@@ -34,7 +34,7 @@ var start_time = null;
 
 function main() {
   canvas = document.getElementById("c");
-  gl = canvas.getContext("experimental-webgl") || canvas.getContext("GL");
+  gl = canvas.getContext("experimental-webgl");
 
   gl.clearColor(0., 0., 0., 1.);
   gl.clear(gl.COLOR_BUFFER_BIT);

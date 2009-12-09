@@ -39,7 +39,7 @@ var g_texCoordOffset=0;
 
 function main() {
   var c = document.getElementById("c");
-  gl = c.getContext("experimental-webgl") || c.getContext("GL");
+  gl = c.getContext("experimental-webgl");
   g_width = c.width;
   g_height = c.height;
   init();

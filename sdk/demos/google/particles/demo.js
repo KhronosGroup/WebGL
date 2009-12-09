@@ -131,7 +131,7 @@ function main() {
   g_view = g_math.matrix4.identity();
   g_projection = g_math.matrix4.identity();
   var c = document.getElementById("c");
-  gl = c.getContext("experimental-webgl") || c.getContext("GL");
+  gl = c.getContext("experimental-webgl");
   g_width = c.width;
   g_height = c.height;
   controller = new CameraController(c);
