@@ -37,6 +37,8 @@ var g_programObject = null;
 var g_vbo = null;
 var g_texCoordOffset=0;
 
+// Main entry point called by the body onload handler.
+// Fetches the WebGL rendering context and initializes OpenGL.
 function main() {
   var c = document.getElementById("c");
   gl = c.getContext("experimental-webgl");
@@ -177,18 +179,36 @@ function draw() {
   gl.flush();
 }
 
+// Loads a texture from the absolute or relative URL "src".
+// Returns a WebGLTexture object.
+// The texture is downloaded in the background using the browser's
+// built-in image handling. Upon completion of the download, our
+// onload event handler will be called which uploads the image into
+// the WebGLTexture.
 function loadTexture(src) {
+  // Create and initialize the WebGLTexture object.
   var texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  // Create a DOM image object.
   var image = new Image();
+  // Set up the onload handler for the image, which will be called by
+  // the browser at some point in the future once the image has
+  // finished downloading.
   image.onload = function() {
+    // This code is not run immediately, but at some point in the
+    // future, so we need to re-bind the texture in order to upload
+    // the image. Note that we use the JavaScript language feature of
+    // closures to refer to the "texture" and "image" variables in the
+    // containing function.
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, image, true);
     checkGLError();
     draw();
   }
+  // Start downloading the image by setting its source.
   image.src = src;
+  // Return the WebGLTexture object immediately.
   return texture;
 }
