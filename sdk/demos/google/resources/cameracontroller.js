@@ -28,8 +28,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Simple camera controller. Attach it to an element to use it as the
-// event source for constructing a view matrix.
+// A simple camera controller which uses an HTML element as the event
+// source for constructing a view matrix. Assign an "onchange"
+// function to the controller as follows to receive the updated X and
+// Y angles for the camera:
+//
+//   var controller = new CameraController(canvas);
+//   controller.onchange = function(xRot, yRot) { ... };
+//
+// The view matrix is computed elsewhere.
 //
 // opt_canvas (an HTMLCanvasElement) and opt_context (a
 // WebGLRenderingContext) can be passed in to make the hit detection
@@ -51,6 +58,7 @@ function CameraController(element, opt_canvas, opt_context) {
   if (opt_context)
       this.context_ = opt_context;
 
+  // Assign a mouse down handler to the HTML element.
   element.onmousedown = function(ev) {
     controller.curX = ev.clientX;
     controller.curY = ev.clientY;
@@ -87,25 +95,33 @@ function CameraController(element, opt_canvas, opt_context) {
     controller.dragging = dragging;
   }
 
+  // Assign a mouse up handler to the HTML element.
   element.onmouseup = function(ev) {
     controller.dragging = false;
   }
 
+  // Assign a mouse move handler to the HTML element.
   element.onmousemove = function(ev) {
     if (controller.dragging) {
+      // Determine how far we have moved since the last mouse move
+      // event.
       var curX = ev.clientX;
       var curY = ev.clientY;
       var deltaX = (controller.curX - curX) / controller.scaleFactor;
       var deltaY = (controller.curY - curY) / controller.scaleFactor;
       controller.curX = curX;
       controller.curY = curY;
+      // Update the X and Y rotation angles based on the mouse motion.
       controller.yRot = (controller.yRot + deltaX) % 360;
       controller.xRot = (controller.xRot + deltaY);
+      // Clamp the X rotation to prevent the camera from going upside
+      // down.
       if (controller.xRot < -90) {
         controller.xRot = -90;
       } else if (controller.xRot > 90) {
         controller.xRot = 90;
       }
+      // Send the onchange event to any listener.
       if (controller.onchange != null) {
         controller.onchange(controller.xRot, controller.yRot);
       }
