@@ -38,7 +38,7 @@
             </dd>
         <dt>Previous version:
             <dd>
-             </dd>
+            </dd>
         <dt>Editor:
             <dd>
                 <a href="mailto:cmarrin@apple.com">Chris Marrin</a>
@@ -275,8 +275,9 @@
     <h3>Supported GLSL Constructs</h3>
 
     <p>
-        A user agent must not accept shaders which do not conform to The OpenGL ES Shading Language, 
-        Version 1.00 <a href="#refsGLES20GLSL">[GLES20GLSL]</a>. In particular, a shader
+        A WebGL implementation must only accept shaders which conform to The OpenGL ES Shading
+        Language, Version 1.00 <a href="#refsGLES20GLSL">[GLES20GLSL]</a>, and which do not exceed
+        the minimum functionality mandated in Sections 4 and 5 of Appendix A.  In particular, a shader
         referencing state variables or functions that are available in other versions of GLSL (such
         as that found in versions of OpenGL for the desktop), must not be allowed to load.
     </p>
@@ -1772,11 +1773,6 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     <p>
         OpenGL ES 2.0 maintains state values for use in rendering. All the calls in this
         group behave identically to their OpenGL counterparts unless otherwise noted.
-        The get calls return a WebGLArray of the appropriate type filled with the returned
-        state value(s). For convenience a version of each get call is provided which returns
-        a single value of the appropriate type for use with state variables that have only
-        a single numeric value. If used for state variables that have multiple values, an
-        exception is raised.
     </p>
     
     <dl class="methods">
@@ -2064,7 +2060,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
         <dd>
             For the WebGLBuffer object bound to the passed target write the passed data starting
             at the passed offset. If the data would be written past the end of the buffer object
-            an exception is raised.
+            an INVALID_VALUE error is raised.
             
         <dt><code>createBuffer()</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGenBuffers.xml">
@@ -2243,7 +2239,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     <p>
         Texture objects provide storage and state for texturing operations. If no WebGLTexture is bound
         (e.g., passing null or 0 to bindTexture) then attempts to modify the texture object shall
-        raise an exception. This is indicated in the functions below.
+        raise an INVALID_OPERATION error. This is indicated in the functions below.
     </p>
      
     <dl class="methods">
@@ -2257,14 +2253,14 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            exception is raised.
+            INVALID_OPERATION error is raised.
         <dt><code>copyTexSubImage2D(target, level, xoffset, yoffset, internalformat, x, y, width, height)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glCopyTexSubImage2D.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            exception is raised.
+            INVALID_OPERATION error is raised.
         <dt><code>createTexture()</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGenTextures.xml">
                 (OpenGL ES 2.0 man page)
@@ -2289,7 +2285,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            exception is raised.
+            INVALID_OPERATION error is raised.
         <dt><code>getTexParameter(target, pname)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetTexParameterfv.xml">
                 (OpenGL ES 2.0 man page)
@@ -2318,7 +2314,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             If the passed <code>pixels</code> value is <code>null</code> a buffer of sufficient size
             initialized to 0 is passed.
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            exception is raised.
+            INVALID_OPERATION error is raised.
         <dt><code>texImage2D(target, level, image, flipY, asPremultipliedAlpha)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexImage2D.xml">
                 (OpenGL ES 2.0 man page)
@@ -2329,28 +2325,28 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             lower left pixel of the passed image is sent first and then transfer proceeds across and then
             up the image.
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            exception is raised.
+            INVALID_OPERATION error is raised.
         <dt><code>texParameterf(target, pname, param)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexParameterf.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            exception is raised.
+            INVALID_OPERATION error is raised.
         <dt><code>texParameteri(target, pname, param)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexParameteri.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            exception is raised.
+            INVALID_OPERATION error is raised.
         <dt><code>texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexSubImage2D.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            exception is raised.
+            INVALID_OPERATION error is raised.
         <dt><code>texSubImage2D(target, level, xoffset, yoffset, image, flipY, asPremultipliedAlpha)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexSubImage2D.xml">
                 (OpenGL ES 2.0 man page)
@@ -2361,7 +2357,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             lower left pixel of the passed image is sent first and then transfer proceeds across and then
             up the image.
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            exception is raised.
+            INVALID_OPERATION error is raised.
     </dl>
      
 <!-- ======================================================================================================= -->
@@ -2675,8 +2671,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
        <dd>
             Each of the uniform* functions above sets the specified uniform or uniforms to the values 
             provided. The passed <code>location</code> must have been obtained from the currently used 
-            program via an earlier call to <code>getUniformLocation</code>, or an exception will be 
-            raised.
+            program via an earlier call to <code>getUniformLocation</code>, or an INVALID_VALUE error
+            will be raised.
         <dt><code>vertexAttrib1f(index, x)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib1f.xml">
                 (OpenGL ES 2.0 man page)
@@ -2717,7 +2713,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Assign the currently bound WebGLBuffer object to the passed vertex attrib index.
             Size is number of components per attribute. Stride and offset are in units of bytes.
             Passed stride and offset must be appropriate for the passed type and size or an
-            exception shall be raised.
+            INVALID_VALUE error will be raised.
     </dl>
     
 <!-- ======================================================================================================= -->
@@ -2749,7 +2745,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
         <dd>
             Draw using the currently bound index array.  The given
             offset is in bytes, and must be a valid multiple of the
-            size of the given type or an exception is raised.
+            size of the given type or an INVALID_VALUE error will be
+            raised.
         <dt><code>finish()</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glFinish.xml">
                 (OpenGL ES 2.0 man page)
@@ -2881,15 +2878,15 @@ http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf
 
 <!-- ======================================================================================================= -->
     
-    <h2>Acknowledgements</h2>
+    <h2>Acknowledgments</h2>
     <p>This specification is produced by the Khronos WebGL Working Group.</p>
     
     <p>
-       Special thanks to: Jon Leech, Kenneth Russell (Google), Kenneth Waters (Google), Mark Callow (HI), Mark Steele (Mozilla), Oliver Hunt (Apple), Tim Johansson (Opera),
+       Special thanks to: Arun Ranganathan (Mozilla), Jon Leech, Kenneth Russell (Google), Kenneth Waters (Google), Mark Callow (HI), Mark Steele (Mozilla), Oliver Hunt (Apple), Tim Johansson (Opera),
        Vangelis Kokkevis (Google), Vladimir Vukicevic (Mozilla)
     </p>
-    <p>Additional thanks to: Alan Hudson (Yumetech), Arun Ranganathan (Mozilla), Bill Licea Kane (AMD), Dan Gessel (Apple), David Ligon (Qualcomm), Greg Ross (Nvidia),
-    Jacob Strom (Ericsson), Kari Pulli (Nokia), Leddie Stenvie (ST-Ericsson), Neil Trevett (Nvidia), Per Wennerstein (Ericsson), Per-Erik Brodin (Ericsson),
+    <p>Additional thanks to: Alan Hudson (Yumetech), Bill Licea Kane (AMD), Dan Gessel (Apple), David Ligon (Qualcomm), Greg Ross (Nvidia),
+    Jacob Strom (Ericsson), Kari Pulli (Nokia), Leddie Stenvie (ST-Ericsson), Neil Trevett (Nvidia), Per Wennersten (Ericsson), Per-Erik Brodin (Ericsson),
     Tom Olson (ARM), Zhengrong Yao (Ericsson), and the members of the Khronos WebGL Working Group.
 </p>
 
