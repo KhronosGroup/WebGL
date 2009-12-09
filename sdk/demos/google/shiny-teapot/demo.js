@@ -71,7 +71,7 @@ function main() {
   //  controller = new CameraController(document.getElementById("body"), c, gl);
   controller.onchange = function(xRot, yRot) {
     draw();
-  }
+  };
   init();
   draw();
 }
@@ -324,7 +324,7 @@ function loadTexture(src) {
     gl.texImage2D(gl.TEXTURE_2D, 0, image, true);
     checkGLError();
     draw();
-  }
+  };
   image.src = src;
   return texture;
 }

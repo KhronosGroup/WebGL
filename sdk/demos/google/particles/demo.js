@@ -140,7 +140,7 @@ function main() {
     g_math.matrix4.translate(g_view, [0, -100, -1500.0]);
     g_math.matrix4.rotateX(g_view, g_math.degToRad(-xRot));
     g_math.matrix4.rotateY(g_view, g_math.degToRad(-yRot));
-  }
+  };
   var fps = document.getElementById("fps");
   if (fps) {
     g_fpsCounter = new FPSCounter(fps);
@@ -177,7 +177,14 @@ function init() {
   setupTrail();
 }
 
+// Loads a texture from the absolute or relative URL "src".
+// Returns a WebGLTexture object.
+// The texture is downloaded in the background using the browser's
+// built-in image handling. Upon completion of the download, our
+// onload event handler will be called which uploads the image into
+// the WebGLTexture.
 function loadTexture(src, opt_completionCallback) {
+  // Create and initialize the WebGLTexture object.
   var texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
@@ -185,16 +192,27 @@ function loadTexture(src, opt_completionCallback) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  // Create a DOM image object.
   var image = new Image();
+  // Set up the onload handler for the image, which will be called by
+  // the browser at some point in the future once the image has
+  // finished downloading.
   image.onload = function() {
+    // This code is not run immediately, but at some point in the
+    // future, so we need to re-bind the texture in order to upload
+    // the image. Note that we use the JavaScript language feature of
+    // closures to refer to the "texture" and "image" variables in the
+    // containing function.
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, image, true);
     gl.generateMipmap(gl.TEXTURE_2D);
     if (opt_completionCallback) {
       opt_completionCallback();
     }
-  }
+  };
+  // Start downloading the image by setting its source.
   image.src = src;
+  // Return the WebGLTexture object immediately.
   return texture;
 }
 

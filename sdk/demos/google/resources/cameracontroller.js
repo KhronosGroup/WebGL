@@ -93,12 +93,12 @@ function CameraController(element, opt_canvas, opt_context) {
     }
 
     controller.dragging = dragging;
-  }
+  };
 
   // Assign a mouse up handler to the HTML element.
   element.onmouseup = function(ev) {
     controller.dragging = false;
-  }
+  };
 
   // Assign a mouse move handler to the HTML element.
   element.onmousemove = function(ev) {
@@ -126,5 +126,5 @@ function CameraController(element, opt_canvas, opt_context) {
         controller.onchange(controller.xRot, controller.yRot);
       }
     }
-  }
+  };
 }

@@ -206,7 +206,7 @@ function loadTexture(src) {
     gl.texImage2D(gl.TEXTURE_2D, 0, image, true);
     checkGLError();
     draw();
-  }
+  };
   // Start downloading the image by setting its source.
   image.src = src;
   // Return the WebGLTexture object immediately.

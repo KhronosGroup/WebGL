@@ -245,14 +245,14 @@ Shader.prototype.bind = function() {
   if (this.normalMatrixLoc !== undefined) {
     gl.uniformMatrix3fv(this.normalMatrixLoc, gl.FALSE, computeNormalMatrix(modelview, normalMatrix));
   }
-}
+};
 
 Shader.prototype.getAttribute = function(name) {
   return gl.getAttribLocation(this.program, name);
 };
 Shader.prototype.getUniform = function(name) {
   return gl.getUniformLocation(this.program, name);
-}
+};
 
 function GlObject(shader, vertices, colors, normals) {
   this.shader = shader;
@@ -281,7 +281,7 @@ function GlObject(shader, vertices, colors, normals) {
 }
 
 GlObject.prototype.free = function() {
-}
+};
 
 GlObject.prototype.draw = function() {
   this.shader.bind();
@@ -306,7 +306,7 @@ GlObject.prototype.draw = function() {
   }
   gl.disableVertexAttribArray(this.shader.colorInLoc);
   gl.disableVertexAttribArray(this.shader.posLoc);
-}
+};
 
 function createGroundPlane(shader) {
   var scale = 4;
@@ -461,7 +461,7 @@ Matrix4x4.prototype.transform3 = function(v) {
   return [e[0] * v[0] + e[4] * v[1] + e[8] * v[2],
           e[1] * v[0] + e[5] * v[1] + e[9] * v[2],
           e[2] * v[0] + e[6] * v[1] + e[10] * v[2]];
-}
+};
 
 function configureLightAndMaterial() {
   var light0Direction = modelview.transform3([-4., 1., 1.]);
@@ -653,15 +653,15 @@ Matrix4x4.prototype.lookAt = function(eyeX, eyeY, eyeZ,
   // console.log(this.elements);
 
   return this;
-}
+};
 
 Matrix4x4.prototype.push = function() {
   this.stack = this.stack || [];
   this.stack.push(this.elements.slice());
-}
+};
 Matrix4x4.prototype.pop = function() {
   this.elements = this.stack.pop();
-}
+};
 
 function camTrack() {
   // console.log('camTrack');

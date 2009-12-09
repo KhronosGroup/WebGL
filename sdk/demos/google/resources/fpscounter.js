@@ -61,4 +61,4 @@ FPSCounter.prototype.update = function() {
     this.curSample_ = 0;
     this.startTime_ = curTime;
   }
-}
+};
