@@ -1,0 +1,4 @@
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE application/x-javascript
+
+
