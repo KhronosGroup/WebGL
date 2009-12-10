@@ -132,6 +132,13 @@ function main() {
     g_projection = g_math.matrix4.identity();
     var c = document.getElementById("c");
     gl = c.getContext("experimental-webgl");
+    if (!gl) {
+        var div = document.createElement("div");
+        div.innerHTML = "This demo requires a WebGL-enabled browser.";
+        var canvasParent = c.parentNode;
+        canvasParent.replaceChild(div, c);
+        return;
+    }
     g_width = c.width;
     g_height = c.height;
     controller = new CameraController(c);

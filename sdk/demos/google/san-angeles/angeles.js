@@ -35,7 +35,13 @@ var start_time = null;
 function main() {
     canvas = document.getElementById("c");
     gl = canvas.getContext("experimental-webgl");
-
+    if (!gl) {
+        var div = document.createElement("div");
+        div.innerHTML = "This demo requires a WebGL-enabled browser.";
+        var canvasParent = c.parentNode;
+        canvasParent.replaceChild(div, c);
+        return;
+    }
     gl.clearColor(0., 0., 0., 1.);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.flush();
