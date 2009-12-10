@@ -53,7 +53,7 @@ function getShader(gl, id) {
     gl.shaderSource(shader, str);
     gl.compileShader(shader);
 
-    if (!gl.getShaderi(shader, gl.COMPILE_STATUS)) {
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
         alert(gl.getShaderInfoLog(shader));
         return null;
     }
@@ -106,7 +106,7 @@ function renderStart() {
     gl.attachShader(shaders.sp, shaders.fs);
     gl.linkProgram(shaders.sp);
 
-    if (!gl.getProgrami(shaders.sp, gl.LINK_STATUS)) {
+    if (!gl.getProgramParameter(shaders.sp, gl.LINK_STATUS)) {
       alert(gl.getProgramInfoLog(shader));
     }
 
