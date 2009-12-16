@@ -778,8 +778,8 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
     <pre class="idl">
 [
     Constructor(in unsigned long length),
-    Constructor(in WebGL<i>TypeName</i>Array array)
-    Constructor(in sequence&lt;<i>type</i>&gt; array)
+    Constructor(in WebGL<i>TypeName</i>Array array),
+    Constructor(in sequence&lt;<i>type</i>&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
                 [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
 ]
@@ -867,8 +867,8 @@ interface WebGL<i>TypeName</i>Array : WebGLArray {
     <pre class="idl">
 [
     Constructor(in unsigned long length),
-    Constructor(in WebGLByteArray array)
-    Constructor(in sequence&lt;long&gt; array)
+    Constructor(in WebGLByteArray array),
+    Constructor(in sequence&lt;long&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
                 [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
 ]
@@ -891,8 +891,8 @@ interface <dfn id="WebGLByteArray">WebGLByteArray</dfn> : WebGLArray {
     <pre class="idl">
 [
     Constructor(in unsigned long length),
-    Constructor(in WebGLUnsignedByteArray array)
-    Constructor(in sequence&lt;unsigned long&gt; array)
+    Constructor(in WebGLUnsignedByteArray array),
+    Constructor(in sequence&lt;unsigned long&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
                 [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
 ]
@@ -915,8 +915,8 @@ interface <dfn id="WebGLUnsignedByteArray">WebGLUnsignedByteArray</dfn> : WebGLA
     <pre class="idl">
 [
     Constructor(in unsigned long length),
-    Constructor(in WebGLShortArray array)
-    Constructor(in sequence&lt;long&gt; array)
+    Constructor(in WebGLShortArray array),
+    Constructor(in sequence&lt;long&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
                 [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
 ]
@@ -939,8 +939,8 @@ interface <dfn id="WebGLShortArray">WebGLShortArray</dfn> : WebGLArray {
     <pre class="idl">
 [
     Constructor(in unsigned long length),
-    Constructor(in WebGLUnsignedShortArray array)
-    Constructor(in sequence&lt;unsigned long&gt; array)
+    Constructor(in WebGLUnsignedShortArray array),
+    Constructor(in sequence&lt;unsigned long&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
                 [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
 ]
@@ -964,8 +964,8 @@ interface <dfn id="WebGLUnsignedShortArray">WebGLUnsignedShortArray</dfn> : WebG
     <pre class="idl">
 [
     Constructor(in unsigned long length),
-    Constructor(in WebGLIntArray array)
-    Constructor(in sequence&lt;long&gt; array)
+    Constructor(in WebGLIntArray array),
+    Constructor(in sequence&lt;long&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
                 [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
 ]
@@ -988,8 +988,8 @@ interface <dfn id="WebGLIntArray">WebGLIntArray</dfn> : WebGLArray {
     <pre class="idl">
 [
     Constructor(in unsigned long length),
-    Constructor(in WebGLUnsignedIntArray array)
-    Constructor(in sequence&lt;unsigned long&gt; array)
+    Constructor(in WebGLUnsignedIntArray array),
+    Constructor(in sequence&lt;unsigned long&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
                 [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
 ]
@@ -1012,8 +1012,8 @@ interface <dfn id="WebGLUnsignedIntArray">WebGLUnsignedIntArray</dfn> : WebGLArr
     <pre class="idl">
 [
     Constructor(in unsigned long length),
-    Constructor(in WebGLFloatArray array)
-    Constructor(in sequence&lt;float&gt; array)
+    Constructor(in WebGLFloatArray array),
+    Constructor(in sequence&lt;float&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
                 [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
 ]
