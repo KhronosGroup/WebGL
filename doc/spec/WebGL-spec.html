@@ -1619,16 +1619,16 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                     in GLsizei width, in GLsizei height, in GLint border, in GLenum format, 
                     in GLenum type, in WebGLArray pixels) raises(DOMException);
     void texImage2D(in GLenum target, in GLint level, in ImageData pixels,
-                    [Optional] GLboolean flipY, [Optional] in asPremultipliedAlpha) 
+                    [Optional] GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
     void texImage2D(in GLenum target, in GLint level, in HTMLImageElement image,
-                    [Optional] GLboolean flipY, [Optional] in asPremultipliedAlpha) 
+                    [Optional] GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
     void texImage2D(in GLenum target, in GLint level, in HTMLCanvasElement image,
-                    [Optional] GLboolean flipY, [Optional] in asPremultipliedAlpha) 
+                    [Optional] GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
     void texImage2D(in GLenum target, in GLint level, in HTMLVideoElement image,
-                    [Optional] GLboolean flipY, [Optional] in asPremultipliedAlpha) 
+                    [Optional] GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
 
     void texParameterf(in GLenum target, in GLenum pname, in GLfloat param) 
@@ -1641,19 +1641,19 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                                                                         raises(DOMException);
     void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
                        in ImageData pixels,
-                       [Optional] GLboolean flipY, [Optional] in asPremultipliedAlpha)
+                       [Optional] GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha)
                                                                         raises(DOMException);
     void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
                        in HTMLImageElement image,
-                       [Optional] GLboolean flipY, [Optional] in asPremultipliedAlpha) 
+                       [Optional] GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
     void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
                        in HTMLCanvasElement image,
-                       [Optional] GLboolean flipY, [Optional] in asPremultipliedAlpha) 
+                       [Optional] GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
     void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
                        in HTMLVideoElement image,
-                       [Optional] GLboolean flipY, [Optional] in asPremultipliedAlpha) 
+                       [Optional] GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
 
     void uniform1f(in WebGLUniformLocation location, in GLfloat x) raises(DOMException);
