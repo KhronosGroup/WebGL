@@ -342,26 +342,24 @@
 
     <p>
         The <code>WebGLContextAttributes</code> interface contains drawing surface attributes 
-        and is passed as the second parameter to getContext. This interface holds key/value
-        pairs, where each key and value is a string. The keys identify the feature being set to 
-        the given value, which is typically a boolean ("true" or "false") or numeric value.
+        and is passed as the second parameter to getContext. A native object may be supplied
+        as this parameter; the specified attributes will be queried from this object. 
     </p>
-    <pre class="idl">interface <dfn id="WebGLContextAttributes">WebGLContextAttributes</dfn> {
-    [NameGetter] DOMString get(in DOMString name);
-    [NameSetter, NameCreator] void set(in DOMString name, in DOMString value);
-    [NameDeleter] void remove(in DOMString name);
+    <pre class="idl">[Callback] interface <dfn id="WebGLContextAttributes">WebGLContextAttributes</dfn> {
+    attribute boolean alpha;
+    attribute boolean depth;
+    attribute boolean stencil;
+    attribute boolean antialias;
+    attribute boolean premultipliedAlpha;
 };</pre>
 
     <h4>Context creation parameters</h4>
 
     <p>
-        The following list describes each key/value pair in the WebGLContextAttributes 
-        object and its use. For each key the default value is shown. If a key is present, 
-        the value is a <code>DOMString</code>. For keys expecting a numerica value, the 
-        string is converted to a number. For keys expecting a boolean value, the string 
-        "true" (case-insensitive) or any string which converts to a number other than 0 
-        is considered to be <code>true</code>. All other values are considered 
-        <code>false</code>.
+        The following list describes each attribute in the WebGLContextAttributes 
+        object and its use. For each attribute the default value is shown. The default
+        value is used either if no second parameter is passed to getContext, or if a
+        native object is passed which has no attribute of the given name.
     </p>
     <dl>
         <dt><span class=prop-value>alpha</span></dt>
@@ -399,6 +397,18 @@
                 premultiplied. This flag is ignored if the <strong>alpha</strong> flag is false.
             </dd>
     </dl>
+
+    <div class="example">
+    Here is an ECMAScript example which passes a WebGLContextAttributes argument to getContext.
+    It assumes the presence of a canvas element named "canvas1" on the page.
+
+    <pre>
+var canvas = document.getElementById('canvas1');
+var context = canvas.getContext('webgl',
+                                { antialias: false,
+                                  stencil: false });
+    </pre>
+    </div>
 
 <!-- ======================================================================================================= -->
 
