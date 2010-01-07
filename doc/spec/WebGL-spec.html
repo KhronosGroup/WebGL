@@ -343,58 +343,63 @@
     <p>
         The <code>WebGLContextAttributes</code> interface contains drawing surface attributes 
         and is passed as the second parameter to getContext. A native object may be supplied
-        as this parameter; the specified attributes will be queried from this object. 
+        as this parameter; the specified attributes will be queried from this object. The "any"
+        type is used for all of the attributes to provide future flexibility for exactly how
+        these values are interpreted.
     </p>
     <pre class="idl">[Callback] interface <dfn id="WebGLContextAttributes">WebGLContextAttributes</dfn> {
-    attribute boolean alpha;
-    attribute boolean depth;
-    attribute boolean stencil;
-    attribute boolean antialias;
-    attribute boolean premultipliedAlpha;
+    attribute any alpha;
+    attribute any depth;
+    attribute any stencil;
+    attribute any antialias;
+    attribute any premultipliedAlpha;
 };</pre>
 
     <h4>Context creation parameters</h4>
 
     <p>
-        The following list describes each attribute in the WebGLContextAttributes 
-        object and its use. For each attribute the default value is shown. The default
-        value is used either if no second parameter is passed to getContext, or if a
-        native object is passed which has no attribute of the given name.
+        The following list describes each attribute in the WebGLContextAttributes object, its
+        natural type and use. For each attribute the default value is shown. The default value
+        is used either if no second parameter is passed to getContext, or if a native object is
+        passed which has no attribute of the given name. If the passed object has an attribute
+        of the given name, its value is converted according to the type mapping rules
+        in <a href="#refsWEBIDL">[WEBIDL]</a> (for example, sections 4.1 and 5.2).
     </p>
     <dl>
         <dt><span class=prop-value>alpha</span></dt>
             <dd>
-                <em>Default: true</em>. If the value is true, the drawing buffer has 
-                an alpha channel for the purposes of performing OpenGL destination 
-                alpha operations and compositing with the page. If the value is false, 
-                no alpha buffer is available.
+                <em>Type: boolean. Default: true</em>. If the value is true, the drawing buffer
+                has an alpha channel for the purposes of performing OpenGL destination alpha
+                operations and compositing with the page. If the value is false, no alpha
+                buffer is available.
             </dd>
         <dt> <span class=prop-value>depth</span>
             <dd>
-                <em>Default: true</em>. If the value is true,  the drawing buffer has a 
-                depth buffer of at least 16 bits. If the value is false, 
-                no depth buffer is available.
+                <em>Type: boolean. Default: true</em>. If the value is true, the drawing buffer
+                has a depth buffer of at least 16 bits. If the value is false, no depth buffer
+                is available.
            </dd>
         <dt> <span class=prop-value>stencil</span>
             <dd>
-                <em>Default: true</em>. If the value is true,  the drawing buffer has a 
-                stencil buffer of at least 8 bits. If  the value is false, 
-                no stencil buffer is available.
+                <em>Type: boolean. Default: true</em>. If the value is true, the drawing buffer
+                has a stencil buffer of at least 8 bits. If the value is false, no stencil
+                buffer is available.
             </dd>
         <dt> <span class=prop-value>antialias</span>
             <dd>
-                <em>Default: true</em>. If the value is true and the implementation 
-                supports antialiasing the drawing buffer will perform antialiasing using 
-                its choice of technique (multisample/supersample) and quality. If the value 
-                is false or the implementation does not support antialiasing, no antialiasing 
-                is performed.
+                <em>Type: boolean. Default: true</em>. If the value is true and the
+                implementation supports antialiasing the drawing buffer will perform
+                antialiasing using its choice of technique (multisample/supersample) and
+                quality. If the value is false or the implementation does not support
+                antialiasing, no antialiasing is performed.
             </dd>
         <dt> <span class=prop-value>premultipliedAlpha</span>
             <dd>
-                <em>Default: true</em>. If the value is true the page compositor will assume 
-                the drawing buffer contains colors with premultiplied alpha. If the value is 
-                false the page compositor will assume that colors in the drawing buffer are not 
-                premultiplied. This flag is ignored if the <strong>alpha</strong> flag is false.
+                <em>Type: boolean. Default: true</em>. If the value is true the page compositor
+                will assume the drawing buffer contains colors with premultiplied alpha. If the
+                value is false the page compositor will assume that colors in the drawing
+                buffer are not premultiplied. This flag is ignored if
+                the <strong>alpha</strong> flag is false.
             </dd>
     </dl>
 
@@ -2874,7 +2879,7 @@ interface <dfn id="WebGLResourceLostEvent">WebGLResourceLostEvent</dfn> : Event 
             Key words for use in RFCs to Indicate Requirement Levels</a></cite>,
             S. Bradner. IETF, March 1997.
         </dd>
-        <dt id="refsWebIDL">[WEBIDL]</dt>
+        <dt id="refsWEBIDL">[WEBIDL]</dt>
         <dd><cite><a href="http://dev.w3.org/2006/webapi/WebIDL/">
             Web IDL: W3C Editor’s Draft</a></cite>, 
             C. McCormack, September 2009.
