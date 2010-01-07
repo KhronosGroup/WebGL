@@ -507,7 +507,6 @@ function loadImageTexture(ctx, url)
 
 function doLoadImageTexture(ctx, image, texture)
 {
-    ctx.enable(ctx.TEXTURE_2D);
     ctx.bindTexture(ctx.TEXTURE_2D, texture);
     ctx.texImage2D(ctx.TEXTURE_2D, 0, image);
     ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR);
