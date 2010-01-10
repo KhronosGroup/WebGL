@@ -864,6 +864,50 @@ interface WebGL<i>TypeName</i>Array : WebGLArray {
       </p>
     </dl>
 
+    <div class="example">
+    Here is an ECMAScript example showing access to the same WebGLArrayBuffer using
+    different types of WebGLArray objects. In this case the buffer contains a
+    floating point vertex position (x, y, z) followed by a color as 4 unsigned bytes (r, g, b, a).
+
+    <pre>
+var numVertices = 100; // for example
+var floatSize = gl.sizeInBytes(gl.FLOAT);
+
+// Compute the number of bytes needed for the buffer
+var vertexSize = 3 * floatSize + 4 * gl.sizeInBytes(gl.UNSIGNED_BYTE);
+
+// Round up to sizeInBytes(gl.FLOAT) -- just in case it isn't 4 on some platforms
+vertexSize = ((vertexSize + floatSize - 1) / floatSize) * floatSize;
+var vertexSizeInFloats = vertexSize / floatSize;
+
+// Allocate the buffer
+var buf = new WebGLArrayBuffer(numVertices * vertexSize);
+
+// Map this buffer to a WebGLFloatArray to access the positions
+var positionArray = new WebGLFloatArray(buf);
+
+// Map the same buffer to a WebGLUnsignedByteArray to access the color
+var colorArray = new WebGLUnsignedByteArray(buf);
+
+// Set up the initial offset of the vertices and colors within the buffer
+var positionIdx = 0;
+var colorIdx = 3 * floatSize;
+
+// Initialize the buffer
+for (var i = 0; i < numVertices; i++) {
+    positionArray[positionIdx] = ...;
+    positionArray[positionIdx + 1] = ...;
+    positionArray[positionIdx + 2] = ...;
+    colorArray[colorIdx] = ...;
+    colorArray[colorIdx + 1] = ...;
+    colorArray[colorIdx + 2] = ...;
+    colorArray[colorIdx + 3] = ...;
+    positionIdx += vertexSizeInFloats;
+    colorIdx += vertexSize;
+}
+    </pre>
+    </div>
+
     <h5>WebGLByteArray</h5>
 
     <p>
@@ -2474,7 +2518,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>INFO_LOG_LENGTH</td><td>long</td></tr>
                 <tr><td>SHADER_SOURCE_LENGTH</td><td>long</td></tr>
             </table>
-        <dt><code>getShaderInfoLog(program)</code>
+        <dt><code>getShaderInfoLog(shader)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetShaderInfoLog.xml">
                 (OpenGL ES 2.0 man page)
             </a>
