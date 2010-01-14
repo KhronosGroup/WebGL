@@ -1,0 +1,903 @@
+/*
+ * webgl.idl
+ *
+ * WebGL IDL definitions scraped from the Khronos specification, revised for esidl.
+ *
+ * Original Khronos Working Draft:
+ *
+ *   https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/WebGL-spec.html
+ */
+
+module webgl {
+
+typedef events::Event Event;
+typedef dom::DOMException DOMException;
+typedef html::HTMLCanvasElement HTMLCanvasElement;
+typedef html::HTMLImageElement HTMLImageElement;
+typedef html::HTMLVideoElement HTMLVideoElement;
+typedef html::ImageData ImageData;
+
+typedef unsigned long  GLenum;
+typedef boolean        GLboolean;
+typedef unsigned long  GLbitfield;
+typedef byte           GLbyte;         /* 'byte' should be a signed 8 bit type. */
+typedef short          GLshort;
+typedef long           GLint;
+typedef long           GLsizei;
+typedef long           GLsizeiptr;
+typedef unsigned byte  GLubyte;        /* 'unsigned byte' should be an unsigned 8 bit type. */
+typedef unsigned short GLushort;
+typedef unsigned long  GLuint;
+typedef float          GLfloat;
+typedef float          GLclampf;  
+
+interface WebGLContextAttributes {
+    attribute boolean alpha;
+    attribute boolean depth;
+    attribute boolean stencil;
+    attribute boolean antialias;
+    attribute boolean premultipliedAlpha;
+};
+
+interface WebGLObject {
+};
+
+interface WebGLBuffer : WebGLObject {
+};
+
+interface WebGLFramebuffer : WebGLObject {
+};
+
+interface WebGLProgram : WebGLObject {
+};
+
+interface WebGLRenderbuffer : WebGLObject {
+};
+
+interface WebGLShader : WebGLObject {
+};
+
+interface WebGLTexture : WebGLObject {
+};
+
+interface WebGLObjectArray {
+    readonly attribute unsigned long length;
+    getter WebGLObject get(in unsigned long index);
+};
+
+interface WebGLUniformLocation {
+};
+
+interface WebGLActiveInfo {
+    readonly attribute GLint size;
+    readonly attribute GLenum type;
+    readonly attribute DOMString name;
+};
+
+
+[ Constructor(in unsigned long length) ]
+interface WebGLArrayBuffer {
+    readonly attribute unsigned long byteLength;
+};
+
+
+interface WebGLArray {
+    readonly attribute WebGLArrayBuffer buffer;
+    readonly attribute unsigned long byteOffset;
+    readonly attribute unsigned long byteLength;
+    readonly attribute unsigned long length;
+
+    WebGLArray slice(in unsigned long offset, in unsigned long length);
+};
+
+
+[
+    Constructor(in unsigned long length),
+    Constructor(in WebGLByteArray array),
+    Constructor(in sequence<GLbyte> array),
+    Constructor(in WebGLArrayBuffer buffer, 
+                in optional unsigned long byteOffset, in optional unsigned long length)
+]
+interface WebGLByteArray : WebGLArray {
+    readonly attribute long bytesPerElement;
+    
+    getter GLbyte get(in unsigned long index);
+    setter void set(in unsigned long index, in GLbyte value);
+    void set(in WebGLByteArray array, in optional unsigned long offset);
+    void set(in sequence<GLbyte> array, in optional unsigned long offset);
+};
+
+
+[
+    Constructor(in unsigned long length),
+    Constructor(in WebGLUnsignedByteArray array),
+    Constructor(in sequence<GLubyte> array),
+    Constructor(in WebGLArrayBuffer buffer, 
+                in optional unsigned long byteOffset, in optional unsigned long length)
+]
+interface WebGLUnsignedByteArray : WebGLArray {
+    readonly attribute long bytesPerElement;
+    
+    getter GLubyte get(in unsigned long index);
+    setter void set(in unsigned long index, in GLubyte value);
+    void set(in WebGLUnsignedByteArray array, in optional unsigned long offset);
+    void set(in sequence<GLubyte> array, in optional unsigned long offset);
+};
+
+
+[
+    Constructor(in unsigned long length),
+    Constructor(in WebGLShortArray array),
+    Constructor(in sequence<GLshort> array),
+    Constructor(in WebGLArrayBuffer buffer, 
+                in optional unsigned long byteOffset, in optional unsigned long length)
+]
+interface WebGLShortArray : WebGLArray {
+    readonly attribute long bytesPerElement;
+    
+    getter GLshort get(in unsigned long index);
+    setter void set(in unsigned long index, in GLshort value);
+    void set(in WebGLShortArray array, in optional unsigned long offset);
+    void set(in sequence<GLshort> array, in optional unsigned long offset);
+};
+
+
+[
+    Constructor(in unsigned long length),
+    Constructor(in WebGLUnsignedShortArray array),
+    Constructor(in sequence<GLushort> array),
+    Constructor(in WebGLArrayBuffer buffer, 
+                in optional unsigned long byteOffset, in optional unsigned long length)
+]
+interface WebGLUnsignedShortArray : WebGLArray {
+    readonly attribute long bytesPerElement;
+    
+    getter GLushort get(in unsigned long index);
+    setter void set(in unsigned long index, in GLushort value);
+    void set(in WebGLUnsignedShortArray array, in optional unsigned long offset);
+    void set(in sequence<GLushort> array, in optional unsigned long offset);
+};
+
+
+[
+    Constructor(in unsigned long length),
+    Constructor(in WebGLIntArray array),
+    Constructor(in sequence<GLint> array),
+    Constructor(in WebGLArrayBuffer buffer, 
+                in optional unsigned long byteOffset, in optional unsigned long length)
+]
+interface WebGLIntArray : WebGLArray {
+    readonly attribute long bytesPerElement;
+    
+    getter GLint get(in unsigned long index);
+    setter void set(in unsigned long index, in GLint value);
+    void set(in WebGLIntArray array, in optional unsigned long offset);
+    void set(in sequence<GLint> array, in optional unsigned long offset);
+};
+
+
+[
+    Constructor(in unsigned long length),
+    Constructor(in WebGLUnsignedIntArray array),
+    Constructor(in sequence<GLuint> array),
+    Constructor(in WebGLArrayBuffer buffer, 
+                in optional unsigned long byteOffset, in optional unsigned long length)
+]
+interface WebGLUnsignedIntArray : WebGLArray {
+    readonly attribute long bytesPerElement;
+    
+    getter GLuint get(in unsigned long index);
+    setter void set(in unsigned long index, in GLuint value);
+    void set(in WebGLUnsignedIntArray array, in optional unsigned long offset);
+    void set(in sequence<GLuint> array, in optional unsigned long offset);
+};
+
+
+[
+    Constructor(in unsigned long length),
+    Constructor(in WebGLFloatArray array),
+    Constructor(in sequence<GLfloat> array),
+    Constructor(in WebGLArrayBuffer buffer, 
+                in optional unsigned long byteOffset, in optional unsigned long length)
+]
+interface WebGLFloatArray : WebGLArray {
+    readonly attribute long bytesPerElement;
+    
+    getter GLfloat get(in unsigned long index);
+    setter void set(in unsigned long index, in GLfloat value);
+    void set(in WebGLFloatArray array, in optional unsigned long offset);
+    void set(in sequence<GLfloat> array, in optional unsigned long offset);
+};
+
+interface WebGLRenderingContext {
+
+    /* ClearBufferMask */
+    const GLenum DEPTH_BUFFER_BIT               = 0x00000100;
+    const GLenum STENCIL_BUFFER_BIT             = 0x00000400;
+    const GLenum COLOR_BUFFER_BIT               = 0x00004000;
+    
+    /* BeginMode */
+    const GLenum POINTS                         = 0x0000;
+    const GLenum LINES                          = 0x0001;
+    const GLenum LINE_LOOP                      = 0x0002;
+    const GLenum LINE_STRIP                     = 0x0003;
+    const GLenum TRIANGLES                      = 0x0004;
+    const GLenum TRIANGLE_STRIP                 = 0x0005;
+    const GLenum TRIANGLE_FAN                   = 0x0006;
+    
+    /* AlphaFunction (not supported in ES20) */
+    /*      NEVER */
+    /*      LESS */
+    /*      EQUAL */
+    /*      LEQUAL */
+    /*      GREATER */
+    /*      NOTEQUAL */
+    /*      GEQUAL */
+    /*      ALWAYS */
+    
+    /* BlendingFactorDest */
+    const GLenum ZERO                           = 0;
+    const GLenum ONE                            = 1;
+    const GLenum SRC_COLOR                      = 0x0300;
+    const GLenum ONE_MINUS_SRC_COLOR            = 0x0301;
+    const GLenum SRC_ALPHA                      = 0x0302;
+    const GLenum ONE_MINUS_SRC_ALPHA            = 0x0303;
+    const GLenum DST_ALPHA                      = 0x0304;
+    const GLenum ONE_MINUS_DST_ALPHA            = 0x0305;
+    
+    /* BlendingFactorSrc */
+    /*      ZERO */
+    /*      ONE */
+    const GLenum DST_COLOR                      = 0x0306;
+    const GLenum ONE_MINUS_DST_COLOR            = 0x0307;
+    const GLenum SRC_ALPHA_SATURATE             = 0x0308;
+    /*      SRC_ALPHA */
+    /*      ONE_MINUS_SRC_ALPHA */
+    /*      DST_ALPHA */
+    /*      ONE_MINUS_DST_ALPHA */
+    
+    /* BlendEquationSeparate */
+    const GLenum FUNC_ADD                       = 0x8006;
+    const GLenum BLEND_EQUATION                 = 0x8009;
+    const GLenum BLEND_EQUATION_RGB             = 0x8009;   /* same as BLEND_EQUATION */
+    const GLenum BLEND_EQUATION_ALPHA           = 0x883D;
+    
+    /* BlendSubtract */
+    const GLenum FUNC_SUBTRACT                  = 0x800A;
+    const GLenum FUNC_REVERSE_SUBTRACT          = 0x800B;
+    
+    /* Separate Blend Functions */
+    const GLenum BLEND_DST_RGB                  = 0x80C8;
+    const GLenum BLEND_SRC_RGB                  = 0x80C9;
+    const GLenum BLEND_DST_ALPHA                = 0x80CA;
+    const GLenum BLEND_SRC_ALPHA                = 0x80CB;
+    const GLenum CONSTANT_COLOR                 = 0x8001;
+    const GLenum ONE_MINUS_CONSTANT_COLOR       = 0x8002;
+    const GLenum CONSTANT_ALPHA                 = 0x8003;
+    const GLenum ONE_MINUS_CONSTANT_ALPHA       = 0x8004;
+    const GLenum BLEND_COLOR                    = 0x8005;
+    
+    /* Buffer Objects */
+    const GLenum ARRAY_BUFFER                   = 0x8892;
+    const GLenum ELEMENT_ARRAY_BUFFER           = 0x8893;
+    const GLenum ARRAY_BUFFER_BINDING           = 0x8894;
+    const GLenum ELEMENT_ARRAY_BUFFER_BINDING   = 0x8895;
+    
+    const GLenum STREAM_DRAW                    = 0x88E0;
+    const GLenum STATIC_DRAW                    = 0x88E4;
+    const GLenum DYNAMIC_DRAW                   = 0x88E8;
+    
+    const GLenum BUFFER_SIZE                    = 0x8764;
+    const GLenum BUFFER_USAGE                   = 0x8765;
+    
+    const GLenum CURRENT_VERTEX_ATTRIB          = 0x8626;
+    
+    /* CullFaceMode */
+    const GLenum FRONT                          = 0x0404;
+    const GLenum BACK                           = 0x0405;
+    const GLenum FRONT_AND_BACK                 = 0x0408;
+    
+    /* DepthFunction */
+    /*      NEVER */
+    /*      LESS */
+    /*      EQUAL */
+    /*      LEQUAL */
+    /*      GREATER */
+    /*      NOTEQUAL */
+    /*      GEQUAL */
+    /*      ALWAYS */
+    
+    /* EnableCap */
+    const GLenum TEXTURE_2D                     = 0x0DE1;
+    const GLenum CULL_FACE                      = 0x0B44;
+    const GLenum BLEND                          = 0x0BE2;
+    const GLenum DITHER                         = 0x0BD0;
+    const GLenum STENCIL_TEST                   = 0x0B90;
+    const GLenum DEPTH_TEST                     = 0x0B71;
+    const GLenum SCISSOR_TEST                   = 0x0C11;
+    const GLenum POLYGON_OFFSET_FILL            = 0x8037;
+    const GLenum SAMPLE_ALPHA_TO_COVERAGE       = 0x809E;
+    const GLenum SAMPLE_COVERAGE                = 0x80A0;
+    
+    /* ErrorCode */
+    const GLenum NO_ERROR                       = 0;
+    const GLenum INVALID_ENUM                   = 0x0500;
+    const GLenum INVALID_VALUE                  = 0x0501;
+    const GLenum INVALID_OPERATION              = 0x0502;
+    const GLenum OUT_OF_MEMORY                  = 0x0505;
+    
+    /* FrontFaceDirection */
+    const GLenum CW                             = 0x0900;
+    const GLenum CCW                            = 0x0901;
+    
+    /* GetPName */
+    const GLenum LINE_WIDTH                     = 0x0B21;
+    const GLenum ALIASED_POINT_SIZE_RANGE       = 0x846D;
+    const GLenum ALIASED_LINE_WIDTH_RANGE       = 0x846E;
+    const GLenum CULL_FACE_MODE                 = 0x0B45;
+    const GLenum FRONT_FACE                     = 0x0B46;
+    const GLenum DEPTH_RANGE                    = 0x0B70;
+    const GLenum DEPTH_WRITEMASK                = 0x0B72;
+    const GLenum DEPTH_CLEAR_VALUE              = 0x0B73;
+    const GLenum DEPTH_FUNC                     = 0x0B74;
+    const GLenum STENCIL_CLEAR_VALUE            = 0x0B91;
+    const GLenum STENCIL_FUNC                   = 0x0B92;
+    const GLenum STENCIL_FAIL                   = 0x0B94;
+    const GLenum STENCIL_PASS_DEPTH_FAIL        = 0x0B95;
+    const GLenum STENCIL_PASS_DEPTH_PASS        = 0x0B96;
+    const GLenum STENCIL_REF                    = 0x0B97;
+    const GLenum STENCIL_VALUE_MASK             = 0x0B93;
+    const GLenum STENCIL_WRITEMASK              = 0x0B98;
+    const GLenum STENCIL_BACK_FUNC              = 0x8800;
+    const GLenum STENCIL_BACK_FAIL              = 0x8801;
+    const GLenum STENCIL_BACK_PASS_DEPTH_FAIL   = 0x8802;
+    const GLenum STENCIL_BACK_PASS_DEPTH_PASS   = 0x8803;
+    const GLenum STENCIL_BACK_REF               = 0x8CA3;
+    const GLenum STENCIL_BACK_VALUE_MASK        = 0x8CA4;
+    const GLenum STENCIL_BACK_WRITEMASK         = 0x8CA5;
+    const GLenum VIEWPORT                       = 0x0BA2;
+    const GLenum SCISSOR_BOX                    = 0x0C10;
+    /*      SCISSOR_TEST */
+    const GLenum COLOR_CLEAR_VALUE              = 0x0C22;
+    const GLenum COLOR_WRITEMASK                = 0x0C23;
+    const GLenum UNPACK_ALIGNMENT               = 0x0CF5;
+    const GLenum PACK_ALIGNMENT                 = 0x0D05;
+    const GLenum MAX_TEXTURE_SIZE               = 0x0D33;
+    const GLenum MAX_VIEWPORT_DIMS              = 0x0D3A;
+    const GLenum SUBPIXEL_BITS                  = 0x0D50;
+    const GLenum RED_BITS                       = 0x0D52;
+    const GLenum GREEN_BITS                     = 0x0D53;
+    const GLenum BLUE_BITS                      = 0x0D54;
+    const GLenum ALPHA_BITS                     = 0x0D55;
+    const GLenum DEPTH_BITS                     = 0x0D56;
+    const GLenum STENCIL_BITS                   = 0x0D57;
+    const GLenum POLYGON_OFFSET_UNITS           = 0x2A00;
+    /*      POLYGON_OFFSET_FILL */
+    const GLenum POLYGON_OFFSET_FACTOR          = 0x8038;
+    const GLenum TEXTURE_BINDING_2D             = 0x8069;
+    const GLenum SAMPLE_BUFFERS                 = 0x80A8;
+    const GLenum SAMPLES                        = 0x80A9;
+    const GLenum SAMPLE_COVERAGE_VALUE          = 0x80AA;
+    const GLenum SAMPLE_COVERAGE_INVERT         = 0x80AB;
+    
+    /* GetTextureParameter */
+    /*      TEXTURE_MAG_FILTER */
+    /*      TEXTURE_MIN_FILTER */
+    /*      TEXTURE_WRAP_S */
+    /*      TEXTURE_WRAP_T */
+    
+    const GLenum NUM_COMPRESSED_TEXTURE_FORMATS = 0x86A2;
+    const GLenum COMPRESSED_TEXTURE_FORMATS     = 0x86A3;
+    
+    /* HintMode */
+    const GLenum DONT_CARE                      = 0x1100;
+    const GLenum FASTEST                        = 0x1101;
+    const GLenum NICEST                         = 0x1102;
+    
+    /* HintTarget */
+    const GLenum GENERATE_MIPMAP_HINT            = 0x8192;
+    
+    /* DataType */
+    const GLenum BYTE                           = 0x1400;
+    const GLenum UNSIGNED_BYTE                  = 0x1401;
+    const GLenum SHORT                          = 0x1402;
+    const GLenum UNSIGNED_SHORT                 = 0x1403;
+    const GLenum INT                            = 0x1404;
+    const GLenum UNSIGNED_INT                   = 0x1405;
+    const GLenum FLOAT                          = 0x1406;
+    
+    /* PixelFormat */
+    const GLenum DEPTH_COMPONENT                = 0x1902;
+    const GLenum ALPHA                          = 0x1906;
+    const GLenum RGB                            = 0x1907;
+    const GLenum RGBA                           = 0x1908;
+    const GLenum LUMINANCE                      = 0x1909;
+    const GLenum LUMINANCE_ALPHA                = 0x190A;
+    
+    /* PixelType */
+    /*      UNSIGNED_BYTE */
+    const GLenum UNSIGNED_SHORT_4_4_4_4         = 0x8033;
+    const GLenum UNSIGNED_SHORT_5_5_5_1         = 0x8034;
+    const GLenum UNSIGNED_SHORT_5_6_5           = 0x8363;
+    
+    /* Shaders */
+    const GLenum FRAGMENT_SHADER                  = 0x8B30;
+    const GLenum VERTEX_SHADER                    = 0x8B31;
+    const GLenum MAX_VERTEX_ATTRIBS               = 0x8869;
+    const GLenum MAX_VERTEX_UNIFORM_VECTORS       = 0x8DFB;
+    const GLenum MAX_VARYING_VECTORS              = 0x8DFC;
+    const GLenum MAX_COMBINED_TEXTURE_IMAGE_UNITS = 0x8B4D;
+    const GLenum MAX_VERTEX_TEXTURE_IMAGE_UNITS   = 0x8B4C;
+    const GLenum MAX_TEXTURE_IMAGE_UNITS          = 0x8872;
+    const GLenum MAX_FRAGMENT_UNIFORM_VECTORS     = 0x8DFD;
+    const GLenum SHADER_TYPE                      = 0x8B4F;
+    const GLenum DELETE_STATUS                    = 0x8B80;
+    const GLenum LINK_STATUS                      = 0x8B82;
+    const GLenum VALIDATE_STATUS                  = 0x8B83;
+    const GLenum ATTACHED_SHADERS                 = 0x8B85;
+    const GLenum ACTIVE_UNIFORMS                  = 0x8B86;
+    const GLenum ACTIVE_UNIFORM_MAX_LENGTH        = 0x8B87;
+    const GLenum ACTIVE_ATTRIBUTES                = 0x8B89;
+    const GLenum ACTIVE_ATTRIBUTE_MAX_LENGTH      = 0x8B8A;
+    const GLenum SHADING_LANGUAGE_VERSION         = 0x8B8C;
+    const GLenum CURRENT_PROGRAM                  = 0x8B8D;
+    
+    /* StencilFunction */
+    const GLenum NEVER                          = 0x0200;
+    const GLenum LESS                           = 0x0201;
+    const GLenum EQUAL                          = 0x0202;
+    const GLenum LEQUAL                         = 0x0203;
+    const GLenum GREATER                        = 0x0204;
+    const GLenum NOTEQUAL                       = 0x0205;
+    const GLenum GEQUAL                         = 0x0206;
+    const GLenum ALWAYS                         = 0x0207;
+    
+    /* StencilOp */
+    /*      ZERO */
+    const GLenum KEEP                           = 0x1E00;
+    const GLenum REPLACE                        = 0x1E01;
+    const GLenum INCR                           = 0x1E02;
+    const GLenum DECR                           = 0x1E03;
+    const GLenum INVERT                         = 0x150A;
+    const GLenum INCR_WRAP                      = 0x8507;
+    const GLenum DECR_WRAP                      = 0x8508;
+    
+    /* StringName */
+    const GLenum VENDOR                         = 0x1F00;
+    const GLenum RENDERER                       = 0x1F01;
+    const GLenum VERSION                        = 0x1F02;
+    const GLenum EXTENSIONS                     = 0x1F03;
+    
+    /* TextureMagFilter */
+    const GLenum NEAREST                        = 0x2600;
+    const GLenum LINEAR                         = 0x2601;
+    
+    /* TextureMinFilter */
+    /*      NEAREST */
+    /*      LINEAR */
+    const GLenum NEAREST_MIPMAP_NEAREST         = 0x2700;
+    const GLenum LINEAR_MIPMAP_NEAREST          = 0x2701;
+    const GLenum NEAREST_MIPMAP_LINEAR          = 0x2702;
+    const GLenum LINEAR_MIPMAP_LINEAR           = 0x2703;
+    
+    /* TextureParameterName */
+    const GLenum TEXTURE_MAG_FILTER             = 0x2800;
+    const GLenum TEXTURE_MIN_FILTER             = 0x2801;
+    const GLenum TEXTURE_WRAP_S                 = 0x2802;
+    const GLenum TEXTURE_WRAP_T                 = 0x2803;
+    
+    /* TextureTarget */
+    /*      TEXTURE_2D */
+    const GLenum TEXTURE                        = 0x1702;
+    
+    const GLenum TEXTURE_CUBE_MAP               = 0x8513;
+    const GLenum TEXTURE_BINDING_CUBE_MAP       = 0x8514;
+    const GLenum TEXTURE_CUBE_MAP_POSITIVE_X    = 0x8515;
+    const GLenum TEXTURE_CUBE_MAP_NEGATIVE_X    = 0x8516;
+    const GLenum TEXTURE_CUBE_MAP_POSITIVE_Y    = 0x8517;
+    const GLenum TEXTURE_CUBE_MAP_NEGATIVE_Y    = 0x8518;
+    const GLenum TEXTURE_CUBE_MAP_POSITIVE_Z    = 0x8519;
+    const GLenum TEXTURE_CUBE_MAP_NEGATIVE_Z    = 0x851A;
+    const GLenum MAX_CUBE_MAP_TEXTURE_SIZE      = 0x851C;
+    
+    /* TextureUnit */
+    const GLenum TEXTURE0                       = 0x84C0;
+    const GLenum TEXTURE1                       = 0x84C1;
+    const GLenum TEXTURE2                       = 0x84C2;
+    const GLenum TEXTURE3                       = 0x84C3;
+    const GLenum TEXTURE4                       = 0x84C4;
+    const GLenum TEXTURE5                       = 0x84C5;
+    const GLenum TEXTURE6                       = 0x84C6;
+    const GLenum TEXTURE7                       = 0x84C7;
+    const GLenum TEXTURE8                       = 0x84C8;
+    const GLenum TEXTURE9                       = 0x84C9;
+    const GLenum TEXTURE10                      = 0x84CA;
+    const GLenum TEXTURE11                      = 0x84CB;
+    const GLenum TEXTURE12                      = 0x84CC;
+    const GLenum TEXTURE13                      = 0x84CD;
+    const GLenum TEXTURE14                      = 0x84CE;
+    const GLenum TEXTURE15                      = 0x84CF;
+    const GLenum TEXTURE16                      = 0x84D0;
+    const GLenum TEXTURE17                      = 0x84D1;
+    const GLenum TEXTURE18                      = 0x84D2;
+    const GLenum TEXTURE19                      = 0x84D3;
+    const GLenum TEXTURE20                      = 0x84D4;
+    const GLenum TEXTURE21                      = 0x84D5;
+    const GLenum TEXTURE22                      = 0x84D6;
+    const GLenum TEXTURE23                      = 0x84D7;
+    const GLenum TEXTURE24                      = 0x84D8;
+    const GLenum TEXTURE25                      = 0x84D9;
+    const GLenum TEXTURE26                      = 0x84DA;
+    const GLenum TEXTURE27                      = 0x84DB;
+    const GLenum TEXTURE28                      = 0x84DC;
+    const GLenum TEXTURE29                      = 0x84DD;
+    const GLenum TEXTURE30                      = 0x84DE;
+    const GLenum TEXTURE31                      = 0x84DF;
+    const GLenum ACTIVE_TEXTURE                 = 0x84E0;
+    
+    /* TextureWrapMode */
+    const GLenum REPEAT                         = 0x2901;
+    const GLenum CLAMP_TO_EDGE                  = 0x812F;
+    const GLenum MIRRORED_REPEAT                = 0x8370;
+    
+    /* Uniform Types */
+    const GLenum FLOAT_VEC2                     = 0x8B50;
+    const GLenum FLOAT_VEC3                     = 0x8B51;
+    const GLenum FLOAT_VEC4                     = 0x8B52;
+    const GLenum INT_VEC2                       = 0x8B53;
+    const GLenum INT_VEC3                       = 0x8B54;
+    const GLenum INT_VEC4                       = 0x8B55;
+    const GLenum BOOL                           = 0x8B56;
+    const GLenum BOOL_VEC2                      = 0x8B57;
+    const GLenum BOOL_VEC3                      = 0x8B58;
+    const GLenum BOOL_VEC4                      = 0x8B59;
+    const GLenum FLOAT_MAT2                     = 0x8B5A;
+    const GLenum FLOAT_MAT3                     = 0x8B5B;
+    const GLenum FLOAT_MAT4                     = 0x8B5C;
+    const GLenum SAMPLER_2D                     = 0x8B5E;
+    const GLenum SAMPLER_CUBE                   = 0x8B60;
+    
+    /* Vertex Arrays */
+    const GLenum VERTEX_ATTRIB_ARRAY_ENABLED        = 0x8622;
+    const GLenum VERTEX_ATTRIB_ARRAY_SIZE           = 0x8623;
+    const GLenum VERTEX_ATTRIB_ARRAY_STRIDE         = 0x8624;
+    const GLenum VERTEX_ATTRIB_ARRAY_TYPE           = 0x8625;
+    const GLenum VERTEX_ATTRIB_ARRAY_NORMALIZED     = 0x886A;
+    const GLenum VERTEX_ATTRIB_ARRAY_POINTER        = 0x8645;
+    const GLenum VERTEX_ATTRIB_ARRAY_BUFFER_BINDING = 0x889F;
+    
+    /* Read Format */
+    const GLenum IMPLEMENTATION_COLOR_READ_TYPE   = 0x8B9A;
+    const GLenum IMPLEMENTATION_COLOR_READ_FORMAT = 0x8B9B;
+    
+    /* Shader Source */
+    const GLenum COMPILE_STATUS                 = 0x8B81;
+    const GLenum INFO_LOG_LENGTH                = 0x8B84;
+    const GLenum SHADER_SOURCE_LENGTH           = 0x8B88;
+    const GLenum SHADER_COMPILER                = 0x8DFA;
+    
+    /* Shader Precision-Specified Types */
+    const GLenum LOW_FLOAT                      = 0x8DF0;
+    const GLenum MEDIUM_FLOAT                   = 0x8DF1;
+    const GLenum HIGH_FLOAT                     = 0x8DF2;
+    const GLenum LOW_INT                        = 0x8DF3;
+    const GLenum MEDIUM_INT                     = 0x8DF4;
+    const GLenum HIGH_INT                       = 0x8DF5;
+    
+    /* Framebuffer Object. */
+    const GLenum FRAMEBUFFER                    = 0x8D40;
+    const GLenum RENDERBUFFER                   = 0x8D41;
+    
+    const GLenum RGBA4                          = 0x8056;
+    const GLenum RGB5_A1                        = 0x8057;
+    const GLenum RGB565                         = 0x8D62;
+    const GLenum DEPTH_COMPONENT16              = 0x81A5;
+    const GLenum STENCIL_INDEX                  = 0x1901;
+    const GLenum STENCIL_INDEX8                 = 0x8D48;
+    
+    const GLenum RENDERBUFFER_WIDTH             = 0x8D42;
+    const GLenum RENDERBUFFER_HEIGHT            = 0x8D43;
+    const GLenum RENDERBUFFER_INTERNAL_FORMAT   = 0x8D44;
+    const GLenum RENDERBUFFER_RED_SIZE          = 0x8D50;
+    const GLenum RENDERBUFFER_GREEN_SIZE        = 0x8D51;
+    const GLenum RENDERBUFFER_BLUE_SIZE         = 0x8D52;
+    const GLenum RENDERBUFFER_ALPHA_SIZE        = 0x8D53;
+    const GLenum RENDERBUFFER_DEPTH_SIZE        = 0x8D54;
+    const GLenum RENDERBUFFER_STENCIL_SIZE      = 0x8D55;
+    
+    const GLenum FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE           = 0x8CD0;
+    const GLenum FRAMEBUFFER_ATTACHMENT_OBJECT_NAME           = 0x8CD1;
+    const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL         = 0x8CD2;
+    const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE = 0x8CD3;
+    
+    const GLenum COLOR_ATTACHMENT0              = 0x8CE0;
+    const GLenum DEPTH_ATTACHMENT               = 0x8D00;
+    const GLenum STENCIL_ATTACHMENT             = 0x8D20;
+    
+    const GLenum NONE                           = 0;
+    
+    const GLenum FRAMEBUFFER_COMPLETE                      = 0x8CD5;
+    const GLenum FRAMEBUFFER_INCOMPLETE_ATTACHMENT         = 0x8CD6;
+    const GLenum FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT = 0x8CD7;
+    const GLenum FRAMEBUFFER_INCOMPLETE_DIMENSIONS         = 0x8CD9;
+    const GLenum FRAMEBUFFER_UNSUPPORTED                   = 0x8CDD;
+    
+    const GLenum FRAMEBUFFER_BINDING            = 0x8CA6;
+    const GLenum RENDERBUFFER_BINDING           = 0x8CA7;
+    const GLenum MAX_RENDERBUFFER_SIZE          = 0x84E8;
+    
+    const GLenum INVALID_FRAMEBUFFER_OPERATION  = 0x0506;
+    
+    readonly attribute HTMLCanvasElement canvas;
+
+    WebGLContextAttributes getContextAttributes();
+
+    void activeTexture(in GLenum texture) raises(DOMException);
+    void attachShader(in WebGLProgram program, in WebGLShader shader) raises(DOMException);
+    void bindAttribLocation(in WebGLProgram program, in GLuint index, in DOMString name) 
+                                                                        raises(DOMException);
+    void bindBuffer(in GLenum target, in WebGLBuffer buffer) raises(DOMException);
+    void bindFramebuffer(in GLenum target, in WebGLFramebuffer framebuffer) 
+                                                                        raises(DOMException);
+    void bindRenderbuffer(in GLenum target, in WebGLRenderbuffer renderbuffer) 
+                                                                        raises(DOMException);
+    void bindTexture(in GLenum target, in WebGLTexture texture) raises(DOMException);
+    void blendColor(in GLclampf red, in GLclampf green, in GLclampf blue, in GLclampf alpha) 
+                                                                        raises(DOMException);
+    void blendEquation(in GLenum mode) raises(DOMException);
+    void blendEquationSeparate(in GLenum modeRGB, in GLenum modeAlpha) raises(DOMException);
+    void blendFunc(in GLenum sfactor, in GLenum dfactor) raises(DOMException);
+    void blendFuncSeparate(in GLenum srcRGB, in GLenum dstRGB, 
+                           in GLenum srcAlpha, in GLenum dstAlpha) raises(DOMException);
+
+    void bufferData(in GLenum target, in GLsizei size, in GLenum usage) raises(DOMException);
+    void bufferData(in GLenum target, in WebGLArray data, in GLenum usage) 
+                                                                        raises(DOMException);
+    void bufferData(in GLenum target, in WebGLArrayBuffer data, in GLenum usage) 
+                                                                        raises(DOMException);
+    void bufferSubData(in GLenum target, in GLsizeiptr offset, in WebGLArray data) 
+                                                                        raises(DOMException);
+    void bufferSubData(in GLenum target, in GLsizeiptr offset, in WebGLArrayBuffer data) 
+                                                                        raises(DOMException);
+
+    GLenum checkFramebufferStatus(in GLenum target) raises(DOMException);
+    void clear(in GLbitfield mask) raises(DOMException);
+    void clearColor(in GLclampf red, in GLclampf green, in GLclampf blue, in GLclampf alpha) 
+                                                                        raises(DOMException);
+    void clearDepth(in GLclampf depth) raises(DOMException);
+    void clearStencil(in GLint s) raises(DOMException);
+    void colorMask(in GLboolean red, in GLboolean green, in GLboolean blue, in GLboolean alpha) 
+                                                                        raises(DOMException);
+    void compileShader(in WebGLShader shader) raises(DOMException);
+
+    void copyTexImage2D(in GLenum target, in GLint level, in GLenum internalformat, 
+                        in GLint x, in GLint y, in GLsizei width, in GLsizei height, 
+                        in GLint border) raises(DOMException);
+    void copyTexSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
+                           in GLint x, in GLint y, in GLsizei width, in GLsizei height) 
+                                                                        raises(DOMException);
+
+    WebGLBuffer createBuffer() raises(DOMException);
+    WebGLFramebuffer createFramebuffer() raises(DOMException);
+    WebGLProgram createProgram() raises(DOMException);
+    WebGLRenderbuffer createRenderbuffer() raises(DOMException);
+    WebGLShader createShader(in GLenum type) raises(DOMException);
+    WebGLTexture createTexture() raises(DOMException);
+
+    void cullFace(in GLenum mode) raises(DOMException);
+
+    void deleteBuffer(in WebGLBuffer buffer) raises(DOMException);
+    void deleteFramebuffer(in WebGLFramebuffer framebuffer) raises(DOMException);
+    void deleteProgram(in WebGLProgram program) raises(DOMException);
+    void deleteRenderbuffer(in WebGLRenderbuffer renderbuffer) raises(DOMException);
+    void deleteShader(in WebGLShader shader) raises(DOMException);
+    void deleteTexture(in WebGLTexture texture) raises(DOMException);
+
+    void depthFunc(in GLenum func) raises(DOMException);
+    void depthMask(in GLboolean flag) raises(DOMException);
+    void depthRange(in GLclampf zNear, in GLclampf zFar) raises(DOMException);
+    void detachShader(in WebGLProgram program, in WebGLShader shader) raises(DOMException);
+    void disable(in GLenum cap) raises(DOMException);
+    void disableVertexAttribArray(in GLuint index) raises(DOMException);
+    void drawArrays(in GLenum mode, in GLint first, in GLsizei count) raises(DOMException);
+    void drawElements(in GLenum mode, in GLsizei count, in GLenum type, in GLsizeiptr offset) 
+                                                                        raises(DOMException);
+
+    void enable(in GLenum cap) raises(DOMException);
+    void enableVertexAttribArray(in GLuint index) raises(DOMException);
+    void finish() raises(DOMException);
+    void flush() raises(DOMException);
+    void framebufferRenderbuffer(in GLenum target, in GLenum attachment, 
+                                 in GLenum renderbuffertarget, 
+                                 in WebGLRenderbuffer renderbuffer) raises(DOMException);
+    void framebufferTexture2D(in GLenum target, in GLenum attachment, in GLenum textarget, 
+                              in WebGLTexture texture, in GLint level) raises(DOMException);
+    void frontFace(in GLenum mode) raises(DOMException);
+
+    void generateMipmap(in GLenum target) raises(DOMException);
+
+    WebGLActiveInfo getActiveAttrib(GLuint program, GLuint index) raises(DOMException);
+    WebGLActiveInfo getActiveUniform(GLuint program, GLuint index) raises(DOMException);
+    WebGLObjectArray getAttachedShaders(GLuint program) raises(DOMException);
+
+    GLint getAttribLocation(in WebGLProgram program, DOMString name) raises(DOMException);
+
+    any getParameter(in GLenum pname) raises(DOMException);
+    any getBufferParameter(in GLenum target, in GLenum pname) raises(DOMException);
+
+    GLenum getError() raises(DOMException);
+
+    any getFramebufferAttachmentParameter(in GLenum target, in GLenum attachment, 
+                                          in GLenum pname) raises(DOMException);
+    any getProgramParameter(in WebGLProgram program, in GLenum pname) raises(DOMException);
+    DOMString getProgramInfoLog(in WebGLProgram program) raises(DOMException);
+    any getRenderbufferParameter(in GLenum target, in GLenum pname) raises(DOMException);
+    any getShaderParameter(in WebGLShader shader, in GLenum pname) raises(DOMException);
+    DOMString getShaderInfoLog(in WebGLShader shader) raises(DOMException);
+
+    DOMString getShaderSource(in WebGLShader shader) raises(DOMException);
+    DOMString getString(in GLenum name) raises(DOMException);
+
+    any getTexParameter(in GLenum target, in GLenum pname) raises(DOMException);
+
+    any getUniform(in WebGLProgram program, in WebGLUniformLocation location) raises(DOMException);
+
+    WebGLUniformLocation getUniformLocation(in WebGLProgram program, DOMString name) raises(DOMException);
+
+    any getVertexAttrib(in GLuint index, in GLenum pname) raises(DOMException);
+
+    GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname) raises(DOMException);
+
+    void hint(in GLenum target, in GLenum mode) raises(DOMException);
+    GLboolean isBuffer(in WebGLObject buffer) raises(DOMException);
+    GLboolean isEnabled(in GLenum cap) raises(DOMException);
+    GLboolean isFramebuffer(in WebGLObject framebuffer) raises(DOMException);
+    GLboolean isProgram(in WebGLObject program) raises(DOMException);
+    GLboolean isRenderbuffer(in WebGLObject renderbuffer) raises(DOMException);
+    GLboolean isShader(in WebGLObject shader) raises(DOMException);
+    GLboolean isTexture(in WebGLObject texture) raises(DOMException);
+    void lineWidth(in GLfloat width) raises(DOMException);
+    void linkProgram(in WebGLProgram program) raises(DOMException);
+    void pixelStorei(in GLenum pname, in GLint param) raises(DOMException);
+    void polygonOffset(in GLfloat factor, in GLfloat units) raises(DOMException);
+
+    WebGLArray readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
+                           GLenum format, GLenum type) raises(DOMException);
+
+    void renderbufferStorage(in GLenum target, in GLenum internalformat, 
+                             in GLsizei width, in GLsizei height) raises(DOMException);
+    void sampleCoverage(in GLclampf value, in GLboolean invert) raises(DOMException);
+    void scissor(in GLint x, in GLint y, in GLsizei width, in GLsizei height) 
+                                                                        raises(DOMException);
+
+    void shaderSource(in WebGLShader shader, in DOMString source) raises(DOMException);
+
+    void stencilFunc(in GLenum func, in GLint ref, in GLuint mask) raises(DOMException);
+    void stencilFuncSeparate(in GLenum face, in GLenum func, in GLint ref, in GLuint mask) 
+                                                                        raises(DOMException);
+    void stencilMask(in GLuint mask) raises(DOMException);
+    void stencilMaskSeparate(in GLenum face, in GLuint mask) raises(DOMException);
+    void stencilOp(in GLenum fail, in GLenum zfail, in GLenum zpass) raises(DOMException);
+    void stencilOpSeparate(in GLenum face, in GLenum fail, in GLenum zfail, in GLenum zpass) 
+                                                                        raises(DOMException);
+
+    void texImage2D(in GLenum target, in GLint level, in GLenum internalformat, 
+                    in GLsizei width, in GLsizei height, in GLint border, in GLenum format, 
+                    in GLenum type, in WebGLArray pixels) raises(DOMException);
+    void texImage2D(in GLenum target, in GLint level, in ImageData pixels,
+                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
+                                                                        raises(DOMException);
+    void texImage2D(in GLenum target, in GLint level, in HTMLImageElement image,
+                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
+                                                                        raises(DOMException);
+    void texImage2D(in GLenum target, in GLint level, in HTMLCanvasElement image,
+                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
+                                                                        raises(DOMException);
+    void texImage2D(in GLenum target, in GLint level, in HTMLVideoElement image,
+                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
+                                                                        raises(DOMException);
+
+    void texParameterf(in GLenum target, in GLenum pname, in GLfloat param) 
+                                                                        raises(DOMException);
+    void texParameteri(in GLenum target, in GLenum pname, in GLint param) raises(DOMException);
+
+    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
+                       in GLsizei width, in GLsizei height, 
+                       in GLenum format, in GLenum type, in WebGLArray pixels) 
+                                                                        raises(DOMException);
+    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
+                       in ImageData pixels,
+                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha)
+                                                                        raises(DOMException);
+    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
+                       in HTMLImageElement image,
+                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
+                                                                        raises(DOMException);
+    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
+                       in HTMLCanvasElement image,
+                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
+                                                                        raises(DOMException);
+    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
+                       in HTMLVideoElement image,
+                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
+                                                                        raises(DOMException);
+
+    void uniform1f(in WebGLUniformLocation location, in GLfloat x) raises(DOMException);
+    void uniform1fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
+    void uniform1fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
+    void uniform1i(in WebGLUniformLocation location, in GLint x) raises(DOMException);
+    void uniform1iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
+    void uniform1iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
+    void uniform2f(in WebGLUniformLocation location, in GLfloat x, in GLfloat y) raises(DOMException);
+    void uniform2fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
+    void uniform2fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
+    void uniform2i(in WebGLUniformLocation location, in GLint x, in GLint y) raises(DOMException);
+    void uniform2iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
+    void uniform2iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
+    void uniform3f(in WebGLUniformLocation location, in GLfloat x, in GLfloat y, in GLfloat z) 
+                                                                        raises(DOMException);
+    void uniform3fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
+    void uniform3fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
+    void uniform3i(in WebGLUniformLocation location, in GLint x, in GLint y, in GLint z) raises(DOMException);
+    void uniform3iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
+    void uniform3iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
+    void uniform4f(in WebGLUniformLocation location, in GLfloat x, in GLfloat y, in GLfloat z, in GLfloat w) 
+                                                                        raises(DOMException);
+    void uniform4fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
+    void uniform4fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
+    void uniform4i(in WebGLUniformLocation location, in GLint x, in GLint y, in GLint z, in GLint w) 
+                                                                        raises(DOMException);
+    void uniform4iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
+    void uniform4iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
+
+    void uniformMatrix2fv(in WebGLUniformLocation location, in GLboolean transpose, 
+                          in WebGLFloatArray value) raises(DOMException);
+    void uniformMatrix2fv(in WebGLUniformLocation location, in GLboolean transpose, 
+                          in sequence<float> value) raises(DOMException);
+    void uniformMatrix3fv(in WebGLUniformLocation location, in GLboolean transpose, 
+                          in WebGLFloatArray value) raises(DOMException);
+    void uniformMatrix3fv(in WebGLUniformLocation location, in GLboolean transpose, 
+                          in sequence<float> value) raises(DOMException);
+    void uniformMatrix4fv(in WebGLUniformLocation location, in GLboolean transpose, 
+                          in WebGLFloatArray value) raises(DOMException);
+    void uniformMatrix4fv(in WebGLUniformLocation location, in GLboolean transpose, 
+                          in sequence<float> value) raises(DOMException);
+
+    void useProgram(in WebGLProgram program) raises(DOMException);
+    void validateProgram(in WebGLProgram program) raises(DOMException);
+
+    void vertexAttrib1f(in GLuint indx, in GLfloat x) raises(DOMException);
+    void vertexAttrib1fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib1fv(in GLuint indx, in sequence<float> values) raises(DOMException);
+    void vertexAttrib2f(in GLuint indx, in GLfloat x, in GLfloat y) raises(DOMException);
+    void vertexAttrib2fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib2fv(in GLuint indx, in sequence<float> values) raises(DOMException);
+    void vertexAttrib3f(in GLuint indx, in GLfloat x, in GLfloat y, in GLfloat z) 
+                                                                        raises(DOMException);
+    void vertexAttrib3fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib3fv(in GLuint indx, in sequence<float> values) raises(DOMException);
+    void vertexAttrib4f(in GLuint indx, in GLfloat x, in GLfloat y, in GLfloat z, in GLfloat w) 
+                                                                        raises(DOMException);
+    void vertexAttrib4fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib4fv(in GLuint indx, in sequence<float> values) raises(DOMException);
+    void vertexAttribPointer(in GLuint indx, in GLint size, in GLenum type, 
+                             in GLboolean normalized, GLsizei stride, GLsizeiptr offset) 
+                                                                        raises(DOMException);
+
+    void viewport(in GLint x, in GLint y, in GLsizei width, in GLsizei height) 
+                                                                        raises(DOMException);
+};
+
+
+interface WebGLResourceLostEvent : Event {
+    readonly attribute WebGLObject resource;
+    readonly attribute WebGLRenderingContext context;
+    
+    void initWebGLResourceLostEvent(in DOMString type,
+                                    in boolean canBubble,
+                                    in boolean cancelable,
+                                    in WebGLObject resource,
+                                    in WebGLRenderingContext context);
+};
+
+};

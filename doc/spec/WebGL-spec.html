@@ -36,11 +36,19 @@
                 <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/WebGL-spec.html">
                     https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/WebGL-spec.html
                 </a>
+                <br>
+                <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/webgl.idl">
+                    <b>WebIDL:</b> https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/webgl.idl
+                </a>
             </dd>
         <dt>Latest version:
             <dd>
                 <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/WebGL-spec.html">
                     https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/WebGL-spec.html
+                </a>
+                <br>
+                <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/webgl.idl">
+                    <b>WebIDL:</b> https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/webgl.idl
                 </a>
             </dd>
         <dt>Previous version:
@@ -50,7 +58,7 @@
         <dt>Editor:
             <dd>
                 <a href="mailto:cmarrin@apple.com">Chris Marrin</a>
-                <a href="http://www.apple.com/">(Apple Inc)</a>
+                <a href="http://www.apple.com/">(Apple Inc.)</a>
             </dd>
     </dl>
 
@@ -338,6 +346,36 @@
 
 <!-- ======================================================================================================= -->
 
+    <h3>Types</h3>
+
+    <p>
+        The following types are used in all interfaces in the following section.
+    </p>
+    <pre class="idl">
+typedef events::Event Event;
+typedef dom::DOMException DOMException;
+typedef html::HTMLCanvasElement HTMLCanvasElement;
+typedef html::HTMLImageElement HTMLImageElement;
+typedef html::HTMLVideoElement HTMLVideoElement;
+typedef html::ImageData ImageData;
+
+typedef unsigned long  GLenum;
+typedef boolean        GLboolean;
+typedef unsigned long  GLbitfield;
+typedef byte           GLbyte;         /* 'byte' should be a signed 8 bit type. */
+typedef short          GLshort;
+typedef long           GLint;
+typedef long           GLsizei;
+typedef long           GLsizeiptr;
+typedef unsigned byte  GLubyte;        /* 'unsigned byte' should be an unsigned 8 bit type. */
+typedef unsigned short GLushort;
+typedef unsigned long  GLuint;
+typedef float          GLfloat;
+typedef float          GLclampf;  
+</pre>
+
+<!-- ======================================================================================================= -->
+
     <h3>WebGLContextAttributes</h3>
 
     <p>
@@ -560,7 +598,7 @@ var context = canvas.getContext('webgl',
     </p>
     <pre class="idl">interface <dfn id="WebGLObjectArray">WebGLObjectArray</dfn> {
     readonly attribute unsigned long length;
-    [IndexGetter] WebGLObject get(in unsigned long index);
+    getter WebGLObject get(in unsigned long index);
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -670,8 +708,10 @@ interface <dfn id="WebGLArrayBuffer">WebGLArrayBuffer</dfn> {
     <h3>WebGLArray</h3>
 
     <p>
-        The <code>WebGLArray</code> interface is the abstract base interface for all 
-        the typed array interfaces.  Every <code>WebGLArray</code> subclass presents a typed view of a <a href="WebGLArrayBuffer">WebGLArrayBuffer</a> region.  Multiple <code>WebGLArray</code>s can reference the same or overlapping regions of a <a href="WebGLArrayBuffer">WebGLArrayBuffer</a>.
+        The <code>WebGLArray</code> interface is the abstract base interface for all the typed array 
+        interfaces.  Every <code>WebGLArray</code> subclass presents a typed view of a 
+        <a href="WebGLArrayBuffer">WebGLArrayBuffer</a> region.  Multiple <code>WebGLArray</code>s can 
+        reference the same or overlapping regions of a <a href="WebGLArrayBuffer">WebGLArrayBuffer</a>.
     </p>
     <pre class="idl">
 interface <dfn id="WebGLArray">WebGLArray</dfn> {
@@ -747,6 +787,8 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
 	  </p>
     </dl>
 
+<!-- ======================================================================================================= -->
+
     <h4>Typed WebGLArray Interfaces</h4>
 
     <p>
@@ -767,7 +809,7 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
 
     <center><table>
       <thead>
-	<tr><th><i>TypeName</i></th><th>Element Size<br>(bytes)</th><th>Type</th><th>Equivalent C Type</th></tr>
+	<tr><th><i>TypeName</i></th><th>bytesPerElement</th><th>Type</th><th>Equivalent C Type</th></tr>
       </thead>
       <tbody>
 	<tr><td>Byte</td><td>1</td><td>8-bit signed integer</td><td><code>signed char</code></td></tr>
@@ -790,13 +832,15 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
     Constructor(in WebGL<i>TypeName</i>Array array),
     Constructor(in sequence&lt;<i>type</i>&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
-                [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
+                in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface WebGL<i>TypeName</i>Array : WebGLArray {
-    [IndexGetter] <i>type</i> get(in unsigned long index);
-    [IndexSetter] void set(in unsigned long index, in <i>type</i> value);
-    void set(in WebGL<i>TypeName</i>Array array, [Optional] in unsigned long offset);
-    void set(in sequence&lt;<i>type</i>&gt; array, [Optional] in unsigned long offset);
+    readonly attribute long bytesPerElement;
+    
+    getter <i>type</i> get(in unsigned long index);
+    setter void set(in unsigned long index, in <i>type</i> value);
+    void set(in WebGL<i>TypeName</i>Array array, in optional unsigned long offset);
+    void set(in sequence&lt;<i>type</i>&gt; array, in optional unsigned long offset);
 };</pre>
 
 
@@ -836,19 +880,39 @@ interface WebGL<i>TypeName</i>Array : WebGLArray {
       </p>
     </dl>
 
+    <h5>Shared Attributes</h4>
+
+    <dl class="methods">
+        <dt>
+            <code class=attribute-name>
+                <a id="DOM-WebGLArray-buffer">
+                    bytesPerElement
+                </a>
+            </code> 
+            of type <code>long</code>
+        <dd>
+            The size in bytes of each element in the array. This value is provided to make it easier for
+            authors to compute the byte offsets needed for heterogenous arrays. See example
+            below.
+    </dl>
+
     <h5>Shared Getters and Setters</h5>
 
     <dl class="methods">
         <dt><code>get(index)</code>
         <dd>
-      Return the element at the given index.  If the index is out of range, an exception is raised.  This is an index getter function, and may be invoked via array index syntax where applicable.
+      Return the element at the given index.  If the index is out of range, an exception is raised.  
+      This is an index getter function, and may be invoked via array index syntax where applicable.
         <dt><code>set(index, value)</code>
         <dd>
       <p>
-        Sets the element at the given index to the given value.  If the index is out of range, an exception is raised.  This is an index setter function, and may be invoked via array index syntax where applicable.
+        Sets the element at the given index to the given value.  If the index is out of range, an 
+        exception is raised.  This is an index setter function, and may be invoked via array index 
+        syntax where applicable.
       </p>
       <p>
-        If the given value is out of range for the type of the array, a C-style cast operation is performed to coerce the value to the valid range.  No clamping or rounding is performed.
+        If the given value is out of range for the type of the array, a C-style cast operation is 
+        performed to coerce the value to the valid range.  No clamping or rounding is performed.
       </p>
         <dt><code>set(array, offset)</code>
         <dd>
@@ -871,14 +935,6 @@ interface WebGL<i>TypeName</i>Array : WebGLArray {
 
     <pre>
 var numVertices = 100; // for example
-var floatSize = gl.sizeInBytes(gl.FLOAT);
-
-// Compute the number of bytes needed for the buffer
-var vertexSize = 3 * floatSize + 4 * gl.sizeInBytes(gl.UNSIGNED_BYTE);
-
-// Round up to sizeInBytes(gl.FLOAT) -- just in case it isn't 4 on some platforms
-vertexSize = ((vertexSize + floatSize - 1) / floatSize) * floatSize;
-var vertexSizeInFloats = vertexSize / floatSize;
 
 // Allocate the buffer
 var buf = new WebGLArrayBuffer(numVertices * vertexSize);
@@ -886,8 +942,14 @@ var buf = new WebGLArrayBuffer(numVertices * vertexSize);
 // Map this buffer to a WebGLFloatArray to access the positions
 var positionArray = new WebGLFloatArray(buf);
 
+var floatSize = positionArray.bytesPerElement;
+
 // Map the same buffer to a WebGLUnsignedByteArray to access the color
 var colorArray = new WebGLUnsignedByteArray(buf);
+
+// Compute the size needed for the buffer, in bytes and floats
+var vertexSize = 3 * floatSize + 4 * colorArray.bytesPerElement;
+var vertexSizeInFloats = vertexSize / floatSize;
 
 // Set up the initial offset of the vertices and colors within the buffer
 var positionIdx = 0;
@@ -908,6 +970,8 @@ for (var i = 0; i < numVertices; i++) {
     </pre>
     </div>
 
+<!-- ======================================================================================================= -->
+
     <h5>WebGLByteArray</h5>
 
     <p>
@@ -921,16 +985,20 @@ for (var i = 0; i < numVertices; i++) {
 [
     Constructor(in unsigned long length),
     Constructor(in WebGLByteArray array),
-    Constructor(in sequence&lt;long&gt; array),
+    Constructor(in sequence&lt;GLbyte&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
-                [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
+                in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLByteArray">WebGLByteArray</dfn> : WebGLArray {
-    [IndexGetter] long get(in unsigned long index);
-    [IndexSetter] void set(in unsigned long index, in long value);
-    void set(in WebGLByteArray array, [Optional] in unsigned long offset);
-    void set(in sequence&lt;long&gt; array, [Optional] in unsigned long offset);
+    readonly attribute long bytesPerElement;
+    
+    getter GLbyte get(in unsigned long index);
+    setter void set(in unsigned long index, in GLbyte value);
+    void set(in WebGLByteArray array, in optional unsigned long offset);
+    void set(in sequence&lt;GLbyte&gt; array, in optional unsigned long offset);
 };</pre>
+
+<!-- ======================================================================================================= -->
 
     <h5>WebGLUnsignedByteArray</h5>
 
@@ -945,16 +1013,20 @@ interface <dfn id="WebGLByteArray">WebGLByteArray</dfn> : WebGLArray {
 [
     Constructor(in unsigned long length),
     Constructor(in WebGLUnsignedByteArray array),
-    Constructor(in sequence&lt;unsigned long&gt; array),
+    Constructor(in sequence&lt;GLubyte&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
-                [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
+                in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLUnsignedByteArray">WebGLUnsignedByteArray</dfn> : WebGLArray {
-    [IndexGetter] unsigned long get(in unsigned long index);
-    [IndexSetter] void set(in unsigned long index, in unsigned long value);
-    void set(in WebGLUnsignedByteArray array, [Optional] in unsigned long offset);
-    void set(in sequence&lt;unsigned long&gt; array, [Optional] in unsigned long offset);
+    readonly attribute long bytesPerElement;
+    
+    getter GLubyte get(in unsigned long index);
+    setter void set(in unsigned long index, in GLubyte value);
+    void set(in WebGLUnsignedByteArray array, in optional unsigned long offset);
+    void set(in sequence&lt;GLubyte&gt; array, in optional unsigned long offset);
 };</pre>
+
+<!-- ======================================================================================================= -->
 
     <h5>WebGLShortArray</h5>
 
@@ -969,16 +1041,20 @@ interface <dfn id="WebGLUnsignedByteArray">WebGLUnsignedByteArray</dfn> : WebGLA
 [
     Constructor(in unsigned long length),
     Constructor(in WebGLShortArray array),
-    Constructor(in sequence&lt;long&gt; array),
+    Constructor(in sequence&lt;GLshort&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
-                [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
+                in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLShortArray">WebGLShortArray</dfn> : WebGLArray {
-    [IndexGetter] long get(in unsigned long index);
-    [IndexSetter] void set(in unsigned long index, in long value);
-    void set(in WebGLShortArray array, [Optional] in unsigned long offset);
-    void set(in sequence&lt;long&gt; array, [Optional] in unsigned long offset);
+    readonly attribute long bytesPerElement;
+    
+    getter GLshort get(in unsigned long index);
+    setter void set(in unsigned long index, in GLshort value);
+    void set(in WebGLShortArray array, in optional unsigned long offset);
+    void set(in sequence&lt;GLshort&gt; array, in optional unsigned long offset);
 };</pre>
+
+<!-- ======================================================================================================= -->
 
     <h5>WebGLUnsignedShortArray</h5>
 
@@ -993,17 +1069,21 @@ interface <dfn id="WebGLShortArray">WebGLShortArray</dfn> : WebGLArray {
 [
     Constructor(in unsigned long length),
     Constructor(in WebGLUnsignedShortArray array),
-    Constructor(in sequence&lt;unsigned long&gt; array),
+    Constructor(in sequence&lt;GLushort&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
-                [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
+                in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLUnsignedShortArray">WebGLUnsignedShortArray</dfn> : WebGLArray {
-    [IndexGetter] unsigned long get(in unsigned long index);
-    [IndexSetter] void set(in unsigned long index, in unsigned long value);
-    void set(in WebGLUnsignedShortArray array, [Optional] in unsigned long offset);
-    void set(in sequence&lt;unsigned long&gt; array, [Optional] in unsigned long offset);
+    readonly attribute long bytesPerElement;
+    
+    getter GLushort get(in unsigned long index);
+    setter void set(in unsigned long index, in GLushort value);
+    void set(in WebGLUnsignedShortArray array, in optional unsigned long offset);
+    void set(in sequence&lt;GLushort&gt; array, in optional unsigned long offset);
 };</pre>
 
+
+<!-- ======================================================================================================= -->
 
     <h5>WebGLIntArray</h5>
 
@@ -1018,16 +1098,20 @@ interface <dfn id="WebGLUnsignedShortArray">WebGLUnsignedShortArray</dfn> : WebG
 [
     Constructor(in unsigned long length),
     Constructor(in WebGLIntArray array),
-    Constructor(in sequence&lt;long&gt; array),
+    Constructor(in sequence&lt;GLint&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
-                [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
+                in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLIntArray">WebGLIntArray</dfn> : WebGLArray {
-    [IndexGetter] long get(in unsigned long index);
-    [IndexSetter] void set(in unsigned long index, in long value);
-    void set(in WebGLIntArray array, [Optional] in unsigned long offset);
-    void set(in sequence&lt;long&gt; array, [Optional] in unsigned long offset);
+    readonly attribute long bytesPerElement;
+    
+    getter GLint get(in unsigned long index);
+    setter void set(in unsigned long index, in GLint value);
+    void set(in WebGLIntArray array, in optional unsigned long offset);
+    void set(in sequence&lt;GLint&gt; array, in optional unsigned long offset);
 };</pre>
+
+<!-- ======================================================================================================= -->
 
     <h5>WebGLUnsignedIntArray</h5>
 
@@ -1042,16 +1126,20 @@ interface <dfn id="WebGLIntArray">WebGLIntArray</dfn> : WebGLArray {
 [
     Constructor(in unsigned long length),
     Constructor(in WebGLUnsignedIntArray array),
-    Constructor(in sequence&lt;unsigned long&gt; array),
+    Constructor(in sequence&lt;GLuint&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
-                [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
+                in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLUnsignedIntArray">WebGLUnsignedIntArray</dfn> : WebGLArray {
-    [IndexGetter] unsigned long get(in unsigned long index);
-    [IndexSetter] void set(in unsigned long index, in unsigned long value);
-    void set(in WebGLUnsignedIntArray array, [Optional] in unsigned long offset);
-    void set(in sequence&lt;unsigned long&gt; array, [Optional] in unsigned long offset);
+    readonly attribute long bytesPerElement;
+    
+    getter GLuint get(in unsigned long index);
+    setter void set(in unsigned long index, in GLuint value);
+    void set(in WebGLUnsignedIntArray array, in optional unsigned long offset);
+    void set(in sequence&lt;GLuint&gt; array, in optional unsigned long offset);
 };</pre>
+
+<!-- ======================================================================================================= -->
 
     <h5>WebGLFloatArray</h5>
 
@@ -1066,15 +1154,17 @@ interface <dfn id="WebGLUnsignedIntArray">WebGLUnsignedIntArray</dfn> : WebGLArr
 [
     Constructor(in unsigned long length),
     Constructor(in WebGLFloatArray array),
-    Constructor(in sequence&lt;float&gt; array),
+    Constructor(in sequence&lt;GLfloat&gt; array),
     Constructor(in WebGLArrayBuffer buffer, 
-                [Optional] in unsigned long byteOffset, [Optional] in unsigned long length)
+                in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
-    [IndexGetter] float get(in unsigned long index);
-    [IndexSetter] void set(in unsigned long index, in float value);
-    void set(in WebGLFloatArray array, [Optional] in unsigned long offset);
-    void set(in sequence&lt;float&gt; array, [Optional] in unsigned long offset);
+    readonly attribute long bytesPerElement;
+    
+    getter GLfloat get(in unsigned long index);
+    setter void set(in unsigned long index, in GLfloat value);
+    void set(in WebGLFloatArray array, in optional unsigned long offset);
+    void set(in sequence&lt;GLfloat&gt; array, in optional unsigned long offset);
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1087,16 +1177,6 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
     <pre class="idl">interface <dfn id="WebGLRenderingContext">WebGLRenderingContext</dfn> {
 
-    typedef unsigned long  GLenum;
-    typedef boolean        GLboolean;
-    typedef unsigned long  GLbitfield;
-    typedef long           GLint;
-    typedef long           GLsizei;
-    typedef long           GLsizeiptr;
-    typedef unsigned long  GLuint;
-    typedef float          GLfloat;
-    typedef float          GLclampf;
-    
     /* ClearBufferMask */
     const GLenum DEPTH_BUFFER_BIT               = 0x00000100;
     const GLenum STENCIL_BUFFER_BIT             = 0x00000400;
@@ -1516,7 +1596,6 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     
     readonly attribute HTMLCanvasElement canvas;
 
-    long sizeInBytes(in GLenum type);
     WebGLContextAttributes getContextAttributes();
 
     void activeTexture(in GLenum texture) raises(DOMException);
@@ -1672,16 +1751,16 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                     in GLsizei width, in GLsizei height, in GLint border, in GLenum format, 
                     in GLenum type, in WebGLArray pixels) raises(DOMException);
     void texImage2D(in GLenum target, in GLint level, in ImageData pixels,
-                    [Optional] in GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
+                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
     void texImage2D(in GLenum target, in GLint level, in HTMLImageElement image,
-                    [Optional] in GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
+                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
     void texImage2D(in GLenum target, in GLint level, in HTMLCanvasElement image,
-                    [Optional] in GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
+                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
     void texImage2D(in GLenum target, in GLint level, in HTMLVideoElement image,
-                    [Optional] in GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
+                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
 
     void texParameterf(in GLenum target, in GLenum pname, in GLfloat param) 
@@ -1694,79 +1773,79 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                                                                         raises(DOMException);
     void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
                        in ImageData pixels,
-                       [Optional] in GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha)
+                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha)
                                                                         raises(DOMException);
     void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
                        in HTMLImageElement image,
-                       [Optional] in GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
+                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
     void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
                        in HTMLCanvasElement image,
-                       [Optional] in GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
+                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
     void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
                        in HTMLVideoElement image,
-                       [Optional] in GLboolean flipY, [Optional] in GLboolean asPremultipliedAlpha) 
+                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
 
     void uniform1f(in WebGLUniformLocation location, in GLfloat x) raises(DOMException);
     void uniform1fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
-    void uniform1fv(in WebGLUniformLocation location, in sequence&lt;float&gt; v) raises(DOMException);
+    void uniform1fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
     void uniform1i(in WebGLUniformLocation location, in GLint x) raises(DOMException);
     void uniform1iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
-    void uniform1iv(in WebGLUniformLocation location, in sequence&lt;long&gt; v) raises(DOMException);
+    void uniform1iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
     void uniform2f(in WebGLUniformLocation location, in GLfloat x, in GLfloat y) raises(DOMException);
     void uniform2fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
-    void uniform2fv(in WebGLUniformLocation location, in sequence&lt;float&gt; v) raises(DOMException);
+    void uniform2fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
     void uniform2i(in WebGLUniformLocation location, in GLint x, in GLint y) raises(DOMException);
     void uniform2iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
-    void uniform2iv(in WebGLUniformLocation location, in sequence&lt;long&gt; v) raises(DOMException);
+    void uniform2iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
     void uniform3f(in WebGLUniformLocation location, in GLfloat x, in GLfloat y, in GLfloat z) 
                                                                         raises(DOMException);
     void uniform3fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
-    void uniform3fv(in WebGLUniformLocation location, in sequence&lt;float&gt; v) raises(DOMException);
+    void uniform3fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
     void uniform3i(in WebGLUniformLocation location, in GLint x, in GLint y, in GLint z) raises(DOMException);
     void uniform3iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
-    void uniform3iv(in WebGLUniformLocation location, in sequence&lt;long&gt; v) raises(DOMException);
+    void uniform3iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
     void uniform4f(in WebGLUniformLocation location, in GLfloat x, in GLfloat y, in GLfloat z, in GLfloat w) 
                                                                         raises(DOMException);
     void uniform4fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
-    void uniform4fv(in WebGLUniformLocation location, in sequence&lt;float&gt; v) raises(DOMException);
+    void uniform4fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
     void uniform4i(in WebGLUniformLocation location, in GLint x, in GLint y, in GLint z, in GLint w) 
                                                                         raises(DOMException);
     void uniform4iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
-    void uniform4iv(in WebGLUniformLocation location, in sequence&lt;long&gt; v) raises(DOMException);
+    void uniform4iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
 
     void uniformMatrix2fv(in WebGLUniformLocation location, in GLboolean transpose, 
                           in WebGLFloatArray value) raises(DOMException);
     void uniformMatrix2fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in sequence&lt;float&gt; value) raises(DOMException);
+                          in sequence<float> value) raises(DOMException);
     void uniformMatrix3fv(in WebGLUniformLocation location, in GLboolean transpose, 
                           in WebGLFloatArray value) raises(DOMException);
     void uniformMatrix3fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in sequence&lt;float&gt; value) raises(DOMException);
+                          in sequence<float> value) raises(DOMException);
     void uniformMatrix4fv(in WebGLUniformLocation location, in GLboolean transpose, 
                           in WebGLFloatArray value) raises(DOMException);
     void uniformMatrix4fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in sequence&lt;float&gt; value) raises(DOMException);
+                          in sequence<float> value) raises(DOMException);
 
     void useProgram(in WebGLProgram program) raises(DOMException);
     void validateProgram(in WebGLProgram program) raises(DOMException);
 
     void vertexAttrib1f(in GLuint indx, in GLfloat x) raises(DOMException);
     void vertexAttrib1fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
-    void vertexAttrib1fv(in GLuint indx, in sequence&lt;float&gt; values) raises(DOMException);
+    void vertexAttrib1fv(in GLuint indx, in sequence<float> values) raises(DOMException);
     void vertexAttrib2f(in GLuint indx, in GLfloat x, in GLfloat y) raises(DOMException);
     void vertexAttrib2fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
-    void vertexAttrib2fv(in GLuint indx, in sequence&lt;float&gt; values) raises(DOMException);
+    void vertexAttrib2fv(in GLuint indx, in sequence<float> values) raises(DOMException);
     void vertexAttrib3f(in GLuint indx, in GLfloat x, in GLfloat y, in GLfloat z) 
                                                                         raises(DOMException);
     void vertexAttrib3fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
-    void vertexAttrib3fv(in GLuint indx, in sequence&lt;float&gt; values) raises(DOMException);
+    void vertexAttrib3fv(in GLuint indx, in sequence<float> values) raises(DOMException);
     void vertexAttrib4f(in GLuint indx, in GLfloat x, in GLfloat y, in GLfloat z, in GLfloat w) 
                                                                         raises(DOMException);
     void vertexAttrib4fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
-    void vertexAttrib4fv(in GLuint indx, in sequence&lt;float&gt; values) raises(DOMException);
+    void vertexAttrib4fv(in GLuint indx, in sequence<float> values) raises(DOMException);
     void vertexAttribPointer(in GLuint indx, in GLint size, in GLenum type, 
                              in GLboolean normalized, GLsizei stride, GLsizeiptr offset) 
                                                                         raises(DOMException);
@@ -1798,23 +1877,12 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
 
 <!-- ======================================================================================================= -->
 
-    <h4>The <code>sizeInBytes</code> method</h4>
-
-    <dl class="methods">
-        <dt><code>sizeInBytes()</code>
-        <dd>
-            Returns the number of bytes used to represent the
-            passed GL data type on the current platform.
-    </dl>
-     
-<!-- ======================================================================================================= -->
-
     <h4>The <code>getContextAttributes</code> method</h4>
 
     <dl class="methods">
         <dt><code>getContextAttributes()</code>
         <dd>
-            Returns the WebGLContextAttributes desribing the current drawing buffer.
+            Returns the WebGLContextAttributes describing the current drawing buffer.
     </dl>
      
 <!-- ======================================================================================================= -->
@@ -2201,8 +2269,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return the value for the passed pname given the passed target and attachment. The type returned is the natural type for the
-            requested pname, as given in the following table:
+            Return the value for the passed pname given the passed target and attachment. The type 
+            returned is the natural type for the requested pname, as given in the following table:
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
                 <tr><td>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</td><td>unsigned long</td></tr>
@@ -2256,8 +2324,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return the value for the passed pname given the passed target. The type returned is the natural type for the
-            requested pname, as given in the following table:
+            Return the value for the passed pname given the passed target. The type returned is the natural 
+            type for the requested pname, as given in the following table:
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
                 <tr><td>RENDERBUFFER_WIDTH</td><td>long</td></tr>
@@ -2485,8 +2553,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return the value for the passed pname given the passed program. The type returned is the natural type for the
-            requested pname, as given in the following table:
+            Return the value for the passed pname given the passed program. The type returned is the natural 
+            type for the requested pname, as given in the following table:
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
                 <tr><td>DELETE_STATUS</td><td>boolean</td></tr>
@@ -2508,8 +2576,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return the value for the passed pname given the passed shader. The type returned is the natural type for the
-            requested pname, as given in the following table:
+            Return the value for the passed pname given the passed shader. The type returned is the natural 
+            type for the requested pname, as given in the following table:
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
                 <tr><td>SHADER_TYPE</td><td>unsigned long</td></tr>
@@ -2626,8 +2694,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return the information requested in pname about the vertex attribute at the passed index. The type returned is 
-            dependent on the information requested, as shown in the following table:
+            Return the information requested in pname about the vertex attribute at the passed index. The 
+            type returned is dependent on the information requested, as shown in the following table:
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
                 <tr><td>VERTEX_ATTRIB_ARRAY_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
@@ -2924,8 +2992,6 @@ interface <dfn id="WebGLResourceLostEvent">WebGLResourceLostEvent</dfn> : Event 
         </dd>
     </dl>
 
-
-
     <h3>Other references</h3>
 
 <!-- ======================================================================================================= -->
@@ -2934,12 +3000,16 @@ interface <dfn id="WebGLResourceLostEvent">WebGLResourceLostEvent</dfn> : Event 
     <p>This specification is produced by the Khronos WebGL Working Group.</p>
     
     <p>
-       Special thanks to: Arun Ranganathan (Mozilla), Jon Leech, Kenneth Russell (Google), Kenneth Waters (Google), Mark Callow (HI), Mark Steele (Mozilla), Oliver Hunt (Apple), Tim Johansson (Opera),
-       Vangelis Kokkevis (Google), Vladimir Vukicevic (Mozilla)
+       Special thanks to: Arun Ranganathan (Mozilla), Jon Leech, Kenneth Russell (Google), 
+       Kenneth Waters (Google), Mark Callow (HI), Mark Steele (Mozilla), Oliver Hunt (Apple), 
+       Tim Johansson (Opera), Vangelis Kokkevis (Google), Vladimir Vukicevic (Mozilla)
     </p>
-    <p>Additional thanks to: Alan Hudson (Yumetech), Bill Licea Kane (AMD), Dan Gessel (Apple), David Ligon (Qualcomm), Greg Ross (Nvidia),
-    Jacob Strom (Ericsson), Kari Pulli (Nokia), Leddie Stenvie (ST-Ericsson), Neil Trevett (Nvidia), Per Wennersten (Ericsson), Per-Erik Brodin (Ericsson),
-    Tom Olson (ARM), Zhengrong Yao (Ericsson), and the members of the Khronos WebGL Working Group.
+    <p>
+        Additional thanks to: Alan Hudson (Yumetech), Bill Licea Kane (AMD), Dan Gessel (Apple), 
+        David Ligon (Qualcomm), Greg Ross (Nvidia), Jacob Strom (Ericsson), Kari Pulli (Nokia), 
+        Leddie Stenvie (ST-Ericsson), Neil Trevett (Nvidia), Per Wennersten (Ericsson), 
+        Per-Erik Brodin (Ericsson), Shiki Okasaka (Google), Tom Olson (ARM), Zhengrong Yao (Ericsson), 
+        and the members of the Khronos WebGL Working Group.
 </p>
 
 </body>
