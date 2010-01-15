@@ -513,7 +513,7 @@ function doLoadImageTexture(ctx, image, texture)
     ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MIN_FILTER, ctx.LINEAR_MIPMAP_LINEAR);
     ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_S, ctx.CLAMP_TO_EDGE);
     ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_T, ctx.CLAMP_TO_EDGE);
-    ctx.generateMipmap(ctx.TEXTURE_2D)
+    //ctx.generateMipmap(ctx.TEXTURE_2D)
     ctx.bindTexture(ctx.TEXTURE_2D, null);
 }
 
