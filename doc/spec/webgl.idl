@@ -99,7 +99,7 @@ interface WebGLArray {
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface WebGLByteArray : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 1;
     
     getter GLbyte get(in unsigned long index);
     setter void set(in unsigned long index, in GLbyte value);
@@ -116,7 +116,7 @@ interface WebGLByteArray : WebGLArray {
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface WebGLUnsignedByteArray : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 1;
     
     getter GLubyte get(in unsigned long index);
     setter void set(in unsigned long index, in GLubyte value);
@@ -133,7 +133,7 @@ interface WebGLUnsignedByteArray : WebGLArray {
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface WebGLShortArray : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 2;
     
     getter GLshort get(in unsigned long index);
     setter void set(in unsigned long index, in GLshort value);
@@ -150,7 +150,7 @@ interface WebGLShortArray : WebGLArray {
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface WebGLUnsignedShortArray : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 2;
     
     getter GLushort get(in unsigned long index);
     setter void set(in unsigned long index, in GLushort value);
@@ -167,7 +167,7 @@ interface WebGLUnsignedShortArray : WebGLArray {
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface WebGLIntArray : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 4;
     
     getter GLint get(in unsigned long index);
     setter void set(in unsigned long index, in GLint value);
@@ -184,7 +184,7 @@ interface WebGLIntArray : WebGLArray {
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface WebGLUnsignedIntArray : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 4;
     
     getter GLuint get(in unsigned long index);
     setter void set(in unsigned long index, in GLuint value);
@@ -201,7 +201,7 @@ interface WebGLUnsignedIntArray : WebGLArray {
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface WebGLFloatArray : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 4;
     
     getter GLfloat get(in unsigned long index);
     setter void set(in unsigned long index, in GLfloat value);

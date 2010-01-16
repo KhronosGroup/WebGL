@@ -809,7 +809,7 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
 
     <center><table>
       <thead>
-	<tr><th><i>TypeName</i></th><th>bytesPerElement</th><th>Type</th><th>Equivalent C Type</th></tr>
+	<tr><th><i>TypeName</i></th><th>BYTES_PER_ELEMENT</th><th>Type</th><th>Equivalent C Type</th></tr>
       </thead>
       <tbody>
 	<tr><td>Byte</td><td>1</td><td>8-bit signed integer</td><td><code>signed char</code></td></tr>
@@ -835,7 +835,7 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface WebGL<i>TypeName</i>Array : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = <i>element size in bytes</i>;
     
     getter <i>type</i> get(in unsigned long index);
     setter void set(in unsigned long index, in <i>type</i> value);
@@ -880,18 +880,18 @@ interface WebGL<i>TypeName</i>Array : WebGLArray {
       </p>
     </dl>
 
-    <h5>Shared Attributes</h5>
+    <h5>Shared Constants</h5>
 
     <dl class="methods">
         <dt>
             <code class=attribute-name>
-                <a id="DOM-WebGLArray-buffer">
-                    bytesPerElement
+                <a id="DOM-WebGLArray-BYTES_PER_ELEMENT">
+                    BYTES_PER_ELEMENT
                 </a>
             </code> 
-            of type <code>long</code>
+            of type <code>GLsizei</code>
         <dd>
-            The size in bytes of each element in the array. This value is provided to make it easier for
+            The size in bytes of each element in the array. This constant is provided to make it easier for
             authors to compute the byte offsets needed for heterogenous arrays. See example
             below.
     </dl>
@@ -942,13 +942,13 @@ var buf = new WebGLArrayBuffer(numVertices * vertexSize);
 // Map this buffer to a WebGLFloatArray to access the positions
 var positionArray = new WebGLFloatArray(buf);
 
-var floatSize = positionArray.bytesPerElement;
+var floatSize = positionArray.BYTES_PER_ELEMENT;
 
 // Map the same buffer to a WebGLUnsignedByteArray to access the color
 var colorArray = new WebGLUnsignedByteArray(buf);
 
 // Compute the size needed for the buffer, in bytes and floats
-var vertexSize = 3 * floatSize + 4 * colorArray.bytesPerElement;
+var vertexSize = 3 * floatSize + 4 * colorArray.BYTES_PER_ELEMENT;
 var vertexSizeInFloats = vertexSize / floatSize;
 
 // Set up the initial offset of the vertices and colors within the buffer
@@ -990,7 +990,7 @@ for (var i = 0; i < numVertices; i++) {
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLByteArray">WebGLByteArray</dfn> : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 1;
     
     getter GLbyte get(in unsigned long index);
     setter void set(in unsigned long index, in GLbyte value);
@@ -1018,7 +1018,7 @@ interface <dfn id="WebGLByteArray">WebGLByteArray</dfn> : WebGLArray {
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLUnsignedByteArray">WebGLUnsignedByteArray</dfn> : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 1;
     
     getter GLubyte get(in unsigned long index);
     setter void set(in unsigned long index, in GLubyte value);
@@ -1046,7 +1046,7 @@ interface <dfn id="WebGLUnsignedByteArray">WebGLUnsignedByteArray</dfn> : WebGLA
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLShortArray">WebGLShortArray</dfn> : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 2;
     
     getter GLshort get(in unsigned long index);
     setter void set(in unsigned long index, in GLshort value);
@@ -1074,7 +1074,7 @@ interface <dfn id="WebGLShortArray">WebGLShortArray</dfn> : WebGLArray {
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLUnsignedShortArray">WebGLUnsignedShortArray</dfn> : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 2;
     
     getter GLushort get(in unsigned long index);
     setter void set(in unsigned long index, in GLushort value);
@@ -1103,7 +1103,7 @@ interface <dfn id="WebGLUnsignedShortArray">WebGLUnsignedShortArray</dfn> : WebG
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLIntArray">WebGLIntArray</dfn> : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 4;
     
     getter GLint get(in unsigned long index);
     setter void set(in unsigned long index, in GLint value);
@@ -1131,7 +1131,7 @@ interface <dfn id="WebGLIntArray">WebGLIntArray</dfn> : WebGLArray {
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLUnsignedIntArray">WebGLUnsignedIntArray</dfn> : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 4;
     
     getter GLuint get(in unsigned long index);
     setter void set(in unsigned long index, in GLuint value);
@@ -1159,7 +1159,7 @@ interface <dfn id="WebGLUnsignedIntArray">WebGLUnsignedIntArray</dfn> : WebGLArr
                 in optional unsigned long byteOffset, in optional unsigned long length)
 ]
 interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
-    readonly attribute long bytesPerElement;
+    const GLsizei BYTES_PER_ELEMENT = 4;
     
     getter GLfloat get(in unsigned long index);
     setter void set(in unsigned long index, in GLfloat value);
