@@ -137,11 +137,15 @@
     function reshape(gl)
     {
         var canvas = document.getElementById('example');
-        if (canvas.clientWidth == width && canvas.clientHeight == height)
+        var windowWidth = window.innerWidth - 20;
+        var windowHeight = window.innerHeight - 40;
+        if (windowWidth == width && windowHeight == height)
             return;
 
-        width = canvas.clientWidth;
-        height = canvas.clientHeight;
+        width = windowWidth;
+        height = windowHeight;
+        canvas.width = width;
+        canvas.height = height;
 
         // Set the viewport and projection matrix for the scene
         gl.viewport(0, 0, width, height);
@@ -208,7 +212,7 @@
 </script>
 <style type="text/css">
     canvas {
-        border: 2px solid black;
+        //border: 2px solid black;
     }
     .text {
         position:absolute;
