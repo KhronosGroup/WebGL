@@ -936,24 +936,23 @@ interface WebGL<i>TypeName</i>Array : WebGLArray {
     <pre>
 var numVertices = 100; // for example
 
+// Compute the size needed for the buffer, in bytes and floats
+var vertexSize = 3 * WebGLFloatArray.BYTES_PER_ELEMENT +
+     4 * WebGLUnsignedByteArray.BYTES_PER_ELEMENT;
+var vertexSizeInFloats = vertexSize / WebGLFloatArray.BYTES_PER_ELEMENT;
+
 // Allocate the buffer
 var buf = new WebGLArrayBuffer(numVertices * vertexSize);
 
 // Map this buffer to a WebGLFloatArray to access the positions
 var positionArray = new WebGLFloatArray(buf);
 
-var floatSize = positionArray.BYTES_PER_ELEMENT;
-
 // Map the same buffer to a WebGLUnsignedByteArray to access the color
 var colorArray = new WebGLUnsignedByteArray(buf);
 
-// Compute the size needed for the buffer, in bytes and floats
-var vertexSize = 3 * floatSize + 4 * colorArray.BYTES_PER_ELEMENT;
-var vertexSizeInFloats = vertexSize / floatSize;
-
 // Set up the initial offset of the vertices and colors within the buffer
 var positionIdx = 0;
-var colorIdx = 3 * floatSize;
+var colorIdx = 3 * WebGLFloatArray.BYTES_PER_ELEMENT;
 
 // Initialize the buffer
 for (var i = 0; i < numVertices; i++) {
