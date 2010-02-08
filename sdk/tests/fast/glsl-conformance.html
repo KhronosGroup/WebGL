@@ -112,6 +112,15 @@ void main()
     gl_FragColor = vec4(0.0,0.0,0.0,1.0);
 }
 </script>
+<script id="fshaderWithDefineLineContinuation" type="text/something-not-javascript">
+#define foo this \
+  is a test
+precision mediump float;
+void main()
+{
+    gl_FragColor = vec4(0.0,0.0,0.0,1.0);
+}
+</script>
 <script id="vshaderWithgl_Color" type="text/something-not-javascript">
 attribute vec4 vPosition;
 void main()
@@ -258,6 +267,14 @@ if (!gl) {
     //  failMsg: 'fragment shader that uses GL_ define must fail',
     //  passMsg: 'fragment shader that uses GL_ define correctly failed',
     //},
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithDefineLineContinuation',
+      fShaderSuccess: false,
+      linkSuccess: false,
+      failMsg: 'fragment shader that has line continuation macro must fail',
+      passMsg: 'fragment shader that uses has line continuation macro correctly failed',
+    },
     { vShaderId: 'vshaderWithgl_Color',
       vShaderSuccess: false,
       fShaderId: 'fshader',
