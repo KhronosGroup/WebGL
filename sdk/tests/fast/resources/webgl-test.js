@@ -38,15 +38,18 @@ function create3DContext(canvas)
     var context = null;
     try {
         context = canvas.getContext("experimental-webgl");
+console.log("experimental-webgl");
     } catch(e) {}
     if (!context) {
         try {
             context = canvas.getContext("webkit-3d");
+console.log("webkit-3d");
         } catch(e) {}
     }
     if (!context) {
         try {
             context = canvas.getContext("moz-webgl");
+console.log("moz-webgl");
         } catch(e) {}
     }
     if (!context) {
@@ -90,9 +93,9 @@ function create3DDebugContext(canvas) {
 // initWebGL
 //
 // Initialize the Canvas element with the passed name as a WebGL object and return the
-// WebGLRenderingContext. 
+// WebGLRenderingContext.
 //
-// Load shaders with the passed names and create a program with them. Return this program 
+// Load shaders with the passed names and create a program with them. Return this program
 // in the 'program' property of the returned context.
 //
 // For each string in the passed attribs array, bind an attrib with that name at that index.
@@ -177,13 +180,13 @@ function getShaderSource(file)
 // loadShader
 //
 // 'shader' is either the id of a <script> element containing the shader source string
-// or the URL of a file containing the shader source. Load this shader and return the 
+// or the URL of a file containing the shader source. Load this shader and return the
 // WebGLShader object corresponding to it.
 //
 function loadShader(ctx, shaderId, shaderType, isFile)
 {
     var shaderSource = "";
-    
+
     if (isFile)
         shaderSource = getShaderSource(shaderId);
     else {
@@ -192,30 +195,30 @@ function loadShader(ctx, shaderId, shaderType, isFile)
             console.log("*** Error: shader script '"+shaderId+"' not found");
             return null;
         }
-        
+
         // this overrides the passed in shader type
         if (shaderScript.type == "x-shader/x-vertex")
             shaderType = ctx.VERTEX_SHADER;
         else if (shaderScript.type == "x-shader/x-fragment")
             shaderType = ctx.FRAGMENT_SHADER;
         else if (shaderType != ctx.VERTEX_SHADER && shaderType != ctx.FRAGMENT_SHADER) {
-            console.log("*** Error: unknown shader type");       
+            console.log("*** Error: unknown shader type");
             return null;
         }
-        
+
         shaderSource = shaderScript.text;
     }
 
     // Create the shader object
     var shader = ctx.createShader(shaderType);
     if (shader == null) {
-        console.log("*** Error: unable to create shader '"+shaderId+"'");       
+        console.log("*** Error: unable to create shader '"+shaderId+"'");
         return null;
     }
 
     // Load the shader source
     ctx.shaderSource(shader, shaderSource);
-    
+
     // Compile the shader
     ctx.compileShader(shader);
 
@@ -266,7 +269,7 @@ function loadStandardFragmentShader(context) {
     return loadShader(context, "resources/fragmentShader.frag", context.FRAGMENT_SHADER, true);
 }
 
-// 
+//
 // makeBox
 //
 // Create a box with vertices, normals and texCoords. Create VBOs for each as well as the index array.
@@ -277,7 +280,7 @@ function loadStandardFragmentShader(context) {
 //  vertexObject        WebGLBuffer object for vertices
 //  indexObject         WebGLBuffer object for indices
 //  numIndices          The number of indices in the indexObject
-// 
+//
 function makeBox(ctx)
 {
     // box
@@ -331,11 +334,11 @@ function makeBox(ctx)
       );
 
     var retval = { };
-    
+
     retval.normalObject = ctx.createBuffer();
     ctx.bindBuffer(ctx.ARRAY_BUFFER, retval.normalObject);
     ctx.bufferData(ctx.ARRAY_BUFFER, normals, ctx.STATIC_DRAW);
-    
+
     retval.texCoordObject = ctx.createBuffer();
     ctx.bindBuffer(ctx.ARRAY_BUFFER, retval.texCoordObject);
     ctx.bufferData(ctx.ARRAY_BUFFER, texCoords, ctx.STATIC_DRAW);
@@ -343,23 +346,23 @@ function makeBox(ctx)
     retval.vertexObject = ctx.createBuffer();
     ctx.bindBuffer(ctx.ARRAY_BUFFER, retval.vertexObject);
     ctx.bufferData(ctx.ARRAY_BUFFER, vertices, ctx.STATIC_DRAW);
-    
+
     ctx.bindBuffer(ctx.ARRAY_BUFFER, 0);
 
     retval.indexObject = ctx.createBuffer();
     ctx.bindBuffer(ctx.ELEMENT_ARRAY_BUFFER, retval.indexObject);
     ctx.bufferData(ctx.ELEMENT_ARRAY_BUFFER, indices, ctx.STATIC_DRAW);
     ctx.bindBuffer(ctx.ELEMENT_ARRAY_BUFFER, 0);
-    
+
     retval.numIndices = indices.length;
 
     return retval;
 }
 
-// 
+//
 // makeSphere
 //
-// Create a sphere with the passed number of latitude and longitude bands and the passed radius. 
+// Create a sphere with the passed number of latitude and longitude bands and the passed radius.
 // Sphere has vertices, normals and texCoords. Create VBOs for each as well as the index array.
 // Return an object with the following properties:
 //
@@ -368,14 +371,14 @@ function makeBox(ctx)
 //  vertexObject        WebGLBuffer object for vertices
 //  indexObject         WebGLBuffer object for indices
 //  numIndices          The number of indices in the indexObject
-// 
+//
 function makeSphere(ctx, radius, lats, longs)
 {
     var geometryData = [ ];
     var normalData = [ ];
     var texCoordData = [ ];
     var indexData = [ ];
-    
+
     for (var latNumber = 0; latNumber <= lats; ++latNumber) {
         for (var longNumber = 0; longNumber <= longs; ++longNumber) {
             var theta = latNumber * Math.PI / lats;
@@ -384,13 +387,13 @@ function makeSphere(ctx, radius, lats, longs)
             var sinPhi = Math.sin(phi);
             var cosTheta = Math.cos(theta);
             var cosPhi = Math.cos(phi);
-            
+
             var x = cosPhi * sinTheta;
             var y = cosTheta;
             var z = sinPhi * sinTheta;
             var u = 1-(longNumber/longs);
             var v = latNumber/lats;
-            
+
             normalData.push(x);
             normalData.push(y);
             normalData.push(z);
@@ -401,7 +404,7 @@ function makeSphere(ctx, radius, lats, longs)
             geometryData.push(radius * z);
         }
     }
-    
+
     longs += 1;
     for (var latNumber = 0; latNumber < lats; ++latNumber) {
         for (var longNumber = 0; longNumber < longs; ++longNumber) {
@@ -416,9 +419,9 @@ function makeSphere(ctx, radius, lats, longs)
             indexData.push(first+1);
         }
     }
-    
+
     var retval = { };
-    
+
     retval.normalObject = ctx.createBuffer();
     ctx.bindBuffer(ctx.ARRAY_BUFFER, retval.normalObject);
     ctx.bufferData(ctx.ARRAY_BUFFER, new WebGLFloatArray(normalData), ctx.STATIC_DRAW);
@@ -430,12 +433,12 @@ function makeSphere(ctx, radius, lats, longs)
     retval.vertexObject = ctx.createBuffer();
     ctx.bindBuffer(ctx.ARRAY_BUFFER, retval.vertexObject);
     ctx.bufferData(ctx.ARRAY_BUFFER, new WebGLFloatArray(geometryData), ctx.STATIC_DRAW);
-    
+
     retval.numIndices = indexData.length;
     retval.indexObject = ctx.createBuffer();
     ctx.bindBuffer(ctx.ELEMENT_ARRAY_BUFFER, retval.indexObject);
     ctx.bufferData(ctx.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indexData), ctx.STREAM_DRAW);
-    
+
     return retval;
 }
 
@@ -443,7 +446,7 @@ function makeSphere(ctx, radius, lats, longs)
 // loadObj
 //
 // Load a .obj file from the passed URL. Return an object with a 'loaded' property set to false.
-// When the object load is complete, the 'loaded' property becomes true and the following 
+// When the object load is complete, the 'loaded' property becomes true and the following
 // properties are set:
 //
 //  normalObject        WebGLBuffer object for normals
@@ -451,7 +454,7 @@ function makeSphere(ctx, radius, lats, longs)
 //  vertexObject        WebGLBuffer object for vertices
 //  indexObject         WebGLBuffer object for indices
 //  numIndices          The number of indices in the indexObject
-//  
+//
 function loadObj(ctx, url)
 {
     var obj = { loaded : false };
@@ -464,7 +467,7 @@ function loadObj(ctx, url)
     return obj;
 }
 
-function processLoadObj(req) 
+function processLoadObj(req)
 {
     console.log("req="+req)
     // only if req shows "complete"
@@ -479,21 +482,21 @@ function doLoadObj(obj, text)
     normalArray = [ ];
     textureArray = [ ];
     indexArray = [ ];
-    
+
     var vertex = [ ];
     var normal = [ ];
     var texture = [ ];
     var facemap = { };
     var index = 0;
-        
+
     var lines = text.split("\n");
     for (var lineIndex in lines) {
         var line = lines[lineIndex].replace(/[ \t]+/g, " ").replace(/\s\s*$/, "");
-        
+
         // ignore comments
         if (line[0] == "#")
             continue;
-            
+
         var array = line.split(" ");
         if (array[0] == "v") {
             // vertex
@@ -518,13 +521,13 @@ function doLoadObj(obj, text)
                 console.log("*** Error: face '"+line+"' not handled");
                 continue;
             }
-            
+
             for (var i = 1; i < 4; ++i) {
                 if (!(array[i] in facemap)) {
                     // add a new entry to the map and arrays
                     var f = array[i].split("/");
                     var vtx, nor, tex;
-                    
+
                     if (f.length == 1) {
                         vtx = parseInt(f[0]) - 1;
                         nor = vtx;
@@ -539,7 +542,7 @@ function doLoadObj(obj, text)
                         console.log("*** Error: did not understand face '"+array[i]+"'");
                         return null;
                     }
-                    
+
                     // do the vertices
                     var x = 0;
                     var y = 0;
@@ -552,7 +555,7 @@ function doLoadObj(obj, text)
                     vertexArray.push(x);
                     vertexArray.push(y);
                     vertexArray.push(z);
-                    
+
                     // do the textures
                     x = 0;
                     y = 0;
@@ -562,7 +565,7 @@ function doLoadObj(obj, text)
                     }
                     textureArray.push(x);
                     textureArray.push(y);
-                    
+
                     // do the normals
                     x = 0;
                     y = 0;
@@ -575,10 +578,10 @@ function doLoadObj(obj, text)
                     normalArray.push(x);
                     normalArray.push(y);
                     normalArray.push(z);
-                    
+
                     facemap[array[i]] = index++;
                 }
-                
+
                 indexArray.push(facemap[array[i]]);
             }
         }
@@ -596,12 +599,12 @@ function doLoadObj(obj, text)
     obj.vertexObject = obj.ctx.createBuffer();
     obj.ctx.bindBuffer(obj.ctx.ARRAY_BUFFER, obj.vertexObject);
     obj.ctx.bufferData(obj.ctx.ARRAY_BUFFER, new WebGLFloatArray(vertexArray), obj.ctx.STATIC_DRAW);
-    
+
     obj.numIndices = indexArray.length;
     obj.indexObject = obj.ctx.createBuffer();
     obj.ctx.bindBuffer(obj.ctx.ELEMENT_ARRAY_BUFFER, obj.indexObject);
     obj.ctx.bufferData(obj.ctx.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indexArray), obj.ctx.STREAM_DRAW);
-    
+
     obj.loaded = true;
 }
 
@@ -635,7 +638,7 @@ function doLoadImageTexture(ctx, image, texture)
 //
 // Framerate object
 //
-// This object keeps track of framerate and displays it as the innerHTML text of the 
+// This object keeps track of framerate and displays it as the innerHTML text of the
 // HTML element with the passed id. Once created you call snapshot at the end
 // of every rendering cycle. Every 500ms the framerate is updated in the HTML element.
 //
@@ -657,7 +660,7 @@ Framerate.prototype.updateFramerate = function()
     var tot = 0;
     for (var i = 0; i < this.framerates.length; ++i)
         tot += this.framerates[i];
-        
+
     var framerate = tot / this.framerates.length;
     framerate = Math.round(framerate);
     document.getElementById(this.id).innerHTML = "Framerate:"+framerate+"fps";

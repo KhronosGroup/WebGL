@@ -48,13 +48,6 @@ else {
     testPassed("context exists");
 
     debug("");
-    debug("Context is correct type");
-    if (context instanceof WebGLRenderingContext)
-      testPassed("context is correct type");
-    else
-      testFailed("context is not correct type");
-  
-    debug("");
     debug("Context contains getError");
     if ("getError" in context)
       testPassed("context contains getError");
@@ -103,7 +96,7 @@ else {
     shouldBe('context.getParameter(context.STENCIL_BACK_PASS_DEPTH_FAIL)', 'context.KEEP');
     shouldBe('context.getParameter(context.STENCIL_BACK_PASS_DEPTH_PASS)', 'context.KEEP');
     shouldBe('context.getParameter(context.STENCIL_BACK_REF)', '0');
-    
+
     // FIXME: Current WebKit implementation returns the wrong value (https://bugs.webkit.org/show_bug.cgi?id=31842)
     //shouldBe('context.getParameter(context.STENCIL_BACK_VALUE_MASK)', '0xFFFFFFFF');
     //shouldBe('context.getParameter(context.STENCIL_BACK_WRITEMASK)', '0xFFFFFFFF');
