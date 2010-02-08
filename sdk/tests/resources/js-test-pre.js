@@ -26,6 +26,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 if (window.layoutTestController)
     layoutTestController.dumpAsText();
 
+function reportTestResultsToHarness(success, msg) {
+  if (window.parent.webglTestHarness) {
+    window.parent.webglTestHarness.reportResults(success, msg);
+  }
+}
+
+function notifyFinishedToHarness() {
+  if (window.parent.webglTestHarness) {
+    window.parent.webglTestHarness.notifyFinished();
+  }
+}
+
 function description(msg)
 {
     // For MSIE 6 compatibility
@@ -52,11 +64,13 @@ function escapeHTML(text)
 
 function testPassed(msg)
 {
+    reportTestResultsToHarness(true, msg);
     debug('<span><span class="pass">PASS</span> ' + escapeHTML(msg) + '</span>');
 }
 
 function testFailed(msg)
 {
+    reportTestResultsToHarness(false, msg);
     debug('<span><span class="fail">FAIL</span> ' + escapeHTML(msg) + '</span>');
 }
 
@@ -262,6 +276,14 @@ function shouldThrow(_a, _e)
     testFailed(_a + " should throw " + (typeof _e == "undefined" ? "an exception" : _ev) + ". Was undefined.");
   else
     testFailed(_a + " should throw " + (typeof _e == "undefined" ? "an exception" : _ev) + ". Was " + _av + ".");
+}
+
+function assertMsg(assertion, msg) {
+    if (assertion) {
+        testPassed(msg);
+     } else {
+        testFailed(msg);
+     }
 }
 
 function gc() {

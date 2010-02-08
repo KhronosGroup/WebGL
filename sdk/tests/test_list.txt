@@ -1,0 +1,4 @@
+// files that end in .txt list other tests
+// other lines are assumed to be .html files
+
+fast/00_test_list.txt
