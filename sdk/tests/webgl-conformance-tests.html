@@ -25,10 +25,37 @@ WebGL Conformance Test Runner.
   .testpagesuccess { border: 1px solid black; background-color: #8F8; }
   .testpagefail { border: 1px solid black; background-color: #F88; }
   .testpagetimeout { border: 1px solid black; background-color: #FC8; }
+  .nowebgl { font-weight: bold; color: red; }
 </style>
 <script type="text/javascript" src="resources/webgl-test-harness.js"></script>
 <script>
 function start() {
+
+  function create3DContext(canvas)
+  {
+    if (!canvas) {
+      canvas = document.createElement("canvas");
+    }
+    var context = null;
+    try {
+        context = canvas.getContext("experimental-webgl");
+    } catch(e) {
+    }
+    if (!context) {
+      try {
+        context = canvas.getContext("webkit-3d");
+      } catch(e) {
+      }
+    }
+    if (!context) {
+      try {
+        context = canvas.getContext("moz-webgl");
+      } catch(e) {
+      }
+    }
+    return context;
+  }
+
   var reportType = WebGLTestHarnessModule.TestHarness.reportType;
 
   var Page = function(reporter, url) {
@@ -46,6 +73,9 @@ function start() {
     button.onclick = function() {
       reporter.runTest(url);
     };
+    if (reporter.noWebGL) {
+      button.disabled = true;
+    }
     div.appendChild(button);
     var a = reporter.localDoc.createElement('a');
     a.href = url;
@@ -126,6 +156,9 @@ function start() {
     this.currentPageElem = null;
     this.totalPages = 0;
     this.pagesByURL = {};
+    var canvas = document.getElementById("webglcheck");
+    var ctx = create3DContext(canvas);
+    this.noWebGL = !ctx;
   };
 
   Reporter.prototype.runTest = function(url) {
@@ -216,6 +249,11 @@ function start() {
   button.onclick = function() {
     testHarness.runTests();
   };
+  if (reporter.noWebGL) {
+    button.disabled = true;
+    var elem = document.getElementById("nowebgl");
+    elem.style.display = "";
+  }
 }
 </script>
 </head>
@@ -224,8 +262,10 @@ function start() {
 <tr style="height: 300px;">
 <td>
 <table>
-<tr><td><img src="http://www.khronos.org/img/api_logos/webgl-logo.png" /><br />WebGL Conformance Test Runner<br/><input type="button" value="run tests" id="runTestsButton"/></td></tr>
-<tr><td><div style="border: 1px">Results: <span id="fullresults"></span></div></td></tr>
+<tr><td><img src="http://www.khronos.org/img/api_logos/webgl-logo.png" /><br />WebGL Conformance Test Runner<br/><input type="button" value="run tests" id="runTestsButton"/>
+<div id="nowebgl" class="nowebgl" style="display: none;">This browser does not appear to support WebGL</div></td></tr>
+<tr><td><div style="border: 1px">Results: <span id="fullresults"></span></div>
+<canvas id="webglcheck" style="display: none;"></canvas></td></tr>
 </table>
 </td>
 <td>

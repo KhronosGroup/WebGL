@@ -38,18 +38,15 @@ function create3DContext(canvas)
     var context = null;
     try {
         context = canvas.getContext("experimental-webgl");
-console.log("experimental-webgl");
     } catch(e) {}
     if (!context) {
         try {
             context = canvas.getContext("webkit-3d");
-console.log("webkit-3d");
         } catch(e) {}
     }
     if (!context) {
         try {
             context = canvas.getContext("moz-webgl");
-console.log("moz-webgl");
         } catch(e) {}
     }
     if (!context) {
