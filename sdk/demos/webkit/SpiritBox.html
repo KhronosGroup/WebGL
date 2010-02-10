@@ -134,11 +134,11 @@
     function reshape(gl)
     {
         var canvas = document.getElementById('example');
-        if (canvas.clientWidth == width && canvas.clientHeight == height)
+        if (canvas.width == width && canvas.height == height)
             return;
 
-        width = canvas.clientWidth;
-        height = canvas.clientHeight;
+        width = canvas.width;
+        height = canvas.height;
 
         // Set the viewport and projection matrix for the scene
         gl.viewport(0, 0, width, height);

@@ -97,6 +97,7 @@ function init() {
     // Can use this to make the background opaque
     // gl.clearColor(0.3, 0.2, 0.2, 1.);
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
+    gl.viewport(0, 0, g_width, g_height);
     initTeapot();
     initShaders();
     g_bumpTexture = loadTexture("bump.jpg");

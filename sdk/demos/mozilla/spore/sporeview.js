@@ -229,6 +229,7 @@ function renderStart() {
   var texturesBound = false;
 
   gl.clearColor(0.2, 0.2, 0.2, 1.0);
+  gl.viewport(0, 0, canvas.width, canvas.height);
   if (gl.clearDepthf) {
     alert("Please update to a newer Firefox nightly, to pick up some WebGL API changes");
     gl.clearDepthf(1.0);

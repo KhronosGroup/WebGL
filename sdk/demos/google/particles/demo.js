@@ -157,6 +157,7 @@ function main() {
 
 function init() {
     gl.clearColor(0.5, 0.5, 0.5, 1.0);
+    gl.viewport(0, 0, g_width, g_height);
     gl.enable(gl.DEPTH_TEST);
     g_projection = g_math.matrix4.perspective(g_math.degToRad(30),
                                               g_width / g_height, 0.1, 5000);

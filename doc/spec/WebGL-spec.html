@@ -123,8 +123,8 @@
     <p>
         Before using the WebGL API, the author must obtain a WebGLRenderingContext object
         for a given HTMLCanvasElement as described below. This object is used to manage 
-        OpenGL state and render to the drawing context, which must also be created at the time of
-        context creation.. The author may supply configuration options for this drawing buffer, otherwise
+        OpenGL state and render to the drawing buffer, which must also be created at the time of
+        context creation. The author may supply configuration options for this drawing buffer, otherwise
         default values shall be used as specified elsewhere in this document. This drawing buffer
         is presented to the HTML page compositor immediately before an HTML page compositing operation, 
         but only if the drawing buffer has been modified since the last compositing operation.
@@ -180,6 +180,36 @@
         the drawing buffer shall be undefined but must not contain uninitialized pixels.
     </p>
     
+<!-- ======================================================================================================= -->
+
+    <h3>The WebGL Viewport</h3>
+
+    <p>
+        OpenGL manages a rectangular viewport as part of its state which defines the placement of the
+        rendering results in the drawing buffer. The initial state of this viewport is an empty
+        rectangle, with origin at (0, 0) and width and height both 0.
+    </p>
+    <p>
+        A WebGL implementation <em>shall not</em> affect the state of the OpenGL viewport in response to
+        resizing of the canvas element.
+    </p>
+    <div class="example">
+        <em>Note</em> that these rules imply that if a WebGL program does not set the viewport, <em>no
+        rendering results</em> will be visible. The following ECMAScript example illustrates the proper
+        method of initializing the viewport.
+
+        <pre>
+var canvas = document.getElementById('canvas1');
+var gl = canvas.getContext('webgl');
+gl.viewport(0, 0, canvas.width, canvas.height);
+        </pre>
+    </div>
+    <p>
+        <em>Rationale</em>: automatically setting the viewport will interfere with applications that set
+        it manually. Applications are expected to use <code>onresize</code> handlers to respond to
+        changes in size of the canvas and set the OpenGL viewport in turn.
+    </p>
+
 <!-- ======================================================================================================= -->
 
     <h2>WebGL Resources</h2>

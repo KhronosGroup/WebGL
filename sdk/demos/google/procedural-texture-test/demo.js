@@ -50,6 +50,7 @@ function main() {
 
 function init() {
     gl.clearColor(0., 0., .7, 1.);
+    gl.viewport(0, 0, g_width, g_height);
     g_texture = createCheckerboardTexture();
     initShaders();
 }
