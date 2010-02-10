@@ -1,0 +1,48 @@
+CONSOLE MESSAGE: line 156: *** Error compiling shader '[object WebGLShader]':ERROR: 0:4: 'mediump' : undeclared identifier 
+ERROR: 0:4: 'assign' :  cannot convert from 'float' to 'FragColor 4-component vector of float'
+ERROR: 0:4: 'vec4' : syntax error syntax error
+ERROR: Parser found no code to compile in source strings.
+
+CONSOLE MESSAGE: line 156: *** Error compiling shader '[object WebGLShader]':ERROR: 0:2: 'precision' : syntax error syntax error
+ERROR: Parser found no code to compile in source strings.
+
+CONSOLE MESSAGE: line 156: *** Error compiling shader '[object WebGLShader]':ERROR: 0:2: 'precision' : syntax error syntax error
+ERROR: Parser found no code to compile in source strings.
+
+CONSOLE MESSAGE: line 156: *** Error compiling shader '[object WebGLShader]':ERROR: 0:9: 'foo' : syntax error syntax error
+ERROR: Parser found no code to compile in source strings.
+
+CONSOLE MESSAGE: line 156: *** Error compiling shader '[object WebGLShader]':ERROR: 0:9: 'foo' : syntax error syntax error
+ERROR: Parser found no code to compile in source strings.
+
+CONSOLE MESSAGE: line 156: *** Error compiling shader '[object WebGLShader]':ERROR: 0:2: 'precision' : syntax error syntax error
+ERROR: Parser found no code to compile in source strings.
+
+CONSOLE MESSAGE: line 156: *** Error compiling shader '[object WebGLShader]':ERROR: 0:4: 'precision' : syntax error syntax error
+ERROR: Parser found no code to compile in source strings.
+
+This test ensures WebGL implementations allow proper GLES2 shaders compile and improper ones fail.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+Canvas.getContext
+PASS context exists
+
+Checking texture formats.
+FAIL fragment shader with precision must succeed
+FAIL fragment shader with default precision must succeed
+FAIL fragment shader without precision must fail
+PASS fragment shader with gl_ identifier correctly failed
+FAIL fragment shader that uses GL_ES preprocessor symbol must succeed
+FAIL fragment shader that expects __VERSION__==100 must succeed
+FAIL fragment shader that uses gl_FragDepth must fail
+FAIL vertex shader that uses gl_ClipVertex must fail
+PASS fragment shader that uses has line continuation macro correctly failed
+FAIL vertex shader that uses gl_Color must fail
+FAIL vertex shader that uses gl_ProjectionMatrix must fail
+
+PASS successfullyParsed is true
+
+TEST COMPLETE
+

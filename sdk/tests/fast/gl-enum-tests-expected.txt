@@ -1,0 +1,34 @@
+This test ensures WebGL various functions fail when passed non OpenGL ES 2.0 enums.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+Canvas.getContext
+PASS context exists
+
+Checking gl enums.
+PASS gl.bindTexture(desktopGL['TEXTURE_3D'], tex) should fail.
+FAIL gl.blendEquation(desktopGL['MIN']) should fail.
+FAIL gl.blendEquation(desktopGL['MAX']) should fail.
+FAIL gl.blendEquationSeparate(desktopGL['MIN'], gl.FUNC_ADD) should fail.
+FAIL gl.blendEquationSeparate(desktopGL['MAX'], gl.FUNC_ADD) should fail.
+FAIL gl.blendEquationSeparate(gl.FUNC_ADD, desktopGL['MIN']) should fail.
+FAIL gl.blendEquationSeparate(gl.FUNC_ADD, desktopGL['MAX']) should fail.
+PASS gl.bufferData(gl.ARRAY_BUFFER, 3, desktopGL['STATIC_READ']) should fail.
+FAIL gl.disable(desktopGL['CLIP_PLANE0']) should fail.
+FAIL gl.disable(desktopGL['POINT_SPRITE']) should fail.
+PASS gl.getBufferParameter(gl.ARRAY_BUFFER, desktopGL['PIXEL_PACK_BUFFER']) should fail.
+PASS gl.getTexParameter(gl.TEXTURE_2D, desktopGL['GENERATE_MIPMAP']) should fail.
+PASS gl.getTexParameter(gl.TEXTURE_2D, desktopGL['GENERATE_MIPMAP']) should fail.
+FAIL gl.hint(desktopGL['PERSPECTIVE_CORRECTION_HINT'], gl.FASTEST) should fail.
+FAIL gl.isEnabled(desktopGL['CLIP_PLANE0']) should fail.
+FAIL gl.isEnabled(desktopGL['POINT_SPRITE']) should fail.
+PASS gl.pixelStorei(desktopGL['PACK_SWAP_BYTES'], 1) should fail.
+FAIL gl.readPixels(0, 0, 1, 1, gl.ALPHA, gl.SHORT) should fail.
+FAIL gl.texParameteri(desktopGL['TEXTURE_3D'], gl.TEXTURE_MAG_FILTER, gl.NEAREST) should fail.
+FAIL gl.texParameteri(gl.TEXTURE_2D, desktopGL['GENERATE_MIPMAP'], 1) should fail.
+
+PASS successfullyParsed is true
+
+TEST COMPLETE
+

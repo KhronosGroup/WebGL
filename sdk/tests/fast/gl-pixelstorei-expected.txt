@@ -1,0 +1,21 @@
+    
+There should be 5 red triangles on 5 black squares above
+
+This test checks that drawImage and readPixels are not effected by gl.Pixelstorei(gl.PACK_ALIGNMENT) and visa versa
+
+FAIL pixel in 3d context at (20,15) is (0,0,0,255), should be (255,0,0,255)
+FAIL pixel in 2d context at (0,0) is (0,0,0,0), should be (0,0,0,255)
+PASS PACK_ALIGNMENT is 1
+FAIL pixel in 3d context at (20,15) is (0,0,0,255), should be (255,0,0,255)
+FAIL pixel in 2d context at (0,0) is (0,0,0,0), should be (0,0,0,255)
+PASS PACK_ALIGNMENT is 2
+FAIL pixel in 3d context at (20,15) is (0,0,0,255), should be (255,0,0,255)
+FAIL pixel in 2d context at (0,0) is (0,0,0,0), should be (0,0,0,255)
+PASS PACK_ALIGNMENT is 4
+FAIL pixel in 3d context at (20,15) is (0,0,0,255), should be (255,0,0,255)
+FAIL pixel in 2d context at (0,0) is (0,0,0,0), should be (0,0,0,255)
+PASS PACK_ALIGNMENT is 8
+PASS successfullyParsed is true
+
+TEST COMPLETE
+

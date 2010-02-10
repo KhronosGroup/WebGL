@@ -1,0 +1,15 @@
+This test ensures WebGL implementations vertexAttribPointer can not be set if no buffer is bound.
+
+On success, you will see a series of "PASS" messages, followed by "TEST COMPLETE".
+
+
+Canvas.getContext
+PASS context exists
+
+Checking gl.vertexAttribPointer.
+PASS vertexAttribPointer should fail if no buffer is bound
+
+PASS successfullyParsed is true
+
+TEST COMPLETE
+
