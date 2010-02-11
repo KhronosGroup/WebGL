@@ -1,12 +1,10 @@
+<html>
+<head>
 <!--
 Copyright (c) 2009 Ilmari Heikkinen. All rights reserved.
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
 -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>WebGL Constants Test</title>
 <link rel="stylesheet" href="../resources/js-test-style.css"/>
@@ -345,7 +343,7 @@ var canvas = document.getElementById("canvas");
 var gl = create3DContext(canvas);
 var passed = true;
 for (var i in constants) {
-  var r = assertProperty(gl, i) && assertMsg_(gl[i] == constants[i], "Property "+i+" has value "+gl[i]+" but it should be "+constants[i]);
+  var r = assertProperty(gl, i) && assertMsg_(gl[i] == constants[i], "Property "+i+" value test "+gl[i]+" == "+constants[i]);
   passed = passed && r;
 }
 if (passed) {
