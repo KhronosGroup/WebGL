@@ -5,6 +5,7 @@ bug-32456.html
 bug-32692.html
 bug-32888.html
 canvas-test.html
+constants.html
 context-type-test.html
 draw-arrays-out-of-bounds.html
 draw-elements-out-of-bounds.html
