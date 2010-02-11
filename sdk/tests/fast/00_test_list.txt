@@ -24,6 +24,7 @@ glsl-conformance.html
 incorrect-context-object-behaviour.html
 index-validation-copies-indices.html
 index-validation.html
+methods.html
 null-object-behaviour.html
 texture-formats-test.html
 texture-npot.html
