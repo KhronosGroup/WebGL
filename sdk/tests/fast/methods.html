@@ -19,7 +19,9 @@ found in the LICENSE file.
 <script>
 description("This test ensures that the WebGL context has all the methods in the specification.");
 
-var methods = ['canvas',
+var methods = [
+"canvas",
+"getContextAttributes",
 "activeTexture",
 "attachShader",
 "bindAttribLocation",
@@ -43,8 +45,12 @@ var methods = ['canvas',
 "compileShader",
 "copyTexImage2D",
 "copyTexSubImage2D",
+"createBuffer",
+"createFramebuffer",
 "createProgram",
+"createRenderbuffer",
 "createShader",
+"createTexture",
 "cullFace",
 "deleteBuffer",
 "deleteFramebuffer",
@@ -67,23 +73,27 @@ var methods = ['canvas',
 "framebufferRenderbuffer",
 "framebufferTexture2D",
 "frontFace",
-"createBuffer",
 "generateMipmap",
-"createFramebuffer",
-"createRenderbuffer",
-"createTexture",
 "getActiveAttrib",
 "getActiveUniform",
 "getAttachedShaders",
 "getAttribLocation",
-"getBufferParameteri",
+"getParameter",
+"getBufferParameter",
 "getError",
-"getFramebufferAttachmentParameteri",
+"getFramebufferAttachmentParameter",
+"getProgramParameter",
 "getProgramInfoLog",
-"getRenderbufferParameteri",
+"getRenderbufferParameter",
+"getShaderParameter",
 "getShaderInfoLog",
 "getShaderSource",
+"getString",
+"getTexParameter",
+"getUniform",
 "getUniformLocation",
+"getVertexAttrib",
+"getVertexAttribOffset",
 "hint",
 "isBuffer",
 "isEnabled",
@@ -94,6 +104,7 @@ var methods = ['canvas',
 "isTexture",
 "lineWidth",
 "linkProgram",
+"pixelStorei",
 "polygonOffset",
 "readPixels",
 "renderbufferStorage",
@@ -107,6 +118,7 @@ var methods = ['canvas',
 "stencilOp",
 "stencilOpSeparate",
 "texImage2D",
+"texParameterf",
 "texParameteri",
 "texSubImage2D",
 "uniform1f",
@@ -139,29 +151,19 @@ var methods = ['canvas',
 "vertexAttrib4f",
 "vertexAttrib4fv",
 "vertexAttribPointer",
-"viewport",
-"currentArrayBufferBinding",
-"currentElementArrayBufferBinding",
-"currentFramebufferBinding",
-"currentRenderbufferBinding",
-"currentTextureBinding2D",
-"currentTextureBindingCubeMap",
-"currentProgram",
-"getParameter",
-"getProgramParameter",
-"getShaderParameter",
-"getTexParameteri",
-"getUniformi",
-"getVertexAttribi",
-"present"
+"viewport"
 ]
 
 function assertProperty(v, p) {
-  if (v[p] == null) {
-    testFailed("Property does not exist: " + p)
-    return false;
-  } else {
-    return true;
+  try {
+    if (v[p] == null) {
+      testFailed("Property does not exist: " + p)
+      return false;
+    } else {
+      return true;
+    }
+  } catch(e) {
+    testFailed("Trying to access the property '"+p+"' threw an error: "+e.toString());
   }
 }
 
@@ -180,10 +182,10 @@ if (passed) {
 }
 var extended = false;
 for (var i in gl) {
-  if (i.match(/^[a-z_]+$/) && methods.indexOf(i) == -1) {
+  if (i.match(/^[a-z]/) && methods.indexOf(i) == -1) {
     if (!extended) {
       extended = true;
-      debug("Also found the following extra methods");
+      debug("Also found the following extra methods:");
     }
     debug(i);
   }
