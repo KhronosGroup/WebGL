@@ -351,10 +351,10 @@ if (passed) {
 }
 var extended = false;
 for (var i in gl) {
-  if (i.match(/^[A-Z_]+$/) && constants[i] == null) {
+  if (i.match(/^[^a-z]/) && constants[i] == null) {
     if (!extended) {
       extended = true;
-      debug("Also found the following extra constants");
+      debug("Also found the following extra constants:");
     }
     debug(i);
   }
