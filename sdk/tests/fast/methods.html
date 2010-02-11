@@ -172,7 +172,7 @@ var canvas = document.getElementById("canvas");
 var gl = create3DContext(canvas);
 var passed = true;
 for (var i=0; i<methods.length; i++) {
-  var r = assertProperty(gl, i);
+  var r = assertProperty(gl, methods[i]);
   passed = passed && r;
 }
 if (passed) {
