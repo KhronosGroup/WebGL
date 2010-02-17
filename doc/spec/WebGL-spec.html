@@ -186,21 +186,24 @@
 
     <p>
         OpenGL manages a rectangular viewport as part of its state which defines the placement of the
-        rendering results in the drawing buffer. The initial state of this viewport is an empty
-        rectangle, with origin at (0, 0) and width and height both 0.
+        rendering results in the drawing buffer. Upon creation of the WebGL context, the viewport is
+        initialized to a rectangle with origin at (0, 0) and width and height equal to (canvas.width,
+        canvas.height).
     </p>
     <p>
         A WebGL implementation <em>shall not</em> affect the state of the OpenGL viewport in response to
         resizing of the canvas element.
     </p>
     <div class="example">
-        <em>Note</em> that these rules imply that if a WebGL program does not set the viewport, <em>no
-        rendering results</em> will be visible. The following ECMAScript example illustrates the proper
-        method of initializing the viewport.
+        Note that if a WebGL program does not contain logic to set the viewport, it will not properly
+        handle the case where the canvas is resized. The following ECMAScript example illustrates how
+        a WebGL program might resize the canvas programmatically.
 
         <pre>
 var canvas = document.getElementById('canvas1');
 var gl = canvas.getContext('webgl');
+canvas.width = newWidth;
+canvas.height = newHeight;
 gl.viewport(0, 0, canvas.width, canvas.height);
         </pre>
     </div>
