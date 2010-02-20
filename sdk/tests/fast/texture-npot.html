@@ -94,7 +94,7 @@ found in the LICENSE file.
                       "gl.generateMipmap with NPOT texture should return INVALID_OPERATION");
 
             var loc = gl.getUniformLocation(gl.program, "tex");
-            gl.uniform1i(loc, tex);
+            gl.uniform1i(loc, 0);
 
             // Check that nothing is drawn if filtering is not correct for NPOT
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
