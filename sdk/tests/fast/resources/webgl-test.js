@@ -250,10 +250,11 @@ function loadStandardProgram(context) {
     return program;
 }
 
-function loadProgram(context, vertexShaderPath, fragmentShaderPath) {
+function loadProgram(context, vertexShaderPath, fragmentShaderPath, isFile) {
+    isFile = (isFile === undefined) ? true : isFile;
     var program = context.createProgram();
-    context.attachShader(program, loadShader(context, vertexShaderPath, context.VERTEX_SHADER, true));
-    context.attachShader(program, loadShader(context, fragmentShaderPath, context.FRAGMENT_SHADER, true));
+    context.attachShader(program, loadShader(context, vertexShaderPath, context.VERTEX_SHADER, isFile));
+    context.attachShader(program, loadShader(context, fragmentShaderPath, context.FRAGMENT_SHADER, isFile));
     context.linkProgram(program);
     return program;
 }
