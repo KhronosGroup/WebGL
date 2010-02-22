@@ -103,7 +103,7 @@
         images can be rendered using a programmatic interface. Currently the only
         such interface described is the CanvasRenderingContext2D. This document
         describes another such interface, WebGLRenderingContext, which presents
-        and API derived from the OpenGL ES 2.0 specification. This API provides a
+        an API derived from the OpenGL ES 2.0 specification. This API provides a
         rich set of functions allowing realistic 3D graphics to be rendered.
     </p>
     <p>
@@ -143,7 +143,7 @@
         If getContext() is subsequently called with any other string, the WebGLRenderingContext shall 
         be detached from its Canvas object (the <code>canvas</code> attribute will be null). API calls may
         still be made on the WebGLRenderingContext object and readPixels() may be used
-        to obtain the contents of the drawing buffer. But the contents shall no longer be shown
+        to obtain the contents of the drawing buffer, but the contents shall no longer be shown
         on the page.
     </p>
         A second parameter may be passed to the getContext() function. If passed, this parameter 
