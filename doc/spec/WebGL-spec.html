@@ -811,7 +811,9 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
              of the <a href="#WebGLArrayBuffer">WebGLArrayBuffer</a>
              store for this <a href="#WebGLArray">WebGLArray</a>,
              referencing the element at offset in the current view,
-             and containing length elements.
+             and containing length elements. The range specified by
+             the given offset and length values is clamped to the
+             valid index range for the current view.
 	  </p>
 	  <p>
 	     The returned <a href="#WebGLArray">WebGLArray</a> will
