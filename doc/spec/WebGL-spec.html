@@ -910,6 +910,11 @@ interface WebGL<i>TypeName</i>Array : WebGLArray {
         type, otherwise an exception is raised.
       </p>
       <p>
+            If the passed WebGLArrayBuffer is null, undefined, or a
+            value not convertible to a WebGLArrayBuffer, an exception
+            is raised.
+      </p>
+      <p>
         If a given byteOffset and length references an area beyond the end of the
             WebGLArrayBuffer an exception is raised.
       </p>
