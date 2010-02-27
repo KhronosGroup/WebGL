@@ -30,6 +30,7 @@ null-object-behaviour.html
 origin-clean-conformance.html
 texture-active-bind.html
 texture-active-bind-2.html
+texparameter-test.html
 texture-complete.html
 texture-formats-test.html
 texture-npot.html
