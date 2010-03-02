@@ -1599,6 +1599,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     const GLenum DEPTH_COMPONENT16              = 0x81A5;
     const GLenum STENCIL_INDEX                  = 0x1901;
     const GLenum STENCIL_INDEX8                 = 0x8D48;
+    const GLenum DEPTH_STENCIL                  = 0x84F9;
     
     const GLenum RENDERBUFFER_WIDTH             = 0x8D42;
     const GLenum RENDERBUFFER_HEIGHT            = 0x8D43;
@@ -1618,6 +1619,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     const GLenum COLOR_ATTACHMENT0              = 0x8CE0;
     const GLenum DEPTH_ATTACHMENT               = 0x8D00;
     const GLenum STENCIL_ATTACHMENT             = 0x8D20;
+    const GLenum DEPTH_STENCIL_ATTACHMENT       = 0x821A;
     
     const GLenum NONE                           = 0;
     
@@ -3001,6 +3003,60 @@ interface <dfn id="WebGLResourceLostEvent">WebGLResourceLostEvent</dfn> : Event 
             during that phase if necessary. If called multiple times, the final invocation 
             takes precedence.
     </dl>
+
+<!-- ======================================================================================================= -->
+
+    <h2>Differences Between WebGL and OpenGL ES 2.0</h2>
+    
+<p>
+
+This section describes changes made to the WebGL API relative to the OpenGL ES 2.0 API to improve
+portability across various operating systems and devices.
+
+</p>
+
+    <h3>Framebuffer Object Attachments</h3>
+
+<p>
+
+WebGL adds the <code>DEPTH_STENCIL_ATTACHMENT</code> framebuffer object attachment point and
+the <code>DEPTH_STENCIL</code> renderbuffer internal format. To attach both depth and stencil
+buffers to a framebuffer object, call <code>renderbufferStorage</code> with
+the <code>DEPTH_STENCIL</code> internal format, and then call <code>framebufferRenderbuffer</code>
+with the <code>DEPTH_STENCIL_ATTACHMENT</code> attachment point.
+
+</p>
+<p>
+
+A renderbuffer attached to the <code>DEPTH_ATTACHMENT</code> attachment point must be allocated with
+the <code>DEPTH_COMPONENT16</code> internal format. A renderbuffer attached to
+the <code>STENCIL_ATTACHMENT</code> attachment point must be allocated with
+the <code>STENCIL_INDEX8</code> internal format. Attempts to attach a renderbuffer with an incorrect
+internal format to a particular attachment point will raise INVALID_OPERATION from the call
+to <code>framebufferRenderbuffer</code> and leave the framebuffer's attachments untouched.
+
+</p>
+<p>
+
+In WebGL, it is an error to attach renderbuffers to the following combinations of attachment points:
+
+<ul>
+<li> <code>DEPTH_ATTACHMENT + DEPTH_STENCIL_ATTACHMENT</code>
+<li> <code>STENCIL_ATTACHMENT + DEPTH_STENCIL_ATTACHMENT</code>
+<li> <code>DEPTH_ATTACHMENT + STENCIL_ATTACHMENT</code>
+</ul>
+
+A call to <code>framebufferRenderbuffer</code> which would result in non-zero attachments to any of
+these combinations of attachment points will raise an <code>INVALID_OPERATION</code> error and leave
+the framebuffer's attachments untouched.
+
+</p>
+<p>
+
+It is legal to detach an attachment from a framebuffer object and attach another to a different
+attachment point; they simply can not be attached concurrently.
+
+</p>
 
 <!-- ======================================================================================================= -->
 
