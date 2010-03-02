@@ -753,7 +753,7 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
     readonly attribute unsigned long byteLength;
     readonly attribute unsigned long length;
 
-    WebGLArray slice(in unsigned long offset, in unsigned long length);
+    WebGLArray slice(in unsigned long start, in unsigned long end);
 };</pre>
 
     <h4>Attributes</h4>
@@ -804,21 +804,24 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
     <h4>slice method</h4>
 
     <dl class="methods">
-        <dt><code>slice(offset, length)</code>
+        <dt><code>slice(start, end)</code>
         <dd>
 	  <p>
              Returns a new <a href="#WebGLArray">WebGLArray</a> view
              of the <a href="#WebGLArrayBuffer">WebGLArrayBuffer</a>
              store for this <a href="#WebGLArray">WebGLArray</a>,
-             referencing the element at offset in the current view,
-             and containing length elements. The range specified by
-             the given offset and length values is clamped to the
-             valid index range for the current view.
+             referencing the elements at start, inclusive, up to end,
+             exclusive. If either start or end is negative, it refers
+             to an index from the end of the array, as opposed to from
+             the start. The range specified by the given start and end
+             values is clamped to the valid index range for the
+             current array, and if not given default to the start and
+             end of the array, respectively.
 	  </p>
 	  <p>
-	     The returned <a href="#WebGLArray">WebGLArray</a> will
-	     be of the same underlying type as the
-	     original <a href="#WebGLArray">WebGLArray</a>.
+	     The returned <a href="#WebGLArray">WebGLArray</a> will be
+	     of the same type as the array on which this method is
+	     invoked.
 	  </p>
     </dl>
 
