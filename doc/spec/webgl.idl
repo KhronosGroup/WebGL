@@ -87,7 +87,7 @@ interface WebGLArray {
     readonly attribute unsigned long byteLength;
     readonly attribute unsigned long length;
 
-    WebGLArray slice(in unsigned long offset, in unsigned long length);
+    WebGLArray slice(in unsigned long start, in unsigned long end);
 };
 
 
