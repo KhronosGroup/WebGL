@@ -3113,7 +3113,8 @@ to <code>framebufferRenderbuffer</code> and leave the framebuffer's attachments 
 </p>
 <p>
 
-In WebGL, it is an error to attach renderbuffers to the following combinations of attachment points:
+In WebGL, it is an error to concurrently attach renderbuffers to the following combinations of
+attachment points:
 
 <ul>
 <li> <code>DEPTH_ATTACHMENT + DEPTH_STENCIL_ATTACHMENT</code>
@@ -3124,12 +3125,6 @@ In WebGL, it is an error to attach renderbuffers to the following combinations o
 A call to <code>framebufferRenderbuffer</code> which would result in non-zero attachments to any of
 these combinations of attachment points will raise an <code>INVALID_OPERATION</code> error and leave
 the framebuffer's attachments untouched.
-
-</p>
-<p>
-
-It is legal to detach an attachment from a framebuffer object and attach another to a different
-attachment point; they simply can not be attached concurrently.
 
 </p>
 
