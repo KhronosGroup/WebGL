@@ -1,0 +1,652 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>ECMAScript Typed Array Specification</title>
+  <link rel="stylesheet" type="text/css" href="Khronos-WD.css" />
+  <link rel="stylesheet" type="text/css" href="default.css" />
+  <script src="jquery-1.3.2.min.js" type="text/javascript"></script>
+  <script src="generateTOC.js" type="text/javascript"></script>
+
+
+    <style type="text/css">
+.view-example-table * {
+  text-align: center;
+}
+.view-example-table tr > td:first-child {
+  font-family: fixed;
+  text-align: right;
+  border: none;
+}
+.view-example-table td {
+  padding: 4px 8px 4px 8px;
+}
+
+.api tbody tr > td {
+  vertical-align: baseline;
+}
+    </style>
+</head>
+
+<body onload="generateTOC(document.getElementById('toc'))">
+  <h1>Typed Arrays</h1>
+  <h2 class="no-toc">Working Draft 25 January 2010</h2>
+  <dl>
+    <dt>This version:
+      <dd>
+        <a href="">
+
+        </a>
+        <br>
+        <a href=""> XXX
+          <b>WebIDL: xxx.idl</b>
+        </a>
+      </dd>
+    <dt>Latest version:
+      <dd>
+        <a href="">
+        </a>
+        <br>
+        <a href=""> XXX
+          <b>WebIDL: xxx.idl</b>
+        </a>
+      </dd>
+    <dt>Previous version:
+      <dd>
+        none
+      </dd>
+    <dt>Editor:
+      <dd>
+        <a href="mailto:"></a>
+        <a href="http://"></a>
+      </dd>
+  </dl>
+
+  <hr />
+    
+    <h2 class="no-toc">Abstract</h2>
+    <p>
+      This specification describes additional core ECMAScript types
+      for interoperability with native binary data.  It defines a
+      generic fixed-length buffer type, as well as accessor types that
+      allow access to the data stored within the buffer.
+    </p>
+
+    <p>
+      The functionality described here originated in the WebGL specification.
+    </p>
+
+    <h2 class="no-toc">Status of this document</h2>
+    
+    <!--begin-status-->
+    <p>
+        This is a working draft document and may be updated, replaced or obsoleted 
+        by other documents at any time. Do not cite this document 
+        as other than work in progress.  Public discussion of this draft specification 
+        is welcome on the (<a href="">archived</a>) 
+        XXX mailing list <a href="mailto:"></a> (see
+        <a href="">instructions</a>).
+    </p>
+    <!--end-status-->
+    
+    <h2 class="no-toc">Table of contents</h2>
+    <div id="toc"></div>
+
+    <h2>Introduction</h2>
+    <p>
+      <em>This section is not normative.</em>
+    </p>
+
+    <p>
+      ECMAScript (REF) has traditionally been used in contexts where there
+      is no access to binary data.  Where binary data has needed to be
+      manipulated, it is often stored as a String and accessed using
+      charCodeAt(), or stored as an Array with conversion to and from
+      base64 for transmission.  Both of these methods are slow and
+      error-prone.  For example, reading binary data as 32-bit
+      integers requires manual conversion of 4 source bytes to and
+      from the target type.  Reading floating-point data is even more
+      expensive.
+    </p>
+
+    <p>
+      As web applications gain access to new functionality, working
+      with binary deta has become a much-demanded feature.  Current
+      specifications such as the File API (REF) and Web Sockets (REF)
+      would benefit from being able to read and write binary data
+      directly in its native form.  Specifications such as WebGL (REF)
+      require this functionality to meet acceptable performance
+      characteristics.
+    </p>
+
+    <p>
+      This specification defines a minimal set of functionality for
+      accessing binary data from ECMAScript.
+    </p>
+
+    <h2>Overview</h2>
+    <p>
+      <em>This section is not normative.</em>
+    </p>
+
+    <p>
+      This specification defines an ArrayBuffer type, representing a generic fixed-length binary buffer.  It is not possible to manipulate the contents of an ArrayBuffer directly.  Instead, a group of types are used to create <i>views</i> of the ArrayBuffer.  For example, to access the buffer as an array of 32-bit signed integers, an Int32Array would be created that refers to the ArrayBuffer.
+    </p>
+    <p>
+      Multiple typed array views can refer to the same ArrayBuffer, of different types, lengths, and offsets.  This allows for complex data structures to be built up in the ArrayBuffer.  As an example, given the following code:
+    </p>
+    <pre>
+      // create an 8-byte ArrayBuffer
+      var b = new ArrayBuffer(8);
+
+      // create a view v1 referring to b, of type Int32, starting at
+      // the default byte index (0) and extending until the end of the buffer
+      var v1 = new Int32Array(b);
+
+      // create a view v2 referring to b, of type Uint8, starting at
+      // byte index 2 and extending until the end of the buffer
+      var v2 = new Uint8Array(b, 2);
+
+      // create a view v3 referring to b, of type Int16, starting at
+      // byte index 2 and having a length of 2
+      var v3 = new Int16Array(b, 2, 2);
+    </pre>
+
+    <p>
+      The following buffer and view layout is created:
+    </p>
+
+    <center>
+    <table class="view-example-table">
+      <thead>
+	<tr>
+	  <th><i>var</i></th><th colspan="8"><i>index</i></th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr style="font-size: small;">
+	  <td></td><td colspan="8"><i>bytes (not indexable)</i></td>
+	</tr>
+	<tr>
+	  <td>b = </td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td>
+	</tr>
+	<tr style="font-size: small;">
+	  <td></td><td colspan="8"><i>indices</i></td>
+	</tr>
+	<tr>
+	  <td>v1 = </td><td colspan="4">0</td><td colspan="4">1</td>
+	</tr>
+	<tr>
+	  <td>v2 = </td><td colspan="2" style="background: #aaa"></td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td>
+	</tr>
+	<tr>
+	  <td>v3 = </td><td colspan="2" style="background: #aaa"></td><td colspan="2">0</td><td colspan="2">1</td><td colspan="2" style="background: #aaa"></td>
+	</tr>
+      </tbody>
+    </table>
+    </center>
+
+    <p>
+      This defines an 8-byte buffer <tt>b</tt>, and three views of
+      that buffer, <tt>v1</tt>, <tt>v2</tt>, and <tt>v3</tt>.  Each of
+      the views refers to the same buffer -- so <tt>v1[0]</tt> refers
+      to bytes 0..3 as a signed 32-bit integer, <tt>v2[0]</tt> refers
+      to byte 2 as a unsigned 8-bit integer, and <tt>v3[0]</tt> refers
+      to bytes 2..3 as a signed 16-bit integer.  Any modification to
+      one view is immediately visible in the other: for example,
+      after <tt>v2[0] = 0xff; v2[1] = 0xff;</tt> then <tt>v3[0] ==
+      -1</tt> (where -1 is represented as <tt>0xffff</tt>).
+    </p>
+
+    <h2>The <tt>ArrayBuffer</tt> Type</h2>
+
+    <p>The <tt>ArrayBuffer</tt> type describes a buffer used to store
+    data for the TypedArray interface and its subclasses.  An ArrayBuffer has the following methods and properties:</p>
+
+    <pre class="idl">
+[ Constructor(in unsigned long length) ]
+interface <dfn id="ArrayBuffer">ArrayBuffer</dfn> {
+    readonly attribute unsigned long byteLength;
+};</pre>
+
+    <table class="api">
+      <tbody>
+	<tr><th colspan="2">Constructors</th></tr>
+	<tr>
+	  <td><i>ArrayBuffer</i>(length)</td>
+	  <td>
+	    <p>Creates a new ArrayBuffer of the given length in bytes.</p>
+
+	    <p>Length must be >= 0.  If length is not specified or
+	    less than 0, an XXX exception is raised.</p>
+	  </td>
+	</tr>
+	<tr></tr>
+	<tr><th colspan="2">Properties</th></tr>
+	<tr>
+	  <td>byteLength</td>
+	  <td>
+	    <p>Read-only property.</p>
+	    <p>The length of the ArrayBuffer in bytes, as fixed at construction time.</p>
+	  </td>
+	<tr></tr>
+	<tr><th colspan="2">Methods</th></tr>
+	<tr><td colspan="2"><i>None</i></td></tr>
+      </tbody>
+    </table>
+
+    <h2>The Typed Array View Types</h2>
+
+    <p>The typed array view types represent a view of
+    an <tt>ArrayBuffer</tt> that allows for indexing and manipulation.
+    The length of each of these is fixed.  Each of the typed array
+    view types follows the same template.</p>
+
+    <p>The following typed arrays are defined by this specification.  The size below is given in bytes, and corresponds to the <tt>BYTES_PER_ELEMENT</tt> constant for the given type.</p>
+
+    <center><table>
+      <thead>
+	<tr><th>Type</th><th>Size</th><th>Description</th><th>Equivalent C Type</th></tr>
+      </thead>
+      <tbody>
+	<tr><td><tt>Int8Array</tt></td><td>1</td><td>8-bit 2's complement signed integer</td><td><code>signed char</code></td></tr>
+	<tr><td><tt>Uint8Array</tt></td><td>1</td><td>8-bit unsigned integer</td><td><code>unsigned char</code></td></tr>
+	<tr><td><tt>Int16Array</tt></td><td>2</td><td>16-bit 2's complement signed integer</td><td><code>short</code></td></tr>
+	<tr><td><tt>Uint16Array</tt></td><td>2</td><td>16-bit unsigned integer</td><td><code>unsigned short</code></td></tr>
+	<tr><td><tt>Int32Array</tt></td><td>4</td><td>32-bit 2's complement signed integer</td><td><code>int</code></td></tr>
+	<tr><td><tt>Uint32Array</tt></td><td>4</td><td>32-bit unsigned integer</td><td><code>unsigned int</code></td></tr>
+	<tr><td><tt>FloatArray</tt></td><td>4</td><td>32-bit IEEE floating point</td><td><code>float</code></td></tr>
+	<tr><td><tt>DoubleArray</tt></td><td>8</td><td>64-bit IEEE floating point</td><td><code>double</code></td></tr>
+      </tbody>
+    </table></center>
+
+    <p>Each of the typed array types has the following constructors,
+    properties, constants and methods.  In the descriptions below, the
+    generic term <i>TypedArray</i> is used to indicate that any valid
+    typed array view type is allowed.</p>
+
+    <pre class="idl">
+[
+    Constructor(in unsigned long length),
+    Constructor(in <i>TypedArray</i> array),
+    Constructor(in sequence&lt;<i>type</i>&gt; array),
+    Constructor(in ArrayBuffer buffer,
+                in optional unsigned long byteOffset, in optional unsigned long length)
+]
+interface <dfn id="TypedArray"><i>TypedArray</i></dfn> {
+    const unsigned long BYTES_PER_ELEMENT = <i>element size in bytes</i>;
+
+    readonly attribute ArrayBuffer buffer;
+    readonly attribute unsigned long byteOffset;
+    readonly attribute unsigned long byteLength;
+    readonly attribute unsigned long length;
+
+    <i>TypedArray</i> slice(in unsigned long start, in unsigned long end);
+
+    getter <i>type</i> get(in unsigned long index);
+    setter void set(in unsigned long index, in <i>type</i> value);
+    void set(in <i>TypedArray</i> array, in optional unsigned long offset);
+    void set(in sequence&lt;<i>type</i>&gt; array, in optional unsigned long offset);
+};</pre>
+
+    <table class="api">
+      <tbody>
+	<tr><th colspan="2">Constructors</th></tr>
+	<tr>
+	  <td><i>TypedArray</i>(length)</td>
+	  <td>
+	    <p>Create a new ArrayBuffer with enough bytes to
+	      hold <tt>length</tt> elements of this typed array, then
+	      creates a typed array view referring to the full buffer.
+	    </p>
+
+	    <p>Length must be >= 0.  If length is not specified or less
+	      than 0, an XXX exception is raised.</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td><i>TypedArray</i>(array)</td>
+	  <td>
+	    <p>Create a new ArrayBuffer with enough bytes to
+	      hold <tt>array.length</tt> elements of this typed array,
+	      then creates a typed array view referring to the full
+	      buffer.  The contents of the new view are initialized to the
+	      contents of the given array, with each element converted to
+	      the appropriate typed array type.</p>
+
+	    <p>If <tt>array</tt> is not
+	      specified or is not an array-like object, an XXX exception
+	      is raised.</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td><i>TypedArray</i>(buffer, byteOffset, length)</td>
+	  <td>
+	    <p>Create a new <i>TypedArray</i> object using the passed
+            ArrayBuffer for its storage. Optional byteOffset and
+            length can be used to limit the section of the buffer
+            referenced. The byteOffset indicates the offset in bytes
+            from the start of the ArrayBuffer, and the length is the
+            count of elements from the offset that
+            this <i>TypedArray</i> will reference.  If both byteOffset
+            and length are omitted, the <i>TypedArray</i> spans the
+            entire ArrayBuffer range.  If the length is omitted, the
+            <i>TypedArray</i> extends from the given byteOffset until
+            the end of the ArrayBuffer.</p>
+	      
+	    <p>If specified, byteOffset and length must be >= 0.  If
+	    they are not, then an XXX exception is raised.</p>
+
+	    <p>The given byteOffset must be a multiple of the element
+	    size of the specific type, otherwise an exception is
+	    raised.</p>
+
+	    <p>If a given byteOffset and length references an area
+	    beyond the end of the WebGLArrayBuffer an exception is
+	    raised.</p>
+
+	    <p>If length is not explicitly specified, the length of
+	    the ArrayBuffer minus the byteOffset must be a multiple of
+	    the element size of the specific type.</p>
+	  </td>
+	</tr>
+	<tr></tr>
+	<tr><th colspan="2">Constants</th></tr>
+	<tr>
+	  <td>BYTES_PER_ELEMENT</td>
+	  <td>The size in bytes of each element in the array.</td>
+	</tr>
+	<tr><th colspan="2">Properties</th></tr>
+	<tr>
+	  <td>buffer</td>
+	  <td>
+	    <p>Read-only property.</p>
+	    <p>The <tt>ArrayBuffer</tt> that this <i>TypedArray</i> references.</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>length</td>
+	  <td>
+	    <p>Read-only property.</p>
+	    <p>The length of the <tt>ArrayBuffer</tt> in elements, as fixed at construction time.</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>byteLength</td>
+	  <td>
+	    <p>Read-only property.</p>
+	    <p>The length of the <tt>ArrayBuffer</tt> in bytes, as fixed at construction time.</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>byteOffset</td>
+	  <td>
+	    <p>Read-only property.</p>
+	    <p>The offset of this <i>TypedArray</i> from the start of its <tt>ArrayBuffer</tt>, in bytes, as fixed at construction time.</p>
+	  </td>
+	<tr></tr>
+	<tr><th colspan="2">Methods</th></tr>
+	<tr>
+	  <td>
+	    <i>get</i>(index)
+	  </td>
+	  <td>
+	    <p>This is an index getter.</p>
+	    <p>Return the element at the given numeric index.</p>
+	    <p>If index is < 0 or >= <tt>length</tt>, then zero is returned. XXX ... an exception is raised?</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>
+	    <i>set</i>(index, value)
+	  </td>
+	  <td>
+	    <p>This is an index setter.</p>
+	    <p>Set the element at the given numeric index to the given value.</p>
+	    <p>If index is < 0 or >= <tt>length</tt>, then zero is returned. XXX ... an exception is raised?</p>
+	    <p>If the value is not within the range of the array's element type, then a C-style cast is performed. XXX define this better -- if the dest type is an integer, coerce the value to an integer then take the low N bits; if the dest type is a float, then assign.. ?</p>
+	    <p>If the value can't be converted to a numeric value, then if the element type can represent a NaN value, NaN is stored, otherwise zero is stored. XXX ... an exception is raised?</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>
+	    <i>set</i>(array, offset)
+	  </td>
+	  <td>
+	    <p>XXX</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>
+	    <i>slice</i>(start, end)
+	  </td>
+	  <td>
+	    <p>Returns a new <i>TypedArray</i> view of
+             the <tt>ArrayBuffer</tt> store for
+             this <i>TypedArray</i>, referencing the elements at
+             start, inclusive, up to end, exclusive.  If either start
+             or end is negative, it refers to an index from the end of
+             the array, as opposed to from the start.  The range
+             specified by the given start and end values is clamped to
+             the valid index range for the current array, and if not
+             given default to the start and end of the array,
+             respectively.</p>
+
+	    <p>The returned <i>TypedArray</i> will be of the same type
+	    as the array on which this method is invoked.</p>
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+
+    <h2>The DataStream Type</h2>
+
+    <p>An <tt>ArrayBuffer</tt> is a useful object for representing an arbitrary chunk of data.  In many cases, such data will be read from disk or from the network, and will not follow the alignment restrictions that are imposed on the typed array views described earlier.  In addition, the data will often be heterogeneous in nature.  The <tt>DataStream</tt> interface provides a stream-based way for reading from and writing to an ArrayBuffer.</p>
+
+    <pre class="idl">
+[
+  Constructor(in ArrayBuffer buffer,
+              optional in unsigned long byteOffset,
+              optional in unsigned long length)
+]
+interface <dfn id="DataStream">DataStream</dfn> {
+    readonly attribute ArrayBuffer buffer;
+    readonly attribute unsigned long byteOffset;
+    readonly attribute unsigned long byteLength;
+    readonly attribute unsigned long length;
+
+    const object BIG_ENDIAN;
+    const object LITTLE_ENDIAN;
+
+    // Takes either BIG_ENDIAN or LITTLE_ENDIAN as argument
+    void setEndianness(object endianness);
+
+    // Fetches the given type at the cursor with the current endianness.
+    // Increments the cursor by the size in bytes of the type.
+    // Throws an exception if the operation would read past the end of the view.
+    unsigned byte getUint8();
+    byte getInt8();
+    unsigned short getUint16();
+    short getInt16();
+    unsigned long getUint32();
+    long getInt32();
+    unsigned long long getUint64();
+    long long getInt64();
+    float getFloat();
+    double getDouble();
+
+    // Sets the given type at the cursor with the current endianness.
+    // Increments the cursor by the size in bytes of the type.
+    // Throws an exception if the operation would write past the end of the view.
+    void setUint8(in unsigned byte value);
+    void setInt8(in byte value);
+    void setUint16(in unsigned short value);
+    void setInt16(in short value);
+    void setUint32(in unsigned long value);
+    void setInt32(in long value);
+    void setUint64(in unsigned long long value);
+    void setInt64(in long long value);
+    void setFloat(in float value);
+    void setDouble(in double value);
+
+    // Gets the current position of the cursor, in bytes, from the beginning of the view.
+    unsigned long getCursorPosition();
+
+    // Sets the current position of the cursor, in bytes, from the  beginning of the view.
+    void setCursorPosition(in unsigned long byteOffset);
+};</pre>
+
+    <p>The following constructors, properties, and methods are available on a <tt>DataStream</tt>:</p>
+
+    <table class="api">
+      <tbody>
+	<tr><th colspan="2">Constructors</th></tr>
+	<tr>
+	  <td>DataStream(buffer, byteOffset, length)</td>
+	  <td>
+	  </td>
+	</tr>
+	<tr></tr>
+	<tr><th colspan="2">Constants</th></tr>
+	<tr>
+	  <td>BIG_ENDIAN</td>
+	  <td>
+	  </td>
+	</tr>
+	<tr>
+	  <td>LITTLE_ENDIAN</td>
+	  <td>
+	  </td>
+	</tr>
+	<tr><th colspan="2">Properties</th></tr>
+	<tr>
+	  <td>buffer</td>
+	  <td>
+	    <p>Read-only property.</p>
+	    <p>The <tt>ArrayBuffer</tt> that this <i>TypedArray</i> references.</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>length</td>
+	  <td>
+	    <p>Read-only property.</p>
+	    <p>The length of the <tt>ArrayBuffer</tt> in elements, as fixed at construction time.</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>byteLength</td>
+	  <td>
+	    <p>Read-only property.</p>
+	    <p>The length of the <tt>ArrayBuffer</tt> in bytes, as fixed at construction time.</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>byteOffset</td>
+	  <td>
+	    <p>Read-only property.</p>
+	    <p>The offset of this <i>TypedArray</i> from the start of its <tt>ArrayBuffer</tt>, in bytes, as fixed at construction time.</p>
+	  </td>
+	<tr></tr>
+	<tr><th colspan="2">Methods</th></tr>
+	<tr>
+	  <td>
+	    <i>setEndianness</i>(endianness)
+	  </td>
+	  <td>
+	    Set the endianness for this <tt>DataStream</tt> to either <tt>BIG_ENDIAN</tt> or <tt>LITTLE_ENDIAN</tt>.  The endianness set will be used for all future reading and writing operations.
+	  </td>
+	<tr>
+	  <td valign="top">
+	    <i>getUint8</i>()<br>
+	    <i>getInt8</i>()<br>
+	    <i>getUint16</i>()<br>
+	    <i>getInt16</i>()<br>
+	    <i>getUint32</i>()<br>
+	    <i>getInt32</i>()<br>
+	    <i>getUint64</i>()<br>
+	    <i>getInt64</i>()<br>
+	    <i>getFloat</i>()<br>
+	    <i>getDouble</i>()<br>
+	  </td>
+	  <td>
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    <i>setUint8</i>(value)<br>
+	    <i>setInt8</i>(value)<br>
+	    <i>setUint16</i>(value)<br>
+	    <i>setInt16</i>(value)<br>
+	    <i>setUint32</i>(value)<br>
+	    <i>setInt32</i>(value)<br>
+	    <i>setUint64</i>(value)<br>
+	    <i>setInt64</i>(value)<br>
+	    <i>setFloat</i>(value)<br>
+	    <i>setDouble</i>(value)<br>
+	  </td>
+	  <td>
+	  </td>
+	</tr>
+	<tr>
+	  <td>
+	    <i>getCursorPosition</i>()
+	  </td>
+	  <td>
+	  </td>
+	</tr>
+	<tr>
+	  <td>
+	    <i>setCursorPosition</i>(byteOffset)
+	  </td>
+	  <td>
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+
+    <h2>Outstanding Issues & Bikeshedding</h2>
+
+    <dt>Should <tt>slice()</tt> return a copy or a reference?</dt>
+    <dd>
+      <p>Right now, <tt>slice()</tt> returns a new <i>TypedArray</i>, but
+      it references the same <tt>ArrayBuffer</tt>.  This is useful for
+      working with a large chunk of data, but only wanting to pass a
+      subregion to a method.  However, the opposite is also useful --
+      you may want to make a copy of a segment in order to modify it.
+      Right now, that requires a call like: <tt>new
+      Int8Array(otherArray.slice(1,10));</tt>.</p>
+      <p>Perhaps we want to
+      introduce a <tt>subset()</tt> that will be the same behaviour as
+      slice currently, and have <tt>slice()</tt> return
+      a <i>TypedArray</i> with a new <tt>ArrayBuffer</tt>?</p>
+    </dd>
+
+    <dt>There's no good way to copy or subset <tt>ArrayBuffers</tt></dt>
+    <dd>
+      <p><tt>ArrayBuffer</tt> could use a method to copy a region; perhaps just a new constructor:</p>
+      <p><tt>ArrayBuffer(other, [start, [end]])</tt> to copy <tt>start..end</tt> (same arg style as slice()) from <tt>other</tt>.</p>
+    </dd>
+
+    <dt>Should this specification reference endianness?</dt>
+    <dd>
+      <p>The types here are intended to be native-endian; the application can determine the endianness of the platform by creating an <tt>Uint16Array</tt> and a <tt>Uint8Array</tt> for the same two bytes and examining the order of <tt>0xaabb</tt> or similar.  However, it might be desirable to provide a <tt>byteSwap()</tt> method on each <i>TypedArray</i> for efficiency.</p>
+      <p>The arrays should explicitly not have a defined endianness, as that would impose a significant performance penalty on different-endian platforms or working with different-endian data.</p>
+    </dd>
+
+    <h2>References</h2>
+    <dt>[CANVAS]</dt>
+    <dd><a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html">The HTML5 Canvas Element</a></dd>
+
+    <dt>[WEBGL]</dt>
+    <dd><a href="http://www.webgl.org/">Khronos WebGL Specification</a></dd>
+
+    <dt>[FILEAPI]</dt>
+    <dd><a href="http://www.w3.org/TR/FileAPI/">File API</a></dd>
+
+    <dt>[WEBSOCKETS]</dt>
+    <dd><a href="http://dev.w3.org/html5/websockets/">The Web Sockets API</a></dd>
+
+</body>
+
+</html>
