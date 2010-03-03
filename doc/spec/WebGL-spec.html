@@ -965,6 +965,13 @@ interface WebGL<i>TypeName</i>Array : WebGLArray {
         omitted, it is assumed to be 0.
       </p>
       <p>
+        The input array may be a <code>WebGL<i>TypeName</i>Array</code>, and the two arrays may use
+        the same underlying <code>WebGLArrayBuffer</code>. In this situation, setting the values
+        takes place as if all the data is first copied into a temporary buffer that does not overlap
+        either of the arrays, and then the data from the temporary buffer is copied into the current
+        array.
+      </p>
+      <p>
 	If the offset plus the length of the given array is out of
 	range for the current <code>WebGLArray</code>, an exception
 	is raised.
