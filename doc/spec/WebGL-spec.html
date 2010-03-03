@@ -409,7 +409,7 @@ typedef float          GLclampf;
 
 <!-- ======================================================================================================= -->
 
-    <h3>WebGLContextAttributes</h3>
+    <h3><a name="WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a></h3>
 
     <p>
         The <code>WebGLContextAttributes</code> interface contains drawing surface attributes 
@@ -1648,6 +1648,9 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     readonly attribute HTMLCanvasElement canvas;
 
     WebGLContextAttributes getContextAttributes();
+
+    boolean isContextLost();
+    boolean resetContext();
 
     void activeTexture(in GLenum texture) raises(DOMException);
     void attachShader(in WebGLProgram program, in WebGLShader shader) raises(DOMException);
@@ -2948,6 +2951,26 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     
 <!-- ======================================================================================================= -->
 
+    <h4>Recovering from context lost events</h4>
+
+    <p>
+        Occurrences such as power events on mobile devices may cause the WebGL rendering context to
+        be lost at any time and require the application to rebuild it; see the section on
+        the <a href="#5.16.1">WebGLContextLostEvent</a> for more details. The
+        following methods assist in detecting and recovering from context lost events.
+    </p>
+
+    <dl class="methods">
+        <dt><code>isContextLost()</code>
+        <dd>
+            Returns true if the context is in the lost state.
+        <dt><code>resetContext()</code>
+        <dd>
+            Returns true if the context was reset successfully.
+    </dl>
+    
+<!-- ======================================================================================================= -->
+
     <h3>Events</h3>
 
     <p>
@@ -2958,26 +2981,29 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
 
 <!-- ======================================================================================================= -->
 
-    <h4>WebGLResourceLostEvent</h4>
+    <h4>WebGLContextLostEvent</h4>
 
     <p>
-        This event occurs when some system activity external to WebGL occurs which
-        causes one of more resources of the current context to be lost. The 
-        <span class="prop-name">resource</span> attribute contains the resource
-        that was lost, or null if all resources were lost. The 
-        <span class="prop-name">context</span> attribute contains the 
-        WebGLRenderingContext for which the resource was lost.
+        This event occurs when some system activity external to WebGL causes the rendering context
+        to lose all of its state. The <span class="prop-name"><code>context</code></span> attribute
+        contains the WebGLRenderingContext whose state was lost.
+    </p>
+    <p>
+        When a WebGLContextLostEvent is delivered for a given context, that context is in a "lost"
+        state. While the context is in the lost state, all rendering commands are ignored, and the
+        context's <code>isContextLost</code> method will return true. In order to resume rendering,
+        the application must call the context's <code>resetContext</code> method, and the invocation
+        must return true. Once the context is reset, the application must reinitialize the context's
+        state and recreate all of its WebGL resources such as textures, shaders and programs.
     </p>
     <pre class="idl">
-interface <dfn id="WebGLResourceLostEvent">WebGLResourceLostEvent</dfn> : Event {
-    readonly attribute WebGLObject resource;
+interface <dfn id="WebGLContextLostEvent">WebGLContextLostEvent</dfn> : Event {
     readonly attribute WebGLRenderingContext context;
     
-    void initWebGLResourceLostEvent(in DOMString type,
-                                    in boolean canBubble,
-                                    in boolean cancelable,
-                                    in WebGLObject resource,
-                                    in WebGLRenderingContext context);
+    void initWebGLContextLostEvent(in DOMString type,
+                                   in boolean canBubble,
+                                   in boolean cancelable,
+                                   in WebGLRenderingContext context);
 };</pre>
 
     <h5>Attributes</h5>
@@ -2987,32 +3013,71 @@ interface <dfn id="WebGLResourceLostEvent">WebGLResourceLostEvent</dfn> : Event 
     </p>
 
     <dl class="methods">
-        <dt><span class="prop-name">resource</span>
+        <dt><span class="prop-name"><code>context</code></span> of type <code>WebGLRenderingContext</code>
         <dd>
-            The resource that was lost, or null if all resources were lost.
-        <dt><span class="prop-name">context</span>
-        <dd>
-            The context for which the resource was lost.
+            The context whose state was lost.
     </dl>
 
-    <h5 id="5.15.1.2"><span class=secno>5.15.1.2</span>
-        Methods
-    </h5>
+    <h5>Methods</h5>
 
     <p>
         The following methods are available:
     </p>
 
     <dl class="methods">
-        <dt><code>initWebGLResourceLostEvent(type, canBubble, cancelable, resource, context)</code>
+        <dt><code>void initWebGLContextLostEvent(in DOMString type, in boolean canBubble, in boolean cancelable, in WebGLRenderingContext context)</code>
         <dd>
             Initialize the event created through the 
-            <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-DocumentEvent">DocumentEvent</a> 
-            interface. This method may only be called before the event has been dispatched via 
-            the <code>dispatchEvent</code> method, though it may be called multiple times 
-            during that phase if necessary. If called multiple times, the final invocation 
-            takes precedence.
+            <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-Event">Event</a>
+            interface. This method may only be called before the event has been dispatched via
+            the <code>dispatchEvent</code> method, though it may be called multiple times during
+            that phase if necessary. If called multiple times, the final invocation takes
+            precedence.
+            <P>
+            <b>Parameters</b>
+            <dl>
+                <dt><code>type</code> of type <code>DOMString</code>
+                <dd>Specifies the event type, which is the string <code>webglcontextlost</code>.
+                <dt><code>canBubble</code> of type <code>boolean</code>
+                <dd>Specifies whether or not the event can bubble.
+                <dt><code>cancelable</code> of type <code>boolean</code>
+                <dd>Specifies whether or not the event can bubble.
+                <dt><code>context</code> of type <code>WebGLRenderingContext</code>
+                <dd>The context whose state was lost.
+            </dl>
+            <b>No Return Value</b><br>
+            <b>No Exceptions</b><br>
     </dl>
+
+    <div class="example">
+    The following ECMAScript example shows how to register an event listener on a Canvas which will
+    receive context lost events and attempt to restart the application.
+    <pre>
+var contextWhichWasLost = null;
+
+function contextLostHandler(contextLostEvent) {
+  // Start a timer to try to periodically reset the context
+  contextWhichWasLost = contextLostEvent.context;
+  setTimeout(tryToResetApplication, 500);
+}
+
+function tryToResetApplication() {
+  if (contextWhichWasLost != null) {
+    if (contextWhichWasLost.resetContext()) {
+      var context = contextWhichWasLost;
+      contextWhichWasLost = null;
+      // Would re-run all of the initialization code for the application
+      resetApplication(context);
+    } else {
+      setTimeout(tryToResetApplication, 500);
+    }
+  }
+}
+
+var canvas = document.getElementById('canvas1');
+canvas.addEventListener("webglcontextlost", contextLostHandler, false);
+    </pre>
+    </div>
 
 <!-- ======================================================================================================= -->
 

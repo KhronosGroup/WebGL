@@ -634,6 +634,9 @@ interface WebGLRenderingContext {
 
     WebGLContextAttributes getContextAttributes();
 
+    boolean isContextLost();
+    boolean resetContext();
+
     void activeTexture(in GLenum texture) raises(DOMException);
     void attachShader(in WebGLProgram program, in WebGLShader shader) raises(DOMException);
     void bindAttribLocation(in WebGLProgram program, in GLuint index, in DOMString name) 
@@ -891,15 +894,13 @@ interface WebGLRenderingContext {
 };
 
 
-interface WebGLResourceLostEvent : Event {
-    readonly attribute WebGLObject resource;
+interface WebGLContextLostEvent : Event {
     readonly attribute WebGLRenderingContext context;
     
-    void initWebGLResourceLostEvent(in DOMString type,
-                                    in boolean canBubble,
-                                    in boolean cancelable,
-                                    in WebGLObject resource,
-                                    in WebGLRenderingContext context);
+    void initWebGLContextLostEvent(in DOMString type,
+                                   in boolean canBubble,
+                                   in boolean cancelable,
+                                   in WebGLRenderingContext context);
 };
 
 };
