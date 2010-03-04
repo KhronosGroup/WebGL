@@ -63,4 +63,6 @@ shouldBeUndefined("contextA.useProgram(programV)");
 shouldBeUndefined("contextA.uniform4fv(locationVec4, vec)");
 shouldBe("contextA.getUniform(programV, locationVec4)", "vec");
 
+shouldBeNull("contextA.getUniformLocation(programV, \"IDontExist\")");
+
 successfullyParsed = true;
