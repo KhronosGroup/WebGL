@@ -2743,6 +2743,11 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetUniformLocation.xml">
                 (OpenGL ES 2.0 man page)
             </a>
+        <dd>
+            Return a WebGLUniformLocation object that represents the location of a specific uniform variable
+            within a program object. The return value is null if name does not correspond to an active uniform
+            variable in the passed program.
+
         <dt><code>getVertexAttrib(index, pname)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetVertexAttribfv.xml">
                 (OpenGL ES 2.0 man page)
