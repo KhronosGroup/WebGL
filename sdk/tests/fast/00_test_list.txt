@@ -1,4 +1,5 @@
 array-unit-tests.html
+buffer-bind-test.html
 bug-31889.html
 bug-32364.html
 bug-32456.html
