@@ -2143,27 +2143,27 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>stencilFunc(func, ref, mask)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glLineWidth.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glStencilFunc.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>stencilFuncSeparate(face, func, ref, mask)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glLineWidth.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glStencilFuncSeparate.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>stencilMask(mask)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glLineWidth.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glStencilMask.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>stencilMaskSeparate(face, mask)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glLineWidth.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glStencilMaskSeparate.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>stencilOp(fail, zfail, zpass)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glLineWidth.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glStencilOp.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>stencilOpSeparate(face, fail, zfail, zpass)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glLineWidth.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glStencilOpSeparate.xml">
                 (OpenGL ES 2.0 man page)
             </a>
     </dl>
@@ -2185,7 +2185,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
 
     <dl class="methods">
         <dt><code>scissor(x, y, width, height)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glViewport.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glScissor.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>viewport(x, y, width, height)</code>
@@ -2288,7 +2288,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             </a>
         
         <dt><code>checkFramebufferStatus(target)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glCheckFrameBufferStatus.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glCheckFramebufferStatus.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>createFramebuffer()</code>
@@ -2399,7 +2399,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
         <dd>
             Return true if the passed WebGLObject is a WebGLRenderbuffer and false otherwise.
         <dt><code>renderbufferStorage(target, internalformat, width, height)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetRenderbufferParameteriv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glRenderbufferStorage.xml">
                 (OpenGL ES 2.0 man page)
             </a>
     </dl>
@@ -2459,7 +2459,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             INVALID_OPERATION error is raised.
         <dt><code>getTexParameter(target, pname)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetTexParameterfv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetTexParameter.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
@@ -2499,14 +2499,14 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             INVALID_OPERATION error is raised.
         <dt><code>texParameterf(target, pname, param)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexParameterf.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexParameter.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             INVALID_OPERATION error is raised.
         <dt><code>texParameteri(target, pname, param)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexParameteri.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexParameter.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
@@ -2715,7 +2715,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>getUniform(program, location)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetUniformfv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
@@ -2749,7 +2749,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             variable in the passed program.
 
         <dt><code>getVertexAttrib(index, pname)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetVertexAttribfv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
@@ -2766,83 +2766,83 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>CURRENT_VERTEX_ATTRIB</td><td>WebGLFloatArray (with 4 elements)</td></tr>
             </table>
         <dt><code>getVertexAttribOffset(index, pname)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetVertexAttribfv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetVertexAttribPointerv.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform1f(location, x)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform1fv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform1fv(location, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform1fv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform1i(location, x)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform1iv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform1iv(location, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform1iv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform2f(location, x, y)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform2fv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform2fv(location, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform2fv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform2i(location, x, y)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform2iv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform2iv(location, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform2iv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform3f(location, x, y, z)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform3fv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform3fv(location, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform3fv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform3i(location, x, y, z)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform3iv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform3iv(location, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform3iv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform4f(location, x, y, z, w)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform4fv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform4fv(location, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform4fv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform4i(location, x, y, z, w)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform4iv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniform4iv(location, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform4iv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniformMatrix2fv(location, transpose, value)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniformMatrix2fv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniformMatrix3fv(location, transpose, value)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniformMatrix3fv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>uniformMatrix4fv(location, transpose, value)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniformMatrix4fv.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
        <dd>
@@ -2851,35 +2851,35 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             program via an earlier call to <code>getUniformLocation</code>, or an INVALID_VALUE error
             will be raised.
         <dt><code>vertexAttrib1f(index, x)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib1f.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>vertexAttrib1fv(index, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib1f.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>vertexAttrib2f(index, x)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib2f.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>vertexAttrib2fv(index, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib2f.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>vertexAttrib3f(index, x)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib3f.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>vertexAttrib3fv(index, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib3f.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>vertexAttrib4f(index, x)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib4f.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>vertexAttrib4fv(index, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib4f.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
          <dt><code>vertexAttribPointer(index, size, type, normalized, stride, offset)</code>
@@ -2916,7 +2916,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 (OpenGL ES 2.0 man page)
             </a>
         <dt><code>drawElements(mode, count, type, offset)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDrawArrays.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDrawElements.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
