@@ -26,6 +26,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 if (window.layoutTestController)
     layoutTestController.overridePreference("WebKitWebGLEnabled", "1");
 
+function webglTestLog(msg) {
+    if (window.console && window.console.log) {
+        window.console.log(msg);
+    }
+}
+
 //
 // create3DContext
 //
@@ -77,7 +83,7 @@ function create3DDebugContext(canvas) {
                 wrap[i] = context[i];
             }
         } catch (e) {
-            // console.log("create3DDebugContext: Error accessing " + i);
+            // webglTestLog("create3DDebugContext: Error accessing " + i);
         }
     }
     wrap.getError = function() {
@@ -139,7 +145,7 @@ function initWebGL(canvasName, vshader, fshader, attribs, clearColor, clearDepth
     if (!linked) {
         // something went wrong with the link
         var error = gl.getProgramInfoLog (gl.program);
-        console.log("Error in program linking:"+error);
+        webglTestLog("Error in program linking:"+error);
 
         gl.deleteProgram(gl.program);
         gl.deleteProgram(fragmentShader);
@@ -189,7 +195,7 @@ function loadShader(ctx, shaderId, shaderType, isFile)
     else {
         var shaderScript = document.getElementById(shaderId);
         if (!shaderScript) {
-            console.log("*** Error: shader script '"+shaderId+"' not found");
+            webglTestLog("*** Error: shader script '"+shaderId+"' not found");
             return null;
         }
 
@@ -199,7 +205,7 @@ function loadShader(ctx, shaderId, shaderType, isFile)
         else if (shaderScript.type == "x-shader/x-fragment")
             shaderType = ctx.FRAGMENT_SHADER;
         else if (shaderType != ctx.VERTEX_SHADER && shaderType != ctx.FRAGMENT_SHADER) {
-            console.log("*** Error: unknown shader type");
+            webglTestLog("*** Error: unknown shader type");
             return null;
         }
 
@@ -209,7 +215,7 @@ function loadShader(ctx, shaderId, shaderType, isFile)
     // Create the shader object
     var shader = ctx.createShader(shaderType);
     if (shader == null) {
-        console.log("*** Error: unable to create shader '"+shaderId+"'");
+        webglTestLog("*** Error: unable to create shader '"+shaderId+"'");
         return null;
     }
 
@@ -224,7 +230,7 @@ function loadShader(ctx, shaderId, shaderType, isFile)
     if (!compiled) {
         // Something went wrong during compilation; get the error
         var error = ctx.getShaderInfoLog(shader);
-        console.log("*** Error compiling shader '"+shader+"':"+error);
+        webglTestLog("*** Error compiling shader '"+shader+"':"+error);
         ctx.deleteShader(shader);
         return null;
     }
@@ -467,7 +473,7 @@ function loadObj(ctx, url)
 
 function processLoadObj(req)
 {
-    console.log("req="+req)
+    webglTestLog("req="+req)
     // only if req shows "complete"
     if (req.readyState == 4) {
         doLoadObj(req.obj, req.responseText);
@@ -516,7 +522,7 @@ function doLoadObj(obj, text)
         else if (array[0] == "f") {
             // face
             if (array.length != 4) {
-                console.log("*** Error: face '"+line+"' not handled");
+                webglTestLog("*** Error: face '"+line+"' not handled");
                 continue;
             }
 
@@ -537,7 +543,7 @@ function doLoadObj(obj, text)
                         nor = parseInt(f[2]) - 1;
                     }
                     else {
-                        console.log("*** Error: did not understand face '"+array[i]+"'");
+                        webglTestLog("*** Error: did not understand face '"+array[i]+"'");
                         return null;
                     }
 
