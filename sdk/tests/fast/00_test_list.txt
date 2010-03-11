@@ -11,6 +11,7 @@ context-type-test.html
 draw-arrays-out-of-bounds.html
 draw-elements-out-of-bounds.html
 error-reporting.html
+framebuffer-test.html
 get-active-test.html
 gl-bindattribLocation-test.html
 gl-drawelements.html
