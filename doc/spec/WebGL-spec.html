@@ -320,6 +320,11 @@ gl.viewport(0, 0, canvas.width, canvas.height);
         referencing state variables or functions that are available in other versions of GLSL (such
         as that found in versions of OpenGL for the desktop), must not be allowed to load.
     </p>
+    <p>
+        In addition to the reserved identifiers in the aforementioned specification, identifiers
+        starting with "webgl_" and "_webgl_" are reserved for use by WebGL. No user-defined
+        identifiers may begin with "webgl_" or "_webgl_".
+    </p>
 
 <!-- ======================================================================================================= -->
 
@@ -3131,6 +3136,13 @@ A call to <code>framebufferRenderbuffer</code> which would result in non-zero at
 these combinations of attachment points will raise an <code>INVALID_OPERATION</code> error and leave
 the framebuffer's attachments untouched.
 
+</p>
+
+    <h3>GLSL Constructs</h3>
+
+<p>
+Per <a href="#4.4">Section 4.4</a>, identifiers starting with "webgl_" and "_webgl_" are reserved
+for use by WebGL.
 </p>
 
 <!-- ======================================================================================================= -->
