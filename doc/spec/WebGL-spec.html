@@ -322,8 +322,8 @@ gl.viewport(0, 0, canvas.width, canvas.height);
     </p>
     <p>
         In addition to the reserved identifiers in the aforementioned specification, identifiers
-        starting with "webgl_" and "_webgl_" are reserved for use by WebGL. No user-defined
-        identifiers may begin with "webgl_" or "_webgl_".
+        starting with "webgl_" and "_webgl_" are reserved for use by WebGL. A shader which declares a 
+        function or a variable starting with these prefixes must not be allowed to load.
     </p>
 
 <!-- ======================================================================================================= -->
@@ -1657,7 +1657,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     boolean isContextLost();
     boolean resetContext();
     
-    DOMString[ ] getExtensionList();
+    DOMString[ ] getSupportedExtensions();
     object getExtension(in DOMString name);
 
     void activeTexture(in GLenum texture) raises(DOMException);
@@ -2989,7 +2989,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     <p>
         An implementation of WebGL must not support any additional parameters, constants or functions
         without first enabling that functionality through the extension mechanism. The 
-        <code>getExtensionList</code> function returns an array of the extension strings supported
+        <code>getSupportedExtensions</code> function returns an array of the extension strings supported
         by this implementation. Extension strings are case-insensitive. An extension is enabled by 
         passing one of those strings to the <code>getExtension</code> function. This call returns an 
         object which contains any constants or functions defined by that extension. The definition of 
@@ -3007,7 +3007,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
 
     <dl class="methods">
-        <dt><code>getExtensionList()</code>
+        <dt><code>getSupportedExtensions()</code>
         <dd>
             Returns an array of all the supported extension strings. Any string in this list, when 
             passed to <code>getExtension</code> must return a valid object. Any other string passed to 
@@ -3230,8 +3230,8 @@ for use by WebGL.
        Tim Johansson (Opera), Vangelis Kokkevis (Google), Vladimir Vukicevic (Mozilla)
     </p>
     <p>
-        Additional thanks to: Alan Hudson (Yumetech), Bill Licea Kane (AMD), Dan Gessel (Apple), 
-        David Ligon (Qualcomm), Greg Ross (Nvidia), Jacob Strom (Ericsson), Kari Pulli (Nokia), 
+        Additional thanks to: Alan Hudson (Yumetech), Bill Licea Kane (AMD), Cedric Vivier (Zegami Pte Ltd), 
+        Dan Gessel (Apple), David Ligon (Qualcomm), Greg Ross (Nvidia), Jacob Strom (Ericsson), Kari Pulli (Nokia), 
         Leddie Stenvie (ST-Ericsson), Neil Trevett (Nvidia), Per Wennersten (Ericsson), 
         Per-Erik Brodin (Ericsson), Shiki Okasaka (Google), Tom Olson (ARM), Zhengrong Yao (Ericsson), 
         and the members of the Khronos WebGL Working Group.
