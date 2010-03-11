@@ -1656,6 +1656,9 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
 
     boolean isContextLost();
     boolean resetContext();
+    
+    DOMString[ ] getExtensionList();
+    object getExtension(in DOMString name);
 
     void activeTexture(in GLenum texture) raises(DOMException);
     void attachShader(in WebGLProgram program, in WebGLShader shader) raises(DOMException);
@@ -2979,6 +2982,46 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Returns true if the context was reset successfully.
     </dl>
     
+<!-- ======================================================================================================= -->
+
+    <h4>Detecting and enabling extensions</h4>
+
+    <p>
+        An implementation of WebGL must not support any additional parameters, constants or functions
+        without first enabling that functionality through the extension mechanism. The 
+        <code>getExtensionList</code> function returns an array of the extension strings supported
+        by this implementation. Extension strings are case-insensitive. An extension is enabled by 
+        passing one of those strings to the <code>getExtension</code> function. This call returns an 
+        object which contains any constants or functions defined by that extension. The definition of 
+        that object is specific to the extension and must be defined by the extension specification.
+    </p>
+    <p>
+        Once an extension is enabled, no mechanism is provided to disable it. Multiple calls to
+        <code>getExtension</code> with the same extension string shall return the same object. An 
+        attempt to use any features of an extension without first calling getExtension to enable it 
+        must return the appropriate GL error and must not make use of the feature.
+    </p>
+    <p>
+        This specification does not define any extensions. Browser specific extensions must have a 
+        browser specific prefix, (e.g., "webkit-" or "moz-"). 
+    </p>
+
+    <dl class="methods">
+        <dt><code>getExtensionList()</code>
+        <dd>
+            Returns an array of all the supported extension strings. Any string in this list, when 
+            passed to <code>getExtension</code> must return a valid object. Any other string passed to 
+            <code>getExtension</code> must return null.
+            
+        <dt><code>getExtension()</code>
+        <dd>
+            Returns an object if the passed extension is supported, or null if not. The object 
+            returned from <code>getExtension</code> contains any constants or functions used by the 
+            extension, if any. A returned object may have no constants or functions if the extension does 
+            not define any, but a unique object must still be returned. That object is used to indicate 
+            that the extension has been enabled. 
+    </dl>
+
 <!-- ======================================================================================================= -->
 
     <h3>Events</h3>
