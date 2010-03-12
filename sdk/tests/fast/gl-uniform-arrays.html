@@ -246,7 +246,7 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
               ") matches value pulled out (" +
               typeInfo.returnValueAsString(value) + ")");
   }
-//  typeInfo.badSet(loc);
+  typeInfo.badSet(loc);
   assertMsg(gl.getError() == gl.INVALID_OPERATION,
             "using the wrong size of gl.Uniform fails");
 
