@@ -135,6 +135,27 @@ void main()
     gl_Position = vPosition * gl_ProjectionMatrix;
 }
 </script>
+<script id="vshaderWithAttributeArray" type="text/something-not-javascript">
+attribute vec4 vPosition[2];
+void main()
+{
+    gl_Position = vPosition[0] + vPosition[1];
+}
+</script>
+<script id="vshaderWithwebgl_" type="text/something-not-javascript">
+attribute vec4 webgl_vPosition;
+void main()
+{
+    gl_Position = webgl_vPosition;
+}
+</script>
+<script id="vshaderWith_webgl_" type="text/something-not-javascript">
+attribute vec4 _webgl_vPosition;
+void main()
+{
+    gl_Position = _webgl_vPosition;
+}
+</script>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
 description("This test ensures WebGL implementations allow proper GLES2 shaders compile and improper ones fail.");
@@ -149,7 +170,7 @@ if (!gl) {
   testPassed("context exists");
 
   debug("");
-  debug("Checking texture formats.");
+  debug("Checking various GLSL programs.");
 
   function log(msg) {
     if (window.console && window.console.log) {
@@ -192,7 +213,6 @@ if (!gl) {
       fShaderId: 'fshaderWithPrecision',
       fShaderSuccess: true,
       linkSuccess: true,
-      failMsg: 'fragment shader with precision must succeed',
       passMsg: 'frament shader with precision compiled and linked'
     },
     { vShaderId: 'vshader',
@@ -200,7 +220,6 @@ if (!gl) {
       fShaderId: 'fshaderWithDefaultPrecision',
       fShaderSuccess: true,
       linkSuccess: true,
-      failMsg: 'fragment shader with default precision must succeed',
       passMsg: 'fragment shader with default precision compiled and linked'
     },
     { vShaderId: 'vshader',
@@ -208,103 +227,114 @@ if (!gl) {
       fShaderId: 'fshaderWithOutPrecision',
       fShaderSuccess: false,
       linkSuccess: false,
-      failMsg: 'fragment shader without precision must fail',
-      passMsg: 'fragment shader without precision correctly failed',
+      passMsg: 'fragment shader without precision should fail',
     },
     { vShaderId: 'vshader',
       vShaderSuccess: true,
       fShaderId: 'fshaderWithInvalidIdentifier',
       fShaderSuccess: false,
       linkSuccess: false,
-      failMsg: 'fragment shader with gl_ identifier must fail',
-      passMsg: 'fragment shader with gl_ identifier correctly failed',
+      passMsg: 'fragment shader with gl_ identifier should fail',
     },
     { vShaderId: 'vshader',
       vShaderSuccess: true,
       fShaderId: 'fshaderWithGLSLPreprocessorSymbol',
       fShaderSuccess: true,
       linkSuccess: true,
-      failMsg: 'fragment shader that uses GL_ES preprocessor symbol must succeed',
-      passMsg: 'fragment shader that uses GL_ES preprocessor symbol succeeded',
+      passMsg: 'fragment shader that uses GL_ES preprocessor symbol should succeed',
     },
     { vShaderId: 'vshader',
       vShaderSuccess: true,
       fShaderId: 'fshaderWithVERSION100PreprocessorSymbol',
       fShaderSuccess: true,
       linkSuccess: true,
-      failMsg: 'fragment shader that expects __VERSION__==100 must succeed',
-      passMsg: 'fragment shader that uses __VERSION__==100 succeeded',
+      passMsg: 'fragment shader that uses __VERSION__==100 should succeed',
     },
     { vShaderId: 'vshader',
       vShaderSuccess: true,
       fShaderId: 'fshaderWithFragDepth',
       fShaderSuccess: false,
       linkSuccess: true,
-      failMsg: 'fragment shader that uses gl_FragDepth must fail',
-      passMsg: 'fragment shader that uses gl_FragDepth correctly failed',
+      passMsg: 'fragment shader that uses gl_FragDepth should fail',
     },
     { vShaderId: 'vshaderWithClipVertex',
       vShaderSuccess: false,
       fShaderId: 'fshader',
       fShaderSuccess: true,
       linkSuccess: false,
-      failMsg: 'vertex shader that uses gl_ClipVertex must fail',
-      passMsg: 'vertex shader that uses gl_ClipVertex correctly failed',
+      passMsg: 'vertex shader that uses gl_ClipVertex should fail',
     },
     //{ vShaderId: 'vshader',
     //  vShaderSuccess: true,
     //  fShaderId: 'fshaderWith__Define',
     //  fShaderSuccess: false,
     //  linkSuccess: false,
-    //  failMsg: 'fragment shader that uses __ define must fail',
-    //  passMsg: 'fragment shader that uses __ define correctly failed',
+    //  passMsg: 'fragment shader that uses __ define should fail',
     //},
     //{ vShaderId: 'vshader',
     //  vShaderSuccess: true,
     //  fShaderId: 'fshaderWithGL_Define',
     //  fShaderSuccess: false,
     //  linkSuccess: false,
-    //  failMsg: 'fragment shader that uses GL_ define must fail',
-    //  passMsg: 'fragment shader that uses GL_ define correctly failed',
+    //  passMsg: 'fragment shader that uses GL_ define should fail',
     //},
     { vShaderId: 'vshader',
       vShaderSuccess: true,
       fShaderId: 'fshaderWithDefineLineContinuation',
       fShaderSuccess: false,
       linkSuccess: false,
-      failMsg: 'fragment shader that has line continuation macro must fail',
-      passMsg: 'fragment shader that uses has line continuation macro correctly failed',
+      passMsg: 'fragment shader that uses has line continuation macro should fail',
     },
     { vShaderId: 'vshaderWithgl_Color',
       vShaderSuccess: false,
       fShaderId: 'fshader',
       fShaderSuccess: true,
       linkSuccess: false,
-      failMsg: 'vertex shader that uses gl_Color must fail',
-      passMsg: 'vertex shader that uses gl_Color correctly failed',
+      passMsg: 'vertex shader that uses gl_Color should fail',
     },
     { vShaderId: 'vshaderWithgl_ProjectionMatrix',
       vShaderSuccess: false,
       fShaderId: 'fshader',
       fShaderSuccess: true,
       linkSuccess: false,
-      failMsg: 'vertex shader that uses gl_ProjectionMatrix must fail',
-      passMsg: 'vertex shader that uses gl_ProjectionMatrix correctly failed',
+      passMsg: 'vertex shader that uses gl_ProjectionMatrix should fail',
     },
+    { vShaderId: 'vshaderWithAttributeArray',
+      vShaderSuccess: false,
+      fShaderId: 'fshader',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'vertex shader that uses attribute array must fail as per GLSL page 110, appendix A, section 5',
+    },
+    { vShaderId: 'vshaderWithwebgl_',
+      vShaderSuccess: false,
+      fShaderId: 'fshader',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'vertex shader that uses _webgl identifier must fail',
+    },
+    { vShaderId: 'vshaderWith_webgl_',
+      vShaderSuccess: false,
+      fShaderId: 'fshader',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'vertex shader that uses _webgl_ identifier must fail',
+    }
   ];
 
   for (var ii = 0; ii < shaderInfo.length; ++ii) {
     var info = shaderInfo[ii];
+    log("vs = " + info.vShaderId + ", fs = " + info.fShaderId);
     //debug(info.fShaderId);
     var vShader = loadShader(gl.VERTEX_SHADER, info.vShaderId);
     if ((vShader != null) != info.vShaderSuccess) {
-      testFailed(info.failMsg);
+      testFailed(info.passMsg);
       continue;
     }
     var fShader = loadShader(gl.FRAGMENT_SHADER, info.fShaderId);
     //debug(fShader == null ? "fail" : "succeed");
     if ((fShader != null) != info.fShaderSuccess) {
-      testFailed(info.failMsg);
+      testFailed(info.passMsg);
       continue;
     }
 
@@ -319,12 +349,12 @@ if (!gl) {
         log("*** Error linking program '"+program+"':"+error);
       }
       if (linked != info.linkSuccess) {
-        testFailed(info.failMsg);
+        testFailed(info.passMsg);
         continue;
       }
     } else {
       if (info.linkSuccess) {
-        testFailed(info.failMsg);
+        testFailed(info.passMsg);
         continue;
       }
     }
