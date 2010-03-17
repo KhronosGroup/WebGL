@@ -37,6 +37,13 @@ if (!gl) {
 
   gl = WebGLDebugUtils.makeDebugContext(gl);
 
+  var value = gl.getFramebufferAttachmentParameter(
+     gl.FRAMEBUFFER,
+     gl.COLOR_ATTACHMENT0,
+     gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
+  assertMsg(gl.getError() == gl.INVALID_OPERATION,
+     "calling getFramebufferAttachmentParameter on the backbuffer should fail with INVALID_OPERATION");
+
   var tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
