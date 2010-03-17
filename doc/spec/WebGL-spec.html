@@ -246,8 +246,8 @@ gl.viewport(0, 0, canvas.width, canvas.height);
     <h3>WebGLArrayBuffer and Uninitialized Data</h3>
 
     <p>
-        Data present in a <a href="WebGLArrayBuffer">WebGLArrayBuffer</a> can be read by the application directly 
-        by creating a <a href="WebGLArrayBuffer">WebGLArray</a> view of the data or indirectly by via rendering 
+        Data present in a <a href="#WebGLArrayBuffer">WebGLArrayBuffer</a> can be read by the application directly 
+        by creating a <a href="#WebGLArray">WebGLArray</a> view of the data or indirectly by via rendering 
         and using a method such as <code>readPixels</code>.  At creation time, a WebGLArrayBuffer 
         must be initialized from existing user data or must be cleared to 0.  
         Additionally, the WebGL implementation must ensure that no data outside of 
@@ -749,8 +749,8 @@ interface <dfn id="WebGLArrayBuffer">WebGLArrayBuffer</dfn> {
     <p>
         The <code>WebGLArray</code> interface is the abstract base interface for all the typed array 
         interfaces.  Every <code>WebGLArray</code> subclass presents a typed view of a 
-        <a href="WebGLArrayBuffer">WebGLArrayBuffer</a> region.  Multiple <code>WebGLArray</code>s can 
-        reference the same or overlapping regions of a <a href="WebGLArrayBuffer">WebGLArrayBuffer</a>.
+        <a href="#WebGLArrayBuffer">WebGLArrayBuffer</a> region.  Multiple <code>WebGLArray</code>s can 
+        reference the same or overlapping regions of a <a href="#WebGLArrayBuffer">WebGLArrayBuffer</a>.
     </p>
     <pre class="idl">
 interface <dfn id="WebGLArray">WebGLArray</dfn> {
