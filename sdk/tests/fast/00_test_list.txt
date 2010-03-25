@@ -20,6 +20,7 @@ gl-enum-tests.html
 gl-get-calls.html
 gl-object-get-calls.html
 gl-pixelstorei.html
+gl-scissor-test.html
 gl-shader-test.html
 gl-uniform-arrays.html
 gl-uniformmatrix4fv.html
