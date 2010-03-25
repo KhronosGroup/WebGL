@@ -97,7 +97,8 @@ SporeFile.prototype = {
     var xhr = new XMLHttpRequest();
     var self = this;
     xhr.onreadystatechange = function () {
-      if (xhr.readyState == 4 && xhr.status == 200) {
+      // Status of 0 handles files coming off the local disk
+      if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 0)) {
         runSoon(function () {
                   var xml = xhr.responseXML;
                   xml.getElementById = function(id) {

@@ -126,7 +126,14 @@ function renderStart() {
   var viewPositionUniform = gl.getUniformLocation(sp, "uViewPosition");
   var colorUniform = gl.getUniformLocation(sp, "uColor");
 
-  gl.uniform4fv(colorUniform, new WebGLFloatArray([0.1, 0.2, 0.4, 1.0]));
+  if (colorUniform == -1) {
+    alert("Please update to a newer Firefox nightly, to pick up some WebGL API changes");
+    colorUniform = null;
+  }
+
+  if (colorUniform) {
+    gl.uniform4fv(colorUniform, new WebGLFloatArray([0.1, 0.2, 0.4, 1.0]));
+  }
 
   var pmMatrix = makePerspective(60, 1, 0.1, 100);
   //var pmMatrix = makePerspective(90, 1, 0.01, 10000);
