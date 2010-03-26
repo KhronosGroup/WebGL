@@ -50,6 +50,9 @@
         void load(in sequence<float> array);                // copy 16 floats into the matrix
         sequence<float> getAsArray();                       // return the matrix as an array of 16 floats
         WebGLFloatArray getAsWebGLFloatArray();             // return the matrix as a WebGLFloatArray with 16 values
+        void setUniform(in WebGLRenderingContext ctx,       // Send the matrix to the passed uniform location in the passed context
+                        in WebGLUniformLocation loc,
+                        in boolean transpose);
         void makeIdentity();                                // replace the matrix with identity
         void transpose();                                   // replace the matrix with its transpose
         void invert();                                      // replace the matrix with its inverse
@@ -103,8 +106,15 @@
 */
 
 J3DIHasCSSMatrix = false;
-//if ("WebKitCSSMatrix" in window && window.media.matchMedium("(-webkit-transform-3d)"))
-//    J3DIHasCSSMatrix = true;
+J3DIHasCSSMatrixCopy = false;
+if ("WebKitCSSMatrix" in window && window.media.matchMedium("(-webkit-transform-3d)")) {
+    J3DIHasCSSMatrix = true;
+    if ("copy" in WebKitCSSMatrix.prototype)
+        J3DIHasCSSMatrixCopy = true;
+}
+
+console.log("J3DIHasCSSMatrix="+J3DIHasCSSMatrix);
+console.log("J3DIHasCSSMatrixCopy="+J3DIHasCSSMatrixCopy);
 
 // 
 // J3DIMatrix4
@@ -134,8 +144,30 @@ J3DIMatrix4.prototype.load = function()
     if (arguments.length == 1 && typeof arguments[0] == 'object') {
         var matrix;
         
-        if (arguments[0] instanceof J3DIMatrix4)
-            matrix = arguments[0].getAsArray();
+        if (arguments[0] instanceof J3DIMatrix4) {
+            matrix = arguments[0].$matrix;
+
+            this.$matrix.m11 = matrix.m11;
+            this.$matrix.m12 = matrix.m12;
+            this.$matrix.m13 = matrix.m13;
+            this.$matrix.m14 = matrix.m14;
+
+            this.$matrix.m21 = matrix.m21;
+            this.$matrix.m22 = matrix.m22;
+            this.$matrix.m23 = matrix.m23;
+            this.$matrix.m24 = matrix.m24;
+
+            this.$matrix.m31 = matrix.m31;
+            this.$matrix.m32 = matrix.m32;
+            this.$matrix.m33 = matrix.m33;
+            this.$matrix.m34 = matrix.m34;
+
+            this.$matrix.m41 = matrix.m41;
+            this.$matrix.m42 = matrix.m42;
+            this.$matrix.m43 = matrix.m43;
+            this.$matrix.m44 = matrix.m44;
+            return;
+        }
         else
             matrix = arguments[0];
             
@@ -178,7 +210,45 @@ J3DIMatrix4.prototype.getAsArray = function()
 
 J3DIMatrix4.prototype.getAsWebGLFloatArray = function()
 {
+    if (J3DIHasCSSMatrixCopy) {
+        var array = new WebGLFloatArray(16);
+        this.$matrix.copy(array);
+        return array;
+    }
     return new WebGLFloatArray(this.getAsArray());
+}
+
+J3DIMatrix4.prototype.setUniform = function(ctx, loc, transpose)
+{
+    if (J3DIMatrix4.setUniformArray == undefined) {
+        J3DIMatrix4.setUniformWebGLArray = new WebGLFloatArray(16);
+        J3DIMatrix4.setUniformArray = new Array(16);
+    }
+    
+    if (J3DIHasCSSMatrixCopy)
+        this.$matrix.copy(J3DIMatrix4.setUniformWebGLArray);
+    else {
+        J3DIMatrix4.setUniformArray[0] = this.$matrix.m11;
+        J3DIMatrix4.setUniformArray[1] = this.$matrix.m12;
+        J3DIMatrix4.setUniformArray[2] = this.$matrix.m13;
+        J3DIMatrix4.setUniformArray[3] = this.$matrix.m14;
+        J3DIMatrix4.setUniformArray[4] = this.$matrix.m21;
+        J3DIMatrix4.setUniformArray[5] = this.$matrix.m22;
+        J3DIMatrix4.setUniformArray[6] = this.$matrix.m23;
+        J3DIMatrix4.setUniformArray[7] = this.$matrix.m24;
+        J3DIMatrix4.setUniformArray[8] = this.$matrix.m31;
+        J3DIMatrix4.setUniformArray[9] = this.$matrix.m32;
+        J3DIMatrix4.setUniformArray[10] = this.$matrix.m33;
+        J3DIMatrix4.setUniformArray[11] = this.$matrix.m34;
+        J3DIMatrix4.setUniformArray[12] = this.$matrix.m41;
+        J3DIMatrix4.setUniformArray[13] = this.$matrix.m42;
+        J3DIMatrix4.setUniformArray[14] = this.$matrix.m43;
+        J3DIMatrix4.setUniformArray[15] = this.$matrix.m44;
+    
+        J3DIMatrix4.setUniformWebGLArray.set(J3DIMatrix4.setUniformArray);
+    }
+    
+    ctx.uniformMatrix4fv(loc, transpose, J3DIMatrix4.setUniformWebGLArray); 
 }
 
 J3DIMatrix4.prototype.makeIdentity = function()

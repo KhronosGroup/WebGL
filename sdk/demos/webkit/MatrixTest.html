@@ -153,14 +153,12 @@
         gl.normalMatrix.load(gl.mvMatrix);
         gl.normalMatrix.invert();
         gl.normalMatrix.transpose();
-        gl.uniformMatrix4fv(gl.u_normalMatrixLoc, false,
-                            gl.normalMatrix.getAsWebGLFloatArray());
+        gl.normalMatrix.setUniform(gl, gl.u_normalMatrixLoc, false);
 
         // Construct the model-view * projection matrix and pass it in
         gl.mvpMatrix.load(gl.mvMatrix);
         gl.mvpMatrix.multRight(gl.perspectiveMatrix);
-        gl.uniformMatrix4fv(gl.u_modelViewProjMatrixLoc, false,
-                            gl.mvpMatrix.getAsWebGLFloatArray());
+        gl.mvpMatrix.setUniform(gl, gl.u_modelViewProjMatrixLoc, false);
 
         // Bind the texture to use
         gl.bindTexture(gl.TEXTURE_2D, spiritTexture);
