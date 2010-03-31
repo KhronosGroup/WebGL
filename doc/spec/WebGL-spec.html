@@ -2217,6 +2217,13 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBindBuffer.xml">
                 (OpenGL ES 2.0 man page)
             </a>
+        <dd>
+            Binds the given WebGLBuffer object to the given binding point (target), either
+            ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER. If the buffer is null then any buffer currently
+            bound to this target is unbound. A given WebGLBuffer object may only be bound to one of
+            the ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER target in its lifetime. An attempt to bind a
+            buffer object to the other target will result in an INVALID_OPERATION error, and the
+            current binding will remain untouched.
         
         <dt><code>bufferData(target, size, usage)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBufferData.xml">
@@ -3141,6 +3148,24 @@ canvas.addEventListener("webglcontextlost", contextLostHandler, false);
 
 This section describes changes made to the WebGL API relative to the OpenGL ES 2.0 API to improve
 portability across various operating systems and devices.
+
+</p>
+
+    <h3>Buffer Object Binding</h3>
+
+<p>
+
+In the WebGL API, a given buffer object may only be bound to one of the <code>ARRAY_BUFFER</code> or
+<code>ELEMENT_ARRAY_BUFFER</code> binding points in its lifetime. This restriction implies that a
+given buffer object may contain either vertices or indices, but not both.
+
+</p>
+<p>
+
+The type of a WebGLBuffer is initialized the first time it is passed as an argument
+to <code>bindBuffer</code>. A subsequent call to <code>bindBuffer</code> which attempts to bind the
+same WebGLBuffer to the other binding point will raise an <code>INVALID_OPERATION</code> error, and
+the state of the binding point will remain untouched.
 
 </p>
 
