@@ -34,6 +34,7 @@ methods.html
 null-object-behaviour.html
 origin-clean-conformance.html
 readpixels-test.html
+resource-sharing-test.html
 texture-active-bind.html
 texture-active-bind-2.html
 texparameter-test.html
