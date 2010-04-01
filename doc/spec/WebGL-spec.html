@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 10 December 2009</h2>
+    <h2 class="no-toc">Working Draft 01 April 2010</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2964,10 +2964,14 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return a WebGLArray with pixels within the passed rectangle. The specific subclass
-            of WebGLArray returned depends on the passed type. If it is GL_UNSIGNED_BYTE, a
-            WebGLUnsignedByteArray is returned, otherwise a WebGLUnsignedShortArray is 
-            returned.
+            Return a WebGLArray with pixels within the passed rectangle. The data returned from
+            readPixels must be up-to-date as of the most recently sent drawing command. Any
+            unprocessed drawing commands must be completed and their results presented to the
+            current drawing buffers before readPixels accesses the drawing buffer. <br><br>
+
+            The specific subclass of WebGLArray returned depends on the passed type. If it is
+            GL_UNSIGNED_BYTE, a WebGLUnsignedByteArray is returned, otherwise a
+            WebGLUnsignedShortArray is returned.
     </dl>
     
 <!-- ======================================================================================================= -->
