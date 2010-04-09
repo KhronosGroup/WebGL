@@ -24,6 +24,7 @@ gl-scissor-test.html
 gl-shader-test.html
 gl-uniform-arrays.html
 gl-uniformmatrix4fv.html
+gl-vertexattrib.html
 gl-vertexattribpointer.html
 glsl-2types-of-textures-on-same-unit.html
 glsl-conformance.html
