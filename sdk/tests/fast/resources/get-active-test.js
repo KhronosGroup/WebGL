@@ -25,45 +25,60 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 description("Test of getActiveAttrib and getActiveUniform");
 
-var context = create3DDebugContext();
-var context2 = create3DDebugContext();
+var context = create3DContext();
+var context2 = create3DContext();
 var program = loadStandardProgram(context);
 var program2 = loadStandardProgram(context2);
 
-shouldBe("context.getError()", "0");
+glErrorShouldBe(context, context.NO_ERROR);
 shouldBe("context.getActiveUniform(program, 0).name", "'u_modelViewProjMatrix'");
 shouldBe("context.getActiveUniform(program, 0).type", "context.FLOAT_MAT4");
 shouldBe("context.getActiveUniform(program, 0).size", "1");
-shouldThrow("context.getActiveUniform(program, 1)");
-shouldBe("context.getError()", "0");
-shouldThrow("context.getActiveUniform(program, -1)");
-shouldBe("context.getError()", "0");
-shouldThrow("context.getActiveUniform(null, 0)");
-shouldBe("context.getError()", "0");
+shouldBe("context.getActiveUniform(program, 1)", "null");
+glErrorShouldBe(context, context.INVALID_VALUE);
+shouldBe("context.getActiveUniform(program, -1)", "null");
+glErrorShouldBe(context, context.INVALID_VALUE);
+shouldBe("context.getActiveUniform(null, 0)", "null");
+glErrorShouldBe(context, context.INVALID_VALUE);
 
-shouldBe("context.getActiveAttrib(program, 0).name", "'a_normal'");
-shouldBe("context.getActiveAttrib(program, 0).type", "context.FLOAT_VEC3");
-shouldBe("context.getActiveAttrib(program, 0).size", "1");
-shouldBe("context.getActiveAttrib(program, 1).name", "'a_vertex'");
-shouldBe("context.getActiveAttrib(program, 1).type", "context.FLOAT_VEC4");
-shouldBe("context.getActiveAttrib(program, 1).size", "1");
-shouldThrow("context.getActiveAttrib(program, 2)");
-shouldBe("context.getError()", "0");
-shouldThrow("context.getActiveAttrib(program, -1)");
-shouldBe("context.getError()", "0");
-shouldThrow("context.getActiveAttrib(null, 0)");
-shouldBe("context.getError()", "0");
+// we don't know the order the attribs will appear.
+var info = [
+  context.getActiveAttrib(program, 0),
+  context.getActiveAttrib(program, 1)
+];
 
-shouldBe("context2.getError()", "0");
-shouldThrow("context2.getActiveAttrib(program, 0)");
-shouldBe("context2.getError()", "0");
-shouldThrow("context2.getActiveUniform(program, 0)");
-shouldBe("context2.getError()", "0");
+var expected = [
+  { name: 'a_normal', type: context.FLOAT_VEC3, size: 1 },
+  { name: 'a_vertex', type: context.FLOAT_VEC4, size: 1 }
+];
+
+if (info[0].name != expected[0].name) {
+  t = info[0];
+  info[0] = info[1];
+  info[1] = t;
+}
+
+for (var ii = 0; ii < info.length; ++ii) {
+  shouldBe("info[ii].name", "expected[ii].name");
+  shouldBe("info[ii].type", "expected[ii].type");
+  shouldBe("info[ii].size", "expected[ii].size");
+}
+shouldBe("context.getActiveAttrib(program, 2)", "null");
+glErrorShouldBe(context, context.INVALID_VALUE);
+shouldBe("context.getActiveAttrib(program, -1)", "null");
+glErrorShouldBe(context, context.INVALID_VALUE);
+shouldBe("context.getActiveAttrib(null, 0)", "null");
+glErrorShouldBe(context, context.INVALID_VALUE);
+
+shouldBe("context2.getActiveAttrib(program, 0)", "null");
+glErrorShouldBe(context2, context2.INVALID_VALUE);
+shouldBe("context2.getActiveUniform(program, 0)", "null");
+glErrorShouldBe(context2, context2.INVALID_VALUE);
 
 context.deleteProgram(program);
-shouldThrow("context.getActiveUniform(program, 0)");
-shouldBe("context.getError()", "0");
-shouldThrow("context.getActiveAttrib(program, 0)");
-shouldBe("context.getError()", "0");
+shouldBe("context.getActiveUniform(program, 0)", "null");
+glErrorShouldBe(context, context.INVALID_VALUE);
+shouldBe("context.getActiveAttrib(program, 0)", "null");
+glErrorShouldBe(context, context.INVALID_VALUE);
 
 successfullyParsed = true;

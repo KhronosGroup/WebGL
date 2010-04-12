@@ -71,7 +71,7 @@ function createGLErrorWrapper(context, fname) {
     };
 }
 
-function create3DDebugContext(canvas) {
+function create3DContextWithWrapperThatThrowsOnGLError(canvas) {
     var context = create3DContext(canvas);
     // Thanks to Ilmari Heikkinen for the idea on how to implement this so elegantly.
     var wrap = {};
@@ -83,13 +83,53 @@ function create3DDebugContext(canvas) {
                 wrap[i] = context[i];
             }
         } catch (e) {
-            // webglTestLog("create3DDebugContext: Error accessing " + i);
+            // webglTestLog("createContextWrapperThatThrowsOnGLError: Error accessing " + i);
         }
     }
     wrap.getError = function() {
         return context.getError();
     };
     return wrap;
+}
+
+function getGLErrorAsString(ctx, err) {
+    if (err === ctx.NO_ERROR) {
+	return "NO_ERROR";
+    }
+    for (var name in ctx) {
+	if (ctx[name] === err) {
+	    return name;
+        }
+    }
+    return err.toString();
+}
+
+function shouldGenerateGLError(ctx, glError, evalStr) {
+    var exception;
+    try {
+	eval(evalStr);
+    } catch (e) {
+	exception = e;
+    }
+    if (exception) {
+	testFailed(evalStr + " threw exception " + exception);
+    } else {
+	var err = ctx.getError();
+        if (err != glError) {
+	    testFailed(evalStr + " expected: " + getGLErrorAsString(ctx, glError) + ". Was " + getGLErrorAsString(ctx, err) + ".");
+        } else {
+	    testPassed(evalStr + " was expected value: " + getGLErrorAsString(ctx, glError) + ".");
+	}
+    }
+}
+
+function glErrorShouldBe(ctx, glError) {
+    var err = ctx.getError();
+    if (err != glError) {
+	testFailed("getError expected: " + getGLErrorAsString(ctx, glError) + ". Was " + getGLErrorAsString(ctx, err) + ".");
+    } else {
+	testPassed("getError was expected value: " + getGLErrorAsString(ctx, glError) + ".");
+    } 
 }
 
 //
