@@ -1,0 +1,116 @@
+<!--
+Copyright (c) 2009 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+ -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>WebGL getProgramParameter Conformance Tests</title>
+<link rel="stylesheet" href="../resources/js-test-style.css"/>
+<script src="../resources/desktop-gl-constants.js" type="text/javascript"></script>
+<script src="../resources/js-test-pre.js"></script>
+<script src="resources/webgl-test.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<canvas id="example" width="2" height="2"> </canvas>
+<script id="vshader" type="x-shader/x-vertex">
+attribute vec4 gtf_Vertex;
+uniform mat4 gtf_ModelViewProjectionMatrix;
+varying vec4  color;
+
+void main(void)
+{
+  color = vec4(gl_DepthRange.near, gl_DepthRange.far, gl_DepthRange.diff, 1.0);
+
+  gl_Position = gtf_ModelViewProjectionMatrix * gtf_Vertex;
+}
+</script>
+
+<script id="fshader" type="x-shader/x-fragment">
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+void main(void)
+{
+  gl_FragColor = vec4(gl_DepthRange.near, gl_DepthRange.far, gl_DepthRange.diff, 1.0);
+}
+</script>
+<script>
+function loadShader(ctx, shaderType, shaderSource) {
+  // Create the shader object
+  var shader = ctx.createShader(shaderType);
+  if (shader == null) {
+    debug("*** Error: unable to create shader '"+shader+"'");
+    return null;
+  }
+
+  // Load the shader source
+  ctx.shaderSource(shader, shaderSource);
+
+  // Compile the shader
+  ctx.compileShader(shader);
+
+  // Check the compile status
+  var compiled = ctx.getShaderParameter(shader, ctx.COMPILE_STATUS);
+  if (!compiled) {
+    // Something went wrong during compilation; get the error
+    var error = ctx.getShaderInfoLog(shader);
+    debug("*** Error compiling shader '"+shader+"':"+error);
+    ctx.deleteShader(shader);
+    return null;
+  }
+
+  return shader;
+}
+
+function loadProgram(ctx, vertexShaderSrc, fragmentShaderSrc) {
+  var program = ctx.createProgram();
+  var vShader = loadShader(ctx, ctx.VERTEX_SHADER, vertexShaderSrc)
+  var fShader = loadShader(ctx, ctx.FRAGMENT_SHADER, fragmentShaderSrc);
+  ctx.attachShader(program, vShader);
+  ctx.attachShader(program, fShader);
+  ctx.linkProgram(program);
+  var linked = ctx.getProgramParameter(program, ctx.LINK_STATUS);
+  if (!linked) {
+    // something went wrong with the link
+    var error = ctx.getProgramInfoLog (ctx.program);
+    debug("Error in program linking:" + error);
+    ctx.deleteProgram(ctx.program);
+    program = null;
+  }
+//  ctx.deleteShader(fShader);
+//  ctx.deleteShader(vShader);
+  return program;
+}
+
+description("Some OpenGL drivers incorrectly return gl_DepthRange as a uniform.");
+description("This test checks that WebGL handles this.");
+
+debug("");
+
+var gl = create3DContext(document.getElementById("example"));
+
+var vSrc = document.getElementById("vshader").text;
+var fSrc = document.getElementById("fshader").text;
+
+debug("");
+var program = loadProgram(gl, vSrc, fSrc);
+shouldBe("gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS)", "1");
+
+debug("");
+successfullyParsed = true;
+
+</script>
+<script src="../resources/js-test-post.js"></script>
+
+<script>
+</script>
+
+</body>
+</html>

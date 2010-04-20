@@ -69,6 +69,9 @@ for (var tt = 0; tt < tests.length; ++tt) {
               test.oneColor, test.oneX, test.oneY);
 }
 
+assertMsg(gl.getError() == gl.NO_ERROR,
+          "there should be no GL errors");
+
 function checkBuffer(checkColor, x, y, oneColor, oneX, oneY) {
   var buf = gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE);
   for (var yy = 0; yy < height; ++yy) {
