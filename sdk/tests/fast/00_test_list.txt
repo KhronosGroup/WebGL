@@ -18,7 +18,6 @@ gl-drawelements.html
 gl-enable-enum-test.html
 gl-enum-tests.html
 gl-get-calls.html
-gl-getprogramiv.html
 gl-object-get-calls.html
 gl-pixelstorei.html
 gl-scissor-test.html
@@ -27,6 +26,7 @@ gl-uniform-arrays.html
 gl-uniformmatrix4fv.html
 gl-vertexattrib.html
 gl-vertexattribpointer.html
+gl-getstring.html
 glsl-2types-of-textures-on-same-unit.html
 glsl-conformance.html
 incorrect-context-object-behaviour.html
