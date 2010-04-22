@@ -1,30 +1,4 @@
 <!DOCTYPE html>
-<!--
-/*
- * Copyright (C) 2009 Apple Inc. All Rights Reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY APPLE INC. ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL APPLE INC. OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
- * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
- */
- -->
 <html>
   <head>
     <title>WebGL + CSS Effects</title>
@@ -180,6 +154,7 @@
     </script>
 
     <script>
+    console.log("Hello");
     function setDirectionalLight(ctx, program, eyeVector, direction, ambient, diffuse, specular)
     {
         var lightString = "u_light.";
@@ -262,11 +237,11 @@
         function reshape(ctx)
         {
             var canvas = document.getElementById('example');
-            if (canvas.width == width && canvas.height == height)
+            if (canvas.clientWidth == width && canvas.clientHeight == height)
                 return;
 
-            width = canvas.width;
-            height = canvas.height;
+            width = canvas.clientWidth;
+            height = canvas.clientHeight;
             
             ctx.viewport(0, 0, width, height);
     
@@ -334,15 +309,8 @@
         {
             // set up event listener on the canvas
             var canvas = document.getElementById('example');
-
-            var w = Math.floor(window.innerWidth * 0.9);
-            var h = Math.floor(window.innerHeight * 0.9);
-
-            canvas.width = w;
-            canvas.height = h;
-
-            var container = document.getElementById('container');
-            container.addEventListener('click', function () {
+            var body = document.getElementById('body');
+            body.addEventListener('click', function () {
                 isTilted = !isTilted;
                 container.className = isTilted ? 'tilted' : '';
             }, false);
@@ -363,25 +331,26 @@
             background-color:grey;
         }
         #container {
-            -webkit-transform: perspective(800) rotateY(0) rotateZ(0);
+            -webkit-transform-origin:400px 300px;
+            -webkit-transform: perspective(800) translateX(0) rotateY(0) rotateZ(0) translateZ(-10px);
             -webkit-transition: -webkit-transform 2s;
         }
         #container.tilted {
-            -webkit-transform: perspective(800) rotateY(60deg) rotateZ(320deg);
+            -webkit-transform: perspective(800) translateX(200px) rotateY(60deg) rotateZ(320deg) translateZ(-250px);
         }
         canvas {
-            width:90%;
-            height:90%;
+            width:800px;
+            height:600px;
         }
         #bg {
             border:4px solid #242;
             position:absolute;
-            width:90%;
-            height:90%;
+            width:800px;
+            height:600px;
         }
         #rocker {
             position:absolute;
-            top:300px;
+            top:200px;
             left:300px;
             font-size:3em;
             text-shadow: white 2px 2px 4px;
@@ -389,11 +358,11 @@
         }
         
         @-webkit-keyframes rock {
-            0% { -webkit-transform: translateX(-100px) rotate3d(0,0,1, -30deg) }
-            25% { -webkit-transform: translateX(-50px) rotate3d(0,0,1, 30deg) }
-            50% { -webkit-transform: translateX(0px) rotate3d(0,0,1, -30deg) }
+            0% { -webkit-transform: translateX(-250px) rotate3d(0,0,1, -30deg) }
+            25% { -webkit-transform: translateX(-150px) rotate3d(0,0,1, 30deg) }
+            50% { -webkit-transform: translateX(-50px) rotate3d(0,0,1, -30deg) }
             75% { -webkit-transform: translateX(50px) rotate3d(0,0,1, 30deg) }
-            100% { -webkit-transform: translateX(100px) rotate3d(0,0,1, -30deg) }
+            100% { -webkit-transform: translateX(150px) rotate3d(0,0,1, -30deg) }
         }
         
         #framerate {
@@ -407,14 +376,14 @@
         }
     </style>
     </head>
-    <body onload="start()">
+    <body id="body" onload="start()">
+        <div id="rocker">WebGL Rocks!</div>
+        <div id="framerate"></div>
         <div id="container">
             <img id="bg" src="resources/BambooBridge.jpg" />
-            <canvas id="example">
+            <canvas id="example" width="800px" height="600px">
                 There is supposed to be an example drawing here, but it's not important.
             </canvas>
         </div>
-        <div id="rocker">WebGL Rocks!</div>
-        <div id="framerate"></div>
   </body>
 </html>
