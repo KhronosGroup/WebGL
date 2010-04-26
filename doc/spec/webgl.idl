@@ -754,13 +754,13 @@ interface WebGLRenderingContext {
     GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname) raises(DOMException);
 
     void hint(in GLenum target, in GLenum mode) raises(DOMException);
-    GLboolean isBuffer(in WebGLObject buffer) raises(DOMException);
+    GLboolean isBuffer(in WebGLBuffer buffer) raises(DOMException);
     GLboolean isEnabled(in GLenum cap) raises(DOMException);
-    GLboolean isFramebuffer(in WebGLObject framebuffer) raises(DOMException);
-    GLboolean isProgram(in WebGLObject program) raises(DOMException);
-    GLboolean isRenderbuffer(in WebGLObject renderbuffer) raises(DOMException);
-    GLboolean isShader(in WebGLObject shader) raises(DOMException);
-    GLboolean isTexture(in WebGLObject texture) raises(DOMException);
+    GLboolean isFramebuffer(in WebGLFramebuffer framebuffer) raises(DOMException);
+    GLboolean isProgram(in WebGLProgram program) raises(DOMException);
+    GLboolean isRenderbuffer(in WebGLRenderbuffer renderbuffer) raises(DOMException);
+    GLboolean isShader(in WebGLShader shader) raises(DOMException);
+    GLboolean isTexture(in WebGLTexture texture) raises(DOMException);
     void lineWidth(in GLfloat width) raises(DOMException);
     void linkProgram(in WebGLProgram program) raises(DOMException);
     void pixelStorei(in GLenum pname, in GLint param) raises(DOMException);
