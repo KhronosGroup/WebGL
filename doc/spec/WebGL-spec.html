@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 15 April 2010</h2>
+    <h2 class="no-toc">Working Draft 26 April 2010</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1778,13 +1778,13 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname) raises(DOMException);
 
     void hint(in GLenum target, in GLenum mode) raises(DOMException);
-    GLboolean isBuffer(in WebGLObject buffer) raises(DOMException);
+    GLboolean isBuffer(in WebGLBuffer buffer) raises(DOMException);
     GLboolean isEnabled(in GLenum cap) raises(DOMException);
-    GLboolean isFramebuffer(in WebGLObject framebuffer) raises(DOMException);
-    GLboolean isProgram(in WebGLObject program) raises(DOMException);
-    GLboolean isRenderbuffer(in WebGLObject renderbuffer) raises(DOMException);
-    GLboolean isShader(in WebGLObject shader) raises(DOMException);
-    GLboolean isTexture(in WebGLObject texture) raises(DOMException);
+    GLboolean isFramebuffer(in WebGLFramebuffer framebuffer) raises(DOMException);
+    GLboolean isProgram(in WebGLProgram program) raises(DOMException);
+    GLboolean isRenderbuffer(in WebGLRenderbuffer renderbuffer) raises(DOMException);
+    GLboolean isShader(in WebGLShader shader) raises(DOMException);
+    GLboolean isTexture(in WebGLTexture texture) raises(DOMException);
     void lineWidth(in GLfloat width) raises(DOMException);
     void linkProgram(in WebGLProgram program) raises(DOMException);
     void pixelStorei(in GLenum pname, in GLint param) raises(DOMException);
@@ -2348,12 +2348,12 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL</td><td>long</td></tr>
                 <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE</td><td>long</td></tr>
             </table>
-        <dt><code>isFramebuffer(buffer)</code>
+        <dt><code>isFramebuffer(framebuffer)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glIsFramebuffer.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return true if the passed WebGLObject is a WebGLFramebuffer and false otherwise.
+            Return true if the passed WebGLFramebuffer is valid and false otherwise.
     </dl>
      
 <!-- ======================================================================================================= -->
@@ -2408,12 +2408,12 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>RENDERBUFFER_DEPTH_SIZE</td><td>long</td></tr>
                 <tr><td>RENDERBUFFER_STENCIL_SIZE</td><td>long</td></tr>
             </table>
-        <dt><code>isRenderbuffer(buffer)</code>
+        <dt><code>isRenderbuffer(renderbuffer)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glIsRenderbuffer.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return true if the passed WebGLObject is a WebGLRenderbuffer and false otherwise.
+            Return true if the passed WebGLRenderbuffer is valid and false otherwise.
         <dt><code>renderbufferStorage(target, internalformat, width, height)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glRenderbufferStorage.xml">
                 (OpenGL ES 2.0 man page)
@@ -2488,12 +2488,12 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>TEXTURE_WRAP_S</td><td>unsigned long</td></tr>
                 <tr><td>TEXTURE_WRAP_T</td><td>unsigned long</td></tr>
             </table>
-        <dt><code>isTexture(buffer)</code>
+        <dt><code>isTexture(texture)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glIsTexture.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return true if the passed WebGLObject is a WebGLTexture and false otherwise.
+            Return true if the passed WebGLTexture is valid and false otherwise.
         <dt><code>texImage2D(target, level, internalformat, width, height, border, format, type, pixels)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexImage2D.xml">
                 (OpenGL ES 2.0 man page)
@@ -2669,14 +2669,13 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return true if the passed WebGLObject is a WebGLProgram and false otherwise.
+            Return true if the passed WebGLProgram is valid and false otherwise.
         <dt><code>isShader(shader)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glIsShader.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return true if the passed WebGLObject is a WebGLShader and false otherwise.
-            
+            Return true if the passed WebGLShader is valid and false otherwise.
         <dt><code>linkProgram(program)</code>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glLinkProgram.xml">
                 (OpenGL ES 2.0 man page)
