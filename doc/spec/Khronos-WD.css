@@ -99,10 +99,25 @@ dl.methods {
     background: #EEFFEE;
 }
 
-a.gl-spec {
-    font-size:0.75em;
-    font-style:italic;
-    font-weight:normal;
+.idl-code {
+  color:black;
+  font-size: 125%;
+  font-family: monospace;
+  text-indent: -1.5em;
+  margin-left: 1.5em;
+}
+
+p.idl-code {
+  margin-top: 0.0em;
+  margin-bottom: 0.0em;
+}
+
+a.gl-spec:link, a.gl-spec:visited {
+  color: green;
+  font-family: sans-serif;
+  font-size: 60%;
+  font-style:italic;
+  font-weight:normal;
 }
 
 ul.toc, ol.toc {

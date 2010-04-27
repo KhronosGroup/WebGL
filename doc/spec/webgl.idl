@@ -62,7 +62,7 @@ interface WebGLTexture : WebGLObject {
 
 interface WebGLObjectArray {
     readonly attribute unsigned long length;
-    getter WebGLObject get(in unsigned long index);
+    getter WebGLObject get(unsigned long index);
 };
 
 interface WebGLUniformLocation {
@@ -75,7 +75,7 @@ interface WebGLActiveInfo {
 };
 
 
-[ Constructor(in unsigned long length) ]
+[ Constructor(unsigned long length) ]
 interface WebGLArrayBuffer {
     readonly attribute unsigned long byteLength;
 };
@@ -87,126 +87,126 @@ interface WebGLArray {
     readonly attribute unsigned long byteLength;
     readonly attribute unsigned long length;
 
-    WebGLArray slice(in unsigned long start, in unsigned long end);
+    WebGLArray slice(unsigned long start, unsigned long end);
 };
 
 
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLByteArray array),
-    Constructor(in sequence<GLbyte> array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLByteArray array),
+    Constructor(sequence<GLbyte> array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface WebGLByteArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 1;
     
-    getter GLbyte get(in unsigned long index);
-    setter void set(in unsigned long index, in GLbyte value);
-    void set(in WebGLByteArray array, in optional unsigned long offset);
-    void set(in sequence<GLbyte> array, in optional unsigned long offset);
+    getter GLbyte get(unsigned long index);
+    setter void set(unsigned long index, GLbyte value);
+    void set(WebGLByteArray array, optional unsigned long offset);
+    void set(sequence<GLbyte> array, optional unsigned long offset);
 };
 
 
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLUnsignedByteArray array),
-    Constructor(in sequence<GLubyte> array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLUnsignedByteArray array),
+    Constructor(sequence<GLubyte> array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface WebGLUnsignedByteArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 1;
     
-    getter GLubyte get(in unsigned long index);
-    setter void set(in unsigned long index, in GLubyte value);
-    void set(in WebGLUnsignedByteArray array, in optional unsigned long offset);
-    void set(in sequence<GLubyte> array, in optional unsigned long offset);
+    getter GLubyte get(unsigned long index);
+    setter void set(unsigned long index, GLubyte value);
+    void set(WebGLUnsignedByteArray array, optional unsigned long offset);
+    void set(sequence<GLubyte> array, optional unsigned long offset);
 };
 
 
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLShortArray array),
-    Constructor(in sequence<GLshort> array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLShortArray array),
+    Constructor(sequence<GLshort> array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface WebGLShortArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 2;
     
-    getter GLshort get(in unsigned long index);
-    setter void set(in unsigned long index, in GLshort value);
-    void set(in WebGLShortArray array, in optional unsigned long offset);
-    void set(in sequence<GLshort> array, in optional unsigned long offset);
+    getter GLshort get(unsigned long index);
+    setter void set(unsigned long index, GLshort value);
+    void set(WebGLShortArray array, optional unsigned long offset);
+    void set(sequence<GLshort> array, optional unsigned long offset);
 };
 
 
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLUnsignedShortArray array),
-    Constructor(in sequence<GLushort> array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLUnsignedShortArray array),
+    Constructor(sequence<GLushort> array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface WebGLUnsignedShortArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 2;
     
-    getter GLushort get(in unsigned long index);
-    setter void set(in unsigned long index, in GLushort value);
-    void set(in WebGLUnsignedShortArray array, in optional unsigned long offset);
-    void set(in sequence<GLushort> array, in optional unsigned long offset);
+    getter GLushort get(unsigned long index);
+    setter void set(unsigned long index, GLushort value);
+    void set(WebGLUnsignedShortArray array, optional unsigned long offset);
+    void set(sequence<GLushort> array, optional unsigned long offset);
 };
 
 
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLIntArray array),
-    Constructor(in sequence<GLint> array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLIntArray array),
+    Constructor(sequence<GLint> array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface WebGLIntArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 4;
     
-    getter GLint get(in unsigned long index);
-    setter void set(in unsigned long index, in GLint value);
-    void set(in WebGLIntArray array, in optional unsigned long offset);
-    void set(in sequence<GLint> array, in optional unsigned long offset);
+    getter GLint get(unsigned long index);
+    setter void set(unsigned long index, GLint value);
+    void set(WebGLIntArray array, optional unsigned long offset);
+    void set(sequence<GLint> array, optional unsigned long offset);
 };
 
 
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLUnsignedIntArray array),
-    Constructor(in sequence<GLuint> array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLUnsignedIntArray array),
+    Constructor(sequence<GLuint> array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface WebGLUnsignedIntArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 4;
     
-    getter GLuint get(in unsigned long index);
-    setter void set(in unsigned long index, in GLuint value);
-    void set(in WebGLUnsignedIntArray array, in optional unsigned long offset);
-    void set(in sequence<GLuint> array, in optional unsigned long offset);
+    getter GLuint get(unsigned long index);
+    setter void set(unsigned long index, GLuint value);
+    void set(WebGLUnsignedIntArray array, optional unsigned long offset);
+    void set(sequence<GLuint> array, optional unsigned long offset);
 };
 
 
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLFloatArray array),
-    Constructor(in sequence<GLfloat> array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLFloatArray array),
+    Constructor(sequence<GLfloat> array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface WebGLFloatArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 4;
     
-    getter GLfloat get(in unsigned long index);
-    setter void set(in unsigned long index, in GLfloat value);
-    void set(in WebGLFloatArray array, in optional unsigned long offset);
-    void set(in sequence<GLfloat> array, in optional unsigned long offset);
+    getter GLfloat get(unsigned long index);
+    setter void set(unsigned long index, GLfloat value);
+    void set(WebGLFloatArray array, optional unsigned long offset);
+    void set(sequence<GLfloat> array, optional unsigned long offset);
 };
 
 interface WebGLRenderingContext {
@@ -637,259 +637,259 @@ interface WebGLRenderingContext {
     boolean isContextLost();
     boolean resetContext();
 
-    void activeTexture(in GLenum texture) raises(DOMException);
-    void attachShader(in WebGLProgram program, in WebGLShader shader) raises(DOMException);
-    void bindAttribLocation(in WebGLProgram program, in GLuint index, in DOMString name) 
+    void activeTexture(GLenum texture) raises(DOMException);
+    void attachShader(WebGLProgram program, WebGLShader shader) raises(DOMException);
+    void bindAttribLocation(WebGLProgram program, GLuint index, DOMString name) 
                                                                         raises(DOMException);
-    void bindBuffer(in GLenum target, in WebGLBuffer buffer) raises(DOMException);
-    void bindFramebuffer(in GLenum target, in WebGLFramebuffer framebuffer) 
+    void bindBuffer(GLenum target, WebGLBuffer buffer) raises(DOMException);
+    void bindFramebuffer(GLenum target, WebGLFramebuffer framebuffer) 
                                                                         raises(DOMException);
-    void bindRenderbuffer(in GLenum target, in WebGLRenderbuffer renderbuffer) 
+    void bindRenderbuffer(GLenum target, WebGLRenderbuffer renderbuffer) 
                                                                         raises(DOMException);
-    void bindTexture(in GLenum target, in WebGLTexture texture) raises(DOMException);
-    void blendColor(in GLclampf red, in GLclampf green, in GLclampf blue, in GLclampf alpha) 
+    void bindTexture(GLenum target, WebGLTexture texture) raises(DOMException);
+    void blendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) 
                                                                         raises(DOMException);
-    void blendEquation(in GLenum mode) raises(DOMException);
-    void blendEquationSeparate(in GLenum modeRGB, in GLenum modeAlpha) raises(DOMException);
-    void blendFunc(in GLenum sfactor, in GLenum dfactor) raises(DOMException);
-    void blendFuncSeparate(in GLenum srcRGB, in GLenum dstRGB, 
-                           in GLenum srcAlpha, in GLenum dstAlpha) raises(DOMException);
+    void blendEquation(GLenum mode) raises(DOMException);
+    void blendEquationSeparate(GLenum modeRGB, GLenum modeAlpha) raises(DOMException);
+    void blendFunc(GLenum sfactor, GLenum dfactor) raises(DOMException);
+    void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, 
+                           GLenum srcAlpha, GLenum dstAlpha) raises(DOMException);
 
-    void bufferData(in GLenum target, in GLsizei size, in GLenum usage) raises(DOMException);
-    void bufferData(in GLenum target, in WebGLArray data, in GLenum usage) 
+    void bufferData(GLenum target, GLsizei size, GLenum usage) raises(DOMException);
+    void bufferData(GLenum target, WebGLArray data, GLenum usage) 
                                                                         raises(DOMException);
-    void bufferData(in GLenum target, in WebGLArrayBuffer data, in GLenum usage) 
+    void bufferData(GLenum target, WebGLArrayBuffer data, GLenum usage) 
                                                                         raises(DOMException);
-    void bufferSubData(in GLenum target, in GLsizeiptr offset, in WebGLArray data) 
+    void bufferSubData(GLenum target, GLsizeiptr offset, WebGLArray data) 
                                                                         raises(DOMException);
-    void bufferSubData(in GLenum target, in GLsizeiptr offset, in WebGLArrayBuffer data) 
+    void bufferSubData(GLenum target, GLsizeiptr offset, WebGLArrayBuffer data) 
                                                                         raises(DOMException);
 
-    GLenum checkFramebufferStatus(in GLenum target) raises(DOMException);
-    void clear(in GLbitfield mask) raises(DOMException);
-    void clearColor(in GLclampf red, in GLclampf green, in GLclampf blue, in GLclampf alpha) 
+    GLenum checkFramebufferStatus(GLenum target) raises(DOMException);
+    void clear(GLbitfield mask) raises(DOMException);
+    void clearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) 
                                                                         raises(DOMException);
-    void clearDepth(in GLclampf depth) raises(DOMException);
-    void clearStencil(in GLint s) raises(DOMException);
-    void colorMask(in GLboolean red, in GLboolean green, in GLboolean blue, in GLboolean alpha) 
+    void clearDepth(GLclampf depth) raises(DOMException);
+    void clearStencil(GLint s) raises(DOMException);
+    void colorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) 
                                                                         raises(DOMException);
-    void compileShader(in WebGLShader shader) raises(DOMException);
+    void compileShader(WebGLShader shader) raises(DOMException);
 
-    void copyTexImage2D(in GLenum target, in GLint level, in GLenum internalformat, 
-                        in GLint x, in GLint y, in GLsizei width, in GLsizei height, 
-                        in GLint border) raises(DOMException);
-    void copyTexSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
-                           in GLint x, in GLint y, in GLsizei width, in GLsizei height) 
+    void copyTexImage2D(GLenum target, GLint level, GLenum internalformat, 
+                        GLint x, GLint y, GLsizei width, GLsizei height, 
+                        GLint border) raises(DOMException);
+    void copyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                           GLint x, GLint y, GLsizei width, GLsizei height) 
                                                                         raises(DOMException);
 
     WebGLBuffer createBuffer() raises(DOMException);
     WebGLFramebuffer createFramebuffer() raises(DOMException);
     WebGLProgram createProgram() raises(DOMException);
     WebGLRenderbuffer createRenderbuffer() raises(DOMException);
-    WebGLShader createShader(in GLenum type) raises(DOMException);
+    WebGLShader createShader(GLenum type) raises(DOMException);
     WebGLTexture createTexture() raises(DOMException);
 
-    void cullFace(in GLenum mode) raises(DOMException);
+    void cullFace(GLenum mode) raises(DOMException);
 
-    void deleteBuffer(in WebGLBuffer buffer) raises(DOMException);
-    void deleteFramebuffer(in WebGLFramebuffer framebuffer) raises(DOMException);
-    void deleteProgram(in WebGLProgram program) raises(DOMException);
-    void deleteRenderbuffer(in WebGLRenderbuffer renderbuffer) raises(DOMException);
-    void deleteShader(in WebGLShader shader) raises(DOMException);
-    void deleteTexture(in WebGLTexture texture) raises(DOMException);
+    void deleteBuffer(WebGLBuffer buffer) raises(DOMException);
+    void deleteFramebuffer(WebGLFramebuffer framebuffer) raises(DOMException);
+    void deleteProgram(WebGLProgram program) raises(DOMException);
+    void deleteRenderbuffer(WebGLRenderbuffer renderbuffer) raises(DOMException);
+    void deleteShader(WebGLShader shader) raises(DOMException);
+    void deleteTexture(WebGLTexture texture) raises(DOMException);
 
-    void depthFunc(in GLenum func) raises(DOMException);
-    void depthMask(in GLboolean flag) raises(DOMException);
-    void depthRange(in GLclampf zNear, in GLclampf zFar) raises(DOMException);
-    void detachShader(in WebGLProgram program, in WebGLShader shader) raises(DOMException);
-    void disable(in GLenum cap) raises(DOMException);
-    void disableVertexAttribArray(in GLuint index) raises(DOMException);
-    void drawArrays(in GLenum mode, in GLint first, in GLsizei count) raises(DOMException);
-    void drawElements(in GLenum mode, in GLsizei count, in GLenum type, in GLsizeiptr offset) 
+    void depthFunc(GLenum func) raises(DOMException);
+    void depthMask(GLboolean flag) raises(DOMException);
+    void depthRange(GLclampf zNear, GLclampf zFar) raises(DOMException);
+    void detachShader(WebGLProgram program, WebGLShader shader) raises(DOMException);
+    void disable(GLenum cap) raises(DOMException);
+    void disableVertexAttribArray(GLuint index) raises(DOMException);
+    void drawArrays(GLenum mode, GLint first, GLsizei count) raises(DOMException);
+    void drawElements(GLenum mode, GLsizei count, GLenum type, GLsizeiptr offset) 
                                                                         raises(DOMException);
 
-    void enable(in GLenum cap) raises(DOMException);
-    void enableVertexAttribArray(in GLuint index) raises(DOMException);
+    void enable(GLenum cap) raises(DOMException);
+    void enableVertexAttribArray(GLuint index) raises(DOMException);
     void finish() raises(DOMException);
     void flush() raises(DOMException);
-    void framebufferRenderbuffer(in GLenum target, in GLenum attachment, 
-                                 in GLenum renderbuffertarget, 
-                                 in WebGLRenderbuffer renderbuffer) raises(DOMException);
-    void framebufferTexture2D(in GLenum target, in GLenum attachment, in GLenum textarget, 
-                              in WebGLTexture texture, in GLint level) raises(DOMException);
-    void frontFace(in GLenum mode) raises(DOMException);
+    void framebufferRenderbuffer(GLenum target, GLenum attachment, 
+                                 GLenum renderbuffertarget, 
+                                 WebGLRenderbuffer renderbuffer) raises(DOMException);
+    void framebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, 
+                              WebGLTexture texture, GLint level) raises(DOMException);
+    void frontFace(GLenum mode) raises(DOMException);
 
-    void generateMipmap(in GLenum target) raises(DOMException);
+    void generateMipmap(GLenum target) raises(DOMException);
 
     WebGLActiveInfo getActiveAttrib(GLuint program, GLuint index) raises(DOMException);
     WebGLActiveInfo getActiveUniform(GLuint program, GLuint index) raises(DOMException);
     WebGLObjectArray getAttachedShaders(GLuint program) raises(DOMException);
 
-    GLint getAttribLocation(in WebGLProgram program, DOMString name) raises(DOMException);
+    GLint getAttribLocation(WebGLProgram program, DOMString name) raises(DOMException);
 
-    any getParameter(in GLenum pname) raises(DOMException);
-    any getBufferParameter(in GLenum target, in GLenum pname) raises(DOMException);
+    any getParameter(GLenum pname) raises(DOMException);
+    any getBufferParameter(GLenum target, GLenum pname) raises(DOMException);
 
     GLenum getError() raises(DOMException);
 
-    any getFramebufferAttachmentParameter(in GLenum target, in GLenum attachment, 
-                                          in GLenum pname) raises(DOMException);
-    any getProgramParameter(in WebGLProgram program, in GLenum pname) raises(DOMException);
-    DOMString getProgramInfoLog(in WebGLProgram program) raises(DOMException);
-    any getRenderbufferParameter(in GLenum target, in GLenum pname) raises(DOMException);
-    any getShaderParameter(in WebGLShader shader, in GLenum pname) raises(DOMException);
-    DOMString getShaderInfoLog(in WebGLShader shader) raises(DOMException);
+    any getFramebufferAttachmentParameter(GLenum target, GLenum attachment, 
+                                          GLenum pname) raises(DOMException);
+    any getProgramParameter(WebGLProgram program, GLenum pname) raises(DOMException);
+    DOMString getProgramInfoLog(WebGLProgram program) raises(DOMException);
+    any getRenderbufferParameter(GLenum target, GLenum pname) raises(DOMException);
+    any getShaderParameter(WebGLShader shader, GLenum pname) raises(DOMException);
+    DOMString getShaderInfoLog(WebGLShader shader) raises(DOMException);
 
-    DOMString getShaderSource(in WebGLShader shader) raises(DOMException);
-    DOMString getString(in GLenum name) raises(DOMException);
+    DOMString getShaderSource(WebGLShader shader) raises(DOMException);
+    DOMString getString(GLenum name) raises(DOMException);
 
-    any getTexParameter(in GLenum target, in GLenum pname) raises(DOMException);
+    any getTexParameter(GLenum target, GLenum pname) raises(DOMException);
 
-    any getUniform(in WebGLProgram program, in WebGLUniformLocation location) raises(DOMException);
+    any getUniform(WebGLProgram program, WebGLUniformLocation location) raises(DOMException);
 
-    WebGLUniformLocation getUniformLocation(in WebGLProgram program, DOMString name) raises(DOMException);
+    WebGLUniformLocation getUniformLocation(WebGLProgram program, DOMString name) raises(DOMException);
 
-    any getVertexAttrib(in GLuint index, in GLenum pname) raises(DOMException);
+    any getVertexAttrib(GLuint index, GLenum pname) raises(DOMException);
 
     GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname) raises(DOMException);
 
-    void hint(in GLenum target, in GLenum mode) raises(DOMException);
-    GLboolean isBuffer(in WebGLBuffer buffer) raises(DOMException);
-    GLboolean isEnabled(in GLenum cap) raises(DOMException);
-    GLboolean isFramebuffer(in WebGLFramebuffer framebuffer) raises(DOMException);
-    GLboolean isProgram(in WebGLProgram program) raises(DOMException);
-    GLboolean isRenderbuffer(in WebGLRenderbuffer renderbuffer) raises(DOMException);
-    GLboolean isShader(in WebGLShader shader) raises(DOMException);
-    GLboolean isTexture(in WebGLTexture texture) raises(DOMException);
-    void lineWidth(in GLfloat width) raises(DOMException);
-    void linkProgram(in WebGLProgram program) raises(DOMException);
-    void pixelStorei(in GLenum pname, in GLint param) raises(DOMException);
-    void polygonOffset(in GLfloat factor, in GLfloat units) raises(DOMException);
+    void hint(GLenum target, GLenum mode) raises(DOMException);
+    GLboolean isBuffer(WebGLBuffer buffer) raises(DOMException);
+    GLboolean isEnabled(GLenum cap) raises(DOMException);
+    GLboolean isFramebuffer(WebGLFramebuffer framebuffer) raises(DOMException);
+    GLboolean isProgram(WebGLProgram program) raises(DOMException);
+    GLboolean isRenderbuffer(WebGLRenderbuffer renderbuffer) raises(DOMException);
+    GLboolean isShader(WebGLShader shader) raises(DOMException);
+    GLboolean isTexture(WebGLTexture texture) raises(DOMException);
+    void lineWidth(GLfloat width) raises(DOMException);
+    void linkProgram(WebGLProgram program) raises(DOMException);
+    void pixelStorei(GLenum pname, GLint param) raises(DOMException);
+    void polygonOffset(GLfloat factor, GLfloat units) raises(DOMException);
 
     WebGLArray readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
                            GLenum format, GLenum type) raises(DOMException);
 
-    void renderbufferStorage(in GLenum target, in GLenum internalformat, 
-                             in GLsizei width, in GLsizei height) raises(DOMException);
-    void sampleCoverage(in GLclampf value, in GLboolean invert) raises(DOMException);
-    void scissor(in GLint x, in GLint y, in GLsizei width, in GLsizei height) 
+    void renderbufferStorage(GLenum target, GLenum internalformat, 
+                             GLsizei width, GLsizei height) raises(DOMException);
+    void sampleCoverage(GLclampf value, GLboolean invert) raises(DOMException);
+    void scissor(GLint x, GLint y, GLsizei width, GLsizei height) 
                                                                         raises(DOMException);
 
-    void shaderSource(in WebGLShader shader, in DOMString source) raises(DOMException);
+    void shaderSource(WebGLShader shader, DOMString source) raises(DOMException);
 
-    void stencilFunc(in GLenum func, in GLint ref, in GLuint mask) raises(DOMException);
-    void stencilFuncSeparate(in GLenum face, in GLenum func, in GLint ref, in GLuint mask) 
+    void stencilFunc(GLenum func, GLint ref, GLuint mask) raises(DOMException);
+    void stencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask) 
                                                                         raises(DOMException);
-    void stencilMask(in GLuint mask) raises(DOMException);
-    void stencilMaskSeparate(in GLenum face, in GLuint mask) raises(DOMException);
-    void stencilOp(in GLenum fail, in GLenum zfail, in GLenum zpass) raises(DOMException);
-    void stencilOpSeparate(in GLenum face, in GLenum fail, in GLenum zfail, in GLenum zpass) 
-                                                                        raises(DOMException);
-
-    void texImage2D(in GLenum target, in GLint level, in GLenum internalformat, 
-                    in GLsizei width, in GLsizei height, in GLint border, in GLenum format, 
-                    in GLenum type, in WebGLArray pixels) raises(DOMException);
-    void texImage2D(in GLenum target, in GLint level, in ImageData pixels,
-                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
-                                                                        raises(DOMException);
-    void texImage2D(in GLenum target, in GLint level, in HTMLImageElement image,
-                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
-                                                                        raises(DOMException);
-    void texImage2D(in GLenum target, in GLint level, in HTMLCanvasElement image,
-                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
-                                                                        raises(DOMException);
-    void texImage2D(in GLenum target, in GLint level, in HTMLVideoElement image,
-                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
+    void stencilMask(GLuint mask) raises(DOMException);
+    void stencilMaskSeparate(GLenum face, GLuint mask) raises(DOMException);
+    void stencilOp(GLenum fail, GLenum zfail, GLenum zpass) raises(DOMException);
+    void stencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass) 
                                                                         raises(DOMException);
 
-    void texParameterf(in GLenum target, in GLenum pname, in GLfloat param) 
+    void texImage2D(GLenum target, GLint level, GLenum internalformat, 
+                    GLsizei width, GLsizei height, GLint border, GLenum format, 
+                    GLenum type, WebGLArray pixels) raises(DOMException);
+    void texImage2D(GLenum target, GLint level, ImageData pixels,
+                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
-    void texParameteri(in GLenum target, in GLenum pname, in GLint param) raises(DOMException);
-
-    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
-                       in GLsizei width, in GLsizei height, 
-                       in GLenum format, in GLenum type, in WebGLArray pixels) 
+    void texImage2D(GLenum target, GLint level, HTMLImageElement image,
+                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
-    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
-                       in ImageData pixels,
-                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha)
+    void texImage2D(GLenum target, GLint level, HTMLCanvasElement canvas,
+                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
-    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
-                       in HTMLImageElement image,
-                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
-                                                                        raises(DOMException);
-    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
-                       in HTMLCanvasElement image,
-                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
-                                                                        raises(DOMException);
-    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
-                       in HTMLVideoElement image,
-                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
+    void texImage2D(GLenum target, GLint level, HTMLVideoElement video,
+                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
 
-    void uniform1f(in WebGLUniformLocation location, in GLfloat x) raises(DOMException);
-    void uniform1fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
-    void uniform1fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
-    void uniform1i(in WebGLUniformLocation location, in GLint x) raises(DOMException);
-    void uniform1iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
-    void uniform1iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
-    void uniform2f(in WebGLUniformLocation location, in GLfloat x, in GLfloat y) raises(DOMException);
-    void uniform2fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
-    void uniform2fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
-    void uniform2i(in WebGLUniformLocation location, in GLint x, in GLint y) raises(DOMException);
-    void uniform2iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
-    void uniform2iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
-    void uniform3f(in WebGLUniformLocation location, in GLfloat x, in GLfloat y, in GLfloat z) 
+    void texParameterf(GLenum target, GLenum pname, GLfloat param) 
                                                                         raises(DOMException);
-    void uniform3fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
-    void uniform3fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
-    void uniform3i(in WebGLUniformLocation location, in GLint x, in GLint y, in GLint z) raises(DOMException);
-    void uniform3iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
-    void uniform3iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
-    void uniform4f(in WebGLUniformLocation location, in GLfloat x, in GLfloat y, in GLfloat z, in GLfloat w) 
-                                                                        raises(DOMException);
-    void uniform4fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
-    void uniform4fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
-    void uniform4i(in WebGLUniformLocation location, in GLint x, in GLint y, in GLint z, in GLint w) 
-                                                                        raises(DOMException);
-    void uniform4iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
-    void uniform4iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
+    void texParameteri(GLenum target, GLenum pname, GLint param) raises(DOMException);
 
-    void uniformMatrix2fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in WebGLFloatArray value) raises(DOMException);
-    void uniformMatrix2fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in sequence<float> value) raises(DOMException);
-    void uniformMatrix3fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in WebGLFloatArray value) raises(DOMException);
-    void uniformMatrix3fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in sequence<float> value) raises(DOMException);
-    void uniformMatrix4fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in WebGLFloatArray value) raises(DOMException);
-    void uniformMatrix4fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in sequence<float> value) raises(DOMException);
-
-    void useProgram(in WebGLProgram program) raises(DOMException);
-    void validateProgram(in WebGLProgram program) raises(DOMException);
-
-    void vertexAttrib1f(in GLuint indx, in GLfloat x) raises(DOMException);
-    void vertexAttrib1fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
-    void vertexAttrib1fv(in GLuint indx, in sequence<float> values) raises(DOMException);
-    void vertexAttrib2f(in GLuint indx, in GLfloat x, in GLfloat y) raises(DOMException);
-    void vertexAttrib2fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
-    void vertexAttrib2fv(in GLuint indx, in sequence<float> values) raises(DOMException);
-    void vertexAttrib3f(in GLuint indx, in GLfloat x, in GLfloat y, in GLfloat z) 
+    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       GLsizei width, GLsizei height, 
+                       GLenum format, GLenum type, WebGLArray pixels) 
                                                                         raises(DOMException);
-    void vertexAttrib3fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
-    void vertexAttrib3fv(in GLuint indx, in sequence<float> values) raises(DOMException);
-    void vertexAttrib4f(in GLuint indx, in GLfloat x, in GLfloat y, in GLfloat z, in GLfloat w) 
+    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       ImageData pixels,
+                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)
                                                                         raises(DOMException);
-    void vertexAttrib4fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
-    void vertexAttrib4fv(in GLuint indx, in sequence<float> values) raises(DOMException);
-    void vertexAttribPointer(in GLuint indx, in GLint size, in GLenum type, 
-                             in GLboolean normalized, GLsizei stride, GLsizeiptr offset) 
+    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       HTMLImageElement image,
+                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
+                                                                        raises(DOMException);
+    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       HTMLCanvasElement canvas,
+                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
+                                                                        raises(DOMException);
+    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       HTMLVideoElement video,
+                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
 
-    void viewport(in GLint x, in GLint y, in GLsizei width, in GLsizei height) 
+    void uniform1f(WebGLUniformLocation location, GLfloat x) raises(DOMException);
+    void uniform1fv(WebGLUniformLocation location, WebGLFloatArray v) raises(DOMException);
+    void uniform1fv(WebGLUniformLocation location, sequence<float> v) raises(DOMException);
+    void uniform1i(WebGLUniformLocation location, GLint x) raises(DOMException);
+    void uniform1iv(WebGLUniformLocation location, WebGLIntArray v) raises(DOMException);
+    void uniform1iv(WebGLUniformLocation location, sequence<long> v) raises(DOMException);
+    void uniform2f(WebGLUniformLocation location, GLfloat x, GLfloat y) raises(DOMException);
+    void uniform2fv(WebGLUniformLocation location, WebGLFloatArray v) raises(DOMException);
+    void uniform2fv(WebGLUniformLocation location, sequence<float> v) raises(DOMException);
+    void uniform2i(WebGLUniformLocation location, GLint x, GLint y) raises(DOMException);
+    void uniform2iv(WebGLUniformLocation location, WebGLIntArray v) raises(DOMException);
+    void uniform2iv(WebGLUniformLocation location, sequence<long> v) raises(DOMException);
+    void uniform3f(WebGLUniformLocation location, GLfloat x, GLfloat y, GLfloat z) 
+                                                                        raises(DOMException);
+    void uniform3fv(WebGLUniformLocation location, WebGLFloatArray v) raises(DOMException);
+    void uniform3fv(WebGLUniformLocation location, sequence<float> v) raises(DOMException);
+    void uniform3i(WebGLUniformLocation location, GLint x, GLint y, GLint z) raises(DOMException);
+    void uniform3iv(WebGLUniformLocation location, WebGLIntArray v) raises(DOMException);
+    void uniform3iv(WebGLUniformLocation location, sequence<long> v) raises(DOMException);
+    void uniform4f(WebGLUniformLocation location, GLfloat x, GLfloat y, GLfloat z, GLfloat w) 
+                                                                        raises(DOMException);
+    void uniform4fv(WebGLUniformLocation location, WebGLFloatArray v) raises(DOMException);
+    void uniform4fv(WebGLUniformLocation location, sequence<float> v) raises(DOMException);
+    void uniform4i(WebGLUniformLocation location, GLint x, GLint y, GLint z, GLint w) 
+                                                                        raises(DOMException);
+    void uniform4iv(WebGLUniformLocation location, WebGLIntArray v) raises(DOMException);
+    void uniform4iv(WebGLUniformLocation location, sequence<long> v) raises(DOMException);
+
+    void uniformMatrix2fv(WebGLUniformLocation location, GLboolean transpose, 
+                          WebGLFloatArray value) raises(DOMException);
+    void uniformMatrix2fv(WebGLUniformLocation location, GLboolean transpose, 
+                          sequence<float> value) raises(DOMException);
+    void uniformMatrix3fv(WebGLUniformLocation location, GLboolean transpose, 
+                          WebGLFloatArray value) raises(DOMException);
+    void uniformMatrix3fv(WebGLUniformLocation location, GLboolean transpose, 
+                          sequence<float> value) raises(DOMException);
+    void uniformMatrix4fv(WebGLUniformLocation location, GLboolean transpose, 
+                          WebGLFloatArray value) raises(DOMException);
+    void uniformMatrix4fv(WebGLUniformLocation location, GLboolean transpose, 
+                          sequence<float> value) raises(DOMException);
+
+    void useProgram(WebGLProgram program) raises(DOMException);
+    void validateProgram(WebGLProgram program) raises(DOMException);
+
+    void vertexAttrib1f(GLuint indx, GLfloat x) raises(DOMException);
+    void vertexAttrib1fv(GLuint indx, WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib1fv(GLuint indx, sequence<float> values) raises(DOMException);
+    void vertexAttrib2f(GLuint indx, GLfloat x, GLfloat y) raises(DOMException);
+    void vertexAttrib2fv(GLuint indx, WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib2fv(GLuint indx, sequence<float> values) raises(DOMException);
+    void vertexAttrib3f(GLuint indx, GLfloat x, GLfloat y, GLfloat z) 
+                                                                        raises(DOMException);
+    void vertexAttrib3fv(GLuint indx, WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib3fv(GLuint indx, sequence<float> values) raises(DOMException);
+    void vertexAttrib4f(GLuint indx, GLfloat x, GLfloat y, GLfloat z, GLfloat w) 
+                                                                        raises(DOMException);
+    void vertexAttrib4fv(GLuint indx, WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib4fv(GLuint indx, sequence<float> values) raises(DOMException);
+    void vertexAttribPointer(GLuint indx, GLint size, GLenum type, 
+                             GLboolean normalized, GLsizei stride, GLsizeiptr offset) 
+                                                                        raises(DOMException);
+
+    void viewport(GLint x, GLint y, GLsizei width, GLsizei height) 
                                                                         raises(DOMException);
 };
 
@@ -897,10 +897,10 @@ interface WebGLRenderingContext {
 interface WebGLContextLostEvent : Event {
     readonly attribute WebGLRenderingContext context;
     
-    void initWebGLContextLostEvent(in DOMString type,
-                                   in boolean canBubble,
-                                   in boolean cancelable,
-                                   in WebGLRenderingContext context);
+    void initWebGLContextLostEvent(DOMString type,
+                                   boolean canBubble,
+                                   boolean cancelable,
+                                   WebGLRenderingContext context);
 };
 
 };

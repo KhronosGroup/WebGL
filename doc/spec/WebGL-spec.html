@@ -637,7 +637,7 @@ var context = canvas.getContext('webgl',
     </p>
     <pre class="idl">interface <dfn id="WebGLObjectArray">WebGLObjectArray</dfn> {
     readonly attribute unsigned long length;
-    getter WebGLObject get(in unsigned long index);
+    getter WebGLObject get(unsigned long index);
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -710,7 +710,7 @@ var context = canvas.getContext('webgl',
         for the WebGLArray interface and its subclasses.
     </p>
     <pre class="idl">
-[ Constructor(in unsigned long length) ]
+[ Constructor(unsigned long length) ]
 interface <dfn id="WebGLArrayBuffer">WebGLArrayBuffer</dfn> {
     readonly attribute unsigned long byteLength;
 };</pre>
@@ -718,7 +718,7 @@ interface <dfn id="WebGLArrayBuffer">WebGLArrayBuffer</dfn> {
     <h4>Constructors</h4>
 
     <dl class="methods">
-        <dt><code>Constructor(length)</code>
+        <dt class="idl-code">Constructor(unsigned long length)
         <dd>
             Create a new WebGLArrayBuffer of the passed length in bytes. Data in the buffer is 
             initialized to 0.
@@ -759,7 +759,7 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
     readonly attribute unsigned long byteLength;
     readonly attribute unsigned long length;
 
-    WebGLArray slice(in long start, in long end);
+    WebGLArray slice(long start, long end);
 };</pre>
 
     <h4>Attributes</h4>
@@ -810,7 +810,7 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
     <h4>slice method</h4>
 
     <dl class="methods">
-        <dt><code>slice(start, end)</code>
+        <dt class="idl-code">WebGLArray slice(long start, long end)
         <dd>
 	  <p>
              Returns a new <a href="#WebGLArray">WebGLArray</a> view
@@ -872,36 +872,37 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
 
     <pre class="idl">
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGL<i>TypeName</i>Array array),
-    Constructor(in sequence&lt;<i>type</i>&gt; array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGL<i>TypeName</i>Array array),
+    Constructor(sequence&lt;<i>type</i>&gt; array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface WebGL<i>TypeName</i>Array : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = <i>element size in bytes</i>;
     
-    getter <i>type</i> get(in unsigned long index);
-    setter void set(in unsigned long index, in <i>type</i> value);
-    void set(in WebGL<i>TypeName</i>Array array, in optional unsigned long offset);
-    void set(in sequence&lt;<i>type</i>&gt; array, in optional unsigned long offset);
+    getter <i>type</i> get(unsigned long index);
+    setter void set(unsigned long index, <i>type</i> value);
+    void set(WebGL<i>TypeName</i>Array array, optional unsigned long offset);
+    void set(sequence&lt;<i>type</i>&gt; array, optional unsigned long offset);
 };</pre>
 
 
     <h5>Shared Constructors</h5>
 
     <dl class="methods">
-        <dt><code>Constructor(length)</code>
+        <dt class="idl-code">Constructor(unsigned long length)
         <dd>
             Create a new WebGL<i>TypeName</i>Array object of the given length with a new
             underlying WebGLArrayBuffer large enough to hold <code>length</code>
             elements of the specific type. Data in the buffer is initialized to 0.
-        <dt><code>Constructor(array)</code>
+        <dt><p class="idl-code">Constructor(WebGL<i>TypeName</i>Array array)</p>
+            <p class="idl-code">Constructor(sequence&lt;<i>type</i>&gt; array)</p>
         <dd>
             Create a new WebGL<i>TypeName</i>Array object with a new underlying
             WebGLArrayBuffer large enough to hold the given data, then copy the passed
             data into the buffer.
-        <dt><code>Constructor(buffer, byteOffset, length)</code>
+        <dt class="idl-code">Constructor(WebGLArrayBuffer buffer, optional unsigned long byteOffset, optional unsigned long length)
         <dd>
       <p>
             Create a new WebGL<i>TypeName</i>Array object using the passed
@@ -948,11 +949,11 @@ interface WebGL<i>TypeName</i>Array : WebGLArray {
     <h5>Shared Getters and Setters</h5>
 
     <dl class="methods">
-        <dt><code>get(index)</code>
+        <dt class="idl-code"><i>type</i> get(unsigned long index)
         <dd>
       Return the element at the given index.  If the index is out of range, an exception is raised.  
       This is an index getter function, and may be invoked via array index syntax where applicable.
-        <dt><code>set(index, value)</code>
+        <dt class="idl-code">void set(unsigned long index, <i>type</i> value)
         <dd>
       <p>
         Sets the element at the given index to the given value.  If the index is out of range, an 
@@ -963,7 +964,8 @@ interface WebGL<i>TypeName</i>Array : WebGLArray {
         If the given value is out of range for the type of the array, a C-style cast operation is 
         performed to coerce the value to the valid range.  No clamping or rounding is performed.
       </p>
-        <dt><code>set(array, offset)</code>
+        <dt><p class="idl-code">void set(WebGL<i>TypeName</i>Array array, optional unsigned long offset)</p>
+            <p class="idl-code">void set(sequence&lt;<i>type</i>&gt; array, optional unsigned long offset)</p>
         <dd>
       <p>
         Set multiple values, reading input values from the array.  The optional offset
@@ -1038,19 +1040,19 @@ for (var i = 0; i < numVertices; i++) {
 
     <pre class="idl">
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLByteArray array),
-    Constructor(in sequence&lt;GLbyte&gt; array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLByteArray array),
+    Constructor(sequence&lt;GLbyte&gt; array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface <dfn id="WebGLByteArray">WebGLByteArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 1;
     
-    getter GLbyte get(in unsigned long index);
-    setter void set(in unsigned long index, in GLbyte value);
-    void set(in WebGLByteArray array, in optional unsigned long offset);
-    void set(in sequence&lt;GLbyte&gt; array, in optional unsigned long offset);
+    getter GLbyte get(unsigned long index);
+    setter void set(unsigned long index, GLbyte value);
+    void set(WebGLByteArray array, optional unsigned long offset);
+    void set(sequence&lt;GLbyte&gt; array, optional unsigned long offset);
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1066,19 +1068,19 @@ interface <dfn id="WebGLByteArray">WebGLByteArray</dfn> : WebGLArray {
 
     <pre class="idl">
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLUnsignedByteArray array),
-    Constructor(in sequence&lt;GLubyte&gt; array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLUnsignedByteArray array),
+    Constructor(sequence&lt;GLubyte&gt; array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface <dfn id="WebGLUnsignedByteArray">WebGLUnsignedByteArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 1;
     
-    getter GLubyte get(in unsigned long index);
-    setter void set(in unsigned long index, in GLubyte value);
-    void set(in WebGLUnsignedByteArray array, in optional unsigned long offset);
-    void set(in sequence&lt;GLubyte&gt; array, in optional unsigned long offset);
+    getter GLubyte get(unsigned long index);
+    setter void set(unsigned long index, GLubyte value);
+    void set(WebGLUnsignedByteArray array, optional unsigned long offset);
+    void set(sequence&lt;GLubyte&gt; array, optional unsigned long offset);
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1094,19 +1096,19 @@ interface <dfn id="WebGLUnsignedByteArray">WebGLUnsignedByteArray</dfn> : WebGLA
 
     <pre class="idl">
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLShortArray array),
-    Constructor(in sequence&lt;GLshort&gt; array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLShortArray array),
+    Constructor(sequence&lt;GLshort&gt; array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface <dfn id="WebGLShortArray">WebGLShortArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 2;
     
-    getter GLshort get(in unsigned long index);
-    setter void set(in unsigned long index, in GLshort value);
-    void set(in WebGLShortArray array, in optional unsigned long offset);
-    void set(in sequence&lt;GLshort&gt; array, in optional unsigned long offset);
+    getter GLshort get(unsigned long index);
+    setter void set(unsigned long index, GLshort value);
+    void set(WebGLShortArray array, optional unsigned long offset);
+    void set(sequence&lt;GLshort&gt; array, optional unsigned long offset);
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1122,19 +1124,19 @@ interface <dfn id="WebGLShortArray">WebGLShortArray</dfn> : WebGLArray {
 
     <pre class="idl">
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLUnsignedShortArray array),
-    Constructor(in sequence&lt;GLushort&gt; array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLUnsignedShortArray array),
+    Constructor(sequence&lt;GLushort&gt; array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface <dfn id="WebGLUnsignedShortArray">WebGLUnsignedShortArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 2;
     
-    getter GLushort get(in unsigned long index);
-    setter void set(in unsigned long index, in GLushort value);
-    void set(in WebGLUnsignedShortArray array, in optional unsigned long offset);
-    void set(in sequence&lt;GLushort&gt; array, in optional unsigned long offset);
+    getter GLushort get(unsigned long index);
+    setter void set(unsigned long index, GLushort value);
+    void set(WebGLUnsignedShortArray array, optional unsigned long offset);
+    void set(sequence&lt;GLushort&gt; array, optional unsigned long offset);
 };</pre>
 
 
@@ -1151,19 +1153,19 @@ interface <dfn id="WebGLUnsignedShortArray">WebGLUnsignedShortArray</dfn> : WebG
 
     <pre class="idl">
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLIntArray array),
-    Constructor(in sequence&lt;GLint&gt; array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLIntArray array),
+    Constructor(sequence&lt;GLint&gt; array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface <dfn id="WebGLIntArray">WebGLIntArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 4;
     
-    getter GLint get(in unsigned long index);
-    setter void set(in unsigned long index, in GLint value);
-    void set(in WebGLIntArray array, in optional unsigned long offset);
-    void set(in sequence&lt;GLint&gt; array, in optional unsigned long offset);
+    getter GLint get(unsigned long index);
+    setter void set(unsigned long index, GLint value);
+    void set(WebGLIntArray array, optional unsigned long offset);
+    void set(sequence&lt;GLint&gt; array, optional unsigned long offset);
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1179,19 +1181,19 @@ interface <dfn id="WebGLIntArray">WebGLIntArray</dfn> : WebGLArray {
 
     <pre class="idl">
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLUnsignedIntArray array),
-    Constructor(in sequence&lt;GLuint&gt; array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLUnsignedIntArray array),
+    Constructor(sequence&lt;GLuint&gt; array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface <dfn id="WebGLUnsignedIntArray">WebGLUnsignedIntArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 4;
     
-    getter GLuint get(in unsigned long index);
-    setter void set(in unsigned long index, in GLuint value);
-    void set(in WebGLUnsignedIntArray array, in optional unsigned long offset);
-    void set(in sequence&lt;GLuint&gt; array, in optional unsigned long offset);
+    getter GLuint get(unsigned long index);
+    setter void set(unsigned long index, GLuint value);
+    void set(WebGLUnsignedIntArray array, optional unsigned long offset);
+    void set(sequence&lt;GLuint&gt; array, optional unsigned long offset);
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1207,19 +1209,19 @@ interface <dfn id="WebGLUnsignedIntArray">WebGLUnsignedIntArray</dfn> : WebGLArr
 
     <pre class="idl">
 [
-    Constructor(in unsigned long length),
-    Constructor(in WebGLFloatArray array),
-    Constructor(in sequence&lt;GLfloat&gt; array),
-    Constructor(in WebGLArrayBuffer buffer, 
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(WebGLFloatArray array),
+    Constructor(sequence&lt;GLfloat&gt; array),
+    Constructor(WebGLArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
 interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 4;
     
-    getter GLfloat get(in unsigned long index);
-    setter void set(in unsigned long index, in GLfloat value);
-    void set(in WebGLFloatArray array, in optional unsigned long offset);
-    void set(in sequence&lt;GLfloat&gt; array, in optional unsigned long offset);
+    getter GLfloat get(unsigned long index);
+    setter void set(unsigned long index, GLfloat value);
+    void set(WebGLFloatArray array, optional unsigned long offset);
+    void set(sequence&lt;GLfloat&gt; array, optional unsigned long offset);
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1659,261 +1661,261 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     boolean resetContext();
     
     DOMString[ ] getSupportedExtensions();
-    object getExtension(in DOMString name);
+    object getExtension(DOMString name);
 
-    void activeTexture(in GLenum texture) raises(DOMException);
-    void attachShader(in WebGLProgram program, in WebGLShader shader) raises(DOMException);
-    void bindAttribLocation(in WebGLProgram program, in GLuint index, in DOMString name) 
+    void activeTexture(GLenum texture) raises(DOMException);
+    void attachShader(WebGLProgram program, WebGLShader shader) raises(DOMException);
+    void bindAttribLocation(WebGLProgram program, GLuint index, DOMString name) 
                                                                         raises(DOMException);
-    void bindBuffer(in GLenum target, in WebGLBuffer buffer) raises(DOMException);
-    void bindFramebuffer(in GLenum target, in WebGLFramebuffer framebuffer) 
+    void bindBuffer(GLenum target, WebGLBuffer buffer) raises(DOMException);
+    void bindFramebuffer(GLenum target, WebGLFramebuffer framebuffer) 
                                                                         raises(DOMException);
-    void bindRenderbuffer(in GLenum target, in WebGLRenderbuffer renderbuffer) 
+    void bindRenderbuffer(GLenum target, WebGLRenderbuffer renderbuffer) 
                                                                         raises(DOMException);
-    void bindTexture(in GLenum target, in WebGLTexture texture) raises(DOMException);
-    void blendColor(in GLclampf red, in GLclampf green, in GLclampf blue, in GLclampf alpha) 
+    void bindTexture(GLenum target, WebGLTexture texture) raises(DOMException);
+    void blendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) 
                                                                         raises(DOMException);
-    void blendEquation(in GLenum mode) raises(DOMException);
-    void blendEquationSeparate(in GLenum modeRGB, in GLenum modeAlpha) raises(DOMException);
-    void blendFunc(in GLenum sfactor, in GLenum dfactor) raises(DOMException);
-    void blendFuncSeparate(in GLenum srcRGB, in GLenum dstRGB, 
-                           in GLenum srcAlpha, in GLenum dstAlpha) raises(DOMException);
+    void blendEquation(GLenum mode) raises(DOMException);
+    void blendEquationSeparate(GLenum modeRGB, GLenum modeAlpha) raises(DOMException);
+    void blendFunc(GLenum sfactor, GLenum dfactor) raises(DOMException);
+    void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, 
+                           GLenum srcAlpha, GLenum dstAlpha) raises(DOMException);
 
-    void bufferData(in GLenum target, in GLsizei size, in GLenum usage) raises(DOMException);
-    void bufferData(in GLenum target, in WebGLArray data, in GLenum usage) 
+    void bufferData(GLenum target, GLsizei size, GLenum usage) raises(DOMException);
+    void bufferData(GLenum target, WebGLArray data, GLenum usage) 
                                                                         raises(DOMException);
-    void bufferData(in GLenum target, in WebGLArrayBuffer data, in GLenum usage) 
+    void bufferData(GLenum target, WebGLArrayBuffer data, GLenum usage) 
                                                                         raises(DOMException);
-    void bufferSubData(in GLenum target, in GLsizeiptr offset, in WebGLArray data) 
+    void bufferSubData(GLenum target, GLsizeiptr offset, WebGLArray data) 
                                                                         raises(DOMException);
-    void bufferSubData(in GLenum target, in GLsizeiptr offset, in WebGLArrayBuffer data) 
+    void bufferSubData(GLenum target, GLsizeiptr offset, WebGLArrayBuffer data) 
                                                                         raises(DOMException);
 
-    GLenum checkFramebufferStatus(in GLenum target) raises(DOMException);
-    void clear(in GLbitfield mask) raises(DOMException);
-    void clearColor(in GLclampf red, in GLclampf green, in GLclampf blue, in GLclampf alpha) 
+    GLenum checkFramebufferStatus(GLenum target) raises(DOMException);
+    void clear(GLbitfield mask) raises(DOMException);
+    void clearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) 
                                                                         raises(DOMException);
-    void clearDepth(in GLclampf depth) raises(DOMException);
-    void clearStencil(in GLint s) raises(DOMException);
-    void colorMask(in GLboolean red, in GLboolean green, in GLboolean blue, in GLboolean alpha) 
+    void clearDepth(GLclampf depth) raises(DOMException);
+    void clearStencil(GLint s) raises(DOMException);
+    void colorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
                                                                         raises(DOMException);
-    void compileShader(in WebGLShader shader) raises(DOMException);
+    void compileShader(WebGLShader shader) raises(DOMException);
 
-    void copyTexImage2D(in GLenum target, in GLint level, in GLenum internalformat, 
-                        in GLint x, in GLint y, in GLsizei width, in GLsizei height, 
-                        in GLint border) raises(DOMException);
-    void copyTexSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
-                           in GLint x, in GLint y, in GLsizei width, in GLsizei height) 
+    void copyTexImage2D(GLenum target, GLint level, GLenum internalformat, 
+                        GLint x, GLint y, GLsizei width, GLsizei height, 
+                        GLint border) raises(DOMException);
+    void copyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                           GLint x, GLint y, GLsizei width, GLsizei height) 
                                                                         raises(DOMException);
 
     WebGLBuffer createBuffer() raises(DOMException);
     WebGLFramebuffer createFramebuffer() raises(DOMException);
     WebGLProgram createProgram() raises(DOMException);
     WebGLRenderbuffer createRenderbuffer() raises(DOMException);
-    WebGLShader createShader(in GLenum type) raises(DOMException);
+    WebGLShader createShader(GLenum type) raises(DOMException);
     WebGLTexture createTexture() raises(DOMException);
 
-    void cullFace(in GLenum mode) raises(DOMException);
+    void cullFace(GLenum mode) raises(DOMException);
 
-    void deleteBuffer(in WebGLBuffer buffer) raises(DOMException);
-    void deleteFramebuffer(in WebGLFramebuffer framebuffer) raises(DOMException);
-    void deleteProgram(in WebGLProgram program) raises(DOMException);
-    void deleteRenderbuffer(in WebGLRenderbuffer renderbuffer) raises(DOMException);
-    void deleteShader(in WebGLShader shader) raises(DOMException);
-    void deleteTexture(in WebGLTexture texture) raises(DOMException);
+    void deleteBuffer(WebGLBuffer buffer) raises(DOMException);
+    void deleteFramebuffer(WebGLFramebuffer framebuffer) raises(DOMException);
+    void deleteProgram(WebGLProgram program) raises(DOMException);
+    void deleteRenderbuffer(WebGLRenderbuffer renderbuffer) raises(DOMException);
+    void deleteShader(WebGLShader shader) raises(DOMException);
+    void deleteTexture(WebGLTexture texture) raises(DOMException);
 
-    void depthFunc(in GLenum func) raises(DOMException);
-    void depthMask(in GLboolean flag) raises(DOMException);
-    void depthRange(in GLclampf zNear, in GLclampf zFar) raises(DOMException);
-    void detachShader(in WebGLProgram program, in WebGLShader shader) raises(DOMException);
-    void disable(in GLenum cap) raises(DOMException);
-    void disableVertexAttribArray(in GLuint index) raises(DOMException);
-    void drawArrays(in GLenum mode, in GLint first, in GLsizei count) raises(DOMException);
-    void drawElements(in GLenum mode, in GLsizei count, in GLenum type, in GLsizeiptr offset) 
+    void depthFunc(GLenum func) raises(DOMException);
+    void depthMask(GLboolean flag) raises(DOMException);
+    void depthRange(GLclampf zNear, GLclampf zFar) raises(DOMException);
+    void detachShader(WebGLProgram program, WebGLShader shader) raises(DOMException);
+    void disable(GLenum cap) raises(DOMException);
+    void disableVertexAttribArray(GLuint index) raises(DOMException);
+    void drawArrays(GLenum mode, GLint first, GLsizei count) raises(DOMException);
+    void drawElements(GLenum mode, GLsizei count, GLenum type, GLsizeiptr offset) 
                                                                         raises(DOMException);
 
-    void enable(in GLenum cap) raises(DOMException);
-    void enableVertexAttribArray(in GLuint index) raises(DOMException);
+    void enable(GLenum cap) raises(DOMException);
+    void enableVertexAttribArray(GLuint index) raises(DOMException);
     void finish() raises(DOMException);
     void flush() raises(DOMException);
-    void framebufferRenderbuffer(in GLenum target, in GLenum attachment, 
-                                 in GLenum renderbuffertarget, 
-                                 in WebGLRenderbuffer renderbuffer) raises(DOMException);
-    void framebufferTexture2D(in GLenum target, in GLenum attachment, in GLenum textarget, 
-                              in WebGLTexture texture, in GLint level) raises(DOMException);
-    void frontFace(in GLenum mode) raises(DOMException);
+    void framebufferRenderbuffer(GLenum target, GLenum attachment, 
+                                 GLenum renderbuffertarget, 
+                                 WebGLRenderbuffer renderbuffer) raises(DOMException);
+    void framebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, 
+                              WebGLTexture texture, GLint level) raises(DOMException);
+    void frontFace(GLenum mode) raises(DOMException);
 
-    void generateMipmap(in GLenum target) raises(DOMException);
+    void generateMipmap(GLenum target) raises(DOMException);
 
     WebGLActiveInfo getActiveAttrib(GLuint program, GLuint index) raises(DOMException);
     WebGLActiveInfo getActiveUniform(GLuint program, GLuint index) raises(DOMException);
     WebGLObjectArray getAttachedShaders(GLuint program) raises(DOMException);
 
-    GLint getAttribLocation(in WebGLProgram program, DOMString name) raises(DOMException);
+    GLint getAttribLocation(WebGLProgram program, DOMString name) raises(DOMException);
 
-    any getParameter(in GLenum pname) raises(DOMException);
-    any getBufferParameter(in GLenum target, in GLenum pname) raises(DOMException);
+    any getParameter(GLenum pname) raises(DOMException);
+    any getBufferParameter(GLenum target, GLenum pname) raises(DOMException);
 
     GLenum getError() raises(DOMException);
 
-    any getFramebufferAttachmentParameter(in GLenum target, in GLenum attachment, 
-                                          in GLenum pname) raises(DOMException);
-    any getProgramParameter(in WebGLProgram program, in GLenum pname) raises(DOMException);
-    DOMString getProgramInfoLog(in WebGLProgram program) raises(DOMException);
-    any getRenderbufferParameter(in GLenum target, in GLenum pname) raises(DOMException);
-    any getShaderParameter(in WebGLShader shader, in GLenum pname) raises(DOMException);
-    DOMString getShaderInfoLog(in WebGLShader shader) raises(DOMException);
+    any getFramebufferAttachmentParameter(GLenum target, GLenum attachment, 
+                                          GLenum pname) raises(DOMException);
+    any getProgramParameter(WebGLProgram program, GLenum pname) raises(DOMException);
+    DOMString getProgramInfoLog(WebGLProgram program) raises(DOMException);
+    any getRenderbufferParameter(GLenum target, GLenum pname) raises(DOMException);
+    any getShaderParameter(WebGLShader shader, GLenum pname) raises(DOMException);
+    DOMString getShaderInfoLog(WebGLShader shader) raises(DOMException);
 
-    DOMString getShaderSource(in WebGLShader shader) raises(DOMException);
-    DOMString getString(in GLenum name) raises(DOMException);
+    DOMString getShaderSource(WebGLShader shader) raises(DOMException);
+    DOMString getString(GLenum name) raises(DOMException);
 
-    any getTexParameter(in GLenum target, in GLenum pname) raises(DOMException);
+    any getTexParameter(GLenum target, GLenum pname) raises(DOMException);
 
-    any getUniform(in WebGLProgram program, in WebGLUniformLocation location) raises(DOMException);
+    any getUniform(WebGLProgram program, WebGLUniformLocation location) raises(DOMException);
 
-    WebGLUniformLocation getUniformLocation(in WebGLProgram program, DOMString name) raises(DOMException);
+    WebGLUniformLocation getUniformLocation(WebGLProgram program, DOMString name) raises(DOMException);
 
-    any getVertexAttrib(in GLuint index, in GLenum pname) raises(DOMException);
+    any getVertexAttrib(GLuint index, GLenum pname) raises(DOMException);
 
     GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname) raises(DOMException);
 
-    void hint(in GLenum target, in GLenum mode) raises(DOMException);
-    GLboolean isBuffer(in WebGLBuffer buffer) raises(DOMException);
-    GLboolean isEnabled(in GLenum cap) raises(DOMException);
-    GLboolean isFramebuffer(in WebGLFramebuffer framebuffer) raises(DOMException);
-    GLboolean isProgram(in WebGLProgram program) raises(DOMException);
-    GLboolean isRenderbuffer(in WebGLRenderbuffer renderbuffer) raises(DOMException);
-    GLboolean isShader(in WebGLShader shader) raises(DOMException);
-    GLboolean isTexture(in WebGLTexture texture) raises(DOMException);
-    void lineWidth(in GLfloat width) raises(DOMException);
-    void linkProgram(in WebGLProgram program) raises(DOMException);
-    void pixelStorei(in GLenum pname, in GLint param) raises(DOMException);
-    void polygonOffset(in GLfloat factor, in GLfloat units) raises(DOMException);
+    void hint(GLenum target, GLenum mode) raises(DOMException);
+    GLboolean isBuffer(WebGLBuffer buffer) raises(DOMException);
+    GLboolean isEnabled(GLenum cap) raises(DOMException);
+    GLboolean isFramebuffer(WebGLFramebuffer framebuffer) raises(DOMException);
+    GLboolean isProgram(WebGLProgram program) raises(DOMException);
+    GLboolean isRenderbuffer(WebGLRenderbuffer renderbuffer) raises(DOMException);
+    GLboolean isShader(WebGLShader shader) raises(DOMException);
+    GLboolean isTexture(WebGLTexture texture) raises(DOMException);
+    void lineWidth(GLfloat width) raises(DOMException);
+    void linkProgram(WebGLProgram program) raises(DOMException);
+    void pixelStorei(GLenum pname, GLint param) raises(DOMException);
+    void polygonOffset(GLfloat factor, GLfloat units) raises(DOMException);
 
     WebGLArray readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
                            GLenum format, GLenum type) raises(DOMException);
 
-    void renderbufferStorage(in GLenum target, in GLenum internalformat, 
-                             in GLsizei width, in GLsizei height) raises(DOMException);
-    void sampleCoverage(in GLclampf value, in GLboolean invert) raises(DOMException);
-    void scissor(in GLint x, in GLint y, in GLsizei width, in GLsizei height) 
+    void renderbufferStorage(GLenum target, GLenum internalformat, 
+                             GLsizei width, GLsizei height) raises(DOMException);
+    void sampleCoverage(GLclampf value, GLboolean invert) raises(DOMException);
+    void scissor(GLint x, GLint y, GLsizei width, GLsizei height) 
                                                                         raises(DOMException);
 
-    void shaderSource(in WebGLShader shader, in DOMString source) raises(DOMException);
+    void shaderSource(WebGLShader shader, DOMString source) raises(DOMException);
 
-    void stencilFunc(in GLenum func, in GLint ref, in GLuint mask) raises(DOMException);
-    void stencilFuncSeparate(in GLenum face, in GLenum func, in GLint ref, in GLuint mask) 
+    void stencilFunc(GLenum func, GLint ref, GLuint mask) raises(DOMException);
+    void stencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask) 
                                                                         raises(DOMException);
-    void stencilMask(in GLuint mask) raises(DOMException);
-    void stencilMaskSeparate(in GLenum face, in GLuint mask) raises(DOMException);
-    void stencilOp(in GLenum fail, in GLenum zfail, in GLenum zpass) raises(DOMException);
-    void stencilOpSeparate(in GLenum face, in GLenum fail, in GLenum zfail, in GLenum zpass) 
-                                                                        raises(DOMException);
-
-    void texImage2D(in GLenum target, in GLint level, in GLenum internalformat, 
-                    in GLsizei width, in GLsizei height, in GLint border, in GLenum format, 
-                    in GLenum type, in WebGLArray pixels) raises(DOMException);
-    void texImage2D(in GLenum target, in GLint level, in ImageData pixels,
-                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
-                                                                        raises(DOMException);
-    void texImage2D(in GLenum target, in GLint level, in HTMLImageElement image,
-                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
-                                                                        raises(DOMException);
-    void texImage2D(in GLenum target, in GLint level, in HTMLCanvasElement image,
-                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
-                                                                        raises(DOMException);
-    void texImage2D(in GLenum target, in GLint level, in HTMLVideoElement image,
-                    in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
+    void stencilMask(GLuint mask) raises(DOMException);
+    void stencilMaskSeparate(GLenum face, GLuint mask) raises(DOMException);
+    void stencilOp(GLenum fail, GLenum zfail, GLenum zpass) raises(DOMException);
+    void stencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass) 
                                                                         raises(DOMException);
 
-    void texParameterf(in GLenum target, in GLenum pname, in GLfloat param) 
+    void texImage2D(GLenum target, GLint level, GLenum internalformat, 
+                    GLsizei width, GLsizei height, GLint border, GLenum format, 
+                    GLenum type, WebGLArray pixels) raises(DOMException);
+    void texImage2D(GLenum target, GLint level, ImageData pixels,
+                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
-    void texParameteri(in GLenum target, in GLenum pname, in GLint param) raises(DOMException);
-
-    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
-                       in GLsizei width, in GLsizei height, 
-                       in GLenum format, in GLenum type, in WebGLArray pixels) 
+    void texImage2D(GLenum target, GLint level, HTMLImageElement image,
+                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
-    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
-                       in ImageData pixels,
-                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha)
+    void texImage2D(GLenum target, GLint level, HTMLCanvasElement canvas,
+                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
-    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
-                       in HTMLImageElement image,
-                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
-                                                                        raises(DOMException);
-    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
-                       in HTMLCanvasElement image,
-                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
-                                                                        raises(DOMException);
-    void texSubImage2D(in GLenum target, in GLint level, in GLint xoffset, in GLint yoffset, 
-                       in HTMLVideoElement image,
-                       in optional GLboolean flipY, in optional GLboolean asPremultipliedAlpha) 
+    void texImage2D(GLenum target, GLint level, HTMLVideoElement video,
+                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
 
-    void uniform1f(in WebGLUniformLocation location, in GLfloat x) raises(DOMException);
-    void uniform1fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
-    void uniform1fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
-    void uniform1i(in WebGLUniformLocation location, in GLint x) raises(DOMException);
-    void uniform1iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
-    void uniform1iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
-    void uniform2f(in WebGLUniformLocation location, in GLfloat x, in GLfloat y) raises(DOMException);
-    void uniform2fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
-    void uniform2fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
-    void uniform2i(in WebGLUniformLocation location, in GLint x, in GLint y) raises(DOMException);
-    void uniform2iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
-    void uniform2iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
-    void uniform3f(in WebGLUniformLocation location, in GLfloat x, in GLfloat y, in GLfloat z) 
+    void texParameterf(GLenum target, GLenum pname, GLfloat param) 
                                                                         raises(DOMException);
-    void uniform3fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
-    void uniform3fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
-    void uniform3i(in WebGLUniformLocation location, in GLint x, in GLint y, in GLint z) raises(DOMException);
-    void uniform3iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
-    void uniform3iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
-    void uniform4f(in WebGLUniformLocation location, in GLfloat x, in GLfloat y, in GLfloat z, in GLfloat w) 
-                                                                        raises(DOMException);
-    void uniform4fv(in WebGLUniformLocation location, in WebGLFloatArray v) raises(DOMException);
-    void uniform4fv(in WebGLUniformLocation location, in sequence<float> v) raises(DOMException);
-    void uniform4i(in WebGLUniformLocation location, in GLint x, in GLint y, in GLint z, in GLint w) 
-                                                                        raises(DOMException);
-    void uniform4iv(in WebGLUniformLocation location, in WebGLIntArray v) raises(DOMException);
-    void uniform4iv(in WebGLUniformLocation location, in sequence<long> v) raises(DOMException);
+    void texParameteri(GLenum target, GLenum pname, GLint param) raises(DOMException);
 
-    void uniformMatrix2fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in WebGLFloatArray value) raises(DOMException);
-    void uniformMatrix2fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in sequence<float> value) raises(DOMException);
-    void uniformMatrix3fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in WebGLFloatArray value) raises(DOMException);
-    void uniformMatrix3fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in sequence<float> value) raises(DOMException);
-    void uniformMatrix4fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in WebGLFloatArray value) raises(DOMException);
-    void uniformMatrix4fv(in WebGLUniformLocation location, in GLboolean transpose, 
-                          in sequence<float> value) raises(DOMException);
-
-    void useProgram(in WebGLProgram program) raises(DOMException);
-    void validateProgram(in WebGLProgram program) raises(DOMException);
-
-    void vertexAttrib1f(in GLuint indx, in GLfloat x) raises(DOMException);
-    void vertexAttrib1fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
-    void vertexAttrib1fv(in GLuint indx, in sequence<float> values) raises(DOMException);
-    void vertexAttrib2f(in GLuint indx, in GLfloat x, in GLfloat y) raises(DOMException);
-    void vertexAttrib2fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
-    void vertexAttrib2fv(in GLuint indx, in sequence<float> values) raises(DOMException);
-    void vertexAttrib3f(in GLuint indx, in GLfloat x, in GLfloat y, in GLfloat z) 
+    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       GLsizei width, GLsizei height, 
+                       GLenum format, GLenum type, WebGLArray pixels) 
                                                                         raises(DOMException);
-    void vertexAttrib3fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
-    void vertexAttrib3fv(in GLuint indx, in sequence<float> values) raises(DOMException);
-    void vertexAttrib4f(in GLuint indx, in GLfloat x, in GLfloat y, in GLfloat z, in GLfloat w) 
+    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       ImageData pixels,
+                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)
                                                                         raises(DOMException);
-    void vertexAttrib4fv(in GLuint indx, in WebGLFloatArray values) raises(DOMException);
-    void vertexAttrib4fv(in GLuint indx, in sequence<float> values) raises(DOMException);
-    void vertexAttribPointer(in GLuint indx, in GLint size, in GLenum type, 
-                             in GLboolean normalized, GLsizei stride, GLsizeiptr offset) 
+    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       HTMLImageElement image,
+                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
+                                                                        raises(DOMException);
+    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       HTMLCanvasElement canvas,
+                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
+                                                                        raises(DOMException);
+    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       HTMLVideoElement video,
+                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
 
-    void viewport(in GLint x, in GLint y, in GLsizei width, in GLsizei height) 
+    void uniform1f(WebGLUniformLocation location, GLfloat x) raises(DOMException);
+    void uniform1fv(WebGLUniformLocation location, WebGLFloatArray v) raises(DOMException);
+    void uniform1fv(WebGLUniformLocation location, sequence<float> v) raises(DOMException);
+    void uniform1i(WebGLUniformLocation location, GLint x) raises(DOMException);
+    void uniform1iv(WebGLUniformLocation location, WebGLIntArray v) raises(DOMException);
+    void uniform1iv(WebGLUniformLocation location, sequence<long> v) raises(DOMException);
+    void uniform2f(WebGLUniformLocation location, GLfloat x, GLfloat y) raises(DOMException);
+    void uniform2fv(WebGLUniformLocation location, WebGLFloatArray v) raises(DOMException);
+    void uniform2fv(WebGLUniformLocation location, sequence<float> v) raises(DOMException);
+    void uniform2i(WebGLUniformLocation location, GLint x, GLint y) raises(DOMException);
+    void uniform2iv(WebGLUniformLocation location, WebGLIntArray v) raises(DOMException);
+    void uniform2iv(WebGLUniformLocation location, sequence<long> v) raises(DOMException);
+    void uniform3f(WebGLUniformLocation location, GLfloat x, GLfloat y, GLfloat z) 
+                                                                        raises(DOMException);
+    void uniform3fv(WebGLUniformLocation location, WebGLFloatArray v) raises(DOMException);
+    void uniform3fv(WebGLUniformLocation location, sequence<float> v) raises(DOMException);
+    void uniform3i(WebGLUniformLocation location, GLint x, GLint y, GLint z) raises(DOMException);
+    void uniform3iv(WebGLUniformLocation location, WebGLIntArray v) raises(DOMException);
+    void uniform3iv(WebGLUniformLocation location, sequence<long> v) raises(DOMException);
+    void uniform4f(WebGLUniformLocation location, GLfloat x, GLfloat y, GLfloat z, GLfloat w) 
+                                                                        raises(DOMException);
+    void uniform4fv(WebGLUniformLocation location, WebGLFloatArray v) raises(DOMException);
+    void uniform4fv(WebGLUniformLocation location, sequence<float> v) raises(DOMException);
+    void uniform4i(WebGLUniformLocation location, GLint x, GLint y, GLint z, GLint w) 
+                                                                        raises(DOMException);
+    void uniform4iv(WebGLUniformLocation location, WebGLIntArray v) raises(DOMException);
+    void uniform4iv(WebGLUniformLocation location, sequence<long> v) raises(DOMException);
+
+    void uniformMatrix2fv(WebGLUniformLocation location, GLboolean transpose, 
+                          WebGLFloatArray value) raises(DOMException);
+    void uniformMatrix2fv(WebGLUniformLocation location, GLboolean transpose, 
+                          sequence<float> value) raises(DOMException);
+    void uniformMatrix3fv(WebGLUniformLocation location, GLboolean transpose, 
+                          WebGLFloatArray value) raises(DOMException);
+    void uniformMatrix3fv(WebGLUniformLocation location, GLboolean transpose, 
+                          sequence<float> value) raises(DOMException);
+    void uniformMatrix4fv(WebGLUniformLocation location, GLboolean transpose, 
+                          WebGLFloatArray value) raises(DOMException);
+    void uniformMatrix4fv(WebGLUniformLocation location, GLboolean transpose, 
+                          sequence<float> value) raises(DOMException);
+
+    void useProgram(WebGLProgram program) raises(DOMException);
+    void validateProgram(WebGLProgram program) raises(DOMException);
+
+    void vertexAttrib1f(GLuint indx, GLfloat x) raises(DOMException);
+    void vertexAttrib1fv(GLuint indx, WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib1fv(GLuint indx, sequence<float> values) raises(DOMException);
+    void vertexAttrib2f(GLuint indx, GLfloat x, GLfloat y) raises(DOMException);
+    void vertexAttrib2fv(GLuint indx, WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib2fv(GLuint indx, sequence<float> values) raises(DOMException);
+    void vertexAttrib3f(GLuint indx, GLfloat x, GLfloat y, GLfloat z) 
+                                                                        raises(DOMException);
+    void vertexAttrib3fv(GLuint indx, WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib3fv(GLuint indx, sequence<float> values) raises(DOMException);
+    void vertexAttrib4f(GLuint indx, GLfloat x, GLfloat y, GLfloat z, GLfloat w) 
+                                                                        raises(DOMException);
+    void vertexAttrib4fv(GLuint indx, WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib4fv(GLuint indx, sequence<float> values) raises(DOMException);
+    void vertexAttribPointer(GLuint indx, GLint size, GLenum type, 
+                             GLboolean normalized, GLsizei stride, GLsizeiptr offset) 
+                                                                        raises(DOMException);
+
+    void viewport(GLint x, GLint y, GLsizei width, GLsizei height) 
                                                                         raises(DOMException);
 };</pre>
 
@@ -1943,7 +1945,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     <h4>The <code>getContextAttributes</code> method</h4>
 
     <dl class="methods">
-        <dt><code>getContextAttributes()</code>
+        <dt class="idl-code">WebGLContextAttributes getContextAttributes()
         <dd>
             Returns the WebGLContextAttributes describing the current drawing buffer.
     </dl>
@@ -1958,79 +1960,79 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
     
     <dl class="methods">
-        <dt><code>activeTexture(texture)</code>
+        <dt class="idl-code">void activeTexture(GLenum texture)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glActiveTexture.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>blendColor(red, green, blue, alpha)</code>
+        <dt class="idl-code"void blendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBlendColor.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>blendEquation(mode)</code>
+        <dt class="idl-code">void blendEquation(GLenum mode)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBlendEquation.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>blendEquationSeparate(modeRGB, modeAlpha)</code>
+        <dt class="idl-code">void blendEquationSeparate(GLenum modeRGB, GLenum modeAlpha)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBlendEquationSeparate.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>blendFunc(sfactor, dfactor)</code>
+        <dt class="idl-code">void blendFunc(GLenum sfactor, GLenum dfactor)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBlendFunc.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>blendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha)</code>
+        <dt class="idl-code">void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBlendFuncSeparate.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>clearColor(red, green, blue, alpha)</code>
+        <dt class="idl-code">void clearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glClearColor.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>clearDepth(depth)</code>
+        <dt class="idl-code">void clearDepth(GLclampf depth)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glClearDepthf.xml">
                 (OpenGL ES 2.0 man page)
             </a>
             <dd>
                 <code>depth</code> value is clamped to the range 0 to 1.
-        <dt><code>clearStencil(s)</code>
+        <dt class="idl-code">void clearStencil(GLint s)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glClearStencil.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>colorMask(red, green, blue, alpha)</code>
+        <dt class="idl-code">void colorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glColorMask.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>cullFace(mode)</code>
+        <dt class="idl-code">void cullFace(GLenum mode)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glCullFace.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>depthFunc(func)</code>
+        <dt class="idl-code">void depthFunc(GLenum func)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDepthFunc.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>depthMask(flag)</code>
+        <dt class="idl-code">void depthMask(GLboolean flag)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDepthMask.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>depthRange(zNear, zFar)</code>
+        <dt class="idl-code">void depthRange(GLclampf zNear, GLclampf zFar)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDepthRangef.xml">
                 (OpenGL ES 2.0 man page)
             </a>
             <dd>
                 <code>zNear</code> and <code>zFar</code> values are clamped to the range 0 to 1.
-        <dt><code>disable(cap)</code>
+        <dt class="idl-code">void disable(GLenum cap)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDisable.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>enable(cap)</code>
+        <dt class="idl-code">void enable(GLenum cap)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glEnable.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>frontFace(mode)</code>
+        <dt class="idl-code">void frontFace(GLenum mode)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glFrontFace.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>getParameter(pname)</code>
+        <dt class="idl-code">any getParameter(GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGet.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2119,59 +2121,59 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>UNPACK_ALIGNMENT</td><td>int</td></tr>
                 <tr><td>VIEWPORT</td><td>WebGLIntArray (with 4 elements)</td></tr>
             </table>
-        <dt><code>getError()</code>
+        <dt class="idl-code">GLenum getError()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetError.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>getString(name)</code>
+        <dt class="idl-code">DOMString getString(GLenum name)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetString.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>hint(target, mode)</code>
+        <dt class="idl-code">void hint(GLenum target, GLenum mode)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glHint.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>isEnabled(cap)</code>
+        <dt class="idl-code">GLboolean isEnabled(GLenum cap)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glIsEnabled.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>lineWidth(width)</code>
+        <dt class="idl-code">void lineWidth(GLfloat width)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glLineWidth.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>pixelStorei(pname, param)</code>
+        <dt class="idl-code">void pixelStorei(GLenum pname, GLint param)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glPixelStorei.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>polygonOffset(factor, units)</code>
+        <dt class="idl-code">void polygonOffset(GLfloat factor, GLfloat units)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glPolygonOffset.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>sampleCoverage(value, invert)</code>
+        <dt class="idl-code">void sampleCoverage(GLclampf value, GLboolean invert)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glSampleCoverage.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>stencilFunc(func, ref, mask)</code>
+        <dt class="idl-code">void stencilFunc(GLenum func, GLint ref, GLuint mask)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glStencilFunc.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>stencilFuncSeparate(face, func, ref, mask)</code>
+        <dt class="idl-code">void stencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glStencilFuncSeparate.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>stencilMask(mask)</code>
+        <dt class="idl-code">void stencilMask(GLuint mask)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glStencilMask.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>stencilMaskSeparate(face, mask)</code>
+        <dt class="idl-code">void stencilMaskSeparate(GLenum face, GLuint mask)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glStencilMaskSeparate.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>stencilOp(fail, zfail, zpass)</code>
+        <dt class="idl-code">void stencilOp(GLenum fail, GLenum zfail, GLenum zpass)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glStencilOp.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>stencilOpSeparate(face, fail, zfail, zpass)</code>
+        <dt class="idl-code">void stencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glStencilOpSeparate.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2193,11 +2195,11 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
 
     <dl class="methods">
-        <dt><code>scissor(x, y, width, height)</code>
+        <dt class="idl-code">void scissor(GLint x, GLint y, GLsizei width, GLsizei height)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glScissor.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>viewport(x, y, width, height)</code>
+        <dt class="idl-code">void viewport(GLint x, GLint y, GLsizei width, GLsizei height)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glViewport.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2213,7 +2215,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
      
     <dl class="methods">
-        <dt><code>bindBuffer(target, buffer)</code>
+        <dt class="idl-code">void bindBuffer(GLenum target, WebGLBuffer buffer)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBindBuffer.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2225,7 +2227,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             buffer object to the other target will result in an INVALID_OPERATION error, and the
             current binding will remain untouched.
         
-        <dt><code>bufferData(target, size, usage)</code>
+        <dt class="idl-code">void bufferData(GLenum target, GLsizei size, GLenum usage)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBufferData.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2233,24 +2235,26 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Set the size of the currently bound WebGLBuffer object for the passed target. The
             buffer is initialized to 0.
             
-        <dt><code>bufferData(target, data, usage)</code>
+        <dt><p class="idl-code">void bufferData(GLenum target, WebGLArray data, GLenum usage)</p>
+            <p class="idl-code">void bufferData(GLenum target, WebGLArrayBuffer data, GLenum usage)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBufferData.xml">
                 (OpenGL ES 2.0 man page)
-            </a>
+            </a></p>
         <dd>
             Set the size of the currently bound WebGLBuffer object for the passed target to the 
             size of the passed data, then write the contents of data to the buffer object.
             
-        <dt><code>bufferSubData(target, offset, data)</code>
+        <dt><p class="idl-code">void bufferSubData(GLenum target, GLsizeiptr offset, WebGLArray data)</p>
+            <p class="idl-code">void bufferSubData(GLenum target, GLsizeiptr offset, WebGLArrayBuffer data)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBufferSubData.xml">
                 (OpenGL ES 2.0 man page)
-            </a>
+            </a></p>
         <dd>
             For the WebGLBuffer object bound to the passed target write the passed data starting
             at the passed offset. If the data would be written past the end of the buffer object
             an INVALID_VALUE error is raised.
             
-        <dt><code>createBuffer()</code>
+        <dt class="idl-code">WebGLBuffer createBuffer()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGenBuffers.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2258,7 +2262,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Create a WebGLBuffer object and initialize it with a buffer object name as if by
             calling glGenBuffers.
             
-        <dt><code>deleteBuffer(buffer)</code>
+        <dt class="idl-code">void deleteBuffer(WebGLBuffer buffer)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDeleteBuffers.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2269,7 +2273,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             This method merely gives the author greater control over when the buffer object is
             destroyed.
 
-        <dt><code>getBufferParameter(target, pname)</code>
+        <dt class="idl-code">any getBufferParameter(GLenum target, GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetBufferParameteriv.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2281,7 +2285,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>BUFFER_SIZE</td><td>long</td></tr>
                 <tr><td>BUFFER_USAGE</td><td>unsigned long</td></tr>
             </table>
-        <dt><code>isBuffer(buffer)</code>
+        <dt class="idl-code">GLboolean isBuffer(WebGLBuffer buffer)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glIsBuffer.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2298,16 +2302,16 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
      
     <dl class="methods">
-        <dt><code>bindFramebuffer(target, buffer)</code>
+        <dt class="idl-code">void bindFramebuffer(GLenum target, WebGLFramebuffer framebuffer)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBindFramebuffer.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         
-        <dt><code>checkFramebufferStatus(target)</code>
+        <dt class="idl-code">GLenum checkFramebufferStatus(GLenum target)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glCheckFramebufferStatus.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>createFramebuffer()</code>
+        <dt class="idl-code">WebGLFramebuffer createFramebuffer()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGenFramebuffers.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2315,7 +2319,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Create a WebGLFramebuffer object and initialize it with a framebuffer object name as if by
             calling glGenFramebuffers.
             
-        <dt><code>deleteFramebuffer(buffer)</code>
+        <dt class="idl-code">void deleteFramebuffer(WebGLFramebuffer buffer)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDeleteFramebuffers.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2326,15 +2330,19 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             This method merely gives the author greater control over when the framebuffer object is
             destroyed.
 
-        <dt><code>framebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer)</code>
+        <dt class="idl-code">void framebufferRenderbuffer(GLenum target, GLenum attachment, 
+                                 GLenum renderbuffertarget, 
+                                 WebGLRenderbuffer renderbuffer)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glFramebufferRenderbuffer.xml">
                 (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>framebufferTexture2D(target, attachment, textarget, texture, level)</code>
+            </a></dt>
+        <dt class="idl-code">void framebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, 
+                              WebGLTexture texture, GLint level)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glFramebufferTexture2D.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>getFramebufferAttachmentParameter(target, attachment, pname)</code>
+        <dt class="idl-code">any getFramebufferAttachmentParameter(GLenum target, GLenum attachment, 
+                                          GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetFramebufferAttachmentParameteriv.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2348,7 +2356,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL</td><td>long</td></tr>
                 <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE</td><td>long</td></tr>
             </table>
-        <dt><code>isFramebuffer(framebuffer)</code>
+        <dt class="idl-code">GLboolean isFramebuffer(WebGLFramebuffer framebuffer)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glIsFramebuffer.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2366,12 +2374,12 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
      
     <dl class="methods">
-        <dt><code>bindRenderbuffer(target, buffer)</code>
+        <dt class="idl-code">void bindRenderbuffer(GLenum target, WebGLRenderbuffer renderbuffer)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBindRenderbuffer.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         
-        <dt><code>createRenderbuffer()</code>
+        <dt class="idl-code">WebGLRenderbuffer createRenderbuffer()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGenRenderbuffers.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2379,7 +2387,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Create a WebGLRenderbuffer object and initialize it with a renderbuffer object name as if by
             calling glGenRenderbuffers.
             
-        <dt><code>deleteRenderbuffer(buffer)</code>
+        <dt class="idl-code">void deleteRenderbuffer(WebGLRenderbuffer renderbuffer)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDeleteRenderbuffers.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2389,7 +2397,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Note that the renderbuffer object will be deleted when the WebGLRenderbuffer object is destroyed.
             This method merely gives the author greater control over when the renderbuffer object is
             destroyed.
-        <dt><code>getRenderbufferParameter(target, pname)</code>
+        <dt class="idl-code">any getRenderbufferParameter(GLenum target, GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetRenderbufferParameteriv.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2408,13 +2416,14 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>RENDERBUFFER_DEPTH_SIZE</td><td>long</td></tr>
                 <tr><td>RENDERBUFFER_STENCIL_SIZE</td><td>long</td></tr>
             </table>
-        <dt><code>isRenderbuffer(renderbuffer)</code>
+        <dt class="idl-code">GLboolean isRenderbuffer(WebGLRenderbuffer renderbuffer)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glIsRenderbuffer.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             Return true if the passed WebGLRenderbuffer is valid and false otherwise.
-        <dt><code>renderbufferStorage(target, internalformat, width, height)</code>
+        <dt class="idl-code">void renderbufferStorage(GLenum target, GLenum internalformat, 
+                             GLsizei width, GLsizei height)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glRenderbufferStorage.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2431,25 +2440,28 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
      
     <dl class="methods">
-        <dt><code>bindTexture(target, texture)</code>
+        <dt class="idl-code">void bindTexture(GLenum target, WebGLTexture texture)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBindTexture.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>copyTexImage2D(target, level, internalformat, x, y, width, height, border)</code>
+        <dt class="idl-code">void copyTexImage2D(GLenum target, GLint level, GLenum internalformat, 
+                        GLint x, GLint y, GLsizei width, GLsizei height, 
+                        GLint border)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glCopyTexImage2D.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             INVALID_OPERATION error is raised.
-        <dt><code>copyTexSubImage2D(target, level, xoffset, yoffset, internalformat, x, y, width, height)</code>
+        <dt class="idl-code">void copyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                           GLint x, GLint y, GLsizei width, GLsizei height)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glCopyTexSubImage2D.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             INVALID_OPERATION error is raised.
-        <dt><code>createTexture()</code>
+        <dt class="idl-code">WebGLTexture createTexture()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGenTextures.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2457,7 +2469,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Create a WebGLTexture object and initialize it with a texture object name as if by
             calling glGenTextures.
             
-        <dt><code>deleteTexture(texture)</code>
+        <dt class="idl-code">void deleteTexture(WebGLTexture texture)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDeleteTextures.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2467,14 +2479,14 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Note that the texture object will be deleted when the WebGLTexture object is destroyed.
             This method merely gives the author greater control over when the texture object is
             destroyed.
-        <dt><code>generateMipmap(target)</code>
+        <dt class="idl-code">void generateMipmap(GLenum target)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGenerateMipmap.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             INVALID_OPERATION error is raised.
-        <dt><code>getTexParameter(target, pname)</code>
+        <dt class="idl-code">any getTexParameter(GLenum target, GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetTexParameter.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2488,13 +2500,15 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>TEXTURE_WRAP_S</td><td>unsigned long</td></tr>
                 <tr><td>TEXTURE_WRAP_T</td><td>unsigned long</td></tr>
             </table>
-        <dt><code>isTexture(texture)</code>
+        <dt class="idl-code">GLboolean isTexture(WebGLTexture texture)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glIsTexture.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             Return true if the passed WebGLTexture is valid and false otherwise.
-        <dt><code>texImage2D(target, level, internalformat, width, height, border, format, type, pixels)</code>
+        <dt class="idl-code">texImage2D(GLenum target, GLint level, GLenum internalformat, 
+                    GLsizei width, GLsizei height, GLint border, GLenum format, 
+                    GLenum type, WebGLArray pixels)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexImage2D.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2503,10 +2517,17 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             initialized to 0 is passed.
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             INVALID_OPERATION error is raised.
-        <dt><code>texImage2D(target, level, image, flipY, asPremultipliedAlpha)</code>
+        <dt><p class="idl-code">void texImage2D(GLenum target, GLint level, ImageData pixels,
+                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
+            <p class="idl-code">void texImage2D(GLenum target, GLint level, HTMLImageElement image,
+                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
+            <p class="idl-code">void texImage2D(GLenum target, GLint level, HTMLCanvasElement canvas,
+                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
+            <p class="idl-code">void texImage2D(GLenum target, GLint level, HTMLVideoElement video,
+                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexImage2D.xml">
                 (OpenGL ES 2.0 man page)
-            </a>
+            </a></p>
         <dd>
             If the flipY parameter is false, the upper left pixel of the passed image is sent first and
             then transfer proceeds across and then down the image. If the flipY parameter is true, the
@@ -2514,31 +2535,44 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             up the image.
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             INVALID_OPERATION error is raised.
-        <dt><code>texParameterf(target, pname, param)</code>
+        <dt class="idl-code">void texParameterf(GLenum target, GLenum pname, GLfloat param)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexParameter.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             INVALID_OPERATION error is raised.
-        <dt><code>texParameteri(target, pname, param)</code>
+        <dt class="idl-code">void texParameteri(GLenum target, GLenum pname, GLint param)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexParameter.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             INVALID_OPERATION error is raised.
-        <dt><code>texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels)</code>
+        <dt class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       GLsizei width, GLsizei height, 
+                       GLenum format, GLenum type, WebGLArray pixels)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexSubImage2D.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             INVALID_OPERATION error is raised.
-        <dt><code>texSubImage2D(target, level, xoffset, yoffset, image, flipY, asPremultipliedAlpha)</code>
+        <dt><p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       ImageData pixels,
+                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
+            <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       HTMLImageElement image,
+                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
+            <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       HTMLCanvasElement canvas,
+                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
+            <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+                       HTMLVideoElement video,
+                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexSubImage2D.xml">
                 (OpenGL ES 2.0 man page)
-            </a>
+            </a></p>
         <dd>
             If the flipY parameter is false, the upper left pixel of the passed image is sent first and
             then transfer proceeds across and then down the image. If the flipY parameter is true, the
@@ -2560,19 +2594,19 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
      
     <dl class="methods">
-        <dt><code>attachShader(program, shader)</code>
+        <dt class="idl-code">void attachShader(WebGLProgram program, WebGLShader shader)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glAttachShader.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>bindAttribLocation(program, index, name)</code>
+        <dt class="idl-code">void bindAttribLocation(WebGLProgram program, GLuint index, DOMString name)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBindAttribLocation.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>compileShader(shader)</code>
+        <dt class="idl-code">void compileShader(WebGLShader shader)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glCompileShader.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>createProgram()</code>
+        <dt class="idl-code">WebGLProgram createProgram()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glCreateProgram.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2580,7 +2614,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Create a WebGLProgram object and initialize it with a program object name as if by
             calling glCreateProgram.
             
-        <dt><code>createShader(type)</code>
+        <dt class="idl-code">WebGLShader createShader(type)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glCreateShader.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2588,7 +2622,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Create a WebGLShader object and initialize it with a shader object name as if by
             calling glCreateShader.
             
-        <dt><code>deleteProgram(program)</code>
+        <dt class="idl-code">void deleteProgram(WebGLProgram program)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDeleteProgram.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2598,7 +2632,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Note that the program object will be deleted when the WebGLProgram object is destroyed.
             This method merely gives the author greater control over when the program object is
             destroyed.
-        <dt><code>deleteShader(shader)</code>
+        <dt class="idl-code">void deleteShader(WebGLShader shader)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDeleteShader.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2608,17 +2642,17 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Note that the shader object will be deleted when the WebGLShader object is destroyed.
             This method merely gives the author greater control over when the shader object is
             destroyed.
-        <dt><code>detachShader(program, shader)</code>
+        <dt class="idl-code">void detachShader(WebGLProgram program, WebGLShader shader)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDetachShader.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>getAttachedShaders(program)</code>
+        <dt class="idl-code">WebGLObjectArray getAttachedShaders(GLuint program)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetAttachedShaders.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             Return the list of shaders attached to the passed program.
-        <dt><code>getProgramParameter(program, pname)</code>
+        <dt class="idl-code">any getProgramParameter(WebGLProgram program, GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetProgramiv.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2637,11 +2671,11 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>ACTIVE_UNIFORMS</td><td>long</td></tr>
                 <tr><td>ACTIVE_UNIFORM_MAX_LENGTH</td><td>long</td></tr>
             </table>
-        <dt><code>getProgramInfoLog(program)</code>
+        <dt class="idl-code">DOMString getProgramInfoLog(WebGLProgram program)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetProgramInfoLog.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>getShaderParameter(shader, pname)</code>
+        <dt class="idl-code">any getShaderParameter(WebGLShader shader, GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetShaderiv.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2656,39 +2690,39 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>INFO_LOG_LENGTH</td><td>long</td></tr>
                 <tr><td>SHADER_SOURCE_LENGTH</td><td>long</td></tr>
             </table>
-        <dt><code>getShaderInfoLog(shader)</code>
+        <dt class="idl-code">DOMString getShaderInfoLog(WebGLShader shader)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetShaderInfoLog.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>getShaderSource(shader)</code>
+        <dt class="idl-code">DOMString getShaderSource(WebGLShader shader)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetShaderSource.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>isProgram(program)</code>
+        <dt class="idl-code">GLboolean isProgram(WebGLProgram program)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glIsProgram.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             Return true if the passed WebGLProgram is valid and false otherwise.
-        <dt><code>isShader(shader)</code>
+        <dt class="idl-code">GLboolean isShader(WebGLShader shader)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glIsShader.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             Return true if the passed WebGLShader is valid and false otherwise.
-        <dt><code>linkProgram(program)</code>
+        <dt class="idl-code">void linkProgram(WebGLProgram program)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glLinkProgram.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>shaderSource(shader, source)</code>
+        <dt class="idl-code">void shaderSource(WebGLShader shader, DOMString source)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glShaderSource.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>useProgram(program)</code>
+        <dt class="idl-code">void useProgram(WebGLProgram program)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUseProgram.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>validateProgram(program)</code>
+        <dt class="idl-code">void validateProgram(WebGLProgram program)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glValidateProgram.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2703,33 +2737,33 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
      
     <dl class="methods">
-        <dt><code>disableVertexAttribArray(index)</code>
+        <dt class="idl-code">void disableVertexAttribArray(GLuint index)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDisableVertexAttribArray.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>enableVertexAttribArray(index)</code>
+        <dt class="idl-code">void enableVertexAttribArray(GLuint index)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glEnableVertexAttribArray.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>getActiveAttrib(program, index)</code>
+        <dt class="idl-code">WebGLActiveInfo getActiveAttrib(GLuint program, GLuint index)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetActiveAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             Returns information about the size, type and name of the vertex attribute at the
             passed index of the passed program object.
-        <dt><code>getActiveUniform(program, index)</code>
+        <dt class="idl-code">WebGLActiveInfo getActiveUniform(GLuint program, GLuint index)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetActiveUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             Returns information about the size, type and name of the uniform at the
             passed index of the passed program object.
-        <dt><code>getAttribLocation(program, name)</code>
+        <dt class="idl-code">GLint getAttribLocation(WebGLProgram program, DOMString name)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetAttribLocation.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>getUniform(program, location)</code>
+        <dt class="idl-code">any getUniform(WebGLProgram program, WebGLUniformLocation location)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2754,7 +2788,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>mat3</td><td>WebGLFloatArray (with 9 elements)</td></tr>
                 <tr><td>mat4</td><td>WebGLFloatArray (with 16 elements)</td></tr>
             </table>
-        <dt><code>getUniformLocation(program, name)</code>
+        <dt class="idl-code">WebGLUniformLocation getUniformLocation(WebGLProgram program, DOMString name)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetUniformLocation.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2763,7 +2797,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             within a program object. The return value is null if name does not correspond to an active uniform
             variable in the passed program.
 
-        <dt><code>getVertexAttrib(index, pname)</code>
+        <dt class="idl-code">any getVertexAttrib(GLuint index, GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2780,124 +2814,146 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>VERTEX_ATTRIB_ARRAY_NORMALIZED</td><td>boolean</td></tr>
                 <tr><td>CURRENT_VERTEX_ATTRIB</td><td>WebGLFloatArray (with 4 elements)</td></tr>
             </table>
-        <dt><code>getVertexAttribOffset(index, pname)</code>
+        <dt class="idl-code">GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetVertexAttribPointerv.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>uniform1f(location, x)</code>
+        <dt class="idl-code">void uniform1f(WebGLUniformLocation location, GLfloat x)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>uniform1fv(location, v)</code>
+        <dt><p class="idl-code">void uniform1fv(WebGLUniformLocation location, WebGLFloatArray v)</p>
+            <p class="idl-code">void uniform1fv(WebGLUniformLocation location, sequence&lt;float&gt; v)
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
+                (OpenGL ES 2.0 man page)
+            </a></p>
+        <dt class="idl-code">void uniform1i(WebGLUniformLocation location, GLint x)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>uniform1i(location, x)</code>
+        <dt><p class="idl-code">void uniform1iv(WebGLUniformLocation location, WebGLIntArray v)</p>
+            <p class="idl-code">void uniform1iv(WebGLUniformLocation location, sequence&lt;long&gt; v)
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
+                (OpenGL ES 2.0 man page)
+            </a></p>
+        <dt class="idl-code">void uniform2f(WebGLUniformLocation location, GLfloat x, GLfloat y)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>uniform1iv(location, v)</code>
+        <dt><p class="idl-code">void uniform2fv(WebGLUniformLocation location, WebGLFloatArray v)</p>
+            <p class="idl-code">void uniform2fv(WebGLUniformLocation location, sequence&lt;float&gt; v)
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
+                (OpenGL ES 2.0 man page)
+            </a></p>
+        <dt class="idl-code">void uniform2i(WebGLUniformLocation location, GLint x, GLint y)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>uniform2f(location, x, y)</code>
+        <dt><p class="idl-code">void uniform2iv(WebGLUniformLocation location, WebGLIntArray v)</p>
+            <p class="idl-code">void uniform2iv(WebGLUniformLocation location, sequence&lt;long&gt; v)
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
+                (OpenGL ES 2.0 man page)
+            </a></p>
+        <dt class="idl-code">void uniform3f(WebGLUniformLocation location, GLfloat x, GLfloat y, GLfloat z)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>uniform2fv(location, v)</code>
+        <dt><p class="idl-code">void uniform3fv(WebGLUniformLocation location, WebGLFloatArray v)</p>
+            <p class="idl-code">void uniform3fv(WebGLUniformLocation location, sequence&lt;float&gt; v)
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
+                (OpenGL ES 2.0 man page)
+            </a></p>
+        <dt class="idl-code">void uniform3i(WebGLUniformLocation location, GLint x, GLint y, GLint z)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>uniform2i(location, x, y)</code>
+        <dt><p class="idl-code">void uniform3iv(WebGLUniformLocation location, WebGLIntArray v)</p>
+            <p class="idl-code">void uniform3iv(WebGLUniformLocation location, sequence&lt;long&gt; v)
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
+                (OpenGL ES 2.0 man page)
+            </a></p>
+        <dt class="idl-code">void uniform4f(WebGLUniformLocation location, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>uniform2iv(location, v)</code>
+        <dt><p class="idl-code">void uniform4fv(WebGLUniformLocation location, WebGLFloatArray v)</p>
+            <p class="idl-code">void uniform4fv(WebGLUniformLocation location, sequence&lt;float&gt; v)
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
+                (OpenGL ES 2.0 man page)
+            </a></p>
+        <dt class="idl-code">void uniform4i(WebGLUniformLocation location, GLint x, GLint y, GLint z, GLint w)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>uniform3f(location, x, y, z)</code>
+        <dt><p class="idl-code">void uniform4iv(WebGLUniformLocation location, WebGLIntArray v)</p>
+            <p class="idl-code">void uniform4iv(WebGLUniformLocation location, sequence&lt;long&gt; v)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>uniform3fv(location, v)</code>
+            </a></p>
+        <dt><p class="idl-code">void uniformMatrix2fv(WebGLUniformLocation location, GLboolean transpose, 
+                          WebGLFloatArray value)</p>
+            <p class="idl-code">void uniformMatrix2fv(WebGLUniformLocation location, GLboolean transpose, 
+                          sequence&lt;float&gt; value)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>uniform3i(location, x, y, z)</code>
+            </a></p>
+        <dt><p class="idl-code">void uniformMatrix3fv(WebGLUniformLocation location, GLboolean transpose, 
+                          WebGLFloatArray value)</p>
+            <p class="idl-code">void uniformMatrix3fv(WebGLUniformLocation location, GLboolean transpose, 
+                          sequence&lt;float&gt; value)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>uniform3iv(location, v)</code>
+            </a></p>
+        <dt><p class="idl-code">void uniformMatrix4fv(WebGLUniformLocation location, GLboolean transpose, 
+                          WebGLFloatArray value)<br>
+            <p class="idl-code">void uniformMatrix4fv(WebGLUniformLocation location, GLboolean transpose, 
+                          sequence&lt;float&gt; value)<br>
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
                 (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>uniform4f(location, x, y, z, w)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
-                (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>uniform4fv(location, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
-                (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>uniform4i(location, x, y, z, w)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
-                (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>uniform4iv(location, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
-                (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>uniformMatrix2fv(location, transpose, value)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
-                (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>uniformMatrix3fv(location, transpose, value)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
-                (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>uniformMatrix4fv(location, transpose, value)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glUniform.xml">
-                (OpenGL ES 2.0 man page)
-            </a>
+            </a></p>
        <dd>
             Each of the uniform* functions above sets the specified uniform or uniforms to the values 
             provided. The passed <code>location</code> must have been obtained from the currently used 
             program via an earlier call to <code>getUniformLocation</code>, or an INVALID_VALUE error
             will be raised.
-        <dt><code>vertexAttrib1f(index, x)</code>
+        <dt class="idl-code">void vertexAttrib1f(GLuint indx, GLfloat x)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>vertexAttrib1fv(index, v)</code>
+        <dt><p class="idl-code">void vertexAttrib1fv(GLuint indx, WebGLFloatArray values)</p>
+            <p class="idl-code">void vertexAttrib1fv(GLuint indx, sequence&lt;float&gt; values)
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
+                (OpenGL ES 2.0 man page)
+            </a></p>
+        <dt class="idl-code">void vertexAttrib2f(GLuint indx, GLfloat x, GLfloat y)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>vertexAttrib2f(index, x)</code>
+        <dt><p class="idl-code">void vertexAttrib2fv(GLuint indx, WebGLFloatArray values)</p>
+            <p class="idl-code">void vertexAttrib2fv(GLuint indx, sequence&lt;float&gt; values)
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
+                (OpenGL ES 2.0 man page)
+            </a></p>
+        <dt class="idl-code">void vertexAttrib3f(GLuint indx, GLfloat x, GLfloat y, GLfloat z)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>vertexAttrib2fv(index, v)</code>
+        <dt><p class="idl-code">void vertexAttrib3fv(GLuint indx, WebGLFloatArray values)</p>
+            <p class="idl-code">voidvoid vertexAttrib3fv(GLuint indx, sequence&lt;float&gt; values)
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
+                (OpenGL ES 2.0 man page)
+            </a></p>
+        <dt class="idl-code">void vertexAttrib4f(GLuint indx, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>vertexAttrib3f(index, x)</code>
+        <dt><p class="idl-code">void vertexAttrib4fv(GLuint indx, WebGLFloatArray values)</p>
+            <p class="idl-code">void vertexAttrib4fv(GLuint indx, sequence&lt;float&gt; values)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
                 (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>vertexAttrib3fv(index, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
-                (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>vertexAttrib4f(index, x)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
-                (OpenGL ES 2.0 man page)
-            </a>
-        <dt><code>vertexAttrib4fv(index, v)</code>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
-                (OpenGL ES 2.0 man page)
-            </a>
-         <dt><code>vertexAttribPointer(index, size, type, normalized, stride, offset)</code>
+            </a></p>
+         <dt class="idl-code">void vertexAttribPointer(GLuint indx, GLint size, GLenum type, 
+                             GLboolean normalized, GLsizei stride, GLsizeiptr offset)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttribPointer.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2922,15 +2978,15 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
      
     <dl class="methods">
-        <dt><code>clear(mask)</code>
+        <dt class="idl-code">void clear(GLbitfield mask)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glClear.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>drawArrays(mode, first, count)</code>
+        <dt class="idl-code">void drawArrays(GLenum mode, GLint first, GLsizei count)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDrawArrays.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>drawElements(mode, count, type, offset)</code>
+        <dt class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLsizeiptr offset)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glDrawElements.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2939,11 +2995,11 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             offset is in bytes, and must be a valid multiple of the
             size of the given type or an INVALID_VALUE error will be
             raised.
-        <dt><code>finish()</code>
+        <dt class="idl-code">void finish()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glFinish.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt><code>flush()</code>
+        <dt class="idl-code">void flush()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glFlush.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2958,7 +3014,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
 
     <dl class="methods">
-        <dt><code>readPixels(x, y, width, height, format, type)</code>
+        <dt class="idl-code">WebGLArray readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
+                           GLenum format, GLenum type)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glReadPixels.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2985,10 +3042,10 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
 
     <dl class="methods">
-        <dt><code>isContextLost()</code>
+        <dt class="idl-code">boolean isContextLost()
         <dd>
             Returns true if the context is in the lost state.
-        <dt><code>resetContext()</code>
+        <dt class="idl-code">boolean resetContext()
         <dd>
             Returns true if the context was reset successfully.
     </dl>
@@ -3018,13 +3075,13 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     </p>
 
     <dl class="methods">
-        <dt><code>getSupportedExtensions()</code>
+        <dt class="idl-code">DOMString[ ] getSupportedExtensions()
         <dd>
             Returns an array of all the supported extension strings. Any string in this list, when 
             passed to <code>getExtension</code> must return a valid object. Any other string passed to 
             <code>getExtension</code> must return null.
             
-        <dt><code>getExtension()</code>
+        <dt class="idl-code">object getExtension(DOMString name)
         <dd>
             Returns an object if the passed extension is supported, or null if not. The object 
             returned from <code>getExtension</code> contains any constants or functions used by the 
@@ -3064,10 +3121,10 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
 interface <dfn id="WebGLContextLostEvent">WebGLContextLostEvent</dfn> : Event {
     readonly attribute WebGLRenderingContext context;
     
-    void initWebGLContextLostEvent(in DOMString type,
-                                   in boolean canBubble,
-                                   in boolean cancelable,
-                                   in WebGLRenderingContext context);
+    void initWebGLContextLostEvent(DOMString type,
+                                   boolean canBubble,
+                                   boolean cancelable,
+                                   WebGLRenderingContext context);
 };</pre>
 
     <h5>Attributes</h5>
@@ -3089,7 +3146,7 @@ interface <dfn id="WebGLContextLostEvent">WebGLContextLostEvent</dfn> : Event {
     </p>
 
     <dl class="methods">
-        <dt><code>void initWebGLContextLostEvent(in DOMString type, in boolean canBubble, in boolean cancelable, in WebGLRenderingContext context)</code>
+        <dt class="idl-code">void initWebGLContextLostEvent(DOMString type, boolean canBubble, boolean cancelable, WebGLRenderingContext context)
         <dd>
             Initialize the event created through the 
             <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-Event">Event</a>
