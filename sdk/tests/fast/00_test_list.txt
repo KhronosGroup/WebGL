@@ -23,7 +23,9 @@ gl-pixelstorei.html
 gl-scissor-test.html
 gl-shader-test.html
 gl-uniform-arrays.html
+gl-uniform-bool.html
 gl-uniformmatrix4fv.html
+gl-unknown-uniform.html
 gl-vertexattrib.html
 gl-vertexattribpointer.html
 gl-getstring.html
