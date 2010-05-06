@@ -2233,7 +2233,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER. If the buffer is null then any buffer currently
             bound to this target is unbound. A given WebGLBuffer object may only be bound to one of
             the ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER target in its lifetime. An attempt to bind a
-            buffer object to the other target will result in an INVALID_OPERATION error, and the
+            buffer object to the other target will generate an <code>INVALID_OPERATION</code> error, and the
             current binding will remain untouched.
         
         <dt class="idl-code">void bufferData(GLenum target, GLsizei size, GLenum usage)
@@ -2261,7 +2261,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
         <dd>
             For the WebGLBuffer object bound to the passed target write the passed data starting
             at the passed offset. If the data would be written past the end of the buffer object
-            an INVALID_VALUE error is raised.
+            an <code>INVALID_VALUE</code> error is generated.
             
         <dt class="idl-code">WebGLBuffer createBuffer()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGenBuffers.xml">
@@ -2445,7 +2445,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     <p>
         Texture objects provide storage and state for texturing operations. If no WebGLTexture is bound
         (e.g., passing null or 0 to bindTexture) then attempts to modify the texture object shall
-        raise an INVALID_OPERATION error. This is indicated in the functions below.
+        generate an <code>INVALID_OPERATION</code> error. This is indicated in the functions below.
     </p>
      
     <dl class="methods">
@@ -2461,7 +2461,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            INVALID_OPERATION error is raised.
+            <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">void copyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                            GLint x, GLint y, GLsizei width, GLsizei height)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glCopyTexSubImage2D.xml">
@@ -2469,7 +2469,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            INVALID_OPERATION error is raised.
+            <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">WebGLTexture createTexture()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGenTextures.xml">
                 (OpenGL ES 2.0 man page)
@@ -2494,7 +2494,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            INVALID_OPERATION error is raised.
+            <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">any getTexParameter(GLenum target, GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetTexParameter.xml">
                 (OpenGL ES 2.0 man page)
@@ -2525,7 +2525,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             If the passed <code>pixels</code> value is <code>null</code> a buffer of sufficient size
             initialized to 0 is passed.
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            INVALID_OPERATION error is raised.
+            <code>INVALID_OPERATION</code> error is generated.
         <dt><p class="idl-code">void texImage2D(GLenum target, GLint level, ImageData pixels,
                     optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
             <p class="idl-code">void texImage2D(GLenum target, GLint level, HTMLImageElement image,
@@ -2543,21 +2543,21 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             lower left pixel of the passed image is sent first and then transfer proceeds across and then
             up the image.
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            INVALID_OPERATION error is raised.
+            <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">void texParameterf(GLenum target, GLenum pname, GLfloat param)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexParameter.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            INVALID_OPERATION error is raised.
+            <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">void texParameteri(GLenum target, GLenum pname, GLint param)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexParameter.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            INVALID_OPERATION error is raised.
+            <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLsizei width, GLsizei height, 
                        GLenum format, GLenum type, WebGLArray pixels)
@@ -2566,7 +2566,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             </a>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            INVALID_OPERATION error is raised.
+            <code>INVALID_OPERATION</code> error is generated.
         <dt><p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        ImageData pixels,
                        optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
@@ -2588,7 +2588,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             lower left pixel of the passed image is sent first and then transfer proceeds across and then
             up the image.
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            INVALID_OPERATION error is raised.
+            <code>INVALID_OPERATION</code> error is generated.
     </dl>
      
 <!-- ======================================================================================================= -->
@@ -2836,8 +2836,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
        <dd>
             Each of the uniform* functions above sets the specified uniform or uniforms to the values 
             provided. The passed <code>location</code> must have been obtained from the currently used 
-            program via an earlier call to <code>getUniformLocation</code>, or an INVALID_VALUE error
-            will be raised.
+            program via an earlier call to <code>getUniformLocation</code>, or an <code>INVALID_VALUE</code> error
+            will be generated.
         <dt><p class="idl-code">void vertexAttrib[1234]f(GLuint indx, ...)</p>
             <p class="idl-code">void vertexAttrib[1234]fv(GLuint indx, ...)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
@@ -2854,7 +2854,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Assign the currently bound WebGLBuffer object to the vertex attribute at the passed index.
             Size is number of components per attribute. Stride and offset are in units of bytes.
             Passed stride and offset must be appropriate for the passed type and size or an
-            INVALID_VALUE error will be raised.
+            <code>INVALID_VALUE</code> error will be generated.
     </dl>
     
 <!-- ======================================================================================================= -->
@@ -2886,8 +2886,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
         <dd>
             Draw using the currently bound index array.  The given
             offset is in bytes, and must be a valid multiple of the
-            size of the given type or an INVALID_VALUE error will be
-            raised.
+            size of the given type or an <code>INVALID_VALUE</code> error will be
+            generated.
         <dt class="idl-code">void finish()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glFinish.xml">
                 (OpenGL ES 2.0 man page)
@@ -2960,7 +2960,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
         Once an extension is enabled, no mechanism is provided to disable it. Multiple calls to
         <code>getExtension</code> with the same extension string shall return the same object. An 
         attempt to use any features of an extension without first calling getExtension to enable it 
-        must return the appropriate GL error and must not make use of the feature.
+        must generate an appropriate GL error and must not make use of the feature.
     </p>
     <p>
         This specification does not define any extensions. Browser specific extensions must have a 
@@ -3117,7 +3117,7 @@ given buffer object may contain either vertices or indices, but not both.
 
 The type of a WebGLBuffer is initialized the first time it is passed as an argument
 to <code>bindBuffer</code>. A subsequent call to <code>bindBuffer</code> which attempts to bind the
-same WebGLBuffer to the other binding point will raise an <code>INVALID_OPERATION</code> error, and
+same WebGLBuffer to the other binding point will generate an <code>INVALID_OPERATION</code> error, and
 the state of the binding point will remain untouched.
 
 </p>
@@ -3139,7 +3139,7 @@ A renderbuffer attached to the <code>DEPTH_ATTACHMENT</code> attachment point mu
 the <code>DEPTH_COMPONENT16</code> internal format. A renderbuffer attached to
 the <code>STENCIL_ATTACHMENT</code> attachment point must be allocated with
 the <code>STENCIL_INDEX8</code> internal format. Attempts to attach a renderbuffer with an incorrect
-internal format to a particular attachment point will raise INVALID_OPERATION from the call
+internal format to a particular attachment point will generate an <code>INVALID_OPERATION</code> error from the call
 to <code>framebufferRenderbuffer</code> and leave the framebuffer's attachments untouched.
 
 </p>
@@ -3155,7 +3155,7 @@ attachment points:
 </ul>
 
 A call to <code>framebufferRenderbuffer</code> which would result in non-zero attachments to any of
-these combinations of attachment points will raise an <code>INVALID_OPERATION</code> error and leave
+these combinations of attachment points will generate an <code>INVALID_OPERATION</code> error and leave
 the framebuffer's attachments untouched.
 
 </p>
