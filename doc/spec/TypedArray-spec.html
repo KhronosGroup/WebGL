@@ -31,7 +31,7 @@
 
 <body onload="generateTOC(document.getElementById('toc'))">
   <h1>Typed Arrays</h1>
-  <h2 class="no-toc">Working Draft 25 January 2010</h2>
+  <h2 class="no-toc">Working Draft 06 May 2010</h2>
   <dl>
     <dt>This version:
       <dd>
@@ -284,8 +284,8 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> {
 
     <i>TypedArray</i> slice(in unsigned long start, in unsigned long end);
 
-    getter <i>type</i> get(in unsigned long index);
-    setter void set(in unsigned long index, in <i>type</i> value);
+    getter <i>type</i> (in unsigned long index);
+    setter void (in unsigned long index, in <i>type</i> value);
     void set(in <i>TypedArray</i> array, in optional unsigned long offset);
     void set(in sequence&lt;<i>type</i>&gt; array, in optional unsigned long offset);
 };</pre>
@@ -389,22 +389,26 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> {
 	<tr><th colspan="2">Methods</th></tr>
 	<tr>
 	  <td>
-	    <i>get</i>(index)
+	    <code>getter</code> <i>type</i> (unsigned long index)
 	  </td>
 	  <td>
 	    <p>This is an index getter.</p>
-	    <p>Return the element at the given numeric index.</p>
-	    <p>If index is < 0 or >= <tt>length</tt>, then zero is returned. XXX ... an exception is raised?</p>
+	    <p>Returns the element at the given numeric index.</p>
+	    <p>In the ECMAScript binding, this getter is invoked via the indexing
+               operator <code>[]</code>.  If the index is greater than or equal
+               to <code>length</code>, then the undefined value is returned.</p>
 	  </td>
 	</tr>
 	<tr>
 	  <td>
-	    <i>set</i>(index, value)
+	    <code>setter</code> void (unsigned long index, <i>type</i> value)
 	  </td>
 	  <td>
 	    <p>This is an index setter.</p>
-	    <p>Set the element at the given numeric index to the given value.</p>
-	    <p>If index is < 0 or >= <tt>length</tt>, then zero is returned. XXX ... an exception is raised?</p>
+	    <p>Sets the element at the given numeric index to the given value.</p>
+	    <p>In the ECMAScript binding, this setter is invoked via the indexing
+               operator <code>[]</code>.  If the index is greater than or equal
+               to <code>length</code>, the assignment has no effect.</p>
 	    <p>If the value is not within the range of the array's element type, then a C-style cast is performed. XXX define this better -- if the dest type is an integer, coerce the value to an integer then take the low N bits; if the dest type is a float, then assign.. ?</p>
 	    <p>If the value can't be converted to a numeric value, then if the element type can represent a NaN value, NaN is stored, otherwise zero is stored. XXX ... an exception is raised?</p>
 	  </td>
