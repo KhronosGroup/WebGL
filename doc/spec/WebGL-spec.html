@@ -2834,10 +2834,12 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 (OpenGL ES 2.0 man page)
             </a></p>
        <dd>
-            Each of the uniform* functions above sets the specified uniform or uniforms to the values 
-            provided. The passed <code>location</code> must have been obtained from the currently used 
-            program via an earlier call to <code>getUniformLocation</code>, or an <code>INVALID_VALUE</code> error
-            will be generated.
+            Each of the uniform* functions above sets the specified uniform or uniforms to the
+            values provided. If the passed <code>location</code> is not null and was not obtained
+            from the currently used program via an earlier call to <code>getUniformLocation</code>,
+            an <code>INVALID_VALUE</code> error will be generated. If the passed
+            <code>location</code> is null, the data passed in will be silently ignored and the
+            specified uniform variable will not be changed.
         <dt><p class="idl-code">void vertexAttrib[1234]f(GLuint indx, ...)</p>
             <p class="idl-code">void vertexAttrib[1234]fv(GLuint indx, ...)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glVertexAttrib.xml">
