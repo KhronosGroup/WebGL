@@ -86,9 +86,9 @@ function init()
   var loc = gl.getUniformLocation(gl.program, "tex");
   gl.uniform1i(loc, 0);
 
-  checkBuffer(0,0,0,0,
+  checkBuffer(0,0,0,1,
       "texture that is not -texture-complete- when " +
-      "TEXTURE_MIN_FILTER not NEAREST or LINEAR should draw with 0,0,0,0");
+      "TEXTURE_MIN_FILTER not NEAREST or LINEAR should draw with 0,0,0,1");
 
   function checkBuffer(r, g, b, a, msg) {
     gl.clearColor(1,1,1,1);
@@ -102,11 +102,12 @@ function init()
           buf[offset + 1] != g ||
           buf[offset + 2] != b ||
           buf[offset + 3] != a) {
-        //debug('ex:' + r + ', ' + g + ', ' + b + ', ' + a + ' != ' +
-        //      buf[offset + 0] + ', ' +
-        //      buf[offset + 1] + ', ' +
-        //      buf[offset + 2] + ', ' +
-        //      buf[offset + 3]);
+        debug('expected: ' + r + ', ' + g + ', ' + b + ', ' + a +
+              ' was: ' +
+              buf[offset + 0] + ', ' +
+              buf[offset + 1] + ', ' +
+              buf[offset + 2] + ', ' +
+              buf[offset + 3]);
         testFailed(msg);
         return;
       }

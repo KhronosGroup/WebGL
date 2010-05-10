@@ -16,6 +16,7 @@ get-active-test.html
 gl-bindattribLocation-test.html
 gl-drawelements.html
 gl-enable-enum-test.html
+gl-enable-vertex-attrib.html
 gl-enum-tests.html
 gl-get-calls.html
 gl-object-get-calls.html

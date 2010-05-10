@@ -54,12 +54,13 @@ function init()
   }
 
   debug("Tests that binding both TEXTURE_2D and TEXTURE_3D to the same");
-  debug("active texture unit function as long as they are not used");
+  debug("active texture unit works as long as they are not used");
   debug("simultaneously in the same shader program.");
   debug("");
 
   var canvas2d = document.getElementById("canvas2d");
   var ctx2d = canvas2d.getContext("2d");
+  ctx2d.globalCompositeOperation = "copy";
 
   gl = initWebGL("example", "vshader", "fshader2d", [ "vPosition", "texCoord0"],
                  [ 0, 0, 0, 1 ], 1);
@@ -105,7 +106,7 @@ function init()
 
   // make a cube texture
   var texCube = gl.createTexture();
-  ctx2d.fillStyle = "rgba(0, 255, 0, 64)";
+  ctx2d.fillStyle = "rgba(255, 0, 255, 255)";
   ctx2d.fillRect(0, 0, 1, 1);
   var targets = [
     gl.TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -151,9 +152,9 @@ function init()
 
   var colors = [
       [0,0,255,255],
-      [0,255,0,64],
+      [255,0,255,255],
       [0,0,255,255],
-      [0,255,0,64]];
+      [255,0,255,255]];
 
   for (var ii = 0; ii < colors.length; ++ii) {
     var c = colors[ii];
