@@ -20,8 +20,8 @@ interface ArrayBufferView {
     readonly attribute ArrayBuffer buffer;
     readonly attribute unsigned long byteOffset;
     readonly attribute unsigned long byteLength;
-
 };
+
 
 // The 'byte' type does not currently exist in Web IDL.
 // In this IDL, it should be a signed 8 bit type.
@@ -43,6 +43,7 @@ interface Int8Array : ArrayBufferView {
     void set(sequence<byte> array, optional unsigned long offset);
     Int8Array slice(long start, long end);
 };
+
 
 // The 'unsigned byte' type does not currently exist in Web IDL, though
 // 'octet' is equivalent.
@@ -164,6 +165,27 @@ interface FloatArray : ArrayBufferView {
     void set(sequence<float> array, optional unsigned long offset);
     FloatArray slice(long start, long end);
 };
+
+
+[
+    Constructor(unsigned long length),
+    Constructor(DoubleArray array),
+    Constructor(sequence<double> array),
+    Constructor(ArrayBuffer buffer, 
+                optional unsigned long byteOffset, optional unsigned long length)
+]
+interface DoubleArray : ArrayBufferView {
+    const long BYTES_PER_ELEMENT = 8;
+    
+    readonly attribute unsigned long length;
+    
+    getter double (unsigned long index);
+    setter void (unsigned long index, double value);
+    void set(DoubleArray array, optional unsigned long offset);
+    void set(sequence<double> array, optional unsigned long offset);
+    DoubleArray slice(long start, long end);
+};
+
 
 [
   Constructor(ArrayBuffer buffer,
