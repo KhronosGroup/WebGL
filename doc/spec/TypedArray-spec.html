@@ -331,7 +331,7 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
     setter void (unsigned long index, <i>type</i> value);
     void set(<i>TypedArray</i> array, optional unsigned long offset);
     void set(sequence&lt;<i>type</i>&gt; array, optional unsigned long offset);
-    <i>TypedArray</i> slice(long start, long end);
+    <i>TypedArray</i> slice(long begin, optional long end);
 };</pre>
 
     <table class="api">
@@ -462,19 +462,27 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
 	</tr>
 	<tr>
 	  <td>
-	    <i>TypedArray</i> <i>slice</i>(long start, long end)
+	    <i>TypedArray</i> <i>slice</i>(long begin, optional long end)
 	  </td>
 	  <td>
 	    <p>Returns a new <i>TypedArray</i> view of
              the <tt>ArrayBuffer</tt> store for this <i>TypedArray</i>,
-             referencing the elements at start, inclusive, up to end,
-             exclusive.  If either start or end is negative, it refers to
-             an index from the end of the array, as opposed to from the
-             start.  The range specified by the given start and end values
-             is clamped to the valid index range for the current array, and
-             if not given default to the start and end of the array,
-             respectively.</p>
-
+             referencing the elements at <tt>begin</tt>, inclusive, up
+             to <tt>end</tt>, exclusive.  If either <tt>begin</tt>
+             or <tt>end</tt> is negative, it refers to an index from the
+             end of the array, as opposed to from the beginning.
+            </p>
+            <p>
+             If <tt>end</tt> is unspecified, the slice contains all
+             elements from <tt>begin</tt> to the end of
+             the <i>TypedArray</i>.
+            </p>
+            <p>
+             The range specified by the <tt>begin</tt> and <tt>end</tt>
+             values is clamped to the valid index range for the current
+             array. If the computed length of the new <i>TypedArray</i>
+             would be negative, it is clamped to zero.
+            </p>
 	    <p>The returned <i>TypedArray</i> will be of the same type
 	    as the array on which this method is invoked.</p>
 	  </td>
