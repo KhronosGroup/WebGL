@@ -31,35 +31,40 @@
 
 <body onload="generateTOC(document.getElementById('toc'))">
   <h1>Typed Arrays</h1>
-  <h2 class="no-toc">Working Draft 06 May 2010</h2>
+  <h2 class="no-toc">Working Draft 11 May 2010</h2>
   <dl>
     <dt>This version:
       <dd>
-        <a href="">
-
-        </a>
-        <br>
-        <a href=""> XXX
-          <b>WebIDL: xxx.idl</b>
-        </a>
+          <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/TypedArray-spec.html">
+              https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/TypedArray-spec.html
+          </a>
+          <br>
+          <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/typedarrays.idl">
+              <b>WebIDL:</b> https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/typedarrays.idl
+          </a>
       </dd>
     <dt>Latest version:
       <dd>
-        <a href="">
-        </a>
-        <br>
-        <a href=""> XXX
-          <b>WebIDL: xxx.idl</b>
-        </a>
+          <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/TypedArray-spec.html">
+              https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/TypedArray-spec.html
+          </a>
+          <br>
+          <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/typedarrays.idl">
+              <b>WebIDL:</b> https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/typedarrays.idl
+          </a>
       </dd>
     <dt>Previous version:
       <dd>
         none
       </dd>
-    <dt>Editor:
+    <dt>Editors:
       <dd>
-        <a href="mailto:"></a>
-        <a href="http://"></a>
+        <a href="mailto:vladimir@mozilla.com">Vladimir Vukicevic</a>
+        <a href="http://www.mozilla.com/">(Mozilla Corporation)</a>
+      </dd>
+      <dd>
+        <a href="mailto:kbr@google.com">Kenneth Russell</a>
+        <a href="http://www.google.com/intl/en/about.html">(Google, Inc.)</a>
       </dd>
   </dl>
 
@@ -84,9 +89,9 @@
         This is a working draft document and may be updated, replaced or obsoleted 
         by other documents at any time. Do not cite this document 
         as other than work in progress.  Public discussion of this draft specification 
-        is welcome on the (<a href="">archived</a>) 
-        XXX mailing list <a href="mailto:"></a> (see
-        <a href="">instructions</a>).
+        is welcome on the (<a href="https://www.khronos.org/webgl/public-mailing-list/archives">archived</a>) 
+        WebGL mailing list <a href="mailto:"></a> (see
+        <a href="https://www.khronos.org/webgl/public-mailing-list/">instructions</a>).
     </p>
     <!--end-status-->
     
@@ -112,7 +117,7 @@
 
     <p>
       As web applications gain access to new functionality, working
-      with binary deta has become a much-demanded feature.  Current
+      with binary data has become a much-demanded feature.  Current
       specifications such as the File API (REF) and Web Sockets (REF)
       would benefit from being able to read and write binary data
       directly in its native form.  Specifications such as WebGL (REF)
@@ -205,7 +210,7 @@
     data for the TypedArray interface and its subclasses.  An ArrayBuffer has the following methods and properties:</p>
 
     <pre class="idl">
-[ Constructor(in unsigned long length) ]
+[ Constructor(unsigned long length) ]
 interface <dfn id="ArrayBuffer">ArrayBuffer</dfn> {
     readonly attribute unsigned long byteLength;
 };</pre>
@@ -214,22 +219,65 @@ interface <dfn id="ArrayBuffer">ArrayBuffer</dfn> {
       <tbody>
 	<tr><th colspan="2">Constructors</th></tr>
 	<tr>
-	  <td><i>ArrayBuffer</i>(length)</td>
+	  <td><i>ArrayBuffer</i>(unsigned long length)</td>
 	  <td>
-	    <p>Creates a new ArrayBuffer of the given length in bytes.</p>
-
-	    <p>Length must be >= 0.  If length is not specified or
-	    less than 0, an XXX exception is raised.</p>
+	    <p>Creates a new ArrayBuffer of the given length in bytes. The contents of the
+	    ArrayBuffer are initialized to 0.</p>
 	  </td>
 	</tr>
 	<tr></tr>
 	<tr><th colspan="2">Properties</th></tr>
 	<tr>
-	  <td>byteLength</td>
+	  <td>unsigned long byteLength</td>
 	  <td>
 	    <p>Read-only property.</p>
 	    <p>The length of the ArrayBuffer in bytes, as fixed at construction time.</p>
 	  </td>
+	</tr>
+	<tr></tr>
+	<tr><th colspan="2">Methods</th></tr>
+	<tr><td colspan="2"><i>None</i></td></tr>
+      </tbody>
+    </table>
+
+    <h2>The <tt>ArrayBufferView</tt> Type</h2>
+
+    <p>The <tt>ArrayBufferView</tt> type holds information shared among all of the types of views of ArrayBuffers. An <tt>ArrayBufferView</tt> has the following properties:
+
+    <pre class="idl">
+interface <dfn id="ArrayBufferView">ArrayBufferView</dfn> {
+    readonly attribute ArrayBuffer buffer;
+    readonly attribute unsigned long byteOffset;
+    readonly attribute unsigned long byteLength;
+};</pre>
+
+    <table class="api">
+      <tbody>
+	<tr><th colspan="2">Constructors</th></tr>
+	<tr><td colspan="2"><i>None</i></td></tr>
+	<tr></tr>
+	<tr><th colspan="2">Properties</th></tr>
+	<tr>
+	  <td>ArrayBuffer buffer</td>
+	  <td>
+	    <p>Read-only property.</p>
+	    <p>The <tt>ArrayBuffer</tt> that this <tt>ArrayBufferView</tt> references.</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>unsigned long byteOffset</td>
+	  <td>
+	    <p>Read-only property.</p>
+	    <p>The offset of this <tt>ArrayBufferView</tt> from the start of its <tt>ArrayBuffer</tt>, in bytes, as fixed at construction time.</p>
+	  </td>
+	</tr>
+	<tr>
+	  <td>unsigned long byteLength</td>
+	  <td>
+	    <p>Read-only property.</p>
+	    <p>The length of the <tt>ArrayBufferView</tt> in bytes, as fixed at construction time.</p>
+	  </td>
+	</tr>
 	<tr></tr>
 	<tr><th colspan="2">Methods</th></tr>
 	<tr><td colspan="2"><i>None</i></td></tr>
@@ -268,45 +316,38 @@ interface <dfn id="ArrayBuffer">ArrayBuffer</dfn> {
 
     <pre class="idl">
 [
-    Constructor(in unsigned long length),
-    Constructor(in <i>TypedArray</i> array),
-    Constructor(in sequence&lt;<i>type</i>&gt; array),
-    Constructor(in ArrayBuffer buffer,
-                in optional unsigned long byteOffset, in optional unsigned long length)
+    Constructor(unsigned long length),
+    Constructor(<i>TypedArray</i> array),
+    Constructor(sequence&lt;<i>type</i>&gt; array),
+    Constructor(ArrayBuffer buffer,
+                optional unsigned long byteOffset, optional unsigned long length)
 ]
-interface <dfn id="TypedArray"><i>TypedArray</i></dfn> {
+interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
     const unsigned long BYTES_PER_ELEMENT = <i>element size in bytes</i>;
 
-    readonly attribute ArrayBuffer buffer;
-    readonly attribute unsigned long byteOffset;
-    readonly attribute unsigned long byteLength;
     readonly attribute unsigned long length;
 
-    <i>TypedArray</i> slice(in unsigned long start, in unsigned long end);
-
-    getter <i>type</i> (in unsigned long index);
-    setter void (in unsigned long index, in <i>type</i> value);
-    void set(in <i>TypedArray</i> array, in optional unsigned long offset);
-    void set(in sequence&lt;<i>type</i>&gt; array, in optional unsigned long offset);
+    getter <i>type</i> (unsigned long index);
+    setter void (unsigned long index, <i>type</i> value);
+    void set(<i>TypedArray</i> array, optional unsigned long offset);
+    void set(sequence&lt;<i>type</i>&gt; array, optional unsigned long offset);
+    <i>TypedArray</i> slice(long start, long end);
 };</pre>
 
     <table class="api">
       <tbody>
 	<tr><th colspan="2">Constructors</th></tr>
 	<tr>
-	  <td><i>TypedArray</i>(length)</td>
+	  <td><i>TypedArray</i>(unsigned long length)</td>
 	  <td>
 	    <p>Create a new ArrayBuffer with enough bytes to
 	      hold <tt>length</tt> elements of this typed array, then
 	      creates a typed array view referring to the full buffer.
 	    </p>
-
-	    <p>Length must be >= 0.  If length is not specified or less
-	      than 0, an XXX exception is raised.</p>
 	  </td>
 	</tr>
 	<tr>
-	  <td><i>TypedArray</i>(array)</td>
+	  <td><i>TypedArray</i>(sequence&lt;<i>type</i>&gt; array)</td>
 	  <td>
 	    <p>Create a new ArrayBuffer with enough bytes to
 	      hold <tt>array.length</tt> elements of this typed array,
@@ -314,14 +355,11 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> {
 	      buffer.  The contents of the new view are initialized to the
 	      contents of the given array, with each element converted to
 	      the appropriate typed array type.</p>
-
-	    <p>If <tt>array</tt> is not
-	      specified or is not an array-like object, an XXX exception
-	      is raised.</p>
 	  </td>
 	</tr>
 	<tr>
-	  <td><i>TypedArray</i>(buffer, byteOffset, length)</td>
+	  <td><i>TypedArray</i>(ArrayBuffer buffer,
+              optional unsigned long byteOffset, optional unsigned long length)</td>
 	  <td>
 	    <p>Create a new <i>TypedArray</i> object using the passed
             ArrayBuffer for its storage. Optional byteOffset and
@@ -335,56 +373,37 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> {
             <i>TypedArray</i> extends from the given byteOffset until
             the end of the ArrayBuffer.</p>
 	      
-	    <p>If specified, byteOffset and length must be >= 0.  If
-	    they are not, then an XXX exception is raised.</p>
+	    <p>The given byteOffset must be a multiple of the element size
+	    of the specific type, otherwise
+	    an <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/urls.html#index_size_err">INDEX_SIZE_ERR</a>
+	    exception is raised.</p>
 
-	    <p>The given byteOffset must be a multiple of the element
-	    size of the specific type, otherwise an exception is
-	    raised.</p>
+	    <p>If a given byteOffset and length references an area beyond
+	    the end of the ArrayBuffer
+	    an <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/urls.html#index_size_err">INDEX_SIZE_ERR</a>
+	    exception is raised.</p>
 
-	    <p>If a given byteOffset and length references an area
-	    beyond the end of the WebGLArrayBuffer an exception is
-	    raised.</p>
-
-	    <p>If length is not explicitly specified, the length of
-	    the ArrayBuffer minus the byteOffset must be a multiple of
-	    the element size of the specific type.</p>
+	    <p>If length is not explicitly specified, the length of the
+	    ArrayBuffer minus the byteOffset must be a multiple of the
+	    element size of the specific type, or
+	    an <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/urls.html#index_size_err">INDEX_SIZE_ERR</a>
+	    exception is raised.</p>
 	  </td>
 	</tr>
 	<tr></tr>
 	<tr><th colspan="2">Constants</th></tr>
 	<tr>
-	  <td>BYTES_PER_ELEMENT</td>
+	  <td>unsigned long BYTES_PER_ELEMENT</td>
 	  <td>The size in bytes of each element in the array.</td>
 	</tr>
 	<tr><th colspan="2">Properties</th></tr>
 	<tr>
-	  <td>buffer</td>
-	  <td>
-	    <p>Read-only property.</p>
-	    <p>The <tt>ArrayBuffer</tt> that this <i>TypedArray</i> references.</p>
-	  </td>
-	</tr>
-	<tr>
-	  <td>length</td>
+	  <td>unsigned long length</td>
 	  <td>
 	    <p>Read-only property.</p>
 	    <p>The length of the <tt>TypedArray</tt> in elements, as fixed at construction time.</p>
 	  </td>
 	</tr>
-	<tr>
-	  <td>byteLength</td>
-	  <td>
-	    <p>Read-only property.</p>
-	    <p>The length of the <tt>TypedArray</tt> in bytes, as fixed at construction time.</p>
-	  </td>
-	</tr>
-	<tr>
-	  <td>byteOffset</td>
-	  <td>
-	    <p>Read-only property.</p>
-	    <p>The offset of this <i>TypedArray</i> from the start of its <tt>ArrayBuffer</tt>, in bytes, as fixed at construction time.</p>
-	  </td>
 	<tr></tr>
 	<tr><th colspan="2">Methods</th></tr>
 	<tr>
@@ -415,26 +434,45 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> {
 	</tr>
 	<tr>
 	  <td>
-	    <i>set</i>(array, offset)
+	    void <i>set</i>(<i>TypedArray</i> array, optional unsigned long offset)<br>
+	    void <i>set</i>(sequence&lt;<i>type</i>&gt; array, optional unsigned long offset)
 	  </td>
 	  <td>
-	    <p>XXX</p>
+            <p>
+              Set multiple values, reading input values from the array.
+              The optional offset value indicates the index in the current
+              array where values are written.  If omitted, it is assumed to
+              be 0.
+            </p>
+            <p>
+              If the input array is a <i>TypedArray</i>, the two arrays may
+              use the same underlying <code>ArrayBuffer</code>. In this
+              situation, setting the values takes place as if all the data
+              is first copied into a temporary buffer that does not overlap
+              either of the arrays, and then the data from the temporary
+              buffer is copied into the current array.
+            </p>
+            <p>
+              If the offset plus the length of the given array is out of
+              range for the current <i>TypedArray</i>,
+              an <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/urls.html#index_size_err">INDEX_SIZE_ERR</a>
+              exception is raised.
+           </p>
 	  </td>
 	</tr>
 	<tr>
 	  <td>
-	    <i>slice</i>(start, end)
+	    <i>TypedArray</i> <i>slice</i>(long start, long end)
 	  </td>
 	  <td>
 	    <p>Returns a new <i>TypedArray</i> view of
-             the <tt>ArrayBuffer</tt> store for
-             this <i>TypedArray</i>, referencing the elements at
-             start, inclusive, up to end, exclusive.  If either start
-             or end is negative, it refers to an index from the end of
-             the array, as opposed to from the start.  The range
-             specified by the given start and end values is clamped to
-             the valid index range for the current array, and if not
-             given default to the start and end of the array,
+             the <tt>ArrayBuffer</tt> store for this <i>TypedArray</i>,
+             referencing the elements at start, inclusive, up to end,
+             exclusive.  If either start or end is negative, it refers to
+             an index from the end of the array, as opposed to from the
+             start.  The range specified by the given start and end values
+             is clamped to the valid index range for the current array, and
+             if not given default to the start and end of the array,
              respectively.</p>
 
 	    <p>The returned <i>TypedArray</i> will be of the same type
@@ -450,16 +488,11 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> {
 
     <pre class="idl">
 [
-  Constructor(in ArrayBuffer buffer,
-              optional in unsigned long byteOffset,
-              optional in unsigned long length)
+  Constructor(ArrayBuffer buffer,
+              optional unsigned long byteOffset,
+              optional unsigned long byteLength)
 ]
-interface <dfn id="DataArray">DataArray</dfn> {
-    readonly attribute ArrayBuffer buffer;
-    readonly attribute unsigned long byteOffset;
-    readonly attribute unsigned long byteLength;
-    readonly attribute unsigned long length;
-
+interface <dfn id="DataArray">DataArray</dfn> : ArrayBufferView {
     // Gets the value of the given type at the specified byte offset
     // from the start of the view. There is no alignment constraint;
     // multi-byte values may be fetched from any offset.
@@ -468,26 +501,26 @@ interface <dfn id="DataArray">DataArray</dfn> {
     // indicates whether a big-endian or little-endian value should be
     // read. If false or undefined, a big-endian value is read.
     //
-    // These methods throw exceptions if they would read beyond the end
-    // of the view.
-    unsigned byte getUInt8(in unsigned long byteOffset);
-    byte getInt8(in unsigned long byteOffset);
-    unsigned short getUInt16(in unsigned long byteOffset,
-                             [optional] in boolean littleEndian);
-    short getInt16(in unsigned long byteOffset,
-                   [optional] in boolean littleEndian);
-    unsigned long getUInt32(in unsigned long byteOffset,
-                            [optional] in boolean littleEndian);
-    long getInt32(in unsigned long byteOffset,
-                  [optional] in boolean littleEndian);
-    unsigned long long getUInt64(in unsigned long byteOffset,
-                                 [optional] in boolean littleEndian);
-    long long getInt64(in unsigned long byteOffset,
-                       [optional] in boolean littleEndian);
-    float getFloat(in unsigned long byteOffset,
-                   [optional] in boolean littleEndian);
-    double getDouble(in unsigned long byteOffset,
-                     [optional] in boolean littleEndian);
+    // These methods raise an INDEX_SIZE_ERR exception if they would read
+    // beyond the end of the view.
+    byte getInt8(unsigned long byteOffset);
+    unsigned byte getUInt8(unsigned long byteOffset);
+    short getInt16(unsigned long byteOffset,
+                   optional boolean littleEndian);
+    unsigned short getUInt16(unsigned long byteOffset,
+                             optional boolean littleEndian);
+    long getInt32(unsigned long byteOffset,
+                  optional boolean littleEndian);
+    unsigned long getUInt32(unsigned long byteOffset,
+                            optional boolean littleEndian);
+    long long getInt64(unsigned long byteOffset,
+                       optional boolean littleEndian);
+    unsigned long long getUInt64(unsigned long byteOffset,
+                                 optional boolean littleEndian);
+    float getFloat(unsigned long byteOffset,
+                   optional boolean littleEndian);
+    double getDouble(unsigned long byteOffset,
+                     optional boolean littleEndian);
 
     // Stores a value of the given type at the specified byte offset
     // from the start of the view. There is no alignment constraint;
@@ -498,38 +531,38 @@ interface <dfn id="DataArray">DataArray</dfn> {
     // little-endian byte order. If false or undefined, the value is
     // stored in big-endian byte order.
     //
-    // These methods throw exceptions if they would write beyond the end
-    // of the view.
-    void setUint8(in unsigned long byteOffset,
-                  in unsigned byte value,
-                  [optional] in boolean littleEndian);
-    void setInt8(in unsigned long byteOffset,
-                 in byte value,
-                 [optional] in boolean littleEndian);
-    void setUint16(in unsigned long byteOffset,
-                   in unsigned short value,
-                   [optional] in boolean littleEndian);
-    void setInt16(in unsigned long byteOffset,
-                  in short value,
-                  [optional] in boolean littleEndian);
-    void setUint32(in unsigned long byteOffset,
-                   in unsigned long value,
-                   [optional] in boolean littleEndian);
-    void setInt32(in unsigned long byteOffset,
-                  in long value,
-                  [optional] in boolean littleEndian);
-    void setUint64(in unsigned long byteOffset,
-                   in unsigned long long value,
-                   [optional] in boolean littleEndian);
-    void setInt64(in unsigned long byteOffset,
-                  in long long value,
-                  [optional] in boolean littleEndian);
-    void setFloat(in unsigned long byteOffset,
-                  in float value,
-                  [optional] in boolean littleEndian);
-    void setDouble(in unsigned long byteOffset,
-                   in double value,
-                   [optional] in boolean littleEndian);
+    // These methods raise an INDEX_SIZE_ERR exception if they would write
+    // beyond the end of the view.
+    void setInt8(unsigned long byteOffset,
+                 byte value,
+                 optional boolean littleEndian);
+    void setUint8(unsigned long byteOffset,
+                  unsigned byte value,
+                  optional boolean littleEndian);
+    void setInt16(unsigned long byteOffset,
+                  short value,
+                  optional boolean littleEndian);
+    void setUint16(unsigned long byteOffset,
+                   unsigned short value,
+                   optional boolean littleEndian);
+    void setInt32(unsigned long byteOffset,
+                  long value,
+                  optional boolean littleEndian);
+    void setUint32(unsigned long byteOffset,
+                   unsigned long value,
+                   optional boolean littleEndian);
+    void setInt64(unsigned long byteOffset,
+                  long long value,
+                  optional boolean littleEndian);
+    void setUint64(unsigned long byteOffset,
+                   unsigned long long value,
+                   optional boolean littleEndian);
+    void setFloat(unsigned long byteOffset,
+                  float value,
+                  optional boolean littleEndian);
+    void setDouble(unsigned long byteOffset,
+                   double value,
+                   optional boolean littleEndian);
 };</pre>
 
     <p>The following constructors, properties, and methods are available on a <tt>DataArray</tt>:</p>
@@ -538,69 +571,43 @@ interface <dfn id="DataArray">DataArray</dfn> {
       <tbody>
 	<tr><th colspan="2">Constructors</th></tr>
 	<tr>
-	  <td>DataArray(buffer, byteOffset, length)</td>
+	  <td><i>DataArray</i>(ArrayBuffer buffer, optional unsigned long byteOffset, optional unsigned long byteLength)</td>
 	  <td>
 	  </td>
 	</tr>
 	<tr></tr>
 	<tr><th colspan="2">Properties</th></tr>
-	<tr>
-	  <td>buffer</td>
-	  <td>
-	    <p>Read-only property.</p>
-	    <p>The <tt>ArrayBuffer</tt> that this <tt>DataArray</tt> references.</p>
-	  </td>
-	</tr>
-	<tr>
-	  <td>length</td>
-	  <td>
-	    <p>Read-only property.</p>
-	    <p>The length of the <tt>DataArray</tt> in elements, as fixed at construction time.</p>
-	  </td>
-	</tr>
-	<tr>
-	  <td>byteLength</td>
-	  <td>
-	    <p>Read-only property.</p>
-	    <p>The length of the <tt>DataArray</tt> in bytes, as fixed at construction time.</p>
-	  </td>
-	</tr>
-	<tr>
-	  <td>byteOffset</td>
-	  <td>
-	    <p>Read-only property.</p>
-	    <p>The offset of this <tt>DataArray</tt> from the start of its <tt>ArrayBuffer</tt>, in bytes, as fixed at construction time.</p>
-	  </td>
+	<tr><td colspan="2"><i>None</i></td></tr>
 	<tr></tr>
 	<tr><th colspan="2">Methods</th></tr>
 	<tr>
 	  <td valign="top">
-            unsigned byte <i>getUInt8</i>(in unsigned long byteOffset);<br>
-            byte <i>getInt8</i>(in unsigned long byteOffset);<br>
-            unsigned short <i>getUInt16</i>(in unsigned long byteOffset, [optional] in boolean littleEndian);<br>
-            short <i>getInt16</i>(in unsigned long byteOffset, [optional] in boolean littleEndian);<br>
-            unsigned long <i>getUInt32</i>(in unsigned long byteOffset, [optional] in boolean littleEndian);<br>
-            long <i>getInt32</i>(in unsigned long byteOffset, [optional] in boolean littleEndian);<br>
-            unsigned long long <i>getUInt64</i>(in unsigned long byteOffset, [optional] in boolean littleEndian);<br>
-            long long <i>getInt64</i>(in unsigned long byteOffset, [optional] in boolean littleEndian);<br>
-            float <i>getFloat</i>(in unsigned long byteOffset, [optional] in boolean littleEndian);<br>
-            double <i>getDouble</i>(in unsigned long byteOffset, [optional] in boolean littleEndian);<br>
+            byte <i>getInt8</i>(unsigned long byteOffset);<br>
+            unsigned byte <i>getUInt8</i>(unsigned long byteOffset);<br>
+            short <i>getInt16</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
+            unsigned short <i>getUInt16</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
+            long <i>getInt32</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
+            unsigned long <i>getUInt32</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
+            long long <i>getInt64</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
+            unsigned long long <i>getUInt64</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
+            float <i>getFloat</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
+            double <i>getDouble</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
 	  </td>
 	  <td>
 	  </td>
 	</tr>
 	<tr>
 	  <td valign="top">
-            void <i>setUint8</i>(in unsigned long byteOffset, in unsigned byte value, [optional] in boolean littleEndian);<br>
-            void <i>setInt8</i>(in unsigned long byteOffset, in byte value, [optional] in boolean littleEndian);<br>
-            void <i>setUint16</i>(in unsigned long byteOffset, in unsigned short value, [optional] in boolean littleEndian);<br>
-            void <i>setInt16</i>(in unsigned long byteOffset, in short value, [optional] in boolean littleEndian);<br>
-            void <i>setUint32</i>(in unsigned long byteOffset, in unsigned long value, [optional] in boolean littleEndian);<br>
-            void <i>setInt32</i>(in unsigned long byteOffset, in long value, [optional] in boolean littleEndian);<br>
-            void <i>setUint64</i>(in unsigned long byteOffset, in unsigned long long value, [optional] in boolean littleEndian);<br>
-            void <i>setInt64</i>(in unsigned long byteOffset, in long long value, [optional] in boolean littleEndian);<br>
-            void <i>setFloat</i>(in unsigned long byteOffset, in float value, [optional] in boolean littleEndian);<br>
-            void <i>setDouble</i>(in unsigned long byteOffset, in double value, [optional] in boolean littleEndian);<br>
+            void <i>setInt8</i>(unsigned long byteOffset, byte value, optional boolean littleEndian);<br>
+            void <i>setUint8</i>(unsigned long byteOffset, unsigned byte value, optional boolean littleEndian);<br>
+            void <i>setInt16</i>(unsigned long byteOffset, short value, optional boolean littleEndian);<br>
+            void <i>setUint16</i>(unsigned long byteOffset, unsigned short value, optional boolean littleEndian);<br>
+            void <i>setInt32</i>(unsigned long byteOffset, long value, optional boolean littleEndian);<br>
+            void <i>setUint32</i>(unsigned long byteOffset, unsigned long value, optional boolean littleEndian);<br>
+            void <i>setInt64</i>(unsigned long byteOffset, long long value, optional boolean littleEndian);<br>
+            void <i>setUint64</i>(unsigned long byteOffset, unsigned long long value, optional boolean littleEndian);<br>
+            void <i>setFloat</i>(unsigned long byteOffset, float value, optional boolean littleEndian);<br>
+            void <i>setDouble</i>(unsigned long byteOffset, double value, optional boolean littleEndian);<br>
 	  </td>
 	  <td>
 	  </td>
