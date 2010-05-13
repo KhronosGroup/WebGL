@@ -637,7 +637,7 @@ var context = canvas.getContext('webgl',
     </p>
     <pre class="idl">interface <dfn id="WebGLObjectArray">WebGLObjectArray</dfn> {
     readonly attribute unsigned long length;
-    getter WebGLObject (unsigned long index);
+    omittable getter WebGLObject get(unsigned long index);
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -881,8 +881,8 @@ interface <dfn id="WebGLArray">WebGLArray</dfn> {
 interface WebGL<i>TypeName</i>Array : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = <i>element size in bytes</i>;
     
-    getter <i>type</i> (unsigned long index);
-    setter void (unsigned long index, <i>type</i> value);
+    omittable getter <i>type</i> get(unsigned long index);
+    omittable setter void set(unsigned long index, <i>type</i> value);
     void set(WebGL<i>TypeName</i>Array array, optional unsigned long offset);
     void set(sequence&lt;<i>type</i>&gt; array, optional unsigned long offset);
 };</pre>
@@ -949,25 +949,15 @@ interface WebGL<i>TypeName</i>Array : WebGLArray {
     <h5>Shared Getters and Setters</h5>
 
     <dl class="methods">
-        <dt class="idl-code">getter <i>type</i> (unsigned long index)
+        <dt class="idl-code">omittable getter <i>type</i> get(unsigned long index)
         <dd>
       <p>
         Returns the element at the given index.
       </p>
-      <p>
-        In the ECMAScript binding, this getter is invoked via the indexing
-        operator <code>[]</code>. If the index is greater than or equal to <code>length</code>, then
-        the undefined value is returned.
-      </p>
-        <dt class="idl-code">setter void (unsigned long index, <i>type</i> value)
+        <dt class="idl-code">omittable setter void set(unsigned long index, <i>type</i> value)
         <dd>
       <p>
         Sets the element at the given index to the given value.
-      </p>
-      <p>
-        In the ECMAScript binding, this setter is invoked via the indexing
-        operator <code>[]</code>. If the index is greater than or equal to <code>length</code>, the
-        assignment has no effect.
       </p>
       <p>
         If the given value is out of range for the type of the array, a C-style cast operation is 
@@ -1058,8 +1048,8 @@ for (var i = 0; i < numVertices; i++) {
 interface <dfn id="WebGLByteArray">WebGLByteArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 1;
     
-    getter GLbyte (unsigned long index);
-    setter void (unsigned long index, GLbyte value);
+    omittable getter GLbyte get(unsigned long index);
+    omittable setter void set(unsigned long index, GLbyte value);
     void set(WebGLByteArray array, optional unsigned long offset);
     void set(sequence&lt;GLbyte&gt; array, optional unsigned long offset);
 };</pre>
@@ -1086,8 +1076,8 @@ interface <dfn id="WebGLByteArray">WebGLByteArray</dfn> : WebGLArray {
 interface <dfn id="WebGLUnsignedByteArray">WebGLUnsignedByteArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 1;
     
-    getter GLubyte (unsigned long index);
-    setter void (unsigned long index, GLubyte value);
+    omittable getter GLubyte get(unsigned long index);
+    omittable setter void set(unsigned long index, GLubyte value);
     void set(WebGLUnsignedByteArray array, optional unsigned long offset);
     void set(sequence&lt;GLubyte&gt; array, optional unsigned long offset);
 };</pre>
@@ -1114,8 +1104,8 @@ interface <dfn id="WebGLUnsignedByteArray">WebGLUnsignedByteArray</dfn> : WebGLA
 interface <dfn id="WebGLShortArray">WebGLShortArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 2;
     
-    getter GLshort (unsigned long index);
-    setter void (unsigned long index, GLshort value);
+    omittable getter GLshort get(unsigned long index);
+    omittable setter void set(unsigned long index, GLshort value);
     void set(WebGLShortArray array, optional unsigned long offset);
     void set(sequence&lt;GLshort&gt; array, optional unsigned long offset);
 };</pre>
@@ -1142,8 +1132,8 @@ interface <dfn id="WebGLShortArray">WebGLShortArray</dfn> : WebGLArray {
 interface <dfn id="WebGLUnsignedShortArray">WebGLUnsignedShortArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 2;
     
-    getter GLushort (unsigned long index);
-    setter void (unsigned long index, GLushort value);
+    omittable getter GLushort get(unsigned long index);
+    omittable setter void set(unsigned long index, GLushort value);
     void set(WebGLUnsignedShortArray array, optional unsigned long offset);
     void set(sequence&lt;GLushort&gt; array, optional unsigned long offset);
 };</pre>
@@ -1171,8 +1161,8 @@ interface <dfn id="WebGLUnsignedShortArray">WebGLUnsignedShortArray</dfn> : WebG
 interface <dfn id="WebGLIntArray">WebGLIntArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 4;
     
-    getter GLint (unsigned long index);
-    setter void (unsigned long index, GLint value);
+    omittable getter GLint get(unsigned long index);
+    omittable setter void set(unsigned long index, GLint value);
     void set(WebGLIntArray array, optional unsigned long offset);
     void set(sequence&lt;GLint&gt; array, optional unsigned long offset);
 };</pre>
@@ -1199,8 +1189,8 @@ interface <dfn id="WebGLIntArray">WebGLIntArray</dfn> : WebGLArray {
 interface <dfn id="WebGLUnsignedIntArray">WebGLUnsignedIntArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 4;
     
-    getter GLuint (unsigned long index);
-    setter void (unsigned long index, GLuint value);
+    omittable getter GLuint get(unsigned long index);
+    omittable setter void set(unsigned long index, GLuint value);
     void set(WebGLUnsignedIntArray array, optional unsigned long offset);
     void set(sequence&lt;GLuint&gt; array, optional unsigned long offset);
 };</pre>
@@ -1227,8 +1217,8 @@ interface <dfn id="WebGLUnsignedIntArray">WebGLUnsignedIntArray</dfn> : WebGLArr
 interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 4;
     
-    getter GLfloat (unsigned long index);
-    setter void (unsigned long index, GLfloat value);
+    omittable getter GLfloat get(unsigned long index);
+    omittable setter void set(unsigned long index, GLfloat value);
     void set(WebGLFloatArray array, optional unsigned long offset);
     void set(sequence&lt;GLfloat&gt; array, optional unsigned long offset);
 };</pre>

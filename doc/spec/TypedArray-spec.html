@@ -327,8 +327,8 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
 
     readonly attribute unsigned long length;
 
-    getter <i>type</i> (unsigned long index);
-    setter void (unsigned long index, <i>type</i> value);
+    omittable getter <i>type</i> get(unsigned long index);
+    omittable setter void set(unsigned long index, <i>type</i> value);
     void set(<i>TypedArray</i> array, optional unsigned long offset);
     void set(sequence&lt;<i>type</i>&gt; array, optional unsigned long offset);
     <i>TypedArray</i> slice(long begin, optional long end);
@@ -408,26 +408,20 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
 	<tr><th colspan="2">Methods</th></tr>
 	<tr>
 	  <td>
-	    <code>getter</code> <i>type</i> (unsigned long index)
+	    <code>omittable getter</code> <i>type</i> get(unsigned long index)
 	  </td>
 	  <td>
 	    <p>This is an index getter.</p>
 	    <p>Returns the element at the given numeric index.</p>
-	    <p>In the ECMAScript binding, this getter is invoked via the indexing
-               operator <code>[]</code>.  If the index is greater than or equal
-               to <code>length</code>, then the undefined value is returned.</p>
 	  </td>
 	</tr>
 	<tr>
 	  <td>
-	    <code>setter</code> void (unsigned long index, <i>type</i> value)
+	    <code>omittable setter</code> void set(unsigned long index, <i>type</i> value)
 	  </td>
 	  <td>
 	    <p>This is an index setter.</p>
 	    <p>Sets the element at the given numeric index to the given value.</p>
-	    <p>In the ECMAScript binding, this setter is invoked via the indexing
-               operator <code>[]</code>.  If the index is greater than or equal
-               to <code>length</code>, the assignment has no effect.</p>
 	    <p>If the value is not within the range of the array's element type, then a C-style cast is performed. XXX define this better -- if the dest type is an integer, coerce the value to an integer then take the low N bits; if the dest type is a float, then assign.. ?</p>
 	    <p>If the value can't be converted to a numeric value, then if the element type can represent a NaN value, NaN is stored, otherwise zero is stored. XXX ... an exception is raised?</p>
 	  </td>

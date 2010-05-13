@@ -62,7 +62,7 @@ interface WebGLTexture : WebGLObject {
 
 interface WebGLObjectArray {
     readonly attribute unsigned long length;
-    getter WebGLObject (unsigned long index);
+    omittable getter WebGLObject get(unsigned long index);
 };
 
 interface WebGLUniformLocation {
@@ -101,8 +101,8 @@ interface WebGLArray {
 interface WebGLByteArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 1;
     
-    getter GLbyte (unsigned long index);
-    setter void (unsigned long index, GLbyte value);
+    omittable getter GLbyte get(unsigned long index);
+    omittable setter void set(unsigned long index, GLbyte value);
     void set(WebGLByteArray array, optional unsigned long offset);
     void set(sequence<GLbyte> array, optional unsigned long offset);
 };
@@ -118,8 +118,8 @@ interface WebGLByteArray : WebGLArray {
 interface WebGLUnsignedByteArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 1;
     
-    getter GLubyte (unsigned long index);
-    setter void (unsigned long index, GLubyte value);
+    omittable getter GLubyte get(unsigned long index);
+    omittable setter void set(unsigned long index, GLubyte value);
     void set(WebGLUnsignedByteArray array, optional unsigned long offset);
     void set(sequence<GLubyte> array, optional unsigned long offset);
 };
@@ -135,8 +135,8 @@ interface WebGLUnsignedByteArray : WebGLArray {
 interface WebGLShortArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 2;
     
-    getter GLshort (unsigned long index);
-    setter void (unsigned long index, GLshort value);
+    omittable getter GLshort get(unsigned long index);
+    omittable setter void set(unsigned long index, GLshort value);
     void set(WebGLShortArray array, optional unsigned long offset);
     void set(sequence<GLshort> array, optional unsigned long offset);
 };
@@ -152,8 +152,8 @@ interface WebGLShortArray : WebGLArray {
 interface WebGLUnsignedShortArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 2;
     
-    getter GLushort (unsigned long index);
-    setter void (unsigned long index, GLushort value);
+    omittable getter GLushort get(unsigned long index);
+    omittable setter void set(unsigned long index, GLushort value);
     void set(WebGLUnsignedShortArray array, optional unsigned long offset);
     void set(sequence<GLushort> array, optional unsigned long offset);
 };
@@ -169,8 +169,8 @@ interface WebGLUnsignedShortArray : WebGLArray {
 interface WebGLIntArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 4;
     
-    getter GLint (unsigned long index);
-    setter void (unsigned long index, GLint value);
+    omittable getter GLint get(unsigned long index);
+    omittable setter void set(unsigned long index, GLint value);
     void set(WebGLIntArray array, optional unsigned long offset);
     void set(sequence<GLint> array, optional unsigned long offset);
 };
@@ -186,8 +186,8 @@ interface WebGLIntArray : WebGLArray {
 interface WebGLUnsignedIntArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 4;
     
-    getter GLuint (unsigned long index);
-    setter void (unsigned long index, GLuint value);
+    omittable getter GLuint get(unsigned long index);
+    omittable setter void set(unsigned long index, GLuint value);
     void set(WebGLUnsignedIntArray array, optional unsigned long offset);
     void set(sequence<GLuint> array, optional unsigned long offset);
 };
@@ -203,8 +203,8 @@ interface WebGLUnsignedIntArray : WebGLArray {
 interface WebGLFloatArray : WebGLArray {
     const GLsizei BYTES_PER_ELEMENT = 4;
     
-    getter GLfloat (unsigned long index);
-    setter void (unsigned long index, GLfloat value);
+    omittable getter GLfloat get(unsigned long index);
+    omittable setter void set(unsigned long index, GLfloat value);
     void set(WebGLFloatArray array, optional unsigned long offset);
     void set(sequence<GLfloat> array, optional unsigned long offset);
 };
