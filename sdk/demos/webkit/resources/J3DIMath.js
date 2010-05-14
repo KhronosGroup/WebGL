@@ -65,8 +65,7 @@
                     in float x, in float y, in float z);    // (angle is in degrees)
         void rotate(in float angle, in J3DVector3 v);       // multiply the matrix by passed rotation values on the right
                                                             // (angle is in degrees)
-        void multRight(in CanvasMatrix matrix);             // multiply the matrix by the passed matrix on the right
-        void multLeft(in CanvasMatrix matrix);              // multiply the matrix by the passed matrix on the left
+        void multiply(in CanvasMatrix matrix);              // multiply the matrix by the passed matrix on the right
         void divide(in float divisor);                      // divide the matrix by the passed divisor
         void ortho(in float left, in float right,           // multiply the matrix by the passed ortho values on the right
                    in float bottom, in float top, 
@@ -107,7 +106,8 @@
 
 J3DIHasCSSMatrix = false;
 J3DIHasCSSMatrixCopy = false;
-if ("WebKitCSSMatrix" in window && window.media.matchMedium("(-webkit-transform-3d)")) {
+if ("WebKitCSSMatrix" in window && ("media" in window && window.media.matchMedium("(-webkit-transform-3d)")) || 
+                                   ("styleMedia" in window && window.styleMedia.matchMedium("(-webkit-transform-3d)"))) {
     J3DIHasCSSMatrix = true;
     if ("copy" in WebKitCSSMatrix.prototype)
         J3DIHasCSSMatrixCopy = true;
@@ -367,7 +367,7 @@ J3DIMatrix4.prototype.translate = function(x,y,z)
     matrix.$matrix.m42 = y;
     matrix.$matrix.m43 = z;
 
-    this.multLeft(matrix);
+    this.multiply(matrix);
 }
 
 J3DIMatrix4.prototype.scale = function(x,y,z)
@@ -403,7 +403,7 @@ J3DIMatrix4.prototype.scale = function(x,y,z)
     matrix.$matrix.m22 = y;
     matrix.$matrix.m33 = z;
     
-    this.multLeft(matrix);
+    this.multiply(matrix);
 }
 
 J3DIMatrix4.prototype.rotate = function(angle,x,y,z)
@@ -515,77 +515,13 @@ J3DIMatrix4.prototype.rotate = function(angle,x,y,z)
         mat.$matrix.m41 = mat.$matrix.m42 = mat.$matrix.m43 = 0;
         mat.$matrix.m44 = 1;
     }
-    this.multLeft(mat);
+    this.multiply(mat);
 }
 
-J3DIMatrix4.prototype.multRight = function(mat)
+J3DIMatrix4.prototype.multiply = function(mat)
 {
     if (J3DIHasCSSMatrix) {
         this.$matrix = this.$matrix.multiply(mat.$matrix);
-        return;
-    }
-
-    var m11 = (this.$matrix.m11 * mat.$matrix.m11 + this.$matrix.m12 * mat.$matrix.m21
-               + this.$matrix.m13 * mat.$matrix.m31 + this.$matrix.m14 * mat.$matrix.m41);
-    var m12 = (this.$matrix.m11 * mat.$matrix.m12 + this.$matrix.m12 * mat.$matrix.m22
-               + this.$matrix.m13 * mat.$matrix.m32 + this.$matrix.m14 * mat.$matrix.m42);
-    var m13 = (this.$matrix.m11 * mat.$matrix.m13 + this.$matrix.m12 * mat.$matrix.m23
-               + this.$matrix.m13 * mat.$matrix.m33 + this.$matrix.m14 * mat.$matrix.m43);
-    var m14 = (this.$matrix.m11 * mat.$matrix.m14 + this.$matrix.m12 * mat.$matrix.m24
-               + this.$matrix.m13 * mat.$matrix.m34 + this.$matrix.m14 * mat.$matrix.m44);
-
-    var m21 = (this.$matrix.m21 * mat.$matrix.m11 + this.$matrix.m22 * mat.$matrix.m21
-               + this.$matrix.m23 * mat.$matrix.m31 + this.$matrix.m24 * mat.$matrix.m41);
-    var m22 = (this.$matrix.m21 * mat.$matrix.m12 + this.$matrix.m22 * mat.$matrix.m22
-               + this.$matrix.m23 * mat.$matrix.m32 + this.$matrix.m24 * mat.$matrix.m42);
-    var m23 = (this.$matrix.m21 * mat.$matrix.m13 + this.$matrix.m22 * mat.$matrix.m23
-               + this.$matrix.m23 * mat.$matrix.m33 + this.$matrix.m24 * mat.$matrix.m43);
-    var m24 = (this.$matrix.m21 * mat.$matrix.m14 + this.$matrix.m22 * mat.$matrix.m24
-               + this.$matrix.m23 * mat.$matrix.m34 + this.$matrix.m24 * mat.$matrix.m44);
-
-    var m31 = (this.$matrix.m31 * mat.$matrix.m11 + this.$matrix.m32 * mat.$matrix.m21
-               + this.$matrix.m33 * mat.$matrix.m31 + this.$matrix.m34 * mat.$matrix.m41);
-    var m32 = (this.$matrix.m31 * mat.$matrix.m12 + this.$matrix.m32 * mat.$matrix.m22
-               + this.$matrix.m33 * mat.$matrix.m32 + this.$matrix.m34 * mat.$matrix.m42);
-    var m33 = (this.$matrix.m31 * mat.$matrix.m13 + this.$matrix.m32 * mat.$matrix.m23
-               + this.$matrix.m33 * mat.$matrix.m33 + this.$matrix.m34 * mat.$matrix.m43);
-    var m34 = (this.$matrix.m31 * mat.$matrix.m14 + this.$matrix.m32 * mat.$matrix.m24
-               + this.$matrix.m33 * mat.$matrix.m34 + this.$matrix.m34 * mat.$matrix.m44);
-
-    var m41 = (this.$matrix.m41 * mat.$matrix.m11 + this.$matrix.m42 * mat.$matrix.m21
-               + this.$matrix.m43 * mat.$matrix.m31 + this.$matrix.m44 * mat.$matrix.m41);
-    var m42 = (this.$matrix.m41 * mat.$matrix.m12 + this.$matrix.m42 * mat.$matrix.m22
-               + this.$matrix.m43 * mat.$matrix.m32 + this.$matrix.m44 * mat.$matrix.m42);
-    var m43 = (this.$matrix.m41 * mat.$matrix.m13 + this.$matrix.m42 * mat.$matrix.m23
-               + this.$matrix.m43 * mat.$matrix.m33 + this.$matrix.m44 * mat.$matrix.m43);
-    var m44 = (this.$matrix.m41 * mat.$matrix.m14 + this.$matrix.m42 * mat.$matrix.m24
-               + this.$matrix.m43 * mat.$matrix.m34 + this.$matrix.m44 * mat.$matrix.m44);
-    
-    this.$matrix.m11 = m11;
-    this.$matrix.m12 = m12;
-    this.$matrix.m13 = m13;
-    this.$matrix.m14 = m14;
-    
-    this.$matrix.m21 = m21;
-    this.$matrix.m22 = m22;
-    this.$matrix.m23 = m23;
-    this.$matrix.m24 = m24;
-    
-    this.$matrix.m31 = m31;
-    this.$matrix.m32 = m32;
-    this.$matrix.m33 = m33;
-    this.$matrix.m34 = m34;
-    
-    this.$matrix.m41 = m41;
-    this.$matrix.m42 = m42;
-    this.$matrix.m43 = m43;
-    this.$matrix.m44 = m44;
-}
-
-J3DIMatrix4.prototype.multLeft = function(mat)
-{
-    if (J3DIHasCSSMatrix) {
-        this.$matrix = mat.$matrix.multiply(this.$matrix);
         return;
     }
     
@@ -694,7 +630,7 @@ J3DIMatrix4.prototype.ortho = function(left, right, bottom, top, near, far)
     matrix.$matrix.m43 = tz;
     matrix.$matrix.m44 = 1;
     
-    this.multLeft(matrix);
+    this.multiply(matrix);
 }
 
 J3DIMatrix4.prototype.frustum = function(left, right, bottom, top, near, far)
@@ -725,7 +661,7 @@ J3DIMatrix4.prototype.frustum = function(left, right, bottom, top, near, far)
     matrix.$matrix.m43 = D;
     matrix.$matrix.m44 = 0;
     
-    this.multRight(matrix);
+    this.multiply(matrix);
 }
 
 J3DIMatrix4.prototype.perspective = function(fovy, aspect, zNear, zFar)
@@ -824,7 +760,7 @@ J3DIMatrix4.prototype.lookat = function(eyex, eyey, eyez, centerx, centery, cent
     matrix.$matrix.m44 = 1;
     matrix.translate(-eyex, -eyey, -eyez);
     
-    this.multLeft(matrix);
+    this.multiply(matrix);
 }
 
 // Returns true on success, false otherwise. All params are Array objects

@@ -371,6 +371,16 @@ function doLoadObj(obj, text)
     var texture = [ ];
     var facemap = { };
     var index = 0;
+    
+    // This is a map which associates a range of indices with a name
+    // The name comes from the 'g' tag (of the form "g NAME"). Indices
+    // are part of one group until another 'g' tag is seen. If any indices
+    // come before a 'g' tag, it is given the group name "_unnamed"
+    // 'group' is an object whose property names are the group name and
+    // whose value is a 2 element array with [<first index>, <num indices>]
+    var groups = { };
+    var currentGroup = [-1, 0];
+    groups["_unnamed"] = currentGroup;
         
     var lines = text.split("\n");
     for (var lineIndex in lines) {
@@ -381,7 +391,12 @@ function doLoadObj(obj, text)
             continue;
             
         var array = line.split(" ");
-        if (array[0] == "v") {
+        if (array[0] == "g") {
+            // new group
+            currentGroup = [indexArray.length, 0];
+            groups[array[1]] = currentGroup;
+        }
+        else if (array[0] == "v") {
             // vertex
             vertex.push(parseFloat(array[1]));
             vertex.push(parseFloat(array[2]));
@@ -466,6 +481,7 @@ function doLoadObj(obj, text)
                 }
                 
                 indexArray.push(facemap[array[i]]);
+                currentGroup[1]++;
             }
         }
     }
@@ -487,6 +503,8 @@ function doLoadObj(obj, text)
     obj.indexObject = obj.ctx.createBuffer();
     obj.ctx.bindBuffer(obj.ctx.ELEMENT_ARRAY_BUFFER, obj.indexObject);
     obj.ctx.bufferData(obj.ctx.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indexArray), obj.ctx.STREAM_DRAW);
+    
+    obj.groups = groups;
     
     obj.loaded = true;
 }
