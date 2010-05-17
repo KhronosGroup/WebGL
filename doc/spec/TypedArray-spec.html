@@ -492,9 +492,9 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
       </tbody>
     </table>
 
-    <h2>The <tt>DataArray</tt> View Type</h2>
+    <h2>The <tt>DataView</tt> View Type</h2>
 
-    <p>An <tt>ArrayBuffer</tt> is a useful object for representing an arbitrary chunk of data.  In many cases, such data will be read from disk or from the network, and will not follow the alignment restrictions that are imposed on the typed array views described earlier.  In addition, the data will often be heterogeneous in nature and have a defined byte order.  The <tt>DataArray</tt> view provides a low-level interface for reading such data from and writing it to an ArrayBuffer.</p>
+    <p>An <tt>ArrayBuffer</tt> is a useful object for representing an arbitrary chunk of data.  In many cases, such data will be read from disk or from the network, and will not follow the alignment restrictions that are imposed on the typed array views described earlier.  In addition, the data will often be heterogeneous in nature and have a defined byte order.  The <tt>DataView</tt> view provides a low-level interface for reading such data from and writing it to an ArrayBuffer.</p>
 
     <pre class="idl">
 [
@@ -502,7 +502,7 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
               optional unsigned long byteOffset,
               optional unsigned long byteLength)
 ]
-interface <dfn id="DataArray">DataArray</dfn> : ArrayBufferView {
+interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
     // Gets the value of the given type at the specified byte offset
     // from the start of the view. There is no alignment constraint;
     // multi-byte values may be fetched from any offset.
@@ -523,10 +523,6 @@ interface <dfn id="DataArray">DataArray</dfn> : ArrayBufferView {
                   optional boolean littleEndian);
     unsigned long getUInt32(unsigned long byteOffset,
                             optional boolean littleEndian);
-    long long getInt64(unsigned long byteOffset,
-                       optional boolean littleEndian);
-    unsigned long long getUInt64(unsigned long byteOffset,
-                                 optional boolean littleEndian);
     float getFloat(unsigned long byteOffset,
                    optional boolean littleEndian);
     double getDouble(unsigned long byteOffset,
@@ -561,12 +557,6 @@ interface <dfn id="DataArray">DataArray</dfn> : ArrayBufferView {
     void setUint32(unsigned long byteOffset,
                    unsigned long value,
                    optional boolean littleEndian);
-    void setInt64(unsigned long byteOffset,
-                  long long value,
-                  optional boolean littleEndian);
-    void setUint64(unsigned long byteOffset,
-                   unsigned long long value,
-                   optional boolean littleEndian);
     void setFloat(unsigned long byteOffset,
                   float value,
                   optional boolean littleEndian);
@@ -575,13 +565,13 @@ interface <dfn id="DataArray">DataArray</dfn> : ArrayBufferView {
                    optional boolean littleEndian);
 };</pre>
 
-    <p>The following constructors, properties, and methods are available on a <tt>DataArray</tt>:</p>
+    <p>The following constructors, properties, and methods are available on a <tt>DataView</tt>:</p>
 
     <table class="api">
       <tbody>
 	<tr><th colspan="2">Constructors</th></tr>
 	<tr>
-	  <td><i>DataArray</i>(ArrayBuffer buffer, optional unsigned long byteOffset, optional unsigned long byteLength)</td>
+	  <td><i>DataView</i>(ArrayBuffer buffer, optional unsigned long byteOffset, optional unsigned long byteLength)</td>
 	  <td>
 	  </td>
 	</tr>
@@ -598,8 +588,6 @@ interface <dfn id="DataArray">DataArray</dfn> : ArrayBufferView {
             unsigned short <i>getUInt16</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
             long <i>getInt32</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
             unsigned long <i>getUInt32</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
-            long long <i>getInt64</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
-            unsigned long long <i>getUInt64</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
             float <i>getFloat</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
             double <i>getDouble</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
 	  </td>
@@ -614,8 +602,6 @@ interface <dfn id="DataArray">DataArray</dfn> : ArrayBufferView {
             void <i>setUint16</i>(unsigned long byteOffset, unsigned short value, optional boolean littleEndian);<br>
             void <i>setInt32</i>(unsigned long byteOffset, long value, optional boolean littleEndian);<br>
             void <i>setUint32</i>(unsigned long byteOffset, unsigned long value, optional boolean littleEndian);<br>
-            void <i>setInt64</i>(unsigned long byteOffset, long long value, optional boolean littleEndian);<br>
-            void <i>setUint64</i>(unsigned long byteOffset, unsigned long long value, optional boolean littleEndian);<br>
             void <i>setFloat</i>(unsigned long byteOffset, float value, optional boolean littleEndian);<br>
             void <i>setDouble</i>(unsigned long byteOffset, double value, optional boolean littleEndian);<br>
 	  </td>
