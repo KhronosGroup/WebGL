@@ -31,7 +31,7 @@
 
 <body onload="generateTOC(document.getElementById('toc'))">
   <h1>Typed Arrays</h1>
-  <h2 class="no-toc">Working Draft 13 May 2010</h2>
+  <h2 class="no-toc">Working Draft 17 May 2010</h2>
   <dl>
     <dt>This version:
       <dd>
@@ -40,7 +40,7 @@
           </a>
           <br>
           <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/typedarrays.idl">
-              <b>WebIDL:</b> https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/typedarrays.idl
+              <b>Web IDL:</b> https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/typedarrays.idl
           </a>
       </dd>
     <dt>Latest version:
@@ -50,7 +50,7 @@
           </a>
           <br>
           <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/typedarrays.idl">
-              <b>WebIDL:</b> https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/typedarrays.idl
+              <b>Web IDL:</b> https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/typedarrays.idl
           </a>
       </dd>
     <dt>Previous version:
@@ -79,7 +79,8 @@
     </p>
 
     <p>
-      The functionality described here originated in the WebGL specification.
+      The functionality described here originated in the WebGL
+      specification <a href="#refsWEBGL">[WEBGL]</a>.
     </p>
 
     <h2 class="no-toc">Status of this document</h2>
@@ -118,11 +119,13 @@
     <p>
       As web applications gain access to new functionality, working
       with binary data has become a much-demanded feature.  Current
-      specifications such as the File API (REF) and Web Sockets (REF)
-      would benefit from being able to read and write binary data
-      directly in its native form.  Specifications such as WebGL (REF)
-      require this functionality to meet acceptable performance
-      characteristics.
+      specifications such as the File
+      API <a href="#refsFILE">[FILEAPI]</a> and Web
+      Sockets <a href="#refsWEBSOCKETS">[WEBSOCKETS]</a> would benefit
+      from being able to read and write binary data directly in its
+      native form.  Specifications such as
+      WebGL <a href="#refsWEBGL">[WEBGL]</a> require this
+      functionality to meet acceptable performance characteristics.
     </p>
 
     <p>
@@ -422,8 +425,13 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
 	  <td>
 	    <p>This is an index setter.</p>
 	    <p>Sets the element at the given numeric index to the given value.</p>
-	    <p>If the value is not within the range of the array's element type, then a C-style cast is performed. XXX define this better -- if the dest type is an integer, coerce the value to an integer then take the low N bits; if the dest type is a float, then assign.. ?</p>
-	    <p>If the value can't be converted to a numeric value, then if the element type can represent a NaN value, NaN is stored, otherwise zero is stored. XXX ... an exception is raised?</p>
+            <p>Conversions of values to <i>type</i> are defined in
+            the <a href="http://dev.w3.org/2006/webapi/WebIDL/">Web
+            IDL</a>
+            specification <a href="#refsWEBIDL">[WEBIDL]</a>. See in
+            particular
+            the <a href="http://dev.w3.org/2006/webapi/WebIDL/#es-type-mapping">ECMAScript
+            type mapping</a>.
 	  </td>
 	</tr>
 	<tr>
@@ -641,16 +649,16 @@ interface <dfn id="DataArray">DataArray</dfn> : ArrayBufferView {
     </dd>
 
     <h2>References</h2>
-    <dt>[CANVAS]</dt>
-    <dd><a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html">The HTML5 Canvas Element</a></dd>
+    <dt id="refsWEBIDL">[WEBIDL]</dt>
+    <dd><a href="http://dev.w3.org/2006/webapi/WebIDL/">Web IDL</a></dd>
 
-    <dt>[WEBGL]</dt>
+    <dt id="refsWEBGL">[WEBGL]</dt>
     <dd><a href="http://www.webgl.org/">Khronos WebGL Specification</a></dd>
 
-    <dt>[FILEAPI]</dt>
+    <dt id="refsFILE">[FILEAPI]</dt>
     <dd><a href="http://www.w3.org/TR/FileAPI/">File API</a></dd>
 
-    <dt>[WEBSOCKETS]</dt>
+    <dt id="refsWEBSOCKETS">[WEBSOCKETS]</dt>
     <dd><a href="http://dev.w3.org/html5/websockets/">The Web Sockets API</a></dd>
 
 </body>
