@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 12 May 2010</h2>
+    <h2 class="no-toc">Working Draft 17 May 2010</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -243,15 +243,15 @@ gl.viewport(0, 0, canvas.width, canvas.height);
 
 <!-- ======================================================================================================= -->
 
-    <h3>WebGLArrayBuffer and Uninitialized Data</h3>
+    <h3>ArrayBuffer and Uninitialized Data</h3>
 
     <p>
-        Data present in a <a href="#WebGLArrayBuffer">WebGLArrayBuffer</a> can be read by the application directly 
-        by creating a <a href="#WebGLArray">WebGLArray</a> view of the data or indirectly by via rendering 
-        and using a method such as <code>readPixels</code>.  At creation time, a WebGLArrayBuffer 
+        Data present in an <a href="#ARRAYBUFFER">ArrayBuffer</a> can be read by the application directly 
+        by creating a <a href="#TYPEDARRAY">typed array</a> view of the data or indirectly by via rendering 
+        and using a method such as <code>readPixels</code>.  At creation time, an ArrayBuffer 
         must be initialized from existing user data or must be cleared to 0.  
         Additionally, the WebGL implementation must ensure that no data outside of 
-        the valid byte range for a WebGLArrayBuffer can be accessed.  If a caller 
+        the valid byte range for an ArrayBuffer can be accessed.  If a caller 
         attempts to access any data outside of that range, an implementation may 
         choose to raise an exception, use the closest valid index, use 0, or any 
         other approach that prevents it from providing access to uninitialized data.
@@ -271,7 +271,7 @@ gl.viewport(0, 0, canvas.width, canvas.height);
         to 0.  For example, this may require creating a temporary buffer of 0 
         values the size of a requested VBO, so that it can be initialized 
         correctly.  All other forms of loading data into a texture or VBO 
-        involve either WebGLArrayBuffers or DOM objects such as images, 
+        involve either ArrayBuffers or DOM objects such as images, 
         and are therefore already required to be initialized.
     </p>
 
@@ -703,313 +703,48 @@ var context = canvas.getContext('webgl',
 
 <!-- ======================================================================================================= -->
 
-    <h3>WebGLArrayBuffer</h3>
+    <h3><a name="ARRAYBUFFER">ArrayBuffer</a> and <a name="TYPEDARRAY">Typed Arrays</a></h3>
 
     <p>
-        The <code>WebGLArrayBuffer</code> interface describes the buffer used to store data 
-        for the WebGLArray interface and its subclasses.
-    </p>
-    <pre class="idl">
-[ Constructor(unsigned long length) ]
-interface <dfn id="WebGLArrayBuffer">WebGLArrayBuffer</dfn> {
-    readonly attribute unsigned long byteLength;
-};</pre>
-
-    <h4>Constructors</h4>
-
-    <dl class="methods">
-        <dt class="idl-code">Constructor(unsigned long length)
-        <dd>
-            Create a new WebGLArrayBuffer of the passed length in bytes. Data in the buffer is 
-            initialized to 0.
-    </dl>
-
-    <h4>Attributes</h4>
-
-    <p>
-        The following attributes are available:
-    </p>
-
-    <dl class="methods">
-        <dt>
-            <code class=attribute-name>
-                <a id="DOM-WebGLArrayBuffer-byteLength">
-                    byteLength
-                </a>
-            </code> 
-            of type <code>unsigned long</code>
-        <dd>
-            The length of the buffer in bytes.  The length is fixed when the WebGLArrayBuffer is created.
-    </dl>
-    
-<!-- ======================================================================================================= -->
-
-    <h3>WebGLArray</h3>
-
-    <p>
-        The <code>WebGLArray</code> interface is the abstract base interface for all the typed array 
-        interfaces.  Every <code>WebGLArray</code> subclass presents a typed view of a 
-        <a href="#WebGLArrayBuffer">WebGLArrayBuffer</a> region.  Multiple <code>WebGLArray</code>s can 
-        reference the same or overlapping regions of a <a href="#WebGLArrayBuffer">WebGLArrayBuffer</a>.
-    </p>
-    <pre class="idl">
-interface <dfn id="WebGLArray">WebGLArray</dfn> {
-    readonly attribute WebGLArrayBuffer buffer;
-    readonly attribute unsigned long byteOffset;
-    readonly attribute unsigned long byteLength;
-    readonly attribute unsigned long length;
-
-    WebGLArray slice(long start, long end);
-};</pre>
-
-    <h4>Attributes</h4>
-
-    <p>
-        The following attributes are available:
-    </p>
-
-    <dl class="methods">
-        <dt>
-            <code class=attribute-name>
-                <a id="DOM-WebGLArray-buffer">
-                    buffer
-                </a>
-            </code> 
-            of type <code>WebGLArrayBuffer</code>
-        <dd>
-            The WebGLArrayBuffer holding the data for this array.
-        <dt>
-            <code class=attribute-name>
-                <a id="DOM-WebGLArray-byteOffset">
-                    byteOffset
-                </a>
-            </code> 
-            of type <code>unsigned long</code>
-        <dd>
-            The offset of this data, in bytes, from the start of this <a id="WebGLArray">WebGLArray</a>'s <a id="WebGLArrayBuffer">WebGLArrayBuffer</a>.
-        <dt>
-            <code class=attribute-name>
-                <a id="DOM-WebGLArray-byteLength">
-                    byteLength
-                </a>
-            </code> 
-            of type <code>unsigned long</code>
-        <dd>
-            The length of this data in bytes.
-        <dt>
-            <code class=attribute-name>
-                <a id="DOM-WebGLArray-length">
-                    length
-                </a>
-            </code> 
-            of type <code>unsigned long</code>
-        <dd>
-            The length of this data in elements.
-    </dl>
-
-    <h4>slice method</h4>
-
-    <dl class="methods">
-        <dt class="idl-code">WebGLArray slice(long start, long end)
-        <dd>
-	  <p>
-             Returns a new <a href="#WebGLArray">WebGLArray</a> view
-             of the <a href="#WebGLArrayBuffer">WebGLArrayBuffer</a>
-             store for this <a href="#WebGLArray">WebGLArray</a>,
-             referencing the elements at start, inclusive, up to end,
-             exclusive. If either start or end is negative, it refers
-             to an index from the end of the array, as opposed to from
-             the start. The range specified by the given start and end
-             values is clamped to the valid index range for the
-             current array, and if not given default to the start and
-             end of the array, respectively.
-	  </p>
-	  <p>
-	     The returned <a href="#WebGLArray">WebGLArray</a> will be
-	     of the same type as the array on which this method is
-	     invoked.
-	  </p>
-    </dl>
-
-<!-- ======================================================================================================= -->
-
-    <h4>Typed WebGLArray Interfaces</h4>
-
-    <p>
-      A <code>WebGLArray</code> is intended to be an abstract base
-      interface for WebGLArrays of a specific type.  There is no way
-      to create a <code>WebGLArray</code>, but there are constructors
-      defined for each of the typed interfaces.  The following
-      sections define the shared constructors and methods that each
-      typed interface implements.
+        Vertex, index, texture, and other data is transferred to the WebGL implementation using
+        the <a href="TypedArray-spec.html#ARRAYBUFFER">ArrayBuffer</a>
+        and <a href="TypedArray-spec.html#TYPEDARRAYS">views</a> defined in
+        the <a href="TypedArray-spec.html">Typed Array</a>
+        specification <a href="#refsTYPEDARRAYS">[TYPEDARRAYS]</a>. All of the typed array views
+        except <tt>DoubleArray</tt> may be used in conjunction with WebGL; OpenGL ES 2.0, and
+        therefore WebGL, does not support double-precision floating-point data.
     </p>
     <p>
-      The typed <code>WebGLArray</code> views provide access to data
-      using indexing, and also provide a bulk set method for replacing
-      a sequence of data from another array.  A summary of all the
-      typed <code>WebGLArray</code> views is given in the
-      following table.
+        Typed Arrays support the creation of interleaved, heterogeneous vertex data; uploading of
+        distinct blocks of data into a large vertex buffer object; and most other use cases required
+        by OpenGL programs.
     </p>
-
-    <center><table>
-      <thead>
-	<tr><th><i>TypeName</i></th><th>BYTES_PER_ELEMENT</th><th>Type</th><th>Equivalent C Type</th></tr>
-      </thead>
-      <tbody>
-	<tr><td>Byte</td><td>1</td><td>8-bit signed integer</td><td><code>signed char</code></td></tr>
-	<tr><td>UnsignedByte</td><td>1</td><td>8-bit unsigned integer</td><td><code>unsigned char</code></td></tr>
-	<tr><td>Short</td><td>2</td><td>16-bit signed integer</td><td><code>short</code></td></tr>
-	<tr><td>UnsignedShort</td><td>2</td><td>16-bit unsigned integer</td><td><code>unsigned short</code></td></tr>
-	<tr><td>Int</td><td>4</td><td>32-bit signed integer</td><td><code>int</code></td></tr>
-	<tr><td>UnsignedInt</td><td>4</td><td>32-bit unsigned integer</td><td><code>unsigned int</code></td></tr>
-	<tr><td>Float</td><td>4</td><td>32-bit floating point</td><td><code>float</code></td></tr>
-      </tbody>
-    </table></center>
-
-    <p>
-      All of the typed <code>WebGLArray</code> views have the following IDL template:
-    </p>
-
-    <pre class="idl">
-[
-    Constructor(unsigned long length),
-    Constructor(WebGL<i>TypeName</i>Array array),
-    Constructor(sequence&lt;<i>type</i>&gt; array),
-    Constructor(WebGLArrayBuffer buffer, 
-                optional unsigned long byteOffset, optional unsigned long length)
-]
-interface WebGL<i>TypeName</i>Array : WebGLArray {
-    const GLsizei BYTES_PER_ELEMENT = <i>element size in bytes</i>;
-    
-    omittable getter <i>type</i> get(unsigned long index);
-    omittable setter void set(unsigned long index, <i>type</i> value);
-    void set(WebGL<i>TypeName</i>Array array, optional unsigned long offset);
-    void set(sequence&lt;<i>type</i>&gt; array, optional unsigned long offset);
-};</pre>
-
-
-    <h5>Shared Constructors</h5>
-
-    <dl class="methods">
-        <dt class="idl-code">Constructor(unsigned long length)
-        <dd>
-            Create a new WebGL<i>TypeName</i>Array object of the given length with a new
-            underlying WebGLArrayBuffer large enough to hold <code>length</code>
-            elements of the specific type. Data in the buffer is initialized to 0.
-        <dt><p class="idl-code">Constructor(WebGL<i>TypeName</i>Array array)</p>
-            <p class="idl-code">Constructor(sequence&lt;<i>type</i>&gt; array)</p>
-        <dd>
-            Create a new WebGL<i>TypeName</i>Array object with a new underlying
-            WebGLArrayBuffer large enough to hold the given data, then copy the passed
-            data into the buffer.
-        <dt class="idl-code">Constructor(WebGLArrayBuffer buffer, optional unsigned long byteOffset, optional unsigned long length)
-        <dd>
-      <p>
-            Create a new WebGL<i>TypeName</i>Array object using the passed
-            WebGLArrayBuffer for its storage. Optional byteOffset and length can be used
-            to limit the section of the buffer referenced. The byteOffset indicates the
-            offset in bytes from the start of the WebGLArrayBuffer, and the length is the
-            count of elements from the offset that this WebGLByteArray will reference.
-            If both byteOffset and length are omitted, the WebGL<i>TypeName</i>Array
-            spans the entire WebGLArrayBuffer range.  If the length is omitted, the
-            WebGL<i>TypeName</i>Array extends from the given byteOffset until the end of
-            the WebGLArrayBuffer.
-      </p>
-      <p>
-        The given byteOffset must be a multiple of the element size of the specific
-        type, otherwise an exception is raised.
-      </p>
-      <p>
-            If the passed WebGLArrayBuffer is null, undefined, or a
-            value not convertible to a WebGLArrayBuffer, an exception
-            is raised.
-      </p>
-      <p>
-        If a given byteOffset and length references an area beyond the end of the
-            WebGLArrayBuffer an exception is raised.
-      </p>
-    </dl>
-
-    <h5>Shared Constants</h5>
-
-    <dl class="methods">
-        <dt>
-            <code class=attribute-name>
-                <a id="DOM-WebGLArray-BYTES_PER_ELEMENT">
-                    BYTES_PER_ELEMENT
-                </a>
-            </code> 
-            of type <code>GLsizei</code>
-        <dd>
-            The size in bytes of each element in the array. This constant is provided to make it easier for
-            authors to compute the byte offsets needed for heterogenous arrays. See example
-            below.
-    </dl>
-
-    <h5>Shared Getters and Setters</h5>
-
-    <dl class="methods">
-        <dt class="idl-code">omittable getter <i>type</i> get(unsigned long index)
-        <dd>
-      <p>
-        Returns the element at the given index.
-      </p>
-        <dt class="idl-code">omittable setter void set(unsigned long index, <i>type</i> value)
-        <dd>
-      <p>
-        Sets the element at the given index to the given value.
-      </p>
-      <p>
-        If the given value is out of range for the type of the array, a C-style cast operation is 
-        performed to coerce the value to the valid range.  No clamping or rounding is performed.
-      </p>
-        <dt><p class="idl-code">void set(WebGL<i>TypeName</i>Array array, optional unsigned long offset)</p>
-            <p class="idl-code">void set(sequence&lt;<i>type</i>&gt; array, optional unsigned long offset)</p>
-        <dd>
-      <p>
-        Set multiple values, reading input values from the array.  The optional offset
-        value indicates the index in the current array where values are written.  If
-        omitted, it is assumed to be 0.
-      </p>
-      <p>
-        The input array may be a <code>WebGL<i>TypeName</i>Array</code>, and the two arrays may use
-        the same underlying <code>WebGLArrayBuffer</code>. In this situation, setting the values
-        takes place as if all the data is first copied into a temporary buffer that does not overlap
-        either of the arrays, and then the data from the temporary buffer is copied into the current
-        array.
-      </p>
-      <p>
-	If the offset plus the length of the given array is out of
-	range for the current <code>WebGLArray</code>, an exception
-	is raised.
-      </p>
-    </dl>
 
     <div class="example">
-    Here is an ECMAScript example showing access to the same WebGLArrayBuffer using
-    different types of WebGLArray objects. In this case the buffer contains a
-    floating point vertex position (x, y, z) followed by a color as 4 unsigned bytes (r, g, b, a).
+    Here is an ECMAScript example showing access to the same ArrayBuffer using different types of
+    typed arrays. In this case the buffer contains a floating point vertex position (x, y, z)
+    followed by a color as 4 unsigned bytes (r, g, b, a).
 
     <pre>
 var numVertices = 100; // for example
 
 // Compute the size needed for the buffer, in bytes and floats
-var vertexSize = 3 * WebGLFloatArray.BYTES_PER_ELEMENT +
-     4 * WebGLUnsignedByteArray.BYTES_PER_ELEMENT;
-var vertexSizeInFloats = vertexSize / WebGLFloatArray.BYTES_PER_ELEMENT;
+var vertexSize = 3 * FloatArray.BYTES_PER_ELEMENT +
+     4 * Uint8Array.BYTES_PER_ELEMENT;
+var vertexSizeInFloats = vertexSize / FloatArray.BYTES_PER_ELEMENT;
 
 // Allocate the buffer
-var buf = new WebGLArrayBuffer(numVertices * vertexSize);
+var buf = new ArrayBuffer(numVertices * vertexSize);
 
-// Map this buffer to a WebGLFloatArray to access the positions
-var positionArray = new WebGLFloatArray(buf);
+// Map this buffer to a FloatArray to access the positions
+var positionArray = new FloatArray(buf);
 
-// Map the same buffer to a WebGLUnsignedByteArray to access the color
-var colorArray = new WebGLUnsignedByteArray(buf);
+// Map the same buffer to a Uint8Array to access the color
+var colorArray = new Uint8Array(buf);
 
 // Set up the initial offset of the vertices and colors within the buffer
 var positionIdx = 0;
-var colorIdx = 3 * WebGLFloatArray.BYTES_PER_ELEMENT;
+var colorIdx = 3 * FloatArray.BYTES_PER_ELEMENT;
 
 // Initialize the buffer
 for (var i = 0; i < numVertices; i++) {
@@ -1025,203 +760,6 @@ for (var i = 0; i < numVertices; i++) {
 }
     </pre>
     </div>
-
-<!-- ======================================================================================================= -->
-
-    <h5>WebGLByteArray</h5>
-
-    <p>
-      A <code>WebGLByteArray</code> represents an array of 8-bit signed integer values.
-    </p>
-    <p>
-      A <code>WebGLByteArray</code> has an element size of 1 byte.
-    </p>
-
-    <pre class="idl">
-[
-    Constructor(unsigned long length),
-    Constructor(WebGLByteArray array),
-    Constructor(sequence&lt;GLbyte&gt; array),
-    Constructor(WebGLArrayBuffer buffer, 
-                optional unsigned long byteOffset, optional unsigned long length)
-]
-interface <dfn id="WebGLByteArray">WebGLByteArray</dfn> : WebGLArray {
-    const GLsizei BYTES_PER_ELEMENT = 1;
-    
-    omittable getter GLbyte get(unsigned long index);
-    omittable setter void set(unsigned long index, GLbyte value);
-    void set(WebGLByteArray array, optional unsigned long offset);
-    void set(sequence&lt;GLbyte&gt; array, optional unsigned long offset);
-};</pre>
-
-<!-- ======================================================================================================= -->
-
-    <h5>WebGLUnsignedByteArray</h5>
-
-    <p>
-      A <code>WebGLUnsignedByteArray</code> represents an array of 8-bit unsigned integer values.
-    </p>
-    <p>
-      A <code>WebGLUnsignedByteArray</code> has an element size of 1 byte.
-    </p>
-
-    <pre class="idl">
-[
-    Constructor(unsigned long length),
-    Constructor(WebGLUnsignedByteArray array),
-    Constructor(sequence&lt;GLubyte&gt; array),
-    Constructor(WebGLArrayBuffer buffer, 
-                optional unsigned long byteOffset, optional unsigned long length)
-]
-interface <dfn id="WebGLUnsignedByteArray">WebGLUnsignedByteArray</dfn> : WebGLArray {
-    const GLsizei BYTES_PER_ELEMENT = 1;
-    
-    omittable getter GLubyte get(unsigned long index);
-    omittable setter void set(unsigned long index, GLubyte value);
-    void set(WebGLUnsignedByteArray array, optional unsigned long offset);
-    void set(sequence&lt;GLubyte&gt; array, optional unsigned long offset);
-};</pre>
-
-<!-- ======================================================================================================= -->
-
-    <h5>WebGLShortArray</h5>
-
-    <p>
-      A <code>WebGLShortArray</code> represents an array of 16-bit signed integer values.
-    </p>
-    <p>
-      A <code>WebGLShortArray</code> has an element size of 2 bytes.
-    </p>
-
-    <pre class="idl">
-[
-    Constructor(unsigned long length),
-    Constructor(WebGLShortArray array),
-    Constructor(sequence&lt;GLshort&gt; array),
-    Constructor(WebGLArrayBuffer buffer, 
-                optional unsigned long byteOffset, optional unsigned long length)
-]
-interface <dfn id="WebGLShortArray">WebGLShortArray</dfn> : WebGLArray {
-    const GLsizei BYTES_PER_ELEMENT = 2;
-    
-    omittable getter GLshort get(unsigned long index);
-    omittable setter void set(unsigned long index, GLshort value);
-    void set(WebGLShortArray array, optional unsigned long offset);
-    void set(sequence&lt;GLshort&gt; array, optional unsigned long offset);
-};</pre>
-
-<!-- ======================================================================================================= -->
-
-    <h5>WebGLUnsignedShortArray</h5>
-
-    <p>
-      A <code>WebGLUnsignedShortArray</code> represents an array of 16-bit unsigned integer values.
-    </p>
-    <p>
-      A <code>WebGLUnsignedShortArray</code> has an element size of 2 bytes.
-    </p>
-
-    <pre class="idl">
-[
-    Constructor(unsigned long length),
-    Constructor(WebGLUnsignedShortArray array),
-    Constructor(sequence&lt;GLushort&gt; array),
-    Constructor(WebGLArrayBuffer buffer, 
-                optional unsigned long byteOffset, optional unsigned long length)
-]
-interface <dfn id="WebGLUnsignedShortArray">WebGLUnsignedShortArray</dfn> : WebGLArray {
-    const GLsizei BYTES_PER_ELEMENT = 2;
-    
-    omittable getter GLushort get(unsigned long index);
-    omittable setter void set(unsigned long index, GLushort value);
-    void set(WebGLUnsignedShortArray array, optional unsigned long offset);
-    void set(sequence&lt;GLushort&gt; array, optional unsigned long offset);
-};</pre>
-
-
-<!-- ======================================================================================================= -->
-
-    <h5>WebGLIntArray</h5>
-
-    <p>
-      A <code>WebGLIntArray</code> represents an array of 32-bit signed integer values.
-    </p>
-    <p>
-      A <code>WebGLIntArray</code> has an element size of 4 bytes.
-    </p>
-
-    <pre class="idl">
-[
-    Constructor(unsigned long length),
-    Constructor(WebGLIntArray array),
-    Constructor(sequence&lt;GLint&gt; array),
-    Constructor(WebGLArrayBuffer buffer, 
-                optional unsigned long byteOffset, optional unsigned long length)
-]
-interface <dfn id="WebGLIntArray">WebGLIntArray</dfn> : WebGLArray {
-    const GLsizei BYTES_PER_ELEMENT = 4;
-    
-    omittable getter GLint get(unsigned long index);
-    omittable setter void set(unsigned long index, GLint value);
-    void set(WebGLIntArray array, optional unsigned long offset);
-    void set(sequence&lt;GLint&gt; array, optional unsigned long offset);
-};</pre>
-
-<!-- ======================================================================================================= -->
-
-    <h5>WebGLUnsignedIntArray</h5>
-
-    <p>
-      A <code>WebGLUnsignedIntArray</code> represents an array of 32-bit unsigned integer values.
-    </p>
-    <p>
-      A <code>WebGLUnsignedIntArray</code> has an element size of 4 bytes.
-    </p>
-
-    <pre class="idl">
-[
-    Constructor(unsigned long length),
-    Constructor(WebGLUnsignedIntArray array),
-    Constructor(sequence&lt;GLuint&gt; array),
-    Constructor(WebGLArrayBuffer buffer, 
-                optional unsigned long byteOffset, optional unsigned long length)
-]
-interface <dfn id="WebGLUnsignedIntArray">WebGLUnsignedIntArray</dfn> : WebGLArray {
-    const GLsizei BYTES_PER_ELEMENT = 4;
-    
-    omittable getter GLuint get(unsigned long index);
-    omittable setter void set(unsigned long index, GLuint value);
-    void set(WebGLUnsignedIntArray array, optional unsigned long offset);
-    void set(sequence&lt;GLuint&gt; array, optional unsigned long offset);
-};</pre>
-
-<!-- ======================================================================================================= -->
-
-    <h5>WebGLFloatArray</h5>
-
-    <p>
-      A <code>WebGLFloatArray</code> represents an array of 32-bit floating point values.
-    </p>
-    <p>
-      A <code>WebGLFloatArray</code> has an element size of 4 bytes.
-    </p>
-
-    <pre class="idl">
-[
-    Constructor(unsigned long length),
-    Constructor(WebGLFloatArray array),
-    Constructor(sequence&lt;GLfloat&gt; array),
-    Constructor(WebGLArrayBuffer buffer, 
-                optional unsigned long byteOffset, optional unsigned long length)
-]
-interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
-    const GLsizei BYTES_PER_ELEMENT = 4;
-    
-    omittable getter GLfloat get(unsigned long index);
-    omittable setter void set(unsigned long index, GLfloat value);
-    void set(WebGLFloatArray array, optional unsigned long offset);
-    void set(sequence&lt;GLfloat&gt; array, optional unsigned long offset);
-};</pre>
 
 <!-- ======================================================================================================= -->
 
@@ -1681,13 +1219,13 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                            GLenum srcAlpha, GLenum dstAlpha) raises(DOMException);
 
     void bufferData(GLenum target, GLsizei size, GLenum usage) raises(DOMException);
-    void bufferData(GLenum target, WebGLArray data, GLenum usage) 
+    void bufferData(GLenum target, ArrayBufferView data, GLenum usage) 
                                                                         raises(DOMException);
-    void bufferData(GLenum target, WebGLArrayBuffer data, GLenum usage) 
+    void bufferData(GLenum target, ArrayBuffer data, GLenum usage) 
                                                                         raises(DOMException);
-    void bufferSubData(GLenum target, GLsizeiptr offset, WebGLArray data) 
+    void bufferSubData(GLenum target, GLsizeiptr offset, ArrayBufferView data) 
                                                                         raises(DOMException);
-    void bufferSubData(GLenum target, GLsizeiptr offset, WebGLArrayBuffer data) 
+    void bufferSubData(GLenum target, GLsizeiptr offset, ArrayBuffer data) 
                                                                         raises(DOMException);
 
     GLenum checkFramebufferStatus(GLenum target) raises(DOMException);
@@ -1791,7 +1329,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     void pixelStorei(GLenum pname, GLint param) raises(DOMException);
     void polygonOffset(GLfloat factor, GLfloat units) raises(DOMException);
 
-    WebGLArray readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
+    ArrayBufferView readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
                            GLenum format, GLenum type) raises(DOMException);
 
     void renderbufferStorage(GLenum target, GLenum internalformat, 
@@ -1813,7 +1351,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
 
     void texImage2D(GLenum target, GLint level, GLenum internalformat, 
                     GLsizei width, GLsizei height, GLint border, GLenum format, 
-                    GLenum type, WebGLArray pixels) raises(DOMException);
+                    GLenum type, ArrayBufferView pixels) raises(DOMException);
     void texImage2D(GLenum target, GLint level, ImageData pixels,
                     optional GLboolean flipY, optional GLboolean asPremultipliedAlpha) 
                                                                         raises(DOMException);
@@ -1833,7 +1371,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
 
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLsizei width, GLsizei height, 
-                       GLenum format, GLenum type, WebGLArray pixels) 
+                       GLenum format, GLenum type, ArrayBufferView pixels) 
                                                                         raises(DOMException);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        ImageData pixels,
@@ -1853,43 +1391,43 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                                                                         raises(DOMException);
 
     void uniform1f(WebGLUniformLocation location, GLfloat x) raises(DOMException);
-    void uniform1fv(WebGLUniformLocation location, WebGLFloatArray v) raises(DOMException);
+    void uniform1fv(WebGLUniformLocation location, FloatArray v) raises(DOMException);
     void uniform1fv(WebGLUniformLocation location, sequence<float> v) raises(DOMException);
     void uniform1i(WebGLUniformLocation location, GLint x) raises(DOMException);
-    void uniform1iv(WebGLUniformLocation location, WebGLIntArray v) raises(DOMException);
+    void uniform1iv(WebGLUniformLocation location, Int32Array v) raises(DOMException);
     void uniform1iv(WebGLUniformLocation location, sequence<long> v) raises(DOMException);
     void uniform2f(WebGLUniformLocation location, GLfloat x, GLfloat y) raises(DOMException);
-    void uniform2fv(WebGLUniformLocation location, WebGLFloatArray v) raises(DOMException);
+    void uniform2fv(WebGLUniformLocation location, FloatArray v) raises(DOMException);
     void uniform2fv(WebGLUniformLocation location, sequence<float> v) raises(DOMException);
     void uniform2i(WebGLUniformLocation location, GLint x, GLint y) raises(DOMException);
-    void uniform2iv(WebGLUniformLocation location, WebGLIntArray v) raises(DOMException);
+    void uniform2iv(WebGLUniformLocation location, Int32Array v) raises(DOMException);
     void uniform2iv(WebGLUniformLocation location, sequence<long> v) raises(DOMException);
     void uniform3f(WebGLUniformLocation location, GLfloat x, GLfloat y, GLfloat z) 
                                                                         raises(DOMException);
-    void uniform3fv(WebGLUniformLocation location, WebGLFloatArray v) raises(DOMException);
+    void uniform3fv(WebGLUniformLocation location, FloatArray v) raises(DOMException);
     void uniform3fv(WebGLUniformLocation location, sequence<float> v) raises(DOMException);
     void uniform3i(WebGLUniformLocation location, GLint x, GLint y, GLint z) raises(DOMException);
-    void uniform3iv(WebGLUniformLocation location, WebGLIntArray v) raises(DOMException);
+    void uniform3iv(WebGLUniformLocation location, Int32Array v) raises(DOMException);
     void uniform3iv(WebGLUniformLocation location, sequence<long> v) raises(DOMException);
     void uniform4f(WebGLUniformLocation location, GLfloat x, GLfloat y, GLfloat z, GLfloat w) 
                                                                         raises(DOMException);
-    void uniform4fv(WebGLUniformLocation location, WebGLFloatArray v) raises(DOMException);
+    void uniform4fv(WebGLUniformLocation location, FloatArray v) raises(DOMException);
     void uniform4fv(WebGLUniformLocation location, sequence<float> v) raises(DOMException);
     void uniform4i(WebGLUniformLocation location, GLint x, GLint y, GLint z, GLint w) 
                                                                         raises(DOMException);
-    void uniform4iv(WebGLUniformLocation location, WebGLIntArray v) raises(DOMException);
+    void uniform4iv(WebGLUniformLocation location, Int32Array v) raises(DOMException);
     void uniform4iv(WebGLUniformLocation location, sequence<long> v) raises(DOMException);
 
     void uniformMatrix2fv(WebGLUniformLocation location, GLboolean transpose, 
-                          WebGLFloatArray value) raises(DOMException);
+                          FloatArray value) raises(DOMException);
     void uniformMatrix2fv(WebGLUniformLocation location, GLboolean transpose, 
                           sequence<float> value) raises(DOMException);
     void uniformMatrix3fv(WebGLUniformLocation location, GLboolean transpose, 
-                          WebGLFloatArray value) raises(DOMException);
+                          FloatArray value) raises(DOMException);
     void uniformMatrix3fv(WebGLUniformLocation location, GLboolean transpose, 
                           sequence<float> value) raises(DOMException);
     void uniformMatrix4fv(WebGLUniformLocation location, GLboolean transpose, 
-                          WebGLFloatArray value) raises(DOMException);
+                          FloatArray value) raises(DOMException);
     void uniformMatrix4fv(WebGLUniformLocation location, GLboolean transpose, 
                           sequence<float> value) raises(DOMException);
 
@@ -1897,18 +1435,18 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     void validateProgram(WebGLProgram program) raises(DOMException);
 
     void vertexAttrib1f(GLuint indx, GLfloat x) raises(DOMException);
-    void vertexAttrib1fv(GLuint indx, WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib1fv(GLuint indx, FloatArray values) raises(DOMException);
     void vertexAttrib1fv(GLuint indx, sequence<float> values) raises(DOMException);
     void vertexAttrib2f(GLuint indx, GLfloat x, GLfloat y) raises(DOMException);
-    void vertexAttrib2fv(GLuint indx, WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib2fv(GLuint indx, FloatArray values) raises(DOMException);
     void vertexAttrib2fv(GLuint indx, sequence<float> values) raises(DOMException);
     void vertexAttrib3f(GLuint indx, GLfloat x, GLfloat y, GLfloat z) 
                                                                         raises(DOMException);
-    void vertexAttrib3fv(GLuint indx, WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib3fv(GLuint indx, FloatArray values) raises(DOMException);
     void vertexAttrib3fv(GLuint indx, sequence<float> values) raises(DOMException);
     void vertexAttrib4f(GLuint indx, GLfloat x, GLfloat y, GLfloat z, GLfloat w) 
                                                                         raises(DOMException);
-    void vertexAttrib4fv(GLuint indx, WebGLFloatArray values) raises(DOMException);
+    void vertexAttrib4fv(GLuint indx, FloatArray values) raises(DOMException);
     void vertexAttrib4fv(GLuint indx, sequence<float> values) raises(DOMException);
     void vertexAttribPointer(GLuint indx, GLint size, GLenum type, 
                              GLboolean normalized, GLsizei stride, GLsizeiptr offset) 
@@ -2041,12 +1579,12 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
                 <tr><td>ACTIVE_TEXTURE</td><td>unsigned long</td></tr>
-                <tr><td>ALIASED_LINE_WIDTH_RANGE</td><td>WebGLFloatArray (with 2 elements)</td></tr>
-                <tr><td>ALIASED_POINT_SIZE_RANGE</td><td>WebGLFloatArray (with 2 elements)</td></tr>
+                <tr><td>ALIASED_LINE_WIDTH_RANGE</td><td>FloatArray (with 2 elements)</td></tr>
+                <tr><td>ALIASED_POINT_SIZE_RANGE</td><td>FloatArray (with 2 elements)</td></tr>
                 <tr><td>ALPHA_BITS</td><td>long</td></tr>
                 <tr><td>ARRAY_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
                 <tr><td>BLEND</td><td>boolean</td></tr>
-                <tr><td>BLEND_COLOR</td><td>WebGLFloatArray (with 4 values)</td></tr>
+                <tr><td>BLEND_COLOR</td><td>FloatArray (with 4 values)</td></tr>
                 <tr><td>BLEND_DST_ALPHA</td><td>unsigned long</td></tr>
                 <tr><td>BLEND_DST_RGB</td><td>unsigned long</td></tr>
                 <tr><td>BLEND_EQUATION_ALPHA</td><td>unsigned long</td></tr>
@@ -2054,8 +1592,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>BLEND_SRC_ALPHA</td><td>unsigned long</td></tr>
                 <tr><td>BLEND_SRC_RGB</td><td>unsigned long</td></tr>
                 <tr><td>BLUE_BITS</td><td>long</td></tr>
-                <tr><td>COLOR_CLEAR_VALUE</td><td>WebGLFloatArray (with 4 values)</td></tr>
-                <tr><td>COLOR_WRITEMASK</td><td>WebGLUnsignedByteArray (with 4 values)</td></tr>
+                <tr><td>COLOR_CLEAR_VALUE</td><td>FloatArray (with 4 values)</td></tr>
+                <tr><td>COLOR_WRITEMASK</td><td>Uint8Array (with 4 values)</td></tr>
                 <tr><td>COMPRESSED_TEXTURE_FORMATS</td><td>null</td></tr>
                 <tr><td>CULL_FACE</td><td>boolean</td></tr>
                 <tr><td>CULL_FACE_MODE</td><td>unsigned long</td></tr>
@@ -2063,7 +1601,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>DEPTH_BITS</td><td>long</td></tr>
                 <tr><td>DEPTH_CLEAR_VALUE</td><td>float</td></tr>
                 <tr><td>DEPTH_FUNC</td><td>unsigned long</td></tr>
-                <tr><td>DEPTH_RANGE</td><td>WebGLFloatArray (with 2 elements)</td></tr>
+                <tr><td>DEPTH_RANGE</td><td>FloatArray (with 2 elements)</td></tr>
                 <tr><td>DEPTH_TEST</td><td>boolean</td></tr>
                 <tr><td>DEPTH_WRITEMASK</td><td>boolean</td></tr>
                 <tr><td>DITHER</td><td>boolean</td></tr>
@@ -2083,7 +1621,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>MAX_VERTEX_ATTRIBS</td><td>long</td></tr>
                 <tr><td>MAX_VERTEX_TEXTURE_IMAGE_UNITS</td><td>long</td></tr>
                 <tr><td>MAX_VERTEX_UNIFORM_VECTORS</td><td>long</td></tr>
-                <tr><td>MAX_VIEWPORT_DIMS</td><td>WebGLIntArray (with 2 elements)</td></tr>
+                <tr><td>MAX_VIEWPORT_DIMS</td><td>Int32Array (with 2 elements)</td></tr>
                 <tr><td>NUM_COMPRESSED_TEXTURE_FORMATS</td><td>long</td></tr>
                 <tr><td>PACK_ALIGNMENT</td><td>long</td></tr>
                 <tr><td>POLYGON_OFFSET_FACTOR</td><td>float</td></tr>
@@ -2095,7 +1633,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>SAMPLE_COVERAGE_INVERT</td><td>boolean</td></tr>
                 <tr><td>SAMPLE_COVERAGE_VALUE</td><td>float</td></tr>
                 <tr><td>SAMPLES</td><td>long</td></tr>
-                <tr><td>SCISSOR_BOX</td><td>WebGLIntArray (with 4 elements)</td></tr>
+                <tr><td>SCISSOR_BOX</td><td>Int32Array (with 4 elements)</td></tr>
                 <tr><td>SCISSOR_TEST</td><td>boolean</td></tr>
                 <tr><td>STENCIL_BACK_FAIL</td><td>unsigned long</td></tr>
                 <tr><td>STENCIL_BACK_FUNC</td><td>unsigned long</td></tr>
@@ -2118,7 +1656,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>TEXTURE_BINDING_2D</td><td>WebGLTexture</td></tr>
                 <tr><td>TEXTURE_BINDING_CUBE_MAP</td><td>WebGLTexture</td></tr>
                 <tr><td>UNPACK_ALIGNMENT</td><td>int</td></tr>
-                <tr><td>VIEWPORT</td><td>WebGLIntArray (with 4 elements)</td></tr>
+                <tr><td>VIEWPORT</td><td>Int32Array (with 4 elements)</td></tr>
             </table>
         <dt class="idl-code">GLenum getError()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetError.xml">
@@ -2234,8 +1772,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Set the size of the currently bound WebGLBuffer object for the passed target. The
             buffer is initialized to 0.
             
-        <dt><p class="idl-code">void bufferData(GLenum target, WebGLArray data, GLenum usage)</p>
-            <p class="idl-code">void bufferData(GLenum target, WebGLArrayBuffer data, GLenum usage)
+        <dt><p class="idl-code">void bufferData(GLenum target, ArrayBufferView data, GLenum usage)</p>
+            <p class="idl-code">void bufferData(GLenum target, ArrayBuffer data, GLenum usage)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBufferData.xml">
                 (OpenGL ES 2.0 man page)
             </a></p>
@@ -2243,8 +1781,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Set the size of the currently bound WebGLBuffer object for the passed target to the 
             size of the passed data, then write the contents of data to the buffer object.
             
-        <dt><p class="idl-code">void bufferSubData(GLenum target, GLsizeiptr offset, WebGLArray data)</p>
-            <p class="idl-code">void bufferSubData(GLenum target, GLsizeiptr offset, WebGLArrayBuffer data)
+        <dt><p class="idl-code">void bufferSubData(GLenum target, GLsizeiptr offset, ArrayBufferView data)</p>
+            <p class="idl-code">void bufferSubData(GLenum target, GLsizeiptr offset, ArrayBuffer data)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glBufferSubData.xml">
                 (OpenGL ES 2.0 man page)
             </a></p>
@@ -2507,7 +2045,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             Return true if the passed WebGLTexture is valid and false otherwise.
         <dt class="idl-code">texImage2D(GLenum target, GLint level, GLenum internalformat, 
                     GLsizei width, GLsizei height, GLint border, GLenum format, 
-                    GLenum type, WebGLArray pixels)
+                    GLenum type, ArrayBufferView pixels)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexImage2D.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2550,7 +2088,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
             <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLsizei width, GLsizei height, 
-                       GLenum format, GLenum type, WebGLArray pixels)
+                       GLenum format, GLenum type, ArrayBufferView pixels)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glTexSubImage2D.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2774,18 +2312,18 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>boolean</td><td>boolean</td></tr>
                 <tr><td>int</td><td>long</td></tr>
                 <tr><td>float</td><td>float</td></tr>
-                <tr><td>vec2</td><td>WebGLFloatArray (with 2 elements)</td></tr>
-                <tr><td>ivec2</td><td>WebGLIntArray (with 2 elements)</td></tr>
-                <tr><td>bvec2</td><td>WebGLUnsignedByteArray (with 2 elements)</td></tr>
-                <tr><td>vec3</td><td>WebGLFloatArray (with 3 elements)</td></tr>
-                <tr><td>ivec3</td><td>WebGLIntArray (with 3 elements)</td></tr>
-                <tr><td>bvec3</td><td>WebGLUnsignedByteArray (with 3 elements)</td></tr>
-                <tr><td>vec4</td><td>WebGLFloatArray (with 4 elements)</td></tr>
-                <tr><td>ivec4</td><td>WebGLIntArray (with 4 elements)</td></tr>
-                <tr><td>bvec4</td><td>WebGLUnsignedByteArray (with 4 elements)</td></tr>
-                <tr><td>mat2</td><td>WebGLFloatArray (with 4 elements)</td></tr>
-                <tr><td>mat3</td><td>WebGLFloatArray (with 9 elements)</td></tr>
-                <tr><td>mat4</td><td>WebGLFloatArray (with 16 elements)</td></tr>
+                <tr><td>vec2</td><td>FloatArray (with 2 elements)</td></tr>
+                <tr><td>ivec2</td><td>Int32Array (with 2 elements)</td></tr>
+                <tr><td>bvec2</td><td>Uint8Array (with 2 elements)</td></tr>
+                <tr><td>vec3</td><td>FloatArray (with 3 elements)</td></tr>
+                <tr><td>ivec3</td><td>Int32Array (with 3 elements)</td></tr>
+                <tr><td>bvec3</td><td>Uint8Array (with 3 elements)</td></tr>
+                <tr><td>vec4</td><td>FloatArray (with 4 elements)</td></tr>
+                <tr><td>ivec4</td><td>Int32Array (with 4 elements)</td></tr>
+                <tr><td>bvec4</td><td>Uint8Array (with 4 elements)</td></tr>
+                <tr><td>mat2</td><td>FloatArray (with 4 elements)</td></tr>
+                <tr><td>mat3</td><td>FloatArray (with 9 elements)</td></tr>
+                <tr><td>mat4</td><td>FloatArray (with 16 elements)</td></tr>
             </table>
         <dt class="idl-code">WebGLUniformLocation getUniformLocation(WebGLProgram program, DOMString name)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetUniformLocation.xml">
@@ -2811,7 +2349,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
                 <tr><td>VERTEX_ATTRIB_ARRAY_STRIDE</td><td>long</td></tr>
                 <tr><td>VERTEX_ATTRIB_ARRAY_TYPE</td><td>unsigned long</td></tr>
                 <tr><td>VERTEX_ATTRIB_ARRAY_NORMALIZED</td><td>boolean</td></tr>
-                <tr><td>CURRENT_VERTEX_ATTRIB</td><td>WebGLFloatArray (with 4 elements)</td></tr>
+                <tr><td>CURRENT_VERTEX_ATTRIB</td><td>FloatArray (with 4 elements)</td></tr>
             </table>
         <dt class="idl-code">GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glGetVertexAttribPointerv.xml">
@@ -2895,24 +2433,23 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
     <h4>Reading back pixels</h4>
 
     <p>
-        Pixels in the current framebuffer can be read back into a WebGLArray object.
+        Pixels in the current framebuffer can be read back into an ArrayBufferView object.
     </p>
 
     <dl class="methods">
-        <dt class="idl-code">WebGLArray readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
+        <dt class="idl-code">ArrayBufferView readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
                            GLenum format, GLenum type)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man/glReadPixels.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return a WebGLArray with pixels within the passed rectangle. The data returned from
+            Return a ArrayBufferView with pixels within the passed rectangle. The data returned from
             readPixels must be up-to-date as of the most recently sent drawing command. Any
             unprocessed drawing commands must be completed and their results presented to the
             current drawing buffers before readPixels accesses the drawing buffer. <br><br>
 
-            The specific subclass of WebGLArray returned depends on the passed type. If it is
-            GL_UNSIGNED_BYTE, a WebGLUnsignedByteArray is returned, otherwise a
-            WebGLUnsignedShortArray is returned.
+            The specific subclass of ArrayBufferView returned depends on the passed type. If it is
+            UNSIGNED_BYTE, a Uint8Array is returned, otherwise a Uint16Array is returned.
     </dl>
     
 <!-- ======================================================================================================= -->
@@ -3166,6 +2703,11 @@ Per <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a>, identifi
     <h3>Normative references</h3>
     <dl>
     
+        <dt id="refsTYPEDARRAYS">[TYPEDARRAYS]</dt>
+        <dd><cite><a href="TypedArray-spec.html">
+            Typed Array Specification: Editor's Draft</a></cite>,
+            V. Vukicevic, K. Russell, May 2010.
+        </dd>
         <dt id="refsGLES20">[GLES20]</dt>
         <dd><cite><a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf">
             OpenGL&reg; ES Common Profile Specification Version 2.0.24</a></cite>, 
