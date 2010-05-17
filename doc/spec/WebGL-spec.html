@@ -148,9 +148,9 @@
     </p>
         A second parameter may be passed to the getContext() function. If passed, this parameter 
         shall be a WebGLContextAttributes object containing configuration parameters to be used in 
-        creating the drawing buffer. See <a href="#5.2">section 5.2</a> for more details. On subsequent 
-        calls to getContext() with the &lsquo;<code class=property>webgl</code>&rsquo; string, the passed
-        WebGLContextAttributes object, if any, shall be ignored.
+        creating the drawing buffer. See <a href="#WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a> for
+        more details. On subsequent calls to getContext() with the &lsquo;<code class=property>webgl</code>&rsquo;
+        string, the passed WebGLContextAttributes object, if any, shall be ignored.
     <p>
     </p>
     
@@ -311,7 +311,7 @@ gl.viewport(0, 0, canvas.width, canvas.height);
 
 <!-- ======================================================================================================= -->
 
-    <h3>Supported GLSL Constructs</h3>
+    <h3><a name="SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a></h3>
 
     <p>
         A WebGL implementation must only accept shaders which conform to The OpenGL ES Shading
@@ -2921,8 +2921,8 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
 
     <p>
         Occurrences such as power events on mobile devices may cause the WebGL rendering context to
-        be lost at any time and require the application to rebuild it; see the section on
-        the <a href="#5.16.1">WebGLContextLostEvent</a> for more details. The
+        be lost at any time and require the application to rebuild it;
+        see <a href="#WEBGLCONTEXTLOSTEVENT">WebGLContextLostEvent</a> for more details. The
         following methods assist in detecting and recovering from context lost events.
     </p>
 
@@ -2987,7 +2987,7 @@ interface <dfn id="WebGLFloatArray">WebGLFloatArray</dfn> : WebGLArray {
 
 <!-- ======================================================================================================= -->
 
-    <h4>WebGLContextLostEvent</h4>
+    <h4><a name="WEBGLCONTEXTLOSTEVENT">WebGLContextLostEvent</a></h4>
 
     <p>
         This event occurs when some system activity external to WebGL causes the rendering context
@@ -3155,8 +3155,8 @@ the framebuffer's attachments untouched.
     <h3>GLSL Constructs</h3>
 
 <p>
-Per <a href="#4.4">Section 4.4</a>, identifiers starting with "webgl_" and "_webgl_" are reserved
-for use by WebGL.
+Per <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a>, identifiers starting with
+"webgl_" and "_webgl_" are reserved for use by WebGL.
 </p>
 
 <!-- ======================================================================================================= -->

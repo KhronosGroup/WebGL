@@ -18,7 +18,9 @@ function nextLevel(nodeList, startIndex, hlevel, prefix, tocString)
         
         // Update the TOC
         var text = currentNode.innerHTML;
-        tocString.s += "<li class='toc-h"+hlevel+"'><a href='#"+sectionString+"'><span class='secno'>"+sectionString+"</span>"+text+"</a></li>\n";
+        // Strip off names specified via <a name="...></a>
+        var tocText = text.replace(/(.*)\<a name=[\'\"].*[\'\"]>(.*)\<\/a\>(.*)/g, "$1$2$3");
+        tocString.s += "<li class='toc-h"+hlevel+"'><a href='#"+sectionString+"'><span class='secno'>"+sectionString+"</span>"+tocText+"</a></li>\n";
         
         // Modify the header
         currentNode.innerHTML = "<span class=secno>"+sectionString+"</span> "+text;
