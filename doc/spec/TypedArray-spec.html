@@ -350,14 +350,16 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
 	  </td>
 	</tr>
 	<tr>
-	  <td><i>TypedArray</i>(sequence&lt;<i>type</i>&gt; array)</td>
+	  <td><i>TypedArray</i>(<i>TypeArray</i> array)<br>
+              <i>TypedArray</i>(sequence&lt;<i>type</i>&gt; array)</td>
 	  <td>
 	    <p>Create a new ArrayBuffer with enough bytes to
 	      hold <tt>array.length</tt> elements of this typed array,
 	      then creates a typed array view referring to the full
-	      buffer.  The contents of the new view are initialized to the
-	      contents of the given array, with each element converted to
-	      the appropriate typed array type.</p>
+	      buffer.  The contents of the new view are initialized to
+	      the contents of the given typed array or sequence, with
+	      each element converted to the appropriate typed array
+	      type.</p>
 	  </td>
 	</tr>
 	<tr>
