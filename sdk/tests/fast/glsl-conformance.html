@@ -45,9 +45,10 @@ void main()
 }
 </script>
 <script id="fshaderWithOutPrecision" type="text/something-not-javascript">
+uniform vec4 color;
 void main()
 {
-    gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+    gl_FragColor = color;
 }
 </script>
 <script id="fshaderWithInvalidIdentifier" type="text/something-not-javascript">
