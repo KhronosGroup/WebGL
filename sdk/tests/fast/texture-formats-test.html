@@ -237,7 +237,7 @@ if (!gl) {
                 "gl.texImage2D with " + typeName + " should generate NO_ERROR");
 
       checkBuffer(r,g,b,a, "texture type " + typeName + " should draw with " +
-                  r + ", " + g + ", " + g + ", " + b);
+                  r + ", " + g + ", " + b + ", " + a);
 
       function checkBuffer(r, g, b, a, msg) {
         gl.clearColor(1,0,0,1);
