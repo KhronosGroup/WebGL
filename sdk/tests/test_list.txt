@@ -2,3 +2,5 @@
 // other lines are assumed to be .html files
 
 fast/00_test_list.txt
+more/00_test_list.txt
+

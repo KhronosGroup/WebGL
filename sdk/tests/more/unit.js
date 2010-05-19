@@ -112,7 +112,7 @@ function runTests() {
     log.removeChild(log.firstChild);
 
   var setup_args = [];
-    
+
   if (Tests.startUnit != null) {
     __testLog__ = document.createElement('div');
     try {
@@ -128,7 +128,8 @@ function runTests() {
   }
 
   var testsRun = false;
-  
+  var allTestsSuccessful = true;
+
   for (var i in Tests) {
     if (i.substring(0,4) != "test") continue;
     __testLog__ = document.createElement('div');
@@ -151,10 +152,12 @@ function runTests() {
       __testLog__.insertBefore(h, __testLog__.firstChild);
       log.appendChild(__testLog__);
     }
+    allTestsSuccessful = allTestsSuccessful && __testSuccess__ == true;
+    reportTestResultsToHarness(__testSuccess__, i);
     doTestNotify (i+"--"+(__testSuccess__?"OK":"FAIL"));
     testsRun = true;
   }
-  
+
   printTestStatus(testsRun);
   if (Tests.endUnit != null) {
     __testLog__ = document.createElement('div');
@@ -167,14 +170,15 @@ function runTests() {
       log.appendChild(__testLog__);
     }
   }
+  notifyFinishedToHarness(allTestsSuccessful, "finished tests");
 }
 
 function doTestNotify(name) {
-  try {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:8888/"+name, true);
-    xhr.send(null);
-  } catch(e) {}
+  //try {
+  //  var xhr = new XMLHttpRequest();
+  //  xhr.open("GET", "http://localhost:8888/"+name, true);
+  //  xhr.send(null);
+  //} catch(e) {}
 }
 
 function testFailed(assertName, name) {
@@ -763,6 +767,18 @@ GLConstants = [
 0x809D
 ];
 
+function reportTestResultsToHarness(success, msg) {
+  if (window.parent.webglTestHarness) {
+    window.parent.webglTestHarness.reportResults(success, msg);
+  }
+}
+
+function notifyFinishedToHarness() {
+  if (window.parent.webglTestHarness) {
+    window.parent.webglTestHarness.notifyFinished();
+  }
+}
+
 function initTests() {
   if (Tests.message != null) {
     var h = document.getElementById('test-message');
@@ -790,7 +806,7 @@ function initTests() {
     }
     h.textContent = Tests.message;
   }
-  
+
 }
 
 window.addEventListener('load', function(){
