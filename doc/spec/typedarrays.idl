@@ -1,7 +1,7 @@
 /*
  * typedarrays.idl
  *
- * TypedArray IDL definitions scraped from the Khronos specification, revised for esidl.
+ * TypedArray IDL definitions scraped from the Khronos specification.
  *
  * Original Khronos Working Draft:
  *

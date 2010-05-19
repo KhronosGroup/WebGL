@@ -1,7 +1,7 @@
 /*
  * webgl.idl
  *
- * WebGL IDL definitions scraped from the Khronos specification, revised for esidl.
+ * WebGL IDL definitions scraped from the Khronos specification.
  *
  * Original Khronos Working Draft:
  *
