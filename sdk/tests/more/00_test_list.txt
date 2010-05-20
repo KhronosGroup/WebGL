@@ -47,7 +47,7 @@ functions/vertexAttribBadArgs.html
 functions/vertexAttribPointer.html
 functions/vertexAttribPointerBadArgs.html
 glsl/arrayOutOfBounds.html
-glsl/longLoops.html // No interactive tests.
+#glsl/longLoops.html // No interactive tests.
 glsl/uniformOutOfBounds.html
-glsl/unusedAttribsUniforms.html // No interactive tests.
+#glsl/unusedAttribsUniforms.html // No interactive tests.
 
