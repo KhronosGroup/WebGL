@@ -67,6 +67,10 @@ function start() {
 
     var li = reporter.localDoc.createElement('li');
     var div = reporter.localDoc.createElement('div');
+    var check = reporter.localDoc.createElement('input');
+    check.type = 'checkbox';
+    check.checked = true;
+    div.appendChild(check);
     var button = reporter.localDoc.createElement('input');
     button.type = 'button';
     button.value = 'run';
@@ -91,6 +95,7 @@ function start() {
     this.totalsElem = node;
     this.resultElem = ul;
     this.elem = li;
+    this.check = check;
   };
 
   Page.prototype.addResult = function(msg, success) {
@@ -126,6 +131,7 @@ function start() {
       this.resultElem.removeChild(this.resultElem.childNodes[0]);
     }
     this.totalsElem.textContent = '';
+    return this.check.checked;
   };
 
   Page.prototype.finishPage = function(success) {
@@ -166,6 +172,7 @@ function start() {
     page.startPage();
     this.currentPage = page;
     this.iframe.src = url;
+    return result;
   };
 
   Reporter.prototype.addPage = function(url) {
@@ -178,7 +185,7 @@ function start() {
   Reporter.prototype.startPage = function(url) {
     var page = this.pagesByURL[url];
     this.currentPage = page;
-    page.startPage();
+    return page.startPage();
   };
 
   Reporter.prototype.addResult = function(msg, success) {
@@ -216,20 +223,15 @@ function start() {
   Reporter.prototype.reportFunc = function(type, msg, success) {
     switch (type) {
       case reportType.ADD_PAGE:
-        this.addPage(msg);
-        break;
+        return this.addPage(msg);
       case reportType.START_PAGE:
-        this.startPage(msg);
-        break;
+        return this.startPage(msg);
       case reportType.TEST_RESULT:
-        this.addResult(msg, success);
-        break;
+        return this.addResult(msg, success);
       case reportType.FINISH_PAGE:
-        this.finishPage(success);
-        break;
+        return this.finishPage(success);
       case reportType.FINISHED_ALL_TESTS:
-        this.displayFinalResults();
-        break;
+        return this.displayFinalResults();
       default:
         throw 'unhandled';
         break;
@@ -242,7 +244,7 @@ function start() {
       iframe,
       'test_list.txt',
       function(type, msg, success) {
-        reporter.reportFunc(type, msg, success);
+        return reporter.reportFunc(type, msg, success);
       });
   window.webglTestHarness = testHarness;
   var button = document.getElementById("runTestsButton");

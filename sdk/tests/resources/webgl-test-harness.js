@@ -9,6 +9,7 @@
 //
 //    function reportResults(type, msg, success) {
 //      ...
+//      return true;
 //    }
 //
 //    var fileListURL = 'test_list.txt';
@@ -50,7 +51,7 @@
 // any testing framework you want.
 //
 // Each test should call reportTestResultsToHarness with true for success if it
-// succeeded and false if it fail followed and any message it want's to
+// succeeded and false if it fail followed and any message it wants to
 // associate with the test. If your testing framework supports checking for
 // timeout you can call it with success equal to undefined in that case.
 //
@@ -58,10 +59,11 @@
 //
 // For each test run, before the page is loaded the reportFunction will be
 // called with WebGLTestHarnessModule.TestHarness.reportType.START_PAGE and msg
-// will be the URL of the test.
+// will be the URL of the test. You may return false if you want the test to be
+// skipped.
 //
 // For each test completed the reportFunction will be called with
-// called with WebGLTestHarnessModule.TestHarness.reportType.TEST_RESULT,
+// with WebGLTestHarnessModule.TestHarness.reportType.TEST_RESULT,
 // success = true on success, false on failure, undefined on timeout
 // and msg is any message the test choose to pass on.
 //
@@ -188,10 +190,14 @@ TestHarness.prototype.startNextFile = function() {
   } else {
     this.currentFile = this.files[this.nextFileIndex++];
     log("loading: " + this.currentFile.url);
-    this.reportFunc(TestHarness.reportType.START_PAGE,
-                    this.currentFile.url, undefined);
-    this.iframe.src = this.currentFile.url;
-    this.setTimeout();
+    if (this.reportFunc(TestHarness.reportType.START_PAGE,
+                        this.currentFile.url, undefined)) {
+      this.iframe.src = this.currentFile.url;
+      this.setTimeout();
+    } else {
+      this.reportResults(false, "skipped");
+      this.notifyFinished();
+    }
   }
 };
 
