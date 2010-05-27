@@ -45,6 +45,8 @@ description("This test is to help see if an WebGL app *can* get lost context.");
 debug("");
 debug("Canvas.getContext");
 var g_worldLoc;
+var g_texLoc;
+var g_textures = [];
 gl = initWebGL("canvas", "vshader", "fshader", [ "vPosition", "texCoord0"], [ 0, 0, 0, 1 ], 1);
 if (!gl) {
   testFailed("context does not exist");
@@ -55,8 +57,9 @@ if (!gl) {
   debug("Checking for out of memory handling.");
 
   var size = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
-size = 4096;
   debug("max render buffer size: " + size);
+  size = size / 2;
+  debug("size used: " + size);
 
   var allocateFramebuffers = true;
   var itervalId;
@@ -99,18 +102,23 @@ size = 4096;
     }
     return { fb: fb, tex: tex };
   }
-  for (var ii = 0; ii < 32; ++ii) {
-    createFBO();
-  }
-  var t = createFBO();
-  tex = t.tex;
-  fb = t.fb;
- 
+
   gl.disable(gl.DEPTH_TEST);
-  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-  gl.scissor(0, 0, size, size);
-  gl.clearColor(1,1,0,1);
-  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  var numFBOs = 32;
+  for (var ii = 0; ii < numFBOs; ++ii) {
+    createFBO();
+    var t = createFBO();
+    tex = t.tex;
+    fb = t.fb;
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.scissor(0, 0, size, size);
+    gl.clearColor(0, ii / numFBOs, 1 - ii / numFBOs, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    g_textures.push(tex);
+  }
+ 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   var vertexObject = gl.createBuffer();
@@ -130,8 +138,8 @@ size = 4096;
   gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
 
   gl.bindTexture(gl.TEXTURE_2D, tex);
-  var texLoc = gl.getUniformLocation(gl.program, "tex");
-  gl.uniform1i(texLoc, 0);
+  g_texLoc = gl.getUniformLocation(gl.program, "tex");
+  gl.uniform1i(g_texLoc, 0);
   g_worldLoc = gl.getUniformLocation(gl.program, "world");
   gl.uniformMatrix4fv(g_worldLoc, false, [
      0, 0, 0, 0,
@@ -147,8 +155,14 @@ size = 4096;
 }
 
 var g_angle = 0;
+var g_texIndex = 0;
 function render() {
   g_angle += 0.1;
+  g_texIndex++;
+  if (g_texIndex >= g_textures.length) {
+    g_texIndex = 0;
+  }
+  gl.bindTexture(gl.TEXTURE_2D, g_textures[g_texIndex]);
   gl.uniformMatrix4fv(g_worldLoc, false, rotationZ(g_angle));
   gl.clearColor(1,0,0,1);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
