@@ -23,13 +23,10 @@ OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-if (window.layoutTestController)
-    layoutTestController.overridePreference("WebKitWebGLEnabled", "1");
-
 function webglTestLog(msg) {
-    if (window.console && window.console.log) {
-        window.console.log(msg);
-    }
+  if (window.console && window.console.log) {
+    window.console.log(msg);
+  }
 }
 
 //
@@ -72,64 +69,64 @@ function createGLErrorWrapper(context, fname) {
 }
 
 function create3DContextWithWrapperThatThrowsOnGLError(canvas) {
-    var context = create3DContext(canvas);
-    // Thanks to Ilmari Heikkinen for the idea on how to implement this so elegantly.
-    var wrap = {};
-    for (var i in context) {
-        try {
-            if (typeof context[i] == 'function') {
-                wrap[i] = createGLErrorWrapper(context, i);
-            } else {
-                wrap[i] = context[i];
-            }
-        } catch (e) {
-            // webglTestLog("createContextWrapperThatThrowsOnGLError: Error accessing " + i);
-        }
+  var context = create3DContext(canvas);
+  // Thanks to Ilmari Heikkinen for the idea on how to implement this so elegantly.
+  var wrap = {};
+  for (var i in context) {
+    try {
+      if (typeof context[i] == 'function') {
+        wrap[i] = createGLErrorWrapper(context, i);
+      } else {
+        wrap[i] = context[i];
+      }
+    } catch (e) {
+      webglTestLog("createContextWrapperThatThrowsOnGLError: Error accessing " + i);
     }
-    wrap.getError = function() {
-        return context.getError();
-    };
-    return wrap;
+  }
+  wrap.getError = function() {
+      return context.getError();
+  };
+  return wrap;
 }
 
 function getGLErrorAsString(ctx, err) {
-    if (err === ctx.NO_ERROR) {
-	return "NO_ERROR";
+  if (err === ctx.NO_ERROR) {
+    return "NO_ERROR";
+  }
+  for (var name in ctx) {
+    if (ctx[name] === err) {
+      return name;
     }
-    for (var name in ctx) {
-	if (ctx[name] === err) {
-	    return name;
-        }
-    }
-    return err.toString();
+  }
+  return err.toString();
 }
 
 function shouldGenerateGLError(ctx, glError, evalStr) {
-    var exception;
-    try {
-	eval(evalStr);
-    } catch (e) {
-	exception = e;
-    }
-    if (exception) {
-	testFailed(evalStr + " threw exception " + exception);
+  var exception;
+  try {
+    eval(evalStr);
+  } catch (e) {
+    exception = e;
+  }
+  if (exception) {
+    testFailed(evalStr + " threw exception " + exception);
+  } else {
+    var err = ctx.getError();
+    if (err != glError) {
+      testFailed(evalStr + " expected: " + getGLErrorAsString(ctx, glError) + ". Was " + getGLErrorAsString(ctx, err) + ".");
     } else {
-	var err = ctx.getError();
-        if (err != glError) {
-	    testFailed(evalStr + " expected: " + getGLErrorAsString(ctx, glError) + ". Was " + getGLErrorAsString(ctx, err) + ".");
-        } else {
-	    testPassed(evalStr + " was expected value: " + getGLErrorAsString(ctx, glError) + ".");
-	}
+      testPassed(evalStr + " was expected value: " + getGLErrorAsString(ctx, glError) + ".");
     }
+  }
 }
 
 function glErrorShouldBe(ctx, glError) {
-    var err = ctx.getError();
-    if (err != glError) {
-	testFailed("getError expected: " + getGLErrorAsString(ctx, glError) + ". Was " + getGLErrorAsString(ctx, err) + ".");
-    } else {
-	testPassed("getError was expected value: " + getGLErrorAsString(ctx, glError) + ".");
-    } 
+  var err = ctx.getError();
+  if (err != glError) {
+    testFailed("getError expected: " + getGLErrorAsString(ctx, glError) + ". Was " + getGLErrorAsString(ctx, err) + ".");
+  } else {
+    testPassed("getError was expected value: " + getGLErrorAsString(ctx, glError) + ".");
+  }
 }
 
 //
@@ -219,12 +216,14 @@ function getShaderSource(file)
     return xhr.responseText;
 }
 
+
 //
 // loadShader
 //
-// 'shader' is either the id of a <script> element containing the shader source string
-// or the URL of a file containing the shader source. Load this shader and return the
-// WebGLShader object corresponding to it.
+// 'shader' is either the id of a <script> element containing the shader source
+// string, the shader string itself,  or the URL of a file containing the shader
+// source. Load this shader and return the WebGLShader object corresponding to
+// it.
 //
 function loadShader(ctx, shaderId, shaderType, isFile)
 {
@@ -235,21 +234,19 @@ function loadShader(ctx, shaderId, shaderType, isFile)
     else {
         var shaderScript = document.getElementById(shaderId);
         if (!shaderScript) {
-            webglTestLog("*** Error: shader script '"+shaderId+"' not found");
-            return null;
-        }
+            shaderSource = shaderId;
+        } else {
+            if (shaderScript.type == "x-shader/x-vertex") {
+                shaderType = ctx.VERTEX_SHADER;
+            } else if (shaderScript.type == "x-shader/x-fragment") {
+                shaderType = ctx.FRAGMENT_SHADER;
+            } else if (shaderType != ctx.VERTEX_SHADER && shaderType != ctx.FRAGMENT_SHADER) {
+                webglTestLog("*** Error: unknown shader type");
+                return null;
+            }
 
-        // this overrides the passed in shader type
-        if (shaderScript.type == "x-shader/x-vertex")
-            shaderType = ctx.VERTEX_SHADER;
-        else if (shaderScript.type == "x-shader/x-fragment")
-            shaderType = ctx.FRAGMENT_SHADER;
-        else if (shaderType != ctx.VERTEX_SHADER && shaderType != ctx.FRAGMENT_SHADER) {
-            webglTestLog("*** Error: unknown shader type");
-            return null;
+            shaderSource = shaderScript.text;
         }
-
-        shaderSource = shaderScript.text;
     }
 
     // Create the shader object
