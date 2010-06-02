@@ -38,6 +38,7 @@ index-validation.html
 methods.html
 null-object-behaviour.html
 origin-clean-conformance.html
+program-test.html
 readpixels-test.html
 resource-sharing-test.html
 texture-active-bind.html
