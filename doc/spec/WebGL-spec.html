@@ -1810,7 +1810,13 @@ for (var i = 0; i < numVertices; i++) {
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindFramebuffer.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        
+        <dd>
+            Bind the given <code class="interface">WebGLFramebuffer</code> object to the given binding point
+            (<code class="param">target</code>), which must be <code class="enum">FRAMEBUFFER</code>.
+            If <code class="param">framebuffer</code> is null, the default framebuffer provided by the context
+            is bound and attempts to modify or query state on <code class="param">target</code> <code class="enum">FRAMEBUFFER</code>
+            will generate an <code class="error">INVALID_OPERATION</code> error.
+
         <dt class="idl-code">GLenum checkFramebufferStatus(GLenum target)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCheckFramebufferStatus.xml">
                 (OpenGL ES 2.0 man page)
@@ -1882,7 +1888,12 @@ for (var i = 0; i < numVertices; i++) {
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindRenderbuffer.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        
+        <dd>
+            Bind the given <code class="interface">WebGLRenderbuffer</code> object to the given binding point
+            (<code class="param">target</code>), which must be <code class="enum">RENDERBUFFER</code>.
+            If <code class="param">renderbuffer</code> is null the renderbuffer object currently bound to
+            this <code class="param">target</code> is unbound.
+
         <dt class="idl-code">WebGLRenderbuffer createRenderbuffer()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenRenderbuffers.xml">
                 (OpenGL ES 2.0 man page)
