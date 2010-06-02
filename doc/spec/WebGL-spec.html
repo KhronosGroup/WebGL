@@ -2021,7 +2021,7 @@ for (var i = 0; i < numVertices; i++) {
             </a>
         <dd>
             Return true if the passed WebGLTexture is valid and false otherwise.
-        <dt class="idl-code">texImage2D(GLenum target, GLint level, GLenum internalformat, 
+        <dt class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat, 
                     GLsizei width, GLsizei height, GLint border, GLenum format, 
                     GLenum type, ArrayBufferView pixels)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glTexImage2D.xml">
@@ -2102,12 +2102,12 @@ for (var i = 0; i < numVertices; i++) {
     <h4>Programs and Shaders</h4>
 
     <p>
-        Rendering with OpenGL ES 2.0 requires the use of <i>shaders</i>, written in OpenGL's shading
-        language, GLSL. Shaders must be loaded with a source string (shaderSource), compiled
+        Rendering with OpenGL ES 2.0 requires the use of <i>shaders</i>, written in OpenGL ES's shading language, GLSL ES.
+        Shaders must be loaded with a source string (shaderSource), compiled
         (compileShader) and attached to a <i>program</i> (attachShader) which must be linked
         (linkProgram) and then used (useProgram).
     </p>
-     
+
     <dl class="methods">
         <dt class="idl-code">void attachShader(WebGLProgram program, WebGLShader shader)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glAttachShader.xml">
