@@ -452,7 +452,7 @@ typedef float          GLclampf;
            </dd>
         <dt> <span class=prop-value>stencil</span>
             <dd>
-                <em>Default: true</em>. If the value is true, the drawing buffer has a stencil
+                <em>Default: false</em>. If the value is true, the drawing buffer has a stencil
                 buffer of at least 8 bits. If the value is false, no stencil buffer is
                 available.
             </dd>
@@ -481,7 +481,7 @@ typedef float          GLclampf;
 var canvas = document.getElementById('canvas1');
 var context = canvas.getContext('webgl',
                                 { antialias: false,
-                                  stencil: false });
+                                  stencil: true });
     </pre>
     </div>
 
