@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 27 May 2010</h2>
+    <h2 class="no-toc">Working Draft 03 June 2010</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2359,10 +2359,12 @@ for (var i = 0; i < numVertices; i++) {
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Assign the currently bound WebGLBuffer object to the vertex attribute at the passed index.
-            Size is number of components per attribute. Stride and offset are in units of bytes.
-            Passed stride and offset must be appropriate for the passed type and size or an
-            <code>INVALID_VALUE</code> error will be generated.
+            Assign the WebGLBuffer object currently bound to the ARRAY_BUFFER target to the vertex
+            attribute at the passed index. Size is number of components per attribute. Stride and
+            offset are in units of bytes. Passed stride and offset must be appropriate for the
+            passed type and size or an <code>INVALID_VALUE</code> error will be generated. If no
+            WebGLBuffer is bound to the ARRAY_BUFFER target, an <code>INVALID_OPERATION</code> error
+            will be generated.
     </dl>
     
 <!-- ======================================================================================================= -->
