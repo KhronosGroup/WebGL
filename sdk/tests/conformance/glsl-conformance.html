@@ -157,6 +157,28 @@ void main()
     gl_Position = _webgl_vPosition;
 }
 </script>
+<script id="fshaderOperator" type="text/something-not-javascript">
+#ifdef GL_ES
+precision mediump float;
+#endif
+varying vec4 color;
+
+void main (void)
+{
+  int j = 30;
+  int k = 37;
+  int y = 10;
+  int n = 12;
+  bool result1 = false;
+  bool result2 = false;
+  (j>k)?( result1 = true ):( result1 = false );
+  (y<n)?( result2 = true ):( result2 = false );
+  float gray;
+  if( !result1 && result2 )
+  gray=1.0;
+  else gray=0.0;
+  gl_FragColor = vec4(gray, gray, gray, 1.0);
+}</script>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
 description("This test ensures WebGL implementations allow proper GLES2 shaders compile and improper ones fail.");
@@ -320,6 +342,13 @@ if (!gl) {
       fShaderSuccess: true,
       linkSuccess: false,
       passMsg: 'vertex shader that uses _webgl_ identifier should fail',
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderOperator',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: 'fragment shader with using ? operator should succeed',
     }
   ];
 

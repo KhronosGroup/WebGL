@@ -41,10 +41,8 @@ gl.generateMipmap(gl.TEXTURE_2D);
 assertMsg(gl.getError() == gl.INVALID_OPERATION,
           "gl.generateMipmap with NPOT texture should return INVALID_OPERATION");
 
-assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
 var loc = gl.getUniformLocation(program, "tex");
 gl.uniform1i(loc, 0);
-assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup2.");
 
 // Check that nothing is drawn if filtering is not correct for NPOT
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
@@ -52,9 +50,7 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
 
-assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
 wtu.drawQuad(gl);
-assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
 wtu.checkCanvas(
     gl, [0, 0, 0, 255],
     "NPOT texture with TEXTURE_WRAP set to REPEAT should draw with 0,0,0,255");
@@ -77,7 +73,6 @@ wtu.checkCanvas(
     gl, [0, 192, 128, 255],
     "NPOT texture with TEXTURE_MIN_FILTER set to LINEAR should draw.");
 
-assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
 successfullyParsed = true;
 </script>
 </body>
