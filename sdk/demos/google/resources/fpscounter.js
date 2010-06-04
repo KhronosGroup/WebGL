@@ -46,19 +46,32 @@ function FPSCounter(outputElement, opt_numSamples) {
         this.numSamples_ = 200;
     }
     this.curSample_ = 0;
+    this.curFPS_ = 0;
 }
 
 /**
  * Updates this FPSCounter.
+ * @return {boolean} whether this FPS counter actually updated this tick.
  */
 FPSCounter.prototype.update = function() {
     if (++this.curSample_ >= this.numSamples_) {
         var curTime = new Date();
         var startTime = this.startTime_;
         var diff = curTime.getTime() - startTime.getTime();
-        var str = "" + (1000.0 * this.numSamples_ / diff).toFixed(2) + " frames per second";
+        this.curFPS_ = (1000.0 * this.numSamples_ / diff);
+        var str = "" + this.curFPS_.toFixed(2) + " frames per second";
         this.outputElement_.innerHTML = str;
         this.curSample_ = 0;
         this.startTime_ = curTime;
+        return true;
     }
+    return false;
+};
+
+/**
+ * Gets the most recent FPS measurement.
+ * @return {number} the most recent FPS measurement.
+ */
+FPSCounter.prototype.getFPS = function() {
+    return this.curFPS_;
 };
