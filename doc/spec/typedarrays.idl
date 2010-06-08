@@ -149,41 +149,41 @@ interface Uint32Array : ArrayBufferView {
 
 [
     Constructor(unsigned long length),
-    Constructor(FloatArray array),
+    Constructor(Float32Array array),
     Constructor(sequence<float> array),
     Constructor(ArrayBuffer buffer, 
                 optional unsigned long byteOffset, optional unsigned long length)
 ]
-interface FloatArray : ArrayBufferView {
+interface Float32Array : ArrayBufferView {
     const long BYTES_PER_ELEMENT = 4;
     
     readonly attribute unsigned long length;
     
     omittable getter float get(unsigned long index);
     omittable setter void set(unsigned long index, float value);
-    void set(FloatArray array, optional unsigned long offset);
+    void set(Float32Array array, optional unsigned long offset);
     void set(sequence<float> array, optional unsigned long offset);
-    FloatArray slice(long start, long end);
+    Float32Array slice(long start, long end);
 };
 
 
 [
     Constructor(unsigned long length),
-    Constructor(DoubleArray array),
+    Constructor(Float64Array array),
     Constructor(sequence<double> array),
     Constructor(ArrayBuffer buffer, 
                 optional unsigned long byteOffset, optional unsigned long length)
 ]
-interface DoubleArray : ArrayBufferView {
+interface Float64Array : ArrayBufferView {
     const long BYTES_PER_ELEMENT = 8;
     
     readonly attribute unsigned long length;
     
     omittable getter double get(unsigned long index);
     omittable setter void set(unsigned long index, double value);
-    void set(DoubleArray array, optional unsigned long offset);
+    void set(Float64Array array, optional unsigned long offset);
     void set(sequence<double> array, optional unsigned long offset);
-    DoubleArray slice(long start, long end);
+    Float64Array slice(long start, long end);
 };
 
 

@@ -66,11 +66,6 @@ interface WebGLShader : WebGLObject {
 interface WebGLTexture : WebGLObject {
 };
 
-interface WebGLObjectArray {
-    readonly attribute unsigned long length;
-    omittable getter WebGLObject get(unsigned long index);
-};
-
 interface WebGLUniformLocation {
 };
 
@@ -337,7 +332,6 @@ interface WebGLRenderingContext {
     const GLenum VENDOR                         = 0x1F00;
     const GLenum RENDERER                       = 0x1F01;
     const GLenum VERSION                        = 0x1F02;
-    const GLenum EXTENSIONS                     = 0x1F03;
     
     /* TextureMagFilter */
     const GLenum NEAREST                        = 0x2600;
@@ -501,12 +495,19 @@ interface WebGLRenderingContext {
     
     const GLenum INVALID_FRAMEBUFFER_OPERATION  = 0x0506;
     
+    /* WebGL-specific enums */
+    const GLenum UNPACK_FLIP_Y_WEBGL            = 0x9240;
+    const GLenum UNPACK_PREMULTIPLY_ALPHA_WEBGL = 0x9241;
+    const GLenum CONTEXT_LOST_WEBGL             = 0x9242;
+
     readonly attribute HTMLCanvasElement canvas;
 
     WebGLContextAttributes getContextAttributes();
 
     boolean isContextLost();
-    boolean resetContext();
+
+    DOMString[ ] getSupportedExtensions();
+    object getExtension(DOMString name);
 
     void activeTexture(GLenum texture);
     void attachShader(WebGLProgram program, WebGLShader shader);
@@ -582,7 +583,7 @@ interface WebGLRenderingContext {
 
     WebGLActiveInfo getActiveAttrib(WebGLProgram program, GLuint index);
     WebGLActiveInfo getActiveUniform(WebGLProgram program, GLuint index);
-    WebGLObjectArray getAttachedShaders(WebGLProgram program);
+    WebGLShader[ ] getAttachedShaders(WebGLProgram program);
 
     GLint getAttribLocation(WebGLProgram program, DOMString name);
 
@@ -600,7 +601,6 @@ interface WebGLRenderingContext {
     DOMString getShaderInfoLog(WebGLShader shader);
 
     DOMString getShaderSource(WebGLShader shader);
-    DOMString getString(GLenum name);
 
     any getTexParameter(GLenum target, GLenum pname);
 
@@ -625,8 +625,8 @@ interface WebGLRenderingContext {
     void pixelStorei(GLenum pname, GLint param);
     void polygonOffset(GLfloat factor, GLfloat units);
 
-    ArrayBufferView readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
-                           GLenum format, GLenum type);
+    void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
+                    GLenum format, GLenum type, ArrayBufferView pixels);
 
     void renderbufferStorage(GLenum target, GLenum internalformat, 
                              GLsizei width, GLsizei height);
@@ -645,14 +645,14 @@ interface WebGLRenderingContext {
     void texImage2D(GLenum target, GLint level, GLenum internalformat, 
                     GLsizei width, GLsizei height, GLint border, GLenum format, 
                     GLenum type, ArrayBufferView pixels);
-    void texImage2D(GLenum target, GLint level, ImageData pixels,
-                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
-    void texImage2D(GLenum target, GLint level, HTMLImageElement image,
-                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
-    void texImage2D(GLenum target, GLint level, HTMLCanvasElement canvas,
-                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
-    void texImage2D(GLenum target, GLint level, HTMLVideoElement video,
-                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
+    void texImage2D(GLenum target, GLint level, GLenum internalformat,
+                    GLenum format, GLenum type, ImageData pixels);
+    void texImage2D(GLenum target, GLint level, GLenum internalformat,
+                    GLenum format, GLenum type, HTMLImageElement image);
+    void texImage2D(GLenum target, GLint level, GLenum internalformat,
+                    GLenum format, GLenum type, HTMLCanvasElement canvas);
+    void texImage2D(GLenum target, GLint level, GLenum internalformat,
+                    GLenum format, GLenum type, HTMLVideoElement video);
 
     void texParameterf(GLenum target, GLenum pname, GLfloat param);
     void texParameteri(GLenum target, GLenum pname, GLint param);
@@ -661,17 +661,13 @@ interface WebGLRenderingContext {
                        GLsizei width, GLsizei height, 
                        GLenum format, GLenum type, ArrayBufferView pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       ImageData pixels,
-                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
+                       GLenum format, GLenum type, ImageData pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       HTMLImageElement image,
-                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
+                       GLenum format, GLenum type, HTMLImageElement image);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       HTMLCanvasElement canvas,
-                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
+                       GLenum format, GLenum type, HTMLCanvasElement canvas);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       HTMLVideoElement video,
-                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
+                       GLenum format, GLenum type, HTMLVideoElement video);
 
     void uniform1f(WebGLUniformLocation location, GLfloat x);
     void uniform1fv(WebGLUniformLocation location, FloatArray v);
@@ -740,6 +736,15 @@ interface WebGLContextLostEvent : Event {
                                    boolean canBubble,
                                    boolean cancelable,
                                    WebGLRenderingContext context);
+};
+
+interface WebGLContextRestoredEvent : Event {
+    readonly attribute WebGLRenderingContext context;
+    
+    void initWebGLContextRestoredEvent(DOMString type,
+                                       boolean canBubble,
+                                       boolean cancelable,
+                                       WebGLRenderingContext context);
 };
 
 };

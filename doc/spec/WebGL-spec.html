@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 03 June 2010</h2>
+    <h2 class="no-toc">Working Draft 08 June 2010</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -215,14 +215,47 @@ gl.viewport(0, 0, canvas.width, canvas.height);
 
 <!-- ======================================================================================================= -->
 
+    <h3><a name="PREMULTIPLIED_ALPHA">Premultiplied Alpha, Canvas APIs and texImage2D</a></h3>
+
+    <p>
+        The OpenGL API allows the application to modify the blending modes used during rendering,
+        and for this reason allows control over how alpha values in the drawing buffer are
+        interpreted; see the <code>premultipliedAlpha</code> parameter in
+        the <a href="#WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a> section.
+    </p>
+    <p>
+        The HTML Canvas APIs <code>toDataURL</code> and <code>drawImage</code> must respect
+        the <code>premultipliedAlpha</code> context creation parameter. When <code>toDataURL</code>
+        is called against a Canvas into which WebGL content is being rendered, then if the requested
+        image format does not specify premultiplied alpha and the WebGL context has
+        the <code>premultipliedAlpha</code> parameter set to true, then the pixel values must be
+        de-multiplied; i.e., the color channels are divided by the alpha channel. <b>Note</b> that
+        this operation is lossy.
+    </p>
+    <p>
+        Passing a WebGL-rendered Canvas to the <code>drawImage</code> method
+        of <code>CanvasRenderingContext2D</code> may or may not need to modify the the rendered
+        WebGL content during the drawing operation, depending on the premultiplication needs of the
+        <code>CanvasRenderingContext2D</code> implementation.
+    </p>
+    <p>
+        When passing a WebGL-rendered Canvas to the <code>texImage2D</code> API, then depending on
+        the setting of the <code>premultipliedAlpha</code> context creation parameter of the passed
+        canvas and the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel store parameter of the
+        destination WebGL context, the pixel data may need to be changed to or from premultiplied
+        form.
+    </p>
+
+<!-- ======================================================================================================= -->
+
     <h2>WebGL Resources</h2>
 
     <p> 
-        OpenGL manages several type of resources as part of its state. These are identified
+        OpenGL manages several types of resources as part of its state. These are identified
         by integer object names and are obtained from OpenGL by various creation calls.
         In contrast WebGL represents these resources as DOM objects. Each object is derived 
         from the WebGLObject interface. Currently supported resources are:
-        textures, buffers (i.e., VBOs) framebuffers, renderbuffers, shaders and
+        textures, buffers (i.e., VBOs), framebuffers, renderbuffers, shaders and
         programs. The WebGLRenderingContext interface has a method to create a 
         WebGLObject subclass for each type. Data from the underlying graphics library are
         stored in these objects and are fully managed by them. The resources represented
@@ -239,22 +272,6 @@ gl.viewport(0, 0, canvas.width, canvas.height);
     <h2>Security</h2>
 
     <p> 
-    </p>
-
-<!-- ======================================================================================================= -->
-
-    <h3>ArrayBuffer and Uninitialized Data</h3>
-
-    <p>
-        Data present in an <a href="#ARRAYBUFFER">ArrayBuffer</a> can be read by the application directly 
-        by creating a <a href="#TYPEDARRAY">typed array</a> view of the data or indirectly by via rendering 
-        and using a method such as <code>readPixels</code>.  At creation time, an ArrayBuffer 
-        must be initialized from existing user data or must be cleared to 0.  
-        Additionally, the WebGL implementation must ensure that no data outside of 
-        the valid byte range for an ArrayBuffer can be accessed.  If a caller 
-        attempts to access any data outside of that range, an implementation may 
-        choose to raise an exception, use the closest valid index, use 0, or any 
-        other approach that prevents it from providing access to uninitialized data.
     </p>
 
 <!-- ======================================================================================================= -->
@@ -276,14 +293,11 @@ gl.viewport(0, 0, canvas.width, canvas.height);
     </p>
 
     <p>
-        When WebGL resources are accessed by shaders through a call such as 
-        <code>drawElements</code> or <code>drawArrays</code>, the WebGL implementation must ensure 
-        that the shader cannot access either out of bounds or uninitialized 
-        data.  For drawArrays, each bound VBO must be at least as large as 
-        needed to satisfy the given mode, offset, and count.  For drawElements, 
-        the bound index buffer must be at least large enough to satisfy the 
-        requested mode, count, type, and offset, and the highest index in the 
-        index buffer range must be a valid index for every bound VBO.
+        When WebGL resources are accessed by shaders through a call such as
+        <code>drawElements</code> or <code>drawArrays</code>, the WebGL implementation must ensure
+        that the shader cannot access either out of bounds or uninitialized data.
+        See <a href="#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range Checking</a>
+        for restrictions which must be enforced by the WebGL implementation.
     </p>
 
 <!-- ======================================================================================================= -->
@@ -465,11 +479,12 @@ typedef float          GLclampf;
             </dd>
         <dt> <span class=prop-value>premultipliedAlpha</span>
             <dd>
-                <em>Default: true</em>. If the value is true the page compositor will assume
-                the drawing buffer contains colors with premultiplied alpha. If the value is
-                false the page compositor will assume that colors in the drawing buffer are not
+                <em>Default: true</em>. If the value is true the page compositor will assume the
+                drawing buffer contains colors with premultiplied alpha. If the value is false the
+                page compositor will assume that colors in the drawing buffer are not
                 premultiplied. This flag is ignored if the <strong>alpha</strong> flag is
-                false.
+                false. See <a href="#PREMULTIPLIED_ALPHA">Premultiplied Alpha</a> for more
+                information on the effects of the <code>premultipliedAlpha</code> flag.
             </dd>
     </dl>
 
@@ -629,18 +644,6 @@ var context = canvas.getContext('webgl',
 
 <!-- ======================================================================================================= -->
 
-    <h3>WebGLObjectArray</h3>
-
-    <p>
-        The <code>WebGLObjectArray</code> interface represents an array of WebGLObject objects.
-    </p>
-    <pre class="idl">interface <dfn id="WebGLObjectArray">WebGLObjectArray</dfn> {
-    readonly attribute unsigned long length;
-    omittable getter WebGLObject get(unsigned long index);
-};</pre>
-
-<!-- ======================================================================================================= -->
-
     <h3>WebGLUniformLocation</h3>
 
     <p>
@@ -710,7 +713,7 @@ var context = canvas.getContext('webgl',
         and <a href="TypedArray-spec.html#TYPEDARRAYS">views</a> defined in
         the <a href="TypedArray-spec.html">Typed Array</a>
         specification <a href="#refsTYPEDARRAYS">[TYPEDARRAYS]</a>. All of the typed array views
-        except <tt>DoubleArray</tt> may be used in conjunction with WebGL; OpenGL ES 2.0, and
+        except <tt>Float64Array</tt> may be used in conjunction with WebGL; OpenGL ES 2.0, and
         therefore WebGL, does not support double-precision floating-point data.
     </p>
     <p>
@@ -728,22 +731,22 @@ var context = canvas.getContext('webgl',
 var numVertices = 100; // for example
 
 // Compute the size needed for the buffer, in bytes and floats
-var vertexSize = 3 * FloatArray.BYTES_PER_ELEMENT +
+var vertexSize = 3 * Float32Array.BYTES_PER_ELEMENT +
      4 * Uint8Array.BYTES_PER_ELEMENT;
-var vertexSizeInFloats = vertexSize / FloatArray.BYTES_PER_ELEMENT;
+var vertexSizeInFloats = vertexSize / Float32Array.BYTES_PER_ELEMENT;
 
 // Allocate the buffer
 var buf = new ArrayBuffer(numVertices * vertexSize);
 
-// Map this buffer to a FloatArray to access the positions
-var positionArray = new FloatArray(buf);
+// Map this buffer to a Float32Array to access the positions
+var positionArray = new Float32Array(buf);
 
 // Map the same buffer to a Uint8Array to access the color
 var colorArray = new Uint8Array(buf);
 
 // Set up the initial offset of the vertices and colors within the buffer
 var positionIdx = 0;
-var colorIdx = 3 * FloatArray.BYTES_PER_ELEMENT;
+var colorIdx = 3 * Float32Array.BYTES_PER_ELEMENT;
 
 // Initialize the buffer
 for (var i = 0; i < numVertices; i++) {
@@ -1025,7 +1028,6 @@ for (var i = 0; i < numVertices; i++) {
     const GLenum VENDOR                         = 0x1F00;
     const GLenum RENDERER                       = 0x1F01;
     const GLenum VERSION                        = 0x1F02;
-    const GLenum EXTENSIONS                     = 0x1F03;
     
     /* TextureMagFilter */
     const GLenum NEAREST                        = 0x2600;
@@ -1189,12 +1191,16 @@ for (var i = 0; i < numVertices; i++) {
     
     const GLenum INVALID_FRAMEBUFFER_OPERATION  = 0x0506;
     
+    /* WebGL-specific enums */
+    const GLenum UNPACK_FLIP_Y_WEBGL            = 0x9240;
+    const GLenum UNPACK_PREMULTIPLY_ALPHA_WEBGL = 0x9241;
+    const GLenum CONTEXT_LOST_WEBGL             = 0x9242;
+
     readonly attribute HTMLCanvasElement canvas;
 
     WebGLContextAttributes getContextAttributes();
 
     boolean isContextLost();
-    boolean resetContext();
     
     DOMString[ ] getSupportedExtensions();
     object getExtension(DOMString name);
@@ -1273,7 +1279,7 @@ for (var i = 0; i < numVertices; i++) {
 
     WebGLActiveInfo getActiveAttrib(WebGLProgram program, GLuint index);
     WebGLActiveInfo getActiveUniform(WebGLProgram program, GLuint index);
-    WebGLObjectArray getAttachedShaders(WebGLProgram program);
+    WebGLShader[ ] getAttachedShaders(WebGLProgram program);
 
     GLint getAttribLocation(WebGLProgram program, DOMString name);
 
@@ -1291,7 +1297,6 @@ for (var i = 0; i < numVertices; i++) {
     DOMString getShaderInfoLog(WebGLShader shader);
 
     DOMString getShaderSource(WebGLShader shader);
-    DOMString getString(GLenum name);
 
     any getTexParameter(GLenum target, GLenum pname);
 
@@ -1316,8 +1321,8 @@ for (var i = 0; i < numVertices; i++) {
     void pixelStorei(GLenum pname, GLint param);
     void polygonOffset(GLfloat factor, GLfloat units);
 
-    ArrayBufferView readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
-                           GLenum format, GLenum type);
+    void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
+                    GLenum format, GLenum type, ArrayBufferView pixels);
 
     void renderbufferStorage(GLenum target, GLenum internalformat, 
                              GLsizei width, GLsizei height);
@@ -1336,14 +1341,14 @@ for (var i = 0; i < numVertices; i++) {
     void texImage2D(GLenum target, GLint level, GLenum internalformat, 
                     GLsizei width, GLsizei height, GLint border, GLenum format, 
                     GLenum type, ArrayBufferView pixels);
-    void texImage2D(GLenum target, GLint level, ImageData pixels,
-                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
-    void texImage2D(GLenum target, GLint level, HTMLImageElement image,
-                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
-    void texImage2D(GLenum target, GLint level, HTMLCanvasElement canvas,
-                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
-    void texImage2D(GLenum target, GLint level, HTMLVideoElement video,
-                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
+    void texImage2D(GLenum target, GLint level, GLenum internalformat,
+                    GLenum format, GLenum type, ImageData pixels);
+    void texImage2D(GLenum target, GLint level, GLenum internalformat,
+                    GLenum format, GLenum type, HTMLImageElement image);
+    void texImage2D(GLenum target, GLint level, GLenum internalformat,
+                    GLenum format, GLenum type, HTMLCanvasElement canvas);
+    void texImage2D(GLenum target, GLint level, GLenum internalformat,
+                    GLenum format, GLenum type, HTMLVideoElement video);
 
     void texParameterf(GLenum target, GLenum pname, GLfloat param);
     void texParameteri(GLenum target, GLenum pname, GLint param);
@@ -1352,53 +1357,49 @@ for (var i = 0; i < numVertices; i++) {
                        GLsizei width, GLsizei height, 
                        GLenum format, GLenum type, ArrayBufferView pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       ImageData pixels,
-                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
+                       GLenum format, GLenum type, ImageData pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       HTMLImageElement image,
-                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
+                       GLenum format, GLenum type, HTMLImageElement image);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       HTMLCanvasElement canvas,
-                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
+                       GLenum format, GLenum type, HTMLCanvasElement canvas);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       HTMLVideoElement video,
-                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha);
+                       GLenum format, GLenum type, HTMLVideoElement video);
 
     void uniform1f(WebGLUniformLocation location, GLfloat x);
-    void uniform1fv(WebGLUniformLocation location, FloatArray v);
+    void uniform1fv(WebGLUniformLocation location, Float32Array v);
     void uniform1fv(WebGLUniformLocation location, sequence<float> v);
     void uniform1i(WebGLUniformLocation location, GLint x);
     void uniform1iv(WebGLUniformLocation location, Int32Array v);
     void uniform1iv(WebGLUniformLocation location, sequence<long> v);
     void uniform2f(WebGLUniformLocation location, GLfloat x, GLfloat y);
-    void uniform2fv(WebGLUniformLocation location, FloatArray v);
+    void uniform2fv(WebGLUniformLocation location, Float32Array v);
     void uniform2fv(WebGLUniformLocation location, sequence<float> v);
     void uniform2i(WebGLUniformLocation location, GLint x, GLint y);
     void uniform2iv(WebGLUniformLocation location, Int32Array v);
     void uniform2iv(WebGLUniformLocation location, sequence<long> v);
     void uniform3f(WebGLUniformLocation location, GLfloat x, GLfloat y, GLfloat z);
-    void uniform3fv(WebGLUniformLocation location, FloatArray v);
+    void uniform3fv(WebGLUniformLocation location, Float32Array v);
     void uniform3fv(WebGLUniformLocation location, sequence<float> v);
     void uniform3i(WebGLUniformLocation location, GLint x, GLint y, GLint z);
     void uniform3iv(WebGLUniformLocation location, Int32Array v);
     void uniform3iv(WebGLUniformLocation location, sequence<long> v);
     void uniform4f(WebGLUniformLocation location, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-    void uniform4fv(WebGLUniformLocation location, FloatArray v);
+    void uniform4fv(WebGLUniformLocation location, Float32Array v);
     void uniform4fv(WebGLUniformLocation location, sequence<float> v);
     void uniform4i(WebGLUniformLocation location, GLint x, GLint y, GLint z, GLint w);
     void uniform4iv(WebGLUniformLocation location, Int32Array v);
     void uniform4iv(WebGLUniformLocation location, sequence<long> v);
 
     void uniformMatrix2fv(WebGLUniformLocation location, GLboolean transpose, 
-                          FloatArray value);
+                          Float32Array value);
     void uniformMatrix2fv(WebGLUniformLocation location, GLboolean transpose, 
                           sequence<float> value);
     void uniformMatrix3fv(WebGLUniformLocation location, GLboolean transpose, 
-                          FloatArray value);
+                          Float32Array value);
     void uniformMatrix3fv(WebGLUniformLocation location, GLboolean transpose, 
                           sequence<float> value);
     void uniformMatrix4fv(WebGLUniformLocation location, GLboolean transpose, 
-                          FloatArray value);
+                          Float32Array value);
     void uniformMatrix4fv(WebGLUniformLocation location, GLboolean transpose, 
                           sequence<float> value);
 
@@ -1406,16 +1407,16 @@ for (var i = 0; i < numVertices; i++) {
     void validateProgram(WebGLProgram program);
 
     void vertexAttrib1f(GLuint indx, GLfloat x);
-    void vertexAttrib1fv(GLuint indx, FloatArray values);
+    void vertexAttrib1fv(GLuint indx, Float32Array values);
     void vertexAttrib1fv(GLuint indx, sequence<float> values);
     void vertexAttrib2f(GLuint indx, GLfloat x, GLfloat y);
-    void vertexAttrib2fv(GLuint indx, FloatArray values);
+    void vertexAttrib2fv(GLuint indx, Float32Array values);
     void vertexAttrib2fv(GLuint indx, sequence<float> values);
     void vertexAttrib3f(GLuint indx, GLfloat x, GLfloat y, GLfloat z);
-    void vertexAttrib3fv(GLuint indx, FloatArray values);
+    void vertexAttrib3fv(GLuint indx, Float32Array values);
     void vertexAttrib3fv(GLuint indx, sequence<float> values);
     void vertexAttrib4f(GLuint indx, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-    void vertexAttrib4fv(GLuint indx, FloatArray values);
+    void vertexAttrib4fv(GLuint indx, Float32Array values);
     void vertexAttrib4fv(GLuint indx, sequence<float> values);
     void vertexAttribPointer(GLuint indx, GLint size, GLenum type, 
                              GLboolean normalized, GLsizei stride, GLsizeiptr offset);
@@ -1538,7 +1539,10 @@ for (var i = 0; i < numVertices; i++) {
             </a>
         <dt class="idl-code">any getParameter(GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGet.xml">
-                (OpenGL ES 2.0 man page)
+                (glGet OpenGL ES 2.0 man page)
+            </a>
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetString.xml">
+                (glGetString OpenGL ES 2.0 man page)
             </a>
         <dd>
             Return the value for the passed pname. The type returned is the natural type for the
@@ -1546,12 +1550,12 @@ for (var i = 0; i < numVertices; i++) {
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
                 <tr><td>ACTIVE_TEXTURE</td><td>unsigned long</td></tr>
-                <tr><td>ALIASED_LINE_WIDTH_RANGE</td><td>FloatArray (with 2 elements)</td></tr>
-                <tr><td>ALIASED_POINT_SIZE_RANGE</td><td>FloatArray (with 2 elements)</td></tr>
+                <tr><td>ALIASED_LINE_WIDTH_RANGE</td><td>Float32Array (with 2 elements)</td></tr>
+                <tr><td>ALIASED_POINT_SIZE_RANGE</td><td>Float32Array (with 2 elements)</td></tr>
                 <tr><td>ALPHA_BITS</td><td>long</td></tr>
                 <tr><td>ARRAY_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
                 <tr><td>BLEND</td><td>boolean</td></tr>
-                <tr><td>BLEND_COLOR</td><td>FloatArray (with 4 values)</td></tr>
+                <tr><td>BLEND_COLOR</td><td>Float32Array (with 4 values)</td></tr>
                 <tr><td>BLEND_DST_ALPHA</td><td>unsigned long</td></tr>
                 <tr><td>BLEND_DST_RGB</td><td>unsigned long</td></tr>
                 <tr><td>BLEND_EQUATION_ALPHA</td><td>unsigned long</td></tr>
@@ -1559,7 +1563,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>BLEND_SRC_ALPHA</td><td>unsigned long</td></tr>
                 <tr><td>BLEND_SRC_RGB</td><td>unsigned long</td></tr>
                 <tr><td>BLUE_BITS</td><td>long</td></tr>
-                <tr><td>COLOR_CLEAR_VALUE</td><td>FloatArray (with 4 values)</td></tr>
+                <tr><td>COLOR_CLEAR_VALUE</td><td>Float32Array (with 4 values)</td></tr>
                 <tr><td>COLOR_WRITEMASK</td><td>Uint8Array (with 4 values)</td></tr>
                 <tr><td>COMPRESSED_TEXTURE_FORMATS</td><td>null</td></tr>
                 <tr><td>CULL_FACE</td><td>boolean</td></tr>
@@ -1568,7 +1572,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>DEPTH_BITS</td><td>long</td></tr>
                 <tr><td>DEPTH_CLEAR_VALUE</td><td>float</td></tr>
                 <tr><td>DEPTH_FUNC</td><td>unsigned long</td></tr>
-                <tr><td>DEPTH_RANGE</td><td>FloatArray (with 2 elements)</td></tr>
+                <tr><td>DEPTH_RANGE</td><td>Float32Array (with 2 elements)</td></tr>
                 <tr><td>DEPTH_TEST</td><td>boolean</td></tr>
                 <tr><td>DEPTH_WRITEMASK</td><td>boolean</td></tr>
                 <tr><td>DITHER</td><td>boolean</td></tr>
@@ -1596,12 +1600,14 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>POLYGON_OFFSET_UNITS</td><td>float</td></tr>
                 <tr><td>RED_BITS</td><td>long</td></tr>
                 <tr><td>RENDERBUFFER_BINDING</td><td>WebGLRenderbuffer</td></tr>
+                <tr><td>RENDERER</td><td>DOMString</td></tr>
                 <tr><td>SAMPLE_BUFFERS</td><td>long</td></tr>
                 <tr><td>SAMPLE_COVERAGE_INVERT</td><td>boolean</td></tr>
                 <tr><td>SAMPLE_COVERAGE_VALUE</td><td>float</td></tr>
                 <tr><td>SAMPLES</td><td>long</td></tr>
                 <tr><td>SCISSOR_BOX</td><td>Int32Array (with 4 elements)</td></tr>
                 <tr><td>SCISSOR_TEST</td><td>boolean</td></tr>
+                <tr><td>SHADING_LANGUAGE_VERSION</td><td>DOMString</td></tr>
                 <tr><td>STENCIL_BACK_FAIL</td><td>unsigned long</td></tr>
                 <tr><td>STENCIL_BACK_FUNC</td><td>unsigned long</td></tr>
                 <tr><td>STENCIL_BACK_PASS_DEPTH_FAIL</td><td>unsigned long</td></tr>
@@ -1623,16 +1629,32 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>TEXTURE_BINDING_2D</td><td>WebGLTexture</td></tr>
                 <tr><td>TEXTURE_BINDING_CUBE_MAP</td><td>WebGLTexture</td></tr>
                 <tr><td>UNPACK_ALIGNMENT</td><td>int</td></tr>
+                <tr><td>UNPACK_FLIP_Y_WEBGL</td><td>boolean</td></tr>
+                <tr><td>UNPACK_PREMULTIPLY_ALPHA_WEBGL</td><td>boolean</td></tr>
+                <tr><td>VENDOR</td><td>DOMString</td></tr>
+                <tr><td>VERSION</td><td>DOMString</td></tr>
                 <tr><td>VIEWPORT</td><td>Int32Array (with 4 elements)</td></tr>
-            </table>
+            </table><br>
+            The following <em>pname</em> arguments return a string describing some aspect of the current WebGL implementation:
+            <table>
+              <tr><td>VERSION</td>
+                  <td>Returns a version or release number of the form <code>WebGL&lt;space&gt;1.0&lt;space&gt;&lt;vendor-specific information&gt;</code>.</td></tr>
+              <tr><td>SHADING_LANGUAGE_VERSION</td>
+                  <td>Returns a version or release number of the form <code>WebGL&lt;space&gt;GLSL&lt;space&gt;ES&lt;space&gt;1.0&lt;space&gt;&lt;vendor-specific information&gt;</code>.</td></tr>
+              <tr><td>VENDOR</td>
+                  <td>Returns the company responsible for this WebGL implementation. This name does not change from release to release.</td></tr>
+              <tr><td>RENDERER</td>
+                  <td>Returns the name of the renderer. This name is typically specific to a particular configuration of a hardware platform. It does not change from release to release.</td></tr>
+            </table><br>
+            See <a href="#EXTENSION_QUERIES">Extension Queries</a> for information on querying the
+            available extensions in the current WebGL implementation.
         <dt class="idl-code">GLenum getError()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetError.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt class="idl-code">DOMString getString(GLenum name)
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetString.xml">
-                (OpenGL ES 2.0 man page)
-            </a>
+            <dd>
+            See <a href="#WEBGLCONTEXTLOSTEVENT">WebGLContextLostEvent</a> for documentation of a
+            WebGL-specific return value from getError.
         <dt class="idl-code">void hint(GLenum target, GLenum mode)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glHint.xml">
                 (OpenGL ES 2.0 man page)
@@ -1649,6 +1671,11 @@ for (var i = 0; i < numVertices; i++) {
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glPixelStorei.xml">
                 (OpenGL ES 2.0 man page)
             </a>
+            <dd>
+                In addition to the parameters in the OpenGL ES 2.0 specification, the WebGL
+                specification accepts the parameters <code>UNPACK_FLIP_Y_WEBGL</code>
+                and <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code>. See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel
+                Storage Parameters</a> for documentation of these parameters.
         <dt class="idl-code">void polygonOffset(GLfloat factor, GLfloat units)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glPolygonOffset.xml">
                 (OpenGL ES 2.0 man page)
@@ -2021,35 +2048,60 @@ for (var i = 0; i < numVertices; i++) {
             </a>
         <dd>
             Return true if the passed WebGLTexture is valid and false otherwise.
-        <dt class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat, 
+        <dt class="idl-code"><a name="TEXIMAGE2D">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat, 
                     GLsizei width, GLsizei height, GLint border, GLenum format, 
                     GLenum type, ArrayBufferView pixels)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glTexImage2D.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            If the passed <code>pixels</code> value is <code>null</code> a buffer of sufficient size
-            initialized to 0 is passed.
+            If <code>pixels</code> is null, a buffer of sufficient size initialized to 0 is
+            passed. <br><br>
+
+            If <code>pixels</code> is non-null, the type of <code>pixels</code> must match the type
+            of the data to be read. If it is UNSIGNED_BYTE, a Uint8Array must be supplied; if it is
+            UNSIGNED_SHORT_5_6_5, UNSIGNED_SHORT_4_4_4_4, or UNSIGNED_SHORT_5_5_5_1, a Uint16Array
+            must be supplied. If the types do not match, an INVALID_OPERATION error is generated.
+            <br><br>
+
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            <code>INVALID_OPERATION</code> error is generated.
-        <dt><p class="idl-code">void texImage2D(GLenum target, GLint level, ImageData pixels,
-                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
-            <p class="idl-code">void texImage2D(GLenum target, GLint level, HTMLImageElement image,
-                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
-            <p class="idl-code">void texImage2D(GLenum target, GLint level, HTMLCanvasElement canvas,
-                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
-            <p class="idl-code">void texImage2D(GLenum target, GLint level, HTMLVideoElement video,
-                    optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)
+            <code>INVALID_OPERATION</code> error is generated. <br><br>
+
+            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
+            pixel storage parameters that affect the behavior of this function.
+        <dt><p class="idl-code"><a name="TEXIMAGE2D_HTML">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat,
+                    GLenum format, GLenum type, ImageData pixels)</p>
+            <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
+                    GLenum format, GLenum type, HTMLImageElement image)</p>
+            <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
+                    GLenum format, GLenum type, HTMLCanvasElement canvas)</p>
+            <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
+                    GLenum format, GLenum type, HTMLVideoElement video)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glTexImage2D.xml">
                 (OpenGL ES 2.0 man page)
             </a></p>
         <dd>
-            If the flipY parameter is false, the upper left pixel of the passed image is sent first and
-            then transfer proceeds across and then down the image. If the flipY parameter is true, the
-            lower left pixel of the passed image is sent first and then transfer proceeds across and then
-            up the image.
+            Uploads the given element or image data to the currently bound WebGLTexture. <br><br>
+
+            The source image data is conceptually first converted to the data type and format
+            specified by the <em>format</em> and <em>type</em> arguments, and then transferred to
+            the OpenGL implementation. If a packed pixel format is specified which would imply loss
+            of bits of precision from the image data, this loss of precision must occur. <br><br>
+
+            If the source image is an RGB or RGBA lossless image with 8 bits per channel, the
+            browser guarantees that the full precision of all channels is preserved. <br><br>
+
+            If the original image semantically contains an alpha channel and the
+            <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter is false, then the
+            alpha channel is guaranteed to never have been premultiplied by the RGB values, whether
+            those values are derived directly from the original file format or converted from some
+            other color format. <br><br>
+
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            <code>INVALID_OPERATION</code> error is generated.
+            <code>INVALID_OPERATION</code> error is generated. <br><br>
+
+            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
+            pixel storage parameters that affect the behavior of this function.
         <dt class="idl-code">void texParameterf(GLenum target, GLenum pname, GLfloat param)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glTexParameter.xml">
                 (OpenGL ES 2.0 man page)
@@ -2071,30 +2123,37 @@ for (var i = 0; i < numVertices; i++) {
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
+            See <a href="#TEXIMAGE2D">texImage2D</a> for restrictions on the <em>format</em>
+            and <em>pixels</em> arguments. <br><br>
+
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            <code>INVALID_OPERATION</code> error is generated.
+            <code>INVALID_OPERATION</code> error is generated. <br><br>
+
+            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
+            pixel storage parameters that affect the behavior of this function.
         <dt><p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       ImageData pixels,
-                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
+                       GLenum format, GLenum type, ImageData pixels)</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       HTMLImageElement image,
-                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
+                       GLenum format, GLenum type, HTMLImageElement image)</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       HTMLCanvasElement canvas,
-                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)</p>
+                       GLenum format, GLenum type, HTMLCanvasElement canvas)</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       HTMLVideoElement video,
-                       optional GLboolean flipY, optional GLboolean asPremultipliedAlpha)
+                       GLenum format, GLenum type, HTMLVideoElement video)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glTexSubImage2D.xml">
                 (OpenGL ES 2.0 man page)
             </a></p>
         <dd>
-            If the flipY parameter is false, the upper left pixel of the passed image is sent first and
-            then transfer proceeds across and then down the image. If the flipY parameter is true, the
-            lower left pixel of the passed image is sent first and then transfer proceeds across and then
-            up the image.
+            Updates a sub-rectangle of the currently bound WebGLTexture with the contents of the
+            given element or image data. <br><br>
+
+            See <a href="#TEXIMAGE2D_HTML">texImage2D</a> for the interpretation of
+            the <em>format</em> and <em>type</em> arguments. <br><br>
+
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            <code>INVALID_OPERATION</code> error is generated.
+            <code>INVALID_OPERATION</code> error is generated. <br><br>
+
+            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
+            pixel storage parameters that affect the behavior of this function.
     </dl>
      
 <!-- ======================================================================================================= -->
@@ -2161,7 +2220,7 @@ for (var i = 0; i < numVertices; i++) {
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDetachShader.xml">
                 (OpenGL ES 2.0 man page)
             </a>
-        <dt class="idl-code">WebGLObjectArray getAttachedShaders(WebGLProgram program)
+        <dt class="idl-code">WebGLShader[ ] getAttachedShaders(WebGLProgram program)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetAttachedShaders.xml">
                 (OpenGL ES 2.0 man page)
             </a>
@@ -2260,6 +2319,11 @@ for (var i = 0; i < numVertices; i++) {
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glEnableVertexAttribArray.xml">
                 (OpenGL ES 2.0 man page)
             </a>
+        <dd>
+            Enable the vertex attribute at <code>index</code> as an array. WebGL imposes additional
+            rules beyond OpenGL ES 2.0 regarding enabled vertex attributes;
+            see <a href="#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range
+            Checking</a>.
         <dt class="idl-code">WebGLActiveInfo getActiveAttrib(WebGLProgram program, GLuint index)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetActiveAttrib.xml">
                 (OpenGL ES 2.0 man page)
@@ -2290,18 +2354,18 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>boolean</td><td>boolean</td></tr>
                 <tr><td>int</td><td>long</td></tr>
                 <tr><td>float</td><td>float</td></tr>
-                <tr><td>vec2</td><td>FloatArray (with 2 elements)</td></tr>
+                <tr><td>vec2</td><td>Float32Array (with 2 elements)</td></tr>
                 <tr><td>ivec2</td><td>Int32Array (with 2 elements)</td></tr>
                 <tr><td>bvec2</td><td>Uint8Array (with 2 elements)</td></tr>
-                <tr><td>vec3</td><td>FloatArray (with 3 elements)</td></tr>
+                <tr><td>vec3</td><td>Float32Array (with 3 elements)</td></tr>
                 <tr><td>ivec3</td><td>Int32Array (with 3 elements)</td></tr>
                 <tr><td>bvec3</td><td>Uint8Array (with 3 elements)</td></tr>
-                <tr><td>vec4</td><td>FloatArray (with 4 elements)</td></tr>
+                <tr><td>vec4</td><td>Float32Array (with 4 elements)</td></tr>
                 <tr><td>ivec4</td><td>Int32Array (with 4 elements)</td></tr>
                 <tr><td>bvec4</td><td>Uint8Array (with 4 elements)</td></tr>
-                <tr><td>mat2</td><td>FloatArray (with 4 elements)</td></tr>
-                <tr><td>mat3</td><td>FloatArray (with 9 elements)</td></tr>
-                <tr><td>mat4</td><td>FloatArray (with 16 elements)</td></tr>
+                <tr><td>mat2</td><td>Float32Array (with 4 elements)</td></tr>
+                <tr><td>mat3</td><td>Float32Array (with 9 elements)</td></tr>
+                <tr><td>mat4</td><td>Float32Array (with 16 elements)</td></tr>
             </table>
         <dt class="idl-code">WebGLUniformLocation getUniformLocation(WebGLProgram program, DOMString name)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetUniformLocation.xml">
@@ -2327,7 +2391,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>VERTEX_ATTRIB_ARRAY_STRIDE</td><td>long</td></tr>
                 <tr><td>VERTEX_ATTRIB_ARRAY_TYPE</td><td>unsigned long</td></tr>
                 <tr><td>VERTEX_ATTRIB_ARRAY_NORMALIZED</td><td>boolean</td></tr>
-                <tr><td>CURRENT_VERTEX_ATTRIB</td><td>FloatArray (with 4 elements)</td></tr>
+                <tr><td>CURRENT_VERTEX_ATTRIB</td><td>Float32Array (with 4 elements)</td></tr>
             </table>
         <dt class="idl-code">GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetVertexAttribPointerv.xml">
@@ -2389,6 +2453,8 @@ for (var i = 0; i < numVertices; i++) {
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDrawArrays.xml">
                 (OpenGL ES 2.0 man page)
             </a>
+            <dd>
+            If <em>first</em> is negative, an <code>INVALID_VALUE</code> error will be generated.
         <dt class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLsizeiptr offset)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDrawElements.xml">
                 (OpenGL ES 2.0 man page)
@@ -2397,7 +2463,12 @@ for (var i = 0; i < numVertices; i++) {
             Draw using the currently bound index array.  The given
             offset is in bytes, and must be a valid multiple of the
             size of the given type or an <code>INVALID_VALUE</code> error will be
-            generated.
+            generated. <br><br>
+
+            WebGL performs additional error checking beyond that specified in OpenGL ES 2.0 during
+            calls to <code>drawArrays</code>
+            and <code>drawElements</code>. See <a href="#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex
+            Attributes and Range Checking</a>.
         <dt class="idl-code">void finish()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glFinish.xml">
                 (OpenGL ES 2.0 man page)
@@ -2417,39 +2488,50 @@ for (var i = 0; i < numVertices; i++) {
     </p>
 
     <dl class="methods">
-        <dt class="idl-code">ArrayBufferView readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
-                           GLenum format, GLenum type)
+        <dt class="idl-code">void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
+                           GLenum format, GLenum type, ArrayBufferView pixels)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glReadPixels.xml">
                 (OpenGL ES 2.0 man page)
             </a>
         <dd>
-            Return a ArrayBufferView with pixels within the passed rectangle. The data returned from
-            readPixels must be up-to-date as of the most recently sent drawing command. Any
-            unprocessed drawing commands must be completed and their results presented to the
-            current drawing buffers before readPixels accesses the drawing buffer. <br><br>
+            Fills <code>pixels</code> with the pixel data in the specified rectangle of the frame
+            buffer. The data returned from readPixels must be up-to-date as of the most recently
+            sent drawing command.
+            <br><br>
 
-            The specific subclass of ArrayBufferView returned depends on the passed type. If it is
-            UNSIGNED_BYTE, a Uint8Array is returned, otherwise a Uint16Array is returned.
+            The type of <code>pixels</code> must match the type of the data to be read. If it is
+            UNSIGNED_BYTE, a Uint8Array must be supplied; if it is UNSIGNED_SHORT_5_6_5,
+            UNSIGNED_SHORT_4_4_4_4, or UNSIGNED_SHORT_5_5_5_1, a Uint16Array must be supplied. If
+            the types do not match, an INVALID_OPERATION error is generated.
+            <br><br>
+
+            If <code>pixels</code> is null, an INVALID_VALUE error is generated. If
+            <code>pixels</code> is non-null, but is not large enough to retrieve all of the pixels
+            in the specified rectangle taking into account pixel store modes, an INVALID_OPERATION
+            value is generated.
+            <br><br>
+
+            For any pixel lying outside the frame buffer, the value read contains 0 in all channels.
+            <br><br>
+
     </dl>
     
 <!-- ======================================================================================================= -->
 
-    <h4>Recovering from context lost events</h4>
+    <h4>Detecting context lost events</h4>
 
     <p>
         Occurrences such as power events on mobile devices may cause the WebGL rendering context to
         be lost at any time and require the application to rebuild it;
-        see <a href="#WEBGLCONTEXTLOSTEVENT">WebGLContextLostEvent</a> for more details. The
-        following methods assist in detecting and recovering from context lost events.
+        see <a href="#WEBGLCONTEXTLOSTEVENT">WebGLContextLostEvent</a>
+        and <a href="#WEBGLCONTEXTRESTOREDEVENT">WebGLContextRestoredEvent</a> for more details. The
+        following method assists in detecting context lost events.
     </p>
 
     <dl class="methods">
         <dt class="idl-code">boolean isContextLost()
         <dd>
             Returns true if the context is in the lost state.
-        <dt class="idl-code">boolean resetContext()
-        <dd>
-            Returns true if the context was reset successfully.
     </dl>
     
 <!-- ======================================================================================================= -->
@@ -2513,11 +2595,25 @@ for (var i = 0; i < numVertices; i++) {
     </p>
     <p>
         When a WebGLContextLostEvent is delivered for a given context, that context is in a "lost"
-        state. While the context is in the lost state, all rendering commands are ignored, and the
-        context's <code>isContextLost</code> method will return true. In order to resume rendering,
-        the application must call the context's <code>resetContext</code> method, and the invocation
-        must return true. Once the context is reset, the application must reinitialize the context's
-        state and recreate all of its WebGL resources such as textures, shaders and programs.
+        state. While the context is in the lost state:
+
+        <ul>
+        <li> The context's <code>isContextLost</code> method returns <code>true</code>. 
+        <li> All methods returning <code>void</code> return immediately.
+        <li> All methods returning nullable values or <code>any</code> return <code>null</code>.
+        <li> <code>checkFramebufferStatus</code> returns <code>FRAMEBUFFER_UNSUPPORTED</code>.
+        <li> <code>getAttribLocation</code> returns <code>-1</code>.
+        <li> <code>getError</code> returns <code>CONTEXT_LOST_WEBGL</code> the first time it is
+             called while the context is lost. Afterward it will return <code>NO_ERROR</code> until
+             the context has been restored.
+        <li> <code>getVertexAttribOffset</code> returns <code>0</code>.
+        <li> All <code>is</code> queries return <code>false</code>.
+        </ul>
+    </p>
+    <p>
+        See the specification of the
+        <a href="#WEBGLCONTEXTRESTOREDEVENT">WebGLContextRestoredEvent</a> for information on
+        resuming rendering after the context has been lost.
     </p>
     <pre class="idl">
 interface <dfn id="WebGLContextLostEvent">WebGLContextLostEvent</dfn> : Event {
@@ -2572,33 +2668,159 @@ interface <dfn id="WebGLContextLostEvent">WebGLContextLostEvent</dfn> : Event {
             <b>No Exceptions</b><br>
     </dl>
 
-    <div class="example">
-    The following ECMAScript example shows how to register an event listener on a Canvas which will
-    receive context lost events and attempt to restart the application.
-    <pre>
-var contextWhichWasLost = null;
+<!-- ======================================================================================================= -->
 
-function contextLostHandler(contextLostEvent) {
-  // Start a timer to try to periodically reset the context
-  contextWhichWasLost = contextLostEvent.context;
-  setTimeout(tryToResetApplication, 500);
+    <h4><a name="WEBGLCONTEXTRESTOREDEVENT">WebGLContextRestoredEvent</a></h4>
+
+    <p>
+        This event occurs when the WebGL implementation determines that a previously lost context
+        can be restored. <em>The system only restores the context if a handler for the context
+        restored event is installed on the Canvas element.</em>
+    </p>
+    <p>
+        Once the context is restored, WebGL resources such as textures and buffers that were created
+        before the context was lost are no longer valid. The application must reinitialize the
+        context's state and recreate all such resources.
+    </p>
+    <pre class="idl">
+interface <dfn id="WebGLContextRestoredEvent">WebGLContextRestoredEvent</dfn> : Event {
+    readonly attribute WebGLRenderingContext context;
+    
+    void initWebGLContextRestoredEvent(DOMString type,
+                                       boolean canBubble,
+                                       boolean cancelable,
+                                       WebGLRenderingContext context);
+};</pre>
+
+    <h5>Attributes</h5>
+
+    <p>
+        The following attributes are available:
+    </p>
+
+    <dl class="methods">
+        <dt><span class="prop-name"><code>context</code></span> of type <code>WebGLRenderingContext</code>
+        <dd>
+            The context whose state was restored.
+    </dl>
+
+    <h5>Methods</h5>
+
+    <p>
+        The following methods are available:
+    </p>
+
+    <dl class="methods">
+        <dt class="idl-code">void initWebGLContextRestoredEvent(DOMString type, boolean canBubble, boolean cancelable, WebGLRenderingContext context)
+        <dd>
+            Initialize the event created through the 
+            <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-Event">Event</a>
+            interface. This method may only be called before the event has been dispatched via
+            the <code>dispatchEvent</code> method, though it may be called multiple times during
+            that phase if necessary. If called multiple times, the final invocation takes
+            precedence.
+            <P>
+            <b>Parameters</b>
+            <dl>
+                <dt><code>type</code> of type <code>DOMString</code>
+                <dd>Specifies the event type, which is the string <code>webglcontextrestored</code>.
+                <dt><code>canBubble</code> of type <code>boolean</code>
+                <dd>Specifies whether or not the event can bubble.
+                <dt><code>cancelable</code> of type <code>boolean</code>
+                <dd>Specifies whether or not the event can bubble.
+                <dt><code>context</code> of type <code>WebGLRenderingContext</code>
+                <dd>The context whose state was lost.
+            </dl>
+            <b>No Return Value</b><br>
+            <b>No Exceptions</b><br>
+    </dl>
+
+    <div class="example">
+    The following ECMAScript example shows how to register event listeners on a Canvas called
+    <code>canvas1</code> which will receive context lost and restored events and restart the
+    application. For completeness, it illustrates how an application performing asynchronous image
+    loading would handle a context lost event at an arbitrary point in time.
+    <pre>
+window.onload = init;
+
+var g_gl;
+var g_canvas;
+var g_intervalId;
+var g_images = [];
+var g_imgURLs = [
+ "someimage.jpg",
+ "someotherimage.jpg",
+ "yetanotherimage.png"
+];
+
+function init() {
+  g_canvas = document.getElementById("canvas1");
+  g_canvas.addEventListener("webglcontextlost", contextLostHandler, false);
+  g_canvas.addEventListener("webglcontextrestored", contextRestoredHandler, false);
+  g_gl = canvas.getContext("webgl");
+
+  for (var ii = 0; ii < g_imgURLs.length; ++ii) {
+    // Create an image tag.
+    var image = document.createElement('img');
+
+    // Create a texture for this image.
+    image.texture = g_gl.createTexture();
+
+    // Mark the image as not loaded.
+    image.loaded = false;
+
+    // Setup a load callback.
+    image.onload = (function(image) {
+        return function() {
+          imageLoadedHandler(image);
+        };
+      }(image));
+
+    // Start the image loading.
+    image.src = g_imgURLs[ii];
+
+    // Remember the image.
+    g_images.push(image);
+  }
+
+  g_intervalId = window.setInterval(renderHandler, 1000/60);
 }
 
-function tryToResetApplication() {
-  if (contextWhichWasLost != null) {
-    if (contextWhichWasLost.resetContext()) {
-      var context = contextWhichWasLost;
-      contextWhichWasLost = null;
-      // Would re-run all of the initialization code for the application
-      resetApplication(context);
-    } else {
-      setTimeout(tryToResetApplication, 500);
-    }
+function renderHandler() {
+  // draw with textures.
+  // ...
+}
+
+function imageLoadedHandler(image) {
+  // Mark the image as loaded.
+  image.loaded = true;
+
+  // Copy the image to the texture.
+  updateTexture(image);
+}
+
+function updateTexture(image) {
+  if (!g_gl.isContextLost() && image.loaded) {
+    g_gl.bindTexture(g_gl.TEXTURE_2D, image.texture);
+    g_gl.texImage2D(g_gl.TEXTURE_2D, 0, image);
   }
 }
 
-var canvas = document.getElementById('canvas1');
-canvas.addEventListener("webglcontextlost", contextLostHandler, false);
+function contextLostHandler() {
+  // stop rendering.
+  window.clearInterval(g_internvalId);
+}
+
+function contextRestoredHandler() {
+  // create new textures for all images and restore their contents.
+  for (var ii = 0; ii < g_images.length; ++ii) {
+    g_images[ii].texture = g_gl.createTexture();
+    updateTexture(g_images[ii]);
+  }
+
+  // Start rendering again.
+  g_intervalId = window.setInterval(renderHandler, 1000/60);
+}
     </pre>
     </div>
 
@@ -2631,6 +2853,35 @@ the state of the binding point will remain untouched.
 
 </p>
 
+    <h3><a name="ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range Checking</a></h3>
+
+<p>
+
+If a vertex attribute is enabled as an array via <code>enableVertexAttribArray</code> but no buffer
+is bound to that attribute via <code>bindBuffer</code> and <code>vertexAttribPointer</code>, then
+calls to <code>drawArrays</code> or <code>drawElements</code> will generate an
+<code>INVALID_OPERATION</code> error.
+
+</p>
+<p>
+
+If a vertex attribute is enabled as an array, a buffer is bound to that attribute, and the attribute
+is consumed by the current program, then calls to <code>drawArrays</code>
+and <code>drawElements</code> will verify that each referenced vertex lies within the storage of the
+bound buffer. If the range specified in <code>drawArrays</code> or any referenced index
+in <code>drawElements</code> lies outside the storage of the bound buffer, an INVALID_OPERATION
+error is generated and no geometry is drawn.
+
+</p>
+<p>
+
+If a vertex attribute is enabled as an array, a buffer is bound to that attribute, but the attribute
+is not consumed by the current program, then regardless of the size of the bound buffer, it will not
+cause any error to be generated during a call to <code>drawArrays</code>
+or <code>drawElements</code>.
+
+</p>
+
     <h3>Framebuffer Object Attachments</h3>
 
 <p>
@@ -2654,8 +2905,8 @@ to <code>framebufferRenderbuffer</code> and leave the framebuffer's attachments 
 </p>
 <p>
 
-In WebGL, it is an error to concurrently attach renderbuffers to the following combinations of
-attachment points:
+In the WebGL API, it is an error to concurrently attach renderbuffers to the following combinations
+of attachment points:
 
 <ul>
 <li> <code>DEPTH_ATTACHMENT + DEPTH_STENCIL_ATTACHMENT</code>
@@ -2669,11 +2920,44 @@ the framebuffer's attachments untouched.
 
 </p>
 
+    <h3><a name="PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a></h3>
+
+<p>
+
+The WebGL API supports the following two additional boolean parameters to <code>pixelStorei</code>.
+Any non-zero <em>param</em> is interpreted as the value <code>true</code>.
+
+<dl>
+<dt><code>UNPACK_FLIP_Y_WEBGL</code>
+<dd>If set, then during any subsequent calls to <code>texImage2D</code> or
+<code>texSubImage2D</code>, the source data is flipped along the vertical axis, so that conceptually
+the last row is the first one transferred. The default value is <code>false</code>.
+
+<dt><code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code>
+<dd>If set, then during any subsequent calls to <code>texImage2D</code>
+or <code>texSubImage2D</code>, the alpha channel of the source data, if present, is multiplied into
+the color channels during the data transfer. The default value is <code>false</code>.
+</dl>
+
+</p>
+
     <h3>GLSL Constructs</h3>
 
 <p>
 Per <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a>, identifiers starting with
 "webgl_" and "_webgl_" are reserved for use by WebGL.
+</p>
+
+    <h3><a name="EXTENSION_QUERIES">Extension Queries</a></h3>
+
+<p>
+
+In the OpenGL ES 2.0 API, the available extensions are determined by calling
+<code>glGetString(GL_EXTENSIONS)</code>, which returns a space-separated list of extension strings.
+In the WebGL API, <code>EXTENSIONS</code> is not a legal argument to <code>getParameter</code>.
+Instead, <code>getSupportedExtensions</code> must be called to determine the set of available
+extensions.
+
 </p>
 
 <!-- ======================================================================================================= -->

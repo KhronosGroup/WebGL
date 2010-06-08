@@ -31,7 +31,7 @@
 
 <body onload="generateTOC(document.getElementById('toc'))">
   <h1>Typed Arrays</h1>
-  <h2 class="no-toc">Working Draft 17 May 2010</h2>
+  <h2 class="no-toc">Working Draft 08 June 2010</h2>
   <dl>
     <dt>This version:
       <dd>
@@ -307,8 +307,8 @@ interface <dfn id="ArrayBufferView">ArrayBufferView</dfn> {
 	<tr><td><tt>Uint16Array</tt></td><td>2</td><td>16-bit unsigned integer</td><td><code>unsigned short</code></td></tr>
 	<tr><td><tt>Int32Array</tt></td><td>4</td><td>32-bit 2's complement signed integer</td><td><code>int</code></td></tr>
 	<tr><td><tt>Uint32Array</tt></td><td>4</td><td>32-bit unsigned integer</td><td><code>unsigned int</code></td></tr>
-	<tr><td><tt>FloatArray</tt></td><td>4</td><td>32-bit IEEE floating point</td><td><code>float</code></td></tr>
-	<tr><td><tt>DoubleArray</tt></td><td>8</td><td>64-bit IEEE floating point</td><td><code>double</code></td></tr>
+	<tr><td><tt>Float32Array</tt></td><td>4</td><td>32-bit IEEE floating point</td><td><code>float</code></td></tr>
+	<tr><td><tt>Float64Array</tt></td><td>8</td><td>64-bit IEEE floating point</td><td><code>double</code></td></tr>
       </tbody>
     </table></center>
 
@@ -525,10 +525,10 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
                   optional boolean littleEndian);
     unsigned long getUInt32(unsigned long byteOffset,
                             optional boolean littleEndian);
-    float getFloat(unsigned long byteOffset,
-                   optional boolean littleEndian);
-    double getDouble(unsigned long byteOffset,
+    float getFloat32(unsigned long byteOffset,
                      optional boolean littleEndian);
+    double getFloat64(unsigned long byteOffset,
+                      optional boolean littleEndian);
 
     // Stores a value of the given type at the specified byte offset
     // from the start of the view. There is no alignment constraint;
@@ -559,12 +559,12 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
     void setUint32(unsigned long byteOffset,
                    unsigned long value,
                    optional boolean littleEndian);
-    void setFloat(unsigned long byteOffset,
-                  float value,
-                  optional boolean littleEndian);
-    void setDouble(unsigned long byteOffset,
-                   double value,
-                   optional boolean littleEndian);
+    void setFloat32(unsigned long byteOffset,
+                    float value,
+                    optional boolean littleEndian);
+    void setFloat64(unsigned long byteOffset,
+                    double value,
+                    optional boolean littleEndian);
 };</pre>
 
     <p>The following constructors, properties, and methods are available on a <tt>DataView</tt>:</p>
@@ -590,8 +590,8 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
             unsigned short <i>getUInt16</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
             long <i>getInt32</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
             unsigned long <i>getUInt32</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
-            float <i>getFloat</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
-            double <i>getDouble</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
+            float <i>getFloat32</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
+            double <i>getFloat64</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
 	  </td>
 	  <td>
 	  </td>
@@ -604,8 +604,8 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
             void <i>setUint16</i>(unsigned long byteOffset, unsigned short value, optional boolean littleEndian);<br>
             void <i>setInt32</i>(unsigned long byteOffset, long value, optional boolean littleEndian);<br>
             void <i>setUint32</i>(unsigned long byteOffset, unsigned long value, optional boolean littleEndian);<br>
-            void <i>setFloat</i>(unsigned long byteOffset, float value, optional boolean littleEndian);<br>
-            void <i>setDouble</i>(unsigned long byteOffset, double value, optional boolean littleEndian);<br>
+            void <i>setFloat32</i>(unsigned long byteOffset, float value, optional boolean littleEndian);<br>
+            void <i>setFloat64</i>(unsigned long byteOffset, double value, optional boolean littleEndian);<br>
 	  </td>
 	  <td>
 	  </td>
