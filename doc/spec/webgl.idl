@@ -439,7 +439,6 @@ interface WebGLRenderingContext {
     const GLenum COMPILE_STATUS                 = 0x8B81;
     const GLenum INFO_LOG_LENGTH                = 0x8B84;
     const GLenum SHADER_SOURCE_LENGTH           = 0x8B88;
-    const GLenum SHADER_COMPILER                = 0x8DFA;
     
     /* Shader Precision-Specified Types */
     const GLenum LOW_FLOAT                      = 0x8DF0;
