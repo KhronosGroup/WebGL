@@ -52,8 +52,8 @@ shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawArrays(co
 shouldGenerateGLError(context, context.INVALID_VALUE, "context.drawArrays(context.TRIANGLES, 0, -1)");
 shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawArrays(context.TRIANGLES, 1, 0)");
 shouldGenerateGLError(context, context.INVALID_VALUE, "context.drawArrays(context.TRIANGLES, -1, 0)");
-shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawArrays(context.TRIANGLES, 1, -1)");
-shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawArrays(context.TRIANGLES, -1, 1)");
+shouldGenerateGLError(context, context.INVALID_VALUE, "context.drawArrays(context.TRIANGLES, 1, -1)");
+shouldGenerateGLError(context, context.INVALID_VALUE, "context.drawArrays(context.TRIANGLES, -1, 1)");
 
 debug("")
 debug("Test buffer with 3 float vectors")
@@ -65,8 +65,8 @@ shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawArrays(co
 shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawArrays(context.TRIANGLES, 0, 10000000000000)");
 shouldGenerateGLError(context, context.INVALID_VALUE, "context.drawArrays(context.TRIANGLES, 0, -1)");
 shouldGenerateGLError(context, context.INVALID_VALUE, "context.drawArrays(context.TRIANGLES, -1, 0)");
-shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawArrays(context.TRIANGLES, 1, -1)");
-shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawArrays(context.TRIANGLES, -1, 1)");
+shouldGenerateGLError(context, context.INVALID_VALUE, "context.drawArrays(context.TRIANGLES, 1, -1)");
+shouldGenerateGLError(context, context.INVALID_VALUE, "context.drawArrays(context.TRIANGLES, -1, 1)");
 
 debug("")
 successfullyParsed = true;
