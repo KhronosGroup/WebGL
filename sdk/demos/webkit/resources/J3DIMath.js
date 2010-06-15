@@ -106,12 +106,14 @@
 
 J3DIHasCSSMatrix = false;
 J3DIHasCSSMatrixCopy = false;
+/*
 if ("WebKitCSSMatrix" in window && ("media" in window && window.media.matchMedium("(-webkit-transform-3d)")) || 
                                    ("styleMedia" in window && window.styleMedia.matchMedium("(-webkit-transform-3d)"))) {
     J3DIHasCSSMatrix = true;
     if ("copy" in WebKitCSSMatrix.prototype)
         J3DIHasCSSMatrixCopy = true;
 }
+*/
 
 console.log("J3DIHasCSSMatrix="+J3DIHasCSSMatrix);
 console.log("J3DIHasCSSMatrixCopy="+J3DIHasCSSMatrixCopy);
