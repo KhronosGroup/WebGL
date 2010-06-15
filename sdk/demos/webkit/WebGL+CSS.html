@@ -322,6 +322,11 @@
                 container.className = isTilted ? 'tilted' : '';
             }, false);
             
+            body.addEventListener('touchstart', function () {
+                isTilted = !isTilted;
+                container.className = isTilted ? 'tilted' : '';
+            }, false);
+            
             var ctx = init();
             currentAngle = 0;
             incAngle = 0.2;
