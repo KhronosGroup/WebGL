@@ -157,6 +157,49 @@ void main()
     gl_Position = _webgl_vPosition;
 }
 </script>
+<script id="vshaderWithImplicitIntCast" type="text/something-not-javascript">
+attribute vec4 vPosition;
+void main()
+{
+    int k = 123;
+    gl_Position = vec4(vPosition.x, vPosition.y, vPosition.z, k);
+}
+</script>
+<script id="vshaderWithImplicitVec3Cast" type="text/something-not-javascript">
+attribute vec4 vPosition;
+void main()
+{
+    highp vec3 k = vec3(1, 2, 3);
+    gl_Position = k;
+}
+</script>
+<script id="vshaderWithExplicitIntCast" type="text/something-not-javascript">
+attribute vec4 vPosition;
+void main()
+{
+    int k = 123;
+    gl_Position = vec4(vPosition.x, vPosition.y, vPosition.z, float(k));
+}
+</script>
+<script id="vshaderWithVersion130" type="text/something-not-javascript">
+#version 130
+attribute vec4 vPosition;
+void main()
+{
+    gl_Position = vPosition;
+}
+</script>
+<script id="vshaderWithVersion100" type="text/something-not-javascript">
+#version 100
+attribute vec4 vPosition;
+void main()
+{
+    gl_Position = vPosition;
+}
+</script>
+<script id="vshaderWith__FILE__" type="text/something-not-javascript">
+__FILE__
+</script>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
 description("This test ensures WebGL implementations allow proper GLES2 shaders compile and improper ones fail.");
@@ -320,6 +363,41 @@ if (!gl) {
       fShaderSuccess: true,
       linkSuccess: false,
       passMsg: 'vertex shader that uses _webgl_ identifier should fail',
+    },
+    { vShaderId: 'vshaderWithImplicitIntCast',
+      vShaderSuccess: false,
+      fShaderId: 'fshader',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'vertex shader that implicit int to float cast should fail',
+    },
+    { vShaderId: 'vshaderWithExplicitIntCast',
+      vShaderSuccess: true,
+      fShaderId: 'fshader',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: 'vertex shader that explicit int to float cast should succeed',
+    },
+    { vShaderId: 'vshaderWithImplicitVec3Cast',
+      vShaderSuccess: false,
+      fShaderId: 'fshader',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'vertex shader that implicit vec3 to vec4 cast should fail',
+    },
+    { vShaderId: 'vshaderWithVersion130',
+      vShaderSuccess: false,
+      fShaderId: 'fshader',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'vertex shader uses the #version not 100 directive should fail',
+    },
+    { vShaderId: 'vshaderWithVersion100',
+      vShaderSuccess: true,
+      fShaderId: 'fshader',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'vertex shader uses the #version 100 directive should succeed',
     }
   ];
 
