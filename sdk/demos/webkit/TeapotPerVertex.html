@@ -140,6 +140,10 @@
     </script>
 
     <script id="fshader" type="x-shader/x-fragment">
+#ifdef GL_ES
+    precision mediump float;
+#endif
+    
         uniform sampler2D u_sampler2d;
 
         varying vec4 v_diffuse, v_specular;

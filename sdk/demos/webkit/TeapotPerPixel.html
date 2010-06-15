@@ -131,6 +131,10 @@
     </script>
 
     <script id="fshader" type="x-shader/x-fragment">
+#ifdef GL_ES
+    precision mediump float;
+#endif
+    
         struct Light 
         { 
             vec4 ambient;

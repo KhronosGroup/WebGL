@@ -54,6 +54,10 @@
 </script>
 
 <script id="fshader" type="x-shader/x-fragment">
+#ifdef GL_ES
+    precision mediump float;
+#endif
+        
     uniform sampler2D sampler2d;
 
     varying float v_Dot;
@@ -82,7 +86,7 @@
             // used later.
             [ "vNormal", "vColor", "vPosition"],
             // The clear color and depth values
-            [ 0, 0, 0, 1 ], 10000);
+            [ 0, 0, 0.5, 1 ], 10000);
 
         // Set some uniform variables for the shaders
         gl.uniform3f(gl.getUniformLocation(gl.program, "lightDir"), 0, 0, 1);

@@ -54,6 +54,10 @@
 </script>
 
 <script id="fshader" type="x-shader/x-fragment">
+#ifdef GL_ES
+    precision mediump float;
+#endif
+    
     varying float v_Dot;
     varying vec4 v_Color;
 
@@ -66,6 +70,7 @@
 <script>
     function init()
     {
+        console.log("Starting init...");
         // Initialize
         var gl = initWebGL(
             // The id of the Canvas Element
@@ -153,7 +158,7 @@
         gl.perspectiveMatrix.perspective(30, width/height, 1, 10000);
         gl.perspectiveMatrix.lookat(0, 0, 7, 0, 0, 0, 0, 1, 0);
     }
-
+    
     function drawPicture(gl)
     {
         // Make sure the canvas is sized correctly.
