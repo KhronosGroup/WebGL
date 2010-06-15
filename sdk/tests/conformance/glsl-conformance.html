@@ -64,7 +64,7 @@ void main()
   precision mediump float;
   void main()
   {
-      gl_FragColor = vec4(0.0,0.0,1.0);
+      gl_FragColor = vec4(0.0,0.0,0.0,1.0);
   }
 #else
   foo
@@ -298,7 +298,7 @@ if (!gl) {
       vShaderSuccess: true,
       fShaderId: 'fshaderWithFragDepth',
       fShaderSuccess: false,
-      linkSuccess: true,
+      linkSuccess: false,
       passMsg: 'fragment shader that uses gl_FragDepth should fail',
     },
     { vShaderId: 'vshaderWithClipVertex',
