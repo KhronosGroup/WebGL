@@ -47,7 +47,7 @@ var simpleTextureFragmentShader = '' +
  * @return {!WebGLShader}
  */
 var setupSimpleTextureVertexShader = function(gl) {
-    return loadShader(gl, simpleTextureVertexShader, gl.VERTEX_SHADER, false);
+    return loadShader(gl, simpleTextureVertexShader, gl.VERTEX_SHADER);
 };
 
 /**
@@ -57,7 +57,42 @@ var setupSimpleTextureVertexShader = function(gl) {
  */
 var setupSimpleTextureFragmentShader = function(gl) {
     return loadShader(
-        gl, simpleTextureFragmentShader, gl.FRAGMENT_SHADER, false);
+        gl, simpleTextureFragmentShader, gl.FRAGMENT_SHADER);
+};
+
+/**
+ * Creates a program, attaches shaders, binds attrib locations, links the
+ * program and calls useProgram.
+ * @param {!Array.<!WebGLShader>} shaders The shaders to attach .
+ * @param {!Array.<string>} attribs The attribs names.
+ * @param {!Array.<number>} opt_locations The locations for the attribs.
+ */
+var setupProgram = function(gl, shaders, attribs, opt_locations) {
+  var program = gl.createProgram();
+  for (var ii = 0; ii < shaders.length; ++ii) {
+    gl.attachShader(program, shaders[ii]);
+  }
+  for (var ii = 0; ii < attribs.length; ++ii) {
+    gl.bindAttribLocation(
+        program,
+        opt_locations ? opt_locations[ii] : ii,
+        attribs[ii]);
+  }
+  gl.linkProgram(program);
+
+  // Check the link status
+  var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+  if (!linked) {
+      // something went wrong with the link
+      var error = gl.getProgramInfoLog (program);
+      log("Error in program linking:"+error);
+
+      gl.deleteProgram(program);
+      return null;
+  }
+
+  gl.useProgram(program);
+  return program;
 };
 
 /**
@@ -76,28 +111,15 @@ var setupSimpleTextureProgram = function(
   if (!vs || !fs) {
     return null;
   }
-  var program = gl.createProgram();
-  gl.attachShader(program, vs);
-  gl.attachShader(program, fs);
-  gl.bindAttribLocation(program, opt_positionLocation, 'vPosition');
-  gl.bindAttribLocation(program, opt_texcoordLocation, 'texCoord0');
-  gl.linkProgram(program);
-
-  // Check the link status
-  var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
-  if (!linked) {
-      // something went wrong with the link
-      var error = gl.getProgramInfoLog (program);
-      log("Error in program linking:"+error);
-
-      gl.deleteProgram(program);
-      gl.deleteProgram(fs);
-      gl.deleteProgram(vs);
-
-      return null;
+  var program = setupProgram(
+      gl,
+      [vs, fs],
+      ['vPosition', 'texCoord0'],
+      [opt_positionLocation, opt_texcoordLocation]);
+  if (!program) {
+    gl.deleteShader(fs);
+    gl.deleteShader(vs);
   }
-
-  gl.useProgram(program);
   return program;
 };
 
@@ -162,7 +184,8 @@ var fillTexture = function(gl, tex, width, height, color, opt_level) {
   ctx2d.fillStyle = "rgba(" + color[0] + "," + color[1] + "," + color[2] + "," + color[3] + ")";
   ctx2d.fillRect(0, 0, width, height);
   gl.bindTexture(gl.TEXTURE_2D, tex);
-  gl.texImage2D(gl.TEXTURE_2D, opt_level, canvas);
+  gl.texImage2D(
+      gl.TEXTURE_2D, opt_level, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
 };
 
 /**
@@ -606,6 +629,7 @@ return {
     loadStandardProgram: loadStandardProgram,
     loadStandardVertexShader: loadStandardVertexShader,
     loadStandardFragmentShader: loadStandardFragmentShader,
+    setupProgram: setupProgram,
     setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
     setupSimpleTextureProgram: setupSimpleTextureProgram,
     setupSimpleTextureVertexShader: setupSimpleTextureVertexShader,

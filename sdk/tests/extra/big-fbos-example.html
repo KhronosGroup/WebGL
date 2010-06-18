@@ -58,19 +58,14 @@ if (!gl) {
 
   var size = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
   debug("max render buffer size: " + size);
-  size = size;
+  size = size / 2;
   debug("size used: " + size);
 
   var allocateFramebuffers = true;
-  var itervalId;
+  var intervalId = 0;
   var count = 0;
 
-  gl = WebGLDebugUtils.makeDebugContext(gl, function(err, functionName, args) {
-        window.clearInterval(intervalId);
-        assertMsg(err == gl.OUT_OF_MEMORY,
-                  "correctly returns gl.OUT_OF_MEMORY when out of memory");
-        finish();
-      });
+  WebGLDebugUtils.init(gl);
 
   function createFBO() {
     var tex = gl.createTexture();
@@ -99,26 +94,39 @@ if (!gl) {
     var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
     if (status != gl.FRAMEBUFFER_COMPLETE) {
       testFailed("gl.checkFramebufferStatus() returned " + WebGLDebugUtils.glEnumToString(status));
+      return;
+    }
+    var err = gl.getError();
+    if (err != gl.NO_ERROR) {
+      if (err != gl.OUT_OF_MEMORY) {
+        testFailed("gl.getError returned " + err);
+      }
+      return;
     }
     return { fb: fb, tex: tex };
   }
 
   gl.disable(gl.DEPTH_TEST);
 
-  var numFBOs = 32;
-  for (var ii = 0; ii < numFBOs; ++ii) {
+  var maxFBOs = 128;
+  for (var ii = 0; ii < maxFBOs; ++ii) {
     createFBO();
     var t = createFBO();
+    if (!t) {
+      break;
+    }
     tex = t.tex;
     fb = t.fb;
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     gl.scissor(0, 0, size, size);
-    gl.clearColor(0, ii / numFBOs, 1 - ii / numFBOs, 1);
+    gl.clearColor(0, ii / maxFBOs, 1 - ii / maxFBOs, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
     g_textures.push(tex);
   }
- 
+
+  debug("fbos allocated:" + g_textures.length);
+  gl.scissor(0, 0, 1024, 1024);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   var vertexObject = gl.createBuffer();
@@ -137,7 +145,6 @@ if (!gl) {
   gl.enableVertexAttribArray(1);
   gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
 
-  gl.bindTexture(gl.TEXTURE_2D, tex);
   g_texLoc = gl.getUniformLocation(gl.program, "tex");
   gl.uniform1i(g_texLoc, 0);
   g_worldLoc = gl.getUniformLocation(gl.program, "world");
@@ -146,10 +153,6 @@ if (!gl) {
      0, 0, 0, 0,
      0, 0, 1, 0,
      0, 0, 0, 1]);
-
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
   setInterval(render, 1000/60);
 }
@@ -163,6 +166,9 @@ function render() {
     g_texIndex = 0;
   }
   gl.bindTexture(gl.TEXTURE_2D, g_textures[g_texIndex]);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.uniformMatrix4fv(g_worldLoc, false, rotationZ(g_angle));
   gl.clearColor(1,0,0,1);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
