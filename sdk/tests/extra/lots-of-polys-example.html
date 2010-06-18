@@ -45,7 +45,7 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 gl.uniform1i(loc, 0);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
-var numQuads = 20000;
+var numQuads = 20;
 var indexBuf = new ArrayBuffer(numQuads * 6);
 var indices = new Uint8Array(indexBuf);
 for (var ii = 0; ii < numQuads; ++ii) {
