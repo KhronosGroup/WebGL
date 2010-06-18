@@ -32,7 +32,7 @@ var simpleTextureVertexShader = '' +
  * @type {string}
  */
 var simpleTextureFragmentShader = '' +
-  '#if GL_ES\n' +
+  '#ifdef GL_ES\n' +
   'precision mediump float;\n' +
   '#endif\n' +
   'uniform sampler2D tex;\n' +
