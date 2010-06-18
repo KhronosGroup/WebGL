@@ -32,6 +32,9 @@ var simpleTextureVertexShader = '' +
  * @type {string}
  */
 var simpleTextureFragmentShader = '' +
+  '#if GL_ES\n' +
+  'precision mediump float;\n' +
+  '#endif\n' +
   'uniform sampler2D tex;\n' +
   'varying vec2 texCoord;\n' +
   'void main() {\n' +
@@ -205,7 +208,9 @@ var drawQuad = function(gl, opt_color) {
 var checkCanvas = function(gl, color, msg) {
   var width = gl.canvas.width;
   var height = gl.canvas.height;
-  var buf = gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE);
+  var buffer = new ArrayBuffer(width * height * 4);
+  var buf = new Uint8Array(buffer);
+  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   for (var i = 0; i < width * height; ++i) {
     var offset = i * 4;
     if (buf[offset + 0] != color[0] ||

@@ -197,6 +197,10 @@ void main()
     gl_Position = vPosition;
 }
 </script>
+<script id="vshaderWithLineDirective" type="text/something-not-javascript">
+#line 123
+foo
+</script>
 <script id="vshaderWith__FILE__" type="text/something-not-javascript">
 __FILE__
 </script>
@@ -222,6 +226,8 @@ if (!gl) {
     }
   }
 
+  var lastError;
+
   function loadShader(shaderType, shaderId) {
     // Get the shader source.
     var shaderSource = document.getElementById(shaderId).text;
@@ -244,6 +250,7 @@ if (!gl) {
     if (!compiled) {
         // Something went wrong during compilation; get the error
         var error = gl.getShaderInfoLog(shader);
+        lastError = error;
         log("*** Error compiling shader '"+shader+"':"+error);
         gl.deleteShader(shader);
         return null;
@@ -398,6 +405,14 @@ if (!gl) {
       fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'vertex shader uses the #version 100 directive should succeed',
+    },
+    { vShaderId: 'vshaderWithLineDirective',
+      vShaderSuccess: false,
+      vShaderTest: (function() { return lastError.indexOf("124") >= 0; }),
+      fShaderId: 'fshader',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'vertex shader uses #line directive should report correct line',
     }
   ];
 
@@ -406,6 +421,12 @@ if (!gl) {
     log("vs = " + info.vShaderId + ", fs = " + info.fShaderId);
     //debug(info.fShaderId);
     var vShader = loadShader(gl.VERTEX_SHADER, info.vShaderId);
+    if (info.vShaderTest) {
+      if (!info.vShaderTest(vShader)) {
+        testFailed(info.passMsg);
+        continue;
+      }
+    }
     if ((vShader != null) != info.vShaderSuccess) {
       testFailed(info.passMsg);
       continue;
