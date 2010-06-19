@@ -77,7 +77,7 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after getting tex location");
 gl.uniform1i(loc, 0);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after setting tex uniform");
 
-var numQuads = 300;
+var numQuads = 1000;
 var indexBuf = new ArrayBuffer(numQuads * 6);
 var indices = new Uint8Array(indexBuf);
 for (var ii = 0; ii < numQuads; ++ii) {
