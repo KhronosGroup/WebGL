@@ -65,11 +65,11 @@ Tests.testTexImage2D = function(gl) {
     var img = document.getElementById('logo');
     time("texImage2DHTML", function() {
         for (var i=0; i<100; i++)
-            gl.texImage2D(gl.TEXTURE_2D, 0, img);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
     });
     time("texSubImage2DHTML", function() {
         for (var i=0; i<100; i++)
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, img);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, img);
     });
     var bufs = [gl.createBuffer(), gl.createBuffer()];
     var buf = bufs[0], buf2 = bufs[1];

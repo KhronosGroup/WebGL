@@ -103,9 +103,7 @@ function init()
         "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + c[3] + ")";
     ctx2d.fillRect(0, 0, 1, 1);
     gl.activeTexture(gl.TEXTURE0 + ii)
-    gl.texImage2D(gl.TEXTURE_2D,
-                  0,             // level
-                  canvas2d);     // internalFormat
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d);
   }
 
   var textureLoc = gl.getUniformLocation(gl.program, "tex");

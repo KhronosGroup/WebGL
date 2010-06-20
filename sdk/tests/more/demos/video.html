@@ -49,7 +49,7 @@ var processor = {
 
   computeFrame: function() {
 //     this.ctx1.drawImage(this.video, 0, 0, this.width, this.height);
-    this.ctx2.texImage2D(this.ctx2.TEXTURE_2D, 0, this.video);
+    this.ctx2.texImage2D(this.ctx2.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.video);
     this.greenScreen.apply(function(s) {
         s.uniform1i('Texture', 0);
         s.uniform1i('Texture2', 1);

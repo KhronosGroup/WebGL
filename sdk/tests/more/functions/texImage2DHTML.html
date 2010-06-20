@@ -69,7 +69,7 @@ Tests.testTexImage2D = function(gl) {
     gl.blendFunc(gl.ONE, gl.ZERO);
     f.apply();
     f.destroy();
-    gl.texImage2D(gl.TEXTURE_2D, 0, c);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
     f = new Filter(gl, 'identity-hflip-vert', 'identity-frag');
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     f.apply();
@@ -84,8 +84,8 @@ Tests.testTexImage2D = function(gl) {
         gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
     ];
     valid_targets.forEach(function(t) {
-        assertOk(function(){gl.texImage2D(t, 0, c);});
-        assertOk(function(){gl.texImage2D(t, 1, c);});
+        assertOk(function(){gl.texImage2D(t, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);});
+        assertOk(function(){gl.texImage2D(t, 1, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);});
     });
 }
 
@@ -95,8 +95,8 @@ Tests.testTexImage2DNonSOP = function(gl) {
     var c = document.getElementById('c');
     var ctx = c.getContext('2d');
     ctx.drawImage(img,0,0);
-    gl.texImage2D(gl.TEXTURE_2D, 0, img);
-    gl.texImage2D(gl.TEXTURE_2D, 0, c);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
 }
 
 Tests.endUnit = function(gl) {

@@ -60,7 +60,7 @@ Tests.testGetImageDataSOPIMG = function(gl) {
     while (!img.complete) {}
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, img);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
     gl.bindTexture(gl.TEXTURE_2D, null);
     // SOP failure
     assertFail(function(){gl.getImageData(0,0,1,1);});
@@ -74,7 +74,7 @@ Tests.testGetImageDataSOPCanvas = function(gl) {
     assertFail(function(){c.getContext("2d").getImageData(0,0,1,1);});
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, c);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
     gl.bindTexture(gl.TEXTURE_2D, null);
     // SOP failure
     assertFail(function(){gl.getImageData(0,0,1,1);});

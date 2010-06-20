@@ -79,9 +79,7 @@ function init()
   var tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
   // 16x16 texture no mips
-  gl.texImage2D(gl.TEXTURE_2D,
-                0,                 // level
-                canvas2d);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d);
 
   var loc = gl.getUniformLocation(gl.program, "tex");
   gl.uniform1i(loc, 0);
