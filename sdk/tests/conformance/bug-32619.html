@@ -36,7 +36,7 @@ var bug32619_tests = {
 
 	"Passing a buffer not large enough to texImage2D should generate an INVALID_OPERATION" : function () {
 		this.setup = function () {
-			var tooSmall = new WebGLUnsignedByteArray(64);
+			var tooSmall = new Uint8Array(64);
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 64, 64, 0, gl.RGBA, gl.UNSIGNED_BYTE, tooSmall);
 		};
 		this.expects = gl.INVALID_OPERATION;
@@ -55,7 +55,7 @@ var bug32619_tests = {
 	},
 	"Passing a buffer not large enough to texSubImage2D should generate an INVALID_OPERATION" : function () {
 		this.setup = function () {
-			var tooSmall = new WebGLUnsignedByteArray(64);
+			var tooSmall = new Uint8Array(64);
 			gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 64, 64, gl.RGBA, gl.UNSIGNED_BYTE, tooSmall);
 		};
 		this.expects = gl.INVALID_OPERATION;

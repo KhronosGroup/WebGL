@@ -76,7 +76,7 @@ function init()
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
   gl.bufferData(
       gl.ARRAY_BUFFER,
-      new WebGLFloatArray([-1, 1,0, 1,1,0, -1,-1,0,
+      new Float32Array([-1, 1,0, 1,1,0, -1,-1,0,
                            -1,-1,0, 1,1,0,  1,-1,0]),
       gl.STATIC_DRAW);
   gl.enableVertexAttribArray(0);
@@ -86,7 +86,7 @@ function init()
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
   gl.bufferData(
       gl.ARRAY_BUFFER,
-      new WebGLFloatArray([ 0,0, 1,0, 0,1,
+      new Float32Array([ 0,0, 1,0, 0,1,
                             0,1, 1,0, 1,1]),
       gl.STATIC_DRAW);
   gl.enableVertexAttribArray(1);
@@ -160,7 +160,8 @@ function init()
     var c = colors[ii];
     var x = ii % 2;
     var y = Math.floor(ii / 2);
-    var buf = gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE);
+    var buf = new Uint8Array(4);
+    gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     var msg = 'expected:' +
         c[0] + ', ' + c[1] + ', ' + c[2] + ', ' + c[3] + ' found: ' +
         buf[0] + ', ' +

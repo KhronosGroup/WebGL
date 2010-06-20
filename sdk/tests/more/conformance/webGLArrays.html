@@ -40,53 +40,53 @@ Tests.endUnit = function() {
 }
 
 Tests.testCreateFromArray = function() {
-  var a = new WebGLFloatArray([1,2,3,4,5,6]);
+  var a = new Float32Array([1,2,3,4,5,6]);
   assertIdxs('Float', a, 6);
-  var a = new WebGLIntArray([1,2,3,4,5,6]);
+  var a = new Int32Array([1,2,3,4,5,6]);
   assertIdxs('Int', a, 6);
-  var a = new WebGLShortArray([1,2,3,4,5,6]);
+  var a = new Int16Array([1,2,3,4,5,6]);
   assertIdxs('Short', a, 6);
-  var a = new WebGLByteArray([1,2,3,4,5,6]);
+  var a = new Int8Array([1,2,3,4,5,6]);
   assertIdxs('Byte', a, 6);
-  var a = new WebGLUnsignedIntArray([1,2,3,4,5,6]);
+  var a = new Uint32Array([1,2,3,4,5,6]);
   assertIdxs('UInt', a, 6);
-  var a = new WebGLUnsignedShortArray([1,2,3,4,5,6]);
+  var a = new Uint16Array([1,2,3,4,5,6]);
   assertIdxs('UShort', a, 6);
-  var a = new WebGLUnsignedByteArray([1,2,3,4,5,6]);
+  var a = new Uint8Array([1,2,3,4,5,6]);
   assertIdxs('UByte', a, 6);
 }
 Tests.testCreateFromCount = function() {
-  var a = new WebGLFloatArray(6);
+  var a = new Float32Array(6);
   assertIdxs('Float', a, 6);
-  var a = new WebGLIntArray(6);
+  var a = new Int32Array(6);
   assertIdxs('Int', a, 6);
-  var a = new WebGLShortArray(6);
+  var a = new Int16Array(6);
   assertIdxs('Short', a, 6);
-  var a = new WebGLByteArray(6);
+  var a = new Int8Array(6);
   assertIdxs('Byte', a, 6);
-  var a = new WebGLUnsignedIntArray(6);
+  var a = new Uint32Array(6);
   assertIdxs('UInt', a, 6);
-  var a = new WebGLUnsignedShortArray(6);
+  var a = new Uint16Array(6);
   assertIdxs('UShort', a, 6);
-  var a = new WebGLUnsignedByteArray(6);
+  var a = new Uint8Array(6);
   assertIdxs('UByte', a, 6);
 }
 Tests.testCreateFromBuffer = function() {
   var sz = 24;
-  var b = new WebGLArrayBuffer(sz);
-  var a = new WebGLFloatArray(b);
+  var b = new ArrayBuffer(sz);
+  var a = new Float32Array(b);
   assertIdxs('Float', a, sz/4);
-  var a = new WebGLIntArray(b);
+  var a = new Int32Array(b);
   assertIdxs('Int', a, sz/4);
-  var a = new WebGLShortArray(b);
+  var a = new Int16Array(b);
   assertIdxs('Short', a, sz/2);
-  var a = new WebGLByteArray(b);
+  var a = new Int8Array(b);
   assertIdxs('Byte', a, sz/1);
-  var a = new WebGLUnsignedIntArray(b);
+  var a = new Uint32Array(b);
   assertIdxs('UInt', a, sz/4);
-  var a = new WebGLUnsignedShortArray(b);
+  var a = new Uint16Array(b);
   assertIdxs('UShort', a, sz/2);
-  var a = new WebGLUnsignedByteArray(b);
+  var a = new Uint8Array(b);
   assertIdxs('UByte', a, sz/1);
 }
 
@@ -100,16 +100,16 @@ Tests.testThatWritesChangeDrawing = function(gl) {
     1,1,
     0,1
   ];
-  var a = new WebGLFloatArray(verts);
+  var a = new Float32Array(verts);
   var arr = [];
   for (var i=0; i<12; i++)
     arr[i] = a[i];
-  assertEquals("Test that reads work from an array-initialized WebGLFloatArray", arr, verts);
+  assertEquals("Test that reads work from an array-initialized Float32Array", arr, verts);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.bufferData(gl.ARRAY_BUFFER, a, gl.STATIC_DRAW);
   gl.vertexAttribPointer(va, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(va);
-  
+
   var id = gl.readPixels(8,8,1,1,gl.RGBA, gl.UNSIGNED_BYTE);
   assertEquals([0, 0, 0, 0], id.data);
 
@@ -129,7 +129,7 @@ Tests.testThatWritesChangeDrawing = function(gl) {
   var id = gl.readPixels(8,8,1,1,gl.RGBA, gl.UNSIGNED_BYTE);
   assertEquals([255, 0, 0, 255], id.data);
   var id = gl.readPixels(0,8,1,1,gl.RGBA, gl.UNSIGNED_BYTE);
-  assertEquals("Test that WebGLFloatArray#[]= worked and drawArrays drew a full-width rectangle", [255, 0, 0, 255], id.data);
+  assertEquals("Test that Float32Array#[]= worked and drawArrays drew a full-width rectangle", [255, 0, 0, 255], id.data);
   var id = gl.readPixels(0,0,1,1,gl.RGBA, gl.UNSIGNED_BYTE);
   assertEquals([0, 0, 0, 0], id.data);
 }

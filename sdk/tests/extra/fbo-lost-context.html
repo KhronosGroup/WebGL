@@ -123,7 +123,7 @@ if (!gl) {
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-  gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray([ -1,1,0, 1,1,0, -1,-1,0,
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ -1,1,0, 1,1,0, -1,-1,0,
      -1,-1,0, 1,1,0, 1,-1,0
    ]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(0);
@@ -131,7 +131,7 @@ if (!gl) {
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-  gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray([ 0,0, 1,0, 0,1,
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0, 1,0, 0,1,
      0,1, 1,0, 1,1
    ]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(1);

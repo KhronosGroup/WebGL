@@ -52,7 +52,8 @@ window.onload = function() {
 
   function makeReadPixels(gl) {
     return function() {
-      var buf = gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE);
+      var buf = new Uint8Array(4);
+      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     };
   }
 

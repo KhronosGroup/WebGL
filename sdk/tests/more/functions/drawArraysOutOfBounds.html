@@ -37,9 +37,9 @@ var verts = [0.0, 0.0, 0.0,   1.0, 0.0, 0.0,   0.0, 1.0, 0.0];
 var normals = [0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0];
 var texcoords = [0.0,0.0,  1.0,0.0,  0.0,1.0];
 
-var vertsA = new WebGLFloatArray(verts);
-var normalsA = new WebGLFloatArray(normals);
-var texcoordsA = new WebGLFloatArray(texcoords);
+var vertsA = new Float32Array(verts);
+var normalsA = new Float32Array(normals);
+var texcoordsA = new Float32Array(texcoords);
 
 // Tests.autorun = false;
 // Tests.message = "Caution: if your implementation has a bug in drawArrays bounds checking, this will likely segfault your browser";
@@ -71,7 +71,7 @@ Tests.endUnit = function(gl, prog, v,n,t) {
 Tests.testDrawArraysEmpty = function(gl, prog, v,n,t) {
   var b = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, b);
-  gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray([]), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
   assertOk(function(){gl.vertexAttribPointer(v, 3, gl.FLOAT, false, 0, 0);})
   gl.enableVertexAttribArray(v);
   assertFail(function(){gl.drawArrays(gl.TRIANGLES, 0, 1);});
@@ -81,7 +81,7 @@ Tests.testDrawArraysEmpty = function(gl, prog, v,n,t) {
 Tests.testDrawArraysOutOfBounds = function(gl, prog, v,n,t) {
   var b = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, b);
-  gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray([]), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([]), gl.STATIC_DRAW);
   assertOk(function(){gl.vertexAttribPointer(v, 3, gl.FLOAT, false, 0, 0);});
   gl.enableVertexAttribArray(v);
   assertFail(function(){gl.drawArrays(gl.TRIANGLES, 0, 1);});
@@ -135,10 +135,10 @@ Tests.testDrawArraysMultiOutOfBounds = function(gl, prog, v,n,t) {
   assertFail(function(){gl.drawArrays(gl.TRIANGLES, 3, 2);});
   bs.push(gl.createBuffer());
   gl.bindBuffer(gl.ARRAY_BUFFER, bs[bs.length-1]);
-  gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(verts.concat(verts)), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verts.concat(verts)), gl.STATIC_DRAW);
   bs.push(gl.createBuffer());
   gl.bindBuffer(gl.ARRAY_BUFFER, bs[bs.length-1]);
-  gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(texcoords.concat(texcoords)), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords.concat(texcoords)), gl.STATIC_DRAW);
   gl.vertexAttribPointer(v, 3, gl.FLOAT, false, 0, 0);
   gl.bindBuffer(gl.ARRAY_BUFFER, bs[1]);
   gl.vertexAttribPointer(n, 3, gl.FLOAT, false, 0, 0);
@@ -240,7 +240,7 @@ Tests.testDrawArraysOOBShaderJuggle = function(gl, prog, v,n,t) {
 </script>
 <script id="vert" type="x-shader/x-vertex">
   #version 120
-  
+
   attribute vec3 Vertex;
   attribute vec3 Normal;
   attribute vec2 Tex;
@@ -254,7 +254,7 @@ Tests.testDrawArraysOOBShaderJuggle = function(gl, prog, v,n,t) {
 </script>
 <script id="frag" type="x-shader/x-fragment">
   #version 120
-  
+
   varying vec4 texCoord0;
   void main()
   {

@@ -135,7 +135,7 @@ var setupUnitQuad = function(gl, opt_positionLocation, opt_texcoordLocation) {
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-  gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(
       [-1,1,0, 1,1,0, -1,-1,0,
        -1,-1,0, 1,1,0, 1,-1,0]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(opt_positionLocation);
@@ -143,7 +143,7 @@ var setupUnitQuad = function(gl, opt_positionLocation, opt_texcoordLocation) {
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-  gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(
       [0,0, 1,0, 0,1,
        0,1, 1,0, 1,1]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(opt_texcoordLocation);
@@ -231,8 +231,7 @@ var drawQuad = function(gl, opt_color) {
 var checkCanvas = function(gl, color, msg) {
   var width = gl.canvas.width;
   var height = gl.canvas.height;
-  var buffer = new ArrayBuffer(width * height * 4);
-  var buf = new Uint8Array(buffer);
+  var buf = new Uint8Array(width * height * 4);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   for (var i = 0; i < width * height; ++i) {
     var offset = i * 4;

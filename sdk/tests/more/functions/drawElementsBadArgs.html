@@ -136,7 +136,7 @@ Tests.testDrawElementsVBOMultiByte = function(gl, prog, v,n,t) {
   // creates VBOs for the quad arrays, binds them with
   // vertexAttribPointer and calls drawElements
   // The quad has 6 vertices
-  var vbo = new VBO(gl, 
+  var vbo = new VBO(gl,
                     {size:3, data:Quad.vertices},
                     {size:3, data:Quad.normals},
                     {size:2, data:Quad.texcoords},
@@ -171,7 +171,7 @@ Tests.testDrawElementsVBOMultiByte = function(gl, prog, v,n,t) {
 
 Tests.testSharedBuffers = function(gl, prog, v,n,t) {
   var vbo = gl.createBuffer();
-  var vertsArr = new WebGLUnsignedShortArray([0,1,3,3,4,5,6,7,8]);
+  var vertsArr = new Uint16Array([0,1,3,3,4,5,6,7,8]);
   gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
   gl.bufferData(gl.ARRAY_BUFFER, vertsArr, gl.STATIC_DRAW);
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo);
@@ -180,7 +180,7 @@ Tests.testSharedBuffers = function(gl, prog, v,n,t) {
   assertFail('buffer data is shared between indexes and verts', function() {
     gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
   });
-  var vertsArr2 = new WebGLUnsignedShortArray([2]);
+  var vertsArr2 = new Uint16Array([2]);
   gl.bufferSubData(gl.ARRAY_BUFFER, 4, vertsArr2); // replace the first 3 with a 2
   assertOk('buffer data is shared between indexes and verts', function() {
     gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);

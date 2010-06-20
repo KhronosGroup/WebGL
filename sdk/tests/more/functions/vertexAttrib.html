@@ -66,7 +66,7 @@ Tests.endUnit = function(gl, prog, v,n,t) {
 
 Tests.testVertexAttrib = function(gl, prog, v,n,t) {
   var vbo = gl.createBuffer();
-  var vertsArr = new WebGLFloatArray(verts);
+  var vertsArr = new Float32Array(verts);
   gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
   gl.bufferData(gl.ARRAY_BUFFER, vertsArr, gl.STATIC_DRAW);
   gl.enableVertexAttribArray(v);
@@ -88,7 +88,7 @@ Tests.testVertexAttrib = function(gl, prog, v,n,t) {
 }
 Tests.testVertexAttribVBO = function(gl, prog, v,n,t) {
   var vbo = gl.createBuffer();
-  var vertsArr = new WebGLFloatArray(verts);
+  var vertsArr = new Float32Array(verts);
   gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
   gl.bufferData(gl.ARRAY_BUFFER, vertsArr, gl.STATIC_DRAW);
   gl.enableVertexAttribArray(v);

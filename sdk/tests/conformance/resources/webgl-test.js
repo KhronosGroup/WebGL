@@ -365,7 +365,7 @@ function makeBox(ctx)
     //  v2------v3
     //
     // vertex coords array
-    var vertices = new WebGLFloatArray(
+    var vertices = new Float32Array(
         [  1, 1, 1,  -1, 1, 1,  -1,-1, 1,   1,-1, 1,    // v0-v1-v2-v3 front
            1, 1, 1,   1,-1, 1,   1,-1,-1,   1, 1,-1,    // v0-v3-v4-v5 right
            1, 1, 1,   1, 1,-1,  -1, 1,-1,  -1, 1, 1,    // v0-v5-v6-v1 top
@@ -375,7 +375,7 @@ function makeBox(ctx)
     );
 
     // normal array
-    var normals = new WebGLFloatArray(
+    var normals = new Float32Array(
         [  0, 0, 1,   0, 0, 1,   0, 0, 1,   0, 0, 1,     // v0-v1-v2-v3 front
            1, 0, 0,   1, 0, 0,   1, 0, 0,   1, 0, 0,     // v0-v3-v4-v5 right
            0, 1, 0,   0, 1, 0,   0, 1, 0,   0, 1, 0,     // v0-v5-v6-v1 top
@@ -386,7 +386,7 @@ function makeBox(ctx)
 
 
     // texCoord array
-    var texCoords = new WebGLFloatArray(
+    var texCoords = new Float32Array(
         [  1, 1,   0, 1,   0, 0,   1, 0,    // v0-v1-v2-v3 front
            0, 1,   0, 0,   1, 0,   1, 1,    // v0-v3-v4-v5 right
            1, 0,   1, 1,   0, 1,   0, 0,    // v0-v5-v6-v1 top
@@ -396,7 +396,7 @@ function makeBox(ctx)
        );
 
     // index array
-    var indices = new WebGLUnsignedByteArray(
+    var indices = new Uint8Array(
         [  0, 1, 2,   0, 2, 3,    // front
            4, 5, 6,   4, 6, 7,    // right
            8, 9,10,   8,10,11,    // top
@@ -496,20 +496,20 @@ function makeSphere(ctx, radius, lats, longs)
 
     retval.normalObject = ctx.createBuffer();
     ctx.bindBuffer(ctx.ARRAY_BUFFER, retval.normalObject);
-    ctx.bufferData(ctx.ARRAY_BUFFER, new WebGLFloatArray(normalData), ctx.STATIC_DRAW);
+    ctx.bufferData(ctx.ARRAY_BUFFER, new Float32Array(normalData), ctx.STATIC_DRAW);
 
     retval.texCoordObject = ctx.createBuffer();
     ctx.bindBuffer(ctx.ARRAY_BUFFER, retval.texCoordObject);
-    ctx.bufferData(ctx.ARRAY_BUFFER, new WebGLFloatArray(texCoordData), ctx.STATIC_DRAW);
+    ctx.bufferData(ctx.ARRAY_BUFFER, new Float32Array(texCoordData), ctx.STATIC_DRAW);
 
     retval.vertexObject = ctx.createBuffer();
     ctx.bindBuffer(ctx.ARRAY_BUFFER, retval.vertexObject);
-    ctx.bufferData(ctx.ARRAY_BUFFER, new WebGLFloatArray(geometryData), ctx.STATIC_DRAW);
+    ctx.bufferData(ctx.ARRAY_BUFFER, new Float32Array(geometryData), ctx.STATIC_DRAW);
 
     retval.numIndices = indexData.length;
     retval.indexObject = ctx.createBuffer();
     ctx.bindBuffer(ctx.ELEMENT_ARRAY_BUFFER, retval.indexObject);
-    ctx.bufferData(ctx.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indexData), ctx.STREAM_DRAW);
+    ctx.bufferData(ctx.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexData), ctx.STREAM_DRAW);
 
     return retval;
 }
@@ -662,20 +662,20 @@ function doLoadObj(obj, text)
     // set the VBOs
     obj.normalObject = obj.ctx.createBuffer();
     obj.ctx.bindBuffer(obj.ctx.ARRAY_BUFFER, obj.normalObject);
-    obj.ctx.bufferData(obj.ctx.ARRAY_BUFFER, new WebGLFloatArray(normalArray), obj.ctx.STATIC_DRAW);
+    obj.ctx.bufferData(obj.ctx.ARRAY_BUFFER, new Float32Array(normalArray), obj.ctx.STATIC_DRAW);
 
     obj.texCoordObject = obj.ctx.createBuffer();
     obj.ctx.bindBuffer(obj.ctx.ARRAY_BUFFER, obj.texCoordObject);
-    obj.ctx.bufferData(obj.ctx.ARRAY_BUFFER, new WebGLFloatArray(textureArray), obj.ctx.STATIC_DRAW);
+    obj.ctx.bufferData(obj.ctx.ARRAY_BUFFER, new Float32Array(textureArray), obj.ctx.STATIC_DRAW);
 
     obj.vertexObject = obj.ctx.createBuffer();
     obj.ctx.bindBuffer(obj.ctx.ARRAY_BUFFER, obj.vertexObject);
-    obj.ctx.bufferData(obj.ctx.ARRAY_BUFFER, new WebGLFloatArray(vertexArray), obj.ctx.STATIC_DRAW);
+    obj.ctx.bufferData(obj.ctx.ARRAY_BUFFER, new Float32Array(vertexArray), obj.ctx.STATIC_DRAW);
 
     obj.numIndices = indexArray.length;
     obj.indexObject = obj.ctx.createBuffer();
     obj.ctx.bindBuffer(obj.ctx.ELEMENT_ARRAY_BUFFER, obj.indexObject);
-    obj.ctx.bufferData(obj.ctx.ELEMENT_ARRAY_BUFFER, new WebGLUnsignedShortArray(indexArray), obj.ctx.STREAM_DRAW);
+    obj.ctx.bufferData(obj.ctx.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexArray), obj.ctx.STREAM_DRAW);
 
     obj.loaded = true;
 }

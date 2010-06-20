@@ -107,11 +107,11 @@ if (!gl) {
 
   var positions = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positions);
-  gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray([ 0,0.5,0, -0.5,-0.5,0, 0.5,-0.5,0 ]), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0.5,0, -0.5,-0.5,0, 0.5,-0.5,0 ]), gl.STATIC_DRAW);
 
   var colors = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, colors);
-  gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray([
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
      0,1,0,1,
      0,1,0,1,
      0,1,0,1]), gl.STATIC_DRAW);
@@ -146,10 +146,13 @@ if (!gl) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-    var buf = gl.readPixels(0, 0, 50, 50, gl.RGBA, gl.UNSIGNED_BYTE);
+    var width = 50;
+    var height = 50;
+    var buf = new Uint8Array(width * height * 4);
+    gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
 
     function checkPixel(x, y, r, g, b, a) {
-      var offset = (y * 50 + x) * 4;
+      var offset = (y * width + x) * 4;
       if (buf[offset + 0] != r ||
           buf[offset + 1] != g ||
           buf[offset + 2] != b ||

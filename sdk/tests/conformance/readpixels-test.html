@@ -73,7 +73,8 @@ assertMsg(gl.getError() == gl.NO_ERROR,
           "there should be no GL errors");
 
 function checkBuffer(checkColor, x, y, oneColor, oneX, oneY) {
-  var buf = gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE);
+  var buf = new Uint8Array(width * height * 4);
+  gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   for (var yy = 0; yy < height; ++yy) {
     for (var xx = 0; xx < width; ++xx) {
       var offset = (yy * width + xx) * 4;

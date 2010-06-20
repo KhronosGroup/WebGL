@@ -74,7 +74,7 @@ Tests.testTexImage2D = function(gl) {
     var bufs = [gl.createBuffer(), gl.createBuffer()];
     var buf = bufs[0], buf2 = bufs[1];
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    var bufArr = new WebGLFloatArray(bufData);
+    var bufArr = new Float32Array(bufData);
     time("bufferDataNoChange", function() {
         for (var i=0; i<100; i++)
             gl.bufferData(gl.ARRAY_BUFFER, bufArr, gl.STATIC_DRAW);
@@ -84,12 +84,12 @@ Tests.testTexImage2D = function(gl) {
             gl.bufferSubData(gl.ARRAY_BUFFER, 0, bufArr);
     });
     time("bufferData", function() {
-        var bufArr = new WebGLFloatArray(bufData);
+        var bufArr = new Float32Array(bufData);
         for (var i=0; i<25; i++)
             gl.bufferData(gl.ARRAY_BUFFER, bufArr, gl.STATIC_DRAW);
     });
     time("bufferSubData", function() {
-        var bufArr = new WebGLFloatArray(bufData);
+        var bufArr = new Float32Array(bufData);
         for (var i=0; i<25; i++)
             gl.bufferSubData(gl.ARRAY_BUFFER, 0, bufArr);
     });
@@ -215,9 +215,9 @@ img{ display:none; }</style>
 <p id="bufferData"></p>
 <h3>25x 256x256x4 float bufferSubData (6.6MB total)</h3>
 <p id="bufferSubData"></p>
-<h3>100x 256x256x4 float bufferData, reuse WebGLFloatArray (26.2MB total)</h3>
+<h3>100x 256x256x4 float bufferData, reuse Float32Array (26.2MB total)</h3>
 <p id="bufferDataNoChange"></p>
-<h3>100x 256x256x4 float bufferSubData, reuse WebGLFloatArray (26.2MB total)</h3>
+<h3>100x 256x256x4 float bufferSubData, reuse Float32Array (26.2MB total)</h3>
 <p id="bufferSubDataNoChange"></p>
 <h3>100x 256x256 vert VBO draw</h3>
 <p id="verticeDraw"></p>

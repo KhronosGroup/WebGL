@@ -229,7 +229,7 @@ var LineWidthRange = GL.getParameter(GL.ALIASED_LINE_WIDTH_RANGE);
 isBufferData = function(bufData) {
   if (typeof bufData == 'number')
     return bufData >= 0;
-  if (bufData instanceof WebGLArrayBuffer)
+  if (bufData instanceof ArrayBuffer)
     return true;
   return WebGLArrayTypes.some(function(t) {
     return bufData instanceof t;
@@ -253,13 +253,13 @@ isValidName = function(name) {
 };
 
 WebGLArrayTypes = [
-  WebGLFloatArray,
-  WebGLIntArray,
-  WebGLShortArray,
-  WebGLByteArray,
-  WebGLUnsignedIntArray,
-  WebGLUnsignedShortArray,
-  WebGLUnsignedByteArray
+  Float32Array,
+  Int32Array,
+  Int16Array,
+  Int8Array,
+  Uint32Array,
+  Uint16Array,
+  Uint8Array
 ];
 webGLArrayContentGenerators = [randomLength, randomSmallIntArray];
 randomWebGLArray = function() {
@@ -267,20 +267,20 @@ randomWebGLArray = function() {
   return new t(webGLArrayContentGenerators.random()());
 };
 
-randomWebGLArrayBuffer = function(buflen) {
+randomArrayBuffer = function(buflen) {
   if (buflen == null) buflen = 256;
   var len = randomInt(buflen)+1;
   var rv;
   try {
-    rv = new WebGLArrayBuffer(len);
+    rv = new ArrayBuffer(len);
   } catch(e) {
-    log("Error creating WebGLArrayBuffer with length " + len);
+    log("Error creating ArrayBuffer with length " + len);
     throw(e);
   }
   return rv;
 };
 
-bufferDataGenerators = [randomLength, randomWebGLArray, randomWebGLArrayBuffer];
+bufferDataGenerators = [randomLength, randomWebGLArray, randomArrayBuffer];
 randomBufferData = function() {
   return bufferDataGenerators.random()();
 };
@@ -290,7 +290,7 @@ randomSmallWebGLArray = function(buflen) {
   return new t(randomInt(buflen/4)+1);
 };
 
-bufferSubDataGenerators = [randomSmallWebGLArray, randomWebGLArrayBuffer];
+bufferSubDataGenerators = [randomSmallWebGLArray, randomArrayBuffer];
 randomBufferSubData = function(buflen) {
   var data = bufferSubDataGenerators.random()(buflen);
   var offset = randomInt(buflen - data.byteLength);
@@ -734,7 +734,7 @@ ArgGenerators = {
       var tex2 = GL.createTexture();
       GL.bindTexture(GL.TEXTURE_2D, tex);
       GL.bindTexture(GL.TEXTURE_CUBE_MAP, tex2);
-      var pix = new WebGLUnsignedByteArray(16*16*4);
+      var pix = new Uint8Array(16*16*4);
       GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, 16, 16, 0, GL.RGBA, GL.UNSIGNED_BYTE, pix);
       GL.texImage2D(GL.TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL.RGBA, 16, 16, 0, GL.RGBA, GL.UNSIGNED_BYTE, pix);
       GL.texImage2D(GL.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL.RGBA, 16, 16, 0, GL.RGBA, GL.UNSIGNED_BYTE, pix);
@@ -987,7 +987,7 @@ ArgGenerators = {
       } else {
         var pix = null;
         if (Math.random > 0.5) {
-          pix = new WebGLUnsignedByteArray(16*16*4);
+          pix = new Uint8Array(16*16*4);
         }
         return [
           texImageTarget.random(), 0,

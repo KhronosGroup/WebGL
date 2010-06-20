@@ -84,7 +84,7 @@ Tests.testVertexAttribPointer = function(gl, prog, v,n,t) {
 
 Tests.testVertexAttribPointerVBO = function(gl, prog, v,n,t) {
   var vbo = gl.createBuffer();
-  var vertsArr = new WebGLFloatArray(verts);
+  var vertsArr = new Float32Array(verts);
   gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
   gl.bufferData(gl.ARRAY_BUFFER, vertsArr, gl.STATIC_DRAW);
   gl.vertexAttribPointer(v, 3, gl.FLOAT, false, 0, 0);

@@ -76,7 +76,7 @@ function init()
 
     textureLoc = gl.getUniformLocation(gl.program, "tex");
 
-    var vertices = new WebGLFloatArray([
+    var vertices = new Float32Array([
          1.0,  1.0, 0.0,
         -1.0,  1.0, 0.0,
         -1.0, -1.0, 0.0,
@@ -85,7 +85,7 @@ function init()
          1.0, -1.0, 0.0]);
     // The input texture has 8 characters; take the leftmost one
     var coeff = 1.0 / 8.0;
-    var texCoords = new WebGLFloatArray([
+    var texCoords = new Float32Array([
         coeff, 1.0,
         0.0, 1.0,
         0.0, 0.0,
@@ -142,7 +142,9 @@ function runTest()
     // Read back the rendering results
     var width = 32;
     var height = 32;
-    buf = gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE);
+	var buffer = new ArrayBuffer(width * height * 4);
+	buf = new Uint8Array(buffer);
+    gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     // Spot check a couple of 2x2 regions in the upper and lower left
     // corners; they should be the background color rather than
     // garbage

@@ -151,7 +151,7 @@ Math.cot = function(z) { return 1.0 / Math.tan(z); }
     Matrix.scale([sx, sy, sz]) -- non-uniform scale by vector
     Matrix.scale1(s)           -- uniform scale by scalar
     Matrix.scale3(sx, sy, sz)  -- non-uniform scale by scalars
-    
+
     Ditto for translate.
 */
 Matrix = {
@@ -236,7 +236,7 @@ Matrix = {
   inverse3x3 : function(m) {
     return this.inverse3x3InPlace(m, this.newIdentity3x3());
   },
-  
+
   inverse3x3InPlace : function(m,n) {
     var a11 = m[8]*m[4]-m[5]*m[7],
         a21 = -m[8]*m[1]+m[2]*m[7],
@@ -622,7 +622,7 @@ Shader.prototype = {
     var loc = this.uniform(name);
     this.gl.uniform4fv(loc, value);
   },
-  
+
   uniform1f : function(name, value) {
     var loc = this.uniform(name);
     this.gl.uniform1f(loc, value);
@@ -642,7 +642,7 @@ Shader.prototype = {
     var loc = this.uniform(name);
     this.gl.uniform4f(loc, v1, v2, v3, v4);
   },
-  
+
   uniform1iv : function(name, value) {
     var loc = this.uniform(name);
     this.gl.uniform1iv(loc, value);
@@ -773,7 +773,7 @@ VBO.prototype = {
   init : function() {
     this.destroy();
     var gl = this.gl;
-   
+
     gl.getError();
     var vbos = [];
     var length = 0;
@@ -789,7 +789,7 @@ VBO.prototype = {
         if (i == 0 || dlen < length)
             length = dlen;
         if (!d.floatArray)
-          d.floatArray = new WebGLFloatArray(d.data);
+          d.floatArray = new Float32Array(d.data);
         gl.bindBuffer(gl.ARRAY_BUFFER, vbos[i]);
         throwError(gl, "bindBuffer");
         gl.bufferData(gl.ARRAY_BUFFER, d.floatArray, gl.STATIC_DRAW);
@@ -802,10 +802,10 @@ VBO.prototype = {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementsVBO);
         throwError(gl, "bindBuffer ELEMENT_ARRAY_BUFFER");
         if (this.elementsType == gl.UNSIGNED_SHORT && !d.ushortArray) {
-          d.ushortArray = new WebGLUnsignedShortArray(d.data);
+          d.ushortArray = new Uint16Array(d.data);
           gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, d.ushortArray, gl.STATIC_DRAW);
         } else if (this.elementsType == gl.UNSIGNED_BYTE && !d.ubyteArray) {
-          d.ubyteArray = new WebGLUnsignedByteArray(d.data);
+          d.ubyteArray = new Uint8Array(d.data);
           gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, d.ubyteArray, gl.STATIC_DRAW);
         }
         throwError(gl, "bufferData ELEMENT_ARRAY_BUFFER");
@@ -821,7 +821,7 @@ VBO.prototype = {
 
     this.length = length;
     this.vbos = vbos;
-  
+
     this.initialized = true;
   },
 

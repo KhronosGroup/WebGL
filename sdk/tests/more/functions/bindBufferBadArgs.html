@@ -44,13 +44,13 @@ Tests.testBindBufferARRAY_BUFFER = function(gl) {
   assertOk(function(){gl.bindBuffer(gl.ARRAY_BUFFER, b)});
   assertFail(function() {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
-    gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray([10]), gl.STATIC_DRAW);
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, new WebGLFloatArray([10]));
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([10]), gl.STATIC_DRAW);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array([10]));
   });
   assertFail(function(){
     gl.bindBuffer(gl.ARRAY_BUFFER, 1000000000);
-    gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray([10]), gl.STATIC_DRAW);
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, new WebGLFloatArray([10]));
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([10]), gl.STATIC_DRAW);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array([10]));
   });
   assertOk(function(){gl.bindBuffer(gl.ARRAY_BUFFER, null)});
   gl.deleteBuffer(b);
@@ -61,13 +61,13 @@ Tests.testBindBufferELEMENT_ARRAY_BUFFER = function(gl) {
   assertOk(function(){gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, b)});
   assertFail(function() {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new WebGLFloatArray([10]), gl.STATIC_DRAW);
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, new WebGLFloatArray([10]));
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Float32Array([10]), gl.STATIC_DRAW);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array([10]));
   });
   assertFail(function(){
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, 1000000000);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new WebGLFloatArray([10]), gl.STATIC_DRAW);
-    gl.bufferSubData(gl.ARRAY_BUFFER, 0, new WebGLFloatArray([10]));
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Float32Array([10]), gl.STATIC_DRAW);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array([10]));
   });
   assertOk(function(){gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null)});
   gl.deleteBuffer(b);

@@ -67,7 +67,7 @@ function init()
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
   gl.bufferData(
       gl.ARRAY_BUFFER,
-      new WebGLFloatArray([-1, 1,0, 1,1,0, -1,-1,0,
+      new Float32Array([-1, 1,0, 1,1,0, -1,-1,0,
                            -1,-1,0, 1,1,0,  1,-1,0]),
       gl.STATIC_DRAW);
   gl.enableVertexAttribArray(0);
@@ -77,7 +77,7 @@ function init()
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
   gl.bufferData(
       gl.ARRAY_BUFFER,
-      new WebGLFloatArray([ 0,0, 1,0, 0,1,
+      new Float32Array([ 0,0, 1,0, 0,1,
                             0,1, 1,0, 1,1]),
       gl.STATIC_DRAW);
   gl.enableVertexAttribArray(1);
