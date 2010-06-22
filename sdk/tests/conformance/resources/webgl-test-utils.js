@@ -128,10 +128,13 @@ var setupSimpleTextureProgram = function(
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {number} opt_positionLocation The attrib location for position.
  * @param {number} opt_texcoordLocation The attrib location for texture coords.
+ * @return {!Array.<WebGLBuffer>} The buffer objects that were
+ *      created.
  */
 var setupUnitQuad = function(gl, opt_positionLocation, opt_texcoordLocation) {
   opt_positionLocation = opt_positionLocation || 0;
   opt_texcoordLocation = opt_texcoordLocation || 1;
+  var objects = [];
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
@@ -140,6 +143,7 @@ var setupUnitQuad = function(gl, opt_positionLocation, opt_texcoordLocation) {
        -1,-1,0, 1,1,0, 1,-1,0]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(opt_positionLocation);
   gl.vertexAttribPointer(opt_positionLocation, 3, gl.FLOAT, false, 0, 0);
+  objects.push(vertexObject);
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
@@ -148,6 +152,8 @@ var setupUnitQuad = function(gl, opt_positionLocation, opt_texcoordLocation) {
        0,1, 1,0, 1,1]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(opt_texcoordLocation);
   gl.vertexAttribPointer(opt_texcoordLocation, 2, gl.FLOAT, false, 0, 0);
+  objects.push(vertexObject);
+  return objects;
 };
 
 /**
