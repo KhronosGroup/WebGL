@@ -76,12 +76,12 @@ if (!gl) {
   }
 
   function testInvalidFormat(internalFormat, formatName) {
-      createTexture(internalFormat, gl.RGBA);
+      createTexture(internalFormat, internalFormat);
       var err = gl.getError();
       if (err == gl.NO_ERROR) {
           testFailed("should NOT be able to create texture of type " + formatName);
       } else if (err == gl.INVALID_OPERATION) {
-          testFailed("should return gl.INVALID_OPERATION for type " + formatName);
+          testFailed("should return gl.INVALID_ENUM for type " + formatName);
       } else if (err == gl.INVALID_ENUM) {
           testPassed("not able to create invalid format: " + formatName);
       }
