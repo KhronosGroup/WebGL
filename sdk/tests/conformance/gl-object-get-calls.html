@@ -71,7 +71,7 @@ var renderbuffer = gl.createRenderbuffer();
 glErrorShouldBe(gl, gl.NO_ERROR);
 gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
 glErrorShouldBe(gl, gl.NO_ERROR);
-gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT, 2, 2);
+gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 2, 2);
 glErrorShouldBe(gl, gl.NO_ERROR);
 gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, renderbuffer);
 // FIXME: on some machines (in particular the WebKit commit bots) the
