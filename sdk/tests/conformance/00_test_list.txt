@@ -35,6 +35,7 @@ incorrect-context-object-behaviour.html
 index-validation-copies-indices.html
 index-validation.html
 methods.html
+more-than-65536-points.html
 null-object-behaviour.html
 origin-clean-conformance.html
 program-test.html
