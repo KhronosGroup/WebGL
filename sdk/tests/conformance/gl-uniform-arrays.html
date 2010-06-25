@@ -251,6 +251,8 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
             "using the wrong size of gl.Uniform fails");
 
   gl.useProgram(null);
+  assertMsg(gl.getError() == gl.NO_ERROR,
+            "can call gl.useProgram(null)");
 }
 debug("");
 successfullyParsed = true;

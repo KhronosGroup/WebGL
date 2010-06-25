@@ -118,8 +118,6 @@ else {
     shouldBeTrue('context.getParameter(context.MAX_VARYING_VECTORS) >= 8');
     shouldBe('context.getParameter(context.NUM_COMPRESSED_TEXTURE_FORMATS)', '0');
     shouldBe('context.getParameter(context.SHADER_COMPILER)', 'true');
-    shouldBe('context.getParameter(context.IMPLEMENTATION_COLOR_READ_FORMAT)', 'context.RGBA');
-    shouldBe('context.getParameter(context.IMPLEMENTATION_COLOR_READ_TYPE)', 'context.UNSIGNED_BYTE');
 }
 
 debug("");
