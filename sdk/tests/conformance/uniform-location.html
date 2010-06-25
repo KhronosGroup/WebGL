@@ -60,7 +60,7 @@ shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programA
 shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.uniformMatrix4fv(locationA, false, mat)");
 shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programA1)");
 shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniformMatrix4fv(locationA, false, mat)");
-shouldGenerateGLError(contextA, contextA.INVALID_VALUE, "contextA.uniformMatrix4fv(0, false, mat)");
+shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniformMatrix4fv(0, false, mat)");
 
 shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programS)");
 shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform1i(locationSx, 3)");
