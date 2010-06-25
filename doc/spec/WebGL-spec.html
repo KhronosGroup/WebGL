@@ -1484,10 +1484,16 @@ for (var i = 0; i < numVertices; i++) {
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBlendFunc.xml">
                 (OpenGL ES 2.0 man page)
             </a>
+            <dd>
+                See <a href="#CONSTANT_COLOR_BLEND">Blending With Constant Color</a> for limitations imposed
+                by WebGL.
         <dt class="idl-code">void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBlendFuncSeparate.xml">
                 (OpenGL ES 2.0 man page)
             </a>
+            <dd>
+                See <a href="#CONSTANT_COLOR_BLEND">Blending With Constant Color</a> for limitations imposed
+                by WebGL.
         <dt class="idl-code">void clearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glClearColor.xml">
                 (OpenGL ES 2.0 man page)
@@ -1523,7 +1529,9 @@ for (var i = 0; i < numVertices; i++) {
                 (OpenGL ES 2.0 man page)
             </a>
             <dd>
-                <code>zNear</code> and <code>zFar</code> values are clamped to the range 0 to 1.
+                <code>zNear</code> and <code>zFar</code> values are clamped to the range 0 to 1 and
+                <code>zNear</code> must be less than or equal to <code>zFar</code>; see
+                <a href="#VIEWPORT_DEPTH_RANGE">Viewport Depth Range</a>.
         <dt class="idl-code">void disable(GLenum cap)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDisable.xml">
                 (OpenGL ES 2.0 man page)
@@ -1693,10 +1701,16 @@ for (var i = 0; i < numVertices; i++) {
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glStencilFuncSeparate.xml">
                 (OpenGL ES 2.0 man page)
             </a>
+            <dd>
+                See <a href="#STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a> for information
+                on WebGL specific limitations to the allowable argument values.
         <dt class="idl-code">void stencilMask(GLuint mask)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glStencilMask.xml">
                 (OpenGL ES 2.0 man page)
             </a>
+            <dd>
+                See <a href="#STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a> for information
+                on WebGL specific limitations to the allowable mask values.
         <dt class="idl-code">void stencilMaskSeparate(GLenum face, GLuint mask)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glStencilMaskSeparate.xml">
                 (OpenGL ES 2.0 man page)
@@ -2429,7 +2443,8 @@ for (var i = 0; i < numVertices; i++) {
             offset are in units of bytes. Passed stride and offset must be appropriate for the
             passed type and size or an <code>INVALID_VALUE</code> error will be generated. If no
             WebGLBuffer is bound to the ARRAY_BUFFER target, an <code>INVALID_OPERATION</code> error
-            will be generated.
+            will be generated. In WebGL, the maximum supported stride is 255; see <a href="#VERTEX_STRIDE">
+            Vertex Attribute Data Stride</a>.
     </dl>
     
 <!-- ======================================================================================================= -->
@@ -2940,6 +2955,54 @@ or <code>texSubImage2D</code>, the alpha channel of the source data, if present,
 the color channels during the data transfer. The default value is <code>false</code>.
 </dl>
 
+</p>
+
+    <h3><a name="STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a></h3>
+
+<p>
+In the WebGL API it is illegal to specify a different mask or reference value for front facing and
+back facing triangles in stencil operations. A call to <code>stencilMaskSeparate</code> will generate an
+<code>INVALID_OPERATION</code> error if <code>FRONT</code> mask is not equal to <code>BACK</code>
+mask. Similarly, a call to <code>stencilFuncSeparate</code> will generate an
+<code>INVALID_OPERATION</code> error if <code>FRONT</code> ref is not equal to <code>BACK</code> ref
+or <code>FRONT</code> mask is not equal to <code>BACK</code> mask. 
+</p>
+
+    <h3><a name="VERTEX_STRIDE">Vertex Attribute Data Stride</a></h3>
+
+<p>
+The WebGL API supports vertex attribute data strides up to 255 bytes. A call to
+<code>vertexAttribPointer</code> will generate an <code>INVALID_VALUE</code> error if the value for
+the stride parameter exceeds 255.
+</p>
+
+    <h3><a name="VIEWPORT_DEPTH_RANGE">Viewport Depth Range</a></h3>
+
+<p>
+The WebGL API does not support depth ranges with where the near plane is mapped to a value greater
+than that of the far plane. A call to <code>depthRange</code> will generate an
+<code>INVALID_OPERATION</code> error if <code>zNear</code> is greater than <code>zFar</code>.
+</p>
+
+    <h3><a name="CONSTANT_COLOR_BLEND">Blending With Constant Color</a></h3>
+
+<p>
+In the WebGL API, constant color and constant alpha cannot be used together as source and
+destination factors in the blend function. A call to <code>blendFunc</code> will generate an
+<code>INVALID_OPERATION</code> error if one of the two factors is set to <code>CONSTANT_COLOR</code>
+or <code>ONE_MINUS_CONSTANT_COLOR</code> and the other to <code>CONSTANT_ALPHA</code> or
+<code>ONE_MINUS_CONSTANT_ALPHA</code>. A call to <code>blendFuncSeparate</code> will generate an
+<code>INVALID_OPERATION</code> error if <code>srcRGB</code> is set to <code>CONSTANT_COLOR</code>
+or <code>ONE_MINUS_CONSTANT_COLOR</code> and <code>dstRGB</code> is set to <code>CONSTANT_ALPHA</code> or
+<code>ONE_MINUS_CONSTANT_ALPHA</code> or vice versa.
+</p>
+
+    <h3><a name="SHADER_INVARIANCE">Shader Invariance</a></h3>
+
+<p>
+The WebGL API makes no guarantees about the invariance in shader outputs as described in section 4.6 of the
+<a href="http://www.khronos.org/registry/gles/specs/2.0/GLSL_ES_Specification_1.0.17.pdf">GLSL ES Specification</a>.
+The <code>invariant</code> qualifier and <code>#pragma STDGL invariant(all)</code> in shaders may be ignored.
 </p>
 
     <h3>GLSL Constructs</h3>
