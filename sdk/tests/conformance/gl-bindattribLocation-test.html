@@ -29,7 +29,6 @@ void main()
 }
 </script>
 <script id="fshader" type="text/something-not-javascript">
-precision mediump float;
 varying vec4 color;
 void main()
 {
@@ -82,7 +81,7 @@ if (!gl) {
     if (!compiled) {
         // Something went wrong during compilation; get the error
         var error = gl.getShaderInfoLog(shader);
-        log("*** Error compiling shader '"+shader+"':"+error);
+        debug("*** Error compiling shader '"+shader+"':"+error);
         gl.deleteShader(shader);
         return null;
     }
