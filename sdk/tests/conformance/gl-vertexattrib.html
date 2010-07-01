@@ -38,6 +38,12 @@ if (!gl) {
   shouldBe('gl.getVertexAttrib(0, gl.CURRENT_VERTEX_ATTRIB)[1]', '2');
   shouldBe('gl.getVertexAttrib(0, gl.CURRENT_VERTEX_ATTRIB)[2]', '3');
   shouldBe('gl.getVertexAttrib(0, gl.CURRENT_VERTEX_ATTRIB)[3]', '4');
+
+  gl.vertexAttrib1f(0, 5);
+  shouldBe('gl.getVertexAttrib(0, gl.CURRENT_VERTEX_ATTRIB)[0]', '5');
+  shouldBe('gl.getVertexAttrib(0, gl.CURRENT_VERTEX_ATTRIB)[1]', '0');
+  shouldBe('gl.getVertexAttrib(0, gl.CURRENT_VERTEX_ATTRIB)[2]', '0');
+  shouldBe('gl.getVertexAttrib(0, gl.CURRENT_VERTEX_ATTRIB)[3]', '1');
 }
 
 debug("");
