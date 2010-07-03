@@ -75,11 +75,11 @@ function init() {
       }
     }
 
-    // Line 15 should be red for at least 10 red pixels starting 20 pixels in
-    var offset = (15*50+20) * 4;
-    for (var i = 0; i < 10; ++i) {
+    // Line 25 should be red for at least 6 red pixels starting 22 pixels in
+    var offset = (25*50+22) * 4;
+    for (var i = 0; i < 6; ++i) {
       if (buf[offset+i*4] != 255 || buf[offset+i*4+1] != 0 || buf[offset+i*4+2] != 0 || buf[offset+i*4+3] != 255) {
-        fail(20 + i, 15, name, buf, "(255,0,0,255)");
+        fail(22 + i, 25, name, buf, "(255,0,0,255)");
         return;
       }
     }
