@@ -10,6 +10,7 @@ found in the LICENSE file.
 <title>WebGL More than 65536 points.</title>
 <link rel="stylesheet" href="../resources/js-test-style.css"/>
 <script src="../resources/js-test-pre.js"></script>
+<script src="resources/webgl-test.js"> </script>
 <script src="resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -36,14 +37,8 @@ void main() {
 </script>
 <script>
 var wtu = WebGLTestUtils;
-var canvas = document.getElementById("example");
-var gl = wtu.create3DContext(canvas);
-var vShaderSource = document.getElementById("vs").text;
-var fShaderSource = document.getElementById("fs").text;
-wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after getting a context");
-var vs = wtu.loadShader(gl, vShaderSource, gl.VERTEX_SHADER)
-var fs = wtu.loadShader(gl, fShaderSource, gl.FRAGMENT_SHADER)
-var program = wtu.setupProgram(gl, [vs, fs], ['vPosition', 'vColor'], [0, 1]);
+var gl = initWebGL("example", "vs", "fs", ["vPosition", "vColor"], [0, 0, 0, 1], 1);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after initWebGL");
 var bufferObjects = wtu.setupUnitQuad(gl, 0, 1);
 gl.bindBuffer(gl.ARRAY_BUFFER, bufferObjects[0]);
 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
