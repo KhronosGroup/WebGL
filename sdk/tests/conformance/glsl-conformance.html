@@ -157,14 +157,6 @@ void main()
     gl_Position = _webgl_vPosition;
 }
 </script>
-<script id="vshaderWithImplicitIntCast" type="text/something-not-javascript">
-attribute vec4 vPosition;
-void main()
-{
-    int k = 123;
-    gl_Position = vec4(vPosition.x, vPosition.y, vPosition.z, k);
-}
-</script>
 <script id="vshaderWithImplicitVec3Cast" type="text/something-not-javascript">
 attribute vec4 vPosition;
 void main()
@@ -339,13 +331,6 @@ if (!gl) {
       fShaderSuccess: true,
       linkSuccess: false,
       passMsg: 'vertex shader that uses _webgl_ identifier should fail',
-    },
-    { vShaderId: 'vshaderWithImplicitIntCast',
-      vShaderSuccess: false,
-      fShaderId: 'fshader',
-      fShaderSuccess: true,
-      linkSuccess: false,
-      passMsg: 'vertex shader that implicit int to float cast should fail',
     },
     { vShaderId: 'vshaderWithExplicitIntCast',
       vShaderSuccess: true,
