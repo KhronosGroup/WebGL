@@ -12,7 +12,7 @@ found in the LICENSE file.
 <link rel="stylesheet" href="../resources/js-test-style.css"/>
 <script src="../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../resources/js-test-pre.js"></script>
-<script src="resources/webgl-test.js"></script>
+<script src="resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -211,7 +211,8 @@ description("This test ensures WebGL implementations allow proper GLES2 shaders 
 debug("");
 debug("Canvas.getContext");
 
-var gl = create3DContext(document.getElementById("canvas"));
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext(document.getElementById("canvas"));
 if (!gl) {
   testFailed("context does not exist");
 } else {
@@ -224,38 +225,6 @@ if (!gl) {
     if (window.console && window.console.log) {
       window.console.log(msg);
     }
-  }
-
-  var lastError;
-
-  function loadShader(shaderType, shaderId) {
-    // Get the shader source.
-    var shaderSource = document.getElementById(shaderId).text;
-
-    // Create the shader object
-    var shader = gl.createShader(shaderType);
-    if (shader == null) {
-        debug("*** Error: unable to create shader '"+shaderId+"'");
-        return null;
-    }
-
-    // Load the shader source
-    gl.shaderSource(shader, shaderSource);
-
-    // Compile the shader
-    gl.compileShader(shader);
-
-    // Check the compile status
-    var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-    if (!compiled) {
-        // Something went wrong during compilation; get the error
-        var error = gl.getShaderInfoLog(shader);
-        lastError = error;
-        log("*** Error compiling shader '"+shader+"':"+error);
-        gl.deleteShader(shader);
-        return null;
-    }
-    return shader;
   }
 
   var shaderInfo = [
@@ -408,7 +377,7 @@ if (!gl) {
     },
     { vShaderId: 'vshaderWithLineDirective',
       vShaderSuccess: false,
-      vShaderTest: (function() { return lastError.indexOf("124") >= 0; }),
+      vShaderTest: (function() { return wtu.getLastError().indexOf("124") >= 0; }),
       fShaderId: 'fshader',
       fShaderSuccess: true,
       linkSuccess: false,
@@ -416,25 +385,52 @@ if (!gl) {
     }
   ];
 
+  // Read in all the shader source.
+  for (var ii = 0; ii < shaderInfo.length; ++ii) {
+    var si = shaderInfo[ii];
+    si.vShaderSource = document.getElementById(si.vShaderId).text;
+    si.fShaderSource = document.getElementById(si.fShaderId).text;
+  }
+
+  // Add more tests from external file
+  var fShader = document.getElementById('fshader').text;
+  var files = wtu.readFileList("shaders/implicit/00_shaders.txt");
+  for (var ii = 0; ii < files.length; ++ii) {
+    var file = files[ii];
+    var vShader = wtu.readFile(file);
+    shaderInfo.push({
+        vShaderId: file,
+        vShaderSource: vShader,
+        vShaderSuccess: false,
+        fShaderId: 'fshader',
+        fShaderSource: fShader,
+        fShaderSuccess: true,
+        linkSuccess: false,
+        passMsg: 'shader with implicit case should fail',
+      })
+  }
+
   for (var ii = 0; ii < shaderInfo.length; ++ii) {
     var info = shaderInfo[ii];
-    log("vs = " + info.vShaderId + ", fs = " + info.fShaderId);
+    var passMsg = '[' + info.vShaderId + '/' + info.fShaderId + ']: ' +
+                  info.passMsg
+    log(passMsg);
     //debug(info.fShaderId);
-    var vShader = loadShader(gl.VERTEX_SHADER, info.vShaderId);
+    var vShader = wtu.loadShader(gl, info.vShaderSource, gl.VERTEX_SHADER);
     if (info.vShaderTest) {
       if (!info.vShaderTest(vShader)) {
-        testFailed(info.passMsg);
+        testFailed(passMsg);
         continue;
       }
     }
     if ((vShader != null) != info.vShaderSuccess) {
-      testFailed(info.passMsg);
+      testFailed(passMsg);
       continue;
     }
-    var fShader = loadShader(gl.FRAGMENT_SHADER, info.fShaderId);
+    var fShader = wtu.loadShader(gl, info.fShaderSource, gl.FRAGMENT_SHADER);
     //debug(fShader == null ? "fail" : "succeed");
     if ((fShader != null) != info.fShaderSuccess) {
-      testFailed(info.passMsg);
+      testFailed(passMsg);
       continue;
     }
 
@@ -449,16 +445,16 @@ if (!gl) {
         log("*** Error linking program '"+program+"':"+error);
       }
       if (linked != info.linkSuccess) {
-        testFailed(info.passMsg);
+        testFailed(passMsg);
         continue;
       }
     } else {
       if (info.linkSuccess) {
-        testFailed(info.passMsg);
+        testFailed(passMsg);
         continue;
       }
     }
-    testPassed(info.passMsg);
+    testPassed(passMsg);
   }
 }
 

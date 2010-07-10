@@ -14,6 +14,16 @@ var log = function(msg) {
   }
 };
 
+var lastError = "";
+
+/**
+ * Returns the last compiler/linker error.
+ * @return {string} The last compiler/linker error.
+ */
+var getLastError = function() {
+  return lastError;
+};
+
 /**
  * A vertex shader for a single texture.
  * @type {string}
@@ -84,8 +94,8 @@ var setupProgram = function(gl, shaders, attribs, opt_locations) {
   var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
   if (!linked) {
       // something went wrong with the link
-      var error = gl.getProgramInfoLog (program);
-      log("Error in program linking:"+error);
+      lastError = gl.getProgramInfoLog (program);
+      log("Error in program linking:" + lastError);
 
       gl.deleteProgram(program);
       return null;
@@ -473,15 +483,44 @@ var setupWebGLWithShaders = function(
 };
 
 /**
- * Gets shader source from a file/URL
+ * Gets a file from a file/URL
  * @param {string} file the URL of the file to get.
  * @return {string} The contents of the file.
  */
-var getShaderSource = function(file) {
+var readFile = function(file) {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", file, false);
   xhr.send();
   return xhr.responseText;
+};
+
+/**
+ * Gets a file from a URL and parses it for filenames. IF a file name ends
+ * in .txt recursively reads that file and adds it to the list.
+ */
+var readFileList = function(url) {
+  var files = [];
+  if (url.substr(url.length - 4) == '.txt') {
+    var lines = readFile(url).split('\n');
+    var prefix = '';
+    var lastSlash = url.lastIndexOf('/');
+    if (lastSlash >= 0) {
+      prefix = url.substr(0, lastSlash + 1);
+    }
+    for (var ii = 0; ii < lines.length; ++ii) {
+      var str = lines[ii].replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+      if (str.length > 4 &&
+          str[0] != '#' &&
+          str[0] != ";" &&
+          str.substr(0, 2) != "//") {
+        new_url = prefix + str;
+        files = files.concat(readFileList(new_url));
+      }
+    }
+  } else {
+    files.push(url);
+  }
+  return files;
 };
 
 /**
@@ -509,8 +548,8 @@ var loadShader = function(gl, shaderSource, shaderType) {
   var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
   if (!compiled) {
     // Something went wrong during compilation; get the error
-    var error = gl.getShaderInfoLog(shader);
-    log("*** Error compiling shader '"+shader+"':"+error);
+    lastError = gl.getShaderInfoLog(shader);
+    log("*** Error compiling shader '" + shader + "':" + lastError);
     gl.deleteShader(shader);
     return null;
   }
@@ -526,7 +565,7 @@ var loadShader = function(gl, shaderSource, shaderType) {
  * @return {!WebGLShader} The created shader.
  */
 var loadShaderFromFile = function(gl, file, type) {
-  var shaderSource = getShaderSource(file);
+  var shaderSource = readFile(file);
   return loadShader(gl, shaderSource, type);
 };
 
@@ -540,21 +579,22 @@ var loadShaderFromFile = function(gl, file, type) {
  */
 var loadShaderFromScript = function(gl, scriptId, opt_shaderType) {
   var shaderSource = "";
-
+  var shaderType;
   var shaderScript = document.getElementById(scriptId);
   if (!shaderScript) {
     throw("*** Error: unknown script element" + scriptId);
-  } else if (!opt_shaderType) {
+  }
+  shaderSource = shaderScript.text;
+
+  if (!opt_shaderType) {
     if (shaderScript.type == "x-shader/x-vertex") {
-      opt_shaderType = gl.VERTEX_SHADER;
+      shaderType = gl.VERTEX_SHADER;
     } else if (shaderScript.type == "x-shader/x-fragment") {
-      opt_shaderType = gl.FRAGMENT_SHADER;
+      shaderType = gl.FRAGMENT_SHADER;
     } else if (shaderType != gl.VERTEX_SHADER && shaderType != gl.FRAGMENT_SHADER) {
       throw("*** Error: unknown shader type");
       return null;
     }
-
-    shaderSource = shaderScript.text;
   }
 
   return loadShader(
@@ -628,6 +668,7 @@ return {
     checkCanvas: checkCanvas,
     createColoredTexture: createColoredTexture,
     drawQuad: drawQuad,
+    getLastError: getLastError,
     glErrorShouldBe: glErrorShouldBe,
     fillTexture: fillTexture,
     loadProgramFromFile: loadProgramFromFile,
@@ -645,6 +686,8 @@ return {
     setupTexturedQuad: setupTexturedQuad,
     setupUnitQuad: setupUnitQuad,
     shouldGenerateGLError: shouldGenerateGLError,
+    readFile: readFile,
+    readFileList: readFileList,
 
     none: false
 };
