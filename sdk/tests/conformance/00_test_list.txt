@@ -22,6 +22,7 @@ gl-object-get-calls.html
 gl-pixelstorei.html
 gl-scissor-test.html
 gl-shader-test.html
+gl-teximage.html
 gl-uniform-arrays.html
 gl-uniform-bool.html
 gl-uniformmatrix4fv.html

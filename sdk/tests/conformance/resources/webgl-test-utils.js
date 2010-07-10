@@ -661,35 +661,79 @@ var loadStandardFragmentShader = function(gl) {
       gl, "resources/fragmentShader.frag", gl.FRAGMENT_SHADER);
 };
 
-return {
-    create3DContext: create3DContext,
-    create3DContextWithWrapperThatThrowsOnGLError:
-        create3DContextWithWrapperThatThrowsOnGLError,
-    checkCanvas: checkCanvas,
-    createColoredTexture: createColoredTexture,
-    drawQuad: drawQuad,
-    getLastError: getLastError,
-    glErrorShouldBe: glErrorShouldBe,
-    fillTexture: fillTexture,
-    loadProgramFromFile: loadProgramFromFile,
-    loadProgramFromScript: loadProgramFromScript,
-    loadShader: loadShader,
-    loadShaderFromFile: loadShaderFromFile,
-    loadShaderFromScript: loadShaderFromScript,
-    loadStandardProgram: loadStandardProgram,
-    loadStandardVertexShader: loadStandardVertexShader,
-    loadStandardFragmentShader: loadStandardFragmentShader,
-    setupProgram: setupProgram,
-    setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
-    setupSimpleTextureProgram: setupSimpleTextureProgram,
-    setupSimpleTextureVertexShader: setupSimpleTextureVertexShader,
-    setupTexturedQuad: setupTexturedQuad,
-    setupUnitQuad: setupUnitQuad,
-    shouldGenerateGLError: shouldGenerateGLError,
-    readFile: readFile,
-    readFileList: readFileList,
+/**
+ * Loads an image asynchronously.
+ * @param {string} url URL of image to load.
+ * @param {!function(!Element): void} callback Function to call
+ *     with loaded image.
+ */
+var loadImageAsync = function(url, callback) {
+  var img = document.createElement('img');
+  img.onload = function() {
+    callback(img);
+  };
+  img.src = url;
+};
 
-    none: false
+/**
+ * Loads an array of images.
+ * @param {!Array.<string>} urls URLs of images to load.
+ * @param {!function(!{string, img}): void} callback. Callback
+ *     that gets passed map of urls to img tags.
+ */
+var loadImagesAsync = function(urls, callback) {
+  var count = 1;
+  var images = { };
+  function countDown() {
+    --count;
+    if (count == 0) {
+      callback(images);
+    }
+  }
+  function imageLoaded(url) {
+    return function(img) {
+      images[url] = img;
+      countDown();
+    }
+  }
+  for (var ii = 0; ii < urls.length; ++ii) {
+    ++count;
+    loadImageAsync(urls[ii], imageLoaded(urls[ii]));
+  }
+  countDown();
+};
+
+return {
+  create3DContext: create3DContext,
+  create3DContextWithWrapperThatThrowsOnGLError:
+    create3DContextWithWrapperThatThrowsOnGLError,
+  checkCanvas: checkCanvas,
+  createColoredTexture: createColoredTexture,
+  drawQuad: drawQuad,
+  getLastError: getLastError,
+  glErrorShouldBe: glErrorShouldBe,
+  fillTexture: fillTexture,
+  loadImageAsync: loadImageAsync,
+  loadImagesAsync: loadImagesAsync,
+  loadProgramFromFile: loadProgramFromFile,
+  loadProgramFromScript: loadProgramFromScript,
+  loadShader: loadShader,
+  loadShaderFromFile: loadShaderFromFile,
+  loadShaderFromScript: loadShaderFromScript,
+  loadStandardProgram: loadStandardProgram,
+  loadStandardVertexShader: loadStandardVertexShader,
+  loadStandardFragmentShader: loadStandardFragmentShader,
+  setupProgram: setupProgram,
+  setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
+  setupSimpleTextureProgram: setupSimpleTextureProgram,
+  setupSimpleTextureVertexShader: setupSimpleTextureVertexShader,
+  setupTexturedQuad: setupTexturedQuad,
+  setupUnitQuad: setupUnitQuad,
+  shouldGenerateGLError: shouldGenerateGLError,
+  readFile: readFile,
+  readFileList: readFileList,
+
+  none: false
 };
 
 }());
