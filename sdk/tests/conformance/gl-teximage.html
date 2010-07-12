@@ -157,7 +157,7 @@ function runTests(imgs) {
     'resources/gray-ramp-gamma4.0.png',
     'resources/gray-ramp-gamma9.0.png'];
   for (var ii = 0; ii < gammaImages.length; ++ii) {
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                   imgs[gammaImages[ii]]);
     wtu.drawQuad(gl);
     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
