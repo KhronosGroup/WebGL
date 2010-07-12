@@ -26,6 +26,8 @@ var program = wtu.setupTexturedQuad(gl);
 assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
 
 var imgURLs = [
+  'resources/gray-ramp-256-with-128-alpha.png',
+  'resources/gray-ramp-256.png',
   'resources/gray-ramp-default-gamma.png',
   'resources/gray-ramp-gamma0.1.png',
   'resources/gray-ramp-gamma1.0.png',
@@ -33,7 +35,8 @@ var imgURLs = [
   'resources/gray-ramp-gamma4.0.png',
   'resources/gray-ramp-gamma9.0.png',
   'resources/gray-ramp.png',
-  'resources/zero-alpha.png'];
+  'resources/zero-alpha.png',
+  'resources/3x3.png'];
 
 wtu.loadImagesAsync(imgURLs, runTests);
 
@@ -91,27 +94,28 @@ function runTests(imgs) {
   var top = 0;
   var center = Math.floor(height / 2);
   var bottom = height - 1;
-  checkPixel(buf, left,   top,    [255,   0,   0, 255]);
-  checkPixel(buf, middle, top,    [255, 255,   0, 255]);
-  checkPixel(buf, right,  top,    [  0, 255,   0, 255]);
+  checkPixel(buf, left,   top,    [  0,   0,   0, 255]);
+  checkPixel(buf, middle, top,    [255,   0, 255, 255]);
+  checkPixel(buf, right,  top,    [  0,   0, 255, 255]);
   checkPixel(buf, left,   center, [128, 128, 128, 255]);
   checkPixel(buf, middle, center, [255, 255, 255, 255]);
   checkPixel(buf, right,  center, [  0, 255, 255, 255]);
-  checkPixel(buf, left,   bottom, [  0,   0,   0, 255]);
-  checkPixel(buf, middle, bottom, [255,   0, 255, 255]);
-  checkPixel(buf, right,  bottom, [  0,   0, 255, 255]);
+  checkPixel(buf, left,   bottom, [255,   0,   0, 255]);
+  checkPixel(buf, middle, bottom, [255, 255,   0, 255]);
+  checkPixel(buf, right,  bottom, [  0, 255,   0, 255]);
 
   debug("");
   debug("check quantization");
   var quantInfo = [
-    {type: gl.UNSIGNED_SHORT_4_4_4_4, counts: [16, 16, 16, 16]},
-    {type: gl.UNSIGNED_SHORT_5_6_5,   counts: [32, 64, 32,  1]},
-    {type: gl.UNSIGNED_SHORT_5_5_5_1, counts: [32, 32, 32,  2]}];
+    {type: gl.UNSIGNED_BYTE,          counts: [256, 256, 256, 256]},
+    {type: gl.UNSIGNED_SHORT_4_4_4_4, counts: [ 16,  16,  16,  16]},
+    {type: gl.UNSIGNED_SHORT_5_6_5,   counts: [ 32,  64,  32,   1]},
+    {type: gl.UNSIGNED_SHORT_5_5_5_1, counts: [ 32,  32,  32,   2]}];
   for (var qq = 0; qq < quantInfo.length; ++qq) {
     var info = quantInfo[qq];
     gl.texImage2D(
         gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, info.type,
-        imgs['resources/gray-ramp.png']);
+        imgs['resources/gray-ramp-256.png']);
     assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
     wtu.drawQuad(gl);
     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
@@ -138,7 +142,7 @@ function runTests(imgs) {
   }
 
   debug("");
-  debug("Check that gamma settings don't effect texture");
+  debug("Check that gamma settings don't effect 8bit pngs");
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_SHORT_4_4_4_4,
                 imgs['resources/gray-ramp-default-gamma.png']);
   assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
@@ -167,6 +171,46 @@ function runTests(imgs) {
     assertMsg(same, "pixels should be same regardless of gamma settings.");
   }
 
+  debug("");
+  debug("check pixels are UN pre-multiplied");
+  var canvas2d = document.createElement("canvas");
+  canvas2d.width = 256;
+  canvas2d.height = 1;
+  //canvas2d.style.height = "40px";
+  //var description = document.getElementById("description");
+  //description.appendChild(canvas2d);
+  var ctx = canvas2d.getContext("2d");
+  ctx.fillRect(0, 0, 256, 1);
+  ctx.drawImage(imgs['resources/gray-ramp-256-with-128-alpha.png'], 0, 0);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, canvas2d);
+  assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
+  wtu.drawQuad(gl);
+  var ref = new Uint8Array(width * height * 4);
+  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, ref);
+  var lt128Count = [0, 0, 0];
+  var ge128Count = [0, 0, 0];
+  for (var jj = 0; jj < width; ++jj) {
+    var off = jj * 4;
+    for (var cc = 0; cc < 3; ++cc) {
+      if (buf[off + cc] < 128) {
+        ++lt128Count[cc];
+      } else {
+        ++ge128Count[cc];
+      }
+    }
+  }
+  // Not sure the exact count here because gamma does effect drawing into the
+  // canvas but it should be close to 50% so I'll pass 45%
+  for (var jj = 0; jj < 3; ++jj) {
+    assertMsg(ge128Count[jj] > 256 * 0.45,
+              "Half the pixels in channel " + jj +
+              " should be >= 128,128,128. found " +
+              ((ge128Count[jj] / 256) * 100).toFixed() + "%");
+    assertMsg(lt128Count[jj] > 256 * 0.45,
+              "Half the pixels in channel " + jj +
+              " should be < 128,128,128. found " +
+              ((lt128Count[jj] / 256) * 100).toFixed() + "%");
+  }
 
   debug("");
   debug("check pixels are pre-multiplied");
@@ -192,20 +236,20 @@ function runTests(imgs) {
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
-                imgs['resources/zero-alpha.png']);
+                imgs['resources/3x3.png']);
   assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup");
   wtu.drawQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
 
-  checkPixel(buf, left,   top,    [  0,   0,   0, 255]);
-  checkPixel(buf, middle, top,    [255,   0, 255, 255]);
-  checkPixel(buf, right,  top,    [  0,   0, 255, 255]);
-  checkPixel(buf, left,   center, [128, 128, 128, 255]);
-  checkPixel(buf, middle, center, [255, 255, 255, 255]);
-  checkPixel(buf, right,  center, [  0, 255, 255, 255]);
-  checkPixel(buf, left,   bottom, [255,   0,   0, 255]);
-  checkPixel(buf, middle, bottom, [255, 255,   0, 255]);
-  checkPixel(buf, right,  bottom, [  0, 255,   0, 255]);
+  checkPixel(buf, left,   top,    [255,   0,   0, 255]);
+  checkPixel(buf, middle, top,    [255, 255,   0, 255]);
+  checkPixel(buf, right,  top,    [255,   0,   0, 255]);
+  checkPixel(buf, left,   center, [255,   0, 255, 255]);
+  checkPixel(buf, middle, center, [255,   0,   0, 255]);
+  checkPixel(buf, right,  center, [  0, 255,   0, 255]);
+  checkPixel(buf, left,   bottom, [  0,   0,   0, 255]);
+  checkPixel(buf, middle, bottom, [  0,   0, 255, 255]);
+  checkPixel(buf, right,  bottom, [255,   0,   0, 255]);
 
   assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors");
 
