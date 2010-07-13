@@ -119,7 +119,7 @@ function shouldGenerateGLError(ctx, glError, evalStr) {
     if (err != glError) {
       testFailed(evalStr + " expected: " + getGLErrorAsString(ctx, glError) + ". Was " + getGLErrorAsString(ctx, err) + ".");
     } else {
-      testPassed(evalStr + " was expected value: " + getGLErrorAsString(ctx, glError) + ".");
+      testPassed(evalStr + " generated expected GL error: " + getGLErrorAsString(ctx, glError) + ".");
     }
   }
 }
