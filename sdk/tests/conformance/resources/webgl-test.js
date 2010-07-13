@@ -124,14 +124,23 @@ function shouldGenerateGLError(ctx, glError, evalStr) {
   }
 }
 
-function glErrorShouldBe(ctx, glError) {
-  var err = ctx.getError();
+/**
+ * Tests that the first error GL returns is the specified error.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {number} glError The expected gl error.
+ * @param {string} opt_msg Optional additional message.
+ */
+function glErrorShouldBe(gl, glError, opt_msg) {
+  opt_msg = opt_msg || "";
+  var err = gl.getError();
   if (err != glError) {
-    testFailed("getError expected: " + getGLErrorAsString(ctx, glError) + ". Was " + getGLErrorAsString(ctx, err) + ".");
+    testFailed("getError expected: " + getGLErrorAsString(gl, glError) +
+               ". Was " + getGLErrorAsString(gl, err) + " : " + opt_msg);
   } else {
-    testPassed("getError was expected value: " + getGLErrorAsString(ctx, glError) + ".");
+    testPassed("getError was expected value: " +
+                getGLErrorAsString(gl, glError) + " : " + opt_msg);
   }
-}
+};
 
 //
 // createProgram
