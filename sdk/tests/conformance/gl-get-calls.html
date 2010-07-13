@@ -99,7 +99,6 @@ else {
     shouldBe('context.getParameter(context.STENCIL_BACK_PASS_DEPTH_PASS)', 'context.KEEP');
     shouldBe('context.getParameter(context.STENCIL_BACK_REF)', '0');
 
-    // FIXME: Current WebKit implementation returns the wrong value (https://bugs.webkit.org/show_bug.cgi?id=31842)
     shouldBe('context.getParameter(context.STENCIL_BACK_VALUE_MASK)', '0xFFFFFFFF');
     shouldBe('context.getParameter(context.STENCIL_BACK_WRITEMASK)', '0xFFFFFFFF');
 
@@ -113,7 +112,6 @@ else {
     shouldBe('context.getParameter(context.STENCIL_REF)', '0');
     shouldBe('context.getParameter(context.STENCIL_TEST)', 'false');
 
-    // FIXME: Current WebKit implementation returns the wrong value (https://bugs.webkit.org/show_bug.cgi?id=31842)
     shouldBe('context.getParameter(context.STENCIL_VALUE_MASK)', '0xFFFFFFFF');
     shouldBe('context.getParameter(context.STENCIL_WRITEMASK)', '0xFFFFFFFF');
 

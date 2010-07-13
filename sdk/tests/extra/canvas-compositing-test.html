@@ -94,9 +94,8 @@ img tag<br/>
   ctx2d.fill();
 
 
-            if (window.layoutTestController) {
-                layoutTestController.overridePreference("WebKitWebGLEnabled", "1");
-                layoutTestController.dumpAsText();
+            if (window.initNonKhronosFramework) {
+                window.initNonKhronosFramework(false);
             }
 
             gl = initWebGL("example", "vshader", "fshader", [ "vPosition"], [ 0, 0, 0, 1 ], 1);

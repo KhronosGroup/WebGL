@@ -657,7 +657,7 @@ var loadStandardVertexShader = function(gl) {
 };
 
 var loadStandardFragmentShader = function(gl) {
-  return loadShaderFromfile(
+  return loadShaderFromFile(
       gl, "resources/fragmentShader.frag", gl.FRAGMENT_SHADER);
 };
 

@@ -22,9 +22,8 @@ description("Checks that ReadPixels works as expected.");
 var canvas = document.getElementById("example");
 var gl = create3DContext(canvas);
 
-if (window.layoutTestController) {
-  layoutTestController.overridePreference("WebKitWebGLEnabled", "1");
-  layoutTestController.dumpAsText();
+if (window.initNonKhronosFramework) {
+   window.initNonKhronosFramework(false);
 }
 
 var width = 2;

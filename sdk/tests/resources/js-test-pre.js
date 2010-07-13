@@ -23,9 +23,6 @@ OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-if (window.layoutTestController)
-    layoutTestController.dumpAsText();
-
 function reportTestResultsToHarness(success, msg) {
   if (window.parent.webglTestHarness) {
     window.parent.webglTestHarness.reportResults(success, msg);

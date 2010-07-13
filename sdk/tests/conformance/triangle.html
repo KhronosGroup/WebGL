@@ -67,9 +67,8 @@ There is supposed to be an example drawing here, but it's not important.
 
         function init()
         {
-            if (window.layoutTestController) {
-                layoutTestController.overridePreference("WebKitWebGLEnabled", "1");
-                layoutTestController.dumpAsText();
+            if (window.initNonKhronosFramework) {
+                window.initNonKhronosFramework(false);
             }
 
             gl = initWebGL("example", "vshader", "fshader", [ "vPosition"], [ 0, 0, 0, 1 ], 1);

@@ -43,9 +43,8 @@ void main()
   <script>
 function init()
 {
-  if (window.layoutTestController) {
-    layoutTestController.overridePreference("WebKitWebGLEnabled", "1");
-    layoutTestController.dumpAsText();
+  if (window.initNonKhronosFramework) {
+      window.initNonKhronosFramework(false);
   }
 
   debug("Tests that using 2 types of textures on the same texture unit");

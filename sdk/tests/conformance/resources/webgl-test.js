@@ -143,36 +143,36 @@ function glErrorShouldBe(ctx, glError) {
 function createProgram(gl, vshaders, fshaders, attribs)
 {
     if (typeof(vshaders) == "string")
-	vshaders = [vshaders];
+  vshaders = [vshaders];
     if (typeof(fshaders) == "string")
-	fshaders = [fshaders];
+  fshaders = [fshaders];
 
     var shaders = [];
     var i;
 
     for (i = 0; i < vshaders.length; ++i) {
-	var shader = loadShader(gl, vshaders[i], gl.VERTEX_SHADER);
-	if (!shader)
-	    return null;
-	shaders.push(shader);
+  var shader = loadShader(gl, vshaders[i], gl.VERTEX_SHADER);
+  if (!shader)
+      return null;
+  shaders.push(shader);
     }
 
     for (i = 0; i < fshaders.length; ++i) {
-	var shader = loadShader(gl, fshaders[i], gl.FRAGMENT_SHADER);
-	if (!shader)
-	    return null;
-	shaders.push(shader);
+  var shader = loadShader(gl, fshaders[i], gl.FRAGMENT_SHADER);
+  if (!shader)
+      return null;
+  shaders.push(shader);
     }
 
     var prog = gl.createProgram();
     for (i = 0; i < shaders.length; ++i) {
-	gl.attachShader(prog, shaders[i]);
+  gl.attachShader(prog, shaders[i]);
     }
 
     if (attribs) {
         for (var i in attribs) {
             gl.bindAttribLocation (prog, i, attribs[i]);
-	}
+  }
     }
 
     gl.linkProgram(prog);
@@ -185,8 +185,8 @@ function createProgram(gl, vshaders, fshaders, attribs)
         webglTestLog("Error in program linking:" + error);
 
         gl.deleteProgram(prog);
-	for (i = 0; i < shaders.length; ++i)
-	    gl.deleteShader(shaders[i]);
+  for (i = 0; i < shaders.length; ++i)
+      gl.deleteShader(shaders[i]);
         return null;
     }
 
