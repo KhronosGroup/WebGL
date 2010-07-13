@@ -60,7 +60,7 @@ shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programA
 shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.uniformMatrix4fv(locationA, false, mat)");
 shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programA1)");
 shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniformMatrix4fv(locationA, false, mat)");
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniformMatrix4fv(0, false, mat)");
+shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniformMatrix4fv(null, false, mat)");
 
 shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programS)");
 shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform1i(locationSx, 3)");
@@ -77,7 +77,6 @@ shouldBeNull("contextA.getUniformLocation(programV, \"IDontExist\")");
 shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.linkProgram(programA1)");
 // After linking all boxes are bad.
 shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.uniformMatrix4fv(locationA, false, mat)");
-
 
 successfullyParsed = true;
 </script>

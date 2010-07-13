@@ -72,7 +72,6 @@ function init()
     description('Regression test for <a href="https://bugs.webkit.org/show_bug.cgi?id=32888">https://bugs.webkit.org/show_bug.cgi?id=32888</a> : <code>Garbage in transparent regions of images uploaded as textures</code>');
 
     gl = initWebGL("example", "vshader", "fshader", [ "g_Position", "g_TexCoord0" ], [ 0, 0, 0, 1 ], 1);
-    gl.viewport(0, 0, 32, 32);
 
     textureLoc = gl.getUniformLocation(gl.program, "tex");
 
@@ -118,7 +117,7 @@ function loadTexture(src) {
     var image = new Image();
     image.onload = function() {
         gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, gl.TRUE);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
         runTest();
     };
@@ -143,8 +142,7 @@ function runTest()
     // Read back the rendering results
     var width = 32;
     var height = 32;
-	var buffer = new ArrayBuffer(width * height * 4);
-	buf = new Uint8Array(buffer);
+    buf = new Uint8Array(width * height * 4);
     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     // Spot check a couple of 2x2 regions in the upper and lower left
     // corners; they should be the background color rather than

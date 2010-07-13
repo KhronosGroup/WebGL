@@ -36,24 +36,24 @@ function webglTestLog(msg) {
 //
 // create3DContext
 //
-// Return the WebGLRenderingContext for any known implementation
+// Returns the WebGLRenderingContext for any known implementation.
 //
-function create3DContext(canvas)
+function create3DContext(canvas, attributes)
 {
     if (!canvas)
         canvas = document.createElement("canvas");
     var context = null;
     try {
-        context = canvas.getContext("experimental-webgl");
+        context = canvas.getContext("experimental-webgl", attributes);
     } catch(e) {}
     if (!context) {
         try {
-            context = canvas.getContext("webkit-3d");
+            context = canvas.getContext("webkit-3d", attributes);
         } catch(e) {}
     }
     if (!context) {
         try {
-            context = canvas.getContext("moz-webgl");
+            context = canvas.getContext("moz-webgl", attributes);
         } catch(e) {}
     }
     if (!context) {
@@ -72,8 +72,8 @@ function createGLErrorWrapper(context, fname) {
     };
 }
 
-function create3DContextWithWrapperThatThrowsOnGLError(canvas) {
-  var context = create3DContext(canvas);
+function create3DContextWithWrapperThatThrowsOnGLError(canvas, attributes) {
+  var context = create3DContext(canvas, attributes);
   // Thanks to Ilmari Heikkinen for the idea on how to implement this so elegantly.
   var wrap = {};
   for (var i in context) {
@@ -208,10 +208,10 @@ function createProgram(gl, vshaders, fshaders, attribs)
 // Set the clear color to the passed array (4 values) and set the clear depth to the passed value.
 // Enable depth testing and blending with a blend func of (SRC_ALPHA, ONE_MINUS_SRC_ALPHA)
 //
-function initWebGL(canvasName, vshader, fshader, attribs, clearColor, clearDepth)
+function initWebGL(canvasName, vshader, fshader, attribs, clearColor, clearDepth, contextAttribs)
 {
     var canvas = document.getElementById(canvasName);
-    var gl = create3DContext(canvas);
+    var gl = create3DContext(canvas, contextAttribs);
     if (!gl) {
         alert("No WebGL context found");
         return null;

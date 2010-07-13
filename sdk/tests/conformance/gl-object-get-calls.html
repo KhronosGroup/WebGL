@@ -44,6 +44,14 @@ var standardProgram = gl.createProgram();
 gl.attachShader(standardProgram, standardVert);
 gl.attachShader(standardProgram, standardFrag);
 gl.linkProgram(standardProgram);
+var shaders = gl.getAttachedShaders(standardProgram);
+shouldBe('shaders.length', '2');
+shouldBeTrue('shaders[0] == standardVert && shaders[1] == standardFrag || shaders[1] == standardVert && shaders[0] == standardFrag');
+shouldBe('gl.getError()', 'gl.NO_ERROR');
+shouldBeUndefined('gl.getAttachedShaders(null)');
+shouldBe('gl.getError()', 'gl.INVALID_VALUE');
+shouldBeUndefined('gl.getAttachedShaders(standardVert)');
+shouldBe('gl.getError()', 'gl.INVALID_VALUE');
 
 // Test getBufferParameter
 var buffer = gl.createBuffer();
@@ -221,6 +229,15 @@ gl.disableVertexAttribArray(1);
 shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_ENABLED)', 'false');
 gl.vertexAttrib4f(1, 5, 6, 7, 8);
 shouldBe('gl.getVertexAttrib(1, gl.CURRENT_VERTEX_ATTRIB)', '[5, 6, 7, 8]');
+glErrorShouldBe(gl, gl.NO_ERROR);
+
+// Test cases where name == 0
+gl.deleteTexture(texture);
+shouldBeNull('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME)');
+gl.deleteRenderbuffer(renderbuffer);
+shouldBeNull('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME)');
+gl.deleteBuffer(buffer);
+shouldBeNull('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING)');
 glErrorShouldBe(gl, gl.NO_ERROR);
 
 successfullyParsed = true;

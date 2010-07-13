@@ -50,7 +50,6 @@ var renderBufferB = contextB.createRenderbuffer();
 var locationA = contextA.getUniformLocation(programA, 'u_modelViewProjMatrix');
 var locationB = contextB.getUniformLocation(programB, 'u_modelViewProjMatrix');
 
-
 shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.compileShader(shaderB)");
 shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.linkProgram(programB)");
 shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.attachShader(programA, shaderB)");

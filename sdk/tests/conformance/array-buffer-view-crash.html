@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2009 The Chromium Authors. All rights reserved.
+Copyright (c) 2010 The Chromium Authors. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -38,32 +38,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <div id="console"></div>
 
 <script>
-description('Regression test for <a href="https://bugs.webkit.org/show_bug.cgi?id=32692">https://bugs.webkit.org/show_bug.cgi?id=32692</a> : <code>Index validation for drawElements examines too many indices</code>');
 
-var context = create3DContext();
-var program = loadStandardProgram(context);
+description('Verify that constructing a typed array view with no arguments and fetching its length does not crash');
 
-context.useProgram(program);
-var vertexObject = context.createBuffer();
-context.enableVertexAttribArray(0);
-context.bindBuffer(context.ARRAY_BUFFER, vertexObject);
-// 4 vertices -> 2 triangles
-context.bufferData(context.ARRAY_BUFFER, new Float32Array([ 0,0,0, 0,1,0, 1,0,0, 1,1,0 ]), context.STATIC_DRAW);
-context.vertexAttribPointer(0, 3, context.FLOAT, false, 0, 0);
+<!-- The following used to cause a crash in both Safari and Chrome -->
+new Uint32Array().length;
 
-var indexObject = context.createBuffer();
-
-debug("Test out of range indices")
-context.bindBuffer(context.ELEMENT_ARRAY_BUFFER, indexObject);
-context.bufferData(context.ELEMENT_ARRAY_BUFFER, new Uint16Array([ 10000, 0, 1, 2, 3, 10000 ]), context.STATIC_DRAW);
-shouldGenerateGLError(context, context.NO_ERROR, "context.drawElements(context.TRIANGLE_STRIP, 4, context.UNSIGNED_SHORT, 2)");
-shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawElements(context.TRIANGLE_STRIP, 4, context.UNSIGNED_SHORT, 0)");
-shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawElements(context.TRIANGLE_STRIP, 4, context.UNSIGNED_SHORT, 4)");
-
-debug("")
+testPassed("new Uint32Array().length did not crash");
 successfullyParsed = true;
+
+</script>
+<script src="../resources/js-test-post.js"></script>
+
+<script>
 </script>
 
-<script src="../resources/js-test-post.js"></script>
 </body>
 </html>

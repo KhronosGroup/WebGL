@@ -73,7 +73,6 @@ There is supposed to be an example drawing here, but it's not important.
             }
 
             gl = initWebGL("example", "vshader", "fshader", [ "vPosition"], [ 0, 0, 0, 1 ], 1);
-            gl.viewport(0, 0, 50, 50);
 
             var vertexObject = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
@@ -83,7 +82,6 @@ There is supposed to be an example drawing here, but it's not important.
 
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
             gl.drawArrays(gl.TRIANGLES, 0, 3);
-            gl.flush();
 
             var buf = new Uint8Array(50 * 50 * 4);
             gl.readPixels(0, 0, 50, 50, gl.RGBA, gl.UNSIGNED_BYTE, buf);
@@ -119,9 +117,6 @@ There is supposed to be an example drawing here, but it's not important.
     </script>
 </body>
 <script src="../resources/js-test-post.js"></script>
-
-<script>
-</script>
 
 </body>
 </html>
