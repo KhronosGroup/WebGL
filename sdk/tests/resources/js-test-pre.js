@@ -296,7 +296,7 @@ function assertMsg(assertion, msg) {
     if (assertion) {
         testPassed(msg);
     } else {
-       testFailed(msg);
+        testFailed(msg);
     }
 }
 
