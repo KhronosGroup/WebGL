@@ -295,9 +295,9 @@ function shouldThrow(_a, _e)
 function assertMsg(assertion, msg) {
     if (assertion) {
         testPassed(msg);
-     } else {
-        testFailed(msg);
-     }
+    } else {
+       testFailed(msg);
+    }
 }
 
 function gc() {
