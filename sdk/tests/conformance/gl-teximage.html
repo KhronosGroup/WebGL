@@ -107,14 +107,14 @@ function runTests(imgs) {
   debug("");
   debug("check quantization");
   var quantInfo = [
-    {type: gl.UNSIGNED_BYTE,          counts: [256, 256, 256, 256]},
-    {type: gl.UNSIGNED_SHORT_4_4_4_4, counts: [ 16,  16,  16,  16]},
-    {type: gl.UNSIGNED_SHORT_5_6_5,   counts: [ 32,  64,  32,   1]},
-    {type: gl.UNSIGNED_SHORT_5_5_5_1, counts: [ 32,  32,  32,   2]}];
+    {format: gl.RGBA, type: gl.UNSIGNED_BYTE,          counts: [256, 256, 256, 256]},
+    {format: gl.RGBA, type: gl.UNSIGNED_SHORT_4_4_4_4, counts: [ 16,  16,  16,  16]},
+    {format: gl.RGB,  type: gl.UNSIGNED_SHORT_5_6_5,   counts: [ 32,  64,  32,   1]},
+    {format: gl.RGBA, type: gl.UNSIGNED_SHORT_5_5_5_1, counts: [ 32,  32,  32,   2]}];
   for (var qq = 0; qq < quantInfo.length; ++qq) {
     var info = quantInfo[qq];
     gl.texImage2D(
-        gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, info.type,
+        gl.TEXTURE_2D, 0, info.format, info.format, info.type,
         imgs['resources/gray-ramp-256.png']);
     assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
     wtu.drawQuad(gl);
