@@ -135,12 +135,7 @@ else {
     shouldBeTrue('context.getParameter(context.MAX_FRAGMENT_UNIFORM_VECTORS) >= 16');
     shouldBeTrue('context.getParameter(context.MAX_VERTEX_UNIFORM_VECTORS) >= 128');
     shouldBeTrue('context.getParameter(context.MAX_VARYING_VECTORS) >= 8');
-
-    // FIXME: WebKit is currently failing this test in
-    // non-deterministic ways because it's delegating the query to the
-    // actual OpenGL implementation. Comment out temporarily since
-    // this test is run as one of the WebKit regression tests.
-    // shouldBe('context.getParameter(context.NUM_COMPRESSED_TEXTURE_FORMATS)', '0');
+    shouldBe('context.getParameter(context.NUM_COMPRESSED_TEXTURE_FORMATS)', '0');
     shouldBe('context.getParameter(context.SHADER_COMPILER)', 'true');
 }
 
