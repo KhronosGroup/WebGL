@@ -10,7 +10,6 @@ found in the LICENSE file.
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>WebGL Framebuffer Test</title>
 <link rel="stylesheet" href="../resources/js-test-style.css"/>
-<script src="../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../resources/js-test-pre.js"></script>
 <script src="resources/webgl-test.js"></script>
 </head>
@@ -39,7 +38,7 @@ if (!gl) {
      gl.COLOR_ATTACHMENT0,
      gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
   assertMsg(gl.getError() == gl.INVALID_OPERATION,
-     "calling getFramebufferAttachmentParameter on the default framebuffer should generate INVALID_OPERATION.");
+            "calling getFramebufferAttachmentParameter on the default framebuffer should generate INVALID_OPERATION.");
 
   assertMsg(gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE,
             "calling checkFramebufferStatus on the default framebuffer should generate FRAMEBUFFER_COMPLETE.");

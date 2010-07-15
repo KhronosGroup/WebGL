@@ -62,8 +62,6 @@ function init()
 
     description('Verify texImage2D and texSubImage2D code paths taking both HTML and user-specified data with all format/type combinations');
 
-    debug('');
-
     gl = initWebGL("example", "vshader", "fshader", [ "g_Position", "g_TexCoord0" ], [ 0, 0, 0, 1 ], 1);
     gl.disable(gl.BLEND);
 

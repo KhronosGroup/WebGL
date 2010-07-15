@@ -44,8 +44,6 @@ function init()
 
     description('Verify texImage2D and texSubImage2D code paths taking Images');
 
-    debug('');
-
     gl = initWebGL("example", "vshader", "fshader", [ "g_Position", "g_TexCoord0" ], [ 0, 0, 0, 1 ], 1);
 
     textureLoc = gl.getUniformLocation(gl.program, "tex");

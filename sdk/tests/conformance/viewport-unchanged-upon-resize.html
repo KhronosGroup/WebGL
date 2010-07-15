@@ -32,8 +32,6 @@ void main()
 <script>
 description('Verifies that GL viewport does not change when canvas is resized');
 
-debug('');
-
 var gl = initWebGL("example", "vshader", "fshader", [ "g_Position" ], [ 0, 0, 1, 1 ], 1);
 
 var vertices = new WebGLFloatArray([
