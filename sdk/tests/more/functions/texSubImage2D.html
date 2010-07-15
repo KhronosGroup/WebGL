@@ -51,15 +51,15 @@ Tests.teardown = function(gl,tex) {
 }
 
 Tests.testTexSubImage2D = function(gl) {
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2,2,0,gl.RGBA,gl.UNSIGNED_BYTE, [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
-  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, [0,0,0,0]);
-  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, 2,1,gl.RGBA,gl.UNSIGNED_BYTE, [0,0,0,0,0,0,0,0]);
-  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, 1,2,gl.RGBA,gl.UNSIGNED_BYTE, [0,0,0,0,0,0,0,0]);
-  gl.texSubImage2D(gl.TEXTURE_2D, 0, 1,0, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, [0,0,0,0]);
-  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,1, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, [0,0,0,0]);
-  gl.texSubImage2D(gl.TEXTURE_2D, 0, 1,1, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, [0,0,0,0]);
-  gl.texImage2D(gl.TEXTURE_2D, 1,gl.RGBA, 1,1,0,gl.RGBA,gl.UNSIGNED_BYTE, [0,0,0,0]);
-  gl.texSubImage2D(gl.TEXTURE_2D, 1, 0,0, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, [0,0,0,0]);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2,2,0,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]));
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,0]));
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, 2,1,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,0,0,0,0,0]));
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, 1,2,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,0,0,0,0,0]));
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, 1,0, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,0]));
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,1, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,0]));
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, 1,1, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,0]));
+  gl.texImage2D(gl.TEXTURE_2D, 1,gl.RGBA, 1,1,0,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,0]));
+  gl.texSubImage2D(gl.TEXTURE_2D, 1, 0,0, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,0]));
   var valid_targets = [
     gl.TEXTURE_2D,
     gl.TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -71,8 +71,8 @@ Tests.testTexSubImage2D = function(gl) {
   ];
   valid_targets.forEach(function(t) {
     assertOk(function(){
-        gl.texImage2D(t, 0, gl.RGBA, 1,1,0,gl.RGBA,gl.UNSIGNED_BYTE, [0,0,0,0]);
-        gl.texSubImage2D(t, 0, 0,0, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, [0,0,0,0]);
+        gl.texImage2D(t, 0, gl.RGBA, 1,1,0,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,0]));
+        gl.texSubImage2D(t, 0, 0,0, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,0]));
     });
   });
 }
