@@ -59,6 +59,17 @@ void main()
     gl_FragColor = vec4(gl_foo,0.0,0.0,1.0);
 }
 </script>
+<script id="fshaderWithGL_ESeq1" type="text/something-not-javascript">
+#if GL_ES == 1
+  precision mediump float;
+  void main()
+  {
+      gl_FragColor = vec4(0.0,0.0,0.0,1.0);
+  }
+#else
+  foo
+#endif
+</script>
 <script id="fshaderWithGLSLPreprocessorSymbol" type="text/something-not-javascript">
 #if defined(GL_ES)
   precision mediump float;
@@ -247,6 +258,13 @@ if (!gl) {
       fShaderSuccess: false,
       linkSuccess: false,
       passMsg: 'fragment shader with gl_ identifier should fail',
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithGL_ESeq1',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: 'fragment shader that expects GL_ES == 1 should succeed',
     },
     { vShaderId: 'vshader',
       vShaderSuccess: true,
