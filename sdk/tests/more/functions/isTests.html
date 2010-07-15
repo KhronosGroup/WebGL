@@ -47,6 +47,7 @@ Tests.testIs = function(gl) {
     var sh1 = gl.createShader(gl.VERTEX_SHADER);
     var sh2 = gl.createShader(gl.FRAGMENT_SHADER);
     var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     assert("tex", gl.isTexture(tex));
     assert("fbo", gl.isFramebuffer(fbo.fbo));
     assert("rbo", gl.isRenderbuffer(fbo.rbo));
