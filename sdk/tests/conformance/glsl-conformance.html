@@ -411,8 +411,8 @@ if (!gl) {
       if (wtu.endsWith(firstLine, " fail") ||
           wtu.endsWith(firstLine, " fail.")) {
         success = false;
-      } else if (wtu.endsWith(firstLine, " succeeds") ||
-                 wtu.endsWith(firstLine, " succeeds.")) {
+      } else if (wtu.endsWith(firstLine, " succeed") ||
+                 wtu.endsWith(firstLine, " succeed.")) {
         success = true;
       }
       if (success === undefined) {
