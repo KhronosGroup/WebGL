@@ -25,6 +25,26 @@ var getLastError = function() {
 };
 
 /**
+ * Whether a haystack ends with a needle.
+ * @param {string} haystack String to search
+ * @param {string} needle String to search for.
+ * @param {boolean} True if haystack ends with needle.
+ */
+var endsWith = function(haystack, needle) {
+  return haystack.substr(haystack.length - needle.length) === needle;
+};
+
+/**
+ * Whether a haystack starts with a needle.
+ * @param {string} haystack String to search
+ * @param {string} needle String to search for.
+ * @param {boolean} True if haystack starts with needle.
+ */
+var startsWith = function(haystack, needle) {
+  return haystack.substr(0, needle.length) === needle;
+};
+
+/**
  * A vertex shader for a single texture.
  * @type {string}
  */
@@ -491,7 +511,7 @@ var readFile = function(file) {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", file, false);
   xhr.send();
-  return xhr.responseText;
+  return xhr.responseText.replace(/\r/g, "");
 };
 
 /**
@@ -710,6 +730,7 @@ return {
   checkCanvas: checkCanvas,
   createColoredTexture: createColoredTexture,
   drawQuad: drawQuad,
+  endsWith: endsWith,
   getLastError: getLastError,
   glErrorShouldBe: glErrorShouldBe,
   fillTexture: fillTexture,
@@ -723,12 +744,14 @@ return {
   loadStandardProgram: loadStandardProgram,
   loadStandardVertexShader: loadStandardVertexShader,
   loadStandardFragmentShader: loadStandardFragmentShader,
+  log: log,
   setupProgram: setupProgram,
   setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
   setupSimpleTextureProgram: setupSimpleTextureProgram,
   setupSimpleTextureVertexShader: setupSimpleTextureVertexShader,
   setupTexturedQuad: setupTexturedQuad,
   setupUnitQuad: setupUnitQuad,
+  startsWith: startsWith,
   shouldGenerateGLError: shouldGenerateGLError,
   readFile: readFile,
   readFileList: readFileList,
