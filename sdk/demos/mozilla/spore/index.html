@@ -58,6 +58,9 @@ void main(void) {
 </script>
 
 <script id="shader-fs" type="x-shader/x-fragment">
+#ifdef GL_ES
+precision mediump float;
+#endif
 varying vec3 vNormal;
 varying vec3 vViewVec;
 varying vec2 vTexCoord0;
