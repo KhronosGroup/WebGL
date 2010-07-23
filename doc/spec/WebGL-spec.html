@@ -1994,7 +1994,7 @@ for (var i = 0; i < numVertices; i++) {
 
     <p>
         Texture objects provide storage and state for texturing operations. If no WebGLTexture is bound
-        (e.g., passing null or 0 to bindTexture) then attempts to modify the texture object shall
+        (e.g., passing null or 0 to bindTexture) then attempts to modify or query the texture object shall
         generate an <code>INVALID_OPERATION</code> error. This is indicated in the functions below.
     </p>
      
@@ -2059,6 +2059,9 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>TEXTURE_WRAP_S</td><td>unsigned long</td></tr>
                 <tr><td>TEXTURE_WRAP_T</td><td>unsigned long</td></tr>
             </table>
+        <dd>
+            If an attempt is made to call this function with no WebGLTexture bound (see above), an
+            <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">GLboolean isTexture(WebGLTexture texture)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glIsTexture.xml">
                 (OpenGL ES 2.0 man page)
@@ -3066,7 +3069,8 @@ extensions.
     <p>
        Special thanks to: Arun Ranganathan (Mozilla), Jon Leech, Kenneth Russell (Google), 
        Kenneth Waters (Google), Mark Callow (HI), Mark Steele (Mozilla), Oliver Hunt (Apple), 
-       Tim Johansson (Opera), Vangelis Kokkevis (Google), Vladimir Vukicevic (Mozilla)
+       Tim Johansson (Opera), Vangelis Kokkevis (Google), Vladimir Vukicevic (Mozilla),
+       Gregg Tavares (Google)
     </p>
     <p>
         Additional thanks to: Alan Hudson (Yumetech), Bill Licea Kane (AMD), Cedric Vivier (Zegami),
