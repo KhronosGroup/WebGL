@@ -14,6 +14,22 @@ var log = function(msg) {
   }
 };
 
+/**
+ * Wrapped logging function.
+ * @param {string} msg The message to log.
+ */
+var error = function(msg) {
+  if (window.console) {
+    if (window.console.error) {
+      window.console.error(msg);
+    }
+    else if (window.console.log) {
+      window.console.log(msg);
+    }
+  }
+};
+
+
 var lastError = "";
 
 /**
@@ -115,7 +131,7 @@ var setupProgram = function(gl, shaders, attribs, opt_locations) {
   if (!linked) {
       // something went wrong with the link
       lastError = gl.getProgramInfoLog (program);
-      log("Error in program linking:" + lastError);
+      error("Error in program linking:" + lastError);
 
       gl.deleteProgram(program);
       return null;
@@ -371,7 +387,7 @@ function create3DContextWithWrapperThatThrowsOnGLError(canvas) {
         wrap[i] = context[i];
       }
     } catch (e) {
-      log("createContextWrapperThatThrowsOnGLError: Error accessing " + i);
+      error("createContextWrapperThatThrowsOnGLError: Error accessing " + i);
     }
   }
   wrap.getError = function() {
@@ -438,11 +454,11 @@ var linkProgram = function(gl, program) {
     // something went wrong with the link
     var error = gl.getProgramInfoLog (program);
 
+    testFailed("Error in program linking:" + error);
+
     gl.deleteProgram(program);
     gl.deleteProgram(fragmentShader);
     gl.deleteProgram(vertexShader);
-
-    testFailed("Error in program linking:" + error);
   }
 };
 
@@ -554,7 +570,7 @@ var loadShader = function(gl, shaderSource, shaderType) {
   // Create the shader object
   var shader = gl.createShader(shaderType);
   if (shader == null) {
-    log("*** Error: unable to create shader '"+shaderSource+"'");
+    error("*** Error: unable to create shader '"+shaderSource+"'");
     return null;
   }
 
@@ -569,7 +585,7 @@ var loadShader = function(gl, shaderSource, shaderType) {
   if (!compiled) {
     // Something went wrong during compilation; get the error
     lastError = gl.getShaderInfoLog(shader);
-    log("*** Error compiling shader '" + shader + "':" + lastError);
+    error("*** Error compiling shader '" + shader + "':" + lastError);
     gl.deleteShader(shader);
     return null;
   }
@@ -671,6 +687,26 @@ var loadProgramFromScript = function loadProgramFromScript(
   return program;
 };
 
+/**
+ * Loads shaders from script tags, creates a program, attaches the shaders and
+ * links.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {string} vertexShader The vertex shader.
+ * @param {string} fragmentShader The fragment shader.
+ * @return {!WebGLProgram} The created program.
+ */
+var loadProgram = function(gl, vertexShader, fragmentShader) {
+  var program = gl.createProgram();
+  gl.attachShader(
+      program,
+      loadShader(gl, vertexShader, gl.VERTEX_SHADER));
+  gl.attachShader(
+      program,
+      loadShader(gl, fragmentShader,  gl.FRAGMENT_SHADER));
+  linkProgram(gl, program);
+  return program;
+};
+
 var loadStandardVertexShader = function(gl) {
   return loadShaderFromFile(
       gl, "resources/vertexShader.vert", gl.VERTEX_SHADER);
@@ -736,6 +772,7 @@ return {
   fillTexture: fillTexture,
   loadImageAsync: loadImageAsync,
   loadImagesAsync: loadImagesAsync,
+  loadProgram: loadProgram,
   loadProgramFromFile: loadProgramFromFile,
   loadProgramFromScript: loadProgramFromScript,
   loadShader: loadShader,
@@ -745,6 +782,7 @@ return {
   loadStandardVertexShader: loadStandardVertexShader,
   loadStandardFragmentShader: loadStandardFragmentShader,
   log: log,
+  error: error,
   setupProgram: setupProgram,
   setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
   setupSimpleTextureProgram: setupSimpleTextureProgram,
