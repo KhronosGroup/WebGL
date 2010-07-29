@@ -130,9 +130,9 @@ function output(str) {
 //
 
 function PeriodicIterator(arraySize,
-			  period,
-			  initialOffset,
-			  delta) {
+        period,
+        initialOffset,
+        delta) {
     if (arraySize != undefined) {
         // floating-point steps-per-increment
         var arrayDelta =  arraySize * (delta / period);
@@ -262,8 +262,8 @@ function init() {
     // FIXME: change these to use FloatArray once reads are better optimized
     sinArray = new Array(SIN_ARRAY_SIZE);
     cosArray = new Array(SIN_ARRAY_SIZE);
-    //    sinArray = new WebGLFloatArray(SIN_ARRAY_SIZE);
-    //    cosArray = new WebGLFloatArray(SIN_ARRAY_SIZE);
+    //    sinArray = new Float32Array(SIN_ARRAY_SIZE);
+    //    cosArray = new Float32Array(SIN_ARRAY_SIZE);
     for (var i = 0; i < SIN_ARRAY_SIZE; i++) {
         var step = i * 2 * Math.PI / SIN_ARRAY_SIZE;
         sinArray[i] = Math.sin(step);
@@ -372,12 +372,12 @@ function allocateBigVBO(gl) {
 function computeElements(gl) {
     // FIXME: change this to use CanvasFloatArray once optimized
     xyArray = new Array(tileSize);
-    // xyArray = new WebGLFloatArray(tileSize);
+    // xyArray = new Float32Array(tileSize);
     for (var i = 0; i < tileSize; i++) {
         xyArray[i] = i / (tileSize - 1.0) - 0.5;
     }
 
-    var elements = new WebGLUnsignedShortArray((tileSize - 1) * (2 * STRIP_SIZE));
+    var elements = new Uint16Array((tileSize - 1) * (2 * STRIP_SIZE));
     var idx = 0;
     for (var i = 0; i < tileSize - 1; i++) {
         for (var j = 0; j < 2 * STRIP_SIZE; j += 2) {
@@ -394,7 +394,7 @@ function setupSliceInfo(gl) {
     var sliceSize = tileSize * STRIP_SIZE * 6;
     var floatSize = BYTES_PER_FLOAT;
     if (clientArray == null || clientArray.length != sliceSize) {
-        clientArray = new WebGLFloatArray(sliceSize);
+        clientArray = new Float32Array(sliceSize);
         var clientArrayByteSize = clientArray.byteLength;
         var numSlices = Math.floor(BUFFER_LENGTH / sliceSize) | 0;
         sliceInfo = [];

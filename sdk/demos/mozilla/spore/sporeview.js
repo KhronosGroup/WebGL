@@ -78,11 +78,11 @@ var sf = null;
 function renderStart() {
   var canvas = document.getElementById("canvas");
   var gl = null;
-  try { 
+  try {
     if (!gl)
       gl = canvas.getContext("moz-webgl");
   } catch (e) { }
-  try { 
+  try {
     if (!gl)
       gl = canvas.getContext("webkit-3d");
   } catch (e) { }
@@ -92,7 +92,7 @@ function renderStart() {
     return;
   }
 
-  if (!WebGLFloatArray) {
+  if (!Float32Array) {
     alert("Please update to a newer Firefox nightly to pick up some WebGL API changes!");
     throw "Need newer nightly.";
   }
@@ -132,7 +132,7 @@ function renderStart() {
   }
 
   if (colorUniform) {
-    gl.uniform4fv(colorUniform, new WebGLFloatArray([0.1, 0.2, 0.4, 1.0]));
+    gl.uniform4fv(colorUniform, new Float32Array([0.1, 0.2, 0.4, 1.0]));
   }
 
   var pmMatrix = makePerspective(60, 1, 0.1, 100);
@@ -166,9 +166,9 @@ function renderStart() {
   }
 
   function setMatrixUniforms() {
-    gl.uniformMatrix4fv(mvUniform, false, new WebGLFloatArray(mvMatrix.flatten()));
-    gl.uniformMatrix4fv(pmUniform, false, new WebGLFloatArray(pmMatrix.flatten()));
-    gl.uniform3fv(viewPositionUniform, new WebGLFloatArray(vpos));
+    gl.uniformMatrix4fv(mvUniform, false, new Float32Array(mvMatrix.flatten()));
+    gl.uniformMatrix4fv(pmUniform, false, new Float32Array(pmMatrix.flatten()));
+    gl.uniform3fv(viewPositionUniform, new Float32Array(vpos));
 /*
     console.log("mv", mvMatrix.flatten());
     console.log("pm", pmMatrix.flatten());
@@ -200,7 +200,7 @@ function renderStart() {
   var buffers = { };
   buffers.position = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
-  gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(sf.mesh.position), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sf.mesh.position), gl.STATIC_DRAW);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
   gl.vertexAttribPointer(va, 3, gl.FLOAT, false, 0, 0);
@@ -209,7 +209,7 @@ function renderStart() {
   if (na != -1) {
     buffers.normal = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal);
-    gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(sf.mesh.normal), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sf.mesh.normal), gl.STATIC_DRAW);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal);
     gl.vertexAttribPointer(na, 3, gl.FLOAT, false, 0, 0);
@@ -219,7 +219,7 @@ function renderStart() {
   if (ta != -1) {
     buffers.texcoord = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffers.texcoord);
-    gl.bufferData(gl.ARRAY_BUFFER, new WebGLFloatArray(sf.mesh.texcoord), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sf.mesh.texcoord), gl.STATIC_DRAW);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, buffers.texcoord);
     gl.vertexAttribPointer(ta, 2, gl.FLOAT, false, 0, 0);
@@ -294,7 +294,9 @@ function renderStart() {
               gl.bindTexture(gl.TEXTURE_2D, texid);
               // XXX we should be able to just pass TRUE to flipY for texImage2D here,
               // but we don't support that yet
-              gl.texImage2D(gl.TEXTURE_2D, 0, flipImage(sf.textures.diffuse));
+              gl.texImage2D(
+                  gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+                  flipImage(sf.textures.diffuse));
               gl.generateMipmap(gl.TEXTURE_2D);
 
               gl.uniform1i(tex0Uniform, 0);

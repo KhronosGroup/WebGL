@@ -22,7 +22,7 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
  -->
 <html>
@@ -57,7 +57,7 @@
 #ifdef GL_ES
     precision mediump float;
 #endif
-    
+
     varying float v_Dot;
     varying vec4 v_Color;
 
@@ -76,7 +76,7 @@
             // The id of the Canvas Element
             "example",
             // The ids of the vertex and fragment shaders
-            "vshader", "fshader", 
+            "vshader", "fshader",
             // The vertex attribute names used by the shaders.
             // The order they appear here corresponds to their index
             // used later.
@@ -93,7 +93,7 @@
         gl.box = makeBox(gl);
 
         // Set up the array of colors for the cube's faces
-        var colors = new WebGLUnsignedByteArray(
+        var colors = new Uint8Array(
             [  0, 0, 1, 1,   0, 0, 1, 1,   0, 0, 1, 1,   0, 0, 1, 1,     // v0-v1-v2-v3 front
                1, 0, 0, 1,   1, 0, 0, 1,   1, 0, 0, 1,   1, 0, 0, 1,     // v0-v3-v4-v5 right
                0, 1, 0, 1,   0, 1, 0, 1,   0, 1, 0, 1,   0, 1, 0, 1,     // v0-v5-v6-v1 top
@@ -158,7 +158,7 @@
         gl.perspectiveMatrix.perspective(30, width/height, 1, 10000);
         gl.perspectiveMatrix.lookat(0, 0, 7, 0, 0, 0, 0, 1, 0);
     }
-    
+
     function drawPicture(gl)
     {
         // Make sure the canvas is sized correctly.

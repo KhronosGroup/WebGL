@@ -22,7 +22,7 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
  -->
 <html>
@@ -54,6 +54,9 @@
 </script>
 
 <script id="fshader" type="x-shader/x-fragment">
+    #ifdef GL_ES
+    precision highp float;
+    #endif
     uniform sampler2D sampler2d;
 
     varying float v_Dot;
@@ -76,7 +79,7 @@
             // The id of the Canvas Element
             "example",
             // The ids of the vertex and fragment shaders
-            "vshader", "fshader", 
+            "vshader", "fshader",
             // The vertex attribute names used by the shaders.
             // The order they appear here corresponds to their index
             // used later.
@@ -146,7 +149,7 @@
         gl.perspectiveMatrix.perspective(30, width/height, 1, 10000);
         gl.perspectiveMatrix.lookat(0, 0, 7, 0, 0, 0, 0, 1, 0);
     }
-    
+
     function drawInstance(gl)
     {
         // Construct the normal matrix from the model-view matrix and pass it in
@@ -174,20 +177,20 @@
 
         // Clear the canvas
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        
+
         // 1 - rotate(angle, 0,1,0)
         gl.mvMatrix.makeIdentity();
         gl.mvMatrix.translate(-4, 2,-10);
         gl.mvMatrix.rotate(20, 1,0,0);
         gl.mvMatrix.rotate(currentValue * 360, 0,1,0);
         drawInstance(gl);
-        
+
         // 2 - rotate(20, angle, 0)
         gl.mvMatrix.makeIdentity();
         gl.mvMatrix.translate(0, 2,-10);
         gl.mvMatrix.rotate(20, currentValue * 360, 0);
         drawInstance(gl);
-        
+
         // 3 - translate(sin(value), cos(value), 0)
         gl.mvMatrix.makeIdentity();
         gl.mvMatrix.translate(4, 2,-10);
@@ -195,7 +198,7 @@
         gl.mvMatrix.rotate(20, 0,1,0);
         gl.mvMatrix.translate(Math.sin(currentValue * 2 * Math.PI), Math.cos(currentValue * 2 * Math.PI) * 0.5, 0);
         drawInstance(gl);
-        
+
         // 4 - scale(sin(value))
         gl.mvMatrix.makeIdentity();
         gl.mvMatrix.translate(-4, -2,-10);
@@ -203,33 +206,33 @@
         gl.mvMatrix.rotate(-20, 0,1,0);
         gl.mvMatrix.scale(Math.abs(Math.sin(currentValue * 2 * Math.PI))+0.5, Math.abs(Math.cos(currentValue * 2 * Math.PI))+0.5);
         drawInstance(gl);
-        
+
         // 5 - Decompose
         var mat = new J3DIMatrix4;
         mat.translate(0, -2,-10);
         mat.scale(0.5);
         mat.rotate(currentValue * 360, 0,1,0);
-           
+
         var translate = new Array(3);
         var rotate = new Array(3);
         var scale = new Array(3);
         var skew = new Array(3);
         var perspective = new Array(4);
         mat.decompose(translate, rotate, scale, skew, perspective);
-        
+
         gl.mvMatrix.makeIdentity();
         gl.mvMatrix.translate(translate[0], translate[1], translate[2]);
         gl.mvMatrix.rotate(20, 1,0,0);
         gl.mvMatrix.rotate(rotate[0], rotate[1], rotate[2]);
         drawInstance(gl);
-        
+
         // 6 - Animate lookat
         gl.mvMatrix.makeIdentity();
         gl.mvMatrix.translate(10, -5,-30);
         gl.mvMatrix.rotate(0, 10,0);
         gl.mvMatrix.lookat(Math.sin(currentValue * 2 * Math.PI) * 2, Math.cos(currentValue * 2 * Math.PI) * 2, 5, 0, 0, -2, 0, 1, 0)
         drawInstance(gl);
-        
+
         // Finish up.
         gl.flush();
 
@@ -262,19 +265,19 @@
     canvas {
         border: 2px solid black;
     }
-    
+
     .box {
         position:absolute;
         width:100;
         height:30;
         color:white;
     }
-    #box1 { left:100px; top:80px; } 
-    #box2 { left:420px; top:80px; } 
-    #box3 { left:740px; top:80px; } 
-    #box4 { left:100px; top:680px; } 
-    #box5 { left:420px; top:680px; } 
-    #box6 { left:740px; top:680px; } 
+    #box1 { left:100px; top:80px; }
+    #box2 { left:420px; top:80px; }
+    #box3 { left:740px; top:80px; }
+    #box4 { left:100px; top:680px; }
+    #box5 { left:420px; top:680px; }
+    #box6 { left:740px; top:680px; }
 </style>
 </head>
 

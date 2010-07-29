@@ -207,7 +207,9 @@ function loadTexture(src, opt_completionCallback) {
         // closures to refer to the "texture" and "image" variables in the
         // containing function.
         gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, image, true);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(
+            gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
         gl.generateMipmap(gl.TEXTURE_2D);
         if (opt_completionCallback) {
             opt_completionCallback();

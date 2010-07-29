@@ -96,6 +96,9 @@ function initShaders() {
         "}"
     ].join("\n");
     var fShaderStr = [
+        "#ifdef GL_ES\n",
+        "precision highp float;\n",
+        "#endif\n",
         "uniform sampler2D tex;",
         "varying vec2 texCoord;",
         "void main()",
@@ -133,14 +136,14 @@ function initShaders() {
     checkGLError();
     g_vbo = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, g_vbo);
-    var vertices = new WebGLFloatArray([
+    var vertices = new Float32Array([
         0.25,  0.75, 0.0,
         -0.75,  0.75, 0.0,
         -0.75, -0.25, 0.0,
         0.25,  0.75, 0.0,
         -0.75, -0.25, 0.0,
         0.25, -0.25, 0.0]);
-    var texCoords = new WebGLFloatArray([
+    var texCoords = new Float32Array([
         1.0, 1.0,
         0.0, 1.0,
         0.0, 0.0,
@@ -206,7 +209,9 @@ function loadTexture(src) {
         // closures to refer to the "texture" and "image" variables in the
         // containing function.
         gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, image, true);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(
+            gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
         checkGLError();
         draw();
     };

@@ -75,17 +75,17 @@ function CameraController(element, opt_canvas, opt_context) {
             // Read back a small portion of the frame buffer around this point
             if (canvasRelativeX > 0 && canvasRelativeX < canvasWidth &&
                 canvasRelativeY > 0 && canvasRelativeY < canvasHeight) {
-                var pixels = controller.context_.readPixels(canvasRelativeX,
-                                                            canvasHeight - canvasRelativeY,
-                                                            1,
-                                                            1,
-                                                            controller.context_.RGBA,
-                                                            controller.context_.UNSIGNED_BYTE);
-                if (pixels) {
-                    // See whether this pixel has an alpha value of >= about 10%
-                    if (pixels[3] > (255.0 / 10.0)) {
-                        dragging = true;
-                    }
+                var pixels = new Uint8Array(1);
+                controller.context_.readPixels(canvasRelativeX,
+                                               canvasHeight - canvasRelativeY,
+                                               1,
+                                               1,
+                                               controller.context_.RGBA,
+                                               controller.context_.UNSIGNED_BYTE,
+                                               pixels);
+                // See whether this pixel has an alpha value of >= about 10%
+                if (pixels[3] > (255.0 / 10.0)) {
+                    dragging = true;
                 }
             }
         } else {

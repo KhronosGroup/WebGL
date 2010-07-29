@@ -160,6 +160,9 @@ var bumpReflectVertexSource = [
     ].join("\n");
 
 var bumpReflectFragmentSource = [
+    "#ifdef GL_ES\n",
+    "precision highp float;\n",
+    "#endif\n",
     "const float bumpHeight = 0.2;",
     "",
     "uniform sampler2D normalSampler;",
@@ -282,10 +285,10 @@ function draw() {
     var viewInverse = view.inverse();
 
     // Set up uniforms
-    gl.uniformMatrix4fv(g_worldLoc, gl.FALSE, new WebGLFloatArray(model.elements));
-    gl.uniformMatrix4fv(g_worldInverseTransposeLoc, gl.FALSE, new WebGLFloatArray(worldInverseTranspose.elements));
-    gl.uniformMatrix4fv(g_worldViewProjLoc, gl.FALSE, new WebGLFloatArray(mvp.elements));
-    gl.uniformMatrix4fv(g_viewInverseLoc, gl.FALSE, new WebGLFloatArray(viewInverse.elements));
+    gl.uniformMatrix4fv(g_worldLoc, gl.FALSE, new Float32Array(model.elements));
+    gl.uniformMatrix4fv(g_worldInverseTransposeLoc, gl.FALSE, new Float32Array(worldInverseTranspose.elements));
+    gl.uniformMatrix4fv(g_worldViewProjLoc, gl.FALSE, new Float32Array(mvp.elements));
+    gl.uniformMatrix4fv(g_viewInverseLoc, gl.FALSE, new Float32Array(viewInverse.elements));
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, g_bumpTexture);
     gl.uniform1i(g_normalSamplerLoc, 0);
@@ -324,7 +327,9 @@ function loadTexture(src) {
     image.onload = function() {
         --g_pendingTextureLoads;
         gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, image, true);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(
+            gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
         checkGLError();
         draw();
     };
@@ -365,7 +370,9 @@ function loadCubeMap(base, suffix) {
             return function() {
                 --g_pendingTextureLoads;
                 gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
-                gl.texImage2D(face, 0, image);
+                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+                gl.texImage2D(
+                   face, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
                 checkGLError();
                 draw();
             }

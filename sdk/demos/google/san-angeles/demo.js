@@ -73,6 +73,9 @@ var flatVertexSource = [
     ].join("\n");
 
 var flatFragmentSource = [
+    "#ifdef GL_ES\n",
+    "precision highp float;\n",
+    "#endif\n",
     "varying vec4 color;",
     "void main() {",
     "  gl_FragColor = vec4(color.rgb, 1.0);",
@@ -133,6 +136,9 @@ var litVertexSource = [
     ].join("\n");
 
 var fadeVertexSource = [
+    "#ifdef GL_ES\n",
+    "precision highp float;\n",
+    "#endif\n",
     "attribute vec2 pos;",
     "",
     "varying vec4 color;",
@@ -260,15 +266,15 @@ function GlObject(shader, vertices, colors, normals) {
     this.count =  (vertices.length / 3) | 0;
     this.vbo = gl.createBuffer();
 
-    var vertexArray = new WebGLFloatArray(vertices);
-    var colorArray = new WebGLUnsignedByteArray(colors);
+    var vertexArray = new Float32Array(vertices);
+    var colorArray = new Uint8Array(colors);
     this.vertexOffset = 0;
     this.colorOffset = vertexArray.byteLength;
     this.normalOffset = this.colorOffset + colorArray.byteLength;
     var sizeInBytes = this.normalOffset;
     var normalArray = null;
     if (normals != undefined) {
-        normalArray = new WebGLFloatArray(normals);
+        normalArray = new Float32Array(normals);
         sizeInBytes += normalArray.byteLength;
     }
 
@@ -724,7 +730,7 @@ function drawGroundPlane() {
 }
 
 function createFadeQuad() {
-    var vertices = new WebGLFloatArray([
+    var vertices = new Float32Array([
         -1., -1.,
         1., -1.,
         -1.,  1.,

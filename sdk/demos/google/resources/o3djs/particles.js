@@ -220,6 +220,9 @@ o3djs.particles.SHADER_STRINGS = [
   '}\n',
 
   // Fragment shader used by both 2D and 3D vertex shaders
+  '#ifdef GL_ES\n' +
+  'precision highp float;\n' +
+  '#endif\n' +
   'uniform sampler2D rampSampler;\n' +
   'uniform sampler2D colorSampler;\n' +
   '\n' +
@@ -335,10 +338,10 @@ o3djs.particles.ParticleSystem = function(gl,
         return Math.random();
       };
 
-  // This WebGLFloatArray is used to store a single particle's data
+  // This Float32Array is used to store a single particle's data
   // in the VBO. As of this writing there wasn't a way to store less
   // than a full WebGLArray's data in a bufferSubData call.
-  this.singleParticleArray_ = new WebGLFloatArray(4 * o3djs.particles.LAST_IDX);
+  this.singleParticleArray_ = new Float32Array(4 * o3djs.particles.LAST_IDX);
 
   /**
    * The shaders for particles.
@@ -389,7 +392,7 @@ o3djs.particles.ParticleSystem.prototype.createTextureFromFloats = function(widt
   // texel.
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  var data = new WebGLUnsignedByteArray(pixels.length);
+  var data = new Uint8Array(pixels.length);
   for (var i = 0; i < pixels.length; i++) {
     var t = pixels[i] * 255.;
     data[i] = t;
@@ -735,10 +738,10 @@ o3djs.particles.ParticleEmitter = function(particleSystem,
 
   this.createdParticles_ = false;
 
-  // This WebGLFloatArray is used to store a single particle's data
+  // This Float32Array is used to store a single particle's data
   // in the VBO. As of this writing there wasn't a way to store less
   // than a full WebGLArray's data in a bufferSubData call.
-  this.singleParticleArray_ = new WebGLFloatArray(4 * o3djs.particles.LAST_IDX);
+  this.singleParticleArray_ = new Float32Array(4 * o3djs.particles.LAST_IDX);
 
   // The VBO holding the particles' data, (re-)allocated in
   // allocateParticles_().
@@ -996,7 +999,7 @@ o3djs.particles.ParticleEmitter.prototype.allocateParticles_ = function(
                   (numParticles + 1) * this.particleSystem.singleParticleArray_.byteLength,
                   gl.DYNAMIC_DRAW);
     // TODO(kbr): assumption of <= 65536 particles
-    var indices = new WebGLUnsignedShortArray(6 * numParticles);
+    var indices = new Uint16Array(6 * numParticles);
     var idx = 0;
     for (var ii = 0; ii < numParticles; ++ii) {
       // Make 2 triangles for the quad.
@@ -1116,7 +1119,7 @@ o3djs.particles.ParticleEmitter.prototype.draw = function(world, viewProjection,
   gl.bindTexture(gl.TEXTURE_2D, this.colorTexture_);
   gl.uniform1i(shader.colorSamplerLoc, 1);
   gl.activeTexture(gl.TEXTURE0);
-  
+
   // Set up vertex attributes
   var sizeofFloat = gl.sizeInBytes(gl.FLOAT);
   var stride = sizeofFloat * o3djs.particles.LAST_IDX;
@@ -1148,7 +1151,7 @@ o3djs.particles.ParticleEmitter.prototype.draw = function(world, viewProjection,
                          sizeofFloat * o3djs.particles.COLOR_MULT_IDX);
   gl.enableVertexAttribArray(shader.colorMultLoc);
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer_);
-  gl.drawElements(gl.TRIANGLES, this.numParticles_ * 6, 
+  gl.drawElements(gl.TRIANGLES, this.numParticles_ * 6,
                   gl.UNSIGNED_SHORT, 0);
 
   gl.disableVertexAttribArray(shader.uvLifeTimeFrameStartLoc);

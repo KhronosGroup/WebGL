@@ -1,11 +1,14 @@
 
-vertexShader = 
+vertexShader =
   "attribute vec2 position;\n" +
   "void main() {\n" +
   "  gl_Position = vec4(position, 0., 1.);\n" +
   "}";
 
 fragmentShader =
+  '#ifdef GL_ES\n' +
+  'precision highp float;\n' +
+  '#endif\n' +
   "void main() {" +
   "  gl_FragColor = vec4(.2, .4, .6, 1.);" +
   "}";
@@ -39,7 +42,7 @@ function init() {
 
   gl.useProgram(program);
   // console.log(gl.getError());
-  
+
   positionLocation = gl.getAttribLocation(program, "position");
   console.log(gl.getError());
 
