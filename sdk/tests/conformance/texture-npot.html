@@ -29,6 +29,9 @@ void main()
 </script>
 
 <script id="fshader" type="x-shader/x-fragment">
+#ifdef GL_ES
+precision mediump float;
+#endif
 uniform samplerCube tex;
 varying vec2 texCoord;
 void main()
@@ -93,7 +96,8 @@ wtu.checkCanvas(
     gl, [0, 192, 128, 255],
     "NPOT texture with TEXTURE_MIN_FILTER set to LINEAR should draw.");
 
-// ------------------- Cube Map -----------------------
+gl.copyTexImage2D(gl.TEXTURE_2D, 1, gl.RGBA, 0, 0, 5, 3, 0);
+assertMsg(gl.getError() == gl.INVALID_VALUE, "copyTexImage2D with NPOT texture with level > 0 should return INVALID_VALUE.");
 
 debug("");
 debug("check using cubemap");
@@ -177,7 +181,6 @@ wtu.drawQuad(gl);
 wtu.checkCanvas(
     gl, [0, 192, 128, 255],
     "POT cubemap with TEXTURE_MIN_FILTER set to LINEAR_MIPMAP_LINEAR should draw.");
-
 
 successfullyParsed = true;
 
