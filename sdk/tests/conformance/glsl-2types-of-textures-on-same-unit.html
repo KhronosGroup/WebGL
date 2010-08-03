@@ -30,6 +30,9 @@ void main()
 </script>
 
 <script id="fshader" type="x-shader/x-fragment">
+#ifdef GL_ES
+precision highp float;
+#endif
 uniform sampler2D tex2d;
 uniform samplerCube texCube;
 varying vec2 texCoord;

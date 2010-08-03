@@ -166,6 +166,7 @@ var setupSimpleTextureProgram = function(
     gl.deleteShader(fs);
     gl.deleteShader(vs);
   }
+  gl.useProgram(program);
   return program;
 };
 

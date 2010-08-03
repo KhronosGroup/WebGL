@@ -74,7 +74,7 @@ window.onload = function() {
 
   var tex = gl1.createTexture();
   gl1.bindTexture(gl1.TEXTURE_2D, tex);
-  gl1.texImage2D(gl1.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+  gl1.texImage2D(gl1.TEXTURE_2D, 0, gl1.RGBA, gl1.RGBA, gl1.UNSIGNED_BYTE, img);
 
   assertMsg(causedException(makeReadPixels(gl1)),
             "should throw exception by readPixels for NON origin clean canvas.");
@@ -92,8 +92,9 @@ window.onload = function() {
             "should not throw exception by toDataURL for origin clean canvas.");
 
   var tex = gl2.createTexture();
-  gl1.bindTexture(gl2.TEXTURE_2D, tex);
-  gl1.texImage2D(gl2.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas1);
+  gl2.bindTexture(gl2.TEXTURE_2D, tex);
+  gl2.texImage2D(
+     gl2.TEXTURE_2D, 0, gl2.RGBA, gl2.RGBA, gl2.UNSIGNED_BYTE, canvas1);
 
   assertMsg(causedException(makeReadPixels(gl2)),
             "should throw exception by readPixels for NON origin clean canvas.");
