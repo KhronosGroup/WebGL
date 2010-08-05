@@ -37,6 +37,14 @@ void main()
     gl_FragColor = mediump vec4(1.0,0.0,0.0,1.0);
 }
 </script>
+<script id="vshaderWithDefaultPrecision" type="text/something-not-javascript">
+precision mediump float;
+attribute vec4 vPosition;
+void main()
+{
+    gl_Position = vPosition;
+}
+</script>
 <script id="fshaderWithDefaultPrecision" type="text/something-not-javascript">
 precision mediump float;
 void main()
@@ -244,6 +252,13 @@ if (!gl) {
       fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'fragment shader with default precision compiled and linked'
+    },
+    { vShaderId: 'vshaderWithDefaultPrecision',
+      vShaderSuccess: true,
+      fShaderId: 'fshader',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: 'vertex shader with default precision compiled and linked'
     },
     { vShaderId: 'vshader',
       vShaderSuccess: true,
