@@ -32,8 +32,10 @@ function init()
 
     textureLoc = gl.getUniformLocation(gl.program, "tex");
 
-    // TODO(gman): Do we need to do something to make sure the video is ready?
-    runTest(document.getElementById("vid"));
+    var video = document.getElementById("vid");
+    video.addEventListener(
+        "ended", function() { runTest(video); }, true);
+    video.play();
 }
 
 // These two declarations need to be global for "shouldBe" to see them
@@ -67,6 +69,14 @@ function runOneIteration(videoElement, useTexSubImage2D, flipY, topColor, bottom
     } else {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, videoElement);
     }
+
+    var c = document.createElement("canvas");
+    c.width = 16;
+    c.height = 16;
+    c.style.border = "1px solid black";
+    var ctx = c.getContext("2d");
+    ctx.drawImage(videoElement, 0, 0, 16, 16);
+    document.body.appendChild(c);
 
     // Point the uniform sampler to texture unit 0
     gl.uniform1i(textureLoc, 0);
@@ -109,7 +119,7 @@ function finish() {
 <canvas id="example" width="32px" height="32px"></canvas>
 <div id="description"></div>
 <div id="console"></div>
-<video width="640" height="128" id="vid" control>
+<video width="640" height="228" id="vid" controls autoplay>
   <source src="resources/red-green.mp4"  type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
   <source src="resources/red-green.webmvp8.webm"  type='video/ogg; codecs="theora, vorbis"' />
   <source src="resources/red-green.theora.ogv" type='video/webm; codecs="vp8, vorbis"' />
