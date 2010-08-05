@@ -107,8 +107,6 @@ var program = wtu.setupProgram(
      wtu.loadShaderFromScript(gl, 'fshader', gl.FRAGMENT_SHADER)],
     ['vPosition', 'texCoord0'], [0, 1]);
 var tex = gl.createTexture();
-assertMsg(gl.getError() == gl.INVALID_VALUE,
-          "gl.texImage2D with NPOT texture with level > 0 should return INVALID_VALUE");
 
 // Check that an NPOT texture not on level 0 generates INVALID_VALUE
 fillCubeTexture(gl, tex, 5, 3, [0, 192, 128, 255], 1);
