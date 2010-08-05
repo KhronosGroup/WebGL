@@ -34,7 +34,7 @@ function init()
 
     var video = document.getElementById("vid");
     video.addEventListener(
-        "ended", function() { runTest(video); }, true);
+        "playing", function() { runTest(video); }, true);
     video.play();
 }
 
