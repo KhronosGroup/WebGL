@@ -30,7 +30,9 @@ void main()
 }
 </script>
 <script id="fshader2d" type="x-shader/x-fragment">
+#ifdef GL_ES
 precision highp float;
+#endif
 uniform sampler2D tex2d;
 varying vec2 texCoord;
 void main()
@@ -39,7 +41,9 @@ void main()
 }
 </script>
 <script id="fshaderCube" type="x-shader/x-fragment">
+#ifdef GL_ES
 precision highp float;
+#endif
 uniform samplerCube texCube;
 void main()
 {
@@ -47,7 +51,7 @@ void main()
 }
 </script>
 
-  <script>
+<script>
 function init()
 {
   if (window.initNonKhronosFramework) {
@@ -180,11 +184,7 @@ function init()
 init();
 successfullyParsed = true;
 </script>
-</body>
 <script src="../resources/js-test-post.js"></script>
-
-<script>
-</script>
 
 </body>
 </html>
