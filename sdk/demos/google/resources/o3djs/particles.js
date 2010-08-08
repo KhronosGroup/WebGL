@@ -1121,7 +1121,7 @@ o3djs.particles.ParticleEmitter.prototype.draw = function(world, viewProjection,
   gl.activeTexture(gl.TEXTURE0);
 
   // Set up vertex attributes
-  var sizeofFloat = gl.sizeInBytes(gl.FLOAT);
+  var sizeofFloat = 4;
   var stride = sizeofFloat * o3djs.particles.LAST_IDX;
   gl.bindBuffer(gl.ARRAY_BUFFER, this.particleBuffer_);
   gl.vertexAttribPointer(shader.uvLifeTimeFrameStartLoc, 4, gl.FLOAT, false, stride,

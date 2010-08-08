@@ -115,8 +115,8 @@ if ("WebKitCSSMatrix" in window && ("media" in window && window.media.matchMediu
 }
 */
 
-console.log("J3DIHasCSSMatrix="+J3DIHasCSSMatrix);
-console.log("J3DIHasCSSMatrixCopy="+J3DIHasCSSMatrixCopy);
+//  console.log("J3DIHasCSSMatrix="+J3DIHasCSSMatrix);
+//  console.log("J3DIHasCSSMatrixCopy="+J3DIHasCSSMatrixCopy);
 
 //
 // J3DIMatrix4

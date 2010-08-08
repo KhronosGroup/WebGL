@@ -70,7 +70,6 @@
 <script>
     function init()
     {
-        console.log("Starting init...");
         // Initialize
         var gl = initWebGL(
             // The id of the Canvas Element
@@ -83,6 +82,8 @@
             [ "vNormal", "vColor", "vPosition"],
             // The clear color and depth values
             [ 0, 0, 0, 1 ], 10000);
+
+        gl.console.log("Starting init...");
 
         // Set up a uniform variable for the shaders
         gl.uniform3f(gl.getUniformLocation(gl.program, "lightDir"), 0, 0, 1);

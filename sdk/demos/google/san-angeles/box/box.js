@@ -30,7 +30,7 @@ function init() {
   vs = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(vs, vertexShader);
   gl.compileShader(vs);
-  console.log(vertexShader);
+  log(vertexShader);
 
   fs = gl.createShader(gl.FRAGMENT_SHADER);
   gl.shaderSource(fs, fragmentShader);
@@ -38,25 +38,25 @@ function init() {
   gl.attachShader(program, vs);
   gl.attachShader(program, fs);
   gl.linkProgram(program);
-  console.log(gl.getProgramInfoLog(program));
+  log(gl.getProgramInfoLog(program));
 
   gl.useProgram(program);
-  // console.log(gl.getError());
+  // log(gl.getError());
 
   positionLocation = gl.getAttribLocation(program, "position");
-  console.log(gl.getError());
+  log(gl.getError());
 
   vbo = gl.genBuffers(1)[0];
   gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
   gl.bufferData(gl.ARRAY_BUFFER, vertexData, gl.FLOAT, gl.STATIC_DRAW);
   // ELEMENT_ARRAY_BUFFER
-  console.log(gl.getError());
+  log(gl.getError());
 }
 
 function draw() {
   gl.clearColor(0.7, 0.7, 0.7, 0.7);
   gl.clear(gl.COLOR_BUFFER_BIT);
-  console.log("positionLocation = " + positionLocation);
+  log("positionLocation = " + positionLocation);
   // gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, vertexData);
   gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(positionLocation);

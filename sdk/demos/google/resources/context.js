@@ -31,8 +31,14 @@
 function getWebGLContext(canvas) {
     var gl = null;
     try {
-        gl = canvas.getContext("experimental-webgl");
+        gl = canvas.getContext("webgl");
     } catch (e) {
+    }
+    if (!gl) {
+        try {
+            gl = canvas.getContext("experimental-webgl");
+        } catch (e) {
+        }
     }
     if (!gl) {
         var div = document.createElement("div");

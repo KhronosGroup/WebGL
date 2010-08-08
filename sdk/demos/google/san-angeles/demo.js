@@ -197,7 +197,7 @@ function Shader(vertex, fragment) {
 
     if (!gl.getShaderParameter(vs, gl.COMPILE_STATUS)) {
         var infoLog = gl.getShaderInfoLog(vs);
-        console.log("Error compiling vertex shader:" + infoLog);
+        log("Error compiling vertex shader:" + infoLog);
     }
 
     gl.attachShader(this.program, vs);
@@ -209,7 +209,7 @@ function Shader(vertex, fragment) {
 
     if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
         var infoLog = gl.getShaderInfoLog(fs);
-        console.log("Error compiling fragment shader:" + infoLog);
+        log("Error compiling fragment shader:" + infoLog);
     }
 
     gl.attachShader(this.program, fs);
@@ -217,7 +217,7 @@ function Shader(vertex, fragment) {
 
     gl.linkProgram(this.program);
     gl.useProgram(this.program);
-    // console.log(gl.getProgramInfoLog(this.program));
+    // log(gl.getProgramInfoLog(this.program));
 
     // find uniforms and attributes
     var re = /(uniform|attribute)\s+\S+\s+(\S+)\s*;/g;
@@ -578,8 +578,8 @@ Matrix4x4.prototype.lookAt = function(eyeX, eyeY, eyeZ,
                                       centerX, centerY, centerZ,
                                       upX, upY, upZ) {
 
-    // console.log("lookAt");
-    // console.log([eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ]);
+    // log("lookAt");
+    // log([eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ]);
 
     /* Z vector */
     var z = Array(3);
@@ -647,7 +647,7 @@ Matrix4x4.prototype.lookAt = function(eyeX, eyeY, eyeZ,
     lookAt.elements[2 * 4 + 3] = 0.;
     lookAt.elements[3 * 4 + 3] = 1.;
 
-    // console.log(lookAt.elements);
+    // log(lookAt.elements);
 
     lookAt = lookAt.multiply(this);
     this.elements = lookAt.elements;
@@ -656,7 +656,7 @@ Matrix4x4.prototype.lookAt = function(eyeX, eyeY, eyeZ,
     */
     this.translate(-eyeX, -eyeY, -eyeZ);
 
-    // console.log(this.elements);
+    // log(this.elements);
 
     return this;
 };
@@ -671,8 +671,8 @@ Matrix4x4.prototype.pop = function() {
 };
 
 function camTrack() {
-    // console.log('camTrack');
-    // console.log(sTick);
+    // log('camTrack');
+    // log(sTick);
 
     nextCamTrackStartTick = currentCamTrackStartTick +
             camTracks[currentCamTrack].len * CAMTRACK_LEN;
@@ -684,7 +684,7 @@ function camTrack() {
         currentCamTrackStartTick = nextCamTrackStartTick;
         nextCamTrackStartTick = currentCamTrackStartTick +
                 camTracks[currentCamTrack].len * CAMTRACK_LEN;
-        // console.log(currentCamTrack);
+        // log(currentCamTrack);
     }
 
     var cam = camTracks[currentCamTrack];
