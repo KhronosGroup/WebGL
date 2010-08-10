@@ -10,7 +10,9 @@ found in the LICENSE file.
 <script src="resources/webgl-test.js"></script>
 <script src="resources/webgl-test-utils.js"></script>
 <script id="fshader" type="x-shader/x-fragment">
+#ifdef GL_ES
 precision highp float;
+#endif
 uniform sampler2D tex;
 varying vec2 texCoord;
 
