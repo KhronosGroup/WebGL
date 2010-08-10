@@ -82,7 +82,7 @@ function init()
   gl.bufferData(
       gl.ARRAY_BUFFER,
       new Float32Array([-1, 1,0, 1,1,0, -1,-1,0,
-                           -1,-1,0, 1,1,0,  1,-1,0]),
+                        -1,-1,0, 1,1,0,  1,-1,0]),
       gl.STATIC_DRAW);
   gl.enableVertexAttribArray(0);
   gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
@@ -92,7 +92,7 @@ function init()
   gl.bufferData(
       gl.ARRAY_BUFFER,
       new Float32Array([ 0,0, 1,0, 0,1,
-                            0,1, 1,0, 1,1]),
+                         0,1, 1,0, 1,1]),
       gl.STATIC_DRAW);
   gl.enableVertexAttribArray(1);
   gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
@@ -109,6 +109,7 @@ function init()
 
   // make a cube texture
   var texCube = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_CUBE_MAP, texCube);
   ctx2d.fillStyle = "rgba(255, 0, 255, 255)";
   ctx2d.fillRect(0, 0, 1, 1);
   var targets = [
