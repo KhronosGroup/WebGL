@@ -41,16 +41,16 @@ function init()
   var textureLoc = gl.getUniformLocation(program, "tex");
 
   gl.uniform1i(textureLoc, 1);
-  assertMsg(gl.getError() == gl.NO_ERROR,
+  glErrorShouldBe(gl, gl.NO_ERROR,
             "uniform1i can set a sampler uniform");
   gl.uniform1iv(textureLoc, [1]);
-  assertMsg(gl.getError() == gl.NO_ERROR,
+  glErrorShouldBe(gl, gl.NO_ERROR,
             "uniform1iv can set a sampler uniform");
   gl.uniform1f(textureLoc, 1);
-  assertMsg(gl.getError() == gl.INVALID_OPERATION,
+  glErrorShouldBe(gl, gl.INVALID_OPERATION,
             "uniform1f returns INVALID_OPERATION if attempting to set a sampler uniform");
   gl.uniform1fv(textureLoc, [1]);
-  assertMsg(gl.getError() == gl.INVALID_OPERATION,
+  glErrorShouldBe(gl, gl.INVALID_OPERATION,
             "uniform1fv returns INVALID_OPERATION if attempting to set a sampler uniform");
 }
 

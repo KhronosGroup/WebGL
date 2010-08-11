@@ -55,12 +55,12 @@ for (var ii = 2; ii <= 4; ++ii) {
   }
   name = "uniformMatrix" + ii + "fv";
   gl[name](loc, false, mat);
-  assertMsg(gl.getError() == gl.INVALID_VALUE, "should fail with insufficient array size for " + name);
+  glErrorShouldBe(gl, gl.INVALID_VALUE, "should fail with insufficient array size for " + name);
   mat[ii * ii - 1] = 1;
   gl[name](loc, false, mat);
-  assertMsg(gl.getError() == gl.NO_ERROR, "can call " + name + "with transpose = false");
+  glErrorShouldBe(gl, gl.NO_ERROR, "can call " + name + "with transpose = false");
   gl[name](loc, true, mat);
-  assertMsg(gl.getError() == gl.INVALID_VALUE, name + " should return INVALID_VALUE with transpose = true");
+  glErrorShouldBe(gl, gl.INVALID_VALUE, name + " should return INVALID_VALUE with transpose = true");
 }
 
 debug("");

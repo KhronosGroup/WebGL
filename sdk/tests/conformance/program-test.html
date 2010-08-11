@@ -80,7 +80,7 @@ function go() {
     assertMsg(gl.getShaderParameter(fsBad, gl.COMPILE_STATUS) == false,
               "bad fragment shader should fail to compile");
 
-    assertMsg(gl.getError() == gl.NO_ERROR,
+    glErrorShouldBe(gl, gl.NO_ERROR,
               "should be no errors at this point");
 
 /////// Check attachShader() /////////////////////////////
@@ -92,7 +92,7 @@ function go() {
         if(gl.getError() != gl.NO_ERROR)
             assertMsg(false, "unexpected error in attachShader()");
         gl.attachShader(prog, shader);
-        assertMsg(gl.getError() == expected_error_code, errmsg);
+        glErrorShouldBe(gl, expected_error_code, errmsg);
     }
 
     checkAttachShader([], vs, gl.NO_ERROR, "attaching a vertex shader should succeed");
@@ -111,7 +111,7 @@ function go() {
         if(gl.getError() != gl.NO_ERROR)
             assertMsg(false, "unexpected error in attachShader()");
         gl.detachShader(prog, shader);
-        assertMsg(gl.getError() == expected_error_code, errmsg);
+        glErrorShouldBe(gl, expected_error_code, errmsg);
     }
 
     checkDetachShader([vs], vs, gl.NO_ERROR, "detaching a vertex shader should succeed");
@@ -171,9 +171,9 @@ function go() {
             assertMsg(false, "unexpected error in getProgramParameter()");
         gl.useProgram(prog);
         if (expected_status == true)
-            assertMsg(gl.getError() == gl.NO_ERROR, "using a valid program should succeed");
+            glErrorShouldBe(gl, gl.NO_ERROR, "using a valid program should succeed");
         if (expected_status == false)
-            assertMsg(gl.getError() == gl.INVALID_OPERATION, "using an invalid program should generate INVALID_OPERATION");
+            glErrorShouldBe(gl, gl.INVALID_OPERATION, "using an invalid program should generate INVALID_OPERATION");
         return prog;
     }
 
@@ -186,7 +186,7 @@ function go() {
     var progBad5 = checkLinkAndUse([vsBad, fsBad], false, "program with bad shaders should fail to link");
 
     gl.useProgram(progGood1);
-    assertMsg(gl.getError() == gl.NO_ERROR,
+    glErrorShouldBe(gl, gl.NO_ERROR,
               "using a valid program shouldn't generate a GL error");
 
     var vbuf = gl.createBuffer();
@@ -202,16 +202,16 @@ function go() {
     gl.enableVertexAttribArray(0);
     gl.vertexAttrib3f(1, 1.0, 0.0, 0.0);
 
-    assertMsg(gl.getError() == gl.NO_ERROR,
+    glErrorShouldBe(gl, gl.NO_ERROR,
               "should be no errors at this point #2");
 
     gl.useProgram(progGood1);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    assertMsg(gl.getError() == gl.NO_ERROR,
+    glErrorShouldBe(gl, gl.NO_ERROR,
               "drawing with a valid program shouldn't generate a GL error");
 
     gl.useProgram(progBad1);
-    assertMsg(gl.getError() == gl.INVALID_OPERATION,
+    glErrorShouldBe(gl, gl.INVALID_OPERATION,
               "using an invalid program should generate INVALID_OPERATION");
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     assertMsg(gl.getError() != gl.NO_ERROR,
@@ -225,7 +225,7 @@ function go() {
 
     gl.useProgram(progGood1);
     gl.drawArrays(gl.TRIANGLES, 0, 4);
-    assertMsg(gl.getError() == gl.NO_ERROR,
+    glErrorShouldBe(gl, gl.NO_ERROR,
               "drawing with a valid when last used program shouldn't generate a GL error");
 }
 

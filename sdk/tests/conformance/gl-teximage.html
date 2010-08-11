@@ -23,7 +23,7 @@ var canvas = document.getElementById("example");
 var gl = wtu.create3DContext(canvas);
 var program = wtu.setupTexturedQuad(gl);
 
-assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
+glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
 var imgURLs = [
   'resources/gray-ramp-256-with-128-alpha.png',
@@ -84,7 +84,7 @@ function runTests(imgs) {
   debug("check pixels are NOT pre-multiplied");
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['resources/zero-alpha.png']);
-  assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup");
+  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   wtu.drawQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
 
@@ -116,7 +116,7 @@ function runTests(imgs) {
     gl.texImage2D(
         gl.TEXTURE_2D, 0, info.format, info.format, info.type,
         imgs['resources/gray-ramp-256.png']);
-    assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
+    glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
     wtu.drawQuad(gl);
     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     var counts = [{ }, { }, { }, { }];
@@ -145,7 +145,7 @@ function runTests(imgs) {
   debug("Check that gamma settings don't effect 8bit pngs");
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['resources/gray-ramp-default-gamma.png']);
-  assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
+  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   wtu.drawQuad(gl);
   var ref = new Uint8Array(width * height * 4);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, ref);
@@ -183,7 +183,7 @@ function runTests(imgs) {
   ctx.fillRect(0, 0, 256, 1);
   ctx.drawImage(imgs['resources/gray-ramp-256-with-128-alpha.png'], 0, 0);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, canvas2d);
-  assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");
+  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   wtu.drawQuad(gl);
   var ref = new Uint8Array(width * height * 4);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, ref);
@@ -218,7 +218,7 @@ function runTests(imgs) {
   // TODO(gman): use different texture that won't pass on failure
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
                 imgs['resources/zero-alpha.png']);
-  assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup");
+  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   wtu.drawQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
 
@@ -237,7 +237,7 @@ function runTests(imgs) {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['resources/3x3.png']);
-  assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup");
+  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   wtu.drawQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
 
@@ -251,7 +251,7 @@ function runTests(imgs) {
   checkPixel(buf, middle, bottom, [  0,   0, 255, 255]);
   checkPixel(buf, right,  bottom, [255,   0,   0, 255]);
 
-  assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors");
+  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
 
   debug("");
   successfullyParsed = true;

@@ -59,7 +59,7 @@ if (!gl) {
   ];
   for (var ii = 0; ii < tests.length; ++ii) {
     eval(tests[ii]);
-    assertMsg(gl.getError() == gl.INVALID_ENUM,
+    glErrorShouldBe(gl, gl.INVALID_ENUM,
               tests[ii] + " should return INVALID_ENUM.");
   }
 
@@ -73,7 +73,7 @@ if (!gl) {
   ];
   for (var ii = 0; ii < tests.length; ++ii) {
     eval(tests[ii]);
-    assertMsg(gl.getError() == gl.INVALID_ENUM,
+    glErrorShouldBe(gl, gl.INVALID_ENUM,
               tests[ii] + " should return INVALID_ENUM.");
   }
 }
