@@ -55,7 +55,7 @@ else {
       testPassed("context is correct type");
     else
       testFailed("context is not correct type");
-  
+
     debug("");
     debug("Context contains getError");
     if ("getError" in context)
@@ -82,6 +82,7 @@ else {
     shouldBe('context.getParameter(context.CULL_FACE)', 'false');
     shouldBe('context.getParameter(context.CULL_FACE_MODE)', 'context.BACK');
     shouldBe('context.getParameter(context.CURRENT_PROGRAM)', 'null');
+    shouldBe('context.getParameter(context.DEPTH_CLEAR_VALUE)', '1');
     shouldBe('context.getParameter(context.DEPTH_FUNC)', 'context.LESS');
     shouldBe('context.getParameter(context.DEPTH_RANGE)', '[0, 1]');
     shouldBe('context.getParameter(context.DEPTH_TEST)', 'false');
