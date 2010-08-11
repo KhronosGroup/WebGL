@@ -29,7 +29,7 @@ void main()
 <div id="description"></div>
 <div id="console"></div>
 <script>
-description('Tests texSubImage2D upload path from WebGLUnsignedByteArray');
+description('Tests texSubImage2D upload path from Uint8Array');
 
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("example");
@@ -54,7 +54,7 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 // Allocate the texture object
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.ALPHA, textureWidth, textureHeight, 0, gl.ALPHA, gl.UNSIGNED_BYTE, null);
 // Prepare the image data
-var array = new WebGLUnsignedByteArray(textureWidth);
+var array = new Uint8Array(textureWidth);
 for (var i = 0; i < textureWidth; i++)
     array[i] = i;
 // Fill the texture object with data -- this is actually the code path being tested
