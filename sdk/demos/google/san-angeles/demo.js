@@ -201,6 +201,7 @@ function Shader(vertex, fragment) {
     }
 
     gl.attachShader(this.program, vs);
+    gl.deleteShader(vs);
 
     var fs = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(fs, fragment);
@@ -212,10 +213,9 @@ function Shader(vertex, fragment) {
     }
 
     gl.attachShader(this.program, fs);
+    gl.deleteShader(fs);
 
     gl.linkProgram(this.program);
-    gl.deleteShader(vs);
-    gl.deleteShader(fs);
     gl.useProgram(this.program);
     // log(gl.getProgramInfoLog(this.program));
 

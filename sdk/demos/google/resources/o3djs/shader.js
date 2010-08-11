@@ -93,16 +93,16 @@ o3djs.shader.Shader = function(gl, vertex, fragment) {
     return;
   }
   this.gl.attachShader(this.program, vs);
+  this.gl.deleteShader(vs);
 
   var fs = this.loadShader(this.gl.FRAGMENT_SHADER, fragment);
   if (fs == null) {
     return;
   }
   this.gl.attachShader(this.program, fs);
+  this.gl.deleteShader(fs);
 
   this.gl.linkProgram(this.program);
-  this.gl.deleteShader(vs);
-  this.gl.deleteShader(fs);
   this.gl.useProgram(this.program);
 
   // Check the link status
