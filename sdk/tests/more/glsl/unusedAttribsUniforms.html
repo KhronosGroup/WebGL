@@ -74,7 +74,9 @@ Tests.testPassingTooManyUniforms = function(gl) {
 <script id="frag" type="x-shader/x-fragment">
 
 
-  precision highp float;
+  #ifdef GL_ES
+precision highp float;
+#endif
   void main()
   {
     gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
@@ -96,7 +98,9 @@ Tests.testPassingTooManyUniforms = function(gl) {
 <script id="frag2" type="x-shader/x-fragment">
 
 
-  precision highp float;
+  #ifdef GL_ES
+precision highp float;
+#endif
   uniform float baz;
 
   varying vec2 TexCoord;

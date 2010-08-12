@@ -118,10 +118,22 @@ function deleteShader(gl, sh) {
   gl.deleteProgram(sh.program);
 }
 
+function getGLErrorAsString(ctx, err) {
+  if (err === ctx.NO_ERROR) {
+    return "NO_ERROR";
+  }
+  for (var name in ctx) {
+    if (ctx[name] === err) {
+      return name;
+    }
+  }
+  return err.toString();
+}
+
 function checkError(gl, msg) {
   var e = gl.getError();
-  if (e != 0) {
-    log("Error " + e + " at " + msg);
+  if (e != gl.NO_ERROR) {
+    log("Error " + getGLErrorAsString(gl, e) + " at " + msg);
   }
   return e;
 }
@@ -129,7 +141,7 @@ function checkError(gl, msg) {
 function throwError(gl, msg) {
   var e = gl.getError();
   if (e != 0) {
-    throw(new Error("Error " + e + " at " + msg));
+    throw(new Error("Error " + getGLErrorAsString(gl, e) + " at " + msg));
   }
 }
 

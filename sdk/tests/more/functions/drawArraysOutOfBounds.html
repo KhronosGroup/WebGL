@@ -251,7 +251,9 @@ Tests.testDrawArraysOOBShaderJuggle = function(gl, prog, v,n,t) {
   }
 </script>
 <script id="frag" type="x-shader/x-fragment">
-  precision highp float;
+  #ifdef GL_ES
+precision highp float;
+#endif
   varying vec4 texCoord0;
   void main()
   {

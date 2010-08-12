@@ -58,7 +58,9 @@ void main()
 }
 </script>
 <script id="foobar-frag" type="x-shader/x-fragment">
+#ifdef GL_ES
 precision highp float;
+#endif
 
 uniform ivec4 foo;
 

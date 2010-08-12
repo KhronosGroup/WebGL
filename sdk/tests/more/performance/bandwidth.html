@@ -168,7 +168,9 @@ Tests.endUnit = function(gl) {
 </script>
 <script id="frag-v" type="x-shader/x-fragment">
 
-  precision highp float;
+  #ifdef GL_ES
+precision highp float;
+#endif
   void main()
   {
     gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
@@ -188,7 +190,9 @@ Tests.endUnit = function(gl) {
 </script>
 <script id="frag-t" type="x-shader/x-fragment">
 
-  precision highp float;
+  #ifdef GL_ES
+precision highp float;
+#endif
   uniform sampler2D Texture;
 
   varying vec2 texCoord0;
