@@ -56,7 +56,7 @@ function init()
   wtu.setupUnitQuad(gl);
   gl.disable(gl.DEPTH_TEST);
   gl.disable(gl.BLEND);
-  shouldBe("gl.getError()", "gl.NO_ERROR");
+  glErrorShouldBe(gl, gl.NO_ERROR);
 
   var colors = [
       [0,192,128,255],
@@ -72,7 +72,7 @@ function init()
     gl.bindTexture(gl.TEXTURE_2D, tex);
     textures[ii] = tex;
   }
-  shouldBe("gl.getError()", "gl.NO_ERROR");
+  glErrorShouldBe(gl, gl.NO_ERROR);
 
   // now use each texture unit to write into the textures,
   for (var ii = 0; ii < colors.length; ++ii) {
@@ -83,11 +83,11 @@ function init()
     gl.activeTexture(gl.TEXTURE0 + ii);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d);
   }
-  shouldBe("gl.getError()", "gl.NO_ERROR");
+  glErrorShouldBe(gl, gl.NO_ERROR);
 
   var textureLoc = gl.getUniformLocation(program, "tex");
   var worldLoc = gl.getUniformLocation(program, "world");
-  shouldBe("gl.getError()", "gl.NO_ERROR");
+  glErrorShouldBe(gl, gl.NO_ERROR);
 
   gl.clearColor(1,0,0,1);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -104,7 +104,7 @@ function init()
          -0.5 + x, -0.5 + y, 0, 1]);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
-  shouldBe("gl.getError()", "gl.NO_ERROR");
+  glErrorShouldBe(gl, gl.NO_ERROR);
 
   for (var ii = 0; ii < colors.length; ++ii) {
     var c = colors[ii];

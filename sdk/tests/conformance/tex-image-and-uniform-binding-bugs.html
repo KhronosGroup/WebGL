@@ -45,7 +45,7 @@ var gl = create3DContext();
 var floatProgram = loadProgram(gl, "resources/floatUniformShader.vert", "resources/noopUniformShader.frag");
 shouldBeUndefined("gl.useProgram(floatProgram)");
 var fval4Loc = gl.getUniformLocation(floatProgram, "fval4");
-shouldBe("gl.getError()", "gl.NO_ERROR");
+glErrorShouldBe(gl, gl.NO_ERROR);
 shouldBeUndefined("gl.uniform4fv(fval4Loc, new Float32Array([0.1, 0.2, 0.4, 1.0]));");
 
 var tmpcanvas = document.createElement("canvas");

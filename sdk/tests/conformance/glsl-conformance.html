@@ -200,6 +200,14 @@ void main()
     gl_Position = vPosition;
 }
 </script>
+<script id="vshaderWithVersion120" type="text/something-not-javascript">
+#version 120
+attribute vec4 vPosition;
+void main()
+{
+    gl_Position = vPosition;
+}
+</script>
 <script id="vshaderWithVersion100" type="text/something-not-javascript">
 #version 100
 attribute vec4 vPosition;
@@ -380,6 +388,13 @@ if (!gl) {
       passMsg: 'vertex shader that implicit vec3 to vec4 cast should fail',
     },
     { vShaderId: 'vshaderWithVersion130',
+      vShaderSuccess: false,
+      fShaderId: 'fshader',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'vertex shader uses the #version not 100 directive should fail',
+    },
+    { vShaderId: 'vshaderWithVersion120',
       vShaderSuccess: false,
       fShaderId: 'fshader',
       fShaderSuccess: true,

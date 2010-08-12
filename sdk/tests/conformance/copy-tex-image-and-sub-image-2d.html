@@ -103,9 +103,9 @@ function runTestIteration(antialias)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
-    shouldBe("gl.getError()", "gl.NO_ERROR");
+    glErrorShouldBe(gl, gl.NO_ERROR);
     gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, 2, 2, 0);
-    shouldBe("gl.getError()", "gl.NO_ERROR");
+    glErrorShouldBe(gl, gl.NO_ERROR);
 
     // Green canvas
     gl.clearColor(0, 1, 0, 1);
@@ -137,9 +137,9 @@ function runTestIteration(antialias)
     gl.clearColor(0, 1, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    shouldBe("gl.getError()", "gl.NO_ERROR");
+    glErrorShouldBe(gl, gl.NO_ERROR);
     gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, 2, 2);
-    shouldBe("gl.getError()", "gl.NO_ERROR");
+    glErrorShouldBe(gl, gl.NO_ERROR);
 
     // Blue canvas
     gl.clearColor(0, 0, 1, 1);

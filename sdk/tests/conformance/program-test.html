@@ -214,7 +214,7 @@ function go() {
     glErrorShouldBe(gl, gl.INVALID_OPERATION,
               "using an invalid program should generate INVALID_OPERATION");
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    assertMsg(gl.getError() != gl.NO_ERROR,
+    glErrorShouldBe(gl, gl.NO_ERROR,
               "drawing with an invalid program should generate some GL error XXX");
 
     gl.useProgram(progGood2);
