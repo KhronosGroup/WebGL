@@ -52,17 +52,17 @@ var tex = gl.createTexture();
 // Check that an NPOT texture not on level 0 generates INVALID_VALUE
 wtu.fillTexture(gl, tex, 5, 3, [0, 192, 128, 255], 1);
 glErrorShouldBe(gl, gl.INVALID_VALUE,
-          "gl.texImage2D with NPOT texture with level > 0 should return INVALID_VALUE");
+    "gl.texImage2D with NPOT texture with level > 0 should return INVALID_VALUE");
 
 // Check that an NPOT texture on level 0 succeeds
 wtu.fillTexture(gl, tex, 5, 3, [0, 192, 128, 255]);
 glErrorShouldBe(gl, gl.NO_ERROR,
-          "gl.texImage2D with NPOT texture at level 0 should succeed");
+    "gl.texImage2D with NPOT texture at level 0 should succeed");
 
 // Check that generateMipmap fails on NPOT
 gl.generateMipmap(gl.TEXTURE_2D);
 glErrorShouldBe(gl, gl.INVALID_OPERATION,
-          "gl.generateMipmap with NPOT texture should return INVALID_OPERATION");
+    "gl.generateMipmap with NPOT texture should return INVALID_OPERATION");
 
 var loc = gl.getUniformLocation(program, "tex");
 gl.uniform1i(loc, 0);
@@ -97,7 +97,25 @@ wtu.checkCanvas(
     "NPOT texture with TEXTURE_MIN_FILTER set to LINEAR should draw.");
 
 gl.copyTexImage2D(gl.TEXTURE_2D, 1, gl.RGBA, 0, 0, 5, 3, 0);
-glErrorShouldBe(gl, gl.INVALID_VALUE, "copyTexImage2D with NPOT texture with level > 0 should return INVALID_VALUE.");
+glErrorShouldBe(gl, gl.INVALID_VALUE,
+    "copyTexImage2D with NPOT texture with level > 0 should return INVALID_VALUE.");
+
+// Check that generateMipmap for an POT texture succeeds
+wtu.fillTexture(gl, tex, 4, 4, [0, 192, 128, 255]);
+gl.generateMipmap(gl.TEXTURE_2D);
+glErrorShouldBe(gl, gl.NO_ERROR,
+    "gl.texImage2D and gl.generateMipmap with POT texture at level 0 should succeed");
+
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+
+wtu.drawQuad(gl);
+wtu.checkCanvas(
+    gl, [0, 192, 128, 255],
+    "POT texture with TEXTURE_MIN_FILTER set to LINEAR_MIPMAP_LINEAR should draw.");
+glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
 debug("");
 debug("check using cubemap");
@@ -111,17 +129,17 @@ var tex = gl.createTexture();
 // Check that an NPOT texture not on level 0 generates INVALID_VALUE
 fillCubeTexture(gl, tex, 5, 3, [0, 192, 128, 255], 1);
 glErrorShouldBe(gl, gl.INVALID_VALUE,
-          "gl.texImage2D with NPOT texture with level > 0 should return INVALID_VALUE");
+    "gl.texImage2D with NPOT texture with level > 0 should return INVALID_VALUE");
 
 // Check that an NPOT texture on level 0 succeeds
 fillCubeTexture(gl, tex, 5, 5, [0, 192, 128, 255]);
 glErrorShouldBe(gl, gl.NO_ERROR,
-          "gl.texImage2D with NPOT texture at level 0 should succeed");
+    "gl.texImage2D with NPOT texture at level 0 should succeed");
 
 // Check that generateMipmap fails on NPOT
 gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
 glErrorShouldBe(gl, gl.INVALID_OPERATION,
-          "gl.generateMipmap with NPOT texture should return INVALID_OPERATION");
+    "gl.generateMipmap with NPOT texture should return INVALID_OPERATION");
 
 var loc = gl.getUniformLocation(program, "tex");
 gl.uniform1i(loc, 0);
@@ -158,7 +176,7 @@ wtu.checkCanvas(
 // Check that an POT texture on level 0 succeeds
 fillCubeTexture(gl, tex, 4, 4, [0, 192, 128, 255]);
 glErrorShouldBe(gl, gl.NO_ERROR,
-          "gl.texImage2D with POT texture at level 0 should succeed");
+    "gl.texImage2D with POT texture at level 0 should succeed");
 
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
@@ -173,7 +191,7 @@ wtu.checkCanvas(
 // Check that generateMipmap succeeds on POT
 gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
 glErrorShouldBe(gl, gl.NO_ERROR,
-          "gl.generateMipmap with POT texture should return succeed");
+    "gl.generateMipmap with POT texture should return succeed");
 
 wtu.drawQuad(gl);
 wtu.checkCanvas(
