@@ -26,7 +26,10 @@ found in the LICENSE file.
 </script>
 
 <script id="fshader" type="x-shader/x-fragment">
-    uniform mediump $type color[3];
+    #ifdef GL_ES
+    precision mediump float;
+    #endif
+    uniform $type color[3];
     void main()
     {
         gl_FragColor = vec4(color[0]$elem, color[1]$elem, color[2]$elem, 1);
