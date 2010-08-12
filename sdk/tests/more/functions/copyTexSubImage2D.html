@@ -114,7 +114,6 @@ Tests.endUnit = function(gl) {
 
 </script>
 <script id="identity-flip-vert" type="x-shader/x-vertex">
-#version 120
 attribute vec3 Vertex;
 attribute vec2 Tex;
 
@@ -126,8 +125,7 @@ void main()
 }
 </script>
 <script id="identity-frag" type="x-shader/x-fragment">
-#version 120
-
+precision highp float;
 uniform sampler2D Texture;
 
 varying vec4 texCoord0;

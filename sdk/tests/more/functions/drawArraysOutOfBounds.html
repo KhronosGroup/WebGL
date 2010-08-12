@@ -239,8 +239,6 @@ Tests.testDrawArraysOOBShaderJuggle = function(gl, prog, v,n,t) {
 
 </script>
 <script id="vert" type="x-shader/x-vertex">
-  #version 120
-
   attribute vec3 Vertex;
   attribute vec3 Normal;
   attribute vec2 Tex;
@@ -253,8 +251,7 @@ Tests.testDrawArraysOOBShaderJuggle = function(gl, prog, v,n,t) {
   }
 </script>
 <script id="frag" type="x-shader/x-fragment">
-  #version 120
-
+  precision highp float;
   varying vec4 texCoord0;
   void main()
   {

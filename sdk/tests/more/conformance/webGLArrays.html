@@ -138,7 +138,6 @@ Tests.testThatWritesChangeDrawing = function(gl) {
 
 </script>
 <script id="vert" type="x-shader/x-vertex">
-  #version 120
   attribute vec2 Vertex;
   void main()
   {
@@ -146,7 +145,7 @@ Tests.testThatWritesChangeDrawing = function(gl) {
   }
 </script>
 <script id="frag" type="x-shader/x-fragment">
-  #version 120
+  precision highp float;
   uniform vec4 c;
   void main()
   {

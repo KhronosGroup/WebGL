@@ -39,7 +39,6 @@ Tests.endUnit = function(gl) {
 
 </script>
 <script id="foobar-vert" type="x-shader/x-vertex">
-#version 120
 attribute vec3 Vertex;
 attribute vec2 Tex;
 
@@ -53,8 +52,7 @@ void main()
 }
 </script>
 <script id="foobar-frag" type="x-shader/x-fragment">
-#version 120
-
+precision highp float;
 uniform vec4 foo;
 
 varying vec4 texCoord0;
