@@ -46,12 +46,16 @@ Tests.startUnit = function () {
 Tests.setup = function(gl) {
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
+    var texCubeMap = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, texCubeMap);
     return [gl]
 }
 
-Tests.teardown = function(gl, tex) {
+Tests.teardown = function(gl, tex, texCubeMap) {
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.deleteTexture(tex);
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+    gl.deleteTexture(texCubeMap);
 }
 
 Tests.testTexImage2D = function(gl) {
