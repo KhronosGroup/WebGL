@@ -301,6 +301,21 @@ function assertEquals(name, v, p) {
   }
 }
 
+function assertArrayEquals(name, v, p) {
+  if (p == null) { p = v; v = name; name = null; }
+  if (v.length != p.length) {
+    testFailed("assertArrayEquals", name, v, p)
+    return false;
+  }
+  for (var ii = 0; ii < v.length; ++ii) {
+    if (v[ii] != p[ii]) {
+      testFailed("assertArrayEquals", name, v, p)
+      return false;
+    }
+  }
+  return true;
+}
+
 function assertNotEquals(name, v, p) {
   if (p == null) { p = v; v = name; name = null; }
   if (compare(v, p)) {

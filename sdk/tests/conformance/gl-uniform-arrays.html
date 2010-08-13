@@ -231,7 +231,7 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
   var info = gl.getActiveUniform(program, 0);
   assertMsg(info.name == "color[0]",
             "uniform name is 'color[0]' not 'color' as per OpenGL ES 2.0.24 section 2.10");
-  var loc = gl.getUniformLocation(program, "color");
+  var loc = gl.getUniformLocation(program, "color[0]");
   var srcValues = typeInfo.srcValues;
   var srcValuesBad = typeInfo.srcValuesBad;
 

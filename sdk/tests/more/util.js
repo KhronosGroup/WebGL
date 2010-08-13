@@ -952,16 +952,30 @@ FBO.prototype = {
   }
 }
 
+function GLError(err, msg, fileName, lineNumber) {
+  console.log("new GLError: " + err);
+  this.message = msg;
+  this.glError = err;
+}
+
+GLError.prototype = new Error();
+
 function makeGLErrorWrapper(gl, fname) {
   return (function() {
     try {
       var rv = gl[fname].apply(gl, arguments);
       var err = gl.getError();
-      if (err != 0)
-        throw(new Error("GL error "+err+" in "+fname));
+      console.log(err);
+      if (err != gl.NO_ERROR) {
+        throw(new GLError(
+            err, "GL error "+getGLErrorAsString(gl, err)+" in "+fname));
+      }
       return rv;
     } catch (e) {
-      throw(new Error("GL error " + e.name +
+      if (e.glError !== undefined) {
+        throw e;
+      }
+      throw(new Error("Threw " + e.name +
                       " in " + fname + "\n" +
                       e.message + "\n" +
                       arguments.callee.caller));
@@ -986,6 +1000,29 @@ function wrapGLContext(gl) {
   return wrap;
 }
 
+function dmp(o) {
+  console.log("dumping:");
+  for (var p in o) {
+    console.log(">" + p + "=" + o[p]);
+  }
+}
+
+function assertGLError(gl, err, name, f) {
+  if (f == null) { f = name; name = null; }
+  var r = false;
+  var glErr = 0;
+  try { f(); } catch(e) { r=true; dmp(e); glErr = e.glError; }
+  if (glErr !== err) {
+    if (glErr === undefined) {
+      testFailed("assertGLError: UNEXPCETED EXCEPTION", name, f);
+    } else {
+      testFailed("assertGLError: expected: " + getGLErrorAsString(gl, err) +
+                 " actual: " + getGLErrorAsString(gl, glErr), name, f);
+    }
+    return false;
+  }
+  return true;
+}
 
 Quad = {
   vertices : [

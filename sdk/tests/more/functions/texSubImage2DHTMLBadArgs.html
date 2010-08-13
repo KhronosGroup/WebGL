@@ -18,20 +18,30 @@ Tests.testTexImage2D = function(gl) {
     var b = document.createElement('b');
     var div = document.createElement('div');
     var c = document.getElementById('c');
-    assertOk(function() {gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertOk(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 1, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 100, 100, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, -1, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, -1, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, -1, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, -1, -1, -1, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, b); });
-    assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, div); });
-    assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, 0); });
-    assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0,0, 0, gl.RGBA, gl.UNSIGNED_BYTE, "foo"); });
-    assertFail(function() {gl.texSubImage2D(gl.FLOAT, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
+    assertOk("good args",
+         function() {gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c); });
+    assertOk("zero width, zero height",
+         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
+    assertFail("y + height > texture height",
+        function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 1, gl.RGBA, gl.UNSIGNED_BYTE, c); });
+    assertFail("x + width > texture width",
+        function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
+    assertFail("negative x",
+        function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, -1, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
+    assertFail("negative y",
+        function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, -1, gl.RGBA, gl.UNSIGNED_BYTE, c); });
+    assertFail("negative level",
+        function() {gl.texSubImage2D(gl.TEXTURE_2D, -1, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
+    assertFail("bad element b",
+        function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, b); });
+    assertFail("bad element div",
+        function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, div); });
+    assertFail("no element",
+        function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, 0); });
+    assertFail("string as data",
+        function() {gl.texSubImage2D(gl.TEXTURE_2D, 0,0, 0, gl.RGBA, gl.UNSIGNED_BYTE, "foo"); });
+    assertFail("bad target",
+        function() {gl.texSubImage2D(gl.FLOAT, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
 }
 
 Tests.endUnit = function(gl, tex) {
