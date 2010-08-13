@@ -18,7 +18,7 @@ Tests.testTexImage2D = function(gl) {
     var b = document.createElement('b');
     var div = document.createElement('div');
     var c = document.getElementById('c');
-    assertOk(function() {gl.texImage2D(gl.TEXTURE_2D, 0, c); });
+    assertOk(function() {gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c); });
     assertOk(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
     assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 1, gl.RGBA, gl.UNSIGNED_BYTE, c); });
     assertFail(function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
