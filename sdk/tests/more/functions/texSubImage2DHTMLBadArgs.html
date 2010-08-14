@@ -22,25 +22,25 @@ Tests.testTexImage2D = function(gl) {
          function() {gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c); });
     assertOk("zero width, zero height",
          function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail("y + height > texture height",
+    assertGLError(gl, gl.INVALID_VALUE, "y + height > texture height",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 1, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail("x + width > texture width",
+    assertGLError(gl, gl.INVALID_VALUE, "x + width > texture width",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail("negative x",
+    assertGLError(gl, gl.INVALID_VALUE, "negative x",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, -1, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail("negative y",
+    assertGLError(gl, gl.INVALID_VALUE, "negative y",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, -1, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail("negative level",
+    assertGLError(gl, gl.INVALID_VALUE, "negative level",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, -1, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertFail("bad element b",
+    assertThrowNoGLError(gl, "bad element b",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, b); });
-    assertFail("bad element div",
+    assertThrowNoGLError(gl, "bad element div",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, div); });
-    assertFail("no element",
+    assertThrowNoGLError(gl, "no element",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, 0); });
-    assertFail("string as data",
+    assertThrowNoGLError(gl, "string as data",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0,0, 0, gl.RGBA, gl.UNSIGNED_BYTE, "foo"); });
-    assertFail("bad target",
+    assertGLError(gl, gl.INVALID_ENUM, "bad target",
         function() {gl.texSubImage2D(gl.FLOAT, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
 }
 

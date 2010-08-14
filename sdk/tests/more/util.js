@@ -953,7 +953,6 @@ FBO.prototype = {
 }
 
 function GLError(err, msg, fileName, lineNumber) {
-  console.log("new GLError: " + err);
   this.message = msg;
   this.glError = err;
 }
@@ -965,7 +964,6 @@ function makeGLErrorWrapper(gl, fname) {
     try {
       var rv = gl[fname].apply(gl, arguments);
       var err = gl.getError();
-      console.log(err);
       if (err != gl.NO_ERROR) {
         throw(new GLError(
             err, "GL error "+getGLErrorAsString(gl, err)+" in "+fname));
@@ -1000,18 +998,11 @@ function wrapGLContext(gl) {
   return wrap;
 }
 
-function dmp(o) {
-  console.log("dumping:");
-  for (var p in o) {
-    console.log(">" + p + "=" + o[p]);
-  }
-}
-
 function assertGLError(gl, err, name, f) {
   if (f == null) { f = name; name = null; }
   var r = false;
   var glErr = 0;
-  try { f(); } catch(e) { r=true; dmp(e); glErr = e.glError; }
+  try { f(); } catch(e) { r=true; glErr = e.glError; }
   if (glErr !== err) {
     if (glErr === undefined) {
       testFailed("assertGLError: UNEXPCETED EXCEPTION", name, f);
@@ -1020,6 +1011,29 @@ function assertGLError(gl, err, name, f) {
                  " actual: " + getGLErrorAsString(gl, glErr), name, f);
     }
     return false;
+  }
+  return true;
+}
+
+function assertThrowNoGLError(gl, name, f) {
+  if (f == null) { f = name; name = null; }
+  var r = false;
+  var glErr = undefined;
+  var exp;
+  try { f(); } catch(e) { r=true; glErr = e.glError; exp = e;}
+  if (!r) {
+    testFailed(
+      "assertThrowNoGError: should have thrown exception", name, f);
+    return false;
+  } else {
+    if (glErr !== undefined) {
+      testFailed(
+        "assertThrowNoGError: should be no GL error but generated: " +
+        getGLErrorAsString(gl, glErr), name, f);
+      return false;
+    } else {
+      // console.log("threw:" + exp);
+    }
   }
   return true;
 }
