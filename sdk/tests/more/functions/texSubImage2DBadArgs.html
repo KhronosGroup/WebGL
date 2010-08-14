@@ -91,10 +91,10 @@ Tests.testTexImage2D = function(gl) {
     assertGLError(gl, gl.INVALID_OPERATION, "not enough data", function(){
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, 1,1,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0]));
     });
-    assertGLError(gl, gl.INVALID_ENUM, "format does not match internal format", function(){
+    assertGLError(gl, gl.INVALID_VALUE, "format does not match internal format", function(){
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, 1,1,gl.RGB,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0]));
     });
-    assertGLError(gl, gl.INVALID_ENUM, "type does not match original", function(){
+    assertGLError(gl, gl.INVALID_VALUE, "type does not match original", function(){
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, 1,1,gl.RGBA,gl.UNSIGNED_SHORT_4_4_4_4, new Uint16Array([0]));
     });
 }
