@@ -1015,6 +1015,24 @@ function assertGLError(gl, err, name, f) {
   return true;
 }
 
+function assertSomeGLError(gl, name, f) {
+  if (f == null) { f = name; name = null; }
+  var r = false;
+  var glErr = 0;
+  var err = 0;
+  try { f(); } catch(e) { r=true; glErr = e.glError; }
+  if (glErr === 0) {
+    if (glErr === undefined) {
+      testFailed("assertGLError: UNEXPCETED EXCEPTION", name, f);
+    } else {
+      testFailed("assertGLError: expected: " + getGLErrorAsString(gl, err) +
+                 " actual: " + getGLErrorAsString(gl, glErr), name, f);
+    }
+    return false;
+  }
+  return true;
+}
+
 function assertThrowNoGLError(gl, name, f) {
   if (f == null) { f = name; name = null; }
   var r = false;
