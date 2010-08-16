@@ -17,32 +17,32 @@ Tests.testUniformf = function(gl) {
     sh.apply(function(f){
         var uniIV4 = f.uniform('uniIV4');
         var uniInt = f.uniform('uniInt');
-        assertFail("number as location",
+        assertThrowNoGLError(gl, "number as location",
             function(){gl.uniform4iv(58882929, [1,2,3,4]);});
-        assertFail("negative number as location",
+        assertThrowNoGLError(gl, "negative number as location",
             function(){gl.uniform4iv(-58882929, [1,2,3,4]);});
         assertOk("more than enough values 4iv",
             function(){gl.uniform4iv(uniIV4, [1,2,3,4,5]);});
         // For non arrays you must pass in only 1 value.
-        assertFail("more than enough values int",
+        assertGLError(gl, gl.INVALID_OPERATION, "more than 1 value to 1iv",
             function(){gl.uniform1iv(uniInt, [2,3,4,5,6]);});
-        assertFail("4iv on int",
+        assertGLError(gl, gl.INVALID_OPERATION, "4iv on int",
             function(){gl.uniform4iv(uniInt, [2,3,4,5]);});
-        assertFail("3iv on int",
+        assertGLError(gl, gl.INVALID_OPERATION, "3iv on int",
             function(){gl.uniform3iv(uniInt, [2,3,4]);});
-        assertFail("2iv on int",
+        assertGLError(gl, gl.INVALID_OPERATION, "2iv on int",
             function(){gl.uniform2iv(uniInt, [2,3]);});
-        assertFail("3iv on 4iv",
+        assertGLError(gl, gl.INVALID_OPERATION, "3iv on 4iv",
             function(){gl.uniform3iv(uniIV4, [4,5,6]);});
-        assertFail("2iv on 4iv",
+        assertGLError(gl, gl.INVALID_OPERATION, "2iv on 4iv",
             function(){gl.uniform2iv(uniIV4, [5,6]);});
-        assertFail("1iv on 4iv",
+        assertGLError(gl, gl.INVALID_OPERATION, "1iv on 4iv",
             function(){gl.uniform1iv(uniIV4, [6]);});
-        assertFail("not enough values",
+        assertGLError(gl, gl.INVALID_VALUE, "not enough values",
             function(){gl.uniform1iv(uniInt, []);});
-        assertFail("1fv on int",
+        assertGLError(gl, gl.INVALID_OPERATION, "1fv on int",
             function(){gl.uniform1fv(uniInt, [2]);});
-        assertFail("4fv on ivec4",
+        assertGLError(gl, gl.INVALID_OPERATION, "4fv on ivec4",
             function(){gl.uniform4fv(uniIV4, [2,3,4,5]);});
         gl.uniform1iv(uniInt, [2]);
         gl.uniform4iv(uniIV4, [1, 2, 3, 4]);

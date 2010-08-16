@@ -17,38 +17,38 @@ Tests.testUniformf = function(gl) {
     sh.apply(function(f){
         var uniV4 = f.uniform('uniV4');
         var uniFloat = f.uniform('uniFloat');
-        assertFail("number for location",
+        assertThrowNoGLError(gl, "number for location",
             function(){gl.uniform4fv(58882929, [1,2,3,4]);});
-        assertFail("negative number for location",
+        assertThrowNoGLError(gl, "negative number for location",
             function(){gl.uniform4fv(-58882929, [1,2,3,4]);});
-        assertFail("??",
+        assertGLError(gl, gl.INVALID_OPERATION, "??",
             function(){gl.uniform1fv(uniV4, [1,2,3,4,5]);});
         // for non arrays you must pass in exactly 1 value.
-        assertFail("more than enough values 1fv",
+        assertGLError(gl, gl.INVALID_OPERATION, "more than enough values 1fv",
             function(){gl.uniform1fv(uniFloat, [2,3,4,5,6]);});
-        assertFail("4fv on float",
+        assertGLError(gl, gl.INVALID_OPERATION, "4fv on float",
             function(){gl.uniform4fv(uniFloat, [2,3,4,5]);});
         assertOk("4fv on 4fv",
             function(){gl.uniform4fv(uniV4, [1, 2, 3, 4]);});
-        assertFail("3fv on float",
+        assertGLError(gl, gl.INVALID_OPERATION, "3fv on float",
             function(){gl.uniform3fv(uniFloat, [2,3,4]);});
-        assertFail("2fv on float",
+        assertGLError(gl, gl.INVALID_OPERATION, "2fv on float",
             function(){gl.uniform2fv(uniFloat, [2,3]);});
-        assertFail("3fv on 4fv",
+        assertGLError(gl, gl.INVALID_OPERATION, "3fv on 4fv",
             function(){gl.uniform3fv(uniV4, [4,5,6]);});
-        assertFail("2fv on 4fv",
+        assertGLError(gl, gl.INVALID_OPERATION, "2fv on 4fv",
             function(){gl.uniform2fv(uniV4, [5,6]);});
-        assertFail("1fv on 4fv",
+        assertGLError(gl, gl.INVALID_OPERATION, "1fv on 4fv",
             function(){gl.uniform1fv(uniV4, [6]);});
         assertOk("1fv on 1fv",
             function(){gl.uniform1fv(uniFloat, [2]);});
-        assertFail("not enough values on 1fv",
+        assertGLError(gl, gl.INVALID_VALUE, "not enough values on 1fv",
             function(){gl.uniform1fv(uniFloat, []);});
-        assertFail("not enough values on 4fv",
+        assertGLError(gl, gl.INVALID_VALUE, "not enough values on 4fv",
             function(){gl.uniform4fv(uniV4, [3,3,4]);});
-        assertFail("4iv on 4fv",
+        assertGLError(gl, gl.INVALID_OPERATION, "4iv on 4fv",
             function(){gl.uniform4iv(uniV4, [1, 2, 3, 4]);});
-        assertFail("1iv on 1fv",
+        assertGLError(gl, gl.INVALID_OPERATION, "1iv on 1fv",
             function(){gl.uniform1iv(uniFloat, [2]);});
     });
     var d = new Uint8Array(4);

@@ -87,6 +87,12 @@ Tests.testTexImage2D = function(gl) {
     assertGLError(gl, gl.INVALID_OPERATION, "not enough data", function(){
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1,1,0,gl.RGBA,gl.UNSIGNED_BYTE, new Uint8Array(3));
     });
+    assertGLError(gl, gl.INVALID_OPERATION, "format and type incompatible",function(){
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1,1,0,gl.RGBA,gl.UNSIGNED_SHORT_5_6_5, null);
+    });
+    assertGLError(gl, gl.INVALID_OPERATION, "format and type incompatible",function(){
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1,1,0,gl.RGB,gl.UNSIGNED_SHORT_4_4_4_4, null);
+    });
 }
 
 

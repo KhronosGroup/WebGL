@@ -998,6 +998,7 @@ function wrapGLContext(gl) {
   return wrap;
 }
 
+// Assert that f generates a specific GL error.
 function assertGLError(gl, err, name, f) {
   if (f == null) { f = name; name = null; }
   var r = false;
@@ -1015,6 +1016,8 @@ function assertGLError(gl, err, name, f) {
   return true;
 }
 
+// Assert that f generates some GL error. Used in situations where it's
+// ambigious which of multiple possible errors will be generated.
 function assertSomeGLError(gl, name, f) {
   if (f == null) { f = name; name = null; }
   var r = false;
@@ -1033,6 +1036,7 @@ function assertSomeGLError(gl, name, f) {
   return true;
 }
 
+// Assert that f throws an exception but does not generate a GL error.
 function assertThrowNoGLError(gl, name, f) {
   if (f == null) { f = name; name = null; }
   var r = false;

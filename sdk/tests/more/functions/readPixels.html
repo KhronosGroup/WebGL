@@ -53,7 +53,7 @@ Tests.testReadPixelsRGBA = function(gl) {
   gl.clear(gl.COLOR_BUFFER_BIT);
   var id = new Uint8Array(4);
   gl.readPixels(1,2,1,1,gl.RGBA, gl.UNSIGNED_BYTE, id);
-  assertEquals([255, 0, 255, 0], [id[0], id[1], id[2], id[3]]);
+  assertArrayEquals([255, 0, 255, 0], id);
 }
 
 Tests.endUnit = function(gl) {

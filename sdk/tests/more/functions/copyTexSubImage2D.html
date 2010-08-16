@@ -35,7 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 Tests.startUnit = function () {
   var canvas = document.getElementById('gl');
-  var gl = canvas.getContext(GL_CONTEXT_ID);
+  var gl = wrapGLContext(canvas.getContext(GL_CONTEXT_ID));
   return [gl];
 }
 
@@ -43,7 +43,7 @@ Tests.setup = function(gl) {
   var tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
   var texCubeMap = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_CUBE_MAP, tex);
+  gl.bindTexture(gl.TEXTURE_CUBE_MAP, texCubeMap);
   return [gl]
 }
 
