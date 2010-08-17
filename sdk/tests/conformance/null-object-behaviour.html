@@ -73,7 +73,7 @@ shouldGenerateGLError(context, context.INVALID_VALUE, "context.getProgramInfoLog
 shouldGenerateGLError(context, context.INVALID_VALUE, "context.getShaderParameter(undefined, 0)");
 shouldGenerateGLError(context, context.INVALID_VALUE, "context.getShaderInfoLog(undefined, 0)");
 shouldGenerateGLError(context, context.INVALID_VALUE, "context.getShaderSource(undefined)");
-shouldGenerateGLError(context, context.INVALID_VALUE, "context.getUniform(undefined, 0)");
+shouldGenerateGLError(context, context.INVALID_VALUE, "context.getUniform(undefined, null)");
 shouldGenerateGLError(context, context.INVALID_VALUE, "context.getUniformLocation(undefined, 'foo')");
 
 debug("");
