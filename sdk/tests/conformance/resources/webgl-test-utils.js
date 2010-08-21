@@ -110,19 +110,21 @@ var setupSimpleTextureFragmentShader = function(gl) {
  * Creates a program, attaches shaders, binds attrib locations, links the
  * program and calls useProgram.
  * @param {!Array.<!WebGLShader>} shaders The shaders to attach .
- * @param {!Array.<string>} attribs The attribs names.
+ * @param {!Array.<string>} opt_attribs The attribs names.
  * @param {!Array.<number>} opt_locations The locations for the attribs.
  */
-var setupProgram = function(gl, shaders, attribs, opt_locations) {
+var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
   var program = gl.createProgram();
   for (var ii = 0; ii < shaders.length; ++ii) {
     gl.attachShader(program, shaders[ii]);
   }
-  for (var ii = 0; ii < attribs.length; ++ii) {
-    gl.bindAttribLocation(
-        program,
-        opt_locations ? opt_locations[ii] : ii,
-        attribs[ii]);
+  if (opt_attribs) {
+    for (var ii = 0; ii < opt_attribs.length; ++ii) {
+      gl.bindAttribLocation(
+          program,
+          opt_locations ? opt_locations[ii] : ii,
+          opt_attribs[ii]);
+    }
   }
   gl.linkProgram(program);
 

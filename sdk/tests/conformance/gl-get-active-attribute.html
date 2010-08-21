@@ -7,7 +7,7 @@ found in the LICENSE file.
   "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>WebGL getActiveAttribute conformance test.</title>
+<title>WebGL getActiveAttrib conformance test.</title>
 <link rel="stylesheet" href="../resources/js-test-style.css"/>
 <script src="../resources/js-test-pre.js"></script>
 <script src="resources/webgl-test.js"> </script>
@@ -18,18 +18,10 @@ found in the LICENSE file.
 <div id="description"></div>
 <div id="console"></div>
 <script id="vshader" type="x-shader/x-vertex">
-attribute vec4 vPosition;
-attribute float attribFloat;
-attribute vec2 attribVec2;
-attribute vec3 attribVec3;
-attribute mat2 attribMat2;
-attribute mat3 attribMat3;
-attribute mat4 attribMat4;
+attribute $type attr0;
 void main()
 {
-    float v = attribFloat + attribVec2[1] + attribVec3[2] +
-              attribMat2[1][1] + attribMat3[2][2] + attribMat4[3][3];
-    gl_Position = vec4(vPosition.xyz, max(min(v + 1.0, 1.0), 1.0));
+    gl_Position = vec4(0, 0, 0, attr0$access);
 }
 </script>
 <script id="fshader" type="x-shader/x-fragment">
@@ -39,22 +31,48 @@ void main()
 }
 </script>
 <script>
+description("Tests getActiveAttrib for various types");
+
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("example");
 var gl = wtu.create3DContext(canvas);
-var program = wtu.setupProgram(
-    gl,
-    [wtu.loadShaderFromScript(gl, 'vshader', gl.VERTEX_SHADER),
-     wtu.loadShaderFromScript(gl, 'fshader', gl.FRAGMENT_SHADER)],
-    ['vPosition'], [0]);
-glErrorShouldBe(gl, gl.NO_ERROR, "no errors from setup");
-var numAttribs = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
-assertMsg(numAttribs >= 7, "must be at least 7 attribs");
-for (var ii = 0; ii < numAttribs; ++ii) {
-  var info = gl.getActiveAttrib(program, ii);
-  debug("" + ii + ":   size = " + info.size +
-        "  type = " + typeToString(info.type) +
-        "  name = " + info.name);
+
+var tests = [
+{ glType: gl.FLOAT,      size: 1, type: 'float', access: ''},
+{ glType: gl.FLOAT_VEC2, size: 1, type: 'vec2',  access: '[1]'},
+{ glType: gl.FLOAT_VEC3, size: 1, type: 'vec3',  access: '[2]'},
+{ glType: gl.FLOAT_VEC4, size: 1, type: 'vec4',  access: '[3]'},
+{ glType: gl.FLOAT_MAT2, size: 1, type: 'mat2',  access: '[1][1]'},
+{ glType: gl.FLOAT_MAT3, size: 1, type: 'mat3',  access: '[2][2]'},
+{ glType: gl.FLOAT_MAT4, size: 1, type: 'mat4',  access: '[3][3]'},
+];
+
+var source = document.getElementById('vshader').text;
+var fs = wtu.loadShaderFromScript(gl, 'fshader', gl.FRAGMENT_SHADER);
+for (var tt = 0; tt < tests.length; ++tt) {
+  var t = tests[tt];
+  var vs = wtu.loadShader(
+      gl,
+      source.replace('$type', t.type).replace('$access', t.access),
+      gl.VERTEX_SHADER);
+  var program = wtu.setupProgram(gl, [vs, fs]);
+  glErrorShouldBe(gl, gl.NO_ERROR, "no errors from setup");
+  var numAttribs = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
+  var found = false;
+  for (var ii = 0; ii < numAttribs; ++ii) {
+    var info = gl.getActiveAttrib(program, ii);
+    if (info.name == 'attr0') {
+      found = true;
+      assertMsg(info.type == t.glType,
+                "type must be " + typeToString(t.glType) + " was " +
+                typeToString(info.type));
+      assertMsg(info.size == t.size,
+                "size must be " + t.size + ' was ' + info.size);
+    }
+  }
+  if (!found) {
+    testFailed("attrib 'attr0' not found");
+  }
 }
 
 function typeToString(type) {
