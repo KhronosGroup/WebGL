@@ -29,6 +29,20 @@ var error = function(msg) {
   }
 };
 
+/**
+ * Converts a WebGL enum to a string
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {number} value The enum value.
+ * @return {string} The enum as a string.
+ */
+var glEnumToString = function(gl, value) {
+  for (var p in gl) {
+    if (gl[p] == value) {
+      return p;
+    }
+  }
+  return "0x" + value.toString(16);
+};
 
 var lastError = "";
 
@@ -815,6 +829,7 @@ return {
   drawQuad: drawQuad,
   endsWith: endsWith,
   getLastError: getLastError,
+  glEnumToString: glEnumToString,
   glErrorShouldBe: glErrorShouldBe,
   fillTexture: fillTexture,
   loadImageAsync: loadImageAsync,

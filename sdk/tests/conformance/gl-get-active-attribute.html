@@ -64,8 +64,8 @@ for (var tt = 0; tt < tests.length; ++tt) {
     if (info.name == 'attr0') {
       found = true;
       assertMsg(info.type == t.glType,
-                "type must be " + typeToString(t.glType) + " was " +
-                typeToString(info.type));
+                "type must be " + wtu.glEnumToString(gl, t.glType) + " was " +
+                wtu.glEnumToString(gl, info.type));
       assertMsg(info.size == t.size,
                 "size must be " + t.size + ' was ' + info.size);
     }
@@ -73,15 +73,6 @@ for (var tt = 0; tt < tests.length; ++tt) {
   if (!found) {
     testFailed("attrib 'attr0' not found");
   }
-}
-
-function typeToString(type) {
-  for (var p in gl) {
-    if (gl[p] == type) {
-      return p;
-    }
-  }
-  return "0x" + type.toString(16);
 }
 
 successfullyParsed = true;
