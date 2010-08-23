@@ -63,7 +63,8 @@ function runOneIteration(videoElement, useTexSubImage2D, flipY, topColor, bottom
     // Upload the videoElement into the texture
     if (useTexSubImage2D) {
         // Initialize the texture to black first
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, videoElement.width, videoElement.height, 0,
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,
+                      videoElement.videoWidth, videoElement.videoHeight, 0,
                       gl.RGBA, gl.UNSIGNED_BYTE, null);
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, videoElement);
     } else {
