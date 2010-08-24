@@ -92,9 +92,9 @@ function runTests(imgs) {
   var left = 0;
   var middle = Math.floor(width / 2);
   var right = width - 1;
-  var top = 0;
+  var bottom = 0;
   var center = Math.floor(height / 2);
-  var bottom = height - 1;
+  var top = height - 1;
   checkPixel(buf, left,   top,    [  0,   0,   0, 255]);
   checkPixel(buf, middle, top,    [255,   0, 255, 255]);
   checkPixel(buf, right,  top,    [  0,   0, 255, 255]);
