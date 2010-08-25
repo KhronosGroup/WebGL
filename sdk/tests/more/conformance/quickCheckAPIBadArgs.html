@@ -14,6 +14,11 @@
 Tests.testInvalidArgs = function() {
   var randomTestCount = 100;
   for (var name in ArgGenerators) {
+
+    // don't fuzz-test bufferData, because with the variant taking 'size', for large random sizes,
+    // this consumes lots of memory (like 4GB). See bug 349.
+    if (name == "bufferData") continue;
+
     try {
       if (!GL[name])
         throw (new Error(name + " is missing from the WebGL context"));
