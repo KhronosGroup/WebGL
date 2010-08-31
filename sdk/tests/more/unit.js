@@ -343,6 +343,8 @@ function time(elementId, f) {
 }
 
 function randomFloat () {
+    // note that in fuzz-testing, this can used as the size of a buffer to allocate.
+    // so it shouldn't return astronomic values. The maximum value 10000000 is already quite big.
     var fac = 1.0;
     var r = Math.random();
     if (r < 0.25)
