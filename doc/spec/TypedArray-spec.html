@@ -379,20 +379,14 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
             the end of the ArrayBuffer.</p>
 	      
 	    <p>The given byteOffset must be a multiple of the element size
-	    of the specific type, otherwise
-	    an <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/urls.html#index_size_err">INDEX_SIZE_ERR</a>
-	    exception is raised.</p>
+	    of the specific type, otherwise an exception is raised.</p>
 
 	    <p>If a given byteOffset and length references an area beyond
-	    the end of the ArrayBuffer
-	    an <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/urls.html#index_size_err">INDEX_SIZE_ERR</a>
-	    exception is raised.</p>
+	    the end of the ArrayBuffer an exception is raised.</p>
 
 	    <p>If length is not explicitly specified, the length of the
 	    ArrayBuffer minus the byteOffset must be a multiple of the
-	    element size of the specific type, or
-	    an <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/urls.html#index_size_err">INDEX_SIZE_ERR</a>
-	    exception is raised.</p>
+	    element size of the specific type, or an exception is raised.</p>
 	  </td>
 	</tr>
 	<tr></tr>
@@ -458,9 +452,7 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
             </p>
             <p>
               If the offset plus the length of the given array is out of
-              range for the current <i>TypedArray</i>,
-              an <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/urls.html#index_size_err">INDEX_SIZE_ERR</a>
-              exception is raised.
+              range for the current <i>TypedArray</i>, an exception is raised.
            </p>
 	  </td>
 	</tr>
@@ -513,7 +505,7 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
     // indicates whether a big-endian or little-endian value should be
     // read. If false or undefined, a big-endian value is read.
     //
-    // These methods raise an INDEX_SIZE_ERR exception if they would read
+    // These methods raise an exception if they would read
     // beyond the end of the view.
     byte getInt8(unsigned long byteOffset);
     unsigned byte getUInt8(unsigned long byteOffset);
@@ -539,7 +531,7 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
     // little-endian byte order. If false or undefined, the value is
     // stored in big-endian byte order.
     //
-    // These methods raise an INDEX_SIZE_ERR exception if they would write
+    // These methods raise an exception if they would write
     // beyond the end of the view.
     void setInt8(unsigned long byteOffset,
                  byte value,
