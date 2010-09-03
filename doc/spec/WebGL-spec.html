@@ -1664,7 +1664,7 @@ for (var i = 0; i < numVertices; i++) {
                 (OpenGL ES 2.0 man page)
             </a>
             <dd>
-            See <a href="#WEBGLCONTEXTLOSTEVENT">WebGLContextLostEvent</a> for documentation of a
+            See <a href="#WEBGLCONTEXTEVENT">WebGLContextEvent</a> for documentation of a
             WebGL-specific return value from getError.
         <dt class="idl-code">void hint(GLenum target, GLenum mode)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glHint.xml">
@@ -2544,8 +2544,7 @@ for (var i = 0; i < numVertices; i++) {
     <p>
         Occurrences such as power events on mobile devices may cause the WebGL rendering context to
         be lost at any time and require the application to rebuild it;
-        see <a href="#WEBGLCONTEXTLOSTEVENT">WebGLContextLostEvent</a>
-        and <a href="#WEBGLCONTEXTRESTOREDEVENT">WebGLContextRestoredEvent</a> for more details. The
+        see <a href="#WEBGLCONTEXTEVENT">WebGLContextEvent</a> for more details. The
         following method assists in detecting context lost events.
     </p>
 
