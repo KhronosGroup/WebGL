@@ -491,7 +491,7 @@ function testSlicingWithDefaultValues(type, name, sz) {
         typeSize = sz;
         shouldBe("array.length", "32 / typeSize");
         try {
-            shouldBe("array.slice().length", "(32 / typeSize)");
+            shouldBe("array.slice(0).length", "(32 / typeSize)");
             shouldBe("array.slice(2).length", "(32 / typeSize) - 2");
             shouldBe("array.slice(-2).length", "2");
             shouldBe("array.slice(-2147483648).length", "(32 / typeSize)");
