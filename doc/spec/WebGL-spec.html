@@ -2597,164 +2597,151 @@ for (var i = 0; i < numVertices; i++) {
 
 <!-- ======================================================================================================= -->
 
-    <h3>Events</h3>
+    <h3><a name="WEBGLCONTEXTEVENT">WebGLContextEvent</a></h3>
 
     <p>
-        WebGL generates events when certain system activity occurs affecting the context.
-        These events are sent to the corresponding HTMLCanvasElement through the
-        <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html">DOM Event System</a>.
+        WebGL generates a WebGLContextEvent event in response to a status change to the WebGL rendering context 
+        associated with the HTMLCanvasElement which has a listener for this event. Events are sent using 
+        the <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html">DOM Event System</a>. Event types can 
+        include the loss or restoration of state, or the inability to create a context.
+    </p>
+    <pre class="idl">
+interface <dfn id="WebGLContextLostEvent">WebGLContextEvent</dfn> : Event {
+    const unsigned short NOT_AVAILABLE = 1;
+    const unsigned short NOT_SUPPORTED = 2;
+    const unsigned short OTHER_ERROR   = 3;
+
+    readonly attribute unsigned short statusCode;
+    readonly attribute DOMString      statusMessage;
+    
+    void initWebGLContextEvent(DOMString typeArg,
+                               boolean canBubbleArg,
+                               boolean cancelableArg,
+                               unsigned short statusCodeArg,
+                               DOMString statusMessageArg);
+};</pre>
+
+    <h4>Attributes</h4>
+
+    <p>
+        The following attributes are available:
     </p>
 
-<!-- ======================================================================================================= -->
+    <dl class="methods">
+        <dt><span class="prop-name"><code>statusCode</code></span> of type <code>unsigned short</code>
+        <dd>
+            One of the specified status codes, or 0 if no additional status is available.
+    </dl>
 
-    <h4><a name="WEBGLCONTEXTLOSTEVENT">WebGLContextLostEvent</a></h4>
+    <dl class="methods">
+        <dt><span class="prop-name"><code>statusMessage</code></span> of type <code>DOMString</code>
+        <dd>
+            A string containing additional information, or the empty string if no additional information
+            is available.
+    </dl>
+
+    <h4>Methods</h4>
 
     <p>
-        This event occurs when some system activity external to WebGL causes the rendering context
-        to lose all of its state. The <span class="prop-name"><code>context</code></span> attribute
-        contains the WebGLRenderingContext whose state was lost.
+        The following methods are available:
     </p>
-    <p>
-        When a WebGLContextLostEvent is delivered for a given context, that context is in a "lost"
-        state. While the context is in the lost state:
+
+    <dl class="methods">
+        <dt class="idl-code">void initWebGLContextLostEvent(DOMString typeArg, boolean canBubbleArg, boolean cancelableArg,
+                                                            unsigned short statusCodeArg, DOMString statusMessageArg)
+        <dd>
+            Initialize the event created through the 
+            <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-Event">Event</a>
+            interface. This method may only be called before the event has been dispatched via
+            the <code>dispatchEvent</code> method, though it may be called multiple times during
+            that phase if necessary. If called multiple times, the final invocation takes
+            precedence.
+            <P>
+            <b>Parameters</b>
+            <dl>
+                <dt><code>typeArg</code> of type <code>DOMString</code>
+                <dd>Specifies the event type (see below)</code>.
+                <dt><code>canBubbleArg</code> of type <code>boolean</code>
+                <dd>Specifies whether or not the event can bubble.
+                <dt><code>cancelableArg</code> of type <code>boolean</code>
+                <dd>Specifies whether or not the event can bubble.
+                <dt><code>statusCodeArg</code> of type <code>unsigned short</code>
+                <dd>One of the specified status codes, or 0 if no additional status is available.
+                <dt><code>statusMessageArg</code> of type <code>DOMString</code>
+                <dd>A string containing additional information, or the empty string if no additional information is available.
+            </dl>
+            <b>No Return Value</b><br>
+            <b>No Exceptions</b><br>
+    </dl>
+
+    <h4>Event Types</h4>
+
+    <dl class="methods">
+        <dt class="idl-code">webglcontextlost
+        <dd>
+            This event occurs when some system activity external to WebGL causes the rendering context 
+            associated with the HTMLCanvasElement receiving the event to lose all of its state. When this
+            event type is delivered, the associated context is in a "lost" state. While the context is 
+            in the lost state:
 
         <ul>
-        <li> The context's <code>isContextLost</code> method returns <code>true</code>. 
-        <li> All methods returning <code>void</code> return immediately.
-        <li> All methods returning nullable values or <code>any</code> return <code>null</code>.
-        <li> <code>checkFramebufferStatus</code> returns <code>FRAMEBUFFER_UNSUPPORTED</code>.
-        <li> <code>getAttribLocation</code> returns <code>-1</code>.
+        <li> The context's <code>isContextLost</code> method returns <code>true</code>.<br>
+        <li> All methods returning <code>void</code> return immediately.<br>
+        <li> All methods returning nullable values or <code>any</code> return <code>null</code>.<br>
+        <li> <code>checkFramebufferStatus</code> returns <code>FRAMEBUFFER_UNSUPPORTED</code>.<br>
+        <li> <code>getAttribLocation</code> returns <code>-1</code>.<br>
         <li> <code>getError</code> returns <code>CONTEXT_LOST_WEBGL</code> the first time it is
              called while the context is lost. Afterward it will return <code>NO_ERROR</code> until
-             the context has been restored.
-        <li> <code>getVertexAttribOffset</code> returns <code>0</code>.
-        <li> All <code>is</code> queries return <code>false</code>.
+             the context has been restored.<br>
+        <li> <code>getVertexAttribOffset</code> returns <code>0</code>.<br>
+        <li> All <code>is</code> queries return <code>false</code>.<br>
         </ul>
-    </p>
-    <p>
-        See the specification of the
-        <a href="#WEBGLCONTEXTRESTOREDEVENT">WebGLContextRestoredEvent</a> for information on
-        resuming rendering after the context has been lost.
-    </p>
-    <pre class="idl">
-interface <dfn id="WebGLContextLostEvent">WebGLContextLostEvent</dfn> : Event {
-    readonly attribute WebGLRenderingContext context;
-    
-    void initWebGLContextLostEvent(DOMString type,
-                                   boolean canBubble,
-                                   boolean cancelable,
-                                   WebGLRenderingContext context);
-};</pre>
-
-    <h5>Attributes</h5>
-
-    <p>
-        The following attributes are available:
-    </p>
-
-    <dl class="methods">
-        <dt><span class="prop-name"><code>context</code></span> of type <code>WebGLRenderingContext</code>
-        <dd>
-            The context whose state was lost.
+        <p>
+            See the <code>webglcontextrestored</code> event type for information on
+            resuming rendering after the context has been lost.
+        <p><p>
+            The <code>statusCode</code> attribute is always 0 and <code>statusMessage</code> attribute is
+            always the empty string for this event. 
     </dl>
 
-    <h5>Methods</h5>
-
-    <p>
-        The following methods are available:
-    </p>
-
     <dl class="methods">
-        <dt class="idl-code">void initWebGLContextLostEvent(DOMString type, boolean canBubble, boolean cancelable, WebGLRenderingContext context)
+        <dt class="idl-code">webglcontextrestored
         <dd>
-            Initialize the event created through the 
-            <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-Event">Event</a>
-            interface. This method may only be called before the event has been dispatched via
-            the <code>dispatchEvent</code> method, though it may be called multiple times during
-            that phase if necessary. If called multiple times, the final invocation takes
-            precedence.
-            <P>
-            <b>Parameters</b>
-            <dl>
-                <dt><code>type</code> of type <code>DOMString</code>
-                <dd>Specifies the event type, which is the string <code>webglcontextlost</code>.
-                <dt><code>canBubble</code> of type <code>boolean</code>
-                <dd>Specifies whether or not the event can bubble.
-                <dt><code>cancelable</code> of type <code>boolean</code>
-                <dd>Specifies whether or not the event can bubble.
-                <dt><code>context</code> of type <code>WebGLRenderingContext</code>
-                <dd>The context whose state was lost.
-            </dl>
-            <b>No Return Value</b><br>
-            <b>No Exceptions</b><br>
+            This event occurs when the WebGL implementation determines that a previously lost context can 
+            be restored. The system only restores the context if a handler for the 
+            <code>webglcontextrestored</code> event is installed on the HTMLCanvasElement associated with 
+            the context.
+        <p><p>
+            Once the context is restored, WebGL resources such as textures and buffers that were created 
+            before the context was lost are no longer valid. The application must reinitialize the 
+            context's state and recreate all such resources.
+        <p><p>
+            The <code>statusCode</code> attribute is always 0 and <code>statusMessage</code> attribute is
+            always the empty string for this event. 
     </dl>
 
-<!-- ======================================================================================================= -->
-
-    <h4><a name="WEBGLCONTEXTRESTOREDEVENT">WebGLContextRestoredEvent</a></h4>
-
-    <p>
-        This event occurs when the WebGL implementation determines that a previously lost context
-        can be restored. <em>The system only restores the context if a handler for the context
-        restored event is installed on the Canvas element.</em>
-    </p>
-    <p>
-        Once the context is restored, WebGL resources such as textures and buffers that were created
-        before the context was lost are no longer valid. The application must reinitialize the
-        context's state and recreate all such resources.
-    </p>
-    <pre class="idl">
-interface <dfn id="WebGLContextRestoredEvent">WebGLContextRestoredEvent</dfn> : Event {
-    readonly attribute WebGLRenderingContext context;
-    
-    void initWebGLContextRestoredEvent(DOMString type,
-                                       boolean canBubble,
-                                       boolean cancelable,
-                                       WebGLRenderingContext context);
-};</pre>
-
-    <h5>Attributes</h5>
-
-    <p>
-        The following attributes are available:
-    </p>
-
     <dl class="methods">
-        <dt><span class="prop-name"><code>context</code></span> of type <code>WebGLRenderingContext</code>
+        <dt class="idl-code">webglcontextcreationerror
         <dd>
-            The context whose state was restored.
-    </dl>
-
-    <h5>Methods</h5>
-
-    <p>
-        The following methods are available:
-    </p>
-
-    <dl class="methods">
-        <dt class="idl-code">void initWebGLContextRestoredEvent(DOMString type, boolean canBubble, boolean cancelable, WebGLRenderingContext context)
-        <dd>
-            Initialize the event created through the 
-            <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-Event">Event</a>
-            interface. This method may only be called before the event has been dispatched via
-            the <code>dispatchEvent</code> method, though it may be called multiple times during
-            that phase if necessary. If called multiple times, the final invocation takes
-            precedence.
-            <P>
-            <b>Parameters</b>
-            <dl>
-                <dt><code>type</code> of type <code>DOMString</code>
-                <dd>Specifies the event type, which is the string <code>webglcontextrestored</code>.
-                <dt><code>canBubble</code> of type <code>boolean</code>
-                <dd>Specifies whether or not the event can bubble.
-                <dt><code>cancelable</code> of type <code>boolean</code>
-                <dd>Specifies whether or not the event can bubble.
-                <dt><code>context</code> of type <code>WebGLRenderingContext</code>
-                <dd>The context whose state was lost.
-            </dl>
-            <b>No Return Value</b><br>
-            <b>No Exceptions</b><br>
-    </dl>
+            This event occurs in response to a call to <code>getContext()</code> on the HTMLCanvasElement
+            receiving the event, when some error occurs during that call. When such an error occurs
+            the <code>getContext()</code> returns with a <code>null</code> value. Later, at the normal
+            event delivery time, this event is delivered with the details of the failure. If the
+            HTMLCanvasElement is listening for this event, it will be delivered whenever 
+            <code>getContext()</code> returns <code>null</code>.
+        <p><p>
+            The <code>statusCode</code> attributes have the following meaning:
+            <table class="foo">
+                <tr><th>statusCode</th><th>meaning</th></tr>
+                <tr><td>NOT_AVAILABLE</td><td>WebGL is not implemented or not enabled in this browser</td></tr>
+                <tr><td>NOT_SUPPORTED</td><td>Current graphics hardware cannot support WebGL</td></tr>
+                <tr><td>OTHER_ERROR</td><td>Some other error occurred when creating context, details in statusMessage</td></tr>
+            </table>
+        <p>
+            If <code>statusCode</code> is <code>OTHER_ERROR</code>, the <code>statusMessage</code> 
+            attribute contains a platform dependent string about the nature of the failure. In all 
+            other cases it is the empty string. 
+        </dl>
 
     <div class="example">
     The following ECMAScript example shows how to register event listeners on a Canvas called
