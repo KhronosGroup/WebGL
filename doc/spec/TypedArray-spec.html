@@ -243,6 +243,21 @@ interface <dfn id="ArrayBuffer">ArrayBuffer</dfn> {
       </tbody>
     </table>
 
+<!-- ======================================================================================================= -->
+
+    <h2>Security</h2>
+
+    <p>
+        The <tt>ArrayBuffer</tt> must always contain initialized data to prevent user information from
+        be inadvertently disclosed. When an <tt>ArrayBuffer</tt> is created directly, or when the Array View
+        constructor which takes a length creates an <tt>ArrayBuffer</tt> implicitly, its contents must be
+        initialized to 0. If it is created implicitly by one of the Array View type constructors which
+        take a array, the initialization can be omitted as long as no region of the <tt>ArrayBuffer</tt> is
+        left uninitialized.
+    </p>
+
+<!-- ======================================================================================================= -->
+
     <h2>The <tt><a name="ARRAYBUFFERVIEW">ArrayBufferView</a></tt> Type</h2>
 
     <p>The <tt>ArrayBufferView</tt> type holds information shared among all of the types of views of ArrayBuffers. An <tt>ArrayBufferView</tt> has the following properties:
