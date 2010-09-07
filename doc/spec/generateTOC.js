@@ -40,4 +40,14 @@ function generateTOC(toc)
     var tocString = { s:"<ul class='toc'>\n" };
     nextLevel(nodeList, 0, 2, "", tocString);
     toc.innerHTML = tocString.s;
+    
+    // Now position the document, in case a #xxx directive was given
+    var id = window.location.hash.substring(1);
+    if (id.length > 0) {
+        var target = document.getElementById(id);
+        if (target) {
+            var rect = target.getBoundingClientRect();
+            setTimeout(function() { window.scrollTo(0, rect.top) }, 0);
+        }
+    }
 }

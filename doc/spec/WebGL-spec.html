@@ -2659,7 +2659,7 @@ interface <dfn id="WebGLContextLostEvent">WebGLContextEvent</dfn> : Event {
             <b>Parameters</b>
             <dl>
                 <dt><code>typeArg</code> of type <code>DOMString</code>
-                <dd>Specifies the event type (see below)</code>.
+                <dd>Specifies the event type (see below).
                 <dt><code>canBubbleArg</code> of type <code>boolean</code>
                 <dd>Specifies whether or not the event can bubble.
                 <dt><code>cancelableArg</code> of type <code>boolean</code>
@@ -2925,12 +2925,9 @@ A call to <code>framebufferRenderbuffer</code> which would result in non-zero at
 these combinations of attachment points will generate an <code>INVALID_OPERATION</code> error and leave
 the framebuffer's attachments untouched.
 
-</p>
-
-    <h3><a name="PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a></h3>
+<h3><a name="PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a></h3>
 
 <p>
-
 The WebGL API supports the following two additional boolean parameters to <code>pixelStorei</code>.
 Any non-zero <em>param</em> is interpreted as the value <code>true</code>.
 
@@ -2946,9 +2943,7 @@ or <code>texSubImage2D</code>, the alpha channel of the source data, if present,
 the color channels during the data transfer. The default value is <code>false</code>.
 </dl>
 
-</p>
-
-    <h3><a name="STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a></h3>
+<h3><a name="STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a></h3>
 
 <p>
 In the WebGL API it is illegal to specify a different mask or reference value for front facing and
