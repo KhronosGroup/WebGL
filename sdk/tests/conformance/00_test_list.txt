@@ -17,6 +17,7 @@ framebuffer-object-attachment.html
 framebuffer-test.html
 get-active-test.html
 gl-bind-attrib-location-test.html
+gl-clear.html
 gl-drawelements.html
 gl-enable-enum-test.html
 gl-enable-vertex-attrib.html
