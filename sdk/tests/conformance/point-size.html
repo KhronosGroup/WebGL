@@ -30,8 +30,7 @@ varying vec4 color;
 
 void main()
 {
-    gl_FragColor = vec4(color.r * gl_PointCoord.x, color.g * gl_PointCoord.y, color.b, color.a);
-    // gl_FragColor = color;
+    gl_FragColor = color;
 }
 </script>
 
@@ -70,8 +69,6 @@ function runTest()
     var locPointSize = gl.getUniformLocation(gl.program, 'pointSize');
 
     debug('Draw a point of size 1 and verify it does not touch any other pixels.');
-
-    debug('Shading language version: ' + gl.getString(gl.SHADING_LANGUAGE_VERSION));
 
     gl.uniform1f(locPointSize, 1.0);
     gl.drawArrays(gl.POINTS, 0, vertices.length / 3);
