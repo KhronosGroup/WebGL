@@ -2905,9 +2905,9 @@ with the <code>DEPTH_STENCIL_ATTACHMENT</code> attachment point.
 A renderbuffer attached to the <code>DEPTH_ATTACHMENT</code> attachment point must be allocated with
 the <code>DEPTH_COMPONENT16</code> internal format. A renderbuffer attached to
 the <code>STENCIL_ATTACHMENT</code> attachment point must be allocated with
-the <code>STENCIL_INDEX8</code> internal format. Attempts to attach a renderbuffer with an incorrect
-internal format to a particular attachment point will generate an <code>INVALID_OPERATION</code> error from the call
-to <code>framebufferRenderbuffer</code> and leave the framebuffer's attachments untouched.
+the <code>STENCIL_INDEX8</code> internal format. A renderbuffer attached to
+the <code>DEPTH_STENCIL_ATTACHMENT</code> attachment point must be allocated with
+the <code>DEPTH_STENCIL</code> internal format.
 
 </p>
 <p>
@@ -2921,9 +2921,10 @@ of attachment points:
 <li> <code>DEPTH_ATTACHMENT + STENCIL_ATTACHMENT</code>
 </ul>
 
-A call to <code>framebufferRenderbuffer</code> which would result in non-zero attachments to any of
-these combinations of attachment points will generate an <code>INVALID_OPERATION</code> error and leave
-the framebuffer's attachments untouched.
+If any of the constraints above are violated, then calls which modify
+the framebuffer such as <code>clear</code> and <code>drawArrays</code>
+generate an <code>INVALID_FRAMEBUFFER_OPERATION</code> error, and
+leave the contents of the framebuffer untouched.
 
 <h3><a name="PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a></h3>
 
