@@ -859,7 +859,6 @@ ArgGenerators = {
   getShaderParameter : {}, // FIXME
   getShaderInfoLog : {}, // FIXME
   getShaderSource : {}, // FIXME
-  getString : {}, // FIXME
   getTexParameter : {}, // FIXME
   getUniform : {}, // FIXME
   getUniformLocation : {}, // FIXME
