@@ -44,7 +44,6 @@ window.onload = function() {
   description("This test ensures WebGL implementations follow proper origin restrictions.");
   debug("");
   var img = document.getElementById("img");
-  assertMsg(img.width > 0 && img.height > 0, "img was loaded");
   imgDomain = getBaseDomain(img.src);
   pageDomain = getBaseDomain(window.location.toString());
   assertMsg(imgDomain != pageDomain,
