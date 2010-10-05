@@ -498,6 +498,8 @@ interface WebGLRenderingContext {
     const GLenum UNPACK_FLIP_Y_WEBGL            = 0x9240;
     const GLenum UNPACK_PREMULTIPLY_ALPHA_WEBGL = 0x9241;
     const GLenum CONTEXT_LOST_WEBGL             = 0x9242;
+    const GLenum UNPACK_COLORSPACE_CONVERSION_WEBGL = 0x9243;
+    const GLenum BROWSER_DEFAULT_WEBGL          = 0x9244;
 
     readonly attribute HTMLCanvasElement canvas;
 

@@ -1209,6 +1209,8 @@ for (var i = 0; i < numVertices; i++) {
     const GLenum UNPACK_FLIP_Y_WEBGL            = 0x9240;
     const GLenum UNPACK_PREMULTIPLY_ALPHA_WEBGL = 0x9241;
     const GLenum CONTEXT_LOST_WEBGL             = 0x9242;
+    const GLenum UNPACK_COLORSPACE_CONVERSION_WEBGL = 0x9243;
+    const GLenum BROWSER_DEFAULT_WEBGL          = 0x9244;
 
     readonly attribute HTMLCanvasElement canvas;
 
@@ -1653,6 +1655,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>TEXTURE_BINDING_2D</td><td>WebGLTexture</td></tr>
                 <tr><td>TEXTURE_BINDING_CUBE_MAP</td><td>WebGLTexture</td></tr>
                 <tr><td>UNPACK_ALIGNMENT</td><td>int</td></tr>
+                <tr><td>UNPACK_COLORSPACE_CONVERSION_WEBGL</td><td>unsigned long</td></tr>
                 <tr><td>UNPACK_FLIP_Y_WEBGL</td><td>boolean</td></tr>
                 <tr><td>UNPACK_PREMULTIPLY_ALPHA_WEBGL</td><td>boolean</td></tr>
                 <tr><td>VENDOR</td><td>DOMString</td></tr>
@@ -1697,8 +1700,9 @@ for (var i = 0; i < numVertices; i++) {
             </a>
             <dd>
                 In addition to the parameters in the OpenGL ES 2.0 specification, the WebGL
-                specification accepts the parameters <code>UNPACK_FLIP_Y_WEBGL</code>
-                and <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code>. See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel
+                specification accepts the parameters <code>UNPACK_FLIP_Y_WEBGL</code>,
+                <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code>
+                and <code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code>. See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel
                 Storage Parameters</a> for documentation of these parameters.
         <dt class="idl-code">void polygonOffset(GLfloat factor, GLfloat units)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glPolygonOffset.xml">
@@ -2946,19 +2950,28 @@ If any of the constraints above are violated, then:
 <h3><a name="PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a></h3>
 
 <p>
-The WebGL API supports the following two additional boolean parameters to <code>pixelStorei</code>.
-Any non-zero <em>param</em> is interpreted as the value <code>true</code>.
+The WebGL API supports the following additional parameters to <code>pixelStorei</code>.
 
 <dl>
-<dt><code>UNPACK_FLIP_Y_WEBGL</code>
+<dt><code>UNPACK_FLIP_Y_WEBGL</code> of type <code>boolean</code>
 <dd>If set, then during any subsequent calls to <code>texImage2D</code> or
 <code>texSubImage2D</code>, the source data is flipped along the vertical axis, so that conceptually
-the last row is the first one transferred. The default value is <code>false</code>.
+the last row is the first one transferred. The default value is <code>false</code>. Any non-zero
+value is interpreted as <code>true</code>.
 
-<dt><code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code>
+<dt><code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> of type <code>boolean</code>
 <dd>If set, then during any subsequent calls to <code>texImage2D</code>
 or <code>texSubImage2D</code>, the alpha channel of the source data, if present, is multiplied into
-the color channels during the data transfer. The default value is <code>false</code>.
+the color channels during the data transfer. The default value is <code>false</code>. Any non-zero
+value is interpreted as <code>true</code>.
+
+<dt><code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code> of type <code>unsigned long</code>
+<dd>If set to <code>BROWSER_DEFAULT_WEBGL</code>, then the browser's default colorspace conversion
+is applied during subsequent <code>texImage2D</code> and <code>texSubImage2D</code> calls
+taking <code>HTMLImageElement</code>. The precise conversions may be specific to both the browser
+and file type. If set to <code>NONE</code>, no colorspace conversion is applied. The default value
+is <code>BROWSER_DEFAULT_WEBGL</code>.
+
 </dl>
 
 <h3><a name="STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a></h3>
