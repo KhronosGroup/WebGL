@@ -213,10 +213,10 @@ interface DataView : ArrayBufferView {
                   optional boolean littleEndian);
     unsigned long getUInt32(unsigned long byteOffset,
                             optional boolean littleEndian);
-    float getFloat(unsigned long byteOffset,
-                   optional boolean littleEndian);
-    double getDouble(unsigned long byteOffset,
+    float getFloat32(unsigned long byteOffset,
                      optional boolean littleEndian);
+    double getFloat64(unsigned long byteOffset,
+                      optional boolean littleEndian);
 
     // Stores a value of the given type at the specified byte offset
     // from the start of the view. There is no alignment constraint;
@@ -230,11 +230,9 @@ interface DataView : ArrayBufferView {
     // These methods throw exceptions if they would write beyond the end
     // of the view.
     void setInt8(unsigned long byteOffset,
-                 byte value,
-                 optional boolean littleEndian);
+                 byte value);
     void setUint8(unsigned long byteOffset,
-                  unsigned byte value,
-                  optional boolean littleEndian);
+                  unsigned byte value);
     void setInt16(unsigned long byteOffset,
                   short value,
                   optional boolean littleEndian);
@@ -247,12 +245,12 @@ interface DataView : ArrayBufferView {
     void setUint32(unsigned long byteOffset,
                    unsigned long value,
                    optional boolean littleEndian);
-    void setFloat(unsigned long byteOffset,
-                  float value,
-                  optional boolean littleEndian);
-    void setDouble(unsigned long byteOffset,
-                   double value,
-                   optional boolean littleEndian);
+    void setFloat32(unsigned long byteOffset,
+                    float value,
+                    optional boolean littleEndian);
+    void setFloat64(unsigned long byteOffset,
+                    double value,
+                    optional boolean littleEndian);
 };
 
 };

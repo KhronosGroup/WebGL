@@ -538,11 +538,9 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
     // These methods raise an exception if they would write
     // beyond the end of the view.
     void setInt8(unsigned long byteOffset,
-                 byte value,
-                 optional boolean littleEndian);
+                 byte value);
     void setUint8(unsigned long byteOffset,
-                  unsigned byte value,
-                  optional boolean littleEndian);
+                  unsigned byte value);
     void setInt16(unsigned long byteOffset,
                   short value,
                   optional boolean littleEndian);
@@ -571,6 +569,21 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
 	<tr>
 	  <td><i>DataView</i>(ArrayBuffer buffer, optional unsigned long byteOffset, optional unsigned long byteLength)</td>
 	  <td>
+            <p>Create a new <i>DataView</i> object using the passed
+            ArrayBuffer for its storage. Optional byteOffset and
+            byteLength can be used to limit the section of the buffer
+            referenced. The byteOffset indicates the offset in bytes
+            from the start of the ArrayBuffer, and the byteLength is
+            the number of bytes from the offset that
+            this <i>DataView</i> will reference.  If both byteOffset
+            and byteLength are omitted, the <i>DataView</i> spans the
+            entire ArrayBuffer range.  If the byteLength is omitted,
+            the <i>DataView</i> extends from the given byteOffset
+            until the end of the ArrayBuffer.</p>
+
+	    <p>If the given byteOffset and byteLength references an
+	    area beyond the end of the ArrayBuffer an exception is
+	    raised.</p>
 	  </td>
 	</tr>
 	<tr></tr>
@@ -590,12 +603,22 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
             double <i>getFloat64</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
 	  </td>
 	  <td>
+            <p>Gets the value of the given type at the specified byte offset
+            from the start of the view. There is no alignment constraint;
+            multi-byte values may be fetched from any offset.</p>
+
+            <p>For multi-byte values, the optional littleEndian argument
+            indicates whether a big-endian or little-endian value should be
+            read. If false or undefined, a big-endian value is read.</p>
+           
+            <p>These methods raise an exception if they would read
+            beyond the end of the view.</p>
 	  </td>
 	</tr>
 	<tr>
 	  <td valign="top">
-            void <i>setInt8</i>(unsigned long byteOffset, byte value, optional boolean littleEndian);<br>
-            void <i>setUint8</i>(unsigned long byteOffset, unsigned byte value, optional boolean littleEndian);<br>
+            void <i>setInt8</i>(unsigned long byteOffset, byte value);<br>
+            void <i>setUint8</i>(unsigned long byteOffset, unsigned byte value);<br>
             void <i>setInt16</i>(unsigned long byteOffset, short value, optional boolean littleEndian);<br>
             void <i>setUint16</i>(unsigned long byteOffset, unsigned short value, optional boolean littleEndian);<br>
             void <i>setInt32</i>(unsigned long byteOffset, long value, optional boolean littleEndian);<br>
@@ -604,6 +627,17 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
             void <i>setFloat64</i>(unsigned long byteOffset, double value, optional boolean littleEndian);<br>
 	  </td>
 	  <td>
+            <p>Stores a value of the given type at the specified byte offset
+            from the start of the view. There is no alignment constraint;
+            multi-byte values may be stored at any offset.</p>
+
+            <p>For multi-byte values, the optional littleEndian argument
+            indicates whether the value should be stored in big-endian or
+            little-endian byte order. If false or undefined, the value is
+            stored in big-endian byte order.</p>
+
+            <p>These methods raise an exception if they would write
+            beyond the end of the view.</p>
 	  </td>
 	</tr>
       </tbody>
