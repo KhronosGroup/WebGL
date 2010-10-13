@@ -28,7 +28,7 @@ interface ArrayBufferView {
 [
     Constructor(unsigned long length),
     Constructor(Int8Array array),
-    Constructor(sequence<byte> array),
+    Constructor(byte[] array),
     Constructor(ArrayBuffer buffer, 
                 optional unsigned long byteOffset, optional unsigned long length)
 ]
@@ -40,7 +40,7 @@ interface Int8Array : ArrayBufferView {
     omittable getter byte get(unsigned long index);
     omittable setter void set(unsigned long index, byte value);
     void set(Int8Array array, optional unsigned long offset);
-    void set(sequence<byte> array, optional unsigned long offset);
+    void set(byte[] array, optional unsigned long offset);
     Int8Array slice(long start, long end);
 };
 
@@ -50,7 +50,7 @@ interface Int8Array : ArrayBufferView {
 [
     Constructor(unsigned long length),
     Constructor(Uint8Array array),
-    Constructor(sequence<unsigned byte> array),
+    Constructor(unsigned byte[] array),
     Constructor(ArrayBuffer buffer, 
                 optional unsigned long byteOffset, optional unsigned long length)
 ]
@@ -62,7 +62,7 @@ interface Uint8Array : ArrayBufferView {
     omittable getter unsigned byte get(unsigned long index);
     omittable setter void set(unsigned long index, unsigned byte value);
     void set(Uint8Array array, optional unsigned long offset);
-    void set(sequence<unsigned byte> array, optional unsigned long offset);
+    void set(unsigned byte[] array, optional unsigned long offset);
     Uint8Array slice(long start, long end);
 };
 
@@ -70,7 +70,7 @@ interface Uint8Array : ArrayBufferView {
 [
     Constructor(unsigned long length),
     Constructor(Int16Array array),
-    Constructor(sequence<short> array),
+    Constructor(short[] array),
     Constructor(ArrayBuffer buffer, 
                 optional unsigned long byteOffset, optional unsigned long length)
 ]
@@ -82,7 +82,7 @@ interface Int16Array : ArrayBufferView {
     omittable getter short get(unsigned long index);
     omittable setter void set(unsigned long index, short value);
     void set(Int16Array array, optional unsigned long offset);
-    void set(sequence<short> array, optional unsigned long offset);
+    void set(short[] array, optional unsigned long offset);
     Int16Array slice(long start, long end);
 };
 
@@ -90,7 +90,7 @@ interface Int16Array : ArrayBufferView {
 [
     Constructor(unsigned long length),
     Constructor(Uint16Array array),
-    Constructor(sequence<unsigned short> array),
+    Constructor(unsigned short[] array),
     Constructor(ArrayBuffer buffer, 
                 optional unsigned long byteOffset, optional unsigned long length)
 ]
@@ -102,7 +102,7 @@ interface Uint16Array : ArrayBufferView {
     omittable getter unsigned short get(unsigned long index);
     omittable setter void set(unsigned long index, unsigned short value);
     void set(Uint16Array array, optional unsigned long offset);
-    void set(sequence<unsigned short> array, optional unsigned long offset);
+    void set(unsigned short[] array, optional unsigned long offset);
     Uint16Array slice(long start, long end);
 };
 
@@ -110,7 +110,7 @@ interface Uint16Array : ArrayBufferView {
 [
     Constructor(unsigned long length),
     Constructor(Int32Array array),
-    Constructor(sequence<long> array),
+    Constructor(long[] array),
     Constructor(ArrayBuffer buffer, 
                 optional unsigned long byteOffset, optional unsigned long length)
 ]
@@ -122,7 +122,7 @@ interface Int32Array : ArrayBufferView {
     omittable getter long get(unsigned long index);
     omittable setter void set(unsigned long index, long value);
     void set(Int32Array array, optional unsigned long offset);
-    void set(sequence<long> array, optional unsigned long offset);
+    void set(long[] array, optional unsigned long offset);
     Int32Array slice(long start, long end);
 };
 
@@ -130,7 +130,7 @@ interface Int32Array : ArrayBufferView {
 [
     Constructor(unsigned long length),
     Constructor(Uint32Array array),
-    Constructor(sequence<unsigned long> array),
+    Constructor(unsigned long[] array),
     Constructor(ArrayBuffer buffer, 
                 optional unsigned long byteOffset, optional unsigned long length)
 ]
@@ -142,7 +142,7 @@ interface Uint32Array : ArrayBufferView {
     omittable getter unsigned long get(unsigned long index);
     omittable setter void set(unsigned long index, unsigned long value);
     void set(Uint32Array array, optional unsigned long offset);
-    void set(sequence<unsigned long> array, optional unsigned long offset);
+    void set(unsigned long[] array, optional unsigned long offset);
     Uint32Array slice(long start, long end);
 };
 
@@ -150,7 +150,7 @@ interface Uint32Array : ArrayBufferView {
 [
     Constructor(unsigned long length),
     Constructor(Float32Array array),
-    Constructor(sequence<float> array),
+    Constructor(float[] array),
     Constructor(ArrayBuffer buffer, 
                 optional unsigned long byteOffset, optional unsigned long length)
 ]
@@ -162,7 +162,7 @@ interface Float32Array : ArrayBufferView {
     omittable getter float get(unsigned long index);
     omittable setter void set(unsigned long index, float value);
     void set(Float32Array array, optional unsigned long offset);
-    void set(sequence<float> array, optional unsigned long offset);
+    void set(float[] array, optional unsigned long offset);
     Float32Array slice(long start, long end);
 };
 
@@ -170,7 +170,7 @@ interface Float32Array : ArrayBufferView {
 [
     Constructor(unsigned long length),
     Constructor(Float64Array array),
-    Constructor(sequence<double> array),
+    Constructor(double[] array),
     Constructor(ArrayBuffer buffer, 
                 optional unsigned long byteOffset, optional unsigned long length)
 ]
@@ -182,7 +182,7 @@ interface Float64Array : ArrayBufferView {
     omittable getter double get(unsigned long index);
     omittable setter void set(unsigned long index, double value);
     void set(Float64Array array, optional unsigned long offset);
-    void set(sequence<double> array, optional unsigned long offset);
+    void set(double[] array, optional unsigned long offset);
     Float64Array slice(long start, long end);
 };
 
