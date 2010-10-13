@@ -103,6 +103,7 @@ function initShaders() {
         "varying vec2 texCoord;",
         "void main()",
         "{",
+        "  for (int i = 0; i < 1; ++i) { continue; }",
         "  gl_FragColor = texture2D(tex, texCoord);",
         "}"
     ].join("\n");
