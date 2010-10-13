@@ -31,7 +31,7 @@
 
 <body onload="generateTOC(document.getElementById('toc'))">
   <h1>Typed Arrays</h1>
-  <h2 class="no-toc">Working Draft 12 October 2010</h2>
+  <h2 class="no-toc">Working Draft 13 October 2010</h2>
   <dl>
     <dt>This version:
       <dd>
@@ -322,7 +322,7 @@ interface <dfn id="ArrayBufferView">ArrayBufferView</dfn> {
 [
     Constructor(unsigned long length),
     Constructor(<i>TypedArray</i> array),
-    Constructor(sequence&lt;<i>type</i>&gt; array),
+    Constructor(<i>type</i>[] array),
     Constructor(ArrayBuffer buffer,
                 optional unsigned long byteOffset, optional unsigned long length)
 ]
@@ -334,7 +334,7 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
     omittable getter <i>type</i> get(unsigned long index);
     omittable setter void set(unsigned long index, <i>type</i> value);
     void set(<i>TypedArray</i> array, optional unsigned long offset);
-    void set(sequence&lt;<i>type</i>&gt; array, optional unsigned long offset);
+    void set(<i>type</i>[] array, optional unsigned long offset);
     <i>TypedArray</i> slice(long begin, optional long end);
 };</pre>
 
@@ -355,13 +355,13 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
 	</tr>
 	<tr>
 	  <td><i>TypedArray</i>(<i>TypeArray</i> array)<br>
-              <i>TypedArray</i>(sequence&lt;<i>type</i>&gt; array)</td>
+              <i>TypedArray</i>(<i>type</i>[] array)</td>
 	  <td>
 	    <p>Create a new ArrayBuffer with enough bytes to
 	      hold <tt>array.length</tt> elements of this typed array,
 	      then creates a typed array view referring to the full
 	      buffer.  The contents of the new view are initialized to
-	      the contents of the given typed array or sequence, with
+	      the contents of the given array or typed array, with
 	      each element converted to the appropriate typed array
 	      type.</p>
 	  </td>
@@ -437,7 +437,7 @@ interface <dfn id="TypedArray"><i>TypedArray</i></dfn> : ArrayBufferView {
 	<tr>
 	  <td>
 	    void <i>set</i>(<i>TypedArray</i> array, optional unsigned long offset)<br>
-	    void <i>set</i>(sequence&lt;<i>type</i>&gt; array, optional unsigned long offset)
+	    void <i>set</i>(<i>type</i>[] array, optional unsigned long offset)
 	  </td>
 	  <td>
             <p>
