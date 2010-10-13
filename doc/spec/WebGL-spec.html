@@ -102,14 +102,21 @@
 
     <p>
         The HTMLCanvasElement places an element on the page into which graphic
-        images can be rendered using a programmatic interface. Currently the only
-        such interface described is the CanvasRenderingContext2D. This document
+        images can be rendered using a programmatic interface. The only such
+        interface described as part of the Canvas specification is the 2D
+        canvas rendering context, CanvasRenderingContext2D. This document
         describes another such interface, WebGLRenderingContext, which presents
         an API derived from the OpenGL ES 2.0 specification. This API provides a
         rich set of functions allowing realistic 3D graphics to be rendered.
     </p>
+
     <p>
-        More details needed here...
+        The remaining sections of this document are intended to be read in conjunction
+        with the OpenGL ES 2.0 specification (2.0.24 at the time of this writing).
+        Unless otherwise specified, the behaviour of each method is defined by the
+        OpenGL ES 2.0 specification.  This specification may diverge from OpenGL ES 2.0
+        in order to ensure interoperability or security, often defining areas that
+        OpenGL ES 2.0 leaves implementation-defined.
     </p>
 
     <div class=issue>
@@ -1662,7 +1669,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>VERSION</td><td>DOMString</td></tr>
                 <tr><td>VIEWPORT</td><td>Int32Array (with 4 elements)</td></tr>
             </table><br>
-            The following <em>pname</em> arguments return a string describing some aspect of the current WebGL implementation:
+            <p>The following <em>pname</em> arguments return a string describing some aspect of the current WebGL implementation:</p>
             <table>
               <tr><td>VERSION</td>
                   <td>Returns a version or release number of the form <code>WebGL&lt;space&gt;1.0&lt;space&gt;&lt;vendor-specific information&gt;</code>.</td></tr>
@@ -1673,8 +1680,13 @@ for (var i = 0; i < numVertices; i++) {
               <tr><td>RENDERER</td>
                   <td>Returns the name of the renderer. This name is typically specific to a particular configuration of a hardware platform. It does not change from release to release.</td></tr>
             </table><br>
-            See <a href="#EXTENSION_QUERIES">Extension Queries</a> for information on querying the
-            available extensions in the current WebGL implementation.
+            <p>See <a href="#EXTENSION_QUERIES">Extension Queries</a> for information on querying the
+            available extensions in the current WebGL implementation.</p>
+            <p>The following parameters have explicit fixed values in WebGL:</p>
+            <table>
+            <tr><td>IMPLEMENTATION_COLOR_READ_FORMAT</td><td>Must be RGB565<br>(see <a href="#IMPLEMENTATION_READ_FORMAT">Implementation Color Read Format</a>)</td></tr>
+            <tr><td>IMPLEMENTATION_COLOR_READ_TYPE</td><td>Must be UNSIGNED_SHORT<br>(see <a href="#IMPLEMENTATION_READ_FORMAT">Implementation Color Read Format</a>)</td></tr>
+            </table>
         <dt class="idl-code">GLenum getError()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetError.xml">
                 (OpenGL ES 2.0 man page)
@@ -3035,6 +3047,22 @@ In the WebGL API, <code>EXTENSIONS</code> is not a legal argument to <code>getPa
 Instead, <code>getSupportedExtensions</code> must be called to determine the set of available
 extensions.
 
+</p>
+
+    <h3><a name="IMPLEMENTATION_READ_FORMAT">Implementation Color Read Format</a></h3>
+
+<p>
+
+    In the OpenGL ES 2.0 API, the
+    <code>IMPLEMENTATION_COLOR_READ_FORMAT</code> and
+    <code>IMPLEMENTATION_COLOR_READ_TYPE</code> parameters are used to
+    inform applications of an additional format and type combination
+    that may be passed to <code>ReadPixels</code>, in addition to the
+    required <code>RGBA</code>/<code>UNSIGNED_BYTE</code> pair.  In
+    the WebGL API, the required implementation read format and type is
+    <code>RGB565</code>/<code>UNSIGNED_SHORT</code> to ensure
+    interoperability.  Extensions may be used to add additional
+    allowed read formats.
 </p>
 
 <!-- ======================================================================================================= -->
