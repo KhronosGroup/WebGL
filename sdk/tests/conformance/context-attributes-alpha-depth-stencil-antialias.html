@@ -268,7 +268,7 @@ function testAntialias(antialias)
         255, 0, 0, 255]);
     var buf = drawAndReadPixel(webGL, vertices, colors, 0, 0);
     pixel[0] = buf[0];
-    shouldBe("pixel[0] == 255 || pixel[0] == 0", (contextAttribs.antialias ? "false" : "true"));
+    shouldBe("pixel[0] != 255 && pixel[0] != 0", "contextAttribs.antialias");
 }
 
 function runTest()
