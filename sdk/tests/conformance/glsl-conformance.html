@@ -223,6 +223,13 @@ foo
 <script id="vshaderWith__FILE__" type="text/something-not-javascript">
 __FILE__
 </script>
+<script id="fshaderWithdFdx" type="text/something-not-javascript">
+precision mediump float;
+void main()
+{
+    gl_FragColor = vec4(dFdx(0.5),0.0,0.0,1.0);
+}
+</script>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
 description("This test ensures WebGL implementations allow proper GLES2 shaders compile and improper ones fail.");
@@ -309,6 +316,13 @@ if (!gl) {
       fShaderSuccess: false,
       linkSuccess: false,
       passMsg: 'fragment shader that uses gl_FragDepth should fail',
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithdFdx',
+      fShaderSuccess: false,
+      linkSuccess: false,
+      passMsg: 'fragment shader that uses dFdx should fail',
     },
     { vShaderId: 'vshaderWithClipVertex',
       vShaderSuccess: false,
