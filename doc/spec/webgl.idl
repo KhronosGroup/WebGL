@@ -730,22 +730,13 @@ interface WebGLRenderingContext {
 };
 
 
-interface WebGLContextLostEvent : Event {
-    readonly attribute WebGLRenderingContext context;
+interface WebGLContextEvent : Event {
+    readonly attribute DOMString statusMessage;
     
-    void initWebGLContextLostEvent(DOMString type,
-                                   boolean canBubble,
-                                   boolean cancelable,
-                                   WebGLRenderingContext context);
-};
-
-interface WebGLContextRestoredEvent : Event {
-    readonly attribute WebGLRenderingContext context;
-    
-    void initWebGLContextRestoredEvent(DOMString type,
-                                       boolean canBubble,
-                                       boolean cancelable,
-                                       WebGLRenderingContext context);
+    void initWebGLContextEvent(DOMString typeArg,
+                               boolean canBubbleArg,
+                               boolean cancelableArg,
+                               DOMString statusMessageArg);
 };
 
 };
