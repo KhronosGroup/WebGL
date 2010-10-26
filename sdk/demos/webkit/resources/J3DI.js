@@ -72,7 +72,7 @@ function initWebGL(canvasName, vshader, fshader, attribs, clearColor, clearDepth
     gl.attachShader (gl.program, fragmentShader);
 
     // Bind attributes
-    for (var i in attribs)
+    for (var i = 0; i < attribs.length; ++i)
         gl.bindAttribLocation (gl.program, i, attribs[i]);
 
     // Link the program
