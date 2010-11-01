@@ -80,3 +80,4 @@ uniform-location.html
 uniform-samplers-test.html
 uninitialized-test.html
 viewport-unchanged-upon-resize.html
+webgl-specific.html
