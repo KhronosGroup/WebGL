@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 25 October 2010</h2>
+    <h2 class="no-toc">Working Draft 02 November 2010</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2929,9 +2929,17 @@ If any of the constraints above are violated, then:
 
 <ul>
 <li> <code>checkFramebufferStatus</code> must return <code>FRAMEBUFFER_UNSUPPORTED</code>.
-<li> Calls which modify the framebuffer such as <code>clear</code> and <code>drawArrays</code> must
-     generate an <code>INVALID_FRAMEBUFFER_OPERATION</code> error, and leave the contents of the
-     framebuffer untouched.
+<li> The following calls, which either modify or read the framebuffer, must generate
+     an <code>INVALID_FRAMEBUFFER_OPERATION</code> error and return early, leaving the contents of
+     the framebuffer, destination texture or destination memory untouched.
+  <ul>
+  <li> clear
+  <li> copyTexImage2D
+  <li> copyTexSubImage2D
+  <li> drawArrays
+  <li> drawElements
+  <li> readPixels
+  </ul>
 </ul>
 
 <h3><a name="PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a></h3>
