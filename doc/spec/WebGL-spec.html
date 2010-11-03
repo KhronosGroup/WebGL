@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 02 November 2010</h2>
+    <h2 class="no-toc">Working Draft 03 November 2010</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1149,10 +1149,6 @@ for (var i = 0; i < numVertices; i++) {
     const GLenum VERTEX_ATTRIB_ARRAY_POINTER        = 0x8645;
     const GLenum VERTEX_ATTRIB_ARRAY_BUFFER_BINDING = 0x889F;
     
-    /* Read Format */
-    const GLenum IMPLEMENTATION_COLOR_READ_TYPE   = 0x8B9A;
-    const GLenum IMPLEMENTATION_COLOR_READ_FORMAT = 0x8B9B;
-    
     /* Shader Source */
     const GLenum COMPILE_STATUS                 = 0x8B81;
     const GLenum INFO_LOG_LENGTH                = 0x8B84;
@@ -1612,8 +1608,6 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>FRONT_FACE</td><td>unsigned long</td></tr>
                 <tr><td>GENERATE_MIPMAP_HINT</td><td>unsigned long</td></tr>
                 <tr><td>GREEN_BITS</td><td>long</td></tr>
-                <tr><td>IMPLEMENTATION_COLOR_READ_FORMAT</td><td>unsigned long</td></tr>
-                <tr><td>IMPLEMENTATION_COLOR_READ_TYPE</td><td>unsigned long</td></tr>
                 <tr><td>LINE_WIDTH</td><td>float</td></tr>
                 <tr><td>MAX_COMBINED_TEXTURE_IMAGE_UNITS</td><td>long</td></tr>
                 <tr><td>MAX_CUBE_MAP_TEXTURE_SIZE</td><td>long</td></tr>
@@ -1682,11 +1676,6 @@ for (var i = 0; i < numVertices; i++) {
             </table><br>
             <p>See <a href="#EXTENSION_QUERIES">Extension Queries</a> for information on querying the
             available extensions in the current WebGL implementation.</p>
-            <p>The following parameters have explicit fixed values in WebGL:</p>
-            <table>
-            <tr><td>IMPLEMENTATION_COLOR_READ_FORMAT</td><td>Must be RGB565<br>(see <a href="#IMPLEMENTATION_READ_FORMAT">Implementation Color Read Format</a>)</td></tr>
-            <tr><td>IMPLEMENTATION_COLOR_READ_TYPE</td><td>Must be UNSIGNED_SHORT<br>(see <a href="#IMPLEMENTATION_READ_FORMAT">Implementation Color Read Format</a>)</td></tr>
-            </table>
         <dt class="idl-code">GLenum getError()
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetError.xml">
                 (OpenGL ES 2.0 man page)
@@ -3032,20 +3021,18 @@ extensions.
 
 </p>
 
-    <h3><a name="IMPLEMENTATION_READ_FORMAT">Implementation Color Read Format</a></h3>
+    <h3><a name="IMPLEMENTATION_READ_FORMAT">Implementation Color Read Format and Type</a></h3>
 
 <p>
 
     In the OpenGL ES 2.0 API, the
     <code>IMPLEMENTATION_COLOR_READ_FORMAT</code> and
-    <code>IMPLEMENTATION_COLOR_READ_TYPE</code> parameters are used to
-    inform applications of an additional format and type combination
-    that may be passed to <code>ReadPixels</code>, in addition to the
-    required <code>RGBA</code>/<code>UNSIGNED_BYTE</code> pair.  In
-    the WebGL API, the required implementation read format and type is
-    <code>RGB565</code>/<code>UNSIGNED_SHORT</code> to ensure
-    interoperability.  Extensions may be used to add additional
-    allowed read formats.
+    <code>IMPLEMENTATION_COLOR_READ_TYPE</code> parameters are used to inform applications of an
+    additional format and type combination that may be passed to <code>ReadPixels</code>, in
+    addition to the required <code>RGBA</code>/<code>UNSIGNED_BYTE</code> pair.  In the WebGL API,
+    the only supported format and type combination to <code>ReadPixels</code> is
+    <code>RGBA</code>/<code>UNSIGNED_BYTE</code>. The <code>IMPLEMENTATION_COLOR_READ_FORMAT</code>
+    and <code>IMPLEMENTATION_COLOR_READ_TYPE</code> enumerants have been removed.
 </p>
 
 <!-- ======================================================================================================= -->
