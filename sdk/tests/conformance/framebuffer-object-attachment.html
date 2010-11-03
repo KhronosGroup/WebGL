@@ -62,6 +62,25 @@ function testColorRenderbuffer(internalformat)
     testAttachment(gl.COLOR_ATTACHMENT0, colorBuffer, false);
 }
 
+function testDepthStencilRenderbuffer()
+{
+    shouldBeNonNull("depthStencilBuffer = gl.createRenderbuffer()");
+    gl.bindRenderbuffer(gl.RENDERBUFFER, depthStencilBuffer);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, width, height);
+    glErrorShouldBe(gl, gl.NO_ERROR);
+    shouldBe("gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_WIDTH)", "width");
+    shouldBe("gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_HEIGHT)", "height");
+    shouldBe("gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_INTERNAL_FORMAT)", "gl.DEPTH_STENCIL");
+    shouldBe("gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_RED_SIZE)", "0");
+    shouldBe("gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_GREEN_SIZE)", "0");
+    shouldBe("gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_BLUE_SIZE)", "0");
+    shouldBe("gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_ALPHA_SIZE)", "0");
+    shouldBeTrue("gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_DEPTH_SIZE) > 0");
+    shouldBeTrue("gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_STENCIL_SIZE) > 0");
+    glErrorShouldBe(gl, gl.NO_ERROR);
+    testAttachment(gl.DEPTH_STENCIL_ATTACHMENT, depthStencilBuffer, false);
+}
+
 description("Test framebuffer object attachment behaviors");
 
 debug("Create renderbuffers");
@@ -123,6 +142,9 @@ testColorRenderbuffer(gl.RGB5_A1);
 
 debug("Attach color renderbuffer with internalformat == RGB565");
 testColorRenderbuffer(gl.RGB565);
+
+debug("Create and attach depthStencil renderbuffer");
+testDepthStencilRenderbuffer();
 
 successfullyParsed = true;
 </script>
