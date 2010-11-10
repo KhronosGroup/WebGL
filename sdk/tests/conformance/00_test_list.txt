@@ -7,7 +7,6 @@ buffer-data-array-buffer.html
 canvas-test.html
 constants.html
 context-attributes-alpha-depth-stencil-antialias.html
-context-attributes.html
 context-type-test.html
 copy-tex-image-and-sub-image-2d.html
 draw-arrays-out-of-bounds.html
