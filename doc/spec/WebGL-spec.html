@@ -101,28 +101,51 @@
     </p>
 
     <p>
-        The HTMLCanvasElement places an element on the page into which graphic
-        images can be rendered using a programmatic interface. The only such
-        interface described as part of the Canvas specification is the 2D
-        canvas rendering context, CanvasRenderingContext2D. This document
-        describes another such interface, WebGLRenderingContext, which presents
-        an API derived from the OpenGL ES 2.0 specification. This API provides a
-        rich set of functions allowing realistic 3D graphics to be rendered.
+      WebGL is an immediate mode 3D rendering API designed for the
+      web.  It is derived from OpenGL ES 2.0, and provides similar
+      rendering functionality, but in a HTML context.  WebGL is
+      designed as a rendering context for the HTML Canvas element.
+      The HTML Canvas provides a destination for programmatic
+      rendering in web pages, and allows for performing that rendering
+      using different rendering APIs.  The only such interface
+      described as part of the Canvas specification is the 2D canvas
+      rendering context, CanvasRenderingContext2D. This document
+      describes another such interface, WebGLRenderingContext, which
+      presents the WebGL API.
     </p>
 
     <p>
-        The remaining sections of this document are intended to be read in conjunction
-        with the OpenGL ES 2.0 specification (2.0.24 at the time of this writing).
-        Unless otherwise specified, the behaviour of each method is defined by the
-        OpenGL ES 2.0 specification.  This specification may diverge from OpenGL ES 2.0
-        in order to ensure interoperability or security, often defining areas that
-        OpenGL ES 2.0 leaves implementation-defined.
+      The immediate mode nature of the API is a divergence from most
+      web APIs.  Given the many use cases of 3D graphics, WebGL
+      chooses the approach of providing flexible primitives that can
+      be applied to any use case.  Libraries can provide an API on top
+      of WebGL that is more tailored to specific areas, thus adding a
+      convenience layer to WebGL that can accelerate and simplify development.
+      However, because of its OpenGL ES 2.0 heritage, it should be
+      straightforward for developers familiar with modern desktop
+      OpenGL or OpenGL ES 2.0 development to transition to WebGL
+      development.
     </p>
 
+    <p>
+      The remaining sections of this document are intended to be read in conjunction
+      with the OpenGL ES 2.0 specification (2.0.24 at the time of this writing, available
+      from the <a href="http://www.khronos.org/registry/gles/">Khronos OpenGL ES API Regsitry</a>).
+      Unless otherwise specified, the behaviour of each method is defined by the
+      OpenGL ES 2.0 specification.  This specification may diverge from OpenGL ES 2.0
+      in order to ensure interoperability or security, often defining areas that
+      OpenGL ES 2.0 leaves implementation-defined.  These differences are summarized in the
+      <a href="#webgl_gl_differences">Differences Between WebGL and OpenGL ES 2.0</a> section.
+    </p>
+
+    <h3>Outstanding Issues</h3>
     <div class=issue>
-        <p>
-            This is where issues would go
-        </p>
+    <p>There are a number of outstanding issues that must be resolved before this specification reaches 1.0 status.  These are listed blow:</p>
+    <ul>
+      <li>Handling of creating a WebGL rendering context for a canvas whose dimensions are too large for implementation-defined limits on GL</li>
+      <li>Single buffering vs. double buffering; preserve semantics on presenting a WebGL frame</li>
+      <li>Test suite coverage</li>
+    </ul>
     </div>
 
 <!-- ======================================================================================================= -->
@@ -2826,7 +2849,7 @@ function contextRestoredHandler() {
 
 <!-- ======================================================================================================= -->
 
-    <h2>Differences Between WebGL and OpenGL ES 2.0</h2>
+    <h2><a name="webgl_gl_differences">Differences Between WebGL and OpenGL ES 2.0</a></h2>
     
 <p>
 
