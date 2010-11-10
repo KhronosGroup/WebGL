@@ -70,7 +70,7 @@ function init()
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
     gl.bufferData(gl.ARRAY_BUFFER, texCoords, gl.STATIC_DRAW);
     gl.enableVertexAttribArray(1);
-    gl.vertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, 0, 0);
+    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
 
     texture = wtu.loadTexture(gl, "resources/bug-32888-texture.png", runTest);
 }
