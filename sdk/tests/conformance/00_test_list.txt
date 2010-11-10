@@ -76,6 +76,7 @@ texture-formats-test.html
 texture-npot.html
 texture-transparent-pixels-initialized.html
 triangle.html
+type-conversion-test.html
 uniform-location.html
 uniform-samplers-test.html
 uninitialized-test.html
