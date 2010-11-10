@@ -47,6 +47,7 @@ index-validation-with-resized-buffer.html
 index-validation.html
 invalid-UTF-16.html
 invalid-passed-params.html
+is-object.html
 methods.html
 more-than-65536-points.html
 null-object-behaviour.html
