@@ -34,7 +34,7 @@ gl.bindBuffer(gl.ARRAY_BUFFER, buf);
 glErrorShouldBe(gl, gl.NO_ERROR);
 
 gl.bufferData(gl.ARRAY_BUFFER, null, gl.STATIC_DRAW);
-glErrorShouldBe(gl, gl.NO_ERROR);
+glErrorShouldBe(gl, gl.INVALID_VALUE);
 
 gl.bufferData(gl.ARRAY_BUFFER, array, gl.STATIC_DRAW);
 glErrorShouldBe(gl, gl.NO_ERROR);
@@ -45,7 +45,7 @@ gl.bufferSubData(gl.ARRAY_BUFFER, 10, array);
 glErrorShouldBe(gl, gl.NO_ERROR);
 
 gl.bufferSubData(gl.ARRAY_BUFFER, 10, null);
-glErrorShouldBe(gl, gl.NO_ERROR);
+glErrorShouldBe(gl, gl.INVALID_VALUE);
 
 successfullyParsed = true;
 </script>
