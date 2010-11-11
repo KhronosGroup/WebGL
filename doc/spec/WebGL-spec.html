@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 03 November 2010</h2>
+    <h2 class="no-toc">Working Draft 11 November 2010</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1832,7 +1832,8 @@ for (var i = 0; i < numVertices; i++) {
         <dd>
             Set the size of the currently bound WebGLBuffer object for the passed target to the 
             size of the passed data, then write the contents of data to the buffer object.
-            
+            <br><br>
+            If the passed data is null then an <code>INVALID_VALUE</code> error is generated.
         <dt><p class="idl-code">void bufferSubData(GLenum target, GLsizeiptr offset, ArrayBufferView data)</p>
             <p class="idl-code">void bufferSubData(GLenum target, GLsizeiptr offset, ArrayBuffer data)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBufferSubData.xml">
