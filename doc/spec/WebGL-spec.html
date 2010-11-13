@@ -2544,7 +2544,7 @@ for (var i = 0; i < numVertices; i++) {
 
 <!-- ======================================================================================================= -->
 
-    <h4>Reading back pixels</h4>
+    <h4><a name="readpixels">Reading back pixels</a></h4>
 
     <p>
         Pixels in the current framebuffer can be read back into an ArrayBufferView object.
@@ -2562,11 +2562,20 @@ for (var i = 0; i < numVertices; i++) {
             sent drawing command.
             <br><br>
 
-            The type of <code>pixels</code> must match the type of the data to be read. If it is
-            UNSIGNED_BYTE, a Uint8Array must be supplied; if it is UNSIGNED_SHORT_5_6_5,
+            The type of <code>pixels</code> must match the type of the data to be read. For example,
+	    if it is UNSIGNED_BYTE, a Uint8Array must be supplied; if it is UNSIGNED_SHORT_5_6_5,
             UNSIGNED_SHORT_4_4_4_4, or UNSIGNED_SHORT_5_5_5_1, a Uint16Array must be supplied. If
             the types do not match, an INVALID_OPERATION error is generated.
             <br><br>
+
+	    The following are the allowed format and type combinations:
+
+            <table class="foo">
+              <tr><th>format</th><th>type</th></tr>
+              <tr><td>ALPHA</td><td>UNSIGNED_BYTE</td></tr>
+              <tr><td>RGB</td><td>UNSIGNED_BYTE</td></tr>
+              <tr><td>RGBA</td><td>UNSIGNED_BYTE</td></tr>
+            </table>
 
             If <code>pixels</code> is null, an INVALID_VALUE error is generated. If
             <code>pixels</code> is non-null, but is not large enough to retrieve all of the pixels
@@ -3053,9 +3062,9 @@ extensions.
     <code>IMPLEMENTATION_COLOR_READ_FORMAT</code> and
     <code>IMPLEMENTATION_COLOR_READ_TYPE</code> parameters are used to inform applications of an
     additional format and type combination that may be passed to <code>ReadPixels</code>, in
-    addition to the required <code>RGBA</code>/<code>UNSIGNED_BYTE</code> pair.  In the WebGL API,
-    the only supported format and type combination to <code>ReadPixels</code> is
-    <code>RGBA</code>/<code>UNSIGNED_BYTE</code>. The <code>IMPLEMENTATION_COLOR_READ_FORMAT</code>
+    addition to the required <ncode>RGBA</code>/<code>UNSIGNED_BYTE</code> pair.  In WebGL 1.0,
+    the supported format and type combinations to <code>ReadPixels</code> are documented in the
+    <a href="#readpixels">Reading back pixels</a> section.  The <code>IMPLEMENTATION_COLOR_READ_FORMAT</code>
     and <code>IMPLEMENTATION_COLOR_READ_TYPE</code> enumerants have been removed.
 </p>
 
