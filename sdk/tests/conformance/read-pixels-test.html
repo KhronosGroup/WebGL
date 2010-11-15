@@ -134,8 +134,10 @@ for (var tt = 0; tt < badFormats.length; ++ tt) {
   var type = info.type;
   var dest = info.dest;
   gl.readPixels(0, 0, 1, 1, format, type, dest);
+  // note that the GL error is INVALID_OPERATION if both format and type are invalid, but
+  // INVALID_ENUM if only one is.
   glErrorShouldBe(
-      gl, gl.INVALID_OPERATION,
+      gl, (format == gl.RGBA || type == gl.UNSIGNED_BYTE) ? gl.INVALID_ENUM : gl.INVALID_OPERATION,
       "Should not be able to read as " + wtu.glEnumToString(gl, format) +
       " / " + wtu.glEnumToString(gl, type));
 }
