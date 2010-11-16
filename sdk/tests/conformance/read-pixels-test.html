@@ -171,6 +171,10 @@ for (var ii = 0; ii < colors.length; ++ii) {
   var buf = new Uint8Array(4);
   gl.readPixels(512, 512, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   results.push(buf);
+  for (var kk = 0; kk < 99; ++kk) {
+    gl.uniform1i(loc, (jj + kk) % 3);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  }
 }
 var actual;
 var expected;
