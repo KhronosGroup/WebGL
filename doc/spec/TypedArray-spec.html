@@ -31,7 +31,7 @@
 
 <body onload="generateTOC(document.getElementById('toc'))">
   <h1>Typed Arrays</h1>
-  <h2 class="no-toc">Working Draft 13 October 2010</h2>
+  <h2 class="no-toc">Working Draft 16 November 2010</h2>
   <dl>
     <dt>This version:
       <dd>
@@ -512,14 +512,14 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
     // These methods raise an exception if they would read
     // beyond the end of the view.
     byte getInt8(unsigned long byteOffset);
-    unsigned byte getUInt8(unsigned long byteOffset);
+    unsigned byte getUint8(unsigned long byteOffset);
     short getInt16(unsigned long byteOffset,
                    optional boolean littleEndian);
-    unsigned short getUInt16(unsigned long byteOffset,
+    unsigned short getUint16(unsigned long byteOffset,
                              optional boolean littleEndian);
     long getInt32(unsigned long byteOffset,
                   optional boolean littleEndian);
-    unsigned long getUInt32(unsigned long byteOffset,
+    unsigned long getUint32(unsigned long byteOffset,
                             optional boolean littleEndian);
     float getFloat32(unsigned long byteOffset,
                      optional boolean littleEndian);
@@ -594,11 +594,11 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
 	<tr>
 	  <td valign="top">
             byte <i>getInt8</i>(unsigned long byteOffset);<br>
-            unsigned byte <i>getUInt8</i>(unsigned long byteOffset);<br>
+            unsigned byte <i>getUint8</i>(unsigned long byteOffset);<br>
             short <i>getInt16</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
-            unsigned short <i>getUInt16</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
+            unsigned short <i>getUint16</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
             long <i>getInt32</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
-            unsigned long <i>getUInt32</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
+            unsigned long <i>getUint32</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
             float <i>getFloat32</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
             double <i>getFloat64</i>(unsigned long byteOffset, optional boolean littleEndian);<br>
 	  </td>

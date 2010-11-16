@@ -204,14 +204,14 @@ interface DataView : ArrayBufferView {
     // These methods raise an INDEX_SIZE_ERR exception if they would read
     // beyond the end of the view.
     byte getInt8(unsigned long byteOffset);
-    unsigned byte getUInt8(unsigned long byteOffset);
+    unsigned byte getUint8(unsigned long byteOffset);
     short getInt16(unsigned long byteOffset,
                    optional boolean littleEndian);
-    unsigned short getUInt16(unsigned long byteOffset,
+    unsigned short getUint16(unsigned long byteOffset,
                              optional boolean littleEndian);
     long getInt32(unsigned long byteOffset,
                   optional boolean littleEndian);
-    unsigned long getUInt32(unsigned long byteOffset,
+    unsigned long getUint32(unsigned long byteOffset,
                             optional boolean littleEndian);
     float getFloat32(unsigned long byteOffset,
                      optional boolean littleEndian);
