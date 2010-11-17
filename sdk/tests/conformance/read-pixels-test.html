@@ -84,8 +84,7 @@ function checkBuffer(checkColor, x, y, oneColor, oneX, oneY) {
         var color = buf[offset + cc];
         var diff = Math.abs(expectedColor - color);
         assertMsg(diff < 3,
-                  "color pixel at " + xx + ", " + yy + " should be about " +
-                  expectedColor + " was " + color);
+                  "color pixel at " + xx + ", " + yy + " should be about " + expectedColor);
       }
     }
   }
