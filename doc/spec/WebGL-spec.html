@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 18 November 2010</h2>
+    <h2 class="no-toc">Working Draft 22 November 2010</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -328,13 +328,12 @@ gl.viewport(0, 0, canvas.width, canvas.height);
         contain initialized data, even if they were created without initial user 
         data values.  Creating a resource without initial values is commonly used to 
         reserve space for a texture or VBO, which is then modified using <code>texSubImage</code> or 
-        <code>bufferSubData</code> calls.  If initial data is not provided to these calls, 
-        the WebGL implementation must initialize their contents 
-        to 0.  For example, this may require creating a temporary buffer of 0 
-        values the size of a requested VBO, so that it can be initialized 
-        correctly.  All other forms of loading data into a texture or VBO 
-        involve either ArrayBuffers or DOM objects such as images, 
-        and are therefore already required to be initialized.
+        <code>bufferSubData</code> calls.  If initial data is not provided to these calls, the WebGL
+        implementation must initialize their contents to 0; depth renderbuffers must be cleared to
+        the default 1.0 clear depth.  For example, this may require creating a temporary buffer of 0
+        values the size of a requested VBO, so that it can be initialized correctly.  All other
+        forms of loading data into a texture or VBO involve either ArrayBuffers or DOM objects such
+        as images, and are therefore already required to be initialized.
     </p>
 
     <p>
