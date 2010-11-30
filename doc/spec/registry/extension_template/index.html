@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>WebGL Extension Template</title>
+    <link rel="stylesheet" type="text/css" href="../../Khronos-WD.css" />
+    <link rel="stylesheet" type="text/css" href="../../default.css" />
+    <script src="../../jquery-1.3.2.min.js" type="text/javascript"></script>
+</head>
+    <!--begin-logo-->
+    <div class=head>
+        <p>
+            <a href="http://khronos.org/">
+                <img alt=Khronos height=60 src="../../KhronosGroup-3D.png" width=220>
+            </a>
+        </p>
+    </div>
+    <div class=head>
+        <p>
+            <a href="http://webgl.org/">
+                <img alt=WebGL height=72 src="../../WebGL-Logo.png" width=156>
+            </a>
+        </p>
+    </div>
+    <!--end-logo-->
+    
+    <h1>WebGL Extension Template</h1>
+    
+    <div class="nonnormative">
+      <p>
+        Comments in this extension template are highlighted in green. This entire section is one big
+        comment.
+      </p>
+      <p>
+        This template for WebGL extensions is derived from
+        the <a href="http://www.opengl.org/registry/doc/template.txt">OpenGL extension template</a>.
+        Refer to the OpenGL extension template for full documentation of the content that should be
+        contained in the sections below. Because WebGL is fundamentally a Web API, its extensions
+        are specified in HTML for easier hyperlinking.
+      </p>
+      <p>
+        Because most WebGL extensions are expected to simply mirror existing OpenGL and OpenGL ES
+        extensions, it is desirable to keep the WebGL extension specifications as small as possible
+        and simply refer to the other specifications for the behavioral definitions.
+      </p>
+    </div>      
+
+    <h2 class="no-toc">Name</h2>
+    <div class="nonnormative">
+    <p>
+      The name of the extension. This is also the string which is passed to
+      the <code>WebGLRenderingContext</code> <code>getExtension</code> API to enable the
+      extension. For example, if the extension name were <code>OES_texture_float</code>, then the
+      extension would be fetched and enabled with a call
+      to <code>getExtension("OES_texture_float")</code>.
+    </p>
+    <p>
+      Per WebGL convention, the <code>GL_</code> prefix is dropped from all extension and enum names, and the
+      <code>gl</code> prefix dropped from, and capitalization adjusted of, all function names.
+    </p>
+    </div>
+
+    <h2 class="no-toc">Contact</h2>
+
+    <div class="nonnormative">
+      <p> The email address of the contact of the specification. Prefer to use 'at' instead of
+      the <code>@</code> character to reduce spam. </p>
+    </div>
+
+    <h2 class="no-toc">Contributors</h2>
+
+    <div class="nonnormative">
+      <p> Names and email addresses of individuals who contributed to the development of the
+      specification. </p>
+    </div>
+
+    <h2 class="no-toc">Version</h2>
+
+    <div class="nonnormative">
+      <p> Last modified date and revision number of this specification. Example: </p>
+      <p>
+          Last modified date: November 29, 2010 <br>
+          Revision: 1
+      </p>
+    </div>
+
+    <h2 class="no-toc">Number</h2>
+
+    <div class="nonnormative">
+      The number of the extension in the <a href="../">WebGL extension registry</a>.
+    </div>
+
+    <h2 class="no-toc">Dependencies</h2>
+
+    <div class="nonnormative">
+    <p>
+      The WebGL specification version against which this extension is written. For example:
+    </p>
+    <p>
+      Written against the WebGL API 1.0 specification.
+    </p>
+    </div>
+
+    <h2 class="no-toc">Overview</h2>
+
+    <div class="nonnormative">
+    <p>
+      A description of what this extension actually does. If this extension simply mirrors an OpenGL
+      or OpenGL ES extension, it is recommended to simply link to that other extension's
+      specification. For example:
+    </p>
+    <p>
+      This extension exposes the
+      <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_texture_float.txt">OES_texture_float</a>
+      functionality to WebGL. There are no WebGL-specific behavioral changes.  Consult the above
+      extension for all documentation, issues, and new functions and enumerants.
+    </p>
+    </div>
+
+    <h2 class="no-toc">IDL</h2>
+
+    <div class="nonnormative">
+    <p>
+      This section should contain a link to a file containing the Web IDL for the extension. The
+      file should be named according to the name of the extension: for
+      example, <code>OES_texture_float.idl</code> for the <code>OES_texture_float</code> extension.
+      Enums and functions introduced by the extension should be specified as <code>const
+      GLenum</code> and methods on the extension object. The extension IDL should be written
+      assuming that the typedefs in <code><a href="../../webgl.idl">webgl.idl</a></code>
+      and <code><a href="../../typedarrays.idl">typedarrays.idl</a></code> have already been
+      defined, and may implicitly reference other web platform specifications.
+    </p>
+    <p>
+    </p>
+    <p>
+      Example contents for a hypothetical extension:
+    </p>
+    <pre>
+module webgl {
+
+interface OES_foo_bar {
+  const GLenum NEW_ENUM = 0xF00;
+
+  void doSomethingNew(GLenum state, GLuint value);
+}; // interface OES_foo_bar
+
+}; // module webgl
+    </div>
+
+    <h2 class="no-toc">IP Status</h2>
+    <h2 class="no-toc">New Procedures and Functions</h2>
+    <h2 class="no-toc">New Types</h2>
+    <h2 class="no-toc">New Tokens</h2>
+    <h2 class="no-toc">Additions to Chapters of the OpenGL ES 2.0 Specification</h2>
+    <h2 class="no-toc">Dependencies on GL and ES profiles, versions, and other extensions</h2>
+    <h2 class="no-toc">Errors</h2>
+    <h2 class="no-toc">New State</h2>
+    <h2 class="no-toc">New Implementation Dependent State</h2>
+    <h2 class="no-toc">Sample Code</h2>
+    <h2 class="no-toc">Conformance Tests</h2>
+    <h2 class="no-toc">Issues</h2>
+
+    <div class="nonnormative">
+      Refer to the <a href="http://www.opengl.org/registry/doc/template.txt">OpenGL extension
+      template</a> for a description of these sections. These sections should be eliminated for
+      WebGL extensions simply mirroring OpenGL or OpenGL ES extensions.
+    </div>
+
+    <h2 class="no-toc">Revision History</h2>
+
+    <div class="nonnormative">
+    <p>
+      Include important changes in the evolution of the extension. It's especially important to
+      include this section if the extension is modified after a version has been shipped. Consult
+      the <a href="http://www.opengl.org/registry/doc/template.txt">OpenGL extension template</a>
+      for an example.
+    </p>
+    </div>
+</body>
+</html>

@@ -69,6 +69,14 @@ div.head { margin-bottom: 1em }
 div.head h1 { margin-top: 2em; clear: both }
 div.head table { margin-left: 2em; margin-top: 2em }
 
+div.nonnormative {
+    color: green;
+    margin: 2em 0 2em 2em; 
+    padding: 0.5em 1em; 
+    border: none; 
+    background: #EEFFEE;
+}
+
 p.copyright { font-size: small }
 p.copyright small { font-size: small }
 

@@ -1,0 +1,6 @@
+module webgl {
+
+interface OES_texture_float {
+};
+
+};
