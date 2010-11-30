@@ -123,12 +123,11 @@
 
     <div class="nonnormative">
     <p>
-      This section should contain a link to a file containing the Web IDL for the extension. The
-      file should be named according to the name of the extension: for
-      example, <code>OES_texture_float.idl</code> for the <code>OES_texture_float</code> extension.
-      Enums and functions introduced by the extension should be specified as <code>const
-      GLenum</code> and methods on the extension object. The extension IDL should be written
-      assuming that the typedefs in <code><a href="../../webgl.idl">webgl.idl</a></code>
+      This section should contain the inline Web IDL for the extension, surrounded by the
+      tags <code>&lt;pre class="idl"&gt;...&lt;/pre&gt;</code>. Enums and functions introduced by
+      the extension should be specified as <code>const GLenum</code> and methods on the extension
+      object. The extension IDL should be written assuming that the typedefs
+      in <code><a href="../../webgl.idl">webgl.idl</a></code>
       and <code><a href="../../typedarrays.idl">typedarrays.idl</a></code> have already been
       defined, and may implicitly reference other web platform specifications.
     </p>
@@ -137,7 +136,7 @@
     <p>
       Example contents for a hypothetical extension:
     </p>
-    <pre>
+<pre class="idl">
 module webgl {
 
 interface OES_foo_bar {
@@ -147,6 +146,7 @@ interface OES_foo_bar {
 }; // interface OES_foo_bar
 
 }; // module webgl
+</pre>
     </div>
 
     <h2 class="no-toc">IP Status</h2>
