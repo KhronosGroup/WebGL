@@ -66,21 +66,21 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 
       <ul>
 
-        <li><code>ARB_</code>, <code>OES_</code> and <code>KHR_</code> prefixes should be used for
+        <li><code>ARB</code>, <code>OES</code> and <code>KHR</code> tags should be used for
         mirroring functionality from OpenGL ES or OpenGL API extensions approved by the respective
-        architecture review boards. <code>EXT_</code> and GPU vendor prefixes should be used for
+        architecture review boards. <code>EXT_</code> and GPU vendor tags should be used for
         mirroring other OpenGL ES or OpenGL API extensions. If only small differences in behavior
-        compared to OpenGL ES or OpenGL are specified for a given extension, the original prefix
-        should be maintained.
+        compared to OpenGL ES or OpenGL are specified for a given extension, the original tag should
+        be maintained.
 
-        <li>The <code>WEBGL_</code> prefix should be used for WebGL-specific extensions which are
+        <li>The <code>WEBGL</code> tag should be used for WebGL-specific extensions which are
         intended to be compatible with multiple web browsers. It should also be used for extensions
         which originated with the OpenGL ES or OpenGL APIs, but whose behavior has been
         significantly altered.
 
-        <li>Browser vendor specific prefixes should be used for WebGL-specific extensions that are
+        <li>Browser vendor specific tags should be used for WebGL-specific extensions that are
         intended to run only on a particular browser. It is recommended to avoid such extensions,
-        and instead specify them with the <code>WEBGL_</code> prefix.
+        and instead specify them with the <code>WEBGL</code> tag.
 
       </ul>
 
