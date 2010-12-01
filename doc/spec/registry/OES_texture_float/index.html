@@ -51,10 +51,14 @@
     <p>
       This extension exposes the
       <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_texture_float.txt">OES_texture_float</a>
-      functionality to WebGL. There are no WebGL-specific behavioral changes.  Consult the above
-      extension for all documentation, issues, and new functions and enumerants.
+      functionality to WebGL. Consult the above extension for all documentation, issues, and new
+      functions and enumerants.
     </p>
-
+    <p>
+      The <code>texImage2D</code> and <code>texSubImage2D</code> entry points
+      taking <code>ArrayBufferView</code> are extended to accept <code>Float32Array</code> with the
+      pixel type <code>FLOAT</code> when this extension is enabled.
+    </p>
     <h2 class="no-toc">IDL</h2>
     <p>
 <pre class="idl">
