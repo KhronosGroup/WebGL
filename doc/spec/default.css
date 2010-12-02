@@ -33,7 +33,6 @@
 
 body {counter-reset: exampleno figure}
 
-h2, h3, h5, h6 { margin-top: 2em }
 h1, h2, h3, h4, h5, h6 { page-break-after: avoid; font-family: inherit }
 div.figure, div.sidefigure, pre, table.propdef, table.propdef-extra,
 div.example { page-break-inside: avoid }
@@ -44,11 +43,11 @@ span.id {float: right; font-weight: bold}
 p, p.testlink + p, p.mtb {
     text-indent: 0;
     margin-bottom: 0.8em;
-    margin-top: 0.8em
+    margin-top: 0.2em;
 }
 p + p, p + div.sidefigure + p {
     text-indent: 0em;
-    margin-top: 0.8em
+    margin-top: 0.8em;
 }
 dd > p:first-child, li > p:first-child {
     margin-top: 0
