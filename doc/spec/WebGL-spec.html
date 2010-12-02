@@ -211,6 +211,14 @@
         0 for any stencil buffer.
     </p>
     <p>
+        If the requested width or height cannot be satisfied, either when the drawing buffer is first
+        created or when the <code>width</code> and <code>height</code> attributes are changed, a
+        drawing buffer with smaller dimensions shall be created. The dimensions actually used are
+        implementation dependent and there is no guarantee that a buffer with the same aspect
+        ratio will be created. The actual drawing buffer size can be obtained from the 
+        <code>getDrawingBufferSize()</code> function.
+    </p>
+    <p>
         By default, the drawing buffer has an RGBA color buffer of at least 8 bits per component and
         an integer depth buffer of at least 16 bits. The optional WebGLContextAttributes object may
         be used to change these defaults. This object is only used on the first call
@@ -1241,7 +1249,7 @@ for (var i = 0; i < numVertices; i++) {
     readonly attribute HTMLCanvasElement canvas;
 
     WebGLContextAttributes getContextAttributes();
-
+    GLsizei[ ] getDrawingBufferSize();
     boolean isContextLost();
     
     DOMString[ ] getSupportedExtensions();
@@ -1489,12 +1497,16 @@ for (var i = 0; i < numVertices; i++) {
 
 <!-- ======================================================================================================= -->
 
-    <h4>The <code>getContextAttributes</code> method</h4>
+    <h4>Getting information about the context</h4>
 
     <dl class="methods">
         <dt class="idl-code">WebGLContextAttributes getContextAttributes()
         <dd>
             Returns the WebGLContextAttributes describing the current drawing buffer.
+        <dt class="idl-code">GLsizei[ ] getDrawingBufferSize()
+        <dd>
+            Returns the current width and height of the drawing buffer, with the width
+            at index 0 and height at index 1 of the returned array.
     </dl>
      
 <!-- ======================================================================================================= -->
@@ -2478,7 +2490,10 @@ for (var i = 0; i < numVertices; i++) {
                 (OpenGL ES 2.0 man page)
             </a></p>
        <dd>
-           Sets the vertex attribute at the passed index to the given constant value.
+           Sets the vertex attribute at the passed index to the given constant value. Values set via the
+           <code>vertexAttrib</code> Are guaranteed to be returned from the <code>getVertexAttrib</code> function
+           with the <code>CURRENT_VERTEX_ATTRIB</code> param, even if there have been intervening calls to 
+           <code>drawArrays</code> or <code>drawElements</code>.
        <dt class="idl-code">void vertexAttribPointer(GLuint indx, GLint size, GLenum type, 
                             GLboolean normalized, GLsizei stride, GLsizeiptr offset)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glVertexAttribPointer.xml">
