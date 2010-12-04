@@ -48,9 +48,9 @@ th, td { /* ns 4 */
 }
 
 th {
-    color:#115511;
+    color:#111155;
     border-bottom:3px solid;
-    background-color:#CCEECC;
+    background-color:#CCCCEE;
 }
 
 h1, h2, h3, h4, h5, h6 { text-align: left }
@@ -100,11 +100,15 @@ pre.idl { border: solid thin; background: #EEEEEE; color: black; padding: 0.5em 
 pre.idl :link, pre.idl :visited { color: inherit; background: transparent; }
 
 dl.methods {
-    color: green;
+    color: black;
     margin: 2em 0 2em 2em; 
     padding: 0.5em 1em; 
     border: none; 
-    background: #EEFFEE;
+    background: #EEEEFF;
+}
+
+.methods dt {
+    padding-top: 1em;
 }
 
 .idl-code {
@@ -120,12 +124,19 @@ p.idl-code {
   margin-bottom: 0.0em;
 }
 
-a.gl-spec:link, a.gl-spec:visited {
-  color: green;
+
+.gl-spec {
+  color: #111155;
   font-family: sans-serif;
   font-size: 60%;
   font-style:italic;
   font-weight:normal;
+}
+
+.gl-spec :link,
+.gl-spec :visited
+{
+  color: green ! important;
 }
 
 ul.toc, ol.toc {
