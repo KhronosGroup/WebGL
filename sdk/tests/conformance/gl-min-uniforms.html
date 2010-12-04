@@ -63,7 +63,7 @@ void main()
     for (int ii = 0; ii < NUM_UNIFORMS; ++ii) {
        c += uni[ii];
     }
-    gl_FragColor = c;
+    gl_FragColor = vec4(c.r, c.g, c.b, c.a / 120.0);
 }
 </script>
 <script>
@@ -81,12 +81,12 @@ var program = wtu.setupProgram(
 
 for (var ii = 0; ii < 128; ++ii) {
   var loc = gl.getUniformLocation(program, "uni[" + ii + "]");
-  gl.uniform4f(loc, 2/256, 2/512, 2/1024, 2/2048);
+  gl.uniform4f(loc, 2/256, 2/512, 2/1024, ii/8128);
 }
 
 wtu.drawQuad(gl);
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
-wtu.checkCanvas(gl, [255, 127, 64, 32], "Should render 255,127,64,32");
+wtu.checkCanvas(gl, [255, 127, 64, 255], "Should render 255,127,64,32");
 
 //------------------------------------------------------------------------------
 var program = wtu.setupProgram(
@@ -97,9 +97,10 @@ var program = wtu.setupProgram(
 
 for (var ii = 0; ii < 16; ++ii) {
   var loc = gl.getUniformLocation(program, "uni[" + ii + "]");
-  gl.uniform4f(loc, 16/2048, 16/1024, 16/512, 16/256);
+  gl.uniform4f(loc, 16/2048, 16/1024, 16/512, ii);
 }
 
+glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 wtu.drawQuad(gl);
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 wtu.checkCanvas(gl, [32, 64, 127, 255], "Should render 32,64,127,255");
