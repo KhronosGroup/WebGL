@@ -153,7 +153,7 @@ var program = wtu.setupTexturedQuad(gl);
 var loc = gl.getUniformLocation(program, "tex");
 gl.disable(gl.BLEND);
 gl.disable(gl.DEPTH_TEST);
-var colors = [[255, 0, 0, 1], [0, 255, 0, 1], [0, 0, 255, 1]];
+var colors = [[255, 0, 0, 255], [0, 255, 0, 255], [0, 0, 255, 255]];
 var textures = [];
 var results = [];
 for (var ii = 0; ii < colors.length; ++ii) {
@@ -181,7 +181,7 @@ for (var ii = 0; ii < colors.length; ++ii) {
   var buf = results[ii];
   var color = colors[ii];
   actual = [buf[0], buf[1], buf[2], buf[3]];
-  expected = [color[0], color[1], color[2], color[3] * 255];
+  expected = [color[0], color[1], color[2], color[3]];
   shouldBe("actual", "expected");
 }
 glErrorShouldBe(gl, gl.NO_ERROR, "there should be no GL errors");
