@@ -52,6 +52,7 @@ more-than-65536-points.html
 null-object-behaviour.html
 null-uniform-location.html
 object-deletion-behaviour.html
+oes-texture-float.html
 origin-clean-conformance.html
 point-size.html
 program-test.html
