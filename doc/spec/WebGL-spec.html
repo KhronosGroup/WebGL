@@ -2106,25 +2106,25 @@ for (var i = 0; i < numVertices; i++) {
 
     <dl class="methods">
         <dt class="idl-code">void attachShader(WebGLProgram program, WebGLShader shader)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glAttachShader.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glAttachShader.xml">man page</a>)</span>
         <dt class="idl-code">void bindAttribLocation(WebGLProgram program, GLuint index, DOMString name)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindAttribLocation.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.4, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindAttribLocation.xml">man page</a>)</span>
         <dt class="idl-code">void compileShader(WebGLShader shader)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCompileShader.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCompileShader.xml">man page</a>)</span>
         <dt class="idl-code">WebGLProgram createProgram()
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCreateProgram.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCreateProgram.xml">man page</a>)</span>
         <dd>
             Create a WebGLProgram object and initialize it with a program object name as if by
             calling glCreateProgram.
             
         <dt class="idl-code">WebGLShader createShader(type)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCreateShader.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCreateShader.xml">man page</a>)</span>
         <dd>
             Create a WebGLShader object and initialize it with a shader object name as if by
             calling glCreateShader.
             
         <dt class="idl-code">void deleteProgram(WebGLProgram program)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteProgram.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteProgram.xml">man page</a>)</span>
         <dd>
             Delete the program object contained in the passed WebGLProgram as if by calling
             glDeleteProgram. If the program has already been deleted the call has no effect.
@@ -2132,7 +2132,7 @@ for (var i = 0; i < numVertices; i++) {
             This method merely gives the author greater control over when the program object is
             destroyed.
         <dt class="idl-code">void deleteShader(WebGLShader shader)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteShader.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteShader.xml">man page</a>)</span>
         <dd>
             Delete the shader object contained in the passed WebGLShader as if by calling
             glDeleteShader. If the shader has already been deleted the call has no effect.
@@ -2140,13 +2140,13 @@ for (var i = 0; i < numVertices; i++) {
             This method merely gives the author greater control over when the shader object is
             destroyed.
         <dt class="idl-code">void detachShader(WebGLProgram program, WebGLShader shader)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDetachShader.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDetachShader.xml">man page</a>)</span>
         <dt class="idl-code">WebGLShader[ ] getAttachedShaders(WebGLProgram program)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetAttachedShaders.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetAttachedShaders.xml">man page</a>)</span>
         <dd>
             Return the list of shaders attached to the passed program.
         <dt class="idl-code">any getProgramParameter(WebGLProgram program, GLenum pname)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetProgramiv.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, similar to <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetProgramiv.xml">man page</a>)</span>
         <dd>
             Return the value for the passed pname given the passed program. The type returned is the natural 
             type for the requested pname, as given in the following table:
@@ -2163,9 +2163,9 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>ACTIVE_UNIFORM_MAX_LENGTH</td><td>long</td></tr>
             </table>
         <dt class="idl-code">DOMString getProgramInfoLog(WebGLProgram program)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetProgramInfoLog.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetProgramInfoLog.xml">man page</a>)</span>
         <dt class="idl-code">any getShaderParameter(WebGLShader shader, GLenum pname)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetShaderiv.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, similar to <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetShaderiv.xml">man page</a>)</span>
         <dd>
             Return the value for the passed pname given the passed shader. The type returned is the natural 
             type for the requested pname, as given in the following table:
@@ -2178,25 +2178,25 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>SHADER_SOURCE_LENGTH</td><td>long</td></tr>
             </table>
         <dt class="idl-code">DOMString getShaderInfoLog(WebGLShader shader)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetShaderInfoLog.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetShaderInfoLog.xml">man page</a>)</span>
         <dt class="idl-code">DOMString getShaderSource(WebGLShader shader)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetShaderSource.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetShaderSource.xml">man page</a>)</span>
         <dt class="idl-code">GLboolean isProgram(WebGLProgram program)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glIsProgram.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glIsProgram.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLProgram is valid and false otherwise.
         <dt class="idl-code">GLboolean isShader(WebGLShader shader)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glIsShader.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glIsShader.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLShader is valid and false otherwise.
         <dt class="idl-code">void linkProgram(WebGLProgram program)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glLinkProgram.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glLinkProgram.xml">man page</a>)</span>
         <dt class="idl-code">void shaderSource(WebGLShader shader, DOMString source)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glShaderSource.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glShaderSource.xml">man page</a>)</span>
         <dt class="idl-code">void useProgram(WebGLProgram program)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glUseProgram.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glUseProgram.xml">man page</a>)</span>
         <dt class="idl-code">void validateProgram(WebGLProgram program)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glValidateProgram.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.5, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glValidateProgram.xml">man page</a>)</span>
     </dl>
     
 <!-- ======================================================================================================= -->
@@ -2209,28 +2209,28 @@ for (var i = 0; i < numVertices; i++) {
      
     <dl class="methods">
         <dt class="idl-code">void disableVertexAttribArray(GLuint index)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDisableVertexAttribArray.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDisableVertexAttribArray.xml">man page</a>)</span>
         <dt class="idl-code">void enableVertexAttribArray(GLuint index)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glEnableVertexAttribArray.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glEnableVertexAttribArray.xml">man page</a>)</span>
         <dd>
             Enable the vertex attribute at <code>index</code> as an array. WebGL imposes additional
             rules beyond OpenGL ES 2.0 regarding enabled vertex attributes;
             see <a href="#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range
             Checking</a>.
         <dt class="idl-code">WebGLActiveInfo getActiveAttrib(WebGLProgram program, GLuint index)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetActiveAttrib.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.4, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetActiveAttrib.xml">man page</a>)</span>
         <dd>
             Returns information about the size, type and name of the vertex attribute at the
             passed index of the passed program object.
         <dt class="idl-code">WebGLActiveInfo getActiveUniform(WebGLProgram program, GLuint index)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetActiveUniform.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.4, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetActiveUniform.xml">man page</a>)</span>
         <dd>
             Returns information about the size, type and name of the uniform at the
             passed index of the passed program object.
         <dt class="idl-code">GLint getAttribLocation(WebGLProgram program, DOMString name)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetAttribLocation.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.4, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetAttribLocation.xml">man page</a>)</span>
         <dt class="idl-code">any getUniform(WebGLProgram program, WebGLUniformLocation location)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetUniform.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetUniform.xml">man page</a>)</span>
         <dd>
             Return the uniform value at the passed location in the passed program. The type returned is 
             dependent on the uniform type, as shown in the following table:
@@ -2253,14 +2253,14 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>mat4</td><td>Float32Array (with 16 elements)</td></tr>
             </table>
         <dt class="idl-code">WebGLUniformLocation getUniformLocation(WebGLProgram program, DOMString name)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetUniformLocation.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.4, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetUniformLocation.xml">man page</a>)</span>
         <dd>
             Return a WebGLUniformLocation object that represents the location of a specific uniform variable
             within a program object. The return value is null if name does not correspond to an active uniform
             variable in the passed program.
 
         <dt class="idl-code">any getVertexAttrib(GLuint index, GLenum pname)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetVertexAttrib.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetVertexAttrib.xml">man page</a>)</span>
         <dd>
             Return the information requested in pname about the vertex attribute at the passed index. The 
             type returned is dependent on the information requested, as shown in the following table:
@@ -2275,11 +2275,11 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>CURRENT_VERTEX_ATTRIB</td><td>Float32Array (with 4 elements)</td></tr>
             </table>
         <dt class="idl-code">GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetVertexAttribPointerv.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, similar to <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetVertexAttribPointerv.xml">man page</a>)</span>
         <dt><p class="idl-code">void uniform[1234][fi](WebGLUniformLocation location, ...)</p>
             <p class="idl-code">void uniform[1234][fi]v(WebGLUniformLocation location, ...)
             <p class="idl-code">void uniformMatrix[234]fv(WebGLUniformLocation location, GLboolean transpose, ...)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glUniform.xml">man page</a>)</span></p>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.4, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glUniform.xml">man page</a>)</span></p>
        <dd>
             Each of the uniform* functions above sets the specified uniform or uniforms to the
             values provided. If the passed <code>location</code> is not null and was not obtained
@@ -2289,7 +2289,7 @@ for (var i = 0; i < numVertices; i++) {
             no uniform variables will be changed.
         <dt><p class="idl-code">void vertexAttrib[1234]f(GLuint indx, ...)</p>
             <p class="idl-code">void vertexAttrib[1234]fv(GLuint indx, ...)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glVertexAttrib.xml">man page</a>)</span></p>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.7, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glVertexAttrib.xml">man page</a>)</span></p>
        <dd>
            Sets the vertex attribute at the passed index to the given constant value. Values set via the
            <code>vertexAttrib</code> are guaranteed to be returned from the <code>getVertexAttrib</code> function
@@ -2297,7 +2297,7 @@ for (var i = 0; i < numVertices; i++) {
            <code>drawArrays</code> or <code>drawElements</code>.
        <dt class="idl-code">void vertexAttribPointer(GLuint indx, GLint size, GLenum type, 
                             GLboolean normalized, GLsizei stride, GLsizeiptr offset)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glVertexAttribPointer.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glVertexAttribPointer.xml">man page</a>)</span>
         <dd>
             Assign the WebGLBuffer object currently bound to the ARRAY_BUFFER target to the vertex
             attribute at the passed index. Size is number of components per attribute. Stride and
@@ -2323,13 +2323,13 @@ for (var i = 0; i < numVertices; i++) {
      
     <dl class="methods">
         <dt class="idl-code">void clear(GLbitfield mask)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glClear.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;4.2.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glClear.xml">man page</a>)</span>
         <dt class="idl-code">void drawArrays(GLenum mode, GLint first, GLsizei count)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDrawArrays.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDrawArrays.xml">man page</a>)</span>
             <dd>
             If <em>first</em> is negative, an <code>INVALID_VALUE</code> error will be generated.
         <dt class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLsizeiptr offset)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDrawElements.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;2.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDrawElements.xml">man page</a>)</span>
         <dd>
             Draw using the currently bound index array.  The given
             offset is in bytes, and must be a valid multiple of the
@@ -2341,9 +2341,9 @@ for (var i = 0; i < numVertices; i++) {
             and <code>drawElements</code>. See <a href="#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex
             Attributes and Range Checking</a>.
         <dt class="idl-code">void finish()
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glFinish.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;5.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glFinish.xml">man page</a>)</span>
         <dt class="idl-code">void flush()
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glFlush.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;5.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glFlush.xml">man page</a>)</span>
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -2357,7 +2357,7 @@ for (var i = 0; i < numVertices; i++) {
     <dl class="methods">
         <dt class="idl-code">void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
                            GLenum format, GLenum type, ArrayBufferView pixels)
-            <span class="gl-spec">(OpenGL ES 2.0 &sect; <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glReadPixels.xml">man page</a>)</span>
+            <span class="gl-spec">(OpenGL ES 2.0 &sect;4.3.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glReadPixels.xml">man page</a>)</span>
         <dd>
             Fills <code>pixels</code> with the pixel data in the specified rectangle of the frame
             buffer. The data returned from readPixels must be up-to-date as of the most recently
@@ -2882,9 +2882,9 @@ extensions.
             V. Vukicevic, K. Russell, May 2010.
         </dd>
         <dt id="refsGLES20">[GLES20]</dt>
-        <dd><cite><a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf">
-            OpenGL&reg; ES Common Profile Specification Version 2.0.24</a></cite>, 
-            A. Munshi, J. Leech, April 2009.
+        <dd><cite><a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf">
+            OpenGL&reg; ES Common Profile Specification Version 2.0.25</a></cite>, 
+            A. Munshi, J. Leech, November 2010.
         </dd>
         <dt id="refsGLES20GLSL">[GLES20GLSL]</dt>
         <dd><cite><a href="http://www.khronos.org/registry/gles/specs/2.0/GLSL_ES_Specification_1.0.17.pdf">
