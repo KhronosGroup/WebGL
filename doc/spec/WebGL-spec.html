@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 02 December 2010</h2>
+    <h2 class="no-toc">Working Draft 06 December 2010</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2425,8 +2425,9 @@ for (var i = 0; i < numVertices; i++) {
         must generate an appropriate GL error and must not make use of the feature.
     </p>
     <p>
-        This specification does not define any extensions. Browser specific extensions must have a 
-        browser specific prefix, (e.g., "webkit-" or "moz-"). 
+        This specification does not define any extensions. A separate <a href="#refsREGISTRY">WebGL
+        extension registry</a> defines extensions that may be supported by a particular WebGL
+        implementation.
     </p>
 
     <dl class="methods">
@@ -2889,6 +2890,10 @@ extensions.
         <dd><cite><a href="http://www.khronos.org/registry/gles/specs/2.0/GLSL_ES_Specification_1.0.17.pdf">
             The OpenGL&reg; ES Shading Language Version 1.00</a></cite>, 
             R. Simpson, May 2009.
+        </dd>
+        <dt id="refsREGISTRY">[REGISTRY]</dt>
+        <dd><cite><a href="http://www.khronos.org/registry/webgl/doc/spec/extensions/">
+            WebGL Extension Registry</a></cite>
         </dd>
         <dt id="refsRFC2119">[RFC2119]</dt>
         <dd><cite><a href="http://www.ietf.org/rfc/rfc2119.txt">
