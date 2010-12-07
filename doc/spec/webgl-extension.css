@@ -142,3 +142,7 @@ ul.toc, ol.toc {
   list-style: none;
 }
 
+body {
+  background-image: url(logo-WD.png);
+}
+
