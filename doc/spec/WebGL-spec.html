@@ -567,18 +567,13 @@ var context = canvas.getContext('webgl',
 
     <p>
         The <code>WebGLBuffer</code> interface represents an OpenGL Buffer Object. The
-        underlying object is created as if by calling 
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenBuffers.xml">
-            glGenBuffers
-        </a>
-        , bound as if by calling
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindBuffer.xml">
-        glBindBuffer 
-        </a>
-        and destroyed as if by calling 
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteBuffers.xml">
-        glDeleteBuffers.
-        </a>
+        underlying object is created as if by calling glGenBuffers 
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;2.9, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenBuffers.xml">man page</a>)</span>
+        , bound as if by calling glBindBuffer
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;2.9, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindBuffer.xml">man page</a>)</span>
+        and destroyed as if by calling glDeleteBuffers
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;2.9, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteBuffers.xml">man page</a>)</span>
+        .
     </p>
     <pre class="idl">interface <dfn id="WebGLBuffer">WebGLBuffer</dfn> : WebGLObject {
 };</pre>
@@ -589,18 +584,13 @@ var context = canvas.getContext('webgl',
 
     <p>
         The <code>WebGLFramebuffer</code> interface represents an OpenGL Framebuffer Object. The
-        underlying object is created as if by calling 
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenFramebuffers.xml">
-            glGenFramebuffers
-        </a>
-        , bound as if by calling
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindFramebuffer.xml">
-        glBindFramebuffer 
-        </a>
-        and destroyed as if by calling 
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteFramebuffers.xml">
-        glDeleteFramebuffers.
-        </a>
+        underlying object is created as if by calling glGenFramebuffers
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;4.4.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenFramebuffers.xml">man page</a>)</span>
+        , bound as if by calling glBindFramebuffer
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;4.4.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindFramebuffer.xml">man page</a>)</span>
+        and destroyed as if by calling glDeleteFramebuffers
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;4.4.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteFramebuffers.xml">man page</a>)</span>
+        .
     </p>
     <pre class="idl">interface <dfn id="WebGLFramebuffer">WebGLFramebuffer</dfn> : WebGLObject {
 };</pre>
@@ -611,18 +601,13 @@ var context = canvas.getContext('webgl',
 
     <p>
         The <code>WebGLProgram</code> interface represents an OpenGL Program Object. The
-        underlying object is created as if by calling 
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCreateProgram.xml">
-            glCreateProgram
-        </a>
-        , used as if by calling
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glUseProgram.xml">
-        glUseProgram 
-        </a>
-        and destroyed as if by calling 
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteProgram.xml">
-        glDeleteProgram.
-        </a>
+        underlying object is created as if by calling glCreateProgram
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCreateProgram.xml">man page</a>)</span>
+        , used as if by calling glUseProgram
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glUseProgram.xml">man page</a>)</span>
+        and destroyed as if by calling glDeleteProgram
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteProgram.xml">man page</a>)</span>
+        .
     </p>
     <pre class="idl">interface <dfn id="WebGLProgram">WebGLProgram</dfn> : WebGLObject {
 };</pre>
@@ -633,18 +618,13 @@ var context = canvas.getContext('webgl',
 
     <p>
         The <code>WebGLRenderbuffer</code> interface represents an OpenGL Renderbuffer Object. The
-        underlying object is created as if by calling 
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenRenderbuffers.xml">
-            glGenRenderbuffers
-        </a>
-        , bound as if by calling
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindRenderbuffer.xml">
-        glBindRenderbuffer 
-        </a>
-        and destroyed as if by calling 
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteRenderbuffers.xml">
-        glDeleteRenderbuffers.
-        </a>
+        underlying object is created as if by calling glGenRenderbuffers
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;4.4.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenRenderbuffers.xml">man page</a>)</span>
+        , bound as if by calling glBindRenderbuffer
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;4.4.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindRenderbuffer.xml">man page</a>)</span>
+        and destroyed as if by calling glDeleteRenderbuffers
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;4.4.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteRenderbuffers.xml">man page</a>)</span>
+        .
     </p>
     <pre class="idl">interface <dfn id="WebGLRenderbuffer">WebGLRenderbuffer</dfn> : WebGLObject {
 };</pre>
@@ -655,18 +635,13 @@ var context = canvas.getContext('webgl',
 
     <p>
         The <code>WebGLShader</code> interface represents an OpenGL Shader Object. The
-        underlying object is created as if by calling 
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCreateShader.xml">
-            glCreateShader
-        </a>
-        , attached to a Program as if by calling
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glAttachShader.xml">
-        glAttachShader 
-        </a>
-        and destroyed as if by calling 
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteShader.xml">
-        glDeleteShader.
-        </a>
+        underlying object is created as if by calling glCreateShader
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCreateShader.xml">man page</a>)</span>
+        , attached to a Program as if by calling glAttachShader
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glAttachShader.xml">man page</a>)</span>
+        and destroyed as if by calling glDeleteShader
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteShader.xml">man page</a>)</span>
+        .
     </p>
     <pre class="idl">interface <dfn id="WebGLShader">WebGLShader</dfn> : WebGLObject {
 };</pre>
@@ -677,18 +652,13 @@ var context = canvas.getContext('webgl',
 
     <p>
         The <code>WebGLTexture</code> interface represents an OpenGL Texture Object. The
-        underlying object is created as if by calling 
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenTextures.xml">
-            glGenTextures
-        </a>
-        , bound as if by calling
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindTexture.xml">
-        glBindTexture 
-        </a>
-        and destroyed as if by calling 
-        <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteTextures.xml">
-        glDeleteTextures.
-        </a>
+        underlying object is created as if by calling glGenTextures
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;3.7.13, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenTextures.xml">man page</a>)</span>
+        , bound as if by calling glBindTexture
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;3.7.13, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindTexture.xml">man page</a>)</span>
+        and destroyed as if by calling glDeleteTextures
+        <span class="gl-spec">(OpenGL ES 2.0 &sect;3.7.13, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteTextures.xml">man page</a>)</span>
+        .
     </p>
     <pre class="idl">interface <dfn id="WebGLTexture">WebGLTexture</dfn> : WebGLObject {
 };</pre>
