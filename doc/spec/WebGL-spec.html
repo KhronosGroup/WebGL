@@ -2791,11 +2791,14 @@ is <code>BROWSER_DEFAULT_WEBGL</code>.
 
 <p>
 In the WebGL API it is illegal to specify a different mask or reference value for front facing and
-back facing triangles in stencil operations. A call to <code>stencilMaskSeparate</code> will generate an
-<code>INVALID_OPERATION</code> error if <code>FRONT</code> mask is not equal to <code>BACK</code>
-mask. Similarly, a call to <code>stencilFuncSeparate</code> will generate an
-<code>INVALID_OPERATION</code> error if <code>FRONT</code> ref is not equal to <code>BACK</code> ref
-or <code>FRONT</code> mask is not equal to <code>BACK</code> mask. 
+back facing triangles in stencil operations. A call to <code>drawArrays</code>
+or <code>drawElements</code> will generate an <code>INVALID_OPERATION</code> error if:
+
+<ul>
+<li> FRONT ref != BACK ref
+<li> FRONT mask != BACK mask
+</ul>
+
 </p>
 
     <h3><a name="VERTEX_STRIDE">Vertex Attribute Data Stride</a></h3>
