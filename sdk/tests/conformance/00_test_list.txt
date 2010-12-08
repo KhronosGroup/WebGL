@@ -47,6 +47,7 @@ index-validation-crash-with-buffer-sub-data.html
 index-validation-verifies-too-many-indices.html
 index-validation-with-resized-buffer.html
 index-validation.html
+instanceof-test.html
 invalid-UTF-16.html
 invalid-passed-params.html
 is-object.html
