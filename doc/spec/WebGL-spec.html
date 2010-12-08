@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 06 December 2010</h2>
+    <h2 class="no-toc">Working Draft 08 December 2010</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2301,10 +2301,11 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLsizeiptr offset)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDrawElements.xml">man page</a>)</span>
         <dd>
-            Draw using the currently bound index array.  The given
-            offset is in bytes, and must be a valid multiple of the
-            size of the given type or an <code>INVALID_VALUE</code> error will be
-            generated. <br><br>
+            Draw using the currently bound element array buffer.  The given offset is in bytes, and
+            must be a valid multiple of the size of the given type or an <code>INVALID_VALUE</code>
+            error will be generated. If <code>count</code> is greater than zero, then a non-null
+            <code>WebGLBuffer</code> must be bound to the <code>ELEMENT_ARRAY_BUFFER</code> binding
+            point or an <code>INVALID_OPERATION</code> error will be generated.<br><br>
 
             WebGL performs additional error checking beyond that specified in OpenGL ES 2.0 during
             calls to <code>drawArrays</code>
@@ -2656,6 +2657,30 @@ same WebGLBuffer to the other binding point will generate an <code>INVALID_OPERA
 the state of the binding point will remain untouched.
 
 </p>
+
+    <h3>No Client Side Arrays</h3>
+
+<p>
+
+The WebGL API does not support client-side arrays. If <code>vertexAttribPointer</code> is called
+without a <code>WebGLBuffer</code> bound to the <code>ARRAY_BUFFER</code> binding point,
+an <code>INVALID_OPERATION</code> error is generated. If <code>drawElements</code> is called with
+a <code>count</code> greater than zero, and no <code>WebGLBuffer</code> is bound to
+the <code>ELEMENT_ARRAY_BUFFER</code> binding point, an <code>INVALID_OPERATION</code> error is
+generated.
+
+</p>
+
+    <h3>Buffer Offset and Stride Requirements</h3>
+
+<p>
+
+The <code>offset</code> arguments to <code>drawElements</code> and <code>vertexAttribPointer</code>,
+and the <code>stride</code> argument to <code>vertexAttribPointer</code>, must be a multiple of the
+size of the data type passed to the call, or an <code>INVALID_OPERATION</code> error is generated.
+
+</p>
+
 
     <h3><a name="ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range Checking</a></h3>
 
