@@ -469,8 +469,11 @@ function makeLostContextSimulatingContext(ctx) {
   var functionsThatShouldReturnNull = [
     "getActiveAttrib",
     "getActiveUniform",
+    "getBufferParameter",
+    "getContextAttributes",
     "getAttachedShaders",
     "getFramebufferAttachmentParameter",
+    "getParameter",
     "getProgramParameter",
     "getProgramInfoLog",
     "getRenderbufferParameter",
@@ -482,7 +485,7 @@ function makeLostContextSimulatingContext(ctx) {
     "getUniformLocation",
     "getVertexAttrib"
   ];
-  for (var ii = 0; ii < functionsThatShouldReturnNull; ++ii) {
+  for (var ii = 0; ii < functionsThatShouldReturnNull.length; ++ii) {
     var functionName = functionsThatShouldReturnNull[ii];
     wrapper_[functionName] = function(f) {
       return function() {
@@ -503,7 +506,7 @@ function makeLostContextSimulatingContext(ctx) {
     "isShader",
     "isTexture"
   ];
-  for (var ii = 0; ii < isFunctions; ++ii) {
+  for (var ii = 0; ii < isFunctions.length; ++ii) {
     var functionName = isFunctions[ii];
     wrapper_[functionName] = function(f) {
       return function() {
