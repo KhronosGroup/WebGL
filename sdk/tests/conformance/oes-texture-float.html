@@ -80,13 +80,13 @@ if (!gl) {
   // the extension has not been enabled yet.
   runTextureCreationTest(testProgram, false);
 
-  var oesTextureFloat = gl.getExtension("OES_texture_float");
-  if (!oesTextureFloat) {
+  if (!gl.getExtension("OES_texture_float")) {
       testPassed("No OES_texture_float support -- this is legal");
   } else {
       testPassed("Successfully enabled OES_texture_float extension");
       runTextureCreationTest(testProgram, true);
       runRenderTargetTest(testProgram);
+      runUniqueObjectTest();
   }
 }
 
@@ -186,6 +186,34 @@ function runRenderTargetTest(testProgram)
     glErrorShouldBe(gl, gl.NO_ERROR, "rendering from floating-point texture should succeed");
     checkRenderingResults();
 }
+
+function attemptToForceGC()
+{
+    var holderArray = [];
+    var tempArray;
+    window.tempArray = holderArray;
+    for (var i = 0; i < 12; ++i) {
+        tempArray = [];
+        for (var j = 0; j < 1024 * 1024; ++j) {
+            tempArray.push(0);
+        }
+        holderArray.push(tempArray);
+    }
+    window.tempArray = null;
+}
+
+function runUniqueObjectTest()
+{
+    debug("Testing that getExtension() returns the same object each time");
+    gl.getExtension("OES_texture_float").myProperty = 2;
+    if (window.GCController) {
+        window.GCController.collect();
+    } else {
+        attemptToForceGC();
+    }
+    shouldBe('gl.getExtension("OES_texture_float").myProperty', '2');
+}
+
 
 debug("");
 successfullyParsed = true;
