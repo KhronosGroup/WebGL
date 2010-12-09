@@ -56,6 +56,7 @@ var program = wtu.setupProgram(
     ['vPosition'], [0]);
 
 shouldBeTrue('gl.getUniformLocation(program, "color") instanceof WebGLUniformLocation');
+shouldBeTrue('gl.getActiveAttrib(program, 0) instanceof WebGLActiveInfo');
 shouldBeTrue('gl.getActiveUniform(program, 0) instanceof WebGLActiveInfo');
 
 successfullyParsed = true;
