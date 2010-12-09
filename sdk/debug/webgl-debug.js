@@ -309,6 +309,7 @@ function makeLostContextSimulatingContext(ctx) {
   var contextId_ = 1;
   var contextLost_ = false;
   var resourceId_ = 0;
+  var resourceDb_ = [];
   var onLost_ = undefined;
   var onRestored_ = undefined;
   var nextOnRestored_ = undefined;
@@ -371,6 +372,25 @@ function makeLostContextSimulatingContext(ctx) {
     return {statusMessage: statusMessage};
   }
 
+  function freeResources() {
+    for (var ii = 0; ii < resourceDb_.length; ++ii) {
+      var resource = resourceDb_[ii];
+      if (resource instanceof WebGLBuffer) {
+        ctx.deleteBuffer(resource);
+      } else if (resource instanceof WebctxFramebuffer) {
+        ctx.deleteFramebuffer(resource);
+      } else if (resource instanceof WebctxProgram) {
+        ctx.deleteProgram(resource);
+      } else if (resource instanceof WebctxRenderbuffer) {
+        ctx.deleteRenderbuffer(resource);
+      } else if (resource instanceof WebctxShader) {
+        ctx.deleteShader(resource);
+      } else if (resource instanceof WebctxTexture) {
+        ctx.deleteTexture(resource);
+      }
+    }
+  }
+
   wrapper_.loseContext = function() {
     if (!contextLost_) {
       contextLost_ = true;
@@ -390,6 +410,7 @@ function makeLostContextSimulatingContext(ctx) {
     if (contextLost_) {
       if (onRestored_) {
         setTimeout(function() {
+            freeResources();
             resetToInitialState(ctx);
             contextLost_ = false;
             if (onRestored_) {
@@ -439,6 +460,7 @@ function makeLostContextSimulatingContext(ctx) {
         }
         var obj = f.apply(ctx, arguments);
         obj.__webglDebugContextLostId__ = contextId_;
+        resourceDb_.push(obj);
         return obj;
       };
     }(ctx[functionName]);
