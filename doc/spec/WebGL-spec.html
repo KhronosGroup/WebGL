@@ -206,7 +206,7 @@
     
 <!-- ======================================================================================================= -->
 
-    <h3>The Drawing Buffer</h3>
+    <h3><a name="THE_DRAWING_BUFFER">The Drawing Buffer</h3>
 
     <p>
         The drawing buffer into which the API calls are rendered shall be defined upon creation of
@@ -236,8 +236,28 @@
         WebGL presents its drawing buffer to the HTML page compositor immediately before a compositing 
         operation, but only if the drawing buffer has been modified since the last compositing operation.
         Before the drawing buffer is presented for compositing the implementation shall ensure that all 
-        rendering operations have been flushed to the drawing buffer. After compositing the contents of 
-        the drawing buffer shall be undefined but must not contain uninitialized pixels.
+        rendering operations have been flushed to the drawing buffer. By default, after compositing 
+        the contents of the drawing buffer shall be cleared to their default values. This includes
+        the color buffer as well as the depth and stencil buffers if they are defined.
+    </p>
+    <p>
+        By setting the <code>preserveDrawingBuffer</code> attribute of the 
+        <a href="#WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a> object to true, the contents
+        of the drawing buffer can be preserved until the author either clears or overwrites them.
+        If this flag is false attempting to perform operations using this context as a source
+        image after the rendering function has returned can lead to undefined behavior. This
+        includes <code>readPixels</code> or <code>toDataURL</code> calls, or using this context 
+        as the source image of another context's <code>texImage2D</code> or <code>drawImage</code> 
+        call.
+    </p>
+    <p>        
+        While it is sometimes desirable ot preserve the drawing buffer, it can cause significant 
+        performance loss on some platforms. Whenever possible this flag should remain false 
+        and other techniques used. Techniques like synchronous drawing buffer access (e.g., 
+        calling <code>readPixels</code> or <code>toDataURL</code> in the same function that 
+        renders to the drawing buffer) can be used to get the contents of the drawing buffer. 
+        If the author needs to render to the same drawing buffer over a series of calls, a 
+        <a href="#WEBGL_FRAMEBUFFER">Framebuffer Object</a> can be used.
     </p>
     
 <!-- ======================================================================================================= -->
@@ -500,6 +520,7 @@ typedef float          GLclampf;
     attribute boolean stencil;
     attribute boolean antialias;
     attribute boolean premultipliedAlpha;
+    attribute boolean preserveDrawingBuffer;
 };</pre>
 
     <h4>Context creation parameters</h4>
@@ -545,8 +566,22 @@ typedef float          GLclampf;
                 false. See <a href="#PREMULTIPLIED_ALPHA">Premultiplied Alpha</a> for more
                 information on the effects of the <code>premultipliedAlpha</code> flag.
             </dd>
+        <dt> <span class=prop-value>preserveDrawingBuffer</span>
+            <dd>
+                <em>Default: false</em>. If false, once the drawing buffer is presented
+                as described in the<a href="#THE_DRAWING_BUFFER">Drawing Buffer</a> section,
+                the contents of the drawing buffer are cleared to their default values.
+                All elements of the drawing buffer (color, depth and stencil) are cleared.
+                If the value is true the buffers will not be cleared and will preserve
+                their values until cleared or overwritten by the author.
+                <blockquote>
+                <em>
+                    On some hardware setting the <code>preserveDrawingBuffer</code> flag 
+                    to true can have significant performance implications.
+                </em>
+                </blockquote>
+            </dd>
     </dl>
-
     <div class="example">
     Here is an ECMAScript example which passes a WebGLContextAttributes argument
     to <code>getContext</code>.  It assumes the presence of a canvas element named "canvas1" on the
@@ -589,7 +624,7 @@ var context = canvas.getContext('webgl',
 
 <!-- ======================================================================================================= -->
 
-    <h3>WebGLFramebuffer</h3>
+    <h3><a name="WEBGL_FRAMEBUFFER">WebGLFramebuffer</h3>
 
     <p>
         The <code>WebGLFramebuffer</code> interface represents an OpenGL Framebuffer Object. The
