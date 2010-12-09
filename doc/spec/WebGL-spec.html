@@ -218,11 +218,12 @@
     </p>
     <p>
         If the requested width or height cannot be satisfied, either when the drawing buffer is first
-        created or when the <code>width</code> and <code>height</code> attributes are changed, a
-        drawing buffer with smaller dimensions shall be created. The dimensions actually used are
-        implementation dependent and there is no guarantee that a buffer with the same aspect
-        ratio will be created. The actual drawing buffer size can be obtained from the 
-        <code>getDrawingBufferSize()</code> function.
+        created or when the <code>width</code> and <code>height</code> attributes of the 
+        <code>HTMLCanvasElement</code> are changed, a drawing buffer with smaller dimensions will
+        be created. The dimensions actually used are implementation dependent and there is no 
+        guarantee that a buffer with the same aspect ratio will be created. The actual drawing 
+        buffer size can be obtained from the <code>drawingBufferWidth</code> and 
+        <code>drawingBufferHeight</code> attributes.
     </p>
     <p>
         By default, the drawing buffer has an RGBA color buffer of at least 8 bits per component and
@@ -1223,9 +1224,10 @@ for (var i = 0; i < numVertices; i++) {
     const GLenum BROWSER_DEFAULT_WEBGL          = 0x9244;
 
     readonly attribute HTMLCanvasElement canvas;
+    readonly attribute GLsizei drawingBufferWidth;
+    readonly attribute GLsizei drawingBufferHeight;
 
     WebGLContextAttributes getContextAttributes();
-    GLsizei[ ] getDrawingBufferSize();
     boolean isContextLost();
     
     DOMString[ ] getSupportedExtensions();
@@ -1469,6 +1471,29 @@ for (var i = 0; i < numVertices; i++) {
         <dd>
             A reference to the canvas element which created this context.
 
+        <dt>
+            <code class=attribute-name>
+                <a id="DOM-WebGLRenderingContext-drawingBufferWidth">
+                    drawingBufferWidth
+                </a>
+            </code> 
+            of type <code>GLsizei</code>
+        <dd>
+            The actual width of the drawing buffer. May be different from the 
+            <code>width</code> attribute of the <code>HTMLCanvasElement</code> if 
+            the implementation is unable to satisfy the requested widthor height.
+            
+        <dt>
+            <code class=attribute-name>
+                <a id="DOM-WebGLRenderingContext-drawingBufferHeight">
+                    drawingBufferHeight
+                </a>
+            </code> 
+            of type <code>GLsizei</code>
+        <dd>
+            The actual height of the drawing buffer. May be different from the 
+            <code>height</code> attribute of the <code>HTMLCanvasElement</code> if 
+            the implementation is unable to satisfy the requested width or height.
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -1479,10 +1504,6 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">WebGLContextAttributes getContextAttributes()
         <dd>
             Returns the WebGLContextAttributes describing the current drawing buffer.
-        <dt class="idl-code">GLsizei[ ] getDrawingBufferSize()
-        <dd>
-            Returns the current width and height of the drawing buffer, with the width
-            at index 0 and height at index 1 of the returned array.
     </dl>
      
 <!-- ======================================================================================================= -->
