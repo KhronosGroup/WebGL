@@ -461,8 +461,6 @@ if (!gl) {
       linkSuccess: false,
       passMsg: 'vertex shader uses #line directive should report correct line',
     },
-// TODO(zmo): adding these tests back once the limit is added to WebGL spec.
-/*
     { vShaderId: 'vshader',
       vShaderSuccess: true,
       fShaderId: 'fshaderWith256CharacterIdentifier',
@@ -477,7 +475,6 @@ if (!gl) {
       linkSuccess: false,
       passMsg: 'shared that uses 257 character identifier should fail',
     },
-*/
   ];
 
   // Read in all the shader source.
