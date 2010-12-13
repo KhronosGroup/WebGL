@@ -59,6 +59,30 @@ shouldBeTrue('gl.getUniformLocation(program, "color") instanceof WebGLUniformLoc
 shouldBeTrue('gl.getActiveAttrib(program, 0) instanceof WebGLActiveInfo');
 shouldBeTrue('gl.getActiveUniform(program, 0) instanceof WebGLActiveInfo');
 
+debug("");
+debug("Tests that those WebGL objects can not be constructed through new operator");
+debug("");
+
+function shouldThrowWithNew(objectType, objectName)
+{
+    try {
+        new objectType;
+        testFailed('new ' + objectName + ' did not throw');
+    } catch (e) {
+        testPassed('new ' + objectName + ' threw an error');
+    }
+}
+
+shouldThrowWithNew(WebGLRenderingContext, 'WebGLRenderingContext');
+shouldThrowWithNew(WebGLActiveInfo, 'WebGLActiveInfo');
+shouldThrowWithNew(WebGLBuffer, 'WebGLBuffer');
+shouldThrowWithNew(WebGLFramebuffer, 'WebGLFramebuffer');
+shouldThrowWithNew(WebGLProgram, 'WebGLProgram');
+shouldThrowWithNew(WebGLRenderbuffer, 'WebGLRenderbuffer');
+shouldThrowWithNew(WebGLShader, 'WebGLShader');
+shouldThrowWithNew(WebGLTexture, 'WebGLTexture');
+shouldThrowWithNew(WebGLUniformLocation, 'WebGLUniformLocation');
+
 successfullyParsed = true;
 </script>
 </body>
