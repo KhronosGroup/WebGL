@@ -2859,8 +2859,9 @@ back facing triangles in stencil operations. A call to <code>drawArrays</code>
 or <code>drawElements</code> will generate an <code>INVALID_OPERATION</code> error if:
 
 <ul>
-<li> FRONT ref != BACK ref
-<li> FRONT mask != BACK mask
+<li> <code>STENCIL_WRITEMASK</code> != <code>STENCIL_BACK_WRITEMASK</code> (as specified by <code>stencilMaskSeparate</code> for the <code>mask</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
+<li> <code>STENCIL_VALUE_MASK</code> != <code>STENCIL_BACK_VALUE_MASK</code> (as specified by <code>stencilFuncSeparate</code> for the <code>mask</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
+<li> <code>STENCIL_REF</code> != <code>STENCIL_BACK_REF</code> (as specified by <code>stencilFuncSeparate</code> for the <code>ref</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
 </ul>
 
 </p>
