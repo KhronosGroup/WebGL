@@ -47,9 +47,16 @@
       functions and enumerants.
     </p>
     <p>
-      The <code>texImage2D</code> and <code>texSubImage2D</code> entry points
-      taking <code>ArrayBufferView</code> are extended to accept <code>Float32Array</code> with the
-      pixel type <code>FLOAT</code> when this extension is enabled.
+      When this extension is enabled:
+      <ul>
+      <li> The <code>texImage2D</code> and <code>texSubImage2D</code> entry points
+           taking <code>ArrayBufferView</code> are extended to accept <code>Float32Array</code> with
+           the pixel type <code>FLOAT</code>.
+
+      <li> The <code>texImage2D</code> and <code>texSubImage2D</code> entry points
+           taking <code>ImageData</code>, <code>HTMLImageElement</code>, <code>HTMLCanvasElement</code>
+           and <code>HTMLVideoElement</code> are extended to accept the pixel type <code>FLOAT</code>.
+      </ul>
     </p>
     <h2 class="no-toc">IDL</h2>
     <p>
@@ -68,6 +75,13 @@ interface OES_texture_float {
       Revision 1, 2010/11/29
       <ul>
       <li> Initial revision.
+      </ul>
+    </p>
+    <p>
+      Revision 2, 2010/12/13
+      <ul>
+      <li> Extended to support pixel type FLOAT for texImage2D and texSubImage2D entry points taking
+           ImageData, HTMLImageElement, HTMLCanvasElement and HTMLVideoElement.
       </ul>
     </p>
 </body>
