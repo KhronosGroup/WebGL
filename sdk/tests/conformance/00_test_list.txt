@@ -40,7 +40,7 @@ gl-uniformmatrix4fv.html
 gl-unknown-uniform.html
 gl-vertex-attrib.html
 gl-vertexattribpointer.html
-glsl-2types-of-textures-on-same-unit.html
+#glsl-2types-of-textures-on-same-unit.html
 glsl-conformance.html
 incorrect-context-object-behaviour.html
 index-validation-copies-indices.html

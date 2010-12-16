@@ -1,9 +1,7 @@
-conformance/badArgsArityLessThanArgc.html
 conformance/constants.html
 conformance/getContext.html
 conformance/methods.html
 conformance/quickCheckAPI.html
-conformance/quickCheckAPIBadArgs.html
 conformance/webGLArrays.html
 functions/bindBuffer.html
 functions/bindBufferBadArgs.html

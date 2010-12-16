@@ -11,7 +11,7 @@ Tests.testGetWebGL = function() {
   var canvas = document.getElementById('webgl');
   var gl;
   assertOk(function(){gl = canvas.getContext(GL_CONTEXT_ID)});
-  assertFail("Shouldn't be able to get 2D context after getting WebGL context", function(){canvas.getContext('2d')});
+  assertOk("Should be able to get 2D context after getting WebGL context", function(){canvas.getContext('2d')});
   assertOk(function(){canvas.getContext(GL_CONTEXT_ID)});
 }
 
@@ -19,7 +19,7 @@ Tests.testGet2D = function() {
   var canvas = document.getElementById('2d');
   var ctx;
   assertOk(function(){ctx = canvas.getContext('2d')});
-  assertFail("Shouldn't be able to get WebGL context after getting 2D context", function(){canvas.getContext(GL_CONTEXT_ID)});
+  assertOk("Should be able to get WebGL context after getting 2D context", function(){canvas.getContext(GL_CONTEXT_ID)});
   assertOk(function(){canvas.getContext('2d')});
 }
 </script>
