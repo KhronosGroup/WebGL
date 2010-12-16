@@ -96,10 +96,7 @@
     <div id="toc"></div>
 
     <h2>Introduction</h2>
-    <p>
-        <em>This section is not normative.</em>
-    </p>
-
+    <div class="note">        
     <p>
       WebGL is an immediate mode 3D rendering API designed for the
       web.  It is derived from OpenGL ES 2.0, and provides similar
@@ -145,7 +142,7 @@
       OpenGL ES 2.0 leaves implementation-defined.  These differences are summarized in the
       <a href="#webgl_gl_differences">Differences Between WebGL and OpenGL ES 2.0</a> section.
     </p>
-
+    </div>
     <h3>Outstanding Issues</h3>
     <div class=issue>
     <p>There are a number of outstanding issues that must be resolved before this specification reaches 1.0 status.  These are listed blow:</p>
@@ -236,21 +233,23 @@
         WebGL presents its drawing buffer to the HTML page compositor immediately before a compositing 
         operation, but only if the drawing buffer has been modified since the last compositing operation.
         Before the drawing buffer is presented for compositing the implementation shall ensure that all 
-        rendering operations have been flushed to the drawing buffer. By default, after compositing 
-        the contents of the drawing buffer shall be cleared to their default values. This includes
-        the color buffer as well as the depth and stencil buffers if they are defined.
+        rendering operations have been flushed to the drawing buffer. By default, after compositing the 
+        contents of the drawing buffer are undefined but are guaranteed not to contain information from 
+        another process. This includes the color buffer as well as the depth and stencil buffers if they 
+        are defined. This behavior can be changed using the 
     </p>
     <p>
-        By setting the <code>preserveDrawingBuffer</code> attribute of the 
-        <a href="#WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a> object to true, the contents
-        of the drawing buffer can be preserved until the author either clears or overwrites them.
-        If this flag is false attempting to perform operations using this context as a source
-        image after the rendering function has returned can lead to undefined behavior. This
-        includes <code>readPixels</code> or <code>toDataURL</code> calls, or using this context 
-        as the source image of another context's <code>texImage2D</code> or <code>drawImage</code> 
-        call.
+        This default behavior can be changed by setting the <code>preserveDrawingBuffer</code> 
+        attribute of the <a href="#WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a> object to 
+        true, the contents of the drawing buffer can be preserved until the author either clears 
+        or overwrites them. If this flag is false attempting to perform operations using this 
+        context as a source image after the rendering function has returned can lead to undefined 
+        behavior. This includes <code>readPixels</code> or <code>toDataURL</code> calls, or using 
+        this context as the source image of another context's <code>texImage2D</code> or 
+        <code>drawImage</code> call.
     </p>
-    <p>        
+    <div class="note">        
+    <p>
         While it is sometimes desirable ot preserve the drawing buffer, it can cause significant 
         performance loss on some platforms. Whenever possible this flag should remain false 
         and other techniques used. Techniques like synchronous drawing buffer access (e.g., 
@@ -259,6 +258,12 @@
         If the author needs to render to the same drawing buffer over a series of calls, a 
         <a href="#WEBGL_FRAMEBUFFER">Framebuffer Object</a> can be used.
     </p>
+    <p>
+        One way for an implementation to guarantee buffers do not contain information from another 
+        process is to clear the buffer to the default values specified in the OpenGL ES 2.0
+        specification <a href="#refsGLES20">[GLES20]</a>.
+    </p>
+    </div>
     
 <!-- ======================================================================================================= -->
 
@@ -423,11 +428,7 @@ gl.viewport(0, 0, canvas.width, canvas.height);
 <!-- ======================================================================================================= -->
 
     <h3>Defense Against Denial of Service</h3>
-
-    <p>
-    <i>This section is non-normative.</i>
-    </p>
-
+    <div class="note">        
     <p>
     It is possible to create, either intentionally or unintentionally, combinations of shaders and
     geometry that take an undesirably long time to render. This issue is analogous to that of
@@ -466,7 +467,7 @@ gl.viewport(0, 0, canvas.width, canvas.height);
     The supporting infrastructure at the OS and graphics API layer is expected to improve over time,
     which is why the exact nature of these safeguards is not specified.
     </p>
-
+    </div>
 <!-- ======================================================================================================= -->
 
     <h2>DOM Interfaces</h2>

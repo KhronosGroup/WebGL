@@ -114,7 +114,7 @@ div.example:before {
     font: bold small sans-serif;
     /*float: left;*/
     position: absolute;
-    top: -0.6em;
+    top: -0.9em;
     left: -2.5em;
     width: 7.5em;
     text-align: center;
@@ -131,7 +131,7 @@ pre.example:before {
     font: bold small sans-serif;
     /*float: left;*/
     position: absolute;
-    top: -0.6em;
+    top: -0.9em;
     left: -2.5em;
     width: 7.5em;
     text-align: center;
@@ -189,15 +189,35 @@ code.xml { color: #600 }	/* inline XML */
 dfn { font-weight: bolder; /*font-size: 1em*/ }
 
 /* Class note is a non-normative note. May be inline or a P or DIV */
-.note {
-    /* font-weight: bold; */
-    color: green
+
+div.note:before {
+    content: "Non-normative";
+    font: bold small sans-serif;
+    /*float: left;*/
+    position: absolute;
+    top: -0.9em;
+    left: -2.5em;
+    width: 7.5em;
+    text-align: center;
+    line-height: 1em;
+    color: #F8FFDD;
+    background: #060;
+    padding: 0.1em;
+    border: thin solid #999;
+    /*margin: -1.3em 0 0.3em -2.5em;*/
 }
-p.note, div.note {
-    /* margin: 1em 2em; */
+div.note, pre.note {
+    background: #F8FFDD;
+    padding: 0.5em;
+    margin: 1em 0;
+    border: thin solid #999;
+    position: relative;
 }
-p.note:before, span.note:before { content: "\25B6" " " }
-div.note > p:first-child:before { content: "\25B6" " " }
+pre.note {
+    padding-top: 1.5em;
+}
+div.note { color: #060 }
+pre.note { color: #060 }
 
 .normref { color: red }	
 .informref { color: green }	
