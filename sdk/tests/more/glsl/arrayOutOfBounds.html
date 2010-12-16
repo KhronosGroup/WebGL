@@ -78,7 +78,10 @@ arr.forEach(function(e){
   void main()
   {
     TexCoord = Tex;
-    float x[3] = float[](1.0, 2.0, 3.0);
+    float x[3];
+    x[0] = 1.0;
+    x[1] = 2.0;
+    x[2] = 3.0;
     gl_Position = vec4(Vertex, x[2]);
   }
 </script>
@@ -91,7 +94,10 @@ arr.forEach(function(e){
   void main()
   {
     TexCoord = Tex;
-    float x[3] = float[](1.0, 2.0, 3.0);
+    float x[3];
+    x[0] = 1.0;
+    x[1] = 2.0;
+    x[2] = 3.0;
     gl_Position = vec4(Vertex, x[4]);
   }
 </script>
@@ -104,7 +110,10 @@ arr.forEach(function(e){
   void main()
   {
     TexCoord = Tex;
-    float x[3] = float[](1.0, 2.0, 3.0);
+    float x[3];
+    x[0] = 1.0;
+    x[1] = 2.0;
+    x[2] = 3.0;
     x[4] = Vertex.z;
     gl_Position = vec4(Vertex, x[4]);
   }
@@ -118,7 +127,10 @@ arr.forEach(function(e){
   void main()
   {
     TexCoord = Tex;
-    float x[3] = float[](1.0, 2.0, 3.0);
+    float x[3];
+    x[0] = 1.0;
+    x[1] = 2.0;
+    x[2] = 3.0;
     int idx = 4 * int(max(1.0, Vertex.x*20.0));
     gl_Position = vec4(Vertex, x[idx]);
   }
@@ -132,7 +144,10 @@ arr.forEach(function(e){
   void main()
   {
     TexCoord = Tex;
-    float x[3] = float[](1.0, 2.0, 3.0);
+    float x[3];
+    x[0] = 1.0;
+    x[1] = 2.0;
+    x[2] = 3.0;
     int idx = 4 * int(max(1.0, Vertex.x*20.0));
     x[idx] = Vertex.z;
     gl_Position = vec4(Vertex, x[idx]);
@@ -161,7 +176,10 @@ precision highp float;
 
   void main()
   {
-    float x[3] = float[](1.0, 2.0, 3.0);
+    float x[3];
+    x[0] = 1.0;
+    x[1] = 2.0;
+    x[2] = 3.0;
     gl_FragColor = vec4(1.0, 0.0, TexCoord.s, x[2]);
   }
 </script>
@@ -175,7 +193,10 @@ precision highp float;
 
   void main()
   {
-    float x[3] = float[](1.0, 2.0, 3.0);
+    float x[3];
+    x[0] = 1.0;
+    x[1] = 2.0;
+    x[2] = 3.0;
     gl_FragColor = vec4(1.0, 0.0, TexCoord.s, x[4]);
   }
 </script>
@@ -189,7 +210,10 @@ precision highp float;
 
   void main()
   {
-    float x[3] = float[](1.0, 2.0, 3.0);
+    float x[3];
+    x[0] = 1.0;
+    x[1] = 2.0;
+    x[2] = 3.0;
 
     x[4] = 6.0;
     gl_FragColor = vec4(1.0, 0.0, TexCoord.s, x[4]);
@@ -205,7 +229,10 @@ precision highp float;
 
   void main()
   {
-    float x[3] = float[](1.0, 2.0, 3.0);
+    float x[3];
+    x[0] = 1.0;
+    x[1] = 2.0;
+    x[2] = 3.0;
 
     int idx = 4 * int(max(1.0, TexCoord.x*20.0));
     gl_FragColor = vec4(1.0, 0.0, TexCoord.s, x[idx]);
@@ -221,7 +248,10 @@ precision highp float;
 
   void main()
   {
-    float x[3] = float[](1.0, 2.0, 3.0);
+    float x[3];
+    x[0] = 1.0;
+    x[1] = 2.0;
+    x[2] = 3.0;
 
     int idx = 4 * int(max(1.0, TexCoord.x*20.0));
     x[idx] = 6.0;

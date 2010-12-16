@@ -44,9 +44,6 @@ Tests.testReadPixels = function(gl) {
   assertOk(function(){gl.readPixels(0,0,1,1,gl.RGBA, gl.UNSIGNED_BYTE, id);});
   assertOk(function(){gl.readPixels(0,0,16,16,gl.RGBA, gl.UNSIGNED_BYTE, id);});
   assertOk(function(){gl.readPixels(15,15,1,1,gl.RGBA, gl.UNSIGNED_BYTE, id);});
-  var format = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT);
-  var type = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE);
-  assertOk(function(){gl.readPixels(15,15,1,1, format, type, id);});
 }
 Tests.testReadPixelsRGBA = function(gl) {
   gl.clearColor(1, 0, 1, 0);

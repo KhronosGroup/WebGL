@@ -14,7 +14,7 @@ Tests.startUnit = function () {
 
 Tests.testDeleteBuffer = function(gl) {
   assertThrowNoGLError(gl, "number ", function(){ gl.deleteBuffer(1); });
-  assertThrowNoGLError(gl, "null", function(){ gl.deleteBuffer(null); });
+  assertGLError(gl, gl.NO_ERROR, "null", function(){ gl.deleteBuffer(null); });
   assertThrowNoGLError(gl, "0", function(){ gl.deleteBuffer(0); });
   assertThrowNoGLError(gl, "false", function(){ gl.deleteBuffer(false); });
   assertThrowNoGLError(gl, "true", function(){ gl.deleteBuffer(true); });

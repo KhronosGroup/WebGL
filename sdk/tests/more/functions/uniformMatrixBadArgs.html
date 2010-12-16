@@ -67,10 +67,11 @@ Tests.testUniformf = function(gl, unwrappedGL) {
       var loc1Name = 'am' + ii + '[1]';
       var loc0 = f.uniform(loc0Name);
       var loc1 = f.uniform(loc1Name);
+      var fname = "uniformMatrix" + ii + "fv";
       assert(loc0Name, loc0 != null);
       assert(loc1Name, loc1 != null);
-      assertOk("set array of 2 matrices " + ii + "2fv",
-          function(){gl.uniformMatrix2fv(loc0, false, all);});
+      assertOk("set array of 2 matrices " + ii + "fv",
+          function(){gl[fname].call(gl,loc0, false, all);});
       var actual = unwrappedGL.getUniform(sh.shader.program, loc0);
       assert("got value for loc0",
              gl.NO_ERROR == checkError(gl, "getUniform loc0"));
@@ -80,14 +81,14 @@ Tests.testUniformf = function(gl, unwrappedGL) {
              gl.NO_ERROR == checkError(gl, "getUniform loc1"));
       assertArrayEquals(mats[1], actual);
       assertOk("set array of second array of 2 matrixes",
-          function(){gl.uniformMatrix2fv(loc1, false, mats[0]);});
+          function(){gl[fname].call(gl, loc1, false, mats[0]);});
       var actual = unwrappedGL.getUniform(sh.shader.program, loc1);
       assert("got value for loc1",
              gl.NO_ERROR == checkError(gl, "getUniform loc1"));
       assertArrayEquals(mats[0], actual);
       var big = mats[1].concat([3]);
       assertOk("set array of first array of 2 matrixes plus 1 value",
-          function(){gl.uniformMatrix2fv(loc0, false, big);});
+          function(){gl[fname].call(gl, loc0, false, big);});
       var actual = unwrappedGL.getUniform(sh.shader.program, loc0);
       assert("got value for loc0",
              gl.NO_ERROR == checkError(gl, "getUniform loc0"));

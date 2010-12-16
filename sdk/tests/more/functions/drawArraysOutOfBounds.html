@@ -93,13 +93,13 @@ Tests.testDrawArraysOutOfBounds = function(gl, prog, v,n,t) {
   assertGLError(gl, gl.INVALID_VALUE, "negative offset",
       function(){gl.drawArrays(gl.TRIANGLES, 0, -1);});
   assertGLError(gl, gl.INVALID_OPERATION, "count out of range",
-      function(){gl.drawArrays(gl.TRIANGLES, 1, 0);});
+      function(){gl.drawArrays(gl.TRIANGLES, 0, 1);});
   assertGLError(gl, gl.INVALID_VALUE, "negative count",
-      function(){gl.drawArrays(gl.TRIANGLES, -1, 0);});
+      function(){gl.drawArrays(gl.TRIANGLES, 0, -1);});
   assertGLError(gl, gl.INVALID_VALUE, "positive count, negative offset",
-      function(){gl.drawArrays(gl.TRIANGLES, 1, -1);});
-  assertGLError(gl, gl.INVALID_VALUE, "negative count, positive offset",
       function(){gl.drawArrays(gl.TRIANGLES, -1, 1);});
+  assertGLError(gl, gl.INVALID_VALUE, "negative count, positive offset",
+      function(){gl.drawArrays(gl.TRIANGLES, 1, -1);});
   gl.deleteBuffer(b);
 }
 
@@ -121,13 +121,13 @@ Tests.testDrawArraysWithDataOutOfBounds = function(gl, prog, v,n,t) {
   assertGLError(gl, gl.INVALID_VALUE, "negative offset",
       function(){gl.drawArrays(gl.TRIANGLES, 0, -1);});
   assertGLError(gl, gl.INVALID_OPERATION, "count out of range",
-      function(){gl.drawArrays(gl.TRIANGLES, 4, 0);});
+      function(){gl.drawArrays(gl.TRIANGLES, 0, 4);});
   assertGLError(gl, gl.INVALID_VALUE, "negative count",
-      function(){gl.drawArrays(gl.TRIANGLES, -1, 0);});
+      function(){gl.drawArrays(gl.TRIANGLES, 0, -1);});
   assertGLError(gl, gl.INVALID_VALUE, "positive count, negative offset",
-      function(){gl.drawArrays(gl.TRIANGLES, 2, -1);});
+      function(){gl.drawArrays(gl.TRIANGLES, -1, 2);});
   assertGLError(gl, gl.INVALID_VALUE, "negative count, positive offset",
-      function(){gl.drawArrays(gl.TRIANGLES, -1, 1);});
+      function(){gl.drawArrays(gl.TRIANGLES, 1, -1);});
   gl.deleteBuffer(b);
 }
 
@@ -221,7 +221,7 @@ Tests.testDrawArraysVBOOutOfBounds = function(gl, prog, v,n,t) {
   assertGLError(gl, gl.INVALID_OPERATION, "1",
       function(){gl.drawArrays(gl.TRIANGLES, 6, 1);});
   assertGLError(gl, gl.INVALID_VALUE, "negative count",
-      function(){gl.drawArrays(gl.TRIANGLES, -1, 2);});
+      function(){gl.drawArrays(gl.TRIANGLES, 2, -1);});
   assertGLError(gl, gl.INVALID_OPERATION, "3",
       function(){gl.drawArrays(gl.TRIANGLES, 0, 7);});
   assertGLError(gl, gl.INVALID_OPERATION, "4",
@@ -240,7 +240,7 @@ Tests.testDrawArraysVBOMultiOutOfBounds = function(gl, prog, v,n,t) {
   assertGLError(gl, gl.INVALID_OPERATION, "1",
       function(){gl.drawArrays(gl.TRIANGLES, 6, 1);});
   assertGLError(gl, gl.INVALID_VALUE, "negative count",
-      function(){gl.drawArrays(gl.TRIANGLES, -1, 2);});
+      function(){gl.drawArrays(gl.TRIANGLES, 2, -1);});
   assertGLError(gl, gl.INVALID_OPERATION, "2",
       function(){gl.drawArrays(gl.TRIANGLES, 0, 7);});
   assertGLError(gl, gl.INVALID_OPERATION, "3",

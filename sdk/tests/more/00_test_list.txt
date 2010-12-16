@@ -1,6 +1,5 @@
 conformance/badArgsArityLessThanArgc.html
 conformance/constants.html
-# conformance/fuzzTheAPI.html // No interactive tests.
 conformance/getContext.html
 conformance/methods.html
 conformance/quickCheckAPI.html
@@ -22,8 +21,6 @@ functions/drawArrays.html
 functions/drawArraysOutOfBounds.html
 functions/drawElements.html
 functions/drawElementsBadArgs.html
-functions/getImageData.html
-functions/getImageDataBadArgs.html
 functions/isTests.html
 functions/readPixels.html
 functions/readPixelsBadArgs.html
