@@ -63,6 +63,7 @@ o3djs.require('o3djs.shader');
 // requires "fpscounter.js"
 
 var gl = null;
+var g_canvas;
 var g_math;
 var g_width = 0;
 var g_height = 0;
@@ -203,18 +204,22 @@ function main() {
     if (fps) {
         g_fpsCounter = new FPSCounter(fps);
     }
-    init();
-    // Set up key handling.
-    document.onkeypress = onKeyPress;
-    setTimeout(draw, 0);
+    if (init()) {
+        // Set up key handling.
+        document.onkeypress = onKeyPress;
+        draw();
+    }
 }
 
 function init() {
-    var c = document.getElementById("c");
-    g_width = c.width;
-    g_height = c.height;
+    g_canvas = document.getElementById("c");
+    g_width = g_canvas.width;
+    g_height = g_canvas.height;
     attribs = { antialias: false };
-    gl = c.getContext("experimental-webgl", attribs) || c.getContext("GL", attribs);
+    gl = WebGLUtils.setupWebGL(g_canvas, attribs);
+    if (!gl) {
+        return false;
+    }
     gl.enable(gl.DEPTH_TEST);
     gl.clearColor(0, 0, 0, 1);
     // FIXME: port O3D's effect.js to WebGL
@@ -274,6 +279,7 @@ function init() {
     setFlag(' ', true);
 
     g_vpsDiv = document.getElementById('vps');
+    return true;
 }
 
 /**
@@ -515,5 +521,5 @@ function draw() {
             }
         }
     }
-    setTimeout(draw, 0);
+    WebGLUtils.requestAnimationFrame(g_canvas, draw);
 }

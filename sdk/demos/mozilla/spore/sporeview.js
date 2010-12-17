@@ -77,24 +77,10 @@ var sf = null;
 
 function renderStart() {
   var canvas = document.getElementById("canvas");
-  var gl = null;
-  try {
-    if (!gl)
-      gl = canvas.getContext("moz-webgl");
-  } catch (e) { }
-  try {
-    if (!gl)
-      gl = canvas.getContext("webkit-3d");
-  } catch (e) { }
+  var gl = WebGLUtils.setupWebGL(canvas);
 
   if (!gl) {
-    alert("Can't find a WebGL context; is it enabled?");
     return;
-  }
-
-  if (!Float32Array) {
-    alert("Please update to a newer Firefox nightly to pick up some WebGL API changes!");
-    throw "Need newer nightly.";
   }
 
   if (!("sp" in shaders)) {

@@ -41,7 +41,7 @@ var g_texCoordOffset=0;
 // Fetches the WebGL rendering context and initializes OpenGL.
 function main() {
     var c = document.getElementById("c");
-    gl = getWebGLContext(c);
+    gl = WebGLUtils.setupWebGL(c);
     if (!gl)
         return;
     g_width = c.width;

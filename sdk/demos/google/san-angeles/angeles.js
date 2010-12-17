@@ -34,7 +34,7 @@ var start_time = null;
 
 function main() {
     canvas = document.getElementById("c");
-    gl = getWebGLContext(canvas);
+    gl = WebGLUtils.setupWebGL(canvas);
     if (!gl)
         return;
     gl.clearColor(0., 0., 0., 1.);
@@ -50,12 +50,11 @@ function main() {
 function init() {
     appInit();
     start_time = (new Date()).getTime();
-    setTimeout(render, 0);
+    render();
 }
 
 function render() {
     appRender((new Date()).getTime() - start_time,
               canvas.width, canvas.height);
-    gl.flush();
-    setTimeout(render, 0);
+    WebGLUtils.requestAnimationFrame(canvas, render);
 }

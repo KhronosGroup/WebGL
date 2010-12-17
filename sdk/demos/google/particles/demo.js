@@ -36,6 +36,7 @@ o3djs.require('o3djs.particles');
 // requires "fpscounter.js"
 
 var gl = null;
+var g_canvas;
 var g_fpsCounter = null;
 var g_width = 0;
 var g_height = 0;
@@ -130,12 +131,12 @@ function main() {
     g_world = g_math.matrix4.identity();
     g_view = g_math.matrix4.identity();
     g_projection = g_math.matrix4.identity();
-    var c = document.getElementById("c");
-    gl = getWebGLContext(c);
+    var g_canvas = document.getElementById("c");
+    gl = WebGLUtils.setupWebGL(g_canvas);
     if (!gl)
         return;
-    g_width = c.width;
-    g_height = c.height;
+    g_width = g_canvas.width;
+    g_height = g_canvas.height;
     controller = new CameraController(c);
     controller.onchange = function(xRot, yRot) {
         g_math.matrix4.setIdentity(g_view);
@@ -152,7 +153,7 @@ function main() {
     document.onkeypress = onKeyPress;
     document.onkeydown = onKeyDown;
     document.onkeyup = onKeyUp;
-    setTimeout(draw, 0);
+    draw();
 }
 
 function init() {
@@ -538,5 +539,5 @@ function draw() {
     if (g_fpsCounter) {
         g_fpsCounter.update();
     }
-    setTimeout(draw, 0);
+    WebGLUtils.requestAnimationFrame(g_canvas, draw);
 }

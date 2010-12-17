@@ -27,6 +27,7 @@
 <head>
 <title>Spore Creature Viewer</title>
 
+<script type="text/javascript" src="../../common/webgl-utils.js"></script>
 <script type="text/javascript" src="sylvester.js"></script>
 <script type="text/javascript" src="glUtils.js"></script>
 
@@ -70,7 +71,7 @@ uniform sampler2D uTexture0;
 
 void main(void) {
     float v = 0.5 * (1.0 + dot(normalize(vViewVec), vNormal));
-    
+
     gl_FragColor = texture2D(uTexture0, vTexCoord0.st);
 }
 </script>
