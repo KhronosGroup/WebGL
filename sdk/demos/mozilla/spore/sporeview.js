@@ -345,4 +345,4 @@ function handleLoad() {
   sf.load("creatures/Amahani.dae");
 }
 
-window.addEventListener("load", handleLoad, false);
+window.onload = handleLoad;

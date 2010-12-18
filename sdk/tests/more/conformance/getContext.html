@@ -11,8 +11,12 @@ Tests.testGetWebGL = function() {
   var canvas = document.getElementById('webgl');
   var gl;
   assertOk(function(){gl = canvas.getContext(GL_CONTEXT_ID)});
+  assertEquals("ctx.canvas === canvas", gl.canvas, canvas);
   assertOk("Should be able to get 2D context after getting WebGL context", function(){canvas.getContext('2d')});
-  assertOk(function(){canvas.getContext(GL_CONTEXT_ID)});
+  assert("ctx.canvas should be cleared after getting 2d context from same canvas", gl.canvas === null);
+  var newgl;
+  assertOk(function(){newgl = canvas.getContext(GL_CONTEXT_ID)});
+  //assertNotEquals("oldContext === newContext", gl, newgl);
 }
 
 Tests.testGet2D = function() {

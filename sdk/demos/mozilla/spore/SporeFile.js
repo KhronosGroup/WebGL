@@ -269,5 +269,5 @@ SporeFile.prototype = {
     this.textures = textures;
 
     return true;
-  },
+  }
 };
