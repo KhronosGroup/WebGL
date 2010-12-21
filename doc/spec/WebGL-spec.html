@@ -2933,6 +2933,15 @@ extensions.
     and <code>IMPLEMENTATION_COLOR_READ_TYPE</code> enumerants have been removed.
 </p>
 
+    <h3><a name="COMPRESSED_TEXTURE_SUPPORT">Compressed Texture Support</a></h3>
+
+<p>
+    WebGL does not support any compressed texture formats. Therefore the <code>CompressedTexImage2D</code> 
+    and <code>CompressedTexSubImage2D</code> functions are not included in this specification. 
+    Likewise the <code>COMPRESSED_TEXTURE_FORMATS</code> and <code>NUM_COMPRESSED_TEXTURE_FORMATS</code> 
+    parameters to <code>getParameter</code> will return the value null or zero.
+</p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
