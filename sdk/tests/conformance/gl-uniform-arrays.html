@@ -108,7 +108,7 @@ var typeInfos = [
       return value === null ? 'null' : value.toString();
     },
     checkType: function(value) {
-      return typeof values === 'number';
+      return typeof value === 'number';
     },
     checkValue: function(typeInfo, index, value) {
       return typeInfo.srcValues[index] == value;
@@ -135,8 +135,9 @@ var typeInfos = [
       return value === null ? 'null' : ("[" + value[0] + ", " + value[1] + "]");
     },
     checkType: function(value) {
-      return typeof values.length === 'number' &&
-             values.length == 2;
+      return value &&
+             typeof value.length === 'number' &&
+             value.length == 2;
     },
     checkValue: function(typeInfo, index, value) {
       return value !== null &&
@@ -167,8 +168,9 @@ var typeInfos = [
           ("[" + value[0] + ", " + value[1] + ", " + value[2] + "]");
     },
     checkType: function(value) {
-      return typeof values.length === 'number' &&
-             values.length == 3;
+      return value &&
+             typeof value.length === 'number' &&
+             value.length == 3;
     },
     checkValue: function(typeInfo, index, value) {
       return value !== null &&
@@ -202,8 +204,9 @@ var typeInfos = [
            ", " + value[2] + ", " + value[3] + "]");
     },
     checkType: function(value) {
-      return typeof values.length === 'number' &&
-             values.length == 4;
+      return value &&
+             typeof value.length === 'number' &&
+             value.length == 4;
     },
     checkValue: function(typeInfo, index, value) {
       return value !== null &&
