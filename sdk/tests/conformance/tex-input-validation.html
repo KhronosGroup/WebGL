@@ -38,7 +38,7 @@ function testTexImage2D(testCase)
 
     gl.texImage2D(testCase.target, level, testCase.internalFormat, width, height, testCase.border, testCase.format, testCase.type, null);
     error = testCase.expectedError;
-    glErrorShouldBe(gl, error);
+    glErrorShouldBe(gl, error, msg);
 }
 
 function testTexSubImage2D(testCase)
@@ -54,7 +54,7 @@ function testTexSubImage2D(testCase)
     var array = new Uint8Array(width * height * 4);
     gl.texSubImage2D(testCase.target, level, xoffset, yoffset, width, height, testCase.format, testCase.type, array);
     error = testCase.expectedError;
-    glErrorShouldBe(gl, error);
+    glErrorShouldBe(gl, error, msg);
 }
 
 function testTexParameter(testCase)
@@ -90,7 +90,7 @@ function testCopyTexImage2D(testCase)
       " border: " + testCase.border;
 
     gl.renderbufferStorage(gl.RENDERBUFFER, testCase.colorBufferFormat, width, height);
-    glErrorShouldBe(gl, gl.NO_ERROR, msg);
+    glErrorShouldBe(gl, gl.NO_ERROR);
     shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
 
     gl.copyTexImage2D(testCase.target, level, testCase.internalFormat, x, y, width, height, testCase.border);
@@ -108,21 +108,55 @@ function testCopyTexSubImage2D(testCase)
     var xoffset = 0;
     var yoffset = 0;
     var border = 0;
+    var type = gl.UNSIGNED_BYTE;
     var msg = "" +
       " colorBufferFormat: " + enumToString(testCase.colorBufferFormat) +
       " internalFormat: " + enumToString(testCase.internalFormat) +
       " target: " + enumToString(testCase.target);
 
     gl.renderbufferStorage(gl.RENDERBUFFER, testCase.colorBufferFormat, width, height);
-    glErrorShouldBe(gl, gl.NO_ERROR, msg);
+    glErrorShouldBe(gl, gl.NO_ERROR);
     shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
 
-    if (testCase.initTex) {
-        gl.copyTexImage2D(testCase.target, level, testCase.internalFormat, x, y, width, height, border);
-        glErrorShouldBe(gl, gl.NO_ERROR, msg);
-    }
+    gl.texImage2D(testCase.target, level, testCase.internalFormat, xoffset + width, yoffset + height, border, testCase.internalFormat, type, null);
+    glErrorShouldBe(gl, gl.NO_ERROR);
 
     gl.copyTexSubImage2D(testCase.target, level, xoffset, yoffset, x, y, width, height);
+    error = testCase.expectedError;
+    glErrorShouldBe(gl, error, msg);
+}
+
+function testCopyFromInternalFBO(testCase)
+{
+    var target = gl.TEXTURE_2D;
+    var level = 0;
+    var x = 0;
+    var y = 0;
+    var width = 16;
+    var height = 16;
+    var xoffset = 0;
+    var yoffset = 0;
+    var border = 0;
+    var type = gl.UNSIGNED_BYTE;
+    var msg = "" +
+      " colorBufferFormat: " + enumToString(testCase.contextAlpha ? gl.RGBA : gl.RGB) +
+      " internalFormat: " + enumToString(testCase.internalFormat);
+
+    if (testCase.contextAlpha)
+        gl = create3DContext(null, { alpha: true });
+    else
+        gl = create3DContext(null, { alpha: false });
+    shouldBeNonNull("gl");
+    shouldBeNonNull("tex = gl.createTexture()");
+    gl.bindTexture(target, tex);
+    if (testCase.subImage) {
+        gl.texImage2D(target, level, testCase.internalFormat, xoffset + width, yoffset + height, border, testCase.internalFormat, type, null);
+        glErrorShouldBe(gl, gl.NO_ERROR);
+        gl.copyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
+    } else {
+        glErrorShouldBe(gl, gl.NO_ERROR);
+        gl.copyTexImage2D(target, level, testCase.internalFormat, x, y, width, height, border);
+    }
     error = testCase.expectedError;
     glErrorShouldBe(gl, error, msg);
 }
@@ -284,16 +318,38 @@ testCases =
   [ {target: gl.TEXTURE_2D,
      colorBufferFormat: gl.RGB5_A1,
      internalFormat: gl.RGBA,
-     initTex: true,
      expectedError: gl.NO_ERROR},
     {target: gl.TEXTURE_2D,
      colorBufferFormat: gl.RGB565,
      internalFormat: gl.RGBA,
-     initTex: false,
      expectedError: gl.INVALID_OPERATION} ];
 
 for (var ii = 0; ii < testCases.length; ++ii)
     testCopyTexSubImage2D(testCases[ii]);
+
+debug("");
+debug("Checking CopyTex{Sub}Image2D: copy from WebGL internal framebuffer");
+
+testCases =
+  [ {contextAlpha: true,
+     internalFormat: gl.RGBA,
+     subImage: false,
+     expectedError: gl.NO_ERROR},
+    {contextAlpha: false,
+     internalFormat: gl.RGBA,
+     subImage: false,
+     expectedError: gl.INVALID_OPERATION},
+    {contextAlpha: true,
+     internalFormat: gl.RGBA,
+     subImage: true,
+     expectedError: gl.NO_ERROR},
+    {contextAlpha: false,
+     internalFormat: gl.RGBA,
+     subImage: true,
+     expectedError: gl.INVALID_OPERATION} ];
+
+for (var ii = 0; ii < testCases.length; ++ii)
+    testCopyFromInternalFBO(testCases[ii]);
 
 successfullyParsed = true;
 </script>
