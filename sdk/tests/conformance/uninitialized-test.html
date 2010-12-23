@@ -45,7 +45,8 @@ function setupTexture(texWidth, texHeight) {
     return texture;
 }
 
-function checkNonZeroPixels(texture, texWidth, texHeight, skipX, skipY, skipWidth, skipHeight) {
+function checkNonZeroPixels(texture, texWidth, texHeight, skipX, skipY, skipWidth, skipHeight, skipR, skipG, skipB, skipA) {
+    gl.bindTexture(gl.TEXTURE_2D, null);
     var fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
@@ -56,15 +57,18 @@ function checkNonZeroPixels(texture, texWidth, texHeight, skipX, skipY, skipWidt
 
     var k = 0;
     for (var y = 0; y < texHeight; ++y) {
-        if (y >= skipY && y < skipY + skipHeight)
-            continue;
         for (var x = 0; x < texWidth; ++x) {
-            if (x >= skipX && x < skipX + skipWidth)
-                continue;
             var index = (y * texWidth + x) * 4;
-            for (var i = 0; i < 4; ++i) {
-                if (data[index + i] != 0)
-                    k++;
+            if (x >= skipX && x < skipX + skipWidth && y >= skipY && y < skipY + skipHeight) {
+                if (data[index] != skipR || data[index + 1] != skipG || data[index + 2] != skipB || data[index + 3] != skipA) {
+                    testFailed("non-zero pixel values are wrong");
+                    return;
+                }
+            } else {
+                for (var i = 0; i < 4; ++i) {
+                    if (data[index + i] != 0)
+                        k++;
+                }
             }
         }
     }
@@ -83,7 +87,7 @@ debug("Reading an uninitialized texture (texImage2D) should succeed with all byt
 
 var tex = setupTexture(width, height);
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-checkNonZeroPixels(tex, width, height, 0, 0, 0, 0);
+checkNonZeroPixels(tex, width, height, 0, 0, 0, 0, 0, 0, 0, 0);
 gl.deleteTexture(tex);
 gl.finish();
 glErrorShouldBe(gl, gl.NO_ERROR);
@@ -101,9 +105,11 @@ var fboHeight = 16;
 gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, fboWidth, fboHeight);
 gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rbo);
 shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
+gl.clearColor(1.0, 0.0, 0.0, 1.0);
+gl.clear(gl.COLOR_BUFFER_BIT);
 glErrorShouldBe(gl, gl.NO_ERROR);
 gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, width, height, 0);
-checkNonZeroPixels(tex, width, height, 0, 0, fboWidth, fboHeight);
+checkNonZeroPixels(tex, width, height, 0, 0, fboWidth, fboHeight, 255, 0, 0, 255);
 gl.deleteTexture(tex);
 gl.finish();
 glErrorShouldBe(gl, gl.NO_ERROR);
@@ -113,9 +119,11 @@ debug("Reading an uninitialized portion of a texture (copyTexImage2D from WebGL 
 
 var tex = setupTexture(width, height);
 gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+gl.clearColor(0.0, 1.0, 0.0, 0.0);
+gl.clear(gl.COLOR_BUFFER_BIT);
 glErrorShouldBe(gl, gl.NO_ERROR);
 gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, width, height, 0);
-checkNonZeroPixels(tex, width, height, 0, 0, canvas.width, canvas.height);
+checkNonZeroPixels(tex, width, height, 0, 0, canvas.width, canvas.height, 0, 255, 0, 0);
 gl.deleteTexture(tex);
 gl.finish();
 glErrorShouldBe(gl, gl.NO_ERROR);
