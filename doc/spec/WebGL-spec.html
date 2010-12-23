@@ -207,26 +207,36 @@
 
     <p>
         The drawing buffer into which the API calls are rendered shall be defined upon creation of
-        the WebGLRenderingContext object. The size of this drawing buffer shall be determined by the
-        <code>width</code> and <code>height</code> attributes of the HTMLCanvasElement. Changing
-        either of these attributes shall cause the drawing buffer to resize and its contents to be
-        cleared to the default values: (0,0,0,0) for the color buffer, 1.0 for any depth buffer, and
-        0 for any stencil buffer.
+        the WebGLRenderingContext object. The table below shows all the buffers which make up
+        the drawing buffer, along with their minimum sizes and whether they are defined or not by
+        default. The size of this drawing buffer shall be determined by the <code>width</code> 
+        and <code>height</code> attributes of the HTMLCanvasElement. The table below also shows 
+        the value to which these buffers shall be cleared when first created or when the size is 
+        changed.
     </p>
+    <table class="foo">
+        <tr><th>Buffer</th><th>Clear value</th><th>Minimum size</th><th>Defined By default?</th></tr>
+        <tr><td>Color</td><td>(0, 0, 0, 0)</td><td>8 bits per component</td><td>yes</td></tr>
+        <tr><td>Depth</td><td>1.0</td><td>16 bit integer</td><td>yes</td></tr>
+        <tr><td>Stencil</td><td>0</td><td>8 bits</td><td>no</td></tr>
+    </table>
+    <br>
     <p>
         If the requested width or height cannot be satisfied, either when the drawing buffer is first
         created or when the <code>width</code> and <code>height</code> attributes of the 
-        <code>HTMLCanvasElement</code> are changed, a drawing buffer with smaller dimensions will
+        <code>HTMLCanvasElement</code> are changed, a drawing buffer with smaller dimensions shall
         be created. The dimensions actually used are implementation dependent and there is no 
         guarantee that a buffer with the same aspect ratio will be created. The actual drawing 
         buffer size can be obtained from the <code>drawingBufferWidth</code> and 
         <code>drawingBufferHeight</code> attributes.
     </p>
     <p>
-        By default, the drawing buffer has an RGBA color buffer of at least 8 bits per component and
-        an integer depth buffer of at least 16 bits. The optional WebGLContextAttributes object may
-        be used to change these defaults. This object is only used on the first call
-        to <code>getContext</code>. No facility is provided to change the attributes of the drawing
+        By default, the buffers shall be the size shown below. The optional <a href="#WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a> 
+        object may be used to change whether or not the buffers are defined. It can also be used
+        to define whether the color buffer will include an alpha channel. If defined, the 
+        alpha channel is used by the HTML compositor to combine the color buffer with the rest
+        of the page. The WebGLContextAttributes object is only used on the first call to 
+        <code>getContext</code>. No facility is provided to change the attributes of the drawing 
         buffer after its creation.
     </p>
     <p>
@@ -234,9 +244,8 @@
         operation, but only if the drawing buffer has been modified since the last compositing operation.
         Before the drawing buffer is presented for compositing the implementation shall ensure that all 
         rendering operations have been flushed to the drawing buffer. By default, after compositing the 
-        contents of the drawing buffer are undefined but are guaranteed not to contain information from 
-        another process. This includes the color buffer as well as the depth and stencil buffers if they 
-        are defined. This behavior can be changed using the 
+        contents of the drawing buffer shall be cleared to its default values, as shown in the table
+        above.
     </p>
     <p>
         This default behavior can be changed by setting the <code>preserveDrawingBuffer</code> 
@@ -249,20 +258,20 @@
         <code>drawImage</code> call.
     </p>
     <div class="note">        
-    <p>
-        While it is sometimes desirable ot preserve the drawing buffer, it can cause significant 
-        performance loss on some platforms. Whenever possible this flag should remain false 
-        and other techniques used. Techniques like synchronous drawing buffer access (e.g., 
-        calling <code>readPixels</code> or <code>toDataURL</code> in the same function that 
-        renders to the drawing buffer) can be used to get the contents of the drawing buffer. 
-        If the author needs to render to the same drawing buffer over a series of calls, a 
-        <a href="#WEBGL_FRAMEBUFFER">Framebuffer Object</a> can be used.
-    </p>
-    <p>
-        One way for an implementation to guarantee buffers do not contain information from another 
-        process is to clear the buffer to the default values specified in the OpenGL ES 2.0
-        specification <a href="#refsGLES20">[GLES20]</a>.
-    </p>
+        <p>
+            While it is sometimes desirable to preserve the drawing buffer, it can cause significant 
+            performance loss on some platforms. Whenever possible this flag should remain false 
+            and other techniques used. Techniques like synchronous drawing buffer access (e.g., 
+            calling <code>readPixels</code> or <code>toDataURL</code> in the same function that 
+            renders to the drawing buffer) can be used to get the contents of the drawing buffer. 
+            If the author needs to render to the same drawing buffer over a series of calls, a 
+            <a href="#WEBGL_FRAMEBUFFER">Framebuffer Object</a> can be used.
+        </p>
+        <p>
+            One way for an implementation to guarantee buffers do not contain information from another 
+            process is to clear the buffer to the default values specified in the OpenGL ES 2.0
+            specification <a href="#refsGLES20">[GLES20]</a>.
+        </p>
     </div>
     
 <!-- ======================================================================================================= -->
