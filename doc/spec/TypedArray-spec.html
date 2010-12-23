@@ -100,7 +100,7 @@
     <div id="toc"></div>
 
     <h2>Introduction</h2>
-    <p>
+    <p class="nonnormative">
       <em>This section is not normative.</em>
     </p>
 
@@ -134,7 +134,7 @@
     </p>
 
     <h2>Overview</h2>
-    <p>
+    <p class="nonnormative">
       <em>This section is not normative.</em>
     </p>
 
@@ -643,7 +643,92 @@ interface <dfn id="DataView">DataView</dfn> : ArrayBufferView {
       </tbody>
     </table>
 
-    <h2>Outstanding Issues & Bikeshedding</h2>
+    <h2>Examples</h2>
+    <p class="nonnormative">
+      <em>This section is not normative.</em>
+    </p>
+
+    <dt>Creating a simple array of 128 32-bit floats:</dt>
+    <dd>
+      <pre>var f32s = new Float32Array(128);</pre>
+    </dd>
+
+    <dt>Filling each 8 consecutive floats of the new array:</dt>
+    <dd>
+      <pre>
+for (var i = 0; i &lt; 128/8; ++i) {
+  var sub_f32s = f32s.slice(i, i+8);
+  for (var j = 0; j &lt; 8; ++j) {
+    sub_f32s[j] = j;
+  }
+}
+      </pre>
+      <p>Note that this code uses <code>slice()</code> to create a new Float32Array
+that references the same data as the original, so that it can always index the sub-array using 0..7.</p>
+    </dd>
+
+    <dt>Interleaved array types</dt>
+    <dd>
+      <p>Some APIs, in particular WebGL <a
+      href="#refsWEBGL">[WEBGL]</a>, can benefit from being able to
+      use a single contiguous buffer, with interleaved data types.
+      For example, a point might have coordinate data (3 Float32
+      values) followed by color data (4 Uint8 values).</p>
+      <p>For 4 points and their associated colors, this can be set up in the following way:</p>
+      <pre>
+var elementSize = 3 * Float32Array.BYTES_PER_ELEMENT + 4 * Uint8Array.BYTES_PER_ELEMENT;
+var buffer = new ArrayBuffer(4 * elementSize);
+var coords = new Float32Array(buffer, 0);
+var colors = new Uint8Array(buffer, 3 * Float32Array.BYTES_PER_ELEMENT);
+      </pre>
+      <p>However, typed arrays don't have a way to explicitly encode the desired per-point structure, so some manual arithmetic must be done to correctly index into the right values.  Note that the <code>colors</code> Uint8Array view is created with an explicit offset (which is given in bytes), so that the <code>[0]</code> element points at the 13th byte in the underlying buffer.</p>
+      <p>In this example, each set of packed data is 16 bytes in size (3 4-byte floats followed by 4 bytes).  16 / Float32Array.BYTES_PER_ELEMENT is 4, so from any given Float32 element, to skip to the same Float32 element in the next point, 4 must be added to the index.  Similarly, to skip from any given Uint8 element to the same in the next point, 16 must be added:</p>
+      <pre>
+var coordOffset = elementSize / Float32Array.BYTES_PER_ELEMENT;
+var colorOffset = elementSize / Uint8Array.BYTES_PER_ELEMENT;
+
+coords[0] = coords[1] = coords[2] = 1.0; // The first point's three coordinate values
+colors[0] = colors[1] = colors[2] = colors[3] = 255; // The first point's four colors
+
+coords[0+N*coordOffset] = 5.0; // The Nth point's first coordinate value
+colors[0+N*colorOffset] = 128; // The Nth point's first color value
+
+coords[i+N*coordOffset] = 6.0; // The Nth point's i coordinate value;
+colors[j+N*colorOffset] = 200; // The Nth point's j color value
+      </pre>
+      <p>In the above example, note that for keeping the data consistent, i must be one of 0, 1, or 2; and j must be one of 0, 1, 2, or 3.  Any higher values will result in data segments that are reserved for 32-bit floats or for 8-bit integers being overwritten with incorrect data.</p>
+    </dd>
+
+
+    <dt>Slicing a large array into multiple regions</dt>
+    <dd>
+      <p>Another usage similar to the above is allocating one large buffer, and then using different regions of it for different purposes:</p>
+      <pre>
+var buffer = new ArrayBuffer(1024);
+      </pre>
+      <p>Carve out 128 floats, 128*4 = 512 bytes in size:</p>
+      <pre>
+var floats = new Float32Array(buffer, 0, 128);
+      </pre>
+      <p>Then 128 shorts, 128*2 = 256 bytes in size, immediately
+      following the floats.  Note  that the 512 byte offset
+      argument is equal to <tt>floats.byteOffset + floats.byteLength</tt>.</p>
+      <pre>
+var shorts = new Uint16Array(buffer, 512, 128);
+      </pre>
+      <p>Finally, 256 unsigned bytes.  We can write the byte offset
+      in the form suggested above to simplify the chaining.
+      We also let this array extend until the end of the ArrayBuffer
+      by not explicitly specifying a length.</p>
+      <pre>
+var bytes = new Uint8Array(buffer, shorts.byteOffset + shorts.byteLength);
+      </pre>
+      <p>If the data is no longer needed, the entire 1024-byte array
+      can be repurposed without causing additional allocations simply
+      by creating new views and discarding the old.</p>
+    </dd>
+
+    <h2>Outstanding Issues &amp; Bikeshedding</h2>
 
     <dt>Should <tt>slice()</tt> return a copy or a reference?</dt>
     <dd>
