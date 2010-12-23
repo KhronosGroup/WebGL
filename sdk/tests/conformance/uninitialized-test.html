@@ -89,7 +89,7 @@ gl.finish();
 glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
-debug("Reading an uninitialized portion of a texture (texCopyImage2D) should succeed with all bytes set to 0.");
+debug("Reading an uninitialized portion of a texture (copyTexImage2D) should succeed with all bytes set to 0.");
 
 var tex = setupTexture(width, height);
 var fbo = gl.createFramebuffer();
@@ -104,6 +104,18 @@ shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE")
 glErrorShouldBe(gl, gl.NO_ERROR);
 gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, width, height, 0);
 checkNonZeroPixels(tex, width, height, 0, 0, fboWidth, fboHeight);
+gl.deleteTexture(tex);
+gl.finish();
+glErrorShouldBe(gl, gl.NO_ERROR);
+
+debug("");
+debug("Reading an uninitialized portion of a texture (copyTexImage2D from WebGL internal fbo) should succeed with all bytes set to 0.");
+
+var tex = setupTexture(width, height);
+gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+glErrorShouldBe(gl, gl.NO_ERROR);
+gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, width, height, 0);
+checkNonZeroPixels(tex, width, height, 0, 0, canvas.width, canvas.height);
 gl.deleteTexture(tex);
 gl.finish();
 glErrorShouldBe(gl, gl.NO_ERROR);
