@@ -461,20 +461,20 @@ if (!gl) {
       linkSuccess: false,
       passMsg: 'vertex shader uses #line directive should report correct line',
     },
+    //{ vShaderId: 'vshader',
+    //  vShaderSuccess: true,
+    //  fShaderId: 'fshaderWith257CharacterIdentifier',
+    //  fShaderSuccess: false,
+    //  linkSuccess: false,
+    //  passMsg: 'shared that uses 257 character identifier should fail',
+    //},
     { vShaderId: 'vshader',
       vShaderSuccess: true,
       fShaderId: 'fshaderWith256CharacterIdentifier',
       fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'shared that uses 256 character identifier should succeed',
-    },
-    { vShaderId: 'vshader',
-      vShaderSuccess: true,
-      fShaderId: 'fshaderWith257CharacterIdentifier',
-      fShaderSuccess: false,
-      linkSuccess: false,
-      passMsg: 'shared that uses 257 character identifier should fail',
-    },
+    }
   ];
 
   // Read in all the shader source.
