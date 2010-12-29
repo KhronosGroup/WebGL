@@ -646,7 +646,7 @@ var loadShader = function(gl, shaderSource, shaderType) {
   gl.shaderSource(shader, shaderSource);
   var err = gl.getError();
   if (err != gl.NO_ERROR) {
-    error("*** Error loading shader '" + shader + "':" + glEnumToString(err));
+    error("*** Error loading shader '" + shader + "':" + glEnumToString(gl, err));
     return null;
   }
 
