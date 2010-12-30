@@ -95,8 +95,9 @@
             return gl;
         }
 
-        width = -1;
-        height = -1;
+        var width = -1;
+        var height = -1;
+        var framerate;
 
         function reshape(ctx)
         {
@@ -183,6 +184,7 @@
             if (!ctx) {
               return;
             }
+            framerate = new Framerate("framerate");
             currentAngle = 0;
             incAngle = 0.2;
             var f = function() {
@@ -190,7 +192,6 @@
               WebGLUtils.requestAnimationFrame(c, f);
             };
             f();
-            framerate = new Framerate("framerate");
         }
     </script>
     <style type="text/css">
