@@ -131,7 +131,7 @@ function main() {
     g_world = g_math.matrix4.identity();
     g_view = g_math.matrix4.identity();
     g_projection = g_math.matrix4.identity();
-    var g_canvas = document.getElementById("c");
+    g_canvas = document.getElementById("c");
     gl = WebGLUtils.setupWebGL(g_canvas);
     if (!gl)
         return;
