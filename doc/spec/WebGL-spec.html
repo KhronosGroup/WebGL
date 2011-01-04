@@ -2154,6 +2154,9 @@ for (var i = 0; i < numVertices; i++) {
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glAttachShader.xml">man page</a>)</span>
         <dt class="idl-code">void bindAttribLocation(WebGLProgram program, GLuint index, DOMString name)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.4, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindAttribLocation.xml">man page</a>)</span>
+        <dd>
+            See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
+            Set</a> for additional validation performed by WebGL implementations.
         <dt class="idl-code">void compileShader(WebGLShader shader)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCompileShader.xml">man page</a>)</span>
         <dt class="idl-code">WebGLProgram createProgram()
@@ -2238,6 +2241,9 @@ for (var i = 0; i < numVertices; i++) {
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glLinkProgram.xml">man page</a>)</span>
         <dt class="idl-code">void shaderSource(WebGLShader shader, DOMString source)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glShaderSource.xml">man page</a>)</span>
+        <dd>
+            See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
+            Set</a> for additional validation performed by WebGL implementations.
         <dt class="idl-code">void useProgram(WebGLProgram program)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glUseProgram.xml">man page</a>)</span>
         <dt class="idl-code">void validateProgram(WebGLProgram program)
@@ -2274,6 +2280,9 @@ for (var i = 0; i < numVertices; i++) {
             passed index of the passed program object.
         <dt class="idl-code">GLint getAttribLocation(WebGLProgram program, DOMString name)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.4, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetAttribLocation.xml">man page</a>)</span>
+        <dd>
+            See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
+            Set</a> for additional validation performed by WebGL implementations.
         <dt class="idl-code">any getUniform(WebGLProgram program, WebGLUniformLocation location)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetUniform.xml">man page</a>)</span>
         <dd>
@@ -2302,8 +2311,10 @@ for (var i = 0; i < numVertices; i++) {
         <dd>
             Return a WebGLUniformLocation object that represents the location of a specific uniform variable
             within a program object. The return value is null if name does not correspond to an active uniform
-            variable in the passed program.
+            variable in the passed program. <br><br>
 
+            See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
+            Set</a> for additional validation performed by WebGL implementations.
         <dt class="idl-code">any getVertexAttrib(GLuint index, GLenum pname)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;6.1.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetVertexAttrib.xml">man page</a>)</span>
         <dd>
@@ -2970,6 +2981,17 @@ extensions.
     The GLSL ES spec <a href="#refsGLES20GLSL">[GLES20GLSL]</a> does not define a limit to the length
     of identifier names. WebGL requires support of identifier names of at least 256 characters in length.
 </p>
+
+    <h3><a name="CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character Set</a></h3>
+
+<p>
+    The GLSL ES spec <a href="#refsGLES20GLSL">[GLES20GLSL]</a> defines the source character set for
+    the OpenGL ES shading language. If a string containing a character not in this set is passed to
+    any of the shader-related entry
+    points <code>bindAttribLocation</code>, <code>getAttribLocation</code>, <code>getUniformLocation</code>,
+    or <code>shaderSource</code>, an <code>INVALID_VALUE</code> error will be generated.
+</p>
+
 
 <!-- ======================================================================================================= -->
 
