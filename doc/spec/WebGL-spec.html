@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 22 December 2010</h2>
+    <h2 class="no-toc">Working Draft 04 January 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1989,13 +1989,21 @@ for (var i = 0; i < numVertices; i++) {
             <span class="gl-spec">(OpenGL ES 2.0 &sect;3.7.2, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCopyTexImage2D.xml">man page</a>)</span>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            <code>INVALID_OPERATION</code> error is generated.
+            <code>INVALID_OPERATION</code> error is generated. <br><br>
+
+            For any pixel lying outside the frame buffer, all channels of the associated texel are
+            initialized to 0; see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the
+            Framebuffer</a>.
         <dt class="idl-code">void copyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                            GLint x, GLint y, GLsizei width, GLsizei height)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;3.7.2, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCopyTexSubImage2D.xml">man page</a>)</span>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            <code>INVALID_OPERATION</code> error is generated.
+            <code>INVALID_OPERATION</code> error is generated. <br><br>
+
+            For any pixel lying outside the frame buffer, all channels of the associated texel are
+            initialized to 0; see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the
+            Framebuffer</a>.
         <dt class="idl-code">WebGLTexture createTexture()
             <span class="gl-spec">(OpenGL ES 2.0 &sect;3.7.13, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenTextures.xml">man page</a>)</span>
         <dd>
@@ -2423,7 +2431,8 @@ for (var i = 0; i < numVertices; i++) {
             value is generated.
             <br><br>
 
-            For any pixel lying outside the frame buffer, the value read contains 0 in all channels.
+            For any pixel lying outside the frame buffer, the value read contains 0 in all channels;
+            see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the Framebuffer</a>.
             <br><br>
 
     </dl>
@@ -2855,6 +2864,15 @@ and file type. If set to <code>NONE</code>, no colorspace conversion is applied.
 is <code>BROWSER_DEFAULT_WEBGL</code>.
 
 </dl>
+
+<h3><a name="READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the Framebuffer</a></h3>
+
+<p>
+In the WebGL API, functions which read the framebuffer
+(<code>copyTexImage2D</code>, <code>copyTexSubImage2D</code>, and <code>readPixels</code>) are
+defined to generate the RGBA value (0, 0, 0, 0) for any pixel which is outside of the bound
+framebuffer.
+</p>
 
 <h3><a name="STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a></h3>
 
