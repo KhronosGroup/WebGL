@@ -121,17 +121,7 @@ function runTest(antialias)
     debug("Testing with antialias off");
     runTestIteration(false);
 
-    successfullyParsed = true;
-    var epilogue = document.createElement("script");
-    epilogue.onload = finish;
-    epilogue.src = "../resources/js-test-post.js";
-    document.body.appendChild(epilogue);
-}
-
-function finish() {
-    if (window.nonKhronosFrameworkNotifyDone) {
-        window.nonKhronosFrameworkNotifyDone();
-    }
+    finishTest();
 }
 </script>
 </head>

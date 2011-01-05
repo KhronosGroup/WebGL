@@ -104,17 +104,7 @@ function runTest(videoElement)
     runOneIteration(videoElement, true, true, red, green);
     runOneIteration(videoElement, true, false, green, red);
 
-    successfullyParsed = true;
-    var epilogue = document.createElement("script");
-    epilogue.onload = finish;
-    epilogue.src = "../resources/js-test-post.js";
-    document.body.appendChild(epilogue);
-}
-
-function finish() {
-    if (window.nonKhronosFrameworkNotifyDone) {
-        window.nonKhronosFrameworkNotifyDone();
-    }
+    finishTest();
 }
 </script>
 </head>
