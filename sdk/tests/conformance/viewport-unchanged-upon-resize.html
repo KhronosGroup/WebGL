@@ -32,6 +32,7 @@ void main()
 <script>
 description('Verifies that GL viewport does not change when canvas is resized');
 
+var err;
 var gl = initWebGL("example", "vshader", "fshader", [ "g_Position" ], [ 0, 0, 1, 1 ], 1);
 
 var vertices = new Float32Array([
@@ -73,12 +74,12 @@ if (passed) {
   var canvas = document.getElementById("example");
   canvas.width = 8;
   canvas.height = 8;
-  var err = gl.getError();
+  err = gl.getError();
   // Some implementations might lost the context when resizing
   if (err == gl.CONTEXT_LOST_WEBGL) {
     testPassed("canvas lost context on resize");
   } else {
-	shouldBe??
+	shouldBe("err", "gl.NO_ERROR");
     // Do another render
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -107,3 +108,4 @@ successfullyParsed = true;
 <script src="../resources/js-test-post.js"></script>
 </body>
 </html>
+

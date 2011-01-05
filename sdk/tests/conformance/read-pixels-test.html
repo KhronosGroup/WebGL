@@ -39,20 +39,17 @@ gl.clear(gl.COLOR_BUFFER_BIT);
 
 // Resize the canvas to 2x2. This is an attempt to get stuff in the backbuffer.
 // that shouldn't be there.
+canvas.addEventListener("webglcontextrestored", continueTestAfterContextRestored, false);
 canvas.width = width;
 canvas.height = height;
-canvas.addEventListener("webglcontextrestored", continueTestAfterContextRestored, false);
 if (gl.getError() != gl.CONTEXT_LOST_WEBGL) {
   continueTestPart1();
 }
 
 function continueTestAfterContextRestored() {
-  window.canvas.removeEventListener("webglcontextrestored", continueTestAfterContextRestored, false);
-  window.canvas.width = width;
-  window.canvas.height = height;
   window.gl = create3DContext(canvas);
   var func = continueTestFunc;
-  continueTestFunc = function() { testFailed("should not be here"); };
+  window.continueTestFunc = function() { testFailed("should not be here"); };
   func();
 }
 
