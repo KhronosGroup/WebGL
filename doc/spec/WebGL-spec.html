@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 04 January 2011</h2>
+    <h2 class="no-toc">Working Draft 06 January 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2359,7 +2359,7 @@ for (var i = 0; i < numVertices; i++) {
             Assign the WebGLBuffer object currently bound to the ARRAY_BUFFER target to the vertex
             attribute at the passed index. Size is number of components per attribute. Stride and
             offset are in units of bytes. Passed stride and offset must be appropriate for the
-            passed type and size or an <code>INVALID_VALUE</code> error will be
+            passed type and size or an <code>INVALID_OPERATION</code> error will be
             generated; see <a href="#BUFFER_OFFSET_AND_STRIDE">Buffer Offset and Stride
             Requirements</a>. If no WebGLBuffer is bound to the ARRAY_BUFFER target,
             an <code>INVALID_OPERATION</code> error will be generated. In WebGL, the maximum
@@ -2390,7 +2390,7 @@ for (var i = 0; i < numVertices; i++) {
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDrawElements.xml">man page</a>)</span>
         <dd>
             Draw using the currently bound element array buffer.  The given offset is in bytes, and
-            must be a valid multiple of the size of the given type or an <code>INVALID_VALUE</code>
+            must be a valid multiple of the size of the given type or an <code>INVALID_OPERATION</code>
             error will be generated; see <a href="#BUFFER_OFFSET_AND_STRIDE">Buffer Offset and Stride
             Requirements</a>. If <code>count</code> is greater than zero, then a non-null
             <code>WebGLBuffer</code> must be bound to the <code>ELEMENT_ARRAY_BUFFER</code> binding
