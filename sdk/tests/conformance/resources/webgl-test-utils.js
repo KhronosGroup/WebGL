@@ -321,14 +321,16 @@ var drawQuad = function(gl, opt_color) {
  * @param {!Array.<number>} color The color to fill clear with before drawing. A
  *        4 element array where each element is in the range 0 to 255.
  * @param {string} msg Message to associate with success. Eg ("should be red").
+ * @param {errorRange} errorRange Optional. Acceptable error in color checking. 0 by default.
  */
-var checkCanvasRect = function(gl, x, y, width, height, color, msg) {
+var checkCanvasRect = function(gl, x, y, width, height, color, msg, errorRange) {
+  errorRange = errorRange || 0;
   var buf = new Uint8Array(width * height * 4);
   gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   for (var i = 0; i < width * height; ++i) {
     var offset = i * 4;
     for (var j = 0; j < color.length; ++j) {
-      if (buf[offset + j] != color[j]) {
+      if (Math.abs(buf[offset + j] - color[j]) > errorRange) {
         testFailed(msg);
         var was = buf[offset + 0].toString();
         for (j = 1; j < color.length; ++j) {

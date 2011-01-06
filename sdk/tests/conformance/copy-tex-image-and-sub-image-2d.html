@@ -103,7 +103,7 @@ function runTestIteration(antialias)
                    Math.floor(255 * texColor[2]),
                    Math.floor(255 * texColor[3])];
               wtu.checkCanvasRect(gl, ix, iy, 1, 1, expectedColor,
-                  "" + ix + ", " + iy + " should render " + expectedColor);
+                  "" + ix + ", " + iy + " should render " + expectedColor + " (+/-1)", 1);
             }
           }
           count = (count + 1) % colors.length;
