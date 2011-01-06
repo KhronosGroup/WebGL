@@ -98,8 +98,8 @@
     <h2>Introduction</h2>
     <div class="note">        
     <p>
-      WebGL is an immediate mode 3D rendering API designed for the
-      web.  It is derived from OpenGL ES 2.0, and provides similar
+      WebGL™ is an immediate mode 3D rendering API designed for the
+      web.  It is derived from OpenGL® ES 2.0, and provides similar
       rendering functionality, but in a HTML context.  WebGL is
       designed as a rendering context for the HTML Canvas element.
       The HTML Canvas provides a destination for programmatic
@@ -127,16 +127,16 @@
     <p>
      Many functions described in this document contain links to OpenGL ES
      man pages. While every effort is made to make these pages match the
-     OpenGL ES 2.0 spec <a href="#refsGLES20">[GLES20]</a>, 
-     they may contain errors. In cases where a man page
-     contradicts the spec, the spec is the final authority.
+     OpenGL ES 2.0 specification <a href="#refsGLES20">[GLES20]</a>, 
+     they may contain errors. In the case of a contradiction, the OpenGL 
+     ES 2.0 specificationis the final authority.
     </p>
 
     <p>
       The remaining sections of this document are intended to be read in conjunction
       with the OpenGL ES 2.0 specification (2.0.24 at the time of this writing, available
-      from the <a href="http://www.khronos.org/registry/gles/">Khronos OpenGL ES API Regsitry</a>).
-      Unless otherwise specified, the behaviour of each method is defined by the
+      from the <a href="http://www.khronos.org/registry/gles/">Khronos OpenGL ES API Registry</a>).
+      Unless otherwise specified, the behavior of each method is defined by the
       OpenGL ES 2.0 specification.  This specification may diverge from OpenGL ES 2.0
       in order to ensure interoperability or security, often defining areas that
       OpenGL ES 2.0 leaves implementation-defined.  These differences are summarized in the
@@ -237,7 +237,7 @@
         operation, but only if the drawing buffer has been modified since the last compositing operation.
         Before the drawing buffer is presented for compositing the implementation shall ensure that all 
         rendering operations have been flushed to the drawing buffer. By default, after compositing the 
-        contents of the drawing buffer shall be cleared to its default values, as shown in the table
+        contents of the drawing buffer shall be cleared to their default values, as shown in the table
         above.
     </p>
     <p>
@@ -261,9 +261,10 @@
             <a href="#WEBGL_FRAMEBUFFER">Framebuffer Object</a> can be used.
         </p>
         <p>
-            One way for an implementation to guarantee buffers do not contain information from another 
-            process is to clear the buffer to the default values specified in the OpenGL ES 2.0
-            specification <a href="#refsGLES20">[GLES20]</a>.
+            Implementations may optimize away the required implicit clear operation of the Drawing 
+            Buffer as long as a guarantee can be made that the author cannot gain access to buffer 
+            contents from another process. For instance, if the author performs an explicit 
+            clear then the implicit clear is not needed.
         </p>
     </div>
     
