@@ -57,19 +57,16 @@ if (!gl) {
   glErrorShouldBe(gl, gl.INVALID_ENUM,
       "vertexAttribPointer should not support FIXED");
 
-  var count = 0;
   function checkVertexAttribPointer(
       gl, err, reason, size, type, normalize, stride, offset) {
     gl.vertexAttribPointer(0, size, type, normalize, stride, offset);
     glErrorShouldBe(gl, err,
-        "(" + count + ") " +
         "gl.vertexAttribPointer(0, " + size +
         ", gl." + wtu.glEnumToString(gl, type) +
         ", " + normalize +
         ", " + stride +
         ", " + offset +
         ") should " + (err == gl.NO_ERROR ? "succeed " : "fail ") + reason);
-    ++count;
   }
 
   var types = [
@@ -85,41 +82,45 @@ if (!gl) {
     debug("");
     for (var size = 1; size <= 4; ++size) {
       debug("");
-      debug("checking: " + wtu.glEnumToString(gl, info.type) + " with size " +
-            size);
+      debug("checking: " + wtu.glEnumToString(gl, info.type) + " with size " + size);
       var bytesPerElement = size * info.bytesPerComponent;
-      for (var off = 0; off < 4; ++off) {
-        for (var ss = 0; ss < info.bytesPerComponent; ++ss) {
-          var offset = bytesPerElement * off + ss;
-          for (var n = 0; n < 2; ++n) {
-            for (var st = 0; st < bytesPerElement * 2; ++st) {
-              var stride = st;
-              var err = gl.NO_ERROR;
-              var reason = ""
-              if (ss != 0) {
-                reason = "because offset is bad";
-                err = gl.INVALID_OPERATION;
-              }
-              if (st % info.bytesPerComponent != 0) {
-                reason = "because stride is bad";
-                err = gl.INVALID_OPERATION;
-              }
-              checkVertexAttribPointer(
-                  gl, err, reason, size, info.type, (n != 0), stride, offset);
-            }
-            var stride = Math.floor(255 / info.bytesPerComponent) *
-                info.bytesPerComponent;
-
-            if (ss == 0) {
-              checkVertexAttribPointer(
-                  gl, gl.NO_ERROR, "at stide limit",
-                  size, info.type, (n != 0), stride, offset);
-              checkVertexAttribPointer(
-                  gl, gl.INVALID_VALUE, "over stride limit",
-                  size, info.type, (n != 0),
-                  stride + info.bytesPerComponent, offset);
-            }
+      var offsetSet;
+      if (info.bytesPerComponent > 1)
+        offsetSet = [0, info.bytesPerComponent - 1];
+      else
+        offsetSet = [0];
+      for (var jj = 0; jj < offsetSet.length; ++jj) {
+        var offset = offsetSet[jj];
+        var strideSet;
+        if (bytesPerElement > 1)
+          strideSet = [0, bytesPerElement - 1, bytesPerElement];
+        else
+          strideSet = [0, bytesPerElement];
+        for (var kk = 0; kk < strideSet.length; ++kk) {
+          var stride = strideSet[kk];
+          var err = gl.NO_ERROR;
+          var reason = ""
+          if (offset != 0) {
+            reason = "because offset is bad";
+            err = gl.INVALID_OPERATION;
           }
+          if (stride % info.bytesPerComponent != 0) {
+            reason = "because stride is bad";
+            err = gl.INVALID_OPERATION;
+          }
+          checkVertexAttribPointer(
+              gl, err, reason, size, info.type, false, stride, offset);
+        }
+        var stride = Math.floor(255 / info.bytesPerComponent) * info.bytesPerComponent;
+
+        if (offset == 0) {
+          checkVertexAttribPointer(
+              gl, gl.NO_ERROR, "at stride limit",
+              size, info.type, false, stride, offset);
+          checkVertexAttribPointer(
+              gl, gl.INVALID_VALUE, "over stride limit",
+              size, info.type, false,
+              stride + info.bytesPerComponent, offset);
         }
       }
     }
