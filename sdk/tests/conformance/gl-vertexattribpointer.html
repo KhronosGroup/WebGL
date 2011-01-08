@@ -84,23 +84,20 @@ if (!gl) {
       debug("");
       debug("checking: " + wtu.glEnumToString(gl, info.type) + " with size " + size);
       var bytesPerElement = size * info.bytesPerComponent;
-      var offsetSet;
-      if (info.bytesPerComponent > 1)
-        offsetSet = [0, info.bytesPerComponent - 1];
-      else
-        offsetSet = [0];
+      var offsetSet = [
+          0,
+          1,
+          info.bytesPerComponent - 1,
+          info.bytesPerComponent,
+          info.bytesPerComponent + 1,
+          info.bytesPerComponent * 2];
       for (var jj = 0; jj < offsetSet.length; ++jj) {
         var offset = offsetSet[jj];
-        var strideSet;
-        if (bytesPerElement > 1)
-          strideSet = [0, bytesPerElement - 1, bytesPerElement];
-        else
-          strideSet = [0, bytesPerElement];
-        for (var kk = 0; kk < strideSet.length; ++kk) {
-          var stride = strideSet[kk];
+        for (var kk = 0; kk < offsetSet.length; ++kk) {
+          var stride = offsetSet[kk];
           var err = gl.NO_ERROR;
           var reason = ""
-          if (offset != 0) {
+          if (offset % info.bytesPerComponent != 0) {
             reason = "because offset is bad";
             err = gl.INVALID_OPERATION;
           }
