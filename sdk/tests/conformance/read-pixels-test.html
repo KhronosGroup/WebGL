@@ -109,36 +109,44 @@ function continueTestPart1() {
     {
       format: gl.RGB,
       type: gl.UNSIGNED_BYTE,
-      dest: new Uint8Array(3)
+      dest: new Uint8Array(3),
+      error: gl.INVALID_OPERATION
     },
     {
       format: gl.RGB,
       type: gl.UNSIGNED_SHORT_5_6_5,
-      dest: new Uint8Array(3)
+      dest: new Uint8Array(3),
+      error: INVALID_OPERATION
     },
     {
       format: gl.RGBA,
       type: gl.UNSIGNED_SHORT_5_5_5_1,
-      dest: new Uint16Array(1)
+      dest: new Uint16Array(1),
+      error: INVALID_OPERATION
     },
     {
       format: gl.RGBA,
       type: gl.UNSIGNED_SHORT_4_4_4_4,
-      dest: new Uint16Array(1)
+      dest: new Uint16Array(1),
+      error: INVALID_OPERATION
     },
     {
       format: gl.ALPHA,
       type: gl.UNSIGNED_BYTE,
-      dest: new Uint8Array(1)
+      dest: new Uint8Array(1),
+      error: INVALID_OPERATION
     },
     {
       format: gl.LUMINANCE,
       type: gl.UNSIGNED_BYTE,
-      dest: new Uint8Array(1) },
+      dest: new Uint8Array(1),
+      error: INVALID_ENUM
+    },
     {
       format: gl.LUMINANCE_ALPHA,
       type: gl.UNSIGNED_BYTE,
-      dest: new Uint8Array(2)
+      dest: new Uint8Array(2),
+      error: INVALID_ENUM
     }
   ];
   debug("");
@@ -148,11 +156,12 @@ function continueTestPart1() {
     var format = info.format;
     var type = info.type;
     var dest = info.dest;
+    var error = info.error;
     gl.readPixels(0, 0, 1, 1, format, type, dest);
     // note that the GL error is INVALID_OPERATION if both format and type are invalid, but
     // INVALID_ENUM if only one is.
     glErrorShouldBe(
-        gl, (format == gl.RGBA || type == gl.UNSIGNED_BYTE) ? gl.INVALID_ENUM : gl.INVALID_OPERATION,
+        gl, error,
         "Should not be able to read as " + wtu.glEnumToString(gl, format) +
         " / " + wtu.glEnumToString(gl, type));
   }
