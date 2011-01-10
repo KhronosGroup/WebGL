@@ -15,12 +15,12 @@ var gl = null;
 var textureLoc = null;
 var successfullyParsed = false;
 
+if (window.initNonKhronosFramework) {
+    window.initNonKhronosFramework(true);
+}
+
 function init()
 {
-    if (window.initNonKhronosFramework) {
-        window.initNonKhronosFramework(true);
-    }
-
     description('Verify texImage2D and texSubImage2D code paths taking Video Elements');
 
     var canvas = document.getElementById("example");
@@ -119,8 +119,3 @@ function runTest(videoElement)
 </video>
 </body>
 </html>
-
-
-
-
-
