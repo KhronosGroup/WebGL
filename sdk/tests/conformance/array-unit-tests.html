@@ -187,6 +187,95 @@ function testConstructWithTypedArrayOfSignedValues(type, name) {
 }
 
 //
+// Test cases for integral types.
+// Some JavaScript engines need separate copies of this code in order
+// to exercise all of their optimized code paths.
+//
+
+function testIntegralArrayTruncationBehavior(type, name, unsigned) {
+  running('test integral array truncation behavior for ' + name);
+
+  var sourceData;
+  var expectedResults;
+
+  if (unsigned) {
+    sourceData = [0.6, 10.6];
+    expectedResults = [0, 10];
+  } else {
+    sourceData = [0.6, 10.6, -0.6, -10.6];
+    expectedResults = [0, 10, 0, -10];
+  }
+
+  var numIterations = 10;
+  var array = new type(numIterations);
+
+  // The code block in each of the case statements below is identical, but some
+  // JavaScript engines need separate copies in order to exercise all of
+  // their optimized code paths.
+
+  try {
+    switch (type) {
+    case Int8Array:
+      for (var ii = 0; ii < sourceData.length; ++ii) {
+        for (var jj = 0; jj < numIterations; ++jj) {
+          array[jj] = sourceData[ii];
+          assertEq('Storing ' + sourceData[ii], expectedResults[ii], array[jj]);
+        }
+      }
+      break;
+    case Int16Array:
+      for (var ii = 0; ii < sourceData.length; ++ii) {
+        for (var jj = 0; jj < numIterations; ++jj) {
+          array[jj] = sourceData[ii];
+          assertEq('Storing ' + sourceData[ii], expectedResults[ii], array[jj]);
+        }
+      }
+      break;
+    case Int32Array:
+      for (var ii = 0; ii < sourceData.length; ++ii) {
+        for (var jj = 0; jj < numIterations; ++jj) {
+          array[jj] = sourceData[ii];
+          assertEq('Storing ' + sourceData[ii], expectedResults[ii], array[jj]);
+        }
+      }
+      break;
+    case Uint8Array:
+      for (var ii = 0; ii < sourceData.length; ++ii) {
+        for (var jj = 0; jj < numIterations; ++jj) {
+          array[jj] = sourceData[ii];
+          assertEq('Storing ' + sourceData[ii], expectedResults[ii], array[jj]);
+        }
+      }
+      break;
+    case Uint16Array:
+      for (var ii = 0; ii < sourceData.length; ++ii) {
+        for (var jj = 0; jj < numIterations; ++jj) {
+          array[jj] = sourceData[ii];
+          assertEq('Storing ' + sourceData[ii], expectedResults[ii], array[jj]);
+        }
+      }
+      break;
+    case Uint32Array:
+      for (var ii = 0; ii < sourceData.length; ++ii) {
+        for (var jj = 0; jj < numIterations; ++jj) {
+          array[jj] = sourceData[ii];
+          assertEq('Storing ' + sourceData[ii], expectedResults[ii], array[jj]);
+        }
+      }
+      break;
+    default:
+      fail("Unhandled type");
+      break;
+    }
+
+    pass();
+  } catch (e) {
+    fail(e);
+  }
+}
+
+
+//
 // Test cases for both signed and unsigned types
 //
 
@@ -671,6 +760,7 @@ function runTests() {
   var testCases =
     [ {name: "Float32Array",
        unsigned: false,
+       integral: false,
        elementSizeInBytes: 4,
        low: -500.5,
        expectedLow: -500.5,
@@ -678,6 +768,7 @@ function runTests() {
        expectedHigh: 500.5},
       {name: "Int8Array",
        unsigned: false,
+       integral: true,
        elementSizeInBytes: 1,
        low: -128,
        expectedLow: -128,
@@ -685,6 +776,7 @@ function runTests() {
        expectedHigh: 127},
       {name: "Int16Array",
        unsigned: false,
+       integral: true,
        elementSizeInBytes: 2,
        low: -32768,
        expectedLow: -32768,
@@ -692,6 +784,7 @@ function runTests() {
        expectedHigh: 32767},
       {name: "Int32Array",
        unsigned: false,
+       integral: true,
        elementSizeInBytes: 4,
        low: -2147483648,
        expectedLow: -2147483648,
@@ -699,6 +792,7 @@ function runTests() {
        expectedHigh: 2147483647},
       {name: "Uint8Array",
        unsigned: true,
+       integral: true,
        elementSizeInBytes: 1,
        low: 0,
        expectedLow: 0,
@@ -706,6 +800,7 @@ function runTests() {
        expectedHigh: 255},
       {name: "Uint16Array",
        unsigned: true,
+       integral: true,
        elementSizeInBytes: 2,
        low: 0,
        expectedLow: 0,
@@ -713,6 +808,7 @@ function runTests() {
        expectedHigh: 65535},
       {name: "Uint32Array",
        unsigned: true,
+       integral: true,
        elementSizeInBytes: 4,
        low: 0,
        expectedLow: 0,
@@ -736,6 +832,9 @@ function runTests() {
       testSetAndGetPos10ToNeg10(type, name);
       testConstructWithArrayOfSignedValues(type, name);
       testConstructWithTypedArrayOfSignedValues(type, name);
+    }
+    if (testCase.integral) {
+      testIntegralArrayTruncationBehavior(type, name, testCase.unsigned);
     }
     testGetWithOutOfRangeIndices(type, name);
     testOffsetsAndSizes(type, name, testCase.elementSizeInBytes);
