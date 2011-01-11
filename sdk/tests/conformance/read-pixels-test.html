@@ -116,37 +116,37 @@ function continueTestPart1() {
       format: gl.RGB,
       type: gl.UNSIGNED_SHORT_5_6_5,
       dest: new Uint8Array(3),
-      error: INVALID_OPERATION
+      error: gl.INVALID_OPERATION
     },
     {
       format: gl.RGBA,
       type: gl.UNSIGNED_SHORT_5_5_5_1,
       dest: new Uint16Array(1),
-      error: INVALID_OPERATION
+      error: gl.INVALID_OPERATION
     },
     {
       format: gl.RGBA,
       type: gl.UNSIGNED_SHORT_4_4_4_4,
       dest: new Uint16Array(1),
-      error: INVALID_OPERATION
+      error: gl.INVALID_OPERATION
     },
     {
       format: gl.ALPHA,
       type: gl.UNSIGNED_BYTE,
       dest: new Uint8Array(1),
-      error: INVALID_OPERATION
+      error: gl.INVALID_OPERATION
     },
     {
       format: gl.LUMINANCE,
       type: gl.UNSIGNED_BYTE,
       dest: new Uint8Array(1),
-      error: INVALID_ENUM
+      error: gl.INVALID_ENUM
     },
     {
       format: gl.LUMINANCE_ALPHA,
       type: gl.UNSIGNED_BYTE,
       dest: new Uint8Array(2),
-      error: INVALID_ENUM
+      error: gl.INVALID_ENUM
     }
   ];
   debug("");
