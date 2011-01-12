@@ -30,7 +30,8 @@ typedef byte           GLbyte;         /* 'byte' should be a signed 8 bit type. 
 typedef short          GLshort;
 typedef long           GLint;
 typedef long           GLsizei;
-typedef long           GLsizeiptr;
+typedef long long      GLintptr;
+typedef long long      GLsizeiptr;
 typedef unsigned byte  GLubyte;        /* 'unsigned byte' should be an unsigned 8 bit type. */
 typedef unsigned short GLushort;
 typedef unsigned long  GLuint;
@@ -520,11 +521,11 @@ interface WebGLRenderingContext {
     void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, 
                            GLenum srcAlpha, GLenum dstAlpha);
 
-    void bufferData(GLenum target, GLsizei size, GLenum usage);
+    void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
     void bufferData(GLenum target, ArrayBufferView data, GLenum usage);
     void bufferData(GLenum target, ArrayBuffer data, GLenum usage);
-    void bufferSubData(GLenum target, GLsizeiptr offset, ArrayBufferView data);
-    void bufferSubData(GLenum target, GLsizeiptr offset, ArrayBuffer data);
+    void bufferSubData(GLenum target, GLintptr offset, ArrayBufferView data);
+    void bufferSubData(GLenum target, GLintptr offset, ArrayBuffer data);
 
     GLenum checkFramebufferStatus(GLenum target);
     void clear(GLbitfield mask);
@@ -563,7 +564,7 @@ interface WebGLRenderingContext {
     void disable(GLenum cap);
     void disableVertexAttribArray(GLuint index);
     void drawArrays(GLenum mode, GLint first, GLsizei count);
-    void drawElements(GLenum mode, GLsizei count, GLenum type, GLsizeiptr offset);
+    void drawElements(GLenum mode, GLsizei count, GLenum type, GLintptr offset);
 
     void enable(GLenum cap);
     void enableVertexAttribArray(GLuint index);
@@ -720,7 +721,7 @@ interface WebGLRenderingContext {
     void vertexAttrib4fv(GLuint indx, FloatArray values);
     void vertexAttrib4fv(GLuint indx, sequence<float> values);
     void vertexAttribPointer(GLuint indx, GLint size, GLenum type, 
-                             GLboolean normalized, GLsizei stride, GLsizeiptr offset);
+                             GLboolean normalized, GLsizei stride, GLintptr offset);
 
     void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
 };

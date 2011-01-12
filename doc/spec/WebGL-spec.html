@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 06 January 2011</h2>
+    <h2 class="no-toc">Working Draft 11 January 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -501,7 +501,8 @@ typedef byte           GLbyte;         /* 'byte' should be a signed 8 bit type. 
 typedef short          GLshort;
 typedef long           GLint;
 typedef long           GLsizei;
-typedef long           GLsizeiptr;
+typedef long long      GLintptr;
+typedef long long      GLsizeiptr;
 typedef unsigned byte  GLubyte;        /* 'unsigned byte' should be an unsigned 8 bit type. */
 typedef unsigned short GLushort;
 typedef unsigned long  GLuint;
@@ -1286,11 +1287,11 @@ for (var i = 0; i < numVertices; i++) {
     void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, 
                            GLenum srcAlpha, GLenum dstAlpha);
 
-    void bufferData(GLenum target, GLsizei size, GLenum usage);
+    void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
     void bufferData(GLenum target, ArrayBufferView data, GLenum usage);
     void bufferData(GLenum target, ArrayBuffer data, GLenum usage);
-    void bufferSubData(GLenum target, GLsizeiptr offset, ArrayBufferView data);
-    void bufferSubData(GLenum target, GLsizeiptr offset, ArrayBuffer data);
+    void bufferSubData(GLenum target, GLintptr offset, ArrayBufferView data);
+    void bufferSubData(GLenum target, GLintptr offset, ArrayBuffer data);
 
     GLenum checkFramebufferStatus(GLenum target);
     void clear(GLbitfield mask);
@@ -1329,7 +1330,7 @@ for (var i = 0; i < numVertices; i++) {
     void disable(GLenum cap);
     void disableVertexAttribArray(GLuint index);
     void drawArrays(GLenum mode, GLint first, GLsizei count);
-    void drawElements(GLenum mode, GLsizei count, GLenum type, GLsizeiptr offset);
+    void drawElements(GLenum mode, GLsizei count, GLenum type, GLintptr offset);
 
     void enable(GLenum cap);
     void enableVertexAttribArray(GLuint index);
@@ -1486,7 +1487,7 @@ for (var i = 0; i < numVertices; i++) {
     void vertexAttrib4fv(GLuint indx, Float32Array values);
     void vertexAttrib4fv(GLuint indx, float[] values);
     void vertexAttribPointer(GLuint indx, GLint size, GLenum type, 
-                             GLboolean normalized, GLsizei stride, GLsizeiptr offset);
+                             GLboolean normalized, GLsizei stride, GLintptr offset);
 
     void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
 };</pre>
@@ -1799,7 +1800,7 @@ for (var i = 0; i < numVertices; i++) {
             buffer object to the other target will generate an <code>INVALID_OPERATION</code> error, and the
             current binding will remain untouched.
         
-        <dt class="idl-code">void bufferData(GLenum target, GLsizei size, GLenum usage)
+        <dt class="idl-code">void bufferData(GLenum target, GLsizeiptr size, GLenum usage)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.9, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBufferData.xml">man page</a>)</span>
         <dd>
             Set the size of the currently bound WebGLBuffer object for the passed target. The
@@ -1813,8 +1814,8 @@ for (var i = 0; i < numVertices; i++) {
             size of the passed data, then write the contents of data to the buffer object.
             <br><br>
             If the passed data is null then an <code>INVALID_VALUE</code> error is generated.
-        <dt><p class="idl-code">void bufferSubData(GLenum target, GLsizeiptr offset, ArrayBufferView data)</p>
-            <p class="idl-code">void bufferSubData(GLenum target, GLsizeiptr offset, ArrayBuffer data)
+        <dt><p class="idl-code">void bufferSubData(GLenum target, GLintptr offset, ArrayBufferView data)</p>
+            <p class="idl-code">void bufferSubData(GLenum target, GLintptr offset, ArrayBuffer data)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.9, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBufferSubData.xml">man page</a>)</span></p>
         <dd>
             For the WebGLBuffer object bound to the passed target write the passed data starting
@@ -2353,7 +2354,7 @@ for (var i = 0; i < numVertices; i++) {
            with the <code>CURRENT_VERTEX_ATTRIB</code> param, even if there have been intervening calls to 
            <code>drawArrays</code> or <code>drawElements</code>.
        <dt class="idl-code">void vertexAttribPointer(GLuint indx, GLint size, GLenum type, 
-                            GLboolean normalized, GLsizei stride, GLsizeiptr offset)
+                            GLboolean normalized, GLsizei stride, GLintptr offset)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glVertexAttribPointer.xml">man page</a>)</span>
         <dd>
             Assign the WebGLBuffer object currently bound to the ARRAY_BUFFER target to the vertex
@@ -2386,7 +2387,7 @@ for (var i = 0; i < numVertices; i++) {
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDrawArrays.xml">man page</a>)</span>
             <dd>
             If <em>first</em> is negative, an <code>INVALID_VALUE</code> error will be generated.
-        <dt class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLsizeiptr offset)
+        <dt class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLintptr offset)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.8, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDrawElements.xml">man page</a>)</span>
         <dd>
             Draw using the currently bound element array buffer.  The given offset is in bytes, and
