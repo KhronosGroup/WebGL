@@ -100,6 +100,17 @@ void main()
   foo
 #endif
 </script>
+<script id="fshaderWithUndefinedPreprocessorSymbol" type="text/something-not-javascript">
+#if UNDEFINED_FOO
+  // according to ES GLSL spec 3.4 undefined symbols should fail.
+#else
+  precision mediump float;
+  void main()
+  {
+      gl_FragColor = vec4(0.0,0.0,0.0,1.0);
+  }
+#endif
+</script>
 <script id="fshaderWithFragDepth" type="text/something-not-javascript">
 precision mediump float;
 void main()
@@ -223,6 +234,16 @@ foo
 <script id="vshaderWith__FILE__" type="text/something-not-javascript">
 __FILE__
 </script>
+<script id="vshaderWithIncludeDirective" type="text/something-not-javascript">
+// Sadly I can not force the current path so this could fail beacuse include.vs
+// does not exist, not because #include is disallowed.
+#include "include.vs"
+attribute vec4 vPosition;
+void main()
+{
+    gl_Position = vPosition;
+}
+</script>
 <script id="fshaderWithdFdx" type="text/something-not-javascript">
 #extension GL_OES_standard_derivatives:enable
 precision mediump float;
@@ -333,6 +354,13 @@ if (!gl) {
       fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'fragment shader that uses __VERSION__==100 should succeed',
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithUndefinedPreprocessorSymbol',
+      fShaderSuccess: false,
+      linkSuccess: true,
+      passMsg: 'fragment shader undefined preprocessor symbol should fail (3.4)',
     },
     { vShaderId: 'vshader',
       vShaderSuccess: true,
@@ -460,6 +488,13 @@ if (!gl) {
       fShaderSuccess: true,
       linkSuccess: false,
       passMsg: 'vertex shader uses #line directive should report correct line',
+    },
+    { vShaderId: 'vshaderWithIncludeDirective',
+      vShaderSuccess: false,
+      fShaderId: 'fshader',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'vertex shader uses #include should fail',
     },
     //{ vShaderId: 'vshader',
     //  vShaderSuccess: true,
