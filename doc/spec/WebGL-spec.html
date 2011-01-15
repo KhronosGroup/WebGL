@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Working Draft 11 January 2011</h2>
+    <h2 class="no-toc">Working Draft 14 January 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -420,6 +420,11 @@ gl.viewport(0, 0, canvas.width, canvas.height);
         the minimum functionality mandated in Sections 4 and 5 of Appendix A.  In particular, a shader
         referencing state variables or functions that are available in other versions of GLSL (such
         as that found in versions of OpenGL for the desktop), must not be allowed to load.
+    </p>
+    <p>
+        An exception is that WebGL implementations must allow comments in shaders to be written
+        using the full Unicode character set. However, the source text of the shader must conform to
+        the GLSL source character set defined in the aforementioned specification.
     </p>
     <p>
         In addition to the reserved identifiers in the aforementioned specification, identifiers
@@ -2244,8 +2249,10 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">void shaderSource(WebGLShader shader, DOMString source)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.1, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glShaderSource.xml">man page</a>)</span>
         <dd>
-            See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
-            Set</a> for additional validation performed by WebGL implementations.
+            See <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a>
+            and <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
+            Set</a> for additional constructs supported by and validation performed by WebGL
+            implementations.
         <dt class="idl-code">void useProgram(WebGLProgram program)
             <span class="gl-spec">(OpenGL ES 2.0 &sect;2.10.3, <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glUseProgram.xml">man page</a>)</span>
         <dt class="idl-code">void validateProgram(WebGLProgram program)
@@ -2991,7 +2998,9 @@ extensions.
     the OpenGL ES shading language. If a string containing a character not in this set is passed to
     any of the shader-related entry
     points <code>bindAttribLocation</code>, <code>getAttribLocation</code>, <code>getUniformLocation</code>,
-    or <code>shaderSource</code>, an <code>INVALID_VALUE</code> error will be generated.
+    or <code>shaderSource</code>, an <code>INVALID_VALUE</code> error will be generated. The only
+    exception to this rule is comments in shaders passed to <code>shaderSource</code>
+    per <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a>.
 </p>
 
 
