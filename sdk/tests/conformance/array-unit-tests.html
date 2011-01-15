@@ -450,10 +450,12 @@ function testBoundaryConditions(type, name, lowValue, expectedLowValue, highValu
   try {
     var array = new type(1);
     assertEq('Array length', 1, array.length);
-    array[0] = lowValue;
-    assertEq('Element 0', expectedLowValue, array[0]);
-    array[0] = highValue;
-    assertEq('Element 0', expectedHighValue, array[0]);
+    for (var ii = 0; ii < 10; ++ii) {
+      array[0] = lowValue;
+      assertEq('Element 0', expectedLowValue, array[0]);
+      array[0] = highValue;
+      assertEq('Element 0', expectedHighValue, array[0]);
+    }
     pass();
   } catch (e) {
     fail(e);
