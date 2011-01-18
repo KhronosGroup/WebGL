@@ -210,9 +210,6 @@ function runTests(imgs) {
   var canvas2d = document.createElement("canvas");
   canvas2d.width = 256;
   canvas2d.height = 1;
-  //canvas2d.style.height = "40px";
-  //var description = document.getElementById("description");
-  //description.appendChild(canvas2d);
   var ctx = canvas2d.getContext("2d");
   ctx.fillRect(0, 0, 256, 1);
   ctx.drawImage(imgs['resources/gray-ramp-256-with-128-alpha.png'], 0, 0);
@@ -245,6 +242,30 @@ function runTests(imgs) {
               " should be < 128,128,128. found " +
               ((lt128Count[jj] / 256) * 100).toFixed() + "%");
   }
+
+  debug("");
+  debug("check canvas pixels are UN pre-multiplied");
+  var canvas2d = document.createElement("canvas");
+  canvas2d.width = 1;
+  canvas2d.height = 1;
+  var ctx = canvas2d.getContext("2d");
+	ctx.fillStyle ="rgba(255,255,255,0.5)";
+  ctx.fillRect(0, 0, 256, 1);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d);
+  wtu.drawQuad(gl);
+  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+	checkPixelRange(buf, 0, 0, [255, 255, 255, 127], 4);
+
+  debug("");
+  debug("check canvas pixels are pre-multiplied");
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d);
+  wtu.drawQuad(gl);
+  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+  checkPixelRange(buf, 0, 0, [127, 127, 127, 127], 4);
+
 
   debug("");
   debug("check pixels are pre-multiplied");
