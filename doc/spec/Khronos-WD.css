@@ -134,8 +134,8 @@ p.idl-code {
   font-weight:normal;
 }
 
-.gl-spec :link,
-.gl-spec :visited
+a.nonnormative:link,
+a.nonnormative:visited
 {
   color: green ! important;
 }
