@@ -31,7 +31,7 @@
 
 <body onload="generateTOC(document.getElementById('toc'))">
   <h1>Typed Arrays</h1>
-  <h2 class="no-toc">Working Draft 16 November 2010</h2>
+  <h2 class="no-toc">Final Draft (1.0) 19 January 2011</h2>
   <dl>
     <dt>This version:
       <dd>
@@ -87,12 +87,15 @@
     
     <!--begin-status-->
     <p>
-        This is a working draft document and may be updated, replaced or obsoleted 
-        by other documents at any time. Do not cite this document 
-        as other than work in progress.  Public discussion of this draft specification 
-        is welcome on the (<a href="https://www.khronos.org/webgl/public-mailing-list/archives">archived</a>) 
-        WebGL mailing list <a href="mailto:"></a> (see
-        <a href="https://www.khronos.org/webgl/public-mailing-list/">instructions</a>).
+        This is currently a final draft document.  While we do not
+        expect major changes, it may still be updated at any time.  Do
+        not cite this document as other than work in progress.  Public
+        discussion of this specification is welcome on the
+        (<a href="https://www.khronos.org/webgl/public-mailing-list/archives/">archived</a>)
+        WebGL mailing list
+	<a href="mailto:public_webgl@khronos.org">public_webgl@khronos.org</a>
+        (see
+	<a href="http://www.khronos.org/webgl/public-mailing-list/">instructions</a>).
     </p>
     <!--end-status-->
     
@@ -728,28 +731,32 @@ var bytes = new Uint8Array(buffer, shorts.byteOffset + shorts.byteLength);
       by creating new views and discarding the old.</p>
     </dd>
 
-    <h2>Outstanding Issues &amp; Bikeshedding</h2>
+    <h2>Resolved Issues</h2>
 
     <dt>Should <tt>slice()</tt> return a copy or a reference?</dt>
     <dd>
-      <p>Right now, <tt>slice()</tt> returns a new <i>TypedArray</i>, but
+      <p><tt>slice()</tt> returns a new <i>TypedArray</i>, but
       it references the same <tt>ArrayBuffer</tt>.  This is useful for
       working with a large chunk of data, but only wanting to pass a
       subregion to a method.  However, the opposite is also useful --
       you may want to make a copy of a segment in order to modify it.
       Right now, that requires a call like: <tt>new
       Int8Array(otherArray.slice(1,10));</tt>.</p>
-      <p>Perhaps we want to
-      introduce a <tt>subset()</tt> that will be the same behaviour as
-      slice currently, and have <tt>slice()</tt> return
-      a <i>TypedArray</i> with a new <tt>ArrayBuffer</tt>?</p>
+      <p>A future version of this specification might introduce a
+      a <tt>subset()</tt> that will return a copy of the given portion of the array
+      with a new ArrayBuffer.</p>
     </dd>
 
-    <dt>There's no good way to copy or subset <tt>ArrayBuffers</tt></dt>
+    <dt>Should there be a way to copy or subset an <tt>ArrayBuffer</tt>?</dt>
     <dd>
-      <p><tt>ArrayBuffer</tt> could use a method to copy a region; perhaps just a new constructor:</p>
-      <p><tt>ArrayBuffer(other, [start, [end]])</tt> to copy <tt>start..end</tt> (same arg style as slice()) from <tt>other</tt>.</p>
+      <p>Not at this time.  A future version of this spec may introduce such functionality.</p>
     </dd>
+
+    <dt>Should <tt>DataView</tt> have methods for reading arrays of data?</dt>
+    <dd>
+      <p>While such methods would be useful, they are not present in this version of the specification
+      to reduce the API footprint.  Such methods may be added in the future.</p>
+    <dd>
 
     <h2>References</h2>
     <dt id="refsWEBIDL">[WEBIDL]</dt>
