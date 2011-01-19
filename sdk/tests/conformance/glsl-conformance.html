@@ -605,7 +605,7 @@ if (!gl) {
       gl.linkProgram(program);
       var linked = (gl.getProgramParameter(program, gl.LINK_STATUS) != 0);
       if (!linked) {
-        var error = gl.getProgramInfoLog(shader);
+        var error = gl.getProgramInfoLog(program);
         log("*** Error linking program '"+program+"':"+error);
       }
       if (linked != info.linkSuccess) {
