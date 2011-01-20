@@ -145,7 +145,7 @@ Tests.testDrawElementsVBOMultiByte = function(gl, prog, v,n,t) {
   gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_BYTE, 0);
   assertFail(function(){gl.drawElements(gl.TRIANGLES, 4, gl.UNSIGNED_BYTE, -1);});
   assertFail(function(){gl.drawElements(gl.TRIANGLES, -1, gl.UNSIGNED_BYTE, 0);});
-  assertFail(function(){gl.drawElements(gl.TRIANGLES, 1, gl.UNSIGNED_BYTE, 5);});
+  assertOk(function(){gl.drawElements(gl.TRIANGLES, 1, gl.UNSIGNED_BYTE, 5);});
   assertFail(function(){gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0);});
   assertOk(function(){gl.drawElements(gl.TRIANGLES, 2, gl.UNSIGNED_BYTE, 0);});
   assertOk(function(){gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_BYTE, 0);});
@@ -159,7 +159,7 @@ Tests.testDrawElementsVBOMultiByte = function(gl, prog, v,n,t) {
   gl.bindBuffer(gl.ARRAY_BUFFER, vbo.vbos[1]);
   gl.vertexAttribPointer(n, 3, gl.FLOAT, false, 0, 0);
   gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_BYTE, 0);
-  assertFail(function(){gl.drawElements(gl.TRIANGLES, 1, gl.UNSIGNED_BYTE, 5);});
+  assertOk(function(){gl.drawElements(gl.TRIANGLES, 1, gl.UNSIGNED_BYTE, 5);});
   assertFail(function(){gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0);});
   assertOk(function(){gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_BYTE, 0);});
   assertFail(function(){gl.drawElements(gl.TRIANGLES, 5, gl.UNSIGNED_BYTE, 1);});
