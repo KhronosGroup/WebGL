@@ -201,7 +201,6 @@ var animationTime = function() {
 var requestAnimationFrame = function(element, callback) {
   if (!requestAnimationFrameImpl_) {
     requestAnimationFrameImpl_ = function() {
-      var objects = [element, window];
       var functionNames = [
         "requestAnimationFrame",
         "webkitRequestAnimationFrame",
@@ -209,25 +208,14 @@ var requestAnimationFrame = function(element, callback) {
         "operaRequestAnimationFrame",
         "msRequestAnimationFrame"
       ];
-      var functions = [
-        function (name) {
-          return function(element, callback) {
-            element[name].call(element, callback);
-          };
-        },
-        function (name) {
-          return function(element, callback) {
-            window[name].call(window, callback);
-          };
-        }
-      ];
-      for (var ii = 0; ii < objects.length; ++ii) {
-        var obj = objects[ii];
-        for (var jj = 0; jj < functionNames.length; ++jj) {
-          var functionName = functionNames[jj];
-          if (obj[functionName]) {
-            return functions[ii](functionName);
-          }
+      for (var jj = 0; jj < functionNames.length; ++jj) {
+        var functionName = functionNames[jj];
+        if (window[functionName]) {
+          return function (name) {
+            return function(element, callback) {
+              window[name].call(window, callback, element);
+            };
+          }(functionName);
         }
       }
       return function(element, callback) {
