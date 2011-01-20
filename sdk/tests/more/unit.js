@@ -36,6 +36,7 @@ Tests = {
 }
 
 var __testSuccess__ = true;
+var __testFailCount__ = 0;
 var __testLog__;
 var __backlog__ = [];
 
@@ -147,11 +148,12 @@ function runTests() {
       testFailed(i, e.name, formatError(e));
     }
     if (__testSuccess__ == false) {
-      var h = document.createElement('h2');
-      h.textContent = i;
-      __testLog__.insertBefore(h, __testLog__.firstChild);
-      log.appendChild(__testLog__);
+      ++__testFailCount__;
     }
+    var h = document.createElement('h2');
+    h.textContent = i;
+    __testLog__.insertBefore(h, __testLog__.firstChild);
+    log.appendChild(__testLog__);
     allTestsSuccessful = allTestsSuccessful && __testSuccess__ == true;
     reportTestResultsToHarness(__testSuccess__, i);
     doTestNotify (i+"--"+(__testSuccess__?"OK":"FAIL"));
@@ -184,7 +186,12 @@ function doTestNotify(name) {
 function testFailed(assertName, name) {
   var d = document.createElement('div');
   var h = document.createElement('h3');
-  h.textContent = name==null ? assertName : name + " (in " + assertName + ")";
+  var d1 = document.createElement("span");
+  h.appendChild(d1);
+  d1.appendChild(document.createTextNode("FAIL: "));
+  d1.style.color = "red";
+  h.appendChild(document.createTextNode(
+      name==null ? assertName : name + " (in " + assertName + ")"));
   d.appendChild(h);
   var args = []
   for (var i=2; i<arguments.length; i++) {
@@ -201,9 +208,32 @@ function testFailed(assertName, name) {
   doTestNotify([assertName, name].concat(args).join("--"));
 }
 
+function testPassed(assertName, name) {
+  var d = document.createElement('div');
+  var h = document.createElement('h3');
+  var d1 = document.createElement("span");
+  h.appendChild(d1);
+  d1.appendChild(document.createTextNode("PASS: "));
+  d1.style.color = "green";
+  h.appendChild(document.createTextNode(
+      name==null ? assertName : name + " (in " + assertName + ")"));
+  d.appendChild(h);
+  var args = []
+  for (var i=2; i<arguments.length; i++) {
+    var a = arguments[i];
+    var p = document.createElement('p');
+    p.style.whiteSpace = 'pre';
+    p.textContent = (a == null) ? "null" :
+                    (typeof a == 'boolean' || typeof a == 'string') ? a : Object.toSource(a);
+    args.push(p.textContent);
+    d.appendChild(p);
+  }
+  __testLog__.appendChild(d);
+  doTestNotify([assertName, name].concat(args).join("--"));
+}
+
 function checkTestSuccess() {
-  var log = document.getElementById('test-log');
-  return (log.childNodes.length == 0)
+  return __testFailCount__ == 0;
 }
 
 window.addEventListener('load', function(){
@@ -230,11 +260,11 @@ function log(msg) {
 function printTestStatus(testsRun) {
   var status = document.getElementById('test-status');
   if (testsRun) {
-    document.body.className = checkTestSuccess() ? 'ok' : 'fail';
-    document.title = status.textContent = checkTestSuccess() ? "OK" : "FAIL";
+    status.className = checkTestSuccess() ? 'ok' : 'fail';
+    status.textContent = checkTestSuccess() ? "PASS" : "FAIL";
   } else {
-    document.body.className = 'fail';
-    document.title = status.textContent = "NO TESTS FOUND";
+    status.className = 'fail';
+    status.textContent = "NO TESTS FOUND";
   }
 }
 
@@ -246,6 +276,7 @@ function assertFail(name, f) {
     testFailed("assertFail", name, f);
     return false;
   } else {
+    testPassed("assertFail", name, f);
     return true;
   }
 }
@@ -259,6 +290,7 @@ function assertOk(name, f) {
     testFailed("assertOk", name, f, err.toString());
     return false;
   } else {
+    testPassed("assertOk", name, f);
     return true;
   }
 }
@@ -269,6 +301,7 @@ function assert(name, v) {
     testFailed("assert", name, v);
     return false;
   } else {
+    testPassed("assert", name, v);
     return true;
   }
 }
@@ -279,6 +312,7 @@ function assertProperty(name, v, p) {
     testFailed("assertProperty", name);
     return false;
   } else {
+    testPassed("assertProperty", name);
     return true;
   }
 }
@@ -297,6 +331,7 @@ function assertEquals(name, v, p) {
     testFailed("assertEquals", name, v, p);
     return false;
   } else {
+    testPassed("assertEquals", name, v, p);
     return true;
   }
 }
@@ -321,6 +356,7 @@ function assertArrayEquals(name, v, p) {
       return false;
     }
   }
+  testPassed("assertArrayEquals", name, v, p);
   return true;
 }
 
@@ -330,6 +366,7 @@ function assertNotEquals(name, v, p) {
     testFailed("assertNotEquals", name, v, p)
     return false;
   } else {
+    testPassed("assertNotEquals", name, v, p)
     return true;
   }
 }

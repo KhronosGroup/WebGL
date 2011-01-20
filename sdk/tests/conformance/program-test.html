@@ -39,9 +39,9 @@ function go() {
         var flags = [];
         function hasUnusedValue(a, value) {
             for (var ii = 0; ii < a.length; ++ii) {
-				if (a[ii] === value && !flags[ii]) {
-					flags[ii] = true;
-					return true;
+                if (a[ii] === value && !flags[ii]) {
+                    flags[ii] = true;
+                    return true;
                 }
             }
             return false;
@@ -52,8 +52,8 @@ function go() {
                 return false;
             }
             for (var ii = 0; ii < a.length; ii++) {
-				if (!hasUnusedValue(b, a[ii])) {
-					return false;
+                if (!hasUnusedValue(b, a[ii])) {
+                    return false;
                 }
             }
         } catch (ex) {

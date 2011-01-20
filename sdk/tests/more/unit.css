@@ -26,14 +26,15 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 */
 .ok {
-  background-color: #8f8;
+  color: green;
 }
 .fail {
-  background-color: #f88;
+  color: red;
 }
-
+canvas {
+  display: none;
+}
 #test-status {
-  color: black;
   font-size: large;
 }
 
