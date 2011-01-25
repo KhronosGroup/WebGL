@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Final Draft (1.0) 19 January 2011</h2>
+    <h2 class="no-toc">Final Draft (1.0) 24 January 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -70,10 +70,9 @@
     <p>
         This specification describes an additional rendering context and support
         objects for the
-        <a
-            href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html"
-            title="HTML 5 Canvas Element">
-            HTML 5 <span class="prop-name">canvas</span> element.
+        <a href="http://www.w3.org/TR/html5/the-canvas-element.html"
+           title="HTML 5 Canvas Element">
+            HTML 5 <span class="prop-name">canvas</span> element <a href="#refsCANVAS">[CANVAS]</a>.
         </a>
         This context allows rendering using an API that conforms closely to the OpenGL ES 2.0 API.
     </p>
@@ -168,11 +167,13 @@
         &lsquo;<code class=property>webgl</code>&rsquo;.  This string is case sensitive. When called
         for the first time, a WebGLRenderingContext object is created and returned. Also at this
         time a drawing buffer shall be created. Subsequent calls to <code>getContext()</code> with
-        the same string shall return the same object.  If <code>getContext()</code> is subsequently
-        called with any other string, the WebGLRenderingContext shall be detached from its Canvas
-        object (the <code>canvas</code> attribute will be null). API calls may still be made on the
-        WebGLRenderingContext object and readPixels() may be used to obtain the contents of the
-        drawing buffer, but the contents shall no longer be shown on the page.
+        the same string shall return the same object.
+    </p>
+    <p>
+        The <a href="http://www.w3.org/TR/html5/the-canvas-element.html#the-canvas-element">HTML
+        Canvas specification</a><a href="#refsCANVAS">[CANVAS]</a>
+        defines the behavior when attempting to fetch two or more
+        incompatible contexts against the same canvas element.
     </p>
     <p>
         A second parameter may be passed to the <code>getContext()</code> method. If passed, this
@@ -3011,6 +3012,11 @@ extensions.
     <h3>Normative references</h3>
     <dl>
     
+        <dt id="refsCANVAS">[CANVAS]</dt>
+        <dd><cite><a href="http://www.w3.org/TR/html5/the-canvas-element.html">
+            HTML5: The Canvas Element</a></cite>,
+            World Wide Web Consortium (W3C).
+        </dd>
         <dt id="refsTYPEDARRAYS">[TYPEDARRAYS]</dt>
         <dd><cite><a href="TypedArray-spec.html">
             Typed Array Specification: Editor's Draft</a></cite>,
