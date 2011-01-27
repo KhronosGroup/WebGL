@@ -99,7 +99,7 @@
     <p>
       WebGL™ is an immediate mode 3D rendering API designed for the
       web.  It is derived from OpenGL® ES 2.0, and provides similar
-      rendering functionality, but in a HTML context.  WebGL is
+      rendering functionality, but in an HTML context.  WebGL is
       designed as a rendering context for the HTML Canvas element.
       The HTML Canvas provides a destination for programmatic
       rendering in web pages, and allows for performing that rendering
@@ -128,7 +128,7 @@
      man pages. While every effort is made to make these pages match the
      OpenGL ES 2.0 specification <a href="#refsGLES20">[GLES20]</a>, 
      they may contain errors. In the case of a contradiction, the OpenGL 
-     ES 2.0 specificationis the final authority.
+     ES 2.0 specification is the final authority.
     </p>
 
     <p>
@@ -209,7 +209,7 @@
         changed.
     </p>
     <table class="foo">
-        <tr><th>Buffer</th><th>Clear value</th><th>Minimum size</th><th>Defined By default?</th></tr>
+        <tr><th>Buffer</th><th>Clear value</th><th>Minimum size</th><th>Defined by default?</th></tr>
         <tr><td>Color</td><td>(0, 0, 0, 0)</td><td>8 bits per component</td><td>yes</td></tr>
         <tr><td>Depth</td><td>1.0</td><td>16 bit integer</td><td>yes</td></tr>
         <tr><td>Stencil</td><td>0</td><td>8 bits</td><td>no</td></tr>
@@ -242,13 +242,13 @@
         above.
     </p>
     <p>
-        This default behavior can be changed by setting the <code>preserveDrawingBuffer</code> 
-        attribute of the <a href="#WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a> object to 
-        true, the contents of the drawing buffer can be preserved until the author either clears 
-        or overwrites them. If this flag is false attempting to perform operations using this 
-        context as a source image after the rendering function has returned can lead to undefined 
-        behavior. This includes <code>readPixels</code> or <code>toDataURL</code> calls, or using 
-        this context as the source image of another context's <code>texImage2D</code> or 
+        This default behavior can be changed by setting the <code>preserveDrawingBuffer</code>
+        attribute of the <a href="#WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a> object. If
+        this flag is true, the contents of the drawing buffer shall be preserved until the author
+        either clears or overwrites them. If this flag is false, attempting to perform operations
+        using this context as a source image after the rendering function has returned can lead to
+        undefined behavior. This includes <code>readPixels</code> or <code>toDataURL</code> calls,
+        or using this context as the source image of another context's <code>texImage2D</code> or
         <code>drawImage</code> call.
     </p>
     <div class="note">        
@@ -350,7 +350,7 @@ gl.viewport(0, 0, canvas.width, canvas.height);
         stored in these objects and are fully managed by them. The resources represented
         by these objects are guaranteed to exist as long as the object exists.
         Furthermore, the DOM object is guaranteed to exist as long as the author has an explicit
-        valid reference to it OR as long as it is bound by the underlying graphics library.
+        valid reference to it <b>or</b> as long as it is bound by the underlying graphics library.
         When none of these conditions exist the user agent can, at any point, delete the object 
         using the equivalent of a delete call (e.g., deleteTexture). If authors wish to control 
         when the underlying resource is released then the delete call can be made explicitly.
