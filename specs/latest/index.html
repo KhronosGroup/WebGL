@@ -1074,9 +1074,7 @@ for (var i = 0; i < numVertices; i++) {
     const GLenum VALIDATE_STATUS                  = 0x8B83;
     const GLenum ATTACHED_SHADERS                 = 0x8B85;
     const GLenum ACTIVE_UNIFORMS                  = 0x8B86;
-    const GLenum ACTIVE_UNIFORM_MAX_LENGTH        = 0x8B87;
     const GLenum ACTIVE_ATTRIBUTES                = 0x8B89;
-    const GLenum ACTIVE_ATTRIBUTE_MAX_LENGTH      = 0x8B8A;
     const GLenum SHADING_LANGUAGE_VERSION         = 0x8B8C;
     const GLenum CURRENT_PROGRAM                  = 0x8B8D;
     
@@ -1205,8 +1203,6 @@ for (var i = 0; i < numVertices; i++) {
     
     /* Shader Source */
     const GLenum COMPILE_STATUS                 = 0x8B81;
-    const GLenum INFO_LOG_LENGTH                = 0x8B84;
-    const GLenum SHADER_SOURCE_LENGTH           = 0x8B88;
     
     /* Shader Precision-Specified Types */
     const GLenum LOW_FLOAT                      = 0x8DF0;
@@ -2211,12 +2207,9 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>DELETE_STATUS</td><td>boolean</td></tr>
                 <tr><td>LINK_STATUS</td><td>boolean</td></tr>
                 <tr><td>VALIDATE_STATUS</td><td>boolean</td></tr>
-                <tr><td>INFO_LOG_LENGTH</td><td>long</td></tr>
                 <tr><td>ATTACHED_SHADERS</td><td>long</td></tr>
                 <tr><td>ACTIVE_ATTRIBUTES</td><td>long</td></tr>
-                <tr><td>ACTIVE_ATTRIBUTE_MAX_LENGTH</td><td>long</td></tr>
                 <tr><td>ACTIVE_UNIFORMS</td><td>long</td></tr>
-                <tr><td>ACTIVE_UNIFORM_MAX_LENGTH</td><td>long</td></tr>
             </table>
         <dt class="idl-code">DOMString getProgramInfoLog(WebGLProgram program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetProgramInfoLog.xml">man page</a>)</span>
@@ -2230,8 +2223,6 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>SHADER_TYPE</td><td>unsigned long</td></tr>
                 <tr><td>DELETE_STATUS</td><td>boolean</td></tr>
                 <tr><td>COMPILE_STATUS</td><td>boolean</td></tr>
-                <tr><td>INFO_LOG_LENGTH</td><td>long</td></tr>
-                <tr><td>SHADER_SOURCE_LENGTH</td><td>long</td></tr>
             </table>
         <dt class="idl-code">DOMString getShaderInfoLog(WebGLShader shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetShaderInfoLog.xml">man page</a>)</span>
@@ -3004,6 +2995,16 @@ extensions.
     per <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a>.
 </p>
 
+    <h3>String Length Queries</h3>
+
+<p>
+    In the WebGL API, the enumerants <code>INFO_LOG_LENGTH</code>, <code>SHADER_SOURCE_LENGTH</code>,
+    <code>ACTIVE_UNIFORM_MAX_LENGTH</code>, and <code>ACTIVE_ATTRIB_MAX_LENGTH</code> have been removed. In
+    the OpenGL ES 2.0 API, these enumerants are needed to determine the size of buffers passed to calls
+    like <code>glGetActiveAttrib</code>. In the WebGL API, the analogous calls (<code>getActiveAttrib</code>,
+    <code>getActiveUniform</code>, <code>getProgramInfoLog</code>, <code>getShaderInfoLog</code>, and
+    <code>getShaderSource</code>) all return <code>DOMString</code>.
+</p>
 
 <!-- ======================================================================================================= -->
 
