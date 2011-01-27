@@ -5,11 +5,11 @@
  *
  * Original Khronos Working Draft:
  *
- *   https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/WebGL-spec.html
+ *   https://www.khronos.org/registry/webgl/specs/latest/
  */
 
 // This module depends on the typedarrays module defined at:
-// https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/doc/spec/typedarrays.idl
+// https://www.khronos.org/registry/typedarray/specs/latest/typedarrays.idl
 
 module webgl {
 
