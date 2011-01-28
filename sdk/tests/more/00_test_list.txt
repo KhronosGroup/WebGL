@@ -29,6 +29,7 @@ functions/texImage2DHTMLBadArgs.html
 functions/texSubImage2D.html
 functions/texSubImage2DBadArgs.html
 functions/texSubImage2DHTML.html
+functions/texSubImage2DHTMLBadArgs.html
 functions/uniformf.html
 functions/uniformfBadArgs.html
 functions/uniformi.html
