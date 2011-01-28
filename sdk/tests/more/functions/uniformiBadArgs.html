@@ -23,11 +23,16 @@ Tests.testUniformf = function(gl) {
             function(){gl.uniform4iv(-58882929, [1,2,3,4]);});
         assertOk("more than enough values 4iv",
             function(){gl.uniform4iv(uniIV4, [1,2,3,4,5]);});
-        // For non arrays you must pass in only 1 value.
-        assertGLError(gl, gl.INVALID_OPERATION, "more than 1 value to 1iv",
+        assertOk("more than 1 value to 1iv",
             function(){gl.uniform1iv(uniInt, [2,3,4,5,6]);});
         assertGLError(gl, gl.INVALID_OPERATION, "4iv on int",
             function(){gl.uniform4iv(uniInt, [2,3,4,5]);});
+        assertOk("4iv on 4iv",
+            function(){gl.uniform4iv(uniIV4, [1, 2, 3, 4]);});
+        assertGLError(gl, gl.INVALID_OPERATION, "5 values on 4iv",
+            function(){gl.uniform4iv(uniIV4, [1, 2, 3, 4, 5]);});
+        assertOk("8 values on 4iv",
+            function(){gl.uniform4iv(uniIV4, [1, 2, 3, 4, 5, 6, 7, 8]);});
         assertGLError(gl, gl.INVALID_OPERATION, "3iv on int",
             function(){gl.uniform3iv(uniInt, [2,3,4]);});
         assertGLError(gl, gl.INVALID_OPERATION, "2iv on int",
