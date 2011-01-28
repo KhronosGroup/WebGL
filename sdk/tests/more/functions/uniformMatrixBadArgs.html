@@ -29,11 +29,11 @@ Tests.testUniformf = function(gl, unwrappedGL) {
         function(){gl.uniformMatrix4fv(588939, false, [1,0,0,0, 0,2,0,0, 0,0,3,0, 0,0,0,4]);});
     assertThrowNoGLError(gl, "bad location (negative)",
         function(){gl.uniformMatrix4fv(-588939, false, [1,0,0,0, 0,2,0,0, 0,0,3,0, 0,0,0,4]);});
-    assertOk("too many values to 4fv",
+    assertGLError(gl, gl.INVALID_VALUE, "17 values to 4fv",
         function(){gl.uniformMatrix4fv(fm4, false, [0,1,0,0,0, 0,2,0,0, 0,0,3,0, 0,0,0,4]);});
-    assertOk("too many values to 2fv",
+    assertGLError(gl, gl.INVALID_VALUE, "5 values to 2fv",
         function(){gl.uniformMatrix2fv(fm2, false, [0,2,1, 2,2]);});
-    assertOk("too many values to 3fv",
+    assertGLError(gl, gl.INVALID_VALUE, "10 values to 3fv",
         function(){gl.uniformMatrix3fv(fm3, false, [0,2,2,2, 2,2,2, 2,1,2]);});
     assertGLError(gl, gl.INVALID_VALUE, "too few values to 4fv",
         function(){gl.uniformMatrix4fv(fm4, false, [0,0,0, 0,2,0,0, 0,0,3,0, 0,0,0,4]);});
@@ -87,16 +87,8 @@ Tests.testUniformf = function(gl, unwrappedGL) {
              gl.NO_ERROR == checkError(gl, "getUniform loc1"));
       assertArrayEquals(mats[0], actual);
       var big = mats[1].concat([3]);
-      assertOk("set array of first array of 2 matrixes plus 1 value",
+      assertGLError(gl, gl.INVALID_VALUE, "set array of first array of 2 matrixes plus 1 value",
           function(){gl[fname].call(gl, loc0, false, big);});
-      var actual = unwrappedGL.getUniform(sh.shader.program, loc0);
-      assert("got value for loc0",
-             gl.NO_ERROR == checkError(gl, "getUniform loc0"));
-      assertArrayEquals(mats[1], actual);
-      var actual = unwrappedGL.getUniform(sh.shader.program, loc1);
-      assert("got value for loc1",
-             gl.NO_ERROR == checkError(gl, "getUniform loc1"));
-      assertArrayEquals(mats[0], actual);
     }
   });
   var d = new Uint8Array(4);
