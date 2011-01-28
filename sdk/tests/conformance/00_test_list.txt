@@ -76,6 +76,7 @@ tex-image-and-uniform-binding-bugs.html
 tex-image-with-format-and-type.html
 tex-image-with-invalid-data.html
 tex-input-validation.html
+tex-sub-image-2d-bad-args.html
 tex-sub-image-2d.html
 texparameter-test.html
 texture-active-bind-2.html
