@@ -42,25 +42,25 @@ Tests.testTexImage2D = function(gl) {
         function() {gl.texSubImage2D(gl.FLOAT, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
     assertOk("good args",
          function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertGLError(gl, gl.INVALID_VALUE, "format not same as original",
+    assertGLError(gl, gl.INVALID_OPERATION, "format not same as original",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_BYTE, c); });
-    assertGLError(gl, gl.INVALID_VALUE, "type not same as original",
+    assertGLError(gl, gl.INVALID_OPERATION, "type not same as original",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c); });
     assertOk("make texture RGB",
          function() {gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, c); });
     assertOk("format same as original RGB",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_BYTE, c); });
-    assertGLError(gl, gl.INVALID_VALUE, "format not same as original RGB",
+    assertGLError(gl, gl.INVALID_OPERATION, "format not same as original RGB",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
-    assertGLError(gl, gl.INVALID_VALUE, "type not same as original RGB",
+    assertGLError(gl, gl.INVALID_OPERATION, "type not same as original RGB",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_SHORT_5_6_5, c); });
     assertOk("make texture RGBA 4_4_4_4",
          function() {gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c); });
     assertOk("format same as original RGBA 4_4_4_4",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c); });
-    assertGLError(gl, gl.INVALID_VALUE, "format not same as original RGBA 4_4_4_4",
+    assertGLError(gl, gl.INVALID_OPERATION, "format not same as original RGBA 4_4_4_4",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_BYTE, c); });
-    assertGLError(gl, gl.INVALID_VALUE, "type not same as original RGBA 4_4_4_4",
+    assertGLError(gl, gl.INVALID_OPERATION, "type not same as original RGBA 4_4_4_4",
         function() {gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c); });
 }
 
