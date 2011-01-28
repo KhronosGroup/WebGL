@@ -29,7 +29,7 @@ Tests.testUniformf = function(gl) {
             function(){gl.uniform4fv(uniFloat, [2,3,4,5]);});
         assertOk("4fv on 4fv",
             function(){gl.uniform4fv(uniV4, [1, 2, 3, 4]);});
-        assertGLError(gl, gl.INVALID_OPERATION, "5 values on 4fv",
+        assertGLError(gl, gl.INVALID_VALUE, "5 values on 4fv",
             function(){gl.uniform4fv(uniV4, [1, 2, 3, 4, 5]);});
         assertOk("8 values on 4fv",
             function(){gl.uniform4fv(uniV4, [1, 2, 3, 4, 5, 6, 7, 8]);});
