@@ -39,6 +39,7 @@ var imgURLs = [
   'resources/zero-alpha.png',
   'resources/3x3.png',
   'resources/blue-1x1.jpg',
+  'resources/red-indexed.png',
   'resources/green-2x2-16bit.png',
   'resources/small-square-with-colorspin-profile.jpg',
   'resources/small-square-with-colorspin-profile.png',
@@ -382,6 +383,16 @@ function runTests(imgs) {
     }
     assertMsg(same, "uploading PNGs with same data but various ICC profiles should generate the same results");
   }
+
+  debug("");
+  debug("check uploading of indexed PNG images");
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
+                imgs['resources/red-indexed.png']);
+  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
+  wtu.drawQuad(gl);
+  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  // The image should be red.
+  checkPixelRange(buf, middle, center, [ 255, 0, 0, 255 ], 10);
 
   debug("");
   successfullyParsed = true;
