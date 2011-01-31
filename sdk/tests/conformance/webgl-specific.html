@@ -79,6 +79,13 @@ shouldBeUndefined(gl.IMPLEMENTATION_COLOR_READ_FORMAT);
 shouldBeUndefined(gl.IMPLEMENTATION_COLOR_READ_TYPE);
 
 debug("");
+debug("Verify that *LENGTH are undefined");
+shouldBeUndefined(gl.INFO_LOG_LENGTH);
+shouldBeUndefined(gl.SHADER_SOURCE_LENGTH);
+shouldBeUndefined(gl.ACTIVE_UNIFORM_MAX_LENGTH);
+shouldBeUndefined(gl.ACTIVE_ATTRIB_MAX_LENGTH);
+
+debug("");
 debug("Verify that UNPACK_COLORSPACE_CONVERSION_WEBGL is supported");
 shouldBe("gl.getParameter(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL)", "gl.BROWSER_DEFAULT_WEBGL");
 gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
