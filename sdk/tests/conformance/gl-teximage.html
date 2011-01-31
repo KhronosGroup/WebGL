@@ -208,9 +208,9 @@ function runTests(imgs) {
 
   debug("");
   debug("check pixels are UN pre-multiplied");
-	for (var ii = 0; ii < 2; ++ii) {
+  for (var ii = 0; ii < 2; ++ii) {
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-		if (ii == 0) {
+    if (ii == 0) {
       var canvas2d = document.createElement("canvas");
       canvas2d.width = 256;
       canvas2d.height = 1;
@@ -257,13 +257,13 @@ function runTests(imgs) {
   canvas2d.width = 1;
   canvas2d.height = 1;
   var ctx = canvas2d.getContext("2d");
-	ctx.fillStyle ="rgba(255,255,255,0.5)";
+  ctx.fillStyle ="rgba(255,255,255,0.5)";
   ctx.fillRect(0, 0, 256, 1);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d);
   wtu.drawQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
-	checkPixelRange(buf, 0, 0, [255, 255, 255, 127], 4);
+  checkPixelRange(buf, 0, 0, [255, 255, 255, 127], 4);
 
   debug("");
   debug("check canvas pixels are pre-multiplied");
