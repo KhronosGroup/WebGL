@@ -278,12 +278,12 @@ void main()
 <script id="fshaderWithLongLine" type="text/something-not-javascript">
 precision mediump float;
 uniform float foo;
-#if 1==2
-#error "long"
+#if defined(someSymbolNotDefined)
+#error long
 #endif
 void main()
 {
-    gl_FragColor = vec4(foo+foo+foo+foo, foo+foo+foo+foo, foo+foo+foo+foo, 0.0);
+    gl_FragColor = vec4(fooo+fooo+fooo+fooo, fooo+fooo+fooo+fooo, fooo+fooo+fooo+fooo, 1.0);
 }
 </script>
 <canvas id="canvas" width="2" height="2"> </canvas>
@@ -533,9 +533,9 @@ if (!gl) {
           return str;
         }
         str = expand(str, new RegExp(" ", 'g'), "  ", 12);
-        str = expand(str, new RegExp("0", 'g'), "00", 14);
-        str = expand(str, new RegExp("foo", 'g'), "foofoo", 5);
-        str = expand(str, new RegExp("long", 'g'), "longlong", 14);
+        str = expand(str, new RegExp("0", 'g'), "00", 8);
+        str = expand(str, new RegExp("fooo", 'g'), "fooofooo", 6);
+        str = expand(str, new RegExp("long", 'g'), "longlong", 6);
         //debug("len:" + str.length);
         //debug(str);
         return str;
