@@ -41,7 +41,7 @@ void main() {
     gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
 #else
     // Error expected
-    garbage;
+    #error no GL_OES_standard_derivatives;
 #endif
 }
 </script>
@@ -239,15 +239,15 @@ function runOutputTests() {
     //    r = floor(dFdx * 255) = 3
     //    g = floor(dFdy * 255) = 3
     //    b = floor(fw * 255) = 5
-    
+
     var e = 2; // Amount of variance to allow in result pixels - may need to be tweaked higher
-    
+
     debug("Testing various draws for valid built-in function behavior");
-    
+
     canvas.width = 50; canvas.height = 50;
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.hint(ext.FRAGMENT_SHADER_DERIVATIVE_HINT_OES, gl.NICEST);
-    
+
     var shaders = [
         wtu.loadShaderFromScript(gl, "outputVertexShader"),
         wtu.loadShaderFromScript(gl, "outputFragmentShader")
@@ -295,7 +295,7 @@ function runOutputTests() {
             testPassed(successMessage);
         }
     };
-    
+
     function setupBuffers(tl, tr, bl, br) {
         gl.bindBuffer(gl.ARRAY_BUFFER, quadParameters[0]);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
@@ -313,7 +313,7 @@ function runOutputTests() {
     expectResult([0, 0, 0, 255],
                  "Draw 1 (no variation) returned the correct data",
                  "Draw 1 (no variation) returned incorrect data");
-    
+
     // Draw 2: (variation in x)
     setupBuffers(1.0, 0.0, 1.0, 0.0);
     wtu.drawQuad(gl);
@@ -327,7 +327,7 @@ function runOutputTests() {
     expectResult([0, 5, 5, 255],
                  "Draw 3 (variation in y) returned the correct data",
                  "Draw 3 (variation in y) returned incorrect data");
-                 
+
     // Draw 4: (variation in x & y)
     setupBuffers(1.0, 0.5, 0.5, 0.0);
     wtu.drawQuad(gl);

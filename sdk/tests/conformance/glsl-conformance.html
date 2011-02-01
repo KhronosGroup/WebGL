@@ -286,6 +286,27 @@ void main()
     gl_FragColor = vec4(fooo+fooo+fooo+fooo, fooo+fooo+fooo+fooo, fooo+fooo+fooo+fooo, 1.0);
 }
 </script>
+<script id="fshaderWithErrorDirective" type="text/something-not-javascript">
+#error testing123 testing123
+void main()
+{
+    gl_FragColor = vec4(0,0,0,0);
+}
+</script>
+<script id="fshaderWithQuotedErrorDirective" type="text/something-not-javascript">
+#error "testing123 testing123" // will return INVALID_VALUE. See WebGL 6.18
+void main()
+{
+    gl_FragColor = vec4(0,0,0,0);
+}
+</script>
+<script id="fshaderWithNonASCIIErrorDirective" type="text/something-not-javascript">
+#error ‚±‚ê‚Í‚`‚r‚b‚h‚h‚Å‚Í‚È‚¢ // will return INVALID_VALUE. See WebGL 6.18
+void main()
+{
+    gl_FragColor = vec4(0,0,0,0);
+}
+</script>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
 description("This test ensures WebGL implementations allow proper GLES2 shaders compile and improper ones fail.");
@@ -533,7 +554,7 @@ if (!gl) {
           return str;
         }
         str = expand(str, new RegExp(" ", 'g'), "  ", 12);
-        str = expand(str, new RegExp("0", 'g'), "00", 8);
+        str = expand(str, new RegExp("0", 'g'), "00", 8).substr(0,253);
         str = expand(str, new RegExp("fooo", 'g'), "fooofooo", 6);
         str = expand(str, new RegExp("long", 'g'), "longlong", 6);
         //debug("len:" + str.length);
@@ -542,6 +563,29 @@ if (!gl) {
       },
       linkSuccess: true,
       passMsg: 'shared that uses long lines should succeed',
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithErrorDirective',
+      fShaderSuccess: false,
+      fShaderTest: (function() {
+        return wtu.getLastError().indexOf("testing123 testing123") >= 0; }),
+      linkSuccess: false,
+      passMsg: "error directive returns error user's error message",
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithQuotedErrorDirective',
+      fShaderSuccess: false,
+      linkSuccess: false,
+      passMsg: "error directive using quotes fails",
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithNonASCIIErrorDirective',
+      fShaderSuccess: false,
+      linkSuccess: false,
+      passMsg: "error directive using characters outside of allowed set fails",
     }
   ];
 
@@ -629,6 +673,12 @@ if (!gl) {
     var fSource = info.fShaderPrep ? info.fShaderPrep(info.fShaderSource) :
       info.fShaderSource;
     var fShader = wtu.loadShader(gl, fSource, gl.FRAGMENT_SHADER);
+    if (info.fShaderTest) {
+      if (!info.fShaderTest(fShader)) {
+        testFailed(passMsg);
+        continue;
+      }
+    }
     //debug(fShader == null ? "fail" : "succeed");
     if ((fShader != null) != info.fShaderSuccess) {
       testFailed(passMsg);

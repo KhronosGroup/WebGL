@@ -106,7 +106,7 @@ var simpleTextureFragmentShader = '' +
   'uniform sampler2D tex;\n' +
   'varying vec2 texCoord;\n' +
   'void main() {\n' +
-  '    gl_FragColor = texture2D(tex, texCoord);\n' +
+  '    gl_FragData[0] = texture2D(tex, texCoord);\n' +
   '}\n';
 
 /**
