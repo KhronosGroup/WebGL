@@ -48,6 +48,9 @@ array = new ArrayBuffer(64);
 gl.bufferSubData(gl.ARRAY_BUFFER, -10, array);
 glErrorShouldBe(gl, gl.INVALID_VALUE);
 
+gl.bufferSubData(gl.ARRAY_BUFFER, -10, new Float32Array(8));
+glErrorShouldBe(gl, gl.INVALID_VALUE);
+
 gl.bufferSubData(gl.ARRAY_BUFFER, 10, array);
 glErrorShouldBe(gl, gl.NO_ERROR);
 
