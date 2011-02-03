@@ -52,7 +52,7 @@ function draw(numVerts, attribIndex) {
       gl.ARRAY_BUFFER, new Float32Array(numVerts * 3), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(attribIndex);
   gl.vertexAttribPointer(attribIndex, 3, gl.FLOAT, false, 0, 0);
-  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  gl.drawArrays(gl.TRIANGLES, 0, numVerts);
   glErrorShouldBe(
       gl, gl.NO_ERROR,
       "drawing using attrib " + attribIndex + " with " + numVerts + " verts");
