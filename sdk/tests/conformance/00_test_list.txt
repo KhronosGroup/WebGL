@@ -41,6 +41,7 @@ gl-uniform-bool.html
 gl-uniformmatrix4fv.html
 gl-unknown-uniform.html
 gl-vertex-attrib.html
+gl-vertex-attrib-zero-issues.html
 gl-vertexattribpointer.html
 #glsl-2types-of-textures-on-same-unit.html
 glsl-conformance.html
