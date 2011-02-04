@@ -28,7 +28,7 @@
 <script id="fshader" type="x-shader/x-fragment">
     void main()
     {
-        gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+        gl_FragColor = vec4(0.0,0.0,0.0,0.0);
     }
 </script>
 
@@ -68,21 +68,22 @@ var p1 = setup(3, 0);
 var p2 = setup(60000, 3);
 
 for (var ii = 0; ii < 5; ++ii) {
-    gl.useProgram(p1);
-    gl.enableVertexAttribArray(0);
-    gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
-    glErrorShouldBe(
-        gl, gl.NO_ERROR,
-        "drawing using attrib 0 with 3 verts");
+  gl.useProgram(p1);
+  gl.enableVertexAttribArray(0);
+  gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
+  glErrorShouldBe(
+      gl, gl.NO_ERROR,
+      "drawing using attrib 0 with 3 verts");
 
-    gl.useProgram(p2);
-    gl.enableVertexAttribArray(3);
-    gl.drawArrays(gl.LINES, 0, 60000);
-    glErrorShouldBe(
-        gl, gl.NO_ERROR,
-        "drawing using attrib 3 with 60000 verts");
+  gl.useProgram(p2);
+  gl.enableVertexAttribArray(3);
+  gl.drawArrays(gl.LINES, 0, 60000);
+  glErrorShouldBe(
+      gl, gl.NO_ERROR,
+      "drawing using attrib 3 with 60000 verts");
 }
 
+wtu.checkCanvas(gl, [0, 0, 0, 0], "canvas should be 0, 0, 0, 0");
 
 successfullyParsed = true;
 </script>
