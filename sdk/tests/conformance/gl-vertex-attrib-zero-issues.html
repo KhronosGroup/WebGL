@@ -39,7 +39,7 @@ var wtu = WebGLTestUtils;
 var canvas = document.getElementById("example");
 var gl = wtu.create3DContext(canvas);
 
-function draw(numVerts, attribIndex) {
+function setup(numVerts, attribIndex) {
   var program = wtu.setupProgram(
       gl,
       [wtu.loadShaderFromScript(gl, 'vshader', gl.VERTEX_SHADER),
@@ -47,19 +47,42 @@ function draw(numVerts, attribIndex) {
       ['vPosition'], [attribIndex]);
   // draw with something on attrib zero with a small number of vertices
   var vertexObject = gl.createBuffer();
+  g_program = program;
+  g_attribLocation = attribIndex;
+  shouldBe("g_attribLocation", "gl.getAttribLocation(g_program, 'vPosition')");
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
   gl.bufferData(
       gl.ARRAY_BUFFER, new Float32Array(numVerts * 3), gl.STATIC_DRAW);
-  gl.enableVertexAttribArray(attribIndex);
   gl.vertexAttribPointer(attribIndex, 3, gl.FLOAT, false, 0, 0);
-  gl.drawArrays(gl.TRIANGLES, 0, numVerts);
-  glErrorShouldBe(
-      gl, gl.NO_ERROR,
-      "drawing using attrib " + attribIndex + " with " + numVerts + " verts");
+  var indices = new Uint16Array(numVerts);
+  for (var ii = 0; ii < numVerts; ++ii) {
+    indices[ii] = ii;
+  }
+  var indexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+  return program;
 }
 
-draw(3, 0);
-draw(300, 3);
+var p1 = setup(3, 0);
+var p2 = setup(60000, 3);
+
+for (var ii = 0; ii < 5; ++ii) {
+    gl.useProgram(p1);
+    gl.enableVertexAttribArray(0);
+    gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
+    glErrorShouldBe(
+        gl, gl.NO_ERROR,
+        "drawing using attrib 0 with 3 verts");
+
+    gl.useProgram(p2);
+    gl.enableVertexAttribArray(3);
+    gl.drawArrays(gl.LINES, 0, 60000);
+    glErrorShouldBe(
+        gl, gl.NO_ERROR,
+        "drawing using attrib 3 with 60000 verts");
+}
+
 
 successfullyParsed = true;
 </script>
