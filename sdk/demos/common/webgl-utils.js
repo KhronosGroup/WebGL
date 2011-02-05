@@ -171,7 +171,7 @@ var animationTime = function() {
         "animationTime",
         "webkitAnimationTime",
         "mozAnimationTime",
-        "operaAnimationTime",
+        "oAnimationTime",
         "msAnimationTime"
       ];
       for (var ii = 0; ii < attribNames.length; ++ii) {
@@ -195,8 +195,8 @@ var animationTime = function() {
  * way.
  *
  * @param {!Element} element Element to request an animation frame for.
- * @param {function(): void} callback. Callback that will be
- *     called when a frame is ready.
+ * @param {function(number): void} callback. Callback that
+ *     will be called when a frame is ready.
  */
 var requestAnimationFrame = function(element, callback) {
   if (!requestAnimationFrameImpl_) {
@@ -205,7 +205,7 @@ var requestAnimationFrame = function(element, callback) {
         "requestAnimationFrame",
         "webkitRequestAnimationFrame",
         "mozRequestAnimationFrame",
-        "operaRequestAnimationFrame",
+        "oRequestAnimationFrame",
         "msRequestAnimationFrame"
       ];
       for (var jj = 0; jj < functionNames.length; ++jj) {
