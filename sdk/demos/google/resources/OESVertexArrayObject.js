@@ -1,4 +1,4 @@
-var WebGLVertexArrayObjectOES = function (ext) {
+var WebGLVertexArrayObjectOES = function WebGLVertexArrayObjectOES(ext) {
     var gl = ext.gl;
     
     this.ext = ext;
@@ -13,7 +13,7 @@ var WebGLVertexArrayObjectOES = function (ext) {
     }
 };
 
-WebGLVertexArrayObjectOES.VertexAttrib = function(gl) {
+WebGLVertexArrayObjectOES.VertexAttrib = function VertexAttrib(gl) {
     this.enabled = false;
     this.buffer = null;
     this.size = 4;
@@ -23,7 +23,7 @@ WebGLVertexArrayObjectOES.VertexAttrib = function(gl) {
     this.offset = 0;
 };
 
-var OESVertexArrayObject = function (gl) {
+var OESVertexArrayObject = function OESVertexArrayObject(gl) {
     var self = this;
     this.gl = gl;
     
@@ -45,7 +45,7 @@ var OESVertexArrayObject = function (gl) {
         vertexAttribPointer: gl.vertexAttribPointer
     };
     
-    gl.getParameter = function (pname) {
+    gl.getParameter = function getParameter(pname) {
         if (pname == self.VERTEX_ARRAY_BINDING_OES) {
             if (self.currentVertexArrayObject == self.defaultVertexArrayObject) {
                 return null;
@@ -56,18 +56,18 @@ var OESVertexArrayObject = function (gl) {
         return original.getParameter.apply(this, arguments);
     };
     
-    gl.enableVertexAttribArray = function (index) {
+    gl.enableVertexAttribArray = function enableVertexAttribArray(index) {
         var attrib = self.currentVertexArrayObject.attribs[index];
         attrib.enabled = true;
         return original.enableVertexAttribArray.apply(this, arguments);
     };
-    gl.disableVertexAttribArray = function (index) {
+    gl.disableVertexAttribArray = function disableVertexAttribArray(index) {
         var attrib = self.currentVertexArrayObject.attribs[index];
         attrib.enabled = false;
         return original.disableVertexAttribArray.apply(this, arguments);
     };
     
-    gl.bindBuffer = function(target, buffer) {
+    gl.bindBuffer = function bindBuffer(target, buffer) {
         switch (target) {
             case gl.ARRAY_BUFFER:
                 self.currentArrayBuffer = buffer;
@@ -79,7 +79,7 @@ var OESVertexArrayObject = function (gl) {
         return original.bindBuffer.apply(this, arguments);
     };
     
-    gl.getVertexAttrib = function (index, pname) {
+    gl.getVertexAttrib = function getVertexAttrib(index, pname) {
         var attrib = self.currentVertexArrayObject.attribs[index];
         switch (pname) {
             case gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING:
@@ -99,7 +99,7 @@ var OESVertexArrayObject = function (gl) {
         }
     };
     
-    gl.vertexAttribPointer = function (indx, size, type, normalized, stride, offset) {
+    gl.vertexAttribPointer = function vertexAttribPointer(indx, size, type, normalized, stride, offset) {
         var attrib = self.currentVertexArrayObject.attribs[indx];
         attrib.buffer = self.currentArrayBuffer;
         attrib.size = size;
@@ -117,16 +117,16 @@ var OESVertexArrayObject = function (gl) {
 
 OESVertexArrayObject.prototype.VERTEX_ARRAY_BINDING_OES = 0x85B5;
 
-OESVertexArrayObject.prototype.createVertexArrayOES = function () {
+OESVertexArrayObject.prototype.createVertexArrayOES = function createVertexArrayOES() {
     var arrayObject = new WebGLVertexArrayObjectOES(this);
     return arrayObject;
 };
 
-OESVertexArrayObject.prototype.deleteVertexArrayOES = function (arrayObject) {
+OESVertexArrayObject.prototype.deleteVertexArrayOES = function deleteVertexArrayOES(arrayObject) {
     arrayObject.isAlive = false;
 };
 
-OESVertexArrayObject.prototype.isVertexArrayOES = function (arrayObject) {
+OESVertexArrayObject.prototype.isVertexArrayOES = function isVertexArrayOES(arrayObject) {
     if (arrayObject && arrayObject instanceof WebGLVertexArrayObjectOES) {
         if (arrayObject.hasBeenBound && arrayObject.ext == this) {
             return true;
@@ -135,7 +135,7 @@ OESVertexArrayObject.prototype.isVertexArrayOES = function (arrayObject) {
     return false;
 };
 
-OESVertexArrayObject.prototype.bindVertexArrayOES = function (arrayObject) {
+OESVertexArrayObject.prototype.bindVertexArrayOES = function bindVertexArrayOES(arrayObject) {
     var gl = this.gl;
     var original = this.original;
 
@@ -221,7 +221,7 @@ function setupVertexArrayObject(gl) {
 
     if (gl.getSupportedExtensions) {
         var original_getSupportedExtensions = gl.getSupportedExtensions;
-        gl.getSupportedExtensions = function () {
+        gl.getSupportedExtensions = function getSupportedExtensions() {
             var list = original_getSupportedExtensions.call(this) || [];
             list.push("OES_vertex_array_object");
             return list;
@@ -229,7 +229,7 @@ function setupVertexArrayObject(gl) {
     }
     
     var original_getExtension = gl.getExtension;
-    gl.getExtension = function (name) {
+    gl.getExtension = function getExtension(name) {
         if (name == "OES_vertex_array_object") {
             if (!gl.__OESVertexArrayObject) {
                 gl.__OESVertexArrayObject = new OESVertexArrayObject(gl);
