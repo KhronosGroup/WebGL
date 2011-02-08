@@ -285,14 +285,10 @@ function GlObject(shader, vertices, colors, normals) {
     if (normals != undefined) {
         gl.bufferSubData(gl.ARRAY_BUFFER, this.normalOffset, normalArray);
     }
-}
-
-GlObject.prototype.free = function() {
-};
-
-GlObject.prototype.draw = function() {
-    this.shader.bind();
-
+    
+    this.vao = glvao.createVertexArrayOES();
+    glvao.bindVertexArrayOES(this.vao);
+    
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.vertexAttribPointer(this.shader.posLoc, 3, gl.FLOAT, false, 0,
                            this.vertexOffset);
@@ -305,14 +301,23 @@ GlObject.prototype.draw = function() {
                                this.normalOffset);
         gl.enableVertexAttribArray(this.shader.normalLoc);
     }
+    
+    glvao.bindVertexArrayOES(null);
+}
+
+GlObject.prototype.free = function() {
+    glvao.deleteVertexArrayOES(this.vao);
+    this.vao = null;
+};
+
+GlObject.prototype.draw = function() {
+    this.shader.bind();
+
+    glvao.bindVertexArrayOES(this.vao);
 
     gl.drawArrays(gl.TRIANGLES, 0, this.count);
-
-    if (this.shader.normalLoc !== undefined) {
-        gl.disableVertexAttribArray(this.shader.normalLoc);
-    }
-    gl.disableVertexAttribArray(this.shader.colorInLoc);
-    gl.disableVertexAttribArray(this.shader.posLoc);
+    
+    glvao.bindVertexArrayOES(null); // ?
 };
 
 function createGroundPlane(shader) {

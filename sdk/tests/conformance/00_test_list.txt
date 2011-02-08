@@ -62,6 +62,7 @@ null-uniform-location.html
 object-deletion-behaviour.html
 oes-standard-derivatives.html
 oes-texture-float.html
+oes-vertex-array-object.html
 origin-clean-conformance.html
 point-size.html
 program-test.html

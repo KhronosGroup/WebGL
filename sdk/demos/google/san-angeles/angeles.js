@@ -30,6 +30,7 @@
 
 var canvas = null;
 var gl = null;
+var glvao = null;
 var start_time = null;
 
 function main() {
@@ -37,6 +38,8 @@ function main() {
     gl = WebGLUtils.setupWebGL(canvas);
     if (!gl)
         return;
+    setupVertexArrayObject(gl);
+    glvao = gl.getExtension("OES_vertex_array_object");
     gl.clearColor(0., 0., 0., 1.);
     gl.viewport(0, 0, c.width, c.height);
     gl.clear(gl.COLOR_BUFFER_BIT);
