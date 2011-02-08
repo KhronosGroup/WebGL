@@ -205,13 +205,14 @@ OESVertexArrayObject.prototype.bindVertexArrayOES = function (arrayObject) {
 
 function setupVertexArrayObject(gl) {
     // Ignore if already installed (or the browser provides the extension)
-    // FIXME: when Firefox supports getSupportedExtensions remove the check and getExtension call
+    // FIXME: when all stable browsers support getSupportedExtensions
+    // and getExtension, remove the workarounds below.
     if (gl.getSupportedExtensions) {
         var exts = gl.getSupportedExtensions();
         if (exts.indexOf("OES_vertex_array_object") != -1) {
             return;
         }
-    } else {
+    } else if (gl.getExtension) {
         var vao = gl.getExtension("OES_vertex_array_object");
         if (vao) {
             return;
@@ -235,6 +236,10 @@ function setupVertexArrayObject(gl) {
             }
             return gl.__OESVertexArrayObject;
         }
-        return original_getExtension.call(this, name);
+        if (original_getExtension) {
+            return original_getExtension.call(this, name);
+        } else {
+            return null;
+        }
     };
 };
