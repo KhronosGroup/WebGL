@@ -94,3 +94,5 @@ uniform-samplers-test.html
 uninitialized-test.html
 viewport-unchanged-upon-resize.html
 webgl-specific.html
+more/00_test_list.txt
+
