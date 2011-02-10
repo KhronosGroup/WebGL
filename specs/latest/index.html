@@ -159,19 +159,18 @@
     
 <!-- ======================================================================================================= -->
 
-    <h3>The <span class=prop-name>&lsquo;<code class=property>canvas</code>&rsquo;</span> Element</h3>
+    <h3>The <span class=prop-name><code>canvas</code></span> Element</h3>
 
     <p>
         A WebGLRenderingContext object shall be created by calling the <code>getContext()</code>
-        method of a given HTMLCanvasElement object with the exact string
+        method of a given HTMLCanvasElement <a href="#refsCANVAS">[CANVAS]</a> object with the exact string
         &lsquo;<code class=property>webgl</code>&rsquo;.  This string is case sensitive. When called
         for the first time, a WebGLRenderingContext object is created and returned. Also at this
         time a drawing buffer shall be created. Subsequent calls to <code>getContext()</code> with
         the same string shall return the same object.
     </p>
     <p>
-        The <a href="http://www.w3.org/TR/html5/the-canvas-element.html#the-canvas-element">HTML
-        Canvas specification</a><a href="#refsCANVAS">[CANVAS]</a>
+        The HTML Canvas specification <a href="#refsCANVAS">[CANVAS]</a>
         defines the behavior when attempting to fetch two or more
         incompatible contexts against the same canvas element.
     </p>
@@ -421,11 +420,6 @@ gl.viewport(0, 0, canvas.width, canvas.height);
         the minimum functionality mandated in Sections 4 and 5 of Appendix A.  In particular, a shader
         referencing state variables or functions that are available in other versions of GLSL (such
         as that found in versions of OpenGL for the desktop), must not be allowed to load.
-    </p>
-    <p>
-        An exception is that WebGL implementations must allow comments in shaders to be written
-        using the full Unicode character set. However, the source text of the shader must conform to
-        the GLSL source character set defined in the aforementioned specification.
     </p>
     <p>
         In addition to the reserved identifiers in the aforementioned specification, identifiers
@@ -2344,6 +2338,10 @@ for (var i = 0; i < numVertices; i++) {
             an <code>INVALID_OPERATION</code> error will be generated. If the passed
             <code>location</code> is null, the data passed in will be silently ignored and
             no uniform variables will be changed.
+            <br><br>
+            If the array passed to any of the vector forms (those ending in <code>v</code>) has an 
+            invalid length, an <code>INVALID_VALUE</code> error will be generated. The length is 
+            invalid if it is too short for or is not an integer multiple of the assigned type.
         <dt><p class="idl-code">void vertexAttrib[1234]f(GLuint indx, ...)</p>
             <p class="idl-code">void vertexAttrib[1234]fv(GLuint indx, ...)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.7">OpenGL ES 2.0 &sect;2.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glVertexAttrib.xml">man page</a>)</span></p>
@@ -2987,14 +2985,23 @@ extensions.
 
 <p>
     The GLSL ES spec <a href="#refsGLES20GLSL">[GLES20GLSL]</a> defines the source character set for
-    the OpenGL ES shading language. If a string containing a character not in this set is passed to
-    any of the shader-related entry
+    the OpenGL ES shading language to be ISO/IEC 646:1991, commonly called ASCII <a href="#refsASCII">[ASCII]</a>. 
+    If a string containing a character not in this set is passed to any of the shader-related entry
     points <code>bindAttribLocation</code>, <code>getAttribLocation</code>, <code>getUniformLocation</code>,
-    or <code>shaderSource</code>, an <code>INVALID_VALUE</code> error will be generated. The only
-    exception to this rule is comments in shaders passed to <code>shaderSource</code>
-    per <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a>.
+    or <code>shaderSource</code>, an <code>INVALID_VALUE</code> error will be generated. The exception is
+    that any character allowed in an HTML DOMString <a href="#refsDOMSTRING">[DOMSTRING]</a> may be used
+    in GLSL comments. Such use must not generate an error.
 </p>
 
+<div class="note">        
+    <p>
+        Some GLSL implementations disallow characters outside the ASCII range, even in comments. In such
+        cases the WebGL implementation needs to prevent errors in such cases. The recommended technique
+        is to preprocess the GLSL string, removing all comments, but maintaining the line numbering by 
+        inserting newline characters as needed for debugging purposes.
+    </p>
+</div>
+    
     <h3>String Length Queries</h3>
 
 <p>
@@ -3046,6 +3053,15 @@ extensions.
         <dd><cite><a href="http://dev.w3.org/2006/webapi/WebIDL/">
             Web IDL: W3C Editor’s Draft</a></cite>, 
             C. McCormack, September 2009.
+        </dd>
+        <dt id="refsASCII">[ASCII]</dt>
+        <dd><cite>International Standard ISO/IEC 646:1991. Information technology - 
+            ISO 7-bit coded character set for information interchange</cite>
+        </dd>
+        <dt id="refsDOMSTRING">[DOMSTRING]</dt>
+        <dd><cite><a href="http://www.w3.org/TR/DOM-Level-2-Core/core.html#DOMString">
+            Document Object Model Core: The DOMString type</a></cite>,
+            World Wide Web Consortium (W3C).
         </dd>
     </dl>
 
