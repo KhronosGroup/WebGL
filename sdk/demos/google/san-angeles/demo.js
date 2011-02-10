@@ -316,8 +316,6 @@ GlObject.prototype.draw = function() {
     glvao.bindVertexArrayOES(this.vao);
 
     gl.drawArrays(gl.TRIANGLES, 0, this.count);
-    
-    glvao.bindVertexArrayOES(null); // ?
 };
 
 function createGroundPlane(shader) {
