@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Final Draft (1.0) 07 February 2011</h2>
+    <h2 class="no-toc">Final Draft (1.0) 14 February 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2995,10 +2995,10 @@ extensions.
 
 <div class="note">        
     <p>
-        Some GLSL implementations disallow characters outside the ASCII range, even in comments. In such
-        cases the WebGL implementation needs to prevent errors in such cases. The recommended technique
-        is to preprocess the GLSL string, removing all comments, but maintaining the line numbering by 
-        inserting newline characters as needed for debugging purposes.
+        Some GLSL implementations disallow characters outside the ASCII range, even in comments. The
+        WebGL implementation needs to prevent errors in such cases. The recommended technique is to
+        preprocess the GLSL string, removing all comments, but maintaining the line numbering for
+        debugging purposes by inserting newline characters as needed.
     </p>
 </div>
     
