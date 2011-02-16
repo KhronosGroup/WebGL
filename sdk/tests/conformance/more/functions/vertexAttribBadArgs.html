@@ -78,10 +78,6 @@ Tests.testVertexAttrib = function(gl, prog, v,n,t) {
       function(){gl.vertexAttrib1f(-69092342, 1);});
   assertFail("bad index (big positive)",
       function(){gl.vertexAttrib1f(58928938, 1);});
-  assertOk("wrong number of args",
-      function(){gl.vertexAttrib4f(v, 1,4,5);});
-  assertOk("wrong number of args, none",
-      function(){gl.vertexAttrib1f(v);});
   assertOk("array too large",
       function(){gl.vertexAttrib1fv(v, [1,2,3,4,5]);});
   assertFail("array too small",
