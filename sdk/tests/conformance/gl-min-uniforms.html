@@ -86,7 +86,7 @@ for (var ii = 0; ii < 128; ++ii) {
 
 wtu.drawQuad(gl);
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
-wtu.checkCanvas(gl, [255, 127, 64, 255], "Should render 255,127,64,32");
+wtu.checkCanvasRect(gl, 0, 0, canvas.width, canvas.height, [255, 127, 64, 255], "Should render 255,127,64,32 (+/-1)", 1);
 
 //------------------------------------------------------------------------------
 var program = wtu.setupProgram(
@@ -103,7 +103,7 @@ for (var ii = 0; ii < 16; ++ii) {
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 wtu.drawQuad(gl);
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
-wtu.checkCanvas(gl, [32, 64, 127, 255], "Should render 32,64,127,255");
+wtu.checkCanvasRect(gl, 0, 0, canvas.width, canvas.height, [32, 64, 127, 255], "Should render 32,64,127,255 (+/-1)", 1);
 
 successfullyParsed = true;
 
