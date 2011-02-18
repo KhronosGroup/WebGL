@@ -521,5 +521,5 @@ function draw() {
             }
         }
     }
-    WebGLUtils.requestAnimationFrame(g_canvas, draw);
+    window.requestAnimationFrame(draw, g_canvas);
 }

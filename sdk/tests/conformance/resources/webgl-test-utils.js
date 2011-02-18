@@ -321,7 +321,8 @@ var drawQuad = function(gl, opt_color) {
  * @param {!Array.<number>} color The color to fill clear with before drawing. A
  *        4 element array where each element is in the range 0 to 255.
  * @param {string} msg Message to associate with success. Eg ("should be red").
- * @param {errorRange} errorRange Optional. Acceptable error in color checking. 0 by default.
+ * @param {number} errorRange Optional. Acceptable error in
+ *        color checking. 0 by default.
  */
 var checkCanvasRect = function(gl, x, y, width, height, color, msg, errorRange) {
   errorRange = errorRange || 0;

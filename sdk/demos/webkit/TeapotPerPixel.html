@@ -358,7 +358,7 @@
             framerate = new Framerate("framerate");
             var f = function() {
                 drawPicture(ctx);
-                WebGLUtils.requestAnimationFrame(c, f);
+                window.requestAnimationFrame(f, c);
             };
             f();
         }

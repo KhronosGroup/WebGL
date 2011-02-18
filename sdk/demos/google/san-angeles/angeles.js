@@ -59,5 +59,5 @@ function init() {
 function render() {
     appRender((new Date()).getTime() - start_time,
               canvas.width, canvas.height);
-    WebGLUtils.requestAnimationFrame(canvas, render);
+    window.requestAnimationFrame(render, canvas);
 }

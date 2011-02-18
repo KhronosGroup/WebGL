@@ -219,7 +219,7 @@
         incAngle = 0.5;
         framerate = new Framerate("framerate");
         var f = function() {
-            WebGLUtils.requestAnimationFrame(c, f);
+            window.requestAnimationFrame(f, c);
             drawPicture(gl);
         };
         f();

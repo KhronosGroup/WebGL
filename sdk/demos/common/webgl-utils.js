@@ -45,7 +45,7 @@
  * loop like this.
  *
  *       function render() {
- *         WebGLUtils.requestAnimationFrame(canvas, render);
+ *         window.requestAnimationFrame(render, canvas);
  *
  *         // do rendering
  *         ...
@@ -55,16 +55,9 @@
  * This will call your rendering function up to the refresh rate
  * of your display but will stop rendering if your app is not
  * visible.
- *
- * To get an animationTime call
- *
- *       timeInMilliSeconds = WebGLUtils.animationFrame();
  */
 
 WebGLUtils = function() {
-
-var requestAnimationFrameImpl_;
-var getAnimationTimeImpl_;
 
 /**
  * Creates the HTLM for a failure message
@@ -160,78 +153,27 @@ var create3DContext = function(canvas, opt_attribs) {
   return context;
 }
 
-/**
- * Returns the animationTime in a cross browser way.
- * @return {number} The current animationTime
- */
-var animationTime = function() {
-  if (!getAnimationTimeImpl_) {
-    getAnimationTimeImpl_ = function() {
-      var attribNames = [
-        "animationTime",
-        "webkitAnimationTime",
-        "mozAnimationTime",
-        "oAnimationTime",
-        "msAnimationTime"
-      ];
-      for (var ii = 0; ii < attribNames.length; ++ii) {
-        var name = attribNames[ii];
-        if (window[name]) {
-          return function() {
-            return window[name];
-          };
-        }
-      }
-      return function() {
-        return (new Date()).getTime();
-      }
-    }();
-  }
-  return getAnimationTimeImpl_();
+return {
+  create3DContext: create3DContext,
+  setupWebGL: setupWebGL
 };
+}();
 
 /**
  * Provides requestAnimationFrame in a cross browser
  * way.
- *
- * @param {!Element} element Element to request an animation frame for.
- * @param {function(number): void} callback. Callback that
- *     will be called when a frame is ready.
  */
-var requestAnimationFrame = function(element, callback) {
-  if (!requestAnimationFrameImpl_) {
-    requestAnimationFrameImpl_ = function() {
-      var functionNames = [
-        "requestAnimationFrame",
-        "webkitRequestAnimationFrame",
-        "mozRequestAnimationFrame",
-        "oRequestAnimationFrame",
-        "msRequestAnimationFrame"
-      ];
-      for (var jj = 0; jj < functionNames.length; ++jj) {
-        var functionName = functionNames[jj];
-        if (window[functionName]) {
-          return function (name) {
-            return function(element, callback) {
-              window[name].call(window, callback, element);
-            };
-          }(functionName);
-        }
-      }
-      return function(element, callback) {
-           window.setTimeout(callback, 1000 / 70);
-        };
-    }();
-  }
+if (!window.requestAnimationFrame) {
+  window.requestAnimationFrame = (function() {
+    return window.requestAnimationFrame ||
+           window.webkitRequestAnimationFrame ||
+           window.mozRequestAnimationFrame ||
+           window.oRequestAnimationFrame ||
+           window.msRequestAnimationFrame ||
+           function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+             window.setTimeout(callback, 1000/60);
+           };
+  })();
+}
 
-  requestAnimationFrameImpl_(element, callback)
-};
-
-return {
-  animationTime: animationTime,
-  create3DContext: create3DContext,
-  requestAnimationFrame: requestAnimationFrame,
-  setupWebGL: setupWebGL
-};
-}();
 

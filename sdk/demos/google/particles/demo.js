@@ -539,5 +539,5 @@ function draw() {
     if (g_fpsCounter) {
         g_fpsCounter.update();
     }
-    WebGLUtils.requestAnimationFrame(g_canvas, draw);
+    window.requestAnimationFrame(draw, g_canvas);
 }
