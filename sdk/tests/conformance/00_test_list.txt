@@ -4,6 +4,7 @@ array-unit-tests.html
 bad-arguments-test.html
 buffer-bind-test.html
 buffer-data-array-buffer.html
+buffer-preserve-test.html
 canvas-test.html
 constants.html
 context-attributes-alpha-depth-stencil-antialias.html
