@@ -167,6 +167,12 @@ function start() {
       this.contextInfo["VENDOR"] = ctx.getParameter(ctx.VENDOR);
       this.contextInfo["VERSION"] = ctx.getParameter(ctx.VERSION);
       this.contextInfo["RENDERER"] = ctx.getParameter(ctx.RENDERER);
+      this.contextInfo["RED_BITS"] = ctx.getParameter(ctx.RED_BITS);
+      this.contextInfo["GREEN_BITS"] = ctx.getParameter(ctx.GREEN_BITS);
+      this.contextInfo["BLUE_BITS"] = ctx.getParameter(ctx.BLUE_BITS);
+      this.contextInfo["ALPHA_BITS"] = ctx.getParameter(ctx.ALPHA_BITS);
+      this.contextInfo["DEPTH_BITS"] = ctx.getParameter(ctx.DEPTH_BITS);
+      this.contextInfo["STENCIL_BITS"] = ctx.getParameter(ctx.STENCIL_BITS);
     }
   };
 
@@ -232,6 +238,7 @@ function start() {
     tx += "WebGL VENDOR: " + this.contextInfo["VENDOR"] + "\n";
     tx += "WebGL VERSION: " + this.contextInfo["VERSION"] + "\n";
     tx += "WebGL RENDERER: " + this.contextInfo["RENDERER"] + "\n";
+    tx += "WebGL R/G/B/A/Depth/Stencil bits (default config): " + this.contextInfo["RED_BITS"] + "/" + this.contextInfo["GREEN_BITS"] + "/" + this.contextInfo["BLUE_BITS"] + "/" + this.contextInfo["ALPHA_BITS"] + "/" + this.contextInfo["DEPTH_BITS"] + "/" + this.contextInfo["STENCIL_BITS"] + "\n";
     tx += "\n";
     tx += "-------------------\n\n";
     tx += "Test Summary (" + totalTests + " total tests):\n";
