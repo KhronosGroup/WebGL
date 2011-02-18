@@ -32,6 +32,7 @@ functions/texSubImage2DHTML.html
 functions/texSubImage2DHTMLBadArgs.html
 functions/uniformf.html
 functions/uniformfBadArgs.html
+functions/uniformfArrayLen1.html
 functions/uniformi.html
 functions/uniformiBadArgs.html
 functions/uniformMatrix.html
