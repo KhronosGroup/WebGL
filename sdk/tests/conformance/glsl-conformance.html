@@ -277,7 +277,7 @@ void main()
 </script>
 <script id="fshaderWithLongLine" type="text/something-not-javascript">
 precision mediump float;
-uniform float foo;
+uniform float fooo;
 #if defined(someSymbolNotDefined)
 #error long
 #endif
@@ -554,7 +554,7 @@ if (!gl) {
           return str;
         }
         str = expand(str, new RegExp(" ", 'g'), "  ", 12);
-        str = expand(str, new RegExp("0", 'g'), "00", 8).substr(0,253);
+        str = expand(str, new RegExp("0", 'g'), "00", 8);
         str = expand(str, new RegExp("fooo", 'g'), "fooofooo", 6);
         str = expand(str, new RegExp("long", 'g'), "longlong", 6);
         //debug("len:" + str.length);
