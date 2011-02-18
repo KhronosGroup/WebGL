@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Final Draft (1.0) 14 February 2011</h2>
+    <h2 class="no-toc">Final Draft (1.0) 18 February 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -181,12 +181,15 @@
         See <a href="#WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a> for more details.
     </p>
     <p>
-        The passed attributes are requests, not requirements. The WebGL implementation does not
-        guarantee that they will be obeyed, but should make a best effort to honor them.
-        Combinations of attributes not supported by the WebGL implementation or graphics hardware
-        shall not cause a failure to create a WebGLRenderingContext. The attributes actually used to
-        create the context may be queried by the <code>getContextAttributes()</code> method on the
-        WebGLRenderingContext.
+        The <code>alpha</code>, <code>depth</code>, <code>stencil</code> and <code>antialias</code>
+        attributes are requests, not requirements. The WebGL implementation does not guarantee that
+        they will be obeyed, but should make a best effort to honor them. Combinations of attributes
+        not supported by the WebGL implementation or graphics hardware shall not cause a failure to
+        create a WebGLRenderingContext. The attributes actually used to create the context may be
+        queried by the <code>getContextAttributes()</code> method on the
+        WebGLRenderingContext. The <code>premultipliedAlpha</code>
+        and <code>preserveDrawingBuffer</code> attributes must be obeyed by the WebGL
+        implementation.
     </p>
     <p>
         On subsequent calls to getContext() with the &lsquo;<code class=property>webgl</code>&rsquo;
