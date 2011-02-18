@@ -49,7 +49,7 @@ function init()
         return;
     }
 
-    canvas.addEventListener("webglcontextlost", testLostContext);
+    canvas.addEventListener("webglcontextlost", testLostContext, false);
 
     testValidContext();
     loseContext();

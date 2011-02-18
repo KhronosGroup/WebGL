@@ -25,8 +25,8 @@ function init()
     description("Tests behavior under a restored context");
 
     canvas = document.getElementById("canvas");
-    canvas.addEventListener("webglcontextlost", testLostContext);
-    canvas.addEventListener("webglcontextrestored", testRestoredContext);
+    canvas.addEventListener("webglcontextlost", testLostContext, false);
+    canvas.addEventListener("webglcontextrestored", testRestoredContext, false);
 
     gl = wtu.create3DContext(canvas);
     shouldGenerateGLError = wtu.shouldGenerateGLError;
