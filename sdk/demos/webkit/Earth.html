@@ -84,8 +84,6 @@
             gl.uniform3f(gl.getUniformLocation(gl.program, "lightDir"), 0, 0, 1);
             gl.uniform1i(gl.getUniformLocation(gl.program, "sampler2d"), 0);
 
-            gl.enable(gl.TEXTURE_2D);
-
             gl.sphere = makeSphere(gl, 1, 30, 30);
 
             // get the images

@@ -95,9 +95,6 @@
         gl.uniform3f(gl.getUniformLocation(gl.program, "lightDir"), 0, 0, 1);
         gl.uniform1i(gl.getUniformLocation(gl.program, "sampler2d"), 0);
 
-        // Enable texturing
-        gl.enable(gl.TEXTURE_2D);
-
         // Create a box. On return 'gl' contains a 'box' property with
         // the BufferObjects containing the arrays for vertices,
         // normals, texture coords, and indices.
@@ -278,8 +275,6 @@
 
     .box {
         position:absolute;
-        width:100;
-        height:30;
         color:white;
     }
     #box1 { left:100px; top:80px; }

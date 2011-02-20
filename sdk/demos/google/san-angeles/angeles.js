@@ -41,16 +41,7 @@ function main() {
     setupVertexArrayObject(gl);
     glvao = gl.getExtension("OES_vertex_array_object");
     gl.clearColor(0., 0., 0., 1.);
-    gl.viewport(0, 0, c.width, c.height);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.flush();
-
-    // hack to get mozilla to draw black and update the UI before running the
-    // precompute
-    setTimeout(init, 200);
-}
-
-function init() {
     appInit();
     start_time = (new Date()).getTime();
     render();

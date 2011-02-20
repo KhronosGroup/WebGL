@@ -286,9 +286,6 @@ function renderStart() {
               gl.generateMipmap(gl.TEXTURE_2D);
 
               gl.uniform1i(tex0Uniform, 0);
-
-              gl.enable(gl.TEXTURING);
-              gl.enable(gl.TEXTURE_2D);
             }
 
             texturesBound = true;

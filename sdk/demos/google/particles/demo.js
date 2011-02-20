@@ -137,7 +137,7 @@ function main() {
         return;
     g_width = g_canvas.width;
     g_height = g_canvas.height;
-    controller = new CameraController(c);
+    controller = new CameraController(g_canvas);
     controller.onchange = function(xRot, yRot) {
         g_math.matrix4.setIdentity(g_view);
         g_math.matrix4.translate(g_view, [0, -100, -1500.0]);
@@ -535,7 +535,6 @@ function draw() {
     var viewProjection = g_math.mulMatrixMatrix4(g_view, g_projection);
     var viewInverse = g_math.inverse4(g_view);
     g_particleSystem.draw(viewProjection, g_world, viewInverse);
-    gl.flush();
     if (g_fpsCounter) {
         g_fpsCounter.update();
     }
