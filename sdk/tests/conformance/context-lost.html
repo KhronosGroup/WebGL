@@ -42,6 +42,10 @@ function init()
         window.initNonKhronosFramework(true);
     }
 
+    // call testValidContext() before checking for the extension, because this is where we check
+    // for the isContextLost() method, which we want to do regardless of the extension's presence.
+    testValidContext();
+
     extension = gl.getExtension(extension_name);
     if (!extension) {
         debug(extension_name + " extension not found.");
@@ -51,7 +55,6 @@ function init()
 
     canvas.addEventListener("webglcontextlost", testLostContext, false);
 
-    testValidContext();
     loseContext();
 }
 
