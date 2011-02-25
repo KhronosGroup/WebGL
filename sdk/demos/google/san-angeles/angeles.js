@@ -50,5 +50,5 @@ function main() {
 function render() {
     appRender((new Date()).getTime() - start_time,
               canvas.width, canvas.height);
-    window.requestAnimationFrame(render, canvas);
+    window.requestAnimFrame(render, canvas);
 }

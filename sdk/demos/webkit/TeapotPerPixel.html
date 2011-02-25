@@ -358,7 +358,7 @@
             framerate = new Framerate("framerate");
             var f = function() {
                 drawPicture(ctx);
-                window.requestAnimationFrame(f, c);
+                window.requestAnimFrame(f, c);
             };
             f();
         }

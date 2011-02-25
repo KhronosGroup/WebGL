@@ -338,7 +338,7 @@
             incAngle = 0.2;
             framerate = new Framerate("framerate");
             var f = function() {
-                window.requestAnimationFrame(f, canvas);
+                window.requestAnimFrame(f, canvas);
                 drawPicture(ctx);
             };
             f();

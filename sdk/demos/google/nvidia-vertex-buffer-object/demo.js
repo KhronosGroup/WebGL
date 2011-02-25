@@ -521,5 +521,5 @@ function draw() {
             }
         }
     }
-    window.requestAnimationFrame(draw, g_canvas);
+    window.requestAnimFrame(draw, g_canvas);
 }
