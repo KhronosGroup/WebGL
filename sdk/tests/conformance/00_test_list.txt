@@ -67,6 +67,7 @@ oes-vertex-array-object.html
 origin-clean-conformance.html
 point-size.html
 program-test.html
+premultiplyalpha-test.html
 read-pixels-pack-alignment.html
 read-pixels-test.html
 renderbuffer-initialization.html

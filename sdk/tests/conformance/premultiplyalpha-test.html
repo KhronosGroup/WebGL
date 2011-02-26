@@ -1,0 +1,109 @@
+<!--
+Copyright (c) 2009 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+ -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Test the WebGL premultipledAlpha context creation flag.</title>
+<link rel="stylesheet" href="../resources/js-test-style.css"/>
+<script src="../resources/js-test-pre.js"></script>
+<script src="resources/webgl-test.js"> </script>
+<script src="resources/webgl-test-utils.js"> </script>
+</head>
+<body>
+<div id="description"></div><div id="console"></div>
+<script>
+var wtu = WebGLTestUtils;
+
+var tests = [
+  // If premultipledAlpha is true then
+  // [texture]           [canvas]      [dataURL]
+  // 255, 192, 128, 0 -> 0, 0, 0, 0 -> 0, 0, 0, 0
+  { creationAttributes: {},
+    expectedColor: [0, 0, 0, 0]
+  },
+  // If premultipledAlpha is false then
+  // [texture]           [canvas]            [dataURL]
+  // 255, 192, 128, 0 -> 255, 192, 128, 0 -> 255, 192, 128, 0
+  { creationAttributes: {premultipliedAlpha: false},
+    expectedColor: [255, 192, 128, 0]
+  }
+];
+
+var g_count = 0;
+var gl;
+var canvas;
+var premultipledAlpha;
+
+description("Test the WebGL premultipledAlpha context creation flag.");
+doNextTest();
+function doNextTest() {
+  if (g_count < tests.length) {
+     var test = tests[g_count++];
+     canvas = document.createElement("canvas");
+     gl = wtu.create3DContext(canvas, test.creationAttributes);
+     var premultipliedAlpha = test.creationAttributes.premultipliedAlpha != false;
+     debug("")
+     debug("testing: premultipliedAlpha: " + premultipliedAlpha);
+
+     shouldBe('gl.getContextAttributes().premultipledAlpha', 'premultipledAlpha');
+
+     console.log(gl.getContextAttributes());
+     var program = wtu.setupTexturedQuad(gl);
+
+     glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+     var tex = gl.createTexture();
+     wtu.fillTexture(gl, tex, 2, 2, [255, 192, 128, 0], 0);
+     var loc = gl.getUniformLocation(program, "tex");
+     gl.uniform1i(loc, 0);
+     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+     wtu.drawQuad(gl);
+     glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from drawing.");
+
+     // get a copy of the texture as a PNG.
+     var png = canvas.toDataURL();
+     // make a texture from the canvas
+     var img = document.createElement("img");
+     img.src = png;
+     img.onload = function() {
+       var pngTex = gl.createTexture();
+       // not needed as it's the default
+       // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+       gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, false);
+       gl.bindTexture(gl.TEXTURE_2D, pngTex);
+       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+       glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from creating copy.");
+       wtu.drawQuad(gl);
+       glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from 2nd drawing.");
+       wtu.checkCanvas(
+          gl, test.expectedColor,
+          "should draw with " + test.expectedColor);
+
+       doNextTest();
+     }
+   } else {
+      successfullyParsed = true;
+      finishTest();
+   }
+}
+
+</script>
+
+<script>
+</script>
+
+</body>
+</html>
+
+
