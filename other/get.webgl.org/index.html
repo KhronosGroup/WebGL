@@ -17,10 +17,10 @@ function launchLogo() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 }
 
-function removeClass(element, class) {
+function removeClass(element, clas) {
     var cs = element.getAttribute("class").split(/\s+/);
-    if (cs.indexOf(class) != -1) {
-	cs.splice(cs.indexOf(class), 1);
+    if (cs.indexOf(clas) != -1) {
+	cs.splice(cs.indexOf(clas), 1);
     }
     element.setAttribute("class", cs.join(" "));
 }
