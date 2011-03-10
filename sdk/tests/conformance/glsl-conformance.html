@@ -601,88 +601,115 @@ if (!gl) {
   var simpleFragShader = document.getElementById('fshader').text;
 
   function addExternalShaders(filename, passMsg) {
-    var files = wtu.readFileList(filename);
-    for (var ii = 0; ii < files.length; ++ii) {
-      var file = files[ii];
-      var shaderSource = wtu.readFile(file);
-      var firstLine = shaderSource.split("\n")[0];
-      var success = undefined;
-      if (wtu.endsWith(firstLine, " fail") ||
-          wtu.endsWith(firstLine, " fail.")) {
-        success = false;
-      } else if (wtu.endsWith(firstLine, " succeed") ||
-                 wtu.endsWith(firstLine, " succeed.")) {
-        success = true;
+    var lines = wtu.readFileList(filename);
+    for (var ii = 0; ii < lines.length; ++ii) {
+      var info = {
+        vShaderId:      'vshader',
+        vShaderSource:  simpleVertShader,
+        vShaderSuccess: true,
+        fShaderId:      'fshader',
+        fShaderSource:  simpleFragShader,
+        fShaderSuccess: true,
+        linkSuccess:    true,
+      };
+
+      var line = lines[ii];
+      var files = line.split(/ +/);
+      var passMsg = "";
+      for (var jj = 0; jj < files.length; ++jj) {
+        var file = files[jj];
+        var shaderSource = wtu.readFile(file);
+        var firstLine = shaderSource.split("\n")[0];
+        var success = undefined;
+        if (wtu.endsWith(firstLine, " fail") ||
+            wtu.endsWith(firstLine, " fail.")) {
+          success = false;
+        } else if (wtu.endsWith(firstLine, " succeed") ||
+                   wtu.endsWith(firstLine, " succeed.")) {
+          success = true;
+        }
+        if (success === undefined) {
+          testFailed("bad first line in " + file);
+          continue;
+        }
+        if (!wtu.startsWith(firstLine, "// ")) {
+          testFailed("bad first line in " + file);
+          continue;
+        }
+        passMsg = passMsg + (passMsg.length ? ", " : "") + firstLine.substr(3);
+        if (wtu.endsWith(file, ".vert")) {
+          info.vShaderId = file;
+          info.vShaderSource = shaderSource;
+          info.vShaderSuccess = success;
+        } else if (wtu.endsWith(file, ".frag")) {
+          info.fShaderId = file;
+          info.fShaderSource = shaderSource;
+          info.fShaderSuccess = success;
+        }
       }
-      if (success === undefined) {
-        testFailed("bad first line in " + file);
-        continue;
-      }
-      if (!wtu.startsWith(firstLine, "// ")) {
-        testFailed("bad first line in " + file);
-        continue;
-      }
-      var passMsg = firstLine.substr(3);
-      if (wtu.endsWith(file, ".vert")) {
-        shaderInfo.push({
-            vShaderId: file,
-            vShaderSource: shaderSource,
-            vShaderSuccess: success,
-            fShaderId: 'fshader',
-            fShaderSource: simpleFragShader,
-            fShaderSuccess: true,
-            linkSuccess: success,
-            passMsg: passMsg,
-          });
-      } else if (wtu.endsWith(file, ".frag")) {
-        shaderInfo.push({
-            vShaderId: 'vshader',
-            vShaderSource: simpleVertShader,
-            vShaderSuccess: true,
-            fShaderId: file,
-            fShaderSource: shaderSource,
-            fShaderSuccess: success,
-            linkSuccess: success,
-            passMsg: passMsg,
-          });
-      }
+      info.linkSuccess = info.vShaderSuccess && info.fShaderSuccess;
+      info.passMsg = passMsg;
+      shaderInfo.push(info);
     }
   }
 
   addExternalShaders('shaders/00_shaders.txt');
+
+  var vShaderDB = { };
+  var fShaderDB = { };
 
   for (var ii = 0; ii < shaderInfo.length; ++ii) {
     var info = shaderInfo[ii];
     var passMsg = '[' + info.vShaderId + '/' + info.fShaderId + ']: ' +
                   info.passMsg
     log(passMsg);
+
     //debug(info.fShaderId);
     var vSource = info.vShaderPrep ? info.vShaderPrep(info.vShaderSource) :
       info.vShaderSource;
-    var vShader = wtu.loadShader(gl, vSource, gl.VERTEX_SHADER);
-    if (info.vShaderTest) {
-      if (!info.vShaderTest(vShader)) {
+
+    // Reuse identical shaders so we test shared shader.
+    var vShader = vShaderDB[vSource];
+    if (!vShader) {
+      vShader = wtu.loadShader(gl, vSource, gl.VERTEX_SHADER);
+      if (info.vShaderTest) {
+        if (!info.vShaderTest(vShader)) {
+          testFailed(passMsg);
+          continue;
+        }
+      }
+      if ((vShader != null) != info.vShaderSuccess) {
         testFailed(passMsg);
         continue;
       }
+      // Save the shaders so we test shared shader.
+      if (vShader) {
+        vShaderDB[vSource] = vShader;
+      }
     }
-    if ((vShader != null) != info.vShaderSuccess) {
-      testFailed(passMsg);
-      continue;
-    }
+
     var fSource = info.fShaderPrep ? info.fShaderPrep(info.fShaderSource) :
       info.fShaderSource;
-    var fShader = wtu.loadShader(gl, fSource, gl.FRAGMENT_SHADER);
-    if (info.fShaderTest) {
-      if (!info.fShaderTest(fShader)) {
+
+    // Reuse identical shaders so we test shared shader.
+    var fShader = fShaderDB[fSource];
+    if (!fShader) {
+      fShader = wtu.loadShader(gl, fSource, gl.FRAGMENT_SHADER);
+      if (info.fShaderTest) {
+        if (!info.fShaderTest(fShader)) {
+          testFailed(passMsg);
+          continue;
+        }
+      }
+      //debug(fShader == null ? "fail" : "succeed");
+      if ((fShader != null) != info.fShaderSuccess) {
         testFailed(passMsg);
         continue;
       }
-    }
-    //debug(fShader == null ? "fail" : "succeed");
-    if ((fShader != null) != info.fShaderSuccess) {
-      testFailed(passMsg);
-      continue;
+      // Safe the shaders so we test shared shader.
+      if (fShader) {
+        fShaderDB[fSource] = fShader;
+      }
     }
 
     if (vShader && fShader) {
