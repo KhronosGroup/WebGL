@@ -122,7 +122,7 @@ var BrowserDetect = {
   /*
   upgradeUrl:         Tell the user how to upgrade their browser.
   troubleshootingUrl: Help the user.
-  platforms:          Urls by platform. See dataPlatform.identity for valid OS names.
+  platforms:          Urls by platform. See dataPlatform.identity for valid platform names.
   */
   urls: {
     "Chrome": {
@@ -139,9 +139,13 @@ var BrowserDetect = {
     },
     "Safari": {
       platforms: {
-        "iPhone/Ipod": {
+        "iPhone/iPod": {
           upgradeUrl: "http://www.apple.com/ios/",
           troubleshootingUrl: "http://www.apple.com/support/iphone/"
+        },
+        "iPad": {
+          upgradeUrl: "http://www.apple.com/ios/",
+          troubleshootingUrl: "http://www.apple.com/support/ipad/"
         },
         "Mac": {
           upgradeUrl: "http://www.webkit.org/",
