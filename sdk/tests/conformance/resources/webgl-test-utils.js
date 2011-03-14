@@ -631,6 +631,7 @@ var readFileList = function(url) {
             s += p + prefix + names[jj];
             p = " ";
           }
+          files.push(s);
         }
       }
     }
