@@ -620,8 +620,18 @@ var readFileList = function(url) {
           str[0] != '#' &&
           str[0] != ";" &&
           str.substr(0, 2) != "//") {
-        new_url = prefix + str;
-        files = files.concat(readFileList(new_url));
+        var names = str.split(/ +/);
+        if (names.length == 1) {
+          new_url = prefix + str;
+          files = files.concat(readFileList(new_url));
+        } else {
+          var s = "";
+          var p = "";
+          for (var jj = 0; jj < names.length; ++jj) {
+            s += p + prefix + names[jj];
+            p = " ";
+          }
+        }
       }
     }
   } else {

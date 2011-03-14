@@ -629,11 +629,11 @@ if (!gl) {
           success = true;
         }
         if (success === undefined) {
-          testFailed("bad first line in " + file);
+          testFailed("bad first line in " + file + ":" + firstLine);
           continue;
         }
         if (!wtu.startsWith(firstLine, "// ")) {
-          testFailed("bad first line in " + file);
+          testFailed("bad first line in " + file + ":" + firstLine);
           continue;
         }
         passMsg = passMsg + (passMsg.length ? ", " : "") + firstLine.substr(3);
