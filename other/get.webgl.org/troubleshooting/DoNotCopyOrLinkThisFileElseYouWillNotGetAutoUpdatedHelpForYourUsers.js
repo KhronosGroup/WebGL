@@ -134,8 +134,8 @@ var BrowserDetect = {
       troubleshootingUrl: "https://support.mozilla.com/en-US/questions/720087"
     },
     "Opera": {
-      upgradeUrl: "http://www.opera.com/",
-      troubleshootingUrl: "http://my.opera.com/chooseopera/blog/2011/03/03/a-sneak-preview-of-our-upcoming-webgl-demo"
+      upgradeUrl: "http://labs.opera.com",
+      troubleshootingUrl: " http://my.opera.com/core/blog/2011/02/28/webgl-and-hardware-acceleration-2"
     },
     "Safari": {
       platforms: {
