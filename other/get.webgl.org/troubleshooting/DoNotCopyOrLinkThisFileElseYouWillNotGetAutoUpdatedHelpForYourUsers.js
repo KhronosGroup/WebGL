@@ -147,7 +147,7 @@ var BrowserDetect = {
   urls: {
     "Chrome": {
       upgradeUrl: "http://www.google.com/support/chrome/bin/answer.py?answer=95346",
-      troubleshootingUrl: "http://www.google.com/support/chrome/bin/answer.py?hl=en&answer=1202946"
+      troubleshootingUrl: "http://www.google.com/support/chrome/bin/answer.py?answer=1220892"
     },
     "Firefox": {
       upgradeUrl: "http://www.mozilla.com/en-US/firefox/beta/",
