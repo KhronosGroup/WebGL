@@ -20,16 +20,40 @@ var wtu = WebGLTestUtils;
 
 var tests = [
   // If premultipledAlpha is true then
-  // [texture]           [canvas]      [dataURL]
-  // 255, 192, 128, 0 -> 0, 0, 0, 0 -> 0, 0, 0, 0
+  // [texture]           [canvas]             [dataURL]
+  // 32, 64, 128, 128 -> 64, 128, 255, 128 -> 64, 128, 255, 128
   { creationAttributes: {},
-    expectedColor: [0, 0, 0, 0]
+    sentColor: [32, 64, 128, 128],
+    expectedColor: [64, 128, 255, 128],
+    errorRange: 2,
+    useToDataURL: true,
+  },
+  // If premultipledAlpha is true then
+  // [texture]           [canvas]             [texture]
+  // 32, 64, 128, 128 -> 64, 128, 255, 128 -> 64, 128, 255, 128
+  { creationAttributes: {},
+    sentColor: [32, 64, 128, 128],
+    expectedColor: [64, 128, 255, 128],
+    errorRange: 2,
+    useToDataURL: false,
   },
   // If premultipledAlpha is false then
   // [texture]           [canvas]            [dataURL]
-  // 255, 192, 128, 0 -> 255, 192, 128, 0 -> 255, 192, 128, 0
+  // 255, 192, 128, 1 -> 255, 192, 128, 1 -> 255, 192, 128, 1
   { creationAttributes: {premultipliedAlpha: false},
-    expectedColor: [255, 192, 128, 0]
+    sentColor: [255, 192, 128, 1],
+    expectedColor: [255, 192, 128, 1],
+    errorRange: 0,
+    useToDataURL: true,
+  },
+  // If premultipledAlpha is false then
+  // [texture]           [canvas]            [texture]
+  // 255, 192, 128, 1 -> 255, 192, 128, 1 -> 255, 192, 128, 1
+  { creationAttributes: {premultipliedAlpha: false},
+    sentColor: [255, 192, 128, 1],
+    expectedColor: [255, 192, 128, 1],
+    errorRange: 0,
+    useToDataURL: false,
   }
 ];
 
@@ -47,7 +71,7 @@ function doNextTest() {
      gl = wtu.create3DContext(canvas, test.creationAttributes);
      var premultipliedAlpha = test.creationAttributes.premultipliedAlpha != false;
      debug("")
-     debug("testing: premultipliedAlpha: " + premultipliedAlpha);
+     debug("testing: premultipliedAlpha: " + premultipliedAlpha + " toDataURL: " + test.useToDataURL);
 
      shouldBe('gl.getContextAttributes().premultipledAlpha', 'premultipledAlpha');
 
@@ -56,7 +80,7 @@ function doNextTest() {
 
      glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
      var tex = gl.createTexture();
-     wtu.fillTexture(gl, tex, 2, 2, [255, 192, 128, 0], 0);
+     wtu.fillTexture(gl, tex, 2, 2, test.sentColor, 0);
      var loc = gl.getUniformLocation(program, "tex");
      gl.uniform1i(loc, 0);
      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -67,18 +91,19 @@ function doNextTest() {
      wtu.drawQuad(gl);
      glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from drawing.");
 
-     // get a copy of the texture as a PNG.
-     var png = canvas.toDataURL();
-     // make a texture from the canvas
-     var img = document.createElement("img");
-     img.src = png;
-     img.onload = function() {
+     function loadTexture() {
        var pngTex = gl.createTexture();
        // not needed as it's the default
        // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
        gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, false);
        gl.bindTexture(gl.TEXTURE_2D, pngTex);
-       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+       if (test.useToDataURL) {
+          // create texture from image
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this);
+       } else {
+          // create texture from canvas
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
+       }
        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -88,9 +113,21 @@ function doNextTest() {
        glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from 2nd drawing.");
        wtu.checkCanvas(
           gl, test.expectedColor,
-          "should draw with " + test.expectedColor);
+          "should draw with " + test.expectedColor, test.errorRange);
 
        doNextTest();
+     }
+
+     if (test.useToDataURL) {
+        // Load canvas into string using toDataURL
+        var png = canvas.toDataURL();
+        // Load string into the texture
+        var input = document.createElement("img");
+        input.onload = loadTexture;
+        input.src = png;
+     } else {
+        // Load canvas into the texture asynchronously (to prevent unbounded stack consumption)
+        setTimeout(loadTexture, 0);
      }
    } else {
       successfullyParsed = true;

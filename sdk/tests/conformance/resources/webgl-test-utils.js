@@ -351,9 +351,11 @@ var checkCanvasRect = function(gl, x, y, width, height, color, msg, errorRange) 
  * @param {!Array.<number>} color The color to fill clear with before drawing. A
  *        4 element array where each element is in the range 0 to 255.
  * @param {string} msg Message to associate with success. Eg ("should be red").
+ * @param {number} errorRange Optional. Acceptable error in
+ *        color checking. 0 by default.
  */
-var checkCanvas = function(gl, color, msg) {
-  checkCanvasRect(gl, 0, 0, gl.canvas.width, gl.canvas.height, color, msg);
+var checkCanvas = function(gl, color, msg, errorRange) {
+  checkCanvasRect(gl, 0, 0, gl.canvas.width, gl.canvas.height, color, msg, errorRange);
 };
 
 /**
