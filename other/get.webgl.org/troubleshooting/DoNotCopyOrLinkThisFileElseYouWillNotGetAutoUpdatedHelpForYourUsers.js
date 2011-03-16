@@ -1,3 +1,23 @@
+/* Do not copy this file. Instead, do something like this in your
+   own code.
+
+  if (!window.WebGLRenderingContext) {
+     // Browser has no idea what WebGL is. Suggest they
+     // get a new browser by presenting the user with link to
+     // http://get.webgl.org
+     return;
+  }
+
+  gl = canvas.getContext("webgl");
+  if (!gl) {
+    // Browser could not initialize WebGL. User probably needs to
+    // update their drivers or get a new browser. Present a link to
+    // http://get.webgl.org/troubleshooting
+    return;
+  }
+
+*/
+
 var BrowserDetect = {
   init: function () {
     this.browser = this.searchString(this.dataBrowser) || "unknown";
