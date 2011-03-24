@@ -23,7 +23,7 @@ Tests.testUniformf = function(gl) {
             function(){gl.uniform4fv(-58882929, [1,2,3,4]);});
         assertGLError(gl, gl.INVALID_OPERATION, "1fv on 4fv",
             function(){gl.uniform1fv(uniV4, [1,2,3,4]);});
-        assertGLError(gl, gl.NO_ERROR, "more than enough values 1fv",
+        assertGLError(gl, gl.INVALID_OPERATION, "more than enough values 1fv",
             function(){gl.uniform1fv(uniFloat, [2,3,4,5,6]);});
         assertGLError(gl, gl.INVALID_OPERATION, "4fv on float",
             function(){gl.uniform4fv(uniFloat, [2,3,4,5]);});
@@ -31,7 +31,7 @@ Tests.testUniformf = function(gl) {
             function(){gl.uniform4fv(uniV4, [1, 2, 3, 4]);});
         assertGLError(gl, gl.INVALID_VALUE, "5 values on 4fv",
             function(){gl.uniform4fv(uniV4, [1, 2, 3, 4, 5]);});
-        assertGLError(gl, gl.NO_ERROR, "8 values on 4fv",
+        assertGLError(gl, gl.INVALID_OPERATION, "8 values on 4fv",
             function(){gl.uniform4fv(uniV4, [1, 2, 3, 4, 5, 6, 7, 8]);});
         assertGLError(gl, gl.INVALID_OPERATION, "3fv on float",
             function(){gl.uniform3fv(uniFloat, [2,3,4]);});
