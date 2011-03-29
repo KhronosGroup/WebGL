@@ -22,12 +22,12 @@ function main() {
   }
   // check if the browser even knows what WebGL is
   if (!window.WebGLRenderingContext) {
-    link.innerText = "Click Here to learn about upgrading "
+    link.innerHTML = "Click Here to learn about upgrading "
        + name + " on " + b.platform + " to one that supports WebGL";
     link.href = b.urls.upgradeUrl;
     return;
   }
-  link.innerText = "Click Here for WebGL troubleshooting info for "
+  link.innerHTML = "Click Here for WebGL troubleshooting info for "
        + name + " on " + b.platform;
   link.href = b.urls.troubleshootingUrl;
 }
