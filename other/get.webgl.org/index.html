@@ -18,11 +18,14 @@ function launchLogo() {
 }
 
 function removeClass(element, clas) {
-    var cs = element.getAttribute("class").split(/\s+/);
-    if (cs.indexOf(clas) != -1) {
-	cs.splice(cs.indexOf(clas), 1);
+    var classes = element.getAttribute("class");
+    if (classes) {
+        var cs = classes.split(/\s+/);
+        if (cs.indexOf(clas) != -1) {
+            cs.splice(cs.indexOf(clas), 1);
+        }
+        element.setAttribute("class", cs.join(" "));
     }
-    element.setAttribute("class", cs.join(" "));
 }
 
 function pageLoaded() {
@@ -32,25 +35,25 @@ function pageLoaded() {
     catch (x) { gl = null; }
 
     if (gl == null) {
-	try { gl = canvas.getContext("experimental-webgl"); experimental = true; }
-	catch (x) { gl = null; }
+        try { gl = canvas.getContext("experimental-webgl"); experimental = true; }
+        catch (x) { gl = null; }
     }
 
     if (gl) {
-	// hide/show phrase for webgl-experimental
-	$$("webgl-experimental").style.display = experimental ? "auto" : "none";
+        // hide/show phrase for webgl-experimental
+        $$("webgl-experimental").style.display = experimental ? "auto" : "none";
 
-	// show webgl supported div, and launch webgl demo
-	removeClass($$("webgl-yes"), "webgl-hidden");
-	launchLogo();
+        // show webgl supported div, and launch webgl demo
+        removeClass($$("webgl-yes"), "webgl-hidden");
+        launchLogo();
     } else if ("WebGLRenderingContext" in window) {
-	// not a foolproof way to check if the browser
-	// might actually support WebGL, but better than nothing
-	removeClass($$("webgl-disabled"), "webgl-hidden");
+        // not a foolproof way to check if the browser
+        // might actually support WebGL, but better than nothing
+        removeClass($$("webgl-disabled"), "webgl-hidden");
     } else {
-	randomizeBrowsers();
-	removeClass($$("webgl-no"), "webgl-hidden");
-    }	
+        randomizeBrowsers();
+        removeClass($$("webgl-no"), "webgl-hidden");
+    }
 }
 
 function randomizeBrowsers() {
@@ -59,28 +62,28 @@ function randomizeBrowsers() {
     var browsers = [];
     var bc = bl.firstChild;
     while (bc) {
-	if (bc.tagName == "DIV") {
-	    browsers.push(bc);
-	    bc.weight = Math.random();
-	}
-	bc = bc.nextSibling;
+        if (bc.tagName == "DIV") {
+            browsers.push(bc);
+            bc.weight = Math.random();
+        }
+        bc = bc.nextSibling;
     }
 
     while (bl.firstChild)
-	bl.removeChild(bl.firstChild);
+        bl.removeChild(bl.firstChild);
 
     browsers = browsers.sort(function(a, b) {
-	if (a.weight < b.weight) return -1;
-	if (a.weight > b.weight) return 1;
-	return 0;
+        if (a.weight < b.weight) return -1;
+        if (a.weight > b.weight) return 1;
+        return 0;
     });
 
     for (var i = 0; i < browsers.length; ++i) {
-	bl.appendChild(browsers[i]);
+        bl.appendChild(browsers[i]);
     }
 }
 
-window.addEventListener("load", pageLoaded, false);
+window.onload = pageLoaded;
 </script>
 
 <style type="text/css">
@@ -110,7 +113,7 @@ body {
 .webgl-bottom {
     background: #aaa;
 }
-    
+
 h1 {
     background: transparent;
     color: #ddd;
