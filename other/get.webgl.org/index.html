@@ -72,6 +72,9 @@ function pageLoaded() {
         // hide/show phrase for webgl-experimental
         $$("webgl-experimental").style.display = experimental ? "auto" : "none";
 
+        // Set the support link to the correct URL for the browser.
+        $$("support-link").href = b.urls.troubleshootingUrl;
+
         // show webgl supported div, and launch webgl demo
         removeClass($$("webgl-yes"), "webgl-hidden");
         launchLogo();
@@ -79,17 +82,30 @@ function pageLoaded() {
         // not a foolproof way to check if the browser
         // might actually support WebGL, but better than nothing
         removeClass($$("webgl-disabled"), "webgl-hidden");
+
+        // Do we know this browser?
         if (b.browser != "unknown") {
+            // Yes. So show the known-browser message.
             removeClass($$("known-browser"), "webgl-hidden");
+
+            // Hide the unknonw-browser message.
             addClass($$("unknown-browser"), "webgl-hidden");
+
+            // Set the correct link for troubleshooting.
             $$("troubleshooting-link").href = b.urls.troubleshootingUrl;
         }
     } else {
+        // Show the no webgl message.
         removeClass($$("webgl-no"), "webgl-hidden");
+
+        // Do we now the browser and can it be upgraded?
         if (b.browser != "unknown" && b.urls.upgradeUrl) {
+            // Yes, show the browser and the upgrade link.
             $$("name").innerHTML = b.browser;
             $$("upgrade-link").href = b.urls.upgradeUrl;
         } else {
+            // No, so only the link for browser for this platform.
+            // TODO: Display "No known browsers for your platform.
             randomizeBrowsers();
             addClass($$("upgrade-browser"), "webgl-hidden");
             removeClass($$("get-browser"), "webgl-hidden");
@@ -185,7 +201,10 @@ h1 {
 <div class="webgl-hidden" id="have-javascript">
 <div class="webgl-hidden webgl-div" id="webgl-yes">
   <p>Yes!  Your browser supports WebGL!  <span id="webgl-experimental">(However,
-it indicates that support is experimental; you might see issues with some content.)  </span>You should see a <strike>spinning WebGL logo below</strike> green square below (logo coming soon).  If you do not, please visit the support site for your browser.</p>
+it indicates that support is experimental; you might see issues with some
+content.)  </span>You should see a <strike>spinning WebGL logo below</strike>
+green square below (logo coming soon).  If you do not,
+<a id="support-link">please visit the support site for your browser</a>.</p>
 
 <p style="text-align: center"><canvas width="200" height="150" id="webgl-logo"></canvas></p>
 
