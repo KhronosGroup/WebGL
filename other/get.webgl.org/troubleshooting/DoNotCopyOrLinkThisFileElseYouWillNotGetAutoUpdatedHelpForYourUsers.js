@@ -26,7 +26,9 @@ var BrowserDetect = {
         || "an unknown version";
     this.platform = this.searchString(this.dataPlatform) || "an unknown OS";
     var browserInfo = this.urls[this.browser];
-    if (browserInfo.platforms) {
+    if (!browserInfo) {
+      browserInfo = this.urls["unknown"];
+    } else if (browserInfo.platforms) {
       var info = browserInfo.platforms[this.platform];
       if (info) {
         browserInfo = info;
@@ -60,7 +62,7 @@ var BrowserDetect = {
   dataBrowser: [
   { string: navigator.userAgent,
     subString: "Chrome",
-    identity: "Chrome",
+    identity: "Chrome"
   },
   { string: navigator.userAgent,
     subString: "OmniWeb",
@@ -70,10 +72,10 @@ var BrowserDetect = {
   { string: navigator.vendor,
     subString: "Apple",
     identity: "Safari",
-    versionSearch: "Version",
+    versionSearch: "Version"
   },
   { prop: window.opera,
-    identity: "Opera",
+    identity: "Opera"
   },
   { string: navigator.vendor,
     subString: "iCab",
@@ -85,7 +87,7 @@ var BrowserDetect = {
   },
   { string: navigator.userAgent,
     subString: "Firefox",
-    identity: "Firefox",
+    identity: "Firefox"
   },
   { string: navigator.vendor,
     subString: "Camino",
@@ -170,7 +172,7 @@ var BrowserDetect = {
         "Mac": {
           upgradeUrl: "http://www.webkit.org/",
           troubleshootingUrl: "http://www.webkit.org/blog/919/webgl-draft-specification-now-available/"
-        },
+        }
       },
       upgradeUrl: "http://www.webkit.org/",
       troubleshootingUrl: "http://www.webkit.org/blog/919/webgl-draft-specification-now-available/"

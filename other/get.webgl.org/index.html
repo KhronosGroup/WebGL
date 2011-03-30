@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta name="vewiport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
-<script type="text/javascript" src="DoNotCopyOrLinkThisFileElseYouWillNotGetAutoUpdatedHelpForYourUsers.js"></script>
+<script type="text/javascript" src="troubleshooting/DoNotCopyOrLinkThisFileElseYouWillNotGetAutoUpdatedHelpForYourUsers.js"></script>
 <script type="text/javascript">
 /**/
 
@@ -49,7 +49,13 @@ function removeClass(element, clas) {
     }
 }
 
+function addClass(element, clas) {
+    element.className = element.className + " " + clas;
+}
+
 function pageLoaded() {
+    var b = BrowserDetect;
+    b.init();
     canvas = document.getElementById("webgl-logo");
     var experimental = false;
     try { gl = canvas.getContext("webgl"); }
@@ -71,6 +77,11 @@ function pageLoaded() {
         // not a foolproof way to check if the browser
         // might actually support WebGL, but better than nothing
         removeClass($$("webgl-disabled"), "webgl-hidden");
+        if (b.browser != "unknonw") {
+            removeClass($$("known-browser"), "webgl-hidden");
+            addClass($$("unknown-browser"), "webgl-hidden");
+            $$("troubleshooting-link").href = b.urls.troubleshootingUrl;
+        }
     } else {
         randomizeBrowsers();
         removeClass($$("webgl-no"), "webgl-hidden");
@@ -173,7 +184,9 @@ it indicates that support is experimental; you might see issues with some conten
 </div>
 
 <div class="webgl-hidden webgl-div" id="webgl-disabled">
-<p>Hmm.  While your browser seems to support WebGL, it is disabled or unavailable.  If possible, please ensure that you are running the latest drivers for your video card.  For more help, please visit the support site for your browser.</p>
+<p>Hmm.  While your browser seems to support WebGL, it is disabled or unavailable.  If possible, please ensure that you are running the latest drivers for your video card.</p>
+<p id="known-browser" class="webgl-hidden"><a id="troubleshooting-link" href="">For more help, please click this link</a>.</p>
+<p id="unknown-browser">For more help, please visit the support site for your browser.</p>
 </div>
 
 <div class="webgl-hidden webgl-div" id="webgl-no">
