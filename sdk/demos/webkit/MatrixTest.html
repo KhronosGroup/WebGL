@@ -234,9 +234,6 @@
         gl.mvMatrix.lookat(Math.sin(currentValue * 2 * Math.PI) * 2, Math.cos(currentValue * 2 * Math.PI) * 2, 5, 0, 0, -2, 0, 1, 0)
         drawInstance(gl);
 
-        // Finish up.
-        gl.flush();
-
         // Show the framerate
         framerate.snapshot();
 

@@ -180,7 +180,6 @@ function draw() {
     checkGLError();
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     checkGLError();
-    gl.flush();
 }
 
 function createCheckerboardTexture() {

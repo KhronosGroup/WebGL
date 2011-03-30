@@ -97,7 +97,6 @@ function init() {
     // Can use this to make the background opaque
     // gl.clearColor(0.3, 0.2, 0.2, 1.);
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
-    gl.viewport(0, 0, g_width, g_height);
     initTeapot();
     initShaders();
     g_bumpTexture = loadTexture("bump.jpg");
@@ -254,7 +253,6 @@ function draw() {
     // avoid accidentally incurring OpenGL errors -- although we should
     // be fully able to load textures in in the background
     if (g_pendingTextureLoads > 0) {
-        gl.flush();
         return;
     }
 
@@ -312,7 +310,6 @@ function draw() {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, g_elementVbo);
     checkGLError();
     gl.drawElements(gl.TRIANGLES, g_numElements, gl.UNSIGNED_SHORT, 0);
-    gl.flush();
 }
 
 function loadTexture(src) {

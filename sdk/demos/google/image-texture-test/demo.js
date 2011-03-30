@@ -182,7 +182,6 @@ function draw() {
     checkGLError();
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     checkGLError();
-    gl.flush();
 }
 
 // Loads a texture from the absolute or relative URL "src".
