@@ -3,11 +3,24 @@
 <html>
 <head>
 <meta name="vewiport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
+<script type="text/javascript" src="DoNotCopyOrLinkThisFileElseYouWillNotGetAutoUpdatedHelpForYourUsers.js"></script>
 <script type="text/javascript">
 /**/
 
 function $$(x) {
     return document.getElementById(x);
+}
+
+// Add indexOf ot IE.
+if(!Array.indexOf){
+    Array.prototype.indexOf = function(obj){
+        for(var i=0; i<this.length; i++){
+            if(this[i]==obj){
+                return i;
+            }
+        }
+        return -1;
+    }
 }
 
 var canvas, gl;
@@ -17,14 +30,22 @@ function launchLogo() {
     gl.clear(gl.COLOR_BUFFER_BIT);
 }
 
+function log(msg) {
+    var d = document.createElement("div");
+    d.appendChild(document.createTextNode(msg));
+    document.body.appendChild(d);
+}
+
 function removeClass(element, clas) {
-    var classes = element.getAttribute("class");
+    // Does not work in IE var classes = element.getAttribute("class");
+    var classes = element.className;
     if (classes) {
         var cs = classes.split(/\s+/);
         if (cs.indexOf(clas) != -1) {
             cs.splice(cs.indexOf(clas), 1);
         }
-        element.setAttribute("class", cs.join(" "));
+        // Does not work in IE element.setAttribute("class", cs.join(" "));
+        element.className = cs.join(" ");
     }
 }
 
@@ -83,6 +104,7 @@ function randomizeBrowsers() {
     }
 }
 
+// addEventListener does not work on IE7/8.
 window.onload = pageLoaded;
 </script>
 
@@ -137,23 +159,25 @@ h1 {
 
 <div class="roundbox">
 <div class="webgl-hidden webgl-div" id="webgl-yes">
-  <p>Yes!  Your browser supports WebGL!  <span id="webgl-experimental">(However, it indicates that support is experimental; you might see issues with some content.)  </span>You should see a <strike>spinning WebGL logo below</strike> green square below (logo coming soon).  If you don't, please visit the support site for your browser.</p>
+  <p>Yes!  Your browser supports WebGL!  <span id="webgl-experimental">(However,
+it indicates that support is experimental; you might see issues with some content.)  </span>You should see a <strike>spinning WebGL logo below</strike> green square below (logo coming soon).  If you do not, please visit the support site for your browser.</p>
 
 <p style="text-align: center"><canvas width="200" height="150" id="webgl-logo"></canvas></p>
 
 <p>Check out some of the following links to learn more about WebGL and to find more web applications using WebGL.</p>
 
 <ul>
-<li><a href="http://khronos.org/webgl/wiki/">WebGL Wiki</a>
-<li>For developers: <a href="http://learningwebgl.com/">Learning WebGL Blog</a>
+<li><a href="http://khronos.org/webgl/wiki/">WebGL Wiki</a></li>
+<li>For developers: <a href="http://learningwebgl.com/">Learning WebGL Blog</a></li>
+</ul>
 </div>
 
 <div class="webgl-hidden webgl-div" id="webgl-disabled">
-<p>Hmm.  While your browser seems to support WebGL, it is disabled or unavailable.  If possible, please ensure that you're running the latest drivers for your video card.  For more help, please visit the support site for your browser.</p>
+<p>Hmm.  While your browser seems to support WebGL, it is disabled or unavailable.  If possible, please ensure that you are running the latest drivers for your video card.  For more help, please visit the support site for your browser.</p>
 </div>
 
 <div class="webgl-hidden webgl-div" id="webgl-no">
-<p>Oh no!  We're sorry, but your browser doesn't seem to support WebGL.  You may want to download one of the following browsers to view WebGL content.</p>
+<p>Oh no!  We are sorry, but your browser does not seem to support WebGL.  You may want to download one of the following browsers to view WebGL content.</p>
 
 <p>The following browsers support WebGL:</p>
 
