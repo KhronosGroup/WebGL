@@ -20,11 +20,13 @@
 
 var BrowserDetect = {
   init: function () {
-    this.browser = this.searchString(this.dataBrowser) || "unknown";
+    var info = this.searchString(this.dataBrowser) || {identity:"unknown"}
+    this.browser = info.identity;
     this.version = this.searchVersion(navigator.userAgent)
         || this.searchVersion(navigator.appVersion)
         || "an unknown version";
-    this.platform = this.searchString(this.dataPlatform) || "an unknown OS";
+    this.platformInfo = this.searchString(this.dataPlatform) || this.dataPlatform["unknown"];
+    this.platform = this.platformInfo.identity;
     var browserInfo = this.urls[this.browser];
     if (!browserInfo) {
       browserInfo = this.urls["unknown"];
@@ -44,10 +46,10 @@ var BrowserDetect = {
       this.versionSearchString = info.versionSearch || info.identity;
       if (dataString) {
         if (dataString.indexOf(info.subString) != -1) {
-          return info.identity;
+          return info;
         }
       } else if (dataProp) {
-        return info.identity;
+        return info;
       }
     }
   },
@@ -73,6 +75,10 @@ var BrowserDetect = {
     subString: "Apple",
     identity: "Safari",
     versionSearch: "Version"
+  },
+  { string: navigator.userAgent,
+    subString: "Android",
+    identity: "Android"
   },
   { prop: window.opera,
     identity: "Opera"
@@ -118,27 +124,63 @@ var BrowserDetect = {
   dataPlatform: [
   { string: navigator.platform,
     subString: "Win",
-    identity: "Windows"
+    identity: "Windows",
+    browsers: [
+      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "http://labs.opera.com/", name: "Opera Labs"},
+      {url: "http://www.webkit.org/", name: "WebKit Developer Builds"}
+    ]
   },
   { string: navigator.platform,
     subString: "Mac",
-    identity: "Mac"
+    identity: "Mac",
+    browsers: [
+      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "http://www.webkit.org/", name: "WebKit Developer Builds"},
+      {url: "http://labs.opera.com/", name: "Opera Labs"}
+    ]
   },
   { string: navigator.userAgent,
     subString: "iPhone",
-    identity: "iPhone/iPod"
+    identity: "iPhone/iPod",
+    browsers: [
+      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"}
+    ]
   },
   { string: navigator.platform,
     subString: "iPad",
-    identity: "iPad"
+    identity: "iPad",
+    browsers: [
+      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"}
+    ]
   },
   { string: navigator.userAgent,
     subString: "Android",
-    identity: "Android"
+    identity: "Android",
+    browsers: [
+      {url: "https://market.android.com/details?id=org.mozilla.firefox", name: "Mozilla Firefox"}
+    ]
   },
   { string: navigator.platform,
     subString: "Linux",
-    identity: "Linux"
+    identity: "Linux",
+    browsers: [
+      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "http://labs.opera.com/", name: "Opera Labs"}
+    ]
+  },
+  { string: "unknown",
+    subString: "unknown",
+    identity: "unknown",
+    browsers: [
+      {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
+      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "http://labs.opera.com/", name: "Opera Labs"},
+      {url: "http://www.webkit.org/", name: "WebKit Developer Builds"}
+    ]
   }
   ],
   /*
@@ -157,7 +199,11 @@ var BrowserDetect = {
     },
     "Opera": {
       upgradeUrl: "http://labs.opera.com",
-      troubleshootingUrl: " http://my.opera.com/core/blog/2011/02/28/webgl-and-hardware-acceleration-2"
+      troubleshootingUrl: "http://my.opera.com/core/blog/2011/02/28/webgl-and-hardware-acceleration-2"
+    },
+    "Android": {
+      upgradeUrl: null,
+      troubleshootingUrl: null
     },
     "Safari": {
       platforms: {
@@ -178,8 +224,8 @@ var BrowserDetect = {
       troubleshootingUrl: "http://www.webkit.org/blog/919/webgl-draft-specification-now-available/"
     },
     "unknown": {
-      upgradeUrl: "http://get.webgl.org",
-      troubleshootingUrl: "http://get.webgl.org"
+      upgradeUrl: null,
+      troubleshootingUrl: null
     }
   }
 };

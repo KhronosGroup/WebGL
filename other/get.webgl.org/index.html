@@ -56,7 +56,7 @@ function addClass(element, clas) {
 function pageLoaded() {
     removeClass($$("have-javascript"), "webgl-hidden");
     addClass($$("no-javascript"), "webgl-hidden");
-    var b = BrowserDetect;
+    b = BrowserDetect;
     b.init();
     canvas = document.getElementById("webgl-logo");
     var experimental = false;
@@ -86,32 +86,30 @@ function pageLoaded() {
         }
     } else {
         removeClass($$("webgl-no"), "webgl-hidden");
-        if (b.browser != "unknown") {
-            $$("name").innerHTML = b.browser    ;
+        if (b.browser != "unknown" && b.urls.upgradeUrl) {
+            $$("name").innerHTML = b.browser;
             $$("upgrade-link").href = b.urls.upgradeUrl;
         } else {
             randomizeBrowsers();
             addClass($$("upgrade-browser"), "webgl-hidden");
             removeClass($$("get-browser"), "webgl-hidden");
+            $$("platform").innerHTML = b.platform;
         }
     }
 }
 
 function randomizeBrowsers() {
+
     var bl = $$("webgl-browser-list");
-
     var browsers = [];
-    var bc = bl.firstChild;
-    while (bc) {
-        if (bc.tagName == "DIV") {
-            browsers.push(bc);
-            bc.weight = Math.random();
-        }
-        bc = bc.nextSibling;
+    var infos = b.platformInfo.browsers;
+    for (var ii = 0; ii < infos.length; ++ii) {
+log(ii);
+      browsers.push({
+        info: infos[ii],
+        weight: Math.random()
+      });
     }
-
-    while (bl.firstChild)
-        bl.removeChild(bl.firstChild);
 
     browsers = browsers.sort(function(a, b) {
         if (a.weight < b.weight) return -1;
@@ -119,8 +117,14 @@ function randomizeBrowsers() {
         return 0;
     });
 
-    for (var i = 0; i < browsers.length; ++i) {
-        bl.appendChild(browsers[i]);
+    for (var ii = 0; ii < browsers.length; ++ii) {
+        var info = browsers[ii].info;
+        var div = document.createElement("div");
+        var a = document.createElement("a");
+        a.href = info.url;
+        a.innerHTML = info.name;
+        div.appendChild(a);
+        bl.appendChild(div);
     }
 }
 
@@ -206,13 +210,9 @@ it indicates that support is experimental; you might see issues with some conten
 <div id="get-browser" class="webgl-hidden">
 <p>You may want to download one of the following browsers to view WebGL content.</p>
 
-<p>The following browsers support WebGL:</p>
+<p>The following browsers support WebGL on <span id="platform"></span>:</p>
 
 <div id="webgl-browser-list">
-<div><a href="http://www.mozilla.com/en-US/firefox/new/">Mozilla Firefox 4</a></div>
-<div><a href="http://www.google.com/chrome/">Google Chrome</a></div>
-<div><a href="http://www.webkit.org/">WebKit Developer Builds</a></div>
-<div><a href="http://labs.opera.com/">Opera Labs</a></div>
 </div>
 </div>
 </div>
