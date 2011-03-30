@@ -54,6 +54,8 @@ function addClass(element, clas) {
 }
 
 function pageLoaded() {
+    removeClass($$("have-javascript"), "webgl-hidden");
+    addClass($$("no-javascript"), "webgl-hidden");
     var b = BrowserDetect;
     b.init();
     canvas = document.getElementById("webgl-logo");
@@ -169,6 +171,7 @@ h1 {
 <h1>Can I use WebGL?</h1>
 
 <div class="roundbox">
+<div class="webgl-hidden" id="have-javascript">
 <div class="webgl-hidden webgl-div" id="webgl-yes">
   <p>Yes!  Your browser supports WebGL!  <span id="webgl-experimental">(However,
 it indicates that support is experimental; you might see issues with some content.)  </span>You should see a <strike>spinning WebGL logo below</strike> green square below (logo coming soon).  If you do not, please visit the support site for your browser.</p>
@@ -201,7 +204,10 @@ it indicates that support is experimental; you might see issues with some conten
 <div><a href="http://labs.opera.com/">Opera Labs</a></div>
 </div>
 </div>
-
+</div>
+<div id="no-javascript">
+You must enable JavaScript to use WebGL.
+</div>
 </div>
 
 <div class="webgl-bottom roundbox">
