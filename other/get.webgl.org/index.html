@@ -79,14 +79,21 @@ function pageLoaded() {
         // not a foolproof way to check if the browser
         // might actually support WebGL, but better than nothing
         removeClass($$("webgl-disabled"), "webgl-hidden");
-        if (b.browser != "unknonw") {
+        if (b.browser != "unknown") {
             removeClass($$("known-browser"), "webgl-hidden");
             addClass($$("unknown-browser"), "webgl-hidden");
             $$("troubleshooting-link").href = b.urls.troubleshootingUrl;
         }
     } else {
-        randomizeBrowsers();
         removeClass($$("webgl-no"), "webgl-hidden");
+        if (b.browser != "unknown") {
+            $$("name").innerHTML = b.browser    ;
+            $$("upgrade-link").href = b.urls.upgradeUrl;
+        } else {
+            randomizeBrowsers();
+            addClass($$("upgrade-browser"), "webgl-hidden");
+            removeClass($$("get-browser"), "webgl-hidden");
+        }
     }
 }
 
@@ -193,15 +200,20 @@ it indicates that support is experimental; you might see issues with some conten
 </div>
 
 <div class="webgl-hidden webgl-div" id="webgl-no">
-<p>Oh no!  We are sorry, but your browser does not seem to support WebGL.  You may want to download one of the following browsers to view WebGL content.</p>
+<p>Oh no!  We are sorry, but your browser does not seem to support WebGL.</p>
+<div id="upgrade-browser">
+<p><a id="upgrade-link" href="">You can upgrade <span id="name"></span> by clicking this link.</a></p></div>
+<div id="get-browser" class="webgl-hidden">
+<p>You may want to download one of the following browsers to view WebGL content.</p>
 
 <p>The following browsers support WebGL:</p>
 
 <div id="webgl-browser-list">
-<div><a href="http://www.mozilla.com/firefox/beta/">Mozilla Firefox 4</a></div>
+<div><a href="http://www.mozilla.com/en-US/firefox/new/">Mozilla Firefox 4</a></div>
 <div><a href="http://www.google.com/chrome/">Google Chrome</a></div>
 <div><a href="http://www.webkit.org/">WebKit Developer Builds</a></div>
 <div><a href="http://labs.opera.com/">Opera Labs</a></div>
+</div>
 </div>
 </div>
 </div>

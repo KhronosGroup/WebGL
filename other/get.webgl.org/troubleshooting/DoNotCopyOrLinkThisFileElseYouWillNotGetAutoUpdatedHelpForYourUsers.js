@@ -152,7 +152,7 @@ var BrowserDetect = {
       troubleshootingUrl: "http://www.google.com/support/chrome/bin/answer.py?answer=1220892"
     },
     "Firefox": {
-      upgradeUrl: "http://www.mozilla.com/en-US/firefox/beta/",
+      upgradeUrl: "http://www.mozilla.com/en-US/firefox/new/",
       troubleshootingUrl: "https://support.mozilla.com/en-US/questions/720087"
     },
     "Opera": {
