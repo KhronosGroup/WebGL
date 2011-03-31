@@ -120,7 +120,6 @@ function randomizeBrowsers() {
     var browsers = [];
     var infos = b.platformInfo.browsers;
     for (var ii = 0; ii < infos.length; ++ii) {
-log(ii);
       browsers.push({
         info: infos[ii],
         weight: Math.random()
