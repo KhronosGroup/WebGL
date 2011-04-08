@@ -106,15 +106,14 @@ var ysinlo = new Array(STRIP_SIZE);
 var ycoslo = new Array(STRIP_SIZE);
 var ysinhi = new Array(STRIP_SIZE);
 var ycoshi = new Array(STRIP_SIZE);
-//var ysinlo = new Float32Array(STRIP_SIZE);
-//var ycoslo = new Float32Array(STRIP_SIZE);
-//var ysinhi = new Float32Array(STRIP_SIZE);
-//var ycoshi = new Float32Array(STRIP_SIZE);
+// var ysinlo = new Float32Array(STRIP_SIZE);
+// var ycoslo = new Float32Array(STRIP_SIZE);
+// var ysinhi = new Float32Array(STRIP_SIZE);
+// var ycoshi = new Float32Array(STRIP_SIZE);
 
 // Element sizes in bytes.
-// FIXME: change to use e.g. Float32Array.BYTES_PER_ELEMENT once supported universally.
-var BYTES_PER_SHORT = 2;
-var BYTES_PER_FLOAT = 4;
+var BYTES_PER_SHORT = Uint16Array.BYTES_PER_ELEMENT;
+var BYTES_PER_FLOAT = Float32Array.BYTES_PER_ELEMENT;
 
 //----------------------------------------------------------------------
 // Utility functions
@@ -264,11 +263,11 @@ function init() {
 
     primitive = gl.TRIANGLE_STRIP;
 
-    // FIXME: change these to use FloatArray once reads are better optimized
+    // FIXME: change these to use Float32Array once reads are better optimized
     sinArray = new Array(SIN_ARRAY_SIZE);
     cosArray = new Array(SIN_ARRAY_SIZE);
-    //    sinArray = new Float32Array(SIN_ARRAY_SIZE);
-    //    cosArray = new Float32Array(SIN_ARRAY_SIZE);
+    // sinArray = new Float32Array(SIN_ARRAY_SIZE);
+    // cosArray = new Float32Array(SIN_ARRAY_SIZE);
     for (var i = 0; i < SIN_ARRAY_SIZE; i++) {
         var step = i * 2 * Math.PI / SIN_ARRAY_SIZE;
         sinArray[i] = Math.sin(step);
@@ -376,7 +375,7 @@ function allocateBigVBO(gl) {
 }
 
 function computeElements(gl) {
-    // FIXME: change this to use CanvasFloatArray once optimized
+    // FIXME: change this to use Float32Array once reads are better optimized
     xyArray = new Array(tileSize);
     // xyArray = new Float32Array(tileSize);
     for (var i = 0; i < tileSize; i++) {
