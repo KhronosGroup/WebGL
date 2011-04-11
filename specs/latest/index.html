@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 07 March 2011</h2>
+    <h2 class="no-toc">Editor's Draft 11 April 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2981,11 +2981,12 @@ extensions.
     parameters to <code>getParameter</code> will return the value null or zero.
 </p>
 
-    <h3><a name="MAX_GLSL_IDENTIFIER_NAME">Maximum GLSL Identifier Name Limit</a></h3>
+    <h3><a name="MAX_GLSL_TOKEN_SIZE">Maximum GLSL Token Size</a></h3>
 
 <p>
-    The GLSL ES spec <a href="#refsGLES20GLSL">[GLES20GLSL]</a> does not define a limit to the length
-    of identifier names. WebGL requires support of identifier names of at least 256 characters in length.
+    The GLSL ES spec <a href="#refsGLES20GLSL">[GLES20GLSL]</a> does not define a limit to the
+    length of tokens. WebGL requires support of tokens up to 256 characters in length. Shaders
+    containing tokens longer than 256 characters must fail to compile.
 </p>
 
     <h3><a name="CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character Set</a></h3>
