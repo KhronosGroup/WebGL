@@ -554,6 +554,8 @@ if (!gl) {
           return str;
         }
         str = expand(str, new RegExp(" ", 'g'), "  ", 12);
+        var manyZeros = expand("0", new RegExp("0", 'g'), "00", 8).substring(2);
+        str = expand(str, new RegExp("0", 'g'), manyZeros, 1);
         str = expand(str, new RegExp("fooo", 'g'), "fooofooo", 6);
         str = expand(str, new RegExp("long", 'g'), "longlong", 6);
         //debug("len:" + str.length);
