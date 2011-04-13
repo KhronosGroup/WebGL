@@ -55,6 +55,8 @@ if (!gl) {
   canvas.height = maxSize[1] * 4;
   shouldBeTrue('canvas.drawingBufferWidth > 0');
   shouldBeTrue('canvas.drawingBufferHeight > 0');
+  shouldBeTrue('canvas.drawingBufferWidth <= maxSize[0]');
+  shouldBeTrue('canvas.drawingBufferHeight <= maxSize[1]');
 }
 debug("")
 successfullyParsed = true;
