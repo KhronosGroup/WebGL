@@ -23,7 +23,7 @@ if (window.initNonKhronosFramework) {
   window.initNonKhronosFramework(true);
 }
 
-description("This test ensures WebGL implementations interact correctly implement drawingbufferWidth/Height.");
+description("This test ensures WebGL implementations correctly implement drawingbufferWidth/Height.");
 
 debug("");
 
@@ -45,7 +45,7 @@ if (!gl) {
   shouldBe('gl.drawingBufferWidth', 'canvas.width');
   shouldBe('gl.drawingBufferHeight', 'canvas.height');
 
-  // Check changing the canvas size to something thattoo large falls back to resonable values.
+  // Check that changing the canvas size to something too large falls back to reasonable values.
   maxSize = gl.getParameter(gl.MAX_VIEWPORT_DIMS);
   shouldBeTrue('maxSize[0] > 0');
   shouldBeTrue('maxSize[1] > 0');
@@ -53,10 +53,10 @@ if (!gl) {
   debug("MAX_VIEWPORT_DIMS = " + maxSize[0] + "x" + maxSize[1]);
   canvas.width = maxSize[0] * 4;
   canvas.height = maxSize[1] * 4;
-  shouldBeTrue('canvas.drawingBufferWidth > 0');
-  shouldBeTrue('canvas.drawingBufferHeight > 0');
-  shouldBeTrue('canvas.drawingBufferWidth <= maxSize[0]');
-  shouldBeTrue('canvas.drawingBufferHeight <= maxSize[1]');
+  shouldBeTrue('gl.drawingBufferWidth > 0');
+  shouldBeTrue('gl.drawingBufferHeight > 0');
+  shouldBeTrue('gl.drawingBufferWidth <= maxSize[0]');
+  shouldBeTrue('gl.drawingBufferHeight <= maxSize[1]');
 }
 debug("")
 successfullyParsed = true;
