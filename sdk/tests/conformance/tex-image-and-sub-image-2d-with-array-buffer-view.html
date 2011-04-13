@@ -184,6 +184,7 @@ gl.clearDepth(1);
 textureLoc = gl.getUniformLocation(program, "tex");
 
 runTest();
+glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 successfullyParsed = true;
 </script>
 <script src="../resources/js-test-post.js"></script>

@@ -122,6 +122,7 @@ function runTest()
     runOneIteration(true, false, true,
                     greenPremultiplyAlpha, redPremultiplyAlpha);
 
+    glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
     finishTest();
 }
 </script>

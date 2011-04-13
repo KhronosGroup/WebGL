@@ -74,6 +74,7 @@ read-pixels-test.html
 renderbuffer-initialization.html
 resource-sharing-test.html
 tex-image-and-sub-image-2d-with-array-buffer-view.html
+tex-image-and-sub-image-2d-with-canvas.html
 tex-image-and-sub-image-2d-with-image-data.html
 tex-image-and-sub-image-2d-with-image.html
 tex-image-and-sub-image-2d-with-video.html
