@@ -35,7 +35,8 @@ function testAttachment(attachment, buffer, isConflicted)
     // we can't guarantee which one will be reported.
     if ((width == 0 || height == 0) && !isConflicted) {
         // Zero-sized renderbuffers are supposed to result in an incomplete attachment.
-        shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
+        // However, certain combination may violate implementation specific restrictions.
+        shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT || gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_UNSUPPORTED");
     } else if (isConflicted) {
         shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_UNSUPPORTED");
         gl.clear(gl.COLOR_BUFFER_BIT);
@@ -58,7 +59,8 @@ function testAttachments(attachment0, buffer0, attachment1, buffer1, isConflicte
     // we can't guarantee which one will be reported.
     if ((width == 0 || height == 0) && !isConflicted) {
         // Zero-sized renderbuffers are supposed to result in an incomplete attachment.
-        shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
+        // However, certain combination may violate implementation specific restrictions.
+        shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT || gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_UNSUPPORTED");
     } else if (isConflicted) {
         shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_UNSUPPORTED");
     }
