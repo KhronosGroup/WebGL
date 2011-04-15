@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 11 April 2011</h2>
+    <h2 class="no-toc">Editor's Draft 14 April 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2600,18 +2600,23 @@ interface <dfn id="WebGLContextLostEvent">WebGLContextEvent</dfn> : Event {
         <li> All <code>is</code> queries return <code>false</code>.<br>
         </ul>
         <p>
-            See the <code>webglcontextrestored</code> event type for information on
-            resuming rendering after the context has been lost.
+            The default behavior of the <code>webglcontextlost</code> event is to prevent
+            the context from being restored.
         <p><p>
             The <code>statusMessage</code> attribute is always the empty string for this event. 
+        <div class="example">
+            The following code prevents the default behavior of the <code>webglcontextlost</code>
+            event and enables the <code>webglcontextrestored</code> event to be delivered:
+    <pre>canvas.addEventListener("webglcontextlost", function(e) { e.preventDefault(); }, false); </pre>
+        </div>
     </dl>
 
     <dl class="methods">
         <dt class="idl-code">webglcontextrestored
         <dd>
             This event occurs when the WebGL implementation determines that a previously lost context can 
-            be restored. The system only restores the context if a handler for the 
-            <code>webglcontextrestored</code> event is installed on the HTMLCanvasElement associated with 
+            be restored. The system only restores the context if the default behavior for the 
+            <code>webglcontextlost</code> event is prevented on the HTMLCanvasElement associated with 
             the context.
         <p><p>
             Once the context is restored, WebGL resources such as textures and buffers that were created 
@@ -2706,9 +2711,11 @@ function updateTexture(image) {
   }
 }
 
-function contextLostHandler() {
+function contextLostHandler(event) {
+  // allow the context to be restored.
+  event.preventDefault();
   // stop rendering.
-  window.clearInterval(g_internvalId);
+  window.clearInterval(g_intervalId);
 }
 
 function contextRestoredHandler() {
