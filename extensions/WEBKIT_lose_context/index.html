@@ -17,7 +17,7 @@
     </div>
     <!--end-logo-->
     
-    <h1>WebGL WEBKIT_lose_context Extension Specification</h1>
+    <h1>WebGL WEBKIT_lose_context Extension Draft Specification</h1>
     
     <h2 class="no-toc">Name</h2>
     <p> WEBKIT_lose_context </p>
@@ -27,10 +27,15 @@
 
     <h2 class="no-toc">Contributors</h2>
     <p> Members of the <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> </p>
+    <p> Glenn Maynard </p>
+
+    <h2 class="no-toc">Status</h2>
+    <p> Draft; revision underway. Do not ship!
+    </p>
 
     <h2 class="no-toc">Version</h2>
-    <p> Last modified date: January 11, 2011 <br>
-        Revision: 1
+    <p> Last modified date: April 14, 2011 <br>
+        Revision: 2
     </p>
 
     <h2 class="no-toc">Number</h2>
@@ -41,7 +46,7 @@
 
     <h2 class="no-toc">Overview</h2>
     <p>
-      This extension exposes a new function which simulates losing the WebGL context, even on platforms where the context can never be lost.  Consult the WebGL specification for documentation about the <code>webglcontextlost</code> and <code>webglcontextrestored</code> events.
+      This extension exposes new functions which simulate losing and restoring the WebGL context, even on platforms where the context can never be lost.  Consult the WebGL specification for documentation about the <code>webglcontextlost</code> and <code>webglcontextrestored</code> events.
     </p>
     <h2 class="no-toc">IDL</h2>
     <p>
@@ -50,6 +55,7 @@ module webgl {
 
 interface WEBKIT_lose_context {
       void loseContext();
+      void restoreContext();
 };
 
 };
@@ -59,7 +65,11 @@ interface WEBKIT_lose_context {
     <h2 class="no-toc">New Procedures and Functions</h2>
     <h3 class="no-toc">void loseContext()</h3>
     <p>
-    When this function is called and the context is not lost, a <code>webglcontextlost</code> event will be dispatched.  The behavior of the WebGL context after this event has been dispatched is identical to one after a real context lost event.  As with a real context lost event, the context will be restored automatically if a handler for the <code>webglcontextrestored</code> event has been installed on the canvas associated with the WebGL context.  If the context is already lost when this function is called, an <code>INVALID_OPERATION</code> error will be generated and no event will be dispatched.
+    When this function is called and the context is not lost, a <code>webglcontextlost</code> event will be dispatched.  The behavior of the WebGL context after this event has been dispatched is identical to one after a real context lost event.  The context will remain in the lost state according to the WebGL specification until <code>restoreContext()</code> is called.  If the context is already lost when this function is called, an <code>INVALID_OPERATION</code> error will be generated and no event will be dispatched.
+    </p>
+    <h3 class="no-toc">void restoreContext()</h3>
+    <p>
+    When this function is called, the context is lost, and the conditions defined by the WebGL specification for delivery of the <code>webglcontextrestored</code> event have been satisfied, a <code>webglcontextrestored</code> event will be dispatched.  The behavior of the WebGL context after this event has been dispatched is identical to one after a real context restored event.  If the context is already restored when this function is called, or if the conditions in the WebGL specification for delivery of the <code>webglcontextrestored</code> event are not satisfied, an <code>INVALID_OPERATION</code> error will be generated and no event will be dispatched.
     </p>
 
     <h2 class="no-toc">Revision History</h2>
@@ -67,6 +77,12 @@ interface WEBKIT_lose_context {
       Revision 1, 2011/01/11
       <ul>
       <li> Initial revision.
+      </ul>
+    </p>
+    <p>
+      Revision 2, 2011/04/14
+      <ul>
+      <li> Added explicit restoreContext() method based on discussion on public_webgl list, to enable testing of scenario where context stays lost for a period of time.
       </ul>
     </p>
 </body>
