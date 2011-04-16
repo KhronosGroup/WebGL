@@ -2,7 +2,9 @@
 
 <html>
 <head>
-<meta name="vewiport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
 <script type="text/javascript">
 /**/
 
@@ -50,7 +52,7 @@ function pageLoaded() {
     } else {
 	randomizeBrowsers();
 	removeClass($$("webgl-no"), "webgl-hidden");
-    }	
+    }
 }
 
 function randomizeBrowsers() {
@@ -117,7 +119,7 @@ iframe {
 .webgl-bottom {
     background: #aaa;
 }
-    
+
 h1 {
     background: transparent;
     color: #850000;
@@ -141,7 +143,7 @@ h1 {
 </head>
 
 <body>
-    
+
 <canvas width="1" height="1" id="dummy"></canvas>
 
 <h1>Can I use <img id="webgl-logo" alt="WebGL" src="webgl-logo.png"/>?</h1>

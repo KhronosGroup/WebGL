@@ -2,7 +2,9 @@
 
 <html>
 <head>
-<meta name="vewiport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
 <script type="text/javascript" src="troubleshooting/DoNotCopyOrLinkThisFileElseYouWillNotGetAutoUpdatedHelpForYourUsers.js"></script>
 <script type="text/javascript">
 /**/
@@ -98,7 +100,7 @@ function pageLoaded() {
         // Show the no webgl message.
         removeClass($$("webgl-no"), "webgl-hidden");
 
-        // Do we now the browser and can it be upgraded?
+        // Do we know the browser and can it be upgraded?
         if (b.browser != "unknown" && b.urls.upgradeUrl) {
             // Yes, show the browser and the upgrade link.
             $$("name").innerHTML = b.browser;
