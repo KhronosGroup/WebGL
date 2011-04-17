@@ -128,8 +128,7 @@ var BrowserDetect = {
     browsers: [
       {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
       {url: "http://www.google.com/chrome/", name: "Google Chrome"},
-      {url: "http://labs.opera.com/", name: "Opera Labs"},
-      {url: "http://www.webkit.org/", name: "WebKit Developer Builds"}
+      // add back in when opera is stable {url: "http://labs.opera.com/", name: "Opera Labs"},
     ]
   },
   { string: navigator.platform,
@@ -139,7 +138,7 @@ var BrowserDetect = {
       {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
       {url: "http://www.google.com/chrome/", name: "Google Chrome"},
       {url: "http://www.webkit.org/", name: "WebKit Developer Builds"},
-      {url: "http://labs.opera.com/", name: "Opera Labs"}
+      // add back in when opera is stable {url: "http://labs.opera.com/", name: "Opera Labs"}
     ]
   },
   { string: navigator.userAgent,
