@@ -194,7 +194,7 @@ var BrowserDetect = {
     },
     "Firefox": {
       upgradeUrl: "http://www.mozilla.com/en-US/firefox/new/",
-      troubleshootingUrl: "https://support.mozilla.com/en-US/questions/720087"
+      troubleshootingUrl: "https://support.mozilla.com/en-US/kb/how-do-i-upgrade-my-graphics-drivers"
     },
     "Opera": {
       upgradeUrl: "http://labs.opera.com",
