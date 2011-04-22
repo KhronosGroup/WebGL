@@ -219,6 +219,37 @@ pre.note {
 div.note { color: #060 }
 pre.note { color: #060 }
 
+/* Class strawman is a strawman proposal. May be inline or a P or DIV */
+
+div.strawman:before {
+    content: "Strawman Proposal";
+    font: bold small sans-serif;
+    /*float: left;*/
+    position: absolute;
+    top: -0.9em;
+    left: -1.5em;
+    width: 10em;
+    text-align: center;
+    line-height: 1em;
+    color: #F8E2E2;
+    background: #A33;
+    padding: 0.1em;
+    border: thin solid #999;
+    /*margin: -1.3em 0 0.3em -2.5em;*/
+}
+div.strawman, pre.strawman {
+    background: #F8E2E2;
+    padding: 0.5em;
+    margin: 1em 0;
+    border: thin solid #999;
+    position: relative;
+}
+pre.strawman {
+    padding-top: 1.5em;
+}
+div.strawman { color: #400 }
+pre.strawman { color: #400 }
+
 .normref { color: red }	
 .informref { color: green }	
 
