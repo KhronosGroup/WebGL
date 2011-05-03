@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 14 April 2011</h2>
+    <h2 class="no-toc">Editor's Draft 03 May 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -624,11 +624,11 @@ var context = canvas.getContext('webgl',
     <p>
         The <code>WebGLBuffer</code> interface represents an OpenGL Buffer Object. The
         underlying object is created as if by calling glGenBuffers 
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenBuffers.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenBuffers.xml">man page</a>)</span>
         , bound as if by calling glBindBuffer
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindBuffer.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindBuffer.xml">man page</a>)</span>
         and destroyed as if by calling glDeleteBuffers
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteBuffers.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteBuffers.xml">man page</a>)</span>
         .
     </p>
     <pre class="idl">interface <dfn id="WebGLBuffer">WebGLBuffer</dfn> : WebGLObject {
@@ -641,11 +641,11 @@ var context = canvas.getContext('webgl',
     <p>
         The <code>WebGLFramebuffer</code> interface represents an OpenGL Framebuffer Object. The
         underlying object is created as if by calling glGenFramebuffers
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenFramebuffers.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenFramebuffers.xml">man page</a>)</span>
         , bound as if by calling glBindFramebuffer
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindFramebuffer.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindFramebuffer.xml">man page</a>)</span>
         and destroyed as if by calling glDeleteFramebuffers
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteFramebuffers.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteFramebuffers.xml">man page</a>)</span>
         .
     </p>
     <pre class="idl">interface <dfn id="WebGLFramebuffer">WebGLFramebuffer</dfn> : WebGLObject {
@@ -658,11 +658,11 @@ var context = canvas.getContext('webgl',
     <p>
         The <code>WebGLProgram</code> interface represents an OpenGL Program Object. The
         underlying object is created as if by calling glCreateProgram
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCreateProgram.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCreateProgram.xml">man page</a>)</span>
         , used as if by calling glUseProgram
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glUseProgram.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glUseProgram.xml">man page</a>)</span>
         and destroyed as if by calling glDeleteProgram
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteProgram.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteProgram.xml">man page</a>)</span>
         .
     </p>
     <pre class="idl">interface <dfn id="WebGLProgram">WebGLProgram</dfn> : WebGLObject {
@@ -675,11 +675,11 @@ var context = canvas.getContext('webgl',
     <p>
         The <code>WebGLRenderbuffer</code> interface represents an OpenGL Renderbuffer Object. The
         underlying object is created as if by calling glGenRenderbuffers
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenRenderbuffers.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenRenderbuffers.xml">man page</a>)</span>
         , bound as if by calling glBindRenderbuffer
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindRenderbuffer.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindRenderbuffer.xml">man page</a>)</span>
         and destroyed as if by calling glDeleteRenderbuffers
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteRenderbuffers.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteRenderbuffers.xml">man page</a>)</span>
         .
     </p>
     <pre class="idl">interface <dfn id="WebGLRenderbuffer">WebGLRenderbuffer</dfn> : WebGLObject {
@@ -692,11 +692,11 @@ var context = canvas.getContext('webgl',
     <p>
         The <code>WebGLShader</code> interface represents an OpenGL Shader Object. The
         underlying object is created as if by calling glCreateShader
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCreateShader.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCreateShader.xml">man page</a>)</span>
         , attached to a Program as if by calling glAttachShader
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glAttachShader.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glAttachShader.xml">man page</a>)</span>
         and destroyed as if by calling glDeleteShader
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteShader.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteShader.xml">man page</a>)</span>
         .
     </p>
     <pre class="idl">interface <dfn id="WebGLShader">WebGLShader</dfn> : WebGLObject {
@@ -709,11 +709,11 @@ var context = canvas.getContext('webgl',
     <p>
         The <code>WebGLTexture</code> interface represents an OpenGL Texture Object. The
         underlying object is created as if by calling glGenTextures
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenTextures.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenTextures.xml">man page</a>)</span>
         , bound as if by calling glBindTexture
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindTexture.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindTexture.xml">man page</a>)</span>
         and destroyed as if by calling glDeleteTextures
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteTextures.xml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteTextures.xml">man page</a>)</span>
         .
     </p>
     <pre class="idl">interface <dfn id="WebGLTexture">WebGLTexture</dfn> : WebGLObject {
@@ -1560,56 +1560,56 @@ for (var i = 0; i < numVertices; i++) {
     
     <dl class="methods">
         <dt class="idl-code">void activeTexture(GLenum texture)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7">OpenGL ES 2.0 &sect;3.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glActiveTexture.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7">OpenGL ES 2.0 &sect;3.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glActiveTexture.xml">man page</a>)</span>
         <dt class="idl-code"void blendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.6">OpenGL ES 2.0 &sect;4.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBlendColor.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.6">OpenGL ES 2.0 &sect;4.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBlendColor.xml">man page</a>)</span>
         <dt class="idl-code">void blendEquation(GLenum mode)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.6">OpenGL ES 2.0 &sect;4.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBlendEquation.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.6">OpenGL ES 2.0 &sect;4.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBlendEquation.xml">man page</a>)</span>
         <dt class="idl-code">void blendEquationSeparate(GLenum modeRGB, GLenum modeAlpha)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.6">OpenGL ES 2.0 &sect;4.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBlendEquationSeparate.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.6">OpenGL ES 2.0 &sect;4.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBlendEquationSeparate.xml">man page</a>)</span>
         <dt class="idl-code">void blendFunc(GLenum sfactor, GLenum dfactor)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.6">OpenGL ES 2.0 &sect;4.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBlendFunc.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.6">OpenGL ES 2.0 &sect;4.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBlendFunc.xml">man page</a>)</span>
             <dd>
                 See <a href="#CONSTANT_COLOR_BLEND">Blending With Constant Color</a> for limitations imposed
                 by WebGL.
         <dt class="idl-code">void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.6">OpenGL ES 2.0 &sect;4.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBlendFuncSeparate.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.6">OpenGL ES 2.0 &sect;4.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBlendFuncSeparate.xml">man page</a>)</span>
             <dd>
                 See <a href="#CONSTANT_COLOR_BLEND">Blending With Constant Color</a> for limitations imposed
                 by WebGL.
         <dt class="idl-code">void clearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.3">OpenGL ES 2.0 &sect;4.2.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glClearColor.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.3">OpenGL ES 2.0 &sect;4.2.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glClearColor.xml">man page</a>)</span>
         <dt class="idl-code">void clearDepth(GLclampf depth)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.3">OpenGL ES 2.0 &sect;4.2.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glClearDepthf.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.3">OpenGL ES 2.0 &sect;4.2.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glClearDepthf.xml">man page</a>)</span>
             <dd>
                 <code>depth</code> value is clamped to the range 0 to 1.
         <dt class="idl-code">void clearStencil(GLint s)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.3">OpenGL ES 2.0 &sect;4.2.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glClearStencil.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.3">OpenGL ES 2.0 &sect;4.2.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glClearStencil.xml">man page</a>)</span>
         <dt class="idl-code">void colorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.2">OpenGL ES 2.0 &sect;4.2.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glColorMask.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.2">OpenGL ES 2.0 &sect;4.2.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glColorMask.xml">man page</a>)</span>
         <dt class="idl-code">void cullFace(GLenum mode)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.5.1">OpenGL ES 2.0 &sect;3.5.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCullFace.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.5.1">OpenGL ES 2.0 &sect;3.5.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCullFace.xml">man page</a>)</span>
         <dt class="idl-code">void depthFunc(GLenum func)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.5">OpenGL ES 2.0 &sect;4.1.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDepthFunc.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.5">OpenGL ES 2.0 &sect;4.1.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDepthFunc.xml">man page</a>)</span>
         <dt class="idl-code">void depthMask(GLboolean flag)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.2">OpenGL ES 2.0 &sect;4.2.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDepthMask.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.2">OpenGL ES 2.0 &sect;4.2.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDepthMask.xml">man page</a>)</span>
         <dt class="idl-code">void depthRange(GLclampf zNear, GLclampf zFar)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.12.1">OpenGL ES 2.0 &sect;2.12.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDepthRangef.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.12.1">OpenGL ES 2.0 &sect;2.12.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDepthRangef.xml">man page</a>)</span>
             <dd>
                 <code>zNear</code> and <code>zFar</code> values are clamped to the range 0 to 1 and
                 <code>zNear</code> must be less than or equal to <code>zFar</code>; see
                 <a href="#VIEWPORT_DEPTH_RANGE">Viewport Depth Range</a>.
         <dt class="idl-code">void disable(GLenum cap)
-            <span class="gl-spec">(<a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDisable.xml">man page</a>)</span>
+            <span class="gl-spec">(<a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDisable.xml">man page</a>)</span>
         <dt class="idl-code">void enable(GLenum cap)
-            <span class="gl-spec">(<a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glEnable.xml">man page</a>)</span>
+            <span class="gl-spec">(<a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glEnable.xml">man page</a>)</span>
         <dt class="idl-code">void frontFace(GLenum mode)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.5.1">OpenGL ES 2.0 &sect;3.5.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glFrontFace.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.5.1">OpenGL ES 2.0 &sect;3.5.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glFrontFace.xml">man page</a>)</span>
         <dt class="idl-code">any getParameter(GLenum pname)
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGet.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGet.xml">
                 (glGet OpenGL ES 2.0 man page)
             </a>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetString.xml">
+            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetString.xml">
                 (glGetString OpenGL ES 2.0 man page)
             </a>
         <dd>
@@ -1718,18 +1718,18 @@ for (var i = 0; i < numVertices; i++) {
             <p>See <a href="#EXTENSION_QUERIES">Extension Queries</a> for information on querying the
             available extensions in the current WebGL implementation.</p>
         <dt class="idl-code">GLenum getError()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.5">OpenGL ES 2.0 &sect;2.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetError.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.5">OpenGL ES 2.0 &sect;2.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetError.xml">man page</a>)</span>
             <dd>
             See <a href="#WEBGLCONTEXTEVENT">WebGLContextEvent</a> for documentation of a
             WebGL-specific return value from getError.
         <dt class="idl-code">void hint(GLenum target, GLenum mode)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-5.2">OpenGL ES 2.0 &sect;5.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glHint.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-5.2">OpenGL ES 2.0 &sect;5.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glHint.xml">man page</a>)</span>
         <dt class="idl-code">GLboolean isEnabled(GLenum cap)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.1">OpenGL ES 2.0 &sect;6.1.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glIsEnabled.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.1">OpenGL ES 2.0 &sect;6.1.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsEnabled.xml">man page</a>)</span>
         <dt class="idl-code">void lineWidth(GLfloat width)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.4">OpenGL ES 2.0 &sect;3.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glLineWidth.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.4">OpenGL ES 2.0 &sect;3.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glLineWidth.xml">man page</a>)</span>
         <dt class="idl-code">void pixelStorei(GLenum pname, GLint param)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.6.1">OpenGL ES 2.0 &sect;3.6.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glPixelStorei.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.6.1">OpenGL ES 2.0 &sect;3.6.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glPixelStorei.xml">man page</a>)</span>
             <dd>
                 In addition to the parameters in the OpenGL ES 2.0 specification, the WebGL
                 specification accepts the parameters <code>UNPACK_FLIP_Y_WEBGL</code>,
@@ -1737,27 +1737,27 @@ for (var i = 0; i < numVertices; i++) {
                 and <code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code>. See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel
                 Storage Parameters</a> for documentation of these parameters.
         <dt class="idl-code">void polygonOffset(GLfloat factor, GLfloat units)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.5.2">OpenGL ES 2.0 &sect;3.5.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glPolygonOffset.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.5.2">OpenGL ES 2.0 &sect;3.5.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glPolygonOffset.xml">man page</a>)</span>
         <dt class="idl-code">void sampleCoverage(GLclampf value, GLboolean invert)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.3">OpenGL ES 2.0 &sect;4.1.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glSampleCoverage.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.3">OpenGL ES 2.0 &sect;4.1.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glSampleCoverage.xml">man page</a>)</span>
         <dt class="idl-code">void stencilFunc(GLenum func, GLint ref, GLuint mask)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.4">OpenGL ES 2.0 &sect;4.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glStencilFunc.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.4">OpenGL ES 2.0 &sect;4.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glStencilFunc.xml">man page</a>)</span>
         <dt class="idl-code">void stencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.4">OpenGL ES 2.0 &sect;4.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glStencilFuncSeparate.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.4">OpenGL ES 2.0 &sect;4.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glStencilFuncSeparate.xml">man page</a>)</span>
             <dd>
                 See <a href="#STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a> for information
                 on WebGL specific limitations to the allowable argument values.
         <dt class="idl-code">void stencilMask(GLuint mask)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.2">OpenGL ES 2.0 &sect;4.2.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glStencilMask.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.2">OpenGL ES 2.0 &sect;4.2.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glStencilMask.xml">man page</a>)</span>
             <dd>
                 See <a href="#STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a> for information
                 on WebGL specific limitations to the allowable mask values.
         <dt class="idl-code">void stencilMaskSeparate(GLenum face, GLuint mask)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.2">OpenGL ES 2.0 &sect;4.2.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glStencilMaskSeparate.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.2">OpenGL ES 2.0 &sect;4.2.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glStencilMaskSeparate.xml">man page</a>)</span>
         <dt class="idl-code">void stencilOp(GLenum fail, GLenum zfail, GLenum zpass)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.4">OpenGL ES 2.0 &sect;4.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glStencilOp.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.4">OpenGL ES 2.0 &sect;4.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glStencilOp.xml">man page</a>)</span>
         <dt class="idl-code">void stencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.4">OpenGL ES 2.0 &sect;4.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glStencilOpSeparate.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.4">OpenGL ES 2.0 &sect;4.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glStencilOpSeparate.xml">man page</a>)</span>
     </dl>
      
 <!-- ======================================================================================================= -->
@@ -1777,10 +1777,10 @@ for (var i = 0; i < numVertices; i++) {
 
     <dl class="methods">
         <dt class="idl-code">void scissor(GLint x, GLint y, GLsizei width, GLsizei height)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.2">OpenGL ES 2.0 &sect;4.1.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glScissor.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.1.2">OpenGL ES 2.0 &sect;4.1.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glScissor.xml">man page</a>)</span>
             
         <dt class="idl-code">void viewport(GLint x, GLint y, GLsizei width, GLsizei height)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.12.1">OpenGL ES 2.0 &sect;2.12.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glViewport.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.12.1">OpenGL ES 2.0 &sect;2.12.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glViewport.xml">man page</a>)</span>
     </dl>
      
 <!-- ======================================================================================================= -->
@@ -1794,7 +1794,7 @@ for (var i = 0; i < numVertices; i++) {
      
     <dl class="methods">
         <dt class="idl-code">void bindBuffer(GLenum target, WebGLBuffer buffer)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindBuffer.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindBuffer.xml">man page</a>)</span>
         <dd>
             Binds the given WebGLBuffer object to the given binding point (target), either
             ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER. If the buffer is null then any buffer currently
@@ -1804,14 +1804,14 @@ for (var i = 0; i < numVertices; i++) {
             current binding will remain untouched.
         
         <dt class="idl-code">void bufferData(GLenum target, GLsizeiptr size, GLenum usage)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBufferData.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferData.xml">man page</a>)</span>
         <dd>
             Set the size of the currently bound WebGLBuffer object for the passed target. The
             buffer is initialized to 0.
             
         <dt><p class="idl-code">void bufferData(GLenum target, ArrayBufferView data, GLenum usage)</p>
             <p class="idl-code">void bufferData(GLenum target, ArrayBuffer data, GLenum usage)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBufferData.xml">man page</a>)</span></p>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferData.xml">man page</a>)</span></p>
         <dd>
             Set the size of the currently bound WebGLBuffer object for the passed target to the 
             size of the passed data, then write the contents of data to the buffer object.
@@ -1819,20 +1819,20 @@ for (var i = 0; i < numVertices; i++) {
             If the passed data is null then an <code>INVALID_VALUE</code> error is generated.
         <dt><p class="idl-code">void bufferSubData(GLenum target, GLintptr offset, ArrayBufferView data)</p>
             <p class="idl-code">void bufferSubData(GLenum target, GLintptr offset, ArrayBuffer data)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBufferSubData.xml">man page</a>)</span></p>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferSubData.xml">man page</a>)</span></p>
         <dd>
             For the WebGLBuffer object bound to the passed target write the passed data starting
             at the passed offset. If the data would be written past the end of the buffer object
             an <code>INVALID_VALUE</code> error is generated.
             
         <dt class="idl-code">WebGLBuffer createBuffer()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenBuffers.xml">glGenBuffers</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenBuffers.xml">glGenBuffers</a>)</span>
         <dd>
             Create a WebGLBuffer object and initialize it with a buffer object name as if by
             calling glGenBuffers.
             
         <dt class="idl-code">void deleteBuffer(WebGLBuffer buffer)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteBuffers.xml">glDeleteBuffers</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteBuffers.xml">glDeleteBuffers</a>)</span>
         <dd>
             Delete the buffer object contained in the passed WebGLBuffer as if by calling
             glDeleteBuffers. If the buffer has already been deleted the call has no effect.
@@ -1841,7 +1841,7 @@ for (var i = 0; i < numVertices; i++) {
             destroyed.
 
         <dt class="idl-code">any getBufferParameter(GLenum target, GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.3">OpenGL ES 2.0 &sect;6.1.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetBufferParameteriv.xml">glGetBufferParameteriv</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.3">OpenGL ES 2.0 &sect;6.1.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetBufferParameteriv.xml">glGetBufferParameteriv</a>)</span>
         <dd>
             Return the value for the passed pname. The type returned is the natural type for the
             requested pname, as given in the following table:
@@ -1851,7 +1851,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>BUFFER_USAGE</td><td>unsigned long</td></tr>
             </table>
         <dt class="idl-code">GLboolean isBuffer(WebGLBuffer buffer)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.6">OpenGL ES 2.0 &sect;6.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glIsBuffer.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.6">OpenGL ES 2.0 &sect;6.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsBuffer.xml">man page</a>)</span>
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -1866,7 +1866,7 @@ for (var i = 0; i < numVertices; i++) {
      
     <dl class="methods">
         <dt class="idl-code">void bindFramebuffer(GLenum target, WebGLFramebuffer framebuffer)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindFramebuffer.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindFramebuffer.xml">man page</a>)</span>
         <dd>
             Bind the given <code class="interface">WebGLFramebuffer</code> object to the given binding point
             (<code class="param">target</code>), which must be <code class="enum">FRAMEBUFFER</code>.
@@ -1875,15 +1875,15 @@ for (var i = 0; i < numVertices; i++) {
             will generate an <code class="error">INVALID_OPERATION</code> error.
 
         <dt class="idl-code">GLenum checkFramebufferStatus(GLenum target)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.5">OpenGL ES 2.0 &sect;4.4.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCheckFramebufferStatus.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.5">OpenGL ES 2.0 &sect;4.4.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCheckFramebufferStatus.xml">man page</a>)</span>
         <dt class="idl-code">WebGLFramebuffer createFramebuffer()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenFramebuffers.xml">glGenFramebuffers</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenFramebuffers.xml">glGenFramebuffers</a>)</span>
         <dd>
             Create a WebGLFramebuffer object and initialize it with a framebuffer object name as if by
             calling glGenFramebuffers.
             
         <dt class="idl-code">void deleteFramebuffer(WebGLFramebuffer buffer)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteFramebuffers.xml">glDeleteFramebuffers</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteFramebuffers.xml">glDeleteFramebuffers</a>)</span>
         <dd>
             Delete the framebuffer object contained in the passed WebGLFramebuffer as if by calling
             glDeleteFramebuffers. If the framebuffer has already been deleted the call has no effect.
@@ -1894,13 +1894,13 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">void framebufferRenderbuffer(GLenum target, GLenum attachment, 
                                  GLenum renderbuffertarget, 
                                  WebGLRenderbuffer renderbuffer)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glFramebufferRenderbuffer.xml">man page</a>)</span></dt>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glFramebufferRenderbuffer.xml">man page</a>)</span></dt>
         <dt class="idl-code">void framebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, 
                               WebGLTexture texture, GLint level)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glFramebufferTexture2D.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glFramebufferTexture2D.xml">man page</a>)</span>
         <dt class="idl-code">any getFramebufferAttachmentParameter(GLenum target, GLenum attachment, 
                                           GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.3">OpenGL ES 2.0 &sect;6.1.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetFramebufferAttachmentParameteriv.xml">glGetFramebufferAttachmentParameteriv</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.3">OpenGL ES 2.0 &sect;6.1.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetFramebufferAttachmentParameteriv.xml">glGetFramebufferAttachmentParameteriv</a>)</span>
         <dd>
             Return the value for the passed pname given the passed target and attachment. The type 
             returned is the natural type for the requested pname, as given in the following table:
@@ -1912,7 +1912,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE</td><td>long</td></tr>
             </table>
         <dt class="idl-code">GLboolean isFramebuffer(WebGLFramebuffer framebuffer)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.7">OpenGL ES 2.0 &sect;6.1.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glIsFramebuffer.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.7">OpenGL ES 2.0 &sect;6.1.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsFramebuffer.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLFramebuffer is valid and false otherwise.
     </dl>
@@ -1928,7 +1928,7 @@ for (var i = 0; i < numVertices; i++) {
      
     <dl class="methods">
         <dt class="idl-code">void bindRenderbuffer(GLenum target, WebGLRenderbuffer renderbuffer)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindRenderbuffer.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindRenderbuffer.xml">man page</a>)</span>
         <dd>
             Bind the given <code class="interface">WebGLRenderbuffer</code> object to the given binding point
             (<code class="param">target</code>), which must be <code class="enum">RENDERBUFFER</code>.
@@ -1936,13 +1936,13 @@ for (var i = 0; i < numVertices; i++) {
             this <code class="param">target</code> is unbound.
 
         <dt class="idl-code">WebGLRenderbuffer createRenderbuffer()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenRenderbuffers.xml">glGenRenderbuffers</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenRenderbuffers.xml">glGenRenderbuffers</a>)</span>
         <dd>
             Create a WebGLRenderbuffer object and initialize it with a renderbuffer object name as if by
             calling glGenRenderbuffers.
             
         <dt class="idl-code">void deleteRenderbuffer(WebGLRenderbuffer renderbuffer)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteRenderbuffers.xml">glDeleteRenderbuffers</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteRenderbuffers.xml">glDeleteRenderbuffers</a>)</span>
         <dd>
             Delete the renderbuffer object contained in the passed WebGLRenderbuffer as if by calling
             glDeleteRenderbuffers. If the renderbuffer has already been deleted the call has no effect.
@@ -1950,7 +1950,7 @@ for (var i = 0; i < numVertices; i++) {
             This method merely gives the author greater control over when the renderbuffer object is
             destroyed.
         <dt class="idl-code">any getRenderbufferParameter(GLenum target, GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.3">OpenGL ES 2.0 &sect;6.1.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetRenderbufferParameteriv.xml">glGetRenderbufferParameteriv</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.3">OpenGL ES 2.0 &sect;6.1.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetRenderbufferParameteriv.xml">glGetRenderbufferParameteriv</a>)</span>
         <dd>
             Return the value for the passed pname given the passed target. The type returned is the natural 
             type for the requested pname, as given in the following table:
@@ -1967,12 +1967,12 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>RENDERBUFFER_STENCIL_SIZE</td><td>long</td></tr>
             </table>
         <dt class="idl-code">GLboolean isRenderbuffer(WebGLRenderbuffer renderbuffer)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.7">OpenGL ES 2.0 &sect;6.1.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glIsRenderbuffer.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.7">OpenGL ES 2.0 &sect;6.1.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsRenderbuffer.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLRenderbuffer is valid and false otherwise.
         <dt class="idl-code">void renderbufferStorage(GLenum target, GLenum internalformat, 
                              GLsizei width, GLsizei height)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glRenderbufferStorage.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glRenderbufferStorage.xml">man page</a>)</span>
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -1987,11 +1987,11 @@ for (var i = 0; i < numVertices; i++) {
      
     <dl class="methods">
         <dt class="idl-code">void bindTexture(GLenum target, WebGLTexture texture)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindTexture.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindTexture.xml">man page</a>)</span>
         <dt class="idl-code">void copyTexImage2D(GLenum target, GLint level, GLenum internalformat, 
                         GLint x, GLint y, GLsizei width, GLsizei height, 
                         GLint border)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCopyTexImage2D.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCopyTexImage2D.xml">man page</a>)</span>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
@@ -2001,7 +2001,7 @@ for (var i = 0; i < numVertices; i++) {
             Framebuffer</a>.
         <dt class="idl-code">void copyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                            GLint x, GLint y, GLsizei width, GLsizei height)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCopyTexSubImage2D.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCopyTexSubImage2D.xml">man page</a>)</span>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
@@ -2010,13 +2010,13 @@ for (var i = 0; i < numVertices; i++) {
             initialized to 0; see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the
             Framebuffer</a>.
         <dt class="idl-code">WebGLTexture createTexture()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenTextures.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenTextures.xml">man page</a>)</span>
         <dd>
             Create a WebGLTexture object and initialize it with a texture object name as if by
             calling glGenTextures.
             
         <dt class="idl-code">void deleteTexture(WebGLTexture texture)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteTextures.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteTextures.xml">man page</a>)</span>
         <dd>
             Delete the texture object contained in the passed WebGLTexture as if by calling
             glDeleteTextures. If the texture has already been deleted the call has no effect.
@@ -2024,12 +2024,12 @@ for (var i = 0; i < numVertices; i++) {
             This method merely gives the author greater control over when the texture object is
             destroyed.
         <dt class="idl-code">void generateMipmap(GLenum target)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.11">OpenGL ES 2.0 &sect;3.7.11</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGenerateMipmap.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.11">OpenGL ES 2.0 &sect;3.7.11</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenerateMipmap.xml">man page</a>)</span>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">any getTexParameter(GLenum target, GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.3">OpenGL ES 2.0 &sect;6.1.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetTexParameter.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.3">OpenGL ES 2.0 &sect;6.1.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetTexParameter.xml">man page</a>)</span>
         <dd>
             Return the value for the passed pname given the passed target. The type returned is the natural type for the
             requested pname, as given in the following table:
@@ -2044,13 +2044,13 @@ for (var i = 0; i < numVertices; i++) {
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">GLboolean isTexture(WebGLTexture texture)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.4">OpenGL ES 2.0 &sect;6.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glIsTexture.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.4">OpenGL ES 2.0 &sect;6.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsTexture.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLTexture is valid and false otherwise.
         <dt class="idl-code"><a name="TEXIMAGE2D">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat, 
                     GLsizei width, GLsizei height, GLint border, GLenum format, 
                     GLenum type, ArrayBufferView pixels)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.1">OpenGL ES 2.0 &sect;3.7.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glTexImage2D.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.1">OpenGL ES 2.0 &sect;3.7.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexImage2D.xml">man page</a>)</span>
         <dd>
             If <code>pixels</code> is null, a buffer of sufficient size initialized to 0 is
             passed. <br><br>
@@ -2074,7 +2074,7 @@ for (var i = 0; i < numVertices; i++) {
                     GLenum format, GLenum type, HTMLCanvasElement canvas)</p>
             <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
                     GLenum format, GLenum type, HTMLVideoElement video)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.1">OpenGL ES 2.0 &sect;3.7.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glTexImage2D.xml">man page</a>)</span></p>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.1">OpenGL ES 2.0 &sect;3.7.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexImage2D.xml">man page</a>)</span></p>
         <dd>
             Uploads the given element or image data to the currently bound WebGLTexture. <br><br>
 
@@ -2098,19 +2098,19 @@ for (var i = 0; i < numVertices; i++) {
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
         <dt class="idl-code">void texParameterf(GLenum target, GLenum pname, GLfloat param)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.4">OpenGL ES 2.0 &sect;3.7.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glTexParameter.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.4">OpenGL ES 2.0 &sect;3.7.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexParameter.xml">man page</a>)</span>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">void texParameteri(GLenum target, GLenum pname, GLint param)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.4">OpenGL ES 2.0 &sect;3.7.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glTexParameter.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.4">OpenGL ES 2.0 &sect;3.7.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexParameter.xml">man page</a>)</span>
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLsizei width, GLsizei height, 
                        GLenum format, GLenum type, ArrayBufferView pixels)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glTexSubImage2D.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexSubImage2D.xml">man page</a>)</span>
         <dd>
             See <a href="#TEXIMAGE2D">texImage2D</a> for restrictions on the <em>format</em>
             and <em>pixels</em> arguments. <br><br>
@@ -2128,7 +2128,7 @@ for (var i = 0; i < numVertices; i++) {
                        GLenum format, GLenum type, HTMLCanvasElement canvas)</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLenum format, GLenum type, HTMLVideoElement video)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glTexSubImage2D.xml">man page</a>)</span></p>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexSubImage2D.xml">man page</a>)</span></p>
         <dd>
             Updates a sub-rectangle of the currently bound WebGLTexture with the contents of the
             given element or image data. <br><br>
@@ -2156,28 +2156,28 @@ for (var i = 0; i < numVertices; i++) {
 
     <dl class="methods">
         <dt class="idl-code">void attachShader(WebGLProgram program, WebGLShader shader)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glAttachShader.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glAttachShader.xml">man page</a>)</span>
         <dt class="idl-code">void bindAttribLocation(WebGLProgram program, GLuint index, DOMString name)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBindAttribLocation.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindAttribLocation.xml">man page</a>)</span>
         <dd>
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
         <dt class="idl-code">void compileShader(WebGLShader shader)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCompileShader.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCompileShader.xml">man page</a>)</span>
         <dt class="idl-code">WebGLProgram createProgram()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCreateProgram.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCreateProgram.xml">man page</a>)</span>
         <dd>
             Create a WebGLProgram object and initialize it with a program object name as if by
             calling glCreateProgram.
             
         <dt class="idl-code">WebGLShader createShader(type)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glCreateShader.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCreateShader.xml">man page</a>)</span>
         <dd>
             Create a WebGLShader object and initialize it with a shader object name as if by
             calling glCreateShader.
             
         <dt class="idl-code">void deleteProgram(WebGLProgram program)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteProgram.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteProgram.xml">man page</a>)</span>
         <dd>
             Delete the program object contained in the passed WebGLProgram as if by calling
             glDeleteProgram. If the program has already been deleted the call has no effect.
@@ -2185,7 +2185,7 @@ for (var i = 0; i < numVertices; i++) {
             This method merely gives the author greater control over when the program object is
             destroyed.
         <dt class="idl-code">void deleteShader(WebGLShader shader)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDeleteShader.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteShader.xml">man page</a>)</span>
         <dd>
             Delete the shader object contained in the passed WebGLShader as if by calling
             glDeleteShader. If the shader has already been deleted the call has no effect.
@@ -2193,13 +2193,13 @@ for (var i = 0; i < numVertices; i++) {
             This method merely gives the author greater control over when the shader object is
             destroyed.
         <dt class="idl-code">void detachShader(WebGLProgram program, WebGLShader shader)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDetachShader.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDetachShader.xml">man page</a>)</span>
         <dt class="idl-code">WebGLShader[ ] getAttachedShaders(WebGLProgram program)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetAttachedShaders.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetAttachedShaders.xml">man page</a>)</span>
         <dd>
             Return the list of shaders attached to the passed program.
         <dt class="idl-code">any getProgramParameter(WebGLProgram program, GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetProgramiv.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetProgramiv.xml">man page</a>)</span>
         <dd>
             Return the value for the passed pname given the passed program. The type returned is the natural 
             type for the requested pname, as given in the following table:
@@ -2213,9 +2213,9 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>ACTIVE_UNIFORMS</td><td>long</td></tr>
             </table>
         <dt class="idl-code">DOMString getProgramInfoLog(WebGLProgram program)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetProgramInfoLog.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetProgramInfoLog.xml">man page</a>)</span>
         <dt class="idl-code">any getShaderParameter(WebGLShader shader, GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetShaderiv.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderiv.xml">man page</a>)</span>
         <dd>
             Return the value for the passed pname given the passed shader. The type returned is the natural 
             type for the requested pname, as given in the following table:
@@ -2226,30 +2226,30 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>COMPILE_STATUS</td><td>boolean</td></tr>
             </table>
         <dt class="idl-code">DOMString getShaderInfoLog(WebGLShader shader)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetShaderInfoLog.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderInfoLog.xml">man page</a>)</span>
         <dt class="idl-code">DOMString getShaderSource(WebGLShader shader)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetShaderSource.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderSource.xml">man page</a>)</span>
         <dt class="idl-code">GLboolean isProgram(WebGLProgram program)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glIsProgram.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsProgram.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLProgram is valid and false otherwise.
         <dt class="idl-code">GLboolean isShader(WebGLShader shader)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glIsShader.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsShader.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLShader is valid and false otherwise.
         <dt class="idl-code">void linkProgram(WebGLProgram program)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glLinkProgram.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glLinkProgram.xml">man page</a>)</span>
         <dt class="idl-code">void shaderSource(WebGLShader shader, DOMString source)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glShaderSource.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glShaderSource.xml">man page</a>)</span>
         <dd>
             See <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a>
             and <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional constructs supported by and validation performed by WebGL
             implementations.
         <dt class="idl-code">void useProgram(WebGLProgram program)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glUseProgram.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glUseProgram.xml">man page</a>)</span>
         <dt class="idl-code">void validateProgram(WebGLProgram program)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.5">OpenGL ES 2.0 &sect;2.10.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glValidateProgram.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.5">OpenGL ES 2.0 &sect;2.10.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glValidateProgram.xml">man page</a>)</span>
     </dl>
     
 <!-- ======================================================================================================= -->
@@ -2262,31 +2262,31 @@ for (var i = 0; i < numVertices; i++) {
      
     <dl class="methods">
         <dt class="idl-code">void disableVertexAttribArray(GLuint index)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDisableVertexAttribArray.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDisableVertexAttribArray.xml">man page</a>)</span>
         <dt class="idl-code">void enableVertexAttribArray(GLuint index)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glEnableVertexAttribArray.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glEnableVertexAttribArray.xml">man page</a>)</span>
         <dd>
             Enable the vertex attribute at <code>index</code> as an array. WebGL imposes additional
             rules beyond OpenGL ES 2.0 regarding enabled vertex attributes;
             see <a href="#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range
             Checking</a>.
         <dt class="idl-code">WebGLActiveInfo getActiveAttrib(WebGLProgram program, GLuint index)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetActiveAttrib.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetActiveAttrib.xml">man page</a>)</span>
         <dd>
             Returns information about the size, type and name of the vertex attribute at the
             passed index of the passed program object.
         <dt class="idl-code">WebGLActiveInfo getActiveUniform(WebGLProgram program, GLuint index)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetActiveUniform.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetActiveUniform.xml">man page</a>)</span>
         <dd>
             Returns information about the size, type and name of the uniform at the
             passed index of the passed program object.
         <dt class="idl-code">GLint getAttribLocation(WebGLProgram program, DOMString name)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetAttribLocation.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetAttribLocation.xml">man page</a>)</span>
         <dd>
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
         <dt class="idl-code">any getUniform(WebGLProgram program, WebGLUniformLocation location)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetUniform.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetUniform.xml">man page</a>)</span>
         <dd>
             Return the uniform value at the passed location in the passed program. The type returned is 
             dependent on the uniform type, as shown in the following table:
@@ -2309,7 +2309,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>mat4</td><td>Float32Array (with 16 elements)</td></tr>
             </table>
         <dt class="idl-code">WebGLUniformLocation getUniformLocation(WebGLProgram program, DOMString name)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetUniformLocation.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetUniformLocation.xml">man page</a>)</span>
         <dd>
             Return a WebGLUniformLocation object that represents the location of a specific uniform variable
             within a program object. The return value is null if name does not correspond to an active uniform
@@ -2318,7 +2318,7 @@ for (var i = 0; i < numVertices; i++) {
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
         <dt class="idl-code">any getVertexAttrib(GLuint index, GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetVertexAttrib.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetVertexAttrib.xml">man page</a>)</span>
         <dd>
             Return the information requested in pname about the vertex attribute at the passed index. The 
             type returned is dependent on the information requested, as shown in the following table:
@@ -2333,11 +2333,11 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>CURRENT_VERTEX_ATTRIB</td><td>Float32Array (with 4 elements)</td></tr>
             </table>
         <dt class="idl-code">GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glGetVertexAttribPointerv.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetVertexAttribPointerv.xml">man page</a>)</span>
         <dt><p class="idl-code">void uniform[1234][fi](WebGLUniformLocation location, ...)</p>
             <p class="idl-code">void uniform[1234][fi]v(WebGLUniformLocation location, ...)
             <p class="idl-code">void uniformMatrix[234]fv(WebGLUniformLocation location, GLboolean transpose, ...)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glUniform.xml">man page</a>)</span></p>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glUniform.xml">man page</a>)</span></p>
        <dd>
             Each of the uniform* functions above sets the specified uniform or uniforms to the
             values provided. If the passed <code>location</code> is not null and was not obtained
@@ -2351,7 +2351,7 @@ for (var i = 0; i < numVertices; i++) {
             invalid if it is too short for or is not an integer multiple of the assigned type.
         <dt><p class="idl-code">void vertexAttrib[1234]f(GLuint indx, ...)</p>
             <p class="idl-code">void vertexAttrib[1234]fv(GLuint indx, ...)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.7">OpenGL ES 2.0 &sect;2.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glVertexAttrib.xml">man page</a>)</span></p>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.7">OpenGL ES 2.0 &sect;2.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glVertexAttrib.xml">man page</a>)</span></p>
        <dd>
            Sets the vertex attribute at the passed index to the given constant value. Values set via the
            <code>vertexAttrib</code> are guaranteed to be returned from the <code>getVertexAttrib</code> function
@@ -2359,7 +2359,7 @@ for (var i = 0; i < numVertices; i++) {
            <code>drawArrays</code> or <code>drawElements</code>.
        <dt class="idl-code">void vertexAttribPointer(GLuint indx, GLint size, GLenum type, 
                             GLboolean normalized, GLsizei stride, GLintptr offset)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glVertexAttribPointer.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glVertexAttribPointer.xml">man page</a>)</span>
         <dd>
             Assign the WebGLBuffer object currently bound to the ARRAY_BUFFER target to the vertex
             attribute at the passed index. Size is number of components per attribute. Stride and
@@ -2386,13 +2386,13 @@ for (var i = 0; i < numVertices; i++) {
      
     <dl class="methods">
         <dt class="idl-code">void clear(GLbitfield mask)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.3">OpenGL ES 2.0 &sect;4.2.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glClear.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.2.3">OpenGL ES 2.0 &sect;4.2.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glClear.xml">man page</a>)</span>
         <dt class="idl-code">void drawArrays(GLenum mode, GLint first, GLsizei count)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDrawArrays.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDrawArrays.xml">man page</a>)</span>
             <dd>
             If <em>first</em> is negative, an <code>INVALID_VALUE</code> error will be generated.
         <dt class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLintptr offset)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glDrawElements.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDrawElements.xml">man page</a>)</span>
         <dd>
             Draw using the currently bound element array buffer.  The given offset is in bytes, and
             must be a valid multiple of the size of the given type or an <code>INVALID_OPERATION</code>
@@ -2406,9 +2406,9 @@ for (var i = 0; i < numVertices; i++) {
             and <code>drawElements</code>. See <a href="#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex
             Attributes and Range Checking</a>.
         <dt class="idl-code">void finish()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-5.1">OpenGL ES 2.0 &sect;5.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glFinish.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-5.1">OpenGL ES 2.0 &sect;5.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glFinish.xml">man page</a>)</span>
         <dt class="idl-code">void flush()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-5.1">OpenGL ES 2.0 &sect;5.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glFlush.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-5.1">OpenGL ES 2.0 &sect;5.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glFlush.xml">man page</a>)</span>
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -2422,7 +2422,7 @@ for (var i = 0; i < numVertices; i++) {
     <dl class="methods">
         <dt class="idl-code">void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, 
                            GLenum format, GLenum type, ArrayBufferView pixels)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.3.1">OpenGL ES 2.0 &sect;4.3.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glReadPixels.xml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.3.1">OpenGL ES 2.0 &sect;4.3.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glReadPixels.xml">man page</a>)</span>
         <dd>
             Fills <code>pixels</code> with the pixel data in the specified rectangle of the frame
             buffer. The data returned from readPixels must be up-to-date as of the most recently
