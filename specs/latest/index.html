@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 03 May 2011</h2>
+    <h2 class="no-toc">Editor's Draft 11 May 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -207,12 +207,13 @@
 
     <p>
         The drawing buffer into which the API calls are rendered shall be defined upon creation of
-        the WebGLRenderingContext object. The table below shows all the buffers which make up
-        the drawing buffer, along with their minimum sizes and whether they are defined or not by
-        default. The size of this drawing buffer shall be determined by the <code>width</code> 
-        and <code>height</code> attributes of the HTMLCanvasElement. The table below also shows 
-        the value to which these buffers shall be cleared when first created or when the size is 
-        changed.
+        the WebGLRenderingContext object. The table below shows all the buffers which make up the
+        drawing buffer, along with their minimum sizes and whether they are defined or not by
+        default. The size of this drawing buffer shall be determined by the <code>width</code>
+        and <code>height</code> attributes of the HTMLCanvasElement. The table below also shows the
+        value to which these buffers shall be cleared when first created, when the size is changed,
+        or after presentation when the <code>preserveDrawingBuffer</code> context creation attribute
+        is <code>false</code>.
     </p>
     <table class="foo">
         <tr><th>Buffer</th><th>Clear value</th><th>Minimum size</th><th>Defined by default?</th></tr>
