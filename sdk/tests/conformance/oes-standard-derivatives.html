@@ -358,6 +358,8 @@ function runUniqueObjectTest()
     gl.getExtension("OES_standard_derivatives").myProperty = 2;
     if (window.GCController) {
         window.GCController.collect();
+    } else if (window.opera && window.opera.collect) {
+        window.opera.collect();
     } else {
         attemptToForceGC();
     }
