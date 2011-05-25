@@ -40,6 +40,7 @@ var webGL = null;
 var contextAttribs = null;
 var pixel = [0, 0, 0, 1];
 var correctColor = null;
+var value;
 
 function init()
 {
@@ -112,6 +113,7 @@ function testAlpha(alpha)
     else
         shouldBeNonNull("webGL = getWebGL(1, 1, { alpha: false, depth: false, stencil: false, antialias: false }, [ 0, 0, 0, 0 ], 1, 0)");
     shouldBeNonNull("contextAttribs = webGL.getContextAttributes()");
+    shouldBeTrue("contextAttribs.alpha == " + alpha);
 
     var buf = new Uint8Array(1 * 1 * 4);
     webGL.readPixels(0, 0, 1, 1, webGL.RGBA, webGL.UNSIGNED_BYTE, buf);
