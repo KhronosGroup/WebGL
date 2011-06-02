@@ -11,6 +11,7 @@ context-attributes-alpha-depth-stencil-antialias.html
 context-lost-restored.html
 context-lost.html
 context-type-test.html
+context-zero-size.html
 copy-tex-image-and-sub-image-2d.html
 draw-arrays-out-of-bounds.html
 draw-elements-out-of-bounds.html
