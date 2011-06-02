@@ -29,7 +29,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 01 June 2011</h2>
+    <h2 class="no-toc">Editor's Draft 02 June 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -397,26 +397,71 @@ gl.viewport(0, 0, canvas.width, canvas.height);
 
 <!-- ======================================================================================================= -->
 
-    <h3>Origin Restrictions</h3>
+    <h3><a name="ORIGIN_RESTRICTIONS">Origin Restrictions</a></h3>
 
     <p>
-        In order to prevent information leakage, the HTML5 canvas element has
-        a <i>origin-clean</i> flag.  (See HTML5, section 4.8.11.3, "Security with canvas
-        elements".)  For a WebGL context, the <i>origin-clean</i> flag must be set to false
-        if any of the following actions occur:
-    </p>
+        In order to prevent information leakage, WebGL disallows uploading as textures:
         <ul>
-            <li>The <code>texImage2D</code> method is called with an <code>HTMLImageElement</code> or 
-                <code>HTMLVideoElement</code> whose origin is not the same as that of the Document 
-                object that owns the canvas element.
-            <li>The <code>texImage2D</code> method is called with an <code>HTMLCanvasElement</code> 
-                whose <i>origin-clean</i> flag is set to false.
+        <li> Image or video elements whose origin is not the same as the origin of the Document that
+             contains the WebGLRenderingContext's canvas element
+        <li> Canvas elements whose <i>origin-clean</i> flag is set to false
         </ul>
-    <p>
-        Whenever the <code>readPixels</code> method of the 2D context of a <code>canvas</code> 
-        element whose <i>origin-clean</i> flag is set to false is called with otherwise correct 
-        arguments, the method must raise a <code>SECURITY_ERR</code> exception.
     </p>
+    <p>
+        If the <code>texImage2D</code> or <code>texSubImage2D</code> method is called with otherwise
+        correct arguments and an <code>HTMLImageElement</code>, <code>HTMLVideoElement</code>,
+        or <code>HTMLCanvasElement</code> violating these restrictions, a <code>SECURITY_ERR</code>
+        exception must be raised.
+    </p>
+    <div class="note">
+        <p>
+            WebGL necessarily imposes stronger restrictions on the use of cross-domain media than other
+            APIs such as the 2D canvas rendering context, because shaders can be used to indirectly
+            deduce the contents of textures which have been uploaded to the GPU.
+        </p>
+        <p>
+            WebGL applications may utilize images and videos that come from other domains, with the
+            cooperation of the server hosting the media,
+            using <a href="http://www.w3.org/TR/cors/">Cross-Origin Resource
+            Sharing</a> <a href="#refsCORS">[CORS]</a>. In order to use such media, the application
+            must explicitly request permission to do so, and the server must explicitly grant
+            permission. Successful CORS-enabled fetches of image and video elements from other
+            domains <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/origin-0.html#origin-0">cause
+            the origin of these elements</a> to be set to that of the containing
+            Document <a href="#refsHTML">[HTML]</a>.
+        </p>
+        <div class="example">
+            <p>
+                The following ECMAScript example demonstrates how to issue a CORS request for an
+                image coming from another domain. The image is fetched from the server without any
+                credentials, i.e., cookies.
+            </p>
+<pre>
+var gl = ...;
+var image = new Image();
+
+// The onload handler should be set to a function which uploads the HTMLImageElement
+// using texImage2D or texSubImage2D.
+image.onload = ...;
+
+image.crossOrigin = "anonymous";
+
+image.src = "http://other-domain.com/image.jpg";
+</pre>
+        </div>
+        <p>
+            Note that these rules imply that the <i>origin-clean</i> flag for a canvas rendered
+            using WebGL will never be set to false.
+        </p>
+        <p>
+            For more information on issuing CORS requests for image and video elements, consult:
+            <ul>
+            <li> <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/urls.html#cors-settings-attribute">CORS settings attributes</a> <a href="#refsHTML">[HTML]</a>
+            <li> <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/embedded-content-1.html#the-img-element">The <code>img</code> element</a> <a href="#refsHTML">[HTML]</a>
+            <li> <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-iframe-element.html#media-elements">Media elements</a> <a href="#refsHTML">[HTML]</a>
+            </ul>
+        </p>
+    </div>
 
 <!-- ======================================================================================================= -->
 
@@ -1443,11 +1488,11 @@ for (var i = 0; i < numVertices; i++) {
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
                     GLenum format, GLenum type, ImageData pixels);
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLImageElement image);
+                    GLenum format, GLenum type, HTMLImageElement image) raises (DOMException);
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLCanvasElement canvas);
+                    GLenum format, GLenum type, HTMLCanvasElement canvas) raises (DOMException);
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLVideoElement video);
+                    GLenum format, GLenum type, HTMLVideoElement video) raises (DOMException);
 
     void texParameterf(GLenum target, GLenum pname, GLfloat param);
     void texParameteri(GLenum target, GLenum pname, GLint param);
@@ -1458,11 +1503,11 @@ for (var i = 0; i < numVertices; i++) {
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLenum format, GLenum type, ImageData pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLImageElement image);
+                       GLenum format, GLenum type, HTMLImageElement image) raises (DOMException);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLCanvasElement canvas);
+                       GLenum format, GLenum type, HTMLCanvasElement canvas) raises (DOMException);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLVideoElement video);
+                       GLenum format, GLenum type, HTMLVideoElement video) raises (DOMException);
 
     void uniform1f(WebGLUniformLocation location, GLfloat x);
     void uniform1fv(WebGLUniformLocation location, Float32Array v);
@@ -2097,11 +2142,11 @@ for (var i = 0; i < numVertices; i++) {
         <dt><p class="idl-code"><a name="TEXIMAGE2D_HTML">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat,
                     GLenum format, GLenum type, ImageData pixels)</p>
             <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLImageElement image)</p>
+                    GLenum format, GLenum type, HTMLImageElement image) raises (DOMException)</p>
             <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLCanvasElement canvas)</p>
+                    GLenum format, GLenum type, HTMLCanvasElement canvas) raises (DOMException)</p>
             <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLVideoElement video)
+                    GLenum format, GLenum type, HTMLVideoElement video) raises (DOMException)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.1">OpenGL ES 2.0 &sect;3.7.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexImage2D.xml">man page</a>)</span></p>
         <dd>
             Uploads the given element or image data to the currently bound WebGLTexture. <br><br>
@@ -2122,6 +2167,12 @@ for (var i = 0; i < numVertices; i++) {
 
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
+
+            If this function is called with an <code>HTMLImageElement</code>
+            or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
+            Document, or with an <code>HTMLCanvasElement</code> whose <i>origin-clean</i> flag is
+            set to false, a <code>SECURITY_ERR</code> exception must be
+            raised. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
 
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
@@ -2151,11 +2202,11 @@ for (var i = 0; i < numVertices; i++) {
         <dt><p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLenum format, GLenum type, ImageData pixels)</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLImageElement image)</p>
+                       GLenum format, GLenum type, HTMLImageElement image) raises (DOMException)</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLCanvasElement canvas)</p>
+                       GLenum format, GLenum type, HTMLCanvasElement canvas) raises (DOMException)</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLVideoElement video)
+                       GLenum format, GLenum type, HTMLVideoElement video) raises (DOMException)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexSubImage2D.xml">man page</a>)</span></p>
         <dd>
             Updates a sub-rectangle of the currently bound WebGLTexture with the contents of the
@@ -2166,6 +2217,12 @@ for (var i = 0; i < numVertices; i++) {
 
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
+
+            If this function is called with an <code>HTMLImageElement</code>
+            or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
+            Document, or with an <code>HTMLCanvasElement</code> whose <i>origin-clean</i> flag is
+            set to false, a <code>SECURITY_ERR</code> exception must be
+            raised. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
 
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
@@ -3102,6 +3159,16 @@ extensions.
         <dd><cite><a href="http://www.ietf.org/rfc/rfc2119.txt">
             Key words for use in RFCs to Indicate Requirement Levels</a></cite>,
             S. Bradner. IETF, March 1997.
+        </dd>
+        <dt id="refsCORS">[CORS]</dt>
+        <dd><cite><a href="http://www.w3.org/TR/cors/">
+            Cross-Origin Resource Sharing</a></cite>,
+            A. van Kesteren, July 2010.
+        </dd>
+        <dt id="refsHTML">[HTML]</dt>
+        <dd><cite><a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/">
+            HTML</a></cite>,
+            I. Hickson, June 2011.
         </dd>
         <dt id="refsWEBIDL">[WEBIDL]</dt>
         <dd><cite><a href="http://dev.w3.org/2006/webapi/WebIDL/">

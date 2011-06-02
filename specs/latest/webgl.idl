@@ -646,11 +646,11 @@ interface WebGLRenderingContext {
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
                     GLenum format, GLenum type, ImageData pixels);
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLImageElement image);
+                    GLenum format, GLenum type, HTMLImageElement image) raises (DOMException);
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLCanvasElement canvas);
+                    GLenum format, GLenum type, HTMLCanvasElement canvas) raises (DOMException);
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLVideoElement video);
+                    GLenum format, GLenum type, HTMLVideoElement video) raises (DOMException);
 
     void texParameterf(GLenum target, GLenum pname, GLfloat param);
     void texParameteri(GLenum target, GLenum pname, GLint param);
@@ -661,11 +661,11 @@ interface WebGLRenderingContext {
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLenum format, GLenum type, ImageData pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLImageElement image);
+                       GLenum format, GLenum type, HTMLImageElement image) raises (DOMException);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLCanvasElement canvas);
+                       GLenum format, GLenum type, HTMLCanvasElement canvas) raises (DOMException);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLVideoElement video);
+                       GLenum format, GLenum type, HTMLVideoElement video) raises (DOMException);
 
     void uniform1f(WebGLUniformLocation location, GLfloat x);
     void uniform1fv(WebGLUniformLocation location, FloatArray v);
