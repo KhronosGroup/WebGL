@@ -486,7 +486,7 @@ gl.viewport(0, 0, canvas.width, canvas.height);
     <p>
         Shaders must not be allowed to read or write array elements that lie outside the bounds of the array.
         This includes arrays of uniforms, samplers, attributes, varyings, variables and constants. It also 
-        includes vector or matrix types such as <code>vec3</code> and <code>mat4</code> when accessed 
+        includes vector or matrix types such as <code>vec3</code> or <code>mat4</code> when accessed 
         using array subscripting syntax. Such accesses may generate an error and prevent the shader from
         executing if detected during compilation. Otherwise, at runtime they may return a constant value 
         (such as 0), or the value at any valid index of the same array.
