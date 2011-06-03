@@ -116,6 +116,10 @@ dl.methods {
   color:black;
   font-size: 125%;
   font-family: monospace;
+  font-weight: bold;
+}
+
+dt.idl-code {
   text-indent: -1.5em;
   margin-left: 1.5em;
 }
