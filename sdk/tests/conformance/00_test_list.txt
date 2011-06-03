@@ -43,11 +43,12 @@ gl-uniform-arrays.html
 gl-uniform-bool.html
 gl-uniformmatrix4fv.html
 gl-unknown-uniform.html
-gl-vertex-attrib.html
 gl-vertex-attrib-zero-issues.html
+gl-vertex-attrib.html
 gl-vertexattribpointer.html
 #glsl-2types-of-textures-on-same-unit.html
 glsl-conformance.html
+glsl-long-variable-names.html
 incorrect-context-object-behaviour.html
 index-validation-copies-indices.html
 index-validation-crash-with-buffer-sub-data.html
@@ -68,8 +69,8 @@ oes-texture-float.html
 oes-vertex-array-object.html
 origin-clean-conformance.html
 point-size.html
-program-test.html
 premultiplyalpha-test.html
+program-test.html
 read-pixels-pack-alignment.html
 read-pixels-test.html
 renderbuffer-initialization.html
@@ -99,5 +100,3 @@ uniform-samplers-test.html
 uninitialized-test.html
 viewport-unchanged-upon-resize.html
 webgl-specific.html
-more/00_test_list.txt
-
