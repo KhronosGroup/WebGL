@@ -6,12 +6,12 @@ buffer-bind-test.html
 buffer-data-array-buffer.html
 buffer-preserve-test.html
 canvas-test.html
+canvas-zero-size.html
 constants.html
 context-attributes-alpha-depth-stencil-antialias.html
 context-lost-restored.html
 context-lost.html
 context-type-test.html
-context-zero-size.html
 copy-tex-image-and-sub-image-2d.html
 draw-arrays-out-of-bounds.html
 draw-elements-out-of-bounds.html
