@@ -48,7 +48,7 @@ function start() {
         context = canvas.getContext("webgl");
     } catch(e) {
     }
-		if (!context) {
+    if (!context) {
       try {
           context = canvas.getContext("experimental-webgl");
       } catch(e) {
@@ -84,6 +84,7 @@ function start() {
     div.appendChild(button);
     var a = reporter.localDoc.createElement('a');
     a.href = url;
+    a.target = "_blank";
     var node = reporter.localDoc.createTextNode(url);
     a.appendChild(node);
     div.appendChild(a);
@@ -256,7 +257,8 @@ function start() {
     for (var url in this.pagesByURL) {
       var page = this.pagesByURL[url];
       if (!(page.totalTests == 0 && page.totalTimeouts == 0)) {
-	tx += url + ": " + page.totalSuccessful + " / " + page.totalTests + " / " + page.totalTimeouts + "\n";
+        tx += url + ": " + page.totalSuccessful + " / " +
+            page.totalTests + " / " + page.totalTimeouts + "\n";
       }
     }
     tx += "\n";
