@@ -32,17 +32,15 @@ function causedException(func) {
   try {
     func();
   } catch(e) {
-    //debug(e);
     hadException = true;
   }
-  //debug ("hadException: " + hadException);
   return hadException;
 }
 
 window.onload = function() {
   description("This test ensures WebGL implementations follow proper same-origin restrictions.");
-  debug("");
   var img = document.getElementById("img");
+  assertMsg(img.width > 0 && img.height > 0, "img was loaded");
   imgDomain = getBaseDomain(img.src);
   pageDomain = getBaseDomain(window.location.toString());
   assertMsg(imgDomain != pageDomain,
@@ -125,6 +123,6 @@ window.onload = function() {
 <div id="console"></div>
 <canvas id="canvas1"></canvas>
 <canvas id="canvas2"></canvas>
-<img id="img" src="http://www.opengl.org/img/opengl_logo.jpg" style="display:none;"/>
+<img id="img" src="http://www.opengl.org/img/opengl_logo.jpg" style="display:none;">
 </body>
 </html>
