@@ -92,30 +92,34 @@
         gl.readPixels(0, 0, 50, 50, gl.RGBA, gl.UNSIGNED_BYTE, buf);
         shouldBe("gl.getError()", "gl.NO_ERROR");
 
-        // Test several locations
-        // First line should be all black
-        for (var i = 0; i < 50; ++i)
-            if (buf[i*4] != 0 || buf[i*4+1] != 0 || buf[i*4+2] != 0 || buf[i*4+3] != 255) {
-                fail(i, 0, buf, "(0,0,0,255)");
-                return;
-            }
+        function checkPixels()
+        {
+            // Test several locations
+            // First line should be all black
+            for (var i = 0; i < 50; ++i)
+                if (buf[i*4] != 0 || buf[i*4+1] != 0 || buf[i*4+2] != 0 || buf[i*4+3] != 255) {
+                    fail(i, 0, buf, "(0,0,0,255)");
+                    return;
+                }
 
-        // Line 15 should be red for at least 10 red pixels starting 20 pixels in
-        var offset = (15*50+20) * 4;
-        for (var i = 0; i < 10; ++i)
-            if (buf[offset+i*4] != 255 || buf[offset+i*4+1] != 0 || buf[offset+i*4+2] != 255 || buf[offset+i*4+3] != 255) {
-                fail(20 + i, 15, buf, "(255,0,255,255)");
-                return;
-            }
-        // Last line should be all black
-        offset = (49*50) * 4;
-        for (var i = 0; i < 50; ++i)
-            if (buf[offset+i*4] != 0 || buf[offset+i*4+1] != 0 || buf[offset+i*4+2] != 0 || buf[offset+i*4+3] != 255) {
-                fail(i, 49, buf, "(0,0,0,255)");
-                return;
-            }
+            // Line 15 should be red for at least 10 red pixels starting 20 pixels in
+            var offset = (15*50+20) * 4;
+            for (var i = 0; i < 10; ++i)
+                if (buf[offset+i*4] != 255 || buf[offset+i*4+1] != 0 || buf[offset+i*4+2] != 255 || buf[offset+i*4+3] != 255) {
+                    fail(20 + i, 15, buf, "(255,0,255,255)");
+                    return;
+                }
+            // Last line should be all black
+            offset = (49*50) * 4;
+            for (var i = 0; i < 50; ++i)
+                if (buf[offset+i*4] != 0 || buf[offset+i*4+1] != 0 || buf[offset+i*4+2] != 0 || buf[offset+i*4+3] != 255) {
+                    fail(i, 49, buf, "(0,0,0,255)");
+                    return;
+                }
 
-        pass();
+            pass();
+        }
+        checkPixels();
         successfullyParsed = true;
     </script>
     <script src="../resources/js-test-post.js"></script>
