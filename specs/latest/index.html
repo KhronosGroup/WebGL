@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 02 June 2011</h2>
+    <h2 class="no-toc">Editor's Draft 08 June 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -469,9 +469,18 @@ image.src = "http://other-domain.com/image.jpg";
     <p>
         A WebGL implementation must only accept shaders which conform to The OpenGL ES Shading
         Language, Version 1.00 <a href="#refsGLES20GLSL">[GLES20GLSL]</a>, and which do not exceed
-        the minimum functionality mandated in Sections 4 and 5 of Appendix A.  In particular, a shader
-        referencing state variables or functions that are available in other versions of GLSL (such
-        as that found in versions of OpenGL for the desktop), must not be allowed to load.
+        the minimum functionality mandated in Sections 4 and 5 of Appendix A.  In particular:
+
+        <ul>
+        <li> A shader referencing state variables or functions that are available in other versions
+             of GLSL, such as that found in versions of OpenGL for the desktop, must not be allowed
+             to load. </li>
+        <li> <code>for</code> loops must conform to the structural constraints in Appendix A. </li>
+        <li> Appendix A mandates certain forms of indexing of arrays; for example, within fragment
+             shaders, indexing is only mandated with a <i>constant-index-expression</i>
+             (see <a href="#refsGLES20GLSL">[GLES20GLSL]</a> for the definition of this term). In
+             the WebGL API, only the forms of indexing mandated in Appendix A are supported. </li>
+        </ul>
     </p>
     <p>
         In addition to the reserved identifiers in the aforementioned specification, identifiers
@@ -528,28 +537,17 @@ image.src = "http://other-domain.com/image.jpg";
     <h3><a name="OUT_OF_RANGE_ARRAY_ACCESSES">Out-of-Range Array Accesses</a></h3>
 
     <p>
-        Shaders must not be allowed to read or write array elements that lie outside the bounds of the array.
-        This includes arrays of uniforms, samplers, attributes, varyings, variables and constants. It also 
-        includes vector or matrix types such as <code>vec3</code> or <code>mat4</code> when accessed 
-        using array subscripting syntax. Such accesses may generate an error and prevent the shader from
-        executing if detected during compilation. Otherwise, at runtime they may return a constant value 
-        (such as 0), or the value at any valid index of the same array.
+        Shaders must not be allowed to read or write array elements that lie outside the bounds of
+        the array. This includes any variable of array type, as well as vector or matrix types such
+        as <code>vec3</code> or <code>mat4</code> when accessed using array subscripting syntax. If
+        detected during compilation, such accesses must generate an error and prevent the shader
+        from compiling. Otherwise, at runtime they may return a constant value (such as 0), or the
+        value at any valid index of the same array.
     </p>
-    <p>
-        See <a href="#DYNAMIC_INDEXING_OF_ARRAYS">Dynamic Indexing of Arrays</a> for more information.
-    </p>
-
     <div class="note">
         <p>
-            Due to the restrictions in <a href="#DYNAMIC_INDEXING_OF_ARRAYS">Dynamic Indexing of Arrays</a>
-            it is often possible to perform static analysis of a shader to determine that the index of 
-            an array is valid. Invalid array indexes such as these can be detected during compilation
-            and shader execution can be disallowed. This is possible for all variable types except uniform 
-            array access in the vertex shader. In this case, if static analysis can not guarantee a valid
-            uniform array index and the GLSL implementation does not have the behavior mandated above
-            when an invalid array index is encountered, runtime checks must be added to ensure compliant
-            behavior. While this may increase shader overhead, it is necessary to avoid out-of-range
-            array access.
+            See <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a> for more information
+            on restrictions which simplify static analysis of the array indexing operations in shaders.
         </p>
     </div>
 <!-- ======================================================================================================= -->
@@ -3110,17 +3108,6 @@ extensions.
     like <code>glGetActiveAttrib</code>. In the WebGL API, the analogous calls (<code>getActiveAttrib</code>,
     <code>getActiveUniform</code>, <code>getProgramInfoLog</code>, <code>getShaderInfoLog</code>, and
     <code>getShaderSource</code>) all return <code>DOMString</code>.
-</p>
-
-    <h3><a name="DYNAMIC_INDEXING_OF_ARRAYS">Dynamic Indexing of Arrays</a></h3>
-<p>
-    The GLSL ES spec <a href="#refsGLES20GLSL">[GLES20GLSL]</a> allows but does not mandate support for dynamic
-    indexing of arrays as well as vectors and matrices. WebGL only allows dynamic indexing with constant 
-    expressions, loop indices or a combination. The only exception is for uniform access in vertex shaders, 
-    which can be indexed using any expression.
-</p>
-<p>
-    See <a href="#OUT_OF_RANGE_ARRAY_ACCESSES">Out-of-Range Array Accesses</a> for more information.
 </p>
 
 <!-- ======================================================================================================= -->
