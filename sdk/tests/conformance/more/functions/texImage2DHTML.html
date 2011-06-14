@@ -99,8 +99,10 @@ Tests.testTexImage2DNonSOP = function(gl) {
     var c = document.getElementById('c');
     var ctx = c.getContext('2d');
     ctx.drawImage(img,0,0);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    assertThrowNoGLError(gl, "texImage2D with cross-origin image should throw exception.",
+      function(){gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);});
+    assertThrowNoGLError(gl, "texImage2D with dirty origin canvas should throw exception.",
+      function(){gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);});
 }
 
 Tests.endUnit = function(gl) {
