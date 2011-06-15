@@ -73,9 +73,7 @@ var flatVertexSource = [
     ].join("\n");
 
 var flatFragmentSource = [
-    "#ifdef GL_ES\n",
-    "precision highp float;\n",
-    "#endif\n",
+    "precision mediump float;\n",
     "varying vec4 color;",
     "void main() {",
     "  gl_FragColor = vec4(color.rgb, 1.0);",
@@ -136,9 +134,7 @@ var litVertexSource = [
     ].join("\n");
 
 var fadeVertexSource = [
-    "#ifdef GL_ES\n",
-    "precision highp float;\n",
-    "#endif\n",
+    "precision mediump float;\n",
     "attribute vec2 pos;",
     "",
     "varying vec4 color;",

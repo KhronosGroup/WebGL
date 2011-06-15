@@ -95,9 +95,7 @@ function initShaders() {
         "}"
     ].join("\n");
     var fShaderStr = [
-        "#ifdef GL_ES\n",
-        "precision highp float;\n",
-        "#endif\n",
+        "precision mediump float;\n",
         "uniform sampler2D tex;",
         "varying vec2 texCoord;",
         "void main()",

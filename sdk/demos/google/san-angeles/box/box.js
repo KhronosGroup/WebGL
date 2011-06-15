@@ -6,9 +6,7 @@ vertexShader =
   "}";
 
 fragmentShader =
-  '#ifdef GL_ES\n' +
-  'precision highp float;\n' +
-  '#endif\n' +
+  'precision mediump float;\n' +
   "void main() {" +
   "  gl_FragColor = vec4(.2, .4, .6, 1.);" +
   "}";

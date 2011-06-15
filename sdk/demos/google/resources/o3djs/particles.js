@@ -220,9 +220,7 @@ o3djs.particles.SHADER_STRINGS = [
   '}\n',
 
   // Fragment shader used by both 2D and 3D vertex shaders
-  '#ifdef GL_ES\n' +
-  'precision highp float;\n' +
-  '#endif\n' +
+  'precision mediump float;\n' +
   'uniform sampler2D rampSampler;\n' +
   'uniform sampler2D colorSampler;\n' +
   '\n' +

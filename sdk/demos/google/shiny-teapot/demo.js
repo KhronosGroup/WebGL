@@ -159,9 +159,7 @@ var bumpReflectVertexSource = [
     ].join("\n");
 
 var bumpReflectFragmentSource = [
-    "#ifdef GL_ES\n",
-    "precision highp float;\n",
-    "#endif\n",
+    "precision mediump float;\n",
     "const float bumpHeight = 0.2;",
     "",
     "uniform sampler2D normalSampler;",
