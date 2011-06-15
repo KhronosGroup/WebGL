@@ -118,9 +118,8 @@ Tests.testDrawArraysVBOMulti = function(gl, prog, v,n,t) {
   }
 </script>
 <script id="frag" type="x-shader/x-fragment">
-  #ifdef GL_ES
-precision highp float;
-#endif
+  precision mediump float;
+
   varying vec4 texCoord0;
   void main()
   {

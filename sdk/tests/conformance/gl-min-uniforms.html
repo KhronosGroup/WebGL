@@ -34,9 +34,7 @@ void main()
 </script>
 
 <script id="fshader" type="x-shader/x-fragment">
-#ifdef GL_ES
 precision mediump float;
-#endif
 varying vec4 color;
 void main()
 {
@@ -52,9 +50,7 @@ void main()
 </script>
 
 <script id="fshader2" type="x-shader/x-fragment">
-#ifdef GL_ES
 precision mediump float;
-#endif
 #define NUM_UNIFORMS 16 // See spec
 uniform vec4 uni[NUM_UNIFORMS];
 void main()

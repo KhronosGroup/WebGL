@@ -29,9 +29,8 @@ void main()
 }
 </script>
 <script id="fshader2d" type="x-shader/x-fragment">
-#ifdef GL_ES
-precision highp float;
-#endif
+precision mediump float;
+
 uniform sampler2D tex2d;
 varying vec2 texCoord;
 void main()
@@ -40,9 +39,8 @@ void main()
 }
 </script>
 <script id="fshaderCube" type="x-shader/x-fragment">
-#ifdef GL_ES
-precision highp float;
-#endif
+precision mediump float;
+
 uniform samplerCube texCube;
 void main()
 {

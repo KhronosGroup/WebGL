@@ -145,9 +145,8 @@ Tests.testThatWritesChangeDrawing = function(gl) {
   }
 </script>
 <script id="frag" type="x-shader/x-fragment">
-  #ifdef GL_ES
-precision highp float;
-#endif
+  precision mediump float;
+
   uniform vec4 c;
   void main()
   {

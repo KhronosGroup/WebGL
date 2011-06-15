@@ -26,9 +26,7 @@ void main() {
 }
 </script>
 <script id="fs" type="x-shader/x-fragment">
-#if defined(GL_ES)
 precision mediump float;
-#endif
 varying vec4 color;
 void main() {
   gl_FragColor = color;

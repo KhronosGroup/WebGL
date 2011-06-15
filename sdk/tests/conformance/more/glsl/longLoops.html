@@ -87,9 +87,7 @@ Tests.testMandelbrot = function(gl) {
   }
 </script>
 <script id="mandelbrot-frag" type="x-shader/x-fragment">
-    #ifdef GL_ES
-precision highp float;
-#endif
+    precision mediump float;
 
     uniform float x,y,z;
     varying vec2 texCoord0;
@@ -184,9 +182,8 @@ precision highp float;
 <script id="whiletruefrag" type="x-shader/x-fragment">
 
 
-    #ifdef GL_ES
-precision highp float;
-#endif
+    precision mediump float;
+
     varying vec2 TexCoord;
     void main()
     {
@@ -198,9 +195,8 @@ precision highp float;
 <script id="loop100Mfrag" type="x-shader/x-fragment">
 
 
-    #ifdef GL_ES
-precision highp float;
-#endif
+    precision mediump float;
+
     varying vec2 TexCoord;
     void main()
     {
@@ -215,9 +211,8 @@ precision highp float;
 <script id="loopCompfrag" type="x-shader/x-fragment">
 
 
-    #ifdef GL_ES
-precision highp float;
-#endif
+    precision mediump float;
+
     varying vec2 TexCoord;
     void main()
     {
@@ -229,9 +224,8 @@ precision highp float;
 <script id="variablefrag" type="x-shader/x-fragment">
 
 
-    #ifdef GL_ES
-precision highp float;
-#endif
+    precision mediump float;
+
     varying vec2 TexCoord;
     void main()
     {
@@ -243,9 +237,8 @@ precision highp float;
 <script id="frag" type="x-shader/x-fragment">
 
 
-  #ifdef GL_ES
-precision highp float;
-#endif
+  precision mediump float;
+
   varying vec2 TexCoord;
   void main()
   {

@@ -144,9 +144,8 @@ void main()
 }
 </script>
 <script id="identity-frag" type="x-shader/x-fragment">
-#ifdef GL_ES
-precision highp float;
-#endif
+precision mediump float;
+
 uniform sampler2D Texture;
 
 varying vec4 texCoord0;

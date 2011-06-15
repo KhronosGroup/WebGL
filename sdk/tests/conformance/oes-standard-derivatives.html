@@ -69,7 +69,7 @@ void main() {
 </script>
 <script id="outputFragmentShader" type="x-shader/x-fragment">
 #extension GL_OES_standard_derivatives : enable
-precision highp float;
+precision mediump float;
 varying vec4 position;
 void main() {
     float dzdx = dFdx(position.z);

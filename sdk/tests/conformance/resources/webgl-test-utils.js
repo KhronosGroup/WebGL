@@ -100,9 +100,7 @@ var simpleTextureVertexShader = '' +
  * @type {string}
  */
 var simpleTextureFragmentShader = '' +
-  '#ifdef GL_ES\n' +
   'precision mediump float;\n' +
-  '#endif\n' +
   'uniform sampler2D tex;\n' +
   'varying vec2 texCoord;\n' +
   'void main() {\n' +

@@ -85,14 +85,14 @@ function go() {
               "bad vertex shader should fail to compile");
 
     var fs = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fs, "#ifdef GL_ES\nprecision mediump float;\n#endif\n varying vec4 vColor; void main() { gl_FragColor = vColor; }");
+    gl.shaderSource(fs, "precision mediump float; varying vec4 vColor; void main() { gl_FragColor = vColor; }");
     gl.compileShader(fs);
 
     assertMsg(gl.getShaderParameter(fs, gl.COMPILE_STATUS) == true,
               "good fragment shader should compile");
 
     var fs2 = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fs2, "#ifdef GL_ES\nprecision mediump float;\n#endif\n varying vec4 vColor; void main() { gl_FragColor = vColor * 0.5; }");
+    gl.shaderSource(fs2, "precision mediump float; varying vec4 vColor; void main() { gl_FragColor = vColor * 0.5; }");
     gl.compileShader(fs2);
 
     assertMsg(gl.getShaderParameter(fs2, gl.COMPILE_STATUS) == true,
@@ -272,7 +272,7 @@ function go() {
     glErrorShouldBe(gl, gl.NO_ERROR, "The current program shouldn't be deleted");
 
     var fs3 = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fs3, "#ifdef GL_ES\nprecision mediump float;\n#endif\n varying vec4 vColor; void main() { gl_FragColor = vColor; }");
+    gl.shaderSource(fs3, "precision mediump float; varying vec4 vColor; void main() { gl_FragColor = vColor; }");
     gl.compileShader(fs3);
 
     assertMsg(gl.getShaderParameter(fs3, gl.COMPILE_STATUS) == true,
@@ -283,7 +283,7 @@ function go() {
     glErrorShouldBe(gl, gl.INVALID_VALUE, "an unattached shader should be deleted immediately");
 
     fs3 = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fs3, "#ifdef GL_ES\nprecision mediump float;\n#endif\n varying vec4 vColor; void main() { gl_FragColor = vColor; }");
+    gl.shaderSource(fs3, "precision mediump float; varying vec4 vColor; void main() { gl_FragColor = vColor; }");
     gl.compileShader(fs3);
 
     assertMsg(gl.getShaderParameter(fs3, gl.COMPILE_STATUS) == true,

@@ -131,9 +131,8 @@ arr.forEach(function(e){
 <script id="crfrag" type="x-shader/x-fragment">
 
 
-  #ifdef GL_ES
-precision highp float;
-#endif
+  precision mediump float;
+
   uniform float x[3];
 
   varying vec2 TexCoord;
@@ -145,9 +144,8 @@ precision highp float;
 <script id="cwfrag" type="x-shader/x-fragment">
 
 
-  #ifdef GL_ES
-precision highp float;
-#endif
+  precision mediump float;
+
   uniform float x[3];
 
   varying vec2 TexCoord;
@@ -160,9 +158,8 @@ precision highp float;
 <script id="vrfrag" type="x-shader/x-fragment">
 
 
-  #ifdef GL_ES
-precision highp float;
-#endif
+  precision mediump float;
+
   uniform float x[3];
 
   varying vec2 TexCoord;
@@ -175,9 +172,8 @@ precision highp float;
 <script id="vwfrag" type="x-shader/x-fragment">
 
 
-  #ifdef GL_ES
-precision highp float;
-#endif
+  precision mediump float;
+
   uniform float x[3];
 
   varying vec2 TexCoord;
@@ -191,9 +187,8 @@ precision highp float;
 <script id="tvwfrag" type="x-shader/x-fragment">
 
 
-  #ifdef GL_ES
-precision highp float;
-#endif
+  precision mediump float;
+
   uniform float x[3];
 
   varying vec2 TexCoord;
@@ -207,9 +202,8 @@ precision highp float;
 <script id="frag" type="x-shader/x-fragment">
 
 
-  #ifdef GL_ES
-precision highp float;
-#endif
+  precision mediump float;
+
   void main()
   {
     gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);

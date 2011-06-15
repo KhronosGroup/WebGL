@@ -1,7 +1,5 @@
 // shared fragment shader should succeed.
-#ifdef GL_ES
-precision highp float;
-#endif
+precision mediump float;
 uniform vec4 lightColor;
 varying vec4 v_position;
 varying vec2 v_texCoord;

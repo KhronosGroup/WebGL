@@ -27,9 +27,7 @@ void main()
 
 <script id="fshader" type="x-shader/x-fragment">
 #define NUM_TEXTURES 8 // See spec
-#ifdef GL_ES
 precision mediump float;
-#endif
 uniform sampler2D uni[8];
 void main()
 {

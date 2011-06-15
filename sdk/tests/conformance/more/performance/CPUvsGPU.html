@@ -297,9 +297,8 @@ Tests.gpuGaussianBlur = function(gl) {
 </script>
 <script id="identity-frag" type="x-shader/x-fragment">
 
-  #ifdef GL_ES
-precision highp float;
-#endif
+  precision mediump float;
+
   uniform sampler2D Texture;
 
   varying vec4 texCoord0;
@@ -310,9 +309,8 @@ precision highp float;
 </script>
 <script id="hblur-frag" type="x-shader/x-fragment">
 
-  #ifdef GL_ES
-precision highp float;
-#endif
+  precision mediump float;
+
   uniform sampler2D Texture;
   uniform float width;
 
@@ -332,9 +330,8 @@ precision highp float;
 </script>
 <script id="vblur-frag" type="x-shader/x-fragment">
 
-  #ifdef GL_ES
-precision highp float;
-#endif
+  precision mediump float;
+
   uniform sampler2D Texture;
   uniform float height;
 

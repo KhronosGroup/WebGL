@@ -73,9 +73,8 @@ var processor = {
     }
 </script>
 <script id="greenScreen" type="x-shader/x-fragment">
-    #ifdef GL_ES
-precision highp float;
-#endif
+    precision mediump float;
+
     uniform sampler2D Texture;
     uniform sampler2D Texture2;
 

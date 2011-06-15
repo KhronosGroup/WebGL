@@ -127,7 +127,7 @@ context.shaderSource(vShader, generateShaderSource());
 context.compileShader(vShader);
 shouldBe("context.getError()", "context.NO_ERROR");
 var fShader = context.createShader(context.FRAGMENT_SHADER);
-context.shaderSource(fShader, "precision highp float;\n"
+context.shaderSource(fShader, "precision mediump float;\n"
                               + "varying float " + validAttribName + ";\n"
                               + "void main() {\n"
                               + "gl_FragColor = vec4(" + validAttribName + ", 0.0, 0.0, 1.0); }");
