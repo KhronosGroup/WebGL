@@ -92,6 +92,10 @@ gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
 shouldBe("gl.getParameter(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL)", "gl.NONE");
 glErrorShouldBe(gl, gl.NO_ERROR, "set/get UNPACK_COLORSPACE_CONVERSION_WEBGL should generate no error");
 
+debug("");
+debug("Verify that drawingBufferWidth and drawingBufferHeights are implemented");
+shouldBeTrue("gl.drawingBufferWidth >= 0 && gl.drawingBufferHeight >= 0");
+
 successfullyParsed = true;
 </script>
 
