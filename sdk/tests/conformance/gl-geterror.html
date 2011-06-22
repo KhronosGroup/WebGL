@@ -1,0 +1,62 @@
+<!--
+Copyright (c) 2009 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+ -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>WebGL get error conformance test.</title>
+<link rel="stylesheet" href="../resources/js-test-style.css"/>
+<script src="../resources/desktop-gl-constants.js" type="text/javascript"></script>
+<script src="../resources/js-test-pre.js"></script>
+<script src="resources/webgl-test.js"> </script>
+<script src="resources/webgl-test-utils.js"> </script>
+</head>
+<body>
+<canvas id="example" width="1" height="1" style="width: 256px; height: 48px;"></canvas>
+<div id="description"></div><div id="console"></div>
+<script>
+description("Test getError.");
+var wtu = WebGLTestUtils;
+var canvas = document.getElementById("example");
+var gl = wtu.create3DContext(canvas);
+var tex = gl.createTexture();
+gl.bindTexture(gl.TEXTURE_2D, tex);
+
+gl.enable(desktopGL.ALPHA_TEST);
+glErrorShouldBe(gl, gl.INVALID_ENUM, "should generate INVALID_ENUM");
+gl.viewport(-1, -1, -1, -1);
+glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE");
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+glErrorShouldBe(gl, gl.INVALID_OPERATION, "should generate INVALID_OPERATION");
+
+// Generate errors of each type.
+// Generate 2 of each type to make sure the implementation is using a flag
+// per type and not a list of errors.
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+gl.viewport(-1, -1, -1, -1);
+gl.viewport(-1, -1, -1, -1);
+gl.enable(desktopGL.ALPHA_TEST);
+gl.enable(desktopGL.ALPHA_TEST);
+
+debug("There should be 3 errors, one of each type");
+var err1 = gl.getError();
+var err2 = gl.getError();
+var err3 = gl.getError();
+
+shouldBeTrue('err1 != err2 != err3');
+shouldBeTrue('err1 == gl.INVALID_ENUM || err1 == gl.INVALID_VALUE || err1 == gl.INVALID_OPERATION'); 
+shouldBeTrue('err2 == gl.INVALID_ENUM || err2 == gl.INVALID_VALUE || err2 == gl.INVALID_OPERATION'); 
+shouldBeTrue('err3 == gl.INVALID_ENUM || err3 == gl.INVALID_VALUE || err3 == gl.INVALID_OPERATION'); 
+shouldBeTrue('gl.getError() == gl.NO_ERROR');
+
+debug("");
+successfullyParsed = true;
+</script>
+<script src="../resources/js-test-post.js"></script>
+</body>
+</html>
+
