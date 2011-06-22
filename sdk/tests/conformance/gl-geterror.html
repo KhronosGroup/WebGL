@@ -36,10 +36,12 @@ glErrorShouldBe(gl, gl.INVALID_OPERATION, "should generate INVALID_OPERATION");
 // Generate 2 of each type to make sure the implementation is using a flag
 // per type and not a list of errors.
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-gl.viewport(-1, -1, -1, -1);
 gl.viewport(-1, -1, -1, -1);
 gl.enable(desktopGL.ALPHA_TEST);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+gl.viewport(-1, -1, -1, -1);
+// Note: This error is specifically last because we know it will be synthasized
+// by WebGL at least when implemented on top of Desktop OpenGL
 gl.enable(desktopGL.ALPHA_TEST);
 
 debug("There should be 3 errors, one of each type");
