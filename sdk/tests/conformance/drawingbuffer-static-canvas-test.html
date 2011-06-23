@@ -45,8 +45,8 @@ if (!gl) {
   shouldBeTrue('maxSize[1] > 0');
 
   // debug("MAX_VIEWPORT_DIMS = " + maxSize[0] + "x" + maxSize[1]);
-  canvas.width = maxSize[0] * 4;
-  canvas.height = maxSize[1] * 4;
+  canvas.width = maxSize[0] /2;
+  canvas.height = maxSize[1];
   shouldBeTrue('gl.drawingBufferWidth > 0');
   shouldBeTrue('gl.drawingBufferHeight > 0');
   shouldBeTrue('gl.drawingBufferWidth <= maxSize[0]');

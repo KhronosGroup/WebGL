@@ -15,6 +15,7 @@ context-type-test.html
 copy-tex-image-and-sub-image-2d.html
 draw-arrays-out-of-bounds.html
 draw-elements-out-of-bounds.html
+drawingbuffer-static-test.html
 drawingbuffer-test.html
 error-reporting.html
 framebuffer-object-attachment.html
