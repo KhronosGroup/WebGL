@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
     <style>
@@ -19,9 +19,70 @@
 
       }
 
-      @media all and (min-device-width: 600px) {
+      @media (max-device-width: 480px) {
+
+          #wrapper #support h1 {
+            font-weight: bold;
+            font-size: 20px;
+            margin: 10px 0px;
+          }
+          #wrapper #support .webgl-div div {
+            margin: 10px 10px;    
+          }
+          #wrapper #support #logo-container {
+            text-align: center;
+          }
+          #wrapper #support canvas {
+            margin: 10px 0px 10px 0px;
+          }
+          #wrapper hr {
+            margin: 10px 0px;
+          }
+          #wrapper #moreinfo {
+            margin: 10px 0px 0px 0px;
+          }
+
+      }
+
+      @media (min-device-width: 600px) {
+
+          #wrapper #support h1 {
+            font-weight: normal;
+            font-size: 40px;
+            margin: 40px 0px;
+          }
+
+          #wrapper #support {
+            text-align: center;
+          }
+    
+          #wrapper #support canvas {
+            margin: 30px 0px 10px 0px;
+          }
+    
+          #wrapper hr {
+            margin: 40px 0px;
+          }
+
           #wrapper {
             width: 600px;
+          }
+
+          #wrapper #moreinfo {
+            width: 250px;
+            margin: 0px 20px 0px 20px;
+            float: left;
+          }
+
+          #wrapper #resources {
+            width: 250px;
+            height: 150px;
+            margin: 0px 20px 0px 40px;
+            float: left;
+          }
+
+          #wrapper #support .webgl-div div {
+            margin: 20px 100px;    
           }
       }
 
@@ -30,65 +91,21 @@
       }
 
       #wrapper hr {
-
         border-top: solid #e3e3e3;
         border-width: 1px 0px 0px 0px;
         height: 0px;
-        margin: 40px 0px;
-
-      }
-
-      #wrapper #support {
-
-        text-align: center;
       }
 
       #wrapper #support h1 {
-
-        font-weight: normal;
-        font-size: 40px;
         color: #33a933;
-        margin: 40px 0px;
-
-      }
-
-      #wrapper #support .webgl-div div {
-        margin: 20px 100px;
-
-      }
-
-      #wrapper #support canvas {
-
-        margin: 30px 0px 10px 0px;
-
-      }
-
-      #wrapper #resources {
-        width: 250px;
-        height: 150px;
-        margin: 0px 20px 0px 40px;
-        float: left;
-
       }
 
       #wrapper #resources div {
-
         font-size: 13px;
-
-      }
-
-      #wrapper #moreinfo {
-
-        width: 250px;
-        margin: 0px 20px 0px 20px;
-        float: left;
-
       }
 
       #wrapper #moreinfo div {
-
         font-size: 13px;
-
       }
 
       .webgl-hidden {
@@ -231,7 +248,7 @@ function randomizeBrowsers() {
 
     for (var ii = 0; ii < browsers.length; ++ii) {
         var info = browsers[ii].info;
-        var div = document.createElement("div");
+        var div = document.createElement("p");
         var a = document.createElement("a");
         a.href = info.url;
         a.innerHTML = info.name;
@@ -258,7 +275,9 @@ window.onload = pageLoaded;
             <div>You should see a spinning cube. If you do not, please
             <a id="support-link">visit the support site for your browser</a>.</div>
 
+            <div id="logo-container">
             <canvas id="webgl-logo" width="140" height="150" /></canvas>
+            </div>
           </div>
 
           <div class="webgl-hidden webgl-div" id="webgl-disabled">
@@ -296,8 +315,7 @@ window.onload = pageLoaded;
         using WebGL.</div><br />
 
         <div><a href="http://www.khronos.org/webgl/wiki/Main_Page">WebGL Wiki</a></div>
-        <div><a href="http://learningwebgl.com">Learning WebGL Blog</a></div>
-
+ 
       </div>
       <div id="moreinfo">
         <div>Want more information about WebGL?</div><br />
