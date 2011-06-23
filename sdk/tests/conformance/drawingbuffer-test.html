@@ -50,6 +50,7 @@ if (!gl) {
   shouldBeTrue('gl.drawingBufferHeight > 0');
   shouldBeTrue('gl.drawingBufferWidth <= maxSize[0]');
   shouldBeTrue('gl.drawingBufferHeight <= maxSize[1]');
+  shouldBe('gl.getError()', 'gl.NO_ERROR');
 }
 debug("")
 successfullyParsed = true;
