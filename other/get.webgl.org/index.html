@@ -1,11 +1,130 @@
-<!DOCTYPE html>
-
+<!--
+NOTE: If you need/want this page changed to include 
+other browsers please contact the Public WebGL Mailing list
+public_webgl at khronos dot org.
+-->
+<!doctype html>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"></meta>
+    <style>
+
+      body {
+
+        color: #6b6b6b;
+        font-family: ubuntu, helvetica, arial, sans, sans-serif;
+
+      }
+
+      a {
+
+        color: #3194d5;
+
+      }
+
+      @media (max-device-width: 480px) {
+
+          #wrapper #support h1 {
+            font-weight: bold;
+            font-size: 20px;
+            margin: 10px 0px;
+          }
+          #wrapper #support .webgl-div div {
+            margin: 10px 10px;    
+          }
+          #wrapper #support #logo-container {
+            text-align: center;
+          }
+          #wrapper #support canvas {
+            margin: 10px 0px 10px 0px;
+          }
+          #wrapper hr {
+            margin: 10px 0px;
+          }
+          #wrapper #moreinfo {
+            margin: 10px 0px 0px 0px;
+          }
+
+      }
+
+      @media (min-device-width: 600px) {
+
+          #wrapper #support h1 {
+            font-weight: normal;
+            font-size: 40px;
+            margin: 40px 0px;
+          }
+
+          #wrapper #support {
+            text-align: center;
+          }
+    
+          #wrapper #support canvas {
+            margin: 30px 0px 10px 0px;
+          }
+    
+          #wrapper hr {
+            margin: 40px 0px;
+          }
+
+          #wrapper {
+            width: 600px;
+          }
+
+          #wrapper #moreinfo {
+            width: 250px;
+            margin: 0px 20px 0px 20px;
+            float: left;
+          }
+
+          #wrapper #resources {
+            width: 250px;
+            height: 150px;
+            margin: 0px 20px 0px 40px;
+            float: left;
+          }
+
+          #wrapper #support .webgl-div div {
+            margin: 20px 100px;    
+          }
+      }
+
+      #wrapper {
+        margin: auto;
+      }
+
+      #wrapper hr {
+        border-top: solid #e3e3e3;
+        border-width: 1px 0px 0px 0px;
+        height: 0px;
+      }
+
+      #wrapper #support h1 {
+        color: #33a933;
+      }
+
+      #wrapper #resources div {
+        font-size: 13px;
+      }
+
+      #wrapper #moreinfo div {
+        font-size: 13px;
+      }
+
+      .webgl-hidden {
+          display: none;
+      }
+
+      #webgl-browser-list {
+          white-space: nowrap;
+      }
+
+    </style>
 <script type="text/javascript" src="troubleshooting/DoNotCopyOrLinkThisFileElseYouWillNotGetAutoUpdatedHelpForYourUsers.js"></script>
+<script type="text/javascript" src="tdl/tdl-minified.js"></script>
+<script type="text/javascript" src="logo4.js"></script>
 <script type="text/javascript">
 /**/
 
@@ -28,8 +147,7 @@ if(!Array.indexOf){
 var canvas, gl;
 
 function launchLogo() {
-    gl.clearColor(0, 1, 0, 1);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    initializeLogo(canvas);
 }
 
 function log(msg) {
@@ -107,7 +225,6 @@ function pageLoaded() {
             $$("upgrade-link").href = b.urls.upgradeUrl;
         } else {
             // No, so only the link for browser for this platform.
-            // TODO: Display "No known browsers for your platform.
             randomizeBrowsers();
             addClass($$("upgrade-browser"), "webgl-hidden");
             removeClass($$("get-browser"), "webgl-hidden");
@@ -136,7 +253,7 @@ function randomizeBrowsers() {
 
     for (var ii = 0; ii < browsers.length; ++ii) {
         var info = browsers[ii].info;
-        var div = document.createElement("div");
+        var div = document.createElement("p");
         var a = document.createElement("a");
         a.href = info.url;
         a.innerHTML = info.name;
@@ -148,104 +265,85 @@ function randomizeBrowsers() {
 // addEventListener does not work on IE7/8.
 window.onload = pageLoaded;
 </script>
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id="support">
 
-<style type="text/css">
+        <div class="webgl-hidden" id="have-javascript">
+          <div class="webgl-hidden webgl-div" id="webgl-yes">
+            <h1 class="good">Your browser supports WebGL</h1>
 
-body {
-    background: #333;
-    font-family: sans-serif;
+            <div id="webgl-experimental">However, it indicates that support is
+            experimental; you might see issues with some content.</div>
+
+            <div>You should see a spinning cube. If you do not, please
+            <a id="support-link">visit the support site for your browser</a>.</div>
+
+            <div id="logo-container">
+            <canvas id="webgl-logo" width="140" height="150" /></canvas>
+            </div>
+          </div>
+
+          <div class="webgl-hidden webgl-div" id="webgl-disabled">
+            <p>Hmm.  While your browser seems to support WebGL, it is disabled or unavailable.  If possible, please ensure that you are running the latest drivers for your video card.</p>
+            <p id="known-browser" class="webgl-hidden"><a id="troubleshooting-link" href="">For more help, please click this link</a>.</p>
+            <p id="unknown-browser">For more help, please visit the support site for your browser.</p>
+          </div>
+
+          <div class="webgl-hidden webgl-div" id="webgl-no">
+            <p>Oh no!  We are sorry, but your browser does not seem to support WebGL.</p>
+            <div id="upgrade-browser">
+            <p><a id="upgrade-link" href="">You can upgrade <span id="name"></span> by clicking this link.</a></p>
+            </div>
+            <div id="get-browser" class="webgl-hidden">
+            <p>You may want to download one of the following browsers to view WebGL content.</p>
+
+            <p>The following browsers support WebGL on <span id="platform"></span>:</p>
+
+              <div id="webgl-browser-list">
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div id="no-javascript">
+          You must enable JavaScript to use WebGL.
+        </div>
+
+      </div>
+      <hr />
+      <div id="resources">
+
+        <div>Check out some of the following links to learn
+        more about WebGL and to find more web applications
+        using WebGL.</div><br />
+
+        <div><a href="http://www.khronos.org/webgl/wiki/Main_Page">WebGL Wiki</a></div>
+ 
+      </div>
+      <div id="moreinfo">
+        <div>Want more information about WebGL?</div><br />
+
+        <div><a href="http://khronos.org/webgl">khronos.org/webgl</a></div>
+      </div>
+    </div>
+  </div>
+<script id="modelVertexShader" type="text/something-not-javascript">
+uniform mat4 worldViewProjection;
+attribute vec4 position;
+void main() {
+  gl_Position = (worldViewProjection * position);
 }
 
-.roundbox {
-    max-width: 500px;
-    margin: 1em auto 1em auto;
-    padding: 0em 0.5em 0em 0.5em;
-
-    border: 2px solid #ccc;
-    background: #eee;
-
-    -moz-border-radius: 5px 5px;
-    -webkit-border-radius: 5px 5px;
-    -o-border-radius: 5px 5px;
-    border-radius: 5px 5px;
+</script>
+<script id="modelFragmentShader" type="text/something-not-javascript">
+#ifdef GL_ES
+precision highp float;
+#endif
+void main() {
+  gl_FragColor = vec4(0.4, 0.4, 0.4, 1.0);
 }
-
-.webgl-div {
-}
-
-.webgl-bottom {
-    background: #aaa;
-}
-
-h1 {
-    background: transparent;
-    color: #ddd;
-    text-shadow: #aaa 3px 3px 2px;
-    text-align: center;
-}
-
-#webgl-logo {
-}
-
-.webgl-hidden {
-    display: none;
-}
-
-</style>
-</head>
-
-<body>
-
-<h1>Can I use WebGL?</h1>
-
-<div class="roundbox">
-<div class="webgl-hidden" id="have-javascript">
-<div class="webgl-hidden webgl-div" id="webgl-yes">
-  <p>Yes!  Your browser supports WebGL!  <span id="webgl-experimental">(However,
-it indicates that support is experimental; you might see issues with some
-content.)  </span>You should see a <strike>spinning WebGL logo below</strike>
-green square below (logo coming soon).  If you do not,
-<a id="support-link">please visit the support site for your browser</a>.</p>
-
-<p style="text-align: center"><canvas width="200" height="150" id="webgl-logo"></canvas></p>
-
-<p>Check out some of the following links to learn more about WebGL and to find more web applications using WebGL.</p>
-
-<ul>
-<li><a href="http://khronos.org/webgl/wiki/">WebGL Wiki</a></li>
-<li>For developers: <a href="http://learningwebgl.com/">Learning WebGL Blog</a></li>
-</ul>
-</div>
-
-<div class="webgl-hidden webgl-div" id="webgl-disabled">
-<p>Hmm.  While your browser seems to support WebGL, it is disabled or unavailable.  If possible, please ensure that you are running the latest drivers for your video card.</p>
-<p id="known-browser" class="webgl-hidden"><a id="troubleshooting-link" href="">For more help, please click this link</a>.</p>
-<p id="unknown-browser">For more help, please visit the support site for your browser.</p>
-</div>
-
-<div class="webgl-hidden webgl-div" id="webgl-no">
-<p>Oh no!  We are sorry, but your browser does not seem to support WebGL.</p>
-<div id="upgrade-browser">
-<p><a id="upgrade-link" href="">You can upgrade <span id="name"></span> by clicking this link.</a></p></div>
-<div id="get-browser" class="webgl-hidden">
-<p>You may want to download one of the following browsers to view WebGL content.</p>
-
-<p>The following browsers support WebGL on <span id="platform"></span>:</p>
-
-<div id="webgl-browser-list">
-</div>
-</div>
-</div>
-</div>
-<div id="no-javascript">
-You must enable JavaScript to use WebGL.
-</div>
-</div>
-
-<div class="webgl-bottom roundbox">
-Want more information about WebGL?  <a href="http://khronos.org/webgl/">Visit khronos.org/webgl</a>.
-</div>
-
-</body>
+</script>
+  </body>
 </html>
-
