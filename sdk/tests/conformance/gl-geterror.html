@@ -49,7 +49,7 @@ var err1 = gl.getError();
 var err2 = gl.getError();
 var err3 = gl.getError();
 
-shouldBeTrue('err1 != err2 != err3');
+shouldBeTrue('err1 != err2 && err1 != err3 && err2 != err3');
 shouldBeTrue('err1 == gl.INVALID_ENUM || err1 == gl.INVALID_VALUE || err1 == gl.INVALID_OPERATION'); 
 shouldBeTrue('err2 == gl.INVALID_ENUM || err2 == gl.INVALID_VALUE || err2 == gl.INVALID_OPERATION'); 
 shouldBeTrue('err3 == gl.INVALID_ENUM || err3 == gl.INVALID_VALUE || err3 == gl.INVALID_OPERATION'); 
