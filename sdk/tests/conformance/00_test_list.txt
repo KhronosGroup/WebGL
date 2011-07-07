@@ -5,6 +5,7 @@ bad-arguments-test.html
 buffer-bind-test.html
 buffer-data-array-buffer.html
 buffer-preserve-test.html
+buffer-offscreen-test.html
 canvas-test.html
 canvas-zero-size.html
 constants.html
