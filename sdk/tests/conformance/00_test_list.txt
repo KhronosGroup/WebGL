@@ -95,6 +95,7 @@ texture-active-bind.html
 texture-complete.html
 texture-formats-test.html
 texture-npot.html
+texture-npot-video.html
 texture-transparent-pixels-initialized.html
 triangle.html
 type-conversion-test.html
