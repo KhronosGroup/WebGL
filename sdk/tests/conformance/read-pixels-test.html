@@ -39,6 +39,7 @@ gl.clear(gl.COLOR_BUFFER_BIT);
 
 // Resize the canvas to 2x2. This is an attempt to get stuff in the backbuffer.
 // that shouldn't be there.
+canvas.addEventListener("webglcontextlost", function(e) { e.preventDefault(); }, false);
 canvas.addEventListener("webglcontextrestored", continueTestAfterContextRestored, false);
 canvas.width = width;
 canvas.height = height;
