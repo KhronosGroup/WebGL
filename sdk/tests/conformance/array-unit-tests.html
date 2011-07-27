@@ -512,7 +512,11 @@ function testConstructionWithOutOfRangeValues(type, name) {
     shouldThrowIndexSizeErr(function() {
         var buffer = new ArrayBuffer(4);
         var array = new type(buffer, 4, 0x3FFFFFFF);
-    }, "Construction of " + name + " with out-of-range values");
+    }, "Construction of " + name + " with out-of-range number of elements");
+    shouldThrowIndexSizeErr(function() {
+        var buffer = new ArrayBuffer(4);
+        var array = new type(buffer, 8);
+    }, "Construction of " + name + " with out-of-range offset");
 }
 
 function testConstructionWithNegativeOutOfRangeValues(type, name) {
