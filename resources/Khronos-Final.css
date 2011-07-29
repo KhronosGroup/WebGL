@@ -3,6 +3,9 @@
 
 @import "default.css";
 
+/* We don't currently have a "Final" logo. For the moment, just elide this. */
+/*
 body {
   background-image: url('logo-Final.png');
 }
+*/
