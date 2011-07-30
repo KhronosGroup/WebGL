@@ -31,7 +31,6 @@ gl-enum-tests.html
 gl-get-active-attribute.html
 gl-get-active-uniform.html
 gl-get-calls.html
-gl-geterror.html
 gl-getshadersource.html
 gl-getstring.html
 gl-min-attribs.html
