@@ -32,14 +32,14 @@ glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE");
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 glErrorShouldBe(gl, gl.INVALID_OPERATION, "should generate INVALID_OPERATION");
 
-// Generate 2 errors of each type.
+// Generate 2 errors of each type for 6 total possible errors.
 // The OpenGL ES 2.0 spec section 2.5 says the implementation is allowed to
-// either return the first error or one error per type in an unspecied order.
-gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+// either return the first error or many errors in an unspecied order.
 gl.viewport(-1, -1, -1, -1);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 gl.enable(desktopGL.ALPHA_TEST);
-gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 gl.viewport(-1, -1, -1, -1);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 // Note: This error is specifically last because we know it will be synthasized
 // by WebGL at least when implemented on top of Desktop OpenGL
 gl.enable(desktopGL.ALPHA_TEST);
@@ -47,19 +47,24 @@ gl.enable(desktopGL.ALPHA_TEST);
 var err1 = gl.getError();
 var err2 = gl.getError();
 var err3 = gl.getError();
+var err4 = gl.getError();
+var err5 = gl.getError();
+var err6 = gl.getError();
 
 debug("");
 if (err2 == gl.NO_ERROR) {
   debug("This WebGL implementation looks like it uses the 'first error' method");
   debug("There should be 1 error, the first one generated");
-  shouldBeTrue('err1 == gl.INVALID_OPERATION && err2 == gl.NO_ERROR && err3 == gl.NO_ERROR');
+  shouldBeTrue('err1 == gl.INVALID_VALUE && err2 == gl.NO_ERROR && err3 == gl.NO_ERROR');
 } else {
-  debug("This WebGL implementation looks like it uses the error flags method");
-  debug("There should be 3 errors, one of each type");
-  shouldBeTrue('err1 != err2 && err1 != err3 && err2 != err3');
-  shouldBeTrue('err1 == gl.INVALID_ENUM || err1 == gl.INVALID_VALUE || err1 == gl.INVALID_OPERATION');
-  shouldBeTrue('err2 == gl.INVALID_ENUM || err2 == gl.INVALID_VALUE || err2 == gl.INVALID_OPERATION');
-  shouldBeTrue('err3 == gl.INVALID_ENUM || err3 == gl.INVALID_VALUE || err3 == gl.INVALID_OPERATION');
+  debug("This WebGL implementation looks like it uses the many error method");
+  debug("Check is that at least one of the errors is the first error");
+  shouldBeTrue('err1 == gl.INVALID_VALUE || ' +
+               'err2 == gl.INVALID_VALUE || ' +
+               'err3 == gl.INVALID_VALUE || ' +
+               'err4 == gl.INVALID_VALUE || ' +
+               'err5 == gl.INVALID_VALUE || ' +
+               'err6 == gl.INVALID_VALUE');
   shouldBeTrue('gl.getError() == gl.NO_ERROR');
 }
 
