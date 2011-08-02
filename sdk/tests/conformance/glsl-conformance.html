@@ -307,6 +307,22 @@ void main()
     gl_FragColor = vec4(0,0,0,0);
 }
 </script>
+<script id="fshaderWithFunctionRecursion" type="text/something-not-javascript">
+void a();
+void b();
+void main()
+{
+    a();
+}
+void a()
+{
+    b();
+}
+void b()
+{
+    a();
+}
+</script>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
 description("This test ensures WebGL implementations allow proper GLES2 shaders compile and improper ones fail.");
@@ -587,6 +603,13 @@ if (!gl) {
       fShaderSuccess: false,
       linkSuccess: false,
       passMsg: "error directive using characters outside of allowed set fails",
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithFunctionRecursion',
+      fShaderSuccess: false,
+      linkSuccess: false,
+      passMsg: "Shaders with recursive function calls should fail",
     }
   ];
 
