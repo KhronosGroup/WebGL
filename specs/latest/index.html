@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 08 June 2011</h2>
+    <h2 class="no-toc">Editor's Draft 08 August 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2194,6 +2194,9 @@ for (var i = 0; i < numVertices; i++) {
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
 
+            If <em>type</em> does not match the type originally used to define the texture, an
+            <code>INVALID_OPERATION</code> error is generated. <br><br>
+
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
         <dt><p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
@@ -2213,6 +2216,9 @@ for (var i = 0; i < numVertices; i++) {
             the <em>format</em> and <em>type</em> arguments. <br><br>
 
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
+            <code>INVALID_OPERATION</code> error is generated. <br><br>
+
+            If <em>type</em> does not match the type originally used to define the texture, an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
 
             If this function is called with an <code>HTMLImageElement</code>
@@ -3109,6 +3115,15 @@ extensions.
     <code>getActiveUniform</code>, <code>getProgramInfoLog</code>, <code>getShaderInfoLog</code>, and
     <code>getShaderSource</code>) all return <code>DOMString</code>.
 </p>
+
+<h3>Texture Type in TexSubImage2D Calls</h3>
+
+<p>
+    In the WebGL API, the <em>type</em> argument passed to <code>texSubImage2D</code> must match the
+    type used to originally define the texture object (i.e., using <code>texImage2D</code>).
+</p>
+
+
 
 <!-- ======================================================================================================= -->
 
