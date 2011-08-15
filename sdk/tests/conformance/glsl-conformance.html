@@ -323,6 +323,127 @@ void b()
     a();
 }
 </script>
+<script id="fshaderWithIntReturnValue" type="text/something-not-javascript">
+int functionResult();
+
+void main()
+{
+    int r = functionResult();
+    gl_FragColor = vec4(r, r, r, r);
+}
+
+int functionResult()
+{
+    return 1;
+}
+</script>
+<script id="fshaderWithIVec2ReturnValue" type="text/something-not-javascript">
+ivec2 functionResult();
+
+void main()
+{
+    ivec2 r = functionResult();
+    gl_FragColor = vec4(r.x, r.y, r.x, r.y);
+}
+
+ivec2 functionResult()
+{
+    return ivec2(1, 1);
+}
+</script>
+<script id="fshaderWithIVec3ReturnValue" type="text/something-not-javascript">
+ivec3 functionResult();
+
+void main()
+{
+    ivec3 r = functionResult();
+    gl_FragColor = vec4(r.x, r.y, r.z, r.x);
+}
+
+ivec3 functionResult()
+{
+    return ivec3(1, 1, 1);
+}
+</script>
+<script id="fshaderWithIVec4ReturnValue" type="text/something-not-javascript">
+ivec4 functionResult();
+
+void main()
+{
+    ivec4 r = functionResult();
+    gl_FragColor = vec4(r.x, r.y, r.z, r.w);
+}
+
+ivec4 functionResult()
+{
+    return ivec4(1, 1, 1, 1);
+}
+
+</script>
+<script id="fshaderWithFloatReturnValue" type="text/something-not-javascript">
+precision mediump float;
+
+float functionResult();
+
+void main()
+{
+    float r = functionResult();
+    gl_FragColor = vec4(r, r, r, r);
+}
+
+float functionResult()
+{
+    return 1.0;
+}
+</script>
+<script id="fshaderWithVec2ReturnValue" type="text/something-not-javascript">
+precision mediump float;
+
+vec2 functionResult();
+
+void main()
+{
+    vec2 r = functionResult();
+    gl_FragColor = vec4(r.x, r.y, r.x, r.y);
+}
+
+vec2 functionResult()
+{
+    return vec2(1.0, 1.0);
+}
+</script>
+<script id="fshaderWithVec3ReturnValue" type="text/something-not-javascript">
+precision mediump float;
+
+vec3 functionResult();
+
+void main()
+{
+    vec3 r = functionResult();
+    gl_FragColor = vec4(r.x, r.y, r.z, r.x);
+}
+
+vec3 functionResult()
+{
+    return vec3(1.0, 1.0, 1.0);
+}
+</script>
+<script id="fshaderWithVec4ReturnValue" type="text/something-not-javascript">
+precision mediump float;
+
+vec4 functionResult();
+
+void main()
+{
+    vec4 r = functionResult();
+    gl_FragColor = vec4(r.x, r.y, r.z, r.w);
+}
+
+vec4 functionResult()
+{
+    return vec4(1.0, 1.0, 1.0, 1.0);
+}
+</script>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
 description("This test ensures WebGL implementations allow proper GLES2 shaders compile and improper ones fail.");
@@ -610,7 +731,63 @@ if (!gl) {
       fShaderSuccess: false,
       linkSuccess: false,
       passMsg: "Shaders with recursive function calls should fail",
-    }
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithIntReturnValue',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: "Shader with int return value from function call should succeed",
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithIVec2ReturnValue',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: "Shader with ivec2 return value from function call should succeed",
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithIVec3ReturnValue',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: "Shader with ivec3 return value from function call should succeed",
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithIVec4ReturnValue',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: "Shader with ivec4 return value from function call should succeed",
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithFloatReturnValue',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: "Shader with float return value from function call should succeed",
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithVec2ReturnValue',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: "Shader with vec2 return value from function call should succeed",
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithVec3ReturnValue',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: "Shader with vec3 return value from function call should succeed",
+    },
+    { vShaderId: 'vshader',
+      vShaderSuccess: true,
+      fShaderId: 'fshaderWithVec4ReturnValue',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: "Shader with vec4 return value from function call should succeed",
+    },
   ];
 
   // Read in all the shader source.
