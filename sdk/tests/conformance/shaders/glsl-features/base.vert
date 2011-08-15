@@ -6,7 +6,7 @@ void main()
 {
    gl_Position = aPosition;
    vTexcoord = aTexcoord;
-   vColor = vec4(1,1,1,1);
+   vColor = vec4(aTexcoord, 0, 1);
 }
 
 

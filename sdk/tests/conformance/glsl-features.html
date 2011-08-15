@@ -2,6 +2,38 @@
 Copyright (c) 2011 The Chromium Authors. All rights reserved.
 Use of this source code is governed by a BSD-style license that can be
 found in the LICENSE file.
+
+Note: To use this sample pass arguments through the URL.
+
+Arguments:
+  feature:  name of the feature being testing
+
+  refvs:    relative url to reference vertex shader
+            default shaders/glsl-features/base.vert
+
+  reffs:    relative url to reference fragment shader
+            default shaders/glsl-features/base.frag
+
+  testvs:   relative url to test vertex shader
+            default shaders/glsl-features/base.vert
+
+  testfs:   relative url to test fragment shader
+            default shaders/glsl-features/base.frag
+
+Example:
+glsl-feature.html?feature=abs&refvs=shader/abs-ref.vert&testvs=shader/abs-test.vert
+
+The idea is to provide 2 shaders that should generate the same image. One shader
+uses the actual feature you want to test. Another emluates that feature to
+provide a reference image.
+
+For example, a test of abs would use "abs" in the test and "v < 0 ? -v : v" in
+the reference.
+
+Both shaders are passed a unit quad that covers the entire canvas and texcoords
+that go from 0.0 to 1.0 over the canvas. A vColor value is also passed
+from the vertex shader to the fragment shader to give the vertex shader
+a chance to generate something.
  -->
 <!DOCTYPE html>
 <html>

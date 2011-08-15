@@ -3,7 +3,7 @@ varying vec2 vTexcoord;
 varying vec4 vColor;
 
 float abs_emu(float value) {
-  return value > 0.0 ? value : -value;
+  return value < 0.0 ? -value : value;
 }
 
 void main()
