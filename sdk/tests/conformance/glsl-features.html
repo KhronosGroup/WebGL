@@ -1,0 +1,123 @@
+<!--
+Copyright (c) 2011 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <title>GLSL feature Test</title>
+  <link rel="stylesheet" href="../resources/js-test-style.css"/>
+  <script src="../resources/js-test-pre.js"></script>
+  <script src="resources/webgl-test.js"> </script>
+  <script src="resources/webgl-test-utils.js"> </script>
+</head>
+<body>
+<table>
+<tr><td>ref</td><td>test</td><td>diff</td></tr>
+<tr>
+<td><canvas id="canvas1" width="32" height="32"></canvas></td>
+<td><canvas id="canvas2" width="32" height="32"></canvas></td>
+<td><canvas id="diff" width="32" height="32"></canvas></td>
+</tr>
+</table>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+function init()
+{
+  if (window.initNonKhronosFramework) {
+    window.initNonKhronosFramework(false);
+  }
+
+  wtu = WebGLTestUtils;
+  var args = wtu.getUrlArguments();
+  var feature = args.feature || "**unset**";
+  var refVS = args.refvs || "shaders/glsl-features/base.vert";
+  var refFS = args.reffs || "shaders/glsl-features/base.frag";
+  var testVS = args.testvs || "shaders/glsl-features/base.vert";
+  var testFS = args.testfs || "shaders/glsl-features/base.frag";
+
+  description("Testing GLSL feature:" + feature);
+  debug("");
+  debug("using reference shaders:");
+  debug("  " + refVS);
+  debug("  " + refFS);
+  debug("");
+  debug("using test shaders:");
+  debug("  " + testVS);
+  debug("  " + testFS);
+  debug("");
+
+  var canvas1 = document.getElementById("canvas1");
+  var canvas2 = document.getElementById("canvas2");
+  var diff = document.getElementById("diff");
+
+  var width = canvas1.width;
+  var height = canvas1.height;
+
+  function draw(canvas, vsURL, fsURL) {
+    var gl = wtu.create3DContext(canvas);
+    if (!gl) {
+      testFailed("context does not exist");
+      return;
+    }
+
+    var program = wtu.loadProgramFromFile(gl, vsURL, fsURL);
+
+    var posLoc = gl.getAttribLocation(program, "aPosition");
+    var refLoc = gl.getAttribLocation(program, "aTexcoord");
+    wtu.setupUnitQuad(gl, posLoc, refLoc);
+
+    gl.useProgram(program);
+    gl.clearColor(0, 0, 1, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors from draw");
+
+    var img = new Uint8Array(width * height * 4);
+    gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    return img;
+  }
+
+  var refImage = draw(canvas1, refVS, refFS);
+  var testImage = draw(canvas2, testVS, testFS);
+
+  var ctx = diff.getContext("2d");
+  var imgData = ctx.getImageData(0, 0, width, height);
+
+  var same = true;
+  for (var yy = 0; yy < height; ++yy) {
+    for (var xx = 0; xx < width; ++xx) {
+      var offset = (yy * width + xx) * 4;
+      imgData.data[offset + 0] = 0;
+      imgData.data[offset + 1] = 0;
+      imgData.data[offset + 2] = 0;
+      imgData.data[offset + 3] = 255;
+      if (refImage[offset + 0] != testImage[offset + 0] ||
+          refImage[offset + 1] != testImage[offset + 1] ||
+          refImage[offset + 2] != testImage[offset + 2] ||
+          refImage[offset + 3] != testImage[offset + 3]) {
+        imgData.data[offset] = 255;
+        same = false;
+      }
+    }
+  }
+
+  if (!same) {
+    ctx.putImageData(imgData, 0, 0);
+    testFailed("images are different");
+  } else {
+    testPassed("images are the same");
+  }
+}
+
+init();
+successfullyParsed = true;
+</script>
+<script src="../resources/js-test-post.js"></script>
+
+</body>
+</html>
+

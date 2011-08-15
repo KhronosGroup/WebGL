@@ -29,6 +29,7 @@ gl-enable-enum-test.html
 gl-enable-vertex-attrib.html
 gl-enum-tests.html
 gl-fragcoord.html
+shaders/00_test_list.txt
 gl-get-active-attribute.html
 gl-get-active-uniform.html
 gl-get-calls.html

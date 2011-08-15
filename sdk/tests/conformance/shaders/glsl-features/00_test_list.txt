@@ -1,0 +1,5 @@
+../../glsl-features.html?feature=base
+../../glsl-features.html?feature=abs&reffs=shaders/glsl-features/abs-ref.frag&testfs=shaders/glsl-features/abs.frag
+../../glsl-features.html?feature=sign&reffs=shaders/glsl-features/sign-ref.frag&testfs=shaders/glsl-features/sign.frag
+
+

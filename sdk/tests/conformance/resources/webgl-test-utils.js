@@ -846,6 +846,29 @@ var loadImagesAsync = function(urls, callback) {
   countDown();
 };
 
+var getUrlArguments = function() {
+  var args = {};
+  try {
+    var s = window.location.href;
+    var q = s.indexOf("?");
+    var e = s.indexOf("#");
+    if (e < 0) {
+      e = s.length;
+    }
+    var query = s.substring(q + 1, e);
+    var pairs = query.split("&");
+    for (var ii = 0; ii < pairs.length; ++ii) {
+      var keyValue = pairs[ii].split("=");
+      var key = keyValue[0];
+      var value = decodeURIComponent(keyValue[1]);
+      args[key] = value;
+    }
+  } catch (e) {
+    throw "could not parse url";
+  }
+  return args;
+};
+
 return {
   create3DContext: create3DContext,
   create3DContextWithWrapperThatThrowsOnGLError:
@@ -856,6 +879,7 @@ return {
   drawQuad: drawQuad,
   endsWith: endsWith,
   getLastError: getLastError,
+  getUrlArguments: getUrlArguments,
   glEnumToString: glEnumToString,
   glErrorShouldBe: glErrorShouldBe,
   fillTexture: fillTexture,
