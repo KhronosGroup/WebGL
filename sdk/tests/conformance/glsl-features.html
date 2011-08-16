@@ -74,16 +74,16 @@ function init()
   var testFS = args.testfs || "shaders/glsl-features/base.frag";
   var gridRes = args.res ? parseInt(args.res) : 2;
 
-  description("Testing GLSL feature: " + feature);
-  debug("");
-  debug("using reference shaders:");
-  debug("  " + refVS);
-  debug("  " + refFS);
-  debug("");
-  debug("using test shaders:");
-  debug("  " + testVS);
-  debug("  " + testFS);
-  debug("");
+  description('Testing GLSL feature: ' + feature);
+  debug('');
+  debug('using reference shaders:');
+  debug('  <a href="' + refVS + '">' + refVS + '</a>');
+  debug('  <a href="' + refFS + '">' + refFS + '</a>');
+  debug('');
+  debug('using test shaders:');
+  debug('  <a href="' + testVS + '">' + testVS + '</a>');
+  debug('  <a href="' + testFS + '">' + testFS + '</a>');
+  debug('');
 
   var canvas1 = document.getElementById("canvas1");
   var canvas2 = document.getElementById("canvas2");
