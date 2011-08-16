@@ -8,6 +8,8 @@ Note: To use this sample pass arguments through the URL.
 Arguments:
   feature:  name of the feature being testing
 
+  res:      number of subdivisions in quad. default: 2
+
   refvs:    relative url to reference vertex shader
             default shaders/glsl-features/base.vert
 
@@ -70,8 +72,9 @@ function init()
   var refFS = args.reffs || "shaders/glsl-features/base.frag";
   var testVS = args.testvs || "shaders/glsl-features/base.vert";
   var testFS = args.testfs || "shaders/glsl-features/base.frag";
+  var gridRes = args.res ? parseInt(args.res) : 2;
 
-  description("Testing GLSL feature:" + feature);
+  description("Testing GLSL feature: " + feature);
   debug("");
   debug("using reference shaders:");
   debug("  " + refVS);
@@ -105,7 +108,7 @@ function init()
     gl.useProgram(program);
     gl.clearColor(0, 0, 1, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.drawArrays(gl.TRIANGLES, 0, 6 * 4);
+    gl.drawElements(gl.TRIANGLES, gridRes * gridRes * 6, gl.UNSIGNED_SHORT, 0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors from draw");
 
     var img = new Uint8Array(width * height * 4);
@@ -115,79 +118,65 @@ function init()
 
   function setupQuad(gl, positionLocation, texcoordLocation) {
     var objects = [];
-  
-    var vertexObject = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(
-        [
-          0.0 + 0,  0.0 + 0, 0.0,
-         -1.0 + 0,  0.0 + 0, 0.0,
-         -1.0 + 0, -1.0 + 0, 0.0,
-          0.0 + 0,  0.0 + 0, 0.0,
-         -1.0 + 0, -1.0 + 0, 0.0,
-          0.0 + 0, -1.0 + 0, 0.0,
 
-          0.0 + 1,  0.0 + 0, 0.0,
-         -1.0 + 1,  0.0 + 0, 0.0,
-         -1.0 + 1, -1.0 + 0, 0.0,
-          0.0 + 1,  0.0 + 0, 0.0,
-         -1.0 + 1, -1.0 + 0, 0.0,
-          0.0 + 1, -1.0 + 0, 0.0,
-  
-          0.0 + 0,  0.0 + 1, 0.0,
-         -1.0 + 0,  0.0 + 1, 0.0,
-         -1.0 + 0, -1.0 + 1, 0.0,
-          0.0 + 0,  0.0 + 1, 0.0,
-         -1.0 + 0, -1.0 + 1, 0.0,
-          0.0 + 0, -1.0 + 1, 0.0,
-                          
-          0.0 + 1,  0.0 + 1, 0.0,
-         -1.0 + 1,  0.0 + 1, 0.0,
-         -1.0 + 1, -1.0 + 1, 0.0,
-          0.0 + 1,  0.0 + 1, 0.0,
-         -1.0 + 1, -1.0 + 1, 0.0,
-          0.0 + 1, -1.0 + 1, 0.0
-        ]), gl.STATIC_DRAW);
+    var vertsAcross = gridRes + 1;
+    var numVerts = vertsAcross * vertsAcross;
+    var positions = new Float32Array(numVerts * 3);
+    var texcoords = new Float32Array(numVerts * 2);
+    var indices = new Uint16Array(6 * gridRes * gridRes);
+
+    var poffset = 0;
+    var toffset = 0;
+
+    for (var yy = 0; yy <= gridRes; ++yy) {
+      for (var xx = 0; xx <= gridRes; ++xx) {
+        positions[poffset + 0] = -1 + 2 * xx / gridRes;
+        positions[poffset + 1] = -1 + 2 * yy / gridRes;
+        positions[poffset + 2] = 0;
+
+        texcoords[toffset + 0] = xx / gridRes;
+        texcoords[toffset + 1] = yy / gridRes;
+
+        poffset += 3;
+        toffset += 2;
+      }
+    }
+
+    var tbase = 0;
+    for (var yy = 0; yy < gridRes; ++yy) {
+      var index = yy * vertsAcross;
+      for (var xx = 0; xx < gridRes; ++xx) {
+        indices[tbase + 0] = index + 0;
+        indices[tbase + 1] = index + 1;
+        indices[tbase + 2] = index + vertsAcross;
+        indices[tbase + 3] = index + vertsAcross;
+        indices[tbase + 4] = index + 1;
+        indices[tbase + 5] = index + vertsAcross + 1;
+
+        index += 1;
+        tbase += 6;
+      }
+    }
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
-    objects.push(vertexObject);
+    objects.push(buf);
   
-    var vertexObject = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(
-        [
-          0.5 + 0.0, 0.5 + 0.0,
-          0.0 + 0.0, 0.5 + 0.0,
-          0.0 + 0.0, 0.0 + 0.0,
-          0.5 + 0.0, 0.5 + 0.0,
-          0.0 + 0.0, 0.0 + 0.0,
-          0.5 + 0.0, 0.0 + 0.0,
-
-          0.5 + 0.5, 0.5 + 0.0,
-          0.0 + 0.5, 0.5 + 0.0,
-          0.0 + 0.5, 0.0 + 0.0,
-          0.5 + 0.5, 0.5 + 0.0,
-          0.0 + 0.5, 0.0 + 0.0,
-          0.5 + 0.5, 0.0 + 0.0,
-  
-          0.5 + 0.0, 0.5 + 0.5,
-          0.0 + 0.0, 0.5 + 0.5,
-          0.0 + 0.0, 0.0 + 0.5,
-          0.5 + 0.0, 0.5 + 0.5,
-          0.0 + 0.0, 0.0 + 0.5,
-          0.5 + 0.0, 0.0 + 0.5,
-                             
-          0.5 + 0.5, 0.5 + 0.5,
-          0.0 + 0.5, 0.5 + 0.5,
-          0.0 + 0.5, 0.0 + 0.5,
-          0.5 + 0.5, 0.5 + 0.5,
-          0.0 + 0.5, 0.0 + 0.5,
-          0.5 + 0.5, 0.0 + 0.5
-        
-        ]), gl.STATIC_DRAW);
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
     gl.enableVertexAttribArray(texcoordLocation);
     gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 0, 0);
-    objects.push(vertexObject);
+    objects.push(buf);
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+    objects.push(buf);
+
     return objects;
   }
 
@@ -201,15 +190,16 @@ function init()
   for (var yy = 0; yy < height; ++yy) {
     for (var xx = 0; xx < width; ++xx) {
       var offset = (yy * width + xx) * 4;
-      imgData.data[offset + 0] = 0;
-      imgData.data[offset + 1] = 0;
-      imgData.data[offset + 2] = 0;
-      imgData.data[offset + 3] = 255;
+      var imgOffset = ((height - yy - 1) * width + xx) * 4;
+      imgData.data[imgOffset + 0] = 0;
+      imgData.data[imgOffset + 1] = 0;
+      imgData.data[imgOffset + 2] = 0;
+      imgData.data[imgOffset + 3] = 255;
       if (refImage[offset + 0] != testImage[offset + 0] ||
           refImage[offset + 1] != testImage[offset + 1] ||
           refImage[offset + 2] != testImage[offset + 2] ||
           refImage[offset + 3] != testImage[offset + 3]) {
-        imgData.data[offset] = 255;
+        imgData.data[imgOffset] = 255;
         same = false;
       }
     }
