@@ -8,6 +8,10 @@ attribute vec2 aTexcoord;
 varying vec2 vTexcoord;
 varying vec4 vColor;
 
+float floor_emu(float value) {
+  return value - mod(value, 1.0);
+}
+
 void main()
 {
    gl_Position = aPosition;
@@ -17,10 +21,10 @@ void main()
        aTexcoord.x * aTexcoord.y,
        (1.0 - aTexcoord.x) * aTexcoord.y * 0.5 + 0.5);
    vColor = vec4(
-     abs(vColor.x * 2.0 - 1.0),
-     0,
-     abs(vColor.y * 2.0 - 1.0),
-     1);
+       floor_emu(color.x * 8.0 - 4.0) / 8.0 + 0.5,
+       0,
+       0,
+       1);
 }
 
 

@@ -8,6 +8,16 @@ attribute vec2 aTexcoord;
 varying vec2 vTexcoord;
 varying vec4 vColor;
 
+float fract_emu1(float value) {
+  return value - floor(value);
+}
+
+vec2 fract_emu(vec2 value) {
+  return vec2(
+	  fract_emu1(value.x),
+	  fract_emu1(value.y));
+}
+
 void main()
 {
    gl_Position = aPosition;
@@ -17,10 +27,9 @@ void main()
        aTexcoord.x * aTexcoord.y,
        (1.0 - aTexcoord.x) * aTexcoord.y * 0.5 + 0.5);
    vColor = vec4(
-     abs(vColor.x * 2.0 - 1.0),
-     0,
-     abs(vColor.y * 2.0 - 1.0),
-     1);
+       fract(color.xy * 4.0 - vec2(2, 2)),
+       0,
+       1);
 }
 
 

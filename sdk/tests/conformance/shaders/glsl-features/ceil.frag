@@ -2,20 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-attribute vec4 aPosition;
-attribute vec2 aTexcoord;
+precision mediump float;
 
 varying vec2 vTexcoord;
 varying vec4 vColor;
 
 void main()
 {
-   gl_Position = aPosition;
-   vTexcoord = aTexcoord;
-   vColor = vec4(
-       aTexcoord,
-       aTexcoord.x * aTexcoord.y,
-       (1.0 - aTexcoord.x) * aTexcoord.y * 0.5 + 0.5);
+   gl_FragColor = vec4(
+      ceil(vColor.x * 8.0 - 4.0) / 8.0 + 0.5,
+      0, 0, 1);
 }
+
 
 

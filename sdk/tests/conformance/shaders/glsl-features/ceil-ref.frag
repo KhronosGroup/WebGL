@@ -2,20 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-attribute vec4 aPosition;
-attribute vec2 aTexcoord;
+precision mediump float;
 
 varying vec2 vTexcoord;
 varying vec4 vColor;
 
+float ceil_emu(float value) {
+  float m = mod(value, 1.0);
+  return m != 0.0 ? (value + 1.0 - m) : value;
+}
+
 void main()
 {
-   gl_Position = aPosition;
-   vTexcoord = aTexcoord;
-   vColor = vec4(
-       aTexcoord,
-       aTexcoord.x * aTexcoord.y,
-       (1.0 - aTexcoord.x) * aTexcoord.y * 0.5 + 0.5);
+   gl_FragColor = vec4(
+      ceil_emu(vColor.x * 8.0 - 4.0) / 8.0 + 0.5,
+      0, 0, 1);
 }
+
+
 
 

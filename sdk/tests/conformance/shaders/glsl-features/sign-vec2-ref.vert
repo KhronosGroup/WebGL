@@ -8,18 +8,22 @@ attribute vec2 aTexcoord;
 varying vec2 vTexcoord;
 varying vec4 vColor;
 
+float sign_emu1(float value) {
+  if (value == 0.0) return 0.0;
+  return value > 0.0 ? 1.0 : -1.0;
+}
+
+vec2 sign_emu(vec2 value) {
+  return vec2(sign_emu1(value.x), sign_emu1(value.y));
+}
+
 void main()
 {
    gl_Position = aPosition;
    vTexcoord = aTexcoord;
-   vec4 color = vec4(
-       aTexcoord,
-       aTexcoord.x * aTexcoord.y,
-       (1.0 - aTexcoord.x) * aTexcoord.y * 0.5 + 0.5);
    vColor = vec4(
-     abs(vColor.x * 2.0 - 1.0),
-     0,
-     abs(vColor.y * 2.0 - 1.0),
+     sign_emu(aTexcoord * 2.0 - vec2(1, 1)),
+     0, 
      1);
 }
 

@@ -8,6 +8,16 @@ attribute vec2 aTexcoord;
 varying vec2 vTexcoord;
 varying vec4 vColor;
 
+float abs_emu1(float value) {
+  return value >= 0.0 ? value : -value;
+}
+
+vec2 abs_emu(vec2 value) {
+  return vec2(
+    abs_emu1(value.x),
+    abs_emu1(value.y));
+}
+
 void main()
 {
    gl_Position = aPosition;
@@ -17,9 +27,8 @@ void main()
        aTexcoord.x * aTexcoord.y,
        (1.0 - aTexcoord.x) * aTexcoord.y * 0.5 + 0.5);
    vColor = vec4(
-     abs(vColor.x * 2.0 - 1.0),
+     abs(vColor.xy * 2.0 - vec2(1, 1)),
      0,
-     abs(vColor.y * 2.0 - 1.0),
      1);
 }
 

@@ -8,6 +8,11 @@ attribute vec2 aTexcoord;
 varying vec2 vTexcoord;
 varying vec4 vColor;
 
+float ceil_emu(float value) {
+  float m = mod(value, 1.0);
+  return m != 0.0 ? (value + 1.0 - m) : value;
+}
+
 void main()
 {
    gl_Position = aPosition;
@@ -17,10 +22,10 @@ void main()
        aTexcoord.x * aTexcoord.y,
        (1.0 - aTexcoord.x) * aTexcoord.y * 0.5 + 0.5);
    vColor = vec4(
-     abs(vColor.x * 2.0 - 1.0),
-     0,
-     abs(vColor.y * 2.0 - 1.0),
-     1);
+       ceil_emu(color.x * 8.0 - 4.0) / 8.0 + 0.5,
+       0,
+       0,
+       1);
 }
 
 

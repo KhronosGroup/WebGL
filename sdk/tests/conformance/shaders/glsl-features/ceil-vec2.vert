@@ -17,10 +17,9 @@ void main()
        aTexcoord.x * aTexcoord.y,
        (1.0 - aTexcoord.x) * aTexcoord.y * 0.5 + 0.5);
    vColor = vec4(
-     abs(vColor.x * 2.0 - 1.0),
-     0,
-     abs(vColor.y * 2.0 - 1.0),
-     1);
+       ceil(color.xy * 8.0 - vec2(4, 4)) / 8.0 + vec2(0.5, 0.5),
+       0,
+       1);
 }
 
 

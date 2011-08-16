@@ -12,15 +12,9 @@ void main()
 {
    gl_Position = aPosition;
    vTexcoord = aTexcoord;
-   vec4 color = vec4(
-       aTexcoord,
-       aTexcoord.x * aTexcoord.y,
-       (1.0 - aTexcoord.x) * aTexcoord.y * 0.5 + 0.5);
-   vColor = vec4(
-     abs(vColor.x * 2.0 - 1.0),
-     0,
-     abs(vColor.y * 2.0 - 1.0),
-     1);
+   vColor = sign(vec4(
+      aTexcoord.yx * -2.0 + vec2(1, 1),
+      aTexcoord * 2.0 - vec2(1, 1)));
 }
 
 
