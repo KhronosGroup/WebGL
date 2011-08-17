@@ -149,7 +149,21 @@ var TestHarness = function(iframe, filelistUrl, reportFunc) {
   this.window = window;
   this.iframe = iframe;
   this.reportFunc = reportFunc;
-  var files = getFileList(filelistUrl);
+  try {
+    var files = getFileList(filelistUrl);
+  } catch (e) {
+    this.reportFunc(
+        TestHarness.reportType.FINISHED_ALL_TESTS,
+        'Unable to load tests. Are you running locally?\n' +
+        'You need to run from a server or configure your\n' +
+        'browser to allow access to local files (not recommended).\n\n' +
+        'Note: An easy way to run from a server:\n\n' +
+        '\tcd path_to_tests\n' +
+        '\tpython -m SimpleHTTPServer\n\n' +
+        'then point your browser to http://localhost:8000/',
+        false)
+    return;
+  }
   this.files = [];
   for (var ii = 0; ii < files.length; ++ii) {
     this.files.push(new TestFile(files[ii]));
@@ -187,7 +201,7 @@ TestHarness.prototype.startNextFile = function() {
   if (this.nextFileIndex >= this.files.length) {
     log("done");
     this.reportFunc(TestHarness.reportType.FINISHED_ALL_TESTS,
-                    '', undefined);
+                    '', true);
   } else {
     this.currentFile = this.files[this.nextFileIndex++];
     log("loading: " + this.currentFile.url);

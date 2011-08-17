@@ -31,6 +31,18 @@ WebGL Conformance Test Runner.
   .testpagefail { border: 1px solid black; background-color: #F88; }
   .testpagetimeout { border: 1px solid black; background-color: #FC8; }
   .nowebgl { font-weight: bold; color: red; }
+  #error-wrap {
+      float: left;
+      position: relative;
+      left: 50%;
+  }
+  #error {
+     color: red;
+     float: left;
+     position: relative;
+     left: -50%;
+     text-align: left;
+  }
 </style>
 <script type="text/javascript" src="resources/webgl-test-harness.js"></script>
 <script>
@@ -215,60 +227,64 @@ function start() {
     }
   };
 
-  Reporter.prototype.displayFinalResults = function() {
-    var totalTests = 0;
-    var totalSuccessful = 0;
-    var totalTimeouts = 0;
-    for (var url in this.pagesByURL) {
-      var page = this.pagesByURL[url];
-      totalTests += page.totalTests;
-      totalSuccessful += page.totalSuccessful;
-      totalTimeouts += page.totalTimeouts;
-    }
-    var timeout = '';
-    if (totalTimeouts > 0) {
-      timeout = ', ' + totalTimeouts + ' timed out';
-    }
-    var msg = ' (' + totalSuccessful + ' of ' +
-              totalTests + ' passed' + timeout + ')';
-    this.fullResultsNode.textContent = msg;
-
-
-    // generate a text summary
-    var tx = "";
-    tx += "WebGL Conformance Test Results\n";
-    tx += "Version " + CONFORMANCE_TEST_VERSION + "\n";
-    tx += "\n";
-    tx += "-------------------\n\n";
-    tx += "User Agent: " + (navigator.userAgent ? navigator.userAgent : "(navigator.userAgent is null)") + "\n";
-    tx += "WebGL VENDOR: " + this.contextInfo["VENDOR"] + "\n";
-    tx += "WebGL VERSION: " + this.contextInfo["VERSION"] + "\n";
-    tx += "WebGL RENDERER: " + this.contextInfo["RENDERER"] + "\n";
-    tx += "WebGL R/G/B/A/Depth/Stencil bits (default config): " + this.contextInfo["RED_BITS"] + "/" + this.contextInfo["GREEN_BITS"] + "/" + this.contextInfo["BLUE_BITS"] + "/" + this.contextInfo["ALPHA_BITS"] + "/" + this.contextInfo["DEPTH_BITS"] + "/" + this.contextInfo["STENCIL_BITS"] + "\n";
-    tx += "\n";
-    tx += "-------------------\n\n";
-    tx += "Test Summary (" + totalTests + " total tests):\n";
-    tx += "Tests PASSED: " + totalSuccessful + "\n";
-    tx += "Tests FAILED: " + (totalTests - totalSuccessful) + "\n";
-    tx += "Tests TIMED OUT: " + totalTimeouts + "\n";
-    tx += "\n";
-    tx += "-------------------\n\n";
-    tx += "Individual Test Results (pass / total / timeout):\n\n";
-    for (var url in this.pagesByURL) {
-      var page = this.pagesByURL[url];
-      if (!(page.totalTests == 0 && page.totalTimeouts == 0)) {
-        tx += url + ": " + page.totalSuccessful + " / " +
-            page.totalTests + " / " + page.totalTimeouts + "\n";
+  Reporter.prototype.displayFinalResults = function(msg, success) {
+    if (success) {
+      var totalTests = 0;
+      var totalSuccessful = 0;
+      var totalTimeouts = 0;
+      for (var url in this.pagesByURL) {
+        var page = this.pagesByURL[url];
+        totalTests += page.totalTests;
+        totalSuccessful += page.totalSuccessful;
+        totalTimeouts += page.totalTimeouts;
       }
-    }
-    tx += "\n";
-    tx += "-------------------\n\n";
-    tx += "Generated on: " + (new Date()).toString() + "\n";
+      var timeout = '';
+      if (totalTimeouts > 0) {
+        timeout = ', ' + totalTimeouts + ' timed out';
+      }
+      var msg = ' (' + totalSuccessful + ' of ' +
+                totalTests + ' passed' + timeout + ')';
+      this.fullResultsNode.textContent = msg;
 
-    var r = document.getElementById("testResultsAsText");
-    while (r.firstChild) r.removeChild(r.firstChild);
-    r.appendChild(document.createTextNode(tx));
-    document.getElementById("showTextSummary").style.visibility = "visible";
+      // generate a text summary
+      var tx = "";
+      tx += "WebGL Conformance Test Results\n";
+      tx += "Version " + CONFORMANCE_TEST_VERSION + "\n";
+      tx += "\n";
+      tx += "-------------------\n\n";
+      tx += "User Agent: " + (navigator.userAgent ? navigator.userAgent : "(navigator.userAgent is null)") + "\n";
+      tx += "WebGL VENDOR: " + this.contextInfo["VENDOR"] + "\n";
+      tx += "WebGL VERSION: " + this.contextInfo["VERSION"] + "\n";
+      tx += "WebGL RENDERER: " + this.contextInfo["RENDERER"] + "\n";
+      tx += "WebGL R/G/B/A/Depth/Stencil bits (default config): " + this.contextInfo["RED_BITS"] + "/" + this.contextInfo["GREEN_BITS"] + "/" + this.contextInfo["BLUE_BITS"] + "/" + this.contextInfo["ALPHA_BITS"] + "/" + this.contextInfo["DEPTH_BITS"] + "/" + this.contextInfo["STENCIL_BITS"] + "\n";
+      tx += "\n";
+      tx += "-------------------\n\n";
+      tx += "Test Summary (" + totalTests + " total tests):\n";
+      tx += "Tests PASSED: " + totalSuccessful + "\n";
+      tx += "Tests FAILED: " + (totalTests - totalSuccessful) + "\n";
+      tx += "Tests TIMED OUT: " + totalTimeouts + "\n";
+      tx += "\n";
+      tx += "-------------------\n\n";
+      tx += "Individual Test Results (pass / total / timeout):\n\n";
+      for (var url in this.pagesByURL) {
+        var page = this.pagesByURL[url];
+        if (!(page.totalTests == 0 && page.totalTimeouts == 0)) {
+          tx += url + ": " + page.totalSuccessful + " / " +
+              page.totalTests + " / " + page.totalTimeouts + "\n";
+        }
+      }
+      tx += "\n";
+      tx += "-------------------\n\n";
+      tx += "Generated on: " + (new Date()).toString() + "\n";
+
+      var r = document.getElementById("testResultsAsText");
+      while (r.firstChild) r.removeChild(r.firstChild);
+      r.appendChild(document.createTextNode(tx));
+      document.getElementById("showTextSummary").style.visibility = "visible";
+    } else {
+      var e = document.getElementById("error");
+      e.textContent = msg;
+    }
   };
 
   Reporter.prototype.reportFunc = function(type, msg, success) {
@@ -282,7 +298,7 @@ function start() {
       case reportType.FINISH_PAGE:
         return this.finishPage(success);
       case reportType.FINISHED_ALL_TESTS:
-        return this.displayFinalResults();
+        return this.displayFinalResults(msg, success);
       default:
         throw 'unhandled';
         break;
@@ -336,6 +352,7 @@ function start() {
 <div id="nowebgl" class="nowebgl" style="display: none;">This browser does not appear to support WebGL</div></td></tr>
 <tr><td><div style="border: 1px">Results: <span id="fullresults"></span></div>
 <canvas id="webglcheck" style="display: none;"></canvas></td></tr>
+<tr><td><div id="error-wrap"><pre id="error"></pre></div></td></tr>
 </table>
 </td>
 <td>
