@@ -3,9 +3,7 @@
 // found in the LICENSE file.
 
 attribute vec4 aPosition;
-attribute vec2 aTexcoord;
 
-varying vec2 vTexcoord;
 varying vec4 vColor;
 
 float ceil_emu1(float value) {
@@ -24,11 +22,11 @@ vec4 ceil_emu(vec4 value) {
 void main()
 {
    gl_Position = aPosition;
-   vTexcoord = aTexcoord;
+   vec2 texcoord = vec2(aPosition.xy * 0.5 + vec2(0.5, 0.5));
    vec4 color = vec4(
-       aTexcoord,
-       aTexcoord.x * aTexcoord.y,
-       (1.0 - aTexcoord.x) * aTexcoord.y * 0.5 + 0.5);
+       texcoord,
+       texcoord.x * texcoord.y,
+       (1.0 - texcoord.x) * texcoord.y * 0.5 + 0.5);
    vColor = ceil_emu(
        color * 8.0 - vec4(4, 4, 4, 4)) / 8.0 + vec4(0.5, 0.5, 0.5, 0.5);
 }

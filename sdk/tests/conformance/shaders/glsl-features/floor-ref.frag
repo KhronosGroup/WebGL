@@ -4,7 +4,6 @@
 
 precision mediump float;
 
-varying vec2 vTexcoord;
 varying vec4 vColor;
 
 float floor_emu(float value) {

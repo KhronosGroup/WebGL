@@ -3,9 +3,7 @@
 // found in the LICENSE file.
 
 attribute vec4 aPosition;
-attribute vec2 aTexcoord;
 
-varying vec2 vTexcoord;
 varying vec4 vColor;
 
 float sign_emu1(float value) {
@@ -24,10 +22,10 @@ vec4 sign_emu(vec4 value) {
 void main()
 {
    gl_Position = aPosition;
-   vTexcoord = aTexcoord;
+   vec2 texcoord = vec2(aPosition.xy * 0.5 + vec2(0.5, 0.5));
    vColor = sign_emu(vec4(
-      aTexcoord.yx * -2.0 + vec2(1, 1),
-      aTexcoord * 2.0 - vec2(1, 1)));
+      texcoord.yx * -2.0 + vec2(1, 1),
+      texcoord * 2.0 - vec2(1, 1))) * 0.5 + vec4(0.5, 0.5, 0.5, 0.5);
 }
 
 

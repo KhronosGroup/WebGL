@@ -4,7 +4,6 @@
 
 precision mediump float;
 
-varying vec2 vTexcoord;
 varying vec4 vColor;
 
 float sign_emu(float value) {
@@ -15,12 +14,11 @@ float sign_emu(float value) {
 void main()
 {
    gl_FragColor = vec4(
-     sign_emu(vTexcoord.x * 2.0 - 1.0),
-     sign_emu(vTexcoord.y * 2.0 - 1.0),
+     sign_emu(vColor.x * 2.0 - 1.0) * 0.5 + 0.5,
+     sign_emu(vColor.y * 2.0 - 1.0) * 0.5 + 0.5,
      0,
      1);
 }
-
 
 
 

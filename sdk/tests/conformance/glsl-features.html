@@ -32,10 +32,9 @@ provide a reference image.
 For example, a test of abs would use "abs" in the test and "v < 0 ? -v : v" in
 the reference.
 
-Both shaders are passed a unit square that covers the entire canvas and 
-texcoords that go from 0.0 to 1.0 over the canvas. A vColor value is also passed
-from the vertex shader to the fragment shader to give the vertex shader
-a chance to generate something.
+Both shaders are passed a unit square that covers the entire canvas. A vColor
+value is also passed from the vertex shader to the fragment shader to give the
+vertex shader a chance to generate something.
  -->
 <!DOCTYPE html>
 <html>
@@ -113,8 +112,7 @@ function init()
     var program = wtu.loadProgramFromFile(gl, vsURL, fsURL);
 
     var posLoc = gl.getAttribLocation(program, "aPosition");
-    var refLoc = gl.getAttribLocation(program, "aTexcoord");
-    setupQuad(gl, posLoc, refLoc);
+    setupQuad(gl, posLoc);
 
     gl.useProgram(program);
     gl.clearColor(0, 0, 1, 1);
@@ -127,17 +125,15 @@ function init()
     return img;
   }
 
-  function setupQuad(gl, positionLocation, texcoordLocation) {
+  function setupQuad(gl, positionLocation) {
     var objects = [];
 
     var vertsAcross = gridRes + 1;
     var numVerts = vertsAcross * vertsAcross;
     var positions = new Float32Array(numVerts * 3);
-    var texcoords = new Float32Array(numVerts * 2);
     var indices = new Uint16Array(6 * gridRes * gridRes);
 
     var poffset = 0;
-    var toffset = 0;
 
     for (var yy = 0; yy <= gridRes; ++yy) {
       for (var xx = 0; xx <= gridRes; ++xx) {
@@ -145,11 +141,7 @@ function init()
         positions[poffset + 1] = -1 + 2 * yy / gridRes;
         positions[poffset + 2] = 0;
 
-        texcoords[toffset + 0] = xx / gridRes;
-        texcoords[toffset + 1] = yy / gridRes;
-
         poffset += 3;
-        toffset += 2;
       }
     }
 
@@ -176,13 +168,6 @@ function init()
     gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
     objects.push(buf);
   
-    var buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(texcoordLocation);
-    gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 0, 0);
-    objects.push(buf);
-
     var buf = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
