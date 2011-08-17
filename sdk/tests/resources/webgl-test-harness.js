@@ -160,7 +160,9 @@ var TestHarness = function(iframe, filelistUrl, reportFunc) {
         'Note: An easy way to run from a server:\n\n' +
         '\tcd path_to_tests\n' +
         '\tpython -m SimpleHTTPServer\n\n' +
-        'then point your browser to http://localhost:8000/',
+        'then point your browser to ' +
+          '<a href="http://localhost:8000/webgl-conformance-tests.html">' +
+          'http://localhost:8000/webgl-conformance-tests.html</a>',
         false)
     return;
   }
