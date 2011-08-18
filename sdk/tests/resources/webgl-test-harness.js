@@ -95,9 +95,11 @@ var log = function(msg) {
 /**
  * Loads text from an external file. This function is synchronous.
  * @param {string} url The url of the external file.
- * @return {string} the loaded text if the request is synchronous.
+ * @param {!function(bool, string): void} callback that is sent a bool for
+ *     success and the string.
  */
-var loadTextFileSynchronous = function(url) {
+var loadTextFileAsynchronous = function(url, callback) {
+  log ("loading: " + url);
   var error = 'loadTextFileSynchronous failed to load url "' + url + '"';
   var request;
   if (window.XMLHttpRequest) {
@@ -108,38 +110,108 @@ var loadTextFileSynchronous = function(url) {
   } else {
     throw 'XMLHttpRequest is disabled';
   }
-  request.open('GET', url, false);
-  request.send(null);
-  if (request.readyState != 4) {
-    throw error;
+  try {
+    request.open('GET', url, true);
+    request.onreadystatechange = function() {
+      if (request.readyState == 4) {
+        var text = '';
+        // HTTP reports success with a 200 status. The file protocol reports
+        // success with zero. HTTP does not use zero as a status code (they
+        // start at 100).
+        // https://developer.mozilla.org/En/Using_XMLHttpRequest
+        var success = request.status == 200 || request.status == 0;
+        if (success) {
+          text = request.responseText;
+        }
+        log("loaded: " + url);
+        callback(success, text);
+      }
+    };
+    request.send(null);
+  } catch (e) {
+    log("failed to load: " + url);
+    callback(false, '');
   }
-  return request.responseText;
 };
 
-var getFileList = function(url) {
+var getFileList = function(url, callback) {
   var files = [];
-  if (url.substr(url.length - 4) == '.txt') {
-    var lines = loadTextFileSynchronous(url).split('\n');
-    var prefix = '';
-    var lastSlash = url.lastIndexOf('/');
-    if (lastSlash >= 0) {
-      prefix = url.substr(0, lastSlash + 1);
+
+  var getFileListImpl = function(url, callback) {
+    var files = [];
+    if (url.substr(url.length - 4) == '.txt') {
+      loadTextFileAsynchronous(url, function() {
+        return function(success, text) {
+          if (!success) {
+            callback(false, '');
+            return;
+          }
+          var lines = text.split('\n');
+          var prefix = '';
+          var lastSlash = url.lastIndexOf('/');
+          if (lastSlash >= 0) {
+            prefix = url.substr(0, lastSlash + 1);
+          }
+          var fail = false;
+          var count = 1;
+          var index = 0;
+          for (var ii = 0; ii < lines.length; ++ii) {
+            var str = lines[ii].replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+            if (str.length > 4 &&
+                str[0] != '#' &&
+                str[0] != ";" &&
+                str.substr(0, 2) != "//") {
+              new_url = prefix + str;
+              ++count;
+              getFileListImpl(new_url, function(index) {
+                return function(success, new_files) {
+                  log("got files: " + new_files.length);
+                  if (success) {
+                    files[index] = new_files;
+                  }
+                  finish(success);
+                };
+              }(index++));
+            }
+          }
+          finish(true);
+
+          function finish(success) {
+            if (!success) {
+              fail = true;
+            }
+            --count;
+            log("count: " + count);
+            if (!count) {
+              callback(!fail, files);
+            }
+          }
+        }
+      }());
+
+    } else {
+      files.push(url);
+      callback(true, files);
     }
-    for (var ii = 0; ii < lines.length; ++ii) {
-      var str = lines[ii].replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-      if (str.length > 4 &&
-          str[0] != '#' &&
-          str[0] != ";" &&
-          str.substr(0, 2) != "//") {
-        new_url = prefix + str;
-        files = files.concat(getFileList(new_url));
+  };
+
+  getFileListImpl(url, function(success, files) {
+    // flatten
+    var flat = [];
+    flatten(files);
+    function flatten(files) {
+      for (var ii = 0; ii < files.length; ++ii) {
+        var value = files[ii];
+        if (typeof(value) == "string") {
+          flat.push(value);
+        } else {
+          flatten(value);
+        }
       }
     }
-  } else {
-    files.push(url);
-  }
-  return files;
-}
+    callback(success, flat);
+  });
+};
 
 var TestFile = function(url) {
   this.url = url;
@@ -149,9 +221,29 @@ var TestHarness = function(iframe, filelistUrl, reportFunc) {
   this.window = window;
   this.iframe = iframe;
   this.reportFunc = reportFunc;
-  try {
-    var files = getFileList(filelistUrl);
-  } catch (e) {
+  this.timeoutDelay = 20000;
+  this.files = [];
+
+  var that = this;
+  getFileList(filelistUrl, function() {
+    return function(success, files) {
+      that.addFiles_(success, files);
+    };
+  }());
+
+};
+
+TestHarness.reportType = {
+  ADD_PAGE: 1,
+  READY: 2,
+  START_PAGE: 3,
+  TEST_RESULT: 4,
+  FINISH_PAGE: 5,
+  FINISHED_ALL_TESTS: 6
+};
+
+TestHarness.prototype.addFiles_ = function(success, files) {
+  if (!success) {
     this.reportFunc(
         TestHarness.reportType.FINISHED_ALL_TESTS,
         'Unable to load tests. Are you running locally?\n' +
@@ -166,22 +258,15 @@ var TestHarness = function(iframe, filelistUrl, reportFunc) {
         false)
     return;
   }
-  this.files = [];
+  log("total files: " + files.length);
   for (var ii = 0; ii < files.length; ++ii) {
+    log("" + ii + ": " + files[ii]);
     this.files.push(new TestFile(files[ii]));
     this.reportFunc(TestHarness.reportType.ADD_PAGE, files[ii], undefined);
   }
+  this.reportFunc(TestHarness.reportType.READY, undefined, undefined);
   this.nextFileIndex = files.length;
-  this.timeoutDelay = 20000;
-};
-
-TestHarness.reportType = {
-  ADD_PAGE: 1,
-  START_PAGE: 2,
-  TEST_RESULT: 3,
-  FINISH_PAGE: 4,
-  FINISHED_ALL_TESTS: 5
-};
+}
 
 TestHarness.prototype.runTests = function(files) {
   this.nextFileIndex = 0;

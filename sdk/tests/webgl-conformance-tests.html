@@ -287,10 +287,21 @@ function start() {
     }
   };
 
+  Reporter.prototype.ready = function() {
+    var loading = document.getElementById("loading");
+    loading.style.display = "none";
+    if (!this.noWebGL) {
+      var button = document.getElementById("runTestsButton");
+      button.disabled = false;
+    }
+  };
+
   Reporter.prototype.reportFunc = function(type, msg, success) {
     switch (type) {
       case reportType.ADD_PAGE:
         return this.addPage(msg);
+      case reportType.READY:
+        return this.ready();
       case reportType.START_PAGE:
         return this.startPage(msg);
       case reportType.TEST_RESULT:
@@ -317,6 +328,7 @@ function start() {
       });
   window.webglTestHarness = testHarness;
   var button = document.getElementById("runTestsButton");
+  button.disabled = true;
   button.onclick = function() {
     testHarness.runTests();
   };
@@ -350,7 +362,8 @@ function start() {
 <table>
 <tr><td><img src="http://www.khronos.org/img/api_logos/webgl-logo.png" /><br />WebGL Conformance Test Runner<br/>Version <span id="testVersion"></span><br/><input type="button" value="run tests" id="runTestsButton"/><br/><input type="button" style="visibility: hidden;" value="display text summary" id="showTextSummary"/>
 <div id="nowebgl" class="nowebgl" style="display: none;">This browser does not appear to support WebGL</div></td></tr>
-<tr><td><div style="border: 1px">Results: <span id="fullresults"></span></div>
+<tr><td><div id="loading">Loading Tests...</div>
+<div style="border: 1px">Results: <span id="fullresults"></span></div>
 <canvas id="webglcheck" style="display: none;"></canvas></td></tr>
 <tr><td><div id="error-wrap"><pre id="error"></pre></div></td></tr>
 </table>
