@@ -590,6 +590,148 @@ var setupWebGLWithShaders = function(
 };
 
 /**
+ * Loads text from an external file. This function is synchronous.
+ * @param {string} url The url of the external file.
+ * @param {!function(bool, string): void} callback that is sent a bool for
+ *     success and the string.
+ */
+var loadTextFileAsync = function(url, callback) {
+  log ("loading: " + url);
+  var error = 'loadTextFileSynchronous failed to load url "' + url + '"';
+  var request;
+  if (window.XMLHttpRequest) {
+    request = new XMLHttpRequest();
+    if (request.overrideMimeType) {
+      request.overrideMimeType('text/plain');
+    }
+  } else {
+    throw 'XMLHttpRequest is disabled';
+  }
+  try {
+    request.open('GET', url, true);
+    request.onreadystatechange = function() {
+      if (request.readyState == 4) {
+        var text = '';
+        // HTTP reports success with a 200 status. The file protocol reports
+        // success with zero. HTTP does not use zero as a status code (they
+        // start at 100).
+        // https://developer.mozilla.org/En/Using_XMLHttpRequest
+        var success = request.status == 200 || request.status == 0;
+        if (success) {
+          text = request.responseText;
+        }
+        log("loaded: " + url);
+        callback(success, text);
+      }
+    };
+    request.send(null);
+  } catch (e) {
+    log("failed to load: " + url);
+    callback(false, '');
+  }
+};
+
+/**
+ * Recursively loads a file as a list. Each line is parsed for a relative
+ * path. If the file ends in .txt the contents of that file is inserted in
+ * the list.
+ *
+ * @param {string} url The url of the external file.
+ * @param {!function(bool, Array<string>): void} callback that is sent a bool
+ *     for success and the array of strings.
+ */
+var getFileListAsync = function(url, callback) {
+  var files = [];
+
+  var getFileListImpl = function(url, callback) {
+    var files = [];
+    if (url.substr(url.length - 4) == '.txt') {
+      loadTextFileAsync(url, function() {
+        return function(success, text) {
+          if (!success) {
+            callback(false, '');
+            return;
+          }
+          var lines = text.split('\n');
+          var prefix = '';
+          var lastSlash = url.lastIndexOf('/');
+          if (lastSlash >= 0) {
+            prefix = url.substr(0, lastSlash + 1);
+          }
+          var fail = false;
+          var count = 1;
+          var index = 0;
+          for (var ii = 0; ii < lines.length; ++ii) {
+            var str = lines[ii].replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+            if (str.length > 4 &&
+                str[0] != '#' &&
+                str[0] != ";" &&
+                str.substr(0, 2) != "//") {
+              var names = str.split(/ +/);
+              new_url = prefix + str;
+              if (names.length == 1) {
+                new_url = prefix + str;
+                ++count;
+                getFileListImpl(new_url, function(index) {
+                  return function(success, new_files) {
+                    log("got files: " + new_files.length);
+                    if (success) {
+                      files[index] = new_files;
+                    }
+                    finish(success);
+                  };
+                }(index++));
+              } else {
+                var s = "";
+                var p = "";
+                for (var jj = 0; jj < names.length; ++jj) {
+                  s += p + prefix + names[jj];
+                  p = " ";
+                }
+                files[index++] = s;
+              }
+            }
+          }
+          finish(true);
+
+          function finish(success) {
+            if (!success) {
+              fail = true;
+            }
+            --count;
+            log("count: " + count);
+            if (!count) {
+              callback(!fail, files);
+            }
+          }
+        }
+      }());
+
+    } else {
+      files.push(url);
+      callback(true, files);
+    }
+  };
+
+  getFileListImpl(url, function(success, files) {
+    // flatten
+    var flat = [];
+    flatten(files);
+    function flatten(files) {
+      for (var ii = 0; ii < files.length; ++ii) {
+        var value = files[ii];
+        if (typeof(value) == "string") {
+          flat.push(value);
+        } else {
+          flatten(value);
+        }
+      }
+    }
+    callback(success, flat);
+  });
+};
+
+/**
  * Gets a file from a file/URL
  * @param {string} file the URL of the file to get.
  * @return {string} The contents of the file.
@@ -601,10 +743,6 @@ var readFile = function(file) {
   return xhr.responseText.replace(/\r/g, "");
 };
 
-/**
- * Gets a file from a URL and parses it for filenames. IF a file name ends
- * in .txt recursively reads that file and adds it to the list.
- */
 var readFileList = function(url) {
   var files = [];
   if (url.substr(url.length - 4) == '.txt') {
@@ -775,7 +913,7 @@ var loadProgramFromScript = function loadProgramFromScript(
 };
 
 /**
- * Loads shaders from script tags, creates a program, attaches the shaders and
+ * Loads shaders from source, creates a program, attaches the shaders and
  * links.
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {string} vertexShader The vertex shader.
@@ -789,7 +927,7 @@ var loadProgram = function(gl, vertexShader, fragmentShader) {
       loadShader(gl, vertexShader, gl.VERTEX_SHADER));
   gl.attachShader(
       program,
-      loadShader(gl, fragmentShader,  gl.FRAGMENT_SHADER));
+      loadShader(gl, fragmentShader, gl.FRAGMENT_SHADER));
   linkProgram(gl, program);
   return program;
 };
@@ -878,6 +1016,7 @@ return {
   createColoredTexture: createColoredTexture,
   drawQuad: drawQuad,
   endsWith: endsWith,
+  getFileListAsync: getFileListAsync,
   getLastError: getLastError,
   getUrlArguments: getUrlArguments,
   glEnumToString: glEnumToString,
@@ -894,6 +1033,7 @@ return {
   loadStandardProgram: loadStandardProgram,
   loadStandardVertexShader: loadStandardVertexShader,
   loadStandardFragmentShader: loadStandardFragmentShader,
+  loadTextFileAsync: loadTextFileAsync,
   loadTexture: loadTexture,
   log: log,
   loggingOff: loggingOff,
