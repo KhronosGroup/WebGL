@@ -29,7 +29,6 @@ gl-enable-enum-test.html
 gl-enable-vertex-attrib.html
 gl-enum-tests.html
 gl-fragcoord.html
-shaders/00_test_list.txt
 gl-get-active-attribute.html
 gl-get-active-uniform.html
 gl-get-calls.html
@@ -54,6 +53,17 @@ gl-vertexattribpointer.html
 gl-vertexattribpointer-offsets.html
 #glsl-2types-of-textures-on-same-unit.html
 glsl-conformance.html
+glsl-feature-abs.html
+glsl-feature-ceil.html
+glsl-feature-floor.html
+glsl-feature-fract.html
+glsl-feature-max-float.html
+glsl-feature-max-gentype.html
+glsl-feature-min-float.html
+glsl-feature-min-gentype.html
+glsl-feature-mod-float.html
+glsl-feature-mod-gentype.html
+glsl-feature-sign.html
 glsl-long-variable-names.html
 incorrect-context-object-behaviour.html
 index-validation-copies-indices.html
