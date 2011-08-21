@@ -7,9 +7,7 @@ found in the LICENSE file.
 <html>
 <head>
 <meta charset="utf-8">
-<title>
-WebGL Conformance Test Runner.
-</title>
+<title>WebGL Conformance Tests</title>
 <style>
   html, body {
       border: 0;
@@ -43,12 +41,22 @@ WebGL Conformance Test Runner.
      left: -50%;
      text-align: left;
   }
+  ul {
+    list-style: none;
+    padding-left: 1em;
+  }
 </style>
 <script type="text/javascript" src="resources/webgl-test-harness.js"></script>
 <script>
-var CONFORMANCE_TEST_VERSION = "1.0.0";
+var CONFORMANCE_TEST_VERSION = "1.0.1 (beta)";
 
 function start() {
+
+  function log(msg) {
+    if (window.console && window.console.log) {
+      window.console.log(msg);
+    }
+  }
 
   function create3DContext(canvas)
   {
@@ -71,12 +79,14 @@ function start() {
 
   var reportType = WebGLTestHarnessModule.TestHarness.reportType;
 
-  var Page = function(reporter, url) {
+  var Page = function(reporter, folder, testIndex, url) {
     this.reporter = reporter;
+    this.folder = folder;
     this.url = url;
     this.totalTests = 0;
     this.totalSuccessful = 0;
     this.totalTimeouts = 0;
+    this.testIndex = testIndex;
 
     var li = reporter.localDoc.createElement('li');
     var div = reporter.localDoc.createElement('div');
@@ -145,7 +155,11 @@ function start() {
       this.resultElem.removeChild(this.resultElem.childNodes[0]);
     }
     this.totalsElem.textContent = '';
-    return this.check.checked;
+    return this.check.checked && this.folder.checked();
+  };
+
+  Page.prototype.firstTestIndex = function() {
+    return this.testIndex;
   };
 
   Page.prototype.finishPage = function(success) {
@@ -165,6 +179,92 @@ function start() {
     this.totalsElem.textContent = msg;
   };
 
+  var Folder = function(reporter, folder, depth, opt_name) {
+    this.reporter = reporter;
+    this.depth = depth;
+    this.name = opt_name || "";
+    this.subFolders = {};
+    this.pages = [];
+    this.items = [];
+    var that = this;
+
+    var doc = reporter.localDoc;
+    var li = doc.createElement('li');
+    var div = doc.createElement('div');
+    var check = doc.createElement('input');
+    check.type = 'checkbox';
+    check.checked = true;
+    div.appendChild(check);
+    var button = doc.createElement('input');
+    button.type = 'button';
+    button.value = 'run';
+    button.onclick = function() {
+      that.run();
+    };
+    if (reporter.noWebGL) {
+      button.disabled = true;
+    }
+    div.appendChild(button);
+    var h = doc.createElement('span');
+    h.appendChild(doc.createTextNode(this.name));
+    div.appendChild(h);
+    var ul = doc.createElement('ul');
+    li.appendChild(div);
+    li.appendChild(ul);
+    this.childUL = ul;
+    this.elem = li;
+    this.check = check;
+  };
+
+  Folder.prototype.checked = function() {
+    return this.check.checked && 
+        (this.folder ? this.folder.checked() : true);
+  };
+
+  Folder.prototype.firstTestIndex = function() {
+    return this.items[0].firstTestIndex();
+  };
+
+  Folder.prototype.numChildren = function() {
+    var numChildren = 0;
+    for (var name in this.subFolders) {
+      numChildren += this.subFolders[name].numChildren();
+    }
+    return numChildren + this.pages.length;
+  };
+
+  Folder.prototype.run = function() {
+    var firstTestIndex = this.firstTestIndex();
+    var count = this.numChildren();
+    testHarness.runTests(this.firstTestIndex(), this.numChildren());
+  };
+
+  Folder.prototype.getSubFolder = function(name) {
+    var subFolder = this.subFolders[name];
+    if (subFolder === undefined) {
+      subFolder = new Folder(this.reporter, this, this.depth + 1, name);
+      this.subFolders[name] = subFolder;
+      this.items.push(subFolder);
+      this.childUL.appendChild(subFolder.elem);
+    } 
+    return subFolder;
+  };
+
+  Folder.prototype.getOrCreateFolder = function(url) {
+    var parts = url.split('/');
+    var folder = this;
+    for (var pp = 0; pp < parts.length - 1; ++pp) {
+      folder = folder.getSubFolder(parts[pp]);
+    }
+    return folder;
+  };
+
+  Folder.prototype.addPage = function(page) {
+    this.pages.push(page);
+    this.items.push(page);
+    this.childUL.appendChild(page.elem);
+  };
+
   var Reporter = function() {
     this.localDoc = document;
     this.resultElem = document.getElementById("results");
@@ -180,6 +280,8 @@ function start() {
     var ctx = create3DContext(canvas);
     this.noWebGL = !ctx;
     this.contextInfo = {};
+    this.root = new Folder(this, null, 0, "all");
+    this.resultElem.appendChild(this.root.elem);
 
     if (ctx) {
       this.contextInfo["VENDOR"] = ctx.getParameter(ctx.VENDOR);
@@ -201,9 +303,14 @@ function start() {
     this.iframe.src = url;
   };
 
+  Reporter.prototype.getFolder = function(url) {
+    return this.root.getOrCreateFolder(url);
+  };
+
   Reporter.prototype.addPage = function(url) {
-    var page = new Page(this, url, this.resultElem);
-    this.resultElem.appendChild(page.elem);
+    var folder = this.getFolder(url);
+    var page = new Page(this, folder, this.totalPages, url);
+    folder.addPage(page);
     ++this.totalPages;
     this.pagesByURL[url] = page;
   };
@@ -334,7 +441,7 @@ function start() {
   };
   var textbutton = document.getElementById("showTextSummary");
   textbutton.onclick = function() {
-    console.log("click");
+    log("click");
     var htmldiv = document.getElementById("testResultsHTML");
     var textdiv = document.getElementById("testResultsText");
     if (textdiv.style.display == "none") {

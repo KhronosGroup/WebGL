@@ -268,8 +268,10 @@ TestHarness.prototype.addFiles_ = function(success, files) {
   this.nextFileIndex = files.length;
 }
 
-TestHarness.prototype.runTests = function(files) {
-  this.nextFileIndex = 0;
+TestHarness.prototype.runTests = function(opt_start, opt_count) {
+  var count = opt_count || this.files.length;
+  this.nextFileIndex = opt_start || 0;
+  this.lastFileIndex = this.nextFileIndex + count;
   this.startNextFile();
 };
 
@@ -285,7 +287,7 @@ TestHarness.prototype.clearTimeout = function() {
 };
 
 TestHarness.prototype.startNextFile = function() {
-  if (this.nextFileIndex >= this.files.length) {
+  if (this.nextFileIndex >= this.lastFileIndex) {
     log("done");
     this.reportFunc(TestHarness.reportType.FINISHED_ALL_TESTS,
                     '', true);
