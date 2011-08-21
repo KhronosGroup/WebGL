@@ -368,7 +368,7 @@ function finishTest() {
     }
   };
 
-  var basePath = "":
+  var basePath = "";
   var expectedBase = "js-test-pre.js";
   var scripts = document.getElementsByTagName('script');
   for (var script, i = 0; script = scripts[i]; i++) {
