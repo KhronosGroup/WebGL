@@ -86,26 +86,26 @@ var startsWith = function(haystack, needle) {
  * A vertex shader for a single texture.
  * @type {string}
  */
-var simpleTextureVertexShader = '' +
-  'attribute vec4 vPosition;\n' +
-  'attribute vec2 texCoord0;\n' +
-  'varying vec2 texCoord;\n' +
-  'void main() {\n' +
-  '    gl_Position = vPosition;\n' +
-  '    texCoord = texCoord0;\n' +
-  '}\n';
+var simpleTextureVertexShader = [
+  'attribute vec4 vPosition;',
+  'attribute vec2 texCoord0;',
+  'varying vec2 texCoord;',
+  'void main() {',
+  '    gl_Position = vPosition;',
+  '    texCoord = texCoord0;',
+  '}'].join('\n');
 
 /**
  * A fragment shader for a single texture.
  * @type {string}
  */
-var simpleTextureFragmentShader = '' +
-  'precision mediump float;\n' +
-  'uniform sampler2D tex;\n' +
-  'varying vec2 texCoord;\n' +
-  'void main() {\n' +
-  '    gl_FragData[0] = texture2D(tex, texCoord);\n' +
-  '}\n';
+var simpleTextureFragmentShader = [
+  'precision mediump float;',
+  'uniform sampler2D tex;',
+  'varying vec2 texCoord;',
+  'void main() {',
+  '    gl_FragData[0] = texture2D(tex, texCoord);',
+  '}'].join('\n');
 
 /**
  * Creates a simple texture vertex shader.
@@ -525,8 +525,8 @@ var linkProgram = function(gl, program) {
     testFailed("Error in program linking:" + error);
 
     gl.deleteProgram(program);
-    gl.deleteProgram(fragmentShader);
-    gl.deleteProgram(vertexShader);
+    //gl.deleteProgram(fragmentShader);
+    //gl.deleteProgram(vertexShader);
   }
 };
 
@@ -932,14 +932,30 @@ var loadProgram = function(gl, vertexShader, fragmentShader) {
   return program;
 };
 
+var basePath;
+var getBasePath = function() {
+  if (!basePath) {
+    var expectedBase = "webgl-test-utils.js";
+    var scripts = document.getElementsByTagName('script');
+    for (var script, i = 0; script = scripts[i]; i++) {
+      var src = script.src;
+      var l = src.length;
+      if (src.substr(l - expectedBase.length) == expectedBase) {
+        basePath = src.substr(0, l - expectedBase.length);
+      }
+    }
+  }
+  return basePath;
+};
+
 var loadStandardVertexShader = function(gl) {
   return loadShaderFromFile(
-      gl, "resources/vertexShader.vert", gl.VERTEX_SHADER);
+      gl, getBasePath() + "vertexShader.vert", gl.VERTEX_SHADER);
 };
 
 var loadStandardFragmentShader = function(gl) {
   return loadShaderFromFile(
-      gl, "resources/fragmentShader.frag", gl.FRAGMENT_SHADER);
+      gl, getBasePath() + "fragmentShader.frag", gl.FRAGMENT_SHADER);
 };
 
 /**

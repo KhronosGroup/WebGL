@@ -337,12 +337,34 @@ function loadProgram(context, vertexShaderPath, fragmentShaderPath, isFile) {
     return program;
 }
 
+var getBasePathForResources = function() {
+  var expectedBase = "webgl-test.js";
+  var scripts = document.getElementsByTagName('script');
+  for (var script, i = 0; script = scripts[i]; i++) {
+    var src = script.src;
+    var l = src.length;
+    if (src.substr(l - expectedBase.length) == expectedBase) {
+      return src.substr(0, l - expectedBase.length);
+    }
+  }
+  throw 'oops';
+};
+
+
 function loadStandardVertexShader(context) {
-    return loadShader(context, "resources/vertexShader.vert", context.VERTEX_SHADER, true);
+    return loadShader(
+        context, 
+        getBasePathForResources() + "vertexShader.vert", 
+        context.VERTEX_SHADER, 
+        true); 
 }
 
 function loadStandardFragmentShader(context) {
-    return loadShader(context, "resources/fragmentShader.frag", context.FRAGMENT_SHADER, true);
+    return loadShader(
+        context, 
+        getBasePathForResources() + "fragmentShader.frag", 
+        context.FRAGMENT_SHADER, 
+        true); 
 }
 
 //
