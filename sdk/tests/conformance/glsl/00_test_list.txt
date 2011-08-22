@@ -3,12 +3,16 @@ gl-fragcoord.html
 glsl-conformance.html
 glsl-feature-abs.html
 glsl-feature-ceil.html
+glsl-feature-clamp-float.html
+glsl-feature-clamp-gentype.html
 glsl-feature-floor.html
 glsl-feature-fract.html
 glsl-feature-max-float.html
 glsl-feature-max-gentype.html
 glsl-feature-min-float.html
 glsl-feature-min-gentype.html
+glsl-feature-mix-float.html
+glsl-feature-mix-gentype.html
 glsl-feature-mod-float.html
 glsl-feature-mod-gentype.html
 glsl-feature-sign.html
