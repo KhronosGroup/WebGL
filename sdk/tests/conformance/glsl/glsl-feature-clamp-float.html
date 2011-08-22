@@ -22,7 +22,7 @@ found in the LICENSE file.
 GLSLGenerator.runFeatureTest({
   feature: "clamp",
   args: "$(type) value, float minValue, float maxValue",
-  baseArgs: "value, minValue, maxValue",
+  baseArgs: "value$(field), minValue, maxValue",
   testFunc: "$(func)($(type), float, float)",
   emuFunc: ["float $(func)_base(float value, float minValue, float maxValue) {",
             "  return min(max(value, minValue), maxValue);",
