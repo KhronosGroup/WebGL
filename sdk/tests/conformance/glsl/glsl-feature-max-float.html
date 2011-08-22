@@ -21,11 +21,11 @@ found in the LICENSE file.
 <script>
 GLSLGenerator.runFeatureTest({
   feature: "max",
-  args: "$(type) value, float arg2",
-  extraArgs: ", arg2",
+  args: "$(type) value, float maxValue",
+  baseArgs: "value$(field), maxValue",
   testFunc: "$(func)($(arg0), float)",
-  emuFunc: ["float $(func)_base(float value, float arg2) {",
-            "  return value > arg2 ? value : arg2;",
+  emuFunc: ["float $(func)_base(float value, float maxValue) {",
+            "  return value > maxValue ? value : maxValue;",
             "}"].join("\n"),
   gridRes: 8,
   tests: [

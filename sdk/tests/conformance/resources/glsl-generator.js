@@ -67,34 +67,34 @@ var types = [
   { type: "float",
     code: [
       "float $(func)_emu($(args)) {",
-      "  return $(func)_base(value$(extraArgs));",
+      "  return $(func)_base($(baseArgs));",
       "}"].join("\n")
   },
   { type: "vec2",
     code: [
       "vec2 $(func)_emu($(args)) {",
       "  return vec2(",
-      "      $(func)_base(value.x$(extraArgsX)),",
-      "      $(func)_base(value.y$(extraArgsY)));",
+      "      $(func)_base($(baseArgsX)),",
+      "      $(func)_base($(baseArgsY)));",
       "}"].join("\n")
   },
   { type: "vec3",
     code: [
       "vec3 $(func)_emu($(args)) {",
       "  return vec3(",
-      "      $(func)_base(value.x$(extraArgsX)),",
-      "      $(func)_base(value.y$(extraArgsY)),",
-      "      $(func)_base(value.z$(extraArgsZ)));",
+      "      $(func)_base($(baseArgsX)),",
+      "      $(func)_base($(baseArgsY)),",
+      "      $(func)_base($(baseArgsZ)));",
       "}"].join("\n")
   },
   { type: "vec4",
     code: [
       "vec4 $(func)_emu($(args)) {",
       "  return vec4(",
-      "      $(func)_base(value.x$(extraArgsX)),",
-      "      $(func)_base(value.y$(extraArgsY)),",
-      "      $(func)_base(value.z$(extraArgsZ)),",
-      "      $(func)_base(value.w$(extraArgsW)));",
+      "      $(func)_base($(baseArgsX)),",
+      "      $(func)_base($(baseArgsY)),",
+      "      $(func)_base($(baseArgsZ)),",
+      "      $(func)_base($(baseArgsW)));",
       "}"].join("\n")
   }
 ];
@@ -122,11 +122,22 @@ var generateReferenceShader = function(
   var type = typeInfo.type;
   var typeCode = typeInfo.code;
 
-  var extraArgs = params.extraArgs || "";
-  var extraArgsX = params.needXYZW ? (extraArgs + ".x") : extraArgs;
-  var extraArgsY = params.needXYZW ? (extraArgs + ".y") : extraArgs;
-  var extraArgsZ = params.needXYZW ? (extraArgs + ".z") : extraArgs;
-  var extraArgsW = params.needXYZW ? (extraArgs + ".w") : extraArgs;
+  var baseArgs = params.baseArgs || "value$(field)";
+//  var baseArgsX = params.needXYZW ? replaceParams(baseArgs, {field: ".x"}) :
+//                                    baseArgs;
+//  var baseArgsY = params.needXYZW ? replaceParams(baseArgs, {field: ".y"}) :
+//                                    baseArgs;
+//  var baseArgsZ = params.needXYZW ? replaceParams(baseArgs, {field: ".z"}) :
+//                                    baseArgs;
+//  var baseArgsW = params.needXYZW ? replaceParams(baseArgs, {field: ".w"}) :
+//                                    baseArgs;
+//  var baseArgs = params.needXYZW ? replaceParams(baseArgs, {field: ""}) :
+//                                   baseArgs;
+  var baseArgsX = replaceParams(baseArgs, {field: ".x"});
+  var baseArgsY = replaceParams(baseArgs, {field: ".y"});
+  var baseArgsZ = replaceParams(baseArgs, {field: ".z"});
+  var baseArgsW = replaceParams(baseArgs, {field: ".w"});
+  var baseArgs = replaceParams(baseArgs, {field: ""});
 
   test = replaceParams(test, {
     input: input,
@@ -143,11 +154,11 @@ var generateReferenceShader = function(
     func: feature,
     type: type,
     args: args,
-    extraArgs: extraArgs,
-    extraArgsX: extraArgsX,
-    extraArgsY: extraArgsY,
-    extraArgsZ: extraArgsZ,
-    extraArgsW: extraArgsW,
+    baseArgs: baseArgs,
+    baseArgsX: baseArgsX,
+    baseArgsY: baseArgsY,
+    baseArgsZ: baseArgsZ,
+    baseArgsW: baseArgsW,
   });
   var shader = replaceParams(template, {
     emu: emuFunc + "\n\n" + typeCode,
@@ -295,7 +306,10 @@ var runFeatureTest = function(params) {
     var l = document.createElement("a");
     l.href = "show-shader-source";
     l.appendChild(document.createTextNode(label));
-    l.addEventListener('click', function() {
+    l.addEventListener('click', function(event) {
+        if (event.preventDefault) {
+          event.preventDefault();
+        }
         s.style.display = (s.style.display == 'none') ? 'block' : 'none';
         return false;
       }, false);
