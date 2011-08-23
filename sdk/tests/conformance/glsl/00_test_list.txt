@@ -1,6 +1,7 @@
 gl-fragcoord.html
 #glsl-2types-of-textures-on-same-unit.html
 glsl-conformance.html
+glsl-feature.html
 glsl-feature-abs.html
 glsl-feature-ceil.html
 glsl-feature-clamp-float.html
