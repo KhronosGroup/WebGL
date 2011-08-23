@@ -3,6 +3,9 @@ gl-fragcoord.html
 glsl-conformance.html
 glsl-feature.html
 glsl-feature-abs.html
+glsl-feature-acos.html
+glsl-feature-asin.html
+glsl-feature-atan.html
 glsl-feature-ceil.html
 glsl-feature-clamp-float.html
 glsl-feature-clamp-gentype.html

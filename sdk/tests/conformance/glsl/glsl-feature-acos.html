@@ -1,0 +1,111 @@
+<!--
+Copyright (c) 2011 The Chromium Authors. All rights reserved.
+Use of this source code is governed by a BSD-style license that can be
+found in the LICENSE file.
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <title>GLSL acos feature Test</title>
+  <link rel="stylesheet" href="../../resources/js-test-style.css"/>
+  <link rel="stylesheet" href="../resources/glsl-feature-tests.css"/>
+  <script src="../../resources/js-test-pre.js"></script>
+  <script src="../resources/webgl-test.js"> </script>
+  <script src="../resources/webgl-test-utils.js"> </script>
+  <script src="../resources/glsl-generator.js"> </script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+
+var piConstants = [
+  "const float kPI     = 3.14159265358979323846;",
+  "const float kHalfPI = (kPI * 0.5);",
+  "const float k2PI    = (kPI * 2.0);"
+].join("\n");
+
+var acosImplementation = [
+  piConstants,
+  "const float kAcos00 = 3.141592653589793;",
+  "const float kAcos01 = 2.636232143305636;",
+  "const float kAcos02 = 2.4188584057763776;",
+  "const float kAcos03 = 2.2459278597319283;",
+  "const float kAcos04 = 2.0943951023931957;",
+  "const float kAcos05 = 1.9551931012905357;",
+  "const float kAcos06 = 1.8234765819369751;",
+  "const float kAcos07 = 1.696124157962962;",
+  "const float kAcos08 = 1.5707963267948966;",
+  "const float kAcos09 = 1.445468495626831;",
+  "const float kAcos10 = 1.318116071652818;",
+  "const float kAcos11 = 1.1863995522992574;",
+  "const float kAcos12 = 1.0471975511965976;",
+  "const float kAcos13 = 0.8956647938578649;",
+  "const float kAcos14 = 0.7227342478134157;",
+  "const float kAcos15 = 0.5053605102841573;",
+  "const float kAcos16 = 0.0;",
+  "",
+  "float acos_impl(float value) {",
+  "  value = (value + 1.0) * 8.0;",        // make it from 0 to 16.0
+  "  int ndx = int(floor(value));",        // table index
+  "  float lerp = value - floor(value);",  // lerp between table indices
+  "  float c = kAcos16;",                  // assume last value
+  "",
+  "  if (ndx == 0)       { c = mix(kAcos00, kAcos01, lerp); }",
+  "  else if (ndx ==  1) { c = mix(kAcos01, kAcos02, lerp); }",
+  "  else if (ndx ==  2) { c = mix(kAcos02, kAcos03, lerp); }",
+  "  else if (ndx ==  3) { c = mix(kAcos03, kAcos04, lerp); }",
+  "  else if (ndx ==  4) { c = mix(kAcos04, kAcos05, lerp); }",
+  "  else if (ndx ==  5) { c = mix(kAcos05, kAcos06, lerp); }",
+  "  else if (ndx ==  6) { c = mix(kAcos06, kAcos07, lerp); }",
+  "  else if (ndx ==  7) { c = mix(kAcos07, kAcos08, lerp); }",
+  "  else if (ndx ==  8) { c = mix(kAcos08, kAcos09, lerp); }",
+  "  else if (ndx ==  9) { c = mix(kAcos09, kAcos10, lerp); }",
+  "  else if (ndx == 10) { c = mix(kAcos10, kAcos11, lerp); }",
+  "  else if (ndx == 11) { c = mix(kAcos11, kAcos12, lerp); }",
+  "  else if (ndx == 12) { c = mix(kAcos12, kAcos13, lerp); }",
+  "  else if (ndx == 13) { c = mix(kAcos13, kAcos14, lerp); }",
+  "  else if (ndx == 14) { c = mix(kAcos14, kAcos15, lerp); }",
+  "  else if (ndx == 15) { c = mix(kAcos15, kAcos16, lerp); }",
+  "",
+  "  return c;",
+  "}"
+].join("\n");
+
+GLSLGenerator.runFeatureTest({
+  feature: "acos",
+  args: "$(type) value",
+  baseArgs: "value$(field)",
+  testFunc: "$(func)($(type))",
+  emuFunc: [
+    acosImplementation,
+    "float $(func)_base(float value) {",
+    "  return acos_impl(value);",
+    "}"
+  ].join("\n"),
+  gridRes: 8,
+  tolerance: 8,
+  extra: piConstants,
+  tests: [
+    ["$(output) = vec4(",
+     "    $(func)($(input).x) / kPI,",
+     "    $(func)($(input).y) / kPI,",
+     "    0,",
+     "    1);"].join("\n"),
+    ["$(output) = vec4(",
+     "    $(func)($(input).xy) / kPI,",
+     "    0, 1);"].join("\n"),
+    ["$(output) = vec4(",
+     "    $(func)($(input).xyz) / kPI,",
+     "    1);"].join("\n"),
+    ["$(output) = ",
+     "    $(func)($(input)) / kPI;",
+    ].join("\n")
+  ]
+});
+successfullyParsed = true;
+</script>
+</body>
+</html>
+
