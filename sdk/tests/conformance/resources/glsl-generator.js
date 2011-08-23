@@ -63,6 +63,66 @@ var baseFragmentShader = [
   "}"
 ].join("\n");
 
+var piConstants = [
+  "  const float kPI     = 3.14159265358979323846;",
+  "  const float kHalfPI = (kPI * 0.5);",
+  "  const float k2PI    = (kPI * 2.0);"
+].join("\n");
+
+var sinImplementation = [
+  piConstants,
+  "  const float kSin00  = 0.0;",
+  "  const float kSin01  = 0.0980171403295606;",
+  "  const float kSin02  = 0.19509032201612825;",
+  "  const float kSin03  = 0.29028467725446233;",
+  "  const float kSin04  = 0.3826834323650898;",
+  "  const float kSin05  = 0.47139673682599764;",
+  "  const float kSin06  = 0.5555702330196022;",
+  "  const float kSin07  = 0.6343932841636455;",
+  "  const float kSin08  = 0.7071067811865475;",
+  "  const float kSin09  = 0.773010453362737;",
+  "  const float kSin10  = 0.8314696123025452;",
+  "  const float kSin11  = 0.8819212643483549;",
+  "  const float kSin12  = 0.9238795325112867;",
+  "  const float kSin13  = 0.9569403357322089;",
+  "  const float kSin14  = 0.9807852804032304;",
+  "  const float kSin15  = 0.9951847266721968;",
+  "  const float kSin16  = 1.0;",
+  "",
+  "  float sin_impl(float value) {",
+  "    value = mod(value, k2PI);",              // only positive values for now.
+  "    int quad = int(floor(value / kHalfPI));",   // figure out which quad
+  "    float p = mod(value, kHalfPI) / kHalfPI;",  // from 0.0 to 1.0
+  "    if (quad == 1 || quad == 3) { p = 1.0 - p; }", // backward in quads 1,3
+  "    p = p * 16.0;",                             // make it from 0 to 16.0
+  "    int ndx = int(floor(p));",                  // table index
+  "    float lerp = p - floor(p);",                // lerp between table indices
+  "    float c = kSin16;",                         // assume last value
+  "",
+  "    if (ndx == 0)       { c = mix(kSin00, kSin01, lerp); }",
+  "    else if (ndx ==  1) { c = mix(kSin01, kSin02, lerp); }",
+  "    else if (ndx ==  2) { c = mix(kSin02, kSin03, lerp); }",
+  "    else if (ndx ==  3) { c = mix(kSin03, kSin04, lerp); }",
+  "    else if (ndx ==  4) { c = mix(kSin04, kSin05, lerp); }",
+  "    else if (ndx ==  5) { c = mix(kSin05, kSin06, lerp); }",
+  "    else if (ndx ==  6) { c = mix(kSin06, kSin07, lerp); }",
+  "    else if (ndx ==  7) { c = mix(kSin07, kSin08, lerp); }",
+  "    else if (ndx ==  8) { c = mix(kSin08, kSin09, lerp); }",
+  "    else if (ndx ==  9) { c = mix(kSin09, kSin10, lerp); }",
+  "    else if (ndx == 10) { c = mix(kSin10, kSin11, lerp); }",
+  "    else if (ndx == 11) { c = mix(kSin11, kSin12, lerp); }",
+  "    else if (ndx == 12) { c = mix(kSin12, kSin13, lerp); }",
+  "    else if (ndx == 13) { c = mix(kSin13, kSin14, lerp); }",
+  "    else if (ndx == 14) { c = mix(kSin14, kSin15, lerp); }",
+  "    else if (ndx == 15) { c = mix(kSin15, kSin16, lerp); }",
+  "",
+  "    if (quad == 2 || quad == 3) { c = -c; }",
+  "",
+  "    return c;",
+  "  }"
+].join("\n");
+
+
 var types = [
   { type: "float",
     code: [
@@ -123,16 +183,6 @@ var generateReferenceShader = function(
   var typeCode = typeInfo.code;
 
   var baseArgs = params.baseArgs || "value$(field)";
-//  var baseArgsX = params.needXYZW ? replaceParams(baseArgs, {field: ".x"}) :
-//                                    baseArgs;
-//  var baseArgsY = params.needXYZW ? replaceParams(baseArgs, {field: ".y"}) :
-//                                    baseArgs;
-//  var baseArgsZ = params.needXYZW ? replaceParams(baseArgs, {field: ".z"}) :
-//                                    baseArgs;
-//  var baseArgsW = params.needXYZW ? replaceParams(baseArgs, {field: ".w"}) :
-//                                    baseArgs;
-//  var baseArgs = params.needXYZW ? replaceParams(baseArgs, {field: ""}) :
-//                                   baseArgs;
   var baseArgsX = replaceParams(baseArgs, {field: ".x"});
   var baseArgsY = replaceParams(baseArgs, {field: ".y"});
   var baseArgsZ = replaceParams(baseArgs, {field: ".z"});
@@ -145,7 +195,9 @@ var generateReferenceShader = function(
     func: feature + "_emu"
   });
   emuFunc = replaceParams(emuFunc, {
-    func: feature
+    func: feature,
+    kPiConstants: piConstants,
+    kSinImplementation: sinImplementation
   });
   args = replaceParams(args, {
     type: type
@@ -158,7 +210,7 @@ var generateReferenceShader = function(
     baseArgsX: baseArgsX,
     baseArgsY: baseArgsY,
     baseArgsZ: baseArgsZ,
-    baseArgsW: baseArgsW,
+    baseArgsW: baseArgsW
   });
   var shader = replaceParams(template, {
     emu: emuFunc + "\n\n" + typeCode,
@@ -173,13 +225,18 @@ var generateTestShader = function(
   var output = shaderInfo.output;
   var feature = params.feature;
   var testFunc = params.testFunc;
+  var extra = params.extra || '';
 
   test = replaceParams(test, {
     input: input,
     output: output,
     func: feature
   });
-  var shader = replaceParams(template, {
+  extra = replaceParams(extra, {
+    kPiConstants: piConstants,
+    kSinImplementation: sinImplementation
+  });
+  var shader = replaceParams(extra + template, {
     emu: '',
     test: test
   });
@@ -197,8 +254,9 @@ var runFeatureTest = function(params) {
     window.initNonKhronosFramework(false);
   }
 
-  wtu = WebGLTestUtils;
-  gridRes = params.gridRes;
+  var wtu = WebGLTestUtils;
+  var gridRes = params.gridRes;
+  var tolerance = params.tolerance || 0;
 
   description("Testing GLSL feature: " + params.feature);
 
@@ -328,10 +386,10 @@ var runFeatureTest = function(params) {
         imgData.data[imgOffset + 1] = 0;
         imgData.data[imgOffset + 2] = 0;
         imgData.data[imgOffset + 3] = 255;
-        if (refData[offset + 0] != testData[offset + 0] ||
-            refData[offset + 1] != testData[offset + 1] ||
-            refData[offset + 2] != testData[offset + 2] ||
-            refData[offset + 3] != testData[offset + 3]) {
+        if (Math.abs(refData[offset + 0] - testData[offset + 0]) > tolerance ||
+            Math.abs(refData[offset + 1] - testData[offset + 1]) > tolerance ||
+            Math.abs(refData[offset + 2] - testData[offset + 2]) > tolerance ||
+            Math.abs(refData[offset + 3] - testData[offset + 3]) > tolerance) {
           imgData.data[imgOffset] = 255;
           same = false;
         }

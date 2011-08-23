@@ -5,6 +5,7 @@ glsl-feature-abs.html
 glsl-feature-ceil.html
 glsl-feature-clamp-float.html
 glsl-feature-clamp-gentype.html
+glsl-feature-cos.html
 glsl-feature-floor.html
 glsl-feature-fract.html
 glsl-feature-max-float.html
@@ -16,6 +17,7 @@ glsl-feature-mix-gentype.html
 glsl-feature-mod-float.html
 glsl-feature-mod-gentype.html
 glsl-feature-sign.html
+glsl-feature-sin.html
 glsl-feature-step-float.html
 glsl-feature-step-gentype.html
 glsl-feature-smoothstep-float.html
