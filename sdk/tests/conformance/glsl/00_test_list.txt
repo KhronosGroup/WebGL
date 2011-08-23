@@ -16,5 +16,9 @@ glsl-feature-mix-gentype.html
 glsl-feature-mod-float.html
 glsl-feature-mod-gentype.html
 glsl-feature-sign.html
+glsl-feature-step-float.html
+glsl-feature-step-gentype.html
+glsl-feature-smoothstep-float.html
+glsl-feature-smoothstep-gentype.html
 glsl-long-variable-names.html
 
