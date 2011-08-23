@@ -236,7 +236,8 @@ function start() {
   Folder.prototype.run = function() {
     var firstTestIndex = this.firstTestIndex();
     var count = this.numChildren();
-    testHarness.runTests(this.firstTestIndex(), this.numChildren());
+    log("run tests: " + firstTestIndex + " to " + (firstTestIndex + count - 1))
+    testHarness.runTests(firstTestIndex, count);
   };
 
   Folder.prototype.getSubFolder = function(name) {
