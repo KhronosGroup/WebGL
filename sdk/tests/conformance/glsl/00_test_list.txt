@@ -6,6 +6,7 @@ glsl-feature-abs.html
 glsl-feature-acos.html
 glsl-feature-asin.html
 glsl-feature-atan.html
+glsl-feature-atan-xy.html
 glsl-feature-ceil.html
 glsl-feature-clamp-float.html
 glsl-feature-clamp-gentype.html
