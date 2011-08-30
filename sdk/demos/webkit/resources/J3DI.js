@@ -573,6 +573,8 @@ Framerate.prototype.snapshot = function()
     else {
         var newTime = new Date().getTime();
         var t = newTime - this.renderTime;
+        if (t == 0)
+            return;
         var framerate = 1000/t;
         this.framerates.push(framerate);
         while (this.framerates.length > this.numFramerates)
