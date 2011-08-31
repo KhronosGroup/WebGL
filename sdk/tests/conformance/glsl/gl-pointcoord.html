@@ -66,6 +66,8 @@ found in the LICENSE file.
 
       maxPointSize = Math.min(maxPointSize, 64);
       pointWidth = maxPointSize / width;
+      pointStep = Math.floor(maxPointSize / 4);
+      pointStep = Math.max(1, pointStep);
 
       program = gl.program;
       pointSizeLoc = gl.getUniformLocation(program, "uPointSize");
@@ -107,8 +109,8 @@ found in the LICENSE file.
           debug("");
           var pointX = -0.5 + px + pixelOffset;
           var pointY = -0.5 + py + pixelOffset;
-          for (var yy = 0; yy < maxPointSize; yy += 4) {
-            for (var xx = 0; xx < maxPointSize; xx += 4) {
+          for (var yy = 0; yy < maxPointSize; yy += pointStep) {
+            for (var xx = 0; xx < maxPointSize; xx += pointStep) {
               // formula for s and t from OpenGL ES 2.0 spec section 3.3
               var xw = s2p(pointX);
               var yw = s2p(pointY);
