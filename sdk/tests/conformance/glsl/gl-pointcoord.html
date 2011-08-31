@@ -64,6 +64,7 @@ found in the LICENSE file.
       shouldBeTrue("maxPointSize >= 1");
       shouldBeTrue("maxPointSize % 1 == 0");
 
+      maxPointSize = Math.min(maxPointSize, 64);
       pointWidth = maxPointSize / width;
 
       program = gl.program;
