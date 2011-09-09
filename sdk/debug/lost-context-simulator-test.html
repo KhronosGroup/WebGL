@@ -20,22 +20,28 @@ found in the LICENSE file.
 <script>
 debug("Tests the context lost simulator.");
 debug("");
-var gl = create3DContext(document.getElementById("example"));
+var c = document.getElementById("example");
+var gl = create3DContext(c);
 //gl = WebGLDebugUtils.makeDebugContext(gl);
-//WebGLDebugUtils.resetToInitialState(gl);
 gl = WebGLDebugUtils.makeLostContextSimulatingContext(gl);
-gl.registerOnContextRestoredListener(afterContextRestored);
+c.addEventListener('webglcontextlost', handleContextLost, false);
+c.addEventListener('webglcontextrestored', afterContextRestored, false);
+
+gl.loseContextInNCalls(4);
 
 assertMsg(gl, "Got 3d context.");
 
 var vertexObject = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
 glErrorShouldBe(gl, gl.NO_ERROR, "no errors from setup");
-gl.loseContext();
 glErrorShouldBe(gl, gl.CONTEXT_LOST_WEBGL, "error should be lost context");
 shouldBeNull("gl.createBuffer()");
-gl.restoreContext();
-function afterContextRestored() {
+
+function handleContextLost(e) {
+  e.preventDefault();
+}
+
+function afterContextRestored(e) {
   glErrorShouldBe(gl, gl.NO_ERROR, "no errors after context restored");
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
   glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid operation using a resource from lost context");

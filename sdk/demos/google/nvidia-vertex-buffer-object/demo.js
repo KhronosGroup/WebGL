@@ -203,14 +203,7 @@ function main() {
     if (fps) {
         g_fpsCounter = new FPSCounter(fps);
     }
-    if (init()) {
-        // Set up key handling.
-        document.onkeypress = onKeyPress;
-        draw();
-    }
-}
 
-function init() {
     g_canvas = document.getElementById("c");
     g_width = g_canvas.width;
     g_height = g_canvas.height;
@@ -219,6 +212,35 @@ function init() {
     if (!gl) {
         return false;
     }
+
+    //gl = WebGLDebugUtils.makeLostContextSimulatingContext(gl);
+
+    c.addEventListener('webglcontextlost', handleContextLost, false);
+    c.addEventListener('webglcontextrestored', handleContextRestored, false);
+
+    //gl.loseContextInNCalls(15);  // tell the simulator when to lose context.
+
+    init();
+}
+
+function log(msg) {
+    if (window.console && window.console.log) {
+        console.log(msg);
+    }
+}
+
+function handleContextLost(e) {
+    log("handle context lost");
+    e.preventDefault();
+}
+
+function handleContextRestored() {
+    log("handle context restored");
+    init();
+}
+
+
+function init() {
     gl.enable(gl.DEPTH_TEST);
     gl.clearColor(0, 0, 0, 1);
     // FIXME: port O3D's effect.js to WebGL
@@ -278,7 +300,10 @@ function init() {
     setFlag(' ', true);
 
     g_vpsDiv = document.getElementById('vps');
-    return true;
+
+    // Set up key handling.
+    document.onkeypress = onKeyPress;
+    draw();
 }
 
 /**

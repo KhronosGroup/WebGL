@@ -89,14 +89,14 @@ o3djs.shader.Shader = function(gl, vertex, fragment) {
   this.gl = gl;
 
   var vs = this.loadShader(this.gl.VERTEX_SHADER, vertex);
-  if (vs == null) {
+  if (vs == null && !gl.isContextLost()) {
     return;
   }
   this.gl.attachShader(this.program, vs);
   this.gl.deleteShader(vs);
 
   var fs = this.loadShader(this.gl.FRAGMENT_SHADER, fragment);
-  if (fs == null) {
+  if (fs == null && !gl.isContextLost()) {
     return;
   }
   this.gl.attachShader(this.program, fs);
@@ -107,7 +107,7 @@ o3djs.shader.Shader = function(gl, vertex, fragment) {
 
   // Check the link status
   var linked = this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS);
-  if (!linked) {
+  if (!linked && !gl.isContextLost()) {
     var infoLog = this.gl.getProgramInfoLog(this.program);
     output("Error linking program:\n" + infoLog);
     this.gl.deleteProgram(this.program);
@@ -155,7 +155,8 @@ o3djs.shader.Shader.prototype.loadShader = function(type, shaderSrc) {
   // Compile the shader
   this.gl.compileShader(shader);
   // Check the compile status
-  if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+  if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS) &&
+      !gl.isContextLost()) {
     var infoLog = this.gl.getShaderInfoLog(shader);
     output("Error compiling shader:\n" + infoLog);
     this.gl.deleteShader(shader);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 The Chromium Authors. All rights reserved.
+ * Copyright (c) 2011 The Chromium Authors. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -38,8 +38,38 @@ function main() {
     gl = WebGLUtils.setupWebGL(canvas);
     if (!gl)
         return;
+
     setupVertexArrayObject(gl);
     glvao = gl.getExtension("OES_vertex_array_object");
+
+    //gl = WebGLDebugUtils.makeLostContextSimulatingContext(gl);
+
+    c.addEventListener('webglcontextlost', handleContextLost, false);
+    c.addEventListener('webglcontextrestored', handleContextRestored, false);
+
+    //gl.loseContextInNCalls(200000);// tell the simulator when to lose context.
+
+    init();
+}
+
+function log(msg) {
+    if (window.console && window.console.log) {
+        console.log(msg);
+    }
+}
+
+function handleContextLost(e) {
+    log("handle context lost");
+    e.preventDefault();
+}
+
+function handleContextRestored() {
+    log("handle context restored");
+    //gl.loseContextInNCalls(200000);// tell the simulator when to lose context.
+    init();
+}
+
+function init() {
     gl.clearColor(0., 0., 0., 1.);
     gl.clear(gl.COLOR_BUFFER_BIT);
     appInit();
