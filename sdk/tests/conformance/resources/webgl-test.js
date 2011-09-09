@@ -100,7 +100,11 @@ function getGLErrorAsString(ctx, err) {
   return "0x" + err.toString(16);
 }
 
-function shouldGenerateGLError(ctx, glError, evalStr) {
+// Pass undefined for glError to test that it at least throws some error
+function shouldGenerateGLError(ctx, glErrors, evalStr) {
+  if (!glErrors.length) {
+    glErrors = [glErrors];
+  }
   var exception;
   try {
     eval(evalStr);
@@ -111,10 +115,14 @@ function shouldGenerateGLError(ctx, glError, evalStr) {
     testFailed(evalStr + " threw exception " + exception);
   } else {
     var err = ctx.getError();
-    if (err != glError) {
-      testFailed(evalStr + " expected: " + getGLErrorAsString(ctx, glError) + ". Was " + getGLErrorAsString(ctx, err) + ".");
+    if (glErrors.indexOf(err) < 0) {
+      var errStrs = [];
+      for (var ii = 0; ii < glErrors.length; ++ii) {
+        errStrs.push(getGLErrorAsString(ctx, glErrors[ii]));
+      }
+      testFailed(evalStr + " expected: " + errStrs.join(" or ") + ". Was " + getGLErrorAsString(ctx, err) + ".");
     } else {
-      testPassed(evalStr + " generated expected GL error: " + getGLErrorAsString(ctx, glError) + ".");
+      testPassed(evalStr + " generated expected GL error: " + getGLErrorAsString(ctx, err) + ".");
     }
   }
 }
