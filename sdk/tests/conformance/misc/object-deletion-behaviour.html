@@ -55,7 +55,7 @@ shouldBeFalse("gl.isShader(fragmentShader)");
 debug("");
 debug("texture deletion");
 
-var fbo = gl.createFramebuffer();
+var fbo = gl.createFramebuffer(), fbo2 = gl.createFramebuffer(), fbo3 = gl.createFramebuffer();
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)");
 
 var tex = gl.createTexture();
@@ -85,7 +85,7 @@ shouldBeNull("gl.getParameter(gl.TEXTURE_BINDING_CUBE_MAP)");
 debug("");
 debug("renderbuffer deletion");
 
-var rbo = gl.createRenderbuffer();
+var rbo = gl.createRenderbuffer(), rbo2 = gl.createRenderbuffer(), rbo3 = gl.createRenderbuffer();
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindRenderbuffer(gl.RENDERBUFFER, rbo)");
 shouldBe("gl.getParameter(gl.RENDERBUFFER_BINDING)", "rbo");
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rbo)");
@@ -99,6 +99,10 @@ shouldBeFalse("gl.isRenderbuffer(rbo)");
 shouldBeNull("gl.getParameter(gl.RENDERBUFFER_BINDING)");
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindRenderbuffer(gl.RENDERBUFFER, rbo)");
 shouldBeNull("gl.getParameter(gl.RENDERBUFFER_BINDING)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindRenderbuffer(gl.RENDERBUFFER, rbo2)");
+shouldBe("gl.getParameter(gl.RENDERBUFFER_BINDING)", "rbo2");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteRenderbuffer(rbo3)");
+shouldBe("gl.getParameter(gl.RENDERBUFFER_BINDING)", "rbo2");
 
 debug("");
 debug("buffer deletion");

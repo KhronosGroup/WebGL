@@ -770,6 +770,12 @@ function drawFadeQuad() {
 }
 
 function appInit() {
+    currentCamTrackStartTick = 0;
+    nextCamTrackStartTick = 0;
+    sTick = 0;
+    currentCamTrack = 0;
+    fadeVBO = null;
+
     gl.enable(gl.DEPTH_TEST);
     gl.disable(gl.CULL_FACE);
 

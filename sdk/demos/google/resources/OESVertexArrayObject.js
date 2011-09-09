@@ -1,3 +1,47 @@
+(function() {
+"strict";
+
+var glErrorShadow = { };
+
+function error(msg) {
+    if (window.console && window.console.error) {
+        window.console.error(msg);
+    }
+}
+
+function log(msg) {
+    if (window.console && window.console.log) {
+        window.console.log(msg);
+    }
+}
+
+function synthesizeGLError(err, opt_msg) {
+    glErrorShadow[err] = true;
+    if (opt_msg !== undefined) {
+        error(opt_msg)
+    }
+}
+
+function wrapGLError(gl) {
+    var f = gl.getError;
+    gl.getError = function() {
+        var err;
+        do {
+            err = gl.getError();
+            if (err != gl.NO_ERROR) {
+                glErrorShadow[err] = true;
+            }
+        } while (err != gl.NO_ERROR);
+        for (var err in glErrorShadow) {
+            if (glErrorShadow[err]) {
+                delete glErrorShadow[err];
+                return err;
+            }
+        }
+        return gl.NO_ERROR;
+    };
+}
+
 var WebGLVertexArrayObjectOES = function WebGLVertexArrayObjectOES(ext) {
     var gl = ext.gl;
     
@@ -34,13 +78,8 @@ WebGLVertexArrayObjectOES.VertexAttrib.prototype.recache = function recache() {
 var OESVertexArrayObject = function OESVertexArrayObject(gl) {
     var self = this;
     this.gl = gl;
-    
-    this.maxVertexAttribs = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
-    
-    this.defaultVertexArrayObject = new WebGLVertexArrayObjectOES(this);
-    this.currentVertexArrayObject = this.defaultVertexArrayObject;
-    
-    this.currentArrayBuffer = null;
+
+    wrapGLError(gl);
     
     var original = this.original = {
         getParameter: gl.getParameter,
@@ -127,17 +166,46 @@ var OESVertexArrayObject = function OESVertexArrayObject(gl) {
     if (gl.instrumentExtension) {
         gl.instrumentExtension(this, "OES_vertex_array_object");
     }
+
+    gl.canvas.addEventListener('webglcontextrestored', function() {
+        log("OESVertexArrayObject emulation library context restored");
+        self.reset_();
+    }, true);
+
+    this.reset_();
 };
 
 OESVertexArrayObject.prototype.VERTEX_ARRAY_BINDING_OES = 0x85B5;
 
+OESVertexArrayObject.prototype.reset_ = function reset_() {
+    var contextWasLost = this.vertexArrayObjects !== undefined;
+    if (contextWasLost) {
+        for (var ii = 0; ii < this.vertexArrayObjects.length; ++ii) {
+            this.vertexArrayObjects.isAlive = false;
+        }
+    }
+    this.maxVertexAttribs = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
+
+    this.defaultVertexArrayObject = new WebGLVertexArrayObjectOES(this);
+    this.currentVertexArrayObject = null;
+    this.currentArrayBuffer = null;
+    this.vertexArrayObjects = [this.defaultVertexArrayObject];
+    
+    this.bindVertexArrayOES(null);
+};
+
 OESVertexArrayObject.prototype.createVertexArrayOES = function createVertexArrayOES() {
     var arrayObject = new WebGLVertexArrayObjectOES(this);
+    this.vertexArrayObjects.push(arrayObject);
     return arrayObject;
 };
 
 OESVertexArrayObject.prototype.deleteVertexArrayOES = function deleteVertexArrayOES(arrayObject) {
     arrayObject.isAlive = false;
+    this.vertexArrayObjects.splice(this.vertexArrayObjects.indexOf(arrayObject), 1);
+    if (this.currentVertexArrayObject == arrayObject) {
+        this.bindVertexArrayOES(null);
+    }
 };
 
 OESVertexArrayObject.prototype.isVertexArrayOES = function isVertexArrayOES(arrayObject) {
@@ -151,6 +219,10 @@ OESVertexArrayObject.prototype.isVertexArrayOES = function isVertexArrayOES(arra
 
 OESVertexArrayObject.prototype.bindVertexArrayOES = function bindVertexArrayOES(arrayObject) {
     var gl = this.gl;
+    if (arrayObject && !arrayObject.isAlive) {
+        synthesizeGLError(gl.INVALID_OPERATION, "bindVertexArrayOES: deleted arrayObject");
+        return;
+    }
     var original = this.original;
 
     var oldVAO = this.currentVertexArrayObject;
@@ -162,17 +234,17 @@ OESVertexArrayObject.prototype.bindVertexArrayOES = function bindVertexArrayOES(
         return;
     }
     
-    if (newVAO.elementArrayBuffer != oldVAO.elementArrayBuffer) {
+    if (!oldVAO || newVAO.elementArrayBuffer != oldVAO.elementArrayBuffer) {
         original.bindBuffer.call(gl, gl.ELEMENT_ARRAY_BUFFER, newVAO.elementArrayBuffer);
     }
     
     var currentBinding = this.currentArrayBuffer;
-    var maxAttrib = Math.max(oldVAO.maxAttrib, newVAO.maxAttrib);
+    var maxAttrib = Math.max(oldVAO ? oldVAO.maxAttrib : 0, newVAO.maxAttrib);
     for (var n = 0; n <= maxAttrib; n++) {
         var attrib = newVAO.attribs[n];
-        var oldAttrib = oldVAO.attribs[n];
+        var oldAttrib = oldVAO ? oldVAO.attribs[n] : null;
         
-        if (attrib.enabled != oldAttrib.enabled) {
+        if (!oldVAO || attrib.enabled != oldAttrib.enabled) {
             if (attrib.enabled) {
                 original.enableVertexAttribArray.call(gl, n);
             } else {
@@ -182,7 +254,7 @@ OESVertexArrayObject.prototype.bindVertexArrayOES = function bindVertexArrayOES(
         
         if (attrib.enabled) {
             var bufferChanged = false;
-            if (attrib.buffer != oldAttrib.buffer) {
+            if (!oldVAO || attrib.buffer != oldAttrib.buffer) {
                 if (currentBinding != attrib.buffer) {
                     original.bindBuffer.call(gl, gl.ARRAY_BUFFER, attrib.buffer);
                     currentBinding = attrib.buffer;
@@ -201,7 +273,8 @@ OESVertexArrayObject.prototype.bindVertexArrayOES = function bindVertexArrayOES(
     }
 };
 
-function setupVertexArrayObject(gl) {
+// You MUST call this BEFORE adding event listeners for 'webglcontextrestored'
+setupVertexArrayObject = function(gl) {
     // Ignore if already installed (or the browser provides the extension)
     // FIXME: when all stable browsers support getSupportedExtensions
     // and getExtension, remove the workarounds below.
@@ -241,3 +314,5 @@ function setupVertexArrayObject(gl) {
         }
     };
 };
+
+}());
