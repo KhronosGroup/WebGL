@@ -13,6 +13,10 @@ found in the LICENSE file.
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
+<!-- comment in the script tag below to test through JS emualation of the extension. -->
+<!--
+<script src="../../../demos/google/resources/OESVertexArrayObject.js"></script>
+-->
 </head>
 <body>
 <div id="description"></div>
@@ -35,6 +39,12 @@ if (!gl) {
     testFailed("WebGL context does not exist");
 } else {
     testPassed("WebGL context exists");
+
+    // Setup emulated OESVertexArrayObject if it has been included.
+    if (window.setupVertexArrayObject) {
+        debug("using emuated OES_vertex_array_object");
+        setupVertexArrayObject(gl);
+    }
 
     // Run tests with extension disabled
     runBindingTestDisabled();
@@ -115,9 +125,12 @@ function runBindingTestEnabled() {
     } else {
         testFailed("gl.getParameter(ext.VERTEX_ARRAY_BINDING_OES) is not expected VAO")
     }
+    ext.deleteVertexArrayOES(vao1);
+    shouldBeNull("gl.getParameter(ext.VERTEX_ARRAY_BINDING_OES)");
+    ext.bindVertexArrayOES(vao1);
+    glErrorShouldBe(gl, gl.INVALID_OPERATION, "binding a deleted vertex array object");
     ext.bindVertexArrayOES(null);
     shouldBeNull("gl.getParameter(ext.VERTEX_ARRAY_BINDING_OES)");
-    ext.deleteVertexArrayOES(vao0);
     ext.deleteVertexArrayOES(vao1);
 }
 

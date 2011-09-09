@@ -27,7 +27,7 @@ function wrapGLError(gl) {
     gl.getError = function() {
         var err;
         do {
-            err = gl.getError();
+            err = f.apply(gl);
             if (err != gl.NO_ERROR) {
                 glErrorShadow[err] = true;
             }
@@ -220,7 +220,7 @@ OESVertexArrayObject.prototype.isVertexArrayOES = function isVertexArrayOES(arra
 OESVertexArrayObject.prototype.bindVertexArrayOES = function bindVertexArrayOES(arrayObject) {
     var gl = this.gl;
     if (arrayObject && !arrayObject.isAlive) {
-        synthesizeGLError(gl.INVALID_OPERATION, "bindVertexArrayOES: deleted arrayObject");
+        synthesizeGLError(gl.INVALID_OPERATION, "bindVertexArrayOES: attempt to bind deleted arrayObject");
         return;
     }
     var original = this.original;
