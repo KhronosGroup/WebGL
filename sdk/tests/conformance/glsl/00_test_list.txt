@@ -1,4 +1,5 @@
 gl-fragcoord.html
+gl-frontfacing.html
 gl-pointcoord.html
 #glsl-2types-of-textures-on-same-unit.html
 glsl-conformance.html
@@ -12,6 +13,7 @@ glsl-feature-ceil.html
 glsl-feature-clamp-float.html
 glsl-feature-clamp-gentype.html
 glsl-feature-cos.html
+glsl-feature-distance.html
 glsl-feature-floor.html
 glsl-feature-fract.html
 glsl-feature-length.html

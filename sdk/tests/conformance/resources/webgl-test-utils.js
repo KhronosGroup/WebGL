@@ -249,6 +249,70 @@ var setupTexturedQuad = function(
 };
 
 /**
+ * Creates a unit quad with only positions of a given rez
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {number} gridRez The resolution of the mesh grid.
+ * @param {number} opt_positionLocation The attrib location for position.
+ */
+var setupQuad = function (
+    gl, gridRes, opt_positionLocation, opt_flipOddTriangles) {
+  var positionLocation = opt_positionLocation || 0;
+  var objects = [];
+
+  var vertsAcross = gridRes + 1;
+  var numVerts = vertsAcross * vertsAcross;
+  var positions = new Float32Array(numVerts * 3);
+  var indices = new Uint16Array(6 * gridRes * gridRes);
+
+  var poffset = 0;
+
+  for (var yy = 0; yy <= gridRes; ++yy) {
+    for (var xx = 0; xx <= gridRes; ++xx) {
+      positions[poffset + 0] = -1 + 2 * xx / gridRes;
+      positions[poffset + 1] = -1 + 2 * yy / gridRes;
+      positions[poffset + 2] = 0;
+
+      poffset += 3;
+    }
+  }
+
+  var tbase = 0;
+  for (var yy = 0; yy < gridRes; ++yy) {
+    var index = yy * vertsAcross;
+    for (var xx = 0; xx < gridRes; ++xx) {
+      indices[tbase + 0] = index + 0;
+      indices[tbase + 1] = index + 1;
+      indices[tbase + 2] = index + vertsAcross;
+      indices[tbase + 3] = index + vertsAcross;
+      indices[tbase + 4] = index + 1;
+      indices[tbase + 5] = index + vertsAcross + 1;
+
+      if (opt_flipOddTriangles) {
+        indices[tbase + 4] = index + vertsAcross + 1;
+        indices[tbase + 5] = index + 1;
+      }
+
+      index += 1;
+      tbase += 6;
+    }
+  }
+
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(positionLocation);
+  gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
+  objects.push(buf);
+
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+  objects.push(buf);
+
+  return objects;
+};
+
+/**
  * Fills the given texture with a solid color
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {!WebGLTexture} tex The texture to fill.
@@ -1055,6 +1119,7 @@ return {
   loggingOff: loggingOff,
   error: error,
   setupProgram: setupProgram,
+  setupQuad: setupQuad,
   setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
   setupSimpleTextureProgram: setupSimpleTextureProgram,
   setupSimpleTextureVertexShader: setupSimpleTextureVertexShader,

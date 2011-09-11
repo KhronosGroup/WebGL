@@ -379,7 +379,7 @@ var runFeatureTest = function(params) {
     var program = wtu.loadProgram(gl, vsSource, fsSource);
 
     var posLoc = gl.getAttribLocation(program, "aPosition");
-    setupQuad(gl, posLoc);
+    WebGLTestUtils.setupQuad(gl, gridRes, posLoc);
 
     gl.useProgram(program);
     gl.clearColor(0, 0, 1, 1);
@@ -392,56 +392,6 @@ var runFeatureTest = function(params) {
     return img;
   }
 
-  function setupQuad(gl, positionLocation) {
-    var objects = [];
-
-    var vertsAcross = gridRes + 1;
-    var numVerts = vertsAcross * vertsAcross;
-    var positions = new Float32Array(numVerts * 3);
-    var indices = new Uint16Array(6 * gridRes * gridRes);
-
-    var poffset = 0;
-
-    for (var yy = 0; yy <= gridRes; ++yy) {
-      for (var xx = 0; xx <= gridRes; ++xx) {
-        positions[poffset + 0] = -1 + 2 * xx / gridRes;
-        positions[poffset + 1] = -1 + 2 * yy / gridRes;
-        positions[poffset + 2] = 0;
-
-        poffset += 3;
-      }
-    }
-
-    var tbase = 0;
-    for (var yy = 0; yy < gridRes; ++yy) {
-      var index = yy * vertsAcross;
-      for (var xx = 0; xx < gridRes; ++xx) {
-        indices[tbase + 0] = index + 0;
-        indices[tbase + 1] = index + 1;
-        indices[tbase + 2] = index + vertsAcross;
-        indices[tbase + 3] = index + vertsAcross;
-        indices[tbase + 4] = index + 1;
-        indices[tbase + 5] = index + vertsAcross + 1;
-
-        index += 1;
-        tbase += 6;
-      }
-    }
-
-    var buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(positionLocation);
-    gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
-    objects.push(buf);
-
-    var buf = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-    objects.push(buf);
-
-    return objects;
-  }
 };
 
 return {

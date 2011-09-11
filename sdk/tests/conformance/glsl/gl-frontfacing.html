@@ -31,9 +31,9 @@ found in the LICENSE file.
     void main()
     {
       gl_FragColor = vec4(
-        floor(gl_FragCoord.x * 4.0 / 32.0) / 4.0,
-        floor(gl_FragCoord.y * 4.0 / 32.0) / 4.0,
-        floor(gl_FragCoord.z * 4.0) / 4.0,
+        gl_FrontFacing ? 1.0 : 0.0,
+        gl_FrontFacing ? 0.0 : 1.0,
+        0,
         1);
     }
   </script>
@@ -48,30 +48,31 @@ found in the LICENSE file.
       wtu = WebGLTestUtils;
       gl = initWebGL("example", "vshader", "fshader", [ "vPosition"], [ 0, 0, 0, 1 ], 1);
 
-      var vertexObject = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(
-        [-1, -1, -1,  1, -1,  0, -1,  1,  0,
-         -1,  1,  0,  1, -1,  0,  1,  1,  1]),
-                    gl.STATIC_DRAW);
-      gl.enableVertexAttribArray(0);
-      gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+      var gridRes = 4;
+      wtu.setupQuad(gl, gridRes, 0, true);
 
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      gl.drawElements(gl.TRIANGLES, gridRes * gridRes * 6, gl.UNSIGNED_SHORT, 0);
       wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors from draw");
 
-      for (var xx = 0; xx < 32; xx += 4) {
-        for (var yy = 0; yy < 32; yy += 4) {
-          var zz = (xx / 64) + (yy / 64);
-          var color = [
-             Math.floor(Math.floor(xx * 4.0 / 32.0) / 4 * 256),
-             Math.floor(Math.floor(yy * 4.0 / 32.0) / 4 * 256),
-             Math.floor(Math.floor(zz * 4.0) / 4 * 256)
-          ];
-          var msg = "should be " + color;
-          wtu.checkCanvasRect(
-              gl, xx, yy, 1, 1, color, msg, 4);
+      var step = 32 / gridRes;
+      var halfStep = step / 2;
+      var quarterStep = halfStep / 2;
+      for (var xx = 0; xx < 32; xx += step) {
+        for (var yy = 0; yy < 32; yy += step) {
+          for (var ii = 0; ii < 2; ++ii) {
+            var color = [
+              ii == 0 ? 255 : 0,
+              ii == 0 ? 0 : 255,
+              0
+            ];
+            var msg = "should be " + color;
+            wtu.checkCanvasRect(
+                gl, 
+                xx + quarterStep + halfStep * ii, 
+                yy + quarterStep + halfStep * ii, 
+                1, 1, color, msg, 4);
+          }
         }
       }
     }
