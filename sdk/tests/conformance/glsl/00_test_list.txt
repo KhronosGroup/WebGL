@@ -14,6 +14,7 @@ glsl-feature-clamp-gentype.html
 glsl-feature-cos.html
 glsl-feature-floor.html
 glsl-feature-fract.html
+glsl-feature-length.html
 glsl-feature-max-float.html
 glsl-feature-max-gentype.html
 glsl-feature-min-float.html

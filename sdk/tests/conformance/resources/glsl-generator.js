@@ -117,7 +117,7 @@ var generateReferenceShader = function(
   var output = shaderInfo.output;
   var feature = params.feature;
   var testFunc = params.testFunc;
-  var emuFunc = params.emuFunc;
+  var emuFunc = params.emuFunc || "";
   var args = params.args || "$(type) value";
   var type = typeInfo.type;
   var typeCode = typeInfo.code;
@@ -231,9 +231,10 @@ var runFeatureTest = function(params) {
   for (var ss = 0; ss < shaderInfos.length; ++ss) {
     var shaderInfo = shaderInfos[ss];
     var tests = params.tests;
+    var testTypes = params.emuFuncs || types;
     // Test vertex shaders
     for (var ii = 0; ii < tests.length; ++ii) {
-      var type = types[ii];
+      var type = testTypes[ii];
       debug("");
       var str = replaceParams(params.testFunc, {
         func: params.feature,
@@ -294,7 +295,16 @@ var runFeatureTest = function(params) {
     var s = document.createElement("pre");
     s.className = "shader-source";
     s.style.display = "none";
-    s.appendChild(document.createTextNode(source));
+    var ol = document.createElement("ol");
+    //s.appendChild(document.createTextNode(source));
+    var lines = source.split("\n");
+    for (var ii = 0; ii < lines.length; ++ii) {
+      var line = lines[ii];
+      var li = document.createElement("li");
+      li.appendChild(document.createTextNode(line));
+      ol.appendChild(li);
+    }
+    s.appendChild(ol);
     var l = document.createElement("a");
     l.href = "show-shader-source";
     l.appendChild(document.createTextNode(label));

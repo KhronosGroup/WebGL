@@ -9,6 +9,9 @@ canvas {
   padding: 1em;
 }
 
+.shader-source li:nth-child(odd) { background: #f8f8f8; }
+.shader-source li:nth-child(even) { background: #f0f0f0; }
+
 .testimages {
 }
 
