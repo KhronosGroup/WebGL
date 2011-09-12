@@ -29,8 +29,8 @@
     <p> Members of the WebGL working group </p>
 
     <h2 class="no-toc">Version</h2>
-    <p> Last modified date: November 29, 2010 <br>
-        Revision: 1
+    <p> Last modified date: September 12, 2011 <br>
+        Revision: 2
     </p>
 
     <h2 class="no-toc">Number</h2>
@@ -43,10 +43,25 @@
     <p>
       This extension exposes the
       <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_texture_float.txt">OES_texture_half_float</a>
-      functionality to WebGL. There are no WebGL-specific behavioral changes.  Consult the above
-      extension for all documentation, issues, and new functions and enumerants.
+      functionality to WebGL, as well as the ability to use <code>HALF_FLOAT</code> textures as FBO
+      attachments.  Consult the above extension for documentation, issues, and new functions and
+      enumerants.
     </p>
+      When this extension is enabled:
+      <ul>
+      <li> The <code>texImage2D</code> and <code>texSubImage2D</code> entry points
+           taking <code>ArrayBufferView</code> are extended to accept <code>null</code> with
+           the pixel type <code>HALF_FLOAT_OES</code>.
 
+      <li> The <code>texImage2D</code> and <code>texSubImage2D</code> entry points
+           taking <code>ImageData</code>, <code>HTMLImageElement</code>, <code>HTMLCanvasElement</code>
+           and <code>HTMLVideoElement</code> are extended to accept the pixel type <code>HALF_FLOAT_OES</code>.
+
+      <li> The WebGL implementation may optionally accept a texture with pixel
+           type <code>HALF_FLOAT_OES</code> as the color attachment to an FBO. Applications must
+           check such an FBO for completeness after attempting to make this attachment.
+      </ul>
+    </p>
     <h2 class="no-toc">IDL</h2>
     <p>
 <pre class="idl">
@@ -65,6 +80,13 @@ interface OES_texture_half_float {
       Revision 1, 2010/11/29
       <ul>
       <li> Initial revision.
+      </ul>
+    </p>
+    <p>
+      Revision 2, 2011/09/12
+      <ul>
+      <li> Added similar text about <code>texImage2D</code> and <code>texSubImage2D</code> as in OES_texture_float spec.
+      <li> Added optional ability to use a HALF_FLOAT_OES type texture as an FBO's color attachment.
       </ul>
     </p>
 </body>

@@ -29,8 +29,8 @@
     <p> Members of the WebGL working group </p>
 
     <h2 class="no-toc">Version</h2>
-    <p> Last modified date: November 29, 2010 <br>
-        Revision: 1
+    <p> Last modified date: September 12, 2011 <br>
+        Revision: 3
     </p>
 
     <h2 class="no-toc">Number</h2>
@@ -43,8 +43,9 @@
     <p>
       This extension exposes the
       <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_texture_float.txt">OES_texture_float</a>
-      functionality to WebGL. Consult the above extension for all documentation, issues, and new
-      functions and enumerants.
+      functionality to WebGL, as well as the ability to use <code>FLOAT</code> textures as FBO
+      attachments.  Consult the above extension for documentation, issues, and new functions and
+      enumerants.
     </p>
     <p>
       When this extension is enabled:
@@ -56,6 +57,10 @@
       <li> The <code>texImage2D</code> and <code>texSubImage2D</code> entry points
            taking <code>ImageData</code>, <code>HTMLImageElement</code>, <code>HTMLCanvasElement</code>
            and <code>HTMLVideoElement</code> are extended to accept the pixel type <code>FLOAT</code>.
+
+      <li> The WebGL implementation may optionally accept a texture with pixel
+           type <code>FLOAT</code> as the color attachment to an FBO. Applications must check such
+           an FBO for completeness after attempting to make this attachment.
       </ul>
     </p>
     <h2 class="no-toc">IDL</h2>
@@ -82,6 +87,12 @@ interface OES_texture_float {
       <ul>
       <li> Extended to support pixel type FLOAT for texImage2D and texSubImage2D entry points taking
            ImageData, HTMLImageElement, HTMLCanvasElement and HTMLVideoElement.
+      </ul>
+    </p>
+    <p>
+      Revision 3, 2011/09/12
+      <ul>
+      <li> Added optional ability to use a FLOAT type texture as an FBO's color attachment.
       </ul>
     </p>
 </body>
