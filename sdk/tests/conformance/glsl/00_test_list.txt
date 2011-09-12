@@ -13,10 +13,14 @@ glsl-feature-ceil.html
 glsl-feature-clamp-float.html
 glsl-feature-clamp-gentype.html
 glsl-feature-cos.html
+glsl-feature-cross.html
 glsl-feature-distance.html
+glsl-feature-dot.html
+glsl-feature-faceforward.html
 glsl-feature-floor.html
 glsl-feature-fract.html
 glsl-feature-length.html
+#glsl-feature-lessThan.html
 glsl-feature-max-float.html
 glsl-feature-max-gentype.html
 glsl-feature-min-float.html
@@ -25,6 +29,9 @@ glsl-feature-mix-float.html
 glsl-feature-mix-gentype.html
 glsl-feature-mod-float.html
 glsl-feature-mod-gentype.html
+glsl-feature-normalize.html
+glsl-feature-reflect.html
+glsl-feature-refract.html
 glsl-feature-sign.html
 glsl-feature-sin.html
 glsl-feature-step-float.html

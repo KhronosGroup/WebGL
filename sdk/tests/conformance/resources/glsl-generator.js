@@ -99,6 +99,36 @@ var types = [
   }
 ];
 
+var bvecTypes = [
+  { type: "bvec2",
+    code: [
+      "bvec2 $(func)_emu($(args)) {",
+      "  return bvec2(",
+      "      $(func)_base($(baseArgsX)),",
+      "      $(func)_base($(baseArgsY)));",
+      "}"].join("\n")
+  },
+  { type: "bvec3",
+    code: [
+      "bvec3 $(func)_emu($(args)) {",
+      "  return bvec3(",
+      "      $(func)_base($(baseArgsX)),",
+      "      $(func)_base($(baseArgsY)),",
+      "      $(func)_base($(baseArgsZ)));",
+      "}"].join("\n")
+  },
+  { type: "bvec4",
+    code: [
+      "vec4 $(func)_emu($(args)) {",
+      "  return bvec4(",
+      "      $(func)_base($(baseArgsX)),",
+      "      $(func)_base($(baseArgsY)),",
+      "      $(func)_base($(baseArgsZ)),",
+      "      $(func)_base($(baseArgsW)));",
+      "}"].join("\n")
+  }
+];
+
 
 var replaceRE = /\$\((\w+)\)/g;
 
@@ -231,7 +261,7 @@ var runFeatureTest = function(params) {
   for (var ss = 0; ss < shaderInfos.length; ++ss) {
     var shaderInfo = shaderInfos[ss];
     var tests = params.tests;
-    var testTypes = params.emuFuncs || types;
+    var testTypes = params.emuFuncs || (params.bvecTest ? bvecTypes : types);
     // Test vertex shaders
     for (var ii = 0; ii < tests.length; ++ii) {
       var type = testTypes[ii];
@@ -376,7 +406,7 @@ var runFeatureTest = function(params) {
   }
 
   function draw(canvas, vsSource, fsSource) {
-    var program = wtu.loadProgram(gl, vsSource, fsSource);
+    var program = wtu.loadProgram(gl, vsSource, fsSource, testFailed);
 
     var posLoc = gl.getAttribLocation(program, "aPosition");
     WebGLTestUtils.setupQuad(gl, gridRes, posLoc);

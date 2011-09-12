@@ -7,7 +7,7 @@ found in the LICENSE file.
 <html>
 <head>
 <meta charset="utf-8">
-  <title>GLSL distance feature Test</title>
+  <title>GLSL reflect feature Test</title>
   <link rel="stylesheet" href="../../resources/js-test-style.css"/>
   <link rel="stylesheet" href="../resources/glsl-feature-tests.css"/>
   <script src="../../resources/js-test-pre.js"></script>
@@ -19,35 +19,34 @@ found in the LICENSE file.
 <div id="description"></div>
 <div id="console"></div>
 <script>
-
 GLSLGenerator.runFeatureTest({
-  feature: "distance",
-  args: "$(type) p1, $(type) p2",
+  feature: "reflect",
+  args: "$(type) I, $(type) N",
   baseArgs: "value$(field)",
   testFunc: "$(func)($(type),$(type))",
   emuFuncs: [
     { type: "float",
       code: [
         "float $(func)_emu($(args)) {",
-        "   return abs(p1 - p2);",
+        "   return I - 2.0 * dot(N, I) * N;",
         "}"].join("\n")
     },
     { type: "vec2",
       code: [
-        "float $(func)_emu($(args)) {",
-        "   return length(p1 - p2);",
+        "vec2 $(func)_emu($(args)) {",
+        "   return I - 2.0 * dot(N, I) * N;",
         "}"].join("\n")
     },
     { type: "vec3",
       code: [
-        "float $(func)_emu($(args)) {",
-        "   return length(p1 - p2);",
+        "vec3 $(func)_emu($(args)) {",
+        "   return I - 2.0 * dot(N, I) * N;",
         "}"].join("\n")
     },
     { type: "vec4",
       code: [
-        "float $(func)_emu($(args)) {",
-        "   return length(p1 - p2);",
+        "vec4 $(func)_emu($(args)) {",
+        "   return I - 2.0 * dot(N, I) * N;",
         "}"].join("\n")
     }
   ],
@@ -55,28 +54,25 @@ GLSLGenerator.runFeatureTest({
   tests: [
     ["$(output) = vec4(",
      "    $(func)(",
-     "        $(input).x * 8.0 - 4.0,", 
-     "        $(input).y * 8.0 - 4.0) / 8.0,",
+     "        $(input).x * 2.0 - 1.0,", 
+     "        $(input).y * 2.0 - 1.0),",
      "    0,",
      "    0,",
      "    1);"].join("\n"),
     ["$(output) = vec4(",
-     "    0,",
      "    $(func)(",
-     "        $(input).xy * 8.0 - 4.0,",
-     "        $(input).wz * 8.0 - 4.0) / 8.0,", 
+     "        $(input).xy * 2.0 - 1.0,", 
+     "        $(input).yz * 2.0 - 1.0),",
      "    0, 1);"].join("\n"),
     ["$(output) = vec4(",
-     "    0, 0,",
      "    $(func)(",
-     "        $(input).xyz * 8.0 - 4.0,",
-     "        $(input).yzw * 8.0 - 4.0) / 8.0,",
+     "        $(input).xyz * 2.0 - 1.0,",
+     "        $(input).yzw * 2.0 - 1.0),",
      "    1);"].join("\n"),
-    ["$(output) = vec4(",
+    ["$(output) = ",
      "    $(func)(",
-     "        vec4($(input).xyz, 0) * 8.0 - 4.0,",
-     "        vec4(0, $(input).wzy) * 8.0 - 4.0) / 8.0,",
-     "    0, 0, 1);",
+     "        $(input).xyzw * 2.0 - 1.0,",
+     "        $(input).yzwx * 2.0 - 1.0);"
     ].join("\n")
   ]
 });
@@ -84,4 +80,5 @@ successfullyParsed = true;
 </script>
 </body>
 </html>
+
 
