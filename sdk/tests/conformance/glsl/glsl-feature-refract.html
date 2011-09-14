@@ -29,7 +29,7 @@ GLSLGenerator.runFeatureTest({
       code: [
         "float $(func)_emu($(args)) {",
         "   float dotNI = dot(N, I);",
-        "   float k = 1.0 * eta * (1.0 - dotNI * dotNI);",
+        "   float k = 1.0 - eta * eta * (1.0 - dotNI * dotNI);",
         "   if (k < 0.0) {",
         "     return 0.0;",
         "   }",
@@ -40,7 +40,7 @@ GLSLGenerator.runFeatureTest({
       code: [
         "vec2 $(func)_emu($(args)) {",
         "   float dotNI = dot(N, I);",
-        "   float k = 1.0 * eta * (1.0 - dotNI * dotNI);",
+        "   float k = 1.0 - eta * eta * (1.0 - dotNI * dotNI);",
         "   if (k < 0.0) {",
         "     return vec2(0, 0);",
         "   }",
@@ -51,7 +51,7 @@ GLSLGenerator.runFeatureTest({
       code: [
         "vec3 $(func)_emu($(args)) {",
         "   float dotNI = dot(N, I);",
-        "   float k = 1.0 * eta * (1.0 - dotNI * dotNI);",
+        "   float k = 1.0 - eta * eta * (1.0 - dotNI * dotNI);",
         "   if (k < 0.0) {",
         "     return vec3(0, 0, 0);",
         "   }",
@@ -62,7 +62,7 @@ GLSLGenerator.runFeatureTest({
       code: [
         "vec4 $(func)_emu($(args)) {",
         "   float dotNI = dot(N, I);",
-        "   float k = 1.0 * eta * (1.0 - dotNI * dotNI);",
+        "   float k = 1.0 - eta * eta * (1.0 - dotNI * dotNI);",
         "   if (k < 0.0) {",
         "     return vec4(0, 0, 0, 0);",
         "   }",

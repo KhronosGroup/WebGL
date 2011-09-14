@@ -31,7 +31,7 @@ glsl-feature-mod-float.html
 glsl-feature-mod-gentype.html
 glsl-feature-normalize.html
 glsl-feature-reflect.html
-glsl-feature-refract.html
+#glsl-feature-refract.html
 glsl-feature-sign.html
 glsl-feature-sin.html
 glsl-feature-step-float.html
