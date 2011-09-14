@@ -29,7 +29,8 @@ GLSLGenerator.runFeatureTest({
     { type: "float",
       code: [
         "float $(func)_emu($(args)) {",
-        "   return sign(value);",
+        "   if (value == 0.0) return 0.0;",
+        "   return value > 0.0 ? 1.0 : -1.0;",
         "}"].join("\n")
     },
     { type: "vec2",
