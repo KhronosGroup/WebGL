@@ -30,7 +30,7 @@ GLSLGenerator.runFeatureTest({
   tests: [
     ["$(output) = vec4(",
      "    $(func)($(input).x * 2.0 - 1.0) * 0.5 + 0.5,",
-     "    $(func)($(input).y * 2.0 - 1.0) * 0.5 + 0.5,",
+     "    0.5,",
      "    0,",
      "    1);"].join("\n"),
     ["$(output) = vec4(",
