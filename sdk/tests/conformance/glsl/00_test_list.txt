@@ -38,5 +38,6 @@ glsl-feature-step-float.html
 glsl-feature-step-gentype.html
 glsl-feature-smoothstep-float.html
 glsl-feature-smoothstep-gentype.html
+glsl-function-nodes.html
 glsl-long-variable-names.html
 
