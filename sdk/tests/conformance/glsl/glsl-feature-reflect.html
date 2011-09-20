@@ -24,44 +24,22 @@ GLSLGenerator.runFeatureTest({
   args: "$(type) I, $(type) N",
   baseArgs: "value$(field)",
   testFunc: "$(func)($(type),$(type))",
-  emuFuncs: [
-    { type: "float",
-      code: [
-        "float $(func)_emu($(args)) {",
-        "   return I - 2.0 * dot(N, I) * N;",
-        "}"].join("\n")
-    },
-    { type: "vec2",
-      code: [
-        "vec2 $(func)_emu($(args)) {",
-        "   return I - 2.0 * dot(N, I) * N;",
-        "}"].join("\n")
-    },
-    { type: "vec3",
-      code: [
-        "vec3 $(func)_emu($(args)) {",
-        "   return I - 2.0 * dot(N, I) * N;",
-        "}"].join("\n")
-    },
-    { type: "vec4",
-      code: [
-        "vec4 $(func)_emu($(args)) {",
-        "   return I - 2.0 * dot(N, I) * N;",
-        "}"].join("\n")
-    }
-  ],
+  simpleEmu: [
+      "$(type) $(func)_emu($(args)) {",
+      "   return I - 2.0 * dot(N, I) * N;",
+      "}"].join("\n"),
   gridRes: 8,
   tests: [
     ["$(output) = vec4(",
      "    $(func)(",
-     "        $(input).x * 2.0 - 1.0,", 
+     "        $(input).x * 2.0 - 1.0,",
      "        $(input).y * 2.0 - 1.0),",
      "    0,",
      "    0,",
      "    1);"].join("\n"),
     ["$(output) = vec4(",
      "    $(func)(",
-     "        $(input).xy * 2.0 - 1.0,", 
+     "        $(input).xy * 2.0 - 1.0,",
      "        $(input).yz * 2.0 - 1.0),",
      "    0, 1);"].join("\n"),
     ["$(output) = vec4(",

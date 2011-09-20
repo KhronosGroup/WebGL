@@ -23,54 +23,30 @@ found in the LICENSE file.
 GLSLGenerator.runFeatureTest({
   feature: "normalize",
   args: "$(type) value",
-  baseArgs: "value$(field)",
   testFunc: "$(func)($(type))",
-  emuFuncs: [
-    { type: "float",
-      code: [
-        "float $(func)_emu($(args)) {",
-        "   if (value == 0.0) return 0.0;",
-        "   return value > 0.0 ? 1.0 : -1.0;",
-        "}"].join("\n")
-    },
-    { type: "vec2",
-      code: [
-        "vec2 $(func)_emu($(args)) {",
-        "   return value / length(value);",
-        "}"].join("\n")
-    },
-    { type: "vec3",
-      code: [
-        "vec3 $(func)_emu($(args)) {",
-        "   return value / length(value);",
-        "}"].join("\n")
-    },
-    { type: "vec4",
-      code: [
-        "vec4 $(func)_emu($(args)) {",
-        "   return value / length(value);",
-        "}"].join("\n")
-    }
-  ],
+  simpleEmu: [
+      "$(type) $(func)_emu($(args)) {",
+      "   return value / length(value);",
+      "}"].join("\n"),
   gridRes: 8,
   tests: [
     ["$(output) = vec4(",
      "    $(func)(",
-     "        $(input).x * 8.0 - 4.0) * 0.5 + 0.5,",
+     "        $(input).x * 8.0 - 4.1) * 0.5 + 0.5,",
      "    0.5,",
      "    0,",
      "    1);"].join("\n"),
     ["$(output) = vec4(",
      "    $(func)(",
-     "        $(input).xy * 8.0 - 4.0) * 0.5 + 0.5,", 
+     "        $(input).xy * 8.0 - 4.1) * 0.5 + 0.5,",
      "    0, 1);"].join("\n"),
     ["$(output) = vec4(",
      "    $(func)(",
-     "        $(input).xyz * 8.0 - 4.0) * 0.5 + 0.5,",
+     "        $(input).xyz * 8.0 - 4.1) * 0.5 + 0.5,",
      "    1);"].join("\n"),
     ["$(output) = ",
      "    $(func)(",
-     "        vec4($(input).xyz, 0) * 8.0 - 4.0) * 0.5 + 0.5 + vec4(0,0,0,0.5);",
+     "        vec4($(input).xyz, 0) * 8.0 - 4.1) * 0.5 + 0.5 + vec4(0,0,0,0.5);",
     ].join("\n")
   ]
 });

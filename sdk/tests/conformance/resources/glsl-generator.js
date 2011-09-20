@@ -129,7 +129,6 @@ var bvecTypes = [
   }
 ];
 
-
 var replaceRE = /\$\((\w+)\)/g;
 
 var replaceParams = function(str, params) {
@@ -265,6 +264,12 @@ var runFeatureTest = function(params) {
     // Test vertex shaders
     for (var ii = 0; ii < tests.length; ++ii) {
       var type = testTypes[ii];
+      if (params.simpleEmu) {
+        type = {
+          type: type.type,
+          code: params.simpleEmu
+        };
+      }
       debug("");
       var str = replaceParams(params.testFunc, {
         func: params.feature,
@@ -425,6 +430,55 @@ var runFeatureTest = function(params) {
 };
 
 return {
+  /**
+   * runs a bunch of GLSL tests using the passed in parameters
+   * The parameters are:
+   *
+   * feature:
+   *    the name of the function being tested (eg, sin, dot,
+   *    normalize)
+   *
+   * testFunc:
+   *    The prototype of function to be tested not including the
+   *    return type.
+   *
+   * emuFunc:
+   *    A base function that can be used to generate emulation
+   *    functions. Example for 'ceil'
+   *
+   *      float $(func)_base(float value) {
+   *        float m = mod(value, 1.0);
+   *        return m != 0.0 ? (value + 1.0 - m) : value;
+   *      }
+   *
+   * args:
+   *    The arguments to the function
+   *
+   * baseArgs: (optional)
+   *    The arguments when a base function is used to create an
+   *    emulation function. For example 'float sign_base(float v)'
+   *    is used to implemenent vec2 sign_emu(vec2 v).
+   *
+   * simpleEmu:
+   *    if supplied, the code that can be used to generate all
+   *    functions for all types.
+   *
+   *    Example for 'normalize':
+   *
+   *        $(type) $(func)_emu($(args)) {
+   *           return value / length(value);
+   *        }
+   *
+   * gridRes: (optional)
+   *    The resolution of the mesh to generate. The default is a
+   *    1x1 grid but many vertex shaders need a higher resolution
+   *    otherwise the only values passed in are the 4 corners
+   *    which often have the same value.
+   *
+   * tests:
+   *    The code for each test. It is assumed the tests are for
+   *    float, vec2, vec3, vec4 in that order.
+   */
   runFeatureTest: runFeatureTest,
 
   none: false
