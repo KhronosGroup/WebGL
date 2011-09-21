@@ -83,15 +83,14 @@ function init()
 
   wtu.drawQuad(gl);
   wtu.checkCanvas(gl, [0,0,0,255],
-      "texture that is not -texture-complete- when " +
+      "texture that is missing mips when " +
       "TEXTURE_MIN_FILTER not NEAREST or LINEAR should draw with 0,0,0,255");
 
   gl.generateMipmap(gl.TEXTURE_2D);
 
   wtu.drawQuad(gl);
   wtu.checkCanvas(gl, [0, 192, 128, 255],
-      "texture that is -texture-complete- when " +
-      "TEXTURE_MIN_FILTER not NEAREST or LINEAR should draw with 0,192,128,255");
+      "texture that has all mips when should draw with 0,192,128,255");
 
   // Fill in the bottom 2 mips with a different color.
   for (var ii = 1; ii <= 2; ++ii) {
