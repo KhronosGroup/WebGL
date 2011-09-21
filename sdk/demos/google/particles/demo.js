@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 The Chromium Authors. All rights reserved.
+ * Copyright (c) 2011 The Chromium Authors. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -93,7 +93,7 @@ getEventKeyChar = function(event) {
         event = window.event;
     }
     var charCode = 0;
-    if (event.keyIdentifier)
+    if (event.keyIdentifierToChar)
         charCode = o3djs.event.keyIdentifierToChar(event.keyIdentifier);
     if (!charCode)
         charCode = (window.event) ? window.event.keyCode : event.charCode;
@@ -135,6 +135,14 @@ function main() {
     gl = WebGLUtils.setupWebGL(g_canvas);
     if (!gl)
         return;
+
+//    gl = WebGLDebugUtils.makeLostContextSimulatingContext(gl);
+
+    c.addEventListener('webglcontextlost', handleContextLost, false);
+    c.addEventListener('webglcontextrestored', handleContextRestored, false);
+
+//    gl.loseContextInNCalls(1);  // tell the simulator when to lose context.
+
     g_width = g_canvas.width;
     g_height = g_canvas.height;
     controller = new CameraController(g_canvas);
@@ -153,10 +161,27 @@ function main() {
     document.onkeypress = onKeyPress;
     document.onkeydown = onKeyDown;
     document.onkeyup = onKeyUp;
-    draw();
+}
+
+
+function log(msg) {
+    if (window.console && window.console.log) {
+        console.log(msg);
+    }
+}
+
+function handleContextLost(e) {
+    log("handle context lost");
+    e.preventDefault();
+}
+
+function handleContextRestored() {
+    log("handle context restored");
+    init();
 }
 
 function init() {
+    g_textures = [];
     gl.clearColor(0.5, 0.5, 0.5, 1.0);
     gl.viewport(0, 0, g_width, g_height);
     gl.enable(gl.DEPTH_TEST);
@@ -165,8 +190,10 @@ function init() {
     g_math.matrix4.setIdentity(g_view);
     g_math.matrix4.translate(g_view, [0, -100, -1500.0]);
     g_particleSystem = new o3djs.particles.ParticleSystem(gl, null, pseudoRandom);
+
     g_textures.push(loadTexture("ripple.png"));
     g_textures.push(loadTexture("particle-anim.png"));
+
     setupFlame();
     setupNaturalGasFlame();
     setupSmoke();
@@ -179,6 +206,8 @@ function init() {
     setupCube();
     setupPoof();
     setupTrail();
+
+    draw();
 }
 
 // Loads a texture from the absolute or relative URL "src".
