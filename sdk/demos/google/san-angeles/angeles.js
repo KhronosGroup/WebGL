@@ -35,19 +35,20 @@ var start_time = null;
 
 function main() {
     canvas = document.getElementById("c");
+
+    //canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(canvas);
+
+    canvas.addEventListener('webglcontextlost', handleContextLost, false);
+    canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+
+    //canvas.loseContextInNCalls(200000);// tell the simulator when to lose context.
+
     gl = WebGLUtils.setupWebGL(canvas);
     if (!gl)
         return;
 
     setupVertexArrayObject(gl);
     glvao = gl.getExtension("OES_vertex_array_object");
-
-    //gl = WebGLDebugUtils.makeLostContextSimulatingContext(gl);
-
-    c.addEventListener('webglcontextlost', handleContextLost, false);
-    c.addEventListener('webglcontextrestored', handleContextRestored, false);
-
-    //gl.loseContextInNCalls(200000);// tell the simulator when to lose context.
 
     init();
 }
@@ -65,7 +66,7 @@ function handleContextLost(e) {
 
 function handleContextRestored() {
     log("handle context restored");
-    //gl.loseContextInNCalls(200000);// tell the simulator when to lose context.
+    //canvas.loseContextInNCalls(200000);// tell the simulator when to lose context.
     init();
 }
 

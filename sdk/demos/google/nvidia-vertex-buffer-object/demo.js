@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 The Chromium Authors. All rights reserved.
+ * Copyright (c) 2011 The Chromium Authors. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -205,6 +205,14 @@ function main() {
     }
 
     g_canvas = document.getElementById("c");
+
+    //g_canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(g_canvas);
+
+    g_canvas.addEventListener('webglcontextlost', handleContextLost, false);
+    g_canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+
+    //g_canvas.loseContextInNCalls(15);  // tell the simulator when to lose context.
+
     g_width = g_canvas.width;
     g_height = g_canvas.height;
     attribs = { antialias: false };
@@ -212,13 +220,6 @@ function main() {
     if (!gl) {
         return false;
     }
-
-    //gl = WebGLDebugUtils.makeLostContextSimulatingContext(gl);
-
-    c.addEventListener('webglcontextlost', handleContextLost, false);
-    c.addEventListener('webglcontextrestored', handleContextRestored, false);
-
-    //gl.loseContextInNCalls(15);  // tell the simulator when to lose context.
 
     init();
 }

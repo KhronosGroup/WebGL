@@ -132,16 +132,18 @@ function main() {
     g_view = g_math.matrix4.identity();
     g_projection = g_math.matrix4.identity();
     g_canvas = document.getElementById("c");
+
+    //g_canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(g_canvas);
+
+    g_canvas.addEventListener('webglcontextlost', handleContextLost, false);
+    g_canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+
+    //g_canvas.loseContextInNCalls(15);  // tell the simulator when to lose context.
+
+
     gl = WebGLUtils.setupWebGL(g_canvas);
     if (!gl)
         return;
-
-//    gl = WebGLDebugUtils.makeLostContextSimulatingContext(gl);
-
-    c.addEventListener('webglcontextlost', handleContextLost, false);
-    c.addEventListener('webglcontextrestored', handleContextRestored, false);
-
-//    gl.loseContextInNCalls(1);  // tell the simulator when to lose context.
 
     g_width = g_canvas.width;
     g_height = g_canvas.height;

@@ -39,16 +39,17 @@ var g_texCoordOffset=0;
 // Fetches the WebGL rendering context and initializes OpenGL.
 function main() {
     var c = document.getElementById("c");
-    gl = WebGLUtils.setupWebGL(c);
-    if (!gl)
-        return;
 
-    // gl = WebGLDebugUtils.makeLostContextSimulatingContext(gl);
+    //c = WebGLDebugUtils.makeLostContextSimulatingCanvas(c);
 
     c.addEventListener('webglcontextlost', handleContextLost, false);
     c.addEventListener('webglcontextrestored', handleContextRestored, false);
 
-    // gl.loseContextInNCalls(15);  // tell the simulator when to lose context.
+    //c.loseContextInNCalls(15);  // tell the simulator when to lose context.
+
+    gl = WebGLUtils.setupWebGL(c);
+    if (!gl)
+        return;
 
     init();
 }
