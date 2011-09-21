@@ -21,18 +21,18 @@ found in the LICENSE file.
 debug("Tests the context lost simulator.");
 debug("");
 var c = document.getElementById("example");
-var gl = create3DContext(c);
-//gl = WebGLDebugUtils.makeDebugContext(gl);
-gl = WebGLDebugUtils.makeLostContextSimulatingContext(gl);
+c = WebGLDebugUtils.makeLostContextSimulatingCanvas(c);
 c.addEventListener('webglcontextlost', handleContextLost, false);
 c.addEventListener('webglcontextrestored', afterContextRestored, false);
+var gl = create3DContext(c);
 
-gl.loseContextInNCalls(4);
+c.loseContextInNCalls(5);
 
 assertMsg(gl, "Got 3d context.");
 
-var vertexObject = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
+var tex = gl.createTexture();
+gl.bindTexture(gl.TEXTURE_2D, tex);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 glErrorShouldBe(gl, gl.NO_ERROR, "no errors from setup");
 glErrorShouldBe(gl, gl.CONTEXT_LOST_WEBGL, "error should be lost context");
 shouldBeNull("gl.createBuffer()");
@@ -43,10 +43,13 @@ function handleContextLost(e) {
 
 function afterContextRestored(e) {
   glErrorShouldBe(gl, gl.NO_ERROR, "no errors after context restored");
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  glErrorShouldBe(gl, gl.NO_ERROR, "no errors binding a resource from lost context");
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid operation using a resource from lost context");
-  vertexObject = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
+  tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   glErrorShouldBe(gl, gl.NO_ERROR, "okay to use new context");
 
   successfullyParsed = true;

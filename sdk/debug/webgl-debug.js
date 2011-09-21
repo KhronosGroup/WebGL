@@ -173,6 +173,26 @@ function glFunctionArgToString(functionName, argumentIndex, value) {
   return value.toString();
 }
 
+function makePropertyWrapper(wrapper, original, propertyName) {
+  wrapper.__defineGetter__(propertyName, function() {
+    return original[propertyName];
+  });
+  // TODO(gmane): this needs to handle properties that take more than
+  // one value?
+  wrapper.__defineSetter__(propertyName, function(value) {
+    original[propertyName] = value;
+  });
+}
+
+// Makes a function that calls a function on another object.
+function makeFunctionWrapper(original, functionName) {
+  var f = original[functionName];
+  return function() {
+    var result = f.apply(original, arguments);
+    return result;
+  };
+}
+
 /**
  * Given a WebGL context returns a wrapped context that calls
  * gl.getError after every command and calls a function if the
@@ -222,7 +242,7 @@ function makeDebugContext(ctx, opt_onErrorFunc) {
     if (typeof ctx[propertyName] == 'function') {
        wrapper[propertyName] = makeErrorWrapper(ctx, propertyName);
      } else {
-       wrapper[propertyName] = ctx[propertyName];
+       makePropertyWrapper(wrapper, ctx, propertyName);
      }
   }
 
@@ -304,14 +324,18 @@ function resetToInitialState(ctx) {
   while(ctx.getError());
 }
 
-function makeLostContextSimulatingContext(ctx) {
-  var wrapper_ = {};
+function makeLostContextSimulatingCanvas(canvas) {
+  var unwrappedCanvas_ = canvas;
+  var wrappedCanvas_ = {};
+  var unwrappedContext_;
+  var wrappedContext_;
+  var onLost_ = [];
+  var onRestored_ = [];
+  var wrappedContext_ = {};
   var contextId_ = 1;
   var contextLost_ = false;
   var resourceId_ = 0;
   var resourceDb_ = [];
-  var onLost_ = [];
-  var onRestored_ = [];
   var numCallsToLoseContext_ = 0;
   var numCalls_ = 0;
   var canRestore_ = false;
@@ -319,6 +343,129 @@ function makeLostContextSimulatingContext(ctx) {
 
   // Holds booleans for each GL error so can simulate errors.
   var glErrorShadow_ = { };
+
+  // copy all functions and properties to wrapper
+  for (var propertyName in unwrappedCanvas_) {
+    if (typeof unwrappedCanvas_[propertyName] == 'function') {
+       wrappedCanvas_[propertyName] = makeFunctionWrapper(
+           unwrappedCanvas_, propertyName);
+     } else {
+       makePropertyWrapper(wrappedCanvas_, unwrappedCanvas_, propertyName);
+     }
+  }
+
+  wrappedCanvas_.getContext = function(f) {
+    return function() {
+      var ctx = f.apply(unwrappedCanvas_, arguments);
+      // Did we get a context and is it a WebGL context?
+      if (ctx instanceof WebGLRenderingContext) {
+        if (ctx != unwrappedContext_) {
+          if (unwrappedContext_) {
+            throw "got different context"
+          }
+          unwrappedContext_ = ctx;
+          wrappedContext_ = makeLostContextSimulatingContext(unwrappedContext_);
+        }
+        return wrappedContext_;
+      }
+      return ctx;
+    }
+  }(unwrappedCanvas_.getContext);
+
+  function wrapEvent(listener) {
+    if (typeof(listener) == "function") {
+      return listener;
+    } else {
+      return function(info) {
+        listener.handleEvent(info);
+      }
+    }
+  }
+
+  var addOnContextLostListener = function(listener) {
+    onLost_.push(wrapEvent(listener));
+  };
+
+  var addOnContextRestoredListener = function(listener) {
+    onRestored_.push(wrapEvent(listener));
+  };
+
+
+  function wrapAddEventListener(canvas) {
+    var f = canvas.addEventListener;
+    canvas.addEventListener = function(type, listener, bubble) {
+      switch (type) {
+        case 'webglcontextlost':
+          addOnContextLostListener(listener);
+          break;
+        case 'webglcontextrestored':
+          addOnContextRestoredListener(listener);
+          break;
+        default:
+          f.apply(canvas, arguments);
+      }
+    };
+  }
+
+  wrapAddEventListener(wrappedCanvas_);
+
+  wrappedCanvas_.loseContext = function() {
+    if (!contextLost_) {
+      contextLost_ = true;
+      numCallsToLoseContext_ = 0;
+      ++contextId_;
+      while (unwrappedContext_.getError());
+      clearErrors();
+      glErrorShadow_[unwrappedContext_.CONTEXT_LOST_WEBGL] = true;
+      var event = makeWebGLContextEvent("context lost");
+      var callbacks = onLost_.slice();
+      setTimeout(function() {
+          log("numCallbacks:" + callbacks.length);
+          for (var ii = 0; ii < callbacks.length; ++ii) {
+            log("calling callback:" + ii);
+            callbacks[ii](event);
+          }
+          if (restoreTimeout_ >= 0) {
+            setTimeout(function() {
+                wrappedCanvas_.restoreContext();
+              }, restoreTimeout_);
+          }
+        }, 0);
+    }
+  };
+
+  wrappedCanvas_.restoreContext = function() {
+    if (contextLost_) {
+      if (onRestored_.length) {
+        setTimeout(function() {
+            if (!canRestore_) {
+              throw "can not restore. webglcontestlost listener did not call event.preventDefault";
+            }
+            freeResources();
+            resetToInitialState(unwrappedContext_);
+            contextLost_ = false;
+            numCalls_ = 0;
+            canRestore_ = false;
+            var callbacks = onRestored_.slice();
+            var event = makeWebGLContextEvent("context restored");
+            for (var ii = 0; ii < callbacks.length; ++ii) {
+              callbacks[ii](event);
+            }
+          }, 0);
+      }
+    }
+  };
+
+  wrappedCanvas_.loseContextInNCalls = function(numCalls) {
+    if (contextLost_) {
+      throw "You can not ask a lost contet to be lost";
+    }
+    numCallsToLoseContext_ = numCalls_ + numCalls;
+  };
+
+  wrappedCanvas_.getNumCalls = function() {
+    return numCalls_;
+  };
 
   function isWebGLObject(obj) {
     //return false;
@@ -351,34 +498,46 @@ function makeLostContextSimulatingContext(ctx) {
     ++numCalls_;
     if (!contextLost_) {
       if (numCallsToLoseContext_ == numCalls_) {
-        wrapper_.loseContext();
+        wrappedCanvas_.loseContext();
       }
     }
   }
 
   // Makes a function that simulates WebGL when out of context.
-  function makeLostContextWrapper(ctx, functionName) {
+  function makeLostContextFunctionWrapper(ctx, functionName) {
     var f = ctx[functionName];
     return function() {
+      // log("calling:" + functionName);
       // Only call the functions if the context is not lost.
       loseContextIfTime();
       if (!contextLost_) {
-        if (!checkResources(arguments)) {
-          glErrorShadow_[ctx.INVALID_OPERATION] = true;
-          return;
-        }
+        //if (!checkResources(arguments)) {
+        //  glErrorShadow_[wrappedContext_.INVALID_OPERATION] = true;
+        //  return;
+        //}
         var result = f.apply(ctx, arguments);
         return result;
       }
     };
   }
 
-  for (var propertyName in ctx) {
-    if (typeof ctx[propertyName] == 'function') {
-       wrapper_[propertyName] = makeLostContextWrapper(ctx, propertyName);
-     } else {
-       wrapper_[propertyName] = ctx[propertyName];
-     }
+  function freeResources() {
+    for (var ii = 0; ii < resourceDb_.length; ++ii) {
+      var resource = resourceDb_[ii];
+      if (resource instanceof WebGLBuffer) {
+        unwrappedContext_.deleteBuffer(resource);
+      } else if (resource instanceof WebGLFramebuffer) {
+        unwrappedContext_.deleteFramebuffer(resource);
+      } else if (resource instanceof WebGLProgram) {
+        unwrappedContext_.deleteProgram(resource);
+      } else if (resource instanceof WebGLRenderbuffer) {
+        unwrappedContext_.deleteRenderbuffer(resource);
+      } else if (resource instanceof WebGLShader) {
+        unwrappedContext_.deleteShader(resource);
+      } else if (resource instanceof WebGLTexture) {
+        unwrappedContext_.deleteTexture(resource);
+      }
+    }
   }
 
   function makeWebGLContextEvent(statusMessage) {
@@ -390,251 +549,154 @@ function makeLostContextSimulatingContext(ctx) {
     };
   }
 
-  function freeResources() {
-    for (var ii = 0; ii < resourceDb_.length; ++ii) {
-      var resource = resourceDb_[ii];
-      if (resource instanceof WebGLBuffer) {
-        ctx.deleteBuffer(resource);
-      } else if (resource instanceof WebGLFramebuffer) {
-        ctx.deleteFramebuffer(resource);
-      } else if (resource instanceof WebGLProgram) {
-        ctx.deleteProgram(resource);
-      } else if (resource instanceof WebGLRenderbuffer) {
-        ctx.deleteRenderbuffer(resource);
-      } else if (resource instanceof WebGLShader) {
-        ctx.deleteShader(resource);
-      } else if (resource instanceof WebGLTexture) {
-        ctx.deleteTexture(resource);
-      }
-    }
-  }
+  return wrappedCanvas_;
 
-  wrapper_.loseContext = function() {
-    if (!contextLost_) {
-      contextLost_ = true;
-      numCallsToLoseContext_ = 0;
-      ++contextId_;
-      while (ctx.getError());
-      clearErrors();
-      glErrorShadow_[ctx.CONTEXT_LOST_WEBGL] = true;
-      var event = makeWebGLContextEvent("context lost");
-      var callbacks = onLost_.slice();
-      setTimeout(function() {
-          for (var ii = 0; ii < callbacks.length; ++ii) {
-            callbacks[ii](event);
+  function makeLostContextSimulatingContext(ctx) {
+    // copy all functions and properties to wrapper
+    for (var propertyName in ctx) {
+      if (typeof ctx[propertyName] == 'function') {
+         wrappedContext_[propertyName] = makeLostContextFunctionWrapper(
+             ctx, propertyName);
+       } else {
+         makePropertyWrapper(wrappedContext_, ctx, propertyName);
+       }
+    }
+
+    // Wrap a few functions specially.
+    wrappedContext_.getError = function() {
+      loseContextIfTime();
+      if (!contextLost_) {
+        var err;
+        while (err = unwrappedContext_.getError()) {
+          glErrorShadow_[err] = true;
+        }
+      }
+      for (var err in glErrorShadow_) {
+        if (glErrorShadow_[err]) {
+          delete glErrorShadow_[err];
+          return err;
+        }
+      }
+      return wrappedContext_.NO_ERROR;
+    };
+
+    var creationFunctions = [
+      "createBuffer",
+      "createFramebuffer",
+      "createProgram",
+      "createRenderbuffer",
+      "createShader",
+      "createTexture"
+    ];
+    for (var ii = 0; ii < creationFunctions.length; ++ii) {
+      var functionName = creationFunctions[ii];
+      wrappedContext_[functionName] = function(f) {
+        return function() {
+          loseContextIfTime();
+          if (contextLost_) {
+            return null;
           }
-          if (restoreTimeout_ >= 0) {
-            setTimeout(function() {
-                wrapper_.restoreContext();
-              }, restoreTimeout_);
+          var obj = f.apply(ctx, arguments);
+          obj.__webglDebugContextLostId__ = contextId_;
+          resourceDb_.push(obj);
+          return obj;
+        };
+      }(ctx[functionName]);
+    }
+
+    var functionsThatShouldReturnNull = [
+      "getActiveAttrib",
+      "getActiveUniform",
+      "getBufferParameter",
+      "getContextAttributes",
+      "getAttachedShaders",
+      "getFramebufferAttachmentParameter",
+      "getParameter",
+      "getProgramParameter",
+      "getProgramInfoLog",
+      "getRenderbufferParameter",
+      "getShaderParameter",
+      "getShaderInfoLog",
+      "getShaderSource",
+      "getTexParameter",
+      "getUniform",
+      "getUniformLocation",
+      "getVertexAttrib"
+    ];
+    for (var ii = 0; ii < functionsThatShouldReturnNull.length; ++ii) {
+      var functionName = functionsThatShouldReturnNull[ii];
+      wrappedContext_[functionName] = function(f) {
+        return function() {
+          loseContextIfTime();
+          if (contextLost_) {
+            return null;
           }
-        }, 0);
+          return f.apply(ctx, arguments);
+        }
+      }(wrappedContext_[functionName]);
     }
-  };
 
-  wrapper_.restoreContext = function() {
-    if (contextLost_) {
-      if (onRestored_.length) {
-        setTimeout(function() {
-            if (!canRestore_) {
-              throw "can not restore. webglcontestlost listener did not call event.preventDefault";
-            }
-            freeResources();
-            resetToInitialState(ctx);
-            contextLost_ = false;
-            numCalls_ = 0;
-            canRestore_ = false;
-            var callbacks = onRestored_.slice();
-            var event = makeWebGLContextEvent("context restored");
-            for (var ii = 0; ii < callbacks.length; ++ii) {
-              callbacks[ii](event);
-            }
-          }, 0);
-      }
+    var isFunctions = [
+      "isBuffer",
+      "isEnabled",
+      "isFramebuffer",
+      "isProgram",
+      "isRenderbuffer",
+      "isShader",
+      "isTexture"
+    ];
+    for (var ii = 0; ii < isFunctions.length; ++ii) {
+      var functionName = isFunctions[ii];
+      wrappedContext_[functionName] = function(f) {
+        return function() {
+          loseContextIfTime();
+          if (contextLost_) {
+            return false;
+          }
+          return f.apply(ctx, arguments);
+        }
+      }(wrappedContext_[functionName]);
     }
-  };
 
-  wrapper_.loseContextInNCalls = function(numCalls) {
-    if (contextLost_) {
-      throw "You can not ask a lost contet to be lost";
-    }
-    numCallsToLoseContext_ = numCalls_ + numCalls;
-  };
-
-  wrapper_.getNumCalls = function() {
-    return numCalls_;
-  };
-
-  // Wrap a few functions specially.
-  wrapper_.getError = function() {
-    loseContextIfTime();
-    if (!contextLost_) {
-      var err;
-      while (err = ctx.getError()) {
-        glErrorShadow_[err] = true;
-      }
-    }
-    for (var err in glErrorShadow_) {
-      if (glErrorShadow_[err]) {
-        delete glErrorShadow_[err];
-        return err;
-      }
-    }
-    return ctx.NO_ERROR;
-  };
-
-  var creationFunctions = [
-    "createBuffer",
-    "createFramebuffer",
-    "createProgram",
-    "createRenderbuffer",
-    "createShader",
-    "createTexture"
-  ];
-  for (var ii = 0; ii < creationFunctions.length; ++ii) {
-    var functionName = creationFunctions[ii];
-    wrapper_[functionName] = function(f) {
+    wrappedContext_.checkFramebufferStatus = function(f) {
       return function() {
         loseContextIfTime();
         if (contextLost_) {
-          return null;
+          return wrappedContext_.FRAMEBUFFER_UNSUPPORTED;
         }
-        var obj = f.apply(ctx, arguments);
-        obj.__webglDebugContextLostId__ = contextId_;
-        resourceDb_.push(obj);
-        return obj;
+        return f.apply(ctx, arguments);
       };
-    }(ctx[functionName]);
-  }
+    }(wrappedContext_.checkFramebufferStatus);
 
-  var functionsThatShouldReturnNull = [
-    "getActiveAttrib",
-    "getActiveUniform",
-    "getBufferParameter",
-    "getContextAttributes",
-    "getAttachedShaders",
-    "getFramebufferAttachmentParameter",
-    "getParameter",
-    "getProgramParameter",
-    "getProgramInfoLog",
-    "getRenderbufferParameter",
-    "getShaderParameter",
-    "getShaderInfoLog",
-    "getShaderSource",
-    "getTexParameter",
-    "getUniform",
-    "getUniformLocation",
-    "getVertexAttrib"
-  ];
-  for (var ii = 0; ii < functionsThatShouldReturnNull.length; ++ii) {
-    var functionName = functionsThatShouldReturnNull[ii];
-    wrapper_[functionName] = function(f) {
+    wrappedContext_.getAttribLocation = function(f) {
       return function() {
         loseContextIfTime();
         if (contextLost_) {
-          return null;
+          return -1;
         }
         return f.apply(ctx, arguments);
-      }
-    }(wrapper_[functionName]);
-  }
+      };
+    }(wrappedContext_.getAttribLocation);
 
-  var isFunctions = [
-    "isBuffer",
-    "isEnabled",
-    "isFramebuffer",
-    "isProgram",
-    "isRenderbuffer",
-    "isShader",
-    "isTexture"
-  ];
-  for (var ii = 0; ii < isFunctions.length; ++ii) {
-    var functionName = isFunctions[ii];
-    wrapper_[functionName] = function(f) {
+    wrappedContext_.getVertexAttribOffset = function(f) {
       return function() {
         loseContextIfTime();
         if (contextLost_) {
-          return false;
+          return 0;
         }
         return f.apply(ctx, arguments);
-      }
-    }(wrapper_[functionName]);
+      };
+    }(wrappedContext_.getVertexAttribOffset);
+
+    wrappedContext_.isContextLost = function() {
+      return contextLost_;
+    };
+
+    return wrappedContext_;
   }
-
-  wrapper_.checkFramebufferStatus = function(f) {
-    return function() {
-      loseContextIfTime();
-      if (contextLost_) {
-        return ctx.FRAMEBUFFER_UNSUPPORTED;
-      }
-      return f.apply(ctx, arguments);
-    };
-  }(wrapper_.checkFramebufferStatus);
-
-  wrapper_.getAttribLocation = function(f) {
-    return function() {
-      loseContextIfTime();
-      if (contextLost_) {
-        return -1;
-      }
-      return f.apply(ctx, arguments);
-    };
-  }(wrapper_.getAttribLocation);
-
-  wrapper_.getVertexAttribOffset = function(f) {
-    return function() {
-      loseContextIfTime();
-      if (contextLost_) {
-        return 0;
-      }
-      return f.apply(ctx, arguments);
-    };
-  }(wrapper_.getVertexAttribOffset);
-
-  wrapper_.isContextLost = function() {
-    return contextLost_;
-  };
-
-  function wrapEvent(listener) {
-    if (typeof(listener) == "function") {
-      return listener;
-    } else {
-      return function(info) {
-        listener.handleEvent(info);
-      }
-    }
-  }
-
-  var addOnContextLostListener = function(listener) {
-    onLost_.push(wrapEvent(listener));
-  };
-
-  var addOnContextRestoredListener = function(listener) {
-    onRestored_.push(wrapEvent(listener));
-  };
-
-  function wrapAddEventListener(canvas) {
-    var f = canvas.addEventListener;
-    canvas.addEventListener = function(type, listener, bubble) {
-      switch (type) {
-        case 'webglcontextlost':
-          addOnContextLostListener(listener);
-          break;
-        case 'webglcontextrestored':
-          addOnContextRestoredListener(listener);
-          break;
-        default:
-          f.apply(canvas, arguments);
-      }
-    };
-  }
-
-  wrapAddEventListener(ctx.canvas);
-
-  return wrapper_;
 }
 
-  return {
+return {
     /**
      * Initializes this module. Safe to call more than once.
      * @param {!WebGLRenderingContext} ctx A WebGL context. If
@@ -704,29 +766,29 @@ function makeLostContextSimulatingContext(ctx) {
   'makeDebugContext': makeDebugContext,
 
   /**
-   * Given a WebGL context returns a wrapped context the adds the following
-   * functions.
+   * Given a canvas element returns a wrapped canvas element that will
+   * simulate lost context. The canvas returned adds the following functions.
    *
-   * ctx.loseContext:
+   * loseContext:
    *   simulates a lost context event.
    *
-   * ctx.restoreContext:
+   * restoreContext:
    *   simulates the context being restored.
    *
-   * ctx.lostContextInNCalls:
+   * lostContextInNCalls:
    *   loses the context after N gl calls.
    *
-   * ctx.getNumCalls:
+   * getNumCalls:
    *   tells you how many gl calls there have been so far.
    *
-   * ctx.setRestoreTimeout:
+   * setRestoreTimeout:
    *   sets the number of milliseconds until the context is restored
    *   after it has been lost. Defaults to 0. Pass -1 to prevent
    *   automatic restoring.
    *
-   * @param {!WebGLRenderingContext} ctx The webgl context to wrap.
+   * @param {!Canvas} canvas The canvas element to wrap.
    */
-  'makeLostContextSimulatingContext': makeLostContextSimulatingContext,
+  'makeLostContextSimulatingCanvas': makeLostContextSimulatingCanvas,
 
   /**
    * Resets a context to the initial state.
