@@ -174,20 +174,24 @@ function glFunctionArgToString(functionName, argumentIndex, value) {
 }
 
 function makePropertyWrapper(wrapper, original, propertyName) {
+log("wrap prop: " + propertyName);
   wrapper.__defineGetter__(propertyName, function() {
     return original[propertyName];
   });
   // TODO(gmane): this needs to handle properties that take more than
   // one value?
   wrapper.__defineSetter__(propertyName, function(value) {
+log("set: " + propertyName);
     original[propertyName] = value;
   });
 }
 
 // Makes a function that calls a function on another object.
 function makeFunctionWrapper(original, functionName) {
+log("wrap fn: " + functionName);
   var f = original[functionName];
   return function() {
+log("call: " + functionName);
     var result = f.apply(original, arguments);
     return result;
   };
@@ -325,8 +329,6 @@ function resetToInitialState(ctx) {
 }
 
 function makeLostContextSimulatingCanvas(canvas) {
-  var unwrappedCanvas_ = canvas;
-  var wrappedCanvas_ = {};
   var unwrappedContext_;
   var wrappedContext_;
   var onLost_ = [];
@@ -344,19 +346,9 @@ function makeLostContextSimulatingCanvas(canvas) {
   // Holds booleans for each GL error so can simulate errors.
   var glErrorShadow_ = { };
 
-  // copy all functions and properties to wrapper
-  for (var propertyName in unwrappedCanvas_) {
-    if (typeof unwrappedCanvas_[propertyName] == 'function') {
-       wrappedCanvas_[propertyName] = makeFunctionWrapper(
-           unwrappedCanvas_, propertyName);
-     } else {
-       makePropertyWrapper(wrappedCanvas_, unwrappedCanvas_, propertyName);
-     }
-  }
-
-  wrappedCanvas_.getContext = function(f) {
+  canvas.getContext = function(f) {
     return function() {
-      var ctx = f.apply(unwrappedCanvas_, arguments);
+      var ctx = f.apply(canvas, arguments);
       // Did we get a context and is it a WebGL context?
       if (ctx instanceof WebGLRenderingContext) {
         if (ctx != unwrappedContext_) {
@@ -370,7 +362,7 @@ function makeLostContextSimulatingCanvas(canvas) {
       }
       return ctx;
     }
-  }(unwrappedCanvas_.getContext);
+  }(canvas.getContext);
 
   function wrapEvent(listener) {
     if (typeof(listener) == "function") {
@@ -407,9 +399,9 @@ function makeLostContextSimulatingCanvas(canvas) {
     };
   }
 
-  wrapAddEventListener(wrappedCanvas_);
+  wrapAddEventListener(canvas);
 
-  wrappedCanvas_.loseContext = function() {
+  canvas.loseContext = function() {
     if (!contextLost_) {
       contextLost_ = true;
       numCallsToLoseContext_ = 0;
@@ -427,14 +419,14 @@ function makeLostContextSimulatingCanvas(canvas) {
           }
           if (restoreTimeout_ >= 0) {
             setTimeout(function() {
-                wrappedCanvas_.restoreContext();
+                canvas.restoreContext();
               }, restoreTimeout_);
           }
         }, 0);
     }
   };
 
-  wrappedCanvas_.restoreContext = function() {
+  canvas.restoreContext = function() {
     if (contextLost_) {
       if (onRestored_.length) {
         setTimeout(function() {
@@ -456,14 +448,14 @@ function makeLostContextSimulatingCanvas(canvas) {
     }
   };
 
-  wrappedCanvas_.loseContextInNCalls = function(numCalls) {
+  canvas.loseContextInNCalls = function(numCalls) {
     if (contextLost_) {
       throw "You can not ask a lost contet to be lost";
     }
     numCallsToLoseContext_ = numCalls_ + numCalls;
   };
 
-  wrappedCanvas_.getNumCalls = function() {
+  canvas.getNumCalls = function() {
     return numCalls_;
   };
 
@@ -498,7 +490,7 @@ function makeLostContextSimulatingCanvas(canvas) {
     ++numCalls_;
     if (!contextLost_) {
       if (numCallsToLoseContext_ == numCalls_) {
-        wrappedCanvas_.loseContext();
+        canvas.loseContext();
       }
     }
   }
@@ -549,7 +541,7 @@ function makeLostContextSimulatingCanvas(canvas) {
     };
   }
 
-  return wrappedCanvas_;
+  return canvas;
 
   function makeLostContextSimulatingContext(ctx) {
     // copy all functions and properties to wrapper

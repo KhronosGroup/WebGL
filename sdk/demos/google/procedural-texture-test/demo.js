@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 The Chromium Authors. All rights reserved.
+ * Copyright (c) 2011 The Chromium Authors. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -39,25 +39,48 @@ var g_texCoordOffset=0;
 
 function main() {
     var c = document.getElementById("c");
+
+    //c = WebGLDebugUtils.makeLostContextSimulatingCanvas(c);
+
+    c.addEventListener('webglcontextlost', handleContextLost, false);
+    c.addEventListener('webglcontextrestored', handleContextRestored, false);
+
+    //c.loseContextInNCalls(15);  // tell the simulator when to lose context.
+
     gl = WebGLUtils.setupWebGL(c);
     if (!gl)
         return;
     g_width = c.width;
     g_height = c.height;
     init();
-    draw();
+}
+
+function log(msg) {
+    if (window.console && window.console.log) {
+        console.log(msg);
+    }
+}
+
+function handleContextLost(e) {
+    log("handle context lost");
+    e.preventDefault();
+}
+
+function handleContextRestored() {
+    log("handle context restored");
+    init();
 }
 
 function init() {
     gl.clearColor(0., 0., .7, 1.);
-    gl.viewport(0, 0, g_width, g_height);
     g_texture = createCheckerboardTexture();
     initShaders();
+    draw();
 }
 
 function checkGLError() {
     var error = gl.getError();
-    if (error != gl.NO_ERROR) {
+    if (error != gl.NO_ERROR && error != gl.CONTEXT_LOST_WEBGL) {
         var str = "GL Error: " + error;
         document.body.appendChild(document.createTextNode(str));
         throw str;
@@ -66,15 +89,13 @@ function checkGLError() {
 
 function loadShader(type, shaderSrc) {
     var shader = gl.createShader(type);
-    if (shader == null) {
-        return null;
-    }
     // Load the shader source
     gl.shaderSource(shader, shaderSrc);
     // Compile the shader
     gl.compileShader(shader);
     // Check the compile status
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS) &&
+        !gl.isContextLost()) {
         var infoLog = gl.getShaderInfoLog(shader);
         alert("Error compiling shader:\n" + infoLog);
         gl.deleteShader(shader);
@@ -108,10 +129,6 @@ function initShaders() {
     var fragmentShader = loadShader(gl.FRAGMENT_SHADER, fShaderStr);
     // Create the program object
     var programObject = gl.createProgram();
-    if (programObject == null) {
-        alert("Creating program failed");
-        return;
-    }
     gl.attachShader(programObject, vertexShader);
     gl.attachShader(programObject, fragmentShader);
     // Bind g_Position to attribute 0
@@ -122,7 +139,7 @@ function initShaders() {
     gl.linkProgram(programObject);
     // Check the link status
     var linked = gl.getProgramParameter(programObject, gl.LINK_STATUS);
-    if (!linked) {
+    if (!linked && !gl.isContextLost()) {
         var infoLog = gl.getProgramInfoLog(programObject);
         alert("Error linking program:\n" + infoLog);
         gl.deleteProgram(programObject);
