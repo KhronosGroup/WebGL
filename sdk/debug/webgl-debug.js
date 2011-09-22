@@ -174,24 +174,24 @@ function glFunctionArgToString(functionName, argumentIndex, value) {
 }
 
 function makePropertyWrapper(wrapper, original, propertyName) {
-log("wrap prop: " + propertyName);
+  //log("wrap prop: " + propertyName);
   wrapper.__defineGetter__(propertyName, function() {
     return original[propertyName];
   });
   // TODO(gmane): this needs to handle properties that take more than
   // one value?
   wrapper.__defineSetter__(propertyName, function(value) {
-log("set: " + propertyName);
+    //log("set: " + propertyName);
     original[propertyName] = value;
   });
 }
 
 // Makes a function that calls a function on another object.
 function makeFunctionWrapper(original, functionName) {
-log("wrap fn: " + functionName);
+  //log("wrap fn: " + functionName);
   var f = original[functionName];
   return function() {
-log("call: " + functionName);
+    //log("call: " + functionName);
     var result = f.apply(original, arguments);
     return result;
   };
@@ -412,9 +412,9 @@ function makeLostContextSimulatingCanvas(canvas) {
       var event = makeWebGLContextEvent("context lost");
       var callbacks = onLost_.slice();
       setTimeout(function() {
-          log("numCallbacks:" + callbacks.length);
+          //log("numCallbacks:" + callbacks.length);
           for (var ii = 0; ii < callbacks.length; ++ii) {
-            log("calling callback:" + ii);
+            //log("calling callback:" + ii);
             callbacks[ii](event);
           }
           if (restoreTimeout_ >= 0) {
