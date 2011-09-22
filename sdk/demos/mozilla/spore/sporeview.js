@@ -26,7 +26,6 @@
 */
 
 var shaders = { };
-var vertexBuffers = { };
 
 function getShader(gl, id) {
     var shaderScript = document.getElementById(id);
@@ -53,7 +52,7 @@ function getShader(gl, id) {
     gl.shaderSource(shader, str);
     gl.compileShader(shader);
 
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS) && !gl.isContextLost()) {
         alert(gl.getShaderInfoLog(shader));
         return null;
     }
@@ -73,31 +72,68 @@ function flipImage(img) {
   return tmpcanvas;
 }
 
+function log(msg) {
+    if (window.console && window.console.log) {
+        console.log(msg);
+    }
+}
+
+function handleContextLost(e) {
+    log("handle context lost");
+    e.preventDefault();
+}
+
+function handleContextRestored() {
+    log("handle context restored");
+    init();
+}
+
 var sf = null;
+var canvas;
+var gl;
+var addedHandlers = false;
+var texturesBound = false;
 
 function renderStart() {
-  var canvas = document.getElementById("canvas");
-  var gl = WebGLUtils.setupWebGL(canvas);
+  canvas = document.getElementById("canvas");
+
+  //canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(canvas);
+
+  canvas.addEventListener('webglcontextlost', handleContextLost, false);
+  canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+
+  // tell the simulator when to lose context.
+  //canvas.loseContextInNCalls(15);
+
+  gl = WebGLUtils.setupWebGL(canvas);
 
   if (!gl) {
     return;
   }
 
-  if (!("sp" in shaders)) {
-    shaders.fs = getShader(gl, "shader-fs");
-    shaders.vs = getShader(gl, "shader-vs");
+  init();
+}
 
-    shaders.sp = gl.createProgram();
-    gl.attachShader(shaders.sp, shaders.vs);
-    gl.attachShader(shaders.sp, shaders.fs);
-    gl.linkProgram(shaders.sp);
+function init() {
+  canvas.removeEventListener("mousedown", mouseDownHandler, false);
+  canvas.removeEventListener("mousemove", mouseMoveHandler, false);
+  canvas.removeEventListener("mouseup", mouseUpHandler, false);
 
-    if (!gl.getProgramParameter(shaders.sp, gl.LINK_STATUS)) {
-      alert(gl.getProgramInfoLog(shader));
-    }
+  texturesBound = false;
+  shaders = {};
+  shaders.fs = getShader(gl, "shader-fs");
+  shaders.vs = getShader(gl, "shader-vs");
 
-    gl.useProgram(shaders.sp);
+  shaders.sp = gl.createProgram();
+  gl.attachShader(shaders.sp, shaders.vs);
+  gl.attachShader(shaders.sp, shaders.fs);
+  gl.linkProgram(shaders.sp);
+
+  if (!gl.getProgramParameter(shaders.sp, gl.LINK_STATUS) && !gl.isContextLost()) {
+    alert(gl.getProgramInfoLog(shader));
   }
+
+  gl.useProgram(shaders.sp);
 
   var sp = shaders.sp;
 
@@ -111,11 +147,6 @@ function renderStart() {
 
   var viewPositionUniform = gl.getUniformLocation(sp, "uViewPosition");
   var colorUniform = gl.getUniformLocation(sp, "uColor");
-
-  if (colorUniform == -1) {
-    alert("Please update to a newer Firefox nightly, to pick up some WebGL API changes");
-    colorUniform = null;
-  }
 
   if (colorUniform) {
     gl.uniform4fv(colorUniform, new Float32Array([0.1, 0.2, 0.4, 1.0]));
@@ -214,21 +245,15 @@ function renderStart() {
 
   var numVertexPoints = sf.mesh.position.length / 3;
 
-  // done with the raw js arrays, nuke them to free up some memory
-  delete sf.mesh.position;
-  delete sf.mesh.normal;
-  delete sf.mesh.texcoord;
-
-  var texturesBound = false;
+  // NOTE: We can't nuke these if we want to handle lost context unless we
+  // wanted to re-download them.
+  //// done with the raw js arrays, nuke them to free up some memory
+  //delete sf.mesh.position;
+  //delete sf.mesh.normal;
+  //delete sf.mesh.texcoord;
 
   gl.clearColor(0.2, 0.2, 0.2, 1.0);
-  gl.viewport(0, 0, canvas.width, canvas.height);
-  if (gl.clearDepthf) {
-    alert("Please update to a newer Firefox nightly, to pick up some WebGL API changes");
-    gl.clearDepthf(1.0);
-  } else {
-    gl.clearDepth(1.0);
-  }
+  gl.clearDepth(1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.enable(gl.DEPTH_TEST);
 
@@ -310,30 +335,33 @@ function renderStart() {
   var mouseDown = false;
   var lastX = 0;
 
-  canvas.addEventListener("mousedown", function(ev) {
-                            mouseDown = true;
-                            lastX = ev.screenX;
-                            return true;
-                          }, false);
+  function mouseDownHandler(ev) {
+    mouseDown = true;
+    lastX = ev.screenX;
+    return true;
+  }
+  function mouseMoveHandler(ev) {
+    if (!mouseDown)
+      return false;
+    var mdelta = ev.screenX - lastX;
+    lastX = ev.screenX;
+    currentRotation -= mdelta;
+    while (currentRotation < 0)
+      currentRotation += 360;
+    if (currentRotation >= 360)
+      currentRotation = currentRotation % 360;
 
-  canvas.addEventListener("mousemove", function(ev) {
-                            if (!mouseDown)
-                              return false;
-                            var mdelta = ev.screenX - lastX;
-                            lastX = ev.screenX;
-                            currentRotation -= mdelta;
-                            while (currentRotation < 0)
-                              currentRotation += 360;
-                            if (currentRotation >= 360)
-                              currentRotation = currentRotation % 360;
+    draw();
+    return true;
+  }
 
-                            draw();
-                            return true;
-                          }, false);
+  function mouseUpHandler(ev) {
+    mouseDown = false;
+  }
 
-  canvas.addEventListener("mouseup", function(ev) {
-                            mouseDown = false;
-                          }, false);
+  canvas.addEventListener("mousedown", mouseDownHandler, false);
+  canvas.addEventListener("mousemove", mouseMoveHandler, false);
+  canvas.addEventListener("mouseup", mouseUpHandler, false);
 }
 
 function handleLoad() {
