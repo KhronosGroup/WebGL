@@ -40,6 +40,7 @@ var g_canvas;
 var g_fpsCounter = null;
 var g_width = 0;
 var g_height = 0;
+var g_requestId;
 var g_particleSystem = null;
 var g_controller = null;
 var g_math;
@@ -134,12 +135,11 @@ function main() {
     g_canvas = document.getElementById("c");
 
     //g_canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(g_canvas);
+    // tell the simulator when to lose context.
+    //g_canvas.loseContextInNCalls(15);
 
     g_canvas.addEventListener('webglcontextlost', handleContextLost, false);
     g_canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
-
-    //g_canvas.loseContextInNCalls(15);  // tell the simulator when to lose context.
-
 
     gl = WebGLUtils.setupWebGL(g_canvas);
     if (!gl)
@@ -175,6 +175,10 @@ function log(msg) {
 function handleContextLost(e) {
     log("handle context lost");
     e.preventDefault();
+    if (g_requestId !== undefined) {
+      window.cancelRequestAnimFrame(g_requestId);
+      g_requestId = undefined;
+    }
 }
 
 function handleContextRestored() {
@@ -569,5 +573,5 @@ function draw() {
     if (g_fpsCounter) {
         g_fpsCounter.update();
     }
-    window.requestAnimFrame(draw, g_canvas);
+    g_requestId = window.requestAnimFrame(draw, g_canvas);
 }

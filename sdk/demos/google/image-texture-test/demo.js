@@ -41,11 +41,11 @@ function main() {
     var c = document.getElementById("c");
 
     //c = WebGLDebugUtils.makeLostContextSimulatingCanvas(c);
+    // tell the simulator when to lose context.
+    //c.loseContextInNCalls(15);
 
     c.addEventListener('webglcontextlost', handleContextLost, false);
     c.addEventListener('webglcontextrestored', handleContextRestored, false);
-
-    //c.loseContextInNCalls(15);  // tell the simulator when to lose context.
 
     gl = WebGLUtils.setupWebGL(c);
     if (!gl)
