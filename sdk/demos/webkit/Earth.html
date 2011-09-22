@@ -168,12 +168,6 @@
                 currentAngle -= 360;
         }
 
-        function log(msg) {
-            if (window.console && window.console.log) {
-                console.log(msg);
-            }
-        }
-
         function start()
         {
             var c = document.getElementById("example");
@@ -181,12 +175,11 @@
             var h = Math.floor(window.innerHeight * 0.9);
 
             //c = WebGLDebugUtils.makeLostContextSimulatingCanvas(c);
+            // tell the simulator when to lose context.
+            //c.loseContextInNCalls(1500);
 
             c.addEventListener('webglcontextlost', handleContextLost, false);
             c.addEventListener('webglcontextrestored', handleContextRestored, false);
-
-            // tell the simulator when to lose context.
-            //c.loseContextInNCalls(1500);
 
             c.width = w;
             c.height = h;
@@ -207,7 +200,7 @@
             f();
 
             function handleContextLost(e) {
-                log("handle context lost");
+                ctx.console.log("handle context lost");
                 e.preventDefault();
                 if (requestId !== undefined) {
                     window.cancelRequestAnimFrame(requestId);
@@ -216,7 +209,7 @@
             }
 
             function handleContextRestored() {
-                log("handle context restored");
+                ctx.console.log("handle context restored");
                 init();
                 f();
             }

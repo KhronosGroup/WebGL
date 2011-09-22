@@ -57,14 +57,8 @@ function initWebGL(canvasName, vshader, fshader, attribs, clearColor, clearDepth
     var vertexShader = loadShader(gl, vshader);
     var fragmentShader = loadShader(gl, fshader);
 
-    if (!vertexShader || !fragmentShader)
-        return null;
-
     // Create the program object
     gl.program = gl.createProgram();
-
-    if (!gl.program)
-        return null;
 
     // Attach our two shaders to the program
     gl.attachShader (gl.program, vertexShader);

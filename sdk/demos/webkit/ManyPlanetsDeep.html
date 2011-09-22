@@ -29,6 +29,7 @@
   <head>
     <title>Many Planets Deep</title>
     <script type="text/javascript" src="../common/webgl-utils.js"></script>
+    <script type="text/javascript" src="../../debug/webgl-debug.js"></script>
     <script src="resources/J3DI.js"> </script>
     <script src="resources/J3DIMath.js" type="text/javascript"> </script>
 
@@ -101,6 +102,7 @@
 
         width = -1;
         height = -1;
+        var requestId;
 
         function reshape(ctx)
         {
@@ -161,7 +163,7 @@
         function drawPicture(ctx)
         {
             reshape(ctx);
-            ctx.clear(ctx.COLOR_BUFFER_BIT | ctx.DEPTH_BUFFER_BIT);
+	        ctx.clear(ctx.COLOR_BUFFER_BIT | ctx.DEPTH_BUFFER_BIT);
 
             var startX = -layoutWidth/2;
             var startY = -layoutHeight/2;
@@ -199,6 +201,13 @@
             var w = Math.floor(window.innerWidth * 0.9);
             var h = Math.floor(window.innerHeight * 0.9);
 
+            //c = WebGLDebugUtils.makeLostContextSimulatingCanvas(c);
+            // tell the simulator when to lose context.
+            //c.loseContextInNCalls(1500);
+
+            c.addEventListener('webglcontextlost', handleContextLost, false);
+            c.addEventListener('webglcontextrestored', handleContextRestored, false);
+
             c.width = w;
             c.height = h;
 
@@ -219,10 +228,25 @@
 
             framerate = new Framerate("framerate");
             var f = function() {
-                window.requestAnimFrame(f, c);
+                requestId = window.requestAnimFrame(f, c);
                 drawPicture(ctx)
             };
             f();
+
+            function handleContextLost(e) {
+                ctx.console.log("handle context lost");
+                e.preventDefault();
+                if (requestId !== undefined) {
+                    window.cancelRequestAnimFrame(requestId);
+                    requestId = undefined;
+                }
+            }
+
+            function handleContextRestored() {
+                ctx.console.log("handle context restored");
+                init();
+                f();
+            }
         }
     </script>
     <style type="text/css">

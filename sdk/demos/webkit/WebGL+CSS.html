@@ -5,6 +5,7 @@
     <script src="resources/J3DI.js"> </script>
     <script src="resources/J3DIMath.js" type="text/javascript"> </script>
     <script type="text/javascript" src="../common/webgl-utils.js"></script>
+    <script type="text/javascript" src="../../debug/webgl-debug.js"></script>
     <script id="vshader" type="x-shader/x-vertex">
         /*
           Copyright (c) 2008 Seneca College
@@ -238,6 +239,7 @@
         width = -1;
         height = -1;
         loaded = false;
+        var requestId;
 
         function reshape(ctx)
         {
@@ -326,6 +328,13 @@
                 container.className = isTilted ? 'tilted' : '';
             }, false);
 
+            //canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(canvas);
+            // tell the simulator when to lose context.
+            //canvas.loseContextInNCalls(1500);
+
+            canvas.addEventListener('webglcontextlost', handleContextLost, false);
+            canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
+
             var ctx = init();
             if (!ctx) {
                 return;
@@ -334,10 +343,26 @@
             incAngle = 0.2;
             framerate = new Framerate("framerate");
             var f = function() {
-                window.requestAnimFrame(f, canvas);
+                requestId = window.requestAnimFrame(f, canvas);
                 drawPicture(ctx);
             };
             f();
+
+            function handleContextLost(e) {
+                ctx.console.log("handle context lost");
+                e.preventDefault();
+                if (requestId !== undefined) {
+                    window.cancelRequestAnimFrame(requestId);
+                    requestId = undefined;
+                }
+            }
+
+            function handleContextRestored() {
+                ctx.console.log("handle context restored");
+                loaded = false;
+                init();
+                f();
+            }
         }
 
         var isTilted = false;
