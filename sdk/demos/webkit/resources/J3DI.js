@@ -79,7 +79,7 @@ function initWebGL(canvasName, vshader, fshader, attribs, clearColor, clearDepth
 
     // Check the link status
     var linked = gl.getProgramParameter(gl.program, gl.LINK_STATUS);
-    if (!linked) {
+    if (!linked && !gl.isContextLost()) {
         // something went wrong with the link
         var error = gl.getProgramInfoLog (gl.program);
         gl.console.log("Error in program linking:"+error);
@@ -128,10 +128,6 @@ function loadShader(ctx, shaderId)
 
     // Create the shader object
     var shader = ctx.createShader(shaderType);
-    if (shader == null) {
-        ctx.console.log("*** Error: unable to create shader '"+shaderId+"'");
-        return null;
-    }
 
     // Load the shader source
     ctx.shaderSource(shader, shaderScript.text);
@@ -141,7 +137,7 @@ function loadShader(ctx, shaderId)
 
     // Check the compile status
     var compiled = ctx.getShaderParameter(shader, ctx.COMPILE_STATUS);
-    if (!compiled) {
+    if (!compiled && !ctx.isContextLost()) {
         // Something went wrong during compilation; get the error
         var error = ctx.getShaderInfoLog(shader);
         ctx.console.log("*** Error compiling shader '"+shaderId+"':"+error);
@@ -516,9 +512,9 @@ function doLoadObj(obj, text)
 function loadImageTexture(ctx, url)
 {
     var texture = ctx.createTexture();
-    texture.image = new Image();
-    texture.image.onload = function() { doLoadImageTexture(ctx, texture.image, texture) }
-    texture.image.src = url;
+    var image = new Image();
+    image.onload = function() { doLoadImageTexture(ctx, image, texture) }
+    image.src = url;
     return texture;
 }
 
