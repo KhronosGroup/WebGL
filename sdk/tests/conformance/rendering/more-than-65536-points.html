@@ -35,7 +35,8 @@ void main() {
 </script>
 <script>
 var wtu = WebGLTestUtils;
-var gl = initWebGL("example", "vs", "fs", ["vPosition", "vColor"], [0, 0, 0, 1], 1);
+// The antialias:false context creation attribute is a concession to some older and buggier drivers.
+var gl = initWebGL("example", "vs", "fs", ["vPosition", "vColor"], [0, 0, 0, 1], 1, { antialias: false });
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after initWebGL");
 var bufferObjects = wtu.setupUnitQuad(gl, 0, 1);
 gl.bindBuffer(gl.ARRAY_BUFFER, bufferObjects[0]);
