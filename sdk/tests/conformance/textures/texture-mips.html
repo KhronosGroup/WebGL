@@ -124,7 +124,7 @@ function init()
       "texture that is only using the top level even though other levels are defined " +
       "should draw with red");
 
-  // Set the top 2 levels
+  // Set the top 2 levels using generateMipmap
   fillLevel(0, 2, blue);
   debug("mips: blue(2x2), lightGreen(8x8-unused), lightGreen(4x4-unused), lightGreen(2x2-unused), lightGreen(1x1-unused)");
   gl.generateMipmap(gl.TEXTURE_2D);
@@ -136,7 +136,7 @@ function init()
       "should draw with blue");
 
 
-  // Set the top 3 levels back to sizes the end up using levels 2, 3, and 4
+  // Set the top 2 levels back to sizes that end up using levels 2, 3, and 4 again.
   fillLevel(0, 16, blue);
   debug("mips: blue(16x16), blue(1x1), lightGreen(4x4-unused), lightGreen(2x2-unused), lightGreen(1x1-unused)");
   fillLevel(1, 8, blue);
