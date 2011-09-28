@@ -37,26 +37,17 @@ var atanImplementation = [
   "    value = -value;",
   "  }",
   "",
-  "  if (value <= 1.0) {",
-  "    // Use Taylors series expansion for atan",
-  "    for(int ii = 1; ii < 12; ii += 2) {",
-  "      atan_value += scale * pow(value, float(ii)) / float(ii);",
-  "      scale = -scale;",
-  "    }",
-  "",
-  "    return sign * atan_value;",
-  "  }",
-  "",
-  "  value = 1.0 / value;",
+  "  bool value_le_1 = value <= 1.0;",
+  "  value = value_le_1 ? value : 1.0 / value;",
   "",
   "  // Use Taylors series expansion for atan",
-  "  for(int ii = 1; ii < 12; ii += 2) {",
+  "  for(int ii = 1; ii < 8; ii += 2) {",
   "    atan_value += scale * pow(value, float(ii)) / float(ii);",
   "    scale = -scale;",
   "  }",
   "",
-  "  return sign * (kHalfPI - atan_value);",
-  "}"
+  "  return value_le_1 ? sign * atan_value : sign * (kHalfPI - atan_value);",
+  "}",
 ].join("\n");
 
 GLSLGenerator.runFeatureTest({
@@ -70,7 +61,7 @@ GLSLGenerator.runFeatureTest({
     "#define $(func)_base(value) atan_impl(value)"
   ].join("\n"),
   gridRes: 8,
-  tolerance: 2,
+  tolerance: 4,
   extra: piConstants,
   tests: [
     ["$(output) = vec4(",
