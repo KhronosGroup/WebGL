@@ -5,6 +5,7 @@ var vertexShaderTemplate = [
   "",
   "varying vec4 vColor;",
   "",
+  "$(extra)",
   "$(emu)",
   "",
   "void main()",
@@ -26,6 +27,7 @@ var fragmentShaderTemplate = [
   "",
   "varying vec4 vColor;",
   "",
+  "$(extra)",
   "$(emu)",
   "",
   "void main()",
@@ -54,7 +56,6 @@ var baseFragmentShader = [
   "#if defined(GL_ES)",
   "precision mediump float;",
   "#endif",
-  "",
   "varying vec4 vColor;",
   "",
   "void main()",
@@ -147,6 +148,7 @@ var generateReferenceShader = function(
   var feature = params.feature;
   var testFunc = params.testFunc;
   var emuFunc = params.emuFunc || "";
+  var extra = params.extra || '';
   var args = params.args || "$(type) value";
   var type = typeInfo.type;
   var typeCode = typeInfo.code;
@@ -180,6 +182,7 @@ var generateReferenceShader = function(
     baseArgsW: baseArgsW
   });
   var shader = replaceParams(template, {
+    extra: extra,
     emu: emuFunc + "\n\n" + typeCode,
     test: test
   });
@@ -199,7 +202,8 @@ var generateTestShader = function(
     output: output,
     func: feature
   });
-  var shader = replaceParams(extra + template, {
+  var shader = replaceParams(template, {
+    extra: extra,
     emu: '',
     test: test
   });
@@ -315,8 +319,13 @@ var runFeatureTest = function(params) {
       var refData = draw(
           canvas, referenceVertexShaderSource, referenceFragmentShaderSource);
       var refImg = makeImage(canvas);
-      var testData = draw(
-          canvas, testVertexShaderSource, referenceFragmentShaderSource);
+      if (ss == 0) {
+        var testData = draw(
+            canvas, testVertexShaderSource, referenceFragmentShaderSource);
+      } else {
+        var testData = draw(
+            canvas, referenceVertexShaderSource, testFragmentShaderSource);
+      }
       var testImg = makeImage(canvas);
 
       reportResults(refData, refImg, testData, testImg);

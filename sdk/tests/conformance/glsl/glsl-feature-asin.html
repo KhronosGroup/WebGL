@@ -27,49 +27,11 @@ var piConstants = [
 ].join("\n");
 
 var asinImplementation = [
-  piConstants,
-  "const float kAsin00 = -1.5707963267948966;",
-  "const float kAsin01 = -1.0654358165107394;",
-  "const float kAsin02 = -0.848062078981481;",
-  "const float kAsin03 = -0.6751315329370317;",
-  "const float kAsin04 = -0.5235987755982988;",
-  "const float kAsin05 = -0.3843967744956391;",
-  "const float kAsin06 = -0.25268025514207865;",
-  "const float kAsin07 = -0.1253278311680654;",
-  "const float kAsin08 = 0.0;",
-  "const float kAsin09 = 0.1253278311680654;",
-  "const float kAsin10 = 0.25268025514207865;",
-  "const float kAsin11 = 0.3843967744956391;",
-  "const float kAsin12 = 0.5235987755982988;",
-  "const float kAsin13 = 0.6751315329370317;",
-  "const float kAsin14 = 0.848062078981481;",
-  "const float kAsin15 = 1.0654358165107394;",
-  "const float kAsin16 = 1.5707963267948966;",
-  "",
-  "float asin_impl(float value) {",
-  "  value = (value + 1.0) * 8.0;",        // make it from 0 to 16.0
-  "  int ndx = int(floor(value));",        // table index
-  "  float lerp = value - floor(value);",  // lerp between table indices
-  "  float c = kAsin16;",                  // assume last value
-  "",
-  "  if (ndx == 0)       { c = mix(kAsin00, kAsin01, lerp); }",
-  "  else if (ndx ==  1) { c = mix(kAsin01, kAsin02, lerp); }",
-  "  else if (ndx ==  2) { c = mix(kAsin02, kAsin03, lerp); }",
-  "  else if (ndx ==  3) { c = mix(kAsin03, kAsin04, lerp); }",
-  "  else if (ndx ==  4) { c = mix(kAsin04, kAsin05, lerp); }",
-  "  else if (ndx ==  5) { c = mix(kAsin05, kAsin06, lerp); }",
-  "  else if (ndx ==  6) { c = mix(kAsin06, kAsin07, lerp); }",
-  "  else if (ndx ==  7) { c = mix(kAsin07, kAsin08, lerp); }",
-  "  else if (ndx ==  8) { c = mix(kAsin08, kAsin09, lerp); }",
-  "  else if (ndx ==  9) { c = mix(kAsin09, kAsin10, lerp); }",
-  "  else if (ndx == 10) { c = mix(kAsin10, kAsin11, lerp); }",
-  "  else if (ndx == 11) { c = mix(kAsin11, kAsin12, lerp); }",
-  "  else if (ndx == 12) { c = mix(kAsin12, kAsin13, lerp); }",
-  "  else if (ndx == 13) { c = mix(kAsin13, kAsin14, lerp); }",
-  "  else if (ndx == 14) { c = mix(kAsin14, kAsin15, lerp); }",
-  "  else if (ndx == 15) { c = mix(kAsin15, kAsin16, lerp); }",
-  "",
-  "  return c;",
+  "float asin_impl(float v) {",
+  "  return v + (1.0 / 2.0) * pow(v, 3.0) / 3.0 +",
+  "             ((1.0 * 3.0) / (2.0 * 4.0)) * pow(v, 5.0) / 5.0 +",
+  "             ((1.0 * 3.0 * 5.0) / (2.0 * 4.0 * 6.0)) * pow(v, 7.0) / 7.0 +",
+  "             ((1.0 * 3.0 * 5.0 * 7.0) / (2.0 * 4.0 * 6.0 * 8.0)) * pow(v, 9.0) / 9.0;",
   "}"
 ].join("\n");
 
@@ -85,22 +47,22 @@ GLSLGenerator.runFeatureTest({
     "}"
   ].join("\n"),
   gridRes: 8,
-  tolerance: 8,
+  tolerance: 2,
   extra: piConstants,
   tests: [
     ["$(output) = vec4(",
-     "    $(func)($(input).x) / kPI + 0.5,",
-     "    $(func)($(input).y) / kPI + 0.5,",
+     "    $(func)($(input).x * 0.8) / kPI + 0.5,",
+     "    $(func)($(input).y * 0.8) / kPI + 0.5,",
      "    0,",
      "    1);"].join("\n"),
     ["$(output) = vec4(",
-     "    $(func)($(input).xy) / kPI + vec2(0.5, 0.5),",
+     "    $(func)($(input).xy * 0.8) / kPI + 0.5,",
      "    0, 1);"].join("\n"),
     ["$(output) = vec4(",
-     "    $(func)($(input).xyz) / kPI + vec3(0.5, 0.5, 0.5),",
+     "    $(func)($(input).xyz * 0.8) / kPI + 0.5,",
      "    1);"].join("\n"),
     ["$(output) = ",
-     "    $(func)($(input)) / kPI + vec4(0.5, 0.5, 0.5, 0.5);",
+     "    $(func)($(input) * 0.8) / kPI + 0.5;",
     ].join("\n")
   ]
 });

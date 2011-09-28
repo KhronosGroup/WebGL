@@ -27,7 +27,6 @@ var piConstants = [
 ].join("\n");
 
 var atanImplementation = [
-  piConstants,
   "float atan_impl(float value) {",
   "  float atan_value = 0.0;",
   "  float scale = 1.0;",
@@ -71,7 +70,7 @@ GLSLGenerator.runFeatureTest({
     "#define $(func)_base(value) atan_impl(value)"
   ].join("\n"),
   gridRes: 8,
-  tolerance: 4,
+  tolerance: 2,
   extra: piConstants,
   tests: [
     ["$(output) = vec4(",
