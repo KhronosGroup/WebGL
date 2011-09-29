@@ -28,7 +28,7 @@ GLSLGenerator.runFeatureTest({
   simpleEmu: [
     "$(type) $(func)_emu($(args)) {",
     "   return dot(Nref, I) < 0.0 ? N : -N;",
-    "}"].join("\n")
+    "}"].join("\n"),
   gridRes: 8,
   tests: [
     ["$(output) = vec4(",
