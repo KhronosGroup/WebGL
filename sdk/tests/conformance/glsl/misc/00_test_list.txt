@@ -1,3 +1,7 @@
+#glsl-2types-of-textures-on-same-unit.html
+glsl-conformance.html
+glsl-function-nodes.html
+glsl-long-variable-names.html
 non-ascii-comments.vert.html
 non-ascii.vert.html
 shader-with-256-character-identifier.frag.html

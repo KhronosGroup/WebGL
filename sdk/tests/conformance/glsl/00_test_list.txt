@@ -2,11 +2,5 @@ functions/00_test_list.txt
 implicit/00_test_list.txt
 misc/00_test_list.txt
 reserved/00_test_list.txt
-gl-fragcoord.html
-gl-frontfacing.html
-gl-pointcoord.html
-#glsl-2types-of-textures-on-same-unit.html
-glsl-conformance.html
-glsl-function-nodes.html
-glsl-long-variable-names.html
+variables/00_test_list.txt
 
