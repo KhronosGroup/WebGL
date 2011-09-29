@@ -1,4 +1,5 @@
 functions/00_test_list.txt
+implicit/00_test_list.txt
 misc/00_test_list.txt
 gl-fragcoord.html
 gl-frontfacing.html
