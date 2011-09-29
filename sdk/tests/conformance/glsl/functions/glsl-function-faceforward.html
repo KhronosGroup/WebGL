@@ -25,37 +25,15 @@ GLSLGenerator.runFeatureTest({
   args: "$(type) N, $(type) I, $(type) Nref",
   baseArgs: "value$(field)",
   testFunc: "$(func)($(type),$(type),$(type))",
-  emuFuncs: [
-    { type: "float",
-      code: [
-        "float $(func)_emu($(args)) {",
-        "   return dot(Nref, I) < 0.0 ? N : -N;",
-        "}"].join("\n")
-    },
-    { type: "vec2",
-      code: [
-        "vec2 $(func)_emu($(args)) {",
-        "   return dot(Nref, I) < 0.0 ? N : -N;",
-        "}"].join("\n")
-    },
-    { type: "vec3",
-      code: [
-        "vec3 $(func)_emu($(args)) {",
-        "   return dot(Nref, I) < 0.0 ? N : -N;",
-        "}"].join("\n")
-    },
-    { type: "vec4",
-      code: [
-        "vec4 $(func)_emu($(args)) {",
-        "   return dot(Nref, I) < 0.0 ? N : -N;",
-        "}"].join("\n")
-    }
-  ],
+  simpleEmu: [
+    "$(type) $(func)_emu($(args)) {",
+    "   return dot(Nref, I) < 0.0 ? N : -N;",
+    "}"].join("\n")
   gridRes: 8,
   tests: [
     ["$(output) = vec4(",
      "    $(func)(",
-     "        $(input).x * 2.0 - 1.0,", 
+     "        $(input).x * 2.0 - 1.0,",
      "        $(input).y * 2.0 - 1.0,",
      "        $(input).z * 2.0 - 1.0),",
      "    0,",
@@ -63,7 +41,7 @@ GLSLGenerator.runFeatureTest({
      "    1);"].join("\n"),
     ["$(output) = vec4(",
      "    $(func)(",
-     "        $(input).xy * 2.0 - 1.0,", 
+     "        $(input).xy * 2.0 - 1.0,",
      "        $(input).yz * 2.0 - 1.0,",
      "        $(input).zw * 2.0 - 1.0),",
      "    0, 1);"].join("\n"),
