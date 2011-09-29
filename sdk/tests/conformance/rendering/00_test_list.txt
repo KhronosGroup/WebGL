@@ -3,7 +3,7 @@ draw-elements-out-of-bounds.html
 gl-clear.html
 gl-drawelements.html
 gl-scissor-test.html
-more-than-65536-points.html
+more-than-65536-indices.html
 point-size.html
 triangle.html
 

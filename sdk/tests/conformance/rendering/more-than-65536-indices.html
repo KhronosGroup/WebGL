@@ -7,7 +7,7 @@ found in the LICENSE file.
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL More than 65536 points.</title>
+<title>WebGL More than 65536 indices.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"> </script>
@@ -34,6 +34,7 @@ void main() {
 }
 </script>
 <script>
+description("checks that rendering with more than 65536 indices works.");
 var wtu = WebGLTestUtils;
 // The antialias:false context creation attribute is a concession to some older and buggier drivers.
 var gl = initWebGL("example", "vs", "fs", ["vPosition", "vColor"], [0, 0, 0, 1], 1, { antialias: false });
