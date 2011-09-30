@@ -321,7 +321,7 @@ function resetToInitialState(ctx) {
   ctx.stencilFunc(ctx.ALWAYS, 0, 0xFFFFFFFF);
   ctx.stencilMask(0xFFFFFFFF);
   ctx.stencilOp(ctx.KEEP, ctx.KEEP, ctx.KEEP);
-  ctx.viewport(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
+  ctx.viewport(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.clear(ctx.COLOR_BUFFER_BIT | ctx.DEPTH_BUFFER_BIT | ctx.STENCIL_BUFFER_BIT);
 
   // TODO: This should NOT be needed but Firefox fails with 'hint'
