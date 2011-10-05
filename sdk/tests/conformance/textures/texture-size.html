@@ -59,8 +59,10 @@ debug("MAX_TEXTURE_SIZE:" + max2DSize);
 debug("MAX_CUBE_MAP_TEXTURE_SIZE:" + maxCubeMapSize);
 // Assuming 2048x2048xRGBA (16meg) will run on all WebGL platforms
 var max2DSquareSize = Math.min(max2DSize, 2048);
+var max2DSquareSize = Math.min(max2DSize, 128);
 // I'd prefer this to be 2048 but that's 16meg x 6 faces or 96meg.
 var maxCubeMapSize = Math.min(maxCubeMapSize, 1024);
+var maxCubeMapSize = Math.min(maxCubeMapSize, 128);
 
 var colors = [
   { name: "green", rgba: [0, 0, 255, 255] },
