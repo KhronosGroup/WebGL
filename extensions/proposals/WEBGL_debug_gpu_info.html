@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <title>WebGL WEBGL_debug_shaders Extension Specification</title>
+    <title>WebGL WEBGL_debug_gpu_info Extension Specification</title>
     <link rel="stylesheet" type="text/css" href="../../resources/webgl-extension.css" />
     <link rel="stylesheet" type="text/css" href="../../resources/default.css" />
     <script src="../../resources/jquery-1.3.2.min.js" type="text/javascript"></script>
@@ -17,10 +17,10 @@
     </div>
     <!--end-logo-->
     
-    <h1>WebGL WEBGL_debug_shaders Extension Draft Specification</h1>
+    <h1>WebGL WEBGL_debug_gpu_info Extension Draft Specification</h1>
     
     <h2 class="no-toc">Name</h2>
-    <p> WEBGL_debug_shaders </p>
+    <p> WEBGL_debug_gpu_info </p>
 
     <h2 class="no-toc">Contact</h2>
     <p> <a href="mailto:enne@chromium.org">zmo@chromium.org</a> </p>
@@ -45,7 +45,7 @@
 
     <h2 class="no-toc">Overview</h2>
     <p>
-      WebGL uses the GLSL ES 2.0 spec on all platforms, and translates these shaders to the host platform's native language (HLSL, GLSL, and even GLSL ES). For debugging purpose, it is useful to be able to examine the shader after translation. This extension exposes a new function <code>getTranslatedShaderSource</code> for such purposes.
+      This extension exposes new tokens for querying the underlying graphics driver's <code>VENDOR</code> and <code>RENDERER</code> strings.
     </p>
 
     <h2 class="no-toc">IDL</h2>
@@ -53,9 +53,10 @@
 <pre class="idl">
 module webgl {
 
-interface WEBGL_debug_shaders {
+interface WEBGL_debug_gpu_info {
 
-      DOMString getTranslatedShaderSource(WebGLShader shader);
+      const GLenum UNMASKED_VENDOR            = 0x6901; ??
+      const GLenum UNMASKED_RENDERER          = 0x6902; ??
 
 };
 
@@ -63,18 +64,28 @@ interface WEBGL_debug_shaders {
 </pre>
     </p>
 
-    <h2 class="no-toc">New Functions and Methods</h2>
+    <h2 class="no-toc">New Tokens</h2>
 
     <dl class="methods">
-        <dt class="idl-code">DOMString getTranslatedShaderSource(WebGLShader shader)</dt>
+        <dt class="idl-code">any getParameter(GLenum pname)</dt>
         <dd>
-          If no source has been defined, <code>compileShader()</code> has not been called, or the translation has failed for <code>shader</code>, an empty string is returned; otherwise, return the translated source.
+          Two new enums <code>UNMASKED_VENDOR</code> and <code>UNMASKED_RENDERER</code> are accepted by <code>pname</code> parameter in <code>getParameter()</code>.
+          <table class="foo">
+            <tr><th>pname</th><th>returned type</th></tr>
+            <tr><td>UNMASKED_VENDOR</td><td>DOMString</td></tr>
+            <tr><td>UNMASKED_RENDERER</td><td>DOMString</td></tr>
+          </table><br>
+          The following pname arguments return a string describing some aspect of the underlying graphics driver.
+          <table class="foo">
+            <tr><td>UNMASKED_VENDOR</td><td>Return the VENDOR string of the underlying graphics driver.</td></tr>
+            <tr><td>UNMASKED_RENDERER</td><td>Return the RENDERER string of the underlying graphics driver.</td></tr>
+          </table><br>
         </dd>
     </dl>
 
     <h2 class="no-toc">Security Considerations</h2>
     <p>
-    Workarounds might be implemented in shader translation for driver bugs, and the pattern of the translation could be used to identify a specific GPU. Therefore, this extension has privacy implications and MUST NOT be available (see <code>getSupportedExtensions()</code>) to regular web content. The extension shall be available only to privileged code in the browser.
+    VENDOR and RENDERER strings from the underlying graphics driver could be used to identify a user's GPU, which in turn could be used to identify a unique user. Therefore, this extension has privacy implications and MUST NOT be available (see <code>getSupportedExtensions()</code>) to regular web content. The extension shall be available only to privileged code in the browser.
     </p>
 
     <h2 class="no-toc">Revision History</h2>
