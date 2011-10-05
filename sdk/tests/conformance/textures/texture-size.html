@@ -59,10 +59,8 @@ debug("MAX_TEXTURE_SIZE:" + max2DSize);
 debug("MAX_CUBE_MAP_TEXTURE_SIZE:" + maxCubeMapSize);
 // Assuming 2048x2048xRGBA (16meg) will run on all WebGL platforms
 var max2DSquareSize = Math.min(max2DSize, 2048);
-var max2DSquareSize = Math.min(max2DSize, 128);
 // I'd prefer this to be 2048 but that's 16meg x 6 faces or 96meg.
 var maxCubeMapSize = Math.min(maxCubeMapSize, 1024);
-var maxCubeMapSize = Math.min(maxCubeMapSize, 128);
 
 var colors = [
   { name: "green", rgba: [0, 0, 255, 255] },
@@ -76,24 +74,37 @@ var colors = [
 // TODO(gman): Test each face of the cube AND test each edge
 
 var count = 0;
-for (power = 0; true; ++power) {
-  var size = Math.pow(2, power);
-  if (size > max2DSize) {
-	break;
-  }
-  gl.useProgram(program2D);
-  if (!checkTexture(size, 1, false)) break;
-  if (!checkTexture(1, size, false)) break;
-  if (size <= max2DSquareSize) {
-    if (!checkTexture(size, size, false)) {
-      break;
+var power = 0;
+runTest();
+
+function runTest() {
+  function doTest() {
+    var size = Math.pow(2, power);
+    if (size > max2DSize) {
+      return false;
     }
-  }
-  if (size <= maxCubeMapSize) {
-    gl.useProgram(programCubeMap);
-	if (!checkTexture(size, size, true)) {
-	  break;
+    gl.useProgram(program2D);
+    if (!checkTexture(size, 1, false)) return false;
+    if (!checkTexture(1, size, false)) return false;
+    if (size <= max2DSquareSize) {
+      if (!checkTexture(size, size, false)) {
+        return false;
+      }
     }
+    if (size <= maxCubeMapSize) {
+      gl.useProgram(programCubeMap);
+      if (!checkTexture(size, size, true)) {
+        return false;
+      }
+    }
+	return true;
+  }
+
+  if (doTest()) {
+    ++power;
+    setTimeout(runTest, 100);
+  } else {
+	finishTest();
   }
 }
 
@@ -168,7 +179,6 @@ glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 
 successfullyParsed = true;
 </script>
-<script src="../../resources/js-test-post.js"></script>
 </body>
 </html>
 
