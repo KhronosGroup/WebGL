@@ -109,12 +109,11 @@ test();
 
 function test() {
   var size = Math.pow(2, sizeCount);
-  if (size <= maxSize) {
-    testSize(size);
+  if (size > maxSize || !testSize(size)) {
+    finishTest();
+  } else {
     ++sizeCount;
     setTimeout(test, 100);
-  } else {
-    finishTest();
   }
 }
 
@@ -128,11 +127,6 @@ function testSize(size) {
   var tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, tex);
 
-  for (var tt = 0; tt < targets.length; ++tt) {
-    var color = colors[(tt + count) % colors.length];
-    fillLevel(targets[tt], 0, size, color.color);
-  }
-
   // Seems like I should be using LINEAR here with some other math
   // to make sure I get more mip coverage but that's easier said
   // than done.
@@ -141,6 +135,27 @@ function testSize(size) {
   gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
   for (var jj = 0; jj < 2; ++jj) {
+    for (var tt = 0; tt < targets.length; ++tt) {
+      var color = colors[(tt + count) % colors.length];
+      fillLevel(targets[tt], 0, size, color.color);
+    }
+    if (jj == 1) {
+      debug("use mipmap");
+      gl.texParameteri(
+          gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER,
+          gl.NEAREST_MIPMAP_NEAREST);
+      gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+    }
+
+    var err = gl.getError();
+    if (err == gl.OUT_OF_MEMORY) {
+      return false;
+    }
+    if (err != gl.NO_ERROR) {
+      testFailed("unexpected gl error: " + wtu.glEnumToString(gl, err));
+    }
+
+
     for (var rr = 0; rr < rotations.length; ++rr) {
       var rot = rotations[rr];
       var color = colors[(rr + count) % colors.length];
@@ -172,18 +187,11 @@ function testSize(size) {
             colors[(h.colors[ii] + count) % colors.length]);
       }
     }
-
-    if (jj == 0) {
-      debug("use mipmap");
-      gl.texParameteri(
-          gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER,
-          gl.NEAREST_MIPMAP_NEAREST);
-      gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-    }
+    ++count;
   }
-  ++count;
 
   gl.deleteTexture(tex);
+  return true;
 }
 
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
