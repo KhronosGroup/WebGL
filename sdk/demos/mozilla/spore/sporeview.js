@@ -60,18 +60,6 @@ function getShader(gl, id) {
     return shader;
 }
 
-function flipImage(img) {
-  var tmpcanvas = document.createElement("canvas");
-  tmpcanvas.width = img.width;
-  tmpcanvas.height = img.height;
-  var cx = tmpcanvas.getContext("2d");
-  cx.globalCompositeMode = "copy";
-  cx.translate(0, img.height);
-  cx.scale(1, -1);
-  cx.drawImage(img, 0, 0);
-  return tmpcanvas;
-}
-
 function log(msg) {
     if (window.console && window.console.log) {
         console.log(msg);
@@ -245,13 +233,6 @@ function init() {
 
   var numVertexPoints = sf.mesh.position.length / 3;
 
-  // NOTE: We can't nuke these if we want to handle lost context unless we
-  // wanted to re-download them.
-  //// done with the raw js arrays, nuke them to free up some memory
-  //delete sf.mesh.position;
-  //delete sf.mesh.normal;
-  //delete sf.mesh.texcoord;
-
   gl.clearColor(0.2, 0.2, 0.2, 1.0);
   gl.clearDepth(1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -303,11 +284,10 @@ function init() {
               var texid = gl.createTexture();
               gl.activeTexture(gl.TEXTURE0);
               gl.bindTexture(gl.TEXTURE_2D, texid);
-              // XXX we should be able to just pass TRUE to flipY for texImage2D here,
-              // but we don't support that yet
+              gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
               gl.texImage2D(
                   gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-                  flipImage(sf.textures.diffuse));
+                  sf.textures.diffuse);
               gl.generateMipmap(gl.TEXTURE_2D);
 
               gl.uniform1i(tex0Uniform, 0);

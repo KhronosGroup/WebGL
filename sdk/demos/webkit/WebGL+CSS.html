@@ -351,6 +351,7 @@
             function handleContextLost(e) {
                 ctx.console.log("handle context lost");
                 e.preventDefault();
+                clearLoadingObjects();
                 if (requestId !== undefined) {
                     window.cancelRequestAnimFrame(requestId);
                     requestId = undefined;

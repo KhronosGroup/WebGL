@@ -346,7 +346,7 @@
 
             //c = WebGLDebugUtils.makeLostContextSimulatingCanvas(c);
             // tell the simulator when to lose context.
-            //c.loseContextInNCalls(1500);
+            //c.loseContextInNCalls(1);
 
             c.addEventListener('webglcontextlost', handleContextLost, false);
             c.addEventListener('webglcontextrestored', handleContextRestored, false);
@@ -370,6 +370,7 @@
             function handleContextLost(e) {
                 ctx.console.log("handle context lost");
                 e.preventDefault();
+                clearLoadingObjects();
                 if (requestId !== undefined) {
                     window.cancelRequestAnimFrame(requestId);
                     requestId = undefined;

@@ -314,6 +314,18 @@ function makeSphere(ctx, radius, lats, longs)
     return retval;
 }
 
+// Array of Objects curently loading
+var g_loadingObjects = [];
+
+// Clears all the Objects currently loading.
+// This is used to handle context lost events.
+function clearLoadingObjects() {
+    for (var ii = 0; ii < g_loadingObjects.length; ++ii) {
+        g_loadingObjects[ii].onreadystatechange = undefined;
+    }
+    g_loadingObjects = [];
+}
+
 //
 // loadObj
 //
@@ -333,6 +345,7 @@ function loadObj(ctx, url)
     obj.ctx = ctx;
     var req = new XMLHttpRequest();
     req.obj = obj;
+    g_loadingObjects.push(req);
     req.onreadystatechange = function () { processLoadObj(req) };
     req.open("GET", url, true);
     req.send(null);
@@ -344,6 +357,7 @@ function processLoadObj(req)
     req.obj.ctx.console.log("req="+req)
     // only if req shows "complete"
     if (req.readyState == 4) {
+        g_loadingObjects.splice(g_loadingObjects.indexOf(req), 1);
         doLoadObj(req.obj, req.responseText);
     }
 }
@@ -498,6 +512,18 @@ function doLoadObj(obj, text)
     obj.loaded = true;
 }
 
+// Array of images curently loading
+var g_loadingImages = [];
+
+// Clears all the images currently loading.
+// This is used to handle context lost events.
+function clearLoadingImages() {
+    for (var ii = 0; ii < g_loadingImages.length; ++ii) {
+        g_loadingImages[ii].onload = undefined;
+    }
+    g_loadingImages = [];
+}
+
 //
 // loadImageTexture
 //
@@ -507,6 +533,7 @@ function loadImageTexture(ctx, url)
 {
     var texture = ctx.createTexture();
     var image = new Image();
+    g_loadingImages.push(image);
     image.onload = function() { doLoadImageTexture(ctx, image, texture) }
     image.src = url;
     return texture;
@@ -514,6 +541,7 @@ function loadImageTexture(ctx, url)
 
 function doLoadImageTexture(ctx, image, texture)
 {
+    g_loadingImages.splice(g_loadingImages.indexOf(image), 1);
     ctx.bindTexture(ctx.TEXTURE_2D, texture);
     ctx.texImage2D(
         ctx.TEXTURE_2D, 0, ctx.RGBA, ctx.RGBA, ctx.UNSIGNED_BYTE, image);

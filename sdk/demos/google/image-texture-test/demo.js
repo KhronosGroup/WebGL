@@ -63,6 +63,7 @@ function log(msg) {
 function handleContextLost(e) {
     log("handle context lost");
     e.preventDefault();
+    clearLoadingImages();
 }
 
 function handleContextRestored() {
@@ -196,6 +197,18 @@ function draw() {
     checkGLError();
 }
 
+// Array of images curently loading
+var g_loadingImage = [];
+
+// Clears all the images currently loading.
+// This is used to handle context lost events.
+function clearLoadingImages() {
+    for (var ii = 0; ii < g_loadingImage.length; ++ii) {
+        g_loadingImage[ii].onload = undefined;
+    }
+    g_loadingImage = [];
+}
+
 // Loads a texture from the absolute or relative URL "src".
 // Returns a WebGLTexture object.
 // The texture is downloaded in the background using the browser's
@@ -210,10 +223,14 @@ function loadTexture(src) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     // Create a DOM image object.
     var image = new Image();
+    // Remember the image so we can stop it if we get lost context.
+    g_loadingImage.push(image);
     // Set up the onload handler for the image, which will be called by
     // the browser at some point in the future once the image has
     // finished downloading.
     image.onload = function() {
+        // Remove the image from the list of images loading.
+        g_loadingImage.splice(g_loadingImage.indexOf(image), 1);
         // This code is not run immediately, but at some point in the
         // future, so we need to re-bind the texture in order to upload
         // the image. Note that we use the JavaScript language feature of

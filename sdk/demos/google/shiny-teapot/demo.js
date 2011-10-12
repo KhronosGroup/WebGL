@@ -94,6 +94,7 @@ function log(msg) {
 function handleContextLost(e) {
     log("handle context lost");
     e.preventDefault();
+    clearLoadingImages();
 }
 
 function handleContextRestored() {
@@ -329,6 +330,18 @@ function draw() {
     gl.drawElements(gl.TRIANGLES, g_numElements, gl.UNSIGNED_SHORT, 0);
 }
 
+// Array of images curently loading
+var g_loadingImages = [];
+
+// Clears all the images currently loading.
+// This is used to handle context lost events.
+function clearLoadingImages() {
+    for (var ii = 0; ii < g_loadingImages.length; ++ii) {
+        g_loadingImages[ii].onload = undefined;
+    }
+    g_loadingImages = [];
+}
+
 function loadTexture(src) {
     var texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -338,7 +351,9 @@ function loadTexture(src) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
     ++g_pendingTextureLoads;
     var image = new Image();
+    g_loadingImages.push(image);
     image.onload = function() {
+        g_loadingImages.splice(g_loadingImages.indexOf(image), 1);
         --g_pendingTextureLoads;
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -377,11 +392,13 @@ function loadCubeMap(base, suffix) {
         var face = faces[i][1];
         ++g_pendingTextureLoads;
         var image = new Image();
+        g_loadingImages.push(image);
         // Javascript has function, not block, scope.
         // See "JavaScript: The Good Parts", Chapter 4, "Functions",
         // section "Scope".
         image.onload = function(texture, face, image, url) {
             return function() {
+                g_loadingImages.splice(g_loadingImages.indexOf(image), 1);
                 --g_pendingTextureLoads;
                 gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
                 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
