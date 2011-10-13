@@ -149,6 +149,10 @@ shouldBeFalse("gl.isFramebuffer(fbo)");
 shouldBeNull("gl.getParameter(gl.FRAMEBUFFER_BINDING)");
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)");
 shouldBeNull("gl.getParameter(gl.FRAMEBUFFER_BINDING)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, fbo2)");
+shouldBe("gl.getParameter(gl.FRAMEBUFFER_BINDING)", "fbo2");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteFramebuffer(fbo3)");
+shouldBe("gl.getParameter(gl.FRAMEBUFFER_BINDING)", "fbo2");
 
 successfullyParsed = true;
 </script>
