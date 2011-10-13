@@ -459,6 +459,10 @@ function makeLostContextSimulatingCanvas(canvas) {
     return numCalls_;
   };
 
+  canvas.setRestoreTimeout = function(timeout) {
+    restoreTimeout_ = timeout;
+  };
+
   function isWebGLObject(obj) {
     //return false;
     return (obj instanceof WebGLBuffer ||
