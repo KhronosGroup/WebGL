@@ -57,9 +57,10 @@ var max2DSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
 var maxCubeMapSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
 debug("MAX_TEXTURE_SIZE:" + max2DSize);
 debug("MAX_CUBE_MAP_TEXTURE_SIZE:" + maxCubeMapSize);
-// Assuming 2048x2048xRGBA (16meg) will run on all WebGL platforms
+// Assuming 2048x2048xRGBA (22meg with mips) will run on all WebGL platforms
 var max2DSquareSize = Math.min(max2DSize, 2048);
-// I'd prefer this to be 2048 but that's 16meg x 6 faces or 96meg.
+// I'd prefer this to be 2048 but that's 16meg x 6 faces or 128meg (with mips)
+// 1024 is 33.5 meg (with mips)
 var maxCubeMapSize = Math.min(maxCubeMapSize, 1024);
 
 var colors = [
