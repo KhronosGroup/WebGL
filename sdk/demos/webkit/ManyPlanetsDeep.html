@@ -78,20 +78,22 @@
         const globeSize = 25;
         const minIncAngle = 0.2;
         const maxIncAngle = 2;
+        var g = {};  // globals
 
         function init()
         {
-            var gl = initWebGL("example", "vshader", "fshader",
-                                [ "vNormal", "vTexCoord", "vPosition"],
-                                [ 0, 0, 0, 1 ], 10000);
+            var gl = initWebGL("example");
             if (!gl) {
               return;
             }
+            g.program = simpleSetup(gl, "vshader", "fshader",
+                                [ "vNormal", "vTexCoord", "vPosition"],
+                                [ 0, 0, 0, 1 ], 10000);
 
-            gl.uniform3f(gl.getUniformLocation(gl.program, "lightDir"), 0, 0, 1);
-            gl.uniform1i(gl.getUniformLocation(gl.program, "sampler2d"), 0);
+            gl.uniform3f(gl.getUniformLocation(g.program, "lightDir"), 0, 0, 1);
+            gl.uniform1i(gl.getUniformLocation(g.program, "sampler2d"), 0);
 
-            gl.sphere = makeSphere(gl, 1, 30, 30);
+            g.sphere = makeSphere(gl, 1, 30, 30);
 
             // get the images
             earthTexture = loadImageTexture(gl, "resources/earthmap1k.jpg");
@@ -115,9 +117,9 @@
 
             ctx.viewport(0, 0, width, height);
 
-            ctx.perspectiveMatrix = new J3DIMatrix4();
-            ctx.perspectiveMatrix.perspective(30, width/height, 1, 10000);
-            ctx.perspectiveMatrix.lookat(0,0,20, 0, 0, 0, 0, 1, 0);
+            g.perspectiveMatrix = new J3DIMatrix4();
+            g.perspectiveMatrix.perspective(30, width/height, 1, 10000);
+            g.perspectiveMatrix.lookat(0,0,20, 0, 0, 0, 0, 1, 0);
         }
 
         function drawOne(ctx, angle, x, y, z, scale, texture)
@@ -127,16 +129,16 @@
             ctx.enableVertexAttribArray(1);
             ctx.enableVertexAttribArray(2);
 
-            ctx.bindBuffer(ctx.ARRAY_BUFFER, ctx.sphere.vertexObject);
+            ctx.bindBuffer(ctx.ARRAY_BUFFER, g.sphere.vertexObject);
             ctx.vertexAttribPointer(2, 3, ctx.FLOAT, false, 0, 0);
 
-            ctx.bindBuffer(ctx.ARRAY_BUFFER, ctx.sphere.normalObject);
+            ctx.bindBuffer(ctx.ARRAY_BUFFER, g.sphere.normalObject);
             ctx.vertexAttribPointer(0, 3, ctx.FLOAT, false, 0, 0);
 
-            ctx.bindBuffer(ctx.ARRAY_BUFFER, ctx.sphere.texCoordObject);
+            ctx.bindBuffer(ctx.ARRAY_BUFFER, g.sphere.texCoordObject);
             ctx.vertexAttribPointer(1, 2, ctx.FLOAT, false, 0, 0);
 
-            ctx.bindBuffer(ctx.ELEMENT_ARRAY_BUFFER, ctx.sphere.indexObject);
+            ctx.bindBuffer(ctx.ELEMENT_ARRAY_BUFFER, g.sphere.indexObject);
 
             // generate the model-view matrix
             var mvMatrix = new J3DIMatrix4();
@@ -149,15 +151,15 @@
             var normalMatrix = new J3DIMatrix4(mvMatrix);
             normalMatrix.invert();
             normalMatrix.transpose();
-            normalMatrix.setUniform(ctx, ctx.getUniformLocation(ctx.program, "u_normalMatrix"), false);
+            normalMatrix.setUniform(ctx, ctx.getUniformLocation(g.program, "u_normalMatrix"), false);
 
             // construct the model-view * projection matrix
-            var mvpMatrix = new J3DIMatrix4(ctx.perspectiveMatrix);
+            var mvpMatrix = new J3DIMatrix4(g.perspectiveMatrix);
             mvpMatrix.multiply(mvMatrix);
-            mvpMatrix.setUniform(ctx, ctx.getUniformLocation(ctx.program, "u_modelViewProjMatrix"), false);
+            mvpMatrix.setUniform(ctx, ctx.getUniformLocation(g.program, "u_modelViewProjMatrix"), false);
 
             ctx.bindTexture(ctx.TEXTURE_2D, texture);
-            ctx.drawElements(ctx.TRIANGLES, ctx.sphere.numIndices, ctx.UNSIGNED_SHORT, 0);
+            ctx.drawElements(ctx.TRIANGLES, g.sphere.numIndices, ctx.UNSIGNED_SHORT, 0);
         }
 
         function drawPicture(ctx)
@@ -228,13 +230,12 @@
 
             framerate = new Framerate("framerate");
             var f = function() {
-                requestId = window.requestAnimFrame(f, c);
                 drawPicture(ctx)
+                requestId = window.requestAnimFrame(f, c);
             };
             f();
 
             function handleContextLost(e) {
-                ctx.console.log("handle context lost");
                 e.preventDefault();
                 clearLoadingImages();
                 if (requestId !== undefined) {
@@ -244,7 +245,6 @@
             }
 
             function handleContextRestored() {
-                ctx.console.log("handle context restored");
                 init();
                 f();
             }

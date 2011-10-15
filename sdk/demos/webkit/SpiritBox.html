@@ -29,7 +29,24 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Spinning WebGL Box</title>
-
+<style>
+body, html {
+  margin: 0px;
+  overflow: hidden;
+}
+#framerate {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0,0,0,0.3);
+  padding: 1em;
+  color: white;
+}
+#example {
+  width: 100%;
+  height: 100%;
+}
+</style>
 <script type="text/javascript" src="../common/webgl-utils.js"></script>
 <script type="text/javascript" src="../../debug/webgl-debug.js"></script>
 <script src="resources/J3DI.js"> </script>
@@ -73,12 +90,19 @@
 </script>
 
 <script>
+    var g = {};
+
     function init()
     {
         // Initialize
         var gl = initWebGL(
             // The id of the Canvas Element
-            "example",
+            "example");
+        if (!gl) {
+          return;
+        }
+        var program = simpleSetup(
+            gl,
             // The ids of the vertex and fragment shaders
             "vshader", "fshader",
             // The vertex attribute names used by the shaders.
@@ -87,31 +111,26 @@
             [ "vNormal", "vColor", "vPosition"],
             // The clear color and depth values
             [ 0, 0, 0.5, 1 ], 10000);
-        if (!gl) {
-          return;
-        }
-        // Set some uniform variables for the shaders
-        gl.uniform3f(gl.getUniformLocation(gl.program, "lightDir"), 0, 0, 1);
-        gl.uniform1i(gl.getUniformLocation(gl.program, "sampler2d"), 0);
 
-        // Enable texturing
-        gl.enable(gl.TEXTURE_2D);
+        // Set some uniform variables for the shaders
+        gl.uniform3f(gl.getUniformLocation(program, "lightDir"), 0, 0, 1);
+        gl.uniform1i(gl.getUniformLocation(program, "sampler2d"), 0);
 
         // Create a box. On return 'gl' contains a 'box' property with
         // the BufferObjects containing the arrays for vertices,
         // normals, texture coords, and indices.
-        gl.box = makeBox(gl);
+        g.box = makeBox(gl);
 
         // Load an image to use. Returns a WebGLTexture object
         spiritTexture = loadImageTexture(gl, "resources/spirit.jpg");
 
         // Create some matrices to use later and save their locations in the shaders
-        gl.mvMatrix = new J3DIMatrix4();
-        gl.u_normalMatrixLoc = gl.getUniformLocation(gl.program, "u_normalMatrix");
-        gl.normalMatrix = new J3DIMatrix4();
-        gl.u_modelViewProjMatrixLoc =
-                gl.getUniformLocation(gl.program, "u_modelViewProjMatrix");
-        gl.mvpMatrix = new J3DIMatrix4();
+        g.mvMatrix = new J3DIMatrix4();
+        g.u_normalMatrixLoc = gl.getUniformLocation(program, "u_normalMatrix");
+        g.normalMatrix = new J3DIMatrix4();
+        g.u_modelViewProjMatrixLoc =
+                gl.getUniformLocation(program, "u_modelViewProjMatrix");
+        g.mvpMatrix = new J3DIMatrix4();
 
         // Enable all of the vertex attribute arrays.
         gl.enableVertexAttribArray(0);
@@ -119,17 +138,17 @@
         gl.enableVertexAttribArray(2);
 
         // Set up all the vertex attributes for vertices, normals and texCoords
-        gl.bindBuffer(gl.ARRAY_BUFFER, gl.box.vertexObject);
+        gl.bindBuffer(gl.ARRAY_BUFFER, g.box.vertexObject);
         gl.vertexAttribPointer(2, 3, gl.FLOAT, false, 0, 0);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, gl.box.normalObject);
+        gl.bindBuffer(gl.ARRAY_BUFFER, g.box.normalObject);
         gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, gl.box.texCoordObject);
+        gl.bindBuffer(gl.ARRAY_BUFFER, g.box.texCoordObject);
         gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
 
         // Bind the index array
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.box.indexObject);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, g.box.indexObject);
 
         return gl;
     }
@@ -149,9 +168,9 @@
 
         // Set the viewport and projection matrix for the scene
         gl.viewport(0, 0, width, height);
-        gl.perspectiveMatrix = new J3DIMatrix4();
-        gl.perspectiveMatrix.perspective(30, width/height, 1, 10000);
-        gl.perspectiveMatrix.lookat(0, 0, 7, 0, 0, 0, 0, 1, 0);
+        g.perspectiveMatrix = new J3DIMatrix4();
+        g.perspectiveMatrix.perspective(30, width/height, 1, 10000);
+        g.perspectiveMatrix.lookat(0, 0, 7, 0, 0, 0, 0, 1, 0);
     }
 
     function drawPicture(gl)
@@ -163,26 +182,26 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // Make a model/view matrix.
-        gl.mvMatrix.makeIdentity();
-        gl.mvMatrix.rotate(20, 1,0,0);
-        gl.mvMatrix.rotate(currentAngle, 0,1,0);
+        g.mvMatrix.makeIdentity();
+        g.mvMatrix.rotate(20, 1,0,0);
+        g.mvMatrix.rotate(currentAngle, 0,1,0);
 
         // Construct the normal matrix from the model-view matrix and pass it in
-        gl.normalMatrix.load(gl.mvMatrix);
-        gl.normalMatrix.invert();
-        gl.normalMatrix.transpose();
-        gl.normalMatrix.setUniform(gl, gl.u_normalMatrixLoc, false);
+        g.normalMatrix.load(g.mvMatrix);
+        g.normalMatrix.invert();
+        g.normalMatrix.transpose();
+        g.normalMatrix.setUniform(gl, g.u_normalMatrixLoc, false);
 
         // Construct the model-view * projection matrix and pass it in
-        gl.mvpMatrix.load(gl.perspectiveMatrix);
-        gl.mvpMatrix.multiply(gl.mvMatrix);
-        gl.mvpMatrix.setUniform(gl, gl.u_modelViewProjMatrixLoc, false);
+        g.mvpMatrix.load(g.perspectiveMatrix);
+        g.mvpMatrix.multiply(g.mvMatrix);
+        g.mvpMatrix.setUniform(gl, g.u_modelViewProjMatrixLoc, false);
 
         // Bind the texture to use
         gl.bindTexture(gl.TEXTURE_2D, spiritTexture);
 
         // Draw the cube
-        gl.drawElements(gl.TRIANGLES, gl.box.numIndices, gl.UNSIGNED_BYTE, 0);
+        gl.drawElements(gl.TRIANGLES, g.box.numIndices, gl.UNSIGNED_BYTE, 0);
 
         // Show the framerate
         framerate.snapshot();
@@ -195,8 +214,8 @@
     function start()
     {
         var c = document.getElementById("example");
-        var w = Math.floor(window.innerWidth * 0.9);
-        var h = Math.floor(window.innerHeight * 0.9);
+        var w = c.clientWidth;
+        var h = c.clientHeight;
 
         //c = WebGLDebugUtils.makeLostContextSimulatingCanvas(c);
         // tell the simulator when to lose context.
@@ -217,13 +236,12 @@
         incAngle = 0.5;
         framerate = new Framerate("framerate");
         var f = function() {
-            requestId = window.requestAnimFrame(f, c);
             drawPicture(gl);
+            requestId = window.requestAnimFrame(f, c);
         };
         f();
 
         function handleContextLost(e) {
-            gl.console.log("handle context lost");
             e.preventDefault();
             clearLoadingImages();
             if (requestId !== undefined) {
@@ -233,7 +251,6 @@
         }
 
         function handleContextRestored() {
-            gl.console.log("handle context restored");
             init();
             f();
         }

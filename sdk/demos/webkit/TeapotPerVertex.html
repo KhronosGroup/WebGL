@@ -158,6 +158,8 @@
     </script>
 
     <script>
+        var g = {}; // globals
+
         function setDirectionalLight(ctx, program, eyeVector, direction, ambient, diffuse, specular)
         {
             var lightString = "u_light.";
@@ -204,23 +206,24 @@
 
         function init()
         {
-            var gl = initWebGL("example", "vshader", "fshader",
-                                [ "a_normal", "a_texCoord", "a_vertex"],
-                                [ 0, 0, 0, 1 ], 10000);
+            var gl = initWebGL("example");
             if (!gl) {
               return;
             }
-            gl.uniform1i(gl.getUniformLocation(gl.program, "u_sampler2d"), 0);
-            gl.uniform4f(gl.getUniformLocation(gl.program, "u_globalAmbientColor"), 0.2, 0.2, 0.2, 1);
+            g.program = simpleSetup(gl, "vshader", "fshader",
+                                    [ "a_normal", "a_texCoord", "a_vertex"],
+                                    [ 0, 0, 0, 1 ], 10000);
+            gl.uniform1i(gl.getUniformLocation(g.program, "u_sampler2d"), 0);
+            gl.uniform4f(gl.getUniformLocation(g.program, "u_globalAmbientColor"), 0.2, 0.2, 0.2, 1);
 
-            setDirectionalLight(gl, gl.program,
+            setDirectionalLight(gl, g.program,
                                 [ 0, 0, 1 ],            // eyeVector
                                 [0, 0, 1, 1],           // position
                                 [0.1, 0.1, 0.1, 1],     // ambient
                                 [1, 1, 1, 1],           // diffuse
                                 [1, 1, 1, 1]);          // specular
 
-            setMaterial(gl, gl.program,
+            setMaterial(gl, g.program,
                 [ 0, 0, 0, 0 ],         // emission
                 [ 0.1, 0.1, 0.1, 1 ],   // ambient
                 [ 0.8, 0.2, 0, 1 ], // diffuse
@@ -251,9 +254,9 @@
 
             ctx.viewport(0, 0, width, height);
 
-            ctx.perspectiveMatrix = new J3DIMatrix4();
-            ctx.perspectiveMatrix.perspective(30, width/height, 1, 10000);
-            ctx.perspectiveMatrix.lookat(0,0,50, 0, 0, 0, 0, 1, 0);
+            g.perspectiveMatrix = new J3DIMatrix4();
+            g.perspectiveMatrix.perspective(30, width/height, 1, 10000);
+            g.perspectiveMatrix.lookat(0,0,50, 0, 0, 0, 0, 1, 0);
         }
 
         function drawPicture(ctx)
@@ -289,19 +292,19 @@
             mvMatrix.makeIdentity();
             mvMatrix.rotate(10, 1,0,0);
             mvMatrix.rotate(currentAngle, 0, 1, 0);
-            mvMatrix.setUniform(ctx, ctx.getUniformLocation(ctx.program, "u_modelViewMatrix"), false);
+            mvMatrix.setUniform(ctx, ctx.getUniformLocation(g.program, "u_modelViewMatrix"), false);
 
             // construct the normal matrix from the model-view matrix
             normalMatrix.load(mvMatrix);
             normalMatrix.invert();
             normalMatrix.transpose();
-            normalMatrix.setUniform(ctx, ctx.getUniformLocation(ctx.program, "u_normalMatrix"), false);
+            normalMatrix.setUniform(ctx, ctx.getUniformLocation(g.program, "u_normalMatrix"), false);
 
             // Construct the model-view * projection matrix and pass it in
             var mvpMatrix = new J3DIMatrix4();
-            mvpMatrix.load(ctx.perspectiveMatrix);
+            mvpMatrix.load(g.perspectiveMatrix);
             mvpMatrix.multiply(mvMatrix);
-            mvpMatrix.setUniform(ctx, ctx.getUniformLocation(ctx.program, "u_modelViewProjMatrix"), false);
+            mvpMatrix.setUniform(ctx, ctx.getUniformLocation(g.program, "u_modelViewProjMatrix"), false);
 
             ctx.drawElements(ctx.TRIANGLES, obj.numIndices, ctx.UNSIGNED_SHORT, 0);
 
@@ -336,13 +339,12 @@
             incAngle = 0.2;
             framerate = new Framerate("framerate");
             var f = function() {
-                requestId = window.requestAnimFrame(f, c);
                 drawPicture(ctx);
+                requestId = window.requestAnimFrame(f, c);
             };
             f();
 
             function handleContextLost(e) {
-                ctx.console.log("handle context lost");
                 e.preventDefault();
                 clearLoadingObjects();
                 if (requestId !== undefined) {
@@ -352,7 +354,6 @@
             }
 
             function handleContextRestored() {
-                ctx.console.log("handle context restored");
                 loaded = false;
                 init();
                 f();

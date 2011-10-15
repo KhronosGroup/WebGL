@@ -28,7 +28,18 @@
 //
 // Initialize the Canvas element with the passed name as a WebGL object and return the
 // WebGLRenderingContext.
-//
+function initWebGL(canvasName, vshader, fshader, attribs, clearColor, clearDepth)
+{
+    var canvas = document.getElementById(canvasName);
+    return gl = WebGLUtils.setupWebGL(canvas);
+}
+
+function log(msg) {
+    if (window.console && window.console.log) {
+        window.console.log(msg);
+    }
+}
+
 // Load shaders with the passed names and create a program with them. Return this program
 // in the 'program' property of the returned context.
 //
@@ -42,50 +53,41 @@
 // by the caller. By default, it maps to the window.console() function on WebKit and to
 // an empty function on other browsers.
 //
-function initWebGL(canvasName, vshader, fshader, attribs, clearColor, clearDepth)
+function simpleSetup(gl, vshader, fshader, attribs, clearColor, clearDepth)
 {
-    var canvas = document.getElementById(canvasName);
-    var gl = WebGLUtils.setupWebGL(canvas);
-    if (!gl) {
-        return null;
-    }
-
-    // Add a console
-    gl.console = ("console" in window) ? window.console : { log: function() { } };
-
     // create our shaders
     var vertexShader = loadShader(gl, vshader);
     var fragmentShader = loadShader(gl, fshader);
 
     // Create the program object
-    gl.program = gl.createProgram();
+    var program = gl.createProgram();
 
     // Attach our two shaders to the program
-    gl.attachShader (gl.program, vertexShader);
-    gl.attachShader (gl.program, fragmentShader);
+    gl.attachShader (program, vertexShader);
+    gl.attachShader (program, fragmentShader);
 
     // Bind attributes
     for (var i = 0; i < attribs.length; ++i)
-        gl.bindAttribLocation (gl.program, i, attribs[i]);
+        gl.bindAttribLocation (program, i, attribs[i]);
 
     // Link the program
-    gl.linkProgram(gl.program);
+    gl.linkProgram(program);
 
     // Check the link status
-    var linked = gl.getProgramParameter(gl.program, gl.LINK_STATUS);
+    var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
     if (!linked && !gl.isContextLost()) {
         // something went wrong with the link
-        var error = gl.getProgramInfoLog (gl.program);
-        gl.console.log("Error in program linking:"+error);
+        var error = gl.getProgramInfoLog (program);
+        log("Error in program linking:"+error);
 
-        gl.deleteProgram(gl.program);
+        gl.deleteProgram(program);
         gl.deleteProgram(fragmentShader);
         gl.deleteProgram(vertexShader);
 
         return null;
     }
 
-    gl.useProgram(gl.program);
+    gl.useProgram(program);
 
     gl.clearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
     gl.clearDepth(clearDepth);
@@ -94,7 +96,7 @@ function initWebGL(canvasName, vshader, fshader, attribs, clearColor, clearDepth
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    return gl;
+    return program;
 }
 
 //
@@ -107,7 +109,7 @@ function loadShader(ctx, shaderId)
 {
     var shaderScript = document.getElementById(shaderId);
     if (!shaderScript) {
-        ctx.console.log("*** Error: shader script '"+shaderId+"' not found");
+        log("*** Error: shader script '"+shaderId+"' not found");
         return null;
     }
 
@@ -116,7 +118,7 @@ function loadShader(ctx, shaderId)
     else if (shaderScript.type == "x-shader/x-fragment")
         var shaderType = ctx.FRAGMENT_SHADER;
     else {
-        ctx.console.log("*** Error: shader script '"+shaderId+"' of undefined type '"+shaderScript.type+"'");
+        log("*** Error: shader script '"+shaderId+"' of undefined type '"+shaderScript.type+"'");
         return null;
     }
 
@@ -134,7 +136,7 @@ function loadShader(ctx, shaderId)
     if (!compiled && !ctx.isContextLost()) {
         // Something went wrong during compilation; get the error
         var error = ctx.getShaderInfoLog(shader);
-        ctx.console.log("*** Error compiling shader '"+shaderId+"':"+error);
+        log("*** Error compiling shader '"+shaderId+"':"+error);
         ctx.deleteShader(shader);
         return null;
     }
@@ -354,7 +356,7 @@ function loadObj(ctx, url)
 
 function processLoadObj(req)
 {
-    req.obj.ctx.console.log("req="+req)
+    log("req="+req)
     // only if req shows "complete"
     if (req.readyState == 4) {
         g_loadingObjects.splice(g_loadingObjects.indexOf(req), 1);
@@ -419,7 +421,7 @@ function doLoadObj(obj, text)
         else if (array[0] == "f") {
             // face
             if (array.length != 4) {
-                obj.ctx.console.log("*** Error: face '"+line+"' not handled");
+                log("*** Error: face '"+line+"' not handled");
                 continue;
             }
 
