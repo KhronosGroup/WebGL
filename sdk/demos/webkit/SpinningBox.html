@@ -68,12 +68,19 @@
 </script>
 
 <script>
+    var g = {}; // globals
+
     function init()
     {
         // Initialize
         var gl = initWebGL(
             // The id of the Canvas Element
-            "example",
+            "example");
+        if (!gl) {
+          return;
+        }
+        g.program = simpleSetup(
+            gl,
             // The ids of the vertex and fragment shaders
             "vshader", "fshader",
             // The vertex attribute names used by the shaders.
@@ -82,19 +89,14 @@
             [ "vNormal", "vColor", "vPosition"],
             // The clear color and depth values
             [ 0, 0, 0, 1 ], 10000);
-        if (!gl) {
-          return;
-        }
-
-        gl.console.log("Starting init...");
 
         // Set up a uniform variable for the shaders
-        gl.uniform3f(gl.getUniformLocation(gl.program, "lightDir"), 0, 0, 1);
+        gl.uniform3f(gl.getUniformLocation(g.program, "lightDir"), 0, 0, 1);
 
         // Create a box. On return 'gl' contains a 'box' property with
         // the BufferObjects containing the arrays for vertices,
         // normals, texture coords, and indices.
-        gl.box = makeBox(gl);
+        g.box = makeBox(gl);
 
         // Set up the array of colors for the cube's faces
         var colors = new Uint8Array(
@@ -107,17 +109,17 @@
                                                 );
 
         // Set up the vertex buffer for the colors
-        gl.box.colorObject = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, gl.box.colorObject);
+        g.box.colorObject = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, g.box.colorObject);
         gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
 
         // Create some matrices to use later and save their locations in the shaders
-        gl.mvMatrix = new J3DIMatrix4();
-        gl.u_normalMatrixLoc = gl.getUniformLocation(gl.program, "u_normalMatrix");
-        gl.normalMatrix = new J3DIMatrix4();
-        gl.u_modelViewProjMatrixLoc =
-                gl.getUniformLocation(gl.program, "u_modelViewProjMatrix");
-        gl.mvpMatrix = new J3DIMatrix4();
+        g.mvMatrix = new J3DIMatrix4();
+        g.u_normalMatrixLoc = gl.getUniformLocation(g.program, "u_normalMatrix");
+        g.normalMatrix = new J3DIMatrix4();
+        g.u_modelViewProjMatrixLoc =
+                gl.getUniformLocation(g.program, "u_modelViewProjMatrix");
+        g.mvpMatrix = new J3DIMatrix4();
 
         // Enable all of the vertex attribute arrays.
         gl.enableVertexAttribArray(0);
@@ -125,17 +127,17 @@
         gl.enableVertexAttribArray(2);
 
         // Set up all the vertex attributes for vertices, normals and colors
-        gl.bindBuffer(gl.ARRAY_BUFFER, gl.box.vertexObject);
+        gl.bindBuffer(gl.ARRAY_BUFFER, g.box.vertexObject);
         gl.vertexAttribPointer(2, 3, gl.FLOAT, false, 0, 0);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, gl.box.normalObject);
+        gl.bindBuffer(gl.ARRAY_BUFFER, g.box.normalObject);
         gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, gl.box.colorObject);
+        gl.bindBuffer(gl.ARRAY_BUFFER, g.box.colorObject);
         gl.vertexAttribPointer(1, 4, gl.UNSIGNED_BYTE, false, 0, 0);
 
         // Bind the index array
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.box.indexObject);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, g.box.indexObject);
 
         return gl;
     }
@@ -159,9 +161,9 @@
 
         // Set the viewport and projection matrix for the scene
         gl.viewport(0, 0, width, height);
-        gl.perspectiveMatrix = new J3DIMatrix4();
-        gl.perspectiveMatrix.perspective(30, width/height, 1, 10000);
-        gl.perspectiveMatrix.lookat(0, 0, 7, 0, 0, 0, 0, 1, 0);
+        g.perspectiveMatrix = new J3DIMatrix4();
+        g.perspectiveMatrix.perspective(30, width/height, 1, 10000);
+        g.perspectiveMatrix.lookat(0, 0, 7, 0, 0, 0, 0, 1, 0);
     }
 
     function drawPicture(gl)
@@ -173,23 +175,23 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // Make a model/view matrix.
-        gl.mvMatrix.makeIdentity();
-        gl.mvMatrix.rotate(20, 1,0,0);
-        gl.mvMatrix.rotate(currentAngle, 0,1,0);
+        g.mvMatrix.makeIdentity();
+        g.mvMatrix.rotate(20, 1,0,0);
+        g.mvMatrix.rotate(currentAngle, 0,1,0);
 
         // Construct the normal matrix from the model-view matrix and pass it in
-        gl.normalMatrix.load(gl.mvMatrix);
-        gl.normalMatrix.invert();
-        gl.normalMatrix.transpose();
-        gl.normalMatrix.setUniform(gl, gl.u_normalMatrixLoc, false);
+        g.normalMatrix.load(g.mvMatrix);
+        g.normalMatrix.invert();
+        g.normalMatrix.transpose();
+        g.normalMatrix.setUniform(gl, g.u_normalMatrixLoc, false);
 
         // Construct the model-view * projection matrix and pass it in
-        gl.mvpMatrix.load(gl.perspectiveMatrix);
-        gl.mvpMatrix.multiply(gl.mvMatrix);
-        gl.mvpMatrix.setUniform(gl, gl.u_modelViewProjMatrixLoc, false);
+        g.mvpMatrix.load(g.perspectiveMatrix);
+        g.mvpMatrix.multiply(g.mvMatrix);
+        g.mvpMatrix.setUniform(gl, g.u_modelViewProjMatrixLoc, false);
 
         // Draw the cube
-        gl.drawElements(gl.TRIANGLES, gl.box.numIndices, gl.UNSIGNED_BYTE, 0);
+        gl.drawElements(gl.TRIANGLES, g.box.numIndices, gl.UNSIGNED_BYTE, 0);
 
         // Show the framerate
         framerate.snapshot();
@@ -223,13 +225,12 @@
         incAngle = 0.5;
         framerate = new Framerate("framerate");
         var f = function() {
-            requestId = window.requestAnimFrame(f, c);
             drawPicture(gl);
+            requestId = window.requestAnimFrame(f, c);
         };
         f();
 
         function handleContextLost(e) {
-            gl.console.log("handle context lost");
             e.preventDefault();
             if (requestId !== undefined) {
                 window.cancelRequestAnimFrame(requestId);
@@ -238,7 +239,6 @@
         }
 
         function handleContextRestored() {
-            gl.console.log("handle context restored");
             init();
             f();
         }
