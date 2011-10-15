@@ -155,23 +155,22 @@ body, html {
         return gl;
     }
 
-    width = -1;
-    height = -1;
     var requestId;
 
     function reshape(gl)
     {
+        // change the size of the canvas's backing store to match the size it is displayed.
         var canvas = document.getElementById('example');
-        if (canvas.width == width && canvas.height == height)
+        if (canvas.clientWidth == canvas.width && canvas.clientHeight == canvas.height)
             return;
 
-        width = canvas.width;
-        height = canvas.height;
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
 
         // Set the viewport and projection matrix for the scene
-        gl.viewport(0, 0, width, height);
+        gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
         g.perspectiveMatrix = new J3DIMatrix4();
-        g.perspectiveMatrix.perspective(30, width/height, 1, 10000);
+        g.perspectiveMatrix.perspective(30, canvas.clientWidth / canvas.clientHeight, 1, 10000);
         g.perspectiveMatrix.lookat(0, 0, 7, 0, 0, 0, 0, 1, 0);
     }
 
@@ -216,8 +215,6 @@ body, html {
     function start()
     {
         var c = document.getElementById("example");
-        var w = c.clientWidth;
-        var h = c.clientHeight;
 
         //c = WebGLDebugUtils.makeLostContextSimulatingCanvas(c);
         // tell the simulator when to lose context.
@@ -225,9 +222,6 @@ body, html {
 
         c.addEventListener('webglcontextlost', handleContextLost, false);
         c.addEventListener('webglcontextrestored', handleContextRestored, false);
-
-        c.width = w;
-        c.height = h;
 
         var gl = init();
         if (!gl) {
