@@ -162,7 +162,7 @@ ArgGenerators = {
     cleanup : function(c) { GL.frontFace(GL.CCW); }
   },
 
-// G
+// G-1
 
   generateMipmap : {
     setup : function() {
@@ -223,81 +223,7 @@ ArgGenerators = {
       GL.deleteShader(s1);
       GL.deleteShader(s2);
     }
-  },
-  getAttribLocation : {
-    generate : function() {
-      var program = GL.createProgram();
-      var name = randomName();
-      GL.bindAttribLocation(program, randomVertexAttribute(), name);
-      return [program, name];
-    },
-    checkArgValidity : function(program, name) {
-      return GL.isProgram(program) && isValidName(name);
-    },
-    cleanup : function(program, name) {
-      try { GL.deleteProgram(program); } catch(e) {}
-    }
-  },
-  getParameter : {
-    generate : function() { return [getParameterPname.random()]; },
-    checkArgValidity : function(p) { return getParameterPname.has(p); }
-  },
-  getBufferParameter : {}, // FIXME
-  getError : {
-    generate : function() { return []; }
-  },
-  getFramebufferAttachmentParameter : {}, // FIXME
-  getProgramParameter : {}, // FIXME
-  getProgramInfoLog : {}, // FIXME
-  getRenderbufferParameter : {}, // FIXME
-  getShaderParameter : {}, // FIXME
-  getShaderInfoLog : {}, // FIXME
-  getShaderSource : {}, // FIXME
-  getTexParameter : {}, // FIXME
-  getUniform : {}, // FIXME
-  getUniformLocation : {}, // FIXME
-  getVertexAttrib : {}, // FIXME
-  getVertexAttribOffset : {}, // FIXME
-
-// H
-
-  hint : {
-    generate : function() { return [GL.GENERATE_MIPMAP_HINT, mipmapHint.random()]; },
-    checkValidArgs : function(h, m) {
-      return h == GL.GENERATE_MIPMAP_HINT && mipmapHint.has(m);
-    },
-    teardown : function(){ GL.hint(GL.GENERATE_MIPMAP_HINT, GL.DONT_CARE); }
-  },
-
-// I
-
-  isBuffer : {
-    generate : function() { return [GL.createBuffer()]; },
-    cleanup : function(o) { try { GL.deleteBuffer(o); } catch(e) {} }
-  },
-  isEnabled : {
-    generate : function() { return [enableCap.random()]; },
-    checkArgValidity : function(c) { return enableCap.has(c); }
-  },
-  isFramebuffer : {
-    generate : function() { return [GL.createFramebuffer()]; },
-    cleanup : function(o) { try { GL.deleteFramebuffer(o); } catch(e) {} }
-  },
-  isProgram : {
-    generate : function() { return [GL.createProgram()]; },
-    cleanup : function(o) { try { GL.deleteProgram(o); } catch(e) {} }
-  },
-  isRenderbuffer : {
-    generate : function() { return [GL.createRenderbuffer()]; },
-    cleanup : function(o) { try { GL.deleteRenderbuffer(o); } catch(e) {} }
-  },
-  isShader : {
-    generate : function() { return [GL.createShader(shaderType.random())]; },
-    cleanup : function(o) { try { GL.deleteShader(o); } catch(e) {} }
-  },
-  isTexture : {
-    generate : function() { return [GL.createTexture()]; },
-    cleanup : function(o) { try { GL.deleteTexture(o); } catch(e) {} }
   }
 
 };
+
