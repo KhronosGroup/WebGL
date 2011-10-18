@@ -29,8 +29,8 @@
     <p> Members of the <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> </p>
 
     <h2 class="no-toc">Version</h2>
-    <p> Last modified date: October 12, 2011 <br>
-        Revision: 2
+    <p> Last modified date: October 18, 2011 <br>
+        Revision: 3
     </p>
 
     <h2 class="no-toc">Number</h2>
@@ -81,7 +81,7 @@ interface WEBGL_debug_renderer_info {
 
     <h2 class="no-toc">Security Considerations</h2>
     <p>
-    VENDOR and RENDERER strings from the underlying graphics driver could be used to identify a user's GPU, which in turn could be used to identify a unique user. Therefore, this extension has privacy implications and MUST NOT be available (see <code>getSupportedExtensions()</code>) to regular web content. The extension shall be available only to privileged code in the browser.
+    VENDOR and RENDERER strings from the underlying graphics driver could be used to identify a user's GPU, which in turn could be used to identify a unique user. Therefore, this extension has privacy implications and MUST NOT be available (see <code>getSupportedExtensions()</code>) to regular web content. The extension shall be available only to content determined to be privileged by some user agent specific means.
     </p>
 
     <h2 class="no-toc">Issues</h2>
@@ -103,6 +103,12 @@ interface WEBGL_debug_renderer_info {
       Revision 2, 2011/10/12
       <ul>
       <li> Assigned enums; assigned webgl extension number.
+      </ul>
+    </p>
+    <p>
+      Revision 3, 2011/10/18
+      <ul>
+      <li> Clarify the meaning of "privileged".
       </ul>
     </p>
 </body>

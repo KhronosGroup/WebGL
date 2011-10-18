@@ -29,8 +29,8 @@
     <p> Members of the <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> </p>
 
     <h2 class="no-toc">Version</h2>
-    <p> Last modified date: October 14, 2011 <br>
-        Revision: 2
+    <p> Last modified date: October 18, 2011 <br>
+        Revision: 3
     </p>
 
     <h2 class="no-toc">Number</h2>
@@ -70,7 +70,7 @@ interface WEBGL_debug_shaders {
 
     <h2 class="no-toc">Security Considerations</h2>
     <p>
-    Workarounds might be implemented in shader translation for driver bugs, and the pattern of the translation could be used to identify a specific GPU. Therefore, this extension has privacy implications and MUST NOT be available (see <code>getSupportedExtensions()</code>) to regular web content. The extension shall be available only to privileged code in the browser.
+    Workarounds might be implemented in shader translation for driver bugs, and the pattern of the translation could be used to identify a specific GPU. Therefore, this extension has privacy implications and MUST NOT be available (see <code>getSupportedExtensions()</code>) to regular web content. The extension shall be available only to content determined to be privileged by some user agent specific means.
     </p>
 
     <h2 class="no-toc">Revision History</h2>
@@ -84,6 +84,12 @@ interface WEBGL_debug_shaders {
       Revision 2, 2011/10/14
       <ul>
       <li> Assigned WebGL extension number.
+      </ul>
+    </p>
+    <p>
+      Revision 3, 2011/10/18
+      <ul>
+      <li> Clarify the meaning of "privileged".
       </ul>
     </p>
 </body>
