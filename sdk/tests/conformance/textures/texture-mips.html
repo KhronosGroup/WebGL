@@ -18,14 +18,13 @@ found in the LICENSE file.
 <div id="description"></div>
 <div id="console"></div>
 <script id="vshader" type="x-shader/x-vertex">
-uniform vec4 uOffset;
 uniform vec4 uMult;
 attribute vec4 vPosition;
 attribute vec2 texCoord0;
 varying vec2 texCoord;
 void main()
 {
-    gl_Position = vPosition * uMult + uOffset;
+    gl_Position = vPosition * uMult;
     texCoord = texCoord0;
 }
 </script>
@@ -79,13 +78,12 @@ function init()
 
   var texLoc = gl.getUniformLocation(program, "tex");
   gl.uniform1i(texLoc, 0);
-  var offLoc = gl.getUniformLocation(program, "uOffset");
   var multLoc = gl.getUniformLocation(program, "uMult");
 
-  gl.uniform4f(offLoc, 0, 0, 0, 0);
+  // ----------------------------------------------------
+  var tex = createTexture();
   gl.uniform4f(multLoc, 1, 1, 1, 1);
 
-  var tex = createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
   // 16x16 texture no mips
   fillLevel(tex, 0, 16, 'cyan');
@@ -129,33 +127,37 @@ function init()
   gl.uniform4f(multLoc, 1, 1, 1, 1);
   check('green', "texture that is only using the smallest 2 mips");
 
+  // ----------------------------------------------------
   var tex = createTexture();
-  fillLevel(tex, 0, 4, 'cyan');
+  gl.uniform4f(multLoc, 1, 1, 1, 1);
+  fillLevel(tex, 0, 8, 'cyan');
   generateMipmap();
-
   check('cyan', "texture that has 3 mips");
-
-  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 
   fillLevel(tex, 0, 16, 'blue');
   texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   check('blue', "texture that is only using top mips");
 
-  fillLevel(tex, 0, 4, 'red');
+  fillLevel(tex, 0, 8, 'red');
   texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
   check('cyan', "texture that is only using smallest mips");
 
   gl.uniform4f(multLoc, 16, 16, 1, 1);
   check('red', "texture that is using only the largest mip");
 
+  // ----------------------------------------------------
   var tex = createTexture();
+  gl.uniform4f(multLoc, 1, 1, 1, 1);
   fillLevel(tex, 2, 1, 'green');
   fillLevel(tex, 1, 2, 'green');
   fillLevel(tex, 0, 4, 'green');
   check('green', "texture that was built smallest mip first");
 
+  // ----------------------------------------------------
+  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
+
   function createTexture() {
-    debug("gl.createTexture()");
+    debug("<hr/>gl.createTexture()");
     mips = [];
     makeDivMipChain();
     return gl.createTexture();
