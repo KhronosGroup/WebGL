@@ -41,6 +41,7 @@ void main()
 </script>
 <script>
 var canvas;
+var wtu = WebGLTestUtils;
 function init()
 {
   if (window.initNonKhronosFramework) {
@@ -50,7 +51,6 @@ function init()
   debug("Checks mip issues");
   debug("");
 
-  var wtu = WebGLTestUtils;
   canvas = document.getElementById("example");
   shouldBe("canvas.width", "2");
   shouldBe("canvas.height", "2");
@@ -66,16 +66,18 @@ function init()
   gl.disable(gl.DEPTH_TEST);
   gl.disable(gl.BLEND);
 
-  var blue = [0, 0, 255, 255];
-  var red = [255, 0, 0, 255];
-  var green = [0, 255, 0, 255];
-  var lightGreen = [128, 255, 192, 255];
-  var black = [0, 0, 0, 255];
+  var colors = {
+    blue: [0, 0, 255, 255],
+    red: [255, 0, 0, 255],
+    green:  [0, 255, 0, 255],
+    lightGreen: [128, 255, 192, 255],
+    black: [0, 0, 0, 255]
+  }
 
   var tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
   // 16x16 texture no mips
-  fillLevel(0, 16, lightGreen);
+  fillLevel(tex, 0, 16, 'lightGreen');
   debug("mips: lightGreen(16x16), undef, undef, undef, undef");
 
   var texLoc = gl.getUniformLocation(program, "tex");
@@ -86,86 +88,90 @@ function init()
   gl.uniform4f(offLoc, 0, 0, 0, 0);
   gl.uniform4f(multLoc, 1, 1, 1, 1);
 
-  wtu.drawQuad(gl);
-  wtu.checkCanvas(gl, black,
-      "texture that is missing mips when " +
-      "TEXTURE_MIN_FILTER not NEAREST or LINEAR should draw with black");
+  check('black',
+        "texture that is missing mips when TEXTURE_MIN_FILTER not NEAREST or LINEAR");
 
-  gl.generateMipmap(gl.TEXTURE_2D);
+  generateMipmap();
   debug("mips: lightGreen(16x16), lightGreen(8x8), lightGreen(4x4), lightGreen(2x2), lightGreen(1x1)");
 
-  wtu.drawQuad(gl);
-  wtu.checkCanvas(gl, lightGreen,
-      "texture that has all mips when should draw with light green");
+  check('lightGreen', "texture that has all mips");
 
   // Fill in the bottom 2 mips with a different color.
-  fillLevel(4, 1, green);
-  fillLevel(3, 2, green);
+  fillLevel(tex, 4, 1, 'green');
+  fillLevel(tex, 3, 2, 'green');
   debug("mips: lightGreen(16x16), lightGreen(8x8), lightGreen(4x4), green(2x2), green(1x1)");
 
   // Choose the nearest mip
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
 
-  wtu.drawQuad(gl);
-  wtu.checkCanvas(gl, green,
-      "texture that is only using the smallest 2 mips should draw with green");
+  check('green', "texture that is only using the smallest 2 mips");
 
   gl.uniform4f(multLoc, 16, 16, 1, 1);
 
-  wtu.drawQuad(gl);
-  wtu.checkCanvas(gl, lightGreen,
-      "texture that is using only the largest 2 mips should draw with light green");
+  check('lightGreen', "texture that is using only the largest 2 mips");
 
   // Set the top level
-  fillLevel(0, 1, red);
+  fillLevel(tex, 0, 1, 'red');
   debug("mips: red(1x1), lightGreen(8x8-unused), lightGreen(4x4-unused), lightGreen(2x2-unused), lightGreen(1x1-unused)");
-  wtu.drawQuad(gl);
-  wtu.checkCanvas(gl, red,
-      "texture that is only using the top level even though other levels are defined " +
-      "should draw with red");
+  check('red',
+        "texture that is only using the top level even though other levels are defined");
 
   // Set the top 2 levels using generateMipmap
-  fillLevel(0, 2, blue);
+  fillLevel(tex, 0, 2, 'blue');
   debug("mips: blue(2x2), lightGreen(8x8-unused), lightGreen(4x4-unused), lightGreen(2x2-unused), lightGreen(1x1-unused)");
-  gl.generateMipmap(gl.TEXTURE_2D);
+  generateMipmap();
   debug("mips: blue(2x2), blue(1x1), lightGreen(4x4-unused), lightGreen(2x2-unused), lightGreen(1x1-unused)");
 
-  wtu.drawQuad(gl);
-  wtu.checkCanvas(gl, blue,
-      "texture that is only using the top 2 levels even though other levels are defined " +
-      "should draw with blue");
-
+  check('blue',
+        "texture that is only using the top 2 levels even though other levels are defined");
 
   // Set the top 2 levels back to sizes that end up using levels 2, 3, and 4 again.
-  fillLevel(0, 16, blue);
+  fillLevel(tex, 0, 16, 'blue');
   debug("mips: blue(16x16), blue(1x1), lightGreen(4x4-unused), lightGreen(2x2-unused), lightGreen(1x1-unused)");
-  fillLevel(1, 8, blue);
+  fillLevel(tex, 1, 8, 'blue');
   debug("mips: blue(16x16), blue(8x8), lightGreen(4x4), lightGreen(2x2), lightGreen(1x1)");
-  wtu.drawQuad(gl);
-  wtu.checkCanvas(gl, blue,
-      "texture that is only using the largest 2 mips should draw with blue");
+  check('blue', "texture that is only using the largest 2 mips");
   gl.uniform4f(multLoc, 1, 1, 1, 1);
-  wtu.drawQuad(gl);
-  wtu.checkCanvas(gl, green,
-      "texture that is only using the smalles 2 mips should draw with green");
+  check('green', "texture that is only using the smallest 2 mips");
 
+  var tex = gl.createTexture();
+  fillLevel(tex, 0, 4, 'lightGreen');
+  generateMipmap();
+  debug("mips: lightGreen(4x4), lightGreen(2x2), lightGreen(1x1)");
+
+  check('lightGreen', "texture that has 3 mips");
 
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
-}
 
-function fillLevel(level, size, color) {
-  var numPixels = size * size;
-  var pixels = new Uint8Array(numPixels * 4);
-  for (var jj = 0; jj < numPixels; ++jj) {
-    var off = jj * 4;
-    pixels[off + 0] = color[0];
-    pixels[off + 1] = color[1];
-    pixels[off + 2] = color[2];
-    pixels[off + 3] = color[3];
+  fillLevel(tex, 0, 16, 'blue');
+  debug("mips: blue(16x16), lightGreen(2x2), lightGreen(1x1)");
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  check('blue', "texture that is only using top mips");
+
+  fillLevel(tex, 0, 4, 'red');
+  debug("mips: red(4x4), lightGreen(2x2), lightGreen(1x1)");
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+  check('lightGreen', "texture that is only using smallest mips");
+
+  gl.uniform4f(multLoc, 16, 16, 1, 1);
+  check('red', "texture that is using only the largest mip");
+
+  function generateMipmap() {
+    debug("gl.genreateMipmap(gl.TEXTURE_2D)");
+    gl.generateMipmap(gl.TEXTURE_2D);
   }
-  gl.texImage2D(
-      gl.TEXTURE_2D, level, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-      pixels);
+
+  function check(color, msg) {
+    wtu.drawQuad(gl);
+    wtu.checkCanvas(gl, colors[color], msg + " should draw with " + color);
+    debug("");
+  }
+
+  function fillLevel(tex, level, size, color) {
+    debug("gl.texImage2D(gl.TEXTURE_2D, " + level + ", gl.RGBA" + size + ", " + size +
+          ", 0, gl.RGBA, gl.UNSIGNED_BYTE, " + color + ");");
+    wtu.fillTexture(gl, tex, size, size, colors[color], level);
+  }
 }
 
 init();
