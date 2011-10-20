@@ -159,6 +159,8 @@ function init()
   fillLevel(tex, 0, 8, 'red');
   generateMipmap();
   check('red', "texture with 1 genmipmaps");
+  fillLevel(tex, 0, 8, 'blue');
+  generateMipmap();
   fillLevel(tex, 0, 8, 'green');
   generateMipmap();
   check('green', "texture with 2 genmipmaps");
