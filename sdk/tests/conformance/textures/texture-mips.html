@@ -70,7 +70,7 @@ function init()
     blue: [0, 0, 255, 255],
     red: [255, 0, 0, 255],
     green:  [0, 255, 0, 255],
-    lightGreen: [128, 255, 192, 255],
+    cyan: [128, 255, 255, 255],
     black: [0, 0, 0, 255]
   };
 
@@ -88,14 +88,14 @@ function init()
   var tex = createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
   // 16x16 texture no mips
-  fillLevel(tex, 0, 16, 'lightGreen');
+  fillLevel(tex, 0, 16, 'cyan');
 
   check('black',
         "texture that is missing mips when TEXTURE_MIN_FILTER not NEAREST or LINEAR");
 
   generateMipmap();
 
-  check('lightGreen', "texture that has all mips");
+  check('cyan', "texture that has all mips");
 
   // Fill in the bottom 2 mips with a different color.
   fillLevel(tex, 4, 1, 'green');
@@ -108,7 +108,7 @@ function init()
 
   gl.uniform4f(multLoc, 16, 16, 1, 1);
 
-  check('lightGreen', "texture that is using only the largest 2 mips");
+  check('cyan', "texture that is using only the largest 2 mips");
 
   // Set the top level
   fillLevel(tex, 0, 1, 'red');
@@ -130,10 +130,10 @@ function init()
   check('green', "texture that is only using the smallest 2 mips");
 
   var tex = createTexture();
-  fillLevel(tex, 0, 4, 'lightGreen');
+  fillLevel(tex, 0, 4, 'cyan');
   generateMipmap();
 
-  check('lightGreen', "texture that has 3 mips");
+  check('cyan', "texture that has 3 mips");
 
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 
@@ -143,7 +143,7 @@ function init()
 
   fillLevel(tex, 0, 4, 'red');
   texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-  check('lightGreen', "texture that is only using smallest mips");
+  check('cyan', "texture that is only using smallest mips");
 
   gl.uniform4f(multLoc, 16, 16, 1, 1);
   check('red', "texture that is using only the largest mip");
