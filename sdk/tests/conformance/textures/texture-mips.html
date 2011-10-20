@@ -102,7 +102,7 @@ function init()
   fillLevel(tex, 3, 2, 'green');
 
   // Choose the nearest mip
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+  texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
 
   check('green', "texture that is only using the smallest 2 mips");
 
@@ -138,22 +138,36 @@ function init()
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 
   fillLevel(tex, 0, 16, 'blue');
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   check('blue', "texture that is only using top mips");
 
   fillLevel(tex, 0, 4, 'red');
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+  texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
   check('lightGreen', "texture that is only using smallest mips");
 
   gl.uniform4f(multLoc, 16, 16, 1, 1);
   check('red', "texture that is using only the largest mip");
+
+  var tex = createTexture();
+  fillLevel(tex, 2, 1, 'green');
+  fillLevel(tex, 1, 2, 'green');
+  fillLevel(tex, 0, 4, 'green');
+  check('green', "texture that was built smallest mip first");
 
   function createTexture() {
     debug("gl.createTexture()");
     mips = [];
     makeDivMipChain();
     return gl.createTexture();
-  };
+  }
+
+  function texParameteri(target, pname, value) {
+	debug("gl.texParameteri(" +
+          wtu.glEnumToString(gl, target) + ", " +
+          wtu.glEnumToString(gl, pname) + ", " +
+          wtu.glEnumToString(gl, value) + ")")
+	gl.texParameteri(target, pname, value);
+  }
 
   function generateMipmap() {
     debug("gl.genreateMipmap(gl.TEXTURE_2D)");
