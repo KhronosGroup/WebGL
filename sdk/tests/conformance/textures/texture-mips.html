@@ -156,12 +156,12 @@ function init()
   // ----------------------------------------------------
   var tex = createTexture();
   gl.uniform4f(multLoc, 1, 1, 1, 1);
-  fillLevel(tex, 0, 8, 'red');
+  fillLevel(tex, 0, 16, 'red');
   generateMipmap();
   check('red', "texture with 1 genmipmaps");
-  fillLevel(tex, 0, 8, 'blue');
+  fillLevel(tex, 0, 16, 'blue');
   generateMipmap();
-  fillLevel(tex, 0, 8, 'green');
+  fillLevel(tex, 0, 16, 'green');
   generateMipmap();
   check('green', "texture with 2 genmipmaps");
 
