@@ -127,7 +127,7 @@ var BrowserDetect = {
     identity: "Windows",
     browsers: [
       {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
-    // add back in when opera is stable {url: "http://labs.opera.com/" name: "Opera Labs"},
+    // add back in when opera is stable {url: "http://www.opera.com/browser/next/" name: "Opera Next"},
       {url: "http://www.google.com/chrome/", name: "Google Chrome"}
     ]
   },
@@ -137,7 +137,7 @@ var BrowserDetect = {
     browsers: [
       {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
       {url: "http://www.google.com/chrome/", name: "Google Chrome"},
-      // add back in when opera is stable {url: "http://labs.opera.com/", name: "Opera Labs"},
+      // add back in when opera is stable {url: "http://www.opera.com/browser/next/", name: "Opera Next"},
       {url: "http://www.webkit.org/", name: "WebKit Developer Builds"}
     ]
   },
@@ -168,7 +168,7 @@ var BrowserDetect = {
     browsers: [
       {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
       {url: "http://www.google.com/chrome/", name: "Google Chrome"},
-      {url: "http://labs.opera.com/", name: "Opera Labs"}
+      {url: "http://www.opera.com/browser/next/", name: "Opera Next"}
     ]
   },
   { string: "unknown",
@@ -177,7 +177,7 @@ var BrowserDetect = {
     browsers: [
       {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
       {url: "http://www.google.com/chrome/", name: "Google Chrome"},
-      {url: "http://labs.opera.com/", name: "Opera Labs"},
+      {url: "http://www.opera.com/browser/next/", name: "Opera Next"},
       {url: "http://www.webkit.org/", name: "WebKit Developer Builds"}
     ]
   }
@@ -197,8 +197,8 @@ var BrowserDetect = {
       troubleshootingUrl: "https://support.mozilla.com/en-US/kb/how-do-i-upgrade-my-graphics-drivers"
     },
     "Opera": {
-      upgradeUrl: "http://labs.opera.com",
-      troubleshootingUrl: "http://my.opera.com/core/blog/2011/02/28/webgl-and-hardware-acceleration-2"
+      upgradeUrl: "http://www.opera.com/browser/next/",
+      troubleshootingUrl: "http://my.opera.com/desktopteam/blog/"
     },
     "Android": {
       upgradeUrl: null,
