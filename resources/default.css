@@ -632,6 +632,17 @@ pre, code { font-size: 1.2em; font-family: monospace; } /* navigator 4 requires 
 pre.idl { border: solid thin; background: #EEEEEE; color: black; padding: 0.5em 1em; min-width: 61em;}
 pre.idl :link, pre.idl :visited { color: inherit; background: transparent; }
 
+/* for a list of steps */
+ol.stepslist>li{
+  margin-top: 1em;
+}
+ol.stepslist ol {
+  margin-top: 1em;
+}
+ol.stepslist ul {
+  margin-top: 1em;
+}
+
 dl.methods {
     color: black;
     margin: 2em 0 2em 2em; 
