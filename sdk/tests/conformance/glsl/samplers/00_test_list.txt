@@ -1,2 +1,3 @@
 glsl-function-texture2d-bias.html
+glsl-function-texture2dlod.html
 

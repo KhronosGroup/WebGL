@@ -20,23 +20,23 @@ found in the LICENSE file.
 <script id="vshader2d" type="x-shader/x-vertex">
 attribute vec4 vPosition;
 attribute vec2 texCoord0;
-varying vec2 texCoord;
+varying vec4 color;
+uniform sampler2D tex;
+uniform float lod;
 void main() {
     gl_Position = vPosition;
-    texCoord = texCoord0;
+    color = texture2DLod(tex, texCoord0, lod);
 }
 </script>
 <script id="fshader2d" type="x-shader/x-vertex">
 precision mediump float;
-uniform sampler2D tex;
-uniform float bias;
-varying vec2 texCoord;
+varying vec4 color;
 void main() {
-    gl_FragData[0] = texture2D(tex, texCoord, bias);
+    gl_FragData[0] = color;
 }
 </script>
 <script>
-description("tests GLSL texture2D function with bias");
+description("tests GLSL texture2DLod function");
 
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("example");
@@ -80,7 +80,7 @@ for (var ii = 0; ii < colors.length; ++ii) {
   wtu.fillTexture(gl, tex, size, size, color.color, ii);
 }
 
-var loc = gl.getUniformLocation(program, "bias");
+var loc = gl.getUniformLocation(program, "lod");
 
 for (var ii = 0; ii < colors.length; ++ii) {
   gl.uniform1f(loc, ii);
@@ -88,7 +88,7 @@ for (var ii = 0; ii < colors.length; ++ii) {
   wtu.drawQuad(gl);
   wtu.checkCanvas(
       gl, color.color,
-      "256x256 texture drawn to 256x256 dest with bias = " + ii +
+      "256x256 texture drawn to 256x256 dest with lod = " + ii +
       " should be " + color.name);
 }
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
