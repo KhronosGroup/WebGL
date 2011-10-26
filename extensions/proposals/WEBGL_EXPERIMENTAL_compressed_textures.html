@@ -251,6 +251,22 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     <p class="issue">
     Should compressedTexSubImage2D be exposed?
     </p>
+	<p>I don't know if any apps use it and it's possible some OpenGL drivers
+	have different restrictions than others. If it's not used maybe it should
+	be removed.</p>
+	<p class="issue">
+	Which formats should supported?
+	</p>
+	<p>
+	Should ATITC be added? I originally had them in there but my 1 minute search
+	of the format so I could write the restrictions didn't come up with any docs
+	so I left them out for now.
+	</p>
+	<p>3DC in? 2bit PVRTC out? DXT3 out?</p>
+	<p>
+	Should we add support now for proposed formats like ETC2, ZIL or ASTC so
+	they don't need a new spec to enable them?
+	</p>
     <h2 class="no-toc">Revision History</h2>
     <p>
       <ul>
