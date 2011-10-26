@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 08 August 2011</h2>
+    <h2 class="no-toc">Editor's Draft 26 October 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2248,6 +2248,10 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">void bindAttribLocation(WebGLProgram program, GLuint index, DOMString name)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindAttribLocation.xml">man page</a>)</span>
         <dd>
+            If the passed name is longer than the restriction defined
+            in <a href="#MAX_LOCATION_LENGTHS">Maximum Uniform and Attribute Location Lengths</a>,
+            an <code>INVALID_VALUE</code> error will be generated. <br><br>
+
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
         <dt class="idl-code">void compileShader(WebGLShader shader)
@@ -2330,10 +2334,12 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">void shaderSource(WebGLShader shader, DOMString source)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glShaderSource.xml">man page</a>)</span>
         <dd>
-            See <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a>
-            and <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
-            Set</a> for additional constructs supported by and validation performed by WebGL
-            implementations.
+            See <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL
+            Constructs</a>, <a href="#MAX_GLSL_TOKEN_SIZE">Maximum GLSL Token
+            Size</a>, <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source
+            Character Set</a>, and <a href="#MAX_STRUCT_NESTING">Maximum Nesting of Structures in
+            GLSL Shaders</a> for additional constraints enforced in, additional constructs supported
+            by, and validation performed by WebGL implementations.
         <dt class="idl-code">void useProgram(WebGLProgram program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glUseProgram.xml">man page</a>)</span>
         <dt class="idl-code">void validateProgram(WebGLProgram program)
@@ -2371,6 +2377,10 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">GLint getAttribLocation(WebGLProgram program, DOMString name)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetAttribLocation.xml">man page</a>)</span>
         <dd>
+            If the passed name is longer than the restriction defined
+            in <a href="#MAX_LOCATION_LENGTHS">Maximum Uniform and Attribute Location Lengths</a>,
+            an <code>INVALID_VALUE</code> error will be generated and -1 will be returned. <br><br>
+
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
         <dt class="idl-code">any getUniform(WebGLProgram program, WebGLUniformLocation location)
@@ -2402,6 +2412,10 @@ for (var i = 0; i < numVertices; i++) {
             Return a WebGLUniformLocation object that represents the location of a specific uniform variable
             within a program object. The return value is null if name does not correspond to an active uniform
             variable in the passed program. <br><br>
+
+            If the passed name is longer than the restriction defined
+            in <a href="#MAX_LOCATION_LENGTHS">Maximum Uniform and Attribute Location Lengths</a>,
+            an <code>INVALID_VALUE</code> error will be generated and null will be returned. <br><br>
 
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
@@ -3105,6 +3119,25 @@ extensions.
     </p>
 </div>
     
+    <h3><a name="MAX_STRUCT_NESTING">Maximum Nesting of Structures in GLSL Shaders</a></h3>
+
+<p>
+    WebGL imposes a limit on the nesting of structures in GLSL shaders. Nesting occurs when a field
+    in a struct refers to another struct type; the GLSL ES
+    spec <a href="#refsGLES20GLSL">[GLES20GLSL]</a> forbids embedded structure definitions. The
+    fields in a top-level struct definition have a nesting level of 1.
+</p>
+<p>
+    WebGL requires support of a structure nesting level of 4. Shaders containing structures nested
+    more than 4 levels deep must fail to compile.
+</p>
+
+    <h3><a name="MAX_LOCATION_LENGTHS">Maximum Uniform and Attribute Location Lengths</a></h3>
+
+<p>
+    WebGL imposes a limit of 256 characters on the lengths of uniform and attribute locations.
+</p>
+
     <h3>String Length Queries</h3>
 
 <p>
