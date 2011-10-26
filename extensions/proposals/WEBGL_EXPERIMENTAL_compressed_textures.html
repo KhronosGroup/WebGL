@@ -168,13 +168,13 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     floor((width + 3) / 4) * (floor(height + 3) / 4) * 16
     </code></blockquote>
     <p>
-    If it is not an error <code>INVALID_OPERATION</code> is generated.
+    If it is not an error <code>INVALID_OPERATION</code> is generated.<br><br>
 
-    For <code>compressedTexSubImage2D</code> <code>width</code>,
-    <code>height</code>, <code>xoffset</code>, and <code>yoffset</code>
-    must be a multiple of 16.
-
-    If they not an error <code>INVALID_VALUE</code> is generated.
+    For <code>compressedTexSubImage2D</code> <code>xoffset</code> and
+	<code>yoffset</code> must be a multiple of 4 and
+	<code>width</code> and
+	<code>height</code> must be less than 4 or a multple of 4.
+    If they are not an error <code>INVALID_VALUE</code> is generated.
     </p>
     </dd>
 
@@ -187,12 +187,11 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     floor((width + 3) / 4) * (floor(height + 3) / 4) * 32
     </code></blockquote>
     <p>
-    If it is not an <code>INVALID_OPERATION</code> error is generated.
+    If it is not an <code>INVALID_OPERATION</code> error is generated.<br><br>
 
-    For <code>compressedTexSubImage2D</code> <code>width</code>,
-    <code>height</code>, <code>xoffset</code>, and <code>yoffset</code>
-    must be a multiple of 16.
-
+    For <code>compressedTexSubImage2D</code> <code>xoffset</code> and
+	<code>yoffset</code> must be a multiple of 4 and <code>width</code> and
+	<code>height</code> must be less than 4 or a multple of 4.
     If they not an <code>INVALID_VALUE</code> error is generated.
     </p>
     </dd>
@@ -206,12 +205,11 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     floor(max(width, 8) * max(height, 8) * 4 + 7) / 8)
     </code></blockquote>
     <p>
-    If it is not an <code>INVALID_OPERATION</code> error is generated.
+    If it is not an <code>INVALID_OPERATION</code> error is generated.<br><br>
 
-    For <code>compressedTexSubImage2D</code> <code>width</code>,
-    <code>height</code> must match the width and height of the original texture.
+    For <code>compressedTexSubImage2D</code> <code>width</code> and
+    <code>height</code> must match the width and height of the original texture and
     <code>xoffset</code>, and <code>yoffset</code> must 0.
-
     If they not an <code>INVALID_VALUE</code> error is generated.
     </p>
     </dd>
@@ -225,12 +223,11 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     floor((max(width, 16) * max(height, 8) * 2 + 7) / 8)
     </code></blockquote>
     <p>
-    If it is not an <code>INVALID_OPERATION</code> error is generated.
+    If it is not an <code>INVALID_OPERATION</code> error is generated.<br><br>
 
-    For <code>compressedTexSubImage2D</code> <code>width</code>,
-    <code>height</code> must match the width and height of the original texture.
-    <code>xoffset</code>, and <code>yoffset</code> must 0.
-
+    For <code>compressedTexSubImage2D</code> <code>width</code> and
+    <code>height</code> must match the width and height of the original texture and
+    <code>xoffset</code> and <code>yoffset</code> must 0.
     If they not an <code>INVALID_VALUE</code> error is generated.
     </p>
     </dd>
@@ -271,6 +268,7 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     <p>
       <ul>
       <li> 2011/10/25 Initial draft.</li>
+      <li> 2011/10/26 Fixed DXT width and height restrictions.</li>
       </ul>
     </p>
 </body>
