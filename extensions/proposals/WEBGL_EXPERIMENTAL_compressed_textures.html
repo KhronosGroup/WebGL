@@ -168,13 +168,14 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     floor((width + 3) / 4) * (floor(height + 3) / 4) * 16
     </code></blockquote>
     <p>
-    If it is not an error <code>INVALID_OPERATION</code> is generated.<br><br>
+    If it is not an error <code>INVALID_VALUE</code> is generated.<br><br>
 
     For <code>compressedTexSubImage2D</code> <code>xoffset</code> and
 	<code>yoffset</code> must be a multiple of 4 and
-	<code>width</code> and
-	<code>height</code> must be less than 4 or a multple of 4.
-    If they are not an error <code>INVALID_VALUE</code> is generated.
+	<code>width</code> and must be a multiple of 4 or equal to the original
+	width of the texture. <code>height</code> must be a multiple of 4 or
+	equal to the original height of the texture.
+    If they are not an error <code>INVALID_OPERATION</code> is generated.
     </p>
     </dd>
 
@@ -190,9 +191,11 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     If it is not an <code>INVALID_OPERATION</code> error is generated.<br><br>
 
     For <code>compressedTexSubImage2D</code> <code>xoffset</code> and
-	<code>yoffset</code> must be a multiple of 4 and <code>width</code> and
-	<code>height</code> must be less than 4 or a multple of 4.
-    If they not an <code>INVALID_VALUE</code> error is generated.
+	<code>yoffset</code> must be a multiple of 4 and
+	<code>width</code> and must be a multiple of 4 or equal to the original
+	width of the texture. <code>height</code> must be a multiple of 4 or
+	equal to the original height of the texture.
+    If they not an <code>INVALID_OPERATION</code> error is generated.
     </p>
     </dd>
 
@@ -210,7 +213,7 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     For <code>compressedTexSubImage2D</code> <code>width</code> and
     <code>height</code> must match the width and height of the original texture and
     <code>xoffset</code>, and <code>yoffset</code> must 0.
-    If they not an <code>INVALID_VALUE</code> error is generated.
+    If they not an <code>INVALID_OPERATION</code> error is generated.
     </p>
     </dd>
 
@@ -228,7 +231,7 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     For <code>compressedTexSubImage2D</code> <code>width</code> and
     <code>height</code> must match the width and height of the original texture and
     <code>xoffset</code> and <code>yoffset</code> must 0.
-    If they not an <code>INVALID_VALUE</code> error is generated.
+    If they not an <code>INVALID_OPERATION</code> error is generated.
     </p>
     </dd>
 <div class="note">
