@@ -68,7 +68,7 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     <h2 class="no-toc">Description</h2>
     <p>
     This extension exposes the standard OpenGL ES 2.0 compressed texture
-    extry points, <code>comrpessedTexImage2D</code> and
+    extry points, <code>compressedTexImage2D</code> and
     <code>compressedTexSubImage2D</code>.
     </p>
     <p>
@@ -89,7 +89,7 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     Many OpenGL drivers do not return a correct list of supported formats when
     calling <code>glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS)</code>. It is
     recommended that WebGL implementations use other means, for example
-    <code>glGetString(GL_EXTENSIONS)</code> to genearte a correct list.
+    <code>glGetString(GL_EXTENSIONS)</code> to generate a correct list.
     </p>
 </div>
 
@@ -162,7 +162,7 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     <dt>COMPRESSED_RGBA_S3TC_DXT1_EXT</dt>
     <dt>ETC1_RGB8_OES</dt>
     <dd><p>The size of the ArrayBufferView, <code>pixels</code>, passed to either
-    <code>comrpessedTexImage2D</code> or <code>compressedTexSubImage2D</code>
+    <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
     must match the following equation:</p>
     <blockquote><code>
     floor((width + 3) / 4) * (floor(height + 3) / 4) * 16
@@ -181,7 +181,7 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     <dt>COMPRESSED_RGBA_S3TC_DXT3_EXT</dt>
     <dt>COMPRESSED_RGBA_S3TC_DXT5_EXT</dt>
     <dd><p>The size of the ArrayBufferView, <code>pixels</code>, passed to either
-    <code>comrpessedTexImage2D</code> or <code>compressedTexSubImage2D</code>
+    <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
     must match the following equation:</p>
     <blockquote><code>
     floor((width + 3) / 4) * (floor(height + 3) / 4) * 32
@@ -199,7 +199,7 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     <dt>COMPRESSED_RGB_PVRTC_4BPPV1_IMG</dt>
     <dt>COMPRESSED_RGBA_PVRTC_4BPPV1_IMG</dt>
     <dd><p>The size of the ArrayBufferView, <code>pixels</code>, passed to either
-    <code>comrpessedTexImage2D</code> or <code>compressedTexSubImage2D</code>
+    <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
     must match the following equation:</p>
     <blockquote><code>
     floor(max(width, 8) * max(height, 8) * 4 + 7) / 8)
@@ -217,7 +217,7 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     <dt>COMPRESSED_RGB_PVRTC_2BPPV1_IMG</dt>
     <dt>COMPRESSED_RGBA_PVRTC_2BPPV1_IMG</dt>
     <dd><p>The size of the ArrayBufferView, <code>pixels</code>, passed to either
-    <code>comrpessedTexImage2D</code> or <code>compressedTexSubImage2D</code>
+    <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
     must match the following equation:</p>
     <blockquote><code>
     floor((max(width, 16) * max(height, 8) * 2 + 7) / 8)
@@ -243,7 +243,7 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code>,
     <code>UNPACK_FLIP_Y_WEBGL</code> and
     <code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code> have no effect on either
-    <code>comrpessedTexImage2D</code> or <code>compressedTexSubImage2D</code>.
+    <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>.
     <h2 class="no-toc">Issues</h2>
     <p class="issue">
     Should compressedTexSubImage2D be exposed?
@@ -260,15 +260,12 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
 	so I left them out for now.
 	</p>
 	<p>3DC in? 2bit PVRTC out? DXT3 out?</p>
-	<p>
-	Should we add support now for proposed formats like ETC2, ZIL or ASTC so
-	they don't need a new spec to enable them?
-	</p>
     <h2 class="no-toc">Revision History</h2>
     <p>
       <ul>
       <li> 2011/10/25 Initial draft.</li>
       <li> 2011/10/26 Fixed DXT width and height restrictions.</li>
+      <li> 2011/10/26 Fixed typos.</li>
       </ul>
     </p>
 </body>
