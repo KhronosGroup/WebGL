@@ -186,34 +186,56 @@ function testDifferentSizedAttachments() {
     gl.framebufferRenderbuffer(
         gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, colorBuffer);
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 16, 16);
+
     shouldBeNonNull("depthBuffer = gl.createRenderbuffer()");
     gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
-    gl.framebufferRenderbuffer(
-        gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 16, 16);
-    glErrorShouldBe(gl, gl.NO_ERROR);
-    status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-    if (status != gl.FRAMEBUFFER_COMPLETE) {
-        gl.framebufferRenderbuffer(
-            gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, null);
-        gl.framebufferRenderbuffer(
-            gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
-        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, 16, 16);
-        status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-        if (status != gl.FRAMEBUFFER_COMPLETE) {
-            return;
+
+    var format;
+    var attachment;
+
+    if (!tryDepth(gl.DEPTH_COMPONENT16, gl.DEPTH_ATTACHMENT) ||
+        !tryDepth(gl.DEPTH_STENCIL, gl.DEPTH_STENCIL_ATTACHMENT)) {
+      return;
+    }
+
+    function tryDepth(try_format, try_attachment) {
+        if (attachment) {
+            gl.framebufferRenderbuffer(
+                gl.FRAMEBUFFER, attachment, gl.RENDERBUFFER, null);
         }
+        format = try_format;
+        attachment = try_attachment;
+        gl.framebufferRenderbuffer(
+            gl.FRAMEBUFFER, attachment, gl.RENDERBUFFER, depthBuffer);
+        gl.renderbufferStorage(gl.RENDERBUFFER, format, 16, 16);
+        glErrorShouldBe(gl, gl.NO_ERROR);
+        return gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE;
     }
 
     debug("Attachments of different sizes should not be framebuffer complete (OpenGL ES 2.0 4.4.5)");
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 32, 16);
+    gl.renderbufferStorage(gl.RENDERBUFFER, format, 32, 16);
     shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 16, 16);
+    gl.renderbufferStorage(gl.RENDERBUFFER, format, 16, 16);
     shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
     gl.bindRenderbuffer(gl.RENDERBUFFER, colorBuffer);
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 16, 32);
     shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 16, 16);
+    shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
+    glErrorShouldBe(gl, gl.NO_ERROR);
+
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 16, 16, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    glErrorShouldBe(gl, gl.NO_ERROR);
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        return;
+    }
+
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 32, 16, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 16, 16, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
     glErrorShouldBe(gl, gl.NO_ERROR);
 }
