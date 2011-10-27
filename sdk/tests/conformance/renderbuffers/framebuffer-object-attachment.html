@@ -178,6 +178,7 @@ for (width = 0; width <= 2; width += 2)
     }
 }
 
+function testDifferentSizedAttachments() {
     shouldBeNonNull("fbo = gl.createFramebuffer()");
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     shouldBeNonNull("colorBuffer = gl.createRenderbuffer()");
@@ -192,19 +193,31 @@ for (width = 0; width <= 2; width += 2)
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 16, 16);
     glErrorShouldBe(gl, gl.NO_ERROR);
     status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-    if (status == gl.FRAMEBUFFER_COMPLETE) {
-        debug("Attachments of different sizes should not be framebuffer complete (OpenGL ES 2.0 4.4.5)");
-        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 32, 16);
-        shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
-        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 16, 16);
-        shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
-        gl.bindRenderbuffer(gl.RENDERBUFFER, colorBuffer);
-        gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 16, 32);
-        shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
-        gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 16, 16);
-        shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
-        glErrorShouldBe(gl, gl.NO_ERROR);
+    if (status != gl.FRAMEBUFFER_COMPLETE) {
+        gl.framebufferRenderbuffer(
+            gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, null);
+        gl.framebufferRenderbuffer(
+            gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, 16, 16);
+        status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+        if (status != gl.FRAMEBUFFER_COMPLETE) {
+            return;
+        }
     }
+
+    debug("Attachments of different sizes should not be framebuffer complete (OpenGL ES 2.0 4.4.5)");
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 32, 16);
+    shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 16, 16);
+    shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
+    gl.bindRenderbuffer(gl.RENDERBUFFER, colorBuffer);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 16, 32);
+    shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 16, 16);
+    shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
+    glErrorShouldBe(gl, gl.NO_ERROR);
+}
+testDifferentSizedAttachments();
 
 successfullyParsed = true;
 </script>
