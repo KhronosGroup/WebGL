@@ -5,6 +5,7 @@
 <title>WebGL attrib location length tests</title>
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
 <script src="../../../resources/js-test-pre.js"></script>
+<script src="../../resources/webgl-test.js"> </script>
 <script src="../../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -53,13 +54,13 @@ var attribLoc = gl.getAttribLocation(program, "vPosition012345678901234567890123
 if (attribLoc == -1) {
     testFailed("attrib location was -1, should not be");
 } else {
-    testPassed("attrib location should not be -1; was " + attribLoc);
+    testPassed("attrib location should not be -1");
 }
 wtu.glErrorShouldBe(gl, gl.NONE);
 
 debug("Test attrib location over the length limit");
 debug("Shader compilation should fail");
-shouldBe('wtu.loadShaderFromScript(gl, "badVertexShader", gl.VERTEX_SHADER)', 'null');
+shouldBe('wtu.loadShaderFromScript(gl, "badVertexShader", gl.VERTEX_SHADER, function (err) {})', 'null');
 wtu.glErrorShouldBe(gl, gl.NONE);
 
 debug("Attempt to bind too-long attrib location should produce error");
