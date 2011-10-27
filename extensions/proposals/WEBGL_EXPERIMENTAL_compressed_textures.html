@@ -72,16 +72,16 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     <code>compressedTexSubImage2D</code>.
     </p>
     <p>
-    Once this extensions is enabled by calling <code>getExtension</code> then
+    Once this extension is enabled by calling <code>getExtension</code> then
     the WebGLRenderingContext method <code>getParameter(gl.COMPRESSED_TEXTURE_FORMATS)</code>
-    starts returning an array of GLenums indicating the formats support by the
+    starts returning an array of GLenums indicating the formats supported by the
     underlying hardware that are also on the list of
     <a href="#SUPPORTEDFORMATS">supported formats</a>.
     </p>
     <p>
     For applications the recommended usage is to first call <code>getParameter(gl.COMPRESSED_TEXTURE_FORMATS)</code>
     to find out the formats that are supported and then use that information to
-    download or generate compressed image data of the correct format or fallback to uncompressed
+    download or generate compressed image data of the correct format or fall back to uncompressed
     formats.
     </p>
 <div class="note">
@@ -89,7 +89,7 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     Many OpenGL drivers do not return a correct list of supported formats when
     calling <code>glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS)</code>. It is
     recommended that WebGL implementations use other means, for example
-    <code>glGetString(GL_EXTENSIONS)</code> to generate a correct list.
+    <code>glGetString(GL_EXTENSIONS)</code>, to generate a correct list.
     </p>
 </div>
 
@@ -100,47 +100,47 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.1">OpenGL ES 2.0 &sect;3.7.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCompressedTexImage2D.xml">man page</a>)</span>
     </dt>
     <dd>
-        If <code>data</code> is null, an error <code>INVALID_VALUE</code> is generated<br><br>
+        If <code>data</code> is null, an <code>INVALID_VALUE</code> error is generated.<br><br>
 
-        If the length of <code>data</code> does not exactly match the size requirements for the given format INVALID_OPERATION error is generated.
-        See <a href="#FORMATRESTRICTIONS">Formats Restictions</a>
+        If the length of <code>data</code> does not exactly match the size requirements for the given format, an <code>INVALID_VALUE</code> error is generated.
+        See <a href="#FORMATRESTRICTIONS">Format Restrictions</a>.
         <br><br>
 
         If an attempt is made to call this function with no WebGLTexture bound (see above), an
         <code>INVALID_OPERATION</code> error is generated. <br><br>
 
         If <code>internalformat</code> is not one of the formats returned by
-        <code>gl.getParameter(gl.COMPRESSED_TEXTURE_FORMATS)</code> an
+        <code>gl.getParameter(gl.COMPRESSED_TEXTURE_FORMATS)</code>, an
         <code>INVALID_ENUM</code> error is generated.<br><br>
 
         Other parameters have specific restrictions depending on the format.
-        See <a href="#FORMATRESTRICTIONS">Formats Restictions</a>
+        See <a href="#FORMATRESTRICTIONS">Format Restrictions</a>.
     </dd>
     <br>
     <dt class="idl-code"><a name="COMPRESSEDTEXSUBIMAGE2D">void compressedTexSubImage2D</a>(GLenum target, GLint level,
-                GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum internalformat, ArrayBufferView data)
+                GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, ArrayBufferView data)
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.7.1">OpenGL ES 2.0 &sect;3.7.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCompressedTexSubImage2D.xml">man page</a>)</span>
     </dt>
     <dd>
-        If <code>data</code> is null, an error <code>INVALID_VALUE</code> is generated<br><br>
+        If <code>data</code> is null, an <code>INVALID_VALUE</code> error is generated.<br><br>
 
-        If the length of <code>data</code> does not exactly match the size requirements for the given format INVALID_VALUE error is generated.
-        See <a href="#FORMATRESTRICTIONS">Formats Restictions</a>
+        If the length of <code>data</code> does not exactly match the size requirements for the given format, an <code>INVALID_VALUE</code> error is generated.
+        See <a href="#FORMATRESTRICTIONS">Format Restrictions</a>.
         <br><br>
 
         If an attempt is made to call this function with no WebGLTexture bound (see above), an
         <code>INVALID_OPERATION</code> error is generated. <br><br>
 
-        If <code>format</code> does not is not one of the formats returned by
-        <code>gl.getParameter(gl.COMPRESSED_TEXTURE_FORMATS)</code> an
+        If <code>format</code> is not one of the formats returned by
+        <code>gl.getParameter(gl.COMPRESSED_TEXTURE_FORMATS)</code>, an
         <code>INVALID_ENUM</code> error is generated.<br><br>
 
         If <code>format</code> does not match the <code>internalformat</code> specifed by
-        a previous call to <code>compressedTexImage2D</code> an <code>INVALID_OPERATION</code>
+        a previous call to <code>compressedTexImage2D</code>, an <code>INVALID_OPERATION</code>
         error is generated.<br><br>
 
         Other parameters have specific restrictions depending on the format.
-        See <a href="#FORMATRESTRICTIONS">Formats Restictions</a>
+        See <a href="#FORMATRESTRICTIONS">Format Restrictions</a>.
     </dd>
 
     <h3><a name="SUPPORTEDFORMATS"></a>Supported Formats</h3>
@@ -168,14 +168,14 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
     floor((width + 3) / 4) * (floor(height + 3) / 4) * 16
     </code></blockquote>
     <p>
-    If it is not an error <code>INVALID_VALUE</code> is generated.<br><br>
+    If it is not an <code>INVALID_VALUE</code> error is generated.<br><br>
 
     For <code>compressedTexSubImage2D</code> <code>xoffset</code> and
 	<code>yoffset</code> must be a multiple of 4 and
 	<code>width</code> must be a multiple of 4 or equal to the original
 	width of the texture. <code>height</code> must be a multiple of 4 or
 	equal to the original height of the texture.
-    If they are not an error <code>INVALID_OPERATION</code> is generated.
+    If they are not an <code>INVALID_OPERATION</code> error is generated.
     </p>
     </dd>
 
@@ -242,7 +242,7 @@ interface WEBGL_EXPERIMENTAL_compressed_textures {
 </div>
 
     <h2 class="no-toc">Notes</h2>
-    <p>the pixelStorei settings <code>UNPACK_ALIGNMENT</code>,
+    <p>The pixelStorei settings <code>UNPACK_ALIGNMENT</code>,
     <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code>,
     <code>UNPACK_FLIP_Y_WEBGL</code> and
     <code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code> have no effect on either
