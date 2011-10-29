@@ -17,7 +17,7 @@ found in the LICENSE file.
 <div id="description"></div>
 <div id="console"></div>
 <script id="vertexShader" type="text/something-not-javascript">
-// embedded structure definitions are forbidden and should fail
+// embedded structure definitions are forbidden per GLSL ES section 4.1.8, "Structures", and should fail
 struct nesting1 {
   struct nesting2 {
     vec4 vector;
