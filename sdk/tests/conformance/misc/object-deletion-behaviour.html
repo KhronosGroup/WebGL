@@ -266,13 +266,16 @@ if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
   // delete framebuffer. because this was the bound fbo the backbuffer should be active now
   shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteFramebuffer(fbo)");
   // check backbuffer
-  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 16, 16, [255,0,0,255], "fbo should be red")');
-  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 300-16, 150-16, 16, 16, [255,0,0,255], "fbo should be red")');
-  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 300, 0, 16, 16, [0,0,0,0], "fbo should be black")');
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 300, 150, [255,0,0,255], "backbuffer should be red")');
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 300, 0, 300, 300, [0,0,0,0], "outside backbuffer should be black")');
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 150, 300, 300, [0,0,0,0], "outside backbuffer should be black")');
   // check drawing to backbuffer
   shouldGenerateGLError(gl, gl.NO_ERROR, "gl.clearColor(0,1,0,1)");
   shouldGenerateGLError(gl, gl.NO_ERROR, "gl.clear(gl.COLOR_BUFFER_BIT)");
-  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 16, 16, [0,255,0,255], "fbo should be green")');
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 300, 150, [0,255,0,255], "fbo should be green")');
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, null)");
+  // check again because many buggy implementations will have bound to the true backbuffer on deleteFramebuffer.
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 300, 150, [0,255,0,255], "fbo should be green")');
 }
 
 successfullyParsed = true;
