@@ -29,17 +29,17 @@
     <p> Members of the WebGL working group </p>
 
     <h2 class="no-toc">Version</h2>
-    <p> Last modified date: October 25, 2011
+    <p> Last modified date: November 11, 2011
     </p>
 
     <h2 class="no-toc">Dependencies</h2>
     <p> Written against the WebGL API 1.0 specification. </p>
 
-    <h2 class="no-toc">Overview</h2>
+    <h2>Overview</h2>
     <p>
       This extension exposes compressed texture functionality to WebGL.
     </p>
-    <h2 class="no-toc">IDL</h2>
+    <h2>IDL</h2>
     <p>
 <pre class="idl">
 module webgl {
@@ -48,13 +48,10 @@ interface WebGLExperimentalCompressedTextures {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_RGB_S3TC_DXT1_EXT        = 0x83F0;
     const GLenum COMPRESSED_RGBA_S3TC_DXT1_EXT       = 0x83F1;
-    const GLenum COMPRESSED_RGBA_S3TC_DXT3_EXT       = 0x83F2;
     const GLenum COMPRESSED_RGBA_S3TC_DXT5_EXT       = 0x83F3;
     const GLenum ETC1_RGB8_OES                       = 0x8D64;
     const GLenum COMPRESSED_RGB_PVRTC_4BPPV1_IMG     = 0x8C00;
-    const GLenum COMPRESSED_RGB_PVRTC_2BPPV1_IMG     = 0x8C01;
     const GLenum COMPRESSED_RGBA_PVRTC_4BPPV1_IMG    = 0x8C02;
-    const GLenum COMPRESSED_RGBA_PVRTC_2BPPV1_IMG    = 0x8C03;
 
     void compressedTexImage2D(GLenum target, GLint level,
                               GLenum internalformat, GLsizei width,
@@ -65,7 +62,7 @@ interface WebGLExperimentalCompressedTextures {
                                  GLenum format, ArrayBufferView data);
 };
 </pre>
-    <h2 class="no-toc">Description</h2>
+    <h2>Description</h2>
     <p>
     This extension exposes the standard OpenGL ES 2.0 compressed texture
     extry points, <code>compressedTexImage2D</code> and
@@ -148,13 +145,10 @@ interface WebGLExperimentalCompressedTextures {
     <ul>
     <li><code>COMPRESSED_RGB_S3TC_DXT1_EXT</code>
     <li><code>COMPRESSED_RGBA_S3TC_DXT1_EXT</code>
-    <li><code>COMPRESSED_RGBA_S3TC_DXT3_EXT</code>
     <li><code>COMPRESSED_RGBA_S3TC_DXT5_EXT</code>
     <li><code>ETC1_RGB8_OES</code>
     <li><code>COMPRESSED_RGB_PVRTC_4BPPV1_IMG</code>
-    <li><code>COMPRESSED_RGB_PVRTC_2BPPV1_IMG</code>
     <li><code>COMPRESSED_RGBA_PVRTC_4BPPV1_IMG</code>
-    <li><code>COMPRESSED_RGBA_PVRTC_2BPPV1_IMG</code>
     </ul>
 
     <h3><a name="FORMATRESTRICTIONS"></a>Format Restrictions</h3>
@@ -165,7 +159,7 @@ interface WebGLExperimentalCompressedTextures {
     <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
     must match the following equation:</p>
     <blockquote><code>
-    floor((width + 3) / 4) * (floor(height + 3) / 4) * 16
+    floor((width + 3) / 4) * floor((height + 3) / 4) * 8
     </code></blockquote>
     <p>
     If it is not an <code>INVALID_VALUE</code> error is generated.<br><br>
@@ -179,13 +173,12 @@ interface WebGLExperimentalCompressedTextures {
     </p>
     </dd>
 
-    <dt>COMPRESSED_RGBA_S3TC_DXT3_EXT</dt>
     <dt>COMPRESSED_RGBA_S3TC_DXT5_EXT</dt>
     <dd><p>The size of the ArrayBufferView, <code>pixels</code>, passed to either
     <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
     must match the following equation:</p>
     <blockquote><code>
-    floor((width + 3) / 4) * (floor(height + 3) / 4) * 32
+    floor((width + 3) / 4) * floor((height + 3) / 4) * 16
     </code></blockquote>
     <p>
     If it is not an <code>INVALID_OPERATION</code> error is generated.<br><br>
@@ -217,23 +210,6 @@ interface WebGLExperimentalCompressedTextures {
     </p>
     </dd>
 
-    <dt>COMPRESSED_RGB_PVRTC_2BPPV1_IMG</dt>
-    <dt>COMPRESSED_RGBA_PVRTC_2BPPV1_IMG</dt>
-    <dd><p>The size of the ArrayBufferView, <code>pixels</code>, passed to either
-    <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
-    must match the following equation:</p>
-    <blockquote><code>
-    floor((max(width, 16) * max(height, 8) * 2 + 7) / 8)
-    </code></blockquote>
-    <p>
-    If it is not an <code>INVALID_OPERATION</code> error is generated.<br><br>
-
-    For <code>compressedTexSubImage2D</code> <code>width</code> and
-    <code>height</code> must match the width and height of the original texture and
-    <code>xoffset</code> and <code>yoffset</code> must 0.
-    If they not an <code>INVALID_OPERATION</code> error is generated.
-    </p>
-    </dd>
 <div class="note">
     <p>
     It is recommended the WebGL implementation enforce all of these restrictions and not
@@ -247,7 +223,9 @@ interface WebGLExperimentalCompressedTextures {
     <code>UNPACK_FLIP_Y_WEBGL</code> and
     <code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code> have no effect on either
     <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>.
-    <h2 class="no-toc">Issues</h2>
+    <p>texSubImage2D and copyTexSubImage2D must generate INVALID_OPERATION on a
+    compressed texture.</p>
+    <h2>Issues</h2>
     <p class="issue">
     Should compressedTexSubImage2D be exposed?
     </p>
@@ -255,7 +233,7 @@ interface WebGLExperimentalCompressedTextures {
 	have different restrictions than others. If it's not used maybe it should
 	be removed.</p>
 	<p class="issue">
-	Which formats should supported?
+	Which formats should be supported?
 	</p>
 	<p>
 	Should ATITC be added? I originally had them in there but my 1 minute search
@@ -263,12 +241,14 @@ interface WebGLExperimentalCompressedTextures {
 	so I left them out for now.
 	</p>
 	<p>3DC in? 2bit PVRTC out? DXT3 out?</p>
-    <h2 class="no-toc">Revision History</h2>
+
+    <h2>Revision History</h2>
     <p>
       <ul>
       <li> 2011/10/25 Initial draft.</li>
       <li> 2011/10/26 Fixed DXT width and height restrictions.</li>
       <li> 2011/10/26 Fixed typos.</li>
+      <li> 2011/11/11 Removed DXT3 and PVRTC_2BPPV1</li>
       </ul>
     </p>
 </body>
