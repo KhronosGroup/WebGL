@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 26 October 2011</h2>
+    <h2 class="no-toc">Editor's Draft 11 November 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2619,19 +2619,21 @@ for (var i = 0; i < numVertices; i++) {
     <h3><a name="WEBGLCONTEXTEVENT">WebGLContextEvent</a></h3>
 
     <p>
-        WebGL generates a WebGLContextEvent event in response to a status change to the WebGL rendering context 
-        associated with the HTMLCanvasElement which has a listener for this event. Events are sent using 
-        the <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html">DOM Event System</a>. Event types can 
-        include the loss or restoration of state, or the inability to create a context.
+        WebGL generates a WebGLContextEvent event in response to a status change to the WebGL rendering context
+        associated with the HTMLCanvasElement which has a listener for this event. Events are sent using the
+        DOM Event System <a href="#refsDOM3EVENTS">[DOM3EVENTS]</a>. Event types can include the loss or
+        restoration of state, or the inability to create a context.
+        <a href="http://www.w3.org/TR/domcore/#eventinit">EventInit</a> is defined in the DOM4
+        specification <a href="#refsDOM4">[DOM4]</a>.
     </p>
     <pre class="idl">
+[Constructor(DOMString type, optional WebGLContextEventInit eventInit)]
 interface <dfn id="WebGLContextLostEvent">WebGLContextEvent</dfn> : Event {
     readonly attribute DOMString statusMessage;
-    
-    void initWebGLContextEvent(DOMString typeArg,
-                               boolean canBubbleArg,
-                               boolean cancelableArg,
-                               DOMString statusMessageArg);
+};
+
+dictionary WebGLContextEventInit : EventInit {
+    DOMString statusMessage;
 };</pre>
 
     <h4>Attributes</h4>
@@ -2645,38 +2647,6 @@ interface <dfn id="WebGLContextLostEvent">WebGLContextEvent</dfn> : Event {
         <dd>
             A string containing additional information, or the empty string if no additional information
             is available.
-    </dl>
-
-    <h4>Methods</h4>
-
-    <p>
-        The following methods are available:
-    </p>
-
-    <dl class="methods">
-        <dt class="idl-code">void initWebGLContextEvent(DOMString typeArg, boolean canBubbleArg, boolean cancelableArg,
-                                                        DOMString statusMessageArg)
-        <dd>
-            Initialize the event created through the 
-            <a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-Event">Event</a>
-            interface. This method may only be called before the event has been dispatched via
-            the <code>dispatchEvent</code> method, though it may be called multiple times during
-            that phase if necessary. If called multiple times, the final invocation takes
-            precedence.
-            <P>
-            <b>Parameters</b>
-            <dl>
-                <dt><code>typeArg</code> of type <code>DOMString</code>
-                <dd>Specifies the event type (see below).
-                <dt><code>canBubbleArg</code> of type <code>boolean</code>
-                <dd>Specifies whether or not the event can bubble.
-                <dt><code>cancelableArg</code> of type <code>boolean</code>
-                <dd>Specifies whether or not the event can be canceled.
-                <dt><code>statusMessageArg</code> of type <code>DOMString</code>
-                <dd>A string containing additional information, or the empty string if no additional information is available.
-            </dl>
-            <b>No Return Value</b><br>
-            <b>No Exceptions</b><br>
     </dl>
 
     <h4>Event Types</h4>
@@ -3198,6 +3168,16 @@ extensions.
         <dd><cite><a href="http://www.w3.org/TR/cors/">
             Cross-Origin Resource Sharing</a></cite>,
             A. van Kesteren, July 2010.
+        </dd>
+        <dt id="refsDOM4">[DOM4]</dt>
+        <dd><cite><a href="http://www.w3.org/TR/domcore/">
+            DOM4</a></cite>,
+            A. van Kesteren, A. Gregor, Ms2ger.
+        </dd>
+        <dt id="refsDOM3EVENTS">[DOM3EVENTS]</dt>
+        <dd><cite><a href="http://dev.w3.org/2006/webapi/DOM-Level-3-Events/html/DOM3-Events.html">
+            Document Object Model (DOM) Level 3 Events Specification</a></cite>,
+            Doug Schepers and Jacob Rossi. W3C.
         </dd>
         <dt id="refsHTML">[HTML]</dt>
         <dd><cite><a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/">

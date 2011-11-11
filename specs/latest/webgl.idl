@@ -726,14 +726,14 @@ interface WebGLRenderingContext {
     void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
 };
 
-
+[Constructor(DOMString type, optional WebGLContextEventInit eventInit)]
 interface WebGLContextEvent : Event {
     readonly attribute DOMString statusMessage;
-    
-    void initWebGLContextEvent(DOMString typeArg,
-                               boolean canBubbleArg,
-                               boolean cancelableArg,
-                               DOMString statusMessageArg);
+};
+
+// EventInit is defined in the DOM4 specification.
+dictionary WebGLContextEventInit : EventInit {
+    DOMString statusMessage;
 };
 
 };
