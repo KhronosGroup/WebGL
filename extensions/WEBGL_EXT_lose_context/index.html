@@ -80,8 +80,7 @@ interface WEBGL_EXT_lose_context {
     described in the WebGL spec for handling the context being restored. 
     If the context is already restored when this function is called, or if 
     the conditions in the WebGL specification for restoring the 
-    context are not satisfied, an <code>INVALID_OPERATION</code> error 
-    will be generated and no event will be dispatched. 
+    context are not satisfied, generate an <code>INVALID_OPERATION</code> error. 
     </p>
 
     <h2 class="no-toc">Revision History</h2>
@@ -106,7 +105,7 @@ interface WEBGL_EXT_lose_context {
     <p>
       Revision 4, 2011/11/11
       <ul>
-      <li> Changed to queue an task to fire an event for both lostCont.
+      <li> Changed to make it clear this extension should follow the WebGL spec for the steps involved in handling losing and restoring the context rather than just fire events.
       </ul>
     </p>
 </body>
