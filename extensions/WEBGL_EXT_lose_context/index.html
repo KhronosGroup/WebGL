@@ -34,8 +34,8 @@
     </p>
 
     <h2 class="no-toc">Version</h2>
-    <p> Last modified date: November 8, 2011 <br>
-        Revision: 3
+    <p> Last modified date: November 12, 2011 <br>
+        Revision: 4
     </p>
 
     <h2 class="no-toc">Number</h2>
@@ -65,11 +65,23 @@ interface WEBGL_EXT_lose_context {
     <h2 class="no-toc">New Procedures and Functions</h2>
     <h3 class="no-toc">void loseContext()</h3>
     <p>
-    When this function is called and the context is not lost, a <code>webglcontextlost</code> event will be dispatched.  The behavior of the WebGL context after this event has been dispatched is identical to one after a real context lost event.  The context will remain in the lost state according to the WebGL specification until <code>restoreContext()</code> is called.  If the context is already lost when this function is called, an <code>INVALID_OPERATION</code> error will be generated and no event will be dispatched.
-    </p>
+    When this function is called and the context is not lost, simulate 
+    losing the context so as to trigger the steps described in the WebGL 
+    spec for handling context lost. The context will remain in the lost 
+    state according to the WebGL specification until 
+    <code>restoreContext()</code> is called.  If the context is already 
+    lost when this function is called, generate an 
+    <code>INVALID_OPERATION</code> error. </p>
     <h3 class="no-toc">void restoreContext()</h3>
     <p>
-    When this function is called, the context is lost, and the conditions defined by the WebGL specification for delivery of the <code>webglcontextrestored</code> event have been satisfied, a <code>webglcontextrestored</code> event will be dispatched.  The behavior of the WebGL context after this event has been dispatched is identical to one after a real context restored event.  If the context is already restored when this function is called, or if the conditions in the WebGL specification for delivery of the <code>webglcontextrestored</code> event are not satisfied, an <code>INVALID_OPERATION</code> error will be generated and no event will be dispatched.
+    When this function is called, the context is lost, and the conditions 
+    defined by the WebGL specification for restoring the context are
+    met, simulate the context being restored so as to trigger the steps 
+    described in the WebGL spec for handling the context being restored. 
+    If the context is already restored when this function is called, or if 
+    the conditions in the WebGL specification for restoring the 
+    context are not satisfied, an <code>INVALID_OPERATION</code> error 
+    will be generated and no event will be dispatched. 
     </p>
 
     <h2 class="no-toc">Revision History</h2>
@@ -89,6 +101,12 @@ interface WEBGL_EXT_lose_context {
       Revision 3, 2011/11/08
       <ul>
       <li> Renamed from WEBKIT_lose_context to WEBGL_EXT_lose_context.
+      </ul>
+    </p>
+    <p>
+      Revision 4, 2011/11/11
+      <ul>
+      <li> Changed to queue an task to fire an event for both lostCont.
       </ul>
     </p>
 </body>
