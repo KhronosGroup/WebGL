@@ -1,8 +1,7 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-        "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
     <title>WebGL Specification</title>
     <meta name="generator" content="BBEdit 9.1">
     <link rel="stylesheet" type="text/css" href="../../resources/Khronos-WD.css" />
@@ -607,7 +606,7 @@ typedef float          GLclampf;
     attribute boolean preserveDrawingBuffer;
 };</pre>
 
-    <h4>Context creation parameters</h4>
+    <h4><a name="context-creation-parameters">Context creation parameters</a></h4>
 
     <p>
         The following list describes each attribute in the WebGLContextAttributes object and its
@@ -2775,22 +2774,23 @@ This section describes the context loss and restoration lifecycle.
 </p>
 
 <p>
-It is important to note there are 2 contexts, the WebGLRenderingContext and
+It is important to note there are 2 contexts, the
+<code>WebGLRenderingContext</code> and
 the underlying OpenGL or simulated OpenGL context. When the WebGL implementation
-has determined an OpenGL context has lost all of its state
+has determined the OpenGL context has lost all of its state
 (eg. due to power or resource management, etc..), the implementation must run
 the following steps:
 </p>
 
 <ol class="stepslist">
 <li>
-    Clear all current GL errors in the WebGLRenderingContext
+    Clear all current GL errors in the <code>WebGLRenderingContext</code>
 <li>
     Generate a single <code>CONTEXT_LOST_WEBGL</code> error in the
-    WebGLRenderingContext.
+    <code>WebGLRenderingContext</code>.
 <li>
-    Put he <code>WebGLRenderingContext</code> in the "lost state".
-    While the WebGLRenderingContext is in the lost state:
+    Put the <code>WebGLRenderingContext</code> in the "lost state".
+    While the <code>WebGLRenderingContext</code> is in the lost state:
 <ul>
 <li>
     <code>isContextLost</code> returns <code>true</code>.
@@ -2810,24 +2810,27 @@ the following steps:
     buffers, that have been created by this context
     (ie. <code>is</code> queries return <code>false</code>).
 <li>
-    <a href="#QUEUETASK">Queue a task</a> to <a href="#FIRESMPLEEVENT">fire the
-    simple event</a> named <code>webglcontexlost</code> at the
+    <a href="http://www.w3.org/TR/html5/webappapis.html#queue-a-task">Queue a
+    task</a> to
+    <a href="http://www.w3.org/TR/html5/webappapis.html#fire-a-simple-event">
+    fire the simple event</a> named <code>webglcontextlost</code> at the
     <code>canvas</code>.
 <li>
-    After the webglcontextcontext event has fired, if the event's preventDefault
-    was not called the WebGLRenderingContext is lost permanently. Abort these
-    steps. If the event's preventDefault was called, queue a task to run the
-    <a href="#OPENGLRESTORE">OpenGL Context Restoration Algorithm</a>
-</ol>
-<p>The <a name="OPENGLRESTORE">OpenGL Context Restoration Algorithm</a></p>
-<ol class="stepslist">
+    After the <code>webglcontextlost</code> event has fired, if the event's
+    preventDefault method was not called the <code>WebGLRenderingContext</code>
+    is lost permanently. Abort these steps. If the event's preventDefault was
+    called, the user-agent may synchronously or asychronously attempt to
+    restore the OpenGL context with the same
+    <a href="#context-creation-parameters">context creation parameters</a> as
+    originally specified.
+    <div class="note">
+    It is expected that for most implementions the current OpenGL context will
+    need to be destroyed and a new OpenGL context created.
+    </div>
 <li>
-    Attempt to restore the OpenGL context with the same
-    <code>WebContextAttributes</code> it had before the context loss.
-<li>
-    If unsuccessful, queue a task to try again.
-<li>
-    If successful, <a href="#QUEUETASK">queue a task</a> to run the
+    Once the user agent has restored the OpenGL context
+    <a href="http://www.w3.org/TR/html5/webappapis.html#queue-a-task">queue a
+    task</a> to run the
     <a href="WEBGLRESTORE">WebGLRenderingContext restoration algorithm</a>.
 </ol>
 <p>The <a name="WEBGLRESTORE">WebGLRenderingContext restoration algorithm</p>
@@ -2835,8 +2838,9 @@ the following steps:
 <li>
     Have the <code>WebGLRenderingContext</code> exit the lost state</br>
 <li>
-    <a href="#FIRESIMPLEEVENT">fire the simple event<a/> named
-    <code>webglcontextrestored</code>at the <code>canvas</code>.
+    <a href="http://www.w3.org/TR/html5/webappapis.html#fire-a-simple-event">
+    fire the simple event</a> named <code>webglcontextrestored</code> at the
+    <code>canvas</code>.
 </ol>
 
 <!-- ======================================================================================================= -->
@@ -3233,14 +3237,6 @@ extensions.
         <dd><cite><a href="http://www.w3.org/TR/DOM-Level-2-Core/core.html#DOMString">
             Document Object Model Core: The DOMString type</a></cite>,
             World Wide Web Consortium (W3C).
-        </dd>
-        <dt id="QUEUETASK">Queue a task</dt>
-        <dd><cite><a href="http://www.w3.org/TR/html5/webappapis.html#queue-a-task">
-        HTML5 Web appliation APIs 6.1.4</a></cite>
-        </dd>
-        <dt id="FIRESIMPLEEVENT">Fire a simple event</dt>
-        <dd><cite><a href="http://www.w3.org/TR/html5/webappapis.html#fire-a-simple-event">
-        HTML5 Web appliation APIs 6.1.6.3</a></cite>
         </dd>
     </dl>
 
