@@ -2943,20 +2943,20 @@ The WebGL API supports the following additional parameters to <code>pixelStorei<
 <dt><code>UNPACK_FLIP_Y_WEBGL</code> of type <code>boolean</code>
 <dd>If set, then during any subsequent calls to <code>texImage2D</code> or
 <code>texSubImage2D</code>, the source data is flipped along the vertical axis, so that conceptually
-the last row is the first one transferred. The default value is <code>false</code>. Any non-zero
+the last row is the first one transferred. The initial value is <code>false</code>. Any non-zero
 value is interpreted as <code>true</code>.
 
 <dt><code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> of type <code>boolean</code>
 <dd>If set, then during any subsequent calls to <code>texImage2D</code>
 or <code>texSubImage2D</code>, the alpha channel of the source data, if present, is multiplied into
-the color channels during the data transfer. The default value is <code>false</code>. Any non-zero
+the color channels during the data transfer. The initial value is <code>false</code>. Any non-zero
 value is interpreted as <code>true</code>.
 
 <dt><code>UNPACK_COLORSPACE_CONVERSION_WEBGL</code> of type <code>unsigned long</code>
 <dd>If set to <code>BROWSER_DEFAULT_WEBGL</code>, then the browser's default colorspace conversion
 is applied during subsequent <code>texImage2D</code> and <code>texSubImage2D</code> calls
 taking <code>HTMLImageElement</code>. The precise conversions may be specific to both the browser
-and file type. If set to <code>NONE</code>, no colorspace conversion is applied. The default value
+and file type. If set to <code>NONE</code>, no colorspace conversion is applied. The initial value
 is <code>BROWSER_DEFAULT_WEBGL</code>.
 
 </dl>
