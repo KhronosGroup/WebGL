@@ -124,6 +124,66 @@ shouldBe("gl.getParameter(gl.RENDERBUFFER_BINDING)", "rbo2");
 debug("");
 debug("using deleted renderbuffer");
 rbo = gl.createRenderbuffer();
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindRenderbuffer(gl.RENDERBUFFER, rbo)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 16, 16)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rbo)");
+if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
+  // make backbuffer red
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, null)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.clearColor(1,0,0,1)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.clear(gl.COLOR_BUFFER_BIT)");
+  // make fbo green
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.clearColor(0,1,0,1)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.clear(gl.COLOR_BUFFER_BIT)");
+  // Bind backbuffer.
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, null)");
+  // delete renderbuffer. It should still be attached to fbo though.
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteRenderbuffer(rbo)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 16, 16, [255,0,0,255], "backbuffer should be red")');
+  // Use fbo that has deleted rbo.
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 16, 16, [0,255,0,255], "fbo should be green")');
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.clearColor(0,0,1,1)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.clear(gl.COLOR_BUFFER_BIT)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 16, 16, [0,0,255,255], "fbo should be blue")');
+  // Bind backbuffer.
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, null)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 16, 16, [255,0,0,255], "backbuffer should be red")');
+}
+
+debug("");
+debug("using deleted texture");
+tex = gl.createTexture();
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindTexture(gl.TEXTURE_2D, tex)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)");
+if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
+  // make fbo green
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.clearColor(0,1,0,1)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.clear(gl.COLOR_BUFFER_BIT)");
+  // Bind backbuffer.
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, null)");
+  // delete texture. It should still be attached to fbo though.
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteTexture(tex)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 1, 1, [255,0,0,255], "backbuffer should be red")');
+  // Use fbo that has deleted texture.
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0,255,0,255], "fbo should be green")');
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.clearColor(0,0,1,1)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.clear(gl.COLOR_BUFFER_BIT)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0,0,255,255], "fbo should be blue")');
+  // Bind backbuffer.
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, null)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 16, 16, [255,0,0,255], "backbuffer should be red")');
+}
+
+debug("");
+debug("using deleted renderbuffer");
+rbo = gl.createRenderbuffer();
 shouldBeTrue("rbo != null");
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindRenderbuffer(gl.RENDERBUFFER, rbo)");
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 16, 16)");
