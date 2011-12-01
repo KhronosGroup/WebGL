@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<registry href="http://www.khronos.org/registry/webgl/extensions/">
+  <extension href="OES_texture_float/">
+    <name>OES_texture_float</name>
+    <number>1</number>
+  </extension>
+  <extension href="OES_texture_half_float/">
+    <name>OES_texture_half_float</name>
+    <number>2</number>
+  </extension>
+  <draft href="WEBGL_EXT_lose_context/">
+    <name>WEBGL_EXT_lose_context</name>
+    <number>3</number>
+  </draft>
+  <extension href="OES_standard_derivatives/">
+    <name>OES_standard_derivatives</name>
+    <number>4</number>
+  </extension>
+  <draft href="OES_vertex_array_object/">
+    <name>OES_vertex_array_object</name>
+    <number>5</number>
+  </draft>
+  <extension href="WEBGL_debug_renderer_info/">
+    <name>WEBGL_debug_renderer_info</name>
+    <number>6</number>
+  </extension>
+  <extension href="WEBGL_debug_shaders/">
+    <name>WEBGL_debug_shaders</name>
+    <number>7</number>
+  </extension>
+</registry>
