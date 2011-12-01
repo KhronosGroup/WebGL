@@ -854,6 +854,57 @@ var context = canvas.getContext('webgl',
 
 <!-- ======================================================================================================= -->
 
+    <h3>WebGLShaderPrecisionFormat</h3>
+
+    <p>
+        The <code>WebGLShaderPrecisionFormat</code> interface represents the information returned 
+        from the getShaderPrecisionFormat call.
+    </p>
+    <pre class="idl">interface <dfn id="WebGLShaderPrecisionFormat">WebGLShaderPrecisionFormat</dfn> {
+    readonly attribute GLint rangeMin;
+    readonly attribute GLint rangeMax;
+    readonly attribute GLint precision;
+};</pre>
+
+    <h4>Attributes</h4>
+
+    <p>
+        The following attributes are available:
+    </p>
+
+    <dl class="methods">
+        <dt>
+            <code class=attribute-name>
+                <a id="DOM-WebGLShaderPrecisionFormat-rangeMin">
+                    rangeMin
+                </a>
+            </code> 
+            of type <code>GLint</code>
+        <dd>
+            The base 2 log of the absolute value of the minimum value that can be represented.
+        <dt>
+            <code class=attribute-name>
+                <a id="DOM-WebGLShaderPrecisionFormat-rangeMax">
+                    rangeMax
+                </a>
+            </code> 
+            of type <code>GLint</code>
+        <dd>
+            The base 2 log of the absolute value of the maximum value that can be represented.
+        <dt>
+            <code class=attribute-name>
+                <a id="DOM-WebGLShaderPrecisionFormat-precision">
+                    precision
+                </a>
+            </code> 
+            of type <code>GLint</code>
+        <dd>
+            The number of bits of precision that can be represented. For integer formats this value
+            is always 0.
+    </dl>
+
+<!-- ======================================================================================================= -->
+
     <h3><a name="ARRAYBUFFER">ArrayBuffer</a> and <a name="TYPEDARRAY">Typed Arrays</a></h3>
 
     <p>
@@ -1424,8 +1475,8 @@ for (var i = 0; i < numVertices; i++) {
 
     GLint getAttribLocation(WebGLProgram program, DOMString name);
 
-    any getParameter(GLenum pname);
     any getBufferParameter(GLenum target, GLenum pname);
+    any getParameter(GLenum pname);
 
     GLenum getError();
 
@@ -1435,6 +1486,7 @@ for (var i = 0; i < numVertices; i++) {
     DOMString getProgramInfoLog(WebGLProgram program);
     any getRenderbufferParameter(GLenum target, GLenum pname);
     any getShaderParameter(WebGLShader shader, GLenum pname);
+    WebGLShaderPrecisionFormat getShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype);
     DOMString getShaderInfoLog(WebGLShader shader);
 
     DOMString getShaderSource(WebGLShader shader);
@@ -2317,6 +2369,12 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>DELETE_STATUS</td><td>boolean</td></tr>
                 <tr><td>COMPILE_STATUS</td><td>boolean</td></tr>
             </table>
+        <dt class="idl-code">WebGLShaderPrecisionFormat getShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man/xhtml/glGetShaderPrecisionFormat.xml">man page</a>)</span>
+        <dd>
+            Return the range and precision for different shader numeric formats. The shadertype value can be 
+            FRAGMENT_SHADER or VERTEX_SHADER. The precisiontype value can be LOW_FLOAT, MEDIUM_FLOAT, HIGH_FLOAT,
+            LOW_INT, MEDIUM_INT or HIGH_INT.
         <dt class="idl-code">DOMString getShaderInfoLog(WebGLShader shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderInfoLog.xml">man page</a>)</span>
         <dt class="idl-code">DOMString getShaderSource(WebGLShader shader)
