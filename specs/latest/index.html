@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 11 November 2011</h2>
+    <h2 class="no-toc">Editor's Draft 01 December 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2372,8 +2372,9 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">WebGLShaderPrecisionFormat getShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man/xhtml/glGetShaderPrecisionFormat.xml">man page</a>)</span>
         <dd>
-            Return the range and precision for different shader numeric formats. The shadertype value can be 
-            FRAGMENT_SHADER or VERTEX_SHADER. The precisiontype value can be LOW_FLOAT, MEDIUM_FLOAT, HIGH_FLOAT,
+            Return a new <code>WebGLShaderPrecisionFormat</code> describing the range and precision
+            for the specified shader numeric format. The shadertype value can be FRAGMENT_SHADER or
+            VERTEX_SHADER. The precisiontype value can be LOW_FLOAT, MEDIUM_FLOAT, HIGH_FLOAT,
             LOW_INT, MEDIUM_INT or HIGH_INT.
         <dt class="idl-code">DOMString getShaderInfoLog(WebGLShader shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderInfoLog.xml">man page</a>)</span>
@@ -2467,7 +2468,7 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">WebGLUniformLocation getUniformLocation(WebGLProgram program, DOMString name)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetUniformLocation.xml">man page</a>)</span>
         <dd>
-            Return a WebGLUniformLocation object that represents the location of a specific uniform variable
+            Return a new <code>WebGLUniformLocation</code> that represents the location of a specific uniform variable
             within a program object. The return value is null if name does not correspond to an active uniform
             variable in the passed program. <br><br>
 
