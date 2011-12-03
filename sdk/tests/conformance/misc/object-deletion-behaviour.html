@@ -168,6 +168,37 @@ if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
 }
 
 debug("");
+debug("renderbuffer attached twice to same framebuffer");
+rbo = gl.createRenderbuffer();
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindRenderbuffer(gl.RENDERBUFFER, rbo)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 16, 16)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rbo)");
+if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
+  var rbo2 = gl.createRenderbuffer();
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindRenderbuffer(gl.RENDERBUFFER, rbo2)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 16, 16)");
+  // attach rbo2 at two attachment points incompatible with it
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, rbo2)");
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.RENDERBUFFER, rbo2)");
+  shouldBeTrue("gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME) == rbo2");
+  shouldBeTrue("gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME) == rbo2");
+  // fbo can't be complete as rbo2 is attached at incompatible attachment points
+  shouldBeFalse("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
+  // now we delete rbo2, which detaches it from the two attachment points where it currently is attached
+  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteRenderbuffer(rbo2)");
+  shouldBe("gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)", "gl.NONE");
+  shouldBe("gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)", "gl.NONE");
+  // we should now be in the same state as before with only rbo attached, so fbo should be complete again
+  shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
+  shouldBeTrue("gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME) == rbo");
+}
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteRenderbuffer(rbo)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, null)");
+
+
+
+debug("");
 debug("using deleted texture");
 tex = gl.createTexture();
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindTexture(gl.TEXTURE_2D, tex)");
