@@ -22,7 +22,7 @@
 <xsl:template match="ol[@id='official-by-number']">
   <xsl:copy>
     <xsl:apply-templates select="$registry/extension">
-      <xsl:sort select="position()" order="descending"/>
+      <xsl:sort select="number" data-type="number" order="ascending"/>
     </xsl:apply-templates>
   </xsl:copy>
 </xsl:template>
@@ -38,7 +38,7 @@
 <xsl:template match="ol[@id='draft-by-number']">
   <xsl:copy>
     <xsl:apply-templates select="$registry/draft">
-      <xsl:sort select="position()" order="descending"/>
+      <xsl:sort select="number" data-type="number" order="ascending"/>
     </xsl:apply-templates>
   </xsl:copy>
 </xsl:template>
