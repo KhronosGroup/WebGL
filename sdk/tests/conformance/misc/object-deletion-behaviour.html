@@ -65,7 +65,7 @@ shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindFramebuffer(gl.FRAMEBUFFER, fbo)"
 var tex = gl.createTexture();
 shouldBeTrue("tex != null");
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindTexture(gl.TEXTURE_2D, tex)");
-shouldBe("gl.getParameter(gl.TEXTURE_BINDING_2D)", "tex");6
+shouldBe("gl.getParameter(gl.TEXTURE_BINDING_2D)", "tex");
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0)");
 shouldBe("gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME)", "tex");
 shouldBe("gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)", "gl.TEXTURE");
@@ -96,6 +96,19 @@ shouldGenerateGLError(gl, gl.NO_ERROR, "gl.texParameteri(gl.TEXTURE_2D, gl.TEXTU
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteTexture(t)");
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindTexture(gl.TEXTURE_2D, t)");
 shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)");
+
+var t2 = gl.createTexture();
+shouldBeTrue("t2 != null");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.activeTexture(gl.TEXTURE0)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindTexture(gl.TEXTURE_2D, t2)");
+shouldBe("gl.getParameter(gl.TEXTURE_BINDING_2D)", "t2");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.activeTexture(gl.TEXTURE1)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindTexture(gl.TEXTURE_2D, t2)");
+shouldBe("gl.getParameter(gl.TEXTURE_BINDING_2D)", "t2");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteTexture(t2)");
+shouldBeNull("gl.getParameter(gl.TEXTURE_BINDING_2D)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.activeTexture(gl.TEXTURE0)");
+shouldBeNull("gl.getParameter(gl.TEXTURE_BINDING_2D)");
 
 debug("");
 debug("renderbuffer deletion");
