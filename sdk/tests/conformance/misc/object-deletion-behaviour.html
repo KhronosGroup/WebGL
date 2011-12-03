@@ -272,6 +272,17 @@ shouldBeNull("gl.getParameter(gl.ARRAY_BUFFER_BINDING)");
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindBuffer(gl.ARRAY_BUFFER, buffer)");
 shouldBeNull("gl.getParameter(gl.ARRAY_BUFFER_BINDING)");
 
+var buffer2 = gl.createBuffer();
+shouldBeTrue("buffer2 != null");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindBuffer(gl.ARRAY_BUFFER, buffer2)");
+shouldBe("gl.getParameter(gl.ARRAY_BUFFER_BINDING)", "buffer2");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindBuffer(gl.ARRAY_BUFFER, null)");
+shouldBeNull("gl.getParameter(gl.ARRAY_BUFFER_BINDING)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteBuffer(buffer2)");
+shouldBeFalse("gl.isBuffer(buffer2)");
+shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindBuffer(gl.ARRAY_BUFFER, buffer2)");
+shouldBeNull("gl.getParameter(gl.ARRAY_BUFFER_BINDING)");
+
 var bufferElement = gl.createBuffer();
 shouldBeTrue("bufferElement != null");
 shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufferElement)");
