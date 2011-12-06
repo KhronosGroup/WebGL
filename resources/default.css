@@ -731,8 +731,8 @@ ul.toc, ol.toc {
 }
 /* end MikeSmith (2008-06-07) additions */
 
-/* ---------- Make numbered lists nest by default ---------- */
+/* ---------- Support for nested ordered lists ---------- */
 
-ol {counter-reset: list-item }
-ol li { display: block }
-ol li:before {content: counters(list-item, ".") "."; counter-increment: list-item }
+ol.nestedlist {counter-reset: list-item }
+ol.nestedlist li { display: block }
+ol.nestedlist li:before {content: counters(list-item, ".") "."; counter-increment: list-item }

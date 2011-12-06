@@ -179,7 +179,8 @@
         new object for
         the <em>contextId</em> <code>webgl</code> <a href="#refsCANVASCONTEXTS">[CANVASCONTEXTS]</a>,
         the user agent must perform the following steps:
-        <ol>
+
+        <ol class="nestedlist">
 
         <li> Create a new <code>WebGLRenderingContext</code> object, <em>context</em>.
 
@@ -197,7 +198,7 @@
 
         <li> If drawing buffer creation failed, perform the following steps:
 
-          <ol>
+          <ol class="nestedlist">
 
           <li> <em>Fire a context creation error</em> at <em>canvas</em>.
 
@@ -1003,13 +1004,13 @@ for (var i = 0; i < numVertices; i++) {
         interface or any method of an interface returned by the <code>getExtension</code> method,
         the following steps must be performed:
 
-        <ol>
+        <ol class="nestedlist">
 
         <li> If the <b>webgl context lost flag</b> is set, and the called method is not in the list
         of methods with <em>explicit context lost handling</em>, perform the following steps and
         terminate this algorithm.
 
-            <ol>
+            <ol class="nestedlist">
 
             <li> If the return type of the called method is <code>any</code> or any nullable type,
             return null. </li>
@@ -2801,7 +2802,7 @@ dictionary WebGLContextEventInit : EventInit {
         a <code>WebGLRenderingContext</code> <em>context</em> has been lost, it must run the
         following steps:
 
-        <ol>
+        <ol class="nestedlist">
 
         <li> Let <em>canvas</em> be the canvas object associated with <em>context</em>. </li>
 
@@ -2814,7 +2815,7 @@ dictionary WebGLContextEventInit : EventInit {
 
         <li> <em>Queue a task</em> to perform the following steps:
 
-            <ol>
+            <ol class="nestedlist">
 
             <li> <em>Fire a WebGL context event</em> named "webglcontextlost" at <em>canvas</em>,
             with its <code>statusMessage</code> attribute set to "". </li>
@@ -2862,7 +2863,7 @@ dictionary WebGLContextEventInit : EventInit {
         When the user agent is to <em>restore the drawing buffer</em>, it must queue a task to run
         the following steps:
 
-        <ol>
+        <ol class="nestedlist">
 
         <li> Let <em>canvas</em> be the canvas object associated with the <code>WebGLRenderingContext</code>.
 
@@ -2893,7 +2894,7 @@ dictionary WebGLContextEventInit : EventInit {
         When the user agent is to <em>fire a context creation error</em> at a <em>canvas</em>, it
         must perform the following steps:
 
-        <ol>
+        <ol class="nestedlist">
 
         <li> <em>Fire a WebGL context event</em> named "webglcontextrestored" at <em>canvas</em>,
         optionally with its <code>statusMessage</code> attribute set to a platform dependent string
