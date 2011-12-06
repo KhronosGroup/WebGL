@@ -232,15 +232,20 @@
 
         function init()
         {
-           var gl = initWebGL("example");
-           if (!gl) {
-             return;
-           }
-           g.program = simpleSetup(gl, "vshader", "fshader",
-                                   [ "a_normal", "a_texCoord", "a_vertex"],
-                                   [ 0, 0, 0, 1 ], 10000);
+            var gl = initWebGL("example");
+            if (!gl) {
+              return;
+            }
+            g.program = simpleSetup(gl, "vshader", "fshader",
+                                    [ "a_normal", "a_texCoord", "a_vertex"],
+                                    [ 0, 0, 0, 1 ], 10000);
             gl.uniform1i(gl.getUniformLocation(g.program, "u_sampler2d"), 0);
             gl.uniform4f(gl.getUniformLocation(g.program, "u_globalAmbientColor"), 0.2, 0.2, 0.2, 1);
+
+            if (g.program) {
+                g.u_modelViewMatrixLoc = gl.getUniformLocation(g.program, "u_modelViewMatrix");
+                g.u_normalMatrixLoc = gl.getUniformLocation(g.program, "u_normalMatrix");
+            }
 
             setDirectionalLight(gl, g.program,
                                 [ 0, 0, 1 ],            // eyeVector
@@ -318,13 +323,13 @@
             mvMatrix.makeIdentity();
             mvMatrix.rotate(10, 1,0,0);
             mvMatrix.rotate(currentAngle, 0, 1, 0);
-            mvMatrix.setUniform(ctx, ctx.getUniformLocation(g.program, "u_modelViewMatrix"), false);
+            mvMatrix.setUniform(ctx, g.u_modelViewMatrixLoc, false);
 
             // construct the normal matrix from the model-view matrix
             normalMatrix.load(mvMatrix);
             normalMatrix.invert();
             normalMatrix.transpose();
-            normalMatrix.setUniform(ctx, ctx.getUniformLocation(g.program, "u_normalMatrix"), false);
+            normalMatrix.setUniform(ctx, g.u_normalMatrixLoc, false);
 
             // Construct the model-view * projection matrix and pass it in
             var mvpMatrix = new J3DIMatrix4();
