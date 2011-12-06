@@ -171,7 +171,7 @@
         a <a href="#WEBGLCONTEXTATTRIBUTES"><code>WebGLContextAttributes</code></a> object.
     </p>
     <p>
-        Each <code>WebGLRenderingContext</code> has a <b>drawing buffer lost flag</b>, which is
+        Each <code>WebGLRenderingContext</code> has a <b>webgl context lost flag</b>, which is
         initially unset.
     </p>
     <p>
@@ -2873,7 +2873,9 @@ dictionary WebGLContextEventInit : EventInit {
         in <em>context's</em> <b>context creation parameters</b>, and associate the <em>drawing
         buffer</em> with <em>context</em>, discarding any previous <em>drawing buffer</em>.
 
-        <li> Clear <em>canvas's</em> <b>webgl context lost</b> flag.
+        <li> Clear <em>canvas's</em> <b>webgl context lost flag</b>.
+
+        <li> Reset <em>context's</em> OpenGL error state.
 
         <li> <em>Fire a WebGL context event</em> named "webglcontextrestored" at <em>canvas</em>,
         with its <code>statusMessage</code> attribute set to "".
