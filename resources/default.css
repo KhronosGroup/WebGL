@@ -730,3 +730,9 @@ ul.toc, ol.toc {
   content: "\2193";
 }
 /* end MikeSmith (2008-06-07) additions */
+
+/* ---------- Make numbered lists nest by default ---------- */
+
+ol {counter-reset: list-item }
+ol li { display: block }
+ol li:before {content: counters(list-item, ".") "."; counter-increment: list-item }
