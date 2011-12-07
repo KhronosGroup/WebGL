@@ -15,7 +15,7 @@
 
 <xsl:template match="extension|draft">
   <li value="{number}">
-    <a href="{concat($registry/@href,@href)}"><xsl:value-of select="name" /></a>
+    <a href="{@href}"><xsl:value-of select="name" /></a>
   </li>
 </xsl:template>
 

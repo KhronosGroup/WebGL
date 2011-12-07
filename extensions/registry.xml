@@ -9,8 +9,8 @@
     <name>OES_texture_half_float</name>
     <number>2</number>
   </extension>
-  <draft href="WEBGL_EXT_lose_context/">
-    <name>WEBGL_EXT_lose_context</name>
+  <draft href="WEBGL_lose_context/">
+    <name>WEBGL_lose_context</name>
     <number>3</number>
   </draft>
   <extension href="OES_standard_derivatives/">
