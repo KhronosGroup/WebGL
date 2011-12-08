@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+<draft href="OES_vertex_array_object/">
+  <name>OES_vertex_array_object</name>
+  <aliases>
+    <alias>WEBKIT_OES_vertex_array_object</alias>
+    <alias>MOZ_OES_vertex_array_object</alias>
+  </aliases>
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
+  </contact>
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+  <number>5</number>
+  <depends>
+    <api version="1.0"/>
+  </depends>
+  <overview>
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_vertex_array_object.txt" name="OES_vertex_array_object" />
+  </overview>
+  <idl>
+module webgl {
+
+interface WebGLVertexArrayObjectOES : WebGLObject {
+};
+
+interface OES_vertex_array_object {
+    const GLenum VERTEX_ARRAY_BINDING_OES = 0x85B5;
+
+    WebGLVertexArrayObjectOES createVertexArrayOES();
+    void deleteVertexArrayOES(WebGLVertexArrayObjectOES arrayObject);
+    GLboolean isVertexArrayOES(WebGLVertexArrayObjectOES arrayObject);
+    void bindVertexArrayOES(WebGLVertexArrayObjectOES arrayObject);
+};
+
+};
+  </idl>
+  <issues>
+    <p>The OES_vertex_array_object spec does not make it clear
+    what happens to buffers that are deleted when they are referenced
+    by vertex array objects. It is inferred that all buffers are
+    reference counted.
+    </p>
+    <p>Before OES_vertex_array_object there was no way to use a deleted
+    buffer in a single context as the spec states it would be unbound
+    from all bind points. After OES_vertex_array_object it is now
+    possible to use deleted buffers.
+    </p>
+    <p>Furthermore, the OpenGL ES 2.0 spec specifies that using a
+    deleted buffer has undefined results including possibly
+    corrupt rendering and generating GL errors. Undefined behavior
+    is unacceptable for WebGL.
+    </p>
+    <p>Therefore it is recommended this spec not be implemented until
+    this issue is resolved.
+    </p>
+  </issues>
+  <history>
+    <revision date="2011/01/27">
+      <change>Initial revision.</change>
+    </revision>
+    <revision date="2011/11/12">
+      <change>Demotion to draft.</change>
+    </revision>
+    <revision date="2011/12/06">
+      <change>Added vendor-specific name strings for draft extension per discussion on WebGL mailing list.</change>
+    </revision>
+    <revision date="2011/12/07">
+      <change>Renamed "Name Strings" section to "Alias Name Strings".</change>
+      <change>Sorted Revision History in ascending order.</change>
+    </revision>
+  </history>
+</draft>

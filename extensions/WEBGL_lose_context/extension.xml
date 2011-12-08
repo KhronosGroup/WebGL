@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+
+<draft href="WEBGL_lose_context/">
+  <name>WEBGL_lose_context</name>
+  <aliases>
+    <alias>WEBKIT_WEBGL_lose_context</alias>
+    <alias>MOZ_WEBGL_lose_context</alias>
+  </aliases>
+  <contact><a href="mailto:enne@chromium.org">enne@chromium.org</a></contact>
+  <contributors>
+    <contributor>Members of the <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a></contributor>
+    <contributor>Glenn Maynard</contributor>
+  </contributors>
+  <status>Draft; revision underway. Do not ship!</status>
+  <number>3</number>
+  <depends>
+    <api version="1.0"/>
+  </depends>
+  <overview>
+    <p>This extension exposes new functions which simulate losing and restoring the WebGL context, even on platforms where the context can never be lost.  Consult the WebGL specification for documentation about the <code>webglcontextlost</code> and <code>webglcontextrestored</code> events.</p>
+  </overview>
+  <idl>
+module webgl {
+
+interface WEBGL_lose_context {
+      void loseContext();
+      void restoreContext();
+};
+
+};
+  </idl>
+  <newfun>
+    <function name="loseContext" type="void">
+      When this function is called and the context is not lost, simulate
+      losing the context so as to trigger the steps described in the WebGL
+      spec for handling context lost. The context will remain in the lost
+      state according to the WebGL specification until
+      <code>restoreContext()</code> is called.  If the context is already
+      lost when this function is called, generate an
+      <code>INVALID_OPERATION</code> error.
+    </function>
+    <function name="restoreContext" type="void">
+      When this function is called, the context is lost, and the conditions
+      defined by the WebGL specification for restoring the context are
+      met, simulate the context being restored so as to trigger the steps
+      described in the WebGL spec for handling the context being restored.
+      If the context is already restored when this function is called, or if
+      the conditions in the WebGL specification for restoring the
+      context are not satisfied, generate an <code>INVALID_OPERATION</code> error.
+    </function>
+  </newfun>
+  <history>
+    <revision date="2011/01/11">
+      <change>Initial revision.</change>
+    </revision>
+    <revision date="2011/04/14">
+      <change>Added explicit restoreContext() method based on discussion on public_webgl list, to enable testing of scenario where context stays lost for a period of time.</change>
+    </revision>
+    <revision date="2011/11/08">
+      <change>Renamed from WEBKIT_lose_context to WEBGL_EXT_lose_context</change>
+    </revision>
+    <revision date="2011/11/11">
+      <change>Changed to make it clear this extension should follow the WebGL spec for the steps involved in handling losing and restoring the context rather than just fire events.</change>
+    </revision>
+    <revision date="2011/12/06">
+      <change>Added vendor-specific name strings for draft extension per discussion on WebGL mailing list</change>
+      <change>Renamed from WEBGL_EXT_lose_context to WEBGL_lose_context</change>
+    </revision>
+    <revision date="2011/12/07">
+      <change>Renamed "Name Strings" section to "Alias Name Strings".</change>
+    </revision>
+  </history>
+</draft>

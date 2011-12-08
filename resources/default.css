@@ -597,6 +597,14 @@ h6 { font: small-caps 100% sans-serif }
 
 .hide { display: none }
 
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
 div.head { margin-bottom: 1em }
 div.head h1 { margin-top: 2em; clear: both }
 div.head table { margin-left: 2em; margin-top: 2em }

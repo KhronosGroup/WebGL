@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<extension href="OES_texture_float/">
+  <name>OES_texture_float</name>
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
+  </contact>
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+  <number>1</number>
+  <depends>
+    <api version="1.0"/>
+  </depends>
+  <overview>
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_texture_float.txt" name="OES_texture_float">
+      <addendum>the ability to use <code>FLOAT</code> textures as FBO attachments</addendum>
+    </mirrors>
+    <features>
+      <feature>
+        The <code>texImage2D</code> and <code>texSubImage2D</code> entry points
+        taking <code>ArrayBufferView</code> are extended to accept <code>Float32Array</code> with
+        the pixel type <code>FLOAT</code>.
+      </feature>
+      <feature>
+        The <code>texImage2D</code> and <code>texSubImage2D</code> entry points
+        taking <code>ImageData</code>, <code>HTMLImageElement</code>, <code>HTMLCanvasElement</code>
+        and <code>HTMLVideoElement</code> are extended to accept the pixel type <code>FLOAT</code>.
+      </feature>
+      <feature>
+        The WebGL implementation may optionally accept a texture with pixel
+        type <code>FLOAT</code> as the color attachment to an FBO. Applications must check such
+        an FBO for completeness after attempting to make this attachment.
+      </feature>
+    </features>
+  </overview>
+  <idl>
+module webgl {
+
+interface OES_texture_float {
+};
+
+};
+  </idl>
+  <history>
+    <revision date="2010/11/29">
+      <change>Initial revision.</change>
+    </revision>
+    <revision date="2010/12/13">
+      <change>Extended to support pixel type FLOAT for texImage2D and texSubImage2D entry points taking ImageData, HTMLImageElement, HTMLCanvasElement and HTMLVideoElement.
+      </change>
+    </revision>
+    <revision date="2011/09/12">
+      <change>Added optional ability to use a FLOAT type texture as an FBO's color attachment.
+      </change>
+    </revision>
+  </history>
+</extension>

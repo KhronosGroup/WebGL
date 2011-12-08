@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+
+<extension href="WEBGL_debug_shaders/">
+  <name>WEBGL_debug_shaders</name>
+  <contact><a href="mailto:zmo@chromium.org">zmo@chromium.org</a></contact>
+  <contributors>
+    <contributor>Members of the <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a></contributor>
+  </contributors>
+  <number>7</number>
+  <depends>
+    <api version="1.0"/>
+  </depends>
+  <overview>
+    <p>
+      WebGL uses the GLSL ES 2.0 spec on all platforms, and translates these shaders to the host platform's native language (HLSL, GLSL, and even GLSL ES). For debugging purpose, it is useful to be able to examine the shader after translation. This extension exposes a new function <code>getTranslatedShaderSource</code> for such purposes.
+    </p>
+  </overview>
+  <idl>
+module webgl {
+
+interface WEBGL_debug_shaders {
+
+      DOMString getTranslatedShaderSource(WebGLShader shader);
+
+};
+
+};
+  </idl>
+  <newfun>
+    <function name="getTranslatedShaderSource" type="DOMString">
+      <param name="shader" type="WebGLShader" />
+      If no source has been defined, <code>compileShader()</code> has not been called, or the translation has failed for <code>shader</code>, an empty string is returned; otherwise, return the translated source.
+    </function>
+  </newfun>
+  <security>
+    <p>
+      Workarounds might be implemented in shader translation for driver bugs, and the pattern of the translation could be used to identify a specific GPU. Therefore, this extension has privacy implications and MUST NOT be available (see <code>getSupportedExtensions()</code>) to regular web content. The extension shall be available only to content determined to be privileged by some user agent specific means.
+    </p>
+  </security>
+  <history>
+    <revision date="2011/10/03">
+      <change>Initial revision.</change>
+    </revision>
+    <revision date="2011/10/14">
+      <change>Assigned WebGL extension number.</change>
+    </revision>
+    <revision date="2011/10/18">
+      <change>Clarify the meaning of "privileged".</change>
+    </revision>
+    <revision date="2011/12/07">
+      <change>Fixed mistake where extension still indicated draft status.</change>
+      <change>Renamed "New Functions and Methods" section to "New Functions".</change>
+    </revision>
+  </history>
+</extension>
