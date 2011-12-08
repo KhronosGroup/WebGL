@@ -157,12 +157,14 @@
   
 <xsl:template name="logo">
   <xsl:comment>begin-logo</xsl:comment>
-  <div>
+  <div class="left">
     <a href="http://webgl.org/"><img alt="WebGL" height="72" src="../../resources/WebGL-Logo.png" width="156" /></a>
-    <div class="right">
-      <a href="http://khronos.org/"><img alt="Khronos" height="60" src="../../resources/KhronosGroup-3D.png" width="220" /></a>
-    </div>
   </div>
+  <div class="right">
+    <a href="http://khronos.org/"><img alt="Khronos" height="60" src="../../resources/KhronosGroup-3D.png" width="220" /></a>
+  </div>
+  <div style="clear: both;"></div>
+  <br></br>
   <xsl:comment>end-logo</xsl:comment>
 </xsl:template>
 
