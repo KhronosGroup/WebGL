@@ -1007,8 +1007,7 @@ for (var i = 0; i < numVertices; i++) {
         <ol class="nestedlist">
 
         <li> If the <b>webgl context lost flag</b> is set, and the called method is not in the list
-        of methods with <em>explicit context lost handling</em>, perform the following steps and
-        terminate this algorithm.
+        of methods with <em>explicit context lost handling</em>, perform the following steps.
 
             <ol class="nestedlist">
 
@@ -1022,8 +1021,18 @@ for (var i = 0; i < numVertices; i++) {
         </li>
 
         <li> If any argument to the method is a <code>WebGLObject</code> which has been invalidated,
-        generate an <code>INVALID_OPERATION</code> error and terminate this algorithm without
-        calling the method implementation.
+        perform the following steps.
+
+            <ol class="nestedlist">
+
+            <li> Generate an <code>INVALID_OPERATION</code> error.
+
+            <li> If the return type of the called method is not <code>void</code>, return the same
+            value that would be returned if the context were lost.
+
+            <li> Terminate this algorithm without calling the method implementation.
+
+            </ol>
 
         <li> Otherwise, perform the implementation of the called method and return its result. </li>
 
@@ -1031,12 +1040,13 @@ for (var i = 0; i < numVertices; i++) {
     </p>
     <p>
 
-        The following methods have explicit context lost handling:
+        The following methods have <em>explicit context lost handling</em>:
 
         <ul>
 
-        <li> isContextLost, checkFramebufferStatus, getAttribLocation, getVertexAttribOffset,
-        isBuffer, isEnabled, isFramebuffer, isProgram, isRenderbuffer, isShader, isTexture
+        <li> isContextLost, checkFramebufferStatus, getAttribLocation, getError,
+        getVertexAttribOffset, isBuffer, isEnabled, isFramebuffer, isProgram, isRenderbuffer,
+        isShader, isTexture
 
         </ul>
 
@@ -1917,12 +1927,16 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">GLenum getError()
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.5">OpenGL ES 2.0 &sect;2.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetError.xml">man page</a>)</span>
             <dd>
-            See <a href="#WEBGLCONTEXTEVENT">WebGLContextEvent</a> for documentation of a
-            WebGL-specific return value from getError.
+                If the context's <b>webgl context lost flag</b> is set,
+                returns <code class="enum">CONTEXT_LOST_WEBGL</code> the first time this method is
+                called. Afterward, returns <code class="enum">NO_ERROR</code> until the context has
+                been restored.
         <dt class="idl-code">void hint(GLenum target, GLenum mode)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-5.2">OpenGL ES 2.0 &sect;5.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glHint.xml">man page</a>)</span>
         <dt class="idl-code">GLboolean isEnabled(GLenum cap)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.1">OpenGL ES 2.0 &sect;6.1.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsEnabled.xml">man page</a>)</span>
+        <dd>
+            Returns false if the context's <b>webgl context lost flag</b> is set.
         <dt class="idl-code">void lineWidth(GLfloat width)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-3.4">OpenGL ES 2.0 &sect;3.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glLineWidth.xml">man page</a>)</span>
         <dt class="idl-code">void pixelStorei(GLenum pname, GLint param)
@@ -2049,6 +2063,8 @@ for (var i = 0; i < numVertices; i++) {
             </table>
         <dt class="idl-code">GLboolean isBuffer(WebGLBuffer buffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.6">OpenGL ES 2.0 &sect;6.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsBuffer.xml">man page</a>)</span>
+        <dd>
+            Returns false if the context's <b>webgl context lost flag</b> is set.
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -2073,6 +2089,10 @@ for (var i = 0; i < numVertices; i++) {
 
         <dt class="idl-code">GLenum checkFramebufferStatus(GLenum target)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.5">OpenGL ES 2.0 &sect;4.4.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCheckFramebufferStatus.xml">man page</a>)</span>
+        <dd>
+            Returns <code class="enum">FRAMEBUFFER_UNSUPPORTED</code> if the context's <b>webgl
+            context lost flag</b> is set.
+
         <dt class="idl-code">WebGLFramebuffer createFramebuffer()
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenFramebuffers.xml">glGenFramebuffers</a>)</span>
         <dd>
@@ -2111,7 +2131,9 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">GLboolean isFramebuffer(WebGLFramebuffer framebuffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.7">OpenGL ES 2.0 &sect;6.1.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsFramebuffer.xml">man page</a>)</span>
         <dd>
-            Return true if the passed WebGLFramebuffer is valid and false otherwise.
+            Return true if the passed WebGLFramebuffer is valid and false otherwise. <br><br>
+
+            Returns false if the context's <b>webgl context lost flag</b> is set.
     </dl>
      
 <!-- ======================================================================================================= -->
@@ -2166,7 +2188,9 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">GLboolean isRenderbuffer(WebGLRenderbuffer renderbuffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.7">OpenGL ES 2.0 &sect;6.1.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsRenderbuffer.xml">man page</a>)</span>
         <dd>
-            Return true if the passed WebGLRenderbuffer is valid and false otherwise.
+            Return true if the passed WebGLRenderbuffer is valid and false otherwise. <br><br>
+
+            Returns false if the context's <b>webgl context lost flag</b> is set.
         <dt class="idl-code">void renderbufferStorage(GLenum target, GLenum internalformat, 
                              GLsizei width, GLsizei height)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glRenderbufferStorage.xml">man page</a>)</span>
@@ -2243,7 +2267,9 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">GLboolean isTexture(WebGLTexture texture)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.4">OpenGL ES 2.0 &sect;6.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsTexture.xml">man page</a>)</span>
         <dd>
-            Return true if the passed WebGLTexture is valid and false otherwise.
+            Return true if the passed WebGLTexture is valid and false otherwise. <br><br>
+
+            Returns false if the context's <b>webgl context lost flag</b> is set.
         <dt class="idl-code"><a name="TEXIMAGE2D">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat, 
                     GLsizei width, GLsizei height, GLint border, GLenum format, 
                     GLenum type, ArrayBufferView pixels)
@@ -2458,11 +2484,15 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">GLboolean isProgram(WebGLProgram program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsProgram.xml">man page</a>)</span>
         <dd>
-            Return true if the passed WebGLProgram is valid and false otherwise.
+            Return true if the passed WebGLProgram is valid and false otherwise. <br><br>
+
+            Returns false if the context's <b>webgl context lost flag</b> is set.
         <dt class="idl-code">GLboolean isShader(WebGLShader shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsShader.xml">man page</a>)</span>
         <dd>
-            Return true if the passed WebGLShader is valid and false otherwise.
+            Return true if the passed WebGLShader is valid and false otherwise. <br><br>
+
+            Returns false if the context's <b>webgl context lost flag</b> is set.
         <dt class="idl-code">void linkProgram(WebGLProgram program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glLinkProgram.xml">man page</a>)</span>
         <dt class="idl-code">void shaderSource(WebGLShader shader, DOMString source)
@@ -2514,6 +2544,8 @@ for (var i = 0; i < numVertices; i++) {
             If the passed name is longer than the restriction defined
             in <a href="#MAX_LOCATION_LENGTHS">Maximum Uniform and Attribute Location Lengths</a>,
             an <code>INVALID_VALUE</code> error will be generated and -1 will be returned. <br><br>
+
+            Returns -1 if the context's <b>webgl context lost flag</b> is set. <br><br>
 
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
@@ -2570,6 +2602,8 @@ for (var i = 0; i < numVertices; i++) {
             </table>
         <dt class="idl-code">GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetVertexAttribPointerv.xml">man page</a>)</span>
+        <dd>
+            Returns 0 if the context's <b>webgl context lost flag</b> is set.
         <dt><p class="idl-code">void uniform[1234][fi](WebGLUniformLocation location, ...)</p>
             <p class="idl-code">void uniform[1234][fi]v(WebGLUniformLocation location, ...)
             <p class="idl-code">void uniformMatrix[234]fv(WebGLUniformLocation location, GLboolean transpose, ...)
@@ -2826,29 +2860,12 @@ dictionary WebGLContextEventInit : EventInit {
 
             <li> Await a restorable <em>drawing buffer</em>. </li>
 
-            <li> <em>Restore the drawing buffer</em>. </li>
+            <li> Queue a task to <em>restore the drawing buffer</em>. </li>
 
             </ol>
 
         </li>
         </ol>
-    </p>
-    <p>
-        While the context's <b>webgl context lost</b> flag is true:
-
-        <ul>
-        <li> The context's <code>isContextLost</code> method returns <code>true</code>.<br>
-        <li> All methods returning <code>void</code> return immediately.<br>
-        <li> All methods returning nullable values or <code>any</code> return <code>null</code>.<br>
-        <li> <code>checkFramebufferStatus</code> returns <code>FRAMEBUFFER_UNSUPPORTED</code>.<br>
-        <li> <code>getAttribLocation</code> returns <code>-1</code>.<br>
-        <li> <code>getError</code> returns <code>CONTEXT_LOST_WEBGL</code> the first time it is
-             called while the context is lost. Afterward it will return <code>NO_ERROR</code> until
-             the context has been restored.<br>
-        <li> <code>getVertexAttribOffset</code> returns <code>0</code>.<br>
-        <li> All <code>is</code> queries return <code>false</code>.<br>
-        </ul>
-
     </p>
     <div class="example">
         The following code prevents the default behavior of the <code>webglcontextlost</code>
@@ -2860,8 +2877,8 @@ dictionary WebGLContextEventInit : EventInit {
 
     <p>
 
-        When the user agent is to <em>restore the drawing buffer</em>, it must queue a task to run
-        the following steps:
+        When the user agent is to <em>restore the drawing buffer</em>, it must run the following
+        steps:
 
         <ol class="nestedlist">
 
