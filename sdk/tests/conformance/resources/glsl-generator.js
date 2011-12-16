@@ -738,8 +738,78 @@ return {
   runFeatureTest: runFeatureTest,
 
   /*
-   * runs a bunch of GLSL tests using the passed in parameters
+   * Runs a bunch of GLSL tests using the passed in parameters
+   *
    * The parameters are:
+   *
+   * tests:
+   *    Array of tests. For each test the following parameters are expected
+   *
+   *    name:
+   *       some description of the test
+   *    reference:
+   *       parameters for the reference shader (see below)
+   *    test:
+   *       parameters for the test shader (see below)
+   *
+   *    The parameter for the reference and test shaders are
+   *
+   *    shader: the GLSL for the shader
+   *    subs: any substitutions you wish to define for the shader.
+   *
+   *    Each shader is created from a basic template that
+   *    defines an input and an output. You can see the
+   *    templates at the top of this file. The input and output
+   *    change depending on whether or not we are generating
+   *    a vertex or fragment shader.
+   *
+   *    All this code function does is a bunch of string substitutions.
+   *    A substitution is defined by $(name). If name is found in
+   *    the 'subs' parameter it is replaced. 4 special names exist.
+   *
+   *    'input' the input to your GLSL. Always a vec4. All change
+   *    from 0 to 1 over the quad to be drawn.
+   *
+   *    'output' the output color. Also a vec4
+   *
+   *    'emu' a place to insert extra stuff
+   *    'extra' a place to insert extra stuff.
+   *
+   *    You can think of the templates like this
+   *
+   *       $(extra)
+   *       $(emu)
+   *
+   *       void main() {
+   *          // do math to calculate input
+   *          ...
+   *
+   *          $(shader)
+   *       }
+   *
+   *    Your shader first has any subs you provided applied as well
+   *    as 'input' and 'output'
+   *
+   *    It is then inserted into the template which is also provided
+   *    with your subs.
+   *
+   * gridRes: (optional)
+   *    The resolution of the mesh to generate. The default is a
+   *    1x1 grid but many vertex shaders need a higher resolution
+   *    otherwise the only values passed in are the 4 corners
+   *    which often have the same value.
+   *
+   * tolerance: (optional)
+   *    Allow some tolerance in the comparisons. The tolerance is applied to
+   *    both vertex and fragment shaders. The default tolerance is 0, meaning
+   *    the values have to be identical.
+   *
+   * fragmentTolerance: (optional)
+   *    Specify a tolerance which only applies to fragment shaders. The
+   *    fragment-only tolerance will override the shared tolerance for
+   *    fragment shaders if both are specified. Fragment shaders usually
+   *    use mediump float precision so they sometimes require higher tolerance
+   *    than vertex shaders which use highp.
    */
   runBasicTest: runBasicTest,
 
