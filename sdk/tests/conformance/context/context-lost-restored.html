@@ -68,8 +68,8 @@ function testLosingContext()
 
     debug("Test losing a context and inability to restore it.");
 
-    canvas.addEventListener("webglcontextlost", function() {
-       testLostContext();
+    canvas.addEventListener("webglcontextlost", function(e) {
+       testLostContext(e);
        // restore the context after this event has exited.
        setTimeout(function() {
          // we didn't call prevent default so we should not be able to restore the context
@@ -102,8 +102,8 @@ function testLosingAndRestoringContext()
     debug("");
     debug("Test losing and restoring a context.");
 
-    canvas.addEventListener("webglcontextlost", function() {
-      testLostContext();
+    canvas.addEventListener("webglcontextlost", function(e) {
+      testLostContext(e);
       // restore the context after this event has exited.
       setTimeout(function() {
         shouldGenerateGLError(gl, gl.NO_ERROR, "extension.restoreContext()");
