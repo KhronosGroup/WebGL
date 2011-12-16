@@ -74,7 +74,7 @@ function testLosingContext()
        setTimeout(function() {
          // we didn't call prevent default so we should not be able to restore the context
          shouldGenerateGLError(gl, gl.INVALID_OPERATION, "extension.restoreContext()");
-         testLosingAndRetoreingContext();
+         testLosingAndRestoringContext();
        }, 1);
     });
     canvas.addEventListener("webglcontextrestored", testShouldNotRestoreContext);
