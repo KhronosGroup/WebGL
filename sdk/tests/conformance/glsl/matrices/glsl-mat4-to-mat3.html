@@ -49,15 +49,15 @@ GLSLGenerator.runBasicTest({
       reference: {
         shader: wtu.getScript("shader_test"),
         subs: {
-          conversion: "mat3"
-        },
+          emu: wtu.getScript("shader_emu"),
+          conversion: "mat3_emu"
+        }
       },
       test: {
         shader: wtu.getScript("shader_test"),
         subs: {
-          emu: wtu.getScript("shader_emu"),
-          conversion: "mat3_emu"
-        }
+          conversion: "mat3"
+        },
       }
     }
   ]
