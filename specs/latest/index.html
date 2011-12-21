@@ -154,7 +154,7 @@
         Before using the WebGL API, the author must obtain a <code>WebGLRenderingContext</code>
         object for a given HTMLCanvasElement <a href="#refsCANVAS">[CANVAS]</a> as described
         below. This object is used to manage OpenGL state and render to the drawing buffer, which
-        must also be created at the time of context creation.
+        must be created at the time of context creation.
     </p>
     
 <!-- ======================================================================================================= -->
@@ -253,11 +253,11 @@
         <code>drawingBufferHeight</code> attributes.
     </p>
     <p>
-        By default, the buffers shall be the size shown below. The optional <a href="#WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a> 
-        object may be used to change whether or not the buffers are defined. It can also be used
-        to define whether the color buffer will include an alpha channel. If defined, the 
-        alpha channel is used by the HTML compositor to combine the color buffer with the rest
-        of the page. The WebGLContextAttributes object is only used on the first call to 
+        The optional <a href="#WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a> object may be used
+        to change whether or not the buffers are defined. It can also be used to define whether the
+        color buffer will include an alpha channel. If defined, the alpha channel is used by the
+        HTML compositor to combine the color buffer with the rest of the page. The
+        WebGLContextAttributes object is only used on the first call to
         <code>getContext</code>. No facility is provided to change the attributes of the drawing 
         buffer after its creation.
     </p>
@@ -413,8 +413,8 @@ gl.viewport(0, 0, canvas.width, canvas.height);
         reserve space for a texture or VBO, which is then modified using <code>texSubImage</code> or 
         <code>bufferSubData</code> calls.  If initial data is not provided to these calls, the WebGL
         implementation must initialize their contents to 0; depth renderbuffers must be cleared to
-        the default 1.0 clear depth.  For example, this may require creating a temporary buffer of 0
-        values the size of a requested VBO, so that it can be initialized correctly.  All other
+        the default 1.0 clear depth.  For example, this may require creating a zeroed temporary
+        buffer the size of a requested VBO, so that it can be initialized correctly.  All other
         forms of loading data into a texture or VBO involve either ArrayBuffers or DOM objects such
         as images, and are therefore already required to be initialized.
     </p>
@@ -2995,7 +2995,7 @@ initializeGame();</pre>
         <ol class="nestedlist">
 
         <li> <a href="#fire-a-webgl-context-event">Fire a WebGL context event</a> named
-        "webglcontextrestored" at <em>canvas</em>, optionally with its <code>statusMessage</code>
+        "webglcontextcreationerror" at <em>canvas</em>, optionally with its <code>statusMessage</code>
         attribute set to a platform dependent string about the nature of the failure. </li>
 
         </ol>
