@@ -193,8 +193,8 @@
         <li> If <code>getContext()</code> was invoked with a second argument, <em>options</em>, set
              the attributes of <em>contextAttributes</em> from those specified in <em>options</em>.
 
-        <li> <em>Create a drawing buffer</em> using the settings specified
-             in <em>contextAttributes</em>, and associate the <em>drawing buffer</em>
+        <li> <a href="#create-a-drawing-buffer">Create a <em>drawing buffer</em></a> using the settings
+             specified in <em>contextAttributes</em>, and associate the <em>drawing buffer</em>
              with <em>context</em>.
 
         <li> If drawing buffer creation failed, perform the following steps:
@@ -225,8 +225,8 @@
 
     <p>
         The drawing buffer into which the API calls are rendered shall be defined upon creation of
-        the WebGLRenderingContext object. To <em>create a drawing buffer</em>, the following shall
-        be performed.
+        the WebGLRenderingContext object. To <b><a name="create-a-drawing-buffer">create a drawing
+        buffer</a></b>, the following shall be performed.
     </p>
     <p>
         The table below shows all the buffers which make up the drawing buffer, along with their
@@ -719,6 +719,10 @@ var context = canvas.getContext('webgl',
     <p>
         The <code>WebGLObject</code> interface is the parent interface for all GL objects.
     </p>
+    <p>
+        Each <code>WebGLObject</code> has
+        an <b><a name="webgl-object-invalidated-flag">invalidated</a></b> flag, which is initially unset.
+    </p>
     <pre class="idl">interface <dfn id="WebGLObject">WebGLObject</dfn> {
 };</pre>
 
@@ -1024,8 +1028,9 @@ for (var i = 0; i < numVertices; i++) {
 
         </li>
 
-        <li> If any argument to the method is a <code>WebGLObject</code> which has been invalidated,
-        perform the following steps.
+        <li> If any argument to the method is a <code>WebGLObject</code> with
+        its <a href="#webgl-object-invalidated-flag">invalidated flag</a> set, perform the following
+        steps.
 
             <ol class="nestedlist">
 
@@ -2069,7 +2074,9 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">GLboolean isBuffer(WebGLBuffer buffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.6">OpenGL ES 2.0 &sect;6.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsBuffer.xml">man page</a>)</span>
         <dd>
-            Returns false if the context's <a href="#webgl-context-lost-flag">webgl context lost
+            Return true if the passed WebGLBuffer is valid and false otherwise. <br><br>
+
+            Returns false if the buffer's <a href="#webgl-object-invalidated-flag">invalidated
             flag</a> is set.
     </dl>
 
@@ -2139,7 +2146,7 @@ for (var i = 0; i < numVertices; i++) {
         <dd>
             Return true if the passed WebGLFramebuffer is valid and false otherwise. <br><br>
 
-            Returns false if the context's <a href="#webgl-context-lost-flag">webgl context lost
+            Returns false if the framebuffer's <a href="#webgl-object-invalidated-flag">invalidated
             flag</a> is set.
     </dl>
      
@@ -2197,7 +2204,7 @@ for (var i = 0; i < numVertices; i++) {
         <dd>
             Return true if the passed WebGLRenderbuffer is valid and false otherwise. <br><br>
 
-            Returns false if the context's <a href="#webgl-context-lost-flag">webgl context lost
+            Returns false if the renderbuffer's <a href="#webgl-object-invalidated-flag">invalidated
             flag</a> is set.
         <dt class="idl-code">void renderbufferStorage(GLenum target, GLenum internalformat, 
                              GLsizei width, GLsizei height)
@@ -2277,7 +2284,7 @@ for (var i = 0; i < numVertices; i++) {
         <dd>
             Return true if the passed WebGLTexture is valid and false otherwise. <br><br>
 
-            Returns false if the context's <a href="#webgl-context-lost-flag">webgl context lost
+            Returns false if the texture's <a href="#webgl-object-invalidated-flag">invalidated
             flag</a> is set.
         <dt class="idl-code"><a name="TEXIMAGE2D">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat, 
                     GLsizei width, GLsizei height, GLint border, GLenum format, 
@@ -2495,14 +2502,14 @@ for (var i = 0; i < numVertices; i++) {
         <dd>
             Return true if the passed WebGLProgram is valid and false otherwise. <br><br>
 
-            Returns false if the context's <a href="#webgl-context-lost-flag">webgl context lost
+            Returns false if the program's <a href="#webgl-object-invalidated-flag">invalidated
             flag</a> is set.
         <dt class="idl-code">GLboolean isShader(WebGLShader shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsShader.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLShader is valid and false otherwise. <br><br>
 
-            Returns false if the context's <a href="#webgl-context-lost-flag">webgl context lost
+            Returns false if the shader's <a href="#webgl-object-invalidated-flag">invalidated
             flag</a> is set.
         <dt class="idl-code">void linkProgram(WebGLProgram program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glLinkProgram.xml">man page</a>)</span>
@@ -2861,10 +2868,11 @@ dictionary WebGLContextEventInit : EventInit {
         <li> Set <em>context's</em> <a href="#webgl-context-lost-flag">webgl context lost</a>
         flag. </li>
 
-        <li> Invalidate all <code>WebGLObject</code> instances, such as textures and buffers, that
-             have been created by this context (ie. <code>is</code> queries return false). </li>
+        <li> Set the <a href="#webgl-object-invalidated-flag">invalidated flag</a> of
+        each <code>WebGLObject</code> instance created by this context. </li>
 
-        <li> <em>Queue a task</em> to perform the following steps:
+        <li> <a href="http://dev.w3.org/html5/spec/webappapis.html#queue-a-task">Queue a task</a> to
+        perform the following steps:
 
             <ol class="nestedlist">
 
@@ -2909,10 +2917,10 @@ dictionary WebGLContextEventInit : EventInit {
         <li> If <em>context's</em> <a href="#webgl-context-lost-flag">webgl context lost flag</a> is
         not set, abort these steps.
 
-        <li> Create a <em>drawing buffer</em> using the settings specified
-        in <em>context's</em> <a href="#context-creation-parameters">context creation
-        parameters</a>, and associate the <em>drawing buffer</em> with <em>context</em>, discarding
-        any previous <em>drawing buffer</em>.
+        <li> <a href="#create-a-drawing-buffer">Create a <em>drawing buffer</em></a> using the
+        settings specified in <em>context's</em> <a href="#context-creation-parameters">context
+        creation parameters</a>, and associate the <em>drawing buffer</em> with <em>context</em>,
+        discarding any previous <em>drawing buffer</em>.
 
         <li> Clear <em>context's</em> <a href="#webgl-context-lost-flag">webgl context lost
         flag</a>.
