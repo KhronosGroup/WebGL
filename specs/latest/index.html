@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 20 December 2011</h2>
+    <h2 class="no-toc">Editor's Draft 21 December 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2941,6 +2941,51 @@ dictionary WebGLContextEventInit : EventInit {
         context's state and recreate all such resources.
     </div>
 
+    <div class="example">
+        The following code illustrates how an application can handle context loss and restoration:
+<pre>function initializeGame() {
+  initializeWorld();
+  initializeResources();
+}
+
+function initializeResources() {
+  initializeShaders();
+  initializeBuffers();
+  initializeTextures();
+
+  // ready to draw, start the main loop
+  renderFrame();
+}
+
+function renderFrame() {
+  updateWorld();
+  drawSkyBox();
+  drawWalls();
+  drawMonsters();
+
+  requestId = window.requestAnimationFrame(
+      renderFrame, canvas);
+}
+
+canvas.addEventListener(
+    "webglcontextlost", function (event) {
+
+  // inform WebGL that we handle context restoration
+  event.preventDefault();
+
+  // Stop rendering
+  window.cancelAnimationFrame(requestId);
+}, false);
+
+canvas.addEventListener(
+    "webglcontextrestored", function (event) {
+
+  initializeResources();
+}, false);
+
+initializeGame();</pre>
+    </div>
+
     <h4>The Context Creation Error Event</h4>
 
     <p>
@@ -2958,94 +3003,28 @@ dictionary WebGLContextEventInit : EventInit {
     </p>
 
     <div class="example">
-    The following ECMAScript example shows how to register event listeners on a Canvas called
-    <code>canvas1</code> which will receive context lost and restored events and restart the
-    application. For completeness, it illustrates how an application performing asynchronous image
-    loading would handle a context lost event at an arbitrary point in time.
-    <pre>
-window.onload = init;
 
-var g_gl;
-var g_canvas;
-var g_intervalId;
-var g_images = [];
-var g_imgURLs = [
- "someimage.jpg",
- "someotherimage.jpg",
- "yetanotherimage.png"
-];
+        The following code illustrates how an application can retrieve information about context creation failure:
 
-function init() {
-  g_canvas = document.getElementById("canvas1");
-  g_canvas.addEventListener("webglcontextlost", contextLostHandler, false);
-  g_canvas.addEventListener("webglcontextrestored", contextRestoredHandler, false);
-  g_gl = canvas.getContext("webgl");
+<pre>var errorInfo = "";
+function onContextCreationError(event) {
 
-  for (var ii = 0; ii < g_imgURLs.length; ++ii) {
-    // Create an image tag.
-    var image = document.createElement('img');
+  canvas.removeEventListener(
+     "webglcontextcreationerror",
+     onContextCreationError, false);
 
-    // Create a texture for this image.
-    image.texture = g_gl.createTexture();
-
-    // Mark the image as not loaded.
-    image.loaded = false;
-
-    // Setup a load callback.
-    image.onload = (function(image) {
-        return function() {
-          imageLoadedHandler(image);
-        };
-      }(image));
-
-    // Start the image loading.
-    image.src = g_imgURLs[ii];
-
-    // Remember the image.
-    g_images.push(image);
-  }
-
-  g_intervalId = window.setInterval(renderHandler, 1000/60);
+  errorInfo = e.statusMessage || "Unknown";
 }
 
-function renderHandler() {
-  // draw with textures.
-  // ...
-}
+canvas.addEventListener(
+    "webglcontextcreationerror",
+    onContextCreationError, false);
 
-function imageLoadedHandler(image) {
-  // Mark the image as loaded.
-  image.loaded = true;
-
-  // Copy the image to the texture.
-  updateTexture(image);
-}
-
-function updateTexture(image) {
-  if (!g_gl.isContextLost() && image.loaded) {
-    g_gl.bindTexture(g_gl.TEXTURE_2D, image.texture);
-    g_gl.texImage2D(g_gl.TEXTURE_2D, 0, image);
-  }
-}
-
-function contextLostHandler(event) {
-  // allow the context to be restored.
-  event.preventDefault();
-  // stop rendering.
-  window.clearInterval(g_intervalId);
-}
-
-function contextRestoredHandler() {
-  // create new textures for all images and restore their contents.
-  for (var ii = 0; ii < g_images.length; ++ii) {
-    g_images[ii].texture = g_gl.createTexture();
-    updateTexture(g_images[ii]);
-  }
-
-  // Start rendering again.
-  g_intervalId = window.setInterval(renderHandler, 1000/60);
-}
-    </pre>
+var gl = canvas.getContext("experimental-webgl");
+if(!gl) {
+  alert("A WebGL context could not be created.\nReason: " +
+        errorInfo);
+}</pre>
     </div>
 
 <!-- ======================================================================================================= -->
