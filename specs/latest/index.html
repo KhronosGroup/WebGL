@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 21 December 2011</h2>
+    <h2 class="no-toc">Editor's Draft 22 December 2011</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -168,7 +168,7 @@
     </p>
     <p>
         Each <code>WebGLRenderingContext</code> has <b><a name="context-creation-parameters">context
-        creation parameters</a></b>, set upon creation, which is
+        creation parameters</a></b>, set upon creation, in
         a <a href="#WEBGLCONTEXTATTRIBUTES"><code>WebGLContextAttributes</code></a> object.
     </p>
     <p>
@@ -225,8 +225,8 @@
 
     <p>
         The drawing buffer into which the API calls are rendered shall be defined upon creation of
-        the WebGLRenderingContext object. To <b><a name="create-a-drawing-buffer">create a drawing
-        buffer</a></b>, the following shall be performed.
+        the WebGLRenderingContext object. The following description defines how
+        to <b><a name="create-a-drawing-buffer">create a drawing buffer</a></b>.
     </p>
     <p>
         The table below shows all the buffers which make up the drawing buffer, along with their
@@ -413,10 +413,10 @@ gl.viewport(0, 0, canvas.width, canvas.height);
         reserve space for a texture or VBO, which is then modified using <code>texSubImage</code> or 
         <code>bufferSubData</code> calls.  If initial data is not provided to these calls, the WebGL
         implementation must initialize their contents to 0; depth renderbuffers must be cleared to
-        the default 1.0 clear depth.  For example, this may require creating a zeroed temporary
-        buffer the size of a requested VBO, so that it can be initialized correctly.  All other
-        forms of loading data into a texture or VBO involve either ArrayBuffers or DOM objects such
-        as images, and are therefore already required to be initialized.
+        the default 1.0 clear depth.  This may require creating a zeroed temporary buffer the size
+        of a requested VBO, so that it can be initialized correctly.  All other forms of loading
+        data into a texture or VBO involve either ArrayBuffers or DOM objects such as images, and
+        are therefore already required to be initialized.
     </p>
 
     <p>
@@ -2817,23 +2817,23 @@ for (var i = 0; i < numVertices; i++) {
         specification <a href="#refsDOM4">[DOM4]</a>.
     </p>
         To <b><a name="fire-a-webgl-context-event">fire a WebGL context event named e</a></b> means that
-        an <a href="http://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html#concept-event">event</a>
+        an <a href="http://www.w3.org/TR/domcore/#concept-event">event</a>
         using the <code>WebGLContextEvent</code> interface, with
-        its <a href="http://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html#dom-event-type"><code>type</code></a>
-        attribute initialized to <em>e</em>, and
-        its <a href="http://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html#dom-event-istrusted"><code>isTrusted</code></a>
-        attribute initialized to true, is to
-        be <a href="http://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html#concept-event-dispatch">dispatched</a>
+        its <a href="http://www.w3.org/TR/domcore/#dom-event-type"><code>type</code></a>
+        attribute <a href="#refsDOM4">[DOM4]</a> initialized to <em>e</em>, and
+        its <a href="http://www.w3.org/TR/domcore/#dom-event-istrusted"><code>isTrusted</code></a>
+        attribute <a href="#refsDOM4">[DOM4]</a> initialized to true, is to
+        be <a href="http://www.w3.org/TR/domcore/#concept-event-dispatch">dispatched</a>
         at the given object.
     <p>
     </p>
     <pre class="idl">
 [Constructor(DOMString type, optional WebGLContextEventInit eventInit)]
-interface <dfn id="WebGLContextLostEvent">WebGLContextEvent</dfn> : Event {
+interface <dfn id="WebGLContextLostEvent">WebGLContextEvent</dfn> : <a href="http://www.w3.org/TR/domcore/#event">Event</a> {
     readonly attribute DOMString statusMessage;
 };
 
-dictionary WebGLContextEventInit : EventInit {
+dictionary WebGLContextEventInit : <a href="http://www.w3.org/TR/domcore/#eventinit">EventInit</a> {
     DOMString statusMessage;
 };</pre>
 
