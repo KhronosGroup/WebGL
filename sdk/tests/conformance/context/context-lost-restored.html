@@ -82,7 +82,7 @@ function testLosingContext()
     shouldBe("gl.getError()", "gl.CONTEXT_LOST_WEBGL");
     shouldBe("gl.getError()", "gl.NO_ERROR");
     // gl methods should be no-ops
-    shouldGenerateGLError(gl, gl.NO_ERROR, gl.blendFunc(gl.TEXTURE_2D, gl.TEXTURE_CUBE_MAP));
+    shouldGenerateGLError(gl, gl.NO_ERROR, "gl.blendFunc(gl.TEXTURE_2D, gl.TEXTURE_CUBE_MAP)");
     // but the event should not have been fired.
     shouldBeFalse("contextLostEventFired");
 }
@@ -105,7 +105,7 @@ function testLosingAndRestoringContext()
         shouldBeTrue("gl.isContextLost()");
         shouldBe("gl.getError()", "gl.NO_ERROR");
         // gl methods should still be no-ops
-        shouldGenerateGLError(gl, gl.NO_ERROR, gl.blendFunc(gl.TEXTURE_2D, gl.TEXTURE_CUBE_MAP));
+        shouldGenerateGLError(gl, gl.NO_ERROR, "gl.blendFunc(gl.TEXTURE_2D, gl.TEXTURE_CUBE_MAP)");
       }, 1);
     });
     canvas.addEventListener("webglcontextrestored", function() {
@@ -123,7 +123,7 @@ function testLosingAndRestoringContext()
     shouldBe("gl.getError()", "gl.CONTEXT_LOST_WEBGL");
     shouldBe("gl.getError()", "gl.NO_ERROR");
     // gl methods should be no-ops
-    shouldGenerateGLError(gl, gl.NO_ERROR, gl.blendFunc(gl.TEXTURE_2D, gl.TEXTURE_CUBE_MAP));
+    shouldGenerateGLError(gl, gl.NO_ERROR, "gl.blendFunc(gl.TEXTURE_2D, gl.TEXTURE_CUBE_MAP)");
     // but the event should not have been fired.
     shouldBeFalse("contextLostEventFired");
 }
