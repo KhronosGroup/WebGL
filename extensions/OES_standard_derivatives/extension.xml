@@ -41,12 +41,8 @@
     </features>
   </overview>
   <idl>
-module webgl {
-
 interface OES_standard_derivatives {
     const GLenum FRAGMENT_SHADER_DERIVATIVE_HINT_OES = 0x8B8B;
-};
-
 };
   </idl>
   <history>
@@ -55,6 +51,9 @@ interface OES_standard_derivatives {
     </revision>
     <revision date="2011/12/07">
       <change>Added <code>genType</code> argument and return type to function declarations.</change>
+    </revision>
+    <revision date="2012/01/03">
+      <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision>
   </history>
 </extension>

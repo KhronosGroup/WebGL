@@ -4,6 +4,8 @@
       <change>Initial revision.</change>
     </revision><revision date="2011/12/07" number="2">
       <change>Added <code>genType</code> argument and return type to function declarations.</change>
+    </revision><revision date="2012/01/03" number="3">
+      <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision></history></extension><extension href="OES_texture_float/"><name>OES_texture_float</name><number>1</number><history><revision date="2010/11/29" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2010/12/13" number="2">
@@ -12,6 +14,8 @@
     </revision><revision date="2011/09/12" number="3">
       <change>Added optional ability to use a FLOAT type texture as an FBO's color attachment.
       </change>
+    </revision><revision date="2012/01/03" number="4">
+      <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision></history></extension><extension href="OES_texture_half_float/"><name>OES_texture_half_float</name><number>2</number><history><revision date="2010/11/29" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/09/12" number="2">
@@ -21,6 +25,8 @@
       <change>
         Added optional ability to use a HALF_FLOAT_OES type texture as an FBO's color attachment.
       </change>
+    </revision><revision date="2012/01/03" number="3">
+      <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision></history></extension><draft href="OES_vertex_array_object/"><name>OES_vertex_array_object</name><number>5</number><history><revision date="2011/01/27" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/11/12" number="2">
@@ -30,6 +36,8 @@
     </revision><revision date="2011/12/07" number="4">
       <change>Renamed "Name Strings" section to "Alias Name Strings".</change>
       <change>Sorted Revision History in ascending order.</change>
+    </revision><revision date="2012/01/03" number="5">
+      <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision></history></draft><draft href="WEBGL_lose_context/"><name>WEBGL_lose_context</name><number>3</number><history><revision date="2011/01/11" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/04/14" number="2">
@@ -43,6 +51,8 @@
       <change>Renamed from WEBGL_EXT_lose_context to WEBGL_lose_context</change>
     </revision><revision date="2011/12/07" number="6">
       <change>Renamed "Name Strings" section to "Alias Name Strings".</change>
+    </revision><revision date="2012/01/03" number="7">
+      <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision></history></draft><extension href="WEBGL_debug_renderer_info/"><name>WEBGL_debug_renderer_info</name><number>6</number><history><revision date="2011/10/03" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/10/12" number="2">
@@ -51,6 +61,8 @@
       <change>Clarify the meaning of "privileged".</change>
     </revision><revision date="2011/12/07" number="4">
       <change>Fixed mistake where extension still indicated draft status.</change>
+    </revision><revision date="2012/01/03" number="5">
+      <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision></history></extension><extension href="WEBGL_debug_shaders/"><name>WEBGL_debug_shaders</name><number>7</number><history><revision date="2011/10/03" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/10/14" number="2">
@@ -60,4 +72,6 @@
     </revision><revision date="2011/12/07" number="4">
       <change>Fixed mistake where extension still indicated draft status.</change>
       <change>Renamed "New Functions and Methods" section to "New Functions".</change>
+    </revision><revision date="2012/01/03" number="5">
+      <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision></history></extension></registry>

@@ -14,14 +14,10 @@
     <p>WebGL implementations might mask the <code>RENDERER</code> and <code>VENDOR</code> strings of the underlying graphics driver for privacy reasons. This extension exposes new tokens to query this information in a guaranteed manner for debugging purposes.</p>
   </overview>
   <idl>
-module webgl {
-
 interface WEBGL_debug_renderer_info {
 
       const GLenum UNMASKED_VENDOR_WEBGL            = 0x9245;
       const GLenum UNMASKED_RENDERER_WEBGL          = 0x9246;
-
-};
 
 };
   </idl>
@@ -67,6 +63,9 @@ interface WEBGL_debug_renderer_info {
     </revision>
     <revision date="2011/12/07">
       <change>Fixed mistake where extension still indicated draft status.</change>
+    </revision>
+    <revision date="2012/01/03">
+      <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision>
   </history>
 </extension>

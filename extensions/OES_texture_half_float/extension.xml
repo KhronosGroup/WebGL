@@ -35,12 +35,8 @@
     </features>
   </overview>
   <idl>
-module webgl {
-
 interface OES_texture_half_float {
   const GLenum HALF_FLOAT_OES = 0x8D61;
-};
-
 };
   </idl>
   <history>
@@ -54,6 +50,9 @@ interface OES_texture_half_float {
       <change>
         Added optional ability to use a HALF_FLOAT_OES type texture as an FBO's color attachment.
       </change>
+    </revision>
+    <revision date="2012/01/03">
+      <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision>
   </history>
 </extension>

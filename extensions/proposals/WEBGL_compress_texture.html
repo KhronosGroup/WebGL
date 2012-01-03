@@ -57,8 +57,6 @@
     <h2 class="no-toc">IDL</h2>
     <p>
 <pre class="idl">
-module webgl {
-
 interface WebGLCompressedTexture : WebGLObject {
     readonly attribute long size;
     readonly attribute GLenum error;
@@ -77,8 +75,6 @@ interface WEBGL_compress_texture {
     compressTexture(GLenum usage, HTMLVideoElement video, Function callback);
 
     compressedTexImage2D(GLenum target, GLint level, GLint border, WebGLCompressedTexture pixels);
-};
-
 };
 </pre>
     <h2 class="no-toc">Description</h2>
@@ -179,6 +175,7 @@ interface WEBGL_compress_texture {
       <ul>
       <li> 2011/04/04 Initial draft.</li>
       <li> 2011/04/05 Fixed typos. Changed error mechanism. Added size.</li>
+      <li> 2012/01/03 Removed webgl module per changes to Web IDL spec</li>
       </ul>
     </p>
 </body>
