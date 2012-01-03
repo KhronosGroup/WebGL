@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 22 December 2011</h2>
+    <h2 class="no-toc">Editor's Draft 03 January 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2551,13 +2551,15 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">WebGLActiveInfo getActiveAttrib(WebGLProgram program, GLuint index)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetActiveAttrib.xml">man page</a>)</span>
         <dd>
-            Returns information about the size, type and name of the vertex attribute at the
-            passed index of the passed program object.
+            Returns a new <code>WebGLActiveInfo</code> object describing the size, type and name of
+            the vertex attribute at the passed index of the passed program object. If the passed
+            index is out of range, generates an <code>INVALID_VALUE</code> error and returns null.
         <dt class="idl-code">WebGLActiveInfo getActiveUniform(WebGLProgram program, GLuint index)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetActiveUniform.xml">man page</a>)</span>
         <dd>
-            Returns information about the size, type and name of the uniform at the
-            passed index of the passed program object.
+            Returns a new <code>WebGLActiveInfo</code> object describing the size, type and name of
+            the uniform at the passed index of the passed program object. If the passed index is out
+            of range, generates an <code>INVALID_VALUE</code> error and returns null.
         <dt class="idl-code">GLint getAttribLocation(WebGLProgram program, DOMString name)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.24.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetAttribLocation.xml">man page</a>)</span>
         <dd>
