@@ -1,6 +1,7 @@
 attrib-location-length-limits.html
 embedded-struct-definitions-forbidden.html
-#glsl-2types-of-textures-on-same-unit.html
+# this test is intentionally disabled as it is too strict and to hard to simulate
+# glsl-2types-of-textures-on-same-unit.html
 glsl-function-nodes.html
 glsl-long-variable-names.html
 non-ascii-comments.vert.html
@@ -36,6 +37,8 @@ shader-with-ivec3-return-value.frag.html
 shader-with-ivec4-return-value.frag.html
 shader-with-limited-indexing.frag.html
 shader-with-line-directive.html
+# enable in 1.0.2
+# shader-with-long-int-constant.html
 shader-with-long-line.html
 shader-with-non-ascii-error.frag.html
 shader-with-precision.frag.html
