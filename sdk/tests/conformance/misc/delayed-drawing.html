@@ -27,29 +27,16 @@ var program = wtu.setupTexturedQuad(gl);
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
 var tex = gl.createTexture();
-
-// Check that an NPOT texture on level 0 succeeds
-wtu.fillTexture(gl, tex, 5, 3, [0, 192, 128, 255]);
-glErrorShouldBe(gl, gl.NO_ERROR,
-    "gl.texImage2D with NPOT texture at level 0 should succeed");
-
-var loc = gl.getUniformLocation(program, "tex");
-gl.uniform1i(loc, 0);
-
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
+wtu.fillTexture(gl, tex, 1, 1, [0, 192, 128, 255]);
 wtu.drawQuad(gl);
+
 setTimeout(step2, 1000);
 
 function step2() {
   wtu.drawQuad(gl);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   wtu.checkCanvas(
-      gl, [0, 192, 128, 255],
-      "NPOT texture with TEXTURE_MIN_FILTER set to LINEAR should draw.");
+      gl, [0, 192, 128, 255], "second draw should be 0, 192, 128, 255");
   finishTest();
 }
 
