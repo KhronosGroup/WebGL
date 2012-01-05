@@ -1,6 +1,5 @@
 bad-arguments-test.html
-# commented out in 1.0.1 version of conformance test. Put back in on 1.0.2
-# delayed-drawing.html
+--min-version 1.0.2 delayed-drawing.html
 error-reporting.html
 instanceof-test.html
 invalid-passed-params.html
