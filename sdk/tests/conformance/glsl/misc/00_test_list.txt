@@ -6,6 +6,7 @@ glsl-function-nodes.html
 glsl-long-variable-names.html
 non-ascii-comments.vert.html
 non-ascii.vert.html
+
 shader-with-256-character-identifier.frag.html
 shader-with-257-character-identifier.frag.html
 shader-with-_webgl-identifier.vert.html
@@ -14,16 +15,22 @@ shader-with-arbitrary-indexing.vert.html
 shader-with-attrib-array.vert.html
 shader-with-attrib-struct.vert.html
 shader-with-clipvertex.vert.html
+-min-version 1.0.2 shader-with-conditional-scoping.html
 shader-with-default-precision.frag.html
 shader-with-default-precision.vert.html
 shader-with-define-line-continuation.frag.html
 shader-with-dfdx-no-ext.frag.html
 shader-with-dfdx.frag.html
+-min-version 1.0.2 shader-with-do-scoping.html
 shader-with-error-directive.html
 shader-with-explicit-int-cast.vert.html
 shader-with-float-return-value.frag.html
+-min-version 1.0.2 shader-with-for-scoping.html
+-min-version 1.0.2 shader-with-for-loop.html
 shader-with-frag-depth.frag.html
 shader-with-function-recursion.frag.html
+-min-version 1.0.2 shader-with-function-scoped-struct.html
+-min-version 1.0.2 shader-with-functional-scoping.html
 shader-with-glcolor.vert.html
 shader-with-gles-1.frag.html
 shader-with-gles-symbol.frag.html
@@ -47,6 +54,7 @@ shader-with-uniform-in-loop-condition.vert.html
 shader-with-vec2-return-value.frag.html
 shader-with-vec3-return-value.frag.html
 shader-with-vec4-return-value.frag.html
+-min-version 1.0.2 shader-with-vec4-vec3-vec4-conditional.html
 shader-with-version-100.frag.html
 shader-with-version-100.vert.html
 shader-with-version-120.vert.html
