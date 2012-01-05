@@ -134,7 +134,52 @@ var loadTextFileAsynchronous = function(url, callback) {
   }
 };
 
-var getFileList = function(url, callback) {
+/**
+ * Compare version strings.
+ */
+var greaterThanOrEqualToVersion = function(have, want) {
+  have = have.split(" ")[0].split(".");
+  want = want.split(" ")[0].split(".");
+
+  //have 1.2.3   want  1.1
+  //have 1.1.1   want  1.1
+  //have 1.0.9   want  1.1
+  //have 1.1     want  1.1.1
+
+  for (var ii = 0; ii < want.length; ++ii) {
+    var wantNum = parseInt(want[ii]);
+    var haveNum = have[ii] ? parseInt(have[ii]) : 0
+    if (haveNum < wantNum) {
+      return false;
+    }
+  }
+  return true;
+};
+
+/**
+ * Reads a file, recursively adding files referenced inside.
+ *
+ * Each line of URL is parsed, comments starting with '#' or ';'
+ * or '//' are stripped.
+ *
+ * arguments beginning with -- are extracted
+ *
+ * lines that end in .txt are recursively scanned for more files
+ * other lines are added to the list of files.
+ *
+ * @param {string} url The url of the file to read.
+ * @param {void function(boolean, !Array.<string>)} callback.
+ *      Callback that is called with true for success and an
+ *      array of filenames.
+ * @param {Object} options. Optional options
+ *
+ * Options:
+ *    version: {string} The version of the conformance test.
+ *    Tests with the argument --min-version <version> will
+ *    be ignored version is less then <version>
+ *
+ */
+var getFileList = function(url, callback, options) {
   var files = [];
 
   var getFileListImpl = function(url, callback) {
@@ -161,17 +206,41 @@ var getFileList = function(url, callback) {
                 str[0] != '#' &&
                 str[0] != ";" &&
                 str.substr(0, 2) != "//") {
-              new_url = prefix + str;
-              ++count;
-              getFileListImpl(new_url, function(index) {
-                return function(success, new_files) {
-                  log("got files: " + new_files.length);
-                  if (success) {
-                    files[index] = new_files;
+              var args = str.split(/\s+/);
+              var nonOptions = [];
+              var useTest = true;
+              for (var jj = 0; jj < args.length; ++jj) {
+                var arg = args[jj];
+                if (arg[0] == '-') {
+                  if (arg[1] != '-') {
+                    throw ("bad option at in " + url + ":" + (ii + 1) + ": " + str);
                   }
-                  finish(success);
-                };
-              }(index++));
+                  switch (arg) {
+                    case '--min-version':
+                      ++jj;
+                      console.error(options.version);
+                      useTest = greaterThanOrEqualToVersion(options.version, args[jj]);
+                      break;
+                    default:
+                      throw ("bad unknown option '" + arg + "' at in " + url + ":" + (ii + 1) + ": " + str);
+                  }
+                } else {
+                  nonOptions.push(arg);
+                }
+              }
+              if (useTest) {
+                new_url = prefix + nonOptions.join(" ");
+                ++count;
+                getFileListImpl(new_url, function(index) {
+                  return function(success, new_files) {
+                    log("got files: " + new_files.length);
+                    if (success) {
+                      files[index] = new_files;
+                    }
+                    finish(success);
+                  };
+                }(index++));
+              }
             }
           }
           finish(true);
@@ -217,7 +286,7 @@ var TestFile = function(url) {
   this.url = url;
 };
 
-var TestHarness = function(iframe, filelistUrl, reportFunc) {
+var TestHarness = function(iframe, filelistUrl, reportFunc, options) {
   this.window = window;
   this.iframe = iframe;
   this.reportFunc = reportFunc;
@@ -229,7 +298,7 @@ var TestHarness = function(iframe, filelistUrl, reportFunc) {
     return function(success, files) {
       that.addFiles_(success, files);
     };
-  }());
+  }(), options);
 
 };
 

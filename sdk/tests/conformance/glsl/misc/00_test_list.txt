@@ -37,8 +37,7 @@ shader-with-ivec3-return-value.frag.html
 shader-with-ivec4-return-value.frag.html
 shader-with-limited-indexing.frag.html
 shader-with-line-directive.html
-# enable in 1.0.2
-# shader-with-long-int-constant.html
+--min-version 1.0.2 shader-with-hex-int-constant-macro.html
 shader-with-long-line.html
 shader-with-non-ascii-error.frag.html
 shader-with-precision.frag.html
