@@ -181,13 +181,19 @@ var greaterThanOrEqualToVersion = function(have, want) {
  */
 var getFileList = function(url, callback, options) {
   var files = [];
-  var globalOptions = options;
+
+  var copyObject = function(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  };
 
   var toCamelCase = function(str) {
     return str.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase() });
-  }
+  };
 
-  var getFileListImpl = function(prefix, line, callback) {
+  var globalOptions = copyObject(options);
+  globalOptions.defaultVersion = "1.0";
+
+  var getFileListImpl = function(prefix, line, hierarchicalOptions, callback) {
     var files = [];
 
     var args = line.split(/\s+/);
@@ -215,20 +221,17 @@ var getFileList = function(url, callback, options) {
     }
     var url = prefix + nonOptions.join(" ");
 
-    // If there is no version on the line, for .txt assume the global version
-    // otherwise assume 1.0
-    if (!testOptions.minVersion) {
-      if (url.substr(url.length - 4) == '.txt') {
-        testOptions.minVersion = globalOptions.minVersion || globalOptions.version;
-      } else {
-        testOptions.minVersion = "1.0";
+    if (url.substr(url.length - 4) != '.txt') {
+      var minVersion = testOptions.minVersion;
+      if (!minVersion) {
+        minVersion = hierarchicalOptions.defaultVersion;
       }
-    }
 
-    if (globalOptions.minVersion) {
-      useTest = greaterThanOrEqualToVersion(testOptions.minVersion, globalOptions.minVersion);
-    } else {
-      useTest = greaterThanOrEqualToVersion(globalOptions.version, testOptions.minVersion);
+      if (globalOptions.minVersion) {
+        useTest = greaterThanOrEqualToVersion(minVersion, globalOptions.minVersion);
+      } else {
+        useTest = greaterThanOrEqualToVersion(globalOptions.version, minVersion);
+      }
     }
 
     if (!useTest) {
@@ -237,6 +240,10 @@ var getFileList = function(url, callback, options) {
     }
 
     if (url.substr(url.length - 4) == '.txt') {
+      // If a version was explicity specified pass it down.
+      if (testOptions.minVersion) {
+        hierarchicalOptions.defaultVersion = testOptions.minVersion;
+      }
       loadTextFileAsynchronous(url, function() {
         return function(success, text) {
           if (!success) {
@@ -259,7 +266,7 @@ var getFileList = function(url, callback, options) {
                 str[0] != ";" &&
                 str.substr(0, 2) != "//") {
               ++count;
-              getFileListImpl(prefix, str, function(index) {
+              getFileListImpl(prefix, str, copyObject(hierarchicalOptions), function(index) {
                 return function(success, new_files) {
                   log("got files: " + new_files.length);
                   if (success) {
@@ -290,7 +297,7 @@ var getFileList = function(url, callback, options) {
     }
   };
 
-  getFileListImpl('', url, function(success, files) {
+  getFileListImpl('', url, globalOptions, function(success, files) {
     // flatten
     var flat = [];
     flatten(files);
