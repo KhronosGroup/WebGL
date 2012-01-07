@@ -181,9 +181,61 @@ var greaterThanOrEqualToVersion = function(have, want) {
  */
 var getFileList = function(url, callback, options) {
   var files = [];
+  var globalOptions = options;
 
-  var getFileListImpl = function(url, callback) {
+  var toCamelCase = function(str) {
+    return str.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase() });
+  }
+
+  var getFileListImpl = function(prefix, line, callback) {
     var files = [];
+
+    var args = line.split(/\s+/);
+    var nonOptions = [];
+    var useTest = true;
+    var testOptions = {};
+    for (var jj = 0; jj < args.length; ++jj) {
+      var arg = args[jj];
+      if (arg[0] == '-') {
+        if (arg[1] != '-') {
+          throw ("bad option at in " + url + ":" + (ii + 1) + ": " + str);
+        }
+        var option = arg.substring(2);
+        switch (option) {
+          case 'min-version':
+            ++jj;
+            testOptions[toCamelCase(option)] = args[jj];
+            break;
+          default:
+            throw ("bad unknown option '" + option + "' at in " + url + ":" + (ii + 1) + ": " + str);
+        }
+      } else {
+        nonOptions.push(arg);
+      }
+    }
+    var url = prefix + nonOptions.join(" ");
+
+    // If there is no version on the line, for .txt assume the global version
+    // otherwise assume 1.0
+    if (!testOptions.minVersion) {
+      if (url.substr(url.length - 4) == '.txt') {
+        testOptions.minVersion = globalOptions.minVersion || globalOptions.version;
+      } else {
+        testOptions.minVersion = "1.0";
+      }
+    }
+
+    if (globalOptions.minVersion) {
+      useTest = greaterThanOrEqualToVersion(testOptions.minVersion, globalOptions.minVersion);
+    } else {
+      useTest = greaterThanOrEqualToVersion(globalOptions.version, testOptions.minVersion);
+    }
+
+    if (!useTest) {
+      callback(true, []);
+      return;
+    }
+
     if (url.substr(url.length - 4) == '.txt') {
       loadTextFileAsynchronous(url, function() {
         return function(success, text) {
@@ -206,41 +258,16 @@ var getFileList = function(url, callback, options) {
                 str[0] != '#' &&
                 str[0] != ";" &&
                 str.substr(0, 2) != "//") {
-              var args = str.split(/\s+/);
-              var nonOptions = [];
-              var useTest = true;
-              for (var jj = 0; jj < args.length; ++jj) {
-                var arg = args[jj];
-                if (arg[0] == '-') {
-                  if (arg[1] != '-') {
-                    throw ("bad option at in " + url + ":" + (ii + 1) + ": " + str);
+              ++count;
+              getFileListImpl(prefix, str, function(index) {
+                return function(success, new_files) {
+                  log("got files: " + new_files.length);
+                  if (success) {
+                    files[index] = new_files;
                   }
-                  switch (arg) {
-                    case '--min-version':
-                      ++jj;
-                      console.error(options.version);
-                      useTest = greaterThanOrEqualToVersion(options.version, args[jj]);
-                      break;
-                    default:
-                      throw ("bad unknown option '" + arg + "' at in " + url + ":" + (ii + 1) + ": " + str);
-                  }
-                } else {
-                  nonOptions.push(arg);
-                }
-              }
-              if (useTest) {
-                new_url = prefix + nonOptions.join(" ");
-                ++count;
-                getFileListImpl(new_url, function(index) {
-                  return function(success, new_files) {
-                    log("got files: " + new_files.length);
-                    if (success) {
-                      files[index] = new_files;
-                    }
-                    finish(success);
-                  };
-                }(index++));
-              }
+                  finish(success);
+                };
+              }(index++));
             }
           }
           finish(true);
@@ -257,14 +284,13 @@ var getFileList = function(url, callback, options) {
           }
         }
       }());
-
     } else {
       files.push(url);
       callback(true, files);
     }
   };
 
-  getFileListImpl(url, function(success, files) {
+  getFileListImpl('', url, function(success, files) {
     // flatten
     var flat = [];
     flatten(files);
