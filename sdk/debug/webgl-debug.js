@@ -253,9 +253,11 @@ function makeDebugContext(ctx, opt_onErrorFunc) {
   // Override the getError function with one that returns our saved results.
   wrapper.getError = function() {
     for (var err in glErrorShadow) {
-      if (glErrorShadow[err]) {
-        glErrorShadow[err] = false;
-        return err;
+      if (glErrorShadow.hasOwnProperty(err)) {
+        if (glErrorShadow[err]) {
+          glErrorShadow[err] = false;
+          return err;
+        }
       }
     }
     return ctx.NO_ERROR;
@@ -747,8 +749,8 @@ return {
    * an exception thrown on any GL error you could do this
    *
    *    function throwOnGLError(err, funcName, args) {
-   *      throw WebGLDebugUtils.glEnumToString(err) + " was caused by call to" +
-   *            funcName;
+   *      throw WebGLDebugUtils.glEnumToString(err) +
+   *            " was caused by call to " + funcName;
    *    };
    *
    *    ctx = WebGLDebugUtils.makeDebugContext(
