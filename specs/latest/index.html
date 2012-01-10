@@ -1015,9 +1015,21 @@ for (var i = 0; i < numVertices; i++) {
 
         <ol class="nestedlist">
 
-        <li> If the <a href="#webgl-context-lost-flag">webgl context lost flag</a> is set, and
-        the called method is not in the list of methods with <em>explicit context lost
-        handling</em>, perform the following steps.
+        <li> If the called method is in the list of methods with <em>explicit context lost
+        handling</em>, perform the implementation of the called method, return its result and
+        terminate these steps. </li>
+
+        <li> Let <em>use default return value</em> be false. </li>
+
+        <li> If the <a href="#webgl-context-lost-flag">webgl context lost flag</a> is set,
+        let <em>use default return value</em> be true. </li>
+
+        <li> If any argument to the method is a <code>WebGLObject</code> with
+        its <a href="#webgl-object-invalidated-flag">invalidated flag</a> set, generate
+        an <code>INVALID_OPERATION</code> error and let <em>use default return value</em> be
+        true. </li>
+
+        <li> If <em>use default return value</em> is true, perform the following steps:
 
             <ol class="nestedlist">
 
@@ -1025,23 +1037,6 @@ for (var i = 0; i < numVertices; i++) {
             return null. </li>
 
             <li> Terminate this algorithm without calling the method implementation. </li>
-
-            </ol>
-
-        </li>
-
-        <li> If any argument to the method is a <code>WebGLObject</code> with
-        its <a href="#webgl-object-invalidated-flag">invalidated flag</a> set, perform the following
-        steps.
-
-            <ol class="nestedlist">
-
-            <li> Generate an <code>INVALID_OPERATION</code> error.
-
-            <li> If the return type of the called method is not <code>void</code>, return the same
-            value that would be returned if the context were lost.
-
-            <li> Terminate this algorithm without calling the method implementation.
 
             </ol>
 
@@ -2421,7 +2416,7 @@ for (var i = 0; i < numVertices; i++) {
         <dd>
             If the passed name is longer than the restriction defined
             in <a href="#MAX_LOCATION_LENGTHS">Maximum Uniform and Attribute Location Lengths</a>,
-            an <code>INVALID_VALUE</code> error will be generated. <br><br>
+            generates an <code>INVALID_VALUE</code> error. <br><br>
 
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
@@ -2565,10 +2560,14 @@ for (var i = 0; i < numVertices; i++) {
         <dd>
             If the passed name is longer than the restriction defined
             in <a href="#MAX_LOCATION_LENGTHS">Maximum Uniform and Attribute Location Lengths</a>,
-            an <code>INVALID_VALUE</code> error will be generated and -1 will be returned. <br><br>
+            generates an <code>INVALID_VALUE</code> error and returns -1. <br><br>
 
             Returns -1 if the context's <a href="#webgl-context-lost-flag">webgl context lost
             flag</a> is set. <br><br>
+
+            If the <a href="#webgl-object-invalidated-flag">invalidated flag</a> of the passed
+            program is set, generates an <code>INVALID_OPERATION</code> error and returns
+            -1. <br><br>
 
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
@@ -2604,7 +2603,7 @@ for (var i = 0; i < numVertices; i++) {
 
             If the passed name is longer than the restriction defined
             in <a href="#MAX_LOCATION_LENGTHS">Maximum Uniform and Attribute Location Lengths</a>,
-            an <code>INVALID_VALUE</code> error will be generated and null will be returned. <br><br>
+            generates an <code>INVALID_VALUE</code> error and returns null. <br><br>
 
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
