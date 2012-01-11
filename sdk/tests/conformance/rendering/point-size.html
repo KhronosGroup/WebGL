@@ -43,6 +43,8 @@ found in the LICENSE file.
 
     var gl = initWebGL('testbed', 'vshader', 'fshader', ['pos', 'colorIn'], [0, 0, 0, 1], 1, { antialias: false });
     shouldBeNonNull(gl);
+    shouldBe('gl.getError()', 'gl.NO_ERROR');
+
     gl.disable(gl.BLEND);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
