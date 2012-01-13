@@ -42,7 +42,7 @@ found in the LICENSE file.
     description('Verify GL_VERTEX_PROGRAM_POINT_SIZE is enabled in WebGL');
 
     var gl = initWebGL('testbed', 'vshader', 'fshader', ['pos', 'colorIn'], [0, 0, 0, 1], 1, { antialias: false });
-    shouldBeNonNull(gl);
+    shouldBeNonNull("gl");
     shouldBe('gl.getError()', 'gl.NO_ERROR');
 
     gl.disable(gl.BLEND);
