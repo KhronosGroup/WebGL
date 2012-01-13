@@ -106,8 +106,6 @@ debug("Set up a program to test invalid characters");
 var invalidSet = ['"', '$', '`', '@', '\\', "'"];
 var validUniformName = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_1234567890";
 var validAttribName = "abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-//var validUniformName = "abc";
-//var validAttribName = "def";
 function generateShaderSource(opt_invalidIdentifierChar, opt_invalidCommentChar) {
   var invalidIdentifierString = "";
   var invalidCommentString = "";
@@ -125,7 +123,6 @@ function generateShaderSource(opt_invalidIdentifierChar, opt_invalidCommentChar)
                           + "//.+-/*%<>[](){}^|&~=!:;,?# " + invalidCommentString;
 }
 var vShader = context.createShader(context.VERTEX_SHADER);
-alert(generateShaderSource());
 context.shaderSource(vShader, generateShaderSource());
 context.compileShader(vShader);
 shouldBe("context.getError()", "context.NO_ERROR");
@@ -142,12 +139,8 @@ context.attachShader(program, fShader);
 context.linkProgram(program);
 var linkStatus = context.getProgramParameter(program, context.LINK_STATUS);
 shouldBeTrue("linkStatus");
-if (!linkStatus) {
+if (!linkStatus)
   debug(context.getProgramInfoLog(program));
-  var ext = context.getExtension("WEBGL_debug_shaders");
-  debug(ext.getTranslatedShaderSource(vShader));
-  debug(ext.getTranslatedShaderSource(fShader));
-}
 shouldBe("context.getError()", "context.NO_ERROR");
 context.bindAttribLocation(program, 1, validAttribName);
 shouldBe("context.getError()", "context.NO_ERROR");
