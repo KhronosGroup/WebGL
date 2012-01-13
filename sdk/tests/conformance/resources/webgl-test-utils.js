@@ -579,6 +579,7 @@ var glErrorShouldBe = function(gl, glError, opt_msg) {
  * @param {function(string): void) opt_errorCallback callback for errors. 
  */
 var linkProgram = function(gl, program, opt_errorCallback) {
+  errFn = opt_errorCallback || testFailed;
   // Link the program
   gl.linkProgram(program);
 
@@ -588,7 +589,7 @@ var linkProgram = function(gl, program, opt_errorCallback) {
     // something went wrong with the link
     var error = gl.getProgramInfoLog (program);
 
-    testFailed("Error in program linking:" + error);
+    errFn("Error in program linking:" + error);
 
     gl.deleteProgram(program);
   }
