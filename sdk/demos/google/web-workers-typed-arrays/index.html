@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2011 The Chromium Authors. All rights reserved.
+Copyright (c) 2012 The Chromium Authors. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -30,34 +30,58 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <html>
   <head>
-    <title>NVIDIA Vertex Buffer Object demo</title>
+    <title>Multithreaded NVIDIA Vertex Buffer Object demo</title>
     <script type="text/javascript" src="../../common/webgl-utils.js"></script>
-    <script type="text/javascript" src="../../../debug/webgl-debug.js"></script>
     <script type="text/javascript" src="../resources/o3djs/base.js"></script>
     <script type="text/javascript" src="../resources/fpscounter.js"></script>
-    <script type="text/javascript" src="PeriodicIterator.js"></script>
-    <script type="text/javascript" src="demo.js"></script>
+    <script type="text/javascript" src="calculation_config.js"></script>
+    <script type="text/javascript" src="calculate.js"></script>
+    <script type="text/javascript" src="../nvidia-vertex-buffer-object/PeriodicIterator.js"></script>
+    <script type="text/javascript" src="math-cordic.js"></script>
+    <script type="text/javascript" src="benchmark.js"></script>
+    <script type="text/javascript" src="capabilities.js"></script>
+    <script type="text/javascript" src="demo-multicore.js"></script>
   </head>
-  <body onload="main()">
-<H1>NVIDIA Vertex Buffer Object demo</H1>
-    <div id="container" style="text-align: center">
-      <canvas id="c" width="1024" height="1024">
+<body onload="main()">
+  <H1>Multithreaded NVIDIA Vertex Buffer Object demo</H1>
+  <div id="container" style="text-align: center">
+    <canvas id="c" width="1024" height="1024">
       </canvas>
-    </div>
-    <div>
-'p': toggle points. <br>
-'w': toggle wireframe. <br>
-'h'/'H': increase/decrease high frequency scaling factor. <br>
-'l'/'L': increase/decrease low frequency scaling factor. <br>
-'1'/'2': increase/decrease low frequency. <br>
-'3'/'4': increase/decrease high frequency. <br>
-'5'/'6': increase/decrease low frequency phase rate. <br>
-'7'/'8': increase/decrease high frequency phase rate. <br>
-'t'/'T': increase/decrease mesh density. <br><br>
-    <div id="fps">
-    </div>
-    <div id="vps">
-    </div>
+  </div>
+  <div>
+    <h3>Settings</h3>
+    <input type="checkbox" id="workerBoolean" checked="checked" />
+    Use workers?<br />
+    <input type="checkbox" id="transferrablesBoolean" checked="checked" />
+    Use transferrables (only relevant with workers and if browser supports)?
+    <br />
+    Worker count? <input type="text" id="workerCount" value="3" /><br /><br />
+    <input type="submit" value="use settings" onclick="updateSettings();" />
+    <br /><br />
+
+    <h3>Keyboard Controls</h3>
+    'p': toggle points. <br>
+    'w': toggle wireframe. <br>
+    'h'/'H': increase/decrease high frequency scaling factor. <br>
+    'l'/'L': increase/decrease low frequency scaling factor. <br>
+    '1'/'2': increase/decrease low frequency. <br>
+    '3'/'4': increase/decrease high frequency. <br>
+    '5'/'6': increase/decrease low frequency phase rate. <br>
+    '7'/'8': increase/decrease high frequency phase rate. <br>
+    't'/'T': increase/decrease mesh density. <br /><br />
+
+    <h3>Stats</h3>
+    <div id="fps">calculating frames per second...</div>
+    <div id="vps">calculating vertices generated per second...</div>
+
+    <h3>Benchmark</h3>
+    <p>This benchmark will run the demo in a number of configurations and print
+       the results below.</p>
+     <p>(If, after benchmarking, you want to go back to normal
+       fiddling first refresh the page).</p>
+    <input type="button" value="Benchmark" onclick="start_benchmark()" />
+    <div id="benchresults"></div>
+
     <script id="vertexShader" type="x-glsl-shader/x-vertex">
 // Per-vertex phong shader
 uniform mat4 worldViewProjection;
@@ -116,5 +140,5 @@ void main() {
   gl_FragColor = v_color;
 }
     </script>
-  </body>
+</body>
 </html>

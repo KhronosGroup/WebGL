@@ -127,61 +127,6 @@ function output(str) {
 }
 
 //----------------------------------------------------------------------
-// PeriodicIterator
-//
-
-function PeriodicIterator(arraySize,
-        period,
-        initialOffset,
-        delta) {
-    if (arraySize != undefined) {
-        // floating-point steps-per-increment
-        var arrayDelta =  arraySize * (delta / period);
-        // fraction bits == 16
-        // fixed-point steps-per-increment
-        this.increment = Math.floor(arrayDelta * (1<<16)) | 0;
-
-        // floating-point initial index
-        var offset = arraySize * (initialOffset / period);
-        // fixed-point initial index
-        this.initOffset = Math.floor(offset * (1<<16)) | 0;
-
-        var mask = 0;
-        var i = 20; // array should be reasonably sized...
-        while ((arraySize & (1<<i)) == 0) {
-            i--;
-        }
-        this.arraySizeMask = (1<<i)-1;
-        this.index = this.initOffset;
-    }
-}
-
-PeriodicIterator.prototype.copy = function() {
-    var res = new PeriodicIterator();
-    res.increment = this.increment;
-    res.initOffset = this.initOffset;
-    res.arraySizeMask = this.arraySizeMask;
-    res.index = this.index;
-    return res;
-}
-
-PeriodicIterator.prototype.getIndex = function() {
-    return (this.index >> 16) & this.arraySizeMask;
-}
-
-PeriodicIterator.prototype.incr = function() {
-    this.index += this.increment;
-}
-
-PeriodicIterator.prototype.decr = function() {
-    this.index -= this.increment;
-}
-
-PeriodicIterator.prototype.reset = function() {
-    this.index = this.initOffset;
-}
-
-//----------------------------------------------------------------------
 // Keyboard input
 //
 
