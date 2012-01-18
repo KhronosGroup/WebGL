@@ -52,7 +52,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <h3>Settings</h3>
     <input type="checkbox" id="workerBoolean" checked="checked" />
     Use workers?<br />
-    <input type="checkbox" id="transferrablesBoolean" checked="checked" />
+    <input type="checkbox" id="transferablesBoolean" checked="checked" />
     Use transferrables (only relevant with workers and if browser supports)?
     <br />
     Worker count? <input type="text" id="workerCount" value="3" /><br /><br />
@@ -80,7 +80,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
      <p>(If, after benchmarking, you want to go back to normal
        fiddling first refresh the page).</p>
     <input type="button" value="Benchmark" onclick="start_benchmark()" />
-    <div id="benchresults"></div>
+    <div id="benchresults">Results will appear here</div>
 
     <script id="vertexShader" type="x-glsl-shader/x-vertex">
 // Per-vertex phong shader

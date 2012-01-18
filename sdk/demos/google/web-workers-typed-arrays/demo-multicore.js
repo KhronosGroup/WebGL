@@ -257,7 +257,7 @@ function init() {
 
     // Spawn workers if multithreading
     if (config.multithreaded) {
-        setUpWorkers(THREAD_POOL_SIZE);
+        setUpWorkers(config.numWorkers);
     }
 
     // Start out animating
@@ -270,41 +270,43 @@ function init() {
 /**
  * Reads settings from the page and restarts drawing.
  */
-function updateSettings() {
+function resetSettings(newConfig) {
 
     // clear any pending animations left over from old requestAnimFrame events
     pendingAnimationQueue = [];
+    config.multithreaded = newConfig.multithreaded;
+    config.useTransferables = newConfig.useTransferables;
+    config.numWorkers = newConfig.numWorkers;
 
-    // Turn multithreading on or off
-    if (document.querySelector('#workerBoolean').checked) {
-        config.multithreaded = true;
-    } else {
-        config.multithreaded = false;
-    }
     console.log('multithreaded? ' + config.multithreaded);
 
-    // Turn transferables on or off
-    if (supportsTransferables() &&
-          document.querySelector('#transferablesBoolean').checked) {
-        config.useTransferables = true;
-    } else {
-        config.useTransferables = false;
-    }
     console.log('using transferables? ' + config.useTransferables);
 
-    // Make sure the right number of workers are spawned
-    THREAD_POOL_SIZE = 1;
-    if (config.multithreaded) {
-        var count = document.querySelector('#workerCount').value;
-        if (count) {
-            THREAD_POOL_SIZE = count;
-        }
-    }
-    console.log('thread pool size: ' + THREAD_POOL_SIZE);
+    console.log('thread pool size: ' + config.numWorkers);
 
     // re-init, since we can't make these changes in the middle of rendering
     init();
     draw();
+}
+
+/**
+ * Update settings from state of checkboxes on the page
+ */
+function updateSettings() {
+    var newConfig =
+        {   multithreaded : document.querySelector('#workerBoolean').checked,
+            useTransferables : supportsTransferables() && document.querySelector('#transferablesBoolean').checked
+        };
+    if (newConfig.multithreaded) {
+        var count = document.querySelector('#workerCount').value;
+        if (count) {
+            newConfig.numWorkers = count;
+        }
+        else {
+            newConfig.numWorkers = 3;
+        }
+    }
+    resetSettings(newConfig);
 }
 
 /**
@@ -703,7 +705,7 @@ function setUpWorkers(count) {
 
     // Set up new workers
     console.log('spawning ' + count + ' worker(s)');
-    if (THREAD_POOL_SIZE > config.tileSize / constants.STRIP_SIZE) {
+    if (config.numWorkers > config.tileSize / constants.STRIP_SIZE) {
         console.error('Warning! More threads than slabs to compute!' +
                 'Probably a misconfiguration!');
     }

@@ -34,47 +34,47 @@ function benchmark() {
     this.tests = [{
         multithreaded: false,
         useTransferables: false,
-        workerCount: null,
+        numWorkers: null,
         framerate: null
     }, {
         multithreaded: true,
         useTransferables: false,
-        workerCount: 1,
+        numWorkers: 1,
         framerate: null
     }, {
         multithreaded: true,
         useTransferables: false,
-        workerCount: 2,
+        numWorkers: 2,
         framerate: null
     }, {
         multithreaded: true,
         useTransferables: false,
-        workerCount: 4,
+        numWorkers: 4,
         framerate: null
     }, {
         multithreaded: true,
         useTransferables: false,
-        workerCount: 6,
+        numWorkers: 6,
         framerate: null
     },{
         multithreaded: true,
         useTransferables: true,
-        workerCount: 1,
+        numWorkers: 1,
         framerate: null
     }, {
         multithreaded: true,
         useTransferables: true,
-        workerCount: 2,
+        numWorkers: 2,
         framerate: null
     }, {
         multithreaded: true,
         useTransferables: true,
-        workerCount: 4,
+        numWorkers: 4,
         framerate: null
     }, {
         multithreaded: true,
         useTransferables: true,
-        workerCount: 6,
+        numWorkers: 6,
         framerate: null
     }];
 }
@@ -111,13 +111,9 @@ benchmark.prototype.UPDATE_COUNT = 3;
  */
 benchmark.prototype.runTest_ = function(test) {
     console.log('running benchmark');
-    // set up the configuration environment for this test run
-    document.querySelector('#transferablesBoolean').checked =
-        test.useTransferables;
-    document.querySelector('#workerBoolean').checked = test.multithreaded;
-    document.querySelector('#workerCount').value = test.workerCount;
+    document.querySelector('#benchresults').innerHTML = "Running test " + this.currentTest_;
     // run the test
-    updateSettings();
+    resetSettings(test);
 };
 
 /**
@@ -133,7 +129,7 @@ benchmark.prototype.printResults_ = function() {
         output.push('Multithreaded: ' + finishedTest.multithreaded + '<br />');
         output.push('Use transferables: ' + finishedTest.useTransferables +
                 '<br />');
-        output.push('Worker count: ' + finishedTest.workerCount + '<br />');
+        output.push('Worker count: ' + finishedTest.numWorkers + '<br />');
         output.push('Framerate: ' + finishedTest.framerate + '<br />');
     }
     document.querySelector('#benchresults').innerHTML = output.join('');
