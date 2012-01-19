@@ -177,6 +177,16 @@ function getFlag(key) {
 // Main demo
 //
 
+function initUI() {
+    var useTransferablesCheckbox = document.querySelector('#transferablesBoolean');
+    if (supportsTransferables()) {
+        useTransferablesCheckbox.checked = true;
+    } else {
+        useTransferablesCheckbox.checked = false;
+        useTransferablesCheckbox.disabled = true;
+    }
+}
+
 /**
  * Sets up the frame rate counter and keyboard handling, then kicks off initial
  * configuration load and animation loop.
@@ -192,6 +202,7 @@ function main() {
     document.onkeypress = onKeyPress;
 
     // do initial configuration load
+    initUI();
     updateSettings();
 }
 
@@ -306,6 +317,8 @@ function updateSettings() {
             newConfig.numWorkers = 3;
         }
     }
+    document.querySelector('#fps').innerHTML = "calculating frames per second...";
+    document.querySelector('#vps').innerHTML = "calculating vertices generated per second..."
     resetSettings(newConfig);
 }
 
