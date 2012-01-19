@@ -32,7 +32,6 @@ self.importScripts('../nvidia-vertex-buffer-object/PeriodicIterator.js');
 self.importScripts('calculate.js');
 self.importScripts('calculation_config.js');
 self.importScripts('capabilities.js');
-self.importScripts('math-cordic.js');
 
 // utility function to pass strings back to be logged
 function log(string, conf) {
@@ -53,11 +52,17 @@ function result(conf) {
   }
 }
 
-self.onmessage = function(event) {
-  var conf = event.data;
+var precalc;
 
+self.onmessage = function(event) {
+  if (event.data.id == "precalc") {
+      precalc = event.data.precalc;
+      return;
+  }
+
+  var conf = event.data;
   reconstructPostTransit(conf);
-  calculate(conf);
+  calculate(conf, precalc);
 
   prepForTransit(conf);
   result(conf);

@@ -63,7 +63,7 @@
  * @param {Object}
  *              conf the calculation config object holding data to parse.
  */
-function calculate(conf) {
+function calculate(conf, precalc) {
 
   var loX = new PeriodicIterator(conf.constants.SIN_ARRAY_SIZE,
           2 * Math.PI,
@@ -83,6 +83,8 @@ function calculate(conf) {
   var ycoslo_tmp = conf.arrays.ycoslo;
   var ycoshi_tmp = conf.arrays.ycoshi;
   var xyArray_tmp = conf.arrays.xyArray;
+  var sinArray_tmp = precalc.sinArray;
+  var cosArray_tmp = precalc.cosArray;
 
   for (var i = conf.config.tileSize; --i >= 0; ) {
       var x = xyArray_tmp[i];
@@ -90,12 +92,7 @@ function calculate(conf) {
       var hiXIndex = hiX.getIndex();
 
       var jOffset = (conf.constants.STRIP_SIZE - 1) * conf.slab;
-      var nx = (locoef_tmp *
-              -Math.cos((loXIndex / conf.constants.SIN_ARRAY_SIZE) * 2 *
-                      Math.PI)) +
-              (hicoef_tmp *
-              -Math.cos((hiXIndex / conf.constants.SIN_ARRAY_SIZE) * 2 *
-                      Math.PI));
+      var nx = (locoef_tmp * -cosArray_tmp[loXIndex] + (hicoef_tmp *-cosArray_tmp[hiXIndex] ));
 
       var v = conf.clientArray;
 
@@ -105,13 +102,8 @@ function calculate(conf) {
 
           v[vertexIndex] = x;
           v[vertexIndex + 1] = y;
-          v[vertexIndex + 2] = (locoef_tmp *
-                  (cordicSin((loXIndex / conf.constants.SIN_ARRAY_SIZE) * 2 *
-                  Math.PI) +
-                  ysinlo_tmp[j]) +
-                  hicoef_tmp *
-                  (cordicSin((hiXIndex / conf.constants.SIN_ARRAY_SIZE) * 2 *
-                  Math.PI) +
+          v[vertexIndex + 2] = (locoef_tmp * (sinArray_tmp[loXIndex] + ysinlo_tmp[j]) +
+                  hicoef_tmp * (sinArray_tmp[hiXIndex] +
                   ysinhi_tmp[j]));
           v[vertexIndex + 3] = nx;
           v[vertexIndex + 4] = ny;

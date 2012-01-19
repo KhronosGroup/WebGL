@@ -121,6 +121,17 @@ var availableWorkers = null;
  */
 var slabComputeQueue = null;
 var allSlabs = null;
+var precalc = {
+        sinArray : new Float32Array(constants.SIN_ARRAY_SIZE),
+        cosArray : new Float32Array(constants.SIN_ARRAY_SIZE)
+    };
+// precalculate sin and cos
+for (var i = 0; i < constants.SIN_ARRAY_SIZE; i++) {
+    var step = i * 2 * Math.PI / constants.SIN_ARRAY_SIZE;
+    precalc.sinArray[i] = Math.sin(step);
+    precalc.cosArray[i] = Math.cos(step);
+}
+
 /**
  * Number of workers we're still waiting on before we can draw a frame
  */
@@ -493,14 +504,14 @@ function setupSliceInfo(gl, slabInfo) {
 function computeSlabInfoArrays(slabInfo, loY, hiY) {
     for (var jj = constants.STRIP_SIZE; --jj >= 0;) {
         slabInfo.conf.arrays.ysinlo[jj] =
-            slabInfo.conf.arrays.sinArray[loY.getIndex()];
+            precalc.sinArray[loY.getIndex()];
         slabInfo.conf.arrays.ycoslo[jj] =
-            slabInfo.conf.arrays.cosArray[loY.getIndex()];
+            precalc.cosArray[loY.getIndex()];
         loY.incr();
         slabInfo.conf.arrays.ysinhi[jj] =
-            slabInfo.conf.arrays.sinArray[hiY.getIndex()];
+            precalc.sinArray[hiY.getIndex()];
         slabInfo.conf.arrays.ycoshi[jj] =
-            slabInfo.conf.arrays.cosArray[hiY.getIndex()];
+            precalc.cosArray[hiY.getIndex()];
         hiY.incr();
     }
     loY.decr();
@@ -649,7 +660,7 @@ function startCalculation() {
         }
         // pull a slab off the queue
         var slabInfo = slabComputeQueue.shift();
-        calculate(slabInfo.conf);
+        calculate(slabInfo.conf, precalc);
         slabDone();
         startCalculation(); // recurse, to pull another worker off the queue
     }
@@ -727,6 +738,7 @@ function setUpWorkers(count) {
         newWorker.onmessage = processWorker;
         newWorker.globalID = globalCounter++;
         console.log('creating worker #' + newWorker.globalID);
+        newWorker.postMessage({id:"precalc", precalc:precalc});
         allWorkers.push(newWorker);
         availableWorkers.push(newWorker);
     }
@@ -762,23 +774,11 @@ function setUpSlabs(numSlabs) {
             ycoslo: new Float32Array(constants.STRIP_SIZE),
             ysinhi: new Float32Array(constants.STRIP_SIZE),
             ycoshi: new Float32Array(constants.STRIP_SIZE),
-            sinArray: null,
-            cosArray: null
         };
 
         newSlab.conf.arrays.xyArray = new Float32Array(config.tileSize);
         for (var i = 0; i < config.tileSize; i++) {
             newSlab.conf.arrays.xyArray[i] = i / (config.tileSize - 1.0) - 0.5;
-        }
-
-        newSlab.conf.arrays.sinArray = new Float32Array(
-                constants.SIN_ARRAY_SIZE);
-        newSlab.conf.arrays.cosArray = new Float32Array(
-                constants.SIN_ARRAY_SIZE);
-        for (var i = 0; i < constants.SIN_ARRAY_SIZE; i++) {
-            var step = i * 2 * Math.PI / constants.SIN_ARRAY_SIZE;
-            newSlab.conf.arrays.sinArray[i] = Math.sin(step);
-            newSlab.conf.arrays.cosArray[i] = Math.cos(step);
         }
 
         allSlabs[slab] = newSlab;
