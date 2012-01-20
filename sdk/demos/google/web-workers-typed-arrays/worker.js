@@ -30,7 +30,6 @@
 
 self.importScripts('../nvidia-vertex-buffer-object/PeriodicIterator.js');
 self.importScripts('calculate.js');
-self.importScripts('calculation_config.js');
 self.importScripts('capabilities.js');
 
 // utility function to pass strings back to be logged
@@ -46,25 +45,26 @@ function result(conf) {
     // back the clientArray's buffer (it'll get re-wrapped to a typed array on
     // the other side)
     self.postMessage({type: 'result', sender: conf.slab, data: conf},
-                conf.transferables);
+                [conf.clientArray.buffer]);
   } else {
     self.postMessage({type: 'result', sender: conf.slab, data: conf});
   }
 }
 
 var precalc;
+var slabData;
 
 self.onmessage = function(event) {
   if (event.data.id == "precalc") {
       precalc = event.data.precalc;
       return;
+  } else if (event.data.id == "slabData") {
+      slabData = event.data.slabData;
+      return;
   }
-
   var conf = event.data;
-  reconstructPostTransit(conf);
-  calculate(conf, precalc);
+  calculate(conf, precalc, slabData);
 
-  prepForTransit(conf);
   result(conf);
 };
 

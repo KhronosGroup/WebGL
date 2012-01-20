@@ -123,7 +123,8 @@ var slabComputeQueue = null;
 var allSlabs = null;
 var precalc = {
         sinArray : new Float32Array(constants.SIN_ARRAY_SIZE),
-        cosArray : new Float32Array(constants.SIN_ARRAY_SIZE)
+        cosArray : new Float32Array(constants.SIN_ARRAY_SIZE),
+        constants : constants
     };
 // precalculate sin and cos
 for (var i = 0; i < constants.SIN_ARRAY_SIZE; i++) {
@@ -131,6 +132,8 @@ for (var i = 0; i < constants.SIN_ARRAY_SIZE; i++) {
     precalc.sinArray[i] = Math.sin(step);
     precalc.cosArray[i] = Math.cos(step);
 }
+
+var g_slabData;
 
 /**
  * Number of workers we're still waiting on before we can draw a frame
@@ -501,17 +504,13 @@ function setupSliceInfo(gl, slabInfo) {
  * @param {PeriodicIterator}
  *            hiY config.phase2 periodic iterator.
  */
-function computeSlabInfoArrays(slabInfo, loY, hiY) {
+function computeSlabDataArrays(curSlabDataArrays, loY, hiY) {
     for (var jj = constants.STRIP_SIZE; --jj >= 0;) {
-        slabInfo.conf.arrays.ysinlo[jj] =
-            precalc.sinArray[loY.getIndex()];
-        slabInfo.conf.arrays.ycoslo[jj] =
-            precalc.cosArray[loY.getIndex()];
+        curSlabDataArrays.ysinlo[jj] = precalc.sinArray[loY.getIndex()];
+        curSlabDataArrays.ycoslo[jj] = precalc.cosArray[loY.getIndex()];
         loY.incr();
-        slabInfo.conf.arrays.ysinhi[jj] =
-            precalc.sinArray[hiY.getIndex()];
-        slabInfo.conf.arrays.ycoshi[jj] =
-            precalc.cosArray[hiY.getIndex()];
+        curSlabDataArrays.ysinhi[jj] = precalc.sinArray[hiY.getIndex()];
+        curSlabDataArrays.ycoshi[jj] = precalc.cosArray[hiY.getIndex()];
         hiY.incr();
     }
     loY.decr();
@@ -607,7 +606,6 @@ function processWorker(event) {
     case 'result':
         var slabInfo = allSlabs[msg.sender];
         slabInfo.conf = msg.data;
-        reconstructPostTransit(slabInfo.conf);
 
         // this worker can now be freed to do something else
         availableWorkers.push(worker);
@@ -660,7 +658,7 @@ function startCalculation() {
         }
         // pull a slab off the queue
         var slabInfo = slabComputeQueue.shift();
-        calculate(slabInfo.conf, precalc);
+        calculate(slabInfo.conf, precalc, g_slabData);
         slabDone();
         startCalculation(); // recurse, to pull another worker off the queue
     }
@@ -675,14 +673,12 @@ function startCalculation() {
         var slabInfo = slabComputeQueue.shift();
         // pull a worker to work on this slab
         var worker = availableWorkers.shift();
-        // Start the worker processing
-        prepForTransit(slabInfo.conf);
         // Use the webkit postMessage if its available
         worker.postMessage = worker.webkitPostMessage || worker.postMessage;
         // If the browser supports transferables and we're configured to use
         // them, do so.
         if (config.useTransferables) {
-            worker.postMessage(slabInfo.conf, slabInfo.conf.transferables);
+            worker.postMessage(slabInfo.conf, [slabInfo.conf.clientArray.buffer]);
         } else {
             worker.postMessage(slabInfo.conf);
         }
@@ -765,24 +761,7 @@ function setUpSlabs(numSlabs) {
         newSlab.conf = {};
         newSlab.conf.slab = slab;
 
-        // set up the constants for this object
-        newSlab.conf.constants = constants;
-
-        // set up the arrays for this worker
-        newSlab.conf.arrays = {
-            ysinlo: new Float32Array(constants.STRIP_SIZE),
-            ycoslo: new Float32Array(constants.STRIP_SIZE),
-            ysinhi: new Float32Array(constants.STRIP_SIZE),
-            ycoshi: new Float32Array(constants.STRIP_SIZE),
-        };
-
-        newSlab.conf.arrays.xyArray = new Float32Array(config.tileSize);
-        for (var i = 0; i < config.tileSize; i++) {
-            newSlab.conf.arrays.xyArray[i] = i / (config.tileSize - 1.0) - 0.5;
-        }
-
         allSlabs[slab] = newSlab;
-
     }
 }
 
@@ -828,10 +807,30 @@ function draw() {
         slabComputeQueue.push(slabInfo);
     });
 
+    g_slabData = {
+        xyArray : new Float32Array(config.tileSize),
+        arrays : Array(numSlabs)
+    };
+    for (var i = 0; i < config.tileSize; i++) {
+        g_slabData.xyArray[i] = i / (config.tileSize - 1.0) - 0.5;
+    }
+
     for (var slab = numSlabs; --slab >= 0;) {
-        // first stage of drawing calculations, which must be done in reverse
-        // order
-        computeSlabInfoArrays(slabComputeQueue[slab], loY, hiY);
+        g_slabData.arrays[slab] = {
+            ysinlo: new Float32Array(constants.STRIP_SIZE),
+            ycoslo: new Float32Array(constants.STRIP_SIZE),
+            ysinhi: new Float32Array(constants.STRIP_SIZE),
+            ycoshi: new Float32Array(constants.STRIP_SIZE),
+        };
+
+        var curSlabDataArrays = g_slabData.arrays[slab];
+        computeSlabDataArrays(curSlabDataArrays, loY, hiY);
+    }
+
+    if (config.multithreaded) {
+        allWorkers.forEach(function(w) {
+            w.postMessage({id:"slabData", slabData:g_slabData});
+        });
     }
 
     // set pendingWorkers to be the number of slabs so we know how many we need

@@ -56,6 +56,7 @@
  *
  */
 
+
 /**
  * Does the heavy lifting of calculating the clientArray buffer. The only thing
  * this modifies is conf.clientArray; everything else is read-only.
@@ -63,13 +64,13 @@
  * @param {Object}
  *              conf the calculation config object holding data to parse.
  */
-function calculate(conf, precalc) {
+function calculate(conf, precalc, slabData) {
 
-  var loX = new PeriodicIterator(conf.constants.SIN_ARRAY_SIZE,
+  var loX = new PeriodicIterator(precalc.constants.SIN_ARRAY_SIZE,
           2 * Math.PI,
           conf.config.phase,
           (1.0 / conf.config.tileSize) * conf.config.lofreq * Math.PI);
-  var hiX = new PeriodicIterator(conf.constants.SIN_ARRAY_SIZE,
+  var hiX = new PeriodicIterator(precalc.constants.SIN_ARRAY_SIZE,
           2 * Math.PI,
           conf.config.phase2,
           (1.0 / conf.config.tileSize) * conf.config.hifreq * Math.PI);
@@ -78,11 +79,11 @@ function calculate(conf, precalc) {
 
   var locoef_tmp = conf.config.locoef;
   var hicoef_tmp = conf.config.hicoef;
-  var ysinlo_tmp = conf.arrays.ysinlo;
-  var ysinhi_tmp = conf.arrays.ysinhi;
-  var ycoslo_tmp = conf.arrays.ycoslo;
-  var ycoshi_tmp = conf.arrays.ycoshi;
-  var xyArray_tmp = conf.arrays.xyArray;
+  var ysinlo_tmp = slabData.arrays[conf.slab].ysinlo;
+  var ysinhi_tmp = slabData.arrays[conf.slab].ysinhi;
+  var ycoslo_tmp = slabData.arrays[conf.slab].ycoslo;
+  var ycoshi_tmp = slabData.arrays[conf.slab].ycoshi;
+  var xyArray_tmp = slabData.xyArray;
   var sinArray_tmp = precalc.sinArray;
   var cosArray_tmp = precalc.cosArray;
 
@@ -91,12 +92,12 @@ function calculate(conf, precalc) {
       var loXIndex = loX.getIndex();
       var hiXIndex = hiX.getIndex();
 
-      var jOffset = (conf.constants.STRIP_SIZE - 1) * conf.slab;
+      var jOffset = (precalc.constants.STRIP_SIZE - 1) * conf.slab;
       var nx = (locoef_tmp * -cosArray_tmp[loXIndex] + (hicoef_tmp *-cosArray_tmp[hiXIndex] ));
 
       var v = conf.clientArray;
 
-      for (var j = conf.constants.STRIP_SIZE; --j >= 0; ) {
+      for (var j = precalc.constants.STRIP_SIZE; --j >= 0; ) {
           var y = xyArray_tmp[j + jOffset];
           var ny = locoef_tmp * -ycoslo_tmp[j] + hicoef_tmp * -ycoshi_tmp[j];
 
