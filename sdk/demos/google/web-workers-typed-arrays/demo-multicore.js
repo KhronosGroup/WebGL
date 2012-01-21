@@ -84,7 +84,7 @@ var MULTIPLIER = 2;
  * can only be as big as the number of slabs, which is tileSize / STRIP_SIZE.
  * Beyond that you spawn useless workers.
  */
-var THREAD_POOL_SIZE = 3; //
+var THREAD_POOL_SIZE = 3; 
 
 /**
  * Constants that are shared between this thread and others
@@ -113,14 +113,13 @@ var primitive = 0; // Primitive: gl.TRIANGLE_STRIP, gl.LINE_STRIP or gl.POINTS
 /**
  * Calculation-related global variables
  */
-var recomputeElements = false;
 var allWorkers = null;
-var availableWorkers = null;
 /**
  * Queue of slabs to be computed
  */
 var slabComputeQueue = null;
 var allSlabs = null;
+var allSlabsReady = null;
 var precalc = {
         sinArray : new Float32Array(constants.SIN_ARRAY_SIZE),
         cosArray : new Float32Array(constants.SIN_ARRAY_SIZE),
@@ -199,6 +198,7 @@ function initUI() {
         useTransferablesCheckbox.checked = false;
         useTransferablesCheckbox.disabled = true;
     }
+    document.querySelector('#workerCount').value = THREAD_POOL_SIZE;
 }
 
 /**
@@ -276,7 +276,7 @@ function init() {
     allocateBigVBO(gl);
 
     // The first time around we need to recompute a bunch of indices
-    recomputeElements = true;
+    allSlabs = null;
 
     primitive = gl.TRIANGLE_STRIP;
 
@@ -302,6 +302,7 @@ function resetSettings(newConfig) {
     config.multithreaded = newConfig.multithreaded;
     config.useTransferables = newConfig.useTransferables;
     config.numWorkers = newConfig.numWorkers;
+    g_fpsCounter.reset();
 
     console.log('multithreaded? ' + config.multithreaded);
 
@@ -417,14 +418,14 @@ function onKeyPress(event) {
         // if(config_const.tileSize < 864) {
         if (config.tileSize < 864) { // 432
             config.tileSize += constants.STRIP_SIZE;
-            recomputeElements = true;
+            allSlabs = null;
         }
     }
 
     if ('T' == k) {
         if (config.tileSize > constants.STRIP_SIZE) {
             config.tileSize -= constants.STRIP_SIZE;
-            recomputeElements = true;
+            allSlabs = null;
         }
     }
 
@@ -561,7 +562,7 @@ function reanimate() {
         if (g_fpsCounter.update()) {
             // we've updated the framerate
             update_count++;
-            if(bench && update_count == bench.UPDATE_COUNT) {
+            if(bench && update_count >= bench.UPDATE_COUNT) {
                 console.log('updating benchmark');
                 update_count = 0;
                 bench.update_benchmark();
@@ -576,14 +577,8 @@ function reanimate() {
             }
         }
     }
-    pendingAnimationQueue.push(draw);
-    window.requestAnimFrame(function() {
-        if (pendingAnimationQueue.length != 0) {
-            func = pendingAnimationQueue.shift();
-            func();
-        }
-    }, g_canvas);
-}
+    draw();
+  }
 
 /**
  * Callback function to asynchronously complete the drawing process. This
@@ -607,12 +602,6 @@ function processWorker(event) {
         var slabInfo = allSlabs[msg.sender];
         slabInfo.conf = msg.data;
 
-        // this worker can now be freed to do something else
-        availableWorkers.push(worker);
-
-        // try to make the worker do something else
-        startCalculation();
-
         // increment slab
         slabDone();
 
@@ -627,20 +616,23 @@ function processWorker(event) {
  * completed client arrays; when all workers are finished).
  */
 function drawAllSlabsAndReAnimate() {
-
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    phongShader.bind();
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, bigVBO);
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elementVBO);
-    gl.enableVertexAttribArray(phongShader.gPositionLoc);
-    gl.enableVertexAttribArray(phongShader.gNormalLoc);
-
-    allSlabs.forEach(function(slabInfo) {
-        drawSlabElements(slabInfo);
-    });
-
+    var tmp = allSlabs;
+    allSlabs = allSlabsReady;
+    allSlabsReady = tmp;
     reanimate();
+    if (allSlabsReady) {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        phongShader.bind();
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, bigVBO);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elementVBO);
+        gl.enableVertexAttribArray(phongShader.gPositionLoc);
+        gl.enableVertexAttribArray(phongShader.gNormalLoc);
+
+        allSlabsReady.forEach(function(slabInfo) {
+            drawSlabElements(slabInfo);
+        });
+    }
 }
 
 /**
@@ -650,42 +642,34 @@ function drawAllSlabsAndReAnimate() {
  * return.
  */
 function startCalculation() {
-    // Option 1: blocking calculate
-    if (!config.multithreaded) {
-        // if the queue is empty, return
-        if (slabComputeQueue.length == 0) {
-            return;
+    var workerIndex = 0;
+    for (var slabIndex = 0; slabIndex < slabComputeQueue.length; slabIndex++) {
+        // Option 1: blocking calculate
+        if (!config.multithreaded) {
+            // pull a slab off the queue
+            var slabInfo = slabComputeQueue[slabIndex];
+            calculate(slabInfo.conf, precalc, g_slabData);
+            slabDone();
         }
-        // pull a slab off the queue
-        var slabInfo = slabComputeQueue.shift();
-        calculate(slabInfo.conf, precalc, g_slabData);
-        slabDone();
-        startCalculation(); // recurse, to pull another worker off the queue
+        // Option 2: use the thread pool to calculate
+        else {
+            // pull a slab off the queue
+            var slabInfo = slabComputeQueue[slabIndex];
+            // pull a worker to work on this slab
+            var worker = allWorkers[workerIndex++];
+            if (workerIndex >= allWorkers.length) workerIndex = 0;
+            // Use the webkit postMessage if its available
+            worker.postMessage = worker.webkitPostMessage || worker.postMessage;
+            // If the browser supports transferables and we're configured to use
+            // them, do so.
+            if (config.useTransferables) {
+                worker.postMessage(slabInfo.conf, [slabInfo.conf.clientArray.buffer]);
+            } else {
+                worker.postMessage(slabInfo.conf);
+            }
+        }
     }
-    // Option 2: use the thread pool to calculate
-    else {
-        // if the queue is empty, return
-        if (slabComputeQueue.length == 0 || availableWorkers.length == 0) {
-            // console.log('nothing to do!');
-            return;
-        }
-        // pull a slab off the queue
-        var slabInfo = slabComputeQueue.shift();
-        // pull a worker to work on this slab
-        var worker = availableWorkers.shift();
-        // Use the webkit postMessage if its available
-        worker.postMessage = worker.webkitPostMessage || worker.postMessage;
-        // If the browser supports transferables and we're configured to use
-        // them, do so.
-        if (config.useTransferables) {
-            worker.postMessage(slabInfo.conf, [slabInfo.conf.clientArray.buffer]);
-        } else {
-            worker.postMessage(slabInfo.conf);
-        }
-        // recurse, starting more workers if possible
-        startCalculation();
-    }
-
+    slabComputeQueue = [];
 }
 
 /**
@@ -698,7 +682,13 @@ function slabDone() {
     pendingSlabs--;
 
     if (pendingSlabs == 0) {
-        drawAllSlabsAndReAnimate();
+        pendingAnimationQueue.push(drawAllSlabsAndReAnimate);
+        window.requestAnimFrame(function() {
+            if (pendingAnimationQueue.length != 0) {
+                func = pendingAnimationQueue.shift();
+                func();
+            }
+        }, g_canvas);
     }
 }
 
@@ -721,7 +711,6 @@ function setUpWorkers(count) {
         worker.terminate();
     });
     allWorkers = [];
-    availableWorkers = [];
 
     // Set up new workers
     console.log('spawning ' + count + ' worker(s)');
@@ -736,7 +725,6 @@ function setUpWorkers(count) {
         console.log('creating worker #' + newWorker.globalID);
         newWorker.postMessage({id:"precalc", precalc:precalc});
         allWorkers.push(newWorker);
-        availableWorkers.push(newWorker);
     }
 }
 
@@ -783,10 +771,9 @@ function draw() {
 
     var numSlabs = config.tileSize / constants.STRIP_SIZE;
 
-    if (recomputeElements) {
+    if (allSlabs == null) {
         setUpSlabs(numSlabs);
         computeElements(gl);
-        recomputeElements = false;
     }
 
     var loY = new PeriodicIterator(constants.SIN_ARRAY_SIZE, 2 * Math.PI,
@@ -829,7 +816,7 @@ function draw() {
 
     if (config.multithreaded) {
         allWorkers.forEach(function(w) {
-            w.postMessage({id:"slabData", slabData:g_slabData});
+            w.postMessage({id:"slabData", slabData:g_slabData,config:config});
         });
     }
 

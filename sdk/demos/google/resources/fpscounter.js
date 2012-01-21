@@ -75,3 +75,8 @@ FPSCounter.prototype.update = function() {
 FPSCounter.prototype.getFPS = function() {
     return this.curFPS_;
 };
+
+FPSCounter.prototype.reset = function() {
+    this.curSample_ = 0;
+    this.curFPS_ = 0;
+}

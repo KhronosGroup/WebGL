@@ -99,6 +99,7 @@ function calculate(conf, precalc, slabData) {
 
       for (var j = precalc.constants.STRIP_SIZE; --j >= 0; ) {
           var y = xyArray_tmp[j + jOffset];
+          var nx1 = nx;
           var ny = locoef_tmp * -ycoslo_tmp[j] + hicoef_tmp * -ycoshi_tmp[j];
 
           v[vertexIndex] = x;
@@ -106,9 +107,9 @@ function calculate(conf, precalc, slabData) {
           v[vertexIndex + 2] = (locoef_tmp * (sinArray_tmp[loXIndex] + ysinlo_tmp[j]) +
                   hicoef_tmp * (sinArray_tmp[hiXIndex] +
                   ysinhi_tmp[j]));
-          v[vertexIndex + 3] = nx;
+          v[vertexIndex + 3] = nx1;
           v[vertexIndex + 4] = ny;
-          v[vertexIndex + 5] = .15; //.15*(1.0 - Math.sqrt(nx * nx + ny * ny));
+          v[vertexIndex + 5] = 0.15*(1.0 - Math.sqrt(nx1 * nx1 + ny * ny));
           vertexIndex += 6;
       }
       loX.incr();
