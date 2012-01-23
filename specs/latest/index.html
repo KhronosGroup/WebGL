@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 09 January 2012</h2>
+    <h2 class="no-toc">Editor's Draft 23 January 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1515,6 +1515,13 @@ for (var i = 0; i < numVertices; i++) {
     void colorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
     void compileShader(WebGLShader shader);
 
+    void compressedTexImage2D(GLenum target, GLint level, GLenum internalformat,
+                              GLsizei width, GLsizei height, GLint border,
+                              ArrayBufferView data);
+    void compressedTexSubImage2D(GLenum target, GLint level, GLenum internalformat,
+                                 GLsizei width, GLsizei height, GLint border,
+                                 ArrayBufferView data);
+
     void copyTexImage2D(GLenum target, GLint level, GLenum internalformat, 
                         GLint x, GLint y, GLsizei width, GLsizei height, 
                         GLint border);
@@ -1818,7 +1825,7 @@ for (var i = 0; i < numVertices; i++) {
             <span class="gl-spec">(<a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glEnable.xml">man page</a>)</span>
         <dt class="idl-code">void frontFace(GLenum mode)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.5.1">OpenGL ES 2.0 &sect;3.5.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glFrontFace.xml">man page</a>)</span>
-        <dt class="idl-code">any getParameter(GLenum pname)
+        <dt class="idl-code"><a name="GETPARAMETER">any getParameter</a>(GLenum pname)
             <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGet.xml">
                 (glGet OpenGL ES 2.0 man page)
             </a>
@@ -1846,7 +1853,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>BLUE_BITS</td><td>long</td></tr>
                 <tr><td>COLOR_CLEAR_VALUE</td><td>Float32Array (with 4 values)</td></tr>
                 <tr><td>COLOR_WRITEMASK</td><td>boolean[] (with 4 values)</td></tr>
-                <tr><td>COMPRESSED_TEXTURE_FORMATS</td><td>null</td></tr>
+                <tr><td>COMPRESSED_TEXTURE_FORMATS</td><td>Uint32Array</td></tr>
                 <tr><td>CULL_FACE</td><td>boolean</td></tr>
                 <tr><td>CULL_FACE_MODE</td><td>unsigned long</td></tr>
                 <tr><td>CURRENT_PROGRAM</td><td>WebGLProgram</td></tr>
@@ -2221,6 +2228,21 @@ for (var i = 0; i < numVertices; i++) {
     <dl class="methods">
         <dt class="idl-code">void bindTexture(GLenum target, WebGLTexture texture)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindTexture.xml">man page</a>)</span>
+
+        <dt><p class="idl-code"><a name="COMPRESSEDTEXIMAGE2D">void compressedTexImage2D</a>(GLenum target, GLint level, GLenum internalformat, 
+                    GLsizei width, GLsizei height, GLint border, ArrayBufferView pixels)
+                <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.3">OpenGL ES 2.0 &sect;3.7.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCompressedTexImage2D.xml">man page</a>)</span></p>
+            <p class="idl-code"><a name="COMPRESSEDTEXSUBIMAGE2D">void compressedTexSubImage2D</a>(GLenum target, GLint level,
+                    GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, ArrayBufferView pixels)
+                <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.3">OpenGL ES 2.0 &sect;3.7.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCompressedTexSubImage2D.xml">man page</a>)</span></p>
+        <dd>
+            If an attempt is made to call these functions with no WebGLTexture bound (see above), an
+            <code>INVALID_OPERATION</code> error is generated. <br><br>
+
+            The core WebGL specification does not define any supported compressed texture formats.
+            By default, these methods generate an <code>INVALID_ENUM</code> error and return
+            immediately. See <a href="#COMPRESSED_TEXTURE_SUPPORT">Compressed Texture Support</a>.
+
         <dt class="idl-code">void copyTexImage2D(GLenum target, GLint level, GLenum internalformat, 
                         GLint x, GLint y, GLsizei width, GLsizei height, 
                         GLint border)
@@ -3288,10 +3310,23 @@ extensions.
     <h3><a name="COMPRESSED_TEXTURE_SUPPORT">Compressed Texture Support</a></h3>
 
 <p>
-    WebGL does not support any compressed texture formats. Therefore the <code>CompressedTexImage2D</code> 
-    and <code>CompressedTexSubImage2D</code> functions are not included in this specification. 
-    Likewise the <code>COMPRESSED_TEXTURE_FORMATS</code> and <code>NUM_COMPRESSED_TEXTURE_FORMATS</code> 
-    parameters to <code>getParameter</code> will return the value null or zero.
+    The core WebGL specification does not define any supported compressed texture formats.
+    Therefore, in the absence of any other extensions being enabled:
+
+    <ul>
+
+      <li> The <a href="#COMPRESSEDTEXIMAGE2D"><code>compressedTexImage2D</code></a>
+           and <a href="#COMPRESSEDTEXSUBIMAGE2D"><code>compressedTexSubImage2D</code></a> methods
+           generate an <code>INVALID_ENUM</code> error. </li>
+
+      <li> Calling <a href="#GETPARAMETER"><code>getParameter</code></a> with the
+           argument <code>COMPRESSED_TEXTURE_FORMATS</code> returns a zero-length array (of
+           type <code>Uint32Array</code>). </li>
+
+      <li> Calling <a href="#GETPARAMETER"><code>getParameter</code></a> with the
+           argument <code>NUM_COMPRESSED_TEXTURE_FORMATS</code> returns zero. </li>
+
+    </ul>
 </p>
 
     <h3><a name="MAX_GLSL_TOKEN_SIZE">Maximum GLSL Token Size</a></h3>
