@@ -10,14 +10,14 @@
 <xsl:template match="extension">
   <xsl:call-template name="ext_page">
     <xsl:with-param name="spec_type" select="'Extension Specification'" />
-    <xsl:with-param name="css" select="'../../resources/Khronos-Final.css'" />
+    <xsl:with-param name="css" select="concat($basepath,'/resources/Khronos-Final.css')" />
   </xsl:call-template>
 </xsl:template>
 
 <xsl:template match="draft">
   <xsl:call-template name="ext_page">
     <xsl:with-param name="spec_type" select="'Extension Draft Specification'" />
-    <xsl:with-param name="css" select="'../../resources/Khronos-WD.css'" />
+    <xsl:with-param name="css" select="concat($basepath,'/resources/Khronos-WD.css')" />
   </xsl:call-template>
 </xsl:template>
 
@@ -158,10 +158,10 @@
 <xsl:template name="logo">
   <xsl:comment>begin-logo</xsl:comment>
   <div class="left">
-    <a href="http://webgl.org/"><img alt="WebGL" height="72" src="../../resources/WebGL-Logo.png" width="156" /></a>
+    <a href="http://webgl.org/"><img alt="WebGL" height="72" src="{concat($basepath,'/resources/WebGL-Logo.png')}" width="156" /></a>
   </div>
   <div class="right">
-    <a href="http://khronos.org/"><img alt="Khronos" height="60" src="../../resources/KhronosGroup-3D.png" width="220" /></a>
+    <a href="http://khronos.org/"><img alt="Khronos" height="60" src="{concat($basepath,'/resources/KhronosGroup-3D.png')}" width="220" /></a>
   </div>
   <div style="clear: both;"></div>
   <br></br>
