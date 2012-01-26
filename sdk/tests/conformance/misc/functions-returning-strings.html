@@ -49,18 +49,23 @@ if (!gl) {
   testFailed("context does not exist");
 } else {
   var vs = gl.createShader(gl.VERTEX_SHADER);
+  shouldReturnString("gl.getShaderSource(vs)");
+  shouldReturnString("gl.getShaderInfoLog(vs)");
   gl.shaderSource(vs, validVertexShaderString);
   gl.compileShader(vs);
   shouldReturnString("gl.getShaderSource(vs)");
   shouldReturnString("gl.getShaderInfoLog(vs)");
 
   var fs = gl.createShader(gl.FRAGMENT_SHADER);
+  shouldReturnString("gl.getShaderSource(fs)");
+  shouldReturnString("gl.getShaderInfoLog(fs)");
   gl.shaderSource(fs, validFragmentShaderString);
   gl.compileShader(fs);
   shouldReturnString("gl.getShaderSource(fs)");
   shouldReturnString("gl.getShaderInfoLog(fs)");
 
   var prog = gl.createProgram();
+  shouldReturnString("gl.getProgramInfoLog(prog)");
   gl.attachShader(prog, vs);
   gl.attachShader(prog, fs);
   gl.linkProgram(prog);
