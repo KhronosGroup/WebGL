@@ -21,7 +21,7 @@
         the <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code> entry points.
       </feature>
       <feature>
-        Calling <code>getParameter</code> with the argument <code>COMRPESSED_TEXTURE_FORMATS</code>
+        Calling <code>getParameter</code> with the argument <code>COMPRESSED_TEXTURE_FORMATS</code>
         will include the 4 formats from this specification.
       </feature>
       <feature>
