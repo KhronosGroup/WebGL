@@ -74,4 +74,6 @@
       <change>Renamed "New Functions and Methods" section to "New Functions".</change>
     </revision><revision date="2012/01/03" number="5">
       <change>Removed webgl module per changes to Web IDL spec.</change>
-    </revision></history></extension></registry>
+    </revision></history></extension><draft href=""><name>WEBGL_compressed_texture_s3tc</name><number>8</number><history><revision date="2012/01/25" number="1">
+      <change>Initial revision.</change>
+    </revision></history></draft></registry>

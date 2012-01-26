@@ -4,7 +4,8 @@ EXTS := OES_standard_derivatives \
 	OES_vertex_array_object \
 	WEBGL_lose_context \
 	WEBGL_debug_renderer_info \
-	WEBGL_debug_shaders
+	WEBGL_debug_shaders \
+	proposals/WEBGL_compressed_texture_s3tc \
 
 EXT_XMLS := $(addsuffix /extension.xml,$(EXTS))
 EXT_IDXS := $(addsuffix /index.html,$(EXTS))
