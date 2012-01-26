@@ -198,8 +198,13 @@ function go() {
         if (gl.getError() != gl.NO_ERROR)
             assertMsg(false, "unexpected error in linkProgram()");
         assertMsg(gl.getProgramParameter(prog, gl.LINK_STATUS) == expected_status, errmsg);
+        var infolog = gl.getProgramInfoLog(prog);
+        if (gl.getError() != gl.NO_ERROR)
+            assertMsg(false, "unexpected error in getProgramInfoLog()");
+        if (typeof(infolog) != "string")
+            assertMsg(false, "getProgramInfoLog() did not return a string");
         if (expected_status == true && gl.getProgramParameter(prog, gl.LINK_STATUS) == false)
-            debug(gl.getProgramInfoLog(prog));
+            debug(infolog);
         if (gl.getError() != gl.NO_ERROR)
             assertMsg(false, "unexpected error in getProgramParameter()");
         gl.useProgram(prog);
