@@ -22,7 +22,7 @@
       </feature>
       <feature>
         Calling <code>getParameter</code> with the argument <code>COMRPESSED_TEXTURE_FORMATS</code>
-        will return 4 formats.
+        will include the 4 formats from this specification.
       </feature>
       <feature>
           <p>The following restrictions must be enforced</p>
