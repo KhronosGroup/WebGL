@@ -13,6 +13,11 @@
     <api version="1.0.1"/>
   </depends>
   <overview>
+    <p>
+      This extension exposes the compressed texture formats defined in the 
+      <a href="http://www.opengl.org/registry/specs/EXT/texture_compression_s3tc.txt">
+      EXT_texture_compression_s3tc</a> OpenGL extension to WebGL.
+    </p>
     <features>
       <feature>
         Compression formats <code>COMPRESSED_RGB_S3TC_DXT1_EXT</code>,
@@ -25,7 +30,7 @@
         will include the 4 formats from this specification.
       </feature>
       <feature>
-          <p>The following restrictions must be enforced</p>
+          <p>The following format specfici restrictions must be enforced</p>
 
           <dt>COMPRESSED_RGB_S3TC_DXT1_EXT</dt>
           <dt>COMPRESSED_RGBA_S3TC_DXT1_EXT</dt>
