@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 23 January 2012</h2>
+    <h2 class="no-toc">Editor's Draft 27 January 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1518,8 +1518,9 @@ for (var i = 0; i < numVertices; i++) {
     void compressedTexImage2D(GLenum target, GLint level, GLenum internalformat,
                               GLsizei width, GLsizei height, GLint border,
                               ArrayBufferView data);
-    void compressedTexSubImage2D(GLenum target, GLint level, GLenum internalformat,
-                                 GLsizei width, GLsizei height, GLint border,
+    void compressedTexSubImage2D(GLenum target, GLint level,
+                                 GLint xoffset, GLint yoffset,
+                                 GLsizei width, GLsizei height, GLenum format,
                                  ArrayBufferView data);
 
     void copyTexImage2D(GLenum target, GLint level, GLenum internalformat, 
