@@ -1236,7 +1236,6 @@ for (var i = 0; i < numVertices; i++) {
     /*      TEXTURE_WRAP_S */
     /*      TEXTURE_WRAP_T */
     
-    const GLenum NUM_COMPRESSED_TEXTURE_FORMATS = 0x86A2;
     const GLenum COMPRESSED_TEXTURE_FORMATS     = 0x86A3;
     
     /* HintMode */
@@ -1882,7 +1881,6 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>MAX_VERTEX_TEXTURE_IMAGE_UNITS</td><td>long</td></tr>
                 <tr><td>MAX_VERTEX_UNIFORM_VECTORS</td><td>long</td></tr>
                 <tr><td>MAX_VIEWPORT_DIMS</td><td>Int32Array (with 2 elements)</td></tr>
-                <tr><td>NUM_COMPRESSED_TEXTURE_FORMATS</td><td>long</td></tr>
                 <tr><td>PACK_ALIGNMENT</td><td>long</td></tr>
                 <tr><td>POLYGON_OFFSET_FACTOR</td><td>float</td></tr>
                 <tr><td>POLYGON_OFFSET_FILL</td><td>boolean</td></tr>
@@ -3323,9 +3321,6 @@ extensions.
       <li> Calling <a href="#GETPARAMETER"><code>getParameter</code></a> with the
            argument <code>COMPRESSED_TEXTURE_FORMATS</code> returns a zero-length array (of
            type <code>Uint32Array</code>). </li>
-
-      <li> Calling <a href="#GETPARAMETER"><code>getParameter</code></a> with the
-           argument <code>NUM_COMPRESSED_TEXTURE_FORMATS</code> returns zero. </li>
 
     </ul>
 </p>
