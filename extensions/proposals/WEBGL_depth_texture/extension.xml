@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<draft href="proposals/WEBGL_depth_texture/">
+  <name>WEBGL_depth_texture</name>
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
+  </contact>
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+    <contributor>Florian B&#246;sch</contributor>
+  </contributors>
+  <number>9</number>
+  <depends>
+    <api version="2.0"/>
+  </depends>
+  <overview>
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_depth_texture.txt" name="OES_depth_texture">
+      <addendum>Cube maps may not be used as depth textures.</addendum>
+    </mirrors>
+    <features>
+      <feature>
+        The <code>texImage2D</code> and <code>texSubImage2D</code> entry points are extended to accept the <code>format</code> parameter <code>DEPTH_COMPONENT</code>
+      </feature>
+      <feature>
+        The <code>texImage2D</code> entry point is extended to accept the <code>internalFormat</code> parameter <code>DEPTH_COMPONENT</code>
+      </feature>
+      <feature>
+        The <code>texImage2D</code> and <code>texSubImage2D</code> entry points are extended to accept the <code>type</code> parameter <code>UNSIGNED_SHORT</code> and <code>UNSIGNED_INT</code>
+      </feature>
+      <feature>
+        The <code>framebufferTexture2D</code> entry point is extended to accept a <code>target</code> parameter <code>DEPTH_ATTACHMENT</code>
+      </feature>
+      <feature>
+        The <code>texImage2D</code> and <code>texSubImage2D</code> entry points are extended to accept <code>ArrayBufferView</code> of type <code>Uint16Array</code> and <code>Uint32Array</code>
+      </feature>
+    </features>
+  </overview>
+  <idl>
+interface WEBGL_depth_texture {
+    const GLenum DEPTH_COMPONENT = 0x1902;
+    const GLenum UNSIGNED_SHORT  = 0x1403;
+    const GLenum UNSIGNED_INT    = 0x1405;
+};
+  </idl>
+  <errors>
+    <error>
+        The error <code>INVALID_OPERATION</code> is generated if the <code>format</code> parameter is is <code>DEPTH_COMPONENT</code> and the <code>target</code> is <code>TEXTURE_CUBE_MAP_{POSITIVE,NEGATIVE}_{X,Y,Z}</code>
+    </error>
+  </errors>
+  <history>
+    <revision date="2012/01/23">
+      <change>Initial revision.</change>
+    </revision>
+    <revision date="2012/01/25">
+      <change>Added provisions to exclude cube depth textures.</change>
+    </revision>
+  </history>
+</draft>

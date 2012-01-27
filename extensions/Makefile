@@ -6,6 +6,7 @@ EXTS := OES_standard_derivatives \
 	WEBGL_debug_renderer_info \
 	WEBGL_debug_shaders \
 	proposals/WEBGL_compressed_texture_s3tc \
+	proposals/WEBGL_depth_texture
 
 EXT_XMLS := $(addsuffix /extension.xml,$(EXTS))
 EXT_IDXS := $(addsuffix /index.html,$(EXTS))
@@ -31,7 +32,7 @@ registry.xml: $(EXT_XMLS) summary.xsl summary.xml
 		summary.xsl summary.xml > registry.xml
 
 %/index.html: %/extension.xml extension.xsl rev_utils.xsl
-	xsltproc --stringparam basepath `echo $*/base | sed -e "s/[^\/]\+/../g"` extension.xsl $*/extension.xml > $*/index.html
+	xsltproc --stringparam basepath `echo $*/base | sed -e "s/[^\/]*/../g"` extension.xsl $*/extension.xml > $*/index.html
 
 clean:
 	rm -f index.html index.atom registry.xml

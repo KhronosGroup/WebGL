@@ -36,7 +36,7 @@
     <!-- use mirrors if this extension wraps another -->
     <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_texture_float.txt" name="OES_texture_float">
       <!-- list the deviations here if there are any -->
-      <addendum>the ability to use <code>FLOAT</code> textures as FBO attachments</addendum>
+      <addendum>Optional support for <code>FLOAT</code> textures as FBO attachments.</addendum>
     </mirrors>
     <!-- normal free-form XHTML is allowed here -->
     <div class="nonnormative">

@@ -183,20 +183,13 @@
     <xsl:when test="count(addendum)=0">
       WebGL. There are no WebGL-specific behavioral changes.
     </xsl:when>
-    <xsl:when test="count(addendum)=1">
-      WebGL, as well as <xsl:copy-of select="addendum/node()"/><xsl:text>.</xsl:text>
-    </xsl:when>
-    <xsl:otherwise>WebGL, as well as
-    <xsl:for-each select="addendum">
-      <xsl:if test="not(position()=last())">
-        <xsl:copy-of select="node()" /><xsl:text>, </xsl:text>
-      </xsl:if>
-      <xsl:if test="position()=last()">
-        <xsl:text>and </xsl:text>
-        <xsl:copy-of select="node()" />
-        <xsl:text>.</xsl:text>
-      </xsl:if>
+    <xsl:otherwise>
+      WebGL. The following WebGL-specific behavioral changes apply:
+    <ul>
+      <xsl:for-each select="addendum">
+        <li><xsl:copy-of select="node()" /></li>
     </xsl:for-each>
+    </ul>
     </xsl:otherwise>
   </xsl:choose>
   Consult the above extension for documentation, issues, and new functions and enumerants.

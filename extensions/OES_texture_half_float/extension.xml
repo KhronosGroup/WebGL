@@ -14,7 +14,7 @@
   </depends>
   <overview>
     <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_texture_float.txt" name="OES_texture_half_float">
-      <addendum>the ability to use <code>HALF_FLOAT</code> textures as FBO attachments</addendum>
+      <addendum>Optional support for <code>HALF_FLOAT</code> textures as FBO attachments.</addendum>
     </mirrors>
     <features>
       <feature>
