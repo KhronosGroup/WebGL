@@ -38,7 +38,7 @@ function shouldReturnString(_a)
 
   if (exception)
     testFailed(_a + ' should return a string. Threw exception ' + exception);
-  else if (_av != null)
+  else if (typeof _av == "string")
     testPassed(_a + ' returns a string: "' + _av + '"');
   else
     testFailed(_a + ' should return a string.  Returns: "' + _av + '"');
