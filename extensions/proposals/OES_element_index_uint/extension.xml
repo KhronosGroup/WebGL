@@ -19,9 +19,6 @@
       <feature>
         The <code>drawElements</code> entry point parameter <code>type</code> accepts the value <code>UNSIGNED_INT</code>
       </feature>
-      <feature>
-        The <code>bufferData</code> and <code>bufferSubData</code> entry points parameter <code>buffer</code> accepts array buffers of type <code>Uint32Array</code>
-      </feature>
     </features>
   </overview>
   <idl>
@@ -32,6 +29,9 @@ interface OES_element_index_uint {
   <history>
     <revision date="2012/01/24">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2012/01/27">
+      <change>Removed the bufferData requirement as this is not checked by webgl</change>
     </revision>
   </history>
 </draft>

@@ -82,4 +82,6 @@
       <change>Added provisions to exclude cube depth textures.</change>
     </revision></history></draft><draft href="proposals/OES_element_index_uint"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
       <change>Initial revision.</change>
+    </revision><revision date="2012/01/27" number="2">
+      <change>Removed the bufferData requirement as this is not checked by webgl</change>
     </revision></history></draft></registry>

@@ -20,8 +20,8 @@
 <p>Members of the WebGL working group</p>
 <p>Florian Bösch</p>
 <h2 class="no-toc">Version</h2>
-<p> Last modified date: January 24, 2012<br>
-          Revision: 1</p>
+<p> Last modified date: January 27, 2012<br>
+          Revision: 2</p>
 <h2 class="no-toc">Number</h2>
 <p> WebGL extension #10</p>
 <h2 class="no-toc">Dependencies</h2>
@@ -35,14 +35,9 @@
   Consult the above extension for documentation, issues, and new functions and enumerants.
   </p>
     <p> When this extension is enabled: </p>
-<ul>
-<li>
+<ul><li>
         The <code>drawElements</code> entry point parameter <code>type</code> accepts the value <code>UNSIGNED_INT</code>
-      </li>
-<li>
-        The <code>bufferData</code> and <code>bufferSubData</code> entry points parameter <code>buffer</code> accepts array buffers of type <code>Uint32Array</code>
-      </li>
-</ul>
+      </li></ul>
   <h2 class="no-toc">IDL</h2>
 <p><pre class="idl">
 interface OES_element_index_uint {
@@ -52,5 +47,7 @@ interface OES_element_index_uint {
 <h2 class="no-toc">Revision History</h2>
 <p>Revision 1, 2012/01/24</p>
 <ul><li>Initial revision.</li></ul>
+<p>Revision 2, 2012/01/27</p>
+<ul><li>Removed the bufferData requirement as this is not checked by webgl</li></ul>
 </body>
 </html>
