@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<draft href="proposals/OES_element_index_uint">
+  <name>OES_element_index_uint</name>
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
+  </contact>
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+    <contributor>Florian B&#246;sch</contributor>
+  </contributors>
+  <number>10</number>
+  <depends>
+    <api version="1.0" />
+  </depends>
+  <overview>
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_element_index_uint.txt" name="OES_element_index_uint"/>
+    <features>
+      <feature>
+        The <code>drawElements</code> entry point parameter <code>type</code> accepts the value <code>UNSIGNED_INT</code>
+      </feature>
+      <feature>
+        The <code>bufferData</code> and <code>bufferSubData</code> entry points parameter <code>buffer</code> accepts array buffers of type <code>Uint32Array</code>
+      </feature>
+    </features>
+  </overview>
+  <idl>
+interface OES_element_index_uint {
+  const GLenum UNSIGNED_INT = 0x1405;
+};
+  </idl>
+  <history>
+    <revision date="2012/01/24">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</draft>
