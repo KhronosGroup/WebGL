@@ -367,8 +367,8 @@ TestHarness.prototype.addFiles_ = function(success, files) {
     this.reportFunc(TestHarness.reportType.ADD_PAGE, files[ii], undefined);
   }
   this.reportFunc(TestHarness.reportType.READY, undefined, undefined);
-  this.nextFileIndex = files.length;
-  this.lastFileIndex = files.length;
+//  this.nextFileIndex = files.length;
+//  this.lastFileIndex = files.length;
 }
 
 TestHarness.prototype.runTests = function(opt_start, opt_count) {
