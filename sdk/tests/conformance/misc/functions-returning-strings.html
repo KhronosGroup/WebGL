@@ -39,7 +39,7 @@ function shouldReturnString(_a)
   if (exception)
     testFailed(_a + ' should return a string. Threw exception ' + exception);
   else if (typeof _av == "string")
-    testPassed(_a + ' returns a string: "' + _av + '"');
+    testPassed(_a + ' returns a string');
   else
     testFailed(_a + ' should return a string.  Returns: "' + _av + '"');
 }
