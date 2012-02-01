@@ -71,9 +71,18 @@ if (!gl) {
   gl.linkProgram(prog);
   shouldReturnString("gl.getProgramInfoLog(prog)");
 
+  // Make sure different numbers of extensions doesn't result in
+  // different test output.
   var exts = gl.getSupportedExtensions();
+  var allPassed = true;
   for (i in exts) {
-    shouldReturnString("gl.getSupportedExtensions()[" + i + "]");
+    if (typeof i != "string") {
+      shouldReturnString("gl.getSupportedExtensions()[" + i + "]");
+      allPassed = false;
+    }
+  }
+  if (allPassed) {
+    testPassed('getSupportedExtensions() returns an array of strings');
   }
 
   shouldReturnString("gl.getParameter(gl.VENDOR)");
