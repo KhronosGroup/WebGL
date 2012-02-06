@@ -41,7 +41,7 @@
           floor((width + 3) / 4) * floor((height + 3) / 4) * 8
           </code></blockquote>
           <p>
-          If it is not an <code>INVALID_VALUE</code> error is generated.
+          If it is not an <code>INVALID_OPERATION</code> error is generated.
           </p>
           <p>When <code>level</code> equals zero <code>width</code> and <code>height</code>
           must be a multiple of 4. When <code>level</code> is greater than 0 <code>width</code>
@@ -55,7 +55,7 @@
           <code>width</code> must be a multiple of 4 or equal to the original
           width of the <code>level</code>. <code>height</code> must be a multiple of 4 or
           equal to the original height of the <code>level</code>.
-          If they are not an <code>INVALID_OPERATION</code> error is generated.
+          If they are not an <code>INVALID_VALUE</code> error is generated.
           </p>
           </dd>
 
@@ -82,7 +82,7 @@
           <code>width</code> must be a multiple of 4 or equal to the original
           width of the <code>level</code>. <code>height</code> must be a multiple of 4 or
           equal to the original height of the <code>level</code>.
-          If they are not an <code>INVALID_OPERATION</code> error is generated.
+          If they are not an <code>INVALID_VALUE</code> error is generated.
           </p>
           </dd>
       </feature>
