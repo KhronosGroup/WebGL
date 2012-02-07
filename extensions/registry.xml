@@ -210,7 +210,7 @@ var ctx2 = canvas2.getContext("webgl", {
       
           Q: Does any care need to be taken to ensure changes to resources in one context
                   are seen in another context.
-          A: No. The OpenGL ES 2.0 spec seems to make it pretty clear that changes to
+          A: No. The OpenGL ES 2.0 spec Appendix C.2.3 seems to make it pretty clear that changes to
                   a resource in one context are not guarnteed to be seen in another context
                   unless flush is called in the context making the change and
                   bind??? for the resource in question is called in the
