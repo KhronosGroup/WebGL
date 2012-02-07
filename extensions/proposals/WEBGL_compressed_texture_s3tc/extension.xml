@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<draft href="proposals/WEBGL_compressed_texture_s3tc/">
+<proposal href="proposals/WEBGL_compressed_texture_s3tc/">
   <name>WEBGL_compressed_texture_s3tc</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -41,13 +41,13 @@
           floor((width + 3) / 4) * floor((height + 3) / 4) * 8
           </code></blockquote>
           <p>
-          If it is not an <code>INVALID_OPERATION</code> error is generated.
+          If it is not an <code>INVALID_VALUE</code> error is generated.
           </p>
           <p>When <code>level</code> equals zero <code>width</code> and <code>height</code>
           must be a multiple of 4. When <code>level</code> is greater than 0 <code>width</code>
           and <code>height</code> must be 0, 1, 2 or a multiple of 4.</p>
           <p>
-          If they are not an <code>INVALID_VALUE</code> error is generated.
+          If they are not an <code>INVALID_OPERATION</code> error is generated.
           </p>
           <p>
           For <code>compressedTexSubImage2D</code> <code>xoffset</code> and
@@ -55,7 +55,7 @@
           <code>width</code> must be a multiple of 4 or equal to the original
           width of the <code>level</code>. <code>height</code> must be a multiple of 4 or
           equal to the original height of the <code>level</code>.
-          If they are not an <code>INVALID_VALUE</code> error is generated.
+          If they are not an <code>INVALID_OPERATION</code> error is generated.
           </p>
           </dd>
 
@@ -68,13 +68,13 @@
           floor((width + 3) / 4) * floor((height + 3) / 4) * 16
           </code></blockquote>
           <p>
-          If it is not an <code>INVALID_OPERATION</code> error is generated.
+          If it is not an <code>INVALID_VALUE</code> error is generated.
           </p>
           <p>When <code>level</code> equals zero <code>width</code> and <code>height</code>
           must be a multiple of 4. When <code>level</code> is greater than 0 <code>width</code>
           and <code>height</code> must be 0, 1, 2 or a multiple of 4.</p>
           <p>
-          If they are not an <code>INVALID_VALUE</code> error is generated.
+          If they are not an <code>INVALID_OPERATION</code> error is generated.
           </p>
           <p>
           For <code>compressedTexSubImage2D</code> <code>xoffset</code> and
@@ -82,7 +82,7 @@
           <code>width</code> must be a multiple of 4 or equal to the original
           width of the <code>level</code>. <code>height</code> must be a multiple of 4 or
           equal to the original height of the <code>level</code>.
-          If they are not an <code>INVALID_VALUE</code> error is generated.
+          If they are not an <code>INVALID_OPERATION</code> error is generated.
           </p>
           </dd>
       </feature>
@@ -102,4 +102,4 @@ interface WEBGL_compressed_texture_s3tc {
       <change>Initial revision.</change>
     </revision>
   </history>
-</draft>
+</proposal>

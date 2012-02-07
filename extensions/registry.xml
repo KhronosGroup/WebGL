@@ -74,13 +74,164 @@
       <change>Renamed "New Functions and Methods" section to "New Functions".</change>
     </revision><revision date="2012/01/03" number="5">
       <change>Removed webgl module per changes to Web IDL spec.</change>
-    </revision></history></extension><draft href="proposals/WEBGL_compressed_texture_s3tc/"><name>WEBGL_compressed_texture_s3tc</name><number>8</number><history><revision date="2012/01/25" number="1">
-      <change>Initial revision.</change>
-    </revision></history></draft><draft href="proposals/WEBGL_depth_texture/"><name>WEBGL_depth_texture</name><number>9</number><history><revision date="2012/01/23" number="1">
-      <change>Initial revision.</change>
-    </revision><revision date="2012/01/25" number="2">
-      <change>Added provisions to exclude cube depth textures.</change>
-    </revision></history></draft><draft href="proposals/OES_element_index_uint"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
+    </revision></history></extension>
+  WEBGL_compressed_texture_s3tc
+  
+    WebGL working group (public_webgl 'at' khronos.org)
+  
+  
+    Members of the WebGL working group
+  
+  8
+  
+    
+  
+  
+    
+      This extension exposes the compressed texture formats defined in the 
+      
+      EXT_texture_compression_s3tc OpenGL extension to WebGL.
+    
+    
+      
+        Compression formats COMPRESSED_RGB_S3TC_DXT1_EXT,
+        COMPRESSED_RGBA_S3TC_DXT1_EXT, COMPRESSED_RGBA_S3TC_DXT3_EXT, and
+        COMPRESSED_RGBA_S3TC_DXT5_EXT may be passed to
+        the compressedTexImage2D and compressedTexSubImage2D entry points.
+      
+      
+        Calling getParameter with the argument COMPRESSED_TEXTURE_FORMATS
+        will include the 4 formats from this specification.
+      
+      
+          The following format specific restrictions must be enforced:
+
+          COMPRESSED_RGB_S3TC_DXT1_EXT
+          COMPRESSED_RGBA_S3TC_DXT1_EXT
+          The length of the ArrayBufferView, pixels, passed to either
+          compressedTexImage2D or compressedTexSubImage2D
+          must match the following equation:
+          
+          floor((width + 3) / 4) * floor((height + 3) / 4) * 8
+          
+          
+          If it is not an INVALID_OPERATION error is generated.
+          
+          When level equals zero width and height
+          must be a multiple of 4. When level is greater than 0 width
+          and height must be 0, 1, 2 or a multiple of 4.
+          
+          If they are not an INVALID_VALUE error is generated.
+          
+          
+          For compressedTexSubImage2D xoffset and
+          yoffset must be a multiple of 4 and
+          width must be a multiple of 4 or equal to the original
+          width of the level. height must be a multiple of 4 or
+          equal to the original height of the level.
+          If they are not an INVALID_VALUE error is generated.
+          
+          
+
+          COMPRESSED_RGBA_S3TC_DXT3_EXT
+          COMPRESSED_RGBA_S3TC_DXT5_EXT
+          The length of the ArrayBufferView, pixels, passed to either
+          compressedTexImage2D or compressedTexSubImage2D
+          must match the following equation:
+          
+          floor((width + 3) / 4) * floor((height + 3) / 4) * 16
+          
+          
+          If it is not an INVALID_OPERATION error is generated.
+          
+          When level equals zero width and height
+          must be a multiple of 4. When level is greater than 0 width
+          and height must be 0, 1, 2 or a multiple of 4.
+          
+          If they are not an INVALID_VALUE error is generated.
+          
+          
+          For compressedTexSubImage2D xoffset and
+          yoffset must be a multiple of 4 and
+          width must be a multiple of 4 or equal to the original
+          width of the level. height must be a multiple of 4 or
+          equal to the original height of the level.
+          If they are not an INVALID_VALUE error is generated.
+          
+          
+      
+    
+  
+  
+interface WEBGL_compressed_texture_s3tc {
+    /* Compressed Texture Formats */
+    const GLenum COMPRESSED_RGB_S3TC_DXT1_EXT        = 0x83F0;
+    const GLenum COMPRESSED_RGBA_S3TC_DXT1_EXT       = 0x83F1;
+    const GLenum COMPRESSED_RGBA_S3TC_DXT3_EXT       = 0x83F2;
+    const GLenum COMPRESSED_RGBA_S3TC_DXT5_EXT       = 0x83F3;
+};
+  
+  
+    
+      Initial revision.
+    
+  
+
+  WEBGL_depth_texture
+  
+    WebGL working group (public_webgl 'at' khronos.org)
+  
+  
+    Members of the WebGL working group
+    Florian Bösch
+  
+  9
+  
+    
+  
+  
+    
+      Cube maps may not be used as depth textures.
+    
+    
+      
+        The texImage2D and texSubImage2D entry points are extended to accept the format parameter DEPTH_COMPONENT
+      
+      
+        The texImage2D entry point is extended to accept the internalFormat parameter DEPTH_COMPONENT
+      
+      
+        The texImage2D and texSubImage2D entry points are extended to accept the type parameter UNSIGNED_SHORT and UNSIGNED_INT
+      
+      
+        The framebufferTexture2D entry point is extended to accept a target parameter DEPTH_ATTACHMENT
+      
+      
+        The texImage2D and texSubImage2D entry points are extended to accept ArrayBufferView of type Uint16Array and Uint32Array
+      
+    
+  
+  
+interface WEBGL_depth_texture {
+    const GLenum DEPTH_COMPONENT = 0x1902;
+    const GLenum UNSIGNED_SHORT  = 0x1403;
+    const GLenum UNSIGNED_INT    = 0x1405;
+};
+  
+  
+    
+        The error INVALID_OPERATION is generated if the format parameter is is DEPTH_COMPONENT and the target is TEXTURE_CUBE_MAP_{POSITIVE,NEGATIVE}_{X,Y,Z}
+    
+  
+  
+    
+      Initial revision.
+    
+    
+      Added provisions to exclude cube depth textures.
+    
+  
+<draft href="proposals/OES_element_index_uint"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/01/27" number="2">
       <change>Removed the bufferData requirement as this is not checked by webgl</change>

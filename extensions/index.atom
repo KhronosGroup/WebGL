@@ -4,13 +4,7 @@
     <email>public_webgl@khronos.org</email>
   </author><entry><title>OES_element_index_uint : revision 2</title><link rel="alternate" type="text/html" href="proposals/OES_element_index_uint"/><id>proposals/OES_element_index_uint#r=2</id><updated>2012-01-27T23:59:59Z</updated><summary>Removed the bufferData requirement as this is not checked by webgl
               
-            </summary></entry><entry><title>WEBGL_compressed_texture_s3tc : revision 1</title><link rel="alternate" type="text/html" href="proposals/WEBGL_compressed_texture_s3tc/"/><id>proposals/WEBGL_compressed_texture_s3tc/#r=1</id><updated>2012-01-25T23:59:59Z</updated><summary>Initial revision.
-              
-            </summary></entry><entry><title>WEBGL_depth_texture : revision 2</title><link rel="alternate" type="text/html" href="proposals/WEBGL_depth_texture/"/><id>proposals/WEBGL_depth_texture/#r=2</id><updated>2012-01-25T23:59:59Z</updated><summary>Added provisions to exclude cube depth textures.
-              
             </summary></entry><entry><title>OES_element_index_uint : revision 1</title><link rel="alternate" type="text/html" href="proposals/OES_element_index_uint"/><id>proposals/OES_element_index_uint#r=1</id><updated>2012-01-24T23:59:59Z</updated><summary>Initial revision.
-              
-            </summary></entry><entry><title>WEBGL_depth_texture : revision 1</title><link rel="alternate" type="text/html" href="proposals/WEBGL_depth_texture/"/><id>proposals/WEBGL_depth_texture/#r=1</id><updated>2012-01-23T23:59:59Z</updated><summary>Initial revision.
               
             </summary></entry><entry><title>OES_standard_derivatives : revision 3</title><link rel="alternate" type="text/html" href="OES_standard_derivatives/"/><id>OES_standard_derivatives/#r=3</id><updated>2012-01-03T23:59:59Z</updated><summary>Removed webgl module per changes to Web IDL spec.
               
@@ -21,5 +15,11 @@
             </summary></entry><entry><title>OES_vertex_array_object : revision 5</title><link rel="alternate" type="text/html" href="OES_vertex_array_object/"/><id>OES_vertex_array_object/#r=5</id><updated>2012-01-03T23:59:59Z</updated><summary>Removed webgl module per changes to Web IDL spec.
               
             </summary></entry><entry><title>WEBGL_lose_context : revision 7</title><link rel="alternate" type="text/html" href="WEBGL_lose_context/"/><id>WEBGL_lose_context/#r=7</id><updated>2012-01-03T23:59:59Z</updated><summary>Removed webgl module per changes to Web IDL spec.
+              
+            </summary></entry><entry><title>WEBGL_debug_renderer_info : revision 5</title><link rel="alternate" type="text/html" href="WEBGL_debug_renderer_info/"/><id>WEBGL_debug_renderer_info/#r=5</id><updated>2012-01-03T23:59:59Z</updated><summary>Removed webgl module per changes to Web IDL spec.
+              
+            </summary></entry><entry><title>WEBGL_debug_shaders : revision 5</title><link rel="alternate" type="text/html" href="WEBGL_debug_shaders/"/><id>WEBGL_debug_shaders/#r=5</id><updated>2012-01-03T23:59:59Z</updated><summary>Removed webgl module per changes to Web IDL spec.
+              
+            </summary></entry><entry><title>OES_standard_derivatives : revision 2</title><link rel="alternate" type="text/html" href="OES_standard_derivatives/"/><id>OES_standard_derivatives/#r=2</id><updated>2011-12-07T23:59:59Z</updated><summary>Added genType argument and return type to function declarations.
               
             </summary></entry></feed>

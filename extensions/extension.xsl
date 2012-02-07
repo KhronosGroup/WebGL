@@ -21,6 +21,13 @@
   </xsl:call-template>
 </xsl:template>
 
+<xsl:template match="proposal">
+  <xsl:call-template name="ext_page">
+    <xsl:with-param name="spec_type" select="'Extension Proposed Specification'" />
+    <xsl:with-param name="css" select="concat($basepath,'/resources/Khronos-Proposal.css')" />
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:template name="ext_page">
   <xsl:param name="spec_type" />
   <xsl:param name="css" />
@@ -42,6 +49,10 @@
 
       <h1><xsl:value-of select="$title" /></h1>
       
+      <xsl:if test="??">
+      <p><strong>DO NOT IMPLEMENT!!!</strong></p>
+      </xsl:if>
+
       <h2 class="no-toc">Name</h2>
       <p> <xsl:value-of select="name" /> </p>
 
