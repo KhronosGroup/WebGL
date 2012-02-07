@@ -235,6 +235,116 @@ interface WEBGL_depth_texture {
     
   
 
+  WEBGL_shared_resources
+  
+    WebGL working group (public_webgl 'at' khronos.org)
+  
+  
+    Members of the WebGL working group
+  
+  12
+  
+    
+  
+  
+    
+      This extension adds the ability to share WebGL resources across contexts.
+    
+    
+      
+        
+        Adds a new context creation parameter:
+        
+            shareGroup
+                
+                    Default: undefined. If the value is set to the group
+                    attribute from the WEBGL_shared_resources object from an existing context
+                    then resources from the existing context are shared with the newly created context.
+                
+        
+        
+        
+var canvas1 = document.createElement("canvas");
+var canvas2 = document.createElement("canvas");
+var ctx1 = canvas1.getContext("webgl");
+var sharedResourcesExtension = ctx1.getExtension("WEBGL_shared_resources");
+var ctx2 = canvas2.getContext("webgl", {
+       shareGroup: sharedResourcesExtension.group
+   });
+        
+      
+      
+      All WebGLTexture, WebGLRenderbuffer, WebGLBuffer,
+      WebGLShader and WebGLProgram objects are shared among contexts in the
+      same share group.
+      WebGLFramebuffer objects are expliclity
+      not shared as their behavior is undefined per OpenGL ES 2.0 spec Appendix C.
+      
+      
+      All shared objects effectively belong to the WebGLShareGroup, not to the WebGLRenderingContext.
+      As such they can be used with any WebGLRenderingContext in the same share group. Errors genearted
+      when an object is not from the same context must be changed to generate an error if the object
+      is not from the same group.
+      
+    
+  
+  
+    
+      
+          Q: Should WEBGL_lose_context loseContext lose all contexts in the group?
+          A: Yes, and restoreContext should restore all contexts which are restorable.
+      
+      
+          Q: Should a WebGLUniformLocation be usable across contexts?
+          A: Yes. They don't seem need to be tied to a context. Rather they are tied
+                  to a particular WebGLProgram.
+      
+      
+          Q: How should deletions of WebGLBuffers be handled?
+          A: The OpenGL ES 2.0 specifies that deleted buffers have undefined behavior.
+                  WebGL implementations must enforce a more consistent reference counted like
+                  behavior and if necessary do their own ref counting and not actually
+                  call DeleteBuffer until all references across all contexts have been released.
+          
+      
+      
+          Q: Does any care need to be taken to ensure changes to resources in one context
+                  are seen in another context.
+          A: No. The OpenGL ES 2.0 spec seems to make it pretty clear that changes to
+                  a resource in one context are not guarnteed to be seen in another context
+                  unless flush is called in the context making the change and
+                  bind??? for the resource in question is called in the
+                  context that wants to observe the change. A context may see the change
+                  before binding but is only guarnteed to see the change after these binding.
+      
+      
+          Q: How do you tell if 2 contexts are sharing resources
+          A: Compare their groups.
+          
+function inSameGroup(context1, context2) {
+  var sharedResourcesExtension1 = context1.getExtension("WEBGL_shared_resources");
+  var sharedResourcesExtension2 = context2.getExtension("WEBGL_shared_resources");
+  return sharedResourcesExtension1.group === sharedResourcesExtension2.group;
+}
+          
+          
+      
+    
+  
+  
+interface WEBGL_shared_resources {
+    readonly attribute WebGLShareGroup group;
+};
+
+interface WEBGLShareGroup {
+};
+  
+  
+    
+      Initial revision.
+    
+  
+
   OES_element_index_uint
   
     WebGL working group (public_webgl 'at' khronos.org)
