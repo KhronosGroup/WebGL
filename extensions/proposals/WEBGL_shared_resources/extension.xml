@@ -35,8 +35,8 @@ var canvas2 = document.createElement("canvas");
 var ctx1 = canvas1.getContext("webgl");
 var sharedResourcesExtension = ctx1.getExtension("WEBGL_shared_resources");
 var ctx2 = canvas2.getContext("webgl", {
-       shareGroup: sharedResourcesExtension.group
-   });
+    shareGroup: sharedResourcesExtension.group
+});
         </pre>
       </feature>
       <feature>
@@ -48,7 +48,7 @@ var ctx2 = canvas2.getContext("webgl", {
       </feature>
       <feature>
       All shared objects effectively belong to the <code>WebGLShareGroup</code>, not to the <code>WebGLRenderingContext</code>.
-      As such they can be used with any <code>WebGLRenderingContext</code> in the same share group. Errors genearted
+      As such they can be used with any <code>WebGLRenderingContext</code> in the same share group. Errors generated
       when an object is not from the same context must be changed to generate an error if the object
       is not from the same group.
       </feature>
@@ -81,7 +81,7 @@ var ctx2 = canvas2.getContext("webgl", {
                   unless <code>flush</code> is called in the context making the change and
                   <code>bind???</code> for the resource in question is called in the
                   context that wants to observe the change. A context may see the change
-                  before binding but is only guarnteed to see the change after binding.</div>
+                  before binding but is only guaranteed to see the change after binding.</div>
       </li>
       <li>
           <div>Q: How do you tell if 2 contexts are sharing resources</div>
@@ -102,7 +102,7 @@ interface WEBGL_shared_resources {
     readonly attribute WebGLShareGroup group;
 };
 
-interface WEBGLShareGroup {
+interface WebGLShareGroup {
 };
   </idl>
   <history>
