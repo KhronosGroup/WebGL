@@ -115,13 +115,13 @@
           floor((width + 3) / 4) * floor((height + 3) / 4) * 8
           
           
-          If it is not an INVALID_OPERATION error is generated.
+          If it is not an INVALID_VALUE error is generated.
           
           When level equals zero width and height
           must be a multiple of 4. When level is greater than 0 width
           and height must be 0, 1, 2 or a multiple of 4.
           
-          If they are not an INVALID_VALUE error is generated.
+          If they are not an INVALID_OPERATION error is generated.
           
           
           For compressedTexSubImage2D xoffset and
@@ -129,7 +129,7 @@
           width must be a multiple of 4 or equal to the original
           width of the level. height must be a multiple of 4 or
           equal to the original height of the level.
-          If they are not an INVALID_VALUE error is generated.
+          If they are not an INVALID_OPERATION error is generated.
           
           
 
@@ -142,13 +142,13 @@
           floor((width + 3) / 4) * floor((height + 3) / 4) * 16
           
           
-          If it is not an INVALID_OPERATION error is generated.
+          If it is not an INVALID_VALUE error is generated.
           
           When level equals zero width and height
           must be a multiple of 4. When level is greater than 0 width
           and height must be 0, 1, 2 or a multiple of 4.
           
-          If they are not an INVALID_VALUE error is generated.
+          If they are not an INVALID_OPERATION error is generated.
           
           
           For compressedTexSubImage2D xoffset and
@@ -156,7 +156,7 @@
           width must be a multiple of 4 or equal to the original
           width of the level. height must be a multiple of 4 or
           equal to the original height of the level.
-          If they are not an INVALID_VALUE error is generated.
+          If they are not an INVALID_OPERATION error is generated.
           
           
       
@@ -230,9 +230,42 @@ interface WEBGL_depth_texture {
     
       Added provisions to exclude cube depth textures.
     
+    
+      Changed referenced WebGL API version from 2.0 to 1.0
+    
   
-<draft href="proposals/OES_element_index_uint"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
-      <change>Initial revision.</change>
-    </revision><revision date="2012/01/27" number="2">
-      <change>Removed the bufferData requirement as this is not checked by webgl</change>
-    </revision></history></draft></registry>
+
+  OES_element_index_uint
+  
+    WebGL working group (public_webgl 'at' khronos.org)
+  
+  
+    Members of the WebGL working group
+    Florian Bösch
+  
+  10
+  
+    
+  
+  
+    
+    
+      
+        The drawElements entry point parameter type accepts the value UNSIGNED_INT
+      
+    
+  
+  
+interface OES_element_index_uint {
+  const GLenum UNSIGNED_INT = 0x1405;
+};
+  
+  
+    
+      Initial revision.
+    
+    
+      Removed the bufferData requirement as this is not checked by webgl
+    
+  
+</registry>

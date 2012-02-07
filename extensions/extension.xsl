@@ -11,6 +11,7 @@
   <xsl:call-template name="ext_page">
     <xsl:with-param name="spec_type" select="'Extension Specification'" />
     <xsl:with-param name="css" select="concat($basepath,'/resources/Khronos-Final.css')" />
+    <xsl:with-param name="spec_status" select="'complete'" />
   </xsl:call-template>
 </xsl:template>
 
@@ -18,6 +19,7 @@
   <xsl:call-template name="ext_page">
     <xsl:with-param name="spec_type" select="'Extension Draft Specification'" />
     <xsl:with-param name="css" select="concat($basepath,'/resources/Khronos-WD.css')" />
+    <xsl:with-param name="spec_status" select="'draft'" />
   </xsl:call-template>
 </xsl:template>
 
@@ -25,12 +27,14 @@
   <xsl:call-template name="ext_page">
     <xsl:with-param name="spec_type" select="'Extension Proposed Specification'" />
     <xsl:with-param name="css" select="concat($basepath,'/resources/Khronos-Proposal.css')" />
+    <xsl:with-param name="spec_status" select="'proposal'" />
   </xsl:call-template>
 </xsl:template>
 
 <xsl:template name="ext_page">
   <xsl:param name="spec_type" />
   <xsl:param name="css" />
+  <xsl:param name="spec_status" />
   <xsl:variable name="title">
     <xsl:text>WebGL </xsl:text>
     <xsl:value-of select="name" />
@@ -49,7 +53,7 @@
 
       <h1><xsl:value-of select="$title" /></h1>
       
-      <xsl:if test="??">
+      <xsl:if test="$spec_status='proposal'">
       <p><strong>DO NOT IMPLEMENT!!!</strong></p>
       </xsl:if>
 

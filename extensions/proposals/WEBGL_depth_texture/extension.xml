@@ -11,7 +11,7 @@
   </contributors>
   <number>9</number>
   <depends>
-    <api version="2.0"/>
+    <api version="1.0"/>
   </depends>
   <overview>
     <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_depth_texture.txt" name="OES_depth_texture">
@@ -53,6 +53,9 @@ interface WEBGL_depth_texture {
     </revision>
     <revision date="2012/01/25">
       <change>Added provisions to exclude cube depth textures.</change>
+    </revision>
+    <revision date="2012/02/06">
+      <change>Changed referenced WebGL API version from 2.0 to 1.0</change>
     </revision>
   </history>
 </proposal>
