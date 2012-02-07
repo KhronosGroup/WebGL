@@ -5,7 +5,7 @@ EXTS := OES_standard_derivatives \
 	WEBGL_lose_context \
 	WEBGL_debug_renderer_info \
 	WEBGL_debug_shaders \
-	proposals/WEBGL_compressed_texture_s3tc \
+	WEBGL_compressed_texture_s3tc \
 	proposals/WEBGL_depth_texture \
 	proposals/WEBGL_shared_resources \
 	proposals/OES_element_index_uint \

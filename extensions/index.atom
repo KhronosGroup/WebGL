@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>WebGL Extension Registry Revisions</title><link href="http://www.khronos.org/registry/webgl/extensions/index.atom" rel="self" type="application/atom+xml"/><link href="http://www.khronos.org/registry/webgl/extensions/" rel="alternate" type="text/html"/><id>http://www.khronos.org/registry/webgl/extensions/index.atom</id><updated>2012-01-03T23:59:59Z</updated><author>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>WebGL Extension Registry Revisions</title><link href="http://www.khronos.org/registry/webgl/extensions/index.atom" rel="self" type="application/atom+xml"/><link href="http://www.khronos.org/registry/webgl/extensions/" rel="alternate" type="text/html"/><id>http://www.khronos.org/registry/webgl/extensions/index.atom</id><updated>2012-01-25T23:59:59Z</updated><author>
     <name>WebGL Working Group</name>
     <email>public_webgl@khronos.org</email>
-  </author><entry><title>OES_standard_derivatives : revision 3</title><link rel="alternate" type="text/html" href="OES_standard_derivatives/"/><id>OES_standard_derivatives/#r=3</id><updated>2012-01-03T23:59:59Z</updated><summary>Removed webgl module per changes to Web IDL spec.
+  </author><entry><title>WEBGL_compressed_texture_s3tc : revision 1</title><link rel="alternate" type="text/html" href="proposals/WEBGL_compressed_texture_s3tc/"/><id>proposals/WEBGL_compressed_texture_s3tc/#r=1</id><updated>2012-01-25T23:59:59Z</updated><summary>Initial revision.
+              
+            </summary></entry><entry><title>OES_standard_derivatives : revision 3</title><link rel="alternate" type="text/html" href="OES_standard_derivatives/"/><id>OES_standard_derivatives/#r=3</id><updated>2012-01-03T23:59:59Z</updated><summary>Removed webgl module per changes to Web IDL spec.
               
             </summary></entry><entry><title>OES_texture_float : revision 4</title><link rel="alternate" type="text/html" href="OES_texture_float/"/><id>OES_texture_float/#r=4</id><updated>2012-01-03T23:59:59Z</updated><summary>Removed webgl module per changes to Web IDL spec.
               
@@ -21,7 +23,5 @@
             </summary></entry><entry><title>OES_vertex_array_object : revision 4</title><link rel="alternate" type="text/html" href="OES_vertex_array_object/"/><id>OES_vertex_array_object/#r=4</id><updated>2011-12-07T23:59:59Z</updated><summary>Renamed "Name Strings" section to "Alias Name Strings".
               
             Sorted Revision History in ascending order.
-              
-            </summary></entry><entry><title>WEBGL_lose_context : revision 6</title><link rel="alternate" type="text/html" href="WEBGL_lose_context/"/><id>WEBGL_lose_context/#r=6</id><updated>2011-12-07T23:59:59Z</updated><summary>Renamed "Name Strings" section to "Alias Name Strings".
               
             </summary></entry></feed>
