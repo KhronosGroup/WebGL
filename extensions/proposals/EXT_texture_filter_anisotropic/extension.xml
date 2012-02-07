@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<proposal href="proposals/EXT_texture_filter_anisotropic">
+  <name>EXT_texture_filter_anisotropic</name>
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
+  </contact>
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+    <contributor>Florian B&#246;sch (pyalot 'at' gmail.com)</contributor>
+  </contributors>
+  <number>11</number>
+  <depends>
+    <api version="1.0" />
+  </depends>
+  <overview>
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/texture_filter_anisotropic.txt" name="EXT_texture_filter_anisotropic"/>
+    <features>
+      <feature>
+        The <code>getTexParameter</code>, <code>texParameterf</code> and <code>texParameteri</code> entry points'
+        parameter <code>pname</code> accepts the value <code>TEXTURE_MAX_ANISOTROPY</code>
+      </feature>
+      <feature>
+        The <code>getParameter</code> entry point parameter <code>pname</code> accepts the value <code>MAX_TEXTURE_MAX_ANISOTROPY</code>, returning a value of type <code>float</code>.
+      </feature>
+    </features>
+  </overview>
+  <idl>
+interface EXT_texture_filter_anisotropic {
+  const GLenum TEXTURE_MAX_ANISOTROPY     = 0x84FE;
+  const GLenum MAX_TEXTURE_MAX_ANISOTROPY = 0x84FF;
+};
+  </idl>
+  <history>
+    <revision date="2012/01/27">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</proposal>

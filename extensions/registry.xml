@@ -268,4 +268,40 @@ interface OES_element_index_uint {
       Removed the bufferData requirement as this is not checked by webgl
     
   
+
+  EXT_texture_filter_anisotropic
+  
+    WebGL working group (public_webgl 'at' khronos.org)
+  
+  
+    Members of the WebGL working group
+    Florian Bösch (pyalot 'at' gmail.com)
+  
+  11
+  
+    
+  
+  
+    
+    
+      
+        The getTexParameter, texParameterf and texParameteri entry points'
+        parameter pname accepts the value TEXTURE_MAX_ANISOTROPY
+      
+      
+        The getParameter entry point parameter pname accepts the value MAX_TEXTURE_MAX_ANISOTROPY, returning a value of type float.
+      
+    
+  
+  
+interface EXT_texture_filter_anisotropic {
+  const GLenum TEXTURE_MAX_ANISOTROPY     = 0x84FE;
+  const GLenum MAX_TEXTURE_MAX_ANISOTROPY = 0x84FF;
+};
+  
+  
+    
+      Initial revision.
+    
+  
 </registry>
