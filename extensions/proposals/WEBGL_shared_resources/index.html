@@ -97,14 +97,18 @@ interface WebGLShareGroup {
           </div>
       </li>
       <li>
-          <div>Q: Does any care need to be taken to ensure changes to resources in one context
+          <div>Q: Does a WebGL implementation need to take any special care to ensure changes to resources in one context
                   are seen in another context.</div>
-          <div>A: No. The OpenGL ES 2.0 spec Appendix C.2.3 seems to make it pretty clear that changes to
+          <div>A: Maybe? The OpenGL ES 2.0 spec Appendix C.2.3 seems to makes it clear that changes to
                   a resource in one context are not guarnteed to be seen in another context
                   unless <code>flush</code> is called in the context making the change and
                   <code>bind???</code> for the resource in question is called in the
                   context that wants to observe the change. A context may see the change
-                  before binding but is only guaranteed to see the change after binding.</div>
+                  before binding but is only guaranteed to see the change after binding.<br><br>
+                  Unfortunately there are undefined implicit flushes in WebGL, usually by
+                  the browser's compositor. The differences on when those flushes happen will
+                  mean developers not calling flush directly will see different behaivor
+                  on different browsers.</div>
       </li>
       <li>
           <div>Q: How do you tell if 2 contexts are sharing resources</div>
