@@ -31,6 +31,8 @@ shader-with-frag-depth.frag.html
 shader-with-function-recursion.frag.html
 --min-version 1.0.2 shader-with-function-scoped-struct.html
 --min-version 1.0.2 shader-with-functional-scoping.html
+--min-version 1.0.2 shader-with-comma-assignment.html
+--min-version 1.0.2 shader-with-comma-conditional-assignment.html
 shader-with-glcolor.vert.html
 shader-with-gles-1.frag.html
 shader-with-gles-symbol.frag.html
