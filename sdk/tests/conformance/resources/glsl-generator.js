@@ -213,12 +213,6 @@ var generateTestShader = function(
   return shader;
 };
 
-var makeImage = function(canvas) {
-  var img = document.createElement('img');
-  img.src = canvas.toDataURL();
-  return img;
-};
-
 var runFeatureTest = function(params) {
   if (window.initNonKhronosFramework) {
     window.initNonKhronosFramework(false);
@@ -314,19 +308,19 @@ var runFeatureTest = function(params) {
           tests[ii]);
 
       debug("");
-      addShaderSource(
-          "reference vertex shader", referenceVertexShaderSource);
-      addShaderSource(
-          "reference fragment shader", referenceFragmentShaderSource);
-      addShaderSource(
-          "test vertex shader", testVertexShaderSource);
-      addShaderSource(
-          "test fragment shader", testFragmentShaderSource);
+      wtu.addShaderSource(
+          console, "reference vertex shader", referenceVertexShaderSource);
+      wtu.addShaderSource(
+          console, "reference fragment shader", referenceFragmentShaderSource);
+      wtu.addShaderSource(
+          console, "test vertex shader", testVertexShaderSource);
+      wtu.addShaderSource(
+          console, "test fragment shader", testFragmentShaderSource);
       debug("");
 
       var refData = draw(
           canvas, referenceVertexShaderSource, referenceFragmentShaderSource);
-      var refImg = makeImage(canvas);
+      var refImg = wtu.makeImage(canvas);
       if (ss == 0) {
         var testData = draw(
             canvas, testVertexShaderSource, referenceFragmentShaderSource);
@@ -334,43 +328,13 @@ var runFeatureTest = function(params) {
         var testData = draw(
             canvas, referenceVertexShaderSource, testFragmentShaderSource);
       }
-      var testImg = makeImage(canvas);
+      var testImg = wtu.makeImage(canvas);
 
       reportResults(refData, refImg, testData, testImg, shaderInfo.tolerance);
     }
   }
 
   finishTest();
-
-  function addShaderSource(label, source) {
-    var div = document.createElement("div");
-    var s = document.createElement("pre");
-    s.className = "shader-source";
-    s.style.display = "none";
-    var ol = document.createElement("ol");
-    //s.appendChild(document.createTextNode(source));
-    var lines = source.split("\n");
-    for (var ii = 0; ii < lines.length; ++ii) {
-      var line = lines[ii];
-      var li = document.createElement("li");
-      li.appendChild(document.createTextNode(line));
-      ol.appendChild(li);
-    }
-    s.appendChild(ol);
-    var l = document.createElement("a");
-    l.href = "show-shader-source";
-    l.appendChild(document.createTextNode(label));
-    l.addEventListener('click', function(event) {
-        if (event.preventDefault) {
-          event.preventDefault();
-        }
-        s.style.display = (s.style.display == 'none') ? 'block' : 'none';
-        return false;
-      }, false);
-    div.appendChild(l);
-    div.appendChild(s);
-    console.appendChild(div);
-  }
 
   function reportResults(refData, refImage, testData, testImage, tolerance) {
     var same = true;
@@ -395,26 +359,18 @@ var runFeatureTest = function(params) {
     var diffImg = null;
     if (!same) {
       ctx.putImageData(imgData, 0, 0);
-      diffImg = makeImage(canvas2d);
+      diffImg = wtu.makeImage(canvas2d);
     }
 
     var div = document.createElement("div");
     div.className = "testimages";
-    insertImg(div, "ref", refImg);
-    insertImg(div, "test", testImg);
+    wtu.insertImage(div, "ref", refImg);
+    wtu.insertImage(div, "test", testImg);
     if (diffImg) {
-      insertImg(div, "diff", diffImg);
+      wtu.insertImage(div, "diff", diffImg);
     }
     div.appendChild(document.createElement('br'));
 
-    function insertImg(element, caption, img) {
-      var div = document.createElement("div");
-      div.appendChild(img);
-      var label = document.createElement("div");
-      label.appendChild(document.createTextNode(caption));
-      div.appendChild(label);
-      element.appendChild(div);
-    }
 
     console.appendChild(div);
 
@@ -541,19 +497,19 @@ var runBasicTest = function(params) {
           test.test.subs);
 
       debug("");
-      addShaderSource(
-          "reference vertex shader", referenceVertexShaderSource);
-      addShaderSource(
-          "reference fragment shader", referenceFragmentShaderSource);
-      addShaderSource(
-          "test vertex shader", testVertexShaderSource);
-      addShaderSource(
-          "test fragment shader", testFragmentShaderSource);
+      wtu.addShaderSource(
+          console, "reference vertex shader", referenceVertexShaderSource);
+      wtu.addShaderSource(
+          console, "reference fragment shader", referenceFragmentShaderSource);
+      wtu.addShaderSource(
+          console, "test vertex shader", testVertexShaderSource);
+      wtu.addShaderSource(
+          console, "test fragment shader", testFragmentShaderSource);
       debug("");
 
       var refData = draw(
           canvas, referenceVertexShaderSource, referenceFragmentShaderSource);
-      var refImg = makeImage(canvas);
+      var refImg = wtu.makeImage(canvas);
       if (ss == 0) {
         var testData = draw(
             canvas, testVertexShaderSource, referenceFragmentShaderSource);
@@ -561,43 +517,13 @@ var runBasicTest = function(params) {
         var testData = draw(
             canvas, referenceVertexShaderSource, testFragmentShaderSource);
       }
-      var testImg = makeImage(canvas);
+      var testImg = wtu.makeImage(canvas);
 
       reportResults(refData, refImg, testData, testImg, shaderInfo.tolerance);
     }
   }
 
   finishTest();
-
-  function addShaderSource(label, source) {
-    var div = document.createElement("div");
-    var s = document.createElement("pre");
-    s.className = "shader-source";
-    s.style.display = "none";
-    var ol = document.createElement("ol");
-    //s.appendChild(document.createTextNode(source));
-    var lines = source.split("\n");
-    for (var ii = 0; ii < lines.length; ++ii) {
-      var line = lines[ii];
-      var li = document.createElement("li");
-      li.appendChild(document.createTextNode(line));
-      ol.appendChild(li);
-    }
-    s.appendChild(ol);
-    var l = document.createElement("a");
-    l.href = "show-shader-source";
-    l.appendChild(document.createTextNode(label));
-    l.addEventListener('click', function(event) {
-        if (event.preventDefault) {
-          event.preventDefault();
-        }
-        s.style.display = (s.style.display == 'none') ? 'block' : 'none';
-        return false;
-      }, false);
-    div.appendChild(l);
-    div.appendChild(s);
-    console.appendChild(div);
-  }
 
   function reportResults(refData, refImage, testData, testImage, tolerance) {
     var same = true;
@@ -622,26 +548,17 @@ var runBasicTest = function(params) {
     var diffImg = null;
     if (!same) {
       ctx.putImageData(imgData, 0, 0);
-      diffImg = makeImage(canvas2d);
+      diffImg = wtu.makeImage(canvas2d);
     }
 
     var div = document.createElement("div");
     div.className = "testimages";
-    insertImg(div, "ref", refImg);
-    insertImg(div, "test", testImg);
+    wtu.insertImage(div, "ref", refImg);
+    wtu.insertImage(div, "test", testImg);
     if (diffImg) {
-      insertImg(div, "diff", diffImg);
+      wtu.insertImage(div, "diff", diffImg);
     }
     div.appendChild(document.createElement('br'));
-
-    function insertImg(element, caption, img) {
-      var div = document.createElement("div");
-      div.appendChild(img);
-      var label = document.createElement("div");
-      label.appendChild(document.createTextNode(caption));
-      div.appendChild(label);
-      element.appendChild(div);
-    }
 
     console.appendChild(div);
 

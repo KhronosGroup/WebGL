@@ -1151,7 +1151,53 @@ var getUrlArguments = function() {
   return args;
 };
 
+var makeImage = function(canvas) {
+  var img = document.createElement('img');
+  img.src = canvas.toDataURL();
+  return img;
+};
+
+var insertImage = function(element, caption, img) {
+  var div = document.createElement("div");
+  div.appendChild(img);
+  var label = document.createElement("div");
+  label.appendChild(document.createTextNode(caption));
+  div.appendChild(label);
+   element.appendChild(div);
+};
+
+var addShaderSource = function(element, label, source) {
+  var div = document.createElement("div");
+  var s = document.createElement("pre");
+  s.className = "shader-source";
+  s.style.display = "none";
+  var ol = document.createElement("ol");
+  //s.appendChild(document.createTextNode(source));
+  var lines = source.split("\n");
+  for (var ii = 0; ii < lines.length; ++ii) {
+    var line = lines[ii];
+    var li = document.createElement("li");
+    li.appendChild(document.createTextNode(line));
+    ol.appendChild(li);
+  }
+  s.appendChild(ol);
+  var l = document.createElement("a");
+  l.href = "show-shader-source";
+  l.appendChild(document.createTextNode(label));
+  l.addEventListener('click', function(event) {
+      if (event.preventDefault) {
+        event.preventDefault();
+      }
+      s.style.display = (s.style.display == 'none') ? 'block' : 'none';
+      return false;
+    }, false);
+  div.appendChild(l);
+  div.appendChild(s);
+  element.appendChild(div);
+}
+
 return {
+  addShaderSource: addShaderSource,
   create3DContext: create3DContext,
   create3DContextWithWrapperThatThrowsOnGLError:
     create3DContextWithWrapperThatThrowsOnGLError,
@@ -1167,6 +1213,7 @@ return {
   glEnumToString: glEnumToString,
   glErrorShouldBe: glErrorShouldBe,
   fillTexture: fillTexture,
+  insertImage: insertImage,
   loadImageAsync: loadImageAsync,
   loadImagesAsync: loadImagesAsync,
   loadProgram: loadProgram,
@@ -1183,6 +1230,7 @@ return {
   loadTexture: loadTexture,
   log: log,
   loggingOff: loggingOff,
+  makeImage: makeImage,
   error: error,
   setupProgram: setupProgram,
   setupQuad: setupQuad,

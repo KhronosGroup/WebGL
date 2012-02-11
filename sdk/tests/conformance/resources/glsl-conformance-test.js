@@ -42,6 +42,8 @@ function runOneTest(gl, info) {
   var passMsg = info.passMsg
   debug("test: " + passMsg);
 
+  var console = document.getElementById("console");
+
   if (info.vShaderSource === undefined) {
     if (info.vShaderId) {
       info.vShaderSource = document.getElementById(info.vShaderId).text;
@@ -59,8 +61,13 @@ function runOneTest(gl, info) {
     }
   }
 
+  var vLabel = (info.vShaderSource == defaultVertexShader ? "default" : "test") + " vertex shader";
+  var fLabel = (info.fShaderSource == defaultFragmentShader ? "default" : "test") + " fragment shader";
+
   var vSource = info.vShaderPrep ? info.vShaderPrep(info.vShaderSource) :
     info.vShaderSource;
+
+  wtu.addShaderSource(console, vLabel, vSource);
 
   // Reuse identical shaders so we test shared shader.
   var vShader = vShaderDB[vSource];
@@ -86,6 +93,8 @@ function runOneTest(gl, info) {
 
   var fSource = info.fShaderPrep ? info.fShaderPrep(info.fShaderSource) :
     info.fShaderSource;
+
+  wtu.addShaderSource(console, fLabel, fSource);
 
   // Reuse identical shaders so we test shared shader.
   var fShader = fShaderDB[fSource];
@@ -143,26 +152,9 @@ function runOneTest(gl, info) {
   wtu.setupUnitQuad(gl);
   wtu.drawQuad(gl);
 
-  var makeImage = function(canvas) {
-    var img = document.createElement('img');
-    img.src = canvas.toDataURL();
-    img.style.border="1px solid black";
-    return img;
-  };
-
-  function insertImg(element, caption, img) {
-    var div = document.createElement("div");
-    div.appendChild(img);
-    var label = document.createElement("div");
-    label.appendChild(document.createTextNode(caption));
-    div.appendChild(label);
-    element.appendChild(div);
-  }
-
-  var console = document.getElementById("console");
   var div = document.createElement("div");
   div.className = "testimages";
-  insertImg(div, "result", makeImage(gl.canvas));
+  wtu.insertImage(div, "result", wtu.makeImage(gl.canvas));
   div.appendChild(document.createElement('br'));
   console.appendChild(div);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
