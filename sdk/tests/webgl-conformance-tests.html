@@ -68,14 +68,14 @@ function start() {
       canvas = document.createElement("canvas");
     }
     var context = null;
-    try {
-        context = canvas.getContext("webgl");
-    } catch(e) {
-    }
-    if (!context) {
+    var names = ["webgl", "experimental-webgl"];
+    for (var i = 0; i < names.length; ++i) {
       try {
-          context = canvas.getContext("experimental-webgl");
-      } catch(e) {
+        context = canvas.getContext(names[i]);
+      } catch (e) {
+      }
+      if (context) {
+        break;
       }
     }
     return context;

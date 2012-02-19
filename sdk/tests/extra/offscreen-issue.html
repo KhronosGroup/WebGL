@@ -11,7 +11,13 @@ window.onload = function() {
 
 function setup(id) {
   var c = document.getElementById(id);
-  var gl = c.getContext("experimental-webgl");
+  var names = ["webgl", "experimental-webgl"];
+  for (var i = 0; i < names.length; ++i) {
+    gl = canvas.getContext(names[i]);
+    if (gl) {
+      break;
+    }
+  }
   gl.clearColor(1,0,0,1);
   gl.clear(gl.COLOR_BUFFER_BIT);
   setTimeout(function() {
