@@ -201,6 +201,25 @@ var setupSimpleTextureProgram = function(
  *      created.
  */
 var setupUnitQuad = function(gl, opt_positionLocation, opt_texcoordLocation) {
+  return setupUnitQuadWithTexCoords(gl, [ 0.0, 0.0 ], [ 1.0, 1.0 ],
+                                    opt_positionLocation, opt_texcoordLocation);
+};
+
+/**
+ * Creates buffers for a textured unit quad with specified lower left
+ * and upper right texture coordinates, and attaches them to vertex
+ * attribs.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!Array.<number>} lowerLeftTexCoords The texture coordinates for the lower left corner.
+ * @param {!Array.<number>} upperRightTexCoords The texture coordinates for the upper right corner.
+ * @param {number} opt_positionLocation The attrib location for position.
+ * @param {number} opt_texcoordLocation The attrib location for texture coords.
+ * @return {!Array.<WebGLBuffer>} The buffer objects that were
+ *      created.
+ */
+var setupUnitQuadWithTexCoords = function(
+    gl, lowerLeftTexCoords, upperRightTexCoords,
+    opt_positionLocation, opt_texcoordLocation) {
   opt_positionLocation = opt_positionLocation || 0;
   opt_texcoordLocation = opt_texcoordLocation || 1;
   var objects = [];
@@ -218,15 +237,20 @@ var setupUnitQuad = function(gl, opt_positionLocation, opt_texcoordLocation) {
   gl.vertexAttribPointer(opt_positionLocation, 3, gl.FLOAT, false, 0, 0);
   objects.push(vertexObject);
 
+  var llx = lowerLeftTexCoords[0];
+  var lly = lowerLeftTexCoords[1];
+  var urx = upperRightTexCoords[0];
+  var ury = upperRightTexCoords[1];
+
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      1.0, 1.0,
-      0.0, 1.0,
-      0.0, 0.0,
-      1.0, 1.0,
-      0.0, 0.0,
-      1.0, 0.0]), gl.STATIC_DRAW);
+      urx, ury,
+      llx, ury,
+      llx, lly,
+      urx, ury,
+      llx, lly,
+      urx, lly]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(opt_texcoordLocation);
   gl.vertexAttribPointer(opt_texcoordLocation, 2, gl.FLOAT, false, 0, 0);
   objects.push(vertexObject);
@@ -249,9 +273,29 @@ var setupTexturedQuad = function(
 };
 
 /**
- * Creates a unit quad with only positions of a given rez
+ * Creates a program and buffers for rendering a textured quad with
+ * specified lower left and upper right texture coordinates.
  * @param {!WebGLContext} gl The WebGLContext to use.
- * @param {number} gridRez The resolution of the mesh grid.
+ * @param {!Array.<number>} lowerLeftTexCoords The texture coordinates for the lower left corner.
+ * @param {!Array.<number>} upperRightTexCoords The texture coordinates for the upper right corner.
+ * @param {number} opt_positionLocation The attrib location for position.
+ * @param {number} opt_texcoordLocation The attrib location for texture coords.
+ * @return {!WebGLProgram}
+ */
+var setupTexturedQuadWithTexCoords = function(
+    gl, lowerLeftTexCoords, upperRightTexCoords,
+    opt_positionLocation, opt_texcoordLocation) {
+  var program = setupSimpleTextureProgram(
+      gl, opt_positionLocation, opt_texcoordLocation);
+  setupUnitQuadWithTexCoords(gl, lowerLeftTexCoords, upperRightTexCoords,
+                             opt_positionLocation, opt_texcoordLocation);
+  return program;
+};
+
+/**
+ * Creates a unit quad with only positions of a given resolution.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {number} gridRes The resolution of the mesh grid, expressed in the number of triangles across and down.
  * @param {number} opt_positionLocation The attrib location for position.
  */
 var setupQuad = function (
@@ -1240,7 +1284,9 @@ return {
   setupSimpleTextureProgram: setupSimpleTextureProgram,
   setupSimpleTextureVertexShader: setupSimpleTextureVertexShader,
   setupTexturedQuad: setupTexturedQuad,
+  setupTexturedQuadWithTexCoords: setupTexturedQuadWithTexCoords,
   setupUnitQuad: setupUnitQuad,
+  setupUnitQuadWithTexCoords: setupUnitQuadWithTexCoords,
   setupWebGLWithShaders: setupWebGLWithShaders,
   startsWith: startsWith,
   shouldGenerateGLError: shouldGenerateGLError,
