@@ -3,6 +3,7 @@ embedded-struct-definitions-forbidden.html
 # this test is intentionally disabled as it is too strict and to hard to simulate
 # glsl-2types-of-textures-on-same-unit.html
 glsl-function-nodes.html
+--min-version 1.0.2 glsl-vertex-branch.html
 glsl-long-variable-names.html
 non-ascii-comments.vert.html
 non-ascii.vert.html
