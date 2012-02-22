@@ -129,13 +129,25 @@ var setupSimpleTextureFragmentShader = function(gl) {
 /**
  * Creates a program, attaches shaders, binds attrib locations, links the
  * program and calls useProgram.
- * @param {!Array.<!WebGLShader>} shaders The shaders to attach .
+ * @param {!Array.<!WebGLShader|string>} shaders The shaders to
+ *        attach, or the source, or the id of a script to get
+ *        the source from.
  * @param {!Array.<string>} opt_attribs The attribs names.
  * @param {!Array.<number>} opt_locations The locations for the attribs.
  */
 var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
+  var realShaders = [];
   var program = gl.createProgram();
   for (var ii = 0; ii < shaders.length; ++ii) {
+    var shader = shaders[ii];
+    if (typeof shader == 'string') {
+      var element = document.getElementById(shader);
+      if (element) {
+        shader = loadShaderFromScript(gl, shader);
+      } else {
+        shader = loadShader(gl, shader, ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER);
+      }
+    }
     gl.attachShader(program, shaders[ii]);
   }
   if (opt_attribs) {
@@ -491,12 +503,17 @@ var loadTexture = function(gl, url, callback) {
 
 /**
  * Creates a webgl context.
- * @param {!Canvas} opt_canvas The canvas tag to get context from. If one is not
- *     passed in one will be created.
+ * @param {!Canvas|string} opt_canvas The canvas tag to get
+ *     context from. If one is not passed in one will be
+ *     created. If it's a string it's assumed to be the id of a
+ *     canvas.
  * @return {!WebGLContext} The created context.
  */
 var create3DContext = function(opt_canvas, opt_attributes) {
   opt_canvas = opt_canvas || document.createElement("canvas");
+  if (typeof opt_canvas == 'string') {
+    opt_canvas = document.getElementById(opt_canvas);
+  }
   var context = null;
   var names = ["webgl", "experimental-webgl"];
   for (var i = 0; i < names.length; ++i) {
