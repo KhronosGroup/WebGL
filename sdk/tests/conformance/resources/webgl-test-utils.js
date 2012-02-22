@@ -148,7 +148,7 @@ var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
         shader = loadShader(gl, shader, ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER);
       }
     }
-    gl.attachShader(program, shaders[ii]);
+    gl.attachShader(program, shader);
   }
   if (opt_attribs) {
     for (var ii = 0; ii < opt_attribs.length; ++ii) {
