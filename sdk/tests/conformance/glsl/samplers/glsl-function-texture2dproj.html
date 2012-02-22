@@ -86,10 +86,8 @@ for (var ss = 0; ss < 2; ++ss) {
   debug("");
   debug(ss ? "testing vec4 version" : "testing vec3 version");
   var program = wtu.setupProgram(
-	  gl,
-	  [wtu.loadShaderFromScript(gl, 'vshader' + ss, gl.VERTEX_SHADER),
-	   wtu.loadShaderFromScript(gl, 'fshader' + ss, gl.FRAGMENT_SHADER)],
-	  ['vPosition', 'texCoord0'], [0, 1]);
+	  gl, ['vshader' + ss, 'fshader' + ss],
+      ['vPosition', 'texCoord0'], [0, 1]);
   gl.useProgram(program);
   var loc = gl.getUniformLocation(program, "divisor");
 

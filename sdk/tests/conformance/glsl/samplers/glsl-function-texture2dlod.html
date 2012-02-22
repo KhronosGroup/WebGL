@@ -47,10 +47,7 @@ shouldBe("canvas.height", "256");
 
 var gl = wtu.create3DContext(canvas);
 var program = wtu.setupProgram(
-    gl,
-    [wtu.loadShaderFromScript(gl, 'vshader2d', gl.VERTEX_SHADER),
-     wtu.loadShaderFromScript(gl, 'fshader2d', gl.FRAGMENT_SHADER)],
-    ['vPosition', 'texCoord0'], [0, 1]);
+    gl, ['vshader2d', 'fshader2d'], ['vPosition', 'texCoord0'], [0, 1]);
 wtu.setupUnitQuad(gl, 0, 1);
 
 var colors = [

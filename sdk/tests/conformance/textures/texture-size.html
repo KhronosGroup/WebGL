@@ -46,10 +46,7 @@ canvas = document.getElementById("example");
 gl = wtu.create3DContext(canvas);
 var program2D = wtu.setupTexturedQuad(gl);
 var programCubeMap = wtu.setupProgram(
-    gl,
-    [wtu.loadShaderFromScript(gl, 'vshader', gl.VERTEX_SHADER),
-     wtu.loadShaderFromScript(gl, 'fshader', gl.FRAGMENT_SHADER)],
-    ['vPosition', 'texCoord0'], [0, 1]);
+    gl, ['vshader', 'fshader'], ['vPosition', 'texCoord0'], [0, 1]);
 gl.disable(gl.DEPTH_TEST);
 gl.disable(gl.BLEND);
 var tex = gl.createTexture();

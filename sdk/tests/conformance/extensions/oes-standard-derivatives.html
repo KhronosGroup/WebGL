@@ -256,11 +256,7 @@ function runOutputTests() {
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.hint(ext.FRAGMENT_SHADER_DERIVATIVE_HINT_OES, gl.NICEST);
 
-    var shaders = [
-        wtu.loadShaderFromScript(gl, "outputVertexShader"),
-        wtu.loadShaderFromScript(gl, "outputFragmentShader")
-    ];
-    var program = wtu.setupProgram(gl, shaders, ['vPosition', 'texCoord0'], [0, 1]);
+    var program = wtu.setupProgram(gl, ["outputVertexShader", "outputFragmentShader"], ['vPosition', 'texCoord0'], [0, 1]);
     var quadParameters = wtu.setupUnitQuad(gl, 0, 1);
 
     function readLocation(x, y) {

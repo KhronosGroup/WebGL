@@ -50,8 +50,7 @@ function init()
   gl = wtu.create3DContext(canvas);
   var program = wtu.setupProgram(
       gl,
-      [wtu.loadShaderFromScript(gl, "vshader"),
-       wtu.setupSimpleTextureFragmentShader(gl)],
+      ["vshader", wtu.setupSimpleTextureFragmentShader(gl)],
       ['vPosition', 'texCoord0']);
   wtu.setupUnitQuad(gl);
   gl.disable(gl.DEPTH_TEST);

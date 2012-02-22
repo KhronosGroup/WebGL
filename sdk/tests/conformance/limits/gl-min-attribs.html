@@ -51,8 +51,7 @@ var program = wtu.setupTexturedQuad(gl);
 
 var program = wtu.setupProgram(
     gl,
-    [wtu.loadShaderFromScript(gl, 'vshader', gl.VERTEX_SHADER),
-     wtu.loadShaderFromScript(gl, 'fshader', gl.FRAGMENT_SHADER)],
+    ['vshader', 'fshader'],
     ['vPosition', 'v0', 'v1', 'v2', 'v3', 'v4', 'v5', 'v6'],
     [0, 1, 2, 3, 4, 5, 6, 7]);
 

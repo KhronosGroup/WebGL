@@ -119,10 +119,7 @@ glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 debug("");
 debug("check using cubemap");
 var program = wtu.setupProgram(
-    gl,
-    [wtu.loadShaderFromScript(gl, 'vshader', gl.VERTEX_SHADER),
-     wtu.loadShaderFromScript(gl, 'fshader', gl.FRAGMENT_SHADER)],
-    ['vPosition', 'texCoord0'], [0, 1]);
+    gl, ['vshader', 'fshader'], ['vPosition', 'texCoord0'], [0, 1]);
 var tex = gl.createTexture();
 
 // Check that an NPOT texture not on level 0 generates INVALID_VALUE

@@ -70,11 +70,7 @@ var gl = wtu.create3DContext(canvas);
 var program = wtu.setupTexturedQuad(gl);
 
 //------------------------------------------------------------------------------
-var program = wtu.setupProgram(
-    gl,
-    [wtu.loadShaderFromScript(gl, 'vshader', gl.VERTEX_SHADER),
-     wtu.loadShaderFromScript(gl, 'fshader', gl.FRAGMENT_SHADER)],
-    ['vPosition'], [0]);
+var program = wtu.setupProgram(gl, ['vshader', 'fshader'], ['vPosition'], [0]);
 
 for (var ii = 0; ii < 128; ++ii) {
   var loc = gl.getUniformLocation(program, "uni[" + ii + "]");
@@ -86,11 +82,7 @@ glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 wtu.checkCanvasRect(gl, 0, 0, canvas.width, canvas.height, [255, 127, 64, 255], "Should render 255,127,64,32 (+/-1)", 1);
 
 //------------------------------------------------------------------------------
-var program = wtu.setupProgram(
-    gl,
-    [wtu.loadShaderFromScript(gl, 'vshader2', gl.VERTEX_SHADER),
-     wtu.loadShaderFromScript(gl, 'fshader2', gl.FRAGMENT_SHADER)],
-    ['vPosition'], [0]);
+var program = wtu.setupProgram(gl, ['vshader2', 'fshader2'], ['vPosition'], [0]);
 
 for (var ii = 0; ii < 16; ++ii) {
   var loc = gl.getUniformLocation(program, "uni[" + ii + "]");
