@@ -59,8 +59,7 @@ void main() {
 <script>
 description(document.title);
 var wtu = WebGLTestUtils;
-var canvas = document.getElementById("example");
-var gl = wtu.create3DContext(canvas);
+var gl = wtu.create3DContext("example");
 
 var vsSource = document.getElementById("vshader").text;
 var fs1Source = document.getElementById("fshader1").text;

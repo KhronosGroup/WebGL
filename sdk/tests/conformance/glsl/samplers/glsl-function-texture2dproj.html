@@ -58,9 +58,7 @@ void main() {
 description("tests GLSL texture2DProj function with");
 
 var wtu = WebGLTestUtils;
-var canvas = document.getElementById("example");
-
-var gl = wtu.create3DContext(canvas, {antialias: false});
+var gl = wtu.create3DContext("example", {antialias: false});
 
 wtu.setupUnitQuad(gl, 0, 1);
 var tex = gl.createTexture();
