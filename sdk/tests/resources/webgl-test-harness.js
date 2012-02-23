@@ -101,6 +101,12 @@
 //
 //     example: new TestHarness(...., {minVersion: "2.3.1"});
 //
+// fast:
+//
+//     Specifies to skip any tests marked as slow.
+//
+//     example: new TestHarness(..., {fast: true});
+//
 // Test Options:
 //
 // Any test URL or .txt file can be prefixed by the following options
@@ -116,6 +122,14 @@
 //     including it. The default is 1.0.0
 //
 //     example:  --min-version 2.1.3 sometest.html
+//
+// slow:
+//
+//     Marks a test as slow. Slow tests can be skipped by passing fastOnly: true
+//     to the TestHarness. Of course you need to pass all tests but sometimes
+//     you'd like to test quickly and run only the fast subset of tests.
+//
+//     example:  --slow some-test-that-takes-2-mins.html
 //
 
 WebGLTestHarnessModule = function() {
@@ -230,7 +244,7 @@ var getFileList = function(url, callback, options) {
   var globalOptions = copyObject(options);
   globalOptions.defaultVersion = "1.0";
 
-  var getFileListImpl = function(prefix, line, hierarchicalOptions, callback) {
+  var getFileListImpl = function(prefix, line, lineNum, hierarchicalOptions, callback) {
     var files = [];
 
     var args = line.split(/\s+/);
@@ -241,16 +255,21 @@ var getFileList = function(url, callback, options) {
       var arg = args[jj];
       if (arg[0] == '-') {
         if (arg[1] != '-') {
-          throw ("bad option at in " + url + ":" + (ii + 1) + ": " + str);
+          throw ("bad option at in " + url + ":" + lineNum + ": " + arg);
         }
         var option = arg.substring(2);
         switch (option) {
+          // no argument options.
+          case 'slow':
+            testOptions[toCamelCase(option)] = true;
+            break;
+          // one argument options.
           case 'min-version':
             ++jj;
             testOptions[toCamelCase(option)] = args[jj];
             break;
           default:
-            throw ("bad unknown option '" + option + "' at in " + url + ":" + (ii + 1) + ": " + str);
+            throw ("bad unknown option '" + option + "' at in " + url + ":" + lineNum + ": " + arg);
         }
       } else {
         nonOptions.push(arg);
@@ -263,8 +282,14 @@ var getFileList = function(url, callback, options) {
       if (!minVersion) {
         minVersion = hierarchicalOptions.defaultVersion;
       }
+      var slow = testOptions.slow;
+      if (!slow) {
+        slow = hierarchicalOptions.defaultSlow;
+      }
 
-      if (globalOptions.minVersion) {
+      if (globalOptions.fast && slow) {
+        useTest = false;
+      } else if (globalOptions.minVersion) {
         useTest = greaterThanOrEqualToVersion(minVersion, globalOptions.minVersion);
       } else {
         useTest = greaterThanOrEqualToVersion(globalOptions.version, minVersion);
@@ -280,6 +305,9 @@ var getFileList = function(url, callback, options) {
       // If a version was explicity specified pass it down.
       if (testOptions.minVersion) {
         hierarchicalOptions.defaultVersion = testOptions.minVersion;
+      }
+      if (testOptions.slow) {
+        hierarchicalOptions.defaultSlow = testOptions.slow;
       }
       loadTextFileAsynchronous(url, function() {
         return function(success, text) {
@@ -303,9 +331,9 @@ var getFileList = function(url, callback, options) {
                 str[0] != ";" &&
                 str.substr(0, 2) != "//") {
               ++count;
-              getFileListImpl(prefix, str, copyObject(hierarchicalOptions), function(index) {
+              getFileListImpl(prefix, str, ii + 1, copyObject(hierarchicalOptions), function(index) {
                 return function(success, new_files) {
-                  log("got files: " + new_files.length);
+                  //log("got files: " + new_files.length);
                   if (success) {
                     files[index] = new_files;
                   }
@@ -321,7 +349,7 @@ var getFileList = function(url, callback, options) {
               fail = true;
             }
             --count;
-            log("count: " + count);
+            //log("count: " + count);
             if (!count) {
               callback(!fail, files);
             }
@@ -334,7 +362,7 @@ var getFileList = function(url, callback, options) {
     }
   };
 
-  getFileListImpl('', url, globalOptions, function(success, files) {
+  getFileListImpl('', url, 1, globalOptions, function(success, files) {
     // flatten
     var flat = [];
     flatten(files);
