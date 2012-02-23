@@ -54,6 +54,9 @@ function notifyFinishedToHarness() {
 
 function description(msg)
 {
+    if (msg === undefined) {
+      msg = document.getElementsByTagName("title")[0].innerText;
+    }
     // For MSIE 6 compatibility
     var span = document.createElement("span");
     span.innerHTML = '<p>' + msg + '</p><p>On success, you will see a series of "<span class="pass">PASS</span>" messages, followed by "<span class="pass">TEST COMPLETE</span>".</p>';

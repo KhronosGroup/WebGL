@@ -16,13 +16,14 @@
 //    var testHarness = new WebGLTestHarnessModule.TestHarness(
 //        iframe,
 //        fileListURL,
-//        reportResults);
+//        reportResults,
+//        options);
 //
 // The harness will load the fileListURL and parse it for the URLs, one URL
-// per line. URLs should be on the same domain and at the same folder level
-// or below the main html file.  If any URL ends in .txt it will be parsed
-// as well so you can nest .txt files. URLs inside a .txt file should be
-// relative to that text file.
+// per line preceded by options, see below. URLs should be on the same domain
+// and at the  same folder level or below the main html file.  If any URL ends
+// in .txt it will be parsed as well so you can nest .txt files. URLs inside a
+// .txt file should be relative to that text file.
 //
 // During startup, for each page found the reportFunction will be called with
 // WebGLTestHarnessModule.TestHarness.reportType.ADD_PAGE and msg will be
@@ -79,6 +80,42 @@
 //
 // Finally, when all the tests have completed the reportFunction will be called
 // with WebGLTestHarnessModule.TestHarness.reportType.FINISHED_ALL_TESTS.
+//
+// Harness Options
+//
+// These are passed in to the TestHarness as a JavaScript object
+//
+// version: (required!)
+//
+//     Specifies a version used to filter tests. Tests marked as requiring
+//     a version greater than this version will not be included.
+//
+//     example: new TestHarness(...., {version: "3.1.2"});
+//
+// minVersion:
+//
+//     Specifies the minimum version a test must require to be included.
+//     This basically flips the filter so that only tests marked with
+//     --min-version will be included if they are at this minVersion or
+//     greater.
+//
+//     example: new TestHarness(...., {minVersion: "2.3.1"});
+//
+// Test Options:
+//
+// Any test URL or .txt file can be prefixed by the following options
+//
+// min-version:
+//
+//     Sets the minimum version requires to include this test. A version is
+//     passed into the harness options. Any test marked as requiring a
+//     min-version greater than the version passed to the harness is skipped.
+//     This allows you to add new tests to a suite of tests for a future
+//     version of the suite without including the test in the current version.
+//     If no -min-version is specified it is inheriited from the .txt file
+//     including it. The default is 1.0.0
+//
+//     example:  --min-version 2.1.3 sometest.html
 //
 
 WebGLTestHarnessModule = function() {
