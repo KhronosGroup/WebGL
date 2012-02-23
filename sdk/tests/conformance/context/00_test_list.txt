@@ -1,5 +1,6 @@
 constants.html
 context-attributes-alpha-depth-stencil-antialias.html
+--min-version 1.0.2 --slow context-creation-and-destruction.html
 context-lost-restored.html
 context-lost.html
 context-type-test.html
