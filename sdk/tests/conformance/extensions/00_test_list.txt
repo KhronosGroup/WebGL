@@ -4,4 +4,4 @@ oes-vertex-array-object.html
 webgl-debug-renderer-info.html
 webgl-debug-shaders.html
 --min-version 1.0.2 webgl-compressed-texture-s3tc.html
-
+--min-version 1.0.2 ext-texture-filter-anisotropic.html
