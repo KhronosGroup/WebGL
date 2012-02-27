@@ -116,6 +116,28 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 
       </ul>
 
+    <h2 class="no-toc">Extension Development Process</h2>
+
+    <p>
+        Extensions move through three states during their
+        development: <em>proposed</em>, <em>draft</em>, and <em>official</em>.
+    </p>
+    <ul>
+        <li> <em>Proposed</em> extensions are intended for discussion on the public WebGL mailing
+        list, in order to move to <em>draft</em> status; they should not be implemented, even under
+        a vendor prefix. If consensus is reached in the community, the extension can be moved
+        to <em>draft</em> status.
+
+        <li> <em>Draft</em> extensions may be implemented under a vendor prefix for experimentation
+        purposes, in order to gain experience with the extension before finalizing it. Once
+        consensus is reached in the community, the extension can be moved to <em>official</em>
+        status.
+
+        <li> <em>Official</em> extensions should be implemented without a vendor prefix. Once
+        implemented by a vendor, support should not be removed unless there is a serious issue with
+        the extension, such as a security flaw.
+    </ul>
+
     <h2 class="no-toc">Official WebGL Extensions</h2>
 
     <table style="border: 2px; width: 100%;">
