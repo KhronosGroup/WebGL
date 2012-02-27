@@ -94,10 +94,7 @@ if (!gl) {
     runTestDisabled();
 
     // Query the extension and store globally so shouldBe can access it
-    ext = gl.getExtension("WEBGL_compressed_texture_s3tc");
-    if (!ext) {
-        ext = gl.getExtension("WEBKIT_WEBGL_compressed_texture_s3tc");
-    }
+    ext = wtu.getExtensionWithKnownPrefixes(gl, "WEBGL_compressed_texture_s3tc");
     if (!ext) {
         testPassed("No WEBGL_compressed_texture_s3tc support -- this is legal");
         runSupportedTest(false);
@@ -110,9 +107,8 @@ if (!gl) {
 }
 
 function runSupportedTest(extensionEnabled) {
-    var supported = gl.getSupportedExtensions();
-    if (supported.indexOf("WEBGL_compressed_texture_s3tc") >= 0 ||
-        supported.indexOf("WEBKIT_WEBGL_compressed_texture_s3tc") >= 0) {
+    var name = wtu.getSupportedExtensionWithKnownPrefixes(gl, "WEBGL_compressed_texture_s3tc");
+    if (name !== undefined) {
         if (extensionEnabled) {
             testPassed("WEBGL_compressed_texture_s3tc listed as supported and getExtension succeeded");
         } else {

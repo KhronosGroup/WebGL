@@ -29,26 +29,6 @@ var canvas = document.getElementById("canvas");
 var gl = create3DContext(canvas);
 var ext = null;
 
-var getExtension = function(){
-    ext = gl.getExtension("MOZ_EXT_texture_filter_anisotropic");
-    if(ext) return;
-
-    ext = gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
-    if(ext) return;
-
-    ext = gl.getExtension("EXT_texture_filter_anisotropic");
-    if(ext) return;
-}
-
-var listsExtension = function(){
-    var supported = gl.getSupportedExtensions();
-    if(supported.indexOf("MOZ_EXT_texture_filter_anisotropic") >= 0) return true;
-    if(supported.indexOf("WEBKIT_EXT_texture_filter_anisotropic") >= 0) return true;
-    if(supported.indexOf("EXT_texture_filter_anisotropic") >= 0) return true;
-
-    return false;
-}
-
 if (!gl) {
     testFailed("WebGL context does not exist");
 } else {
@@ -58,7 +38,7 @@ if (!gl) {
     runHintTestDisabled();
 
     // Query the extension and store globally so shouldBe can access it
-    getExtension();
+    ext = wtu.getExtensionWithKnownPrefixes(gl, "EXT_texture_filter_anisotropic");
 
     if (!ext) {
         testPassed("No EXT_texture_filter_anisotropic support -- this is legal");
@@ -73,7 +53,7 @@ if (!gl) {
 }
 
 function runSupportedTest(extensionEnabled) {
-    if (listsExtension()) {
+    if (wtu.getSupportedExtensionWithKnownPrefixes(gl, "EXT_texture_filter_anisotropic") !== undefined) {
         if (extensionEnabled) {
             testPassed("EXT_texture_filter_anisotropic listed as supported and getExtension succeeded");
         } else {
