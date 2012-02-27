@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<proposal href="proposals/EXT_texture_filter_anisotropic">
+<draft href="EXT_texture_filter_anisotropic">
   <name>EXT_texture_filter_anisotropic</name>
   <aliases>
     <alias>WEBKIT_EXT_texture_filter_anisotropic</alias>
@@ -43,4 +43,4 @@ interface EXT_texture_filter_anisotropic {
       <change>Added the EXT suffix to the enumerants and aliases to the extension name</change>
     </revision>
   </history>
-</proposal>
+</draft>

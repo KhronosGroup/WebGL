@@ -292,47 +292,8 @@ interface OES_element_index_uint {
       Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name
     
   
-
-  EXT_texture_filter_anisotropic
-  
-    WEBKIT_EXT_texture_filter_anisotropic
-    MOZ_EXT_texture_filter_anisotropic
-  
-  
-    WebGL working group (public_webgl 'at' khronos.org)
-  
-  
-    Members of the WebGL working group
-    Florian Bösch (pyalot 'at' gmail.com)
-  
-  11
-  
-    
-  
-  
-    
-    
-      
-        The getTexParameter, texParameterf and texParameteri entry points'
-        parameter pname accepts the value TEXTURE_MAX_ANISOTROPY_EXT
-      
-      
-        The getParameter entry point parameter pname accepts the value MAX_TEXTURE_MAX_ANISOTROPY_EXT, returning a value of type float.
-      
-    
-  
-  
-interface EXT_texture_filter_anisotropic {
-  const GLenum TEXTURE_MAX_ANISOTROPY_EXT       = 0x84FE;
-  const GLenum MAX_TEXTURE_MAX_ANISOTROPY_EXT   = 0x84FF;
-};
-  
-  
-    
-      Initial revision.
-    
-    
-      Added the EXT suffix to the enumerants and aliases to the extension name
-    
-  
-</registry>
+<draft href="EXT_texture_filter_anisotropic"><name>EXT_texture_filter_anisotropic</name><number>11</number><history><revision date="2012/01/27" number="1">
+      <change>Initial revision.</change>
+    </revision><revision date="2012/02/24" number="2">
+      <change>Added the EXT suffix to the enumerants and aliases to the extension name</change>
+    </revision></history></draft></registry>

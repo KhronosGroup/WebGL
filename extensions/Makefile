@@ -9,7 +9,7 @@ EXTS := OES_standard_derivatives \
 	proposals/WEBGL_depth_texture \
 	proposals/WEBGL_shared_resources \
 	proposals/OES_element_index_uint \
-	proposals/EXT_texture_filter_anisotropic
+	EXT_texture_filter_anisotropic
 
 EXT_XMLS := $(addsuffix /extension.xml,$(EXTS))
 EXT_IDXS := $(addsuffix /index.html,$(EXTS))
