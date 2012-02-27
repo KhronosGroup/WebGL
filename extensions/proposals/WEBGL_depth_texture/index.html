@@ -19,10 +19,10 @@
   </p>
 <h2 class="no-toc">Contributors</h2>
 <p>Members of the WebGL working group</p>
-<p>Florian Bösch</p>
+<p>Florian Bösch (pyalot 'at' gmail.com)</p>
 <h2 class="no-toc">Version</h2>
-<p> Last modified date: February 06, 2012<br>
-          Revision: 3</p>
+<p> Last modified date: February 24, 2012<br>
+          Revision: 4</p>
 <h2 class="no-toc">Number</h2>
 <p> WebGL extension #9</p>
 <h2 class="no-toc">Dependencies</h2>
@@ -53,12 +53,14 @@
         The <code>texImage2D</code> and <code>texSubImage2D</code> entry points are extended to accept <code>ArrayBufferView</code> of type <code>Uint16Array</code> and <code>Uint32Array</code>
       </li>
 </ul>
-  <h2 class="no-toc">IDL</h2>
+  <h2 class="no-toc">Alias Name Strings (for draft extensions)</h2>
+<ul>
+<li>WEBKIT_WEBGL_depth_texture</li>
+<li>MOZ_WEBGL_depth_texture</li>
+</ul>
+<h2 class="no-toc">IDL</h2>
 <p><pre class="idl">
 interface WEBGL_depth_texture {
-    const GLenum DEPTH_COMPONENT = 0x1902;
-    const GLenum UNSIGNED_SHORT  = 0x1403;
-    const GLenum UNSIGNED_INT    = 0x1405;
 };
   </pre></p>
 <h2 class="no-toc">Errors</h2>
@@ -72,5 +74,7 @@ interface WEBGL_depth_texture {
 <ul><li>Added provisions to exclude cube depth textures.</li></ul>
 <p>Revision 3, 2012/02/06</p>
 <ul><li>Changed referenced WebGL API version from 2.0 to 1.0</li></ul>
+<p>Revision 4, 2012/02/24</p>
+<ul><li>Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name</li></ul>
 </body>
 </html>

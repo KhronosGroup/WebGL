@@ -79,11 +79,15 @@
     </revision></history></draft>
   WEBGL_depth_texture
   
+    WEBKIT_WEBGL_depth_texture
+    MOZ_WEBGL_depth_texture
+  
+  
     WebGL working group (public_webgl 'at' khronos.org)
   
   
     Members of the WebGL working group
-    Florian Bösch
+    Florian Bösch (pyalot 'at' gmail.com)
   
   9
   
@@ -113,9 +117,6 @@
   
   
 interface WEBGL_depth_texture {
-    const GLenum DEPTH_COMPONENT = 0x1902;
-    const GLenum UNSIGNED_SHORT  = 0x1403;
-    const GLenum UNSIGNED_INT    = 0x1405;
 };
   
   
@@ -132,6 +133,9 @@ interface WEBGL_depth_texture {
     
     
       Changed referenced WebGL API version from 2.0 to 1.0
+    
+    
+      Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name
     
   
 
@@ -251,11 +255,15 @@ interface WebGLShareGroup {
 
   OES_element_index_uint
   
+    WEBKIT_OES_element_index_uint
+    MOZ_OES_element_index_uint
+  
+  
     WebGL working group (public_webgl 'at' khronos.org)
   
   
     Members of the WebGL working group
-    Florian Bösch
+    Florian Bösch (pyalot 'at' gmail.com)
   
   10
   
@@ -271,7 +279,6 @@ interface WebGLShareGroup {
   
   
 interface OES_element_index_uint {
-  const GLenum UNSIGNED_INT = 0x1405;
 };
   
   
@@ -281,9 +288,16 @@ interface OES_element_index_uint {
     
       Removed the bufferData requirement as this is not checked by webgl
     
+    
+      Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name
+    
   
 
   EXT_texture_filter_anisotropic
+  
+    WEBKIT_EXT_texture_filter_anisotropic
+    MOZ_EXT_texture_filter_anisotropic
+  
   
     WebGL working group (public_webgl 'at' khronos.org)
   
@@ -300,22 +314,25 @@ interface OES_element_index_uint {
     
       
         The getTexParameter, texParameterf and texParameteri entry points'
-        parameter pname accepts the value TEXTURE_MAX_ANISOTROPY
+        parameter pname accepts the value TEXTURE_MAX_ANISOTROPY_EXT
       
       
-        The getParameter entry point parameter pname accepts the value MAX_TEXTURE_MAX_ANISOTROPY, returning a value of type float.
+        The getParameter entry point parameter pname accepts the value MAX_TEXTURE_MAX_ANISOTROPY_EXT, returning a value of type float.
       
     
   
   
 interface EXT_texture_filter_anisotropic {
-  const GLenum TEXTURE_MAX_ANISOTROPY     = 0x84FE;
-  const GLenum MAX_TEXTURE_MAX_ANISOTROPY = 0x84FF;
+  const GLenum TEXTURE_MAX_ANISOTROPY_EXT       = 0x84FE;
+  const GLenum MAX_TEXTURE_MAX_ANISOTROPY_EXT   = 0x84FF;
 };
   
   
     
       Initial revision.
+    
+    
+      Added the EXT suffix to the enumerants and aliases to the extension name
     
   
 </registry>

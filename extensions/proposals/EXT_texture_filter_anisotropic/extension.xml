@@ -2,6 +2,10 @@
 
 <proposal href="proposals/EXT_texture_filter_anisotropic">
   <name>EXT_texture_filter_anisotropic</name>
+  <aliases>
+    <alias>WEBKIT_EXT_texture_filter_anisotropic</alias>
+    <alias>MOZ_EXT_texture_filter_anisotropic</alias>
+  </aliases>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
   </contact>
@@ -18,22 +22,25 @@
     <features>
       <feature>
         The <code>getTexParameter</code>, <code>texParameterf</code> and <code>texParameteri</code> entry points'
-        parameter <code>pname</code> accepts the value <code>TEXTURE_MAX_ANISOTROPY</code>
+        parameter <code>pname</code> accepts the value <code>TEXTURE_MAX_ANISOTROPY_EXT</code>
       </feature>
       <feature>
-        The <code>getParameter</code> entry point parameter <code>pname</code> accepts the value <code>MAX_TEXTURE_MAX_ANISOTROPY</code>, returning a value of type <code>float</code>.
+        The <code>getParameter</code> entry point parameter <code>pname</code> accepts the value <code>MAX_TEXTURE_MAX_ANISOTROPY_EXT</code>, returning a value of type <code>float</code>.
       </feature>
     </features>
   </overview>
   <idl>
 interface EXT_texture_filter_anisotropic {
-  const GLenum TEXTURE_MAX_ANISOTROPY     = 0x84FE;
-  const GLenum MAX_TEXTURE_MAX_ANISOTROPY = 0x84FF;
+  const GLenum TEXTURE_MAX_ANISOTROPY_EXT       = 0x84FE;
+  const GLenum MAX_TEXTURE_MAX_ANISOTROPY_EXT   = 0x84FF;
 };
   </idl>
   <history>
     <revision date="2012/01/27">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2012/02/24">
+      <change>Added the EXT suffix to the enumerants and aliases to the extension name</change>
     </revision>
   </history>
 </proposal>

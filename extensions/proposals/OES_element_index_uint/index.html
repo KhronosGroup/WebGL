@@ -19,10 +19,10 @@
   </p>
 <h2 class="no-toc">Contributors</h2>
 <p>Members of the WebGL working group</p>
-<p>Florian Bösch</p>
+<p>Florian Bösch (pyalot 'at' gmail.com)</p>
 <h2 class="no-toc">Version</h2>
-<p> Last modified date: January 27, 2012<br>
-          Revision: 2</p>
+<p> Last modified date: February 24, 2012<br>
+          Revision: 3</p>
 <h2 class="no-toc">Number</h2>
 <p> WebGL extension #10</p>
 <h2 class="no-toc">Dependencies</h2>
@@ -39,10 +39,14 @@
 <ul><li>
         The <code>drawElements</code> entry point parameter <code>type</code> accepts the value <code>UNSIGNED_INT</code>
       </li></ul>
-  <h2 class="no-toc">IDL</h2>
+  <h2 class="no-toc">Alias Name Strings (for draft extensions)</h2>
+<ul>
+<li>WEBKIT_OES_element_index_uint</li>
+<li>MOZ_OES_element_index_uint</li>
+</ul>
+<h2 class="no-toc">IDL</h2>
 <p><pre class="idl">
 interface OES_element_index_uint {
-  const GLenum UNSIGNED_INT = 0x1405;
 };
   </pre></p>
 <h2 class="no-toc">Revision History</h2>
@@ -50,5 +54,7 @@ interface OES_element_index_uint {
 <ul><li>Initial revision.</li></ul>
 <p>Revision 2, 2012/01/27</p>
 <ul><li>Removed the bufferData requirement as this is not checked by webgl</li></ul>
+<p>Revision 3, 2012/02/24</p>
+<ul><li>Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name</li></ul>
 </body>
 </html>

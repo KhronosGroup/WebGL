@@ -21,8 +21,8 @@
 <p>Members of the WebGL working group</p>
 <p>Florian Bösch (pyalot 'at' gmail.com)</p>
 <h2 class="no-toc">Version</h2>
-<p> Last modified date: January 27, 2012<br>
-          Revision: 1</p>
+<p> Last modified date: February 24, 2012<br>
+          Revision: 2</p>
 <h2 class="no-toc">Number</h2>
 <p> WebGL extension #11</p>
 <h2 class="no-toc">Dependencies</h2>
@@ -39,21 +39,28 @@
 <ul>
 <li>
         The <code>getTexParameter</code>, <code>texParameterf</code> and <code>texParameteri</code> entry points'
-        parameter <code>pname</code> accepts the value <code>TEXTURE_MAX_ANISOTROPY</code>
+        parameter <code>pname</code> accepts the value <code>TEXTURE_MAX_ANISOTROPY_EXT</code>
       </li>
 <li>
-        The <code>getParameter</code> entry point parameter <code>pname</code> accepts the value <code>MAX_TEXTURE_MAX_ANISOTROPY</code>, returning a value of type <code>float</code>.
+        The <code>getParameter</code> entry point parameter <code>pname</code> accepts the value <code>MAX_TEXTURE_MAX_ANISOTROPY_EXT</code>, returning a value of type <code>float</code>.
       </li>
 </ul>
-  <h2 class="no-toc">IDL</h2>
+  <h2 class="no-toc">Alias Name Strings (for draft extensions)</h2>
+<ul>
+<li>WEBKIT_EXT_texture_filter_anisotropic</li>
+<li>MOZ_EXT_texture_filter_anisotropic</li>
+</ul>
+<h2 class="no-toc">IDL</h2>
 <p><pre class="idl">
 interface EXT_texture_filter_anisotropic {
-  const GLenum TEXTURE_MAX_ANISOTROPY     = 0x84FE;
-  const GLenum MAX_TEXTURE_MAX_ANISOTROPY = 0x84FF;
+  const GLenum TEXTURE_MAX_ANISOTROPY_EXT       = 0x84FE;
+  const GLenum MAX_TEXTURE_MAX_ANISOTROPY_EXT   = 0x84FF;
 };
   </pre></p>
 <h2 class="no-toc">Revision History</h2>
 <p>Revision 1, 2012/01/27</p>
 <ul><li>Initial revision.</li></ul>
+<p>Revision 2, 2012/02/24</p>
+<ul><li>Added the EXT suffix to the enumerants and aliases to the extension name</li></ul>
 </body>
 </html>
