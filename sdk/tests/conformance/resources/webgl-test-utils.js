@@ -1260,7 +1260,12 @@ var addShaderSource = function(element, label, source) {
 };
 
 // Add your prefix here.
-var browserPrefixes = ["", "MOZ_", "WEBKIT_", "OP_", "IE_"];
+var browserPrefixes = [
+  "",
+  "MOZ_",
+  "OP_",
+  "WEBKIT_"
+];
 
 /**
  * Given an extension name like WEBGL_compressed_texture_s3tc
