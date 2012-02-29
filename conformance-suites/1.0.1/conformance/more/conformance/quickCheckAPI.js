@@ -337,7 +337,7 @@ randomImage = function(w,h) {
   } else if (r < 0.5) {
     img = document.createElement('video');
     img.width = w; img.height = h;
-  } else if (r < 0.75) {
+  } else if (r < 0.5) {
     img = document.createElement('img');
     img.width = w; img.height = h;
   } else {
