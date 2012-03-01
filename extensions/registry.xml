@@ -77,10 +77,10 @@
     </revision></history></extension><draft href="WEBGL_compressed_texture_s3tc/"><name>WEBGL_compressed_texture_s3tc</name><number>8</number><history><revision date="2012/01/25" number="1">
       <change>Initial revision.</change>
     </revision></history></draft>
-  WEBGL_depth_texture
+  OES_depth_texture
   
-    WEBKIT_WEBGL_depth_texture
-    MOZ_WEBGL_depth_texture
+    WEBKIT_OES_depth_texture
+    MOZ_OES_depth_texture
   
   
     WebGL working group (public_webgl 'at' khronos.org)
@@ -94,8 +94,6 @@
     
   
   
-    
-      Cube maps may not be used as depth textures.
     
     
       
@@ -116,7 +114,7 @@
     
   
   
-interface WEBGL_depth_texture {
+interface OES_depth_texture {
 };
   
   
@@ -136,6 +134,12 @@ interface WEBGL_depth_texture {
     
     
       Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name
+    
+    
+      
+        Renamed with OES prefix and removed the addendum due to expected harmonization between OES_depth_texture and ARB_depth_texture
+        (depth cube maps).
+      
     
   
 

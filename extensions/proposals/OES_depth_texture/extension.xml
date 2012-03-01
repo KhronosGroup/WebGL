@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 
-<proposal href="proposals/WEBGL_depth_texture/">
-  <name>WEBGL_depth_texture</name>
+<proposal href="proposals/OES_depth_texture/">
+  <name>OES_depth_texture</name>
   <aliases>
-    <alias>WEBKIT_WEBGL_depth_texture</alias>
-    <alias>MOZ_WEBGL_depth_texture</alias>
+    <alias>WEBKIT_OES_depth_texture</alias>
+    <alias>MOZ_OES_depth_texture</alias>
   </aliases>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -18,9 +18,7 @@
     <api version="1.0"/>
   </depends>
   <overview>
-    <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_depth_texture.txt" name="OES_depth_texture">
-      <addendum>Cube maps may not be used as depth textures.</addendum>
-    </mirrors>
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_depth_texture.txt" name="OES_depth_texture" />
     <features>
       <feature>
         The <code>texImage2D</code> and <code>texSubImage2D</code> entry points are extended to accept the <code>format</code> parameter <code>DEPTH_COMPONENT</code>
@@ -40,7 +38,7 @@
     </features>
   </overview>
   <idl>
-interface WEBGL_depth_texture {
+interface OES_depth_texture {
 };
   </idl>
   <errors>
@@ -60,6 +58,12 @@ interface WEBGL_depth_texture {
     </revision>
     <revision date="2012/02/24">
       <change>Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name</change>
+    </revision>
+    <revision date="2012/03/01">
+      <change>
+        Renamed with OES prefix and removed the addendum due to expected harmonization between OES_depth_texture and ARB_depth_texture
+        (depth cube maps).
+      </change>
     </revision>
   </history>
 </proposal>
