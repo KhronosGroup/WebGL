@@ -1,5 +1,6 @@
 get-active-test.html
 gl-bind-attrib-location-test.html
+gl-bind-attrib-location-long-names-test.html
 gl-get-active-attribute.html
 gl-get-active-uniform.html
 gl-getshadersource.html

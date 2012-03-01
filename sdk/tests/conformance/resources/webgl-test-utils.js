@@ -1303,6 +1303,30 @@ var getExtensionWithKnownPrefixes = function(gl, name) {
   }
 };
 
+
+var replaceRE = /\$\((\w+)\)/g;
+
+/**
+ * Replaces strings with property values.
+ * Given a string like "hello $(first) $(last)" and an object
+ * like {first:"John", last:"Smith"} will return
+ * "hello John Smith".
+ * @param {string} str String to do replacements in
+ * @param {...} 1 or more objects conaining properties.
+ */
+var replaceParams = function(str) {
+  var args = arguments;
+  return str.replace(replaceRE, function(str, p1, offset, s) {
+    for (var ii = 1; ii < args.length; ++ii) {
+      if (args[ii][p1] !== undefined) {
+        return args[ii][p1];
+      }
+    }
+    throw "unknown string param '" + p1 + "'";
+  });
+};
+
+
 return {
   addShaderSource: addShaderSource,
   create3DContext: create3DContext,
@@ -1355,6 +1379,7 @@ return {
   shouldGenerateGLError: shouldGenerateGLError,
   readFile: readFile,
   readFileList: readFileList,
+  replaceParams: replaceParams,
 
   none: false
 };
