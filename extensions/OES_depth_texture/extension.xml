@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<proposal href="proposals/OES_depth_texture/">
+<draft href="OES_depth_texture/">
   <name>OES_depth_texture</name>
   <aliases>
     <alias>WEBKIT_OES_depth_texture</alias>
@@ -66,4 +66,4 @@ interface OES_depth_texture {
       </change>
     </revision>
   </history>
-</proposal>
+</draft>
