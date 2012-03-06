@@ -1018,7 +1018,7 @@ return {
    *    fragment-only tolerance will override the shared tolerance for 
    *    fragment shaders if both are specified. Fragment shaders usually
    *    use mediump float precision so they sometimes require higher tolerance
-   *    than vertex shaders which use highp.
+   *    than vertex shaders which use mediump.
    */
   runFeatureTest: runFeatureTest,
 
