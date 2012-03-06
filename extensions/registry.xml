@@ -213,4 +213,33 @@ interface WebGLShareGroup {
       <change>Initial revision.</change>
     </revision><revision date="2012/02/24" number="2">
       <change>Added the EXT suffix to the enumerants and aliases to the extension name</change>
-    </revision></history></draft></registry>
+    </revision></history></draft>
+  ANGLE_instanced_arrays
+  
+    WebGL working group (public_webgl 'at' khronos.org)
+  
+  
+    Contributors to ANGLE_instanced_arrays
+    Members of the WebGL working group
+  
+  13
+  
+    
+  
+  
+    
+  
+  
+interface ANGLE_instanced_arrays {
+    const GLenum VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE = 0x88FE;
+    void drawArraysInstancedANGLE(GLenum mode, GLint first, GLsizei count, GLsizei primcount);
+    void drawElementsInstancedANGLE(GLenum mode, GLsizei count, GLenum type, GLintptr offset, GLsizei primcount);
+    void vertexAttribDivisorANGLE(GLuint index, GLuint divisor); 
+};
+  
+  
+    
+      Initial revision.
+    
+  
+</registry>
