@@ -45,11 +45,6 @@ var canvas = document.getElementById("example");
 shouldBe("canvas.width", "256");
 shouldBe("canvas.height", "256");
 
-var gl = wtu.create3DContext(canvas);
-var program = wtu.setupProgram(
-    gl, ['vshader2d', 'fshader2d'], ['vPosition', 'texCoord0'], [0, 1]);
-wtu.setupUnitQuad(gl, 0, 1);
-
 var colors = [
   {name: 'red', color:[255, 0, 0, 255]},
   {name: 'green', color:[0, 255, 0, 255]},
@@ -62,34 +57,47 @@ var colors = [
   {name: 'light green', color:[128, 255, 128, 255]},
 ];
 
-shouldBe("colors.length", "9");
-
-var tex = gl.createTexture();
-gl.bindTexture(gl.TEXTURE_2D, tex);
-gl.texParameteri(
-    gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR);
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-
-for (var ii = 0; ii < colors.length; ++ii) {
-  var color = colors[ii];
-  var size = Math.pow(2, colors.length - ii - 1);
-  wtu.fillTexture(gl, tex, size, size, color.color, ii);
+var gl = wtu.create3DContext(canvas);
+if (gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS) > 0) {
+  runTest();
+} else {
+  testPassed("MAX_VERTEX_TEXTURE_IMAGE_UNITS == 0, this is okay.");
 }
 
-var loc = gl.getUniformLocation(program, "lod");
+function runTest() {
+  var program = wtu.setupProgram(
+      gl, ['vshader2d', 'fshader2d'], ['vPosition', 'texCoord0'], [0, 1]);
+  wtu.setupUnitQuad(gl, 0, 1);
 
-for (var ii = 0; ii < colors.length; ++ii) {
-  gl.uniform1f(loc, ii);
-  var color = colors[ii];
-  wtu.drawQuad(gl);
-  wtu.checkCanvas(
-      gl, color.color,
-      "256x256 texture drawn to 256x256 dest with lod = " + ii +
-      " should be " + color.name);
+  shouldBe("colors.length", "9");
+
+  var tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texParameteri(
+      gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+
+  for (var ii = 0; ii < colors.length; ++ii) {
+    var color = colors[ii];
+    var size = Math.pow(2, colors.length - ii - 1);
+    wtu.fillTexture(gl, tex, size, size, color.color, ii);
+  }
+
+  var loc = gl.getUniformLocation(program, "lod");
+
+  for (var ii = 0; ii < colors.length; ++ii) {
+    gl.uniform1f(loc, ii);
+    var color = colors[ii];
+    wtu.drawQuad(gl);
+    wtu.checkCanvas(
+        gl, color.color,
+        "256x256 texture drawn to 256x256 dest with lod = " + ii +
+        " should be " + color.name);
+  }
+  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 }
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 
 successfullyParsed = true;
 
