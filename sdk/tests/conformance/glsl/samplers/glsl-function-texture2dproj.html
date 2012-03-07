@@ -27,7 +27,7 @@ void main() {
     texCoord = texCoord0;
 }
 </script>
-<script id="fshader0" type="x-shader/x-vertex">
+<script id="fshader0" type="x-shader/x-fragment">
 precision mediump float;
 uniform sampler2D tex;
 uniform float divisor;
@@ -36,7 +36,7 @@ void main() {
     gl_FragData[0] = texture2DProj(tex, vec3(texCoord, divisor));
 }
 </script>
-<script id="vshader1" type="x-shader/x-vertex">
+<script id="vshader1" type="x-shader/x-fragment">
 attribute vec4 vPosition;
 attribute vec2 texCoord0;
 varying vec2 texCoord;
@@ -45,7 +45,7 @@ void main() {
     texCoord = texCoord0;
 }
 </script>
-<script id="fshader1" type="x-shader/x-vertex">
+<script id="fshader1" type="x-shader/x-fragment">
 precision mediump float;
 uniform sampler2D tex;
 uniform float divisor;
