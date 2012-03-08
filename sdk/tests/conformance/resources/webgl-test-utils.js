@@ -1327,8 +1327,47 @@ var replaceParams = function(str) {
 };
 
 
+/**
+ * Provides requestAnimationFrame in a cross browser way.
+ */
+var requestAnimFrame = (function() {
+  return window.requestAnimationFrame ||
+         window.webkitRequestAnimationFrame ||
+         window.mozRequestAnimationFrame ||
+         window.oRequestAnimationFrame ||
+         window.msRequestAnimationFrame ||
+         function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+           return window.setTimeout(callback, 1000/60);
+         };
+})();
+
+/**
+ * Provides cancelRequestAnimationFrame in a cross browser way.
+ */
+var cancelRequestAnimFrame = (function() {
+  return window.cancelCancelRequestAnimationFrame ||
+         window.webkitCancelRequestAnimationFrame ||
+         window.mozCancelRequestAnimationFrame ||
+         window.oCancelRequestAnimationFrame ||
+         window.msCancelRequestAnimationFrame ||
+         window.clearTimeout;
+})();
+
+var waitFrames = function(frames, callback) {
+  var countDown = function() {
+    if (frames == 0) {
+      callback();
+    } else {
+      --frames;
+      requestAnimFrame(countDown);
+    }
+  };
+  countDown();
+};
+
 return {
   addShaderSource: addShaderSource,
+  cancelRequestAnimFrame: cancelRequestAnimFrame,
   create3DContext: create3DContext,
   create3DContextWithWrapperThatThrowsOnGLError:
     create3DContextWithWrapperThatThrowsOnGLError,
@@ -1380,6 +1419,8 @@ return {
   readFile: readFile,
   readFileList: readFileList,
   replaceParams: replaceParams,
+  requestAnimFrame: requestAnimFrame,
+  waitFrames: waitFrames,
 
   none: false
 };
