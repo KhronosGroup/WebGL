@@ -10,7 +10,6 @@ found in the LICENSE file.
 <title>WebGL Texture Format Conformance Tests</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
-<script src="../../debug/webgl-debug.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
@@ -32,10 +31,6 @@ if (!gl) {
   testFailed("context does not exist");
 } else {
   testPassed("context exists");
-  if ("WebGLDebugUtils" in window)
-    WebGLDebugUtils.init(gl);
-  else
-    WebGLDebugUtils = false;
 
   debug("");
   debug("Checking texture formats.");
@@ -174,13 +169,6 @@ if (!gl) {
 
 
   function checkTypes() {
-    var canvas = document.getElementById("canvas");
-    gl = wtu.create3DContext(canvas);
-    var program = wtu.setupTexturedQuad(gl);
-
-    gl.disable(gl.DEPTH_TEST);
-    gl.disable(gl.BLEND);
-
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -191,9 +179,11 @@ if (!gl) {
     gl.uniform1i(loc, 0);
 
     function checkType(r, g, b, a, type, format, buf) {
-      var typeName = WebGLDebugUtils ? WebGLDebugUtils.glEnumToString(type) : type;
+      var typeName = wtu.glEnumToString(gl, type);
+      var formatName = wtu.glEnumToString(gl, format);
+      var desc = "format: " + formatName + ", type: " + typeName;
       debug("");
-      debug("checking gl.texImage2D with type: " + typeName);
+      debug("checking gl.texImage2D with " + desc);
       gl.texImage2D(gl.TEXTURE_2D,
                     0,                 // level
                     format,            // internalFormat
@@ -205,39 +195,66 @@ if (!gl) {
                     buf);              // data
 
       glErrorShouldBe(gl, gl.NO_ERROR,
-                "gl.texImage2D with " + typeName + " should generate NO_ERROR");
+                "gl.texImage2D with " + desc + " should generate NO_ERROR");
 
       wtu.drawQuad(gl, [255, 0, 0, 255]);
       wtu.checkCanvas(gl, [r,g,b,a],
-                      "texture type " + typeName + " should draw with " +
+                      "texture " + desc + " should draw with " +
                       r + ", " + g + ", " + b + ", " + a);
 
    }
-   checkType(0, 255, 0, 255, gl.UNSIGNED_BYTE, gl.RGBA,
-                    new Uint8Array([
-           0, 255, 0, 255,
+   checkType(
+       0, 255, 0, 255, gl.UNSIGNED_BYTE, gl.RGBA,
+       new Uint8Array(
+         [ 0, 255, 0, 255,
            0, 255, 0, 255,
            0, 255, 0, 255,
            0, 255, 0, 255]));
-   checkType(0, 0, 255, 255, gl.UNSIGNED_SHORT_4_4_4_4, gl.RGBA,
-                    new Uint16Array([
-           255, 255,
+   checkType(
+       0, 0, 255, 255, gl.UNSIGNED_SHORT_4_4_4_4, gl.RGBA,
+       new Uint16Array(
+         [ 255, 255,
            255, 255,
            255, 255,
            255, 255]));
-   checkType(0, 255, 0, 255, gl.UNSIGNED_SHORT_5_6_5, gl.RGB,
-                    new Uint16Array([
-           2016, 2016,
+   checkType(
+       0, 255, 0, 255, gl.UNSIGNED_SHORT_5_6_5, gl.RGB,
+       new Uint16Array(
+         [ 2016, 2016,
            2016, 2016,
            2016, 2016,
            2016, 2016]));
-   checkType(0, 0, 255, 255, gl.UNSIGNED_SHORT_5_5_5_1, gl.RGBA,
-                    new Uint16Array([
-           63, 63,
+   checkType(
+       0, 0, 255, 255, gl.UNSIGNED_SHORT_5_5_5_1, gl.RGBA,
+       new Uint16Array(
+         [ 63, 63,
            63, 63,
            63, 63,
            63, 63]));
+   checkType(
+       255, 255, 255, 255, gl.UNSIGNED_BYTE, gl.LUMINANCE,
+       new Uint8Array([
+           255,
+           255,
+           255,
+           255]));
+   checkType(
+       0, 0, 0, 128, gl.UNSIGNED_BYTE, gl.ALPHA,
+       new Uint8Array([
+           128,
+           128,
+           128,
+           128]));
+   checkType(
+       128, 128, 128, 192, gl.UNSIGNED_BYTE, gl.LUMINANCE_ALPHA,
+       new Uint8Array([
+           128, 192,
+           128, 192,
+           128, 192,
+           128, 192]));
   }
+  var program = wtu.setupTexturedQuad(gl);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
   checkTypes();
 }
 
