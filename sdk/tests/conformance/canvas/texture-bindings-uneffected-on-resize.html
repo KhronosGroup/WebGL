@@ -35,6 +35,7 @@ wtu.fillTexture(gl, tex1, 1, 1, green, 0);
 var loc = gl.getUniformLocation(program, "tex");
 
 function test() {
+  gl.viewport(0, 0, canvas.width, canvas.height);
   gl.uniform1i(loc, 0);
   wtu.drawQuad(gl);
   wtu.checkCanvas(gl, blue, "should be blue");
