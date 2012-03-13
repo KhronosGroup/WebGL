@@ -22,14 +22,15 @@ found in the LICENSE file.
 <script id="testFragmentShader" type="x-shader/x-fragment">
 precision mediump float;
 uniform sampler2D tex;
+uniform vec4 subtractor;
 varying vec2 texCoord;
 void main()
 {
     vec4 color = texture2D(tex, texCoord);
-    if (abs(color.r - 10000.0) +
-        abs(color.g - 10000.0) +
-        abs(color.b - 10000.0) +
-        abs(color.a - 10000.0) < 8.0) {
+    if (abs(color.r - subtractor.r) +
+        abs(color.g - subtractor.g) +
+        abs(color.b - subtractor.b) +
+        abs(color.a - subtractor.a) < 8.0) {
         gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
     } else {
         gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
@@ -83,7 +84,11 @@ if (!gl) {
       testPassed("No OES_texture_float support -- this is legal");
   } else {
       testPassed("Successfully enabled OES_texture_float extension");
-      runTextureCreationTest(testProgram, true);
+      runTextureCreationTest(testProgram, true, gl.RGBA, 4, [10000, 10000, 10000, 10000]);
+      runTextureCreationTest(testProgram, true, gl.RGB, 3, [10000, 10000, 10000, 0]);
+      runTextureCreationTest(testProgram, true, gl.LUMINANCE, 1, [10000, 10000, 10000, 0]);
+      runTextureCreationTest(testProgram, true, gl.ALPHA, 1, [0, 0, 0, 10000]);
+      runTextureCreationTest(testProgram, true, gl.LUMINANCE_ALPHA, 2, [10000, 10000, 10000, 10000]);
       runRenderTargetTest(testProgram);
       runUniqueObjectTest();
   }
@@ -106,29 +111,29 @@ function allocateTexture()
 
 function checkRenderingResults()
 {
-    pixels = new Uint8Array(4);
-    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-    // Outputs green if OK, red if not.
-    shouldBe("pixels[0]", "0");
-    shouldBe("pixels[1]", "255");
-    shouldBe("pixels[2]", "0");
-    shouldBe("pixels[3]", "255");
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 }
 
-function runTextureCreationTest(testProgram, extensionEnabled)
+function runTextureCreationTest(testProgram, extensionEnabled, opt_format, opt_numChannels, opt_subtractor)
 {
+    var format = opt_format || gl.RGBA;
+    var numberOfChannels = opt_numChannels || 4;
     var expectFailure = !extensionEnabled;
+    var subtractor = opt_subtractor || [10000, 10000, 10000, 10000];
+
+	debug("");
+	debug("testing format: " + wtu.glEnumToString(gl, format) +
+          " expect:" + (extensionEnabled ? "success" : "failure"));
 
     var texture = allocateTexture();
     // Generate data.
     var width = 2;
     var height = 2;
-    var numberOfChannels = 4;
     var data = new Float32Array(width * height * numberOfChannels);
     for (var ii = 0; ii < data.length; ++ii) {
         data[ii] = 10000;
     }
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.FLOAT, data);
+    gl.texImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, format, gl.FLOAT, data);
     if (expectFailure) {
         glErrorShouldBe(gl, gl.INVALID_ENUM, "floating-point texture allocation must be disallowed if OES_texture_float isn't enabled");
         return;
@@ -137,6 +142,7 @@ function runTextureCreationTest(testProgram, extensionEnabled)
     }
     // Verify that the texture actually works for sampling and contains the expected data.
     gl.uniform1i(gl.getUniformLocation(testProgram, "tex"), 0);
+    gl.uniform4fv(gl.getUniformLocation(testProgram, "subtractor"), subtractor);
     wtu.drawQuad(gl);
     checkRenderingResults();
 }
