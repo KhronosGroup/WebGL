@@ -108,6 +108,18 @@ var simpleTextureFragmentShader = [
   '}'].join('\n');
 
 /**
+ * A vertex shader for a single texture.
+ * @type {string}
+ */
+var noTexCoordTextureVertexShader = [
+  'attribute vec4 vPosition;',
+  'varying vec2 texCoord;',
+  'void main() {',
+  '    gl_Position = vPosition;',
+  '    texCoord = vPosition.xy * 0.5 + 0.5;',
+  '}'].join('\n');
+
+/**
  * Creates a simple texture vertex shader.
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @return {!WebGLShader}
@@ -124,6 +136,15 @@ var setupSimpleTextureVertexShader = function(gl) {
 var setupSimpleTextureFragmentShader = function(gl) {
     return loadShader(
         gl, simpleTextureFragmentShader, gl.FRAGMENT_SHADER);
+};
+
+/**
+ * Creates a texture vertex shader that doesn't need texcoords.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @return {!WebGLShader}
+ */
+var setupNoTexCoordTextureVertexShader = function(gl) {
+    return loadShader(gl, noTexCoordTextureVertexShader, gl.VERTEX_SHADER);
 };
 
 /**
@@ -196,6 +217,30 @@ var setupSimpleTextureProgram = function(
       [vs, fs],
       ['vPosition', 'texCoord0'],
       [opt_positionLocation, opt_texcoordLocation]);
+  if (!program) {
+    gl.deleteShader(fs);
+    gl.deleteShader(vs);
+  }
+  gl.useProgram(program);
+  return program;
+};
+
+/**
+ * Creates a simple texture program.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @return {WebGLProgram}
+ */
+var setupNoTexCoordTextureProgram = function(gl) {
+  var vs = setupNoTexCoordTextureVertexShader(gl);
+  var fs = setupSimpleTextureFragmentShader(gl);
+  if (!vs || !fs) {
+    return null;
+  }
+  var program = setupProgram(
+      gl,
+      [vs, fs],
+      ['vPosition'],
+      [0]);
   if (!program) {
     gl.deleteShader(fs);
     gl.deleteShader(vs);
@@ -307,14 +352,39 @@ var setupTexturedQuadWithTexCoords = function(
 /**
  * Creates a unit quad with only positions of a given resolution.
  * @param {!WebGLContext} gl The WebGLContext to use.
- * @param {number} gridRes The resolution of the mesh grid, expressed in the number of triangles across and down.
+ * @param {number} gridRes The resolution of the mesh grid,
+ *     expressed in the number of quads across and down.
  * @param {number} opt_positionLocation The attrib location for position.
  */
 var setupQuad = function (
     gl, gridRes, opt_positionLocation, opt_flipOddTriangles) {
-  var positionLocation = opt_positionLocation || 0;
+  setupQuadWithOptions(gl,
+    { gridRes: gridRes,
+      positionLocation: opt_positionLocation,
+      flipOddTriangles: opt_flipOddTriangles
+    });
+};
+
+/**
+ * Creates a quad with various options.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ *
+ * Options:
+ *   gridRes: number of quads across and down grid.
+ *   positionLocation: attrib location for position
+ *   flipOddTriangles: reverse order of vertices of every other
+ *       triangle
+ *   positionOffset: offset added to each vertex
+ *   positionMult: multipier for each vertex
+ */
+var setupQuadWithOptions = function (gl, options) {
+
+  var positionLocation = options.positionLocation || 0;
   var objects = [];
 
+  var gridRes = options.gridRes || 1;
+  var positionOffset = options.positionOffset || 0;
+  var positionMult = options.positionMult || 1;
   var vertsAcross = gridRes + 1;
   var numVerts = vertsAcross * vertsAcross;
   var positions = new Float32Array(numVerts * 3);
@@ -324,8 +394,8 @@ var setupQuad = function (
 
   for (var yy = 0; yy <= gridRes; ++yy) {
     for (var xx = 0; xx <= gridRes; ++xx) {
-      positions[poffset + 0] = -1 + 2 * xx / gridRes;
-      positions[poffset + 1] = -1 + 2 * yy / gridRes;
+      positions[poffset + 0] = (-1 + 2 * xx / gridRes) * positionMult + positionOffset;
+      positions[poffset + 1] = (-1 + 2 * yy / gridRes) * positionMult + positionOffset;
       positions[poffset + 2] = 0;
 
       poffset += 3;
@@ -343,7 +413,7 @@ var setupQuad = function (
       indices[tbase + 4] = index + 1;
       indices[tbase + 5] = index + vertsAcross + 1;
 
-      if (opt_flipOddTriangles) {
+      if (options.flipOddTriangles) {
         indices[tbase + 4] = index + vertsAcross + 1;
         indices[tbase + 5] = index + 1;
       }
@@ -427,6 +497,25 @@ var drawQuad = function(gl, opt_color) {
       opt_color[3] / 255);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.drawArrays(gl.TRIANGLES, 0, 6);
+};
+
+/**
+ * Draws a previously setup quad.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {number} gridRes Resolution of grid.
+ * @param {!Array.<number>} opt_color The color to fill clear with before
+ *        drawing. A 4 element array where each element is in the range 0 to
+ *        255. Default [255, 255, 255, 255]
+ */
+var drawIndexedQuad = function(gl, gridRes, opt_color) {
+  opt_color = opt_color || [255, 255, 255, 255];
+  gl.clearColor(
+      opt_color[0] / 255,
+      opt_color[1] / 255,
+      opt_color[2] / 255,
+      opt_color[3] / 255);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.drawElements(gl.TRIANGLES, gridRes * 6, gl.UNSIGNED_SHORT, 0);
 };
 
 /**
@@ -1375,6 +1464,7 @@ return {
   checkCanvasRect: checkCanvasRect,
   createColoredTexture: createColoredTexture,
   drawQuad: drawQuad,
+  drawIndexedQuad: drawIndexedQuad,
   endsWith: endsWith,
   getExtensionWithKnownPrefixes: getExtensionWithKnownPrefixes,
   getFileListAsync: getFileListAsync,
@@ -1406,9 +1496,12 @@ return {
   error: error,
   setupProgram: setupProgram,
   setupQuad: setupQuad,
+  setupQuadWithOptions: setupQuadWithOptions,
   setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
   setupSimpleTextureProgram: setupSimpleTextureProgram,
   setupSimpleTextureVertexShader: setupSimpleTextureVertexShader,
+  setupNoTexCoordTextureProgram: setupNoTexCoordTextureProgram,
+  setupNoTexCoordTextureVertexShader: setupNoTexCoordTextureVertexShader,
   setupTexturedQuad: setupTexturedQuad,
   setupTexturedQuadWithTexCoords: setupTexturedQuadWithTexCoords,
   setupUnitQuad: setupUnitQuad,
