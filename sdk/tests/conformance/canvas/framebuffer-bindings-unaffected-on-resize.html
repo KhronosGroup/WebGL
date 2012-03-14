@@ -45,6 +45,14 @@ function checkFBO(color, msg) {
   wtu.checkCanvasRect(gl, fboSize, fboSize, fboSize, fboSize, [0, 0, 0, 0], "area outside fbo should be transparent black");
 }
 
+// The FBO is 2x2 and it's bound so clearing should clear a 2x2 area
+// and calling read pixels should read the clear color in that 2x2 area
+// and 0,0,0,0 outside that area.
+//
+// If the FBO is no longer bound because of a WebGL implementation error
+// then likely the clear will clear the backbuffer and reading outside
+// the 2x2 area will not be 0,0,0,0
+
 function test() {
   gl.clearColor(0, 0, 1, 1);
   gl.clear(gl.COLOR_BUFFER_BIT);
