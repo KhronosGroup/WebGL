@@ -76,12 +76,12 @@ var BrowserDetect = {
     identity: "Safari",
     versionSearch: "Version"
   },
+  { prop: window.opera,
+    identity: "Opera"
+  },
   { string: navigator.userAgent,
     subString: "Android",
     identity: "Android"
-  },
-  { prop: window.opera,
-    identity: "Opera"
   },
   { string: navigator.vendor,
     subString: "iCab",
