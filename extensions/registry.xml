@@ -281,7 +281,7 @@ interface ANGLE_instanced_arrays {
     
       
           Q: Does this extension allow you to render to the backbuffer with multiple render targets?
-          A: No, that requires a different extension. This extension only handles framebuffers with multiple render target.
+          A: No, that requires a different extension. This extension only handles framebuffers with multiple render targets.
       
       
           Q: Can the multiple attachments be different dimensions?
