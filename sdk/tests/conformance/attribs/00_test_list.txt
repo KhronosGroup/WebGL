@@ -1,4 +1,5 @@
 gl-enable-vertex-attrib.html
+--min-version 1.0.2 gl-vertex-attrib-render.html
 gl-vertex-attrib-zero-issues.html
 gl-vertex-attrib.html
 gl-vertexattribpointer-offsets.html

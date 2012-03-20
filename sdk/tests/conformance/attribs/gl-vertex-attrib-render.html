@@ -1,0 +1,103 @@
+<!--
+Copyright (C) 2011 Opera Software ASA.  All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY OPERA SOFTWARE ASA. ''AS IS'' AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL APPLE COMPUTER, INC. OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../../resources/js-test-style.css"/>
+        <script src="../../resources/js-test-pre.js"></script>
+        <script src="../resources/webgl-test.js"></script>
+		<script id='vshader' type='x-shader'>
+			attribute vec4 a;
+			attribute vec2 p;
+			void main() {
+				gl_Position = vec4(p.x + a.x + a.y + a.z + a.w, p.y, 0.0, 1.0);
+			}
+		</script>
+		<script id='fshader' type='x-shader'>
+			precision mediump float;
+			void main() {
+				gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+			}
+		</script>
+        <script>
+        	function checkRedPortion(gl, w, low, high) {
+                var buf = new Uint8Array(w * w * 4);
+                gl.readPixels(0, 0, w, w, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+                var i = 0;
+                for (; i < w; ++i) {
+                	if (buf[i * 4 + 0] != 255 || buf[i * 4 + 1] != 0 || buf[i * 4 + 2] != 0 || buf[i * 4 + 3] != 255) {
+                		break;
+                	}
+                }
+                return low <= i && i <= high;
+        	}
+
+            function runTest() {
+                var gl = initWebGL('testbed', 'vshader', 'fshader', ['p', 'a'], [1, 0, 0, 1], 1, { preserveDrawingBuffer : true });
+                if (!gl) {
+                    testFailed('initWebGL(..) failed');
+                    return;
+                }
+
+                gl.enableVertexAttribArray(gl.p);
+				var pos = gl.createBuffer();
+				pos.type = gl.FLOAT;
+				pos.size = 2;
+				pos.num = 4;
+				gl.bindBuffer(gl.ARRAY_BUFFER, pos);
+				gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+
+				gl.vertexAttribPointer(0, pos.size, pos.type, false, 0, 0);
+
+                debug('Test vertexAttrib[1..4]fv by setting different combinations that add up to 1.5 and use that when rendering.');
+				var vals = [[0.5], [0.1,0.4], [0.2,-0.2,0.5], [-1.0,0.3,0.2,2.0]];
+
+				for (var j = 0; j < 4; ++j) {
+					gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+					gl['vertexAttrib' + (j+1) + 'fv'](1, vals[j]);
+					gl.drawArrays(gl.TRIANGLE_STRIP, 0, pos.num);
+
+					if (checkRedPortion(gl, 50, 50 * 0.7, 50 * 0.8)) {
+	                    testPassed('Attribute of size ' + (j+1) + ' was set correctly');
+	                } else {
+	                    testFailed('Attribute of size ' + (j+1) + ' was not set correctly');
+	                }
+	            }
+            }
+        </script>
+    </head>
+    <body>
+        <canvas id="testbed" width="50" height="50"></canvas>
+        <div id="description"></div>
+        <div id="console"></div>
+        <script>
+            description('Verify that using constant attributes works.');
+            runTest();
+            successfullyParsed = true;
+        </script>
+        <script src="../../resources/js-test-post.js"></script>
+    </body>
+</html>
