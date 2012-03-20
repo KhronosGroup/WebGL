@@ -23,6 +23,36 @@ a formal conformance submission.'
    --- NEED ADDRESS HERE --- @khronos.org
 
 
+Usage Notes:
+
+There are various URL options you can pass in.
+
+run:         Set to 1 to start the tests automatically
+
+             Example: webgl-conformance-tests.html?run=1
+
+version:     Set to the version of the harness you wish to run. Tests
+             at this version or below will be run
+
+             Example: webgl-conformance-tests.html?version=1.3.2
+
+minVersion:  Set to the minimum version of each test to include. Only tests
+             at this version or above will be inlcuded.
+
+             Example: webgl-conformance-tests.html?minVersion=1.3.2
+
+fast:        Only run tests not marked with --slow
+
+             Example: webgl-conformance-tests.html?fast=true
+
+skip:        Comma separated list of regular expressions of which tests to skip.
+
+             Example: webgl-conformance-tests.html?skip=glsl,.*destruction\.html
+
+
 - Version 1.0.0
 - February 24, 2011
+
+- Version 1.0.2.1
+- March 20, 2012
 

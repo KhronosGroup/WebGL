@@ -183,6 +183,12 @@ function start() {
     this.totalsElem.textContent = msg;
   };
 
+  Page.prototype.disableTest = function(re) {
+    if (this.url.match(re)) {
+      this.check.checked = false;
+    }
+  };
+
   var Folder = function(reporter, folder, depth, opt_name) {
     this.reporter = reporter;
     this.depth = depth;
@@ -270,6 +276,19 @@ function start() {
     this.childUL.appendChild(page.elem);
   };
 
+  Folder.prototype.disableTest = function(re) {
+    if (this.name.match(re)) {
+      this.check.checked = false;
+    } else {
+      for (var name in this.subFolders) {
+        this.subFolders[name].disableTest(re);
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.pages[ii].disableTest(re);
+      }
+    }
+  };
+
   var Reporter = function() {
     this.localDoc = document;
     this.resultElem = document.getElementById("results");
@@ -287,6 +306,7 @@ function start() {
     this.contextInfo = {};
     this.root = new Folder(this, null, 0, "all");
     this.resultElem.appendChild(this.root.elem);
+    this.callbacks = { };
 
     if (ctx) {
       this.contextInfo["VENDOR"] = ctx.getParameter(ctx.VENDOR);
@@ -304,6 +324,24 @@ function start() {
         this.contextInfo["UNMASKED_VENDOR"] = ctx.getParameter(ext.UNMASKED_VENDOR_WEBGL);
         this.contextInfo["UNMASKED_RENDERER"] = ctx.getParameter(ext.UNMASKED_RENDERER_WEBGL);
       }
+    }
+  };
+
+  Reporter.prototype.disableTest = function(name) {
+    this.root.disableTest(name);
+  };
+
+  Reporter.prototype.addEventListener = function(type, func) {
+    if (!this.callbacks[type]) {
+      this.callbacks[type] = [];
+    }
+    this.callbacks[type].push(func);
+  };
+
+  Reporter.prototype.executeListenerEvents_ = function(type) {
+    var callbacks = this.callbacks[type].slice(0);
+    for (var ii = 0; ii < callbacks.length; ++ii) {
+      setTimeout(callbacks[ii], 0);
     }
   };
 
@@ -413,6 +451,7 @@ function start() {
     if (!this.noWebGL) {
       var button = document.getElementById("runTestsButton");
       button.disabled = false;
+      this.executeListenerEvents_("ready");
     }
   };
 
@@ -449,7 +488,7 @@ function start() {
       var keyValue = pairs[ii].split("=");
       var key = keyValue[0];
       var value = decodeURIComponent(keyValue[1]);
-	  obj[key] = value;
+      obj[key] = value;
     }
   };
 
@@ -466,6 +505,19 @@ function start() {
         return reporter.reportFunc(type, msg, success);
       },
       OPTIONS);
+  reporter.addEventListener("ready", function() {
+    // Remove tests based on skip=re1,re2 in URL.
+    if (OPTIONS.skip) {
+      var skips = OPTIONS.skip.split(",")
+      for (var ii = 0; ii < skips.length; ++ii) {
+        reporter.disableTest(new RegExp(skips[ii]));
+      }
+    }
+    // Auto run the tests if the run=1 in URL
+    if (OPTIONS.run) {
+      testHarness.runTests();
+    }
+  });
   window.webglTestHarness = testHarness;
   var button = document.getElementById("runTestsButton");
   button.disabled = true;
