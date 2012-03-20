@@ -159,7 +159,8 @@ var BrowserDetect = {
     subString: "Android",
     identity: "Android",
     browsers: [
-      {url: "https://market.android.com/details?id=org.mozilla.firefox", name: "Mozilla Firefox"}
+      {url: "https://market.android.com/details?id=org.mozilla.firefox", name: "Mozilla Firefox"},
+      {url: "https://market.android.com/details?id=com.opera.browser", name: "Opera Mobile"}
     ]
   },
   { string: navigator.platform,
@@ -197,8 +198,14 @@ var BrowserDetect = {
       troubleshootingUrl: "https://support.mozilla.com/en-US/kb/how-do-i-upgrade-my-graphics-drivers"
     },
     "Opera": {
+      platforms: {
+        "Android": {
+          upgradeUrl: "https://market.android.com/details?id=com.opera.browser",
+          troubleshootingUrl: "http://www.opera.com/support/"
+        }
+      },
       upgradeUrl: "http://www.opera.com/browser/next/",
-      troubleshootingUrl: "http://my.opera.com/desktopteam/blog/"
+      troubleshootingUrl: "http://www.opera.com/support/"
     },
     "Android": {
       upgradeUrl: null,
