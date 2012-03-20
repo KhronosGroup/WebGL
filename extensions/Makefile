@@ -10,7 +10,8 @@ EXTS := OES_standard_derivatives \
 	proposals/WEBGL_shared_resources \
 	OES_element_index_uint \
 	EXT_texture_filter_anisotropic \
-	proposals/ANGLE_instanced_arrays
+	proposals/ANGLE_instanced_arrays \
+	proposals/WEBGL_fbo_color_attachments \
 
 EXT_XMLS := $(addsuffix /extension.xml,$(EXTS))
 EXT_IDXS := $(addsuffix /index.html,$(EXTS))
