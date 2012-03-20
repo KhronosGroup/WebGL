@@ -45,7 +45,7 @@
           <div>Q: Can the multiple attachments be different dimensions?</div>
           <div>A: No. If the set of attachments attached to a framebuffer are not all the same dimensions
                   the WebGL implemention is required to return <code>FRAMEBUFFER_UNSUPPORTED</code> for <code>checkFramebufferStatus</code>
-                  and <code>INVALID_FRAMEBUFFER_OPERATION</code> for all rendering and reading commands. (eg. <code>drawArrays</code>,
+                  and generate <code>INVALID_FRAMEBUFFER_OPERATION</code> for all rendering and reading commands. (eg. <code>drawArrays</code>,
                   <code>drawElements</code>, <code>clear</code>, <code>readPixels</code>, <code>copyTexImage2D</code>, etc..)
           </div>
       </li>
@@ -53,7 +53,7 @@
           <div>Q: Are any set of possible color attachments required to work?</div>
           <div>A: No. An implementation can reject any set of attachments. For invalid combinations
                   the implemention is required to return <code>FRAMEBUFFER_UNSUPPORTED</code> for <code>checkFramebufferStatus</code>
-                  and <code>INVALID_FRAMEBUFFER_OPERATION</code> for all rendering and reading commands. (eg. <code>drawArrays</code>,
+                  and generate <code>INVALID_FRAMEBUFFER_OPERATION</code> for all rendering and reading commands. (eg. <code>drawArrays</code>,
                   <code>drawElements</code>, <code>clear</code>, <code>readPixels</code>, <code>copyTexImage2D</code>, etc..)
           </div>
       </li>

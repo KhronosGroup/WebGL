@@ -287,7 +287,7 @@ interface ANGLE_instanced_arrays {
           Q: Can the multiple attachments be different dimensions?
           A: No. If the set of attachments attached to a framebuffer are not all the same dimensions
                   the WebGL implemention is required to return FRAMEBUFFER_UNSUPPORTED for checkFramebufferStatus
-                  and INVALID_FRAMEBUFFER_OPERATION for all rendering and reading commands. (eg. drawArrays,
+                  and generate INVALID_FRAMEBUFFER_OPERATION for all rendering and reading commands. (eg. drawArrays,
                   drawElements, clear, readPixels, copyTexImage2D, etc..)
           
       
@@ -295,7 +295,7 @@ interface ANGLE_instanced_arrays {
           Q: Are any set of possible color attachments required to work?
           A: No. An implementation can reject any set of attachments. For invalid combinations
                   the implemention is required to return FRAMEBUFFER_UNSUPPORTED for checkFramebufferStatus
-                  and INVALID_FRAMEBUFFER_OPERATION for all rendering and reading commands. (eg. drawArrays,
+                  and generate INVALID_FRAMEBUFFER_OPERATION for all rendering and reading commands. (eg. drawArrays,
                   drawElements, clear, readPixels, copyTexImage2D, etc..)
           
       
