@@ -49,6 +49,9 @@ skip:        Comma separated list of regular expressions of which tests to skip.
 
              Example: webgl-conformance-tests.html?skip=glsl,.*destruction\.html
 
+include:     Comma separated list of regular expressions of which tests to include.
+
+             Example: webgl-conformance-tests.html?include=glsl,.*destruction\.html
 
 - Version 1.0.0
 - February 24, 2011

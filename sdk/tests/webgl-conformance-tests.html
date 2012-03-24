@@ -183,6 +183,13 @@ function start() {
     this.totalsElem.textContent = msg;
   };
 
+  Page.prototype.enableTest = function(re) {
+    if (this.url.match(re)) {
+      this.check.checked = true;
+      this.folder.enableUp_();
+    }
+  };
+
   Page.prototype.disableTest = function(re) {
     if (this.url.match(re)) {
       this.check.checked = false;
@@ -196,6 +203,7 @@ function start() {
     this.subFolders = {};
     this.pages = [];
     this.items = [];
+    this.folder = folder;
     var that = this;
 
     var doc = reporter.localDoc;
@@ -276,16 +284,39 @@ function start() {
     this.childUL.appendChild(page.elem);
   };
 
-  Folder.prototype.disableTest = function(re) {
+  Folder.prototype.disableTest = function(re, opt_forceRecurse) {
+    var recurse = true;
     if (this.name.match(re)) {
       this.check.checked = false;
-    } else {
+      recurse = opt_forceRecurse;
+    }
+    if (recurse) {
       for (var name in this.subFolders) {
-        this.subFolders[name].disableTest(re);
+        this.subFolders[name].disableTest(re, opt_forceRecurse);
       }
       for (var ii = 0; ii < this.pages.length; ++ii) {
         this.pages[ii].disableTest(re);
       }
+    }
+  };
+
+  Folder.prototype.enableUp_ = function() {
+    this.check.checked = true;
+    var parent = this.folder;
+    if (parent) {
+      parent.enableUp_();
+    }
+  }
+
+  Folder.prototype.enableTest = function(re) {
+    if (this.name.match(re)) {
+      this.enableUp_();
+    }
+    for (var name in this.subFolders) {
+      this.subFolders[name].enableTest(re);
+    }
+    for (var ii = 0; ii < this.pages.length; ++ii) {
+      this.pages[ii].enableTest(re);
     }
   };
 
@@ -327,8 +358,16 @@ function start() {
     }
   };
 
+  Reporter.prototype.enableTest = function(name) {
+    this.root.enableTest(name);
+  };
+
   Reporter.prototype.disableTest = function(name) {
     this.root.disableTest(name);
+  };
+
+  Reporter.prototype.disableAllTests = function() {
+    this.root.disableTest(".*", true);
   };
 
   Reporter.prototype.addEventListener = function(type, func) {
@@ -506,6 +545,14 @@ function start() {
       },
       OPTIONS);
   reporter.addEventListener("ready", function() {
+    // Set which tests to include.
+    if (OPTIONS.include) {
+      reporter.disableAllTests();
+      var includes = OPTIONS.include.split(",")
+      for (var ii = 0; ii < includes.length; ++ii) {
+        reporter.enableTest(new RegExp(includes[ii]));
+      }
+    }
     // Remove tests based on skip=re1,re2 in URL.
     if (OPTIONS.skip) {
       var skips = OPTIONS.skip.split(",")
@@ -514,7 +561,7 @@ function start() {
       }
     }
     // Auto run the tests if the run=1 in URL
-    if (OPTIONS.run) {
+    if (OPTIONS.run != undefined && OPTIONS.run != 0) {
       testHarness.runTests();
     }
   });
