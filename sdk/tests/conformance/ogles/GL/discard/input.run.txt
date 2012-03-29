@@ -1,0 +1,3 @@
+# this file is auto-generated. DO NOT EDIT.
+discard_frag.test.html
+discard_cond_frag.test.html

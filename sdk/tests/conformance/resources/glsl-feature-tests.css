@@ -24,3 +24,6 @@ canvas {
   margin: 1em;
 }
 
+IMG {
+  border: 1px solid black;
+}

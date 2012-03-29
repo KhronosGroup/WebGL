@@ -1,0 +1,3 @@
+# this file is auto-generated. DO NOT EDIT.
+cross_vec3_frag_xvaryyconst.test.html
+cross_vec3_vert_xvaryyconst.test.html

@@ -1,0 +1,7 @@
+# this file is auto-generated. DO NOT EDIT.
+mat3arraysimple_vert.test.html
+mat3arrayindirect0_vert.test.html
+mat3arrayindirect1_vert.test.html
+mat3arraysimple_frag.test.html
+mat3arrayindirect0_frag.test.html
+mat3arrayindirect1_frag.test.html

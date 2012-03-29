@@ -1,0 +1,7 @@
+# this file is auto-generated. DO NOT EDIT.
+faceforward_float_frag_nvaryiconst.test.html
+faceforward_float_vert_nvaryiconst.test.html
+faceforward_vec2_frag_nvaryiconst.test.html
+faceforward_vec2_vert_nvaryiconst.test.html
+faceforward_vec3_frag_nvaryiconst.test.html
+faceforward_vec3_vert_nvaryiconst.test.html

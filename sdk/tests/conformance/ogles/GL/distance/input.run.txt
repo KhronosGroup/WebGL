@@ -1,0 +1,7 @@
+# this file is auto-generated. DO NOT EDIT.
+distance_float_frag_xvaryyhalf.test.html
+distance_vec2_frag_xvaryyhalf.test.html
+distance_vec3_frag_xvaryyhalf.test.html
+distance_float_vert_xvaryyhalf.test.html
+distance_vec2_vert_xvaryyhalf.test.html
+distance_vec3_vert_xvaryyhalf.test.html

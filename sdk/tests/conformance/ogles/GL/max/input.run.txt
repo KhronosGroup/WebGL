@@ -1,0 +1,7 @@
+# this file is auto-generated. DO NOT EDIT.
+max_float_frag_xvary_yconsthalf.test.html
+max_vec2_frag_xvary_yconsthalf.test.html
+max_vec3_frag_xvary_yconsthalf.test.html
+max_float_vert_xvary_yconsthalf.test.html
+max_vec2_vert_xvary_yconsthalf.test.html
+max_vec3_vert_xvary_yconsthalf.test.html

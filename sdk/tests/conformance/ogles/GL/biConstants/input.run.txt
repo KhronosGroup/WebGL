@@ -1,0 +1,17 @@
+# this file is auto-generated. DO NOT EDIT.
+gl_MaxCombinedTextureImageUnits_frag.test.html
+gl_MaxCombinedTextureImageUnits_vert.test.html
+gl_MaxDrawBuffers_frag.test.html
+gl_MaxDrawBuffers_vert.test.html
+gl_MaxFragmentUniformVectors_frag.test.html
+gl_MaxFragmentUniformVectors_vert.test.html
+gl_MaxTextureImageUnits_frag.test.html
+gl_MaxTextureImageUnits_vert.test.html
+gl_MaxVaryingVectors_frag.test.html
+gl_MaxVaryingVectors_vert.test.html
+gl_MaxVertexAttribs_frag.test.html
+gl_MaxVertexAttribs_vert.test.html
+gl_MaxVertexTextureImageUnits_frag.test.html
+gl_MaxVertexTextureImageUnits_vert.test.html
+gl_MaxVertexUniformVectors_frag.test.html
+gl_MaxVertexUniformVectors_vert.test.html

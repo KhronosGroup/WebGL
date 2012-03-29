@@ -1,0 +1,5 @@
+# this file is auto-generated. DO NOT EDIT.
+all_bvec2_frag.test.html
+all_bvec2_vert.test.html
+all_bvec3_frag.test.html
+all_bvec3_vert.test.html

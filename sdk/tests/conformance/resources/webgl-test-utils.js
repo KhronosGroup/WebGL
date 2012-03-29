@@ -376,9 +376,10 @@ var setupQuad = function (
  *       triangle
  *   positionOffset: offset added to each vertex
  *   positionMult: multipier for each vertex
+ *   colorLocation: attrib location for vertex colors. If
+ *      undefined no vertex colors will be created.
  */
 var setupQuadWithOptions = function (gl, options) {
-
   var positionLocation = options.positionLocation || 0;
   var objects = [];
 
@@ -389,7 +390,6 @@ var setupQuadWithOptions = function (gl, options) {
   var numVerts = vertsAcross * vertsAcross;
   var positions = new Float32Array(numVerts * 3);
   var indices = new Uint16Array(6 * gridRes * gridRes);
-
   var poffset = 0;
 
   for (var yy = 0; yy <= gridRes; ++yy) {
@@ -400,6 +400,40 @@ var setupQuadWithOptions = function (gl, options) {
 
       poffset += 3;
     }
+  }
+
+  var buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(positionLocation);
+  gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
+  objects.push(buf);
+
+  if (options.colorLocation !== undefined) {
+    var colors = new Float32Array(numVerts * 4);
+    for (var yy = 0; yy <= gridRes; ++yy) {
+      for (var xx = 0; xx <= gridRes; ++xx) {
+        if (options.color !== undefined) {
+          colors[poffset + 0] = options.color[0];
+          colors[poffset + 1] = options.color[1];
+          colors[poffset + 2] = options.color[2];
+          colors[poffset + 3] = options.color[3];
+        } else {
+          colors[poffset + 0] = xx / gridRes;
+          colors[poffset + 1] = yy / gridRes;
+          colors[poffset + 2] = (xx / gridRes) * (yy / gridRes);
+          colors[poffset + 3] = (yy % 2) * 0.5 + 0.5;
+        }
+        poffset += 4;
+      }
+    }
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(options.colorLocation);
+    gl.vertexAttribPointer(options.colorLocation, 4, gl.FLOAT, false, 0, 0);
+    objects.push(buf);
   }
 
   var tbase = 0;
@@ -422,13 +456,6 @@ var setupQuadWithOptions = function (gl, options) {
       tbase += 6;
     }
   }
-
-  var buf = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-  gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-  gl.enableVertexAttribArray(positionLocation);
-  gl.vertexAttribPointer(positionLocation, 3, gl.FLOAT, false, 0, 0);
-  objects.push(buf);
 
   var buf = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf);
@@ -1157,24 +1184,35 @@ var loadProgramFromScript = function loadProgramFromScript(
  * Loads shaders from source, creates a program, attaches the shaders and
  * links.
  * @param {!WebGLContext} gl The WebGLContext to use.
- * @param {string} vertexShader The vertex shader.
- * @param {string} fragmentShader The fragment shader.
+ * @param {!WebGLShader} vertexShader The vertex shader.
+ * @param {!WebGLShader} fragmentShader The fragment shader.
+ * @param {function(string): void) opt_errorCallback callback for errors.
+ * @return {!WebGLProgram} The created program.
+ */
+var createProgram = function(gl, vertexShader, fragmentShader, opt_errorCallback) {
+  var program = gl.createProgram();
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  linkProgram(gl, program, opt_errorCallback);
+  return program;
+};
+
+/**
+ * Loads shaders from source, creates a program, attaches the shaders and
+ * links.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {string} vertexShader The vertex shader source.
+ * @param {string} fragmentShader The fragment shader source.
  * @param {function(string): void) opt_errorCallback callback for errors. 
  * @return {!WebGLProgram} The created program.
  */
 var loadProgram = function(
     gl, vertexShader, fragmentShader, opt_errorCallback) {
-  var program = gl.createProgram();
-  gl.attachShader(
-      program,
-      loadShader(
-          gl, vertexShader, gl.VERTEX_SHADER, opt_errorCallback));
-  gl.attachShader(
-      program,
-      loadShader(
-          gl, fragmentShader, gl.FRAGMENT_SHADER, opt_errorCallback));
-  linkProgram(gl, program, opt_errorCallback);
-  return program;
+  var vs = loadShader(
+      gl, vertexShader, gl.VERTEX_SHADER, opt_errorCallback);
+  var fs = loadShader(
+      gl, fragmentShader, gl.FRAGMENT_SHADER, opt_errorCallback);
+  return createProgram(gl, vs, fs, opt_errorCallback);
 };
 
 /**
@@ -1318,7 +1356,7 @@ var insertImage = function(element, caption, img) {
    element.appendChild(div);
 };
 
-var addShaderSource = function(element, label, source) {
+var addShaderSource = function(element, label, source, opt_url) {
   var div = document.createElement("div");
   var s = document.createElement("pre");
   s.className = "shader-source";
@@ -1344,6 +1382,13 @@ var addShaderSource = function(element, label, source) {
       return false;
     }, false);
   div.appendChild(l);
+  if (opt_url) {
+    var u = document.createElement("a");
+    u.href = opt_url;
+    div.appendChild(document.createTextNode(" "));
+    u.appendChild(document.createTextNode("(" + opt_url + ")"));
+    div.appendChild(u);
+  }
   div.appendChild(s);
   element.appendChild(div);
 };
@@ -1463,6 +1508,7 @@ return {
   checkCanvas: checkCanvas,
   checkCanvasRect: checkCanvasRect,
   createColoredTexture: createColoredTexture,
+  createProgram: createProgram,
   drawQuad: drawQuad,
   drawIndexedQuad: drawIndexedQuad,
   endsWith: endsWith,

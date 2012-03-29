@@ -1,0 +1,7 @@
+# this file is auto-generated. DO NOT EDIT.
+tan_float_frag_xvary.test.html
+tan_vec2_frag_xvary.test.html
+tan_vec3_frag_xvary.test.html
+tan_float_vert_xvary.test.html
+tan_vec2_vert_xvary.test.html
+tan_vec3_vert_xvary.test.html

@@ -55,7 +55,7 @@ function notifyFinishedToHarness() {
 function description(msg)
 {
     if (msg === undefined) {
-      msg = document.getElementsByTagName("title")[0].innerText;
+      msg = document.title;
     }
     // For MSIE 6 compatibility
     var span = document.createElement("span");
