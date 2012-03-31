@@ -18,15 +18,18 @@ found in the LICENSE file.
 <div id="description"></div>
 <div id="console"></div>
 <script id="fragmentShader" type="text/something-not-javascript">
-// fragment shader with invalid functional scoping should fail
+// fragment shader with illegal references to conditionally scoped variables should fail
 precision mediump float;
-int f(int k) {
-  int k = k + 3;
-  return k;
-}
-
 void main() {
-  gl_FragColor = vec4(f(100));
+  int k = 3;
+
+  if (true) int g = k = 4;
+  else int q = k = 5;
+
+  g = 3; // should error
+  q = 4; // should error
+
+  gl_FragColor = vec4(1.);
 }
 </script>
 <script>

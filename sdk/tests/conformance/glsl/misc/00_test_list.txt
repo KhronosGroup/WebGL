@@ -17,6 +17,7 @@ shader-with-attrib-array.vert.html
 shader-with-attrib-struct.vert.html
 shader-with-clipvertex.vert.html
 --min-version 1.0.2 shader-with-conditional-scoping.html
+--min-version 1.0.2 shader-with-conditional-scoping-negative.html
 shader-with-default-precision.frag.html
 shader-with-default-precision.vert.html
 shader-with-define-line-continuation.frag.html

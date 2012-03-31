@@ -18,11 +18,11 @@ found in the LICENSE file.
 <div id="description"></div>
 <div id="console"></div>
 <script id="fragmentShader" type="text/something-not-javascript">
-// fragment shader with for scoping should succeed
+// fragment shader with illegal for scoping should fail
 precision mediump float;
 void main() {
   int k = 0;
-  for (int i = 0; i < 10; i++) { int i = k+i; } // ok, compound nests
+  for (int i = 0; i < 10; i++) { int i = k+i; } // not a nested scope, in i's scope, nesting already happened
   gl_FragColor = vec4(float(k));
 }
 </script>
