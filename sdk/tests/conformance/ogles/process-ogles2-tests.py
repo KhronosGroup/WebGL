@@ -15,6 +15,12 @@ if sys.version < '2.6':
    print 'Wrong Python Version !!!: Need >= 2.6'
    sys.exit(1)
 
+# each shader test generates up to 3 512x512 images.
+# a 512x512 image takes 1meg of memory so set this
+# number apporpriate for the platform with
+# the smallest memory issue. At 8 that means
+# at least 24 meg is needed to run the test.
+MAX_TESTS_PER_SET = 8
 
 VERBOSE = False
 
@@ -159,6 +165,11 @@ def ReadFile(filename):
   return content.replace("\r\n", "\n")
 
 
+def Chunkify(list, chunk_size):
+  """divides an array into chunks of chunk_size"""
+  return [list[i:i + chunk_size] for i in range(0, len(list), chunk_size)]
+
+
 def GetText(nodelist):
   """Gets the text of from a list of nodes"""
   rc = []
@@ -175,6 +186,21 @@ def GetElementText(node, name):
     return GetText(elements[0].childNodes)
   else:
     return None
+
+
+def GetBoolElement(node, name):
+  text = GetElementText(node, name)
+  return text.lower() == "true"
+
+
+def GetModel(node):
+  """Gets the model"""
+  model = GetElementText(node, "model")
+  if model and len(model.strip()) == 0:
+    elements = node.getElementsByTagName("model")
+    if len(elements) > 0:
+      model = GetElementText(elements[0], "filename")
+  return model
 
 
 def RelativizePaths(base, paths, template):
@@ -219,6 +245,25 @@ def CopyShader(filename, src, dst):
   f.close()
 
 
+def IsOneOf(string, regexs):
+  for regex in regexs:
+    if re.match(regex, string):
+      return True
+  return False
+
+
+def CheckForUnknownTags(valid_tags, node, depth=1):
+  """do a hacky check to make sure we're not missing something."""
+  for child in node.childNodes:
+    if child.localName and not IsOneOf(child.localName, valid_tags[0]):
+      print "unsupported tag:", child.localName
+      print "depth:", depth
+      raise SyntaxError
+    else:
+      if len(valid_tags) > 1:
+        CheckForUnknownTags(valid_tags[1:], child, depth + 1)
+
+
 def IsFileWeWant(filename):
   for f in FILTERS:
     if f.search(filename):
@@ -251,23 +296,34 @@ class TestReader():
     dirname = os.path.dirname(filename)
     lines = ReadFileAsLines(filename)
     count = 0
+    tests_data = []
     for line in lines:
       if len(line) > 0 and not line.startswith("#"):
         fname = os.path.join(dirname, line)
-        if not IsFileWeWant(fname):
-          Log("skipped: %s" % line)
-          continue
-        elif line.endswith(".run"):
+        if line.endswith(".run"):
           if self.ReadTests(fname):
             f.Write(line + ".txt\n")
             count += 1
         elif line.endswith(".test"):
-          if self.ReadTest(fname):
-            f.Write(line + ".html\n")
-            count += 1
+          tests_data.extend(self.ReadTest(fname))
         else:
           print "Error in %s:%d:%s" % (filename, count, line)
           raise SyntaxError()
+    if len(tests_data):
+      global MAX_TESTS_PER_SET
+      sets = Chunkify(tests_data, MAX_TESTS_PER_SET)
+      id = 1
+      for set in sets:
+        suffix = "_%03d_to_%03d" % (id, id + len(set) - 1)
+        test_outname = self.MakeOutPath(filename + suffix + ".html")
+        if os.path.basename(test_outname).startswith("input.run"):
+          dname = os.path.dirname(test_outname)
+          folder_name = os.path.basename(dname)
+          test_outname = os.path.join(dname, folder_name + suffix + ".html")
+        self.WriteTests(filename, test_outname, {"tests":set})
+        f.Write(os.path.basename(test_outname) + "\n")
+        id += len(set)
+      count += 1
     f.Close()
     return count
 
@@ -279,11 +335,13 @@ class TestReader():
     tests_data = []
     outname = self.MakeOutPath(filename + ".html")
     for test in tests:
-      test_data = self.ProcessTest(test, filename, outname, len(tests_data))
-      if test_data:
-        tests_data.append(test_data)
-    self.WriteTests(filename, outname, {"tests": tests_data})
-    return len(tests_data)
+      if not IsFileWeWant(filename):
+        self.CopyShaders(test, filename, outname)
+      else:
+        test_data = self.ProcessTest(test, filename, outname, len(tests_data))
+        if test_data:
+          tests_data.append(test_data)
+    return tests_data
 
   def ProcessTest(self, test, filename, outname, id):
     """Process a test"""
@@ -345,6 +403,16 @@ successfullyParsed = true;
       })
     f.close()
 
+
+  def CopyShaders(self, test, filename, outname):
+    """For tests we don't actually support yet, at least copy the shaders"""
+    shaders = test.getElementsByTagName("shader")
+    for shader in shaders:
+      for name in ["vertshader", "fragshader"]:
+        s = GetElementText(shader, name)
+        if s and s != "empty":
+          CopyShader(s, filename, outname)
+
   #
   # pattern handlers.
   #
@@ -352,27 +420,12 @@ successfullyParsed = true;
   def Process_compare(self, test, filename, outname):
     global MATRIX_RE
 
-    # do a hacky check to make sure we're not missing something.
-    VALID_LEVEL1_ELEMENTS = ["shader", "model", "glstate"]
-    VALID_LEVEL2_ELEMENTS = ["uniform", "vertshader", "fragshader", "filename"]
-    VALID_LEVEL3_ELEMENTS = ["name", "count", "transpose", "uniform*"]
-    models = test.getElementsByTagName("model")
-    for node in test.childNodes:
-      if node.localName == "glstate":
-        pass
-      elif node.localName and not node.localName in VALID_LEVEL1_ELEMENTS:
-        print "unsupported tag:", node.localName
-        raise SyntaxError
-      else:
-        for child in node.childNodes:
-          if child.localName and not child.localName in VALID_LEVEL2_ELEMENTS:
-            print "unsupported tag:", child.localName
-            raise SyntaxError
-          else:
-            for baby in child.childNodes:
-              if baby.localName and not baby.localName in VALID_LEVEL3_ELEMENTS and not baby.localName.startswith("uniform"):
-                print "unsupported tag:", baby.localName
-                raise SyntaxError
+    valid_tags = [
+      ["shader", "model", "glstate"],
+      ["uniform", "vertshader", "fragshader", "filename", "depthrange"],
+      ["name", "count", "transpose", "uniform*", "near", "far"],
+    ]
+    CheckForUnknownTags(valid_tags, test)
 
     # parse the test
     shaders = test.getElementsByTagName("shader")
@@ -416,7 +469,7 @@ successfullyParsed = true;
                 TransposeMatrix(uniform["value"], int(m.group(1)))
     data = {
       "name": os.path.basename(outname),
-      "model": GetElementText(test, "model"),
+      "model": GetModel(test),
       "referenceProgram": shaderInfos[1],
       "testProgram": shaderInfos[0],
     }
@@ -436,35 +489,40 @@ successfullyParsed = true;
 
   def Process_shaderload(self, test, filename, outname):
     """no need for shaderload tests"""
-    return None
+    self.CopyShaders(test, filename, outname)
 
   def Process_extension(self, test, filename, outname):
     """no need for extension tests"""
-    return None
+    self.CopyShaders(test, filename, outname)
 
   def Process_createtests(self, test, filename, outname):
     Log("createtests Not implemented:  %s" % filename)
-    return None
+    self.CopyShaders(test, filename, outname)
 
   def Process_GL2Test(self, test, filename, outname):
     Log("GL2Test Not implemented:  %s" % filename)
-    return None
+    self.CopyShaders(test, filename, outname)
 
   def Process_uniformquery(self, test, filename, outname):
     Log("uniformquery Not implemented:  %s" % filename)
-    return None
+    self.CopyShaders(test, filename, outname)
 
   def Process_egl_image_external(self, test, filename, outname):
     """no need for egl_image_external tests"""
-    return None
+    self.CopyShaders(test, filename, outname)
 
   def Process_dismount(self, test, filename, outname):
     Log("dismount Not implemented:  %s" % filename)
-    return None
+    self.CopyShaders(test, filename, outname)
 
   def Process_build(self, test, filename, outname):
     """don't need build tests"""
-    return None  # comment out when we support this pattern.
+    valid_tags = [
+      ["shader", "compstat", "linkstat"],
+      ["vertshader", "fragshader"],
+    ]
+    CheckForUnknownTags(valid_tags, test)
+
     shader = test.getElementsByTagName("shader")
     if not shader:
       return None
@@ -475,10 +533,13 @@ successfullyParsed = true;
     if fs and fs != "empty":
       CopyShader(fs, filename, outname)
     data = {
-      "name": os.path.basename("outname"),
-      "compstat": GetElementText(test, "compstat"),
-      "linkstat": GetElementText(test, "linkstat"),
-      "testProgram": [ vs, fs, ],
+      "name": os.path.basename(outname),
+      "compstat": bool(GetBoolElement(test, "compstat")),
+      "linkstat": bool(GetBoolElement(test, "linkstat")),
+      "testProgram": {
+        "vertexShader": vs,
+        "fragmentShader": fs,
+      },
     }
     attach = test.getElementsByTagName("attach")
     if len(attach) > 0:
@@ -487,15 +548,15 @@ successfullyParsed = true;
 
   def Process_coverage(self, test, filename, outname):
     Log("coverage Not implemented:  %s" % filename)
-    return None
+    self.CopyShaders(test, filename, outname)
 
   def Process_attributes(self, test, filename, outname):
     Log("attributes Not implemented:  %s" % filename)
-    return None
+    self.CopyShaders(test, filename, outname)
 
   def Process_fixed(self, test, filename, outname):
     """no need for fixed function tests"""
-    return None
+    self.CopyShaders(test, filename, outname)
 
 
 def main(argv):

@@ -1,9 +1,0 @@
-# this file is auto-generated. DO NOT EDIT.
-lessThan_vec2_frag.test.html
-lessThan_vec2_vert.test.html
-lessThan_vec3_frag.test.html
-lessThan_vec3_vert.test.html
-lessThan_ivec2_frag.test.html
-lessThan_ivec2_vert.test.html
-lessThan_ivec3_frag.test.html
-lessThan_ivec3_vert.test.html

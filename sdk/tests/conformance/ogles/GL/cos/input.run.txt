@@ -1,7 +1,0 @@
-# this file is auto-generated. DO NOT EDIT.
-cos_float_frag_xvary.test.html
-cos_vec2_frag_xvary.test.html
-cos_vec3_frag_xvary.test.html
-cos_float_vert_xvary.test.html
-cos_vec2_vert_xvary.test.html
-cos_vec3_vert_xvary.test.html

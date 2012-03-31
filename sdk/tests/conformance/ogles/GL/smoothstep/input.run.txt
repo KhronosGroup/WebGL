@@ -1,7 +1,0 @@
-# this file is auto-generated. DO NOT EDIT.
-smoothstep_float_frag_xvary_edgeconstquarter.test.html
-smoothstep_vec2_frag_xvary_edgeconstquarter.test.html
-smoothstep_vec3_frag_xvary_edgeconstquarter.test.html
-smoothstep_float_vert_xvary_edgeconstquarter.test.html
-smoothstep_vec2_vert_xvary_edgeconstquarter.test.html
-smoothstep_vec3_vert_xvary_edgeconstquarter.test.html

@@ -1,7 +1,0 @@
-# this file is auto-generated. DO NOT EDIT.
-dot_float_frag_xvaryyone.test.html
-dot_vec2_frag_xvaryyhalf.test.html
-dot_vec3_frag_xvaryythird.test.html
-dot_float_vert_xvaryyone.test.html
-dot_vec2_vert_xvaryyhalf.test.html
-dot_vec3_vert_xvaryythird.test.html

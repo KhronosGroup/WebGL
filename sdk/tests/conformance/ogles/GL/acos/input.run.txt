@@ -1,7 +1,0 @@
-# this file is auto-generated. DO NOT EDIT.
-acos_float_frag_xvary.test.html
-acos_vec2_frag_xvary.test.html
-acos_vec3_frag_xvary.test.html
-acos_float_vert_xvary.test.html
-acos_vec2_vert_xvary.test.html
-acos_vec3_vert_xvary.test.html

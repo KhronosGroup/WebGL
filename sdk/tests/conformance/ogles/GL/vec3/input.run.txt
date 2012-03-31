@@ -1,9 +1,0 @@
-# this file is auto-generated. DO NOT EDIT.
-vec3array_frag.test.html
-vec3single_vert.test.html
-vec3arrayindirect_vert.test.html
-vec3arraydirect_vert.test.html
-vec3array_vert.test.html
-vec3single_frag.test.html
-vec3arrayindirect_frag.test.html
-vec3arraydirect_frag.test.html

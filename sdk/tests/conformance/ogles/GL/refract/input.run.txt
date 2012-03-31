@@ -1,7 +1,0 @@
-# this file is auto-generated. DO NOT EDIT.
-refract_float_frag_ivarynconst.test.html
-refract_float_vert_ivarynconst.test.html
-refract_vec2_frag_ivarynconst.test.html
-refract_vec2_vert_ivarynconst.test.html
-refract_vec3_frag_ivarynconst.test.html
-refract_vec3_vert_ivarynconst.test.html

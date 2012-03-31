@@ -16,7 +16,7 @@ var GTFNCCTOLARANCEZERO = 0.25;
 var GTFKERNALSIZE = 5;
 
 function log(msg) {
-  //debug(msg);
+  // debug(msg);
 }
 
 function compareImages(refData, tstData, width, height, diff) {
@@ -622,8 +622,88 @@ function runCompareTest(test, callback) {
   runProgram(test.testProgram, test, "test", storeResults(1));
 }
 
+function runBuildTest(test, callback) {
+  debug("");
+  debug("test: " + test.name);
+
+  var shaders = [null, null];
+  var source = ["",""];
+  var success = [undefined, undefined];
+  var count = 0;
+
+  function loadShader(path, type, index) {
+    if (path == "empty") {
+      shaders[index] = gl.createShader();
+      success[index] = true;
+      source[index] = "/* empty */";
+      attachAndLink();
+    } else {
+      wtu.loadTextFileAsync(path, function(loadSuccess, text) {
+        if (!loadSuccess) {
+          success[index] = false;
+          source[index] = "/* could not load */";
+          testFailed("could not load:" + path);
+        } else {
+          source[index] = text;
+          shaders[index] = wtu.loadShader(gl, text, type, function(index) {
+            return function(msg) {
+              success[index] = false
+            }
+          }(index));
+          if (success[index] === undefined) {
+            success[index] = true;
+          }
+        }
+        attachAndLink();
+      });
+    }
+  }
+
+  function attachAndLink() {
+    ++count;
+    if (count == 2) {
+      debug("");
+      var c = document.getElementById("console");
+      wtu.addShaderSource(
+          c, "vertex shader", source[0], test.testProgram.vertexShader);
+      debug("compile: " + (success[0] ? "success" : "fail"));
+      wtu.addShaderSource(
+          c, "fragment shader", source[1], test.testProgram.fragmentShader);
+      debug("compile: " + (success[1] ? "success" : "fail"));
+      compileSuccess = (success[0] && success[1]);
+      if (!test.compstat) {
+        if (compileSuccess) {
+          testFailed("expected compile failure but was successful");
+        } else {
+          testPassed("expected compile failure and it failed");
+        }
+      } else {
+        if (compileSuccess) {
+          testPassed("expected compile success and it was successful");
+        } else {
+          testFailed("expected compile success but it failed");
+        }
+        var linkSuccess = true;
+        var program = wtu.createProgram(gl, shaders[0], shaders[1], function() {
+          linkSuccess = false;
+        });
+        if (linkSuccess !== test.linkstat) {
+          testFailed("expected link to " + (test.linkstat ? "succeed" : "fail"));
+        } else {
+          testPassed("shaders compiled and linked as expected.");
+        }
+      }
+      callback();
+    }
+  }
+
+  loadShader(test.testProgram.vertexShader, gl.VERTEX_SHADER, 0);
+  loadShader(test.testProgram.fragmentShader, gl.FRAGMENT_SHADER, 1);
+}
+
 var testPatterns = {
   compare: runCompareTest,
+  build: runBuildTest,
 
   dummy: null  // just here to mark the end
 };

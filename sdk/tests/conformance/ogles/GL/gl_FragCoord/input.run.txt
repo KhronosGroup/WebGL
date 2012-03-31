@@ -1,4 +1,0 @@
-# this file is auto-generated. DO NOT EDIT.
-gl_FragCoord_xy_frag.test.html
-gl_FragCoord_z_frag.test.html
-gl_FragCoord_w_frag.test.html
