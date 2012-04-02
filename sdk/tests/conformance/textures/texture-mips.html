@@ -76,6 +76,38 @@ function init()
   shouldBe("canvas.height", "2");
 
   gl = wtu.create3DContext(canvas);
+
+  var tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  glErrorShouldBe(gl, gl.INVALID_OPERATION, "for generateMipmap with mip 0 is 0x0");
+  gl.texImage2D(
+      gl.TEXTURE_2D, 1, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+      new Uint8Array(4));
+  gl.generateMipmap(gl.TEXTURE_2D);
+  glErrorShouldBe(gl, gl.INVALID_OPERATION, "for generateMipmap with mip 0 is 0x0");
+
+  tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_CUBE_MAP, tex);
+  gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+  glErrorShouldBe(gl, gl.INVALID_OPERATION, "for generateMipmap with mip 0 is 0x0");
+
+  var faces = [
+    gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+    gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+    gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+    gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+    gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+    gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
+  ];
+  for (var ii = 0; ii < faces.length; ++ii) {
+    gl.texImage2D(
+        faces[ii], 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+        new Uint8Array(4 * 2 * 2));
+    gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+    glErrorShouldBe(gl, ii == 5 ? gl.NO_ERROR : gl.INVALID_OPERATION, "for generateMipmap with " + (ii + 1) + " faces");
+  }
+
   wtu.setupUnitQuad(gl, 0, 1);
   var program = wtu.setupProgram(
       gl, ['vshader', 'fshader'], ['vPosition', 'texCoord0'], [0, 1]);
