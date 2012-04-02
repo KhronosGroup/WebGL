@@ -20,7 +20,8 @@ typedef long           GLint;
 typedef long           GLsizei;
 typedef long long      GLintptr;
 typedef long long      GLsizeiptr;
-typedef unsigned byte  GLubyte;        /* 'unsigned byte' should be an unsigned 8 bit type. */
+// Ideally the typedef below would use 'unsigned byte', but that doesn't currently exist in Web IDL.
+typedef octet          GLubyte;        /* 'octet' should be an unsigned 8 bit type. */
 typedef unsigned short GLushort;
 typedef unsigned long  GLuint;
 typedef float          GLfloat;
