@@ -8,20 +8,8 @@
  *   https://www.khronos.org/registry/webgl/specs/latest/
  */
 
-// This module depends on the typedarrays module defined at:
+// This IDL depends on the typed array specification defined at:
 // https://www.khronos.org/registry/typedarray/specs/latest/typedarrays.idl
-
-module webgl {
-
-typedef events::Event Event;
-typedef html::HTMLCanvasElement HTMLCanvasElement;
-typedef html::HTMLImageElement HTMLImageElement;
-typedef html::HTMLVideoElement HTMLVideoElement;
-typedef html::ImageData ImageData;
-typedef typedarrays::ArrayBuffer ArrayBuffer;
-typedef typedarrays::ArrayBufferView ArrayBufferView;
-typedef typedarrays::FloatArray FloatArray;
-typedef typedarrays::Int32Array Int32Array;
 
 typedef unsigned long  GLenum;
 typedef boolean        GLboolean;
@@ -734,6 +722,4 @@ interface WebGLContextEvent : Event {
 // EventInit is defined in the DOM4 specification.
 dictionary WebGLContextEventInit : EventInit {
     DOMString statusMessage;
-};
-
 };
