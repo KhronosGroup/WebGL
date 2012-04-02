@@ -170,8 +170,33 @@ function glFunctionArgToString(functionName, argumentIndex, value) {
       return glEnumToString(value);
     }
   }
-  return value.toString();
+  if (value === null) {
+    return "null";
+  } else if (value === undefined) {
+    return "undefined";
+  } else {
+    return value.toString();
+  }
 }
+
+/**
+ * Converts the arguments of a WebGL function to a string.
+ * Attempts to convert enum arguments to strings.
+ *
+ * @param {string} functionName the name of the WebGL function.
+ * @param {number} args The arguments.
+ * @return {string} The arguments as a string.
+ */
+function glFunctionArgsToString(functionName, args) {
+  // apparently we can't do args.join(",");
+  var argStr = "";
+  for (var ii = 0; ii < args.length; ++ii) {
+    argStr += ((ii == 0) ? '' : ', ') +
+        glFunctionArgToString(functionName, ii, args[ii]);
+  }
+  return argStr;
+};
+
 
 function makePropertyWrapper(wrapper, original, propertyName) {
   //log("wrap prop: " + propertyName);
@@ -208,8 +233,11 @@ function makeFunctionWrapper(original, functionName) {
  *        The function to call when gl.getError returns an
  *        error. If not specified the default function calls
  *        console.log with a message.
+ * @param {!function(funcName, args): void} opt_onFunc The
+ *        function to call when each webgl function is called.
+ *        You can use this to log all calls for example.
  */
-function makeDebugContext(ctx, opt_onErrorFunc) {
+function makeDebugContext(ctx, opt_onErrorFunc, opt_onFunc) {
   init(ctx);
   opt_onErrorFunc = opt_onErrorFunc || function(err, functionName, args) {
         // apparently we can't do args.join(",");
@@ -229,6 +257,9 @@ function makeDebugContext(ctx, opt_onErrorFunc) {
   // Makes a function that calls a WebGL function and then calls getError.
   function makeErrorWrapper(ctx, functionName) {
     return function() {
+      if (opt_onFunc) {
+        opt_onFunc(functionName, arguments);
+      }
       var result = ctx[functionName].apply(ctx, arguments);
       var err = ctx.getError();
       if (err != 0) {
@@ -741,6 +772,16 @@ return {
   'glFunctionArgToString': glFunctionArgToString,
 
   /**
+   * Converts the arguments of a WebGL function to a string.
+   * Attempts to convert enum arguments to strings.
+   *
+   * @param {string} functionName the name of the WebGL function.
+   * @param {number} args The arguments.
+   * @return {string} The arguments as a string.
+   */
+  'glFunctionArgsToString': glFunctionArgsToString,
+
+  /**
    * Given a WebGL context returns a wrapped context that calls
    * gl.getError after every command and calls a function if the
    * result is not NO_ERROR.
@@ -760,6 +801,9 @@ return {
    * @param {!function(err, funcName, args): void} opt_onErrorFunc The function
    *     to call when gl.getError returns an error. If not specified the default
    *     function calls console.log with a message.
+   * @param {!function(funcName, args): void} opt_onFunc The
+   *     function to call when each webgl function is called. You
+   *     can use this to log all calls for example.
    */
   'makeDebugContext': makeDebugContext,
 
