@@ -77,6 +77,7 @@ debug("");
 debug("Test that getShaderPrecisionFormat returns the same thing every call.");
 debug("");
 
+var shaderPrecisionFormat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT);
 var shaderPrecisionFormat2 = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT);
 shouldBeTrue('shaderPrecisionFormat.rangeMin == shaderPrecisionFormat2.rangeMin');
 shouldBeTrue('shaderPrecisionFormat.rangeMax == shaderPrecisionFormat2.rangeMax');
