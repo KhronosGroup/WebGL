@@ -27,7 +27,7 @@ typedef unsigned long  GLuint;
 typedef float          GLfloat;
 typedef float          GLclampf;  
 
-[Callback] interface WebGLContextAttributes {
+callback interface WebGLContextAttributes {
     attribute boolean alpha;
     attribute boolean depth;
     attribute boolean stencil;
