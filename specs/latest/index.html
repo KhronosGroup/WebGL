@@ -445,7 +445,7 @@ gl.viewport(0, 0, canvas.width, canvas.height);
         If the <code>texImage2D</code> or <code>texSubImage2D</code> method is called with otherwise
         correct arguments and an <code>HTMLImageElement</code>, <code>HTMLVideoElement</code>,
         or <code>HTMLCanvasElement</code> violating these restrictions, a <code>SECURITY_ERR</code>
-        exception must be raised.
+        exception must be thrown.
     </p>
     <div class="note">
         <p>
@@ -1629,11 +1629,11 @@ for (var i = 0; i < numVertices; i++) {
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
                     GLenum format, GLenum type, ImageData pixels);
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLImageElement image) raises (DOMException);
+                    GLenum format, GLenum type, HTMLImageElement image); // May throw DOMException
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLCanvasElement canvas) raises (DOMException);
+                    GLenum format, GLenum type, HTMLCanvasElement canvas); // May throw DOMException
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLVideoElement video) raises (DOMException);
+                    GLenum format, GLenum type, HTMLVideoElement video) // May throw DOMException
 
     void texParameterf(GLenum target, GLenum pname, GLfloat param);
     void texParameteri(GLenum target, GLenum pname, GLint param);
@@ -1644,11 +1644,11 @@ for (var i = 0; i < numVertices; i++) {
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLenum format, GLenum type, ImageData pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLImageElement image) raises (DOMException);
+                       GLenum format, GLenum type, HTMLImageElement image) // May throw DOMException
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLCanvasElement canvas) raises (DOMException);
+                       GLenum format, GLenum type, HTMLCanvasElement canvas) // May throw DOMException
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLVideoElement video) raises (DOMException);
+                       GLenum format, GLenum type, HTMLVideoElement video) // May throw DOMException
 
     void uniform1f(WebGLUniformLocation? location, GLfloat x);
     void uniform1fv(WebGLUniformLocation? location, Float32Array v);
@@ -2321,11 +2321,11 @@ for (var i = 0; i < numVertices; i++) {
         <dt><p class="idl-code"><a name="TEXIMAGE2D_HTML">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat,
                     GLenum format, GLenum type, ImageData pixels)</p>
             <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLImageElement image) raises (DOMException)</p>
+                    GLenum format, GLenum type, HTMLImageElement image) /* May throw DOMException */</p>
             <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLCanvasElement canvas) raises (DOMException)</p>
+                    GLenum format, GLenum type, HTMLCanvasElement canvas) /* May throw DOMException */</p>
             <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLVideoElement video) raises (DOMException)
+                    GLenum format, GLenum type, HTMLVideoElement video) /* May throw DOMException */
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.1">OpenGL ES 2.0 &sect;3.7.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexImage2D.xml">man page</a>)</span></p>
         <dd>
             Uploads the given element or image data to the currently bound WebGLTexture. <br><br>
@@ -2351,7 +2351,7 @@ for (var i = 0; i < numVertices; i++) {
             or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
             Document, or with an <code>HTMLCanvasElement</code> whose <i>origin-clean</i> flag is
             set to false, a <code>SECURITY_ERR</code> exception must be
-            raised. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
+            thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
 
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
@@ -2384,11 +2384,11 @@ for (var i = 0; i < numVertices; i++) {
         <dt><p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLenum format, GLenum type, ImageData pixels)</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLImageElement image) raises (DOMException)</p>
+                       GLenum format, GLenum type, HTMLImageElement image) /* May throw DOMException */</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLCanvasElement canvas) raises (DOMException)</p>
+                       GLenum format, GLenum type, HTMLCanvasElement canvas) /* May throw DOMException */</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLVideoElement video) raises (DOMException)
+                       GLenum format, GLenum type, HTMLVideoElement video) /* May throw DOMException */
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexSubImage2D.xml">man page</a>)</span></p>
         <dd>
             Updates a sub-rectangle of the currently bound WebGLTexture with the contents of the
@@ -2407,7 +2407,7 @@ for (var i = 0; i < numVertices; i++) {
             or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
             Document, or with an <code>HTMLCanvasElement</code> whose <i>origin-clean</i> flag is
             set to false, a <code>SECURITY_ERR</code> exception must be
-            raised. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
+            thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
 
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
