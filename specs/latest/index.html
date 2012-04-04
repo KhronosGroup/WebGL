@@ -1478,7 +1478,7 @@ for (var i = 0; i < numVertices; i++) {
     WebGLContextAttributes getContextAttributes();
     boolean isContextLost();
     
-    DOMString[ ] getSupportedExtensions();
+    sequence&lt;DOMString&gt; getSupportedExtensions();
     object? getExtension(DOMString name);
 
     void activeTexture(GLenum texture);
@@ -2807,7 +2807,7 @@ for (var i = 0; i < numVertices; i++) {
     </p>
 
     <dl class="methods">
-        <dt class="idl-code">DOMString[ ] getSupportedExtensions()
+        <dt class="idl-code">sequence&lt;DOMString&gt; getSupportedExtensions()
         <dd>
             Returns an array of all the supported extension strings. Any string in this list, when 
             passed to <code>getExtension</code> must return a valid object. Any other string passed to 

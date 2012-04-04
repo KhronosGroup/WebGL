@@ -492,7 +492,7 @@ interface WebGLRenderingContext {
     WebGLContextAttributes getContextAttributes();
     boolean isContextLost();
     
-    DOMString[ ] getSupportedExtensions();
+    sequence<DOMString> getSupportedExtensions();
     object? getExtension(DOMString name);
 
     void activeTexture(GLenum texture);
