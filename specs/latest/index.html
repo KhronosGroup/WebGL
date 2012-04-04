@@ -1045,9 +1045,9 @@ for (var i = 0; i < numVertices; i++) {
 
         <ul>
 
-        <li> isContextLost, checkFramebufferStatus, getAttribLocation, getError,
-        getVertexAttribOffset, isBuffer, isEnabled, isFramebuffer, isProgram, isRenderbuffer,
-        isShader, isTexture
+        <li> isContextLost, checkFramebufferStatus, getAttribLocation, getContextAttributes,
+        getError, getVertexAttribOffset, isBuffer, isEnabled, isFramebuffer, isProgram,
+        isRenderbuffer, isShader, isTexture
 
         </ul>
 
@@ -1761,7 +1761,11 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">WebGLContextAttributes getContextAttributes()
         <dd>
             Returns a new <code>WebGLContextAttributes</code> object describing
-            the <a href="#context-creation-parameters">context creation parameters</a>.
+            the <a href="#context-creation-parameters">context creation parameters</a>. If the
+            context's <a href="#webgl-context-lost-flag">webgl context lost flag</a> is set, returns
+            a new <code>WebGLContextAttributes</code> object describing the most recently created
+            context's <a href="#context-creation-parameters">context creation parameters</a>, or the
+            default values if no context has ever been created.
     </dl>
      
 <!-- ======================================================================================================= -->
