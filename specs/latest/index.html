@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 04 April 2012</h2>
+    <h2 class="no-toc">Editor's Draft 05 April 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1921,6 +1921,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>VERSION</td><td>DOMString</td></tr>
                 <tr><td>VIEWPORT</td><td>Int32Array (with 4 elements)</td></tr>
             </table><br>
+            <p>All queries returning arrays or typed arrays return a new object each time.</p>
             <p>The following <em>pname</em> arguments return a string describing some aspect of the current WebGL implementation:</p>
             <table>
               <tr><td>VERSION</td>
@@ -2613,6 +2614,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>mat3</td><td>Float32Array (with 9 elements)</td></tr>
                 <tr><td>mat4</td><td>Float32Array (with 16 elements)</td></tr>
             </table>
+            <p>All queries returning arrays or typed arrays return a new object each time.</p>
         <dt class="idl-code">WebGLUniformLocation? getUniformLocation(WebGLProgram? program, DOMString name)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetUniformLocation.xml">man page</a>)</span>
         <dd>
@@ -2641,6 +2643,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>VERTEX_ATTRIB_ARRAY_NORMALIZED</td><td>boolean</td></tr>
                 <tr><td>CURRENT_VERTEX_ATTRIB</td><td>Float32Array (with 4 elements)</td></tr>
             </table>
+            <p>All queries returning arrays or typed arrays return a new object each time.</p>
         <dt class="idl-code">GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetVertexAttribPointerv.xml">man page</a>)</span>
         <dd>
