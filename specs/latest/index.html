@@ -1850,7 +1850,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>BLEND_SRC_RGB</td><td>unsigned long</td></tr>
                 <tr><td>BLUE_BITS</td><td>long</td></tr>
                 <tr><td>COLOR_CLEAR_VALUE</td><td>Float32Array (with 4 values)</td></tr>
-                <tr><td>COLOR_WRITEMASK</td><td>boolean[] (with 4 values)</td></tr>
+                <tr><td>COLOR_WRITEMASK</td><td>sequence&lt;boolean&gt; (with 4 values)</td></tr>
                 <tr><td>COMPRESSED_TEXTURE_FORMATS</td><td>Uint32Array</td></tr>
                 <tr><td>CULL_FACE</td><td>boolean</td></tr>
                 <tr><td>CULL_FACE_MODE</td><td>unsigned long</td></tr>
@@ -1921,7 +1921,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>VERSION</td><td>DOMString</td></tr>
                 <tr><td>VIEWPORT</td><td>Int32Array (with 4 elements)</td></tr>
             </table><br>
-            <p>All queries returning arrays or typed arrays return a new object each time.</p>
+            <p>All queries returning sequences or typed arrays return a new object each time.</p>
             <p>The following <em>pname</em> arguments return a string describing some aspect of the current WebGL implementation:</p>
             <table>
               <tr><td>VERSION</td>
@@ -2603,18 +2603,18 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>float</td><td>float</td></tr>
                 <tr><td>vec2</td><td>Float32Array (with 2 elements)</td></tr>
                 <tr><td>ivec2</td><td>Int32Array (with 2 elements)</td></tr>
-                <tr><td>bvec2</td><td>boolean[] (with 2 elements)</td></tr>
+                <tr><td>bvec2</td><td>sequence&lt;boolean&gt; (with 2 elements)</td></tr>
                 <tr><td>vec3</td><td>Float32Array (with 3 elements)</td></tr>
                 <tr><td>ivec3</td><td>Int32Array (with 3 elements)</td></tr>
-                <tr><td>bvec3</td><td>boolean[] (with 3 elements)</td></tr>
+                <tr><td>bvec3</td><td>sequence&lt;boolean&gt; (with 3 elements)</td></tr>
                 <tr><td>vec4</td><td>Float32Array (with 4 elements)</td></tr>
                 <tr><td>ivec4</td><td>Int32Array (with 4 elements)</td></tr>
-                <tr><td>bvec4</td><td>boolean[] (with 4 elements)</td></tr>
+                <tr><td>bvec4</td><td>sequence&lt;boolean&gt; (with 4 elements)</td></tr>
                 <tr><td>mat2</td><td>Float32Array (with 4 elements)</td></tr>
                 <tr><td>mat3</td><td>Float32Array (with 9 elements)</td></tr>
                 <tr><td>mat4</td><td>Float32Array (with 16 elements)</td></tr>
             </table>
-            <p>All queries returning arrays or typed arrays return a new object each time.</p>
+            <p>All queries returning sequences or typed arrays return a new object each time.</p>
         <dt class="idl-code">WebGLUniformLocation? getUniformLocation(WebGLProgram? program, DOMString name)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetUniformLocation.xml">man page</a>)</span>
         <dd>
@@ -2643,7 +2643,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>VERTEX_ATTRIB_ARRAY_NORMALIZED</td><td>boolean</td></tr>
                 <tr><td>CURRENT_VERTEX_ATTRIB</td><td>Float32Array (with 4 elements)</td></tr>
             </table>
-            <p>All queries returning arrays or typed arrays return a new object each time.</p>
+            <p>All queries returning sequences or typed arrays return a new object each time.</p>
         <dt class="idl-code">GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetVertexAttribPointerv.xml">man page</a>)</span>
         <dd>
