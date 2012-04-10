@@ -1631,7 +1631,7 @@ for (var i = 0; i < numVertices; i++) {
                     GLsizei width, GLsizei height, GLint border, GLenum format, 
                     GLenum type, ArrayBufferView? pixels);
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, ImageData pixels);
+                    GLenum format, GLenum type, ImageData? pixels);
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
                     GLenum format, GLenum type, HTMLImageElement image); // May throw DOMException
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
@@ -1644,9 +1644,9 @@ for (var i = 0; i < numVertices; i++) {
 
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLsizei width, GLsizei height, 
-                       GLenum format, GLenum type, ArrayBufferView pixels);
+                       GLenum format, GLenum type, ArrayBufferView? pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, ImageData pixels);
+                       GLenum format, GLenum type, ImageData? pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLenum format, GLenum type, HTMLImageElement image); // May throw DOMException
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
@@ -2044,8 +2044,9 @@ for (var i = 0; i < numVertices; i++) {
             <p class="idl-code">void bufferSubData(GLenum target, GLintptr offset, ArrayBuffer? data)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferSubData.xml">man page</a>)</span></p>
         <dd>
-            For the WebGLBuffer object bound to the passed target write the passed data starting
-            at the passed offset. If the data would be written past the end of the buffer object
+            For the WebGLBuffer object bound to the passed target write the passed data starting at
+            the passed offset. If the data would be written past the end of the buffer object
+            an <code>INVALID_VALUE</code> error is generated. If <code>data</code> is null then
             an <code>INVALID_VALUE</code> error is generated.
             
         <dt class="idl-code">WebGLBuffer? createBuffer()
@@ -2323,7 +2324,7 @@ for (var i = 0; i < numVertices; i++) {
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
         <dt><p class="idl-code"><a name="TEXIMAGE2D_HTML">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, ImageData pixels)</p>
+                    GLenum format, GLenum type, ImageData? pixels)</p>
             <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
                     GLenum format, GLenum type, HTMLImageElement image) /* May throw DOMException */</p>
             <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
@@ -2357,6 +2358,9 @@ for (var i = 0; i < numVertices; i++) {
             set to false, a <code>SECURITY_ERR</code> exception must be
             thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
 
+            If <code>pixels</code> is null then an <code>INVALID_VALUE</code> error is
+            generated. <br><br>
+
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
         <dt class="idl-code">void texParameterf(GLenum target, GLenum pname, GLfloat param)
@@ -2371,7 +2375,7 @@ for (var i = 0; i < numVertices; i++) {
             <code>INVALID_OPERATION</code> error is generated.
         <dt class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLsizei width, GLsizei height, 
-                       GLenum format, GLenum type, ArrayBufferView pixels)
+                       GLenum format, GLenum type, ArrayBufferView? pixels)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexSubImage2D.xml">man page</a>)</span>
         <dd>
             See <a href="#TEXIMAGE2D">texImage2D</a> for restrictions on the <em>format</em>
@@ -2383,10 +2387,13 @@ for (var i = 0; i < numVertices; i++) {
             If <em>type</em> does not match the type originally used to define the texture, an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
 
+            If <code>pixels</code> is null then an <code>INVALID_VALUE</code> error is
+            generated. <br><br>
+
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
         <dt><p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, ImageData pixels)</p>
+                       GLenum format, GLenum type, ImageData? pixels)</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLenum format, GLenum type, HTMLImageElement image) /* May throw DOMException */</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
@@ -2412,6 +2419,9 @@ for (var i = 0; i < numVertices; i++) {
             Document, or with an <code>HTMLCanvasElement</code> whose <i>origin-clean</i> flag is
             set to false, a <code>SECURITY_ERR</code> exception must be
             thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
+
+            If <code>pixels</code> is null then an <code>INVALID_VALUE</code> error is
+            generated. <br><br>
 
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
