@@ -1482,7 +1482,7 @@ for (var i = 0; i < numVertices; i++) {
     WebGLContextAttributes getContextAttributes();
     boolean isContextLost();
     
-    sequence&lt;DOMString&gt; getSupportedExtensions();
+    sequence&lt;DOMString&gt;? getSupportedExtensions();
     object? getExtension(DOMString name);
 
     void activeTexture(GLenum texture);
@@ -1579,13 +1579,13 @@ for (var i = 0; i < numVertices; i++) {
     any getFramebufferAttachmentParameter(GLenum target, GLenum attachment, 
                                           GLenum pname);
     any getProgramParameter(WebGLProgram? program, GLenum pname);
-    DOMString getProgramInfoLog(WebGLProgram? program);
+    DOMString? getProgramInfoLog(WebGLProgram? program);
     any getRenderbufferParameter(GLenum target, GLenum pname);
     any getShaderParameter(WebGLShader? shader, GLenum pname);
-    WebGLShaderPrecisionFormat getShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype);
-    DOMString getShaderInfoLog(WebGLShader? shader);
+    WebGLShaderPrecisionFormat? getShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype);
+    DOMString? getShaderInfoLog(WebGLShader? shader);
 
-    DOMString getShaderSource(WebGLShader? shader);
+    DOMString? getShaderSource(WebGLShader? shader);
 
     any getTexParameter(GLenum target, GLenum pname);
 
