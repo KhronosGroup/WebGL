@@ -537,12 +537,12 @@ interface WebGLRenderingContext {
     void copyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                            GLint x, GLint y, GLsizei width, GLsizei height);
 
-    WebGLBuffer createBuffer();
-    WebGLFramebuffer createFramebuffer();
-    WebGLProgram createProgram();
-    WebGLRenderbuffer createRenderbuffer();
-    WebGLShader createShader(GLenum type);
-    WebGLTexture createTexture();
+    WebGLBuffer? createBuffer();
+    WebGLFramebuffer? createFramebuffer();
+    WebGLProgram? createProgram();
+    WebGLRenderbuffer? createRenderbuffer();
+    WebGLShader? createShader(GLenum type);
+    WebGLTexture? createTexture();
 
     void cullFace(GLenum mode);
 
@@ -608,13 +608,13 @@ interface WebGLRenderingContext {
     GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname);
 
     void hint(GLenum target, GLenum mode);
-    GLboolean isBuffer(WebGLBuffer buffer);
+    GLboolean isBuffer(WebGLBuffer? buffer);
     GLboolean isEnabled(GLenum cap);
-    GLboolean isFramebuffer(WebGLFramebuffer framebuffer);
-    GLboolean isProgram(WebGLProgram program);
-    GLboolean isRenderbuffer(WebGLRenderbuffer renderbuffer);
-    GLboolean isShader(WebGLShader shader);
-    GLboolean isTexture(WebGLTexture texture);
+    GLboolean isFramebuffer(WebGLFramebuffer? framebuffer);
+    GLboolean isProgram(WebGLProgram? program);
+    GLboolean isRenderbuffer(WebGLRenderbuffer? renderbuffer);
+    GLboolean isShader(WebGLShader? shader);
+    GLboolean isTexture(WebGLTexture? texture);
     void lineWidth(GLfloat width);
     void linkProgram(WebGLProgram? program);
     void pixelStorei(GLenum pname, GLint param);

@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 06 April 2012</h2>
+    <h2 class="no-toc">Editor's Draft 09 April 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1527,12 +1527,12 @@ for (var i = 0; i < numVertices; i++) {
     void copyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                            GLint x, GLint y, GLsizei width, GLsizei height);
 
-    WebGLBuffer createBuffer();
-    WebGLFramebuffer createFramebuffer();
-    WebGLProgram createProgram();
-    WebGLRenderbuffer createRenderbuffer();
-    WebGLShader createShader(GLenum type);
-    WebGLTexture createTexture();
+    WebGLBuffer? createBuffer();
+    WebGLFramebuffer? createFramebuffer();
+    WebGLProgram? createProgram();
+    WebGLRenderbuffer? createRenderbuffer();
+    WebGLShader? createShader(GLenum type);
+    WebGLTexture? createTexture();
 
     void cullFace(GLenum mode);
 
@@ -1598,13 +1598,13 @@ for (var i = 0; i < numVertices; i++) {
     GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname);
 
     void hint(GLenum target, GLenum mode);
-    GLboolean isBuffer(WebGLBuffer buffer);
+    GLboolean isBuffer(WebGLBuffer? buffer);
     GLboolean isEnabled(GLenum cap);
-    GLboolean isFramebuffer(WebGLFramebuffer framebuffer);
-    GLboolean isProgram(WebGLProgram program);
-    GLboolean isRenderbuffer(WebGLRenderbuffer renderbuffer);
-    GLboolean isShader(WebGLShader shader);
-    GLboolean isTexture(WebGLTexture texture);
+    GLboolean isFramebuffer(WebGLFramebuffer? framebuffer);
+    GLboolean isProgram(WebGLProgram? program);
+    GLboolean isRenderbuffer(WebGLRenderbuffer? renderbuffer);
+    GLboolean isShader(WebGLShader? shader);
+    GLboolean isTexture(WebGLTexture? texture);
     void lineWidth(GLfloat width);
     void linkProgram(WebGLProgram? program);
     void pixelStorei(GLenum pname, GLint param);
@@ -2048,7 +2048,7 @@ for (var i = 0; i < numVertices; i++) {
             at the passed offset. If the data would be written past the end of the buffer object
             an <code>INVALID_VALUE</code> error is generated.
             
-        <dt class="idl-code">WebGLBuffer createBuffer()
+        <dt class="idl-code">WebGLBuffer? createBuffer()
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenBuffers.xml">glGenBuffers</a>)</span>
         <dd>
             Create a WebGLBuffer object and initialize it with a buffer object name as if by
@@ -2073,7 +2073,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>BUFFER_SIZE</td><td>long</td></tr>
                 <tr><td>BUFFER_USAGE</td><td>unsigned long</td></tr>
             </table>
-        <dt class="idl-code">GLboolean isBuffer(WebGLBuffer buffer)
+        <dt class="idl-code">GLboolean isBuffer(WebGLBuffer? buffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.6">OpenGL ES 2.0 &sect;6.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsBuffer.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLBuffer is valid and false otherwise. <br><br>
@@ -2108,7 +2108,7 @@ for (var i = 0; i < numVertices; i++) {
             Returns <code class="enum">FRAMEBUFFER_UNSUPPORTED</code> if the
             context's <a href="#webgl-context-lost-flag">webgl context lost flag</a> is set.
 
-        <dt class="idl-code">WebGLFramebuffer createFramebuffer()
+        <dt class="idl-code">WebGLFramebuffer? createFramebuffer()
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenFramebuffers.xml">glGenFramebuffers</a>)</span>
         <dd>
             Create a WebGLFramebuffer object and initialize it with a framebuffer object name as if by
@@ -2143,7 +2143,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL</td><td>long</td></tr>
                 <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE</td><td>long</td></tr>
             </table>
-        <dt class="idl-code">GLboolean isFramebuffer(WebGLFramebuffer framebuffer)
+        <dt class="idl-code">GLboolean isFramebuffer(WebGLFramebuffer? framebuffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.7">OpenGL ES 2.0 &sect;6.1.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsFramebuffer.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLFramebuffer is valid and false otherwise. <br><br>
@@ -2170,7 +2170,7 @@ for (var i = 0; i < numVertices; i++) {
             If <code class="param">renderbuffer</code> is null the renderbuffer object currently bound to
             this <code class="param">target</code> is unbound.
 
-        <dt class="idl-code">WebGLRenderbuffer createRenderbuffer()
+        <dt class="idl-code">WebGLRenderbuffer? createRenderbuffer()
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenRenderbuffers.xml">glGenRenderbuffers</a>)</span>
         <dd>
             Create a WebGLRenderbuffer object and initialize it with a renderbuffer object name as if by
@@ -2201,7 +2201,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>RENDERBUFFER_DEPTH_SIZE</td><td>long</td></tr>
                 <tr><td>RENDERBUFFER_STENCIL_SIZE</td><td>long</td></tr>
             </table>
-        <dt class="idl-code">GLboolean isRenderbuffer(WebGLRenderbuffer renderbuffer)
+        <dt class="idl-code">GLboolean isRenderbuffer(WebGLRenderbuffer? renderbuffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.7">OpenGL ES 2.0 &sect;6.1.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsRenderbuffer.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLRenderbuffer is valid and false otherwise. <br><br>
@@ -2262,7 +2262,7 @@ for (var i = 0; i < numVertices; i++) {
             For any pixel lying outside the frame buffer, all channels of the associated texel are
             initialized to 0; see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the
             Framebuffer</a>.
-        <dt class="idl-code">WebGLTexture createTexture()
+        <dt class="idl-code">WebGLTexture? createTexture()
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenTextures.xml">man page</a>)</span>
         <dd>
             Create a WebGLTexture object and initialize it with a texture object name as if by
@@ -2296,7 +2296,7 @@ for (var i = 0; i < numVertices; i++) {
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated.
-        <dt class="idl-code">GLboolean isTexture(WebGLTexture texture)
+        <dt class="idl-code">GLboolean isTexture(WebGLTexture? texture)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.4">OpenGL ES 2.0 &sect;6.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsTexture.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLTexture is valid and false otherwise. <br><br>
@@ -2442,13 +2442,13 @@ for (var i = 0; i < numVertices; i++) {
             Set</a> for additional validation performed by WebGL implementations.
         <dt class="idl-code">void compileShader(WebGLShader? shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCompileShader.xml">man page</a>)</span>
-        <dt class="idl-code">WebGLProgram createProgram()
+        <dt class="idl-code">WebGLProgram? createProgram()
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCreateProgram.xml">man page</a>)</span>
         <dd>
             Create a WebGLProgram object and initialize it with a program object name as if by
             calling glCreateProgram.
             
-        <dt class="idl-code">WebGLShader createShader(type)
+        <dt class="idl-code">WebGLShader? createShader(type)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCreateShader.xml">man page</a>)</span>
         <dd>
             Create a WebGLShader object and initialize it with a shader object name as if by
@@ -2514,14 +2514,14 @@ for (var i = 0; i < numVertices; i++) {
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderInfoLog.xml">man page</a>)</span>
         <dt class="idl-code">DOMString getShaderSource(WebGLShader? shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderSource.xml">man page</a>)</span>
-        <dt class="idl-code">GLboolean isProgram(WebGLProgram program)
+        <dt class="idl-code">GLboolean isProgram(WebGLProgram? program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsProgram.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLProgram is valid and false otherwise. <br><br>
 
             Returns false if the program's <a href="#webgl-object-invalidated-flag">invalidated
             flag</a> is set.
-        <dt class="idl-code">GLboolean isShader(WebGLShader shader)
+        <dt class="idl-code">GLboolean isShader(WebGLShader? shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsShader.xml">man page</a>)</span>
         <dd>
             Return true if the passed WebGLShader is valid and false otherwise. <br><br>
