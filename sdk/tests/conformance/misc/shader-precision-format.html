@@ -77,15 +77,43 @@ debug("");
 debug("Test that WebGLShaderPrecisionFormat values are sensible.");
 debug("");
 
+// The minimum values are from OpenGL ES Shading Language spec, section 4.5.
+
 var shaderPrecisionFormat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT);
-shouldBeTrue('shaderPrecisionFormat.rangeMin >= 0 && shaderPrecisionFormat.rangeMin <= 128');
-shouldBeTrue('shaderPrecisionFormat.rangeMax >= 0 && shaderPrecisionFormat.rangeMax <= 128');
-shouldBeTrue('shaderPrecisionFormat.precision >= 0 && shaderPrecisionFormat.precision <= 128');
+shouldBeTrue('shaderPrecisionFormat.rangeMin >= 1 && shaderPrecisionFormat.rangeMin <= 128');
+shouldBeTrue('shaderPrecisionFormat.rangeMax >= 1 && shaderPrecisionFormat.rangeMax <= 128');
+shouldBeTrue('shaderPrecisionFormat.precision >= 8 && shaderPrecisionFormat.precision <= 128');
+
+shaderPrecisionFormat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT);
+shouldBeTrue('shaderPrecisionFormat.rangeMin >= 14 && shaderPrecisionFormat.rangeMin <= 128');
+shouldBeTrue('shaderPrecisionFormat.rangeMax >= 14 && shaderPrecisionFormat.rangeMax <= 128');
+shouldBeTrue('shaderPrecisionFormat.precision >= 10 && shaderPrecisionFormat.precision <= 128');
+
+shaderPrecisionFormat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT);
+shouldBeTrue('shaderPrecisionFormat.rangeMin >= 62 && shaderPrecisionFormat.rangeMin <= 128');
+shouldBeTrue('shaderPrecisionFormat.rangeMax >= 62 && shaderPrecisionFormat.rangeMax <= 128');
+shouldBeTrue('shaderPrecisionFormat.precision >= 16 && shaderPrecisionFormat.precision <= 128');
+
+shaderPrecisionFormat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_INT);
+shouldBeTrue('shaderPrecisionFormat.rangeMin >= 8');
+shouldBeTrue('shaderPrecisionFormat.rangeMax >= 8');
+shouldBeTrue('shaderPrecisionFormat.precision == 0');
+
+shaderPrecisionFormat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_INT);
+shouldBeTrue('shaderPrecisionFormat.rangeMin >= 10');
+shouldBeTrue('shaderPrecisionFormat.rangeMax >= 10');
+shouldBeTrue('shaderPrecisionFormat.precision == 0');
+
+shaderPrecisionFormat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_INT);
+shouldBeTrue('shaderPrecisionFormat.rangeMin >= 16');
+shouldBeTrue('shaderPrecisionFormat.rangeMax >= 16');
+shouldBeTrue('shaderPrecisionFormat.precision == 0');
 
 debug("");
 debug("Test that getShaderPrecisionFormat returns the same thing every call.");
 debug("");
 
+shaderPrecisionFormat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT);
 var shaderPrecisionFormat2 = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT);
 shouldBeTrue('shaderPrecisionFormat.rangeMin == shaderPrecisionFormat2.rangeMin');
 shouldBeTrue('shaderPrecisionFormat.rangeMax == shaderPrecisionFormat2.rangeMax');
