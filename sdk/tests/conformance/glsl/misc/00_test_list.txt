@@ -8,7 +8,9 @@ glsl-long-variable-names.html
 non-ascii-comments.vert.html
 non-ascii.vert.html
 --min-version 1.0.2 re-compile-re-link.html
+--min-version 1.0.2 shader-with-256-character-define.html
 shader-with-256-character-identifier.frag.html
+--min-version 1.0.2 shader-with-257-character-define.html
 shader-with-257-character-identifier.frag.html
 shader-with-_webgl-identifier.vert.html
 shader-with-arbitrary-indexing.frag.html
