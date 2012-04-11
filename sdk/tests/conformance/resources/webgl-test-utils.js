@@ -695,8 +695,8 @@ var createGLErrorWrapper = function(context, fname) {
   return function() {
     var rv = context[fname].apply(context, arguments);
     var err = context.getError();
-    if (err != 0)
-      throw "GL error " + getGLErrorAsString(err) + " in " + fname;
+    if (err != context.NO_ERROR)
+      throw "GL error " + getGLErrorAsString(context, err) + " in " + fname;
     return rv;
   };
 };
@@ -1161,15 +1161,21 @@ var loadStandardProgram = function(gl) {
 var loadProgramFromFile = function(
     gl, vertexShaderPath, fragmentShaderPath, opt_errorCallback) {
   var program = gl.createProgram();
-  gl.attachShader(
-      program,
-      loadShaderFromFile(
-          gl, vertexShaderPath, gl.VERTEX_SHADER, opt_errorCallback));
-  gl.attachShader(
-      program,
-      loadShaderFromFile(
-          gl, fragmentShaderPath, gl.FRAGMENT_SHADER, opt_errorCallback));
-  linkProgram(gl, program, opt_errorCallback);
+  var vs = loadShaderFromFile(
+      gl, vertexShaderPath, gl.VERTEX_SHADER, opt_errorCallback);
+  var fs = loadShaderFromFile(
+      gl, fragmentShaderPath, gl.FRAGMENT_SHADER, opt_errorCallback);
+  if (vs && fs) {
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    linkProgram(gl, program, opt_errorCallback);
+  }
+  if (vs) {
+    gl.deleteShader(vs);
+  }
+  if (fs) {
+    gl.deleteShader(fs);
+  }
   return program;
 };
 
@@ -1227,11 +1233,21 @@ var createProgram = function(gl, vertexShader, fragmentShader, opt_errorCallback
  */
 var loadProgram = function(
     gl, vertexShader, fragmentShader, opt_errorCallback) {
+  var program;
   var vs = loadShader(
       gl, vertexShader, gl.VERTEX_SHADER, opt_errorCallback);
   var fs = loadShader(
       gl, fragmentShader, gl.FRAGMENT_SHADER, opt_errorCallback);
-  return createProgram(gl, vs, fs, opt_errorCallback);
+  if (vs && fs) {
+    program = createProgram(gl, vs, fs, opt_errorCallback)
+  }
+  if (vs) {
+    gl.deleteShader(vs);
+  }
+  if (fs) {
+    gl.deleteShader(fs);
+  }
+  return program;
 };
 
 /**
