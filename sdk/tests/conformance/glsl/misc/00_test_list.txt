@@ -53,6 +53,7 @@ shader-with-limited-indexing.frag.html
 --min-version 1.0.2 shader-with-hex-int-constant-macro.html
 shader-with-long-line.html
 shader-with-non-ascii-error.frag.html
+--min-version 1.0.2 shader-with-non-reserved-words.html
 shader-with-precision.frag.html
 shader-with-quoted-error.frag.html
 shader-with-undefined-preprocessor-symbol.frag.html
