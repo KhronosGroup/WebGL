@@ -42,7 +42,7 @@
 <script id="vertexShader" type="text/something-not-javascript">
 // shader with struct nesting less than maximum in WebGL spec should succeed
 struct nesting4 {
-  vec4 vector;
+  vec4 vecfield;
 };
 
 struct nesting3 {
@@ -60,7 +60,7 @@ struct nesting1 {
 uniform nesting1 uniform1;
 void main()
 {
-    gl_Position = uniform1.field2.field3.field4.vector;
+    gl_Position = uniform1.field2.field3.field4.vecfield;
 }
 </script>
 <script>

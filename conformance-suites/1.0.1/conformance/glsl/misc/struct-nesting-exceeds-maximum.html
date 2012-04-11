@@ -20,7 +20,7 @@ found in the LICENSE file.
 <script id="vertexShader" type="text/something-not-javascript">
 // shader with too-deep struct nesting should fail per WebGL spec
 struct nesting5 {
-  vec4 vector;
+  vec4 vecfield;
 };
 
 struct nesting4 {
@@ -42,7 +42,7 @@ struct nesting1 {
 uniform nesting1 uniform1;
 void main()
 {
-    gl_Position = uniform1.field2.field3.field4.field5.vector;
+    gl_Position = uniform1.field2.field3.field4.field5.vecfield;
 }
 </script>
 <script>
