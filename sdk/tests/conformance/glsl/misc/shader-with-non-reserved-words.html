@@ -40,10 +40,15 @@
 <div id="description"></div>
 <div id="console"></div>
 <script id="vertexShader" type="text/something-not-javascript">
+struct Foo {
+  vec4 $replaceMe;
+};
 attribute vec4 $replaceMe;
 void main()
 {
-    gl_Position = $replaceMe;
+    Foo f;
+    f.$replaceMe = $replaceMe;
+    gl_Position = f.$replaceMe;
 }
 </script>
 <script id="fragmentShader" type="text/something-not-javascript">
@@ -265,7 +270,7 @@ var DXWords = [
   "texCUBElod",
   "texCUBEproj",
   "transpose",
-  "trunc",
+  "trunc"
 ];
 
 var GLSL_4_20_11_words = [
@@ -427,7 +432,7 @@ var GLSL_4_20_11_words = [
   "image2DMSArray",
   "iimage2DMSArray",
   "uimage2DMSArray",
-  "struct",
+  "struct"
 ];
 
 var GLSL_4_20_11_future_words = [
@@ -471,7 +476,7 @@ var GLSL_4_20_11_future_words = [
   "cast",
   "namespace",
   "using",
-  "row_major",
+  "row_major"
 ];
 
 var GLSL_1_0_17_words = [
@@ -516,7 +521,7 @@ var GLSL_1_0_17_words = [
   "bvec4",
   "sampler2D",
   "samplerCube",
-  "struct",
+  "struct"
 ]
 
 var GLSL_1_0_17_FutureWords = [
@@ -568,7 +573,7 @@ var GLSL_1_0_17_FutureWords = [
   "sizeof",
   "cast",
   "namespace",
-  "using",
+  "using"
 ];
 
 description();
@@ -583,18 +588,20 @@ var badWords = [
   { words: GLSL_4_20_11_future_words, }
 ];
 
-var goodWordsLists = [
+var reservedWordsLists = [
   GLSL_1_0_17_words,
   GLSL_1_0_17_FutureWords
 ];
 
-var goodWords = { };
-for (var ii = 0; ii < goodWordsLists.length; ++ii) {
-  var list = goodWordsLists[ii];
+var reservedWords = { };
+for (var ii = 0; ii < reservedWordsLists.length; ++ii) {
+  var list = reservedWordsLists[ii];
   for (var jj = 0; jj < list.length; ++jj) {
-    goodWords[list[jj]] = true;
+    reservedWords[list[jj]] = true;
   }
 }
+
+var checkedWords = {};
 
 var vsrc = document.getElementById("vertexShader").text;
 var fsrc = document.getElementById("fragmentShader").text;
@@ -611,17 +618,19 @@ function testNextWord() {
       return;
     }
     listNdx = 0;
-    list = badWords[badWordNdx];
+    list = badWords[badWordNdx].words;
   }
-  testWord(list[listNdx++]);
+  testWord(list[listNdx]);
+  ++listNdx;
   setTimeout(testNextWord,1);
 }
 testNextWord();
 
 function testWord(word) {
-  if (word in goodWords) {
+  if (word in reservedWords || word in checkedWords) {
 	return;
   }
+  checkedWords[word] = true;
   debug("");
   debug("testing: " + word);
   var vs = vsrc.replace(/\$replaceMe/g, word);
