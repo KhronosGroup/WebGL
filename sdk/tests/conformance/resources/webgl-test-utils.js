@@ -1483,16 +1483,36 @@ var replaceParams = function(str) {
 /**
  * Provides requestAnimationFrame in a cross browser way.
  */
-var requestAnimFrame = (function() {
-  return window.requestAnimationFrame ||
-         window.webkitRequestAnimationFrame ||
-         window.mozRequestAnimationFrame ||
-         window.oRequestAnimationFrame ||
-         window.msRequestAnimationFrame ||
-         function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
-           return window.setTimeout(callback, 1000/60);
-         };
-})();
+var requestAnimFrameImpl_;
+
+var requestAnimFrame = function(callback, element) {
+  if (!requestAnimFrameImpl_) {
+    requestAnimFrameImpl_ = function() {
+      var functionNames = [
+        "requestAnimationFrame",
+        "webkitRequestAnimationFrame",
+        "mozRequestAnimationFrame",
+        "oRequestAnimationFrame",
+        "msRequestAnimationFrame"
+      ];
+      for (var jj = 0; jj < functionNames.length; ++jj) {
+        var functionName = functionNames[jj];
+        if (window[functionName]) {
+          return function(name) {
+            return function(callback, element) {
+              return window[name].call(window, callback, element);
+            };
+          }(functionName);
+        }
+      }
+      return function(callback, element) {
+           return window.setTimeout(callback, 1000 / 70);
+        };
+    }();
+  }
+
+  return requestAnimFrameImpl_(callback, element);
+};
 
 /**
  * Provides cancelRequestAnimationFrame in a cross browser way.

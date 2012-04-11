@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <link rel="stylesheet" href="../../resources/js-test-style.css"/>
         <script src="../../resources/js-test-pre.js"></script>
         <script src="../resources/webgl-test.js"></script>
+        <script src="../resources/webgl-test-utils.js"></script>
         <style>
             canvas {
                 width:50px;
@@ -42,6 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         </style>
         <script>
+            wtu = WebGLTestUtils;
             function checkResult(ctx1, ctx2, preserve) {
                 var imgData1 = ctx1.getImageData(0,0,1,1);
                 var imgData2 = ctx2.getImageData(0,0,1,1);
@@ -60,8 +62,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 else
                     testFailed('Did not render ok with preserveDrawingBuffer ' + preserve + '.');
                 if (preserve) {
-                    debug('<br /><span class="pass">TEST COMPLETE</span>');
-                    notifyFinishedToHarness()
+                    finishTest()
                 } else {
                     runTest(true);
                 }
@@ -73,11 +74,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 var c3 = document.getElementById('c' + (preserve * 3 + 3));
                 var ctx1 = c1.getContext('2d');
                 var ctx2 = c2.getContext('2d');
-                var gl = c3.getContext('experimental-webgl', { alpha:false, preserveDrawingBuffer:preserve });
+                var gl = create3DContext(c3, { alpha:false, preserveDrawingBuffer:preserve });
                 gl.clearColor(1, 0, 0, 1);
                 gl.clear(gl.COLOR_BUFFER_BIT);
                 ctx1.drawImage(c3, 0, 0);
-                setTimeout(function() { ctx2.drawImage(c3, 0, 0); checkResult(ctx1, ctx2, preserve); }, 100);
+                wtu.requestAnimFrame(function() {
+                    wtu.requestAnimFrame(function() {
+                        ctx2.drawImage(c3, 0, 0);
+                        checkResult(ctx1, ctx2, preserve);
+                    });
+                });
 
             }
         </script>
