@@ -776,6 +776,12 @@ function appInit() {
     currentCamTrack = 0;
     fadeVBO = null;
 
+    var exts = gl.getSupportedExtensions();
+    for (var ii = 0; ii < exts.length; ++ii) {
+      console.log("extension: " + exts[ii]);
+    }
+
+
     gl.enable(gl.DEPTH_TEST);
     gl.disable(gl.CULL_FACE);
 
