@@ -25,7 +25,7 @@ shader-with-default-precision.vert.html
 shader-with-define-line-continuation.frag.html
 shader-with-dfdx-no-ext.frag.html
 shader-with-dfdx.frag.html
---min-version 1.0.2 shader-with-do-scoping.html
+--min-version 1.0.2 shader-with-do-loop.html
 shader-with-error-directive.html
 shader-with-explicit-int-cast.vert.html
 shader-with-float-return-value.frag.html
@@ -70,6 +70,7 @@ shader-with-version-100.vert.html
 shader-with-version-120.vert.html
 shader-with-version-130.vert.html
 shader-with-webgl-identifier.vert.html
+--min-version 1.0.2 shader-with-while-loop.html
 shader-without-precision.frag.html
 shared.html
 struct-nesting-exceeds-maximum.html
