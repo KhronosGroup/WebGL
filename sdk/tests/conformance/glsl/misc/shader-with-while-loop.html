@@ -40,11 +40,13 @@
 <div id="description"></div>
 <div id="console"></div>
 <script id="fragmentShader" type="text/something-not-javascript">
-// fragment shader with do scoping should succeed
+// fragment shader with while loop should fail
 precision mediump float;
 void main() {
   int k = 0;
-  do int k = 1; while (k != 0); // ok, do always introduces scope
+  while (k < 5) {
+    k++;
+  }
   gl_FragColor = vec4(float(k));
 }
 </script>
