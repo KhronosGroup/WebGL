@@ -40,9 +40,6 @@ var textureLoc = null;
 var successfullyParsed = false;
 var imgCanvas;
 
-const red = [255, 0, 0];
-const green = [0, 255, 0];
-
 function init()
 {
     if (window.initNonKhronosFramework) {
@@ -110,6 +107,8 @@ function runOneIteration(image, useTexSubImage2D, flipY, topColor, bottomColor)
 }
 
 function runTestOnImage(image) {
+    var red = [255, 0, 0];
+    var green = [0, 255, 0];
     runOneIteration(image, false, true, red, green);
     runOneIteration(image, false, false, green, red);
     runOneIteration(image, true, true, red, green);
