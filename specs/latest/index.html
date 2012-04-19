@@ -1924,6 +1924,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>VIEWPORT</td><td>Int32Array (with 4 elements)</td></tr>
             </table><br>
             <p>All queries returning sequences or typed arrays return a new object each time.</p>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
             <p>The following <em>pname</em> arguments return a string describing some aspect of the current WebGL implementation:</p>
             <table>
               <tr><td>VERSION</td>
@@ -2076,6 +2077,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>BUFFER_SIZE</td><td>long</td></tr>
                 <tr><td>BUFFER_USAGE</td><td>unsigned long</td></tr>
             </table>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
         <dt class="idl-code">GLboolean isBuffer(WebGLBuffer? buffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.6">OpenGL ES 2.0 &sect;6.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsBuffer.xml">man page</a>)</span>
         <dd>
@@ -2204,6 +2206,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>RENDERBUFFER_DEPTH_SIZE</td><td>long</td></tr>
                 <tr><td>RENDERBUFFER_STENCIL_SIZE</td><td>long</td></tr>
             </table>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
         <dt class="idl-code">GLboolean isRenderbuffer(WebGLRenderbuffer? renderbuffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.7">OpenGL ES 2.0 &sect;6.1.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsRenderbuffer.xml">man page</a>)</span>
         <dd>
@@ -2502,6 +2505,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>ACTIVE_ATTRIBUTES</td><td>long</td></tr>
                 <tr><td>ACTIVE_UNIFORMS</td><td>long</td></tr>
             </table>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
         <dt class="idl-code">DOMString getProgramInfoLog(WebGLProgram? program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetProgramInfoLog.xml">man page</a>)</span>
         <dt class="idl-code">any getShaderParameter(WebGLShader? shader, GLenum pname)
@@ -2515,6 +2519,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>DELETE_STATUS</td><td>boolean</td></tr>
                 <tr><td>COMPILE_STATUS</td><td>boolean</td></tr>
             </table>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
         <dt class="idl-code">WebGLShaderPrecisionFormat getShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man/xhtml/glGetShaderPrecisionFormat.xml">man page</a>)</span>
         <dd>
@@ -2656,6 +2661,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>CURRENT_VERTEX_ATTRIB</td><td>Float32Array (with 4 elements)</td></tr>
             </table>
             <p>All queries returning sequences or typed arrays return a new object each time.</p>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
         <dt class="idl-code">GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetVertexAttribPointerv.xml">man page</a>)</span>
         <dd>

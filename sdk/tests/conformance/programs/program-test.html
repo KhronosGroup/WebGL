@@ -31,6 +31,7 @@
 <title>WebGL Program Compiling/Linking Conformance Test</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js" type="text/javascript"></script>
+<script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../resources/webgl-test.js" type="text/javascript"></script>
 </head>
 <body>
@@ -90,6 +91,13 @@ function go() {
 
     assertMsg(gl.getShaderParameter(vs, gl.COMPILE_STATUS) == true,
               "good vertex shader should compile");
+
+    // Verify that constants removed from the WebGL spec generate INVALID_ENUM errors
+    glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors at this point");
+    assertMsg(gl.getShaderParameter(vs, desktopGL['INFO_LOG_LENGTH']) === null, "invalid call to getShaderParameter should return null");
+    glErrorShouldBe(gl, gl.INVALID_ENUM, "INFO_LOG_LENGTH is not a valid argument to getShaderParameter in WebGL");
+    assertMsg(gl.getShaderParameter(vs, desktopGL['SHADER_SOURCE_LENGTH']) === null, "invalid call to getShaderParameter should return null");
+    glErrorShouldBe(gl, gl.INVALID_ENUM, "SHADER_SOURCE_LENGTH is not a valid argument to getShaderParameter in WebGL");
 
     var vs2 = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vs2, "attribute vec4 aVertex; attribute vec4 aColor; varying vec4 vColor; void main() { vColor = aColor; gl_Position = aVertex * 0.5; }");
@@ -206,7 +214,7 @@ function go() {
 
 /////// Check linkProgram() and useProgram /////////////////////////////
 
-    function checkLinkAndUse(shaders, deleteShaderAfterAttach, expected_status, errmsg) {
+    function checkLinkAndUse(shaders, deleteShaderAfterAttach, expected_status, testInvalidEnums, errmsg) {
         var prog = gl.createProgram();
         for (var i = 0; i < shaders.length; ++i) {
             gl.attachShader(prog, shaders[i]);
@@ -228,6 +236,17 @@ function go() {
             debug(infolog);
         if (gl.getError() != gl.NO_ERROR)
             assertMsg(false, "unexpected error in getProgramParameter()");
+        
+        if (testInvalidEnums) {
+            // Verify that constants removed from the WebGL spec generate INVALID_ENUM errors
+            assertMsg(gl.getProgramParameter(prog, desktopGL['INFO_LOG_LENGTH']) === null, "invalid call to getProgramParameter should return null");
+            glErrorShouldBe(gl, gl.INVALID_ENUM, "INFO_LOG_LENGTH is not a valid argument to getProgramParameter in WebGL");
+            assertMsg(gl.getProgramParameter(prog, desktopGL['ACTIVE_ATTRIBUTE_MAX_LENGTH']) === null, "invalid call to getProgramParameter should return null");
+            glErrorShouldBe(gl, gl.INVALID_ENUM, "ACTIVE_ATTRIBUTE_MAX_LENGTH is not a valid argument to getProgramParameter in WebGL");
+            assertMsg(gl.getProgramParameter(prog, desktopGL['ACTIVE_UNIFORM_MAX_LENGTH']) === null, "invalid call to getProgramParameter should return null");
+            glErrorShouldBe(gl, gl.INVALID_ENUM, "ACTIVE_UNIFORM_MAX_LENGTH is not a valid argument to getProgramParameter in WebGL");
+        }
+
         gl.useProgram(prog);
         if (expected_status == true)
             glErrorShouldBe(gl, gl.NO_ERROR, "using a valid program should succeed");
@@ -236,13 +255,13 @@ function go() {
         return prog;
     }
 
-    var progGood1 = checkLinkAndUse([vs, fs], false, true, "valid program should link");
-    var progGood2 = checkLinkAndUse([vs, fs2], false, true, "valid program #2 should link");
-    var progBad1 = checkLinkAndUse([vs], false, false, "program with no fragment shader should fail to link");
-    var progBad2 = checkLinkAndUse([fs], false, false, "program with no vertex shader should fail to link");
-    var progBad3 = checkLinkAndUse([vsBad, fs], false, false, "program with bad vertex shader should fail to link");
-    var progBad4 = checkLinkAndUse([vs, fsBad], false, false, "program with bad fragment shader should fail to link");
-    var progBad5 = checkLinkAndUse([vsBad, fsBad], false, false, "program with bad shaders should fail to link");
+    var progGood1 = checkLinkAndUse([vs, fs], false, true, true, "valid program should link");
+    var progGood2 = checkLinkAndUse([vs, fs2], false, true, false, "valid program #2 should link");
+    var progBad1 = checkLinkAndUse([vs], false, false, false, "program with no fragment shader should fail to link");
+    var progBad2 = checkLinkAndUse([fs], false, false, false, "program with no vertex shader should fail to link");
+    var progBad3 = checkLinkAndUse([vsBad, fs], false, false, false, "program with bad vertex shader should fail to link");
+    var progBad4 = checkLinkAndUse([vs, fsBad], false, false, false, "program with bad fragment shader should fail to link");
+    var progBad5 = checkLinkAndUse([vsBad, fsBad], false, false, false, "program with bad shaders should fail to link");
 
     gl.useProgram(progGood1);
     glErrorShouldBe(gl, gl.NO_ERROR, "using a valid program shouldn't generate a GL error");
@@ -288,7 +307,7 @@ function go() {
     gl.drawArrays(gl.TRIANGLES, 0, 4);
     glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid when last used program shouldn't generate a GL error");
 
-    var progGood1 = checkLinkAndUse([vs, fs], true, true, "delete shaders after attaching them and before linking program should not affect linkProgram");
+    var progGood1 = checkLinkAndUse([vs, fs], true, true, false, "delete shaders after attaching them and before linking program should not affect linkProgram");
     gl.useProgram(progGood1);
     gl.drawArrays(gl.TRIANGLES, 0, 4);
     glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid when last used program shouldn't generate a GL error");
