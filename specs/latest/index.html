@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 09 April 2012</h2>
+    <h2 class="no-toc">Editor's Draft 18 April 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -515,6 +515,8 @@ image.src = "http://other-domain.com/image.jpg";
              of GLSL, such as that found in versions of OpenGL for the desktop, must not be allowed
              to load. </li>
         <li> <code>for</code> loops must conform to the structural constraints in Appendix A. </li>
+        <li> <code>while</code> and <code>do-while</code> loops are disallowed, since they are
+             optional in Appendix A.</li>
         <li> Appendix A mandates certain forms of indexing of arrays; for example, within fragment
              shaders, indexing is only mandated with a <i>constant-index-expression</i>
              (see <a href="#refsGLES20GLSL">[GLES20GLSL]</a> for the definition of this term). In
