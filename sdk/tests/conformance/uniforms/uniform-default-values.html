@@ -130,35 +130,74 @@ void main()
 description();
 
 var tests = [
-{ type: 'float', check: "value == 0.0" },
-{ type: 'int', check: "value == 0" },
-{ type: 'bool', check: "value == false" },
-{ type: 'vec2', check: "value.x == 0.0 && value.y == 0.0" },
-{ type: 'vec3', check: "value.x == 0.0 && value.y == 0.0 && value.z == 0.0" },
-{ type: 'vec4', check: "value.x == 0.0 && value.y == 0.0 && value.z == 0.0 && value.z == 0.0" },
-{ type: 'ivec2', check: "value.x == 0 && value.y == 0" },
-{ type: 'ivec3', check: "value.x == 0 && value.y == 0 && value.z == 0" },
-{ type: 'ivec4', check: "value.x == 0 && value.y == 0 && value.z == 0 && value.z == 0" },
-{ type: 'bvec2', check: "value.x == false && value.y == false" },
-{ type: 'bvec3', check: "value.x == false && value.y == false && value.z == false" },
-{ type: 'bvec4', check: "value.x == false && value.y == false && value.z == false && value.z == false" },
+{ type: 'float',
+  check: "value == 0.0",
+  setFn: function(gl, loc) { gl.uniform1f(loc, 3.0); }
+},
+{ type: 'int',
+  check: "value == 0",
+  setFn: function(gl, loc) { gl.uniform1i(loc, 3.0); }
+},
+{ type: 'bool',
+  check: "value == false",
+  setFn: function(gl, loc) { gl.uniform1i(loc, 1); }
+},
+{ type: 'vec2',
+  check: "value.x == 0.0 && value.y == 0.0",
+  setFn: function(gl, loc) { gl.uniform2f(loc, 3.0, 3.0); }
+},
+{ type: 'vec3',
+  check: "value.x == 0.0 && value.y == 0.0 && value.z == 0.0",
+  setFn: function(gl, loc) { gl.uniform3f(loc, 3.0, 3.0, 3.0); }
+},
+{ type: 'vec4',
+  check: "value.x == 0.0 && value.y == 0.0 && value.z == 0.0 && value.z == 0.0",
+  setFn: function(gl, loc) { gl.uniform4f(loc, 3.0, 3.0, 3.0, 3.0); }
+},
+{ type: 'ivec2',
+  check: "value.x == 0 && value.y == 0",
+  setFn: function(gl, loc) { gl.uniform2i(loc, 3, 3); }
+},
+{ type: 'ivec3',
+  check: "value.x == 0 && value.y == 0 && value.z == 0",
+  setFn: function(gl, loc) { gl.uniform3i(loc, 3, 3, 3); }
+},
+{ type: 'ivec4',
+  check: "value.x == 0 && value.y == 0 && value.z == 0 && value.z == 0",
+  setFn: function(gl, loc) { gl.uniform4i(loc, 3, 3, 3, 3); }
+},
+{ type: 'bvec2',
+  check: "value.x == false && value.y == false",
+  setFn: function(gl, loc) { gl.uniform2i(loc, 1, 1); }
+},
+{ type: 'bvec3',
+  check: "value.x == false && value.y == false && value.z == false",
+  setFn: function(gl, loc) { gl.uniform3i(loc, 1, 1, 1); }
+},
+{ type: 'bvec4',
+  check: "value.x == false && value.y == false && value.z == false && value.z == false",
+  setFn: function(gl, loc) { gl.uniform4i(loc, 1, 1, 1, 1); }
+},
 { type: 'mat2',
   check:
     "value[0][0] == 0.0 && value[0][1] == 0.0 && " +
-    "value[1][0] == 0.0 && value[1][0] == 0.0"
+    "value[1][0] == 0.0 && value[1][0] == 0.0",
+  setFn: function(gl, loc) { gl.uniformMatrix2fv(loc, false, [1, 1, 1, 1]); }
 },
 { type: 'mat3',
   check:
     "value[0][0] == 0.0 && value[1][0] == 0.0 && value[2][0] == 0.0 && " +
     "value[0][1] == 0.0 && value[1][1] == 0.0 && value[2][1] == 0.0 && " +
-    "value[0][2] == 0.0 && value[1][2] == 0.0 && value[2][2] == 0.0"
+    "value[0][2] == 0.0 && value[1][2] == 0.0 && value[2][2] == 0.0",
+  setFn: function(gl, loc) { gl.uniformMatrix3fv(loc, false, [1, 1, 1, 1, 1, 1, 1, 1, 1]); }
 },
 { type: 'mat4',
   check:
     "value[0][0] == 0.0 && value[1][0] == 0.0 && value[2][0] == 0.0 && value[3][0] == 0.0 && " +
     "value[0][1] == 0.0 && value[1][1] == 0.0 && value[2][1] == 0.0 && value[3][1] == 0.0 && " +
     "value[0][2] == 0.0 && value[1][2] == 0.0 && value[2][2] == 0.0 && value[3][2] == 0.0 && " +
-    "value[0][3] == 0.0 && value[1][3] == 0.0 && value[2][3] == 0.0 && value[3][3] == 0.0"
+    "value[0][3] == 0.0 && value[1][3] == 0.0 && value[2][3] == 0.0 && value[3][3] == 0.0",
+  setFn: function(gl, loc) { gl.uniformMatrix4fv(loc, false, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]); }
 },
 ];
 
@@ -186,12 +225,33 @@ function testType(test) {
     wtu.addShaderSource(c, "vertex shader", vs);
     wtu.addShaderSource(c, "fragment shader", fs);
 
-    var success = true;
-    var program = wtu.loadProgram(gl, vs, fs);
+    var vs = wtu.loadShader(gl, vs, gl.VERTEX_SHADER);
+    var fs = wtu.loadShader(gl, fs, gl.FRAGMENT_SHADER);
+    var program = wtu.createProgram(gl, vs, fs);
+
     gl.useProgram(program);
+
+    var loc = gl.getUniformLocation(program, "u_uniform");
+
+    debug("default value should be zero");
     wtu.drawQuad(gl);
     wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
+
+    debug("test test by setting value");
+    test.setFn(gl, loc);
+
+    wtu.drawQuad(gl);
+    wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red", 0);
+
+    debug("re-linking should reset to defaults");
+    gl.linkProgram(program);
+
+    wtu.drawQuad(gl);
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
+
     gl.deleteProgram(program);
+    gl.deleteShader(vs);
+    gl.deleteShader(fs);
 
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no GL errors");
   }
