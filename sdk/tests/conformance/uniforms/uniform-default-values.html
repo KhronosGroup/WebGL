@@ -100,7 +100,7 @@ bool isZero($(type) value) {
 
 void main()
 {
-  gl_FragColor = (isZero(u_uniform[0]) && isZero(u_uniform[1])) ? vec4(0,1,0,1) : vec4(1,0,0,1);
+  gl_FragColor = isZero(u_uniform[1]) ? vec4(0,1,0,1) : vec4(1,0,0,1);
 }
 </script>
 <script id="vshader3" type="x-shader/x-vertex">
@@ -115,7 +115,7 @@ bool isZero($(type) value) {
 void main()
 {
     gl_Position = vPosition;
-    v_color = (isZero(u_uniform[0]) && isZero(u_uniform[1])) ? vec4(0,1,0,1) : vec4(1,0,0,1);
+    v_color = isZero(u_uniform[1]) ? vec4(0,1,0,1) : vec4(1,0,0,1);
 }
 </script>
 <script id="fshader3" type="x-shader/x-fragment">
@@ -231,7 +231,10 @@ function testType(test) {
 
     gl.useProgram(program);
 
-    var loc = gl.getUniformLocation(program, "u_uniform");
+    var loc = gl.getUniformLocation(program, "u_uniform[1]");
+    if (!loc) {
+        var loc = gl.getUniformLocation(program, "u_uniform");
+    }
 
     debug("default value should be zero");
     wtu.drawQuad(gl);
