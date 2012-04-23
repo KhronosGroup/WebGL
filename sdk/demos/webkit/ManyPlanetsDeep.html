@@ -243,7 +243,7 @@
                 e.preventDefault();
                 clearLoadingImages();
                 if (requestId !== undefined) {
-                    window.cancelRequestAnimFrame(requestId);
+                    window.cancelAnimFrame(requestId);
                     requestId = undefined;
                 }
             }

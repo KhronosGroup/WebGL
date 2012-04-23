@@ -1531,14 +1531,14 @@ var requestAnimFrame = function(callback, element) {
 };
 
 /**
- * Provides cancelRequestAnimationFrame in a cross browser way.
+ * Provides cancelAnimationFrame in a cross browser way.
  */
-var cancelRequestAnimFrame = (function() {
-  return window.cancelCancelRequestAnimationFrame ||
-         window.webkitCancelRequestAnimationFrame ||
-         window.mozCancelRequestAnimationFrame ||
-         window.oCancelRequestAnimationFrame ||
-         window.msCancelRequestAnimationFrame ||
+var cancelAnimFrame = (function() {
+  return window.cancelAnimationFrame ||
+         window.webkitCancelAnimationFrame ||
+         window.mozCancelAnimationFrame ||
+         window.oCancelAnimationFrame ||
+         window.msCancelAnimationFrame ||
          window.clearTimeout;
 })();
 
@@ -1556,7 +1556,7 @@ var waitFrames = function(frames, callback) {
 
 return {
   addShaderSource: addShaderSource,
-  cancelRequestAnimFrame: cancelRequestAnimFrame,
+  cancelAnimFrame: cancelAnimFrame,
   create3DContext: create3DContext,
   create3DContextWithWrapperThatThrowsOnGLError:
     create3DContextWithWrapperThatThrowsOnGLError,

@@ -162,14 +162,14 @@ window.requestAnimFrame = (function() {
 })();
 
 /**
- * Provides cancelRequestAnimationFrame in a cross browser way.
+ * Provides cancelAnimationFrame in a cross browser way.
  */
-window.cancelRequestAnimFrame = (function() {
-  return window.cancelCancelRequestAnimationFrame ||
-         window.webkitCancelRequestAnimationFrame ||
-         window.mozCancelRequestAnimationFrame ||
-         window.oCancelRequestAnimationFrame ||
-         window.msCancelRequestAnimationFrame ||
+window.cancelAnimFrame = (function() {
+  return window.cancelAnimationFrame ||
+         window.webkitCancelAnimationFrame ||
+         window.mozCancelAnimationFrame ||
+         window.oCancelAnimationFrame ||
+         window.msCancelAnimationFrame ||
          window.clearTimeout;
 })();
 

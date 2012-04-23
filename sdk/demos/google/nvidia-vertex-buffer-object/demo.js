@@ -181,7 +181,7 @@ function handleContextLost(e) {
     log("handle context lost");
     e.preventDefault();
     if (g_requestId !== undefined) {
-      cancelRequestAnimFrame(g_requestId);
+      cancelAnimFrame(g_requestId);
       g_requestId = undefined;
     }
 }

@@ -233,7 +233,7 @@
         function handleContextLost(e) {
             e.preventDefault();
             if (requestId !== undefined) {
-                window.cancelRequestAnimFrame(requestId);
+                window.cancelAnimFrame(requestId);
                 requestId = undefined;
             }
         }

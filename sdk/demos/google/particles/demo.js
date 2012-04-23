@@ -177,7 +177,7 @@ function handleContextLost(e) {
     e.preventDefault();
     clearLoadingImages();
     if (g_requestId !== undefined) {
-      window.cancelRequestAnimFrame(g_requestId);
+      window.cancelAnimFrame(g_requestId);
       g_requestId = undefined;
     }
 }
