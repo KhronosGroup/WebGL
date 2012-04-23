@@ -41,6 +41,10 @@
 <script>
 description('Verifies that GL texture bindings do not change when canvas is resized');
 
+if (window.initNonKhronosFramework) {
+  window.initNonKhronosFramework(true);
+}
+
 var err;
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("example");

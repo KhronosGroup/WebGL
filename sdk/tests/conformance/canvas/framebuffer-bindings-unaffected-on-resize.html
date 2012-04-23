@@ -40,7 +40,11 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
-description();
+description("Verifies that GL framebuffer bindings do not change when canvas is resized");
+
+if (window.initNonKhronosFramework) {
+  window.initNonKhronosFramework(true);
+}
 
 var err;
 var wtu = WebGLTestUtils;
