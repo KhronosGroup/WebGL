@@ -2833,17 +2833,16 @@ for (var i = 0; i < numVertices; i++) {
     <dl class="methods">
         <dt class="idl-code">sequence&lt;DOMString&gt;? getSupportedExtensions()
         <dd>
-            Returns an array of all the supported extension strings. Any string in this list, when 
-            passed to <code>getExtension</code> must return a valid object. Any other string passed to 
-            <code>getExtension</code> must return null.
+            Returns a list of all the supported extension strings.
             
         <dt class="idl-code">object? getExtension(DOMString name)
         <dd>
-            Returns an object if the passed extension is supported, or null if not. The object 
-            returned from <code>getExtension</code> contains any constants or functions used by the 
-            extension, if any. A returned object may have no constants or functions if the extension does 
-            not define any, but a unique object must still be returned. That object is used to indicate 
-            that the extension has been enabled. 
+            Returns a valid object if, and only if, <em>name</em> is included in the return value
+            from <code>getSupportedExtensions</code>; otherwise, returns <code>null</code>. The
+            object returned from <code>getExtension</code> contains any constants or functions used
+            by the extension, if any. A returned object may have no constants or functions if the
+            extension does not define any, but a unique object must still be returned. That object
+            is used to indicate that the extension has been enabled.
     </dl>
 
 <!-- ======================================================================================================= -->
