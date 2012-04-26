@@ -143,39 +143,39 @@ var tests = [
   setFn: function(gl, loc) { gl.uniform1i(loc, 1); }
 },
 { type: 'vec2',
-  check: "return value.x == 0.0 && value.y == 0.0",
+  check: "return value[0] == 0.0 && value[1] == 0.0",
   setFn: function(gl, loc) { gl.uniform2f(loc, 3.0, 3.0); }
 },
 { type: 'vec3',
-  check: "return value.x == 0.0 && value.y == 0.0 && value.z == 0.0",
+  check: "return value[0] == 0.0 && value[1] == 0.0 && value[2] == 0.0",
   setFn: function(gl, loc) { gl.uniform3f(loc, 3.0, 3.0, 3.0); }
 },
 { type: 'vec4',
-  check: "return value.x == 0.0 && value.y == 0.0 && value.z == 0.0 && value.z == 0.0",
+  check: "return value[0] == 0.0 && value[1] == 0.0 && value[2] == 0.0 && value[3] == 0.0",
   setFn: function(gl, loc) { gl.uniform4f(loc, 3.0, 3.0, 3.0, 3.0); }
 },
 { type: 'ivec2',
-  check: "return value.x == 0 && value.y == 0",
+  check: "return value[0] == 0 && value[1] == 0",
   setFn: function(gl, loc) { gl.uniform2i(loc, 3, 3); }
 },
 { type: 'ivec3',
-  check: "return value.x == 0 && value.y == 0 && value.z == 0",
+  check: "return value[0] == 0 && value[1] == 0 && value[2] == 0",
   setFn: function(gl, loc) { gl.uniform3i(loc, 3, 3, 3); }
 },
 { type: 'ivec4',
-  check: "return value.x == 0 && value.y == 0 && value.z == 0 && value.z == 0",
+  check: "return value[0] == 0 && value[1] == 0 && value[2] == 0 && value[3] == 0",
   setFn: function(gl, loc) { gl.uniform4i(loc, 3, 3, 3, 3); }
 },
 { type: 'bvec2',
-  check: "return value.x == false && value.y == false",
+  check: "return value[0] == false && value[1] == false",
   setFn: function(gl, loc) { gl.uniform2i(loc, 1, 1); }
 },
 { type: 'bvec3',
-  check: "return value.x == false && value.y == false && value.z == false",
+  check: "return value[0] == false && value[1] == false && value[2] == false",
   setFn: function(gl, loc) { gl.uniform3i(loc, 1, 1, 1); }
 },
 { type: 'bvec4',
-  check: "return value.x == false && value.y == false && value.z == false && value.z == false",
+  check: "return value[0] == false && value[1] == false && value[2] == false && value[3] == false",
   setFn: function(gl, loc) { gl.uniform4i(loc, 1, 1, 1, 1); }
 },
 { type: 'mat2',
@@ -183,6 +183,10 @@ var tests = [
     "return " +
     "value[0][0] == 0.0 && value[0][1] == 0.0 && " +
     "value[1][0] == 0.0 && value[1][0] == 0.0",
+  valueCheck:
+    "return " +
+    "value[0] == 0.0 && value[1] == 0.0 && " +
+    "value[2] == 0.0 && value[3] == 0.0",
   setFn: function(gl, loc) { gl.uniformMatrix2fv(loc, false, [1, 1, 1, 1]); }
 },
 { type: 'mat3',
@@ -191,6 +195,11 @@ var tests = [
     "value[0][0] == 0.0 && value[1][0] == 0.0 && value[2][0] == 0.0 && " +
     "value[0][1] == 0.0 && value[1][1] == 0.0 && value[2][1] == 0.0 && " +
     "value[0][2] == 0.0 && value[1][2] == 0.0 && value[2][2] == 0.0",
+  valueCheck:
+    "return " +
+    "value[0] == 0.0 && value[1] == 0.0 && value[2] == 0.0 && " +
+    "value[3] == 0.0 && value[4] == 0.0 && value[5] == 0.0 && " +
+    "value[6] == 0.0 && value[7] == 0.0 && value[8] == 0.0",
   setFn: function(gl, loc) { gl.uniformMatrix3fv(loc, false, [1, 1, 1, 1, 1, 1, 1, 1, 1]); }
 },
 { type: 'mat4',
@@ -200,18 +209,28 @@ var tests = [
     "value[0][1] == 0.0 && value[1][1] == 0.0 && value[2][1] == 0.0 && value[3][1] == 0.0 && " +
     "value[0][2] == 0.0 && value[1][2] == 0.0 && value[2][2] == 0.0 && value[3][2] == 0.0 && " +
     "value[0][3] == 0.0 && value[1][3] == 0.0 && value[2][3] == 0.0 && value[3][3] == 0.0",
+  valueCheck:
+    "return " +
+    "value[ 0] == 0.0 && value[ 1] == 0.0 && value[ 2] == 0.0 && value[ 3] == 0.0 && " +
+    "value[ 4] == 0.0 && value[ 5] == 0.0 && value[ 6] == 0.0 && value[ 7] == 0.0 && " +
+    "value[ 8] == 0.0 && value[ 9] == 0.0 && value[10] == 0.0 && value[11] == 0.0 && " +
+    "value[12] == 0.0 && value[13] == 0.0 && value[14] == 0.0 && value[15] == 0.0",
   setFn: function(gl, loc) { gl.uniformMatrix4fv(loc, false, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]); }
 },
 { type: 'sampler2D',
   check:
     "vec4 v = texture2D(value, vec2(0, 0));" +
     "return v.x == 1.0 && v.y == 1.0 && v.z == 1.0 && v.w == 1.0",
+  valueCheck:
+    "return value == 0",
   setFn: function(gl, loc) { gl.uniform1i(loc, 1); }
 },
 { type: 'samplerCube',
   check:
     "vec4 v = textureCube(value, vec3(0, 0, 0));" +
     "return v.x == 1.0 && v.y == 1.0 && v.z == 1.0 && v.w == 1.0",
+  valueCheck:
+    "return value == 0",
   setFn: function(gl, loc) { gl.uniform1i(loc, 1); }
 },
 ];
@@ -287,6 +306,14 @@ function testType(test) {
     var loc = gl.getUniformLocation(program, "u_uniform[1]");
     if (!loc) {
         var loc = gl.getUniformLocation(program, "u_uniform");
+    }
+
+    var value = gl.getUniform(program, loc);
+    eval("checkFn = function(value) {" + (test.valueCheck ? test.valueCheck : test.check) + ";}");
+    if (checkFn(value)) {
+        testPassed("uniform is zero");
+    } else {
+        testFailed("uniform is not zero");
     }
 
     debug("default value should be zero");
