@@ -126,11 +126,13 @@ function runTest() {
 }
 
 function checkTexture(width, height, cubeMap) {
+  debug("");
   count = (count + 1) % colors.length;
   var color = colors[count];
   var tex = gl.createTexture();
   var target = cubeMap ? gl.TEXTURE_CUBE_MAP : gl.TEXTURE_2D;
   var type = cubeMap ? "cube map" : "2D texture";
+  debug("check " + width + ", " + height + " " + type);
   gl.bindTexture(target, tex);
   gl.texParameteri(target, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.texParameteri(target, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -163,11 +165,22 @@ function checkTexture(width, height, cubeMap) {
   wtu.drawQuad(gl);
   wtu.checkCanvas(gl, color.rgba,
       type + " of size " + width + "x" + height + " with mips should draw with " + color.name);
+
+  count = (count + 1) % colors.length;
+  color = colors[count];
+  fillLevel(0, width, height, color.rgba, cubeMap, true);
+  gl.generateMipmap(target);
+
+  wtu.drawQuad(gl);
+  wtu.checkCanvas(gl, color.rgba,
+      type + " of size " + width + "x" + height + " with mips should draw with " + color.name);
+
   gl.deleteTexture(tex);
+  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
   return true;
 }
 
-function fillLevel(level, width, height, color, opt_cubemap) {
+function fillLevel(level, width, height, color, opt_cubemap, opt_subTex) {
   var numPixels = width * height;
   var pixels = null;
   var largeDim = Math.max(width, height);
@@ -203,13 +216,19 @@ function fillLevel(level, width, height, color, opt_cubemap) {
 
   for (var ii = 0; ii < targets.length; ++ii) {
     // debug(wtu.glEnumToString(gl, targets[ii]));
-    gl.texImage2D(
-        targets[ii], level, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-        pixels);
+    var index = (ii + power) % targets.length;
+    var target = targets[index];
+    if (opt_subTex) {
+      gl.texSubImage2D(
+          target, level, 0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE,
+          pixels);
+    } else {
+      gl.texImage2D(
+          target, level, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+          pixels);
+    }
   }
 }
-
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 
 successfullyParsed = true;
 </script>
