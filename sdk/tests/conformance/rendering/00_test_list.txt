@@ -1,3 +1,4 @@
+--min-version 1.0.2 culling.html
 draw-arrays-out-of-bounds.html
 draw-elements-out-of-bounds.html
 gl-clear.html
