@@ -1557,7 +1557,7 @@ for (var i = 0; i < numVertices; i++) {
 
     WebGLActiveInfo? getActiveAttrib(WebGLProgram? program, GLuint index);
     WebGLActiveInfo? getActiveUniform(WebGLProgram? program, GLuint index);
-    WebGLShader[]? getAttachedShaders(WebGLProgram? program);
+    sequence&lt;WebGLShader&gt;? getAttachedShaders(WebGLProgram? program);
 
     [WebGLHandlesContextLoss] GLint getAttribLocation(WebGLProgram? program, DOMString name);
 
@@ -2475,10 +2475,10 @@ for (var i = 0; i < numVertices; i++) {
             destroyed.
         <dt class="idl-code">void detachShader(WebGLProgram? program, WebGLShader? shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDetachShader.xml">man page</a>)</span>
-        <dt class="idl-code">WebGLShader[]? getAttachedShaders(WebGLProgram? program)
+        <dt class="idl-code">sequence&lt;WebGLShader&gt;? getAttachedShaders(WebGLProgram? program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetAttachedShaders.xml">man page</a>)</span>
         <dd>
-            Return the list of shaders attached to the passed program.
+            Returns a new object representing the list of shaders attached to the passed program.
         <dt class="idl-code">any getProgramParameter(WebGLProgram? program, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetProgramiv.xml">man page</a>)</span>
         <dd>
