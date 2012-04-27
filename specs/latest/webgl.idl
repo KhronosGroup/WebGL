@@ -489,8 +489,8 @@ interface WebGLRenderingContext {
     readonly attribute GLsizei drawingBufferWidth;
     readonly attribute GLsizei drawingBufferHeight;
 
-    WebGLContextAttributes getContextAttributes();
-    boolean isContextLost();
+    [WebGLHandlesContextLoss] WebGLContextAttributes getContextAttributes();
+    [WebGLHandlesContextLoss] boolean isContextLost();
     
     sequence<DOMString>? getSupportedExtensions();
     object? getExtension(DOMString name);
@@ -515,7 +515,7 @@ interface WebGLRenderingContext {
     void bufferSubData(GLenum target, GLintptr offset, ArrayBufferView data);
     void bufferSubData(GLenum target, GLintptr offset, ArrayBuffer? data);
 
-    GLenum checkFramebufferStatus(GLenum target);
+    [WebGLHandlesContextLoss] GLenum checkFramebufferStatus(GLenum target);
     void clear(GLbitfield mask);
     void clearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
     void clearDepth(GLclampf depth);
@@ -579,12 +579,12 @@ interface WebGLRenderingContext {
     WebGLActiveInfo? getActiveUniform(WebGLProgram? program, GLuint index);
     WebGLShader[]? getAttachedShaders(WebGLProgram? program);
 
-    GLint getAttribLocation(WebGLProgram? program, DOMString name);
+    [WebGLHandlesContextLoss] GLint getAttribLocation(WebGLProgram? program, DOMString name);
 
     any getBufferParameter(GLenum target, GLenum pname);
     any getParameter(GLenum pname);
 
-    GLenum getError();
+    [WebGLHandlesContextLoss] GLenum getError();
 
     any getFramebufferAttachmentParameter(GLenum target, GLenum attachment, 
                                           GLenum pname);
@@ -605,16 +605,16 @@ interface WebGLRenderingContext {
 
     any getVertexAttrib(GLuint index, GLenum pname);
 
-    GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname);
+    [WebGLHandlesContextLoss] GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname);
 
     void hint(GLenum target, GLenum mode);
-    GLboolean isBuffer(WebGLBuffer? buffer);
-    GLboolean isEnabled(GLenum cap);
-    GLboolean isFramebuffer(WebGLFramebuffer? framebuffer);
-    GLboolean isProgram(WebGLProgram? program);
-    GLboolean isRenderbuffer(WebGLRenderbuffer? renderbuffer);
-    GLboolean isShader(WebGLShader? shader);
-    GLboolean isTexture(WebGLTexture? texture);
+    [WebGLHandlesContextLoss] GLboolean isBuffer(WebGLBuffer? buffer);
+    [WebGLHandlesContextLoss] GLboolean isEnabled(GLenum cap);
+    [WebGLHandlesContextLoss] GLboolean isFramebuffer(WebGLFramebuffer? framebuffer);
+    [WebGLHandlesContextLoss] GLboolean isProgram(WebGLProgram? program);
+    [WebGLHandlesContextLoss] GLboolean isRenderbuffer(WebGLRenderbuffer? renderbuffer);
+    [WebGLHandlesContextLoss] GLboolean isShader(WebGLShader? shader);
+    [WebGLHandlesContextLoss] GLboolean isTexture(WebGLTexture? texture);
     void lineWidth(GLfloat width);
     void linkProgram(WebGLProgram? program);
     void pixelStorei(GLenum pname, GLint param);
