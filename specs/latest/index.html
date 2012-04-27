@@ -2708,11 +2708,12 @@ for (var i = 0; i < numVertices; i++) {
             Assign the WebGLBuffer object currently bound to the ARRAY_BUFFER target to the vertex
             attribute at the passed index. Size is number of components per attribute. Stride and
             offset are in units of bytes. Passed stride and offset must be appropriate for the
-            passed type and size or an <code>INVALID_OPERATION</code> error will be
-            generated; see <a href="#BUFFER_OFFSET_AND_STRIDE">Buffer Offset and Stride
-            Requirements</a>. If no WebGLBuffer is bound to the ARRAY_BUFFER target,
-            an <code>INVALID_OPERATION</code> error will be generated. In WebGL, the maximum
-            supported stride is 255; see <a href="#VERTEX_STRIDE"> Vertex Attribute Data Stride</a>.
+            passed type and size or an <code>INVALID_OPERATION</code> error will be generated;
+            see <a href="#BUFFER_OFFSET_AND_STRIDE">Buffer Offset and Stride Requirements</a>. If
+            offset is negative, an <code>INVALID_VALUE</code> error will be generated. If no
+            WebGLBuffer is bound to the ARRAY_BUFFER target, an <code>INVALID_OPERATION</code> error
+            will be generated. In WebGL, the maximum supported stride is 255;
+            see <a href="#VERTEX_STRIDE"> Vertex Attribute Data Stride</a>.
     </dl>
     
 <!-- ======================================================================================================= -->
