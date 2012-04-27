@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 26 April 2012</h2>
+    <h2 class="no-toc">Editor's Draft 27 April 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2133,6 +2133,7 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL</td><td>long</td></tr>
                 <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE</td><td>long</td></tr>
             </table>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isFramebuffer(WebGLFramebuffer? framebuffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.7">OpenGL ES 2.0 &sect;6.1.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsFramebuffer.xml">man page</a>)</span>
         <dd>
@@ -2284,9 +2285,9 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>TEXTURE_WRAP_S</td><td>unsigned long</td></tr>
                 <tr><td>TEXTURE_WRAP_T</td><td>unsigned long</td></tr>
             </table>
-        <dd>
-            If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            <code>INVALID_OPERATION</code> error is generated.
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+            <p>If an attempt is made to call this function with no WebGLTexture bound (see above), an
+            <code>INVALID_OPERATION</code> error is generated.</p>
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isTexture(WebGLTexture? texture)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.4">OpenGL ES 2.0 &sect;6.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsTexture.xml">man page</a>)</span>
         <dd>
@@ -2475,7 +2476,10 @@ for (var i = 0; i < numVertices; i++) {
         <dt class="idl-code">sequence&lt;WebGLShader&gt;? getAttachedShaders(WebGLProgram? program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetAttachedShaders.xml">man page</a>)</span>
         <dd>
-            Returns a new object representing the list of shaders attached to the passed program.
+            <p>Returns a new object representing the list of shaders attached to the passed program.</p>
+
+            <p>Returns null if any OpenGL errors are generated during the execution of this
+            function.</p>
         <dt class="idl-code">any getProgramParameter(WebGLProgram? program, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetProgramiv.xml">man page</a>)</span>
         <dd>
@@ -2491,8 +2495,13 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>ACTIVE_UNIFORMS</td><td>long</td></tr>
             </table>
             <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+            <p>Returns null if any OpenGL errors are generated during the execution of this
+            function.</p>
         <dt class="idl-code">DOMString? getProgramInfoLog(WebGLProgram? program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetProgramInfoLog.xml">man page</a>)</span>
+        <dd>
+            <p>Returns null if any OpenGL errors are generated during the execution of this
+            function.</p>
         <dt class="idl-code">any getShaderParameter(WebGLShader? shader, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderiv.xml">man page</a>)</span>
         <dd>
@@ -2505,6 +2514,8 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>COMPILE_STATUS</td><td>boolean</td></tr>
             </table>
             <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+            <p>Returns null if any OpenGL errors are generated during the execution of this
+            function.</p>
         <dt class="idl-code">WebGLShaderPrecisionFormat getShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man/xhtml/glGetShaderPrecisionFormat.xml">man page</a>)</span>
         <dd>
@@ -2514,8 +2525,14 @@ for (var i = 0; i < numVertices; i++) {
             LOW_INT, MEDIUM_INT or HIGH_INT.
         <dt class="idl-code">DOMString? getShaderInfoLog(WebGLShader? shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderInfoLog.xml">man page</a>)</span>
+        <dd>
+            <p>Returns null if any OpenGL errors are generated during the execution of this
+            function.</p>
         <dt class="idl-code">DOMString? getShaderSource(WebGLShader? shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderSource.xml">man page</a>)</span>
+        <dd>
+            <p>Returns null if any OpenGL errors are generated during the execution of this
+            function.</p>
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isProgram(WebGLProgram? program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsProgram.xml">man page</a>)</span>
         <dd>
@@ -2571,12 +2588,16 @@ for (var i = 0; i < numVertices; i++) {
             Returns a new <code>WebGLActiveInfo</code> object describing the size, type and name of
             the vertex attribute at the passed index of the passed program object. If the passed
             index is out of range, generates an <code>INVALID_VALUE</code> error and returns null.
+            <p>Returns null if any OpenGL errors are generated during the execution of this
+            function.</p>
         <dt class="idl-code">WebGLActiveInfo? getActiveUniform(WebGLProgram? program, GLuint index)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetActiveUniform.xml">man page</a>)</span>
         <dd>
             Returns a new <code>WebGLActiveInfo</code> object describing the size, type and name of
             the uniform at the passed index of the passed program object. If the passed index is out
             of range, generates an <code>INVALID_VALUE</code> error and returns null.
+            <p>Returns null if any OpenGL errors are generated during the execution of this
+            function.</p>
         <dt class="idl-code">[WebGLHandlesContextLoss] GLint getAttribLocation(WebGLProgram? program, DOMString name)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetAttribLocation.xml">man page</a>)</span>
         <dd>
@@ -2617,19 +2638,24 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>mat4</td><td>Float32Array (with 16 elements)</td></tr>
             </table>
             <p>All queries returning sequences or typed arrays return a new object each time.</p>
+            <p>Returns null if any OpenGL errors are generated during the execution of this
+            function.</p>
         <dt class="idl-code">WebGLUniformLocation? getUniformLocation(WebGLProgram? program, DOMString name)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetUniformLocation.xml">man page</a>)</span>
         <dd>
-            Return a new <code>WebGLUniformLocation</code> that represents the location of a specific uniform variable
-            within a program object. The return value is null if name does not correspond to an active uniform
-            variable in the passed program. <br><br>
+            <p>Return a new <code>WebGLUniformLocation</code> that represents the location of a
+            specific uniform variable within a program object. The return value is null if name does
+            not correspond to an active uniform variable in the passed program.</p>
 
-            If the passed name is longer than the restriction defined
+            <p>If the passed name is longer than the restriction defined
             in <a href="#MAX_LOCATION_LENGTHS">Maximum Uniform and Attribute Location Lengths</a>,
-            generates an <code>INVALID_VALUE</code> error and returns null. <br><br>
+            generates an <code>INVALID_VALUE</code> error and returns null.</p>
 
-            See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
-            Set</a> for additional validation performed by WebGL implementations.
+            <p>See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source
+            Character Set</a> for additional validation performed by WebGL implementations.</p>
+
+            <p>Returns null if any OpenGL errors are generated during the execution of this
+            function.</p>
         <dt class="idl-code">any getVertexAttrib(GLuint index, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetVertexAttrib.xml">man page</a>)</span>
         <dd>
