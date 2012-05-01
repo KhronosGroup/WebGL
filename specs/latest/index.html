@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 27 April 2012</h2>
+    <h2 class="no-toc">Editor's Draft 01 May 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -269,9 +269,10 @@
         buffer after its creation.
     </p>
     <p>
-        The <code>depth</code>, <code>stencil</code> and <code>antialias</code> attributes are
-        requests, not requirements. The WebGL implementation does not guarantee that they will be
-        obeyed, but should make a best effort to honor them. Combinations of attributes not
+        The <code>depth</code>, <code>stencil</code> and <code>antialias</code> attributes, when set
+        to true, are requests, not requirements. The WebGL implementation should make a best effort
+        to honor them. When any of these attributes is set to false, however, the WebGL
+        implementation must not provide the associated functionality. Combinations of attributes not
         supported by the WebGL implementation or graphics hardware shall not cause a failure to
         create a WebGLRenderingContext. The <a href="#actual-context-parameters">actual context
         parameters</a> are set to the attributes of the created drawing buffer. The
