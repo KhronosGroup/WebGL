@@ -183,14 +183,18 @@ function testDepth(depth)
     shouldBe("pixel", "correctColor");
 }
 
-function testStencil(stencil)
+function testStencilAndDepth(stencil, depth)
 {
-    debug("Testing stencil = " + stencil);
-    if (stencil)
-        shouldBeNonNull("webGL = getWebGL(1, 1, { depth: false, stencil: true, antialias: false }, [ 0, 0, 0, 1 ], 1, 0)");
-    else
-        shouldBeNonNull("webGL = getWebGL(1, 1, { depth: false, stencil: false, antialias: false }, [ 0, 0, 0, 1 ], 1, 0)");
+    debug("Testing stencil = " + stencil + ", depth = " + depth);
+    var creationString =
+        "webGL = getWebGL(1, 1, { depth: " + depth + ", stencil: " + stencil + ", antialias: false }, [ 0, 0, 0, 1 ], 1, 0)";
+    shouldBeNonNull(creationString);
     shouldBeNonNull("contextAttribs = webGL.getContextAttributes()");
+    if (!stencil && contextAttribs.stencil) {
+        testFailed("WebGL implementation provided a stencil buffer when it should not have");
+    }
+    if (!contextAttribs.stencil)
+        stencil = false;
 
     webGL.depthFunc(webGL.ALWAYS);
 
@@ -217,7 +221,7 @@ function testStencil(stencil)
     pixel[1] = buf[1];
     pixel[2] = buf[2];
     pixel[3] = buf[3];
-    correctColor = (contextAttribs.stencil ? [0, 0, 0, 255] : [255, 0, 0, 255]);
+    correctColor = (stencil ? [0, 0, 0, 255] : [255, 0, 0, 255]);
     shouldBe("pixel", "correctColor");
 }
 
@@ -250,8 +254,10 @@ function runTest()
     testAlpha(false);
     testDepth(true);
     testDepth(false);
-    testStencil(true);
-    testStencil(false);
+    testStencilAndDepth(true, false);
+    testStencilAndDepth(false, false);
+    testStencilAndDepth(true, true);
+    testStencilAndDepth(false, true);
     testAntialias(true);
     testAntialias(false);
 
