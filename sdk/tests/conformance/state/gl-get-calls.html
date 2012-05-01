@@ -146,6 +146,33 @@ else {
     // especially if there are multiple screens.
     shouldBeTrue('context.getParameter(context.MAX_VIEWPORT_DIMS)[0] >= window.screen.width');
     shouldBeTrue('context.getParameter(context.MAX_VIEWPORT_DIMS)[1] >= window.screen.height');
+
+    debug("");
+    debug("check texture values");
+    var maxTextures = context.getParameter(context.MAX_TEXTURE_IMAGE_UNITS);
+    for (var ii = 0; ii < maxTextures; ++ii) {
+      context.activeTexture(context.TEXTURE0 + ii);
+      debug("check texture unit: " + ii);
+      shouldBe('context.getParameter(context.TEXTURE_BINDING_2D)', 'null');
+      shouldBe('context.getParameter(context.TEXTURE_BINDING_CUBE_MAP)', 'null');
+    }
+
+    debug("");
+    debug("check attrib values");
+    var maxAttribs = context.getParameter(context.MAX_VERTEX_ATTRIBS);
+    for (var ii = 0; ii < maxAttribs; ++ii) {
+      debug("check attrib: " + ii);
+      shouldBe('context.getVertexAttrib(ii, context.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING)', 'null');
+      shouldBe('context.getVertexAttrib(ii, context.VERTEX_ATTRIB_ARRAY_ENABLED)', 'false');
+      shouldBe('context.getVertexAttrib(ii, context.VERTEX_ATTRIB_ARRAY_SIZE)', '4');
+      shouldBe('context.getVertexAttrib(ii, context.VERTEX_ATTRIB_ARRAY_STRIDE)', '0');
+      shouldBe('context.getVertexAttrib(ii, context.VERTEX_ATTRIB_ARRAY_TYPE)', 'context.FLOAT');
+      shouldBe('context.getVertexAttrib(ii, context.VERTEX_ATTRIB_ARRAY_NORMALIZED)', 'false');
+      shouldBe('context.getVertexAttrib(ii, context.CURRENT_VERTEX_ATTRIB)', '[0, 0, 0, 1]');
+      shouldBe('context.getVertexAttribOffset(ii, context.VERTEX_ATTRIB_ARRAY_POINTER)', '0');
+    }
+
+    shouldBe('context.getError()', 'context.NO_ERROR');
 }
 
 debug("");
