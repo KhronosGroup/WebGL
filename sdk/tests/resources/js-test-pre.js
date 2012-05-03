@@ -336,6 +336,14 @@ function shouldBeGreaterThanOrEqual(_a, _b) {
         testPassed(_a + " is >= " + _b);
 }
 
+function expectTrue(v, msg) {
+  if (v) {
+    testPassed(msg);
+  } else {
+    testFailed(msg);
+  }
+}
+
 function shouldThrow(_a, _e)
 {
   var exception;
