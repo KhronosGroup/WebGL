@@ -85,7 +85,7 @@ Tests.testVertexAttribPointerVBO = function(gl, prog, v,n,t) {
   assertFail("bad type",
       function(){gl.vertexAttribPointer(v, 3, gl.TEXTURE_2D, false, 0, 0);});
   assertFail("bad index",
-      function(){gl.vertexAttribPointer(-4, 3, gl.FLOAT, false, 0, 0);});
+      function(){gl.vertexAttribPointer(-1, 3, gl.FLOAT, false, 0, 0);});
   assertFail("bad index (big negative)",
       function(){gl.vertexAttribPointer(-8693948, 3, gl.FLOAT, false, 0, 0);});
   assertFail("bad index (big positive)",
