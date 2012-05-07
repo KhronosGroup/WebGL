@@ -29,6 +29,7 @@ functions/drawArraysOutOfBounds.html
 functions/drawElements.html
 functions/drawElementsBadArgs.html
 functions/isTests.html
+--min-version 1.0.2 functions/isTestsBadArgs.html
 functions/readPixels.html
 functions/readPixelsBadArgs.html
 functions/texImage2D.html
