@@ -189,7 +189,11 @@
 </xsl:template>
 
 <xsl:template match="api">
-  <p> Written against the WebGL API <xsl:value-of select="@version"/> specification. </p>
+  <p> Written against the <a href="http://www.khronos.org/registry/webgl/specs/{@version}/">WebGL API <xsl:value-of select="@version"/></a> specification. </p>
+</xsl:template>
+
+<xsl:template match="rfc">
+  <p> Written against IETF <a href="http://tools.ietf.org/html/rfc{@number}">RFC <xsl:value-of select="@number"/></a>. </p>
 </xsl:template>
 
 <xsl:template match="overview" mode="overview">

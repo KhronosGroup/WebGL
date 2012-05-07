@@ -9,20 +9,20 @@
               
             </summary></entry><entry><title>OES_depth_texture : revision 4</title><link rel="alternate" type="text/html" href="OES_depth_texture/"/><id>OES_depth_texture/#r=4</id><updated>2012-02-24T23:59:59Z</updated><summary>Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name
               
-            </summary></entry><entry><title>OES_element_index_uint : revision 3</title><link rel="alternate" type="text/html" href="OES_element_index_uint"/><id>OES_element_index_uint#r=3</id><updated>2012-02-24T23:59:59Z</updated><summary>Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name
+            </summary></entry><entry><title>OES_element_index_uint : revision 3</title><link rel="alternate" type="text/html" href="OES_element_index_uint/"/><id>OES_element_index_uint/#r=3</id><updated>2012-02-24T23:59:59Z</updated><summary>Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name
               
-            </summary></entry><entry><title>EXT_texture_filter_anisotropic : revision 2</title><link rel="alternate" type="text/html" href="EXT_texture_filter_anisotropic"/><id>EXT_texture_filter_anisotropic#r=2</id><updated>2012-02-24T23:59:59Z</updated><summary>Added the EXT suffix to the enumerants and aliases to the extension name
+            </summary></entry><entry><title>EXT_texture_filter_anisotropic : revision 2</title><link rel="alternate" type="text/html" href="EXT_texture_filter_anisotropic/"/><id>EXT_texture_filter_anisotropic/#r=2</id><updated>2012-02-24T23:59:59Z</updated><summary>Added the EXT suffix to the enumerants and aliases to the extension name
               
             </summary></entry><entry><title>OES_depth_texture : revision 3</title><link rel="alternate" type="text/html" href="OES_depth_texture/"/><id>OES_depth_texture/#r=3</id><updated>2012-02-06T23:59:59Z</updated><summary>Changed referenced WebGL API version from 2.0 to 1.0
               
-            </summary></entry><entry><title>OES_element_index_uint : revision 2</title><link rel="alternate" type="text/html" href="OES_element_index_uint"/><id>OES_element_index_uint#r=2</id><updated>2012-01-27T23:59:59Z</updated><summary>Removed the bufferData requirement as this is not checked by webgl
+            </summary></entry><entry><title>OES_element_index_uint : revision 2</title><link rel="alternate" type="text/html" href="OES_element_index_uint/"/><id>OES_element_index_uint/#r=2</id><updated>2012-01-27T23:59:59Z</updated><summary>Removed the bufferData requirement as this is not checked by webgl
               
-            </summary></entry><entry><title>EXT_texture_filter_anisotropic : revision 1</title><link rel="alternate" type="text/html" href="EXT_texture_filter_anisotropic"/><id>EXT_texture_filter_anisotropic#r=1</id><updated>2012-01-27T23:59:59Z</updated><summary>Initial revision.
+            </summary></entry><entry><title>EXT_texture_filter_anisotropic : revision 1</title><link rel="alternate" type="text/html" href="EXT_texture_filter_anisotropic/"/><id>EXT_texture_filter_anisotropic/#r=1</id><updated>2012-01-27T23:59:59Z</updated><summary>Initial revision.
               
             </summary></entry><entry><title>WEBGL_compressed_texture_s3tc : revision 1</title><link rel="alternate" type="text/html" href="WEBGL_compressed_texture_s3tc/"/><id>WEBGL_compressed_texture_s3tc/#r=1</id><updated>2012-01-25T23:59:59Z</updated><summary>Initial revision.
               
             </summary></entry><entry><title>OES_depth_texture : revision 2</title><link rel="alternate" type="text/html" href="OES_depth_texture/"/><id>OES_depth_texture/#r=2</id><updated>2012-01-25T23:59:59Z</updated><summary>Added provisions to exclude cube depth textures.
               
-            </summary></entry><entry><title>OES_element_index_uint : revision 1</title><link rel="alternate" type="text/html" href="OES_element_index_uint"/><id>OES_element_index_uint#r=1</id><updated>2012-01-24T23:59:59Z</updated><summary>Initial revision.
+            </summary></entry><entry><title>OES_element_index_uint : revision 1</title><link rel="alternate" type="text/html" href="OES_element_index_uint/"/><id>OES_element_index_uint/#r=1</id><updated>2012-01-24T23:59:59Z</updated><summary>Initial revision.
               
             </summary></entry></feed>

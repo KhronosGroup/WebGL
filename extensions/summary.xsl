@@ -30,6 +30,9 @@
   </registry>
 </xsl:template>
 
+<!-- proposals are not summarized in the registry or syndication feeds -->
+<xsl:template match="proposal" />
+
 <xsl:template match="extension|draft">
   <xsl:copy>
     <xsl:copy-of select="@href" />
