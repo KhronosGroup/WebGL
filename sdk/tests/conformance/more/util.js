@@ -1006,7 +1006,7 @@ function assertGLError(gl, err, name, f) {
   try { f(); } catch(e) { r=true; glErr = e.glError; }
   if (glErr !== err) {
     if (glErr === undefined) {
-      testFailed("assertGLError: UNEXPCETED EXCEPTION", name, f);
+      testFailed("assertGLError: UNEXPECTED EXCEPTION", name, f);
     } else {
       testFailed("assertGLError: expected: " + getGLErrorAsString(gl, err) +
                  " actual: " + getGLErrorAsString(gl, glErr), name, f);
@@ -1026,7 +1026,7 @@ function assertSomeGLError(gl, name, f) {
   try { f(); } catch(e) { r=true; glErr = e.glError; }
   if (glErr === 0) {
     if (glErr === undefined) {
-      testFailed("assertGLError: UNEXPCETED EXCEPTION", name, f);
+      testFailed("assertGLError: UNEXPECTED EXCEPTION", name, f);
     } else {
       testFailed("assertGLError: expected: " + getGLErrorAsString(gl, err) +
                  " actual: " + getGLErrorAsString(gl, glErr), name, f);
