@@ -36,6 +36,18 @@ var log = function(msg) {
 };
 
 /**
+ * Wrapped error logging function.
+ * @param {string} msg Message to log.
+ */
+var error = function(msg) {
+  if (window.console && window.console.error) {
+    window.console.error(msg);
+  } else {
+    log(msg);
+  }
+};
+
+/**
  * Which arguements are enums.
  * @type {!Object.<number, string>}
  */
@@ -265,8 +277,8 @@ function makeDebugContext(ctx, opt_onErrorFunc, opt_onFunc) {
           argStr += ((ii == 0) ? '' : ', ') +
               glFunctionArgToString(functionName, ii, args[ii]);
         }
-        log("WebGL error "+ glEnumToString(err) + " in "+ functionName +
-            "(" + argStr + ")");
+        error("WebGL error "+ glEnumToString(err) + " in "+ functionName +
+              "(" + argStr + ")");
       };
 
   // Holds booleans for each GL error so after we get the error ourselves
