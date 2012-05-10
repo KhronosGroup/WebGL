@@ -88,8 +88,7 @@ function testInvalidArgument(funcName, argumentName, validArgumentArray, func) {
       var result = func(ii);
       if (result !== null) {
         success = false;
-        console.log("here:" + ii);
-        testFailed(funcName + " did not return null for invalid " + argumentName + " enum: " + wtu.glEnumToString(gl, ii));
+        testFailed(funcName + " returned " + result + " instead of null for invalid " + argumentName + " enum: " + wtu.glEnumToString(gl, ii));
         break;
       }
       var err = gl.getError();
@@ -425,21 +424,19 @@ shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_ENABLED)', 'false');
 gl.vertexAttrib4f(1, 5, 6, 7, 8);
 shouldBe('gl.getVertexAttrib(1, gl.CURRENT_VERTEX_ATTRIB)', '[5, 6, 7, 8]');
 glErrorShouldBe(gl, gl.NO_ERROR);
-var validAttribParams = [
-    gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING,
-    gl.VERTEX_ATTRIB_ARRAY_ENABLED,
-    gl.VERTEX_ATTRIB_ARRAY_SIZE,
-    gl.VERTEX_ATTRIB_ARRAY_STRIDE,
-    gl.VERTEX_ATTRIB_ARRAY_TYPE,
-    gl.VERTEX_ATTRIB_ARRAY_NORMALIZED,
-    gl.VERTEX_ATTRIB_ARRAY_STRIDE,
-    gl.VERTEX_ATTRIB_ARRAY_ENABLED,
-    gl.CURRENT_VERTEX_ATTRIB
-];
 testInvalidArgument(
     "getVertexAttrib",
     "parameter",
-    validAttribParams,
+    [ gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING,
+      gl.VERTEX_ATTRIB_ARRAY_ENABLED,
+      gl.VERTEX_ATTRIB_ARRAY_SIZE,
+      gl.VERTEX_ATTRIB_ARRAY_STRIDE,
+      gl.VERTEX_ATTRIB_ARRAY_TYPE,
+      gl.VERTEX_ATTRIB_ARRAY_NORMALIZED,
+      gl.VERTEX_ATTRIB_ARRAY_STRIDE,
+      gl.VERTEX_ATTRIB_ARRAY_ENABLED,
+      gl.CURRENT_VERTEX_ATTRIB
+    ],
     function(parameter) {
       return gl.getVertexAttrib(1, parameter);
     }
