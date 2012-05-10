@@ -4,6 +4,7 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:import href="rev_utils.xsl" />
+<xsl:import href="standards.xsl" />
 
 <xsl:output
     method="html"
@@ -87,7 +88,7 @@
       <p> WebGL extension #<xsl:value-of select="number" /> </p>
 
       <h2 class="no-toc">Dependencies</h2>
-      <xsl:apply-templates select="depends" />
+      <xsl:apply-templates select="depends" mode="depends" />
 
       <h2 class="no-toc">Overview</h2>
       <xsl:apply-templates select="overview" mode="overview" />
@@ -188,12 +189,20 @@
   <xsl:comment>end-logo</xsl:comment>
 </xsl:template>
 
-<xsl:template match="api">
-  <p> Written against the <a href="http://www.khronos.org/registry/webgl/specs/{@version}/">WebGL API <xsl:value-of select="@version"/></a> specification. </p>
+<xsl:template match="api" mode="depends">
+  <p> Written against the <xsl:apply-templates select="."/> specification. </p>
 </xsl:template>
 
-<xsl:template match="rfc">
-  <p> Written against IETF <a href="http://tools.ietf.org/html/rfc{@number}">RFC <xsl:value-of select="@number"/></a>. </p>
+<xsl:template match="ext" mode="depends">
+  <p> Written against the <xsl:apply-templates select="."/> specification. </p>
+</xsl:template>
+
+<xsl:template match="glsl" mode="depends">
+  <p> Written against the <xsl:apply-templates select="."/> specification. </p>
+</xsl:template>
+
+<xsl:template match="rfc" mode="depends">
+  <p> Written against IETF <xsl:apply-templates select="."/>. </p>
 </xsl:template>
 
 <xsl:template match="overview" mode="overview">
