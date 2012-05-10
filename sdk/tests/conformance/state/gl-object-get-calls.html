@@ -32,12 +32,14 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
 <div id="console"></div>
 
 <script>
+wtu = WebGLTestUtils;
 description("Test of get calls against GL objects like getBufferParameter, etc.");
 
 function sizeInBytes(type) {
@@ -59,6 +61,7 @@ function sizeInBytes(type) {
 
 var gl = create3DContext();
 
+debug("test getAttachedShaders");
 var standardVert = loadStandardVertexShader(gl);
 var standardFrag = loadStandardFragmentShader(gl);
 var standardProgram = gl.createProgram();
@@ -74,14 +77,65 @@ glErrorShouldBe(gl, gl.INVALID_VALUE);
 shouldThrow('gl.getAttachedShaders(standardVert)');
 glErrorShouldBe(gl, gl.NO_ERROR);
 
-// Test getBufferParameter
-var buffer = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-gl.bufferData(gl.ARRAY_BUFFER, 16, gl.DYNAMIC_DRAW);
-shouldBe('gl.getBufferParameter(gl.ARRAY_BUFFER, gl.BUFFER_SIZE)', '16');
-shouldBe('gl.getBufferParameter(gl.ARRAY_BUFFER, gl.BUFFER_USAGE)', 'gl.DYNAMIC_DRAW');
+function testInvalidArgument(funcName, argumentName, validArgumentArray, func) {
+  var validArguments = {};
+  for (var ii = 0; ii < validArgumentArray.length; ++ii) {
+    validArguments[validArgumentArray[ii]] = true;
+  }
+  var success = true;
+  for (var ii = 0; ii < 0x10000; ++ii) {
+    if (!validArguments[ii]) {
+      var result = func(ii);
+      if (result !== null) {
+        success = false;
+        console.log("here:" + ii);
+        testFailed(funcName + " did not return null for invalid " + argumentName + " enum: " + wtu.glEnumToString(gl, ii));
+        break;
+      }
+      var err = gl.getError();
+      if (err != gl.INVALID_ENUM) {
+        success = false;
+        testFailed(funcName + " did not generate INVALID_ENUM for invalid " + argumentName + " enum: " + wtu.glEnumToString(gl, ii));
+        break;
+      }
+    }
+  }
+  if (success) {
+    testPassed(funcName + " correctly handled invalid " + argumentName + " enums");
+  }
+}
 
-// Test getFramebufferAttachmentParameter
+debug("");
+debug("test getBufferParameter");
+// Test getBufferParameter
+var bufferTypes = [gl.ARRAY_BUFFER, gl.ELEMENT_ARRAY_BUFFER];
+for (var bb = 0; bb < bufferTypes.length; ++bb) {
+  var bufferType = bufferTypes[bb];
+  var buffer = gl.createBuffer();
+  gl.bindBuffer(bufferType, buffer);
+  gl.bufferData(bufferType, 16, gl.DYNAMIC_DRAW);
+  var expression1 = "gl.getBufferParameter(gl." + wtu.glEnumToString(gl, bufferType) + ", gl.BUFFER_SIZE)";
+  var expression2 = "gl.getBufferParameter(gl." + wtu.glEnumToString(gl, bufferType) + ", gl.BUFFER_USAGE)";
+  shouldBe(expression1, '16');
+  shouldBe(expression2, 'gl.DYNAMIC_DRAW');
+  testInvalidArgument("getBufferParameter", "parameter", [gl.BUFFER_SIZE, gl.BUFFER_USAGE], function(bufferType) {
+    return function(parameter) {
+      return gl.getBufferParameter(bufferType, parameter);
+    };
+  }(bufferType));
+}
+testInvalidArgument(
+    "getBufferParameter",
+    "target",
+    bufferTypes,
+    function(target) {
+      return gl.getBufferParameter(target, gl.BUFFER_SIZE);
+    }
+);
+
+
+debug("");
+debug("Test getFramebufferAttachmentParameter");
 var texture = gl.createTexture();
 gl.bindTexture(gl.TEXTURE_2D, texture);
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE,
@@ -116,16 +170,65 @@ shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHME
 
 shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)', 'gl.RENDERBUFFER');
 shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME)', 'renderbuffer');
+testInvalidArgument(
+    "getFramebufferAttachmentParameter",
+    "parameter",
+    [ gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE,
+      gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
+      gl.FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL,
+      gl.FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE
+    ],
+    function(parameter) {
+      return gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT, parameter);
+    }
+);
+testInvalidArgument(
+    "getFramebufferAttachmentParameter",
+    "target",
+    [ gl.FRAMEBUFFER ],
+    function(target) {
+      return gl.getFramebufferAttachmentParameter(target, gl.COLOR_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
+    }
+);
+testInvalidArgument(
+    "getFramebufferAttachmentParameter",
+    "attachment",
+    [ gl.COLOR_ATTACHMENT0,
+      gl.DEPTH_ATTACHMENT,
+      gl.STENCIL_ATTACHMENT,
+      gl.DEPTH_STENCIL_ATTACHMENT
+    ],
+    function(attachment) {
+      return gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, attachment, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
+    }
+);
 
-// Test getProgramParameter
+
+debug("");
+debug("Test getProgramParameter");
 shouldBe('gl.getProgramParameter(standardProgram, gl.DELETE_STATUS)', 'false');
 shouldBe('gl.getProgramParameter(standardProgram, gl.LINK_STATUS)', 'true');
 shouldBe('typeof gl.getProgramParameter(standardProgram, gl.VALIDATE_STATUS)', '"boolean"');
 shouldBe('gl.getProgramParameter(standardProgram, gl.ATTACHED_SHADERS)', '2');
 shouldBe('gl.getProgramParameter(standardProgram, gl.ACTIVE_ATTRIBUTES)', '2');
 shouldBe('gl.getProgramParameter(standardProgram, gl.ACTIVE_UNIFORMS)', '1');
+testInvalidArgument(
+    "getProgramParameter",
+    "parameter",
+    [ gl.DELETE_STATUS,
+      gl.LINK_STATUS,
+      gl.VALIDATE_STATUS,
+      gl.ATTACHED_SHADERS,
+      gl.ACTIVE_ATTRIBUTES,
+      gl.ACTIVE_UNIFORMS
+    ],
+    function(parameter) {
+      return gl.getProgramParameter(standardProgram, parameter);
+    }
+);
 
-// Test getRenderbufferParameter
+debug("");
+debug("Test getRenderbufferParameter");
 shouldBe('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_WIDTH)', '2');
 shouldBe('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_HEIGHT)', '2');
 // Note: we can't test the actual value of the internal format since
@@ -141,13 +244,49 @@ shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_RE
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_GREEN_SIZE)');
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_BLUE_SIZE)');
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_ALPHA_SIZE)');
+testInvalidArgument(
+    "getRenderbufferParameter",
+    "parameter",
+    [ gl.RENDERBUFFER_WIDTH,
+      gl.RENDERBUFFER_HEIGHT,
+      gl.RENDERBUFFER_INTERNAL_FORMAT,
+      gl.RENDERBUFFER_RED_SIZE,
+      gl.RENDERBUFFER_GREEN_SIZE,
+      gl.RENDERBUFFER_BLUE_SIZE,
+      gl.RENDERBUFFER_ALPHA_SIZE,
+      gl.RENDERBUFFER_DEPTH_SIZE,
+      gl.RENDERBUFFER_STENCIL_SIZE,
+    ],
+    function(parameter) {
+      return gl.getRenderbufferParameter(gl.RENDERBUFFER, parameter);
+    });
+testInvalidArgument(
+    "getRenderbufferParameter",
+    "target",
+    [ gl.RENDERBUFFER ],
+    function(target) {
+      return gl.getRenderbufferParameter(target, gl.RENDERBUFFER_WIDTH);
+    });
 
-// Test getShaderParameter
+debug("");
+debug("Test getShaderParameter");
 shouldBe('gl.getShaderParameter(standardVert, gl.SHADER_TYPE)', 'gl.VERTEX_SHADER');
 shouldBe('gl.getShaderParameter(standardVert, gl.DELETE_STATUS)', 'false');
 shouldBe('gl.getShaderParameter(standardVert, gl.COMPILE_STATUS)', 'true');
+testInvalidArgument(
+    "getShaderParameter",
+    "parameter",
+    [ gl.DELETE_STATUS,
+      gl.COMPILE_STATUS,
+      gl.SHADER_TYPE
+    ],
+    function(parameter) {
+      return gl.getShaderParameter(standardVert, parameter);
+    }
+);
 
-// Test getTexParameter
+debug("");
+debug("Test getTexParameter");
 gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
 gl.bindTexture(gl.TEXTURE_2D, texture);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
@@ -158,8 +297,31 @@ shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER)', 'gl.NEAREST
 shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER)', 'gl.NEAREST');
 shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S)', 'gl.CLAMP_TO_EDGE');
 shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T)', 'gl.CLAMP_TO_EDGE');
+testInvalidArgument(
+    "getTexParameter",
+    "parameter",
+    [ gl.TEXTURE_MAG_FILTER,
+      gl.TEXTURE_MIN_FILTER,
+      gl.TEXTURE_WRAP_S,
+      gl.TEXTURE_WRAP_T
+    ],
+    function(parameter) {
+      return gl.getTexParameter(gl.TEXTURE_2D, parameter);
+    }
+);
+testInvalidArgument(
+    "getTexParameter",
+    "target",
+    [ gl.TEXTURE_2D,
+      gl.TEXTURE_CUBE_MAP
+    ],
+    function(target) {
+      return gl.getTexParameter(target, gl.TEXTURE_MAG_FILTER);
+    }
+);
 
-// Test getUniform with all variants of data types
+debug("");
+debug("Test getUniform with all variants of data types");
 // Boolean uniform variables
 var boolProgram = loadProgram(gl, "../resources/boolUniformShader.vert", "../resources/noopUniformShader.frag");
 shouldBe('gl.getProgramParameter(boolProgram, gl.LINK_STATUS)', 'true');
@@ -237,8 +399,10 @@ shouldBe('gl.getUniform(matProgram, mval2Loc)', '[1, 2, 3, 4]');
 shouldBe('gl.getUniform(matProgram, mval3Loc)', '[5, 6, 7, 8, 9, 10, 11, 12, 13]');
 shouldBe('gl.getUniform(matProgram, mval4Loc)', '[14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]');
 
-// Test getVertexAttrib
+debug("");
+debug("test getVertexAttrib");
 var array = new Float32Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+var buffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 gl.bufferData(gl.ARRAY_BUFFER, array, gl.DYNAMIC_DRAW);
 // Vertex attribute 0 is special in that it has no current state, so
@@ -261,8 +425,26 @@ shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_ENABLED)', 'false');
 gl.vertexAttrib4f(1, 5, 6, 7, 8);
 shouldBe('gl.getVertexAttrib(1, gl.CURRENT_VERTEX_ATTRIB)', '[5, 6, 7, 8]');
 glErrorShouldBe(gl, gl.NO_ERROR);
+testInvalidArgument(
+    "getVertexAttrib",
+    "parameter",
+    [ gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING,
+      gl.VERTEX_ATTRIB_ARRAY_ENABLED,
+      gl.VERTEX_ATTRIB_ARRAY_SIZE,
+      gl.VERTEX_ATTRIB_ARRAY_STRIDE,
+      gl.VERTEX_ATTRIB_ARRAY_TYPE,
+      gl.VERTEX_ATTRIB_ARRAY_NORMALIZED,
+      gl.VERTEX_ATTRIB_ARRAY_STRIDE,
+      gl.VERTEX_ATTRIB_ARRAY_ENABLED,
+      gl.CURRENT_VERTEX_ATTRIB
+    ],
+    function(parameter) {
+      return gl.getVertexAttrib(1, parameter);
+    }
+);
 
-// Test cases where name == 0
+debug("");
+debug("Test cases where name == 0");
 gl.deleteTexture(texture);
 shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)', 'gl.NONE');
 gl.deleteRenderbuffer(renderbuffer);
