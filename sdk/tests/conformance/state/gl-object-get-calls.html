@@ -425,23 +425,27 @@ shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_ENABLED)', 'false');
 gl.vertexAttrib4f(1, 5, 6, 7, 8);
 shouldBe('gl.getVertexAttrib(1, gl.CURRENT_VERTEX_ATTRIB)', '[5, 6, 7, 8]');
 glErrorShouldBe(gl, gl.NO_ERROR);
+var validAttribParams = [
+    gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING,
+    gl.VERTEX_ATTRIB_ARRAY_ENABLED,
+    gl.VERTEX_ATTRIB_ARRAY_SIZE,
+    gl.VERTEX_ATTRIB_ARRAY_STRIDE,
+    gl.VERTEX_ATTRIB_ARRAY_TYPE,
+    gl.VERTEX_ATTRIB_ARRAY_NORMALIZED,
+    gl.VERTEX_ATTRIB_ARRAY_STRIDE,
+    gl.VERTEX_ATTRIB_ARRAY_ENABLED,
+    gl.CURRENT_VERTEX_ATTRIB
+];
 testInvalidArgument(
     "getVertexAttrib",
     "parameter",
-    [ gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING,
-      gl.VERTEX_ATTRIB_ARRAY_ENABLED,
-      gl.VERTEX_ATTRIB_ARRAY_SIZE,
-      gl.VERTEX_ATTRIB_ARRAY_STRIDE,
-      gl.VERTEX_ATTRIB_ARRAY_TYPE,
-      gl.VERTEX_ATTRIB_ARRAY_NORMALIZED,
-      gl.VERTEX_ATTRIB_ARRAY_STRIDE,
-      gl.VERTEX_ATTRIB_ARRAY_ENABLED,
-      gl.CURRENT_VERTEX_ATTRIB
-    ],
+    validAttribParams,
     function(parameter) {
       return gl.getVertexAttrib(1, parameter);
     }
 );
+var numVertexAttribs = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
+shouldGenerateGLError(gl, gl.INVALID_VALUE, 'gl.getVertexAttrib(' + numVertexAttribs + ', gl.CURRENT_VERTEX_ATTRIB)');
 
 debug("");
 debug("Test cases where name == 0");
