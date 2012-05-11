@@ -139,6 +139,27 @@ var noTexCoordTextureVertexShader = [
   '}'].join('\n');
 
 /**
+ * A vertex shader for a single texture.
+ * @type {string}
+ */
+var simpleColorVertexShader = [
+  'attribute vec4 vPosition;',
+  'void main() {',
+  '    gl_Position = vPosition;',
+  '}'].join('\n');
+
+/**
+ * A fragment shader for a color.
+ * @type {string}
+ */
+var simpleColorFragmentShader = [
+  'precision mediump float;',
+  'uniform vec4 u_color;',
+  'void main() {',
+  '    gl_FragData[0] = u_color;',
+  '}'].join('\n');
+
+/**
  * Creates a simple texture vertex shader.
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @return {!WebGLShader}
@@ -269,6 +290,35 @@ var setupNoTexCoordTextureProgram = function(gl) {
 };
 
 /**
+ * Creates a simple texture program.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {number} opt_positionLocation The attrib location for position.
+ * @param {number} opt_texcoordLocation The attrib location for texture coords.
+ * @return {WebGLProgram}
+ */
+var setupSimpleTextureProgram = function(
+    gl, opt_positionLocation, opt_texcoordLocation) {
+  opt_positionLocation = opt_positionLocation || 0;
+  opt_texcoordLocation = opt_texcoordLocation || 1;
+  var vs = setupSimpleTextureVertexShader(gl);
+  var fs = setupSimpleTextureFragmentShader(gl);
+  if (!vs || !fs) {
+    return null;
+  }
+  var program = setupProgram(
+      gl,
+      [vs, fs],
+      ['vPosition', 'texCoord0'],
+      [opt_positionLocation, opt_texcoordLocation]);
+  if (!program) {
+    gl.deleteShader(fs);
+    gl.deleteShader(vs);
+  }
+  gl.useProgram(program);
+  return program;
+};
+
+/**
  * Creates buffers for a textured unit quad and attaches them to vertex attribs.
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {number} opt_positionLocation The attrib location for position.
@@ -345,6 +395,23 @@ var setupTexturedQuad = function(
   var program = setupSimpleTextureProgram(
       gl, opt_positionLocation, opt_texcoordLocation);
   setupUnitQuad(gl, opt_positionLocation, opt_texcoordLocation);
+  return program;
+};
+
+/**
+ * Creates a program and buffers for rendering a color quad.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {number} opt_positionLocation The attrib location for position.
+ * @return {!WebGLProgram}
+ */
+var setupColorQuad = function(gl, opt_positionLocation) {
+  opt_positionLocation = opt_positionLocation || 0;
+  var program = wtu.setupProgram(
+      gl,
+      [simpleColorVertexShader, simpleColorFragmentShader],
+      ['vPosition'],
+      [opt_positionLocation]);
+  setupUnitQuad(gl, opt_positionLocation);
   return program;
 };
 
@@ -1595,6 +1662,7 @@ return {
   loggingOff: loggingOff,
   makeImage: makeImage,
   error: error,
+  setupColorQuad: setupColorQuad,
   setupProgram: setupProgram,
   setupQuad: setupQuad,
   setupQuadWithOptions: setupQuadWithOptions,
