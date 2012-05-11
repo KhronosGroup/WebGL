@@ -143,8 +143,8 @@ function runTextureCreationTest(testProgram, extensionEnabled, opt_format, opt_n
     var expectFailure = !extensionEnabled;
     var subtractor = opt_subtractor || [10000, 10000, 10000, 10000];
 
-	debug("");
-	debug("testing format: " + wtu.glEnumToString(gl, format) +
+    debug("");
+    debug("testing format: " + wtu.glEnumToString(gl, format) +
           " expect:" + (extensionEnabled ? "success" : "failure"));
 
     var texture = allocateTexture();

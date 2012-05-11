@@ -53,16 +53,16 @@ Tests.testUniformArray = function(gl) {
         assertOk("8 values on 4fv",
             function(){gl.uniform4fv(uniV4, [1, 2, 3, 4, 5, 6, 7, 8]);});
 
-	var uniformsFound = 0;
-	var numUniforms = gl.getProgramParameter(f.shader.program, gl.ACTIVE_UNIFORMS);
-	for (var i = 0; i < numUniforms; ++i) {
-		var uniformName = gl.getActiveUniform(f.shader.program, i).name;
-		if (uniformName.indexOf('uniV4') == 0 || uniformName.indexOf('uniFloat') == 0) {
-			assert("Uniform array of length 1 ends with [0]", uniformName.indexOf("[0]") != -1);
-			++uniformsFound;
-		}
-	}
-	assert("Both uniforms found", uniformsFound == 2);
+    var uniformsFound = 0;
+    var numUniforms = gl.getProgramParameter(f.shader.program, gl.ACTIVE_UNIFORMS);
+    for (var i = 0; i < numUniforms; ++i) {
+        var uniformName = gl.getActiveUniform(f.shader.program, i).name;
+        if (uniformName.indexOf('uniV4') == 0 || uniformName.indexOf('uniFloat') == 0) {
+            assert("Uniform array of length 1 ends with [0]", uniformName.indexOf("[0]") != -1);
+            ++uniformsFound;
+        }
+    }
+    assert("Both uniforms found", uniformsFound == 2);
 
         uniV4 = f.uniform('uniV4[0]');
         uniFloat = f.uniform('uniFloat[0]');

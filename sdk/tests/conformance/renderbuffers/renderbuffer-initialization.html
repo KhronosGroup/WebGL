@@ -62,31 +62,31 @@ if (!gl) {
 
 function runTest(gl, width, height, order)
 {
-	wtu.checkCanvasRect(gl, 0, 0, width, height, [0,0,0,0],
+    wtu.checkCanvasRect(gl, 0, 0, width, height, [0,0,0,0],
                         "internal buffers have been initialized to 0");
 
     // fill the back buffer so we know that reading below happens from
     // the renderbuffer.
-	gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
     var fbo = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     var colorbuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, colorbuffer);
-	switch (order) {
+    switch (order) {
       case 0:
-		allocStorage(width, height);
-		attachBuffer(colorbuffer);
-		break;
+        allocStorage(width, height);
+        attachBuffer(colorbuffer);
+        break;
       case 1:
-		attachBuffer(colorbuffer);
-		allocStorage(width, height);
-		break;
+        attachBuffer(colorbuffer);
+        allocStorage(width, height);
+        break;
     }
 
     function allocStorage(width, height) {
       gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, width, height);
-	  glErrorShouldBe(gl, gl.NO_ERROR, 'should be no error after renderbufferStorage(internalformat = RGBA4).');
+      glErrorShouldBe(gl, gl.NO_ERROR, 'should be no error after renderbufferStorage(internalformat = RGBA4).');
     }
 
     function attachBuffer(colorbuffer) {
@@ -101,11 +101,11 @@ function runTest(gl, width, height, order)
     wtu.checkCanvasRect(gl, 0, 0, width, height, [0,0,0,0],
                         "user buffers have been initialized to 0");
 
-	gl.deleteFramebuffer(fbo);
-	gl.deleteRenderbuffer(colorbuffer);
+    gl.deleteFramebuffer(fbo);
+    gl.deleteRenderbuffer(colorbuffer);
 
     // this clear should not matter we are about to resize
-	gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
     gl.canvas.width += 1;
     gl.canvas.height += 1;

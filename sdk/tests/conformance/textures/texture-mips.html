@@ -226,11 +226,11 @@ function init()
   }
 
   function texParameteri(target, pname, value) {
-	debug("gl.texParameteri(" +
+    debug("gl.texParameteri(" +
           wtu.glEnumToString(gl, target) + ", " +
           wtu.glEnumToString(gl, pname) + ", " +
           wtu.glEnumToString(gl, value) + ")")
-	gl.texParameteri(target, pname, value);
+    gl.texParameteri(target, pname, value);
   }
 
   function generateMipmap() {

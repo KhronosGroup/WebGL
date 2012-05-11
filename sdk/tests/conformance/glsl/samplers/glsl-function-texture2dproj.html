@@ -106,24 +106,24 @@ for (var ss = 0; ss < 2; ++ss) {
   debug("");
   debug(ss ? "testing vec4 version" : "testing vec3 version");
   var program = wtu.setupProgram(
-	  gl, ['vshader' + ss, 'fshader' + ss],
+      gl, ['vshader' + ss, 'fshader' + ss],
       ['vPosition', 'texCoord0'], [0, 1]);
   gl.useProgram(program);
   var loc = gl.getUniformLocation(program, "divisor");
 
   for (var ii = 0; ii < 3; ++ii) {
-	var denominator = Math.pow(2, ii);
-	gl.uniform1f(loc, 1 / denominator);
-	wtu.drawQuad(gl);
-	var size = 16 / denominator;
-	for (var yy = 0; yy < 32; yy += size) {
-	  for (var xx = 0; xx < 32; xx += size) {
-		var odd = (xx / size + yy / size) % 2;
-		var color = odd ? [0, 255, 0, 255] : [0, 0, 255, 255];
-		var msg = "" + xx + ", " + yy + ", " + size + ", " + size + " should be " + (odd ? "green" : "blue");
-		wtu.checkCanvasRect(gl, xx, yy, size, size, color, msg);
-	  }
-	}
+    var denominator = Math.pow(2, ii);
+    gl.uniform1f(loc, 1 / denominator);
+    wtu.drawQuad(gl);
+    var size = 16 / denominator;
+    for (var yy = 0; yy < 32; yy += size) {
+      for (var xx = 0; xx < 32; xx += size) {
+        var odd = (xx / size + yy / size) % 2;
+        var color = odd ? [0, 255, 0, 255] : [0, 0, 255, 255];
+        var msg = "" + xx + ", " + yy + ", " + size + ", " + size + " should be " + (odd ? "green" : "blue");
+        wtu.checkCanvasRect(gl, xx, yy, size, size, color, msg);
+      }
+    }
   }
 }
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");

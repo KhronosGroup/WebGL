@@ -64,56 +64,56 @@ function test(desc, func, expected) {
 
     var exc = null;
     try {
-	func();
+        func();
     } catch (x) {
-	exc = x;
+        exc = x;
     }
 
     if (expected == gl.INVALID_OPERATION) {
-	glErrorShouldBe(gl, expected);
+      glErrorShouldBe(gl, expected);
     } else if (expected == "exception") {
         if (exc) {
-	    testPassed("threw exception");
-	} else {
-	    testFailed("did not throw exception");
-	}
+            testPassed("threw exception");
+        } else {
+            testFailed("did not throw exception");
+        }
     }
 }
 
 test("Passing a buffer not large enough to texImage2D should generate an INVALID_OPERATION",
      function () {
-	 var tooSmall = new Uint8Array(64);
-	 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 64, 64, 0, gl.RGBA, gl.UNSIGNED_BYTE, tooSmall);
+     var tooSmall = new Uint8Array(64);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 64, 64, 0, gl.RGBA, gl.UNSIGNED_BYTE, tooSmall);
      },
      gl.INVALID_OPERATION);
 
 test("Passing texImage2D parameter data of Number type should throw an exception",
      function () {
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 64, 64, 0, gl.RGBA, gl.UNSIGNED_BYTE, 42);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 64, 64, 0, gl.RGBA, gl.UNSIGNED_BYTE, 42);
      },
      "exception");
 
 test("Passing texImage2D parameter data of String type should throw a TypeError",
      function () {
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 64, 64, 0, gl.RGBA, gl.UNSIGNED_BYTE, "not a buffer");
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 64, 64, 0, gl.RGBA, gl.UNSIGNED_BYTE, "not a buffer");
      },
      "exception");
 test("Passing a buffer not large enough to texSubImage2D should generate an INVALID_OPERATION",
      function () {
-	 var tooSmall = new Uint8Array(64);
-	 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 64, 64, gl.RGBA, gl.UNSIGNED_BYTE, tooSmall);
+        var tooSmall = new Uint8Array(64);
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 64, 64, gl.RGBA, gl.UNSIGNED_BYTE, tooSmall);
      },
      gl.INVALID_OPERATION);
 
 test("Passing texSubImage2D parameter data of Number type should throw a TypeError",
      function () {
-	 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 64, 64, gl.RGBA, gl.UNSIGNED_BYTE, 42);
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 64, 64, gl.RGBA, gl.UNSIGNED_BYTE, 42);
      },
      "exception");
 
 test("Passing texSubImage2D parameter data of String type should throw a TypeError",
      function () {
-      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 64, 64, gl.RGBA, gl.UNSIGNED_BYTE, "not a buffer");
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 64, 64, gl.RGBA, gl.UNSIGNED_BYTE, "not a buffer");
      },
      "exception");
 

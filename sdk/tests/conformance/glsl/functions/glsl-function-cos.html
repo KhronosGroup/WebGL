@@ -68,47 +68,47 @@ GLSLGenerator.runReferenceImageTest({
                "    0,",
                "    1);"].join("\n"),
       generator: function(x, y, z, w) {
-	return [ cos(x * kHalfPI + kHalfPI),
-		 cos(y * kHalfPI),
-		 0,
-		 1 ];
+    return [ cos(x * kHalfPI + kHalfPI),
+         cos(y * kHalfPI),
+         0,
+         1 ];
       },
     },
     {
       source: ["$(output) = vec4(",
-	       "    $(func)($(input).xy * vec2(kPI, k2PI)) * 0.5 + vec2(0.5, 0.5),",
-	       "    0, 1);"].join("\n"),
+           "    $(func)($(input).xy * vec2(kPI, k2PI)) * 0.5 + vec2(0.5, 0.5),",
+           "    0, 1);"].join("\n"),
       generator: function(x, y, z, w) {
-	return [ cos(x * kPI) * 0.5 + 0.5,
-		 cos(y * k2PI) * 0.5 + 0.5,
-		 0,
-		 1 ];
+    return [ cos(x * kPI) * 0.5 + 0.5,
+         cos(y * k2PI) * 0.5 + 0.5,
+         0,
+         1 ];
       },
     },
     {
       // FIXME: for some reason, this test requires a higher tolerance when run in a vertex shader.
       source: ["$(output) = vec4(",
-	       "    $(func)($(input).xyz * vec3(kPI, k2PI, 4.0)) * ",
-	       "    0.5 + vec3(0.5, 0.5, 0.5),",
-	       "    1);"].join("\n"),
+           "    $(func)($(input).xyz * vec3(kPI, k2PI, 4.0)) * ",
+           "    0.5 + vec3(0.5, 0.5, 0.5),",
+           "    1);"].join("\n"),
       generator: function(x, y, z, w) {
-	return [ cos(x * kPI) * 0.5 + 0.5,
-		 cos(y * k2PI) * 0.5 + 0.5,
-		 cos(z * 4.0) * 0.5 + 0.5,
-		 1 ];
+    return [ cos(x * kPI) * 0.5 + 0.5,
+         cos(y * k2PI) * 0.5 + 0.5,
+         cos(z * 4.0) * 0.5 + 0.5,
+         1 ];
       },
       tolerance: 7,
     },
     {
       source: ["$(output) = ",
-	       "    $(func)($(input) * vec4(k2PI, 4.0, kHalfPI, kPI)) *",
-	       "    0.5 + vec4(0.5, 0.5, 0.5, 1);",
-	      ].join("\n"),
+           "    $(func)($(input) * vec4(k2PI, 4.0, kHalfPI, kPI)) *",
+           "    0.5 + vec4(0.5, 0.5, 0.5, 1);",
+          ].join("\n"),
       generator: function(x, y, z, w) {
-	return [ cos(x * k2PI) * 0.5 + 0.5,
-		 cos(y * 4.0) * 0.5 + 0.5,
-		 cos(z * kHalfPI) * 0.5 + 0.5,
-		 cos(w * kPI) * 0.5 + 1.0 ];
+    return [ cos(x * k2PI) * 0.5 + 0.5,
+         cos(y * 4.0) * 0.5 + 0.5,
+         cos(z * kHalfPI) * 0.5 + 0.5,
+         cos(w * kPI) * 0.5 + 1.0 ];
       },
     },
   ]

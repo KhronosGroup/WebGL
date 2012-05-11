@@ -41,59 +41,59 @@
 
 function runTest()
 {
-	shouldThrow("gl.isBuffer(gl.createFramebuffer())");
-	shouldThrow("gl.isBuffer(gl.createProgram())");
-	shouldThrow("gl.isBuffer(gl.createRenderbuffer())");
-	shouldThrow("gl.isBuffer(gl.createShader(gl.VERTEX_SHADER))");
-	shouldThrow("gl.isBuffer(gl.createTexture())");
+    shouldThrow("gl.isBuffer(gl.createFramebuffer())");
+    shouldThrow("gl.isBuffer(gl.createProgram())");
+    shouldThrow("gl.isBuffer(gl.createRenderbuffer())");
+    shouldThrow("gl.isBuffer(gl.createShader(gl.VERTEX_SHADER))");
+    shouldThrow("gl.isBuffer(gl.createTexture())");
 
-	shouldThrow("gl.isFramebuffer(gl.createBuffer())");
-	shouldThrow("gl.isFramebuffer(gl.createProgram())");
-	shouldThrow("gl.isFramebuffer(gl.createRenderbuffer())");
-	shouldThrow("gl.isFramebuffer(gl.createShader(gl.VERTEX_SHADER))");
-	shouldThrow("gl.isFramebuffer(gl.createTexture())");
+    shouldThrow("gl.isFramebuffer(gl.createBuffer())");
+    shouldThrow("gl.isFramebuffer(gl.createProgram())");
+    shouldThrow("gl.isFramebuffer(gl.createRenderbuffer())");
+    shouldThrow("gl.isFramebuffer(gl.createShader(gl.VERTEX_SHADER))");
+    shouldThrow("gl.isFramebuffer(gl.createTexture())");
 
-	shouldThrow("gl.isProgram(gl.createBuffer())");
-	shouldThrow("gl.isProgram(gl.createFramebuffer())");
-	shouldThrow("gl.isProgram(gl.createRenderbuffer())");
-	shouldThrow("gl.isProgram(gl.createShader(gl.VERTEX_SHADER))");
-	shouldThrow("gl.isProgram(gl.createTexture())");
+    shouldThrow("gl.isProgram(gl.createBuffer())");
+    shouldThrow("gl.isProgram(gl.createFramebuffer())");
+    shouldThrow("gl.isProgram(gl.createRenderbuffer())");
+    shouldThrow("gl.isProgram(gl.createShader(gl.VERTEX_SHADER))");
+    shouldThrow("gl.isProgram(gl.createTexture())");
 
-	shouldThrow("gl.isRenderbuffer(gl.createBuffer())");
-	shouldThrow("gl.isRenderbuffer(gl.createFramebuffer())");
-	shouldThrow("gl.isRenderbuffer(gl.createProgram())");
-	shouldThrow("gl.isRenderbuffer(gl.createShader(gl.VERTEX_SHADER))");
-	shouldThrow("gl.isRenderbuffer(gl.createTexture())");
+    shouldThrow("gl.isRenderbuffer(gl.createBuffer())");
+    shouldThrow("gl.isRenderbuffer(gl.createFramebuffer())");
+    shouldThrow("gl.isRenderbuffer(gl.createProgram())");
+    shouldThrow("gl.isRenderbuffer(gl.createShader(gl.VERTEX_SHADER))");
+    shouldThrow("gl.isRenderbuffer(gl.createTexture())");
 
-	shouldThrow("gl.isShader(gl.createBuffer())");
-	shouldThrow("gl.isShader(gl.createFramebuffer())");
-	shouldThrow("gl.isShader(gl.createProgram())");
-	shouldThrow("gl.isShader(gl.createRenderbuffer())");
-	shouldThrow("gl.isShader(gl.createTexture())");
+    shouldThrow("gl.isShader(gl.createBuffer())");
+    shouldThrow("gl.isShader(gl.createFramebuffer())");
+    shouldThrow("gl.isShader(gl.createProgram())");
+    shouldThrow("gl.isShader(gl.createRenderbuffer())");
+    shouldThrow("gl.isShader(gl.createTexture())");
 
-	shouldThrow("gl.isTexture(gl.createBuffer())");
-	shouldThrow("gl.isTexture(gl.createFramebuffer())");
-	shouldThrow("gl.isTexture(gl.createProgram())");
-	shouldThrow("gl.isTexture(gl.createRenderbuffer())");
-	shouldThrow("gl.isTexture(gl.createShader(gl.VERTEX_SHADER))");
+    shouldThrow("gl.isTexture(gl.createBuffer())");
+    shouldThrow("gl.isTexture(gl.createFramebuffer())");
+    shouldThrow("gl.isTexture(gl.createProgram())");
+    shouldThrow("gl.isTexture(gl.createRenderbuffer())");
+    shouldThrow("gl.isTexture(gl.createShader(gl.VERTEX_SHADER))");
 
-	shouldBe("gl.isBuffer(null)",            "false");
-	shouldBe("gl.isBuffer(undefined)",       "false");
+    shouldBe("gl.isBuffer(null)",            "false");
+    shouldBe("gl.isBuffer(undefined)",       "false");
 
-	shouldBe("gl.isFramebuffer(null)",       "false");
-	shouldBe("gl.isFramebuffer(undefined)",  "false");
+    shouldBe("gl.isFramebuffer(null)",       "false");
+    shouldBe("gl.isFramebuffer(undefined)",  "false");
 
-	shouldBe("gl.isProgram(null)",           "false");
-	shouldBe("gl.isProgram(undefined)",      "false");
+    shouldBe("gl.isProgram(null)",           "false");
+    shouldBe("gl.isProgram(undefined)",      "false");
 
-	shouldBe("gl.isRenderbuffer(null)",      "false");
-	shouldBe("gl.isRenderbuffer(undefined)", "false");
+    shouldBe("gl.isRenderbuffer(null)",      "false");
+    shouldBe("gl.isRenderbuffer(undefined)", "false");
 
-	shouldBe("gl.isShader(null)",            "false");
-	shouldBe("gl.isShader(undefined)",       "false");
+    shouldBe("gl.isShader(null)",            "false");
+    shouldBe("gl.isShader(undefined)",       "false");
 
-	shouldBe("gl.isTexture(null)",           "false");
-	shouldBe("gl.isTexture(undefined)",      "false");
+    shouldBe("gl.isTexture(null)",           "false");
+    shouldBe("gl.isTexture(undefined)",      "false");
 }
 
 description("Tests type checking for isX() functions");
