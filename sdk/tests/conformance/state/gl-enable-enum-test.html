@@ -141,8 +141,12 @@ if (!gl) {
     gl.enable(gl[name]);
     glErrorShouldBe(gl, gl.NO_ERROR,
               "gl.enable must succeed when passed gl." + name );
+	shouldBe('gl.isEnabled(gl.' + name + ')', 'true');
+	gl.disable(gl[name]);
+	shouldBe('gl.isEnabled(gl.' + name + ')', 'false');
   }
 
+  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 debug("");
