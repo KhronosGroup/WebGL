@@ -59,11 +59,12 @@
         	}
 
             function runTest() {
-                var gl = initWebGL('testbed', 'vshader', 'fshader', ['p', 'a'], [1, 0, 0, 1], 1, { preserveDrawingBuffer : true });
+                var gl = initWebGL('testbed', { preserveDrawingBuffer : true });
                 if (!gl) {
                     testFailed('initWebGL(..) failed');
                     return;
                 }
+                var program = setupProgram(gl, 'vshader', 'fshader', ['p', 'a'])
 
                 gl.enableVertexAttribArray(gl.p);
 				var pos = gl.createBuffer();

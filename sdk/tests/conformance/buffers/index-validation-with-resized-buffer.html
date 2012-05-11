@@ -57,10 +57,10 @@ void main() {
 <script>
 description('Test that updating the size of a vertex buffer is properly noticed by the WebGL implementation.')
 
-var gl = initWebGL("example", "vs", "fs", ["vPosition", "vColor"], [0, 0, 0, 1], 1);
+var gl = initWebGL("example");
+var program = setupProgram(gl, "vs", "fs", ["vPosition", "vColor"]);
 glErrorShouldBe(gl, gl.NO_ERROR, "after initialization");
 
-gl.useProgram(gl.program);
 var vertexObject = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(

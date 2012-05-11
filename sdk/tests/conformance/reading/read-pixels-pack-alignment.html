@@ -219,7 +219,8 @@ function runTestIteration(format, type, packAlignment, width, height)
 
 description('Verify readPixels() works fine with various PACK_ALIGNMENT values.');
 
-shouldBeNonNull("gl = initWebGL('example', 'vshader', 'fshader', [ 'pos', 'colorIn' ], [ 0, 0, 0, 1 ], 1)");
+shouldBeNonNull("gl = initWebGL('example')")
+shouldBeNonNull("program = setupProgram(gl, 'vshader', 'fshader', [ 'pos', 'colorIn' ])");
 gl.disable(gl.BLEND);
 
 var formats = [ gl.RGBA ];

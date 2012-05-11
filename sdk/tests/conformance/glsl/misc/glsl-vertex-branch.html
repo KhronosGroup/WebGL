@@ -95,14 +95,15 @@ var height = 50;
 
 function drawAndRead(canvasID, vshaderID, buffer)
 {
-    var gl = initWebGL(canvasID, vshaderID, "fshader", ["aPosition"], [0, 0, 0, 1], 1);
+    var gl = initWebGL(canvasID);
+    var program = setupProgram(gl, vshaderID, "fshader", ["aPosition"]);
     var vertexObject = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0.5,0, -1,-1,0, 1,-1,0 ]), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
 
-    var loc = gl.getUniformLocation(gl.program, "redIntensity");
+    var loc = gl.getUniformLocation(program, "redIntensity");
     gl.uniform1f(loc, 0.75);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 3);

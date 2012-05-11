@@ -73,8 +73,9 @@
     // NOTE: I'm not 100% confident in this test. I think it is correct.
 
     wtu = WebGLTestUtils;
-    var gl = initWebGL("example", "vshader", "fshader", [ "vPosition"], [ 0, 0, 0, 1 ], 1);
+    var gl = initWebGL("example");
     shouldBeNonNull("gl");
+    var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
     shouldBe("gl.getError()", "gl.NO_ERROR");
 
     var canvas = gl.canvas;
@@ -91,7 +92,6 @@
     var pointStep = Math.floor(maxPointSize / 4);
     var pointStep = Math.max(1, pointStep);
 
-    var program = gl.program;
     var pointSizeLoc = gl.getUniformLocation(program, "uPointSize");
     gl.uniform1f(pointSizeLoc, maxPointSize);
 

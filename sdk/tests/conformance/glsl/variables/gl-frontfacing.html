@@ -70,7 +70,8 @@
       description("tests gl_FrontFacing");
 
       wtu = WebGLTestUtils;
-      gl = initWebGL("example", "vshader", "fshader", [ "vPosition"], [ 0, 0, 0, 1 ], 1);
+      gl = initWebGL("example");
+      program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
 
       var gridRes = 4;
       wtu.setupQuad(gl, gridRes, 0, true);

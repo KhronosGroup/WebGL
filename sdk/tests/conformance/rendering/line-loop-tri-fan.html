@@ -110,11 +110,12 @@
 
             function runTest()
             {
-                var gl = initWebGL('testbed', 'vshader', 'fshader', ['pos'], [0, 0, 0, 1], 1, { antialias: false });
+                var gl = initWebGL('testbed', { antialias: false });
                 if (!gl) {
                     testFailed('initWebGL(..) failed');
                     return;
                 }
+                var program = setupProgram(gl, 'vshader', 'fshader', ['pos'])
                 var w = document.getElementById('testbed').width;
 
                 gl.enableVertexAttribArray(0);

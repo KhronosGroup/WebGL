@@ -63,9 +63,10 @@ description("This test ensures WebGL implementations handle uniformMatrix in a O
 debug("");
 debug("Checking gl.uniformMatrix.");
 
-gl = initWebGL("example", "vshader", "fshader", [ "vPosition"], [ 0, 0, 0, 1 ], 1);
+gl = initWebGL("example");
+program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
 for (var ii = 2; ii <= 4; ++ii) {
-  var loc = gl.getUniformLocation(gl.program, "world" + ii);
+  var loc = gl.getUniformLocation(program, "world" + ii);
   var matLess = [];
   for (var jj = 0; jj < ii; ++jj) {
     for (var ll = 0; ll < ii; ++ll) {

@@ -63,8 +63,9 @@
 <script>
     description('Verify GL_VERTEX_PROGRAM_POINT_SIZE is enabled in WebGL');
 
-    var gl = initWebGL('testbed', 'vshader', 'fshader', ['pos', 'colorIn'], [0, 0, 0, 1], 1, { antialias: false });
+    var gl = initWebGL('testbed', { antialias: false });
     shouldBeNonNull("gl");
+    var program = setupProgram(gl, 'vshader', 'fshader', ['pos', 'colorIn']);
     shouldBe('gl.getError()', 'gl.NO_ERROR');
 
     gl.disable(gl.BLEND);
@@ -91,7 +92,7 @@
     gl.vertexAttribPointer(1, 4, gl.UNSIGNED_BYTE, true, 0, colorOffset);
     gl.enableVertexAttribArray(1);
 
-    var locPointSize = gl.getUniformLocation(gl.program, 'pointSize');
+    var locPointSize = gl.getUniformLocation(program, 'pointSize');
 
     shouldBe('gl.getError()', 'gl.NO_ERROR');
 

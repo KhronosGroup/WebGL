@@ -56,7 +56,8 @@ void main()
 description('Verifies that GL viewport does not change when canvas is resized');
 
 var err;
-var gl = initWebGL("example", "vshader", "fshader", [ "g_Position" ], [ 0, 0, 1, 1 ], 1);
+var gl = initWebGL("example");
+var program = setupProgram(gl, "vshader", "fshader", [ "g_Position" ]);
 
 var vertices = new Float32Array([
      1.0,  1.0, 0.0,
@@ -74,7 +75,7 @@ gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
 
 // Clear and set up
 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-gl.useProgram(gl.program);
+gl.useProgram(program);
 // Draw the triangle pair to the frame buffer
 gl.drawArrays(gl.TRIANGLES, 0, 6);
 

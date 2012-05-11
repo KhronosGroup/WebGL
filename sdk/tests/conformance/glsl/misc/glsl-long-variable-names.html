@@ -139,7 +139,8 @@
         description("Verify that shader long variable names works fine if they are within 256 characters.");
 
         debug("Test same long uniform name in both vertex shader and fragment shader");
-        var gl = initWebGL("example", "vshader_shared_uniform", "fshader_shared_uniform", [ "vPosition"], [ 0, 0, 0, 1 ], 1);
+        var gl = initWebGL("example");
+        var program = setupProgram(gl, "vshader_shared_uniform", "fshader_shared_uniform", [ "vPosition"]);
         shouldBeNonNull("gl");
         shouldBe("gl.getError()", "gl.NO_ERROR");
         var prog = gl.getParameter(gl.CURRENT_PROGRAM);
@@ -158,7 +159,8 @@
         debug("");
 
         debug("Test long uniform array name");
-        var gl = initWebGL("example", "vshader_uniform_array", "fshader_uniform_array", [ "vPosition"], [ 0, 0, 0, 1 ], 1);
+        var gl = initWebGL("example");
+        var program = setupProgram(gl, "vshader_uniform_array", "fshader_uniform_array", [ "vPosition"]);
         shouldBeNonNull("gl");
         shouldBe("gl.getError()", "gl.NO_ERROR");
         var prog = gl.getParameter(gl.CURRENT_PROGRAM);
@@ -180,7 +182,8 @@
         debug("");
 
         debug("Test long varying name");
-        var gl = initWebGL("example", "vshader_varying", "fshader_varying", [ "vPosition"], [ 0, 0, 0, 1 ], 1);
+        var gl = initWebGL("example");
+        var program = setupProgram(gl, "vshader_varying", "fshader_varying", [ "vPosition"]);
         shouldBeNonNull("gl");
         shouldBe("gl.getError()", "gl.NO_ERROR");
         var prog = gl.getParameter(gl.CURRENT_PROGRAM);
@@ -190,7 +193,8 @@
         debug("");
 
         debug("Test long local variable name");
-        var gl = initWebGL("example", "vshader_varying", "fshader_varying", [ "vPosition"], [ 0, 0, 0, 1 ], 1);
+        var gl = initWebGL("example");
+        var program = setupProgram(gl, "vshader_varying", "fshader_varying", [ "vPosition"]);
         shouldBeNonNull("gl");
         shouldBe("gl.getError()", "gl.NO_ERROR");
         var prog = gl.getParameter(gl.CURRENT_PROGRAM);
@@ -200,7 +204,8 @@
         debug("");
 
         debug("Test long attribute name");
-        var gl = initWebGL("example", "vshader_attrib", "fshader_attrib", [ "vPosition0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456"], [ 0, 0, 0, 1 ], 1);
+        var gl = initWebGL("example");
+        var program = setupProgram(gl, "vshader_attrib", "fshader_attrib", [ "vPosition0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456"]);
         shouldBeNonNull("gl");
         shouldBe("gl.getError()", "gl.NO_ERROR");
         var prog = gl.getParameter(gl.CURRENT_PROGRAM);

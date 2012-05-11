@@ -74,7 +74,8 @@ function init() {
   debug("");
 
   var canvas3d = document.getElementById("example");
-  gl = initWebGL("example", "vshader", "fshader", [ "vPosition"], [ 0, 0, 0, 1 ], 1);
+  gl = initWebGL("example");
+  program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);

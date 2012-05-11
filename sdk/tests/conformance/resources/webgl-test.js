@@ -226,16 +226,10 @@ function createProgram(gl, vshaders, fshaders, attribs)
 // Initialize the Canvas element with the passed name as a WebGL object and return the
 // WebGLRenderingContext.
 //
-// Load shaders with the passed names and create a program with them. Return this program
-// in the 'program' property of the returned context.
-//
-// For each string in the passed attribs array, bind an attrib with that name at that index.
-// Once the attribs are bound, link the program and then use it.
-//
-// Set the clear color to the passed array (4 values) and set the clear depth to the passed value.
+// Set the clear color to [0,0,0,1] and the depth to 1.
 // Enable depth testing and blending with a blend func of (SRC_ALPHA, ONE_MINUS_SRC_ALPHA)
 //
-function initWebGL(canvasName, vshader, fshader, attribs, clearColor, clearDepth, contextAttribs)
+function initWebGL(canvasName, contextAttribs)
 {
     var canvas = document.getElementById(canvasName);
     var gl = create3DContext(canvas, contextAttribs);
@@ -244,15 +238,8 @@ function initWebGL(canvasName, vshader, fshader, attribs, clearColor, clearDepth
         return null;
     }
 
-    // Create the program object
-    gl.program = createProgram(gl, vshader, fshader, attribs);
-    if (!gl.program)
-        return null;
-
-    gl.useProgram(gl.program);
-
-    gl.clearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
-    gl.clearDepth(clearDepth);
+    gl.clearColor(0, 0, 0, 1);
+    gl.clearDepth(1);
 
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
@@ -260,6 +247,25 @@ function initWebGL(canvasName, vshader, fshader, attribs, clearColor, clearDepth
 
     return gl;
 }
+
+//
+// setupProgram
+//
+// Load shaders with the passed names and create a program with them.
+//
+// For each string in the passed attribs array, bind an attrib with that name at that index.
+// Once the attribs are bound, link the program and then use it.
+function setupProgram(gl, vshader, fshader, attribs)
+{
+  // Create the program object
+  var program = createProgram(gl, vshader, fshader, attribs);
+  if (!program)
+      return null;
+
+  gl.useProgram(program);
+  return program;
+}
+
 
 //
 // getShaderSource

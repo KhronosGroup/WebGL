@@ -861,65 +861,6 @@ var linkProgram = function(gl, program, opt_errorCallback) {
 };
 
 /**
- * Sets up WebGL with shaders.
- * @param {string} canvasName The id of the canvas.
- * @param {string} vshader The id of the script tag that contains the vertex
- *     shader source.
- * @param {string} fshader The id of the script tag that contains the fragment
- *     shader source.
- * @param {!Array.<string>} attribs An array of attrib names used to bind
- *     attribs to the ordinal of the name in this array.
- * @param {!Array.<number>} opt_clearColor The color to cla
- * @return {!WebGLContext} The created WebGLContext.
- */
-var setupWebGLWithShaders = function(
-   canvasName, vshader, fshader, attribs) {
-  var canvas = document.getElementById(canvasName);
-  var gl = create3DContext(canvas);
-  if (!gl) {
-    testFailed("No WebGL context found");
-  }
-
-  // create our shaders
-  var vertexShader = loadShaderFromScript(gl, vshader);
-  var fragmentShader = loadShaderFromScript(gl, fshader);
-
-  if (!vertexShader || !fragmentShader) {
-    return null;
-  }
-
-  // Create the program object
-  program = gl.createProgram();
-
-  if (!program) {
-    return null;
-  }
-
-  // Attach our two shaders to the program
-  gl.attachShader (program, vertexShader);
-  gl.attachShader (program, fragmentShader);
-
-  // Bind attributes
-  for (var i in attribs) {
-    gl.bindAttribLocation (program, i, attribs[i]);
-  }
-
-  linkProgram(gl, program);
-
-  gl.useProgram(program);
-
-  gl.clearColor(0,0,0,1);
-  gl.clearDepth(1);
-
-  gl.enable(gl.DEPTH_TEST);
-  gl.enable(gl.BLEND);
-  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-
-  gl.program = program;
-  return gl;
-};
-
-/**
  * Loads text from an external file. This function is synchronous.
  * @param {string} url The url of the external file.
  * @param {!function(bool, string): void} callback that is sent a bool for
@@ -1675,7 +1616,6 @@ return {
   setupTexturedQuadWithTexCoords: setupTexturedQuadWithTexCoords,
   setupUnitQuad: setupUnitQuad,
   setupUnitQuadWithTexCoords: setupUnitQuadWithTexCoords,
-  setupWebGLWithShaders: setupWebGLWithShaders,
   startsWith: startsWith,
   shouldGenerateGLError: shouldGenerateGLError,
   readFile: readFile,

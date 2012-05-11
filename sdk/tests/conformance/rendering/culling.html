@@ -52,13 +52,13 @@
         </script>
 
         <script>
-            function draw(gl, arr, col) {
+            function draw(gl, arr, colLoc, col) {
                 var vertices = new Float32Array(arr);
                 var vertBuf = gl.createBuffer();
                 gl.bindBuffer(gl.ARRAY_BUFFER, vertBuf);
                 gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
                 gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-                gl.uniform4fv(gl.program.col, col);
+                gl.uniform4fv(colLoc, col);
                 gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertices.length / 2);
             }
 
@@ -84,21 +84,22 @@
                 var green = [0, 1, 0, 1];
                 var ok;
 
-                var gl = initWebGL('testbed', 'vshader', 'fshader', ['pos'], [0, 0, 0, 1], 1, { antialias: false });
+                var gl = initWebGL('testbed', { antialias: false });
                 if (!gl) {
                     testFailed('initWebGL(..) failed');
                     return;
                 }
-                gl.program.col = gl.getUniformLocation(gl.program, 'col');
+                var program = setupProgram(gl, 'vshader', 'fshader', ['pos']);
+                var colLoc = gl.getUniformLocation(program, 'col');
 
                 gl.enableVertexAttribArray(0);
 
                 debug('CULL_FACE should be off by default');
                 clear(gl, red);
-                draw(gl, ccwVertices, green);
+                draw(gl, ccwVertices, colLoc, green);
                 check(gl, 'CCW', true);
                 clear(gl, red);
-                draw(gl, cwVertices, green);
+                draw(gl, cwVertices, colLoc, green);
                 check(gl, 'CW', true);
 
                 debug('Enabling CULL_FACE');
@@ -106,10 +107,10 @@
 
                 debug('BACK and CCW should be set by default');
                 clear(gl, red);
-                draw(gl, ccwVertices, green);
+                draw(gl, ccwVertices, colLoc, green);
                 check(gl, 'CCW', true);
                 clear(gl, green);
-                draw(gl, cwVertices, red);
+                draw(gl, cwVertices, colLoc, red);
                 check(gl, 'CW', false);
 
                 var tests = [{ cullFace : 'BACK', frontFace : 'CCW', drawCCW : true, drawCW : false},
@@ -125,10 +126,10 @@
                     gl.cullFace(gl[t.cullFace]);
                     gl.frontFace(gl[t.frontFace]);
                     clear(gl, t.drawCCW ? red : green);
-                    draw(gl, ccwVertices, t.drawCCW ? green : red);
+                    draw(gl, ccwVertices, colLoc, t.drawCCW ? green : red);
                     check(gl, 'CCW', t.drawCCW);
                     clear(gl, t.drawCW ? red : green);
-                    draw(gl, cwVertices, t.drawCW ? green : red);
+                    draw(gl, cwVertices, colLoc, t.drawCW ? green : red);
                     check(gl, 'CW', t.drawCW);
                 }
 

@@ -86,10 +86,10 @@ function init()
   var ctx2d = canvas2d.getContext("2d");
   ctx2d.globalCompositeOperation = "copy";
 
-  gl = initWebGL("example", "vshader", "fshader2d", ["vPosition", "texCoord0"],
-                 [ 0, 0, 0, 1 ], 1);
+  gl = initWebGL("example");
+  program = setupProgram(gl, "vshader", "fshader2d", ["vPosition", "texCoord0"]);
 
-  var program2d = gl.program;
+  var program2d = program;
   var programCube = createProgram(
       gl, "vshader", "fshaderCube", ["vPosition", "texCoord0"]);
 

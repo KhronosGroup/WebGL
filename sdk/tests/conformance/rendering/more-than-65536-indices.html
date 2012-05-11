@@ -59,7 +59,8 @@ void main() {
 description("checks that rendering with more than 65536 indices works.");
 var wtu = WebGLTestUtils;
 // The antialias:false context creation attribute is a concession to some older and buggier drivers.
-var gl = initWebGL("example", "vs", "fs", ["vPosition", "vColor"], [0, 0, 0, 1], 1, { antialias: false });
+var gl = initWebGL("example", { antialias: false });
+var program = setupProgram(gl, "vs", "fs", ["vPosition", "vColor"]);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after initWebGL");
 var bufferObjects = wtu.setupUnitQuad(gl, 0, 1);
 gl.bindBuffer(gl.ARRAY_BUFFER, bufferObjects[0]);

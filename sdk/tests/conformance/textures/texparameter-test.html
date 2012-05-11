@@ -75,8 +75,8 @@ function init()
   var canvas2d = document.getElementById("canvas2d");
   var ctx2d = canvas2d.getContext("2d");
 
-  gl = initWebGL("example", "vshader", "fshader", [ "vPosition", "texCoord0"],
-                 [ 0, 0, 0, 1 ], 1);
+  gl = initWebGL("example");
+  program = setupProgram(gl, "vshader", "fshader", [ "vPosition", "texCoord0"]);
 
   gl.disable(gl.DEPTH_TEST);
   gl.disable(gl.BLEND);
@@ -131,8 +131,8 @@ function init()
     textures[ii] = tex;
   }
 
-  var textureLoc = gl.getUniformLocation(gl.program, "tex");
-  var worldLoc = gl.getUniformLocation(gl.program, "world");
+  var textureLoc = gl.getUniformLocation(program, "tex");
+  var worldLoc = gl.getUniformLocation(program, "world");
 
   gl.clearColor(1,1,1,1);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);

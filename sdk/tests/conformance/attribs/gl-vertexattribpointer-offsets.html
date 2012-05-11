@@ -79,7 +79,8 @@ There is supposed to be an example drawing here, but it's not important.
             description("test vertexattribpointer offsets work");
 
             wtu = WebGLTestUtils;
-            gl = initWebGL("example", "vshader", "fshader", [ "vPosition"], [ 0, 0, 0, 1 ], 1);
+            gl = initWebGL("example");
+            program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
 
             var tests = [
               { data: new Float32Array([ 0, 1, 0, 1, 0, 0, 0, 0, 0 ]),
@@ -139,7 +140,7 @@ There is supposed to be an example drawing here, but it's not important.
             gl.bufferData(gl.ARRAY_BUFFER, 1024, gl.STATIC_DRAW);
             gl.enableVertexAttribArray(0);
 
-            var colorLoc = gl.getUniformLocation(gl.program, "color");
+            var colorLoc = gl.getUniformLocation(program, "color");
             var kNumVerts = 3;
             var kNumComponents = 3;
 
