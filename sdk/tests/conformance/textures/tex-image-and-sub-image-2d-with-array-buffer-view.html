@@ -46,12 +46,6 @@ var gl = null;
 var textureLoc = null;
 var successfullyParsed = false;
 
-// These two declarations need to be global for "shouldBe" to see them
-var buf = null;
-var idx = 0;
-var pixel = [0, 0, 0, 1];
-var correctColor = null;
-
 function generateRGBAData(type, unpackAlignment)
 {
     var sourceData = [ 255,   0,   0, 255,
@@ -151,9 +145,6 @@ function runOneIteration(useTexSubImage2D, type, unpackAlignment, flipY, premult
     // Draw the triangles
     wtu.drawQuad(gl, [0, 0, 0, 255]);
 
-    // Read back the rendering results
-    buf = new Uint8Array(1 * 2 * 4);
-    gl.readPixels(0, 0, 1, 2, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     // Check the top pixel and bottom pixel and make sure they have
     // the right color.
     debug("Checking bottom pixel");

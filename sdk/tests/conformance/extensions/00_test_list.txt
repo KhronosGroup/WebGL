@@ -1,4 +1,8 @@
 oes-standard-derivatives.html
+oes-texture-float-with-canvas.html
+oes-texture-float-with-image-data.html
+oes-texture-float-with-image.html
+oes-texture-float-with-video.html
 oes-texture-float.html
 oes-vertex-array-object.html
 webgl-debug-renderer-info.html
