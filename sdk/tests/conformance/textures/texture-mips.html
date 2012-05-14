@@ -136,7 +136,9 @@ function init()
   gl.uniform4f(multLoc, 1, 1, 1, 1);
   gl.bindTexture(gl.TEXTURE_2D, clearTex);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 16, 16, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  debug('gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 16, 16, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);');
   setMipData(0, 16, 'blank');
+  makeDivMipChain();
   generateMipmap();
   check('blank', "texture created with null that has all mips");
 
