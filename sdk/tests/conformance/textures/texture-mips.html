@@ -120,7 +120,8 @@ function init()
     red: [255, 0, 0, 255],
     green:  [0, 255, 0, 255],
     cyan: [128, 255, 255, 255],
-    black: [0, 0, 0, 255]
+    black: [0, 0, 0, 255],
+    blank: [0, 0, 0, 0]
   };
 
   var mips = [
@@ -129,6 +130,15 @@ function init()
   var texLoc = gl.getUniformLocation(program, "tex");
   gl.uniform1i(texLoc, 0);
   var multLoc = gl.getUniformLocation(program, "uMult");
+
+  // ----------------------------------------------------
+  var clearTex = createTexture();
+  gl.uniform4f(multLoc, 1, 1, 1, 1);
+  gl.bindTexture(gl.TEXTURE_2D, clearTex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 16, 16, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  setMipData(0, 16, 'blank');
+  generateMipmap();
+  check('blank', "texture created with null that has all mips");
 
   // ----------------------------------------------------
   var tex = createTexture();
