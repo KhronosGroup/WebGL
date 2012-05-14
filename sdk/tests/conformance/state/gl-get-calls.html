@@ -65,9 +65,12 @@ else {
     shouldBe('context.getParameter(context.ACTIVE_TEXTURE)', 'context.TEXTURE0');
     shouldBe('(context.getParameter(context.ALIASED_LINE_WIDTH_RANGE)[0] <= 1) && (context.getParameter(context.ALIASED_LINE_WIDTH_RANGE)[0] > 0) && (context.getParameter(context.ALIASED_LINE_WIDTH_RANGE)[1] >= 1)', 'true');
     shouldBe('(context.getParameter(context.ALIASED_POINT_SIZE_RANGE)[0] <= 1) && (context.getParameter(context.ALIASED_POINT_SIZE_RANGE)[0] > 0) && (context.getParameter(context.ALIASED_POINT_SIZE_RANGE)[1] >= 1)', 'true');
+	shouldBeType('(context.getParameter(context.ALIASED_LINE_WIDTH_RANGE)', 'Float32Array');
+	shouldBeType('(context.getParameter(context.ALIASED_POINT_SIZE_RANGE)', 'Float32Array');
     shouldBe('context.getParameter(context.ARRAY_BUFFER_BINDING)', 'null');
     shouldBe('context.getParameter(context.BLEND)', 'false');
     shouldBe('context.getParameter(context.BLEND_COLOR)', '[0, 0, 0, 0]');
+	shouldBeType('context.getParameter(context.BLEND_COLOR)', 'Float32Array');
     shouldBe('context.getParameter(context.BLEND_DST_ALPHA)', '0');
     shouldBe('context.getParameter(context.BLEND_DST_RGB)', '0');
     shouldBe('context.getParameter(context.BLEND_EQUATION_ALPHA)', 'context.FUNC_ADD');
@@ -75,13 +78,16 @@ else {
     shouldBe('context.getParameter(context.BLEND_SRC_ALPHA)', '1');
     shouldBe('context.getParameter(context.BLEND_SRC_RGB)', '1');
     shouldBe('context.getParameter(context.COLOR_CLEAR_VALUE)', '[0, 0, 0, 0]');
+	shouldBeType('context.getParameter(context.COLOR_CLEAR_VALUE)', 'Float32Array');
     shouldBe('context.getParameter(context.COLOR_WRITEMASK)', '[true, true, true, true]');
+	shouldBeType('context.getParameter(context.COMPRESSED_TEXTURE_FORMATS)', 'Uint32Array');
     shouldBe('context.getParameter(context.CULL_FACE)', 'false');
     shouldBe('context.getParameter(context.CULL_FACE_MODE)', 'context.BACK');
     shouldBe('context.getParameter(context.CURRENT_PROGRAM)', 'null');
     shouldBe('context.getParameter(context.DEPTH_CLEAR_VALUE)', '1');
     shouldBe('context.getParameter(context.DEPTH_FUNC)', 'context.LESS');
     shouldBe('context.getParameter(context.DEPTH_RANGE)', '[0, 1]');
+	shouldBeType('context.getParameter(context.DEPTH_RANGE)', 'Float32Array');
     shouldBe('context.getParameter(context.DEPTH_TEST)', 'false');
     shouldBe('context.getParameter(context.DEPTH_WRITEMASK)', 'true');
     shouldBe('context.getParameter(context.DITHER)', 'true');
@@ -97,6 +103,7 @@ else {
     shouldBe('context.getParameter(context.SAMPLE_COVERAGE_VALUE)', '1');
     shouldBe('context.getParameter(context.SCISSOR_BOX)[0]', '0');
     shouldBe('context.getParameter(context.SCISSOR_BOX)[1]', '0');
+	shouldBeType('context.getParameter(context.SCISSOR_BOX)', Int32Array);
     shouldBe('context.getParameter(context.SCISSOR_TEST)', 'false');
     shouldBe('context.getParameter(context.STENCIL_BACK_FAIL)', 'context.KEEP');
     shouldBe('context.getParameter(context.STENCIL_BACK_FUNC)', 'context.ALWAYS');
@@ -129,7 +136,7 @@ else {
     shouldBe('context.getParameter(context.UNPACK_FLIP_Y_WEBGL)', 'false');
     shouldBe('context.getParameter(context.UNPACK_PREMULTIPLY_ALPHA_WEBGL)', 'false');
     shouldBe('context.getParameter(context.VIEWPORT)', '[0, 0, 2, 2]');
-    shouldBeNonNull('context.getParameter(context.COMPRESSED_TEXTURE_FORMATS)');
+	shouldBeType('context.getParameter(context.VIEWPORT)', 'Int32Array');
 
     shouldBeTrue('context.getParameter(context.MAX_COMBINED_TEXTURE_IMAGE_UNITS) >= 8');
     shouldBeTrue('context.getParameter(context.MAX_CUBE_MAP_TEXTURE_SIZE) >= 16');
@@ -146,6 +153,7 @@ else {
     // especially if there are multiple screens.
     shouldBeTrue('context.getParameter(context.MAX_VIEWPORT_DIMS)[0] >= window.screen.width');
     shouldBeTrue('context.getParameter(context.MAX_VIEWPORT_DIMS)[1] >= window.screen.height');
+	shouldBeType('context.getParameter(context.MAX_VIEWPORT_DIMS)', 'Int32Array');
 
     debug("");
     debug("check texture values");
@@ -169,6 +177,7 @@ else {
       shouldBe('context.getVertexAttrib(ii, context.VERTEX_ATTRIB_ARRAY_TYPE)', 'context.FLOAT');
       shouldBe('context.getVertexAttrib(ii, context.VERTEX_ATTRIB_ARRAY_NORMALIZED)', 'false');
       shouldBe('context.getVertexAttrib(ii, context.CURRENT_VERTEX_ATTRIB)', '[0, 0, 0, 1]');
+	  shouldBeType('context.getVertexAttrib(ii, context.CURRENT_VERTEX_ATTRIB)', 'Float32Array');
       shouldBe('context.getVertexAttribOffset(ii, context.VERTEX_ATTRIB_ARRAY_POINTER)', '0');
     }
 
