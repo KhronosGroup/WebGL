@@ -234,7 +234,7 @@ function init()
   }
 
   function generateMipmap() {
-    debug("gl.genreateMipmap(gl.TEXTURE_2D)");
+    debug("gl.generateMipmap(gl.TEXTURE_2D)");
     gl.generateMipmap(gl.TEXTURE_2D);
     var mip0 = mips[0];
     var size = mip0.size;
