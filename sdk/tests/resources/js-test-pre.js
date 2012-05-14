@@ -369,6 +369,24 @@ function shouldThrow(_a, _e)
     testFailed(_a + " should throw " + (typeof _e == "undefined" ? "an exception" : _ev) + ". Was " + _av + ".");
 }
 
+function shouldBeType(_a, _type) {
+	var exception;
+	var _av;
+	try {
+		_av = eval(_a);
+	} catch (e) {
+		exception = e;
+	}
+
+	var _typev = eval(_type);
+
+	if (_av instanceof _typev) {
+		testPassed(_a + " is an instance of " + _type);
+	} else {
+		testFailed(_a + " is not an instance of " + _type);
+	}
+}
+
 function assertMsg(assertion, msg) {
     if (assertion) {
         testPassed(msg);
