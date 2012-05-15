@@ -1,3 +1,4 @@
+--min-version 1.0.2 get-extension.html
 oes-standard-derivatives.html
 oes-texture-float-with-canvas.html
 oes-texture-float-with-image-data.html
