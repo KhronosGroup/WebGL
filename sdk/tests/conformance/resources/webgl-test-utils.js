@@ -646,12 +646,15 @@ var drawIndexedQuad = function(gl, gridRes, opt_color) {
  */
 var checkCanvasRect = function(gl, x, y, width, height, color, msg, errorRange) {
   errorRange = errorRange || 0;
+  if (!errorRange.length) {
+    errorRange = [errorRange, errorRange, errorRange, errorRange]
+  }
   var buf = new Uint8Array(width * height * 4);
   gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   for (var i = 0; i < width * height; ++i) {
     var offset = i * 4;
     for (var j = 0; j < color.length; ++j) {
-      if (Math.abs(buf[offset + j] - color[j]) > errorRange) {
+      if (Math.abs(buf[offset + j] - color[j]) > errorRange[j]) {
         testFailed(msg);
         var was = buf[offset + 0].toString();
         for (j = 1; j < color.length; ++j) {
