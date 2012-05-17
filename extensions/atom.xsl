@@ -14,6 +14,7 @@
 
     <xsl:for-each select="$registry/*/history/revision">
       <xsl:sort select="@date" order="descending"/>
+      <xsl:sort select="@number" order="descending"/>
       <xsl:if test="position() &lt; 11">
         <entry>
           <title>

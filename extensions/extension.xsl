@@ -305,6 +305,10 @@
     </xsl:for-each>
   </ul>
 </xsl:template>
+
+<xsl:template match="api|ext|glsl|rfc" mode="overview">
+  <xsl:apply-templates select="." />
+</xsl:template>
 <xsl:template match="node()" mode="overview">
   <xsl:copy>
     <xsl:copy-of select="@*" />

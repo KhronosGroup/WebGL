@@ -8,9 +8,19 @@
 <xsl:template name="output-summaries">
     <xsl:param name="list" /> 
     <xsl:variable name="car" select="substring-before($list, ',')" /> 
-    <xsl:variable name="cdr" select="substring-after($list, ',')" /> 
-    
-    <xsl:apply-templates select="document(concat($car,'/extension.xml'))" />
+    <xsl:variable name="cdr" select="substring-after($list, ',')" />
+
+    <xsl:variable name="path">
+      <xsl:choose>
+        <xsl:when test="substring-after($car,'.')='xml'">
+          <xsl:value-of select="$car" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="concat($car,'/extension.xml')" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:apply-templates select="document($path)" />
     
     <xsl:if test="$cdr">
       <xsl:call-template name="output-summaries">
