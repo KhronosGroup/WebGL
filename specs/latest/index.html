@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 01 May 2012</h2>
+    <h2 class="no-toc">Editor's Draft 16 May 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2063,7 +2063,8 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>BUFFER_SIZE</td><td>long</td></tr>
                 <tr><td>BUFFER_USAGE</td><td>unsigned long</td></tr>
             </table>
-            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+            <p>If an OpenGL error is generated, returns null.</p>
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isBuffer(WebGLBuffer? buffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.6">OpenGL ES 2.0 &sect;6.1.6</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsBuffer.xml">man page</a>)</span>
         <dd>
@@ -2134,7 +2135,8 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL</td><td>long</td></tr>
                 <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE</td><td>long</td></tr>
             </table>
-            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+            <p>If an OpenGL error is generated, returns null.</p>
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isFramebuffer(WebGLFramebuffer? framebuffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.7">OpenGL ES 2.0 &sect;6.1.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsFramebuffer.xml">man page</a>)</span>
         <dd>
@@ -2193,7 +2195,8 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>RENDERBUFFER_DEPTH_SIZE</td><td>long</td></tr>
                 <tr><td>RENDERBUFFER_STENCIL_SIZE</td><td>long</td></tr>
             </table>
-            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+            <p>If an OpenGL error is generated, returns null.</p>
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isRenderbuffer(WebGLRenderbuffer? renderbuffer)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.7">OpenGL ES 2.0 &sect;6.1.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsRenderbuffer.xml">man page</a>)</span>
         <dd>
@@ -2286,9 +2289,10 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>TEXTURE_WRAP_S</td><td>unsigned long</td></tr>
                 <tr><td>TEXTURE_WRAP_T</td><td>unsigned long</td></tr>
             </table>
-            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
-            <p>If an attempt is made to call this function with no WebGLTexture bound (see above), an
-            <code>INVALID_OPERATION</code> error is generated.</p>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+            <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an
+            <code>INVALID_OPERATION</code> error.</p>
+            <p>If an OpenGL error is generated, returns null.</p>
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isTexture(WebGLTexture? texture)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.4">OpenGL ES 2.0 &sect;6.1.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsTexture.xml">man page</a>)</span>
         <dd>
@@ -2673,7 +2677,8 @@ for (var i = 0; i < numVertices; i++) {
                 <tr><td>CURRENT_VERTEX_ATTRIB</td><td>Float32Array (with 4 elements)</td></tr>
             </table>
             <p>All queries returning sequences or typed arrays return a new object each time.</p>
-            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+            <p>If an OpenGL error is generated, returns null.</p>
         <dt class="idl-code">[WebGLHandlesContextLoss] GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetVertexAttribPointerv.xml">man page</a>)</span>
         <dd>
