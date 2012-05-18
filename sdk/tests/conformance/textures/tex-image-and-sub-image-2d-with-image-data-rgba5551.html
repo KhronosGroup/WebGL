@@ -33,27 +33,17 @@
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
-<script src="../resources/tex-image-and-sub-image-2d-with-video.js"></script>
+<script src="../resources/tex-image-and-sub-image-2d-with-image-data.js"></script>
 <script>
 function testPrologue(gl) {
-    if (!gl.getExtension("OES_texture_float")) {
-        testPassed("No OES_texture_float support -- this is legal");
-        return false;
-    }
-
-    testPassed("Successfully enabled OES_texture_float extension");
     return true;
 }
 </script>
 </head>
-<body onload='generateTest("RGBA", "FLOAT", testPrologue)()'>
-<canvas id="example" width="32px" height="32px"></canvas>
+<body onload='generateTest("RGBA", "UNSIGNED_SHORT_5_5_5_1", testPrologue)()'>
+<canvas id="texcanvas" width="1px" height="2px"></canvas>
+<canvas id="example" width="1px" height="2px"></canvas>
 <div id="description"></div>
 <div id="console"></div>
-<video width="640" height="228" id="vid" controls>
-  <source src="../resources/red-green.mp4"  type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
-  <source src="../resources/red-green.webmvp8.webm" type='video/webm; codecs="vp8, vorbis"' />
-  <source src="../resources/red-green.theora.ogv"  type='video/ogg; codecs="theora, vorbis"' />
-</video>
 </body>
 </html>

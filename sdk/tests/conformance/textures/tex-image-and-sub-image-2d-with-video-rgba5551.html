@@ -36,17 +36,11 @@
 <script src="../resources/tex-image-and-sub-image-2d-with-video.js"></script>
 <script>
 function testPrologue(gl) {
-    if (!gl.getExtension("OES_texture_float")) {
-        testPassed("No OES_texture_float support -- this is legal");
-        return false;
-    }
-
-    testPassed("Successfully enabled OES_texture_float extension");
     return true;
 }
 </script>
 </head>
-<body onload='generateTest("RGBA", "FLOAT", testPrologue)()'>
+<body onload='generateTest("RGBA", "UNSIGNED_SHORT_5_5_5_1", testPrologue)()'>
 <canvas id="example" width="32px" height="32px"></canvas>
 <div id="description"></div>
 <div id="console"></div>

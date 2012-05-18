@@ -21,7 +21,7 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
-function generateTest(pixelType, prologue) {
+function generateTest(pixelFormat, pixelType, prologue) {
     var wtu = WebGLTestUtils;
     var gl = null;
     var textureLoc = null;
@@ -33,7 +33,7 @@ function generateTest(pixelType, prologue) {
 
     var init = function()
     {
-        description('Verify texImage2D and texSubImage2D code paths taking video elements');
+        description('Verify texImage2D and texSubImage2D code paths taking video elements (' + pixelFormat + '/' + pixelType + ')');
 
         gl = wtu.create3DContext("example");
 
@@ -77,12 +77,12 @@ function generateTest(pixelType, prologue) {
         // Upload the videoElement into the texture
         if (useTexSubImage2D) {
             // Initialize the texture to black first
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl[pixelFormat],
                           videoElement.videoWidth, videoElement.videoHeight, 0,
-                          gl.RGBA, gl[pixelType], null);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl[pixelType], videoElement);
+                          gl[pixelFormat], gl[pixelType], null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl[pixelFormat], gl[pixelType], videoElement);
         } else {
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl[pixelType], videoElement);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl[pixelFormat], gl[pixelFormat], gl[pixelType], videoElement);
         }
 
         var c = document.createElement("canvas");

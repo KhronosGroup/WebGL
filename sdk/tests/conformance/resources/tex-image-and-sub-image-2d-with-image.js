@@ -21,7 +21,7 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
-function generateTest(pixelType, pathToTestRoot, prologue) {
+function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
     var wtu = WebGLTestUtils;
     var gl = null;
     var textureLoc = null;
@@ -36,7 +36,7 @@ function generateTest(pixelType, pathToTestRoot, prologue) {
             window.initNonKhronosFramework(true);
         }
 
-        description('Verify texImage2D and texSubImage2D code paths taking image elements');
+        description('Verify texImage2D and texSubImage2D code paths taking image elements (' + pixelFormat + '/' + pixelType + ')');
 
         gl = wtu.create3DContext("example");
 
@@ -75,11 +75,11 @@ function generateTest(pixelType, pathToTestRoot, prologue) {
         // Upload the image into the texture
         if (useTexSubImage2D) {
             // Initialize the texture to black first
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0,
-                          gl.RGBA, gl[pixelType], null);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl[pixelType], image);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl[pixelFormat], image.width, image.height, 0,
+                          gl[pixelFormat], gl[pixelType], null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl[pixelFormat], gl[pixelType], image);
         } else {
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl[pixelType], image);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl[pixelFormat], gl[pixelFormat], gl[pixelType], image);
         }
 
         // Point the uniform sampler to texture unit 0
