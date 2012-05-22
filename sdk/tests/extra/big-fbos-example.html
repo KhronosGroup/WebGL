@@ -37,17 +37,17 @@
 <script src="../conformance/resources/webgl-test.js"></script>
 </head>
 <body>
+<canvas id="canvas" width="256" height="256"> </canvas>
 <div id="description"></div>
 <div id="console"></div>
 <script id="vshader" type="x-shader/x-vertex">
 attribute vec4 vPosition;
 attribute vec2 texCoord0;
-uniform mat4 world;
 varying vec2 texCoord;
 void main()
 {
-    gl_Position = vPosition * world;
-    texCoord = texCoord0;
+  gl_Position = vec4(vPosition.xyz, 1.0);
+  texCoord = texCoord0;
 }
 </script>
 
@@ -57,12 +57,14 @@ uniform sampler2D tex;
 varying vec2 texCoord;
 void main()
 {
-    gl_FragColor = texture2D(tex, texCoord);
+  gl_FragColor = texture2D(tex, texCoord);
 }
 </script>
-<canvas id="canvas" width="1024" height="1024"> </canvas>
 <script>
 window.onload = init;
+
+var g_textures = [];
+
 debug("Tests the performance of using lots of large FBOs");
 
 function init() {
@@ -74,158 +76,161 @@ function init() {
   }
 }
 
-function main() {
-  debug("");
-  debug("Canvas.getContext");
-  var g_worldLoc;
-  var g_texLoc;
-  var g_textures = [];
-  gl = initWebGL("canvas", "vshader", "fshader", [ "vPosition", "texCoord0"], [ 0, 0, 0, 1 ], 1);
-  if (!gl) {
-    testFailed("context does not exist");
-  } else {
-    testPassed("context exists");
-
-    debug("");
-    debug("Checking for out of memory handling.");
-
-    var size = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
-    debug("max render buffer size: " + size);
-    size = size / 2;
-    debug("size used: " + size);
-
-    var allocateFramebuffers = true;
-    var intervalId = 0;
-    var count = 0;
-
-    WebGLDebugUtils.init(gl);
-
-    function createFBO() {
-      var tex = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, tex);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texImage2D(gl.TEXTURE_2D,
-                    0,                 // level
-                    gl.RGBA,           // internalFormat
-                    size,              // width
-                    size,              // height
-                    0,                 // border
-                    gl.RGBA,           // format
-                    gl.UNSIGNED_BYTE,  // type
-                    null);             // data
-      var fb = gl.createFramebuffer();
-      gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-      gl.framebufferTexture2D(
-          gl.FRAMEBUFFER,
-          gl.COLOR_ATTACHMENT0,
-          gl.TEXTURE_2D,
-          tex,
-          0);
-      var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-      if (status != gl.FRAMEBUFFER_COMPLETE) {
-        testFailed("gl.checkFramebufferStatus() returned " + WebGLDebugUtils.glEnumToString(status));
-        return;
-      }
-      var err = gl.getError();
-      if (err != gl.NO_ERROR) {
-        if (err != gl.OUT_OF_MEMORY) {
-          testFailed("gl.getError returned " + err);
-        }
-        return;
-      }
-      return { fb: fb, tex: tex };
-    }
-
-    gl.disable(gl.DEPTH_TEST);
-
-    var maxFBOs = 2;
-    for (var ii = 0; ii < maxFBOs; ++ii) {
-      createFBO();
-      var t = createFBO();
-      if (!t) {
-        break;
-      }
-      tex = t.tex;
-      fb = t.fb;
-
-      gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-      gl.scissor(0, 0, size, size);
-      gl.clearColor(0, ii / maxFBOs, 1 - ii / maxFBOs, 1);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      g_textures.push(tex);
-    }
-
-    debug("fbos allocated:" + g_textures.length);
-    gl.scissor(0, 0, 1024, 1024);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-    var vertexObject = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-       -1,1,0, 1,1,0, -1,-1,0,
-       -1,-1,0, 1,1,0, 1,-1,0
-     ]), gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(0);
-    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
-
-    var vertexObject = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0, 1,0, 0,1,
-       0,1, 1,0, 1,1
-     ]), gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(1);
-    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
-
-    g_texLoc = gl.getUniformLocation(gl.program, "tex");
-    gl.uniform1i(g_texLoc, 0);
-    g_worldLoc = gl.getUniformLocation(gl.program, "world");
-    gl.uniformMatrix4fv(g_worldLoc, false, [
-       0, 0, 0, 0,
-       0, 0, 0, 0,
-       0, 0, 1, 0,
-       0, 0, 0, 1]);
-
-    setInterval(render, 1000/60);
+function checkFBOStatus(gl) {
+  var err = gl.getError();
+  if (err != gl.NO_ERROR) {
+    if (err != gl.OUT_OF_MEMORY)
+      testFailed("gl.getError returned " + err);
+    else
+      testPassed("OUT-OF-MEMORY");
+    return false;
   }
-
-  var g_angle = 0;
-  var g_texIndex = 0;
-  function render() {
-    g_angle += 0.1;
-    g_texIndex++;
-    if (g_texIndex >= g_textures.length) {
-      g_texIndex = 0;
-    }
-    gl.bindTexture(gl.TEXTURE_2D, g_textures[g_texIndex]);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.uniformMatrix4fv(g_worldLoc, false, rotationZ(g_angle));
-    gl.clearColor(1,0,0,1);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+  var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+  if (status != gl.FRAMEBUFFER_COMPLETE) {
+    testFailed("gl.checkFramebufferStatus() returned " + WebGLDebugUtils.glEnumToString(status));
+    return false;
   }
+  return true;
 }
 
-/**
- * Creates a 4-by-4 matrix which rotates around the z-axis by the given angle.
- * @param {number} angle The angle by which to rotate (in radians).
- * @return {!o3djs.math.Matrix4} The rotation matrix.
- */
-function rotationZ(angle) {
-  var c = Math.cos(angle);
-  var s = Math.sin(angle);
+function setupFBO(gl, size) {
+  var tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-  return [
-    c, s, 0, 0,
-    -s, c, 0, 0,
-    0, 0, 1, 0,
-    0, 0, 0, 1
-  ];
-};
+  var fb = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+
+  gl.texImage2D(gl.TEXTURE_2D,
+                0,                 // level
+                gl.RGBA,           // internalFormat
+                size,              // width
+                size,              // height
+                0,                 // border
+                gl.RGBA,           // format
+                gl.UNSIGNED_BYTE,  // type
+                null);             // data
+  if (!checkFBOStatus(gl))
+    return null;
+
+  return { fb: fb, tex: tex };
+}
+
+function drawAndCheck(gl, tex) {
+  gl.clearColor(0, 0, 0, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+  var width = 256;
+  var height = 256;
+
+  var thresh = 3;
+
+  var buf = new Uint8Array(width * height * 4);
+  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  for (var yy = 0; yy < height; ++yy) {
+    for (var xx = 0; xx < width; ++xx) {
+      var offset = (yy * width + xx) * 4;
+      if (Math.abs(buf[offset] - 255) > thresh &&
+          Math.abs(buf[offset + 1] - 0) > thresh &&
+          Math.abs(buf[offset + 2] - 0) > thresh) {
+        testFailed("drawing results incorrect");
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+function main() {
+  debug("");
+  debug("Checking for out of memory handling.");
+
+  var gl = initWebGL("canvas");
+  var prog = setupProgram(gl, "vshader", "fshader", [ "vPosition", "texCoord0"]);
+
+  WebGLDebugUtils.init(gl);
+ 
+  gl.disable(gl.DEPTH_TEST);
+  gl.disable(gl.BLEND);
+
+  var vertexObject = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    -1,1,0, 1,1,0, -1,-1,0,
+    -1,-1,0, 1,1,0, 1,-1,0
+  ]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);
+  gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+
+  var vertexObject = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0, 1,0, 0,1,
+    0,1, 1,0, 1,1
+  ]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(1);
+  gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
+
+  var texLoc = gl.getUniformLocation(prog, "tex");
+  gl.uniform1i(texLoc, 0);
+
+  glErrorShouldBe(gl, gl.NO_ERROR, "setup should succeed");
+
+  var size = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
+  debug("max render buffer size: " + size +
+        ", size used: " + (size / 2));
+  size /= 2;
+
+  var maxFBOs = 200;
+  var ii;
+  for (ii = 0; ii < maxFBOs; ++ii) {
+    debug(" ");
+    debug("trying to create fbo #" + ii);
+    var t = setupFBO(gl, 2);
+    if (!t)
+      break;
+
+    var tex = t.tex;
+    var fb = t.fb;
+
+    debug("allocating fbo color buffer of size " + size + " x " + size);
+    gl.texImage2D(gl.TEXTURE_2D,
+                  0,                 // level
+                  gl.RGBA,           // internalFormat
+                  size,              // width
+                  size,              // height
+                  0,                 // border
+                  gl.RGBA,           // format
+                  gl.UNSIGNED_BYTE,  // type
+                  null);             // data
+    if (!checkFBOStatus(gl))
+      break;
+    g_textures.push(tex);
+    debug("succeeded in creating fbo");
+
+    debug("clearing the fbo with red color");
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.clearColor(1, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    debug("deleting fbo, but the now red texture should be untouched");
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.deleteFramebuffer(fb);
+
+    debug("drawing to the canvas using the red texture");
+    if (!drawAndCheck(gl, tex))
+      break;
+
+    debug("succeeded in drawing");
+    glErrorShouldBe(gl, gl.NO_ERROR, "each run with no error");
+  }
+
+  debug("fbos allocated:" + ii);
+}
 
 debug("");
 successfullyParsed = true;
