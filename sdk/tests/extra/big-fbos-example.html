@@ -120,11 +120,7 @@ function setupFBO(gl, size) {
   return { fb: fb, tex: tex };
 }
 
-function drawAndCheck(gl, tex) {
-  gl.clearColor(0, 0, 0, 1);
-  gl.clear(gl.COLOR_BUFFER_BIT);
-  gl.drawArrays(gl.TRIANGLES, 0, 6);
-
+function checkPixels(gl) {
   var width = 256;
   var height = 256;
 
@@ -135,8 +131,8 @@ function drawAndCheck(gl, tex) {
   for (var yy = 0; yy < height; ++yy) {
     for (var xx = 0; xx < width; ++xx) {
       var offset = (yy * width + xx) * 4;
-      if (Math.abs(buf[offset] - 255) > thresh &&
-          Math.abs(buf[offset + 1] - 0) > thresh &&
+      if (Math.abs(buf[offset] - 255) > thresh ||
+          Math.abs(buf[offset + 1] - 0) > thresh ||
           Math.abs(buf[offset + 2] - 0) > thresh) {
         testFailed("drawing results incorrect");
         return false;
@@ -178,6 +174,9 @@ function main() {
   var texLoc = gl.getUniformLocation(prog, "tex");
   gl.uniform1i(texLoc, 0);
 
+  gl.clearColor(0, 0, 0, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
   glErrorShouldBe(gl, gl.NO_ERROR, "setup should succeed");
 
   var size = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
@@ -186,9 +185,8 @@ function main() {
   size /= 2;
 
   var maxFBOs = 200;
-  var ii;
-  for (ii = 0; ii < maxFBOs; ++ii) {
-    debug(" ");
+  for (var ii = 0; ii < maxFBOs; ++ii) {
+    debug("");
     debug("trying to create fbo #" + ii);
     var t = setupFBO(gl, 2);
     if (!t)
@@ -222,14 +220,22 @@ function main() {
     gl.deleteFramebuffer(fb);
 
     debug("drawing to the canvas using the red texture");
-    if (!drawAndCheck(gl, tex))
+    gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    if (!checkPixels(gl))
       break;
 
     debug("succeeded in drawing");
     glErrorShouldBe(gl, gl.NO_ERROR, "each run with no error");
   }
 
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+  debug("");
   debug("fbos allocated:" + ii);
+  if (!checkPixels(gl))
+    testFailed("final check of canvas drawing buffer pixels failed");
 }
 
 debug("");
