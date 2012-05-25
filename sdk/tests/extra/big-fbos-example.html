@@ -35,6 +35,7 @@
 <script src="../../debug/webgl-debug.js"></script>
 <script src="../resources/js-test-pre.js"></script>
 <script src="../conformance/resources/webgl-test.js"></script>
+<script src="../conformance/resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <canvas id="canvas" width="256" height="256"> </canvas>
@@ -142,10 +143,16 @@ function checkPixels(gl) {
   return true;
 }
 
+function handleContextLost() {
+  debug("context lost");
+}
+
 function main() {
   debug("");
   debug("Checking for out of memory handling.");
 
+  var canvas = document.getElementById("canvas");
+  canvas.addEventListener('webglcontextlost', handleContextLost);
   var gl = initWebGL("canvas");
   var prog = setupProgram(gl, "vshader", "fshader", [ "vPosition", "texCoord0"]);
 
@@ -185,12 +192,29 @@ function main() {
   size /= 2;
 
   var maxFBOs = 200;
-  for (var ii = 0; ii < maxFBOs; ++ii) {
+  var numFBOs = 0;
+  allocateNextFBO();
+
+  function allocateNextFBO() {
+    if (numFBOs >= maxFBOs) {
+      phase2();
+      return;
+    }
+    if (!allocateFBO()) {
+      phase2();
+      return;
+    }
+    ++numFBOs;
+    setTimeout(allocateNextFBO, 100);
+  }
+
+  function allocateFBO() {
     debug("");
-    debug("trying to create fbo #" + ii);
+    debug("trying to create fbo #" + (numFBOs + 1));
     var t = setupFBO(gl, 2);
-    if (!t)
-      break;
+    if (!t) {
+      return false;
+    }
 
     var tex = t.tex;
     var fb = t.fb;
@@ -205,8 +229,9 @@ function main() {
                   gl.RGBA,           // format
                   gl.UNSIGNED_BYTE,  // type
                   null);             // data
-    if (!checkFBOStatus(gl))
-      break;
+    if (!checkFBOStatus(gl)) {
+      return false;
+    }
     g_textures.push(tex);
     debug("succeeded in creating fbo");
 
@@ -223,25 +248,29 @@ function main() {
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
-    if (!checkPixels(gl))
-      break;
+    if (!checkPixels(gl)) {
+      return false;
+    }
 
     debug("succeeded in drawing");
     glErrorShouldBe(gl, gl.NO_ERROR, "each run with no error");
+    return true;
   }
 
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  function phase2() {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-  debug("");
-  debug("fbos allocated:" + ii);
-  if (!checkPixels(gl))
-    testFailed("final check of canvas drawing buffer pixels failed");
+    debug("");
+    debug("fbos allocated:" + numFBOs);
+    if (!checkPixels(gl)) {
+      testFailed("final check of canvas drawing buffer pixels failed");
+    }
+    debug("");
+    finishTest();
+  }
 }
 
-debug("");
 successfullyParsed = true;
-</script>
-<script>
 </script>
 
 </body>
