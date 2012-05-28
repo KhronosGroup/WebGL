@@ -68,6 +68,36 @@ function checkFramebufferForAllowedStatuses(allowedStatuses)
         testFailed(msg);
 }
 
+function checkBufferBits(attachment0, attachment1)
+{
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE)
+      return;
+
+    var haveDepthBuffer = attachment0 == gl.DEPTH_ATTACHMENT ||
+                          attachment0 == gl.DEPTH_STENCIL_ATTACHMENT ||
+                          attachment1 == gl.DEPTH_ATTACHMENT ||
+                          attachment1 == gl.DEPTH_STENCIL_ATTACHMENT;
+    var haveStencilBuffer = attachment0 == gl.STENCIL_ATTACHMENT ||
+                            attachment0 == gl.DEPTH_STENCIL_ATTACHMENT ||
+                            attachment1 == gl.STENCIL_ATTACHMENT ||
+                            attachment1 == gl.DEPTH_STENCIL_ATTACHMENT;
+
+    debug("foo " + gl.getParameter(gl.RED_BITS));
+    debug("foo " + gl.getParameter(gl.DEPTH_BITS));
+
+    shouldBeTrue("gl.getParameter(gl.RED_BITS) + gl.getParameter(gl.GREEN_BITS) + gl.getParameter(gl.BLUE_BITS) + gl.getParameter(gl.ALPHA_BITS) >= 16");
+
+    if (haveDepthBuffer)
+      shouldBeTrue("gl.getParameter(gl.DEPTH_BITS) >= 16");
+    else
+      shouldBeTrue("gl.getParameter(gl.DEPTH_BITS) == 0");
+
+    if (haveStencilBuffer)
+      shouldBeTrue("gl.getParameter(gl.STENCIL_BITS) >= 8");
+    else
+      shouldBeTrue("gl.getParameter(gl.STENCIL_BITS) == 0");
+}
+
 function testAttachment(attachment, buffer, allowedStatuses)
 {
     shouldBeNonNull("fbo = gl.createFramebuffer()");
@@ -82,6 +112,7 @@ function testAttachment(attachment, buffer, allowedStatuses)
         gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(width * height * 4));
         glErrorShouldBe(gl, gl.INVALID_FRAMEBUFFER_OPERATION);
     }
+    checkBufferBits(attachment);
     gl.deleteFramebuffer(fbo);
 }
 
@@ -95,6 +126,7 @@ function testAttachments(attachment0, buffer0, attachment1, buffer1, allowedStat
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, attachment1, gl.RENDERBUFFER, buffer1);
     glErrorShouldBe(gl, gl.NO_ERROR);
     checkFramebufferForAllowedStatuses(allowedStatuses);
+    checkBufferBits(attachment0, attachment1);
     gl.deleteFramebuffer(fbo);
 }
 
