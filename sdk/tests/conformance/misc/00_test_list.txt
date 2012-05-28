@@ -1,4 +1,5 @@
 bad-arguments-test.html
+--min-version 1.0.2 boolean-argument-conversion.html
 --min-version 1.0.2 delayed-drawing.html
 error-reporting.html
 instanceof-test.html
