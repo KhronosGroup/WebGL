@@ -159,10 +159,19 @@ function drawAndReadPixel(gl, vertices, colors, x, y)
 function testAlpha(alpha)
 {
     debug("Testing alpha = " + alpha);
-    if (alpha)
+    if (alpha) {
         shouldBeNonNull("gl = getWebGL(1, 1, { alpha: true, depth: false, stencil: false, antialias: false }, [ 0, 0, 0, 0 ], 1, 0)");
-    else
+        shouldBeTrue("gl.getParameter(gl.ALPHA_BITS) >= 8");
+    } else {
         shouldBeNonNull("gl = getWebGL(1, 1, { alpha: false, depth: false, stencil: false, antialias: false }, [ 0, 0, 0, 0 ], 1, 0)");
+        shouldBeTrue("gl.getParameter(gl.ALPHA_BITS) == 0");
+    }
+    shouldBeTrue("gl.getParameter(gl.RED_BITS) >= 8");
+    shouldBeTrue("gl.getParameter(gl.GREEN_BITS) >= 8");
+    shouldBeTrue("gl.getParameter(gl.BLUE_BITS) >= 8");
+    shouldBeTrue("gl.getParameter(gl.DEPTH_BITS) == 0");
+    shouldBeTrue("gl.getParameter(gl.STENCIL_BITS) == 0");
+
     shouldBeNonNull("contextAttribs = gl.getContextAttributes()");
     shouldBeTrue("contextAttribs.alpha == " + alpha);
 
@@ -192,10 +201,18 @@ function testAlpha(alpha)
 function testDepth(depth)
 {
     debug("Testing depth = " + depth);
-    if (depth)
+    if (depth) {
         shouldBeNonNull("gl = getWebGL(1, 1, { stencil: false, antialias: false }, [ 0, 0, 0, 1 ], 1, 0)");
-    else
+        shouldBeTrue("gl.getParameter(gl.DEPTH_BITS) >= 16");
+    } else {
         shouldBeNonNull("gl = getWebGL(1, 1, { depth: false, stencil: false, antialias: false }, [ 0, 0, 0, 1 ], 1, 0)");
+        shouldBeTrue("gl.getParameter(gl.DEPTH_BITS) == 0");
+    }
+    shouldBeTrue("gl.getParameter(gl.RED_BITS) >= 8");
+    shouldBeTrue("gl.getParameter(gl.GREEN_BITS) >= 8");
+    shouldBeTrue("gl.getParameter(gl.BLUE_BITS) >= 8");
+    shouldBeTrue("gl.getParameter(gl.ALPHA_BITS) >= 8");
+
     shouldBeNonNull("contextAttribs = gl.getContextAttributes()");
 
     gl.depthFunc(gl.NEVER);
@@ -242,6 +259,21 @@ function testStencilAndDepth(stencil, depth)
     var creationString =
         "gl = getWebGL(1, 1, { depth: " + depth + ", stencil: " + stencil + ", antialias: false }, [ 0, 0, 0, 1 ], 1, 0)";
     shouldBeNonNull(creationString);
+
+    shouldBeTrue("gl.getParameter(gl.RED_BITS) >= 8");
+    shouldBeTrue("gl.getParameter(gl.GREEN_BITS) >= 8");
+    shouldBeTrue("gl.getParameter(gl.BLUE_BITS) >= 8");
+    shouldBeTrue("gl.getParameter(gl.ALPHA_BITS) == 0");
+    if (depth)
+        shouldBeTrue("gl.getParameter(gl.DEPTH_BITS) >= 16");
+    else
+        shouldBeTrue("gl.getParameter(gl.DEPTH_BITS) == 0");
+
+    if (stencil)
+        shouldBeTrue("gl.getParameter(gl.STENCIL_BITS) >= 8");
+    else
+        shouldBeTrue("gl.getParameter(gl.STENCIL_BITS) == 0");
+
     shouldBeNonNull("contextAttribs = gl.getContextAttributes()");
     if (!stencil && contextAttribs.stencil) {
         testFailed("WebGL implementation provided a stencil buffer when it should not have");
