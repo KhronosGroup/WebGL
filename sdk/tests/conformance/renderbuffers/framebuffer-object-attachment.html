@@ -82,9 +82,6 @@ function checkBufferBits(attachment0, attachment1)
                             attachment1 == gl.STENCIL_ATTACHMENT ||
                             attachment1 == gl.DEPTH_STENCIL_ATTACHMENT;
 
-    debug("foo " + gl.getParameter(gl.RED_BITS));
-    debug("foo " + gl.getParameter(gl.DEPTH_BITS));
-
     shouldBeTrue("gl.getParameter(gl.RED_BITS) + gl.getParameter(gl.GREEN_BITS) + gl.getParameter(gl.BLUE_BITS) + gl.getParameter(gl.ALPHA_BITS) >= 16");
 
     if (haveDepthBuffer)
