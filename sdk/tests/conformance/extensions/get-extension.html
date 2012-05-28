@@ -75,6 +75,7 @@ for (var ii = 0; ii < extensionNames.length; ++ii) {
         extension.testNumberProperty = kTestNumber;
         extension.testFunctionProperty = kTestFunction;
         extension.testObjectProperty = kTestObject;
+        gc();
         var extension2 = gl.getExtension(originalName);
         assertMsg(
             extension === extension2,
