@@ -134,6 +134,8 @@ var typeInfos = [
     },
     srcValues: [16, 15, 14],
     srcValuesLess: [],
+    srcValuesLessMultiple: [16],
+    srcValuesMoreMultiple: [16, 15, 14, 13],
     srcValuesNonMultiple: null,
   },
   { type: 'vec2',
@@ -166,6 +168,8 @@ var typeInfos = [
     },
     srcValues: [16, 15, 14, 13, 12, 11],
     srcValuesLess: [16],
+    srcValuesLessMultiple: [16, 15, 14, 13],
+    srcValuesMoreMultiple: [16, 15, 14, 13, 12, 11, 10, 9],
     srcValuesNonMultiple: [16, 15, 14, 13, 12, 11, 10],
   },
   { type: 'vec3',
@@ -201,6 +205,8 @@ var typeInfos = [
     },
     srcValues: [16, 15, 14, 13, 12, 11, 10, 9, 8],
     srcValuesLess: [16, 15],
+    srcValuesLessMultiple: [16, 15, 14, 13, 12, 11],
+    srcValuesMoreMultiple: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2],
     srcValuesNonMultiple: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7],
   },
   { type: 'vec4',
@@ -239,6 +245,8 @@ var typeInfos = [
     },
     srcValues: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
     srcValuesLess: [16, 15, 14],
+    srcValuesLessMultiple: [16, 15, 14, 13, 12, 11, 10, 9],
+    srcValuesMoreMultiple: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
     srcValuesNonMultiple: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4],
   }
 ];
@@ -260,6 +268,8 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
   var loc = gl.getUniformLocation(program, "color[0]");
   var srcValues = typeInfo.srcValues;
   var srcValuesLess = typeInfo.srcValuesLess;
+  var srcValuesLessMultiple = typeInfo.srcValuesLessMultiple;
+  var srcValuesMoreMultiple = typeInfo.srcValuesMoreMultiple;
   var srcValuesNonMultiple = typeInfo.srcValuesNonMultiple;
 
   // Try setting the value before using the program
@@ -279,6 +289,13 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
   gl[typeInfo.setter](loc, srcValues);
   glErrorShouldBe(gl, gl.NO_ERROR,
                   "can set an array of uniforms with gl." + typeInfo.setter);
+  gl[typeInfo.setter](loc, srcValuesLessMultiple);
+  glErrorShouldBe(gl, gl.NO_ERROR,
+                  "can partially set an array of uniforms with gl." + typeInfo.setter + " with a smaller array");
+  gl[typeInfo.setter](loc, srcValuesMoreMultiple);
+  glErrorShouldBe(gl, gl.NO_ERROR,
+                  "can set an array of uniforms with gl." + typeInfo.setter + " with a larger array");
+
   var values = gl.getUniform(program, loc);
   glErrorShouldBe(gl, gl.NO_ERROR,
                   "can call gl.getUniform");
