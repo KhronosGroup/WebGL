@@ -42,7 +42,7 @@
         <script id='fshader' type='x-shader'>
             precision mediump float;
             void main() {
-                gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+                gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
             }
         </script>
         <script>
@@ -51,7 +51,7 @@
                 gl.readPixels(0, 0, w, w, gl.RGBA, gl.UNSIGNED_BYTE, buf);
                 var i = 0;
                 for (; i < w; ++i) {
-                    if (buf[i * 4 + 0] != 255 || buf[i * 4 + 1] != 0 || buf[i * 4 + 2] != 0 || buf[i * 4 + 3] != 255) {
+                    if (buf[i * 4 + 0] == 255 && buf[i * 4 + 1] == 0 && buf[i * 4 + 2] == 0 && buf[i * 4 + 3] == 255) {
                         break;
                     }
                 }
