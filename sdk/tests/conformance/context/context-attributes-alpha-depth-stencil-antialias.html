@@ -263,7 +263,7 @@ function testStencilAndDepth(stencil, depth)
     shouldBeTrue("gl.getParameter(gl.RED_BITS) >= 8");
     shouldBeTrue("gl.getParameter(gl.GREEN_BITS) >= 8");
     shouldBeTrue("gl.getParameter(gl.BLUE_BITS) >= 8");
-    shouldBeTrue("gl.getParameter(gl.ALPHA_BITS) == 0");
+    shouldBeTrue("gl.getParameter(gl.ALPHA_BITS) >= 8");
     if (depth)
         shouldBeTrue("gl.getParameter(gl.DEPTH_BITS) >= 16");
     else
@@ -275,6 +275,11 @@ function testStencilAndDepth(stencil, depth)
         shouldBeTrue("gl.getParameter(gl.STENCIL_BITS) == 0");
 
     shouldBeNonNull("contextAttribs = gl.getContextAttributes()");
+    if (!depth && contextAttribs.depth) {
+        testFailed("WebGL implementation provided a depth buffer when it should not have");
+    }
+    if (!contextAttribs.depth)
+        depth = false;
     if (!stencil && contextAttribs.stencil) {
         testFailed("WebGL implementation provided a stencil buffer when it should not have");
     }
