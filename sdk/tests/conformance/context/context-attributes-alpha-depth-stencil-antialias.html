@@ -193,7 +193,7 @@ function testAlpha(alpha)
       pixel[1] = buf[1];
       pixel[2] = buf[2];
       pixel[3] = buf[3];
-      shouldBe("pixel", "[127, 127, 127, 127]");
+      shouldBeTrue("Math.abs(pixel[0] - 127) <= 1 && Math.abs(pixel[1] - 127) <= 1 && Math.abs(pixel[2] - 127) <= 1 && Math.abs(pixel[3] - 127) <= 1");
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 }
