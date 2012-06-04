@@ -72,7 +72,7 @@ function init()
   glErrorShouldBe(gl, gl.INVALID_OPERATION,
             "uniform1fv returns INVALID_OPERATION if attempting to set a sampler uniform");
 
-  var maxTextureUnits = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+  var maxTextureUnits = gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS);
 
   var success = true;
   for (var ii = 0; ii < maxTextureUnits; ++ii) {
