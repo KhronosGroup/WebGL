@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 16 May 2012</h2>
+    <h2 class="no-toc">Editor's Draft 04 June 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -280,12 +280,13 @@
         attributes must be obeyed by the WebGL implementation.
     </p>
     <p>
-        WebGL presents its drawing buffer to the HTML page compositor immediately before a compositing 
-        operation, but only if the drawing buffer has been modified since the last compositing operation.
-        Before the drawing buffer is presented for compositing the implementation shall ensure that all 
-        rendering operations have been flushed to the drawing buffer. By default, after compositing the 
-        contents of the drawing buffer shall be cleared to their default values, as shown in the table
-        above.
+        WebGL presents its drawing buffer to the HTML page compositor immediately before a
+        compositing operation, but only if <code>clear</code>, <code>drawArrays</code>
+        or <code>drawElements</code> have been called since the last compositing operation, while
+        the drawing buffer is the currently bound framebuffer. Before the drawing buffer is
+        presented for compositing the implementation shall ensure that all rendering operations have
+        been flushed to the drawing buffer. By default, after compositing the contents of the
+        drawing buffer shall be cleared to their default values, as shown in the table above.
     </p>
     <p>
         This default behavior can be changed by setting the <code>preserveDrawingBuffer</code>
