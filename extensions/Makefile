@@ -6,7 +6,7 @@ EXTS := OES_standard_derivatives \
 	WEBGL_debug_renderer_info \
 	WEBGL_debug_shaders \
 	WEBGL_compressed_texture_s3tc \
-	OES_depth_texture \
+	WEBGL_depth_texture \
 	proposals/WEBGL_shared_resources \
 	OES_element_index_uint \
 	EXT_texture_filter_anisotropic \

@@ -134,7 +134,9 @@
 
       <xsl:if test="errors">
         <h2 class="no-toc">Errors</h2>
-        <xsl:copy-of select="errors/node()" />
+        <xsl:for-each select="errors/error">
+          <p><xsl:copy-of select="node()" /></p>
+        </xsl:for-each>
       </xsl:if>
 
       <xsl:if test="newstate">

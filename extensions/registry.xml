@@ -76,7 +76,7 @@
       <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision></history></extension><draft href="WEBGL_compressed_texture_s3tc/"><name>WEBGL_compressed_texture_s3tc</name><number>8</number><history><revision date="2012/01/25" number="1">
       <change>Initial revision.</change>
-    </revision></history></draft><draft href="OES_depth_texture/"><name>OES_depth_texture</name><number>9</number><history><revision date="2012/01/23" number="1">
+    </revision></history></draft><draft href="WEBGL_depth_texture/"><name>WEBGL_depth_texture</name><number>9</number><history><revision date="2012/01/23" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/01/25" number="2">
       <change>Added provisions to exclude cube depth textures.</change>
@@ -88,6 +88,12 @@
       <change>
         Renamed with OES prefix and removed the addendum due to expected harmonization between OES_depth_texture and ARB_depth_texture
         (depth cube maps).
+      </change>
+    </revision><revision date="2012/06/04" number="6">
+      <change>
+        Renamed to WEBGL prefix, and changed to reference ANGLE_depth_texture, because of
+        limitations preventing the current ANGLE library from loading of image data to depth
+        textures. Incorporated errors from ANGLE_depth_texure extension specification.
       </change>
     </revision></history></draft><draft href="OES_element_index_uint/"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
       <change>Initial revision.</change>
