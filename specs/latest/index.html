@@ -2839,9 +2839,10 @@ for (var i = 0; i < numVertices; i++) {
     </p>
     <p>
         Once an extension is enabled, no mechanism is provided to disable it. Multiple calls to
-        <code>getExtension</code> with the same extension string shall return the same object. An 
-        attempt to use any features of an extension without first calling getExtension to enable it 
-        must generate an appropriate GL error and must not make use of the feature.
+        <code>getExtension</code> with the same extension string, taking into account
+        case-insensitive comparison, shall return the same object. An attempt to use any features of
+        an extension without first calling getExtension to enable it must generate an appropriate GL
+        error and must not make use of the feature.
     </p>
     <p>
         This specification does not define any extensions. A separate <a href="#refsREGISTRY">WebGL
@@ -2856,7 +2857,9 @@ for (var i = 0; i < numVertices; i++) {
             
         <dt class="idl-code">object? getExtension(DOMString name)
         <dd>
-            Returns a valid object if, and only if, <em>name</em> is included in the return value
+            Returns a valid object if, and only if, <em>name</em> is
+            an <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/infrastructure.html#ascii-case-insensitive">ASCII
+            case-insensitive match</a> <a href="#refsHTML">[HTML]</a> for one of the names returned
             from <code>getSupportedExtensions</code>; otherwise, returns <code>null</code>. The
             object returned from <code>getExtension</code> contains any constants or functions used
             by the extension, if any. A returned object may have no constants or functions if the
