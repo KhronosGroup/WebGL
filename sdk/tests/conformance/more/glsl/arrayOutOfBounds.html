@@ -55,10 +55,12 @@ Tests.testOk = function(gl) {
 
 var arr = ['cr', 'cw', 'vr', 'vw'];
 arr.forEach(function(e){
-    Tests['test'+e+'vert'] = function(gl) {
-        var sh = new Filter(gl, e+'vert', 'frag');
-        assertFail(function(){sh.apply();});
-        sh.destroy();
+    if (e == 'cr' || e == 'cw') {
+        Tests['test'+e+'vert'] = function(gl) {
+            var sh = new Filter(gl, e+'vert', 'frag');
+            assertFail(function(){sh.apply();});
+            sh.destroy();
+        }
     }
     Tests['test'+e+'frag'] = function(gl) {
         var sh = new Filter(gl, 'vert', e+'frag');
@@ -118,6 +120,7 @@ arr.forEach(function(e){
     gl_Position = vec4(Vertex, x[4]);
   }
 </script>
+<!-- This one can't be required to fail compilation, because vertex shaders must support arbitrary array indexing -->
 <script id="vrvert" type="x-shader/x-vertex">
 
 
@@ -135,6 +138,7 @@ arr.forEach(function(e){
     gl_Position = vec4(Vertex, x[idx]);
   }
 </script>
+<!-- This one can't be required to fail compilation, because vertex shaders must support arbitrary array indexing -->
 <script id="vwvert" type="x-shader/x-vertex">
 
 
@@ -216,6 +220,7 @@ arr.forEach(function(e){
     gl_FragColor = vec4(1.0, 0.0, TexCoord.s, x[4]);
   }
 </script>
+<!-- This one actually fails because of WebGL's restrictions on indexing expressions in fragment shaders -->
 <script id="vrfrag" type="x-shader/x-fragment">
 
 
@@ -234,6 +239,7 @@ arr.forEach(function(e){
     gl_FragColor = vec4(1.0, 0.0, TexCoord.s, x[idx]);
   }
 </script>
+<!-- This one actually fails because of WebGL's restrictions on indexing expressions in fragment shaders -->
 <script id="vwfrag" type="x-shader/x-fragment">
 
 
