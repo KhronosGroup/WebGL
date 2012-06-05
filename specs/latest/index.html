@@ -464,7 +464,7 @@ gl.viewport(0, 0, canvas.width, canvas.height);
             cooperation of the server hosting the media,
             using <a href="http://www.w3.org/TR/cors/">Cross-Origin Resource
             Sharing</a> <a href="#refsCORS">[CORS]</a>. In order to use such media, the application
-            must explicitly request permission to do so, and the server must explicitly grant
+            needs to explicitly request permission to do so, and the server needs to explicitly grant
             permission. Successful CORS-enabled fetches of image and video elements from other
             domains <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/origin-0.html#origin-0">cause
             the origin of these elements</a> to be set to that of the containing
@@ -3009,7 +3009,7 @@ dictionary WebGLContextEventInit : <a href="http://www.w3.org/TR/domcore/#eventi
 
     <div class="note"> 
         Once the context is restored, WebGL resources such as textures and buffers that were created
-        before the context was lost are no longer valid. The application must reinitialize the
+        before the context was lost are no longer valid. The application needs to reinitialize the
         context's state and recreate all such resources.
     </div>
 
