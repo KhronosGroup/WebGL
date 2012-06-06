@@ -81,7 +81,7 @@
                 gl.clearColor(1, 0, 0, 1);
                 gl.clear(gl.COLOR_BUFFER_BIT);
                 ctx1.drawImage(c3, 0, 0);
-                wtu.waitFrames(5, function() {
+                wtu.waitForComposite(gl, function() {
                     ctx2.drawImage(c3, 0, 0);
                     checkResult(ctx1, ctx2, preserve);
                 });

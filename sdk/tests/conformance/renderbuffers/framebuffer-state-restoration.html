@@ -105,11 +105,11 @@ function test() {
   testDrawToFBO("after drawing to backbuffer");
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-  wtu.waitFrames(5, function() {
+  wtu.waitForComposite(gl, function() {
     testDrawToBackBuffer("after composite");
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     testDrawToFBO("after drawing to backbuffer after composite");
-    wtu.waitFrames(5, function() {
+    wtu.waitForComposite(gl, function() {
       testDrawToFBO("after composite");
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
       testDrawToBackBuffer("after drawing to framebuffer after composite");

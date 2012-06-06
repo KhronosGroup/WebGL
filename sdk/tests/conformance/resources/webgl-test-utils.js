@@ -1582,7 +1582,12 @@ var cancelAnimFrame = (function() {
          window.clearTimeout;
 })();
 
-var waitFrames = function(frames, callback) {
+/**
+ * Waits for the browser to composite the canvas associated with
+ * the WebGL context passed in.
+ */
+var waitForComposite = function(gl, callback) {
+  var frames = 5;
   var countDown = function() {
     if (frames == 0) {
       callback();
@@ -1655,7 +1660,7 @@ return {
   readFileList: readFileList,
   replaceParams: replaceParams,
   requestAnimFrame: requestAnimFrame,
-  waitFrames: waitFrames,
+  waitForComposite: waitForComposite,
 
   none: false
 };

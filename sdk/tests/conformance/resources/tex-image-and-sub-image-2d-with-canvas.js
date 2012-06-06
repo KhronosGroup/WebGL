@@ -162,7 +162,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
                     return;
                 }
             }
-            wtu.waitFrames(5, runNextTest);
+            wtu.waitForComposite(gl, runNextTest);
         }
         runNextTest();
     }
