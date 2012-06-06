@@ -640,11 +640,15 @@ var drawIndexedQuad = function(gl, gridRes, opt_color) {
  * @param {number} height width of region to check.
  * @param {!Array.<number>} color The color to fill clear with before drawing. A
  *        4 element array where each element is in the range 0 to 255.
- * @param {string} msg Message to associate with success. Eg ("should be red").
  * @param {number} errorRange Optional. Acceptable error in
  *        color checking. 0 by default.
+ * @param {!function()} sameFn Function to call if all pixels
+ *        are the same as color.
+ * @param {!function()} differentFn Function to call if a pixel
+ *        is different than color
+ * @param {!function()} logFn Function to call for logging.
  */
-var checkCanvasRect = function(gl, x, y, width, height, color, msg, errorRange) {
+var checkCanvasRectColor = function(gl, x, y, width, height, color, errorRange, sameFn, differentFn, logFn) {
   errorRange = errorRange || 0;
   if (!errorRange.length) {
     errorRange = [errorRange, errorRange, errorRange, errorRange]
@@ -655,18 +659,43 @@ var checkCanvasRect = function(gl, x, y, width, height, color, msg, errorRange) 
     var offset = i * 4;
     for (var j = 0; j < color.length; ++j) {
       if (Math.abs(buf[offset + j] - color[j]) > errorRange[j]) {
-        testFailed(msg);
+        differentFn();
         var was = buf[offset + 0].toString();
         for (j = 1; j < color.length; ++j) {
           was += "," + buf[offset + j];
         }
-        debug('at (' + (i % width) + ', ' + Math.floor(i / width) +
+        logFn('at (' + (i % width) + ', ' + Math.floor(i / width) +
               ') expected: ' + color + ' was ' + was);
         return;
       }
     }
   }
-  testPassed(msg);
+  sameFn();
+};
+
+/**
+ * Checks that a portion of a canvas is 1 color.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {number} x left corner of region to check.
+ * @param {number} y bottom corner of region to check.
+ * @param {number} width width of region to check.
+ * @param {number} height width of region to check.
+ * @param {!Array.<number>} color The color to fill clear with before drawing. A
+ *        4 element array where each element is in the range 0 to 255.
+ * @param {string} msg Message to associate with success. Eg ("should be red").
+ * @param {number} errorRange Optional. Acceptable error in
+ *        color checking. 0 by default.
+ */
+var checkCanvasRect = function(gl, x, y, width, height, color, msg, errorRange) {
+  checkCanvasRectColor(
+      gl, x, y, width, height, color, errorRange,
+      function() {
+        testPassed(msg);
+      },
+      function() {
+        testFailed(msg);
+      },
+      debug);
 };
 
 /**
@@ -1573,6 +1602,7 @@ return {
     create3DContextWithWrapperThatThrowsOnGLError,
   checkCanvas: checkCanvas,
   checkCanvasRect: checkCanvasRect,
+  checkCanvasRectColor: checkCanvasRectColor,
   createColoredTexture: createColoredTexture,
   createProgram: createProgram,
   drawQuad: drawQuad,

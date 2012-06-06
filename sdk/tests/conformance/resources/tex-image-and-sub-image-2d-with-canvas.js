@@ -24,7 +24,6 @@
 function generateTest(pixelFormat, pixelType, prologue) {
     var wtu = WebGLTestUtils;
     var gl = null;
-    var textureLoc = null;
     var successfullyParsed = false;
 
     var init = function()
@@ -56,21 +55,28 @@ function generateTest(pixelFormat, pixelType, prologue) {
         ctx.fillStyle = "#00ff00";
         ctx.fillRect(0,1,1,1);
         runTest(testCanvas);
+        //document.body.appendChild(testCanvas);
     }
 
-    function runOneIteration(image, useTexSubImage2D, flipY, topColor, bottomColor)
+    function runOneIteration(canvas, useTexSubImage2D, flipY, topColor, bottomColor, opt_texture, opt_fontTest)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
               ' with flipY=' + flipY);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Disable any writes to the alpha channel
         gl.colorMask(1, 1, 1, 0);
-        var texture = gl.createTexture();
-        // Bind the texture to texture unit 0
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        // Set up texture parameters
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        if (!opt_texture) {
+            var texture = gl.createTexture();
+            // Bind the texture to texture unit 0
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            // Set up texture parameters
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        } else {
+            var texture = opt_texture;
+        }
         // Set up pixel store parameters
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
@@ -78,38 +84,87 @@ function generateTest(pixelFormat, pixelType, prologue) {
         // Upload the image into the texture
         if (useTexSubImage2D) {
             // Initialize the texture to black first
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl[pixelFormat], image.width, image.height, 0,
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl[pixelFormat], canvas.width, canvas.height, 0,
                           gl[pixelFormat], gl[pixelType], null);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl[pixelFormat], gl[pixelType], image);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl[pixelFormat], gl[pixelType], canvas);
         } else {
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl[pixelFormat], gl[pixelFormat], gl[pixelType], image);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl[pixelFormat], gl[pixelFormat], gl[pixelType], canvas);
         }
 
-        // Point the uniform sampler to texture unit 0
-        gl.uniform1i(textureLoc, 0);
         // Draw the triangles
         wtu.drawQuad(gl, [0, 0, 0, 255]);
-        // Check a few pixels near the top and bottom and make sure they have
-        // the right color.
-        debug("Checking lower left corner");
-        wtu.checkCanvasRect(gl, 4, 4, 2, 2, bottomColor,
-                            "shouldBe " + bottomColor);
-        debug("Checking upper left corner");
-        wtu.checkCanvasRect(gl, 4, gl.canvas.height - 8, 2, 2, topColor,
-                            "shouldBe " + topColor);
+
+        if (opt_fontTest) {
+            wtu.checkCanvasRectColor(
+                  gl, 0, 0, gl.canvas.width, gl.canvas.height,
+                  [255, 255, 255, 255], 0,
+                  function() {
+                    testFailed("font missing");
+                  },
+                  function() {
+                    testPassed("font renderered");
+                  },
+                  debug);
+        } else {
+            // Check a few pixels near the top and bottom and make sure they have
+            // the right color.
+            debug("Checking lower left corner");
+            wtu.checkCanvasRect(gl, 4, 4, 2, 2, bottomColor,
+                                "shouldBe " + bottomColor);
+            debug("Checking upper left corner");
+            wtu.checkCanvasRect(gl, 4, gl.canvas.height - 8, 2, 2, topColor,
+                                "shouldBe " + topColor);
+        }
+
+        return texture;
     }
 
-    function runTest(image)
+    function runTest(canvas)
     {
         var red = [255, 0, 0];
         var green = [0, 255, 0];
-        runOneIteration(image, false, true, red, green);
-        runOneIteration(image, false, false, green, red);
-        runOneIteration(image, true, true, red, green);
-        runOneIteration(image, true, false, green, red);
+        runOneIteration(canvas, false, true, red, green);
+        runOneIteration(canvas, false, false, green, red);
+        runOneIteration(canvas, true, true, red, green);
+        runOneIteration(canvas, true, false, green, red);
 
-        glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
-        finishTest();
+        var count = 4;
+        var caseNdx = 0;
+        canvas.width = 257;
+        canvas.height = 257;
+        var ctx = canvas.getContext("2d");
+
+        var cases = [
+            { sub: false, flipY: true,  top: red,   bottom: green },
+            { sub: false, flipY: false, top: green, bottom: red   },
+            { sub: true,  flipY: true,  top: red,   bottom: green },
+            { sub: true,  flipY: false, top: green, bottom: red   },
+        ];
+
+        var texture;
+        function runNextTest() {
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '20pt Arial';
+            ctx.fillStyle = 'black';
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("1234567890", canvas.width / 2, canvas.height / 2);
+            var c = cases[caseNdx];
+            texture = runOneIteration(canvas, c.sub, c.flipY, c.top, c.bottom, texture, true);
+            ++caseNdx;
+            if (caseNdx == cases.length) {
+                caseNdx = 0;
+                --count;
+                if (!count) {
+                    glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+                    finishTest();
+                    return;
+                }
+            }
+            wtu.waitFrames(5, runNextTest);
+        }
+        runNextTest();
     }
 
     return init;
