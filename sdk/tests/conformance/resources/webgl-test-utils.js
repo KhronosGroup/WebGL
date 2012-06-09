@@ -594,6 +594,40 @@ var createColoredTexture = function(gl, width, height, color) {
   return tex;
 };
 
+var ubyteToFloat = function(c) {
+  return c / 255;
+};
+
+/**
+ * Draws a previously setup quad in the given color.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!Array.<number>} color The color to draw with. A 4
+ *        element array where each element is in the range 0 to
+ *        1.
+ */
+var drawFloatColorQuad = function(gl, color) {
+  var program = gl.getParameter(gl.CURRENT_PROGRAM);
+  var colorLocation = gl.getUniformLocation(program, "u_color");
+  gl.uniform4fv(colorLocation, color);
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+};
+
+
+/**
+ * Draws a previously setup quad in the given color.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!Array.<number>} color The color to draw with. A 4
+ *        element array where each element is in the range 0 to
+ *        255.
+ */
+var drawUByteColorQuad = function(gl, color) {
+  var floatColor = [];
+  for (var ii = 0; ii < color.length; ++ii) {
+    floatColor[ii] = ubyteToFloat(color[ii]);
+  }
+  drawFloatColorQuad(gl, floatColor);
+};
+
 /**
  * Draws a previously setup quad.
  * @param {!WebGLContext} gl The WebGLContext to use.
@@ -1612,6 +1646,8 @@ return {
   createProgram: createProgram,
   drawQuad: drawQuad,
   drawIndexedQuad: drawIndexedQuad,
+  drawUByteColorQuad: drawUByteColorQuad,
+  drawFloatColorQuad: drawFloatColorQuad,
   endsWith: endsWith,
   getExtensionWithKnownPrefixes: getExtensionWithKnownPrefixes,
   getFileListAsync: getFileListAsync,
