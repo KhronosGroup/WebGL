@@ -162,6 +162,68 @@ function testDepthStencilRenderbuffer(allowedStatuses)
     }
     glErrorShouldBe(gl, gl.NO_ERROR);
     testAttachment(gl.DEPTH_STENCIL_ATTACHMENT, depthStencilBuffer, allowedStatuses);
+    testDepthStencilDepthStencil();
+}
+
+function testDepthStencilDepthStencil()
+{
+    var tests = [
+      { firstFormat: gl.DEPTH_COMPONENT16,
+        firstAttach: gl.DEPTH_ATTACHMENT,
+        secondFormat: gl.DEPTH_STENCIL,
+        secondAttach: gl.DEPTH_STENCIL_ATTACHMENT
+      },
+      { firstFormat: gl.DEPTH_STENCIL,
+        firstAttach: gl.DEPTH_STENCIL_ATTACHMENT,
+		secondFormat: gl.DEPTH_COMPONENT16,
+		secondAttach: gl.DEPTH_ATTACHMENT
+      }
+	];
+    for (var ii = 0; ii < tests.length; ++tests) {
+		var test = tests[ii];
+		var fbo = gl.createFramebuffer();
+		var tex = gl.createTexture();
+		var firstRb = gl.createRenderbuffer();
+
+		gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+		// attach texture as color
+		gl.bindTexture(gl.TEXTURE_2D, tex);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+
+		// attach first
+		gl.bindRenderbuffer(gl.RENDERBUFFER, firstRb);
+		gl.renderbufferStorage(gl.RENDERBUFFER, test.firstFormat, width, height);
+		gl.framebufferRenderbuffer(gl.FRAMEBUFFER, test.firstAttach, gl.RENDERBUFFER, firstRb);
+
+		if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
+			var secondRb = gl.createRenderbuffer();
+
+			// attach second
+			gl.bindRenderbuffer(gl.RENDERBUFFER, secondRb);
+			gl.renderbufferStorage(gl.RENDERBUFFER, test.secondFormat, width, height);
+			gl.framebufferRenderbuffer(gl.FRAMEBUFFER, test.secondAttach, gl.RENDERBUFFER, secondRb);
+
+			// now delete it
+			gl.deleteRenderbuffer(secondRb);
+
+			// If the first attachment is not restored this may fail
+			shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
+			glErrorShouldBe(gl, gl.NO_ERROR);
+
+			// If the first attachment is not restored this may fail.
+			gl.enable(gl.DEPTH_TEST);
+			var program = wtu.setupColorQuad(gl);
+			wtu.drawUByteColorQuad(gl, [0, 255, 0, 255]);
+			wtu.drawUByteColorQuad(gl, [255, 0, 0, 255]);  // should not draw since DEPTH_FUNC == LESS
+			wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
+			gl.disable(gl.DEPTH_TEST);
+		}
+
+		gl.deleteRenderbuffer(secondRb);
+		gl.deleteFramebuffer(fbo);
+	}
+	glErrorShouldBe(gl, gl.NO_ERROR);
 }
 
 description("Test framebuffer object attachment behaviors");
