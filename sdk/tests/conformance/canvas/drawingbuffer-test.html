@@ -201,6 +201,32 @@ function test(desiredWidth, desiredHeight) {
     checkQuad(gl);
 
     shouldBe('gl.getError()', 'gl.NO_ERROR');
+
+    debug("");
+    debug("testing resizing canvas to width = " + desiredWidth + ", height = " + desiredHeight);
+
+    oldViewport = gl.getParameter(gl.VIEWPORT);
+
+    // flip width and height
+    canvas.width = desiredHeight;
+    canvas.height = desiredWidth;
+
+    // Verify the viewport didn't change.
+    shouldBe('gl.getParameter(gl.VIEWPORT)[0]', 'oldViewport[0]');
+    shouldBe('gl.getParameter(gl.VIEWPORT)[1]', 'oldViewport[1]');
+    shouldBe('gl.getParameter(gl.VIEWPORT)[2]', 'oldViewport[2]');
+    shouldBe('gl.getParameter(gl.VIEWPORT)[3]', 'oldViewport[3]');
+
+    // fix the viewport
+    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+
+    // Draw a pixel grid using a shader that draws in device coordinates
+    checkGrid(gl);
+
+    // Draw a quad in the top right corner.
+    checkQuad(gl);
+
+    shouldBe('gl.getError()', 'gl.NO_ERROR');
   }
 }
 
@@ -212,14 +238,13 @@ shouldBeTrue('maxSize[0] > 0');
 shouldBeTrue('maxSize[1] > 0');
 
 // test a small size to make sure it works at all.
-test(16, 16);
+test(16, 32);
 
 // Make a canvas slightly larger than the max size WebGL can handle.
 // From section 2.2 of the spec the WebGL implementation should allow this to work.
 
 // test a size larger than MAX_VIEWPORT_DIMS in both dimensions
 test(maxSize[0] + 32, 8);
-test(8, maxSize[1] + 32);
 
 debug("")
 successfullyParsed = true;
