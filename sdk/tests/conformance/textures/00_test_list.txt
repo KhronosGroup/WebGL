@@ -1,5 +1,6 @@
 compressed-tex-image.html
 copy-tex-image-and-sub-image-2d.html
+--min-version 1.0.2 copy-tex-image-2d-formats.html
 gl-pixelstorei.html
 gl-teximage.html
 origin-clean-conformance.html
