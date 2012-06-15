@@ -164,7 +164,7 @@ function testCopyTexImage2D(backFormat, texFormat) {
 
   var color = expectedColors[texFormat];
 
-  wtu.checkCanvas(gl, color, "should be " + color);
+  wtu.checkCanvas(gl, color, "should be " + color, 16);
 
   glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 }
