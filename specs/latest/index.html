@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 05 June 2012</h2>
+    <h2 class="no-toc">Editor's Draft 14 June 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -321,10 +321,10 @@
     <h3>The WebGL Viewport</h3>
 
     <p>
-        OpenGL manages a rectangular viewport as part of its state which defines the placement of the
-        rendering results in the drawing buffer. Upon creation of the WebGL context, the viewport is
-        initialized to a rectangle with origin at (0, 0) and width and height equal to (canvas.width,
-        canvas.height).
+        OpenGL manages a rectangular viewport as part of its state which defines the placement of
+        the rendering results in the drawing buffer. Upon creation of WebGL
+        context <em>context</em>, the viewport is initialized to a rectangle with origin at (0, 0)
+        and width and height equal to (context.drawingBufferWidth, context.drawingBufferHeight).
     </p>
     <p>
         A WebGL implementation <em>shall not</em> affect the state of the OpenGL viewport in response to
@@ -340,7 +340,7 @@ var canvas = document.getElementById('canvas1');
 var gl = canvas.getContext('webgl');
 canvas.width = newWidth;
 canvas.height = newHeight;
-gl.viewport(0, 0, canvas.width, canvas.height);
+gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
         </pre>
     </div>
     <p>
