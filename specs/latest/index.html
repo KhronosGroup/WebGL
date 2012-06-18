@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 14 June 2012</h2>
+    <h2 class="no-toc">Editor's Draft 18 June 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -259,6 +259,32 @@
         buffer size can be obtained from the <code>drawingBufferWidth</code> and 
         <code>drawingBufferHeight</code> attributes.
     </p>
+    <p>
+        A WebGL implementation must not perform any automatic scaling of the size of the drawing
+        buffer on high-definition displays. The context's <code>drawingBufferWidth</code>
+        and <code>drawingBufferHeight</code> must match the canvas's <code>width</code>
+        and <code>height</code> attributes as closely as possible, modulo implementation-dependent
+        constraints.
+    </p>
+    <div class="note">
+        <p>
+            The constraint above does not change the amount of space the canvas element consumes on
+            the web page, even on a high-definition display. The
+            canvas's <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#attr-canvas-width">intrinsic
+            dimensions</a> <a href="#refsCANVAS">[CANVAS]</a> equal the size of its coordinate
+            space, with the numbers interpreted in CSS pixels, and CSS pixels
+            are <a href="http://www.w3.org/TR/CSS21/syndata.html#length-units">resolution-independent</a> <a href="#refsCSS">[CSS]</a>.
+        </p>
+        <p>
+            A WebGL application can achieve a 1:1 ratio between drawing buffer pixels and on-screen
+            pixels on high-definition displays by examining properties
+            like <code>window.devicePixelRatio</code>, scaling the canvas's <code>width</code>
+            and <code>height</code> by that factor, and setting its CSS width and height to the
+            original width and height. An application can simulate the effect of running on a
+            higher-resolution display simply by scaling up the canvas's <code>width</code>
+            and <code>height</code> properties.
+        </p>
+    </div>
     <p>
         The optional <a href="#WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a> object may be used
         to change whether or not the buffers are defined. It can also be used to define whether the
@@ -3475,6 +3501,11 @@ extensions.
         <dd><cite><a href="http://www.ietf.org/rfc/rfc2119.txt">
             Key words for use in RFCs to Indicate Requirement Levels</a></cite>,
             S. Bradner. IETF, March 1997.
+        </dd>
+        <dt id="refsCSS">[CSS]</dt>
+        <dd><cite><a href="http://www.w3.org/TR/CSS21/">
+            Cascading Style Sheets Level 2 Revision 1 (CSS 2.1) Specification</a></cite>,
+            B. Bos, T. Celik, I. Hickson, H. W. Lie, June 2011.
         </dd>
         <dt id="refsCORS">[CORS]</dt>
         <dd><cite><a href="http://www.w3.org/TR/cors/">
