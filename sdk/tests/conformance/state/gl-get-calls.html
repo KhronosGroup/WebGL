@@ -95,6 +95,7 @@ else {
     shouldBe('context.getParameter(context.FRONT_FACE)', 'context.CCW');
     shouldBe('context.getParameter(context.GENERATE_MIPMAP_HINT)', 'context.DONT_CARE');
     shouldBe('context.getParameter(context.LINE_WIDTH)', '1');
+    shouldBe('context.getParameter(context.PACK_ALIGNMENT)', '4');
     shouldBe('context.getParameter(context.POLYGON_OFFSET_FACTOR)', '0');
     shouldBe('context.getParameter(context.POLYGON_OFFSET_FILL)', 'false');
     shouldBe('context.getParameter(context.POLYGON_OFFSET_UNITS)', '0');
@@ -103,6 +104,8 @@ else {
     shouldBe('context.getParameter(context.SAMPLE_COVERAGE_VALUE)', '1');
     shouldBe('context.getParameter(context.SCISSOR_BOX)[0]', '0');
     shouldBe('context.getParameter(context.SCISSOR_BOX)[1]', '0');
+    shouldBe('context.getParameter(context.SCISSOR_BOX)[2]', 'context.getParameter(context.VIEWPORT)[2]');
+    shouldBe('context.getParameter(context.SCISSOR_BOX)[3]', 'context.getParameter(context.VIEWPORT)[3]');
     shouldBeType('context.getParameter(context.SCISSOR_BOX)', Int32Array);
     shouldBe('context.getParameter(context.SCISSOR_TEST)', 'false');
     shouldBe('context.getParameter(context.STENCIL_BACK_FAIL)', 'context.KEEP');
