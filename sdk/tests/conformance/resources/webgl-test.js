@@ -154,7 +154,7 @@ function glErrorShouldBe(gl, glErrors, opt_msg) {
     var msg = "getError expected" + ((glErrors.length > 1) ? " one of: " : ": ");
     testFailed(msg + expected +  ". Was " + getGLErrorAsString(gl, err) + " : " + opt_msg);
   } else {
-    var msg = "getError was " + ((glErrors.length > 1) ? " one of: " : ": ");
+    var msg = "getError was " + ((glErrors.length > 1) ? "one of: " : "expected value: ");
     testPassed(msg + expected + " : " + opt_msg);
   }
 };
