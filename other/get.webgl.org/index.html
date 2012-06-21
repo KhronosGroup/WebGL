@@ -179,6 +179,9 @@ function pageLoaded() {
     b = BrowserDetect;
     b.init();
     canvas = document.getElementById("webgl-logo");
+    var ratio = (window.devicePixelRatio ? window.devicePixelRatio : 1);
+    canvas.width = 140 * ratio;
+    canvas.height = 150 * ratio;
     var experimental = false;
     try { gl = canvas.getContext("webgl"); }
     catch (x) { gl = null; }
@@ -281,7 +284,7 @@ window.onload = pageLoaded;
             <a id="support-link">visit the support site for your browser</a>.</div>
 
             <div id="logo-container">
-            <canvas id="webgl-logo" width="140" height="150" /></canvas>
+            <canvas id="webgl-logo" style="width: 140px; height: 150px;" /></canvas>
             </div>
           </div>
 
