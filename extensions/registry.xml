@@ -95,6 +95,11 @@
         limitations preventing the current ANGLE library from loading of image data to depth
         textures. Incorporated errors from ANGLE_depth_texure extension specification.
       </change>
+    </revision><revision date="2012/06/20" number="7">
+      <change>
+        Incorporated depth/stencil support and UNSIGNED_INT_24_8_WEBGL enum after discussion on
+        public_webgl mailing list.
+      </change>
     </revision></history></draft><draft href="OES_element_index_uint/"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/01/27" number="2">
