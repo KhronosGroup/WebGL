@@ -4,7 +4,9 @@
     <email>public_webgl@khronos.org</email>
   </author><entry><title>WEBGL_depth_texture : revision 7</title><link rel="alternate" type="text/html" href="WEBGL_depth_texture/"/><id>WEBGL_depth_texture/#r=7</id><updated>2012-06-20T23:59:59Z</updated><summary>
         Incorporated depth/stencil support and UNSIGNED_INT_24_8_WEBGL enum after discussion on
-        public_webgl mailing list.
+        public_webgl mailing list, including supported behavior and additional error behavior.
+        Extended rules in Section 6.5 ("Framebuffer Object Attachments") to handle texture
+        attachments.
       
               
             </summary></entry><entry><title>WEBGL_depth_texture : revision 6</title><link rel="alternate" type="text/html" href="WEBGL_depth_texture/"/><id>WEBGL_depth_texture/#r=6</id><updated>2012-06-04T23:59:59Z</updated><summary>

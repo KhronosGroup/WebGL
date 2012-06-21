@@ -22,7 +22,7 @@
 
       <ul>
       <li> ANGLE_depth_texture provides both depth and depth/stencil textures. </li>
-      <li> ANGLE_depth_texture does not provide the DEPTH24_STENCIL8_OES renderbuffer internal format from the OES_packed_depth_stencil extension. The core WebGL specification already supports allocation of depth/stencil renderbuffers. </li>
+      <li> ANGLE_depth_texture does not provide the <code>DEPTH24_STENCIL8_OES</code> renderbuffer internal format from the OES_packed_depth_stencil extension. The core WebGL specification already supports allocation of depth/stencil renderbuffers. </li>
       <li> ANGLE_depth_texture does not support loading image data via the TexImage or TexSubImage commands. Depth and depth/stencil textures created via this extension can only have their contents specified by rendering to them. </li>
       </ul>
 
@@ -46,6 +46,29 @@
       </feature>
       <feature>
         The <code>texImage2D</code> and <code>texSubImage2D</code> entry points are extended to accept <code>ArrayBufferView</code> of type <code>Uint16Array</code> and <code>Uint32Array</code>
+      </feature>
+
+      <feature>
+        <p>
+          The WebGL-specific constraints about <a href="http://www.khronos.org/registry/webgl/specs/1.0/#6.5">Framebuffer Object Attachments</a> are extended:
+
+          <ul>
+          <li> A texture attached to an FBO's <code>DEPTH_ATTACHMENT</code> attachment point must be allocated with the <code>DEPTH_COMPONENT</code> internal format. </li>
+          <li> A texture attached to the <code>DEPTH_STENCIL_ATTACHMENT</code> attachment point must be allocated with the <code>DEPTH_STENCIL</code> internal format. </li>
+          </ul>
+        </p>
+        <p>
+          In the WebGL API, it is an error to concurrently attach either renderbuffers or textures to the following combinations of attachment points:
+
+          <ul>
+          <li> <code>DEPTH_ATTACHMENT</code> + <code>DEPTH_STENCIL_ATTACHMENT</code> </li>
+          <li> <code>STENCIL_ATTACHMENT</code> + <code>DEPTH_STENCIL_ATTACHMENT</code> </li>
+          <li> <code>DEPTH_ATTACHMENT</code> + <code>STENCIL_ATTACHMENT</code> </li>
+          </ul>
+        </p>
+        <p>
+          See the section <a href="http://www.khronos.org/registry/webgl/specs/1.0/#6.5">Framebuffer Object Attachments</a> in the WebGL specification for the behavior if these constraints are violated.
+        </p>
       </feature>
     </features>
   </overview>
@@ -127,7 +150,9 @@ interface WEBGL_depth_texture {
     <revision date="2012/06/20">
       <change>
         Incorporated depth/stencil support and UNSIGNED_INT_24_8_WEBGL enum after discussion on
-        public_webgl mailing list.
+        public_webgl mailing list, including supported behavior and additional error behavior.
+        Extended rules in Section 6.5 ("Framebuffer Object Attachments") to handle texture
+        attachments.
       </change>
     </revision>
   </history>
