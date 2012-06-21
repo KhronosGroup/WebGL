@@ -145,6 +145,9 @@ function main() {
     if (!gl)
         return;
 
+	var ratio = window.devicePixelRatio ? window.devicePixelRatio : 1;
+	g_canvas.width = 800 * ratio;
+	g_canvas.height = 600 * ratio;
     g_width = g_canvas.width;
     g_height = g_canvas.height;
     controller = new CameraController(g_canvas);

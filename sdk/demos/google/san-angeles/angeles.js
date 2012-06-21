@@ -43,6 +43,9 @@ function main() {
 
     //canvas.loseContextInNCalls(200000);// tell the simulator when to lose context.
 
+	var ratio = window.devicePixelRatio ? window.devicePixelRatio : 1;
+	canvas.width = 640 * ratio;
+	canvas.height = 480 * ratio;
     gl = WebGLUtils.setupWebGL(canvas);
     if (!gl)
         return;
