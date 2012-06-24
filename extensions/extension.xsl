@@ -127,6 +127,7 @@
         <xsl:apply-templates select="newtok" mode="newfun" />
       </xsl:if>
 
+
       <xsl:if test="additions">
         <h2 class="no-toc">Additions to the WebGL Specification</h2>
         <xsl:copy-of select="additions/node()" />
