@@ -116,7 +116,7 @@ interface OES_foo_bar {
   <security></security>
   <ipstatus></ipstatus>
   <newtypes></newtypes>
-  <additions></additions> <!-- Additions to Chapters of the OpenGL ES 2.0 Specifications -->
+  <additions></additions> <!-- Additions to the WebGL Specification -->
   <errors></errors>
   <newstate></newstate>
   <newimplstate></newimplstate> <!-- New Implementation-Dependent State -->

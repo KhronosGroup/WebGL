@@ -128,7 +128,7 @@
       </xsl:if>
 
       <xsl:if test="additions">
-        <h2 class="no-toc">Additions to Chapters of the OpenGL ES 2.0 Specification</h2>
+        <h2 class="no-toc">Additions to the WebGL Specification</h2>
         <xsl:copy-of select="additions/node()" />
       </xsl:if>
 
