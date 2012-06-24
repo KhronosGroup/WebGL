@@ -107,7 +107,6 @@ interface OES_foo_bar {
     </function>
   </newtok>
 
-
   <!-- Refer to the <http://www.opengl.org/registry/doc/template.txt> OpenGL
        extension template for a description of these sections. These sections
        should be eliminated for WebGL extensions simply mirroring OpenGL or
