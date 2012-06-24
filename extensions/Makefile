@@ -13,6 +13,8 @@ EXTS := OES_standard_derivatives \
 	proposals/ANGLE_instanced_arrays \
 	proposals/WEBGL_fbo_color_attachments \
 
+EXTS := $(strip $(EXTS))
+
 EXT_XMLS := $(addsuffix /extension.xml,$(EXTS))
 EXT_IDXS := $(addsuffix /index.html,$(EXTS))
 
@@ -20,8 +22,7 @@ comma:=,
 empty:=
 space:=$(empty) $(empty)
 EXT_LIST:=$(subst $(space),$(comma),$(EXTS))
-# Trim the trailing empty elements from EXT_LIST
-EXT_LIST:=$(shell echo $(EXT_LIST) | sed -e "s/,\s*$$//")
+
 # This sed substitute command builds a relative path back to the SVN root
 # from an extension registry relative path
 RE_BASEPATH:="s/[^\/]*/../g"
