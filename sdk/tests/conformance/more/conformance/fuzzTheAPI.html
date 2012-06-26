@@ -90,7 +90,7 @@ Tests.testGetGLWeb20 = function() {
     var funcnames = document.getElementById('funcnames').value.split(",");
     var canvas = document.getElementById('glweb20');
     var gl;
-    assertOk(function(){gl = canvas.getContext(GL_CONTEXT_ID);});
+    assertOk(function(){gl = getGLContext(canvas);});
     var funcs = [];
     for (var i=0; i<funcnames.length; i++) {
         var fn = funcnames[i];

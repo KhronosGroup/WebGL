@@ -770,6 +770,37 @@ var loadTexture = function(gl, url, callback) {
 };
 
 /**
+ * Makes a shallow copy of an object.
+ * @param {!Object) src Object to copy
+ * @return {!Object} The copy of src.
+ */
+var shallowCopyObject = function(src) {
+  var dst = {};
+  for (var attr in src) {
+    if (src.hasOwnProperty(attr)) {
+      dst[attr] = src[attr];
+    }
+  }
+  return dst;
+};
+
+/**
+ * Checks if an attribute exists on an object case insensitive.
+ * @param {!Object) obj Object to check
+ * @param {string} attr Name of attribute to look for.
+ * @return {string?} The name of the attribute if it exists,
+ *         undefined if not.
+ */
+var hasAttributeCaseInsensitive = function(obj, attr) {
+  var lower = attr.toLowerCase();
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key) && key.toLowerCase() == lower) {
+      return key;
+    }
+  }
+};
+
+/**
  * Creates a webgl context.
  * @param {!Canvas|string} opt_canvas The canvas tag to get
  *     context from. If one is not passed in one will be
@@ -778,6 +809,11 @@ var loadTexture = function(gl, url, callback) {
  * @return {!WebGLContext} The created context.
  */
 var create3DContext = function(opt_canvas, opt_attributes) {
+  var attributes = shallowCopyObject(opt_attributes || {});
+  if (!hasAttributeCaseInsensitive(attributes, "antialias")) {
+    attributes.antialias = false;
+  }
+
   opt_canvas = opt_canvas || document.createElement("canvas");
   if (typeof opt_canvas == 'string') {
     opt_canvas = document.getElementById(opt_canvas);
@@ -786,7 +822,7 @@ var create3DContext = function(opt_canvas, opt_attributes) {
   var names = ["webgl", "experimental-webgl"];
   for (var i = 0; i < names.length; ++i) {
     try {
-      context = opt_canvas.getContext(names[i], opt_attributes);
+      context = opt_canvas.getContext(names[i], attributes);
     } catch (e) {
     }
     if (context) {
@@ -1638,7 +1674,7 @@ return {
   cancelAnimFrame: cancelAnimFrame,
   create3DContext: create3DContext,
   create3DContextWithWrapperThatThrowsOnGLError:
-    create3DContextWithWrapperThatThrowsOnGLError,
+      create3DContextWithWrapperThatThrowsOnGLError,
   checkCanvas: checkCanvas,
   checkCanvasRect: checkCanvasRect,
   checkCanvasRectColor: checkCanvasRectColor,
@@ -1649,6 +1685,7 @@ return {
   drawUByteColorQuad: drawUByteColorQuad,
   drawFloatColorQuad: drawFloatColorQuad,
   endsWith: endsWith,
+  fillTexture: fillTexture,
   getExtensionWithKnownPrefixes: getExtensionWithKnownPrefixes,
   getFileListAsync: getFileListAsync,
   getLastError: getLastError,
@@ -1657,7 +1694,7 @@ return {
   getUrlArguments: getUrlArguments,
   glEnumToString: glEnumToString,
   glErrorShouldBe: glErrorShouldBe,
-  fillTexture: fillTexture,
+  hasAttributeCaseInsensitive: hasAttributeCaseInsensitive,
   insertImage: insertImage,
   loadImageAsync: loadImageAsync,
   loadImagesAsync: loadImagesAsync,
@@ -1677,6 +1714,7 @@ return {
   loggingOff: loggingOff,
   makeImage: makeImage,
   error: error,
+  shallowCopyObject: shallowCopyObject,
   setupColorQuad: setupColorQuad,
   setupProgram: setupProgram,
   setupQuad: setupQuad,

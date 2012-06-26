@@ -35,7 +35,7 @@
 
 Tests.startUnit = function () {
   var canvas = document.getElementById('gl');
-  var unwrappedGL = canvas.getContext(GL_CONTEXT_ID);
+  var unwrappedGL = getGLContext(canvas);
   var gl = wrapGLContext(unwrappedGL);
   return [gl, unwrappedGL];
 }

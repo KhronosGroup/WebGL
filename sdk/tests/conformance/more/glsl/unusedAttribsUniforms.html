@@ -38,7 +38,7 @@ Tests.message = "Caution: may crash the browser";
 
 Tests.startUnit = function () {
   var canvas = document.getElementById('gl');
-  var gl = canvas.getContext(GL_CONTEXT_ID);
+  var gl = getGLContext(canvas);
   return [gl];
 }
 

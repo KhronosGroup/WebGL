@@ -45,7 +45,7 @@
 var GLcanvas = document.createElement('canvas');
 var canvas2D = document.createElement('canvas');
 GLcanvas.width = GLcanvas.height = 256;
-GL = GLcanvas.getContext(GL_CONTEXT_ID);
+GL = getGLContext(GLcanvas);
 Array.from = function(o) {
   var a = [];
   for (var i=0; i<o.length; i++)

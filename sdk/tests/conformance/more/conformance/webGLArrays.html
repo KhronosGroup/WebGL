@@ -52,7 +52,7 @@ function assertIdxs(name, arr, length) {
 
 Tests.startUnit = function () {
   var canvas = document.getElementById('gl');
-  var gl = wrapGLContext(canvas.getContext(GL_CONTEXT_ID));
+  var gl = wrapGLContext(getGLContext(canvas));
   prog = new Shader(gl, 'vert', 'frag');
   prog.use();
   prog.uniform4f('c', 255, 0, 0, 255);

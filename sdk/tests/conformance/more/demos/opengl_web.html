@@ -44,7 +44,7 @@ function log(msg) {
 
 function init(ev) {
     var canvas = document.getElementById('canvas');
-    var gl = canvas.getContext(GL_CONTEXT_ID);
+    var gl = getGLContext(canvas);
 
     var shader = new Shader(gl, "ppix-vert", "ppix-frag");
     shader.compile();
