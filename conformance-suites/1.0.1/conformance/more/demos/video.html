@@ -22,7 +22,7 @@ var processor = {
   init: function() {
     if (this.initDone) return;
     this.c2 = document.getElementById("c2");
-    this.ctx2 = this.c2.getContext(GL_CONTEXT_ID);
+    this.ctx2 = getGLContext(this.c2);
     this.greenScreen = new Filter(this.ctx2, 'identity-flip-vert', 'greenScreen');
     this.ctx2.activeTexture(this.ctx2.TEXTURE0);
     this.tex = loadTexture(this.ctx2, this.c1, false);

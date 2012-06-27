@@ -10,7 +10,7 @@
 Tests.testGetWebGL = function() {
   var canvas = document.getElementById('webgl');
   var gl;
-  assertOk(function(){gl = canvas.getContext(GL_CONTEXT_ID)});
+  assertOk(function(){gl = getGLContext(canvas)});
   assertEquals("ctx.canvas === canvas", gl.canvas, canvas);
   assertOk(function(){g2d = canvas.getContext('2d')});
   assert("Should get a null 2d context after getting webgl context", g2d === null);
@@ -21,7 +21,7 @@ Tests.testGet2D = function() {
   var g2d;
   var gl;
   assertOk(function(){g2d = canvas.getContext('2d')});
-  assertOk(function(){gl = canvas.getContext(GL_CONTEXT_ID)});
+  assertOk(function(){gl = getGLContext(canvas)});
   assert("Should get a null WebGL context after getting 2D context", gl === null);
 }
 </script>

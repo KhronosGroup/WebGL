@@ -191,7 +191,7 @@ Tests.testOES20Methods = function(gl) {
 
 Tests.startUnit = function() {
   var canvas = document.getElementById('gl');
-  var gl = wrapGLContext(canvas.getContext(GL_CONTEXT_ID));
+  var gl = wrapGLContext(getGLContext(canvas));
   return [gl];
 }
 

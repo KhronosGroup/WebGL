@@ -33,13 +33,52 @@ function webglTestLog(msg) {
   }
 }
 
+create3DContext = (function() {
+/**
+ * Makes a shallow copy of an object.
+ * @param {!Object) src Object to copy
+ * @return {!Object} The copy of src.
+ */
+var shallowCopyObject = function(src)
+{
+  var dst = {};
+  for (var attr in src) {
+    if (src.hasOwnProperty(attr)) {
+      dst[attr] = src[attr];
+    }
+  }
+  return dst;
+};
+
+/**
+ * Checks if an attribute exists on an object case insensitive.
+ * @param {!Object) obj Object to check
+ * @param {string} attr Name of attribute to look for.
+ * @return {string?} The name of the attribute if it exists,
+ *         undefined if not.
+ */
+var hasAttributeCaseInsensitive = function(obj, attr)
+{
+  var lower = attr.toLowerCase();
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key) && key.toLowerCase() == lower) {
+      return key;
+    }
+  }
+};
+
+
 //
 // create3DContext
 //
 // Returns the WebGLRenderingContext for any known implementation.
 //
-function create3DContext(canvas, attributes)
+return function(canvas, opt_attributes)
 {
+    var attributes = shallowCopyObject(opt_attributes || {});
+    if (!hasAttributeCaseInsensitive(attributes, "antialias")) {
+      attributes.antialias = false;
+    }
     if (!canvas)
         canvas = document.createElement("canvas");
     var names = ["webgl", "experimental-webgl"];
@@ -57,7 +96,9 @@ function create3DContext(canvas, attributes)
         throw "Unable to fetch WebGL rendering context for Canvas";
     }
     return context;
-}
+};
+
+}());
 
 function createGLErrorWrapper(context, fname) {
     return function() {

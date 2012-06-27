@@ -39,7 +39,7 @@ Tests.message = "This might take a second or two. Take the upload numbers with a
 
 Tests.startUnit = function () {
   var canvas = document.getElementById('gl');
-  var gl = canvas.getContext(GL_CONTEXT_ID);
+  var gl = getGLContext(canvas);
   return [gl];
 }
 

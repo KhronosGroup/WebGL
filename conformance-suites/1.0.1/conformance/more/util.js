@@ -998,6 +998,10 @@ function wrapGLContext(gl) {
   return wrap;
 }
 
+function getGLContext(canvas) {
+  return canvas.getContext(GL_CONTEXT_ID, {antialias: false});
+}
+
 // Assert that f generates a specific GL error.
 function assertGLError(gl, err, name, f) {
   if (f == null) { f = name; name = null; }

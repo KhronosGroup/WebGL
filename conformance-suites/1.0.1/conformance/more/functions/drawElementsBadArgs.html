@@ -43,7 +43,7 @@ var indices = [60000000,1,2]
 
 Tests.startUnit = function () {
   var canvas = document.getElementById('gl');
-  var gl = wrapGLContext(canvas.getContext(GL_CONTEXT_ID));
+  var gl = wrapGLContext(getGLContext(canvas));
   var prog = new Shader(gl, 'vert', 'frag');
   prog.use();
   var sh = prog.shader.program;
