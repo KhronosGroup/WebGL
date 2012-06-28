@@ -30,14 +30,39 @@
 <meta charset="utf-8">
 <title>WebGL Conformance Tests</title>
 <style>
-  html, body {
+  body {
       border: 0;
       margin: 0;
+      padding: 0;
       height: 100%;
-      height: 100%;
-      text-align: center;
+      max-height:100%;
       font-family: monospace;
+      overflow: hidden;
     }
+
+  #testlist {
+    position:fixed;
+    top:310px;
+    left:0;
+    right:0;
+    bottom:0px;
+    overflow:auto;
+    padding:1em;
+  }
+
+  #header {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:310px;
+    overflow:auto;
+  }
+
+  #info {
+    text-align: center;
+  }
+
   table {
     width: 100%;
     height: 100%;
@@ -103,6 +128,8 @@ function start() {
   }
 
   var reportType = WebGLTestHarnessModule.TestHarness.reportType;
+  var pageCount = 0;
+  var folderCount = 0;
 
   var Page = function(reporter, folder, testIndex, url) {
     this.reporter = reporter;
@@ -113,7 +140,9 @@ function start() {
     this.totalTimeouts = 0;
     this.testIndex = testIndex;
 
+    this.elementId = "page" + pageCount++;
     var li = reporter.localDoc.createElement('li');
+    li.id = this.elementId;
     var div = reporter.localDoc.createElement('div');
     var check = reporter.localDoc.createElement('input');
     check.type = 'checkbox';
@@ -172,6 +201,9 @@ function start() {
   };
 
   Page.prototype.startPage = function() {
+    if (this.elem.scrollIntoView) {
+      this.elem.scrollIntoView(false);
+    }
     this.totalTests = 0;
     this.totalSuccessful = 0;
     this.totalTimeouts = 0;
@@ -228,7 +260,9 @@ function start() {
     var that = this;
 
     var doc = reporter.localDoc;
+    this.elementId = "folder" + folderCount++;
     var li = doc.createElement('li');
+    li.id = this.elementId;
     var div = doc.createElement('div');
     var check = doc.createElement('input');
     check.type = 'checkbox';
@@ -636,30 +670,73 @@ function start() {
 </script>
 </head>
 <body onload="start()">
+
+<div id="testlist">
+
+        <div id="testResultsHTML">
+          <ul id="results">
+          </ul>
+        </div>
+        <div style="display: none;" id="testResultsText">
+          <pre id="testResultsAsText"></pre>
+        </div>
+
+</div> <!-- end of container -->
+
+<div id="header">
+
 <table border="2">
-<tr style="height: 300px;">
-<td>
-<table>
-<tr><td><img src="resources/webgl-logo.png" /><br />WebGL Conformance Test Runner<br/>Version <span id="testVersion"></span><br/><input type="button" value="run tests" id="runTestsButton"/><br/><input type="button" style="visibility: hidden;" value="display text summary" id="showTextSummary"/>
-<div id="nowebgl" class="nowebgl" style="display: none;">This browser does not appear to support WebGL</div></td></tr>
-<tr><td><div id="loading">Loading Tests...</div>
-<div style="border: 1px">Results: <span id="fullresults"></span></div>
-<canvas id="webglcheck" style="display: none;"></canvas></td></tr>
-<tr><td><div id="error-wrap"><pre id="error"></pre></div></td></tr>
+  <tr style="height: 300px;">
+    <td>
+      <table>
+        <tr>
+          <td style="width: 300px">
+            <div id="info">
+              <img src="resources/webgl-logo.png" /><br />
+              WebGL Conformance Test Runner<br/>
+              Version
+              <span id="testVersion">
+              </span>
+              <br/>
+              <input type="button" value="run tests" id="runTestsButton"/>
+              <br/>
+              <input type="button" style="visibility: hidden;" value="display text summary" id="showTextSummary"/>
+              <div id="nowebgl" class="nowebgl" style="display: none;">
+                This browser does not appear to support WebGL
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div id="loading">
+              Loading Tests...
+            </div>
+            <div style="border: 1px">
+              Results:
+              <span id="fullresults">
+              </span>
+            </div>
+            <canvas id="webglcheck" style="display: none;">
+            </canvas>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div id="error-wrap">
+              <pre id="error"></pre>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td>
+      <iframe id="testframe" scrolling="yes" width="100%" height="100%">
+      </iframe>
+    </td>
+  </tr>
 </table>
-</td>
-<td>
-<iframe id="testframe" scrolling="yes" width="100%" height="100%"></iframe>
-</td>
-</tr>
-<tr>
-<td colspan="2">
-<div style="text-align: left; width: 100%; height: 100%; overflow: auto;">
-<div id="testResultsHTML"><ul id="results"></ul></div>
-<div style="display: none;" id="testResultsText"><pre id="testResultsAsText"></pre></div>
-</div>
-</td>
-</tr>
-</table>
+</div> <!-- end of header -->
+
 </body>
 </html>
