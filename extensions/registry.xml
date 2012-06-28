@@ -102,6 +102,11 @@
         Extended rules in Section 6.5 ("Framebuffer Object Attachments") to handle texture
         attachments.
       </change>
+    </revision><revision date="2012/06/27" number="8">
+      <change>
+        Updated references to texSubImage2D. Added
+        DEPTH_STENCIL_ATTACHMENT to framebufferTexture2D.
+      </change>
     </revision></history></draft><draft href="OES_element_index_uint/"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/01/27" number="2">

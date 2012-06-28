@@ -20,14 +20,20 @@
 <p>Members of the WebGL working group</p>
 <p>Florian Bösch (pyalot 'at' gmail.com)</p>
 <h2 class="no-toc">Version</h2>
-<p> Last modified date: June 20, 2012<br>
-          Revision: 7</p>
+<p> Last modified date: June 27, 2012<br>
+          Revision: 8</p>
 <h2 class="no-toc">Number</h2>
 <p> WebGL extension #9</p>
 <h2 class="no-toc">Dependencies</h2>
     <p> Written against the <a href="http://www.khronos.org/registry/webgl/specs/1.0/">WebGL API 1.0</a> specification. </p>
   <h2 class="no-toc">Overview</h2>
-    <p>This extension exposes the <a href="http://angleproject.googlecode.com/svn/trunk/extensions/ANGLE_depth_texture.txt">ANGLE_depth_texture</a> functionality to WebGL. ANGLE_depth_texture provides a subset of the functionality from the OpenGL ES 2.0 extensions <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_depth_texture.txt">OES_depth_texture</a> and <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_packed_depth_stencil.txt">OES_packed_depth_stencil</a>, with certain restrictions added for portability reasons. Specifically:
+    <p>This extension exposes the
+      <a href="http://angleproject.googlecode.com/svn/trunk/extensions/ANGLE_depth_texture.txt">ANGLE_depth_texture</a>
+      functionality to WebGL. ANGLE_depth_texture provides a subset of the
+      functionality from the OpenGL ES 2.0 extensions
+      <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_depth_texture.txt">OES_depth_texture</a>
+      and
+      <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_packed_depth_stencil.txt">OES_packed_depth_stencil</a>, with certain restrictions added for portability reasons. Specifically:
 
       <ul>
       <li> ANGLE_depth_texture provides both depth and depth/stencil textures. </li>
@@ -43,19 +49,31 @@
     <p> When this extension is enabled: </p>
 <ul>
 <li>
-        The <code>texImage2D</code> and <code>texSubImage2D</code> entry points are extended to accept the <code>format</code> parameter <code>DEPTH_COMPONENT</code> and <code>DEPTH_STENCIL</code>
+        The <code>texImage2D</code> entry point is extended to accept the
+        <code>format</code> parameter <code>DEPTH_COMPONENT</code> and
+        <code>DEPTH_STENCIL</code>
       </li>
 <li>
-        The <code>texImage2D</code> entry point is extended to accept the <code>internalFormat</code> parameter <code>DEPTH_COMPONENT</code> and <code>DEPTH_STENCIL</code>
+        The <code>texImage2D</code> entry point is extended to accept the
+        <code>internalFormat</code> parameter <code>DEPTH_COMPONENT</code>
+        and <code>DEPTH_STENCIL</code>
       </li>
 <li>
-        The <code>texImage2D</code> and <code>texSubImage2D</code> entry points are extended to accept the <code>type</code> parameter <code>UNSIGNED_SHORT</code>, <code>UNSIGNED_INT</code>, and <code>UNSIGNED_INT_24_8_WEBGL</code>
+        The <code>texImage2D</code> entry point is extended to accept
+        the <code>type</code> parameter <code>UNSIGNED_SHORT</code>,
+        <code>UNSIGNED_INT</code>, and
+        <code>UNSIGNED_INT_24_8_WEBGL</code>
       </li>
 <li>
-        The <code>framebufferTexture2D</code> entry point is extended to accept a <code>target</code> parameter <code>DEPTH_ATTACHMENT</code>
+        The <code>framebufferTexture2D</code> entry point is extended to
+        accept the <code>target</code> parameter
+        <code>DEPTH_ATTACHMENT</code> and
+        <code>DEPTH_STENCIL_ATTACHMENT</code>
       </li>
 <li>
-        The <code>texImage2D</code> and <code>texSubImage2D</code> entry points are extended to accept <code>ArrayBufferView</code> of type <code>Uint16Array</code> and <code>Uint32Array</code>
+        The <code>texImage2D</code> entry point is extended to accept
+        <code>ArrayBufferView</code> of type <code>Uint16Array</code> and
+        <code>Uint32Array</code>
       </li>
 <li>
         <p>
@@ -67,7 +85,9 @@
           </ul>
         </p>
         <p>
-          In the WebGL API, it is an error to concurrently attach either renderbuffers or textures to the following combinations of attachment points:
+          In the WebGL API, it is an error to concurrently attach either
+          renderbuffers or textures to the following combinations of
+          attachment points:
 
           <ul>
           <li> <code>DEPTH_ATTACHMENT</code> + <code>DEPTH_STENCIL_ATTACHMENT</code> </li>
@@ -76,7 +96,10 @@
           </ul>
         </p>
         <p>
-          See the section <a href="http://www.khronos.org/registry/webgl/specs/1.0/#6.5">Framebuffer Object Attachments</a> in the WebGL specification for the behavior if these constraints are violated.
+          See the section
+          <a href="http://www.khronos.org/registry/webgl/specs/1.0/#6.5">Framebuffer Object Attachments</a>
+          in the WebGL specification for the behavior if these
+          constraints are violated.
         </p>
       </li>
 </ul>
@@ -93,48 +116,74 @@ interface WEBGL_depth_texture {
   </pre></p>
 <h2 class="no-toc">Errors</h2>
 <p>
-      The error <code>INVALID_OPERATION</code> is generated by <code>texImage2D</code> if the <code>format</code> parameter is <code>DEPTH_COMPONENT</code> or <code>DEPTH_STENCIL</code> and the <code>target</code> is <code>TEXTURE_CUBE_MAP_{POSITIVE,NEGATIVE}_{X,Y,Z}</code>.
+      The error <code>INVALID_OPERATION</code> is generated by
+      <code>texImage2D</code> if the <code>format</code> parameter is
+      <code>DEPTH_COMPONENT</code> or <code>DEPTH_STENCIL</code> and the
+      <code>target</code> is
+      <code>TEXTURE_CUBE_MAP_{POSITIVE,NEGATIVE}_{X,Y,Z}</code>.
     </p>
 <p>
-      The error <code>INVALID_OPERATION</code> is generated by <code>texImage2D</code> if <code>format</code> and <code>internalformat</code> are <code>DEPTH_COMPONENT</code> and <code>type</code> is not <code>UNSIGNED_SHORT</code> or <code>UNSIGNED_INT</code>.
+      The error <code>INVALID_OPERATION</code> is generated by
+      <code>texImage2D</code> if <code>format</code> and
+      <code>internalformat</code> are <code>DEPTH_COMPONENT</code> and
+      <code>type</code> is not <code>UNSIGNED_SHORT</code> or
+      <code>UNSIGNED_INT</code>.
     </p>
 <p>
-      The error <code>INVALID_OPERATION</code> is generated by <code>texSubImage2D</code> if <code>format</code> is <code>DEPTH_COMPONENT</code> and <code>type</code> is not <code>UNSIGNED_SHORT</code> or <code>UNSIGNED_INT</code>.
+       The error <code>INVALID_OPERATION</code> is generated by
+       <code>texImage2D</code> if <code>format</code> and
+       <code>internalformat</code> are not <code>DEPTH_COMPONENT</code>
+       and <code>type</code> is <code>UNSIGNED_SHORT</code> or
+       <code>UNSIGNED_INT</code>.
     </p>
 <p>
-      The error <code>INVALID_OPERATION</code> is generated by <code>texImage2D</code> if <code>format</code> and <code>internalformat</code> are not <code>DEPTH_COMPONENT</code> and <code>type</code> is <code>UNSIGNED_SHORT</code> or <code>UNSIGNED_INT</code>.
+      The error <code>INVALID_OPERATION</code> is generated by
+      <code>texImage2D</code> if <code>format</code> and
+      <code>internalformat</code> are <code>DEPTH_STENCIL</code> and
+      <code>type</code> is not <code>UNSIGNED_INT_24_8_WEBGL</code>.
     </p>
 <p>
-      The error <code>INVALID_OPERATION</code> is generated by <code>texSubImage2D</code> if <code>format</code> is not <code>DEPTH_COMPONENT</code> and <code>type</code> is <code>UNSIGNED_SHORT</code> or <code>UNSIGNED_INT</code>.
-    </p>
-<p>
-      The error <code>INVALID_OPERATION</code> is generated by <code>texImage2D</code> if <code>format</code> and <code>internalformat</code> are <code>DEPTH_STENCIL</code> and <code>type</code> is not <code>UNSIGNED_INT_24_8_WEBGL</code>.
-    </p>
-<p>
-      The error <code>INVALID_OPERATION</code> is generated by <code>texSubImage2D</code> if <code>format</code> is <code>DEPTH_STENCIL</code> and <code>type</code> is not <code>UNSIGNED_INT_24_8_WEBGL</code>.
-    </p>
-<p>
-      The error <code>INVALID_OPERATION</code> is generated by <code>texImage2D</code> if <code>format</code> and <code>internalformat</code> are not <code>DEPTH_STENCIL</code> and <code>type</code> is <code>UNSIGNED_INT_24_8_WEBGL</code>.
-    </p>
-<p>
-      The error <code>INVALID_OPERATION</code> is generated by <code>texSubImage2D</code> if <code>format</code> is not <code>DEPTH_STENCIL</code> and <code>type</code> is <code>UNSIGNED_INT_24_8_WEBGL</code>.
+      The error <code>INVALID_OPERATION</code> is generated by
+      <code>texImage2D</code> if <code>format</code> and
+      <code>internalformat</code> are not <code>DEPTH_STENCIL</code> and
+      <code>type</code> is <code>UNSIGNED_INT_24_8_WEBGL</code>.
     </p>
 <p>
       The error <code>INVALID_OPERATION</code> is generated in the following situations:
       <ul>
-      <li> <code>texImage2D</code> is called with <code>format</code> and <code>internalformat</code> of <code>DEPTH_COMPONENT</code> or <code>DEPTH_STENCIL</code> and
-        <ul>
-        <li> <code>target</code> is not TEXTURE_2D, </li>
-        <li> <code>data</code> is not NULL, or </li>
-        <li> <code>level</code> is not zero. </li>
-        </ul> </li>
-      <li> <code>texSubImage2D</code> is called with <code>format</code> of <code>DEPTH_COMPONENT</code> or <code>DEPTH_STENCIL</code>. </li>
-      <li> <code>copyTexImage2D</code> is called with an <code>internalformat</code> that has a base internal format of <code>DEPTH_COMPONENT</code> or <code>DEPTH_STENCIL</code>. </li>
-      <li> <code>copyTexSubImage2D</code> is called with a target texture that has a base internal format of <code>DEPTH_COMPONENT</code> or <code>DEPTH_STENCIL</code>. </li>
-      <li> <code>generateMipmap</code> is called on a texture that has a base internal format of <code>DEPTH_COMPONENT</code> or <code>DEPTH_STENCIL</code>. </li>
+        <li>
+          <code>texImage2D</code> is called with <code>format</code> and
+          <code>internalformat</code> of <code>DEPTH_COMPONENT</code> or
+          <code>DEPTH_STENCIL</code> and
+          <ul>
+            <li> <code>target</code> is not TEXTURE_2D, </li>
+            <li> <code>data</code> is not NULL, or </li>
+            <li> <code>level</code> is not zero. </li>
+          </ul>
+        </li>
+        <li>
+          <code>texSubImage2D</code> is called with <code>format</code> of
+          <code>DEPTH_COMPONENT</code> or <code>DEPTH_STENCIL</code>.
+        </li>
+        <li>
+          <code>copyTexImage2D</code> is called with an
+          <code>internalformat</code> that has a base internal format of
+          <code>DEPTH_COMPONENT</code> or <code>DEPTH_STENCIL</code>.
+        </li>
+        <li>
+          <code>copyTexSubImage2D</code> is called with a target texture
+          that has a base internal format of <code>DEPTH_COMPONENT</code>
+          or <code>DEPTH_STENCIL</code>.
+        </li>
+        <li>
+          <code>generateMipmap</code> is called on a texture that has a
+          base internal format of <code>DEPTH_COMPONENT</code> or
+          <code>DEPTH_STENCIL</code>.
+        </li>
       </ul>
     </p>
-<h2 class="no-toc">Revision History</h2>
+<h2 class="no-toc">Issues</h2>
+  <h2 class="no-toc">Revision History</h2>
 <p>Revision 1, 2012/01/23</p>
 <ul><li>Initial revision.</li></ul>
 <p>Revision 2, 2012/01/25</p>
@@ -160,6 +209,11 @@ interface WEBGL_depth_texture {
         public_webgl mailing list, including supported behavior and additional error behavior.
         Extended rules in Section 6.5 ("Framebuffer Object Attachments") to handle texture
         attachments.
+      </li></ul>
+<p>Revision 8, 2012/06/27</p>
+<ul><li>
+        Updated references to texSubImage2D. Added
+        DEPTH_STENCIL_ATTACHMENT to framebufferTexture2D.
       </li></ul>
 </body>
 </html>
