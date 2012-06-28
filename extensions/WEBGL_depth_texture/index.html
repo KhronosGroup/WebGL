@@ -183,6 +183,20 @@ interface WEBGL_depth_texture {
       </ul>
     </p>
 <h2 class="no-toc">Issues</h2>
+    <issue>
+      <p>
+        As per the ANGLE_depth_texture specification, the contents of the
+        ALPHA channel when sampling a depth texture is implementation
+        dependent. It can be either another copy of the depth value that is
+        stored in the LUMIANCE channels, <code>r</code>, <code>g</code>,
+        and <code>b</code>, it can be 1.0
+      </p>
+      <p>
+        It is therefore recommended to use <code>r</code>,
+        <code>g</code>, or <code>b</code> in GLSL shaders
+        that are used to reference depth textures.
+      </p>
+    </issue>
   <h2 class="no-toc">Revision History</h2>
 <p>Revision 1, 2012/01/23</p>
 <ul><li>Initial revision.</li></ul>
