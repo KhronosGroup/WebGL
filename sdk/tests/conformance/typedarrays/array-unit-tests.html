@@ -918,6 +918,21 @@ function testNaNConversion(type, name) {
   }
 }
 
+function testInheritanceHierarchy() {
+  debug('test inheritance hierarchy of typed array views');
+
+  try {
+    var foo = ArrayBufferView;
+    testFailed('ArrayBufferView has [NoInterfaceObject] extended attribute and should not be defined');
+  } catch (e) {
+    testPassed('ArrayBufferView has [NoInterfaceObject] extended attribute and was not defined');
+  }
+
+  // There is currently only one kind of view that inherits from another
+  shouldBe('new Uint8ClampedArray(1) instanceof Uint8Array', 'true');
+}
+
+
 //
 // Test driver
 //
@@ -926,6 +941,7 @@ function runTests() {
   allPassed = true;
 
   testSlice();
+  testInheritanceHierarchy();
 
   // The "name" attribute is a concession to browsers which don't
   // implement the "name" property on function objects
