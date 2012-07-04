@@ -105,7 +105,7 @@ void main() {
     float dzdx = dFdx(position.z);
     float dzdy = dFdy(position.z);
     float fw = fwidth(position.z);
-    gl_FragColor = vec4(abs(dzdx), abs(dzdy), fw, 1.0);
+    gl_FragColor = vec4(abs(dzdx) * 40.0, abs(dzdy) * 40.0, fw * 40.0, 1.0);
 }
 </script>
 
@@ -266,9 +266,9 @@ function runOutputTests() {
     //    dFdx = totalChange.x / canvas.width  = 0.5 / 50.0 = 0.01
     //    dFdy = totalChange.y / canvas.height = 0.5 / 50.0 = 0.01
     //    fw = abs(dFdx + dFdy) = 0.01 + 0.01 = 0.02
-    //    r = floor(dFdx * 255) = 3
-    //    g = floor(dFdy * 255) = 3
-    //    b = floor(fw * 255) = 5
+    //    r = floor(dFdx * 40.0 * 255) = 102
+    //    g = floor(dFdy * 40.0 * 255) = 102
+    //    b = floor(fw * 40.0 * 255) = 204
 
     var e = 2; // Amount of variance to allow in result pixels - may need to be tweaked higher
 
@@ -343,21 +343,21 @@ function runOutputTests() {
     // Draw 2: (variation in x)
     setupBuffers(1.0, 0.0, 1.0, 0.0);
     wtu.drawQuad(gl);
-    expectResult([5, 0, 5, 255],
+    expectResult([204, 0, 204, 255],
                  "Draw 2 (variation in x) returned the correct data",
                  "Draw 2 (variation in x) returned incorrect data");
 
     // Draw 3: (variation in y)
     setupBuffers(1.0, 1.0, 0.0, 0.0);
     wtu.drawQuad(gl);
-    expectResult([0, 5, 5, 255],
+    expectResult([0, 204, 204, 255],
                  "Draw 3 (variation in y) returned the correct data",
                  "Draw 3 (variation in y) returned incorrect data");
 
     // Draw 4: (variation in x & y)
     setupBuffers(1.0, 0.5, 0.5, 0.0);
     wtu.drawQuad(gl);
-    expectResult([3, 3, 5, 255],
+    expectResult([102, 102, 204, 255],
                  "Draw 4 (variation in x & y) returned the correct data",
                  "Draw 4 (variation in x & y) returned incorrect data");
 
