@@ -12,6 +12,7 @@ EXTS := OES_standard_derivatives \
 	EXT_texture_filter_anisotropic \
 	proposals/ANGLE_instanced_arrays \
 	proposals/WEBGL_fbo_color_attachments \
+	proposals/WEBGL_dynamic_texture \
 
 EXTS := $(strip $(EXTS))
 
