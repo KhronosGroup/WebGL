@@ -72,7 +72,7 @@ http://www.khronos.org/registry/webgl/extensions/
       </feature>
     </features>
   </overview>
-  <idl> <!-- copied literally into a <pre> -->
+  <idl xml:space="preserve"> <!-- copied literally into a <pre> -->
     <!-- Enums and functions introduced by the extension should be specified as
          'const GLenum' and methods on the extension object. The extension IDL should
          be written assuming that the typedefs in
