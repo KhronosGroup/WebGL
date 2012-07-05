@@ -131,7 +131,6 @@ function start() {
   var pageCount = 0;
   var folderCount = 0;
   var autoScroll = true;
-  var scollRequested = false;
 
   var Page = function(reporter, folder, testIndex, url) {
     this.reporter = reporter;
@@ -205,7 +204,6 @@ function start() {
 
   Page.prototype.startPage = function() {
     if (autoScroll && this.elem.scrollIntoView) {
-      scollRequested = true;
       this.elem.scrollIntoView(false);
     }
     this.totalTests = 0;
@@ -672,16 +670,6 @@ function start() {
     var elem = document.getElementById("nowebgl");
     elem.style.display = "";
   }
-
-  var scrollCount = 0;
-  var testlist = document.getElementById("testlist");
-  testlist.addEventListener('scroll', function() {
-    if (scrollRequested) {
-      scollRequested = false;
-    } else {
-      autoScroll = false;
-    }
-  });
 }
 </script>
 </head>
