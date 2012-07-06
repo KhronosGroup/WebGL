@@ -22,8 +22,8 @@
 <p>Acorn Pooley</p>
 <p>Members of the WebGL working group</p>
 <h2 class="no-toc">Version</h2>
-<p> Last modified date: July 05, 2012<br>
-          Revision: 1</p>
+<p> Last modified date: July 06, 2012<br>
+          Revision: 2</p>
 <h2 class="no-toc">Number</h2>
 <p> WebGL extension #NN</p>
 <h2 class="no-toc">Dependencies</h2>
@@ -129,13 +129,13 @@
     source of dynamic images.</dd>
 <dt class="idl-code">any dynamicTextureGetSource()</dt>
 <dd></dd>
-<dt class="idl-code">void dynamicTextureAcquireFrame(WebGLTexture texture)</dt>
+<dt class="idl-code">void dynamicTextureAcquireImage(WebGLTexture texture)</dt>
 <dd>Acquires a frame from the dynamic
     image source of the <code>texture</code>. The image data is guaranteed not
     to change until <code>dynamicTextureReleaseImage</code> is called.
     Sampling will return samples corresponding to image values at the time
     <code>dynamicTextureAcquireImage</code> returned.</dd>
-<dt class="idl-code">void dynamicTextureReleaseFrame(WebGLTexture texture)</dt>
+<dt class="idl-code">void dynamicTextureReleaseImage(WebGLTexture texture)</dt>
 <dd>Releases the frame lock on the dynamic
     image source of the <code>texture</code>. After this the image data can
     change and sampling will return samples which may correspond to image
@@ -379,7 +379,7 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
   {
     g_loadingFiles.splice(g_loadingFiles.indexOf(image), 1);
     ctx.bindTexture(ctx.TEXTURE_EXTERNAL_OES, texture);
-    ctx.dynamicTextureSetSource(video);
+    ctx.dynamicTextureSetSource(texture, video);
     // These are the default values of these properties so the following
     // 4 lines are not necessary.
     ctx.texParameteri(ctx.TEXTURE_EXTERNAL_OES, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR);
@@ -418,7 +418,7 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
 
     // Set some uniform variables for the shaders
     gl.uniform3f(gl.getUniformLocation(program, "lightDir"), 0, 0, 1);
-
+    // Use the default texture unit 0 for the video
     gl.uniform1i(gl.getUniformLocation(program, "samplerExternal"), 0);
 
     // Create a box. On return 'gl' contains a 'box' property with
@@ -428,6 +428,8 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
 
     // Load an image to use. Returns a WebGLTexture object
     videoTexture = createVideoTexture(gl, "video");
+    // Bind the video texture
+    gl.bindTexture(gl.TEXTURE_EXTERNAL_OES, videoTexture);
 
     // Create some matrices to use later and save their locations in the shaders
     g.mvMatrix = new J3DIMatrix4();
@@ -486,9 +488,6 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
     g.mvpMatrix.load(g.perspectiveMatrix);
     g.mvpMatrix.multiply(g.mvMatrix);
     g.mvpMatrix.setUniform(gl, g.u_modelViewProjMatrixLoc, false);
-
-    // Bind the video texture to use
-    gl.bindTexture(gl.TEXTURE_EXTERNAL, videoTexture);
 
     // Acquire the latest video image
     gl.dynamicTextureAcquireImage(videoTexture);
@@ -646,5 +645,9 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
   <h2 class="no-toc">Revision History</h2>
 <p>Revision 1, 2012/07/05</p>
 <ul><li>Initial revision.</li></ul>
+<p>Revision 2, 2012/07/06</p>
+<ul><li>Fixed minor naming inconsistencies. Fixed missing parameter
+      error and moved the location of the bindTexture call in the sample
+      code.</li></ul>
 </body>
 </html>
