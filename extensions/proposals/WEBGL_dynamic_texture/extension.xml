@@ -19,7 +19,7 @@
   <number>NN</number>
 
   <depends>
-    <api version="1.0.1"/>
+    <api version="1.0"/>
   </depends>
 
   <overview>
@@ -701,9 +701,9 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
     </revision>
 
     <revision date="2012/07/06">
-      <change>Fixed minor naming inconsistencies. Fixed missing parameter
-      error and moved the location of the bindTexture call in the sample
-      code.</change>
+      <change>Fixed incorrect dependency and minor naming inconsistencies.
+      Fixed missing parameter error and moved the location of the bindTexture
+      call in the sample code.</change>
     </revision>
   </history>
 </proposal>
