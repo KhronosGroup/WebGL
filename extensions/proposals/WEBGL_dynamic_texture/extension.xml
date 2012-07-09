@@ -86,33 +86,31 @@
         image during sampling.</p>
       </feature>
 
-      <feature>
-        <glsl extname="OES_EGL_image_external">
-          <stage type="fragment"/>
-
-          <stage type="vertex"/>
-
-          <keyword name="samplerExternalOES"/>
-
-          <function name="texture2D" type="vec4">
-            <param name="sampler" type="samplerExternalOES"/>
-
-            <param name="coord" type="vec2"/>
-          </function>
-
-          <function name="texture2DProj" type="vec4">
-            <param name="sampler" type="samplerExternalOES"/>
-
-            <param name="coord" type="vec3"/>
-          </function>
-
-          <function name="texture2DProj" type="vec4">
-            <param name="sampler" type="samplerExternalOES"/>
-
-            <param name="coord" type="vec4"/>
-          </function>
-        </glsl>
-      </feature>
+      <glsl extname="OES_EGL_image_external">
+        <stage type="fragment"/>
+        
+        <stage type="vertex"/>
+        
+        <type name="samplerExternalOES"/>
+        
+        <function name="texture2D" type="vec4">
+          <param name="sampler" type="samplerExternalOES"/>
+          
+          <param name="coord" type="vec2"/>
+        </function>
+        
+        <function name="texture2DProj" type="vec4">
+          <param name="sampler" type="samplerExternalOES"/>
+          
+          <param name="coord" type="vec3"/>
+        </function>
+        
+        <function name="texture2DProj" type="vec4">
+          <param name="sampler" type="samplerExternalOES"/>
+          
+          <param name="coord" type="vec4"/>
+        </function>
+      </glsl>
     </features>
   </overview>
 

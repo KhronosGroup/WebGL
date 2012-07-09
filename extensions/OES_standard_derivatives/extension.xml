@@ -19,25 +19,18 @@
         The <code>hint</code> entry point accepts <code>FRAGMENT_SHADER_DERIVATIVE_HINT_OES</code>
            as a target and the <code>getParameter</code> entry point accepts it as a pname.
       </feature>
-      <feature>
-        <glsl extname="GL_OES_standard_derivatives">
-          <stage type="fragment"/>
-          <function name="dFdx" type="genType">
-            <param type="genType" />
-          </function>
-          <function name="dFdy" type="genType">
-            <param type="genType" />
-          </function>
-          <function name="fwidth" type="genType">
-            <param type="genType" />
-          </function>
-        </glsl>
-      </feature>
-      <feature>
-        <glsl>
-          <macro name="GL_OES_standard_derivatives" value="1" />
-        </glsl>
-      </feature>
+      <glsl extname="GL_OES_standard_derivatives">
+        <stage type="fragment"/>
+        <function name="dFdx" type="genType">
+          <param type="genType" />
+        </function>
+        <function name="dFdy" type="genType">
+          <param type="genType" />
+        </function>
+        <function name="fwidth" type="genType">
+          <param type="genType" />
+        </function>
+      </glsl>
     </features>
   </overview>
   <idl>

@@ -92,10 +92,28 @@
         used before and after 3D rendering to prevent modification of the
         image during sampling.</p>
       </li>
-<li>The built-in functions <code>vec4 texture2D(samplerExternalOES sampler, vec2 coord)</code>, <code>vec4 texture2DProj(samplerExternalOES sampler, vec3 coord)</code>, and <code>vec4 texture2DProj(samplerExternalOES sampler, vec4 coord)</code> are available in fragment, and vertex shaders if the following directive is added to the shader:<pre>
-#extension OES_EGL_image_external : enable
-</pre>
+<li>When a <em>fragment</em> or <em>vertex</em> shader enables, requires, or warns <code>OES_EGL_image_external</code> with an <code>#extension</code> directive:<ul>
+<li>
+<code>samplerExternalOES</code> is a built-in type.
+            </li>
+<li>
+<code>vec4 texture2D(samplerExternalOES sampler, vec2 coord)</code> is a built-in
+              function.
+            </li>
+<li>
+<code>vec4 texture2DProj(samplerExternalOES sampler, vec3 coord)</code> is a built-in
+              function.
+            </li>
+<li>
+<code>vec4 texture2DProj(samplerExternalOES sampler, vec4 coord)</code> is a built-in
+              function.
+            </li>
+</ul>
 </li>
+<li>
+        The GLSL macro <code>OES_EGL_image_external</code>
+        is defined as <code>1</code>.
+      </li>
 </ul>
   <h2 class="no-toc">IDL</h2>
 <p><pre class="idl">module webgl {

@@ -49,13 +49,15 @@
 <ul>
 <li>Frobs the <b>baz</b>
 </li>
-<li>The built-in function <code>vec4 myfun(vec4)</code> is available in fragment, and vertex shaders if the following directive is added to the shader:<pre>
-#extension GL_OES_foo_bar : enable
-</pre>
+<li>When a <em>fragment</em> or <em>vertex</em> shader enables, requires, or warns <code>GL_OES_foo_bar</code> with an <code>#extension</code> directive:<ul><li>
+<code>vec4 myfun(vec4)</code> is a built-in
+              function.
+            </li></ul>
 </li>
-<li>The following macro definition is available:<pre>
-#define GL_OES_foo_bar 1</pre>
-</li>
+<li>
+        The GLSL macro <code>GL_OES_foo_bar</code>
+        is defined as <code>1</code>.
+      </li>
 </ul>
   <h2 class="no-toc">Alias Name Strings (for draft extensions)</h2>
 <ul>

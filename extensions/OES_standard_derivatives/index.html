@@ -39,13 +39,25 @@
         The <code>hint</code> entry point accepts <code>FRAGMENT_SHADER_DERIVATIVE_HINT_OES</code>
            as a target and the <code>getParameter</code> entry point accepts it as a pname.
       </li>
-<li>The built-in functions <code>genType dFdx(genType)</code>, <code>genType dFdy(genType)</code>, and <code>genType fwidth(genType)</code> are available in fragment shaders if the following directive is added to the shader:<pre>
-#extension GL_OES_standard_derivatives : enable
-</pre>
+<li>When a <em>fragment</em> shader enables, requires, or warns <code>GL_OES_standard_derivatives</code> with an <code>#extension</code> directive:<ul>
+<li>
+<code>genType dFdx(genType)</code> is a built-in
+              function.
+            </li>
+<li>
+<code>genType dFdy(genType)</code> is a built-in
+              function.
+            </li>
+<li>
+<code>genType fwidth(genType)</code> is a built-in
+              function.
+            </li>
+</ul>
 </li>
-<li>The following macro definition is available:<pre>
-#define GL_OES_standard_derivatives 1</pre>
-</li>
+<li>
+        The GLSL macro <code>GL_OES_standard_derivatives</code>
+        is defined as <code>1</code>.
+      </li>
 </ul>
   <h2 class="no-toc">IDL</h2>
 <p><pre class="idl">

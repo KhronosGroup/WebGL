@@ -234,75 +234,51 @@
   <p> When this extension is enabled: </p>
   <ul>
     <xsl:for-each select="feature">
+      <li><xsl:copy-of select="node()" /></li>
+    </xsl:for-each>
+    <xsl:for-each select="glsl">
       <li>
-        <xsl:choose>
-          <xsl:when test="glsl/function">
-            <xsl:text>The built-in </xsl:text>
+        <xsl:text>When a </xsl:text>
+        <xsl:if test="count(stage)>0">
+          <xsl:for-each select="stage">
             <xsl:choose>
-              <xsl:when test="count(glsl/function)=1">function </xsl:when>
-              <xsl:otherwise>functions </xsl:otherwise>
-            </xsl:choose>
-            <xsl:for-each select="glsl/function">
-              <xsl:choose>
-                <xsl:when test="last()=1">
-                  <code><xsl:call-template name="fun_sig"/></code>
-                  <xsl:text> is </xsl:text>
-                </xsl:when>
-                <xsl:when test="position()=last()">
-                  <xsl:text>and </xsl:text>
-                  <code><xsl:call-template name="fun_sig"/></code>
-                  <xsl:text> are </xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                  <code><xsl:call-template name="fun_sig"/></code>
-                  <xsl:text>, </xsl:text>
-                </xsl:otherwise>
-              </xsl:choose>
-            </xsl:for-each>
-            <xsl:text>available </xsl:text>
-            <xsl:if test="count(glsl/stage)>0">
-              <xsl:text>in </xsl:text>
-              <xsl:for-each select="glsl/stage">
-                <xsl:choose>
-                  <xsl:when test="last()=1">
-                    <xsl:value-of select="@type"/>
-                  </xsl:when>
-                  <xsl:when test="position()=last()">
-                    <xsl:text>and </xsl:text>
-                    <xsl:value-of select="@type"/>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:value-of select="@type"/><xsl:text>, </xsl:text>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </xsl:for-each>
-              <xsl:text> shaders </xsl:text>
-            </xsl:if>
-            <xsl:text>if the following directive is added to the shader:</xsl:text>
-<pre>
-#extension <xsl:value-of select="glsl/@extname"/> : enable
-</pre>
-          </xsl:when>
-          <xsl:when test="glsl/macro">
-            <xsl:text>The following macro </xsl:text>
-            <xsl:choose>
-              <xsl:when test="count(glsl/macro)=1">
-                <xsl:text>definition is available:</xsl:text>
+              <xsl:when test="last()=1 or position()=last()">
+                <em><xsl:value-of select="@type"/></em><xsl:text> </xsl:text>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:text>definitions are available:</xsl:text>
+                <em><xsl:value-of select="@type"/></em><xsl:text> or </xsl:text>
               </xsl:otherwise>
             </xsl:choose>
-<pre>
-              <xsl:for-each select="glsl/macro">
-#define <xsl:value-of select="@name"/><xsl:text> </xsl:text><xsl:value-of select="@value"/>
-              </xsl:for-each>
-</pre>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:copy-of select="node()"/>
-          </xsl:otherwise>
-        </xsl:choose>
+          </xsl:for-each>
+        </xsl:if>
+        <xsl:text>shader enables, requires, or warns </xsl:text>
+        <code><xsl:value-of select="@extname" /></code>
+        <xsl:text> with an </xsl:text>
+        <code>#extension</code>
+        <xsl:text> directive:</xsl:text>
+        <ul>
+          <xsl:for-each select="macro">
+            <li>
+              The macro <code><xsl:value-of select="@name" /></code>
+              is defined as <code><xsl:value-of select="@value" /></code>.
+            </li>
+          </xsl:for-each>
+          <xsl:for-each select="type">
+            <li>
+              <code><xsl:value-of select="@name"/></code> is a built-in type.
+            </li>
+          </xsl:for-each>
+          <xsl:for-each select="function">
+            <li>
+              <code><xsl:call-template name="fun_sig"/></code> is a built-in
+              function.
+            </li>
+          </xsl:for-each>
+        </ul>
+      </li>
+      <li>
+        The GLSL macro <code><xsl:value-of select="@extname"/></code>
+        is defined as <code>1</code>.
       </li>
     </xsl:for-each>
   </ul>

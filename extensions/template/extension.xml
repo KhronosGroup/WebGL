@@ -56,20 +56,14 @@ http://www.khronos.org/registry/webgl/extensions/
     </div>
     <features> <!-- a list of features in XHTML -->
       <feature>Frobs the <b>baz</b></feature>
-      <feature> <!-- can also specify glsl built-ins in structured format -->
-        <glsl extname="GL_OES_foo_bar">
-          <stage type="fragment"/>
-          <stage type="vertex"/>
-          <function name="myfun" type="vec4">
-            <param type="vec4"/>
-          </function>
-        </glsl>
-      </feature>
-      <feature>
-        <glsl>
-          <macro name="GL_OES_foo_bar" value="1" />
-        </glsl>
-      </feature>
+      <!-- can also specify glsl built-ins in structured format -->
+      <glsl extname="GL_OES_foo_bar">
+        <stage type="fragment"/>
+        <stage type="vertex"/>
+        <function name="myfun" type="vec4">
+          <param type="vec4"/>
+        </function>
+      </glsl>
     </features>
   </overview>
   <idl xml:space="preserve"> <!-- copied literally into a <pre> -->
