@@ -1,6 +1,7 @@
 compressed-tex-image.html
 copy-tex-image-and-sub-image-2d.html
 --min-version 1.0.2 copy-tex-image-2d-formats.html
+--min-version 1.0.2 get-tex-parameter.html
 gl-pixelstorei.html
 gl-teximage.html
 origin-clean-conformance.html
@@ -33,7 +34,7 @@ texture-active-bind.html
 --min-version 1.0.2 texture-attachment-formats.html
 --min-version 1.0.2 texture-clear.html
 texture-complete.html
-texture-hd-dpi.html
+--min-version 1.0.2 texture-hd-dpi.html
 --min-version 1.0.2 texture-formats-test.html
 texture-mips.html
 texture-npot-video.html
