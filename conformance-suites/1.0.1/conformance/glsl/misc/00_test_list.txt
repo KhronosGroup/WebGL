@@ -46,9 +46,6 @@ shader-with-ivec2-return-value.frag.html
 shader-with-ivec3-return-value.frag.html
 shader-with-ivec4-return-value.frag.html
 shader-with-limited-indexing.frag.html
-# we can not check line directives because GLSL 1.0.17 says error messages
-# are implementation defined.
-#shader-with-line-directive.html
 --min-version 1.0.2 shader-with-hex-int-constant-macro.html
 shader-with-long-line.html
 shader-with-non-ascii-error.frag.html
