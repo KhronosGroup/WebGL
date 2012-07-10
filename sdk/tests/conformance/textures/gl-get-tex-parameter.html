@@ -107,7 +107,7 @@ function getStateValue(count, stateInfo) {
 applyStates(function() {
   var count = 0;
   return function(target, stateInfo) {
-    gl.texParameteri(gl[target], gl[stateInfo.state], getStateValue(count, stateInfo));
+    gl.texParameteri(gl[target], gl[stateInfo.state], gl[getStateValue(count, stateInfo)]);
     ++count;
   }
 }());
