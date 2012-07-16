@@ -199,12 +199,15 @@ var setupNoTexCoordTextureVertexShader = function(gl) {
 var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
   var realShaders = [];
   var program = gl.createProgram();
+  var shaderType = undefined;
   for (var ii = 0; ii < shaders.length; ++ii) {
     var shader = shaders[ii];
     if (typeof shader == 'string') {
       var element = document.getElementById(shader);
       if (element) {
-        shader = loadShaderFromScript(gl, shader);
+        if (element.type != "x-shader/x-vertex" && element.type != "x-shader/x-fragment")
+          shaderType = ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER;
+        shader = loadShaderFromScript(gl, shader, shaderType);
       } else {
         shader = loadShader(gl, shader, ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER);
       }
@@ -1740,5 +1743,3 @@ return {
 };
 
 }());
-
-
