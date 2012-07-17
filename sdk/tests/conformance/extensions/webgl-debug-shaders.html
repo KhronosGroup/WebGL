@@ -51,6 +51,8 @@ var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("canvas");
 var ext = null;
 var shader = null;
+var program = null;
+var info = null;
 
 if (!gl) {
     testFailed("WebGL context does not exist");
@@ -91,23 +93,45 @@ function runSupportedTest(extensionEnabled) {
 function runTestEnabled() {
     debug("Testing function with extension enabled");
 
-    var source = "void main() { gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); }";
+    var shaderInfos = [
+      {
+        source: "void main() { gl_Position = vec4(1.0, 0.0, 0.0, 1.0); }",
+        type: gl.VERTEX_SHADER
+      },
+      {
+        source: "void main() { gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); }",
+        type: gl.FRAGMENT_SHADER
+      }
+    ];
 
-    shader = gl.createShader(gl.FRAGMENT_SHADER);
+    // Do this twice to test for caching issues.
+    for (var jj = 0; jj < 2; ++jj) {
+        debug("pass:" + (jj + 1));
+        program = gl.createProgram();
+        for (var ii = 0; ii < shaderInfos.length; ++ii) {
+            info = shaderInfos[ii];
 
-    // if no source has been defined or compileShader() has not been called,
-    // getTranslatedShaderSource() should return an empty string.
-    shouldBeNull("ext.getTranslatedShaderSource(shader)");
-    gl.shaderSource(shader, source);
-    shouldBeNull("ext.getTranslatedShaderSource(shader)");
-    gl.compileShader(shader);
-    shouldBeTrue("gl.getShaderParameter(shader, gl.COMPILE_STATUS)");
-    var translatedSource = ext.getTranslatedShaderSource(shader);
-    glErrorShouldBe(gl, gl.NO_ERROR, "No gl error should occur");
-    if (translatedSource.length > 0)
-        testPassed("Successfully called getTranslatedShaderSource()");
-    else
-        testFailed("Calling getTranslatedShaderSource() failed");
+            shader = gl.createShader(info.type);
+
+            // if no source has been defined or compileShader() has not been called,
+            // getTranslatedShaderSource() should return an empty string.
+            shouldBeNull("ext.getTranslatedShaderSource(shader)");
+            gl.shaderSource(shader, info.source);
+            shouldBeNull("ext.getTranslatedShaderSource(shader)");
+            gl.compileShader(shader);
+            shouldBeTrue("gl.getShaderParameter(shader, gl.COMPILE_STATUS)");
+            var translatedSource = ext.getTranslatedShaderSource(shader);
+            glErrorShouldBe(gl, gl.NO_ERROR, "No gl error should occur");
+            if (translatedSource.length > 0) {
+                testPassed("Successfully called getTranslatedShaderSource()");
+            } else {
+                testFailed("Calling getTranslatedShaderSource() failed");
+            }
+            gl.attachShader(program, shader);
+        }
+        gl.linkProgram(program);
+        shouldBeTrue("gl.getProgramParameter(program, gl.LINK_STATUS)");
+    }
 }
 
 debug("");
