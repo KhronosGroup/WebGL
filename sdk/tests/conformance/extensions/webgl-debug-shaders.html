@@ -122,7 +122,7 @@ function runTestEnabled() {
             shouldBeTrue("gl.getShaderParameter(shader, gl.COMPILE_STATUS)");
             var translatedSource = ext.getTranslatedShaderSource(shader);
             glErrorShouldBe(gl, gl.NO_ERROR, "No gl error should occur");
-            if (translatedSource.length > 0) {
+            if (translatedSource && translatedSource.length > 0) {
                 testPassed("Successfully called getTranslatedShaderSource()");
             } else {
                 testFailed("Calling getTranslatedShaderSource() failed");
