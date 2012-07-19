@@ -38,6 +38,7 @@
 <body>
 <div id="description"></div>
 <canvas id="canvas" width="2px" height="2px"></canvas>
+<canvas id="canvasNoAlpha" width="2px" height="2px"></canvas>
 <div id="console"></div>
 <script>
 
@@ -70,16 +71,22 @@ var wtu = WebGLTestUtils;
 description();
 
 var canvas = document.getElementById("canvas");
-gl = wtu.create3DContext(canvas, {antialias: false});
+var canvasNoAlpha = document.getElementById("canvasNoAlpha");
+gl = wtu.create3DContext(canvas, {alpha:true});
+glNoAlpha = wtu.create3DContext(canvasNoAlpha, {alpha:false});
 
+debug("test with an RGBA backbuffer");
 var program = wtu.setupTexturedQuad(gl);
 glErrorShouldBe(gl, gl.NO_ERROR, "During Initialization");
-
-debug("test with the backbuffer");
-
 testFormats('RGBA');
 
 testBackbufferFormats();
+
+debug("test with an RGB backbuffer");
+gl = glNoAlpha;
+var program = wtu.setupTexturedQuad(gl);
+glErrorShouldBe(gl, gl.NO_ERROR, "During Initialization");
+testFormats('RGB');
 
 function testBackbufferFormats() {
   var fbo = gl.createFramebuffer();
