@@ -51,7 +51,7 @@
 <script id="fshader" type="x-shader/x-fragment">
     void main()
     {
-        gl_FragColor = vec4(0.0,0.0,0.0,0.0);
+        gl_FragColor = vec4(0.0,1.0,0.0,1.0);
     }
 </script>
 
@@ -61,48 +61,81 @@ debug("");
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
 
-function setup(numVerts, attribIndex) {
+function setup(attribIndex) {
   var program = wtu.setupProgram(
       gl, ['vshader', 'fshader'], ['vPosition'], [attribIndex]);
-  // draw with something on attrib zero with a small number of vertices
-  var vertexObject = gl.createBuffer();
   g_program = program;
   g_attribLocation = attribIndex;
   shouldBe("g_attribLocation", "gl.getAttribLocation(g_program, 'vPosition')");
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-  gl.bufferData(
-      gl.ARRAY_BUFFER, new Float32Array(numVerts * 3), gl.STATIC_DRAW);
-  gl.vertexAttribPointer(attribIndex, 3, gl.FLOAT, false, 0, 0);
-  var indices = new Uint16Array(numVerts);
-  for (var ii = 0; ii < numVerts; ++ii) {
-    indices[ii] = ii;
-  }
-  var indexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
   return program;
 }
 
-var p1 = setup(3, 0);
-var p2 = setup(60000, 3);
+function setupVerts(numVerts) {
+  var verts = [
+     1.0,  1.0, 0.0,
+    -1.0,  1.0, 0.0,
+    -1.0, -1.0, 0.0,
+     1.0,  1.0, 0.0,
+    -1.0, -1.0, 0.0,
+     1.0, -1.0, 0.0
+  ];
+  var positions = new Float32Array(numVerts * 3);
+  var indices = new Uint16Array(numVerts);
+  for (var ii = 0; ii < numVerts; ++ii) {
+    var ndx = ii % 6;
+    var dst = ii * 3;
+    var src = ndx * 3;
+    for (var jj = 0; jj < 3; ++jj) {
+      positions[dst + jj] = verts[src + jj];
+    }
+    indices[ii] = ii;
+  }
+  var vertexObject = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
+  gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+  var indexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+}
+
+var p0 = setup(0);
+var p3 = setup(3);
+setupVerts(60000);
 
 for (var ii = 0; ii < 5; ++ii) {
-  gl.useProgram(p1);
+  gl.useProgram(p0);
   gl.enableVertexAttribArray(0);
-  gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
+  gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.drawElements(gl.TRIANGLES, 60000, gl.UNSIGNED_SHORT, 0);
   glErrorShouldBe(
       gl, gl.NO_ERROR,
-      "drawing using attrib 0 with 3 verts");
+      "drawing using attrib 0 with 6 verts");
+  wtu.checkCanvas(gl, [0, 255, 0, 255], "canvas should be green");
+  gl.disableVertexAttribArray(0);
 
-  gl.useProgram(p2);
+  gl.useProgram(p3);
   gl.enableVertexAttribArray(3);
-  gl.drawArrays(gl.LINES, 0, 60000);
+  gl.vertexAttribPointer(3, 3, gl.FLOAT, false, 0, 0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.drawArrays(gl.TRIANGLES, 0, 60000);
   glErrorShouldBe(
       gl, gl.NO_ERROR,
       "drawing using attrib 3 with 60000 verts");
+  wtu.checkCanvas(gl, [0, 255, 0, 255], "canvas should be green");
+  gl.disableVertexAttribArray(3);
+
+  gl.useProgram(p3);
+  gl.enableVertexAttribArray(3);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.drawElements(gl.TRIANGLES, 60000, gl.UNSIGNED_SHORT, 0);
+  glErrorShouldBe(
+      gl, gl.NO_ERROR,
+      "drawing using attrib 3 with 60000 verts");
+  wtu.checkCanvas(gl, [0, 255, 0, 255], "canvas should be green");
+  gl.disableVertexAttribArray(3);
 }
 
-wtu.checkCanvas(gl, [0, 0, 0, 0], "canvas should be 0, 0, 0, 0");
 
 successfullyParsed = true;
 </script>
