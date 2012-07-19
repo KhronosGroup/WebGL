@@ -153,13 +153,6 @@ function runTestEnabled() {
     // the source should have change.
     newTranslatedSource = ext.getTranslatedShaderSource(shader);
     shouldNotBe('newTranslatedSource', 'translatedSource');
-    // Change the source to something bad.
-    translatedSource = newTranslatedSource;
-    gl.shaderSource(shader, "void main() { fooFragColor = vec4(1.0, 0.0, 0.0, 1.0); }");
-    gl.compileShader(shader);
-    // The source should change. The point of the extension is to show what was passed, even if it's bad.
-    newTranslatedSource = ext.getTranslatedShaderSource(shader);
-    shouldNotBe('newTranslatedSource', 'translatedSource');
 }
 
 debug("");
