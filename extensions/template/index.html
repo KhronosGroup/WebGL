@@ -31,9 +31,10 @@
   <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_texture_float.txt">OES_texture_float</a> functionality to
   
       WebGL. The following WebGL-specific behavioral changes apply:
-    <ul><li>Optional support for <code>FLOAT</code> textures as FBO attachments.</li></ul>
-  Consult the above extension for documentation, issues, and new functions and enumerants.
-  </p>
+    <ul><li>Optional support for <code>FLOAT</code> textures as FBO attachments.</li></ul></p>
+<p>
+        Consult the above extension for documentation, issues and new functions and enumerants.
+      </p>
     <!-- normal free-form XHTML is allowed here -->
     <div class="nonnormative">
       <p>
@@ -49,13 +50,13 @@
 <ul>
 <li>Frobs the <b>baz</b>
 </li>
-<li>When a <em>fragment</em> or <em>vertex</em> shader enables, requires, or warns <code>GL_OES_foo_bar</code> with an <code>#extension</code> directive:<ul><li>
+<li>When a <em>fragment</em> or <em>vertex</em> shader enables, requires, or warns <code>GL_OES_foo_bar</code> (or <code>GL_NV_foo_bar</code> or <code>GL_ATI_foo_bar</code>) with an <code>#extension</code> directive:<ul><li>
 <code>vec4 myfun(vec4)</code> is a built-in
               function.
             </li></ul>
 </li>
 <li>
-        The GLSL macro <code>GL_OES_foo_bar</code>
+		The GLSL macro <code>GL_OES_foo_bar</code> (or <code>GL_NV_foo_bar</code> or <code>GL_ATI_foo_bar</code>)
         is defined as <code>1</code>.
       </li>
 </ul>

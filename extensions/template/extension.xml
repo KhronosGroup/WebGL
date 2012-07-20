@@ -42,6 +42,9 @@ http://www.khronos.org/registry/webgl/extensions/
     <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_texture_float.txt" name="OES_texture_float">
       <!-- list the deviations here if there are any -->
       <addendum>Optional support for <code>FLOAT</code> textures as FBO attachments.</addendum>
+      <!-- Tags not 'addendum' replace the default text that says
+           "Consult the above extension for documentation, issues and new functions and enumerants."
+      -->
     </mirrors>
     <!-- normal free-form XHTML is allowed here -->
     <div class="nonnormative">
@@ -58,6 +61,8 @@ http://www.khronos.org/registry/webgl/extensions/
       <feature>Frobs the <b>baz</b></feature>
       <!-- can also specify glsl built-ins in structured format -->
       <glsl extname="GL_OES_foo_bar">
+        <alias extname="GL_NV_foo_bar" />
+        <alias extname="GL_ATI_foo_bar" />
         <stage type="fragment"/>
         <stage type="vertex"/>
         <function name="myfun" type="vec4">

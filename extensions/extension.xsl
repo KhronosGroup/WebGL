@@ -231,13 +231,23 @@
     <ul>
       <xsl:for-each select="addendum">
         <li><xsl:copy-of select="node()" /></li>
-    </xsl:for-each>
+      </xsl:for-each>
     </ul>
     </xsl:otherwise>
   </xsl:choose>
-  Consult the above extension for documentation, issues, and new functions and enumerants.
   </p>
+  <xsl:choose>
+    <xsl:when test="count(child::*[local-name()!='addendum'])!=0">
+      <xsl:copy-of select="child::node()[local-name()!='addendum']" />
+    </xsl:when>
+    <xsl:otherwise>
+      <p>
+        Consult the above extension for documentation, issues and new functions and enumerants.
+      </p>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
+
 <xsl:template match="features" mode="overview">
   <p> When this extension is enabled: </p>
   <ul>
@@ -261,6 +271,21 @@
         </xsl:if>
         <xsl:text>shader enables, requires, or warns </xsl:text>
         <code><xsl:value-of select="@extname" /></code>
+        <xsl:if test="alias">
+          <xsl:for-each select="alias">
+            <xsl:choose>
+              <xsl:when test="position()=1">
+                <xsl:text> (or </xsl:text>
+                <code><xsl:value-of select="@extname" /></code>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text> or </xsl:text>
+                <code><xsl:value-of select="@extname" /></code>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
+          <xsl:text>)</xsl:text>
+        </xsl:if>
         <xsl:text> with an </xsl:text>
         <code>#extension</code>
         <xsl:text> directive:</xsl:text>
@@ -285,7 +310,22 @@
         </ul>
       </li>
       <li>
-        The GLSL macro <code><xsl:value-of select="@extname"/></code>
+		The GLSL macro <code><xsl:value-of select="@extname"/></code>
+		<xsl:if test="alias">
+          <xsl:for-each select="alias">
+            <xsl:choose>
+              <xsl:when test="position()=1">
+                <xsl:text> (or </xsl:text>
+                <code><xsl:value-of select="@extname" /></code>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text> or </xsl:text>
+                <code><xsl:value-of select="@extname" /></code>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
+          <xsl:text>)</xsl:text>
+        </xsl:if>
         is defined as <code>1</code>.
       </li>
     </xsl:for-each>
