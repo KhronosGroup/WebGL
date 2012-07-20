@@ -10,11 +10,19 @@
     method="html"
     encoding="utf-8"/>
 
+<xsl:template match="ratified">
+  <xsl:call-template name="ext_page">
+    <xsl:with-param name="spec_type" select="'Khronos Ratified Extension Specification'" />
+    <xsl:with-param name="css" select="concat($basepath,'/resources/Khronos-Final.css')" />
+    <xsl:with-param name="spec_status" select="'complete'" />
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:template match="extension">
   <xsl:call-template name="ext_page">
     <xsl:with-param name="spec_type" select="'Extension Specification'" />
     <xsl:with-param name="css" select="concat($basepath,'/resources/Khronos-Final.css')" />
-    <xsl:with-param name="spec_status" select="'complete'" />
+    <xsl:with-param name="spec_status" select="'community approved'" />
   </xsl:call-template>
 </xsl:template>
 

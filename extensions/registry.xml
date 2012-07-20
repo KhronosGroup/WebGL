@@ -113,8 +113,10 @@
       <change>Removed the bufferData requirement as this is not checked by webgl</change>
     </revision><revision date="2012/02/24" number="3">
       <change>Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name</change>
-    </revision></history></draft><draft href="EXT_texture_filter_anisotropic/"><name>EXT_texture_filter_anisotropic</name><number>11</number><history><revision date="2012/01/27" number="1">
+    </revision></history></draft><extension href="EXT_texture_filter_anisotropic/"><name>EXT_texture_filter_anisotropic</name><number>11</number><history><revision date="2012/01/27" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/02/24" number="2">
       <change>Added the EXT suffix to the enumerants and aliases to the extension name</change>
-    </revision></history></draft><!-- vi:set sw=2 ts=4: --></registry>
+    </revision><revision date="2012/07/19" number="3">
+      <change>Moved from draft to community approved status</change>
+    </revision></history></extension><!-- vi:set sw=2 ts=4: --></registry>

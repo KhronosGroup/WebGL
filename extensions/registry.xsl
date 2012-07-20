@@ -16,13 +16,29 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="extension|draft">
+<xsl:template match="extension|draft|ratified">
   <li value="{number}">
     <a href="{@href}"><xsl:value-of select="name" /></a>
   </li>
 </xsl:template>
 
-<xsl:template match="ol[@id='official-by-number']">
+<xsl:template match="ol[@id='ratified-by-number']">
+  <xsl:copy>
+    <xsl:apply-templates select="$registry/ratified">
+      <xsl:sort select="number" data-type="number" order="ascending" />
+    </xsl:apply-templates>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="ol[@id='ratified-by-name']">
+  <xsl:copy>
+    <xsl:apply-templates select="$registry/ratified">
+      <xsl:sort select="name"/>
+    </xsl:apply-templates>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="ol[@id='community-approved-by-number']">
   <xsl:copy>
     <xsl:apply-templates select="$registry/extension">
       <xsl:sort select="number" data-type="number" order="ascending" />
@@ -30,7 +46,7 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="ol[@id='official-by-name']">
+<xsl:template match="ol[@id='community-approved-by-name']">
   <xsl:copy>
     <xsl:apply-templates select="$registry/extension">
       <xsl:sort select="name"/>

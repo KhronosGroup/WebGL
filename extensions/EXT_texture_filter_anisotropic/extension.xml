@@ -1,11 +1,7 @@
 <?xml version="1.0"?>
 
-<draft href="EXT_texture_filter_anisotropic/">
+<extension href="EXT_texture_filter_anisotropic/">
   <name>EXT_texture_filter_anisotropic</name>
-  <aliases>
-    <alias>WEBKIT_EXT_texture_filter_anisotropic</alias>
-    <alias>MOZ_EXT_texture_filter_anisotropic</alias>
-  </aliases>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
   </contact>
@@ -42,5 +38,8 @@ interface EXT_texture_filter_anisotropic {
     <revision date="2012/02/24">
       <change>Added the EXT suffix to the enumerants and aliases to the extension name</change>
     </revision>
+    <revision date="2012/07/19">
+      <change>Moved from draft to community approved status</change>
+    </revision>
   </history>
-</draft>
+</extension>

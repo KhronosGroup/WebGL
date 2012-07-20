@@ -109,8 +109,9 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 </ul>
 <h2 class="no-toc">Extension Development Process</h2>
 <p>
-        Extensions move through three states during their
-        development: <em>proposed</em>, <em>draft</em>, and <em>official</em>.
+        Extensions move through four states during their
+        development: <em>proposed</em>, <em>draft</em>, <em>community approved</em>, and <em>Khronos
+        ratified</em>.
     </p>
 <ul>
 <li> <em>Proposed</em> extensions are intended for discussion on the public WebGL mailing
@@ -121,16 +122,38 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
         </li>
 <li> <em>Draft</em> extensions may be implemented under a vendor prefix for experimentation
         purposes, in order to gain experience with the extension before finalizing it. Once
-        consensus is reached in the community, the extension can be moved to <em>official</em>
+        consensus is reached in the community, the extension can be moved to <em>community approved</em>
         status.
 
         </li>
-<li> <em>Official</em> extensions should be implemented without a vendor prefix. When a draft extension moves to official status, any existing implementation should immediately remove support for the vendor-prefixed extension name. Once
-        implemented by a vendor, support should not be removed unless there is a serious issue with
-        the extension, such as a security flaw.
+<li> <em>Community approved</em> extensions should be implemented without a vendor
+        prefix. When a draft extension moves to community approved status, any existing
+        implementation should immediately remove support for the vendor-prefixed extension
+        name. Once implemented by a vendor, support should not be removed unless there is a serious
+        issue with the extension, such as a security flaw.
+
+        </li>
+<li> <em>Khronos ratified</em> extensions are those community approved extensions which have
+        been voted upon by the Khronos Board of Promoters.
+
     </li>
 </ul>
-<h2 class="no-toc">Official WebGL Extensions</h2>
+<h2 class="no-toc">Khronos ratified WebGL Extensions</h2>
+<table style="border: 2px; width: 100%;">
+<tr>
+<td class="list">
+<h3>By Number</h3>
+    </td>
+<td class="list">
+<h3>By Name</h3>
+    </td>
+</tr>
+<tr>
+<td class="list"><ol></ol></td>
+<td class="list"><ol></ol></td>
+</tr>
+</table>
+<h2 class="no-toc">Community approved WebGL Extensions</h2>
 <table style="border: 2px; width: 100%;">
 <tr>
 <td class="list">
@@ -147,8 +170,10 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 <li value="4"><a href="OES_standard_derivatives/">OES_standard_derivatives</a></li>
 <li value="6"><a href="WEBGL_debug_renderer_info/">WEBGL_debug_renderer_info</a></li>
 <li value="7"><a href="WEBGL_debug_shaders/">WEBGL_debug_shaders</a></li>
+<li value="11"><a href="EXT_texture_filter_anisotropic/">EXT_texture_filter_anisotropic</a></li>
 </ol></td>
 <td class="list"><ol>
+<li value="11"><a href="EXT_texture_filter_anisotropic/">EXT_texture_filter_anisotropic</a></li>
 <li value="4"><a href="OES_standard_derivatives/">OES_standard_derivatives</a></li>
 <li value="1"><a href="OES_texture_float/">OES_texture_float</a></li>
 <li value="2"><a href="OES_texture_half_float/">OES_texture_half_float</a></li>
@@ -174,10 +199,8 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 <li value="8"><a href="WEBGL_compressed_texture_s3tc/">WEBGL_compressed_texture_s3tc</a></li>
 <li value="9"><a href="WEBGL_depth_texture/">WEBGL_depth_texture</a></li>
 <li value="10"><a href="OES_element_index_uint/">OES_element_index_uint</a></li>
-<li value="11"><a href="EXT_texture_filter_anisotropic/">EXT_texture_filter_anisotropic</a></li>
 </ol></td>
 <td class="list"><ol>
-<li value="11"><a href="EXT_texture_filter_anisotropic/">EXT_texture_filter_anisotropic</a></li>
 <li value="10"><a href="OES_element_index_uint/">OES_element_index_uint</a></li>
 <li value="5"><a href="OES_vertex_array_object/">OES_vertex_array_object</a></li>
 <li value="8"><a href="WEBGL_compressed_texture_s3tc/">WEBGL_compressed_texture_s3tc</a></li>
@@ -188,6 +211,9 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 </table>
 <h2 class="no-toc">Recent WebGL Extension Revisions</h2>
 <ol>
+<li>
+<a href="EXT_texture_filter_anisotropic/">EXT_texture_filter_anisotropic</a> : revision 3 on <time>July 19, 2012</time><ul><li>Moved from draft to community approved status</li></ul>
+</li>
 <li>
 <a href="WEBGL_depth_texture/">WEBGL_depth_texture</a> : revision 8 on <time>June 27, 2012</time><ul><li>
         Updated references to texSubImage2D. Added
@@ -229,9 +255,6 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 </li>
 <li>
 <a href="OES_element_index_uint/">OES_element_index_uint</a> : revision 2 on <time>January 27, 2012</time><ul><li>Removed the bufferData requirement as this is not checked by webgl</li></ul>
-</li>
-<li>
-<a href="EXT_texture_filter_anisotropic/">EXT_texture_filter_anisotropic</a> : revision 1 on <time>January 27, 2012</time><ul><li>Initial revision.</li></ul>
 </li>
 </ol>
 <img src="../resources/feed-icon-14x14.png" width="14" height="14"> <a href="index.atom">Recent Revisions</a>

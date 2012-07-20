@@ -119,8 +119,9 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
     <h2 class="no-toc">Extension Development Process</h2>
 
     <p>
-        Extensions move through three states during their
-        development: <em>proposed</em>, <em>draft</em>, and <em>official</em>.
+        Extensions move through four states during their
+        development: <em>proposed</em>, <em>draft</em>, <em>community approved</em>, and <em>Khronos
+        ratified</em>.
     </p>
     <ul>
         <li> <em>Proposed</em> extensions are intended for discussion on the public WebGL mailing
@@ -130,15 +131,21 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 
         <li> <em>Draft</em> extensions may be implemented under a vendor prefix for experimentation
         purposes, in order to gain experience with the extension before finalizing it. Once
-        consensus is reached in the community, the extension can be moved to <em>official</em>
+        consensus is reached in the community, the extension can be moved to <em>community approved</em>
         status.
 
-        <li> <em>Official</em> extensions should be implemented without a vendor prefix. When a draft extension moves to official status, any existing implementation should immediately remove support for the vendor-prefixed extension name. Once
-        implemented by a vendor, support should not be removed unless there is a serious issue with
-        the extension, such as a security flaw.
+        <li> <em>Community approved</em> extensions should be implemented without a vendor
+        prefix. When a draft extension moves to community approved status, any existing
+        implementation should immediately remove support for the vendor-prefixed extension
+        name. Once implemented by a vendor, support should not be removed unless there is a serious
+        issue with the extension, such as a security flaw.
+
+        <li> <em>Khronos ratified</em> extensions are those community approved extensions which have
+        been voted upon by the Khronos Board of Promoters.
+
     </ul>
 
-    <h2 class="no-toc">Official WebGL Extensions</h2>
+    <h2 class="no-toc">Khronos ratified WebGL Extensions</h2>
 
     <table style="border: 2px; width: 100%;">
     <tr>
@@ -146,8 +153,21 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
     <td class="list"><h3>By Name</h3>
     </tr>
     <tr>
-    <td class="list"><ol id="official-by-number"></ol>
-    <td class="list"><ol id="official-by-name"></ol>
+    <td class="list"><ol id="ratified-by-number"></ol>
+    <td class="list"><ol id="ratified-by-name"></ol>
+    </tr>
+    </table>
+
+    <h2 class="no-toc">Community approved WebGL Extensions</h2>
+
+    <table style="border: 2px; width: 100%;">
+    <tr>
+    <td class="list"><h3>By Number</h3>
+    <td class="list"><h3>By Name</h3>
+    </tr>
+    <tr>
+    <td class="list"><ol id="community-approved-by-number"></ol>
+    <td class="list"><ol id="community-approved-by-name"></ol>
     </tr>
     </table>
 
