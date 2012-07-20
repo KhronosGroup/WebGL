@@ -103,6 +103,7 @@ var p3 = setup(3);
 setupVerts(60000);
 
 for (var ii = 0; ii < 5; ++ii) {
+  // test drawing with attrib 0
   gl.useProgram(p0);
   gl.enableVertexAttribArray(0);
   gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
@@ -114,6 +115,7 @@ for (var ii = 0; ii < 5; ++ii) {
   wtu.checkCanvas(gl, [0, 255, 0, 255], "canvas should be green");
   gl.disableVertexAttribArray(0);
 
+  // test drawing without attrib 0
   gl.useProgram(p3);
   gl.enableVertexAttribArray(3);
   gl.vertexAttribPointer(3, 3, gl.FLOAT, false, 0, 0);
@@ -125,6 +127,9 @@ for (var ii = 0; ii < 5; ++ii) {
   wtu.checkCanvas(gl, [0, 255, 0, 255], "canvas should be green");
   gl.disableVertexAttribArray(3);
 
+  // This second test of drawing without attrib0 unconvered a bug in chrome
+  // where after the draw without attrib0 the attrib 0 emulation code disabled
+  // attrib 0 and it was never re-enabled so this next draw failed.
   gl.useProgram(p3);
   gl.enableVertexAttribArray(3);
   gl.clear(gl.COLOR_BUFFER_BIT);
