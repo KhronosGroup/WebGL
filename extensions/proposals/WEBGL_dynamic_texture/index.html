@@ -18,68 +18,119 @@
   working group</a> (public_webgl 'at' khronos.org) </p>
 <h2 class="no-toc">Contributors</h2>
 <p>Mark Callow</p>
-<p>Ken Russell</p>
 <p>Acorn Pooley</p>
+<p>Ken Russell</p>
+<p>David Sheets</p>
 <p>Members of the WebGL working group</p>
 <h2 class="no-toc">Version</h2>
-<p> Last modified date: July 06, 2012<br>
-          Revision: 2</p>
+<p> Last modified date: July 20, 2012<br>
+          Revision: 3</p>
 <h2 class="no-toc">Number</h2>
 <p> WebGL extension #NN</p>
 <h2 class="no-toc">Dependencies</h2>
     <p> Written against the <a href="http://www.khronos.org/registry/webgl/specs/1.0/">WebGL API 1.0</a> specification. </p>
   <h2 class="no-toc">Overview</h2>
-    <p>Texturing with video is currently achieved by using the
-    <code>TEXTURE2D</code> target and passing an HTMLVideoElement to
-    <code>texImage2D</code>. It is difficult, if not impossible to implement
-    video texturing with zero-copy efficiency via this API and it leaves
-    synchronization entirely up to the implementation with no way for the
-    application to indicate when it needs a complete and stable image and when
-    it does not.</p>
+    <p>A dynamic texture is a texture whose image changes frequently. The
+    source of the stream of images may be a producer outside the control of
+    the WebGL application. The classic example is using a playing video to
+    texture geometry. Texturing with video is currently achieved by using the
+    <code>TEXTURE2D</code> target and passing an <code>HTMLVideoElement</code>
+    to <code>texImage2D</code>. It is difficult, if not impossible to
+    implement video texturing with zero-copy efficiency via this API and much
+    of the behavior is underspecified.</p>
 
-    <p>This extension adds the ability to manage video and other textures
-    whose image data changes dynamically. Data may be sourced from
-    HTMLVideoElements, CanvasElements and ImageElements having multiple frames
-    such as animated GIF, APNG and MNG files. It provides functions for
-    synchronizing the dynamic source decoder and 3D rendering.</p>
+    <p>This extension provides a mechanism for streaming image frames from an
+    <code>HTMLVideoElement</code>, <code>HTMLCanvasElement</code> or
+    <code>HTMLImageElement</code> (having multiple frames such those created
+    from animated GIF, APNG and MNG files) into a WebGL texture. The extension
+    defines a new texture target, <code>TEXTURE_EXTERNAL_OES</code> which can
+    only be specified as being the consumer of an image stream from one of
+    these elements.</p>
+
+    <p>There is no support for most of the functions that manipulate other
+    texture targets (e.g. you cannot use <code>*[Tt]ex*Image*()</code>
+    functions with <code>TEXTURE_EXTERNAL_OES</code>). Also,
+    <code>TEXTURE_EXTERNAL_OES</code> targets never have more than a single
+    LOD level. These restrictions enable dynamic texturing with maximum
+    efficiency. They remove the need for a copy of the image data manipulable
+    via the WebGL API and allow sources which have internal formats not
+    otherwise supported by WebGL, such as planar or interleaved YUV data, to
+    be WebGL texture target siblings.</p>
+
+    <p>The extension extends GLSL ES with a new
+    <code>samplerExternalOES</code> type and matching sampling functions that
+    provide a place for an implementation to inject code for sampling non-RGB
+    data when necessary without degrading performance for other texture
+    targets. Sampling a <code>TEXTURE_EXTERNAL_OES</code> via a sampler of
+    type <code>samplerExternalOES</code> always returns RGBA data. This allows
+    the implementation to decide the most efficient format to use whether it
+    be RGB and or YUV data. If the underlying format was exposed, the
+    application would have to query the format in use and provide shaders to
+    handle both cases.</p>
+
+    <p>The extension includes a mechanism for <em>latching</em> an image frame
+    into a texture as its contents. This is equivalent to copying the image
+    into the texture but, due to the restrictions outlined above a copy is not
+    necessary. Most implementations will be able to avoid one so this can be
+    much faster than using <code>texImage2D</code>. Latching can and should be
+    implemented in a way that allows the producer to run independently of 3D
+    rendering.</p>
 
     <p> This extension exposes the
-  <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt">OES_EGL_image_external</a> functionality to
+  <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a> functionality to
   
       WebGL. The following WebGL-specific behavioral changes apply:
     <ul>
 <li>
-        <p>The function <code>EGLImageTargetTexture2DOES</code> and the
-        typedef <code>GLeglImageOES</code> are not supported. All references
-        to them are omitted. An alternative mechanism is provided for binding
-        a dynamic source to a texture.</p>
+        <p>An <code>HTMLVideoElement</code>, <code>HTMLCanvasElement</code> or
+        <code>HTMLImageElement</code> is the producer and deliverer of the
+        stream of images being consumed by the dynamic texture rather than the
+        unspecified external producer and <code>EGLStream</code> pair referred
+        to in the extension.</p>
       </li>
 <li>
-        <p>The paragraph describing synchronization beginning <cite>Sampling
-        an external texture which has been modified ...</cite> and ending
-        <cite>... to ensure they have taken effect on the the texture, before
-        the call to BindTexture is made.)</cite> in section 3.7.14 of the
-        amended OpenGL ES 2.0 API specification is replaced with: <blockquote>
-        If <code>dynamicTextureAcquireImage()</code> has not been called,
-        sampling an external texture will return samples which may correspond
-        to image values before, during or after external modification. Calling
-        <code>dynamicTextureAcquireImage()</code> guarantees that
-        modifications are complete and sampling will always return samples
-        corresponding to the image values at the time
-        <code>dynamicTextureAcquireImage()</code> returned. To permit external
-        modifications to the image once again,
-        <code>dynamicTextureReleaseImage()</code> must be called.
-        </blockquote></p>
+        <p>References to <code>EGLImage</code> and associated state are
+        deleted.</p>
       </li>
-</ul>
-  Consult the above extension for documentation, issues, and new functions and enumerants.
-  </p>
+<li>
+        <p><code>dynamicTextureSetSource</code> is used to connect a texture
+        to the image stream from an HTML element instead of the command
+        <code>eglStreamConsumerGLTextureNV</code> or its equivalent
+        <code>eglStreamConsumerGLTextureExternalKHR</code> referenced by the
+        extension.</p>
+      </li>
+<li>
+        <p><code>dynamicTextureAcquireImage</code> and
+        <code>dynamicTextureReleaseImage</code> are used to latch and unlatch
+        image frames instead of the commands
+        <code>eglStreamConsumerAcquireNV</code> or its equivalent
+        <code>eglStreamConsumerAcquireKHR</code> and
+        <code>eglStreamConsumerReleaseNV</code> or its equivalent
+        <code>eglStreamConsumerReleaseKHR</code> referenced by the
+        extension.</p>
+      </li>
+</ul></p>
+      <!-- list the deviations here if there are any -->
+
+      
+
+      
+
+      
+
+      
+
+      <p>For ease of reading, this specification briefly describes the new
+      functions and enumerants of <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>.
+      Consult that extension for detailed documentation of their meaning and
+      behavior. Changes to the language of that extension are given <a href="#differences">later</a> in this specification.</p>
+    
 
     <p> When this extension is enabled: </p>
 <ul>
 <li>
-        <p>The functions <code>dynamicTextureSetSource</code> for binding
-        <code>HTML{Canvas,Image,Video}Elements</code> to a texture are
+        <p>The family of <code>dynamicTextureSetSource</code> functions for
+        binding <code>HTML{Canvas,Image,Video}Elements</code> to a texture are
         available. </p>
       </li>
 <li>
@@ -88,11 +139,18 @@
       </li>
 <li>
         <p>The functions <code>dynamicTextureAcquireImage</code> and
-        <code>dynamicTextureReleaseImage</code> are available. These calls are
-        used before and after 3D rendering to prevent modification of the
-        image during sampling.</p>
+        <code>dynamicTextureReleaseImage</code> are available. These commands
+        are used before and after 3D rendering to latch an image that will not
+        change during sampling.</p>
       </li>
-<li>When a <em>fragment</em> or <em>vertex</em> shader enables, requires, or warns <code>OES_EGL_image_external</code> with an <code>#extension</code> directive:<ul>
+<li>
+        <p>The functions <code>dynamicTextureSetConsumerLatencyUsec</code> and
+        <code>dynamicTextureGetConsumerLatencyUsec</code> are available. These
+        commands are used to inform a connected <code>HTMLVideoElement</code>
+        of the latency between latching an image and displaying it and to
+        query the currently set latency.</p>
+      </li>
+<li>When a <em>fragment</em> or <em>vertex</em> shader enables, requires, or warns <code>WEBGL_dynamic_texture</code> (or <code>NV_EGL_stream_consumer_external</code> or <code>OES_EGL_image_external</code>) with an <code>#extension</code> directive:<ul>
 <li>
 <code>samplerExternalOES</code> is a built-in type.
             </li>
@@ -111,7 +169,7 @@
 </ul>
 </li>
 <li>
-        The GLSL macro <code>OES_EGL_image_external</code>
+		The GLSL macro <code>WEBGL_dynamic_texture</code> (or <code>NV_EGL_stream_consumer_external</code> or <code>OES_EGL_image_external</code>)
         is defined as <code>1</code>.
       </li>
 </ul>
@@ -123,46 +181,65 @@
     const GLenum TEXTURE_BINDING_EXTERNAL_OES = 0x8D67;
     const GLenum REQUIRED_TEXTURE_IMAGE_UNITS_OES = 0x8D68;
 
-    void dynamicTextureSetSource(WebGLTexture texture, HTMLCanvasElement? source);
-    void dynamicTextureSetSource(WebGLTexture texture, HTMLImageElement? source);
-    void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);
-    any dynamicTextureGetSource(WebGLTexture texture);
-    void dynamicTextureAcquireImage(WebGLTexture texture);
-    void dynamicTextureReleaseImage(WebGLTexture texture);
+    void dynamicTextureSetSource(HTMLCanvasElement? source);
+    void dynamicTextureSetSource(HTMLImageElement? source);
+    void dynamicTextureSetSource(HTMLVideoElement? source);
+    any dynamicTextureGetSource();
+    void dynamicTextureAcquireImage();
+    void dynamicTextureReleaseImage();
+    void dynamicTextureSetConsumerLatencyUsec(HTMLVideoElement, int);
+    int dynamicTextureGetConsumerLatencyUsec(HTMLVideoElement);
   }; // interface WEBGL_dynamic_texture
 }; // module webgl </pre></p>
 <h2 class="no-toc">IP Status</h2>No known IP claims.<h2 class="no-toc">New Functions</h2>
 <dl class="methods">
-<dt class="idl-code">void dynamicTextureSetSource(WebGLTexture texture, HTMLCanvasElement? source)</dt>
-<dd>Binds
-    source <code>source</code> to <code>WebGLTexture texture</code> as the
-    source of dynamic images.</dd>
-<dt class="idl-code">void dynamicTextureSetSource(WebGLTexture texture, HTMLImageElement? source)</dt>
-<dd>Binds
-    source <code>source</code> to <code>WebGLTexture texture</code> as the
-    source of dynamic images.</dd>
-<dt class="idl-code">void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source)</dt>
-<dd>Binds
-    source <code>source</code> to <code>WebGLTexture texture</code> as the
-    source of dynamic images.</dd>
+<dt class="idl-code">void dynamicTextureSetSource(HTMLCanvasElement? source)</dt>
+<dd>Connects source <em>source</em> to the
+    <code>WebGLTexture</code> that is bound to the
+    <code>TEXTURE_EXTERNAL_OES</code> target of the active texture unit, as
+    the producer of its image stream </dd>
+<dt class="idl-code">void dynamicTextureSetSource(HTMLImageElement? source)</dt>
+<dd>Connects source <em>source</em> to
+    the<code>WebGLTexture</code> that is bound to the
+    <code>TEXTURE_EXTERNAL_OES</code> target of the active texture unit, as
+    the producer of its image stream</dd>
+<dt class="idl-code">void dynamicTextureSetSource(HTMLVideoElement? source)</dt>
+<dd>Connects source <em>source</em> to
+    <code>WebGLTexture texture</code> that is bound to the
+    <code>TEXTURE_EXTERNAL_OES</code> target of the active texture unit, as
+    the producer of its image stream</dd>
 <dt class="idl-code">any dynamicTextureGetSource()</dt>
-<dd></dd>
-<dt class="idl-code">void dynamicTextureAcquireImage(WebGLTexture texture)</dt>
-<dd>Acquires a frame from the dynamic
-    image source of the <code>texture</code>. The image data is guaranteed not
-    to change until <code>dynamicTextureReleaseImage</code> is called.
-    Sampling will return samples corresponding to image values at the time
-    <code>dynamicTextureAcquireImage</code> returned.</dd>
-<dt class="idl-code">void dynamicTextureReleaseImage(WebGLTexture texture)</dt>
-<dd>Releases the frame lock on the dynamic
-    image source of the <code>texture</code>. After this the image data can
-    change and sampling will return samples which may correspond to image
-    values before, during or after the modification.</dd>
+<dd>Returns the
+    <code>HTML{Canvas,Image,Video}Element</code> that is connected as a source
+    of images to the <code>WebGLTexture</code> bound to the
+    <code>TEXTURE_EXTERNAL_OES</code> target of the active texture
+    unit.</dd>
+<dt class="idl-code">void dynamicTextureAcquireImage()</dt>
+<dd>Causes the
+    <code>WebGLTexture</code> bound to the
+    <code>TEXTURE_EXTERNAL_OES</code>target of the active texture unit to
+    acquire an image frame from the producer connected to it . The image data
+    is guaranteed not to change during sampling.</dd>
+<dt class="idl-code">void dynamicTextureReleaseImage()</dt>
+<dd>Causes the
+    <code>WebGLTexture</code> bound to the
+    <code>TEXTURE_EXTERNAL_OES</code>target of the active texture unit to
+    release an acquired image frame back to the buffer pool available to the
+    producer connected to it. After this sampling will return
+    (0,0,0,1).</dd>
+<dt class="idl-code">void dynamicTextureSetConsumerLatencyUsec(HTMLVideoElement source, int latency)</dt>
+<dd>Informs an HTMLVideo source the average latency between
+    latching an image and displaying it. Setting the latency enables the
+    HTMLVideoElement to make necessary adjustments to keep audio in
+    sync.</dd>
+<dt class="idl-code">int dynamicTextureSetConsumerLatencyUsec()</dt>
+<dd>Returns
+    the currently set latency.</dd>
 </dl>
 <h2 class="no-toc">New Types</h2>
 <h2 class="no-toc">New Tokens</h2>
 <dl class="methods">
-<p>The meaning and use of these tokens is exactly as described in <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt">OES_EGL_image_external</a></p>
+<p>The meaning and use of these tokens is exactly as described in <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>.</p>
 <dt class="idl-code">void bindTexture(GLenum target, WebGLTexture? texture)</dt>
 <dd>
 <code>TEXTURE_EXTERNAL_OES</code> is accepted as a
@@ -194,7 +271,7 @@
     paragraph beginning <cite>A WebGL implementation must ...</cite> with the
     following paragraph:<blockquote>A WebGL implementation must only accept
     shaders which conform to The OpenGL ES Shading Language, Version 1.00 <a href="https://www.khronos.org/registry/webgl/specs/1.0/#refsGLES20GLSL">[GLES20GLSL]</a>,
-    as extended by <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt">OES_EGL_image_external</a>,
+    as extended by <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>,
     and which do not exceed the minimum functionality mandated in Sections 4
     and 5 of Appendix A. In particular, a shader referencing state variables
     or commands that are available in other versions of GLSL (such as that
@@ -205,45 +282,59 @@
     the WebGLRenderingContext interface. Note that until such time as this
     extension enters core WebGL the tokens and commands mentioned below will
     be located on the WebGL_dynamic_texture extension interface shown
-    above.<li>In the list following <code>/* GetPName */</code>:<pre xml:space="preserve">TEXTURE_BINDING_EXTERNAL = 0x8D67;</pre>
+    above.<li>In the list following <code>/* GetPName */</code>:<pre class="idl" xml:space="preserve">TEXTURE_BINDING_EXTERNAL = 0x8D67;</pre>
 </li><li>In
-    the list following <code>/* TextureParameterName */</code>:<pre xml:space="preserve">REQUIRED_TEXTURE_IMAGE_UNITS = 0x8D68;</pre>
+    the list following <code>/* TextureParameterName */</code>:<pre class="idl" xml:space="preserve">REQUIRED_TEXTURE_IMAGE_UNITS = 0x8D68;</pre>
 </li><li>In
-    the list following <code>/* TextureTarget */</code>:<pre xml:space="preserve">TEXTURE_EXTERNAL = 0x8D65;</pre>
+    the list following <code>/* TextureTarget */</code>:<pre class="idl" xml:space="preserve">TEXTURE_EXTERNAL = 0x8D65;</pre>
 </li><li>In the list
-    following <code>/* Uniform Types */</code>:<pre xml:space="preserve">SAMPLER_EXTERNAL = 0x8D66;</pre>
-</li><li>In
-    the alphabetical list of commands add the following :<pre xml:space="preserve">void dynamicTextureAcquireImage(WebGLTexture texture);
-any dynamicTextureGetSource(WebGLTexture texture);
-void dynamicTextureReleaseImage(WebGLTexture texture);
-void dynamicTextureSetSource(WebGLTexture texture, HTMLCanvasElement? source);
-void dynamicTextureSetSource(WebGLTexture texture, HTMLImageElement? source);
-void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</pre>
+    following <code>/* Uniform Types */</code>:<pre class="idl" xml:space="preserve">SAMPLER_EXTERNAL = 0x8D66;</pre>
+</li><li>In the
+    alphabetical list of commands add the following :<pre class="idl" xml:space="preserve">void dynamicTextureAcquireImage();
+int dynamicTextureGetConsumerLatencyUsec();
+any dynamicTextureGetSource();
+void dynamicTextureReleaseImage();
+void dynamicTextureSetConsumerLatencyUsec(HTMLVideoElement);
+void dynamicTextureSetSource(HTMLCanvasElement? source);
+void dynamicTextureSetSource(HTMLImageElement? source);
+void dynamicTextureSetSource(HTMLVideoElement? source);</pre>
 </li></p>
 
     <p>In section 5.13.3 <cite>Setting and getting state</cite>, add the
     following to the table under <code>getParameter</code>.</p>
 
-    <table>
-      <tr>
-        <td>TEXTURE_BINDING_EXTERNAL</td>
+    <dl class="methods">
+      <dt class="idl-code">
+        <dd>
+          <table>
+            <tr>
+              <td>TEXTURE_BINDING_EXTERNAL</td>
 
-        <td>int</td>
-      </tr>
-    </table>
+              <td>int</td>
+            </tr>
+          </table>
+        </dd>
+      </dt>
+    </dl>
 
     <p></p>
 
     <p>In section 5.13.8<cite>Texture objects</cite>, add the following to the
     table under <code>getTexParameter</code>.</p>
 
-    <table>
-      <tr>
-        <td>REQUIRED_TEXTURE_IMAGE_UNITS</td>
+    <dl class="methods">
+      <dt class="idl-code">
+        <dd>
+          <table>
+            <tr>
+              <td>REQUIRED_TEXTURE_IMAGE_UNITS</td>
 
-        <td>int</td>
-      </tr>
-    </table>
+              <td>int</td>
+            </tr>
+          </table>
+        </dd>
+      </dt>
+    </dl>
 
     <p></p>
 
@@ -252,83 +343,202 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
     <blockquote>
       <h3>5.13.8.1 Dynamic textures</h3>
 
-      <p>Dynamic textures are texture objects whose images change outside the
-      control of the WebGL application and asynchronously with its rendering.
-      The commands<pre class="idl-code" xml:space="preserve">void dynamicTextureSetSource(WebGLTexture texture, HTMLCanvasElement? source);
-void dynamicTextureSetSource(WebGLTexture texture, HTMLImageElement? source);
-void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</pre>bind
-      the given dynamic source <code>source</code> to the texture object. If
-      <code>source</code> is null any previous source binding is removed.</p>
+      <p>Dynamic textures are texture objects whose complete image data
+      changes frequently. The source of the stream of images may be a producer
+      outside the control of the WebGL application. The classic example is
+      using a playing video to texture geometry. A dynamic texture object is
+      created by binding an unused <code>WebGLTexture</code> to the target
+      <code>TEXTURE_EXTERNAL_OES</code>. Note that only unused WebGLTextures
+      or those previously used as dynamic textures can be bound to
+      <code>TEXTURE_EXTERNAL_OES</code>. Binding a <code>WebGLTexture</code>
+      previously used with a different target or binding a WebGLTexture
+      previously used with TEXTURE_EXTERNAL_OES to a different target
+      generates a <code>GL_INVALID_OPERATION</code> error as documented in <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">GL_NV_EGL_stream_consumer_external.txt</a>.</p>
 
-      <p>The command<pre class="idl-code" xml:space="preserve">any? dynamicTextureGetSource(WebGLTexture texture, HTMLCanvasElement? source);</pre>returns
-      a handle to the currently bound dynamic source.</p>
+      <p>The commands<pre class="idl" xml:space="preserve">void dynamicTextureSetSource(HTMLCanvasElement? source);
+void dynamicTextureSetSource(HTMLImageElement? source);
+void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
+      texture object currently bound to the <code>TEXTURE_EXTERNAL_OES</code>
+      target in the active texture unit as the consumer of the stream of
+      images produced by the HTMLElement <em>source</em>. If <em>source</em>
+      is null any previously connected producer is removed.</p>
 
-      <p>The command<pre class="idl-code" xml:space="preserve">void dynamicTextureAcquireImage(WebGLTexture texture);</pre>waits
-      for any pending modifications to the image to complete and locks the
-      image to prevent further changes. The image is guaranteed not to change
-      until the command<pre class="idl-code" xml:space="preserve">void dynamicTextureReleaseImage(WebGLTexture texture);</pre>is
-      called. If <code>dynamicTextureAcquireImage</code> is not called before
-      the texture is sampled, the returned sample may be taken before, during
-      or after external modifications to the image data potentially causing
-      tearing of the image on the textured primitive.</p>
+      <p>If <em>source</em> is an HTMLCanvasElement object with either a
+      horizontal dimension or a vertical dimension equal to zero, then the
+      implementation must throw an InvalidStateError exception. <em>XXX
+      Mirrors CanvasRenderingContext2D.drawImage. Do we need to do
+      this?</em></p>
+
+      <p>The command<pre class="idl" xml:space="preserve">any? dynamicTextureGetSource(WebGLTexture texture, HTMLCanvasElement? source);</pre>returns
+      a handle to the currently connected image source.</p>
+
+      <p>The command<pre class="idl" xml:space="preserve">void dynamicTextureAcquireImage();</pre>causes
+      the texture object currently bound to the
+      <code>TEXTURE_EXTERNAL_OES</code> target in the active texture unit to
+      <em>latch</em> the most recent image frame from its currently connected
+      source. The rules for selecting the image to be latched mirror those for
+      selecting the image drawn by the <code>drawImage</code> method of <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#canvasrenderingcontext2d">CanvasRenderingContext2D</a>.</p>
+
+      <p>For HTMLVideoElements, it will latch the frame at the <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-video-element.html#current-playback-position">current
+      playback position</a>, as defined in the <a href="http://www.whatwg.org/specs/web-apps/current-work/">HTML Living
+      Standard</a>, unless the element's readyState attribute is either
+      HAVE_NOTHING or HAVE_METADATA, in which case the command returns without
+      latching anything and the texture remains <em>incomplete</em>.</p>
+
+      <p>For animated HTMLImageElements it will latch the first frame of the
+      animation.</p>
+
+      <p>For HTMLCanvasElements it will latch the current content of the
+      canvas as would be returned by a call to <code>toDataURL</code>.</p>
+
+      <p>The model is a stream of images between the producer and the
+      WebGLTexture consumer. <code>dynamicTextureAcquireImage</code> latches
+      the most recent image frame. If the producer has not inserted any new
+      image frames since the last call to
+      <code>dynamicTextureAcquireImage</code> then
+      <code>dynamicTextureAcquireImage</code> will latch the same image frame
+      it latched last time it was called. If the producer has inserted one new
+      image frame since the last call then
+      <code>dynamicTextureAcquireImage</code> will "latch" the newly inserted
+      image frame. If the producer has inserted more than one new image frame
+      since the last call then all but the most recently inserted image frames
+      are discarded and <code>dynamicTextureAcquireImage</code> will "latch"
+      the most recently inserted image frame. For HTMLVideoElements, the
+      application can use the value of the <code>currentTime</code> attribute
+      to identify which image frame was actually latched.</p>
+
+      <p>The command <pre class="idl" xml:space="preserve">void dynamicTextureReleaseImage(WebGLTexture texture);</pre>releases
+      the latched image. <code>dynamicTextureReleaseImage</code> will prevent
+      the producer from re-using and/or modifying the image frame until all
+      preceding WebGL commands that use the image frame as a texture have
+      completed. If <code>dynamicTextureAcquireImage</code> is called twice
+      for the same texture and producer pair without an intervening call to
+      <code>dynamicTextureReleaseImage</code> then dynamicTextureReleaseImage
+      is implicitly called at the start of
+      <code>dynamicTextureAcquireImage</code>.</p>
+
+      <p>After successfully calling <code>dynamicTextureReleaseImage</code>
+      the texture becomes "incomplete".</p>
+
+      <p>If <code>dynamicTextureReleaseImage</code> is called twice without a
+      successful intervening call to <code>dynamicTextureAcquireImage</code>,
+      or called with no previous call to
+      <code>dynamicTextureAcquireImage</code>, then the call does nothing and
+      the texture remains in "incomplete" state. This is not an error.</p>
 
       <p><code>dynamicTextureAcquireImage</code> and
       <code>dynamicTextureReleaseImage</code> generate an INVALID_OPERATION
       error if no dynamic source is bound to the texture.</p>
 
+      <p>The command <pre class="idl" xml:space="preserve">void dynamicTextureSetConsumerLatencyUsec(HTMLVideoElement source, int latency);</pre>informs
+      the <em>source</em> <code>HTMLVideoElement</code> that the time that
+      elapses (on average) from when the application latches an image frame
+      with <code>dynamicTextureAcquireImage</code> until the image frame is
+      visible to the user is <em>latency</em> microseconds. The initial value
+      is an implementation-dependent constant value, possibly zero.
+      Applications are encouraged to adjust this value dynamically as
+      conditions change. Applications may also modify this value to adjust the
+      timing of the stream under direction from a user, e.g., to make video
+      frames coincide with an audio track. The <code>HTMLVideoElement</code>
+      should use this information to deliver frames at an appropriate time.
+      The producer should deliver each image frame into the stream at the time
+      that frame should appear to the user MINUS the <em>latency</em>and it
+      should adjust the latency of audio and other synchronized tracks to
+      match.</p>
+
+      <p>The command<pre class="idl" xml:space="preserve">int dynamicTextureGetConsumerLatencyUsec(HTMLVideoElement source);</pre>returns
+      the current value of the latency set by the application.</p>
+
       <p>To sample a dynamic texture, the texture object must be bound to the
       target <code>TEXTURE_EXTERNAL</code> and the sampler uniform must be of
       type <code>samplerExternal</code>. If the texture object bound to
-      <code>TEXTURE_EXTERNAL</code> is not bound to a dynamic source the
-      sampler will return the RGBA value (0,0,0,1). If a texture object to
-      which a dynamic source is bound is bound to a texture target other than
-      <code>TEXTURE_EXTERNAL</code> the dynamic source will be ignored. Data
-      will be sampled from the texture object's regular data store.</p>
+      <code>TEXTURE_EXTERNAL</code> is not bound to a dynamic source then the
+      texture is "incomplete" and the sampler will return the RGBA value
+      (0,0,0,1).</p>
     </blockquote>
 
     <p>In section 5.13.10 <cite>Uniforms and attributes</cite>, add the
     following to the table under <code>getUniform</code>.</p>
 
-    <table>
-      <tr>
-        <td>samplerExternal</td>
+    <dl class="methods">
+      <dt class="idl-code">
+        <dd>
+          <table>
+            <tr>
+              <td>samplerExternal</td>
 
-        <td>long</td>
-      </tr>
-    </table>
+              <td>long</td>
+            </tr>
+          </table>
+        </dd>
+      </dt>
+    </dl>
 
     <p></p>
 
-    <p>At the end of section 6 <cite>Differences between WebGL and OpenGL
-    ES</cite>, add the following new sections.</p>
+    <p><a id="differences"></a>At the end of section 6 <cite>Differences between
+    WebGL and OpenGL ES</cite>, add the following new sections. Note that
+    differences are considered with respect to the OpenGL ES 2.0 specification
+    as extended by <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>
+    in the absence of <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt">OES_EGL_image_external</a>.</p>
 
     <blockquote>
-      <h3>EGLImage Support</h3>
+      <h3>External Texture Support</h3>
 
-      <p>The function <code>EGLImageTargetTexture2DOES</code> and the typedef
-      <code>GLeglImageOES</code> are not supported by WebGL. Instead use
-      <code>dynamicTextureSetSource</code> with HTML canvas, image and video
-      elements.</p>
+      <p>WebGL supports <em>external textures</em> but has no notion of an
+      <code>EGLStream</code>. The source of images for an external texture is
+      the HTMLCanvasElement, HTMLImageElement or HTMLVideoElement which has
+      been connected to it with <code>dynamicTextureSetSource</code>
+      (<em>dynamic HTML element</em>). Specific language changes follow.</p>
 
-      <h3>Synchronizing dynamic images and rendering</h3>
+      <p>In section <cite>3.7.14 External Textures</cite> the sentence in the
+      penultimate paragraph beginning <cite>The parameters of the
+      transformation ...</cite> is replaced with<blockquote>
+          <p>The parameters of the transformation from one basis (e.g. YUV) to
+          RGB (color conversion matrix, sampling offsets, etc) are taken from
+          the source of the dynamic HTML element that is associated with the
+          external texture.</p>
+        </blockquote></p>
 
-      <p>The paragraph about using external mechanisms for synchronizing
-      external images and rendering in section <cite>3.7.14 External
-      Textures</cite> beginning <cite>Sampling an external texture which has
-      been modified ...</cite> and ending <cite>... to ensure they have taken
-      effect on the the texture, before the call to BindTexture is
-      made.)</cite> is not applicable to WebGL as those external mechanisms do
-      not exist in WebGL or in the web browser. Synchronization is
-      accomplished with <code>dynamicTextureAcquireImage()</code> and
-      <code>dynamicTextureReleaseImage()</code>. If
-      <code>dynamicTextureAcquireImage()</code> has not been called, sampling
-      a dynamic texture will return samples which may correspond to image
-      values before, during or after external modification. Calling
-      <code>dynamicTextureAcquireImage()</code> guarantees that modifications
-      are complete and sampling will always return samples corresponding to
-      the image values at the time <code>dynamicTextureAcquireImage()</code>
-      returned. To permit external modifications to the image once again,
-      <code>dynamicTextureReleaseImage()</code> must be called.</p>
+      <p>The final paragraph is replaced with<blockquote>
+          <p>If the image frames in the dynamic HTML element contain alpha
+          values then the value of the alpha component returned is taken from
+          the image; otherwise the alpha component is 1.0.</p>
+        </blockquote></p>
+
+      <p>Section <cite>3.7.14.1 External Textures as Stream Consumers</cite>
+      is replaced with the following.<blockquote>
+          <p>To use a TEXTURE_EXTERNAL_OES texture as the consumer of images
+          from a dynamic HTML element, bind the texture to the active texture
+          unit, and call <code>dynamicTextureSetSource</code>. The width,
+          height, format, type, internalformat, border and image data of the
+          TEXTURE_EXTERNAL_OES texture will all be determined based on the
+          specified dynamic HTML element. If the element does not have any
+          source or the source is not yet loaded, the width, height &amp;
+          border will be zero, the format and internal format will be
+          undefined. Once the element's source has been loaded and one (or
+          more) images have been decoded these attributes are determined
+          (internally by the implementation), but they are not exposed to the
+          WebGL application and there is no way to query their values.</p>
+
+          <p> The TEXTURE_EXTERNAL_OES texture remains the consumer of the
+          dynamic HTML element's image frames until the first of any of these
+          events occur:<ol>
+              <li>The texture is associated with a different dynamic HTML
+              element (with a later call to
+              <code>dynamicTextureSetSource</code>).</li>
+
+              <li>The texture is deleted in a call to
+              <code>deleteTextures</code>.</li>
+            </ol></p>
+
+          <p>Sampling an external texture which is not connected to a dynamic
+          HTML element will return a sample value of (0,0,0,1). Sampling an
+          external texture which is connected to a dynamic HTML element will
+          return a sample value of (0,0,0,1) unless an image frame has been
+          'latched' into the texture by a successful call to
+          dynamicTextureAcquireImage.</p>
+        </blockquote></p>
     </blockquote>
   <h2 class="no-toc">Errors</h2>
 <h2 class="no-toc">New State</h2>
@@ -397,7 +607,7 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
   {
     g_loadingFiles.splice(g_loadingFiles.indexOf(image), 1);
     ctx.bindTexture(ctx.TEXTURE_EXTERNAL_OES, texture);
-    ctx.dynamicTextureSetSource(texture, video);
+    ctx.dynamicTextureSetSource(video);
     // These are the default values of these properties so the following
     // 4 lines are not necessary.
     ctx.texParameteri(ctx.TEXTURE_EXTERNAL_OES, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR);
@@ -508,13 +718,13 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
     g.mvpMatrix.setUniform(gl, g.u_modelViewProjMatrixLoc, false);
 
     // Acquire the latest video image
-    gl.dynamicTextureAcquireImage(videoTexture);
+    gl.dynamicTextureAcquireImage();
 
     // Draw the cube
     gl.drawElements(gl.TRIANGLES, g.box.numIndices, gl.UNSIGNED_BYTE, 0);
 
     // Allow updates to the image again
-    gl.dynamicTextureReleaseImage(videoTexture);
+    gl.dynamicTextureReleaseImage();
 
     // Show the framerate
     framerate.snapshot();
@@ -541,77 +751,63 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
 <h2 class="no-toc">Issues</h2>
     <ol>
       <li>
-        <p>Why not use <code>TexImage2D</code> and the <code>TEXTURE2D</code>
-        target?</p>
+        <p>Why not use the <code>TEXTURE2D</code> target and
+        <code>texImage2D</code>?</p>
 
-        <p>RESOLVED: Use a new texture target and sampler type and new
-        commands. Using <code>TexImage2D</code>, it is very difficult to build
-        an implementation that doe not require copying or converting the data
-        from the dynamic image. A zero-copy implementation is likely to need
-        special code when sampling a YUV format dynamic image in a shader.
-        Identifying which calls in a shader program will sample from a static
-        image and which from a dynamic image with only one sampler type is
-        difficult and may require run-time recompilation. Furthermore the
-        existing API offers no mechanism by which an application can indicate
-        when it will be rendering using a particular dynamic source. In order
-        to avoid tearing, an implementation has to lock the dynamic image
-        around the entire call into the WebGL application's Javascript
-        potentially stalling the video decoder. Lastly interactions with, or
-        lack thereof, with <code>TexSubImage*</code>,
-        <code>CopyTexImage*</code> and the myriad other parameters of
-        the<code>{Copy,}Tex*Image*</code> family of commands need to be
-        documented, coded and conformance tested, opening up a large surface
-        for the introduction of bugs. </p>
+        <p>RESOLVED: Use a new texture target and new commands. A new texture
+        target makes it easy to specify, implement and conformance test the
+        restrictions that enable a zero-copy implementation of dynamic
+        textures as described in the <a href="#overview">Overview</a>. Given
+        that one of those restriction is not allowing modification of the
+        texture data, which is normally done via <code>texImage2D</code> using
+        a new command will make the usage model clearer.</p>
       </li>
 
       <li>
-        <p>Why not mirror all of <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt">
-        OES_EGL_image_external</a>?</p>
+        <p>Why not use sampler2D uniforms?</p>
 
-        <p>RESOLVED: Do not mirror all of <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt">
-        OES_EGL_image_external</a>. On the Web platform, a
-        <code>GLeglImageOES</code> has no use other than as an intermediary to
-        pass the handle of a dynamic HTMLElement to a texture. The mechanism
-        by which applications are expected to synchronize GL rendering and
-        video decoding requires exposing eglFenceSync commands that may not be
-        available on every platform. It is better to replace these parts with
-        methods better suited to the Web platform that are at a level
-        high-enough to be implementable on any hardware platform.</p>
+        <p>RESOLVED: Use a new sampler type. Most zero-copy implementations
+        will need special shader code when sampling a YUV format dynamic
+        textures. Implementations may choose to (a) re-compile at run time or
+        (b) inject conditional code which branches at run time according to
+        the format of the texture bound to TEXTURE_EXTERNAL_OES in the texture
+        unit to which the sampler variable is set. Without a new sampler type,
+        such conditional code would have to be injected for every sampler
+        fetch increasing the size of the shader and slowing sampling of other
+        texture targets. In order to preserve the possibility of using
+        approach (b), a new sampler type will be used.</p>
       </li>
 
       <li>
         <p>Should the API be implemented as methods on the texture object or
         commands taking a texture object as a parameter?</p>
 
-        <p>UNRESOLVED: the ideal way to provide this API is to add
-        <code>setSource()</code>, <code>acquireImage()</code>and
-        <code>releaseImage()</code> as methods on <code>WebGLTexture</code>.
-        This is not in the spirit of the WebGL API due to its heritage from
-        OpenGL ES. Also it is not clear if enabling an extension can cause
-        methods to be added to an object. If not then a new object type
-        derived from <code>WebGLTexture</code> can be used, should this more
-        object oriented approach be desired. See also issue #4.</p>
+        <p>RESOLVED: Neither. The <code>WebGLTexture</code> object represents
+        an OpenGL texture name. No object is created until the name is bound
+        to a texture target. Therefore the new commands should operate on a
+        the currently bound texture object.</p>
       </li>
 
       <li>
         <p>Should dynamic textures be a new texture type or can
         <code>WebGLTexture</code> be reused?</p>
 
-        <p>UNRESOLVED: Other than as explained in issue #3 there seems to be
-        no benefit to creating a new texture type as the target to which the
-        texture is bound and the type of sampler used determine how to sample
-        the texture and the presence or absence of a dynamic source affects
-        only the result of sampling.</p>
+        <p>RESOLVED: Do not use a new texture type. As noted in the previous
+        issue a <code>WebGLTexture</code> represents a texture name and is a
+        handle to multiple texture types. The type of texture is set according
+        to the target to which the name is initially bound.</p>
       </li>
 
       <li>
-        <p>Should we re-use <code>#extension OES_EGL_image_external</code>,
-        create our own GLSL extension name or have both this and a
-        WebGL-specific name?</p>
+        <p>Should we re-use <code>#extension
+        NV_EGL_stream_consumer_external</code>, create our own GLSL extension
+        name or have both this and a WebGL-specific name?</p>
 
-        <p>UNRESOLVED: Having EGL_IMAGE in the name is confusing but using the
-        same name permits the same shader to be used with both WebGL and
-        OpenGL ES 2.0.</p>
+        <p>RESOLVED: Any of <code>WEBGL_dynamic_texture</code> or the aliases
+        <code>NV_EGL_stream_consumer_external</code> or
+        <code>OES_EGL_image_external</code> can be used to enable this
+        extension's features in the shader. This permits the same shader to be
+        used with both WebGL and OpenGL ES 2.0.</p>
       </li>
 
       <li>
@@ -628,7 +824,9 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
         HTMLVideoElement, set the texture image to the current frame. In all
         cases, the texture image does not change until a subsequent call to a
         <code>tex*Image2D</code> command. <em>Is this a change from the way
-        any of these elements are handled today?</em></p>
+        any of these elements are handled today? This area is very
+        underspecified and needs to be clarified in the WebGL
+        specification.</em></p>
       </li>
 
       <li>
@@ -637,7 +835,10 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
         the image is already in the state to be set or ignore those extra
         calls?</p>
 
-        <p>UNRESOLVED:</p>
+        <p>RESOLVED: They should not generate errors.
+        <code>dynamicTextureAcquireImage</code> will be defined to implicitly
+        call <code>dynamicTextureReleaseImage</code> if there has not been an
+        intervening call.</p>
       </li>
 
       <li>
@@ -652,12 +853,35 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
         <p>Should this extension use direct texture access commands or should
         it use <code>texParameter</code> and <code>getTexParameter</code>?</p>
 
-        <p>UNRESOLVED: Currently direct texture access commands are used.
-        Using <code>texParameter</code> doesn't seem unreasonable for binding
-        the dynamic source but doesn't feel right for acquireImage and
-        releaseImage as that state is not a texture parameter. For an
-        application with dynamic sources bound to multiple texture units,
-        direct texture access is much more convenient.</p>
+        <p>RESOLVED: If direct texture access commands are used several new
+        interactions and errors will have to be specified because the
+        <code>WebGLTexture</code> does not always represent an object that can
+        be connected to a source of image frames.<code>texParameter</code>
+        doesn't seem unreasonable for binding the dynamic source but doesn't
+        feel right for acquireImage and releaseImage as that operation has
+        nothing to do with texture parameters. Therefore those commands will
+        will operate on the texture object bound to a new target. For
+        othogonality so too will setSource.</p>
+      </li>
+
+      <li>
+        <p>Should this extension support HTMLImageElement?</p>
+
+        <p>UNRESOLVED: If we are tracking the behavior of
+        CanvasRenderingContext2D.drawImage then there is no point supporting
+        HTMLImageElement. The HTML5 specification for <a>canvas</a>says for
+        animated images to draw the first frame.</p>
+      </li>
+
+      <li>
+        <p>Should this extension extend <code>HTMLMediaElement</code> with an
+        acquireImage/releaseImage API?</p>
+
+        <p>RESOLVED: No. The API would have no purpose and would require
+        HTML{Video,Canvas,Image}Element becoming aware of WebGLTexture or,
+        even worse, aware of texture binding within WebGL. No similar API was
+        exposed to support CanvasRenderingContext2D.drawImage. The HTMLElement
+        is simply passed to drawImage.</p>
       </li>
     </ol>
   <h2 class="no-toc">Revision History</h2>
@@ -667,5 +891,9 @@ void dynamicTextureSetSource(WebGLTexture texture, HTMLVideoElement? source);</p
 <ul><li>Fixed incorrect dependency and minor naming inconsistencies.
       Fixed missing parameter error and moved the location of the bindTexture
       call in the sample code.</li></ul>
+<p>Revision 3, 2012/07/20</p>
+<ul><li>Significant rewrite that bases the extension on
+      GL_NV_EGL_stream_consumer_external and which uses semantics and
+      concepts" from EGLStream rather than EGLImage.</li></ul>
 </body>
 </html>
