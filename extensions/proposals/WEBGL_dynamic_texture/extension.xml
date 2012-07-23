@@ -143,9 +143,9 @@
       </feature>
 
       <glsl extname="WEBGL_dynamic_texture">
-        <alias extname="NV_EGL_stream_consumer_external"/>
+        <alias extname="GL_NV_EGL_stream_consumer_external"/>
 
-        <alias extname="OES_EGL_image_external"/>
+        <alias extname="GL_OES_EGL_image_external"/>
 
         <stage type="fragment"/>
 
@@ -842,8 +842,8 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         name or have both this and a WebGL-specific name?</p>
 
         <p>RESOLVED: Any of <code>WEBGL_dynamic_texture</code> or the aliases
-        <code>NV_EGL_stream_consumer_external</code> or
-        <code>OES_EGL_image_external</code> can be used to enable this
+        <code>GL_NV_EGL_stream_consumer_external</code> or
+        <code>GL_OES_EGL_image_external</code> can be used to enable this
         extension's features in the shader. This permits the same shader to be
         used with both WebGL and OpenGL ES 2.0.</p>
       </li>
@@ -939,6 +939,11 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
       <change>Significant rewrite that bases the extension on
       GL_NV_EGL_stream_consumer_external and which uses semantics and
       concepts" from EGLStream rather than EGLImage.</change>
+    </revision>
+
+    <revision date="2012/07/23">
+      <change>Change #extension aliases to match bug fixes in mirrored
+      extensions.</change>
     </revision>
   </history>
 </proposal>

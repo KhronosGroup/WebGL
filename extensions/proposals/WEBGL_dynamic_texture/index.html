@@ -23,8 +23,8 @@
 <p>David Sheets</p>
 <p>Members of the WebGL working group</p>
 <h2 class="no-toc">Version</h2>
-<p> Last modified date: July 20, 2012<br>
-          Revision: 3</p>
+<p> Last modified date: July 23, 2012<br>
+          Revision: 4</p>
 <h2 class="no-toc">Number</h2>
 <p> WebGL extension #NN</p>
 <h2 class="no-toc">Dependencies</h2>
@@ -150,7 +150,7 @@
         of the latency between latching an image and displaying it and to
         query the currently set latency.</p>
       </li>
-<li>When a <em>fragment</em> or <em>vertex</em> shader enables, requires, or warns <code>WEBGL_dynamic_texture</code> (or <code>NV_EGL_stream_consumer_external</code> or <code>OES_EGL_image_external</code>) with an <code>#extension</code> directive:<ul>
+<li>When a <em>fragment</em> or <em>vertex</em> shader enables, requires, or warns <code>WEBGL_dynamic_texture</code> (or <code>GL_NV_EGL_stream_consumer_external</code> or <code>GL_OES_EGL_image_external</code>) with an <code>#extension</code> directive:<ul>
 <li>
 <code>samplerExternalOES</code> is a built-in type.
             </li>
@@ -169,7 +169,7 @@
 </ul>
 </li>
 <li>
-		The GLSL macro <code>WEBGL_dynamic_texture</code> (or <code>NV_EGL_stream_consumer_external</code> or <code>OES_EGL_image_external</code>)
+		The GLSL macro <code>WEBGL_dynamic_texture</code> (or <code>GL_NV_EGL_stream_consumer_external</code> or <code>GL_OES_EGL_image_external</code>)
         is defined as <code>1</code>.
       </li>
 </ul>
@@ -804,8 +804,8 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         name or have both this and a WebGL-specific name?</p>
 
         <p>RESOLVED: Any of <code>WEBGL_dynamic_texture</code> or the aliases
-        <code>NV_EGL_stream_consumer_external</code> or
-        <code>OES_EGL_image_external</code> can be used to enable this
+        <code>GL_NV_EGL_stream_consumer_external</code> or
+        <code>GL_OES_EGL_image_external</code> can be used to enable this
         extension's features in the shader. This permits the same shader to be
         used with both WebGL and OpenGL ES 2.0.</p>
       </li>
@@ -895,5 +895,8 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
 <ul><li>Significant rewrite that bases the extension on
       GL_NV_EGL_stream_consumer_external and which uses semantics and
       concepts" from EGLStream rather than EGLImage.</li></ul>
+<p>Revision 4, 2012/07/23</p>
+<ul><li>Change #extension aliases to match bug fixes in mirrored
+      extensions.</li></ul>
 </body>
 </html>
