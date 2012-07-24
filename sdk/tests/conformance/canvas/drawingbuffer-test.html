@@ -162,8 +162,8 @@ function checkQuad(gl) {
   // check the square.
   wtu.checkCanvasRect(gl, deviceX1, deviceY1, squareWidth, squareHeight, green, "should be green");
   // check outside the square.
-  wtu.checkCanvasRect(gl, 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight - deviceY1, black, "should be black");
-  wtu.checkCanvasRect(gl, 0, gl.drawingBufferHeight - deviceY1, gl.drawingBufferWidth, squareHeight, black, "should be black");
+  wtu.checkCanvasRect(gl, 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight - squareHeight, black, "should be black");
+  wtu.checkCanvasRect(gl, 0, gl.drawingBufferHeight - squareHeight, gl.drawingBufferWidth - squareWidth, squareHeight, black, "should be black");
 }
 
 
