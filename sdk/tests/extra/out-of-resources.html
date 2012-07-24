@@ -35,6 +35,7 @@
 <script src="../../debug/webgl-debug.js"></script>
 <script src="../resources/js-test-pre.js"></script>
 <script src="../conformance/resources/webgl-test.js"></script>
+<script src="../conformance/resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -42,6 +43,7 @@
 <canvas id="canvas" width="2" height="2"> </canvas>
 <canvas id="canvas2" width="2" height="2"> </canvas>
 <script>
+wtu = WebGLTestUtils;
 window.onload = init;
 debug("Tests a WebGL program that tries to use all of vram.");
 
@@ -64,6 +66,9 @@ function main() {
   } else {
     testPassed("context exists");
 
+	var program = wtu.setupColorQuad(gl);
+    gl.useProgram(program);
+
     debug("");
     debug("Checking for out of memory handling.");
 
@@ -75,11 +80,12 @@ function main() {
     var count = 0;
 
     gl = WebGLDebugUtils.makeDebugContext(gl, function(err, functionName, args) {
-          window.clearInterval(intervalId);
           assertMsg(err == gl.OUT_OF_MEMORY,
                     "correctly returns gl.OUT_OF_MEMORY when out of memory");
-          finish();
+          stop("got: " + wtu.glEnumToString(gl, err));
         });
+
+	var fbos = [];
 
     intervalId = window.setInterval(function() {
       ++count;
@@ -100,7 +106,12 @@ function main() {
                     gl.RGBA,           // format
                     gl.UNSIGNED_BYTE,  // type
                     null);             // data
-      if (allocateFrameBuffers) {
+	  var err = gl.getError();
+	  if (err != gl.NO_ERROR) {
+		stop("got error: " + wtu.glEnumToString(gl, err));
+		return;
+	  }
+      if (allocateFramebuffers) {
         var fb = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
         gl.framebufferTexture2D(
@@ -111,13 +122,20 @@ function main() {
             0);
         var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
         if (status != gl.FRAMEBUFFER_COMPLETE) {
-          testFailed("gl.checkFramebufferStatus() returned " + WebGLDebugUtils.glEnumToString(status) +
-                     " should have gotten gl.OUT_OF_MEMORY before getting this.");
-          window.clearInterval(intervalId);
-          finish();
+          stop("got: " + wtu.glEnumToString(gl, status));
+          return;
         }
+		// use the framebuffer
+        wtu.drawFloatColorQuad(gl, [1, Math.random(), 1, 1]);
       }
     }, 1000/10);
+
+	function stop(msg) {
+        debug(msg);
+		window.clearInterval(intervalId);
+		finish();
+	}
+
   }
 
   function finish() {

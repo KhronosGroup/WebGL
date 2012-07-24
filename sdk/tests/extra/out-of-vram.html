@@ -70,6 +70,9 @@ if (!gl) {
     debug("***context restored***");
   }
 
+  var program = wtu.setupTexturedQuad(gl);
+  gl.useProgram(program);
+
   debug("");
   debug("Allocating textures.");
 
@@ -112,9 +115,11 @@ if (!gl) {
                   null);             // data
     var err = gl.getError();
     if (err != gl.NO_ERROR) {
-      stop("out of memory");
+      stop("got error: " + wtu.glEnumToString(gl, err));
       return;
     }
+	// use the texture
+    wtu.drawQuad(gl);
   }
 
   intervalId = window.setInterval(makeTexture, 1000 / 15);
