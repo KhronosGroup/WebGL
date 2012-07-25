@@ -14,4 +14,7 @@ https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/tests/webgl-co
 Official live versions of the conformance test suite can be found at
 https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/conformance-suites/
 
+The WebGL Wiki can be found at
+http://www.khronos.org/webgl/wiki/
+
 
