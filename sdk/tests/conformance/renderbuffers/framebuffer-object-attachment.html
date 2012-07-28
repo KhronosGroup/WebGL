@@ -204,45 +204,44 @@ function testDepthStencilDepthStencil()
             gl.renderbufferStorage(gl.RENDERBUFFER, test.firstFormat, width, height);
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, test.firstAttach, gl.RENDERBUFFER, firstRb);
 
-            if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
-                gl.enable(gl.DEPTH_TEST);
-                var program = wtu.setupColorQuad(gl);
-                // Test it works
-                wtu.drawUByteColorQuad(gl, [0, 255, 0, 255]);
-                wtu.drawUByteColorQuad(gl, [255, 0, 0, 255]);  // should not draw since DEPTH_FUNC == LESS
-                wtu.checkCanvasRect(gl, 0, 0, width, height, [0, 255, 0, 255], "should be green");
+            shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
+            gl.enable(gl.DEPTH_TEST);
+            var program = wtu.setupColorQuad(gl);
+            // Test it works
+            wtu.drawUByteColorQuad(gl, [0, 255, 0, 255]);
+            wtu.drawUByteColorQuad(gl, [255, 0, 0, 255]);  // should not draw since DEPTH_FUNC == LESS
+            wtu.checkCanvasRect(gl, 0, 0, width, height, [0, 255, 0, 255], "should be green");
 
-                var secondRb = gl.createRenderbuffer();
+            var secondRb = gl.createRenderbuffer();
 
-                // attach second
-                gl.bindRenderbuffer(gl.RENDERBUFFER, secondRb);
-                gl.renderbufferStorage(gl.RENDERBUFFER, test.secondFormat, width, height);
-                gl.framebufferRenderbuffer(gl.FRAMEBUFFER, test.secondAttach, gl.RENDERBUFFER, secondRb);
+            // attach second
+            gl.bindRenderbuffer(gl.RENDERBUFFER, secondRb);
+            gl.renderbufferStorage(gl.RENDERBUFFER, test.secondFormat, width, height);
+            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, test.secondAttach, gl.RENDERBUFFER, secondRb);
 
-                if (jj == 0) {
-                  // now delete it
-                  debug("test deleting second renderbuffer");
-                  gl.deleteRenderbuffer(secondRb);
-                } else {
-                  // unbind it
-                  debug("test unbinding second renderbuffer");
-                  gl.framebufferRenderbuffer(gl.FRAMEBUFFER, test.secondAttach, gl.RENDERBUFFER, null);
-                }
+            if (jj == 0) {
+              // now delete it
+              debug("test deleting second renderbuffer");
+              gl.deleteRenderbuffer(secondRb);
+            } else {
+              // unbind it
+              debug("test unbinding second renderbuffer");
+              gl.framebufferRenderbuffer(gl.FRAMEBUFFER, test.secondAttach, gl.RENDERBUFFER, null);
+            }
 
-                // If the first attachment is not restored this may fail
-                shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
-                glErrorShouldBe(gl, gl.NO_ERROR);
+            // If the first attachment is not restored this may fail
+            shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
+            glErrorShouldBe(gl, gl.NO_ERROR);
 
-                // If the first attachment is not restored this may fail.
-                gl.clear(gl.DEPTH_BUFFER_BIT);
-                wtu.drawUByteColorQuad(gl, [0, 255, 0, 255]);
-                wtu.drawUByteColorQuad(gl, [255, 0, 0, 255]);  // should not draw since DEPTH_FUNC == LESS
-                wtu.checkCanvasRect(gl, 0, 0, width, height, [0, 255, 0, 255], "should be green");
-                gl.disable(gl.DEPTH_TEST);
+            // If the first attachment is not restored this may fail.
+            gl.clear(gl.DEPTH_BUFFER_BIT);
+            wtu.drawUByteColorQuad(gl, [0, 255, 0, 255]);
+            wtu.drawUByteColorQuad(gl, [255, 0, 0, 255]);  // should not draw since DEPTH_FUNC == LESS
+            wtu.checkCanvasRect(gl, 0, 0, width, height, [0, 255, 0, 255], "should be green");
+            gl.disable(gl.DEPTH_TEST);
 
-                if (jj == 1) {
-                  gl.deleteRenderbuffer(secondRb);
-                }
+            if (jj == 1) {
+              gl.deleteRenderbuffer(secondRb);
             }
 
             gl.deleteRenderbuffer(secondRb);
