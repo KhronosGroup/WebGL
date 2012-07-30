@@ -3,7 +3,7 @@
 ** Copyright (c) 2012 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
-** copy of this software and /or associated documentation files (the
+** copy of this software and/or associated documentation files (the
 ** "Materials"), to deal in the Materials without restriction, including
 ** without limitation the rights to use, copy, modify, merge, publish,
 ** distribute, sublicense, and/or sell copies of the Materials, and to
@@ -32,6 +32,11 @@ precision mediump float;
 // of the arithmetic used.
 #define SAFETY_BOUND 500.0
 
+// Macro to scale/bias the range of output.  If input is [-1.0, 1.0], maps to [0.5, 1.0]..  
+// Accounts for precision errors magnified by derivative operation.
+#define REDUCE_RANGE(A) ((A) + 3.0) / 4.0
+
+
 uniform float viewportwidth;
 uniform float viewportheight;
 
@@ -47,7 +52,7 @@ void main (void)
 		// average of horizontal and vertical abs cosine waves with periods of 128 pixels
 
 #ifdef GL_OES_standard_derivatives
-		func = 0.5 * (abs(cos(fract(gl_FragCoord.x / 128.0) * (2.0 * M_PI))) + abs(cos(fract(gl_FragCoord.y / 128.0) * (2.0 * M_PI))));
+		func = REDUCE_RANGE(0.5 * (abs(cos(fract(gl_FragCoord.x / 128.0) * (2.0 * M_PI))) + abs(cos(fract(gl_FragCoord.y / 128.0) * (2.0 * M_PI)))));
 #else
     func = 0.5;
 #endif
