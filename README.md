@@ -9,10 +9,10 @@ http://www.khronos.org/webgl/
 
 The newest work in progress WebGL conformance test suite
 for the next version of the spec can be accessed at.
-https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/tests/webgl-conformance-tests.html
+https://www.khronos.org/registry/webgl/sdk/tests/webgl-conformance-tests.html
 
 Official live versions of the conformance test suite can be found at
-https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/conformance-suites/
+https://www.khronos.org/registry/webgl/conformance-suites/
 
 The WebGL Wiki can be found here
 http://www.khronos.org/webgl/wiki/
