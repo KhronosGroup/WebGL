@@ -59,10 +59,22 @@ void main()
 description();
 debug("");
 
+var gl;
+var canvas;
+
+function checkDimensions() {
+  // We expect that for the sizes being testing drawingBufferWidth and drawingBufferHeight
+  // will match canvas.width and canvas.height.
+
+  // We need to test that devicePixelRatio does not effect the backbuffer size of a canvas.
+  shouldBe('gl.drawingBufferWidth', 'canvas.width');
+  shouldBe('gl.drawingBufferHeight', 'canvas.height');
+}
+
 // This uses gl_FragCoord to draw a device pixel relavent pattern.
 // If drawBufferWidth or drawBufferHeight are not in device pixels
 // this test should fail.
-function checkGrid(gl) {
+function checkGrid(gl, width, height) {
   var program = wtu.setupProgram(gl, ["vshaderGrid", "fshaderGrid"], ["a_position"]);
   wtu.setupUnitQuad(gl);
   gl.useProgram(program);
@@ -70,19 +82,19 @@ function checkGrid(gl) {
 
   wtu.drawQuad(gl);
 
-  var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
-  gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+  var pixels = new Uint8Array(width * height * 4);
+  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
   var colors = [
     [ { color: [0,   0, 0, 255], name: "black" },  { color: [255,   0, 0, 255], name: "red"    } ],
     [ { color: [0, 255, 0, 255], name: "green" },  { color: [255, 255, 0, 255], name: "yellow" } ],
   ];
 
-  for (var yy = 0; yy < gl.drawingBufferHeight; ++yy) {
-    for (var xx = 0; xx < gl.drawingBufferWidth; ++xx) {
+  for (var yy = 0; yy < height; ++yy) {
+    for (var xx = 0; xx < width; ++xx) {
       var info = colors[yy % 2][xx % 2];
       var color = info.color;
-      var offset = (yy * gl.drawingBufferWidth + xx) * 4;
+      var offset = (yy * width + xx) * 4;
       for (var jj = 0; jj < 4; ++jj) {
         if (pixels[offset + jj] != color[jj]) {
           var actual = [pixels[offset], pixels[offset + 1], pixels[offset + 2], pixels[offset + 3]];
@@ -96,7 +108,7 @@ function checkGrid(gl) {
 }
 
 // This passes device coordinate vertices in to make sure gl.viewport is not being mucked with.
-function checkQuad(gl) {
+function checkQuad(gl, width, height) {
   var deviceToClipSpace = function(value, range) {
     return value / range * 2 - 1;
   }
@@ -104,15 +116,15 @@ function checkQuad(gl) {
   var program = wtu.setupColorQuad(gl);
 
   // draw a small green square in the top right corner.
-  var deviceX1 = gl.drawingBufferWidth - 4;
-  var deviceX2 = gl.drawingBufferWidth;
-  var deviceY1 = gl.drawingBufferHeight - 4;
-  var deviceY2 = gl.drawingBufferHeight;
+  var deviceX1 = width - 4;
+  var deviceX2 = width;
+  var deviceY1 = height - 4;
+  var deviceY2 = height;
 
-  var clipX1 = deviceToClipSpace(deviceX1, gl.drawingBufferWidth);
-  var clipX2 = deviceToClipSpace(deviceX2, gl.drawingBufferWidth);
-  var clipY1 = deviceToClipSpace(deviceY1, gl.drawingBufferHeight);
-  var clipY2 = deviceToClipSpace(deviceY2, gl.drawingBufferHeight);
+  var clipX1 = deviceToClipSpace(deviceX1, width);
+  var clipX2 = deviceToClipSpace(deviceX2, width);
+  var clipY1 = deviceToClipSpace(deviceY1, height);
+  var clipY2 = deviceToClipSpace(deviceY2, height);
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
@@ -141,8 +153,8 @@ function checkQuad(gl) {
   // check the square.
   wtu.checkCanvasRect(gl, deviceX1, deviceY1, squareWidth, squareHeight, green, "should be green");
   // check outside the square.
-  wtu.checkCanvasRect(gl, 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight - squareHeight, black, "should be black");
-  wtu.checkCanvasRect(gl, 0, gl.drawingBufferHeight - squareHeight, gl.drawingBufferWidth - squareWidth, squareHeight, black, "should be black");
+  wtu.checkCanvasRect(gl, 0, 0, width, height - squareHeight, black, "should be black");
+  wtu.checkCanvasRect(gl, 0, height - squareHeight, width - squareWidth, squareHeight, black, "should be black");
 }
 
 
@@ -151,7 +163,7 @@ function test(desiredWidth, desiredHeight) {
   debug("testing canvas width = " + desiredWidth + ", height = " + desiredHeight);
 
   // Make a fresh canvas.
-  var canvas = document.createElement("canvas");
+  canvas = document.createElement("canvas");
   canvas.width = desiredWidth;
   canvas.height = desiredHeight;
 
@@ -162,11 +174,14 @@ function test(desiredWidth, desiredHeight) {
   } else {
     testPassed("context exists");
 
+    // Check the dimensions are correct.
+    checkDimensions();
+
     // Draw a pixel grid using a shader that draws in device coordinates
-    checkGrid(gl);
+    checkGrid(gl, desiredWidth, desiredHeight);
 
     // Draw a quad in the top right corner.
-    checkQuad(gl);
+    checkQuad(gl, desiredWidth, desiredHeight);
 
     shouldBe('gl.getError()', 'gl.NO_ERROR');
 
@@ -180,13 +195,16 @@ function test(desiredWidth, desiredHeight) {
     canvas.height = desiredWidth;
 
     // fix the viewport
-    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    gl.viewport(0, 0, desiredHeight, desiredWidth);
+
+    // Check the dimensions are correct.
+    checkDimensions();
 
     // Draw a pixel grid using a shader that draws in device coordinates
-    checkGrid(gl);
+    checkGrid(gl, desiredHeight, desiredWidth);
 
     // Draw a quad in the top right corner.
-    checkQuad(gl);
+    checkQuad(gl, desiredHeight, desiredWidth);
 
     shouldBe('gl.getError()', 'gl.NO_ERROR');
   }
@@ -195,9 +213,9 @@ function test(desiredWidth, desiredHeight) {
 var wtu = WebGLTestUtils;
 
 // test a few sizes
-test(16, 32);
+test(32, 16);
+test(128, 64);
 test(256, 512);
-test(1024, 512);
 
 debug("")
 successfullyParsed = true;
