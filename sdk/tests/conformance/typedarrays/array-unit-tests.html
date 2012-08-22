@@ -250,11 +250,11 @@ function testIntegralArrayTruncationBehavior(type, name, unsigned) {
   var expectedResults;
 
   if (unsigned) {
-    sourceData = [0.6, 10.6];
+    sourceData = [0.6, 10.6, 0.2, 10.2, 10.5, 11.5];
     if (type === Uint8ClampedArray) {
-      expectedResults = [1, 11];
+      expectedResults = [1, 11, 0, 10, 10, 12];
     } else {
-      expectedResults = [0, 10];
+      expectedResults = [0, 10, 0, 10, 10, 11];
     }
   } else {
     sourceData = [0.6, 10.6, -0.6, -10.6];
