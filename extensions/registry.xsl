@@ -22,6 +22,12 @@
   </li>
 </xsl:template>
 
+<xsl:template match="proposal">
+  <li>
+    <a href="{@href}"><xsl:value-of select="name" /></a>
+  </li>
+</xsl:template>
+
 <xsl:template match="ol[@id='ratified-by-number']">
   <xsl:copy>
     <xsl:apply-templates select="$registry/ratified">
@@ -65,6 +71,14 @@
 <xsl:template match="ol[@id='draft-by-name']">
   <xsl:copy>
     <xsl:apply-templates select="$registry/draft">
+      <xsl:sort select="name"/>
+    </xsl:apply-templates>
+  </xsl:copy>
+</xsl:template>
+
+<xsl:template match="ul[@id='proposed-by-name']">
+  <xsl:copy>
+    <xsl:apply-templates select="$registry/proposal">
       <xsl:sort select="name"/>
     </xsl:apply-templates>
   </xsl:copy>

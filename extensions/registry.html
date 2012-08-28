@@ -6,7 +6,6 @@
     <title>WebGL Extension Registry</title>
     <link rel="alternate" type="text/xml" href="registry.xml" />
     <link rel="alternate" type="application/atom+xml" href="index.atom" />
-    <link rel="stylesheet" type="text/css" href="../resources/Khronos-WD.css" />
     <link rel="stylesheet" type="text/css" href="../resources/default.css" />
     <style type="text/css">
 /* Override some styles in the default style sheet */
@@ -15,6 +14,9 @@ tr.list {
 }
 td.list {
   border: 0px;
+}
+ul li+li {
+  margin-top: 0px;
 }
     </style>
 
@@ -181,6 +183,17 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
     <tr>
     <td class="list"><ol id="draft-by-number"></ol>
     <td class="list"><ol id="draft-by-name"></ol>
+    </tr>
+    </table>
+
+    <h2 class="no-toc">Proposed WebGL Extensions (do not implement!)</h2>
+
+    <table style="border: 2px; width: 100%;">
+    <tr>
+    <td class="list"><h3>By Name</h3>
+    </tr>
+    <tr>
+    <td class="list"><ul class="indexlist" id="proposed-by-name"></ul>
     </tr>
     </table>
 
