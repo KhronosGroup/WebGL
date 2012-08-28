@@ -107,7 +107,7 @@
         Updated references to texSubImage2D. Added
         DEPTH_STENCIL_ATTACHMENT to framebufferTexture2D.
       </change>
-    </revision></history></draft><draft href="OES_element_index_uint/"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
+    </revision></history></draft><proposal href="proposals/WEBGL_shared_resources/"><name>WEBGL_shared_resources</name></proposal><draft href="OES_element_index_uint/"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/01/27" number="2">
       <change>Removed the bufferData requirement as this is not checked by webgl</change>
@@ -119,4 +119,4 @@
       <change>Added the EXT suffix to the enumerants and aliases to the extension name</change>
     </revision><revision date="2012/07/19" number="3">
       <change>Moved from draft to community approved status</change>
-    </revision></history></extension><!-- vi:set sw=2 ts=4: --></registry>
+    </revision></history></extension><proposal href="proposals/ANGLE_instanced_arrays/"><name>ANGLE_instanced_arrays</name></proposal><proposal href="proposals/WEBGL_fbo_color_attachments/"><name>WEBGL_fbo_color_attachments</name></proposal><!-- vi:set sw=2 ts=4: --><proposal href="proposals/WEBGL_dynamic_texture/"><name>WEBGL_dynamic_texture</name></proposal><proposal href="proposals/WEBGL_compressed_texture_pvrtc/"><name>WEBGL_compressed_texture_pvrtc</name></proposal></registry>
