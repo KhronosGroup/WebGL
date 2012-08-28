@@ -42,7 +42,12 @@
 </xsl:template>
 
 <!-- proposals are not summarized in the registry or syndication feeds -->
-<xsl:template match="proposal" />
+<xsl:template match="proposal">
+  <xsl:copy>
+    <xsl:copy-of select="@href" />
+    <xsl:copy-of select="name"/>
+  </xsl:copy>
+</xsl:template>
 
 <xsl:template match="extension|draft|ratified">
   <xsl:copy>
