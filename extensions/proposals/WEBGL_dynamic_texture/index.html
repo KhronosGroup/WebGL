@@ -17,14 +17,15 @@
 <p><a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
   working group</a> (public_webgl 'at' khronos.org) </p>
 <h2 class="no-toc">Contributors</h2>
-<p>Mark Callow</p>
-<p>Acorn Pooley</p>
-<p>Ken Russell</p>
+<p>Mark Callow, HI Corporation</p>
+<p>Acorn Pooley, NVIDIA</p>
+<p>Ken Russell, Google</p>
 <p>David Sheets</p>
+<p>William Hennebois, STMicroelectronics</p>
 <p>Members of the WebGL working group</p>
 <h2 class="no-toc">Version</h2>
-<p> Last modified date: July 23, 2012<br>
-          Revision: 4</p>
+<p> Last modified date: August 30, 2012<br>
+          Revision: 5</p>
 <h2 class="no-toc">Number</h2>
 <p> WebGL extension #NN</p>
 <h2 class="no-toc">Dependencies</h2>
@@ -767,7 +768,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         <p>Why not use sampler2D uniforms?</p>
 
         <p>RESOLVED: Use a new sampler type. Most zero-copy implementations
-        will need special shader code when sampling a YUV format dynamic
+        will need special shader code when sampling YUV format dynamic
         textures. Implementations may choose to (a) re-compile at run time or
         (b) inject conditional code which branches at run time according to
         the format of the texture bound to TEXTURE_EXTERNAL_OES in the texture
@@ -780,7 +781,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
 
       <li>
         <p>Should the API be implemented as methods on the texture object or
-        commands taking a texture object as a parameter?</p>
+        as commands taking a texture object as a parameter?</p>
 
         <p>RESOLVED: Neither. The <code>WebGLTexture</code> object represents
         an OpenGL texture name. No object is created until the name is bound
@@ -796,6 +797,21 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         issue a <code>WebGLTexture</code> represents a texture name and is a
         handle to multiple texture types. The type of texture is set according
         to the target to which the name is initially bound.</p>
+      </li>
+
+      <li>
+        <p>Should this extension use direct texture access commands or should
+        it use <code>texParameter</code> and <code>getTexParameter</code>?</p>
+
+        <p>RESOLVED: Use the latter. There is no directly accessible texture
+        object to which such commands can be added. Changing the API to have
+        such objects is outside the scope of this extension.
+        <code>texParameter</code> doesn't seem unreasonable for binding the
+        dynamic source but doesn't feel right for acquireImage and
+        releaseImage as that operation has nothing to do with texture
+        parameters. Therefore those commands will operate on the texture
+        object bound to a new target. For othogonality so too will
+        setSource.</p>
       </li>
 
       <li>
@@ -850,21 +866,6 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
       </li>
 
       <li>
-        <p>Should this extension use direct texture access commands or should
-        it use <code>texParameter</code> and <code>getTexParameter</code>?</p>
-
-        <p>RESOLVED: If direct texture access commands are used several new
-        interactions and errors will have to be specified because the
-        <code>WebGLTexture</code> does not always represent an object that can
-        be connected to a source of image frames.<code>texParameter</code>
-        doesn't seem unreasonable for binding the dynamic source but doesn't
-        feel right for acquireImage and releaseImage as that operation has
-        nothing to do with texture parameters. Therefore those commands will
-        will operate on the texture object bound to a new target. For
-        othogonality so too will setSource.</p>
-      </li>
-
-      <li>
         <p>Should this extension support HTMLImageElement?</p>
 
         <p>UNRESOLVED: If we are tracking the behavior of
@@ -898,5 +899,9 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
 <p>Revision 4, 2012/07/23</p>
 <ul><li>Change #extension aliases to match bug fixes in mirrored
       extensions.</li></ul>
+<p>Revision 5, 2012/08/30</p>
+<ul><li>Update contributors list. Reorder issues to put all texture
+      object related issues together and modify them for consistency. Fix
+      small typos.</li></ul>
 </body>
 </html>
