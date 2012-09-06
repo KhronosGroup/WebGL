@@ -35,7 +35,7 @@ function wrapGLError(gl) {
         for (var err in glErrorShadow) {
             if (glErrorShadow[err]) {
                 delete glErrorShadow[err];
-                return err;
+                return parseInt(err);
             }
         }
         return gl.NO_ERROR;
