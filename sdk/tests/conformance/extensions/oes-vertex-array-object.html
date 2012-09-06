@@ -447,13 +447,14 @@ function runDeleteTests() {
 
     var positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-         1.0,  1.0,
-        -1.0,  1.0,
-        -1.0, -1.0,
-         1.0,  1.0,
-        -1.0, -1.0,
-         1.0, -1.0]), gl.STATIC_DRAW);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([
+           1.0,  1.0,
+          -1.0,  1.0,
+          -1.0, -1.0,
+           1.0, -1.0]),
+        gl.STATIC_DRAW);
 
     var colors = [
       [255,   0,   0, 255],
@@ -462,6 +463,7 @@ function runDeleteTests() {
       [  0, 255, 255, 255]
     ];
     var colorBuffers = [];
+    var elementBuffers = [];
     var vaos = [];
     for (var ii = 0; ii < colors.length; ++ii) {
       var vao = ext.createVertexArrayOES();
@@ -472,6 +474,14 @@ function runDeleteTests() {
       gl.enableVertexAttribArray(0);
       gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
+      var elementBuffer = gl.createBuffer();
+      elementBuffers.push(elementBuffer);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elementBuffer);
+      gl.bufferData(
+          gl.ELEMENT_ARRAY_BUFFER,
+          new Uint8Array([0, 1, 2, 0, 2, 3]),
+          gl.STATIC_DRAW);
+
       // Setup the color attrib
       var color = colors[ii];
       if (ii < 3) {
@@ -480,8 +490,6 @@ function runDeleteTests() {
         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(
           [ color[0], color[1], color[2], color[3],
-            color[0], color[1], color[2], color[3],
-            color[0], color[1], color[2], color[3],
             color[0], color[1], color[2], color[3],
             color[0], color[1], color[2], color[3],
             color[0], color[1], color[2], color[3]
@@ -497,6 +505,7 @@ function runDeleteTests() {
     ext.bindVertexArrayOES(null);
     for (var ii = 0; ii < colorBuffers.length; ++ii) {
       gl.deleteBuffer(colorBuffers[ii]);
+      gl.deleteBuffer(elementBuffers[ii]);
     }
     gl.deleteBuffer(positionBuffer);
 
@@ -505,7 +514,7 @@ function runDeleteTests() {
     for (var ii = 0; ii < colors.length; ++ii) {
       var color = colors[ii];
       ext.bindVertexArrayOES(vaos[ii]);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0);
       wtu.checkCanvas(gl, color, "should be " + color);
     }
 
