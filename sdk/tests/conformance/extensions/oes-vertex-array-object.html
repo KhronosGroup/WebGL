@@ -44,8 +44,22 @@
 <div id="description"></div>
 <canvas id="canvas" style="width: 50px; height: 50px;"> </canvas>
 <div id="console"></div>
-<!-- Shaders for testing standard derivatives -->
-
+<script id="vshader", type="x-shader/x-vertex">
+attribute vec4 a_position;
+attribute vec4 a_color;
+varying vec4 v_color;
+void main(void) {
+    gl_Position = a_position;
+    v_color = a_color;
+}
+</script>
+<script id="fshader", type="x-shader/x-fragment">
+precision mediump float;
+varying vec4 v_color;
+void main(void) {
+    gl_FragColor = v_color;
+}
+</script>
 <script>
 description("This test verifies the functionality of the OES_vertex_array_object extension, if it is available.");
 
@@ -86,6 +100,8 @@ if (!gl) {
         runAttributeTests();
         runAttributeValueTests();
         runDrawTests();
+        runDeleteTests();
+        glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
     }
 }
 
@@ -422,6 +438,83 @@ function runDrawTests() {
     ext.deleteVertexArrayOES(vao0);
     ext.deleteVertexArrayOES(vao1);
 }
+
+function runDeleteTests() {
+    debug("Testing using deleted buffers referenced by VAOs");
+
+    var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["a_position", "a_color"]);
+    gl.useProgram(program);
+
+    var positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+         1.0,  1.0,
+        -1.0,  1.0,
+        -1.0, -1.0,
+         1.0,  1.0,
+        -1.0, -1.0,
+         1.0, -1.0]), gl.STATIC_DRAW);
+
+    var colors = [
+      [255,   0,   0, 255],
+      [  0, 255,   0, 255],
+      [  0,   0, 255, 255],
+      [  0, 255, 255, 255]
+    ];
+    var colorBuffers = [];
+    var vaos = [];
+    for (var ii = 0; ii < colors.length; ++ii) {
+      var vao = ext.createVertexArrayOES();
+      vaos.push(vao);
+      ext.bindVertexArrayOES(vao);
+      // Set the position buffer
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.enableVertexAttribArray(0);
+      gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+      // Setup the color attrib
+      var color = colors[ii];
+      if (ii < 3) {
+        var colorBuffer = gl.createBuffer();
+        colorBuffers.push(colorBuffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(
+          [ color[0], color[1], color[2], color[3],
+            color[0], color[1], color[2], color[3],
+            color[0], color[1], color[2], color[3],
+            color[0], color[1], color[2], color[3],
+            color[0], color[1], color[2], color[3],
+            color[0], color[1], color[2], color[3]
+          ]), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(1);
+        gl.vertexAttribPointer(1, 4, gl.UNSIGNED_BYTE, true, 0, 0);
+      } else {
+        gl.vertexAttrib4f(1, color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255);
+      }
+    }
+
+    // delete the color buffers AND the position buffer.
+    ext.bindVertexArrayOES(null);
+    for (var ii = 0; ii < colorBuffers.length; ++ii) {
+      gl.deleteBuffer(colorBuffers[ii]);
+    }
+    gl.deleteBuffer(positionBuffer);
+
+    // Render with the deleted buffers. As they are referenced by VAOs they
+    // must still be around.
+    for (var ii = 0; ii < colors.length; ++ii) {
+      var color = colors[ii];
+      ext.bindVertexArrayOES(vaos[ii]);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      wtu.checkCanvas(gl, color, "should be " + color);
+    }
+
+    // Clean up.
+    for (var ii = 0; ii < colorBuffers.length; ++ii) {
+      ext.deleteVertexArrayOES(vaos[ii]);
+    }
+}
+
 
 debug("");
 successfullyParsed = true;
