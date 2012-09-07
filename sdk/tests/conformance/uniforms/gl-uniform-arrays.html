@@ -33,83 +33,44 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
 <div id="console"></div>
 <canvas id="example" width="2" height="2"> </canvas>
 <script id="vshader" type="x-shader/x-vertex">
-    attribute vec4 vPosition;
+    attribute vec4 a_position;
     void main()
     {
-        gl_Position = vPosition;
+        gl_Position = a_position;
     }
 </script>
 
 <script id="fshader" type="x-shader/x-fragment">
     precision mediump float;
-    uniform $type color[3];
+    uniform $(type) color[3];
     void main()
     {
-        gl_FragColor = vec4(color[0]$elem, color[1]$elem, color[2]$elem, 1);
+        gl_FragColor = vec4(color[0]$(elem), color[1]$(elem), color[2]$(elem), 1);
+    }
+</script>
+<script id="fshader-max" type="x-shader/x-fragment">
+    precision mediump float;
+    uniform vec4 color[$(maxUniformVectors)];
+    void main()
+    {
+        gl_FragColor = vec4(color[$(usedUniformVector)]);
     }
 </script>
 <script>
-function loadShader(ctx, shaderType, shaderSource) {
-  // Create the shader object
-  var shader = ctx.createShader(shaderType);
-  if (shader == null) {
-    debug("*** Error: unable to create shader '"+shader+"'");
-    return null;
-  }
-
-  // Load the shader source
-  ctx.shaderSource(shader, shaderSource);
-
-  // Compile the shader
-  ctx.compileShader(shader);
-
-  // Check the compile status
-  var compiled = ctx.getShaderParameter(shader, ctx.COMPILE_STATUS);
-  if (!compiled) {
-    // Something went wrong during compilation; get the error
-    var error = ctx.getShaderInfoLog(shader);
-    debug("*** Error compiling shader '"+shader+"':"+error);
-    ctx.deleteShader(shader);
-    return null;
-  }
-
-  return shader;
-}
-
-function loadProgram(ctx, vertexShaderSrc, fragmentShaderSrc) {
-  var program = ctx.createProgram();
-  var vShader = loadShader(ctx, ctx.VERTEX_SHADER, vertexShaderSrc)
-  var fShader = loadShader(ctx, ctx.FRAGMENT_SHADER, fragmentShaderSrc);
-  ctx.attachShader(program, vShader);
-  ctx.attachShader(program, fShader);
-  ctx.linkProgram(program);
-  var linked = ctx.getProgramParameter(program, ctx.LINK_STATUS);
-  if (!linked) {
-    // something went wrong with the link
-    var error = ctx.getProgramInfoLog (ctx.program);
-    debug("Error in program linking:" + error);
-    ctx.deleteProgram(ctx.program);
-    program = null;
-  }
-//  ctx.deleteShader(fShader);
-//  ctx.deleteShader(vShader);
-  return program;
-}
-
-description("This test ensures WebGL implementations handle uniform arrays correctly.");
-
+description();
 debug("");
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext(document.getElementById("example"));
 
-var gl = create3DContext(document.getElementById("example"));
-
-var vSrc = document.getElementById("vshader").text;
-var fTemplate = document.getElementById("fshader").text;
+var vSrc = wtu.getScript("vshader");
+var fTemplate = wtu.getScript("fshader");
 
 var typeInfos = [
   { type: 'float',
@@ -255,10 +216,9 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
   var typeInfo = typeInfos[tt];
   debug("");
   debug("check " + typeInfo.type);
-  var fSrc = fTemplate.replace(/\$type/g, typeInfo.type).
-                       replace(/\$elem/g, typeInfo.elem);
+  var fSrc = wtu.replaceParams(fTemplate, typeInfo);
   //debug("fSrc: " + fSrc);
-  var program = loadProgram(gl, vSrc, fSrc);
+  var program = wtu.loadProgram(gl, vSrc, fSrc);
 
   var numUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
   assertMsg(numUniforms == 1, "1 uniform found");
@@ -331,6 +291,53 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
   glErrorShouldBe(gl, gl.NO_ERROR,
                   "can call gl.useProgram(null)");
 }
+
+// This test is to test drivers the have bugs related to optimizing
+// an array of uniforms when only 1 of those uniforms is used.
+debug("");
+debug("Test using only the last uniform of and array uniforms.");
+var maxUniformVectors = gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS);
+for (var jj = 0; jj < 2; ++jj) {
+  var usedUniformVector = jj ? 0 : maxUniformVectors - 1;
+  debug("test using " + (jj ? "first" : "last") + " uniform");
+  var fSrc = wtu.replaceParams(
+      wtu.getScript("fshader-max"),
+      {
+        maxUniformVectors: maxUniformVectors,
+        usedUniformVector: usedUniformVector
+      });
+  var program = wtu.loadProgram(gl, vSrc, fSrc);
+  gl.useProgram(program);
+
+  // Set just the used uniform
+  var name = "color[" + usedUniformVector + "]";
+  var uniformLocation = gl.getUniformLocation(program, name);
+  gl.uniform4fv(uniformLocation, [0, 255, 0, 255]);
+  wtu.setupQuad(gl, 1, positionLoc);
+  wtu.drawIndexedQuad(gl, 1);
+  wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
+
+  // Set all the unused uniforms
+  var allUniformLocationsQueryable = true;
+  for (var ii = 0; ii < maxUniformVectors; ++ii) {
+    if (ii == usedUniformVector) {
+      continue;
+    }
+    var name = "color[" + ii + "]";
+    var uniformLocation = gl.getUniformLocation(program, name);
+    if (uniformLocation === undefined || uniformLocation === null) {
+      allUniformLocationsQueryable = false;
+    }
+    gl.uniform4fv(uniformLocation, [255, 0, 0, 255]);
+  }
+  shouldBeTrue("allUniformLocationsQueryable");
+  var positionLoc = gl.getAttribLocation(program, "a_position");
+  wtu.setupQuad(gl, 1, positionLoc);
+  wtu.drawIndexedQuad(gl, 1);
+  wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
+}
+glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+
 debug("");
 successfullyParsed = true;
 
