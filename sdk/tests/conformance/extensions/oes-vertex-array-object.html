@@ -36,9 +36,9 @@
 <script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 <!-- comment in the script tag below to test through JS emualation of the extension. -->
-<!--
+<!-- -->
 <script src="../../../demos/google/resources/OESVertexArrayObject.js"></script>
--->
+<!-- -->
 </head>
 <body>
 <div id="description"></div>
@@ -101,6 +101,7 @@ if (!gl) {
         runAttributeValueTests();
         runDrawTests();
         runDeleteTests();
+        runArrayBufferBindTests();
         glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
     }
 }
@@ -524,6 +525,89 @@ function runDeleteTests() {
     }
 }
 
+function runArrayBufferBindTests() {
+    debug("Testing that VAOs don't effect ARRAY_BUFFER binding.");
+
+    ext.bindVertexArrayOES(null);
+
+    var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["a_color", "a_position"]);
+    gl.useProgram(program);
+
+    // create shared element buuffer
+    var elementBuffer = gl.createBuffer();
+    // bind to default
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elementBuffer);
+    gl.bufferData(
+        gl.ELEMENT_ARRAY_BUFFER,
+        new Uint8Array([0, 1, 2, 0, 2, 3]),
+        gl.STATIC_DRAW);
+
+    // first create the buffers for no vao draw.
+    var nonVAOColorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, nonVAOColorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(
+      [ 0, 255, 0, 255,
+        0, 255, 0, 255,
+        0, 255, 0, 255,
+        0, 255, 0, 255,
+      ]), gl.STATIC_DRAW);
+
+    // shared position buffer.
+    var positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([
+           1.0,  1.0,
+          -1.0,  1.0,
+          -1.0, -1.0,
+           1.0, -1.0]),
+        gl.STATIC_DRAW);
+
+    // attach position buffer to default
+    gl.enableVertexAttribArray(1);
+    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
+
+    // now create vao
+    var vao = ext.createVertexArrayOES();
+    ext.bindVertexArrayOES(vao);
+
+    // attach the position buffer vao
+    gl.enableVertexAttribArray(1);
+    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
+
+    var vaoColorBuffer = gl.createBuffer();
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 4, gl.UNSIGNED_BYTE, true, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vaoColorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(
+      [ 255, 0, 0, 255,
+        255, 0, 0, 255,
+        255, 0, 0, 255,
+        255, 0, 0, 255,
+      ]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 4, gl.UNSIGNED_BYTE, true, 0, 0);
+
+    // now set the buffer back to the nonVAOColorBuffer
+    gl.bindBuffer(gl.ARRAY_BUFFER, nonVAOColorBuffer);
+
+    // bind to vao
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elementBuffer);
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0);
+    wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red");
+
+    // unbind vao
+    ext.bindVertexArrayOES(null);
+
+    // At this point the nonVAOColorBuffer should be still be bound.
+    // If the WebGL impl is emulating VAOs it must make sure
+    // it correctly restores this binding.
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 4, gl.UNSIGNED_BYTE, true, 0, 0);
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0);
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
+}
 
 debug("");
 successfullyParsed = true;
