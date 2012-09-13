@@ -385,7 +385,7 @@ for (var nameOrder = 0; nameOrder < 2; ++nameOrder) {
           usage2: usage2,
         });
         var desc = "testing: " + name1 + ":" + name2 + " using " + (last ? "last" : "first") +
-            " " + decl1 + " " + decl2 + " " + usage1 + " " + usage2;
+            " creating uniforms " + decl1 + " " + decl2 + " and accessing " + usage1 + " " + usage2;
         tests.push({
           desc: desc,
           maxUniformVectors: maxUniformVectors - 1,
@@ -400,8 +400,9 @@ for (var nameOrder = 0; nameOrder < 2; ++nameOrder) {
   }
 }
 
-for (var jj = 0; jj < tests.length; ++jj) {
-  var test = tests[jj];
+var allUniformLocationsQueryable = true;
+function testUniformOptimizationIssues(testIndex) {
+  var test = tests[testIndex];
   debug("");
   debug(test.desc);
   var fSrc = test.source;
@@ -432,13 +433,15 @@ for (var jj = 0; jj < tests.length; ++jj) {
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 
   // Set all the unused uniforms
-  var allUniformLocationsQueryable = true;
+  var locations = [];
+  allUniformLocationsQueryable = true;
   for (var ii = 0; ii < test.maxUniformVectors; ++ii) {
+    var name = test.arrayName + "[" + ii + "]";
+    var uniformLocation = gl.getUniformLocation(program, name);
+    locations.push(uniformLocation);
     if (ii == test.usedUniformVector) {
       continue;
     }
-    var name = test.arrayName + "[" + ii + "]";
-    var uniformLocation = gl.getUniformLocation(program, name);
     if (uniformLocation === undefined || uniformLocation === null) {
       allUniformLocationsQueryable = false;
     }
@@ -449,14 +452,44 @@ for (var jj = 0; jj < tests.length; ++jj) {
   wtu.setupQuad(gl, 1, positionLoc);
   wtu.drawIndexedQuad(gl, 1);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
-}
-glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 
-debug("");
+  // Check we can write and read each uniform.
+  for (var ii = 0; ii < test.maxUniformVectors; ++ii) {
+    gl.uniform4fv(locations[ii], [ii + 4, ii + 2, ii + 3, ii + 1]);
+  }
+
+  var kEpsilon = 0.01;
+  function isSame(v1, v2) {
+    return Math.abs(v1 - v2) < kEpsilon;
+  }
+
+  for (var ii = 0; ii < test.maxUniformVectors; ++ii) {
+    var value = gl.getUniform(program, locations[ii]);
+    if (!isSame(value[0], ii + 4) ||
+        !isSame(value[1], ii + 2) ||
+        !isSame(value[2], ii + 3) ||
+        !isSame(value[3], ii + 1)) {
+      testFailed("location: " + ii + " was not correct value");
+      break;
+    }
+  }
+}
+
+var testIndex = 0;
+function runNextTest() {
+  testUniformOptimizationIssues(testIndex++);
+  if (testIndex < tests.length) {
+    setTimeout(runNextTest, 10);
+  } else {
+    glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+    debug("");
+    finishTest();
+  }
+}
+runNextTest();
+
 successfullyParsed = true;
 
 </script>
-<script src="../../resources/js-test-post.js"></script>
-
 </body>
 </html>
