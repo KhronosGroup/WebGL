@@ -58,6 +58,7 @@ shader-with-precision.frag.html
 shader-with-quoted-error.frag.html
 --min-version 1.0.2 shader-with-reserved-words.html
 --min-version 1.0.2 shader-with-similar-uniform-array-names.html
+--min-version 1.0.2 shader-with-too-many-uniforms.html
 shader-with-undefined-preprocessor-symbol.frag.html
 shader-with-uniform-in-loop-condition.vert.html
 shader-with-vec2-return-value.frag.html
