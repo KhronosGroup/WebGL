@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<proposal href="proposals/WEBGL_compressed_texture_pvrtc/">
+<draft href="WEBGL_compressed_texture_pvrtc/">
   <name>WEBGL_compressed_texture_pvrtc</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -8,7 +8,7 @@
   <contributors>
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
-  <number>NN</number>
+  <number>13</number>
   <depends>
     <api version="1.0.1"/>
   </depends>
@@ -87,4 +87,4 @@ interface WEBGL_compressed_texture_pvrtc {
       <change>Initial revision.</change>
     </revision>
   </history>
-</proposal>
+</draft>

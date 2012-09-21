@@ -1,8 +1,12 @@
 <?xml version="1.0"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>WebGL Extension Registry Revisions</title><link href="http://www.khronos.org/registry/webgl/extensions/index.atom" rel="self" type="application/atom+xml"/><link href="http://www.khronos.org/registry/webgl/extensions/" rel="alternate" type="text/html"/><id>http://www.khronos.org/registry/webgl/extensions/index.atom</id><updated>2012-07-19T23:59:59Z</updated><author>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>WebGL Extension Registry Revisions</title><link href="http://www.khronos.org/registry/webgl/extensions/index.atom" rel="self" type="application/atom+xml"/><link href="http://www.khronos.org/registry/webgl/extensions/" rel="alternate" type="text/html"/><id>http://www.khronos.org/registry/webgl/extensions/index.atom</id><updated>2012-09-11T23:59:59Z</updated><author>
     <name>WebGL Working Group</name>
     <email>public_webgl@khronos.org</email>
-  </author><entry><title>EXT_texture_filter_anisotropic : revision 3</title><link rel="alternate" type="text/html" href="EXT_texture_filter_anisotropic/"/><id>EXT_texture_filter_anisotropic/#r=3</id><updated>2012-07-19T23:59:59Z</updated><summary>Moved from draft to community approved status
+  </author><entry><title>WEBGL_compressed_texture_atc : revision 1</title><link rel="alternate" type="text/html" href="WEBGL_compressed_texture_atc/"/><id>WEBGL_compressed_texture_atc/#r=1</id><updated>2012-09-11T23:59:59Z</updated><summary>Initial revision.
+              
+            </summary></entry><entry><title>WEBGL_compressed_texture_pvrtc : revision 1</title><link rel="alternate" type="text/html" href="WEBGL_compressed_texture_pvrtc/"/><id>WEBGL_compressed_texture_pvrtc/#r=1</id><updated>2012-08-07T23:59:59Z</updated><summary>Initial revision.
+              
+            </summary></entry><entry><title>EXT_texture_filter_anisotropic : revision 3</title><link rel="alternate" type="text/html" href="EXT_texture_filter_anisotropic/"/><id>EXT_texture_filter_anisotropic/#r=3</id><updated>2012-07-19T23:59:59Z</updated><summary>Moved from draft to community approved status
               
             </summary></entry><entry><title>WEBGL_depth_texture : revision 8</title><link rel="alternate" type="text/html" href="WEBGL_depth_texture/"/><id>WEBGL_depth_texture/#r=8</id><updated>2012-06-27T23:59:59Z</updated><summary>
         Updated references to texSubImage2D. Added
@@ -32,9 +36,5 @@
             </summary></entry><entry><title>OES_element_index_uint : revision 3</title><link rel="alternate" type="text/html" href="OES_element_index_uint/"/><id>OES_element_index_uint/#r=3</id><updated>2012-02-24T23:59:59Z</updated><summary>Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name
               
             </summary></entry><entry><title>EXT_texture_filter_anisotropic : revision 2</title><link rel="alternate" type="text/html" href="EXT_texture_filter_anisotropic/"/><id>EXT_texture_filter_anisotropic/#r=2</id><updated>2012-02-24T23:59:59Z</updated><summary>Added the EXT suffix to the enumerants and aliases to the extension name
-              
-            </summary></entry><entry><title>WEBGL_depth_texture : revision 3</title><link rel="alternate" type="text/html" href="WEBGL_depth_texture/"/><id>WEBGL_depth_texture/#r=3</id><updated>2012-02-06T23:59:59Z</updated><summary>Changed referenced WebGL API version from 2.0 to 1.0
-              
-            </summary></entry><entry><title>OES_element_index_uint : revision 2</title><link rel="alternate" type="text/html" href="OES_element_index_uint/"/><id>OES_element_index_uint/#r=2</id><updated>2012-01-27T23:59:59Z</updated><summary>Removed the bufferData requirement as this is not checked by webgl
               
             </summary></entry></feed>
