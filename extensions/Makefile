@@ -13,8 +13,8 @@ EXTS := OES_standard_derivatives \
 	proposals/ANGLE_instanced_arrays \
 	proposals/WEBGL_fbo_color_attachments \
 	proposals/WEBGL_dynamic_texture \
-	proposals/WEBGL_compressed_texture_pvrtc \
-	proposals/WEBGL_compressed_texture_atc
+	WEBGL_compressed_texture_pvrtc \
+	WEBGL_compressed_texture_atc
 
 EXTS := $(strip $(EXTS))
 
