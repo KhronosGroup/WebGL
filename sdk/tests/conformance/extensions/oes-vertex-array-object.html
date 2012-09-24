@@ -507,6 +507,10 @@ function runDeleteTests() {
     for (var ii = 0; ii < colorBuffers.length; ++ii) {
       gl.deleteBuffer(colorBuffers[ii]);
       gl.deleteBuffer(elementBuffers[ii]);
+      // The buffers should still be valid at this point, since it was attached to the VAO
+      if(!gl.isBuffer(colorBuffers[ii])) {
+        testFailed("buffer removed too early");
+      }
     }
     gl.deleteBuffer(positionBuffer);
 
@@ -522,6 +526,13 @@ function runDeleteTests() {
     // Clean up.
     for (var ii = 0; ii < colorBuffers.length; ++ii) {
       ext.deleteVertexArrayOES(vaos[ii]);
+    }
+
+    for (var ii = 0; ii < colorBuffers.length; ++ii) {
+      // The buffers should no longer be valid now that the VAOs are deleted
+      if(gl.isBuffer(colorBuffers[ii])) {
+        testFailed("buffer not properly cleaned up after VAO deletion");
+      }
     }
 }
 
