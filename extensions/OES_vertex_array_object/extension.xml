@@ -48,9 +48,30 @@ interface OES_vertex_array_object {
     corrupt rendering and generating GL errors. Undefined behavior
     is unacceptable for WebGL.
     </p>
-    <p>Therefore it is recommended this spec not be implemented until
-    this issue is resolved.
-    </p>
+    <ul>
+      <li>
+        <p>RESOLVED: Buffers should be reference counted when attached to
+        a vertex array object. This is consistent with the OpenGL ES 3.0
+        spec's implementation of Vertex Array Objects and matches the 
+        behavior of other WebGL objects, such as textures that are attached
+        to framebuffers.
+        </p>
+        <p>This will require that most implementations do not call 
+        glDeleteBuffer when the user calls deleteBuffer on the WebGL context.
+        Instead the implementation must wait for all references to be released
+        before calling glDeleteBuffer to prevent undefined behavior.
+        </p>
+        <p>If a buffer object is deleted while it is attached to the currently
+        bound vertex array object, then it is as if BindBuffer had been called,
+        with a buffer of 0, for each target to which this buffer was attached
+        in the currently bound vertex array object. In other words, this buffer
+        is ﬁrst detached from all attachment points in the currently bound 
+        vertex array object. Note that the buffer is speciﬁcally not detached
+        from any other vertex array object. Detaching the buffer from any other
+        vertex array objects is the responsibility of the application.
+        </p>
+      </li>
+    </ul>
   </issues>
   <history>
     <revision date="2011/01/27">
@@ -68,6 +89,9 @@ interface OES_vertex_array_object {
     </revision>
     <revision date="2012/01/03">
       <change>Removed webgl module per changes to Web IDL spec.</change>
+    </revision>
+    <revision date="2012/09/24">
+      <change>Added resolution to deleted buffer issue</change>
     </revision>
   </history>
 </draft>
