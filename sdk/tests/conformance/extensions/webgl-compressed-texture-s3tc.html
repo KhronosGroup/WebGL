@@ -559,8 +559,8 @@ function makeImage(imageWidth, imageHeight, dataWidth, data, alpha) {
     c.width = imageWidth * scale;
     c.height = imageHeight * scale;
     var ctx = c.getContext("2d");
-    for (var yy = 0; yy < imageWidth; ++yy) {
-        for (var xx = 0; xx < imageHeight; ++xx) {
+    for (var yy = 0; yy < imageHeight; ++yy) {
+        for (var xx = 0; xx < imageWidth; ++xx) {
             var offset = (yy * dataWidth + xx) * 4;
             ctx.fillStyle = "rgba(" +
                     data[offset + 0] + "," +
