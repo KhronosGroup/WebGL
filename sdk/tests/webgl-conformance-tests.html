@@ -559,10 +559,23 @@ function start() {
       while (r.firstChild) r.removeChild(r.firstChild);
       r.appendChild(document.createTextNode(tx));
       document.getElementById("showTextSummary").style.visibility = "visible";
+
+      this.postResultsToServer(tx);
     } else {
       var e = document.getElementById("error");
       e.innerHTML = msg;
     }
+  };
+
+  Reporter.prototype.postResultsToServer = function(resultText) {
+    if(OPTIONS.postResults == undefined || OPTIONS.postResults == 0) {
+      return;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', "/finish", true);
+    xhr.setRequestHeader("Content-Type", "text/plain");
+    xhr.send(resultText);
   };
 
   Reporter.prototype.ready = function() {
