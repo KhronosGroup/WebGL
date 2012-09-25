@@ -2,9 +2,18 @@ var os = require('os');
 var fs = require('fs');
 var path = require('path');
 var child_process = require('child_process');
+
 var express = require('express');
 
-console.log("Platform:", os.platform());
+var optimist = require('optimist')
+    .boolean('h')
+    .alias('h', 'help')
+    .describe('h', 'Show this help message')
+    .usage('Automated execution of the Khronos WebGL conformance tests\nUsage: $0')
+    .alias('b', 'browser')
+    .describe('b', 'Comma-separated list of browsers to run the tests with')
+    .alias('v', 'version')
+    .describe('v', 'Version of the conformance test to run. (If not specified runs the latest)');
 
 function main() {
   var config_path = path.join(__dirname, 'config.json');
@@ -16,16 +25,26 @@ function main() {
     }
 
     var config = JSON.parse(data);
+    config.args = optimist.argv;
+
+    process_args(config);
+
     var app = start_test_server(config);
     ensure_dir_exists(__dirname + '/' + config.output_dir);
-    config.test.full_url = build_full_url(app, config.test);
+    config.test_url = build_test_url(app, config);
 
     run_tests(app, config, function() {
       // This callback runs when all tests have finished
-      console.log("\nDone!");
+      console.log("\n\nDone!");
       process.exit(0);
     });
   });
+}
+
+function process_args(config) {
+  if(config.args.browser) {
+    config.args.browser = config.args.browser.split(",");
+  }
 }
 
 function ensure_dir_exists(dir_path) {
@@ -47,8 +66,22 @@ function ensure_dir_exists(dir_path) {
   }
 }
 
-function build_full_url(app, test) {
-  var full_url = "http://localhost:" + app.port + "/" + test.url;
+function build_test_url(app, config) {
+  var test_url;
+  if(config.args.version) {
+    test_url = path.join("conformance-suites", config.args.version)
+  } else {
+    test_url = path.join("sdk", "tests");
+  }
+
+  test_url = path.join(test_url, "webgl-conformance-tests.html");
+
+  if(!fs.existsSync(path.join(__dirname, "../..", test_url))) {
+    console.error("ERROR: Could not find test", test_url);
+    process.exit(0);
+  }
+
+  var full_url = "http://localhost:" + app.port + "/" + test_url;
   var queryArgs = 0;
   var arg_name;
 
@@ -62,9 +95,9 @@ function build_full_url(app, test) {
     full_url += arg_name + "=" + default_args[arg_name];
     queryArgs++;
   }
-  for(arg_name in test.args) {
+  for(arg_name in config.test_args) {
     full_url += queryArgs ? "&" : "?";
-    full_url += arg_name + "=" + test.args[arg_name];
+    full_url += arg_name + "=" + config.test_args[arg_name];
     queryArgs++;
   }
 
@@ -89,6 +122,15 @@ function start_test_server(config) {
     }
   });
 
+  app.post('/start', function(req, res){
+    // Now that the browser has told us it's working prevent the test from timing out
+    if(app.start_timeout) {
+      clearTimeout(app.start_timeout);
+    }
+
+    res.send(200);
+  });
+
   app.post('/finish', function(req, res){
     // Output the plain text results to a file
     var file_name = path.join(
@@ -101,6 +143,7 @@ function start_test_server(config) {
         console.error(err);
       }
       if(app.browser_proc) {
+        process.stdout.write("Success");
         app.browser_proc.kill();
       }
     });
@@ -118,7 +161,6 @@ function start_test_server(config) {
     try {
       app.listen(port);
       app.port = port;
-      console.log('Listening on:', port);
       listening = true;
     } catch(ex) {}
   }
@@ -126,9 +168,9 @@ function start_test_server(config) {
   return app;
 }
 
-function run_tests(app, config, callback, browser_id) {
-  process.stdout.write("\n");
+var TEST_START_TIMEOUT = 10000;
 
+function run_tests(app, config, callback, browser_id) {
   if(!browser_id) {
     browser_id = 0;
   }
@@ -142,7 +184,12 @@ function run_tests(app, config, callback, browser_id) {
 
   var browser = config.browsers[browser_id];
 
-  process.stdout.write(browser.name + ": ");
+  if(!should_run_browser(browser.name, config)) {
+    run_tests(app, config, callback, browser_id + 1);
+    return;
+  }
+
+  process.stdout.write("\n" + browser.name + ": ");
 
   // Does a browser matching the given configuration exist on this system?
   var os_platform = os.platform();
@@ -166,17 +213,20 @@ function run_tests(app, config, callback, browser_id) {
     if(platform.args) {
       all_args = all_args.concat(platform.args);
     }
-    all_args.push(config.test.full_url);
+    all_args.push(config.test_url);
 
     var browser_proc = child_process.spawn(platform.path, all_args);
     app.browser_proc = browser_proc;
     app.browser_name = browser.name.replace(' ', '-');
 
+    app.start_timeout = setTimeout(function() {
+      browser_proc.kill();
+      process.stdout.write("Test failed to start in allotted time");
+    }, TEST_START_TIMEOUT);
+
     browser_proc.on('exit', function(code) {
       if(code == 20) {
         process.stdout.write("Could not launch new instance, already running");
-      } else {
-        process.stdout.write("Finished");
       }
       run_tests(app, config, callback, browser_id + 1);
     });
@@ -187,4 +237,26 @@ function run_tests(app, config, callback, browser_id) {
   }
 }
 
-main();
+function should_run_browser(browser, config) {
+  if(!config.args.browser) {
+    return true;
+  }
+
+  var found_browser = false;
+
+  var i;
+  for(i = 0; i < config.args.browser.length; ++i) {
+    if(browser == config.args.browser[i]) {
+      found_browser = true;
+      break;
+    }
+  }
+
+  return found_browser;
+}
+
+if(optimist.argv.h) {
+  optimist.showHelp();
+} else {
+  main();
+}

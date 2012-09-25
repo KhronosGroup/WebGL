@@ -567,6 +567,16 @@ function start() {
     }
   };
 
+  Reporter.prototype.postTestStartToServer = function(resultText) {
+    if(OPTIONS.postResults == undefined || OPTIONS.postResults == 0) {
+      return;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', "/start", true);
+    xhr.send(null);
+  };
+
   Reporter.prototype.postResultsToServer = function(resultText) {
     if(OPTIONS.postResults == undefined || OPTIONS.postResults == 0) {
       return;
@@ -656,6 +666,7 @@ function start() {
     }
     // Auto run the tests if the run=1 in URL
     if (OPTIONS.run != undefined && OPTIONS.run != 0) {
+      reporter.postTestStartToServer();
       testHarness.runTests();
     }
   });
@@ -664,6 +675,7 @@ function start() {
   button.disabled = true;
   button.onclick = function() {
     autoScroll = true;
+    reporter.postTestStartToServer();
     testHarness.runTests();
   };
   var textbutton = document.getElementById("showTextSummary");

@@ -1,9 +1,6 @@
 {
-    "test": {
-        "url": "sdk/tests/webgl-conformance-tests.html",
-        "args": {
-            "include": "attribs"
-        }
+    "test_args": {
+        "include": "attribs"
     },
 
     "output_dir": "output",
@@ -21,12 +18,13 @@
             },
 
             "args": [
+                "--no-first-run",
                 "--disable-gpu-driver-workarounds"
             ]
         },
 
         {
-            "name": "Chrome Canary",
+            "name": "ChromeCanary",
             "platforms": {
                 "darwin": {
                     "path": "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary"
@@ -34,6 +32,7 @@
             },
 
             "args": [
+                "--no-first-run",
                 "--disable-gpu-driver-workarounds"
             ]
         },
@@ -47,6 +46,7 @@
             },
 
             "args": [
+                "--no-first-run",
                 "--disable-gpu-driver-workarounds"
             ]
         },
@@ -60,7 +60,8 @@
             },
 
             "args": [
-                "--browser"
+                "-browser",
+                "-silent"
             ]
         }
     ]
