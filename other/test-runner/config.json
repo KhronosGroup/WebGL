@@ -1,0 +1,67 @@
+{
+    "test": {
+        "url": "sdk/tests/webgl-conformance-tests.html",
+        "args": {
+            "include": "attribs"
+        }
+    },
+
+    "output_dir": "output",
+
+    "browsers": [
+        {
+            "name": "Chrome",
+            "platforms": {
+                "darwin": {
+                    "path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+                },
+                "win32": {
+                    "path": "C:\\Program Files\\Google\\Google Chrome\\chrome.exe"
+                }
+            },
+
+            "args": [
+                "--disable-gpu-driver-workarounds"
+            ]
+        },
+
+        {
+            "name": "Chrome Canary",
+            "platforms": {
+                "darwin": {
+                    "path": "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary"
+                }
+            },
+
+            "args": [
+                "--disable-gpu-driver-workarounds"
+            ]
+        },
+
+        {
+            "name": "Chromium",
+            "platforms": {
+                "darwin": {
+                    "path": "/Applications/Chromium.app/Contents/MacOS/Chromium"
+                }
+            },
+
+            "args": [
+                "--disable-gpu-driver-workarounds"
+            ]
+        },
+
+        {
+            "name": "Firefox",
+            "platforms": {
+                "darwin": {
+                    "path": "/Applications/Firefox.app/Contents/MacOS/firefox"
+                }
+            },
+
+            "args": [
+                "--browser"
+            ]
+        }
+    ]
+}

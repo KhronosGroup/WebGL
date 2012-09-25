@@ -1,102 +1,187 @@
+var os = require('os');
+var fs = require('fs');
+var child_process = require('child_process');
 var express = require('express');
 
-var HTTP_PORT = 9090;
+console.log("Platform:", os.platform());
 
-var child_process = require('child_process');
+function main() {
+  var config_path = __dirname + '/config.json';
 
-var test_url = 
-    "localhost:" + HTTP_PORT + "/sdk/tests/webgl-conformance-tests.html?run=1";
-    test_url += "&postResults=1";
+  fs.readFile(config_path, 'utf8', function (err, data) {
+    if (err) {
+      console.error('ERROR: Could not locate configuration file ', config_path);
+      process.exit(0);
+    }
 
-    test_url += "&include=attribs";
+    var config = JSON.parse(data);
+    var app = start_test_server(config);
+    ensure_dir_exists(__dirname + '/' + config.output_dir);
+    config.test.full_url = build_full_url(app, config.test);
 
-function launch_chrome() {
-  //var app_path = 
-  //    "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome";
-
-  var app_path = 
-      "/Users/bajones/chrome/src/out/Release/Chromium.app/Contents/MacOS/Chromium";
-
-  var app_args = [test_url,
-      "--disable-gpu-driver-workarounds"
-      ];
-
-  console.log("Launching", app_path);
-  return child_process.spawn(app_path, app_args);
-}
-
-function launch_firefox() {
-  var app_path = 
-      "/Applications/Firefox.app/Contents/MacOS/firefox";
-
-  var app_args = [
-      "-browser",
-      test_url
-      ];
-
-  console.log("Launching", app_path);
-  return child_process.spawn(app_path, app_args);
-}
-
-function watch_process(child) {
-  child.stdout.setEncoding('utf8');
-  child.stdout.on("data", function(data) {
-    console.log(data);
+    run_tests(app, config, function() {
+      // This callback runs when all tests have finished
+      console.log("\nDone!");
+      process.exit(0);
+    });
   });
+}
 
-  child.stderr.setEncoding('utf8');
-  child.stderr.on("data", function(data) {
-    if (/^execvp\(\)/.test(data)) {
-      console.error('ERROR: Failed to start child process.\n' + data);
+function ensure_dir_exists(path) {
+  if(!path) { 
+    return; 
+  }
+
+  var idx = path.lastIndexOf("/");
+  var dir = path.substring(0, idx);
+  
+  if(dir) {
+    ensure_dir_exists(dir);
+  }
+  
+  if(idx != path.length - 1) {
+    try {
+        fs.mkdirSync(path);
+    } catch(ex) {}
+  }
+}
+
+function build_full_url(app, test) {
+  var full_url = "http://localhost:" + app.port + "/" + test.url;
+  var queryArgs = 0;
+  var arg_name;
+
+  var default_args = {
+    "run": 1,
+    "postResults": 1
+  }
+
+  for(arg_name in default_args) {
+    full_url += queryArgs ? "&" : "?";
+    full_url += arg_name + "=" + default_args[arg_name];
+    queryArgs++;
+  }
+  for(arg_name in test.args) {
+    full_url += queryArgs ? "&" : "?";
+    full_url += arg_name + "=" + test.args[arg_name];
+    queryArgs++;
+  }
+
+  return full_url;
+}
+
+function start_test_server(config) {
+  // Start Express server
+  var app = express();
+  app.use('/', express.static(__dirname + '/../..'));
+  app.use(express.bodyParser());
+
+  // Allows reading of plain text POSTs
+  app.use(function(req, res, next){
+    if (req.is('text/plain')) {
+      req.plainText = '';
+      req.setEncoding('utf8');
+      req.on('data', function(chunk){ req.plainText += chunk });
+      req.on('end', next);
     } else {
-      //console.error(data);
+      next();
     }
   });
 
-  child.on("exit", function(code) {
-    console.log("Process exited with code", code);
+  app.post('/finish', function(req, res){
+    // Output the plain text results to a file
+    var file_name = __dirname + '/' + config.output_dir + '/';
+    file_name += app.browser_name + "_" + Date.now() + ".txt";
+
+    fs.writeFile(file_name, req.plainText, 'utf8', function(err, data) {
+      if(err) {
+        console.error(err);
+      }
+      if(app.browser_proc) {
+        app.browser_proc.kill();
+      }
+    });
+
+    res.send(200);
   });
 
-  return child;
+  var port;
+  var listening = false;
+  
+  // Attempt to listen on random ports till we find a free one
+  while(!listening) {
+    port = Math.floor(Math.random() * 8999) + 1000;
+    
+    try {
+      app.listen(port);
+      app.port = port;
+      console.log('Listening on:', port);
+      listening = true;
+    } catch(ex) {}
+  }
+
+  return app;
 }
 
-var chrome = watch_process(launch_chrome());
+function run_tests(app, config, callback, browser_id) {
+  process.stdout.write("\n");
 
-// Start Express server
-var app = express();
-app.use("/", express.static(__dirname + "/../.."));
-app.use("/", express.directory(__dirname + "/../.."));
-
-app.use(express.bodyParser());
-
-app.use(function(req, res, next){
-  if (req.is('text/plain')) {
-    req.plainText = '';
-    req.setEncoding('utf8');
-    req.on('data', function(chunk){ req.plainText += chunk });
-    req.on('end', next);
-  } else {
-    next();
+  if(!browser_id) {
+    browser_id = 0;
   }
-});
 
-app.get("/finish", function(req, res){
-  res.send(200);
-  chrome.kill();
+  if(browser_id >= config.browsers.length) {
+    if(callback) {
+      callback();
+    }
+    return;
+  }
 
-  // All done, nothing to see here! Goodbye!
-  process.exit(0);
-});
+  var browser = config.browsers[browser_id];
 
-app.post("/finish", function(req, res){
-  console.log(req.plainText);
+  process.stdout.write(browser.name + ": ");
 
-  res.send(200);
-  chrome.kill();
+  // Does a browser matching the given configuration exist on this system?
+  var os_platform = os.platform();
+  var platform_id, platform;
+  for(platform_id in browser.platforms) {
+    if(os_platform.match(platform_id)) {
+      if(fs.existsSync(browser.platforms[platform_id].path)) {
+        platform = browser.platforms[platform_id];
+        break;
+      }
+    }
+  }
 
-  // All done, nothing to see here! Goodbye!
-  process.exit(0);
-});
+  if(platform) {
+    // Concatenate the standard browser args and any platform specific ones
+    var all_args = [];
 
-app.listen(HTTP_PORT);
-console.log("Listening on:", HTTP_PORT);
+    if(browser.args) {
+      all_args = all_args.concat(browser.args);
+    }
+    if(platform.args) {
+      all_args = all_args.concat(platform.args);
+    }
+    all_args.push(config.test.full_url);
+
+    var browser_proc = child_process.spawn(platform.path, all_args);
+    app.browser_proc = browser_proc;
+    app.browser_name = browser.name.replace(' ', '-');
+
+    browser_proc.on('exit', function(code) {
+      if(code == 20) {
+        process.stdout.write("Could not launch new instance, already running");
+      } else {
+        process.stdout.write("Finished");
+      }
+      run_tests(app, config, callback, browser_id + 1);
+    });
+
+  } else {
+    process.stdout.write("Not found, skipped");
+    run_tests(app, config, callback, browser_id + 1);
+  }
+}
+
+main();
