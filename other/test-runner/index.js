@@ -1,12 +1,13 @@
 var os = require('os');
 var fs = require('fs');
+var path = require('path');
 var child_process = require('child_process');
 var express = require('express');
 
 console.log("Platform:", os.platform());
 
 function main() {
-  var config_path = __dirname + '/config.json';
+  var config_path = path.join(__dirname, 'config.json');
 
   fs.readFile(config_path, 'utf8', function (err, data) {
     if (err) {
@@ -27,21 +28,21 @@ function main() {
   });
 }
 
-function ensure_dir_exists(path) {
-  if(!path) { 
+function ensure_dir_exists(dir_path) {
+  if(!dir_path) { 
     return; 
   }
 
-  var idx = path.lastIndexOf("/");
-  var dir = path.substring(0, idx);
+  var idx = dir_path.lastIndexOf(path.sep);
+  var dir = dir_path.substring(0, idx);
   
   if(dir) {
     ensure_dir_exists(dir);
   }
   
-  if(idx != path.length - 1) {
+  if(idx != dir_path.length - 1) {
     try {
-        fs.mkdirSync(path);
+        fs.mkdirSync(dir_path);
     } catch(ex) {}
   }
 }
@@ -90,8 +91,10 @@ function start_test_server(config) {
 
   app.post('/finish', function(req, res){
     // Output the plain text results to a file
-    var file_name = __dirname + '/' + config.output_dir + '/';
-    file_name += app.browser_name + "_" + Date.now() + ".txt";
+    var file_name = path.join(
+        __dirname, config.output_dir,
+        app.browser_name + "_" + Date.now() + ".txt"
+        );
 
     fs.writeFile(file_name, req.plainText, 'utf8', function(err, data) {
       if(err) {
