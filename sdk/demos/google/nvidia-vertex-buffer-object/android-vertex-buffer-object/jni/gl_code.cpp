@@ -58,7 +58,7 @@ static void checkGlError(const char* op) {
 //===============================================================================
 
 #define SIN_ARRAY_SIZE 1024
-#define STRIP_SIZE 48
+#define STRIP_SIZE 144
 int TILE_SIZE = 3 * STRIP_SIZE;
 int BUFFER_LENGTH = 1000000;
 
