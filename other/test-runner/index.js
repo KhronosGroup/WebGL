@@ -178,7 +178,7 @@ function start_test_server(config) {
   return app;
 }
 
-var TEST_START_TIMEOUT = 10000;
+var TEST_START_TIMEOUT = 30000;
 var PROFILE_DIR_NAME = "tmp_profile";
 
 function run_tests(app, config, callback, browser_id) {
