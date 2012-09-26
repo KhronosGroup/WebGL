@@ -1,0 +1,76 @@
+{
+    "output_dir": "output",
+
+    "browsers": [
+        {
+            "name": "Chrome",
+            "platforms": {
+                "darwin": {
+                    "path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+                },
+                "win32": {
+                    "path": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+                }
+            },
+
+            "profile_arg": "--user-data-dir=",
+
+            "args": [
+                "--no-first-run",
+                "--disable-gpu-driver-workarounds"
+            ]
+        },
+
+        {
+            "name": "ChromeCanary",
+            "platforms": {
+                "darwin": {
+                    "path": "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary"
+                },
+                "win32": {
+                    "path": "C:\\Program Files (x86)\\Google\\Chrome SxS\\Application\\chrome.exe"
+                }
+            },
+
+            "profile_arg": "--user-data-dir=",
+
+            "args": [
+                "--no-first-run",
+                "--disable-gpu-driver-workarounds"
+            ]
+        },
+
+        {
+            "name": "Chromium",
+            "platforms": {
+                "darwin": {
+                    "path": "/Applications/Chromium.app/Contents/MacOS/Chromium"
+                },
+                "win32": {
+                    "path": "C:\\Program Files (x86)\\Google\\Chromium\\Application\\chromium.exe"
+                }
+            },
+
+            "profile_arg": "--user-data-dir=",
+
+            "args": [
+                "--no-first-run",
+                "--disable-gpu-driver-workarounds"
+            ]
+        },
+
+        {
+            "name": "Firefox",
+            "platforms": {
+                "darwin": {
+                    "path": "/Applications/Firefox.app/Contents/MacOS/firefox"
+                },
+                "win32": {
+                    "path": "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"
+                }
+            },
+
+            "profile_arg": "-profile"
+        }
+    ]
+}

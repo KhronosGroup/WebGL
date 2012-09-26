@@ -559,10 +559,33 @@ function start() {
       while (r.firstChild) r.removeChild(r.firstChild);
       r.appendChild(document.createTextNode(tx));
       document.getElementById("showTextSummary").style.visibility = "visible";
+
+      this.postResultsToServer(tx);
     } else {
       var e = document.getElementById("error");
       e.innerHTML = msg;
     }
+  };
+
+  Reporter.prototype.postTestStartToServer = function(resultText) {
+    if(OPTIONS.postResults == undefined || OPTIONS.postResults == 0) {
+      return;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', "/start", true);
+    xhr.send(null);
+  };
+
+  Reporter.prototype.postResultsToServer = function(resultText) {
+    if(OPTIONS.postResults == undefined || OPTIONS.postResults == 0) {
+      return;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', "/finish", true);
+    xhr.setRequestHeader("Content-Type", "text/plain");
+    xhr.send(resultText);
   };
 
   Reporter.prototype.ready = function() {
@@ -643,6 +666,7 @@ function start() {
     }
     // Auto run the tests if the run=1 in URL
     if (OPTIONS.run != undefined && OPTIONS.run != 0) {
+      reporter.postTestStartToServer();
       testHarness.runTests();
     }
   });
@@ -651,6 +675,7 @@ function start() {
   button.disabled = true;
   button.onclick = function() {
     autoScroll = true;
+    reporter.postTestStartToServer();
     testHarness.runTests();
   };
   var textbutton = document.getElementById("showTextSummary");
