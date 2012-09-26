@@ -1,5 +1,5 @@
 {
-    "name": "screening",
+    "name": "webgl-conformance-test-runner",
     "version": "0.1.0",
     "description": "A test harness for executing WebGL Conformance Tests",
     "contributors": [
