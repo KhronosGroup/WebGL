@@ -35,4 +35,5 @@
 .settings/ # settings directory for eclipse
 tags
 Thumbs.db
-
+other/test-runner/node_modules/
+other/test-runner/output/
