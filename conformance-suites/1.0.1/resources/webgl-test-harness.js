@@ -1,6 +1,25 @@
-// Copyright (c) 2009 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+/*
+** Copyright (c) 2012 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
 
 // This is a test harness for running javascript tests in the browser.
 // The only identifier exposed by this harness is WebGLTestHarnessModule.
@@ -16,13 +35,14 @@
 //    var testHarness = new WebGLTestHarnessModule.TestHarness(
 //        iframe,
 //        fileListURL,
-//        reportResults);
+//        reportResults,
+//        options);
 //
 // The harness will load the fileListURL and parse it for the URLs, one URL
-// per line. URLs should be on the same domain and at the same folder level
-// or below the main html file.  If any URL ends in .txt it will be parsed
-// as well so you can nest .txt files. URLs inside a .txt file should be
-// relative to that text file.
+// per line preceded by options, see below. URLs should be on the same domain
+// and at the  same folder level or below the main html file.  If any URL ends
+// in .txt it will be parsed as well so you can nest .txt files. URLs inside a
+// .txt file should be relative to that text file.
 //
 // During startup, for each page found the reportFunction will be called with
 // WebGLTestHarnessModule.TestHarness.reportType.ADD_PAGE and msg will be
@@ -79,6 +99,56 @@
 //
 // Finally, when all the tests have completed the reportFunction will be called
 // with WebGLTestHarnessModule.TestHarness.reportType.FINISHED_ALL_TESTS.
+//
+// Harness Options
+//
+// These are passed in to the TestHarness as a JavaScript object
+//
+// version: (required!)
+//
+//     Specifies a version used to filter tests. Tests marked as requiring
+//     a version greater than this version will not be included.
+//
+//     example: new TestHarness(...., {version: "3.1.2"});
+//
+// minVersion:
+//
+//     Specifies the minimum version a test must require to be included.
+//     This basically flips the filter so that only tests marked with
+//     --min-version will be included if they are at this minVersion or
+//     greater.
+//
+//     example: new TestHarness(...., {minVersion: "2.3.1"});
+//
+// fast:
+//
+//     Specifies to skip any tests marked as slow.
+//
+//     example: new TestHarness(..., {fast: true});
+//
+// Test Options:
+//
+// Any test URL or .txt file can be prefixed by the following options
+//
+// min-version:
+//
+//     Sets the minimum version requires to include this test. A version is
+//     passed into the harness options. Any test marked as requiring a
+//     min-version greater than the version passed to the harness is skipped.
+//     This allows you to add new tests to a suite of tests for a future
+//     version of the suite without including the test in the current version.
+//     If no -min-version is specified it is inheriited from the .txt file
+//     including it. The default is 1.0.0
+//
+//     example:  --min-version 2.1.3 sometest.html
+//
+// slow:
+//
+//     Marks a test as slow. Slow tests can be skipped by passing fastOnly: true
+//     to the TestHarness. Of course you need to pass all tests but sometimes
+//     you'd like to test quickly and run only the fast subset of tests.
+//
+//     example:  --slow some-test-that-takes-2-mins.html
 //
 
 WebGLTestHarnessModule = function() {
@@ -193,7 +263,7 @@ var getFileList = function(url, callback, options) {
   var globalOptions = copyObject(options);
   globalOptions.defaultVersion = "1.0";
 
-  var getFileListImpl = function(prefix, line, hierarchicalOptions, callback) {
+  var getFileListImpl = function(prefix, line, lineNum, hierarchicalOptions, callback) {
     var files = [];
 
     var args = line.split(/\s+/);
@@ -204,16 +274,21 @@ var getFileList = function(url, callback, options) {
       var arg = args[jj];
       if (arg[0] == '-') {
         if (arg[1] != '-') {
-          throw ("bad option at in " + url + ":" + (ii + 1) + ": " + str);
+          throw ("bad option at in " + url + ":" + lineNum + ": " + arg);
         }
         var option = arg.substring(2);
         switch (option) {
+          // no argument options.
+          case 'slow':
+            testOptions[toCamelCase(option)] = true;
+            break;
+          // one argument options.
           case 'min-version':
             ++jj;
             testOptions[toCamelCase(option)] = args[jj];
             break;
           default:
-            throw ("bad unknown option '" + option + "' at in " + url + ":" + (ii + 1) + ": " + str);
+            throw ("bad unknown option '" + option + "' at in " + url + ":" + lineNum + ": " + arg);
         }
       } else {
         nonOptions.push(arg);
@@ -226,8 +301,14 @@ var getFileList = function(url, callback, options) {
       if (!minVersion) {
         minVersion = hierarchicalOptions.defaultVersion;
       }
+      var slow = testOptions.slow;
+      if (!slow) {
+        slow = hierarchicalOptions.defaultSlow;
+      }
 
-      if (globalOptions.minVersion) {
+      if (globalOptions.fast && slow) {
+        useTest = false;
+      } else if (globalOptions.minVersion) {
         useTest = greaterThanOrEqualToVersion(minVersion, globalOptions.minVersion);
       } else {
         useTest = greaterThanOrEqualToVersion(globalOptions.version, minVersion);
@@ -243,6 +324,9 @@ var getFileList = function(url, callback, options) {
       // If a version was explicity specified pass it down.
       if (testOptions.minVersion) {
         hierarchicalOptions.defaultVersion = testOptions.minVersion;
+      }
+      if (testOptions.slow) {
+        hierarchicalOptions.defaultSlow = testOptions.slow;
       }
       loadTextFileAsynchronous(url, function() {
         return function(success, text) {
@@ -266,9 +350,9 @@ var getFileList = function(url, callback, options) {
                 str[0] != ";" &&
                 str.substr(0, 2) != "//") {
               ++count;
-              getFileListImpl(prefix, str, copyObject(hierarchicalOptions), function(index) {
+              getFileListImpl(prefix, str, ii + 1, copyObject(hierarchicalOptions), function(index) {
                 return function(success, new_files) {
-                  log("got files: " + new_files.length);
+                  //log("got files: " + new_files.length);
                   if (success) {
                     files[index] = new_files;
                   }
@@ -284,7 +368,7 @@ var getFileList = function(url, callback, options) {
               fail = true;
             }
             --count;
-            log("count: " + count);
+            //log("count: " + count);
             if (!count) {
               callback(!fail, files);
             }
@@ -297,7 +381,7 @@ var getFileList = function(url, callback, options) {
     }
   };
 
-  getFileListImpl('', url, globalOptions, function(success, files) {
+  getFileListImpl('', url, 1, globalOptions, function(success, files) {
     // flatten
     var flat = [];
     flatten(files);
