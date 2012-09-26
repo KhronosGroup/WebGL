@@ -11,11 +11,10 @@
             "platforms": {
                 "darwin": {
                     "path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-                },
-                "win32": {
-                    "path": "C:\\Program Files\\Google\\Google Chrome\\chrome.exe"
                 }
             },
+
+            "profile_arg": "--user-data-dir=",
 
             "args": [
                 "--no-first-run",
@@ -31,6 +30,8 @@
                 }
             },
 
+            "profile_arg": "--user-data-dir=",
+
             "args": [
                 "--no-first-run",
                 "--disable-gpu-driver-workarounds"
@@ -44,6 +45,8 @@
                     "path": "/Applications/Chromium.app/Contents/MacOS/Chromium"
                 }
             },
+
+            "profile_arg": "--user-data-dir=",
 
             "args": [
                 "--no-first-run",
@@ -59,10 +62,7 @@
                 }
             },
 
-            "args": [
-                "-browser",
-                "-silent"
-            ]
+            "profile_arg": "-profile"
         }
     ]
 }

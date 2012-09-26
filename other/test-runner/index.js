@@ -1,5 +1,6 @@
 var os = require('os');
 var fs = require('fs');
+var rimraf = require("rimraf"); // To provide "rm -rf" functionality
 var path = require('path');
 var child_process = require('child_process');
 
@@ -169,6 +170,7 @@ function start_test_server(config) {
 }
 
 var TEST_START_TIMEOUT = 10000;
+var PROFILE_DIR_NAME = "tmp_profile";
 
 function run_tests(app, config, callback, browser_id) {
   if(!browser_id) {
@@ -213,7 +215,23 @@ function run_tests(app, config, callback, browser_id) {
     if(platform.args) {
       all_args = all_args.concat(platform.args);
     }
+
+    var profile_dir;
+    if(browser.profile_arg) {
+      var profile_dir = path.join(__dirname, PROFILE_DIR_NAME);
+      ensure_dir_exists(profile_dir);
+      if(browser.profile_arg.indexOf("=") != -1) {
+        all_args.push(browser.profile_arg + profile_dir);
+      } else {
+        all_args.push(browser.profile_arg);
+        all_args.push(profile_dir);
+      }
+      
+    }
+
     all_args.push(config.test_url);
+
+    console.log(all_args);
 
     var browser_proc = child_process.spawn(platform.path, all_args);
     app.browser_proc = browser_proc;
@@ -228,7 +246,14 @@ function run_tests(app, config, callback, browser_id) {
       if(code == 20) {
         process.stdout.write("Could not launch new instance, already running");
       }
-      run_tests(app, config, callback, browser_id + 1);
+
+      if(profile_dir) {
+        rimraf(profile_dir, function() {
+          run_tests(app, config, callback, browser_id + 1);
+        });
+      } else {
+        run_tests(app, config, callback, browser_id + 1);
+      }
     });
 
   } else {
