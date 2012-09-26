@@ -7,17 +7,20 @@ var child_process = require('child_process');
 var express = require('express');
 
 var optimist = require('optimist')
-    .boolean('h')
-    .alias('h', 'help')
-    .describe('h', 'Show this help message')
     .usage('Automated execution of the Khronos WebGL conformance tests\nUsage: $0')
-    .alias('b', 'browser')
-    .describe('b', 'Comma-separated list of browsers to run the tests with')
-    .alias('v', 'version')
-    .describe('v', 'Version of the conformance test to run. (If not specified runs the latest)');
+    .boolean('help')
+    .describe('help', 'Show this help message')
+    .describe('browser', 'Comma-separated list of browsers to run the tests with')
+    .describe('version', 'Version of the conformance test to run. (If not specified runs the latest)')
+    .boolean('fast')
+    .describe('fast', 'Only run tests not marked with --slow')
+    .describe('skip', 'Comma separated list of regular expressions of which tests to skip.')
+    .describe('include', 'Comma separated list of regular expressions of which tests to include.')
+    .default('config', 'config')
+    .describe('config', 'Use a different config file than the default');
 
 function main() {
-  var config_path = path.join(__dirname, 'config.json');
+  var config_path = path.join(__dirname, optimist.argv.config + '.json');
 
   fs.readFile(config_path, 'utf8', function (err, data) {
     if (err) {
@@ -91,17 +94,23 @@ function build_test_url(app, config) {
     "postResults": 1
   }
 
+  if(config.args.fast) {
+    default_args.fast = true;
+  }
+
+  if(config.args.skip) {
+    default_args.skip = config.args.skip;
+  }
+  if(config.args.include) {
+    default_args.include = config.args.include;
+  }
+
   for(arg_name in default_args) {
     full_url += queryArgs ? "&" : "?";
     full_url += arg_name + "=" + default_args[arg_name];
     queryArgs++;
   }
-  for(arg_name in config.test_args) {
-    full_url += queryArgs ? "&" : "?";
-    full_url += arg_name + "=" + config.test_args[arg_name];
-    queryArgs++;
-  }
-
+  
   return full_url;
 }
 
@@ -231,8 +240,6 @@ function run_tests(app, config, callback, browser_id) {
 
     all_args.push(config.test_url);
 
-    console.log(all_args);
-
     var browser_proc = child_process.spawn(platform.path, all_args);
     app.browser_proc = browser_proc;
     app.browser_name = browser.name.replace(' ', '-');
@@ -280,7 +287,7 @@ function should_run_browser(browser, config) {
   return found_browser;
 }
 
-if(optimist.argv.h) {
+if(optimist.argv.help) {
   optimist.showHelp();
 } else {
   main();

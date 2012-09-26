@@ -1,8 +1,4 @@
 {
-    "test_args": {
-        "include": "attribs"
-    },
-
     "output_dir": "output",
 
     "browsers": [
