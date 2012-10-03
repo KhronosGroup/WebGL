@@ -224,10 +224,10 @@ function fillLevel(target, level, size, color) {
       target, level, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE,
       null);
   for (var jj = 0; jj < size; ++jj) {
-	  gl.texSubImage2D(
-		  target, level, 0, jj, size / 2, 1, gl.RGBA, gl.UNSIGNED_BYTE, halfPixelRow);
-	  gl.texSubImage2D(
-		  target, level, size / 2, jj, size / 2, 1, gl.RGBA, gl.UNSIGNED_BYTE, halfPixelRow);
+      gl.texSubImage2D(
+          target, level, 0, jj, size / 2, 1, gl.RGBA, gl.UNSIGNED_BYTE, halfPixelRow);
+      gl.texSubImage2D(
+          target, level, size / 2, jj, size / 2, 1, gl.RGBA, gl.UNSIGNED_BYTE, halfPixelRow);
   }
 }
 
@@ -329,6 +329,7 @@ function mulMatrix(a, b) {
 
 successfullyParsed = true;
 </script>
+<script src="../../resources/js-test-post.js"></script>
 </body>
 </html>
 
