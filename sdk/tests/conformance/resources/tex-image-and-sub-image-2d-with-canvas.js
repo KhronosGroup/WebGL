@@ -92,6 +92,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
               (opt_fontTest ? " with fonts" : " with red-green"));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Disable any writes to the alpha channel
+        // No idea why this was here. If it's important put it back and leave a comment as to why
 //        gl.colorMask(1, 1, 1, 0);
         if (!opt_texture) {
             var texture = gl.createTexture();
@@ -199,6 +200,10 @@ function generateTest(pixelFormat, pixelType, prologue) {
               c.init(ctx);
             }
             texture = runOneIteration(canvas, c.sub, c.flipY, c.top, c.bottom, texture, c.font);
+            // for the first 2 iterations always make a new texture.
+            if (count > 2) {
+              texture = undefined;
+            }
             ++caseNdx;
             if (caseNdx == cases.length) {
                 caseNdx = 0;
