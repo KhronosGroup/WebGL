@@ -54,14 +54,14 @@ function numLevelsFromSize(size) {
 var wtu = WebGLTestUtils;
 gl = wtu.create3DContext("example");
 var tests = [
-  { format: gl.RGBA,            type: gl.UNSIGNED_BYTE,          size: 4, dataType: Uint8Array  },
-  { format: gl.RGBA,            type: gl.UNSIGNED_SHORT_4_4_4_4, size: 1, dataType: Uint16Array },
-  { format: gl.RGBA,            type: gl.UNSIGNED_SHORT_5_5_5_1, size: 1, dataType: Uint16Array },
-  { format: gl.RGB,             type: gl.UNSIGNED_BYTE,          size: 3, dataType: Uint8Array  },
-  { format: gl.RGB,             type: gl.UNSIGNED_SHORT_5_6_5,   size: 1, dataType: Uint16Array },
   { format: gl.ALPHA,           type: gl.UNSIGNED_BYTE,          size: 1, dataType: Uint8Array  },
   { format: gl.LUMINANCE,       type: gl.UNSIGNED_BYTE,          size: 1, dataType: Uint8Array  },
-  { format: gl.LUMINANCE_ALPHA, type: gl.UNSIGNED_BYTE,          size: 2, dataType: Uint8Array  }
+  { format: gl.LUMINANCE_ALPHA, type: gl.UNSIGNED_BYTE,          size: 2, dataType: Uint8Array  },
+  { format: gl.RGB,             type: gl.UNSIGNED_BYTE,          size: 3, dataType: Uint8Array  },
+  { format: gl.RGB,             type: gl.UNSIGNED_SHORT_5_6_5,   size: 1, dataType: Uint16Array },
+  { format: gl.RGBA,            type: gl.UNSIGNED_BYTE,          size: 4, dataType: Uint8Array  },
+  { format: gl.RGBA,            type: gl.UNSIGNED_SHORT_4_4_4_4, size: 1, dataType: Uint16Array },
+  { format: gl.RGBA,            type: gl.UNSIGNED_SHORT_5_5_5_1, size: 1, dataType: Uint16Array }
 ];
 
 // Note: We expressly only use 2 textures because first a texture will be defined
@@ -135,18 +135,20 @@ function testFormatType(t, test) {
       // Do bottom levels first;
       var size = 1 << l;
       var level = numLevels - l - 1;
-      var pixels = new test.dataType((size + 1) * test.size);
-      gl.texImage2D(target, level, test.format, size, 1, 0, test.format, test.type, pixels);
-      glErrorShouldBe(gl, gl.NO_ERROR, "there should be no error for level: " + level + " " + size + "x1");
-      gl.texImage2D(target, level, test.format, 1, size, 0, test.format, test.type, pixels);
-      glErrorShouldBe(gl, gl.NO_ERROR, "there should be no error for level: " + level + " 1x" + size);
-      gl.texImage2D(target, level, test.format, size + 1, 1, 0, test.format, test.type, pixels);
-      glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE for level: " + level + " " + (size + 1) + "x1");
-      gl.texImage2D(target, level, test.format, 1, size + 1, 0, test.format, test.type, pixels);
-      glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE for level: " + level + " 1x" + (size + 1));
+      var otherDimension = t.target == gl.TEXTURE_2D ? 1 : size;
+      var badSize = size * 2;
+      var badOtherDimension = t.target == gl.TEXTURE_2D ? 1 : badSize;
+      var pixels = new test.dataType(badSize * badOtherDimension * test.size);
+      gl.texImage2D(target, level, test.format, size, otherDimension, 0, test.format, test.type, pixels);
+      glErrorShouldBe(gl, gl.NO_ERROR, "there should be no error for level: " + level + " " + size + "x" + otherDimension);
+      gl.texImage2D(target, level, test.format, otherDimension, size, 0, test.format, test.type, pixels);
+      glErrorShouldBe(gl, gl.NO_ERROR, "there should be no error for level: " + level + " " + otherDimension + "x" + size);
+      gl.texImage2D(target, level, test.format, badSize, badOtherDimension, 0, test.format, test.type, pixels);
+      glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE for level: " + level + " " + badSize + "x" + badOtherDimension);
+      gl.texImage2D(target, level, test.format, badOtherDimension, badSize, 0, test.format, test.type, pixels);
+      glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE for level: " + level + " " + badOtherDimension + "x" + badSize);
     }
   }
-
 }
 
 successfullyParsed = true;
