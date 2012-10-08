@@ -28,11 +28,57 @@ if (window.initNonKhronosFramework) {
     window.initNonKhronosFramework(true);
 }
 
+var old = debug;
+var debug = function(msg) {
+  console.log(msg);
+  old(msg);
+};
+
 function generateTest(pixelFormat, pixelType, prologue) {
     var wtu = WebGLTestUtils;
     var gl = null;
     var textureLoc = null;
     var successfullyParsed = false;
+
+    // Test each format separately because many browsers implement each
+    // differently. Some might be GPU accelerated, some might not. Etc...
+    var videos = [
+      { src: "../resources/red-green.mp4"         , type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"', },
+      { src: "../resources/red-green.webmvp8.webm", type: 'video/webm; codecs="vp8, vorbis"',           },
+      { src: "../resources/red-green.theora.ogv",   type: 'video/ogg; codecs="theora, vorbis"',         },
+    ];
+
+    var videoNdx = 0;
+    var runNextVideo = function() {
+        if (videoNdx == videos.length) {
+            finishTest();
+            return;
+        }
+        var info = videos[videoNdx++];
+        debug("");
+        debug("testing: " + info.type);
+        var video = document.createElement("video");
+        var canPlay = true;
+        if (!video.canPlayType) {
+          testFailed("video.canPlayType required method missing");
+          runNextTest();
+          return;
+        }
+
+        if(!video.canPlayType(info.type).replace(/no/, '')) {
+          debug(info.type + " unsupported");
+          runNextVideo();
+          return;
+        };
+
+        document.body.appendChild(video);
+        video.addEventListener(
+            "playing", function() { runTest(video); }, true);
+        video.type = info.type;
+        video.src = info.src;
+        video.loop = true;
+        video.play();
+    }
 
     var init = function()
     {
@@ -51,12 +97,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
         gl.clearDepth(1);
 
         textureLoc = gl.getUniformLocation(program, "tex");
-
-        var video = document.getElementById("vid");
-        video.addEventListener(
-            "playing", function() { runTest(video); }, true);
-        video.loop = true;
-        video.play();
+        runNextVideo();
     }
 
     function runOneIteration(videoElement, useTexSubImage2D, flipY, topColor, bottomColor)
@@ -120,7 +161,8 @@ function generateTest(pixelFormat, pixelType, prologue) {
         runOneIteration(videoElement, true, false, green, red);
 
         glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
-        finishTest();
+
+        runNextVideo();
     }
 
     return init;
