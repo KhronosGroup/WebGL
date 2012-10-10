@@ -70,7 +70,18 @@
                 }
             },
 
-            "profile_arg": "-profile"
+            "profile_arg": "-profile",
+
+            "firefox_user_prefs": {
+                "webgl.force-enabled": true,
+                "webgl.prefer-native-gl": true,
+                "browser.shell.checkDefaultBrowser": false,
+                "gfx.work-around-driver-bugs": false
+            },
+
+            "args": [
+                "-silent"
+            ]
         }
     ]
 }
