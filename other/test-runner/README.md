@@ -22,10 +22,18 @@ Running
     cd <WebGL>/other
     node ./test-runner
 
-Run with `--help` to see command line options
+Run with `--help` to see command line options.
+
+Example invocations:
+
+    node ./test-runner
+    node ./test-runner --version 1.0.1 --browser ChromeOpenGL
 
 Results
 -------
+
+Returns exit code 0 if all tests passed in all browser configurations.
+Returns non-zero exit code otherwise.
 
 Test results are output as plain text files into 
 `<WebGL>/other/test-runner/output`
