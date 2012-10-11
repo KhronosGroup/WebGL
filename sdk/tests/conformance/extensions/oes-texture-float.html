@@ -184,11 +184,12 @@ function runRenderTargetTest(testProgram)
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     gl.bindTexture(gl.TEXTURE_2D, null);
     shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
-    // While strictly speaking it is probably legal for a WebGL implementation to support
-    // floating-point textures but not as attachments to framebuffer objects, any such
-    // implementation is so poor that it arguably should not advertise support for the
-    // OES_texture_float extension. For this reason the conformance test requires that the
-    // framebuffer is complete here.
+    // While it is legal for a WebGL implementation exposing the OES_texture_float
+    // extension to support floating-point textures but not as attachments to framebuffer
+    // objects, it is strongly desired that implementations support both. For this reason
+    // the conformance test requires that the framebuffer is complete here. A WebGL
+    // implementation always has the option of not advertising the OES_texture_float
+    // extension even if it supports the underlying OpenGL ES extension.
     if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE)
         return;
 
