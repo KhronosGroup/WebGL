@@ -34,7 +34,7 @@ var optimist = require('optimist')
     .boolean('help')
     .describe('help', 'Show this help message')
     .describe('browser', 'Comma-separated list of browsers to run the tests with')
-    .describe('version', 'Version of the conformance test to run. (If not specified runs the latest)')
+    .describe('version', 'Version of the conformance test to run.\n     If not specified runs the latest.\n     Example: --version 1.0.1')
     .boolean('fast')
     .describe('fast', 'Only run tests not marked with --slow')
     .describe('skip', 'Comma separated list of regular expressions of which tests to skip.')
@@ -42,13 +42,15 @@ var optimist = require('optimist')
     .default('config', 'config')
     .describe('config', 'Use a different config file than the default');
 
+var all_passed = false;
+
 function main() {
   var config_path = path.join(__dirname, optimist.argv.config + '.json');
 
   fs.readFile(config_path, 'utf8', function (err, data) {
     if (err) {
       console.error('ERROR: Could not locate configuration file ', config_path);
-      process.exit(0);
+      process.exit(1);
     }
 
     var config = JSON.parse(data);
@@ -60,10 +62,16 @@ function main() {
     ensure_dir_exists(__dirname + '/' + config.output_dir);
     config.test_url = build_test_url(app, config);
 
+    all_passed = true;
+
     run_tests(app, config, function() {
       // This callback runs when all tests have finished
-      console.log("\n\nDone!");
-      process.exit(0);
+      if (all_passed) {
+        console.log("\nAll tests passed!");
+      } else {
+        console.log("\nERROR: some tests failed. See output/ for details.");
+      }
+      process.exit(all_passed ? 0 : 1);
     });
   });
 }
@@ -105,7 +113,7 @@ function build_test_url(app, config) {
 
   if(!fs.existsSync(path.join(__dirname, "../..", test_url))) {
     console.error("ERROR: Could not find test", test_url);
-    process.exit(0);
+    process.exit(1);
   }
 
   var full_url = "http://localhost:" + app.port + "/" + test_url;
@@ -135,6 +143,42 @@ function build_test_url(app, config) {
   }
   
   return full_url;
+}
+
+var pass_re = /Tests PASSED: (\d+)/;
+var fail_re = /Tests FAILED: (\d+)/;
+var timeout_re = /Tests TIMED OUT: (\d+)/;
+
+function to_int(str) {
+  var val = parseInt(str);
+  if (isNaN(val)) {
+    return 0;
+  }
+  return val;
+}
+
+function scan_test_results_with_re(test_results, test_re, re_kind, expect_zero) {
+  var captured = test_re.exec(test_results);
+  if (captured === null || captured.length != 2) {
+    console.error("\n  ERROR: while parsing test output for " + re_kind);
+    all_passed = false;
+    return;
+  }
+
+  var val = to_int(captured[1]);
+  if (expect_zero && val != 0) {
+    console.error("\n  ERROR: expected to see 0 " + re_kind + ", saw " + val);
+    all_passed = false;
+  } else if (!expect_zero && val <= 0) {
+    console.error("\n  ERROR: expected to see > 0 " + re_kind + ", saw " + val);
+    all_passed = false;
+  }
+}
+
+function scan_test_results(test_results) {
+  scan_test_results_with_re(test_results, pass_re, "passes", false);
+  scan_test_results_with_re(test_results, fail_re, "failures", true);
+  scan_test_results_with_re(test_results, timeout_re, "timeouts", true);
 }
 
 function start_test_server(config) {
@@ -171,13 +215,18 @@ function start_test_server(config) {
         app.browser_name + "_" + Date.now() + ".txt"
         );
 
-    fs.writeFile(file_name, req.plainText, 'utf8', function(err, data) {
+    var test_results = req.plainText;
+
+    fs.writeFile(file_name, test_results, 'utf8', function(err, data) {
       if(err) {
         console.error(err);
+        all_passed = false;
       }
       if(app.browser_proc) {
-        process.stdout.write("Success");
+        process.stdout.write("Finished");
+        app.finished_tests = true;
         app.browser_proc.kill();
+        scan_test_results(test_results);
       }
     });
 
@@ -269,15 +318,23 @@ function run_tests(app, config, callback, browser_id) {
     var browser_proc = child_process.spawn(platform.path, all_args);
     app.browser_proc = browser_proc;
     app.browser_name = browser.name.replace(' ', '-');
+    app.finished_tests = false;
 
     app.start_timeout = setTimeout(function() {
       browser_proc.kill();
       process.stdout.write("Test failed to start in allotted time");
+      all_passed = false;
     }, TEST_START_TIMEOUT);
 
     browser_proc.on('exit', function(code) {
       if(code == 20) {
         process.stdout.write("Could not launch new instance, already running");
+        all_passed = false;
+      }
+
+      if (!app.finished_tests) {
+        process.stdout.write("Tests didn't run to successful completion");
+        all_passed = false;
       }
 
       if(profile_dir) {
