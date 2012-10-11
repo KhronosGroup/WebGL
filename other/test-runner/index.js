@@ -259,6 +259,9 @@ function run_tests(app, config, callback, browser_id) {
         all_args.push(profile_dir);
       }
       
+      if(browser.firefox_user_prefs) {
+        write_firefox_user_prefs(profile_dir, browser.firefox_user_prefs);
+      }
     }
 
     all_args.push(config.test_url);
@@ -308,6 +311,17 @@ function should_run_browser(browser, config) {
   }
 
   return found_browser;
+}
+
+function write_firefox_user_prefs(profile_dir, user_prefs) {
+  var out = "";
+
+  var i, val;
+  for(i in user_prefs) {
+    out += "user_pref(\"" + i + "\", " + JSON.stringify(user_prefs[i]) + ");\n";
+  }
+
+  fs.appendFileSync(path.join(profile_dir, "prefs.js"), out);
 }
 
 if(optimist.argv.help) {
