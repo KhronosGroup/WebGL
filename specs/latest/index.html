@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 09 July 2012</h2>
+    <h2 class="no-toc">Editor's Draft 16 October 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -3166,6 +3166,15 @@ an <code>INVALID_OPERATION</code> error is generated. If <code>drawElements</cod
 a <code>count</code> greater than zero, and no <code>WebGLBuffer</code> is bound to
 the <code>ELEMENT_ARRAY_BUFFER</code> binding point, an <code>INVALID_OPERATION</code> error is
 generated.
+
+</p>
+
+    <h3>No Default Textures</h3>
+
+<p>
+
+The WebGL API does not support default textures. A non-null <code>WebGLTexture</code> object must be
+bound in order for texture-related operations and queries to succeed.
 
 </p>
 
