@@ -125,4 +125,4 @@
       <change>Initial revision.</change>
     </revision></history></draft><draft href="WEBGL_compressed_texture_atc/"><name>WEBGL_compressed_texture_atc</name><number>12</number><history><revision date="2012/09/11" number="1">
       <change>Initial revision.</change>
-    </revision></history></draft></registry>
+    </revision></history></draft><proposal href="proposals/WEBGL_multiple_render_targets/"><name>WEBGL_multiple_render_targets</name></proposal></registry>
