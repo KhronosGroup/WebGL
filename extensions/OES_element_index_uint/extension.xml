@@ -1,11 +1,7 @@
 <?xml version="1.0"?>
 
-<draft href="OES_element_index_uint/">
+<extension href="OES_element_index_uint/">
   <name>OES_element_index_uint</name>
-  <aliases>
-    <alias>WEBKIT_OES_element_index_uint</alias>
-    <alias>MOZ_OES_element_index_uint</alias>
-  </aliases>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
   </contact>
@@ -39,5 +35,8 @@ interface OES_element_index_uint {
     <revision date="2012/02/24">
       <change>Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name</change>
     </revision>
+    <revision date="2012/10/16">
+      <change>Based on feedback on public_webgl, moved from draft to community approved, and removed aliases.</change>
+    </revision>
   </history>
-</draft>
+</extension>
