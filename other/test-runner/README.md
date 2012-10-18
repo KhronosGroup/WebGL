@@ -55,5 +55,10 @@ Results
 Returns exit code 0 if all tests passed in all browser configurations.
 Returns non-zero exit code otherwise.
 
+The exit code can be tested via the $? variable in most Unix shells, and
+via the %errorlevel% pseudo environment variable in the Windows Command
+Prompt. See:
+http://stackoverflow.com/questions/334879/how-do-i-get-the-application-exit-code-from-a-windows-command-line
+
 Test results are output as plain text files into 
 `<WebGL>/other/test-runner/output`
