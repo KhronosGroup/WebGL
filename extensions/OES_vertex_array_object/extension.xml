@@ -1,11 +1,7 @@
 <?xml version="1.0"?>
 
-<draft href="OES_vertex_array_object/">
+<extension href="OES_vertex_array_object/">
   <name>OES_vertex_array_object</name>
-  <aliases>
-    <alias>WEBKIT_OES_vertex_array_object</alias>
-    <alias>MOZ_OES_vertex_array_object</alias>
-  </aliases>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
   </contact>
@@ -93,5 +89,8 @@ interface OES_vertex_array_object {
     <revision date="2012/09/24">
       <change>Added resolution to deleted buffer issue</change>
     </revision>
+    <revision date="2012/10/16">
+      <change>Based on feedback on public_webgl, moved from draft to community approved, and removed aliases.</change>
+    </revision>
   </history>
-</draft>
+</extension>
