@@ -116,6 +116,11 @@ function build_test_url(app, config) {
     process.exit(1);
   }
 
+  // We should never see '\' in a valid path name to the conformance
+  // tests, and their presence breaks loading of the conformance suite
+  // in Firefox on Windows.
+  test_url = test_url.replace(/\\/g, '/');
+
   var full_url = "http://localhost:" + app.port + "/" + test_url;
   var queryArgs = 0;
   var arg_name;
