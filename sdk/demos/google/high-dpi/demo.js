@@ -285,7 +285,6 @@ TeapotDemo.prototype.draw = function() {
 
     // Note: the viewport is automatically set up to cover the entire Canvas.
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    checkGLError(gl);
 
     // For now, don't render if we have incomplete textures, just to
     // avoid accidentally incurring OpenGL errors -- although we should
@@ -331,7 +330,6 @@ TeapotDemo.prototype.draw = function() {
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.envTexture);
     gl.uniform1i(this.envSamplerLoc, 1);
-    checkGLError(gl);
 
     // Bind and set up vertex streams
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
@@ -346,7 +344,6 @@ TeapotDemo.prototype.draw = function() {
     gl.vertexAttribPointer(4, 3, gl.FLOAT, false, 0, this.normalsOffset);
     gl.enableVertexAttribArray(4);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementVbo);
-    checkGLError(gl);
     gl.drawElements(gl.TRIANGLES, this.numElements, gl.UNSIGNED_SHORT, 0);
 }
 
