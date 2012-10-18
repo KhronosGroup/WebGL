@@ -15,7 +15,9 @@ then run:
 
 Once installed you may need to adjust the paths in
 `test-runner/config.json` to ensure they are correct for your system. The
-Linux paths in particular are especially likely to need adjustment.
+Linux paths in particular are especially likely to need adjustment. On
+Windows the paths will need to be adjusted if you have done a per-user
+installation of Chrome, rather than a machine-wide installation.
 
 Running
 -------
