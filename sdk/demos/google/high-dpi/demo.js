@@ -306,6 +306,14 @@ TeapotDemo.prototype.initShaders = function(gl) {
     gl.bindAttribLocation(programObject, 4, "g_Normal");
     // Link the program
     gl.linkProgram(programObject);
+    // Check the link status
+    var linked = gl.getProgramParameter(programObject, gl.LINK_STATUS);
+    if (!linked && !gl.isContextLost()) {
+        var infoLog = gl.getProgramInfoLog(programObject);
+        output("Error linking program:\n" + infoLog);
+        gl.deleteProgram(programObject);
+        return;
+    }
     
     this.programObject = programObject;
     // Look up uniform locations
