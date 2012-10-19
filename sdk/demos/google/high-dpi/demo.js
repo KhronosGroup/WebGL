@@ -92,6 +92,24 @@ var bumpReflectFragmentSource = [
     "}"
     ].join("\n");
 
+var wireVertexSource = [
+    "attribute vec3 g_Position;",
+    "",
+    "uniform mat4 worldViewProj;",
+    "",
+    "void main() {",
+    "  gl_Position = worldViewProj * vec4(g_Position.xyz, 1.);",
+    "}"
+    ].join("\n");
+
+var wireFragmentSource = [
+    "precision mediump float;\n",
+    "",
+    "void main() {",
+    "  gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);",
+    "}"
+    ].join("\n");
+
 function log(msg) {
     if (window.console && window.console.log) {
         console.log(msg);
@@ -135,13 +153,16 @@ function TeapotDemo(canvas) {
     this.bumpTexture = null;
     this.envTexture = null;
     this.programObject = null;
+    this.wireProgramObject = null;
     this.vbo = null;
     this.elementVbo = null;
+    this.wireElementVbo = null;
     this.normalsOffset = 0;
     this.tangentsOffset = 0;
     this.binormalsOffset = 0;
     this.texCoordsOffset = 0;
     this.numElements = 0;
+    this.numWireElements = 0;
 
     // Uniform variables
     this.worldLoc = 0;
@@ -150,6 +171,7 @@ function TeapotDemo(canvas) {
     this.viewInverseLoc = 0;
     this.normalSamplerLoc = 0;
     this.envSamplerLoc = 0;
+    this.wireWorldViewProjLoc = 0;
 
     // Array of images curently loading
     this.loadingImages = [];
@@ -226,7 +248,30 @@ TeapotDemo.prototype.initTeapot = function(gl) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementVbo);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, teapotIndices, gl.STATIC_DRAW);
     this.numElements = teapotIndices.length;
+    
+    var wireIndices = this.createWireIndicies(teapotIndices);
+    this.wireElementVbo = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.wireElementVbo);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, wireIndices, gl.STATIC_DRAW);
+    this.numWireElements = wireIndices.length;
     checkGLError(gl);
+
+}
+
+TeapotDemo.prototype.createWireIndicies = function(triIndicies) {
+    var wireIndices = new Uint16Array(triIndicies.length * 2);
+    var i, j;
+    for(i = 0, j = 0; i < triIndicies.length; i += 3) {
+        wireIndices[j++] = triIndicies[i];
+        wireIndices[j++] = triIndicies[i+1];
+
+        wireIndices[j++] = triIndicies[i+1];
+        wireIndices[j++] = triIndicies[i+2];
+
+        wireIndices[j++] = triIndicies[i+2];
+        wireIndices[j++] = triIndicies[i];
+    }
+    return wireIndices;
 }
 
 TeapotDemo.prototype.loadShader = function(gl, type, shaderSrc) {
@@ -269,6 +314,7 @@ TeapotDemo.prototype.initShaders = function(gl) {
         gl.deleteProgram(programObject);
         return;
     }
+    
     this.programObject = programObject;
     // Look up uniform locations
     this.worldLoc = gl.getUniformLocation(programObject, "world");
@@ -278,6 +324,27 @@ TeapotDemo.prototype.initShaders = function(gl) {
     this.normalSamplerLoc = gl.getUniformLocation(programObject, "normalSampler");
     this.envSamplerLoc = gl.getUniformLocation(programObject, "envSampler");
     checkGLError(gl);
+
+    vertexShader = this.loadShader(gl, gl.VERTEX_SHADER, wireVertexSource);
+    fragmentShader = this.loadShader(gl, gl.FRAGMENT_SHADER, wireFragmentSource);
+    // Create the program object
+    programObject = gl.createProgram();
+    gl.attachShader(programObject, vertexShader);
+    gl.attachShader(programObject, fragmentShader);
+    // Bind attributes
+    gl.bindAttribLocation(programObject, 0, "g_Position");
+    // Link the program
+    gl.linkProgram(programObject);
+    // Check the link status
+    var linked = gl.getProgramParameter(programObject, gl.LINK_STATUS);
+    if (!linked && !gl.isContextLost()) {
+        var infoLog = gl.getProgramInfoLog(programObject);
+        output("Error linking program:\n" + infoLog);
+        gl.deleteProgram(programObject);
+        return;
+    }
+    this.wireProgramObject = programObject;
+    this.wireWorldViewProjLoc = gl.getUniformLocation(programObject, "worldViewProj");
 }
 
 TeapotDemo.prototype.draw = function() {
@@ -307,6 +374,9 @@ TeapotDemo.prototype.draw = function() {
     // Correct for initial placement and orientation of model
     model.translate(0, -10, 0);
     model.rotate(90, 1, 0, 0);
+
+    gl.enable(gl.POLYGON_OFFSET_FILL);
+    gl.polygonOffset(1, -1);
 
     gl.useProgram(this.programObject);
 
@@ -343,8 +413,20 @@ TeapotDemo.prototype.draw = function() {
     gl.enableVertexAttribArray(3);
     gl.vertexAttribPointer(4, 3, gl.FLOAT, false, 0, this.normalsOffset);
     gl.enableVertexAttribArray(4);
+    
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.elementVbo);
     gl.drawElements(gl.TRIANGLES, this.numElements, gl.UNSIGNED_SHORT, 0);
+
+    // Render the mesh wireframe
+    gl.useProgram(this.wireProgramObject);
+
+    gl.uniformMatrix4fv(this.wireWorldViewProjLoc, gl.FALSE, new Float32Array(mvp.elements));
+
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(0);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.wireElementVbo);
+    gl.drawElements(gl.LINES, this.numWireElements, gl.UNSIGNED_SHORT, 0);
 }
 
 // Clears all the images currently loading.
