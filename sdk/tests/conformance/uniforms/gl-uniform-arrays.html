@@ -400,7 +400,7 @@ for (var nameOrder = 0; nameOrder < 2; ++nameOrder) {
   }
 }
 
-var allUniformLocationsQueryable = true;
+var allRequiredUniformLocationsQueryable = true;
 function testUniformOptimizationIssues(testIndex) {
   var test = tests[testIndex];
   debug("");
@@ -434,7 +434,7 @@ function testUniformOptimizationIssues(testIndex) {
 
   // Set all the unused uniforms
   var locations = [];
-  allUniformLocationsQueryable = true;
+  allRequiredUniformLocationsQueryable = true;
   for (var ii = 0; ii < test.maxUniformVectors; ++ii) {
     var name = test.arrayName + "[" + ii + "]";
     var uniformLocation = gl.getUniformLocation(program, name);
@@ -442,12 +442,14 @@ function testUniformOptimizationIssues(testIndex) {
     if (ii == test.usedUniformVector) {
       continue;
     }
-    if (ii <= test.usedUniformVector && uniformLocation === undefined || uniformLocation === null) {
-      allUniformLocationsQueryable = false;
+    // Locations > usedUnformVector may not exist.
+    // Locations <= usedUniformVector MUST exist.
+    if (ii <= test.usedUniformVector && (uniformLocation === undefined || uniformLocation === null)) {
+      allRequiredUniformLocationsQueryable = false;
     }
     gl.uniform4fv(uniformLocation, [1, 0, 0, 1]);
   }
-  shouldBeTrue("allUniformLocationsQueryable");
+  shouldBeTrue("allRequiredUniformLocationsQueryable");
   var positionLoc = gl.getAttribLocation(program, "a_position");
   wtu.setupQuad(gl, 1, positionLoc);
   wtu.drawIndexedQuad(gl, 1);
