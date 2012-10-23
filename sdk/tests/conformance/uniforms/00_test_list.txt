@@ -1,4 +1,5 @@
 gl-uniform-arrays.html
+--min-version 1.0.02 gl-uniform-unused-array-elements-get-truncated.html
 gl-uniform-bool.html
 gl-uniformmatrix4fv.html
 gl-unknown-uniform.html
