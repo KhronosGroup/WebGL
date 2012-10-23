@@ -98,7 +98,8 @@ function testUniformIssues(testIndex) {
 
   requiredUniformLocationsExist = true;
   for (var ii = 0; ii <= test.usedUniformVector + 1; ++ii) {
-    var colorLocation = gl.getUniformLocation(program, test.arrayName + "[" + ii + "]");
+    var name = test.arrayName + "[" + ii + "]";
+    var colorLocation = gl.getUniformLocation(program, name);
     if (ii <= test.usedUniformVector) {
       if (!colorLocation) {
         requiredUniformLocationsExist = false
@@ -109,6 +110,7 @@ function testUniformIssues(testIndex) {
       }
     }
   }
+  shouldBeTrue("requiredUniformLocationsExist");
 }
 
 var testIndex = 0;
