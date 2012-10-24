@@ -171,6 +171,9 @@ function runTextureCreationTest(testProgram, extensionEnabled, opt_format, opt_n
 
 function runRenderTargetTest(testProgram)
 {
+    debug("");
+    debug("testing floating-point render targets");
+
     var texture = allocateTexture();
     var width = 2;
     var height = 2;
@@ -178,20 +181,17 @@ function runRenderTargetTest(testProgram)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.FLOAT, null);
     glErrorShouldBe(gl, gl.NO_ERROR, "floating-point texture allocation should succeed if OES_texture_float is enabled");
 
-    // Use this texture as a render target.
+    // Try to use this texture as a render target.
     var fbo = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     gl.bindTexture(gl.TEXTURE_2D, null);
-    shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
-    // While it is legal for a WebGL implementation exposing the OES_texture_float
-    // extension to support floating-point textures but not as attachments to framebuffer
-    // objects, it is strongly desired that implementations support both. For this reason
-    // the conformance test requires that the framebuffer is complete here. A WebGL
-    // implementation always has the option of not advertising the OES_texture_float
-    // extension even if it supports the underlying OpenGL ES extension.
-    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE)
+    // It is legal for a WebGL implementation exposing the OES_texture_float extension to
+    // support floating-point textures but not as attachments to framebuffer objects.
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        debug("floating-point render targets not supported -- this is legal");
         return;
+    }
 
     var renderProgram =
         wtu.setupProgram(gl,
