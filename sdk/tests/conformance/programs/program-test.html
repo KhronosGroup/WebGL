@@ -33,12 +33,33 @@
 <script src="../../resources/js-test-pre.js" type="text/javascript"></script>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../resources/webgl-test.js" type="text/javascript"></script>
+<script src="../resources/webgl-test-utils.js" type="text/javascript"></script>
 </head>
 <body>
+<script id="vshader" type="x-shader/x-vertex">
+    attribute vec4 a_position;
+    void main()
+    {
+        gl_Position = a_position;
+    }
+</script>
+<script id="fshader-red" type="x-shader/x-fragment">
+    void main()
+    {
+        gl_FragColor = vec4(1, 0, 0, 1);
+    }
+</script>
+<script id="fshader-green" type="x-shader/x-fragment">
+    void main()
+    {
+        gl_FragColor = vec4(0, 1, 0, 1);
+    }
+</script>
 <div id="description"></div>
 <div id="console"></div>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script type="text/javascript">
+var wtu = WebGLTestUtils;
 function go() {
     description("Tests that program compiling/linking/using works correctly.");
 
@@ -354,6 +375,21 @@ function go() {
 
     gl.compileShader(fs3);
     glErrorShouldBe(gl, gl.INVALID_VALUE, "a delete-marked shader should be deleted once all its attachments are removed");
+
+//////// Check linkProgram() with relinked program //////////
+    var vs = wtu.loadShaderFromScript(gl, "vshader");
+    var fs = wtu.loadShaderFromScript(gl, "fshader-red");
+    var prg = wtu.createProgram(gl, vs, fs);
+    gl.useProgram(prg);
+    var posLoc = gl.getAttribLocation(prg, "a_position");
+    wtu.setupUnitQuad(gl, posLoc);
+    wtu.drawQuad(gl);
+    wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red");
+    gl.shaderSource(fs, wtu.getScript("fshader-green"));
+    gl.compileShader(fs);
+    gl.linkProgram(prg);
+    wtu.drawQuad(gl);
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 }
 
 debug("");
