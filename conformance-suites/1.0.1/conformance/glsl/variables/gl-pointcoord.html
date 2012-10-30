@@ -62,6 +62,9 @@ found in the LICENSE file.
 
     var maxPointSize = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE)[1];
     shouldBeTrue("maxPointSize >= 1");
+    // The minimum and maximum point sizes may be floating-point numbers.
+    shouldBeTrue("Math.floor(maxPointSize) >= 1");
+    maxPointSize = Math.floor(maxPointSize);
     shouldBeTrue("maxPointSize % 1 == 0");
 
     maxPointSize = Math.min(maxPointSize, 64);
