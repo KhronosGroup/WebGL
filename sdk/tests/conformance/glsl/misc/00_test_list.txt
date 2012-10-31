@@ -15,6 +15,7 @@ shader-with-257-character-identifier.frag.html
 shader-with-_webgl-identifier.vert.html
 shader-with-arbitrary-indexing.frag.html
 shader-with-arbitrary-indexing.vert.html
+--min-version 1.0.2 shader-with-array-of-structs-contining-arrays.html
 --min-version 1.0.2 shader-with-array-of-structs-uniform.html
 shader-with-attrib-array.vert.html
 shader-with-attrib-struct.vert.html
