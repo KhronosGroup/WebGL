@@ -10,7 +10,7 @@
   </contributors>
   <number>XYZ</number>
   <depends>
-    <api version="1.0.1"/>
+    <api version="1.0"/>
   </depends>
   <overview>
     <mirrors href="https://angleproject.googlecode.com/svn/trunk/extensions/ANGLE_multiple_render_targets.txt" name="ANGLE_multiple_render_targets"/>
@@ -61,12 +61,15 @@ interface WEBGL_multiple_render_targets {
     const GLenum MAX_COLOR_ATTACHMENTS_WEBGL = 0x8CDF;
     const GLenum MAX_DRAW_BUFFERS_WEBGL      = 0x8824;
 
-    void DrawBuffersWEBGL(sequence&lt;GLenum&gt; buffers);
+    void drawBuffersWEBGL(sequence&lt;GLenum&gt; buffers);
 };
   </idl>
   <history>
     <revision date="2012/10/16">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2012/11/05">
+      <change>Corrected typo in drawBuffersWEBGL. Changed referenced spec version to 1.0 to fix broken link.</change>
     </revision>
   </history>
 </proposal>
