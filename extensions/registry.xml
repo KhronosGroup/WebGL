@@ -27,7 +27,7 @@
       </change>
     </revision><revision date="2012/01/03" number="3">
       <change>Removed webgl module per changes to Web IDL spec.</change>
-    </revision></history></extension><draft href="OES_vertex_array_object/"><name>OES_vertex_array_object</name><number>5</number><history><revision date="2011/01/27" number="1">
+    </revision></history></extension><extension href="OES_vertex_array_object/"><name>OES_vertex_array_object</name><number>5</number><history><revision date="2011/01/27" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/11/12" number="2">
       <change>Demotion to draft.</change>
@@ -40,7 +40,9 @@
       <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision><revision date="2012/09/24" number="6">
       <change>Added resolution to deleted buffer issue</change>
-    </revision></history></draft><draft href="WEBGL_lose_context/"><name>WEBGL_lose_context</name><number>3</number><history><revision date="2011/01/11" number="1">
+    </revision><revision date="2012/10/16" number="7">
+      <change>Based on feedback on public_webgl, moved from draft to community approved, and removed aliases.</change>
+    </revision></history></extension><draft href="WEBGL_lose_context/"><name>WEBGL_lose_context</name><number>3</number><history><revision date="2011/01/11" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/04/14" number="2">
       <change>Added explicit restoreContext() method based on discussion on public_webgl list, to enable testing of scenario where context stays lost for a period of time.</change>
@@ -109,13 +111,15 @@
         Updated references to texSubImage2D. Added
         DEPTH_STENCIL_ATTACHMENT to framebufferTexture2D.
       </change>
-    </revision></history></draft><proposal href="proposals/WEBGL_shared_resources/"><name>WEBGL_shared_resources</name></proposal><draft href="OES_element_index_uint/"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
+    </revision></history></draft><proposal href="proposals/WEBGL_shared_resources/"><name>WEBGL_shared_resources</name></proposal><extension href="OES_element_index_uint/"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/01/27" number="2">
       <change>Removed the bufferData requirement as this is not checked by webgl</change>
     </revision><revision date="2012/02/24" number="3">
       <change>Removed the enumerants from the IDL which are contained in the context and added aliases to the extension name</change>
-    </revision></history></draft><extension href="EXT_texture_filter_anisotropic/"><name>EXT_texture_filter_anisotropic</name><number>11</number><history><revision date="2012/01/27" number="1">
+    </revision><revision date="2012/10/16" number="4">
+      <change>Based on feedback on public_webgl, moved from draft to community approved, and removed aliases.</change>
+    </revision></history></extension><extension href="EXT_texture_filter_anisotropic/"><name>EXT_texture_filter_anisotropic</name><number>11</number><history><revision date="2012/01/27" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/02/24" number="2">
       <change>Added the EXT suffix to the enumerants and aliases to the extension name</change>
@@ -125,4 +129,4 @@
       <change>Initial revision.</change>
     </revision></history></draft><draft href="WEBGL_compressed_texture_atc/"><name>WEBGL_compressed_texture_atc</name><number>12</number><history><revision date="2012/09/11" number="1">
       <change>Initial revision.</change>
-    </revision></history></draft></registry>
+    </revision></history></draft><proposal href="proposals/WEBGL_multiple_render_targets/"><name>WEBGL_multiple_render_targets</name></proposal></registry>

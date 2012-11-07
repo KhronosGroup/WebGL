@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 09 July 2012</h2>
+    <h2 class="no-toc">Editor's Draft 01 November 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1494,7 +1494,7 @@ for (var i = 0; i < numVertices; i++) {
     readonly attribute GLsizei drawingBufferWidth;
     readonly attribute GLsizei drawingBufferHeight;
 
-    [WebGLHandlesContextLoss] WebGLContextAttributes getContextAttributes();
+    [WebGLHandlesContextLoss] WebGLContextAttributes? getContextAttributes();
     [WebGLHandlesContextLoss] boolean isContextLost();
     
     sequence&lt;DOMString&gt;? getSupportedExtensions();
@@ -1777,9 +1777,11 @@ for (var i = 0; i < numVertices; i++) {
     <h4>Getting information about the context</h4>
 
     <dl class="methods">
-        <dt class="idl-code">[WebGLHandlesContextLoss] WebGLContextAttributes getContextAttributes()
+        <dt class="idl-code">[WebGLHandlesContextLoss] WebGLContextAttributes? getContextAttributes()
         <dd>
-            Returns a copy of the <a href="#actual-context-parameters">actual context parameters</a>.
+            If the <a href="#webgl-context-lost-flag">webgl context lost flag</a> is set, returns
+            null. Otherwise, returns a copy of the <a href="#actual-context-parameters">actual
+            context parameters</a>.
     </dl>
      
 <!-- ======================================================================================================= -->
@@ -3166,6 +3168,15 @@ an <code>INVALID_OPERATION</code> error is generated. If <code>drawElements</cod
 a <code>count</code> greater than zero, and no <code>WebGLBuffer</code> is bound to
 the <code>ELEMENT_ARRAY_BUFFER</code> binding point, an <code>INVALID_OPERATION</code> error is
 generated.
+
+</p>
+
+    <h3>No Default Textures</h3>
+
+<p>
+
+The WebGL API does not support default textures. A non-null <code>WebGLTexture</code> object must be
+bound in order for texture-related operations and queries to succeed.
 
 </p>
 

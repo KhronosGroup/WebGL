@@ -137,6 +137,8 @@
         shouldBe("gl.getError()", "gl.NO_ERROR");
         var prog = gl.getParameter(gl.CURRENT_PROGRAM);
         shouldBeNonNull("prog");
+        var arrayLoc = gl.getUniformLocation(prog, "color01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567");
+        shouldBeNonNull("arrayLoc");
         var redLoc = gl.getUniformLocation(prog, "color01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567[0]");
         shouldBeNonNull("redLoc");
         var greenLoc = gl.getUniformLocation(prog, "color01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567[1]");
@@ -147,10 +149,23 @@
         shouldBe("activeUniform.type", "gl.FLOAT");
         shouldBe("activeUniform.size", "2");
         shouldBe("activeUniform.name", "'color01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567[0]'");
+        debug("Binding each uniform array value by component location...");
         gl.uniform1f(redLoc, 1.0);
         gl.uniform1f(greenLoc, 0.0);
         drawAndCheckPixels(gl);
         shouldBe("gl.getError()", "gl.NO_ERROR");
+        gl.uniform1f(redLoc, 0.5);
+        gl.uniform1f(greenLoc, 0.5);
+        debug("Binding all uniform array values by first component location...");
+        gl.uniform1fv(redLoc, [1.0, 0.0]);
+        drawAndCheckPixels(gl);
+        shouldBe("gl.getError()", "gl.NO_ERROR");
+        gl.uniform1fv(redLoc, [0.5, 0.5]);
+        debug("Binding all uniform array values by array location...");
+        gl.uniform1fv(arrayLoc, [1.0, 0.0]);
+        drawAndCheckPixels(gl);
+        shouldBe("gl.getError()", "gl.NO_ERROR");
+        gl.uniform1fv(arrayLoc, [0.5, 0.5]);
         debug("");
 
         debug("Test long varying name");

@@ -400,7 +400,7 @@ for (var nameOrder = 0; nameOrder < 2; ++nameOrder) {
   }
 }
 
-var allUniformLocationsQueryable = true;
+var allRequiredUniformLocationsQueryable = true;
 function testUniformOptimizationIssues(testIndex) {
   var test = tests[testIndex];
   debug("");
@@ -434,7 +434,7 @@ function testUniformOptimizationIssues(testIndex) {
 
   // Set all the unused uniforms
   var locations = [];
-  allUniformLocationsQueryable = true;
+  allRequiredUniformLocationsQueryable = true;
   for (var ii = 0; ii < test.maxUniformVectors; ++ii) {
     var name = test.arrayName + "[" + ii + "]";
     var uniformLocation = gl.getUniformLocation(program, name);
@@ -442,35 +442,41 @@ function testUniformOptimizationIssues(testIndex) {
     if (ii == test.usedUniformVector) {
       continue;
     }
-    if (uniformLocation === undefined || uniformLocation === null) {
-      allUniformLocationsQueryable = false;
+    // Locations > usedUnformVector may not exist.
+    // Locations <= usedUniformVector MUST exist.
+    if (ii <= test.usedUniformVector && (uniformLocation === undefined || uniformLocation === null)) {
+      allRequiredUniformLocationsQueryable = false;
     }
     gl.uniform4fv(uniformLocation, [1, 0, 0, 1]);
   }
-  shouldBeTrue("allUniformLocationsQueryable");
+  shouldBeTrue("allRequiredUniformLocationsQueryable");
   var positionLoc = gl.getAttribLocation(program, "a_position");
   wtu.setupQuad(gl, 1, positionLoc);
   wtu.drawIndexedQuad(gl, 1);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 
-  // Check we can write and read each uniform.
+  // Check we can read & write each uniform.
+  // Note: uniforms past test.usedUniformVector might not exist.
   for (var ii = 0; ii < test.maxUniformVectors; ++ii) {
     gl.uniform4fv(locations[ii], [ii + 4, ii + 2, ii + 3, ii + 1]);
   }
 
   var kEpsilon = 0.01;
-  function isSame(v1, v2) {
+  var isSame = function(v1, v2) {
     return Math.abs(v1 - v2) < kEpsilon;
-  }
+  };
 
   for (var ii = 0; ii < test.maxUniformVectors; ++ii) {
-    var value = gl.getUniform(program, locations[ii]);
-    if (!isSame(value[0], ii + 4) ||
-        !isSame(value[1], ii + 2) ||
-        !isSame(value[2], ii + 3) ||
-        !isSame(value[3], ii + 1)) {
-      testFailed("location: " + ii + " was not correct value");
-      break;
+    var location = locations[ii];
+    if (location) {
+      var value = gl.getUniform(program, locations[ii]);
+      if (!isSame(value[0], ii + 4) ||
+          !isSame(value[1], ii + 2) ||
+          !isSame(value[2], ii + 3) ||
+          !isSame(value[3], ii + 1)) {
+        testFailed("location: " + ii + " was not correct value");
+        break;
+      }
     }
   }
 }

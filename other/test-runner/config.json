@@ -8,6 +8,9 @@
                 "darwin": {
                     "path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
                 },
+                "linux": {
+                    "path": "/opt/google/chrome/google-chrome"
+                },
                 "win32": {
                     "path": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
                 }
@@ -18,6 +21,23 @@
             "args": [
                 "--no-first-run",
                 "--disable-gpu-driver-workarounds"
+            ]
+        },
+
+        {
+            "name": "ChromeWinOpenGL",
+            "platforms": {
+                "win32": {
+                    "path": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+                }
+            },
+
+            "profile_arg": "--user-data-dir=",
+
+            "args": [
+                "--no-first-run",
+                "--disable-gpu-driver-workarounds",
+                "--use-gl=desktop"
             ]
         },
 
@@ -41,6 +61,23 @@
         },
 
         {
+            "name": "ChromeCanaryWinOpenGL",
+            "platforms": {
+                "win32": {
+                    "path": "C:\\Program Files (x86)\\Google\\Chrome SxS\\Application\\chrome.exe"
+                }
+            },
+
+            "profile_arg": "--user-data-dir=",
+
+            "args": [
+                "--no-first-run",
+                "--disable-gpu-driver-workarounds",
+                "--use-gl=desktop"
+            ]
+        },
+
+        {
             "name": "Chromium",
             "platforms": {
                 "darwin": {
@@ -60,17 +97,69 @@
         },
 
         {
+            "name": "ChromiumWinOpenGL",
+            "platforms": {
+                "win32": {
+                    "path": "C:\\Program Files (x86)\\Google\\Chromium\\Application\\chromium.exe"
+                }
+            },
+
+            "profile_arg": "--user-data-dir=",
+
+            "args": [
+                "--no-first-run",
+                "--disable-gpu-driver-workarounds",
+                "--use-gl=desktop"
+            ]
+        },
+
+        {
             "name": "Firefox",
             "platforms": {
                 "darwin": {
                     "path": "/Applications/Firefox.app/Contents/MacOS/firefox"
+                },
+                "linux": {
+                    "path": "/usr/bin/firefox"
                 },
                 "win32": {
                     "path": "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"
                 }
             },
 
-            "profile_arg": "-profile"
+            "profile_arg": "-profile",
+
+            "firefox_user_prefs": {
+                "webgl.force-enabled": true,
+                "browser.shell.checkDefaultBrowser": false,
+                "gfx.work-around-driver-bugs": false
+            },
+
+            "args": [
+                "-silent"
+            ]
+        },
+
+        {
+            "name": "FirefoxWinOpenGL",
+            "platforms": {
+                "win32": {
+                    "path": "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"
+                }
+            },
+
+            "profile_arg": "-profile",
+
+            "firefox_user_prefs": {
+                "webgl.force-enabled": true,
+                "browser.shell.checkDefaultBrowser": false,
+                "gfx.work-around-driver-bugs": false,
+                "webgl.prefer-native-gl": true
+            },
+
+            "args": [
+                "-silent"
+            ]
         }
     ]
 }
