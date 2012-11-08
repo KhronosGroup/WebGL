@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension href="EXT_color_buffer_half_float">
+  <name>EXT_color_buffer_half_float</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Mark Callow, HI Corporation</contributor>
+
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>NN</number>
+
+  <depends>
+    <api version="1.0"/>
+
+    <ext name="OES_texture_half_float" require="true"/>
+  </depends>
+
+  <overview>
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_color_buffer_half_float.txt"
+             name="EXT_color_buffer_half_float">
+      <addendum>
+        <p>All references to <code>R16F</code> and <code>RG16F</code> types
+        are ignored.</p>
+      </addendum>
+    </mirrors>
+
+    <features>
+      <feature>
+        <p>The 16-bit floating-point types <code>RGB16F</code> and
+        <code>RGBA16F</code> become available as color-renderable formats.
+        Renderbuffers can be created in these formats. These and textures
+        created with <code>type = HALF_FLOAT_OES</code>, which will have one
+        of these internal formats, can be attached to framebuffer object color
+        attachments for rendering.</p>
+      </feature>
+
+      <feature>
+        <p><span style="color: red">NOTE:</span> fragment shaders outputs
+        gl_FragColor and gl_FragData[0] will only be clamped and converted
+        when the color buffer is fixed-point and <code>BlendColor()</code> and
+        <code>ClearColor()</code> will no longer clamp their parameter values
+        on input. Clamping will be applied as necessary at draw time according
+        to the type of color buffer in use.</p>
+      </feature>
+
+      <feature>
+        <p>The component types of framebuffer object attachments can be
+        queried.</p>
+      </feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">module webgl {
+  interface EXT_color_buffer_half_float {
+    const GLenum RGBA16F_EXT = 0x881A;
+    const GLenum RGB16F_EXT = 0x881B;
+    const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
+    const GLenum UNSIGNED_NORMALIZED_EXT = 0x8C17;
+  }; // interface EXT_color_buffer_half_float
+}; // module webgl</idl>
+
+  <history>
+    <revision date="2012/11/08">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</extension>

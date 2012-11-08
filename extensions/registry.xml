@@ -129,4 +129,8 @@
       <change>Initial revision.</change>
     </revision></history></draft><draft href="WEBGL_compressed_texture_atc/"><name>WEBGL_compressed_texture_atc</name><number>12</number><history><revision date="2012/09/11" number="1">
       <change>Initial revision.</change>
-    </revision></history></draft><proposal href="proposals/WEBGL_multiple_render_targets/"><name>WEBGL_multiple_render_targets</name></proposal></registry>
+    </revision></history></draft><proposal href="proposals/WEBGL_multiple_render_targets/"><name>WEBGL_multiple_render_targets</name></proposal><extension href="EXT_color_buffer_half_float"><name>EXT_color_buffer_half_float</name><number>NN</number><history><revision date="2012/11/08" number="1">
+      <change>Initial revision.</change>
+    </revision></history></extension><extension href="WEBGL_color_buffer_float"><name>WEBGL_color_buffer_float</name><number>NN</number><history><revision date="2012/11/08" number="1">
+      <change>Initial revision.</change>
+    </revision></history></extension></registry>
