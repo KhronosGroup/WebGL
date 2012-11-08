@@ -1398,6 +1398,87 @@ var loadProgramFromScriptExpectError = function(
   return linkSuccess ? program : null;
 };
 
+
+var getActiveMap = function(gl, program, typeInfo) {
+  var numVariables = gl.getProgramParameter(program, gl[typeInfo.param]);
+  var variables = {};
+  for (var ii = 0; ii < numVariables; ++ii) {
+    var info = gl[typeInfo.activeFn](program, ii);
+    variables[info.name] = {
+      name: info.name,
+      size: info.size,
+      type: info.type,
+      location: gl[typeInfo.locFn](program, info.name)
+    };
+  }
+  return variables;
+};
+
+/**
+ * Returns a map of attrib names to info about those
+ * attribs
+ *
+ * eg:
+ *    { "attrib1Name":
+ *      {
+ *        name: "attrib1Name",
+ *        size: 1,
+ *        type: gl.FLOAT_MAT2,
+ *        location: 0
+ *      },
+ *      "attrib2Name[0]":
+ *      {
+ *         name: "attrib2Name[0]",
+ *         size: 4,
+ *         type: gl.FLOAT,
+ *         location: 1
+ *      },
+ *    }
+ *
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {WebGLProgram} The program to query for attribs.
+ * @return the map.
+ */
+var getAttribMap = function(gl, program) {
+  return getActiveMap(gl, program, {
+      param: "ACTIVE_ATTRIBS",
+      activeFn: "getActiveAttrib",
+      locFn: "getAttribLocation"
+  });
+};
+
+/**
+ * Returns a map of uniform names to info about those uniform
+ *
+ * eg:
+ *    { "uniform1Name":
+ *      {
+ *        name: "uniform1Name",
+ *        size: 1,
+ *        type: gl.FLOAT_MAT2,
+ *        location: WebGLUniformLocation
+ *      },
+ *      "uniform2Name[0]":
+ *      {
+ *         name: "uniform2Name[0]",
+ *         size: 4,
+ *         type: gl.FLOAT,
+ *         location: WebGLUniformLocation
+ *      },
+ *    }
+ *
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {WebGLProgram} The program to query for uniforms.
+ * @return the map.
+ */
+var getUniformMap = function(gl, program) {
+  return getActiveMap(gl, program, {
+      param: "ACTIVE_UNIFORMS",
+      activeFn: "getActiveUniform",
+      locFn: "getUniformLocation"
+  });
+};
+
 var basePath;
 var getBasePath = function() {
   if (!basePath) {
@@ -1695,6 +1776,8 @@ return {
   getScript: getScript,
   getSupportedExtensionWithKnownPrefixes: getSupportedExtensionWithKnownPrefixes,
   getUrlArguments: getUrlArguments,
+  getAttribMap: getAttribMap,
+  getUniformMap: getUniformMap,
   glEnumToString: glEnumToString,
   glErrorShouldBe: glErrorShouldBe,
   hasAttributeCaseInsensitive: hasAttributeCaseInsensitive,
