@@ -204,7 +204,14 @@
 </xsl:template>
 
 <xsl:template match="ext" mode="depends">
-  <p> Written against the <xsl:apply-templates select="."/> specification. </p>
+  <xsl:choose>
+	<xsl:when test="@require='true'">
+	  <p> Implementations must also support the <xsl:apply-templates select="."/> extension. </p>
+	</xsl:when>
+	<xsl:otherwise>
+	  <p> Written against the <xsl:apply-templates select="."/> specification. </p>
+	</xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="glsl" mode="depends">

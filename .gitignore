@@ -37,3 +37,4 @@ tags
 Thumbs.db
 other/test-runner/node_modules/
 other/test-runner/output/
+/extensions/MARK_README.txt

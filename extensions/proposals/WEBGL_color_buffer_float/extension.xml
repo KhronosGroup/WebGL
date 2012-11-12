@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proposal href="proposals/WEBGL_color_buffer_float">
+  <name>WEBGL_color_buffer_float</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Mark Callow, HI Corporation</contributor>
+
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>NN</number>
+
+  <depends>
+    <api version="1.0"/>
+
+    <ext name="OES_texture_float" require="true"/>
+  </depends>
+
+  <overview>
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_color_buffer_half_float.txt"
+             name="EXT_color_buffer_half_float">
+      <addendum>
+        <p>All references to <code>R16F</code>, <code>RG16F</code>,
+        <code>RGB16F</code> and <code>RGBA16F</code> types are ignored. 32-bit
+        float types are supported instead.</p>
+      </addendum>
+    </mirrors>
+
+    <features>
+      <feature>
+        <p>The 32-bit floating-point types <code>RGB32F</code> and
+        <code>RGBA32F</code> become available as color-renderable formats.
+        Renderbuffers can be created in these formats. These and textures
+        created with <code>type = FLOAT</code>, which will have one of these
+        internal formats, can be attached to framebuffer object color
+        attachments for rendering.</p>
+      </feature>
+
+      <feature>
+        <p><span style="color: red">NOTE:</span> fragment shaders outputs
+        gl_FragColor and gl_FragData[0] will only be clamped and converted
+        when the color buffer is fixed-point and <code>BlendColor()</code> and
+        <code>ClearColor()</code> will no longer clamp their parameter values
+        on input. Clamping will be applied as necessary at draw time according
+        to the type of color buffer in use.</p>
+      </feature>
+
+      <feature>
+        <p>The component types of framebuffer object attachments can be
+        queried.</p>
+      </feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">module webgl {
+  interface EXT_color_buffer_float {
+    const GLenum RGBA32F_EXT = 0x8814;
+    const GLenum RGB32F_EXT = 0x8815;
+    const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
+    const GLenum UNSIGNED_NORMALIZED_EXT = 0x8C17;
+  }; // interface EXT_color_buffer_float
+}; // module webgl</idl>
+
+  <newtok>
+    <function name="renderbufferStorage" type="void"><param name="target"
+    type="GLenum"/><param name="internalformat" type="GLenum"/><param
+    name="width" type="GLsizei"/><param name="height"
+    type="GLsizei"/><code>RGBA32F_EXT</code> and <code>RGB32F_EXT</code> are
+    accepted as the <code>internalformat</code> parameter of
+    <code>renderbufferStorage()</code>.</function>
+  </newtok>
+
+  <history>
+    <revision date="2012/11/08">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</proposal>
