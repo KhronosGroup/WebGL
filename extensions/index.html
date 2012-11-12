@@ -6,148 +6,148 @@
 <link rel="alternate" type="text/xml" href="registry.xml">
 <link rel="alternate" type="application/atom+xml" href="index.atom">
 <link rel="stylesheet" type="text/css" href="../resources/default.css">
-<style type="text/css">
-/* Override some styles in the default style sheet */
-tr.list {
-  border: 0px;
-}
-td.list {
-  border: 0px;
-}
-ul li+li {
-  margin-top: 0px;
-}
+<style type="text/css">
+/* Override some styles in the default style sheet */
+tr.list {
+  border: 0px;
+}
+td.list {
+  border: 0px;
+}
+ul li+li {
+  margin-top: 0px;
+}
     </style>
-<script src="../resources/jquery-1.3.2.min.js" type="text/javascript"></script><script src="../resources/generateTOC.js" type="text/javascript"></script><!--
-Planned extensions from a recent F2F:
-
-OES_texture_float
-OES_texture_half_float
-OES_depth24
-
-# require shader validator changes
-OES_standard_derivatives
-EXT_shader_texture_lod
-
-# desktop only
-OES_texture_float_linear
-OES_texture_half_float_linear
-
-# future core
-OES_vertex_array_object -- same as IMG_vertex_array_object?
-
-OES_rgb8_rgba8
-OES_depth_texture - problematic, ARB/EXT have slightly different semantics; might need to define WEBGL versions
+<script src="../resources/jquery-1.3.2.min.js" type="text/javascript"></script><script src="../resources/generateTOC.js" type="text/javascript"></script><!--
+Planned extensions from a recent F2F:
+
+OES_texture_float
+OES_texture_half_float
+OES_depth24
+
+# require shader validator changes
+OES_standard_derivatives
+EXT_shader_texture_lod
+
+# desktop only
+OES_texture_float_linear
+OES_texture_half_float_linear
+
+# future core
+OES_vertex_array_object -- same as IMG_vertex_array_object?
+
+OES_rgb8_rgba8
+OES_depth_texture - problematic, ARB/EXT have slightly different semantics; might need to define WEBGL versions
 -->
 </head>
 <body>
-<!--begin-logo--><div class="head">
-        <p>
-            <a href="http://khronos.org/">
-                <img alt="Khronos" height="60" src="../resources/KhronosGroup-3D.png" width="220"></a>
-        </p>
+<!--begin-logo--><div class="head">
+        <p>
+            <a href="http://khronos.org/">
+                <img alt="Khronos" height="60" src="../resources/KhronosGroup-3D.png" width="220"></a>
+        </p>
     </div>
-<div class="head">
-        <p>
-            <a href="http://webgl.org/">
-                <img alt="WebGL" height="72" src="../resources/WebGL-Logo.png" width="156"></a>
-        </p>
+<div class="head">
+        <p>
+            <a href="http://webgl.org/">
+                <img alt="WebGL" height="72" src="../resources/WebGL-Logo.png" width="156"></a>
+        </p>
     </div>
 <!--end-logo--><h1>WebGL Extension Registry</h1>
 <h2 class="no-toc">Overview</h2>
-<p>
-        The WebGL extension registry contains specifications for extensions to the
-        core <a href="../specs/latest/">WebGL API</a>. Most of these extensions are incorporated
-        directly from the <a href="http://www.khronos.org/registry/gles/">OpenGL ES</a>
-        or <a href="http://www.opengl.org/registry/">OpenGL</a> extension registries, and refer to
-        those extensions for their behavioral definition. Because WebGL extensions are specified as
-        Web IDL interfaces, each specification also includes the IDL to which each implementation
-        will comply.
+<p>
+        The WebGL extension registry contains specifications for extensions to the
+        core <a href="../specs/latest/">WebGL API</a>. Most of these extensions are incorporated
+        directly from the <a href="http://www.khronos.org/registry/gles/">OpenGL ES</a>
+        or <a href="http://www.opengl.org/registry/">OpenGL</a> extension registries, and refer to
+        those extensions for their behavioral definition. Because WebGL extensions are specified as
+        Web IDL interfaces, each specification also includes the IDL to which each implementation
+        will comply.
     </p>
-<p>
-        An <a href="template/">extension template</a> is available for the submission of
-        new proposed extensions. New extension proposals should be emailed to the
-        <a href="https://www.khronos.org/webgl/public-mailing-list/">public WebGL mailing list</a>.
-        When writing a new extension specification, it may be helpful to check out the entire public
+<p>
+        An <a href="template/">extension template</a> is available for the submission of
+        new proposed extensions. New extension proposals should be emailed to the
+        <a href="https://www.khronos.org/webgl/public-mailing-list/">public WebGL mailing list</a>.
+        When writing a new extension specification, it may be helpful to check out the entire public
         WebGL repository:</p>
-<pre>
-svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
+<pre>
+svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 </pre>
-<p>
-        The extension registry files are located under <code>extensions/</code>.
+<p>
+        The extension registry files are located under <code>extensions/</code>.
     </p>
-<p>
-        Each extension object is fetched from
-        the <a href="../specs/latest/index.html#WEBGLRENDERINGCONTEXT">WebGLRenderingContext</a> by passing
-        the name of the extension to the <code>getExtension</code> method,
-        i.e.: <code>context.getExtension("OES_texture_float")</code>.
+<p>
+        Each extension object is fetched from
+        the <a href="../specs/latest/index.html#WEBGLRENDERINGCONTEXT">WebGLRenderingContext</a> by passing
+        the name of the extension to the <code>getExtension</code> method,
+        i.e.: <code>context.getExtension("OES_texture_float")</code>.
     </p>
 <h2 class="no-toc">Naming conventions</h2>
-<p>
-        WebGL API extensions may derive from many sources, and the naming of each extension reflects
-        its origin and intent.
+<p>
+        WebGL API extensions may derive from many sources, and the naming of each extension reflects
+        its origin and intent.
     </p>
 <ul>
 <li>
-<code>ARB</code>, <code>OES</code> and <code>KHR</code> tags should be used for
-        mirroring functionality from OpenGL ES or OpenGL API extensions approved by the respective
-        architecture review boards. <code>EXT_</code> and GPU vendor tags should be used for
-        mirroring other OpenGL ES or OpenGL API extensions. If only small differences in behavior
-        compared to OpenGL ES or OpenGL are specified for a given extension, the original tag should
-        be maintained.
-
+<code>ARB</code>, <code>OES</code> and <code>KHR</code> tags should be used for
+        mirroring functionality from OpenGL ES or OpenGL API extensions approved by the respective
+        architecture review boards. <code>EXT_</code> and GPU vendor tags should be used for
+        mirroring other OpenGL ES or OpenGL API extensions. If only small differences in behavior
+        compared to OpenGL ES or OpenGL are specified for a given extension, the original tag should
+        be maintained.
+
         </li>
-<li>The <code>WEBGL</code> tag should be used for WebGL-specific extensions which are
-        intended to be compatible with multiple web browsers. It should also be used for extensions
-        which originated with the OpenGL ES or OpenGL APIs, but whose behavior has been
-        significantly altered.
-
+<li>The <code>WEBGL</code> tag should be used for WebGL-specific extensions which are
+        intended to be compatible with multiple web browsers. It should also be used for extensions
+        which originated with the OpenGL ES or OpenGL APIs, but whose behavior has been
+        significantly altered.
+
         </li>
-<li>Browser vendor specific tags should be used for WebGL-specific extensions that are
-        intended to run only on a particular browser. It is recommended to avoid such extensions,
-        and instead specify them with the <code>WEBGL</code> tag.
-
+<li>Browser vendor specific tags should be used for WebGL-specific extensions that are
+        intended to run only on a particular browser. It is recommended to avoid such extensions,
+        and instead specify them with the <code>WEBGL</code> tag.
+
       </li>
 </ul>
 <h2 class="no-toc">Extension Development Process</h2>
-<p>
-        Extensions move through four states during their
-        development: <em>proposed</em>, <em>draft</em>, <em>community approved</em>, and <em>Khronos
-        ratified</em>.
+<p>
+        Extensions move through four states during their
+        development: <em>proposed</em>, <em>draft</em>, <em>community approved</em>, and <em>Khronos
+        ratified</em>.
     </p>
 <ul>
-<li> <em>Proposed</em> extensions are intended for discussion on the public WebGL mailing
-        list, in order to move to <em>draft</em> status; they should not be implemented, even under
-        a vendor prefix. If consensus is reached in the community, the extension can be moved
-        to <em>draft</em> status.
-
+<li> <em>Proposed</em> extensions are intended for discussion on the public WebGL mailing
+        list, in order to move to <em>draft</em> status; they should not be implemented, even under
+        a vendor prefix. If consensus is reached in the community, the extension can be moved
+        to <em>draft</em> status.
+
         </li>
-<li> <em>Draft</em> extensions may be implemented under a vendor prefix for experimentation
-        purposes, in order to gain experience with the extension before finalizing it. Once
-        consensus is reached in the community, the extension can be moved to <em>community approved</em>
-        status.
-
+<li> <em>Draft</em> extensions may be implemented under a vendor prefix for experimentation
+        purposes, in order to gain experience with the extension before finalizing it. Once
+        consensus is reached in the community, the extension can be moved to <em>community approved</em>
+        status.
+
         </li>
-<li> <em>Community approved</em> extensions should be implemented without a vendor
-        prefix. When a draft extension moves to community approved status, any existing
-        implementation should immediately remove support for the vendor-prefixed extension
-        name. Once implemented by a vendor, support should not be removed unless there is a serious
-        issue with the extension, such as a security flaw.
-
+<li> <em>Community approved</em> extensions should be implemented without a vendor
+        prefix. When a draft extension moves to community approved status, any existing
+        implementation should immediately remove support for the vendor-prefixed extension
+        name. Once implemented by a vendor, support should not be removed unless there is a serious
+        issue with the extension, such as a security flaw.
+
         </li>
-<li> <em>Khronos ratified</em> extensions are those community approved extensions which have
-        been voted upon by the Khronos Board of Promoters.
-
+<li> <em>Khronos ratified</em> extensions are those community approved extensions which have
+        been voted upon by the Khronos Board of Promoters.
+
     </li>
 </ul>
 <h2 class="no-toc">Khronos ratified WebGL Extensions</h2>
 <table style="border: 2px; width: 100%;">
 <tr>
 <td class="list">
-<h3>By Number</h3>
+<h3>By Number</h3>
     </td>
 <td class="list">
-<h3>By Name</h3>
+<h3>By Name</h3>
     </td>
 </tr>
 <tr>
@@ -159,16 +159,14 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 <table style="border: 2px; width: 100%;">
 <tr>
 <td class="list">
-<h3>By Number</h3>
+<h3>By Number</h3>
     </td>
 <td class="list">
-<h3>By Name</h3>
+<h3>By Name</h3>
     </td>
 </tr>
 <tr>
 <td class="list"><ol>
-<li value="NN"><a href="EXT_color_buffer_half_float">EXT_color_buffer_half_float</a></li>
-<li value="NN"><a href="WEBGL_color_buffer_float">WEBGL_color_buffer_float</a></li>
 <li value="1"><a href="OES_texture_float/">OES_texture_float</a></li>
 <li value="2"><a href="OES_texture_half_float/">OES_texture_half_float</a></li>
 <li value="4"><a href="OES_standard_derivatives/">OES_standard_derivatives</a></li>
@@ -179,14 +177,12 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 <li value="11"><a href="EXT_texture_filter_anisotropic/">EXT_texture_filter_anisotropic</a></li>
 </ol></td>
 <td class="list"><ol>
-<li value="NN"><a href="EXT_color_buffer_half_float">EXT_color_buffer_half_float</a></li>
 <li value="11"><a href="EXT_texture_filter_anisotropic/">EXT_texture_filter_anisotropic</a></li>
 <li value="10"><a href="OES_element_index_uint/">OES_element_index_uint</a></li>
 <li value="4"><a href="OES_standard_derivatives/">OES_standard_derivatives</a></li>
 <li value="1"><a href="OES_texture_float/">OES_texture_float</a></li>
 <li value="2"><a href="OES_texture_half_float/">OES_texture_half_float</a></li>
 <li value="5"><a href="OES_vertex_array_object/">OES_vertex_array_object</a></li>
-<li value="NN"><a href="WEBGL_color_buffer_float">WEBGL_color_buffer_float</a></li>
 <li value="6"><a href="WEBGL_debug_renderer_info/">WEBGL_debug_renderer_info</a></li>
 <li value="7"><a href="WEBGL_debug_shaders/">WEBGL_debug_shaders</a></li>
 </ol></td>
@@ -196,10 +192,10 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 <table style="border: 2px; width: 100%;">
 <tr>
 <td class="list">
-<h3>By Number</h3>
+<h3>By Number</h3>
     </td>
 <td class="list">
-<h3>By Name</h3>
+<h3>By Name</h3>
     </td>
 </tr>
 <tr>
@@ -222,10 +218,12 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 <h2 class="no-toc">Proposed WebGL Extensions (do not implement!)</h2>
 <table style="border: 2px; width: 100%;">
 <tr><td class="list">
-<h3>By Name</h3>
+<h3>By Name</h3>
     </td></tr>
 <tr><td class="list"><ul>
 <li><a href="proposals/ANGLE_instanced_arrays/">ANGLE_instanced_arrays</a></li>
+<li><a href="proposals/EXT_color_buffer_half_float">EXT_color_buffer_half_float</a></li>
+<li><a href="proposals/WEBGL_color_buffer_float">WEBGL_color_buffer_float</a></li>
 <li><a href="proposals/WEBGL_dynamic_texture/">WEBGL_dynamic_texture</a></li>
 <li><a href="proposals/WEBGL_fbo_color_attachments/">WEBGL_fbo_color_attachments</a></li>
 <li><a href="proposals/WEBGL_multiple_render_targets/">WEBGL_multiple_render_targets</a></li>
@@ -234,12 +232,6 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 </table>
 <h2 class="no-toc">Recent WebGL Extension Revisions</h2>
 <ol>
-<li>
-<a href="EXT_color_buffer_half_float">EXT_color_buffer_half_float</a> : revision 1 on <time>November 08, 2012</time><ul><li>Initial revision.</li></ul>
-</li>
-<li>
-<a href="WEBGL_color_buffer_float">WEBGL_color_buffer_float</a> : revision 1 on <time>November 08, 2012</time><ul><li>Initial revision.</li></ul>
-</li>
 <li>
 <a href="OES_vertex_array_object/">OES_vertex_array_object</a> : revision 7 on <time>October 16, 2012</time><ul><li>Based on feedback on public_webgl, moved from draft to community approved, and removed aliases.</li></ul>
 </li>
@@ -270,6 +262,19 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
         public_webgl mailing list, including supported behavior and additional error behavior.
         Extended rules in Section 6.5 ("Framebuffer Object Attachments") to handle texture
         attachments.
+      </li></ul>
+</li>
+<li>
+<a href="WEBGL_depth_texture/">WEBGL_depth_texture</a> : revision 6 on <time>June 04, 2012</time><ul><li>
+        Renamed to WEBGL prefix, and changed to reference ANGLE_depth_texture, because of
+        limitations preventing the current ANGLE library from loading of image data to depth
+        textures. Incorporated errors from ANGLE_depth_texure extension specification.
+      </li></ul>
+</li>
+<li>
+<a href="WEBGL_depth_texture/">WEBGL_depth_texture</a> : revision 5 on <time>March 01, 2012</time><ul><li>
+        Renamed with OES prefix and removed the addendum due to expected harmonization between OES_depth_texture and ARB_depth_texture
+        (depth cube maps).
       </li></ul>
 </li>
 </ol>
