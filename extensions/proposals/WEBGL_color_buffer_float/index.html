@@ -20,27 +20,18 @@
 <p>Mark Callow, HI Corporation</p>
 <p>Members of the WebGL working group</p>
 <h2 class="no-toc">Version</h2>
-<p> Last modified date: November 08, 2012<br>
-          Revision: 1</p>
+<p> Last modified date: November 13, 2012<br>
+          Revision: 3</p>
 <h2 class="no-toc">Number</h2>
 <p> WebGL extension #NN</p>
 <h2 class="no-toc">Dependencies</h2>
     <p> Written against the <a href="http://www.khronos.org/registry/webgl/specs/1.0/">WebGL API 1.0</a> specification. </p>
 
+    <p> Written against the <a href="http://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_half_float/">EXT_color_buffer_half_float</a> specification. </p>
+
     <p> Implementations must also support the <a href="http://www.khronos.org/registry/webgl/extensions/OES_texture_float/">OES_texture_float</a> extension. </p>
   <h2 class="no-toc">Overview</h2>
-    <p> This extension exposes the
-  <a href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_color_buffer_half_float.txt">EXT_color_buffer_half_float</a> functionality to
-  
-      WebGL. The following WebGL-specific behavioral changes apply:
-    <ul><li>
-        <p>All references to <code>R16F</code>, <code>RG16F</code>,
-        <code>RGB16F</code> and <code>RGBA16F</code> types are ignored. 32-bit
-        float types are supported instead.</p>
-      </li></ul></p>
-<p>
-        Consult the above extension for documentation, issues and new functions and enumerants.
-      </p>
+    <p>Adds support for rendering to 32-bit floating-point color buffers.</p>
 
     <p> When this extension is enabled: </p>
 <ul>
@@ -59,6 +50,13 @@
         <code>ClearColor()</code> will no longer clamp their parameter values
         on input. Clamping will be applied as necessary at draw time according
         to the type of color buffer in use.</p>
+      </li>
+<li>
+        <p>The format and type combination <code>RGBA</code> and
+        <code>FLOAT</code> becomes valid for reading from a floating-point
+        rendering buffer. Note: <code>RGBA</code> and
+        <code>UNSIGNED_BYTE</code> cannot be used for reading from a
+        floating-point rendering buffer.</p>
       </li>
 <li>
         <p>The component types of framebuffer object attachments can be
@@ -82,8 +80,19 @@
     accepted as the <code>internalformat</code> parameter of
     <code>renderbufferStorage()</code>.</dd>
 </dl>
-<h2 class="no-toc">Revision History</h2>
+<h2 class="no-toc">Additions to the WebGL Specification</h2>
+    <p>The new tokens and the behavioral changes for floating-point color
+    buffers specified in <a href="http://www.khronos.org/registry/webgl/extensions/proposals/EXT_color_buffer_half_float.txt">EXT_color_buffer_half_float</a>
+    are incorporated into WebGL except for the <code>RGB16F</code> and
+    <code>RGBA16F</code> types. All references to these are replaced by the
+    32-bit floating-point types specified above.</p>
+  <h2 class="no-toc">Revision History</h2>
 <p>Revision 1, 2012/11/08</p>
 <ul><li>Initial revision.</li></ul>
+<p>Revision 2, 2012/11/12</p>
+<ul><li>Don't mirror EXT_color_buffer_half_float. Mirror has a different
+      meaning from what is done here.</li></ul>
+<p>Revision 3, 2012/11/13</p>
+<ul><li>Add reading-pixels-as-FLOAT feature to the Overview.</li></ul>
 </body>
 </html>

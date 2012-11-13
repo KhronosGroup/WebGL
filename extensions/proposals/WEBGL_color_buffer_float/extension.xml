@@ -16,18 +16,13 @@
   <depends>
     <api version="1.0"/>
 
+    <ext name="EXT_color_buffer_half_float"/>
+
     <ext name="OES_texture_float" require="true"/>
   </depends>
 
   <overview>
-    <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_color_buffer_half_float.txt"
-             name="EXT_color_buffer_half_float">
-      <addendum>
-        <p>All references to <code>R16F</code>, <code>RG16F</code>,
-        <code>RGB16F</code> and <code>RGBA16F</code> types are ignored. 32-bit
-        float types are supported instead.</p>
-      </addendum>
-    </mirrors>
+    <p>Adds support for rendering to 32-bit floating-point color buffers.</p>
 
     <features>
       <feature>
@@ -46,6 +41,14 @@
         <code>ClearColor()</code> will no longer clamp their parameter values
         on input. Clamping will be applied as necessary at draw time according
         to the type of color buffer in use.</p>
+      </feature>
+
+      <feature>
+        <p>The format and type combination <code>RGBA</code> and
+        <code>FLOAT</code> becomes valid for reading from a floating-point
+        rendering buffer. Note: <code>RGBA</code> and
+        <code>UNSIGNED_BYTE</code> cannot be used for reading from a
+        floating-point rendering buffer.</p>
       </feature>
 
       <feature>
@@ -73,9 +76,27 @@
     <code>renderbufferStorage()</code>.</function>
   </newtok>
 
+  <additions>
+    <p>The new tokens and the behavioral changes for floating-point color
+    buffers specified in <a
+    href="http://www.khronos.org/registry/webgl/extensions/proposals/EXT_color_buffer_half_float.txt">EXT_color_buffer_half_float</a>
+    are incorporated into WebGL except for the <code>RGB16F</code> and
+    <code>RGBA16F</code> types. All references to these are replaced by the
+    32-bit floating-point types specified above.</p>
+  </additions>
+
   <history>
     <revision date="2012/11/08">
       <change>Initial revision.</change>
+    </revision>
+
+    <revision date="2012/11/12">
+      <change>Don't mirror EXT_color_buffer_half_float. Mirror has a different
+      meaning from what is done here.</change>
+    </revision>
+
+    <revision date="2012/11/13">
+      <change>Add reading-pixels-as-FLOAT feature to the Overview.</change>
     </revision>
   </history>
 </proposal>
