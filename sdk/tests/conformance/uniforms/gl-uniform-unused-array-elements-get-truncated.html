@@ -63,7 +63,6 @@ var vSrc = wtu.getScript("vshader");
 // This test is to test drivers the have bugs related to optimizing
 // an array of uniforms when only 1 of those uniforms is used.
 debug("");
-debug("Test drivers don't over optimized unused array elements");
 var maxUniformVectors = gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS);
 var tests = [
  { desc: "using 5th element",
@@ -95,6 +94,8 @@ function testUniformIssues(testIndex) {
 
   var program = wtu.loadProgram(gl, vSrc, fSrc);
   gl.useProgram(program);
+  uniforms = wtu.getUniformMap(gl, program);
+  shouldBe('uniforms["' + test.arrayName + '[0]"].size', (test.usedUniformVector + 1).toString());
 
   requiredUniformLocationsExist = true;
   for (var ii = 0; ii <= test.usedUniformVector + 1; ++ii) {
