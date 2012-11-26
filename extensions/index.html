@@ -205,8 +205,12 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 <li value="9"><a href="WEBGL_depth_texture/">WEBGL_depth_texture</a></li>
 <li value="12"><a href="WEBGL_compressed_texture_atc/">WEBGL_compressed_texture_atc</a></li>
 <li value="13"><a href="WEBGL_compressed_texture_pvrtc/">WEBGL_compressed_texture_pvrtc</a></li>
+<li value="14"><a href="EXT_color_buffer_half_float">EXT_color_buffer_half_float</a></li>
+<li value="15"><a href="WEBGL_color_buffer_float">WEBGL_color_buffer_float</a></li>
 </ol></td>
 <td class="list"><ol>
+<li value="14"><a href="EXT_color_buffer_half_float">EXT_color_buffer_half_float</a></li>
+<li value="15"><a href="WEBGL_color_buffer_float">WEBGL_color_buffer_float</a></li>
 <li value="12"><a href="WEBGL_compressed_texture_atc/">WEBGL_compressed_texture_atc</a></li>
 <li value="13"><a href="WEBGL_compressed_texture_pvrtc/">WEBGL_compressed_texture_pvrtc</a></li>
 <li value="8"><a href="WEBGL_compressed_texture_s3tc/">WEBGL_compressed_texture_s3tc</a></li>
@@ -222,8 +226,6 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
     </td></tr>
 <tr><td class="list"><ul>
 <li><a href="proposals/ANGLE_instanced_arrays/">ANGLE_instanced_arrays</a></li>
-<li><a href="proposals/EXT_color_buffer_half_float">EXT_color_buffer_half_float</a></li>
-<li><a href="proposals/WEBGL_color_buffer_float">WEBGL_color_buffer_float</a></li>
 <li><a href="proposals/WEBGL_dynamic_texture/">WEBGL_dynamic_texture</a></li>
 <li><a href="proposals/WEBGL_fbo_color_attachments/">WEBGL_fbo_color_attachments</a></li>
 <li><a href="proposals/WEBGL_multiple_render_targets/">WEBGL_multiple_render_targets</a></li>
@@ -233,6 +235,29 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 <h2 class="no-toc">Recent WebGL Extension Revisions</h2>
 <ol>
 <li>
+<a href="WEBGL_color_buffer_float">WEBGL_color_buffer_float</a> : revision 4 on <time>November 26, 2012</time><ul><li>Move to draft.</li></ul>
+</li>
+<li>
+<a href="EXT_color_buffer_half_float">EXT_color_buffer_half_float</a> : revision 3 on <time>November 26, 2012</time><ul><li>Move to draft.</li></ul>
+</li>
+<li>
+<a href="WEBGL_color_buffer_float">WEBGL_color_buffer_float</a> : revision 3 on <time>November 13, 2012</time><ul><li>Add reading-pixels-as-FLOAT feature to the Overview.</li></ul>
+</li>
+<li>
+<a href="EXT_color_buffer_half_float">EXT_color_buffer_half_float</a> : revision 2 on <time>November 13, 2012</time><ul><li>"Add reading-pixels-as-FLOAT feature to the Overview and related
+      changes to WebGL section 5.13.12.</li></ul>
+</li>
+<li>
+<a href="WEBGL_color_buffer_float">WEBGL_color_buffer_float</a> : revision 2 on <time>November 12, 2012</time><ul><li>Don't mirror EXT_color_buffer_half_float. Mirror has a different
+      meaning from what is done here.</li></ul>
+</li>
+<li>
+<a href="EXT_color_buffer_half_float">EXT_color_buffer_half_float</a> : revision 1 on <time>November 08, 2012</time><ul><li>Initial revision.</li></ul>
+</li>
+<li>
+<a href="WEBGL_color_buffer_float">WEBGL_color_buffer_float</a> : revision 1 on <time>November 08, 2012</time><ul><li>Initial revision.</li></ul>
+</li>
+<li>
 <a href="OES_vertex_array_object/">OES_vertex_array_object</a> : revision 7 on <time>October 16, 2012</time><ul><li>Based on feedback on public_webgl, moved from draft to community approved, and removed aliases.</li></ul>
 </li>
 <li>
@@ -240,42 +265,6 @@ svn checkout https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl
 </li>
 <li>
 <a href="OES_vertex_array_object/">OES_vertex_array_object</a> : revision 6 on <time>September 24, 2012</time><ul><li>Added resolution to deleted buffer issue</li></ul>
-</li>
-<li>
-<a href="WEBGL_compressed_texture_atc/">WEBGL_compressed_texture_atc</a> : revision 1 on <time>September 11, 2012</time><ul><li>Initial revision.</li></ul>
-</li>
-<li>
-<a href="WEBGL_compressed_texture_pvrtc/">WEBGL_compressed_texture_pvrtc</a> : revision 1 on <time>August 07, 2012</time><ul><li>Initial revision.</li></ul>
-</li>
-<li>
-<a href="EXT_texture_filter_anisotropic/">EXT_texture_filter_anisotropic</a> : revision 3 on <time>July 19, 2012</time><ul><li>Moved from draft to community approved status</li></ul>
-</li>
-<li>
-<a href="WEBGL_depth_texture/">WEBGL_depth_texture</a> : revision 8 on <time>June 27, 2012</time><ul><li>
-        Updated references to texSubImage2D. Added
-        DEPTH_STENCIL_ATTACHMENT to framebufferTexture2D.
-      </li></ul>
-</li>
-<li>
-<a href="WEBGL_depth_texture/">WEBGL_depth_texture</a> : revision 7 on <time>June 20, 2012</time><ul><li>
-        Incorporated depth/stencil support and UNSIGNED_INT_24_8_WEBGL enum after discussion on
-        public_webgl mailing list, including supported behavior and additional error behavior.
-        Extended rules in Section 6.5 ("Framebuffer Object Attachments") to handle texture
-        attachments.
-      </li></ul>
-</li>
-<li>
-<a href="WEBGL_depth_texture/">WEBGL_depth_texture</a> : revision 6 on <time>June 04, 2012</time><ul><li>
-        Renamed to WEBGL prefix, and changed to reference ANGLE_depth_texture, because of
-        limitations preventing the current ANGLE library from loading of image data to depth
-        textures. Incorporated errors from ANGLE_depth_texure extension specification.
-      </li></ul>
-</li>
-<li>
-<a href="WEBGL_depth_texture/">WEBGL_depth_texture</a> : revision 5 on <time>March 01, 2012</time><ul><li>
-        Renamed with OES prefix and removed the addendum due to expected harmonization between OES_depth_texture and ARB_depth_texture
-        (depth cube maps).
-      </li></ul>
 </li>
 </ol>
 <img src="../resources/feed-icon-14x14.png" width="14" height="14"> <a href="index.atom">Recent Revisions</a>
