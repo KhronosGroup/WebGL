@@ -314,6 +314,11 @@
               function.
             </li>
           </xsl:for-each>
+          <xsl:for-each select="output">
+            <li>
+                <code><xsl:call-template name="shader_output"/></code> is a built-in output.
+            </li>
+          </xsl:for-each>
         </ul>
       </li>
       <li>
@@ -380,6 +385,11 @@
     <xsl:if test="not(position()=last())">, </xsl:if>
   </xsl:for-each>
   <xsl:text>)</xsl:text>
+</xsl:template>
+
+<xsl:template name="shader_output">
+  <xsl:value-of select="@type"/><xsl:text> </xsl:text>
+  <xsl:value-of select="@name"/>
 </xsl:template>
 
 <xsl:template match="revision">
