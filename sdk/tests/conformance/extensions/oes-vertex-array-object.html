@@ -210,13 +210,14 @@ function runAttributeTests() {
         var vao = state.vao = ext.createVertexArrayOES();
         ext.bindVertexArrayOES(vao);
         
-        if (n % 2 == 0) {
+        var enableArray = (n % 2 == 0);
+        if (enableArray) {
             gl.enableVertexAttribArray(n);
         } else {
             gl.disableVertexAttribArray(n);
         }
         
-        if (n % 2 == 0) {
+        if (enableArray) {
             var buffer = state.buffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
             gl.bufferData(gl.ARRAY_BUFFER, 1024, gl.STATIC_DRAW);
@@ -224,7 +225,7 @@ function runAttributeTests() {
             gl.vertexAttribPointer(n, 1 + n % 4, gl.FLOAT, true, n * 4, n * 4);
         }
         
-        if (n % 2 == 0) {
+        if (enableArray) {
             var elbuffer = state.elbuffer = gl.createBuffer();
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elbuffer);
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, 1024, gl.STATIC_DRAW);
@@ -239,16 +240,15 @@ function runAttributeTests() {
         
         ext.bindVertexArrayOES(state.vao);
         
+        var shouldBeEnabled = (n % 2 == 0);
         var isEnabled = gl.getVertexAttrib(n, gl.VERTEX_ATTRIB_ARRAY_ENABLED);
-        if ((n % 2 == 1) || isEnabled) {
-            // Valid
-        } else {
+        if (shouldBeEnabled != isEnabled) {
             testFailed("VERTEX_ATTRIB_ARRAY_ENABLED not preserved");
             anyMismatch = true;
         }
         
         var buffer = gl.getVertexAttrib(n, gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING);
-        if (n % 2 == 0) {
+        if (shouldBeEnabled) {
             if (buffer == state.buffer) {
                 // Matched
                 if ((gl.getVertexAttrib(n, gl.VERTEX_ATTRIB_ARRAY_SIZE) == 1 + n % 4) &&
@@ -274,7 +274,7 @@ function runAttributeTests() {
         }
         
         var elbuffer = gl.getParameter(gl.ELEMENT_ARRAY_BUFFER_BINDING);
-        if (n % 2 == 0) {
+        if (shouldBeEnabled) {
             if (elbuffer == state.elbuffer) {
                 // Matched
             } else {
@@ -438,6 +438,26 @@ function runDrawTests() {
     ext.bindVertexArrayOES(null);
     ext.deleteVertexArrayOES(vao0);
     ext.deleteVertexArrayOES(vao1);
+
+    // Draw with values.
+    var positionLoc = 0;
+    var colorLoc = 1;
+    var gridRes = 1;
+    wtu.setupQuad(gl, gridRes, positionLoc);
+    // Set the vertex color to red.
+    gl.vertexAttrib4f(colorLoc, 1, 0, 0, 1);
+
+    var vao0 = ext.createVertexArrayOES();
+    ext.bindVertexArrayOES(vao0);
+    var program = wtu.setupSimpleVertexColorProgram(gl, positionLoc, colorLoc);
+    wtu.setupQuad(gl, gridRes, positionLoc);
+    // Set the vertex color to green.
+    gl.vertexAttrib4f(colorLoc, 0, 1, 0, 1);
+    wtu.drawIndexedQuad(gl, gridRes);
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green")
+    ext.deleteVertexArrayOES(vao0);
+    wtu.drawIndexedQuad(gl, gridRes);
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green")
 }
 
 function runDeleteTests() {
