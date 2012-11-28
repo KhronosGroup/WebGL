@@ -233,7 +233,7 @@
     latching an image and displaying it. Setting the latency enables the
     HTMLVideoElement to make necessary adjustments to keep audio in
     sync.</dd>
-<dt class="idl-code">int dynamicTextureSetConsumerLatencyUsec()</dt>
+<dt class="idl-code">int dynamicTextureGetConsumerLatencyUsec()</dt>
 <dd>Returns
     the currently set latency.</dd>
 </dl>
@@ -380,11 +380,14 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
       source. The rules for selecting the image to be latched mirror those for
       selecting the image drawn by the <code>drawImage</code> method of <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#canvasrenderingcontext2d">CanvasRenderingContext2D</a>.</p>
 
-      <p>For HTMLVideoElements, it will latch the frame at the <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-video-element.html#current-playback-position">current
-      playback position</a>, as defined in the <a href="http://www.whatwg.org/specs/web-apps/current-work/">HTML Living
-      Standard</a>, unless the element's readyState attribute is either
-      HAVE_NOTHING or HAVE_METADATA, in which case the command returns without
-      latching anything and the texture remains <em>incomplete</em>.</p>
+      <p>For HTMLVideoElements, it latches the frame video that corresponds to
+      the <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-video-element.html#current-playback-position">current
+      playback position</a> of the audio channel, as defined in the <a href="http://www.whatwg.org/specs/web-apps/current-work/">HTML Living
+      Standard</a>, <em>latency</em> microseconds from the call, where
+      <em>latency</em> is described in <a href="#setlatency">dynamicTextureSetConsumerLatencyUsec</a>, unless the
+      element's readyState attribute is either HAVE_NOTHING or HAVE_METADATA,
+      in which case the command returns without latching anything and the
+      texture remains <em>incomplete</em>.</p>
 
       <p>For animated HTMLImageElements it will latch the first frame of the
       animation.</p>
@@ -402,7 +405,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
       image frame since the last call then
       <code>dynamicTextureAcquireImage</code> will "latch" the newly inserted
       image frame. If the producer has inserted more than one new image frame
-      since the last call then all but the most recently inserted image frames
+      since the last call then all but the most recently inserted image frame
       are discarded and <code>dynamicTextureAcquireImage</code> will "latch"
       the most recently inserted image frame. For HTMLVideoElements, the
       application can use the value of the <code>currentTime</code> attribute
@@ -593,7 +596,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
   // Load video from the passed HTMLVideoElement id, bind it to a new WebGLTexture object
   // and return the WebGLTexture.
   //
-  // Is their a constructor for an HTMLVideoElement so you can do like "new Image()?"
+  // Is there a constructor for an HTMLVideoElement so you can do like "new Image()?"
   //
   function createVideoTexture(ctx, videoId)
   {
