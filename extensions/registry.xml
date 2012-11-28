@@ -129,4 +129,20 @@
       <change>Initial revision.</change>
     </revision></history></draft><draft href="WEBGL_compressed_texture_atc/"><name>WEBGL_compressed_texture_atc</name><number>12</number><history><revision date="2012/09/11" number="1">
       <change>Initial revision.</change>
-    </revision></history></draft><proposal href="proposals/WEBGL_multiple_render_targets/"><name>WEBGL_multiple_render_targets</name></proposal><proposal href="proposals/EXT_color_buffer_half_float"><name>EXT_color_buffer_half_float</name></proposal><proposal href="proposals/WEBGL_color_buffer_float"><name>WEBGL_color_buffer_float</name></proposal></registry>
+    </revision></history></draft><proposal href="proposals/WEBGL_multiple_render_targets/"><name>WEBGL_multiple_render_targets</name></proposal><draft href="EXT_color_buffer_half_float"><name>EXT_color_buffer_half_float</name><number>14</number><history><revision date="2012/11/08" number="1">
+      <change>Initial revision.</change>
+    </revision><revision date="2012/11/13" number="2">
+      <change>"Add reading-pixels-as-FLOAT feature to the Overview and related
+      changes to WebGL section 5.13.12.</change>
+    </revision><revision date="2012/11/26" number="3">
+      <change>Move to draft.</change>
+    </revision></history></draft><draft href="WEBGL_color_buffer_float"><name>WEBGL_color_buffer_float</name><number>15</number><history><revision date="2012/11/08" number="1">
+      <change>Initial revision.</change>
+    </revision><revision date="2012/11/12" number="2">
+      <change>Don't mirror EXT_color_buffer_half_float. Mirror has a different
+      meaning from what is done here.</change>
+    </revision><revision date="2012/11/13" number="3">
+      <change>Add reading-pixels-as-FLOAT feature to the Overview.</change>
+    </revision><revision date="2012/11/26" number="4">
+      <change>Move to draft.</change>
+    </revision></history></draft><proposal href="proposals/EXT_frag_depth"><name>EXT_frag_depth</name></proposal></registry>

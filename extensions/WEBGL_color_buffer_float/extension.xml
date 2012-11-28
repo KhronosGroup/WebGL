@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/WEBGL_color_buffer_float">
+<draft href="WEBGL_color_buffer_float">
   <name>WEBGL_color_buffer_float</name>
 
-  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list">WebGL
+  <contact><a href="https://www.khronos.org/webgl/public-mailing-list">WebGL
   working group</a> (public_webgl 'at' khronos.org) </contact>
 
   <contributors>
@@ -11,7 +11,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>15</number>
 
   <depends>
     <api version="1.0"/>
@@ -79,7 +79,7 @@
   <additions>
     <p>The new tokens and the behavioral changes for floating-point color
     buffers specified in <a
-    href="http://www.khronos.org/registry/webgl/extensions/proposals/EXT_color_buffer_half_float.txt">EXT_color_buffer_half_float</a>
+    href="http://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_half_float.txt">EXT_color_buffer_half_float</a>
     are incorporated into WebGL except for the <code>RGB16F</code> and
     <code>RGBA16F</code> types. All references to these are replaced by the
     32-bit floating-point types specified above.</p>
@@ -98,5 +98,9 @@
     <revision date="2012/11/13">
       <change>Add reading-pixels-as-FLOAT feature to the Overview.</change>
     </revision>
+
+    <revision date="2012/11/26">
+      <change>Move to draft.</change>
+    </revision>
   </history>
-</proposal>
+</draft>
