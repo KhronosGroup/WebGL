@@ -831,13 +831,13 @@ GLConstants = [
 
 function reportTestResultsToHarness(success, msg) {
   if (window.parent.webglTestHarness) {
-    window.parent.webglTestHarness.reportResults(success, msg);
+    window.parent.webglTestHarness.reportResults(window.location.pathname, success, msg);
   }
 }
 
 function notifyFinishedToHarness() {
   if (window.parent.webglTestHarness) {
-    window.parent.webglTestHarness.notifyFinished();
+    window.parent.webglTestHarness.notifyFinished(window.location.pathname);
   }
 }
 
