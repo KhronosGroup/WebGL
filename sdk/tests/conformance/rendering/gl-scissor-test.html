@@ -57,21 +57,6 @@ function test(canvas, attribs) {
   } else {
     testPassed("context exists");
 
-    debug("");
-    debug("test with clear");
-    test(function() {
-      gl.clearColor(0, 1, 0, 1);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-    });
-
-    wtu.setupColorQuad(gl);
-
-    debug("");
-    debug("test with draw");
-    test(function() {
-      wtu.drawFloatColorQuad(gl, [0, 1, 0, 1]);
-    });
-
     function test(func) {
       gl.disable(gl.SCISSOR_TEST);
       gl.clearColor(0,0,0,0);
@@ -91,6 +76,22 @@ function test(canvas, attribs) {
         wtu.checkCanvasRect(gl, ii + 1, ii, size - ii - 1, 1, [0, 0, 0, 0], "should be black");
       }
     }
+
+    debug("");
+    debug("test with clear");
+    test(function() {
+      gl.clearColor(0, 1, 0, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+    });
+
+    wtu.setupColorQuad(gl);
+
+    debug("");
+    debug("test with draw");
+    test(function() {
+      wtu.drawFloatColorQuad(gl, [0, 1, 0, 1]);
+    });
+
     glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
   }
 }
