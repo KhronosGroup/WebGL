@@ -75,7 +75,7 @@
 // associate with the test. If your testing framework supports checking for
 // timeout you can call it with success equal to undefined in that case.
 //
-// To run the tests, call testHarness.runTests();
+// To run the tests, call testHarness.runTests(options);
 //
 // For each test run, before the page is loaded the reportFunction will be
 // called with WebGLTestHarnessModule.TestHarness.reportType.START_PAGE and msg
@@ -399,13 +399,26 @@ var getFileList = function(url, callback, options) {
   });
 };
 
+var FilterURL = (function() {
+  return function(url) {
+    if (url.substring(0, 1) == "/") {
+      return url.substring(1);
+    }
+    return url;
+  };
+}());
+
 var TestFile = function(url) {
   this.url = url;
 };
 
+var Test = function(file) {
+  this.file = file;
+};
+
 var TestHarness = function(iframe, filelistUrl, reportFunc, options) {
   this.window = window;
-  this.iframe = iframe;
+  this.iframes = iframe.length ? iframe : [iframe];
   this.reportFunc = reportFunc;
   this.timeoutDelay = 20000;
   this.files = [];
@@ -432,6 +445,7 @@ TestHarness.prototype.addFiles_ = function(success, files) {
   if (!success) {
     this.reportFunc(
         TestHarness.reportType.FINISHED_ALL_TESTS,
+        '',
         'Unable to load tests. Are you running locally?\n' +
         'You need to run from a server or configure your\n' +
         'browser to allow access to local files (not recommended).\n\n' +
@@ -448,70 +462,109 @@ TestHarness.prototype.addFiles_ = function(success, files) {
   for (var ii = 0; ii < files.length; ++ii) {
     log("" + ii + ": " + files[ii]);
     this.files.push(new TestFile(files[ii]));
-    this.reportFunc(TestHarness.reportType.ADD_PAGE, files[ii], undefined);
+    this.reportFunc(TestHarness.reportType.ADD_PAGE, '', files[ii], undefined);
   }
-  this.reportFunc(TestHarness.reportType.READY, undefined, undefined);
+  this.reportFunc(TestHarness.reportType.READY, '', undefined, undefined);
 }
 
-TestHarness.prototype.runTests = function(opt_start, opt_count) {
-  var count = opt_count || this.files.length;
-  this.nextFileIndex = opt_start || 0;
-  this.lastFileIndex = this.nextFileIndex + count;
-  this.startNextFile();
+TestHarness.prototype.runTests = function(opt_options) {
+  var options = opt_options || { };
+  options.start = options.start || 0;
+  options.count = options.count || this.files.length;
+
+  this.idleIFrames = this.iframes.slice(0);
+  this.runningTests = {};
+  var testsToRun = [];
+  for (var ii = 0; ii < options.count; ++ii) {
+    testsToRun.push(ii + options.start);
+  }
+  this.numTestsRemaining = options.count;
+  this.testsToRun = testsToRun;
+  this.startNextTest();
 };
 
-TestHarness.prototype.setTimeout = function() {
+TestHarness.prototype.setTimeout = function(test) {
   var that = this;
-  this.timeoutId = this.window.setTimeout(function() {
-      that.timeout();
+  test.timeoutId = this.window.setTimeout(function() {
+      that.timeout(test);
     }, this.timeoutDelay);
 };
 
-TestHarness.prototype.clearTimeout = function() {
-  this.window.clearTimeout(this.timeoutId);
+TestHarness.prototype.clearTimeout = function(test) {
+  this.window.clearTimeout(test.timeoutId);
 };
 
-TestHarness.prototype.startNextFile = function() {
-  if (this.nextFileIndex >= this.lastFileIndex) {
+TestHarness.prototype.startNextTest = function() {
+  if (this.numTestsRemaining == 0) {
     log("done");
     this.reportFunc(TestHarness.reportType.FINISHED_ALL_TESTS,
-                    '', true);
+                    '', '', true);
   } else {
-    this.currentFile = this.files[this.nextFileIndex++];
-    log("loading: " + this.currentFile.url);
-    if (this.reportFunc(TestHarness.reportType.START_PAGE,
-                        this.currentFile.url, undefined)) {
-      this.iframe.src = this.currentFile.url;
-      this.setTimeout();
-    } else {
-      this.reportResults(false, "skipped");
-      this.notifyFinished();
+    while (this.testsToRun.length > 0 && this.idleIFrames.length > 0) {
+      var testId = this.testsToRun.shift();
+      var iframe = this.idleIFrames.shift();
+      this.startTest(iframe, this.files[testId]);
     }
   }
 };
 
-TestHarness.prototype.reportResults = function (success, msg) {
-  this.clearTimeout();
+TestHarness.prototype.startTest = function(iframe, testFile) {
+  var test = {
+    iframe: iframe,
+    testFile: testFile
+  };
+  var url = testFile.url;
+  this.runningTests[url] = test;
+  log("loading: " + url);
+  if (this.reportFunc(TestHarness.reportType.START_PAGE, url, url, undefined)) {
+    iframe.src = url;
+    this.setTimeout(test);
+  } else {
+    this.reportResults(url, false, "skipped");
+    this.notifyFinished(url);
+  }
+};
+
+TestHarness.prototype.getTest = function(url) {
+  var test = this.runningTests[FilterURL(url)];
+  if (!test) {
+    throw("unknown test:" + url);
+  }
+  return test;
+};
+
+TestHarness.prototype.reportResults = function(url, success, msg) {
+  url = FilterURL(url);
+  var test = this.getTest(url);
+  this.clearTimeout(test);
   log(success ? "PASS" : "FAIL", msg);
-  this.reportFunc(TestHarness.reportType.TEST_RESULT, msg, success);
+  this.reportFunc(TestHarness.reportType.TEST_RESULT, url, msg, success);
   // For each result we get, reset the timeout
-  this.setTimeout();
+  this.setTimeout(test);
 };
 
-TestHarness.prototype.notifyFinished = function () {
-  this.clearTimeout();
-  var url = this.currentFile ? this.currentFile.url : 'unknown';
+TestHarness.prototype.dequeTest = function(test) {
+  this.clearTimeout(test);
+  this.idleIFrames.push(test.iframe);
+  delete this.runningTests[test.testFile.url];
+  --this.numTestsRemaining;
+}
+
+TestHarness.prototype.notifyFinished = function(url) {
+  url = FilterURL(url);
+  var test = this.getTest(url);
   log(url + ": finished");
-  this.reportFunc(TestHarness.reportType.FINISH_PAGE, url, true);
-  this.startNextFile();
+  this.dequeTest(test);
+  this.reportFunc(TestHarness.reportType.FINISH_PAGE, url, url, true);
+  this.startNextTest();
 };
 
-TestHarness.prototype.timeout = function() {
-  this.clearTimeout();
-  var url = this.currentFile ? this.currentFile.url : 'unknown';
+TestHarness.prototype.timeout = function(test) {
+  this.dequeTest(test);
+  var url = test.testFile.url;
   log(url + ": timeout");
-  this.reportFunc(TestHarness.reportType.FINISH_PAGE, url, undefined);
-  this.startNextFile();
+  this.reportFunc(TestHarness.reportType.FINISH_PAGE, url, url, undefined);
+  this.startNextTest();
 };
 
 TestHarness.prototype.setTimeoutDelay = function(x) {
