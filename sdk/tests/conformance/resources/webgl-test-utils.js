@@ -139,7 +139,7 @@ var noTexCoordTextureVertexShader = [
   '}'].join('\n');
 
 /**
- * A vertex shader for a single texture.
+ * A vertex shader for a uniform color.
  * @type {string}
  */
 var simpleColorVertexShader = [
@@ -149,7 +149,7 @@ var simpleColorVertexShader = [
   '}'].join('\n');
 
 /**
- * A fragment shader for a color.
+ * A fragment shader for a uniform color.
  * @type {string}
  */
 var simpleColorFragmentShader = [
@@ -157,6 +157,30 @@ var simpleColorFragmentShader = [
   'uniform vec4 u_color;',
   'void main() {',
   '    gl_FragData[0] = u_color;',
+  '}'].join('\n');
+
+/**
+ * A vertex shader for vertex colors.
+ * @type {string}
+ */
+var simpleVertexColorVertexShader = [
+  'attribute vec4 vPosition;',
+  'attribute vec4 a_color;',
+  'varying vec4 v_color;',
+  'void main() {',
+  '    gl_Position = vPosition;',
+  '    v_color = a_color;',
+  '}'].join('\n');
+
+/**
+ * A fragment shader for vertex colors.
+ * @type {string}
+ */
+var simpleVertexColorFragmentShader = [
+  'precision mediump float;',
+  'varying vec4 v_color;',
+  'void main() {',
+  '    gl_FragData[0] = v_color;',
   '}'].join('\n');
 
 /**
@@ -185,6 +209,25 @@ var setupSimpleTextureFragmentShader = function(gl) {
  */
 var setupNoTexCoordTextureVertexShader = function(gl) {
     return loadShader(gl, noTexCoordTextureVertexShader, gl.VERTEX_SHADER);
+};
+
+/**
+ * Creates a simple vertex color vertex shader.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @return {!WebGLShader}
+ */
+var setupSimpleVertexColorVertexShader = function(gl) {
+    return loadShader(gl, simpleVertexColorVertexShader, gl.VERTEX_SHADER);
+};
+
+/**
+ * Creates a simple vertex color fragment shader.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @return {!WebGLShader}
+ */
+var setupSimpleVertexColorFragmentShader = function(gl) {
+    return loadShader(
+        gl, simpleVertexColorFragmentShader, gl.FRAGMENT_SHADER);
 };
 
 /**
@@ -313,6 +356,36 @@ var setupSimpleTextureProgram = function(
       [vs, fs],
       ['vPosition', 'texCoord0'],
       [opt_positionLocation, opt_texcoordLocation]);
+  if (!program) {
+    gl.deleteShader(fs);
+    gl.deleteShader(vs);
+  }
+  gl.useProgram(program);
+  return program;
+};
+
+/**
+ * Creates a simple vertex color program.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {number} opt_positionLocation The attrib location for position.
+ * @param {number} opt_vertexColorLocation The attrib location
+ *        for vertex colors.
+ * @return {WebGLProgram}
+ */
+var setupSimpleVertexColorProgram = function(
+    gl, opt_positionLocation, opt_vertexColorLocation) {
+  opt_positionLocation = opt_positionLocation || 0;
+  opt_vertexColorLocation = opt_vertexColorLocation || 1;
+  var vs = setupSimpleVertexColorVertexShader(gl);
+  var fs = setupSimpleVertexColorFragmentShader(gl);
+  if (!vs || !fs) {
+    return null;
+  }
+  var program = setupProgram(
+      gl,
+      [vs, fs],
+      ['vPosition', 'a_color'],
+      [opt_positionLocation, opt_vertexColorLocation]);
   if (!program) {
     gl.deleteShader(fs);
     gl.deleteShader(vs);
@@ -1808,6 +1881,9 @@ return {
   setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
   setupSimpleTextureProgram: setupSimpleTextureProgram,
   setupSimpleTextureVertexShader: setupSimpleTextureVertexShader,
+  setupSimpleVertexColorFragmentShader: setupSimpleVertexColorFragmentShader,
+  setupSimpleVertexColorProgram: setupSimpleVertexColorProgram,
+  setupSimpleVertexColorVertexShader: setupSimpleVertexColorVertexShader,
   setupNoTexCoordTextureProgram: setupNoTexCoordTextureProgram,
   setupNoTexCoordTextureVertexShader: setupNoTexCoordTextureVertexShader,
   setupTexturedQuad: setupTexturedQuad,

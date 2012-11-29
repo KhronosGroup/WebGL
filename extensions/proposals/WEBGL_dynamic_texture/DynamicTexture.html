@@ -1,4 +1,53 @@
 <!DOCTYPE html>
+<!-- Questions to answer
+
+Q: Do videos with variable framerate have a target display rate?
+A: No such thing is exposed in the HTMLVideoElement or MediaElement interfaces.
+   The containers usually store the framerate as metadata (in WebM FrameRate
+   is listed as "information only."). However browsers may not use that.
+   Firefox 4, WebKit and Opera all reportedly use the presentation time
+   encoded with the frame.
+   See this thread:
+   http://lists.whatwg.org/pipermail/whatwg-whatwg.org/2011-January/029801.html
+   The thread starts at
+   http://lists.whatwg.org/pipermail/whatwg-whatwg.org/2011-January/029724.html
+   There is no resolution to the request for a way to determine fps.
+
+   WebM container spec: http://www.webmproject.org/code/specs/container/ 
+
+Q: What do applications need to be able to determine about the source?
+A: Two things
+   - the minimum interframe interval, which is probably the same as the
+     framerate given in the container. This is to determine a rendering
+	 budget. Need to ensure methodology works with fixed- and variable-
+	 frame-rate videos.
+   - whether a frame has been missed. In EGLStream this can be determined
+     by comparing the PRODUCER_FRAME_KHR and CONSUMER_FRAME_KHR attributes.
+
+Q: Should we make connection setup a convenience function with an onload
+   handler callback?
+A: TBD
+
+Q: Use an exponential moving average for calculating latency?
+A: TBD.
+
+Q: What should be the interface for connecting a stream to a producer?
+A: KHR_stream_producer_aldatalocator has the app pass an XADataSink
+   structure with, essentially, a pointer to the EGLStream, as the
+   ImageVideoSnk argument when calling CreateMediaPlayer.
+
+   Similarly the stream is connected to an EGLSurface producer by
+   eglCreateStreamProducerSurfaceKHR(dpy, config, EGLStreamKHR stream, &attrib_list[0]);
+
+   This suggests the stream needs to be passed when creating the video element.
+   But video elements do not have a constructor. 
+
+Q: Is the maximum latency set when the producer is bound?
+A: Yes.
+
+Q: Do we specify repeat vs pause for the case where latency drops? If so, how?
+A: TBD.
+-->
 <!--
 /*
  * WEBGL_dynamic_texture sample
@@ -127,9 +176,22 @@ canvas {
   function clearLoadingFiles() {
     for (var ii = 0; ii < g.loadingFiles.length; ++ii) {
       g.loadingFiles[ii].onload = undefined;
+	  g.loadingFiles[ii].wssDisconnectStream();
     }
     g.loadingFiles = [];
   }
+
+  // Create a hidden video element and append to the document
+  // XXX Is it necessary to append the element?
+  function createVideoElement() {
+	var video = document.createElement('video');
+	video.autoplay = true;
+	video.controls = false;
+	video.hidden = true;
+	document.body.appendChild(video);
+	return video;
+  }
+
 
   //
   // connectVideo
@@ -154,22 +216,37 @@ canvas {
   //     wdtStreamDisconnected
   //   };
   //   // Time taken from acquireImage to posting drawing buffer; default 0?
-  //   readonly int consumerLatency;
+  //   readonly int consumerLatency; // microseconds
   //   // Frame # (aka Media Stream Count) of most recently inserted frame
   //   // Value is 1 at first frame.
   //   readonly int producerFrame;
   //   // MSC of most recently acquired frame. 
   //   readonly int consumerFrame;
   //   // timeout for acquireImage; default 0
-  //   int acquireTimeout;
+  //   int acquireTimeout; // microseconds
   //
+  //   // Sets consumerLatency. Clamp to some maximum set by the
+  //   // producer?
   //   void setConsumerLatency(int);
   // };
   //
  
-  //
-  function connectVideo(ctx, video)
-  {
+  function connectStreamToProducerAndSource(stream, video, url) {
+	video.onload = function() {
+	  g.loadingFiles.splice(g.loadingFiles.indexOf(video), 1);
+    };
+	video.onerror = function() {
+	  g.loadingFiles.splice(g.loadingFiles.indexOf(video), 1);
+	  // Notify user? Abort application?
+	  // video.error gives the reason.
+	};
+    g.loadingFiles.push(video);
+	video.wssConnectToSourceAsProducer(url, stream);
+  }
+
+  function connectVideo(ctx, video) {
+	// Is this whole thing racy? Is the video already loading
+	// when this is called?
     g.loadingFiles.push(video);
 	g.videoReady = false;
 
@@ -211,8 +288,7 @@ canvas {
   // Initialize the application.
   ///////////////////////////////////////////////////////////////////////
 
-  function init()
-  {
+  function init() {
     // Initialize
     var gl = initWebGL(
         // The id of the Canvas Element
@@ -232,12 +308,24 @@ canvas {
       // The clear color and depth values
       [ 0.259, 0.388, 1, 1 ], 10000);
 
-	// Set up a video texture
-    g.video = document.getElementById(videoId);
-	var texture = ctx.createTexture();
-    // ctx.activeTexture(gl.TEXTURE0);
-    ctx.bindTexture(ctx.TEXTURE_EXTERNAL_OES, texture);
-    connectVideo(gl, g.video);
+	g.videoTexture = {
+	  texture: gl.createTexture(),
+	  video: createVideoElement(),
+	  stream: null
+	};
+    // gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_EXTERNAL_OES, g.videoTexture.texture);
+	// Create stream with currently bound texture as consumer.
+	g.videoTexture.stream = gl.dte.createStream();
+
+	connectStreamToProducerAndSource(stream, video, "http://myserver/myvideo.mp4");
+//-------------
+	// Option 1: video object is augmented with stream
+	connectVideoStream(gl, g.videoTexture.video, "http://myserver/myvideo.mp4");
+	// Option 2: returns stream object
+	g.videoTexture.vstream = connectVideoStream(gl, "http://myserver/myvideo.mp4");
+	connectVideoStream(gl, g.videoTexture, "http://myserver/myvideo.mp4"); //??
+//-------------
 
     // Set some uniform variables for the shaders
     gl.uniform3f(gl.getUniformLocation(program, "lightDir"), 0, 0, 1);
@@ -278,8 +366,7 @@ canvas {
     return gl;
   }
 
-  function reshape(gl)
-  {
+  function reshape(gl) {
 	  // change the size of the canvas's backing store to match the size it is displayed.
 	  var canvas = document.getElementById('example');
 	  var devicePixelRatio = window.devicePixelRatio || 1;
@@ -298,8 +385,7 @@ canvas {
 	  g.perspectiveMatrix.lookat(0, 0, 7, 0, 0, 0, 0, 1, 0);
   }
 
-  function drawFrame(gl)
-  {
+  function drawFrame(gl) {
     var lastFrame;
 	var syncValues;
 	var latency;
@@ -342,6 +428,9 @@ canvas {
 	//   updated should be 5x the highest MSC frequency supported. For
 	//   example if highest MSC is 48kHz (audio) the update frequency
 	//   should be 240kHz. Most OSes have this kind of counter available.
+	//
+	//   If OS provided UST=0 would be system startup. Could also use
+	//   {navigation,fetch}Start as in the high-resolution time spec.
 	//
 	//   MSC is the media stream count. It is incremented once/sample; for
 	//   video that means once/frame, for audio once/sample. For graphics,
@@ -400,10 +489,19 @@ canvas {
 		// Record UST of frame acquisition.
 		// No such system function in JS so it is added to extension.
 		lastFrame.ust = gl.dte.ustnow();
+		// Or possibly
+		lastFrame.ust = window.performance.now();
+		// but there are issues.
+		// - it doesn't meet the requirements listed above but is it sufficient?
+		//   - the units are milliseconds but microsecond accuracy is
+		//     (nominally) required. Presumably it is supposed to report
+		//     fractional values.
+		// The above timer comes from the high-resolution time proposal
+		//
 		lastFrame.msc = vstream.consumerFrame;
 	  }
       vstream.acquireImage();
-	  lastFrame = g.stream.consumerFrame;
+	  lastFrame.msc = g.stream.consumerFrame;
     }
 
     // Draw the cube
@@ -420,8 +518,7 @@ canvas {
         currentAngle -= 360;
   }
 
-  function start()
-  {
+  function start() {
     var c = document.getElementById("example");
 
     //c = WebGLDebugUtils.makeLostContextSimulatingCanvas(c);

@@ -17,7 +17,8 @@ EXTS := OES_standard_derivatives \
 	WEBGL_compressed_texture_atc \
 	proposals/WEBGL_multiple_render_targets \
 	EXT_color_buffer_half_float \
-	WEBGL_color_buffer_float
+	WEBGL_color_buffer_float \
+	proposals/EXT_frag_depth
 
 EXTS := $(strip $(EXTS))
 
