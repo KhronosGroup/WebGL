@@ -400,9 +400,11 @@ var getFileList = function(url, callback, options) {
 };
 
 var FilterURL = (function() {
+  var prefix = window.location.pathname;
+  prefix = prefix.substring(0, prefix.lastIndexOf("/") + 1);
   return function(url) {
-    if (url.substring(0, 1) == "/") {
-      return url.substring(1);
+    if (url.substring(0, prefix.length) == prefix) {
+      url = url.substring(prefix.length);
     }
     return url;
   };
