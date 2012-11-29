@@ -51,6 +51,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
     var videoNdx = 0;
     var runNextVideo = function() {
         if (videoNdx == videos.length) {
+            video.removeEventListener("playing", runTest);
             finishTest();
             return;
         }
