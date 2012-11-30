@@ -52,6 +52,27 @@ var wtu = WebGLTestUtils;
 
 function test(canvas, attribs) {
   var gl = wtu.create3DContext(canvas, attribs);
+
+  function test(func) {
+    gl.disable(gl.SCISSOR_TEST);
+    gl.clearColor(0,0,0,0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.enable(gl.SCISSOR_TEST);
+
+    var size = 16;
+    for (var ii = 0; ii < size; ++ii) {
+      // clear a portion of our FBO
+      gl.scissor(ii, ii, 1, 1);
+      func();
+    }
+
+    for (var ii = 0; ii < size; ++ii) {
+      wtu.checkCanvasRect(gl, 0, ii, ii, 1, [0, 0, 0, 0], "should be black");
+      wtu.checkCanvasRect(gl, ii, ii, 1, 1, [0, 255, 0, 255], "should be green");
+      wtu.checkCanvasRect(gl, ii + 1, ii, size - ii - 1, 1, [0, 0, 0, 0], "should be black");
+    }
+  }
+
   if (!gl) {
     testFailed("context does not exist");
   } else {
@@ -72,25 +93,6 @@ function test(canvas, attribs) {
       wtu.drawFloatColorQuad(gl, [0, 1, 0, 1]);
     });
 
-    function test(func) {
-      gl.disable(gl.SCISSOR_TEST);
-      gl.clearColor(0,0,0,0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.enable(gl.SCISSOR_TEST);
-
-      var size = 16;
-      for (var ii = 0; ii < size; ++ii) {
-        // clear a portion of our FBO
-        gl.scissor(ii, ii, 1, 1);
-        func();
-      }
-
-      for (var ii = 0; ii < size; ++ii) {
-        wtu.checkCanvasRect(gl, 0, ii, ii, 1, [0, 0, 0, 0], "should be black");
-        wtu.checkCanvasRect(gl, ii, ii, 1, 1, [0, 255, 0, 255], "should be green");
-        wtu.checkCanvasRect(gl, ii + 1, ii, size - ii - 1, 1, [0, 0, 0, 0], "should be black");
-      }
-    }
     glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
   }
 }
