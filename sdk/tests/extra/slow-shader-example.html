@@ -123,7 +123,7 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after setting up indices");
 
 function main () {
   if (confirm(
-      "after clicking ok your machine may be come unresponsive or crash")) {
+      "After clicking OK your machine may become unresponsive or crash.")) {
     gl.drawElements(gl.TRIANGLES, numQuads * 6, gl.UNSIGNED_BYTE, 0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after drawing");
   } else {
