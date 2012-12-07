@@ -566,6 +566,7 @@ function start() {
     } else {
       var e = document.getElementById("error");
       e.innerHTML = msg;
+      this.postResultsToServer(msg);
     }
   };
 
@@ -778,6 +779,7 @@ function start() {
     button.disabled = true;
     var elem = document.getElementById("nowebgl");
     elem.style.display = "";
+    reporter.postResultsToServer("Browser does not appear to support WebGL");
   }
 }
 </script>
