@@ -320,7 +320,9 @@ function run_tests(app, config, callback, browser_id) {
 
     all_args.push(config.test_url);
 
-    var browser_proc = child_process.spawn(platform.path, all_args);
+    var path = platform.command ? platform.command : platform.path;
+
+    var browser_proc = child_process.spawn(path, all_args);
     app.browser_proc = browser_proc;
     app.browser_name = browser.name.replace(' ', '-');
     app.finished_tests = false;
