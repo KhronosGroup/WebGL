@@ -1,3 +1,4 @@
+.htaccess
 *.Makefile
 *.gypcmd
 *.mk
