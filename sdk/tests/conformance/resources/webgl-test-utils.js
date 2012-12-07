@@ -231,6 +231,25 @@ var setupSimpleVertexColorFragmentShader = function(gl) {
 };
 
 /**
+ * Creates a simple color vertex shader.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @return {!WebGLShader}
+ */
+var setupSimpleColorVertexShader = function(gl) {
+    return loadShader(gl, simpleColorVertexShader, gl.VERTEX_SHADER);
+};
+
+/**
+ * Creates a simple color fragment shader.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @return {!WebGLShader}
+ */
+var setupSimpleColorFragmentShader = function(gl) {
+    return loadShader(
+        gl, simpleColorFragmentShader, gl.FRAGMENT_SHADER);
+};
+
+/**
  * Creates a program, attaches shaders, binds attrib locations, links the
  * program and calls useProgram.
  * @param {!Array.<!WebGLShader|string>} shaders The shaders to
@@ -395,6 +414,32 @@ var setupSimpleVertexColorProgram = function(
 };
 
 /**
+ * Creates a simple color program.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {number} opt_positionLocation The attrib location for position.
+ * @return {WebGLProgram}
+ */
+var setupSimpleColorProgram = function(gl, opt_positionLocation) {
+  opt_positionLocation = opt_positionLocation || 0;
+  var vs = setupSimpleColorVertexShader(gl);
+  var fs = setupSimpleColorFragmentShader(gl);
+  if (!vs || !fs) {
+    return null;
+  }
+  var program = setupProgram(
+      gl,
+      [vs, fs],
+      ['vPosition'],
+      [opt_positionLocation]);
+  if (!program) {
+    gl.deleteShader(fs);
+    gl.deleteShader(vs);
+  }
+  gl.useProgram(program);
+  return program;
+};
+
+/**
  * Creates buffers for a textured unit quad and attaches them to vertex attribs.
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {number} opt_positionLocation The attrib location for position.
@@ -482,11 +527,7 @@ var setupTexturedQuad = function(
  */
 var setupColorQuad = function(gl, opt_positionLocation) {
   opt_positionLocation = opt_positionLocation || 0;
-  var program = wtu.setupProgram(
-      gl,
-      [simpleColorVertexShader, simpleColorFragmentShader],
-      ['vPosition'],
-      [opt_positionLocation]);
+  var program = setupSimpleColorProgram(gl);
   setupUnitQuad(gl, opt_positionLocation);
   return program;
 };
@@ -520,7 +561,7 @@ var setupTexturedQuadWithTexCoords = function(
  */
 var setupQuad = function (
     gl, gridRes, opt_positionLocation, opt_flipOddTriangles) {
-  setupQuadWithOptions(gl,
+  return setupQuadWithOptions(gl,
     { gridRes: gridRes,
       positionLocation: opt_positionLocation,
       flipOddTriangles: opt_flipOddTriangles
@@ -530,6 +571,9 @@ var setupQuad = function (
 /**
  * Creates a quad with various options.
  * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!Object) options The options. See below.
+ * @return {!Array.<WebGLBuffer>} The created buffers.
+ *     [positions, <colors>, indices]
  *
  * Options:
  *   gridRes: number of quads across and down grid.
@@ -674,6 +718,36 @@ var ubyteToFloat = function(c) {
   return c / 255;
 };
 
+var ubyteColorToFloatColor = function(color) {
+  var floatColor = [];
+  for (var ii = 0; ii < color.length; ++ii) {
+    floatColor[ii] = ubyteToFloat(color[ii]);
+  }
+  return floatColor;
+};
+
+/**
+ * Sets the "u_color" uniform of the current program to color.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!Array.<number> color 4 element array of 0-1 color
+ *      components.
+ */
+var setFloatDrawColor = function(gl, color) {
+  var program = gl.getParameter(gl.CURRENT_PROGRAM);
+  var colorLocation = gl.getUniformLocation(program, "u_color");
+  gl.uniform4fv(colorLocation, color);
+};
+
+/**
+ * Sets the "u_color" uniform of the current program to color.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!Array.<number> color 4 element array of 0-255 color
+ *      components.
+ */
+var setUByteDrawColor = function(gl, color) {
+  setFloatDrawColor(gl, ubyteColorToFloatColor(color));
+};
+
 /**
  * Draws a previously setup quad in the given color.
  * @param {!WebGLContext} gl The WebGLContext to use.
@@ -697,11 +771,7 @@ var drawFloatColorQuad = function(gl, color) {
  *        255.
  */
 var drawUByteColorQuad = function(gl, color) {
-  var floatColor = [];
-  for (var ii = 0; ii < color.length; ++ii) {
-    floatColor[ii] = ubyteToFloat(color[ii]);
-  }
-  drawFloatColorQuad(gl, floatColor);
+  drawFloatColorQuad(gl, ubyteColorToFloatColor(color));
 };
 
 /**
@@ -1878,6 +1948,9 @@ return {
   setupProgram: setupProgram,
   setupQuad: setupQuad,
   setupQuadWithOptions: setupQuadWithOptions,
+  setupSimpleColorFragmentShader: setupSimpleColorFragmentShader,
+  setupSimpleColorVertexShader: setupSimpleColorVertexShader,
+  setupSimpleColorProgram: setupSimpleColorProgram,
   setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
   setupSimpleTextureProgram: setupSimpleTextureProgram,
   setupSimpleTextureVertexShader: setupSimpleTextureVertexShader,
@@ -1890,6 +1963,8 @@ return {
   setupTexturedQuadWithTexCoords: setupTexturedQuadWithTexCoords,
   setupUnitQuad: setupUnitQuad,
   setupUnitQuadWithTexCoords: setupUnitQuadWithTexCoords,
+  setFloatDrawColor: setFloatDrawColor,
+  setUByteDrawColor: setUByteDrawColor,
   startsWith: startsWith,
   shouldGenerateGLError: shouldGenerateGLError,
   readFile: readFile,
