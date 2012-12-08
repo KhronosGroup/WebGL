@@ -160,6 +160,20 @@
             "args": [
                 "-silent"
             ]
+        },
+
+        {
+            "name": "Safari",
+            "platforms": {
+                "darwin": {
+                    "path": "/Applications/Safari.app/Contents/MacOS/Safari",
+                    "command": "open"
+                }
+            },
+
+            "args": [
+                "-F", "-W", "-n", "-a", "safari"
+            ]
         }
     ]
 }
