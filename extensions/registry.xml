@@ -9,24 +9,30 @@
     </revision></history></extension><extension href="OES_texture_float/"><name>OES_texture_float</name><number>1</number><history><revision date="2010/11/29" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2010/12/13" number="2">
-      <change>Extended to support pixel type FLOAT for texImage2D and texSubImage2D entry points taking ImageData, HTMLImageElement, HTMLCanvasElement and HTMLVideoElement.
-      </change>
+      <change>Extended to support pixel type FLOAT for texImage2D and
+      texSubImage2D entry points taking ImageData, HTMLImageElement,
+      HTMLCanvasElement and HTMLVideoElement. </change>
     </revision><revision date="2011/09/12" number="3">
-      <change>Added optional ability to use a FLOAT type texture as an FBO's color attachment.
-      </change>
+      <change>Added optional ability to use a FLOAT type texture as an FBO's
+      color attachment. </change>
     </revision><revision date="2012/01/03" number="4">
       <change>Removed webgl module per changes to Web IDL spec.</change>
+    </revision><revision date="2012/12/04" number="5">
+      <change>Specify that implementations supporting FLOAT color attachments
+      implicitly enable WEBGL_color_buffer_float.</change>
     </revision></history></extension><extension href="OES_texture_half_float/"><name>OES_texture_half_float</name><number>2</number><history><revision date="2010/11/29" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/09/12" number="2">
-      <change>
-        Added similar text about <code>texImage2D</code> and <code>texSubImage2D</code> as in OES_texture_float spec.
-      </change>
-      <change>
-        Added optional ability to use a HALF_FLOAT_OES type texture as an FBO's color attachment.
-      </change>
+      <change> Added similar text about <code>texImage2D</code> and
+      <code>texSubImage2D</code> as in OES_texture_float spec. </change>
+
+      <change> Added optional ability to use a HALF_FLOAT_OES type texture as
+      an FBO's color attachment. </change>
     </revision><revision date="2012/01/03" number="3">
       <change>Removed webgl module per changes to Web IDL spec.</change>
+    </revision><revision date="2012/12/04" number="4">
+      <change>Specify that implementations supporting HALF_FLOAT_OES color
+      attachments implicitly enable EXT_color_buffer_half_float.</change>
     </revision></history></extension><extension href="OES_vertex_array_object/"><name>OES_vertex_array_object</name><number>5</number><history><revision date="2011/01/27" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/11/12" number="2">
