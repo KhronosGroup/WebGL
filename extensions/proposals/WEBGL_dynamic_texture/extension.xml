@@ -13,7 +13,7 @@
 
     <contributor>Ken Russell, Google</contributor>
 
-    <contributor>David Sheets</contributor>
+    <contributor>David Sheets, Ashima Arts</contributor>
 
     <contributor>William Hennebois, STMicroelectronics</contributor>
 
@@ -788,6 +788,9 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
 &lt;/body&gt;
 
 &lt;/html&gt;</pre></div>
+
+    <p>See the <a href="DynamicTexture.html" target="_blank">complete
+    sample</a>.</p>
   </samplecode>
 
   <tests/>
@@ -926,6 +929,34 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         even worse, aware of texture binding within WebGL. No similar API was
         exposed to support CanvasRenderingContext2D.drawImage. The HTMLElement
         is simply passed to drawImage.</p>
+      </li>
+
+      <li>
+        <p>Should <a
+        href="http://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HighResolutionTime/Overview.html#sec-DOMHighResTimeStamp">DOMHighResolutionTime</a>
+        and <code>window.performance.now()</code> from the W3C <a
+        href="http://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HighResolutionTime/Overview.html">High-Resolution
+        Time</a> draft be used for the timestamps and as UST?</p>
+
+        <p>UNRESOLVED: The specified unit is milliseconds which means using
+        fractional <code>double</code> values to represent smaller times with
+        the attendant issues of variable time steps and inaccuracies. As
+        currently specified, with browsers allowed to be as sloppy as 1ms
+        accuracy, <code>window.performance.now()</code> is insufficiently
+        accurate. Feedback has been provided. Hopefully the draft
+        specification will be updated.</p>
+      </li>
+
+      <li>
+        <p>Should UST 0 be system start-up, browser start-up or <a
+        href="http://www.w3.org/TR/navigation-timing/#dom-performancetiming-navigationstart">navigationStart</a>
+        as defined in the W3C <a
+        href="http://www.w3.org/TR/2012/PR-navigation-timing-20120726/">Navigation
+        Timing</a> proposed recommendation?</p>
+
+        <p>UNRESOLVED: If high-resolution time is used, then navigationStart
+        makes sense otherwise browser start-up seems preferable to system
+        start-up as it is closer to the events being measured.</p>
       </li>
     </ol>
   </issues>
