@@ -10,7 +10,7 @@
   </contributors>
   <number>8</number>
   <depends>
-    <api version="1.0.1"/>
+    <api version="1.0"/>
   </depends>
   <overview>
     <p>
