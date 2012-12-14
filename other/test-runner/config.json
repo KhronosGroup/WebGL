@@ -171,6 +171,10 @@
                 }
             },
 
+            "osx_defaults": {
+                "com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2WebGLEnabled": "1"
+            },
+
             "args": [
                 "-F", "-W", "-n", "-a", "safari"
             ]
