@@ -19,7 +19,8 @@ EXTS := OES_standard_derivatives \
 	EXT_color_buffer_half_float \
 	WEBGL_color_buffer_float \
 	proposals/EXT_frag_depth \
-	proposals/EXT_blend_minmax
+	proposals/EXT_blend_minmax \
+	proposals/EXT_sRGB
 
 EXTS := $(strip $(EXTS))
 
