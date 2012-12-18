@@ -9,4 +9,5 @@ incorrect-context-object-behaviour.html
 methods.html
 premultiplyalpha-test.html
 resource-sharing-test.html
+--min-version 1.0.2 context-release-with-workers.html
 
