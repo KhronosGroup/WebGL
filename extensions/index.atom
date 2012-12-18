@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>WebGL Extension Registry Revisions</title><link href="http://www.khronos.org/registry/webgl/extensions/index.atom" rel="self" type="application/atom+xml"/><link href="http://www.khronos.org/registry/webgl/extensions/" rel="alternate" type="text/html"/><id>http://www.khronos.org/registry/webgl/extensions/index.atom</id><updated>2012-12-04T23:59:59Z</updated><author>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>WebGL Extension Registry Revisions</title><link href="http://www.khronos.org/registry/webgl/extensions/index.atom" rel="self" type="application/atom+xml"/><link href="http://www.khronos.org/registry/webgl/extensions/" rel="alternate" type="text/html"/><id>http://www.khronos.org/registry/webgl/extensions/index.atom</id><updated>2012-12-17T23:59:59Z</updated><author>
     <name>WebGL Working Group</name>
     <email>public_webgl@khronos.org</email>
-  </author><entry><title>OES_texture_float : revision 5</title><link rel="alternate" type="text/html" href="OES_texture_float/"/><id>OES_texture_float/#r=5</id><updated>2012-12-04T23:59:59Z</updated><summary>Specify that implementations supporting FLOAT color attachments
+  </author><entry><title>EXT_frag_depth : revision 2</title><link rel="alternate" type="text/html" href="EXT_frag_depth"/><id>EXT_frag_depth#r=2</id><updated>2012-12-17T23:59:59Z</updated><summary>Moved to draft.
+              
+            </summary></entry><entry><title>OES_texture_float : revision 5</title><link rel="alternate" type="text/html" href="OES_texture_float/"/><id>OES_texture_float/#r=5</id><updated>2012-12-04T23:59:59Z</updated><summary>Specify that implementations supporting FLOAT color attachments
       implicitly enable WEBGL_color_buffer_float.
               
             </summary></entry><entry><title>OES_texture_half_float : revision 4</title><link rel="alternate" type="text/html" href="OES_texture_half_float/"/><id>OES_texture_half_float/#r=4</id><updated>2012-12-04T23:59:59Z</updated><summary>Specify that implementations supporting HALF_FLOAT_OES color
@@ -11,6 +13,8 @@
             </summary></entry><entry><title>WEBGL_color_buffer_float : revision 4</title><link rel="alternate" type="text/html" href="WEBGL_color_buffer_float"/><id>WEBGL_color_buffer_float#r=4</id><updated>2012-11-26T23:59:59Z</updated><summary>Move to draft.
               
             </summary></entry><entry><title>EXT_color_buffer_half_float : revision 3</title><link rel="alternate" type="text/html" href="EXT_color_buffer_half_float"/><id>EXT_color_buffer_half_float#r=3</id><updated>2012-11-26T23:59:59Z</updated><summary>Move to draft.
+              
+            </summary></entry><entry><title>EXT_frag_depth : revision 1</title><link rel="alternate" type="text/html" href="EXT_frag_depth"/><id>EXT_frag_depth#r=1</id><updated>2012-11-22T23:59:59Z</updated><summary>Initial revision.
               
             </summary></entry><entry><title>WEBGL_color_buffer_float : revision 3</title><link rel="alternate" type="text/html" href="WEBGL_color_buffer_float"/><id>WEBGL_color_buffer_float#r=3</id><updated>2012-11-13T23:59:59Z</updated><summary>Add reading-pixels-as-FLOAT feature to the Overview.
               
@@ -21,9 +25,5 @@
       meaning from what is done here.
               
             </summary></entry><entry><title>EXT_color_buffer_half_float : revision 1</title><link rel="alternate" type="text/html" href="EXT_color_buffer_half_float"/><id>EXT_color_buffer_half_float#r=1</id><updated>2012-11-08T23:59:59Z</updated><summary>Initial revision.
-              
-            </summary></entry><entry><title>WEBGL_color_buffer_float : revision 1</title><link rel="alternate" type="text/html" href="WEBGL_color_buffer_float"/><id>WEBGL_color_buffer_float#r=1</id><updated>2012-11-08T23:59:59Z</updated><summary>Initial revision.
-              
-            </summary></entry><entry><title>OES_vertex_array_object : revision 7</title><link rel="alternate" type="text/html" href="OES_vertex_array_object/"/><id>OES_vertex_array_object/#r=7</id><updated>2012-10-16T23:59:59Z</updated><summary>Based on feedback on public_webgl, moved from draft to community approved, and removed aliases.
               
             </summary></entry></feed>
