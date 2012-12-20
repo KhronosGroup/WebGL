@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 28 November 2012</h2>
+    <h2 class="no-toc">Editor's Draft 19 December 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2362,8 +2362,13 @@ for (var i = 0; i < numVertices; i++) {
 
             The source image data is conceptually first converted to the data type and format
             specified by the <em>format</em> and <em>type</em> arguments, and then transferred to
-            the OpenGL implementation. If a packed pixel format is specified which would imply loss
+            the WebGL implementation. If a packed pixel format is specified which would imply loss
             of bits of precision from the image data, this loss of precision must occur. <br><br>
+
+            The first pixel transferred from the source to the WebGL implementation corresponds to
+            the upper left corner of the source. This behavior is modified by the
+            the <code>UNPACK_FLIP_Y_WEBGL</code> <a href="#PIXEL_STORAGE_PARAMETERS">pixel storage
+            parameter</a>. <br><br>
 
             If the source image is an RGB or RGBA lossless image with 8 bits per channel, the
             browser guarantees that the full precision of all channels is preserved. <br><br>
@@ -2432,6 +2437,11 @@ for (var i = 0; i < numVertices; i++) {
 
             See <a href="#TEXIMAGE2D_HTML">texImage2D</a> for the interpretation of
             the <em>format</em> and <em>type</em> arguments. <br><br>
+
+            The first pixel transferred from the source to the WebGL implementation corresponds to
+            the upper left corner of the source. This behavior is modified by the
+            the <code>UNPACK_FLIP_Y_WEBGL</code> <a href="#PIXEL_STORAGE_PARAMETERS">pixel storage
+            parameter</a>. <br><br>
 
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
