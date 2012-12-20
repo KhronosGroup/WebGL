@@ -569,6 +569,22 @@ function shouldThrowIndexSizeErr(func, text) {
     }
 }
 
+function shouldThrowTypeError(func, text) {
+    var ok = false;
+    try {
+        func();
+    } catch (e) {
+        if (e instanceof TypeError) {
+            ok = true;
+        }
+    }
+    if (ok) {
+        testPassed(text + " threw TypeError");
+    } else {
+        testFailed(text + " should throw TypeError");
+    }
+}
+
 function testConstructionWithOutOfRangeValues(type, name) {
     shouldThrowIndexSizeErr(function() {
         var buffer = new ArrayBuffer(4);
@@ -923,9 +939,22 @@ function testInheritanceHierarchy() {
 
   try {
     var foo = ArrayBufferView;
-    testFailed('ArrayBufferView has [NoInterfaceObject] extended attribute and should not be defined');
+    testPassed('ArrayBufferView does not have [NoInterfaceObject] extended attribute and should be defined');
+
+    shouldBe('new Int8Array(1) instanceof ArrayBufferView', 'true');
+    shouldBe('new Uint8Array(1) instanceof ArrayBufferView', 'true');
+    shouldBe('new Uint8ClampedArray(1) instanceof ArrayBufferView', 'true');
+    shouldBe('new Int16Array(1) instanceof ArrayBufferView', 'true');
+    shouldBe('new Uint16Array(1) instanceof ArrayBufferView', 'true');
+    shouldBe('new Int32Array(1) instanceof ArrayBufferView', 'true');
+    shouldBe('new Uint32Array(1) instanceof ArrayBufferView', 'true');
+    shouldBe('new Float32Array(1) instanceof ArrayBufferView', 'true');
+    shouldBe('new Float64Array(1) instanceof ArrayBufferView', 'true');
+    shouldBe('new DataView(new ArrayBuffer(8)) instanceof ArrayBufferView', 'true');
+
+    shouldThrowTypeError(function() { new ArrayBufferView() }, "new ArrayBufferView()");
   } catch (e) {
-    testPassed('ArrayBufferView has [NoInterfaceObject] extended attribute and was not defined');
+    testFailed('ArrayBufferView does not have [NoInterfaceObject] extended attribute but was not defined');
   }
 
   // There is currently only one kind of view that inherits from another
