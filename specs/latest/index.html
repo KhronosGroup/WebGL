@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 19 December 2012</h2>
+    <h2 class="no-toc">Editor's Draft 20 December 2012</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -662,12 +662,12 @@ typedef unrestricted float GLclampf;
         is passed as the second parameter to <code>getContext</code>.
     </p>
     <pre class="idl">dictionary <dfn id="WebGLContextAttributes">WebGLContextAttributes</dfn> {
-    boolean alpha = true;
-    boolean depth = true;
-    boolean stencil = false;
-    boolean antialias = true;
-    boolean premultipliedAlpha = true;
-    boolean preserveDrawingBuffer = false;
+    GLboolean alpha = true;
+    GLboolean depth = true;
+    GLboolean stencil = false;
+    GLboolean antialias = true;
+    GLboolean premultipliedAlpha = true;
+    GLboolean preserveDrawingBuffer = false;
 };</pre>
 
     <h4>Context creation parameters</h4>
@@ -1852,88 +1852,88 @@ for (var i = 0; i < numVertices; i++) {
             requested pname, as given in the following table:
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
-                <tr><td>ACTIVE_TEXTURE</td><td>unsigned long</td></tr>
+                <tr><td>ACTIVE_TEXTURE</td><td>GLenum</td></tr>
                 <tr><td>ALIASED_LINE_WIDTH_RANGE</td><td>Float32Array (with 2 elements)</td></tr>
                 <tr><td>ALIASED_POINT_SIZE_RANGE</td><td>Float32Array (with 2 elements)</td></tr>
-                <tr><td>ALPHA_BITS</td><td>long</td></tr>
+                <tr><td>ALPHA_BITS</td><td>GLint</td></tr>
                 <tr><td>ARRAY_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
-                <tr><td>BLEND</td><td>boolean</td></tr>
+                <tr><td>BLEND</td><td>GLboolean</td></tr>
                 <tr><td>BLEND_COLOR</td><td>Float32Array (with 4 values)</td></tr>
-                <tr><td>BLEND_DST_ALPHA</td><td>unsigned long</td></tr>
-                <tr><td>BLEND_DST_RGB</td><td>unsigned long</td></tr>
-                <tr><td>BLEND_EQUATION_ALPHA</td><td>unsigned long</td></tr>
-                <tr><td>BLEND_EQUATION_RGB</td><td>unsigned long</td></tr>
-                <tr><td>BLEND_SRC_ALPHA</td><td>unsigned long</td></tr>
-                <tr><td>BLEND_SRC_RGB</td><td>unsigned long</td></tr>
-                <tr><td>BLUE_BITS</td><td>long</td></tr>
+                <tr><td>BLEND_DST_ALPHA</td><td>GLenum</td></tr>
+                <tr><td>BLEND_DST_RGB</td><td>GLenum</td></tr>
+                <tr><td>BLEND_EQUATION_ALPHA</td><td>GLenum</td></tr>
+                <tr><td>BLEND_EQUATION_RGB</td><td>GLenum</td></tr>
+                <tr><td>BLEND_SRC_ALPHA</td><td>GLenum</td></tr>
+                <tr><td>BLEND_SRC_RGB</td><td>GLenum</td></tr>
+                <tr><td>BLUE_BITS</td><td>GLint</td></tr>
                 <tr><td>COLOR_CLEAR_VALUE</td><td>Float32Array (with 4 values)</td></tr>
-                <tr><td>COLOR_WRITEMASK</td><td>sequence&lt;boolean&gt; (with 4 values)</td></tr>
+                <tr><td>COLOR_WRITEMASK</td><td>sequence&lt;GLboolean&gt; (with 4 values)</td></tr>
                 <tr><td>COMPRESSED_TEXTURE_FORMATS</td><td>Uint32Array</td></tr>
-                <tr><td>CULL_FACE</td><td>boolean</td></tr>
-                <tr><td>CULL_FACE_MODE</td><td>unsigned long</td></tr>
+                <tr><td>CULL_FACE</td><td>GLboolean</td></tr>
+                <tr><td>CULL_FACE_MODE</td><td>GLenum</td></tr>
                 <tr><td>CURRENT_PROGRAM</td><td>WebGLProgram</td></tr>
-                <tr><td>DEPTH_BITS</td><td>long</td></tr>
-                <tr><td>DEPTH_CLEAR_VALUE</td><td>float</td></tr>
-                <tr><td>DEPTH_FUNC</td><td>unsigned long</td></tr>
+                <tr><td>DEPTH_BITS</td><td>GLint</td></tr>
+                <tr><td>DEPTH_CLEAR_VALUE</td><td>GLfloat</td></tr>
+                <tr><td>DEPTH_FUNC</td><td>GLenum</td></tr>
                 <tr><td>DEPTH_RANGE</td><td>Float32Array (with 2 elements)</td></tr>
-                <tr><td>DEPTH_TEST</td><td>boolean</td></tr>
-                <tr><td>DEPTH_WRITEMASK</td><td>boolean</td></tr>
-                <tr><td>DITHER</td><td>boolean</td></tr>
+                <tr><td>DEPTH_TEST</td><td>GLboolean</td></tr>
+                <tr><td>DEPTH_WRITEMASK</td><td>GLboolean</td></tr>
+                <tr><td>DITHER</td><td>GLboolean</td></tr>
                 <tr><td>ELEMENT_ARRAY_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
                 <tr><td>FRAMEBUFFER_BINDING</td><td>WebGLFramebuffer</td></tr>
-                <tr><td>FRONT_FACE</td><td>unsigned long</td></tr>
-                <tr><td>GENERATE_MIPMAP_HINT</td><td>unsigned long</td></tr>
-                <tr><td>GREEN_BITS</td><td>long</td></tr>
-                <tr><td>LINE_WIDTH</td><td>float</td></tr>
-                <tr><td>MAX_COMBINED_TEXTURE_IMAGE_UNITS</td><td>long</td></tr>
-                <tr><td>MAX_CUBE_MAP_TEXTURE_SIZE</td><td>long</td></tr>
-                <tr><td>MAX_FRAGMENT_UNIFORM_VECTORS</td><td>long</td></tr>
-                <tr><td>MAX_RENDERBUFFER_SIZE</td><td>long</td></tr>
-                <tr><td>MAX_TEXTURE_IMAGE_UNITS</td><td>long</td></tr>
-                <tr><td>MAX_TEXTURE_SIZE</td><td>long</td></tr>
-                <tr><td>MAX_VARYING_VECTORS</td><td>long</td></tr>
-                <tr><td>MAX_VERTEX_ATTRIBS</td><td>long</td></tr>
-                <tr><td>MAX_VERTEX_TEXTURE_IMAGE_UNITS</td><td>long</td></tr>
-                <tr><td>MAX_VERTEX_UNIFORM_VECTORS</td><td>long</td></tr>
+                <tr><td>FRONT_FACE</td><td>GLenum</td></tr>
+                <tr><td>GENERATE_MIPMAP_HINT</td><td>GLenum</td></tr>
+                <tr><td>GREEN_BITS</td><td>GLint</td></tr>
+                <tr><td>LINE_WIDTH</td><td>GLfloat</td></tr>
+                <tr><td>MAX_COMBINED_TEXTURE_IMAGE_UNITS</td><td>GLint</td></tr>
+                <tr><td>MAX_CUBE_MAP_TEXTURE_SIZE</td><td>GLint</td></tr>
+                <tr><td>MAX_FRAGMENT_UNIFORM_VECTORS</td><td>GLint</td></tr>
+                <tr><td>MAX_RENDERBUFFER_SIZE</td><td>GLint</td></tr>
+                <tr><td>MAX_TEXTURE_IMAGE_UNITS</td><td>GLint</td></tr>
+                <tr><td>MAX_TEXTURE_SIZE</td><td>GLint</td></tr>
+                <tr><td>MAX_VARYING_VECTORS</td><td>GLint</td></tr>
+                <tr><td>MAX_VERTEX_ATTRIBS</td><td>GLint</td></tr>
+                <tr><td>MAX_VERTEX_TEXTURE_IMAGE_UNITS</td><td>GLint</td></tr>
+                <tr><td>MAX_VERTEX_UNIFORM_VECTORS</td><td>GLint</td></tr>
                 <tr><td>MAX_VIEWPORT_DIMS</td><td>Int32Array (with 2 elements)</td></tr>
-                <tr><td>PACK_ALIGNMENT</td><td>long</td></tr>
-                <tr><td>POLYGON_OFFSET_FACTOR</td><td>float</td></tr>
-                <tr><td>POLYGON_OFFSET_FILL</td><td>boolean</td></tr>
-                <tr><td>POLYGON_OFFSET_UNITS</td><td>float</td></tr>
-                <tr><td>RED_BITS</td><td>long</td></tr>
+                <tr><td>PACK_ALIGNMENT</td><td>GLint</td></tr>
+                <tr><td>POLYGON_OFFSET_FACTOR</td><td>GLfloat</td></tr>
+                <tr><td>POLYGON_OFFSET_FILL</td><td>GLboolean</td></tr>
+                <tr><td>POLYGON_OFFSET_UNITS</td><td>GLfloat</td></tr>
+                <tr><td>RED_BITS</td><td>GLint</td></tr>
                 <tr><td>RENDERBUFFER_BINDING</td><td>WebGLRenderbuffer</td></tr>
                 <tr><td>RENDERER</td><td>DOMString</td></tr>
-                <tr><td>SAMPLE_BUFFERS</td><td>long</td></tr>
-                <tr><td>SAMPLE_COVERAGE_INVERT</td><td>boolean</td></tr>
-                <tr><td>SAMPLE_COVERAGE_VALUE</td><td>float</td></tr>
-                <tr><td>SAMPLES</td><td>long</td></tr>
+                <tr><td>SAMPLE_BUFFERS</td><td>GLint</td></tr>
+                <tr><td>SAMPLE_COVERAGE_INVERT</td><td>GLboolean</td></tr>
+                <tr><td>SAMPLE_COVERAGE_VALUE</td><td>GLfloat</td></tr>
+                <tr><td>SAMPLES</td><td>GLint</td></tr>
                 <tr><td>SCISSOR_BOX</td><td>Int32Array (with 4 elements)</td></tr>
-                <tr><td>SCISSOR_TEST</td><td>boolean</td></tr>
+                <tr><td>SCISSOR_TEST</td><td>GLboolean</td></tr>
                 <tr><td>SHADING_LANGUAGE_VERSION</td><td>DOMString</td></tr>
-                <tr><td>STENCIL_BACK_FAIL</td><td>unsigned long</td></tr>
-                <tr><td>STENCIL_BACK_FUNC</td><td>unsigned long</td></tr>
-                <tr><td>STENCIL_BACK_PASS_DEPTH_FAIL</td><td>unsigned long</td></tr>
-                <tr><td>STENCIL_BACK_PASS_DEPTH_PASS</td><td>unsigned long</td></tr>
-                <tr><td>STENCIL_BACK_REF</td><td>long</td></tr>
-                <tr><td>STENCIL_BACK_VALUE_MASK</td><td>unsigned long</td></tr>
-                <tr><td>STENCIL_BACK_WRITEMASK</td><td>unsigned long</td></tr>
-                <tr><td>STENCIL_BITS</td><td>long</td></tr>
-                <tr><td>STENCIL_CLEAR_VALUE</td><td>long</td></tr>
-                <tr><td>STENCIL_FAIL</td><td>unsigned long</td></tr>
-                <tr><td>STENCIL_FUNC</td><td>unsigned long</td></tr>
-                <tr><td>STENCIL_PASS_DEPTH_FAIL</td><td>unsigned long</td></tr>
-                <tr><td>STENCIL_PASS_DEPTH_PASS</td><td>unsigned long</td></tr>
-                <tr><td>STENCIL_REF</td><td>long</td></tr>
-                <tr><td>STENCIL_TEST</td><td>boolean</td></tr>
-                <tr><td>STENCIL_VALUE_MASK</td><td>unsigned long</td></tr>
-                <tr><td>STENCIL_WRITEMASK</td><td>unsigned long</td></tr>
-                <tr><td>SUBPIXEL_BITS</td><td>long</td></tr>
+                <tr><td>STENCIL_BACK_FAIL</td><td>GLenum</td></tr>
+                <tr><td>STENCIL_BACK_FUNC</td><td>GLenum</td></tr>
+                <tr><td>STENCIL_BACK_PASS_DEPTH_FAIL</td><td>GLenum</td></tr>
+                <tr><td>STENCIL_BACK_PASS_DEPTH_PASS</td><td>GLenum</td></tr>
+                <tr><td>STENCIL_BACK_REF</td><td>GLint</td></tr>
+                <tr><td>STENCIL_BACK_VALUE_MASK</td><td>GLuint</td></tr>
+                <tr><td>STENCIL_BACK_WRITEMASK</td><td>GLuint</td></tr>
+                <tr><td>STENCIL_BITS</td><td>GLint</td></tr>
+                <tr><td>STENCIL_CLEAR_VALUE</td><td>GLint</td></tr>
+                <tr><td>STENCIL_FAIL</td><td>GLenum</td></tr>
+                <tr><td>STENCIL_FUNC</td><td>GLenum</td></tr>
+                <tr><td>STENCIL_PASS_DEPTH_FAIL</td><td>GLenum</td></tr>
+                <tr><td>STENCIL_PASS_DEPTH_PASS</td><td>GLenum</td></tr>
+                <tr><td>STENCIL_REF</td><td>GLint</td></tr>
+                <tr><td>STENCIL_TEST</td><td>GLboolean</td></tr>
+                <tr><td>STENCIL_VALUE_MASK</td><td>GLuint</td></tr>
+                <tr><td>STENCIL_WRITEMASK</td><td>GLuint</td></tr>
+                <tr><td>SUBPIXEL_BITS</td><td>GLint</td></tr>
                 <tr><td>TEXTURE_BINDING_2D</td><td>WebGLTexture</td></tr>
                 <tr><td>TEXTURE_BINDING_CUBE_MAP</td><td>WebGLTexture</td></tr>
-                <tr><td>UNPACK_ALIGNMENT</td><td>long</td></tr>
-                <tr><td>UNPACK_COLORSPACE_CONVERSION_WEBGL</td><td>unsigned long</td></tr>
-                <tr><td>UNPACK_FLIP_Y_WEBGL</td><td>boolean</td></tr>
-                <tr><td>UNPACK_PREMULTIPLY_ALPHA_WEBGL</td><td>boolean</td></tr>
+                <tr><td>UNPACK_ALIGNMENT</td><td>GLint</td></tr>
+                <tr><td>UNPACK_COLORSPACE_CONVERSION_WEBGL</td><td>GLenum</td></tr>
+                <tr><td>UNPACK_FLIP_Y_WEBGL</td><td>GLboolean</td></tr>
+                <tr><td>UNPACK_PREMULTIPLY_ALPHA_WEBGL</td><td>GLboolean</td></tr>
                 <tr><td>VENDOR</td><td>DOMString</td></tr>
                 <tr><td>VERSION</td><td>DOMString</td></tr>
                 <tr><td>VIEWPORT</td><td>Int32Array (with 4 elements)</td></tr>
@@ -2089,8 +2089,8 @@ for (var i = 0; i < numVertices; i++) {
             requested pname, as given in the following table:
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
-                <tr><td>BUFFER_SIZE</td><td>long</td></tr>
-                <tr><td>BUFFER_USAGE</td><td>unsigned long</td></tr>
+                <tr><td>BUFFER_SIZE</td><td>GLint</td></tr>
+                <tr><td>BUFFER_USAGE</td><td>GLenum</td></tr>
             </table>
             <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
             <p>If an OpenGL error is generated, returns null.</p>
@@ -2159,10 +2159,10 @@ for (var i = 0; i < numVertices; i++) {
             returned is the natural type for the requested pname, as given in the following table:
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
-                <tr><td>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</td><td>unsigned long</td></tr>
+                <tr><td>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</td><td>GLenum</td></tr>
                 <tr><td>FRAMEBUFFER_ATTACHMENT_OBJECT_NAME</td><td>WebGLRenderbuffer or WebGLTexture</td></tr>
-                <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL</td><td>long</td></tr>
-                <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE</td><td>long</td></tr>
+                <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL</td><td>GLint</td></tr>
+                <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE</td><td>GLint</td></tr>
             </table>
             <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
             <p>If an OpenGL error is generated, returns null.</p>
@@ -2214,15 +2214,15 @@ for (var i = 0; i < numVertices; i++) {
             type for the requested pname, as given in the following table:
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
-                <tr><td>RENDERBUFFER_WIDTH</td><td>long</td></tr>
-                <tr><td>RENDERBUFFER_HEIGHT</td><td>long</td></tr>
-                <tr><td>RENDERBUFFER_INTERNAL_FORMAT</td><td>unsigned long</td></tr>
-                <tr><td>RENDERBUFFER_RED_SIZE</td><td>long</td></tr>
-                <tr><td>RENDERBUFFER_GREEN_SIZE</td><td>long</td></tr>
-                <tr><td>RENDERBUFFER_BLUE_SIZE</td><td>long</td></tr>
-                <tr><td>RENDERBUFFER_ALPHA_SIZE</td><td>long</td></tr>
-                <tr><td>RENDERBUFFER_DEPTH_SIZE</td><td>long</td></tr>
-                <tr><td>RENDERBUFFER_STENCIL_SIZE</td><td>long</td></tr>
+                <tr><td>RENDERBUFFER_WIDTH</td><td>GLint</td></tr>
+                <tr><td>RENDERBUFFER_HEIGHT</td><td>GLint</td></tr>
+                <tr><td>RENDERBUFFER_INTERNAL_FORMAT</td><td>GLenum</td></tr>
+                <tr><td>RENDERBUFFER_RED_SIZE</td><td>GLint</td></tr>
+                <tr><td>RENDERBUFFER_GREEN_SIZE</td><td>GLint</td></tr>
+                <tr><td>RENDERBUFFER_BLUE_SIZE</td><td>GLint</td></tr>
+                <tr><td>RENDERBUFFER_ALPHA_SIZE</td><td>GLint</td></tr>
+                <tr><td>RENDERBUFFER_DEPTH_SIZE</td><td>GLint</td></tr>
+                <tr><td>RENDERBUFFER_STENCIL_SIZE</td><td>GLint</td></tr>
             </table>
             <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
             <p>If an OpenGL error is generated, returns null.</p>
@@ -2313,10 +2313,10 @@ for (var i = 0; i < numVertices; i++) {
             requested pname, as given in the following table:
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
-                <tr><td>TEXTURE_MAG_FILTER</td><td>unsigned long</td></tr>
-                <tr><td>TEXTURE_MIN_FILTER</td><td>unsigned long</td></tr>
-                <tr><td>TEXTURE_WRAP_S</td><td>unsigned long</td></tr>
-                <tr><td>TEXTURE_WRAP_T</td><td>unsigned long</td></tr>
+                <tr><td>TEXTURE_MAG_FILTER</td><td>GLenum</td></tr>
+                <tr><td>TEXTURE_MIN_FILTER</td><td>GLenum</td></tr>
+                <tr><td>TEXTURE_WRAP_S</td><td>GLenum</td></tr>
+                <tr><td>TEXTURE_WRAP_T</td><td>GLenum</td></tr>
             </table>
             <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
             <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an
@@ -2531,12 +2531,12 @@ for (var i = 0; i < numVertices; i++) {
             type for the requested pname, as given in the following table:
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
-                <tr><td>DELETE_STATUS</td><td>boolean</td></tr>
-                <tr><td>LINK_STATUS</td><td>boolean</td></tr>
-                <tr><td>VALIDATE_STATUS</td><td>boolean</td></tr>
-                <tr><td>ATTACHED_SHADERS</td><td>long</td></tr>
-                <tr><td>ACTIVE_ATTRIBUTES</td><td>long</td></tr>
-                <tr><td>ACTIVE_UNIFORMS</td><td>long</td></tr>
+                <tr><td>DELETE_STATUS</td><td>GLboolean</td></tr>
+                <tr><td>LINK_STATUS</td><td>GLboolean</td></tr>
+                <tr><td>VALIDATE_STATUS</td><td>GLboolean</td></tr>
+                <tr><td>ATTACHED_SHADERS</td><td>GLint</td></tr>
+                <tr><td>ACTIVE_ATTRIBUTES</td><td>GLint</td></tr>
+                <tr><td>ACTIVE_UNIFORMS</td><td>GLint</td></tr>
             </table>
             <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
             <p>Returns null if any OpenGL errors are generated during the execution of this
@@ -2553,9 +2553,9 @@ for (var i = 0; i < numVertices; i++) {
             type for the requested pname, as given in the following table:
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
-                <tr><td>SHADER_TYPE</td><td>unsigned long</td></tr>
-                <tr><td>DELETE_STATUS</td><td>boolean</td></tr>
-                <tr><td>COMPILE_STATUS</td><td>boolean</td></tr>
+                <tr><td>SHADER_TYPE</td><td>GLenum</td></tr>
+                <tr><td>DELETE_STATUS</td><td>GLboolean</td></tr>
+                <tr><td>COMPILE_STATUS</td><td>GLboolean</td></tr>
             </table>
             <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
             <p>Returns null if any OpenGL errors are generated during the execution of this
@@ -2665,23 +2665,23 @@ for (var i = 0; i < numVertices; i++) {
             dependent on the uniform type, as shown in the following table:
             <table class="foo">
                 <tr><th>uniform type</th><th>returned type</th></tr>
-                <tr><td>boolean</td><td>boolean</td></tr>
-                <tr><td>int</td><td>long</td></tr>
-                <tr><td>float</td><td>float</td></tr>
+                <tr><td>boolean</td><td>GLboolean</td></tr>
+                <tr><td>int</td><td>GLint</td></tr>
+                <tr><td>float</td><td>GLfloat</td></tr>
                 <tr><td>vec2</td><td>Float32Array (with 2 elements)</td></tr>
                 <tr><td>ivec2</td><td>Int32Array (with 2 elements)</td></tr>
-                <tr><td>bvec2</td><td>sequence&lt;boolean&gt; (with 2 elements)</td></tr>
+                <tr><td>bvec2</td><td>sequence&lt;GLboolean&gt; (with 2 elements)</td></tr>
                 <tr><td>vec3</td><td>Float32Array (with 3 elements)</td></tr>
                 <tr><td>ivec3</td><td>Int32Array (with 3 elements)</td></tr>
-                <tr><td>bvec3</td><td>sequence&lt;boolean&gt; (with 3 elements)</td></tr>
+                <tr><td>bvec3</td><td>sequence&lt;GLboolean&gt; (with 3 elements)</td></tr>
                 <tr><td>vec4</td><td>Float32Array (with 4 elements)</td></tr>
                 <tr><td>ivec4</td><td>Int32Array (with 4 elements)</td></tr>
-                <tr><td>bvec4</td><td>sequence&lt;boolean&gt; (with 4 elements)</td></tr>
+                <tr><td>bvec4</td><td>sequence&lt;GLboolean&gt; (with 4 elements)</td></tr>
                 <tr><td>mat2</td><td>Float32Array (with 4 elements)</td></tr>
                 <tr><td>mat3</td><td>Float32Array (with 9 elements)</td></tr>
                 <tr><td>mat4</td><td>Float32Array (with 16 elements)</td></tr>
-                <tr><td>sampler2D</td><td>long</td></tr>
-                <tr><td>samplerCube</td><td>long</td></tr>
+                <tr><td>sampler2D</td><td>GLint</td></tr>
+                <tr><td>samplerCube</td><td>GLint</td></tr>
             </table>
             <p>All queries returning sequences or typed arrays return a new object each time.</p>
             <p>Returns null if any OpenGL errors are generated during the execution of this
@@ -2710,11 +2710,11 @@ for (var i = 0; i < numVertices; i++) {
             <table class="foo">
                 <tr><th>pname</th><th>returned type</th></tr>
                 <tr><td>VERTEX_ATTRIB_ARRAY_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_ENABLED</td><td>boolean</td></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_SIZE</td><td>long</td></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_STRIDE</td><td>long</td></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_TYPE</td><td>unsigned long</td></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_NORMALIZED</td><td>boolean</td></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_ENABLED</td><td>GLboolean</td></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_SIZE</td><td>GLint</td></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_STRIDE</td><td>GLint</td></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_TYPE</td><td>GLenum</td></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_NORMALIZED</td><td>GLboolean</td></tr>
                 <tr><td>CURRENT_VERTEX_ATTRIB</td><td>Float32Array (with 4 elements)</td></tr>
             </table>
             <p>All queries returning sequences or typed arrays return a new object each time.</p>
