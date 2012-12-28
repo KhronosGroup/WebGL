@@ -36,10 +36,11 @@ context.bindBuffer(context.ARRAY_BUFFER, vertexObject);
 context.bufferData(context.ARRAY_BUFFER, new Float32Array(3 * 65536), context.STATIC_DRAW);
 context.vertexAttribPointer(0, 3, context.FLOAT, false, 0, 0);
 
-debug("Test out of range indices")
+debug("Test large attribute buffer")
 shouldGenerateGLError(context, context.NO_ERROR, "context.drawElements(context.TRIANGLES, 3, context.UNSIGNED_SHORT, 0)");
 
 // Enlarge the attribute buffer slightly.
+debug("Test even larger attribute buffer")
 context.bufferData(context.ARRAY_BUFFER, new Float32Array(3 * 65536 + 3), context.STATIC_DRAW);
 shouldGenerateGLError(context, context.NO_ERROR, "context.drawElements(context.TRIANGLES, 3, context.UNSIGNED_SHORT, 0)");
 
