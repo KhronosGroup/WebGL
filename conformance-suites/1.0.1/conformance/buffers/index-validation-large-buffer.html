@@ -22,19 +22,25 @@ var context = create3DContext();
 var program = loadStandardProgram(context);
 
 context.useProgram(program);
-var vertexObject = context.createBuffer();
-context.enableVertexAttribArray(0);
-context.bindBuffer(context.ARRAY_BUFFER, vertexObject);
-// Create a large attribute buffer.
-context.bufferData(context.ARRAY_BUFFER, new Float32Array(3 * 65536 + 3), context.STATIC_DRAW);
-context.vertexAttribPointer(0, 3, context.FLOAT, false, 0, 0);
 
+// Create a small index buffer.
 var indexObject = context.createBuffer();
-
-debug("Test out of range indices")
 context.bindBuffer(context.ELEMENT_ARRAY_BUFFER, indexObject);
 var indexArray = new Uint16Array([0, 1, 2]);
 context.bufferData(context.ELEMENT_ARRAY_BUFFER, indexArray, context.STATIC_DRAW);
+
+// Create a large attribute buffer.
+var vertexObject = context.createBuffer();
+context.enableVertexAttribArray(0);
+context.bindBuffer(context.ARRAY_BUFFER, vertexObject);
+context.bufferData(context.ARRAY_BUFFER, new Float32Array(3 * 65536), context.STATIC_DRAW);
+context.vertexAttribPointer(0, 3, context.FLOAT, false, 0, 0);
+
+debug("Test out of range indices")
+shouldGenerateGLError(context, context.NO_ERROR, "context.drawElements(context.TRIANGLES, 3, context.UNSIGNED_SHORT, 0)");
+
+// Enlarge the attribute buffer slightly.
+context.bufferData(context.ARRAY_BUFFER, new Float32Array(3 * 65536 + 3), context.STATIC_DRAW);
 shouldGenerateGLError(context, context.NO_ERROR, "context.drawElements(context.TRIANGLES, 3, context.UNSIGNED_SHORT, 0)");
 
 debug("")
