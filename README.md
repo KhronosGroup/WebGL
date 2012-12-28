@@ -4,6 +4,9 @@ This is the offical home of the Khronos
 WebGL repository for the WebGL specifications
 and the WebGL conformance test suite.
 
+Before adding a new test or editing an existing test
+<a href="sdk/test/test-guidelines.md"> please read these guidelines</a>.
+
 You can find live versions of the specifications at
 http://www.khronos.org/webgl/
 
