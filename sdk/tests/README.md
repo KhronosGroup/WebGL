@@ -1,6 +1,9 @@
 Welcome to the WebGL Conformance Test Suite
 ===========================================
 
+Note: Before adding a new test or editing an existing test
+<a href="test-guidelines.md" please read these guidelines</a>.
+
 This is the initial release of the WebGL conformance test suite.
 
 NOTE TO USERS: Unless you are a WebGL implementor, there is no need to submit
