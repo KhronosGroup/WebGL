@@ -2,16 +2,16 @@ Contributing WebGL conformance tests Guidelines
 ===============================================
 
 Thank you for contibuting to the WebGL conformance tests.
-Please try to follow these guidelines when submitting a test
+Please try to follow these guidelines when submitting a test.
 
-1) All changes and/or new tests should go in the sdk/tests/conformance folder
+*   All changes and/or new tests should go in the sdk/tests/conformance folder
 
 The tests under conformance-suites are snapshots and are only to be updated by
 the WebGL Working Group when "official" snapshots are taken.
 
-2) Please use the Khronos Group License (MIT)
+*   Please use the Khronos Group License (MIT)
 
-This lines appears at the top of every html and js file under sdk/tests/conformance
+These lines appears at the top of every html and js file under sdk/tests/conformance
 
     <!--
     /*
@@ -38,12 +38,12 @@ This lines appears at the top of every html and js file under sdk/tests/conforma
     */
     -->
 
-3) Please use code similar to the code in existing tests
+*   Please use code similar to the code in existing tests
 
 Ideally, copy an existing test and modify it for your new test. Try not to duplicate
 code that already exists where approriate.
 
-4) If adding a new test edit the approriate 00_test_list.txt file
+*   If adding a new test edit the approriate 00_test_list.txt file
 
 Each folder has a 00_test_list.txt file that lists the test in that folder.
 Each new test should be prefixed with the option "--min-version <version>" where
