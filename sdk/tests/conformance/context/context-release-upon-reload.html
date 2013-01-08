@@ -40,7 +40,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
-description("This test ensures that WebGL contexts are released properly when a worker is used");
+description("This test ensures that WebGL contexts are released properly upon page reload");
 
 var host = document.getElementById("host");
 var testIterations = 25;
@@ -51,7 +51,7 @@ function refreshFrame() {
     currentIteration++;
     debug("");
     debug("Test " + currentIteration + " of " + testIterations);
-    host.src = "resources/context-release-child-with-worker.html";
+    host.src = "resources/context-release-upon-reload-child.html";
   } else {
     finishTest();
   }

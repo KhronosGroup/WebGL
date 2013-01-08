@@ -29,8 +29,8 @@
 <html style="margin: 0; padding: 0;">
   <head>
 <meta charset="utf-8">
-    <title>Simple WebGL context with Worker</title>
-    <script src="../resources/webgl-test-utils.js"> </script>
+    <title>Simple WebGL context</title>
+    <script src="../../resources/webgl-test-utils.js"> </script>
 </head>
 <body style="margin: 0; padding: 0; overflow: hidden;">
     <canvas id="c"
@@ -53,7 +53,6 @@
 
     <script>
         var wtu = WebGLTestUtils;
-        var myWorker = new Worker("context-release-worker.js");
 
         var gl = wtu.create3DContext("c", {"antialiased": false});
         program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
