@@ -4,6 +4,7 @@ draw-elements-out-of-bounds.html
 gl-clear.html
 gl-drawelements.html
 gl-scissor-test.html
+--min-version 1.0.2 gl-scissor-fbo-test.html
 more-than-65536-indices.html
 multisample-corruption.html
 point-size.html
