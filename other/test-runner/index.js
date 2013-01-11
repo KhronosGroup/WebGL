@@ -322,7 +322,7 @@ function run_tests_internal(app, config, callback, browser_id, browser, platform
 
   var profile_dir;
   if(browser.profile_arg) {
-    var profile_dir = path.join(__dirname, PROFILE_DIR_NAME);
+    profile_dir = path.join(__dirname, PROFILE_DIR_NAME);
     ensure_dir_exists(profile_dir);
     if(browser.profile_arg.indexOf("=") != -1) {
       all_args.push(browser.profile_arg + profile_dir);
@@ -338,9 +338,9 @@ function run_tests_internal(app, config, callback, browser_id, browser, platform
 
   all_args.push(config.test_url);
 
-  var path = platform.command ? platform.command : platform.path;
+  var browser_path = platform.command ? platform.command : platform.path;
 
-  var browser_proc = child_process.spawn(path, all_args);
+  var browser_proc = child_process.spawn(browser_path, all_args);
   app.browser_proc = browser_proc;
   app.browser_name = browser.name.replace(' ', '-');
   app.finished_tests = false;
