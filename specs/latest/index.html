@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 20 December 2012</h2>
+    <h2 class="no-toc">Editor's Draft 14 January 2013</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2487,6 +2487,14 @@ for (var i = 0; i < numVertices; i++) {
             Set</a> for additional validation performed by WebGL implementations.
         <dt class="idl-code">void compileShader(WebGLShader? shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCompileShader.xml">man page</a>)</span>
+        <dd>
+            See <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL
+            Constructs</a>, <a href="#MAX_GLSL_TOKEN_SIZE">Maximum GLSL Token
+            Size</a>, <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source
+            Character Set</a>, <a href="#MAX_STRUCT_NESTING">Maximum Nesting of Structures in GLSL
+            Shaders</a>, and <a href="#PACKING_RESTRICTIONS">Packing Restrictions for Uniforms and
+            Varyings</a> for additional constraints enforced in, additional constructs supported by,
+            and additional validation performed by WebGL implementations.
         <dt class="idl-code">WebGLProgram? createProgram()
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCreateProgram.xml">man page</a>)</span>
         <dd>
@@ -2593,15 +2601,20 @@ for (var i = 0; i < numVertices; i++) {
             flag</a> is set.
         <dt class="idl-code">void linkProgram(WebGLProgram? program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glLinkProgram.xml">man page</a>)</span>
+        <dd>
+            See <a href="#PACKING_RESTRICTIONS">Packing Restrictions for Uniforms and Varyings</a>
+            for additional constraints enforced in, and additional validation performed by, WebGL
+            implementations.
         <dt class="idl-code">void shaderSource(WebGLShader? shader, DOMString source)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glShaderSource.xml">man page</a>)</span>
         <dd>
             See <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL
             Constructs</a>, <a href="#MAX_GLSL_TOKEN_SIZE">Maximum GLSL Token
             Size</a>, <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source
-            Character Set</a>, and <a href="#MAX_STRUCT_NESTING">Maximum Nesting of Structures in
-            GLSL Shaders</a> for additional constraints enforced in, additional constructs supported
-            by, and validation performed by WebGL implementations.
+            Character Set</a>, <a href="#MAX_STRUCT_NESTING">Maximum Nesting of Structures in GLSL
+            Shaders</a>, and <a href="#PACKING_RESTRICTIONS">Packing Restrictions for Uniforms and
+            Varyings</a> for additional constraints enforced in, additional constructs supported by,
+            and additional validation performed by WebGL implementations.
         <dt class="idl-code">void useProgram(WebGLProgram? program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glUseProgram.xml">man page</a>)</span>
         <dt class="idl-code">void validateProgram(WebGLProgram? program)
@@ -3481,6 +3494,33 @@ extensions.
     type used to originally define the texture object (i.e., using <code>texImage2D</code>).
 </p>
 
+    <h3><a name="PACKING_RESTRICTIONS">Packing Restrictions for Uniforms and Varyings</a></h3>
+
+<p>
+    The OpenGL ES Shading Language, Version 1.00 <a href="#refsGLES20GLSL">[GLES20GLSL]</a>,
+    Appendix A, Section 7 "Counting of Varyings and Uniforms" defines a conservative algorithm for
+    computing the storage required for all of the uniform and varying variables in a shader. The
+    GLSL ES specification requires that if the packing algorithm defined in Appendix A succeeds,
+    then the shader must succeed compilation on the target platform. The WebGL API further requires
+    that this packing algorithm succeed when run against shaders and programs submitted
+    to <code>compileShader</code> and <code>linkProgram</code> in order for the shader or program to
+    be valid.
+</p>
+<p>
+    During a call to <code>compileShader</code>, packing of uniform variables is validated. Instead
+    of using a fixed size grid of registers, the number of rows allocated for uniform variables is
+    determined by querying MAX_VERTEX_UNIFORM_VECTORS or MAX_FRAGMENT_UNIFORM_VECTORS, depending on
+    whether a vertex or fragment shader is being compiled.
+</p>
+<p>
+    During a call to <code>linkProgram</code>, packing of varying variables is validated. Instead of
+    using a fixed size grid of registers, the number of rows allocated for varying variables is
+    determined by querying MAX_VARYING_VECTORS.
+</p>
+<p>
+    If the packing algorithm fails either for the uniform variables of a shader or for the varying
+    variables of a program, compilation or linking must fail.
+</p>
 
 
 <!-- ======================================================================================================= -->
