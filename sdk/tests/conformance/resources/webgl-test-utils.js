@@ -507,8 +507,10 @@ var setupUnitQuadWithTexCoords = function(
 /**
  * Creates a program and buffers for rendering a textured quad.
  * @param {!WebGLContext} gl The WebGLContext to use.
- * @param {number} opt_positionLocation The attrib location for position.
- * @param {number} opt_texcoordLocation The attrib location for texture coords.
+ * @param {number} opt_positionLocation The attrib location for
+ *        position. Default = 0.
+ * @param {number} opt_texcoordLocation The attrib location for
+ *        texture coords. Default = 0.
  * @return {!WebGLProgram}
  */
 var setupTexturedQuad = function(
@@ -820,7 +822,7 @@ var drawIndexedQuad = function(gl, gridRes, opt_color) {
  * @param {number} height width of region to check.
  * @param {!Array.<number>} color The color to fill clear with before drawing. A
  *        4 element array where each element is in the range 0 to 255.
- * @param {number} errorRange Optional. Acceptable error in
+ * @param {number} opt_errorRange Optional. Acceptable error in
  *        color checking. 0 by default.
  * @param {!function()} sameFn Function to call if all pixels
  *        are the same as color.
@@ -828,8 +830,8 @@ var drawIndexedQuad = function(gl, gridRes, opt_color) {
  *        is different than color
  * @param {!function()} logFn Function to call for logging.
  */
-var checkCanvasRectColor = function(gl, x, y, width, height, color, errorRange, sameFn, differentFn, logFn) {
-  errorRange = errorRange || 0;
+var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRange, sameFn, differentFn, logFn) {
+  var errorRange = opt_errorRange || 0;
   if (!errorRange.length) {
     errorRange = [errorRange, errorRange, errorRange, errorRange]
   }
@@ -862,13 +864,18 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, errorRange, 
  * @param {number} height width of region to check.
  * @param {!Array.<number>} color The color to fill clear with before drawing. A
  *        4 element array where each element is in the range 0 to 255.
- * @param {string} msg Message to associate with success. Eg ("should be red").
- * @param {number} errorRange Optional. Acceptable error in
+ * @param {string} opt_msg Message to associate with success. Eg
+ *        ("should be red").
+ * @param {number} opt_errorRange Optional. Acceptable error in
  *        color checking. 0 by default.
  */
-var checkCanvasRect = function(gl, x, y, width, height, color, msg, errorRange) {
+var checkCanvasRect = function(gl, x, y, width, height, color, opt_msg, opt_errorRange) {
+  var msg = opt_msg;
+  if (msg === undefined) {
+    msg = "should be " + color.toString();
+  }
   checkCanvasRectColor(
-      gl, x, y, width, height, color, errorRange,
+      gl, x, y, width, height, color, opt_errorRange,
       function() {
         testPassed(msg);
       },
