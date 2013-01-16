@@ -1,5 +1,3 @@
-<!--
-
 /*
 ** Copyright (c) 2012 The Khronos Group Inc.
 **
@@ -22,28 +20,13 @@
 ** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
+/**
+ * Calls eval.
+ *
+ * This is here so other modules can use "use strict":
+ */
+TestEval = function(str) {
+  return eval(str);
+};
 
--->
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
-<script src="../resources/webgl-test-utils.js"></script>
-<script src="../resources/tex-image-and-sub-image-2d-with-image.js"></script>
-<script>
-"use strict";
-function testPrologue(gl) {
-    return true;
-}
-</script>
-</head>
-<body onload='generateTest("RGBA", "UNSIGNED_BYTE", "..", testPrologue)()'>
-<canvas id="example" width="32px" height="32px"></canvas>
-<div id="description"></div>
-<div id="console"></div>
-</body>
-</html>

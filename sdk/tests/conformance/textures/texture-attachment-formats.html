@@ -40,6 +40,7 @@
 <div id="console"></div>
 <canvas id="canvas" width="2" height="2" style="width: 100px; height:100px; border: 1px solid black;"> </canvas>
 <script>
+"use strict";
 description();
 
 var wtu = WebGLTestUtils;
@@ -66,7 +67,7 @@ if (!gl) {
     return result;
   }
 
-  function testFormat(info) {
+  var testFormat = function(info) {
     debug("");
     debug("testing: " + info.format + ", " + info.type);
 
@@ -167,7 +168,7 @@ if (!gl) {
   ];
 
   gl.clearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
-  fbo = gl.createFramebuffer();
+  var fbo = gl.createFramebuffer();
   gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
   var tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -189,7 +190,7 @@ if (!gl) {
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

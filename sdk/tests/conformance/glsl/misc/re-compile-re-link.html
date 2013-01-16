@@ -79,6 +79,7 @@ void main() {
 </script>
 
 <script>
+"use strict";
 description(document.title);
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
@@ -163,7 +164,7 @@ for (var i = 0; i < 10; ++i) {
 
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../../resources/js-test-post.js"></script>
 

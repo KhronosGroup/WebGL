@@ -41,6 +41,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 function init()
 {
   if (window.initNonKhronosFramework) {
@@ -58,7 +59,7 @@ function init()
 
   var wtu = WebGLTestUtils;
   var canvas = document.getElementById("example");
-  gl = wtu.create3DContext(canvas);
+  var gl = wtu.create3DContext(canvas);
   var program = wtu.setupTexturedQuad(gl);
 
   gl.disable(gl.DEPTH_TEST);
@@ -79,7 +80,7 @@ function init()
 }
 
 init();
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

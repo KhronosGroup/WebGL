@@ -55,6 +55,7 @@
     </script>
 
     <script>
+        "use strict";
         function init()
         {
             if (window.initNonKhronosFramework) {
@@ -73,7 +74,7 @@
             gl.clearColor(1.0, 0.0, 0.0, 1.0);
             gl.clear(gl.COLOR_BUFFER_BIT);
 
-            program = setupProgram(gl, "vshader", "fshader", ["vPosition"]);
+            var program = setupProgram(gl, "vshader", "fshader", ["vPosition"]);
             var vertexObject = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,2.5,0, 1.5,1.5,0, 2.5,1.5,0 ]), gl.STATIC_DRAW);
@@ -121,7 +122,7 @@
        }
 
        init();
-       successfullyParsed = true;
+       var successfullyParsed = true;
     </script>
 
 </body>

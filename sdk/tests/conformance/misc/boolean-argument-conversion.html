@@ -33,12 +33,14 @@
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
+<script src="../../resources/test-eval.js"></script>
 </head>
 <body>
 <div id="description"></div>
 <div id="console"></div>
 
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 description("Test that conversion of boolean arguments of WebGL functions follows EcmaScript 9.2. ToBoolean");
 debug("");
@@ -65,7 +67,7 @@ var boolArg = { valueOf: function() { throw "Converting an Object to a Boolean s
 
 function shouldNotThrowWithBoolArgs(code) {
   try {
-    eval(code);
+    TestEval(code);
   } catch(e) {
     testFailed(code + " threw exception: " + e);
     return;
@@ -127,7 +129,7 @@ shouldNotThrowWithBoolArgs(
   "gl.vertexAttribPointer(aloc, 4, gl.FLOAT, boolArg, 4, 0)"
 );
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

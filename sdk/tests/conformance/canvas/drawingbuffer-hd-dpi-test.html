@@ -56,6 +56,7 @@ void main()
 }
 </script>
 <script>
+"use strict";
 description();
 debug("");
 
@@ -188,7 +189,7 @@ function test(desiredWidth, desiredHeight) {
     debug("");
     debug("testing resizing canvas to width = " + desiredWidth + ", height = " + desiredHeight);
 
-    oldViewport = gl.getParameter(gl.VIEWPORT);
+    var oldViewport = gl.getParameter(gl.VIEWPORT);
 
     // flip width and height
     canvas.width = desiredHeight;
@@ -218,7 +219,7 @@ test(128, 64);
 test(256, 512);
 
 debug("")
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

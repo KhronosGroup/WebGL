@@ -41,6 +41,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 GLSLGenerator.runFeatureTest({
   feature: "mix",
   args: "$(type) startValue, $(type) endValue, float mixValue",
@@ -68,7 +69,7 @@ GLSLGenerator.runFeatureTest({
     ].join("\n")
   ]
 });
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

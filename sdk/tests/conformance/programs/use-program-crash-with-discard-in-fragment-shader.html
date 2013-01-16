@@ -58,6 +58,7 @@ void main()
 }
 </script>
 <script>
+"use strict";
 description('Regression test for crash in Mac OS AMD OpenGL driver related to use of discard in fragment shader.<br><br>More specifically, triggering the crash seems to require examination of gl_FragCoord.w, use of exp2, and a call to discard in the fragment shader. Thanks to Sheheryar Zakaria and Michael Braithwaite at Turbulenz for the original test case.<br><a href="https://bugs.webkit.org/show_bug.cgi?id=73932">WebKit bug 73932</a><br>');
 
 debug("");
@@ -115,7 +116,7 @@ if (pixels[0] == 255 &&
            "), should be (255, 0, 0, 255)");
 }
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

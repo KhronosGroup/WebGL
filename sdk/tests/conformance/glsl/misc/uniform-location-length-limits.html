@@ -82,6 +82,7 @@ void main() {
 }
 </script>
 <script>
+"use strict";
 if (window.initNonKhronosFramework) {
     window.initNonKhronosFramework(false);
 }
@@ -104,7 +105,7 @@ var uniformLoc = gl.getUniformLocation(program, "identifier128CharactersLong_012
 wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
 shouldBeNull('uniformLoc');
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../../resources/js-test-post.js"></script>
 </body>

@@ -34,12 +34,14 @@
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
+<script src="../../resources/test-eval.js"></script>
 </head>
 <body>
 <div id="description"></div>
 <div id="console"></div>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
+"use strict";
 description("Test that functions returning strings really do return strings (and not e.g. null)");
 debug("");
 
@@ -53,7 +55,7 @@ function shouldReturnString(_a)
   var exception;
   var _av;
   try {
-     _av = eval(_a);
+     _av = TestEval(_a);
   } catch (e) {
      exception = e;
   }
@@ -98,9 +100,10 @@ if (!gl) {
   // different test output.
   var exts = gl.getSupportedExtensions();
   var allPassed = true;
-  for (i in exts) {
-    if (typeof i != "string") {
-      shouldReturnString("gl.getSupportedExtensions()[" + i + "]");
+  for (var ii = 0; ii < exts.length; ++ii) {
+    var s = exts[ii];
+    if (typeof s != "string") {
+      shouldReturnString("gl.getSupportedExtensions()[" + s + "]");
       allPassed = false;
     }
   }
@@ -115,7 +118,7 @@ if (!gl) {
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

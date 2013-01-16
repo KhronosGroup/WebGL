@@ -41,6 +41,7 @@
 <div id="console"></div>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
+"use strict";
 description("This test checks vertexAttribPointer behaviors in WebGL.");
 
 debug("");
@@ -78,7 +79,7 @@ if (!gl) {
   glErrorShouldBe(gl, gl.INVALID_ENUM,
       "vertexAttribPointer should not support FIXED");
 
-  function checkVertexAttribPointer(
+  var checkVertexAttribPointer = function(
       gl, err, reason, size, type, normalize, stride, offset) {
     gl.vertexAttribPointer(0, size, type, normalize, stride, offset);
     glErrorShouldBe(gl, err,
@@ -146,7 +147,7 @@ if (!gl) {
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

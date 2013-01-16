@@ -58,13 +58,14 @@ void main()
 </script>
 
 <script>
+"use strict";
 description("This test ensures WebGL implementations handle uniformMatrix in a OpenGL ES 2.0 spec compliant way");
 
 debug("");
 debug("Checking gl.uniformMatrix.");
 
-gl = initWebGL("example");
-program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+var gl = initWebGL("example");
+var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
 for (var ii = 2; ii <= 4; ++ii) {
   var loc = gl.getUniformLocation(program, "world" + ii);
   var matLess = [];
@@ -93,7 +94,7 @@ for (var ii = 2; ii <= 4; ++ii) {
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

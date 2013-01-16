@@ -62,10 +62,11 @@ void main() {
 </script>
 
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 description();
 
-gl = wtu.create3DContext("example");
+var gl = wtu.create3DContext("example");
 
 var numVertexAttribs = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
 for (var ii = 0; ii < numVertexAttribs; ++ii) {
@@ -91,7 +92,7 @@ for (var ii = 0; ii < numVertexAttribs; ++ii) {
 }
 glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

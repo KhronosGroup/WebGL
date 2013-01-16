@@ -38,6 +38,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 description("Tests calling the various uniform[Matrix]* APIs with a null uniform location");
 
 var gl = create3DContext();
@@ -84,13 +85,15 @@ var funcs = [ "uniform1f", "uniform1fv", "uniform1i", "uniform1iv",
               "uniform3f", "uniform3fv", "uniform3i", "uniform3iv",
               "uniform4f", "uniform4fv", "uniform4i", "uniform4iv",
               "uniformMatrix2fv", "uniformMatrix3fv", "uniformMatrix4fv" ];
+var callString;
+
 for (var i = 0; i < funcs.length; i++) {
   callString = "callUniformFunction('" + funcs[i] + "')";
   shouldBeUndefined(callString);
   glErrorShouldBe(gl, gl.NO_ERROR);
 }
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

@@ -62,6 +62,7 @@ void main()
 </script>
 <canvas id="canvas" width="1024" height="1024"> </canvas>
 <script>
+"use strict";
 description("This test is to help see if an WebGL app *can* get lost context.");
 
 debug("");
@@ -69,7 +70,7 @@ debug("Canvas.getContext");
 var g_worldLoc;
 var g_texLoc;
 var g_textures = [];
-gl = initWebGL("canvas", "vshader", "fshader", [ "vPosition", "texCoord0"], [ 0, 0, 0, 1 ], 1);
+var gl = initWebGL("canvas", "vshader", "fshader", [ "vPosition", "texCoord0"], [ 0, 0, 0, 1 ], 1);
 if (!gl) {
   testFailed("context does not exist");
 } else {
@@ -211,9 +212,10 @@ function rotationZ(angle) {
 };
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script>
+"use strict";
 </script>
 
 </body>

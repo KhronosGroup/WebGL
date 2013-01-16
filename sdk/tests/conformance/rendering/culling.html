@@ -52,6 +52,7 @@
         </script>
 
         <script>
+            "use strict";
             function draw(gl, arr, colLoc, col) {
                 var vertices = new Float32Array(arr);
                 var vertBuf = gl.createBuffer();
@@ -68,7 +69,7 @@
             }
 
             function check(gl, winding, shoulddraw) {
-                buf = new Uint8Array(4);
+                var buf = new Uint8Array(4);
                 gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
                 if (buf[0] == 0 && buf[1] == 255 && buf[2] == 0 && buf[3] == 255)
                     testPassed(winding + ' face was ' + (shoulddraw ? '' : 'not ') + 'drawn.');
@@ -141,9 +142,10 @@
         <div id="description"></div>
         <div id="console"></div>
         <script>
+            "use strict";
             description('Verify that culling works');
             runTest();
-            successfullyParsed = true;
+            var successfullyParsed = true;
         </script>
         <script src="../../resources/js-test-post.js"></script>
     </body>

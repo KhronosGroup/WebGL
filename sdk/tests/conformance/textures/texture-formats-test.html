@@ -42,6 +42,7 @@
 <canvas id="canvas2d" width="2" height="2" style="width: 50px; height: 50px; border: 1px solid black;"></canvas>
 <canvas id="canvas" width="2" height="2" style="width: 100px; height:100px; border: 1px solid black;"> </canvas>
 <script>
+"use strict";
 description("This test ensures WebGL implementations allow the OpenGL ES 2.0 texture formats and do not allow DesktopGL texture formats.");
 
 debug("");
@@ -57,7 +58,7 @@ if (!gl) {
   debug("");
   debug("Checking texture formats.");
 
-  function createTexture(internalFormat, format, opt_border) {
+  var createTexture = function(internalFormat, format, opt_border) {
       var border = (opt_border === undefined) ? 0 : opt_border;
       var tex = gl.createTexture();
       gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -72,13 +73,13 @@ if (!gl) {
                     null);             // data
   }
 
-  function testValidFormat(internalFormat, formatName) {
+  var testValidFormat = function(internalFormat, formatName) {
       createTexture(internalFormat, internalFormat);
       glErrorShouldBe(gl, gl.NO_ERROR,
                 "was able to create texture of " + formatName);
   }
 
-  function testInvalidFormat(internalFormat, formatName) {
+  var testInvalidFormat = function(internalFormat, formatName) {
       createTexture(internalFormat, internalFormat);
       var err = gl.getError();
       if (err == gl.NO_ERROR) {
@@ -190,7 +191,7 @@ if (!gl) {
             "non 0 border to gl.TexImage2D should return INVALID_VALUE");
 
 
-  function checkTypes() {
+  var checkTypes = function() {
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -200,7 +201,7 @@ if (!gl) {
     var loc = gl.getUniformLocation(program, "tex");
     gl.uniform1i(loc, 0);
 
-    function checkType(r, g, b, a, type, format, buf) {
+    var checkType = function(r, g, b, a, type, format, buf) {
       var typeName = wtu.glEnumToString(gl, type);
       var formatName = wtu.glEnumToString(gl, format);
       var desc = "format: " + formatName + ", type: " + typeName;
@@ -281,7 +282,7 @@ if (!gl) {
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

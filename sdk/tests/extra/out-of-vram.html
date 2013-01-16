@@ -41,6 +41,7 @@
 <div id="console"></div>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
+"use strict";
 debug("This tests WebGL running out of vram.");
 
 debug("");
@@ -134,7 +135,7 @@ function stop(msg) {
 
 function finish() {
   debug("");
-  successfullyParsed = true;
+  var successfullyParsed = true;
 }
 
 </script>

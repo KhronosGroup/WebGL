@@ -39,7 +39,8 @@
 <div id="console"></div>
 
 <script>
-wtu = WebGLTestUtils;
+"use strict";
+var wtu = WebGLTestUtils;
 description("Test of get calls against GL objects like getBufferParameter, etc.");
 
 function sizeInBytes(type) {
@@ -454,7 +455,7 @@ gl.deleteBuffer(buffer);
 shouldBeNull('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING)');
 glErrorShouldBe(gl, gl.NO_ERROR);
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

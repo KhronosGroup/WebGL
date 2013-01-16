@@ -59,6 +59,7 @@ void main() {
 <canvas id="canvas" style="width: 50px; height: 50px;"> </canvas>
 <div id="console"></div>
 <script>
+"use strict";
 description("This test verifies the functionality of the OES_element_index_uint extension, if it is available.");
 
 debug("");
@@ -437,7 +438,7 @@ function runCrashWithBufferSubDataTests() {
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

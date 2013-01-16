@@ -36,6 +36,7 @@
 <script src="../resources/webgl-test-utils.js"></script>
 
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 var gl = null;
 var textureLoc = null;
@@ -446,7 +447,7 @@ function runOneTest(testCase)
     gl.deleteTexture(texture);
 
     // Read back the rendering results.
-    buf = new Uint8Array(testCase.width * testCase.height * 4);
+    var buf = new Uint8Array(testCase.width * testCase.height * 4);
     gl.readPixels(0, 0, testCase.width, testCase.height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     // Run the verification routine.
     if (testCase.verifier(buf, testCase.threshold, testCase.numOccurrences))

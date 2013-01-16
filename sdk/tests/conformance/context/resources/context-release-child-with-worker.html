@@ -52,11 +52,12 @@
     </script>
 
     <script>
+        "use strict";
         var wtu = WebGLTestUtils;
         var myWorker = new Worker("context-release-worker.js");
 
         var gl = wtu.create3DContext("c", {"antialiased": false});
-        program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
+        var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 
         var vertexObject = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);

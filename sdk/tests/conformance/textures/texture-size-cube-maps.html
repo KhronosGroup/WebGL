@@ -61,14 +61,15 @@ void main()
 }
 </script>
 <script>
+"use strict";
 var canvas;
 description("Checks issues with size of cube map textures");
 debug("");
 
 var wtu = WebGLTestUtils;
-canvas = document.getElementById("example");
+var canvas = document.getElementById("example");
 
-gl = wtu.create3DContext(canvas);
+var gl = wtu.create3DContext(canvas);
 wtu.setupUnitQuad(gl, 0, 1);
 var program = wtu.setupProgram(
     gl,
@@ -346,7 +347,7 @@ function mulMatrix(a, b) {
   return dst;
 };
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

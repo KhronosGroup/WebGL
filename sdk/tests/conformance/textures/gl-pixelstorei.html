@@ -57,6 +57,7 @@ void main() {
 </script>
 
 <script>
+"use strict";
 function fail(x,y, name, buf, shouldBe) {
   var i = (y*50+x) * 4;
   var reason = "pixel in "+name+" at ("+x+","+y+") is ("+buf[i]+","+buf[i+1]+","+buf[i+2]+","+buf[i+3]+"), should be "+shouldBe;
@@ -74,8 +75,8 @@ function init() {
   debug("");
 
   var canvas3d = document.getElementById("example");
-  gl = initWebGL("example");
-  program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+  var gl = initWebGL("example");
+  var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
@@ -118,6 +119,8 @@ function init() {
     pass(name);
   }
 
+  var ctx2d;
+
   function checkColors() {
     var buf = new Uint8Array(50 * 50 * 4);
     gl.readPixels(0, 0, 50, 50, gl.RGBA, gl.UNSIGNED_BYTE, buf);
@@ -139,7 +142,7 @@ function init() {
 }
 
 init();
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

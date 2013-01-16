@@ -41,6 +41,7 @@
 <canvas id="canvasNoAlpha" width="2px" height="2px"></canvas>
 <div id="console"></div>
 <script>
+"use strict";
 
 function getChannelsFromFormat(format) {
   switch (gl[format]) {
@@ -72,8 +73,8 @@ description();
 
 var canvas = document.getElementById("canvas");
 var canvasNoAlpha = document.getElementById("canvasNoAlpha");
-gl = wtu.create3DContext(canvas, {alpha:true});
-glNoAlpha = wtu.create3DContext(canvasNoAlpha, {alpha:false});
+var gl = wtu.create3DContext(canvas, {alpha:true});
+var glNoAlpha = wtu.create3DContext(canvasNoAlpha, {alpha:false});
 
 debug("test with an RGBA backbuffer");
 var program = wtu.setupTexturedQuad(gl);
@@ -83,7 +84,7 @@ testFormats('RGBA');
 testBackbufferFormats();
 
 debug("test with an RGB backbuffer");
-gl = glNoAlpha;
+var gl = glNoAlpha;
 var program = wtu.setupTexturedQuad(gl);
 glErrorShouldBe(gl, gl.NO_ERROR, "During Initialization");
 testFormats('RGB');

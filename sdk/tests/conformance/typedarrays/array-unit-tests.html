@@ -32,12 +32,14 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../../resources/test-eval.js"></script>
 </head>
 <body>
 <div id="description"></div>
 <div id="console"></div>
 
 <script>
+"use strict";
 
 description("Verifies the functionality of the new array-like objects in the TypedArray spec");
 
@@ -92,7 +94,7 @@ var subBuffer;
 function testSlice() {
   function test(subBuf, starts, size) {
     byteLength = size;
-    subBuffer = eval(subBuf);
+    subBuffer = TestEval(subBuf);
     var subArray = new Int8Array(subBuffer);
     assertEq(subBuf, subBuffer.byteLength, byteLength);
     for (var i = 0; i < size; ++i)
@@ -1132,7 +1134,7 @@ function runTests() {
 }
 
 runTests();
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

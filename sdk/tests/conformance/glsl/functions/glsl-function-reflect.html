@@ -41,6 +41,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 GLSLGenerator.runFeatureTest({
   feature: "reflect",
   args: "$(type) I, $(type) N",
@@ -76,7 +77,7 @@ GLSLGenerator.runFeatureTest({
     ].join("\n")
   ]
 });
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

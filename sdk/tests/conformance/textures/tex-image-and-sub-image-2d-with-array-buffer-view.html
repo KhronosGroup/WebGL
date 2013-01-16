@@ -39,6 +39,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description('Verifies texImage2D and texSubImage2D code paths taking ArrayBufferView');
 
 var wtu = WebGLTestUtils;
@@ -244,14 +245,14 @@ function runTest()
 
 }
 
-gl = wtu.create3DContext("example");
+var gl = wtu.create3DContext("example");
 var program = wtu.setupTexturedQuad(gl);
 
 textureLoc = gl.getUniformLocation(program, "tex");
 
 runTest();
 glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

@@ -56,28 +56,29 @@ void main()
 }
 </script>
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 function init()
 {
   description();
 
-  gl = wtu.create3DContext("example");
-  program = wtu.loadProgramFromScript(gl, "vshader", "fshader");
+  var gl = wtu.create3DContext("example");
+  var program = wtu.loadProgramFromScript(gl, "vshader", "fshader");
   gl.useProgram(program);
-  loc = gl.getAttribLocation(program, "a_Position");
+  var loc = gl.getAttribLocation(program, "a_Position");
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
   gl.bufferData(
-  	gl.ARRAY_BUFFER,
-  	new Float32Array(
-		[  1,  1,
-		  -1,  1,
-		  -1, -1,
-		   1,  1,
-		  -1, -1,
-		   1, -1]),
-  	gl.STATIC_DRAW);
+    gl.ARRAY_BUFFER,
+    new Float32Array(
+    [  1,  1,
+      -1,  1,
+      -1, -1,
+       1,  1,
+      -1, -1,
+       1, -1]),
+    gl.STATIC_DRAW);
   gl.enableVertexAttribArray(loc);
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
@@ -90,7 +91,7 @@ function init()
 }
 
 init();
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

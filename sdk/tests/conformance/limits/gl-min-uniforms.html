@@ -85,6 +85,7 @@ void main()
 }
 </script>
 <script>
+"use strict";
 description(document.title);
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
@@ -115,7 +116,7 @@ wtu.drawQuad(gl);
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 wtu.checkCanvasRect(gl, 0, 0, gl.canvas.width, gl.canvas.height, [32, 64, 127, 255], "Should render 32,64,127,255 (+/-1)", 1);
 
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

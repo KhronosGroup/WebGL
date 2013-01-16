@@ -55,11 +55,13 @@
     }
 </script>
 <script>
+"use strict";
 description();
 debug("");
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext(document.getElementById("example"));
 var vSrc = wtu.getScript("vshader");
+var uniforms;
 // This test is to test drivers the have bugs related to optimizing
 // an array of uniforms when only 1 of those uniforms is used.
 debug("");
@@ -127,7 +129,7 @@ function runNextTest() {
 }
 runNextTest();
 
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 </body>

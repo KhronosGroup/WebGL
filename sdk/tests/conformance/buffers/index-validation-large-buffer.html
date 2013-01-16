@@ -38,6 +38,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 description('Tests that index validation for drawElements works with large attribute buffers');
 
 var context = create3DContext();
@@ -67,7 +68,7 @@ context.bufferData(context.ARRAY_BUFFER, new Float32Array(3 * 65536 + 3), contex
 shouldGenerateGLError(context, context.NO_ERROR, "context.drawElements(context.TRIANGLES, 3, context.UNSIGNED_SHORT, 0)");
 
 debug("")
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

@@ -40,6 +40,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description("This test ensures that WebGL contexts are released properly upon page reload");
 
 var host = document.getElementById("host");
@@ -84,7 +85,7 @@ window.addEventListener("message", function(event) {
 
 refreshFrame();
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 </body>

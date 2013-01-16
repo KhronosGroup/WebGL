@@ -40,6 +40,7 @@
 <div id="console"></div>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
+"use strict";
 debug("This tests WebGL running out of memory.");
 
 debug("");
@@ -100,13 +101,14 @@ if (!gl) {
 
 function finish() {
   debug("");
-  successfullyParsed = true;
+  var successfullyParsed = true;
 }
 
 </script>
 <!-- <script src="../resources/js-test-post.js"></script> -->
 
 <script>
+"use strict";
 </script>
 
 </body>

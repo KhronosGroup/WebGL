@@ -71,6 +71,7 @@ void main()
 }
 </script>
 <script>
+"use strict";
 description("Tests getActiveUniform for various types");
 
 var wtu = WebGLTestUtils;
@@ -155,7 +156,7 @@ gl.uniform1f(l1, 2);
 glErrorShouldBe(gl, gl.INVALID_OPERATION,
                 "setting a uniform using a location from another program");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

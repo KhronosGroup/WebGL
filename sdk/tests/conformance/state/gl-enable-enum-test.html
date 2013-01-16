@@ -40,6 +40,7 @@
 <div id="console"></div>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
+"use strict";
 description("This test ensures WebGL implementations allow OpenGL ES 2.0 features to be turned on but not non OpenGL ES 2.0 features.");
 
 debug("");
@@ -150,7 +151,7 @@ if (!gl) {
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

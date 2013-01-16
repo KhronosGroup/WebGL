@@ -39,6 +39,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description('Tests texSubImage2D with bad arguments');
 
 var wtu = WebGLTestUtils;
@@ -85,7 +86,7 @@ glErrorShouldBe(gl, gl.INVALID_OPERATION, "format not same as original RGBA 4_4_
 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original RGBA 4_4_4_4");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

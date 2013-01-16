@@ -41,6 +41,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description("Test texImage2D from a webgl canvas.");
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
@@ -78,7 +79,7 @@ wtu.drawQuad(gl);
 wtu.checkCanvas(gl, [0, 255, 0, 255], "Canvas should be green");
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

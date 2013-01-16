@@ -41,6 +41,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 GLSLGenerator.runFeatureTest({
   feature: "mod",
   args: "$(type) value, $(type) divisor",
@@ -70,7 +71,7 @@ GLSLGenerator.runFeatureTest({
      "       vec4(1.5, 2.1, 3.2, 1.1)) / vec4(1.5, 2.1, 3.2, 1.1);"].join("\n")
   ]
 });
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

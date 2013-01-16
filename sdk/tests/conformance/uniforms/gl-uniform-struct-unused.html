@@ -69,6 +69,7 @@ void main()
 </script>
 
 <script>
+"use strict";
 description("This test ensures WebGL implementations handle unused members at the end of structs correctly.");
 
 var wtu = WebGLTestUtils;
@@ -95,7 +96,7 @@ wtu.checkCanvas(gl, [255, 255, 255, 255], "should still be white", 0);
 
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no GL errors");
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>
