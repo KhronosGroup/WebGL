@@ -55,9 +55,10 @@
 </script>
 
 <script>
+"use strict";
 description("tests that turning on attribs that have no buffer bound fails to draw");
-gl = initWebGL("example")
-program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+var gl = initWebGL("example");
+var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
 
 var vertexObject = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
@@ -71,7 +72,7 @@ glErrorShouldBe(gl, gl.NO_ERROR);
 gl.drawArrays(gl.TRIANGLES, 0, 3);
 glErrorShouldBe(gl, gl.INVALID_OPERATION);
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

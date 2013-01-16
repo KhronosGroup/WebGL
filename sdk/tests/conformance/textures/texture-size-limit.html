@@ -40,6 +40,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description("Checks that various sizes limits of textures ")
 var canvas;
 
@@ -52,7 +53,7 @@ function numLevelsFromSize(size) {
 }
 
 var wtu = WebGLTestUtils;
-gl = wtu.create3DContext("example");
+var gl = wtu.create3DContext("example");
 var tests = [
   { format: gl.ALPHA,           type: gl.UNSIGNED_BYTE,          size: 1, dataType: Uint8Array  },
   { format: gl.LUMINANCE,       type: gl.UNSIGNED_BYTE,          size: 1, dataType: Uint8Array  },
@@ -151,7 +152,7 @@ function testFormatType(t, test) {
   }
 }
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

@@ -40,6 +40,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 window.onload = init;
 debug("Tests a WebGL program that draws a bunch of large polygons");
 
@@ -100,7 +101,7 @@ function main() {
   gl.drawElements(gl.TRIANGLES, numQuads * 6, gl.UNSIGNED_BYTE, 0);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after drawing");
 
-  successfullyParsed = true;
+  var successfullyParsed = true;
 }
 </script>
 </body>

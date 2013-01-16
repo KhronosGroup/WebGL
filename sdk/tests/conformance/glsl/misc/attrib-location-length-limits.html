@@ -67,6 +67,7 @@ void main() {
 }
 </script>
 <script>
+"use strict";
 if (window.initNonKhronosFramework) {
     window.initNonKhronosFramework(false);
 }
@@ -101,7 +102,7 @@ program = wtu.loadStandardProgram(gl);
 shouldBe('gl.getAttribLocation(program, "vPosition01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567")', '-1');
 wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../../resources/js-test-post.js"></script>
 </body>

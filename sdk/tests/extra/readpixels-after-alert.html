@@ -41,6 +41,7 @@
 <div id="description">Verify WebGL behavior after an alert and then a readPixels()</div>
 <div id="console"></div>
 <script>
+"use strict";
 window.onload = init;
 
 function checkPixels(buf, width, height, thresh) {
@@ -86,9 +87,10 @@ function init() {
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script>
+"use strict";
 </script>
 
 </body>

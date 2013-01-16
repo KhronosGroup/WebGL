@@ -38,6 +38,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 description("Test of getActiveAttrib and getActiveUniform");
 
 var context = create3DContext();
@@ -130,7 +131,7 @@ glErrorShouldBe(context, context.INVALID_VALUE);
 shouldBeNull("context.getActiveAttrib(program, 0)");
 glErrorShouldBe(context, context.INVALID_VALUE);
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

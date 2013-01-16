@@ -39,6 +39,7 @@
 <div id="console"></div>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
+"use strict";
 description("Tests to check user code cannot access uninitialized data from GL resources.");
 
 var wtu = WebGLTestUtils;
@@ -186,7 +187,7 @@ glErrorShouldBe(gl, gl.NO_ERROR);
 //TODO: uninitialized uniform arrays?
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

@@ -40,6 +40,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 description("Tests the a few differences between WebGL and GLES2");
 
@@ -123,7 +124,7 @@ debug("Verify that bindAttribLocation rejects names start with webgl_ or _webgl_
 shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindAttribLocation(program, 0, 'webgl_a')");
 shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindAttribLocation(program, 0, '_webgl_a')");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

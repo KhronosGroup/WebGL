@@ -63,6 +63,7 @@
   </script>
 
   <script>
+    "use strict";
     if (window.initNonKhronosFramework) {
       window.initNonKhronosFramework(false);
     }
@@ -72,7 +73,7 @@
 
     // NOTE: I'm not 100% confident in this test. I think it is correct.
 
-    wtu = WebGLTestUtils;
+    var wtu = WebGLTestUtils;
     var gl = initWebGL("example");
     shouldBeNonNull("gl");
     var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
@@ -158,7 +159,7 @@
       }
     }
 
-    successfullyParsed = true;
+    var successfullyParsed = true;
   </script>
   <script src="../../../resources/js-test-post.js"></script>
 

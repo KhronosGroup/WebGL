@@ -49,6 +49,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
     ];
 
     var videoNdx = 0;
+    var video;
     var runNextVideo = function() {
         if (videoNdx == videos.length) {
             video.removeEventListener("playing", runTest);
@@ -58,7 +59,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
         var info = videos[videoNdx++];
         debug("");
         debug("testing: " + info.type);
-        var video = document.createElement("video");
+        video = document.createElement("video");
         var canPlay = true;
         if (!video.canPlayType) {
           testFailed("video.canPlayType required method missing");

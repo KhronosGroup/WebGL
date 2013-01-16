@@ -58,6 +58,7 @@ void main()
 }
 </script>
 <script>
+"use strict";
 description("This test ensures WebGL implementations don't allow names that start with 'gl_' when calling bindAttribLocation.");
 
 debug("");
@@ -214,7 +215,7 @@ checkDraw(0, 3, 255, 0, 0, 255);
 glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

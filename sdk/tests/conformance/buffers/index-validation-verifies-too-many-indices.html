@@ -38,6 +38,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 description('Tests that index validation for drawElements does not examine too many indices');
 
 var context = create3DContext();
@@ -61,7 +62,7 @@ shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawElements(
 shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawElements(context.TRIANGLE_STRIP, 4, context.UNSIGNED_SHORT, 4)");
 
 debug("")
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

@@ -79,6 +79,7 @@
     }
 </script>
 <script>
+"use strict";
 description("checks shader with too many uniforms fails");
 
 var wtu = WebGLTestUtils;
@@ -129,7 +130,7 @@ for (var ii = 0; ii < tests.length; ++ii) {
 }
 
 GLSLConformanceTester.runTests(glslTests);
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

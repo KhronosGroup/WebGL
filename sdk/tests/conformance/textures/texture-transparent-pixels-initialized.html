@@ -31,8 +31,10 @@
 <script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 var gl = null;
+var texture;
 var textureLoc = null;
 var successfullyParsed = false;
 
@@ -89,7 +91,7 @@ function runTest()
 
     // Spot check a couple of 2x2 regions in the upper and lower left
     // corners; they should be the rgb values in the texture.
-    color = [0, 0, 0];
+    var color = [0, 0, 0];
     debug("Checking lower left corner");
     wtu.checkCanvasRect(gl, 1, gl.canvas.height - 3, 2, 2, color,
                         "shouldBe " + color);

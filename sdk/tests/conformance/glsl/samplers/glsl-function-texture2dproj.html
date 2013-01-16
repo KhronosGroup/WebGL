@@ -77,6 +77,7 @@ void main() {
 }
 </script>
 <script>
+"use strict";
 description("tests GLSL texture2DProj function with");
 
 var wtu = WebGLTestUtils;
@@ -128,7 +129,7 @@ for (var ss = 0; ss < 2; ++ss) {
 }
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../../resources/js-test-post.js"></script>

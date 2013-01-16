@@ -38,6 +38,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 description("Test of drawElements with out-of-bounds parameters");
 
 var context = create3DContext();
@@ -172,7 +173,7 @@ shouldGenerateGLError(context, context.NO_ERROR, "context.drawElements(context.T
 context.bindBuffer(context.ELEMENT_ARRAY_BUFFER, null);
 shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawElements(context.TRIANGLES, 6, context.UNSIGNED_SHORT, 2)");
 debug("")
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

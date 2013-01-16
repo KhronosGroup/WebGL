@@ -67,6 +67,7 @@ void main()
 }
 </script>
 <script>
+"use strict";
 window.onload = main;
 debug("Tests a WebGL program that accesses out of bounds uniform array elements");
 
@@ -117,7 +118,7 @@ function main() {
     gl.drawElements(gl.TRIANGLES, gridRes * gridRes * 6, gl.UNSIGNED_SHORT, 0);
   }
 
-  successfullyParsed = true;
+  var successfullyParsed = true;
 }
 
 </script>

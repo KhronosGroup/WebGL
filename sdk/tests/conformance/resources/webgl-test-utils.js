@@ -20,8 +20,8 @@
 ** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
-
-WebGLTestUtils = (function() {
+var WebGLTestUtils = (function() {
+"use strict";
 
 /**
  * Wrapped logging function.
@@ -1099,7 +1099,7 @@ var glErrorShouldBe = function(gl, glError, opt_msg) {
  * @param {function(string): void) opt_errorCallback callback for errors. 
  */
 var linkProgram = function(gl, program, opt_errorCallback) {
-  errFn = opt_errorCallback || testFailed;
+  var errFn = opt_errorCallback || testFailed;
   // Link the program
   gl.linkProgram(program);
 

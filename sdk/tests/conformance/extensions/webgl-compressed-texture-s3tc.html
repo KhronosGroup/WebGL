@@ -57,6 +57,7 @@ img {
 <canvas id="canvas" width="8" height="8" style="width: 8px; height: 8px;"></canvas>
 <div id="console"></div>
 <script>
+"use strict";
 description("This test verifies the functionality of the WEBGL_compressed_texture_s3tc extension, if it is available.");
 
 debug("");
@@ -627,7 +628,7 @@ function testPVRTCTextures() {
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

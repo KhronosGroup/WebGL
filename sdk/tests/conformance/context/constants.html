@@ -39,6 +39,7 @@
 <div id="console"></div>
 <canvas id="canvas" style="width: 50px; height: 50px;"> </canvas>
 <script>
+"use strict";
 description("This test ensures that the WebGL context has all the constants in the specification.");
 
 var constants = {
@@ -529,7 +530,7 @@ for (var i in gl) {
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

@@ -90,6 +90,7 @@ void main(void) {
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description();
 
 var wtu = WebGLTestUtils;
@@ -148,7 +149,7 @@ wtu.checkCanvas(gl, [255, 255, 0, 0], "Should be yellow");
 
 glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../../resources/js-test-post.js"></script>
 </body>

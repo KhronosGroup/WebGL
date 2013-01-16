@@ -39,6 +39,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 description("Tests calling WebGL APIs with wrong argument types");
 
@@ -53,7 +54,7 @@ assertMsg(shader != null, "Shader Compiled");
 var loc = context.getUniformLocation(program, "u_modelViewProjMatrix");
 assertMsg(loc != null, "getUniformLocation succeeded");
 
-var arguments = [
+var testArguments = [
   { value: "foo",
     throws: true },
   { value: 0,
@@ -70,9 +71,9 @@ function shouldBeEmptyString(command) {
   shouldBe(command, "''");
 }
 
-for (var i = 0; i < arguments.length; ++i) {
+for (var i = 0; i < testArguments.length; ++i) {
   var func, func2, func3;
-  if (arguments[i].throws) {
+  if (testArguments[i].throws) {
     func = shouldThrow;
     func2 = shouldThrow;
     func3 = shouldThrow;
@@ -81,7 +82,7 @@ for (var i = 0; i < arguments.length; ++i) {
     func2 = shouldBeNull;
     func3 = shouldBeEmptyString;
   }
-  argument = arguments[i].value;
+  argument = testArguments[i].value;
   func("context.compileShader(argument)");
   func("context.linkProgram(argument)");
   func("context.attachShader(program, argument)");
@@ -112,7 +113,7 @@ for (var i = 0; i < arguments.length; ++i) {
   func3("context.getShaderSource(argument)");
 }
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

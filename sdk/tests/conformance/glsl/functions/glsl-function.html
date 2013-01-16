@@ -41,6 +41,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 GLSLGenerator.runFeatureTest({
   feature: "the_GLSL_test_harness",
   testFunc: "pass through",
@@ -53,7 +54,7 @@ GLSLGenerator.runFeatureTest({
      "$(output) = $(input);"
   ]
 });
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

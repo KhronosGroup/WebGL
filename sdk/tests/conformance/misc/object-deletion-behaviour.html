@@ -39,6 +39,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 description("Tests deletion behavior for texture, renderbuffer, shader, and program");
 
 var wtu = WebGLTestUtils;
@@ -439,7 +440,7 @@ if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
   shouldGenerateGLError(gl, gl.NO_ERROR, 'wtu.checkCanvasRect(gl, 0, 0, 300, 150, [0,255,0,255], "fbo should be green")');
 }
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

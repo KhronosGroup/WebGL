@@ -41,6 +41,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description("Tests that resources can not be shared.");
 debug("");
 
@@ -55,7 +56,7 @@ assertMsg(
   gl2.getError() == gl2.INVALID_OPERATION,
   "attempt to use a resource from the wrong context should fail with INVALID_OPERATION");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

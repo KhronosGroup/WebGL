@@ -35,6 +35,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 
 description('Tests passing a vec4 to a uniform and a canvas to texImage2D');
 
@@ -52,7 +53,7 @@ var texture = gl.createTexture();
 shouldBeUndefined("gl.bindTexture(gl.TEXTURE_2D, texture)");
 shouldBeUndefined("gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tmpcanvas)");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

@@ -46,6 +46,7 @@
             }
         </script>
         <script>
+            "use strict";
             function checkRedPortion(gl, w, low, high) {
                 var buf = new Uint8Array(w * w * 4);
                 gl.readPixels(0, 0, w, w, gl.RGBA, gl.UNSIGNED_BYTE, buf);
@@ -98,9 +99,10 @@
         <div id="description"></div>
         <div id="console"></div>
         <script>
+            "use strict";
             description('Verify that using constant attributes works.');
             runTest();
-            successfullyParsed = true;
+            var successfullyParsed = true;
         </script>
         <script src="../../resources/js-test-post.js"></script>
     </body>

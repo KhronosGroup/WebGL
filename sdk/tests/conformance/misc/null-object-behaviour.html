@@ -39,6 +39,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 description("Tests calling WebGL APIs without providing the necessary objects");
 
@@ -102,7 +103,7 @@ shouldGenerateGLError(context, context.INVALID_OPERATION, "context.texParameteri
 shouldGenerateGLError(context, context.INVALID_OPERATION, "context.getTexParameter(context.TEXTURE_2D, context.TEXTURE_MIN_FILTER)");
 
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

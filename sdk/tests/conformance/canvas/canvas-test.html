@@ -41,6 +41,7 @@
 <canvas id="canvas" style="width: 50px; height: 50px;"> </canvas>
 <canvas id="canvas2d" width="40" height="40"> </canvas>
 <script>
+"use strict";
 if (window.initNonKhronosFramework) {
   window.initNonKhronosFramework(true);
 }
@@ -68,7 +69,7 @@ if (!gl) {
   shouldBe('canvas.height', '150');
 
   // Check get a 4 value gl parameter as a csv string.
-  function getValue4v(name) {
+  var getValue4v = function(name) {
     var v = gl.getParameter(name);
     var result = '' +
         v[0] + ',' +
@@ -78,29 +79,29 @@ if (!gl) {
     return result;
   }
 
-  function getViewport() {
+  var getViewport = function() {
     return getValue4v(gl.VIEWPORT);
   }
 
-  function getClearColor() {
+  var getClearColor = function() {
     return getValue4v(gl.COLOR_CLEAR_VALUE);
   }
 
-  function isAboutEqual(a, b) {
+  var isAboutEqual = function(a, b) {
     return Math.abs(a - b) < 0.01;
   }
 
-  function isAboutEqualInt(a, b) {
+  var isAboutEqualInt = function(a, b) {
     return Math.abs(a - b) < 3;
   }
 
-  function checkCanvasContentIs(r3d,g3d,b3d,a3d) {
+  var checkCanvasContentIs = function(r3d,g3d,b3d,a3d) {
     var r2d;
     var g2d;
     var b2d;
     var a2d;
 
-    function checkPixel(x, y, r3d,g3d,b3d,a3d) {
+    var checkPixel = function(x, y, r3d,g3d,b3d,a3d) {
       var offset = (y * 40 + x) * 4;
       r2d = imgData.data[offset];
       g2d = imgData.data[offset + 1];
@@ -113,7 +114,7 @@ if (!gl) {
              isAboutEqualInt(a2d, a3d);
     }
 
-    function checkPixels(r3d,g3d,b3d,a3d) {
+    var checkPixels = function(r3d,g3d,b3d,a3d) {
       return checkPixel(0, 0, r3d, g3d, b3d, a3d) &&
              checkPixel(0, 39, r3d, g3d, b3d, a3d) &&
              checkPixel(39, 0, r3d, g3d, b3d, a3d) &&

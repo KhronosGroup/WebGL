@@ -35,6 +35,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 description('Test that client data is always copied during bufferData and bufferSubData calls, because otherwise the data the GL uses to draw may differ from that checked by the index validation code.')
 
 var context = create3DContext();
@@ -63,7 +64,7 @@ shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawElements(
 shouldGenerateGLError(context, context.INVALID_OPERATION, "context.drawElements(context.TRIANGLE_STRIP, 4, context.UNSIGNED_SHORT, 4)");
 
 debug("")
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

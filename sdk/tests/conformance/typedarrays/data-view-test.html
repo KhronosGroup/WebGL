@@ -31,19 +31,21 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
+<script src="../../resources/test-eval.js"></script>
 </head>
 <body>
 <div id="description"></div>
 <div id="console"></div>
 
 <script>
+"use strict";
 description("Test DataView.");
 
 var intArray1 = [0, 1, 2, 3, 100, 101, 102, 103, 128, 129, 130, 131, 252, 253, 254, 255];
 var intArray2 = [31, 32, 33, 0, 1, 2, 3, 100, 101, 102, 103, 128, 129, 130, 131, 252, 253, 254, 255];
 var emptyArray = [204, 204, 204, 204, 204, 204, 204, 204, 204, 204, 204, 204, 204, 204, 204, 204];
 
-var arayBuffer = null;
+var arrayBuffer = null;
 var view = null;
 var viewStart = 0;
 var viewLength = 0;
@@ -260,14 +262,14 @@ function runNegativeIndexTests(isTestingGet)
 
 function runConstructorTests()
 {
-    arayBuffer = (new Uint8Array([1, 2])).buffer;
+    arrayBuffer = (new Uint8Array([1, 2])).buffer;
 
     debug("");
     debug("Test for constructor not called as a function");
     var expr = "DataView(new ArrayBuffer)";
     // Use try/catch instead of calling shouldThrow to avoid different exception message being reported from different platform.
     try {
-        eval(expr);
+        TestEval(expr);
         testFailed(expr + " does not throw exception");
     } catch (e) {
         testPassed(expr + " threw exception");
@@ -275,27 +277,27 @@ function runConstructorTests()
 
     debug("");
     debug("Test for constructor taking 1 argument");
-    shouldBeDefined("view = new DataView(arayBuffer)");
+    shouldBeDefined("view = new DataView(arrayBuffer)");
     shouldBe("view.byteOffset", "0");
     shouldBe("view.byteLength", "2");
 
     debug("");
     debug("Test for constructor taking 2 arguments");
-    shouldBeDefined("view = new DataView(arayBuffer, 1)");
+    shouldBeDefined("view = new DataView(arrayBuffer, 1)");
     shouldBe("view.byteOffset", "1");
     shouldBe("view.byteLength", "1");
 
     debug("");
     debug("Test for constructor taking 3 arguments");
-    shouldBeDefined("view = new DataView(arayBuffer, 0, 1)");
+    shouldBeDefined("view = new DataView(arrayBuffer, 0, 1)");
     shouldBe("view.byteOffset", "0");
     shouldBe("view.byteLength", "1");
 
     debug("");
     debug("Test for constructor throwing exception");
-    shouldThrow("view = new DataView(arayBuffer, 0, 3)");
-    shouldThrow("view = new DataView(arayBuffer, 1, 2)");
-    shouldThrow("view = new DataView(arayBuffer, 2, 1)");
+    shouldThrow("view = new DataView(arrayBuffer, 0, 3)");
+    shouldThrow("view = new DataView(arrayBuffer, 1, 2)");
+    shouldThrow("view = new DataView(arrayBuffer, 2, 1)");
 }
 
 function runGetTests()
@@ -378,7 +380,7 @@ runConstructorTests();
 runGetTests();
 runSetTests();
 runIndexingTests();
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

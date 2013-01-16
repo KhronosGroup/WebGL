@@ -35,6 +35,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 description("Tests that index validation verifies the correct number of indices");
 
 function sizeInBytes(type) {
@@ -128,7 +129,7 @@ gl.vertexAttribPointer(normalLoc, 3, gl.FLOAT, false, 7 * sizeInBytes(gl.FLOAT),
 glErrorShouldBe(gl, gl.INVALID_VALUE);
 shouldBeUndefined('gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0)');
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

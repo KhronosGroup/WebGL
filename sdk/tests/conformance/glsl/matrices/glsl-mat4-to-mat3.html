@@ -62,6 +62,7 @@ mat3 mat3_emu(mat4 m4) {
   $(output) = vec4(c, 1);
 </script>
 <script>
+"use strict";
 // See resources glsl-generator runBasicTest for how this works
 var wtu = WebGLTestUtils;
 GLSLGenerator.runBasicTest({
@@ -85,7 +86,7 @@ GLSLGenerator.runBasicTest({
     }
   ]
 });
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

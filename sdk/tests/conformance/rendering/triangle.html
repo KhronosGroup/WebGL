@@ -56,6 +56,7 @@ There is supposed to be an example drawing here, but it's not important.
     </script>
 
     <script>
+        "use strict";
         function fail(x,y, buf, shouldBe)
         {
             var i = (y*50+x) * 4;
@@ -76,8 +77,8 @@ There is supposed to be an example drawing here, but it's not important.
 
             description(document.title);
 
-            gl = initWebGL("example");
-            program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+            var gl = initWebGL("example");
+            var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
 
             var vertexObject = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
@@ -118,7 +119,7 @@ There is supposed to be an example drawing here, but it's not important.
        }
 
        init();
-       successfullyParsed = true;
+       var successfullyParsed = true;
     </script>
 <script src="../../resources/js-test-post.js"></script>
 

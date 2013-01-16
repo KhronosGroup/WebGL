@@ -57,6 +57,7 @@ void main() {
 }
 </script>
 <script>
+"use strict";
 description("checks that vertex texture fetch, if supported, operates correctly.");
 var wtu = WebGLTestUtils;
 var gl = initWebGL("example");
@@ -104,7 +105,7 @@ if (!gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS)) {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after drawing");
 }
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

@@ -40,6 +40,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description(document.title);
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
@@ -77,7 +78,7 @@ function drawAndCheck() {
       "draw should be 0, 192, 128, 255");
 }
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

@@ -59,6 +59,7 @@ void main() {
 }
 </script>
 <script>
+"use strict";
 description("tests GLSL texture2D function with bias");
 
 var wtu = WebGLTestUtils;
@@ -113,7 +114,7 @@ for (var ii = 0; ii < colors.length; ++ii) {
 }
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../../resources/js-test-post.js"></script>

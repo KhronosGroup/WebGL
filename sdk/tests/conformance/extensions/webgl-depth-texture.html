@@ -57,6 +57,7 @@ void main()
 <div id="console"></div>
 <canvas id="canvas" width="8" height="8" style="width: 8px; height: 8px;"></canvas>
 <script>
+"use strict";
 if (window.initNonKhronosFramework) {
     window.initNonKhronosFramework(false);
 }
@@ -73,6 +74,7 @@ var vao = null;
 var tex;
 var name;
 var supportedFormats;
+var canvas2;
 
 if (!gl) {
     testFailed("WebGL context does not exist");
@@ -336,7 +338,7 @@ function runTestExtension() {
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

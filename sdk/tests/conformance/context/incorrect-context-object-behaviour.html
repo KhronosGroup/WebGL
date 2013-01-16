@@ -38,6 +38,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 description("Tests calling WebGL APIs with objects from other contexts");
 
 var contextA = create3DContext();
@@ -78,7 +79,7 @@ shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.getShaderS
 shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.getUniform(programB, locationA)");
 shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.getUniformLocation(programB, 'u_modelViewProjMatrix')");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

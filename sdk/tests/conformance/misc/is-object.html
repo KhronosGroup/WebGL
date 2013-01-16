@@ -38,6 +38,7 @@
 <div id="console"></div>
 <canvas id="canvas">
 <script>
+"use strict";
 var wtu;
 var canvas;
 var gl;
@@ -53,7 +54,7 @@ var texture;
 description("Tests 'is' calls against non-bound and deleted objects");
 
 wtu = WebGLTestUtils;
-gl = wtu.create3DContext("canvas");
+var gl = wtu.create3DContext("canvas");
 shouldGenerateGLError = wtu.shouldGenerateGLError;
 
 shouldGenerateGLError(gl, gl.NO_ERROR, "buffer = gl.createBuffer()");
@@ -92,7 +93,7 @@ shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteShader(shader)");
 shouldBeFalse("gl.isShader(shader)");
 debug("");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

@@ -56,11 +56,13 @@
 </script>
 
 <script>
+"use strict";
 description("Test some of the issues of the difference between attrib 0 on OpenGL vs WebGL");
 debug("");
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
-
+var g_program;
+var g_attribLocation;
 function setup(attribIndex) {
   var program = wtu.setupProgram(
       gl, ['vshader', 'fshader'], ['vPosition'], [attribIndex]);
@@ -142,7 +144,7 @@ for (var ii = 0; ii < 5; ++ii) {
 }
 
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

@@ -375,8 +375,9 @@ class TestReader():
 <div id="console"></div>
 </body>
 <script>
+"use strict";
 OpenGLESTestRunner.run(%(tests_data)s);
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </html>
 """

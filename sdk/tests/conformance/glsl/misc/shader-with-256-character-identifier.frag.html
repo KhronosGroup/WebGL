@@ -85,6 +85,7 @@ void main()
 }
 </script>
 <script>
+"use strict";
 GLSLConformanceTester.runTests([
     { vShaderId: undefined,
       vShaderSuccess: true,
@@ -122,7 +123,7 @@ GLSLConformanceTester.runTests([
       passMsg: 'shader with 256 character identifier with even characters as underscores should succeed'
     }
 ]);
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

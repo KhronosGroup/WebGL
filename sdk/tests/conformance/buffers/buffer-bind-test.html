@@ -39,6 +39,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description("Checks a buffer can only be bound to 1 target.");
 
 debug("");
@@ -76,7 +77,7 @@ if (!gl) {
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 
