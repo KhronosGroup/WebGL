@@ -34,12 +34,14 @@
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../../resources/test-eval.js"></script>
 </head>
 <body>
 <div id="description"></div>
 <div id="console"></div>
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
+"use strict";
 description("This test ensures various WebGL functions fail when passed non OpenGL ES 2.0 enums.");
 
 debug("");
@@ -78,7 +80,7 @@ if (!gl) {
     "gl.pixelStorei(desktopGL['PACK_SWAP_BYTES'], 1)",
   ];
   for (var ii = 0; ii < tests.length; ++ii) {
-    eval(tests[ii]);
+    TestEval(tests[ii]);
     glErrorShouldBe(gl, gl.INVALID_ENUM,
               tests[ii] + " should return INVALID_ENUM.");
   }
@@ -92,14 +94,14 @@ if (!gl) {
     "gl.texParameteri(gl.TEXTURE_2D, desktopGL['GENERATE_MIPMAP'], 1)"
   ];
   for (var ii = 0; ii < tests.length; ++ii) {
-    eval(tests[ii]);
+    TestEval(tests[ii]);
     glErrorShouldBe(gl, gl.INVALID_ENUM,
               tests[ii] + " should return INVALID_ENUM.");
   }
 }
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

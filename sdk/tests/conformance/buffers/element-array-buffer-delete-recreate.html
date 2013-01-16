@@ -39,13 +39,14 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
-wtu = WebGLTestUtils;
+"use strict";
+var wtu = WebGLTestUtils;
 function init()
 {
   description();
 
   // Clear the background with red.
-  gl = wtu.create3DContext("example");
+  var gl = wtu.create3DContext("example");
   wtu.setupSimpleColorProgram(gl);
   var color = [0, 255, 0, 255];
   wtu.setUByteDrawColor(gl, color);
@@ -83,7 +84,7 @@ function init()
 }
 
 init();
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

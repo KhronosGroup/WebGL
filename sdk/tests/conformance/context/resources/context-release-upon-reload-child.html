@@ -52,10 +52,11 @@
     </script>
 
     <script>
+        "use strict";
         var wtu = WebGLTestUtils;
 
         var gl = wtu.create3DContext("c", {"antialiased": false});
-        program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
+        var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 
         var vertexObject = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
@@ -67,7 +68,7 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-        if(parent) {
+        if (parent) {
             window.glContext = gl;
             parent.postMessage("Ready", "*");
         }

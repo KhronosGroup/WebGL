@@ -71,6 +71,7 @@ void main()
 </script>
 
 <script>
+"use strict";
 function init()
 {
   if (window.initNonKhronosFramework) {
@@ -86,8 +87,8 @@ function init()
   var ctx2d = canvas2d.getContext("2d");
   ctx2d.globalCompositeOperation = "copy";
 
-  gl = initWebGL("example");
-  program = setupProgram(gl, "vshader", "fshader2d", ["vPosition", "texCoord0"]);
+  var gl = initWebGL("example");
+  var program = setupProgram(gl, "vshader", "fshader2d", ["vPosition", "texCoord0"]);
 
   var program2d = program;
   var programCube = createProgram(
@@ -202,7 +203,7 @@ function init()
 }
 
 init();
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

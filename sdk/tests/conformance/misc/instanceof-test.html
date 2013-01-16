@@ -57,6 +57,7 @@ void main()
 }
 </script>
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 description(document.title);
 debug("Tests that instanceof works on WebGL objects.");
@@ -101,7 +102,7 @@ shouldThrowWithNew(window.WebGLTexture, 'WebGLTexture');
 shouldThrowWithNew(window.WebGLUniformLocation, 'WebGLUniformLocation');
 shouldThrowWithNew(window.WebGLShaderPrecisionFormat, 'WebGLShaderPrecisionFormat');
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

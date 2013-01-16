@@ -59,6 +59,7 @@ void main()
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 var successfullyParsed = false;
 
 // The below declarations need to be global for "shouldBe" to see them
@@ -255,8 +256,8 @@ for (var i = 0; i < formats.length; ++i) {
     runTestIteration(format, gl.UNSIGNED_BYTE, 4, 0, -1);
     runTestIteration(format, gl.UNSIGNED_BYTE, 8, -1, -1);
 }
-    
-successfullyParsed = true;
+
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

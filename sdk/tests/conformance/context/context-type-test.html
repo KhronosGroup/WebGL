@@ -41,6 +41,7 @@
 <canvas id="canvas" style="width: 50px; height: 50px;"> </canvas>
 <canvas id="canvas2d" width="40" height="40"> </canvas>
 <script>
+"use strict";
 description("This test ensures WebGL implementations interact correctly with the canvas tag.");
 
 debug("");
@@ -63,7 +64,7 @@ if (!gl) {
             "context type should be WebGLRenderingContext");
 }
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

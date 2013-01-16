@@ -35,6 +35,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 description("Tests generation of synthetic and real GL errors");
 
 var context = create3DContext();
@@ -87,7 +88,7 @@ glErrorShouldBe(context, context.INVALID_OPERATION);
 // Error state should be clear by this point
 glErrorShouldBe(context, context.NO_ERROR);
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

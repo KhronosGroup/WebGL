@@ -149,6 +149,7 @@ void main() {
 }
 </script>
 <script>
+"use strict";
 GLSLConformanceTester.runTests([
   { vShaderSource: document.getElementById("sharedVertexShader").text,
     vShaderSuccess: true,
@@ -165,7 +166,7 @@ GLSLConformanceTester.runTests([
     passMsg: 'shared fragment shader should succeed',
   }
 ]);
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

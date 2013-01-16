@@ -56,6 +56,7 @@ void main()
 </script>
 
 <script>
+"use strict";
 function fail(x,y, buf, shouldBe)
 {
   var i = (y*50+x) * 4;
@@ -122,7 +123,7 @@ if (!gl) {
 } else {
   testPassed("context exists");
 
-  program = createProgram(gl, "vshader", "fshader", ["vPosition"]);
+  var program = createProgram(gl, "vshader", "fshader", ["vPosition"]);
   shouldBeNonNull("program");
   gl.useProgram(program);
   gl.enable(gl.DEPTH_TEST);
@@ -163,7 +164,7 @@ if (!gl) {
   shouldBe('gl.getError()', 'gl.NO_ERROR');
 }
 debug("")
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

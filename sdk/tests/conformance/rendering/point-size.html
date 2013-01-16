@@ -61,6 +61,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
     description('Verify GL_VERTEX_PROGRAM_POINT_SIZE is enabled in WebGL');
 
     var gl = initWebGL('testbed', { antialias: false });
@@ -157,7 +158,7 @@
     shouldBe('gl.getError()', 'gl.NO_ERROR');
     test(program2);
 
-    successfullyParsed = true;
+    var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

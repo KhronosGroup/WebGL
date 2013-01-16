@@ -39,6 +39,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 description("Tests calling WebGL APIs with various types");
 
@@ -83,7 +84,7 @@ for (var i = 0; i < args.length; ++i) {
   if (argument == 2) {
     func2 = shouldBeNull;
   }
-  func3 = shouldBeNull;
+  var func3 = shouldBeNull;
   debug("");
   debug("testing type of " + args[i].type + " : value = " + argument);
   func1("context.bindAttribLocation(program, argument, 'foo')");
@@ -164,7 +165,7 @@ for (var i = 0; i < args.length; ++i) {
   func1("context.uniform4f(loc, 0, 0, 0, argument)");
 }
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

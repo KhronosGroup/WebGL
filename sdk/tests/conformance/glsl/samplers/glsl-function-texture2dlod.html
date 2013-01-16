@@ -59,6 +59,7 @@ void main() {
 }
 </script>
 <script>
+"use strict";
 description("tests GLSL texture2DLod function");
 
 var wtu = WebGLTestUtils;
@@ -121,7 +122,7 @@ function runTest() {
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 }
 
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../../resources/js-test-post.js"></script>

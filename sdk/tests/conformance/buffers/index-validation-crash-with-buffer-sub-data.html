@@ -38,6 +38,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 description('Verifies that the index validation code which is within bufferSubData does not crash.')
 
 var gl = create3DContext();
@@ -49,7 +50,7 @@ var data = new Uint8Array(127);
 gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 63, data);
 testPassed("bufferSubData, when buffer object was initialized with null, did not crash");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

@@ -41,6 +41,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 GLSLGenerator.runFeatureTest({
   feature: "max",
   args: "$(type) value, float maxValue",
@@ -66,7 +67,7 @@ GLSLGenerator.runFeatureTest({
      "    $(func)($(input), 0.5);"].join("\n")
   ]
 });
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

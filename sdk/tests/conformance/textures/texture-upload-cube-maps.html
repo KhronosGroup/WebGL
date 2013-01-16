@@ -39,6 +39,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description('Tests texImage2D and texSubImage2D upload path for TEXTURE_CUBE_MAP');
 
 var wtu = WebGLTestUtils;
@@ -66,7 +67,7 @@ testOneTarget(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 16, 16);
 testOneTarget(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 16, 16);
 testOneTarget(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 16, 16);
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

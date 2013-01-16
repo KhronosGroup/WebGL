@@ -38,6 +38,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 
 description('Test ArrayBuffer.byteLength');
 
@@ -53,7 +54,7 @@ try {
 }
 
 testPassed("new ArrayBuffer().byteLength did not crash");
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

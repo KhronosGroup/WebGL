@@ -61,6 +61,7 @@
   </script>
 
   <script>
+    "use strict";
     function init()
     {
       if (window.initNonKhronosFramework) {
@@ -69,9 +70,9 @@
 
       description("tests gl_FrontFacing");
 
-      wtu = WebGLTestUtils;
-      gl = initWebGL("example");
-      program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+      var wtu = WebGLTestUtils;
+      var gl = initWebGL("example");
+      var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
 
       var gridRes = 4;
       wtu.setupQuad(gl, gridRes, 0, true);
@@ -103,7 +104,7 @@
     }
 
     init();
-    successfullyParsed = true;
+    var successfullyParsed = true;
   </script>
 <script src="../../../resources/js-test-post.js"></script>
 

@@ -51,6 +51,7 @@
         </script>
 
         <script>
+            "use strict";
             // Check a single 32-bit RGBA pixel.
             function checkPixel(buf, index, correct) {
                 for (var i = 0; i < 4; ++i) {
@@ -92,7 +93,7 @@
 
             // Check the tri fan by reading the pixels and making sure they are all green.
             function checkTriFan(gl, w) {
-                buf = new Uint8Array(w * w * 4);
+                var buf = new Uint8Array(w * w * 4);
                 gl.readPixels(0, 0, w, w, gl.RGBA, gl.UNSIGNED_BYTE, buf);
                 var filled = true;
                 for (var j = 0; j < w * w * 4; j += 4) {
@@ -237,9 +238,10 @@
         <div id="description"></div>
         <div id="console"></div>
         <script>
+            "use strict";
             description('Verify that LINE_LOOP and TRIANGLE_FAN works correctly.');
             runTest();
-            successfullyParsed = true;
+            var successfullyParsed = true;
         </script>
         <script src="../../resources/js-test-post.js"></script>
     </body>

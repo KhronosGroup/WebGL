@@ -43,6 +43,7 @@
 <canvas id="canvas" width="2" height="2"> </canvas>
 <canvas id="canvas2" width="2" height="2"> </canvas>
 <script>
+"use strict";
 wtu = WebGLTestUtils;
 window.onload = init;
 debug("Tests a WebGL program that tries to use all of vram.");
@@ -140,7 +141,7 @@ function main() {
 
   function finish() {
     debug("");
-    successfullyParsed = true;
+    var successfullyParsed = true;
   }
 }
 </script>

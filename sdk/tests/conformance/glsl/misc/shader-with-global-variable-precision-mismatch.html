@@ -90,6 +90,7 @@ void main()
 }
 </script>
 <script>
+"use strict";
 description("Checks shaders with global variables and precision qualifier mismatch.");
 
 var wtu = WebGLTestUtils;
@@ -117,7 +118,7 @@ glslTests.push({
 GLSLConformanceTester.runTests(glslTests);
 
 debug("");
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

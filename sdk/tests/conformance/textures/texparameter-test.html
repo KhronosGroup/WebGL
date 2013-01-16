@@ -63,6 +63,7 @@ void main()
 </script>
 
 <script>
+"use strict";
 function init()
 {
   if (window.initNonKhronosFramework) {
@@ -75,8 +76,8 @@ function init()
   var canvas2d = document.getElementById("canvas2d");
   var ctx2d = canvas2d.getContext("2d");
 
-  gl = initWebGL("example");
-  program = setupProgram(gl, "vshader", "fshader", [ "vPosition", "texCoord0"]);
+  var gl = initWebGL("example");
+  var program = setupProgram(gl, "vshader", "fshader", [ "vPosition", "texCoord0"]);
 
   gl.disable(gl.DEPTH_TEST);
   gl.disable(gl.BLEND);
@@ -201,7 +202,7 @@ function init()
 }
 
 init();
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 

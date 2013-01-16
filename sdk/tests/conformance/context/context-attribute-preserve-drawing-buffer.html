@@ -46,7 +46,8 @@
             }
         </style>
         <script>
-            wtu = WebGLTestUtils;
+            "use strict";
+            var wtu = WebGLTestUtils;
             function checkResult(ctx1, ctx2, preserve) {
                 var imgData1 = ctx1.getImageData(0,0,1,1);
                 var imgData2 = ctx2.getImageData(0,0,1,1);
@@ -111,9 +112,10 @@
         <div id="description"></div>
         <div id="console"></div>
         <script>
+            "use strict";
             description('Verify that preserveDrawingBuffer attribute is honored.');
             runTest(false);
-            successfullyParsed = true;
+            var successfullyParsed = true;
             shouldBeTrue("successfullyParsed");
         </script>
     </body>

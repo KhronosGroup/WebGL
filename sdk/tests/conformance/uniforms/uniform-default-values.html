@@ -35,6 +35,7 @@
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
+<script src="../../resources/test-eval.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -127,6 +128,7 @@ void main()
 }
 </script>
 <script>
+"use strict";
 description();
 
 var tests = [
@@ -238,6 +240,7 @@ var tests = [
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext();
 var c = document.getElementById("console");
+var checkFn;
 
 wtu.setupUnitQuad(gl, [0, 1]);
 
@@ -273,7 +276,7 @@ var shaderTemplates = [
 
 // Get shader templates
 for (var ii = 0; ii < shaderTemplates.length; ++ii) {
-  template = shaderTemplates[ii];
+  var template = shaderTemplates[ii];
   template.vs = wtu.getScript(template.vs);
   template.fs = wtu.getScript(template.fs);
 }
@@ -309,7 +312,7 @@ function testType(test) {
     }
 
     var value = gl.getUniform(program, loc);
-    eval("checkFn = function(value) {" + (test.valueCheck ? test.valueCheck : test.check) + ";}");
+    TestEval("checkFn = function(value) {" + (test.valueCheck ? test.valueCheck : test.check) + ";}");
     if (checkFn(value)) {
         testPassed("uniform is zero");
     } else {
@@ -352,7 +355,7 @@ function runNextTest() {
 
 runNextTest();
 
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 </body>

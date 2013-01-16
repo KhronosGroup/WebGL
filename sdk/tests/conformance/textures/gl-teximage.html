@@ -40,11 +40,13 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description("Test texImage2D conversions.");
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
 gl.disable(gl.DITHER);
 var program = wtu.setupTexturedQuad(gl);
+var successfullyParsed;
 
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 

@@ -41,6 +41,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 GLSLGenerator.runFeatureTest({
   feature: "lessThan",
   args: "$(type) x, $(type) y",
@@ -66,7 +67,7 @@ GLSLGenerator.runFeatureTest({
      "       vec4(0.5, 0.5, 0.5, 0.5);"].join("\n")
   ]
 });
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

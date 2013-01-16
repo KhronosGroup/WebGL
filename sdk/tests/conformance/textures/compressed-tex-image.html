@@ -39,6 +39,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description("This test ensures WebGL implementations correctly implement compressedTexImage2D and compressedTexSubImage2D.");
 
 debug("");
@@ -46,12 +47,12 @@ debug("");
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext();
 
-const  COMPRESSED_RGB_S3TC_DXT1_EXT        = 0x83F0;
-const  COMPRESSED_RGBA_S3TC_DXT1_EXT       = 0x83F1;
-const  COMPRESSED_RGBA_S3TC_DXT5_EXT       = 0x83F3;
-const  ETC1_RGB8_OES                       = 0x8D64;
-const  COMPRESSED_RGB_PVRTC_4BPPV1_IMG     = 0x8C00;
-const  COMPRESSED_RGBA_PVRTC_4BPPV1_IMG    = 0x8C02;
+var COMPRESSED_RGB_S3TC_DXT1_EXT        = 0x83F0;
+var COMPRESSED_RGBA_S3TC_DXT1_EXT       = 0x83F1;
+var COMPRESSED_RGBA_S3TC_DXT5_EXT       = 0x83F3;
+var ETC1_RGB8_OES                       = 0x8D64;
+var COMPRESSED_RGB_PVRTC_4BPPV1_IMG     = 0x8C00;
+var COMPRESSED_RGBA_PVRTC_4BPPV1_IMG    = 0x8C02;
 
 var formats = null;
 
@@ -75,7 +76,7 @@ if (!gl) {
   shouldBe("formats.length", "0");
 }
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

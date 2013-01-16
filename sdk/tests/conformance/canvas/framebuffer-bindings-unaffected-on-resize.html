@@ -40,6 +40,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description("Verifies that GL framebuffer bindings do not change when canvas is resized");
 
 if (window.initNonKhronosFramework) {
@@ -102,7 +103,7 @@ wtu.waitForComposite(gl, function() {
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 });
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 </body>
 </html>

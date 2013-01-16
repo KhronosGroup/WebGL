@@ -52,6 +52,7 @@ void main()
 <div id="description"></div>
 <div id="console"></div>
 <script>
+"use strict";
 description('Tests texSubImage2D upload path from Uint8Array');
 
 var wtu = WebGLTestUtils;
@@ -66,7 +67,7 @@ wtu.setupUnitQuad(gl);
 var textureWidth = 256;
 var textureHeight = 1;
 
-textureLoc = gl.getUniformLocation(program, "tex");
+var textureLoc = gl.getUniformLocation(program, "tex");
 
 var texture = gl.createTexture();
 gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -115,7 +116,7 @@ for (var i = 0; i < textureWidth; i++) {
 if (passed)
     testPassed("");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>
 </body>

@@ -35,6 +35,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 
 description('Verify that constructing a typed array view with no arguments and fetching its length does not crash');
 
@@ -51,7 +52,7 @@ try {
 }
 
 testPassed("new Uint32Array().length did not crash");
-successfullyParsed = true;
+var successfullyParsed = true;
 
 </script>
 <script src="../../resources/js-test-post.js"></script>

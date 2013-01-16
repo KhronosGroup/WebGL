@@ -39,6 +39,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 var gl;
 var fbo;
@@ -49,9 +50,9 @@ var colorBuffer;
 var width;
 var height;
 
-const ALLOW_COMPLETE              = 0x01;
-const ALLOW_UNSUPPORTED           = 0x02;
-const ALLOW_INCOMPLETE_ATTACHMENT = 0x04;
+var ALLOW_COMPLETE              = 0x01;
+var ALLOW_UNSUPPORTED           = 0x02;
+var ALLOW_INCOMPLETE_ATTACHMENT = 0x04;
 
 function checkFramebufferForAllowedStatuses(allowedStatuses)
 {
@@ -550,7 +551,7 @@ function testFramebufferIncompleteDimensions() {
     glErrorShouldBe(gl, gl.NO_ERROR);
 }
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

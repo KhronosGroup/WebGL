@@ -56,6 +56,7 @@ void main() {
 }
 </script>
 <script>
+"use strict";
 description("checks that rendering with more than 65536 indices works.");
 var wtu = WebGLTestUtils;
 var gl = initWebGL("example");
@@ -136,7 +137,7 @@ for (var mm = 0; mm < modes.length; ++mm) {
 }
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after drawing");
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>

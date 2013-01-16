@@ -38,6 +38,7 @@
 <body>
 <div id="description"></div><div id="console"></div>
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 
 var tests = [
@@ -116,7 +117,7 @@ function doNextTest() {
      shouldBe('gl.getContextAttributes().premultipledAlpha', 'premultipledAlpha');
      shouldBeTrue('gl.getContextAttributes().preserveDrawingBuffer');
 
-     console.log(gl.getContextAttributes());
+     wtu.log(gl.getContextAttributes());
      var program = wtu.setupTexturedQuad(gl);
 
      glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
@@ -132,7 +133,7 @@ function doNextTest() {
      wtu.drawQuad(gl);
      glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from drawing.");
 
-     function loadTexture() {
+     var loadTexture = function() {
        var pngTex = gl.createTexture();
        // not needed as it's the default
        // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
@@ -178,7 +179,7 @@ function doNextTest() {
         setTimeout(loadTexture, 0);
      }
    } else {
-      successfullyParsed = true;
+      var successfullyParsed = true;
       finishTest();
    }
 }

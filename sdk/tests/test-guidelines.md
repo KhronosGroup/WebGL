@@ -41,7 +41,44 @@ These lines appears at the top of every html and js file under sdk/tests/conform
 *   Please use code similar to the code in existing tests
 
 Ideally, copy an existing test and modify it for your new test. Try not to duplicate
-code that already exists where approriate.
+code that already exists where approriate. In particular
+
+    *   use the functions in WebGLTestUtils rather than duplicating functionality.
+
+        In particular, as much as possible, keep the WebGL code in your test specific
+        to the issue being tested and try to use the helper functions to handle
+        common setup.
+
+        Examples:
+
+        * use `WebGLTestUtils.checkCanvas` or `WebGLTestUtils.checkCanvasRect` rather
+          than checking rendering results by hand.
+
+        * use `WebgLTestUtils.setupTexturedQuad` if you need a unit quad with texture coords.
+          By default the positions will be at location 0 and the texture coords at location 1.
+
+        * If you need a custom shader use `WebGLTestUtils.setupProgram`. Note that it takes
+          the following arguments. `gl, shaders, opt_attribs, opt_locations` where:
+
+          `gl` is the WebGL context.
+
+          `shaders` are an array of either script element ids, shader source, or WebGLShader
+          objects. The first element in the array is the vertex shader, the second the fragment
+          shader.
+
+          `opt_attribs` is an optional array of attribute names. If provided the named attributes
+          will have their locations bound to their index in this array.
+
+          `opt_locations` is an optional array of attribute locations. If provided each attribute
+          name in `opt_attribs` is bound to the corresponding location in `opt_locations`.
+
+    *   indent with spaces not tabs. (not everyone uses your tab settings).
+
+    *   All HTML files must have a `<!DOCTYPE html>`
+
+    *   All HTML files must have a `<meta charset="utf-8">`
+
+    *   All JavaScript must start with "use strict";
 
 *   If adding a new test edit the approriate 00_test_list.txt file
 

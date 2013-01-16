@@ -39,6 +39,7 @@
 <div id="console"></div>
 
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 var gl = null;
 var tex = null;
@@ -375,7 +376,7 @@ testCases =
 for (var ii = 0; ii < testCases.length; ++ii)
     testCopyFromInternalFBO(testCases[ii]);
 
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
 
 <script src="../../resources/js-test-post.js"></script>
