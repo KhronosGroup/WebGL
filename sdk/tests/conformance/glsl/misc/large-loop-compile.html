@@ -51,15 +51,9 @@ uniform sampler2D source;
 
 void main(){
     vec4 result = vec4(0.0);
-    float scale = 0.99;
-    float step = -0.001;
-    float value = 5.0;
     for(int i=0; i < 1024*32; i++){
-        value = max(value * scale + step, 0.0);
-        if (value > 0.0) {
-            vec4 texel = texture2D(source, vec2(i));
-            result += texel;
-        }
+        vec4 texel = texture2D(source, vec2(i));
+        result += texel;
     }
     gl_FragColor = result;
 }
