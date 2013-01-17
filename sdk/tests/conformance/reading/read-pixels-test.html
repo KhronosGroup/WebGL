@@ -47,9 +47,7 @@ var wtu = WebGLTestUtils;
 var canvas = document.getElementById("example");
 var gl = wtu.create3DContext(canvas);
 
-if (window.initNonKhronosFramework) {
-   window.initNonKhronosFramework(true);
-}
+initTestingHarnessWaitUntilDone();
 
 var actual;
 var expected;

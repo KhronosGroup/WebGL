@@ -39,9 +39,7 @@ var gl = null;
 var textureLoc = null;
 var successfullyParsed = false;
 
-if (window.initNonKhronosFramework) {
-    window.initNonKhronosFramework(true);
-}
+initTestingHarnessWaitUntilDone();
 
 function init()
 {

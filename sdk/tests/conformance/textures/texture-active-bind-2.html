@@ -75,10 +75,6 @@ void main()
 "use strict";
 function init()
 {
-  if (window.initNonKhronosFramework) {
-    window.initNonKhronosFramework(false);
-  }
-
   description(
       "Tests that binding both TEXTURE_2D and TEXTURE_CUBE_MAP to the same" +
       "active texture unit works as long as they are not used" +

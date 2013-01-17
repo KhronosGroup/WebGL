@@ -66,10 +66,6 @@ var canvas;
 var wtu = WebGLTestUtils;
 function init()
 {
-  if (window.initNonKhronosFramework) {
-    window.initNonKhronosFramework(false);
-  }
-
   description("Checks mip issues");
 
   canvas = document.getElementById("example");

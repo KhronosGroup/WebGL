@@ -40,9 +40,7 @@ var successfullyParsed = false;
 
 function init()
 {
-    if (window.initNonKhronosFramework) {
-        window.initNonKhronosFramework(true);
-    }
+    initTestingHarnessWaitUntilDone();
 
     description('Verify copyTexImage2D and copyTexSubImage2D');
 

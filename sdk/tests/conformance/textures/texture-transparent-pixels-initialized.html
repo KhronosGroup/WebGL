@@ -40,9 +40,7 @@ var successfullyParsed = false;
 
 function init()
 {
-    if (window.initNonKhronosFramework) {
-        window.initNonKhronosFramework(true);
-    }
+    initTestingHarnessWaitUntilDone();
 
     description('Tests there is no garbage in transparent regions of images uploaded as textures');
 
