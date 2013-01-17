@@ -34,31 +34,91 @@
 <link rel="stylesheet" href="../../resources/glsl-feature-tests.css"/>
 <script src="../../../resources/js-test-pre.js"></script>
 <script src="../../resources/webgl-test-utils.js"></script>
-<script src="../../resources/glsl-conformance-test.js"></script>
 </head>
 <body>
 <div id="description"></div>
 <div id="console"></div>
+<script id="vertexShader" type="text/something-not-javascript">
+attribute vec4 vPosition;
+void main()
+{
+    gl_Position = vPosition;
+}
+</script>
 <script id="fragmentShader" type="text/something-not-javascript">
-// shader with large loop should succeed
 precision highp vec4;
 uniform sampler2D source;
 
 void main(){
     vec4 result = vec4(0.0);
-    for(int i=0; i<1024*32; i++){
-        vec4 texel = texture2D(source, vec2(i));
-        result += texel;
+    float scale = 0.99;
+    float step = -0.001;
+    float value = 5.0;
+    for(int i=0; i < 1024*32; i++){
+        value = max(value * scale + step, 0.0);
+        if (value > 0.0) {
+            vec4 texel = texture2D(source, vec2(i));
+            result += texel;
+        }
     }
     gl_FragColor = result;
 }
 </script>
 <script>
 "use strict";
-GLSLConformanceTester.runTest();
+var receivedContextLost = false;
+if (window.initNonKhronosFramework) {
+  window.initNonKhronosFramework(true);
+}
+description("Ensures that compilation of a large loop completes in a reasonable period of time and does not cause the WebGL context to be lost");
+var wtu = WebGLTestUtils;
+var canvas = document.createElement('canvas');
+canvas.width = 32;
+canvas.height = 32;
+canvas.addEventListener("webglcontextlost", function(e) {
+  testFailed("context was lost during shader compilation or linking");
+  receivedContextLost = true;
+});
+var gl = wtu.create3DContext(canvas);
+if (!gl) {
+  testFailed("context does not exist");
+  finishTest();
+} else {
+  var startTime = Date.now();
+  var console = document.getElementById("console");
+  var vSource = document.getElementById("vertexShader").text;
+  var fSource = document.getElementById("fragmentShader").text;
+  wtu.addShaderSource(console, "test vertex shader", vSource);
+  var vShader = wtu.loadShader(gl, vSource, gl.VERTEX_SHADER);
+  wtu.addShaderSource(console, "test fragment shader", fSource);
+  var fShader = wtu.loadShader(gl, fSource, gl.FRAGMENT_SHADER);
+  if (vShader && fShader) {
+    var program = gl.createProgram();
+    gl.attachShader(program, vShader);
+    gl.attachShader(program, fShader);
+    gl.linkProgram(program);
+    gl.getProgramParameter(program, gl.LINK_STATUS);
+  }
+  gl.clearColor(0.0, 1.0, 0.0, 1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
+  var endTime = Date.now();
+
+  // Delay for some period to increase chances that context lost event will be delivered.
+  setTimeout(function() {
+    if (!receivedContextLost) {
+      testPassed("Large loop compiled and linked without terminating the WebGL context");
+      if (endTime - startTime < 5000) {
+        testPassed("Shader compilation completed in a reasonable amount of time");
+      } else {
+        testFailed("Shader compilation took an unreasonably long time");
+      }
+    }
+    finishTest();
+  }, 500);
+}
 var successfullyParsed = true;
 </script>
 </body>
 </html>
-
 
