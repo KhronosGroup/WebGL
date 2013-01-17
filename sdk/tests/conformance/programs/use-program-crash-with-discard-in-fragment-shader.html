@@ -65,7 +65,7 @@ description('Regression test for crash in Mac OS AMD OpenGL driver related to us
 debug("");
 
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext(document.getElementById("canvas"));
+var gl = wtu.create3DContext("canvas");
 if (!gl) {
   testFailed("context does not exist");
 } else {

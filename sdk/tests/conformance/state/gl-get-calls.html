@@ -48,7 +48,7 @@ debug("Canvas.getContext");
 
 var minimumRequiredStencilMask = 0;
 var wtu = WebGLTestUtils;
-var context = wtu.create3DContext(document.getElementById("canvas"));
+var context = wtu.create3DContext("canvas");
 if (!context)
     testFailed("context does not exist");
 else {

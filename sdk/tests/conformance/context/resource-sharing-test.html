@@ -46,8 +46,8 @@ description("Tests that resources can not be shared.");
 debug("");
 
 var wtu = WebGLTestUtils;
-var gl1 = wtu.create3DContext(document.getElementById("example1"));
-var gl2 = wtu.create3DContext(document.getElementById("example2"));
+var gl1 = wtu.create3DContext("example1");
+var gl2 = wtu.create3DContext("example2");
 assertMsg(gl1 && gl2,
           "Got 3d context.");
 

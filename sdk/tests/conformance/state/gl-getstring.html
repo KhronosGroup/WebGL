@@ -48,7 +48,7 @@ debug("");
 debug("Canvas.getContext");
 
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext(document.getElementById("canvas"));
+var gl = wtu.create3DContext("canvas");
 if (!gl) {
   testFailed("context does not exist");
 } else {
