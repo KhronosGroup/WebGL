@@ -32,6 +32,7 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -41,8 +42,9 @@
 "use strict";
 description("Tests calling the various uniform[Matrix]* APIs with a null uniform location");
 
-var gl = create3DContext();
-var program = loadStandardProgram(gl);
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext();
+var program = wtu.loadStandardProgram(gl);
 
 glErrorShouldBe(gl, gl.NO_ERROR);
 shouldBeUndefined("gl.useProgram(program)");

@@ -262,7 +262,7 @@ for (width = 0; width <= 2; width += 2)
         debug("Dimensions " + width + " x " + height);
 
         debug("Create renderbuffers");
-        shouldBeNonNull("gl = create3DContext()");
+        shouldBeNonNull("gl = wtu.create3DContext()");
         shouldBeNonNull("colorBuffer = gl.createRenderbuffer()");
         gl.bindRenderbuffer(gl.RENDERBUFFER, colorBuffer);
         gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, width, height);

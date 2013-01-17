@@ -35,6 +35,7 @@
 <script src="../../debug/webgl-debug.js"></script>
 <script src="../resources/js-test-pre.js"></script>
 <script src="../conformance/resources/webgl-test.js"></script>
+<script src="../conformance/resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -67,10 +68,11 @@ description("This test is to help see if an WebGL app *can* get lost context.");
 
 debug("");
 debug("Canvas.getContext");
+var wtu = WebGLTestUtils;
 var g_worldLoc;
 var g_texLoc;
 var g_textures = [];
-var gl = initWebGL("canvas", "vshader", "fshader", [ "vPosition", "texCoord0"], [ 0, 0, 0, 1 ], 1);
+var gl = wtu.create3DContext("canvas");
 if (!gl) {
   testFailed("context does not exist");
 } else {
@@ -79,6 +81,7 @@ if (!gl) {
   debug("");
   debug("Checking for out of memory handling.");
 
+  var program = wtu.setupProgram(["vshader", "fshader"], ["vPosition", "texCoord0"]);
   var size = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
   debug("max render buffer size: " + size);
   size = size / 2;

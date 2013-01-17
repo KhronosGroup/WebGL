@@ -34,6 +34,7 @@
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 <script src="../../resources/test-eval.js"></script>
 </head>
 <body>
@@ -47,7 +48,8 @@ description("This test ensures various WebGL functions fail when passed non Open
 debug("");
 debug("Canvas.getContext");
 
-var gl = create3DContext(document.getElementById("canvas"));
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext(document.getElementById("canvas"));
 if (!gl) {
   testFailed("context does not exist");
 } else {

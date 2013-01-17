@@ -74,9 +74,9 @@
     // NOTE: I'm not 100% confident in this test. I think it is correct.
 
     var wtu = WebGLTestUtils;
-    var gl = initWebGL("example");
+    var gl = wtu.create3DContext("example");
     shouldBeNonNull("gl");
-    var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+    var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
     shouldBe("gl.getError()", "gl.NO_ERROR");
 
     var canvas = gl.canvas;

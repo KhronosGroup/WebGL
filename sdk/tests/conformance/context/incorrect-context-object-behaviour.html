@@ -32,6 +32,7 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -41,12 +42,13 @@
 "use strict";
 description("Tests calling WebGL APIs with objects from other contexts");
 
-var contextA = create3DContext();
-var contextB = create3DContext();
-var programA = loadStandardProgram(contextA);
-var programB = loadStandardProgram(contextB);
-var shaderA = loadStandardVertexShader(contextA);
-var shaderB = loadStandardVertexShader(contextB);
+var wtu = WebGLTestUtils;
+var contextA = wtu.create3DContext();
+var contextB = wtu.create3DContext();
+var programA = wtu.loadStandardProgram(contextA);
+var programB = wtu.loadStandardProgram(contextB);
+var shaderA = wtu.loadStandardVertexShader(contextA);
+var shaderB = wtu.loadStandardVertexShader(contextB);
 var textureA = contextA.createTexture();
 var textureB = contextB.createTexture();
 var frameBufferA = contextA.createFramebuffer();

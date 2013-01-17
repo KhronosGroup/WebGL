@@ -154,8 +154,9 @@ function main() {
 
   var canvas = document.getElementById("canvas");
   canvas.addEventListener('webglcontextlost', handleContextLost);
-  var gl = initWebGL("canvas");
-  var prog = setupProgram(gl, "vshader", "fshader", [ "vPosition", "texCoord0"]);
+  var wtu = WebGLTestUtils;
+  var gl = wtu.create3DContext("canvas");
+  var prog = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition", "texCoord0"]);
 
   WebGLDebugUtils.init(gl);
  

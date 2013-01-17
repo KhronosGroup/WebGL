@@ -34,6 +34,7 @@
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -60,7 +61,8 @@ description("Tests that unknown uniforms don't cause errors.");
 debug("");
 debug("Canvas.getContext");
 
-var gl = initWebGL("example");
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("canvas");
 if (!gl) {
   testFailed("context does not exist");
 } else {
@@ -68,7 +70,7 @@ if (!gl) {
 
   debug("");
 
-  var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+  var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
   // Get the location of an unknown uniform.
   var loc = gl.getUniformLocation(program, "someUnknownUniform");
   assertMsg(loc === null, "location of unknown uniform should be null");

@@ -32,6 +32,7 @@
         <link rel="stylesheet" href="../../resources/js-test-style.css"/>
         <script src="../../resources/js-test-pre.js"></script>
         <script src="../resources/webgl-test.js"></script>
+        <script src="../resources/webgl-test-utils.js"></script>
         <script id="vshader" type="x-shader/x-vertex">
             attribute vec2 pos;
 
@@ -53,6 +54,8 @@
 
         <script>
             "use strict";
+            var wtu = WebGLTestUtils;
+
             function draw(gl, arr, colLoc, col) {
                 var vertices = new Float32Array(arr);
                 var vertBuf = gl.createBuffer();
@@ -69,12 +72,8 @@
             }
 
             function check(gl, winding, shoulddraw) {
-                var buf = new Uint8Array(4);
-                gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
-                if (buf[0] == 0 && buf[1] == 255 && buf[2] == 0 && buf[3] == 255)
-                    testPassed(winding + ' face was ' + (shoulddraw ? '' : 'not ') + 'drawn.');
-                else
-                    testFailed(winding + ' face was ' + (shoulddraw ? 'not ' : '') + 'drawn.');
+                var msg = winding + ' face was ' + (shoulddraw ? '' : 'not ') + 'drawn.';
+                wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 255, 0, 255], msg);
             }
 
             function runTest()
@@ -85,12 +84,12 @@
                 var green = [0, 1, 0, 1];
                 var ok;
 
-                var gl = initWebGL('testbed', { antialias: false });
+                var gl = wtu.create3DContext('testbed', { antialias: false });
                 if (!gl) {
-                    testFailed('initWebGL(..) failed');
+                    testFailed('could not create context');
                     return;
                 }
-                var program = setupProgram(gl, 'vshader', 'fshader', ['pos']);
+                var program = wtu.setupProgram(gl, ['vshader', 'fshader'], ['pos']);
                 var colLoc = gl.getUniformLocation(program, 'col');
 
                 gl.enableVertexAttribArray(0);
@@ -138,7 +137,7 @@
         </script>
     </head>
     <body>
-        <canvas id="testbed" width="1px" height="1px" style="width:50px; height:50px"></canvas>
+        <canvas id="testbed" width="16" height="16" style="width:50px; height:50px"></canvas>
         <div id="description"></div>
         <div id="console"></div>
         <script>

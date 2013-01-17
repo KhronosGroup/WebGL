@@ -29,6 +29,7 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -55,8 +56,9 @@ function sizeInBytes(type) {
   }
 }
 
-var gl = create3DContext();
-var program = loadStandardProgram(gl);
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext();
+var program = wtu.loadStandardProgram(gl);
 
 // 3 vertices => 1 triangle, interleaved data
 var dataComplete = new Float32Array([0, 0, 0, 1,

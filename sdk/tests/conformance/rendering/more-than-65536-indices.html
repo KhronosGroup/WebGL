@@ -59,11 +59,8 @@ void main() {
 "use strict";
 description("checks that rendering with more than 65536 indices works.");
 var wtu = WebGLTestUtils;
-var gl = initWebGL("example");
-var program = setupProgram(gl, "vs", "fs", ["vPosition", "vColor"]);
-gl.disable(gl.BLEND);
-gl.disable(gl.DEPTH_TEST);
-wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after initWebGL");
+var gl = wtu.create3DContext("example");
+var program = wtu.setupProgram(gl, ["vs", "fs"], ["vPosition", "vColor"]);
 var bufferObjects = wtu.setupUnitQuad(gl, 0, 1);
 
 gl.bindBuffer(gl.ARRAY_BUFFER, bufferObjects[0]);

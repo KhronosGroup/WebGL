@@ -123,13 +123,10 @@ if (!gl) {
 } else {
   testPassed("context exists");
 
-  var program = createProgram(gl, "vshader", "fshader", ["vPosition"]);
+  var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
   shouldBeNonNull("program");
-  gl.useProgram(program);
   gl.enable(gl.DEPTH_TEST);
-  gl.disable(gl.BLEND);
   gl.clearColor(0, 0, 0, 1);
-  gl.clearDepth(1);
   shouldBe('gl.getError()', 'gl.NO_ERROR');
 
   debug("");

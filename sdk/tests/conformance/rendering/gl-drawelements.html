@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="../../resources/js-test-style.css"/>
     <script src="../../resources/js-test-pre.js"></script>
     <script src="../resources/webgl-test.js"> </script>
+    <script src="../resources/webgl-test-utils.js"> </script>
     <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 </head>
 <body>
@@ -70,8 +71,9 @@
               glErrorShouldBe(gl, expect, msg);
             }
 
-            var gl = initWebGL("example");
-            var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+            var wtu = WebGLTestUtils;
+            var gl = wtu.create3DContext("example");
+            var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 
             var vertexObject = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);

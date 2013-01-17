@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="../resources/js-test-style.css"/>
     <script src="../resources/js-test-pre.js"></script>
     <script src="../conformance/resources/webgl-test.js"> </script>
+    <script src="../conformance/resources/webgl-test-utils.js"> </script>
 </head>
 <body>
 Below are 2 50x50 pixel canvas but using CSS to display them at 100x100 pixels. <br/>
@@ -71,39 +72,28 @@ img tag<br/>
 
     <script>
         "use strict";
-        function fail(x,y, buf, shouldBe)
-        {
-            var i = (y*50+x) * 4;
-            var reason = "pixel at ("+x+","+y+") is ("+buf[i]+","+buf[i+1]+","+buf[i+2]+","+buf[i+3]+"), should be "+shouldBe;
-            testFailed(reason);
-        }
-
-        function pass()
-        {
-            testPassed("drawing is correct");
-        }
-
         function init()
         {
-  var canvas2d = document.getElementById("example2");
-  var ctx2d = canvas2d.getContext("2d");
-  ctx2d.fillStyle = "rgba(0, 0, 0, 255)"
-  ctx2d.fillRect(0, 0, 50, 50);
-  ctx2d.fillStyle = "rgba(255, 0, 0, 255)"
-  ctx2d.beginPath();
-  ctx2d.moveTo(25, 12.5);
-  ctx2d.lineTo(12.5, 37.5);
-  ctx2d.lineTo(37.5, 37.5);
-  ctx2d.lineTo(25, 12.5);
-  ctx2d.fill();
+            var wtu = WebGLTestUtils;
+            var canvas2d = document.getElementById("example2");
+            var ctx2d = canvas2d.getContext("2d");
+            ctx2d.fillStyle = "rgba(0, 0, 0, 255)"
+            ctx2d.fillRect(0, 0, 50, 50);
+            ctx2d.fillStyle = "rgba(255, 0, 0, 255)"
+            ctx2d.beginPath();
+            ctx2d.moveTo(25, 12.5);
+            ctx2d.lineTo(12.5, 37.5);
+            ctx2d.lineTo(37.5, 37.5);
+            ctx2d.lineTo(25, 12.5);
+            ctx2d.fill();
 
 
             if (window.initNonKhronosFramework) {
                 window.initNonKhronosFramework(false);
             }
 
-            gl = initWebGL("example", "vshader", "fshader", [ "vPosition"], [ 0, 0, 0, 1 ], 1);
-            gl.viewport(0, 0, 50, 50);
+            var gl = wtu.create3DContext("example");
+            var program = wtu.setupProgram(["vshader", "fshader"], ["vPosition"]);
 
             var vertexObject = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
@@ -120,10 +110,5 @@ img tag<br/>
     </script>
 </body>
 <script src="../resources/js-test-post.js"></script>
-
-<script>
-"use strict";
-</script>
-
 </body>
 </html>

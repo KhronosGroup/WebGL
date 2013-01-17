@@ -32,6 +32,7 @@
         <link rel="stylesheet" href="../../resources/js-test-style.css"/>
         <script src="../../resources/js-test-pre.js"></script>
         <script src="../resources/webgl-test.js"></script>
+        <script src="../resources/webgl-test-utils.js"></script>
         <script id="vshader" type="x-shader/x-vertex">
             attribute vec2 pos;
 
@@ -52,6 +53,8 @@
 
         <script>
             "use strict";
+            var wtu = WebGLTestUtils;
+
             // Check a single 32-bit RGBA pixel.
             function checkPixel(buf, index, correct) {
                 for (var i = 0; i < 4; ++i) {
@@ -111,12 +114,13 @@
 
             function runTest()
             {
-                var gl = initWebGL('testbed', { antialias: false });
+                var gl = wtu.create3DContext('testbed', { antialias: false });
                 if (!gl) {
-                    testFailed('initWebGL(..) failed');
+                    testFailed('could not create context');
                     return;
                 }
-                var program = setupProgram(gl, 'vshader', 'fshader', ['pos'])
+                gl.clearColor(0, 0, 0, 1);
+                var program = wtu.setupProgram(gl, ['vshader', 'fshader'], ['pos'])
                 var w = document.getElementById('testbed').width;
 
                 gl.enableVertexAttribArray(0);

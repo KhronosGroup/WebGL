@@ -32,6 +32,7 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 <script id="vshader" type="x-shader/x-vertex">
     attribute vec3 pos;
     attribute vec4 colorIn;
@@ -61,10 +62,11 @@
 <div id="description"></div>
 <div id="console"></div>
 <script>
-"use strict";
+    "use strict";
     description('Verify GL_VERTEX_PROGRAM_POINT_SIZE is enabled in WebGL');
 
-    var gl = initWebGL('testbed', { antialias: false });
+    var wtu = WebGLTestUtils;
+    var gl = wtu.create3DContext('testbed', { antialias: false });
     shouldBeNonNull("gl");
 
     gl.disable(gl.BLEND);
@@ -104,21 +106,12 @@
         gl.uniform1f(locPointSize, 1.0);
         gl.drawArrays(gl.POINTS, 0, vertices.length / 3);
         
-        gl.readPixels(0, 0, 2, 2, gl.RGBA, gl.UNSIGNED_BYTE, buf);
         shouldBe('gl.getError()', 'gl.NO_ERROR');
 
-        index = 0
-        var correctColor;
         for (var y = 0; y < 2; ++y) {
             for (var x = 0; x < 2; ++x) {
-                correctColor = [0, 0, 0];
-                if (x == 1 && y == 1)
-                    shouldBe('buf[index]', '255');
-                else
-                    shouldBe('buf[index]', '0');
-                shouldBe('buf[index + 1]', '0');
-                shouldBe('buf[index + 2]', '0');
-                index += 4;
+                var correctColor = (x == 1 && y == 1) ? [255, 0, 0] : [0, 0, 0];
+                wtu.checkCanvasRect(gl, x, y, 1, 1, correctColor);
             }
         }
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -129,23 +122,14 @@
         if (pointSizeRange[1] >= 2.0) {
             gl.uniform1f(locPointSize, 2.0);
             gl.drawArrays(gl.POINTS, 0, vertices.length / 3);
-            gl.readPixels(0, 0, 2, 2, gl.RGBA, gl.UNSIGNED_BYTE, buf);
             shouldBe('gl.getError()', 'gl.NO_ERROR');
-            index = 0;
-            for (var y = 0; y < 2; ++y) {
-                for (var x = 0; x < 2; ++x) {
-                    shouldBe('buf[index]', '255');
-                    shouldBe('buf[index + 1]', '0');
-                    shouldBe('buf[index + 2]', '0');
-                    index += 4;
-                }
-            }
+            wtu.checkCanvasRect(gl, 0, 0, 2, 2, [255, 0, 0]);
         }
     }
 
     debug('');
     debug('Pass 1');
-    var program1 = setupProgram(gl, 'vshader', 'fshader', ['pos', 'colorIn']);
+    var program1 = wtu.setupProgram(gl, ['vshader', 'fshader'], ['pos', 'colorIn']);
     shouldBe('gl.getError()', 'gl.NO_ERROR');
     test(program1);
 
@@ -154,7 +138,7 @@
     // repeating the test simulates the conditions that caused it to fail
     debug('');
     debug('Pass 2');
-    var program2 = setupProgram(gl, 'vshader', 'fshader', ['pos', 'colorIn']);
+    var program2 = wtu.setupProgram(gl, ['vshader', 'fshader'], ['pos', 'colorIn']);
     shouldBe('gl.getError()', 'gl.NO_ERROR');
     test(program2);
 

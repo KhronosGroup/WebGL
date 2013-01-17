@@ -60,7 +60,7 @@ void main() {
 "use strict";
 description("checks that vertex texture fetch, if supported, operates correctly.");
 var wtu = WebGLTestUtils;
-var gl = initWebGL("example");
+var gl = wtu.create3DContext("example");
 if (!gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS)) {
   testPassed("No vertex texture image units (vertex texture fetch not supported) -- this is legal");
 } else {
