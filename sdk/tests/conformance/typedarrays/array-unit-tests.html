@@ -89,13 +89,15 @@ function printSummary() {
   }
 }
 
+var buffer;
 var byteLength;
 var subBuffer;
+var subArray;
 function testSlice() {
   function test(subBuf, starts, size) {
     byteLength = size;
     subBuffer = TestEval(subBuf);
-    var subArray = new Int8Array(subBuffer);
+    subArray = new Int8Array(subBuffer);
     assertEq(subBuf, subBuffer.byteLength, byteLength);
     for (var i = 0; i < size; ++i)
       assertEq('Element ' + i, starts + i, subArray[i]);
@@ -103,7 +105,7 @@ function testSlice() {
 
   try {
     running('testSlice');
-    var buffer = new ArrayBuffer(32);
+    buffer = new ArrayBuffer(32);
     var array = new Int8Array(buffer);
     for (var i = 0; i < 32; ++i)
       array[i] = i;
@@ -468,6 +470,7 @@ function negativeTestSetFromArray(type, name) {
   }
 }
 
+var subarray;
 function testSubarray(type, name) {
   running('test ' + name + ' Subarray');
   try {

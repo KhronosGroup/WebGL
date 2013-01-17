@@ -33,6 +33,7 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -64,7 +65,8 @@ description("This test ensures WebGL implementations don't allow names that star
 debug("");
 debug("Canvas.getContext");
 
-var gl = create3DContext(document.getElementById("canvas"));
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("canvas");
 shouldBeNonNull("gl");
 
 function fail(x,y, buf, shouldBe)

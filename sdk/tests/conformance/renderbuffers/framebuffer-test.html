@@ -33,6 +33,7 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 <script src="../../resources/desktop-gl-constants.js"></script>
 </head>
 <body>
@@ -46,8 +47,9 @@ description("This tests framebuffer/renderbuffer-related functions");
 debug("");
 debug("Canvas.getContext");
 
+var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
-var gl = create3DContext(canvas);
+var gl = wtu.create3DContext(canvas);
 if (!gl) {
   testFailed("context does not exist");
 } else {

@@ -61,13 +61,13 @@ function main() {
   debug("");
   debug("Canvas.getContext");
 
-  var gl = create3DContext(document.getElementById("canvas"));
+  var gl = wtu.create3DContext("canvas");
   if (!gl) {
     testFailed("context does not exist");
   } else {
     testPassed("context exists");
 
-	var program = wtu.setupColorQuad(gl);
+    var program = wtu.setupColorQuad(gl);
     gl.useProgram(program);
 
     debug("");
@@ -86,7 +86,7 @@ function main() {
           stop("got: " + wtu.glEnumToString(gl, err));
         });
 
-	var fbos = [];
+    var fbos = [];
 
     intervalId = window.setInterval(function() {
       ++count;

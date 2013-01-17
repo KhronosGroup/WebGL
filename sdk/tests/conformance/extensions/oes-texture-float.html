@@ -81,7 +81,7 @@ debug("");
 
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
-var gl = create3DContext(canvas);
+var gl = wtu.create3DContext(canvas);
 
 if (!gl) {
   testFailed("WebGL context does not exist");

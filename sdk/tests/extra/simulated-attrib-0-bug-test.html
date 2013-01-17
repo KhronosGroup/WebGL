@@ -31,6 +31,7 @@
 <title>Simulated Attrib 0 Bug Test</title>
 <script src="../resources/js-test-pre.js"></script>
 <script src="../conformance/resources/webgl-test.js"></script>
+<script src="../conformance/resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div>Simulated Attrib 0 Bug Test</div>
@@ -38,8 +39,9 @@
 <div id="console"></div>
 <script>
 "use strict";
-var context = create3DContext();
-var program = loadStandardProgram(context);
+var wtu = WebGLTestUtils;
+var context = wtu.create3DContext();
+var program = wtu.loadStandardProgram(context);
 
 context.useProgram(program);
 debug("This line attempts to draw with 0x7FFFFFFF triangles with attrib 0 off");

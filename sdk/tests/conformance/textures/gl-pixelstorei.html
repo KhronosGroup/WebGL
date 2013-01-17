@@ -33,6 +33,7 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"> </script>
+<script src="../resources/webgl-test-utils.js"> </script>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 </head>
 <body>
@@ -58,25 +59,16 @@ void main() {
 
 <script>
 "use strict";
-function fail(x,y, name, buf, shouldBe) {
-  var i = (y*50+x) * 4;
-  var reason = "pixel in "+name+" at ("+x+","+y+") is ("+buf[i]+","+buf[i+1]+","+buf[i+2]+","+buf[i+3]+"), should be "+shouldBe;
-  testFailed(reason);
-}
-
-function pass(name) {
-  testPassed("drawing is correct in " + name);
-}
-
 function init() {
   description("This test checks that drawImage and readPixels are not effected by gl.Pixelstorei(gl.PACK_ALIGNMENT) and visa versa");
 
   debug("There should be 5 red triangles on 5 black squares above");
   debug("");
 
+  var wtu = WebGLTestUtils;
   var canvas3d = document.getElementById("example");
-  var gl = initWebGL("example");
-  var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+  var gl = wtu.create3DContext("example");
+  var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
@@ -87,46 +79,23 @@ function init() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-
-  function checkData(buf, name) {
+  function checkData(ctx, name) {
     // Test several locations
     // First line should be all black
-    for (var i = 0; i < 50; ++i) {
-      if (buf[i*4] != 0 || buf[i*4+1] != 0 || buf[i*4+2] != 0 || buf[i*4+3] != 255) {
-        fail(i, 0, name, buf, "(0,0,0,255)");
-        return;
-      }
-    }
+    wtu.checkCanvasRect(ctx, 0, 0, 50, 1, [0, 0, 0, 0]);
 
     // Line 25 should be red for at least 6 red pixels starting 22 pixels in
-    var offset = (25*50+22) * 4;
-    for (var i = 0; i < 6; ++i) {
-      if (buf[offset+i*4] != 255 || buf[offset+i*4+1] != 0 || buf[offset+i*4+2] != 0 || buf[offset+i*4+3] != 255) {
-        fail(22 + i, 25, name, buf, "(255,0,0,255)");
-        return;
-      }
-    }
+    wtu.checkCanvasRect(ctx, 22, 25, 6, 1, [255, 0, 0, 255]);
 
     // Last line should be all black
-    offset = (49*50) * 4;
-    for (var i = 0; i < 50; ++i) {
-      if (buf[offset+i*4] != 0 || buf[offset+i*4+1] != 0 || buf[offset+i*4+2] != 0 || buf[offset+i*4+3] != 255) {
-        fail(i, 49, name, buf, "(0,0,0,255)");
-        return;
-      }
-    }
-
-    pass(name);
+    wtu.checkCanvasRect(ctx, 0, 49, 50, 1, [0, 0, 0, 0]);
   }
 
   var ctx2d;
 
   function checkColors() {
-    var buf = new Uint8Array(50 * 50 * 4);
-    gl.readPixels(0, 0, 50, 50, gl.RGBA, gl.UNSIGNED_BYTE, buf);
-    checkData(buf, "3d context");
-    var imgData = ctx2d.getImageData(0, 0, 50, 50);
-    checkData(imgData.data, "2d context");
+    checkData(gl, "3d context");
+    checkData(ctx2d, "2d context");
   }
 
   var table = [1, 2, 4, 8];

@@ -71,8 +71,8 @@
       description("tests gl_FragCoord");
 
       var wtu = WebGLTestUtils;
-      var gl = initWebGL("example");
-      var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+      var gl = wtu.create3DContext("example");
+      var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 
       var vertexObject = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);

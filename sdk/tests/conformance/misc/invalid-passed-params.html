@@ -33,6 +33,7 @@
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
 <script src="../../resources/desktop-gl-constants.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -42,7 +43,8 @@
 "use strict";
 description("Test for invalid passed parameters");
 
-var context = create3DContext();
+var wtu = WebGLTestUtils;
+var context = wtu.create3DContext();
 
 debug("");
 debug("Test createShader()");
