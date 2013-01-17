@@ -71,9 +71,7 @@ function init()
 
     description("Tests behavior under a lost context");
 
-    if (window.initNonKhronosFramework) {
-        window.initNonKhronosFramework(true);
-    }
+    initTestingHarnessWaitUntilDone();
 
     // call testValidContext() before checking for the extension, because this is where we check
     // for the isContextLost() method, which we want to do regardless of the extension's presence.

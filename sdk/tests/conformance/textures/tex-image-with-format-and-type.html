@@ -61,9 +61,7 @@ var DataMode = {
 
 function init()
 {
-    if (window.initNonKhronosFramework) {
-        window.initNonKhronosFramework(true);
-    }
+    initTestingHarnessWaitUntilDone();
 
     description('Verify texImage2D and texSubImage2D code paths taking both HTML and user-specified data with all format/type combinations');
 

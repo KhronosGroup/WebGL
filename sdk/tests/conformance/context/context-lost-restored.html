@@ -53,9 +53,7 @@ var contextRestoredEventFired;
 
 function init()
 {
-    if (window.initNonKhronosFramework) {
-        window.initNonKhronosFramework(true);
-    }
+    initTestingHarnessWaitUntilDone();
 
     description("Tests behavior under a restored context.");
 

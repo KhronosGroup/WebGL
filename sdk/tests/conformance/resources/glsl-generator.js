@@ -236,10 +236,6 @@ var generateTestShader = function(
 };
 
 var runFeatureTest = function(params) {
-  if (window.initNonKhronosFramework) {
-    window.initNonKhronosFramework(false);
-  }
-
   var wtu = WebGLTestUtils;
   var gridRes = params.gridRes;
   var vertexTolerance = params.tolerance || 0;
@@ -425,10 +421,6 @@ var runFeatureTest = function(params) {
 };
 
 var runBasicTest = function(params) {
-  if (window.initNonKhronosFramework) {
-    window.initNonKhronosFramework(false);
-  }
-
   var wtu = WebGLTestUtils;
   var gridRes = params.gridRes;
   var vertexTolerance = params.tolerance || 0;
@@ -613,10 +605,6 @@ var runBasicTest = function(params) {
 };
 
 var runReferenceImageTest = function(params) {
-  if (window.initNonKhronosFramework) {
-    window.initNonKhronosFramework(false);
-  }
-
   var wtu = WebGLTestUtils;
   var gridRes = params.gridRes;
   var vertexTolerance = params.tolerance || 0;

@@ -30,9 +30,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
 
     var init = function()
     {
-        if (window.initNonKhronosFramework) {
-            window.initNonKhronosFramework(true);
-        }
+        initTestingHarnessWaitUntilDone();
 
         description('Verify texImage2D and texSubImage2D code paths taking ImageData (' + pixelFormat + '/' + pixelType + ')');
 

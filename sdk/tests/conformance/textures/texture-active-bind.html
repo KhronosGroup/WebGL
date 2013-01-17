@@ -57,10 +57,6 @@ var gl;
 
 function init()
 {
-  if (window.initNonKhronosFramework) {
-    window.initNonKhronosFramework(false);
-  }
-
   description(
       "Tests that glActiveTexture and glBindTexture work as expected" +
       "Specifically texture targets are per active texture unit.");

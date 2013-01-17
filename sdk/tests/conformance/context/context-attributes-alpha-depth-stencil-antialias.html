@@ -72,9 +72,7 @@ var fbHasStencil;
 
 function init()
 {
-    if (window.initNonKhronosFramework) {
-        window.initNonKhronosFramework(true);
-    }
+    initTestingHarnessWaitUntilDone();
 
     description('Verify WebGLContextAttributes are working as specified, including alpha, depth, stencil, antialias, but not premultipliedAlpha');
 

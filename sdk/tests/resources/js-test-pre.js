@@ -21,18 +21,36 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
-// WebKit Specfic code.  Add your own here.
-function initNonKhronosFramework(waitUntilDone) {
-  if (window.layoutTestController) {
-    layoutTestController.overridePreference("WebKitWebGLEnabled", "1");
-    layoutTestController.dumpAsText();
-    if (waitUntilDone) {
-      layoutTestController.waitUntilDone();
+(function() {
+  var testHarnessInitialized = false;
+
+  var initNonKhronosFramework = function(waitUntilDone) {
+    if (testHarnessInitialized) {
+      return;
+    }
+    testHarnessInitialized = true;
+
+    // WebKit Specific code. Add your code here.
+    if (window.layoutTestController) {
+      layoutTestController.overridePreference("WebKitWebGLEnabled", "1");
+      layoutTestController.dumpAsText();
+      if (waitUntilDone) {
+        layoutTestController.waitUntilDone();
+      }
     }
   }
-}
+
+  this.initTestingHarnessWaitUntilDone = function() {
+    initNonKhronosFramework(true);
+  }
+
+  this.initTestingHarness = function() {
+    initNonKhronosFramework(false);
+  }
+}());
 
 function nonKhronosFrameworkNotifyDone() {
+  // WebKit Specific code. Add your code here.
   if (window.layoutTestController) {
     layoutTestController.notifyDone();
   }
@@ -52,6 +70,7 @@ function notifyFinishedToHarness() {
 
 function description(msg)
 {
+    initTestingHarness();
     if (msg === undefined) {
       msg = document.title;
     }

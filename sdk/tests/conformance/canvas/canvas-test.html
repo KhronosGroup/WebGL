@@ -43,9 +43,7 @@
 <canvas id="canvas2d" width="40" height="40"> </canvas>
 <script>
 "use strict";
-if (window.initNonKhronosFramework) {
-  window.initNonKhronosFramework(true);
-}
+initTestingHarnessWaitUntilDone();
 
 description("This test ensures WebGL implementations interact correctly with the canvas tag.");
 

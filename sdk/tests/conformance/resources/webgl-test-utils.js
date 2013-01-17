@@ -971,6 +971,9 @@ var hasAttributeCaseInsensitive = function(obj, attr) {
  * @return {!WebGLContext} The created context.
  */
 var create3DContext = function(opt_canvas, opt_attributes) {
+  if (window.initTestingHarness) {
+    window.initTestingHarness();
+  }
   var attributes = shallowCopyObject(opt_attributes || {});
   if (!hasAttributeCaseInsensitive(attributes, "antialias")) {
     attributes.antialias = false;
