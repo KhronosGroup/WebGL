@@ -126,10 +126,6 @@ function compareRendering(buffer1, buffer2, tol)
 
 function init()
 {
-    if (window.initNonKhronosFramework) {
-        window.initNonKhronosFramework(false);
-    }
-
     description("tests vertex shader with branch");
 
     var bufBranch = new Uint8Array(width * height * 4);
