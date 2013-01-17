@@ -34,6 +34,7 @@
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -63,8 +64,9 @@ debug("NOTE: Some OpenGL drivers do not handle this correctly");
 debug("");
 debug("Checking gl.uniform1f with bool.");
 
-var gl = initWebGL("example");
-var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("example");
+var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 var loc = gl.getUniformLocation(program, "color");
 gl.uniform1f(loc, 1);
 glErrorShouldBe(gl, gl.NO_ERROR,

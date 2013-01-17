@@ -66,7 +66,7 @@ debug("");
 
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
-var gl = create3DContext(canvas);
+var gl = wtu.create3DContext(canvas);
 var ext = null;
 var vao = null;
 
@@ -236,7 +236,7 @@ function runIndexValidationTests() {
       }
     }
 
-    var program = loadStandardProgram(gl);
+    var program = wtu.loadStandardProgram(gl);
 
     // 3 vertices => 1 triangle, interleaved data
     var dataComplete = new Float32Array([0, 0, 0, 1,
@@ -313,7 +313,7 @@ function runIndexValidationTests() {
 function runCopiesIndicesTests() {
     debug("Test that client data is always copied during bufferData and bufferSubData calls");
 
-    var program = loadStandardProgram(gl);
+    var program = wtu.loadStandardProgram(gl);
 
     gl.useProgram(program);
     var vertexObject = gl.createBuffer();
@@ -341,7 +341,7 @@ function runCopiesIndicesTests() {
 function runResizedBufferTests() {
     debug("Test that updating the size of a vertex buffer is properly noticed by the WebGL implementation.");
 
-    var program = setupProgram(gl, "vs", "fs", ["vPosition", "vColor"]);
+    var program = wtu.setupProgram(gl, ["vs", "fs"], ["vPosition", "vColor"]);
     glErrorShouldBe(gl, gl.NO_ERROR, "after initialization");
 
     var vertexObject = gl.createBuffer();
@@ -404,7 +404,7 @@ function runResizedBufferTests() {
 function runVerifiesTooManyIndicesTests() {
     description("Tests that index validation for drawElements does not examine too many indices");
 
-    var program = loadStandardProgram(gl);
+    var program = wtu.loadStandardProgram(gl);
 
     gl.useProgram(program);
     var vertexObject = gl.createBuffer();

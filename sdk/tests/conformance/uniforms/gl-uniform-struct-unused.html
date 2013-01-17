@@ -75,7 +75,7 @@ description("This test ensures WebGL implementations handle unused members at th
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext();
 var c = document.getElementById("console");
-program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+program = wtu.setupProgram(gl, ["vshader", "fshader"], [ "vPosition"]);
 
 wtu.setupUnitQuad(gl, [0, 1]);
 var white = [1.0, 1.0, 1.0, 1.0];

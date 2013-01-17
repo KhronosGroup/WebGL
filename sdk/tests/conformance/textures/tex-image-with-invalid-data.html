@@ -32,6 +32,7 @@
   <link rel="stylesheet" href="../../resources/js-test-style.css"/>
   <script src="../../resources/js-test-pre.js"></script>
   <script src="../resources/webgl-test.js"></script>
+  <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -40,8 +41,9 @@
 <script type="text/javascript">
 description("texImage2D and texSubImage2D tests with invalid data");
 
+var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
-var gl = create3DContext(canvas);
+var gl = wtu.create3DContext(canvas);
 if (!gl)
   testFailed("Context created.");
 else

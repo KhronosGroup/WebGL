@@ -270,6 +270,10 @@ var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
         if (element.type != "x-shader/x-vertex" && element.type != "x-shader/x-fragment")
           shaderType = ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER;
         shader = loadShaderFromScript(gl, shader, shaderType);
+      } else if (endsWith(shader, ".vert")) {
+        shader = loadShaderFromFile(gl, shader, gl.VERTEX_SHADER);
+      } else if (endsWith(shader, ".frag")) {
+        shader = loadShaderFromFile(gl, shader, gl.FRAGMENT_SHADER);
       } else {
         shader = loadShader(gl, shader, ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER);
       }
@@ -835,8 +839,13 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
   if (!errorRange.length) {
     errorRange = [errorRange, errorRange, errorRange, errorRange]
   }
-  var buf = new Uint8Array(width * height * 4);
-  gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  var buf;
+  if (gl instanceof WebGLRenderingContext) {
+    buf = new Uint8Array(width * height * 4);
+    gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  } else {
+    buf = gl.getImageData(x, y, width, height).data;
+  }
   for (var i = 0; i < width * height; ++i) {
     var offset = i * 4;
     for (var j = 0; j < color.length; ++j) {

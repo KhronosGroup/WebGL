@@ -32,6 +32,7 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -43,7 +44,8 @@ description("Test bufferData/bufferSubData with ArrayBuffer input");
 
 debug('Regression test for <a href="https://bugs.webkit.org/show_bug.cgi?id=41884">https://bugs.webkit.org/show_bug.cgi?id=41884</a> : <code>Implement bufferData and bufferSubData with ArrayBuffer as input</code>');
 
-var gl = create3DContext();
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext();
 shouldBeNonNull("gl");
 
 var array = new ArrayBuffer(128);

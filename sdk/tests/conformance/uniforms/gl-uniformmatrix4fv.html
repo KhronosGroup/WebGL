@@ -33,6 +33,7 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -64,8 +65,9 @@ description("This test ensures WebGL implementations handle uniformMatrix in a O
 debug("");
 debug("Checking gl.uniformMatrix.");
 
-var gl = initWebGL("example");
-var program = setupProgram(gl, "vshader", "fshader", [ "vPosition"]);
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("example");
+var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 for (var ii = 2; ii <= 4; ++ii) {
   var loc = gl.getUniformLocation(program, "world" + ii);
   var matLess = [];

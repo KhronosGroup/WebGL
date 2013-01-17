@@ -84,9 +84,7 @@ void main()
 </script>
 
 <script id="fshader", type="x-shader/x-fragment">
-#if defined(GL_ES)
 precision mediump float;
-#endif
 varying vec4 vColor;
 void main()
 {
@@ -103,11 +101,12 @@ void main()
 "use strict";
 var width = 50;
 var height = 50;
+var wtu = WebGLTestUtils;
 
 function drawAndRead(canvasID, vshaderID, buffer)
 {
-    var gl = initWebGL(canvasID);
-    var program = setupProgram(gl, vshaderID, "fshader", ["aPosition"]);
+    var gl = wtu.create3DContext(canvasID);
+    var program = wtu.setupProgram(gl, [vshaderID, "fshader"], ["aPosition"]);
     var vertexObject = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0.5,0, -0.5,-0.5,0, 0.5,-0.5,0 ]), gl.STATIC_DRAW);

@@ -168,9 +168,9 @@ function testCopyFromInternalFBO(testCase)
       " internalFormat: " + enumToString(testCase.internalFormat);
 
     if (testCase.contextAlpha)
-        gl = create3DContext(null, { alpha: true });
+        gl = wtu.create3DContext(null, { alpha: true });
     else
-        gl = create3DContext(null, { alpha: false });
+        gl = wtu.create3DContext(null, { alpha: false });
     shouldBeNonNull("gl");
     shouldBeNonNull("tex = gl.createTexture()");
     gl.bindTexture(target, tex);
@@ -188,7 +188,7 @@ function testCopyFromInternalFBO(testCase)
 
 description("Validate tex functions input parameters");
 
-shouldBeNonNull("gl = create3DContext()");
+shouldBeNonNull("gl = wtu.create3DContext()");
 shouldBeNonNull("tex = gl.createTexture()");
 gl.bindTexture(gl.TEXTURE_2D, tex);
 glErrorShouldBe(gl, gl.NO_ERROR);

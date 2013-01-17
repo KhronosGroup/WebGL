@@ -45,7 +45,7 @@ description("Checks that ReadPixels works as expected.");
 
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("example");
-var gl = create3DContext(canvas);
+var gl = wtu.create3DContext(canvas);
 
 if (window.initNonKhronosFramework) {
    window.initNonKhronosFramework(true);
@@ -71,7 +71,7 @@ if (gl.getError() != gl.CONTEXT_LOST_WEBGL) {
 }
 
 function continueTestAfterContextRestored() {
-  window.gl = create3DContext(canvas);
+  window.gl = wtu.create3DContext(canvas);
   var func = continueTestFunc;
   window.continueTestFunc = function() { testFailed("should not be here"); };
   func();
