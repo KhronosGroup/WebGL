@@ -45,11 +45,10 @@ interface WEBGL_debug_renderer_info {
   </security>
   <issues>
     <p>
-      1) What enum values should be used for UNMASKED_VENDOR_WEBGL and UNMASKED_RENDERER_WEBGL?
+      1) What enum values should be used for UNMASKED_VENDOR_WEBGL and UNMASKED_RENDERER_WEBGL?</p>
       <ul>
         <li> RESOLVED: The first draft used temporary enum values. They have been replaced with enums allocated from the WEBGL range of GL enums.</li>
       </ul>
-    </p>
   </issues>
   <history>
     <revision date="2011/10/03">

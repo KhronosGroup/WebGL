@@ -73,53 +73,44 @@
 
   <additions>
     <p>In section 5.13.12 <cite>Reading back pixels</cite>, change the allowed
-    format and types table to the following .</p>
+    format and types table to:</p>
 
     <dl class="methods">
-      <dt class="idl-code">
-        <dd>
-          <table>
-            <tbody>
-              <tr>
-                <th>frame buffer type</th>
+      <dd>
+        <table>
+          <tbody>
+            <tr>
+              <th>frame buffer type</th>
+              <th>
+                <code>format</code>
+              </th>
+              <th>
+                <code>type</code>
+              </th>
+            </tr>
 
-                <th>
-                  <code>format</code>
-                </th>
+            <tr>
+              <td>normalized fixed-point</td>
+              <td>RGBA</td>
+              <td>UNSIGNED_BYTE</td>
+            </tr>
 
-                <th>
-                  <code>type</code>
-                </th>
-              </tr>
+            <tr>
+              <td>floating-point</td>
+              <td>RGBA</td>
+              <td>FLOAT</td>
+            </tr>
 
-              <tr>
-                <td>normalized fixed-point</td>
-
-                <td>RGBA</td>
-
-                <td>UNSIGNED_BYTE</td>
-              </tr>
-
-              <tr>
-                <td>floating-point</td>
-
-                <td>RGBA</td>
-
-                <td>FLOAT</td>
-              </tr>
-
-              <tr/>
-            </tbody>
-          </table>
-        </dd>
-      </dt>
+          </tbody>
+        </table>
+      </dd>
     </dl>
 
     <p>Change the paragraph beginning "If <code>pixels</code> is null ..."
-    to<blockquote>If frame buffer type is not that indicated in the table for
+    to</p><blockquote>If frame buffer type is not that indicated in the table for
     the <code>format</code> and <code>type</code> combination, an
     INVALID_OPERATON error is generated. If pixels is null
-    ...</blockquote></p>
+    ...</blockquote>
   </additions>
 
   <history>
