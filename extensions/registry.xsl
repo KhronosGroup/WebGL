@@ -23,8 +23,10 @@
     <xsl:copy-of select="@*" />
     <xsl:apply-templates select="node()" />
     <xsl:if test="not(local-name()='area' or local-name()='base' or local-name()='br' or local-name()='col' or local-name()='command' or local-name()='embed' or local-name()='hr' or local-name()='img' or local-name()='input' or local-name()='keygen' or local-name()='link' or local-name()='meta' or local-name()='param' or local-name()='source')">
-      <!-- this element is not allowed to be void so emit a space -->
-      <xsl:text> </xsl:text>
+      <xsl:if test="count(*|text())=0">
+        <!-- this element is not allowed to be void so emit a space -->
+        <xsl:text> </xsl:text>
+      </xsl:if>
     </xsl:if>
   </xsl:copy>
 </xsl:template>
@@ -42,23 +44,27 @@
 </xsl:template>
 
 <xsl:template match="ol[@id='ratified-by-number']">
-  <xsl:if test="count($registry/ratified)!=0">
+  <xsl:choose><xsl:when test="count($registry/ratified)!=0">
   <xsl:copy>
     <xsl:apply-templates select="$registry/ratified">
       <xsl:sort select="number" data-type="number" order="ascending" />
     </xsl:apply-templates>
   </xsl:copy>
-  </xsl:if>
+  </xsl:when><xsl:otherwise>
+  <xsl:text> </xsl:text>
+  </xsl:otherwise></xsl:choose>
 </xsl:template>
 
 <xsl:template match="ol[@id='ratified-by-name']">
-  <xsl:if test="count($registry/ratified)!=0">
+  <xsl:choose><xsl:when test="count($registry/ratified)!=0">
   <xsl:copy>
     <xsl:apply-templates select="$registry/ratified">
       <xsl:sort select="name"/>
     </xsl:apply-templates>
   </xsl:copy>
-  </xsl:if>
+  </xsl:when><xsl:otherwise>
+  <xsl:text> </xsl:text>
+  </xsl:otherwise></xsl:choose>
 </xsl:template>
 
 <xsl:template match="ol[@id='community-approved-by-number']">
