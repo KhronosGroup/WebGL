@@ -146,8 +146,13 @@ function runOneTest(gl, info) {
     var program = gl.createProgram();
     gl.attachShader(program, vShader);
     gl.attachShader(program, fShader);
-    gl.bindAttribLocation(program, 0, "vPosition");
-    gl.bindAttribLocation(program, 1, "texCoord0");
+
+    if (vSource.indexOf("vPosition") >= 0) {
+      gl.bindAttribLocation(program, 0, "vPosition");
+    }
+    if (vSource.indexOf("texCoord0") >= 0) {
+      gl.bindAttribLocation(program, 1, "texCoord0");
+    }
     gl.linkProgram(program);
     var linked = (gl.getProgramParameter(program, gl.LINK_STATUS) != 0);
     if (!linked) {
