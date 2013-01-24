@@ -73,8 +73,8 @@ shader-with-version-130.vert.html
 shader-with-webgl-identifier.vert.html
 --min-version 1.0.2 shader-with-while-loop.html
 shader-without-precision.frag.html
---min-version 1.0.2 shaders-with-mis-matched-uniforms.html
---min-version 1.0.2 shaders-with-mis-matched-varying.html
+--min-version 1.0.2 shaders-with-mis-matching-uniforms.html
+--min-version 1.0.2 shaders-with-mis-matching-varyings.html
 --min-version 1.0.2 shaders-with-missing-varyings.html
 --min-version 1.0.2 shaders-with-varyings.html
 shared.html
