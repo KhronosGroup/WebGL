@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<draft href="WEBGL_depth_texture/">
+<extension href="WEBGL_depth_texture/">
   <name>WEBGL_depth_texture</name>
   <aliases>
     <alias>WEBKIT_WEBGL_depth_texture</alias>
@@ -225,4 +225,4 @@ interface WEBGL_depth_texture {
       </change>
     </revision>
   </history>
-</draft>
+</extension>

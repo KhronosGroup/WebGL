@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<draft href="WEBGL_lose_context/">
+<extension href="WEBGL_lose_context/">
   <name>WEBGL_lose_context</name>
   <aliases>
     <alias>WEBKIT_WEBGL_lose_context</alias>
@@ -69,4 +69,4 @@ interface WEBGL_lose_context {
       <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision>
   </history>
-</draft>
+</extension>
