@@ -18,8 +18,7 @@
     </p>
     <features>
       <feature>
-        <p>
-        Adds a new context creation parameter:
+        <p>Adds a new context creation parameter:</p>
         <dl>
             <dt><span class="prop-value">shareGroup</span></dt>
                 <dd>
@@ -28,7 +27,6 @@
                     then resources from the existing context are shared with the newly created context.
                 </dd>
         </dl>
-        </p>
         <pre class="example">
 var canvas1 = document.createElement("canvas");
 var canvas2 = document.createElement("canvas");

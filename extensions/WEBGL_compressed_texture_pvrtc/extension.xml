@@ -47,29 +47,29 @@
       </feature>
       <feature>
         <p>The following format-specific restrictions must also be enforced:</p>
-
+        <dl>
           <dt>COMPRESSED_RGB_PVRTC_4BPPV1_IMG</dt>
           <dt>COMPRESSED_RGBA_PVRTC_4BPPV1_IMG</dt>
           <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
           <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
-          must be equal to the following number of bytes:
+          must be equal to the following number of bytes:</p>
           <blockquote><code>
             max(width, 8) * max(height, 8) / 2
           </code></blockquote>
-          If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
           </dd>
 
           <dt>COMPRESSED_RGB_PVRTC_2BPPV1_IMG</dt>
           <dt>COMPRESSED_RGBA_PVRTC_2BPPV1_IMG</dt>
           <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
           <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
-          must be equal to the following number of bytes:
+          must be equal to the following number of bytes:</p>
           <blockquote><code>
             max(width, 16) * max(height, 8) / 4
           </code></blockquote>
-          If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
           </dd>
-
+        </dl>
       </feature>
     </features>
   </overview>

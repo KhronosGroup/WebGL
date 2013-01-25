@@ -30,8 +30,8 @@
         will include the 4 formats from this specification.
       </feature>
       <feature>
-          <p>The following format specific restrictions must be enforced:</p>
-
+        <p>The following format specific restrictions must be enforced:</p>
+        <dl>
           <dt>COMPRESSED_RGB_S3TC_DXT1_EXT</dt>
           <dt>COMPRESSED_RGBA_S3TC_DXT1_EXT</dt>
           <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
@@ -85,6 +85,7 @@
           If they are not an <code>INVALID_OPERATION</code> error is generated.
           </p>
           </dd>
+        </dl>
       </feature>
     </features>
   </overview>
