@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 15 January 2013</h2>
+    <h2 class="no-toc">Editor's Draft 25 January 2013</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -610,8 +610,8 @@ image.src = "http://other-domain.com/image.jpg";
         the array. This includes any variable of array type, as well as vector or matrix types such
         as <code>vec3</code> or <code>mat4</code> when accessed using array subscripting syntax. If
         detected during compilation, such accesses must generate an error and prevent the shader
-        from compiling. Otherwise, at runtime they may return a constant value (such as 0), or the
-        value at any valid index of the same array.
+        from compiling. Otherwise, at runtime they shall return zero or the value at any valid index
+        of the same array.
     </p>
     <div class="note">
         <p>
