@@ -1350,7 +1350,7 @@ var loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
   if (!compiled) {
     // Something went wrong during compilation; get the error
     lastError = gl.getShaderInfoLog(shader);
-    errFn("*** Error compiling shader '" + shader + "':" + lastError);
+    errFn("*** Error compiling " + glEnumToString(gl, shaderType) + " '" + shader + "':" + lastError);
     gl.deleteShader(shader);
     return null;
   }
