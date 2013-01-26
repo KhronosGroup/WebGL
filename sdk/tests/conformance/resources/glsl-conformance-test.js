@@ -62,6 +62,7 @@ var fShaderDB = {};
  */
 function runOneTest(gl, info) {
   var passMsg = info.passMsg
+  debug("");
   debug("test: " + passMsg);
 
   var console = document.getElementById("console");
