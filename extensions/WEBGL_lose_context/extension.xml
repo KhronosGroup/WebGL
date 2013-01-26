@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<draft href="WEBGL_lose_context/">
+<extension href="WEBGL_lose_context/">
   <name>WEBGL_lose_context</name>
   <aliases>
     <alias>WEBKIT_WEBGL_lose_context</alias>
@@ -11,7 +11,6 @@
     <contributor>Members of the <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a></contributor>
     <contributor>Glenn Maynard</contributor>
   </contributors>
-  <status>Draft; revision underway. Do not ship!</status>
   <number>3</number>
   <depends>
     <api version="1.0"/>
@@ -68,5 +67,8 @@ interface WEBGL_lose_context {
     <revision date="2012/01/03">
       <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision>
+    <revision date="2013/01/26">
+      <change>Moved from draft to community approved status</change>
+    </revision>
   </history>
-</draft>
+</extension>
