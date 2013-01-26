@@ -155,4 +155,8 @@
       <change>Initial revision.</change>
     </revision><revision date="2012/12/17" number="2">
       <change>Moved to draft.</change>
-    </revision></history></draft><proposal href="proposals/EXT_blend_minmax"><name>EXT_blend_minmax</name></proposal><proposal href="proposals/EXT_sRGB"><name>EXT_sRGB</name></proposal></registry>
+    </revision></history></draft><proposal href="proposals/EXT_blend_minmax"><name>EXT_blend_minmax</name></proposal><draft href="EXT_sRGB"><name>EXT_sRGB</name><number>17</number><history><revision date="2012/12/16" number="1">
+      <change>Initial revision.</change>
+    </revision><revision date="2013/12/26" number="2">
+      <change>Moved from proposal to draft</change>
+    </revision></history></draft></registry>
