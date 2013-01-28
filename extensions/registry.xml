@@ -48,7 +48,7 @@
       <change>Added resolution to deleted buffer issue</change>
     </revision><revision date="2012/10/16" number="7">
       <change>Based on feedback on public_webgl, moved from draft to community approved, and removed aliases.</change>
-    </revision></history></extension><draft href="WEBGL_lose_context/"><name>WEBGL_lose_context</name><number>3</number><history><revision date="2011/01/11" number="1">
+    </revision></history></extension><extension href="WEBGL_lose_context/"><name>WEBGL_lose_context</name><number>3</number><history><revision date="2011/01/11" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/04/14" number="2">
       <change>Added explicit restoreContext() method based on discussion on public_webgl list, to enable testing of scenario where context stays lost for a period of time.</change>
@@ -63,7 +63,9 @@
       <change>Renamed "Name Strings" section to "Alias Name Strings".</change>
     </revision><revision date="2012/01/03" number="7">
       <change>Removed webgl module per changes to Web IDL spec.</change>
-    </revision></history></draft><extension href="WEBGL_debug_renderer_info/"><name>WEBGL_debug_renderer_info</name><number>6</number><history><revision date="2011/10/03" number="1">
+    </revision><revision date="2013/01/26" number="8">
+      <change>Moved from draft to community approved status</change>
+    </revision></history></extension><extension href="WEBGL_debug_renderer_info/"><name>WEBGL_debug_renderer_info</name><number>6</number><history><revision date="2011/10/03" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/10/12" number="2">
       <change>Assigned enums; assigned webgl extension number.</change>
@@ -84,9 +86,11 @@
       <change>Renamed "New Functions and Methods" section to "New Functions".</change>
     </revision><revision date="2012/01/03" number="5">
       <change>Removed webgl module per changes to Web IDL spec.</change>
-    </revision></history></extension><draft href="WEBGL_compressed_texture_s3tc/"><name>WEBGL_compressed_texture_s3tc</name><number>8</number><history><revision date="2012/01/25" number="1">
+    </revision></history></extension><extension href="WEBGL_compressed_texture_s3tc/"><name>WEBGL_compressed_texture_s3tc</name><number>8</number><history><revision date="2012/01/25" number="1">
       <change>Initial revision.</change>
-    </revision></history></draft><draft href="WEBGL_depth_texture/"><name>WEBGL_depth_texture</name><number>9</number><history><revision date="2012/01/23" number="1">
+    </revision><revision date="2013/01/26" number="2">
+      <change>Moved from draft to community approved status</change>
+    </revision></history></extension><extension href="WEBGL_depth_texture/"><name>WEBGL_depth_texture</name><number>9</number><history><revision date="2012/01/23" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/01/25" number="2">
       <change>Added provisions to exclude cube depth textures.</change>
@@ -117,7 +121,9 @@
         Updated references to texSubImage2D. Added
         DEPTH_STENCIL_ATTACHMENT to framebufferTexture2D.
       </change>
-    </revision></history></draft><proposal href="proposals/WEBGL_shared_resources/"><name>WEBGL_shared_resources</name></proposal><extension href="OES_element_index_uint/"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
+    </revision><revision date="2013/01/26" number="9">
+      <change>Moved from draft to community approved status</change>
+    </revision></history></extension><proposal href="proposals/WEBGL_shared_resources/"><name>WEBGL_shared_resources</name></proposal><extension href="OES_element_index_uint/"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/01/27" number="2">
       <change>Removed the bufferData requirement as this is not checked by webgl</change>
