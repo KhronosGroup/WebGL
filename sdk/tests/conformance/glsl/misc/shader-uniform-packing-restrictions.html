@@ -47,12 +47,40 @@
         gl_Position = a_position;
     }
 </script>
+<script id="fshader" type="x-shader/x-vertex">
+    precision mediump float;
+    varying vec4 v_varying;
+    void main()
+    {
+        gl_FragColor = v_varying;
+    }
+</script>
+<script id="vshaderArrayTest" type="x-shader/x-vertex">
+    attribute vec4 a_position;
+    varying vec4 v_varying;
+    uniform $(type) u_uniform[$(numTestType)];
+    void main()
+    {
+        v_varying = $(code);
+        gl_Position = a_position;
+    }
+</script>
 <script id="fshaderArrayTest" type="x-shader/x-fragment">
     precision mediump float;
     uniform $(type) u_uniform[$(numTestType)];
     void main()
     {
         gl_FragColor = $(code);
+    }
+</script>
+<script id="vshaderUniformTest" type="x-shader/x-fragment">
+    attribute vec4 a_position;
+    varying vec4 v_varying;
+$(uniforms)
+    void main()
+    {
+        v_varying = $(code);
+        gl_Position = a_position;
     }
 </script>
 <script id="fshaderUniformTest" type="x-shader/x-fragment">
@@ -69,7 +97,6 @@ description();
 debug("");
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
-var vSrc = wtu.getScript("vshader");
 
 var uniformTypes = [
   { type: "bool",        componentsPerRow: 1, rows: 1, code: "vec4(u_uniform$(id)$(index), 0, 0, 0)", },
@@ -94,118 +121,145 @@ var uniformTypes = [
 ];
 
 var vBaseSource = wtu.getScript("vshader");
+var fBaseSource = wtu.getScript("fshader");
+var vArrayTestSource = wtu.getScript("vshaderArrayTest");
 var fArrayTestSource = wtu.getScript("fshaderArrayTest");
+var vUniformTestSource = wtu.getScript("vshaderUniformTest");
 var fUniformTestSource = wtu.getScript("fshaderUniformTest");
 
-var minFragmentVectors = 128;  // GLSL ES 1.0.17 Appendix A.7
-var maxFragmentVectors = gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS);
 var tests = [];
-
-for (var ii = 0; ii < uniformTypes.length; ++ii) {
-  var info = uniformTypes[ii];
-  wtu.log("checking: " + info.type);
-  // Compute the maximum amount of this type allowed in a single array.
-  var numVars = Math.floor(maxFragmentVectors / info.rows);
-  // Compute the minimum required to work in a single array.
-  var minVars = Math.floor(minFragmentVectors / info.rows);
-  // Test array[1] of the type
-  var code = wtu.replaceParams(info.code, {id: "", index: "[0]"});
-  tests.push({
-    vShaderSource: vBaseSource,
-    vShaderSuccess: true,
-    fShaderSource: wtu.replaceParams(fArrayTestSource, {numTestType: 1, code: code}, info),
-    fShaderSuccess: true,
-    linkSuccess: true,
-    passMsg: "fragment shader with uniform array of " + info.type + " with 1 element should succeed",
-  });
-  // Test array[max] of the type
-  // Note: We can't test this as actual GL drivers are only required to be able to
-  // do the minimum number. After that it can fail for any reason.
-  if (false) {
-    var code = wtu.replaceParams(info.code, {id: "", index: "[" + (numVars - 1) + "]"});
+var shaderTypes = [
+  { type: "vertex",
+    // For tests that expect failure which shader might fail.
+    vertExpectation: false,
+    fragExpectation: true,
+    vertArrayTest: vArrayTestSource,
+    fragArrayTest: fBaseSource,
+    vertUniformTest: vUniformTestSource,
+    fragUniformTest: fBaseSource,
+    maxVectors: gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS),
+    minVectors: 128,  // GLSL ES 1.0.17 Appendix A.7,
+  },
+  { type: "fragment",
+    // For tests that expect failure which shader might fail.
+    vertExpectation: true,
+    fragExpectation: false,
+    vertArrayTest: vBaseSource,
+    fragArrayTest: fArrayTestSource,
+    vertUniformTest: vBaseSource,
+    fragUniformTest: fUniformTestSource,
+    maxVectors: gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS),
+    minVectors: 16,  // GLSL ES 1.0.17 Appendix A.7,
+  },
+];
+for (var ss = 0; ss < shaderTypes.length; ++ss) {
+  var shaderType = shaderTypes[ss];
+  debug("max " + shaderType.type + ": " + shaderType.maxVectors);
+  for (var ii = 0; ii < uniformTypes.length; ++ii) {
+    var info = uniformTypes[ii];
+    wtu.log("checking: " + info.type);
+    // Compute the maximum amount of this type allowed in a single array.
+    var numVars = Math.floor(shaderType.maxVectors / info.rows);
+    // Compute the minimum required to work in a single array.
+    var minVars = Math.floor(shaderType.minVectors / info.rows);
+    // Test array[1] of the type
+    var code = wtu.replaceParams(info.code, {id: "", index: "[0]"});
     tests.push({
-      vShaderSource: vBaseSource,
+      vShaderSource: wtu.replaceParams(shaderType.vertArrayTest, {numTestType: 1, code: code}, info),
       vShaderSuccess: true,
-      fShaderSource: wtu.replaceParams(fArrayTestSource, {numTestType: numVars, code: code}, info),
+      fShaderSource: wtu.replaceParams(shaderType.fragArrayTest, {numTestType: 1, code: code}, info),
       fShaderSuccess: true,
       linkSuccess: true,
-      passMsg: "fragment shader with uniform array of " + info.type + " with " + numVars + " elements (the maximum) should succeed",
+      passMsg: shaderType.type + " shader with uniform array of " + info.type + " with 1 element should succeed",
+    });
+    // Test array[max] of the type
+    // Note: We can't test this as actual GL drivers are only required to be able to
+    // do the minimum number. After that it can fail for any reason.
+    if (false) {
+      var code = wtu.replaceParams(info.code, {id: "", index: "[" + (numVars - 1) + "]"});
+      tests.push({
+        vShaderSource: wtu.replaceParams(shaderType.vertArrayTest, {numTestType: numVars, code: code}, info),
+        vShaderSuccess: true,
+        fShaderSource: wtu.replaceParams(shaderType.fragArrayTest, {numTestType: numVars, code: code}, info),
+        fShaderSuccess: true,
+        linkSuccess: true,
+        passMsg: shaderType.type + " shader with uniform array of " + info.type + " with " + numVars + " elements (the maximum) should succeed",
+      });
+    }
+
+    // Test required number of uniforms
+    var code = wtu.replaceParams(info.code, {id: "", index: "[" + (minVars - 1) + "]"});
+    tests.push({
+      vShaderSource: wtu.replaceParams(shaderType.vertArrayTest, {numTestType: minVars, code: code}, info),
+      vShaderSuccess: true,
+      fShaderSource: wtu.replaceParams(shaderType.fragArrayTest, {numTestType: minVars, code: code}, info),
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: shaderType.type + " shader with uniform array of " + info.type + " with " + minVars + " elements (the minimum required) should succeed",
+    });
+
+    // Test array[max + 1] accessing last element. WebGL requires this to fail.
+    var code = wtu.replaceParams(info.code, {id: "", index: "[" + numVars + "]"});
+    tests.push({
+      vShaderSource: wtu.replaceParams(shaderType.vertArrayTest, {numTestType: numVars + 1, code: code}, info),
+      vShaderSuccess: shaderType.vertExpectation,
+      fShaderSource: wtu.replaceParams(shaderType.fragArrayTest, {numTestType: numVars + 1, code: code}, info),
+      fShaderSuccess: shaderType.fragExpectation,
+      linkSuccess: false,
+      passMsg: shaderType.type + " shader with uniform array of " + info.type + " with " + (numVars + 1) + " elements (one past maximum) accessing last element should fail",
+    });
+
+    // Test array[max + 1] accessing first element. WebGL requires this to fail but ES allows truncating array.
+    var code = wtu.replaceParams(info.code, {id: "", index: "[0]"});
+    tests.push({
+      vShaderSource: wtu.replaceParams(shaderType.vertArrayTest, {numTestType: numVars + 1, code: code}, info),
+      vShaderSuccess: shaderType.vertExpectation,
+      fShaderSource: wtu.replaceParams(shaderType.fragArrayTest, {numTestType: numVars + 1, code: code}, info),
+      fShaderSuccess: shaderType.fragExpectation,
+      linkSuccess: false,
+      passMsg: shaderType.type + " shader with uniform array of " + info.type + " with " + (numVars + 1) + " elements (one past maximum) accessing first element should fail",
+    });
+
+    // Test max uniforms of type.
+    // Note: We can't test this as actual GL drivers are only required to be able to
+    // do the minimum number. After that it can fail for any reason.
+    if (false) {
+    }
+
+    var generateCode = function(numVars) {
+      var uniforms = [];
+      var codes = [];
+      for (var uu = 0; uu < numVars; ++uu) {
+        uniforms.push("    uniform " + info.type + " u_uniform" + uu + ";");
+        codes.push(wtu.replaceParams(info.code, {id: uu, index: ""}));
+      }
+      return {
+        uniforms: uniforms.join("\n"),
+        code: codes.join(" + \n            "),
+      };
+    };
+
+    // Test max+1 uniforms of type.
+    tests.push({
+      vShaderSource: wtu.replaceParams(shaderType.vertUniformTest, generateCode(numVars + 1), info),
+      vShaderSuccess: shaderType.vertExpectation,
+      fShaderSource: wtu.replaceParams(shaderType.fragUniformTest, generateCode(numVars + 1), info),
+      fShaderSuccess: shaderType.fragExpectation,
+      linkSuccess: false,
+      passMsg: shaderType.type + " shader with " + (numVars + 1) + " uniforms of " + info.type + " (one past maximum) should fail",
+    });
+
+    // Test required uniforms of type.
+    tests.push({
+      vShaderSource: wtu.replaceParams(shaderType.vertUniformTest, generateCode(minVars), info),
+      vShaderSuccess: true,
+      fShaderSource: wtu.replaceParams(shaderType.fragUniformTest, generateCode(minVars), info),
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: shaderType.type + " shader with " + minVars + " uniforms of " + info.type + " (the minimum required) should succeed",
     });
   }
-
-  // Test required number of uniforms
-  var code = wtu.replaceParams(info.code, {id: "", index: "[" + (minVars - 1) + "]"});
-  tests.push({
-    vShaderSource: vBaseSource,
-    vShaderSuccess: true,
-    fShaderSource: wtu.replaceParams(fArrayTestSource, {numTestType: minVars, code: code}, info),
-    fShaderSuccess: true,
-    linkSuccess: true,
-    passMsg: "fragment shader with uniform array of " + info.type + " with " + minVars + " elements (the minimum required) should succeed",
-  });
-
-  // Test array[max + 1] accessing last element. WebGL requires this to fail.
-  var code = wtu.replaceParams(info.code, {id: "", index: "[" + numVars + "]"});
-  tests.push({
-    vShaderSource: vBaseSource,
-    vShaderSuccess: true,
-    fShaderSource: wtu.replaceParams(fArrayTestSource, {numTestType: numVars + 1, code: code}, info),
-    fShaderSuccess: false,
-    linkSuccess: false,
-    passMsg: "fragment shader with uniform array of " + info.type + " with " + (numVars + 1) + " elements (one past maximum) accessing last element should fail",
-  });
-
-  // Test array[max + 1] accessing first element. WebGL requires this to fail but ES allows truncating array.
-  var code = wtu.replaceParams(info.code, {id: "", index: "[0]"});
-  tests.push({
-    vShaderSource: vBaseSource,
-    vShaderSuccess: true,
-    fShaderSource: wtu.replaceParams(fArrayTestSource, {numTestType: numVars + 1, code: code}, info),
-    fShaderSuccess: false,
-    linkSuccess: false,
-    passMsg: "fragment shader with uniform array of " + info.type + " with " + (numVars + 1) + " elements (one past maximum) accessing first element should fail",
-  });
-
-  // Test max uniforms of type.
-  // Note: We can't test this as actual GL drivers are only required to be able to
-  // do the minimum number. After that it can fail for any reason.
-  if (false) {
-  }
-
-  var generateCode = function(numVars) {
-    var uniforms = [];
-    var codes = [];
-    for (var uu = 0; uu < numVars; ++uu) {
-      uniforms.push("    uniform " + info.type + " u_uniform" + uu + ";");
-      codes.push(wtu.replaceParams(info.code, {id: uu, index: ""}));
-    }
-    return {
-      uniforms: uniforms.join("\n"),
-      code: codes.join(" + \n            "),
-    };
-  };
-
-  // Test max+1 uniforms of type.
-  tests.push({
-    vShaderSource: vBaseSource,
-    vShaderSuccess: true,
-    fShaderSource: wtu.replaceParams(fUniformTestSource, generateCode(numVars + 1), info),
-    fShaderSuccess: false,
-    linkSuccess: false,
-    passMsg: "fragment shader with " + (numVars + 1) + " uniforms of " + info.type + " (one past maximum) should fail",
-  });
-
-  // Test required uniforms of type.
-  tests.push({
-    vShaderSource: vBaseSource,
-    vShaderSuccess: true,
-    fShaderSource: wtu.replaceParams(fUniformTestSource, generateCode(minVars), info),
-    fShaderSuccess: true,
-    linkSuccess: true,
-    passMsg: "fragment shader with " + minVars + " uniforms of " + info.type + " (the minimum required) should succeed",
-  });
 }
-
 GLSLConformanceTester.runTests(tests);
 var successfullyParsed = true;
 </script>
