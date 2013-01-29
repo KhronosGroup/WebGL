@@ -10,6 +10,8 @@
               
             </summary></entry><entry><title>WEBGL_compressed_texture_s3tc : revision 2</title><link rel="alternate" type="text/html" href="WEBGL_compressed_texture_s3tc/"/><id>WEBGL_compressed_texture_s3tc/#r=2</id><updated>2013-01-26T23:59:59Z</updated><summary>Moved from draft to community approved status
               
+            </summary></entry><entry><title>ANGLE_instanced_arrays : revision 2</title><link rel="alternate" type="text/html" href="ANGLE_instanced_arrays/"/><id>ANGLE_instanced_arrays/#r=2</id><updated>2013-01-26T23:59:59Z</updated><summary>Moved from proposal to draft.
+              
             </summary></entry><entry><title>EXT_frag_depth : revision 2</title><link rel="alternate" type="text/html" href="EXT_frag_depth"/><id>EXT_frag_depth#r=2</id><updated>2012-12-17T23:59:59Z</updated><summary>Moved to draft.
               
             </summary></entry><entry><title>EXT_sRGB : revision 1</title><link rel="alternate" type="text/html" href="EXT_sRGB"/><id>EXT_sRGB#r=1</id><updated>2012-12-16T23:59:59Z</updated><summary>Initial revision.
@@ -21,7 +23,5 @@
       attachments implicitly enable EXT_color_buffer_half_float.
               
             </summary></entry><entry><title>WEBGL_color_buffer_float : revision 4</title><link rel="alternate" type="text/html" href="WEBGL_color_buffer_float"/><id>WEBGL_color_buffer_float#r=4</id><updated>2012-11-26T23:59:59Z</updated><summary>Move to draft.
-              
-            </summary></entry><entry><title>EXT_color_buffer_half_float : revision 3</title><link rel="alternate" type="text/html" href="EXT_color_buffer_half_float"/><id>EXT_color_buffer_half_float#r=3</id><updated>2012-11-26T23:59:59Z</updated><summary>Move to draft.
               
             </summary></entry></feed>

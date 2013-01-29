@@ -10,7 +10,7 @@ EXTS := OES_standard_derivatives \
 	proposals/WEBGL_shared_resources \
 	OES_element_index_uint \
 	EXT_texture_filter_anisotropic \
-	proposals/ANGLE_instanced_arrays \
+	ANGLE_instanced_arrays \
 	proposals/WEBGL_dynamic_texture \
 	WEBGL_compressed_texture_pvrtc \
 	WEBGL_compressed_texture_atc \

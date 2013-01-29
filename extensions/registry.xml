@@ -137,7 +137,11 @@
       <change>Added the EXT suffix to the enumerants and aliases to the extension name</change>
     </revision><revision date="2012/07/19" number="3">
       <change>Moved from draft to community approved status</change>
-    </revision></history></extension><proposal href="proposals/ANGLE_instanced_arrays/"><name>ANGLE_instanced_arrays</name></proposal><!-- vi:set sw=2 ts=4: --><proposal href="proposals/WEBGL_dynamic_texture/"><name>WEBGL_dynamic_texture</name></proposal><draft href="WEBGL_compressed_texture_pvrtc/"><name>WEBGL_compressed_texture_pvrtc</name><number>13</number><history><revision date="2012/08/07" number="1">
+    </revision></history></extension><draft href="ANGLE_instanced_arrays/"><name>ANGLE_instanced_arrays</name><number>13</number><history><revision date="2012/03/06" number="1">
+      <change>Initial revision.</change>
+    </revision><revision date="2013/01/26" number="2">
+      <change>Moved from proposal to draft.</change>
+    </revision></history></draft><!-- vi:set sw=2 ts=4: --><proposal href="proposals/WEBGL_dynamic_texture/"><name>WEBGL_dynamic_texture</name></proposal><draft href="WEBGL_compressed_texture_pvrtc/"><name>WEBGL_compressed_texture_pvrtc</name><number>13</number><history><revision date="2012/08/07" number="1">
       <change>Initial revision.</change>
     </revision></history></draft><draft href="WEBGL_compressed_texture_atc/"><name>WEBGL_compressed_texture_atc</name><number>12</number><history><revision date="2012/09/11" number="1">
       <change>Initial revision.</change>
