@@ -133,7 +133,6 @@ These lines appears at the top of every html and js file under sdk/tests/conform
     *   All HTML files must have a `<meta charset="utf-8">`
 
     *   All JavaScript must start with "use strict";
->>>>>>> Stashed changes
 
 *   If adding a new test edit the approriate 00_test_list.txt file
 
