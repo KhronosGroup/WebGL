@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<proposal href="proposals/ANGLE_instanced_arrays/">
+<draft href="ANGLE_instanced_arrays/">
   <name>ANGLE_instanced_arrays</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -28,5 +28,8 @@ interface ANGLE_instanced_arrays {
     <revision date="2012/03/06">
       <change>Initial revision.</change>
     </revision>
+    <revision date="2013/01/26">
+      <change>Moved from proposal to draft.</change>
+    </revision>
   </history>
-</proposal>
+</draft>
