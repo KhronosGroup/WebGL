@@ -40,8 +40,8 @@ These lines appears at the top of every html and js file under sdk/tests/conform
 
 *   Please use code similar to the code in existing tests
 
-Ideally, copy an existing test and modify it for your new test. Try not to duplicate
-code that already exists where approriate. In particular
+    Ideally, copy an existing test and modify it for your new test. Try not to duplicate
+    code that already exists where approriate. In particular
 
     *   use the functions in WebGLTestUtils rather than duplicating functionality.
 
@@ -51,26 +51,80 @@ code that already exists where approriate. In particular
 
         Examples:
 
-        * use `WebGLTestUtils.checkCanvas` or `WebGLTestUtils.checkCanvasRect` rather
-          than checking rendering results by hand.
+        *    to create a WebGL context call WebGLTestUtils.create3DContext. Passed nothing
+             it will create an offscreen canvas. Passed a canvas element it will create
+             a context on that element. Passed a string it will look up the canvas element
+             with the matching id and create a context from that element.
 
-        * use `WebgLTestUtils.setupTexturedQuad` if you need a unit quad with texture coords.
-          By default the positions will be at location 0 and the texture coords at location 1.
+        *    use `WebGLTestUtils.checkCanvas` or `WebGLTestUtils.checkCanvasRect` rather
+             than checking rendering results by hand.
 
-        * If you need a custom shader use `WebGLTestUtils.setupProgram`. Note that it takes
-          the following arguments. `gl, shaders, opt_attribs, opt_locations` where:
+        *    use `WebgLTestUtils.setupTexturedQuad` if you need a unit quad with texture coords.
+             By default the positions will be at location 0 and the texture coords at location 1.
 
-          `gl` is the WebGL context.
+        *    If you need a custom shader use `WebGLTestUtils.setupProgram`. Note that it takes
+             the following arguments. `gl, shaders, opt_attribs, opt_locations` where:
 
-          `shaders` are an array of either script element ids, shader source, or WebGLShader
-          objects. The first element in the array is the vertex shader, the second the fragment
-          shader.
+             `gl` is the WebGL context.
 
-          `opt_attribs` is an optional array of attribute names. If provided the named attributes
-          will have their locations bound to their index in this array.
+             `shaders` are an array of either script element ids, shader source, or WebGLShader
+             objects. The first element in the array is the vertex shader, the second the fragment
+             shader.
 
-          `opt_locations` is an optional array of attribute locations. If provided each attribute
-          name in `opt_attribs` is bound to the corresponding location in `opt_locations`.
+             `opt_attribs` is an optional array of attribute names. If provided the named attributes
+             will have their locations bound to their index in this array.
+
+             `opt_locations` is an optional array of attribute locations. If provided each attribute
+             name in `opt_attribs` is bound to the corresponding location in `opt_locations`.
+
+        *    If you need to wait for a composite call WebGLTestUtils.waitForComposite.
+             As compositing is a browser specfic thing this provides a central place to
+             update all tests that rely on compositing to function.
+
+    *   Code/Tag Order
+
+        Most tests run inline. They don't use window.onload or the load event. This works by placing
+        the script tag inside the body, *after* the canvas and required divs.
+
+            <canvas id="example"></canvas>
+            <div id="description"></div>
+            <div id="console"></div>
+            <script>
+            var wtu = WebGLDebugUtils;
+            var gl = wtu.create3DContext("example");
+            ...
+
+    *   Ending Tests
+
+        *   Tests that are short and run synchronously end with
+
+                <script src="../../resources/js-test-post.js"></script>
+
+
+        *   Tests that take a long time use setTimeout so as not to freeze the browser.
+
+            Many browsers will terminate JavaScript that takes more than a few seconds to execute
+            without returning control to the browser. The workaround is code like this
+
+                var numTests = 10;
+                var currenTest = 0;
+                function runNextTest() {
+                  if (currentTest == numTests) {
+                    finishTest();  // Tells the harness you're done.
+                    return;
+                  }
+                  // Run your test.
+                  ...
+                  ++currentTest;
+                  setTimeout(runNextTest, 100);
+                }
+                runNextTest();
+
+            The harness requries the global variable `successfullyParse` to be set to true.
+            This usually appears at the end of a file.
+
+                var successfullyParsed = true;
+
 
     *   indent with spaces not tabs. (not everyone uses your tab settings).
 
@@ -79,6 +133,7 @@ code that already exists where approriate. In particular
     *   All HTML files must have a `<meta charset="utf-8">`
 
     *   All JavaScript must start with "use strict";
+>>>>>>> Stashed changes
 
 *   If adding a new test edit the approriate 00_test_list.txt file
 
