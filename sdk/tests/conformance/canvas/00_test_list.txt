@@ -7,5 +7,6 @@ drawingbuffer-static-canvas-test.html
 drawingbuffer-test.html
 --min-version 1.0.2 framebuffer-bindings-unaffected-on-resize.html
 --min-version 1.0.2 texture-bindings-unaffected-on-resize.html
+--min-version 1.0.2 to-data-url-test.html
 viewport-unchanged-upon-resize.html
 
