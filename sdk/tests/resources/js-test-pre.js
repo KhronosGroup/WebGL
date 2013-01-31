@@ -30,21 +30,33 @@
     }
     testHarnessInitialized = true;
 
+    /* -- plaform specific code -- */
+
     // WebKit Specific code. Add your code here.
+    if (window.testRunner && !window.layoutTestController) {
+      window.layoutTestController = window.testRunner;
+    }
+
     if (window.layoutTestController) {
       layoutTestController.overridePreference("WebKitWebGLEnabled", "1");
       layoutTestController.dumpAsText();
-      if (waitUntilDone) {
-        layoutTestController.waitUntilDone();
-      }
+      layoutTestController.waitUntilDone();
     }
     if (window.internals) {
-      // Turn off console messages because for the WebGL tests they are
-      // GPU capability dependent.
+      // The WebKit testing system compares console output.
+      // Because the output of the WebGL Tests is GPU dependent
+      // we turn off console messages.
       window.console.log = function() { };
       window.console.error = function() { };
       window.internals.settings.setWebGLErrorsToConsoleEnabled(false);
+
+      // RAF doesn't work in LayoutTests. Disable it so the tests will
+      // use setTimeout instead.
+      window.requestAnimationFrame = undefined;
+      window.webkitRequestAnimationFrame = undefined;
     }
+
+    /* -- end platform specific code --*/
   }
 
   this.initTestingHarnessWaitUntilDone = function() {
