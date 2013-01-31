@@ -24,6 +24,36 @@ Unit testing library for the OpenGL ES 2.0 HTML Canvas context
 ** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
+
+/* -- plaform specific code -- */
+
+// WebKit
+if (window.testRunner && !window.layoutTestController) {
+  window.layoutTestController = window.testRunner;
+}
+
+if (window.layoutTestController) {
+  layoutTestController.overridePreference("WebKitWebGLEnabled", "1");
+  layoutTestController.dumpAsText();
+  layoutTestController.waitUntilDone();
+
+  // The WebKit testing system compares console output.
+  // Because the output of the WebGL Tests is GPU dependent
+  // we turn off console messages.
+  window.console.log = function() { };
+  window.console.error = function() { };
+
+  // RAF doesn't work in LayoutTests. Disable it so the tests will
+  // use setTimeout instead.
+  window.requestAnimationFrame = undefined;
+  window.webkitRequestAnimationFrame = undefined;
+}
+
+if (window.internals) {
+  window.internals.settings.setWebGLErrorsToConsoleEnabled(false);
+}
+
+/* -- end platform specific code --*/
 Tests = {
   autorun : true,
   message : null,
