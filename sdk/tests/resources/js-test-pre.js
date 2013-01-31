@@ -38,6 +38,13 @@
         layoutTestController.waitUntilDone();
       }
     }
+    if (window.internals) {
+      // Turn off console messages because for the WebGL tests they are
+      // GPU capability dependent.
+      window.console.log = function() { };
+      window.console.error = function() { };
+      window.internals.settings.setWebGLErrorsToConsoleEnabled(false);
+    }
   }
 
   this.initTestingHarnessWaitUntilDone = function() {
