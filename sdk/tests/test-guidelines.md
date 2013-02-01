@@ -4,6 +4,8 @@ Contributing WebGL conformance tests Guidelines
 Thank you for contibuting to the WebGL conformance tests.
 Please try to follow these guidelines when submitting a test.
 
+*   If you're new to git [here's a terse set of instructions](http://www.khronos.org/webgl/wiki/Using_Github_To_Contribute "Using Github to Contribute").
+
 *   All changes and/or new tests should go in the sdk/tests/conformance folder
 
 The tests under conformance-suites are snapshots and are only to be updated by
@@ -51,7 +53,7 @@ These lines appears at the top of every html and js file under sdk/tests/conform
 
         Examples:
 
-        *    to create a WebGL context call WebGLTestUtils.create3DContext. Passed nothing
+        *    to create a WebGL context call `WebGLTestUtils.create3DContext`. Passed nothing
              it will create an offscreen canvas. Passed a canvas element it will create
              a context on that element. Passed a string it will look up the canvas element
              with the matching id and create a context from that element.
@@ -63,7 +65,7 @@ These lines appears at the top of every html and js file under sdk/tests/conform
              By default the positions will be at location 0 and the texture coords at location 1.
 
         *    If you need a custom shader use `WebGLTestUtils.setupProgram`. Note that it takes
-             the following arguments. `gl, shaders, opt_attribs, opt_locations` where:
+             the following arguments. `gl`, `shaders`, `opt_attribs`, `opt_locations` where:
 
              `gl` is the WebGL context.
 
@@ -77,7 +79,7 @@ These lines appears at the top of every html and js file under sdk/tests/conform
              `opt_locations` is an optional array of attribute locations. If provided each attribute
              name in `opt_attribs` is bound to the corresponding location in `opt_locations`.
 
-        *    If you need to wait for a composite call WebGLTestUtils.waitForComposite.
+        *    If you need to wait for a composite call `WebGLTestUtils.waitForComposite`.
              As compositing is a browser specfic thing this provides a central place to
              update all tests that rely on compositing to function.
 
@@ -100,7 +102,6 @@ These lines appears at the top of every html and js file under sdk/tests/conform
 
                 <script src="../../resources/js-test-post.js"></script>
 
-
         *   Tests that take a long time use setTimeout so as not to freeze the browser.
 
             Many browsers will terminate JavaScript that takes more than a few seconds to execute
@@ -120,13 +121,31 @@ These lines appears at the top of every html and js file under sdk/tests/conform
                 }
                 runNextTest();
 
-            The harness requries the global variable `successfullyParse` to be set to true.
+            Remember the tests need to run without timing out even and slow mobile devices.
+            The harness resets the timeout timer everytime a test reports success or failure
+            so as long as some part of your test calls `testPassed` or `testFailed` or one of the
+            many wrappers (`shouldXXX`, `glErrorShouldBe`, `WebGLTestUtils.checkCanvasXXX`, etc..)
+            every so often the harness will not timeout your test.
+
+        *   The test harness requries the global variable `successfullyParse` to be set to true.
             This usually appears at the end of a file.
 
                 var successfullyParsed = true;
 
+    *   Do not use browser specfic code.
 
-    *   indent with spaces not tabs. (not everyone uses your tab settings).
+        *   Do not check the browser version. Use feature detection.
+
+        *   If you do need feature detection consider putting it into WebGLTestUtils so that
+            other tests can go through the same abstraction and the workaround is isolated
+            to one place.
+
+        *   Vendors may place test harness specific code in the testing infrustructure.
+
+                resources/js-test-pre.js
+                conformance/more/unit.js
+
+    *   Indent with spaces not tabs. (not everyone uses your tab settings).
 
     *   All HTML files must have a `<!DOCTYPE html>`
 
@@ -136,9 +155,9 @@ These lines appears at the top of every html and js file under sdk/tests/conform
 
 *   If adding a new test edit the approriate 00_test_list.txt file
 
-Each folder has a 00_test_list.txt file that lists the test in that folder.
-Each new test should be prefixed with the option "--min-version <version>" where
-version is 1 more than the newest official verison. At the time of this writing
-all new tests should be prefixed with "--min-version 1.0.2"
+    Each folder has a 00_test_list.txt file that lists the test in that folder.
+    Each new test should be prefixed with the option `--min-version <version>` where
+    version is 1 more than the newest official verison. At the time of this writing
+    all new tests should be prefixed with `--min-version 1.0.2`
 
 
