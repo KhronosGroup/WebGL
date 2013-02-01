@@ -351,12 +351,13 @@ function runDrawTests() {
     
     var vao0 = ext.createVertexArrayOES();
     var vao1 = ext.createVertexArrayOES();
+
+    var opt_positionLocation = 0;
+    var opt_texcoordLocation = 1;
     
-    var program = wtu.setupSimpleTextureProgram(gl, 0, 1);
+    var program = wtu.setupSimpleTextureProgram(gl, opt_positionLocation, opt_texcoordLocation);
     
     function setupQuad(s) {
-        var opt_positionLocation = 0;
-        var opt_texcoordLocation = 1;
         var vertexObject = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
@@ -439,6 +440,10 @@ function runDrawTests() {
     ext.bindVertexArrayOES(null);
     ext.deleteVertexArrayOES(vao0);
     ext.deleteVertexArrayOES(vao1);
+
+    // Disable global vertex attrib array
+    gl.disableVertexAttribArray(opt_positionLocation);
+    gl.disableVertexAttribArray(opt_texcoordLocation);
 
     // Draw with values.
     var positionLoc = 0;
