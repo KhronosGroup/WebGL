@@ -2,7 +2,7 @@ Welcome to the WebGL Conformance Test Suite
 ===========================================
 
 Note: Before adding a new test or editing an existing test
-<a href="https://github.com/KhronosGroup/WebGL/blob/master/sdk/tests/test-guidelines.md"> please read these guidelines</a>.
+[please read these guidelines](test-guidelines.md).
 
 This is the initial release of the WebGL conformance test suite.
 
