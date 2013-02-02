@@ -145,7 +145,13 @@
       <change>Initial revision.</change>
     </revision></history></draft><draft href="WEBGL_compressed_texture_atc/"><name>WEBGL_compressed_texture_atc</name><number>12</number><history><revision date="2012/09/11" number="1">
       <change>Initial revision.</change>
-    </revision></history></draft><proposal href="proposals/WEBGL_multiple_render_targets/"><name>WEBGL_multiple_render_targets</name></proposal><draft href="EXT_color_buffer_half_float"><name>EXT_color_buffer_half_float</name><number>14</number><history><revision date="2012/11/08" number="1">
+    </revision></history></draft><draft href="EXT_draw_buffers"><name>EXT_draw_buffers</name><number>18</number><history><revision date="2012/10/16" number="1">
+      <change>Initial revision.</change>
+    </revision><revision date="2012/11/05" number="2">
+      <change>Corrected typo in drawBuffersWEBGL. Changed referenced spec version to 1.0 to fix broken link.</change>
+    </revision><revision date="2013/02/02" number="3">
+      <change>Renamed to EXT_draw_buffers per plan of OpenGL ES 2.0 working group. Moved to draft status. Assigned number.</change>
+    </revision></history></draft><draft href="EXT_color_buffer_half_float"><name>EXT_color_buffer_half_float</name><number>14</number><history><revision date="2012/11/08" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/11/13" number="2">
       <change>"Add reading-pixels-as-FLOAT feature to the Overview and related

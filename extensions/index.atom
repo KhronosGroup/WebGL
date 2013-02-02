@@ -4,6 +4,8 @@
     <email>public_webgl@khronos.org</email>
   </author><entry><title>EXT_sRGB : revision 2</title><link rel="alternate" type="text/html" href="EXT_sRGB"/><id>EXT_sRGB#r=2</id><updated>2013-12-26T23:59:59Z</updated><summary>Moved from proposal to draft
               
+            </summary></entry><entry><title>EXT_draw_buffers : revision 3</title><link rel="alternate" type="text/html" href="EXT_draw_buffers"/><id>EXT_draw_buffers#r=3</id><updated>2013-02-02T23:59:59Z</updated><summary>Renamed to EXT_draw_buffers per plan of OpenGL ES 2.0 working group. Moved to draft status. Assigned number.
+              
             </summary></entry><entry><title>WEBGL_depth_texture : revision 9</title><link rel="alternate" type="text/html" href="WEBGL_depth_texture/"/><id>WEBGL_depth_texture/#r=9</id><updated>2013-01-26T23:59:59Z</updated><summary>Moved from draft to community approved status
               
             </summary></entry><entry><title>WEBGL_lose_context : revision 8</title><link rel="alternate" type="text/html" href="WEBGL_lose_context/"/><id>WEBGL_lose_context/#r=8</id><updated>2013-01-26T23:59:59Z</updated><summary>Moved from draft to community approved status
@@ -21,7 +23,5 @@
               
             </summary></entry><entry><title>OES_texture_half_float : revision 4</title><link rel="alternate" type="text/html" href="OES_texture_half_float/"/><id>OES_texture_half_float/#r=4</id><updated>2012-12-04T23:59:59Z</updated><summary>Specify that implementations supporting HALF_FLOAT_OES color
       attachments implicitly enable EXT_color_buffer_half_float.
-              
-            </summary></entry><entry><title>WEBGL_color_buffer_float : revision 4</title><link rel="alternate" type="text/html" href="WEBGL_color_buffer_float"/><id>WEBGL_color_buffer_float#r=4</id><updated>2012-11-26T23:59:59Z</updated><summary>Move to draft.
               
             </summary></entry></feed>
