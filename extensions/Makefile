@@ -14,7 +14,7 @@ EXTS := OES_standard_derivatives \
 	proposals/WEBGL_dynamic_texture \
 	WEBGL_compressed_texture_pvrtc \
 	WEBGL_compressed_texture_atc \
-	proposals/WEBGL_multiple_render_targets \
+	EXT_draw_buffers \
 	EXT_color_buffer_half_float \
 	WEBGL_color_buffer_float \
 	EXT_frag_depth \
