@@ -42,6 +42,9 @@
 <script id="vertexShader" type="text/something-not-javascript">
 // vertex shader with default precision should succeed
 precision mediump float;
+precision mediump int;
+precision lowp sampler2D;
+precision lowp samplerCube;
 attribute vec4 vPosition;
 void main()
 {
