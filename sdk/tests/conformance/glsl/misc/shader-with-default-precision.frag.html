@@ -42,6 +42,9 @@
 <script id="fragmentShader" type="text/something-not-javascript">
 // fragment shader with default precision should succeed
 precision mediump float;
+precision mediump int;
+precision lowp sampler2D;
+precision lowp samplerCube;
 void main()
 {
     gl_FragColor = vec4(1.0,0.0,0.0,1.0);
