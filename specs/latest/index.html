@@ -3292,6 +3292,16 @@ If any of the constraints above are violated, then:
   </ul>
 </ul>
 
+The following combinations of framebuffer object attachments, when all of the attachments are
+framebuffer attachment complete, non-zero, and have the same width and height, must result in the
+framebuffer being framebuffer complete:
+
+<ul>
+<li> <code>COLOR_ATTACHMENT0</code> = <code>RGBA/UNSIGNED_BYTE</code> texture
+<li> <code>COLOR_ATTACHMENT0</code> = <code>RGBA/UNSIGNED_BYTE</code> texture + <code>DEPTH_ATTACHMENT</code> = <code>DEPTH_COMPONENT16</code> renderbuffer
+<li> <code>COLOR_ATTACHMENT0</code> = <code>RGBA/UNSIGNED_BYTE</code> texture + <code>DEPTH_STENCIL_ATTACHMENT</code> = <code>DEPTH_STENCIL</code> renderbuffer
+</ul>
+
 <h3><a name="PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a></h3>
 
 <p>
