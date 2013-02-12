@@ -47,7 +47,6 @@ var depthBuffer;
 var stencilBuffer;
 var depthStencilBuffer;
 var colorBuffer;
-var colorTexture;
 var width;
 var height;
 
@@ -260,9 +259,8 @@ shouldBeNonNull("gl = wtu.create3DContext()");
 function testFramebufferRequiredCombinations() {
     debug("Checking combinations of framebuffer attachments required to be valid");
 
-    // Per discussion with the ES 2.0 working group, the following
-    // framebuffer attachment combinations are required to work in all
-    // WebGL implementations:
+    // Per discussion with the OpenGL ES working group, the following framebuffer attachment
+    // combinations are required to work in all WebGL implementations:
     // 1. COLOR_ATTACHMENT0 = RGBA/UNSIGNED_BYTE texture
     // 2. COLOR_ATTACHMENT0 = RGBA/UNSIGNED_BYTE texture + DEPTH_ATTACHMENT = DEPTH_COMPONENT16 renderbuffer
     // 3. COLOR_ATTACHMENT0 = RGBA/UNSIGNED_BYTE texture + DEPTH_STENCIL_ATTACHMENT = DEPTH_STENCIL renderbuffer
