@@ -36,13 +36,13 @@
 <script src="../../resources/webgl-test.js"> </script>
 <script src="../../resources/webgl-test-utils.js"> </script>
 
-<script id="vshader", type="x-shader/x-vertex">
+<script id="vshader" type="x-shader/x-vertex">
 attribute vec4 a_position;
 void main(void) {
     gl_Position = a_position;
 }
 </script>
-<script id="fshader1", type="x-shader/x-fragment">
+<script id="fshader1" type="x-shader/x-fragment">
 precision mediump float;
 uniform vec4 u_nameCollision[2];
 uniform vec4 u_nameCollision2[2];
@@ -51,7 +51,7 @@ void main(void) {
     gl_FragColor = u_nameCollision[0] + u_nameCollision2[0] + u_name[0];
 }
 </script>
-<script id="fshader2", type="x-shader/x-fragment">
+<script id="fshader2" type="x-shader/x-fragment">
 precision mediump float;
 uniform vec4 u_nameCollision2[2];
 uniform vec4 u_nameCollision[2];
@@ -60,7 +60,7 @@ void main(void) {
     gl_FragColor = u_nameCollision2[0] + u_nameCollision[0] + u_name[0];
 }
 </script>
-<script id="fshader3", type="x-shader/x-fragment">
+<script id="fshader3" type="x-shader/x-fragment">
 precision mediump float;
 uniform vec4 u_nameCollision[2];
 uniform vec4 u_name[2];
@@ -69,7 +69,7 @@ void main(void) {
     gl_FragColor = u_nameCollision[0] + u_name[0] + u_nameCollision2[0];
 }
 </script>
-<script id="fshader4", type="x-shader/x-fragment">
+<script id="fshader4" type="x-shader/x-fragment">
 precision mediump float;
 uniform vec4 u_nameCollision2[2];
 uniform vec4 u_name[2];
@@ -78,7 +78,7 @@ void main(void) {
     gl_FragColor = u_nameCollision2[0] + u_name[0] + u_nameCollision[0];
 }
 </script>
-<script id="fshader5", type="x-shader/x-fragment">
+<script id="fshader5" type="x-shader/x-fragment">
 precision mediump float;
 uniform vec4 u_name[2];
 uniform vec4 u_nameCollision[2];
@@ -87,7 +87,7 @@ void main(void) {
     gl_FragColor = u_name[0] + u_nameCollision[0] + u_nameCollision2[0];
 }
 </script>
-<script id="fshader6", type="x-shader/x-fragment">
+<script id="fshader6" type="x-shader/x-fragment">
 precision mediump float;
 uniform vec4 u_name[2];
 uniform vec4 u_nameCollision2[2];
