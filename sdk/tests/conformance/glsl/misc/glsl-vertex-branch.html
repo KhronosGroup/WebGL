@@ -36,7 +36,7 @@
 <script src="../../resources/webgl-test.js"> </script>
 <script src="../../resources/webgl-test-utils.js"> </script>
 
-<script id="vshaderNoBranch", type="x-shader/x-vertex">
+<script id="vshaderNoBranch" type="x-shader/x-vertex">
 attribute vec3 aPosition;
 uniform float redIntensity;
 
@@ -53,7 +53,7 @@ void main(void) {
 }
 </script>
 
-<script id="vshaderBranch", type="x-shader/x-vertex">
+<script id="vshaderBranch" type="x-shader/x-vertex">
 attribute vec3 aPosition;
 uniform float redIntensity;
 
@@ -72,7 +72,7 @@ void main(void) {
 }
 </script>
 
-<script id="fshader", type="x-shader/x-fragment">
+<script id="fshader" type="x-shader/x-fragment">
 #if defined(GL_ES)
 precision mediump float;
 #endif
