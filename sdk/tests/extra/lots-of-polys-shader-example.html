@@ -76,7 +76,7 @@ function main() {
   var program = wtu.setupProgram(
       gl, ['vshader', 'fshader'], ['vPosition'], [0]);
 
-  wtu.setupQuad(gl, gridRes, 0, true);
+  wtu.setupIndexedQuad(gl, gridRes, 0, true);
 
   // make 1 texture since we'd have at least that in CSS shaders
   var size = 256;

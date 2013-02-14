@@ -81,7 +81,7 @@ function checkGrid(gl, width, height) {
   gl.useProgram(program);
   shouldBe('gl.getError()', 'gl.NO_ERROR');
 
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
 
   var pixels = new Uint8Array(width * height * 4);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);

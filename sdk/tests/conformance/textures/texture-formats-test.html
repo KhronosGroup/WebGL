@@ -220,7 +220,7 @@ if (!gl) {
       glErrorShouldBe(gl, gl.NO_ERROR,
                 "gl.texImage2D with " + desc + " should generate NO_ERROR");
 
-      wtu.drawQuad(gl, [255, 0, 0, 255]);
+      wtu.clearAndDrawUnitQuad(gl, [255, 0, 0, 255]);
       wtu.checkCanvas(gl, [r,g,b,a],
                       "texture " + desc + " should draw with " +
                       r + ", " + g + ", " + b + ", " + a);

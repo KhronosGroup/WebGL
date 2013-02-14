@@ -336,28 +336,28 @@ function runOutputTests() {
 
     // Draw 1: (no variation)
     setupBuffers(0.0, 0.0, 0.0, 0.0);
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     expectResult([0, 0, 0, 255],
                  "Draw 1 (no variation) returned the correct data",
                  "Draw 1 (no variation) returned incorrect data");
 
     // Draw 2: (variation in x)
     setupBuffers(1.0, 0.0, 1.0, 0.0);
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     expectResult([204, 0, 204, 255],
                  "Draw 2 (variation in x) returned the correct data",
                  "Draw 2 (variation in x) returned incorrect data");
 
     // Draw 3: (variation in y)
     setupBuffers(1.0, 1.0, 0.0, 0.0);
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     expectResult([0, 204, 204, 255],
                  "Draw 3 (variation in y) returned the correct data",
                  "Draw 3 (variation in y) returned incorrect data");
 
     // Draw 4: (variation in x & y)
     setupBuffers(1.0, 0.5, 0.5, 0.0);
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     expectResult([102, 102, 204, 255],
                  "Draw 4 (variation in x & y) returned the correct data",
                  "Draw 4 (variation in x & y) returned incorrect data");

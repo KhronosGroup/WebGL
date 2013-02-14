@@ -117,7 +117,7 @@ for (var ii = 0; ii < 6; ++ii) {
   gl.uniform4fv(loc1, [1, 0, 0, 0]);
   gl.uniform4fv(loc2, [0, 1, 0, 0]);
   gl.uniform4fv(loc3, [0, 0, 0, 1]);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [255, 255, 0, 255], "Should be yellow");
 }
 

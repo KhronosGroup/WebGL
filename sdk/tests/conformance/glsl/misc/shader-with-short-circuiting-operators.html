@@ -161,7 +161,7 @@
 
           gl.useProgram(program);
 
-          wtu.drawQuad(gl);
+          wtu.clearAndDrawUnitQuad(gl);
           wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
 
           gl.deleteProgram(program);

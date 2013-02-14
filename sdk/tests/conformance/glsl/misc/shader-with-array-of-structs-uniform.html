@@ -93,7 +93,7 @@ for (var ii = 0; ii < 2; ++ii) {
   var green_loc = gl.getUniformLocation(program, "u_colors[" + (1 - ii) + "].color");
   gl.uniform4fv(red_loc, [1, 0, 0, 1]);
   gl.uniform4fv(green_loc, [0, 1, 0, 1]);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [255, 0, 0, 255], "Should be red");
 }
 
@@ -121,7 +121,7 @@ gl.uniform4fv(loc00, [1, 0, 0, 0]);
 gl.uniform4fv(loc01, [0, 1, 0, 0]);
 gl.uniform4fv(loc10, [0, 0, 1, 0]);
 gl.uniform4fv(loc11, [0, 0, 0, 1]);
-wtu.drawQuad(gl, [0, 0, 0, 0]);
+wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 0]);
 wtu.checkCanvas(gl, [255, 255, 255, 255], "Should be white");
 
 glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");

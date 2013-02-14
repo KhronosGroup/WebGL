@@ -88,7 +88,7 @@ gl.texImage2D(
     pixels);
 gl.generateMipmap(gl.TEXTURE_2D);
 
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(gl, [0, 255, 128, 255],
                 "Should be 0, 255, 128, 255");
 debug("test 1x" + testSize);
@@ -97,7 +97,7 @@ gl.texImage2D(
     pixels);
 gl.generateMipmap(gl.TEXTURE_2D);
 
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(gl, [0, 255, 128, 255],
                 "Should be 0, 255, 128, 255");
 

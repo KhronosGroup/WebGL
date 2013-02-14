@@ -429,8 +429,8 @@ function testUniformOptimizationIssues(testIndex) {
   var name = test.arrayName + "[" + test.usedUniformVector + "]";
   var uniformLocation = gl.getUniformLocation(program, name);
   gl.uniform4fv(uniformLocation, test.color);
-  wtu.setupQuad(gl, 1, positionLoc);
-  wtu.drawIndexedQuad(gl, 1);
+  wtu.setupIndexedQuad(gl, 1, positionLoc);
+  wtu.clearAndDrawIndexedQuad(gl, 1);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 
   // Set all the unused uniforms
@@ -452,8 +452,8 @@ function testUniformOptimizationIssues(testIndex) {
   }
   shouldBeTrue("allRequiredUniformLocationsQueryable");
   var positionLoc = gl.getAttribLocation(program, "a_position");
-  wtu.setupQuad(gl, 1, positionLoc);
-  wtu.drawIndexedQuad(gl, 1);
+  wtu.setupIndexedQuad(gl, 1, positionLoc);
+  wtu.clearAndDrawIndexedQuad(gl, 1);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 
   // Check we can read & write each uniform.

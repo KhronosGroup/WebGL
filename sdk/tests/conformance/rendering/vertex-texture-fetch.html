@@ -87,19 +87,19 @@ if (!gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS)) {
   gl.disableVertexAttribArray(1);
 
   gl.vertexAttrib2f(1, 0, 0);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [255, 0, 0, 255], "Should be red.");
 
   gl.vertexAttrib2f(1, 1, 0);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "Should be green.");
 
   gl.vertexAttrib2f(1, 0, 1);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [0, 0, 255, 255], "Should be blue.");
 
   gl.vertexAttrib2f(1, 1, 1);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [255, 255, 0, 255], "Should be yellow.");
 
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after drawing");

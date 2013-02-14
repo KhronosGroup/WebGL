@@ -93,7 +93,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
         // Point the uniform sampler to texture unit 0
         gl.uniform1i(textureLoc, 0);
         // Draw the triangles
-        wtu.drawQuad(gl, [0, 0, 0, 255]);
+        wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
 
         // Check the top pixel and bottom pixel and make sure they have
         // the right color.

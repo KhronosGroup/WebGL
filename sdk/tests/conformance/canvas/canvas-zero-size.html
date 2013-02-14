@@ -54,7 +54,7 @@ gl.bindTexture(gl.TEXTURE_2D, tex);
 var pixel = new Uint8Array([0, 255, 0, 255]);
 gl.texImage2D(
   gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 
 glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 var successfullyParsed = true;

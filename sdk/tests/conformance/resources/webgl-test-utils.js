@@ -565,9 +565,9 @@ var setupTexturedQuadWithTexCoords = function(
  *     expressed in the number of quads across and down.
  * @param {number} opt_positionLocation The attrib location for position.
  */
-var setupQuad = function (
+var setupIndexedQuad = function (
     gl, gridRes, opt_positionLocation, opt_flipOddTriangles) {
-  return setupQuadWithOptions(gl,
+  return setupIndexedQuadWithOptions(gl,
     { gridRes: gridRes,
       positionLocation: opt_positionLocation,
       flipOddTriangles: opt_flipOddTriangles
@@ -591,7 +591,7 @@ var setupQuad = function (
  *   colorLocation: attrib location for vertex colors. If
  *      undefined no vertex colors will be created.
  */
-var setupQuadWithOptions = function (gl, options) {
+var setupIndexedQuadWithOptions = function (gl, options) {
   var positionLocation = options.positionLocation || 0;
   var objects = [];
 
@@ -781,13 +781,21 @@ var drawUByteColorQuad = function(gl, color) {
 };
 
 /**
- * Draws a previously setup quad.
+ * Draws a previously setupUnitQuad.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ */
+var drawUnitQuad = function(gl) {
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+};
+
+/**
+ * Clears then Draws a previously setupUnitQuad.
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {!Array.<number>} opt_color The color to fill clear with before
  *        drawing. A 4 element array where each element is in the range 0 to
  *        255. Default [255, 255, 255, 255]
  */
-var drawQuad = function(gl, opt_color) {
+var clearAndDrawUnitQuad = function(gl, opt_color) {
   opt_color = opt_color || [255, 255, 255, 255];
   gl.clearColor(
       opt_color[0] / 255,
@@ -795,18 +803,27 @@ var drawQuad = function(gl, opt_color) {
       opt_color[2] / 255,
       opt_color[3] / 255);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  gl.drawArrays(gl.TRIANGLES, 0, 6);
+  drawUnitQuad(gl);
 };
 
 /**
- * Draws a previously setup quad.
+ * Draws a quad previsouly settup with setupIndexedQuad.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {number} gridRes Resolution of grid.
+ */
+var drawIndexedQuad = function(gl, gridRes) {
+  gl.drawElements(gl.TRIANGLES, gridRes * gridRes * 6, gl.UNSIGNED_SHORT, 0);
+};
+
+/**
+ * Draws a previously setupIndexedQuad
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {number} gridRes Resolution of grid.
  * @param {!Array.<number>} opt_color The color to fill clear with before
  *        drawing. A 4 element array where each element is in the range 0 to
  *        255. Default [255, 255, 255, 255]
  */
-var drawIndexedQuad = function(gl, gridRes, opt_color) {
+var clearAndDrawIndexedQuad = function(gl, gridRes, opt_color) {
   opt_color = opt_color || [255, 255, 255, 255];
   gl.clearColor(
       opt_color[0] / 255,
@@ -814,7 +831,7 @@ var drawIndexedQuad = function(gl, gridRes, opt_color) {
       opt_color[2] / 255,
       opt_color[3] / 255);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  gl.drawElements(gl.TRIANGLES, gridRes * 6, gl.UNSIGNED_SHORT, 0);
+  drawIndexedQuad(gl, gridRes);
 };
 
 /**
@@ -1926,7 +1943,9 @@ return {
   checkCanvasRectColor: checkCanvasRectColor,
   createColoredTexture: createColoredTexture,
   createProgram: createProgram,
-  drawQuad: drawQuad,
+  clearAndDrawUnitQuad: clearAndDrawUnitQuad,
+  clearAndDrawIndexedQuad: clearAndDrawIndexedQuad,
+  drawUnitQuad: drawUnitQuad,
   drawIndexedQuad: drawIndexedQuad,
   drawUByteColorQuad: drawUByteColorQuad,
   drawFloatColorQuad: drawFloatColorQuad,
@@ -1965,8 +1984,8 @@ return {
   shallowCopyObject: shallowCopyObject,
   setupColorQuad: setupColorQuad,
   setupProgram: setupProgram,
-  setupQuad: setupQuad,
-  setupQuadWithOptions: setupQuadWithOptions,
+  setupIndexedQuad: setupIndexedQuad,
+  setupIndexedQuadWithOptions: setupIndexedQuadWithOptions,
   setupSimpleColorFragmentShader: setupSimpleColorFragmentShader,
   setupSimpleColorVertexShader: setupSimpleColorVertexShader,
   setupSimpleColorProgram: setupSimpleColorProgram,

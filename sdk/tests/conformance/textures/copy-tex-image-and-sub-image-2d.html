@@ -112,7 +112,7 @@ function runTestIteration(antialias)
           gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
           // Draw the triangles
-          wtu.drawQuad(gl);
+          wtu.clearAndDrawUnitQuad(gl);
 
           // check the rendering results
           for (var iy = 0; iy < 2; ++iy) {

@@ -88,7 +88,7 @@ function testCanvas(size) {
   // when doing the copy in texImage2D. If it has not scaled and instead done
   // a direct copy of the larger texture this test will not have created enough mips
   // and will therefore not be "texture complete" and will render in black.
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 }
 
@@ -120,7 +120,7 @@ function testWebGL(size) {
   // If it has been scaled then we'll have the wrong kind of mips chain here.
   // Level 0 will be half resolution. Level 1 will be the same resolution
   // and will therefore not be "texture complete" and will render in black.
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 }
 

@@ -391,22 +391,22 @@ function go() {
     gl.useProgram(prg);
     var posLoc = gl.getAttribLocation(prg, "a_position");
     wtu.setupUnitQuad(gl, posLoc);
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red");
     gl.shaderSource(fs, wtu.getScript("fshader-green"));
     gl.compileShader(fs);
     gl.linkProgram(prg);
     // Program should be new program at this point without calling useProgram
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
     var prg = wtu.setupProgram(gl, ["vshader", "fshader-settable"], ["a_position"]);
     var colorLoc = gl.getUniformLocation(prg, "u_color");
     gl.uniform4f(colorLoc, 1, 0, 0, 1);
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red");
     gl.linkProgram(prg);
     // Program's uniforms should be cleared at this point without calling useProgram
-    wtu.drawQuad(gl, [0, 255, 0, 255]);
+    wtu.clearAndDrawUnitQuad(gl, [0, 255, 0, 255]);
     wtu.checkCanvas(gl, [0, 0, 0, 0], "should be tranparent black");
     glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 }

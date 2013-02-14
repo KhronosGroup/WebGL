@@ -147,7 +147,7 @@ function checkTexture(width, height, cubeMap) {
   if (err != gl.NO_ERROR) {
     testFailed("unexpected gl error: " + wtu.glEnumToString(gl, err));
   }
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, color.rgba,
       type + " of size " + width + "x" + height + " with no mips should draw with " + color.name);
   count = (count + 1) % colors.length;
@@ -163,7 +163,7 @@ function checkTexture(width, height, cubeMap) {
     testFailed("unexpected gl error: " + wtu.glEnumToString(gl, err));
   }
   gl.texParameteri(target, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, color.rgba,
       type + " of size " + width + "x" + height + " with mips should draw with " + color.name);
 
@@ -172,7 +172,7 @@ function checkTexture(width, height, cubeMap) {
   fillLevel(0, width, height, color.rgba, cubeMap, true);
   gl.generateMipmap(target);
 
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, color.rgba,
       type + " of size " + width + "x" + height + " with mips should draw with " + color.name);
 

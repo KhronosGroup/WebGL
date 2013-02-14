@@ -79,7 +79,7 @@ function main() {
       ['vshader', 'fshader'],
       ['vPosition'], [0]);
   var gridRes = 255;
-  wtu.setupQuad(gl, gridRes, 0);
+  wtu.setupIndexedQuad(gl, gridRes, 0);
   var lineWidthLoc = gl.getUniformLocation(program, "lineWidth");
   var elemMultLoc = gl.getUniformLocation(program, "elemMult");
   assertMsg(gl.getError() == gl.NO_ERROR, "Should be no errors from setup.");

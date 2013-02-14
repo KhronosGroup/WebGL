@@ -160,7 +160,7 @@ function setBindLocations(colorLocation, positionLocation) {
 }
 
 function checkDraw(colorLocation, positionLocation, r, g, b, a) {
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [r, g, b, a], "should be green");
 
   gl.disableVertexAttribArray(positionLocation);
