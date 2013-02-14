@@ -1726,6 +1726,10 @@ var loadImagesAsync = function(urls, callback) {
   countDown();
 };
 
+/**
+ * Returns a map of key=value values from url.
+ * @return {!Object.<string, number>} map of keys to values.
+ */
 var getUrlArguments = function() {
   var args = {};
   try {
@@ -1749,12 +1753,23 @@ var getUrlArguments = function() {
   return args;
 };
 
+/**
+ * Makes an image from a canvas.
+ * @param {!HTMLCanvas} canvas Canvas to make image from.
+ * @return {!Image} The created image.
+ */
 var makeImage = function(canvas) {
   var img = document.createElement('img');
   img.src = canvas.toDataURL();
   return img;
 };
 
+/**
+ * Inserts an image with a caption into 'element'
+ * @param {!HTMLElement} element Element to append image to.
+ * @param {string} caption caption to associate with image.
+ * @param {!Image) image image to insert.
+ */
 var insertImage = function(element, caption, img) {
   var div = document.createElement("div");
   div.appendChild(img);
@@ -1764,6 +1779,15 @@ var insertImage = function(element, caption, img) {
    element.appendChild(div);
 };
 
+/**
+ * Inserts a 'label' that when clicked expands to the pre
+ * formatted text supplied by 'source'.
+ * @param {!HTMLElement} element element to append label to.
+ * @param {string} label label for anchor.
+ * @param {string} source preformatted text to expand to.
+ * @param {string} opt_url url of source. If provided a 2nd link
+ *     will be added.
+ */
 var addShaderSource = function(element, label, source, opt_url) {
   var div = document.createElement("div");
   var s = document.createElement("pre");

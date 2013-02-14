@@ -1,3 +1,4 @@
+--min-version 1.0.2 ext-draw-buffers.html
 --min-version 1.0.2 get-extension.html
 oes-standard-derivatives.html
 oes-texture-float-with-canvas.html
