@@ -320,19 +320,19 @@ function testType(test) {
     }
 
     debug("default value should be zero");
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
 
     debug("test test by setting value");
     test.setFn(gl, loc);
 
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red", 0);
 
     debug("re-linking should reset to defaults");
     gl.linkProgram(program);
 
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
 
     gl.deleteProgram(program);

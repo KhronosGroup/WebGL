@@ -147,7 +147,7 @@ function runTests(imgs) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['../resources/zero-alpha.png']);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
 
   var left = 0;
@@ -179,7 +179,7 @@ function runTests(imgs) {
         gl.TEXTURE_2D, 0, info.format, info.format, info.type,
         imgs['../resources/gray-ramp-256.png']);
     glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     var counts = [{ }, { }, { }, { }];
     var numUniqueValues = [0, 0, 0, 0];
@@ -209,7 +209,7 @@ function runTests(imgs) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['../resources/gray-ramp-default-gamma.png']);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   var ref = new Uint8Array(width * height * 4);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, ref);
 
@@ -222,7 +222,7 @@ function runTests(imgs) {
   for (var ii = 0; ii < gammaImages.length; ++ii) {
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                   imgs[gammaImages[ii]]);
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     var same = true;
     for (var jj = 0; jj < width * height * 4; ++jj) {
@@ -250,7 +250,7 @@ function runTests(imgs) {
                     imgs['../resources/gray-ramp-256-with-128-alpha.png']);
     }
     glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     var buf = new Uint8Array(width * height * 4);
     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     var lt128Count = [0, 0, 0];
@@ -288,7 +288,7 @@ function runTests(imgs) {
   ctx.fillStyle ="rgba(255,255,255,0.5)";
   ctx.fillRect(0, 0, 256, 1);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   checkPixelRange(buf, 0, 0, [255, 255, 255, 127], 4);
@@ -297,7 +297,7 @@ function runTests(imgs) {
   debug("check canvas pixels are pre-multiplied");
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   checkPixelRange(buf, 0, 0, [127, 127, 127, 127], 4);
@@ -310,7 +310,7 @@ function runTests(imgs) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
                 imgs['../resources/zero-alpha.png']);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
 
   var same = true;
@@ -329,7 +329,7 @@ function runTests(imgs) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['../resources/3x3.png']);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
 
   checkPixel(buf, left,   top,    [255,   0,   0, 255]);
@@ -349,7 +349,7 @@ function runTests(imgs) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['../resources/blue-1x1.jpg']);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   checkPixelRange(buf, middle, center, [   0,   0, 255, 255], 10);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
@@ -361,7 +361,7 @@ function runTests(imgs) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['../resources/green-2x2-16bit.png']);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   checkPixelRange(buf, middle, center, [   15, 121,   0, 255], 10);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
@@ -375,7 +375,7 @@ function runTests(imgs) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['../resources/small-square-with-colorspin-profile.jpg']);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   // The image is red.  However, if we ignore the color profile, it is blue.
   checkPixelRange(buf, middle, center, [ 0, 0, 255, 255], 10);
@@ -383,7 +383,7 @@ function runTests(imgs) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['../resources/small-square-with-colorspin-profile.png']);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   // The image is red.  However, if we ignore the color profile, it is blue.
   checkPixelRange(buf, middle, center, [ 0, 0, 255, 255], 10);
@@ -399,7 +399,7 @@ function runTests(imgs) {
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                   imgs[iccPNGs[ii]]);
     glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf2);
     glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
     var same = true;
@@ -417,7 +417,7 @@ function runTests(imgs) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['../resources/red-indexed.png']);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   // The image should be red.
   checkPixelRange(buf, middle, center, [ 255, 0, 0, 255 ], 10);
@@ -429,7 +429,7 @@ function runTests(imgs) {
                 imgs['../resources/red-indexed.png'].height,
                 0, gl.RGB, gl.UNSIGNED_BYTE, null);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   // The image should be white.
   checkPixelRange(buf, middle, center, [ 0, 0, 0, 255 ], 10);

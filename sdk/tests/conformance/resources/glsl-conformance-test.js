@@ -178,7 +178,7 @@ function runOneTest(gl, info) {
 
   gl.useProgram(program);
   wtu.setupUnitQuad(gl);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
 
   var div = document.createElement("div");
   div.className = "testimages";

@@ -115,7 +115,7 @@ for (var ss = 0; ss < 2; ++ss) {
   for (var ii = 0; ii < 3; ++ii) {
     var denominator = Math.pow(2, ii);
     gl.uniform1f(loc, 1 / denominator);
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     var size = 16 / denominator;
     for (var yy = 0; yy < 32; yy += size) {
       for (var xx = 0; xx < 32; xx += size) {

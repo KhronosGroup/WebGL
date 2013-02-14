@@ -160,7 +160,7 @@ function testCopyTexImage2D(backFormat, texFormat) {
       "should be able to copyTexImage2D " + texFormat + " from " + backFormat);
 
   // Draw
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
 
   var expectedColors = {
     'ALPHA': [0, 0, 0, 127],

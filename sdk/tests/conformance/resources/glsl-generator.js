@@ -405,12 +405,10 @@ var runFeatureTest = function(params) {
     var program = wtu.loadProgram(gl, vsSource, fsSource, testFailed);
 
     var posLoc = gl.getAttribLocation(program, "aPosition");
-    WebGLTestUtils.setupQuad(gl, gridRes, posLoc);
+    wtu.setupIndexedQuad(gl, gridRes, posLoc);
 
     gl.useProgram(program);
-    gl.clearColor(0, 0, 1, 1);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.drawElements(gl.TRIANGLES, gridRes * gridRes * 6, gl.UNSIGNED_SHORT, 0);
+    wtu.clearAndDrawIndexedQuad(gl, gridRes, [0, 0, 255, 255]);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors from draw");
 
     var img = new Uint8Array(width * height * 4);
@@ -589,12 +587,10 @@ var runBasicTest = function(params) {
     var program = wtu.loadProgram(gl, vsSource, fsSource, testFailed);
 
     var posLoc = gl.getAttribLocation(program, "aPosition");
-    WebGLTestUtils.setupQuad(gl, gridRes, posLoc);
+    wtu.setupIndexedQuad(gl, gridRes, posLoc);
 
     gl.useProgram(program);
-    gl.clearColor(0, 0, 1, 1);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.drawElements(gl.TRIANGLES, gridRes * gridRes * 6, gl.UNSIGNED_SHORT, 0);
+    wtu.clearAndDrawIndexedQuad(gl, gridRes, [0, 0, 255, 255]);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors from draw");
 
     var img = new Uint8Array(width * height * 4);
@@ -784,12 +780,10 @@ var runReferenceImageTest = function(params) {
     var program = wtu.loadProgram(gl, vsSource, fsSource, testFailed);
 
     var posLoc = gl.getAttribLocation(program, "aPosition");
-    WebGLTestUtils.setupQuad(gl, gridRes, posLoc);
+    wtu.setupIndexedQuad(gl, gridRes, posLoc);
 
     gl.useProgram(program);
-    gl.clearColor(0, 0, 1, 1);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.drawElements(gl.TRIANGLES, gridRes * gridRes * 6, gl.UNSIGNED_SHORT, 0);
+    wtu.clearAndDrawIndexedQuad(gl, gridRes, [0, 0, 255, 255]);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors from draw");
 
     var img = new Uint8Array(width * height * 4);
@@ -801,17 +795,17 @@ var runReferenceImageTest = function(params) {
     var program;
     if (isVertex) {
       var halfTexel = 0.5 / (1.0 + gridRes);
-      program = WebGLTestUtils.setupTexturedQuadWithTexCoords(
+      program = wtu.setupTexturedQuadWithTexCoords(
         gl, [halfTexel, halfTexel], [1.0 - halfTexel, 1.0 - halfTexel]);
     } else {
-      program = WebGLTestUtils.setupTexturedQuad(gl);
+      program = wtu.setupTexturedQuad(gl);
     }
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture);
     var texLoc = gl.getUniformLocation(program, "tex");
     gl.uniform1i(texLoc, 0);
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors from draw");
 
     var img = new Uint8Array(width * height * 4);

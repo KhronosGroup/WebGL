@@ -71,7 +71,7 @@ function step2() {
 
 function drawAndCheck() {
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors before drawing.");
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from drawing.");
   wtu.checkCanvas(
       gl, [0, 192, 128, 255],

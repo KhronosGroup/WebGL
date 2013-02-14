@@ -260,7 +260,7 @@ function init()
   }
 
   function check(color, msg) {
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(gl, colors[color], msg + " should draw with " + color);
   }
 

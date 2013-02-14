@@ -164,7 +164,7 @@ function testSize(size) {
       var color = colors[(rr + count) % colors.length];
       var rotMat = axisRotation(rot.axis, rot.angle);
       gl.uniformMatrix4fv(rotLoc, false, rotMat);
-      wtu.drawQuad(gl);
+      wtu.clearAndDrawUnitQuad(gl);
       wtu.checkCanvas(
           gl, color.color,
           wtu.glEnumToString(gl, targets[rr]) + " should be " + color.name);
@@ -179,7 +179,7 @@ function testSize(size) {
         var rotMat = mulMatrix(tmpMat, rotMat);
       }
       gl.uniformMatrix4fv(rotLoc, false, rotMat);
-      wtu.drawQuad(gl);
+      wtu.clearAndDrawUnitQuad(gl);
 
       for (var ii = 0; ii < 2; ++ii) {
         checkRect(

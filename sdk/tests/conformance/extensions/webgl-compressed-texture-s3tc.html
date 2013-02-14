@@ -449,7 +449,7 @@ function testDXTTexture(test) {
     glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture");
     gl.generateMipmap(gl.TEXTURE_2D);
     glErrorShouldBe(gl, gl.INVALID_OPERATION, "trying to generate mipmaps from compressed texture");
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     compareRect(width, height, test.channels, width, height, uncompressedData, data, format);
 
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 1, data);
@@ -539,7 +539,7 @@ function testDXTTexture(test) {
             copyRect(uncompressedData, 0, 0, xoff, yoff, 4, 4, stride);
             gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, xoff, yoff, 4, 4, format, subData);
             glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture");
-            wtu.drawQuad(gl);
+            wtu.clearAndDrawUnitQuad(gl);
             compareRect(width, height, test.channels, width, height, uncompressedData, data, format);
         }
     }

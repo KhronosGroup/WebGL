@@ -166,7 +166,7 @@ function runTextureCreationTest(testProgram, extensionEnabled, opt_format, opt_n
     // Verify that the texture actually works for sampling and contains the expected data.
     gl.uniform1i(gl.getUniformLocation(testProgram, "tex"), 0);
     gl.uniform4fv(gl.getUniformLocation(testProgram, "subtractor"), subtractor);
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     checkRenderingResults();
 }
 
@@ -199,7 +199,7 @@ function runRenderTargetTest(testProgram)
                          ["positionVertexShader", "floatingPointFragmentShader"],
                          ['vPosition'],
                          [0]);
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     glErrorShouldBe(gl, gl.NO_ERROR, "rendering to floating-point texture should succeed");
 
     // Now sample from the floating-point texture and verify we got the correct values.
@@ -207,7 +207,7 @@ function runRenderTargetTest(testProgram)
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.useProgram(testProgram);
     gl.uniform1i(gl.getUniformLocation(testProgram, "tex"), 0);
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     glErrorShouldBe(gl, gl.NO_ERROR, "rendering from floating-point texture should succeed");
     checkRenderingResults();
 }

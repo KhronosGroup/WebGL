@@ -86,12 +86,12 @@ gl.uniform4fv(gl.getUniformLocation(program, "u1.var2"), black);
 gl.uniform4fv(gl.getUniformLocation(program, "u1.var3"), black);
 gl.uniform4fv(gl.getUniformLocation(program, "u1.var4"), black);
 gl.uniform4fv(gl.getUniformLocation(program, "u2"), white);
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(gl, [255, 255, 255, 255], "should be white", 0);
 gl.uniform4fv(gl.getUniformLocation(program, "u1.var2"), black);
 gl.uniform4fv(gl.getUniformLocation(program, "u1.var3"), black);
 gl.uniform4fv(gl.getUniformLocation(program, "u1.var4"), black);
-wtu.drawQuad(gl, [0, 0, 0, 0]);
+wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 0]);
 wtu.checkCanvas(gl, [255, 255, 255, 255], "should still be white", 0);
 
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no GL errors");

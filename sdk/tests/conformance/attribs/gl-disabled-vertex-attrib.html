@@ -86,8 +86,8 @@ for (var ii = 0; ii < numVertexAttribs; ++ii) {
       ['a_position', 'a_color'],
       [positionLocation, colorLocation]);
   var gridRes = 1;
-  wtu.setupQuad(gl, gridRes, positionLocation);
-  wtu.drawIndexedQuad(gl, gridRes);
+  wtu.setupIndexedQuad(gl, gridRes, positionLocation);
+  wtu.clearAndDrawIndexedQuad(gl, gridRes);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 }
 glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");

@@ -491,7 +491,7 @@ function testUsingIncompleteFramebuffer() {
 
     function testRenderingAndReading() {
         glErrorShouldBe(gl, gl.NO_ERROR);
-        wtu.drawQuad(gl);
+        wtu.clearAndDrawUnitQuad(gl);
         glErrorShouldBe(gl, gl.INVALID_FRAMEBUFFER_OPERATION, "drawArrays with incomplete framebuffer");
         gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
         glErrorShouldBe(gl, gl.INVALID_FRAMEBUFFER_OPERATION, "readPixels from incomplete framebuffer");

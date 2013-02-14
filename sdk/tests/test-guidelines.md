@@ -61,8 +61,19 @@ These lines appears at the top of every html and js file under sdk/tests/conform
         *    use `WebGLTestUtils.checkCanvas` or `WebGLTestUtils.checkCanvasRect` rather
              than checking rendering results by hand.
 
-        *    use `WebgLTestUtils.setupTexturedQuad` if you need a unit quad with texture coords.
-             By default the positions will be at location 0 and the texture coords at location 1.
+        *    use the various quad and draw functions
+
+             *    `WebGLTestUtils.setupUnitQuad` and `WebGLTestUtils.clearAndDrawUnitQuad` for
+                   simple drawing.
+
+             *    `WebGLTestUtils.setupColorQuad`, `WebGLTestUtils.drawFloatColorQuad`, and
+                  `WebGLTestUilts.drawUByteColorQuad` for drawing in a particular color.
+
+             *    `WebGLTestUtils.setupIndexedQuad` and `WebGLTestUtils.clearAndDrawIndexedQuad`
+                  if you need a higher subdivision of vertices and/or vertex colors.
+
+             *    use `WebgLTestUtils.setupTexturedQuad` if you need a unit quad with texture coords.
+                  By default the positions will be at location 0 and the texture coords at location 1.
 
         *    If you need a custom shader use `WebGLTestUtils.setupProgram`. Note that it takes
              the following arguments. `gl`, `shaders`, `opt_attribs`, `opt_locations` where:
