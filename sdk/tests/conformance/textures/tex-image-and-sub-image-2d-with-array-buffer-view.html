@@ -164,7 +164,7 @@ function runOneIteration(useTexSubImage2D, type, unpackAlignment, flipY, premult
     // Point the uniform sampler to texture unit 0
     gl.uniform1i(textureLoc, 0);
     // Draw the triangles
-    wtu.drawQuad(gl, [0, 0, 0, 255]);
+    wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
 
     // Check the top pixel and bottom pixel and make sure they have
     // the right color.
@@ -186,7 +186,7 @@ function runOneIteration(useTexSubImage2D, type, unpackAlignment, flipY, premult
     ];
     var data = generateRGBAData(type, unpackAlignment, extraData, partWidth, partHeight);
     gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, partWidth, partHeight, gl.RGBA, type, data);
-    wtu.drawQuad(gl, [0, 0, 0, 255]);
+    wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
     var halfWidth  = gl.drawingBufferWidth / 2;
     var halfHeight = gl.drawingBufferHeight / 2;
     var quarterHeight = gl.drawingBufferHeight / 4;
@@ -199,7 +199,7 @@ function runOneIteration(useTexSubImage2D, type, unpackAlignment, flipY, premult
     wtu.checkCanvasRect(gl, 0, halfHeight, testWidth, halfHeight, topColor, "top pixels should be " + topColor);
     // set far corner.
     gl.texSubImage2D(gl.TEXTURE_2D, 0, partWidth, partHeight, partWidth, partHeight, gl.RGBA, type, data);
-    wtu.drawQuad(gl, [0, 0, 0, 255]);
+    wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
     wtu.checkCanvasRect(gl, 0, 0, halfWidth, quarterHeight, tcolor0, "bottom left bottom pixels should be " + tcolor0);
     wtu.checkCanvasRect(gl, 0, quarterHeight, halfWidth, quarterHeight, tcolor1, "bottom left top pixels should be " + tcolor1);
     wtu.checkCanvasRect(gl, halfWidth, 0, halfWidth, halfHeight, bottomColor, "bottom left pixels should be " + bottomColor);

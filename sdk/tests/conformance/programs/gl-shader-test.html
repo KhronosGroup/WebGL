@@ -102,7 +102,7 @@ function checkDeferredCompliation() {
   gl.linkProgram(p);
   gl.useProgram(p);
   wtu.setupUnitQuad(gl, 0, 1);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 }
 

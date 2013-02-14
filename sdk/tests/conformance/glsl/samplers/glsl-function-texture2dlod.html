@@ -113,7 +113,7 @@ function runTest() {
   for (var ii = 0; ii < colors.length; ++ii) {
     gl.uniform1f(loc, ii);
     var color = colors[ii];
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(
         gl, color.color,
         "256x256 texture drawn to 256x256 dest with lod = " + ii +

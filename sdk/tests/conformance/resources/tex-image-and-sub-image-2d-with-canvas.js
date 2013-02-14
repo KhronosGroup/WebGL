@@ -119,7 +119,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
         }
 
         // Draw the triangles
-        wtu.drawQuad(gl, [0, 255, 0, 255]);
+        wtu.clearAndDrawUnitQuad(gl, [0, 255, 0, 255]);
 
         if (opt_fontTest) {
             var width = gl.canvas.width;

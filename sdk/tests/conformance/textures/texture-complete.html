@@ -69,7 +69,7 @@ function init()
   var loc = gl.getUniformLocation(program, "tex");
   gl.uniform1i(loc, 0);
 
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [0,0,0,255],
       "texture that is not -texture-complete- when " +
       "TEXTURE_MIN_FILTER not NEAREST or LINEAR should draw with 0,0,0,255");

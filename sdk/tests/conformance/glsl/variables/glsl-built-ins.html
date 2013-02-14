@@ -112,7 +112,7 @@ variables.forEach(function(variable) {
     wtu.addShaderSource(output, "vertex shader", shaders[0]);
     wtu.addShaderSource(output, "fragment shader", shaders[1]);
     var program = wtu.setupProgram(gl, shaders, ["a_position"]);
-    wtu.clearAndDrawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
   });
 });

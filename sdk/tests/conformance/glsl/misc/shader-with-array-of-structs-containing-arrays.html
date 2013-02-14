@@ -103,14 +103,14 @@ for (var ii = 0; ii < 2; ++ii) {
   var green_loc = gl.getUniformLocation(program, "u_colors[0].color[" + (1 - ii) + "]");
   gl.uniform4fv(red_loc, [1, 0, 0, 1]);
   gl.uniform4fv(green_loc, [0, 1, 0, 1]);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [255, 0, 0, 255], "Should be red");
 }
 
 var program = wtu.setupProgram(gl, ["vshader", "fshader-with-one-element-arrays"], ["a_position"]);
 var green_loc = gl.getUniformLocation(program, "u_colors[0].color[0]");
 gl.uniform4fv(green_loc, [0, 1, 0, 1]);
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(gl, [0, 255, 0, 255], "Should be green");
 
 var program = wtu.setupProgram(gl, ["vshader", "fshader3"], ["a_position"]);
@@ -141,10 +141,10 @@ var loc101 = gl.getUniformLocation(program, "u_colors[1].color1[1]");
 var loc111 = gl.getUniformLocation(program, "u_colors[1].color2[1]");
 shouldBeTrue("loc101 != undefined");
 shouldBeTrue("loc111 != undefined");
-wtu.drawQuad(gl, [0, 0, 0, 0]);
+wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 0]);
 gl.uniform4fv(loc101, [0, 0, 0, 0]);
 gl.uniform4fv(loc111, [0, 0, 0, 0]);
-wtu.drawQuad(gl, [0, 0, 0, 0]);
+wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 0]);
 wtu.checkCanvas(gl, [255, 255, 0, 0], "Should be yellow");
 
 glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");

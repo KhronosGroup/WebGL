@@ -165,7 +165,7 @@ function testRendering()
     texture = wtu.createColoredTexture(gl, canvas.width, canvas.height, texColor);
 
     gl.uniform1i(gl.getUniformLocation(program, "tex"), 0);
-    wtu.drawQuad(gl, [0, 0, 0, 255]);
+    wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
 
     var compare = texColor.slice(0, 3);
     wtu.checkCanvasRect(gl, 0, 0, canvas.width, canvas.height, compare, "shouldBe " + compare);

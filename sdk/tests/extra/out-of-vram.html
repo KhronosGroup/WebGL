@@ -120,7 +120,7 @@ if (!gl) {
       return;
     }
 	// use the texture
-    wtu.drawQuad(gl);
+    wtu.clearAndDrawUnitQuad(gl);
   }
 
   intervalId = window.setInterval(makeTexture, 1000 / 15);

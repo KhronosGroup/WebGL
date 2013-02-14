@@ -71,7 +71,7 @@
       var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 
       var gridRes = 4;
-      wtu.setupQuad(gl, gridRes, 0, true);
+      wtu.setupIndexedQuad(gl, gridRes, 0, true);
 
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.drawElements(gl.TRIANGLES, gridRes * gridRes * 6, gl.UNSIGNED_SHORT, 0);

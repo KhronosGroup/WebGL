@@ -100,7 +100,7 @@ function main() {
   // according to the WebGL specification for out-of-bounds array accesses,
   // we will get exactly the input colors from the uniform colorArray, or
   // zero, for each pixel on the canvas.
-  wtu.setupQuad(gl, gridRes, 0);
+  wtu.setupIndexedQuad(gl, gridRes, 0);
   var colorArrayLoc = gl.getUniformLocation(program, "colorArray[0]");
   assertMsg(colorArrayLoc != null, "color array uniform should be found");
   var colors = new Float32Array(knownColors);

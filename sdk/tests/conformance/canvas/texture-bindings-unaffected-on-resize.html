@@ -63,10 +63,10 @@ var loc = gl.getUniformLocation(program, "tex");
 function test() {
   gl.viewport(0, 0, canvas.width, canvas.height);
   gl.uniform1i(loc, 0);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, blue, "should be blue");
   gl.uniform1i(loc, 1);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, green, "should be green");
 }
 

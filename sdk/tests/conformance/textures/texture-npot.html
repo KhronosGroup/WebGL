@@ -94,7 +94,7 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
 
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 0, 0, 255],
     "NPOT texture with TEXTURE_WRAP set to REPEAT should draw with 0,0,0,255");
@@ -104,7 +104,7 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR);
 
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 0, 0, 255],
     "NPOT texture with TEXTURE_MIN_FILTER not NEAREST or LINEAR should draw with 0,0,0,255");
@@ -112,7 +112,7 @@ glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 192, 128, 255],
     "NPOT texture with TEXTURE_MIN_FILTER set to LINEAR should draw.");
@@ -132,7 +132,7 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
 
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 192, 128, 255],
     "POT texture with TEXTURE_MIN_FILTER set to LINEAR_MIPMAP_LINEAR should draw.");
@@ -168,7 +168,7 @@ gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
 
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 0, 0, 255],
     "NPOT cubemap with TEXTURE_WRAP set to REPEAT should draw with 0,0,0,255");
@@ -178,7 +178,7 @@ gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_LINEAR);
 
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 0, 0, 255],
     "NPOT cubemap with TEXTURE_MIN_FILTER not NEAREST or LINEAR should draw with 0,0,0,255");
@@ -186,7 +186,7 @@ glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 192, 128, 255],
     "NPOT cubemap with TEXTURE_MIN_FILTER set to LINEAR should draw.");
@@ -201,7 +201,7 @@ gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
 
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 0, 0, 255],
     "POT cubemap with TEXTURE_MIN_FILTER set to LINEAR_MIPMAP_LINEAR but no mips draw with 0,0,0,255");
@@ -211,7 +211,7 @@ gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
 glErrorShouldBe(gl, gl.NO_ERROR,
     "gl.generateMipmap with POT texture should return succeed");
 
-wtu.drawQuad(gl);
+wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 192, 128, 255],
     "POT cubemap with TEXTURE_MIN_FILTER set to LINEAR_MIPMAP_LINEAR should draw.");

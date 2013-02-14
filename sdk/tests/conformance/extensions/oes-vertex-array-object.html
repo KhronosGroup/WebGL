@@ -404,7 +404,7 @@ function runDrawTests() {
         return testList(blackList, 0) && testList(whiteList, 255);
     };
     function verifyDraw(drawNumber, s) {
-        wtu.drawQuad(gl);
+        wtu.clearAndDrawUnitQuad(gl);
         var blackList = [];
         var whiteList = [];
         var points = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0];
@@ -449,20 +449,20 @@ function runDrawTests() {
     var positionLoc = 0;
     var colorLoc = 1;
     var gridRes = 1;
-    wtu.setupQuad(gl, gridRes, positionLoc);
+    wtu.setupIndexedQuad(gl, gridRes, positionLoc);
     // Set the vertex color to red.
     gl.vertexAttrib4f(colorLoc, 1, 0, 0, 1);
 
     var vao0 = ext.createVertexArrayOES();
     ext.bindVertexArrayOES(vao0);
     var program = wtu.setupSimpleVertexColorProgram(gl, positionLoc, colorLoc);
-    wtu.setupQuad(gl, gridRes, positionLoc);
+    wtu.setupIndexedQuad(gl, gridRes, positionLoc);
     // Set the vertex color to green.
     gl.vertexAttrib4f(colorLoc, 0, 1, 0, 1);
-    wtu.drawIndexedQuad(gl, gridRes);
+    wtu.clearAndDrawIndexedQuad(gl, gridRes);
     wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green")
     ext.deleteVertexArrayOES(vao0);
-    wtu.drawIndexedQuad(gl, gridRes);
+    wtu.clearAndDrawIndexedQuad(gl, gridRes);
     wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green")
 }
 
