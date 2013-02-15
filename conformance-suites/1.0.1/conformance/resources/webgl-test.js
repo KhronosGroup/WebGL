@@ -390,6 +390,8 @@ function loadStandardProgram(context) {
     var program = context.createProgram();
     context.attachShader(program, loadStandardVertexShader(context));
     context.attachShader(program, loadStandardFragmentShader(context));
+    context.bindAttribLocation(program, 0, "a_vertex");
+    context.bindAttribLocation(program, 1, "a_normal");
     context.linkProgram(program);
     return program;
 }
