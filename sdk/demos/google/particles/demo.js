@@ -137,6 +137,7 @@ function main() {
     g_canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(g_canvas);
     // tell the simulator when to lose context.
     g_canvas.loseContextInNCalls(1);
+    // Testing
 
     g_canvas.addEventListener('webglcontextlost', handleContextLost, false);
     g_canvas.addEventListener('webglcontextrestored', handleContextRestored, false);
