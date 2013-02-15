@@ -514,7 +514,7 @@ var setupUnitQuadWithTexCoords = function(
  * @param {number} opt_positionLocation The attrib location for
  *        position. Default = 0.
  * @param {number} opt_texcoordLocation The attrib location for
- *        texture coords. Default = 0.
+ *        texture coords. Default = 1.
  * @return {!WebGLProgram}
  */
 var setupTexturedQuad = function(
