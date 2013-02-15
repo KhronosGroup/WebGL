@@ -1438,6 +1438,8 @@ var loadStandardProgram = function(gl) {
   var program = gl.createProgram();
   gl.attachShader(program, loadStandardVertexShader(gl));
   gl.attachShader(program, loadStandardFragmentShader(gl));
+  gl.bindAttribLocation(program, 0, "a_vertex");
+  gl.bindAttribLocation(program, 1, "a_normal");
   linkProgram(gl, program);
   return program;
 };
