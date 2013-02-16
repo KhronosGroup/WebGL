@@ -262,6 +262,7 @@ var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
   var realShaders = [];
   var program = gl.createProgram();
   var shaderType = undefined;
+  var shaderCount = 0;
   for (var ii = 0; ii < shaders.length; ++ii) {
     var shader = shaders[ii];
     if (typeof shader == 'string') {
@@ -278,7 +279,14 @@ var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
         shader = loadShader(gl, shader, ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER);
       }
     }
-    gl.attachShader(program, shader);
+    if (shader) {
+      ++shaderCount;
+      gl.attachShader(program, shader);
+    }
+  }
+  if (shaderCount != 2) {
+    error("Error in compiling shader");
+    return null;
   }
   if (opt_attribs) {
     for (var ii = 0; ii < opt_attribs.length; ++ii) {
