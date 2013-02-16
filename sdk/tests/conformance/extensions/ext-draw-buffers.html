@@ -47,7 +47,7 @@ void main() {
 }
 </script>
 <script id="fshader" type="x-shader/x-fragment">
-#extension GL_ext_draw_buffers
+#extension GL_EXT_draw_buffers
 precision mediump float;
 uniform vec4 u_colors[$(numDrawingBuffers)];
 void main() {
@@ -76,10 +76,10 @@ void main() {
   #if GL_EXT_draw_buffers == 1
     #define CODE
   #else
-    #define CODE this code is bad
+    #define CODE this_code_is_bad_it_should_have_compiled
   #endif
 #else
-   #define CODE this code is bad
+   #define CODE this_code_is_bad_it_should_have_compiled
 #endif
 CODE
 precision mediump float;
@@ -155,6 +155,8 @@ if (!gl) {
   runShadersTestDisabled();
   runAttachmentTestDisabled();
 
+  debug("");
+
   // Query the extension and store globally so shouldBe can access it
   ext = gl.getExtension("EXT_draw_buffers");
   if (!ext) {
@@ -177,6 +179,7 @@ if (!gl) {
 function createExtDrawBuffersProgram(scriptId, sub) {
   var fsource = wtu.getScript(scriptId);
   fsource = wtu.replaceParams(fsource, sub);
+  wtu.addShaderSource(output, "fragement shader", fsource);
   return wtu.setupProgram(gl, ["vshader", fsource], ["a_position"]);
 }
 
@@ -198,43 +201,49 @@ function runSupportedTest(extensionEnabled) {
 }
 
 function runEnumTestDisabled() {
+  debug("");
   debug("Testing binding enum with extension disabled");
 
   // Use the constant directly as we don't have the extension
   extensionConstants.forEach(function(c) {
-    if (!c.expectedFn) {
+    if (c.expectedFn) {
       gl.getParameter(c.enum);
       glErrorShouldBe(gl, gl.INVALID_ENUM, c.name + " should not be queryable if extension is disabled");
     }
   });
+  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function runEnumTestEnabled() {
+  debug("");
   debug("Testing enums with extension enabled");
 
   extensionConstants.forEach(function(c) {
-    shouldBe("ext." + c.name, c.enum.toString());
+    shouldBe("ext." + c.name, "0x" + c.enum.toString(16));
     if (c.expectedFn) {
+      glErrorShouldBe(gl, gl.NO_ERROR, "foo");
+      debug(c.name + ":" + ext[c.name].toString(16));
       expectTrue(c.expectedFn(gl.getParameter(ext[c.name])), "gl.getParemter(ext." + c.name + ")" + c.passMsg);
-      glErrorShouldBe(gl, gl.NO_ERROR, c.name + " query should succeed if extension is enable");
+      glErrorShouldBe(gl, gl.NO_ERROR, c.name + " query should succeed if extension is enabled");
     }
   });
 
   debug("Testing drawBuffersEXT with default drawing buffer");
-  shouldBe("gl.getParameter(ext.COLOR_ATTACHMENT0_EXT)", "gl.BACK");
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_EXT)", "gl.BACK");
   shouldGenerateGLError(gl, gl.INVALID_VALUE, "ext.drawBuffersEXT([])");
   shouldGenerateGLError(gl, gl.INVALID_VALUE, "ext.drawBuffersEXT([gl.NONE, gl.NONE])");
   shouldGenerateGLError(gl, gl.INVALID_OPERATION, "ext.drawBuffersEXT([ext.COLOR_ATTACHMENT0_EXT])");
-  shouldBe("gl.getParameter(ext.COLOR_ATTACHMENT0_EXT)", "gl.BACK");
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_EXT)", "gl.BACK");
   shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersEXT([gl.NONE])");
-  shouldBe("gl.getParameter(ext.COLOR_ATTACHMENT0_EXT)", "gl.NONE");
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_EXT)", "gl.NONE");
   shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersEXT([gl.BACK])");
-  shouldBe("gl.getParameter(ext.COLOR_ATTACHMENT0_EXT)", "gl.BACK");
+  shouldBe("gl.getParameter(ext.DRAW_BUFFER0_EXT)", "gl.BACK");
+  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function testShaders(tests, sub) {
   tests.forEach(function(test) {
-    var shaders = [test.shaders[0], wtu.replaceParams(test.shaders[1], sub)];
+    var shaders = [wtu.getScript(test.shaders[0]), wtu.replaceParams(wtu.getScript(test.shaders[1]), sub)];
     wtu.addShaderSource(output, "vertex shader", shaders[0]);
     wtu.addShaderSource(output, "fragement shader", shaders[1]);
     var program = wtu.setupProgram(gl, shaders, ["a_position"]);
@@ -246,6 +255,9 @@ function testShaders(tests, sub) {
 }
 
 function runShadersTestDisabled() {
+  debug("");
+  debug("test shaders disabled");
+
   testShaders([
     { shaders: ["vshader", "fshaderMacroDisabled"],
       msg: "GL_EXT_draw_buffers should not be defined in GLSL",
@@ -255,9 +267,13 @@ function runShadersTestDisabled() {
       expectFailure: true,
     },
   ], {numDrawingBuffers: 1});
+  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function runShadersTestEnabled() {
+  debug("");
+  debug("test shaders enabled");
+
   var sub = {numDrawingBuffers: gl.getParameter(ext.MAX_DRAW_BUFFERS_EXT)};
   testShaders([
     { shaders: ["vshader", "fshaderMacroEnabled"],
@@ -270,9 +286,12 @@ function runShadersTestEnabled() {
   wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
   gl.deleteProgram(program);
+  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function runAttachmentTestDisabled() {
+  debug("");
+  debug("test attachment disabled");
   var tex = gl.createTexture();
   var fb = gl.createFramebuffer();
   gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -281,6 +300,7 @@ function runAttachmentTestDisabled() {
   glErrorShouldBe(gl, gl.INVALID_VALUE, "should not be able to attach to gl.COLOR_ATTACHMENT1");
   gl.deleteFramebuffer(fb);
   gl.deleteTexture(tex);
+  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function makeArray(size, value) {
@@ -294,13 +314,16 @@ function makeArray(size, value) {
 function makeColorAttachmentArray(size) {
   var array = []
   for (var ii = 0; ii < size; ++ii) {
-    array.push(ext.COLOR_ATTACHMENT0 + ii);
+    array.push(gl.COLOR_ATTACHMENT0 + ii);
   }
   return array;
 }
 
 function runAttachmentTestEnabled() {
-  var maxDrawingBuffers = gl.getParameter(ext.MAX_DRAWING_BUFFERS_EXT);
+  debug("");
+  debug("test attachment enabled");
+
+  var maxDrawingBuffers = gl.getParameter(ext.MAX_DRAW_BUFFERS_EXT);
   var maxColorAttachments = gl.getParameter(ext.MAX_COLOR_ATTACHMENTS_EXT);
 
   var tex = gl.createTexture();
@@ -320,8 +343,8 @@ function runAttachmentTestEnabled() {
   ext.drawBuffersEXT(bufs);
   glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffersEXT with mixed array attachments of size " + maxColorAttachments);
   if (maxDrawingBuffers > 1) {
-    bufs[0] = ext.COLOR_ATTACHMENT1;
-    bufs[1] = ext.COLOR_ATTACHMENT0;
+    bufs[0] = ext.COLOR_ATTACHMENT1_EXT;
+    bufs[1] = ext.COLOR_ATTACHMENT0_EXT;
     ext.drawBuffersEXT(bufs);
     glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be able to call drawBuffersEXT with out of order attachments of size " + maxColorAttachments);
     var bufs = makeColorAttachmentArray(Math.floor(maxDrawingBuffers / 2));
@@ -330,6 +353,7 @@ function runAttachmentTestEnabled() {
 
   gl.deleteFramebuffer(fb);
   gl.deleteTexture(tex);
+  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function makeColorByIndex(index) {
@@ -356,6 +380,8 @@ function makeColorByIndex(index) {
 }
 
 function runDrawTests() {
+  debug("");
+  debug("--------- draw tests -----------");
   var fb = gl.createFramebuffer();
   var fb2 = gl.createFramebuffer();
   var halfFB1 = gl.createFramebuffer();
@@ -363,7 +389,7 @@ function runDrawTests() {
   var endsFB = gl.createFramebuffer();
   var middleFB = gl.createFramebuffer();
 
-  var maxDrawingBuffers = gl.getParameter(ext.MAX_DRAWING_BUFFERS_EXT);
+  var maxDrawingBuffers = gl.getParameter(ext.MAX_DRAW_BUFFERS_EXT);
   var maxColorAttachments = gl.getParameter(ext.MAX_COLOR_ATTACHMENTS_EXT);
   var maxUniformVectors = gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS);
   var maxUsable = Math.min(maxDrawingBuffers, maxColorAttachments, maxUniformVectors);
@@ -404,7 +430,8 @@ function runDrawTests() {
     }
     var location = gl.getUniformLocation(drawProgram, "u_colors[" + ii + "]");
     var color = makeColorByIndex(ii + 1);
-    gl.uniform4fv(location, color);
+    var floatColor = [color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255];
+    gl.uniform4fv(location, floatColor);
     attachments.push({
       texture: tex,
       location: location,
@@ -438,7 +465,6 @@ function runDrawTests() {
       return color || attachment.color;
     });
   };
-
 
   var drawAndCheckAttachments = function(testFB, msg, testFn) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, testFB);
@@ -476,6 +502,8 @@ function runDrawTests() {
 
   var bufs = makeColorAttachmentArray(maxUsable);
   var nones = makeArray(maxUsable, gl.NONE);
+
+  gl.useProgram(drawProgram);
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   ext.drawBuffersEXT(bufs);
   wtu.drawUnitQuad(gl);
@@ -607,14 +635,16 @@ function runDrawTests() {
   checkAttachmentsForColor(attachments);
 
   debug("test queries");
-  gl.bindFramebuffer(gl, fb);
+  debug("check framebuffer with all attachments on");
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   for (var ii = 0; ii < maxUsable; ++ii) {
-    shouldBe("gl.getParameter(ext.DRAW_COLORBUFFER0_EXT + " + ii + ")", "gl.COLOR_ATTACHMENT0 + " + ii);
+    shouldBe("gl.getParameter(ext.DRAW_BUFFER0_EXT + " + ii + ")", "gl.COLOR_ATTACHMENT0 + " + ii);
   }
 
-  gl.bindFramebuffer(gl, fb2);
+  debug("check framebuffer with all attachments off");
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb2);
   for (var ii = 0; ii < maxUsable; ++ii) {
-    shouldBe("gl.getParameter(ext.DRAW_COLORBUFFER0_EXT + " + ii + ")", "gl.NONE");
+    shouldBe("gl.getParameter(ext.DRAW_BUFFER0_EXT + " + ii + ")", "gl.NONE");
   }
 
   debug("test attachment size mis-match");
