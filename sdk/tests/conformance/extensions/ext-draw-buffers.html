@@ -394,6 +394,13 @@ function runDrawTests() {
   var maxUniformVectors = gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS);
   var maxUsable = Math.min(maxDrawingBuffers, maxColorAttachments, maxUniformVectors);
   var half = Math.floor(maxUsable / 2);
+  var bufs = makeColorAttachmentArray(maxUsable);
+  var nones = makeArray(maxUsable, gl.NONE);
+
+  [fb, fb2, halfFB1, halfFB2, endsFB, middleFB].forEach(function(fbo) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    ext.drawBuffersEXT(bufs);
+  });
 
   var checkProgram = wtu.setupTexturedQuad(gl);
   var redProgram = wtu.setupProgram(gl, ["vshader", "fshaderRed"], ["a_position"]);
@@ -421,13 +428,8 @@ function runDrawTests() {
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.TEXTURE_2D, tex, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, ii < half ? halfFB1 : halfFB2);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.TEXTURE_2D, tex, 0);
-    if (ii == 0 || ii == (maxUsable - 1)) {
-      gl.bindFramebuffer(gl.FRAMEBUFFER, endsFB);
-      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.TEXTURE_2D, tex, 0);
-    } else {
-      gl.bindFramebuffer(gl.FRAMEBUFFER, middleFB);
-      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.TEXTURE_2D, tex, 0);
-    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, (ii == 0 || ii == (maxUsable - 1)) ? endsFB : middleFB);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.TEXTURE_2D, tex, 0);
     var location = gl.getUniformLocation(drawProgram, "u_colors[" + ii + "]");
     var color = makeColorByIndex(ii + 1);
     var floatColor = [color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255];
@@ -458,6 +460,7 @@ function runDrawTests() {
       });
       wtu.checkCanvas(gl, expectedColor, "attachment " + index + " should be " + expectedColor.toString(), tolerance);
     });
+    debug("");
   };
 
   var checkAttachmentsForColor = function(attachments, color) {
@@ -467,23 +470,35 @@ function runDrawTests() {
   };
 
   var drawAndCheckAttachments = function(testFB, msg, testFn) {
+    debug("test clearing " + msg);
+
     gl.bindFramebuffer(gl.FRAMEBUFFER, testFB);
-    ext.drawBuffersEXT(bufs);  // enable all bufs.
+
+    attachments.forEach(function(attachment, index) {
+      debug("attachment: " + index + " = " + wtu.glEnumToString(gl, gl.getParameter(ext.DRAW_BUFFER0_EXT + index)) +
+            ", " + wtu.glEnumToString(gl, gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + index, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)));
+    });
+
     if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+      debug("framebuffer not complete");
+      debug("");
       return;
     }
 
-    debug("test clearing " + msg);
-
     // Clear all the attachments
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb2);
     gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.CLEAR_BUFFER_BIT);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    //checkAttachmentsForColorFn(attachments, function(attachment, index) {
+    //  return [0, 0, 0, 0];
+    //});
+    //debug("--");
 
     // Clear some attachments using testFB
     gl.bindFramebuffer(gl.FRAMEBUFFER, testFB);
+
     gl.clearColor(0, 1, 0, 1);
-    gl.clear(gl.CLEAR_BUFFER_BIT);
+    gl.clear(gl.COLOR_BUFFER_BIT);
     checkAttachmentsForColorFn(attachments, function(attachment, index) {
       return testFn(attachment, index) ? [0, 255, 0, 255] : [0, 0, 0, 0];
     });
@@ -500,12 +515,12 @@ function runDrawTests() {
     });
   };
 
-  var bufs = makeColorAttachmentArray(maxUsable);
-  var nones = makeArray(maxUsable, gl.NONE);
-
   gl.useProgram(drawProgram);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb2);
+  ext.drawBuffersEXT(bufs);
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   ext.drawBuffersEXT(bufs);
+
   wtu.drawUnitQuad(gl);
 
   debug("test that each texture got the correct color.");
@@ -567,15 +582,17 @@ function runDrawTests() {
       return index < half ? [255, 0, 0, 255] : attachment.color;
     });
 
-    debug("test setting second half to NONE");
+    debug("test setting second half to NONE and clearing");
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    ext.drawBuffersEXT(bufs);
+    gl.clearColor(1, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
     ext.drawBuffersEXT(bufs2);
     gl.clearColor(0, 0, 1, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
-
     checkAttachmentsForColorFn(attachments, function(attachment, index) {
-      return index < half ? [255, 0, 0, 255] : [0, 0, 255, 255];
+      return index < half ? [0, 0, 255, 255] : [255, 0, 0, 255];
     });
 
     debug("test setting second half to NONE and drawing");
@@ -585,17 +602,19 @@ function runDrawTests() {
     wtu.drawUnitQuad(gl);
 
     checkAttachmentsForColorFn(attachments, function(attachment, index) {
-      return index < half ? attachment.color : [0, 0, 255, 255];
+      return index < half ? attachment.color : [255, 0, 0, 255];
     });
 
+    gl.bindFramebuffer(gl.FRAMEBUFFER, halfFB1);
+    ext.drawBuffersEXT(bufs);
     drawAndCheckAttachments(
-      halfFB1, "test clearing framebuffer that only has first half of attachments",
+      halfFB1, "framebuffer that only has first half of attachments",
       function(attachment, index) {
         return index < half;
       });
 
     drawAndCheckAttachments(
-      halfFB2, "test clearing framebuffer that only has second half of attachments",
+      halfFB2, "framebuffer that only has second half of attachments",
       function(attachment, index) {
         return index >= half;
       });
