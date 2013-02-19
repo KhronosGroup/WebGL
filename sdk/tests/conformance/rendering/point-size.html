@@ -70,7 +70,6 @@
     shouldBeNonNull("gl");
 
     gl.disable(gl.BLEND);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // The choice of (0.4, 0.4) ensures that the centers of the surrounding
     // pixels are not contained within the point when it is of size 1, but
@@ -92,6 +91,8 @@
     gl.bufferSubData(gl.ARRAY_BUFFER, colorOffset, colors);
 
     function test(program) {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
         gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(0);
         gl.vertexAttribPointer(1, 4, gl.UNSIGNED_BYTE, true, 0, colorOffset);
