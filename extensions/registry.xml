@@ -150,7 +150,7 @@
     </revision><revision date="2012/11/05" number="2">
       <change>Corrected typo in drawBuffersWEBGL. Changed referenced spec version to 1.0 to fix broken link.</change>
     </revision><revision date="2013/02/02" number="3">
-      <change>Renamed to EXT_draw_buffers per plan of OpenGL ES 2.0 working group. Moved to draft status. Assigned number.</change>
+      <change>Renamed to EXT_draw_buffers per plan of OpenGL ES working group. Moved to draft status. Assigned number.</change>
     </revision></history></draft><draft href="EXT_color_buffer_half_float"><name>EXT_color_buffer_half_float</name><number>14</number><history><revision date="2012/11/08" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/11/13" number="2">
@@ -175,4 +175,4 @@
       <change>Initial revision.</change>
     </revision><revision date="2013/12/26" number="2">
       <change>Moved from proposal to draft</change>
-    </revision></history></draft></registry>
+    </revision></history></draft><proposal href="proposals/OES_texture_float_linear/"><name>OES_texture_float_linear</name></proposal><proposal href="proposals/OES_texture_half_float_linear/"><name>OES_texture_half_float_linear</name></proposal></registry>
