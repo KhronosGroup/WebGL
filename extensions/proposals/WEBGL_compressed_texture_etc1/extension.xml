@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+
+<extension href="WEBGL_compressed_texture_etc1/">
+  <name>WEBGL_compressed_texture_etc1</name>
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
+  </contact>
+  <contributors>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+  <number>XYZ</number>
+  <depends>
+    <api version="1.0"/>
+  </depends>
+  <overview>
+    <p>
+      This extension exposes the compressed texture format defined in the 
+      <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_compressed_ETC1_RGB8_texture.txt">
+      OES_compressed_ETC1_RGB8_texture</a> OpenGL ES extension to WebGL.
+    </p>
+    <features>
+      <feature>
+        Compression format <code>COMPRESSED_RGB_ETC1_WEBGL</code> may be passed to
+        the <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code> entry points.
+
+        This format correspond to the format defined in the OES_compressed_ETC1_RGB8_texture OpenGL ES
+        extension. Although the enum name is changed, the numeric value is the same. The correspondence
+        is given by this table:
+        <table>
+          <tr>
+            <th>WebGL format enum</th>
+            <th>OpenGL format enum</th>
+            <th>Numeric value</th>
+          </tr>
+          <tr>
+            <td>COMPRESSED_RGB_ETC1_WEBGL</td>
+            <td>ETC1_RGB8_OES</td>
+            <td>0x8D64</td>
+          </tr>
+        </table>
+      </feature>
+      <feature>
+        Calling <code>getParameter</code> with the argument <code>COMPRESSED_TEXTURE_FORMATS</code>
+        will include the format from this specification.
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGB_ETC1_WEBGL</dt>
+          <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
+          <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
+          must be equal to the following number of bytes:</p>
+          <blockquote><code>
+            floor((width + 3) / 4) * floor((height + 3) / 4) * 8
+          </code></blockquote>
+          <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+    </features>
+  </overview>
+  <idl>
+interface WEBGL_compressed_texture_etc1 {
+    /* Compressed Texture Format */
+    const GLenum COMPRESSED_RGB_ETC1_WEBGL = 0x8D64; 
+};
+  </idl>
+  <history>
+    <revision date="2012/02/23">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</extension>
