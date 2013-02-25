@@ -169,8 +169,8 @@ function get_command_line_args_string() {
   return out;
 }
 
-function get_failing_command_line_args_string(test_results) {
-  var out = "--include=";
+function get_failing_command_line_args_string(browser_name, test_results) {
+  var out = "--browser=" + browser_name + " --include=";
   var firstMatch = true;
 
   test_results.replace(/(.*): (\d) tests failed/g, function(match, p1, p2, offset) {
@@ -262,7 +262,7 @@ function start_test_server(config) {
       output += "Executing command line args: " + executing_args + "\n\n";
     }
     if(!all_passed) {
-      var failing_args = get_failing_command_line_args_string(test_results);
+      var failing_args = get_failing_command_line_args_string(app.browser_name, test_results);
       output += "To reproduce failures, run with the following args: " + failing_args + "\n\n";
     }
 
