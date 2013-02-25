@@ -21,7 +21,8 @@ EXTS := OES_standard_derivatives \
 	proposals/EXT_blend_minmax \
 	EXT_sRGB \
 	proposals/OES_texture_float_linear \
-	proposals/OES_texture_half_float_linear
+	proposals/OES_texture_half_float_linear \
+	proposals/WEBGL_compressed_texture_etc1
 
 EXTS := $(strip $(EXTS))
 
