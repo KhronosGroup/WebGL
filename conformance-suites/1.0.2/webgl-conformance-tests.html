@@ -83,6 +83,7 @@
   .testpage { border: 1px solid black; background-color: #ccc; }
   .testpagesuccess { border: 1px solid black; background-color: #8F8; }
   .testpagefail { border: 1px solid black; background-color: #F88; }
+  .testpageskipped { border: 1px solid black; background-color: #888; }
   .testpagetimeout { border: 1px solid black; background-color: #FC8; }
   .nowebgl { font-weight: bold; color: red; }
   #error-wrap {
@@ -109,7 +110,8 @@ var CONFORMANCE_TEST_VERSION = "1.0.2";
 
 var OPTIONS = {
   version: CONFORMANCE_TEST_VERSION,
-  frames: 1
+  frames: 1,
+  failOnSkip: "true"
 };
 
 function start() {
@@ -151,6 +153,7 @@ function start() {
     this.totalTests = 0;
     this.totalSuccessful = 0;
     this.totalTimeouts = 0;
+    this.totalSkipped = 0;
     this.testIndex = testIndex;
 
     this.elementId = "page" + pageCount++;
@@ -190,16 +193,18 @@ function start() {
     this.check = check;
   };
 
-  Page.prototype.addResult = function(msg, success) {
+  Page.prototype.addResult = function(msg, success, skipped) {
     ++this.totalTests;
     if (success === undefined) {
       ++this.totalTimeouts;
       var result = "timeout";
       var css = "timeout";
     } else if (success) {
-      ++this.totalSuccessful;
-      var result = "success";
-      var css = "success";
+      if(skipped) {
+        ++this.totalSkipped;
+      } else {
+        ++this.totalSuccessful;
+      }
       // don't report success.
       return;
     } else {
@@ -234,13 +239,19 @@ function start() {
   };
 
   Page.prototype.finishPage = function(success) {
-    var msg = ' (' + this.totalSuccessful + ' of ' +
-              this.totalTests + ' passed)';
+    if(this.totalSkipped) {
+      var msg = ' (' + this.totalSkipped + ' of ' + this.totalTests + ' skipped)';
+    } else {
+      var msg = ' (' + this.totalSuccessful + ' of ' + this.totalTests + ' passed)';
+    }
+
     if (success === undefined) {
       var css = 'testpagetimeout';
       msg = '(*timeout*)';
       ++this.totalTests;
       ++this.totalTimeouts;
+    } else if (this.totalSkipped) {
+      var css = 'testpageskipped';
     } else if (this.totalSuccessful != this.totalTests) {
       var css = 'testpagefail';
     } else {
@@ -476,9 +487,9 @@ function start() {
     return page.startPage();
   };
 
-  Reporter.prototype.addResult = function(url, msg, success) {
+  Reporter.prototype.addResult = function(url, msg, success, skipped) {
     var page = this.pagesByURL[url];
-    page.addResult(msg, success);
+    page.addResult(msg, success, skipped);
   };
 
   Reporter.prototype.finishPage = function(url, success) {
@@ -491,11 +502,13 @@ function start() {
       var totalTests = 0;
       var totalSuccessful = 0;
       var totalTimeouts = 0;
+      var totalSkipped = 0;
       for (var url in this.pagesByURL) {
         var page = this.pagesByURL[url];
         totalTests += page.totalTests;
         totalSuccessful += page.totalSuccessful;
         totalTimeouts += page.totalTimeouts;
+        totalSkipped += page.totalSkipped;
       }
       var timeout = '';
       if (totalTimeouts > 0) {
@@ -522,15 +535,16 @@ function start() {
       tx += "-------------------\n\n";
       tx += "Test Summary (" + totalTests + " total tests):\n";
       tx += "Tests PASSED: " + totalSuccessful + "\n";
-      tx += "Tests FAILED: " + (totalTests - totalSuccessful) + "\n";
+      tx += "Tests FAILED: " + (totalTests - totalSuccessful - totalSkipped) + "\n";
       tx += "Tests TIMED OUT: " + totalTimeouts + "\n";
+      tx += "Tests SKIPPED: " + totalSkipped + "\n";
       tx += "\n";
       tx += "-------------------\n\n";
       if (totalSuccessful < totalTests) {
         tx += "Failures:\n\n";
         for (var url in this.pagesByURL) {
             var page = this.pagesByURL[url];
-            var pageTotalFail = page.totalTests - page.totalSuccessful;
+            var pageTotalFail = page.totalTests - page.totalSuccessful - page.totalSkipped;
             if (!(page.totalTests == 0 && page.totalTimeouts == 0) &&
                 pageTotalFail > 0)
             {
@@ -545,13 +559,13 @@ function start() {
       }
       tx += "\n";
       tx += "-------------------\n\n";
-      tx += "Complete Test Results (total / pass / fail / timeout):\n\n";
+      tx += "Complete Test Results (total / pass / fail / timeout / skipped):\n\n";
       for (var url in this.pagesByURL) {
         var page = this.pagesByURL[url];
-        var pageTotalFail = page.totalTests - page.totalSuccessful;
+        var pageTotalFail = page.totalTests - page.totalSuccessful - page.totalSkipped;
         if (!(page.totalTests == 0 && page.totalTimeouts == 0)) {
           tx += url + ": " + page.totalTests + " / " +
-              page.totalSuccessful + " / " + pageTotalFail + " / " + page.totalTimeouts + "\n";
+              page.totalSuccessful + " / " + pageTotalFail + " / " + page.totalTimeouts + " / " + page.totalSkipped + "\n";
         }
       }
       tx += "\n";
@@ -602,7 +616,7 @@ function start() {
     }
   };
 
-  Reporter.prototype.reportFunc = function(type, url, msg, success) {
+  Reporter.prototype.reportFunc = function(type, url, msg, success, skipped) {
     switch (type) {
       case reportType.ADD_PAGE:
         return this.addPage(msg);
@@ -611,7 +625,7 @@ function start() {
       case reportType.START_PAGE:
         return this.startPage(url);
       case reportType.TEST_RESULT:
-        return this.addResult(url, msg, success);
+        return this.addResult(url, msg, success, skipped);
       case reportType.FINISH_PAGE:
         return this.finishPage(url, success);
       case reportType.FINISHED_ALL_TESTS:
@@ -727,8 +741,8 @@ function start() {
   var testHarness = new WebGLTestHarnessModule.TestHarness(
       iframes,
       '00_test_list.txt',
-      function(type, url, msg, success) {
-        return reporter.reportFunc(type, url, msg, success);
+      function(type, url, msg, success, skipped) {
+        return reporter.reportFunc(type, url, msg, success, skipped);
       },
       OPTIONS);
   reporter.addEventListener("ready", function() {
