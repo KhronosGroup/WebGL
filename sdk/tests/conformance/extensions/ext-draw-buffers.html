@@ -47,7 +47,7 @@ void main() {
 }
 </script>
 <script id="fshader" type="x-shader/x-fragment">
-#extension GL_EXT_draw_buffers
+#extension GL_EXT_draw_buffers : require
 precision mediump float;
 uniform vec4 u_colors[$(numDrawingBuffers)];
 void main() {
@@ -263,7 +263,7 @@ function runShadersTestDisabled() {
       msg: "GL_EXT_draw_buffers should not be defined in GLSL",
     },
     { shaders: ["vshader", "fshader"],
-      msg: "#extension GL_EXT_draw_buffers should not allowed in GLSL",
+      msg: "#extension GL_EXT_draw_buffers should not be allowed in GLSL",
       expectFailure: true,
     },
   ], {numDrawingBuffers: 1});
@@ -297,7 +297,7 @@ function runAttachmentTestDisabled() {
   gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + 1, gl.TEXTURE_2D, tex, 0);
-  glErrorShouldBe(gl, gl.INVALID_VALUE, "should not be able to attach to gl.COLOR_ATTACHMENT1");
+  glErrorShouldBe(gl, gl.INVALID_ENUM, "should not be able to attach to gl.COLOR_ATTACHMENT1");
   gl.deleteFramebuffer(fb);
   gl.deleteTexture(tex);
   glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
@@ -613,6 +613,8 @@ function runDrawTests() {
         return index < half;
       });
 
+    gl.bindFramebuffer(gl.FRAMEBUFFER, halfFB2);
+    ext.drawBuffersEXT(bufs);
     drawAndCheckAttachments(
       halfFB2, "framebuffer that only has second half of attachments",
       function(attachment, index) {
@@ -620,12 +622,16 @@ function runDrawTests() {
       });
 
     if (maxUsable > 2) {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, endsFB);
+      ext.drawBuffersEXT(bufs);
       drawAndCheckAttachments(
         endsFB, "framebuffer that only has first and last attachments",
         function(attachment, index) {
           return index == 0 || index == (maxUsable - 1);
         });
 
+      gl.bindFramebuffer(gl.FRAMEBUFFER, middleFB);
+      ext.drawBuffersEXT(bufs);
       drawAndCheckAttachments(
         middleFB,
         "framebuffer that has all but the first and last attachments",
@@ -642,14 +648,16 @@ function runDrawTests() {
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   ext.drawBuffersEXT(bufs);
   gl.clearColor(1, 0, 0, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
   checkAttachmentsForColor(attachments, [255, 0, 0, 255]);
 
-  gl.bindFramebuffer(gl.FRAMEBUFFER, fb2)
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb2);
   gl.useProgram(drawProgram);
   wtu.drawUnitQuad(gl);
   checkAttachmentsForColor(attachments, [255, 0, 0, 255]);
 
-  gl.bindFramebuffer(gl.FRAMEBUFFER, fb)
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+  gl.useProgram(drawProgram);
   wtu.drawUnitQuad(gl);
   checkAttachmentsForColor(attachments);
 
