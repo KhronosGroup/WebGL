@@ -132,7 +132,7 @@ function build_test_url(app, config) {
   var default_args = {
     "run": 1,
     "postResults": 1,
-    "failOnSkip": false
+    "allowSkip": 1
   }
 
   if(config.args.fast) {
