@@ -131,7 +131,8 @@ function build_test_url(app, config) {
 
   var default_args = {
     "run": 1,
-    "postResults": 1
+    "postResults": 1,
+    "failOnSkip": false
   }
 
   if(config.args.fast) {
@@ -152,6 +153,32 @@ function build_test_url(app, config) {
   }
   
   return full_url;
+}
+
+function get_command_line_args_string() {
+  var out = ""; //process.argv[0];
+
+  for(var i = 2; i < process.argv.length; ++i) {
+    if(process.argv[i].indexOf(" ") != -1) {
+      out += " \"" + process.argv[i] + "\""
+    } else {
+      out += " " + process.argv[i];
+    }
+  }
+
+  return out;
+}
+
+function get_failing_command_line_args_string(test_results) {
+  var out = "--include=";
+  var firstMatch = true;
+
+  test_results.replace(/(.*): (\d) tests failed/g, function(match, p1, p2, offset) {
+    out += (firstMatch ? "" : ",") + p1;
+    firstMatch = false;
+  });
+
+  return out;
 }
 
 var pass_re = /Tests PASSED: (\d+)/;
@@ -224,9 +251,28 @@ function start_test_server(config) {
         app.browser_name + "_" + Date.now() + ".txt"
         );
 
-    var test_results = req.plainText;
+    var output = "";
 
-    fs.writeFile(file_name, test_results, 'utf8', function(err, data) {
+    var test_results = req.plainText;
+    scan_test_results(test_results);
+
+    var executing_args = get_command_line_args_string();
+
+    if(executing_args) {
+      output += "Executing command line args: " + executing_args + "\n\n";
+    }
+    if(!all_passed) {
+      var failing_args = get_failing_command_line_args_string(test_results);
+      output += "To reproduce failures, run with the following args: " + failing_args + "\n\n";
+    }
+
+    if(executing_args || !all_passed) {
+      output += "-------------------\n\n"
+    }
+
+    output += test_results;
+
+    fs.writeFile(file_name, output, 'utf8', function(err, data) {
       if(err) {
         console.error(err);
         all_passed = false;
@@ -235,7 +281,6 @@ function start_test_server(config) {
         process.stdout.write("Finished");
         app.finished_tests = true;
         app.browser_proc.kill();
-        scan_test_results(test_results);
       }
     });
 
