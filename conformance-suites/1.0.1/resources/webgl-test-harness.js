@@ -409,6 +409,7 @@ var TestHarness = function(iframe, filelistUrl, reportFunc, options) {
   this.reportFunc = reportFunc;
   this.timeoutDelay = 20000;
   this.files = [];
+  this.allowSkip = options.allowSkip;
 
   var that = this;
   getFileList(filelistUrl, function() {
@@ -484,7 +485,7 @@ TestHarness.prototype.startNextFile = function() {
       this.iframe.src = this.currentFile.url;
       this.setTimeout();
     } else {
-      this.reportResults(false, "skipped");
+      this.reportResults(!!this.allowSkip, "skipped", true);
       this.notifyFinished();
     }
   }
