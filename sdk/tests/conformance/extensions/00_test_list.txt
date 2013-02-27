@@ -10,6 +10,7 @@ oes-vertex-array-object.html
 --min-version 1.0.2 oes-element-index-uint.html
 webgl-debug-renderer-info.html
 webgl-debug-shaders.html
+--min-version 1.0.3 webgl-compressed-texture-atc.html
 --min-version 1.0.2 webgl-compressed-texture-s3tc.html
 --min-version 1.0.2 webgl-depth-texture.html
 --min-version 1.0.2 ext-texture-filter-anisotropic.html
