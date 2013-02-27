@@ -353,7 +353,7 @@ randomLineWidth = function() {
 randomImage = function(w,h) {
   var img;
   var r = Math.random();
-  if (r < 0.5) {
+  if (r < 0.25) {
     img = document.createElement('canvas');
     img.width = w; img.height = h;
     img.getContext('2d').fillRect(0,0,w,h);
