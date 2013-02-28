@@ -1,29 +1,6 @@
-EXTS := OES_standard_derivatives \
-	OES_texture_float \
-	OES_texture_half_float \
-	OES_vertex_array_object \
-	WEBGL_lose_context \
-	WEBGL_debug_renderer_info \
-	WEBGL_debug_shaders \
-	WEBGL_compressed_texture_s3tc \
-	WEBGL_depth_texture \
-	proposals/WEBGL_shared_resources \
-	OES_element_index_uint \
-	EXT_texture_filter_anisotropic \
-	ANGLE_instanced_arrays \
-	proposals/WEBGL_dynamic_texture \
-	WEBGL_compressed_texture_pvrtc \
-	WEBGL_compressed_texture_atc \
-	EXT_draw_buffers \
-	EXT_color_buffer_half_float \
-	WEBGL_color_buffer_float \
-	EXT_frag_depth \
-	proposals/EXT_blend_minmax \
-	EXT_sRGB \
-	proposals/OES_texture_float_linear \
-	proposals/OES_texture_half_float_linear \
-	proposals/WEBGL_compressed_texture_etc1
+# See README for more information about the WebGL extension registry automation.
 
+EXTS := $(shell ./find-exts)
 EXTS := $(strip $(EXTS))
 
 EXT_XMLS := $(addsuffix /extension.xml,$(EXTS))
@@ -54,6 +31,7 @@ registry.xml: $(EXT_XMLS) summary.xsl summary.xml
 	         summary.xsl summary.xml > registry.xml
 
 %/index.html: %/extension.xml extension.xsl rev_utils.xsl standards.xsl
+	./validate $*
 	xsltproc --stringparam basepath `echo $*/ | sed -e $(RE_BASEPATH)` \
 	         extension.xsl $*/extension.xml > $*/index.html
 
