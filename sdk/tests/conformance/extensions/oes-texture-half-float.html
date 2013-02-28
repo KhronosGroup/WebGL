@@ -41,9 +41,35 @@
 <canvas id="canvas" style="width: 50px; height: 50px;"> </canvas>
 <div id="console"></div>
 <script id="testFragmentShader" type="x-shader/x-fragment">
+precision mediump float;
+uniform sampler2D tex;
+uniform vec4 subtractor;
+varying vec2 texCoord;
 void main()
 {
-    gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+    vec4 color = texture2D(tex, texCoord);
+    if (abs(color.r - subtractor.r) +
+        abs(color.g - subtractor.g) +
+        abs(color.b - subtractor.b) +
+        abs(color.a - subtractor.a) < 8.0) {
+        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+    } else {
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+}
+</script>
+<!-- Shaders for testing floating-point render targets -->
+<script id="positionVertexShader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+void main()
+{
+    gl_Position = vPosition;
+}
+</script>
+<script id="floatingPointFragmentShader" type="x-shader/x-fragment">
+void main()
+{
+    gl_FragColor = vec4(10000.0, 10000.0, 10000.0, 10000.0);
 }
 </script>
 <script>
@@ -51,7 +77,7 @@ void main()
 description("This test verifies the functionality of OES_texture_half_float with null ArrayBufferView");
 
 debug("");
-
+// FIXME: Test cases to cover uploading of HTMLImageElement, HTMLCanvasELement and HTMLVideoElement into HALF_FLOAT_OES texture needs to be written.
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas);
@@ -61,16 +87,6 @@ if (!gl) {
 } else {
     testPassed("WebGL context exists");
 
-    var shaders = [
-        wtu.setupSimpleTextureVertexShader(gl),
-        "testFragmentShader"
-    ];
-    var testProgram = wtu.setupProgram(gl,
-                                       shaders,
-                                       ['vPosition', 'texCoord0'],
-                                       [0,1]);
-    var quadParameters = wtu.setupUnitQuad(gl, 0, 1);
-
     // Verify that allocation of texture fails if extension is not enabled
     runTextureCreationTest(false);
 
@@ -78,18 +94,71 @@ if (!gl) {
         testPassed("No OES_texture_half_float support. This is legal");
     } else {
         testPassed("Successfully enabled OES_texture_half_float extension");
-        // Check if creation of texture succeed's with various formats
-        runTextureCreationTest(testProgram, true, gl.RGBA);
-        runTextureCreationTest(testProgram, true, gl.RGB);
-        runTextureCreationTest(testProgram, true, gl.LUMINANCE);
-        runTextureCreationTest(testProgram, true, gl.ALPHA);
-        runTextureCreationTest(testProgram, true, gl.ALPHA);
-        runTextureCreationTest(testProgram, true, gl.LUMINANCE_ALPHA);
+
+        // Check if creation of texture succeed's with various formats and null ArrayBufferView
+        var formats = [gl.RGBA, gl.RGB, gl.LUMINANCE, gl.ALPHA, gl.LUMINANCE_ALPHA];
+        for (var i = 0; i < formats.length; i++) {
+            runTextureCreationTest(true, formats[i], null);
+        }
+        
+        // Texture creation should fail when passed with non-null ArrayBufferView
+        for (var i = 0; i < formats.length; i++) {
+            var width = 2;
+            var height = 2;
+            
+            // Float32Array
+            var float32Data = new Float32Array(width * height * getNumberOfChannels(formats[i]));
+            for (var ii = 0; ii < float32Data.length; ii++) {
+                float32Data[ii] = 1000;
+            }
+            runTextureCreationTest(true, formats[i], float32Data);
+
+            // Int16Array
+            var int16Data = new Int16Array(width * height * getNumberOfChannels(formats[i]));
+            for (var ii = 0; ii <  int16Data.length; ii++) {
+                int16Data[ii] = 1000;
+            }
+            runTextureCreationTest(true, formats[i], int16Data);
+
+            // Uint16Array
+            var uint16Data = new Uint16Array(width * height * getNumberOfChannels(formats[i]));
+            for (var ii = 0; ii <  uint16Data.length; ii++) {
+                uint16Data[ii] = 1000;
+            }
+            runTextureCreationTest(true, formats[i], uint16Data);            
+        }
+
         // Check if attaching texture as FBO target succeeds (Not mandatory)
-        runRenderTargetTest(testProgram);
+        runRenderTargetTest();
         // Check of getExtension() returns same object
         runUniqueObjectTest();
     }
+}
+
+function getNumberOfChannels(format)
+{
+    if (format == gl.RGBA)
+        return 4;
+    else if (format == gl.RGB)
+        return 3;
+    else if (format == gl.LUMINANCE || format == gl.ALPHA)
+        return 1;
+    else if (format == gl.LUMINANCE_ALPHA)
+        return 2;
+}
+
+function getFormatName(format)
+{
+    if (format == gl.RGBA)
+        return "RGBA";
+    else if (format == gl.RGB)
+        return "RGB";
+    else if (format == gl.LUMINANCE)
+        return "LUMINANCE";
+    else if (format == gl.ALPHA)
+        return "ALPHA";
+    else if (format == gl.LUMINANCE_ALPHA)
+        return "LUMINANCE_ALPHA";
 }
 
 function allocateTexture()
@@ -104,29 +173,36 @@ function allocateTexture()
     return texture;
 }
 
-function checkRenderingResults()
+function runTextureCreationTest(extensionEnabled, opt_format, opt_data)
 {
-    wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
-}
-
-function runTextureCreationTest(testProgram, extensionEnabled, format)
-{
+    var format = opt_format || gl.RGBA;
+    var data = opt_data || null;
+    var expectSuccess = true;
+    
+    if (!extensionEnabled || data)
+        expectSuccess = false;
     debug("Testing texture creation with extension " + (extensionEnabled ? "enabled" : "disabled") +
-          ". Expect " + (extensionEnabled ? "success" : "failure"));
+          ", format " + getFormatName(format) + ", and data " + (data ? "non-null" : "null") +
+          ". Expect " + (expectSuccess ? "Success" : "Failure"));   
 
     var texture = allocateTexture();
     var width = 2;
     var height = 2;
-    gl.texImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, format, gl.HALF_FLOAT_OES, null);
+    gl.texImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, format, gl.HALF_FLOAT_OES, data);
     if(!extensionEnabled) {
         glErrorShouldBe(gl, gl.INVALID_ENUM, "Half floating point texture must be diallowed if OES_texture_half_float isn't enabled");
+        return;
+    } else if (data) {
+        glErrorShouldBe(gl, gl.INVALID_OPERATION, "Half floating point texture allocation must be diallowed when ArrayBufferView is not-null");
         return;
     } else {
         glErrorShouldBe(gl, gl.NO_ERROR, "Half floating point texture allocation should succeed if OES_texture_half_float is enabled");
     }
-    gl.uniform1i(gl.getUniformLocation(testProgram, "tex"), 0);
-    wtu.clearAndDrawUnitQuad(gl);
-    checkRenderingResults();
+}
+
+function checkRenderingResults()
+{
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 }
 
 function runRenderTargetTest(testProgram)
@@ -154,15 +230,30 @@ function runRenderTargetTest(testProgram)
         return;
     }
 
-    wtu.clearAndDrawUnitQuad(gl);
-    glErrorShouldBe(gl, gl.NO_ERROR, "rendering to floating-point texture should succeed");
+    var renderProgram =
+        wtu.setupProgram(gl,
+                         ["positionVertexShader", "floatingPointFragmentShader"],
+                         ['vPosition'],
+                         [0]);
+    wtu.drawQuad(gl);
+    glErrorShouldBe(gl, gl.NO_ERROR, "Rendering to half floating point texture should succeed");
 
     // Now sample from the floating-point texture and verify we got the correct values.
+    var texturedShaders = [
+      wtu.setupSimpleTextureVertexShader(gl),
+          "testFragmentShader"
+      ];
+    var testProgram =
+        wtu.setupProgram(gl,
+                        [wtu.setupSimpleTextureVertexShader(gl), "testFragmentShader"],
+                        ['vPosition', 'texCoord0'],
+                        [0, 1]);
+    var quadParameters = wtu.setupUnitQuad(gl, 0, 1);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.useProgram(testProgram);
     gl.uniform1i(gl.getUniformLocation(testProgram, "tex"), 0);
-    wtu.clearAndDrawUnitQuad(gl);
+    wtu.drawQuad(gl);
     glErrorShouldBe(gl, gl.NO_ERROR, "rendering from half floating point texture should succeed");
     checkRenderingResults();
 }
