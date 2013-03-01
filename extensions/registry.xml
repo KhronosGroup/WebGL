@@ -123,6 +123,8 @@
       </change>
     </revision><revision date="2013/01/26" number="9">
       <change>Moved from draft to community approved status</change>
+    </revision><revision date="2013/02/28" number="10">
+      <change>Updated to track ANGLE_depth_texture, indicating that only red channel is guaranteed.</change>
     </revision></history></extension><proposal href="proposals/WEBGL_shared_resources/"><name>WEBGL_shared_resources</name></proposal><extension href="OES_element_index_uint/"><name>OES_element_index_uint</name><number>10</number><history><revision date="2012/01/24" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/01/27" number="2">
