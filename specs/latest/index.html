@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 12 February 2013</h2>
+    <h2 class="no-toc">Editor's Draft 01 March 2013</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2483,6 +2483,10 @@ for (var i = 0; i < numVertices; i++) {
             in <a href="#MAX_LOCATION_LENGTHS">Maximum Uniform and Attribute Location Lengths</a>,
             generates an <code>INVALID_VALUE</code> error. <br><br>
 
+            If <code>name</code> starts with one of the reserved WebGL prefixes
+            per <a href="#GLSL_CONSTRUCTS">GLSL Constructs</a>, generates
+            an <code>INVALID_OPERATION</code> error. <br><br>
+
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
         <dt class="idl-code">void compileShader(WebGLShader? shader)
@@ -2662,6 +2666,9 @@ for (var i = 0; i < numVertices; i++) {
             in <a href="#MAX_LOCATION_LENGTHS">Maximum Uniform and Attribute Location Lengths</a>,
             generates an <code>INVALID_VALUE</code> error and returns -1. <br><br>
 
+            Returns -1 if <code>name</code> starts with one of the reserved WebGL prefixes
+            per <a href="#GLSL_CONSTRUCTS">GLSL Constructs</a>. <br><br>
+
             Returns -1 if the context's <a href="#webgl-context-lost-flag">webgl context lost
             flag</a> is set. <br><br>
 
@@ -2709,6 +2716,9 @@ for (var i = 0; i < numVertices; i++) {
             <p>If the passed name is longer than the restriction defined
             in <a href="#MAX_LOCATION_LENGTHS">Maximum Uniform and Attribute Location Lengths</a>,
             generates an <code>INVALID_VALUE</code> error and returns null.</p>
+
+            <p>Returns null if <code>name</code> starts with one of the reserved WebGL prefixes
+            per <a href="#GLSL_CONSTRUCTS">GLSL Constructs</a>.</p>
 
             <p>See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source
             Character Set</a> for additional validation performed by WebGL implementations.</p>
@@ -3386,7 +3396,7 @@ or <code>ONE_MINUS_CONSTANT_COLOR</code> and <code>dstRGB</code> is set to <code
 
 The WebGL API does not support the <code>GL_FIXED</code> data type.
 
-    <h3>GLSL Constructs</h3>
+    <h3><a name="GLSL_CONSTRUCTS">GLSL Constructs</a></h3>
 
 <p>
 Per <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a>, identifiers starting with
