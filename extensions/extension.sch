@@ -6,7 +6,7 @@
   <pattern name="Stages" id="stage-patt">
     <rule context="/proposal">
       <assert test="self::node()[starts-with(@href,'proposals/')]"
-              >A proposal belongs in the 'proposals' directory.</assert>
+              >A proposal's @href belongs in the 'proposals' directory.</assert>
       <assert test="self::node()[@href=concat('proposals/',name,'/')]"
               >A proposal should have a URL matching its name and ending in '/'.</assert>
     </rule>
@@ -20,7 +20,7 @@
   <pattern name="Extensions" id="extension-patt">
     <rule context="/*">
       <assert test="self::node()[@href=concat($path,'/')]"
-              >An extension should be stored under its name.</assert>
+              >An extension should be stored under its @href path.</assert>
     </rule>
     <rule context="idl">
       <assert test="self::node()[@xml:space='preserve']"
