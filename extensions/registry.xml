@@ -158,6 +158,8 @@
       </change>
     </revision><revision date="2013/01/26" number="9">
       <change>Moved from draft to community approved status</change>
+    </revision><revision date="2013/02/28" number="10">
+      <change>Updated to track ANGLE_depth_texture, indicating that only red channel is guaranteed.</change>
     </revision></history></extension><extension href="WEBGL_lose_context/"><name>WEBGL_lose_context</name><number>3</number><history><revision date="2011/01/11" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/04/14" number="2">
