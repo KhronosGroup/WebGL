@@ -46,7 +46,7 @@
     </features>
   </overview>
 
-  <idl> interface OES_texture_float { }; </idl>
+  <idl xml:space="preserve"> interface OES_texture_float { }; </idl>
 
   <history>
     <revision date="2010/11/29">

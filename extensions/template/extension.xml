@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- The root element should be <draft href="~~"> for draft extensions -->
 <!-- The root element should be <proposal href="~~"> for proposed extensions -->
-<!-- @href should be either an absolute URI with http scheme or a URI relative
-to the WebGL extension registry at
+<!-- The root element should be <ratified href="~~"> for ratified extensions -->
+<!-- @href should be a URI relative to the WebGL extension registry at
 http://www.khronos.org/registry/webgl/extensions/
 -->
-<extension href="EXT_NAME/">
+<extension href="template/">
   <!-- The name of the extension. This is also the string which is passed to the 
        WebGLRenderingContext getExtension API to enable the extension. For example, if
        the extension were OES_texture_float, then the extension would be fetched and
@@ -16,7 +16,7 @@ http://www.khronos.org/registry/webgl/extensions/
        function names.
   -->
 
-  <name>EXT_NAME</name>
+  <name>template</name>
 
   <!-- The optional alternate name strings of the extension for draft exts -->
 
