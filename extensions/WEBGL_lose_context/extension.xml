@@ -18,7 +18,7 @@
   <overview>
     <p>This extension exposes new functions which simulate losing and restoring the WebGL context, even on platforms where the context can never be lost.  Consult the WebGL specification for documentation about the <code>webglcontextlost</code> and <code>webglcontextrestored</code> events.</p>
   </overview>
-  <idl>
+  <idl xml:space="preserve">
 interface WEBGL_lose_context {
       void loseContext();
       void restoreContext();

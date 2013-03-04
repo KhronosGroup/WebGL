@@ -15,7 +15,7 @@
       WebGL uses the GLSL ES 2.0 spec on all platforms, and translates these shaders to the host platform's native language (HLSL, GLSL, and even GLSL ES). For debugging purpose, it is useful to be able to examine the shader after translation. This extension exposes a new function <code>getTranslatedShaderSource</code> for such purposes.
     </p>
   </overview>
-  <idl>
+  <idl xml:space="preserve">
 interface WEBGL_debug_shaders {
 
       DOMString getTranslatedShaderSource(WebGLShader shader);

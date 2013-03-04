@@ -99,7 +99,7 @@ function inSameGroup(context1, context2) {
       </li>
     </ul>
   </issues>
-  <idl>
+  <idl xml:space="preserve">
 interface WEBGL_shared_resources {
     readonly attribute WebGLShareGroup group;
 };

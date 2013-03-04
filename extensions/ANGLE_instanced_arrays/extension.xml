@@ -16,7 +16,7 @@
   <overview>
     <mirrors href="http://www.khronos.org/registry/gles/extensions/ANGLE/ANGLE_instanced_arrays.txt" name="ANGLE_instanced_arrays" />
   </overview>
-  <idl>
+  <idl xml:space="preserve">
 interface ANGLE_instanced_arrays {
     const GLenum VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE = 0x88FE;
     void drawArraysInstancedANGLE(GLenum mode, GLint first, GLsizei count, GLsizei primcount);
