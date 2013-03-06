@@ -28,9 +28,7 @@
           <updated><xsl:value-of select="translate(@date,'/','-')"/>T23:59:59Z</updated>
           <summary>
             <xsl:for-each select="change">
-              <xsl:value-of select="."/><xsl:text>
-              
-            </xsl:text>
+              <xsl:value-of select="."/><xsl:text>&#xa;&#xa;</xsl:text>
             </xsl:for-each>
           </summary>
         </entry>

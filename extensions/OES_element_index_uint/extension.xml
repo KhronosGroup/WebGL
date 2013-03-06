@@ -21,7 +21,7 @@
       </feature>
     </features>
   </overview>
-  <idl>
+  <idl xml:space="preserve">
 interface OES_element_index_uint {
 };
   </idl>

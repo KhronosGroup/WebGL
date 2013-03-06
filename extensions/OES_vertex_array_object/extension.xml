@@ -15,7 +15,7 @@
   <overview>
     <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_vertex_array_object.txt" name="OES_vertex_array_object" />
   </overview>
-  <idl>
+  <idl xml:space="preserve">
 interface WebGLVertexArrayObjectOES : WebGLObject {
 };
 

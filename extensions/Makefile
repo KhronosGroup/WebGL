@@ -1,33 +1,13 @@
-EXTS := OES_standard_derivatives \
-	OES_texture_float \
-	OES_texture_half_float \
-	OES_vertex_array_object \
-	WEBGL_lose_context \
-	WEBGL_debug_renderer_info \
-	WEBGL_debug_shaders \
-	WEBGL_compressed_texture_s3tc \
-	WEBGL_depth_texture \
-	proposals/WEBGL_shared_resources \
-	OES_element_index_uint \
-	EXT_texture_filter_anisotropic \
-	ANGLE_instanced_arrays \
-	proposals/WEBGL_dynamic_texture \
-	WEBGL_compressed_texture_pvrtc \
-	WEBGL_compressed_texture_atc \
-	EXT_draw_buffers \
-	EXT_color_buffer_half_float \
-	WEBGL_color_buffer_float \
-	EXT_frag_depth \
-	proposals/EXT_blend_minmax \
-	EXT_sRGB \
-	proposals/OES_texture_float_linear \
-	proposals/OES_texture_half_float_linear \
-	proposals/WEBGL_compressed_texture_etc1
+# See README for more information about the WebGL extension registry automation.
 
+EXTS := $(shell ./find-exts)
 EXTS := $(strip $(EXTS))
 
 EXT_XMLS := $(addsuffix /extension.xml,$(EXTS))
 EXT_IDXS := $(addsuffix /index.html,$(EXTS))
+
+# a list of resources to be built for validation
+VALID := schematron/webgl_message.xsl extension-schematron.xsl
 
 comma:=,
 empty:=
@@ -53,10 +33,23 @@ registry.xml: $(EXT_XMLS) summary.xsl summary.xml
 	xsltproc --stringparam extensions $(EXT_LIST) \
 	         summary.xsl summary.xml > registry.xml
 
-%/index.html: %/extension.xml extension.xsl rev_utils.xsl standards.xsl
+%/index.html: %/extension.xml extension.xsl rev_utils.xsl standards.xsl $(VALID)
+	./validate $*
 	xsltproc --stringparam basepath `echo $*/ | sed -e $(RE_BASEPATH)` \
 	         extension.xsl $*/extension.xml > $*/index.html
+
+schematron/webgl_message.xsl: schematron/iso_schematron_message.xsl
+	xsltproc schematron/webgl_message_patch.xsl \
+	         schematron/iso_schematron_message.xsl \
+	       > schematron/webgl_message.xsl
+
+extension-schematron.xsl: extension.sch schematron/webgl_message.xsl
+	xsltproc schematron/iso_dsdl_include.xsl extension.sch \
+	| xsltproc schematron/iso_abstract_expand.xsl - \
+	| xsltproc schematron/webgl_message.xsl - \
+	> extension-schematron.xsl
 
 clean:
 	rm -f index.html index.atom registry.xml
 	rm -f $(EXT_IDXS) template/index.html
+	rm -f $(VALID)
