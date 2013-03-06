@@ -4,9 +4,11 @@
     <email>public_webgl@khronos.org</email>
   </author><entry><title>EXT_sRGB : revision 2</title><link rel="alternate" type="text/html" href="EXT_sRGB/"/><id>EXT_sRGB/#r=2</id><updated>2013-12-26T23:59:59Z</updated><summary>Moved from proposal to draft
 
+</summary></entry><entry><title>WEBGL_draw_buffers : revision 4</title><link rel="alternate" type="text/html" href="WEBGL_draw_buffers/"/><id>WEBGL_draw_buffers/#r=4</id><updated>2013-03-05T23:59:59Z</updated><summary>Renamed to WEBGL_draw_buffers per discussion on public_webgl list. Added guarantees to make it easier for developers to use the extension.
+
 </summary></entry><entry><title>WEBGL_depth_texture : revision 10</title><link rel="alternate" type="text/html" href="WEBGL_depth_texture/"/><id>WEBGL_depth_texture/#r=10</id><updated>2013-02-28T23:59:59Z</updated><summary>Updated to track ANGLE_depth_texture, indicating that only red channel is guaranteed.
 
-</summary></entry><entry><title>EXT_draw_buffers : revision 3</title><link rel="alternate" type="text/html" href="EXT_draw_buffers/"/><id>EXT_draw_buffers/#r=3</id><updated>2013-02-02T23:59:59Z</updated><summary>Renamed to EXT_draw_buffers per plan of OpenGL ES working group. Moved to draft status. Assigned number.
+</summary></entry><entry><title>WEBGL_draw_buffers : revision 3</title><link rel="alternate" type="text/html" href="WEBGL_draw_buffers/"/><id>WEBGL_draw_buffers/#r=3</id><updated>2013-02-02T23:59:59Z</updated><summary>Renamed to EXT_draw_buffers per plan of OpenGL ES working group. Moved to draft status. Assigned number.
 
 </summary></entry><entry><title>WEBGL_depth_texture : revision 9</title><link rel="alternate" type="text/html" href="WEBGL_depth_texture/"/><id>WEBGL_depth_texture/#r=9</id><updated>2013-01-26T23:59:59Z</updated><summary>Moved from draft to community approved status
 
@@ -19,8 +21,5 @@
 </summary></entry><entry><title>EXT_frag_depth : revision 2</title><link rel="alternate" type="text/html" href="EXT_frag_depth/"/><id>EXT_frag_depth/#r=2</id><updated>2012-12-17T23:59:59Z</updated><summary>Moved to draft.
 
 </summary></entry><entry><title>EXT_sRGB : revision 1</title><link rel="alternate" type="text/html" href="EXT_sRGB/"/><id>EXT_sRGB/#r=1</id><updated>2012-12-16T23:59:59Z</updated><summary>Initial revision.
-
-</summary></entry><entry><title>OES_texture_float : revision 5</title><link rel="alternate" type="text/html" href="OES_texture_float/"/><id>OES_texture_float/#r=5</id><updated>2012-12-04T23:59:59Z</updated><summary>Specify that implementations supporting FLOAT color attachments
-      implicitly enable WEBGL_color_buffer_float.
 
 </summary></entry></feed>
