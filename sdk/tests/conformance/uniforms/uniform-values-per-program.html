@@ -178,7 +178,7 @@ function init() {
           gl.useProgram(info.program);
           gl.uniform1i(info.selectLoc, ii);
           wtu.clearAndDrawUnitQuad(gl);
-          wtu.checkCanvas(gl, info.expect[ii]);
+          wtu.checkCanvas(gl, info.expect[ii], undefined, 1);
         });
       }
       progs.forEach(function(info) {
