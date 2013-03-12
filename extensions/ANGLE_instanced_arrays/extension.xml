@@ -9,7 +9,7 @@
     <contributor>Contributors to ANGLE_instanced_arrays</contributor>
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
-  <number>13</number>
+  <number>19</number>
   <depends>
     <api version="1.0"/>
   </depends>
@@ -30,6 +30,9 @@ interface ANGLE_instanced_arrays {
     </revision>
     <revision date="2013/01/26">
       <change>Moved from proposal to draft.</change>
+    </revision>
+    <revision date="2013/03/11">
+      <change>Renumbered to 19 to fix misnumbering problem.</change>
     </revision>
   </history>
 </draft>
