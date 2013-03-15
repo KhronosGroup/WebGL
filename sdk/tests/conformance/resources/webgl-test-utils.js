@@ -535,8 +535,8 @@ var setupQuad = function(gl, options) {
         urx, ury,
         llx, lly,
         urx, lly]), gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(texcoordLocation);
-    gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(options.texcoordLocation);
+    gl.vertexAttribPointer(options.texcoordLocation, 2, gl.FLOAT, false, 0, 0);
     objects.push(vertexObject);
   }
 
