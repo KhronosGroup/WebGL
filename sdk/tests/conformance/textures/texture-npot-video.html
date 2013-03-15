@@ -137,12 +137,13 @@ function runOneIteration(videoElement, useTexSubImage2D, flipY, topColor, bottom
     wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
     // Check a few pixels near the top and bottom and make sure they have
     // the right color.
+    var tolerance = 5;
     debug("Checking lower left corner");
     wtu.checkCanvasRect(gl, 4, 4, 2, 2, bottomColor,
-                        "shouldBe " + bottomColor);
+                        "shouldBe " + bottomColor, tolerance);
     debug("Checking upper left corner");
     wtu.checkCanvasRect(gl, 4, gl.canvas.height - 8, 2, 2, topColor,
-                        "shouldBe " + topColor);
+                        "shouldBe " + topColor, tolerance);
     debug("");
 }
 
