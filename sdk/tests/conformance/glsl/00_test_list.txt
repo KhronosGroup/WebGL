@@ -1,3 +1,4 @@
+bugs/00_test_list.txt
 functions/00_test_list.txt
 implicit/00_test_list.txt
 --min-version 1.0.2 literals/00_test_list.txt
