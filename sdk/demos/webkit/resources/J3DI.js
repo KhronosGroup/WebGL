@@ -534,6 +534,8 @@ function clearLoadingImages() {
 function loadImageTexture(ctx, url)
 {
     var texture = ctx.createTexture();
+    ctx.bindTexture(ctx.TEXTURE_2D, texture);
+    ctx.texImage2D(ctx.TEXTURE_2D, 0, ctx.RGBA, 1, 1, 0, ctx.RGBA, ctx.UNSIGNED_BYTE, null);
     var image = new Image();
     g_loadingImages.push(image);
     image.onload = function() { doLoadImageTexture(ctx, image, texture) }

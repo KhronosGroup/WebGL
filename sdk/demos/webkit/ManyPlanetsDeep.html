@@ -87,7 +87,7 @@
                 return;
             }
             g.program = simpleSetup(gl, "vshader", "fshader",
-                                [ "vNormal", "vTexCoord", "vPosition"],
+                                [ "vPosition", "vTexCoord", "vNormal"],
                                 [ 0, 0, 0, 1 ], 10000);
             gl.uniform3f(gl.getUniformLocation(g.program, "lightDir"), 0, 0, 1);
             gl.uniform1i(gl.getUniformLocation(g.program, "sampler2d"), 0);
@@ -134,10 +134,10 @@
             ctx.enableVertexAttribArray(2);
 
             ctx.bindBuffer(ctx.ARRAY_BUFFER, g.sphere.vertexObject);
-            ctx.vertexAttribPointer(2, 3, ctx.FLOAT, false, 0, 0);
+            ctx.vertexAttribPointer(0, 3, ctx.FLOAT, false, 0, 0);
 
             ctx.bindBuffer(ctx.ARRAY_BUFFER, g.sphere.normalObject);
-            ctx.vertexAttribPointer(0, 3, ctx.FLOAT, false, 0, 0);
+            ctx.vertexAttribPointer(2, 3, ctx.FLOAT, false, 0, 0);
 
             ctx.bindBuffer(ctx.ARRAY_BUFFER, g.sphere.texCoordObject);
             ctx.vertexAttribPointer(1, 2, ctx.FLOAT, false, 0, 0);
