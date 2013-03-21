@@ -479,40 +479,67 @@ var setupUnitQuad = function(gl, opt_positionLocation, opt_texcoordLocation) {
 var setupUnitQuadWithTexCoords = function(
     gl, lowerLeftTexCoords, upperRightTexCoords,
     opt_positionLocation, opt_texcoordLocation) {
-  opt_positionLocation = opt_positionLocation || 0;
-  opt_texcoordLocation = opt_texcoordLocation || 1;
+  return setupQuad(gl, {
+    positionLocation: opt_positionLocation || 0,
+    texcoordLocation: opt_texcoordLocation || 1,
+    lowerLeftTexCoords: lowerLeftTexCoords,
+    upperRightTexCoords: upperRightTexCoords,
+  });
+};
+
+/**
+ * Makes a quad with various options.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {!Object} options.
+ *
+ * scale: scale to multiple unit quad values by. default 1.0
+ * positionLocation: attribute location for position
+ * texcoordLocation: attribute location for texcoords.
+ *     If this does not exist no texture coords are created.
+ * lowerLeftTexCoords: an array of 2 values for the
+ *     lowerLeftTexCoords.
+ * upperRightTexCoords: an array of 2 values for the
+ *     upperRightTexCoords.
+ */
+var setupQuad = function(gl, options) {
+  var positionLocation = options.positionLocation || 0;
+  var scale = options.scale || 1;
+
   var objects = [];
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-       1.0,  1.0, 0.0,
-      -1.0,  1.0, 0.0,
-      -1.0, -1.0, 0.0,
-       1.0,  1.0, 0.0,
-      -1.0, -1.0, 0.0,
-       1.0, -1.0, 0.0]), gl.STATIC_DRAW);
-  gl.enableVertexAttribArray(opt_positionLocation);
-  gl.vertexAttribPointer(opt_positionLocation, 3, gl.FLOAT, false, 0, 0);
+       1.0 * scale ,  1.0 * scale,
+      -1.0 * scale ,  1.0 * scale,
+      -1.0 * scale , -1.0 * scale,
+       1.0 * scale ,  1.0 * scale,
+      -1.0 * scale , -1.0 * scale,
+       1.0 * scale , -1.0 * scale,]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(positionLocation);
+  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
   objects.push(vertexObject);
 
-  var llx = lowerLeftTexCoords[0];
-  var lly = lowerLeftTexCoords[1];
-  var urx = upperRightTexCoords[0];
-  var ury = upperRightTexCoords[1];
+  if (options.texcoordLocation !== undefined) {
+    var llx = options.lowerLeftTexCoords[0];
+    var lly = options.lowerLeftTexCoords[1];
+    var urx = options.upperRightTexCoords[0];
+    var ury = options.upperRightTexCoords[1];
 
-  var vertexObject = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      urx, ury,
-      llx, ury,
-      llx, lly,
-      urx, ury,
-      llx, lly,
-      urx, lly]), gl.STATIC_DRAW);
-  gl.enableVertexAttribArray(opt_texcoordLocation);
-  gl.vertexAttribPointer(opt_texcoordLocation, 2, gl.FLOAT, false, 0, 0);
-  objects.push(vertexObject);
+    var vertexObject = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        urx, ury,
+        llx, ury,
+        llx, lly,
+        urx, ury,
+        llx, lly,
+        urx, lly]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(options.texcoordLocation);
+    gl.vertexAttribPointer(options.texcoordLocation, 2, gl.FLOAT, false, 0, 0);
+    objects.push(vertexObject);
+  }
+
   return objects;
 };
 
@@ -909,14 +936,39 @@ var clearAndDrawIndexedQuad = function(gl, gridRes, opt_color) {
 };
 
 /**
+ * Clips a range to min, max
+ * (Eg. clipToRange(-5,7,0,20) would return {value:0,extent:2}
+ * @param {number} value start of range
+ * @param {number} extent extent of range
+ * @param {number} min min.
+ * @param {number} max max.
+ * @return {!{value:number,extent:number} The clipped value.
+ */
+var clipToRange = function(value, extent, min, max) {
+  if (value < min) {
+    extent -= min - value;
+    value = min;
+  }
+  var end = value + extent;
+  if (end > max) {
+    extent -= end - max;
+  }
+  if (extent < 0) {
+    value = max;
+    extent = 0;
+  }
+  return {value:value, extent: extent};
+};
+
+/**
  * Checks that a portion of a canvas is 1 color.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} x left corner of region to check.
  * @param {number} y bottom corner of region to check.
  * @param {number} width width of region to check.
  * @param {number} height width of region to check.
- * @param {!Array.<number>} color The color to fill clear with before drawing. A
- *        4 element array where each element is in the range 0 to 255.
+ * @param {!Array.<number>} color The color expected. A 4 element array where
+ *        each element is in the range 0 to 255.
  * @param {number} opt_errorRange Optional. Acceptable error in
  *        color checking. 0 by default.
  * @param {!function()} sameFn Function to call if all pixels
@@ -926,6 +978,20 @@ var clearAndDrawIndexedQuad = function(gl, gridRes, opt_color) {
  * @param {!function()} logFn Function to call for logging.
  */
 var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRange, sameFn, differentFn, logFn) {
+  if (!gl.getParameter(gl.FRAMEBUFFER_BINDING)) {
+    // We're reading the backbuffer so clip.
+    var xr = clipToRange(x, width, 0, gl.canvas.width);
+    var yr = clipToRange(y, height, 0, gl.canvas.height);
+    if (!xr.extent || !yr.extent) {
+      logFn("checking rect: effective width or heigh is zero");
+      sameFn();
+      return;
+    }
+    x = xr.value;
+    y = yr.value;
+    width = xr.extent;
+    height = yr.extent;
+  }
   var errorRange = opt_errorRange || 0;
   if (!errorRange.length) {
     errorRange = [errorRange, errorRange, errorRange, errorRange]
@@ -962,8 +1028,8 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
  * @param {number} y bottom corner of region to check.
  * @param {number} width width of region to check.
  * @param {number} height width of region to check.
- * @param {!Array.<number>} color The color to fill clear with before drawing. A
- *        4 element array where each element is in the range 0 to 255.
+ * @param {!Array.<number>} color The color expected. A 4 element array where
+ *        each element is in the range 0 to 255.
  * @param {string} opt_msg Message to associate with success. Eg
  *        ("should be red").
  * @param {number} opt_errorRange Optional. Acceptable error in
@@ -988,14 +1054,43 @@ var checkCanvasRect = function(gl, x, y, width, height, color, opt_msg, opt_erro
 /**
  * Checks that an entire canvas is 1 color.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @param {!Array.<number>} color The color to fill clear with before drawing. A
- *        4 element array where each element is in the range 0 to 255.
+ * @param {!Array.<number>} color The color expected. A 4 element array where
+ *        each element is in the range 0 to 255.
  * @param {string} msg Message to associate with success. Eg ("should be red").
  * @param {number} errorRange Optional. Acceptable error in
  *        color checking. 0 by default.
  */
 var checkCanvas = function(gl, color, msg, errorRange) {
   checkCanvasRect(gl, 0, 0, gl.canvas.width, gl.canvas.height, color, msg, errorRange);
+};
+
+/**
+ * Checks a rectangular area both inside the area and outside
+ * the area.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number} x left corner of region to check.
+ * @param {number} y bottom corner of region to check.
+ * @param {number} width width of region to check.
+ * @param {number} height width of region to check.
+ * @param {!Array.<number>} innerColor The color expected inside
+ *     the area. A 4 element array where each element is in the
+ *     range 0 to 255.
+ * @param {!Array.<number>} outerColor The color expected
+ *     outside. A 4 element array where each element is in the
+ *     range 0 to 255.
+ * @param {!number} opt_edgeSize: The number of pixels to skip
+ *     around the edges of the area. Defaut 0.
+ * @param {!{width:number, height:number}} opt_outerDimensions
+ *     The outer dimensions. Default the size of gl.canvas.
+ */
+var checkAreaInAndOut = function(gl, x, y, width, height, innerColor, outerColor, opt_edgeSize, opt_outerDimensions) {
+  var outerDimensions = opt_outerDimensions || { width: gl.canvas.width, height: gl.canvas.height };
+  var edgeSize = opt_edgeSize || 0;
+  checkCanvasRect(gl, x + edgeSize, y + edgeSize, width - edgeSize * 2, height - edgeSize * 2, innerColor);
+  checkCanvasRect(gl, 0, 0, x - edgeSize, outerDimensions.height, outerColor);
+  checkCanvasRect(gl, x + width + edgeSize, 0, outerDimensions.width - x - width - edgeSize, outerDimensions.height, outerColor);
+  checkCanvasRect(gl, 0, 0, outerDimensions.width, y - edgeSize, outerColor);
+  checkCanvasRect(gl, 0, y + height + edgeSize, outerDimensions.width, outerDimensions.height - y - height - edgeSize, outerColor);
 };
 
 /**
@@ -2038,9 +2133,11 @@ return {
   create3DContext: create3DContext,
   create3DContextWithWrapperThatThrowsOnGLError:
       create3DContextWithWrapperThatThrowsOnGLError,
+  checkAreaInAndOut: checkAreaInAndOut,
   checkCanvas: checkCanvas,
   checkCanvasRect: checkCanvasRect,
   checkCanvasRectColor: checkCanvasRectColor,
+  clipToRange: clipToRange,
   createColoredTexture: createColoredTexture,
   createProgram: createProgram,
   clearAndDrawUnitQuad: clearAndDrawUnitQuad,
@@ -2086,6 +2183,7 @@ return {
   shallowCopyObject: shallowCopyObject,
   setupColorQuad: setupColorQuad,
   setupProgram: setupProgram,
+  setupQuad: setupQuad,
   setupIndexedQuad: setupIndexedQuad,
   setupIndexedQuadWithOptions: setupIndexedQuadWithOptions,
   setupSimpleColorFragmentShader: setupSimpleColorFragmentShader,
