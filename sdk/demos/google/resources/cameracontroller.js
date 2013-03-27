@@ -58,8 +58,7 @@ function CameraController(element, opt_canvas, opt_context) {
     if (opt_context)
         this.context_ = opt_context;
 
-    // Assign a mouse down handler to the HTML element.
-    element.onmousedown = function(ev) {
+    function mouseDown(ev) {
         controller.curX = ev.clientX;
         controller.curY = ev.clientY;
         var dragging = false;
@@ -93,15 +92,9 @@ function CameraController(element, opt_canvas, opt_context) {
         }
 
         controller.dragging = dragging;
-    };
+    }
 
-    // Assign a mouse up handler to the HTML element.
-    element.onmouseup = function(ev) {
-        controller.dragging = false;
-    };
-
-    // Assign a mouse move handler to the HTML element.
-    element.onmousemove = function(ev) {
+    function mouseMove(ev) {
         if (controller.dragging) {
             // Determine how far we have moved since the last mouse move
             // event.
@@ -126,5 +119,60 @@ function CameraController(element, opt_canvas, opt_context) {
                 controller.onchange(controller.xRot, controller.yRot);
             }
         }
-    };
+    }
+
+    function mouseUp(ev) {
+        controller.dragging = false;
+    }
+
+    element.addEventListener("mousedown", mouseDown, false);
+    element.addEventListener("mousemove", mouseMove, false);
+    element.addEventListener("mouseup", mouseUp, false);
+
+    var activeTouchIdentifier;
+
+    function findActiveTouch(touches) {
+        for (var ii = 0; ii < touches.length; ++ii) {
+            if (touches.item(ii).identifier == activeTouchIdentifier) {
+                return touches.item(ii);
+            }
+        }
+        return null;
+    }
+
+    function touchStart(ev) {
+        if (controller.dragging || ev.targetTouches.length == 0) {
+            return;
+        }
+        var touch = ev.targetTouches.item(0);
+        mouseDown(touch);
+        if (controller.dragging) {
+            activeTouchIdentifier = touch.identifier;
+        }
+        ev.preventDefault();
+    }
+
+    function touchMove(ev) {
+        if (!controller.dragging) {
+            return;
+        }
+        var touch = findActiveTouch(ev.changedTouches);
+        if (touch) {
+            mouseMove(touch);
+        }
+        ev.preventDefault();
+    }
+
+    function touchEnd(ev) {
+        var touch = findActiveTouch(ev.changedTouches);
+        if (touch) {
+            mouseUp(touch);
+        }
+        ev.preventDefault();
+    }
+
+    element.addEventListener("touchstart", touchStart, false);
+    element.addEventListener("touchmove", touchMove, false);
+    element.addEventListener("touchend", touchEnd, false);
+    element.addEventListener("touchcancel", touchEnd, false);
 }
