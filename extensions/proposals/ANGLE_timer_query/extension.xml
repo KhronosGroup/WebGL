@@ -23,13 +23,15 @@
   <overview>
     <mirrors href="https://angleproject.googlecode.com/svn/trunk/extensions/ANGLE_timer_query.txt"
              name="ANGLE_timer_query">
+      <addendum>
+        Specifies that queries' results only become available at certain well-defined times.
+      </addendum>
     </mirrors>
 
     <features>
       <feature>
-            Allows applications and tools to accurately determine the
-            time it takes to fully complete a set of OpenGL commands,
-            without stalling the rendering pipeline.
+        Allows applications and tools to accurately determine the time it takes to fully complete a
+        set of OpenGL commands, without stalling the rendering pipeline.
       </feature>
     </features>
   </overview>
@@ -123,9 +125,8 @@
   <newfun>
     <function name="getQueryParameterANGLE" type="any">
       <param name="query" type="WebGLTimerQueryANGLE?"/>
-      <param name="pname" type="GLenum">
-      Accepts <code>QUERY_RESULT_ANGLE</code> or <code>QUERY_RESULT_AVAILABLE_ANGLE</code>
-      </param>
+      <param name="pname" type="GLenum"/>
+      <code>pname</code> accepts <code>QUERY_RESULT_ANGLE</code> or <code>QUERY_RESULT_AVAILABLE_ANGLE</code>.
       <br/>
       The return type of this method depends on the parameter queried:
       <table width="30%">
@@ -133,6 +134,24 @@
       <tr><td>QUERY_RESULT_ANGLE</td><td>GLuint64ANGLE</td></tr>
       <tr><td>QUERY_RESULT_AVAILABLE_ANGLE</td><td>GLint</td></tr>
       </table>      
+      <br/>
+      In order to ensure consistent behavior across platforms, queries' results must only be made
+      available when the user agent's <a
+      href="http://www.whatwg.org/specs/web-apps/current-work/multipage/webappapis.html#event-loops">event
+      loop</a> is not executing a task. In other words:
+      <ul>
+        <li> A query's result must not be made available until the current frame has completed
+             rendering. </li>
+        <li> Repeatedly fetching a query's QUERY_RESULT_AVAILABLE_ANGLE parameter in a loop, without
+             returning control to the user agent, must always return the same value. </li>
+      </ul>
+      <br/>
+      Additionally:
+      <ul>
+        <li> If QUERY_RESULT_ANGLE is fetched for a given query before QUERY_RESULT_AVAILABLE_ANGLE
+             has been fetched, and returned true, for that or a subsequently issued query, generates
+             an <code>INVALID_OPERATION</code> error and returns null. </li>
+      </ul>
     </function>
   </newfun>
 
@@ -164,7 +183,7 @@
 
         ext.endQueryANGLE(ext.TIME_ELAPSED_ANGLE);
 
-        // Some time later...
+        // At some point in the future, after returning control to the browser and being called again:
         if (ext.getQueryParameterANGLE(query, ext.QUERY_RESULT_AVAILABLE_ANGLE)) {
           // See how much time the rendering of the object took in nanoseconds.
           var timeElapsed = ext.getQueryParameterANGLE(query, ext.QUERY_RESULT_ANGLE);
@@ -189,7 +208,7 @@
 
         ext.queryCounterANGLE(endQuery, ext.TIMESTAMP_ANGLE);
 
-        // Some time later...
+        // At some point in the future, after returning control to the browser and being called again:
         if (ext.getQueryParameterANGLE(endQuery, ext.QUERY_RESULT_AVAILABLE_ANGLE)) {
           // See how much time the rendering of the object took in nanoseconds.
           var timeStart = ext.getQueryParameterANGLE(startQuery, ext.QUERY_RESULT_ANGLE);
@@ -206,6 +225,9 @@
   <history>
     <revision date="2013/04/02">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2013/04/03">
+      <change>Based on public_webgl discussion, specified that queries' results only become available at well-defined times.</change>
     </revision>
   </history>
 </proposal>
