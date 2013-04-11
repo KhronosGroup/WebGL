@@ -2063,6 +2063,10 @@ var replaceParams = function(str) {
   });
 };
 
+var upperCaseFirstLetter = function(str) {
+  return str.substring(0, 1).toUpperCase() + str.substring(1);
+};
+
 /**
  * Gets a prefixed property. For example,
  *
@@ -2084,12 +2088,14 @@ var propertyPrefixes = ["", "moz", "ms", "o", "webkit"];
 var getPrefixedProperty = function(obj, propertyName) {
   for (var ii = 0; ii < propertyPrefixes.length; ++ii) {
     var prefix = propertyPrefixes[ii];
-    var property = obj[prefix + propertyName];
+    var name = prefix + propertyName;
+    console.log(name);
+    var property = obj[name];
     if (property) {
       return property;
     }
     if (ii == 0) {
-      propertyName = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+      propertyName = upperCaseFirstLetter(propertyName);
     }
   }
   return undefined;
@@ -2108,6 +2114,111 @@ var requestAnimFrame = getPrefixedProperty(window, "requestAnimationFrame") ||
  */
 var cancelAnimFrame = getPrefixedProperty(window, "cancelAnimationFrame") ||
     window.clearTimeout;
+
+/**
+ * Provides requestFullScreen in a cross browser way.
+ */
+var requestFullScreen = function(element) {
+  var fn = getPrefixedProperty(element, "requestFullScreen");
+  if (fn) {
+    fn.call(element);
+  }
+};
+
+/**
+ * Provides cancelFullScreen in a cross browser way.
+ */
+var cancelFullScreen = function() {
+  var fn = getPrefixedProperty(document, "cancelFullScreen");
+  if (fn) {
+    fn.call(document);
+  }
+};
+
+/**
+ * @param {!HTMLElement} element the element to go fullscreen
+ * @param {!function(boolean)} a function that will be called
+ *        when entering/exiting fullscreen. It is passed true if
+ *        entering fullscreen, false if exiting.
+ */
+/**
+ * Provides a way to attach callback
+ */
+var fullScreenStateName;
+var fullScreenStateNames = [
+  "isFullScreen",
+  "fullScreen",
+];
+(function() {
+  for (var ii = 0; ii < fullScreenStateNames.length; ++ii) {
+    var propertyName = fullScreenStateNames[ii];
+    for (var jj = 0; jj < propertyPrefixes.length; ++jj) {
+      var prefix = propertyPrefixes[jj];
+      if (prefix.length) {
+        propertyName = upperCaseFirstLetter(propertyName);
+        fullScreenStateName = prefix + propertyName;
+        if (document[fullScreenStateName] !== undefined) {
+          return;
+        }
+      }
+    }
+    fullScreenStateName = undefined;
+  }
+}());
+var getFullScreenState = function() {
+  console.log("fullscreenstatename:" + fullScreenStateName);
+  console.log(document[fullScreenStateName]);
+  return document[fullScreenStateName];
+};
+
+var onFullScreenChange = function(element, callback) {
+  propertyPrefixes.forEach(function(prefix) {
+    var eventName = prefix + "fullscreenchange";
+    console.log("addevent: " + eventName);
+    document.addEventListener(eventName, function(event) {
+      console.log("event: " + eventName);
+      callback(getFullScreenState());
+    });
+  });
+};
+
+var setupFullscreen = function(buttonId, fullscreenId, callback) {
+  function findElement(id) {
+    var element = document.getElementById(id);
+    if (element) {
+      return element;
+    }
+
+    var elements = document.getElementsByTagName(id);
+    if (elements) {
+      return elements[0];
+    }
+  }
+
+  if (!fullScreenStateName) {
+    return false;
+  }
+
+  var fullscreenElement = findElement(fullscreenId);
+
+  var buttonElement = findElement(buttonId);
+
+  onFullScreenChange(fullscreenElement, callback);
+
+  var toggleFullScreen = function(event) {
+    if (getFullScreenState()) {
+      cancelFullScreen(fullscreenElement);
+    } else {
+      requestFullScreen(fullscreenElement);
+    }
+    event.preventDefault();
+    return false;
+  };
+
+  buttonElement.addEventListener('click', toggleFullScreen);
+
+  return true;
+};
 
 /**
  * Waits for the browser to composite the canvas associated with
@@ -2210,6 +2321,9 @@ return {
   replaceParams: replaceParams,
   requestAnimFrame: requestAnimFrame,
   waitForComposite: waitForComposite,
+
+  // fullscreen api
+  setupFullscreen: setupFullscreen,
 
   none: false
 };
