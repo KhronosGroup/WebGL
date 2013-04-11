@@ -2063,52 +2063,51 @@ var replaceParams = function(str) {
   });
 };
 
+/**
+ * Gets a prefixed property. For example,
+ *
+ *     var fn = getPrefixedProperty(
+ *        window,
+ *        "requestAnimationFrame");
+ *
+ * Will return either:
+ *    "window.requestAnimationFrame",
+ *    "window.oRequestAnimationFrame",
+ *    "window.msRequestAnimationFrame",
+ *    "window.mozRequestAnimationFrame",
+ *    "window.webKitRequestAnimationFrame",
+ *    undefined
+ *
+ * the non-prefixed function is tried first.
+ */
+var propertyPrefixes = ["", "moz", "ms", "o", "webkit"];
+var getPrefixedProperty = function(obj, propertyName) {
+  for (var ii = 0; ii < propertyPrefixes.length; ++ii) {
+    var prefix = propertyPrefixes[ii];
+    var property = obj[prefix + propertyName];
+    if (property) {
+      return property;
+    }
+    if (ii == 0) {
+      propertyName = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+    }
+  }
+  return undefined;
+};
 
 /**
  * Provides requestAnimationFrame in a cross browser way.
  */
-var requestAnimFrameImpl_;
-
-var requestAnimFrame = function(callback, element) {
-  if (!requestAnimFrameImpl_) {
-    requestAnimFrameImpl_ = function() {
-      var functionNames = [
-        "requestAnimationFrame",
-        "webkitRequestAnimationFrame",
-        "mozRequestAnimationFrame",
-        "oRequestAnimationFrame",
-        "msRequestAnimationFrame"
-      ];
-      for (var jj = 0; jj < functionNames.length; ++jj) {
-        var functionName = functionNames[jj];
-        if (window[functionName]) {
-          return function(name) {
-            return function(callback, element) {
-              return window[name].call(window, callback, element);
-            };
-          }(functionName);
-        }
-      }
-      return function(callback, element) {
-           return window.setTimeout(callback, 1000 / 70);
-        };
-    }();
-  }
-
-  return requestAnimFrameImpl_(callback, element);
-};
+var requestAnimFrame = getPrefixedProperty(window, "requestAnimationFrame") ||
+    function(callback, element) {
+      return window.setTimeout(callback, 1000 / 70);
+    };
 
 /**
  * Provides cancelAnimationFrame in a cross browser way.
  */
-var cancelAnimFrame = (function() {
-  return window.cancelAnimationFrame ||
-         window.webkitCancelAnimationFrame ||
-         window.mozCancelAnimationFrame ||
-         window.oCancelAnimationFrame ||
-         window.msCancelAnimationFrame ||
-         window.clearTimeout;
-})();
+var cancelAnimFrame = getPrefixedProperty(window, "cancelAnimationFrame") ||
+    window.clearTimeout;
 
 /**
  * Waits for the browser to composite the canvas associated with
@@ -2152,6 +2151,7 @@ return {
   getExtensionWithKnownPrefixes: getExtensionWithKnownPrefixes,
   getFileListAsync: getFileListAsync,
   getLastError: getLastError,
+  getPrefixedProperty: getPrefixedProperty,
   getScript: getScript,
   getSupportedExtensionWithKnownPrefixes: getSupportedExtensionWithKnownPrefixes,
   getUrlArguments: getUrlArguments,
