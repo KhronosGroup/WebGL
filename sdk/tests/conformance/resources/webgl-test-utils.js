@@ -1791,7 +1791,7 @@ var getActiveMap = function(gl, program, typeInfo) {
  */
 var getAttribMap = function(gl, program) {
   return getActiveMap(gl, program, {
-      param: "ACTIVE_ATTRIBS",
+      param: "ACTIVE_ATTRIBUTES",
       activeFn: "getActiveAttrib",
       locFn: "getAttribLocation"
   });
