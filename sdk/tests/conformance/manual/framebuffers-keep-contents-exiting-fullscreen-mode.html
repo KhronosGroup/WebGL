@@ -36,37 +36,34 @@
 <script src="../resources/webgl-test-utils.js"></script>
 <style>
 canvas {
-    width: 10%;
-    height: 10%;
-    border: 1px solid black;
-}
-body,html {
     width: 100%;
-    height: 100%;
-    padding: 0px;
-    margin: 0px;
-    border: 0px;
+    height: 50px;
+    border: 1px solid black;
 }
 #f {
-    z-index: 2;
-    position: absolute;
     left: 0px;
     top: 0px;
-    width: 100%;
-    height: 100%;
-    text-align: center;
 }
 #inner {
-    position: relative;
-    top: 50%;
 }
-#button {
-    background-color: white;
+input.button {
+    font-size: 36pt;
+}
+.redbox {
     border: 1px solid black;
-    font-size: 24pt;
-    padding: 1em;
-    margin-left: auto;
-    margin-right: auto;
+    background-color: red;
+}
+#canvasholder {
+    position: relative;
+}
+#clabel {
+    position: absolute;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    font-size: 40px;
+    z-index: 10;
+    text-align: center;
 }
 </style>
 </head>
@@ -76,22 +73,27 @@ This test must be run manually.
 
 Checks that framebuffers keep their contents going into and out of fullscreen mode.
 
-Click the button.
+Through the entire test you should see a <span class="redbox">red rectangle</span>. If it is not <span class="redbox">red</span> in all cases the test has failed.
 </pre>
 <div id="f">
   <div id="inner">
     <div id="buttonHolder">
-      <div id="button">click to <span id="mode">enter</span> fullscreen</div>
-      <canvas id='c'></canvas>
+      <div><input id="button" class="button" type="button" value="Click this button to continue the test"/></div>
+      <div id="canvasholder">
+        <canvas id='c'></canvas>
+        <div id='clabel'>
+          should be red
+        </div>
+      </div>
     </div>
   </div>
 </div>
+<div id="description"></div>
 <div id="console"></div>
 <script>
 "use strict";
 var wtu = WebGLTestUtils;
 var testedFullScreen = false;
-var mode = document.getElementById("mode");
 var c = document.getElementById("c");
 var button = document.getElementById("button");
 var buttonHolder = document.getElementById("buttonHolder");
@@ -111,7 +113,6 @@ var checkFramebufferState = function(fullscreen) {
   checkState();
 
   debug("fullscreen:" + fullscreen);
-  mode.innerText = fullscreen ? "exit" : "enter";
 
   if (fullscreen) {
     // Not sure if this is needed but need to make sure
@@ -119,7 +120,6 @@ var checkFramebufferState = function(fullscreen) {
     testedFullScreen = true;
   } else {
     if (testedFullScreen) {
-      buttonHolder.innerHTML = "";
       finishTest();
     }
   }
