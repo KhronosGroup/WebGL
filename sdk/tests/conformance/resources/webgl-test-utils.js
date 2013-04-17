@@ -978,7 +978,7 @@ var clipToRange = function(value, extent, min, max) {
  * @param {!function()} logFn Function to call for logging.
  */
 var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRange, sameFn, differentFn, logFn) {
-  if (!gl.getParameter(gl.FRAMEBUFFER_BINDING)) {
+  if ((gl instanceof WebGLRenderingContext) && !gl.getParameter(gl.FRAMEBUFFER_BINDING)) {
     // We're reading the backbuffer so clip.
     var xr = clipToRange(x, width, 0, gl.canvas.width);
     var yr = clipToRange(y, height, 0, gl.canvas.height);
