@@ -1,5 +1,5 @@
 (function() {
-"strict";
+"use strict";
 
 var glErrorShadow = { };
 
@@ -274,7 +274,7 @@ OESVertexArrayObject.prototype.bindVertexArrayOES = function bindVertexArrayOES(
 };
 
 // You MUST call this BEFORE adding event listeners for 'webglcontextrestored'
-setupVertexArrayObject = function(gl) {
+window.setupVertexArrayObject = function(gl) {
     // Ignore if already installed (or the browser provides the extension)
     // FIXME: when all stable browsers support getSupportedExtensions
     // and getExtension, remove the workarounds below.
