@@ -88,10 +88,6 @@ GLSLConformanceTester.runTests([
   vShaderSuccess: true,
   fShaderId: 'fshaderWithHighPrecision',
   fShaderSuccess: highpSupported,
-  // We can't test for the actual error message as
-  // GLSL 1.0.17 11 says the messages are implementation dependant.
-  //fShaderTest: (function() {
-  //  return wtu.getLastError().indexOf("testing123 testing123") >= 0; }),
   linkSuccess: highpSupported,
   passMsg: "getShaderPrecisionFormat's results agree with highp support in fragment shaders",
 },
@@ -99,10 +95,6 @@ GLSLConformanceTester.runTests([
   vShaderSuccess: true,
   fShaderId: highpSupported ? 'fshaderWhichCompilesWithHighp' : 'fshaderWhichCompilesWithoutHighp',
   fShaderSuccess: true,
-  // We can't test for the actual error message as
-  // GLSL 1.0.17 11 says the messages are implementation dependant.
-  //fShaderTest: (function() {
-  //  return wtu.getLastError().indexOf("testing123 testing123") >= 0; }),
   linkSuccess: true,
   passMsg: "getShaderPrecisionFormat's results agree with definition of GL_FRAGMENT_PRECISION_HIGH",
 },
