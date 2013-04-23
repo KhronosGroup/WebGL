@@ -1,0 +1,8 @@
+FAQ
+===
+
+Q:  How do I indicate that a newly drafted extension proposal should be built
+    for the registry?
+
+A:  Put the extension.xml in a subdirectory of `proposals/` named for the
+    official extension name. Then, `make`.
