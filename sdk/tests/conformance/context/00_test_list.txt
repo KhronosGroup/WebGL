@@ -1,4 +1,4 @@
-constants.html
+constants-and-properties.html
 --min-version 1.0.2 context-attribute-preserve-drawing-buffer.html
 context-attributes-alpha-depth-stencil-antialias.html
 --min-version 1.0.2 --slow context-creation-and-destruction.html
