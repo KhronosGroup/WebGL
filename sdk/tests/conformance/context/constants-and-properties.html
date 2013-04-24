@@ -28,7 +28,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL Constants Test</title>
+<title>WebGL Constants and Properties Test</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
@@ -41,7 +41,7 @@
 <canvas id="canvas" style="width: 50px; height: 50px;"> </canvas>
 <script>
 "use strict";
-description("This test ensures that the WebGL context has all the constants in the specification.");
+description("This test ensures that the WebGL context has all the constants and (non-function) properties in the specification.");
 
 var constants = {
     /* ClearBufferMask */
@@ -460,6 +460,19 @@ UNPACK_COLORSPACE_CONVERSION_WEBGL : 0x9243,
 BROWSER_DEFAULT_WEBGL              : 0x9244
 };
 
+// Other non-function properties on the WebGL object
+var otherProperties = {
+drawingBufferWidth  : "number",
+drawingBufferHeight : "number",
+canvas              : "implementation-dependent"
+};
+
+// Properties to be ignored (as a list of strings) because they were
+// added in versions of the spec that are backward-compatible with
+// this version
+var ignoredProperties = [
+];
+
 // Constants removed from the WebGL spec compared to ES 2.0
 var removedConstants = {
 NUM_COMPRESSED_TEXTURE_FORMATS : 0x86A2,
@@ -522,13 +535,24 @@ if (passed) {
 }
 var extended = false;
 for (var i in gl) {
-  if (i.match(/^[^a-z]/) && constants[i] == null) {
+  if (constants[i] !== undefined) {
+    // OK; known constant
+  } else if (ignoredProperties.indexOf(i) != -1) {
+    // OK; constant that should be ignored because it was added in a later version of the spec
+  } else if (otherProperties[i] !== undefined &&
+             (otherProperties[i] == "implementation-dependent" || typeof gl[i] == otherProperties[i])) {
+    // OK; known property of known type
+  } else if (typeof gl[i] != "function") {
     if (!extended) {
       extended = true;
-      debug("Also found the following extra constants:");
+      testFailed("Also found the following extra properties:");
     }
-    debug(i);
+    testFailed(i);
   }
+}
+
+if (!extended) {
+  testPassed("No extra properties found on WebGL context.");
 }
 
 debug("");

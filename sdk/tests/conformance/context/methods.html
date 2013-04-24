@@ -44,7 +44,6 @@
 description("This test ensures that the WebGL context has all the methods in the specification.");
 
 var methods = [
-"canvas",
 "getContextAttributes",
 "activeTexture",
 "attachShader",
@@ -67,6 +66,8 @@ var methods = [
 "clearStencil",
 "colorMask",
 "compileShader",
+"compressedTexImage2D",
+"compressedTexSubImage2D",
 "copyTexImage2D",
 "copyTexSubImage2D",
 "createBuffer",
@@ -105,13 +106,16 @@ var methods = [
 "getParameter",
 "getBufferParameter",
 "getError",
+"getExtension",
 "getFramebufferAttachmentParameter",
 "getProgramParameter",
 "getProgramInfoLog",
 "getRenderbufferParameter",
 "getShaderParameter",
 "getShaderInfoLog",
+"getShaderPrecisionFormat",
 "getShaderSource",
+"getSupportedExtensions",
 "getTexParameter",
 "getUniform",
 "getUniformLocation",
@@ -119,6 +123,7 @@ var methods = [
 "getVertexAttribOffset",
 "hint",
 "isBuffer",
+"isContextLost",
 "isEnabled",
 "isFramebuffer",
 "isProgram",
@@ -175,18 +180,23 @@ var methods = [
 "vertexAttrib4fv",
 "vertexAttribPointer",
 "viewport"
-]
+];
 
-function assertProperty(v, p) {
+// Properties to be ignored because they were added in versions of the
+// spec that are backward-compatible with this version
+var ignoredMethods = [
+];
+
+function assertFunction(v, f) {
   try {
-    if (v[p] == null) {
-      testFailed("Property does not exist: " + p)
+    if (typeof v[f] != "function") {
+      testFailed("Property either does not exist or is not a function: " + f);
       return false;
     } else {
       return true;
     }
   } catch(e) {
-    testFailed("Trying to access the property '"+p+"' threw an error: "+e.toString());
+    testFailed("Trying to access the property '" + f + "' threw an error: "+e.toString());
   }
 }
 
@@ -198,7 +208,7 @@ var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas);
 var passed = true;
 for (var i=0; i<methods.length; i++) {
-  var r = assertProperty(gl, methods[i]);
+  var r = assertFunction(gl, methods[i]);
   passed = passed && r;
 }
 if (passed) {
@@ -206,13 +216,17 @@ if (passed) {
 }
 var extended = false;
 for (var i in gl) {
-  if (i.match(/^[a-z]/) && methods.indexOf(i) == -1) {
+  if (typeof gl[i] == "function" && methods.indexOf(i) == -1 && ignoredMethods.indexOf(i) == -1) {
     if (!extended) {
       extended = true;
-      debug("Also found the following extra methods:");
+      testFailed("Also found the following extra methods:");
     }
-    debug(i);
+    testFailed(i);
   }
+}
+
+if (!extended) {
+  testPassed("No extra methods found on WebGL context.");
 }
 
 debug("");
