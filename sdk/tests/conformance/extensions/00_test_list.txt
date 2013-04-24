@@ -8,6 +8,10 @@ oes-texture-float-with-video.html
 oes-texture-float.html
 oes-vertex-array-object.html
 --min-version 1.0.3 oes-texture-half-float.html
+--min-version 1.0.3 oes-texture-half-float-with-canvas.html
+--min-version 1.0.3 oes-texture-half-float-with-image-data.html
+--min-version 1.0.3 oes-texture-half-float-with-image.html
+--min-version 1.0.3 oes-texture-half-float-with-video.html
 --min-version 1.0.2 oes-element-index-uint.html
 webgl-debug-renderer-info.html
 webgl-debug-shaders.html
