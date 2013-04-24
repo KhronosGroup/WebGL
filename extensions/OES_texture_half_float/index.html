@@ -26,8 +26,11 @@
       to an FBO. Although this feature has historically been allowed, new
       implementations should not implicitly support float rendering and
       applications should be modified to explicitly enable <a href="OES_color_buffer_half_float.html">OES_color_buffer_half_float</a>.</li></ul>
-  <h2 class="no-toc">IDL</h2><pre class="idl"> interface OES_texture_half_float { const GLenum HALF_FLOAT_OES =
-  0x8D61; }; </pre><h2 class="no-toc">Revision History</h2><p>Revision 1, 2010/11/29</p><ul><li>Initial revision.</li></ul><p>Revision 2, 2011/09/12</p><ul><li> Added similar text about <code>texImage2D</code> and
+  <h2 class="no-toc">IDL</h2><pre class="idl">
+interface OES_texture_half_float {
+  const GLenum HALF_FLOAT_OES = 0x8D61;
+};
+</pre><h2 class="no-toc">Revision History</h2><p>Revision 1, 2010/11/29</p><ul><li>Initial revision.</li></ul><p>Revision 2, 2011/09/12</p><ul><li> Added similar text about <code>texImage2D</code> and
       <code>texSubImage2D</code> as in OES_texture_float spec. </li><li> Added optional ability to use a HALF_FLOAT_OES type texture as
       an FBO's color attachment. </li></ul><p>Revision 3, 2012/01/03</p><ul><li>Removed webgl module per changes to Web IDL spec.</li></ul><p>Revision 4, 2012/12/04</p><ul><li>Specify that implementations supporting HALF_FLOAT_OES color
       attachments implicitly enable EXT_color_buffer_half_float.</li></ul></body></html>
