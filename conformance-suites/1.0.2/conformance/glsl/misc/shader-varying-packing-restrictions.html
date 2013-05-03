@@ -108,6 +108,9 @@ for (var ii = 0; ii < varyingTypes.length; ++ii) {
   var numVars = Math.floor(maxVaryingVectors / info.rows);
   // Compute the minimum required to work in a single array.
   var minVars = Math.floor(minVaryingVectors / info.rows);
+  // Compute the maximum allowed as single elements
+  var numPerRow = Math.floor(4 / info.componentsPerRow);
+  var numMax = Math.floor(shaderType.maxVectors * numPerRow);
   // Test array[1] of the type
   var vcode = wtu.replaceParams(info.vcode, {id: "", index: "[0]"});
   var fcode = wtu.replaceParams(info.fcode, {id: "", index: "[0]"});
@@ -193,12 +196,12 @@ for (var ii = 0; ii < varyingTypes.length; ++ii) {
 
   // Test max+1 varyings of type.
   tests.push({
-    vShaderSource: wtu.replaceParams(vVaryingTestSource, generateCode(numVars + 1), info),
+    vShaderSource: wtu.replaceParams(vVaryingTestSource, generateCode(numMax + 1), info),
     vShaderSuccess: false,
-    fShaderSource: wtu.replaceParams(fVaryingTestSource, generateCode(numVars + 1), info),
+    fShaderSource: wtu.replaceParams(fVaryingTestSource, generateCode(numMax + 1), info),
     fShaderSuccess: false,
     linkSuccess: false,
-    passMsg: "shaders with " + (numVars + 1) + " varyings of " + info.type + " (one past maximum) should fail",
+    passMsg: "shaders with " + (numMax + 1) + " varyings of " + info.type + " (one past maximum) should fail",
   });
 
   // Test required varyings of type.
