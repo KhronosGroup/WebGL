@@ -104,7 +104,7 @@ function runOneTest(gl, info) {
     }
     // As per GLSL 1.0.17 10.27 we can only check for success on
     // compileShader, not failure.
-    if (info.vShaderSuccess && !vShader) {
+    if (!info.ignoreResults && info.vShaderSuccess && !vShader) {
       testFailed("[unexpected vertex shader compile status] (expected: " +
                  info.vShaderSuccess + ") " + passMsg);
     }
@@ -132,7 +132,7 @@ function runOneTest(gl, info) {
     //debug(fShader == null ? "fail" : "succeed");
     // As per GLSL 1.0.17 10.27 we can only check for success on
     // compileShader, not failure.
-    if (info.fShaderSuccess && !fShader) {
+    if (!info.ignoreResults && info.fShaderSuccess && !fShader) {
       testFailed("[unexpected fragment shader compile status] (expected: " +
                 info.fShaderSuccess + ") " + passMsg);
       return;
@@ -160,12 +160,12 @@ function runOneTest(gl, info) {
       var error = gl.getProgramInfoLog(program);
       log("*** Error linking program '"+program+"':"+error);
     }
-    if (linked != info.linkSuccess) {
+    if (!info.ignoreResults && linked != info.linkSuccess) {
       testFailed("[unexpected link status] " + passMsg);
       return;
     }
   } else {
-    if (info.linkSuccess) {
+    if (!info.ignoreResults && info.linkSuccess) {
       testFailed("[link failed] " + passMsg);
       return;
     }
