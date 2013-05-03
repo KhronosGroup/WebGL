@@ -164,7 +164,7 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
     var minVars = Math.floor(shaderType.minVectors / info.rows);
     // Compute the maximum allowed as single elements
     var numPerRow = Math.floor(4 / info.componentsPerRow);
-    var numMax = Math.floor(shaderType.maxVectors * numPerRow);
+    var numMax = Math.floor(shaderType.maxVectors * numPerRow / info.rows);
     // Test array[1] of the type
     var code = wtu.replaceParams(info.code, {id: "", index: "[0]"});
     tests.push({
