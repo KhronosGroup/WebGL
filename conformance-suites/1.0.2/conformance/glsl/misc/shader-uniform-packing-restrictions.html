@@ -162,6 +162,9 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
     var numVars = Math.floor(shaderType.maxVectors / info.rows);
     // Compute the minimum required to work in a single array.
     var minVars = Math.floor(shaderType.minVectors / info.rows);
+    // Compute the maximum allowed as single elements
+    var numPerRow = Math.floor(4 / info.componentsPerRow);
+    var numMax = Math.floor(shaderType.maxVectors * numPerRow);
     // Test array[1] of the type
     var code = wtu.replaceParams(info.code, {id: "", index: "[0]"});
     tests.push({
@@ -241,12 +244,12 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
 
     // Test max+1 uniforms of type.
     tests.push({
-      vShaderSource: wtu.replaceParams(shaderType.vertUniformTest, generateCode(numVars + 1), info),
+      vShaderSource: wtu.replaceParams(shaderType.vertUniformTest, generateCode(numMax + 1), info),
       vShaderSuccess: shaderType.vertExpectation,
-      fShaderSource: wtu.replaceParams(shaderType.fragUniformTest, generateCode(numVars + 1), info),
+      fShaderSource: wtu.replaceParams(shaderType.fragUniformTest, generateCode(numMax + 1), info),
       fShaderSuccess: shaderType.fragExpectation,
       linkSuccess: false,
-      passMsg: shaderType.type + " shader with " + (numVars + 1) + " uniforms of " + info.type + " (one past maximum) should fail",
+      passMsg: shaderType.type + " shader with " + (numMax + 1) + " uniforms of " + info.type + " (one past maximum) should fail",
     });
 
     // Test required uniforms of type.
