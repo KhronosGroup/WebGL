@@ -200,11 +200,17 @@ function runTests(shaderInfos) {
     return;
   }
 
-  for (var ii = 0; ii < shaderInfos.length; ++ii) {
-    runOneTest(gl, shaderInfos[ii]);
-  }
+  var testIndex = 0;
+  var runNextTest = function() {
+    if (testIndex == shaderInfos.length) {
+      finishTest();
+      return;
+    }
 
-  finishTest();
+    runOneTest(gl, shaderInfos[testIndex++]);
+    setTimeout(runNextTest, 1);
+  }
+  runNextTest();
 };
 
 function loadExternalShaders(filename, passMsg) {
