@@ -99,7 +99,7 @@ counts.forEach(function(info) {
     fShaderSuccess: true,
     linkSuccess: true,
     ignoreResults: !info.mustPass,
-    passMsg: "shader with uniform with " + info.count + " operators in expression in multiple lines",
+    passMsg: "shader with " + info.count + " operators in expression in multiple lines",
   });
   subs.code = subs.code.replace(/\n     /g, "")
   tests.push({
@@ -109,7 +109,7 @@ counts.forEach(function(info) {
     fShaderSuccess: true,
     linkSuccess: true,
     ignoreResults: !info.mustPass,
-    passMsg: "shader with uniform with " + info.count + " operators in expression in one line",
+    passMsg: "shader with " + info.count + " operators in expression in one line",
   });
 });
 GLSLConformanceTester.runTests(tests);
