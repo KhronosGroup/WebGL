@@ -91,6 +91,8 @@
       <change>Added resolution to deleted buffer issue</change>
     </revision><revision date="2012/10/16" number="7">
       <change>Based on feedback on public_webgl, moved from draft to community approved, and removed aliases.</change>
+    </revision><revision date="2013/05/08" number="8">
+      <change>Made WebGLVertexArrayObjectOES return values and arguments nullable on feedback from Benoit Jacob.</change>
     </revision></history></extension><draft href="WEBGL_color_buffer_float/"><name>WEBGL_color_buffer_float</name><number>15</number><history><revision date="2012/11/08" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/11/12" number="2">
