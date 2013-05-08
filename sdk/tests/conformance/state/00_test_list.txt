@@ -4,4 +4,5 @@ gl-get-calls.html
 gl-geterror.html
 gl-getstring.html
 gl-object-get-calls.html
+--min-version 1.0.3 state-uneffected-after-compositing.html
 
