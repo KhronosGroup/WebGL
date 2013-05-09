@@ -54,15 +54,50 @@ function runTest()
 
   var program = wtu.setupTexturedQuad(gl);
   var tex = gl.createTexture();
-  wtu.fillTexture(gl, tex, 1, 1, [0, 255, 0, 255]);
-  wtu.clearAndDrawUnitQuad(gl);
-  wtu.checkCanvas(gl, [0, 255, 0, 255]);
-  wtu.waitForComposite(gl, function() {
+  var fb = gl.createFramebuffer();
+
+  var step1 = function() {
+    wtu.fillTexture(gl, tex, 1, 1, [0, 255, 0, 255]);
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.checkCanvas(gl, [0, 255, 0, 255]);
-    glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
-    finishTest();
-  });
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "drawing with texture should be green");
+  };
+
+  var step2 = function() {
+    wtu.clearAndDrawUnitQuad(gl);
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "drawing with texture after composite without rebinding should be green");
+
+    // Clear background to red
+    gl.clearColor(1, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    // Bind framebuffer with green texture.
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 255, 0, 255], "reading from fbo with attached texture should be green");
+  };
+
+  var step3 = function() {
+    // Should still have fb bound and reading should be green
+    wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 255, 0, 255], "reading from fbo after composite without rebinding should be green");
+  };
+
+  var steps = [
+    step1,
+    step2,
+    step3,
+  ];
+
+  var stepIndex = 0;
+  var runNextStep = function() {
+    steps[stepIndex++]();
+    if (stepIndex == steps.length) {
+      glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+      finishTest();
+      return;
+    }
+    wtu.waitForComposite(gl, runNextStep);
+  };
+  runNextStep();
 }
 
 runTest();
