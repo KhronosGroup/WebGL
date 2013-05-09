@@ -24,7 +24,7 @@ interface OES_vertex_array_object {
 
     WebGLVertexArrayObjectOES? createVertexArrayOES();
     void deleteVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
-    GLboolean isVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
+    [WebGLHandlesContextLoss] GLboolean isVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
     void bindVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
 };
   </idl>
@@ -94,6 +94,9 @@ interface OES_vertex_array_object {
     </revision>
     <revision date="2013/05/08">
       <change>Made WebGLVertexArrayObjectOES return values and arguments nullable on feedback from Benoit Jacob.</change>
+    </revision>
+    <revision date="2013/05/09">
+      <change>Added the [WebGLHandlesContextLoss] extended attribute to isVertexArrayOES.</change>
     </revision>
   </history>
 </extension>
