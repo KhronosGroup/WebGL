@@ -13,7 +13,14 @@
     <api version="1.0"/>
   </depends>
   <overview>
-    <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_vertex_array_object.txt" name="OES_vertex_array_object" />
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_vertex_array_object.txt"
+name="OES_vertex_array_object">
+      <addendum>
+        The command IsVertexArrayObjectOES returns false if the vertex
+array object's <a href="#webgl-object-invalidated-flag">invalidated
+flag</a> is set.
+      </addendum>
+    </mirrors>
   </overview>
   <idl xml:space="preserve">
 interface WebGLVertexArrayObjectOES : WebGLObject {
