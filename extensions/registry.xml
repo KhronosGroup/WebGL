@@ -191,4 +191,8 @@
       <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision><revision date="2013/01/26" number="8">
       <change>Moved from draft to community approved status</change>
-    </revision></history></extension><proposal href="proposals/ANGLE_timer_query/"><name>ANGLE_timer_query</name></proposal><proposal href="proposals/EXT_blend_minmax/"><name>EXT_blend_minmax</name></proposal><proposal href="proposals/WEBGL_compressed_texture_etc1/"><name>WEBGL_compressed_texture_etc1</name></proposal><!-- vi:set sw=2 ts=4: --><proposal href="proposals/WEBGL_dynamic_texture/"><name>WEBGL_dynamic_texture</name></proposal><proposal href="proposals/WEBGL_shared_resources/"><name>WEBGL_shared_resources</name></proposal></registry>
+    </revision></history></extension><draft href="WEBGL_shared_resources/"><name>WEBGL_shared_resources</name><number>22</number><history><revision date="2012/02/06" number="1">
+      <change>Initial revision.</change>
+    </revision><revision date="2013/05/14" number="2">
+      <change>Moved to draft after agreement in working group.</change>
+    </revision></history></draft><proposal href="proposals/ANGLE_timer_query/"><name>ANGLE_timer_query</name></proposal><proposal href="proposals/EXT_blend_minmax/"><name>EXT_blend_minmax</name></proposal><proposal href="proposals/WEBGL_compressed_texture_etc1/"><name>WEBGL_compressed_texture_etc1</name></proposal><!-- vi:set sw=2 ts=4: --><proposal href="proposals/WEBGL_dynamic_texture/"><name>WEBGL_dynamic_texture</name></proposal></registry>
