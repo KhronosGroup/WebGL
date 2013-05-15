@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<extension href="OES_standard_derivatives/">
+<ratified href="OES_standard_derivatives/">
   <name>OES_standard_derivatives</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -48,5 +48,8 @@ interface OES_standard_derivatives {
     <revision date="2012/01/03">
       <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision>
+    <revision date="2013/05/15">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
   </history>
-</extension>
+</ratified>

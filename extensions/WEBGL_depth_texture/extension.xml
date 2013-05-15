@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<extension href="WEBGL_depth_texture/">
+<ratified href="WEBGL_depth_texture/">
   <name>WEBGL_depth_texture</name>
   <aliases>
     <alias>WEBKIT_WEBGL_depth_texture</alias>
@@ -222,5 +222,8 @@ interface WEBGL_depth_texture {
     <revision date="2013/02/28">
       <change>Updated to track ANGLE_depth_texture, indicating that only red channel is guaranteed.</change>
     </revision>
+    <revision date="2013/05/15">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
   </history>
-</extension>
+</ratified>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<extension href="OES_vertex_array_object/">
+<ratified href="OES_vertex_array_object/">
   <name>OES_vertex_array_object</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -125,5 +125,8 @@ interface OES_vertex_array_object {
     <revision date="2013/05/14">
       <change>Based on pull request from J Kenneth King, added WebGLHandlesContextLoss extended attribute to isVertexArrayOES and added markup for new functions.</change>
     </revision>
+    <revision date="2013/05/15">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
   </history>
-</extension>
+</ratified>
