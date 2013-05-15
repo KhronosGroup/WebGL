@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<extension href="WEBGL_lose_context/">
+<ratified href="WEBGL_lose_context/">
   <name>WEBGL_lose_context</name>
   <aliases>
     <alias>WEBKIT_WEBGL_lose_context</alias>
@@ -70,5 +70,8 @@ interface WEBGL_lose_context {
     <revision date="2013/01/26">
       <change>Moved from draft to community approved status</change>
     </revision>
+    <revision date="2013/05/15">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
   </history>
-</extension>
+</ratified>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<extension href="WEBGL_debug_shaders/">
+<ratified href="WEBGL_debug_shaders/">
   <name>WEBGL_debug_shaders</name>
   <contact><a href="mailto:zmo@chromium.org">zmo@chromium.org</a></contact>
   <contributors>
@@ -50,5 +50,8 @@ interface WEBGL_debug_shaders {
     <revision date="2012/01/03">
       <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision>
+    <revision date="2013/05/15">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
   </history>
-</extension>
+</ratified>
