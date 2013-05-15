@@ -157,13 +157,13 @@ function generateTest(extensionTypeName, extensionName, pixelType, prologue) {
                 if (minFilter != gl.NEAREST && minFilter !=  gl.LINEAR)
                     gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
         }
-        wtu.drawQuad(gl);
+        wtu.clearAndDrawUnitQuad(gl);
         if (!linear) {
-            glErrorShouldBe(gl, gl.NO_ERROR, extensionTypeName + " texture with non-Linear filter would succeed with NO_ERROR no matter " + extensionName + " is enabled or not");
+            glErrorShouldBe(gl, gl.NO_ERROR, extensionTypeName + " texture with non-Linear filter should succeed with NO_ERROR no matter whether " + extensionName + " is enabled or not");
         } else if (!extensionEnabled) {
-            glErrorShouldBe(gl, gl.NO_ERROR, extensionTypeName + " texture with Linear filter would produce [0, 0, 0, 1.0] with NO_ERROR if " + extensionName + " isn't enabled");
+            glErrorShouldBe(gl, gl.NO_ERROR, extensionTypeName + " texture with Linear filter should produce [0, 0, 0, 1.0] with NO_ERROR if " + extensionName + " isn't enabled");
         } else {
-            glErrorShouldBe(gl, gl.NO_ERROR, extensionTypeName + " texture with Linear filter would succeed with NO_ERROR if " + extensionTypeName + " is enabled");
+            glErrorShouldBe(gl, gl.NO_ERROR, extensionTypeName + " texture with Linear filter should succeed with NO_ERROR if " + extensionTypeName + " is enabled");
         }
 
         wtu.checkCanvas(gl, expected, "should be " + expected[0] + "," + expected[1]  + "," +  expected[2] + "," + expected[3]);
