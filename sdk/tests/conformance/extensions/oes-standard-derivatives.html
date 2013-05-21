@@ -279,8 +279,10 @@ function runOutputTests() {
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.hint(ext.FRAGMENT_SHADER_DERIVATIVE_HINT_OES, gl.NICEST);
 
+    var positionLoc = 0;
+    var texcoordLoc = 1;
     var program = wtu.setupProgram(gl, ["outputVertexShader", "outputFragmentShader"], ['vPosition', 'texCoord0'], [0, 1]);
-    var quadParameters = wtu.setupUnitQuad(gl, 0, 1);
+    var quadParameters = wtu.setupUnitQuad(gl, positionLoc, texcoordLoc);
 
     function readLocation(x, y) {
         var pixels = new Uint8Array(1 * 1 * 4);
@@ -332,6 +334,7 @@ function runOutputTests() {
            1.0,  1.0, tr,
           -1.0, -1.0, bl,
            1.0, -1.0, br]), gl.STATIC_DRAW);
+        gl.vertexAttribPointer(positionLoc, 3, gl.FLOAT, false, 0, 0);
     };
 
     // Draw 1: (no variation)
