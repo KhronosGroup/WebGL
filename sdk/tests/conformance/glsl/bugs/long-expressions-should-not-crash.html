@@ -46,6 +46,21 @@ void main(){
   gl_Position = vec4(0, 0, 0, 1);
 }
 </script>
+<script id="vshaderUniformTest" type="x-shader/x-vertex">
+uniform vec4 u_uniform;
+void main(){
+  gl_Position =
+      $(code)
+      vec4(0, 0, 0, 1);
+}
+</script>
+<script id="fshader" type="x-shader/x-fragment">
+precision mediump float;
+void main()
+{
+  gl_FragColor = vec4(0, 0, 0, 0);
+}
+</script>
 <script id="fshaderUniformTest" type="x-shader/x-fragment">
 precision mediump float;
 uniform vec4 u_uniform;
@@ -61,6 +76,7 @@ void main()
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext();
 
+var vUniformTestSource = wtu.getScript("vshaderUniformTest");
 var fUniformTestSource = wtu.getScript("fshaderUniformTest");
 
 var tests = [
@@ -79,37 +95,61 @@ var counts = [
     mustPass: false,
   },
 ];
-var operators = ["+", "-", "/", "*"];
+var operatorSets = [
+  ["+", "-", "/", "*"],
+  ["+"],
+  ["-"],
+];
 counts.forEach(function(info) {
-  var generateCode = function(numVars) {
-    var codes = [];
-    for (var uu = 0; uu < numVars; ++uu) {
-      codes.push("u_uniform " + operators[uu % operators.length]);
-    }
-    return {
-      code: codes.join("\n      "),
+  operatorSets.forEach(function(operators) {
+    var generateCode = function(numVars) {
+      var codes = [];
+      for (var uu = 0; uu < numVars; ++uu) {
+        codes.push("u_uniform " + operators[uu % operators.length]);
+      }
+      return {
+        code: codes.join("\n      "),
+      };
     };
-  };
 
-  var subs = generateCode(info.count);
-  tests.push({
-    vShaderId: "vshader",
-    vShaderSuccess: true,
-    fShaderSource: wtu.replaceParams(fUniformTestSource, subs),
-    fShaderSuccess: true,
-    linkSuccess: true,
-    ignoreResults: !info.mustPass,
-    passMsg: "shader with " + info.count + " operators in expression in multiple lines",
-  });
-  subs.code = subs.code.replace(/\n     /g, "")
-  tests.push({
-    vShaderId: "vshader",
-    vShaderSuccess: true,
-    fShaderSource: wtu.replaceParams(fUniformTestSource, subs),
-    fShaderSuccess: true,
-    linkSuccess: true,
-    ignoreResults: !info.mustPass,
-    passMsg: "shader with " + info.count + " operators in expression in one line",
+    var subs = generateCode(info.count);
+    tests.push({
+      vShaderId: "vshader",
+      vShaderSuccess: true,
+      fShaderSource: wtu.replaceParams(fUniformTestSource, subs),
+      fShaderSuccess: true,
+      linkSuccess: true,
+      ignoreResults: !info.mustPass,
+      passMsg: "shader with " + info.count + " [" + operators + "] operators in expression in multiple lines",
+    });
+    tests.push({
+      vShaderSource: wtu.replaceParams(vUniformTestSource, subs),
+      vShaderSuccess: true,
+      fShaderId: "fshader",
+      fShaderSuccess: true,
+      linkSuccess: true,
+      ignoreResults: !info.mustPass,
+      passMsg: "shader with " + info.count + " [" + operators + "] operators in expression in multiple lines",
+    });
+    subs.code = subs.code.replace(/\n     /g, "")
+    tests.push({
+      vShaderId: "vshader",
+      vShaderSuccess: true,
+      fShaderSource: wtu.replaceParams(fUniformTestSource, subs),
+      fShaderSuccess: true,
+      linkSuccess: true,
+      ignoreResults: !info.mustPass,
+      passMsg: "shader with " + info.count + " [" + operators + "] operators in expression in one line",
+    });
+    tests.push({
+      vShaderSource: wtu.replaceParams(vUniformTestSource, subs),
+      vShaderSuccess: true,
+      fShaderId: "fshader",
+      fShaderSuccess: true,
+      linkSuccess: true,
+      ignoreResults: !info.mustPass,
+      passMsg: "shader with " + info.count + " [" + operators + "] operators in expression in one line",
+    });
   });
 });
 GLSLConformanceTester.runTests(tests);
