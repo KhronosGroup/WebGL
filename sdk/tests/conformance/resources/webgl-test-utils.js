@@ -2237,6 +2237,28 @@ var waitForComposite = function(gl, callback) {
   countDown();
 };
 
+/**
+ * Runs an array of functions, yielding to the browser between each step.
+ * If you want to know when all the steps are finished add a last step.
+ * @param {!Array.<function(): void>} steps. Array of functions.
+ */
+var runSteps = function(steps) {
+  if (!steps.length) {
+    return;
+  }
+
+  // copy steps so they can't be modifed.
+  var stepsToRun = steps.slice();
+  var currentStep = 0;
+  var runNextStep = function() {
+    stepsToRun[currentStep++]();
+    if (currentStep < stepsToRun.length) {
+      setTimeout(runNextStep, 1);
+    }
+  };
+  runNextStep();
+};
+
 return {
   addShaderSource: addShaderSource,
   cancelAnimFrame: cancelAnimFrame,
@@ -2320,6 +2342,7 @@ return {
   readFileList: readFileList,
   replaceParams: replaceParams,
   requestAnimFrame: requestAnimFrame,
+  runSteps: runSteps,
   waitForComposite: waitForComposite,
 
   // fullscreen api
