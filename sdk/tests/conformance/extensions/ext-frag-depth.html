@@ -83,19 +83,17 @@ void main() {
 <!-- Shaders to test output -->
 <script id="outputVertexShader" type="x-shader/x-vertex">
 attribute vec4 vPosition;
-varying vec4 position;
 void main() {
-    position = vPosition;
     gl_Position = vPosition;
 }
 </script>
 <script id="outputFragmentShader" type="x-shader/x-fragment">
 #extension GL_EXT_frag_depth : enable
 precision mediump float;
-varying vec4 position;
+uniform float uDepth;
 void main() {
     gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-    gl_FragDepthEXT = position.z;
+    gl_FragDepthEXT = uDepth;
 }
 </script>
 
@@ -118,7 +116,7 @@ if (!gl) {
     runShaderTests(false);
 
     // Query the extension and store globally so shouldBe can access it
-    ext = gl.getExtension("EXT_frag_depth");
+    ext = wtu.getExtensionWithKnownPrefixes(gl, "EXT_frag_depth");
     if (!ext) {
         testPassed("No EXT_frag_depth support -- this is legal");
 
@@ -198,18 +196,6 @@ function runShaderTests(extensionEnabled) {
 }
 
 function runOutputTests() {
-    // This tests does several draws with various values of z.
-    // The output of the fragment shader is:
-    // [dFdx(z), dFdy(z), fwidth(z), 1.0]
-    // The expected math: (note the conversion to uint8)
-    //    canvas.width = canvas.height = 50
-    //    dFdx = totalChange.x / canvas.width  = 0.5 / 50.0 = 0.01
-    //    dFdy = totalChange.y / canvas.height = 0.5 / 50.0 = 0.01
-    //    fw = abs(dFdx + dFdy) = 0.01 + 0.01 = 0.02
-    //    r = floor(dFdx * 40.0 * 255) = 102
-    //    g = floor(dFdy * 40.0 * 255) = 102
-    //    b = floor(fw * 40.0 * 255) = 204
-
     var e = 2; // Amount of variance to allow in result pixels - may need to be tweaked higher
 
     debug("Testing various draws for valid built-in function behavior");
@@ -225,16 +211,10 @@ function runOutputTests() {
 
     var positionLoc = 0;
     var texcoordLoc = 1;
-    var program = wtu.setupProgram(gl, ["outputVertexShader", "outputFragmentShader"], ['vPosition', 'texCoord0'], [0, 1]);
+    var program = wtu.setupProgram(gl, ["outputVertexShader", "outputFragmentShader"], ['vPosition'], [0]);
     var quadParameters = wtu.setupUnitQuad(gl, 0, 1);
+    var depthUniform = gl.getUniformLocation(program, "uDepth");
 
-    function readLocation(x, y) {
-        var pixels = new Uint8Array(1 * 1 * 4);
-        var px = Math.floor(x * canvas.width);
-        var py = Math.floor(y * canvas.height);
-        gl.readPixels(px, py, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-        return pixels;
-    };
     function toString(arr) {
         var s = "[";
         for (var n = 0; n < arr.length; n++) {
@@ -245,28 +225,10 @@ function runOutputTests() {
         }
         return s + "]";
     };
-    function expectResult(targetList, successMessage, failureMessage) {
-        var locations = [
-            readLocation(0.1, 0.1),
-            readLocation(0.9, 0.1),
-            readLocation(0.1, 0.9),
-            readLocation(0.9, 0.9),
-        ];
-        var anyDiffer = false;
-        for (var n = 0; n < locations.length; n++) {
-            var source = locations[n];
-            var target = targetList[n];
-            for (var m = 0; m < 4; m++) {
-                if (Math.abs(source[m] - target[m]) > e) {
-                    anyDiffer = true;
-                    testFailed(failureMessage + "; Sample " + n + " should be " + toString(target) + ", was " + toString(source));
-                    break;
-                }
-            }
-        }
-        if (!anyDiffer) {
-            testPassed(successMessage);
-        }
+    function expectResult(target) {
+        wtu.checkCanvasRect(gl, 
+            0, 0, canvas.width, canvas.height,
+            target, "Canvas should be " + toString(target));
     };
 
     function setupBuffers(tl, tr, bl, br) {
@@ -281,53 +243,15 @@ function runOutputTests() {
         gl.vertexAttribPointer(positionLoc, 3, gl.FLOAT, false, 0, 0);
     };
 
-    // Draw 1: (no variation)
-    setupBuffers(0.0, 0.0, 0.0, 0.0);
+    // Draw 1: Greater than clear depth
+    gl.uniform1f(depthUniform, 1.0);
     wtu.clearAndDrawUnitQuad(gl);
-    expectResult([
-                    [255, 0, 0, 255],
-                    [255, 0, 0, 255],
-                    [255, 0, 0, 255],
-                    [255, 0, 0, 255]
-                 ],
-                 "Draw 1 returned the correct data",
-                 "Draw 1 returned incorrect data");
+    expectResult([255, 255, 255, 255]);
 
-    // Draw 2: (variation in x)
-    setupBuffers(1.0, 0.0, 1.0, 0.0);
+    // Draw 2: Less than clear depth
+    gl.uniform1f(depthUniform, 0.0);
     wtu.clearAndDrawUnitQuad(gl);
-    expectResult([
-                    [255, 255, 255, 255],
-                    [255, 0, 0, 255],
-                    [255, 255, 255, 255],
-                    [255, 0, 0, 255]
-                 ],
-                 "Draw 2 returned the correct data",
-                 "Draw 2 returned incorrect data");
-
-    // Draw 3: (variation in y)
-    setupBuffers(1.0, 1.0, 0.0, 0.0);
-    wtu.clearAndDrawUnitQuad(gl);
-    expectResult([
-                    [255, 0, 0, 255],
-                    [255, 0, 0, 255],
-                    [255, 255, 255, 255],
-                    [255, 255, 255, 255]
-                 ],
-                 "Draw 3 returned the correct data",
-                 "Draw 3 returned incorrect data");
-
-    // Draw 4: (variation in x & y)
-    setupBuffers(1.0, 0.5, 0.5, 0.0);
-    wtu.clearAndDrawUnitQuad(gl);
-    expectResult([
-                    [255, 255, 255, 255],
-                    [255, 0, 0, 255],
-                    [255, 255, 255, 255],
-                    [255, 255, 255, 255]
-                 ],
-                 "Draw 4 returned the correct data",
-                 "Draw 4 returned incorrect data");
+    expectResult([255, 0, 0, 255]);
 }
 
 function runUniqueObjectTest()
