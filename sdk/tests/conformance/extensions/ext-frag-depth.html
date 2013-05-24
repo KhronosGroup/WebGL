@@ -215,43 +215,15 @@ function runOutputTests() {
     var quadParameters = wtu.setupUnitQuad(gl, 0, 1);
     var depthUniform = gl.getUniformLocation(program, "uDepth");
 
-    function toString(arr) {
-        var s = "[";
-        for (var n = 0; n < arr.length; n++) {
-            s += arr[n];
-            if (n < arr.length - 1) {
-                s += ", ";
-            }
-        }
-        return s + "]";
-    };
-    function expectResult(target) {
-        wtu.checkCanvasRect(gl, 
-            0, 0, canvas.width, canvas.height,
-            target, "Canvas should be " + toString(target));
-    };
-
-    function setupBuffers(tl, tr, bl, br) {
-        gl.bindBuffer(gl.ARRAY_BUFFER, quadParameters[0]);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-           1.0,  1.0, tr,
-          -1.0,  1.0, tl,
-          -1.0, -1.0, bl,
-           1.0,  1.0, tr,
-          -1.0, -1.0, bl,
-           1.0, -1.0, br]), gl.STATIC_DRAW);
-        gl.vertexAttribPointer(positionLoc, 3, gl.FLOAT, false, 0, 0);
-    };
-
     // Draw 1: Greater than clear depth
     gl.uniform1f(depthUniform, 1.0);
     wtu.clearAndDrawUnitQuad(gl);
-    expectResult([255, 255, 255, 255]);
+    wtu.checkCanvasRect(gl, 0, 0, canvas.width, canvas.height, [255, 255, 255, 255]);
 
     // Draw 2: Less than clear depth
     gl.uniform1f(depthUniform, 0.0);
     wtu.clearAndDrawUnitQuad(gl);
-    expectResult([255, 0, 0, 255]);
+    wtu.checkCanvasRect(gl, 0, 0, canvas.width, canvas.height, [255, 0, 0, 255]);
 }
 
 function runUniqueObjectTest()
