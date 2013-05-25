@@ -117,9 +117,6 @@ if (!gl) {
   }
 }
 
-// Needs to be global for shouldBe to see it.
-var pixels;
-
 function allocateTexture()
 {
     var texture = gl.createTexture();
@@ -164,10 +161,14 @@ function runTextureCreationTest(testProgram, extensionEnabled, opt_format, opt_n
         glErrorShouldBe(gl, gl.NO_ERROR, "floating-point texture allocation should succeed if OES_texture_float is enabled");
     }
     // Verify that the texture actually works for sampling and contains the expected data.
-    gl.uniform1i(gl.getUniformLocation(testProgram, "tex"), 0);
     gl.uniform4fv(gl.getUniformLocation(testProgram, "subtractor"), subtractor);
     wtu.clearAndDrawUnitQuad(gl);
     checkRenderingResults();
+
+    // Check that linear fails.
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    wtu.clearAndDrawUnitQuad(gl);
+    wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red");
 }
 
 function runRenderTargetTest(testProgram)
