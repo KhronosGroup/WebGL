@@ -38,8 +38,28 @@ var wtu = WebGLTestUtils;
 var gl = null;
 var textureLoc = null;
 var successfullyParsed = false;
+var video;
+var gotPlaying = false;
+var gotTimeUpdate = false;
+var runningTest = false;
 
 initTestingHarnessWaitUntilDone();
+
+
+function playingListener() {
+    gotPlaying = true;
+    maybeRunTest(video);
+}
+
+function timeupdateListener() {
+    // Checking to make sure the current time has advanced beyond
+    // the start time seems to be a reliable heuristic that the
+    // video element has data that can be consumed.
+    if (video.currentTime > 0.0) {
+        gotTimeUpdate = true;
+        maybeRunTest(video);
+    }
+}
 
 function init()
 {
@@ -54,9 +74,9 @@ function init()
 
     textureLoc = gl.getUniformLocation(program, "tex");
 
-    var video = document.getElementById("vid");
-    video.addEventListener(
-        "playing", function() { runTest(video); }, true);
+    video = document.getElementById("vid");
+    video.addEventListener("playing", playingListener, true);
+    video.addEventListener("timeupdate", timeupdateListener, true);
     video.loop = true;
     video.play();
 }
@@ -147,6 +167,14 @@ function runOneIteration(videoElement, useTexSubImage2D, flipY, topColor, bottom
     debug("");
 }
 
+function maybeRunTest(videoElement)
+{
+    if (gotPlaying && gotTimeUpdate && !runningTest) {
+        runningTest = true;
+        runTest(videoElement);
+    }
+}
+
 function runTest(videoElement)
 {
     var red = [255, 0, 0];
@@ -162,7 +190,8 @@ function runTest(videoElement)
     runOneIteration(videoElement, true, false, red, green, false, false, false);
 
     glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
-    videoElement.removeEventListener("playing", runTest);
+    videoElement.removeEventListener("playing", playingListener, true);
+    videoElement.removeEventListener("timeupdate", timeupdateListener, true);
     finishTest();
 }
 </script>

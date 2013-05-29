@@ -16,9 +16,28 @@ var wtu = WebGLTestUtils;
 var gl = null;
 var textureLoc = null;
 var successfullyParsed = false;
+var video;
+var gotPlaying = false;
+var gotTimeUpdate = false;
+var runningTest = false;
 
 if (window.initNonKhronosFramework) {
     window.initNonKhronosFramework(true);
+}
+
+function playingListener() {
+    gotPlaying = true;
+    maybeRunTest(video);
+}
+
+function timeupdateListener() {
+    // Checking to make sure the current time has advanced beyond
+    // the start time seems to be a reliable heuristic that the
+    // video element has data that can be consumed.
+    if (video.currentTime > 0.0) {
+        gotTimeUpdate = true;
+        maybeRunTest(video);
+    }
 }
 
 function init()
@@ -33,9 +52,9 @@ function init()
 
     textureLoc = gl.getUniformLocation(program, "tex");
 
-    var video = document.getElementById("vid");
-    video.addEventListener(
-        "playing", function() { runTest(video); }, true);
+    video = document.getElementById("vid");
+    video.addEventListener("playing", playingListener, true);
+    video.addEventListener("timeupdate", timeupdateListener, true);
     video.loop = true;
     video.play();
 }
@@ -96,6 +115,14 @@ function runOneIteration(videoElement, useTexSubImage2D, flipY, topColor, bottom
     debug("Checking upper left corner");
     wtu.checkCanvasRect(gl, 4, gl.canvas.height - 8, 2, 2, topColor,
                         "shouldBe " + topColor, tolerance);
+}
+
+function maybeRunTest(videoElement)
+{
+    if (gotPlaying && gotTimeUpdate && !runningTest) {
+        runningTest = true;
+        runTest(videoElement);
+    }
 }
 
 function runTest(videoElement)
