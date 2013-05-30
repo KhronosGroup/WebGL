@@ -90,9 +90,18 @@ function getExtensionAndAddProperty(gl, name) {
 
 function reGetExtensionAndTestForProperty(gl, name) {
   newExtension = wtu.getExtensionWithKnownPrefixes(gl, name);
-  if (newExtension) {
-    shouldBeTrue("newExtension.webglTestProperty");
-  }
+  // NOTE: while getting a extension after context lost/restored is allowed to fail
+  // for the purpose the conformance tests it is not.
+  //
+  // Hypothetically the user can switch GPUs live. For example on Windows, install 2 GPUs,
+  // then in the control panen enable 1, disable the others and visa versa. Since the GPUs
+  // have different capabilities one or the other may not support a particlar extension.
+  //
+  // But, for the purpose of the conformance tests the context is expected to restore
+  // on the same GPU and therefore the extensions that succeeded previously should
+  // succeed on restore.
+  shouldBeTrie("newExtension != null");
+  shouldBeTrue("newExtension.webglTestProperty");
   return newExtension;
 }
 
@@ -238,9 +247,7 @@ function testOESTextureFloat() {
     shouldGenerateGLError(gl, gl.INVALID_ENUM, "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.FLOAT, null)");
     // Try re-enabling extension
     OES_texture_float = reGetExtensionAndTestForProperty(gl, "OES_texture_float");
-    if (OES_texture_float) {
-      shouldGenerateGLError(gl, gl.NO_ERROR, "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.FLOAT, null)");
-    }
+    shouldGenerateGLError(gl, gl.NO_ERROR, "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.FLOAT, null)");
   }
 }
 
@@ -250,9 +257,7 @@ function testOESVertexArrayObject() {
     shouldBeNull("OES_vertex_array_object.createVertexArrayOES()");
     // Try re-enabling extension
     OES_vertex_array_object = reGetExtensionAndTestForProperty(gl, "OES_vertex_array_object");
-    if (OES_vertex_array_object) {
-      shouldBeTrue("OES_vertex_array_object.createVertexArrayOES() != NULL");
-    }
+    shouldBeTrue("OES_vertex_array_object.createVertexArrayOES() != null");
   }
 }
 
