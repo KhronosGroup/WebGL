@@ -48,29 +48,12 @@ function generateTest(pixelFormat, pixelType, prologue) {
 
     var videoNdx = 0;
     var video;
-    var gotPlaying = false;
-    var gotTimeUpdate = false;
-    var runningTest = false;
-
-    function playingListener() {
-        gotPlaying = true;
-        maybeRunTest(video);
-    }
-
-    function timeupdateListener() {
-        // Checking to make sure the current time has advanced beyond
-        // the start time seems to be a reliable heuristic that the
-        // video element has data that can be consumed.
-        if (video.currentTime > 0.0) {
-            gotTimeUpdate = true;
-            maybeRunTest(video);
-        }
-    }
+    var videoCallbackId;
 
     function runNextVideo() {
-        if (video) {
-            video.removeEventListener("playing", playingListener, true);
-            video.removeEventListener("timeupdate", timeupdateListener, true);
+        if (videoCallbackId) {
+            wtu.unregisterVideoPlayingCallback(videoCallbackId);
+            videoCallbackId = null;
             video.pause();
         }
 
@@ -78,10 +61,6 @@ function generateTest(pixelFormat, pixelType, prologue) {
             finishTest();
             return;
         }
-
-        gotPlaying = false;
-        gotTimeUpdate = false;
-        runningTest = false;
 
         var info = videos[videoNdx++];
         debug("");
@@ -101,8 +80,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
         };
 
         document.body.appendChild(video);
-        video.addEventListener("playing", playingListener, true);
-        video.addEventListener("timeupdate", timeupdateListener, true);
+        videoCallbackId = wtu.registerVideoPlayingCallback(video, runTest);
         video.type = info.type;
         video.src = info.src;
         video.loop = true;
@@ -179,14 +157,6 @@ function generateTest(pixelFormat, pixelType, prologue) {
         debug("Checking upper left corner");
         wtu.checkCanvasRect(gl, 4, gl.canvas.height - 8, 2, 2, topColor,
                             "shouldBe " + topColor, tolerance);
-    }
-
-    function maybeRunTest(videoElement)
-    {
-        if (gotPlaying && gotTimeUpdate && !runningTest) {
-            runningTest = true;
-            runTest(videoElement);
-        }
     }
 
     function runTest(videoElement)
