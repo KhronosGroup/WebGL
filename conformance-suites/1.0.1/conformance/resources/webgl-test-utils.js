@@ -1296,106 +1296,44 @@ var addShaderSource = function(element, label, source) {
 }
 
 /**
- * A pseudo-class which tracks the state of a video element in order
- * to reliably fire a "playing" callback when the video has valid data
- * to be consumed.
- * @param {!HTMLVideoElement} video Video element to be tracked.
+ * Starts playing a video and waits for it to be consumable.
+ * @param {!HTMLVideoElement} video An HTML5 Video element.
+ * @param {!function(!HTMLVideoElement): void>} callback. Function to call when
+ *        video is ready.
  */
-function VideoStateTracker(video) {
-  var that = this;
+var startPlayingAndWaitForVideo = function(video, callback) {
+  var gotPlaying = false;
+  var gotTimeUpdate = false;
 
-  that.video_ = video;
-  that.gotPlaying_ = false;
-  that.gotTimeUpdate_ = false;
-  that.callback_ = null;
-  that.calledCallback_ = false;
-
-  that.playingListener_ = function() {
-    that.gotPlaying_ = true;
-    that.maybeCallCallback_();
+  var maybeCallCallback = function() {
+    if (gotPlaying && gotTimeUpdate && callback) {
+      callback(video);
+      callback = undefined;
+      video.removeEventListener('playing', playingListener, true);
+      video.removeEventListener('timeupdate', timeupdateListener, true);
+    }
   };
 
-  that.timeupdateListener_ = function() {
+  var playingListener = function() {
+    gotPlaying = true;
+    maybeCallCallback();
+  };
+
+  var timeupdateListener = function() {
     // Checking to make sure the current time has advanced beyond
     // the start time seems to be a reliable heuristic that the
     // video element has data that can be consumed.
-    if (that.video_.currentTime > 0.0) {
-        that.gotTimeUpdate_ = true;
-        that.maybeCallCallback_();
+    if (video.currentTime > 0.0) {
+      gotTimeUpdate = true;
+      maybeCallCallback();
     }
   };
-}
 
-/**
- * Calls the callback if ready to do so.
- */
-VideoStateTracker.prototype.maybeCallCallback_ = function() {
-  if (this.gotPlaying_ && this.gotTimeUpdate_ && this.callback_ && !this.calledCallback_) {
-    this.calledCallback_ = true;
-    this.callback_(this.video_);
-  }
+  video.addEventListener('playing', playingListener, true);
+  video.addEventListener('timeupdate', timeupdateListener, true);
+  video.loop = true;
+  video.play();
 };
-
-/**
- * Registers the "playing" callback.
- * @param {!function(!HTMLVideoElement): void} callback The callback to be
- *   called when the video is playing.
- */
-VideoStateTracker.prototype.registerPlayingCallback = function(callback) {
-  if (this.callback_) {
-    throw "Already registered";
-  }
-
-  if (this.calledCallback_) {
-    throw "Already called callback";
-  }
-
-  this.callback_ = callback;
-
-  this.video_.addEventListener("playing", this.playingListener_, true);
-  this.video_.addEventListener("timeupdate", this.timeupdateListener_, true);
-};
-
-/**
- * Unregisters the previously registered "playing" callback.
- */
-VideoStateTracker.prototype.unregisterPlayingCallback = function() {
-  if (!this.callback_) {
-    throw "Callback not registered";
-  }
-
-  this.video_.removeEventListener("playing", this.playingListener_, true);
-  this.video_.removeEventListener("timeupdate", this.timeupdateListener_, true);
-};
-
-/**
- * Registers a "playing" callback against a video element. This
- * callback is called when the video element is reliably playing and
- * has valid data to be consumed. Returns an id which must be passed
- * back into unregisterPlayingCallback, later.
- *
- * @param {!HTMLVideoElement} video Video element with which to register callback.
- * @param {!function(!HTMLVideoElement): void} callback Callback to register.
- * @return {!Object} Id to pass to unregisterVideoPlayingCallback.
- */
-function registerVideoPlayingCallback(video, callback) {
-  var tracker = new VideoStateTracker(video);
-  tracker.registerPlayingCallback(callback);
-  return tracker;
-}
-
-/**
- * Unregisters a previously registered callback against a video element.
- *
- * @param {!Object} id Id returned from registerPlayingCallback.
- */
-function unregisterVideoPlayingCallback(id) {
-  if (!id instanceof VideoStateTracker) {
-    throw "Invalid id";
-  }
-
-  id.unregisterPlayingCallback();
-}
 
 return {
   addShaderSource: addShaderSource,
@@ -1434,7 +1372,6 @@ return {
   loggingOff: loggingOff,
   makeImage: makeImage,
   error: error,
-  registerVideoPlayingCallback: registerVideoPlayingCallback,
   setupProgram: setupProgram,
   setupQuad: setupQuad,
   setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
@@ -1446,11 +1383,11 @@ return {
   setupUnitQuadWithTexCoords: setupUnitQuadWithTexCoords,
   setupWebGLWithShaders: setupWebGLWithShaders,
   shallowCopyObject: shallowCopyObject,
+  startPlayingAndWaitForVideo: startPlayingAndWaitForVideo,
   startsWith: startsWith,
   shouldGenerateGLError: shouldGenerateGLError,
   readFile: readFile,
   readFileList: readFileList,
-  unregisterVideoPlayingCallback: unregisterVideoPlayingCallback,
 
   none: false
 };

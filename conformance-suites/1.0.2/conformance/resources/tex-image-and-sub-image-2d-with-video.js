@@ -48,12 +48,9 @@ function generateTest(pixelFormat, pixelType, prologue) {
 
     var videoNdx = 0;
     var video;
-    var videoCallbackId;
 
     function runNextVideo() {
-        if (videoCallbackId) {
-            wtu.unregisterVideoPlayingCallback(videoCallbackId);
-            videoCallbackId = null;
+        if (video) {
             video.pause();
         }
 
@@ -80,11 +77,9 @@ function generateTest(pixelFormat, pixelType, prologue) {
         };
 
         document.body.appendChild(video);
-        videoCallbackId = wtu.registerVideoPlayingCallback(video, runTest);
         video.type = info.type;
         video.src = info.src;
-        video.loop = true;
-        video.play();
+        wtu.startPlayingAndWaitForVideo(video, runTest);
     }
 
     var init = function()

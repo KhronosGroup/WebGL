@@ -35,9 +35,7 @@ function init()
     textureLoc = gl.getUniformLocation(program, "tex");
 
     video = document.getElementById("vid");
-    wtu.registerVideoPlayingCallback(video, runTest);
-    video.loop = true;
-    video.play();
+    wtu.startPlayingAndWaitForVideo(video, runTest);
 }
 
 // These two declarations need to be global for "shouldBe" to see them
