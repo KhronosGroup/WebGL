@@ -1295,6 +1295,46 @@ var addShaderSource = function(element, label, source) {
   element.appendChild(div);
 }
 
+/**
+ * Starts playing a video and waits for it to be consumable.
+ * @param {!HTMLVideoElement} video An HTML5 Video element.
+ * @param {!function(!HTMLVideoElement): void>} callback. Function to call when
+ *        video is ready.
+ */
+var startPlayingAndWaitForVideo = function(video, callback) {
+  var gotPlaying = false;
+  var gotTimeUpdate = false;
+
+  var maybeCallCallback = function() {
+    if (gotPlaying && gotTimeUpdate && callback) {
+      callback(video);
+      callback = undefined;
+      video.removeEventListener('playing', playingListener, true);
+      video.removeEventListener('timeupdate', timeupdateListener, true);
+    }
+  };
+
+  var playingListener = function() {
+    gotPlaying = true;
+    maybeCallCallback();
+  };
+
+  var timeupdateListener = function() {
+    // Checking to make sure the current time has advanced beyond
+    // the start time seems to be a reliable heuristic that the
+    // video element has data that can be consumed.
+    if (video.currentTime > 0.0) {
+      gotTimeUpdate = true;
+      maybeCallCallback();
+    }
+  };
+
+  video.addEventListener('playing', playingListener, true);
+  video.addEventListener('timeupdate', timeupdateListener, true);
+  video.loop = true;
+  video.play();
+};
+
 return {
   addShaderSource: addShaderSource,
   create3DContext: create3DContext,
@@ -1343,6 +1383,7 @@ return {
   setupUnitQuadWithTexCoords: setupUnitQuadWithTexCoords,
   setupWebGLWithShaders: setupWebGLWithShaders,
   shallowCopyObject: shallowCopyObject,
+  startPlayingAndWaitForVideo: startPlayingAndWaitForVideo,
   startsWith: startsWith,
   shouldGenerateGLError: shouldGenerateGLError,
   readFile: readFile,

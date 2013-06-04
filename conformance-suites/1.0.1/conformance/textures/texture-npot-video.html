@@ -14,6 +14,7 @@ var wtu = WebGLTestUtils;
 var gl = null;
 var textureLoc = null;
 var successfullyParsed = false;
+var video;
 
 if (window.initNonKhronosFramework) {
     window.initNonKhronosFramework(true);
@@ -32,11 +33,8 @@ function init()
 
     textureLoc = gl.getUniformLocation(program, "tex");
 
-    var video = document.getElementById("vid");
-    video.addEventListener(
-        "playing", function() { runTest(video); }, true);
-    video.loop = true;
-    video.play();
+    video = document.getElementById("vid");
+    wtu.startPlayingAndWaitForVideo(video, runTest);
 }
 
 // These two declarations need to be global for "shouldBe" to see them

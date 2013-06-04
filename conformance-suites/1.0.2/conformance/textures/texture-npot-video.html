@@ -38,6 +38,7 @@ var wtu = WebGLTestUtils;
 var gl = null;
 var textureLoc = null;
 var successfullyParsed = false;
+var video;
 
 initTestingHarnessWaitUntilDone();
 
@@ -54,11 +55,8 @@ function init()
 
     textureLoc = gl.getUniformLocation(program, "tex");
 
-    var video = document.getElementById("vid");
-    video.addEventListener(
-        "playing", function() { runTest(video); }, true);
-    video.loop = true;
-    video.play();
+    video = document.getElementById("vid");
+    wtu.startPlayingAndWaitForVideo(video, runTest);
 }
 
 // These two declarations need to be global for "shouldBe" to see them
@@ -162,7 +160,6 @@ function runTest(videoElement)
     runOneIteration(videoElement, true, false, red, green, false, false, false);
 
     glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
-    videoElement.removeEventListener("playing", runTest);
     finishTest();
 }
 </script>
