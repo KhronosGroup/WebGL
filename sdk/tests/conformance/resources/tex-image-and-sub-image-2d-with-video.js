@@ -48,12 +48,17 @@ function generateTest(pixelFormat, pixelType, prologue) {
 
     var videoNdx = 0;
     var video;
-    var runNextVideo = function() {
+
+    function runNextVideo() {
+        if (video) {
+            video.pause();
+        }
+
         if (videoNdx == videos.length) {
-            video.removeEventListener("playing", runTest);
             finishTest();
             return;
         }
+
         var info = videos[videoNdx++];
         debug("");
         debug("testing: " + info.type);
@@ -61,7 +66,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
         var canPlay = true;
         if (!video.canPlayType) {
           testFailed("video.canPlayType required method missing");
-          runNextTest();
+          runNextVideo();
           return;
         }
 
@@ -72,12 +77,9 @@ function generateTest(pixelFormat, pixelType, prologue) {
         };
 
         document.body.appendChild(video);
-        video.addEventListener(
-            "playing", function() { runTest(video); }, true);
         video.type = info.type;
         video.src = info.src;
-        video.loop = true;
-        video.play();
+        wtu.startPlayingAndWaitForVideo(video, runTest);
     }
 
     var init = function()
