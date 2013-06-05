@@ -17,6 +17,11 @@
   </depends>
   <overview>
     <p>This extension exposes new functions which simulate losing and restoring the WebGL context, even on platforms where the context can never be lost.  Consult the WebGL specification for documentation about the <code>webglcontextlost</code> and <code>webglcontextrestored</code> events.</p>
+    <p>When this extension is enabled:
+      <ul>
+        <li><code>loseContext</code> and <code>restoreContext</code> are allowed to generate INVALID_OPERATION errors even when the context is lost.</li>
+      </ul>
+    </p>
   </overview>
   <idl xml:space="preserve">
 interface WEBGL_lose_context {
@@ -72,6 +77,9 @@ interface WEBGL_lose_context {
     </revision>
     <revision date="2013/05/15">
       <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
+    <revision date="2013/06/05">
+      <change>Clarified error generation that conflicted with WebGL spec.</change>
     </revision>
   </history>
 </ratified>
