@@ -48,7 +48,7 @@ Tests.testInvalidArgs = function() {
         var ok = false;
         var rv;
         // assert that GL function fails when called with invalid args
-        assertFail("This should fail: "+name+"("+mutatedArgs.map(function(a){return Object.toSource(a)}).join(",")+")",
+        assertFail("This should fail: "+name+"("+argsToString(mutatedArgs)+")",
           function(){
             GL.getError(); // clear off existing error
             rv = GL[name].apply(GL, mutatedArgs);
@@ -58,7 +58,7 @@ Tests.testInvalidArgs = function() {
         // if we need to cleanup the return value, do it here
         // e.g. calling gl.deleteBuffer(rv) after testing gl.createBuffer() above
         if (gen.returnValueCleanup && rv != null) {
-          assertOk("Cleaning up return value after "+name+"("+mutatedArgs.map(function(a){return Object.toSource(a)}).join(",")+")",
+          assertOk("Cleaning up return value after "+name+"("+argsToString(mutatedArgs)+")",
                    function() { gen.returnValueCleanup(rv); });
         }
         GL.getError();
