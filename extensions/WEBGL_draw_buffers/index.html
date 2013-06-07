@@ -47,6 +47,12 @@
                <code>COLOR_ATTACHMENT2_WEBGL = RGBA/UNSIGNED_BYTE</code><br/>
                <code>COLOR_ATTACHMENT3_WEBGL = RGBA/UNSIGNED_BYTE</code><br/></li>
         </ul>
+      </li><li>
+        Although the extension name is prefixed with WEBGL the extension must be enabled with the 
+        <code>#extension GL_EXT_draw_buffers</code> directive, as shown in the sample code, to use
+        the extension in a shader.
+
+        Likewise the shading language preprocessor <code>#define GL_EXT_draw_buffers</code>, will be defined to 1 if the extension is supported.
       </li></ul><p>
         Consult the above extension for documentation, issues and new functions and enumerants.
       </p>
@@ -94,4 +100,15 @@ interface WEBGL_draw_buffers {
 
     void drawBuffersWEBGL(sequence&lt;GLenum&gt; buffers);
 };
-  </pre><h2 class="no-toc">Revision History</h2><p>Revision 1, 2012/10/16</p><ul><li>Initial revision.</li></ul><p>Revision 2, 2012/11/05</p><ul><li>Corrected typo in drawBuffersWEBGL. Changed referenced spec version to 1.0 to fix broken link.</li></ul><p>Revision 3, 2013/02/02</p><ul><li>Renamed to EXT_draw_buffers per plan of OpenGL ES working group. Moved to draft status. Assigned number.</li></ul><p>Revision 4, 2013/03/05</p><ul><li>Renamed to WEBGL_draw_buffers per discussion on public_webgl list. Added guarantees to make it easier for developers to use the extension.</li></ul></body></html>
+  </pre><h2 class="no-toc">Sample Code</h2>
+    <pre>
+    #extension GL_EXT_draw_buffers : require
+    precision mediump float;
+    void main() {
+        gl_FragData[0] = vec4(1.0, 0.0, 0.0, 1.0);
+        gl_FragData[1] = vec4(0.0, 1.0, 0.0, 1.0);
+        gl_FragData[2] = vec4(0.0, 0.0, 1.0, 1.0);
+        gl_FragData[3] = vec4(1.0, 1.0, 1.0, 1.0);
+    }
+    </pre>
+  <h2 class="no-toc">Revision History</h2><p>Revision 1, 2012/10/16</p><ul><li>Initial revision.</li></ul><p>Revision 2, 2012/11/05</p><ul><li>Corrected typo in drawBuffersWEBGL. Changed referenced spec version to 1.0 to fix broken link.</li></ul><p>Revision 3, 2013/02/02</p><ul><li>Renamed to EXT_draw_buffers per plan of OpenGL ES working group. Moved to draft status. Assigned number.</li></ul><p>Revision 4, 2013/03/05</p><ul><li>Renamed to WEBGL_draw_buffers per discussion on public_webgl list. Added guarantees to make it easier for developers to use the extension.</li></ul></body></html>
