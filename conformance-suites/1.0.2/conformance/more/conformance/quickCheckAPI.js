@@ -410,4 +410,21 @@ argGeneratorTestRunner = function(argGen, testFunction, numberOfTests) {
   if (argGen.teardown)
     argGen.teardown.apply(argGen, setupVars);
   if (error) throw(error);
-}
+};
+
+// TODO: Remove this
+// WebKit or at least Chrome is really slow at laying out strings with
+// unprintable characters. Without this tests can take 30-90 seconds.
+// With this they're instant.
+sanitize = function(str) {
+  var newStr = [];
+  for (var ii = 0; ii < str.length; ++ii) {
+    var c = str.charCodeAt(ii);
+    newStr.push((c > 31 && c < 128) ? str[ii] : "?");
+  }
+  return newStr.join('');
+};
+
+argsToString = function(args) {
+  return sanitize(args.map(function(a){return Object.toSource(a)}).join(","));
+};
