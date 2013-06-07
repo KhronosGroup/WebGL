@@ -57,6 +57,13 @@
                <code>COLOR_ATTACHMENT3_WEBGL = RGBA/UNSIGNED_BYTE</code><br/></li>
         </ul>
       </addendum>
+      <addendum>
+        Although the extension name is prefixed with WEBGL the extension must be enabled with the 
+        <code>#extension GL_EXT_draw_buffers</code> directive, as shown in the sample code, to use
+        the extension in a shader.
+
+        Likewise the shading language preprocessor <code>#define GL_EXT_draw_buffers</code>, will be defined to 1 if the extension is supported.
+      </addendum>
     </mirrors>
     <features>
       <feature>
@@ -106,6 +113,18 @@ interface WEBGL_draw_buffers {
     void drawBuffersWEBGL(sequence&lt;GLenum&gt; buffers);
 };
   </idl>
+  <samplecode xml:space="preserve">
+    <pre>
+    #extension GL_EXT_draw_buffers : require
+    precision mediump float;
+    void main() {
+        gl_FragData[0] = vec4(1.0, 0.0, 0.0, 1.0);
+        gl_FragData[1] = vec4(0.0, 1.0, 0.0, 1.0);
+        gl_FragData[2] = vec4(0.0, 0.0, 1.0, 1.0);
+        gl_FragData[3] = vec4(1.0, 1.0, 1.0, 1.0);
+    }
+    </pre>
+  </samplecode>
   <history>
     <revision date="2012/10/16">
       <change>Initial revision.</change>
@@ -118,6 +137,9 @@ interface WEBGL_draw_buffers {
     </revision>
     <revision date="2013/03/05">
       <change>Renamed to WEBGL_draw_buffers per discussion on public_webgl list. Added guarantees to make it easier for developers to use the extension.</change>
+    </revision>
+    <revision date="2013/06/07">
+      <change>Clarified naming of shader directives.</change>
     </revision>
   </history>
 </draft>
