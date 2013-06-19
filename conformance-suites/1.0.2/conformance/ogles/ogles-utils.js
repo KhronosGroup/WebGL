@@ -470,10 +470,7 @@ function drawWithProgram(program, programInfo, test) {
   // Set test specific uniforms
   for (var name in programInfo.uniforms) {
     var location = getUniformLocation(name);
-    if (!location) {
-      testFailed("uniform not found: " + name);
-      continue;
-    }
+    // Note that in some tests, uniforms are allowed to be inactive
     var uniform = programInfo.uniforms[name];
     var type = uniform.type;
     var value = uniform.value;
