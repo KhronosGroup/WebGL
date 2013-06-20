@@ -76,6 +76,7 @@ var tex;
 var tex3;
 var rb;
 var fb;
+var id;
 var resource;
 var shader;
 var program;
@@ -134,6 +135,10 @@ function makeFailCallback(msg) {
 
 
 function runTestExtension() {
+  var canvas2 = document.getElementById("canvas2");
+  gl2 = wtu.create3DContext(canvas2, { group: ext.group });
+  ext2 = wtu.getExtensionWithKnownPrefixes(gl2, "WEBGL_shared_resources");
+
   // Runs an array of functions. Expects each function takes a callback
   // it will call when finished.
   var runSequence = function(steps) {
@@ -448,9 +453,6 @@ function runTestExtension() {
   var testRendering = function(callback) {
     debug("");
     debug("test rendering");
-    var canvas2 = document.getElementById("canvas2");
-    gl2 = wtu.create3DContext(canvas2, { group: ext.group });
-    ext2 = wtu.getExtensionWithKnownPrefixes(gl2, "WEBGL_shared_resources");
     var positionLocation = 0;
     var texcoordLocation = 1;
     var program = wtu.setupSimpleTextureProgram(gl, positionLocation, texcoordLocation);
@@ -563,14 +565,22 @@ function runTestExtension() {
       debug("test READ_ONLY texture attachment");
       debug("Test we fail of we haven't bound again");
       shouldGenerateGLError(gl, gl.INVALID_FRAMEBUFFER_OPERATION, "gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4))");
+      shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
+      shouldBeTrue("gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
+      shouldBeTrue("gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
 
-      gl.bindRenderbuffer(gl.RENDERBUFFER, rb);
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, destTex);
+      gl.activeTexture(gl.TEXTURE0);
       debug("Test we fail to draw because we're read only.");
+      shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
+      shouldBeTrue("gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
       shouldGenerateGLError(gl, gl.INVALID_FRAMEBUFFER_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 6)");
       shouldGenerateGLError(gl, gl.INVALID_FRAMEBUFFER_OPERATION, "gl.clear(gl.COLOR_BUFFER_BIT)");
 
       debug("Test we can read a READ_ONLY texture.");
-      shouldGenerateGLError(gl, gl.INVALID_FRAMEBUFFER_OPERATION, "gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4))");
+      shouldBeTrue("gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
+      shouldGenerateGLError(gl, gl.NO_ERROR, "gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4))");
 
       checkRenderbuffer(callback);
     };
@@ -599,13 +609,19 @@ function runTestExtension() {
         debug("test READ_ONLY renderbuffer attachment");
         debug("Test we fail of we haven't bound again");
         shouldGenerateGLError(gl, gl.INVALID_FRAMEBUFFER_OPERATION, "gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4))");
+        shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
+        shouldBeTrue("gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
+        shouldBeTrue("gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
 
         gl.bindRenderbuffer(gl.RENDERBUFFER, rb);
         debug("Test we fail to draw because we're read only.");
         shouldGenerateGLError(gl, gl.INVALID_FRAMEBUFFER_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 6)");
         shouldGenerateGLError(gl, gl.INVALID_FRAMEBUFFER_OPERATION, "gl.clear(gl.COLOR_BUFFER_BIT)");
+        shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
+        shouldBeTrue("gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
 
         debug("Test we can read a READ_ONLY renderbuffer.");
+        shouldBeTrue("gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
         shouldGenerateGLError(gl, gl.NO_ERROR, "gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4))");
       }
 
@@ -733,7 +749,90 @@ function runTestExtension() {
     shouldGenerateGLError(gl, gl.INVALID_OPERATION, "ext.releaseSharedResource(tex3)");
     shouldGenerateGLError(gl, gl.INVALID_OPERATION, "ext.acquireSharedResource(tex3, ext.READ_ONLY, makeFailCallback('should not be able to acquire resource from other context'))");
 
-    callback();
+    var failTest = function() {
+      testFailed("cancelled callback was called");
+    };
+
+    var tex = gl.createTexture();
+    debug("test releasing from the wrong context. Should be a no-op");
+    shouldGenerateGLError(gl, gl.NO_ERROR, "ext2.releaseSharedResource(tex)");
+
+    id = ext2.acquireSharedResource(tex, ext.READ_ONLY, failTest);
+    debug("test cancelling a request for which an event has not been posted");
+    ext2.cancelAcquireSharedResource(id);
+
+    debug("test cancelling a request for which an event has already been posted");
+    ext.releaseSharedResource(tex);
+    id = ext.acquireSharedResource(tex, ext.READ_ONLY, failTest);
+    ext.cancelAcquireSharedResource(id);
+
+    debug("test cancelling on the wrong context's extension is ignored");
+    id = ext2.acquireSharedResource(tex, ext.READ_ONLY, callback);
+    shouldGenerateGLError(gl, gl.NO_ERROR, 'ext.cancelAcquireSharedResource(id)');
+  };
+
+  var testLostContext = function(callback) {
+    var WEBGL_lose_context = wtu.getExtensionWithKnownPrefixes(gl, "WEBGL_lose_context");
+    if (!WEBGL_lose_context) {
+      callback();
+      return;
+    }
+
+    var tex = gl.createTexture();
+    var tex2 = gl.createTexture();
+
+    var setupAcquire = function(callback) {
+      var callbacksNeeded = 3;
+      var waitForContextLostAndAcquire = function(e) {
+        if (e && e.preventDefault) {
+          e.preventDefault();  // allow context restore.
+        }
+        --callbacksNeeded;
+        if (callbacksNeeded == 0) {
+          callback();
+        }
+        return false;
+      };
+
+      debug("");
+      debug("Test extension still functions during context lost.");
+      acquireMultipleResources([ext2], [tex, tex2], ext2.READ_ONLY, waitForContextLostAndAcquire);
+      canvas1.addEventListener("webglcontextlost", waitForContextLostAndAcquire, false);
+      canvas2.addEventListener("webglcontextlost", waitForContextLostAndAcquire, false);
+      // Release one before context lost
+      ext.releaseSharedResource(tex);
+      WEBGL_lose_context.loseContext();
+      // Release one after context lost
+      ext.releaseSharedResource(tex2);
+
+      shouldBeTrue('gl.isContextLost()');
+      shouldBeTrue('gl2.isContextLost()');
+    };
+
+    var checkAcquireExt2 = function(callback) {
+      testPassed("was able to acquire resources during context lost");
+      acquireMultipleResources([ext], [tex, tex2], ext.READ_ONLY, callback);
+    };
+
+    var checkAcquireExt = function(callback) {
+      testPassed("was able to request acquire resources during context lost");
+      canvas1.addEventListener("webglcontextrestored", callback, false);
+      WEBGL_lose_context.restoreContext();
+    };
+
+    var passTest = function(callback) {
+      testPassed("extension works during lost context");
+      callback();
+    };
+
+    runSequence(
+      [
+        setupAcquire,
+        checkAcquireExt2,
+        checkAcquireExt,
+        passTest,
+        callback,
+      ]);
   };
 
   runSequence(
@@ -750,6 +849,7 @@ function runTestExtension() {
       makeSingleContextResourceTest(textureTests),
       testRendering,
       testMisc,
+      testLostContext,
       finishTest,
     ]);
 
