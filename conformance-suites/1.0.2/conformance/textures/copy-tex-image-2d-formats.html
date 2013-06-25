@@ -66,14 +66,6 @@ var formats = [
   'RGBA'
 ];
 
-var isRenderable = {
-  'ALPHA': false,
-  'LUMINANCE': false,
-  'LUMINANCE_ALPHA': false,
-  'RGB': true,
-  'RGBA': true
-};
-
 var gl = null;
 var wtu = WebGLTestUtils;
 
@@ -115,12 +107,8 @@ function testBackbufferFormats() {
 
     debug('');
     if (status == gl.FRAMEBUFFER_COMPLETE) {
-      if (!isRenderable[backFormat]) {
-        testFailed('Creating framebuffer from ' + backFormat + ' texture succeeded even though it is not a renderable format');
-      } else {
-        debug('test with ' + backFormat + ' fbo');
-        testFormats(backFormat);
-      }
+      debug('test with ' + backFormat + ' fbo');
+      testFormats(backFormat);
     } else {
       debug(backFormat + ' not supported as a renderbuffer attachment');
     }
@@ -143,7 +131,7 @@ function toChannels(value) {
 function testCopyTexImage2D(backFormat, texFormat) {
   var need = getChannelsFromFormat(texFormat);
   var have = getChannelsFromFormat(backFormat);
-  var shouldPass = (need & have) == need;
+  var shouldPass = (need & have) == need
 
   //debug("need: " + toChannels(need));
   //debug("have: " + toChannels(have));
