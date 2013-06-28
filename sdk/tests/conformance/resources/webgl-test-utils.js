@@ -962,9 +962,11 @@ var clipToRange = function(value, extent, min, max) {
 
 /**
  * Checks that a portion of a canvas is 1 color.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
+ *         WebGLRenderingContext or 2D context to use.
  * @param {number} x left corner of region to check.
- * @param {number} y bottom corner of region to check.
+ * @param {number} y bottom corner of region to check in case of checking from
+ *        a GL context or top corner in case of checking from a 2D context.
  * @param {number} width width of region to check.
  * @param {number} height width of region to check.
  * @param {!Array.<number>} color The color expected. A 4 element array where
@@ -1023,9 +1025,11 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
 
 /**
  * Checks that a portion of a canvas is 1 color.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
+ *         WebGLRenderingContext or 2D context to use.
  * @param {number} x left corner of region to check.
- * @param {number} y bottom corner of region to check.
+ * @param {number} y bottom corner of region to check in case of checking from
+ *        a GL context or top corner in case of checking from a 2D context.
  * @param {number} width width of region to check.
  * @param {number} height width of region to check.
  * @param {!Array.<number>} color The color expected. A 4 element array where
@@ -1053,7 +1057,8 @@ var checkCanvasRect = function(gl, x, y, width, height, color, opt_msg, opt_erro
 
 /**
  * Checks that an entire canvas is 1 color.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
+ *         WebGLRenderingContext or 2D context to use.
  * @param {!Array.<number>} color The color expected. A 4 element array where
  *        each element is in the range 0 to 255.
  * @param {string} msg Message to associate with success. Eg ("should be red").
@@ -1067,9 +1072,11 @@ var checkCanvas = function(gl, color, msg, errorRange) {
 /**
  * Checks a rectangular area both inside the area and outside
  * the area.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
+ *         WebGLRenderingContext or 2D context to use.
  * @param {number} x left corner of region to check.
- * @param {number} y bottom corner of region to check.
+ * @param {number} y bottom corner of region to check in case of checking from
+ *        a GL context or top corner in case of checking from a 2D context.
  * @param {number} width width of region to check.
  * @param {number} height width of region to check.
  * @param {!Array.<number>} innerColor The color expected inside
