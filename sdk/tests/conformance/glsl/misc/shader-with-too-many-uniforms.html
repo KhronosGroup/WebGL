@@ -88,7 +88,8 @@ var maxFragmentUniformVectors = gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS)
 var maxVertexUniformVectors = gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS);
 var tests = [
  { desc: "using all uniforms in vertex shader should succeed",
-   maxUniformVectors: maxVertexUniformVectors,
+// 2 uniform vector registers may be spent for literal constants in the shader code
+   maxUniformVectors: maxVertexUniformVectors - 2,
    vShader: "vshader-max",
    fShader: "fshader",
    success: true,
@@ -101,7 +102,8 @@ var tests = [
    success: false,
  },
  { desc: "using all uniforms in fragment shader should succeed",
-   maxUniformVectors: maxFragmentUniformVectors,
+// 2 uniform vector registers may be spent for literal constants in the shader code
+   maxUniformVectors: maxFragmentUniformVectors - 2,
    vShader: "vshader",
    fShader: "fshader-max",
    success: true,
