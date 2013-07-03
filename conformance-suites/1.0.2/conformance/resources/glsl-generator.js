@@ -252,7 +252,7 @@ var runFeatureTest = function(params) {
   var canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
-  var gl = wtu.create3DContext(canvas);
+  var gl = wtu.create3DContext(canvas, { premultipliedAlpha: false });
   if (!gl) {
     testFailed("context does not exist");
     finishTest();
@@ -617,7 +617,7 @@ var runReferenceImageTest = function(params) {
   var canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
-  var gl = wtu.create3DContext(canvas, { antialias: false });
+  var gl = wtu.create3DContext(canvas, { antialias: false, premultipliedAlpha: false });
   if (!gl) {
     testFailed("context does not exist");
     finishTest();
