@@ -47,9 +47,9 @@
         <p>The following format-specific restrictions must be enforced:</p>
         <dl>
           <dt>COMPRESSED_RGB_ETC1_WEBGL</dt>
-          <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
-          <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
-          must be equal to the following number of bytes:</p>
+          <dd><p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+          either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
+          equal to the following number of bytes:</p>
           <blockquote><code>
             floor((width + 3) / 4) * floor((height + 3) / 4) * 8
           </code></blockquote>
@@ -68,6 +68,9 @@ interface WEBGL_compressed_texture_etc1 {
   <history>
     <revision date="2012/02/23">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2013/07/03">
+      <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
     </revision>
   </history>
 </proposal>

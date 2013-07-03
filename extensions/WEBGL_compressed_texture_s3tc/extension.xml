@@ -34,8 +34,8 @@
         <dl>
           <dt>COMPRESSED_RGB_S3TC_DXT1_EXT</dt>
           <dt>COMPRESSED_RGBA_S3TC_DXT1_EXT</dt>
-          <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
-          <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
+          <dd><p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+          either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
           must match the following equation:</p>
           <blockquote><code>
           floor((width + 3) / 4) * floor((height + 3) / 4) * 8
@@ -61,9 +61,9 @@
 
           <dt>COMPRESSED_RGBA_S3TC_DXT3_EXT</dt>
           <dt>COMPRESSED_RGBA_S3TC_DXT5_EXT</dt>
-          <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
-          <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
-          must match the following equation:</p>
+          <dd><p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+          either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must
+          match the following equation:</p>
           <blockquote><code>
           floor((width + 3) / 4) * floor((height + 3) / 4) * 16
           </code></blockquote>
@@ -107,6 +107,9 @@ interface WEBGL_compressed_texture_s3tc {
     </revision>
     <revision date="2013/05/15">
       <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
+    <revision date="2013/07/03">
+      <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
     </revision>
   </history>
 </ratified>
