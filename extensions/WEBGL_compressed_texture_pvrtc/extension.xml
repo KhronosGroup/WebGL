@@ -50,9 +50,9 @@
         <dl>
           <dt>COMPRESSED_RGB_PVRTC_4BPPV1_IMG</dt>
           <dt>COMPRESSED_RGBA_PVRTC_4BPPV1_IMG</dt>
-          <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
-          <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
-          must be equal to the following number of bytes:</p>
+          <dd><p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+          either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
+          equal to the following number of bytes:</p>
           <blockquote><code>
             max(width, 8) * max(height, 8) / 2
           </code></blockquote>
@@ -61,9 +61,9 @@
 
           <dt>COMPRESSED_RGB_PVRTC_2BPPV1_IMG</dt>
           <dt>COMPRESSED_RGBA_PVRTC_2BPPV1_IMG</dt>
-          <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
-          <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
-          must be equal to the following number of bytes:</p>
+          <dd><p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+          either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
+          equal to the following number of bytes:</p>
           <blockquote><code>
             max(width, 16) * max(height, 8) / 4
           </code></blockquote>
@@ -85,6 +85,9 @@ interface WEBGL_compressed_texture_pvrtc {
   <history>
     <revision date="2012/08/07">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2013/07/03">
+      <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
     </revision>
   </history>
 </draft>
