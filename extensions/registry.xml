@@ -107,7 +107,7 @@
       <change>Based on pull request from J Kenneth King, added WebGLHandlesContextLoss extended attribute to isVertexArrayOES and added markup for new functions.</change>
     </revision><revision date="2013/05/15" number="10">
       <change>Ratified by Khronos Board of Promoters.</change>
-    </revision></history></ratified><!-- vi:set sw=2 ts=4: --><proposal href="proposals/WEBGL_dynamic_texture/"><name>WEBGL_dynamic_texture</name></proposal><proposal href="proposals/ANGLE_timer_query/"><name>ANGLE_timer_query</name></proposal><proposal href="proposals/WEBGL_compressed_texture_etc1/"><name>WEBGL_compressed_texture_etc1</name></proposal><proposal href="proposals/EXT_blend_minmax/"><name>EXT_blend_minmax</name></proposal><draft href="WEBGL_color_buffer_float/"><name>WEBGL_color_buffer_float</name><number>15</number><history><revision date="2012/11/08" number="1">
+    </revision></history></ratified><draft href="WEBGL_color_buffer_float/"><name>WEBGL_color_buffer_float</name><number>15</number><history><revision date="2012/11/08" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2012/11/12" number="2">
       <change>Don't mirror EXT_color_buffer_half_float. Mirror has a different
@@ -118,14 +118,20 @@
       <change>Move to draft.</change>
     </revision></history></draft><draft href="WEBGL_compressed_texture_atc/"><name>WEBGL_compressed_texture_atc</name><number>12</number><history><revision date="2012/09/11" number="1">
       <change>Initial revision.</change>
+    </revision><revision date="2013/07/03" number="2">
+      <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
     </revision></history></draft><draft href="WEBGL_compressed_texture_pvrtc/"><name>WEBGL_compressed_texture_pvrtc</name><number>13</number><history><revision date="2012/08/07" number="1">
       <change>Initial revision.</change>
+    </revision><revision date="2013/07/03" number="2">
+      <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
     </revision></history></draft><ratified href="WEBGL_compressed_texture_s3tc/"><name>WEBGL_compressed_texture_s3tc</name><number>8</number><history><revision date="2012/01/25" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2013/01/26" number="2">
       <change>Moved from draft to community approved status</change>
     </revision><revision date="2013/05/15" number="3">
       <change>Ratified by Khronos Board of Promoters.</change>
+    </revision><revision date="2013/07/03" number="4">
+      <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
     </revision></history></ratified><ratified href="WEBGL_debug_renderer_info/"><name>WEBGL_debug_renderer_info</name><number>6</number><history><revision date="2011/10/03" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/10/12" number="2">
@@ -196,6 +202,8 @@
       <change>Renamed to EXT_draw_buffers per plan of OpenGL ES working group. Moved to draft status. Assigned number.</change>
     </revision><revision date="2013/03/05" number="4">
       <change>Renamed to WEBGL_draw_buffers per discussion on public_webgl list. Added guarantees to make it easier for developers to use the extension.</change>
+    </revision><revision date="2013/06/07" number="5">
+      <change>Clarified naming of shader directives.</change>
     </revision></history></draft><ratified href="WEBGL_lose_context/"><name>WEBGL_lose_context</name><number>3</number><history><revision date="2011/01/11" number="1">
       <change>Initial revision.</change>
     </revision><revision date="2011/04/14" number="2">
@@ -221,4 +229,4 @@
       <change>Initial revision.</change>
     </revision><revision date="2013/05/14" number="2">
       <change>Moved to draft after agreement in working group.</change>
-    </revision></history></draft></registry>
+    </revision></history></draft><proposal href="proposals/ANGLE_timer_query/"><name>ANGLE_timer_query</name></proposal><proposal href="proposals/EXT_blend_minmax/"><name>EXT_blend_minmax</name></proposal><proposal href="proposals/WEBGL_compressed_texture_etc1/"><name>WEBGL_compressed_texture_etc1</name></proposal><!-- vi:set sw=2 ts=4: --><proposal href="proposals/WEBGL_dynamic_texture/"><name>WEBGL_dynamic_texture</name></proposal></registry>
