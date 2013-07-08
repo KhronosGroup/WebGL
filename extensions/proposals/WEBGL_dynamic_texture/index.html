@@ -18,9 +18,9 @@
   working group</a> (public_webgl 'at' khronos.org) </p>
 <h2 class="no-toc">Contributors</h2>
 <p>Mark Callow, HI Corporation</p>
-<p>Acorn Pooley, NVIDIA</p>
+<p>Acorn Pooley, while at NVIDIA</p>
 <p>Ken Russell, Google</p>
-<p>David Sheets</p>
+<p>David Sheets, Ashima Arts</p>
 <p>William Hennebois, STMicroelectronics</p>
 <p>Members of the WebGL working group</p>
 <h2 class="no-toc">Version</h2>
@@ -43,10 +43,11 @@
     <p>This extension provides a mechanism for streaming image frames from an
     <code>HTMLVideoElement</code>, <code>HTMLCanvasElement</code> or
     <code>HTMLImageElement</code> (having multiple frames such those created
-    from animated GIF, APNG and MNG files) into a WebGL texture. The extension
-    defines a new texture target, <code>TEXTURE_EXTERNAL_OES</code> which can
-    only be specified as being the consumer of an image stream from one of
-    these elements.</p>
+    from animated GIF, APNG and MNG files) into a WebGL texture. This is done
+    via a new texture target, <code>TEXTURE_EXTERNAL_OES</code> which can only
+    be specified as being the consumer of an image stream from a new
+    <code>WDTStream</code> object which provides commands for connecting to a
+    producer element.</p>
 
     <p>There is no support for most of the functions that manipulate other
     texture targets (e.g. you cannot use <code>*[Tt]ex*Image*()</code>
@@ -69,13 +70,13 @@
     application would have to query the format in use and provide shaders to
     handle both cases.</p>
 
-    <p>The extension includes a mechanism for <em>latching</em> an image frame
-    into a texture as its contents. This is equivalent to copying the image
-    into the texture but, due to the restrictions outlined above a copy is not
-    necessary. Most implementations will be able to avoid one so this can be
-    much faster than using <code>texImage2D</code>. Latching can and should be
-    implemented in a way that allows the producer to run independently of 3D
-    rendering.</p>
+    <p><code>WDTStream</code> provides a command for <em>latching</em> an
+    image frame into the consuming texture as its contents. This is equivalent
+    to copying the image into the texture but, due to the restrictions
+    outlined above a copy is not necessary. Most implementations will be able
+    to avoid one so this can be much faster than using
+    <code>texImage2D</code>. Latching can and should be implemented in a way
+    that allows the producer to run independently of 3D rendering.</p>
 
     <p> This extension exposes the
   <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a> functionality to
@@ -84,25 +85,29 @@
     <ul>
 <li>
         <p>An <code>HTMLVideoElement</code>, <code>HTMLCanvasElement</code> or
-        <code>HTMLImageElement</code> is the producer and deliverer of the
-        stream of images being consumed by the dynamic texture rather than the
-        unspecified external producer and <code>EGLStream</code> pair referred
-        to in the extension.</p>
+        <code>HTMLImageElement</code> is the producer of the stream of images
+        being consumed by the dynamic texture rather than the unspecified
+        external producer referred to in the extension.</p>
+      </li>
+<li>
+        <p>A <code>WDTStream</code> is the deliverer of the stream of images
+        being consumed by the dynamic texture rather an
+        <code>EGLStream</code>.</p>
       </li>
 <li>
         <p>References to <code>EGLImage</code> and associated state are
         deleted.</p>
       </li>
 <li>
-        <p><code>dynamicTextureSetSource</code> is used to connect a texture
+        <p><code>WDTStream.connectProducer</code> is used to connect a texture
         to the image stream from an HTML element instead of the command
         <code>eglStreamConsumerGLTextureNV</code> or its equivalent
         <code>eglStreamConsumerGLTextureExternalKHR</code> referenced by the
         extension.</p>
       </li>
 <li>
-        <p><code>dynamicTextureAcquireImage</code> and
-        <code>dynamicTextureReleaseImage</code> are used to latch and unlatch
+        <p><code>WDTStream.acquireImage</code> and
+        <code>WDTStream.releaseImage</code> are used to latch and unlatch
         image frames instead of the commands
         <code>eglStreamConsumerAcquireNV</code> or its equivalent
         <code>eglStreamConsumerAcquireKHR</code> and
@@ -121,6 +126,8 @@
 
       
 
+      
+
       <p>For ease of reading, this specification briefly describes the new
       functions and enumerants of <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>.
       Consult that extension for detailed documentation of their meaning and
@@ -130,23 +137,25 @@
     <p> When this extension is enabled: </p>
 <ul>
 <li>
-        <p>The family of <code>dynamicTextureSetSource</code> functions for
-        binding <code>HTML{Canvas,Image,Video}Elements</code> to a texture are
-        available. </p>
+        <p>Objects having the <code>WDTStream</code> interface, for streaming
+        external data to texture objects, and the <code>createStream</code>
+        function are available.</p>
       </li>
 <li>
-        <p>The function <code>dynamicTextureGetSource</code> for querying the
-        current dynamic source of a texture is available.</p>
+        <p>The <code>WDTStream.connectSource</code> family of functions for
+        binding the stream to<code>HTML{Canvas,Image,Video}Elements</code> and
+        the <code>getSource</code> function for querying the current stream
+        source are available.</p>
       </li>
 <li>
-        <p>The functions <code>dynamicTextureAcquireImage</code> and
-        <code>dynamicTextureReleaseImage</code> are available. These commands
-        are used before and after 3D rendering to latch an image that will not
+        <p>The functions <code>WDTStream.acquireImage</code> and
+        <code>WDTStream.releaseImage</code> are available. These commands are
+        used before and after 3D rendering to latch an image that will not
         change during sampling.</p>
       </li>
 <li>
-        <p>The functions <code>dynamicTextureSetConsumerLatencyUsec</code> and
-        <code>dynamicTextureGetConsumerLatencyUsec</code> are available. These
+        <p>The functions <code>WDTStream.setConsumerLatencyUsec</code> and
+        <code>WDTStream.getConsumerLatencyUsec</code> are available. These
         commands are used to inform a connected <code>HTMLVideoElement</code>
         of the latency between latching an image and displaying it and to
         query the currently set latency.</p>
@@ -177,21 +186,76 @@
   <h2 class="no-toc">IDL</h2>
 <p><pre class="idl">module webgl {
   interface WEBGL_dynamic_texture {
+    // Type for nanosecond time stamps as returned by the system monotonic timer.
+    // Precision will be unchanged up to 2**53 nanoseconds =~ 41 days. Could
+    // wrap after that or just keep counting, in which case precision will be halved
+    // and the next precision change will occur after a further 82 days.
+    // Certainly good enough for browser up time and for system up time
+    // which is what the monotonic clock usually is.
+    typedef double WEBGLTimeStampNS;
+
+    interface WDTFrame {
+      // Time of the frame relative to the start of the media.
+      // Equivalent to currrentTime in an HTMLMediaElement
+      readonly attribute double frameTime;
+      // The time the frame should be presented in order to sync with
+      // other tracks in the element's mediagroup, particularly audio.
+      // Question: what are the base and units of the renderbuffer-present time on iOS?
+      readonly attribute WEBGLTimeStampNS presentTime;
+    }; // interface WDTFrame
+           
+    interface WDTStream {
+      const GLenum STREAM_CONNECTING = 0;
+      const GLenum STREAM_EMPTY = 1;
+      const GLenum STREAM_NEW_FRAME_AVAILABLE = 2;
+      const GLenum STREAM_OLD_FRAME_AVAILABLE = 3;
+      const GLenum STREAM_DISCONNECTED = 4;
+
+      // Affects size of buffer allocated for holding video frames and how many video
+      // frames need to be produced before starting audio playback. Therefore needs
+      // to be set before video starts playing. Would be convenient if it could be
+      // changed during pause. Need implementation experience to know if that is
+      // possible. 
+      attribute unsigned long maxConsumerLatency(int usecs);
+      // Can vary between 0 and maxConsumerLatency set above.
+      attribute unsigned long consumerLatencyUSec;
+
+      readonly attribute WDTFrame consumerFrame;
+      readonly attribute WDTFrame producerFrame;
+
+      void connectSource(HTMLCanvasElement);
+      void connectSource(HTMLImageElement);
+      void connectSource(HTMLVideoElement);
+      void disconnect();
+
+      WDTFrame acquireImage();
+      void releaseImage();
+    }; // interface WDTStream
+
+    interface WDTSyncValues {
+      readonly attribute WEBGLTimeStampNS ust;
+      readonly attribute unsigned long msc;
+    }; // interface WDTSyncValues
+
     const GLenum TEXTURE_EXTERNAL_OES = 0x8D65;
     const GLenum SAMPLER_EXTERNAL_OES = 0x8D66;
     const GLenum TEXTURE_BINDING_EXTERNAL_OES = 0x8D67;
     const GLenum REQUIRED_TEXTURE_IMAGE_UNITS_OES = 0x8D68;
 
-    void dynamicTextureSetSource(HTMLCanvasElement? source);
-    void dynamicTextureSetSource(HTMLImageElement? source);
-    void dynamicTextureSetSource(HTMLVideoElement? source);
-    any dynamicTextureGetSource();
-    void dynamicTextureAcquireImage();
-    void dynamicTextureReleaseImage();
-    void dynamicTextureSetConsumerLatencyUsec(HTMLVideoElement, int);
-    int dynamicTextureGetConsumerLatencyUsec(HTMLVideoElement);
+    // Creates a stream whose consumer is the texture currently bound to TEXTURE_EXTERNAL_OES.
+    WDTStream createStream();
+ 
+    // Returns UST and MSC (screen refreash count) of last drawing buffer present
+    WDTSyncValues getSyncValues();
+    // Returns current UST (unadjusted system time), the system monotonic clock.
+    WEBGLTimeStampNS ustnow();
+    // Sets presentation time for drawing buffer at composite following the script returning
+    // to the browser. If time already passed, present as soon as possible.
+    void setDBPresentationTime(WEBGLTimeStampNS pt);
+    // Information help the application determine how complex its drawing can be
+    SomeTimePeriod getMinInterframeInterval;  
   }; // interface WEBGL_dynamic_texture
-}; // module webgl </pre></p>
+}; // module webgl</pre></p>
 <h2 class="no-toc">IP Status</h2>No known IP claims.<h2 class="no-toc">New Functions</h2>
 <dl class="methods">
 <dt class="idl-code">void dynamicTextureSetSource(HTMLCanvasElement? source)</dt>
@@ -233,12 +297,15 @@
     latching an image and displaying it. Setting the latency enables the
     HTMLVideoElement to make necessary adjustments to keep audio in
     sync.</dd>
-<dt class="idl-code">int dynamicTextureSetConsumerLatencyUsec()</dt>
+<dt class="idl-code">int dynamicTextureGetConsumerLatencyUsec()</dt>
 <dd>Returns
     the currently set latency.</dd>
 </dl>
 <h2 class="no-toc">New Types</h2>
-<h2 class="no-toc">New Tokens</h2>
+    <p>The type to use for nanosecond times is: </p>
+
+    <code>typedef double WGTNanoTime;</code>
+  <h2 class="no-toc">New Tokens</h2>
 <dl class="methods">
 <p>The meaning and use of these tokens is exactly as described in <a href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>.</p>
 <dt class="idl-code">void bindTexture(GLenum target, WebGLTexture? texture)</dt>
@@ -380,11 +447,14 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
       source. The rules for selecting the image to be latched mirror those for
       selecting the image drawn by the <code>drawImage</code> method of <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#canvasrenderingcontext2d">CanvasRenderingContext2D</a>.</p>
 
-      <p>For HTMLVideoElements, it will latch the frame at the <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-video-element.html#current-playback-position">current
-      playback position</a>, as defined in the <a href="http://www.whatwg.org/specs/web-apps/current-work/">HTML Living
-      Standard</a>, unless the element's readyState attribute is either
-      HAVE_NOTHING or HAVE_METADATA, in which case the command returns without
-      latching anything and the texture remains <em>incomplete</em>.</p>
+      <p>For HTMLVideoElements, it latches the frame video that corresponds to
+      the <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-video-element.html#current-playback-position">current
+      playback position</a> of the audio channel, as defined in the <a href="http://www.whatwg.org/specs/web-apps/current-work/">HTML Living
+      Standard</a>, <em>latency</em> microseconds from the call, where
+      <em>latency</em> is described in <a href="#setlatency">dynamicTextureSetConsumerLatencyUsec</a>, unless the
+      element's readyState attribute is either HAVE_NOTHING or HAVE_METADATA,
+      in which case the command returns without latching anything and the
+      texture remains <em>incomplete</em>.</p>
 
       <p>For animated HTMLImageElements it will latch the first frame of the
       animation.</p>
@@ -402,7 +472,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
       image frame since the last call then
       <code>dynamicTextureAcquireImage</code> will "latch" the newly inserted
       image frame. If the producer has inserted more than one new image frame
-      since the last call then all but the most recently inserted image frames
+      since the last call then all but the most recently inserted image frame
       are discarded and <code>dynamicTextureAcquireImage</code> will "latch"
       the most recently inserted image frame. For HTMLVideoElements, the
       application can use the value of the <code>currentTime</code> attribute
@@ -593,7 +663,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
   // Load video from the passed HTMLVideoElement id, bind it to a new WebGLTexture object
   // and return the WebGLTexture.
   //
-  // Is their a constructor for an HTMLVideoElement so you can do like "new Image()?"
+  // Is there a constructor for an HTMLVideoElement so you can do like "new Image()?"
   //
   function createVideoTexture(ctx, videoId)
   {
@@ -747,15 +817,59 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
 
 &lt;/html&gt;</pre>
 </div>
+
+    <p>See the <a href="DynamicTexture.html" target="_blank">complete
+    sample</a>.</p>
   <h2 class="no-toc">Conformance Tests</h2>
 <h2 class="no-toc">Security Considerations</h2>
-<h2 class="no-toc">Issues</h2>
+    <p>Statistical fingerprinting is a privacy concern where a malicious web
+    site may determine whether a user has visited a third-party web site by
+    measuring the timing of cache hits and misses of resources in the
+    third-party web site. Though the ustnow method of this extension returns
+    time data to a greater accuracy than before, it does not make this privacy
+    concern significantly worse than it was already. </p>
+  <h2 class="no-toc">Issues</h2>
     <ol>
+      <li>
+        <p>What do applications need to be able to determine about the
+        source?</p>
+
+        <p>RESOLVED. Two things <ul>
+            <li>the minimum inter-frame interval. For fixed-rate videos this
+            is easily derived from the frame-rate. For variable-rate videos
+            this which is probably the same as the framerate given in the
+            container. This is to determine a rendering budget. Need to ensure
+            methodology works with fixed- and variable- frame-rate
+            videos.</li>
+
+            <li>whether a frame has been missed. In EGLStream this can be
+            determined by comparing PRODUCER_FRAME_KHR and
+            CONSUMER_FRAME_KHR</li>
+          </ul></p>
+      </li>
+
+      <li>
+        <p>How can the minimum inter-frame interval be determined?</p>
+
+        <p>UNRESOLVED. It can easily be derived from the frame-rate of
+        fixed-rate videos or from information that is commonly stored in the
+        container metadata for variable-rate formats. For example the <a href="http://matroska.org/technical/specs/index.html">Matroska</a> and
+        <a href="http://www.webmproject.org/code/specs/container/">WebM</a>
+        containers provide a FrameRate item, albeit listed as "information
+        only." However no matching property is exposed in the HTMLVideoElement
+        or MediaElement interfaces. Although there have been requests for a
+        way to determine fps from JavaScript, in connection with doing frame
+        accurate seeks to SMPTE time-code positions there has been no
+        resolution. See this <a href="http://lists.whatwg.org/pipermail/whatwg-whatwg.org/2011-January/029724.html">thread</a>
+        on the whatwg mailing list. Therefore the stream object interface will
+        have to provide a query for the minimum inter-frame interval.</p>
+      </li>
+
       <li>
         <p>Why not use the <code>TEXTURE2D</code> target and
         <code>texImage2D</code>?</p>
 
-        <p>RESOLVED: Use a new texture target and new commands. A new texture
+        <p>RESOLVED. Use a new texture target and new commands. A new texture
         target makes it easy to specify, implement and conformance test the
         restrictions that enable a zero-copy implementation of dynamic
         textures as described in the <a href="#overview">Overview</a>. Given
@@ -767,7 +881,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
       <li>
         <p>Why not use sampler2D uniforms?</p>
 
-        <p>RESOLVED: Use a new sampler type. Most zero-copy implementations
+        <p>RESOLVED. Use a new sampler type. Most zero-copy implementations
         will need special shader code when sampling YUV format dynamic
         textures. Implementations may choose to (a) re-compile at run time or
         (b) inject conditional code which branches at run time according to
@@ -783,7 +897,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         <p>Should the API be implemented as methods on the texture object or
         as commands taking a texture object as a parameter?</p>
 
-        <p>RESOLVED: Neither. The <code>WebGLTexture</code> object represents
+        <p>RESOLVED. Neither. The <code>WebGLTexture</code> object represents
         an OpenGL texture name. No object is created until the name is bound
         to a texture target. Therefore the new commands should operate on a
         the currently bound texture object.</p>
@@ -793,7 +907,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         <p>Should dynamic textures be a new texture type or can
         <code>WebGLTexture</code> be reused?</p>
 
-        <p>RESOLVED: Do not use a new texture type. As noted in the previous
+        <p>RESOLVED. Do not use a new texture type. As noted in the previous
         issue a <code>WebGLTexture</code> represents a texture name and is a
         handle to multiple texture types. The type of texture is set according
         to the target to which the name is initially bound.</p>
@@ -803,7 +917,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         <p>Should this extension use direct texture access commands or should
         it use <code>texParameter</code> and <code>getTexParameter</code>?</p>
 
-        <p>RESOLVED: Use the latter. There is no directly accessible texture
+        <p>RESOLVED. Use the latter. There is no directly accessible texture
         object to which such commands can be added. Changing the API to have
         such objects is outside the scope of this extension.
         <code>texParameter</code> doesn't seem unreasonable for binding the
@@ -819,7 +933,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         NV_EGL_stream_consumer_external</code>, create our own GLSL extension
         name or have both this and a WebGL-specific name?</p>
 
-        <p>RESOLVED: Any of <code>WEBGL_dynamic_texture</code> or the aliases
+        <p>RESOLVED. Any of <code>WEBGL_dynamic_texture</code> or the aliases
         <code>GL_NV_EGL_stream_consumer_external</code> or
         <code>GL_OES_EGL_image_external</code> can be used to enable this
         extension's features in the shader. This permits the same shader to be
@@ -832,7 +946,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         <code>HTMLVideoElement</code>is passed to the existing
         <code>tex*Image2D</code> commands?</p>
 
-        <p>UNRESOLVED: Suggestion: for single-frame HTMLImageElement set the
+        <p>UNRESOLVED. Suggestion: for single-frame HTMLImageElement set the
         texture image to the HTMLImageElement; for an animated
         HTMLImageElement set the texture image to the first frame of the
         animation; for an HTMLCanvasElement, set the texture image to the
@@ -851,7 +965,7 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         the image is already in the state to be set or ignore those extra
         calls?</p>
 
-        <p>RESOLVED: They should not generate errors.
+        <p>RESOLVED. They should not generate errors.
         <code>dynamicTextureAcquireImage</code> will be defined to implicitly
         call <code>dynamicTextureReleaseImage</code> if there has not been an
         intervening call.</p>
@@ -862,13 +976,13 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         efficiency. Should it therefore move directly to core rather than
         being an extension?</p>
 
-        <p>UNRESOLVED:</p>
+        <p>UNRESOLVED.</p>
       </li>
 
       <li>
         <p>Should this extension support HTMLImageElement?</p>
 
-        <p>UNRESOLVED: If we are tracking the behavior of
+        <p>UNRESOLVED. If we are tracking the behavior of
         CanvasRenderingContext2D.drawImage then there is no point supporting
         HTMLImageElement. The HTML5 specification for <a>canvas</a>says for
         animated images to draw the first frame.</p>
@@ -878,11 +992,41 @@ void dynamicTextureSetSource(HTMLVideoElement? source);</pre>connect the
         <p>Should this extension extend <code>HTMLMediaElement</code> with an
         acquireImage/releaseImage API?</p>
 
-        <p>RESOLVED: No. The API would have no purpose and would require
+        <p>RESOLVED. No. The API would have no purpose and would require
         HTML{Video,Canvas,Image}Element becoming aware of WebGLTexture or,
         even worse, aware of texture binding within WebGL. No similar API was
         exposed to support CanvasRenderingContext2D.drawImage. The HTMLElement
         is simply passed to drawImage.</p>
+      </li>
+
+      <li>
+        <p>Should <a href="http://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HighResolutionTime/Overview.html#sec-DOMHighResTimeStamp">DOMHighResolutionTime</a>
+        and <code>window.performance.now()</code> from the W3C <a href="http://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HighResolutionTime/Overview.html">High-Resolution
+        Time</a> draft be used for the timestamps and as UST?</p>
+
+        <p>UNRESOLVED. The specified unit is milliseconds which means using
+        fractional <code>double</code> values to represent smaller times with
+        the attendant issues of variable time steps and inaccuracies. As
+        currently specified, with browsers allowed to be as sloppy as 1ms
+        accuracy, <code>window.performance.now()</code> is insufficiently
+        accurate. Feedback has been provided. Hopefully the draft
+        specification will be updated.</p>
+      </li>
+
+      <li>
+        <p>Should UST 0 be system start-up, browser start-up or <a href="http://www.w3.org/TR/navigation-timing/#dom-performancetiming-navigationstart">navigationStart</a>
+        as defined in the W3C <a href="http://www.w3.org/TR/2012/PR-navigation-timing-20120726/">Navigation
+        Timing</a> proposed recommendation?</p>
+
+        <p>UNRESOLVED. If high-resolution time is used, then navigationStart
+        makes sense otherwise browser start-up seems preferable to system
+        start-up as it is closer to the events being measured.</p>
+      </li>
+
+      <li>
+        <p>Should WDTStream.state be a proper idl enum?</p>
+
+        <p>UNRESOLVED:</p>
       </li>
     </ol>
   <h2 class="no-toc">Revision History</h2>

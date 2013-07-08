@@ -47,6 +47,37 @@ A: Yes.
 
 Q: Do we specify repeat vs pause for the case where latency drops? If so, how?
 A: TBD.
+
+Q: How to ensure there is only 1 stream per producer?
+A: TBD. Possibly make the stream constructor require the source object.
+
+Q: What are the units of DOMHighResTimeStamp and the base for window.performance.now?
+A: A double accurate to "a thousandth of a millisecond" but accuracy is allowed to be as sloppy as "to 1ms."
+   The base is navigationStart, more or less when the browser begins fetching the document. Times are
+   monotonically increasing.
+   
+Q: What are the units and base of the next frame attribute on a MediaElement?
+A: There is no next frame attribute. There is a currentTime attribute. It is a double in units of seconds
+   with 0 at the start of the media. In essence it is the MSC.
+   
+Q: How many seconds can be represented using a double (53 bits) with units of nanoseconds?
+A: 9007199s = 150119m = 2501h = 41days enough for an MSC. Maybe not enough for UST (uptime).
+
+Q: Using a double with units of 1s, starting with t0 = 2**32, what is the range and precision?
+A: The exponent, and hence precision, will remain constant for the next ~4 billion seconds, or ~136 years.
+   This precision is approximately one microsecond.
+   
+Q: What is the type and precision of the frame times in Matroska/WebM?
+A: Base units is nanoseconds but header contains a TimecodeScale multiplier that SHOULD/MUST be set to
+   the default 1,000,000, so it is in milliseconds. But you can't do 29.97fps acurately with milliseconds.
+   Raw timecode = (a + b) * c where
+   a = Block's Timecode
+   b = Cluster's Timecode
+   c = TimecodeScale
+   a is a signed 16-bit integer. Cluster timecode is an unsigned int which can be up to 56 bits.
+   XXX check other formats.
+   
+   Timestamps for VP8 carried in RTP are based on a sampling rate of 90kHz!!
 -->
 <!--
 /*
@@ -163,6 +194,46 @@ canvas {
 <script>
   // Use object for "global" variables to avoid polluting the global space.
   var g = {};
+  
+  //
+  // Latency object
+  //
+  // This object keeps track of latency using an exponential moving average.
+  //
+  Latency = function(gl, vstream)
+  {
+	this.gl = gl;
+	this.latencyUpdateInterval = 500;
+
+	this.acquireTime = -1;
+	this.lastLatency = -1;
+	this.emaLatency = -1;
+	const periods = 15;
+	this.alpha = 2 / (periods + 1);
+	self = this;
+	var ul = function() { self.updateLatency() }
+	setInterval(ul, this.latencyUpdateInterval);
+  }
+  
+  Latency.prototype.updateLatency = function()
+  {
+	  vstream.setConsumerLatency(this.emaLatency);
+  }
+  
+  Latency.prototype.snapshot = function()
+  {
+	var latency;
+	if (this.acquireTime > 0) {
+	  latency = gl.dte.getSyncValues().ust - this.acquireTime;	      
+	}
+	this.acquireTime = gl.dte.ustnow();
+	if (lastLatency > 0) {
+	  emaLatency = this.alpha * this.lastLatency + (1 - this.alpha) * emaLatency;
+	} else {
+	  emaLatency = latency;
+	}
+	this.lastLatency = latency;
+  }
 
   ///////////////////////////////////////////////////////////////////////
   // Create a video texture and bind a source to it.
@@ -176,7 +247,6 @@ canvas {
   function clearLoadingFiles() {
     for (var ii = 0; ii < g.loadingFiles.length; ++ii) {
       g.loadingFiles[ii].onload = undefined;
-	  g.loadingFiles[ii].wssDisconnectStream();
     }
     g.loadingFiles = [];
   }
@@ -184,8 +254,12 @@ canvas {
   // Create a hidden video element and append to the document
   // XXX Is it necessary to append the element?
   function createVideoElement() {
-	var video = document.createElement('video');
-	video.autoplay = true;
+	// Use an 'audio' element as, in this use, no playback area is needed.
+	// XXX Will this work or do I need to use 'video' in order that the canvas
+	// will become tainted if the video is cross-origin? The extension will have
+	// to deal with tainting ...
+	var video = document.createElement('audio');
+	video.autoplay = false;  // Need to do some housekeeping after loading and before playing.
 	video.controls = false;
 	video.hidden = true;
 	document.body.appendChild(video);
@@ -231,58 +305,21 @@ canvas {
   // };
   //
  
-  function connectStreamToProducerAndSource(stream, video, url) {
+  function loadVideo(video, url) {
 	video.onload = function() {
 	  g.loadingFiles.splice(g.loadingFiles.indexOf(video), 1);
+	  g.videoReady = true;
+	  assert(stream.state == wdtStreamEmpty);
     };
 	video.onerror = function() {
 	  g.loadingFiles.splice(g.loadingFiles.indexOf(video), 1);
-	  // Notify user? Abort application?
-	  // video.error gives the reason.
+	  window.alert("Video load failed: " + video.error);
+	  // Abort application?
 	};
-    g.loadingFiles.push(video);
-	video.wssConnectToSourceAsProducer(url, stream);
+	video.src = url; // Start the load
+	g.loadingFiles.push(video);	
   }
 
-  function connectVideo(ctx, video) {
-	// Is this whole thing racy? Is the video already loading
-	// when this is called?
-    g.loadingFiles.push(video);
-	g.videoReady = false;
-
-	//-----------------------------
-	// Options for connecting to video
-	//-----------------------------
-	// OPTION 1: method on WDT extension augments video element
-	// with a wdtStream object.
-	ctx.dte.createStream(video);
-	assert(video.wdtStream.state == wdtStreamConnecting);
-    //-----------------------------
-	// OPTION 2: method returns a stream object.
-	g.vstream = ctx.dte.createStream(ctx);
-	assert(g.vstream.state == wdtStreamConnecting);
-    //-----------------------------
-
-    video.onload = function() {
-        g.loadingFiles.splice(g.loadingFiles.indexOf(video), 1);
-        try {
-          // OPTION 1: video object augmented with stream
-          video.wdtStream.connect();
-	      assert(video.wdtStream.state == wdtStreamEmpty);
-          //-----------------------------
-          // OPTION 2: separate stream object
-          g.vstream.connectProducer(video); 
-	      assert(g.stream.state == wdtStreamEmpty);
-		  //------------------------------
-		  if (!video.autoplay) {
-		    video.play(); // Play video
-		  }
-		  g.videoReady = true;
-        } catch (e) {
-          window.alert("Video texture setup failed: " + e.name);
-        }
-      };
-  }
 
   ///////////////////////////////////////////////////////////////////////
   // Initialize the application.
@@ -290,14 +327,22 @@ canvas {
 
   function init() {
     // Initialize
-    var gl = initWebGL(
+	var gl;
+	var program;
+	
+	g.videoReady = false;
+	
+    gl = initWebGL(
         // The id of the Canvas Element
-        "example");
+        "videotex");
     if (!gl) {
       return;
     }
     gl.dte = gl.getExtension("WEBGL_dynamic_texture");
-    var program = simpleSetup(
+	if (!gl.dte) {
+	  return;
+	}
+    program = simpleSetup(
       gl,
       // The ids of the vertex and fragment shaders
       "vshader", "fshader",
@@ -310,22 +355,18 @@ canvas {
 
 	g.videoTexture = {
 	  texture: gl.createTexture(),
-	  video: createVideoElement(),
 	  stream: null
 	};
     // gl.activeTexture(gl.TEXTURE0);
 	gl.bindTexture(gl.TEXTURE_EXTERNAL_OES, g.videoTexture.texture);
 	// Create stream with currently bound texture as consumer.
-	g.videoTexture.stream = gl.dte.createStream();
-
-	connectStreamToProducerAndSource(stream, video, "http://myserver/myvideo.mp4");
-//-------------
-	// Option 1: video object is augmented with stream
-	connectVideoStream(gl, g.videoTexture.video, "http://myserver/myvideo.mp4");
-	// Option 2: returns stream object
-	g.videoTexture.vstream = connectVideoStream(gl, "http://myserver/myvideo.mp4");
-	connectVideoStream(gl, g.videoTexture, "http://myserver/myvideo.mp4"); //??
-//-------------
+	// XXX Pass producer at creation in case there need to be major differences in
+	// stream types. Can be eased after implementation experience.
+	// Throws if video already connected to stream or video loading or loaded.
+	// Can also be eased after implementation experience.
+	g.videoTexture.stream = gl.dte.createStream(); 
+	// XXX Maybe do here or else after measuring and setting maxLatency.
+	g.videoTexture.stream.connectProducer(g.video);
 
     // Set some uniform variables for the shaders
     gl.uniform3f(gl.getUniformLocation(program, "lightDir"), 0, 0, 1);
@@ -390,6 +431,7 @@ canvas {
 	var syncValues;
 	var latency;
 	var graphicsMSCBase;
+	var presentationTime;
 
     // Make sure the canvas is sized correctly.
     reshape(gl);
@@ -443,18 +485,18 @@ canvas {
 	if (graphicsMSCBase == undefined) {
 	    graphicsMSCBase = gl.dte.getSyncValues().msc;
 	}
-
+	/*
     if (lastFrame.msc && vstream.producerFrame > lastFrame.msc + 1) {
       // Missed a frame! Simplify rendering?
 	}
-
+	*/
 	if (!latency.frameCount) {
 	  // Initialize
 	  latency.frameCount = 0;
 	  latency.accumTotal = 0;
 	}
 
-	if (lastFrame.ust) {
+	if (lastFrame) {
 	  syncValues = gl.dte.getSyncValues();
 	  // interface syncValues {
 	  //     // UST of last present
@@ -473,8 +515,10 @@ canvas {
 		// will need some way to know canvas was hidden so app
 		// won't just assume its not keeping up and therefore
 		// adjust its rendering.
-	    graphicsMSCBase = syncValues.msc; // reset base.
+	    graphicsMSCBase = syncValues.msc - syncValues.cpc; // reset base.
 	  }
+	  // Have to account for frames showing for a long time
+	  // (i.e. no new frames) so lastFrame.ust might be long in the past.
 	  latency.accumValue += syncValues.ust - lastFrame.ust;
 	  latency.frameCount++;
 	  if (latency.frameCount == 30) {
@@ -485,7 +529,8 @@ canvas {
 	}  
 
 	if (g.videoReady) {
-	  if (g.video.wdtStream.acquireImage()) {
+	  if (g.videoTexture.stream.acquireImage()) {
+		g.latency.snapshot();
 		// Record UST of frame acquisition.
 		// No such system function in JS so it is added to extension.
 		lastFrame.ust = gl.dte.ustnow();
@@ -498,11 +543,15 @@ canvas {
 		//     fractional values.
 		// The above timer comes from the high-resolution time proposal
 		//
-		lastFrame.msc = vstream.consumerFrame;
+		//lastFrame.msc = vstream.consumerFrame;
+		// Record requested presentation time of frame
+		lastFrame.pt = vstream.consumerFrame.pt;
+		// Set presentation time on the drawbuffer.
+		gl.dte.setDBPresentationTime(g.videoTexture.stream.consumerFrame.pt);
+	    // If have explicit present pass above value as parameter to extended present function.
+	    // If have separate drawbuffer object, set directly on drawbuffer.
 	  }
-      vstream.acquireImage();
-	  lastFrame.msc = g.stream.consumerFrame;
-    }
+	}
 
     // Draw the cube
     gl.drawElements(gl.TRIANGLES, g.box.numIndices, gl.UNSIGNED_BYTE, 0);
@@ -515,10 +564,80 @@ canvas {
 
     currentAngle += incAngle;
     if (currentAngle > 360)
-        currentAngle -= 360;
+        currentAngle -= 360;	
   }
 
+  function handleContextLost(e) {
+	e.preventDefault();
+	clearLoadingFiles();
+	if (g.requestId !== undefined) {
+	  window.cancelAnimFrame(g.requestId);
+	  g.requestId = undefined;
+	}
+	if (g.videoReady) {
+	  g.videoTexture.video.pause();
+	}
+  }
+  
+  function handleContextRestored() {
+    start();
+  }
+  
   function start() {
+	var nframes = 0;
+	var minInterframeInterval = -1;
+	
+    var gl = init();
+    if (!gl) {
+     return;
+    }
+	
+	g.latencytimer = new Latency(gl, g.videoTexture.stream);
+	g.frametimer = new Latency();
+	
+	var f1 = function() {
+	  drawFrameComplex();
+      g.requestId = window.requestAnimFrame(f1, c);
+	}
+	
+	var f2 = function() {
+	  drawFrameMedium();
+      g.requestId = window.requestAnimFrame(f2, c);
+	}
+	
+	var f3 = function() {
+	  drawFrameSimple();
+      g.requestId = window.requestAnimFrame(f3, c);
+	}
+	
+    var f = function() {
+      drawFrameComplex(gl);
+	  if (g.videoReady) {
+		  minInterframeInterval = g.videoTexture.stream.minInterframeInterval;
+	  }
+	  
+	  if (minInterframeInterval && nframes > 15) {
+		if (g.frameTimer.emaTime > minInterFrameInterval) {
+			// choose simpler rendering
+		}
+		// XXX Can only be called when state is empty or connecting? But what about displaying the poster or the frame
+		// when the video is paused after a context lost? Can max latency be set as long as the video is paused? Seems
+		// it might be necessary to do this.
+		g.videoTexture.stream.setMaxLatency(g.frameTimer.emaTime);
+		// This could be a big hiccough. Maybe better to connect during set up and have it enter some special state
+		// that still allows maxLatency to be set.
+		g.videoTexture.stream.connectProducer(g.video);
+		// Start the video playing.
+		g.videoTexture.video.play();
+        g.requestId = window.requestAnimFrame(f, c);
+	  } else {
+        g.requestId = window.requestAnimFrame(f1, c);
+	  }
+    };
+    f();
+  }
+  
+  function main() {
     var c = document.getElementById("example");
 
     //c = WebGLDebugUtils.makeLostContextSimulatingCanvas(c);
@@ -528,38 +647,22 @@ canvas {
     c.addEventListener('webglcontextlost', handleContextLost, false);
     c.addEventListener('webglcontextrestored', handleContextRestored, false);
 
-    var gl = init();
-    if (!gl) {
-     return;
-    }
-
     currentAngle = 0;
     incAngle = 0.5;
     framerate = new Framerate("framerate");
-    var f = function() {
-      drawFrame(gl);
-      g.requestId = window.requestAnimFrame(f, c);
-    };
-    f();
 
-    function handleContextLost(e) {
-      e.preventDefault();
-      clearLoadingFiles();
-      if (g.requestId !== undefined) {
-        window.cancelAnimFrame(g.requestId);
-        g.requestId = undefined;
-      }
-    }
-
-    function handleContextRestored() {
-      init();
-      f();
-    }
+    // Set-up video here; don't want it recreated and reloaded on webglcontextrestored.	
+	g.video = createVideoElement();
+	loadVideo(g.video, "http://myserver/myvideo.mp4");
+	
+	start();
   }
+
+
 </script>
 </head>
 
-<body onload="start()">
+<body onLoad="start()">
 <canvas id="example">
   If you're seeing this your web browser doesn't support the &lt;canvas>&gt; element. Ouch!
 </canvas>
