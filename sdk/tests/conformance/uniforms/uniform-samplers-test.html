@@ -41,12 +41,9 @@
 <div id="console"></div>
 
   <script>
+"use strict";
 function init()
 {
-  if (window.initNonKhronosFramework) {
-    window.initNonKhronosFramework(false);
-  }
-
   description(
       "Tests that only Uniform1i and Uniform1iv can be used to set" +
       "sampler uniforms.");
@@ -54,7 +51,7 @@ function init()
   var canvas2d = document.getElementById("canvas2d");
 
   var wtu = WebGLTestUtils;
-  gl = wtu.create3DContext("example");
+  var gl = wtu.create3DContext("example");
   var program = wtu.setupTexturedQuad(gl);
 
   var textureLoc = gl.getUniformLocation(program, "tex");
@@ -74,40 +71,64 @@ function init()
 
   var maxTextureUnits = gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS);
 
-  var success = true;
-  for (var ii = 0; ii < maxTextureUnits; ++ii) {
-    gl.uniform1i(textureLoc, ii);
-    success = success && (gl.getError() == gl.NO_ERROR);
-  }
-  expectTrue(success, "uniform1i works for any valid texture unit");
+  var testUniformi = function() {
+    var success = true;
+    for (var ii = 0; ii < maxTextureUnits; ++ii) {
+      gl.uniform1i(textureLoc, ii);
+      success = success && (gl.getError() == gl.NO_ERROR);
+    }
+    expectTrue(success, "uniform1i works for any valid texture unit");
+  };
 
-  var success = true;
-  for (var ii = 0; ii < maxTextureUnits; ++ii) {
-    gl.uniform1iv(textureLoc, [ii]);
-    success = success && (gl.getError() == gl.NO_ERROR);
-  }
-  expectTrue(success, "uniform1iv works for any valid texture unit");
+  var testUniformiv = function() {
+    var success = true;
+    for (var ii = 0; ii < maxTextureUnits; ++ii) {
+      gl.uniform1iv(textureLoc, [ii]);
+      success = success && (gl.getError() == gl.NO_ERROR);
+    }
+    expectTrue(success, "uniform1iv works for any valid texture unit");
+  };
 
-  var success = true;
-  for (var ii = maxTextureUnits; ii < 0x10000; ++ii) {
-    gl.uniform1i(textureLoc, ii);
-    success = success && (gl.getError() == gl.INVALID_VALUE);
-  }
-  expectTrue(success, "uniform1i generates INVALID_VALUE for invalid texture units");
+  var steps = [
+    testUniformi,
+    testUniformiv,
+  ];
 
-  var success = true;
-  for (var ii = maxTextureUnits; ii < 0x10000; ++ii) {
-    gl.uniform1iv(textureLoc, [ii]);
-    success = success && (gl.getError() == gl.INVALID_VALUE);
-  }
-  expectTrue(success, "uniform1iv generates INVALID_VALUE for invalid texture units");
+  var generateInvalidUniformiTests = function(start, end) {
+    return function() {
+      var success = true;
+      for (var ii = start; ii < end; ++ii) {
+        gl.uniform1i(textureLoc, ii);
+        success = success && (gl.getError() == gl.INVALID_VALUE);
+      }
+      expectTrue(success, "uniform1i generates INVALID_VALUE for invalid texture units 0x" + start.toString(16) + " to 0x" + end.toString(16));
+    };
+  };
 
+  var generateInvalidUniformivTests = function(start, end) {
+    return function() {
+      var success = true;
+      for (var ii = start; ii < end; ++ii) {
+        gl.uniform1iv(textureLoc, [ii]);
+        success = success && (gl.getError() == gl.INVALID_VALUE);
+      }
+      expectTrue(success, "uniform1iv generates INVALID_VALUE for invalid texture units 0x" + start.toString(16) + " to 0x" + end.toString(16));
+    };
+  };
+
+  var step = 0x1000;
+  for (var ii = maxTextureUnits; ii < 0x10000; ii += step) {
+    steps.push(generateInvalidUniformiTests(ii, ii + step));
+    steps.push(generateInvalidUniformivTests(ii, ii + step));
+  }
+
+  steps.push(finishTest);
+  wtu.runSteps(steps);
 }
 
 init();
-successfullyParsed = true;
+var successfullyParsed = true;
 </script>
-<script src="../../resources/js-test-post.js"></script>
 </body>
 </html>
 

@@ -1,3 +1,6 @@
+--min-version 1.0.3 angle-instanced-arrays.html
+--min-version 1.0.3 ext-frag-depth.html
+--min-version 1.0.2 ext-texture-filter-anisotropic.html
 --min-version 1.0.2 get-extension.html
 oes-standard-derivatives.html
 oes-texture-float-with-canvas.html
@@ -6,9 +9,20 @@ oes-texture-float-with-image.html
 oes-texture-float-with-video.html
 oes-texture-float.html
 oes-vertex-array-object.html
+--min-version 1.0.3 oes-texture-half-float.html
+--min-version 1.0.3 oes-texture-float-linear.html
+--min-version 1.0.3 oes-texture-half-float-linear.html
+--min-version 1.0.3 oes-texture-half-float-with-canvas.html
+--min-version 1.0.3 oes-texture-half-float-with-image-data.html
+--min-version 1.0.3 oes-texture-half-float-with-image.html
+--min-version 1.0.3 oes-texture-half-float-with-video.html
 --min-version 1.0.2 oes-element-index-uint.html
 webgl-debug-renderer-info.html
 webgl-debug-shaders.html
+--min-version 1.0.3 webgl-compressed-texture-atc.html
+--min-version 1.0.3 webgl-compressed-texture-pvrtc.html
 --min-version 1.0.2 webgl-compressed-texture-s3tc.html
 --min-version 1.0.2 webgl-depth-texture.html
---min-version 1.0.2 ext-texture-filter-anisotropic.html
+--min-version 1.0.3 webgl-draw-buffers.html
+--min-version 1.0.3 webgl-shared-resources.html
+

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proposal href="proposals/ANGLE_timer_query/">
+  <name>ANGLE_timer_query</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Contributors to ARB_occlusion_query</contributor>
+    <contributor>Contributors to EXT_timer_query</contributor>
+    <contributor>Contributors to ARB_timer_query</contributor>
+    <contributor>Ben Vanik, Google Inc.</contributor>
+    <contributor>Daniel Koch, TransGaming Inc.</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>NN</number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://angleproject.googlecode.com/svn/trunk/extensions/ANGLE_timer_query.txt"
+             name="ANGLE_timer_query">
+      <addendum>
+        Specifies that queries' results only become available at certain well-defined times.
+      </addendum>
+    </mirrors>
+
+    <features>
+      <feature>
+        Allows applications and tools to accurately determine the time it takes to fully complete a
+        set of OpenGL commands, without stalling the rendering pipeline.
+      </feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+    typedef unsigned long long GLuint64ANGLE;
+
+    [NoInterfaceObject]
+    interface WebGLTimerQueryANGLE : WebGLObject {
+    };
+
+    interface ANGLE_timer_query {
+      const GLenum QUERY_COUNTER_BITS_ANGLE      = 0x8864;
+      const GLenum CURRENT_QUERY_ANGLE           = 0x8865;
+      const GLenum QUERY_RESULT_ANGLE            = 0x8866;
+      const GLenum QUERY_RESULT_AVAILABLE_ANGLE  = 0x8867;
+      const GLenum TIME_ELAPSED_ANGLE            = 0x88BF;
+      const GLenum TIMESTAMP_ANGLE               = 0x8E28;
+
+      WebGLTimerQueryANGLE? createQueryANGLE();
+      void deleteQueryANGLE(WebGLTimerQueryANGLE? query);
+      [WebGLHandlesContextLoss] boolean isQueryANGLE(WebGLTimerQueryANGLE? query);
+      void beginQueryANGLE(enum target, WebGLTimerQueryANGLE? query);
+      void endQueryANGLE(enum target);
+      void queryCounterANGLE(WebGLTimerQueryANGLE? query, enum target);
+      any getQueryANGLE(enum target, enum pname);
+      any getQueryParameterANGLE(WebGLTimerQueryANGLE? query, enum pname);
+    };
+  </idl>
+
+  <newfun>
+    <function name="createQueryAngle" type="WebGLTimerQueryANGLE?">
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="deleteQueryAngle" type="void">
+      <param name="query" type="WebGLTimerQueryANGLE?"/>
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="isQueryANGLE" type="boolean">
+      <param name="query" type="WebGLTimerQueryANGLE?"/>
+      Returns true if the passed WebGLTimerQueryANGLE is valid and false otherwise. Returns false if
+      the query's <a
+      href="http://www.khronos.org/registry/webgl/specs/1.0.1/#webgl-object-invalidated-flag">invalidated
+      flag</a> is set.
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="beginQueryANGLE" type="void">
+      <param name="target" type="GLenum"/>
+      <param name="query" type="WebGLTimerQueryANGLE?"/>
+      <code>target</code> accepts <code>TIME_ELAPSED_ANGLE</code>.
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="endQueryANGLE" type="void">
+      <param name="target" type="GLenum"/>
+      <code>target</code> accepts <code>TIME_ELAPSED_ANGLE</code>.
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="queryCounterANGLE" type="void">
+      <param name="query" type="WebGLTimerQueryANGLE?"/>
+      <param name="target" type="GLenum"/>
+      <code>target</code> accepts <code>TIME_ELAPSED_ANGLE</code>.
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="getQueryANGLE" type="any">
+      <param name="target" type="GLenum"/>
+      <param name="pname" type="GLenum"/>
+      <code>target</code> accepts <code>TIME_ELAPSED_ANGLE</code> or <code>TIMESTAMP_ANGLE</code>.
+      <code>pname</code> accepts <code>CURRENT_QUERY_ANGLE</code> or <code>QUERY_COUNTER_BITS_ANGLE</code>.
+      <br/>
+      The return type of this method depends on the parameter queried:
+      <table width="30%">
+      <tr><th>pname</th><th>returned type</th></tr>
+      <tr><td>CURRENT_QUERY_ANGLE</td><td>WebGLTimerQueryANGLE?</td></tr>
+      <tr><td>QUERY_COUNTER_BITS_ANGLE</td><td>GLint</td></tr>
+      </table>      
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="getQueryParameterANGLE" type="any">
+      <param name="query" type="WebGLTimerQueryANGLE?"/>
+      <param name="pname" type="GLenum"/>
+      <code>pname</code> accepts <code>QUERY_RESULT_ANGLE</code> or <code>QUERY_RESULT_AVAILABLE_ANGLE</code>.
+      <br/>
+      The return type of this method depends on the parameter queried:
+      <table width="30%">
+      <tr><th>pname</th><th>returned type</th></tr>
+      <tr><td>QUERY_RESULT_ANGLE</td><td>GLuint64ANGLE</td></tr>
+      <tr><td>QUERY_RESULT_AVAILABLE_ANGLE</td><td>GLint</td></tr>
+      </table>      
+      <br/>
+      In order to ensure consistent behavior across platforms, queries' results must only be made
+      available when the user agent's <a
+      href="http://www.whatwg.org/specs/web-apps/current-work/multipage/webappapis.html#event-loops">event
+      loop</a> is not executing a task. In other words:
+      <ul>
+        <li> A query's result must not be made available until the current frame has completed
+             rendering. </li>
+        <li> Repeatedly fetching a query's QUERY_RESULT_AVAILABLE_ANGLE parameter in a loop, without
+             returning control to the user agent, must always return the same value. </li>
+      </ul>
+      <br/>
+      Additionally:
+      <ul>
+        <li> If QUERY_RESULT_ANGLE is fetched for a given query before QUERY_RESULT_AVAILABLE_ANGLE
+             has been fetched, and returned true, for that or a subsequently issued query, generates
+             an <code>INVALID_OPERATION</code> error and returns null. </li>
+      </ul>
+    </function>
+  </newfun>
+
+  <issues>
+    <ol>
+      <li>
+        <p>
+          Can getQueryParameterANGLE be exposed in its current form according to ECMAScript
+          semantics?  ECMAScript's <a
+          href="http://wiki.ecmascript.org/doku.php?id=strawman:concurrency">de-facto concurrency
+          model</a> is "shared nothing" communicating event loops. Is it acceptable for sequential
+          calls to getQueryParameterANGLE to return different answers? Note that Date.now() advances
+          during script execution, so this may be fine; but if concerns are raised, then the API may
+          need to be redesigned to use callbacks.
+        </p>
+      </li>
+    </ol>
+  </issues>
+
+  <samplecode xml:space="preserve">
+    <pre>
+        // Example (1) -- uses beginQueryANGLE/endQueryANGLE.
+        var ext = gl.getExtension('ANGLE_timer_query');
+        var query = ext.createQueryANGLE();
+        ext.beginQueryANGLE(ext.TIME_ELAPSED_ANGLE, query);
+
+        // Draw object
+        gl.drawElements(...);
+
+        ext.endQueryANGLE(ext.TIME_ELAPSED_ANGLE);
+
+        // At some point in the future, after returning control to the browser and being called again:
+        if (ext.getQueryParameterANGLE(query, ext.QUERY_RESULT_AVAILABLE_ANGLE)) {
+          // See how much time the rendering of the object took in nanoseconds.
+          var timeElapsed = ext.getQueryParameterANGLE(query, ext.QUERY_RESULT_ANGLE);
+
+          // Do something useful with the time.  Note that care should be
+          // taken to use all significant bits of the result, not just the
+          // least significant 32 bits.
+          adjustObjectLODBasedOnDrawTime(timeElapsed);
+        }
+
+
+        //----------------------------------------------------------------------
+
+        // Example (2) -- same as the example above, but uses queryCounterANGLE instead.
+        var ext = gl.getExtension('ANGLE_timer_query');
+        var startQuery = ext.createQueryANGLE();
+        var endQuery = ext.createQueryANGLE();
+        ext.queryCounterANGLE(startQuery, ext.TIMESTAMP_ANGLE);
+
+        // Draw object
+        gl.drawElements(...);
+
+        ext.queryCounterANGLE(endQuery, ext.TIMESTAMP_ANGLE);
+
+        // At some point in the future, after returning control to the browser and being called again:
+        if (ext.getQueryParameterANGLE(endQuery, ext.QUERY_RESULT_AVAILABLE_ANGLE)) {
+          // See how much time the rendering of the object took in nanoseconds.
+          var timeStart = ext.getQueryParameterANGLE(startQuery, ext.QUERY_RESULT_ANGLE);
+          var timeEnd = ext.getQueryParameterANGLE(endQuery, ext.QUERY_RESULT_ANGLE);
+
+          // Do something useful with the time.  Note that care should be
+          // taken to use all significant bits of the result, not just the
+          // least significant 32 bits.
+          adjustObjectLODBasedOnDrawTime(timeEnd - timeStart);
+        }
+    </pre>
+  </samplecode>
+
+  <history>
+    <revision date="2013/04/02">
+      <change>Initial revision.</change>
+    </revision>
+    <revision date="2013/04/03">
+      <change>Based on public_webgl discussion, specified that queries' results only become available at well-defined times.</change>
+    </revision>
+  </history>
+</proposal>

@@ -20,8 +20,8 @@
 ** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
-
-WebGLTestUtils = (function() {
+var WebGLTestUtils = (function() {
+"use strict";
 
 /**
  * Wrapped logging function.
@@ -58,7 +58,7 @@ var loggingOff = function() {
 
 /**
  * Converts a WebGL enum to a string
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} value The enum value.
  * @return {string} The enum as a string.
  */
@@ -185,7 +185,7 @@ var simpleVertexColorFragmentShader = [
 
 /**
  * Creates a simple texture vertex shader.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @return {!WebGLShader}
  */
 var setupSimpleTextureVertexShader = function(gl) {
@@ -194,7 +194,7 @@ var setupSimpleTextureVertexShader = function(gl) {
 
 /**
  * Creates a simple texture fragment shader.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @return {!WebGLShader}
  */
 var setupSimpleTextureFragmentShader = function(gl) {
@@ -204,7 +204,7 @@ var setupSimpleTextureFragmentShader = function(gl) {
 
 /**
  * Creates a texture vertex shader that doesn't need texcoords.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @return {!WebGLShader}
  */
 var setupNoTexCoordTextureVertexShader = function(gl) {
@@ -213,7 +213,7 @@ var setupNoTexCoordTextureVertexShader = function(gl) {
 
 /**
  * Creates a simple vertex color vertex shader.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @return {!WebGLShader}
  */
 var setupSimpleVertexColorVertexShader = function(gl) {
@@ -222,12 +222,31 @@ var setupSimpleVertexColorVertexShader = function(gl) {
 
 /**
  * Creates a simple vertex color fragment shader.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @return {!WebGLShader}
  */
 var setupSimpleVertexColorFragmentShader = function(gl) {
     return loadShader(
         gl, simpleVertexColorFragmentShader, gl.FRAGMENT_SHADER);
+};
+
+/**
+ * Creates a simple color vertex shader.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @return {!WebGLShader}
+ */
+var setupSimpleColorVertexShader = function(gl) {
+    return loadShader(gl, simpleColorVertexShader, gl.VERTEX_SHADER);
+};
+
+/**
+ * Creates a simple color fragment shader.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @return {!WebGLShader}
+ */
+var setupSimpleColorFragmentShader = function(gl) {
+    return loadShader(
+        gl, simpleColorFragmentShader, gl.FRAGMENT_SHADER);
 };
 
 /**
@@ -243,6 +262,7 @@ var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
   var realShaders = [];
   var program = gl.createProgram();
   var shaderType = undefined;
+  var shaderCount = 0;
   for (var ii = 0; ii < shaders.length; ++ii) {
     var shader = shaders[ii];
     if (typeof shader == 'string') {
@@ -251,11 +271,22 @@ var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
         if (element.type != "x-shader/x-vertex" && element.type != "x-shader/x-fragment")
           shaderType = ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER;
         shader = loadShaderFromScript(gl, shader, shaderType);
+      } else if (endsWith(shader, ".vert")) {
+        shader = loadShaderFromFile(gl, shader, gl.VERTEX_SHADER);
+      } else if (endsWith(shader, ".frag")) {
+        shader = loadShaderFromFile(gl, shader, gl.FRAGMENT_SHADER);
       } else {
         shader = loadShader(gl, shader, ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER);
       }
     }
-    gl.attachShader(program, shader);
+    if (shader) {
+      ++shaderCount;
+      gl.attachShader(program, shader);
+    }
+  }
+  if (shaderCount != 2) {
+    error("Error in compiling shader");
+    return null;
   }
   if (opt_attribs) {
     for (var ii = 0; ii < opt_attribs.length; ++ii) {
@@ -284,7 +315,7 @@ var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
 
 /**
  * Creates a simple texture program.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} opt_positionLocation The attrib location for position.
  * @param {number} opt_texcoordLocation The attrib location for texture coords.
  * @return {WebGLProgram}
@@ -313,7 +344,7 @@ var setupSimpleTextureProgram = function(
 
 /**
  * Creates a simple texture program.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @return {WebGLProgram}
  */
 var setupNoTexCoordTextureProgram = function(gl) {
@@ -337,7 +368,7 @@ var setupNoTexCoordTextureProgram = function(gl) {
 
 /**
  * Creates a simple texture program.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} opt_positionLocation The attrib location for position.
  * @param {number} opt_texcoordLocation The attrib location for texture coords.
  * @return {WebGLProgram}
@@ -366,7 +397,7 @@ var setupSimpleTextureProgram = function(
 
 /**
  * Creates a simple vertex color program.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} opt_positionLocation The attrib location for position.
  * @param {number} opt_vertexColorLocation The attrib location
  *        for vertex colors.
@@ -395,8 +426,34 @@ var setupSimpleVertexColorProgram = function(
 };
 
 /**
+ * Creates a simple color program.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number} opt_positionLocation The attrib location for position.
+ * @return {WebGLProgram}
+ */
+var setupSimpleColorProgram = function(gl, opt_positionLocation) {
+  opt_positionLocation = opt_positionLocation || 0;
+  var vs = setupSimpleColorVertexShader(gl);
+  var fs = setupSimpleColorFragmentShader(gl);
+  if (!vs || !fs) {
+    return null;
+  }
+  var program = setupProgram(
+      gl,
+      [vs, fs],
+      ['vPosition'],
+      [opt_positionLocation]);
+  if (!program) {
+    gl.deleteShader(fs);
+    gl.deleteShader(vs);
+  }
+  gl.useProgram(program);
+  return program;
+};
+
+/**
  * Creates buffers for a textured unit quad and attaches them to vertex attribs.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} opt_positionLocation The attrib location for position.
  * @param {number} opt_texcoordLocation The attrib location for texture coords.
  * @return {!Array.<WebGLBuffer>} The buffer objects that were
@@ -411,7 +468,7 @@ var setupUnitQuad = function(gl, opt_positionLocation, opt_texcoordLocation) {
  * Creates buffers for a textured unit quad with specified lower left
  * and upper right texture coordinates, and attaches them to vertex
  * attribs.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!Array.<number>} lowerLeftTexCoords The texture coordinates for the lower left corner.
  * @param {!Array.<number>} upperRightTexCoords The texture coordinates for the upper right corner.
  * @param {number} opt_positionLocation The attrib location for position.
@@ -422,48 +479,77 @@ var setupUnitQuad = function(gl, opt_positionLocation, opt_texcoordLocation) {
 var setupUnitQuadWithTexCoords = function(
     gl, lowerLeftTexCoords, upperRightTexCoords,
     opt_positionLocation, opt_texcoordLocation) {
-  opt_positionLocation = opt_positionLocation || 0;
-  opt_texcoordLocation = opt_texcoordLocation || 1;
+  return setupQuad(gl, {
+    positionLocation: opt_positionLocation || 0,
+    texcoordLocation: opt_texcoordLocation || 1,
+    lowerLeftTexCoords: lowerLeftTexCoords,
+    upperRightTexCoords: upperRightTexCoords,
+  });
+};
+
+/**
+ * Makes a quad with various options.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {!Object} options.
+ *
+ * scale: scale to multiple unit quad values by. default 1.0
+ * positionLocation: attribute location for position
+ * texcoordLocation: attribute location for texcoords.
+ *     If this does not exist no texture coords are created.
+ * lowerLeftTexCoords: an array of 2 values for the
+ *     lowerLeftTexCoords.
+ * upperRightTexCoords: an array of 2 values for the
+ *     upperRightTexCoords.
+ */
+var setupQuad = function(gl, options) {
+  var positionLocation = options.positionLocation || 0;
+  var scale = options.scale || 1;
+
   var objects = [];
 
   var vertexObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-       1.0,  1.0, 0.0,
-      -1.0,  1.0, 0.0,
-      -1.0, -1.0, 0.0,
-       1.0,  1.0, 0.0,
-      -1.0, -1.0, 0.0,
-       1.0, -1.0, 0.0]), gl.STATIC_DRAW);
-  gl.enableVertexAttribArray(opt_positionLocation);
-  gl.vertexAttribPointer(opt_positionLocation, 3, gl.FLOAT, false, 0, 0);
+       1.0 * scale ,  1.0 * scale,
+      -1.0 * scale ,  1.0 * scale,
+      -1.0 * scale , -1.0 * scale,
+       1.0 * scale ,  1.0 * scale,
+      -1.0 * scale , -1.0 * scale,
+       1.0 * scale , -1.0 * scale,]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(positionLocation);
+  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
   objects.push(vertexObject);
 
-  var llx = lowerLeftTexCoords[0];
-  var lly = lowerLeftTexCoords[1];
-  var urx = upperRightTexCoords[0];
-  var ury = upperRightTexCoords[1];
+  if (options.texcoordLocation !== undefined) {
+    var llx = options.lowerLeftTexCoords[0];
+    var lly = options.lowerLeftTexCoords[1];
+    var urx = options.upperRightTexCoords[0];
+    var ury = options.upperRightTexCoords[1];
 
-  var vertexObject = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      urx, ury,
-      llx, ury,
-      llx, lly,
-      urx, ury,
-      llx, lly,
-      urx, lly]), gl.STATIC_DRAW);
-  gl.enableVertexAttribArray(opt_texcoordLocation);
-  gl.vertexAttribPointer(opt_texcoordLocation, 2, gl.FLOAT, false, 0, 0);
-  objects.push(vertexObject);
+    var vertexObject = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        urx, ury,
+        llx, ury,
+        llx, lly,
+        urx, ury,
+        llx, lly,
+        urx, lly]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(options.texcoordLocation);
+    gl.vertexAttribPointer(options.texcoordLocation, 2, gl.FLOAT, false, 0, 0);
+    objects.push(vertexObject);
+  }
+
   return objects;
 };
 
 /**
  * Creates a program and buffers for rendering a textured quad.
- * @param {!WebGLContext} gl The WebGLContext to use.
- * @param {number} opt_positionLocation The attrib location for position.
- * @param {number} opt_texcoordLocation The attrib location for texture coords.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number} opt_positionLocation The attrib location for
+ *        position. Default = 0.
+ * @param {number} opt_texcoordLocation The attrib location for
+ *        texture coords. Default = 1.
  * @return {!WebGLProgram}
  */
 var setupTexturedQuad = function(
@@ -476,17 +562,13 @@ var setupTexturedQuad = function(
 
 /**
  * Creates a program and buffers for rendering a color quad.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} opt_positionLocation The attrib location for position.
  * @return {!WebGLProgram}
  */
 var setupColorQuad = function(gl, opt_positionLocation) {
   opt_positionLocation = opt_positionLocation || 0;
-  var program = wtu.setupProgram(
-      gl,
-      [simpleColorVertexShader, simpleColorFragmentShader],
-      ['vPosition'],
-      [opt_positionLocation]);
+  var program = setupSimpleColorProgram(gl);
   setupUnitQuad(gl, opt_positionLocation);
   return program;
 };
@@ -494,7 +576,7 @@ var setupColorQuad = function(gl, opt_positionLocation) {
 /**
  * Creates a program and buffers for rendering a textured quad with
  * specified lower left and upper right texture coordinates.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!Array.<number>} lowerLeftTexCoords The texture coordinates for the lower left corner.
  * @param {!Array.<number>} upperRightTexCoords The texture coordinates for the upper right corner.
  * @param {number} opt_positionLocation The attrib location for position.
@@ -513,14 +595,14 @@ var setupTexturedQuadWithTexCoords = function(
 
 /**
  * Creates a unit quad with only positions of a given resolution.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} gridRes The resolution of the mesh grid,
  *     expressed in the number of quads across and down.
  * @param {number} opt_positionLocation The attrib location for position.
  */
-var setupQuad = function (
+var setupIndexedQuad = function (
     gl, gridRes, opt_positionLocation, opt_flipOddTriangles) {
-  setupQuadWithOptions(gl,
+  return setupIndexedQuadWithOptions(gl,
     { gridRes: gridRes,
       positionLocation: opt_positionLocation,
       flipOddTriangles: opt_flipOddTriangles
@@ -529,7 +611,10 @@ var setupQuad = function (
 
 /**
  * Creates a quad with various options.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {!Object) options The options. See below.
+ * @return {!Array.<WebGLBuffer>} The created buffers.
+ *     [positions, <colors>, indices]
  *
  * Options:
  *   gridRes: number of quads across and down grid.
@@ -541,7 +626,7 @@ var setupQuad = function (
  *   colorLocation: attrib location for vertex colors. If
  *      undefined no vertex colors will be created.
  */
-var setupQuadWithOptions = function (gl, options) {
+var setupIndexedQuadWithOptions = function (gl, options) {
   var positionLocation = options.positionLocation || 0;
   var objects = [];
 
@@ -628,36 +713,102 @@ var setupQuadWithOptions = function (gl, options) {
 };
 
 /**
+ * Returns the constructor for an ArrayBuffer that
+ * corresponds to the given WebGL type.
+ * @param {!WebGLRenderingContext} gl A WebGLRenderingContext.
+ * @param {number} type The WebGL type (eg, gl.UNSIGNED_BYTE)
+ * @return {!Constructor} The ArrayBuffer constructor that
+ *      corresponds to the given type.
+ */
+var glTypeToArrayBufferType = function(gl, type) {
+  switch (type) {
+    case gl.BYTE:
+      return window.Int8Array;
+    case gl.UNSIGNED_BYTE:
+      return window.Uint8Array;
+    case gl.SHORT:
+      return window.Int16Array;
+    case gl.UNSIGNED_SHORT:
+    case gl.UNSIGNED_SHORT_5_6_5:
+    case gl.UNSIGNED_SHORT_4_4_4_4:
+    case gl.UNSIGNED_SHORT_5_5_5_1:
+      return window.Uint16Array;
+    case gl.INT:
+      return window.Int32Array;
+    case gl.UNSIGNED_INT:
+      return window.Uint32Array;
+    default:
+      throw 'unknown gl type ' + glEnumToString(gl, type);
+  }
+};
+
+/**
+ * Returns the number of bytes per component for a given WebGL
+ * type.
+ * @param {!WebGLRenderingContext} gl A WebGLRenderingContext.
+ * @param {number} type The WebGL type (eg, gl.UNSIGNED_BYTE)
+ * @return {!Constructor} The ArrayBuffer constructor that
+ *      corresponds to the given type.
+ */
+var getBytesPerComponent = function(gl, type) {
+  switch (type) {
+    case gl.BYTE:
+    case gl.UNSIGNED_BYTE:
+      return 1;
+    case gl.SHORT:
+    case gl.UNSIGNED_SHORT:
+    case gl.UNSIGNED_SHORT_5_6_5:
+    case gl.UNSIGNED_SHORT_4_4_4_4:
+    case gl.UNSIGNED_SHORT_5_5_5_1:
+      return 2;
+    case gl.INT:
+    case gl.UNSIGNED_INT:
+      return 4;
+    default:
+      throw 'unknown gl type ' + glEnumToString(gl, type);
+  }
+};
+
+/**
  * Fills the given texture with a solid color
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!WebGLTexture} tex The texture to fill.
  * @param {number} width The width of the texture to create.
  * @param {number} height The height of the texture to create.
- * @param {!Array.<number>} color The color to fill with. A 4 element array
+ * @param {!Array.<number>} color The color to fill with.
  *        where each element is in the range 0 to 255.
  * @param {number} opt_level The level of the texture to fill. Default = 0.
+ * @param {number} opt_format The format for the texture.
  */
-var fillTexture = function(gl, tex, width, height, color, opt_level) {
+var fillTexture = function(gl, tex, width, height, color, opt_level, opt_format, opt_type) {
   opt_level = opt_level || 0;
-  var numPixels = width * height;
-  var size = numPixels * 4;
-  var buf = new Uint8Array(size);
-  for (var ii = 0; ii < numPixels; ++ii) {
-    var off = ii * 4;
-    buf[off + 0] = color[0];
-    buf[off + 1] = color[1];
-    buf[off + 2] = color[2];
-    buf[off + 3] = color[3];
+  opt_format = opt_format || gl.RGBA;
+  opt_type = opt_type || gl.UNSIGNED_BYTE;
+  var pack = gl.getParameter(gl.UNPACK_ALIGNMENT);
+  var numComponents = color.length;
+  var bytesPerComponent = getBytesPerComponent(gl, opt_type);
+  var rowSize = numComponents * width * bytesPerComponent;
+  var paddedRowSize = Math.floor((rowSize + pack - 1) / pack) * pack;
+  var size = rowSize + (height - 1) * paddedRowSize;
+  size = Math.floor((size + bytesPerComponent - 1) / bytesPerComponent) * bytesPerComponent;
+  var buf = new (glTypeToArrayBufferType(gl, opt_type))(size);
+  for (var yy = 0; yy < height; ++yy) {
+    var off = yy * paddedRowSize;
+    for (var xx = 0; xx < width; ++xx) {
+      for (var jj = 0; jj < numComponents; ++jj) {
+        buf[off++] = color[jj];
+      }
+    }
   }
   gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.texImage2D(
-      gl.TEXTURE_2D, opt_level, gl.RGBA, width, height, 0,
-      gl.RGBA, gl.UNSIGNED_BYTE, buf);
-  };
+      gl.TEXTURE_2D, opt_level, opt_format, width, height, 0,
+      opt_format, opt_type, buf);
+};
 
 /**
  * Creates a textures and fills it with a solid color
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} width The width of the texture to create.
  * @param {number} height The height of the texture to create.
  * @param {!Array.<number>} color The color to fill with. A 4 element array
@@ -674,9 +825,39 @@ var ubyteToFloat = function(c) {
   return c / 255;
 };
 
+var ubyteColorToFloatColor = function(color) {
+  var floatColor = [];
+  for (var ii = 0; ii < color.length; ++ii) {
+    floatColor[ii] = ubyteToFloat(color[ii]);
+  }
+  return floatColor;
+};
+
+/**
+ * Sets the "u_color" uniform of the current program to color.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {!Array.<number> color 4 element array of 0-1 color
+ *      components.
+ */
+var setFloatDrawColor = function(gl, color) {
+  var program = gl.getParameter(gl.CURRENT_PROGRAM);
+  var colorLocation = gl.getUniformLocation(program, "u_color");
+  gl.uniform4fv(colorLocation, color);
+};
+
+/**
+ * Sets the "u_color" uniform of the current program to color.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {!Array.<number> color 4 element array of 0-255 color
+ *      components.
+ */
+var setUByteDrawColor = function(gl, color) {
+  setFloatDrawColor(gl, ubyteColorToFloatColor(color));
+};
+
 /**
  * Draws a previously setup quad in the given color.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!Array.<number>} color The color to draw with. A 4
  *        element array where each element is in the range 0 to
  *        1.
@@ -691,27 +872,31 @@ var drawFloatColorQuad = function(gl, color) {
 
 /**
  * Draws a previously setup quad in the given color.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!Array.<number>} color The color to draw with. A 4
  *        element array where each element is in the range 0 to
  *        255.
  */
 var drawUByteColorQuad = function(gl, color) {
-  var floatColor = [];
-  for (var ii = 0; ii < color.length; ++ii) {
-    floatColor[ii] = ubyteToFloat(color[ii]);
-  }
-  drawFloatColorQuad(gl, floatColor);
+  drawFloatColorQuad(gl, ubyteColorToFloatColor(color));
 };
 
 /**
- * Draws a previously setup quad.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * Draws a previously setupUnitQuad.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ */
+var drawUnitQuad = function(gl) {
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+};
+
+/**
+ * Clears then Draws a previously setupUnitQuad.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!Array.<number>} opt_color The color to fill clear with before
  *        drawing. A 4 element array where each element is in the range 0 to
  *        255. Default [255, 255, 255, 255]
  */
-var drawQuad = function(gl, opt_color) {
+var clearAndDrawUnitQuad = function(gl, opt_color) {
   opt_color = opt_color || [255, 255, 255, 255];
   gl.clearColor(
       opt_color[0] / 255,
@@ -719,18 +904,27 @@ var drawQuad = function(gl, opt_color) {
       opt_color[2] / 255,
       opt_color[3] / 255);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  gl.drawArrays(gl.TRIANGLES, 0, 6);
+  drawUnitQuad(gl);
 };
 
 /**
- * Draws a previously setup quad.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * Draws a quad previsouly settup with setupIndexedQuad.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number} gridRes Resolution of grid.
+ */
+var drawIndexedQuad = function(gl, gridRes) {
+  gl.drawElements(gl.TRIANGLES, gridRes * gridRes * 6, gl.UNSIGNED_SHORT, 0);
+};
+
+/**
+ * Draws a previously setupIndexedQuad
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} gridRes Resolution of grid.
  * @param {!Array.<number>} opt_color The color to fill clear with before
  *        drawing. A 4 element array where each element is in the range 0 to
  *        255. Default [255, 255, 255, 255]
  */
-var drawIndexedQuad = function(gl, gridRes, opt_color) {
+var clearAndDrawIndexedQuad = function(gl, gridRes, opt_color) {
   opt_color = opt_color || [255, 255, 255, 255];
   gl.clearColor(
       opt_color[0] / 255,
@@ -738,19 +932,46 @@ var drawIndexedQuad = function(gl, gridRes, opt_color) {
       opt_color[2] / 255,
       opt_color[3] / 255);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  gl.drawElements(gl.TRIANGLES, gridRes * 6, gl.UNSIGNED_SHORT, 0);
+  drawIndexedQuad(gl, gridRes);
+};
+
+/**
+ * Clips a range to min, max
+ * (Eg. clipToRange(-5,7,0,20) would return {value:0,extent:2}
+ * @param {number} value start of range
+ * @param {number} extent extent of range
+ * @param {number} min min.
+ * @param {number} max max.
+ * @return {!{value:number,extent:number} The clipped value.
+ */
+var clipToRange = function(value, extent, min, max) {
+  if (value < min) {
+    extent -= min - value;
+    value = min;
+  }
+  var end = value + extent;
+  if (end > max) {
+    extent -= end - max;
+  }
+  if (extent < 0) {
+    value = max;
+    extent = 0;
+  }
+  return {value:value, extent: extent};
 };
 
 /**
  * Checks that a portion of a canvas is 1 color.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
+ *         WebGLRenderingContext or 2D context to use.
  * @param {number} x left corner of region to check.
- * @param {number} y bottom corner of region to check.
+ * @param {number} y bottom corner of region to check in case of checking from
+ *        a GL context or top corner in case of checking from a 2D context.
  * @param {number} width width of region to check.
  * @param {number} height width of region to check.
- * @param {!Array.<number>} color The color to fill clear with before drawing. A
- *        4 element array where each element is in the range 0 to 255.
- * @param {number} errorRange Optional. Acceptable error in
+ * @param {!Array.<number>} color The color expected. A 4 element array where
+ *        each element is in the range 0 to 255.
+ * @param {number} opt_errorRange Optional. Acceptable error in
  *        color checking. 0 by default.
  * @param {!function()} sameFn Function to call if all pixels
  *        are the same as color.
@@ -758,13 +979,32 @@ var drawIndexedQuad = function(gl, gridRes, opt_color) {
  *        is different than color
  * @param {!function()} logFn Function to call for logging.
  */
-var checkCanvasRectColor = function(gl, x, y, width, height, color, errorRange, sameFn, differentFn, logFn) {
-  errorRange = errorRange || 0;
+var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRange, sameFn, differentFn, logFn) {
+  if ((gl instanceof WebGLRenderingContext) && !gl.getParameter(gl.FRAMEBUFFER_BINDING)) {
+    // We're reading the backbuffer so clip.
+    var xr = clipToRange(x, width, 0, gl.canvas.width);
+    var yr = clipToRange(y, height, 0, gl.canvas.height);
+    if (!xr.extent || !yr.extent) {
+      logFn("checking rect: effective width or heigh is zero");
+      sameFn();
+      return;
+    }
+    x = xr.value;
+    y = yr.value;
+    width = xr.extent;
+    height = yr.extent;
+  }
+  var errorRange = opt_errorRange || 0;
   if (!errorRange.length) {
     errorRange = [errorRange, errorRange, errorRange, errorRange]
   }
-  var buf = new Uint8Array(width * height * 4);
-  gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  var buf;
+  if (gl instanceof WebGLRenderingContext) {
+    buf = new Uint8Array(width * height * 4);
+    gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  } else {
+    buf = gl.getImageData(x, y, width, height).data;
+  }
   for (var i = 0; i < width * height; ++i) {
     var offset = i * 4;
     for (var j = 0; j < color.length; ++j) {
@@ -785,20 +1025,27 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, errorRange, 
 
 /**
  * Checks that a portion of a canvas is 1 color.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
+ *         WebGLRenderingContext or 2D context to use.
  * @param {number} x left corner of region to check.
- * @param {number} y bottom corner of region to check.
+ * @param {number} y bottom corner of region to check in case of checking from
+ *        a GL context or top corner in case of checking from a 2D context.
  * @param {number} width width of region to check.
  * @param {number} height width of region to check.
- * @param {!Array.<number>} color The color to fill clear with before drawing. A
- *        4 element array where each element is in the range 0 to 255.
- * @param {string} msg Message to associate with success. Eg ("should be red").
- * @param {number} errorRange Optional. Acceptable error in
+ * @param {!Array.<number>} color The color expected. A 4 element array where
+ *        each element is in the range 0 to 255.
+ * @param {string} opt_msg Message to associate with success. Eg
+ *        ("should be red").
+ * @param {number} opt_errorRange Optional. Acceptable error in
  *        color checking. 0 by default.
  */
-var checkCanvasRect = function(gl, x, y, width, height, color, msg, errorRange) {
+var checkCanvasRect = function(gl, x, y, width, height, color, opt_msg, opt_errorRange) {
+  var msg = opt_msg;
+  if (msg === undefined) {
+    msg = "should be " + color.toString();
+  }
   checkCanvasRectColor(
-      gl, x, y, width, height, color, errorRange,
+      gl, x, y, width, height, color, opt_errorRange,
       function() {
         testPassed(msg);
       },
@@ -810,9 +1057,10 @@ var checkCanvasRect = function(gl, x, y, width, height, color, msg, errorRange) 
 
 /**
  * Checks that an entire canvas is 1 color.
- * @param {!WebGLContext} gl The WebGLContext to use.
- * @param {!Array.<number>} color The color to fill clear with before drawing. A
- *        4 element array where each element is in the range 0 to 255.
+ * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
+ *         WebGLRenderingContext or 2D context to use.
+ * @param {!Array.<number>} color The color expected. A 4 element array where
+ *        each element is in the range 0 to 255.
  * @param {string} msg Message to associate with success. Eg ("should be red").
  * @param {number} errorRange Optional. Acceptable error in
  *        color checking. 0 by default.
@@ -822,8 +1070,39 @@ var checkCanvas = function(gl, color, msg, errorRange) {
 };
 
 /**
+ * Checks a rectangular area both inside the area and outside
+ * the area.
+ * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
+ *         WebGLRenderingContext or 2D context to use.
+ * @param {number} x left corner of region to check.
+ * @param {number} y bottom corner of region to check in case of checking from
+ *        a GL context or top corner in case of checking from a 2D context.
+ * @param {number} width width of region to check.
+ * @param {number} height width of region to check.
+ * @param {!Array.<number>} innerColor The color expected inside
+ *     the area. A 4 element array where each element is in the
+ *     range 0 to 255.
+ * @param {!Array.<number>} outerColor The color expected
+ *     outside. A 4 element array where each element is in the
+ *     range 0 to 255.
+ * @param {!number} opt_edgeSize: The number of pixels to skip
+ *     around the edges of the area. Defaut 0.
+ * @param {!{width:number, height:number}} opt_outerDimensions
+ *     The outer dimensions. Default the size of gl.canvas.
+ */
+var checkAreaInAndOut = function(gl, x, y, width, height, innerColor, outerColor, opt_edgeSize, opt_outerDimensions) {
+  var outerDimensions = opt_outerDimensions || { width: gl.canvas.width, height: gl.canvas.height };
+  var edgeSize = opt_edgeSize || 0;
+  checkCanvasRect(gl, x + edgeSize, y + edgeSize, width - edgeSize * 2, height - edgeSize * 2, innerColor);
+  checkCanvasRect(gl, 0, 0, x - edgeSize, outerDimensions.height, outerColor);
+  checkCanvasRect(gl, x + width + edgeSize, 0, outerDimensions.width - x - width - edgeSize, outerDimensions.height, outerColor);
+  checkCanvasRect(gl, 0, 0, outerDimensions.width, y - edgeSize, outerColor);
+  checkCanvasRect(gl, 0, y + height + edgeSize, outerDimensions.width, outerDimensions.height - y - height - edgeSize, outerColor);
+};
+
+/**
  * Loads a texture, calls callback when finished.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} url URL of image to load
  * @param {function(!Image): void} callback Function that gets called after
  *        image has loaded
@@ -882,9 +1161,12 @@ var hasAttributeCaseInsensitive = function(obj, attr) {
  *     context from. If one is not passed in one will be
  *     created. If it's a string it's assumed to be the id of a
  *     canvas.
- * @return {!WebGLContext} The created context.
+ * @return {!WebGLRenderingContext} The created context.
  */
 var create3DContext = function(opt_canvas, opt_attributes) {
+  if (window.initTestingHarness) {
+    window.initTestingHarness();
+  }
   var attributes = shallowCopyObject(opt_attributes || {});
   if (!hasAttributeCaseInsensitive(attributes, "antialias")) {
     attributes.antialias = false;
@@ -913,7 +1195,7 @@ var create3DContext = function(opt_canvas, opt_attributes) {
 
 /**
  * Gets a GLError value as a string.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} err The webgl error as retrieved from gl.getError().
  * @return {string} the error as a string.
  */
@@ -932,7 +1214,7 @@ var getGLErrorAsString = function(gl, err) {
 /**
  * Wraps a WebGL function with a function that throws an exception if there is
  * an error.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} fname Name of function to wrap.
  * @return {function} The wrapped function.
  */
@@ -974,7 +1256,7 @@ function create3DContextWithWrapperThatThrowsOnGLError(canvas) {
 
 /**
  * Tests that an evaluated expression generates a specific GL error.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} glError The expected gl error.
  * @param {string} evalSTr The string to evaluate.
  */
@@ -999,7 +1281,7 @@ var shouldGenerateGLError = function(gl, glError, evalStr) {
 
 /**
  * Tests that the first error GL returns is the specified error.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} glError The expected gl error.
  * @param {string} opt_msg
  */
@@ -1017,12 +1299,12 @@ var glErrorShouldBe = function(gl, glError, opt_msg) {
 
 /**
  * Links a WebGL program, throws if there are errors.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!WebGLProgram} program The WebGLProgram to link.
  * @param {function(string): void) opt_errorCallback callback for errors. 
  */
 var linkProgram = function(gl, program, opt_errorCallback) {
-  errFn = opt_errorCallback || testFailed;
+  var errFn = opt_errorCallback || testFailed;
   // Link the program
   gl.linkProgram(program);
 
@@ -1230,7 +1512,7 @@ var readFileList = function(url) {
 
 /**
  * Loads a shader.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} shaderSource The shader source.
  * @param {number} shaderType The type of shader. 
  * @param {function(string): void) opt_errorCallback callback for errors. 
@@ -1261,7 +1543,7 @@ var loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
   if (!compiled) {
     // Something went wrong during compilation; get the error
     lastError = gl.getShaderInfoLog(shader);
-    errFn("*** Error compiling shader '" + shader + "':" + lastError);
+    errFn("*** Error compiling " + glEnumToString(gl, shaderType) + " '" + shader + "':" + lastError);
     gl.deleteShader(shader);
     return null;
   }
@@ -1271,7 +1553,7 @@ var loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
 
 /**
  * Loads a shader from a URL.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {file} file The URL of the shader source.
  * @param {number} type The type of shader.
  * @param {function(string): void) opt_errorCallback callback for errors. 
@@ -1295,7 +1577,7 @@ var getScript = function(scriptId) {
 
 /**
  * Loads a shader from a script tag.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} scriptId The id of the script tag.
  * @param {number} opt_shaderType The type of shader. If not passed in it will
  *     be derived from the type of the script tag.
@@ -1332,13 +1614,15 @@ var loadStandardProgram = function(gl) {
   var program = gl.createProgram();
   gl.attachShader(program, loadStandardVertexShader(gl));
   gl.attachShader(program, loadStandardFragmentShader(gl));
+  gl.bindAttribLocation(program, 0, "a_vertex");
+  gl.bindAttribLocation(program, 1, "a_normal");
   linkProgram(gl, program);
   return program;
 };
 
 /**
  * Loads shaders from files, creates a program, attaches the shaders and links.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} vertexShaderPath The URL of the vertex shader.
  * @param {string} fragmentShaderPath The URL of the fragment shader.
  * @param {function(string): void) opt_errorCallback callback for errors. 
@@ -1368,7 +1652,7 @@ var loadProgramFromFile = function(
 /**
  * Loads shaders from script tags, creates a program, attaches the shaders and
  * links.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} vertexScriptId The id of the script tag that contains the
  *        vertex shader.
  * @param {string} fragmentScriptId The id of the script tag that contains the
@@ -1394,7 +1678,7 @@ var loadProgramFromScript = function loadProgramFromScript(
 /**
  * Loads shaders from source, creates a program, attaches the shaders and
  * links.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!WebGLShader} vertexShader The vertex shader.
  * @param {!WebGLShader} fragmentShader The fragment shader.
  * @param {function(string): void) opt_errorCallback callback for errors.
@@ -1411,7 +1695,7 @@ var createProgram = function(gl, vertexShader, fragmentShader, opt_errorCallback
 /**
  * Loads shaders from source, creates a program, attaches the shaders and
  * links.
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} vertexShader The vertex shader source.
  * @param {string} fragmentShader The fragment shader source.
  * @param {function(string): void) opt_errorCallback callback for errors. 
@@ -1445,7 +1729,7 @@ var loadProgram = function(
  * rely on compileShader failing. This function expects
  * one of the shader to fail OR linking to fail.
  *
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} vertexShaderScriptId The vertex shader.
  * @param {string} fragmentShaderScriptId The fragment shader.
  * @return {WebGLProgram} The created program.
@@ -1508,13 +1792,13 @@ var getActiveMap = function(gl, program, typeInfo) {
  *      },
  *    }
  *
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {WebGLProgram} The program to query for attribs.
  * @return the map.
  */
 var getAttribMap = function(gl, program) {
   return getActiveMap(gl, program, {
-      param: "ACTIVE_ATTRIBS",
+      param: "ACTIVE_ATTRIBUTES",
       activeFn: "getActiveAttrib",
       locFn: "getAttribLocation"
   });
@@ -1540,7 +1824,7 @@ var getAttribMap = function(gl, program) {
  *      },
  *    }
  *
- * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {WebGLProgram} The program to query for uniforms.
  * @return the map.
  */
@@ -1620,6 +1904,10 @@ var loadImagesAsync = function(urls, callback) {
   countDown();
 };
 
+/**
+ * Returns a map of key=value values from url.
+ * @return {!Object.<string, number>} map of keys to values.
+ */
 var getUrlArguments = function() {
   var args = {};
   try {
@@ -1643,12 +1931,23 @@ var getUrlArguments = function() {
   return args;
 };
 
+/**
+ * Makes an image from a canvas.
+ * @param {!HTMLCanvas} canvas Canvas to make image from.
+ * @return {!Image} The created image.
+ */
 var makeImage = function(canvas) {
   var img = document.createElement('img');
   img.src = canvas.toDataURL();
   return img;
 };
 
+/**
+ * Inserts an image with a caption into 'element'
+ * @param {!HTMLElement} element Element to append image to.
+ * @param {string} caption caption to associate with image.
+ * @param {!Image) image image to insert.
+ */
 var insertImage = function(element, caption, img) {
   var div = document.createElement("div");
   div.appendChild(img);
@@ -1658,6 +1957,15 @@ var insertImage = function(element, caption, img) {
    element.appendChild(div);
 };
 
+/**
+ * Inserts a 'label' that when clicked expands to the pre
+ * formatted text supplied by 'source'.
+ * @param {!HTMLElement} element element to append label to.
+ * @param {string} label label for anchor.
+ * @param {string} source preformatted text to expand to.
+ * @param {string} opt_url url of source. If provided a 2nd link
+ *     will be added.
+ */
 var addShaderSource = function(element, label, source, opt_url) {
   var div = document.createElement("div");
   var s = document.createElement("pre");
@@ -1762,52 +2070,162 @@ var replaceParams = function(str) {
   });
 };
 
+var upperCaseFirstLetter = function(str) {
+  return str.substring(0, 1).toUpperCase() + str.substring(1);
+};
+
+/**
+ * Gets a prefixed property. For example,
+ *
+ *     var fn = getPrefixedProperty(
+ *        window,
+ *        "requestAnimationFrame");
+ *
+ * Will return either:
+ *    "window.requestAnimationFrame",
+ *    "window.oRequestAnimationFrame",
+ *    "window.msRequestAnimationFrame",
+ *    "window.mozRequestAnimationFrame",
+ *    "window.webKitRequestAnimationFrame",
+ *    undefined
+ *
+ * the non-prefixed function is tried first.
+ */
+var propertyPrefixes = ["", "moz", "ms", "o", "webkit"];
+var getPrefixedProperty = function(obj, propertyName) {
+  for (var ii = 0; ii < propertyPrefixes.length; ++ii) {
+    var prefix = propertyPrefixes[ii];
+    var name = prefix + propertyName;
+    console.log(name);
+    var property = obj[name];
+    if (property) {
+      return property;
+    }
+    if (ii == 0) {
+      propertyName = upperCaseFirstLetter(propertyName);
+    }
+  }
+  return undefined;
+};
 
 /**
  * Provides requestAnimationFrame in a cross browser way.
  */
-var requestAnimFrameImpl_;
-
-var requestAnimFrame = function(callback, element) {
-  if (!requestAnimFrameImpl_) {
-    requestAnimFrameImpl_ = function() {
-      var functionNames = [
-        "requestAnimationFrame",
-        "webkitRequestAnimationFrame",
-        "mozRequestAnimationFrame",
-        "oRequestAnimationFrame",
-        "msRequestAnimationFrame"
-      ];
-      for (var jj = 0; jj < functionNames.length; ++jj) {
-        var functionName = functionNames[jj];
-        if (window[functionName]) {
-          return function(name) {
-            return function(callback, element) {
-              return window[name].call(window, callback, element);
-            };
-          }(functionName);
-        }
-      }
-      return function(callback, element) {
-           return window.setTimeout(callback, 1000 / 70);
-        };
-    }();
-  }
-
-  return requestAnimFrameImpl_(callback, element);
-};
+var requestAnimFrame = getPrefixedProperty(window, "requestAnimationFrame") ||
+    function(callback, element) {
+      return window.setTimeout(callback, 1000 / 70);
+    };
 
 /**
  * Provides cancelAnimationFrame in a cross browser way.
  */
-var cancelAnimFrame = (function() {
-  return window.cancelAnimationFrame ||
-         window.webkitCancelAnimationFrame ||
-         window.mozCancelAnimationFrame ||
-         window.oCancelAnimationFrame ||
-         window.msCancelAnimationFrame ||
-         window.clearTimeout;
-})();
+var cancelAnimFrame = getPrefixedProperty(window, "cancelAnimationFrame") ||
+    window.clearTimeout;
+
+/**
+ * Provides requestFullScreen in a cross browser way.
+ */
+var requestFullScreen = function(element) {
+  var fn = getPrefixedProperty(element, "requestFullScreen");
+  if (fn) {
+    fn.call(element);
+  }
+};
+
+/**
+ * Provides cancelFullScreen in a cross browser way.
+ */
+var cancelFullScreen = function() {
+  var fn = getPrefixedProperty(document, "cancelFullScreen");
+  if (fn) {
+    fn.call(document);
+  }
+};
+
+/**
+ * @param {!HTMLElement} element the element to go fullscreen
+ * @param {!function(boolean)} a function that will be called
+ *        when entering/exiting fullscreen. It is passed true if
+ *        entering fullscreen, false if exiting.
+ */
+/**
+ * Provides a way to attach callback
+ */
+var fullScreenStateName;
+var fullScreenStateNames = [
+  "isFullScreen",
+  "fullScreen",
+];
+(function() {
+  for (var ii = 0; ii < fullScreenStateNames.length; ++ii) {
+    var propertyName = fullScreenStateNames[ii];
+    for (var jj = 0; jj < propertyPrefixes.length; ++jj) {
+      var prefix = propertyPrefixes[jj];
+      if (prefix.length) {
+        propertyName = upperCaseFirstLetter(propertyName);
+        fullScreenStateName = prefix + propertyName;
+        if (document[fullScreenStateName] !== undefined) {
+          return;
+        }
+      }
+    }
+    fullScreenStateName = undefined;
+  }
+}());
+var getFullScreenState = function() {
+  console.log("fullscreenstatename:" + fullScreenStateName);
+  console.log(document[fullScreenStateName]);
+  return document[fullScreenStateName];
+};
+
+var onFullScreenChange = function(element, callback) {
+  propertyPrefixes.forEach(function(prefix) {
+    var eventName = prefix + "fullscreenchange";
+    console.log("addevent: " + eventName);
+    document.addEventListener(eventName, function(event) {
+      console.log("event: " + eventName);
+      callback(getFullScreenState());
+    });
+  });
+};
+
+var setupFullscreen = function(buttonId, fullscreenId, callback) {
+  function findElement(id) {
+    var element = document.getElementById(id);
+    if (element) {
+      return element;
+    }
+
+    var elements = document.getElementsByTagName(id);
+    if (elements) {
+      return elements[0];
+    }
+  }
+
+  if (!fullScreenStateName) {
+    return false;
+  }
+
+  var fullscreenElement = findElement(fullscreenId);
+
+  var buttonElement = findElement(buttonId);
+
+  onFullScreenChange(fullscreenElement, callback);
+
+  var toggleFullScreen = function(event) {
+    if (getFullScreenState()) {
+      cancelFullScreen(fullscreenElement);
+    } else {
+      requestFullScreen(fullscreenElement);
+    }
+    event.preventDefault();
+    return false;
+  };
+
+  buttonElement.addEventListener('click', toggleFullScreen);
+
+  return true;
+};
 
 /**
  * Waits for the browser to composite the canvas associated with
@@ -1826,26 +2244,94 @@ var waitForComposite = function(gl, callback) {
   countDown();
 };
 
+/**
+ * Runs an array of functions, yielding to the browser between each step.
+ * If you want to know when all the steps are finished add a last step.
+ * @param {!Array.<function(): void>} steps. Array of functions.
+ */
+var runSteps = function(steps) {
+  if (!steps.length) {
+    return;
+  }
+
+  // copy steps so they can't be modifed.
+  var stepsToRun = steps.slice();
+  var currentStep = 0;
+  var runNextStep = function() {
+    stepsToRun[currentStep++]();
+    if (currentStep < stepsToRun.length) {
+      setTimeout(runNextStep, 1);
+    }
+  };
+  runNextStep();
+};
+
+/**
+ * Starts playing a video and waits for it to be consumable.
+ * @param {!HTMLVideoElement} video An HTML5 Video element.
+ * @param {!function(!HTMLVideoElement): void>} callback. Function to call when
+ *        video is ready.
+ */
+var startPlayingAndWaitForVideo = function(video, callback) {
+  var gotPlaying = false;
+  var gotTimeUpdate = false;
+
+  var maybeCallCallback = function() {
+    if (gotPlaying && gotTimeUpdate && callback) {
+      callback(video);
+      callback = undefined;
+      video.removeEventListener('playing', playingListener, true);
+      video.removeEventListener('timeupdate', timeupdateListener, true);
+    }
+  };
+
+  var playingListener = function() {
+    gotPlaying = true;
+    maybeCallCallback();
+  };
+
+  var timeupdateListener = function() {
+    // Checking to make sure the current time has advanced beyond
+    // the start time seems to be a reliable heuristic that the
+    // video element has data that can be consumed.
+    if (video.currentTime > 0.0) {
+      gotTimeUpdate = true;
+      maybeCallCallback();
+    }
+  };
+
+  video.addEventListener('playing', playingListener, true);
+  video.addEventListener('timeupdate', timeupdateListener, true);
+  video.loop = true;
+  video.play();
+};
+
 return {
   addShaderSource: addShaderSource,
   cancelAnimFrame: cancelAnimFrame,
   create3DContext: create3DContext,
   create3DContextWithWrapperThatThrowsOnGLError:
       create3DContextWithWrapperThatThrowsOnGLError,
+  checkAreaInAndOut: checkAreaInAndOut,
   checkCanvas: checkCanvas,
   checkCanvasRect: checkCanvasRect,
   checkCanvasRectColor: checkCanvasRectColor,
+  clipToRange: clipToRange,
   createColoredTexture: createColoredTexture,
   createProgram: createProgram,
-  drawQuad: drawQuad,
+  clearAndDrawUnitQuad: clearAndDrawUnitQuad,
+  clearAndDrawIndexedQuad: clearAndDrawIndexedQuad,
+  drawUnitQuad: drawUnitQuad,
   drawIndexedQuad: drawIndexedQuad,
   drawUByteColorQuad: drawUByteColorQuad,
   drawFloatColorQuad: drawFloatColorQuad,
   endsWith: endsWith,
   fillTexture: fillTexture,
+  getBytesPerComponent: getBytesPerComponent,
   getExtensionWithKnownPrefixes: getExtensionWithKnownPrefixes,
   getFileListAsync: getFileListAsync,
   getLastError: getLastError,
+  getPrefixedProperty: getPrefixedProperty,
   getScript: getScript,
   getSupportedExtensionWithKnownPrefixes: getSupportedExtensionWithKnownPrefixes,
   getUrlArguments: getUrlArguments,
@@ -1853,6 +2339,7 @@ return {
   getUniformMap: getUniformMap,
   glEnumToString: glEnumToString,
   glErrorShouldBe: glErrorShouldBe,
+  glTypeToArrayBufferType: glTypeToArrayBufferType,
   hasAttributeCaseInsensitive: hasAttributeCaseInsensitive,
   insertImage: insertImage,
   loadImageAsync: loadImageAsync,
@@ -1877,7 +2364,11 @@ return {
   setupColorQuad: setupColorQuad,
   setupProgram: setupProgram,
   setupQuad: setupQuad,
-  setupQuadWithOptions: setupQuadWithOptions,
+  setupIndexedQuad: setupIndexedQuad,
+  setupIndexedQuadWithOptions: setupIndexedQuadWithOptions,
+  setupSimpleColorFragmentShader: setupSimpleColorFragmentShader,
+  setupSimpleColorVertexShader: setupSimpleColorVertexShader,
+  setupSimpleColorProgram: setupSimpleColorProgram,
   setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
   setupSimpleTextureProgram: setupSimpleTextureProgram,
   setupSimpleTextureVertexShader: setupSimpleTextureVertexShader,
@@ -1890,13 +2381,20 @@ return {
   setupTexturedQuadWithTexCoords: setupTexturedQuadWithTexCoords,
   setupUnitQuad: setupUnitQuad,
   setupUnitQuadWithTexCoords: setupUnitQuadWithTexCoords,
+  setFloatDrawColor: setFloatDrawColor,
+  setUByteDrawColor: setUByteDrawColor,
+  startPlayingAndWaitForVideo: startPlayingAndWaitForVideo,
   startsWith: startsWith,
   shouldGenerateGLError: shouldGenerateGLError,
   readFile: readFile,
   readFileList: readFileList,
   replaceParams: replaceParams,
   requestAnimFrame: requestAnimFrame,
+  runSteps: runSteps,
   waitForComposite: waitForComposite,
+
+  // fullscreen api
+  setupFullscreen: setupFullscreen,
 
   none: false
 };

@@ -10,7 +10,7 @@
   </contributors>
   <number>12</number>
   <depends>
-    <api version="1.0.1"/>
+    <api version="1.0"/>
   </depends>
   <overview>
     <p>
@@ -57,31 +57,32 @@
       </feature>
       <feature>
         <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
           <dt>COMPRESSED_RGB_ATC_WEBGL</dt>
-          <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
-          <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
-          must be equal to the following number of bytes:
+          <dd><p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+          either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
+          equal to the following number of bytes:</p>
           <blockquote><code>
             floor((width + 3) / 4) * floor((height + 3) / 4) * 8
           </code></blockquote>
-          If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
           </dd>
 
           <dt>COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL</dt>
           <dt>COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL</dt>
-          <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
-          <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
-          must be equal to the following number of bytes:
+          <dd><p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+          either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
+          equal to the following number of bytes:</p>
           <blockquote><code>
             floor((width + 3) / 4) * floor((height + 3) / 4) * 16
           </code></blockquote>
-          If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
           </dd>
-
+        </dl>
       </feature>
     </features>
   </overview>
-  <idl>
+  <idl xml:space="preserve">
 interface WEBGL_compressed_texture_atc {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_RGB_ATC_WEBGL                     = 0x8C92;
@@ -92,6 +93,9 @@ interface WEBGL_compressed_texture_atc {
   <history>
     <revision date="2012/09/11">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2013/07/03">
+      <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
     </revision>
   </history>
 </draft>

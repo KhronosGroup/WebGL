@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<extension href="OES_vertex_array_object/">
+<ratified href="OES_vertex_array_object/">
   <name>OES_vertex_array_object</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -15,19 +15,46 @@
   <overview>
     <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_vertex_array_object.txt" name="OES_vertex_array_object" />
   </overview>
-  <idl>
+  <idl xml:space="preserve">
 interface WebGLVertexArrayObjectOES : WebGLObject {
 };
 
 interface OES_vertex_array_object {
     const GLenum VERTEX_ARRAY_BINDING_OES = 0x85B5;
 
-    WebGLVertexArrayObjectOES createVertexArrayOES();
-    void deleteVertexArrayOES(WebGLVertexArrayObjectOES arrayObject);
-    GLboolean isVertexArrayOES(WebGLVertexArrayObjectOES arrayObject);
-    void bindVertexArrayOES(WebGLVertexArrayObjectOES arrayObject);
+    WebGLVertexArrayObjectOES? createVertexArrayOES();
+    void deleteVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
+    [WebGLHandlesContextLoss] GLboolean isVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
+    void bindVertexArrayOES(WebGLVertexArrayObjectOES? arrayObject);
 };
   </idl>
+
+  <newfun>
+    <function name="createVertexArrayOES" type="WebGLVertexArrayObjectOES?">
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="deleteVertexArrayOES" type="void">
+      <param name="arrayObject" type="WebGLVertexArrayObjectOES?"/>
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="isVertexArrayOES" type="GLboolean">
+      <param name="arrayObject" type="WebGLVertexArrayObjectOES?"/>
+      Returns false if the vertex array object's <a
+      href="../../specs/1.0/#webgl-object-invalidated-flag">invalidated
+      flag</a> is set.
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="bindVertexArrayOES" type="void">
+      <param name="arrayObject" type="WebGLVertexArrayObjectOES?"/>
+    </function>
+  </newfun>
+
   <issues>
     <p>The OES_vertex_array_object spec does not make it clear
     what happens to buffers that are deleted when they are referenced
@@ -92,5 +119,14 @@ interface OES_vertex_array_object {
     <revision date="2012/10/16">
       <change>Based on feedback on public_webgl, moved from draft to community approved, and removed aliases.</change>
     </revision>
+    <revision date="2013/05/08">
+      <change>Made WebGLVertexArrayObjectOES return values and arguments nullable on feedback from Benoit Jacob.</change>
+    </revision>
+    <revision date="2013/05/14">
+      <change>Based on pull request from J Kenneth King, added WebGLHandlesContextLoss extended attribute to isVertexArrayOES and added markup for new functions.</change>
+    </revision>
+    <revision date="2013/05/15">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
   </history>
-</extension>
+</ratified>

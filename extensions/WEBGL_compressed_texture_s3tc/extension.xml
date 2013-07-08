@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<draft href="WEBGL_compressed_texture_s3tc/">
+<ratified href="WEBGL_compressed_texture_s3tc/">
   <name>WEBGL_compressed_texture_s3tc</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -10,7 +10,7 @@
   </contributors>
   <number>8</number>
   <depends>
-    <api version="1.0.1"/>
+    <api version="1.0"/>
   </depends>
   <overview>
     <p>
@@ -30,12 +30,12 @@
         will include the 4 formats from this specification.
       </feature>
       <feature>
-          <p>The following format specific restrictions must be enforced:</p>
-
+        <p>The following format specific restrictions must be enforced:</p>
+        <dl>
           <dt>COMPRESSED_RGB_S3TC_DXT1_EXT</dt>
           <dt>COMPRESSED_RGBA_S3TC_DXT1_EXT</dt>
-          <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
-          <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
+          <dd><p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+          either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
           must match the following equation:</p>
           <blockquote><code>
           floor((width + 3) / 4) * floor((height + 3) / 4) * 8
@@ -61,9 +61,9 @@
 
           <dt>COMPRESSED_RGBA_S3TC_DXT3_EXT</dt>
           <dt>COMPRESSED_RGBA_S3TC_DXT5_EXT</dt>
-          <dd><p>The length of the ArrayBufferView, <code>pixels</code>, passed to either
-          <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code>
-          must match the following equation:</p>
+          <dd><p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+          either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must
+          match the following equation:</p>
           <blockquote><code>
           floor((width + 3) / 4) * floor((height + 3) / 4) * 16
           </code></blockquote>
@@ -85,10 +85,11 @@
           If they are not an <code>INVALID_OPERATION</code> error is generated.
           </p>
           </dd>
+        </dl>
       </feature>
     </features>
   </overview>
-  <idl>
+  <idl xml:space="preserve">
 interface WEBGL_compressed_texture_s3tc {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_RGB_S3TC_DXT1_EXT        = 0x83F0;
@@ -101,5 +102,14 @@ interface WEBGL_compressed_texture_s3tc {
     <revision date="2012/01/25">
       <change>Initial revision.</change>
     </revision>
+    <revision date="2013/01/26">
+      <change>Moved from draft to community approved status</change>
+    </revision>
+    <revision date="2013/05/15">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
+    <revision date="2013/07/03">
+      <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
+    </revision>
   </history>
-</draft>
+</ratified>

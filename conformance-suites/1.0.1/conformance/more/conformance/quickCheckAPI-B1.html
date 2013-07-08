@@ -32,16 +32,16 @@ Tests.testValidArgs = function() {
         var ok = false;
         // if we have an validity checker, assert that the generated args are valid
         if (gen.checkArgValidity)
-          assert("Valid args: "+name+"("+args.map(function(a){return Object.toSource(a)}).join(",")+")",
+          assert("Valid args: "+name+"("+argsToString(args)+")",
                 gen.checkArgValidity.apply(gen, args));
         var rv;
         // assert that GL function works when called with valid args
-        assertOk("This should work: "+name+"("+args.map(function(a){return Object.toSource(a)}).join(",")+")",
+        assertOk("This should work: "+name+"("+argsToString(args)+")",
                 function(){rv = GL[name].apply(GL, args); ok = true;});
         // if we need to cleanup the return value, do it here
         // e.g. calling gl.deleteBuffer(rv) after testing gl.createBuffer() above
         if (gen.returnValueCleanup)
-          assertOk("Cleaning up return value after "+name+"("+args.map(function(a){return Object.toSource(a)}).join(",")+")",
+          assertOk("Cleaning up return value after "+name+"("+argsToString(args)+")",
                    function() { gen.returnValueCleanup(rv); });
         return ok;
       }, argGen.testCount || randomTestCount);

@@ -1,7 +1,11 @@
 Welcome to the WebGL Conformance Test Suite
 ===========================================
 
-This is the initial release of the WebGL conformance test suite.
+Note: Before adding a new test or editing an existing test
+[please read these guidelines](test-guidelines.md).
+
+This is the WebGL conformance test suite. You can find a the current "live"
+version at [https://www.khronos.org/registry/webgl/sdk/tests/webgl-conformance-tests.html](https://www.khronos.org/registry/webgl/sdk/tests/webgl-conformance-tests.html)
 
 NOTE TO USERS: Unless you are a WebGL implementor, there is no need to submit
 a conformance result using this process.  Should you discover bugs in your
@@ -56,10 +60,17 @@ There are various URL options you can pass in.
 
                  Example: webgl-conformance-tests.html?include=glsl,.*destruction\.html
 
+    frames:      The number of iframes to use to run tests in parallel.
+
+                 Example: webgl-conformance-tests.html?frames=8
+
+                 Note the tests are not requried to run with anything other than frames = 1.
+
 History
 -------
 
 - 2011/02/24: Version 1.0.0
 - 2012/02/23: Version 1.0.1
-- 2012/03/20: Version 1.0.2 (beta)
+- 2012/03/20: Version 1.0.2
+- 2013/02/14: Version 1.0.3 (beta)
 

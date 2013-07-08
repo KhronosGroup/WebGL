@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<draft href="WEBGL_depth_texture/">
+<ratified href="WEBGL_depth_texture/">
   <name>WEBGL_depth_texture</name>
   <aliases>
     <alias>WEBKIT_WEBGL_depth_texture</alias>
@@ -24,15 +24,13 @@
       functionality from the OpenGL ES 2.0 extensions
       <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_depth_texture.txt">OES_depth_texture</a>
       and
-      <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_packed_depth_stencil.txt">OES_packed_depth_stencil</a>, with certain restrictions added for portability reasons. Specifically:
+      <a href="http://www.khronos.org/registry/gles/extensions/OES/OES_packed_depth_stencil.txt">OES_packed_depth_stencil</a>, with certain restrictions added for portability reasons. Specifically:</p>
 
       <ul>
       <li> ANGLE_depth_texture provides both depth and depth/stencil textures. </li>
       <li> ANGLE_depth_texture does not provide the <code>DEPTH24_STENCIL8_OES</code> renderbuffer internal format from the OES_packed_depth_stencil extension. The core WebGL specification already supports allocation of depth/stencil renderbuffers. </li>
       <li> ANGLE_depth_texture does not support loading image data via the TexImage or TexSubImage commands. Depth and depth/stencil textures created via this extension can only have their contents specified by rendering to them. </li>
       </ul>
-
-    </p>
 
     <p>Consult the Errors section below for specific restrictions.
     </p>
@@ -67,24 +65,24 @@
       </feature>
       <feature>
         <p>
-          The WebGL-specific constraints about <a href="http://www.khronos.org/registry/webgl/specs/1.0/#6.5">Framebuffer Object Attachments</a> are extended:
+          The WebGL-specific constraints about <a href="http://www.khronos.org/registry/webgl/specs/1.0/#6.5">Framebuffer Object Attachments</a> are extended:</p>
 
           <ul>
           <li> A texture attached to an FBO's <code>DEPTH_ATTACHMENT</code> attachment point must be allocated with the <code>DEPTH_COMPONENT</code> internal format. </li>
           <li> A texture attached to the <code>DEPTH_STENCIL_ATTACHMENT</code> attachment point must be allocated with the <code>DEPTH_STENCIL</code> internal format. </li>
           </ul>
-        </p>
+
         <p>
           In the WebGL API, it is an error to concurrently attach either
           renderbuffers or textures to the following combinations of
-          attachment points:
+          attachment points:</p>
 
           <ul>
           <li> <code>DEPTH_ATTACHMENT</code> + <code>DEPTH_STENCIL_ATTACHMENT</code> </li>
           <li> <code>STENCIL_ATTACHMENT</code> + <code>DEPTH_STENCIL_ATTACHMENT</code> </li>
           <li> <code>DEPTH_ATTACHMENT</code> + <code>STENCIL_ATTACHMENT</code> </li>
           </ul>
-        </p>
+
         <p>
           See the section
           <a href="http://www.khronos.org/registry/webgl/specs/1.0/#6.5">Framebuffer Object Attachments</a>
@@ -94,7 +92,7 @@
       </feature>
     </features>
   </overview>
-  <idl>
+  <idl xml:space="preserve">
 interface WEBGL_depth_texture {
   const GLenum UNSIGNED_INT_24_8_WEBGL = 0x84FA;
 };
@@ -169,20 +167,14 @@ interface WEBGL_depth_texture {
     </error>
   </errors>
   <issues>
-    <issue>
-      <p>
-        As per the ANGLE_depth_texture specification, the content of the
-        ALPHA channel when sampling a depth texture is implementation
-        dependent. It can be either another copy of the depth value that is
-        stored in the LUMINANCE channels, <code>r</code>, <code>g</code>,
-        and <code>b</code>, or it can be 1.0.
-      </p>
-      <p>
-        It is therefore recommended to use <code>r</code>,
-        <code>g</code>, or <code>b</code> in GLSL shaders
-        that are used to reference depth textures.
-      </p>
-    </issue>
+    <p>
+      As per the ANGLE_depth_texture specification, when a depth
+      texture is sampled, the value is stored into the RED channel.
+      The contents of the GREEN, BLUE and ALPHA channels are
+      implementation dependent. It is therefore recommended to use
+      only the <code>r</code> component of variables in GLSL shaders
+      that are used to reference depth textures.
+    </p>
   </issues>
   <history>
     <revision date="2012/01/23">
@@ -224,5 +216,14 @@ interface WEBGL_depth_texture {
         DEPTH_STENCIL_ATTACHMENT to framebufferTexture2D.
       </change>
     </revision>
+    <revision date="2013/01/26">
+      <change>Moved from draft to community approved status</change>
+    </revision>
+    <revision date="2013/02/28">
+      <change>Updated to track ANGLE_depth_texture, indicating that only red channel is guaranteed.</change>
+    </revision>
+    <revision date="2013/05/15">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
   </history>
-</draft>
+</ratified>

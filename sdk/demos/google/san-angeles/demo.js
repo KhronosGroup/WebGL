@@ -150,7 +150,7 @@ var fadeVertexSource = [
 
 // globals
 var ground = null;
-var fadeVBO = null;
+var fade = null;
 var shapes = null;
 
 var modelview = new Matrix4x4();
@@ -211,6 +211,8 @@ function Shader(vertex, fragment) {
     gl.attachShader(this.program, fs);
     gl.deleteShader(fs);
 
+    gl.bindAttribLocation(this.program, 0, "pos");
+
     gl.linkProgram(this.program);
     gl.useProgram(this.program);
     // log(gl.getProgramInfoLog(this.program));
@@ -250,7 +252,8 @@ Shader.prototype.bind = function() {
 };
 
 Shader.prototype.getAttribute = function(name) {
-    return gl.getAttribLocation(this.program, name);
+    var loc = gl.getAttribLocation(this.program, name);
+    return loc;
 };
 
 Shader.prototype.getUniform = function(name) {
@@ -262,9 +265,10 @@ function GlObject(shader, vertices, colors, normals) {
     this.count =  (vertices.length / 3) | 0;
     this.vbo = gl.createBuffer();
 
-    var vertexArray = new Float32Array(vertices);
-    var colorArray = new Uint8Array(colors);
     this.vertexOffset = 0;
+    var vertexArray = new Float32Array(vertices);
+    var colorArray = null;
+    var colorArray = new Uint8Array(colors != undefined ? colors : []);
     this.colorOffset = vertexArray.byteLength;
     this.normalOffset = this.colorOffset + colorArray.byteLength;
     var sizeInBytes = this.normalOffset;
@@ -277,7 +281,9 @@ function GlObject(shader, vertices, colors, normals) {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferData(gl.ARRAY_BUFFER, sizeInBytes, gl.STATIC_DRAW);
     gl.bufferSubData(gl.ARRAY_BUFFER, this.vertexOffset, vertexArray);
-    gl.bufferSubData(gl.ARRAY_BUFFER, this.colorOffset, colorArray);
+    if (colors != undefined) {
+      gl.bufferSubData(gl.ARRAY_BUFFER, this.colorOffset, colorArray);
+    }
     if (normals != undefined) {
         gl.bufferSubData(gl.ARRAY_BUFFER, this.normalOffset, normalArray);
     }
@@ -289,9 +295,11 @@ function GlObject(shader, vertices, colors, normals) {
     gl.vertexAttribPointer(this.shader.posLoc, 3, gl.FLOAT, false, 0,
                            this.vertexOffset);
     gl.enableVertexAttribArray(this.shader.posLoc);
-    gl.vertexAttribPointer(this.shader.colorInLoc, 4, gl.UNSIGNED_BYTE, true, 0,
-                           this.colorOffset);
-    gl.enableVertexAttribArray(this.shader.colorInLoc);
+    if (this.shader.colorInLoc !== undefined) {
+      gl.vertexAttribPointer(this.shader.colorInLoc, 4, gl.UNSIGNED_BYTE, true, 0,
+                             this.colorOffset);
+      gl.enableVertexAttribArray(this.shader.colorInLoc);
+    }
     if (this.shader.normalLoc !== undefined) {
         gl.vertexAttribPointer(this.shader.normalLoc, 3, gl.FLOAT, false, 0,
                                this.normalOffset);
@@ -730,20 +738,18 @@ function drawGroundPlane() {
 
 function createFadeQuad() {
     var vertices = new Float32Array([
-        -1., -1.,
-        1., -1.,
-        -1.,  1.,
-        1., -1.,
-        1.,  1.,
-        -1.,  1.]);
-    fadeVBO = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, fadeVBO);
-    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+        -1., -1., 0,
+         1., -1., 0,
+        -1.,  1., 0,
+         1., -1., 0,
+         1.,  1., 0,
+        -1.,  1., 0,]);
+    return new GlObject(fadeShader, vertices);
 }
 
 function drawFadeQuad() {
-    if (fadeVBO == null) {
-        createFadeQuad();
+    if (fade == null) {
+        fade = createFadeQuad();
     }
 
     var beginFade = sTick - currentCamTrackStartTick;
@@ -756,13 +762,7 @@ function drawFadeQuad() {
         gl.blendFunc(gl.ZERO, gl.SRC_COLOR);
         fadeShader.bind();
         gl.uniform1f(fadeShader.minFadeLoc, minFade / 1024.);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, fadeVBO);
-        var vertexOffset = 0;
-        gl.vertexAttribPointer(fadeShader.posLoc, 2, gl.FLOAT, false, 0, vertexOffset);
-        gl.enableVertexAttribArray(fadeShader.posLoc);
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
-        gl.disableVertexAttribArray(fadeShader.posLoc);
+        fade.draw();
 
         gl.disable(gl.BLEND);
         gl.enable(gl.DEPTH_TEST);

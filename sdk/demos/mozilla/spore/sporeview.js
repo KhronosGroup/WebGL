@@ -144,7 +144,7 @@ function init() {
   //var pmMatrix = makePerspective(90, 1, 0.01, 10000);
   //var pmMatrix = makeOrtho(-20,20,-20,20, 0.01, 10000);
 
-  var vpos = [0, 0, 0];
+  var vpos = [0, 0, 0, 1];
 
   var mvMatrixStack = [];
   var mvMatrix = Matrix.I(4);
@@ -173,7 +173,7 @@ function init() {
   function setMatrixUniforms() {
     gl.uniformMatrix4fv(mvUniform, false, new Float32Array(mvMatrix.flatten()));
     gl.uniformMatrix4fv(pmUniform, false, new Float32Array(pmMatrix.flatten()));
-    gl.uniform3fv(viewPositionUniform, new Float32Array(vpos));
+    gl.uniform4fv(viewPositionUniform, new Float32Array(vpos));
 /*
     console.log("mv", mvMatrix.flatten());
     console.log("pm", pmMatrix.flatten());
@@ -342,6 +342,48 @@ function init() {
   canvas.addEventListener("mousedown", mouseDownHandler, false);
   canvas.addEventListener("mousemove", mouseMoveHandler, false);
   canvas.addEventListener("mouseup", mouseUpHandler, false);
+
+  var activeTouchIdentifier;
+
+  function findActiveTouch(touches) {
+    for (var ii = 0; ii < touches.length; ++ii) {
+      if (touches.item(ii).identifier == activeTouchIdentifier) {
+        return touches.item(ii);
+      }
+    }
+    return null;
+  }
+  
+  function touchStartHandler(ev) {
+    if (mouseDown || ev.targetTouches.length == 0) {
+      return;
+    }
+    var touch = ev.targetTouches.item(0);
+    mouseDownHandler(touch);
+    activeTouchIdentifier = touch.identifier;
+    ev.preventDefault();
+  }
+
+  function touchMoveHandler(ev) {
+    var touch = findActiveTouch(ev.changedTouches);
+    if (touch) {
+      mouseMoveHandler(touch);
+    }
+    ev.preventDefault();
+  }
+
+  function touchEndHandler(ev) {
+    var touch = findActiveTouch(ev.changedTouches);
+    if (touch) {
+      mouseUpHandler(touch);
+    }
+    ev.preventDefault();
+  }
+
+  canvas.addEventListener("touchstart", touchStartHandler, false);
+  canvas.addEventListener("touchmove", touchMoveHandler, false);
+  canvas.addEventListener("touchend", touchEndHandler, false);
+  canvas.addEventListener("touchcancel", touchEndHandler, false);
 }
 
 function handleLoad() {

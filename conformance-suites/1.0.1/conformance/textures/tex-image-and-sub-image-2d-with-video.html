@@ -16,6 +16,7 @@ var wtu = WebGLTestUtils;
 var gl = null;
 var textureLoc = null;
 var successfullyParsed = false;
+var video;
 
 if (window.initNonKhronosFramework) {
     window.initNonKhronosFramework(true);
@@ -33,11 +34,8 @@ function init()
 
     textureLoc = gl.getUniformLocation(program, "tex");
 
-    var video = document.getElementById("vid");
-    video.addEventListener(
-        "playing", function() { runTest(video); }, true);
-    video.loop = true;
-    video.play();
+    video = document.getElementById("vid");
+    wtu.startPlayingAndWaitForVideo(video, runTest);
 }
 
 // These two declarations need to be global for "shouldBe" to see them
@@ -89,12 +87,13 @@ function runOneIteration(videoElement, useTexSubImage2D, flipY, topColor, bottom
     wtu.drawQuad(gl, [0, 0, 0, 255]);
     // Check a few pixels near the top and bottom and make sure they have
     // the right color.
+    var tolerance = 5;
     debug("Checking lower left corner");
     wtu.checkCanvasRect(gl, 4, 4, 2, 2, bottomColor,
-                        "shouldBe " + bottomColor);
+                        "shouldBe " + bottomColor, tolerance);
     debug("Checking upper left corner");
     wtu.checkCanvasRect(gl, 4, gl.canvas.height - 8, 2, 2, topColor,
-                        "shouldBe " + topColor);
+                        "shouldBe " + topColor, tolerance);
 }
 
 function runTest(videoElement)

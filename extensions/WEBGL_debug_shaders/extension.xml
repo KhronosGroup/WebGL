@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<extension href="WEBGL_debug_shaders/">
+<ratified href="WEBGL_debug_shaders/">
   <name>WEBGL_debug_shaders</name>
   <contact><a href="mailto:zmo@chromium.org">zmo@chromium.org</a></contact>
   <contributors>
@@ -15,7 +15,7 @@
       WebGL uses the GLSL ES 2.0 spec on all platforms, and translates these shaders to the host platform's native language (HLSL, GLSL, and even GLSL ES). For debugging purpose, it is useful to be able to examine the shader after translation. This extension exposes a new function <code>getTranslatedShaderSource</code> for such purposes.
     </p>
   </overview>
-  <idl>
+  <idl xml:space="preserve">
 interface WEBGL_debug_shaders {
 
       DOMString getTranslatedShaderSource(WebGLShader shader);
@@ -50,5 +50,8 @@ interface WEBGL_debug_shaders {
     <revision date="2012/01/03">
       <change>Removed webgl module per changes to Web IDL spec.</change>
     </revision>
+    <revision date="2013/05/15">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
   </history>
-</extension>
+</ratified>

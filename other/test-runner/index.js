@@ -44,6 +44,8 @@ var optimist = require('optimist')
 
 var all_passed = false;
 
+var osx_cached_defaults = null;
+
 function main() {
   var config_path = path.join(__dirname, optimist.argv.config + '.json');
 
@@ -71,7 +73,9 @@ function main() {
       } else {
         console.log("\nERROR: some tests failed. See output/ for details.");
       }
-      process.exit(all_passed ? 0 : 1);
+      restore_osx_defaults(function() {
+        process.exit(all_passed ? 0 : 1);
+      });
     });
   });
 }
@@ -127,7 +131,8 @@ function build_test_url(app, config) {
 
   var default_args = {
     "run": 1,
-    "postResults": 1
+    "postResults": 1,
+    "allowSkip": 1
   }
 
   if(config.args.fast) {
@@ -148,6 +153,36 @@ function build_test_url(app, config) {
   }
   
   return full_url;
+}
+
+function get_command_line_args_string() {
+  var out = ""; //process.argv[0];
+
+  for(var i = 2; i < process.argv.length; ++i) {
+    if(process.argv[i].indexOf(" ") != -1) {
+      out += " \"" + process.argv[i] + "\""
+    } else {
+      out += " " + process.argv[i];
+    }
+  }
+
+  return out;
+}
+
+function get_failing_command_line_args_string(browser_name, version, test_results) {
+  var out = "--browser=" + browser_name;
+  if(version) {
+    out += " --version=" + version;
+  }
+  out += " --include=";
+  var firstMatch = true;
+
+  test_results.replace(/(.*): (\d) tests failed/g, function(match, p1, p2, offset) {
+    out += (firstMatch ? "" : ",") + p1;
+    firstMatch = false;
+  });
+
+  return out;
 }
 
 var pass_re = /Tests PASSED: (\d+)/;
@@ -220,9 +255,28 @@ function start_test_server(config) {
         app.browser_name + "_" + Date.now() + ".txt"
         );
 
-    var test_results = req.plainText;
+    var output = "";
 
-    fs.writeFile(file_name, test_results, 'utf8', function(err, data) {
+    var test_results = req.plainText;
+    scan_test_results(test_results);
+
+    var executing_args = get_command_line_args_string();
+
+    if(executing_args) {
+      output += "Executing command line args: " + executing_args + "\n\n";
+    }
+    if(!all_passed) {
+      var failing_args = get_failing_command_line_args_string(app.browser_name, config.args.version, test_results);
+      output += "To reproduce failures, run with the following args: " + failing_args + "\n\n";
+    }
+
+    if(executing_args || !all_passed) {
+      output += "-------------------\n\n"
+    }
+
+    output += test_results;
+
+    fs.writeFile(file_name, output, 'utf8', function(err, data) {
       if(err) {
         console.error(err);
         all_passed = false;
@@ -231,7 +285,6 @@ function start_test_server(config) {
         process.stdout.write("Finished");
         app.finished_tests = true;
         app.browser_proc.kill();
-        scan_test_results(test_results);
       }
     });
 
@@ -292,69 +345,85 @@ function run_tests(app, config, callback, browser_id) {
   }
 
   if(platform) {
-    // Concatenate the standard browser args and any platform specific ones
-    var all_args = [];
-
-    if(browser.args) {
-      all_args = all_args.concat(browser.args);
+    if(os_platform == "darwin" && browser.osx_defaults) {
+      set_osx_defaults(browser.osx_defaults, function() {
+        run_tests_internal(app, config, callback, browser_id, browser, platform);
+      });
+    } else {
+      run_tests_internal(app, config, callback, browser_id, browser, platform);
     }
-    if(platform.args) {
-      all_args = all_args.concat(platform.args);
-    }
-
-    var profile_dir;
-    if(browser.profile_arg) {
-      var profile_dir = path.join(__dirname, PROFILE_DIR_NAME);
-      ensure_dir_exists(profile_dir);
-      if(browser.profile_arg.indexOf("=") != -1) {
-        all_args.push(browser.profile_arg + profile_dir);
-      } else {
-        all_args.push(browser.profile_arg);
-        all_args.push(profile_dir);
-      }
-      
-      if(browser.firefox_user_prefs) {
-        write_firefox_user_prefs(profile_dir, browser.firefox_user_prefs);
-      }
-    }
-
-    all_args.push(config.test_url);
-
-    var browser_proc = child_process.spawn(platform.path, all_args);
-    app.browser_proc = browser_proc;
-    app.browser_name = browser.name.replace(' ', '-');
-    app.finished_tests = false;
-
-    app.start_timeout = setTimeout(function() {
-      browser_proc.kill();
-      process.stdout.write("Test failed to start in allotted time");
-      all_passed = false;
-    }, TEST_START_TIMEOUT);
-
-    browser_proc.on('exit', function(code) {
-      if(code == 20) {
-        process.stdout.write("Could not launch new instance, already running");
-        all_passed = false;
-      }
-
-      if (!app.finished_tests) {
-        process.stdout.write("Tests didn't run to successful completion");
-        all_passed = false;
-      }
-
-      if(profile_dir) {
-        rimraf(profile_dir, function() {
-          run_tests(app, config, callback, browser_id + 1);
-        });
-      } else {
-        run_tests(app, config, callback, browser_id + 1);
-      }
-    });
-
   } else {
     process.stdout.write("Not found, skipped");
     run_tests(app, config, callback, browser_id + 1);
   }
+}
+
+function run_tests_internal(app, config, callback, browser_id, browser, platform) {
+  // Concatenate the standard browser args and any platform specific ones
+  var all_args = [];
+
+  if(browser.args) {
+    all_args = all_args.concat(browser.args);
+  }
+  if(platform.args) {
+    all_args = all_args.concat(platform.args);
+  }
+
+  var profile_dir;
+  if(browser.profile_arg) {
+    profile_dir = path.join(__dirname, PROFILE_DIR_NAME);
+    ensure_dir_exists(profile_dir);
+    if(browser.profile_arg.indexOf("=") != -1) {
+      all_args.push(browser.profile_arg + profile_dir);
+    } else {
+      all_args.push(browser.profile_arg);
+      all_args.push(profile_dir);
+    }
+    
+    if(browser.firefox_user_prefs) {
+      write_firefox_user_prefs(profile_dir, browser.firefox_user_prefs);
+    }
+  }
+
+  all_args.push(config.test_url);
+
+  var browser_path = platform.command ? platform.command : platform.path;
+
+  var browser_proc = child_process.spawn(browser_path, all_args);
+  app.browser_proc = browser_proc;
+  app.browser_name = browser.name.replace(' ', '-');
+  app.finished_tests = false;
+
+  app.start_timeout = setTimeout(function() {
+    browser_proc.kill();
+    process.stdout.write("Test failed to start in allotted time");
+    all_passed = false;
+  }, TEST_START_TIMEOUT);
+
+  browser_proc.on('exit', function(code) {
+    if(code == 20) {
+      process.stdout.write("Could not launch new instance, already running");
+      all_passed = false;
+    }
+
+    if (!app.finished_tests) {
+      process.stdout.write("Tests didn't run to successful completion");
+      all_passed = false;
+    }
+
+    if(app.kill_timeout) {
+      clearTimeout(app.kill_timeout);
+      app.kill_timeout = null;
+    }
+
+    if(profile_dir) {
+      rimraf(profile_dir, function() {
+        run_tests(app, config, callback, browser_id + 1);
+      });
+    } else {
+      run_tests(app, config, callback, browser_id + 1);
+    }
+  });
 }
 
 function should_run_browser(browser, config) {
@@ -384,6 +453,69 @@ function write_firefox_user_prefs(profile_dir, user_prefs) {
   }
 
   fs.appendFileSync(path.join(profile_dir, "prefs.js"), out);
+}
+
+var default_was_changed = false;
+
+function write_osx_default(domain_key, value, callback) {
+  if(!osx_cached_defaults){
+    osx_cached_defaults = {};
+  }
+
+  child_process.exec("defaults read " + domain_key,
+    function (error, stdout, stderr) {
+      if(stdout == value) {
+        if(callback) { callback(); }
+        return; // Already has the right value
+      }
+
+      // Only cache the previous value the first time we read it for a given key
+      if(typeof(osx_cached_defaults[domain_key]) == 'undefined') {
+        osx_cached_defaults[domain_key] = stdout;
+
+        if(!default_was_changed) {
+          default_was_changed = true;
+          console.log("WARNING: System defaults have been changed to ensure " +
+              "correct test execution. Terminating this process early may " +
+              "prevent system defaults from properly restoring to their original " +
+              "values.");
+        }
+      }
+
+      if(value.indexOf(" ") != -1) {
+        value = "\"" + value + "\"";
+      }
+
+      // Write the desired default
+      child_process.exec("defaults write " + domain_key + " " + value, callback);
+    }
+  );
+}
+
+function set_osx_defaults(defaults, callback, i) {
+  if(!i) { i = 0; }
+  var keys = Object.keys(defaults);
+  if(i >= keys.length) {
+    if(callback) {
+      callback();
+    }
+    return;
+  }
+  var domain_key = keys[i];
+  var value = defaults[domain_key];
+
+  write_osx_default(domain_key, value, function() {
+    set_osx_defaults(defaults, callback, i+1);
+  });
+}
+
+function restore_osx_defaults(callback) {
+  if(os.platform() != "darwin" || !osx_cached_defaults) {
+    if(callback) { callback(); }
+    return;
+  }
+
+  set_osx_defaults(osx_cached_defaults, callback);
 }
 
 if(optimist.argv.help) {

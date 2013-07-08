@@ -37,10 +37,11 @@
 </head>
 <body>
 <div id="description"></div>
-<canvas id="canvas" width="2px" height="2px"></canvas>
-<canvas id="canvasNoAlpha" width="2px" height="2px"></canvas>
+<canvas id="canvas" width="2" height="2"></canvas>
+<canvas id="canvasNoAlpha" width="2" height="2"></canvas>
 <div id="console"></div>
 <script>
+"use strict";
 
 function getChannelsFromFormat(format) {
   switch (gl[format]) {
@@ -65,6 +66,14 @@ var formats = [
   'RGBA'
 ];
 
+var isRenderable = {
+  'ALPHA': false,
+  'LUMINANCE': false,
+  'LUMINANCE_ALPHA': false,
+  'RGB': true,
+  'RGBA': true
+};
+
 var gl = null;
 var wtu = WebGLTestUtils;
 
@@ -72,8 +81,8 @@ description();
 
 var canvas = document.getElementById("canvas");
 var canvasNoAlpha = document.getElementById("canvasNoAlpha");
-gl = wtu.create3DContext(canvas, {alpha:true});
-glNoAlpha = wtu.create3DContext(canvasNoAlpha, {alpha:false});
+var gl = wtu.create3DContext(canvas, {alpha:true});
+var glNoAlpha = wtu.create3DContext(canvasNoAlpha, {alpha:false});
 
 debug("test with an RGBA backbuffer");
 var program = wtu.setupTexturedQuad(gl);
@@ -83,7 +92,7 @@ testFormats('RGBA');
 testBackbufferFormats();
 
 debug("test with an RGB backbuffer");
-gl = glNoAlpha;
+var gl = glNoAlpha;
 var program = wtu.setupTexturedQuad(gl);
 glErrorShouldBe(gl, gl.NO_ERROR, "During Initialization");
 testFormats('RGB');
@@ -106,8 +115,12 @@ function testBackbufferFormats() {
 
     debug('');
     if (status == gl.FRAMEBUFFER_COMPLETE) {
-      debug('test with ' + backFormat + ' fbo');
-      testFormats(backFormat);
+      if (!isRenderable[backFormat]) {
+        testFailed('Creating framebuffer from ' + backFormat + ' texture succeeded even though it is not a renderable format');
+      } else {
+        debug('test with ' + backFormat + ' fbo');
+        testFormats(backFormat);
+      }
     } else {
       debug(backFormat + ' not supported as a renderbuffer attachment');
     }
@@ -130,7 +143,7 @@ function toChannels(value) {
 function testCopyTexImage2D(backFormat, texFormat) {
   var need = getChannelsFromFormat(texFormat);
   var have = getChannelsFromFormat(backFormat);
-  var shouldPass = (need & have) == need
+  var shouldPass = (need & have) == need;
 
   //debug("need: " + toChannels(need));
   //debug("have: " + toChannels(have));
@@ -159,7 +172,7 @@ function testCopyTexImage2D(backFormat, texFormat) {
       "should be able to copyTexImage2D " + texFormat + " from " + backFormat);
 
   // Draw
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
 
   var expectedColors = {
     'ALPHA': [0, 0, 0, 127],

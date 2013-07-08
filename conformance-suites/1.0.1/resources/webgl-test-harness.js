@@ -409,6 +409,7 @@ var TestHarness = function(iframe, filelistUrl, reportFunc, options) {
   this.reportFunc = reportFunc;
   this.timeoutDelay = 20000;
   this.files = [];
+  this.allowSkip = options.allowSkip;
 
   var that = this;
   getFileList(filelistUrl, function() {
@@ -484,16 +485,16 @@ TestHarness.prototype.startNextFile = function() {
       this.iframe.src = this.currentFile.url;
       this.setTimeout();
     } else {
-      this.reportResults(false, "skipped");
+      this.reportResults(!!this.allowSkip, "skipped", true);
       this.notifyFinished();
     }
   }
 };
 
-TestHarness.prototype.reportResults = function (success, msg) {
+TestHarness.prototype.reportResults = function (success, msg, skipped) {
   this.clearTimeout();
   log(success ? "PASS" : "FAIL", msg);
-  this.reportFunc(TestHarness.reportType.TEST_RESULT, msg, success);
+  this.reportFunc(TestHarness.reportType.TEST_RESULT, msg, success, skipped);
   // For each result we get, reset the timeout
   this.setTimeout();
 };

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<extension href="OES_element_index_uint/">
+<ratified href="OES_element_index_uint/">
   <name>OES_element_index_uint</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -21,7 +21,7 @@
       </feature>
     </features>
   </overview>
-  <idl>
+  <idl xml:space="preserve">
 interface OES_element_index_uint {
 };
   </idl>
@@ -38,5 +38,8 @@ interface OES_element_index_uint {
     <revision date="2012/10/16">
       <change>Based on feedback on public_webgl, moved from draft to community approved, and removed aliases.</change>
     </revision>
+    <revision date="2013/05/15">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
   </history>
-</extension>
+</ratified>

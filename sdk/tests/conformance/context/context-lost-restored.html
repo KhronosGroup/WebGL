@@ -33,15 +33,13 @@
 <script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 <script>
+"use strict";
 var wtu = WebGLTestUtils;
 var canvas;
 var gl;
 var shouldGenerateGLError;
-var extensionNames = [
-    "WEBKIT_WEBGL_lose_context",
-    "MOZ_WEBGL_lose_context",
-];
-var extension;
+var WEBGL_lose_context;
+var new_WEBGL_lose_context;
 var bufferObjects;
 var program;
 var texture;
@@ -49,12 +47,15 @@ var texColor = [255, 10, 20, 255];
 var allowRestore;
 var contextLostEventFired;
 var contextRestoredEventFired;
+var OES_vertex_array_object;
+var old_OES_vertex_array_object;
+var vertexArrayObject;
+var OES_texture_float;
+var newExtension;
 
 function init()
 {
-    if (window.initNonKhronosFramework) {
-        window.initNonKhronosFramework(true);
-    }
+    initTestingHarnessWaitUntilDone();
 
     description("Tests behavior under a restored context.");
 
@@ -68,22 +69,54 @@ function setupTest()
     canvas.width = 1;
     canvas.height = 1;
     gl = wtu.create3DContext(canvas);
-    for (var ii = 0; ii < extensionNames.length; ++ii) {
-        extension = gl.getExtension(extensionNames[ii]);
-        if (extension)
-            break;
-    }
-    if (!extension) {
-        debug("Could not find lose_context extension under the following names: " + extensionNames.join(" "));
+    WEBGL_lose_context = getExtensionAndAddProperty(gl, "WEBGL_lose_context");
+    if (!WEBGL_lose_context) {
+        debug("Could not find WEBGL_lose_context extension");
         return false;
     }
+
+    // Try to get a few extensions
+    OES_vertex_array_object = getExtensionAndAddProperty(gl, "OES_vertex_array_object");
+    OES_texture_float = getExtensionAndAddProperty(gl, "OES_texture_float");
+
     return true;
+}
+
+function getExtensionAndAddProperty(gl, name) {
+  var ext = wtu.getExtensionWithKnownPrefixes(gl, name);
+  if (ext) {
+    ext.webglTestProperty = true;
+  }
+  return ext;
+}
+
+function reGetExtensionAndTestForProperty(gl, name, expectProperty) {
+  newExtension = wtu.getExtensionWithKnownPrefixes(gl, name);
+  // NOTE: while getting a extension after context lost/restored is allowed to fail
+  // for the purpose the conformance tests it is not.
+  //
+  // Hypothetically the user can switch GPUs live. For example on Windows, install 2 GPUs,
+  // then in the control panen enable 1, disable the others and visa versa. Since the GPUs
+  // have different capabilities one or the other may not support a particlar extension.
+  //
+  // But, for the purpose of the conformance tests the context is expected to restore
+  // on the same GPU and therefore the extensions that succeeded previously should
+  // succeed on restore.
+  shouldBeTrue("newExtension != null");
+  if (expectProperty) {
+    shouldBeTrue("newExtension.webglTestProperty === true");
+  } else {
+    shouldBeTrue("newExtension.webglTestProperty === undefined");
+  }
+  return newExtension;
 }
 
 function testLosingContext()
 {
-    if (!setupTest())
+    if (!setupTest()) {
         finishTest();
+        return;
+    }
 
     debug("Test losing a context and inability to restore it.");
 
@@ -92,7 +125,7 @@ function testLosingContext()
        // restore the context after this event has exited.
        setTimeout(function() {
          // we didn't call prevent default so we should not be able to restore the context
-         shouldGenerateGLError(gl, gl.INVALID_OPERATION, "extension.restoreContext()");
+         shouldGenerateGLError(gl, gl.INVALID_OPERATION, "WEBGL_lose_context.restoreContext()");
          testLosingAndRestoringContext();
        }, 0);
     });
@@ -102,7 +135,7 @@ function testLosingContext()
     contextRestoredEventFired = false;
 
     testOriginalContext();
-    extension.loseContext();
+    WEBGL_lose_context.loseContext();
     // The context should be lost immediately.
     shouldBeTrue("gl.isContextLost()");
     shouldBe("gl.getError()", "gl.CONTEXT_LOST_WEBGL");
@@ -125,7 +158,7 @@ function testLosingAndRestoringContext()
       testLostContext(e);
       // restore the context after this event has exited.
       setTimeout(function() {
-        shouldGenerateGLError(gl, gl.NO_ERROR, "extension.restoreContext()");
+        shouldGenerateGLError(gl, gl.NO_ERROR, "WEBGL_lose_context.restoreContext()");
         // The context should still be lost. It will not get restored until the 
         // webglrestorecontext event is fired.
         shouldBeTrue("gl.isContextLost()");
@@ -143,7 +176,7 @@ function testLosingAndRestoringContext()
     contextRestoredEventFired = false;
 
     testOriginalContext();
-    extension.loseContext();
+    WEBGL_lose_context.loseContext();
     // The context should be lost immediately.
     shouldBeTrue("gl.isContextLost()");
     shouldBe("gl.getError()", "gl.CONTEXT_LOST_WEBGL");
@@ -165,7 +198,7 @@ function testRendering()
     texture = wtu.createColoredTexture(gl, canvas.width, canvas.height, texColor);
 
     gl.uniform1i(gl.getUniformLocation(program, "tex"), 0);
-    wtu.drawQuad(gl, [0, 0, 0, 255]);
+    wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
 
     var compare = texColor.slice(0, 3);
     wtu.checkCanvasRect(gl, 0, 0, canvas.width, canvas.height, compare, "shouldBe " + compare);
@@ -212,6 +245,38 @@ function testResources(expected)
         shouldGenerateGLError(gl, expected, tests[i]);
 }
 
+function testOESTextureFloat() {
+  if (OES_texture_float) {
+    // Extension must still be lost.
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    shouldGenerateGLError(gl, gl.INVALID_ENUM, "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.FLOAT, null)");
+    // Try re-enabling extension
+    OES_texture_float = reGetExtensionAndTestForProperty(gl, "OES_texture_float", false);
+    shouldGenerateGLError(gl, gl.NO_ERROR, "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.FLOAT, null)");
+  }
+}
+
+function testOESVertexArrayObject() {
+  if (OES_vertex_array_object) {
+    // Extension must still be lost.
+    shouldBeNull("OES_vertex_array_object.createVertexArrayOES()");
+    // Try re-enabling extension
+
+    old_OES_vertex_array_object = OES_vertex_array_object;
+    OES_vertex_array_object = reGetExtensionAndTestForProperty(gl, "OES_vertex_array_object", false);
+    shouldBeTrue("OES_vertex_array_object.createVertexArrayOES() != null");
+    shouldBeTrue("old_OES_vertex_array_object.createVertexArrayOES() == null");
+  }
+}
+
+function testExtensions() {
+  testOESTextureFloat();
+  testOESVertexArrayObject();
+  // Only the WEBGL_lose_context extension should be the same object after context lost.
+  new_WEBGL_lose_context = reGetExtensionAndTestForProperty(gl, "WEBGL_lose_context", true);
+}
+
 function testRestoredContext()
 {
     debug("Test restored context");
@@ -227,6 +292,9 @@ function testRestoredContext()
 
     // Validate new resources created in testRendering().
     testResources(gl.NO_ERROR);
+
+    testExtensions();
+
     debug("");
 }
 

@@ -8,6 +8,9 @@ glsl-long-variable-names.html
 non-ascii-comments.vert.html
 non-ascii.vert.html
 --min-version 1.0.2 re-compile-re-link.html
+--min-version 1.0.3 shader-precision-format-obeyed.html
+--min-version 1.0.2 shader-uniform-packing-restrictions.html
+--min-version 1.0.2 shader-varying-packing-restrictions.html
 --min-version 1.0.2 shader-with-256-character-define.html
 shader-with-256-character-identifier.frag.html
 --min-version 1.0.2 shader-with-257-character-define.html
@@ -73,8 +76,15 @@ shader-with-version-130.vert.html
 shader-with-webgl-identifier.vert.html
 --min-version 1.0.2 shader-with-while-loop.html
 shader-without-precision.frag.html
+--min-version 1.0.3 shaders-with-name-conflicts.html
+--min-version 1.0.2 shaders-with-mis-matching-uniforms.html
+--min-version 1.0.2 shaders-with-mis-matching-varyings.html
+--min-version 1.0.2 shaders-with-missing-varyings.html
+--min-version 1.0.2 shaders-with-varyings.html
 shared.html
 struct-nesting-exceeds-maximum.html
 struct-nesting-under-maximum.html
 uniform-location-length-limits.html
 --min-version 1.0.2 shader-with-short-circuiting-operators.html
+--min-version 1.0.2 shader-with-global-variable-precision-mismatch.html
+--min-version 1.0.2 large-loop-compile.html

@@ -33,6 +33,11 @@ Currently supported browser configurations:
     ChromeCanary
     Chromium
     Firefox
+    Safari
+
+NOTE: The Safari configuration is able to execute the tests, but has several
+known issues, such as not shutting down the browser instance when test execution
+is complete.
 
 The configurations above use the browser's default mechanism for rendering
 WebGL. Both Firefox and Chrome by default use the ANGLE library on Windows, and

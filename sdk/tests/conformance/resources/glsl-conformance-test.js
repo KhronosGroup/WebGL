@@ -62,6 +62,7 @@ var fShaderDB = {};
  */
 function runOneTest(gl, info) {
   var passMsg = info.passMsg
+  debug("");
   debug("test: " + passMsg);
 
   var console = document.getElementById("console");
@@ -103,7 +104,7 @@ function runOneTest(gl, info) {
     }
     // As per GLSL 1.0.17 10.27 we can only check for success on
     // compileShader, not failure.
-    if (info.vShaderSuccess && !vShader) {
+    if (!info.ignoreResults && info.vShaderSuccess && !vShader) {
       testFailed("[unexpected vertex shader compile status] (expected: " +
                  info.vShaderSuccess + ") " + passMsg);
     }
@@ -131,7 +132,7 @@ function runOneTest(gl, info) {
     //debug(fShader == null ? "fail" : "succeed");
     // As per GLSL 1.0.17 10.27 we can only check for success on
     // compileShader, not failure.
-    if (info.fShaderSuccess && !fShader) {
+    if (!info.ignoreResults && info.fShaderSuccess && !fShader) {
       testFailed("[unexpected fragment shader compile status] (expected: " +
                 info.fShaderSuccess + ") " + passMsg);
       return;
@@ -146,20 +147,25 @@ function runOneTest(gl, info) {
     var program = gl.createProgram();
     gl.attachShader(program, vShader);
     gl.attachShader(program, fShader);
-    gl.bindAttribLocation(program, 0, "vPosition");
-    gl.bindAttribLocation(program, 1, "texCoord0");
+
+    if (vSource.indexOf("vPosition") >= 0) {
+      gl.bindAttribLocation(program, 0, "vPosition");
+    }
+    if (vSource.indexOf("texCoord0") >= 0) {
+      gl.bindAttribLocation(program, 1, "texCoord0");
+    }
     gl.linkProgram(program);
     var linked = (gl.getProgramParameter(program, gl.LINK_STATUS) != 0);
     if (!linked) {
       var error = gl.getProgramInfoLog(program);
       log("*** Error linking program '"+program+"':"+error);
     }
-    if (linked != info.linkSuccess) {
+    if (!info.ignoreResults && linked != info.linkSuccess) {
       testFailed("[unexpected link status] " + passMsg);
       return;
     }
   } else {
-    if (info.linkSuccess) {
+    if (!info.ignoreResults && info.linkSuccess) {
       testFailed("[link failed] " + passMsg);
       return;
     }
@@ -172,7 +178,7 @@ function runOneTest(gl, info) {
 
   gl.useProgram(program);
   wtu.setupUnitQuad(gl);
-  wtu.drawQuad(gl);
+  wtu.clearAndDrawUnitQuad(gl);
 
   var div = document.createElement("div");
   div.className = "testimages";
@@ -194,11 +200,17 @@ function runTests(shaderInfos) {
     return;
   }
 
-  for (var ii = 0; ii < shaderInfos.length; ++ii) {
-    runOneTest(gl, shaderInfos[ii]);
-  }
+  var testIndex = 0;
+  var runNextTest = function() {
+    if (testIndex == shaderInfos.length) {
+      finishTest();
+      return;
+    }
 
-  finishTest();
+    runOneTest(gl, shaderInfos[testIndex++]);
+    setTimeout(runNextTest, 1);
+  }
+  runNextTest();
 };
 
 function loadExternalShaders(filename, passMsg) {
