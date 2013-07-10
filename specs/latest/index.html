@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 15 May 2013</h2>
+    <h2 class="no-toc">Editor's Draft 10 July 2013</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2379,6 +2379,19 @@ for (var i = 0; i < numVertices; i++) {
             those values are derived directly from the original file format or converted from some
             other color format. <br><br>
 
+            <div class="note">
+
+            Some implementations of HTMLCanvasElement's CanvasRenderingContext2D store color values
+            internally in premultiplied form. If such a canvas is uploaded to a WebGL texture with
+            the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter set to false,
+            the color channels will have to be un-multiplied by the alpha channel, which is a lossy
+            operation. The WebGL implementation therefore can not guarantee that colors with alpha <
+            1.0 will be preserved losslessly when first drawn to a canvas via
+            CanvasRenderingContext2D and then uploaded to a WebGL texture when
+            the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter is set to false.
+
+            </div>
+
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
 
@@ -2403,7 +2416,7 @@ for (var i = 0; i < numVertices; i++) {
         <dd>
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated.
-        <dt class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+        <dt class="idl-code"><a name="TEXSUBIMAGE2D">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLsizei width, GLsizei height, 
                        GLenum format, GLenum type, ArrayBufferView? pixels)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexSubImage2D.xml">man page</a>)</span>
@@ -2422,7 +2435,7 @@ for (var i = 0; i < numVertices; i++) {
 
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
-        <dt><p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
+        <dt><p class="idl-code"><a name="TEXSUBIMAGE2D_HTML">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLenum format, GLenum type, ImageData? pixels)</p>
             <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                        GLenum format, GLenum type, HTMLImageElement image) /* May throw DOMException */</p>
@@ -2436,7 +2449,8 @@ for (var i = 0; i < numVertices; i++) {
             given element or image data. <br><br>
 
             See <a href="#TEXIMAGE2D_HTML">texImage2D</a> for the interpretation of
-            the <em>format</em> and <em>type</em> arguments. <br><br>
+            the <em>format</em> and <em>type</em> arguments, and notes on
+            the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter. <br><br>
 
             The first pixel transferred from the source to the WebGL implementation corresponds to
             the upper left corner of the source. This behavior is modified by the
