@@ -74,6 +74,19 @@ var baseVertexShader = [
   "}"
 ].join("\n");
 
+var baseVertexShaderWithColor = [
+  "attribute vec4 aPosition;",
+  "attribute vec4 aColor;",
+  "",
+  "varying vec4 vColor;",
+  "",
+  "void main()",
+  "{",
+  "   gl_Position = aPosition;",
+  "   vColor = aColor;",
+  "}"
+].join("\n");
+
 var baseFragmentShader = [
   "#if defined(GL_ES)",
   "precision mediump float;",
@@ -630,6 +643,18 @@ var runReferenceImageTest = function(params) {
   var ctx = canvas2d.getContext("2d");
   var imgData = ctx.getImageData(0, 0, width, height);
 
+  // State for reference images for vertex shader tests.
+  // These are drawn with the same tessellated grid as the test vertex
+  // shader so that the interpolation is identical. The grid is reused
+  // from test to test; the colors are changed.
+
+  var indexedQuadForReferenceVertexShader =
+    wtu.setupIndexedQuad(gl, gridRes, 0);
+  var referenceVertexShaderProgram =
+    wtu.setupProgram(gl, [ baseVertexShaderWithColor, baseFragmentShader ],
+		     ["aPosition", "aColor"]);
+  var referenceVertexShaderColorBuffer = gl.createBuffer();
+
   var shaderInfos = [
     { type: "vertex",
       input: "color",
@@ -684,7 +709,7 @@ var runReferenceImageTest = function(params) {
           shaderInfo.fragmentShaderTemplate,
           params,
           tests[ii].source);
-      var referenceTexture = generateReferenceTexture(
+      var referenceTextureOrArray = generateReferenceImage(
           gl,
           tests[ii].generator,
           isVertex ? gridRes : width,
@@ -697,14 +722,20 @@ var runReferenceImageTest = function(params) {
       wtu.addShaderSource(
           console, "test fragment shader", testFragmentShaderSource);
       debug("");
-      var refData = drawReferenceImage(canvas, referenceTexture, isVertex);
-      var refImg = wtu.makeImage(canvas);
+      var refData;
       if (isVertex) {
-        var testData = draw(
-            canvas, testVertexShaderSource, referenceFragmentShaderSource);
+	refData = drawVertexReferenceImage(canvas, referenceTextureOrArray);
       } else {
-        var testData = draw(
-            canvas, referenceVertexShaderSource, testFragmentShaderSource);
+	refData = drawFragmentReferenceImage(canvas, referenceTextureOrArray);
+      }
+      var refImg = wtu.makeImage(canvas);
+      var testData;
+      if (isVertex) {
+        testData = draw(
+          canvas, testVertexShaderSource, referenceFragmentShaderSource);
+      } else {
+        testData = draw(
+          canvas, referenceVertexShaderSource, testFragmentShaderSource);
       }
       var testImg = wtu.makeImage(canvas);
       var testTolerance = shaderInfo.tolerance;
@@ -791,15 +822,28 @@ var runReferenceImageTest = function(params) {
     return img;
   }
 
-  function drawReferenceImage(canvas, texture, isVertex) {
-    var program;
-    if (isVertex) {
-      var halfTexel = 0.5 / (1.0 + gridRes);
-      program = wtu.setupTexturedQuadWithTexCoords(
-        gl, [halfTexel, halfTexel], [1.0 - halfTexel, 1.0 - halfTexel]);
-    } else {
-      program = wtu.setupTexturedQuad(gl);
-    }
+  function drawVertexReferenceImage(canvas, colors) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, indexedQuadForReferenceVertexShader[0]);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, referenceVertexShaderColorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(1);
+    gl.vertexAttribPointer(1, 4, gl.UNSIGNED_BYTE, true, 0, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexedQuadForReferenceVertexShader[1]);
+    gl.useProgram(referenceVertexShaderProgram);
+    wtu.clearAndDrawIndexedQuad(gl, gridRes);
+    gl.disableVertexAttribArray(0);
+    gl.disableVertexAttribArray(1);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors from draw");
+
+    var img = new Uint8Array(width * height * 4);
+    gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    return img;
+  }
+
+  function drawFragmentReferenceImage(canvas, texture) {
+    var program = wtu.setupTexturedQuad(gl);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -814,23 +858,23 @@ var runReferenceImageTest = function(params) {
   }
 
   /**
-   * Creates and returns a texture containing the reference image for
-   * the function being tested. Exactly how the function is evaluated,
-   * and the size of the returned texture, depends on whether we are
-   * testing a vertex or fragment shader. If a fragment shader, the
-   * function is evaluated at the pixel centers. If a vertex shader,
-   * the function is evaluated at the triangle's vertices, and the
-   * resulting texture must be offset by half a texel during
-   * rendering.
+   * Creates and returns either a Uint8Array (for vertex shaders) or
+   * WebGLTexture (for fragment shaders) containing the reference
+   * image for the function being tested. Exactly how the function is
+   * evaluated, and the size of the returned texture or array, depends on
+   * whether we are testing a vertex or fragment shader. If a fragment
+   * shader, the function is evaluated at the pixel centers. If a
+   * vertex shader, the function is evaluated at the triangle's
+   * vertices.
    *
    * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use to generate texture objects.
    * @param {!function(number,number,number,number): !Array.<number>} generator The reference image generator function.
    * @param {number} width The width of the texture to generate if testing a fragment shader; the grid resolution if testing a vertex shader.
    * @param {number} height The height of the texture to generate if testing a fragment shader; the grid resolution if testing a vertex shader.
    * @param {boolean} isVertex True if generating a reference image for a vertex shader; false if for a fragment shader.
-   * @return {!WebGLTexture} The texture object that was generated.
+   * @return {!WebGLTexture|!Uint8Array} The texture object or array that was generated.
    */
-  function generateReferenceTexture(
+  function generateReferenceImage(
     gl,
     generator,
     width,
@@ -873,7 +917,7 @@ var runReferenceImageTest = function(params) {
       pixel[3] = clamp(Math.round(256 * output[3]), 0, 255);
     }
 
-    function fillFragmentReference() {
+    function generateFragmentReference() {
       var data = new Uint8Array(4 * width * height);
 
       var horizTexel = 1.0 / width;
@@ -900,12 +944,19 @@ var runReferenceImageTest = function(params) {
         }
       }
 
+      var texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0,
                     gl.RGBA, gl.UNSIGNED_BYTE, data);
+      return texture;
     }
 
-    function fillVertexReference() {
-      // We generate a texture which contains the evaluation of the
+    function generateVertexReference() {
+      // We generate a Uint8Array which contains the evaluation of the
       // function at the vertices of the triangle mesh. It is expected
       // that the width and the height are identical, and equivalent
       // to the grid resolution.
@@ -937,28 +988,18 @@ var runReferenceImageTest = function(params) {
         }
       }
 
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, texSize, texSize, 0,
-                    gl.RGBA, gl.UNSIGNED_BYTE, data);
+      return data;
     }
 
     //----------------------------------------------------------------------
-    // Body of generateReferenceTexture
+    // Body of generateReferenceImage
     //
 
-    var texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
     if (isVertex) {
-      fillVertexReference();
+      return generateVertexReference();
     } else {
-      fillFragmentReference();
+      return generateFragmentReference();
     }
-
-    return texture;
   }
 };
 
