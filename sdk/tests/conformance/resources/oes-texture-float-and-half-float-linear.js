@@ -41,7 +41,7 @@ function generateTest(extensionTypeName, extensionName, pixelType, prologue) {
 
         // Before the extension is enabled
         var extensionEnabled = false;
-        runTestSuite(extensionEnabled);
+        // runTestSuite(extensionEnabled);
 
         if (!gl.getExtension(extensionName))
             testPassed("No " + extensionName + " support -- this is legal");
