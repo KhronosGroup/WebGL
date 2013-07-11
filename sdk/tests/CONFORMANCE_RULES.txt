@@ -20,9 +20,28 @@ There are two primary reasons to submit conformance results:
 
 Each of these situations carries different constraints, so the
 conformance rules are phrased differently for each. Typically, a web
-browser implementer aims to certify that the WebGL "layer" is
-correct. A GPU vendor typically aims to certify that a given device is
+browser implementer aims to certify that the WebGL "layer" is correct.
+A GPU vendor typically aims to certify that a given device is
 physically capable of passing the tests.
+
+A newly-developed WebGL implementation should not support the "webgl"
+HTML Canvas context type by default in a shipping version of the
+product until reaching conformance. It is acceptable to give end users
+an option to turn on WebGL support in a non-conformant implementation
+as long as the documentation for that option clearly indicates that
+the implementation is not yet conformant and may have compatibility
+issues. It is suggested that the Canvas context type
+"experimental-webgl" may be supported by default in such
+implementations.
+
+A WebGL implementation might reach conformance, but a subsequent
+graphics driver release on a particular OS might introduce a
+regression causing failures of one or more of the WebGL conformance
+tests. In this situation it is not required to revoke support for the
+"webgl" HTML Canvas context type. The WebGL implementer should work
+with the GPU vendor to ensure the driver regression is fixed. A
+situation like this would, however, prevent the WebGL implementer from
+conforming to a subsequent version of the test suite.
 
 (A) Conformance Rules for a Web Browser Implementer
 ===================================================
@@ -82,29 +101,10 @@ GPU vendor should submit new conformance results.
 Discussion
 ==========
 
-A WebGL implementation might reach conformance on a particular OS, but
-a subsequent graphics driver release on that OS might introduce a
-regression causing failures of one or more of the WebGL conformance
-tests. In this situation it is not required that the browser revoke
-support for the "webgl" HTML Canvas context type. The browser vendor
-should work with the GPU vendor to ensure the driver regression is
-fixed. A situation like this would, however, prevent the WebGL
-implementer from conforming to a subsequent version of the test suite.
-
 A WebGL implementation intended to ship on three OSs may reach
 conformance on two of them, but due to graphics driver bugs, may be
 unable to reach conformance on the third. In this situation the
 implementation is not yet considered to be conformant.
-
-A web browser author developing a new WebGL implementation should not
-support the "webgl" HTML Canvas context type by default in a shipping
-version of the product until reaching conformance. It is acceptable to
-give end users an option to turn on WebGL support in a non-conformant
-implementation as long as the documentation for that option clearly
-indicates that the implementation is not yet conformant and may have
-compatibility issues. It is suggested that the Canvas context type
-"experimental-webgl" may be supported by default in such
-implementations.
 
 An existing WebGL implementation which conformed to an earlier version
 of the test suite is not required to remove support for the "webgl"
