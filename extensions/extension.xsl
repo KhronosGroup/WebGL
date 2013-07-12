@@ -123,7 +123,7 @@
 
       <xsl:if test="newtypes">
         <h2 class="no-toc">New Types</h2>
-        <xsl:copy-of select="newtypes/node()" />
+        <xsl:apply-templates select="newtypes" mode="newfun" />
       </xsl:if>
 
       <xsl:if test="newtok">
@@ -349,11 +349,25 @@
   </xsl:copy>
 </xsl:template>
 
-<xsl:template match="newfun|newtok" mode="newfun">
+<xsl:template match="newfun|newtypes|newtok" mode="newfun">
   <xsl:copy-of select="p" />
-  <dl class="methods">
-    <xsl:apply-templates select="*[local-name()!='p']" mode="newfun" />
-  </dl>
+  <xsl:if test="count(*[local-name()!='p']) != 0">
+    <dl class="methods">
+      <xsl:apply-templates select="*[local-name()!='p']" mode="newfun" />
+    </dl>
+  </xsl:if>
+</xsl:template>
+<xsl:template match="type/name" mode="newfun">
+  <em><xsl:value-of select="."/></em>
+</xsl:template>
+<xsl:template match="typedef" mode="newfun">
+  <dt class="idl-code">
+    <xsl:text>typedef </xsl:text>
+    <xsl:apply-templates select="type/node()" mode="newfun" />
+  </dt>
+  <dd>
+    <xsl:apply-templates select="node()[local-name()!='type']" mode="newfun" />
+  </dd>
 </xsl:template>
 <xsl:template match="function" mode="newfun">
   <dt class="idl-code"><xsl:call-template name="fun_sig"/></dt>

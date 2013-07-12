@@ -134,6 +134,30 @@ interface OES_foo_bar {
     <function name="loseContext" type="void"> XHTML description </function>
   </newfun>
 
+  <!-- new types -->
+  <newtypes>
+    <p>These typedef signatures should include &lt;name&gt; markup because
+    C's type syntax is baroquen.</p>
+    <typedef>
+      <type>unsigned long long <name>in_pipe</name></type>
+      XHTML
+    </typedef>
+    <typedef>
+      <type>unsigned long long <name>out_pipe</name></type>
+      XHTML
+    </typedef>
+    <typedef>
+      <type>struct plumber { struct plumber (*work)(in_pipe,
+      out_pipe); } <name>plumber_t</name></type>
+      XHTML
+    </typedef>
+    <typedef>
+      <type>plumber_t (*<name>agency</name>)(uint32_t yp_sz,
+      plumber_t*)</type>
+      XHTML
+    </typedef>
+  </newtypes>
+
   <!-- new tokens -->
 
   <newtok>
@@ -152,8 +176,6 @@ interface OES_foo_bar {
   <security/>
 
   <ipstatus/>
-
-  <newtypes/>
 
   <additions/>
 
