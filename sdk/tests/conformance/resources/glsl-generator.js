@@ -652,7 +652,7 @@ var runReferenceImageTest = function(params) {
     wtu.setupIndexedQuad(gl, gridRes, 0);
   var referenceVertexShaderProgram =
     wtu.setupProgram(gl, [ baseVertexShaderWithColor, baseFragmentShader ],
-		     ["aPosition", "aColor"]);
+                     ["aPosition", "aColor"]);
   var referenceVertexShaderColorBuffer = gl.createBuffer();
 
   var shaderInfos = [
@@ -724,9 +724,9 @@ var runReferenceImageTest = function(params) {
       debug("");
       var refData;
       if (isVertex) {
-	refData = drawVertexReferenceImage(canvas, referenceTextureOrArray);
+        refData = drawVertexReferenceImage(canvas, referenceTextureOrArray);
       } else {
-	refData = drawFragmentReferenceImage(canvas, referenceTextureOrArray);
+        refData = drawFragmentReferenceImage(canvas, referenceTextureOrArray);
       }
       var refImg = wtu.makeImage(canvas);
       var testData;
