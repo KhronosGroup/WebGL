@@ -47,13 +47,17 @@ var fragmentShaderTemplate = [
   "precision mediump float;",
   "#endif",
   "",
-  "varying vec4 vColor;",
+  "varying vec2 vTexcoord;",
   "",
   "$(extra)",
   "$(emu)",
   "",
   "void main()",
   "{",
+  "   vec4 color = vec4(",
+  "       vTexcoord,",
+  "       vTexcoord.x * vTexcoord.y,",
+  "       (1.0 - vTexcoord.x) * vTexcoord.y * 0.5 + 0.5);",
   "   $(test)",
   "}"
 ].join("\n");
@@ -61,16 +65,12 @@ var fragmentShaderTemplate = [
 var baseVertexShader = [
   "attribute vec4 aPosition;",
   "",
-  "varying vec4 vColor;",
+  "varying vec2 vTexcoord;",
   "",
   "void main()",
   "{",
   "   gl_Position = aPosition;",
-  "   vec2 texcoord = vec2(aPosition.xy * 0.5 + vec2(0.5, 0.5));",
-  "   vColor = vec4(",
-  "       texcoord,",
-  "       texcoord.x * texcoord.y,",
-  "       (1.0 - texcoord.x) * texcoord.y * 0.5 + 0.5);",
+  "   vTexcoord = vec2(aPosition.xy * 0.5 + vec2(0.5, 0.5));",
   "}"
 ].join("\n");
 
@@ -287,7 +287,7 @@ var runFeatureTest = function(params) {
       tolerance: vertexTolerance
     },
     { type: "fragment",
-      input: "vColor",
+      input: "color",
       output: "gl_FragColor",
       vertexShaderTemplate: baseVertexShader,
       fragmentShaderTemplate: fragmentShaderTemplate,
@@ -470,7 +470,7 @@ var runBasicTest = function(params) {
       tolerance: vertexTolerance
     },
     { type: "fragment",
-      input: "vColor",
+      input: "color",
       output: "gl_FragColor",
       vertexShaderTemplate: baseVertexShader,
       fragmentShaderTemplate: fragmentShaderTemplate,
@@ -664,7 +664,7 @@ var runReferenceImageTest = function(params) {
       tolerance: vertexTolerance
     },
     { type: "fragment",
-      input: "vColor",
+      input: "color",
       output: "gl_FragColor",
       vertexShaderTemplate: baseVertexShader,
       fragmentShaderTemplate: fragmentShaderTemplate,
