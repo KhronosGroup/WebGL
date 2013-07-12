@@ -872,7 +872,7 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
         for (j = 1; j < color.length; ++j) {
           was += "," + buf[offset + j];
         }
-        logFn('at (' + (i % width) + ', ' + Math.floor(i / width) +
+        logFn('at (' + (x + (i % width)) + ', ' + (y + Math.floor(i / width)) +
               ') expected: ' + color + ' was ' + was);
         return;
       }
