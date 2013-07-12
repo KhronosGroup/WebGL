@@ -27,7 +27,7 @@
  -->
 <html>
   <head>
-    <title>Teapot (per-pixel)</title>
+    <title>WebGL Logo</title>
     <script type="text/javascript" src="../common/webgl-utils.js"></script>
     <script type="text/javascript" src="../../debug/webgl-debug.js"></script>
     <script src="resources/J3DI.js"> </script>
@@ -42,21 +42,21 @@
         // the light() function in the 2.0 context.
         struct Light
         {
-            vec4 ambient;
-            vec4 diffuse;
-            vec4 specular;
-            vec4 position;
+            mediump vec4 ambient;
+            mediump vec4 diffuse;
+            mediump vec4 specular;
+            mediump vec4 position;
 
-            vec3 halfVector;
+            mediump vec3 halfVector;
         };
 
         struct Material
         {
-            vec4 emission;
-            vec4 ambient;
-            vec4 diffuse;
-            vec4 specular;
-            float shininess;
+            mediump vec4 emission;
+            mediump vec4 ambient;
+            mediump vec4 diffuse;
+            mediump vec4 specular;
+            mediump float shininess;
         };
 
         //
