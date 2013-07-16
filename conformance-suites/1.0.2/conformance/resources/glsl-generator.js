@@ -887,11 +887,66 @@ var runReferenceImageTest = function(params) {
       return x * 0.5 + 0.5;
     }
 
-    function computeColor(texCoordX, texCoordY) {
+    function computeVertexColor(texCoordX, texCoordY) {
       return [ texCoordX,
                texCoordY,
                texCoordX * texCoordY,
                (1.0 - texCoordX) * texCoordY * 0.5 + 0.5 ];
+    }
+
+    /**
+     * Computes fragment color according to the algorithm used for interpolation
+     * in OpenGL (GLES 2.0 spec 3.5.1, OpenGL 4.3 spec 14.6.1).
+     */
+    function computeInterpolatedColor(texCoordX, texCoordY) {
+      // Calculate grid line indexes below and to the left from texCoord.
+      var gridBottom = Math.floor(texCoordY * gridRes);
+      if (gridBottom == gridRes) {
+        --gridBottom;
+      }
+      var gridLeft = Math.floor(texCoordX * gridRes);
+      if (gridLeft == gridRes) {
+        --gridLeft;
+      }
+
+      // Calculate coordinates relative to the grid cell.
+      var cellX = texCoordX * gridRes - gridLeft;
+      var cellY = texCoordY * gridRes - gridBottom;
+
+      // Barycentric coordinates inside either triangle ACD or ABC
+      // are used as weights for the vertex colors in the corners:
+      // A--B
+      // |\ |
+      // | \|
+      // D--C
+
+      var aColor = computeVertexColor(gridLeft / gridRes, (gridBottom + 1) / gridRes);
+      var bColor = computeVertexColor((gridLeft + 1) / gridRes, (gridBottom + 1) / gridRes);
+      var cColor = computeVertexColor((gridLeft + 1) / gridRes, gridBottom / gridRes);
+      var dColor = computeVertexColor(gridLeft / gridRes, gridBottom / gridRes);
+
+      // Calculate weights.
+      var a, b, c, d;
+
+      if (cellX + cellY < 1) {
+        // In bottom triangle ACD.
+        a = cellY; // area of triangle C-D-(cellX, cellY) relative to ACD
+        c = cellX; // area of triangle D-A-(cellX, cellY) relative to ACD
+        d = 1 - a - c;
+        b = 0;
+      } else {
+        // In top triangle ABC.
+        a = 1 - cellX; // area of the triangle B-C-(cellX, cellY) relative to ABC
+        c = 1 - cellY; // area of the triangle A-B-(cellX, cellY) relative to ABC
+        b = 1 - a - c;
+        d = 0;
+      }
+
+      var interpolated = [];
+      for (var ii = 0; ii < aColor.length; ++ii) {
+        interpolated.push(a * aColor[ii] + b * bColor[ii] + c * cColor[ii] + d * dColor[ii]);
+      }
+      return interpolated;
     }
 
     function clamp(value, minVal, maxVal) {
@@ -901,11 +956,11 @@ var runReferenceImageTest = function(params) {
     // Evaluates the function at clip coordinates (px,py), storing the
     // result in the array "pixel". Each channel's result is clamped
     // between 0 and 255.
-    function evaluateAtClipCoords(px, py, pixel) {
+    function evaluateAtClipCoords(px, py, pixel, colorFunc) {
       var tcx = computeTexCoord(px);
       var tcy = computeTexCoord(py);
 
-      var color = computeColor(tcx, tcy);
+      var color = colorFunc(tcx, tcy);
 
       var output = generator(color[0], color[1], color[2], color[3]);
 
@@ -935,7 +990,7 @@ var runReferenceImageTest = function(params) {
           var px = -1.0 + 2.0 * (halfHorizTexel + xi * horizTexel);
           var py = -1.0 + 2.0 * (halfVertTexel + yi * vertTexel);
 
-          evaluateAtClipCoords(px, py, pixel);
+          evaluateAtClipCoords(px, py, pixel, computeInterpolatedColor);
           var index = 4 * (width * yi + xi);
           data[index + 0] = pixel[0];
           data[index + 1] = pixel[1];
@@ -979,7 +1034,7 @@ var runReferenceImageTest = function(params) {
           var px = -1.0 + (xi * step);
           var py = -1.0 + (yi * step);
 
-          evaluateAtClipCoords(px, py, pixel);
+          evaluateAtClipCoords(px, py, pixel, computeVertexColor);
           var index = 4 * (texSize * yi + xi);
           data[index + 0] = pixel[0];
           data[index + 1] = pixel[1];
