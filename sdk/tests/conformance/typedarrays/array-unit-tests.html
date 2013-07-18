@@ -191,8 +191,10 @@ function testInheritanceHierarchy() {
     testPassed('ArrayBufferView has [NoInterfaceObject] extended attribute and was (correctly) not defined');
   }
 
-  // There is currently only one kind of view that inherits from another
-  shouldBe('new Uint8ClampedArray(1) instanceof Uint8Array', 'true');
+  // Uint8ClampedArray inherited from Uint8Array in earlier versions
+  // of the typed array specification. Since this is no longer the
+  // case, assert the new behavior.
+  shouldBe('new Uint8ClampedArray(1) instanceof Uint8Array', 'false');
 }
 
 //
