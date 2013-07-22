@@ -712,19 +712,6 @@ function testConstructionWithUnalignedLength(type, name, elementSizeInBytes) {
     }
 }
 
-function testConstructionOfHugeArray(type, name, sz) {
-    if (sz == 1)
-        return;
-    try {
-        // Construction of huge arrays must fail because byteLength is
-        // an unsigned long
-        array = new type(3000000000);
-        testFailed("Construction of huge " + name + " should throw exception");
-    } catch (e) {
-        testPassed("Construction of huge " + name + " threw exception");
-    }
-}
-
 function testConstructionWithBothArrayBufferAndLength(type, name, elementSizeInBytes) {
     var bufByteLength = 1000 * elementSizeInBytes;
     var buf = new ArrayBuffer(bufByteLength);
@@ -1068,7 +1055,6 @@ function runTests() {
     testConstructionWithNegativeOutOfRangeValues(type, name);
     testConstructionWithUnalignedOffset(type, name, testCase.elementSizeInBytes);
     testConstructionWithUnalignedLength(type, name, testCase.elementSizeInBytes);
-    testConstructionOfHugeArray(type, name, testCase.elementSizeInBytes);
     testConstructionWithBothArrayBufferAndLength(type, name, testCase.elementSizeInBytes);
     testConstructionWithSubPortionOfArrayBuffer(type, name, testCase.elementSizeInBytes);
     testSubarrayWithOutOfRangeValues(type, name, testCase.elementSizeInBytes);
