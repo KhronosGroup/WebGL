@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 10 July 2013</h2>
+    <h2 class="no-toc">Editor's Draft 26 July 2013</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -3536,7 +3536,8 @@ extensions.
     computing the storage required for all of the uniform and varying variables in a shader. The
     GLSL ES specification requires that if the packing algorithm defined in Appendix A succeeds,
     then the shader must succeed compilation on the target platform. The WebGL API further requires
-    that this packing algorithm succeed for all shaders and programs submitted to the API.
+    that if the packing algorithm fails either for the uniform variables of a shader or for the
+    varying variables of a program, compilation or linking must fail.
 </p>
 <p>
     Instead of using a fixed size grid of registers, the number of rows in the target architecture
@@ -3547,10 +3548,6 @@ extensions.
     <li> when counting uniform variables in a fragment shader: <code>getParameter(MAX_FRAGMENT_UNIFORM_VECTORS)</code>
     <li> when counting varying variables: <code>getParameter(MAX_VARYING_VECTORS)</code>
     </ul>
-</p>
-<p>
-    If the packing algorithm fails either for the uniform variables of a shader or for the varying
-    variables of a program, compilation or linking must fail.
 </p>
 
 
