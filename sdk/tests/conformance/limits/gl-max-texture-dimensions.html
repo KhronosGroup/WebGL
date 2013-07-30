@@ -79,6 +79,7 @@ function shouldBePowerOfTwo(n, name) {
 // work. Even 1 by 128k is only 512k
 var maxSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
 debug("advertised max size: " + maxSize);
+debug("verifying max size is power-of-two (implied by GLES 2.0 section 3.7.1)");
 shouldBePowerOfTwo(maxSize, 'Max size');
 var testSize = Math.min(maxSize, 128 * 1024);
 var pixels = new Uint8Array(testSize * 4);
