@@ -56,7 +56,6 @@ void main() {
 </head>
 <body>
 <div id="description"></div>
-<canvas id="canvas" style="width: 50px; height: 50px;"> </canvas>
 <div id="console"></div>
 <script>
 "use strict";
@@ -65,37 +64,51 @@ description("This test verifies the functionality of the OES_element_index_uint 
 debug("");
 
 var wtu = WebGLTestUtils;
-var canvas = document.getElementById("canvas");
-var gl = wtu.create3DContext(canvas);
+var gl = null;
 var ext = null;
-var vao = null;
+var canvas = null;
 
-if (!gl) {
-    testFailed("WebGL context does not exist");
-} else {
-    testPassed("WebGL context exists");
+// Test both STATIC_DRAW and DYNAMIC_DRAW as a regression test
+// for a bug in ANGLE which has since been fixed.
+for (var ii = 0; ii < 2; ++ii) {
+    canvas = document.createElement("canvas");
+    canvas.width = 50;
+    canvas.height = 50;
 
-    // Query the extension and store globally so shouldBe can access it
-    ext = gl.getExtension("OES_element_index_uint");
-    if (!ext) {
-        testPassed("No OES_element_index_uint support -- this is legal");
+    gl = wtu.create3DContext(canvas);
 
-        runSupportedTest(false);
+    if (!gl) {
+        testFailed("WebGL context does not exist");
     } else {
-        testPassed("Successfully enabled OES_element_index_uint extension");
+        testPassed("WebGL context exists");
+    
+        var drawType = (ii == 0) ? gl.STATIC_DRAW : gl.DYNAMIC_DRAW;
+        debug("Testing " + ((ii == 0) ? "STATIC_DRAW" : "DYNAMIC_DRAW"));
 
-        runSupportedTest(true);
-        runDrawTests();
 
-        // These tests are tweaked duplicates of the buffers/index-validation* tests
-        // using unsigned int indices to ensure that behavior remains consistent
-        runIndexValidationTests();
-        runCopiesIndicesTests();
-        runResizedBufferTests();
-        runVerifiesTooManyIndicesTests();
-        runCrashWithBufferSubDataTests();
+        // Query the extension and store globally so shouldBe can access it
+        ext = gl.getExtension("OES_element_index_uint");
+        if (!ext) {
+            testPassed("No OES_element_index_uint support -- this is legal");
 
-        glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+            runSupportedTest(false);
+        } else {
+            testPassed("Successfully enabled OES_element_index_uint extension");
+
+            runSupportedTest(true);
+
+            runDrawTests(drawType);
+
+            // These tests are tweaked duplicates of the buffers/index-validation* tests
+            // using unsigned int indices to ensure that behavior remains consistent
+            runIndexValidationTests(drawType);
+            runCopiesIndicesTests(drawType);
+            runResizedBufferTests(drawType);
+            runVerifiesTooManyIndicesTests(drawType);
+            runCrashWithBufferSubDataTests(drawType);
+
+            glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+        }
     }
 }
 
@@ -116,7 +129,7 @@ function runSupportedTest(extensionEnabled) {
     }
 }
 
-function runDrawTests() {
+function runDrawTests(drawType) {
     debug("Test that draws with unsigned integer indices produce the expected results");
     
     canvas.width = 50; canvas.height = 50;
@@ -151,7 +164,7 @@ function runDrawTests() {
 
         var vertexObject = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-        gl.bufferData(gl.ARRAY_BUFFER, quadArray, gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, quadArray, drawType);
 
         // Create an unsigned int index buffer that indexes the last 4 vertices
         var baseIndex = (quadArrayLen / 3) - 4;
@@ -164,7 +177,7 @@ function runDrawTests() {
             baseIndex + 2,
             baseIndex + 2,
             baseIndex + 3,
-            baseIndex + 0]), gl.STATIC_DRAW);
+            baseIndex + 0]), drawType);
 
         var opt_positionLocation = 0;
         gl.enableVertexAttribArray(opt_positionLocation);
@@ -216,7 +229,7 @@ function runDrawTests() {
     verifyDraw(0, 0.5);
 }
 
-function runIndexValidationTests() {
+function runIndexValidationTests(drawType) {
     description("Tests that index validation verifies the correct number of indices");
 
     function sizeInBytes(type) {
@@ -256,10 +269,10 @@ function runIndexValidationTests() {
 
     var bufferComplete = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferComplete);
-    gl.bufferData(gl.ARRAY_BUFFER, dataComplete, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, dataComplete, drawType);
     var elements = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elements);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, drawType);
     gl.useProgram(program);
     var vertexLoc = gl.getAttribLocation(program, "a_vertex");
     var normalLoc = gl.getAttribLocation(program, "a_normal");
@@ -276,7 +289,7 @@ function runIndexValidationTests() {
 
     var bufferIncomplete = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, bufferIncomplete);
-    gl.bufferData(gl.ARRAY_BUFFER, dataIncomplete, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, dataIncomplete, drawType);
     gl.vertexAttribPointer(vertexLoc, 4, gl.FLOAT, false, 7 * sizeInBytes(gl.FLOAT), 0);
     gl.enableVertexAttribArray(vertexLoc);
     gl.disableVertexAttribArray(normalLoc);
@@ -310,7 +323,7 @@ function runIndexValidationTests() {
     shouldBeUndefined('gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, 0)');
 }
 
-function runCopiesIndicesTests() {
+function runCopiesIndicesTests(drawType) {
     debug("Test that client data is always copied during bufferData and bufferSubData calls");
 
     var program = wtu.loadStandardProgram(gl);
@@ -320,14 +333,14 @@ function runCopiesIndicesTests() {
     gl.enableVertexAttribArray(0);
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
     // 4 vertices -> 2 triangles
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0,0, 0,1,0, 1,0,0, 1,1,0 ]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0,0, 0,1,0, 1,0,0, 1,1,0 ]), drawType);
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
 
     var indexObject = gl.createBuffer();
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexObject);
     var indices = new Uint32Array([ 10000, 0, 1, 2, 3, 10000 ]);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, drawType);
     shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 4)");
     shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 0)");
     shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 8)");
@@ -338,7 +351,7 @@ function runCopiesIndicesTests() {
     shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 8)");
 }
 
-function runResizedBufferTests() {
+function runResizedBufferTests(drawType) {
     debug("Test that updating the size of a vertex buffer is properly noticed by the WebGL implementation.");
 
     var program = wtu.setupProgram(gl, ["vs", "fs"], ["vPosition", "vColor"]);
@@ -348,7 +361,7 @@ function runResizedBufferTests() {
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(
         [-1,1,0, 1,1,0, -1,-1,0,
-         -1,-1,0, 1,1,0, 1,-1,0]), gl.STATIC_DRAW);
+         -1,-1,0, 1,1,0, 1,-1,0]), drawType);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
     glErrorShouldBe(gl, gl.NO_ERROR, "after vertex setup");
@@ -357,7 +370,7 @@ function runResizedBufferTests() {
     gl.bindBuffer(gl.ARRAY_BUFFER, texCoordObject);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(
         [0,0, 1,0, 0,1,
-         0,1, 1,0, 1,1]), gl.STATIC_DRAW);
+         0,1, 1,0, 1,1]), drawType);
     gl.enableVertexAttribArray(1);
     gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
     glErrorShouldBe(gl, gl.NO_ERROR, "after texture coord setup");
@@ -366,7 +379,7 @@ function runResizedBufferTests() {
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
         -1,1,0, 1,1,0, -1,-1,0, 1,-1,0,
-        -1,1,0, 1,1,0, -1,-1,0, 1,-1,0]), gl.STATIC_DRAW);
+        -1,1,0, 1,1,0, -1,-1,0, 1,-1,0]), drawType);
     glErrorShouldBe(gl, gl.NO_ERROR, "after vertex redefinition");
     gl.bindBuffer(gl.ARRAY_BUFFER, texCoordObject);
     gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array([
@@ -377,7 +390,7 @@ function runResizedBufferTests() {
         0, 255, 0, 255,
         0, 255, 0, 255,
         0, 255, 0, 255,
-        0, 255, 0, 255]), gl.STATIC_DRAW);
+        0, 255, 0, 255]), drawType);
     gl.vertexAttribPointer(1, 4, gl.UNSIGNED_BYTE, false, 0, 0);
     glErrorShouldBe(gl, gl.NO_ERROR, "after texture coordinate / color redefinition");
 
@@ -395,13 +408,13 @@ function runResizedBufferTests() {
     }
     var indexObject = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexObject);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, drawType);
     glErrorShouldBe(gl, gl.NO_ERROR, "after setting up indices");
     gl.drawElements(gl.TRIANGLES, numQuads * 6, gl.UNSIGNED_INT, 0);
     glErrorShouldBe(gl, gl.NO_ERROR, "after drawing");
 }
 
-function runVerifiesTooManyIndicesTests() {
+function runVerifiesTooManyIndicesTests(drawType) {
     description("Tests that index validation for drawElements does not examine too many indices");
 
     var program = wtu.loadStandardProgram(gl);
@@ -412,25 +425,25 @@ function runVerifiesTooManyIndicesTests() {
     gl.disableVertexAttribArray(1);
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
     // 4 vertices -> 2 triangles
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0,0, 0,1,0, 1,0,0, 1,1,0 ]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0,0, 0,1,0, 1,0,0, 1,1,0 ]), drawType);
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
 
     var indexObject = gl.createBuffer();
 
     debug("Test out of range indices")
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexObject);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array([ 10000, 0, 1, 2, 3, 10000 ]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array([ 10000, 0, 1, 2, 3, 10000 ]), drawType);
     shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 4)");
     shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 0)");
     shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 8)");
 }
 
-function runCrashWithBufferSubDataTests() {
+function runCrashWithBufferSubDataTests(drawType) {
     debug('Verifies that the index validation code which is within bufferSubData does not crash.')
 
     var elementBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elementBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, 256, gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, 256, drawType);
     var data = new Uint32Array(127);
     gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 64, data);
     glErrorShouldBe(gl, gl.INVALID_VALUE, "after attempting to update a buffer outside of the allocated bounds");
