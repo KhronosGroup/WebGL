@@ -1,8 +1,13 @@
 <?xml version="1.0"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>WebGL Extension Registry Revisions</title><link href="http://www.khronos.org/registry/webgl/extensions/index.atom" rel="self" type="application/atom+xml"/><link href="http://www.khronos.org/registry/webgl/extensions/" rel="alternate" type="text/html"/><id>http://www.khronos.org/registry/webgl/extensions/index.atom</id><updated>2013-07-03T23:59:59Z</updated><author>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>WebGL Extension Registry Revisions</title><link href="http://www.khronos.org/registry/webgl/extensions/index.atom" rel="self" type="application/atom+xml"/><link href="http://www.khronos.org/registry/webgl/extensions/" rel="alternate" type="text/html"/><id>http://www.khronos.org/registry/webgl/extensions/index.atom</id><updated>2013-08-02T23:59:59Z</updated><author>
     <name>WebGL Working Group</name>
     <email>public_webgl@khronos.org</email>
-  </author><entry><title>WEBGL_compressed_texture_s3tc : revision 4</title><link rel="alternate" type="text/html" href="WEBGL_compressed_texture_s3tc/"/><id>WEBGL_compressed_texture_s3tc/#r=4</id><updated>2013-07-03T23:59:59Z</updated><summary>Clarified that length of ArrayBufferView is actually byteLength.
+  </author><entry><title>WEBGL_lose_context : revision 11</title><link rel="alternate" type="text/html" href="WEBGL_lose_context/"/><id>WEBGL_lose_context/#r=11</id><updated>2013-08-02T23:59:59Z</updated><summary>
+          Indicated that this extension is not disconnected from the WebGLRenderingContext
+          when that object loses its drawing buffer (i.e. when it performs the steps
+          outlines in "The Context Lost Event" of the WebGL specification).
+
+</summary></entry><entry><title>WEBGL_compressed_texture_s3tc : revision 4</title><link rel="alternate" type="text/html" href="WEBGL_compressed_texture_s3tc/"/><id>WEBGL_compressed_texture_s3tc/#r=4</id><updated>2013-07-03T23:59:59Z</updated><summary>Clarified that length of ArrayBufferView is actually byteLength.
 
 </summary></entry><entry><title>WEBGL_compressed_texture_atc : revision 2</title><link rel="alternate" type="text/html" href="WEBGL_compressed_texture_atc/"/><id>WEBGL_compressed_texture_atc/#r=2</id><updated>2013-07-03T23:59:59Z</updated><summary>Clarified that length of ArrayBufferView is actually byteLength.
 
@@ -19,7 +24,5 @@
 </summary></entry><entry><title>WEBGL_debug_renderer_info : revision 6</title><link rel="alternate" type="text/html" href="WEBGL_debug_renderer_info/"/><id>WEBGL_debug_renderer_info/#r=6</id><updated>2013-05-15T23:59:59Z</updated><summary>Ratified by Khronos Board of Promoters.
 
 </summary></entry><entry><title>WEBGL_debug_shaders : revision 6</title><link rel="alternate" type="text/html" href="WEBGL_debug_shaders/"/><id>WEBGL_debug_shaders/#r=6</id><updated>2013-05-15T23:59:59Z</updated><summary>Ratified by Khronos Board of Promoters.
-
-</summary></entry><entry><title>OES_element_index_uint : revision 5</title><link rel="alternate" type="text/html" href="OES_element_index_uint/"/><id>OES_element_index_uint/#r=5</id><updated>2013-05-15T23:59:59Z</updated><summary>Ratified by Khronos Board of Promoters.
 
 </summary></entry></feed>
