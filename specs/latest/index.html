@@ -2918,9 +2918,12 @@ for (var i = 0; i < numVertices; i++) {
         Once an extension is enabled, it is only disabled if the WebGL rendering context is lost (see
         below), with the exception of the "WEBGL_lose_context" extension which remains active through
         any loss of context. Any objects referenced by a disabled extension, such as the object returned
-        by <code>getExtension</code>, are no longer associated with the WebGL rendering context. Any use
-        of a disabled extension or its referenced objects is undefined. There are no other mechanisms to
-        disable an extension.
+        by <code>getExtension</code>, are no longer associated with the WebGL rendering context. Any
+        extension objects that derive from <code>WebGLObject</code> have their
+        <a href="#webgl-object-invalidated-flag">invalidated</a> flag set to true. Any use of a disabled
+        extension or its referenced objects generates an INVALID_OPERATION error.
+    <p>
+        There are no other mechanisms to disable an extension.
     </p>
     <p>
         Multiple calls to <code>getExtension</code> with the same extension string, taking into account
