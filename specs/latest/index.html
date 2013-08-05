@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 30 July 2013</h2>
+    <h2 class="no-toc">Editor's Draft 2 August 2013</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2915,11 +2915,21 @@ for (var i = 0; i < numVertices; i++) {
         to the extension and must be defined by the extension specification.
     </p>
     <p>
-        Once an extension is enabled, no mechanism is provided to disable it. Multiple calls to
-        <code>getExtension</code> with the same extension string, taking into account
-        case-insensitive comparison, shall return the same object. An attempt to use any features of
-        an extension without first calling getExtension to enable it must generate an appropriate GL
-        error and must not make use of the feature.
+        Once an extension is enabled, it is only disabled if the WebGL rendering context is lost (see
+        below), with the exception of the "WEBGL_lose_context" extension which remains active through
+        any loss of context. Any objects referenced by a disabled extension, such as the object returned
+        by <code>getExtension</code>, are no longer associated with the WebGL rendering context. Any
+        extension objects that derive from <code>WebGLObject</code> have their
+        <a href="#webgl-object-invalidated-flag">invalidated</a> flag set to true. Any use of a disabled
+        extension or its referenced objects generates an INVALID_OPERATION error.
+    <p>
+        There are no other mechanisms to disable an extension.
+    </p>
+    <p>
+        Multiple calls to <code>getExtension</code> with the same extension string, taking into account
+        case-insensitive comparison, must return the same object as long as the extension is enabled. An
+        attempt to use any features of an extension without first calling getExtension to enable it must
+        generate an appropriate GL error and must not make use of the feature.
     </p>
     <p>
         This specification does not define any extensions. A separate <a href="#refsREGISTRY">WebGL
@@ -3019,6 +3029,8 @@ dictionary WebGLContextEventInit : <a href="http://www.w3.org/TR/domcore/#eventi
 
         <li> Set the <a href="#webgl-object-invalidated-flag">invalidated flag</a> of
         each <code>WebGLObject</code> instance created by this context. </li>
+
+        <li> Disable all extensions except "WEBGL_lose_context". </li>
 
         <li> <a href="http://dev.w3.org/html5/spec/webappapis.html#queue-a-task">Queue a task</a> to
         perform the following steps:

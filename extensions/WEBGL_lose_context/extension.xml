@@ -22,6 +22,11 @@
         <li><code>loseContext</code> and <code>restoreContext</code> are allowed to generate INVALID_OPERATION errors even when the context is lost.</li>
       </ul>
     </p>
+    <p>
+        Note that this extension is <strong>not</strong> disconnected from the WebGLRenderingContext if that
+        object loses its context as described in "The Context Lost Event" of the WebGL specification, either
+        through use of this API or via actual circumstances such as a system failure.
+    </p>
   </overview>
   <idl xml:space="preserve">
 interface WEBGL_lose_context {
@@ -80,6 +85,12 @@ interface WEBGL_lose_context {
     </revision>
     <revision date="2013/06/05">
       <change>Clarified error generation that conflicted with WebGL spec.</change>
+    </revision>
+    <revision date="2013/08/02">
+      <change>
+          Indicated that this extension is not disconnected from the WebGLRenderingContext
+          when that object loses its drawing buffer (i.e. when it performs the steps
+          outlines in "The Context Lost Event" of the WebGL specification).</change>
     </revision>
   </history>
 </ratified>
