@@ -5,7 +5,7 @@
   </author><entry><title>WEBGL_lose_context : revision 11</title><link rel="alternate" type="text/html" href="WEBGL_lose_context/"/><id>WEBGL_lose_context/#r=11</id><updated>2013-08-02T23:59:59Z</updated><summary>
           Indicated that this extension is not disconnected from the WebGLRenderingContext
           when that object loses its drawing buffer (i.e. when it performs the steps
-          outlines in "The Context Lost Event" of the WebGL specification).
+          outlined in "The Context Lost Event" of the WebGL specification).
 
 </summary></entry><entry><title>WEBGL_compressed_texture_s3tc : revision 4</title><link rel="alternate" type="text/html" href="WEBGL_compressed_texture_s3tc/"/><id>WEBGL_compressed_texture_s3tc/#r=4</id><updated>2013-07-03T23:59:59Z</updated><summary>Clarified that length of ArrayBufferView is actually byteLength.
 
