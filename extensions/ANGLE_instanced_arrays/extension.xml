@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-
-<draft href="ANGLE_instanced_arrays/">
+<extension href="ANGLE_instanced_arrays/">
   <name>ANGLE_instanced_arrays</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -9,7 +8,7 @@
     <contributor>Contributors to ANGLE_instanced_arrays</contributor>
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
-  <number>19</number>
+  <number>20</number>
   <depends>
     <api version="1.0"/>
   </depends>
@@ -34,5 +33,8 @@ interface ANGLE_instanced_arrays {
     <revision date="2013/03/11">
       <change>Renumbered to 19 to fix misnumbering problem.</change>
     </revision>
+    <revision date="2013/08/06">
+      <change>Moved to community approved.</change>
+    </revision>
   </history>
-</draft>
+</extension>
