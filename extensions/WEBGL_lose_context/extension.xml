@@ -90,7 +90,7 @@ interface WEBGL_lose_context {
       <change>
           Indicated that this extension is not disconnected from the WebGLRenderingContext
           when that object loses its drawing buffer (i.e. when it performs the steps
-          outlines in "The Context Lost Event" of the WebGL specification).</change>
+          outlined in "The Context Lost Event" of the WebGL specification).</change>
     </revision>
   </history>
 </ratified>
