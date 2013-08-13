@@ -1,3 +1,4 @@
+extensions-invalid-after-lost-context.html
 --min-version 1.0.2 get-extension.html
 oes-standard-derivatives.html
 oes-texture-float-with-canvas.html
