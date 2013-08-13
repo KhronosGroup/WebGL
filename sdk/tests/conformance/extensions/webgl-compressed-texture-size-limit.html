@@ -60,12 +60,15 @@ var validFormats = {
     COMPRESSED_RGBA_S3TC_DXT5_EXT       : 0x83F3,
 };
 
+// format specific restrictions for COMPRESSED_RGB_S3TC_DXT1_EXT and COMPRESSED_RGBA_S3TC_DXT1_EXT
+// on the byteLength of the ArrayBufferView, pixels
 function func1 (width, height)
 {
     return Math.floor((width + 3) / 4) * Math.floor((height + 3) / 4) * 8;
 }
 
-
+// format specific restrictions for COMPRESSED_RGBA_S3TC_DXT3_EXT and COMPRESSED_RGBA_S3TC_DXT5_EXT
+// on the byteLength of the ArrayBufferView, pixels
 function func2 (width, height)
 {
     return Math.floor((width + 3) / 4) * Math.floor((height + 3) / 4) * 16;
@@ -151,6 +154,14 @@ function testFormatType(t, test) {
       debug(wtu.glEnumToString(gl, target));
       var numLevels = numLevelsFromSize(t.maxSize);
 
+      // positive test
+      for (var i = 0, size = t.maxSize; i < numLevels; i++, size /= 2) {
+        var pixels = new test.dataType(test.func(size, size));
+        gl.compressedTexImage2D(target, i, test.format, size, size, 0, pixels);
+        glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture should generate NO_ERROR."
+            + "level is " + i + ", size is " + size + "x" + size);
+      }
+
       // out of bound test
       // width or height out of bound
       var pixelsNegativeTest1 = new test.dataType(test.func(t.maxSize * 2, t.maxSize * 2));
@@ -166,14 +177,6 @@ function testFormatType(t, test) {
       gl.compressedTexImage2D(target, numLevels - 1, test.format, 256, 256, 0, pixelsNegativeTest2);
       glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound for specified level: should generate INVALID_VALUE."
           + " level is " + (numLevels - 1) + ", size is 256x256");
-
-      // positive test
-      for (var i = 0, size = t.maxSize; i < numLevels; i++, size /= 2) {
-        var pixels = new test.dataType(test.func(size, size));
-        gl.compressedTexImage2D(target, i, test.format, size, size, 0, pixels);
-        glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture should generate NO_ERROR."
-            + "level is " + i + ", size is " + size + "x" + size);
-      }
     }
   }
   else
