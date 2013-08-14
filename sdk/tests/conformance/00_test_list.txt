@@ -1,4 +1,3 @@
---min-version 1.0.3 conformance/typedarrays/array-large-array-tests.html
 attribs/00_test_list.txt
 buffers/00_test_list.txt
 canvas/00_test_list.txt
