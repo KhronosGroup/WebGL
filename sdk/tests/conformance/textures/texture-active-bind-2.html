@@ -76,8 +76,8 @@ void main()
 function init()
 {
   description(
-      "Tests that binding both TEXTURE_2D and TEXTURE_CUBE_MAP to the same" +
-      "active texture unit works as long as they are not used" +
+      "Tests that binding both TEXTURE_2D and TEXTURE_CUBE_MAP to the same " +
+      "active texture unit works as long as they are not used " +
       "simultaneously in the same shader program.");
 
   var canvas2d = document.getElementById("canvas2d");
@@ -180,6 +180,46 @@ function init()
     var y = Math.floor(ii / 2);
     wtu.checkCanvasRect(gl, x, y, 1, 1, c);
   }
+
+  // Test that binding to one target does not affect the other
+  debug("");
+  debug("Testing texture target binding/unbinding");
+
+  var worldMatrix = [
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1];
+
+  gl.activeTexture(gl.TEXTURE2);
+
+  // Unbinding the TEXTURE_CUBE_MAP target should not affect the TEXTURE_2D target
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  gl.bindTexture(gl.TEXTURE_2D, tex2d);
+  gl.bindTexture(gl.TEXTURE_CUBE_MAP, texCube);
+  gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+
+  gl.useProgram(program2d);
+  gl.uniform1i(tex2dLoc, 2);
+  gl.uniformMatrix4fv(world2dLoc, false, worldMatrix);
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+  wtu.checkCanvasRect(gl, 0, 0, 2, 2, [0,0,255,255]);
+
+  // Unbinding the TEXTURE_2D target should not affect the TEXTURE_CUBE_MAP target
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  gl.bindTexture(gl.TEXTURE_CUBE_MAP, texCube);
+  gl.bindTexture(gl.TEXTURE_2D, tex2d);
+  gl.bindTexture(gl.TEXTURE_2D, null);
+
+  gl.useProgram(programCube);
+  gl.uniform1i(texCubeLoc, 2);
+  gl.uniformMatrix4fv(worldCubeLoc, false, worldMatrix);
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+  wtu.checkCanvasRect(gl, 0, 0, 2, 2, [255,0,255,255]);
 }
 
 init();
