@@ -140,7 +140,7 @@ var shaderTypes = [
     vertUniformTest: vUniformTestSource,
     fragUniformTest: fBaseSource,
     maxVectors: gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS),
-    minVectors: 126,  // GLSL ES 1.0.17 Appendix A.7 and A.8. Reserve two rows for constants in the code, hence 128 - 2.
+    minVectors: 127,  // GLSL ES 1.0.17 Appendix A.7 and A.8. Reserve one row for constants in the code, hence 128 - 1.
   },
   { type: "fragment",
     // For tests that expect failure which shader might fail.
@@ -151,7 +151,7 @@ var shaderTypes = [
     vertUniformTest: vBaseSource,
     fragUniformTest: fUniformTestSource,
     maxVectors: gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS),
-    minVectors: 14,  // GLSL ES 1.0.17 Appendix A.8 - minimum value of gl_maxFragmentUniformVectors is 16. Again, reserve two rows for constants.
+    minVectors: 15,  // GLSL ES 1.0.17 Appendix A.8 - minimum value of gl_maxFragmentUniformVectors is 16. Again, reserve a row for constants.
   },
 ];
 for (var ss = 0; ss < shaderTypes.length; ++ss) {
