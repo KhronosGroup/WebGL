@@ -164,17 +164,21 @@ function testFormatType(t, test) {
 
       // out of bound test
       // width or height out of bound
-      var pixelsNegativeTest1 = new test.dataType(test.func(t.maxSize * 2, t.maxSize * 2));
-      gl.compressedTexImage2D(target, 0, test.format, t.maxSize * 2, t.maxSize * 2, 0, pixelsNegativeTest1);
-      glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound: should generate INVALID_VALUE."
-          + " level is 0, size is " + (t.maxSize * 2) + "x" + (t.maxSize * 2));
+      var pixelsNegativeTest1 = new test.dataType(test.func(t.maxSize * 2, 1));
+      gl.compressedTexImage2D(target, 0, test.format, t.maxSize * 2, 1, 0, pixelsNegativeTest1);
+      glErrorShouldBe(gl, gl.INVALID_VALUE, "width out of bound: should generate INVALID_VALUE."
+          + " level is 0, size is " + (t.maxSize * 2) + "x1");
+      var pixelsNegativeTest2 = new test.dataType(test.func(1, t.maxSize * 2));
+      gl.compressedTexImage2D(target, 0, test.format, 1, t.maxSize * 2, 0, pixelsNegativeTest2);
+      glErrorShouldBe(gl, gl.INVALID_VALUE, "height out of bound: should generate INVALID_VALUE."
+          + " level is 0, size is " + "1x" + (t.maxSize * 2));
       // level out of bound
-      var pixelsNegativeTest2 = new test.dataType(test.func(256, 256));
-      gl.compressedTexImage2D(target, numLevels, test.format, 256, 256, 0, pixelsNegativeTest2);
+      var pixelsNegativeTest3 = new test.dataType(test.func(256, 256));
+      gl.compressedTexImage2D(target, numLevels, test.format, 256, 256, 0, pixelsNegativeTest3);
       glErrorShouldBe(gl, gl.INVALID_VALUE, "level out of bound: should generate INVALID_VALUE."
           + " level is " + numLevels + ", size is 256x256");
       //width or height out of bound for specified level
-      gl.compressedTexImage2D(target, numLevels - 1, test.format, 256, 256, 0, pixelsNegativeTest2);
+      gl.compressedTexImage2D(target, numLevels - 1, test.format, 256, 256, 0, pixelsNegativeTest3);
       glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound for specified level: should generate INVALID_VALUE."
           + " level is " + (numLevels - 1) + ", size is 256x256");
     }

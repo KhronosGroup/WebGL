@@ -133,20 +133,19 @@ function testFormatType(t, test) {
     var numLevels = numLevelsFromSize(t.maxSize);
     var numTestLevels = Math.min(numLevels, t.maxLevel);
 
-    // out of bound test
-    var pixelsNegativeTest = new test.dataType((t.maxSize + 1) * (t.maxSize + 1) * 4);
     // level out of bound
-    gl.texImage2D(target, numLevels, test.format, 1, 1, 0, test.format, test.type, pixelsNegativeTest);
+    var pixelsNegativeTest1 = new test.dataType(1 * 1 * 4);
+    gl.texImage2D(target, numLevels, test.format, 1, 1, 0, test.format, test.type, pixelsNegativeTest1);
     glErrorShouldBe(gl, gl.INVALID_VALUE, "level out of bound: should generate INVALID_VALUE: level is: "
         + numLevels + ", size is 1x1.");
     // width or height out of bound
-    gl.texImage2D(target, 0, test.format, t.maxSize + 1, t.maxSize + 1, 0, test.format, test.type, pixelsNegativeTest);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound: should generate INVALID_VALUE: level is 0, size is "
-        + (t.maxSize + 1) + "x" + (t.maxSize + 1));
-    // width or height out of bound for specified level
-    gl.texImage2D(target, (numLevels - 1), test.format, 4, 4, 0, test.format, test.type, pixelsNegativeTest);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound for specified level: should generate INVALID_VALUE: levle is "
-        + (numLevels - 1) + ", size is 4x4.");
+    var pixelsNegativeTest2 = new test.dataType((t.maxSize + 1) * 1 * 4);
+    gl.texImage2D(target, 0, test.format, t.maxSize + 1, 1, 0, test.format, test.type, pixelsNegativeTest2);
+    glErrorShouldBe(gl, gl.INVALID_VALUE, "width out of bound: should generate INVALID_VALUE: level is 0, size is "
+        + (t.maxSize + 1) + "x1");
+    gl.texImage2D(target, 0, test.format, 1, t.maxSize + 1, 0, test.format, test.type, pixelsNegativeTest2);
+    glErrorShouldBe(gl, gl.INVALID_VALUE, "height out of bound: should generate INVALID_VALUE: level is 0, size is "
+        + "1x" + (t.maxSize + 1));
 
     for (var l = 0; l < numTestLevels; ++l) {
       // Do bottom levels first;
