@@ -71,6 +71,11 @@ var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas);
 var ext = null;
 
+var positionLoc = 0;
+var offsetLoc = 2;
+var colorLoc = 3;
+var program;
+
 if (!gl) {
     testFailed("WebGL context does not exist");
 } else {
@@ -90,8 +95,11 @@ if (!gl) {
         runSupportedTest(true);
 
         runDivisorTestEnabled();
-        runOutputTests();
         runUniqueObjectTest();
+
+        setupCanvas();
+        runOutputTests();
+        runANGLECorruptionTest();
     }
 }
 
@@ -153,20 +161,19 @@ function runDivisorTestEnabled() {
     }
 }
 
+function setupCanvas() {
+    canvas.width = 50; canvas.height = 50;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.clearColor(0, 0, 0, 0);
+
+    program = wtu.setupProgram(gl, ["outputVertexShader", "outputFragmentShader"], ['aPosition', 'aOffset', 'aColor'], [positionLoc, offsetLoc, colorLoc]);
+}
+
 function runOutputTests() {
     var e = 2; // Amount of variance to allow in result pixels - may need to be tweaked higher
     var instanceCount = 4;
 
     debug("Testing various draws for valid built-in function behavior");
-
-    canvas.width = 50; canvas.height = 50;
-    gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.clearColor(0, 0, 0, 0);
-
-    var positionLoc = 0;
-    var offsetLoc = 2;
-    var colorLoc = 3;
-    var program = wtu.setupProgram(gl, ["outputVertexShader", "outputFragmentShader"], ['aPosition', 'aOffset', 'aColor'], [positionLoc, offsetLoc, colorLoc]);
 
     var offsets = new Float32Array([
         -1.0,  1.0,
@@ -283,10 +290,108 @@ function runUniqueObjectTest()
     shouldBe('gl.getExtension("ANGLE_instanced_arrays").myProperty', '2');
 }
 
-debug("");
+function runANGLECorruptionTest()
+{
+    debug("")
+    debug("Testing to ensure that rendering isn't corrupt due to an ANGLE bug");
+    // See: https://code.google.com/p/angleproject/issues/detail?id=467
+
+    var e = 2; // Amount of variance to allow in result pixels - may need to be tweaked higher
+    var instanceCount = 10; // Must be higher than 6
+    var iteration = 0;
+    var totalIterations = 10;
+
+    var offsets = new Float32Array([
+        0.0, 0.0,
+        0.2, 0.0,
+        0.4, 0.0,
+        0.6, 0.0,
+        0.8, 0.0,
+        1.0, 0.0,
+        1.2, 0.0,
+        1.4, 0.0,
+        1.6, 0.0,
+        1.8, 0.0,
+    ]);
+    var offsetBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, offsetBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, offsets.byteLength * 2, gl.STATIC_DRAW);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, offsets);
+    gl.enableVertexAttribArray(offsetLoc);
+    gl.vertexAttribPointer(offsetLoc, 2, gl.FLOAT, false, 0, 0);
+    ext.vertexAttribDivisorANGLE(offsetLoc, 1);
+
+    var colors = new Float32Array([
+        1.0, 0.0, 0.0, 1.0,
+        1.0, 1.0, 0.0, 1.0,
+        0.0, 1.0, 0.0, 1.0,
+        0.0, 1.0, 1.0, 1.0,
+        0.0, 0.0, 1.0, 1.0,
+        1.0, 0.0, 1.0, 1.0,
+        1.0, 0.0, 0.0, 1.0,
+        1.0, 1.0, 0.0, 1.0,
+        0.0, 1.0, 0.0, 1.0,
+        0.0, 1.0, 1.0, 1.0,
+    ]);
+    var colorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, colors.byteLength * 2, gl.STATIC_DRAW);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, colors);
+    gl.enableVertexAttribArray(colorLoc);
+    gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
+    ext.vertexAttribDivisorANGLE(colorLoc, 1);
+
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    wtu.setupUnitQuad(gl, 0);
+
+    function cycleAndTest() {
+        // Update the instanced data buffers outside the accessed range.
+        // This, plus rendering more instances than vertices, triggers the bug.
+        var nullData = new Float32Array(offsets.length);
+        gl.bindBuffer(gl.ARRAY_BUFFER, offsetBuffer);
+        gl.bufferSubData(gl.ARRAY_BUFFER, offsets.byteLength, nullData);
+
+        nullData = new Float32Array(colors.length);
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferSubData(gl.ARRAY_BUFFER, colors.byteLength, nullData);
+
+        ext.drawArraysInstancedANGLE(gl.TRIANGLES, 0, 6, instanceCount);
+
+        // Make sure each color was drawn correctly 
+        var i;
+        var passed = true;
+        for (i = 0; i < instanceCount; ++i) {
+            var w = canvas.width / instanceCount;
+            var x = w * i;
+            var color =  [colors[(i*4)] * 255, colors[(i*4)+1] * 255, colors[(i*4)+2] * 255, 255]
+
+            wtu.checkCanvasRectColor(
+                gl, x, 0, w, canvas.height, color, e,
+                function() {},
+                function() {
+                    passed = false;
+                }, debug);
+        }
+
+        if (passed) {
+            testPassed("Passed test " + iteration + " of " + totalIterations);
+            if (iteration < totalIterations) {
+                ++iteration;
+                setTimeout(cycleAndTest, 100);
+            } else {
+                finishTest();
+            }
+        } else {
+            testFailed("Failed test " + iteration + " of " + totalIterations);
+            finishTest();
+        }
+    }
+
+    cycleAndTest();
+}
+
 var successfullyParsed = true;
 </script>
-<script src="../../resources/js-test-post.js"></script>
 
 </body>
 </html>
