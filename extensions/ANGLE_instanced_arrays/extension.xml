@@ -13,7 +13,10 @@
     <api version="1.0"/>
   </depends>
   <overview>
-    <mirrors href="http://www.khronos.org/registry/gles/extensions/ANGLE/ANGLE_instanced_arrays.txt" name="ANGLE_instanced_arrays" />
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/ANGLE/ANGLE_instanced_arrays.txt" name="ANGLE_instanced_arrays"/>
+    <p>
+      Although the extension contains ANGLE in the name it may be exposed by any implementation, whether or not the implementation uses the ANGLE library.
+    </p>
   </overview>
   <idl xml:space="preserve">
 interface ANGLE_instanced_arrays {
@@ -35,6 +38,9 @@ interface ANGLE_instanced_arrays {
     </revision>
     <revision date="2013/08/06">
       <change>Moved to community approved.</change>
+    </revision>
+    <revision date="2013/08/22">
+      <change>Clarified non-ANGLE support.</change>
     </revision>
   </history>
 </extension>
