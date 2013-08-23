@@ -65,7 +65,7 @@
         Likewise the shading language preprocessor <code>#define GL_EXT_draw_buffers</code>, will be defined to 1 if the extension is supported.
       </addendum>
       <addendum>
-        The value of <code>glMaxDrawBuffers</code> should match <code>MAX_DRAW_BUFFERS_WEBGL</code> from the API if the extension is enabled in a WEBGL context; otherwise, the value should be 1. Whether or not the extension is enabled with the <code>#extension GL_EXT_draw_buffers</code> directive in a shader does not affect the value of <code>glMaxDrawBuffers</code>.
+        The value of <code>gl_MaxDrawBuffers</code> should match <code>MAX_DRAW_BUFFERS_WEBGL</code> from the API if the extension is enabled in a WebGL context; otherwise, the value should be 1. Whether or not the extension is enabled with the <code>#extension GL_EXT_draw_buffers</code> directive in a shader does not affect the value of <code>gl_MaxDrawBuffers</code>.
       </addendum>
     </mirrors>
     <features>
