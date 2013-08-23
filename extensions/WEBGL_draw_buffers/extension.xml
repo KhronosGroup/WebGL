@@ -13,7 +13,7 @@
     <api version="1.0"/>
   </depends>
   <overview>
-    <mirrors href="https://angleproject.googlecode.com/svn/trunk/extensions/EXT_draw_buffers.txt" name="EXT_draw_buffers">
+    <mirrors href="https://www.khronos.org/registry/gles/extensions/EXT/EXT_draw_buffers.txt" name="EXT_draw_buffers">
       <addendum>
         The implementation must support a minimum of 4 color attachments.
       </addendum>
@@ -63,6 +63,9 @@
         the extension in a shader.
 
         Likewise the shading language preprocessor <code>#define GL_EXT_draw_buffers</code>, will be defined to 1 if the extension is supported.
+      </addendum>
+      <addendum>
+        The value of <code>glMaxDrawBuffers</code> should match <code>MAX_DRAW_BUFFERS_WEBGL</code> from the API if the extension is enabled in a WEBGL context; otherwise, the value should be 1. Whether or not the extension is enabled with the <code>#extension GL_EXT_draw_buffers</code> directive in a shader does not affect the value of <code>glMaxDrawBuffers</code>.
       </addendum>
     </mirrors>
     <features>
