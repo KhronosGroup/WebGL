@@ -296,7 +296,7 @@ function runANGLECorruptionTest()
     debug("Testing to ensure that rendering isn't corrupt due to an ANGLE bug");
     // See: https://code.google.com/p/angleproject/issues/detail?id=467
 
-    var e = 2; // Amount of variance to allow in result pixels - may need to be tweaked higher
+    var tolerance = 2; // Amount of variance to allow in result pixels - may need to be tweaked higher
     var instanceCount = 10; // Must be higher than 6
     var iteration = 0;
     var totalIterations = 10;
@@ -366,7 +366,7 @@ function runANGLECorruptionTest()
             var color =  [colors[(i*4)] * 255, colors[(i*4)+1] * 255, colors[(i*4)+2] * 255, 255]
 
             wtu.checkCanvasRectColor(
-                gl, x, 0, w, canvas.height, color, e,
+                gl, x, 0, w, canvas.height, color, tolerance,
                 function() {},
                 function() {
                     passed = false;
