@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL varying packing restrctions Conformance Test</title>
+<title>WebGL varying packing restrictions Conformance Test</title>
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
 <link rel="stylesheet" href="../../resources/glsl-feature-tests.css"/>
 <script src="../../../resources/js-test-pre.js"></script>
@@ -86,7 +86,7 @@ var varyingTypes = [
   { type: "vec2",        componentsPerRow: 2, rows: 1, vcode: "v_varying$(id)$(index) = vec2(0, 0);",       fcode: "vec4(v_varying$(id)$(index), 0, 0)", },
   { type: "vec3",        componentsPerRow: 3, rows: 1, vcode: "v_varying$(id)$(index) = vec3(0, 0, 0);",    fcode: "vec4(v_varying$(id)$(index), 0)", },
   { type: "vec4",        componentsPerRow: 4, rows: 1, vcode: "v_varying$(id)$(index) = vec4(0, 0, 0, 0);", fcode: "vec4(v_varying$(id)$(index))", },
-// Yes, the spec says mat2 takes 4 columns, 2 rows.    vcode: "",
+// Yes, the spec says mat2 takes 4 columns, 2 rows.
   { type: "mat2",        componentsPerRow: 4, rows: 2, vcode: "v_varying$(id)$(index) = mat2(1.0);", fcode: "vec4(v_varying$(id)$(index)[0], 0, 0)", },
   { type: "mat3",        componentsPerRow: 3, rows: 3, vcode: "v_varying$(id)$(index) = mat3(1.0);", fcode: "vec4(v_varying$(id)$(index)[0], 0)", },
   { type: "mat4",        componentsPerRow: 4, rows: 4, vcode: "v_varying$(id)$(index) = mat4(1.0);", fcode: "vec4(v_varying$(id)$(index)[0])", },
@@ -123,21 +123,8 @@ for (var ii = 0; ii < varyingTypes.length; ++ii) {
     linkSuccess: true,
     passMsg: "shaders with varying array of " + info.type + " with 1 element should succeed",
   });
-  // do the minimum number. After that it can fail for any reason.
-  if (false) {
-    var vcode = wtu.replaceParams(info.vcode, {id: "", index: "[" + (numVars - 1) + "]"});
-    var fcode = wtu.replaceParams(info.fcode, {id: "", index: "[" + (numVars - 1) + "]"});
-    tests.push({
-      vShaderSource: wtu.replaceParams(vArrayTestSource, {numTestType: numVars, vcode: vcode}, info),
-      vShaderSuccess: true,
-      fShaderSource: wtu.replaceParams(fArrayTestSource, {numTestType: numVars, fcode: fcode}, info),
-      fShaderSuccess: true,
-      linkSuccess: true,
-      passMsg: "shaders with varying array of " + info.type + " with " + numVars + " elements (the maximum) should succeed",
-    });
-  }
 
-  // Test required number of uniforms
+  // Test required number of varyings
   var vcode = wtu.replaceParams(info.vcode, {id: "", index: "[" + (minVars - 1) + "]"});
   var fcode = wtu.replaceParams(info.fcode, {id: "", index: "[" + (minVars - 1) + "]"});
   tests.push({
@@ -173,11 +160,9 @@ for (var ii = 0; ii < varyingTypes.length; ++ii) {
     passMsg: "shaders with varying array of " + info.type + " with " + (numVars + 1) + " elements (one past maximum) accessing first element should fail",
   });
 
-  // Test max uniforms of type.
-  // Note: We can't test this as actual GL drivers are only required to be able to
-  // do the minimum number. After that it can fail for any reason.
-  if (false) {
-  }
+  // Note: We can't test max varyings as actual GL drivers are only required to be able to
+  // do the minimum number. After that it can fail for any reason, for example running out of
+  // instruction space.
 
   var generateCode = function(numVars) {
     var varyings = [];
