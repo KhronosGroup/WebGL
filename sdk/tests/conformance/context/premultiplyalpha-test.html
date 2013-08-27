@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Test the WebGL premultipledAlpha context creation flag.</title>
+<title>Test the WebGL premultipliedAlpha context creation flag.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"> </script>
@@ -42,7 +42,7 @@
 var wtu = WebGLTestUtils;
 
 var tests = [
-  // If premultipledAlpha is true then
+  // If premultipliedAlpha is true then
   // [texture]           [canvas]             [dataURL]
   // 32, 64, 128, 128 -> 64, 128, 255, 128 -> 64, 128, 255, 128
   { creationAttributes: {},
@@ -51,7 +51,7 @@ var tests = [
     errorRange: 2,
     imageFormat: "image/png"
   },
-  // If premultipledAlpha is true then
+  // If premultipliedAlpha is true then
   // [texture]           [canvas]             [texture]
   // 32, 64, 128, 128 -> 64, 128, 255, 128 -> 64, 128, 255, 128
   { creationAttributes: {},
@@ -59,7 +59,7 @@ var tests = [
     expectedColor: [64, 128, 255, 128],
     errorRange: 2,
   },
-  // If premultipledAlpha is false then
+  // If premultipliedAlpha is false then
   // [texture]           [canvas]            [dataURL]
   // 255, 192, 128, 1 -> 255, 192, 128, 1 -> 255, 192, 128, 1
   { creationAttributes: {premultipliedAlpha: false},
@@ -68,7 +68,7 @@ var tests = [
     errorRange: 0,
     imageFormat: "image/png"
   },
-  // If premultipledAlpha is false then
+  // If premultipliedAlpha is false then
   // [texture]           [canvas]            [texture]
   // 255, 192, 128, 1 -> 255, 192, 128, 1 -> 255, 192, 128, 1
   { creationAttributes: {premultipliedAlpha: false},
@@ -76,7 +76,7 @@ var tests = [
     expectedColor: [255, 192, 128, 1],
     errorRange: 0,
   },
-  // If premultipledAlpha is false then
+  // If premultipliedAlpha is false then
   // [texture]             [canvas]            [dataURL]
   // 255, 255, 255, 128 -> 255, 255, 255, 128 -> 128, 128, 128, 255
   { creationAttributes: {premultipliedAlpha: false},
@@ -85,7 +85,7 @@ var tests = [
     errorRange: 2,
     imageFormat: "image/jpeg"
   },
-  // If premultipledAlpha is true then
+  // If premultipliedAlpha is true then
   // [texture]             [canvas]            [dataURL]
   // 128, 128, 128, 128 -> 255, 255, 255, 128 -> 128, 128, 128, 255
   { creationAttributes: {},
@@ -99,9 +99,9 @@ var tests = [
 var g_count = 0;
 var gl;
 var canvas;
-var premultipledAlpha;
+var premultipliedAlpha;
 
-description("Test the WebGL premultipledAlpha context creation flag.");
+description("Test the WebGL premultipliedAlpha context creation flag.");
 doNextTest();
 function doNextTest() {
   if (g_count < tests.length) {
@@ -114,7 +114,7 @@ function doNextTest() {
      debug("")
      debug("testing: premultipliedAlpha: " + premultipliedAlpha + " imageFormat: " + test.imageFormat);
 
-     shouldBe('gl.getContextAttributes().premultipledAlpha', 'premultipledAlpha');
+     shouldBe('gl.getContextAttributes().premultipliedAlpha', premultipliedAlpha.toString());
      shouldBeTrue('gl.getContextAttributes().preserveDrawingBuffer');
 
      wtu.log(gl.getContextAttributes());
