@@ -137,7 +137,7 @@ function doNextTest() {
        var pngTex = gl.createTexture();
        // not needed as it's the default
        // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-       gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, false);
+       gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
        gl.bindTexture(gl.TEXTURE_2D, pngTex);
        if (test.imageFormat) {
           // create texture from image
