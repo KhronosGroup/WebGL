@@ -176,22 +176,22 @@
     <h3>Context Creation</h3>
 
     <p>
-        Each <code>WebGLRenderingContext</code> has an
+        Each <code>WebGLRenderingContext</code> and <code>WebGL2RenderingContext</code> has an
         associated <b><a name="context-canvas">canvas</a></b>, set upon creation, which is
         a <em>canvas</em> <a href="#refsCANVAS">[CANVAS]</a>.
     </p>
     <p>
-        Each <code>WebGLRenderingContext</code> has <b><a name="context-creation-parameters">context
+        Each <code>WebGLRenderingContext</code> and <code>WebGL2RenderingContext</code> has <b><a name="context-creation-parameters">context
         creation parameters</a></b>, set upon creation, in
         a <a href="#WEBGLCONTEXTATTRIBUTES"><code>WebGLContextAttributes</code></a> object.
     </p>
     <p>
-        Each <code>WebGLRenderingContext</code> has <b><a name="actual-context-parameters">actual
+        Each <code>WebGLRenderingContext</code> and <code>WebGL2RenderingContext</code> has <b><a name="actual-context-parameters">actual
         context parameters</a></b>, set each time the drawing buffer is created, in
         a <a href="#WEBGLCONTEXTATTRIBUTES"><code>WebGLContextAttributes</code></a> object.
     </p>
     <p>
-        Each <code>WebGLRenderingContext</code> has a <b><a name="webgl-context-lost-flag">webgl
+        Each <code>WebGLRenderingContext</code> and <code>WebGL2RenderingContext</code> has a <b><a name="webgl-context-lost-flag">webgl
         context lost flag</a></b>, which is initially unset.
     </p>
     <p>
@@ -202,7 +202,11 @@
 
         <ol class="nestedlist">
 
-        <li> Create a new <code>WebGLRenderingContext</code> object, <em>context</em>.
+        <li> Create a new <code>WebGLRenderingContext</code> or <code>WebGL2RenderingContext</code> object,
+            <em>context</em>. If <code>getContext()</code> was invoked with a second argument, <em>options</em>,
+            and <em>options</em> has a <code>version</code> property with the value <code>"2"</code>,
+            then <em>context</em> will be a <code>WebGL2RenderingContext</code> object. Otherwise <em>context</em>
+            is a <code>WebGLRenderingContext</code> object.
 
         <li> Let <em>context's</em> <a href="#context-canvas">canvas</a> be the canvas
              the <code>getContext()</code> method is associated with.
@@ -662,7 +666,7 @@ typedef octet          GLubyte;        /* 'octet' should be an unsigned 8 bit ty
 typedef unsigned short GLushort;
 typedef unsigned long  GLuint;
 typedef unrestricted float GLfloat;
-typedef unrestricted float GLclampf;  
+typedef unrestricted float GLclampf;
 </pre>
 
 <!-- ======================================================================================================= -->
@@ -1085,7 +1089,11 @@ for (var i = 0; i < numVertices; i++) {
     <p>
     See <a href="#CONTEXT_LOST">the context lost event</a> for further details.
     </p>
-    <pre class="idl">interface <dfn id="WebGLRenderingContext">WebGLRenderingContext</dfn> {
+
+    <pre class="idl">
+[NoInterfaceObject]
+interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
+{
 
     /* ClearBufferMask */
     const GLenum DEPTH_BUFFER_BIT               = 0x00000100;
@@ -1738,7 +1746,23 @@ for (var i = 0; i < numVertices; i++) {
                              GLboolean normalized, GLsizei stride, GLintptr offset);
 
     void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
-};</pre>
+};
+
+interface <dfn id="WebGLRenderingContext">WebGLRenderingContext</dfn> implements WebGLRenderingContextBase
+{
+};
+
+[NoInterfaceObject]
+interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn> implements WebGLRenderingContextBase
+{
+    /* WebGL 2.0 features will go here. */
+};
+
+interface <dfn id="WebGL2RenderingContext">WebGL2RenderingContext</dfn> implements WebGL2RenderingContextBase
+{
+};
+
+</pre>
 
 <!-- ======================================================================================================= -->
 
