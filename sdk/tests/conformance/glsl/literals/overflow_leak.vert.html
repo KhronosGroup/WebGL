@@ -71,6 +71,8 @@ var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
 wtu.setupUnitQuad(gl);
 var program = wtu.setupProgram(gl, ["vshader", "fshader"]);
+if (!program)
+    testFailed("Fail to setup program");
 wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 
