@@ -40,28 +40,8 @@
 <div id="description"></div>
 <div id="console"></div>
 <script id="vertexShader" type="text/something-not-javascript">
-
-// parsing floating point literals should succeed
-void main() {
-  float zero = 0.0;
-  float fractionalConstant = 1.0;
-  float fractionalConstantExponent = 1.0e1;
-  float fractionalConstantPosExponent = 1.0e+1;
-  float fractionalConstantNegExponent = 1.0e-1;
-  float digitSequenceExponent = 1e1;
-  float digitSequencePosExponent = 1e+1;
-  float digitSequenceNegExponent = 1e-1;
-  float pointDigit = .1;
-  float digitPoint= 1.;
-  float upperCaseExponent = 1.0E1;
-  highp float posInRange = 4611686018427387903.;  // 2^62 - 1
-  highp float posOutRange = 4611686018427387905.;  // 2^62 + 1
-  highp float posHuge = 1E100;
-  highp float negInRange = -4611686018427387903.;
-  highp float negOutRange = -4611686018427387905.;
-  highp float negHuge = -1E100;
-  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
-}
+// vertex shader with an empty main() should succeed
+void main() { }
 </script>
 <script>
 "use strict";
