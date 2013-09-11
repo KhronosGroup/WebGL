@@ -389,7 +389,7 @@ function run_tests_internal(app, config, callback, browser_id, browser, platform
 
   var browser_path = platform.command ? platform.command : platform.path;
 
-  var browser_proc = child_process.spawn(browser_path, all_args);
+  var browser_proc = child_process.spawn(browser_path, all_args, { stdio: 'ignore' });
   app.browser_proc = browser_proc;
   app.browser_name = browser.name.replace(' ', '-');
   app.finished_tests = false;
