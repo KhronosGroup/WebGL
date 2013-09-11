@@ -20,7 +20,7 @@
 
             "args": [
                 "--no-first-run",
-                "--disable-gpu-driver-workarounds",
+                "--disable-gpu-driver-bug-workarounds",
                 "--ignore-gpu-blacklist"
             ]
         },
@@ -37,7 +37,7 @@
 
             "args": [
                 "--no-first-run",
-                "--disable-gpu-driver-workarounds",
+                "--disable-gpu-driver-bug-workarounds",
                 "--ignore-gpu-blacklist",
                 "--use-gl=desktop"
             ]
@@ -58,7 +58,7 @@
 
             "args": [
                 "--no-first-run",
-                "--disable-gpu-driver-workarounds",
+                "--disable-gpu-driver-bug-workarounds",
                 "--ignore-gpu-blacklist"
             ]
         },
@@ -75,7 +75,7 @@
 
             "args": [
                 "--no-first-run",
-                "--disable-gpu-driver-workarounds",
+                "--disable-gpu-driver-bug-workarounds",
                 "--ignore-gpu-blacklist",
                 "--use-gl=desktop"
             ]
@@ -96,7 +96,7 @@
 
             "args": [
                 "--no-first-run",
-                "--disable-gpu-driver-workarounds",
+                "--disable-gpu-driver-bug-workarounds",
                 "--ignore-gpu-blacklist"
             ]
         },
@@ -113,7 +113,7 @@
 
             "args": [
                 "--no-first-run",
-                "--disable-gpu-driver-workarounds",
+                "--disable-gpu-driver-bug-workarounds",
                 "--ignore-gpu-blacklist",
                 "--use-gl=desktop"
             ]
