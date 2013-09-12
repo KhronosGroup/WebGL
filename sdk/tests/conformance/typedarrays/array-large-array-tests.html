@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../js/resources/js-test-pre.js"></script>
-<script src="resources/webgl-test.js"></script>
+<script src="../../resources/js-test-pre.js"></script>
+<script src="../resources/webgl-test.js"></script>
 <script src="resources/typed-array-test-cases.js"></script>
 </head>
 <body>
@@ -12,6 +12,8 @@
 <div id="console"></div>
 
 <script>
+"use strict";
+
 description("Verifies allocation of large array buffers");
 
 var currentlyRunning = '';
@@ -94,7 +96,7 @@ runTests();
 var successfullyParsed = true;
 
 </script>
-<script src="../../js/resources/js-test-post.js"></script>
+<script src="../../resources/js-test-post.js"></script>
 
 </body>
 </html>
