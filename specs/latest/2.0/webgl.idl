@@ -732,7 +732,7 @@ interface WebGLRenderingContext implements WebGLRenderingContextBase
 [NoInterfaceObject]
 interface WebGL2RenderingContextBase implements WebGLRenderingContextBase
 {
-    /* WebGL 2.0 features will go here. */
+    void copyBufferSubData(GLenum readtarget, GLenum writetarget, GLintptr readoffset, GLintptr writeoffset, GLsizeiptr size);
 };
 
 interface WebGL2RenderingContext implements WebGL2RenderingContextBase
