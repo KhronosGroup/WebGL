@@ -35,9 +35,10 @@ Currently supported browser configurations:
     Firefox
     Safari
 
-NOTE: The Safari configuration is able to execute the tests, but has several
-known issues, such as not shutting down the browser instance when test execution
-is complete.
+NOTE: The Safari configuration is able to execute the tests, but has
+several known issues, including potentially interfering with an
+already-running instance of the browser. Make sure you quit Safari before
+running this test harness against Safari.
 
 The configurations above use the browser's default mechanism for rendering
 WebGL. Both Firefox and Chrome by default use the ANGLE library on Windows, and
