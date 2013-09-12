@@ -6,21 +6,8 @@
 // This IDL depends on the typed array specification defined at:
 // https://www.khronos.org/registry/typedarray/specs/latest/typedarrays.idl
 
-typedef unsigned long  GLenum;
-typedef boolean        GLboolean;
-typedef unsigned long  GLbitfield;
-typedef byte           GLbyte;         /* 'byte' should be a signed 8 bit type. */
-typedef short          GLshort;
-typedef long           GLint;
-typedef long           GLsizei;
-typedef long long      GLintptr;
-typedef long long      GLsizeiptr;
-// Ideally the typedef below would use 'unsigned byte', but that doesn't currently exist in Web IDL.
-typedef octet          GLubyte;        /* 'octet' should be an unsigned 8 bit type. */
-typedef unsigned short GLushort;
-typedef unsigned long  GLuint;
-typedef unrestricted float GLfloat;
-typedef unrestricted float GLclampf;
+typedef long long GLint64;
+typedef unsigned long long GLuint64;
 
 
 dictionary WebGLContextAttributes {
@@ -30,42 +17,7 @@ dictionary WebGLContextAttributes {
     GLboolean antialias = true;
     GLboolean premultipliedAlpha = true;
     GLboolean preserveDrawingBuffer = false;
-};
-
-interface WebGLObject {
-};
-
-interface WebGLBuffer : WebGLObject {
-};
-
-interface WebGLFramebuffer : WebGLObject {
-};
-
-interface WebGLProgram : WebGLObject {
-};
-
-interface WebGLRenderbuffer : WebGLObject {
-};
-
-interface WebGLShader : WebGLObject {
-};
-
-interface WebGLTexture : WebGLObject {
-};
-
-interface WebGLUniformLocation {
-};
-
-interface WebGLActiveInfo {
-    readonly attribute GLint size;
-    readonly attribute GLenum type;
-    readonly attribute DOMString name;
-};
-
-interface WebGLShaderPrecisionFormat {
-    readonly attribute GLint rangeMin;
-    readonly attribute GLint rangeMax;
-    readonly attribute GLint precision;
+    GLint version = 1; /* New in WebGL 2.0 */
 };
 
 [NoInterfaceObject]
@@ -740,13 +692,3 @@ interface WebGL2RenderingContext implements WebGL2RenderingContextBase
 };
 
 
-
-[Constructor(DOMString type, optional WebGLContextEventInit eventInit)]
-interface WebGLContextEvent : Event {
-    readonly attribute DOMString statusMessage;
-};
-
-// EventInit is defined in the DOM4 specification.
-dictionary WebGLContextEventInit : EventInit {
-    DOMString statusMessage;
-};
