@@ -20,6 +20,15 @@ dictionary WebGLContextAttributes {
     GLint version = 1; /* New in WebGL 2.0 */
 };
 
+interface WebGLQuery : WebGLObject {
+};
+
+interface WebGLSampler : WebGLObject {
+};
+
+interface WebGLVertexArrayObject : WebGLObject {
+};
+
 [NoInterfaceObject]
 interface WebGLRenderingContextBase
 {
@@ -599,7 +608,7 @@ interface WebGLRenderingContextBase
     const GLenum UNSIGNED_INT_24_8                             = 0x84FA;
     const GLenum DEPTH24_STENCIL8                              = 0x88F0;
     const GLenum UNSIGNED_NORMALIZED                           = 0x8C17;
-    const GLenum DRAW_FRAMEBUFFER_BINDING                      = FRAMEBUFFER_BINDING;
+    const GLenum DRAW_FRAMEBUFFER_BINDING                      = 0x8CA6; /* Same as FRAMEBUFFER_BINDING */
     const GLenum READ_FRAMEBUFFER                              = 0x8CA8;
     const GLenum DRAW_FRAMEBUFFER                              = 0x8CA9;
     const GLenum READ_FRAMEBUFFER_BINDING                      = 0x8CAA;
@@ -659,8 +668,8 @@ interface WebGLRenderingContextBase
     const GLenum PRIMITIVE_RESTART_FIXED_INDEX                 = 0x8D69;
     const GLenum COPY_READ_BUFFER                              = 0x8F36;
     const GLenum COPY_WRITE_BUFFER                             = 0x8F37;
-    const GLenum COPY_READ_BUFFER_BINDING                      = COPY_READ_BUFFER;
-    const GLenum COPY_WRITE_BUFFER_BINDING                     = COPY_WRITE_BUFFER;
+    const GLenum COPY_READ_BUFFER_BINDING                      = 0x8F36; /* Same as COPY_READ_BUFFER */
+    const GLenum COPY_WRITE_BUFFER_BINDING                     = 0x8F37; /* Same as COPY_WRITE_BUFFER */
     const GLenum UNIFORM_BUFFER                                = 0x8A11;
     const GLenum UNIFORM_BUFFER_BINDING                        = 0x8A28;
     const GLenum UNIFORM_BUFFER_START                          = 0x8A29;
