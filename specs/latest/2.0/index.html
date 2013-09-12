@@ -1755,7 +1755,7 @@ interface <dfn id="WebGLRenderingContext">WebGLRenderingContext</dfn> implements
 [NoInterfaceObject]
 interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn> implements WebGLRenderingContextBase
 {
-    /* WebGL 2.0 features will go here. */
+    void copyBufferSubData(GLenum readtarget, GLenum writetarget, GLintptr readoffset, GLintptr writeoffset, GLsizeiptr size);
 };
 
 interface <dfn id="WebGL2RenderingContext">WebGL2RenderingContext</dfn> implements WebGL2RenderingContextBase
@@ -2137,6 +2137,29 @@ interface <dfn id="WebGL2RenderingContext">WebGL2RenderingContext</dfn> implemen
 
             Returns false if the buffer's <a href="#webgl-object-invalidated-flag">invalidated
             flag</a> is set.
+        <dt class="new-in-3"><p class="idl-code">void copyBufferSubData(GLenum readtarget, GLenum writetarget, GLintptr readoffset, GLintptr writeoffset, GLsizeiptr size);
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-2.9.5">OpenGL ES 3.0 &sect;2.9.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glCopyBufferSubData.xml">man page</a>)</span></p>
+        <dd>
+            Copies part of the data store attached to readtarget to the data store attached to
+            writetarget.
+            <br><br>
+            If any of <code>readoffset</code>, <code>writeoffset</code> or <code>size</code> is
+            negative, if <code>readoffset</code> + <code>size</code> exceeds the size of the buffer
+            object bound to readtarget or if <code>writeoffset</code> + <code>size</code> exceeds
+            the size of the WebGLBuffer object bound to <code>writetarget</code>, then
+            <code>INVALID_VALUE</code> is generated.
+            <br><br>
+            If the same buffer object is bound to both <code>readtarget</code> and
+            <code>writetarget</code> and the ranges [<code>readoffset</code>,
+            <code>readoffset</code> + <code>size</code>) and [<code>writeoffset</code>,
+            <code>writeoffset</code> + <code>size</code>) overlap, then <code>INVALID_VALUE</code>
+            is generated.
+            <br><br>
+            If either of <code>readtarget</code> or <code>writetarget</code> are null,
+            then <code>INVALID_OPERATION</code> is generated.
+            <br><br>
+            If the WebGLBuffer object bound to either readtarget or writetarget is mapped
+            then <code>INVALID_OPERATION</code> is generated.
     </dl>
 
 <!-- ======================================================================================================= -->

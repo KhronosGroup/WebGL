@@ -756,3 +756,7 @@ ul.toc, ol.toc {
 ol.nestedlist {counter-reset: list-item }
 ol.nestedlist li { display: block }
 ol.nestedlist li:before {content: counters(list-item, ".") "."; counter-increment: list-item }
+
+.new-in-3 {
+  background-color: #fee;
+}
