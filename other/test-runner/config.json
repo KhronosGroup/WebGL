@@ -173,7 +173,9 @@
             "platforms": {
                 "darwin": {
                     "path": "/Applications/Safari.app/Contents/MacOS/Safari",
-                    "command": "open"
+                    "command": "open",
+                    "comment": "FIXME: find a way to send this command to precisely the right process",
+                    "quit_command": "osascript -e 'quit application \"Safari\"'"
                 }
             },
 
