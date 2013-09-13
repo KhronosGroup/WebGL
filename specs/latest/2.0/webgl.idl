@@ -999,8 +999,8 @@ interface WebGL2RenderingContextBase implements WebGLRenderingContextBase
   void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
   void framebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
   any getInternalformatParameter(GLenum target, GLenum internalformat, GLenum pname);
-  void invalidateFramebuffer(GLenum target, sequence attachments);
-  void invalidateSubFramebuffer (GLenum target, sequence attachments, GLint x, GLint y, GLsizei width, GLsizei height);
+  void invalidateFramebuffer(GLenum target, sequence<GLenum> attachments);
+  void invalidateSubFramebuffer (GLenum target, sequence<GLenum> attachments, GLint x, GLint y, GLsizei width, GLsizei height);
   void readBuffer(GLenum mode);
   void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
 
@@ -1031,29 +1031,29 @@ interface WebGL2RenderingContextBase implements WebGLRenderingContextBase
   void uniform2ui(WebGLUniformLocation? location, GLuint v0, GLuint v1);
   void uniform3ui(WebGLUniformLocation? location, GLuint v0, GLuint v1, GLuint v2);
   void uniform4ui(WebGLUniformLocation? location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
-  void uniform1uiv(WebGLUniformLocation? location, sequence value);
-  void uniform2uiv(WebGLUniformLocation? location, sequence value);
-  void uniform3uiv(WebGLUniformLocation? location, sequence value);
-  void uniform4uiv(WebGLUniformLocation? location, sequence value);
+  void uniform1uiv(WebGLUniformLocation? location, sequence<GLuint> value);
+  void uniform2uiv(WebGLUniformLocation? location, sequence<GLuint> value);
+  void uniform3uiv(WebGLUniformLocation? location, sequence<GLuint> value);
+  void uniform4uiv(WebGLUniformLocation? location, sequence<GLuint> value);
   void uniformMatrix2x3fv(WebGLUniformLocation? location, GLboolean transpose, Float32Array value);
-  void uniformMatrix2x3fv(WebGLUniformLocation? location, GLboolean transpose, sequence value);
+  void uniformMatrix2x3fv(WebGLUniformLocation? location, GLboolean transpose, sequence<GLfloat> value);
   void uniformMatrix3x2fv(WebGLUniformLocation? location, GLboolean transpose, Float32Array value);
-  void uniformMatrix3x2fv(WebGLUniformLocation? location, GLboolean transpose, sequence value);
+  void uniformMatrix3x2fv(WebGLUniformLocation? location, GLboolean transpose, sequence<GLfloat> value);
   void uniformMatrix2x4fv(WebGLUniformLocation? location, GLboolean transpose, Float32Array value);
-  void uniformMatrix2x4fv(WebGLUniformLocation? location, GLboolean transpose, sequence value);
+  void uniformMatrix2x4fv(WebGLUniformLocation? location, GLboolean transpose, sequence<GLfloat> value);
   void uniformMatrix4x2fv(WebGLUniformLocation? location, GLboolean transpose, Float32Array value);
-  void uniformMatrix4x2fv(WebGLUniformLocation? location, GLboolean transpose, sequence value);
+  void uniformMatrix4x2fv(WebGLUniformLocation? location, GLboolean transpose, sequence<GLfloat> value);
   void uniformMatrix3x4fv(WebGLUniformLocation? location, GLboolean transpose, Float32Array value);
-  void uniformMatrix3x4fv(WebGLUniformLocation? location, GLboolean transpose, sequence value);
+  void uniformMatrix3x4fv(WebGLUniformLocation? location, GLboolean transpose, sequence<GLfloat> value);
   void uniformMatrix4x3fv(WebGLUniformLocation? location, GLboolean transpose, Float32Array value);
-  void uniformMatrix4x3fv(WebGLUniformLocation? location, GLboolean transpose, sequence value);
+  void uniformMatrix4x3fv(WebGLUniformLocation? location, GLboolean transpose, sequence<GLfloat> value);
   /* TODO: this will be exposed as a couple of additional entries in
      the return type table for getUniform */
   // void glGetUniformuiv (GLuint program, GLint location, GLuint* params);
   void vertexAttribI4i(GLuint index, GLint x, GLint y, GLint z, GLint w);
-  void vertexAttribI4iv(GLuint index, sequence v);
+  void vertexAttribI4iv(GLuint index, sequence<GLint> v);
   void vertexAttribI4ui(GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
-  void vertexAttribI4uiv(GLuint index, sequence v);
+  void vertexAttribI4uiv(GLuint index, sequence<GLuint> v);
 
   /* Writing to the drawing buffer */
   void vertexAttribDivisor(GLuint index, GLuint divisor);
@@ -1064,18 +1064,18 @@ interface WebGL2RenderingContextBase implements WebGLRenderingContextBase
   void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLintptr offset);
 
   /* Multiple Render Targets */
-  void drawBuffers(sequence buffers);
+  void drawBuffers(sequence<GLenum> buffers);
   /* TODO: consider collapsing these four entry points into
      one. However, that may not be possible due to Web IDL's
      overloading rules. */
   void clearBufferiv(GLenum buffer, GLint drawbuffer, Int32Array value);
-  void clearBufferiv(GLenum buffer, GLint drawbuffer, sequence value);
+  void clearBufferiv(GLenum buffer, GLint drawbuffer, sequence<GLint> value);
   void clearBufferuiv(GLenum buffer, GLint drawbuffer, Uint32Array value);
-  void clearBufferuiv(GLenum buffer, GLint drawbuffer, sequence value);
+  void clearBufferuiv(GLenum buffer, GLint drawbuffer, sequence<GLuint> value);
   void clearBufferfv(GLenum buffer, GLint drawbuffer, Float32Array value);
-  void clearBufferfv(GLenum buffer, GLint drawbuffer, sequence value);
+  void clearBufferfv(GLenum buffer, GLint drawbuffer, sequence<GLfloat> value);
   void clearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil);
-  
+
   /* Query Objects */
   /* TODO: discuss further the exact form of this API */
   WebGLQuery? createQuery();
@@ -1084,7 +1084,7 @@ interface WebGL2RenderingContextBase implements WebGLRenderingContextBase
   void beginQuery(GLenum target, WebGLQuery? query);
   void endQuery(GLenum target);
   /* TODO: document return type */
-  any getQuery(GLenum target, GLenum pname);    
+  any getQuery(GLenum target, GLenum pname);
   /* TODO: document return type */
   any getQueryParameter(WebGLQuery? query, GLenum pname);
 
@@ -1095,10 +1095,10 @@ interface WebGL2RenderingContextBase implements WebGLRenderingContextBase
   void bindSampler(GLuint unit, WebGLSampler? sampler);
   void samplerParameteri(WebGLSampler? sampler, GLenum pname, GLint param);
   void samplerParameteriv(WebGLSampler? sampler, GLenum pname, Int32Array param);
-  void samplerParameteriv(WebGLSampler? sampler, GLenum pname, sequence param);
+  void samplerParameteriv(WebGLSampler? sampler, GLenum pname, sequence<GLint> param);
   void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param);
   void samplerParameterfv(WebGLSampler? sampler, GLenum pname, Float32Array param);
-  void samplerParameterfv(WebGLSampler? sampler, GLenum pname, sequence param);
+  void samplerParameterfv(WebGLSampler? sampler, GLenum pname, sequence<GLfloat> param);
 };
 
 interface WebGL2RenderingContext implements WebGL2RenderingContextBase
