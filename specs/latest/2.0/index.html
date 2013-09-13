@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 12 September 2013</h2>
+    <h2 class="no-toc">Editor's Draft 13 September 2013</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -296,6 +296,24 @@ var context = canvas.getContext('webgl',
     <p>
     </p>
     <pre class="idl">interface <dfn id="WebGLSampler">WebGLSampler</dfn> : WebGLObject {
+};</pre>
+
+<!-- ======================================================================================================= -->
+
+    <h3>WebGLSync</h3>
+
+    <p>
+    </p>
+    <pre class="idl">interface <dfn id="WebGLSync">WebGLSync</dfn> : WebGLObject {
+};</pre>
+
+<!-- ======================================================================================================= -->
+
+    <h3>WebGLTransformFeedback</h3>
+
+    <p>
+    </p>
+    <pre class="idl">interface <dfn id="WebGLTransformFeedback">WebGLTransformFeedback</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1387,6 +1405,59 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn> 
   void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param);
   void samplerParameterfv(WebGLSampler? sampler, GLenum pname, Float32Array param);
   void samplerParameterfv(WebGLSampler? sampler, GLenum pname, sequence&lt;GLfloat&gt; param);
+
+  /* TODO: document return type */
+  any getSamplerParameter(WebGLSampler? sampler, GLenum pname);
+
+  /* Sync objects */
+  WebGLSync? fenceSync(GLenum condition, GLbitfield flags);
+  GLboolean isSync(WebGLSync? sync);
+  void deleteSync(WebGLSync? sync);
+  GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout);
+  void waitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout);
+  /* TODO: document return type */
+  any getSyncParameter(WebGLSync? sync, GLenum pname);
+
+  /* Transform Feedback */
+  WebGLTransformFeedback? createTransformFeedback();
+  void deleteTransformFeedback(WebGLTransformFeedback?);
+  [WebGLHandlesContextLoss] GLboolean isTransformFeedback(WebGLTransformFeedback?);
+  void bindTransformFeedback (GLenum target, GLuint id);
+  void beginTransformFeedback(GLenum primitiveMode);
+  void endTransformFeedback();
+  void transformFeedbackVaryings(WebGLProgram? program, GLsizei count, sequence&lt;DOMString&gt; varyings, GLenum bufferMode);
+  WebGLActiveInfo? getTransformFeedbackVarying(WebGLProgram? program, GLuint index);
+  void pauseTransformFeedback();
+  void resumeTransformFeedback();
+
+  /* Uniform Buffer Objects and Transform Feedback Buffers */
+  void bindBufferBase(GLenum target, GLuint index, WebGLBuffer? buffer);
+  void bindBufferRange(GLenum target, GLuint index, WebGLBuffer? buffer, GLintptr offset, GLsizeiptr size);
+  /* TODO: figure out whether to overload getParameter, add getIndexedParameter, or some other solution */
+  // void getIntegeri_v (GLenum target, GLuint index, GLint* data);
+  sequence&lt;GLuint&gt;? getUniformIndices(WebGLProgram? program, sequence&lt;DOMString&gt; uniformNames);
+  sequence&lt;GLint&gt;? getActiveUniforms(WebGLProgram? program, sequence&lt;GLuint&gt; uniformIndices, GLenum pname);
+  GLuint getUniformBlockIndex(WebGLProgram? program, DOMString uniformBlockName);
+  /* TODO: document return type; make sure unnecessary enums are deleted */
+  any getActiveUniformBlockParameter(WebGLProgram? program, GLuint uniformBlockIndex, GLenum pname);
+  /* TODO: if there were a fake enum for GL_UNIFORM_BLOCK_NAME, then this could be folded into getActiveUniformBlockParameter */
+  DOMString? getActiveUniformBlockName(WebGLProgram? program, GLuint uniformBlockIndex);
+  void uniformBlockBinding(WebGLProgram? program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
+
+  /* Vertex Array Objects */
+  WebGLVertexArrayObject? createVertexArray();
+  void deleteVertexArray(WebGLVertexArrayObject? vertexArray);
+  [WebGLHandlesContextLoss] GLboolean isVertexArray(WebGLVertexArrayObject? vertexArray);
+  void bindVertexArray(WebGLVertexArrayObject? array);
+
+  /* TODO:
+   *  - Consider adding getBufferSubData replacing MapBufferRange, etc.
+   *  - Figure out what to do about glMapBufferRange, glFlushMappedBufferRange, glUnmapBuffer
+   *    - If exposing these, think about glGetBufferPointerv
+   *  - Is it necessary to expose glGetInteger64v, glGetInteger64i_v, and glGetBufferParameteri64v?
+   *    - Or are they subsumed into other queries' signatures?
+   *  - Deliberately not exposing glGetProgramBinary, glProgramBinary, glProgramParameteri
+   */
 };
 
 interface <dfn id="WebGL2RenderingContext">WebGL2RenderingContext</dfn> implements WebGL2RenderingContextBase
