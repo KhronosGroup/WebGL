@@ -219,6 +219,16 @@ pre.note {
 div.note { color: #060 }
 pre.note { color: #060 }
 
+div.note.editor:before {
+    content: "Editor's note";
+    background: #600;
+}
+div.note.editor {
+    background: #FFDDF8;
+    color: black;
+}
+
+
 /* Class strawman is a strawman proposal. May be inline or a P or DIV */
 
 div.strawman:before {
