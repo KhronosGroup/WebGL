@@ -1484,13 +1484,88 @@ interface <dfn id="WebGL2RenderingContext">WebGL2RenderingContext</dfn> implemen
     <h4>Buffer objects</h4>
 
     <dl class="methods">
-        <dt><p class="idl-code">void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-2.9.5">OpenGL ES 3.0 &sect;2.9.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glCopyBufferSubData.xml">man page</a>)</span></p>
+      <!--
+      <dt>
+        <p class="idl-code">
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-2.9.5">OpenGL ES 3.0 &sect;2.9.5</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glCopyBufferSubData.xml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      -->
+      <dt>
+        <p class="idl-code">void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-2.9.5">OpenGL ES 3.0.2 &sect;2.9.5</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glCopyBufferSubData.xml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
     </dl>
 
 <!-- ======================================================================================================= -->
 
     <h4>Framebuffer objects</h4>
+
+    <dl class="methods">
+      <dt>
+        <p class="idl-code">void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-4.3.2">OpenGL ES 3.0.2 &sect;4.3.2</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glBlitFramebuffer.xml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void framebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-4.4">OpenGL ES 3.0.2 &sect;4.4</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glFramebufferTextureLayer.xml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">any getInternalformatParameter(GLenum target, GLenum internalformat, GLenum pname);
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.15">OpenGL ES 3.0.2 &sect;6.1.15</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetInternalformativ.xml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void invalidateFramebuffer(GLenum target, sequence&lt;GLenum&gt; attachments);
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-4.5">OpenGL ES 3.0.2 &sect;4.5</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glInvalidateFramebuffer.xml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void invalidateSubFramebuffer (GLenum target, sequence&lt;GLenum&gt; attachments, GLint x, GLint y, GLsizei width, GLsizei height);
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-4.5">OpenGL ES 3.0.2 &sect;4.5</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glInvalidateSubFramebuffer.xml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void readBuffer(GLenum mode);
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-4.3.1">OpenGL ES 3.0.2 &sect;4.3.1</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glReadBuffer.xml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-4.4.2">OpenGL ES 3.0.2 &sect;4.4.2</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glRenderBufferStorageMultisample.xml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+    </dl>
 
 <!-- ======================================================================================================= -->
 
