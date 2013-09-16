@@ -24,7 +24,7 @@
 (function() {
   var testHarnessInitialized = false;
 
-  var initNonKhronosFramework = function(waitUntilDone) {
+  var initNonKhronosFramework = function() {
     if (testHarnessInitialized) {
       return;
     }
@@ -59,12 +59,8 @@
     /* -- end platform specific code --*/
   }
 
-  this.initTestingHarnessWaitUntilDone = function() {
-    initNonKhronosFramework(true);
-  }
-
   this.initTestingHarness = function() {
-    initNonKhronosFramework(false);
+    initNonKhronosFramework();
   }
 }());
 
