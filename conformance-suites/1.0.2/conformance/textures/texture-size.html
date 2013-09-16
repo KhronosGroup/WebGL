@@ -120,7 +120,7 @@ function runTest() {
 
   if (doTest()) {
     ++power;
-    setTimeout(runTest, 100);
+    setTimeout(runTest, 0);
   } else {
     finishTest();
   }

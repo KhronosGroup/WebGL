@@ -38,6 +38,10 @@ void main()
 }
 </script>
 <script>
+if (window.initNonKhronosFramework) {
+    window.initNonKhronosFramework(true);
+}
+
 description("Checks that various sizes of textures render")
 var canvas;
 

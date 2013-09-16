@@ -39,6 +39,10 @@ void main()
 }
 </script>
 <script>
+if (window.initNonKhronosFramework) {
+    window.initNonKhronosFramework(true);
+}
+
 var canvas;
 description("Checks issues with size of cube map textures");
 debug("");
