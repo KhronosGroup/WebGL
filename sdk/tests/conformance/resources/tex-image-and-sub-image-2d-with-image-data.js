@@ -30,8 +30,6 @@ function generateTest(pixelFormat, pixelType, prologue) {
 
     var init = function()
     {
-        initTestingHarnessWaitUntilDone();
-
         description('Verify texImage2D and texSubImage2D code paths taking ImageData (' + pixelFormat + '/' + pixelType + ')');
 
         gl = wtu.create3DContext("example");
