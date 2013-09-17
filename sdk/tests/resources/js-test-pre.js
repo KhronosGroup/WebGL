@@ -81,6 +81,9 @@ function notifyFinishedToHarness() {
   if (window.parent.webglTestHarness) {
     window.parent.webglTestHarness.notifyFinished(window.location.pathname);
   }
+  if (window.nonKhronosFrameworkNotifyDone) {
+    window.nonKhronosFrameworkNotifyDone();
+  }
 }
 
 function description(msg)
@@ -461,12 +464,6 @@ function gc() {
 function finishTest() {
   successfullyParsed = true;
   var epilogue = document.createElement("script");
-  epilogue.onload = function() {
-    if (window.nonKhronosFrameworkNotifyDone) {
-      window.nonKhronosFrameworkNotifyDone();
-    }
-  };
-
   var basePath = "";
   var expectedBase = "js-test-pre.js";
   var scripts = document.getElementsByTagName('script');
