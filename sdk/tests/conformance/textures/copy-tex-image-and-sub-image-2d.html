@@ -52,7 +52,7 @@ function runTestIteration(antialias)
 {
     var canvas = document.getElementById(
         antialias ? "antialiasOn" : "antialiasOff");
-    var attribs = antialias ? { antialias: false } : undefined;
+    var attribs = antialias ? { antialias: true } : { antialias: false };
     gl = wtu.create3DContext(canvas, attribs);
     var program = wtu.setupTexturedQuad(gl);
     var textureLoc = gl.getUniformLocation(program, "tex");
@@ -96,12 +96,12 @@ function runTestIteration(antialias)
           case 0:
             gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, xx, yy, 2, 2, 0);
             glErrorShouldBe(gl, gl.NO_ERROR,
-                "using copyTexImage2D: x =" + xx + ", y = " + yy);
+                "using copyTexImage2D: x = " + xx + ", y = " + yy);
             break;
           case 1:
             gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, xx, yy, 2, 2);
             glErrorShouldBe(gl, gl.NO_ERROR,
-                "using copyTexSubImage2D: x =" + xx + ", y = " + yy);
+                "using copyTexSubImage2D: x = " + xx + ", y = " + yy);
             break;
           }
 

@@ -54,7 +54,7 @@ function runTestIteration(antialias)
 {
     var canvas = document.getElementById(
         antialias ? "antialiasOn" : "antialiasOff");
-    var attribs = antialias ? { antialias: false } : undefined;
+    var attribs = antialias ? { antialias: true } : { antialias: false };
     gl = wtu.create3DContext(canvas, attribs);
     var program = wtu.setupTexturedQuad(gl);
     var textureLoc = gl.getUniformLocation(program, "tex");
