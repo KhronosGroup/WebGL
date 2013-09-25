@@ -55,7 +55,7 @@
         "use strict";
         var wtu = WebGLTestUtils;
 
-        var gl = wtu.create3DContext("c", {"antialiased": false});
+        var gl = wtu.create3DContext("c", { antialias: false });
         var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 
         var vertexObject = gl.createBuffer();
