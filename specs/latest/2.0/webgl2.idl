@@ -1072,9 +1072,6 @@ interface WebGL2RenderingContextBase implements WebGLRenderingContextBase
 
   /* Multiple Render Targets */
   void drawBuffers(sequence<GLenum> buffers);
-  /* TODO: consider collapsing these four entry points into
-     one. However, that may not be possible due to Web IDL's
-     overloading rules. */
   void clearBufferiv(GLenum buffer, GLint drawbuffer, Int32Array value);
   void clearBufferiv(GLenum buffer, GLint drawbuffer, sequence<GLint> value);
   void clearBufferuiv(GLenum buffer, GLint drawbuffer, Uint32Array value);
