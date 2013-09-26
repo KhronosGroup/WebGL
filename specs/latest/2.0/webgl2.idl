@@ -470,7 +470,7 @@ interface WebGL2RenderingContextBase implements WebGLRenderingContextBase
   /* Uniform Buffer Objects and Transform Feedback Buffers */
   void bindBufferBase(GLenum target, GLuint index, WebGLBuffer? buffer);
   void bindBufferRange(GLenum target, GLuint index, WebGLBuffer? buffer, GLintptr offset, GLsizeiptr size);
-  void getIndexedParameter(GLenum target, GLuint index, GLint* data);
+  any getIndexedParameter(GLenum target, GLuint index);
   sequence<GLuint>? getUniformIndices(WebGLProgram? program, sequence<DOMString> uniformNames);
   sequence<GLint>? getActiveUniforms(WebGLProgram? program, sequence<GLuint> uniformIndices, GLenum pname);
   GLuint getUniformBlockIndex(WebGLProgram? program, DOMString uniformBlockName);
