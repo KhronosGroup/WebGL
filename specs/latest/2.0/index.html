@@ -1431,8 +1431,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn> 
   /* Uniform Buffer Objects and Transform Feedback Buffers */
   void bindBufferBase(GLenum target, GLuint index, WebGLBuffer? buffer);
   void bindBufferRange(GLenum target, GLuint index, WebGLBuffer? buffer, GLintptr offset, GLsizeiptr size);
-  /* TODO: figure out whether to overload getParameter, add getIndexedParameter, or some other solution */
-  // void getIntegeri_v (GLenum target, GLuint index, GLint* data);
+  void getIndexedParameter(GLenum target, GLuint index, GLint* data);
   sequence&lt;GLuint&gt;? getUniformIndices(WebGLProgram? program, sequence&lt;DOMString&gt; uniformNames);
   sequence&lt;GLint&gt;? getActiveUniforms(WebGLProgram? program, sequence&lt;GLuint&gt; uniformIndices, GLenum pname);
   GLuint getUniformBlockIndex(WebGLProgram? program, DOMString uniformBlockName);
