@@ -1083,7 +1083,10 @@ for (var i = 0; i < numVertices; i++) {
     <p>
     See <a href="#CONTEXT_LOST">the context lost event</a> for further details.
     </p>
-    <pre class="idl">interface <dfn id="WebGLRenderingContext">WebGLRenderingContext</dfn> {
+    <pre class="idl">
+[NoInterfaceObject]
+interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
+{
 
     /* ClearBufferMask */
     const GLenum DEPTH_BUFFER_BIT               = 0x00000100;
@@ -1736,7 +1739,12 @@ for (var i = 0; i < numVertices; i++) {
                              GLboolean normalized, GLsizei stride, GLintptr offset);
 
     void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
-};</pre>
+};
+
+interface <dfn id="WebGLRenderingContext">WebGLRenderingContext</dfn> implements WebGLRenderingContextBase
+{
+};
+</pre>
 
 <!-- ======================================================================================================= -->
 
