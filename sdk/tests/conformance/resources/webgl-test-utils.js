@@ -2115,21 +2115,12 @@ var cancelFullScreen = function() {
   }
 };
 
-/**
- * @param {!HTMLElement} element The element to go fullscreen.
- * @param {!function(boolean)} callback A function that will be called
- *        when entering/exiting fullscreen. It is passed true if
- *        entering fullscreen, false if exiting.
- */
-/**
- * Provides a way to attach callback
- */
 var fullScreenStateName;
-var fullScreenStateNames = [
-  "isFullScreen",
-  "fullScreen",
-];
 (function() {
+  var fullScreenStateNames = [
+    "isFullScreen",
+    "fullScreen",
+  ];
   for (var ii = 0; ii < fullScreenStateNames.length; ++ii) {
     var propertyName = fullScreenStateNames[ii];
     for (var jj = 0; jj < propertyPrefixes.length; ++jj) {
@@ -2145,12 +2136,22 @@ var fullScreenStateNames = [
     fullScreenStateName = undefined;
   }
 }());
+
+/**
+ * @return {boolean} True if fullscreen mode is active.
+ */
 var getFullScreenState = function() {
   console.log("fullscreenstatename:" + fullScreenStateName);
   console.log(document[fullScreenStateName]);
   return document[fullScreenStateName];
 };
 
+/**
+ * @param {!HTMLElement} element The element to go fullscreen.
+ * @param {!function(boolean)} callback A function that will be called
+ *        when entering/exiting fullscreen. It is passed true if
+ *        entering fullscreen, false if exiting.
+ */
 var onFullScreenChange = function(element, callback) {
   propertyPrefixes.forEach(function(prefix) {
     var eventName = prefix + "fullscreenchange";
@@ -2162,27 +2163,21 @@ var onFullScreenChange = function(element, callback) {
   });
 };
 
+/**
+ * @param {!string} buttonId The id of the button that will toggle fullscreen
+ *        mode.
+ * @param {!string} fullscreenId The id of the element to go fullscreen.
+ * @param {!function(boolean)} callback A function that will be called
+ *        when entering/exiting fullscreen. It is passed true if
+ *        entering fullscreen, false if exiting.
+ * @return {boolean} True if fullscreen mode is supported.
+ */
 var setupFullscreen = function(buttonId, fullscreenId, callback) {
-  function findElement(id) {
-    var element = document.getElementById(id);
-    if (element) {
-      return element;
-    }
-
-    var elements = document.getElementsByTagName(id);
-    if (elements) {
-      return elements[0];
-    }
-  }
-
   if (!fullScreenStateName) {
     return false;
   }
 
-  var fullscreenElement = findElement(fullscreenId);
-
-  var buttonElement = findElement(buttonId);
-
+  var fullscreenElement = document.getElementById(fullscreenId);
   onFullScreenChange(fullscreenElement, callback);
 
   var toggleFullScreen = function(event) {
@@ -2195,6 +2190,7 @@ var setupFullscreen = function(buttonId, fullscreenId, callback) {
     return false;
   };
 
+  var buttonElement = document.getElementById(buttonId);
   buttonElement.addEventListener('click', toggleFullScreen);
 
   return true;
