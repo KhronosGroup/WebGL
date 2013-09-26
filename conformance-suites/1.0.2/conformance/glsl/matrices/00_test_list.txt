@@ -1,3 +1,2 @@
 glsl-mat4-to-mat3.html
-glsl-mat3-construction.html
 
