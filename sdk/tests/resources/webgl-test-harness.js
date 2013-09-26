@@ -120,6 +120,15 @@
 //
 //     example: new TestHarness(...., {minVersion: "2.3.1"});
 //
+// maxVersion:
+//
+//     Specifies the maximum version a test must require to be included.
+//     This basically flips the filter so that only tests marked with
+//     --max-version will be included if they are at this maxVersion or
+//     less.
+//
+//     example: new TestHarness(...., {maxVersion: "2.3.1"});
+//
 // fast:
 //
 //     Specifies to skip any tests marked as slow.
@@ -132,7 +141,7 @@
 //
 // min-version:
 //
-//     Sets the minimum version requires to include this test. A version is
+//     Sets the minimum version required to include this test. A version is
 //     passed into the harness options. Any test marked as requiring a
 //     min-version greater than the version passed to the harness is skipped.
 //     This allows you to add new tests to a suite of tests for a future
@@ -141,6 +150,18 @@
 //     including it. The default is 1.0.0
 //
 //     example:  --min-version 2.1.3 sometest.html
+//
+// max-version:
+//
+//     Sets the maximum version required to include this test. A version is
+//     passed into the harness options. Any test marked as requiring a
+//     max-version less than the version passed to the harness is skipped.
+//     This allows you to test functionality that has been removed from later
+//     versions of the suite.
+//     If no -max-version is specified it is inherited from the .txt file
+//     including it.
+//
+//     example:  --max-version 1.9.9 sometest.html
 //
 // slow:
 //
@@ -204,6 +225,13 @@ var loadTextFileAsynchronous = function(url, callback) {
   }
 };
 
+var getMajorVersion = function(versionString) {
+  if (!versionString) {
+    return 1;
+  }
+  return parseInt(versionString.split(" ")[0].split(".")[0], 10);
+}
+
 /**
  * Compare version strings.
  */
@@ -262,6 +290,7 @@ var getFileList = function(url, callback, options) {
 
   var globalOptions = copyObject(options);
   globalOptions.defaultVersion = "1.0";
+  globalOptions.defaultMaxVersion = null;
 
   var getFileListImpl = function(prefix, line, lineNum, hierarchicalOptions, callback) {
     var files = [];
@@ -284,6 +313,7 @@ var getFileList = function(url, callback, options) {
             break;
           // one argument options.
           case 'min-version':
+          case 'max-version':
             ++jj;
             testOptions[toCamelCase(option)] = args[jj];
             break;
@@ -301,6 +331,10 @@ var getFileList = function(url, callback, options) {
       if (!minVersion) {
         minVersion = hierarchicalOptions.defaultVersion;
       }
+      var maxVersion = testOptions.maxVersion;
+      if (!maxVersion) {
+        maxVersion = hierarchicalOptions.defaultMaxVersion;
+      }
       var slow = testOptions.slow;
       if (!slow) {
         slow = hierarchicalOptions.defaultSlow;
@@ -310,8 +344,13 @@ var getFileList = function(url, callback, options) {
         useTest = false;
       } else if (globalOptions.minVersion) {
         useTest = greaterThanOrEqualToVersion(minVersion, globalOptions.minVersion);
+      } else if (globalOptions.maxVersion && maxVersion) {
+        useTest = greaterThanOrEqualToVersion(globalOptions.maxVersion, maxVersion);
       } else {
         useTest = greaterThanOrEqualToVersion(globalOptions.version, minVersion);
+        if (maxVersion) {
+          useTest = useTest && greaterThanOrEqualToVersion(maxVersion, globalOptions.version);
+        }
       }
     }
 
@@ -324,6 +363,9 @@ var getFileList = function(url, callback, options) {
       // If a version was explicity specified pass it down.
       if (testOptions.minVersion) {
         hierarchicalOptions.defaultVersion = testOptions.minVersion;
+      }
+      if (testOptions.maxVersion) {
+        hierarchicalOptions.defaultMaxVersion = testOptions.maxVersion;
       }
       if (testOptions.slow) {
         hierarchicalOptions.defaultSlow = testOptions.slow;
@@ -425,6 +467,7 @@ var TestHarness = function(iframe, filelistUrl, reportFunc, options) {
   this.timeoutDelay = 20000;
   this.files = [];
   this.allowSkip = options.allowSkip;
+  this.webglVersion = getMajorVersion(options.version);
 
   var that = this;
   getFileList(filelistUrl, function() {
@@ -506,12 +549,12 @@ TestHarness.prototype.startNextTest = function() {
     while (this.testsToRun.length > 0 && this.idleIFrames.length > 0) {
       var testId = this.testsToRun.shift();
       var iframe = this.idleIFrames.shift();
-      this.startTest(iframe, this.files[testId]);
+      this.startTest(iframe, this.files[testId], this.webglVersion);
     }
   }
 };
 
-TestHarness.prototype.startTest = function(iframe, testFile) {
+TestHarness.prototype.startTest = function(iframe, testFile, webglVersion) {
   var test = {
     iframe: iframe,
     testFile: testFile
@@ -520,7 +563,7 @@ TestHarness.prototype.startTest = function(iframe, testFile) {
   this.runningTests[url] = test;
   log("loading: " + url);
   if (this.reportFunc(TestHarness.reportType.START_PAGE, url, url, undefined)) {
-    iframe.src = url;
+    iframe.src = url + "?webglVersion=" + webglVersion;
     this.setTimeout(test);
   } else {
     this.reportResults(url, !!this.allowSkip, "skipped", true);

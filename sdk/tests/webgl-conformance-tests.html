@@ -1,7 +1,7 @@
 <!--
 
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
+** Copyright (c) 2013 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
@@ -34,14 +34,23 @@
 <title>WebGL Conformance Tests</title>
 <style>
   body {
-      border: 0;
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      max-height:100%;
-      font-family: monospace;
-      overflow: hidden;
-    }
+    border: 0;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    max-height:100%;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 0.8em;
+  }
+
+  a {
+    color: #88F;
+    text-decoration: none;
+  }
+
+  a:hover {
+    border-bottom: 1px solid #66D;
+  }
 
   #testlist {
     position:fixed;
@@ -60,6 +69,7 @@
     width:100%;
     height:310px;
     overflow:auto;
+    border-bottom: 1px solid #CCC;
   }
 
   #info {
@@ -70,21 +80,65 @@
   table {
     width: 100%;
     height: 100%;
+    border: 0;
   }
+
+  #frames {
+    border-left: 1px solid #CCC;
+  }
+
   #frames td {
-      border: 1px solid black;
       min-height: 1px;
       min-width: 1px;
   }
-  #frames t
+
+  #frames iframe {
+    border: 0;
+  }
+  
+  #testList {
+    padding:1em;
+  }
+
+  .folder {
+    margin-bottom: 1.5em;
+  }
+
+  .folderHeader {
+    white-space: nowrap;
+  }
+
+  .folderName {
+    font-weight: bold;
+  }
+
+  .pageHeader {
+    white-space: nowrap;
+  }
+
+  .testpage { 
+    border-style: solid;
+    border-color: #CCC;
+    border-width: 0px 0 1px 0;
+    background-color: #FFF;
+    padding: 4px 0 4px 0;
+
+    -webkit-transition: background-color 0.25s;
+    -moz-transition: background-color 0.25s;
+    transition: background-color 0.25s;
+  }
+
+  .testpage:first-child { 
+    border-width: 1px 0 1px 0;
+  }
+
   .timeout { }
   .success { }
   .fail { }
-  .testpage { border: 1px solid black; background-color: #ccc; }
-  .testpagesuccess { border: 1px solid black; background-color: #8F8; }
-  .testpagefail { border: 1px solid black; background-color: #F88; }
-  .testpageskipped { border: 1px solid black; background-color: #888; }
-  .testpagetimeout { border: 1px solid black; background-color: #FC8; }
+  .testpagesuccess { background-color: #8F8; }
+  .testpagefail { background-color: #F88; }
+  .testpageskipped { background-color: #888; }
+  .testpagetimeout { background-color: #FC8; }
   .nowebgl { font-weight: bold; color: red; }
   #error-wrap {
       float: left;
@@ -106,7 +160,7 @@
 <script type="text/javascript" src="resources/webgl-test-harness.js"></script>
 <script>
 "use strict";
-var CONFORMANCE_TEST_VERSION = "1.0.3 (beta)";
+var CONFORMANCE_TEST_VERSION = "2.0.0 (beta)";
 
 var OPTIONS = {
   version: CONFORMANCE_TEST_VERSION,
@@ -122,16 +176,21 @@ function start() {
     }
   }
 
-  function create3DContext(canvas)
-  {
+  function create3DContext(canvas, attrs, version) {
     if (!canvas) {
       canvas = document.createElement("canvas");
     }
     var context = null;
-    var names = ["webgl", "experimental-webgl"];
+    var names;
+    switch (version) {
+      case 2:
+        names = ["webgl2", "experimental-webgl2"]; break;
+      default:
+        names = ["webgl", "experimental-webgl"]; break;
+    }
     for (var i = 0; i < names.length; ++i) {
       try {
-        context = canvas.getContext(names[i]);
+        context = canvas.getContext(names[i], attrs);
       } catch (e) {
       }
       if (context) {
@@ -161,6 +220,7 @@ function start() {
     var li = reporter.localDoc.createElement('li');
     li.id = this.elementId;
     var div = reporter.localDoc.createElement('div');
+    div.classList.add('pageHeader');
     var check = reporter.localDoc.createElement('input');
     check.type = 'checkbox';
     check.checked = true;
@@ -232,6 +292,16 @@ function start() {
       this.resultElem.removeChild(this.resultElem.childNodes[0]);
     }
     this.totalsElem.textContent = '';
+
+    var shouldRun = this.check.checked && this.folder.checked();
+
+    if (shouldRun) {
+      this.elem.classList.remove('testpagetimeout');
+      this.elem.classList.remove('testpageskipped');
+      this.elem.classList.remove('testpagefail');
+      this.elem.classList.remove('testpagesuccess');
+    }
+
     return this.check.checked && this.folder.checked();
   };
 
@@ -258,7 +328,7 @@ function start() {
     } else {
       var css = 'testpagesuccess';
     }
-    this.elem.setAttribute('class', css);
+    this.elem.classList.add(css);
     this.totalsElem.textContent = msg;
   };
 
@@ -279,6 +349,10 @@ function start() {
     this.reporter = reporter;
     this.depth = depth;
     this.name = opt_name || "";
+    this.displayName = this.name;
+    if (folder && folder.displayName) {
+      this.displayName = folder.displayName + '/' + this.displayName;
+    }
     this.subFolders = {};
     this.pages = [];
     this.items = [];
@@ -289,7 +363,9 @@ function start() {
     this.elementId = "folder" + folderCount++;
     var li = doc.createElement('li');
     li.id = this.elementId;
+    li.classList.add("folder");
     var div = doc.createElement('div');
+    div.classList.add('folderHeader');
     var check = doc.createElement('input');
     check.type = 'checkbox';
     check.checked = true;
@@ -306,7 +382,8 @@ function start() {
     }
     div.appendChild(button);
     var h = doc.createElement('span');
-    h.appendChild(doc.createTextNode(this.name));
+    h.classList.add('folderName');
+    h.appendChild(doc.createTextNode(this.displayName));
     div.appendChild(h);
     var ul = doc.createElement('ul');
     li.appendChild(div);
@@ -314,6 +391,7 @@ function start() {
     this.childUL = ul;
     this.elem = li;
     this.check = check;
+    this.folderHeader = div;
   };
 
   Folder.prototype.checked = function() {
@@ -364,6 +442,7 @@ function start() {
     this.pages.push(page);
     this.items.push(page);
     this.childUL.appendChild(page.elem);
+    this.folderHeader.classList.add('hasPages');
   };
 
   Folder.prototype.disableTest = function(re, opt_forceRecurse) {
@@ -413,9 +492,23 @@ function start() {
     this.currentPageElem = null;
     this.totalPages = 0;
     this.pagesByURL = {};
-    var canvas = document.getElementById("webglcheck");
-    var ctx = create3DContext(canvas);
+
+    // Check to see if WebGL is supported
+    var canvas = document.createElement("canvas");
+    var ctx = create3DContext(canvas, null, 1);
     this.noWebGL = !ctx;
+
+    // Check to see if WebGL2 is supported
+    this.noWebGL2 = true;
+    var canvas2 = document.createElement("canvas");
+    var ctx2 = create3DContext(canvas2, null, 2);
+
+    // If the WebGL2 context could be created use it instead
+    if (ctx2) {
+      this.noWebGL2 = false;
+      ctx = ctx2;
+    }
+
     this.contextInfo = {};
     this.root = new Folder(this, null, 0, "all");
     this.resultElem.appendChild(this.root.elem);
@@ -822,7 +915,7 @@ function start() {
 
 <div id="header">
 
-<table border="2">
+<table>
   <tr style="height: 300px;">
     <td>
       <table id="toparea">
@@ -852,13 +945,11 @@ function start() {
             <div id="loading">
               Loading Tests...
             </div>
-            <div style="border: 1px">
+            <div>
               Results:
               <span id="fullresults">
               </span>
             </div>
-            <canvas id="webglcheck" style="display: none;">
-            </canvas>
           </td>
         </tr>
         <tr>

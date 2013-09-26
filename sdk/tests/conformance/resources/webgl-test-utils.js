@@ -933,6 +933,21 @@ var clipToRange = function(value, extent, min, max) {
 };
 
 /**
+ * Determines if the passed context is an instance of a WebGLRenderingContext
+ * or later variant (like WebGL2RenderingContext)
+ * @param {CanvasRenderingContext} ctx The context to check.
+ */
+var isWebGLContext = function(ctx) {
+  if (ctx instanceof WebGLRenderingContext)
+    return true;
+
+  if ('WebGL2RenderingContext' in window && ctx instanceof WebGL2RenderingContext)
+    return true;
+
+  return false;
+};
+
+/**
  * Checks that a portion of a canvas is 1 color.
  * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
  *         WebGLRenderingContext or 2D context to use.
@@ -952,7 +967,7 @@ var clipToRange = function(value, extent, min, max) {
  * @param {!function()} logFn Function to call for logging.
  */
 var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRange, sameFn, differentFn, logFn) {
-  if ((gl instanceof WebGLRenderingContext) && !gl.getParameter(gl.FRAMEBUFFER_BINDING)) {
+  if (isWebGLContext(gl) && !gl.getParameter(gl.FRAMEBUFFER_BINDING)) {
     // We're reading the backbuffer so clip.
     var xr = clipToRange(x, width, 0, gl.canvas.width);
     var yr = clipToRange(y, height, 0, gl.canvas.height);
@@ -971,7 +986,7 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
     errorRange = [errorRange, errorRange, errorRange, errorRange]
   }
   var buf;
-  if (gl instanceof WebGLRenderingContext) {
+  if (isWebGLContext(gl)) {
     buf = new Uint8Array(width * height * 4);
     gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   } else {
@@ -1127,6 +1142,26 @@ var hasAttributeCaseInsensitive = function(obj, attr) {
   }
 };
 
+var getURLOptions = function() {
+  var options = {};
+  var s = window.location.href;
+  var q = s.indexOf("?");
+  var e = s.indexOf("#");
+  if (e < 0) {
+    e = s.length;
+  }
+  var query = s.substring(q + 1, e);
+  var pairs = query.split("&");
+  for (var ii = 0; ii < pairs.length; ++ii) {
+    var keyValue = pairs[ii].split("=");
+    var key = keyValue[0];
+    var value = decodeURIComponent(keyValue[1]);
+    options[key] = value;
+  }
+
+  return options;
+};
+
 /**
  * Creates a webgl context.
  * @param {!Canvas|string} opt_canvas The canvas tag to get
@@ -1134,9 +1169,10 @@ var hasAttributeCaseInsensitive = function(obj, attr) {
  *     created. If it's a string it's assumed to be the id of a
  *     canvas.
  * @param {Object} opt_attributes Context attributes.
+ * @param {!number} opt_version Version of WebGL context to create
  * @return {!WebGLRenderingContext} The created context.
  */
-var create3DContext = function(opt_canvas, opt_attributes) {
+var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
   if (window.initTestingHarness) {
     window.initTestingHarness();
   }
@@ -1144,13 +1180,23 @@ var create3DContext = function(opt_canvas, opt_attributes) {
   if (!hasAttributeCaseInsensitive(attributes, "antialias")) {
     attributes.antialias = false;
   }
-
+  if (!opt_version) {
+    opt_version = parseInt(getURLOptions().webglVersion, 10) || 1;
+  }
   opt_canvas = opt_canvas || document.createElement("canvas");
   if (typeof opt_canvas == 'string') {
     opt_canvas = document.getElementById(opt_canvas);
   }
   var context = null;
-  var names = ["webgl", "experimental-webgl"];
+
+  var names;
+  switch (opt_version) {
+    case 2:
+      names = ["webgl2", "experimental-webgl2"]; break;
+    default:
+      names = ["webgl", "experimental-webgl"]; break;
+  }
+
   for (var i = 0; i < names.length; ++i) {
     try {
       context = opt_canvas.getContext(names[i], attributes);

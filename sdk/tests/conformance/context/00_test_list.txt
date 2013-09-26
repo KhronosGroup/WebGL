@@ -1,4 +1,4 @@
-constants-and-properties.html
+--max-version 1.9.9 constants-and-properties.html
 --min-version 1.0.2 context-attribute-preserve-drawing-buffer.html
 context-attributes-alpha-depth-stencil-antialias.html
 --min-version 1.0.2 --slow context-creation-and-destruction.html
@@ -6,9 +6,9 @@ context-attributes-alpha-depth-stencil-antialias.html
 --min-version 1.0.2 context-release-with-workers.html
 context-lost-restored.html
 context-lost.html
-context-type-test.html
+--max-version 1.9.9 context-type-test.html
 incorrect-context-object-behaviour.html
-methods.html
+--max-version 1.9.9 methods.html
 premultiplyalpha-test.html
 resource-sharing-test.html
 
