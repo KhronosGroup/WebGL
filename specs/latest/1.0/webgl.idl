@@ -30,6 +30,7 @@ dictionary WebGLContextAttributes {
     GLboolean antialias = true;
     GLboolean premultipliedAlpha = true;
     GLboolean preserveDrawingBuffer = false;
+    GLboolean preferLowPowerToHighPerformance = false;
 };
 
 interface WebGLObject {

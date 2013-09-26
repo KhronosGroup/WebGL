@@ -18,6 +18,7 @@ dictionary WebGLContextAttributes {
     GLboolean premultipliedAlpha = true;
     GLboolean preserveDrawingBuffer = false;
     GLint version = 1; /* New in WebGL 2.0 */
+    GLboolean preferLowPowerToHighPerformance = false;
 };
 
 interface WebGLQuery : WebGLObject {
