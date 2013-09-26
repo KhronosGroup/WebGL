@@ -69,7 +69,9 @@ interface WebGLShaderPrecisionFormat {
     readonly attribute GLint precision;
 };
 
-interface WebGLRenderingContext {
+[NoInterfaceObject]
+interface WebGLRenderingContextBase
+{
 
     /* ClearBufferMask */
     const GLenum DEPTH_BUFFER_BIT               = 0x00000100;
@@ -723,6 +725,11 @@ interface WebGLRenderingContext {
 
     void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
 };
+
+interface WebGLRenderingContext implements WebGLRenderingContextBase
+{
+};
+
 
 [Constructor(DOMString type, optional WebGLContextEventInit eventInit)]
 interface WebGLContextEvent : Event {
