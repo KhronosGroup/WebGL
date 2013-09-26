@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 24 September 2013</h2>
+    <h2 class="no-toc">Editor's Draft 26 September 2013</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -258,28 +258,15 @@ typedef unsigned long long GLuint64;
     GLboolean premultipliedAlpha = true;
     GLboolean preserveDrawingBuffer = false;
     GLint version = 1; /* New in WebGL 2.0 */
-    GLboolean preferLowPowerToHighPerformance = false; /* New in WebGL 2.0 */
+    GLboolean preferLowPowerToHighPerformance = false;
 };</pre>
 
     <h4>Context creation parameters</h4>
 
     <p>
       Each of these parameters is described in the WebGL 1.0 spec, other than
-      <code>version</code>, the behaviour of which was described above, and
-      <code>preferLowPowerToHighPerformance</code>, described here.
+      <code>version</code>, the behaviour of which is described above.
     </p>
-
-    <dl>
-      <dt><span class=prop-value>preferLowPowerToHighPerformance</span></dt>
-      <dd>
-        Provides a hint to the implementation suggesting that, if possible, it
-        creates a context that optimizes for power consumption over
-        performance. For example, on hardware that has more than one
-        GPU, it may be the case that one of them is less powerful
-        but also uses less power. An implementation may chose to, and may
-        have to, ignore this hint.
-      </dd>
-    </dl>
 
     <div class="example">
     Here is an ECMAScript example which passes a WebGLContextAttributes argument to
