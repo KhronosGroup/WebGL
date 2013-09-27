@@ -138,12 +138,17 @@ function createBuffer(size, allowedToFail) {
 
     error = gl.getError();
     if (error !== gl.NO_ERROR) {
-        if (allowedToFail && error === gl.OUT_OF_MEMORY) {
-            testPassed(msg + " failed with gl.OUT_OF_MEMORY (this is allowed)");
-        } else {
-            testFailed(msg + " failed with error " + wtu.glEnumToString(gl, error));
-        }
         gl.deleteBuffer(buffer);
+        if (allowedToFail) {
+            if (error === gl.OUT_OF_MEMORY) {
+                testPassed("drawArrays failed with gl.OUT_OF_MEMORY (this is allowed)");
+                return null;
+            } else if (error === gl.CONTEXT_LOST_WEBGL) {
+                testPassed("drawArrays failed with gl.CONTEXT_LOST_WEBGL (this is allowed)");
+                return null;
+            }
+        }
+        testFailed(msg + " failed with error " + wtu.glEnumToString(gl, error));
         return null;
     }
 
@@ -184,11 +189,16 @@ function drawWithBuffer(buffer, allowedToFail) {
         error = gl.getError();
 
         if (error !== gl.NO_ERROR) {
-            if (allowedToFail && error === gl.OUT_OF_MEMORY) {
-                testPassed("drawArrays failed with gl.OUT_OF_MEMORY (this is allowed)");
-            } else {
-                testFailed("drawArrays failed with error " + wtu.glEnumToString(gl, error));
+            if (allowedToFail) {
+                if (error === gl.OUT_OF_MEMORY) {
+                    testPassed("drawArrays failed with gl.OUT_OF_MEMORY (this is allowed)");
+                    return;
+                } else if (error === gl.CONTEXT_LOST_WEBGL) {
+                    testPassed("drawArrays failed with gl.CONTEXT_LOST_WEBGL (this is allowed)");
+                    return;
+                }
             }
+            testFailed("drawArrays failed with error " + wtu.glEnumToString(gl, error));
             return;
         }
     }
