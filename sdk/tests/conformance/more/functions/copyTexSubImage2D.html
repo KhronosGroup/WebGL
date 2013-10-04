@@ -41,14 +41,18 @@ Tests.startUnit = function () {
 
 Tests.setup = function(gl) {
   var tex = gl.createTexture();
+  gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, tex);
   var texCubeMap = gl.createTexture();
+  gl.activeTexture(gl.TEXTURE1);
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, texCubeMap);
   return [gl]
 }
 
 Tests.teardown = function(gl,tex,texCubeMap) {
+  gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, null);
+  gl.activeTexture(gl.TEXTURE1);
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
   gl.deleteTexture(tex);
   gl.deleteTexture(texCubeMap);
@@ -56,6 +60,7 @@ Tests.teardown = function(gl,tex,texCubeMap) {
 
 
 Tests.testTexImage2D = function(gl) {
+  gl.activeTexture(gl.TEXTURE0);
   gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0,0,16,16,0);
   gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0,0, 0,0,1,1);
   gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0,0, 0,0,2,1);
@@ -64,8 +69,13 @@ Tests.testTexImage2D = function(gl) {
   gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0,0, 15,15,1,1);
   gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 1,1, 0,0,15,15);
   gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 15,15, 0,0,1,1);
+
+  assertOk(function(){
+      gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0,0,1,1,0);
+      gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0,0,0,0,1,1);
+  });
+
   var valid_targets = [
-    gl.TEXTURE_2D,
     gl.TEXTURE_CUBE_MAP_POSITIVE_X,
     gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
     gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
@@ -73,6 +83,8 @@ Tests.testTexImage2D = function(gl) {
     gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
     gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
   ];
+
+  gl.activeTexture(gl.TEXTURE1);
   valid_targets.forEach(function(t) {
     assertOk(function(){
         gl.copyTexImage2D(t, 0, gl.RGBA, 0,0,1,1,0);
@@ -90,6 +102,7 @@ Tests.testRoundtrip = function(gl) {
     // red texture
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.activeTexture(gl.TEXTURE0);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById('gl'));
     gl.clearColor(1.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
