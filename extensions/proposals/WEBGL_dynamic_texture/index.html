@@ -27,7 +27,7 @@
     texture targets (e.g. you cannot use <code>*[Tt]ex*Image*()</code>
     functions with <code>TEXTURE_EXTERNAL_OES</code>). Also,
     <code>TEXTURE_EXTERNAL_OES</code> targets never have more than a single
-    LOD level. These restrictions enable dynamic texturing with maximum
+    level of detail. These restrictions enable dynamic texturing with maximum
     efficiency. They remove the need for a copy of the image data manipulable
     via the WebGL API and allow sources which have internal formats not
     otherwise supported by WebGL, such as planar or interleaved YUV data, to
@@ -40,9 +40,9 @@
     targets. Sampling a <code>TEXTURE_EXTERNAL_OES</code> via a sampler of
     type <code>samplerExternalOES</code> always returns RGBA data. This allows
     the implementation to decide the most efficient format to use whether it
-    be RGB and or YUV data. If the underlying format was exposed, the
-    application would have to query the format in use and provide shaders to
-    handle both cases.</p>
+    be RGB or YUV data. If the underlying format was exposed, the application
+    would have to query the format in use and provide shaders to handle both
+    cases.</p>
 
     <p><code>WDTStream</code> provides a command for <em>latching</em> an
     image frame into the consuming texture as its contents. This is equivalent
@@ -147,9 +147,9 @@
 
     WDTStream? createStream();
  
-    WDTNanoTime ustnow();
     WDTNanoTime getLastDBPresentTime();
     void setDBPresentTime(WDTNanoTime pt);
+    WDTNanoTime ustnow();
   }; // interface WEBGL_dynamic_texture
 }; // module webgl</pre><h2 class="no-toc">IP Status</h2>No known IP claims.<h2 class="no-toc">New Functions</h2><p>On <code>WEBGL_dynamic_texture</code> /
     <code>WebGLRenderingContext</code>:</p><dl class="methods"><dt class="idl-code">WDTStream createStream()</dt><dd>Creates and returns a
@@ -222,8 +222,8 @@
     following <code>/* Uniform Types */</code>:<pre class="idl" xml:space="preserve">SAMPLER_EXTERNAL = 0x8D66;</pre></li><li>In the
     alphabetical list of commands add the following :<pre class="idl" xml:space="preserve">WDTStream? createStream(); 
 WDTNanoTime getLastDBPresentTime();
-WDTNanoTime ustnow();
-void setDBPresentationTime(WDTNanoTime pt);</pre></li></p>
+void setDBPresentationTime(WDTNanoTime pt);
+WDTNanoTime ustnow();</pre></li></p>
 
     <p>In section 5.14.3 <cite>Setting and getting state</cite>, add the
     following to the table under <code>getParameter</code>.</p>
@@ -308,8 +308,8 @@ void setDBPresentationTime(WDTNanoTime pt);</pre></li></p>
       <h3 id="dynamic-textures">5.16 Dynamic Textures</h3>
 
       <p>Dynamic textures are texture objects that display a stream of images
-      coming from a <em>producer</em> outside the WebGL application. The
-      classic example is texturing geometry from a playing video. A
+      coming from a <em>producer</em> outside the WebGL application, the
+      classic example ibeing using a playing video to texture geometry from. A
       <code>WDTStream</code> object mediates between the producer and the
       <em>consumer</em>, the texture consuming the images.</p>
 
@@ -330,8 +330,8 @@ void setDBPresentationTime(WDTNanoTime pt);</pre></li></p>
       the canvas.</p>
 
       <p>The command <pre class="idl" xml:space="preserve">WDTNanoTime ustnow();</pre>
-      returns the <em>unadjusted system time</em> a monotonically increasing
-      clock in units of nanoseconds. The zero time of this clock is not
+      returns the <em>unadjusted system time</em>, a monotonically increasing
+      clock, in units of nanoseconds. The zero time of this clock is not
       important. It could start at system boot, browser start or navigation
       start.</p>
 
@@ -425,24 +425,22 @@ void setDBPresentationTime(WDTNanoTime pt);</pre></li></p>
         <dt><code class="attribute-name">consumer</code> of type
         <code>WebGLTexture</code></dt>
 
-        <dd>The<code>WebGLTexture</code> that was bound to the
+        <dd>The <code>WebGLTexture</code> that was bound to the
         TEXTURE_EXTERNAL_OES target of the active texture unit at the time the
         stream was created. Sampling this texture in a shader will return
-        samples from the image latched by a<code>cquireImage</code>.</dd>
+        samples from the image latched by <code>acquireImage</code>.</dd>
 
         <dt><code class="attribute-name">consumerFrame</code> of type
         <code>WDTStreamFrameInfo</code></dt>
 
         <dd>Information about the last frame latched by the consumer via
-        <code>acquireImage.</code> It is the same information that is returned
-        by <code>acquireImage.</code></dd>
+        <code>acquireImage.</code></dd>
 
         <dt><code class="attribute-name">producerFrame</code> of type
         <code>WDTStreamFrameInfo</code></dt>
 
         <dd>Information about the frame most recently inserted into the stream
-        by the producer. It should normally be at most 1 frame ahead of
-        <code>consumerFrame.</code></dd>
+        by the producer.</dd>
 
         <dt><code class="attribute-name">minFrameDuration</code> of type
         <code>WDTNanoTime</code></dt>
@@ -452,10 +450,10 @@ void setDBPresentationTime(WDTNanoTime pt);</pre></li></p>
         formats have metadata that can be used to calculate this. It can only
         reflect the actual value once the stream is connected to a producer
         and the producer's <code>READY_STATE</code> is at least
-        <code>HAVE_METADATA</code>. The initial value is Number.MAX_VALUE
-        (i.e., infinity). Applications need this information to determine how
-        complex their drawing can be while maintaining the video's frame
-        rate.<code>consumerFrame.</code></dd>
+        <code>HAVE_METADATA</code>. The initial value is
+        <code>Number.MAX_VALUE</code> (i.e., infinity). Applications need this
+        information to determine how complex their drawing can be while
+        maintaining the video's frame rate.</dd>
 
         <dt><code class="attribute-name">state</code> of type
         <code>GLenum</code></dt>
@@ -492,20 +490,20 @@ void setDBPresentationTime(WDTNanoTime pt);</pre></li></p>
       <code>StreamSource</code> is an <code>HTMLMediaElement</code>, the
       element's <code>autoPlay</code> attribute is set to <code>false</code>
       to prevent playback starting before the application is ready. If
-      <code>state</code> is not STREAM_CONNECTING, an
+      <code>state</code> is not <code>STREAM_CONNECTING</code>, an
       <code>InvalidStateError</code> exception is thrown. After connecting
       <code>state</code> becomes <code>STREAM_EMPTY</code>.</p>
 
       <p>The command<pre class="idl" xml:space="preserve">void disconnect();</pre>disconnects
       the stream from its source. Subsequent sampling of the associated
-      texture will return transparent black. <code>state</code> is set to
+      texture will return opaque black. <code>state</code> is set to
       <code>STREAM_DISCONNECTED</code>.</p>
 
       <p>The command<pre class="idl" xml:space="preserve">StreamSource? getSource();</pre>returns
       the HTML element that is the producer for this stream.</p>
 
       <p>The command<pre class="idl" xml:space="preserve">void acquireImage();</pre>causes
-      <em>consumer</em> to <em>latch</em> the most recent image frame from its
+      <em>consumer</em> to <em>latch</em> the most recent image frame from the
       currently connected source. The rules for selecting the image to be
       latched mirror those for selecting the image drawn by the
       <code>drawImage</code> method of <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-canvas-element.html#canvasrenderingcontext2d">CanvasRenderingContext2D</a>.</p>
@@ -536,23 +534,22 @@ void setDBPresentationTime(WDTNanoTime pt);</pre></li></p>
 
       <p>The model is a stream of images between the producer and the
       WebGLTexture consumer. <code>acquireImage</code> latches the most recent
-      image frame. If the producer has not inserted any new image frames since
-      the last call to <code>acquireImage</code> then
-      <code>acquireImage</code> will latch the same image frame it latched
-      last time it was called. If the producer has inserted one new image
-      frame since the last call then <code>acquireImage</code> will "latch"
-      the newly inserted image frame. If the producer has inserted more than
-      one new image frame since the last call then all but the most recently
-      inserted image frame are discarded and <code>acquireImage</code> will
-      "latch" the most recently inserted image frame. For
-      <code>HTMLVideoElements</code>, the application can use the value of the
-      <code>frameTime</code> attribute in the returned WDTStreamFrameInfo to
-      identify which image frame was actually latched.</p>
+      image. If the producer has not inserted any new images since the last
+      call to <code>acquireImage</code> then <code>acquireImage</code> will
+      latch the same image it latched last time it was called. If the producer
+      has inserted one new image since the last call then
+      <code>acquireImage</code> will "latch" the newly inserted image. If the
+      producer has inserted more than one new image since the last call then
+      all but the most recently inserted image are discarded and
+      <code>acquireImage</code> will "latch" the most recently inserted image.
+      For <code>HTMLVideoElements</code>, the application can use the value of
+      the <code>frameTime</code> attribute in the returned WDTStreamFrameInfo
+      to identify which image frame was actually latched.</p>
 
       <p>The command <pre class="idl" xml:space="preserve">void releaseImage(WebGLTexture texture);</pre>releases
       the latched image. <code>releaseImage</code> will prevent the producer
-      from re-using and/or modifying the image frame until all preceding WebGL
-      commands that use the image frame as a texture have completed. If
+      from re-using and/or modifying the image until all preceding WebGL
+      commands that use the image as a texture have completed. If
       <code>acquireImage</code> is called twice without an intervening call to
       <code>releaseImage</code> then <code>releaseImage</code> is implicitly
       called at the start of <code>acquireImage</code>.</p>
@@ -1023,8 +1020,8 @@ void setDBPresentationTime(WDTNanoTime pt);</pre></li></p>
         <p>RESOLVED. No. The specified unit is milliseconds and, although the
         preferred accuracy is microseconds, the required accuracy is only
         milliseconds. At millisecond accuracy it is not possible to
-        distinguish between 29.97 fps and 30 fps () which means sound for a
-        29.97 fps video will be ~3.5 seconds out of sync after 1 hour. Also
+        distinguish between 29.97 fps and 30 fps which means sound for a 29.97
+        fps video will be ~3.5 seconds out of sync after 1 hour. Also
         fractional <code>double</code> values must be used to represent times
         &lt; 1 ms with the attendant issues of variable time steps as the
         exponent changes. Feedback has been provided. Hopefully the draft

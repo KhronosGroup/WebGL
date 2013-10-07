@@ -583,6 +583,16 @@ canvas {
     start();
   }
   
+  function measurePerf() {
+	if (g.frameTimer.emaTime > minInterFrameInterval) {
+		// choose simpler rendering
+        if (drawFunc > 1)
+		  drawFunc--;
+	}
+	window.requestAnimationFrame(
+  }
+
+
   function start() {
 	var nframes = 0;
 	var minInterframeInterval = -1;
