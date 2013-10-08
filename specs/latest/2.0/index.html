@@ -176,16 +176,12 @@
     <p>
         When the <code>getContext()</code> method of a <code>canvas</code> element is to return a
         new object for
-        the <em>contextId</em> <code>webgl</code> <a href="#refsCANVASCONTEXTS">[CANVASCONTEXTS]</a>,
+        the <em>contextId</em> <code>webgl2</code> <a href="#refsCANVASCONTEXTS">[CANVASCONTEXTS]</a>,
         the user agent must perform the following steps:
 
         <ol class="nestedlist">
 
-        <li> Create a new <code>WebGLRenderingContext</code> or <code>WebGL2RenderingContext</code> object,
-            <em>context</em>. If <code>getContext()</code> was invoked with a second argument, <em>options</em>,
-            and <em>options</em> has a <code>version</code> property with the value <code>"2"</code>,
-            then <em>context</em> will be a <code>WebGL2RenderingContext</code> object. Otherwise <em>context</em>
-            is a <code>WebGLRenderingContext</code> object.
+        <li> Create a new <code>WebGL2RenderingContext</code> object, <em>context</em>.
 
         <li> Let <em>context's</em> <a href="#context-canvas">canvas</a> be the canvas
              the <code>getContext()</code> method is associated with.
@@ -241,46 +237,6 @@
 typedef long long GLint64;
 typedef unsigned long long GLuint64;
 </pre>
-
-<!-- ======================================================================================================= -->
-
-    <h3><a name="WEBGLCONTEXTATTRIBUTES">WebGLContextAttributes</a></h3>
-
-    <p>
-        The <code>WebGLContextAttributes</code> dictionary contains drawing surface attributes and
-        is passed as the second parameter to <code>getContext</code>.
-    </p>
-    <pre class="idl">dictionary <dfn id="WebGLContextAttributes">WebGLContextAttributes</dfn> {
-    GLboolean alpha = true;
-    GLboolean depth = true;
-    GLboolean stencil = false;
-    GLboolean antialias = true;
-    GLboolean premultipliedAlpha = true;
-    GLboolean preserveDrawingBuffer = false;
-    GLint version = 1; /* New in WebGL 2.0 */
-    GLboolean preferLowPowerToHighPerformance = false;
-};</pre>
-
-    <h4>Context creation parameters</h4>
-
-    <p>
-      Each of these parameters is described in the WebGL 1.0 spec, other than
-      <code>version</code>, the behaviour of which is described above.
-    </p>
-
-    <div class="example">
-    Here is an ECMAScript example which passes a WebGLContextAttributes argument to
-    <code>getContext</code> to request a WebGL 2 rendering context. It assumes the presence of a
-    canvas element named "canvas1" on the page.
-
-    <pre>
-var canvas = document.getElementById('canvas1');
-var context = canvas.getContext('webgl',
-                                { antialias: false,
-                                  stencil: true,
-                                  version: 2 });
-    </pre>
-    </div>
 
 <!-- ======================================================================================================= -->
 
