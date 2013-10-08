@@ -24,7 +24,7 @@
 (function() {
   var testHarnessInitialized = false;
 
-  var initNonKhronosFramework = function(waitUntilDone) {
+  var initNonKhronosFramework = function() {
     if (testHarnessInitialized) {
       return;
     }
@@ -59,12 +59,8 @@
     /* -- end platform specific code --*/
   }
 
-  this.initTestingHarnessWaitUntilDone = function() {
-    initNonKhronosFramework(true);
-  }
-
   this.initTestingHarness = function() {
-    initNonKhronosFramework(false);
+    initNonKhronosFramework();
   }
 }());
 
@@ -84,6 +80,9 @@ function reportTestResultsToHarness(success, msg) {
 function notifyFinishedToHarness() {
   if (window.parent.webglTestHarness) {
     window.parent.webglTestHarness.notifyFinished(window.location.pathname);
+  }
+  if (window.nonKhronosFrameworkNotifyDone) {
+    window.nonKhronosFrameworkNotifyDone();
   }
 }
 
@@ -465,12 +464,6 @@ function gc() {
 function finishTest() {
   successfullyParsed = true;
   var epilogue = document.createElement("script");
-  epilogue.onload = function() {
-    if (window.nonKhronosFrameworkNotifyDone) {
-      window.nonKhronosFrameworkNotifyDone();
-    }
-  };
-
   var basePath = "";
   var expectedBase = "js-test-pre.js";
   var scripts = document.getElementsByTagName('script');

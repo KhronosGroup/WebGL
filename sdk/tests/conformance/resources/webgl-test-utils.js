@@ -57,7 +57,7 @@ var loggingOff = function() {
 };
 
 /**
- * Converts a WebGL enum to a string
+ * Converts a WebGL enum to a string.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} value The enum value.
  * @return {string} The enum as a string.
@@ -252,6 +252,7 @@ var setupSimpleColorFragmentShader = function(gl) {
 /**
  * Creates a program, attaches shaders, binds attrib locations, links the
  * program and calls useProgram.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!Array.<!WebGLShader|string>} shaders The shaders to
  *        attach, or the source, or the id of a script to get
  *        the source from.
@@ -261,10 +262,10 @@ var setupSimpleColorFragmentShader = function(gl) {
 var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
   var realShaders = [];
   var program = gl.createProgram();
-  var shaderType = undefined;
   var shaderCount = 0;
   for (var ii = 0; ii < shaders.length; ++ii) {
     var shader = shaders[ii];
+    var shaderType = undefined;
     if (typeof shader == 'string') {
       var element = document.getElementById(shader);
       if (element) {
@@ -309,35 +310,6 @@ var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
       return null;
   }
 
-  gl.useProgram(program);
-  return program;
-};
-
-/**
- * Creates a simple texture program.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @param {number} opt_positionLocation The attrib location for position.
- * @param {number} opt_texcoordLocation The attrib location for texture coords.
- * @return {WebGLProgram}
- */
-var setupSimpleTextureProgram = function(
-    gl, opt_positionLocation, opt_texcoordLocation) {
-  opt_positionLocation = opt_positionLocation || 0;
-  opt_texcoordLocation = opt_texcoordLocation || 1;
-  var vs = setupSimpleTextureVertexShader(gl);
-  var fs = setupSimpleTextureFragmentShader(gl);
-  if (!vs || !fs) {
-    return null;
-  }
-  var program = setupProgram(
-      gl,
-      [vs, fs],
-      ['vPosition', 'texCoord0'],
-      [opt_positionLocation, opt_texcoordLocation]);
-  if (!program) {
-    gl.deleteShader(fs);
-    gl.deleteShader(vs);
-  }
   gl.useProgram(program);
   return program;
 };
@@ -492,8 +464,8 @@ var setupUnitQuadWithTexCoords = function(
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!Object} options.
  *
- * scale: scale to multiple unit quad values by. default 1.0
- * positionLocation: attribute location for position
+ * scale: scale to multiple unit quad values by. default 1.0.
+ * positionLocation: attribute location for position.
  * texcoordLocation: attribute location for texcoords.
  *     If this does not exist no texture coords are created.
  * lowerLeftTexCoords: an array of 2 values for the
@@ -770,7 +742,7 @@ var getBytesPerComponent = function(gl, type) {
 };
 
 /**
- * Fills the given texture with a solid color
+ * Fills the given texture with a solid color.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!WebGLTexture} tex The texture to fill.
  * @param {number} width The width of the texture to create.
@@ -807,7 +779,7 @@ var fillTexture = function(gl, tex, width, height, color, opt_level, opt_format,
 };
 
 /**
- * Creates a textures and fills it with a solid color
+ * Creates a texture and fills it with a solid color.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} width The width of the texture to create.
  * @param {number} height The height of the texture to create.
@@ -908,7 +880,7 @@ var clearAndDrawUnitQuad = function(gl, opt_color) {
 };
 
 /**
- * Draws a quad previsouly settup with setupIndexedQuad.
+ * Draws a quad previously setup with setupIndexedQuad.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number} gridRes Resolution of grid.
  */
@@ -1014,7 +986,7 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
         for (j = 1; j < color.length; ++j) {
           was += "," + buf[offset + j];
         }
-        logFn('at (' + (i % width) + ', ' + Math.floor(i / width) +
+        logFn('at (' + (x + (i % width)) + ', ' + (y + Math.floor(i / width)) +
               ') expected: ' + color + ' was ' + was);
         return;
       }
@@ -1161,6 +1133,7 @@ var hasAttributeCaseInsensitive = function(obj, attr) {
  *     context from. If one is not passed in one will be
  *     created. If it's a string it's assumed to be the id of a
  *     canvas.
+ * @param {Object} opt_attributes Context attributes.
  * @return {!WebGLRenderingContext} The created context.
  */
 var create3DContext = function(opt_canvas, opt_attributes) {
@@ -1463,7 +1436,7 @@ var getFileListAsync = function(url, callback) {
 };
 
 /**
- * Gets a file from a file/URL
+ * Gets a file from a file/URL.
  * @param {string} file the URL of the file to get.
  * @return {string} The contents of the file.
  */
@@ -1566,6 +1539,8 @@ var loadShaderFromFile = function(gl, file, type, opt_errorCallback) {
 
 /**
  * Gets the content of script.
+ * @param {string} scriptId The id of the script tag.
+ * @return {string} The content of the script.
  */
 var getScript = function(scriptId) {
   var shaderScript = document.getElementById(scriptId);
@@ -1587,7 +1562,6 @@ var getScript = function(scriptId) {
 var loadShaderFromScript = function(
     gl, scriptId, opt_shaderType, opt_errorCallback) {
   var shaderSource = "";
-  var shaderType;
   var shaderScript = document.getElementById(scriptId);
   if (!shaderScript) {
     throw("*** Error: unknown script element " + scriptId);
@@ -1596,18 +1570,17 @@ var loadShaderFromScript = function(
 
   if (!opt_shaderType) {
     if (shaderScript.type == "x-shader/x-vertex") {
-      shaderType = gl.VERTEX_SHADER;
+      opt_shaderType = gl.VERTEX_SHADER;
     } else if (shaderScript.type == "x-shader/x-fragment") {
-      shaderType = gl.FRAGMENT_SHADER;
-    } else if (shaderType != gl.VERTEX_SHADER && shaderType != gl.FRAGMENT_SHADER) {
+      opt_shaderType = gl.FRAGMENT_SHADER;
+    } else {
       throw("*** Error: unknown shader type");
       return null;
     }
   }
 
   return loadShader(
-      gl, shaderSource, opt_shaderType ? opt_shaderType : shaderType,
-      opt_errorCallback);
+      gl, shaderSource, opt_shaderType, opt_errorCallback);
 };
 
 var loadStandardProgram = function(gl) {
@@ -1773,7 +1746,7 @@ var getActiveMap = function(gl, program, typeInfo) {
 
 /**
  * Returns a map of attrib names to info about those
- * attribs
+ * attribs.
  *
  * eg:
  *    { "attrib1Name":
@@ -1805,7 +1778,7 @@ var getAttribMap = function(gl, program) {
 };
 
 /**
- * Returns a map of uniform names to info about those uniform
+ * Returns a map of uniform names to info about those uniforms.
  *
  * eg:
  *    { "uniform1Name":
@@ -1943,10 +1916,10 @@ var makeImage = function(canvas) {
 };
 
 /**
- * Inserts an image with a caption into 'element'
+ * Inserts an image with a caption into 'element'.
  * @param {!HTMLElement} element Element to append image to.
  * @param {string} caption caption to associate with image.
- * @param {!Image) image image to insert.
+ * @param {!Image) img image to insert.
  */
 var insertImage = function(element, caption, img) {
   var div = document.createElement("div");
@@ -2015,7 +1988,7 @@ var browserPrefixes = [
  * Given an extension name like WEBGL_compressed_texture_s3tc
  * returns the name of the supported version extension, like
  * WEBKIT_WEBGL_compressed_teture_s3tc
- * @param {string} name Name of extension to look for
+ * @param {string} name Name of extension to look for.
  * @return {string} name of extension found or undefined if not
  *     found.
  */
@@ -2033,7 +2006,7 @@ var getSupportedExtensionWithKnownPrefixes = function(gl, name) {
  * Given an extension name like WEBGL_compressed_texture_s3tc
  * returns the supported version extension, like
  * WEBKIT_WEBGL_compressed_teture_s3tc
- * @param {string} name Name of extension to look for
+ * @param {string} name Name of extension to look for.
  * @return {WebGLExtension} The extension or undefined if not
  *     found.
  */
@@ -2055,8 +2028,8 @@ var replaceRE = /\$\((\w+)\)/g;
  * Given a string like "hello $(first) $(last)" and an object
  * like {first:"John", last:"Smith"} will return
  * "hello John Smith".
- * @param {string} str String to do replacements in
- * @param {...} 1 or more objects conaining properties.
+ * @param {string} str String to do replacements in.
+ * @param {...} 1 or more objects containing properties.
  */
 var replaceParams = function(str) {
   var args = arguments;
@@ -2142,21 +2115,12 @@ var cancelFullScreen = function() {
   }
 };
 
-/**
- * @param {!HTMLElement} element the element to go fullscreen
- * @param {!function(boolean)} a function that will be called
- *        when entering/exiting fullscreen. It is passed true if
- *        entering fullscreen, false if exiting.
- */
-/**
- * Provides a way to attach callback
- */
 var fullScreenStateName;
-var fullScreenStateNames = [
-  "isFullScreen",
-  "fullScreen",
-];
 (function() {
+  var fullScreenStateNames = [
+    "isFullScreen",
+    "fullScreen",
+  ];
   for (var ii = 0; ii < fullScreenStateNames.length; ++ii) {
     var propertyName = fullScreenStateNames[ii];
     for (var jj = 0; jj < propertyPrefixes.length; ++jj) {
@@ -2172,12 +2136,22 @@ var fullScreenStateNames = [
     fullScreenStateName = undefined;
   }
 }());
+
+/**
+ * @return {boolean} True if fullscreen mode is active.
+ */
 var getFullScreenState = function() {
   console.log("fullscreenstatename:" + fullScreenStateName);
   console.log(document[fullScreenStateName]);
   return document[fullScreenStateName];
 };
 
+/**
+ * @param {!HTMLElement} element The element to go fullscreen.
+ * @param {!function(boolean)} callback A function that will be called
+ *        when entering/exiting fullscreen. It is passed true if
+ *        entering fullscreen, false if exiting.
+ */
 var onFullScreenChange = function(element, callback) {
   propertyPrefixes.forEach(function(prefix) {
     var eventName = prefix + "fullscreenchange";
@@ -2189,27 +2163,21 @@ var onFullScreenChange = function(element, callback) {
   });
 };
 
+/**
+ * @param {!string} buttonId The id of the button that will toggle fullscreen
+ *        mode.
+ * @param {!string} fullscreenId The id of the element to go fullscreen.
+ * @param {!function(boolean)} callback A function that will be called
+ *        when entering/exiting fullscreen. It is passed true if
+ *        entering fullscreen, false if exiting.
+ * @return {boolean} True if fullscreen mode is supported.
+ */
 var setupFullscreen = function(buttonId, fullscreenId, callback) {
-  function findElement(id) {
-    var element = document.getElementById(id);
-    if (element) {
-      return element;
-    }
-
-    var elements = document.getElementsByTagName(id);
-    if (elements) {
-      return elements[0];
-    }
-  }
-
   if (!fullScreenStateName) {
     return false;
   }
 
-  var fullscreenElement = findElement(fullscreenId);
-
-  var buttonElement = findElement(buttonId);
-
+  var fullscreenElement = document.getElementById(fullscreenId);
   onFullScreenChange(fullscreenElement, callback);
 
   var toggleFullScreen = function(event) {
@@ -2222,6 +2190,7 @@ var setupFullscreen = function(buttonId, fullscreenId, callback) {
     return false;
   };
 
+  var buttonElement = document.getElementById(buttonId);
   buttonElement.addEventListener('click', toggleFullScreen);
 
   return true;
@@ -2230,6 +2199,9 @@ var setupFullscreen = function(buttonId, fullscreenId, callback) {
 /**
  * Waits for the browser to composite the canvas associated with
  * the WebGL context passed in.
+ * @param {WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {function()} callback A function to call after compositing has taken
+ *        place.
  */
 var waitForComposite = function(gl, callback) {
   var frames = 5;
@@ -2269,7 +2241,7 @@ var runSteps = function(steps) {
 /**
  * Starts playing a video and waits for it to be consumable.
  * @param {!HTMLVideoElement} video An HTML5 Video element.
- * @param {!function(!HTMLVideoElement): void>} callback. Function to call when
+ * @param {!function(!HTMLVideoElement): void>} callback Function to call when
  *        video is ready.
  */
 var startPlayingAndWaitForVideo = function(video, callback) {

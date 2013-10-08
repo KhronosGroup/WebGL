@@ -284,7 +284,11 @@ function start_test_server(config) {
       if(app.browser_proc) {
         process.stdout.write("Finished");
         app.finished_tests = true;
-        app.browser_proc.kill();
+        if (app.quit_command) {
+          child_process.exec(app.quit_command);
+        } else {
+          app.browser_proc.kill();
+        }
       }
     });
 
@@ -389,9 +393,11 @@ function run_tests_internal(app, config, callback, browser_id, browser, platform
 
   var browser_path = platform.command ? platform.command : platform.path;
 
-  var browser_proc = child_process.spawn(browser_path, all_args);
+  var browser_proc = child_process.spawn(browser_path, all_args, { stdio: 'ignore' });
   app.browser_proc = browser_proc;
   app.browser_name = browser.name.replace(' ', '-');
+  app.quit_command = platform.quit_command;
+
   app.finished_tests = false;
 
   app.start_timeout = setTimeout(function() {

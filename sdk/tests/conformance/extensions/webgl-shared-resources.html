@@ -98,6 +98,7 @@ if (!gl) {
   if (!ext) {
       testPassed("No WEBGL_shared_resources support -- this is legal");
       runSupportedTest(false);
+      finishTest();
   } else {
       testPassed("Successfully enabled WEBGL_shared_resources extension");
 

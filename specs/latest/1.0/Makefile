@@ -11,4 +11,4 @@ webgl.idl: index.html Makefile
 	echo "// This IDL depends on the typed array specification defined at:" >> webgl.idl
 	echo "// https://www.khronos.org/registry/typedarray/specs/latest/typedarrays.idl" >> webgl.idl
 	echo "" >> webgl.idl
-	PYTHONPATH=../../resources/html5lib/src python extract-idl.py index.html >> webgl.idl
+	PYTHONPATH=../../../resources/html5lib/src python extract-idl.py index.html >> webgl.idl

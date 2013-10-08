@@ -112,7 +112,6 @@ if (!gl) {
   debug("");
   debug("Checking drawingBufferWidth/drawingBufferHeight");
 
-  // Check that a canvas with no width or height is 300x150 pixels
   shouldBe('gl.drawingBufferWidth', 'gl.canvas.width');
   shouldBe('gl.drawingBufferHeight', 'gl.canvas.height');
 

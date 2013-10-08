@@ -28,7 +28,6 @@ function generateTest(extensionTypeName, extensionName, pixelType, prologue) {
 
     var init = function()
     {
-        initTestingHarnessWaitUntilDone();
         description("This test verifies the functionality of the " + extensionName + " extension, if it is available.");
 
         var canvas = document.getElementById("canvas");

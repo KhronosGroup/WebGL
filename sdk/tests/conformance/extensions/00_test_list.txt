@@ -22,6 +22,7 @@ webgl-debug-shaders.html
 --min-version 1.0.3 webgl-compressed-texture-atc.html
 --min-version 1.0.3 webgl-compressed-texture-pvrtc.html
 --min-version 1.0.2 webgl-compressed-texture-s3tc.html
+--min-version 1.0.3 webgl-compressed-texture-size-limit.html
 --min-version 1.0.2 webgl-depth-texture.html
 --min-version 1.0.3 webgl-draw-buffers.html
 --min-version 1.0.3 webgl-shared-resources.html

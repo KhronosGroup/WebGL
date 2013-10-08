@@ -191,8 +191,10 @@ function testInheritanceHierarchy() {
     testPassed('ArrayBufferView has [NoInterfaceObject] extended attribute and was (correctly) not defined');
   }
 
-  // There is currently only one kind of view that inherits from another
-  shouldBe('new Uint8ClampedArray(1) instanceof Uint8Array', 'true');
+  // Uint8ClampedArray inherited from Uint8Array in earlier versions
+  // of the typed array specification. Since this is no longer the
+  // case, assert the new behavior.
+  shouldBe('new Uint8ClampedArray(1) instanceof Uint8Array', 'false');
 }
 
 //
@@ -715,19 +717,6 @@ function testConstructionWithUnalignedLength(type, name, elementSizeInBytes) {
     }
 }
 
-function testConstructionOfHugeArray(type, name, sz) {
-    if (sz == 1)
-        return;
-    try {
-        // Construction of huge arrays must fail because byteLength is
-        // an unsigned long
-        array = new type(3000000000);
-        testFailed("Construction of huge " + name + " should throw exception");
-    } catch (e) {
-        testPassed("Construction of huge " + name + " threw exception");
-    }
-}
-
 function testConstructionWithBothArrayBufferAndLength(type, name, elementSizeInBytes) {
     var bufByteLength = 1000 * elementSizeInBytes;
     var buf = new ArrayBuffer(bufByteLength);
@@ -1071,7 +1060,6 @@ function runTests() {
     testConstructionWithNegativeOutOfRangeValues(type, name);
     testConstructionWithUnalignedOffset(type, name, testCase.elementSizeInBytes);
     testConstructionWithUnalignedLength(type, name, testCase.elementSizeInBytes);
-    testConstructionOfHugeArray(type, name, testCase.elementSizeInBytes);
     testConstructionWithBothArrayBufferAndLength(type, name, testCase.elementSizeInBytes);
     testConstructionWithSubPortionOfArrayBuffer(type, name, testCase.elementSizeInBytes);
     testSubarrayWithOutOfRangeValues(type, name, testCase.elementSizeInBytes);

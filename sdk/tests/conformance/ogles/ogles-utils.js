@@ -471,7 +471,6 @@ function drawWithProgram(program, programInfo, test) {
   for (var name in programInfo.uniforms) {
     var location = getUniformLocation(name);
     if (!location) {
-      testFailed("uniform not found: " + name);
       continue;
     }
     var uniform = programInfo.uniforms[name];
