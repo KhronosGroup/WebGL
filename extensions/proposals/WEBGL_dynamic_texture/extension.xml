@@ -138,9 +138,10 @@
 
       <feature>
         <p>The functions <code>ustnow</code>,
-        <code>getLastDBPresentTime</code> and <code>setDBPresentTime</code>
-        are available. These commands are used for accurate timing and
-        specifying when the drawing buffer should next be presented.</p>
+        <code>getLastDrawingBufferPresentTime</code> and
+        <code>setDrawingBufferPresentTime</code> are available. These commands
+        are used for accurate timing and specifying when the drawing buffer
+        should next be presented.</p>
       </feature>
 
       <feature>
@@ -201,8 +202,8 @@
 
     WDTStream? createStream();
  
-    WDTNanoTime getLastDBPresentTime();
-    void setDBPresentTime(WDTNanoTime pt);
+    WDTNanoTime getLastDrawingBufferPresentTime();
+    void setDrawingBufferPresentTime(WDTNanoTime pt);
     WDTNanoTime ustnow();
   }; // interface WEBGL_dynamic_texture
 }; // module webgl</idl>
@@ -359,8 +360,8 @@
     xml:space="preserve">SAMPLER_EXTERNAL = 0x8D66;</pre></li><li>In the
     alphabetical list of commands add the following :<pre class="idl"
     xml:space="preserve">WDTStream? createStream(); 
-WDTNanoTime getLastDBPresentTime();
-void setDBPresentationTime(WDTNanoTime pt);
+WDTNanoTime getLastDrawingBufferPresentTime();
+void setDrawingBufferPresentationTime(WDTNanoTime pt);
 WDTNanoTime ustnow();</pre></li></p>
 
     <p>In section 5.14.3 <cite>Setting and getting state</cite>, add the
@@ -476,7 +477,7 @@ WDTNanoTime ustnow();</pre></li></p>
       important. It could start at system boot, browser start or navigation
       start.</p>
 
-      <p>The command <pre class="idl" xml:space="preserve">WDTNanoTime getLastDBPresentTime();</pre>
+      <p>The command <pre class="idl" xml:space="preserve">WDTNanoTime getLastDrawingBufferPresentTime();</pre>
       returns the UST the last time the composited page containing the drawing
       buffer's content was presented to the user.</p>
 
@@ -485,7 +486,7 @@ WDTNanoTime ustnow();</pre></li></p>
       able to specify the <em>presentation time</em> of the drawing
       buffer.</p>
 
-      <p>The command <pre class="idl" xml:space="preserve">void setDBPresentTime(WDTNanoTime pt);</pre>
+      <p>The command <pre class="idl" xml:space="preserve">void setDrawingBufferPresentTime(WDTNanoTime pt);</pre>
       tells the browser the UST when the drawing buffer must be presented
       after the application returns to the browser. The browser must present
       the composited page containing the canvas to the user at the specified
