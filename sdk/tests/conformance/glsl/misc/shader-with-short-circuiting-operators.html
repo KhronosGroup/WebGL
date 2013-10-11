@@ -134,6 +134,7 @@
         { condition: "(j == 3 && j == k) && (j > (x = 0))", variables: "int j = 3;\nint k = 4;" }, /* test basic 'and' short circuit with actual condition */
         { condition: "(j + 3 > k && ((j < 10) || (x + 5 > j + (x = 0))) || ( x = 0 ) == 7)", variables: "int j = 5;\nint k = 3;" }, /* complex test */
         { condition: "j + 1 == 6 ? x == 1 || j > (x = 0) : (x = 0) == 1 && (x = 0) <= 1", variables: "int j = 5;" }, /* nested with ternary operator */
+        { condition: "true || (true || (x = 0) == 1)", variables: "" }, /* test unfold short circuit update order correctness */
       ];
 
       function testShortCircuit(test) {
