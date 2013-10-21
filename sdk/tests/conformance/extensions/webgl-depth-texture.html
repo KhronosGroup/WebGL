@@ -274,7 +274,7 @@ function runTestExtension() {
         dumpIt(gl, res, "--depth--");
 
         // Check that each pixel's R value is less than that of the previous pixel
-        // in either direction. Basically verify we have a radient.
+        // in either direction. Basically verify we have a gradient.
         var success = true;
         for (var yy = 0; yy < res; ++yy) {
           for (var xx = 0; xx < res; ++xx) {
