@@ -134,17 +134,16 @@ function testFormatType(t, test) {
     var numTestLevels = Math.min(numLevels, t.maxLevel);
 
     // out of bounds tests
-    var pixelsNegativeTest = new test.dataType((t.maxSize + 1) * (t.maxSize + 1) * 4);
     // level out of bounds
-    gl.texImage2D(target, numLevels, test.format, 1, 1, 0, test.format, test.type, pixelsNegativeTest);
+    gl.texImage2D(target, numLevels, test.format, 1, 1, 0, test.format, test.type, null);
     glErrorShouldBe(gl, gl.INVALID_VALUE, "level out of bounds: should generate INVALID_VALUE: level is: "
         + numLevels + ", size is 1x1.");
     // width and height out of bounds
-    gl.texImage2D(target, 0, test.format, t.maxSize + 1, t.maxSize + 1, 0, test.format, test.type, pixelsNegativeTest);
+    gl.texImage2D(target, 0, test.format, t.maxSize + 1, t.maxSize + 1, 0, test.format, test.type, null);
     glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bounds: should generate INVALID_VALUE: level is 0, size is "
         + (t.maxSize + 1) + "x" + (t.maxSize + 1));
     // width and height out of bounds for specified level
-    gl.texImage2D(target, (numLevels - 1), test.format, 4, 4, 0, test.format, test.type, pixelsNegativeTest);
+    gl.texImage2D(target, (numLevels - 1), test.format, 4, 4, 0, test.format, test.type, null);
     glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bounds for specified level: should generate INVALID_VALUE: level is "
         + (numLevels - 1) + ", size is 4x4.");
 
