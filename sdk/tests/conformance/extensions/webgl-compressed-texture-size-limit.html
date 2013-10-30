@@ -108,6 +108,20 @@ var targets = [
   }
 ];
 
+// Share an ArrayBuffer among tests to avoid too many large allocations
+var sharedArrayBufferSize = 0;
+for (var tt = 0; tt < tests.length; ++tt) {
+  var test = tests[tt];
+  for (var trg = 0; trg < targets.length; ++trg) {
+    var t = targets[trg];
+    var sizeNeeded = test.func(t.maxSize + test.sizeStep, t.maxSize + test.sizeStep);
+    if (sizeNeeded > sharedArrayBufferSize) {
+      sharedArrayBufferSize = sizeNeeded;
+    }
+  }
+}
+var sharedArrayBuffer = new ArrayBuffer(sharedArrayBufferSize);
+
 gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
 
 var trg = 0;
@@ -157,7 +171,7 @@ function testFormatType(t, test) {
 
       // positive test
       for (var i = 0, size = t.maxSize; i < numLevels; i++, size /= 2) {
-        var pixels = new test.dataType(test.func(size, size));
+        var pixels = new test.dataType(sharedArrayBuffer, 0, test.func(size, size));
         gl.compressedTexImage2D(target, i, test.format, size, size, 0, pixels);
         glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture should generate NO_ERROR."
             + "level is " + i + ", size is " + size + "x" + size);
@@ -165,12 +179,12 @@ function testFormatType(t, test) {
 
       // out of bounds tests
       // width and height out of bounds
-      var pixelsNegativeTest1 = new test.dataType(test.func(t.maxSize + test.sizeStep, t.maxSize + test.sizeStep));
+      var pixelsNegativeTest1 = new test.dataType(sharedArrayBuffer, 0, test.func(t.maxSize + test.sizeStep, t.maxSize + test.sizeStep));
       gl.compressedTexImage2D(target, 0, test.format, t.maxSize + test.sizeStep, t.maxSize + test.sizeStep, 0, pixelsNegativeTest1);
       glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bounds: should generate INVALID_VALUE."
           + " level is 0, size is " + (t.maxSize + test.sizeStep) + "x" + (t.maxSize + test.sizeStep));
       // level out of bounds
-      var pixelsNegativeTest2 = new test.dataType(test.func(256, 256));
+      var pixelsNegativeTest2 = new test.dataType(sharedArrayBuffer, 0, test.func(256, 256));
       gl.compressedTexImage2D(target, numLevels, test.format, 256, 256, 0, pixelsNegativeTest2);
       glErrorShouldBe(gl, gl.INVALID_VALUE, "level out of bounds: should generate INVALID_VALUE."
           + " level is " + numLevels + ", size is 256x256");
