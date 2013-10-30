@@ -78,11 +78,11 @@ var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
 var tests = [
   // More tests can be added here when more texture compression extensions are enabled in WebGL.
-  // Level 0 image width and height must be a multiple of the divisor.
-  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGB_S3TC_DXT1_EXT, dataType: Uint8Array, func: func1, divisor: 4},
-  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGBA_S3TC_DXT1_EXT, dataType: Uint8Array, func: func1, divisor: 4},
-  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGBA_S3TC_DXT3_EXT, dataType: Uint8Array, func: func2, divisor: 4},
-  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGBA_S3TC_DXT5_EXT, dataType: Uint8Array, func: func2, divisor: 4},
+  // Level 0 image width and height must be a multiple of the sizeStep.
+  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGB_S3TC_DXT1_EXT, dataType: Uint8Array, func: func1, sizeStep: 4},
+  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGBA_S3TC_DXT1_EXT, dataType: Uint8Array, func: func1, sizeStep: 4},
+  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGBA_S3TC_DXT3_EXT, dataType: Uint8Array, func: func2, sizeStep: 4},
+  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGBA_S3TC_DXT5_EXT, dataType: Uint8Array, func: func2, sizeStep: 4},
 ];
 
 // Note: We expressly only use 2 textures because first a texture will be defined
@@ -165,10 +165,10 @@ function testFormatType(t, test) {
 
       // out of bounds tests
       // width and height out of bounds
-      var pixelsNegativeTest1 = new test.dataType(test.func(t.maxSize + test.divisor, t.maxSize + test.divisor));
-      gl.compressedTexImage2D(target, 0, test.format, t.maxSize + test.divisor, t.maxSize + test.divisor, 0, pixelsNegativeTest1);
+      var pixelsNegativeTest1 = new test.dataType(test.func(t.maxSize + test.sizeStep, t.maxSize + test.sizeStep));
+      gl.compressedTexImage2D(target, 0, test.format, t.maxSize + test.sizeStep, t.maxSize + test.sizeStep, 0, pixelsNegativeTest1);
       glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bounds: should generate INVALID_VALUE."
-          + " level is 0, size is " + (t.maxSize + test.divisor) + "x" + (t.maxSize + test.divisor));
+          + " level is 0, size is " + (t.maxSize + test.sizeStep) + "x" + (t.maxSize + test.sizeStep));
       // level out of bounds
       var pixelsNegativeTest2 = new test.dataType(test.func(256, 256));
       gl.compressedTexImage2D(target, numLevels, test.format, 256, 256, 0, pixelsNegativeTest2);
