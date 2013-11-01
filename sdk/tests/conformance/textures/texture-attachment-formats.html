@@ -186,7 +186,7 @@ if (!gl) {
 
   debug("");
   shouldBeTrue("numValidFormats > 0");
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 debug("");

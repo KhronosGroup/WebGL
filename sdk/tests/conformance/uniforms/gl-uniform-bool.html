@@ -69,7 +69,7 @@ var gl = wtu.create3DContext("example");
 var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 var loc = gl.getUniformLocation(program, "color");
 gl.uniform1f(loc, 1);
-glErrorShouldBe(gl, gl.NO_ERROR,
+wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                 "should be able to set bool with gl.uniform1f");
 
 debug("");

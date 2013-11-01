@@ -115,7 +115,7 @@ function test() {
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
       testDrawToBackBuffer("after drawing to framebuffer after composite");
 
-      glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
       finishTest();
     });
   });

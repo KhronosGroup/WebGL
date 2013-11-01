@@ -115,7 +115,7 @@ function runOneIteration(videoElement, useTexSubImage2D, flipY, topColor, bottom
     if (genMips) {
         debug("generate mips");
         gl.generateMipmap(gl.TEXTURE_2D);
-        glErrorShouldBe(gl, gl.INVALID_OPERATION, "should be INVALID_OPERATION");
+        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "should be INVALID_OPERATION");
     }
 
     gl.bindTexture(gl.TEXTURE_2D, null);
@@ -159,7 +159,7 @@ function runTest(videoElement)
     runOneIteration(videoElement, true, true, green, red, false, false, false);
     runOneIteration(videoElement, true, false, red, green, false, false, false);
 
-    glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
     finishTest();
 }
 </script>

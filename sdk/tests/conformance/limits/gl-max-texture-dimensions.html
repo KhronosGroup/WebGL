@@ -115,7 +115,7 @@ wtu.checkCanvas(gl, [0, 255, 128, 255],
 var program = wtu.setupProgram(
     gl, ['vshader', 'fshader'], ['vPosition', 'texCoord0'], [0, 1]);
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 
 // NOTE: We can't easily test cube maps because they require width == height
 // and we might not have enough memory for maxSize by maxSize texture.

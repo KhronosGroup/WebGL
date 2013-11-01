@@ -111,7 +111,7 @@ for (var ii = 0; ii < 5; ++ii) {
   gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.drawElements(gl.TRIANGLES, 60000, gl.UNSIGNED_SHORT, 0);
-  glErrorShouldBe(
+  wtu.glErrorShouldBe(
       gl, gl.NO_ERROR,
       "drawing using attrib 0 with 6 verts");
   wtu.checkCanvas(gl, [0, 255, 0, 255], "canvas should be green");
@@ -123,7 +123,7 @@ for (var ii = 0; ii < 5; ++ii) {
   gl.vertexAttribPointer(3, 3, gl.FLOAT, false, 0, 0);
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.drawArrays(gl.TRIANGLES, 0, 60000);
-  glErrorShouldBe(
+  wtu.glErrorShouldBe(
       gl, gl.NO_ERROR,
       "drawing using attrib 3 with 60000 verts");
   wtu.checkCanvas(gl, [0, 255, 0, 255], "canvas should be green");
@@ -136,7 +136,7 @@ for (var ii = 0; ii < 5; ++ii) {
   gl.enableVertexAttribArray(3);
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.drawElements(gl.TRIANGLES, 60000, gl.UNSIGNED_SHORT, 0);
-  glErrorShouldBe(
+  wtu.glErrorShouldBe(
       gl, gl.NO_ERROR,
       "drawing using attrib 3 with 60000 verts");
   wtu.checkCanvas(gl, [0, 255, 0, 255], "canvas should be green");

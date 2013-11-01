@@ -124,7 +124,7 @@ gl.uniform4fv(loc11, [0, 0, 0, 1]);
 wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 0]);
 wtu.checkCanvas(gl, [255, 255, 255, 255], "Should be white");
 
-glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 
 var successfullyParsed = true;
 </script>

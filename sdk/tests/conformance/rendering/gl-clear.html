@@ -45,7 +45,7 @@ var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
 var program = wtu.setupTexturedQuad(gl);
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 wtu.checkCanvas(gl, [0,0,0,0], "should be 0,0,0,0");
 
 gl.clearColor(1,1,1,1);

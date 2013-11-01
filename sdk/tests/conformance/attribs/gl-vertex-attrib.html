@@ -106,7 +106,7 @@ if (!gl) {
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '8');
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '9');
   }
-  glErrorShouldBe(gl, gl.NO_ERROR);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 }
 
 debug("");

@@ -91,7 +91,7 @@ function runTest()
   var runNextStep = function() {
     steps[stepIndex++]();
     if (stepIndex == steps.length) {
-      glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
       finishTest();
       return;
     }

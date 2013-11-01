@@ -93,7 +93,7 @@ function test() {
   wtu.checkCanvasRect(gl, 0, 0, 256, 256, [255, 0, 0, 255]);
   wtu.checkCanvasRect(gl, 256, 0, 256, 256, [0, 255, 0, 255]);
 
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 test();
 var successfullyParsed = true;

@@ -105,7 +105,7 @@ function continueTestPart1() {
                 test.oneColor, test.oneX, test.oneY);
   }
 
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no GL errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no GL errors");
 
   function checkBuffer(checkColor, x, y, oneColor, oneX, oneY) {
     var buf = new Uint8Array(width * height * 4);
@@ -180,7 +180,7 @@ function continueTestPart1() {
     gl.readPixels(0, 0, 1, 1, format, type, dest);
     // note that the GL error is INVALID_OPERATION if both format and type are invalid, but
     // INVALID_ENUM if only one is.
-    glErrorShouldBe(
+    wtu.glErrorShouldBe(
         gl, error,
         "Should not be able to read as " + wtu.glEnumToString(gl, format) +
         " / " + wtu.glEnumToString(gl, type));
@@ -233,7 +233,7 @@ function continueTestPart2() {
     expected = [color[0], color[1], color[2], color[3]];
     shouldBe("actual", "expected");
   }
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no GL errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no GL errors");
 
   debug("");
   finishTest();

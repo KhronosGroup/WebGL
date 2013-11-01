@@ -125,7 +125,7 @@ function allocateTexture()
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    glErrorShouldBe(gl, gl.NO_ERROR, "texture parameter setup should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texture parameter setup should succeed");
     return texture;
 }
 
@@ -155,10 +155,10 @@ function runTextureCreationTest(testProgram, extensionEnabled, opt_format, opt_n
     }
     gl.texImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, format, gl.FLOAT, data);
     if (expectFailure) {
-        glErrorShouldBe(gl, gl.INVALID_ENUM, "floating-point texture allocation must be disallowed if OES_texture_float isn't enabled");
+        wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "floating-point texture allocation must be disallowed if OES_texture_float isn't enabled");
         return;
     } else {
-        glErrorShouldBe(gl, gl.NO_ERROR, "floating-point texture allocation should succeed if OES_texture_float is enabled");
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "floating-point texture allocation should succeed if OES_texture_float is enabled");
     }
     // Verify that the texture actually works for sampling and contains the expected data.
     gl.uniform4fv(gl.getUniformLocation(testProgram, "subtractor"), subtractor);
@@ -181,7 +181,7 @@ function runRenderTargetTest(testProgram)
     var height = 2;
     var numberOfChannels = 4;
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.FLOAT, null);
-    glErrorShouldBe(gl, gl.NO_ERROR, "floating-point texture allocation should succeed if OES_texture_float is enabled");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "floating-point texture allocation should succeed if OES_texture_float is enabled");
 
     // Try to use this texture as a render target.
     var fbo = gl.createFramebuffer();
@@ -201,7 +201,7 @@ function runRenderTargetTest(testProgram)
                          ['vPosition'],
                          [0]);
     wtu.clearAndDrawUnitQuad(gl);
-    glErrorShouldBe(gl, gl.NO_ERROR, "rendering to floating-point texture should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "rendering to floating-point texture should succeed");
 
     // Now sample from the floating-point texture and verify we got the correct values.
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -209,7 +209,7 @@ function runRenderTargetTest(testProgram)
     gl.useProgram(testProgram);
     gl.uniform1i(gl.getUniformLocation(testProgram, "tex"), 0);
     wtu.clearAndDrawUnitQuad(gl);
-    glErrorShouldBe(gl, gl.NO_ERROR, "rendering from floating-point texture should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "rendering from floating-point texture should succeed");
     checkRenderingResults();
 }
 

@@ -50,8 +50,8 @@ var program = wtu.setupTexturedQuad(gl);
 var gl1 = wtu.create3DContext("source");
 gl1.disable(gl.DITHER);
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
-glErrorShouldBe(gl1, gl1.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl1, gl1.NO_ERROR, "Should be no errors from setup.");
 
 gl.disable(gl.BLEND);
 gl.disable(gl.DEPTH_TEST);

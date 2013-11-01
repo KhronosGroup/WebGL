@@ -72,7 +72,7 @@ function test(desc, func, expected) {
     }
 
     if (expected == gl.INVALID_OPERATION) {
-      glErrorShouldBe(gl, expected);
+      wtu.glErrorShouldBe(gl, expected);
     } else if (expected == "exception") {
         if (exc) {
             testPassed("threw exception");

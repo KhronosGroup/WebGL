@@ -121,7 +121,7 @@ for (var ii = 0; ii < 6; ++ii) {
   wtu.checkCanvas(gl, [255, 255, 0, 255], "Should be yellow");
 }
 
-glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 
 var successfullyParsed = true;
 </script>

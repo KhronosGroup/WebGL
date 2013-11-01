@@ -180,7 +180,7 @@ if (!gl) {
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       checkCanvasContentIs(64, 128, 192, 255);
       gl.colorMask(0,0,0,0);
-      glErrorShouldBe(gl, gl.NO_ERROR, "No GL errors before resizing the canvas");
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "No GL errors before resizing the canvas");
       canvas.width = 400;
       canvas.height = 10;
       err = gl.getError();

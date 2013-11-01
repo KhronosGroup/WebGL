@@ -50,7 +50,7 @@ var shader = gl.createShader(gl.VERTEX_SHADER);
 gl.shaderSource(shader, original);
 var source = gl.getShaderSource(shader);
 shouldBe("source", "original");
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>

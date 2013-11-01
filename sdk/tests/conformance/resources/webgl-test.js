@@ -63,34 +63,3 @@ function shouldGenerateGLError(ctx, glErrors, evalStr) {
   }
 }
 
-/**
- * Tests that the first error GL returns is the specified error.
- * @param {!WebGLContext} gl The WebGLContext to use.
- * @param {number|!Array.<number>} glError The expected gl
- *        error. Multiple errors can be passed in using an
- *        array.
- * @param {string} opt_msg Optional additional message.
- */
-function glErrorShouldBe(gl, glErrors, opt_msg) {
-  if (!glErrors.length) {
-    glErrors = [glErrors];
-  }
-  opt_msg = opt_msg || "";
-  var err = gl.getError();
-  var ndx = glErrors.indexOf(err);
-  var errStrs = [];
-  for (var ii = 0; ii < glErrors.length; ++ii) {
-    errStrs.push(getGLErrorAsString(gl, glErrors[ii]));
-  }
-  var expected = errStrs.join(" or ");
-  if (ndx < 0) {
-    var msg = "getError expected" + ((glErrors.length > 1) ? " one of: " : ": ");
-    testFailed(msg + expected +  ". Was " + getGLErrorAsString(gl, err) + " : " + opt_msg);
-  } else {
-    var msg = "getError was " + ((glErrors.length > 1) ? "one of: " : "expected value: ");
-    testPassed(msg + expected + " : " + opt_msg);
-  }
-};
-
-
-

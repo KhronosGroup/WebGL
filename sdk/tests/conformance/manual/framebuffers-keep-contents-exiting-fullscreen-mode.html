@@ -106,7 +106,7 @@ var checkState = function() {
   debug("");
   wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 255, 0, 255]);
   shouldBeNonNull("gl.getParameter(gl.FRAMEBUFFER_BINDING)");
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 var checkFramebufferState = function(fullscreen) {

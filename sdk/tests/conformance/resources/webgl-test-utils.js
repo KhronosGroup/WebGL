@@ -1241,18 +1241,27 @@ var shouldGenerateGLError = function(gl, glError, evalStr) {
 /**
  * Tests that the first error GL returns is the specified error.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @param {number} glError The expected gl error.
- * @param {string} opt_msg
+ * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
+ * @param {string} opt_msg Optional additional message.
  */
-var glErrorShouldBe = function(gl, glError, opt_msg) {
+var glErrorShouldBe = function(gl, glErrors, opt_msg) {
+  if (!glErrors.length) {
+    glErrors = [glErrors];
+  }
   opt_msg = opt_msg || "";
   var err = gl.getError();
-  if (err != glError) {
-    testFailed("getError expected: " + glEnumToString(gl, glError) +
-               ". Was " + glEnumToString(gl, err) + " : " + opt_msg);
+  var ndx = glErrors.indexOf(err);
+  var errStrs = [];
+  for (var ii = 0; ii < glErrors.length; ++ii) {
+    errStrs.push(glEnumToString(gl, glErrors[ii]));
+  }
+  var expected = errStrs.join(" or ");
+  if (ndx < 0) {
+    var msg = "getError expected" + ((glErrors.length > 1) ? " one of: " : ": ");
+    testFailed(msg + expected +  ". Was " + glEnumToString(gl, err) + " : " + opt_msg);
   } else {
-    testPassed("getError was expected value: " +
-                glEnumToString(gl, glError) + " : " + opt_msg);
+    var msg = "getError was " + ((glErrors.length > 1) ? "one of: " : "expected value: ");
+    testPassed(msg + expected + " : " + opt_msg);
   }
 };
 

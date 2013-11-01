@@ -50,7 +50,7 @@ gl.useProgram(program);
 var vertexObject = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
 gl.enableVertexAttribArray(0);
-glErrorShouldBe(gl, gl.NO_ERROR, "Setup should succeed");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setup should succeed");
 
 debug("");
 debug("Verify that constant color and constant alpha cannot be used together as source and destination factors in the blend function");
@@ -113,7 +113,7 @@ debug("Verify that UNPACK_COLORSPACE_CONVERSION_WEBGL is supported");
 shouldBe("gl.getParameter(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL)", "gl.BROWSER_DEFAULT_WEBGL");
 gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
 shouldBe("gl.getParameter(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL)", "gl.NONE");
-glErrorShouldBe(gl, gl.NO_ERROR, "set/get UNPACK_COLORSPACE_CONVERSION_WEBGL should generate no error");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "set/get UNPACK_COLORSPACE_CONVERSION_WEBGL should generate no error");
 
 debug("");
 debug("Verify that drawingBufferWidth and drawingBufferHeights are implemented");

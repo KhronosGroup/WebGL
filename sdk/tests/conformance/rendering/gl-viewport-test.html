@@ -110,7 +110,7 @@ function test(canvas, attribs) {
     drawAndCheck(0, -h, w*2, h*2);
 
     debug("");
-    glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
   }
 }
 

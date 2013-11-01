@@ -175,7 +175,7 @@ gl.disableVertexAttribArray(0);
 gl.vertexAttrib4f(0, 1, 0, 0, 1);
 checkDraw(0, 3, 255, 0, 0, 255);
 
-glErrorShouldBe(gl, gl.NO_ERROR);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
 var successfullyParsed = true;

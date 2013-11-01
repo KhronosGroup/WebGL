@@ -126,7 +126,7 @@ function runDivisorTestDisabled() {
     var VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE = 0x88FE;
 
     gl.getVertexAttrib(0, VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE should not be queryable if extension is disabled");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE should not be queryable if extension is disabled");
 }
 
 function runDivisorTestEnabled() {
@@ -147,10 +147,10 @@ function runDivisorTestEnabled() {
     }
 
     ext.vertexAttribDivisorANGLE(max_vertex_attribs, 2);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "vertexAttribDivisorANGLE index set greater than or equal to MAX_VERTEX_ATTRIBS should be an invalid value");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "vertexAttribDivisorANGLE index set greater than or equal to MAX_VERTEX_ATTRIBS should be an invalid value");
 
     ext.vertexAttribDivisorANGLE(max_vertex_attribs-1, 2);
-    glErrorShouldBe(gl, gl.NO_ERROR, "vertexAttribDivisorANGLE index set less than MAX_VERTEX_ATTRIBS should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "vertexAttribDivisorANGLE index set less than MAX_VERTEX_ATTRIBS should succeed");
 
     var queried_value = gl.getVertexAttrib(max_vertex_attribs-1, ext.VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE);
     if(queried_value == 2){
@@ -214,31 +214,31 @@ function runOutputTests() {
     wtu.checkCanvasRect(gl, canvas.width/2, 0, canvas.width/2, canvas.height/2, [255, 255, 0, 255]);
 
     ext.drawArraysInstancedANGLE(gl.TRIANGLES, 0, 6, -1);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "drawArraysInstancedANGLE cannot have a primcount less than 0");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "drawArraysInstancedANGLE cannot have a primcount less than 0");
 
     ext.drawArraysInstancedANGLE(gl.TRIANGLES, 0, -1, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "drawArraysInstancedANGLE cannot have a count less than 0");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "drawArraysInstancedANGLE cannot have a count less than 0");
 
     ext.vertexAttribDivisorANGLE(positionLoc, 1);
     ext.drawArraysInstancedANGLE(gl.TRIANGLES, 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "There must be at least one vertex attribute with a divisor of zero when calling drawArraysInstancedANGLE");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "There must be at least one vertex attribute with a divisor of zero when calling drawArraysInstancedANGLE");
     ext.vertexAttribDivisorANGLE(positionLoc, 0);
 
     ext.drawArraysInstancedANGLE(gl.POINTS, 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstancedANGLE with POINTS should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstancedANGLE with POINTS should succeed");
     ext.drawArraysInstancedANGLE(gl.LINES, 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstancedANGLE with LINES should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstancedANGLE with LINES should succeed");
     ext.drawArraysInstancedANGLE(gl.LINE_LIST, 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstancedANGLE with LINE_LIST should return succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstancedANGLE with LINE_LIST should return succeed");
     ext.drawArraysInstancedANGLE(gl.TRIANGLE_LIST, 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstancedANGLE with TRIANGLE_LIST should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstancedANGLE with TRIANGLE_LIST should succeed");
 
     ext.drawArraysInstancedANGLE(desktopGL['QUAD_STRIP'], 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstancedANGLE with QUAD_STRIP should return INVALID_ENUM");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstancedANGLE with QUAD_STRIP should return INVALID_ENUM");
     ext.drawArraysInstancedANGLE(desktopGL['QUADS'], 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstancedANGLE with QUADS should return INVALID_ENUM");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstancedANGLE with QUADS should return INVALID_ENUM");
     ext.drawArraysInstancedANGLE(desktopGL['POLYGON'], 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstancedANGLE with POLYGON should return INVALID_ENUM");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstancedANGLE with POLYGON should return INVALID_ENUM");
 
     // Draw 2: Draw indexed instances
     debug("Testing drawElementsInstancedANGLE");
@@ -252,34 +252,34 @@ function runOutputTests() {
 
     // Test drawElementsInstancedANGLE error conditions
     ext.drawElementsInstancedANGLE(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, -1);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "drawElementsInstancedANGLE cannot have a primcount less than 0");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "drawElementsInstancedANGLE cannot have a primcount less than 0");
 
     ext.drawElementsInstancedANGLE(gl.TRIANGLES, -1, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "drawElementsInstancedANGLE cannot have a count less than 0");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "drawElementsInstancedANGLE cannot have a count less than 0");
 
     ext.vertexAttribDivisorANGLE(positionLoc, 1);
     ext.drawElementsInstancedANGLE(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "There must be at least one vertex attribute with a divisor of zero when calling drawElementsInstancedANGLE");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "There must be at least one vertex attribute with a divisor of zero when calling drawElementsInstancedANGLE");
     ext.vertexAttribDivisorANGLE(positionLoc, 0);
 
     ext.drawElementsInstancedANGLE(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstancedANGLE with UNSIGNED_BYTE should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstancedANGLE with UNSIGNED_BYTE should succeed");
 
     ext.drawElementsInstancedANGLE(gl.POINTS, 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstancedANGLE with POINTS should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstancedANGLE with POINTS should succeed");
     ext.drawElementsInstancedANGLE(gl.LINES, 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstancedANGLE with LINES should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstancedANGLE with LINES should succeed");
     ext.drawElementsInstancedANGLE(gl.LINE_LIST, 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstancedANGLE with LINE_LIST should return succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstancedANGLE with LINE_LIST should return succeed");
     ext.drawElementsInstancedANGLE(gl.TRIANGLE_LIST, 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstancedANGLE with TRIANGLE_LIST should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstancedANGLE with TRIANGLE_LIST should succeed");
 
     ext.drawElementsInstancedANGLE(desktopGL['QUAD_STRIP'], 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstancedANGLE with QUAD_STRIP should return INVALID_ENUM");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstancedANGLE with QUAD_STRIP should return INVALID_ENUM");
     ext.drawElementsInstancedANGLE(desktopGL['QUADS'], 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstancedANGLE with QUADS should return INVALID_ENUM");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstancedANGLE with QUADS should return INVALID_ENUM");
     ext.drawElementsInstancedANGLE(desktopGL['POLYGON'], 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstancedANGLE with POLYGON should return INVALID_ENUM");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstancedANGLE with POLYGON should return INVALID_ENUM");
 }
 
 function runUniqueObjectTest()

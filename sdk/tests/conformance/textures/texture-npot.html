@@ -66,7 +66,7 @@ var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
 var program = wtu.setupTexturedQuad(gl);
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
 var tests = [
   { format: gl.RGBA,
@@ -126,17 +126,17 @@ tests.forEach(function(test) {
 
   // Check that an NPOT texture not on level 0 generates INVALID_VALUE
   wtu.fillTexture(gl, tex, 5, 3, test.color, 1, test.format, test.type);
-  glErrorShouldBe(gl, gl.INVALID_VALUE,
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
       "gl.texImage2D with NPOT texture with level > 0 should return INVALID_VALUE");
 
   // Check that an NPOT texture on level 0 succeeds
   wtu.fillTexture(gl, tex, 5, 3, test.color, 0, test.format, test.type);
-  glErrorShouldBe(gl, gl.NO_ERROR,
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "gl.texImage2D with NPOT texture at level 0 should succeed");
 
   // Check that generateMipmap fails on NPOT
   gl.generateMipmap(gl.TEXTURE_2D);
-  glErrorShouldBe(gl, gl.INVALID_OPERATION,
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
       "gl.generateMipmap with NPOT texture should return INVALID_OPERATION");
 
   // Check that nothing is drawn if filtering is not correct for NPOT
@@ -149,7 +149,7 @@ tests.forEach(function(test) {
   wtu.checkCanvas(
       gl, [0, 0, 0, 255],
       "NPOT texture with TEXTURE_WRAP set to REPEAT should draw with 0,0,0,255");
-  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -159,7 +159,7 @@ tests.forEach(function(test) {
   wtu.checkCanvas(
       gl, [0, 0, 0, 255],
       "NPOT texture with TEXTURE_MIN_FILTER not NEAREST or LINEAR should draw with 0,0,0,255");
-  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
@@ -169,13 +169,13 @@ tests.forEach(function(test) {
       "NPOT texture with TEXTURE_MIN_FILTER set to LINEAR should draw.");
 
   gl.copyTexImage2D(gl.TEXTURE_2D, 1, test.format, 0, 0, 5, 3, 0);
-  glErrorShouldBe(gl, gl.INVALID_VALUE,
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
       "copyTexImage2D with NPOT texture with level > 0 should return INVALID_VALUE.");
 
   // Check that generateMipmap for an POT texture succeeds
   wtu.fillTexture(gl, tex, 4, 4, test.color, 0, test.format);
   gl.generateMipmap(gl.TEXTURE_2D);
-  glErrorShouldBe(gl, gl.NO_ERROR,
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "gl.texImage2D and gl.generateMipmap with POT texture at level 0 should succeed");
 
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
@@ -187,7 +187,7 @@ tests.forEach(function(test) {
   wtu.checkCanvas(
       gl, test.expected,
       "POT texture with TEXTURE_MIN_FILTER set to LINEAR_MIPMAP_LINEAR should draw.");
-  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 });
 
 debug("");
@@ -198,17 +198,17 @@ var tex = gl.createTexture();
 
 // Check that an NPOT texture not on level 0 generates INVALID_VALUE
 fillCubeTexture(gl, tex, 5, 3, [0, 192, 128, 255], 1);
-glErrorShouldBe(gl, gl.INVALID_VALUE,
+wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
     "gl.texImage2D with NPOT texture with level > 0 should return INVALID_VALUE");
 
 // Check that an NPOT texture on level 0 succeeds
 fillCubeTexture(gl, tex, 5, 5, [0, 192, 128, 255]);
-glErrorShouldBe(gl, gl.NO_ERROR,
+wtu.glErrorShouldBe(gl, gl.NO_ERROR,
     "gl.texImage2D with NPOT texture at level 0 should succeed");
 
 // Check that generateMipmap fails on NPOT
 gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-glErrorShouldBe(gl, gl.INVALID_OPERATION,
+wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
     "gl.generateMipmap with NPOT texture should return INVALID_OPERATION");
 
 var loc = gl.getUniformLocation(program, "tex");
@@ -224,7 +224,7 @@ wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 0, 0, 255],
     "NPOT cubemap with TEXTURE_WRAP set to REPEAT should draw with 0,0,0,255");
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -234,7 +234,7 @@ wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 0, 0, 255],
     "NPOT cubemap with TEXTURE_MIN_FILTER not NEAREST or LINEAR should draw with 0,0,0,255");
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
@@ -245,7 +245,7 @@ wtu.checkCanvas(
 
 // Check that an POT texture on level 0 succeeds
 fillCubeTexture(gl, tex, 4, 4, [0, 192, 128, 255]);
-glErrorShouldBe(gl, gl.NO_ERROR,
+wtu.glErrorShouldBe(gl, gl.NO_ERROR,
     "gl.texImage2D with POT texture at level 0 should succeed");
 
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
@@ -260,7 +260,7 @@ wtu.checkCanvas(
 
 // Check that generateMipmap succeeds on POT
 gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-glErrorShouldBe(gl, gl.NO_ERROR,
+wtu.glErrorShouldBe(gl, gl.NO_ERROR,
     "gl.generateMipmap with POT texture should return succeed");
 
 wtu.clearAndDrawUnitQuad(gl);

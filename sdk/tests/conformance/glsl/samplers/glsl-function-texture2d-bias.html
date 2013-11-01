@@ -112,7 +112,7 @@ for (var ii = 0; ii < colors.length; ++ii) {
       "256x256 texture drawn to 256x256 dest with bias = " + ii +
       " should be " + color.name);
 }
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 
 var successfullyParsed = true;
 

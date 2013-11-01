@@ -87,7 +87,7 @@ function init()
   gl.drawArrays(gl.TRIANGLES, 0, 6);
   wtu.checkCanvas(gl, [0,255,0,255], "should be green", 0);
 
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 init();

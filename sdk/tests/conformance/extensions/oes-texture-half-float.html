@@ -187,7 +187,7 @@ function allocateTexture()
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    glErrorShouldBe(gl, gl.NO_ERROR, "texture parameter setup should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texture parameter setup should succeed");
     return texture;
 }
 
@@ -208,13 +208,13 @@ function runTextureCreationTest(extensionEnabled, opt_format, opt_data, opt_expe
     var height = 2;
     gl.texImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, format, halfFloatOESEnum, data);
     if(!extensionEnabled) {
-        glErrorShouldBe(gl, gl.INVALID_ENUM, "Half floating point texture must be diallowed if OES_texture_half_float isn't enabled");
+        wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Half floating point texture must be diallowed if OES_texture_half_float isn't enabled");
         return;
     } else if (data) {
-        glErrorShouldBe(gl, gl.INVALID_OPERATION, "Half floating point texture allocation must be diallowed when ArrayBufferView is not-null");
+        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Half floating point texture allocation must be diallowed when ArrayBufferView is not-null");
         return;
     } else {
-        glErrorShouldBe(gl, gl.NO_ERROR, "Half floating point texture allocation should succeed if OES_texture_half_float is enabled");
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Half floating point texture allocation should succeed if OES_texture_half_float is enabled");
 
         gl.texImage2D(gl.TEXTURE_2D, 0, format, format, halfFloatOESEnum, colorCanvas);
         wtu.clearAndDrawUnitQuad(gl);
@@ -242,7 +242,7 @@ function runRenderTargetTest(testProgram)
     var height = 2;
     
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, ext.HALF_FLOAT_OES, null);
-    glErrorShouldBe(gl, gl.NO_ERROR, "Half floating point texture allocation should succeed if OES_texture_half_float is enabled");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Half floating point texture allocation should succeed if OES_texture_half_float is enabled");
 
     // Try to use this texture as render target
     var fbo = gl.createFramebuffer();
@@ -263,7 +263,7 @@ function runRenderTargetTest(testProgram)
                          ['vPosition'],
                          [0]);
     wtu.drawUnitQuad(gl);
-    glErrorShouldBe(gl, gl.NO_ERROR, "Rendering to half floating point texture should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Rendering to half floating point texture should succeed");
 
     // Now sample from the half floating-point texture and verify we got the correct values.
     var texturedShaders = [
@@ -281,7 +281,7 @@ function runRenderTargetTest(testProgram)
     gl.useProgram(testProgram);
     gl.uniform4fv(gl.getUniformLocation(testProgram, "subtractor"), [10000, 10000, 10000, 10000]);
     wtu.drawUnitQuad(gl);
-    glErrorShouldBe(gl, gl.NO_ERROR, "rendering from half floating point texture should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "rendering from half floating point texture should succeed");
     checkRenderingResults();
 }
 

@@ -122,7 +122,7 @@ function runNextTest() {
   if (testIndex < tests.length) {
     setTimeout(runNextTest, 10);
   } else {
-    glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
     debug("");
     finishTest();
   }

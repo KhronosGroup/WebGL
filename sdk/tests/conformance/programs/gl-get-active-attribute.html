@@ -78,7 +78,7 @@ for (var tt = 0; tt < tests.length; ++tt) {
       source.replace('$type', t.type).replace('$access', t.access),
       gl.VERTEX_SHADER);
   var program = wtu.setupProgram(gl, [vs, fs]);
-  glErrorShouldBe(gl, gl.NO_ERROR, "no errors from setup");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors from setup");
   var numAttribs = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
   var found = false;
   for (var ii = 0; ii < numAttribs; ++ii) {

@@ -244,40 +244,40 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
 
   // Try setting the value before using the program
   gl[typeInfo.setter](loc, srcValues);
-  glErrorShouldBe(gl, gl.INVALID_OPERATION,
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
                   "should fail if there is no current program");
 
   gl.useProgram(program);
   gl[typeInfo.setter](loc, srcValuesLess);
-  glErrorShouldBe(gl, gl.INVALID_VALUE,
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
                   "should fail with insufficient array size with gl." + typeInfo.setter);
   if (srcValuesNonMultiple) {
     gl[typeInfo.setter](loc, srcValuesNonMultiple);
-    glErrorShouldBe(gl, gl.INVALID_VALUE,
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
                     "should fail with non-multiple array size with gl." + typeInfo.setter);
   }
   gl[typeInfo.setter](loc, srcValues);
-  glErrorShouldBe(gl, gl.NO_ERROR,
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                   "can set an array of uniforms with gl." + typeInfo.setter);
   gl[typeInfo.setter](loc, srcValuesLessMultiple);
-  glErrorShouldBe(gl, gl.NO_ERROR,
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                   "can partially set an array of uniforms with gl." + typeInfo.setter + " with a smaller array");
   gl[typeInfo.setter](loc, srcValuesMoreMultiple);
-  glErrorShouldBe(gl, gl.NO_ERROR,
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                   "can set an array of uniforms with gl." + typeInfo.setter + " with a larger array");
 
   var values = gl.getUniform(program, loc);
-  glErrorShouldBe(gl, gl.NO_ERROR,
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                   "can call gl.getUniform");
   assertMsg(typeInfo.checkType(values),
             "gl.getUniform returns the correct type.");
   for (var ii = 0; ii < typeInfo.numSrcValues; ++ii) {
     var elemLoc = gl.getUniformLocation(program, "color[" + ii + "]");
-    glErrorShouldBe(gl, gl.NO_ERROR,
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                     "can get location of element " + ii +
                     " of array from gl.getUniformLocation");
     var value = gl.getUniform(program, elemLoc);
-    glErrorShouldBe(gl, gl.NO_ERROR,
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                     "can get value of element " + ii + " of array from gl.getUniform");
     assertMsg(typeInfo.checkValue(typeInfo, ii, value),
               "value put in (" + typeInfo.srcValueAsString(ii, srcValues) +
@@ -285,7 +285,7 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
               typeInfo.returnValueAsString(value) + ")");
   }
   typeInfo.invalidSet(loc);
-  glErrorShouldBe(gl, gl.INVALID_OPERATION,
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
                   "using the wrong size of gl.Uniform fails");
   var exceptionCaught = false;
   if (typeInfo.illegalSet) {
@@ -298,7 +298,7 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
   }
 
   gl.useProgram(null);
-  glErrorShouldBe(gl, gl.NO_ERROR,
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                   "can call gl.useProgram(null)");
 }
 
@@ -488,7 +488,7 @@ function runNextTest() {
   if (testIndex < tests.length) {
     setTimeout(runNextTest, 10);
   } else {
-    glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
     debug("");
     finishTest();
   }

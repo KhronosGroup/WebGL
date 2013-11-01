@@ -177,7 +177,7 @@ function checkTexture(width, height, cubeMap) {
       type + " of size " + width + "x" + height + " with mips should draw with " + color.name);
 
   gl.deleteTexture(tex);
-  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
   return true;
 }
 

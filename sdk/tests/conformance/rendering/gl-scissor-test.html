@@ -94,7 +94,7 @@ function test(canvas, attribs) {
       wtu.drawFloatColorQuad(gl, [0, 1, 0, 1]);
     });
 
-    glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
   }
 }
 

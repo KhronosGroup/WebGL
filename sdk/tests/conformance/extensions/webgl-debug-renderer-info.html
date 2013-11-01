@@ -99,11 +99,11 @@ function runTestDisabled() {
 
     var UNMASKED_VENDOR_WEBGL = 0x9245;
     gl.getParameter(UNMASKED_VENDOR_WEBGL);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "UNMASKED_VENDOR_WEBGL should not be queryable if extension is disabled");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "UNMASKED_VENDOR_WEBGL should not be queryable if extension is disabled");
 
     var UNMASKED_RENDERER_WEBGL = 0x9246;
     gl.getParameter(UNMASKED_RENDERER_WEBGL);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "UNMASKED_RENDERER_WEBGL should not be queryable if extension is disabled");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "UNMASKED_RENDERER_WEBGL should not be queryable if extension is disabled");
 }
 
 function runTestEnabled() {
@@ -111,11 +111,11 @@ function runTestEnabled() {
 
     shouldBe("ext.UNMASKED_VENDOR_WEBGL", "0x9245");
     gl.getParameter(ext.UNMASKED_VENDOR_WEBGL);
-    glErrorShouldBe(gl, gl.NO_ERROR, "UNMASKED_VENDOR_WEBGL query should succeed if extension is enable");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "UNMASKED_VENDOR_WEBGL query should succeed if extension is enable");
 
     shouldBe("ext.UNMASKED_RENDERER_WEBGL", "0x9246");
     gl.getParameter(ext.UNMASKED_RENDERER_WEBGL);
-    glErrorShouldBe(gl, gl.NO_ERROR, "UNMASKED_RENDERER_WEBGL query should succeed if extension is enable");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "UNMASKED_RENDERER_WEBGL query should succeed if extension is enable");
 }
 
 debug("");

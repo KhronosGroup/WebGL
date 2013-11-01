@@ -446,44 +446,44 @@ function testDXTTexture(test) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, data);
-    glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture");
     gl.generateMipmap(gl.TEXTURE_2D);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "trying to generate mipmaps from compressed texture");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "trying to generate mipmaps from compressed texture");
     wtu.clearAndDrawUnitQuad(gl);
     compareRect(width, height, test.channels, width, height, uncompressedData, data, format);
 
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 1, data);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "non 0 border");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "non 0 border");
 
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width + 4, height, 0, data);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height + 4, 0, data);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width - 4, height, 0, data);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height - 4, 0, data);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
 
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width - 1, height, 0, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width - 2, height, 0, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height - 1, 0, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height - 2, 0, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
 
     if (width == 4) {
       gl.compressedTexImage2D(gl.TEXTURE_2D, 1, format, 1, height, 0, data);
-      glErrorShouldBe(gl, gl.NO_ERROR, "valid dimensions for level > 0");
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "valid dimensions for level > 0");
       gl.compressedTexImage2D(gl.TEXTURE_2D, 1, format, 2, height, 0, data);
-      glErrorShouldBe(gl, gl.NO_ERROR, "valid dimensions for level > 0");
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "valid dimensions for level > 0");
     }
     if (height == 4) {
       gl.compressedTexImage2D(gl.TEXTURE_2D, 1, format, width, 1, 0, data);
-      glErrorShouldBe(gl, gl.NO_ERROR, "valid dimensions for level > 0");
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "valid dimensions for level > 0");
       gl.compressedTexImage2D(gl.TEXTURE_2D, 1, format, width, 2, 0, data);
-      glErrorShouldBe(gl, gl.NO_ERROR, "valid dimensions for level > 0");
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "valid dimensions for level > 0");
     }
 
     // pick a wrong format that uses the same amount of data.
@@ -504,33 +504,33 @@ function testDXTTexture(test) {
     }
 
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, wrongFormat, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "format does not match");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "format does not match");
 
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width + 4, height, format, data);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height + 4, format, data);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width - 4, height, format, data);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height - 4, format, data);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
 
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width - 1, height, format, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width - 2, height, format, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height - 1, format, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height - 2, format, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
 
     var subData = new Uint8Array(data.buffer, 0, getBlockSize(format));
 
     if (width == 8 && height == 8) {
         gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 1, 0, 4, 4, format, subData);
-        glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid offset");
+        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid offset");
         gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 1, 4, 4, format, subData);
-        glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid offset");
+        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid offset");
     }
 
     var stride = width * 4;
@@ -538,7 +538,7 @@ function testDXTTexture(test) {
         for (var xoff = 0; xoff < width; xoff += 4) {
             copyRect(uncompressedData, 0, 0, xoff, yoff, 4, 4, stride);
             gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, xoff, yoff, 4, 4, format, subData);
-            glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture");
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture");
             wtu.clearAndDrawUnitQuad(gl);
             compareRect(width, height, test.channels, width, height, uncompressedData, data, format);
         }

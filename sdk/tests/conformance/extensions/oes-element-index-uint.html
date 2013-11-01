@@ -107,7 +107,7 @@ for (var ii = 0; ii < 2; ++ii) {
             runVerifiesTooManyIndicesTests(drawType);
             runCrashWithBufferSubDataTests(drawType);
 
-            glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
         }
     }
 }
@@ -281,9 +281,9 @@ function runIndexValidationTests(drawType) {
     gl.vertexAttribPointer(normalLoc, 3, gl.FLOAT, false, 7 * sizeInBytes(gl.FLOAT), 4 * sizeInBytes(gl.FLOAT));
     gl.enableVertexAttribArray(normalLoc);
     shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     shouldBeUndefined('gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, 0)');
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
     debug("Testing with out-of-range indices");
 
@@ -294,15 +294,15 @@ function runIndexValidationTests(drawType) {
     gl.enableVertexAttribArray(vertexLoc);
     gl.disableVertexAttribArray(normalLoc);
     debug("Enable vertices, valid");
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     shouldBeUndefined('gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, 0)');
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     debug("Enable normals, out-of-range");
     gl.vertexAttribPointer(normalLoc, 3, gl.FLOAT, false, 7 * sizeInBytes(gl.FLOAT), 4 * sizeInBytes(gl.FLOAT));
     gl.enableVertexAttribArray(normalLoc);
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     shouldBeUndefined('gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, 0)');
-    glErrorShouldBe(gl, gl.INVALID_OPERATION);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION);
 
     debug("Test with enabled attribute that does not belong to current program");
 
@@ -310,16 +310,16 @@ function runIndexValidationTests(drawType) {
     var extraLoc = Math.max(vertexLoc, normalLoc) + 1;
     gl.enableVertexAttribArray(extraLoc);
     debug("Enable an extra attribute with null");
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     shouldBeUndefined('gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, 0)');
-    glErrorShouldBe(gl, gl.INVALID_OPERATION);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION);
     debug("Enable an extra attribute with insufficient data buffer");
     gl.vertexAttribPointer(extraLoc, 3, gl.FLOAT, false, 7 * sizeInBytes(gl.FLOAT), 4 * sizeInBytes(gl.FLOAT));
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     shouldBeUndefined('gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, 0)');
     debug("Pass large negative index to vertexAttribPointer");
     gl.vertexAttribPointer(normalLoc, 3, gl.FLOAT, false, 7 * sizeInBytes(gl.FLOAT), -2000000000 * sizeInBytes(gl.FLOAT));
-    glErrorShouldBe(gl, gl.INVALID_VALUE);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
     shouldBeUndefined('gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, 0)');
 }
 
@@ -355,7 +355,7 @@ function runResizedBufferTests(drawType) {
     debug("Test that updating the size of a vertex buffer is properly noticed by the WebGL implementation.");
 
     var program = wtu.setupProgram(gl, ["vs", "fs"], ["vPosition", "vColor"]);
-    glErrorShouldBe(gl, gl.NO_ERROR, "after initialization");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after initialization");
 
     var vertexObject = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
@@ -364,7 +364,7 @@ function runResizedBufferTests(drawType) {
          -1,-1,0, 1,1,0, 1,-1,0]), drawType);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
-    glErrorShouldBe(gl, gl.NO_ERROR, "after vertex setup");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after vertex setup");
 
     var texCoordObject = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, texCoordObject);
@@ -373,14 +373,14 @@ function runResizedBufferTests(drawType) {
          0,1, 1,0, 1,1]), drawType);
     gl.enableVertexAttribArray(1);
     gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
-    glErrorShouldBe(gl, gl.NO_ERROR, "after texture coord setup");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after texture coord setup");
 
     // Now resize these buffers because we want to change what we're drawing.
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
         -1,1,0, 1,1,0, -1,-1,0, 1,-1,0,
         -1,1,0, 1,1,0, -1,-1,0, 1,-1,0]), drawType);
-    glErrorShouldBe(gl, gl.NO_ERROR, "after vertex redefinition");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after vertex redefinition");
     gl.bindBuffer(gl.ARRAY_BUFFER, texCoordObject);
     gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array([
         255, 0, 0, 255,
@@ -392,7 +392,7 @@ function runResizedBufferTests(drawType) {
         0, 255, 0, 255,
         0, 255, 0, 255]), drawType);
     gl.vertexAttribPointer(1, 4, gl.UNSIGNED_BYTE, false, 0, 0);
-    glErrorShouldBe(gl, gl.NO_ERROR, "after texture coordinate / color redefinition");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after texture coordinate / color redefinition");
 
     var numQuads = 2;
     var indices = new Uint32Array(numQuads * 6);
@@ -409,9 +409,9 @@ function runResizedBufferTests(drawType) {
     var indexObject = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexObject);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, drawType);
-    glErrorShouldBe(gl, gl.NO_ERROR, "after setting up indices");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after setting up indices");
     gl.drawElements(gl.TRIANGLES, numQuads * 6, gl.UNSIGNED_INT, 0);
-    glErrorShouldBe(gl, gl.NO_ERROR, "after drawing");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after drawing");
 }
 
 function runVerifiesTooManyIndicesTests(drawType) {
@@ -446,7 +446,7 @@ function runCrashWithBufferSubDataTests(drawType) {
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, 256, drawType);
     var data = new Uint32Array(127);
     gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 64, data);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "after attempting to update a buffer outside of the allocated bounds");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "after attempting to update a buffer outside of the allocated bounds");
     testPassed("bufferSubData, when buffer object was initialized with null, did not crash");
 }
 

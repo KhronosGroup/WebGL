@@ -65,7 +65,7 @@ gl.clearColor(0,1,0,1);
 gl.clear(gl.COLOR_BUFFER_BIT);
 wtu.waitForComposite(gl, function() {
   gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
-  glErrorShouldBe(gl, gl.NO_ERROR, "no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors");
 });
 </script>
 </body>

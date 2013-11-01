@@ -217,7 +217,7 @@ function testSize(size) {
   return true;
 }
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 
 function checkRect(x, y, width, height, color) {
   wtu.checkCanvasRect(

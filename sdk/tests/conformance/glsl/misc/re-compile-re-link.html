@@ -162,7 +162,7 @@ for (var i = 0; i < 10; ++i) {
   checkProgramStatus(program)
 }
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
 
 var successfullyParsed = true;
 </script>

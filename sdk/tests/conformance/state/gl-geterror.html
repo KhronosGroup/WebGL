@@ -48,11 +48,11 @@ var tex = gl.createTexture();
 gl.bindTexture(gl.TEXTURE_2D, tex);
 
 gl.enable(desktopGL.ALPHA_TEST);
-glErrorShouldBe(gl, gl.INVALID_ENUM, "should generate INVALID_ENUM");
+wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "should generate INVALID_ENUM");
 gl.viewport(-1, -1, -1, -1);
-glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE");
+wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE");
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-glErrorShouldBe(gl, gl.INVALID_OPERATION, "should generate INVALID_OPERATION");
+wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "should generate INVALID_OPERATION");
 
 // Generate 2 errors of each type for 6 total possible errors.
 // The OpenGL ES 2.0 spec section 2.5 says the implementation is allowed to

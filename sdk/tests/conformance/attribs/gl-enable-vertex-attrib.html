@@ -69,10 +69,10 @@ gl.enableVertexAttribArray(0);
 gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
 
 gl.enableVertexAttribArray(3);
-glErrorShouldBe(gl, gl.NO_ERROR);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 gl.drawArrays(gl.TRIANGLES, 0, 3);
-glErrorShouldBe(gl, gl.INVALID_OPERATION);
+wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION);
 
 var successfullyParsed = true;
 </script>

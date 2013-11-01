@@ -139,7 +139,7 @@ function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
     function runTest3(image) {
         runTestOnImage(image);
 
-        glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
         finishTest();
     }
 

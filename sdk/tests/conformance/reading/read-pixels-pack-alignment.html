@@ -186,7 +186,7 @@ function runTestIteration(format, type, packAlignment, width, height)
     gl.clearColor(1, 0.4, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.pixelStorei(gl.PACK_ALIGNMENT, packAlignment);
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     var bytesPerPixel = calculatePixelBytes(format, type);
     var padding = calculatePaddingBytes(bytesPerPixel, packAlignment, width);
     var size = bytesPerPixel * width * height + padding * (height - 1);
@@ -198,11 +198,11 @@ function runTestIteration(format, type, packAlignment, width, height)
     array = new Uint8Array(size);
     gl.readPixels(0, 0, width, height, format, type, array);
     if (width < 0 || height < 0) {
-        glErrorShouldBe(gl, gl.INVALID_VALUE);
+        wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
         return;
     }
 
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     if (!array.length)
         return;
 

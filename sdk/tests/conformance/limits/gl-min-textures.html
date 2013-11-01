@@ -80,7 +80,7 @@ for (var ii = 0; ii < 8; ++ii) {
 }
 
 wtu.clearAndDrawUnitQuad(gl);
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 wtu.checkCanvas(gl, [255, 128, 64, 252],
                 "Should render using all texture units", 1);
 

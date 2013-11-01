@@ -100,7 +100,7 @@ for (var ii = 0; ii < 128; ++ii) {
 }
 
 wtu.clearAndDrawUnitQuad(gl);
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 wtu.checkCanvasRect(gl, 0, 0, gl.canvas.width, gl.canvas.height, [255, 127, 64, 255], "Should render 255,127,64,32 (+/-1)", 1);
 
 //------------------------------------------------------------------------------
@@ -111,9 +111,9 @@ for (var ii = 0; ii < 16; ++ii) {
   gl.uniform4f(loc, 16/2048, 16/1024, 16/512, ii);
 }
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 wtu.clearAndDrawUnitQuad(gl);
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 wtu.checkCanvasRect(gl, 0, 0, gl.canvas.width, gl.canvas.height, [32, 64, 127, 255], "Should render 32,64,127,255 (+/-1)", 1);
 
 var successfullyParsed = true;

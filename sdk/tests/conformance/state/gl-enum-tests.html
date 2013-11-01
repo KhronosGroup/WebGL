@@ -62,7 +62,7 @@ if (!gl) {
   var buf = new Uint16Array(buffer);
   var tex = gl.createTexture();
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-  glErrorShouldBe(gl, gl.NO_ERROR);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
   var tests = [
     "gl.bindTexture(desktopGL['TEXTURE_3D'], tex)",
@@ -83,12 +83,12 @@ if (!gl) {
   ];
   for (var ii = 0; ii < tests.length; ++ii) {
     TestEval(tests[ii]);
-    glErrorShouldBe(gl, gl.INVALID_ENUM,
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
               tests[ii] + " should return INVALID_ENUM.");
   }
 
   gl.bindTexture(gl.TEXTURE_2D, tex);
-  glErrorShouldBe(gl, gl.NO_ERROR);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
   tests = [
     "gl.getTexParameter(gl.TEXTURE_2D, desktopGL['GENERATE_MIPMAP'])",
@@ -97,7 +97,7 @@ if (!gl) {
   ];
   for (var ii = 0; ii < tests.length; ++ii) {
     TestEval(tests[ii]);
-    glErrorShouldBe(gl, gl.INVALID_ENUM,
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
               tests[ii] + " should return INVALID_ENUM.");
   }
 }
