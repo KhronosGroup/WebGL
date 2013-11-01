@@ -64,6 +64,7 @@ canvas {
 description();
 
 var wtu = WebGLTestUtils;
+var shouldGenerateGLError = wtu.shouldGenerateGLError;
 var canvas1 = document.getElementById("canvas1");
 var gl = wtu.create3DContext(canvas1);
 var gl2;

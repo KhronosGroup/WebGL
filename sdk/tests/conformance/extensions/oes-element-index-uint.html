@@ -341,14 +341,14 @@ function runCopiesIndicesTests(drawType) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexObject);
     var indices = new Uint32Array([ 10000, 0, 1, 2, 3, 10000 ]);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, drawType);
-    shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 4)");
-    shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 0)");
-    shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 8)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 4)");
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 0)");
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 8)");
     indices[0] = 2;
     indices[5] = 1;
-    shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 4)");
-    shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 0)");
-    shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 8)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 4)");
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 0)");
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 8)");
 }
 
 function runResizedBufferTests(drawType) {
@@ -433,9 +433,9 @@ function runVerifiesTooManyIndicesTests(drawType) {
     debug("Test out of range indices")
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexObject);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array([ 10000, 0, 1, 2, 3, 10000 ]), drawType);
-    shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 4)");
-    shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 0)");
-    shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 8)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 4)");
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 0)");
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawElements(gl.TRIANGLE_STRIP, 4, gl.UNSIGNED_INT, 8)");
 }
 
 function runCrashWithBufferSubDataTests(drawType) {

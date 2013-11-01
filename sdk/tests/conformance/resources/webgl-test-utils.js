@@ -1216,10 +1216,10 @@ function create3DContextWithWrapperThatThrowsOnGLError(canvas) {
 /**
  * Tests that an evaluated expression generates a specific GL error.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @param {number} glError The expected gl error.
- * @param {string} evalSTr The string to evaluate.
+ * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
+ * @param {string} evalStr The string to evaluate.
  */
-var shouldGenerateGLError = function(gl, glError, evalStr) {
+var shouldGenerateGLError = function(gl, glErrors, evalStr) {
   var exception;
   try {
     eval(evalStr);
@@ -1229,12 +1229,7 @@ var shouldGenerateGLError = function(gl, glError, evalStr) {
   if (exception) {
     testFailed(evalStr + " threw exception " + exception);
   } else {
-    var err = gl.getError();
-    if (err != glError) {
-      testFailed(evalStr + " expected: " + glEnumToString(gl, glError) + ". Was " + glEnumToString(gl, err) + ".");
-    } else {
-      testPassed(evalStr + " was expected value: " + glEnumToString(gl, glError) + ".");
-    }
+    glErrorShouldBe(gl, glErrors, "after evaluating: " + evalStr);
   }
 };
 

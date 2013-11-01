@@ -443,7 +443,7 @@ testInvalidArgument(
     }
 );
 var numVertexAttribs = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
-shouldGenerateGLError(gl, gl.INVALID_VALUE, 'gl.getVertexAttrib(' + numVertexAttribs + ', gl.CURRENT_VERTEX_ATTRIB)');
+wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, 'gl.getVertexAttrib(' + numVertexAttribs + ', gl.CURRENT_VERTEX_ATTRIB)');
 
 debug("");
 debug("Test cases where name == 0");

@@ -54,47 +54,47 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setup should succeed");
 
 debug("");
 debug("Verify that constant color and constant alpha cannot be used together as source and destination factors in the blend function");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.CONSTANT_COLOR, gl.CONSTANT_ALPHA)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.ONE_MINUS_CONSTANT_COLOR, gl.CONSTANT_ALPHA)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.CONSTANT_COLOR, gl.ONE_MINUS_CONSTANT_ALPHA)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.ONE_MINUS_CONSTANT_COLOR, gl.ONE_MINUS_CONSTANT_ALPHA)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.CONSTANT_ALPHA, gl.CONSTANT_COLOR)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.CONSTANT_ALPHA, gl.ONE_MINUS_CONSTANT_COLOR)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.ONE_MINUS_CONSTANT_ALPHA, gl.CONSTANT_COLOR)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE_MINUS_CONSTANT_COLOR)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.CONSTANT_COLOR, gl.CONSTANT_ALPHA)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.ONE_MINUS_CONSTANT_COLOR, gl.CONSTANT_ALPHA)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.CONSTANT_COLOR, gl.ONE_MINUS_CONSTANT_ALPHA)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.ONE_MINUS_CONSTANT_COLOR, gl.ONE_MINUS_CONSTANT_ALPHA)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.CONSTANT_ALPHA, gl.CONSTANT_COLOR)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.CONSTANT_ALPHA, gl.ONE_MINUS_CONSTANT_COLOR)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.ONE_MINUS_CONSTANT_ALPHA, gl.CONSTANT_COLOR)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFunc(gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE_MINUS_CONSTANT_COLOR)");
 
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.CONSTANT_COLOR, gl.CONSTANT_ALPHA, gl.ONE, gl.ZERO)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.ONE_MINUS_CONSTANT_COLOR, gl.CONSTANT_ALPHA, gl.ONE, gl.ZERO)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.CONSTANT_COLOR, gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE, gl.ZERO)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.ONE_MINUS_CONSTANT_COLOR, gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE, gl.ZERO)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.CONSTANT_ALPHA, gl.CONSTANT_COLOR, gl.ONE, gl.ZERO)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.CONSTANT_ALPHA, gl.ONE_MINUS_CONSTANT_COLOR, gl.ONE, gl.ZERO)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.ONE_MINUS_CONSTANT_ALPHA, gl.CONSTANT_COLOR, gl.ONE, gl.ZERO)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE_MINUS_CONSTANT_COLOR, gl.ONE, gl.ZERO)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.CONSTANT_COLOR, gl.CONSTANT_ALPHA, gl.ONE, gl.ZERO)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.ONE_MINUS_CONSTANT_COLOR, gl.CONSTANT_ALPHA, gl.ONE, gl.ZERO)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.CONSTANT_COLOR, gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE, gl.ZERO)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.ONE_MINUS_CONSTANT_COLOR, gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE, gl.ZERO)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.CONSTANT_ALPHA, gl.CONSTANT_COLOR, gl.ONE, gl.ZERO)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.CONSTANT_ALPHA, gl.ONE_MINUS_CONSTANT_COLOR, gl.ONE, gl.ZERO)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.ONE_MINUS_CONSTANT_ALPHA, gl.CONSTANT_COLOR, gl.ONE, gl.ZERO)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.blendFuncSeparate(gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE_MINUS_CONSTANT_COLOR, gl.ONE, gl.ZERO)");
 
 debug("");
 debug("Verify that in depthRange zNear <= zFar");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.depthRange(20, 10)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.depthRange(20, 10)");
 
 debug("");
 debug("Verify that front/back settings should be the same for stenclMask and stencilFunc");
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMask(255)");
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMaskSeparate(gl.FRONT, 1)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMaskSeparate(gl.BACK, 1)");
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMask(255)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMaskSeparate(gl.FRONT, 1)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMaskSeparate(gl.BACK, 1)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
 
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFunc(gl.ALWAYS, 0, 255)");
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 1, 255)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 1, 255)");
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 1, 1)");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 1, 1)");
-shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFunc(gl.ALWAYS, 0, 255)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 1, 255)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 1, 255)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 1, 1)");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 1, 1)");
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
 
 debug("");
 debug("Verify that IMPLEMENTATION_COLOR_READ_FORMAT and IMPLEMENTATION_COLOR_READ_TYPE are undefined");
@@ -121,8 +121,8 @@ shouldBeTrue("gl.drawingBufferWidth >= 0 && gl.drawingBufferHeight >= 0");
 
 debug("");
 debug("Verify that bindAttribLocation rejects names start with webgl_ or _webgl_");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindAttribLocation(program, 0, 'webgl_a')");
-shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindAttribLocation(program, 0, '_webgl_a')");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindAttribLocation(program, 0, 'webgl_a')");
+wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindAttribLocation(program, 0, '_webgl_a')");
 
 var successfullyParsed = true;
 </script>

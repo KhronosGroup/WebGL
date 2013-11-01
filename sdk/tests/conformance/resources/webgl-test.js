@@ -32,34 +32,3 @@ function getGLErrorAsString(ctx, err) {
   }
   return "0x" + err.toString(16);
 }
-
-// Pass undefined for glError to test that it at least throws some error
-function shouldGenerateGLError(ctx, glErrors, evalStr) {
-  if (!glErrors.length) {
-    glErrors = [glErrors];
-  }
-  var exception;
-  try {
-    eval(evalStr);
-  } catch (e) {
-    exception = e;
-  }
-  if (exception) {
-    testFailed(evalStr + " threw exception " + exception);
-  } else {
-    var err = ctx.getError();
-    var errStrs = [];
-    for (var ii = 0; ii < glErrors.length; ++ii) {
-      errStrs.push(getGLErrorAsString(ctx, glErrors[ii]));
-    }
-    var expected = errStrs.join(" or ");
-    if (glErrors.indexOf(err) < 0) {
-      testFailed(evalStr + " expected: " + expected + ". Was " + getGLErrorAsString(ctx, err) + ".");
-    } else {
-      var msg = (glErrors.length == 1) ? " generated expected GL error: " :
-                                         " generated one of expected GL errors: ";
-      testPassed(evalStr + msg + expected + ".");
-    }
-  }
-}
-

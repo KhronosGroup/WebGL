@@ -230,13 +230,13 @@ function runEnumTestEnabled() {
 
   debug("Testing drawBuffersWEBGL with default drawing buffer");
   shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.BACK");
-  shouldGenerateGLError(gl, gl.INVALID_VALUE, "ext.drawBuffersWEBGL([])");
-  shouldGenerateGLError(gl, gl.INVALID_VALUE, "ext.drawBuffersWEBGL([gl.NONE, gl.NONE])");
-  shouldGenerateGLError(gl, gl.INVALID_OPERATION, "ext.drawBuffersWEBGL([ext.COLOR_ATTACHMENT0_WEBGL])");
+  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, "ext.drawBuffersWEBGL([])");
+  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, "ext.drawBuffersWEBGL([gl.NONE, gl.NONE])");
+  wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "ext.drawBuffersWEBGL([ext.COLOR_ATTACHMENT0_WEBGL])");
   shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.BACK");
-  shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.NONE])");
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.NONE])");
   shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.NONE");
-  shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.BACK])");
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.BACK])");
   shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.BACK");
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
