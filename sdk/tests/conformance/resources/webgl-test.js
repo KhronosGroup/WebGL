@@ -21,16 +21,6 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
-function webglTestLog(msg) {
-  if (window.console && window.console.log) {
-    window.console.log(msg);
-  }
-  if (document.getElementById("console")) {
-    var log = document.getElementById("console");
-    log.innerHTML += msg + "<br>";
-  }
-}
-
 function getGLErrorAsString(ctx, err) {
   if (err === ctx.NO_ERROR) {
     return "NO_ERROR";
