@@ -63,6 +63,10 @@ var loggingOff = function() {
  * @return {string} The enum as a string.
  */
 var glEnumToString = function(gl, value) {
+  // Optimization for the most common enum:
+  if (value === gl.NO_ERROR) {
+    return "NO_ERROR";
+  }
   for (var p in gl) {
     if (gl[p] == value) {
       return p;
@@ -1167,24 +1171,6 @@ var create3DContext = function(opt_canvas, opt_attributes) {
 }
 
 /**
- * Gets a GLError value as a string.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @param {number} err The webgl error as retrieved from gl.getError().
- * @return {string} the error as a string.
- */
-var getGLErrorAsString = function(gl, err) {
-  if (err === gl.NO_ERROR) {
-    return "NO_ERROR";
-  }
-  for (var name in gl) {
-    if (gl[name] === err) {
-      return name;
-    }
-  }
-  return err.toString();
-};
-
-/**
  * Wraps a WebGL function with a function that throws an exception if there is
  * an error.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
@@ -1196,7 +1182,7 @@ var createGLErrorWrapper = function(context, fname) {
     var rv = context[fname].apply(context, arguments);
     var err = context.getError();
     if (err != context.NO_ERROR)
-      throw "GL error " + getGLErrorAsString(context, err) + " in " + fname;
+      throw "GL error " + glEnumToString(context, err) + " in " + fname;
     return rv;
   };
 };
@@ -1245,9 +1231,9 @@ var shouldGenerateGLError = function(gl, glError, evalStr) {
   } else {
     var err = gl.getError();
     if (err != glError) {
-      testFailed(evalStr + " expected: " + getGLErrorAsString(gl, glError) + ". Was " + getGLErrorAsString(gl, err) + ".");
+      testFailed(evalStr + " expected: " + glEnumToString(gl, glError) + ". Was " + glEnumToString(gl, err) + ".");
     } else {
-      testPassed(evalStr + " was expected value: " + getGLErrorAsString(gl, glError) + ".");
+      testPassed(evalStr + " was expected value: " + glEnumToString(gl, glError) + ".");
     }
   }
 };
@@ -1262,11 +1248,11 @@ var glErrorShouldBe = function(gl, glError, opt_msg) {
   opt_msg = opt_msg || "";
   var err = gl.getError();
   if (err != glError) {
-    testFailed("getError expected: " + getGLErrorAsString(gl, glError) +
-               ". Was " + getGLErrorAsString(gl, err) + " : " + opt_msg);
+    testFailed("getError expected: " + glEnumToString(gl, glError) +
+               ". Was " + glEnumToString(gl, err) + " : " + opt_msg);
   } else {
     testPassed("getError was expected value: " +
-                getGLErrorAsString(gl, glError) + " : " + opt_msg);
+                glEnumToString(gl, glError) + " : " + opt_msg);
   }
 };
 
