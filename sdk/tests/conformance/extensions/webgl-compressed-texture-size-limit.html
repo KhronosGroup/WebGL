@@ -51,7 +51,7 @@ function numLevelsFromSize(size) {
   return levels;
 }
 
-// More formats can be added here when more texture compression extensions is enabled in WebGL.
+// More formats can be added here when more texture compression extensions are enabled in WebGL.
 var validFormats = {
     COMPRESSED_RGB_S3TC_DXT1_EXT        : 0x83F0,
     COMPRESSED_RGBA_S3TC_DXT1_EXT       : 0x83F1,
@@ -76,15 +76,16 @@ function func2 (width, height)
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
 var tests = [
-  // More tests can be added here when more texture compression extensions is enabled in WebGL.
-  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGB_S3TC_DXT1_EXT, dataType: Uint8Array, func: func1},
-  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGBA_S3TC_DXT1_EXT, dataType: Uint8Array, func: func1},
-  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGBA_S3TC_DXT3_EXT, dataType: Uint8Array, func: func2},
-  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGBA_S3TC_DXT5_EXT, dataType: Uint8Array, func: func2},
+  // More tests can be added here when more texture compression extensions are enabled in WebGL.
+  // Level 0 image width and height must be a multiple of the sizeStep.
+  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGB_S3TC_DXT1_EXT, dataType: Uint8Array, func: func1, sizeStep: 4},
+  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGBA_S3TC_DXT1_EXT, dataType: Uint8Array, func: func1, sizeStep: 4},
+  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGBA_S3TC_DXT3_EXT, dataType: Uint8Array, func: func2, sizeStep: 4},
+  { extension: "WEBGL_compressed_texture_s3tc", format: validFormats.COMPRESSED_RGBA_S3TC_DXT5_EXT, dataType: Uint8Array, func: func2, sizeStep: 4},
 ];
 
 // Note: We expressly only use 2 textures because first a texture will be defined
-// as using all mips of 1 format, then for a moment it will have mixed formats which
+// using all mip levels of 1 format, then for a moment it will have mixed formats which
 // may uncover bugs.
 var targets = [
   { target: gl.TEXTURE_2D,
@@ -105,6 +106,20 @@ var targets = [
     ]
   }
 ];
+
+// Share an ArrayBuffer among tests to avoid too many large allocations
+var sharedArrayBufferSize = 0;
+for (var tt = 0; tt < tests.length; ++tt) {
+  var test = tests[tt];
+  for (var trg = 0; trg < targets.length; ++trg) {
+    var t = targets[trg];
+    var sizeNeeded = test.func(t.maxSize + test.sizeStep, t.maxSize + test.sizeStep);
+    if (sizeNeeded > sharedArrayBufferSize) {
+      sharedArrayBufferSize = sizeNeeded;
+    }
+  }
+}
+var sharedArrayBuffer = new ArrayBuffer(sharedArrayBufferSize);
 
 gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
 
@@ -155,26 +170,26 @@ function testFormatType(t, test) {
 
       // positive test
       for (var i = 0, size = t.maxSize; i < numLevels; i++, size /= 2) {
-        var pixels = new test.dataType(test.func(size, size));
+        var pixels = new test.dataType(sharedArrayBuffer, 0, test.func(size, size));
         gl.compressedTexImage2D(target, i, test.format, size, size, 0, pixels);
         wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture should generate NO_ERROR."
             + "level is " + i + ", size is " + size + "x" + size);
       }
 
-      // out of bound test
-      // width or height out of bound
-      var pixelsNegativeTest1 = new test.dataType(test.func(t.maxSize * 2, t.maxSize * 2));
-      gl.compressedTexImage2D(target, 0, test.format, t.maxSize * 2, t.maxSize * 2, 0, pixelsNegativeTest1);
-      wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound: should generate INVALID_VALUE."
-          + " level is 0, size is " + (t.maxSize * 2) + "x" + (t.maxSize * 2));
-      // level out of bound
-      var pixelsNegativeTest2 = new test.dataType(test.func(256, 256));
+      // out of bounds tests
+      // width and height out of bounds
+      var pixelsNegativeTest1 = new test.dataType(sharedArrayBuffer, 0, test.func(t.maxSize + test.sizeStep, t.maxSize + test.sizeStep));
+      gl.compressedTexImage2D(target, 0, test.format, t.maxSize + test.sizeStep, t.maxSize + test.sizeStep, 0, pixelsNegativeTest1);
+      wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bounds: should generate INVALID_VALUE."
+          + " level is 0, size is " + (t.maxSize + test.sizeStep) + "x" + (t.maxSize + test.sizeStep));
+      // level out of bounds
+      var pixelsNegativeTest2 = new test.dataType(sharedArrayBuffer, 0, test.func(256, 256));
       gl.compressedTexImage2D(target, numLevels, test.format, 256, 256, 0, pixelsNegativeTest2);
-      wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "level out of bound: should generate INVALID_VALUE."
+      wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "level out of bounds: should generate INVALID_VALUE."
           + " level is " + numLevels + ", size is 256x256");
-      //width or height out of bound for specified level
+      //width and height out of bounds for specified level
       gl.compressedTexImage2D(target, numLevels - 1, test.format, 256, 256, 0, pixelsNegativeTest2);
-      wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound for specified level: should generate INVALID_VALUE."
+      wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bounds for specified level: should generate INVALID_VALUE."
           + " level is " + (numLevels - 1) + ", size is 256x256");
     }
   }

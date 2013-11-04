@@ -40,7 +40,7 @@
 <div id="console"></div>
 <script>
 "use strict";
-description("Checks that various sizes limits of textures ")
+description("Checks various size limits of textures")
 var canvas;
 
 function numLevelsFromSize(size) {
@@ -65,7 +65,7 @@ var tests = [
 ];
 
 // Note: We expressly only use 2 textures because first a texture will be defined
-// as using all mips of 1 format, then for a moment it will have mixed formats which
+// using all mip levels of 1 format, then for a moment it will have mixed formats which
 // may uncover bugs.
 var targets = [
   { target: gl.TEXTURE_2D,
@@ -132,19 +132,18 @@ function testFormatType(t, test) {
     var numLevels = numLevelsFromSize(t.maxSize);
     var numTestLevels = Math.min(numLevels, t.maxLevel);
 
-    // out of bound test
-    var pixelsNegativeTest = new test.dataType((t.maxSize + 1) * (t.maxSize + 1) * 4);
-    // level out of bound
-    gl.texImage2D(target, numLevels, test.format, 1, 1, 0, test.format, test.type, pixelsNegativeTest);
-    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "level out of bound: should generate INVALID_VALUE: level is: "
+    // out of bounds tests
+    // level out of bounds
+    gl.texImage2D(target, numLevels, test.format, 1, 1, 0, test.format, test.type, null);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "level out of bounds: should generate INVALID_VALUE: level is: "
         + numLevels + ", size is 1x1.");
-    // width or height out of bound
-    gl.texImage2D(target, 0, test.format, t.maxSize + 1, t.maxSize + 1, 0, test.format, test.type, pixelsNegativeTest);
-    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound: should generate INVALID_VALUE: level is 0, size is "
+    // width and height out of bounds
+    gl.texImage2D(target, 0, test.format, t.maxSize + 1, t.maxSize + 1, 0, test.format, test.type, null);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bounds: should generate INVALID_VALUE: level is 0, size is "
         + (t.maxSize + 1) + "x" + (t.maxSize + 1));
-    // width or height out of bound for specified level
-    gl.texImage2D(target, (numLevels - 1), test.format, 4, 4, 0, test.format, test.type, pixelsNegativeTest);
-    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound for specified level: should generate INVALID_VALUE: levle is "
+    // width and height out of bounds for specified level
+    gl.texImage2D(target, (numLevels - 1), test.format, 4, 4, 0, test.format, test.type, null);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bounds for specified level: should generate INVALID_VALUE: level is "
         + (numLevels - 1) + ", size is 4x4.");
 
     for (var l = 0; l < numTestLevels; ++l) {
