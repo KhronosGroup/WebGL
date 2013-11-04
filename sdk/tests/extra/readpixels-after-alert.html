@@ -34,7 +34,6 @@
 <script src="../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../debug/webgl-debug.js"></script>
 <script src="../resources/js-test-pre.js"></script>
-<script src="../conformance/resources/webgl-test.js"></script>
 <script src="../conformance/resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -66,13 +65,13 @@ function init() {
   var gl = wtu.create3DContext("canvas");
   gl.clearColor(1, 0, 0, 1);
   gl.clear(gl.COLOR_BUFFER_BIT);
-  glErrorShouldBe(gl, gl.NO_ERROR, "setup should succeed");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "setup should succeed");
 
   wtu.checkCanvas(gl, [255, 0, 0, 255], undefined, 3);
 
   alert("Click me to continue");
 
-  glErrorShouldBe(gl, gl.NO_ERROR, "setup should succeed");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "setup should succeed");
   wtu.checkCanvas(gl, [255, 0, 0, 255], undefined, 3);
 
   alert("Click me to continue");

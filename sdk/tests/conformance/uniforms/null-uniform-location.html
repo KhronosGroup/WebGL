@@ -31,7 +31,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -46,7 +45,7 @@ var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext();
 var program = wtu.loadStandardProgram(gl);
 
-glErrorShouldBe(gl, gl.NO_ERROR);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 shouldBeUndefined("gl.useProgram(program)");
 var floatArray = new Float32Array([1, 2, 3, 4]);
 var intArray = new Int32Array([1, 2, 3, 4]);
@@ -92,7 +91,7 @@ var callString;
 for (var i = 0; i < funcs.length; i++) {
   callString = "callUniformFunction('" + funcs[i] + "')";
   shouldBeUndefined(callString);
-  glErrorShouldBe(gl, gl.NO_ERROR);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 }
 
 var successfullyParsed = true;

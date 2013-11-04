@@ -32,7 +32,6 @@
 <title>WebGL Delayed Drawing test.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -46,7 +45,7 @@ var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
 var program = wtu.setupTexturedQuad(gl);
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
 var tex = gl.createTexture();
 wtu.fillTexture(gl, tex, 5, 3, [0, 192, 128, 255]);
@@ -70,9 +69,9 @@ function step2() {
 }
 
 function drawAndCheck() {
-  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors before drawing.");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors before drawing.");
   wtu.clearAndDrawUnitQuad(gl);
-  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from drawing.");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from drawing.");
   wtu.checkCanvas(
       gl, [0, 192, 128, 255],
       "draw should be 0, 192, 128, 255");

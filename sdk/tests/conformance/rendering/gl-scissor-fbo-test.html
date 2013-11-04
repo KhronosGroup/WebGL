@@ -32,7 +32,6 @@
 <title>WebGL Scissor FBO Test</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -123,7 +122,7 @@ if (!gl) {
   testScissor(0, 0, 12, 10, "test scissor at 0,0");
   testScissor(0, 0, 16, 16, "test scissor with size that matches drawingbuffer");
 
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 debug("");

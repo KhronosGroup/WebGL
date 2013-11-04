@@ -32,7 +32,6 @@
 <title>Test that contexts are freed and garbage collected reasonably</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -62,7 +61,7 @@ function test() {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE,
                 new Uint8Array(size * size * 4));
   gl.clear(gl.COLOR_BUFFER_BIT);
-  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
 }
 
 function doNextTest() {

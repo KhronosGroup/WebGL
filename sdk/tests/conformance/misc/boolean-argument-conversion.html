@@ -31,7 +31,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 <script src="../../resources/test-eval.js"></script>
 </head>
@@ -59,7 +58,7 @@ var aloc = gl.getAttribLocation(program, "a_vertex");
 
 gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from initialization.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from initialization.");
 assertMsg(uloc, "Uniform not found");
 assertMsg(aloc >= 0, "Attribute not found");
 

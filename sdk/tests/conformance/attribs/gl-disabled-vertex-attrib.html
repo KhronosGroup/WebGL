@@ -32,7 +32,6 @@
 <title>WebGL Disabled Vertex Attrib Test</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -90,7 +89,7 @@ for (var ii = 0; ii < numVertexAttribs; ++ii) {
   wtu.clearAndDrawIndexedQuad(gl, gridRes);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 }
-glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 
 var successfullyParsed = true;
 </script>

@@ -33,7 +33,6 @@
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
 <script src="../../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../../resources/js-test-pre.js"></script>
-<script src="../../resources/webgl-test.js"></script>
 <script src="../../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -93,7 +92,7 @@ function test() {
   wtu.checkCanvasRect(gl, 0, 0, 256, 256, [255, 0, 0, 255]);
   wtu.checkCanvasRect(gl, 256, 0, 256, 256, [0, 255, 0, 255]);
 
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 test();
 var successfullyParsed = true;

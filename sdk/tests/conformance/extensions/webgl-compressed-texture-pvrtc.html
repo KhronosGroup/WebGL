@@ -31,7 +31,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 <title>WebGL WEBGL_compressed_texture_pvrtc Conformance Tests</title>
 <style>
@@ -246,35 +245,35 @@ function testPVRTCTexture(test) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, data);
-    glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture");
     gl.generateMipmap(gl.TEXTURE_2D);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "trying to generate mipmaps from compressed texture");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "trying to generate mipmaps from compressed texture");
     wtu.clearAndDrawUnitQuad(gl);
     compareRect(width, height, test.channels, width, height, uncompressedData, data, format);
 
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 1, data);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "non 0 border");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "non 0 border");
 
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width - 1, height, 0, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width - 2, height, 0, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height - 1, 0, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height - 2, 0, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
 
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, format, data);
-    glErrorShouldBe(gl, gl.NO_ERROR, "compressedTexSubImage2D allowed for reloading of complete textures");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "compressedTexSubImage2D allowed for reloading of complete textures");
 
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width - 2, height, format, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "compressedTexSubImage2D not allowed for partial texture updates");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "compressedTexSubImage2D not allowed for partial texture updates");
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height - 2, format, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "compressedTexSubImage2D not allowed for partial texture updates");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "compressedTexSubImage2D not allowed for partial texture updates");
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 2, 0, width - 2, height, format, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "compressedTexSubImage2D not allowed for partial texture updates");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "compressedTexSubImage2D not allowed for partial texture updates");
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 2, width, height - 2, format, data);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "compressedTexSubImage2D not allowed for partial texture updates");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "compressedTexSubImage2D not allowed for partial texture updates");
 }
 
 function insertImg(element, caption, img) {

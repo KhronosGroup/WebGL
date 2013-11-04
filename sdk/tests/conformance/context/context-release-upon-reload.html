@@ -33,7 +33,7 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <iframe id="host" style="width: 256px; height: 256px; border: 0;"></iframe>
@@ -42,6 +42,8 @@
 <script>
 "use strict";
 description("This test ensures that WebGL contexts are released properly upon page reload");
+
+var wtu = WebGLTestUtils;
 
 var host = document.getElementById("host");
 var testIterations = 25;
@@ -62,7 +64,7 @@ function testContext() {
   var gl = host.contentWindow.glContext;
   assertMsg(gl != null, "context was created properly");
 
-  glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
 
   if(gl.canvas.width != gl.drawingBufferWidth ||
     gl.canvas.height != gl.drawingBufferHeight) {

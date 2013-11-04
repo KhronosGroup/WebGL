@@ -33,7 +33,6 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -75,7 +74,7 @@ if (!gl) {
 
   var testValidFormat = function(internalFormat, formatName) {
       createTexture(internalFormat, internalFormat);
-      glErrorShouldBe(gl, gl.NO_ERROR,
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                 "was able to create texture of " + formatName);
   }
 
@@ -187,7 +186,7 @@ if (!gl) {
   debug("");
   debug("checking non 0 border parameter to gl.TexImage2D");
   createTexture(gl['RGBA'], gl['RGBA'], 1);
-  glErrorShouldBe(gl, gl.INVALID_VALUE,
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
             "non 0 border to gl.TexImage2D should return INVALID_VALUE");
 
 
@@ -217,7 +216,7 @@ if (!gl) {
                     type,              // type
                     buf);              // data
 
-      glErrorShouldBe(gl, gl.NO_ERROR,
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                 "gl.texImage2D with " + desc + " should generate NO_ERROR");
 
       wtu.clearAndDrawUnitQuad(gl, [255, 0, 0, 255]);

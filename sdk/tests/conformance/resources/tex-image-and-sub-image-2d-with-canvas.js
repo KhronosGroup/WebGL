@@ -205,7 +205,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
                 caseNdx = 0;
                 --count;
                 if (!count) {
-                    glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+                    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
                     finishTest();
                     return;
                 }

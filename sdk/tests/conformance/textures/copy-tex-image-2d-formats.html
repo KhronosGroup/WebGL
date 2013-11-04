@@ -32,7 +32,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -86,7 +85,7 @@ var glNoAlpha = wtu.create3DContext(canvasNoAlpha, {alpha:false});
 
 debug("test with an RGBA backbuffer");
 var program = wtu.setupTexturedQuad(gl);
-glErrorShouldBe(gl, gl.NO_ERROR, "During Initialization");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "During Initialization");
 testFormats('RGBA');
 
 testBackbufferFormats();
@@ -94,7 +93,7 @@ testBackbufferFormats();
 debug("test with an RGB backbuffer");
 var gl = glNoAlpha;
 var program = wtu.setupTexturedQuad(gl);
-glErrorShouldBe(gl, gl.NO_ERROR, "During Initialization");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "During Initialization");
 testFormats('RGB');
 
 function testBackbufferFormats() {
@@ -161,13 +160,13 @@ function testCopyTexImage2D(backFormat, texFormat) {
 
   gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl[texFormat], 0, 0, 2, 2, 0);
   if (!shouldPass) {
-    glErrorShouldBe(
+    wtu.glErrorShouldBe(
         gl, gl.INVALID_OPERATION,
         "should not be able to copyTexImage2D " + texFormat + " from " + backFormat);
     return;
   }
 
-  glErrorShouldBe(
+  wtu.glErrorShouldBe(
       gl, gl.NO_ERROR,
       "should be able to copyTexImage2D " + texFormat + " from " + backFormat);
 
@@ -186,7 +185,7 @@ function testCopyTexImage2D(backFormat, texFormat) {
 
   wtu.checkCanvas(gl, color, "should be " + color, 16);
 
-  glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 }
 var successfullyParsed = true;
 </script>

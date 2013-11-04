@@ -31,7 +31,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -63,7 +62,7 @@ function testTexImage2D(testCase)
 
     gl.texImage2D(testCase.target, level, testCase.internalFormat, width, height, testCase.border, testCase.format, testCase.type, null);
     error = testCase.expectedError;
-    glErrorShouldBe(gl, error, msg);
+    wtu.glErrorShouldBe(gl, error, msg);
 }
 
 function testTexSubImage2D(testCase)
@@ -79,7 +78,7 @@ function testTexSubImage2D(testCase)
     var array = new Uint8Array(width * height * 4);
     gl.texSubImage2D(testCase.target, level, xoffset, yoffset, width, height, testCase.format, testCase.type, array);
     error = testCase.expectedError;
-    glErrorShouldBe(gl, error, msg);
+    wtu.glErrorShouldBe(gl, error, msg);
 }
 
 function testTexParameter(testCase)
@@ -87,9 +86,9 @@ function testTexParameter(testCase)
     var msg = "paramName: " + enumToString(testCase.pname);
     error = testCase.expectedError;
     gl.texParameteri(testCase.target, testCase.pname, testCase.param);
-    glErrorShouldBe(gl, error, msg);
+    wtu.glErrorShouldBe(gl, error, msg);
     gl.texParameterf(testCase.target, testCase.pname, testCase.param);
-    glErrorShouldBe(gl, error, msg);
+    wtu.glErrorShouldBe(gl, error, msg);
 }
 
 function testGetTexParameter(testCase)
@@ -97,7 +96,7 @@ function testGetTexParameter(testCase)
     var msg = "paramName: " + enumToString(testCase.pname);
     error = testCase.expectedError;
     gl.getTexParameter(testCase.target, testCase.pname);
-    glErrorShouldBe(gl, error, msg);
+    wtu.glErrorShouldBe(gl, error, msg);
 }
 
 function testCopyTexImage2D(testCase)
@@ -115,12 +114,12 @@ function testCopyTexImage2D(testCase)
       " border: " + testCase.border;
 
     gl.renderbufferStorage(gl.RENDERBUFFER, testCase.colorBufferFormat, width, height);
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
 
     gl.copyTexImage2D(testCase.target, level, testCase.internalFormat, x, y, width, height, testCase.border);
     error = testCase.expectedError;
-    glErrorShouldBe(gl, error, msg);
+    wtu.glErrorShouldBe(gl, error, msg);
 }
 
 function testCopyTexSubImage2D(testCase)
@@ -140,15 +139,15 @@ function testCopyTexSubImage2D(testCase)
       " target: " + enumToString(testCase.target);
 
     gl.renderbufferStorage(gl.RENDERBUFFER, testCase.colorBufferFormat, width, height);
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
 
     gl.texImage2D(testCase.target, level, testCase.internalFormat, xoffset + width, yoffset + height, border, testCase.internalFormat, type, null);
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
     gl.copyTexSubImage2D(testCase.target, level, xoffset, yoffset, x, y, width, height);
     error = testCase.expectedError;
-    glErrorShouldBe(gl, error, msg);
+    wtu.glErrorShouldBe(gl, error, msg);
 }
 
 function testCopyFromInternalFBO(testCase)
@@ -176,14 +175,14 @@ function testCopyFromInternalFBO(testCase)
     gl.bindTexture(target, tex);
     if (testCase.subImage) {
         gl.texImage2D(target, level, testCase.internalFormat, xoffset + width, yoffset + height, border, testCase.internalFormat, type, null);
-        glErrorShouldBe(gl, gl.NO_ERROR);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR);
         gl.copyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
     } else {
-        glErrorShouldBe(gl, gl.NO_ERROR);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR);
         gl.copyTexImage2D(target, level, testCase.internalFormat, x, y, width, height, border);
     }
     error = testCase.expectedError;
-    glErrorShouldBe(gl, error, msg);
+    wtu.glErrorShouldBe(gl, error, msg);
 }
 
 description("Validate tex functions input parameters");
@@ -191,7 +190,7 @@ description("Validate tex functions input parameters");
 shouldBeNonNull("gl = wtu.create3DContext()");
 shouldBeNonNull("tex = gl.createTexture()");
 gl.bindTexture(gl.TEXTURE_2D, tex);
-glErrorShouldBe(gl, gl.NO_ERROR);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
 debug("Checking TexImage2D: a set of inputs that are valid in GL but invalid in GLES2");
@@ -309,7 +308,7 @@ gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
 shouldBeNonNull("colorBuffer = gl.createRenderbuffer()");
 gl.bindRenderbuffer(gl.RENDERBUFFER, colorBuffer);
 gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, colorBuffer);
-glErrorShouldBe(gl, gl.NO_ERROR);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 testCases =
   [ {target: gl.TEXTURE_2D,

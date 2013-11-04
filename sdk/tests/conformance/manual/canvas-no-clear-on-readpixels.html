@@ -32,7 +32,6 @@
 <title>Check that the canvas is NOT recomposited after calling readPixels</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 <style>
 canvas {
@@ -65,7 +64,7 @@ gl.clearColor(0,1,0,1);
 gl.clear(gl.COLOR_BUFFER_BIT);
 wtu.waitForComposite(gl, function() {
   gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
-  glErrorShouldBe(gl, gl.NO_ERROR, "no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors");
 });
 </script>
 </body>

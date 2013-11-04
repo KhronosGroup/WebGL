@@ -163,7 +163,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
         runOneIteration(videoElement, true, true, red, green);
         runOneIteration(videoElement, true, false, green, red);
 
-        glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 
         runNextVideo();
     }

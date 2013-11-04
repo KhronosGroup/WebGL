@@ -33,7 +33,6 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -172,7 +171,7 @@ if (!gl) {
     runAttachmentTestEnabled();
     runDrawTests();
 
-    glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
   }
 }
 
@@ -208,10 +207,10 @@ function runEnumTestDisabled() {
   extensionConstants.forEach(function(c) {
     if (c.expectedFn) {
       gl.getParameter(c.enum);
-      glErrorShouldBe(gl, gl.INVALID_ENUM, c.name + " should not be queryable if extension is disabled");
+      wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, c.name + " should not be queryable if extension is disabled");
     }
   });
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function runEnumTestEnabled() {
@@ -221,24 +220,24 @@ function runEnumTestEnabled() {
   extensionConstants.forEach(function(c) {
     shouldBe("ext." + c.name, "0x" + c.enum.toString(16));
     if (c.expectedFn) {
-      glErrorShouldBe(gl, gl.NO_ERROR, "foo");
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "foo");
       debug(c.name + ":" + ext[c.name].toString(16));
       expectTrue(c.expectedFn(gl.getParameter(ext[c.name])), "gl.getParemter(ext." + c.name + ")" + c.passMsg);
-      glErrorShouldBe(gl, gl.NO_ERROR, c.name + " query should succeed if extension is enabled");
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, c.name + " query should succeed if extension is enabled");
     }
   });
 
   debug("Testing drawBuffersWEBGL with default drawing buffer");
   shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.BACK");
-  shouldGenerateGLError(gl, gl.INVALID_VALUE, "ext.drawBuffersWEBGL([])");
-  shouldGenerateGLError(gl, gl.INVALID_VALUE, "ext.drawBuffersWEBGL([gl.NONE, gl.NONE])");
-  shouldGenerateGLError(gl, gl.INVALID_OPERATION, "ext.drawBuffersWEBGL([ext.COLOR_ATTACHMENT0_WEBGL])");
+  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, "ext.drawBuffersWEBGL([])");
+  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, "ext.drawBuffersWEBGL([gl.NONE, gl.NONE])");
+  wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "ext.drawBuffersWEBGL([ext.COLOR_ATTACHMENT0_WEBGL])");
   shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.BACK");
-  shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.NONE])");
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.NONE])");
   shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.NONE");
-  shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.BACK])");
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.BACK])");
   shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.BACK");
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function testShaders(tests, sub) {
@@ -267,7 +266,7 @@ function runShadersTestDisabled() {
       expectFailure: true,
     },
   ], {numDrawingBuffers: 1});
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function runShadersTestEnabled() {
@@ -286,7 +285,7 @@ function runShadersTestEnabled() {
   wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
   gl.deleteProgram(program);
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function runAttachmentTestDisabled() {
@@ -297,10 +296,10 @@ function runAttachmentTestDisabled() {
   gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + 1, gl.TEXTURE_2D, tex, 0);
-  glErrorShouldBe(gl, gl.INVALID_ENUM, "should not be able to attach to gl.COLOR_ATTACHMENT1");
+  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "should not be able to attach to gl.COLOR_ATTACHMENT1");
   gl.deleteFramebuffer(fb);
   gl.deleteTexture(tex);
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function makeArray(size, value) {
@@ -331,29 +330,29 @@ function runAttachmentTestEnabled() {
   gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + maxColorAttachments, gl.TEXTURE_2D, tex, 0);
-  glErrorShouldBe(gl, gl.INVALID_ENUM, "should not be able to attach pass the max attachment point: gl.COLOR_ATTACHMENT0 + " + maxColorAttachments);
+  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "should not be able to attach pass the max attachment point: gl.COLOR_ATTACHMENT0 + " + maxColorAttachments);
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + maxColorAttachments - 1, gl.TEXTURE_2D, tex, 0);
-  glErrorShouldBe(gl, gl.NO_ERROR, "should be able to attach to the max attachment point: gl.COLOR_ATTACHMENT0 + " + (maxColorAttachments - 1));
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to attach to the max attachment point: gl.COLOR_ATTACHMENT0 + " + (maxColorAttachments - 1));
   ext.drawBuffersWEBGL(makeArray(maxDrawingBuffers, gl.NONE));
-  glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffersWEBGL with array NONE of size " + maxColorAttachments);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffersWEBGL with array NONE of size " + maxColorAttachments);
   var bufs = makeColorAttachmentArray(maxDrawingBuffers);
   ext.drawBuffersWEBGL(bufs);
-  glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffersWEBGL with array attachments of size " + maxColorAttachments);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffersWEBGL with array attachments of size " + maxColorAttachments);
   bufs[0] = gl.NONE;
   ext.drawBuffersWEBGL(bufs);
-  glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffersWEBGL with mixed array attachments of size " + maxColorAttachments);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffersWEBGL with mixed array attachments of size " + maxColorAttachments);
   if (maxDrawingBuffers > 1) {
     bufs[0] = ext.COLOR_ATTACHMENT1_WEBGL;
     bufs[1] = ext.COLOR_ATTACHMENT0_WEBGL;
     ext.drawBuffersWEBGL(bufs);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be able to call drawBuffersWEBGL with out of order attachments of size " + maxColorAttachments);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be able to call drawBuffersWEBGL with out of order attachments of size " + maxColorAttachments);
     var bufs = makeColorAttachmentArray(Math.floor(maxDrawingBuffers / 2));
-    glErrorShouldBe(gl, gl.NO_ERROR, "should not be able to call drawBuffersWEBGL with short array of attachments of size " + maxColorAttachments);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should not be able to call drawBuffersWEBGL with short array of attachments of size " + maxColorAttachments);
   }
 
   gl.deleteFramebuffer(fb);
   gl.deleteTexture(tex);
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function makeColorByIndex(index) {

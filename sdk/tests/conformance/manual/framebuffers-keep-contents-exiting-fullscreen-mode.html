@@ -32,7 +32,6 @@
 <title>Check that framebuffers keep contents exiting fullscreen mode.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 <style>
 canvas {
@@ -106,7 +105,7 @@ var checkState = function() {
   debug("");
   wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 255, 0, 255]);
   shouldBeNonNull("gl.getParameter(gl.FRAMEBUFFER_BINDING)");
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 var checkFramebufferState = function(fullscreen) {

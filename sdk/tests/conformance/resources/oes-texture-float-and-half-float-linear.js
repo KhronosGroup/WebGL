@@ -158,11 +158,11 @@ function generateTest(extensionTypeName, extensionName, pixelType, prologue) {
         }
         wtu.clearAndDrawUnitQuad(gl);
         if (!linear) {
-            glErrorShouldBe(gl, gl.NO_ERROR, extensionTypeName + " texture with non-Linear filter should succeed with NO_ERROR no matter whether " + extensionName + " is enabled or not");
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, extensionTypeName + " texture with non-Linear filter should succeed with NO_ERROR no matter whether " + extensionName + " is enabled or not");
         } else if (!extensionEnabled) {
-            glErrorShouldBe(gl, gl.NO_ERROR, extensionTypeName + " texture with Linear filter should produce [0, 0, 0, 1.0] with NO_ERROR if " + extensionName + " isn't enabled");
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, extensionTypeName + " texture with Linear filter should produce [0, 0, 0, 1.0] with NO_ERROR if " + extensionName + " isn't enabled");
         } else {
-            glErrorShouldBe(gl, gl.NO_ERROR, extensionTypeName + " texture with Linear filter should succeed with NO_ERROR if " + extensionTypeName + " is enabled");
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, extensionTypeName + " texture with Linear filter should succeed with NO_ERROR if " + extensionTypeName + " is enabled");
         }
 
         wtu.checkCanvas(gl, expected, "should be " + expected[0] + "," + expected[1]  + "," +  expected[2] + "," + expected[3]);

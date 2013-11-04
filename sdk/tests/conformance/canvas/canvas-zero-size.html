@@ -32,7 +32,6 @@
     <title>Zero Size Canvas Test</title>
     <link rel="stylesheet" href="../../resources/js-test-style.css"/>
     <script src="../../resources/js-test-pre.js"></script>
-    <script src="../resources/webgl-test.js"> </script>
     <script src="../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -56,7 +55,7 @@ gl.texImage2D(
   gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
 wtu.clearAndDrawUnitQuad(gl);
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>

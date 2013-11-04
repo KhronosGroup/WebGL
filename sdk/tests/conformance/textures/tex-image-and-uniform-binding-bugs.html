@@ -28,7 +28,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -45,7 +44,7 @@ var gl = wtu.create3DContext();
 var floatProgram = wtu.loadProgramFromFile(gl, "../resources/floatUniformShader.vert", "../resources/noopUniformShader.frag");
 shouldBeUndefined("gl.useProgram(floatProgram)");
 var fval4Loc = gl.getUniformLocation(floatProgram, "fval4");
-glErrorShouldBe(gl, gl.NO_ERROR);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 shouldBeUndefined("gl.uniform4fv(fval4Loc, new Float32Array([0.1, 0.2, 0.4, 1.0]));");
 
 var tmpcanvas = document.createElement("canvas");

@@ -32,7 +32,6 @@
 <title>WebGL Texture Attachment Format Conformance Tests</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -186,7 +185,7 @@ if (!gl) {
 
   debug("");
   shouldBeTrue("numValidFormats > 0");
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 debug("");

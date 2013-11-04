@@ -30,7 +30,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 <script id="vshader" type="x-shader/x-vertex">
 attribute vec3 g_Position;
@@ -87,7 +86,7 @@ gl.drawArrays(gl.TRIANGLES, 0, 6);
 wtu.checkCanvasRect(gl, 2, 2, 1, 1, [255, 0, 0, 255]);
 
 // Now resize the canvas
-glErrorShouldBe(gl, gl.NO_ERROR, "No GL errors before resizing the canvas");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "No GL errors before resizing the canvas");
 var canvas = gl.canvas;
 canvas.width = 8;
 canvas.height = 8;
