@@ -32,7 +32,6 @@
 <title>WebGL uniformMatrix Conformance Tests</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -82,17 +81,17 @@ for (var ii = 2; ii <= 4; ++ii) {
   var matMore = mat.concat([1]);
   name = "uniformMatrix" + ii + "fv";
   gl[name](loc, false, matLess);
-  glErrorShouldBe(gl, gl.INVALID_VALUE, "should fail with insufficient array size for " + name);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "should fail with insufficient array size for " + name);
   gl[name](loc, false, mat);
-  glErrorShouldBe(gl, gl.NO_ERROR, "should succeed with correct array size for " + name);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should succeed with correct array size for " + name);
   gl[name](loc, false, matMore);
-  glErrorShouldBe(gl, gl.INVALID_VALUE, "should fail with more than 1 array size for " + name);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "should fail with more than 1 array size for " + name);
 
   mat[ii * ii - 1] = 1;
   gl[name](loc, false, mat);
-  glErrorShouldBe(gl, gl.NO_ERROR, "can call " + name + "with transpose = false");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "can call " + name + "with transpose = false");
   gl[name](loc, true, mat);
-  glErrorShouldBe(gl, gl.INVALID_VALUE, name + " should return INVALID_VALUE with transpose = true");
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, name + " should return INVALID_VALUE with transpose = true");
 }
 
 debug("");

@@ -32,7 +32,6 @@
 <title>WebGL the minimum number of attributes are supported.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -93,7 +92,7 @@ for (var ii = 0; ii < 7; ++ii) {
 }
 
 wtu.clearAndDrawUnitQuad(gl);
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 wtu.checkCanvasRect(gl, 0, 0, gl.canvas.width, gl.canvas.height, [255, 127, 64, 32], "Should render 255,127,64,32 (+/-1)", 1);
 
 var successfullyParsed = true;

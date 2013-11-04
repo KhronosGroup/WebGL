@@ -31,7 +31,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -46,7 +45,6 @@ description("Tests calling WebGL APIs with various types");
 var context = wtu.create3DContext();
 var program = wtu.loadStandardProgram(context);
 var shader = wtu.loadStandardVertexShader(context);
-var shouldGenerateGLError = wtu.shouldGenerateGLError;
 
 assertMsg(program != null, "Program Compiled");
 assertMsg(shader != null, "Shader Compiled");

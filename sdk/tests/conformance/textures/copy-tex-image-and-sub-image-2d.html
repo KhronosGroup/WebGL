@@ -31,7 +31,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 
 <script>
@@ -56,7 +55,7 @@ function runTestIteration(antialias)
     gl = wtu.create3DContext(canvas, attribs);
     var program = wtu.setupTexturedQuad(gl);
     var textureLoc = gl.getUniformLocation(program, "tex");
-    glErrorShouldBe(gl, gl.NO_ERROR, "During Initialization");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "During Initialization");
 
     gl.colorMask(1, 1, 1, 1);
     gl.disable(gl.BLEND);
@@ -95,12 +94,12 @@ function runTestIteration(antialias)
           switch (ii) {
           case 0:
             gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, xx, yy, 2, 2, 0);
-            glErrorShouldBe(gl, gl.NO_ERROR,
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                 "using copyTexImage2D: x = " + xx + ", y = " + yy);
             break;
           case 1:
             gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, xx, yy, 2, 2);
-            glErrorShouldBe(gl, gl.NO_ERROR,
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                 "using copyTexSubImage2D: x = " + xx + ", y = " + yy);
             break;
           }

@@ -33,7 +33,6 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -171,10 +170,10 @@ function runHintTestDisabled() {
     var FRAGMENT_SHADER_DERIVATIVE_HINT_OES = 0x8B8B;
 
     gl.getParameter(FRAGMENT_SHADER_DERIVATIVE_HINT_OES);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "FRAGMENT_SHADER_DERIVATIVE_HINT_OES should not be queryable if extension is disabled");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "FRAGMENT_SHADER_DERIVATIVE_HINT_OES should not be queryable if extension is disabled");
 
     gl.hint(FRAGMENT_SHADER_DERIVATIVE_HINT_OES, gl.DONT_CARE);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "hint should not accept FRAGMENT_SHADER_DERIVATIVE_HINT_OES if extension is disabled");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "hint should not accept FRAGMENT_SHADER_DERIVATIVE_HINT_OES if extension is disabled");
 }
 
 function runHintTestEnabled() {
@@ -183,7 +182,7 @@ function runHintTestEnabled() {
     shouldBe("ext.FRAGMENT_SHADER_DERIVATIVE_HINT_OES", "0x8B8B");
 
     gl.getParameter(ext.FRAGMENT_SHADER_DERIVATIVE_HINT_OES);
-    glErrorShouldBe(gl, gl.NO_ERROR, "FRAGMENT_SHADER_DERIVATIVE_HINT_OES query should succeed if extension is enabled");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "FRAGMENT_SHADER_DERIVATIVE_HINT_OES query should succeed if extension is enabled");
 
     // Default value is DONT_CARE
     if (gl.getParameter(ext.FRAGMENT_SHADER_DERIVATIVE_HINT_OES) == gl.DONT_CARE) {
@@ -194,7 +193,7 @@ function runHintTestEnabled() {
 
     // Ensure that we can set the target
     gl.hint(ext.FRAGMENT_SHADER_DERIVATIVE_HINT_OES, gl.DONT_CARE);
-    glErrorShouldBe(gl, gl.NO_ERROR, "hint should accept FRAGMENT_SHADER_DERIVATIVE_HINT_OES");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "hint should accept FRAGMENT_SHADER_DERIVATIVE_HINT_OES");
 
     // Test all the hint modes
     var validModes = ["FASTEST", "NICEST", "DONT_CARE"];

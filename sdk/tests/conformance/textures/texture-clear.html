@@ -32,7 +32,6 @@
 <title>WebGL texture clear conformance test.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -46,7 +45,7 @@ var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
 var program = wtu.setupTexturedQuad(gl);
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
 var tex = gl.createTexture();
 gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -55,7 +54,7 @@ gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new
 wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 255, 0, 255], "should be green");
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>

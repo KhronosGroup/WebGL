@@ -32,7 +32,6 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js" type="text/javascript"></script>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
-<script src="../resources/webgl-test.js" type="text/javascript"></script>
 <script src="../resources/webgl-test-utils.js" type="text/javascript"></script>
 </head>
 <body>
@@ -122,11 +121,11 @@ function go() {
               "good vertex shader should compile");
 
     // Verify that constants removed from the WebGL spec generate INVALID_ENUM errors
-    glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors at this point");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors at this point");
     assertMsg(gl.getShaderParameter(vs, desktopGL['INFO_LOG_LENGTH']) === null, "invalid call to getShaderParameter should return null");
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "INFO_LOG_LENGTH is not a valid argument to getShaderParameter in WebGL");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "INFO_LOG_LENGTH is not a valid argument to getShaderParameter in WebGL");
     assertMsg(gl.getShaderParameter(vs, desktopGL['SHADER_SOURCE_LENGTH']) === null, "invalid call to getShaderParameter should return null");
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "SHADER_SOURCE_LENGTH is not a valid argument to getShaderParameter in WebGL");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "SHADER_SOURCE_LENGTH is not a valid argument to getShaderParameter in WebGL");
 
     var vs2 = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vs2, "attribute vec4 aVertex; attribute vec4 aColor; varying vec4 vColor; void main() { vColor = aColor; gl_Position = aVertex * 0.5; }");
@@ -165,7 +164,7 @@ function go() {
     //assertMsg(gl.getShaderParameter(fsBad, gl.COMPILE_STATUS) == false,
     //          "bad fragment shader should fail to compile");
 
-    glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors at this point");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors at this point");
 
 /////// Check attachShader() /////////////////////////////
 
@@ -176,7 +175,7 @@ function go() {
         if(gl.getError() != gl.NO_ERROR)
             assertMsg(false, "unexpected error in attachShader()");
         gl.attachShader(prog, shader);
-        glErrorShouldBe(gl, expected_error_code, errmsg);
+        wtu.glErrorShouldBe(gl, expected_error_code, errmsg);
     }
 
     checkAttachShader([], vs, gl.NO_ERROR, "attaching a vertex shader should succeed");
@@ -199,7 +198,7 @@ function go() {
         if(gl.getError() != gl.NO_ERROR)
             assertMsg(false, "unexpected error in attachShader()");
         gl.detachShader(prog, shader);
-        glErrorShouldBe(gl, expected_error_code, errmsg);
+        wtu.glErrorShouldBe(gl, expected_error_code, errmsg);
     }
 
     checkDetachShader([vs], vs, gl.NO_ERROR, "detaching a vertex shader should succeed");
@@ -269,18 +268,18 @@ function go() {
         if (testInvalidEnums) {
             // Verify that constants removed from the WebGL spec generate INVALID_ENUM errors
             assertMsg(gl.getProgramParameter(prog, desktopGL['INFO_LOG_LENGTH']) === null, "invalid call to getProgramParameter should return null");
-            glErrorShouldBe(gl, gl.INVALID_ENUM, "INFO_LOG_LENGTH is not a valid argument to getProgramParameter in WebGL");
+            wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "INFO_LOG_LENGTH is not a valid argument to getProgramParameter in WebGL");
             assertMsg(gl.getProgramParameter(prog, desktopGL['ACTIVE_ATTRIBUTE_MAX_LENGTH']) === null, "invalid call to getProgramParameter should return null");
-            glErrorShouldBe(gl, gl.INVALID_ENUM, "ACTIVE_ATTRIBUTE_MAX_LENGTH is not a valid argument to getProgramParameter in WebGL");
+            wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "ACTIVE_ATTRIBUTE_MAX_LENGTH is not a valid argument to getProgramParameter in WebGL");
             assertMsg(gl.getProgramParameter(prog, desktopGL['ACTIVE_UNIFORM_MAX_LENGTH']) === null, "invalid call to getProgramParameter should return null");
-            glErrorShouldBe(gl, gl.INVALID_ENUM, "ACTIVE_UNIFORM_MAX_LENGTH is not a valid argument to getProgramParameter in WebGL");
+            wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "ACTIVE_UNIFORM_MAX_LENGTH is not a valid argument to getProgramParameter in WebGL");
         }
 
         gl.useProgram(prog);
         if (expected_status == true)
-            glErrorShouldBe(gl, gl.NO_ERROR, "using a valid program should succeed");
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "using a valid program should succeed");
         if (expected_status == false)
-            glErrorShouldBe(gl, gl.INVALID_OPERATION, "using an invalid program should generate INVALID_OPERATION");
+            wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "using an invalid program should generate INVALID_OPERATION");
         return prog;
     }
 
@@ -293,7 +292,7 @@ function go() {
     var progBad5 = checkLinkAndUse([vsBad, fsBad], false, false, false, "program with bad shaders should fail to link");
 
     gl.useProgram(progGood1);
-    glErrorShouldBe(gl, gl.NO_ERROR, "using a valid program shouldn't generate a GL error");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "using a valid program shouldn't generate a GL error");
 
     var vbuf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vbuf);
@@ -308,20 +307,20 @@ function go() {
     gl.enableVertexAttribArray(0);
     gl.vertexAttrib3f(1, 1.0, 0.0, 0.0);
 
-    glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors at this point #2");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors at this point #2");
 
     gl.useProgram(progGood1);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid program shouldn't generate a GL error");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid program shouldn't generate a GL error");
 
     gl.useProgram(progBad1);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "using an invalid program should generate INVALID_OPERATION");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "using an invalid program should generate INVALID_OPERATION");
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    glErrorShouldBe(gl, gl.NO_ERROR, "Try to use an invalid program should not change the current rendering state");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Try to use an invalid program should not change the current rendering state");
 
     gl.useProgram(progGood2);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid program shouldn't generate a GL error");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid program shouldn't generate a GL error");
     gl.detachShader(progGood2, fs2);
     gl.attachShader(progGood2, fsBad);
     gl.linkProgram(progGood2);
@@ -330,26 +329,26 @@ function go() {
 
     // Invalid link leaves previous valid program intact.
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid program shouldn't generate a GL error");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid program shouldn't generate a GL error");
 
     gl.useProgram(progGood1);
     gl.drawArrays(gl.TRIANGLES, 0, 4);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid when last used program shouldn't generate a GL error");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid when last used program shouldn't generate a GL error");
 
     var progGood1 = checkLinkAndUse([vs, fs], true, true, false, "delete shaders after attaching them and before linking program should not affect linkProgram");
     gl.useProgram(progGood1);
     gl.drawArrays(gl.TRIANGLES, 0, 4);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid when last used program shouldn't generate a GL error");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid when last used program shouldn't generate a GL error");
 
 /////// Check deleteProgram() and deleteShader() /////////////////////////////
 
     gl.useProgram(progGood1);
     gl.deleteProgram(progGood1);
     gl.drawArrays(gl.TRIANGLES, 0, 4);
-    glErrorShouldBe(gl, gl.NO_ERROR, "delete the current program shouldn't change the current rendering state");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "delete the current program shouldn't change the current rendering state");
 
     gl.linkProgram(progGood1);
-    glErrorShouldBe(gl, gl.NO_ERROR, "The current program shouldn't be deleted");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "The current program shouldn't be deleted");
 
     var fs3 = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(fs3, "precision mediump float; varying vec4 vColor; void main() { gl_FragColor = vColor; }");
@@ -360,7 +359,7 @@ function go() {
 
     gl.deleteShader(fs3);
     gl.compileShader(fs3);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "an unattached shader should be deleted immediately");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "an unattached shader should be deleted immediately");
 
     fs3 = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(fs3, "precision mediump float; varying vec4 vColor; void main() { gl_FragColor = vColor; }");
@@ -379,10 +378,10 @@ function go() {
 
     gl.useProgram(null);
     gl.linkProgram(progGood1);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "a delete-marked program should be deleted once it's no longer the current program");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "a delete-marked program should be deleted once it's no longer the current program");
 
     gl.compileShader(fs3);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "a delete-marked shader should be deleted once all its attachments are removed");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "a delete-marked shader should be deleted once all its attachments are removed");
 
 //////// Check linkProgram() with relinked program //////////
     var vs = wtu.loadShaderFromScript(gl, "vshader");
@@ -408,7 +407,7 @@ function go() {
     // Program's uniforms should be cleared at this point without calling useProgram
     wtu.clearAndDrawUnitQuad(gl, [0, 255, 0, 255]);
     wtu.checkCanvas(gl, [0, 0, 0, 0], "should be tranparent black");
-    glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 }
 
 debug("");

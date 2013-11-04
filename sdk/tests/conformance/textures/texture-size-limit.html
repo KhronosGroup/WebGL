@@ -32,7 +32,6 @@
 <title>WebGL texture size limit conformance test.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -137,15 +136,15 @@ function testFormatType(t, test) {
     var pixelsNegativeTest = new test.dataType((t.maxSize + 1) * (t.maxSize + 1) * 4);
     // level out of bound
     gl.texImage2D(target, numLevels, test.format, 1, 1, 0, test.format, test.type, pixelsNegativeTest);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "level out of bound: should generate INVALID_VALUE: level is: "
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "level out of bound: should generate INVALID_VALUE: level is: "
         + numLevels + ", size is 1x1.");
     // width or height out of bound
     gl.texImage2D(target, 0, test.format, t.maxSize + 1, t.maxSize + 1, 0, test.format, test.type, pixelsNegativeTest);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound: should generate INVALID_VALUE: level is 0, size is "
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound: should generate INVALID_VALUE: level is 0, size is "
         + (t.maxSize + 1) + "x" + (t.maxSize + 1));
     // width or height out of bound for specified level
     gl.texImage2D(target, (numLevels - 1), test.format, 4, 4, 0, test.format, test.type, pixelsNegativeTest);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound for specified level: should generate INVALID_VALUE: levle is "
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound for specified level: should generate INVALID_VALUE: levle is "
         + (numLevels - 1) + ", size is 4x4.");
 
     for (var l = 0; l < numTestLevels; ++l) {
@@ -157,13 +156,13 @@ function testFormatType(t, test) {
       var badOtherDimension = t.target == gl.TEXTURE_2D ? 1 : badSize;
       var pixels = new test.dataType(badSize * badOtherDimension * test.size);
       gl.texImage2D(target, level, test.format, size, otherDimension, 0, test.format, test.type, pixels);
-      glErrorShouldBe(gl, gl.NO_ERROR, "there should be no error for level: " + level + " " + size + "x" + otherDimension);
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no error for level: " + level + " " + size + "x" + otherDimension);
       gl.texImage2D(target, level, test.format, otherDimension, size, 0, test.format, test.type, pixels);
-      glErrorShouldBe(gl, gl.NO_ERROR, "there should be no error for level: " + level + " " + otherDimension + "x" + size);
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no error for level: " + level + " " + otherDimension + "x" + size);
       gl.texImage2D(target, level, test.format, badSize, badOtherDimension, 0, test.format, test.type, pixels);
-      glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE for level: " + level + " " + badSize + "x" + badOtherDimension);
+      wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE for level: " + level + " " + badSize + "x" + badOtherDimension);
       gl.texImage2D(target, level, test.format, badOtherDimension, badSize, 0, test.format, test.type, pixels);
-      glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE for level: " + level + " " + badOtherDimension + "x" + badSize);
+      wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE for level: " + level + " " + badOtherDimension + "x" + badSize);
     }
   }
 }

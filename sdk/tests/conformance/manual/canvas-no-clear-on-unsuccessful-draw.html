@@ -32,7 +32,6 @@
 <title>Check that the canvas is NOT recomposited after unsucessful draw call</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 <style>
 canvas {
@@ -70,7 +69,7 @@ gl2.clearColor(0,1,0,1);
 gl2.clear(gl2.COLOR_BUFFER_BIT);
 wtu.waitForComposite(gl1, function() {
   gl1.drawArrays(gl1.BLEND, 0, 0);
-  glErrorShouldBe(gl1, gl1.INVALID_ENUM, "no errors");
+  wtu.glErrorShouldBe(gl1, gl1.INVALID_ENUM, "no errors");
 });
 
 wtu.waitForComposite(gl2, function() {
@@ -78,7 +77,7 @@ wtu.waitForComposite(gl2, function() {
   gl2.bindBuffer(gl2.ELEMENT_ARRAY_BUFFER, buf);
   gl2.bufferData(gl2.ELEMENT_ARRAY_BUFFER, new Uint8Array(1), gl2.STATIC_DRAW);
   gl2.drawElements(gl2.BLEND, 0, gl2.UNSIGNED_SHORT, 0);
-  glErrorShouldBe(gl2, gl2.INVALID_ENUM, "no errors");
+  wtu.glErrorShouldBe(gl2, gl2.INVALID_ENUM, "no errors");
 });
 </script>
 </body>

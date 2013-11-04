@@ -33,7 +33,6 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -123,7 +122,7 @@ if (!gl) {
   for (var ii = 0; ii < invalidEnums.length; ++ii) {
     var name = invalidEnums[ii];
     gl.enable(desktopGL[name]);
-    glErrorShouldBe(gl, gl.INVALID_ENUM,
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
               "gl.enable must set INVALID_ENUM when passed GL_" + name );
   }
 
@@ -142,14 +141,14 @@ if (!gl) {
   for (var ii = 0; ii < validEnums.length; ++ii) {
     var name = validEnums[ii];
     gl.enable(gl[name]);
-    glErrorShouldBe(gl, gl.NO_ERROR,
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR,
               "gl.enable must succeed when passed gl." + name );
 	shouldBe('gl.isEnabled(gl.' + name + ')', 'true');
 	gl.disable(gl[name]);
 	shouldBe('gl.isEnabled(gl.' + name + ')', 'false');
   }
 
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 debug("");

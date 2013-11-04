@@ -32,7 +32,6 @@
 <title>WebGL texImage2D from WebGL conformance test.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -50,8 +49,8 @@ var program = wtu.setupTexturedQuad(gl);
 var gl1 = wtu.create3DContext("source");
 gl1.disable(gl.DITHER);
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
-glErrorShouldBe(gl1, gl1.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+wtu.glErrorShouldBe(gl1, gl1.NO_ERROR, "Should be no errors from setup.");
 
 gl.disable(gl.BLEND);
 gl.disable(gl.DEPTH_TEST);

@@ -32,7 +32,6 @@
     <title>WebGL GLSL 2 types of textures on same unit conformance test.</title>
     <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
     <script src="../../../resources/js-test-pre.js"></script>
-    <script src="../../resources/webgl-test.js"> </script>
     <script src="../../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -140,7 +139,7 @@ function init()
     var x = ii % 2;
     var y = Math.floor(ii / 2);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION,
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
               "drawing with 2 different targets on the same texture unit should generate INVALID_VALUE");
   }
 }

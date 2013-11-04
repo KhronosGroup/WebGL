@@ -31,7 +31,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 <script id="vshader" type="x-shader/x-vertex">
 attribute vec3 pos;
@@ -124,7 +123,7 @@ function getWebGL(canvasWidth, canvasHeight, contextAttribs, clearColor, clearDe
       }
     }
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 
     return gl;
 }

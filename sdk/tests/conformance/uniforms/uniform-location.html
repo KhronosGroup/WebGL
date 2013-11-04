@@ -28,7 +28,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -58,44 +57,44 @@ var locationVec4 = contextA.getUniformLocation(programV, "fval4");
 var vec = [1, 2, 3, 4];
 var mat = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programA2)");
-shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.uniformMatrix4fv(locationA, false, mat)");
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programA1)");
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniformMatrix4fv(locationA, false, mat)");
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniformMatrix4fv(null, false, mat)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programA2)");
+wtu.shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.uniformMatrix4fv(locationA, false, mat)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programA1)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniformMatrix4fv(locationA, false, mat)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniformMatrix4fv(null, false, mat)");
 
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programS)");
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform1i(locationSx, 333)");
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform1f(locationArray0, 4.0)");
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform1f(locationArray1, 5.0)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programS)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform1i(locationSx, 333)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform1f(locationArray0, 4.0)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform1f(locationArray1, 5.0)");
 
 shouldBe("contextA.getUniform(programS, locationSx)", "333");
 shouldBe("contextA.getUniform(programS, locationArray0)", "4.0");
 shouldBe("contextA.getUniform(programS, locationArray1)", "5.0");
 
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programV)");
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform4fv(locationVec4, vec)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programV)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform4fv(locationVec4, vec)");
 shouldBe("contextA.getUniform(programV, locationVec4)", "vec");
 
 shouldBeNull("contextA.getUniformLocation(programV, \"IDontExist\")");
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.linkProgram(programA1)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.linkProgram(programA1)");
 // After linking all boxes are bad.
-shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.uniformMatrix4fv(locationA, false, mat)");
+wtu.shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.uniformMatrix4fv(locationA, false, mat)");
 
 // after re-linking the same program, all uniform locations become invalid.
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programS)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.useProgram(programS)");
 contextA.stencilMask(1);
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.linkProgram(programS)");
-shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.uniform1i(locationSx, 3)");
-shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.getUniform(programS, locationSx)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.linkProgram(programS)");
+wtu.shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.uniform1i(locationSx, 3)");
+wtu.shouldGenerateGLError(contextA, contextA.INVALID_OPERATION, "contextA.getUniform(programS, locationSx)");
 
 // Retrieve the locations again, and they should be good.
 locationSx = contextA.getUniformLocation(programS, "u_struct.x");
 locationArray0 = contextA.getUniformLocation(programS, "u_array[0]");
 debug("here");
 contextA.stencilMask(0);
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform1i(locationSx, 3)");
-shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform1f(locationArray0, 123)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform1i(locationSx, 3)");
+wtu.shouldGenerateGLError(contextA, contextA.NO_ERROR, "contextA.uniform1f(locationArray0, 123)");
 shouldBe("contextA.getUniform(programS, locationSx)", "3");
 shouldBe("contextA.getUniform(programS, locationArray0)", "123");
 

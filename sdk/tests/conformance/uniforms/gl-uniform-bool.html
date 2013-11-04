@@ -33,7 +33,6 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -69,7 +68,7 @@ var gl = wtu.create3DContext("example");
 var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 var loc = gl.getUniformLocation(program, "color");
 gl.uniform1f(loc, 1);
-glErrorShouldBe(gl, gl.NO_ERROR,
+wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                 "should be able to set bool with gl.uniform1f");
 
 debug("");

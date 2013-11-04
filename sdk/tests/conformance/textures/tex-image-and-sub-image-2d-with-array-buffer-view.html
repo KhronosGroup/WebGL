@@ -31,7 +31,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -251,7 +250,7 @@ var program = wtu.setupTexturedQuad(gl);
 textureLoc = gl.getUniformLocation(program, "tex");
 
 runTest();
-glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 var successfullyParsed = true;
 </script>
 <script src="../../resources/js-test-post.js"></script>

@@ -633,7 +633,7 @@ function runCompareTest(test, callback) {
       ++count;
       if (count == 2) {
         compareResults(results[0], results[1]);
-        glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
         callback();
       }
     }

@@ -125,7 +125,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
         runOneIteration(true, false, true,
                         greenPremultiplyAlpha, redPremultiplyAlpha);
 
-        glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
         finishTest();
     }
 

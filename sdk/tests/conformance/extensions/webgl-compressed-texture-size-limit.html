@@ -32,7 +32,6 @@
 <title>WebGL compressed texture size limit conformance test</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -158,7 +157,7 @@ function testFormatType(t, test) {
       for (var i = 0, size = t.maxSize; i < numLevels; i++, size /= 2) {
         var pixels = new test.dataType(test.func(size, size));
         gl.compressedTexImage2D(target, i, test.format, size, size, 0, pixels);
-        glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture should generate NO_ERROR."
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture should generate NO_ERROR."
             + "level is " + i + ", size is " + size + "x" + size);
       }
 
@@ -166,16 +165,16 @@ function testFormatType(t, test) {
       // width or height out of bound
       var pixelsNegativeTest1 = new test.dataType(test.func(t.maxSize * 2, t.maxSize * 2));
       gl.compressedTexImage2D(target, 0, test.format, t.maxSize * 2, t.maxSize * 2, 0, pixelsNegativeTest1);
-      glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound: should generate INVALID_VALUE."
+      wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound: should generate INVALID_VALUE."
           + " level is 0, size is " + (t.maxSize * 2) + "x" + (t.maxSize * 2));
       // level out of bound
       var pixelsNegativeTest2 = new test.dataType(test.func(256, 256));
       gl.compressedTexImage2D(target, numLevels, test.format, 256, 256, 0, pixelsNegativeTest2);
-      glErrorShouldBe(gl, gl.INVALID_VALUE, "level out of bound: should generate INVALID_VALUE."
+      wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "level out of bound: should generate INVALID_VALUE."
           + " level is " + numLevels + ", size is 256x256");
       //width or height out of bound for specified level
       gl.compressedTexImage2D(target, numLevels - 1, test.format, 256, 256, 0, pixelsNegativeTest2);
-      glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound for specified level: should generate INVALID_VALUE."
+      wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "width or height out of bound for specified level: should generate INVALID_VALUE."
           + " level is " + (numLevels - 1) + ", size is 256x256");
     }
   }

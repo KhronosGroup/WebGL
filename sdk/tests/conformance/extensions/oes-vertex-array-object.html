@@ -33,7 +33,6 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 <!-- comment in the script tag below to test through JS emualation of the extension. -->
 <!--
@@ -103,7 +102,7 @@ if (!gl) {
         runDrawTests();
         runDeleteTests();
         runArrayBufferBindTests();
-        glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
     }
 }
 
@@ -131,7 +130,7 @@ function runBindingTestDisabled() {
     var VERTEX_ARRAY_BINDING_OES = 0x85B5;
     
     gl.getParameter(VERTEX_ARRAY_BINDING_OES);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "VERTEX_ARRAY_BINDING_OES should not be queryable if extension is disabled");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "VERTEX_ARRAY_BINDING_OES should not be queryable if extension is disabled");
 }
 
 function runBindingTestEnabled() {
@@ -140,7 +139,7 @@ function runBindingTestEnabled() {
     shouldBe("ext.VERTEX_ARRAY_BINDING_OES", "0x85B5");
     
     gl.getParameter(ext.VERTEX_ARRAY_BINDING_OES);
-    glErrorShouldBe(gl, gl.NO_ERROR, "VERTEX_ARRAY_BINDING_OES query should succeed if extension is enable");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "VERTEX_ARRAY_BINDING_OES query should succeed if extension is enable");
     
     // Default value is null
     if (gl.getParameter(ext.VERTEX_ARRAY_BINDING_OES) === null) {
@@ -168,7 +167,7 @@ function runBindingTestEnabled() {
     ext.deleteVertexArrayOES(vao1);
     shouldBeNull("gl.getParameter(ext.VERTEX_ARRAY_BINDING_OES)");
     ext.bindVertexArrayOES(vao1);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "binding a deleted vertex array object");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "binding a deleted vertex array object");
     ext.bindVertexArrayOES(null);
     shouldBeNull("gl.getParameter(ext.VERTEX_ARRAY_BINDING_OES)");
     ext.deleteVertexArrayOES(vao1);
@@ -178,7 +177,7 @@ function runObjectTest() {
     debug("Testing object creation");
     
     vao = ext.createVertexArrayOES();
-    glErrorShouldBe(gl, gl.NO_ERROR, "createVertexArrayOES should not set an error");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "createVertexArrayOES should not set an error");
     shouldBeNonNull("vao");
     
     // Expect false if never bound

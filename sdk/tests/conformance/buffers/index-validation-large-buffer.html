@@ -31,7 +31,6 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -62,12 +61,12 @@ context.bufferData(context.ARRAY_BUFFER, new Float32Array(3 * 65536), context.ST
 context.vertexAttribPointer(0, 3, context.FLOAT, false, 0, 0);
 
 debug("Test large attribute buffer")
-shouldGenerateGLError(context, context.NO_ERROR, "context.drawElements(context.TRIANGLES, 3, context.UNSIGNED_SHORT, 0)");
+wtu.shouldGenerateGLError(context, context.NO_ERROR, "context.drawElements(context.TRIANGLES, 3, context.UNSIGNED_SHORT, 0)");
 
 // Enlarge the attribute buffer slightly.
 debug("Test even larger attribute buffer")
 context.bufferData(context.ARRAY_BUFFER, new Float32Array(3 * 65536 + 3), context.STATIC_DRAW);
-shouldGenerateGLError(context, context.NO_ERROR, "context.drawElements(context.TRIANGLES, 3, context.UNSIGNED_SHORT, 0)");
+wtu.shouldGenerateGLError(context, context.NO_ERROR, "context.drawElements(context.TRIANGLES, 3, context.UNSIGNED_SHORT, 0)");
 
 debug("")
 var successfullyParsed = true;

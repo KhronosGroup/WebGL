@@ -32,7 +32,6 @@
 <title>WebGL HD-DPI issues texture conformance test.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -128,7 +127,7 @@ testCanvas(4);
 testCanvas(512);
 testWebGL(4);
 testWebGL(512);
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
 
 var successfullyParsed = true;
 

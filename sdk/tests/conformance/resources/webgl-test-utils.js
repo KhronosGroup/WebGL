@@ -63,6 +63,10 @@ var loggingOff = function() {
  * @return {string} The enum as a string.
  */
 var glEnumToString = function(gl, value) {
+  // Optimization for the most common enum:
+  if (value === gl.NO_ERROR) {
+    return "NO_ERROR";
+  }
   for (var p in gl) {
     if (gl[p] == value) {
       return p;
@@ -1167,24 +1171,6 @@ var create3DContext = function(opt_canvas, opt_attributes) {
 }
 
 /**
- * Gets a GLError value as a string.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @param {number} err The webgl error as retrieved from gl.getError().
- * @return {string} the error as a string.
- */
-var getGLErrorAsString = function(gl, err) {
-  if (err === gl.NO_ERROR) {
-    return "NO_ERROR";
-  }
-  for (var name in gl) {
-    if (gl[name] === err) {
-      return name;
-    }
-  }
-  return err.toString();
-};
-
-/**
  * Wraps a WebGL function with a function that throws an exception if there is
  * an error.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
@@ -1196,7 +1182,7 @@ var createGLErrorWrapper = function(context, fname) {
     var rv = context[fname].apply(context, arguments);
     var err = context.getError();
     if (err != context.NO_ERROR)
-      throw "GL error " + getGLErrorAsString(context, err) + " in " + fname;
+      throw "GL error " + glEnumToString(context, err) + " in " + fname;
     return rv;
   };
 };
@@ -1230,10 +1216,10 @@ function create3DContextWithWrapperThatThrowsOnGLError(canvas) {
 /**
  * Tests that an evaluated expression generates a specific GL error.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @param {number} glError The expected gl error.
- * @param {string} evalSTr The string to evaluate.
+ * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
+ * @param {string} evalStr The string to evaluate.
  */
-var shouldGenerateGLError = function(gl, glError, evalStr) {
+var shouldGenerateGLError = function(gl, glErrors, evalStr) {
   var exception;
   try {
     eval(evalStr);
@@ -1243,30 +1229,34 @@ var shouldGenerateGLError = function(gl, glError, evalStr) {
   if (exception) {
     testFailed(evalStr + " threw exception " + exception);
   } else {
-    var err = gl.getError();
-    if (err != glError) {
-      testFailed(evalStr + " expected: " + getGLErrorAsString(gl, glError) + ". Was " + getGLErrorAsString(gl, err) + ".");
-    } else {
-      testPassed(evalStr + " was expected value: " + getGLErrorAsString(gl, glError) + ".");
-    }
+    glErrorShouldBe(gl, glErrors, "after evaluating: " + evalStr);
   }
 };
 
 /**
  * Tests that the first error GL returns is the specified error.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @param {number} glError The expected gl error.
- * @param {string} opt_msg
+ * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
+ * @param {string} opt_msg Optional additional message.
  */
-var glErrorShouldBe = function(gl, glError, opt_msg) {
+var glErrorShouldBe = function(gl, glErrors, opt_msg) {
+  if (!glErrors.length) {
+    glErrors = [glErrors];
+  }
   opt_msg = opt_msg || "";
   var err = gl.getError();
-  if (err != glError) {
-    testFailed("getError expected: " + getGLErrorAsString(gl, glError) +
-               ". Was " + getGLErrorAsString(gl, err) + " : " + opt_msg);
+  var ndx = glErrors.indexOf(err);
+  var errStrs = [];
+  for (var ii = 0; ii < glErrors.length; ++ii) {
+    errStrs.push(glEnumToString(gl, glErrors[ii]));
+  }
+  var expected = errStrs.join(" or ");
+  if (ndx < 0) {
+    var msg = "getError expected" + ((glErrors.length > 1) ? " one of: " : ": ");
+    testFailed(msg + expected +  ". Was " + glEnumToString(gl, err) + " : " + opt_msg);
   } else {
-    testPassed("getError was expected value: " +
-                getGLErrorAsString(gl, glError) + " : " + opt_msg);
+    var msg = "getError was " + ((glErrors.length > 1) ? "one of: " : "expected value: ");
+    testPassed(msg + expected + " : " + opt_msg);
   }
 };
 

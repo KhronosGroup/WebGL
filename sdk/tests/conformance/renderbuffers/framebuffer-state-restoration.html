@@ -32,7 +32,6 @@
 <title>WebGL Framebuffer state restoration Test</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -115,7 +114,7 @@ function test() {
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
       testDrawToBackBuffer("after drawing to framebuffer after composite");
 
-      glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
       finishTest();
     });
   });

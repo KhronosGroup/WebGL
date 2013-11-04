@@ -32,7 +32,6 @@
 <title>WebGL getActiveUniform conformance test.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -115,7 +114,7 @@ function createProgram(type, access) {
       source.replace('$type', type).replace('$access', access),
       gl.FRAGMENT_SHADER);
   var program = wtu.setupProgram(gl, [vs, fs]);
-  glErrorShouldBe(gl, gl.NO_ERROR, "no errors from setup");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors from setup");
   return program;
 }
 
@@ -141,19 +140,19 @@ for (var tt = 0; tt < tests.length; ++tt) {
 }
 
 var p1 = wtu.setupProgram(gl, [vs, 'fshaderA']);
-glErrorShouldBe(gl, gl.NO_ERROR, "no errors from program A");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors from program A");
 var p2 = wtu.setupProgram(gl, [vs, 'fshaderB']);
-glErrorShouldBe(gl, gl.NO_ERROR, "no errors from program B");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors from program B");
 var l1 = gl.getUniformLocation(p1, 'uniform0');
-glErrorShouldBe(gl, gl.NO_ERROR, "no errors getting location of uniform0 p1");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors getting location of uniform0 p1");
 var l2 = gl.getUniformLocation(p2, 'uniform0');
-glErrorShouldBe(gl, gl.NO_ERROR, "no errors getting location of uniform0 p2");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors getting location of uniform0 p2");
 
 gl.useProgram(p2);
 gl.uniform1f(l2, 1);
-glErrorShouldBe(gl, gl.NO_ERROR, "no errors setting uniform 0");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors setting uniform 0");
 gl.uniform1f(l1, 2);
-glErrorShouldBe(gl, gl.INVALID_OPERATION,
+wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
                 "setting a uniform using a location from another program");
 
 var successfullyParsed = true;

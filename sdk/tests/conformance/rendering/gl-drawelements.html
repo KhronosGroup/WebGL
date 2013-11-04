@@ -32,7 +32,6 @@
     <title>WebGL drawElements Test</title>
     <link rel="stylesheet" href="../../resources/js-test-style.css"/>
     <script src="../../resources/js-test-pre.js"></script>
-    <script src="../resources/webgl-test.js"> </script>
     <script src="../resources/webgl-test-utils.js"> </script>
     <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 </head>
@@ -64,7 +63,7 @@
             function checkDrawElements(mode, count, type, expect, msg) {
               gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
               gl.drawElements(mode, count, type, 0);
-              glErrorShouldBe(gl, expect, msg);
+              wtu.glErrorShouldBe(gl, expect, msg);
             }
 
             var wtu = WebGLTestUtils;

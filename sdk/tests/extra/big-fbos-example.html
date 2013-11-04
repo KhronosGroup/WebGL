@@ -34,7 +34,6 @@
 <script src="../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../debug/webgl-debug.js"></script>
 <script src="../resources/js-test-pre.js"></script>
-<script src="../conformance/resources/webgl-test.js"></script>
 <script src="../conformance/resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -186,7 +185,7 @@ function main() {
   gl.clearColor(0, 0, 0, 1);
   gl.clear(gl.COLOR_BUFFER_BIT);
 
-  glErrorShouldBe(gl, gl.NO_ERROR, "setup should succeed");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "setup should succeed");
 
   var size = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE);
   debug("max render buffer size: " + size +
@@ -255,7 +254,7 @@ function main() {
     }
 
     debug("succeeded in drawing");
-    glErrorShouldBe(gl, gl.NO_ERROR, "each run with no error");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "each run with no error");
     return true;
   }
 

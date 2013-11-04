@@ -32,7 +32,6 @@
     <title>WebGL BindBuffer conformance test.</title>
     <link rel="stylesheet" href="../../resources/js-test-style.css"/>
     <script src="../../resources/js-test-pre.js"></script>
-    <script src="../resources/webgl-test.js"> </script>
     <script src="../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -57,24 +56,24 @@ if (!gl) {
 
   var buf = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-  glErrorShouldBe(gl, gl.NO_ERROR,
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
             "should be able to bind array buffer.");
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
-  glErrorShouldBe(gl, gl.NO_ERROR,
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
             "should be able to unbind array buffer.");
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf);
-  glErrorShouldBe(gl, gl.INVALID_OPERATION,
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
             "should get INVALID_OPERATION if attempting to bind array buffer to different target");
 
   var buf = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf);
-  glErrorShouldBe(gl, gl.NO_ERROR,
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
             "should be able to bind element array buffer.");
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-  glErrorShouldBe(gl, gl.NO_ERROR,
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
             "should be able to unbind element array buffer.");
   gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-  glErrorShouldBe(gl, gl.INVALID_OPERATION,
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
             "should get INVALID_OPERATION if attempting to bind element array buffer to different target");
 }
 

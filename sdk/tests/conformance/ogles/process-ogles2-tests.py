@@ -387,7 +387,6 @@ var successfullyParsed = true;
     ]
     scripts = [
       "../../resources/js-test-pre.js",
-      "../resources/webgl-test.js",
       "../resources/webgl-test-utils.js",
       "ogles-utils.js",
     ]

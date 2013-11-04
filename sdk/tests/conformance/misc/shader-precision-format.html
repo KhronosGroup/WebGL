@@ -31,7 +31,6 @@
 <title>WebGL shader precision format test.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"> </script>
 </head>
 <body>
@@ -72,7 +71,7 @@ debug("");
 debug("Test that getShaderPrecisionFormat throws an error with invalid parameters.");
 debug("");
 
-shouldGenerateGLError(gl, gl.INVALID_ENUM, 'gl.getShaderPrecisionFormat(gl.HIGH_INT, gl.VERTEX_SHADER)');
+wtu.shouldGenerateGLError(gl, gl.INVALID_ENUM, 'gl.getShaderPrecisionFormat(gl.HIGH_INT, gl.VERTEX_SHADER)');
 
 debug("");
 debug("Test that WebGLShaderPrecisionFormat values are sensible.");

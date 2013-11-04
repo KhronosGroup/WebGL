@@ -32,7 +32,6 @@
 <title>WebGL texture size cube map conformance test.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"> </script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -217,7 +216,7 @@ function testSize(size) {
   return true;
 }
 
-glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors.");
 
 function checkRect(x, y, width, height, color) {
   wtu.checkCanvasRect(

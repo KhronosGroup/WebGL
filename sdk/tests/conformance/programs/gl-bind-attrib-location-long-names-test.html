@@ -32,7 +32,6 @@
 <title>WebGL BindAttribLocation Long Names Conformance Tests</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -175,7 +174,7 @@ gl.disableVertexAttribArray(0);
 gl.vertexAttrib4f(0, 1, 0, 0, 1);
 checkDraw(0, 3, 255, 0, 0, 255);
 
-glErrorShouldBe(gl, gl.NO_ERROR);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
 var successfullyParsed = true;
