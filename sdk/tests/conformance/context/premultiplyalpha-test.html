@@ -41,8 +41,12 @@
 "use strict";
 var wtu = WebGLTestUtils;
 
+// wtu.create3DContext(...) will set antialias to false by default
+// if the antialias property is not set to true explicitly.
+// To cover the antialias case, it needs to set antialias to true
+// explicitly.
 var tests = [
-  // If premultipliedAlpha is true then
+  // If premultipliedAlpha is true and antialias is false then
   // [texture]           [canvas]             [dataURL]
   // 32, 64, 128, 128 -> 64, 128, 255, 128 -> 64, 128, 255, 128
   { creationAttributes: {},
@@ -51,7 +55,16 @@ var tests = [
     errorRange: 2,
     imageFormat: "image/png"
   },
-  // If premultipliedAlpha is true then
+  // If premultipliedAlpha is true and antialias is true then
+  // [texture]           [canvas]             [dataURL]
+  // 32, 64, 128, 128 -> 64, 128, 255, 128 -> 64, 128, 255, 128
+  { creationAttributes: {antialias: true},
+    sentColor: [32, 64, 128, 128],
+    expectedColor: [64, 128, 255, 128],
+    errorRange: 2,
+    imageFormat: "image/png"
+  },
+  // If premultipliedAlpha is true and antialias is false then
   // [texture]           [canvas]             [texture]
   // 32, 64, 128, 128 -> 64, 128, 255, 128 -> 64, 128, 255, 128
   { creationAttributes: {},
@@ -59,7 +72,15 @@ var tests = [
     expectedColor: [64, 128, 255, 128],
     errorRange: 2,
   },
-  // If premultipliedAlpha is false then
+  // If premultipliedAlpha is true and antialias is true then
+  // [texture]           [canvas]             [texture]
+  // 32, 64, 128, 128 -> 64, 128, 255, 128 -> 64, 128, 255, 128
+  { creationAttributes: {antialias: true},
+    sentColor: [32, 64, 128, 128],
+    expectedColor: [64, 128, 255, 128],
+    errorRange: 2,
+  },
+  // If premultipliedAlpha is false and antialias is false then
   // [texture]           [canvas]            [dataURL]
   // 255, 192, 128, 1 -> 255, 192, 128, 1 -> 255, 192, 128, 1
   { creationAttributes: {premultipliedAlpha: false},
@@ -68,7 +89,16 @@ var tests = [
     errorRange: 0,
     imageFormat: "image/png"
   },
-  // If premultipliedAlpha is false then
+  // If premultipliedAlpha is false and antialias is true then
+  // [texture]           [canvas]            [dataURL]
+  // 255, 192, 128, 1 -> 255, 192, 128, 1 -> 255, 192, 128, 1
+  { creationAttributes: {premultipliedAlpha: false, antialias: true},
+    sentColor: [255, 192, 128, 1],
+    expectedColor: [255, 192, 128, 1],
+    errorRange: 0,
+    imageFormat: "image/png"
+  },
+  // If premultipliedAlpha is false and antialias is false then
   // [texture]           [canvas]            [texture]
   // 255, 192, 128, 1 -> 255, 192, 128, 1 -> 255, 192, 128, 1
   { creationAttributes: {premultipliedAlpha: false},
@@ -76,7 +106,15 @@ var tests = [
     expectedColor: [255, 192, 128, 1],
     errorRange: 0,
   },
-  // If premultipliedAlpha is false then
+  // If premultipliedAlpha is false and antialias is true then
+  // [texture]           [canvas]            [texture]
+  // 255, 192, 128, 1 -> 255, 192, 128, 1 -> 255, 192, 128, 1
+  { creationAttributes: {premultipliedAlpha: false, antialias: true},
+    sentColor: [255, 192, 128, 1],
+    expectedColor: [255, 192, 128, 1],
+    errorRange: 0,
+  },
+  // If premultipliedAlpha is false and antialias is false then
   // [texture]             [canvas]            [dataURL]
   // 255, 255, 255, 128 -> 255, 255, 255, 128 -> 128, 128, 128, 255
   { creationAttributes: {premultipliedAlpha: false},
@@ -85,10 +123,28 @@ var tests = [
     errorRange: 2,
     imageFormat: "image/jpeg"
   },
-  // If premultipliedAlpha is true then
+  // If premultipliedAlpha is false and antialias is true then
+  // [texture]             [canvas]            [dataURL]
+  // 255, 255, 255, 128 -> 255, 255, 255, 128 -> 128, 128, 128, 255
+  { creationAttributes: {premultipliedAlpha: false, antialias: true},
+    sentColor: [255, 255, 255, 128],
+    expectedColor: [128, 128, 128, 255],
+    errorRange: 2,
+    imageFormat: "image/jpeg"
+  },
+  // If premultipliedAlpha is true and antialias is false then
   // [texture]             [canvas]            [dataURL]
   // 128, 128, 128, 128 -> 255, 255, 255, 128 -> 128, 128, 128, 255
   { creationAttributes: {},
+    sentColor: [128, 128, 128, 128],
+    expectedColor: [128, 128, 128, 255],
+    errorRange: 2,
+    imageFormat: "image/jpeg"
+  },
+  // If premultipliedAlpha is true and antialias is true then
+  // [texture]             [canvas]            [dataURL]
+  // 128, 128, 128, 128 -> 255, 255, 255, 128 -> 128, 128, 128, 255
+  { creationAttributes: {antialias: true},
     sentColor: [128, 128, 128, 128],
     expectedColor: [128, 128, 128, 255],
     errorRange: 2,
@@ -111,8 +167,11 @@ function doNextTest() {
      test.creationAttributes.preserveDrawingBuffer = true;
      gl = wtu.create3DContext(canvas, test.creationAttributes);
      var premultipliedAlpha = test.creationAttributes.premultipliedAlpha != false;
+     var antialias = test.creationAttributes.antialias == true;
      debug("")
-     debug("testing: premultipliedAlpha: " + premultipliedAlpha + " imageFormat: " + test.imageFormat);
+     debug("testing: premultipliedAlpha: " + premultipliedAlpha
+         + ", antialias: " + antialias
+         + ", imageFormat: " + test.imageFormat);
 
      shouldBe('gl.getContextAttributes().premultipliedAlpha', premultipliedAlpha.toString());
      shouldBeTrue('gl.getContextAttributes().preserveDrawingBuffer');
