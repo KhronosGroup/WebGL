@@ -136,8 +136,6 @@ function runNextTest() {
 
     debug("");
     debug("max size for " + wtu.glEnumToString(gl, t.target) + ": " + t.maxSize);
-    var numLevels = numLevelsFromSize(t.maxSize);
-    debug("num levels " + numLevels);
   }
 
   var test = tests[tt];
@@ -155,26 +153,48 @@ function runNextTest() {
 }
 
 function testFormatType(t, test) {
+  var positiveTestSize = t.maxSize;
+  var positiveTestOtherDimension = test.sizeStep;
+  if (t.target === gl.TEXTURE_CUBE_MAP) {
+    // Can't always test the maximum size since that can cause OOM:
+    positiveTestSize = Math.min(2048, t.maxSize);
+    // Cube map textures need to be square:
+    positiveTestOtherDimension = positiveTestSize;
+  }
+  var positiveTestLevels = numLevelsFromSize(positiveTestSize);
+  var numLevels = numLevelsFromSize(t.maxSize);
+  debug("");
+  debug("num levels: " + numLevels + ", levels used in positive test: " + positiveTestLevels);
+
   debug("");
 
   // Query the extension and store globally so shouldBe can access it
   var ext = wtu.getExtensionWithKnownPrefixes(gl, test.extension);
   if (ext) {
+
     testPassed("Successfully enabled " + test.extension + " extension");
 
     for (var j = 0; j < t.targets.length; ++j) {
       var target = t.targets[j];
       debug("");
       debug(wtu.glEnumToString(gl, target));
-      var numLevels = numLevelsFromSize(t.maxSize);
 
       // positive test
-      for (var i = 0, size = t.maxSize; i < numLevels; i++, size /= 2) {
-        var pixels = new test.dataType(sharedArrayBuffer, 0, test.func(size, size));
-        gl.compressedTexImage2D(target, i, test.format, size, size, 0, pixels);
+      var size = positiveTestSize;
+      var otherDimension = positiveTestOtherDimension;
+      for (var i = 0; i < positiveTestLevels; i++) {
+        var pixels = new test.dataType(sharedArrayBuffer, 0, test.func(size, otherDimension));
+        gl.compressedTexImage2D(target, i, test.format, size, otherDimension, 0, pixels);
         wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture should generate NO_ERROR."
-            + "level is " + i + ", size is " + size + "x" + size);
+            + "level is " + i + ", size is " + size + "x" + otherDimension);
+        size /= 2;
+        otherDimension /= 2;
+        if (otherDimension < 1) {
+            otherDimension = 1;
+        }
       }
+
+      var numLevels = numLevelsFromSize(t.maxSize);
 
       // out of bounds tests
       // width and height out of bounds
