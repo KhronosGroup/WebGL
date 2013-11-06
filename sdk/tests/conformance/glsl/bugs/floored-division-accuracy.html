@@ -50,7 +50,9 @@ varying vec4 vColor;
 void main(void) {
   gl_Position = vec4(pos, 0.0, 1.0);
   float index = 9.0;
-  float value = floor(index / divisor);
+  // Floating point operations don't have any guaranteed precision, but they
+  // should at least be accurate to 1 part in 10^5.
+  float value = floor((index / divisor) * 1.00001);
   vColor = (value == 3.) ? vec4(0, 1, 0, 1) : vec4(1, 0, 0, 1);
 }
 </script>
@@ -67,7 +69,8 @@ description();
 debug("");
 // Reproduces bug seen on Mac OS X with AMD Radeon HD 6490 GPU
 debug("If things are working correctly, then the square will be green.");
-debug("If your card thinks floor(9. / 3.) is not 3., then the square will be red.");
+debug("If your card thinks floor(9. / 3.) is not 3 to within 1 part in 10^5, ");
+debug("then the square will be red.");
 
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("repro");
