@@ -49,8 +49,11 @@ varying vec4 vColor;
 void main(void) {
   gl_Position = vec4(pos, 0.0, 1.0);
   float index = 9.0;
-  float value = mod(index, divisor);
-  vColor = (value == 0.) ? vec4(0, 1, 0, 1) : vec4(1, 0, 0, 1);
+  // mod(x, y) is computed as x-y*floor(x/y).  There are no guarantees on
+  // the precision of floating point operations in WebGL shaders, but division
+  // should be accurate to at least 1 part in 10^5.
+  float value = mod(index * 1.00001, divisor);
+  vColor = (value < 1.) ? vec4(0, 1, 0, 1) : vec4(1, 0, 0, 1);
 }
 </script>
 
