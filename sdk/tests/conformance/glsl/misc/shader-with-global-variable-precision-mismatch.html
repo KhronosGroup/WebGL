@@ -40,7 +40,7 @@
 <div id="description"></div>
 <div id="console"></div>
 <script id="fshaderWithMediumpGlobal" type="text/something-not-javascript">
-// There is no default precision in fragment shaders, so specify mediump.
+// There is no default float precision in fragment shaders, so specify mediump.
 precision mediump float;
 
 uniform vec4 foo;
@@ -50,8 +50,17 @@ void main()
     gl_FragColor = foo;
 }
 </script>
+<script id="fshaderWithMediumpGlobalInt" type="text/something-not-javascript">
+// Default precision for int in fragment shaders is mediump.
+uniform int foo;
+
+void main()
+{
+    gl_FragColor = vec4(foo, 0, 0, 1);
+}
+</script>
 <script id="fshaderWithMediumpGlobalStruct" type="text/something-not-javascript">
-// There is no default precision in fragment shaders, so specify mediump.
+// There is no default float precision in fragment shaders, so specify mediump.
 precision mediump float;
 
 struct foo
@@ -72,6 +81,14 @@ uniform vec4 foo;
 
 void main() {
     gl_Position = foo;
+}
+</script>
+<script id="vshaderWithHighpGlobalInt" type="x-shader/x-vertex">
+// Default precision for int in vertex shaders is highp.
+uniform int foo;
+
+void main() {
+    gl_Position = vec4(foo, 0, 0, 1);
 }
 </script>
 <script id="vshaderWithHighpGlobalStruct" type="x-shader/x-vertex">
@@ -103,6 +120,15 @@ glslTests.push({
   fShaderSuccess: true,
   linkSuccess: false,
   passMsg: "mismatching precision for uniforms causes link error (as expected)",
+});
+
+glslTests.push({
+  vShaderId: 'vshaderWithHighpGlobalInt',
+  vShaderSuccess: true,
+  fShaderId: 'fshaderWithMediumpGlobalInt',
+  fShaderSuccess: true,
+  linkSuccess: false,
+  passMsg: "mismatching precision for int uniforms with default precision causes link error (as expected)",
 });
 
 glslTests.push({
