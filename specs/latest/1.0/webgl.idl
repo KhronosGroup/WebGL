@@ -31,6 +31,7 @@ dictionary WebGLContextAttributes {
     GLboolean premultipliedAlpha = true;
     GLboolean preserveDrawingBuffer = false;
     GLboolean preferLowPowerToHighPerformance = false;
+    GLboolean failIfMajorPerformanceCaveat = false;
 };
 
 interface WebGLObject {
