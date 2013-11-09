@@ -72,5 +72,6 @@ History
 - 2011/02/24: Version 1.0.0
 - 2012/02/23: Version 1.0.1
 - 2012/03/20: Version 1.0.2
-- 2013/02/14: Version 1.0.3 (beta)
+- 2013/02/14: Version 1.0.3
+- 2013/10/11: Version 2.0.0 (beta)
 
