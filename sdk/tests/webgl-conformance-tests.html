@@ -168,6 +168,13 @@ var OPTIONS = {
   allowSkip: 0
 };
 
+var testVersions = [
+  "1.0.1",
+  "1.0.2",
+  "1.0.3 (beta)",
+  "2.0.0 (beta)"
+];
+
 function start() {
 
   function log(msg) {
@@ -749,7 +756,42 @@ function start() {
 
   getURLOptions(OPTIONS);
 
-  document.getElementById("testVersion").innerHTML = OPTIONS.version;
+  var makeVersionSelect = function(currentVersion) {
+    var versionSelect = document.getElementById("testVersion");
+    var foundCurrentVersion = false;
+    var numericCurrentVersion = currentVersion.replace(/[^\d.]/g, '');
+
+    for (var i in testVersions) {
+      var version = testVersions[i];
+      var numericVersion = version.replace(/[^\d.]/g, '');
+      var option = document.createElement("option");
+      option.setAttribute('value', numericVersion);
+      option.innerHTML = version;
+
+      if (numericVersion == numericCurrentVersion) {
+        foundCurrentVersion = true;
+        option.selected = true;
+      }
+
+      versionSelect.appendChild(option);
+    }
+
+    // If the version requested by the query string isn't in the list add it.
+    if (!foundCurrentVersion) {
+      var option = document.createElement("option");
+      option.setAttribute('value', numericCurrentVersion);
+      option.innerHTML = currentVersion + " (unknown)";
+      option.selected = true;
+
+      versionSelect.appendChild(option);
+    }
+
+    versionSelect.addEventListener('change', function(ev) {
+      window.location.href = "?version=" + versionSelect.value;
+    }, false);
+  }
+
+  makeVersionSelect(OPTIONS.version);
 
   // Make iframes
   var makeIFrames = function() {
@@ -925,8 +967,8 @@ function start() {
               <img src="resources/webgl-logo.png" /><br />
               WebGL Conformance Test Runner<br/>
               Version
-              <span id="testVersion">
-              </span>
+              <select id="testVersion">
+              </select>
               <br/>
               <input type="button" value="run tests" id="runTestsButton"/>
               <br/>
