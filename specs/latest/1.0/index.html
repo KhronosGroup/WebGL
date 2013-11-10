@@ -3602,6 +3602,17 @@ extensions.
     </ul>
 </p>
 
+<h3>Feedback Loops Between Textures and the Framebuffer</h3>
+<p>
+    In the OpenGL ES 2.0 API, it's possible to make calls that both write to and read from
+    the same texture, creating a feedback loop.
+    It specifies that where these feedback loops exist, undefined behavior results.
+</p>
+<p>
+    In the WebGL API, such operations that would cause such feedback loops (by the definitions
+    in the OpenGL ES 2.0 spec) will instead generate an <code>INVALID_OPERATION</code> error.
+</p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
