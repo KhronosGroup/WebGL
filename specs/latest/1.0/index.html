@@ -669,6 +669,7 @@ typedef unrestricted float GLclampf;
     GLboolean premultipliedAlpha = true;
     GLboolean preserveDrawingBuffer = false;
     GLboolean preferLowPowerToHighPerformance = false;
+    GLboolean failIfMajorPerformanceCaveat = false;
 };</pre>
 
     <h4>Context creation parameters</h4>
@@ -727,7 +728,7 @@ typedef unrestricted float GLclampf;
                 </em>
                 </blockquote>
             </dd>
-            <dt><span class=prop-value>preferLowPowerToHighPerformance</span></dt>
+        <dt><span class=prop-value>preferLowPowerToHighPerformance</span></dt>
             <dd>
               Provides a hint to the implementation suggesting that, if possible, it
               creates a context that optimizes for power consumption over
@@ -735,6 +736,27 @@ typedef unrestricted float GLclampf;
               GPU, it may be the case that one of them is less powerful
               but also uses less power. An implementation may choose to, and may
               have to, ignore this hint.
+            </dd>
+        <dt> <span class=prop-value>failIfMajorPerformanceCaveat</span></dt>
+            <dd>
+              If the value is true, context creation will fail if the implementation determines
+              that the performance of the created WebGL context would be dramatically lower
+              than that of a native application making equivalent OpenGL calls. This could happen
+              for a number of reasons, including:
+              <ul>
+                <li>An implementation might switch to a software rasterizer if the user's GPU
+                    driver is known to be unstable.
+                <li>An implementation might require reading back the framebuffer from GPU memory
+                    to system memory before compositing it with the rest of the page,
+                    significantly reducing performance.
+              </ul>
+              Applications that don't require high performance should leave this parameter at its
+              default value of <code>false</code>. Applications that require high performance may
+              set this parameter to <code>true</code>, and if context creation fails then the
+              application may prefer to use a fallback rendering path such as a 2D canvas context.
+              Alternatively the application can retry WebGL context creation with this parameter
+              set to <code>false</code>, with the knowledge that a reduced-fidelity rendering mode
+              should be used to improve performance.
             </dd>
     </dl>
     <div class="example">
