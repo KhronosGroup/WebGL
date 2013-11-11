@@ -31,9 +31,7 @@
 <meta charset="utf-8">
 <title>WebGL vertex_array_object Conformance Tests</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../../conformance/resources/webgl-test.js"></script>
 <script src="../../conformance/resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -79,7 +77,7 @@ if (!gl) {
     runDrawTests();
     runDeleteTests();
     runArrayBufferBindTests();
-    glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function runBindingTest() {
@@ -88,7 +86,7 @@ function runBindingTest() {
     shouldBe("gl.VERTEX_ARRAY_BINDING", "0x85B5");
     
     gl.getParameter(gl.VERTEX_ARRAY_BINDING);
-    glErrorShouldBe(gl, gl.NO_ERROR, "VERTEX_ARRAY_BINDING query should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "VERTEX_ARRAY_BINDING query should succeed");
     
     // Default value is null
     if (gl.getParameter(gl.VERTEX_ARRAY_BINDING) === null) {
@@ -116,7 +114,7 @@ function runBindingTest() {
     gl.deleteVertexArray(vao1);
     shouldBeNull("gl.getParameter(gl.VERTEX_ARRAY_BINDING)");
     gl.bindVertexArray(vao1);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "binding a deleted vertex array object");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "binding a deleted vertex array object");
     gl.bindVertexArray(null);
     shouldBeNull("gl.getParameter(gl.VERTEX_ARRAY_BINDING)");
     gl.deleteVertexArray(vao1);
@@ -126,7 +124,7 @@ function runObjectTest() {
     debug("Testing object creation");
     
     vao = gl.createVertexArray();
-    glErrorShouldBe(gl, gl.NO_ERROR, "createVertexArray should not set an error");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "createVertexArray should not set an error");
     shouldBeNonNull("vao");
     
     // Expect false if never bound

@@ -31,9 +31,7 @@
 <meta charset="utf-8">
 <title>WebGL Draw Buffers Conformance Tests</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../../conformance/resources/webgl-test.js"></script>
 <script src="../../conformance/resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -88,7 +86,7 @@ if (!gl) {
   runAttachmentTest();
   runDrawTests();
 
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function createDrawBuffersProgram(scriptId, sub) {
@@ -108,7 +106,7 @@ function runShadersTest() {
   wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
   gl.deleteProgram(program);
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function makeArray(size, value) {
@@ -139,17 +137,17 @@ function runAttachmentTest() {
   gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + maxColorAttachments, gl.TEXTURE_2D, tex, 0);
-  glErrorShouldBe(gl, gl.INVALID_ENUM, "should not be able to attach pass the max attachment point: gl.COLOR_ATTACHMENT0 + " + maxColorAttachments);
+  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "should not be able to attach pass the max attachment point: gl.COLOR_ATTACHMENT0 + " + maxColorAttachments);
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + maxColorAttachments - 1, gl.TEXTURE_2D, tex, 0);
-  glErrorShouldBe(gl, gl.NO_ERROR, "should be able to attach to the max attachment point: gl.COLOR_ATTACHMENT0 + " + (maxColorAttachments - 1));
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to attach to the max attachment point: gl.COLOR_ATTACHMENT0 + " + (maxColorAttachments - 1));
   gl.drawBuffers(makeArray(maxDrawingBuffers, gl.NONE));
-  glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffers with array NONE of size " + maxColorAttachments);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffers with array NONE of size " + maxColorAttachments);
   var bufs = makeColorAttachmentArray(maxDrawingBuffers);
   gl.drawBuffers(bufs);
-  glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffers with array attachments of size " + maxColorAttachments);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffers with array attachments of size " + maxColorAttachments);
   bufs[0] = gl.NONE;
   gl.drawBuffers(bufs);
-  glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffers with mixed array attachments of size " + maxColorAttachments);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffers with mixed array attachments of size " + maxColorAttachments);
   if (maxDrawingBuffers > 1) {
     bufs[0] = gl.COLOR_ATTACHMENT1;
     bufs[1] = gl.COLOR_ATTACHMENT0;
@@ -161,7 +159,7 @@ function runAttachmentTest() {
 
   gl.deleteFramebuffer(fb);
   gl.deleteTexture(tex);
-  glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function makeColorByIndex(index) {

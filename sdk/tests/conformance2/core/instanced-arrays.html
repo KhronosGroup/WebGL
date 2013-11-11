@@ -33,7 +33,6 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../../conformance/resources/webgl-test.js"></script>
 <script src="../../conformance/resources/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -77,7 +76,7 @@ if (!gl) {
 
     runDivisorTest();
     runOutputTests();
-    glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function runDivisorTest() {
@@ -98,10 +97,10 @@ function runDivisorTest() {
     }
 
     gl.vertexAttribDivisor(max_vertex_attribs, 2);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "vertexAttribDivisor index set greater than or equal to MAX_VERTEX_ATTRIBS should be an invalid value");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "vertexAttribDivisor index set greater than or equal to MAX_VERTEX_ATTRIBS should be an invalid value");
 
     gl.vertexAttribDivisor(max_vertex_attribs-1, 2);
-    glErrorShouldBe(gl, gl.NO_ERROR, "vertexAttribDivisor index set less than MAX_VERTEX_ATTRIBS should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "vertexAttribDivisor index set less than MAX_VERTEX_ATTRIBS should succeed");
 
     var queried_value = gl.getVertexAttrib(max_vertex_attribs-1, gl.VERTEX_ATTRIB_ARRAY_DIVISOR);
     if(queried_value == 2){
@@ -166,31 +165,31 @@ function runOutputTests() {
     wtu.checkCanvasRect(gl, canvas.width/2, 0, canvas.width/2, canvas.height/2, [255, 255, 0, 255]);
 
     gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, -1);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "drawArraysInstanced cannot have a primcount less than 0");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "drawArraysInstanced cannot have a primcount less than 0");
 
     gl.drawArraysInstanced(gl.TRIANGLES, 0, -1, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "drawArraysInstanced cannot have a count less than 0");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "drawArraysInstanced cannot have a count less than 0");
 
     gl.vertexAttribDivisor(positionLoc, 1);
     gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "There must be at least one vertex attribute with a divisor of zero when calling drawArraysInstanced");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "There must be at least one vertex attribute with a divisor of zero when calling drawArraysInstanced");
     gl.vertexAttribDivisor(positionLoc, 0);
 
     gl.drawArraysInstanced(gl.POINTS, 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstanced with POINTS should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstanced with POINTS should succeed");
     gl.drawArraysInstanced(gl.LINES, 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstanced with LINES should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstanced with LINES should succeed");
     gl.drawArraysInstanced(gl.LINE_LIST, 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstanced with LINE_LIST should return succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstanced with LINE_LIST should return succeed");
     gl.drawArraysInstanced(gl.TRI_LIST, 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstanced with TRI_LIST should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstanced with TRI_LIST should succeed");
 
     gl.drawArraysInstanced(desktopGL['QUAD_STRIP'], 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstanced with QUAD_STRIP should return INVALID_ENUM");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstanced with QUAD_STRIP should return INVALID_ENUM");
     gl.drawArraysInstanced(desktopGL['QUADS'], 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstanced with QUADS should return INVALID_ENUM");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstanced with QUADS should return INVALID_ENUM");
     gl.drawArraysInstanced(desktopGL['POLYGON'], 0, 6, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstanced with POLYGON should return INVALID_ENUM");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstanced with POLYGON should return INVALID_ENUM");
 
     // Draw 2: Draw indexed instances
     debug("Testing drawElementsInstanced");
@@ -204,34 +203,34 @@ function runOutputTests() {
 
     // Test drawElementsInstanced error conditions
     gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, -1);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "drawElementsInstanced cannot have a primcount less than 0");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "drawElementsInstanced cannot have a primcount less than 0");
 
     gl.drawElementsInstanced(gl.TRIANGLES, -1, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_VALUE, "drawElementsInstanced cannot have a count less than 0");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "drawElementsInstanced cannot have a count less than 0");
 
     gl.vertexAttribDivisor(positionLoc, 1);
     gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "There must be at least one vertex attribute with a divisor of zero when calling drawElementsInstanced");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "There must be at least one vertex attribute with a divisor of zero when calling drawElementsInstanced");
     gl.vertexAttribDivisor(positionLoc, 0);
 
     gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstanced with UNSIGNED_BYTE should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstanced with UNSIGNED_BYTE should succeed");
 
     gl.drawElementsInstanced(gl.POINTS, 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstanced with POINTS should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstanced with POINTS should succeed");
     gl.drawElementsInstanced(gl.LINES, 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstanced with LINES should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstanced with LINES should succeed");
     gl.drawElementsInstanced(gl.LINE_LIST, 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstanced with LINE_LIST should return succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstanced with LINE_LIST should return succeed");
     gl.drawElementsInstanced(gl.TRI_LIST, 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstanced with TRI_LIST should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElementsInstanced with TRI_LIST should succeed");
 
     gl.drawElementsInstanced(desktopGL['QUAD_STRIP'], 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstanced with QUAD_STRIP should return INVALID_ENUM");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstanced with QUAD_STRIP should return INVALID_ENUM");
     gl.drawElementsInstanced(desktopGL['QUADS'], 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstanced with QUADS should return INVALID_ENUM");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstanced with QUADS should return INVALID_ENUM");
     gl.drawElementsInstanced(desktopGL['POLYGON'], 6, gl.UNSIGNED_SHORT, 0, instanceCount);
-    glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstanced with POLYGON should return INVALID_ENUM");
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstanced with POLYGON should return INVALID_ENUM");
 }
 
 debug("");
