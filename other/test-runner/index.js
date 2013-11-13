@@ -338,23 +338,29 @@ function run_tests(app, config, callback, browser_id) {
 
   // Does a browser matching the given configuration exist on this system?
   var os_platform = os.platform();
-  var platform_id, platform;
+  var platform_id, platform, path_id, browser_path;
   for(platform_id in browser.platforms) {
     if(os_platform.match(platform_id)) {
-      if(fs.existsSync(browser.platforms[platform_id].path)) {
-        platform = browser.platforms[platform_id];
-        break;
+      for(path_id in browser.platforms[platform_id].paths) {
+        if(fs.existsSync(browser.platforms[platform_id].paths[path_id])) {
+          platform = browser.platforms[platform_id];
+          browser_path = platform.paths[path_id];
+          break;
+        }
       }
+    }
+    if (platform) {
+      break;
     }
   }
 
   if(platform) {
     if(os_platform == "darwin" && browser.osx_defaults) {
       set_osx_defaults(browser.osx_defaults, function() {
-        run_tests_internal(app, config, callback, browser_id, browser, platform);
+        run_tests_internal(app, config, callback, browser_id, browser, platform, browser_path);
       });
     } else {
-      run_tests_internal(app, config, callback, browser_id, browser, platform);
+      run_tests_internal(app, config, callback, browser_id, browser, platform, browser_path);
     }
   } else {
     process.stdout.write("Not found, skipped");
@@ -362,7 +368,7 @@ function run_tests(app, config, callback, browser_id) {
   }
 }
 
-function run_tests_internal(app, config, callback, browser_id, browser, platform) {
+function run_tests_internal(app, config, callback, browser_id, browser, platform, browser_path) {
   // Concatenate the standard browser args and any platform specific ones
   var all_args = [];
 
@@ -391,7 +397,9 @@ function run_tests_internal(app, config, callback, browser_id, browser, platform
 
   all_args.push(config.test_url);
 
-  var browser_path = platform.command ? platform.command : platform.path;
+  if (platform.command) {
+    browser_path = platform.command;
+  }
 
   var browser_proc = child_process.spawn(browser_path, all_args, { stdio: 'ignore' });
   app.browser_proc = browser_proc;
