@@ -6,13 +6,13 @@
             "name": "Chrome",
             "platforms": {
                 "darwin": {
-                    "path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+                    "paths": ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"]
                 },
                 "linux": {
-                    "path": "/opt/google/chrome/google-chrome"
+                    "paths": ["/opt/google/chrome/google-chrome"]
                 },
                 "win32": {
-                    "path": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+                    "paths": ["C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"]
                 }
             },
 
@@ -29,7 +29,7 @@
             "name": "ChromeWinOpenGL",
             "platforms": {
                 "win32": {
-                    "path": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+                    "paths": ["C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"]
                 }
             },
 
@@ -47,10 +47,10 @@
             "name": "ChromeCanary",
             "platforms": {
                 "darwin": {
-                    "path": "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary"
+                    "paths": ["/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary"]
                 },
                 "win32": {
-                    "path": "C:\\Program Files (x86)\\Google\\Chrome SxS\\Application\\chrome.exe"
+                    "paths": ["C:\\Program Files (x86)\\Google\\Chrome SxS\\Application\\chrome.exe"]
                 }
             },
 
@@ -67,7 +67,7 @@
             "name": "ChromeCanaryWinOpenGL",
             "platforms": {
                 "win32": {
-                    "path": "C:\\Program Files (x86)\\Google\\Chrome SxS\\Application\\chrome.exe"
+                    "paths": ["C:\\Program Files (x86)\\Google\\Chrome SxS\\Application\\chrome.exe"]
                 }
             },
 
@@ -85,10 +85,10 @@
             "name": "Chromium",
             "platforms": {
                 "darwin": {
-                    "path": "/Applications/Chromium.app/Contents/MacOS/Chromium"
+                    "paths": ["/Applications/Chromium.app/Contents/MacOS/Chromium"]
                 },
                 "win32": {
-                    "path": "C:\\Program Files (x86)\\Google\\Chromium\\Application\\chromium.exe"
+                    "paths": ["C:\\Program Files (x86)\\Google\\Chromium\\Application\\chromium.exe"]
                 }
             },
 
@@ -105,7 +105,7 @@
             "name": "ChromiumWinOpenGL",
             "platforms": {
                 "win32": {
-                    "path": "C:\\Program Files (x86)\\Google\\Chromium\\Application\\chromium.exe"
+                    "paths": ["C:\\Program Files (x86)\\Google\\Chromium\\Application\\chromium.exe"]
                 }
             },
 
@@ -123,13 +123,13 @@
             "name": "Firefox",
             "platforms": {
                 "darwin": {
-                    "path": "/Applications/Firefox.app/Contents/MacOS/firefox"
+                    "paths": ["/Applications/Firefox.app/Contents/MacOS/firefox"]
                 },
                 "linux": {
-                    "path": "/usr/bin/firefox"
+                    "paths": ["/usr/bin/firefox"]
                 },
                 "win32": {
-                    "path": "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"
+                    "paths": ["C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"]
                 }
             },
 
@@ -150,7 +150,7 @@
             "name": "FirefoxWinOpenGL",
             "platforms": {
                 "win32": {
-                    "path": "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"
+                    "paths": ["C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"]
                 }
             },
 
@@ -172,7 +172,7 @@
             "name": "Safari",
             "platforms": {
                 "darwin": {
-                    "path": "/Applications/Safari.app/Contents/MacOS/Safari",
+                    "paths": ["/Applications/Safari.app/Contents/MacOS/Safari"],
                     "command": "open",
                     "comment": "FIXME: find a way to send this command to precisely the right process",
                     "quit_command": "osascript -e 'quit application \"Safari\"'"
