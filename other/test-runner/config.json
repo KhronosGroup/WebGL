@@ -87,6 +87,9 @@
                 "darwin": {
                     "paths": ["/Applications/Chromium.app/Contents/MacOS/Chromium"]
                 },
+                "linux": {
+                    "paths": ["/usr/bin/chromium-browser"]
+                },
                 "win32": {
                     "paths": ["C:\\Program Files (x86)\\Google\\Chromium\\Application\\chromium.exe"]
                 }
