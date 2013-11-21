@@ -45,7 +45,7 @@
     <h3>Definitions</h3>
     <p>This extension relies on the definition of several constructs in GLSL. These constructs are determined statically, after preprocessing.</p>
 
-    <h4>Regular Sampler Variables and Security Sensitive Sampler Variables</h4>
+    <h4>Regular Sampler Variables and Secure Sampler Variables</h4>
     <p><code>S</code> is a regular sampler if an expression dependent on <code>S</code> appears in one or more of the following constructs:</p>
     <p>
       <ul>
@@ -59,7 +59,7 @@
         <li>assignment to <code>gl_FragDepth</code></li>
       </ul>
     </p>
-    <p>Otherwise, <code>S</code> is a security sensitive sampler.</p>
+    <p>Otherwise, <code>S</code> is a secure sampler.</p>
 
     <h4>Sampler-Dependent Expressions</h4>
     <p>An expression is dependent on the sampler <code>S</code> if:</p>
@@ -126,8 +126,8 @@ dictionary WebGLContextAttributes {
         <li>
           <p><code>drawArrays</code> or <code>drawElements</code> is called and:</p>
           <ul>
-            <li>a security sensitive texture is bound to a security sensitive sampler,</li>
-            <li>a color output variable <code>gl_FragColor</code> or <code>gl_FragData[i]</code> is dependent on the security sensitive sampler,</li>
+            <li>a security sensitive texture is bound to a secure sampler,</li>
+            <li>a color output variable <code>gl_FragColor</code> or <code>gl_FragData[i]</code> is dependent on the secure sampler,</li>
             <li>
               <p>the output variable writes to either:</p>
               <ul>
