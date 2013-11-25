@@ -1,7 +1,7 @@
 <!--
 
 /*
-** Copyright (c) 2013 The Khronos Group Inc.
+** Copyright (c) 2012 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
@@ -30,26 +30,27 @@
 <head>
 <meta charset="utf-8">
 <title>Test that contexts are freed and garbage collected reasonably</title>
-<style>
-head, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-}
-
-#test-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-</style>
+<link rel="stylesheet" href="../resources/js-test-style.css"/>
+<script src="../resources/js-test-pre.js"></script>
+<script src="../conformance/resources/webgl-test-utils.js"> </script>
+<script src="../conformance/resources/iterable-test.js"> </script>
 </head>
 <body>
-  <iframe id="test-container" src="../conformance/context/context-creation-and-destruction.html?iterations=500"></iframe>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+description();
+
+var wtu = WebGLTestUtils;
+
+var test = IterableTest.createContextCreationAndDestructionTest();
+var iterations = parseInt(wtu.getUrlOptions().iterations, 10) || 500;
+IterableTest.run(test, iterations);
+
+var successfullyParsed = true;
+</script>
+
 </body>
 </html>
 
