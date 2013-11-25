@@ -1146,7 +1146,11 @@ var hasAttributeCaseInsensitive = function(obj, attr) {
   }
 };
 
-var getURLOptions = function() {
+/**
+ * Returns a map of URL querystring options
+ * @return {Object?} Object containing all the values in the URL querystring
+ */
+var getUrlOptions = function() {
   var options = {};
   var s = window.location.href;
   var q = s.indexOf("?");
@@ -1185,7 +1189,7 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
     attributes.antialias = false;
   }
   if (!opt_version) {
-    opt_version = parseInt(getURLOptions().webglVersion, 10) || 1;
+    opt_version = parseInt(getUrlOptions().webglVersion, 10) || 1;
   }
   opt_canvas = opt_canvas || document.createElement("canvas");
   if (typeof opt_canvas == 'string') {
@@ -2343,6 +2347,7 @@ return {
   getScript: getScript,
   getSupportedExtensionWithKnownPrefixes: getSupportedExtensionWithKnownPrefixes,
   getUrlArguments: getUrlArguments,
+  getUrlOptions: getUrlOptions,
   getAttribMap: getAttribMap,
   getUniformMap: getUniformMap,
   glEnumToString: glEnumToString,

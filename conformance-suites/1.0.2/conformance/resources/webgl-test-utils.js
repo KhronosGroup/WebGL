@@ -980,6 +980,30 @@ var hasAttributeCaseInsensitive = function(obj, attr) {
 };
 
 /**
+ * Returns a map of URL querystring options
+ * @return {Object?} Object containing all the values in the URL querystring
+ */
+var getUrlOptions = function() {
+  var options = {};
+  var s = window.location.href;
+  var q = s.indexOf("?");
+  var e = s.indexOf("#");
+  if (e < 0) {
+    e = s.length;
+  }
+  var query = s.substring(q + 1, e);
+  var pairs = query.split("&");
+  for (var ii = 0; ii < pairs.length; ++ii) {
+    var keyValue = pairs[ii].split("=");
+    var key = keyValue[0];
+    var value = decodeURIComponent(keyValue[1]);
+    options[key] = value;
+  }
+
+  return options;
+};
+
+/**
  * Creates a webgl context.
  * @param {!Canvas|string} opt_canvas The canvas tag to get
  *     context from. If one is not passed in one will be
@@ -1999,6 +2023,7 @@ return {
   getScript: getScript,
   getSupportedExtensionWithKnownPrefixes: getSupportedExtensionWithKnownPrefixes,
   getUrlArguments: getUrlArguments,
+  getUrlOptions: getUrlOptions,
   getAttribMap: getAttribMap,
   getUniformMap: getUniformMap,
   glEnumToString: glEnumToString,

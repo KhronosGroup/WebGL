@@ -59,11 +59,11 @@
         {
             description(document.title);
 
+            var wtu = WebGLTestUtils;
             var lastContext = null;
             var cycleCount = 0;
-            var maxCycles = 25;
+            var maxCycles = parseInt(wtu.getUrlOptions().iterations, 10) || 25;
             var failed = false;
-            var wtu = WebGLTestUtils;
             var gl = wtu.create3DContext("example", {antialias: true, preserveDrawingBuffer: true});
 
             gl.clearColor(1.0, 0.0, 0.0, 1.0);
@@ -88,7 +88,7 @@
 
                 if(lastContext) {
                     gl.drawArrays(gl.TRIANGLES, 0, 3);
-                    var msg = "Should be red after loop " + cycleCount;
+                    var msg = "Should be red after loop " + cycleCount + " of " + maxCycles;
                     wtu.checkCanvasRectColor(gl,
                         0, 0, gl.canvas.width, gl.canvas.height,
                         [255, 0, 0, 255], null,

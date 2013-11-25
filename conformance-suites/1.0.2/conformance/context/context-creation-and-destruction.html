@@ -41,7 +41,7 @@
 <script>
 "use strict";
 var wtu = WebGLTestUtils;
-var target = 50;
+var target = parseInt(wtu.getUrlOptions().iterations, 10) || 50;
 var count = 0;
 
 description();
