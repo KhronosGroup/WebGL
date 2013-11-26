@@ -2264,7 +2264,7 @@ var waitForComposite = function(gl, callback) {
       callback();
     } else {
       --frames;
-      requestAnimFrame.apply(window, countDown);
+      requestAnimFrame.call(window, countDown);
     }
   };
   countDown();
