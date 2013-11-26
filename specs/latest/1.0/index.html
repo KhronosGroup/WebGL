@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 09 November 2013</h2>
+    <h2 class="no-toc">Editor's Draft 25 November 2013</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -224,6 +224,18 @@
         <li> Return <em>context</em>.
 
         </ol>
+    </p>
+    <div class="note">
+    <p>
+      The canvas context type 'experimental-webgl' has historically been used to provide access to
+      WebGL implementations which are not yet complete or conformant.
+    </p>
+    </div>
+    <p>
+      If the user agent supports both the <code>webgl</code> and <code>experimental-webgl</code>
+      canvas context types, they shall be treated as aliases. For example, if a call
+      to <code>getContext('webgl')</code> successfully creates a WebGLRenderingContext, a subsequent
+      call to <code>getContext('experimental-webgl')</code> shall return the same context object.
     </p>
     
 <!-- ======================================================================================================= -->
