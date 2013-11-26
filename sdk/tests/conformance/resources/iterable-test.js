@@ -71,8 +71,12 @@ IterableTest = (function() {
 
   // Creates a canvas and a texture then exits. There are
   // no references to either so both should be garbage collected.
-  function createMultisampleCorruptionTest(gl, program) {
+  function createMultisampleCorruptionTest(gl) {
     var lastContext = null;
+
+    var program = wtu.loadStandardProgram(gl);
+    var uniforms = wtu.getUniformMap(gl, program);
+    gl.useProgram(program);
 
     gl.clearColor(1.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
@@ -82,6 +86,16 @@ IterableTest = (function() {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,2.5,0, 1.5,1.5,0, 2.5,1.5,0 ]), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+    gl.vertexAttrib3f(1, 0.0, 0.0, 1.0);
+
+    var identityMat = new Float32Array([
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+    ]);
+
+    gl.uniformMatrix4fv(uniforms.u_modelViewProjMatrix.location, false, identityMat);
 
     function test() {
       var gl2 = wtu.create3DContext(null, {antialias: true});
