@@ -2121,19 +2121,33 @@ var getPrefixedProperty = function(obj, propertyName) {
   return undefined;
 };
 
+var _requestAnimFrame;
+
 /**
  * Provides requestAnimationFrame in a cross browser way.
  */
-var requestAnimFrame = getPrefixedProperty(window, "requestAnimationFrame") ||
-    function(callback, element) {
-      return window.setTimeout(callback, 1000 / 70);
-    };
+var requestAnimFrame = function(callback) {
+  if (!_requestAnimFrame) {
+    _requestAnimFrame = getPrefixedProperty(window, "requestAnimationFrame") || 
+      function(callback, element) {
+        return window.setTimeout(callback, 1000 / 70);
+      };
+  }
+  _requestAnimFrame.call(window, callback);
+};
+
+var _cancelAnimFrame;
 
 /**
  * Provides cancelAnimationFrame in a cross browser way.
  */
-var cancelAnimFrame = getPrefixedProperty(window, "cancelAnimationFrame") ||
-    window.clearTimeout;
+var cancelAnimFrame = function(request) {
+  if (!_cancelAnimFrame) {
+    _cancelAnimFrame = getPrefixedProperty(window, "cancelAnimationFrame") ||
+      window.clearTimeout;
+  }
+  _cancelAnimFrame.call(window, request);
+};
 
 /**
  * Provides requestFullScreen in a cross browser way.
@@ -2250,7 +2264,7 @@ var waitForComposite = function(gl, callback) {
       callback();
     } else {
       --frames;
-      requestAnimFrame(countDown);
+      requestAnimFrame.apply(window, countDown);
     }
   };
   countDown();
