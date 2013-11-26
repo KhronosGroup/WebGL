@@ -247,6 +247,9 @@ var greaterThanOrEqualToVersion = function(have, want) {
   for (var ii = 0; ii < want.length; ++ii) {
     var wantNum = parseInt(want[ii]);
     var haveNum = have[ii] ? parseInt(have[ii]) : 0
+    if (haveNum > wantNum) {
+      return true; // 2.0.0 is greater than 1.2.3
+    }
     if (haveNum < wantNum) {
       return false;
     }
