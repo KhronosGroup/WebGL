@@ -132,7 +132,7 @@ function $$(x) {
     return document.getElementById(x);
 }
 
-// Add indexOf ot IE.
+// Add indexOf to IE.
 if(!Array.indexOf){
     Array.prototype.indexOf = function(obj){
         for(var i=0; i<this.length; i++){
@@ -173,6 +173,162 @@ function addClass(element, clas) {
     element.className = element.className + " " + clas;
 }
 
+function assertFunction(v, f) {
+  try {
+    return (typeof v[f] == "function");
+  } catch(e) {
+    return false;
+  }
+}
+
+function completeImplementation(gl) {
+  var methods = [
+    "getContextAttributes",
+    "activeTexture",
+    "attachShader",
+    "bindAttribLocation",
+    "bindBuffer",
+    "bindFramebuffer",
+    "bindRenderbuffer",
+    "bindTexture",
+    "blendColor",
+    "blendEquation",
+    "blendEquationSeparate",
+    "blendFunc",
+    "blendFuncSeparate",
+    "bufferData",
+    "bufferSubData",
+    "checkFramebufferStatus",
+    "clear",
+    "clearColor",
+    "clearDepth",
+    "clearStencil",
+    "colorMask",
+    "compileShader",
+    "compressedTexImage2D",
+    "compressedTexSubImage2D",
+    "copyTexImage2D",
+    "copyTexSubImage2D",
+    "createBuffer",
+    "createFramebuffer",
+    "createProgram",
+    "createRenderbuffer",
+    "createShader",
+    "createTexture",
+    "cullFace",
+    "deleteBuffer",
+    "deleteFramebuffer",
+    "deleteProgram",
+    "deleteRenderbuffer",
+    "deleteShader",
+    "deleteTexture",
+    "depthFunc",
+    "depthMask",
+    "depthRange",
+    "detachShader",
+    "disable",
+    "disableVertexAttribArray",
+    "drawArrays",
+    "drawElements",
+    "enable",
+    "enableVertexAttribArray",
+    "finish",
+    "flush",
+    "framebufferRenderbuffer",
+    "framebufferTexture2D",
+    "frontFace",
+    "generateMipmap",
+    "getActiveAttrib",
+    "getActiveUniform",
+    "getAttachedShaders",
+    "getAttribLocation",
+    "getParameter",
+    "getBufferParameter",
+    "getError",
+    "getExtension",
+    "getFramebufferAttachmentParameter",
+    "getProgramParameter",
+    "getProgramInfoLog",
+    "getRenderbufferParameter",
+    "getShaderParameter",
+    "getShaderInfoLog",
+    "getShaderPrecisionFormat",
+    "getShaderSource",
+    "getSupportedExtensions",
+    "getTexParameter",
+    "getUniform",
+    "getUniformLocation",
+    "getVertexAttrib",
+    "getVertexAttribOffset",
+    "hint",
+    "isBuffer",
+    "isContextLost",
+    "isEnabled",
+    "isFramebuffer",
+    "isProgram",
+    "isRenderbuffer",
+    "isShader",
+    "isTexture",
+    "lineWidth",
+    "linkProgram",
+    "pixelStorei",
+    "polygonOffset",
+    "readPixels",
+    "renderbufferStorage",
+    "sampleCoverage",
+    "scissor",
+    "shaderSource",
+    "stencilFunc",
+    "stencilFuncSeparate",
+    "stencilMask",
+    "stencilMaskSeparate",
+    "stencilOp",
+    "stencilOpSeparate",
+    "texImage2D",
+    "texParameterf",
+    "texParameteri",
+    "texSubImage2D",
+    "uniform1f",
+    "uniform1fv",
+    "uniform1i",
+    "uniform1iv",
+    "uniform2f",
+    "uniform2fv",
+    "uniform2i",
+    "uniform2iv",
+    "uniform3f",
+    "uniform3fv",
+    "uniform3i",
+    "uniform3iv",
+    "uniform4f",
+    "uniform4fv",
+    "uniform4i",
+    "uniform4iv",
+    "uniformMatrix2fv",
+    "uniformMatrix3fv",
+    "uniformMatrix4fv",
+    "useProgram",
+    "validateProgram",
+    "vertexAttrib1f",
+    "vertexAttrib1fv",
+    "vertexAttrib2f",
+    "vertexAttrib2fv",
+    "vertexAttrib3f",
+    "vertexAttrib3fv",
+    "vertexAttrib4f",
+    "vertexAttrib4fv",
+    "vertexAttribPointer",
+    "viewport"
+  ];
+
+  for (var i=0; i<methods.length; i++) {
+    if(!assertFunction(gl, methods[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function pageLoaded() {
     removeClass($$("have-javascript"), "webgl-hidden");
     addClass($$("no-javascript"), "webgl-hidden");
@@ -192,8 +348,14 @@ function pageLoaded() {
     }
 
     if (gl) {
-        // hide/show phrase for webgl-experimental
-        $$("webgl-experimental").style.display = experimental ? "auto" : "none";
+        if (!completeImplementation(gl)) {
+          // hide/show phrase for webgl-incomplete
+          removeClass($$("webgl-incomplete"), "webgl-hidden");
+          $$("webgl-experimental").style.display = "none";
+        } else {
+          // hide/show phrase for webgl-experimental
+          $$("webgl-experimental").style.display = experimental ? "auto" : "none";
+        }
 
         // Set the support link to the correct URL for the browser.
         $$("support-link").href = b.urls.troubleshootingUrl;
@@ -279,6 +441,10 @@ window.onload = pageLoaded;
 
             <div id="webgl-experimental">However, it indicates that support is
             experimental; you might see issues with some content.</div>
+
+            <div class="webgl-hidden" id="webgl-incomplete">However, it doesn't
+            appear to be a complete implementation. Some functionality may be
+            missing and WebGL content may not work as expected!</div>
 
             <div>You should see a spinning cube. If you do not, please
             <a id="support-link">visit the support site for your browser</a>.</div>

@@ -109,6 +109,12 @@ var BrowserDetect = {
     identity: "Explorer",
     versionSearch: "MSIE"
   },
+  { // for IE11+
+    string: navigator.userAgent,
+    subString: "Trident",
+    identity: "Explorer",
+    versionSearch: "rv"
+  },
   { string: navigator.userAgent,
     subString: "Gecko",
     identity: "Mozilla",
@@ -127,8 +133,9 @@ var BrowserDetect = {
     identity: "Windows",
     browsers: [
       {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
-    // add back in when opera is stable {url: "http://www.opera.com/browser/next/" name: "Opera Next"},
-      {url: "http://www.google.com/chrome/", name: "Google Chrome"}
+      {url: "http://www.opera.com/", name: "Opera"},
+      {url: "http://www.google.com/chrome/", name: "Google Chrome"},
+      {url: "http://www.microsoft.com/ie", name: "Internet Explorer"}
     ]
   },
   { string: navigator.platform,
@@ -137,7 +144,7 @@ var BrowserDetect = {
     browsers: [
       {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
       {url: "http://www.google.com/chrome/", name: "Google Chrome"},
-      // add back in when opera is stable {url: "http://www.opera.com/browser/next/", name: "Opera Next"},
+      {url: "http://www.opera.com/", name: "Opera"},
       {url: "http://www.webkit.org/", name: "WebKit Developer Builds"}
     ]
   },
@@ -169,7 +176,7 @@ var BrowserDetect = {
     browsers: [
       {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
       {url: "http://www.google.com/chrome/", name: "Google Chrome"},
-      {url: "http://www.opera.com/browser/next/", name: "Opera Next"}
+      {url: "http://www.opera.com/", name: "Opera"}
     ]
   },
   { string: "unknown",
@@ -178,7 +185,7 @@ var BrowserDetect = {
     browsers: [
       {url: "http://www.mozilla.com/en-US/firefox/new/", name: "Mozilla Firefox"},
       {url: "http://www.google.com/chrome/", name: "Google Chrome"},
-      {url: "http://www.opera.com/browser/next/", name: "Opera Next"},
+      {url: "http://www.opera.com/", name: "Opera"},
       {url: "http://www.webkit.org/", name: "WebKit Developer Builds"}
     ]
   }
@@ -204,7 +211,7 @@ var BrowserDetect = {
           troubleshootingUrl: "http://www.opera.com/support/"
         }
       },
-      upgradeUrl: "http://www.opera.com/browser/next/",
+      upgradeUrl: "http://www.opera.com/",
       troubleshootingUrl: "http://www.opera.com/support/"
     },
     "Android": {
@@ -228,6 +235,10 @@ var BrowserDetect = {
       },
       upgradeUrl: "http://www.webkit.org/",
       troubleshootingUrl: "http://www.webkit.org/blog/919/webgl-draft-specification-now-available/"
+    },
+    "Explorer": {
+      upgradeUrl: "http://www.microsoft.com/ie",
+      troubleshootingUrl: "http://msdn.microsoft.com/en-us/library/ie/bg182648(v=vs.85).aspx"
     },
     "unknown": {
       upgradeUrl: null,
