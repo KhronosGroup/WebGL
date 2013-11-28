@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<proposal href="proposals/WEBGL_compressed_texture_etc1/">
+<draft href="proposals/WEBGL_compressed_texture_etc1/">
   <name>WEBGL_compressed_texture_etc1</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -73,4 +73,4 @@ interface WEBGL_compressed_texture_etc1 {
       <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
     </revision>
   </history>
-</proposal>
+</draft>
