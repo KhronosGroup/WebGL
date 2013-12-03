@@ -75,5 +75,8 @@ interface WEBGL_compressed_texture_etc1 {
     <revision date="2013/11/27">
       <change>Moved to draft status.</change>
     </revision>
+    <revision date="2013/12/03">
+      <change>Assigned extension number 24 to WEBGL_compressed_texture_etc1 extension.</change>
+    </revision>
   </history>
 </draft>
