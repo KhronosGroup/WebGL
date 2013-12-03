@@ -8,7 +8,7 @@
   <contributors>
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
-  <number>XYZ</number>
+  <number>24</number>
   <depends>
     <api version="1.0"/>
   </depends>
