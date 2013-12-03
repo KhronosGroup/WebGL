@@ -72,5 +72,8 @@ interface WEBGL_compressed_texture_etc1 {
     <revision date="2013/07/03">
       <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
     </revision>
+    <revision date="2013/11/27">
+      <change>Moved to draft status.</change>
+    </revision>
   </history>
 </draft>

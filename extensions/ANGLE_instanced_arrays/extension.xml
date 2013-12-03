@@ -8,7 +8,7 @@
     <contributor>Contributors to ANGLE_instanced_arrays</contributor>
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
-  <number>20</number>
+  <number>19</number>
   <depends>
     <api version="1.0"/>
   </depends>

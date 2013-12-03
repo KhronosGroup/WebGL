@@ -9,7 +9,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>22</number>
+  <number>21</number>
 
   <depends>
     <api version="1.0"/>
