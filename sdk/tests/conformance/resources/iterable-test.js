@@ -69,11 +69,11 @@ IterableTest = (function() {
     };
   }
 
-  // Creates many small canvases and attaches them to the dom
+  // Creates many small canvases and attaches them to the DOM.
   // This tests an edge case discovered in Chrome where the creation of multiple
-  // WebGL contexts would eventually lead to context creation failure. The test
-  // does not require that old contexts remain valid, only that new ones can be
-  // created.
+  // WebGL contexts would eventually lead to context creation failure.
+  // (crbug.com/319265) The test does not require that old contexts remain
+  // valid, only that new ones can be created.
   function createContextCreationTest() {
     return function() {
       var canvas = document.createElement("canvas");
