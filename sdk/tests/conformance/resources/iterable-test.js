@@ -69,6 +69,31 @@ IterableTest = (function() {
     };
   }
 
+  // Creates many small canvases and attaches them to the DOM.
+  // This tests an edge case discovered in Chrome where the creation of multiple
+  // WebGL contexts would eventually lead to context creation failure.
+  // (crbug.com/319265) The test does not require that old contexts remain
+  // valid, only that new ones can be created.
+  function createContextCreationTest() {
+    return function() {
+      var canvas = document.createElement("canvas");
+      canvas.width = 1;
+      canvas.height = 1;
+
+      document.body.appendChild(canvas);
+
+      var gl = wtu.create3DContext(canvas);
+      if (!gl) {
+        return false;
+      }
+
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
+
+      return true;
+    };
+  }
+
   // Creates a canvas and a texture then exits. There are
   // no references to either so both should be garbage collected.
   function createMultisampleCorruptionTest(gl) {
@@ -138,6 +163,7 @@ IterableTest = (function() {
     run: run,
 
     createContextCreationAndDestructionTest: createContextCreationAndDestructionTest,
+    createContextCreationTest: createContextCreationTest,
     createMultisampleCorruptionTest: createMultisampleCorruptionTest
   };
 
