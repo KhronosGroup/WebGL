@@ -132,7 +132,7 @@ function $$(x) {
     return document.getElementById(x);
 }
 
-// Add indexOf ot IE.
+// Add indexOf to IE.
 if(!Array.indexOf){
     Array.prototype.indexOf = function(obj){
         for(var i=0; i<this.length; i++){
@@ -278,7 +278,8 @@ window.onload = pageLoaded;
             <h1 class="good">Your browser supports WebGL</h1>
 
             <div id="webgl-experimental">However, it indicates that support is
-            experimental; you might see issues with some content.</div>
+            experimental; Not all WebGL functionality may be supported, and
+            content may not run as expected.</div>
 
             <div>You should see a spinning cube. If you do not, please
             <a id="support-link">visit the support site for your browser</a>.</div>
