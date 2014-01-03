@@ -265,17 +265,6 @@ function runConstructorTests()
     arrayBuffer = (new Uint8Array([1, 2])).buffer;
 
     debug("");
-    debug("Test for constructor not called as a function");
-    var expr = "DataView(new ArrayBuffer)";
-    // Use try/catch instead of calling shouldThrow to avoid different exception message being reported from different platform.
-    try {
-        TestEval(expr);
-        testFailed(expr + " does not throw exception");
-    } catch (e) {
-        testPassed(expr + " threw exception");
-    }
-
-    debug("");
     debug("Test for constructor taking 1 argument");
     shouldBeDefined("view = new DataView(arrayBuffer)");
     shouldBe("view.byteOffset", "0");
