@@ -120,11 +120,19 @@ if (!gl) {
  * - or if step5 was ommited (probably because that makes step 2 a no-op since the VAO is bound)
  */
 function runBufferDataTest() {
-	
+	debug("Testing draws with bufferData");
+    
+    canvas.width = 50; canvas.height = 50;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    
 	var testColor = [0, 255, 0, 255];
 	var clearColor = [255, 0, 0, 255];
 	
-	var numberOfTests = 3; // 2 is enough actually
+    // Where the issue occures, this is the sequence of success/failure every time:
+    // result:           success fail fail fail fail ... success fail fail ...
+    // currentTestCount: 0       1    2    3    4    ... 64      65   66   ...
+    // So with just 1 test it passes, but 2 tests are enough. Here we use 3.
+	var numberOfTests = 3; 
 	var currentTestCount = 0;
 	
 	var positionLoc = 0;
@@ -139,8 +147,6 @@ function runBufferDataTest() {
 	var buffers = wtu.setupIndexedQuadWithOptions(gl,
     { gridRes: gridRes,
       positionLocation: positionLoc
-	  //,colorLocation: colorLoc, // colors and not handled properly in setupIndexedQuadWithOptions
-	  //color: testColors,
     });
 	
 	var colorTypedArray = createColorTypedArray();
@@ -156,20 +162,29 @@ function runBufferDataTest() {
 	
 	function testDrawing() {
 	
+        // this order works fine:
+		// ext.bindVertexArrayOES(vao0);
+        // uploadColor();
+        
+        // this order doesn't:
 		uploadColor();
 		ext.bindVertexArrayOES(vao0);
+        
 		wtu.clearAndDrawIndexedQuad(gl, 1, clearColor);
+        
 		ext.bindVertexArrayOES(null);
 
+        //debug("<span>"+currentTestCount+"</span");
 		wtu.checkCanvas(gl, testColor, "should be green")
 		
 		if (++currentTestCount < numberOfTests) {
 		
 			testDrawing();
-			
-			// or
-			//wtu.requestAnimFrame(testDrawing);
-		}
+			// wtu.requestAnimFrame(testDrawing);
+		} else {
+            // clean up
+            ext.deleteVertexArrayOES(vao0);
+        }
 	}
 	
 	function uploadColor() {
