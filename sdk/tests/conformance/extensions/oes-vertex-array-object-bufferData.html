@@ -161,7 +161,6 @@ function runBufferDataTest() {
     testDrawing();
     
     function testDrawing() {
-    
         // this order works fine:
         // ext.bindVertexArrayOES(vao0);
         // uploadColor();
@@ -188,13 +187,11 @@ function runBufferDataTest() {
     }
     
     function uploadColor() {
-    
         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, colorTypedArray, gl.STREAM_DRAW);
     }
     
     function createColorTypedArray() {
-    
         var colors = [];
         var pOffset = 0;
         for (var yy = 0; yy <= gridRes; ++yy) {
