@@ -9,6 +9,7 @@ oes-texture-float-with-image.html
 oes-texture-float-with-video.html
 oes-texture-float.html
 oes-vertex-array-object.html
+--min-version 1.0.3 oes-vertex-array-object-bufferData.html
 --min-version 1.0.3 oes-texture-half-float.html
 --min-version 1.0.3 oes-texture-float-linear.html
 --min-version 1.0.3 oes-texture-half-float-linear.html
