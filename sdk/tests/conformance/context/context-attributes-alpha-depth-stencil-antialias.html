@@ -147,6 +147,14 @@ function drawAndReadPixel(gl, vertices, colors)
     gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 3);
 }
 
+function testDefault()
+{
+    debug("Testing default attributes: { stencil:false }");
+    shouldBeNonNull("gl = getWebGL(1, 1, null, [ 0, 0, 0, 0 ], 1, 0)");
+    shouldBeFalse("gl.getContextAttributes().stencil");
+    shouldBeTrue("gl.getParameter(gl.STENCIL_BITS) == 0");
+}
+
 function testAlpha(alpha)
 {
     debug("Testing alpha = " + alpha);
@@ -317,7 +325,7 @@ function testAntialias(antialias)
 
 function runTest()
 {
-
+    testDefault();
     testAlpha(true);
     testAlpha(false);
     testDepth(true);
