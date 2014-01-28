@@ -1,0 +1,9 @@
+glsl-construct-vec2.html
+glsl-construct-vec3.html
+glsl-construct-vec4.html
+glsl-construct-ivec2.html
+glsl-construct-ivec3.html
+glsl-construct-ivec4.html
+glsl-construct-bvec2.html
+glsl-construct-bvec3.html
+glsl-construct-bvec4.html
