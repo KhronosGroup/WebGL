@@ -28,11 +28,26 @@ interface WEBGL_debug_shaders {
       If no source has been defined, <code>compileShader()</code> has not been called, or the translation has failed for <code>shader</code>, an empty string is returned; otherwise, return the translated source.
     </function>
   </newfun>
-  <security>
+  <issues>
     <p>
-      Workarounds might be implemented in shader translation for driver bugs, and the pattern of the translation could be used to identify a specific GPU. Therefore, this extension has privacy implications and MUST NOT be available (see <code>getSupportedExtensions()</code>) to regular web content. The extension shall be available only to content determined to be privileged by some user agent specific means.
-    </p>
-  </security>
+      1) Should this extension be made available on ordinary web pages?</p>
+      <ul>
+        <li> Earlier versions of this extension noted the following concerns:
+        <ol>
+          <li> The precise pattern of how the original shader is translated may yield personally-identifiable information to the web page about the kind of graphics card in the user's computer. </li>
+        </ol>
+
+        User agents (web browsers) should carefully consider whether or not to expose this extension in non-privileged settings due to these concerns. </li>
+
+        <li> On the other hand, benefits of exposing this information to general web pages include:
+
+        <ol>
+          <li> Tools for WebGL developers can provide more detailed information about how the input shader is translated to run on the graphics card, potentially helping the developers make their applications run faster. </li>
+        </ol>
+
+        </li>
+      </ul>
+  </issues>
   <history>
     <revision date="2011/10/03">
       <change>Initial revision.</change>
@@ -52,6 +67,9 @@ interface WEBGL_debug_shaders {
     </revision>
     <revision date="2013/05/15">
       <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
+    <revision date="2014/01/28">
+      <change>Added issue on privacy considerations, replacing security section.</change>
     </revision>
   </history>
 </ratified>
