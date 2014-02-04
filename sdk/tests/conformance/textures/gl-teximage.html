@@ -50,6 +50,7 @@ var successfullyParsed;
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
 var imgURLs = [
+  '../resources/1-channel.jpg',
   '../resources/gray-ramp-256-with-128-alpha.png',
   '../resources/gray-ramp-256.png',
   '../resources/gray-ramp-default-gamma.png',
@@ -420,6 +421,16 @@ function runTests(imgs) {
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   // The image should be red.
   checkPixelRange(buf, middle, center, [ 255, 0, 0, 255 ], 10);
+
+  debug("");
+  debug("check uploading of 1-channel JPG images");
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
+                imgs['../resources/1-channel.jpg']);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
+  wtu.clearAndDrawUnitQuad(gl);
+  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+  // The image should be gray.
+  checkPixelRange(buf, middle, center, [ 128, 128, 128, 255 ], 28);
 
   debug("")
   debug("check calling texImage2D with NULL clears the texture");
