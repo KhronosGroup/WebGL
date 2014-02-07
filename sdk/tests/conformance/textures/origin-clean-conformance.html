@@ -36,17 +36,63 @@
 <script>
 "use strict";
 var wtu = WebGLTestUtils;
+
+function getHost(url) {
+  url = url.replace("\\", "/");
+  var pos = url.indexOf("://");
+  if (pos >= 0) {
+    url = url.substr(pos + 3);
+  }
+  var parts = url.split('/');
+  return parts[0];
+}
+
 // This function returns the last 2 words of the domain of a URL
 // This is probably not the correct check but it will do for now.
-function getBaseDomain(str) {
-  str = str.replace("\\", "/");
-  var pos = str.indexOf("://");
-  if (pos >= 0) {
-    str = str.substr(pos + 3);
+function getBaseDomain(host) {
+  var parts = host.split(":");
+  var hostname = parts[0];
+  var port = parts[1] || "80";
+  parts = hostname.split(".");
+  if(parts.length < 2)
+    return hostname + ":" + port;
+  var tld = parts[parts.length-1];
+  var domain = parts[parts.length-2];
+  return domain + "." + tld + ":" + port;
+}
+
+function getLocalCrossOrigin() {
+  var domain;
+  if (window.location.host.indexOf("localhost") != -1) {
+    domain = "127.0.0.1";
+  } else {
+    domain = "localhost";
   }
-  var parts = str.split('/');
-  var domain = parts[0].match(/\w+\.\w+$/);
-  return domain || '';
+
+  var port = window.location.port || "80";
+  return window.location.protocol + "//" + domain + ":" + port
+}
+
+function getRelativePath(path) {
+  var relparts = window.location.pathname.split("/");
+  relparts.pop(); // Pop off filename
+  var pathparts = path.split("/");
+
+  var i;
+  for (i = 0; i < pathparts.length; ++i) {
+    switch (pathparts[i]) {
+      case "": break;
+      case ".": break;
+      case "..":
+        relparts.pop();
+        break;
+      default:
+        relparts.push(pathparts[i]);
+        break;
+    }
+  }
+
+  return relparts.join("/");
 }
 
 // Checks if function throws an exception.
@@ -60,16 +106,19 @@ function causedException(func) {
   return hadException;
 }
 
+var defaultImgUrl = "http://www.opengl.org/img/opengl_logo.jpg";
+var localImgUrl = "../resources/opengl_logo.jpg";
+
 var imgDomain;
 var pageDomain;
 var successfullyParsed;
 
-window.onload = function() {
-  description("This test ensures WebGL implementations follow proper same-origin restrictions.");
-  var img = document.getElementById("img");
+function imageLoaded() {
+  var img = this;
+
   assertMsg(img.width > 0 && img.height > 0, "img was loaded");
-  imgDomain = getBaseDomain(img.src);
-  pageDomain = getBaseDomain(window.location.toString());
+  imgDomain = getBaseDomain(getHost(img.src));
+  pageDomain = getBaseDomain(window.location.host);
   assertMsg(imgDomain != pageDomain,
             "img domain (" + imgDomain + ") and page domain (" + pageDomain + ") are not the same.");
 
@@ -143,6 +192,20 @@ window.onload = function() {
   debug('<br /><span class="pass">TEST COMPLETE</span>');
   notifyFinishedToHarness();
 }
+
+window.onload = function() {
+  description("This test ensures WebGL implementations follow proper same-origin restrictions.");
+  var img = document.getElementById("img");
+  img.addEventListener("load", imageLoaded, false);
+  img.addEventListener("error", imageLoaded, false);
+
+  var localTest = window.location.hostname.indexOf("localhost") != -1 || window.location.hostname.indexOf("127.0.0.1") != -1;
+  if (localTest) {
+    img.src = getLocalCrossOrigin() + getRelativePath(localImgUrl);
+  } else {
+    img.src = wtu.getUrlOptions().imgUrl || defaultImgUrl;
+  }
+}
 </script>
 </head>
 <body>
@@ -150,6 +213,6 @@ window.onload = function() {
 <div id="console"></div>
 <canvas id="canvas1"></canvas>
 <canvas id="canvas2"></canvas>
-<img id="img" src="http://www.opengl.org/img/opengl_logo.jpg" style="display:none;">
+<img id="img" style="display:none;">
 </body>
 </html>
