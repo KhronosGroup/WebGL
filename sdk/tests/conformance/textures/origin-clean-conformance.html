@@ -61,40 +61,6 @@ function getBaseDomain(host) {
   return domain + "." + tld + ":" + port;
 }
 
-function getLocalCrossOrigin() {
-  var domain;
-  if (window.location.host.indexOf("localhost") != -1) {
-    domain = "127.0.0.1";
-  } else {
-    domain = "localhost";
-  }
-
-  var port = window.location.port || "80";
-  return window.location.protocol + "//" + domain + ":" + port
-}
-
-function getRelativePath(path) {
-  var relparts = window.location.pathname.split("/");
-  relparts.pop(); // Pop off filename
-  var pathparts = path.split("/");
-
-  var i;
-  for (i = 0; i < pathparts.length; ++i) {
-    switch (pathparts[i]) {
-      case "": break;
-      case ".": break;
-      case "..":
-        relparts.pop();
-        break;
-      default:
-        relparts.push(pathparts[i]);
-        break;
-    }
-  }
-
-  return relparts.join("/");
-}
-
 // Checks if function throws an exception.
 function causedException(func) {
   var hadException = false;
@@ -199,9 +165,8 @@ window.onload = function() {
   img.addEventListener("load", imageLoaded, false);
   img.addEventListener("error", imageLoaded, false);
 
-  var localTest = window.location.hostname.indexOf("localhost") != -1 || window.location.hostname.indexOf("127.0.0.1") != -1;
-  if (localTest) {
-    img.src = getLocalCrossOrigin() + getRelativePath(localImgUrl);
+  if (wtu.runningOnLocalhost()) {
+    img.src = wtu.getLocalCrossOrigin() + wtu.getRelativePath(localImgUrl);
   } else {
     img.src = wtu.getUrlOptions().imgUrl || defaultImgUrl;
   }

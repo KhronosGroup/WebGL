@@ -2332,6 +2332,45 @@ var startPlayingAndWaitForVideo = function(video, callback) {
   video.play();
 };
 
+var runningOnLocalhost = function() {
+  return window.location.hostname.indexOf("localhost") != -1 ||
+      window.location.hostname.indexOf("127.0.0.1") != -1;
+}
+
+var getLocalCrossOrigin = function() {
+  var domain;
+  if (window.location.host.indexOf("localhost") != -1) {
+    domain = "127.0.0.1";
+  } else {
+    domain = "localhost";
+  }
+
+  var port = window.location.port || "80";
+  return window.location.protocol + "//" + domain + ":" + port
+}
+
+var getRelativePath = function(path) {
+  var relparts = window.location.pathname.split("/");
+  relparts.pop(); // Pop off filename
+  var pathparts = path.split("/");
+
+  var i;
+  for (i = 0; i < pathparts.length; ++i) {
+    switch (pathparts[i]) {
+      case "": break;
+      case ".": break;
+      case "..":
+        relparts.pop();
+        break;
+      default:
+        relparts.push(pathparts[i]);
+        break;
+    }
+  }
+
+  return relparts.join("/");
+}
+
 return {
   addShaderSource: addShaderSource,
   cancelAnimFrame: cancelAnimFrame,
@@ -2422,6 +2461,10 @@ return {
 
   // fullscreen api
   setupFullscreen: setupFullscreen,
+
+  runningOnLocalhost: runningOnLocalhost,
+  getLocalCrossOrigin: getLocalCrossOrigin,
+  getRelativePath: getRelativePath,
 
   none: false
 };
