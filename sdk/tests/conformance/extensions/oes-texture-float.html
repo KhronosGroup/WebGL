@@ -105,12 +105,14 @@ if (!gl) {
       testPassed("No OES_texture_float support -- this is legal");
   } else {
       testPassed("Successfully enabled OES_texture_float extension");
+      // If alpha value is missing from a texture it gets filled to 1 when sampling according to GLES2.0 table 3.12
       runTextureCreationTest(testProgram, true, gl.RGBA, 4, [10000, 10000, 10000, 10000]);
-      runTextureCreationTest(testProgram, true, gl.RGB, 3, [10000, 10000, 10000, 0]);
-      runTextureCreationTest(testProgram, true, gl.LUMINANCE, 1, [10000, 10000, 10000, 0]);
+      runTextureCreationTest(testProgram, true, gl.RGB, 3, [10000, 10000, 10000, 1]);
+      runTextureCreationTest(testProgram, true, gl.LUMINANCE, 1, [10000, 10000, 10000, 1]);
       runTextureCreationTest(testProgram, true, gl.ALPHA, 1, [0, 0, 0, 10000]);
       runTextureCreationTest(testProgram, true, gl.LUMINANCE_ALPHA, 2, [10000, 10000, 10000, 10000]);
-      runRenderTargetTest(testProgram);
+      runRenderTargetTest(testProgram, gl.RGBA, [10000, 10000, 10000, 10000]);
+      runRenderTargetTest(testProgram, gl.RGB, [10000, 10000, 10000, 1]);
       runUniqueObjectTest();
   }
 }
@@ -169,16 +171,17 @@ function runTextureCreationTest(testProgram, extensionEnabled, opt_format, opt_n
     wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red");
 }
 
-function runRenderTargetTest(testProgram)
+function runRenderTargetTest(testProgram, format, subtractor)
 {
+    var formatString = wtu.glEnumToString(gl, format);
     debug("");
-    debug("testing floating-point render targets");
+    debug("testing floating-point " + formatString + " render target");
 
     var texture = allocateTexture();
     var width = 2;
     var height = 2;
     var numberOfChannels = 4;
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.FLOAT, null);
+    gl.texImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, format, gl.FLOAT, null);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "floating-point texture allocation should succeed if OES_texture_float is enabled");
 
     // Try to use this texture as a render target.
@@ -189,7 +192,7 @@ function runRenderTargetTest(testProgram)
     // It is legal for a WebGL implementation exposing the OES_texture_float extension to
     // support floating-point textures but not as attachments to framebuffer objects.
     if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
-        debug("floating-point render targets not supported -- this is legal");
+        debug("floating-point " + formatString + " render target not supported -- this is legal");
         return;
     }
 
@@ -206,6 +209,7 @@ function runRenderTargetTest(testProgram)
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.useProgram(testProgram);
     gl.uniform1i(gl.getUniformLocation(testProgram, "tex"), 0);
+    gl.uniform4fv(gl.getUniformLocation(testProgram, "subtractor"), subtractor);
     wtu.clearAndDrawUnitQuad(gl);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "rendering from floating-point texture should succeed");
     checkRenderingResults();
@@ -213,6 +217,7 @@ function runRenderTargetTest(testProgram)
 
 function runUniqueObjectTest()
 {
+    debug("");
     debug("Testing that getExtension() returns the same object each time");
     gl.getExtension("OES_texture_float").myProperty = 2;
     gc();
