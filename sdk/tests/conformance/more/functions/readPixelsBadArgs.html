@@ -31,7 +31,13 @@
 <link rel="stylesheet" type="text/css" href="../unit.css" />
 <script type="application/x-javascript" src="../unit.js"></script>
 <script type="application/x-javascript" src="../util.js"></script>
+<script type="application/x-javascript" src="../../resources/webgl-test-utils.js"></script>
 <script type="application/x-javascript">
+var wtu = WebGLTestUtils;
+var defaultImgUrl = "http://www.opengl.org/img/opengl_logo.jpg";
+var localImgUrl = "../../resources/opengl_logo.jpg";
+
+Tests.autoinit = false; // Prevents the test from running until the image is loaded
 
 Tests.startUnit = function () {
   var canvas = document.getElementById('gl');
@@ -77,7 +83,6 @@ Tests.testReadPixels = function(gl) {
 
 Tests.testReadPixelsSOPIMG = function(gl) {
     var img = document.getElementById("i");
-    while (!img.complete) {}
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     // SOP failure
@@ -91,7 +96,6 @@ Tests.testReadPixelsSOPIMG = function(gl) {
 }
 Tests.testReadPixelsSOPCanvas = function(gl) {
     var img = document.getElementById("i");
-    while (!img.complete) {}
     var c = document.getElementById("c");
     c.getContext("2d").drawImage(img, 0, 0);
     assertFail("canvas throws because not origin clean",
@@ -111,9 +115,10 @@ Tests.testReadPixelsSOPCanvas = function(gl) {
 Tests.endUnit = function(gl) {
 }
 
+wtu.setupImageForCrossOriginTest("#i", defaultImgUrl, localImgUrl, initTests);
 </script>
 </head><body>
 <canvas id="gl" width="16" height="16"></canvas>
 <canvas id="c" width="128" height="128"></canvas>
-<img id="i" src="http://www.opengl.org/img/opengl_logo.jpg">
+<img id="i">
 </body></html>
