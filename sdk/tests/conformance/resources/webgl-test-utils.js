@@ -2332,6 +2332,30 @@ var startPlayingAndWaitForVideo = function(video, callback) {
   video.play();
 };
 
+var getHost = function(url) {
+  url = url.replace("\\", "/");
+  var pos = url.indexOf("://");
+  if (pos >= 0) {
+    url = url.substr(pos + 3);
+  }
+  var parts = url.split('/');
+  return parts[0];
+}
+
+// This function returns the last 2 words of the domain of a URL
+// This is probably not the correct check but it will do for now.
+var getBaseDomain = function(host) {
+  var parts = host.split(":");
+  var hostname = parts[0];
+  var port = parts[1] || "80";
+  parts = hostname.split(".");
+  if(parts.length < 2)
+    return hostname + ":" + port;
+  var tld = parts[parts.length-1];
+  var domain = parts[parts.length-2];
+  return domain + "." + tld + ":" + port;
+}
+
 var runningOnLocalhost = function() {
   return window.location.hostname.indexOf("localhost") != -1 ||
       window.location.hostname.indexOf("127.0.0.1") != -1;
@@ -2369,6 +2393,23 @@ var getRelativePath = function(path) {
   }
 
   return relparts.join("/");
+}
+
+var setupImageForCrossOriginTest = function(img, imgUrl, localUrl, callback) {
+  window.addEventListener("load", function() {
+    if (typeof(img) == "string")
+      img = document.querySelector(img);
+    if (!img)
+      img = new Image();
+
+    img.addEventListener("load", callback, false);
+    img.addEventListener("error", callback, false);
+
+    if (runningOnLocalhost())
+      img.src = getLocalCrossOrigin() + getRelativePath(localUrl);
+    else
+      img.src = getUrlOptions().imgUrl || imgUrl;
+  }, false);
 }
 
 return {
@@ -2462,9 +2503,12 @@ return {
   // fullscreen api
   setupFullscreen: setupFullscreen,
 
+  getHost: getHost,
+  getBaseDomain: getBaseDomain,
   runningOnLocalhost: runningOnLocalhost,
   getLocalCrossOrigin: getLocalCrossOrigin,
   getRelativePath: getRelativePath,
+  setupImageForCrossOriginTest: setupImageForCrossOriginTest,
 
   none: false
 };

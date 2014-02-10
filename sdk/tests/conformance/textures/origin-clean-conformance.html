@@ -37,30 +37,6 @@
 "use strict";
 var wtu = WebGLTestUtils;
 
-function getHost(url) {
-  url = url.replace("\\", "/");
-  var pos = url.indexOf("://");
-  if (pos >= 0) {
-    url = url.substr(pos + 3);
-  }
-  var parts = url.split('/');
-  return parts[0];
-}
-
-// This function returns the last 2 words of the domain of a URL
-// This is probably not the correct check but it will do for now.
-function getBaseDomain(host) {
-  var parts = host.split(":");
-  var hostname = parts[0];
-  var port = parts[1] || "80";
-  parts = hostname.split(".");
-  if(parts.length < 2)
-    return hostname + ":" + port;
-  var tld = parts[parts.length-1];
-  var domain = parts[parts.length-2];
-  return domain + "." + tld + ":" + port;
-}
-
 // Checks if function throws an exception.
 function causedException(func) {
   var hadException = false;
@@ -80,11 +56,12 @@ var pageDomain;
 var successfullyParsed;
 
 function imageLoaded() {
+  description("This test ensures WebGL implementations follow proper same-origin restrictions.");
   var img = this;
 
   assertMsg(img.width > 0 && img.height > 0, "img was loaded");
-  imgDomain = getBaseDomain(getHost(img.src));
-  pageDomain = getBaseDomain(window.location.host);
+  imgDomain = wtu.getBaseDomain(wtu.getHost(img.src));
+  pageDomain = wtu.getBaseDomain(window.location.host);
   assertMsg(imgDomain != pageDomain,
             "img domain (" + imgDomain + ") and page domain (" + pageDomain + ") are not the same.");
 
@@ -159,18 +136,7 @@ function imageLoaded() {
   notifyFinishedToHarness();
 }
 
-window.onload = function() {
-  description("This test ensures WebGL implementations follow proper same-origin restrictions.");
-  var img = document.getElementById("img");
-  img.addEventListener("load", imageLoaded, false);
-  img.addEventListener("error", imageLoaded, false);
-
-  if (wtu.runningOnLocalhost()) {
-    img.src = wtu.getLocalCrossOrigin() + wtu.getRelativePath(localImgUrl);
-  } else {
-    img.src = wtu.getUrlOptions().imgUrl || defaultImgUrl;
-  }
-}
+wtu.setupImageForCrossOriginTest("#img", defaultImgUrl, localImgUrl, imageLoaded);
 </script>
 </head>
 <body>

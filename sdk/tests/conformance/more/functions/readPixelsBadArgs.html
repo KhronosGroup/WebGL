@@ -115,18 +115,7 @@ Tests.testReadPixelsSOPCanvas = function(gl) {
 Tests.endUnit = function(gl) {
 }
 
-window.addEventListener('load', function() {
-  var img = document.getElementById("i");
-  img.addEventListener("load", initTests, false);
-  img.addEventListener("error", initTests, false);
-
-  if (wtu.runningOnLocalhost()) {
-    img.src = wtu.getLocalCrossOrigin() + wtu.getRelativePath(localImgUrl);
-  } else {
-    img.src = wtu.getUrlOptions().imgUrl || defaultImgUrl;
-  }
-}, false);
-
+wtu.setupImageForCrossOriginTest("#i", defaultImgUrl, localImgUrl, initTests);
 </script>
 </head><body>
 <canvas id="gl" width="16" height="16"></canvas>
