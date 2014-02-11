@@ -36,18 +36,6 @@
 <script>
 "use strict";
 var wtu = WebGLTestUtils;
-// This function returns the last 2 words of the domain of a URL
-// This is probably not the correct check but it will do for now.
-function getBaseDomain(str) {
-  str = str.replace("\\", "/");
-  var pos = str.indexOf("://");
-  if (pos >= 0) {
-    str = str.substr(pos + 3);
-  }
-  var parts = str.split('/');
-  var domain = parts[0].match(/\w+\.\w+$/);
-  return domain || '';
-}
 
 // Checks if function throws an exception.
 function causedException(func) {
@@ -60,16 +48,20 @@ function causedException(func) {
   return hadException;
 }
 
+var defaultImgUrl = "http://www.opengl.org/img/opengl_logo.jpg";
+var localImgUrl = "../resources/opengl_logo.jpg";
+
 var imgDomain;
 var pageDomain;
 var successfullyParsed;
 
-window.onload = function() {
+function imageLoaded() {
   description("This test ensures WebGL implementations follow proper same-origin restrictions.");
-  var img = document.getElementById("img");
+  var img = this;
+
   assertMsg(img.width > 0 && img.height > 0, "img was loaded");
-  imgDomain = getBaseDomain(img.src);
-  pageDomain = getBaseDomain(window.location.toString());
+  imgDomain = wtu.getBaseDomain(wtu.getHost(img.src));
+  pageDomain = wtu.getBaseDomain(window.location.host);
   assertMsg(imgDomain != pageDomain,
             "img domain (" + imgDomain + ") and page domain (" + pageDomain + ") are not the same.");
 
@@ -143,6 +135,8 @@ window.onload = function() {
   debug('<br /><span class="pass">TEST COMPLETE</span>');
   notifyFinishedToHarness();
 }
+
+wtu.setupImageForCrossOriginTest("#img", defaultImgUrl, localImgUrl, imageLoaded);
 </script>
 </head>
 <body>
@@ -150,6 +144,6 @@ window.onload = function() {
 <div id="console"></div>
 <canvas id="canvas1"></canvas>
 <canvas id="canvas2"></canvas>
-<img id="img" src="http://www.opengl.org/img/opengl_logo.jpg" style="display:none;">
+<img id="img" style="display:none;">
 </body>
 </html>
