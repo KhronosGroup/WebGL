@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension href="OES_texture_float_linear/">
+<ratified href="OES_texture_float_linear/">
   <name>OES_texture_float_linear</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -39,5 +39,8 @@
     <revision date="2013/08/06">
       <change>Moved to community approved.</change>
     </revision>
+    <revision date="2014/02/12">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
   </history>
-</extension>
+</ratified>
