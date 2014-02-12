@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/ANGLE_timer_query/">
-  <name>ANGLE_timer_query</name>
+<proposal href="proposals/EXT_disjoint_timer_query/">
+  <name>EXT_disjoint_timer_query</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
   working group</a> (public_webgl 'at' khronos.org) </contact>
@@ -11,6 +11,7 @@
     <contributor>Contributors to ARB_timer_query</contributor>
     <contributor>Ben Vanik, Google Inc.</contributor>
     <contributor>Daniel Koch, TransGaming Inc.</contributor>
+    <contributor>Florian Boesch (pyalot 'at' gmail.com)</contributor>
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
@@ -21,8 +22,8 @@
   </depends>
 
   <overview>
-    <mirrors href="https://angleproject.googlecode.com/svn/trunk/extensions/ANGLE_timer_query.txt"
-             name="ANGLE_timer_query">
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_disjoint_timer_query.txt"
+             name="EXT_disjoint_timer_query">
       <addendum>
         Specifies that queries' results only become available at certain well-defined times.
       </addendum>
@@ -30,53 +31,57 @@
 
     <features>
       <feature>
-        Allows applications and tools to accurately determine the time it takes to fully complete a
-        set of OpenGL commands, without stalling the rendering pipeline.
+        This extension provides a query mechanism that can be used to determine
+        the amount of time it takes to fully complete a set of GL commands, and
+        without stalling the rendering pipeline.  It uses the query object
+        mechanisms first introduced in the occlusion query extension, which allow
+        time intervals to be polled asynchronously by the application.
       </feature>
     </features>
   </overview>
 
   <idl xml:space="preserve">
-    typedef unsigned long long GLuint64ANGLE;
+    typedef unsigned long long GLuint64EXT;
 
     [NoInterfaceObject]
-    interface WebGLTimerQueryANGLE : WebGLObject {
+    interface WebGLTimerQueryEXT : WebGLObject {
     };
 
-    interface ANGLE_timer_query {
-      const GLenum QUERY_COUNTER_BITS_ANGLE      = 0x8864;
-      const GLenum CURRENT_QUERY_ANGLE           = 0x8865;
-      const GLenum QUERY_RESULT_ANGLE            = 0x8866;
-      const GLenum QUERY_RESULT_AVAILABLE_ANGLE  = 0x8867;
-      const GLenum TIME_ELAPSED_ANGLE            = 0x88BF;
-      const GLenum TIMESTAMP_ANGLE               = 0x8E28;
+    interface EXT_disjoint_timer_query {
+      const GLenum QUERY_COUNTER_BITS_EXT      = 0x8864;
+      const GLenum CURRENT_QUERY_EXT           = 0x8865;
+      const GLenum QUERY_RESULT_EXT            = 0x8866;
+      const GLenum QUERY_RESULT_AVAILABLE_EXT  = 0x8867;
+      const GLenum TIME_ELAPSED_EXT            = 0x88BF;
+      const GLenum TIMESTAMP_EXT               = 0x8E28;
+      const GLenum GPU_DISJOINT_EXT            = 0x8FBB;
 
-      WebGLTimerQueryANGLE? createQueryANGLE();
-      void deleteQueryANGLE(WebGLTimerQueryANGLE? query);
-      [WebGLHandlesContextLoss] boolean isQueryANGLE(WebGLTimerQueryANGLE? query);
-      void beginQueryANGLE(enum target, WebGLTimerQueryANGLE? query);
-      void endQueryANGLE(enum target);
-      void queryCounterANGLE(WebGLTimerQueryANGLE? query, enum target);
-      any getQueryANGLE(enum target, enum pname);
-      any getQueryParameterANGLE(WebGLTimerQueryANGLE? query, enum pname);
+      WebGLTimerQueryEXT? createQueryEXT();
+      void deleteQueryEXT(WebGLTimerQueryEXT? query);
+      [WebGLHandlesContextLoss] boolean isQueryEXT(WebGLTimerQueryEXT? query);
+      void beginQueryEXT(enum target, WebGLTimerQueryEXT? query);
+      void endQueryEXT(enum target);
+      void queryCounterEXT(WebGLTimerQueryEXT? query, enum target);
+      any getQueryEXT(enum target, enum pname);
+      any getQueryObjectEXT(WebGLTimerQueryEXT? query, enum pname);
     };
   </idl>
 
   <newfun>
-    <function name="createQueryAngle" type="WebGLTimerQueryANGLE?">
+    <function name="createQueryEXT" type="WebGLTimerQueryEXT?">
     </function>
   </newfun>
 
   <newfun>
-    <function name="deleteQueryAngle" type="void">
-      <param name="query" type="WebGLTimerQueryANGLE?"/>
+    <function name="deleteQueryEXT" type="void">
+      <param name="query" type="WebGLTimerQueryEXT?"/>
     </function>
   </newfun>
 
   <newfun>
-    <function name="isQueryANGLE" type="boolean">
-      <param name="query" type="WebGLTimerQueryANGLE?"/>
-      Returns true if the passed WebGLTimerQueryANGLE is valid and false otherwise. Returns false if
+    <function name="isQueryEXT" type="boolean">
+      <param name="query" type="WebGLTimerQueryEXT?"/>
+      Returns true if the passed WebGLTimerQueryEXT is valid and false otherwise. Returns false if
       the query's <a
       href="http://www.khronos.org/registry/webgl/specs/1.0.1/#webgl-object-invalidated-flag">invalidated
       flag</a> is set.
@@ -84,55 +89,55 @@
   </newfun>
 
   <newfun>
-    <function name="beginQueryANGLE" type="void">
+    <function name="beginQueryEXT" type="void">
       <param name="target" type="GLenum"/>
-      <param name="query" type="WebGLTimerQueryANGLE?"/>
-      <code>target</code> accepts <code>TIME_ELAPSED_ANGLE</code>.
+      <param name="query" type="WebGLTimerQueryEXT?"/>
+      <code>target</code> accepts <code>TIME_ELAPSED_EXT</code>.
     </function>
   </newfun>
 
   <newfun>
-    <function name="endQueryANGLE" type="void">
+    <function name="endQueryEXT" type="void">
       <param name="target" type="GLenum"/>
-      <code>target</code> accepts <code>TIME_ELAPSED_ANGLE</code>.
+      <code>target</code> accepts <code>TIME_ELAPSED_EXT</code>.
     </function>
   </newfun>
 
   <newfun>
-    <function name="queryCounterANGLE" type="void">
-      <param name="query" type="WebGLTimerQueryANGLE?"/>
+    <function name="queryCounterEXT" type="void">
+      <param name="query" type="WebGLTimerQueryEXT?"/>
       <param name="target" type="GLenum"/>
-      <code>target</code> accepts <code>TIME_ELAPSED_ANGLE</code>.
+      <code>target</code> accepts <code>TIMESTAMP_EXT</code>.
     </function>
   </newfun>
 
   <newfun>
-    <function name="getQueryANGLE" type="any">
+    <function name="getQueryEXT" type="any">
       <param name="target" type="GLenum"/>
       <param name="pname" type="GLenum"/>
-      <code>target</code> accepts <code>TIME_ELAPSED_ANGLE</code> or <code>TIMESTAMP_ANGLE</code>.
-      <code>pname</code> accepts <code>CURRENT_QUERY_ANGLE</code> or <code>QUERY_COUNTER_BITS_ANGLE</code>.
+      <code>target</code> accepts <code>TIME_ELAPSED_EXT</code> or <code>TIMESTAMP_EXT</code>.
+      <code>pname</code> accepts <code>CURRENT_QUERY_EXT</code> or <code>QUERY_COUNTER_BITS_EXT</code>.
       <br/>
       The return type of this method depends on the parameter queried:
       <table width="30%">
       <tr><th>pname</th><th>returned type</th></tr>
-      <tr><td>CURRENT_QUERY_ANGLE</td><td>WebGLTimerQueryANGLE?</td></tr>
-      <tr><td>QUERY_COUNTER_BITS_ANGLE</td><td>GLint</td></tr>
+      <tr><td>CURRENT_QUERY_EXT</td><td>WebGLTimerQueryEXT?</td></tr>
+      <tr><td>QUERY_COUNTER_BITS_EXT</td><td>GLint</td></tr>
       </table>      
     </function>
   </newfun>
 
   <newfun>
-    <function name="getQueryParameterANGLE" type="any">
-      <param name="query" type="WebGLTimerQueryANGLE?"/>
+    <function name="getQueryObjectEXT" type="any">
+      <param name="query" type="WebGLTimerQueryEXT?"/>
       <param name="pname" type="GLenum"/>
-      <code>pname</code> accepts <code>QUERY_RESULT_ANGLE</code> or <code>QUERY_RESULT_AVAILABLE_ANGLE</code>.
+      <code>pname</code> accepts <code>QUERY_RESULT_EXT</code> or <code>QUERY_RESULT_AVAILABLE_EXT</code>.
       <br/>
       The return type of this method depends on the parameter queried:
       <table width="30%">
       <tr><th>pname</th><th>returned type</th></tr>
-      <tr><td>QUERY_RESULT_ANGLE</td><td>GLuint64ANGLE</td></tr>
-      <tr><td>QUERY_RESULT_AVAILABLE_ANGLE</td><td>GLint</td></tr>
+      <tr><td>QUERY_RESULT_EXT</td><td>GLuint64EXT</td></tr>
+      <tr><td>QUERY_RESULT_AVAILABLE_EXT</td><td>boolean</td></tr>
       </table>      
       <br/>
       In order to ensure consistent behavior across platforms, queries' results must only be made
@@ -142,28 +147,36 @@
       <ul>
         <li> A query's result must not be made available until the current frame has completed
              rendering. </li>
-        <li> Repeatedly fetching a query's QUERY_RESULT_AVAILABLE_ANGLE parameter in a loop, without
+        <li> Repeatedly fetching a query's QUERY_RESULT_AVAILABLE_EXT parameter in a loop, without
              returning control to the user agent, must always return the same value. </li>
-      </ul>
-      <br/>
-      Additionally:
-      <ul>
-        <li> If QUERY_RESULT_ANGLE is fetched for a given query before QUERY_RESULT_AVAILABLE_ANGLE
-             has been fetched, and returned true, for that or a subsequently issued query, generates
-             an <code>INVALID_OPERATION</code> error and returns null. </li>
       </ul>
     </function>
   </newfun>
+  
+  <newtok>
+    <function name="getParameter" type="any">
+      <param name="pname" type="GLenum"/>
+      <code>pname</code> accepts <code>TIMESTAMP_EXT</code> or <code>GPU_DISJOINT_EXT</code>.
+      <br/>
+
+      The return type depends on the parameter queried:
+      <table width="30%">
+      <tr><th>pname</th><th>returned type</th></tr>
+      <tr><td>TIMESTAMP_EXT</td><td>GLuint64EXT</td></tr>
+      <tr><td>GPU_DISJOINT_EXT</td><td>boolean</td></tr>
+      </table>      
+    </function>
+  </newtok>
 
   <issues>
     <ol>
       <li>
         <p>
-          Can getQueryParameterANGLE be exposed in its current form according to ECMAScript
+          Can getQueryObjectEXT be exposed in its current form according to ECMAScript
           semantics?  ECMAScript's <a
           href="http://wiki.ecmascript.org/doku.php?id=strawman:concurrency">de-facto concurrency
           model</a> is "shared nothing" communicating event loops. Is it acceptable for sequential
-          calls to getQueryParameterANGLE to return different answers? Note that Date.now() advances
+          calls to getQueryObjectEXT to return different answers? Note that Date.now() advances
           during script execution, so this may be fine; but if concerns are raised, then the API may
           need to be redesigned to use callbacks.
         </p>
@@ -173,20 +186,23 @@
 
   <samplecode xml:space="preserve">
     <pre>
-        // Example (1) -- uses beginQueryANGLE/endQueryANGLE.
-        var ext = gl.getExtension('ANGLE_timer_query');
-        var query = ext.createQueryANGLE();
-        ext.beginQueryANGLE(ext.TIME_ELAPSED_ANGLE, query);
+        // Example (1) -- uses beginQueryEXT/endQueryEXT.
+        var ext = gl.getExtension('EXT_disjoint_timer_query');
+        var query = ext.createQueryEXT();
+        ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query);
 
         // Draw object
         gl.drawElements(...);
 
-        ext.endQueryANGLE(ext.TIME_ELAPSED_ANGLE);
+        ext.endQueryEXT(ext.TIME_ELAPSED_EXT);
 
         // At some point in the future, after returning control to the browser and being called again:
-        if (ext.getQueryParameterANGLE(query, ext.QUERY_RESULT_AVAILABLE_ANGLE)) {
+        var available = ext.getQueryObjectEXT(query, ext.QUERY_RESULT_AVAILABLE_EXT);
+        var disjoint = gl.getParamater(ext.GPU_DISJOINT_EXT);
+
+        if (available &amp;&amp; !disjoint) {
           // See how much time the rendering of the object took in nanoseconds.
-          var timeElapsed = ext.getQueryParameterANGLE(query, ext.QUERY_RESULT_ANGLE);
+          var timeElapsed = ext.getQueryObjectEXT(query, ext.QUERY_RESULT_EXT);
 
           // Do something useful with the time.  Note that care should be
           // taken to use all significant bits of the result, not just the
@@ -197,22 +213,25 @@
 
         //----------------------------------------------------------------------
 
-        // Example (2) -- same as the example above, but uses queryCounterANGLE instead.
-        var ext = gl.getExtension('ANGLE_timer_query');
-        var startQuery = ext.createQueryANGLE();
-        var endQuery = ext.createQueryANGLE();
-        ext.queryCounterANGLE(startQuery, ext.TIMESTAMP_ANGLE);
+        // Example (2) -- same as the example above, but uses queryCounterEXT instead.
+        var ext = gl.getExtension('EXT_disjoint_timer_query');
+        var startQuery = ext.createQueryEXT();
+        var endQuery = ext.createQueryEXT();
+        ext.queryCounterEXT(startQuery, ext.TIMESTAMP_EXT);
 
         // Draw object
         gl.drawElements(...);
 
-        ext.queryCounterANGLE(endQuery, ext.TIMESTAMP_ANGLE);
+        ext.queryCounterEXT(endQuery, ext.TIMESTAMP_EXT);
 
         // At some point in the future, after returning control to the browser and being called again:
-        if (ext.getQueryParameterANGLE(endQuery, ext.QUERY_RESULT_AVAILABLE_ANGLE)) {
+        var available = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_AVAILABLE_EXT);
+        var disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
+
+        if (available &amp;&amp; !disjoint) {
           // See how much time the rendering of the object took in nanoseconds.
-          var timeStart = ext.getQueryParameterANGLE(startQuery, ext.QUERY_RESULT_ANGLE);
-          var timeEnd = ext.getQueryParameterANGLE(endQuery, ext.QUERY_RESULT_ANGLE);
+          var timeStart = ext.getQueryObjectEXT(startQuery, ext.QUERY_RESULT_EXT);
+          var timeEnd = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_EXT);
 
           // Do something useful with the time.  Note that care should be
           // taken to use all significant bits of the result, not just the
@@ -228,6 +247,9 @@
     </revision>
     <revision date="2013/04/03">
       <change>Based on public_webgl discussion, specified that queries' results only become available at well-defined times.</change>
+    </revision>
+    <revision date="2014/02/12">
+      <change>Recast as EXT_disjoint_timer_query and harmonized with mirrored extension.</change>
     </revision>
   </history>
 </proposal>
