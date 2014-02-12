@@ -79,7 +79,7 @@
   <additions>
     <p>The new tokens and the behavioral changes for floating-point color
     buffers specified in <a
-    href="http://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_half_float.txt">EXT_color_buffer_half_float</a>
+    href="http://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_half_float/">EXT_color_buffer_half_float</a>
     are incorporated into WebGL except for the <code>RGB16F</code> and
     <code>RGBA16F</code> types. All references to these are replaced by the
     32-bit floating-point types specified above.</p>
