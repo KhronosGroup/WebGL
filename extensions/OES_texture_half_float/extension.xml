@@ -25,7 +25,7 @@
     <features>
       <feature> The <code>texImage2D</code> and <code>texSubImage2D</code>
       entry points taking <code>ArrayBufferView</code> are extended to accept
-      <code>null</code> with the pixel type <code>HALF_FLOAT_OES</code>.
+      <code>Uint16Array</code> with the pixel type <code>HALF_FLOAT_OES</code>.
       </feature>
 
       <feature> The <code>texImage2D</code> and <code>texSubImage2D</code>
@@ -76,6 +76,10 @@ interface OES_texture_half_float {
 
     <revision date="2013/05/15">
       <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
+
+    <revision date="2014/02/12">
+      <change>Allow texture uploads of half-floats via Uint16Arrays.</change>
     </revision>
   </history>
 </ratified>
