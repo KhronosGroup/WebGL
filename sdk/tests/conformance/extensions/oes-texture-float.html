@@ -111,9 +111,10 @@ if (!gl) {
       runTextureCreationTest(testProgram, true, gl.LUMINANCE, 1, [10000, 10000, 10000, 1]);
       runTextureCreationTest(testProgram, true, gl.ALPHA, 1, [0, 0, 0, 10000]);
       runTextureCreationTest(testProgram, true, gl.LUMINANCE_ALPHA, 2, [10000, 10000, 10000, 10000]);
-      runRenderTargetTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], false);
-      runRenderTargetTest(testProgram, gl.RGB, 3, [10000, 10000, 10000, 1], false);
-      runRenderTargetTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], true);
+      runRenderTargetTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0);
+      runRenderTargetTest(testProgram, gl.RGB, 3, [10000, 10000, 10000, 1], 0);
+      runRenderTargetTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 1);
+      runRenderTargetTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0.5);
       runUniqueObjectTest();
   }
 }
@@ -172,11 +173,11 @@ function runTextureCreationTest(testProgram, extensionEnabled, opt_format, opt_n
     wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red");
 }
 
-function runRenderTargetTest(testProgram, format, numberOfChannels, subtractor, callTexSubImage)
+function runRenderTargetTest(testProgram, format, numberOfChannels, subtractor, texSubImageCover)
 {
     var formatString = wtu.glEnumToString(gl, format);
     debug("");
-    debug("testing floating-point " + formatString + " render target" + (callTexSubImage ? " after calling texSubImage" : ""));
+    debug("testing floating-point " + formatString + " render target" + (texSubImageCover > 0 ? " after calling texSubImage" : ""));
 
     var texture = allocateTexture();
     var width = 2;
@@ -196,11 +197,11 @@ function runRenderTargetTest(testProgram, format, numberOfChannels, subtractor, 
         return;
     }
 
-    if (callTexSubImage) {
-        // Ensure that replacing the whole texture with texSubImage2D doesn't affect renderability
+    if (texSubImageCover > 0) {
+        // Ensure that replacing the whole texture or a part of it with texSubImage2D doesn't affect renderability
         gl.bindTexture(gl.TEXTURE_2D, texture);
-        var data = new Float32Array(width * height * numberOfChannels);
-        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, format, gl.FLOAT, data);
+        var data = new Float32Array(width * height * numberOfChannels * texSubImageCover);
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height * texSubImageCover, format, gl.FLOAT, data);
         wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texSubImage2D should succeed if OES_texture_float is enabled");
         gl.bindTexture(gl.TEXTURE_2D, null);
         if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
