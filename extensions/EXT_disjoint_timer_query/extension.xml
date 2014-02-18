@@ -15,7 +15,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>25</number>
+  <number>26</number>
 
   <depends>
     <api version="1.0"/>
