@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL the minimum number of uniforms are supported.</title>
+<title>Sampler arrays using loop index should compile fine.</title>
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
 <script src="../../../resources/js-test-pre.js"></script>
 <script src="../../resources/webgl-test-utils.js"> </script>
@@ -52,7 +52,7 @@ uniform sampler2D uni[2];
 void main()
 {
     vec4 c = vec4(0,0,0,0);
-    for (int ii = 0, ii < 3; ++ii) {
+    for (int ii = 0, ii < 2; ++ii) {
       if (c.x > 255) {
         c.x = 255;
         break;
@@ -93,5 +93,4 @@ var successfullyParsed = true;
 
 </body>
 </html>
-
 
