@@ -53,6 +53,9 @@ uniform sampler2D uni[NUM_TEXTURES];
 void main()
 {
     vec4 c = vec4(0,0,0,0);
+    // The loop was manually unrolled in order to verify that this works.
+    // A separate test sampler-array-using-loop-index.html checks that
+    // loops indexing sampler arrays still work.
     c += texture2D(uni[0], vec2(0.5, 0.5));
     c += texture2D(uni[1], vec2(0.5, 0.5));
     c += texture2D(uni[2], vec2(0.5, 0.5));

@@ -52,12 +52,12 @@ uniform sampler2D uni[2];
 void main()
 {
     vec4 c = vec4(0,0,0,0);
-    for (int ii = 0, ii < 2; ++ii) {
-      if (c.x > 255) {
-        c.x = 255;
+    for (int ii = 0; ii < 2; ++ii) {
+      if (c.x > 255.0) {
+        c.x = 255.0;
         break;
       }
-      c += texture2D(uni[i], vec2(0.5, 0.5));
+      c += texture2D(uni[ii], vec2(0.5, 0.5));
     }
     gl_FragColor = c;
 }
