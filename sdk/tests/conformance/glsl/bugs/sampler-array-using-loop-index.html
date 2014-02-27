@@ -42,24 +42,30 @@
 attribute vec4 vPosition;
 void main()
 {
-    gl_Position = vPosition;
+  gl_Position = vPosition;
 }
 </script>
 
 <script id="fshader" type="x-shader/x-fragment">
 precision mediump float;
 uniform sampler2D uni[2];
+
+float zero(int x)
+{
+  return float(x) - float(x);
+}
+
 void main()
 {
-    vec4 c = vec4(0,0,0,0);
-    for (int ii = 0; ii < 2; ++ii) {
-      if (c.x > 255.0) {
-        c.x = 255.0;
-        break;
-      }
-      c += texture2D(uni[ii], vec2(0.5, 0.5));
+  vec4 c = vec4(0,0,0,0);
+  for (int ii = 1; ii < 3; ++ii) {
+    if (c.x > 255.0) {
+      c.x = 255.0 + zero(ii);
+      break;
     }
-    gl_FragColor = c;
+    c += texture2D(uni[ii - 1], vec2(0.5, 0.5));
+  }
+  gl_FragColor = c;
 }
 </script>
 <script>
