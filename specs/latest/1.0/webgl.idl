@@ -727,9 +727,10 @@ interface WebGLRenderingContextBase
     void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
 };
 
-interface WebGLRenderingContext implements WebGLRenderingContextBase
+interface WebGLRenderingContext
 {
 };
+WebGLRenderingContext implements WebGLRenderingContextBase;
 
 
 [Constructor(DOMString type, optional WebGLContextEventInit eventInit)]
