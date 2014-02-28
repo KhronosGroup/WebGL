@@ -10,17 +10,6 @@ typedef long long GLint64;
 typedef unsigned long long GLuint64;
 
 
-dictionary WebGLContextAttributes {
-    GLboolean alpha = true;
-    GLboolean depth = true;
-    GLboolean stencil = false;
-    GLboolean antialias = true;
-    GLboolean premultipliedAlpha = true;
-    GLboolean preserveDrawingBuffer = false;
-    GLint version = 1; /* New in WebGL 2.0 */
-    GLboolean preferLowPowerToHighPerformance = false;
-};
-
 interface WebGLQuery : WebGLObject {
 };
 
@@ -37,7 +26,7 @@ interface WebGLVertexArrayObject : WebGLObject {
 };
 
 [NoInterfaceObject]
-interface WebGL2RenderingContextBase implements WebGLRenderingContextBase
+interface WebGL2RenderingContextBase
 {
   const GLenum READ_BUFFER                                   = 0x0C02;
   const GLenum UNPACK_ROW_LENGTH                             = 0x0CF2;
@@ -495,9 +484,11 @@ interface WebGL2RenderingContextBase implements WebGLRenderingContextBase
    *  - Deliberately not exposing glGetProgramBinary, glProgramBinary, glProgramParameteri
    */
 };
+WebGL2RenderingContextBase implements WebGLRenderingContextBase;
 
-interface WebGL2RenderingContext implements WebGL2RenderingContextBase
+interface WebGL2RenderingContext
 {
 };
+WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
 
