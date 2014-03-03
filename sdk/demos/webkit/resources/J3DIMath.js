@@ -873,7 +873,7 @@ J3DIMatrix4.prototype.decompose = function(_translate, _rotate, _scale, _skew, _
     }
 
     // Now, get the rotations out
-    rotate[1] = Math.asin(-row0[2]);
+    rotate[1] = Math.asin(row2[0]);
     if (Math.cos(rotate[1]) != 0) {
         rotate[0] = Math.atan2(row1[2], row2[2]);
         rotate[2] = Math.atan2(row0[1], row0[0]);
@@ -882,13 +882,13 @@ J3DIMatrix4.prototype.decompose = function(_translate, _rotate, _scale, _skew, _
         var b = Math.sin(rotate[1]);
         if (b < 0) {
             // b == -1
-            var d = Math.acos((row2[0] + row1[1]) / (1 - b));
+            var d = Math.acos((row0[2] + row1[1]) / (1 - b));
             rotate[2] = (Math.acos((row1[1] + row2[1]) / Math.sqrt(2)) - d + Math.PI / 4) / 2;
             rotate[0] = d + rotate[2];
         } else {
             // b == 1
-            var c = Math.asin((row2[1] + row1[0]) / (b + 1));
-            rotate[2] = -(Math.acos((row1[1] + row2[1]) / Math.sqrt(2)) - c + Math.PI / 4) / 2;
+            var c = Math.asin((row1[2] + row0[1]) / (b + 1));
+            rotate[2] = -(Math.acos((row1[1] + row1[2]) / Math.sqrt(2)) - c + Math.PI / 4) / 2;
             rotate[0] = c - rotate[2];
         }
     }
