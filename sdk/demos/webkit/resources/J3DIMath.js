@@ -879,8 +879,18 @@ J3DIMatrix4.prototype.decompose = function(_translate, _rotate, _scale, _skew, _
         rotate[2] = Math.atan2(row0[1], row0[0]);
     }
     else {
-        rotate[0] = Math.atan2(-row2[0], row1[1]);
-        rotate[2] = 0;
+        var b = Math.sin(rotate[1]);
+        if (b < 0) {
+            // b == -1
+            var d = Math.acos((row2[0] + row1[1]) / (1 - b));
+            rotate[2] = (Math.acos((row1[1] + row2[1]) / Math.sqrt(2)) - d + Math.PI / 4) / 2;
+            rotate[0] = d + rotate[2];
+        } else {
+            // b == 1
+            var c = Math.asin((row2[1] + row1[0]) / (b + 1));
+            rotate[2] = -(Math.acos((row1[1] + row2[1]) / Math.sqrt(2)) - c + Math.PI / 4) / 2;
+            rotate[0] = c - rotate[2];
+        }
     }
 
     // Convert rotations to degrees
