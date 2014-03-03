@@ -187,7 +187,7 @@
         g.mvMatrix.makeIdentity();
         g.mvMatrix.translate(-4, 2,-10);
         g.mvMatrix.rotate(20, 1,0,0);
-        g.mvMatrix.rotate(currentValue * 360, 0,1,0);
+        g.mvMatrix.rotate(currentValue * 360, 1,1,1);
         drawInstance(gl);
 
         // 2 - rotate(20, angle, 0)
@@ -216,7 +216,7 @@
         var mat = new J3DIMatrix4;
         mat.translate(0, -2,-10);
         mat.scale(0.5);
-        mat.rotate(currentValue * 360, 0,1,0);
+        mat.rotate(currentValue * 360, 1,1,1);
 
         var translate = new Array(3);
         var rotate = new Array(3);
@@ -312,7 +312,7 @@
 <canvas id="example">
     If you're seeing this your web browser doesn't support the &lt;canvas>&gt; element. Ouch!
 </canvas>
-<div class="box" id="box1">rotate(angle, 0,1,0)</div>
+<div class="box" id="box1">rotate(angle, 1,1,1)</div>
 <div class="box" id="box2">rotate(angleX, angleY, angleZ)</div>
 <div class="box" id="box3">translate(sin(value), cos(value), 0)</div>
 <div class="box" id="box4">scale(sin(value), cos(value))</div>

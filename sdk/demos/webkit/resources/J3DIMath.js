@@ -875,8 +875,8 @@ J3DIMatrix4.prototype.decompose = function(_translate, _rotate, _scale, _skew, _
     // Now, get the rotations out
     rotate[1] = Math.asin(row2[0]);
     if (Math.cos(rotate[1]) != 0) {
-        rotate[0] = Math.atan2(row1[2], row2[2]);
-        rotate[2] = Math.atan2(row0[1], row0[0]);
+        rotate[0] = Math.atan2(-row2[1], row2[2]);
+        rotate[2] = Math.atan2(-row1[0], row0[0]);
     }
     else {
         var b = Math.sin(rotate[1]);
