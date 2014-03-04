@@ -46,7 +46,17 @@ var BrowserDetect = {
       this.versionSearchString = info.versionSearch || info.identity;
       if (dataString) {
         if (dataString.indexOf(info.subString) != -1) {
-          return info;
+          var shouldExclude = false;
+          if (info.excludeSubstrings) {
+            for (var ii = 0; ii < info.excludeSubstrings.length; ++ii) {
+              if (dataString.indexOf(info.excludeSubstrings[ii]) != -1) {
+                shouldExclude = true;
+                break;
+              }
+            }
+          }
+          if (!shouldExclude)
+            return info;
         }
       } else if (dataProp) {
         return info;
@@ -64,6 +74,7 @@ var BrowserDetect = {
   dataBrowser: [
   { string: navigator.userAgent,
     subString: "Chrome",
+    excludeSubstrings: ["OPR/"],
     identity: "Chrome"
   },
   { string: navigator.userAgent,
@@ -76,7 +87,8 @@ var BrowserDetect = {
     identity: "Safari",
     versionSearch: "Version"
   },
-  { prop: window.opera,
+  { string: navigator.vendor,
+    subString: "Opera",
     identity: "Opera"
   },
   { string: navigator.userAgent,
