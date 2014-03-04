@@ -765,7 +765,73 @@ J3DIMatrix4.prototype.lookat = function(eyex, eyey, eyez, centerx, centery, cent
     this.multiply(matrix);
 }
 
-// Returns true on success, false otherwise. All params are Array objects
+// Decompose the matrix to the passed vectors. Returns true on success, false
+// otherwise. All params are Array objects.
+// Based on James Arvo: Graphics Gems II section VII. 1 Decomposing a matrix
+// into simple transformations. Source code here:
+// http://tog.acm.org/resources/GraphicsGems/gemsii/unmatrix.c
+// The rotation decomposition code in the book is incorrect, official errata
+// is here: http://tog.acm.org/resources/GraphicsGems/Errata.GraphicsGemsII
+//
+// This code has completely re-derived rotation decomposition since the book
+// has different conventions for the handedness of rotations, and the
+// explanation in the errata is not very thorough either.
+//
+// Rotation matrix Rx * Ry * Rz = rotate(A, B, C)
+//
+//   [ 1  0       0       ]   [ cos(B)   0  sin(B) ]   [ cos(C)  -sin(C)  0 ]
+// = | 0  cos(A)  -sin(A) | * | 0        1  0      | * | sin(C)  cos(C)   0 |
+//   [ 0  sin(A)  cos(A)  ]   [ -sin(B)  0  cos(B) ]   [ 0       0        1 ]
+//
+//   [ cos(B)*cos(C)                          -cos(B)*sin(C)                         sin(B)         ]
+// = | sin(A)*sin(B)*cos(C) + cos(A)*sin(C)   -sin(A)*sin(B)*sin(C) + cos(A)*cos(C)  -sin(A)*cos(B) |
+//   [ -cos(A)*sin(B)*cos(C) + sin(A)*sin(C)  cos(A)*sin(B)*sin(C) + sin(A)*cos(C)   cos(A)*cos(B)  ]
+//
+// From here, we easily get B = asin(m31) (note that this class is using
+// atypical notation where m31 corresponds to third column and first row, and
+// code also uses "row" to mean "column" as it is usually used with matrices).
+//
+// This corresponds to the matrix above:
+// [ m11 m21 m31 ]
+// | m12 m22 m32 |
+// [ m13 m23 m33 ]
+//
+// Now, if cos(B) != 0, C is easily derived from m11, m21, and A is equally
+// easily derived from m32 and m33:
+//
+//  m32 / m33 = (-sin(A) * cos(B)) / (cos(A) * cos(B))
+// -m32 / m33 = sin(A) / cos(A)
+// -m32 / m33 = tan(A)
+// => A = atan2(-m32, m33)
+//
+// And similarly for C.
+//
+// If cos(B) = 0, things get more interesting:
+//
+// let b = sin(B) = +-1
+//
+// Let's handle cases where b = 1 and b = -1 separately.
+//
+// b = 1
+// ============================================================================
+// m12 + m23 = sin(A) * b * cos(C) + cos(A) * sin(C) + cos(A) * b * sin(C) + sin(A) * cos(C)
+// m12 + m23 = sin(A + C) + b * sin(A + C)
+// m12 + m23 = (b + 1) * sin(A + C)
+// => A = asin((m12 + m23) / (b + 1)) - C
+//
+// b = -1
+// ============================================================================
+// m13 + m22 = -cos(A) * b * cos(C) + sin(A) * sin(C) - sin(A) * b * sin(C) + cos(A) * cos(C)
+// m13 + m22 = cos(A - C) - b * cos(A - C)
+// m13 + m22 = (1 - b) * cos(A - C)
+// => A = acos((m13 + m22) / (1 - b)) + C
+//
+// Technically, these aren't complete solutions for A because of periodicity,
+// but we're only interested in one solution.
+//
+// As long as A is solved as above, C can be chosen arbitrarily. Proof for
+// this is omitted.
+//
 J3DIMatrix4.prototype.decompose = function(_translate, _rotate, _scale, _skew, _perspective)
 {
     // Normalize the matrix.
@@ -879,17 +945,14 @@ J3DIMatrix4.prototype.decompose = function(_translate, _rotate, _scale, _skew, _
         rotate[2] = Math.atan2(-row1[0], row0[0]);
     }
     else {
+        rotate[2] = 0; // arbitrary in this case
         var b = Math.sin(rotate[1]);
         if (b < 0) {
             // b == -1
-            var d = Math.acos((row0[2] + row1[1]) / (1 - b));
-            rotate[2] = (Math.acos((row1[1] + row2[1]) / Math.sqrt(2)) - d + Math.PI / 4) / 2;
-            rotate[0] = d + rotate[2];
+            rotate[0] = Math.acos((row0[2] + row1[1]) / (1 - b)) + rotate[2];
         } else {
             // b == 1
-            var c = Math.asin((row1[2] + row0[1]) / (b + 1));
-            rotate[2] = -(Math.acos((row1[1] + row1[2]) / Math.sqrt(2)) - c + Math.PI / 4) / 2;
-            rotate[0] = c - rotate[2];
+            rotate[0] = Math.asin((row1[2] + row0[1]) / (b + 1)) - rotate[2];
         }
     }
 
