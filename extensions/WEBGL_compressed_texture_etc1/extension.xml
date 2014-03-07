@@ -21,7 +21,7 @@
     <features>
       <feature>
         Compression format <code>COMPRESSED_RGB_ETC1_WEBGL</code> may be passed to
-        the <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code> entry points.
+        the <code>compressedTexImage2D</code> entry point.
 
         This format correspond to the format defined in the OES_compressed_ETC1_RGB8_texture OpenGL ES
         extension. Although the enum name is changed, the numeric value is the same. The correspondence
@@ -48,8 +48,7 @@
         <dl>
           <dt>COMPRESSED_RGB_ETC1_WEBGL</dt>
           <dd><p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-          either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
-          equal to the following number of bytes:</p>
+          <code>compressedTexImage2D</code> must be equal to the following number of bytes:</p>
           <blockquote><code>
             floor((width + 3) / 4) * floor((height + 3) / 4) * 8
           </code></blockquote>
@@ -77,6 +76,9 @@ interface WEBGL_compressed_texture_etc1 {
     </revision>
     <revision date="2013/12/03">
       <change>Assigned extension number 24 to WEBGL_compressed_texture_etc1 extension.</change>
+    </revision>
+    <revision date="2014/03/07">
+      <change>Remove ability to use the format with compressedTexSubImage2D, as per the GLES extension spec.</change>
     </revision>
   </history>
 </draft>
