@@ -65,7 +65,7 @@
       </feature>
       <feature>
         <p>
-          The WebGL-specific constraints about <a href="http://www.khronos.org/registry/webgl/specs/1.0/#6.5">Framebuffer Object Attachments</a> are extended:</p>
+          The WebGL-specific constraints about <a href="http://www.khronos.org/registry/webgl/specs/1.0/#FBO_ATTACHMENTS">Framebuffer Object Attachments</a> are extended:</p>
 
           <ul>
           <li> A texture attached to an FBO's <code>DEPTH_ATTACHMENT</code> attachment point must be allocated with the <code>DEPTH_COMPONENT</code> internal format. </li>
@@ -85,7 +85,7 @@
 
         <p>
           See the section
-          <a href="http://www.khronos.org/registry/webgl/specs/1.0/#6.5">Framebuffer Object Attachments</a>
+          <a href="http://www.khronos.org/registry/webgl/specs/1.0/#FBO_ATTACHMENTS">Framebuffer Object Attachments</a>
           in the WebGL specification for the behavior if these
           constraints are violated.
         </p>
