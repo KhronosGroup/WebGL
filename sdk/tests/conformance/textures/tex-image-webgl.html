@@ -48,6 +48,8 @@ gl.disable(gl.DITHER);
 var program = wtu.setupTexturedQuad(gl);
 var gl1 = wtu.create3DContext("source");
 gl1.disable(gl.DITHER);
+gl1.disable(gl.BLEND);
+gl1.disable(gl.DEPTH_TEST);
 
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 wtu.glErrorShouldBe(gl1, gl1.NO_ERROR, "Should be no errors from setup.");
@@ -72,10 +74,21 @@ wtu.checkCanvas(gl, [255, 0, 0, 255], "Canvas should be red");
 gl1.clearColor(0.0, 1.0, 0.0, 1.0);
 gl1.clear(gl1.COLOR_BUFFER_BIT);
 
+var program1 = wtu.setupTexturedQuad(gl1);
+var tex1 = gl1.createTexture();
+gl1.bindTexture(gl.TEXTURE_2D, tex1);
+gl1.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGB, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255]));
+
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, gl1.canvas);
 wtu.clearAndDrawUnitQuad(gl);
 
 wtu.checkCanvas(gl, [0, 255, 0, 255], "Canvas should be green");
+
+// Test a scenario from Chrome where a WebGL context would lose it's active texture binding when its
+// canvas was used as the texture source for another WebGL context.
+wtu.clearAndDrawUnitQuad(gl1);
+
+wtu.checkCanvas(gl1, [0, 0, 255, 255], "Canvas should be blue");
 
 debug("");
 var successfullyParsed = true;
