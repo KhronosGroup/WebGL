@@ -153,10 +153,10 @@ function runHintTestEnabled() {
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "texParameteri TEXTURE_MAX_ANISOTROPY_EXT set to < 1 should be an invalid value");
     
     gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texParameterf TEXTURE_MAX_ANISOTROPY_EXT set to >= 2 should should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texParameterf TEXTURE_MAX_ANISOTROPY_EXT set to >= 2 should succeed");
     
     gl.texParameteri(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texParameteri TEXTURE_MAX_ANISOTROPY_EXT set to >= 2 should should succeed");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texParameteri TEXTURE_MAX_ANISOTROPY_EXT set to >= 2 should succeed");
 
     var queried_value = gl.getTexParameter(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT);
     if(queried_value == max_anisotropy){
@@ -165,6 +165,18 @@ function runHintTestEnabled() {
     else{
         testFailed("Set value of TEXTURE_MAX_ANISOTROPY_EXT should be: " + max_anisotropy + " , returned value was: " + queried_value);
     }
+
+    gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, 1.5);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texParameterf TEXTURE_MAX_ANISOTROPY_EXT set to 1.5 should succeed");
+
+    queried_value = gl.getTexParameter(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT);
+    if(queried_value == 1.5){
+        testPassed("Set value of TEXTURE_MAX_ANISOTROPY_EXT matches expecation");
+    }
+    else{
+        testFailed("Set value of TEXTURE_MAX_ANISOTROPY_EXT should be: " + 1.5 + " , returned value was: " + queried_value);
+    }
+
 
     gl.deleteTexture(texture);
 }

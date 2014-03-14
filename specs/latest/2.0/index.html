@@ -294,7 +294,7 @@ typedef unsigned long long GLuint64;
 
     <pre class="idl">
 [NoInterfaceObject]
-interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn> implements WebGLRenderingContextBase
+interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
 {
   const GLenum READ_BUFFER                                   = 0x0C02;
   const GLenum UNPACK_ROW_LENGTH                             = 0x0CF2;
@@ -752,10 +752,12 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn> 
    *  - Deliberately not exposing glGetProgramBinary, glProgramBinary, glProgramParameteri
    */
 };
+WebGL2RenderingContextBase implements WebGLRenderingContextBase;
 
-interface <dfn id="WebGL2RenderingContext">WebGL2RenderingContext</dfn> implements WebGL2RenderingContextBase
+interface <dfn id="WebGL2RenderingContext">WebGL2RenderingContext</dfn>
 {
 };
+WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
 </pre>
 

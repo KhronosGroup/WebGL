@@ -42,14 +42,14 @@
 
     [
         Constructor(in J3DIMatrix4 matrix),                 // copy passed matrix into new J3DIMatrix4
-        Constructor(in sequence<float> array)               // create new J3DIMatrix4 with 16 floats (row major)
+        Constructor(in sequence<float> array)               // create new J3DIMatrix4 with 16 floats (column major)
         Constructor()                                       // create new J3DIMatrix4 with identity matrix
     ]
     interface J3DIMatrix4 {
         void load(in J3DIMatrix4 matrix);                   // copy the values from the passed matrix
         void load(in sequence<float> array);                // copy 16 floats into the matrix
         sequence<float> getAsArray();                       // return the matrix as an array of 16 floats
-        Float32Array getAsFloat32Array();             // return the matrix as a Float32Array with 16 values
+        Float32Array getAsFloat32Array();                   // return the matrix as a Float32Array with 16 values
         void setUniform(in WebGLRenderingContext ctx,       // Send the matrix to the passed uniform location in the passed context
                         in WebGLUniformLocation loc,
                         in boolean transpose);
@@ -58,12 +58,12 @@
         void invert();                                      // replace the matrix with its inverse
 
         void translate(in float x, in float y, in float z); // multiply the matrix by passed translation values on the right
-        void translate(in J3DVector3 v);                    // multiply the matrix by passed translation values on the right
+        void translate(in J3DIVector3 v);                   // multiply the matrix by passed translation values on the right
         void scale(in float x, in float y, in float z);     // multiply the matrix by passed scale values on the right
-        void scale(in J3DVector3 v);                        // multiply the matrix by passed scale values on the right
+        void scale(in J3DIVector3 v);                       // multiply the matrix by passed scale values on the right
         void rotate(in float angle,                         // multiply the matrix by passed rotation values on the right
                     in float x, in float y, in float z);    // (angle is in degrees)
-        void rotate(in float angle, in J3DVector3 v);       // multiply the matrix by passed rotation values on the right
+        void rotate(in float angle, in J3DIVector3 v);      // multiply the matrix by passed rotation values on the right
                                                             // (angle is in degrees)
         void multiply(in CanvasMatrix matrix);              // multiply the matrix by the passed matrix on the right
         void divide(in float divisor);                      // divide the matrix by the passed divisor
@@ -75,31 +75,31 @@
                      in float near, in float far);
         void perspective(in float fovy, in float aspect,    // multiply the matrix by the passed perspective values on the right
                          in float zNear, in float zFar);
-        void lookat(in J3DVector3 eye,                      // multiply the matrix by the passed lookat
-                in J3DVector3 center,  in J3DVector3 up);   // values on the right
-         bool decompose(in J3DVector3 translate,            // decompose the matrix into the passed vector
-                        in J3DVector3 rotate,
-                        in J3DVector3 scale,
-                        in J3DVector3 skew,
-                        in sequence<float> perspective);
+        void lookat(in J3DIVector3 eye,                     // multiply the matrix by the passed lookat values on the right
+                in J3DIVector3 center,  in J3DIVector3 up);
+        bool decompose(in J3DIVector3 translate,            // decompose the matrix into the passed vectors
+                       in J3DIVector3 rotate,
+                       in J3DIVector3 scale,
+                       in J3DIVector3 skew,
+                       in sequence<float> perspective);
     }
 
     [
-        Constructor(in J3DVector3 vector),                  // copy passed vector into new J3DVector3
-        Constructor(in sequence<float> array)               // create new J3DVector3 with 3 floats from array
-        Constructor(in float x, in float y, in float z)     // create new J3DVector3 with 3 floats
-        Constructor()                                       // create new J3DVector3 with (0,0,0)
+        Constructor(in J3DIVector3 vector),                 // copy passed vector into new J3DIVector3
+        Constructor(in sequence<float> array)               // create new J3DIVector3 with 3 floats from array
+        Constructor(in float x, in float y, in float z)     // create new J3DIVector3 with 3 floats
+        Constructor()                                       // create new J3DIVector3 with (0,0,0)
     ]
-    interface J3DVector3 {
-        void load(in J3DVector3 vector);                    // copy the values from the passed vector
+    interface J3DIVector3 {
+        void load(in J3DIVector3 vector);                   // copy the values from the passed vector
         void load(in sequence<float> array);                // copy 3 floats into the vector from array
         void load(in float x, in float y, in float z);      // copy 3 floats into the vector
         sequence<float> getAsArray();                       // return the vector as an array of 3 floats
-        Float32Array getAsFloat32Array();             // return the matrix as a Float32Array with 16 values
-        void multMatrix(in J3DIMatrix4 matrix);             // multiply the vector by the passed matrix (on the right)
+        Float32Array getAsFloat32Array();                   // return the vector as a Float32Array with 3 values
+        void multVecMatrix(in J3DIMatrix4 matrix);          // transform the vector with the passed matrix containing a homogenous coordinate transform
         float vectorLength();                               // return the length of the vector
-        float dot();                                        // return the dot product of the vector
-        void cross(in J3DVector3 v);                        // replace the vector with vector x v
+        float dot(in J3DIVector3 v);                        // return the dot product vector . v
+        void cross(in J3DIVector3 v);                       // replace the vector with cross product vector x v
         void divide(in float divisor);                      // divide the vector by the passed divisor
     }
 */
@@ -527,6 +527,8 @@ J3DIMatrix4.prototype.multiply = function(mat)
         return;
     }
 
+    // Note that m12 is the value in the first column and second row, etc.
+
     var m11 = (mat.$matrix.m11 * this.$matrix.m11 + mat.$matrix.m12 * this.$matrix.m21
                + mat.$matrix.m13 * this.$matrix.m31 + mat.$matrix.m14 * this.$matrix.m41);
     var m12 = (mat.$matrix.m11 * this.$matrix.m12 + mat.$matrix.m12 * this.$matrix.m22
@@ -765,7 +767,73 @@ J3DIMatrix4.prototype.lookat = function(eyex, eyey, eyez, centerx, centery, cent
     this.multiply(matrix);
 }
 
-// Returns true on success, false otherwise. All params are Array objects
+// Decompose the matrix to the passed vectors. Returns true on success, false
+// otherwise. All params are Array objects.
+// Based on James Arvo: Graphics Gems II section VII. 1 Decomposing a matrix
+// into simple transformations. Source code here:
+// http://tog.acm.org/resources/GraphicsGems/gemsii/unmatrix.c
+// The rotation decomposition code in the book is incorrect, official errata
+// is here: http://tog.acm.org/resources/GraphicsGems/Errata.GraphicsGemsII
+//
+// This code has completely re-derived rotation decomposition since the book
+// has different conventions for the handedness of rotations, and the
+// explanation in the errata is not very thorough either.
+//
+// Rotation matrix Rx * Ry * Rz = rotate(A, B, C)
+//
+//   [ 1  0       0       ]   [ cos(B)   0  sin(B) ]   [ cos(C)  -sin(C)  0 ]
+// = | 0  cos(A)  -sin(A) | * | 0        1  0      | * | sin(C)  cos(C)   0 |
+//   [ 0  sin(A)  cos(A)  ]   [ -sin(B)  0  cos(B) ]   [ 0       0        1 ]
+//
+//   [ cos(B)*cos(C)                          -cos(B)*sin(C)                         sin(B)         ]
+// = | sin(A)*sin(B)*cos(C) + cos(A)*sin(C)   -sin(A)*sin(B)*sin(C) + cos(A)*cos(C)  -sin(A)*cos(B) |
+//   [ -cos(A)*sin(B)*cos(C) + sin(A)*sin(C)  cos(A)*sin(B)*sin(C) + sin(A)*cos(C)   cos(A)*cos(B)  ]
+//
+// From here, we easily get B = asin(m31) (note that this class is using
+// atypical notation where m31 corresponds to third column and first row, and
+// code also uses "row" to mean "column" as it is usually used with matrices).
+//
+// This corresponds to the matrix above:
+// [ m11 m21 m31 ]
+// | m12 m22 m32 |
+// [ m13 m23 m33 ]
+//
+// Now, if cos(B) != 0, C is easily derived from m11, m21, and A is equally
+// easily derived from m32 and m33:
+//
+//  m32 / m33 = (-sin(A) * cos(B)) / (cos(A) * cos(B))
+// -m32 / m33 = sin(A) / cos(A)
+// -m32 / m33 = tan(A)
+// => A = atan2(-m32, m33)
+//
+// And similarly for C.
+//
+// If cos(B) = 0, things get more interesting:
+//
+// let b = sin(B) = +-1
+//
+// Let's handle cases where b = 1 and b = -1 separately.
+//
+// b = 1
+// ============================================================================
+// m12 + m23 = sin(A) * b * cos(C) + cos(A) * sin(C) + cos(A) * b * sin(C) + sin(A) * cos(C)
+// m12 + m23 = sin(A + C) + b * sin(A + C)
+// m12 + m23 = (b + 1) * sin(A + C)
+// => A = asin((m12 + m23) / (b + 1)) - C
+//
+// b = -1
+// ============================================================================
+// m13 + m22 = -cos(A) * b * cos(C) + sin(A) * sin(C) - sin(A) * b * sin(C) + cos(A) * cos(C)
+// m13 + m22 = cos(A - C) - b * cos(A - C)
+// m13 + m22 = (1 - b) * cos(A - C)
+// => A = acos((m13 + m22) / (1 - b)) + C
+//
+// Technically, these aren't complete solutions for A because of periodicity,
+// but we're only interested in one solution.
+//
+// As long as A is solved as above, C can be chosen arbitrarily. Proof for
+// this is omitted.
+//
 J3DIMatrix4.prototype.decompose = function(_translate, _rotate, _scale, _skew, _perspective)
 {
     // Normalize the matrix.
@@ -873,14 +941,21 @@ J3DIMatrix4.prototype.decompose = function(_translate, _rotate, _scale, _skew, _
     }
 
     // Now, get the rotations out
-    rotate[1] = Math.asin(-row0[2]);
+    rotate[1] = Math.asin(row2[0]);
     if (Math.cos(rotate[1]) != 0) {
-        rotate[0] = Math.atan2(row1[2], row2[2]);
-        rotate[2] = Math.atan2(row0[1], row0[0]);
+        rotate[0] = Math.atan2(-row2[1], row2[2]);
+        rotate[2] = Math.atan2(-row1[0], row0[0]);
     }
     else {
-        rotate[0] = Math.atan2(-row2[0], row1[1]);
-        rotate[2] = 0;
+        rotate[2] = 0; // arbitrary in this case
+        var b = Math.sin(rotate[1]);
+        if (b < 0) {
+            // b == -1
+            rotate[0] = Math.acos((row0[2] + row1[1]) / (1 - b)) + rotate[2];
+        } else {
+            // b == 1
+            rotate[0] = Math.asin((row1[2] + row0[1]) / (b + 1)) - rotate[2];
+        }
     }
 
     // Convert rotations to degrees
@@ -1025,9 +1100,11 @@ J3DIVector3.prototype.divide = function(divisor)
 
 J3DIVector3.prototype.cross = function(v)
 {
-    this[0] =  this[1] * v[2] - this[2] * v[1];
-    this[1] = -this[0] * v[2] + this[2] * v[0];
+    var x =  this[1] * v[2] - this[2] * v[1];
+    var y = -this[0] * v[2] + this[2] * v[0];
     this[2] =  this[0] * v[1] - this[1] * v[0];
+    this[0] = x;
+    this[1] = y;
 }
 
 J3DIVector3.prototype.dot = function(v)
