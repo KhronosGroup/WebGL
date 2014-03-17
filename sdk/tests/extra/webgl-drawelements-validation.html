@@ -14,7 +14,6 @@ var wtu = WebGLTestUtils;
 
 var totalTimeTest1 = 0;
 var totalTimeTest2 = 0;
-var totalTimeTest3 = 0;
 var iterationsLeft = 10; // How many times to run the full test.
 var indexCount = 500001; // Divisible by 3.
 
@@ -78,25 +77,14 @@ var runTestIteration = function() {
     // so only validation will happen, not drawing.
 
     totalTimeTest1 += measureTime(function() {
-        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-        for (var i = 1; i < drawIterations; ++i) {
-            // Change data at two indices to cause completely revalidating the index buffer in
-            // current implementations in Chrome and Firefox (as of March 17th 2014).
-            gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, new Uint16Array([i + 5]));
-            gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, indices.length - 1, new Uint16Array([i + 5]));
-            gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-        }
-    });
-
-    totalTimeTest2 += measureTime(function() {
         for (var i = 0; i < drawIterations; ++i) {
-            // Change all data to ensure completely revalidating the index buffer.
+            // Change all data, which will cause complete revalidation of the index buffer.
             gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, fullIndicesArray);
             gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
         }
     });
 
-    totalTimeTest3 += measureTime(function() {
+    totalTimeTest2 += measureTime(function() {
         for (var i = 0; i < drawIterations; ++i) {
             // Change only one index and vary the amount of referenced indices.
             // These should not be a big problem to a smart implementation.
@@ -118,17 +106,16 @@ var runTest = function() {
         setTimeout(runTest, 500);
     } else {
         log("Validation returned correct results: " + errorsCorrect);
-        log('Test #1 (minimal updates to cause complete revalidation in Chrome and Firefox as of March 2014) ran in ' + totalTimeTest1 + ' ms');
-        log('Indices referenced by draw calls processed: ' + Math.round(indices.length * drawIterations / totalTimeTest1) + ' / ms');
-        log('Test #2 (full buffer updates to ensure complete revalidation) ran in ' + totalTimeTest2 + ' ms');
-        log('Indices uploaded and referenced by draw calls processed: ' + Math.round(indices.length * drawIterations / totalTimeTest2) + ' / ms');
-        log('Test #3 (single index updates and per-call changes in the drawn indices) ran in ' + totalTimeTest3 + ' ms');
-        log('Indices referenced by draw calls handled: ' + Math.round(indices.length * drawIterations / totalTimeTest3) + ' / ms');
+        log('Time spent on full buffer updates: ' + totalTimeTest1 + ' ms');
+        log('Indices uploaded and referenced by draw calls processed: ' + Math.round(indices.length * drawIterations / totalTimeTest1) + ' / ms');
+        log('Time spent on validating single index updates while range referenced also changes on every draw call: ' + totalTimeTest2 + ' ms');
+        log('Indices referenced by draw calls handled: ' + Math.round(indices.length * drawIterations / totalTimeTest2) + ' / ms');
     }
 };
 </script>
 </head>
 <body onload="setTimeout(runTest, 100)">
 <h1>Micro-benchmark for WebGL drawElements index validation</h1>
+<p>Note that these test cases are completely artificial, and their results only very rough indicators of the performance of a specific part of the system.</p>
 </body>
 </html>
