@@ -59,7 +59,7 @@ var error = function(msg) {
  * means if there are 9 arguments then 6 and 7 are enums, if there are 6
  * arguments 3 and 4 are enums
  *
- * @type {!Object.<number, !Object.<number, string>}}
+ * @type {!Object.<number, !Object.<number, string>}
  */
 var glValidEnumContexts = {
   // Generic setters and getters
@@ -781,10 +781,9 @@ function makeLostContextSimulatingCanvas(canvas) {
 }
 
 return {
-    /**
-     * Initializes this module. Safe to call more than once.
-     * @param {!WebGLRenderingContext} ctx A WebGL context. If
-    }
+  /**
+   * Initializes this module. Safe to call more than once.
+   * @param {!WebGLRenderingContext} ctx A WebGL context. If
    *    you have more than one context it doesn't matter which one
    *    you pass in, it is only used to pull out constants.
    */
