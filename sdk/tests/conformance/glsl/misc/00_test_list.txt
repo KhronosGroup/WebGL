@@ -1,4 +1,5 @@
 attrib-location-length-limits.html
+--min-version 1.0.3 boolean_precision.html
 embedded-struct-definitions-forbidden.html
 empty_main.vert.html
 gl_position_unset.vert.html
