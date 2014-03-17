@@ -144,6 +144,15 @@ var glValidEnumContexts = {
 
   'cullFace': {1: { 0:true }},
   'frontFace': {1: { 0:true }},
+
+  // ANGLE_instanced_arrays extension
+
+  'drawArraysInstancedANGLE': {4: { 0:true }},
+  'drawElementsInstancedANGLE': {5: { 0:true, 2:true }},
+
+  // EXT_blend_minmax extension
+
+  'blendEquationEXT': {1: { 0:true }},
 };
 
 /**
@@ -290,8 +299,11 @@ function makeFunctionWrapper(original, functionName) {
  * @param {!function(funcName, args): void} opt_onFunc The
  *        function to call when each webgl function is called.
  *        You can use this to log all calls for example.
+ * @param {!WebGLRenderingContext} opt_err_ctx The webgl context
+ *        to call getError on if different than ctx.
  */
-function makeDebugContext(ctx, opt_onErrorFunc, opt_onFunc) {
+function makeDebugContext(ctx, opt_onErrorFunc, opt_onFunc, opt_err_ctx) {
+  opt_err_ctx = opt_err_ctx || ctx;
   init(ctx);
   opt_onErrorFunc = opt_onErrorFunc || function(err, functionName, args) {
         // apparently we can't do args.join(",");
@@ -316,7 +328,7 @@ function makeDebugContext(ctx, opt_onErrorFunc, opt_onFunc) {
         opt_onFunc(functionName, arguments);
       }
       var result = ctx[functionName].apply(ctx, arguments);
-      var err = ctx.getError();
+      var err = opt_err_ctx.getError();
       if (err != 0) {
         glErrorShadow[err] = true;
         opt_onErrorFunc(err, functionName, arguments);
@@ -330,7 +342,15 @@ function makeDebugContext(ctx, opt_onErrorFunc, opt_onFunc) {
   var wrapper = {};
   for (var propertyName in ctx) {
     if (typeof ctx[propertyName] == 'function') {
-       wrapper[propertyName] = makeErrorWrapper(ctx, propertyName);
+       if (propertyName != 'getExtension') {
+	  wrapper[propertyName] = makeErrorWrapper(ctx, propertyName);
+       } else {
+	  var wrapped = makeErrorWrapper(ctx, propertyName);
+	  wrapper[propertyName] = function () {
+	     var result = wrapped.apply(ctx, arguments);
+	     return makeDebugContext(result, opt_onErrorFunc, opt_onFunc, opt_err_ctx);
+	  };
+       }
      } else {
        makePropertyWrapper(wrapper, ctx, propertyName);
      }
