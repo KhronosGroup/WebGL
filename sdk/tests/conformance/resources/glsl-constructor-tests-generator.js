@@ -38,22 +38,27 @@ var wtu = WebGLTestUtils;
 
 // Shader code templates 
 var vectorConstructorVertexTemplate = [
+  "precision mediump int;",
+  "precision mediump float;",
   "varying vec4 v_color;",
   
   "void main() {",
   "  $(argList)",
     
-  "  mediump $(vecType) v = $(vecType)($(arg0)$(arg1)$(arg2)$(arg3)$(arg4)); ",
+  "  $(vecType) v = $(vecType)($(arg0)$(arg1)$(arg2)$(arg3)$(arg4)); ",
   "  gl_Position = vec4(v$(filler));",
   
   "}"
 ].join("\n");
 
 var vectorConstructorFragmentTemplate = [
+  "precision mediump int;",
+  "precision mediump float;",
+
   "void main() {",
   "  $(argList)",
   
-  "  mediump $(vecType) v = $(vecType)($(arg0)$(arg1)$(arg2)$(arg3)$(arg4)); ",
+  "  $(vecType) v = $(vecType)($(arg0)$(arg1)$(arg2)$(arg3)$(arg4)); ",
   
   "  gl_FragColor = vec4(v$(filler));",
   "}"
@@ -136,7 +141,7 @@ function getSubstitutions(vecBaseType, compCount, scalarType, argCompCounts) {
       var argName = "a" + aa; 
       var argVecType = vecBaseType + argCompCount;
       var argExp = wtu.replaceParams("$(argType) $(argName) = $(argVal);", {
-        argType: "mediump " + ((argCompCount === 1) ? scalarType : argVecType), 
+        argType: ((argCompCount === 1) ? scalarType : argVecType),
         argName: argName,
         argVal:  getArgumentValue(argCompCount, argVecType, argCompValue, scalarType)
       });
