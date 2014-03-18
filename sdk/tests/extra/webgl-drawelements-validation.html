@@ -14,6 +14,7 @@ var wtu = WebGLTestUtils;
 
 var totalTimeTest1 = 0;
 var totalTimeTest2 = 0;
+var totalTimeTest3 = 0;
 var iterationsLeft = 10; // How many times to run the full test.
 var indexCount = 500001; // Divisible by 3.
 
@@ -93,6 +94,16 @@ var runTestIteration = function() {
         }
     });
 
+    totalTimeTest3 += measureTime(function() {
+        for (var i = 0; i < drawIterations; ++i) {
+            // Change data at two indices to cause completely revalidating the index buffer in
+            // current implementations in Chrome and Firefox (as of March 17th 2014).
+            gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, new Uint16Array([i + 5]));
+            gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, indices.length - 1, new Uint16Array([i + 5]));
+            gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+        }
+    });
+
     setTimeout(function() {
         var lose = gl.getExtension('WEBGL_lose_context');
         lose.loseContext();
@@ -106,10 +117,12 @@ var runTest = function() {
         setTimeout(runTest, 500);
     } else {
         log("Validation returned correct results: " + errorsCorrect);
-        log('Time spent on full buffer updates: ' + totalTimeTest1 + ' ms');
+        log('1. Time spent on full buffer updates: ' + totalTimeTest1 + ' ms');
         log('Indices uploaded and referenced by draw calls processed: ' + Math.round(indices.length * drawIterations / totalTimeTest1) + ' / ms');
-        log('Time spent on validating single index updates while range referenced also changes on every draw call: ' + totalTimeTest2 + ' ms');
+        log('2. Time spent on validating single index updates while range referenced also changes on every draw call: ' + totalTimeTest2 + ' ms');
         log('Indices referenced by draw calls handled: ' + Math.round(indices.length * drawIterations / totalTimeTest2) + ' / ms');
+        log('3. Time spent on validating single index updates at each end of the buffer (worst case for Firefox implementation as of March 2014, not reflective of real world performance): ' + totalTimeTest3 + ' ms');
+        log('Indices referenced by draw calls handled: ' + Math.round(indices.length * drawIterations / totalTimeTest3) + ' / ms');
     }
 };
 </script>
@@ -117,5 +130,6 @@ var runTest = function() {
 <body onload="setTimeout(runTest, 100)">
 <h1>Micro-benchmark for WebGL drawElements index validation</h1>
 <p>Note that these test cases are completely artificial, and their results only very rough indicators of the performance of a specific part of the system.</p>
+<p>The benchmark does not perform any drawing, but rather measures the time the browser takes to upload indices and to check if there are out-of-range indices.</p>
 </body>
 </html>
