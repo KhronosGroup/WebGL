@@ -2060,6 +2060,33 @@ var getExtensionWithKnownPrefixes = function(gl, name) {
   }
 };
 
+/**
+ * Returns possible prefixed versions of an extension's name.
+ * @param {string} name Name of extension. May already include a prefix.
+ * @return {Array.<string>} Variations of the extension name with known
+ *     browser prefixes.
+ */
+var getExtensionPrefixedNames = function(name) {
+  var unprefix = function(name) {
+    for (var ii = 0; ii < browserPrefixes.length; ++ii) {
+      if (browserPrefixes[ii].length > 0 &&
+          name.substring(0, browserPrefixes[ii].length).toLowerCase() ===
+          browserPrefixes[ii].toLowerCase()) {
+        return name.substring(browserPrefixes[ii].length);
+      }
+    }
+    return name;
+  }
+
+  var unprefixed = unprefix(name);
+
+  var variations = [];
+  for (var ii = 0; ii < browserPrefixes.length; ++ii) {
+    variations.push(browserPrefixes[ii] + unprefixed);
+  }
+
+  return variations;
+};
 
 var replaceRE = /\$\((\w+)\)/g;
 
@@ -2434,6 +2461,7 @@ return {
   endsWith: endsWith,
   fillTexture: fillTexture,
   getBytesPerComponent: getBytesPerComponent,
+  getExtensionPrefixedNames: getExtensionPrefixedNames,
   getExtensionWithKnownPrefixes: getExtensionWithKnownPrefixes,
   getFileListAsync: getFileListAsync,
   getLastError: getLastError,
