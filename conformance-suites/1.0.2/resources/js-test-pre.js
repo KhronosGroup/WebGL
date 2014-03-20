@@ -421,7 +421,18 @@ function shouldBeType(_a, _type) {
 
 	var _typev = eval(_type);
 
-	if (_av instanceof _typev) {
+    if(_typev === Number){
+        if(_av instanceof Number){
+		    testPassed(_a + " is an instance of Number");
+        }
+        else if(typeof(_av) === 'number'){
+		    testPassed(_a + " is an instance of Number");
+        }
+        else{
+		    testFailed(_a + " is not an instance of Number");
+        }
+    }
+	else if (_av instanceof _typev) {
 		testPassed(_a + " is an instance of " + _type);
 	} else {
 		testFailed(_a + " is not an instance of " + _type);
