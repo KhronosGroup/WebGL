@@ -107,6 +107,12 @@
             checkDrawElements(
                 gl.TRIANGLES, 3, gl.UNSIGNED_INT,
                 gl.INVALID_ENUM, "gl.DrawElements should return INVALID_ENUM with UNSIGNED_INT");
+            checkDrawElements(
+                gl.TRIANGLES, 3, gl.FLOAT,
+                gl.INVALID_ENUM, "gl.DrawElements should return INVALID_ENUM with FLOAT");
+            checkDrawElements(
+                gl.TRIANGLES, 3, gl.SHORT,
+                gl.INVALID_ENUM, "gl.DrawElements should return INVALID_ENUM with SHORT");
 
        }
 
