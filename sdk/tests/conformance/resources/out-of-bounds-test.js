@@ -25,15 +25,6 @@
 
 var OutOfBoundsTest = (function() {
 
-var runInt32OverflowTest = function(callTemplate, gl, wtu, ext) {
-    // 0xffffffff needs to convert to a 'long' IDL argument as -1, as per
-    // WebIDL 4.1.7.  JS ToInt32(0xffffffff) == -1, which is the first step
-    // of the conversion.  Thus INVALID_VALUE.
-    wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, wtu.replaceParams(callTemplate, {count: '0xffffffff', type: 'gl.UNSIGNED_SHORT', offset: 0}));
-    wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, wtu.replaceParams(callTemplate, {count: 1, type: 'gl.UNSIGNED_SHORT', offset: '0xffffffff'}));
-    wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, wtu.replaceParams(callTemplate, {count: '0xffffffff', type: 'gl.UNSIGNED_SHORT', offset: '0xffffffff'}));
-};
-
 var runCommonInvalidValueTests = function(callTemplate, gl, wtu, ext) {
     wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, wtu.replaceParams(callTemplate, {count: -1, type: 'gl.UNSIGNED_BYTE', offset: 0}));
     wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, wtu.replaceParams(callTemplate, {count: 0, type: 'gl.UNSIGNED_BYTE', offset: -1}));
@@ -126,7 +117,11 @@ var runDrawArraysTest = function(callTemplate, gl, wtu, ext) {
     wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, wtu.replaceParams(callTemplate, {offset: -200, count: 1}));
     wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, wtu.replaceParams(callTemplate, {offset: -200, count: -500}));
 
-    runInt32OverflowTest(callTemplate, gl, wtu, ext);
+    // 0xffffffff needs to convert to a 'long' IDL argument as -1, as per
+    // WebIDL 4.1.7.  JS ToInt32(0xffffffff) == -1. Thus INVALID_VALUE.
+    wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, wtu.replaceParams(callTemplate, {offset: 0, count: '0xffffffff'}));
+    wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, wtu.replaceParams(callTemplate, {offset: '0xffffffff', count: '0xffffffff'}));
+    wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, wtu.replaceParams(callTemplate, {offset: '0xffffffff', count: 1}));
 
     // values that could otherwise be valid but aren't due to bindings generate
     // INVALID_OPERATION
@@ -214,7 +209,13 @@ var runDrawElementsTest = function(callTemplate, gl, wtu, ext) {
     wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {count: 18, type: 'gl.UNSIGNED_SHORT', offset: 0}));
     wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {count: 3, type: 'gl.UNSIGNED_SHORT', offset: 2*15}));
 
-    runInt32OverflowTest(callTemplate, gl, wtu, ext);
+    // 0xffffffff needs to convert to a 'long' IDL argument as -1, as per
+    // WebIDL 4.1.7.  JS ToInt32(0xffffffff) == -1. Thus INVALID_VALUE.
+    wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, wtu.replaceParams(callTemplate, {count: '0xffffffff', type: 'gl.UNSIGNED_SHORT', offset: 0}));
+    // offset is defined as GLintptr, which is long long in IDL (64-bit).
+    // 2^32 - 1 should not overflow, and only result in INVALID_OPERATION.
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {count: 1, type: 'gl.UNSIGNED_SHORT', offset: '0xffffffff'}));
+
     wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {count: '0x7fffffff', type: 'gl.UNSIGNED_SHORT', offset: 0}));
 
     wtu.shouldGenerateGLError(gl, gl.NO_ERROR, wtu.replaceParams(callTemplate, {count: 0, type: 'gl.UNSIGNED_SHORT', offset: 0}));
