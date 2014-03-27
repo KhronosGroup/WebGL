@@ -1,7 +1,7 @@
 <!--
 
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
+** Copyright (c) 2014 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
@@ -29,7 +29,7 @@
 <html>
   <head>
 <meta charset="utf-8">
-    <title>WebGL drawElements Test</title>
+    <title>WebGL drawArrays Test</title>
     <link rel="stylesheet" href="../../resources/js-test-style.css"/>
     <script src="../../resources/js-test-pre.js"></script>
     <script src="../resources/webgl-test-utils.js"> </script>
@@ -60,9 +60,9 @@
         {
             description(document.title);
 
-            function checkDrawElements(mode, count, type, expect, msg) {
+            function checkDrawArrays(mode, count, expect, msg) {
               gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-              gl.drawElements(mode, count, type, 0);
+              gl.drawArrays(mode, 0, count);
               wtu.glErrorShouldBe(gl, expect, msg);
             }
 
@@ -76,44 +76,18 @@
             gl.enableVertexAttribArray(0);
             gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
 
-            var vertexObject = gl.createBuffer();
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexObject);
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array([ 0, 1, 2]), gl.STATIC_DRAW);
+            checkDrawArrays(gl.TRIANGLES, 3,
+                            gl.NO_ERROR, "can call gl.DrawArrays with gl.TRIANGLES");
 
-            checkDrawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT,
-                              gl.NO_ERROR, "can call gl.DrawElements with UNSIGNED_SHORT");
-
-            var vertexObject = gl.createBuffer();
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexObject);
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array([ 0, 1, 2, 0]), gl.STATIC_DRAW);
-
-            checkDrawElements(
-                gl.TRIANGLES, 3, gl.UNSIGNED_BYTE,
-                gl.NO_ERROR, "can call gl.DrawElements with UNSIGNED_BYTE");
-            checkDrawElements(
-                desktopGL['QUAD_STRIP'], 4, gl.UNSIGNED_BYTE,
-                gl.INVALID_ENUM, "gl.DrawElements with QUAD_STRIP should return INVALID_ENUM");
-            checkDrawElements(
-                desktopGL['QUADS'], 4, gl.UNSIGNED_BYTE,
-                gl.INVALID_ENUM, "gl.DrawElements with QUADS should return INVALID_ENUM");
-            checkDrawElements(
-                desktopGL['POLYGON'], 4, gl.UNSIGNED_BYTE,
-                gl.INVALID_ENUM, "gl.DrawElements with POLYGON should return INVALID_ENUM");
-
-            var vertexObject = gl.createBuffer();
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexObject);
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array([ 0, 1, 2]), gl.STATIC_DRAW);
-
-            checkDrawElements(
-                gl.TRIANGLES, 3, gl.UNSIGNED_INT,
-                gl.INVALID_ENUM, "gl.DrawElements should return INVALID_ENUM with UNSIGNED_INT");
-            checkDrawElements(
-                gl.TRIANGLES, 3, gl.FLOAT,
-                gl.INVALID_ENUM, "gl.DrawElements should return INVALID_ENUM with FLOAT");
-            checkDrawElements(
-                gl.TRIANGLES, 3, gl.SHORT,
-                gl.INVALID_ENUM, "gl.DrawElements should return INVALID_ENUM with SHORT");
-
+            checkDrawArrays(
+                desktopGL['QUAD_STRIP'], 4,
+                gl.INVALID_ENUM, "gl.DrawArrays with QUAD_STRIP should return INVALID_ENUM");
+            checkDrawArrays(
+                desktopGL['QUADS'], 4,
+                gl.INVALID_ENUM, "gl.DrawArrays with QUADS should return INVALID_ENUM");
+            checkDrawArrays(
+                desktopGL['POLYGON'], 4,
+                gl.INVALID_ENUM, "gl.DrawArrays with POLYGON should return INVALID_ENUM");
        }
 
        init();
