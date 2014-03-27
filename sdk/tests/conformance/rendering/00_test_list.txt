@@ -2,6 +2,7 @@
 draw-arrays-out-of-bounds.html
 draw-elements-out-of-bounds.html
 gl-clear.html
+--min-version 1.0.3 gl-drawarrays.html
 gl-drawelements.html
 gl-scissor-test.html
 --min-version 1.0.2 gl-scissor-fbo-test.html
