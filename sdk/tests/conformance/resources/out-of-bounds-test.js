@@ -241,9 +241,88 @@ var runDrawElementsTest = function(callTemplate, gl, wtu, ext) {
     wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {count: 6, type: 'gl.UNSIGNED_SHORT', offset: 2}));
 };
 
+var runInstancedTest = function(callTemplate, gl, wtu, ext) {
+    setupProgram2(gl, wtu);
+
+    // Initialize non-instanced attribute data.
+    // Enough for 9 vertices, so 3 triangles.
+    var vbo = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(9*3), gl.STATIC_DRAW);
+
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+
+    // Setup buffer for instanced attribute data.
+    var vbo2 = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo2);
+    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
+
+    gl.enableVertexAttribArray(0);
+    gl.enableVertexAttribArray(1);
+
+    debug('Test out-of-range instanced attributes');
+    debug('');
+
+    debug('Test with an empty buffer for the instanced attribute');
+    ext.vertexAttribDivisorANGLE(1, 1);
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 0}));
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, wtu.replaceParams(callTemplate, {offset: 0, count: 10000, primcount: 0}));
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 1}));
+
+    debug('Test with a buffer with 1 float for the instanced attribute');
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(1), gl.STATIC_DRAW);
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 0}));
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, wtu.replaceParams(callTemplate, {offset: 0, count: 10000, primcount: 0}));
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 1}));
+
+    debug('');
+    debug('Test with a buffer with 2 floats for the instanced attribute');
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(2), gl.STATIC_DRAW);
+    debug('Divisor 1');
+    ext.vertexAttribDivisorANGLE(1, 1);
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 1}));
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 2}));
+    debug('Divisor 3');
+    ext.vertexAttribDivisorANGLE(1, 3);
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 3}));
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 4}));
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 10000}));
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: '0x7fffffff'}));
+
+    debug('');
+    debug('Test with a buffer with 4 floats for the instanced attribute');
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(4), gl.STATIC_DRAW);
+    debug('Divisor 1');
+    ext.vertexAttribDivisorANGLE(1, 1);
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 2}));
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 3}));
+    debug('Divisor 2');
+    ext.vertexAttribDivisorANGLE(1, 2);
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 4}));
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, wtu.replaceParams(callTemplate, {offset: 0, count: 9, primcount: 5}));
+};
+
+var runDrawArraysInstancedTest = function(callTemplate, gl, wtu, ext) {
+    runInstancedTest(callTemplate, gl, wtu, ext);
+};
+
+var runDrawElementsInstancedTest = function(callTemplate, gl, wtu, ext) {
+    var ebo = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint8Array(
+        [ 0, 1, 2,
+          5, 4, 3,
+          6, 7, 8 ]),
+        gl.STATIC_DRAW);
+    callTemplate = wtu.replaceParams(callTemplate, {type: 'gl.UNSIGNED_BYTE', offset: '$(offset)', count: '$(count)', primcount: '$(primcount)'});
+    runInstancedTest(callTemplate, gl, wtu, ext);
+};
+
 return {
     runDrawArraysTest: runDrawArraysTest,
-    runDrawElementsTest: runDrawElementsTest
+    runDrawArraysInstancedTest: runDrawArraysInstancedTest,
+    runDrawElementsTest: runDrawElementsTest,
+    runDrawElementsInstancedTest: runDrawElementsInstancedTest
 };
 
 })();

@@ -62,6 +62,11 @@ if (!ext) {
     OutOfBoundsTest.runDrawArraysTest("ext.drawArraysInstancedANGLE(gl.TRIANGLES, $(offset), $(count), 2)", gl, wtu, ext);
     debug("");
     OutOfBoundsTest.runDrawElementsTest("ext.drawElementsInstancedANGLE(gl.TRIANGLES, $(count), $(type), $(offset), 2)", gl, wtu, ext);
+    debug("");
+    OutOfBoundsTest.runDrawArraysInstancedTest("ext.drawArraysInstancedANGLE(gl.TRIANGLES, $(offset), $(count), $(primcount))", gl, wtu, ext);
+    debug("");
+    OutOfBoundsTest.runDrawElementsInstancedTest("ext.drawElementsInstancedANGLE(gl.TRIANGLES, $(count), $(type), $(offset), $(primcount))", gl, wtu, ext);
+    debug("");
 }
 
 var successfullyParsed = true;
