@@ -194,6 +194,17 @@ function testInheritanceHierarchy() {
   // of the typed array specification. Since this is no longer the
   // case, assert the new behavior.
   shouldBe('new Uint8ClampedArray(1) instanceof Uint8Array', 'false');
+
+  shouldBe('Object.getPrototypeOf(Int8Array.prototype)', 'Object.prototype');
+  shouldBe('Object.getPrototypeOf(Uint8Array.prototype)', 'Object.prototype');
+  shouldBe('Object.getPrototypeOf(Uint8ClampedArray.prototype)', 'Object.prototype');
+  shouldBe('Object.getPrototypeOf(Int16Array.prototype)', 'Object.prototype');
+  shouldBe('Object.getPrototypeOf(Uint16Array.prototype)', 'Object.prototype');
+  shouldBe('Object.getPrototypeOf(Int32Array.prototype)', 'Object.prototype');
+  shouldBe('Object.getPrototypeOf(Uint32Array.prototype)', 'Object.prototype');
+  shouldBe('Object.getPrototypeOf(Float32Array.prototype)', 'Object.prototype');
+  shouldBe('Object.getPrototypeOf(Float64Array.prototype)', 'Object.prototype');
+  shouldBe('Object.getPrototypeOf(DataView.prototype)', 'Object.prototype');
 }
 
 //
