@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 12 March 2014</h2>
+    <h2 class="no-toc">Editor's Draft 1 April 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2413,6 +2413,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
         <dd>
             Uploads the given element or image data to the currently bound WebGLTexture. <br><br>
 
+            The width and height of the texture are set as specified in section
+            <a href="#TEXTURE_UPLOAD_SIZE">Texture Upload Width and Height</a>.<br><br>
+
             The source image data is conceptually first converted to the data type and format
             specified by the <em>format</em> and <em>type</em> arguments, and then transferred to
             the WebGL implementation. If a packed pixel format is specified which would imply loss
@@ -2501,6 +2504,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             Updates a sub-rectangle of the currently bound WebGLTexture with the contents of the
             given element or image data. <br><br>
 
+            The width and height of the updated sub-rectangle are determined as specified in section
+            <a href="#TEXTURE_UPLOAD_SIZE">Texture Upload Width and Height</a>.<br><br>
+
             See <a href="#TEXIMAGE2D_HTML">texImage2D</a> for the interpretation of
             the <em>format</em> and <em>type</em> arguments, and notes on
             the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter. <br><br>
@@ -2528,7 +2534,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
     </dl>
-     
+
 <!-- ======================================================================================================= -->
 
     <h4>Programs and Shaders</h4>
@@ -3390,6 +3396,37 @@ framebuffer being framebuffer complete:
 <li> <code>COLOR_ATTACHMENT0</code> = <code>RGBA/UNSIGNED_BYTE</code> texture + <code>DEPTH_ATTACHMENT</code> = <code>DEPTH_COMPONENT16</code> renderbuffer
 <li> <code>COLOR_ATTACHMENT0</code> = <code>RGBA/UNSIGNED_BYTE</code> texture + <code>DEPTH_STENCIL_ATTACHMENT</code> = <code>DEPTH_STENCIL</code> renderbuffer
 </ul>
+
+<h3><a name="TEXTURE_UPLOAD_SIZE">Texture Upload Width and Height</a></h3>
+
+<p>
+Unless <code>width</code> and <code>height</code> parameters are explicitly specified, the width
+and height of the texture set by <code>texImage2D</code> and the width and height of the
+sub-rectangle updated by <code>texSubImage2D</code> are determined based on the uploaded element or
+image data the following way:
+</p>
+
+    <dl>
+        <dt><code>ImageData pixels</code>
+        <dd>
+            The width and height of the texture are set to the current values of the width and
+            height properties of <code>pixels</code>, representing the actual pixel width and height
+            of <code>pixels</code>.
+        <dt><code>HTMLImageElement image</code>
+        <dd>
+            If a bitmap is uploaded, the width and height of the texture are set to the width and
+            height of the uploaded bitmap in pixels. If an SVG image is uploaded, the width and
+            height of the texture are set to the current values of the width and height properties
+            of <code>image</code>.
+        <dt><code>HTMLCanvasElement canvas</code>
+        <dd>
+            The width and height of the texture are set to the current values of the width and
+            height properties of <code>canvas</code>.
+        <dt><code>HTMLVideoElement video</code>
+        <dd>
+            The width and height of the texture are set to the width and height of the uploaded
+            frame of the video in pixels.
+    </dl>
 
 <h3><a name="PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a></h3>
 
