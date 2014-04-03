@@ -98,7 +98,7 @@ var shaderPairs = [
 ];
 
 wtu.setupUnitQuad(gl);
-var output = document.getElementById("console");
+var console = document.getElementById("console");
 
 variables.forEach(function(variable) {
   debug("");
@@ -108,12 +108,18 @@ variables.forEach(function(variable) {
     expectTrue(variable.max >= variable.min, "gl.getParameter(gl." + toUnderscore(variable.name) + ") >= " + variable.min);
   }
   shaderPairs.forEach(function(pair) {
-    var shaders = [wtu.replaceParams(pair[0], variable), wtu.replaceParams(pair[1], variable)];
-    wtu.addShaderSource(output, "vertex shader", shaders[0]);
-    wtu.addShaderSource(output, "fragment shader", shaders[1]);
-    var program = wtu.setupProgram(gl, shaders, ["a_position"]);
-    wtu.clearAndDrawUnitQuad(gl);
-    wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
+    var shaderSources = [wtu.replaceParams(pair[0], variable), wtu.replaceParams(pair[1], variable)];
+    var shaders = [wtu.loadShader(gl, shaderSources[0], gl.VERTEX_SHADER),
+                   wtu.loadShader(gl, shaderSources[1], gl.FRAGMENT_SHADER)];
+    wtu.addShaderSources(gl, console, "vertex shader", shaders[0], shaderSources[0]);
+    wtu.addShaderSources(gl, console, "fragment shader", shaders[1], shaderSources[1]);
+    if (shaders[0] && shaders[1]) {
+      var program = wtu.setupProgram(gl, shaders, ["a_position"]);
+      wtu.clearAndDrawUnitQuad(gl);
+      wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
+    } else {
+      testFailed('Shader compilation failed');
+    }
   });
 });
 

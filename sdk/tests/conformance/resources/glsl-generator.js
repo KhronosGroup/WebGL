@@ -338,26 +338,35 @@ var runFeatureTest = function(params) {
           params,
           tests[ii]);
 
+      var referenceVertexShader = wtu.loadShader(gl, referenceVertexShaderSource, gl.VERTEX_SHADER, testFailed);
+      var referenceFragmentShader = wtu.loadShader(gl, referenceFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed);
+      var testVertexShader = wtu.loadShader(gl, testVertexShaderSource, gl.VERTEX_SHADER, testFailed);
+      var testFragmentShader = wtu.loadShader(gl, testFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed);
+
       debug("");
-      wtu.addShaderSource(
-          console, "reference vertex shader", referenceVertexShaderSource);
-      wtu.addShaderSource(
-          console, "reference fragment shader", referenceFragmentShaderSource);
-      wtu.addShaderSource(
-          console, "test vertex shader", testVertexShaderSource);
-      wtu.addShaderSource(
-          console, "test fragment shader", testFragmentShaderSource);
+      wtu.addShaderSources(
+          gl, console, "reference vertex shader", referenceVertexShader,
+          referenceVertexShaderSource);
+      wtu.addShaderSources(
+          gl, console, "reference fragment shader", referenceFragmentShader,
+          referenceFragmentShaderSource);
+      wtu.addShaderSources(
+          gl, console, "test vertex shader", testVertexShader,
+          testVertexShaderSource);
+      wtu.addShaderSources(
+          gl, console, "test fragment shader", testFragmentShader,
+          testFragmentShaderSource);
       debug("");
 
       var refData = draw(
-          canvas, referenceVertexShaderSource, referenceFragmentShaderSource);
+          referenceVertexShader, referenceFragmentShader);
       var refImg = wtu.makeImage(canvas);
       if (ss == 0) {
         var testData = draw(
-            canvas, testVertexShaderSource, referenceFragmentShaderSource);
+            testVertexShader, referenceFragmentShader);
       } else {
         var testData = draw(
-            canvas, referenceVertexShaderSource, testFragmentShaderSource);
+            referenceVertexShader, testFragmentShader);
       }
       var testImg = wtu.makeImage(canvas);
 
@@ -414,8 +423,8 @@ var runFeatureTest = function(params) {
     console.appendChild(document.createElement('hr'));
   }
 
-  function draw(canvas, vsSource, fsSource) {
-    var program = wtu.loadProgram(gl, vsSource, fsSource, testFailed);
+  function draw(vertexShader, fragmentShader) {
+    var program = wtu.createProgram(gl, vertexShader, fragmentShader, testFailed);
 
     var posLoc = gl.getAttribLocation(program, "aPosition");
     wtu.setupIndexedQuad(gl, gridRes, posLoc);
@@ -521,26 +530,32 @@ var runBasicTest = function(params) {
           test.test.shader,
           test.test.subs);
 
+      var referenceVertexShader = wtu.loadShader(gl, referenceVertexShaderSource, gl.VERTEX_SHADER, testFailed);
+      var referenceFragmentShader = wtu.loadShader(gl, referenceFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed);
+      var testVertexShader = wtu.loadShader(gl, testVertexShaderSource, gl.VERTEX_SHADER, testFailed);
+      var testFragmentShader = wtu.loadShader(gl, testFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed);
+
       debug("");
-      wtu.addShaderSource(
-          console, "reference vertex shader", referenceVertexShaderSource);
-      wtu.addShaderSource(
-          console, "reference fragment shader", referenceFragmentShaderSource);
-      wtu.addShaderSource(
-          console, "test vertex shader", testVertexShaderSource);
-      wtu.addShaderSource(
-          console, "test fragment shader", testFragmentShaderSource);
+      wtu.addShaderSources(
+          gl, console, "reference vertex shader", referenceVertexShader,
+          referenceVertexShaderSource);
+      wtu.addShaderSources(
+          gl, console, "reference fragment shader", referenceFragmentShader,
+          referenceFragmentShaderSource);
+      wtu.addShaderSources(
+          gl, console, "test vertex shader", testVertexShader,
+          testVertexShaderSource);
+      wtu.addShaderSources(
+          gl, console, "test fragment shader", testFragmentShader,
+          testFragmentShaderSource);
       debug("");
 
-      var refData = draw(
-          canvas, referenceVertexShaderSource, referenceFragmentShaderSource);
+      var refData = draw(referenceVertexShader, referenceFragmentShader);
       var refImg = wtu.makeImage(canvas);
       if (ss == 0) {
-        var testData = draw(
-            canvas, testVertexShaderSource, referenceFragmentShaderSource);
+        var testData = draw(testVertexShader, referenceFragmentShader);
       } else {
-        var testData = draw(
-            canvas, referenceVertexShaderSource, testFragmentShaderSource);
+        var testData = draw(referenceVertexShader, testFragmentShader);
       }
       var testImg = wtu.makeImage(canvas);
 
@@ -596,8 +611,8 @@ var runBasicTest = function(params) {
     console.appendChild(document.createElement('hr'));
   }
 
-  function draw(canvas, vsSource, fsSource) {
-    var program = wtu.loadProgram(gl, vsSource, fsSource, testFailed);
+  function draw(vertexShader, fragmentShader) {
+    var program = wtu.createProgram(gl, vertexShader, fragmentShader, testFailed);
 
     var posLoc = gl.getAttribLocation(program, "aPosition");
     wtu.setupIndexedQuad(gl, gridRes, posLoc);
@@ -716,26 +731,34 @@ var runReferenceImageTest = function(params) {
           isVertex ? gridRes : height,
           isVertex);
 
+      var testVertexShader = wtu.loadShader(gl, testVertexShaderSource, gl.VERTEX_SHADER, testFailed);
+      var testFragmentShader = wtu.loadShader(gl, testFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed);
+
       debug("");
-      wtu.addShaderSource(
-          console, "test vertex shader", testVertexShaderSource);
-      wtu.addShaderSource(
-          console, "test fragment shader", testFragmentShaderSource);
+      wtu.addShaderSources(
+          gl, console, "test vertex shader", testVertexShader,
+          testVertexShaderSource);
+      wtu.addShaderSources(
+          gl, console, "test fragment shader", testFragmentShader,
+          testFragmentShaderSource);
       debug("");
+
       var refData;
       if (isVertex) {
-        refData = drawVertexReferenceImage(canvas, referenceTextureOrArray);
+        refData = drawVertexReferenceImage(referenceTextureOrArray);
       } else {
-        refData = drawFragmentReferenceImage(canvas, referenceTextureOrArray);
+        refData = drawFragmentReferenceImage(referenceTextureOrArray);
       }
       var refImg = wtu.makeImage(canvas);
       var testData;
       if (isVertex) {
+        var referenceFragmentShader = wtu.loadShader(gl, referenceFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed);
         testData = draw(
-          canvas, testVertexShaderSource, referenceFragmentShaderSource);
+          testVertexShader, referenceFragmentShader);
       } else {
+        var referenceVertexShader = wtu.loadShader(gl, referenceVertexShaderSource, gl.VERTEX_SHADER, testFailed);
         testData = draw(
-          canvas, referenceVertexShaderSource, testFragmentShaderSource);
+          referenceVertexShader, testFragmentShader);
       }
       var testImg = wtu.makeImage(canvas);
       var testTolerance = shaderInfo.tolerance;
@@ -807,8 +830,8 @@ var runReferenceImageTest = function(params) {
     console.appendChild(document.createElement('hr'));
   }
 
-  function draw(canvas, vsSource, fsSource) {
-    var program = wtu.loadProgram(gl, vsSource, fsSource, testFailed);
+  function draw(vertexShader, fragmentShader) {
+    var program = wtu.createProgram(gl, vertexShader, fragmentShader, testFailed);
 
     var posLoc = gl.getAttribLocation(program, "aPosition");
     wtu.setupIndexedQuad(gl, gridRes, posLoc);
@@ -822,7 +845,7 @@ var runReferenceImageTest = function(params) {
     return img;
   }
 
-  function drawVertexReferenceImage(canvas, colors) {
+  function drawVertexReferenceImage(colors) {
     gl.bindBuffer(gl.ARRAY_BUFFER, indexedQuadForReferenceVertexShader[0]);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
@@ -842,7 +865,7 @@ var runReferenceImageTest = function(params) {
     return img;
   }
 
-  function drawFragmentReferenceImage(canvas, texture) {
+  function drawFragmentReferenceImage(texture) {
     var program = wtu.setupTexturedQuad(gl);
 
     gl.activeTexture(gl.TEXTURE0);

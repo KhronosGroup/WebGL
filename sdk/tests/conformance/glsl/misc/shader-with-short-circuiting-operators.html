@@ -105,7 +105,7 @@
 
       var wtu = WebGLTestUtils;
       var gl = wtu.create3DContext();
-      var c = document.getElementById("console");
+      var console = document.getElementById("console");
 
       wtu.setupUnitQuad(gl, [0, 1]);
 
@@ -148,14 +148,13 @@
           gl.clear(gl.COLOR_BUFFER_BIT);
           var template = shaderTemplates[ii];
 
-          var vs = wtu.replaceParams(template.vs, test);
-          var fs = wtu.replaceParams(template.fs, test);
+          var vsSource = wtu.replaceParams(template.vs, test);
+          var fsSource = wtu.replaceParams(template.fs, test);
 
-          wtu.addShaderSource(c, "vertex shader", vs);
-          wtu.addShaderSource(c, "fragment shader", fs);
-
-          var vs = wtu.loadShader(gl, vs, gl.VERTEX_SHADER);
-          var fs = wtu.loadShader(gl, fs, gl.FRAGMENT_SHADER);
+          var vs = wtu.loadShader(gl, vsSource, gl.VERTEX_SHADER);
+          wtu.addShaderSources(gl, console, "vertex shader", vs, vsSource);
+          var fs = wtu.loadShader(gl, fsSource, gl.FRAGMENT_SHADER);
+          wtu.addShaderSources(gl, console, "fragment shader", fs, fsSource);
           var program = wtu.createProgram(gl, vs, fs);
 
           gl.useProgram(program);

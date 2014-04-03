@@ -1585,7 +1585,7 @@ var loadShaderFromFile = function(gl, file, type, opt_errorCallback) {
 var getScript = function(scriptId) {
   var shaderScript = document.getElementById(scriptId);
   if (!shaderScript) {
-    throw("*** Error: unknown script element" + scriptId);
+    throw("*** Error: unknown script element " + scriptId);
   }
   return shaderScript.text;
 };
@@ -2016,6 +2016,25 @@ var addShaderSource = function(element, label, source, opt_url) {
   element.appendChild(div);
 };
 
+/**
+ * Inserts labels that when clicked expand to show the original source of the
+ * shader and also translated source of the shader, if that is available.
+ *
+ * @param {WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {!HTMLElement} element element to append label to.
+ * @param {string} label label for anchor.
+ * @param {WebGLShader} shader Shader to show the sources for.
+ * @param {string} shaderSource Original shader source.
+ */
+var addShaderSources = function(gl, element, label, shader, shaderSource) {
+  addShaderSource(element, label, shaderSource);
+
+  var debugShaders = gl.getExtension('WEBGL_debug_shaders');
+  if (debugShaders && shader) {
+    addShaderSource(element, label + ' translated for driver', debugShaders.getTranslatedShaderSource(shader));
+  }
+};
+
 // Add your prefix here.
 var browserPrefixes = [
   "",
@@ -2441,6 +2460,7 @@ var setupImageForCrossOriginTest = function(img, imgUrl, localUrl, callback) {
 
 return {
   addShaderSource: addShaderSource,
+  addShaderSources: addShaderSources,
   cancelAnimFrame: cancelAnimFrame,
   create3DContext: create3DContext,
   create3DContextWithWrapperThatThrowsOnGLError:

@@ -168,12 +168,12 @@ if (!gl) {
 } else {
   var startTime = Date.now();
   var consoleDiv = document.getElementById("console");
-  var vSource = document.getElementById("vertexShader").text;
-  var fSource = document.getElementById("fragmentShader").text;
-  wtu.addShaderSource(consoleDiv, "test vertex shader", vSource);
+  var vSource = wtu.getScript("vertexShader");
   var vShader = wtu.loadShader(gl, vSource, gl.VERTEX_SHADER);
-  wtu.addShaderSource(consoleDiv, "test fragment shader", fSource);
+  wtu.addShaderSources(gl, consoleDiv, "test vertex shader", vShader, vSource);
+  var fSource = wtu.getScript("fragmentShader");
   var fShader = wtu.loadShader(gl, fSource, gl.FRAGMENT_SHADER);
+  wtu.addShaderSources(gl, consoleDiv, "test fragment shader", fShader, fSource);
   if (vShader && fShader) {
     var program = gl.createProgram();
     gl.attachShader(program, vShader);

@@ -60,7 +60,7 @@ var fShaderDB = {};
  * render: if true render to unit quad. Green = success
  *
  */
-function runOneTest(gl, info) {
+function runOneTest(gl, debugShaders, info) {
   var passMsg = info.passMsg
   debug("");
   debug("test: " + passMsg);
@@ -114,6 +114,11 @@ function runOneTest(gl, info) {
     }
   }
 
+  if (debugShaders && vShader) {
+    wtu.addShaderSource(console, vLabel + " translated for driver",
+                        debugShaders.getTranslatedShaderSource(vShader));
+  }
+
   var fSource = info.fShaderPrep ? info.fShaderPrep(info.fShaderSource) :
     info.fShaderSource;
 
@@ -141,6 +146,11 @@ function runOneTest(gl, info) {
     if (fShader) {
       fShaderDB[fSource] = fShader;
     }
+  }
+
+  if (debugShaders && fShader) {
+    wtu.addShaderSource(console, fLabel + " translated for driver",
+                        debugShaders.getTranslatedShaderSource(fShader));
   }
 
   if (vShader && fShader) {
@@ -200,6 +210,8 @@ function runTests(shaderInfos) {
     return;
   }
 
+  var debugShaders = gl.getExtension('WEBGL_debug_shaders');
+
   var testIndex = 0;
   var runNextTest = function() {
     if (testIndex == shaderInfos.length) {
@@ -207,7 +219,7 @@ function runTests(shaderInfos) {
       return;
     }
 
-    runOneTest(gl, shaderInfos[testIndex++]);
+    runOneTest(gl, debugShaders, shaderInfos[testIndex++]);
     setTimeout(runNextTest, 1);
   }
   runNextTest();

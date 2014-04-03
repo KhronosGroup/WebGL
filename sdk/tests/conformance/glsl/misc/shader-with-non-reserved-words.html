@@ -633,7 +633,7 @@ description();
 
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext();
-var c = document.getElementById("console");
+var console = document.getElementById("console");
 
 var badWords = [
   { words: DXWords },
@@ -691,18 +691,27 @@ function testWord(word) {
   debug("");
   debug("testing: " + word);
 
-  for (var ii = 0; ii < src.length; ++ii) {
-    var vs = src[ii].vsrc.replace(/\$replaceMe/g, word);
-    var fs = src[ii].fsrc.replace(/\$replaceMe/g, word);
+  var program;
 
-    wtu.addShaderSource(c, "vertex shader", vs);
-    wtu.addShaderSource(c, "fragment shader", fs);
+  for (var ii = 0; ii < src.length; ++ii) {
+    var vsSource = src[ii].vsrc.replace(/\$replaceMe/g, word);
+    var fsSource = src[ii].fsrc.replace(/\$replaceMe/g, word);
 
     var success = true;
-    var program = wtu.loadProgram(gl, vs, fs, function(msg) {
+    var noSuccess = function(msg) {
       debug(msg);
       success = false;
-    });
+    };
+
+    var vs = wtu.loadShader(gl, vsSource, gl.VERTEX_SHADER, noSuccess);
+    wtu.addShaderSources(gl, console, "vertex shader", vs, vsSource);
+    var fs = wtu.loadShader(gl, fsSource, gl.FRAGMENT_SHADER, noSuccess);
+    wtu.addShaderSources(gl, console, "fragment shader", fs, fsSource);
+
+    if (vs && fs) {
+      program = wtu.createProgram(gl, vs, fs, noSuccess);
+    }
+
     if (success) {
       testPassed("shader with: '" + word + "' compiled");
     } else {
