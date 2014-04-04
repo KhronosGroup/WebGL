@@ -167,20 +167,7 @@ if (!gl) {
   finishTest();
 } else {
   var startTime = Date.now();
-  var consoleDiv = document.getElementById("console");
-  var vSource = wtu.getScript("vertexShader");
-  var vShader = wtu.loadShader(gl, vSource, gl.VERTEX_SHADER);
-  wtu.addShaderSources(gl, consoleDiv, "test vertex shader", vShader, vSource);
-  var fSource = wtu.getScript("fragmentShader");
-  var fShader = wtu.loadShader(gl, fSource, gl.FRAGMENT_SHADER);
-  wtu.addShaderSources(gl, consoleDiv, "test fragment shader", fShader, fSource);
-  if (vShader && fShader) {
-    var program = gl.createProgram();
-    gl.attachShader(program, vShader);
-    gl.attachShader(program, fShader);
-    gl.linkProgram(program);
-    gl.getProgramParameter(program, gl.LINK_STATUS);
-  }
+  wtu.setupProgram(gl, ["vertexShader", "fragmentShader"], undefined, undefined, true);
   gl.clearColor(0.0, 1.0, 0.0, 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);

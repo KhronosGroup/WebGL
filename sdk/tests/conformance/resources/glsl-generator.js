@@ -261,7 +261,7 @@ var runFeatureTest = function(params) {
   var width = 32;
   var height = 32;
 
-  var console = document.getElementById("console");
+  var consoleDiv = document.getElementById("console");
   var canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
@@ -338,24 +338,12 @@ var runFeatureTest = function(params) {
           params,
           tests[ii]);
 
-      var referenceVertexShader = wtu.loadShader(gl, referenceVertexShaderSource, gl.VERTEX_SHADER, testFailed);
-      var referenceFragmentShader = wtu.loadShader(gl, referenceFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed);
-      var testVertexShader = wtu.loadShader(gl, testVertexShaderSource, gl.VERTEX_SHADER, testFailed);
-      var testFragmentShader = wtu.loadShader(gl, testFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed);
 
       debug("");
-      wtu.addShaderSources(
-          gl, console, "reference vertex shader", referenceVertexShader,
-          referenceVertexShaderSource);
-      wtu.addShaderSources(
-          gl, console, "reference fragment shader", referenceFragmentShader,
-          referenceFragmentShaderSource);
-      wtu.addShaderSources(
-          gl, console, "test vertex shader", testVertexShader,
-          testVertexShaderSource);
-      wtu.addShaderSources(
-          gl, console, "test fragment shader", testFragmentShader,
-          testFragmentShaderSource);
+      var referenceVertexShader = wtu.loadShader(gl, referenceVertexShaderSource, gl.VERTEX_SHADER, testFailed, true, 'reference');
+      var referenceFragmentShader = wtu.loadShader(gl, referenceFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed, true, 'reference');
+      var testVertexShader = wtu.loadShader(gl, testVertexShaderSource, gl.VERTEX_SHADER, testFailed, true, 'test');
+      var testFragmentShader = wtu.loadShader(gl, testFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed, true, 'test');
       debug("");
 
       var refData = draw(
@@ -412,7 +400,7 @@ var runFeatureTest = function(params) {
     div.appendChild(document.createElement('br'));
 
 
-    console.appendChild(div);
+    consoleDiv.appendChild(div);
 
     if (!same) {
       testFailed("images are different");
@@ -420,7 +408,7 @@ var runFeatureTest = function(params) {
       testPassed("images are the same");
     }
 
-    console.appendChild(document.createElement('hr'));
+    consoleDiv.appendChild(document.createElement('hr'));
   }
 
   function draw(vertexShader, fragmentShader) {
@@ -453,7 +441,7 @@ var runBasicTest = function(params) {
   var width = 32;
   var height = 32;
 
-  var console = document.getElementById("console");
+  var consoleDiv = document.getElementById("console");
   var canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
@@ -530,24 +518,11 @@ var runBasicTest = function(params) {
           test.test.shader,
           test.test.subs);
 
-      var referenceVertexShader = wtu.loadShader(gl, referenceVertexShaderSource, gl.VERTEX_SHADER, testFailed);
-      var referenceFragmentShader = wtu.loadShader(gl, referenceFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed);
-      var testVertexShader = wtu.loadShader(gl, testVertexShaderSource, gl.VERTEX_SHADER, testFailed);
-      var testFragmentShader = wtu.loadShader(gl, testFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed);
-
       debug("");
-      wtu.addShaderSources(
-          gl, console, "reference vertex shader", referenceVertexShader,
-          referenceVertexShaderSource);
-      wtu.addShaderSources(
-          gl, console, "reference fragment shader", referenceFragmentShader,
-          referenceFragmentShaderSource);
-      wtu.addShaderSources(
-          gl, console, "test vertex shader", testVertexShader,
-          testVertexShaderSource);
-      wtu.addShaderSources(
-          gl, console, "test fragment shader", testFragmentShader,
-          testFragmentShaderSource);
+      var referenceVertexShader = wtu.loadShader(gl, referenceVertexShaderSource, gl.VERTEX_SHADER, testFailed, true, 'reference');
+      var referenceFragmentShader = wtu.loadShader(gl, referenceFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed, true, 'reference');
+      var testVertexShader = wtu.loadShader(gl, testVertexShaderSource, gl.VERTEX_SHADER, testFailed, true, 'test');
+      var testFragmentShader = wtu.loadShader(gl, testFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed, true, 'test');
       debug("");
 
       var refData = draw(referenceVertexShader, referenceFragmentShader);
@@ -600,7 +575,7 @@ var runBasicTest = function(params) {
     }
     div.appendChild(document.createElement('br'));
 
-    console.appendChild(div);
+    consoleDiv.appendChild(div);
 
     if (!same) {
       testFailed("images are different");
@@ -608,7 +583,7 @@ var runBasicTest = function(params) {
       testPassed("images are the same");
     }
 
-    console.appendChild(document.createElement('hr'));
+    consoleDiv.appendChild(document.createElement('hr'));
   }
 
   function draw(vertexShader, fragmentShader) {
@@ -641,7 +616,7 @@ var runReferenceImageTest = function(params) {
   var width = 32;
   var height = 32;
 
-  var console = document.getElementById("console");
+  var consoleDiv = document.getElementById("console");
   var canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
@@ -731,16 +706,9 @@ var runReferenceImageTest = function(params) {
           isVertex ? gridRes : height,
           isVertex);
 
-      var testVertexShader = wtu.loadShader(gl, testVertexShaderSource, gl.VERTEX_SHADER, testFailed);
-      var testFragmentShader = wtu.loadShader(gl, testFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed);
-
       debug("");
-      wtu.addShaderSources(
-          gl, console, "test vertex shader", testVertexShader,
-          testVertexShaderSource);
-      wtu.addShaderSources(
-          gl, console, "test fragment shader", testFragmentShader,
-          testFragmentShaderSource);
+      var testVertexShader = wtu.loadShader(gl, testVertexShaderSource, gl.VERTEX_SHADER, testFailed, true);
+      var testFragmentShader = wtu.loadShader(gl, testFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed, true);
       debug("");
 
       var refData;
@@ -785,7 +753,7 @@ var runReferenceImageTest = function(params) {
             Math.abs(refData[offset + 1] - testData[offset + 1]) > tolerance ||
             Math.abs(refData[offset + 2] - testData[offset + 2]) > tolerance ||
             Math.abs(refData[offset + 3] - testData[offset + 3]) > tolerance) {
-          console.appendChild(document.createTextNode('at (' + xx + ',' + yy + '): ref=(' +
+          consoleDiv.appendChild(document.createTextNode('at (' + xx + ',' + yy + '): ref=(' +
                                                       refData[offset + 0] + ',' +
                                                       refData[offset + 1] + ',' +
                                                       refData[offset + 2] + ',' +
@@ -794,9 +762,7 @@ var runReferenceImageTest = function(params) {
                                                       testData[offset + 1] + ',' +
                                                       testData[offset + 2] + ',' +
                                                       testData[offset + 3] + ')'));
-          console.appendChild(document.createElement('br'));          
-
-
+          consoleDiv.appendChild(document.createElement('br'));
 
           imgData.data[imgOffset] = 255;
           same = false;
@@ -819,7 +785,7 @@ var runReferenceImageTest = function(params) {
     }
     div.appendChild(document.createElement('br'));
 
-    console.appendChild(div);
+    consoleDiv.appendChild(div);
 
     if (!same) {
       testFailed("images are different");
@@ -827,7 +793,7 @@ var runReferenceImageTest = function(params) {
       testPassed("images are the same");
     }
 
-    console.appendChild(document.createElement('hr'));
+    consoleDiv.appendChild(document.createElement('hr'));
   }
 
   function draw(vertexShader, fragmentShader) {

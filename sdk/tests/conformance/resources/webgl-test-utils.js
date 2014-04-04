@@ -262,8 +262,10 @@ var setupSimpleColorFragmentShader = function(gl) {
  *        the source from.
  * @param {!Array.<string>} opt_attribs The attribs names.
  * @param {!Array.<number>} opt_locations The locations for the attribs.
+ * @param {boolean} opt_logShaders Whether to log shader source.
  */
-var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
+var setupProgram = function(
+    gl, shaders, opt_attribs, opt_locations, opt_logShaders) {
   var realShaders = [];
   var program = gl.createProgram();
   var shaderCount = 0;
@@ -275,14 +277,16 @@ var setupProgram = function(gl, shaders, opt_attribs, opt_locations) {
       if (element) {
         if (element.type != "x-shader/x-vertex" && element.type != "x-shader/x-fragment")
           shaderType = ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER;
-        shader = loadShaderFromScript(gl, shader, shaderType);
+        shader = loadShaderFromScript(gl, shader, shaderType, undefined, opt_logShaders);
       } else if (endsWith(shader, ".vert")) {
-        shader = loadShaderFromFile(gl, shader, gl.VERTEX_SHADER);
+        shader = loadShaderFromFile(gl, shader, gl.VERTEX_SHADER, undefined, opt_logShaders);
       } else if (endsWith(shader, ".frag")) {
-        shader = loadShaderFromFile(gl, shader, gl.FRAGMENT_SHADER);
+        shader = loadShaderFromFile(gl, shader, gl.FRAGMENT_SHADER, undefined, opt_logShaders);
       } else {
-        shader = loadShader(gl, shader, ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER);
+        shader = loadShader(gl, shader, ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER, undefined, opt_logShaders);
       }
+    } else if (opt_logShaders) {
+      throw 'Shader source logging requested but no shader source provided';
     }
     if (shader) {
       ++shaderCount;
@@ -1529,9 +1533,17 @@ var readFileList = function(url) {
  * @param {string} shaderSource The shader source.
  * @param {number} shaderType The type of shader. 
  * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {boolean} opt_logShaders Whether to log shader source.
+ * @param {string} opt_shaderLabel Label that identifies the shader source in
+ *     the log.
+ * @param {string} opt_url URL from where the shader source was loaded from.
+ *     If opt_logShaders is set, then a link to the source file will also be
+ *     added.
  * @return {!WebGLShader} The created shader.
  */
-var loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
+var loadShader = function(
+    gl, shaderSource, shaderType, opt_errorCallback, opt_logShaders,
+    opt_shaderLabel, opt_url) {
   var errFn = opt_errorCallback || error;
   // Create the shader object
   var shader = gl.createShader(shaderType);
@@ -1550,6 +1562,15 @@ var loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
 
   // Compile the shader
   gl.compileShader(shader);
+
+  if (opt_logShaders) {
+    var label = shaderType == gl.VERTEX_SHADER ? 'vertex shader' : 'fragment_shader';
+    if (opt_shaderLabel) {
+      label = opt_shaderLabel + ' ' + label;
+    }
+    addShaderSources(
+        gl, document.getElementById('console'), label, shader, shaderSource, opt_url);
+  }
 
   // Check the compile status
   var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
@@ -1570,11 +1591,14 @@ var loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
  * @param {file} file The URL of the shader source.
  * @param {number} type The type of shader.
  * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {boolean} opt_logShaders Whether to log shader source.
  * @return {!WebGLShader} The created shader.
  */
-var loadShaderFromFile = function(gl, file, type, opt_errorCallback) {
+var loadShaderFromFile = function(
+    gl, file, type, opt_errorCallback, opt_logShaders) {
   var shaderSource = readFile(file);
-  return loadShader(gl, shaderSource, type, opt_errorCallback);
+  return loadShader(gl, shaderSource, type, opt_errorCallback,
+      opt_logShaders, undefined, file);
 };
 
 /**
@@ -1597,10 +1621,11 @@ var getScript = function(scriptId) {
  * @param {number} opt_shaderType The type of shader. If not passed in it will
  *     be derived from the type of the script tag.
  * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {boolean} opt_logShaders Whether to log shader source.
  * @return {!WebGLShader} The created shader.
  */
 var loadShaderFromScript = function(
-    gl, scriptId, opt_shaderType, opt_errorCallback) {
+    gl, scriptId, opt_shaderType, opt_errorCallback, opt_logShaders) {
   var shaderSource = "";
   var shaderScript = document.getElementById(scriptId);
   if (!shaderScript) {
@@ -1619,8 +1644,8 @@ var loadShaderFromScript = function(
     }
   }
 
-  return loadShader(
-      gl, shaderSource, opt_shaderType, opt_errorCallback);
+  return loadShader(gl, shaderSource, opt_shaderType, opt_errorCallback,
+      opt_logShaders);
 };
 
 var loadStandardProgram = function(gl) {
@@ -1712,15 +1737,16 @@ var createProgram = function(gl, vertexShader, fragmentShader, opt_errorCallback
  * @param {string} vertexShader The vertex shader source.
  * @param {string} fragmentShader The fragment shader source.
  * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {boolean} opt_logShaders Whether to log shader source.
  * @return {!WebGLProgram} The created program.
  */
 var loadProgram = function(
-    gl, vertexShader, fragmentShader, opt_errorCallback) {
+    gl, vertexShader, fragmentShader, opt_errorCallback, opt_logShaders) {
   var program;
   var vs = loadShader(
-      gl, vertexShader, gl.VERTEX_SHADER, opt_errorCallback);
+      gl, vertexShader, gl.VERTEX_SHADER, opt_errorCallback, opt_logShaders);
   var fs = loadShader(
-      gl, fragmentShader, gl.FRAGMENT_SHADER, opt_errorCallback);
+      gl, fragmentShader, gl.FRAGMENT_SHADER, opt_errorCallback, opt_logShaders);
   if (vs && fs) {
     program = createProgram(gl, vs, fs, opt_errorCallback)
   }
@@ -1971,13 +1997,13 @@ var insertImage = function(element, caption, img) {
 };
 
 /**
- * Inserts a 'label' that when clicked expands to the pre
- * formatted text supplied by 'source'.
+ * Inserts a 'label' that when clicked expands to the pre formatted text
+ * supplied by 'source'.
  * @param {!HTMLElement} element element to append label to.
  * @param {string} label label for anchor.
  * @param {string} source preformatted text to expand to.
- * @param {string} opt_url url of source. If provided a 2nd link
- *     will be added.
+ * @param {string} opt_url URL of source. If provided a link to the source file
+ *     will also be added.
  */
 var addShaderSource = function(element, label, source, opt_url) {
   var div = document.createElement("div");
@@ -2019,19 +2045,24 @@ var addShaderSource = function(element, label, source, opt_url) {
 /**
  * Inserts labels that when clicked expand to show the original source of the
  * shader and also translated source of the shader, if that is available.
- *
  * @param {WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!HTMLElement} element element to append label to.
  * @param {string} label label for anchor.
  * @param {WebGLShader} shader Shader to show the sources for.
  * @param {string} shaderSource Original shader source.
+ * @param {string} opt_url URL of source. If provided a link to the source file
+ *     will also be added.
  */
-var addShaderSources = function(gl, element, label, shader, shaderSource) {
-  addShaderSource(element, label, shaderSource);
+var addShaderSources = function(
+    gl, element, label, shader, shaderSource, opt_url) {
+  addShaderSource(element, label, shaderSource, opt_url);
 
   var debugShaders = gl.getExtension('WEBGL_debug_shaders');
   if (debugShaders && shader) {
-    addShaderSource(element, label + ' translated for driver', debugShaders.getTranslatedShaderSource(shader));
+    var translatedSource = debugShaders.getTranslatedShaderSource(shader);
+    if (translatedSource != '') {
+      addShaderSource(element, label + ' translated for driver', translatedSource);
+    }
   }
 };
 

@@ -60,12 +60,12 @@ var fShaderDB = {};
  * render: if true render to unit quad. Green = success
  *
  */
-function runOneTest(gl, debugShaders, info) {
+function runOneTest(gl, info) {
   var passMsg = info.passMsg
   debug("");
   debug("test: " + passMsg);
 
-  var console = document.getElementById("console");
+  var consoleDiv = document.getElementById("console");
 
   if (info.vShaderSource === undefined) {
     if (info.vShaderId) {
@@ -90,7 +90,7 @@ function runOneTest(gl, debugShaders, info) {
   var vSource = info.vShaderPrep ? info.vShaderPrep(info.vShaderSource) :
     info.vShaderSource;
 
-  wtu.addShaderSource(console, vLabel, vSource);
+  wtu.addShaderSource(consoleDiv, vLabel, vSource);
 
   // Reuse identical shaders so we test shared shader.
   var vShader = vShaderDB[vSource];
@@ -114,15 +114,16 @@ function runOneTest(gl, debugShaders, info) {
     }
   }
 
+  var debugShaders = gl.getExtension('WEBGL_debug_shaders');
   if (debugShaders && vShader) {
-    wtu.addShaderSource(console, vLabel + " translated for driver",
+    wtu.addShaderSource(consoleDiv, vLabel + " translated for driver",
                         debugShaders.getTranslatedShaderSource(vShader));
   }
 
   var fSource = info.fShaderPrep ? info.fShaderPrep(info.fShaderSource) :
     info.fShaderSource;
 
-  wtu.addShaderSource(console, fLabel, fSource);
+  wtu.addShaderSource(consoleDiv, fLabel, fSource);
 
   // Reuse identical shaders so we test shared shader.
   var fShader = fShaderDB[fSource];
@@ -149,7 +150,7 @@ function runOneTest(gl, debugShaders, info) {
   }
 
   if (debugShaders && fShader) {
-    wtu.addShaderSource(console, fLabel + " translated for driver",
+    wtu.addShaderSource(consoleDiv, fLabel + " translated for driver",
                         debugShaders.getTranslatedShaderSource(fShader));
   }
 
@@ -194,7 +195,7 @@ function runOneTest(gl, debugShaders, info) {
   div.className = "testimages";
   wtu.insertImage(div, "result", wtu.makeImage(gl.canvas));
   div.appendChild(document.createElement('br'));
-  console.appendChild(div);
+  consoleDiv.appendChild(div);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
 }
 
@@ -210,8 +211,6 @@ function runTests(shaderInfos) {
     return;
   }
 
-  var debugShaders = gl.getExtension('WEBGL_debug_shaders');
-
   var testIndex = 0;
   var runNextTest = function() {
     if (testIndex == shaderInfos.length) {
@@ -219,7 +218,7 @@ function runTests(shaderInfos) {
       return;
     }
 
-    runOneTest(gl, debugShaders, shaderInfos[testIndex++]);
+    runOneTest(gl, shaderInfos[testIndex++]);
     setTimeout(runNextTest, 1);
   }
   runNextTest();

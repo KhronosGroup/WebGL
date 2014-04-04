@@ -67,7 +67,7 @@ function test() {
   }
 
   wtu.setupUnitQuad(gl);
-  var program = wtu.setupProgram(gl, ["vshader", "fshader"],["a"]);
+  var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["a"], undefined, true);
 
   var setUniformf = function(name, val) {
     var loc = gl.getUniformLocation(program, name);

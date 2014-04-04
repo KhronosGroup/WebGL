@@ -64,9 +64,6 @@ void main() {
 description("Comparing loop index to an uniform in a fragment shader should work.");
 debug("");
 var wtu = WebGLTestUtils;
-
-var console = document.getElementById('console');
-
 function test() {
   var gl = wtu.create3DContext("canvas");
   if (!gl) {
@@ -74,16 +71,7 @@ function test() {
     return;
   }
   wtu.setupUnitQuad(gl);
-
-  var vsSource = wtu.getScript("vshader");
-  var vs = wtu.loadShader(gl, vsSource, gl.VERTEX_SHADER);
-  wtu.addShaderSources(gl, console, 'vertex shader', vs, vsSource);
-  var fsSource = wtu.getScript("fshader");
-  var fs = wtu.loadShader(gl, fsSource, gl.FRAGMENT_SHADER);
-  wtu.addShaderSources(gl, console, 'fragment shader', fs, fsSource);
-
-  var program = wtu.setupProgram(gl, [vs, fs], ["aPosition"]);
-  gl.useProgram(program);
+  var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["aPosition"], undefined, true);
   var uniformLoc = gl.getUniformLocation(program, 'uCount');
   gl.uniform1i(uniformLoc, 5);
   wtu.drawUnitQuad(gl);
