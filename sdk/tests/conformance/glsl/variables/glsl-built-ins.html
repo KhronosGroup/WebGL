@@ -98,7 +98,6 @@ var shaderPairs = [
 ];
 
 wtu.setupUnitQuad(gl);
-var output = document.getElementById("console");
 
 variables.forEach(function(variable) {
   debug("");
@@ -109,9 +108,7 @@ variables.forEach(function(variable) {
   }
   shaderPairs.forEach(function(pair) {
     var shaders = [wtu.replaceParams(pair[0], variable), wtu.replaceParams(pair[1], variable)];
-    wtu.addShaderSource(output, "vertex shader", shaders[0]);
-    wtu.addShaderSource(output, "fragment shader", shaders[1]);
-    var program = wtu.setupProgram(gl, shaders, ["a_position"]);
+    var program = wtu.setupProgram(gl, shaders, ["a_position"], undefined, true);
     wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
   });

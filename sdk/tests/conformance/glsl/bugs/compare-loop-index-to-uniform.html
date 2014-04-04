@@ -71,7 +71,7 @@ function test() {
     return;
   }
   wtu.setupUnitQuad(gl);
-  var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["aPosition"]);
+  var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["aPosition"], undefined, true);
   var uniformLoc = gl.getUniformLocation(program, 'uCount');
   gl.uniform1i(uniformLoc, 5);
   wtu.drawUnitQuad(gl);

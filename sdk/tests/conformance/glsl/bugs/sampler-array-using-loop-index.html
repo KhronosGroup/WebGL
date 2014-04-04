@@ -77,7 +77,7 @@ var program = wtu.setupTexturedQuad(gl);
 
 //------------------------------------------------------------------------------
 var program = wtu.setupProgram(
-    gl, ['vshader', 'fshader'], ['vPosition'], [0]);
+    gl, ['vshader', 'fshader'], ['vPosition'], undefined, true);
 
 for (var ii = 0; ii < 2; ++ii) {
   var loc = gl.getUniformLocation(program, "uni[" + ii + "]");

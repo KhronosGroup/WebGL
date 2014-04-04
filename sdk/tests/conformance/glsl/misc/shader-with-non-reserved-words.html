@@ -633,7 +633,6 @@ description();
 
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext();
-var c = document.getElementById("console");
 
 var badWords = [
   { words: DXWords },
@@ -695,14 +694,11 @@ function testWord(word) {
     var vs = src[ii].vsrc.replace(/\$replaceMe/g, word);
     var fs = src[ii].fsrc.replace(/\$replaceMe/g, word);
 
-    wtu.addShaderSource(c, "vertex shader", vs);
-    wtu.addShaderSource(c, "fragment shader", fs);
-
     var success = true;
     var program = wtu.loadProgram(gl, vs, fs, function(msg) {
       debug(msg);
       success = false;
-    });
+    }, true);
     if (success) {
       testPassed("shader with: '" + word + "' compiled");
     } else {

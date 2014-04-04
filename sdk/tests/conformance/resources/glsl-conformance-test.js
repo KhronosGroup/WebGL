@@ -65,7 +65,7 @@ function runOneTest(gl, info) {
   debug("");
   debug("test: " + passMsg);
 
-  var console = document.getElementById("console");
+  var consoleDiv = document.getElementById("console");
 
   if (info.vShaderSource === undefined) {
     if (info.vShaderId) {
@@ -90,7 +90,7 @@ function runOneTest(gl, info) {
   var vSource = info.vShaderPrep ? info.vShaderPrep(info.vShaderSource) :
     info.vShaderSource;
 
-  wtu.addShaderSource(console, vLabel, vSource);
+  wtu.addShaderSource(consoleDiv, vLabel, vSource);
 
   // Reuse identical shaders so we test shared shader.
   var vShader = vShaderDB[vSource];
@@ -114,10 +114,16 @@ function runOneTest(gl, info) {
     }
   }
 
+  var debugShaders = gl.getExtension('WEBGL_debug_shaders');
+  if (debugShaders && vShader) {
+    wtu.addShaderSource(consoleDiv, vLabel + " translated for driver",
+                        debugShaders.getTranslatedShaderSource(vShader));
+  }
+
   var fSource = info.fShaderPrep ? info.fShaderPrep(info.fShaderSource) :
     info.fShaderSource;
 
-  wtu.addShaderSource(console, fLabel, fSource);
+  wtu.addShaderSource(consoleDiv, fLabel, fSource);
 
   // Reuse identical shaders so we test shared shader.
   var fShader = fShaderDB[fSource];
@@ -141,6 +147,11 @@ function runOneTest(gl, info) {
     if (fShader) {
       fShaderDB[fSource] = fShader;
     }
+  }
+
+  if (debugShaders && fShader) {
+    wtu.addShaderSource(consoleDiv, fLabel + " translated for driver",
+                        debugShaders.getTranslatedShaderSource(fShader));
   }
 
   if (vShader && fShader) {
@@ -184,7 +195,7 @@ function runOneTest(gl, info) {
   div.className = "testimages";
   wtu.insertImage(div, "result", wtu.makeImage(gl.canvas));
   div.appendChild(document.createElement('br'));
-  console.appendChild(div);
+  consoleDiv.appendChild(div);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
 }
 

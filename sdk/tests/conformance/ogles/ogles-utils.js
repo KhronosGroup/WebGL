@@ -563,11 +563,13 @@ function runProgram(programInfo, test, label, callback) {
       var result;
       if (shaders.length == 2) {
         debug("");
-        var console = document.getElementById("console");
-        wtu.addShaderSource(
-            console, label + " vertex shader", source[0], programInfo.vertexShader);
-        wtu.addShaderSource(
-            console, label + " fragment shader", source[1], programInfo.fragmentShader);
+        var consoleDiv = document.getElementById("console");
+        wtu.addShaderSources(
+            gl, consoleDiv, label + " vertex shader", shaders[0], source[0],
+            programInfo.vertexShader);
+        wtu.addShaderSources(
+            gl, consoleDiv, label + " fragment shader", shaders[1], source[1],
+            programInfo.fragmentShader);
         var program = wtu.createProgram(gl, shaders[0], shaders[1]);
         result = drawWithProgram(program, programInfo, test);
       }
