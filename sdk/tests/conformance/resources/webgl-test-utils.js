@@ -723,12 +723,10 @@ var glTypeToArrayBufferType = function(gl, type) {
 };
 
 /**
- * Returns the number of bytes per component for a given WebGL
- * type.
+ * Returns the number of bytes per component for a given WebGL type.
  * @param {!WebGLRenderingContext} gl A WebGLRenderingContext.
- * @param {number} type The WebGL type (eg, gl.UNSIGNED_BYTE)
- * @return {!Constructor} The ArrayBuffer constructor that
- *      corresponds to the given type.
+ * @param {GLenum} type The WebGL type (eg, gl.UNSIGNED_BYTE)
+ * @return {number} The number of bytes per component.
  */
 var getBytesPerComponent = function(gl, type) {
   switch (type) {

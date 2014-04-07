@@ -81,15 +81,12 @@ function generateTest(pixelFormat, pixelType, prologue) {
       setCanvasToRedGreen(ctx);
     }
 
-    function runOneIteration(canvas, useTexSubImage2D, flipY, topColor, bottomColor, opt_texture, opt_fontTest)
+    function runOneIteration(canvas, useTexSubImage2D, flipY, opt_texture, opt_fontTest)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
               ' with flipY=' + flipY + ' canvas size: ' + canvas.width + 'x' + canvas.height +
               (opt_fontTest ? " with fonts" : " with red-green"));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        // Disable any writes to the alpha channel
-        // No idea why this was here. If it's important put it back and leave a comment as to why
-//        gl.colorMask(1, 1, 1, 0);
         if (!opt_texture) {
             var texture = gl.createTexture();
             // Bind the texture to texture unit 0
@@ -119,12 +116,13 @@ function generateTest(pixelFormat, pixelType, prologue) {
         // Draw the triangles
         wtu.clearAndDrawUnitQuad(gl, [0, 255, 0, 255]);
 
+        var width = gl.canvas.width;
+        var height = gl.canvas.height;
+        var halfHeight = Math.floor(height / 2);
+        var top = flipY ? 0 : (height - halfHeight);
+        var bottom = flipY ? (height - halfHeight) : 0;
+
         if (opt_fontTest) {
-            var width = gl.canvas.width;
-            var height = gl.canvas.height;
-            var halfHeight = Math.floor(height / 2);
-            var top = flipY ? 0 : (height - halfHeight);
-            var bottom = flipY ? (height - halfHeight) : 0;
             // check half is a solid color.
             wtu.checkCanvasRect(
                   gl, 0, top, width, halfHeight,
@@ -142,17 +140,15 @@ function generateTest(pixelFormat, pixelType, prologue) {
                   },
                   debug);
         } else {
-            // Check a few pixels near the top and bottom and make sure they have
-            // the right color.
-            var width = gl.canvas.width;
-            var height = gl.canvas.height;
-            var halfHeight = Math.floor(height / 2);
-            debug("Checking bottom");
-            wtu.checkCanvasRect(gl, 0, 0, width, halfHeight, bottomColor,
-                                "shouldBe " + bottomColor);
-            debug("Checking top");
-            wtu.checkCanvasRect(gl, 0, height - halfHeight, width, halfHeight, topColor,
-                                "shouldBe " + topColor);
+            // Check the top and bottom halves and make sure they have the right color.
+            var red = [255, 0, 0];
+            var green = [0, 255, 0];
+            debug("Checking " + (flipY ? "top" : "bottom"));
+            wtu.checkCanvasRect(gl, 0, bottom, width, halfHeight, red,
+                                "shouldBe " + red);
+            debug("Checking " + (flipY ? "bottom" : "top"));
+            wtu.checkCanvasRect(gl, 0, top, width, halfHeight, green,
+                                "shouldBe " + green);
         }
 
         if (false) {
@@ -168,25 +164,23 @@ function generateTest(pixelFormat, pixelType, prologue) {
     function runTest(canvas)
     {
         var ctx = canvas.getContext("2d");
-        var red = [255, 0, 0];
-        var green = [0, 255, 0];
 
         var count = 4;
         var caseNdx = 0;
 
         var cases = [
-            { sub: false, flipY: true,  top: red,   bottom: green, font: false, init: setCanvasTo1x2 },
-            { sub: false, flipY: false, top: green, bottom: red,   font: false },
-            { sub: true,  flipY: true,  top: red,   bottom: green, font: false },
-            { sub: true,  flipY: false, top: green, bottom: red,   font: false },
-            { sub: false, flipY: true,  top: red,   bottom: green, font: false, init: setCanvasTo257x257 },
-            { sub: false, flipY: false, top: green, bottom: red,   font: false },
-            { sub: true,  flipY: true,  top: red,   bottom: green, font: false },
-            { sub: true,  flipY: false, top: green, bottom: red,   font: false },
-            { sub: false, flipY: true,  top: red,   bottom: green, font: true, init: drawTextInCanvas },
-            { sub: false, flipY: false, top: green, bottom: red,   font: true },
-            { sub: true,  flipY: true,  top: red,   bottom: green, font: true },
-            { sub: true,  flipY: false, top: green, bottom: red,   font: true },
+            { sub: false, flipY: true,  font: false, init: setCanvasTo1x2 },
+            { sub: false, flipY: false, font: false },
+            { sub: true,  flipY: true,  font: false },
+            { sub: true,  flipY: false, font: false },
+            { sub: false, flipY: true,  font: false, init: setCanvasTo257x257 },
+            { sub: false, flipY: false, font: false },
+            { sub: true,  flipY: true,  font: false },
+            { sub: true,  flipY: false, font: false },
+            { sub: false, flipY: true,  font: true, init: drawTextInCanvas },
+            { sub: false, flipY: false, font: true },
+            { sub: true,  flipY: true,  font: true },
+            { sub: true,  flipY: false, font: true },
         ];
 
         var texture;
@@ -195,7 +189,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
             if (c.init) {
               c.init(ctx);
             }
-            texture = runOneIteration(canvas, c.sub, c.flipY, c.top, c.bottom, texture, c.font);
+            texture = runOneIteration(canvas, c.sub, c.flipY, texture, c.font);
             // for the first 2 iterations always make a new texture.
             if (count > 2) {
               texture = undefined;
