@@ -75,6 +75,8 @@ void main(void) {
 </script>
 
 <script>
+"use strict";
+
 description();
 debug("");
 debug("If things are working correctly, then there will be a green square.");
@@ -86,19 +88,19 @@ var canvas = document.getElementById("repro");
 var gl = wtu.create3DContext(canvas);
 if (!gl) {
   testFailed("context does not exist");
-  return;
-}
-gl.clearColor(0.0, 0.0, 0.0, 1.0);
-gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-wtu.setupUnitQuad(gl);
-var program = wtu.setupProgram(gl, ["shader-vs", "shader-fs"], ["pos"], undefined, true);
-wtu.drawUnitQuad(gl);
-wtu.checkCanvasRect(gl, 128, 128, 128, 128, [ 0, 255, 0, 255 ], "should be green", 1);
+} else {
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  wtu.setupUnitQuad(gl);
+  var program = wtu.setupProgram(gl, ["shader-vs", "shader-fs"], ["pos"], undefined, true);
+  wtu.drawUnitQuad(gl);
+  wtu.checkCanvasRect(gl, 128, 128, 128, 128, [ 0, 255, 0, 255 ], "should be green", 1);
 
-gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-var programMutable = wtu.setupProgram(gl, ["shader-vs", "shader-fs-mutable"], ["pos"]);
-wtu.drawUnitQuad(gl);
-wtu.checkCanvasRect(gl, 128, 128, 128, 128, [ 0, 255, 0, 255 ], "should be green", 1);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  var programMutable = wtu.setupProgram(gl, ["shader-vs", "shader-fs-mutable"], ["pos"]);
+  wtu.drawUnitQuad(gl);
+  wtu.checkCanvasRect(gl, 128, 128, 128, 128, [ 0, 255, 0, 255 ], "should be green", 1);
+}
 
 var successfullyParsed = true;
 </script>
