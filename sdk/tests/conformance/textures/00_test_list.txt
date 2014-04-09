@@ -47,6 +47,7 @@ texture-size-cube-maps.html
 --min-version 1.0.2 texture-sub-image-cube-maps.html
 texture-transparent-pixels-initialized.html
 --min-version 1.0.2 texture-upload-cube-maps.html
+--min-version 1.0.3 texture-upload-size.html
 --min-version 1.0.2 mipmap-fbo.html
 --min-version 1.0.3 texture-fakeblack.html
 

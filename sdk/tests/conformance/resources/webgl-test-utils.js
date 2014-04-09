@@ -693,14 +693,14 @@ var setupIndexedQuadWithOptions = function (gl, options) {
 };
 
 /**
- * Returns the constructor for an ArrayBuffer that
- * corresponds to the given WebGL type.
+ * Returns the constructor for a typed array that corresponds to the given
+ * WebGL type.
  * @param {!WebGLRenderingContext} gl A WebGLRenderingContext.
  * @param {number} type The WebGL type (eg, gl.UNSIGNED_BYTE)
- * @return {!Constructor} The ArrayBuffer constructor that
+ * @return {!Constructor} The typed array constructor that
  *      corresponds to the given type.
  */
-var glTypeToArrayBufferType = function(gl, type) {
+var glTypeToTypedArrayType = function(gl, type) {
   switch (type) {
     case gl.BYTE:
       return window.Int8Array;
@@ -723,12 +723,10 @@ var glTypeToArrayBufferType = function(gl, type) {
 };
 
 /**
- * Returns the number of bytes per component for a given WebGL
- * type.
+ * Returns the number of bytes per component for a given WebGL type.
  * @param {!WebGLRenderingContext} gl A WebGLRenderingContext.
- * @param {number} type The WebGL type (eg, gl.UNSIGNED_BYTE)
- * @return {!Constructor} The ArrayBuffer constructor that
- *      corresponds to the given type.
+ * @param {GLenum} type The WebGL type (eg, gl.UNSIGNED_BYTE)
+ * @return {number} The number of bytes per component.
  */
 var getBytesPerComponent = function(gl, type) {
   switch (type) {
@@ -746,6 +744,42 @@ var getBytesPerComponent = function(gl, type) {
       return 4;
     default:
       throw 'unknown gl type ' + glEnumToString(gl, type);
+  }
+};
+
+/**
+ * Returns the number of typed array elements per pixel for a given WebGL
+ * format/type combination. The corresponding typed array type can be determined
+ * by calling glTypeToTypedArrayType.
+ * @param {!WebGLRenderingContext} gl A WebGLRenderingContext.
+ * @param {GLenum} format The WebGL format (eg, gl.RGBA)
+ * @param {GLenum} type The WebGL type (eg, gl.UNSIGNED_BYTE)
+ * @return {number} The number of typed array elements per pixel.
+ */
+var getTypedArrayElementsPerPixel = function(gl, format, type) {
+  switch (type) {
+    case gl.UNSIGNED_SHORT_5_6_5:
+    case gl.UNSIGNED_SHORT_4_4_4_4:
+    case gl.UNSIGNED_SHORT_5_5_5_1:
+      return 1;
+    case gl.UNSIGNED_BYTE:
+      break;
+    default:
+      throw 'not a gl type for color information ' + glEnumToString(gl, type);
+  }
+
+  switch (format) {
+    case gl.RGBA:
+      return 4;
+    case gl.RGB:
+      return 3;
+    case gl.LUMINANCE_ALPHA:
+      return 2;
+    case gl.LUMINANCE:
+    case gl.ALPHA:
+      return 1;
+    default:
+      throw 'unknown gl format ' + glEnumToString(gl, format);
   }
 };
 
@@ -771,7 +805,7 @@ var fillTexture = function(gl, tex, width, height, color, opt_level, opt_format,
   var paddedRowSize = Math.floor((rowSize + pack - 1) / pack) * pack;
   var size = rowSize + (height - 1) * paddedRowSize;
   size = Math.floor((size + bytesPerComponent - 1) / bytesPerComponent) * bytesPerComponent;
-  var buf = new (glTypeToArrayBufferType(gl, opt_type))(size);
+  var buf = new (glTypeToTypedArrayType(gl, opt_type))(size);
   for (var yy = 0; yy < height; ++yy) {
     var off = yy * paddedRowSize;
     for (var xx = 0; xx < width; ++xx) {
@@ -1117,6 +1151,44 @@ var loadTexture = function(gl, url, callback) {
     };
     image.src = url;
     return texture;
+};
+
+/**
+ * Checks whether the bound texture has expected dimensions. One corner pixel
+ * of the texture will be changed as a side effect.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {!WebGLTexture} texture The texture to check.
+ * @param {number} width Expected width.
+ * @param {number} height Expected height.
+ * @param {GLenum} opt_format The texture's format. Defaults to RGBA.
+ * @param {GLenum} opt_type The texture's type. Defaults to UNSIGNED_BYTE.
+ */
+var checkTextureSize = function(gl, width, height, opt_format, opt_type) {
+  opt_format = opt_format || gl.RGBA;
+  opt_type = opt_type || gl.UNSIGNED_BYTE;
+
+  var numElements = getTypedArrayElementsPerPixel(gl, opt_format, opt_type);
+  var buf = new (glTypeToTypedArrayType(gl, opt_type))(numElements);
+
+  var errors = 0;
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, width - 1, height - 1, 1, 1, opt_format, opt_type, buf);
+  if (gl.getError() != gl.NO_ERROR) {
+    testFailed("Texture was smaller than the expected size " + width + "x" + height);
+    ++errors;
+  }
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, width - 1, height, 1, 1, opt_format, opt_type, buf);
+  if (gl.getError() == gl.NO_ERROR) {
+    testFailed("Texture was taller than " + height);
+    ++errors;
+  }
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, width, height - 1, 1, 1, opt_format, opt_type, buf);
+  if (gl.getError() == gl.NO_ERROR) {
+    testFailed("Texture was wider than " + width);
+    ++errors;
+  }
+  if (errors == 0) {
+    testPassed("Texture had the expected size " + width + "x" + height);
+  }
 };
 
 /**
@@ -2500,6 +2572,7 @@ return {
   checkCanvas: checkCanvas,
   checkCanvasRect: checkCanvasRect,
   checkCanvasRectColor: checkCanvasRectColor,
+  checkTextureSize: checkTextureSize,
   clipToRange: clipToRange,
   createColoredTexture: createColoredTexture,
   createProgram: createProgram,
@@ -2519,13 +2592,14 @@ return {
   getPrefixedProperty: getPrefixedProperty,
   getScript: getScript,
   getSupportedExtensionWithKnownPrefixes: getSupportedExtensionWithKnownPrefixes,
+  getTypedArrayElementsPerPixel: getTypedArrayElementsPerPixel,
   getUrlArguments: getUrlArguments,
   getUrlOptions: getUrlOptions,
   getAttribMap: getAttribMap,
   getUniformMap: getUniformMap,
   glEnumToString: glEnumToString,
   glErrorShouldBe: glErrorShouldBe,
-  glTypeToArrayBufferType: glTypeToArrayBufferType,
+  glTypeToTypedArrayType: glTypeToTypedArrayType,
   hasAttributeCaseInsensitive: hasAttributeCaseInsensitive,
   insertImage: insertImage,
   loadImageAsync: loadImageAsync,
