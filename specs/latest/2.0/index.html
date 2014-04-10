@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 26 September 2013</h2>
+    <h2 class="no-toc">Editor's Draft 10 April 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -546,7 +546,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES          = 0x8A43;
   const GLenum UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER     = 0x8A44;
   const GLenum UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER   = 0x8A46;
-  const GLenum INVALID_INDEX                                 = 0xFFFFFFFFu; /* TODO: valid GLenum? */
+  const GLenum INVALID_INDEX                                 = 0xFFFFFFFF;
   const GLenum MAX_VERTEX_OUTPUT_COMPONENTS                  = 0x9122;
   const GLenum MAX_FRAGMENT_INPUT_COMPONENTS                 = 0x9125;
   const GLenum MAX_SERVER_WAIT_TIMEOUT                       = 0x9111;
@@ -563,7 +563,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum CONDITION_SATISFIED                           = 0x911C;
   const GLenum WAIT_FAILED                                   = 0x911D;
   const GLenum SYNC_FLUSH_COMMANDS_BIT                       = 0x00000001;
-  const GLenum TIMEOUT_IGNORED                               = 0xFFFFFFFFFFFFFFFFull;  /* TODO: valid GLenum? */
   const GLenum VERTEX_ATTRIB_ARRAY_DIVISOR                   = 0x88FE;
   const GLenum ANY_SAMPLES_PASSED                            = 0x8C2F;
   const GLenum ANY_SAMPLES_PASSED_CONSERVATIVE               = 0x8D6A;
@@ -594,6 +593,8 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum MAX_ELEMENT_INDEX                             = 0x8D6B;
   const GLenum NUM_SAMPLE_COUNTS                             = 0x9380;
   const GLenum TEXTURE_IMMUTABLE_LEVELS                      = 0x82DF;
+
+  const GLuint64 TIMEOUT_IGNORED                             = 0xFFFFFFFFFFFFFFFF;
 
   /* Buffer objects */
   void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
