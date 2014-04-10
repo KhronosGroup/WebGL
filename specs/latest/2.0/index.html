@@ -876,6 +876,32 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h4>Framebuffer objects</h4>
 
     <dl class="methods">
+      <dt class="idl-code">any getFramebufferAttachmentParameter(GLenum target, GLenum attachment,
+                                        GLenum pname)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.13">OpenGL ES 3.0.2 &sect;6.1.13</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetFramebufferAttachmentParameteriv.xml">glGetFramebufferAttachmentParameteriv</a>)</span>
+      </dt>
+      <dd>
+          Return the value for the passed pname given the passed target and attachment. The type
+          returned is the natural type for the requested pname, as given in the following table:
+          <table class="foo">
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_BLUE_SIZE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING</td><td>Genum</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE</td><td>Genum</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_GREEN_SIZE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_OBJECT_NAME</td><td>WebGLRenderbuffer or WebGLTexture</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</td><td>GLenum</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_RED_SIZE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER</td><td>Gint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL</td><td>GLint</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>If an OpenGL error is generated, returns null.</p>
+      </dd>
       <dt>
         <p class="idl-code">void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
           <span class="gl-spec">
