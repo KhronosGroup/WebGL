@@ -264,7 +264,7 @@ function go() {
             debug(infolog);
         if (gl.getError() != gl.NO_ERROR)
             assertMsg(false, "unexpected error in getProgramParameter()");
-        
+
         if (testInvalidEnums) {
             // Verify that constants removed from the WebGL spec generate INVALID_ENUM errors
             assertMsg(gl.getProgramParameter(prog, desktopGL['INFO_LOG_LENGTH']) === null, "invalid call to getProgramParameter should return null");
@@ -308,6 +308,10 @@ function go() {
     gl.vertexAttrib3f(1, 1.0, 0.0, 0.0);
 
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors at this point #2");
+
+    gl.useProgram(null);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "drawing with a null program should generate INVALID_OPERATION");
 
     gl.useProgram(progGood1);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
