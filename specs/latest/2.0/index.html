@@ -28,7 +28,7 @@
     <!--end-logo-->
     
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 26 September 2013</h2>
+    <h2 class="no-toc">Editor's Draft 10 April 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -332,8 +332,8 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum CURRENT_QUERY                                 = 0x8865;
   const GLenum QUERY_RESULT                                  = 0x8866;
   const GLenum QUERY_RESULT_AVAILABLE                        = 0x8867;
-  const GLenum BUFFER_MAPPED                                 = 0x88BC;
-  const GLenum BUFFER_MAP_POINTER                            = 0x88BD;
+  const GLenum BUFFER_MAPPED                                 = 0x88BC; /* TODO: Depends on mapBufferRange */
+  const GLenum BUFFER_MAP_POINTER                            = 0x88BD; /* TODO: Depends on mapBufferRange */
   const GLenum STREAM_READ                                   = 0x88E1;
   const GLenum STREAM_COPY                                   = 0x88E2;
   const GLenum STATIC_READ                                   = 0x88E5;
@@ -434,9 +434,9 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum UNSIGNED_INT_SAMPLER_3D                       = 0x8DD3;
   const GLenum UNSIGNED_INT_SAMPLER_CUBE                     = 0x8DD4;
   const GLenum UNSIGNED_INT_SAMPLER_2D_ARRAY                 = 0x8DD7;
-  const GLenum BUFFER_ACCESS_FLAGS                           = 0x911F;
-  const GLenum BUFFER_MAP_LENGTH                             = 0x9120;
-  const GLenum BUFFER_MAP_OFFSET                             = 0x9121;
+  // const GLenum BUFFER_ACCESS_FLAGS                           = 0x911F; /* TODO: Depends on mapBufferRange */
+  // const GLenum BUFFER_MAP_LENGTH                             = 0x9120; /* TODO: Depends on mapBufferRange */
+  // const GLenum BUFFER_MAP_OFFSET                             = 0x9121; /* TODO: Depends on mapBufferRange */
   const GLenum DEPTH_COMPONENT32F                            = 0x8CAC;
   const GLenum DEPTH32F_STENCIL8                             = 0x8CAD;
   const GLenum FLOAT_32_UNSIGNED_INT_24_8_REV                = 0x8DAD;
@@ -480,12 +480,12 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum FRAMEBUFFER_INCOMPLETE_MULTISAMPLE            = 0x8D56;
   const GLenum MAX_SAMPLES                                   = 0x8D57;
   const GLenum HALF_FLOAT                                    = 0x140B;
-  const GLenum MAP_READ_BIT                                  = 0x0001;
-  const GLenum MAP_WRITE_BIT                                 = 0x0002;
-  const GLenum MAP_INVALIDATE_RANGE_BIT                      = 0x0004;
-  const GLenum MAP_INVALIDATE_BUFFER_BIT                     = 0x0008;
-  const GLenum MAP_FLUSH_EXPLICIT_BIT                        = 0x0010;
-  const GLenum MAP_UNSYNCHRONIZED_BIT                        = 0x0020;
+  // const GLenum MAP_READ_BIT                                  = 0x0001; /* TODO: Depends on mapBufferRange */
+  // const GLenum MAP_WRITE_BIT                                 = 0x0002; /* TODO: Depends on mapBufferRange */
+  // const GLenum MAP_INVALIDATE_RANGE_BIT                      = 0x0004; /* TODO: Depends on mapBufferRange */
+  // const GLenum MAP_INVALIDATE_BUFFER_BIT                     = 0x0008; /* TODO: Depends on mapBufferRange */
+  // const GLenum MAP_FLUSH_EXPLICIT_BIT                        = 0x0010; /* TODO: Depends on mapBufferRange */
+  // const GLenum MAP_UNSYNCHRONIZED_BIT                        = 0x0020; /* TODO: Depends on mapBufferRange */
   const GLenum RG                                            = 0x8227;
   const GLenum RG_INTEGER                                    = 0x8228;
   const GLenum R8                                            = 0x8229;
@@ -546,7 +546,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES          = 0x8A43;
   const GLenum UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER     = 0x8A44;
   const GLenum UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER   = 0x8A46;
-  const GLenum INVALID_INDEX                                 = 0xFFFFFFFFu; /* TODO: valid GLenum? */
+  const GLenum INVALID_INDEX                                 = 0xFFFFFFFF;
   const GLenum MAX_VERTEX_OUTPUT_COMPONENTS                  = 0x9122;
   const GLenum MAX_FRAGMENT_INPUT_COMPONENTS                 = 0x9125;
   const GLenum MAX_SERVER_WAIT_TIMEOUT                       = 0x9111;
@@ -563,7 +563,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum CONDITION_SATISFIED                           = 0x911C;
   const GLenum WAIT_FAILED                                   = 0x911D;
   const GLenum SYNC_FLUSH_COMMANDS_BIT                       = 0x00000001;
-  const GLenum TIMEOUT_IGNORED                               = 0xFFFFFFFFFFFFFFFFull;  /* TODO: valid GLenum? */
   const GLenum VERTEX_ATTRIB_ARRAY_DIVISOR                   = 0x88FE;
   const GLenum ANY_SAMPLES_PASSED                            = 0x8C2F;
   const GLenum ANY_SAMPLES_PASSED_CONSERVATIVE               = 0x8D6A;
@@ -594,6 +593,8 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum MAX_ELEMENT_INDEX                             = 0x8D6B;
   const GLenum NUM_SAMPLE_COUNTS                             = 0x9380;
   const GLenum TEXTURE_IMMUTABLE_LEVELS                      = 0x82DF;
+
+  const GLuint64 TIMEOUT_IGNORED                             = 0xFFFFFFFFFFFFFFFF;
 
   /* Buffer objects */
   void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
@@ -875,6 +876,32 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h4>Framebuffer objects</h4>
 
     <dl class="methods">
+      <dt class="idl-code">any getFramebufferAttachmentParameter(GLenum target, GLenum attachment,
+                                        GLenum pname)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.13">OpenGL ES 3.0.2 &sect;6.1.13</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetFramebufferAttachmentParameteriv.xml">glGetFramebufferAttachmentParameteriv</a>)</span>
+      </dt>
+      <dd>
+          Return the value for the passed pname given the passed target and attachment. The type
+          returned is the natural type for the requested pname, as given in the following table:
+          <table class="foo">
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_BLUE_SIZE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING</td><td>Genum</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE</td><td>Genum</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_GREEN_SIZE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_OBJECT_NAME</td><td>WebGLRenderbuffer or WebGLTexture</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</td><td>GLenum</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_RED_SIZE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE</td><td>GLint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER</td><td>Gint</td></tr>
+              <tr><td>FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL</td><td>GLint</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>If an OpenGL error is generated, returns null.</p>
+      </dd>
       <dt>
         <p class="idl-code">void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
           <span class="gl-spec">
@@ -923,6 +950,35 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+    </dl>
+
+<!-- ======================================================================================================= -->
+
+    <h4>Renderbuffer objects</h4>
+
+    <dl class="methods">
+      <dt class="idl-code">any getRenderbufferParameter(GLenum target, GLenum pname)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.14">OpenGL ES 2.0 &sect;6.1.14</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetRenderbufferParameteriv.xml">glGetRenderbufferParameteriv</a>)</span>
+      </dt>
+      <dd>
+          Return the value for the passed pname given the passed target. The type returned is the natural 
+          type for the requested pname, as given in the following table:
+          <table class="foo">
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>RENDERBUFFER_WIDTH</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_HEIGHT</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_INTERNAL_FORMAT</td><td>GLenum</td></tr>
+              <tr><td>RENDERBUFFER_RED_SIZE</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_GREEN_SIZE</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_BLUE_SIZE</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_ALPHA_SIZE</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_DEPTH_SIZE</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_SAMPLES</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_STENCIL_SIZE</td><td>GLint</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>If an OpenGL error is generated, returns null.</p>
+      </dd>
       <dt>
         <p class="idl-code">void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
           <span class="gl-spec">
@@ -937,9 +993,66 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <h4>Texture objects</h4>
 
+    <dl class="methods">
+      <dt class="idl-code">any getTexParameter(GLenum target, GLenum pname)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.3">OpenGL ES 3.0.2 &sect;6.1.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetTexParameter.xml">man page</a>)</span>
+      </dt>
+      <dd>
+          Return the value for the passed pname given the passed target. The type returned is the natural type for the
+          requested pname, as given in the following table:
+          <table class="foo">
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>TEXTURE_BASE_LEVEL</td><td>GLint</td></tr>
+              <tr><td>TEXTURE_COMPARE_FUNC</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_COMPARE_MODE</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_MAG_FILTER</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_MAX_LEVEL</td><td>GLint</td></tr>
+              <tr><td>TEXTURE_MAX_LOD</td><td>GLfloat</td></tr>
+              <tr><td>TEXTURE_MIN_FILTER</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_MIN_LOD</td><td>GLfloat</td></tr>
+              <tr><td>TEXTURE_SWIZZLE_A</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_SWIZZLE_B</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_SWIZZLE_G</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_SWIZZLE_R</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_WRAP_R</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_WRAP_S</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_WRAP_T</td><td>GLenum</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an
+          <code>INVALID_OPERATION</code> error.</p>
+          <p>If an OpenGL error is generated, returns null.</p>
+      </dd>
+    </dl>
+
 <!-- ======================================================================================================= -->
 
     <h4>Programs and Shaders</h4>
+
+    <dl class="methods">
+      <dt class="idl-code">any getProgramParameter(WebGLProgram? program, GLenum pname)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.2 &sect;6.1.12</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetProgramiv.xml">man page</a>)</span>
+      </dt>
+      <dd>
+          Return the value for the passed pname given the passed program. The type returned is the natural
+          type for the requested pname, as given in the following table:
+          <table class="foo">
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>DELETE_STATUS</td><td>GLboolean</td></tr>
+              <tr><td>LINK_STATUS</td><td>GLboolean</td></tr>
+              <tr><td>VALIDATE_STATUS</td><td>GLboolean</td></tr>
+              <tr><td>ATTACHED_SHADERS</td><td>GLint</td></tr>
+              <tr><td>ACTIVE_ATTRIBUTES</td><td>GLint</td></tr>
+              <tr><td>ACTIVE_UNIFORMS</td><td>GLint</td></tr>
+              <tr><td>TRANSFORM_FEEDBACK_BUFFER_MODE</td><td>GLenum</td></tr>
+              <tr><td>TRANSFORM_FEEDBACK_VARYINGS</td><td>GLint</td></tr>
+              <tr><td>ACTIVE_UNIFORM_BLOCKS</td><td>GLint</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+          <p>Returns null if any OpenGL errors are generated during the execution of this
+          function.</p>
+      </dd>
+    </dl>
 
 <!-- ======================================================================================================= -->
 
