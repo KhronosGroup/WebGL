@@ -1029,6 +1029,31 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <h4>Programs and Shaders</h4>
 
+    <dl class="methods">
+      <dt class="idl-code">any getProgramParameter(WebGLProgram? program, GLenum pname)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.2 &sect;6.1.12</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetProgramiv.xml">man page</a>)</span>
+      </dt>
+      <dd>
+          Return the value for the passed pname given the passed program. The type returned is the natural
+          type for the requested pname, as given in the following table:
+          <table class="foo">
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>DELETE_STATUS</td><td>GLboolean</td></tr>
+              <tr><td>LINK_STATUS</td><td>GLboolean</td></tr>
+              <tr><td>VALIDATE_STATUS</td><td>GLboolean</td></tr>
+              <tr><td>ATTACHED_SHADERS</td><td>GLint</td></tr>
+              <tr><td>ACTIVE_ATTRIBUTES</td><td>GLint</td></tr>
+              <tr><td>ACTIVE_UNIFORMS</td><td>GLint</td></tr>
+              <tr><td>TRANSFORM_FEEDBACK_BUFFER_MODE</td><td>GLenum</td></tr>
+              <tr><td>TRANSFORM_FEEDBACK_VARYINGS</td><td>GLint</td></tr>
+              <tr><td>ACTIVE_UNIFORM_BLOCKS</td><td>GLint</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+          <p>Returns null if any OpenGL errors are generated during the execution of this
+          function.</p>
+      </dd>
+    </dl>
+
 <!-- ======================================================================================================= -->
 
     <h4>Uniforms and attributes</h4>
