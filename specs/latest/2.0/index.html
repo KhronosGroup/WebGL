@@ -993,6 +993,38 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <h4>Texture objects</h4>
 
+    <dl class="methods">
+      <dt class="idl-code">any getTexParameter(GLenum target, GLenum pname)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.3">OpenGL ES 3.0.2 &sect;6.1.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetTexParameter.xml">man page</a>)</span>
+      </dt>
+      <dd>
+          Return the value for the passed pname given the passed target. The type returned is the natural type for the
+          requested pname, as given in the following table:
+          <table class="foo">
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>TEXTURE_BASE_LEVEL</td><td>GLint</td></tr>
+              <tr><td>TEXTURE_COMPARE_FUNC</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_COMPARE_MODE</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_MAG_FILTER</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_MAX_LEVEL</td><td>GLint</td></tr>
+              <tr><td>TEXTURE_MAX_LOD</td><td>GLfloat</td></tr>
+              <tr><td>TEXTURE_MIN_FILTER</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_MIN_LOD</td><td>GLfloat</td></tr>
+              <tr><td>TEXTURE_SWIZZLE_A</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_SWIZZLE_B</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_SWIZZLE_G</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_SWIZZLE_R</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_WRAP_R</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_WRAP_S</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_WRAP_T</td><td>GLenum</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an
+          <code>INVALID_OPERATION</code> error.</p>
+          <p>If an OpenGL error is generated, returns null.</p>
+      </dd>
+    </dl>
+
 <!-- ======================================================================================================= -->
 
     <h4>Programs and Shaders</h4>
