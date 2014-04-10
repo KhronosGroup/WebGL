@@ -26,7 +26,7 @@
         </p>
     </div>
     <!--end-logo-->
-    
+
     <h1>WebGL 2 Specification</h1>
     <h2 class="no-toc">Editor's Draft 10 April 2014</h2>
     <dl>
@@ -1126,6 +1126,31 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 <!-- ======================================================================================================= -->
 
     <h4>Uniforms and attributes</h4>
+
+    <dl class="methods">
+        <dt class="idl-code">any getVertexAttrib(GLuint index, GLenum pname)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.2 &sect;6.1.12</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetVertexAttrib.xml">man page</a>)</span>
+        </dt>
+        <dd>
+            Return the information requested in pname about the vertex attribute at the passed index. The
+            type returned is dependent on the information requested, as shown in the following table:
+            <table class="foo">
+                <tr><th>pname</th><th>returned type</th></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_ENABLED</td><td>GLboolean</td></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_SIZE</td><td>GLint</td></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_STRIDE</td><td>GLint</td></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_TYPE</td><td>GLenum</td></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_NORMALIZED</td><td>GLboolean</td></tr>
+                <tr><td>CURRENT_VERTEX_ATTRIB</td><td>Float32Array (with 4 elements)</td></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_INTEGER</td><td>GLboolean</td></tr>
+                <tr><td>VERTEX_ATTRIB_ARRAY_DIVISOR</td><td>GLint</td></tr>
+            </table>
+            <p>All queries returning sequences or typed arrays return a new object each time.</p>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+            <p>If an OpenGL error is generated, returns null.</p>
+        </dd>
+    </dl>
 
 <!-- ======================================================================================================= -->
 
