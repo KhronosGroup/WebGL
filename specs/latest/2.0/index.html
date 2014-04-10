@@ -950,6 +950,35 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+    </dl>
+
+<!-- ======================================================================================================= -->
+
+    <h4>Renderbuffer objects</h4>
+
+    <dl class="methods">
+      <dt class="idl-code">any getRenderbufferParameter(GLenum target, GLenum pname)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.14">OpenGL ES 2.0 &sect;6.1.14</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetRenderbufferParameteriv.xml">glGetRenderbufferParameteriv</a>)</span>
+      </dt>
+      <dd>
+          Return the value for the passed pname given the passed target. The type returned is the natural 
+          type for the requested pname, as given in the following table:
+          <table class="foo">
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>RENDERBUFFER_WIDTH</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_HEIGHT</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_INTERNAL_FORMAT</td><td>GLenum</td></tr>
+              <tr><td>RENDERBUFFER_RED_SIZE</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_GREEN_SIZE</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_BLUE_SIZE</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_ALPHA_SIZE</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_DEPTH_SIZE</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_SAMPLES</td><td>GLint</td></tr>
+              <tr><td>RENDERBUFFER_STENCIL_SIZE</td><td>GLint</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>If an OpenGL error is generated, returns null.</p>
+      </dd>
       <dt>
         <p class="idl-code">void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
           <span class="gl-spec">
