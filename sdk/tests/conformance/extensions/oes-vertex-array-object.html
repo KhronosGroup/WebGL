@@ -433,10 +433,12 @@ function runDrawTests() {
     verifyDraw(1, 0.5);
     ext.bindVertexArrayOES(vao1);
     verifyDraw(2, 0.25);
-    
-    ext.bindVertexArrayOES(null);
+
+    // Verify bound VAO after delete
     ext.deleteVertexArrayOES(vao0);
+    verifyDraw(3, 0.25);
     ext.deleteVertexArrayOES(vao1);
+    verifyDraw(4, 1);
 
     // Disable global vertex attrib array
     gl.disableVertexAttribArray(opt_positionLocation);
