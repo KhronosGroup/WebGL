@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 10 April 2014</h2>
+    <h2 class="no-toc">Editor's Draft 29 May 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -770,7 +770,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void samplerParameterfv(WebGLSampler? sampler, GLenum pname, Float32Array param);
   void samplerParameterfv(WebGLSampler? sampler, GLenum pname, sequence&lt;GLfloat&gt; param);
 
-  /* TODO: document return type */
   any getSamplerParameter(WebGLSampler? sampler, GLenum pname);
 
   /* Sync objects */
@@ -920,16 +919,6 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h4>Buffer objects</h4>
 
     <dl class="methods">
-      <!--
-      <dt>
-        <p class="idl-code">
-          <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-2.9.5">OpenGL ES 3.0 &sect;2.9.5</a>,
-            <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glCopyBufferSubData.xml" class="nonnormative">man page</a>)
-          </span>
-        </p>
-      </dt>
-      -->
       <dt>
         <p class="idl-code">void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
           <span class="gl-spec">
@@ -995,6 +984,18 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+          Return the value for the passed pname given the passed target and internalformat. The type
+          returned is given in the following table:
+          <table>
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>NUM_SAMPLE_COUNTS</td><td>GLint</td></tr>
+              <tr><td>SAMPLES</td><td>Int32Array</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>If an OpenGL error is generated, returns null.</p>
+          <p>Each query for SAMPLES returns a new typed array object instance.</p>
+      </dd>
       <dt>
         <p class="idl-code">void invalidateFramebuffer(GLenum target, sequence&lt;GLenum&gt; attachments);
           <span class="gl-spec">
@@ -1142,10 +1143,15 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
                 <tr><td>VERTEX_ATTRIB_ARRAY_STRIDE</td><td>GLint</td></tr>
                 <tr><td>VERTEX_ATTRIB_ARRAY_TYPE</td><td>GLenum</td></tr>
                 <tr><td>VERTEX_ATTRIB_ARRAY_NORMALIZED</td><td>GLboolean</td></tr>
-                <tr><td>CURRENT_VERTEX_ATTRIB</td><td>Float32Array (with 4 elements)</td></tr>
+                <tr><td>CURRENT_VERTEX_ATTRIB</td><td>One of Float32Array, Int32Array or Uint32Array (each with 4 elements)</td></tr>
                 <tr><td>VERTEX_ATTRIB_ARRAY_INTEGER</td><td>GLboolean</td></tr>
                 <tr><td>VERTEX_ATTRIB_ARRAY_DIVISOR</td><td>GLint</td></tr>
             </table>
+            <p>For CURRENT_VERTEX_ATTRIB, the return type is dictated by the most recent call
+              to the vertexAttrib family of functions for the given index. That is, if
+              vertexAttribI4i* was used, the return type will be Int32Array; If vertexAttribI4ui*
+              was used, the return type will be Uint32Array; Otherwise, Float32Array.
+            </p>
             <p>All queries returning sequences or typed arrays return a new object each time.</p>
             <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
             <p>If an OpenGL error is generated, returns null.</p>
@@ -1167,6 +1173,30 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 <!-- ======================================================================================================= -->
 
     <h4>Sampler objects</h4>
+
+    <dl class="methods">
+        <dt class="idl-code">any getSamplerParameter(WebGLSampler? sampler, GLenum pname)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.5">OpenGL ES 3.0.2 &sect;6.1.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetSamplerParameter.xml">man page</a>)</span>
+        </dt>
+        <dd>
+            Return the information requested in pname about the given WebGLSampler, passed as <em>sampler</em>. The
+            type returned is dependent on the information requested, as shown in the following table:
+            <table>
+                <tr><th>pname</th><th>returned type</th></tr>
+                <tr><td>TEXTURE_COMPARE_FUNC</td><td>GLenum</td></tr>
+                <tr><td>TEXTURE_COMPARE_MODE</td><td>GLenum</td></tr>
+                <tr><td>TEXTURE_MAG_FILTER</td><td>GLenum</td></tr>
+                <tr><td>TEXTURE_MAX_LOD</td><td>GLfloat</td></tr>
+                <tr><td>TEXTURE_MIN_FILTER</td><td>GLenum</td></tr>
+                <tr><td>TEXTURE_MIN_LOD</td><td>GLfloat</td></tr>
+                <tr><td>TEXTURE_WRAP_R</td><td>GLenum</td></tr>
+                <tr><td>TEXTURE_WRAP_S</td><td>GLenum</td></tr>
+                <tr><td>TEXTURE_WRAP_T</td><td>GLenum</td></tr>
+            </table>
+            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+            <p>If an OpenGL error is generated, returns null.</p>
+        </dd>
+    </dl>
 
 <!-- ======================================================================================================= -->
 
