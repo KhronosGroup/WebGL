@@ -41,7 +41,7 @@
 <script>
 "use strict";
 var wtu = WebGLTestUtils;
-description("Tests the a few differences between WebGL and GLES2");
+description("Tests the few differences between WebGL and GLES2");
 
 var gl = wtu.create3DContext();
 var program = wtu.loadStandardProgram(gl);
@@ -94,11 +94,6 @@ wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.A
 wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
 wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 1, 1)");
 wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-
-debug("");
-debug("Verify that IMPLEMENTATION_COLOR_READ_FORMAT and IMPLEMENTATION_COLOR_READ_TYPE are undefined");
-shouldBeUndefined(gl.IMPLEMENTATION_COLOR_READ_FORMAT);
-shouldBeUndefined(gl.IMPLEMENTATION_COLOR_READ_TYPE);
 
 debug("");
 debug("Verify that *LENGTH are undefined");

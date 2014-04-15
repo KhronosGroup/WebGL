@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 1 April 2014</h2>
+    <h2 class="no-toc">Editor's Draft 15 April 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1473,6 +1473,10 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     const GLenum VERTEX_ATTRIB_ARRAY_POINTER        = 0x8645;
     const GLenum VERTEX_ATTRIB_ARRAY_BUFFER_BINDING = 0x889F;
     
+    /* Read Format */
+    const GLenum IMPLEMENTATION_COLOR_READ_TYPE   = 0x8B9A;
+    const GLenum IMPLEMENTATION_COLOR_READ_FORMAT = 0x8B9B;
+
     /* Shader Source */
     const GLenum COMPILE_STATUS                 = 0x8B81;
     
@@ -1937,6 +1941,8 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
                 <tr><td>FRONT_FACE</td><td>GLenum</td></tr>
                 <tr><td>GENERATE_MIPMAP_HINT</td><td>GLenum</td></tr>
                 <tr><td>GREEN_BITS</td><td>GLint</td></tr>
+                <tr><td>IMPLEMENTATION_COLOR_READ_FORMAT</td><td>GLenum</td></tr>
+                <tr><td>IMPLEMENTATION_COLOR_READ_TYPE</td><td>GLenum</td></tr>
                 <tr><td>LINE_WIDTH</td><td>GLfloat</td></tr>
                 <tr><td>MAX_COMBINED_TEXTURE_IMAGE_UNITS</td><td>GLint</td></tr>
                 <tr><td>MAX_CUBE_MAP_TEXTURE_SIZE</td><td>GLint</td></tr>
@@ -2925,12 +2931,15 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             the types do not match, an INVALID_OPERATION error is generated.
             <br><br>
 
-	    The following are the allowed format and type combinations:
-
-            <table class="foo">
-              <tr><th>format</th><th>type</th></tr>
-              <tr><td>RGBA</td><td>UNSIGNED_BYTE</td></tr>
-            </table>
+            Only two combinations of <code>format</code> and <code>type</code> are accepted. The
+            first is <code>format</code> RGBA and <code>type</code> UNSIGNED_BYTE. The second is an
+            implementation-chosen format. The values of <code>format</code> and <code>type</code>
+            for this format may be determined by calling
+            <a href="#GETPARAMETER"><code>getParameter</code></a> with the symbolic constants
+            IMPLEMENTATION_COLOR_READ_FORMAT and IMPLEMENTATION_COLOR_READ_TYPE, respectively. The
+            implementation-chosen format may vary depending on the format of the currently bound
+            rendering surface. Unsupported combinations of <code>format</code> and <code>type</code>
+            will generate an INVALID_OPERATION error. <br><br>
 
             If <code>pixels</code> is null, an INVALID_VALUE error is generated. If
             <code>pixels</code> is non-null, but is not large enough to retrieve all of the pixels
