@@ -169,8 +169,6 @@ var OPTIONS = {
 };
 
 var testVersions = [
-  "1.0.1",
-  "1.0.2",
   "1.0.3 (beta)",
   "2.0.0 (beta)"
 ];
@@ -622,7 +620,7 @@ function start() {
       // generate a text summary
       var tx = "";
       tx += "WebGL Conformance Test Results\n";
-      tx += "Subset: Version " + OPTIONS.version + "\n";
+      tx += "Version " + OPTIONS.version + "\n";
       tx += "\n";
       tx += "-------------------\n\n";
       tx += "User Agent: " + (navigator.userAgent ? navigator.userAgent : "(navigator.userAgent is null)") + "\n";
@@ -966,7 +964,7 @@ function start() {
             <div id="info">
               <img src="resources/webgl-logo.png" /><br />
               WebGL Conformance Test Runner<br/>
-              Subset: Version 
+              Version 
               <select id="testVersion">
               </select>
               <br/>
