@@ -327,7 +327,7 @@ function testACTTexture(test) {
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid dimensions");
 
     gl.compressedTexImage2D(gl.TEXTURE_2D, -1, format, 1, height, 0, data);
-    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "cannot specify negative mip level");
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "cannot specify negative mip level");
 
     // ATC Does not allow use of CompressedTexSubImage
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, format, data);
