@@ -111,10 +111,10 @@ if (!gl) {
       runTextureCreationTest(testProgram, true, gl.LUMINANCE, 1, [10000, 10000, 10000, 1]);
       runTextureCreationTest(testProgram, true, gl.ALPHA, 1, [0, 0, 0, 10000]);
       runTextureCreationTest(testProgram, true, gl.LUMINANCE_ALPHA, 2, [10000, 10000, 10000, 10000]);
-      runRenderTargetTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0);
-      runRenderTargetTest(testProgram, gl.RGB, 3, [10000, 10000, 10000, 1], 0);
-      runRenderTargetTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 1);
-      runRenderTargetTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0.5);
+      runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0);
+      runRenderTargetAndReadbackTest(testProgram, gl.RGB, 3, [10000, 10000, 10000, 1], 0);
+      runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 1);
+      runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0.5);
       runUniqueObjectTest();
   }
 }
@@ -173,7 +173,18 @@ function runTextureCreationTest(testProgram, extensionEnabled, opt_format, opt_n
     wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red");
 }
 
-function runRenderTargetTest(testProgram, format, numberOfChannels, subtractor, texSubImageCover)
+function arrayToString(arr) {
+    var out = "[";
+    for (var ii = 0; ii < arr.length; ++ii) {
+	if (ii > 0) {
+	    out += ", ";
+	}
+	out += arr[ii];
+    }
+    return out + "]";
+}
+
+function runRenderTargetAndReadbackTest(testProgram, format, numberOfChannels, subtractor, texSubImageCover)
 {
     var formatString = wtu.glEnumToString(gl, format);
     debug("");
@@ -227,6 +238,37 @@ function runRenderTargetTest(testProgram, format, numberOfChannels, subtractor, 
     wtu.clearAndDrawUnitQuad(gl);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "rendering from floating-point texture should succeed");
     checkRenderingResults();
+
+    // Finally, if the implementation supports floating-point readback, verify it.
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    var implFormat = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT);
+    var implType = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "getParameter of IMPLEMENTATION_COLOR_READ_{FORMAT|TYPE} should succeed");
+    if ((implFormat == gl.RGBA || implFormat == gl.RGB) && implType == gl.FLOAT) {
+	debug("Checking readback of floating-point values");
+	var arraySize = (implFormat == gl.RGBA) ? 4 : 3
+	var buf = new Float32Array(arraySize);
+	var expected = new Array(arraySize);
+	for (var ii = 0; ii < arraySize; ++ii) {
+	    expected[ii] = 10000;
+	}
+	gl.readPixels(0, 0, 1, 1, implFormat, implType , buf);
+	wtu.glErrorShouldBe(gl, gl.NO_ERROR, "readPixels from floating-point renderbuffer should succeed");
+	var ok = true;
+	var tolerance = 8.0; // TODO: factor this out from both this test and the subtractor shader above.
+	for (var ii = 0; ii < buf.length; ++ii) {
+	    if (Math.abs(buf[ii] - expected[ii]) > tolerance) {
+		ok = false;
+		break;
+	    }
+	}
+	if (ok) {
+	    testPassed("readPixels of float-type data from floating-point renderbuffer succeeded");
+	} else {
+	    testFailed("readPixels of float-type data from floating-point renderbuffer failed: expected "
+		       + arrayToString(expected) + ", got " + arrayToString(buf));
+	}
+    }
 }
 
 function runUniqueObjectTest()
