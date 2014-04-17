@@ -60,8 +60,7 @@
         <dl>
           <dt>COMPRESSED_RGB_ATC_WEBGL</dt>
           <dd><p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-          either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
-          equal to the following number of bytes:</p>
+          <code>compressedTexImage2D</code>, must be equal to the following number of bytes:</p>
           <blockquote><code>
             floor((width + 3) / 4) * floor((height + 3) / 4) * 8
           </code></blockquote>
@@ -71,8 +70,7 @@
           <dt>COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL</dt>
           <dt>COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL</dt>
           <dd><p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
-          either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
-          equal to the following number of bytes:</p>
+          <code>compressedTexImage2D</code>, must be equal to the following number of bytes:</p>
           <blockquote><code>
             floor((width + 3) / 4) * floor((height + 3) / 4) * 16
           </code></blockquote>
@@ -96,6 +94,9 @@ interface WEBGL_compressed_texture_atc {
     </revision>
     <revision date="2013/07/03">
       <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
+    </revision>
+    <revision date="2014/04/17">
+      <change>Removed reference to compressedTexSubImage2D. This format can only be used with compressedTexImage2D.</change>
     </revision>
   </history>
 </draft>
