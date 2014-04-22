@@ -21,7 +21,7 @@
 <ul>
 <li> <a href="specs/latest">WebGL current draft specification</a>.
      </li>
-<li> <a href="specs/latest/webgl.idl"> webgl.idl </a>
+<li> <a href="specs/latest/1.0/webgl.idl"> webgl.idl </a>
      Web IDL description of the WebGL API. </li>
 </ul>
 
