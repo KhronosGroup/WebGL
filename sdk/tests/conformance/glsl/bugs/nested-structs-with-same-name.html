@@ -1,0 +1,104 @@
+<!--
+
+/*
+** Copyright (c) 2014 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!-- author: Jamie Madill (jmadill at chromium) -->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ANGLE Nested Structs Bug Shader Test</title>
+<link rel="stylesheet" href="../../../resources/js-test-style.css"/>
+<script src="../../../resources/js-test-pre.js"></script>
+<script src="../../resources/webgl-test-utils.js"></script>
+<script src="../../resources/glsl-conformance-test.js"></script>
+</head>
+
+<body>
+<canvas id="example" width="500" height="500" style="width: 16px; height: 16px;"></canvas>
+<div id="description"></div>
+<div id="console"></div>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+void main(void) {
+
+  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+
+  {
+    struct T {
+      int v1;
+    };
+
+    T x;
+    gl_Position.x += float(x.v1);
+  }
+
+  {
+    struct T {
+      float v2;
+    };
+
+    T x;
+    gl_Position.x += x.v2;
+  }
+
+}
+</script>
+
+<script id="shader-fs" type="x-shader/x-fragment">
+precision mediump float;
+void main(void) {
+  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+</script>
+
+<script>
+"use strict";
+
+description();
+debug("Shaders using multiple nested structs with the same name trigger a bug in ANGLE (see <a href=\"https://code.google.com/p/angleproject/issues/detail?id=618\">https://code.google.com/p/angleproject/issues/detail?id=618</a>)");
+
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("example");
+
+var tests = [{
+  vShaderSource: wtu.getScript("shader-vs"),
+  vShaderSuccess: true,
+  fShaderSource: wtu.getScript("shader-fs"),
+  fShaderSuccess: true,
+  linkSuccess: true,
+  ignoreResults: false,
+  passMsg: "nested structs shader"
+}];
+
+GLSLConformanceTester.runTests(tests);
+
+var successfullyParsed = true;
+</script>
+<script src="../../../resources/js-test-post.js"></script>
+</body>
+</html>
