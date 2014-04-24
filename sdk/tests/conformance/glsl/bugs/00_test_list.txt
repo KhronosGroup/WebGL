@@ -1,3 +1,4 @@
+--min-version 1.0.3 array-of-struct-with-int-first-position.html
 --min-version 1.0.3 compare-loop-index-to-uniform.html
 --min-version 1.0.3 complex-glsl-does-not-crash.html
 --min-version 1.0.3 conditional-discard-optimization.html
