@@ -8,7 +8,7 @@ a conformance result using this process.  Should you discover bugs in your
 browser's WebGL implementation, either via this test suite or otherwise,
 please report them to your browser vendor's bug tracking system.
 
-FOR WEBGL IMPLEMENTORS: Please follow the isntructions below to create
+FOR WEBGL IMPLEMENTORS: Please follow the instructions below to create
 a formal conformance submission.'
 
 1) Open webgl-conformance-tests.html in your target browser

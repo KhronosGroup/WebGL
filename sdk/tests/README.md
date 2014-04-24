@@ -44,7 +44,7 @@ There are various URL options you can pass in.
                  Example: webgl-conformance-tests.html?version=1.3.2
 
     minVersion:  Set to the minimum version of each test to include. Only tests
-                 at this version or above will be inlcuded.
+                 at this version or above will be included.
 
                  Example: webgl-conformance-tests.html?minVersion=1.3.2
 
@@ -64,7 +64,7 @@ There are various URL options you can pass in.
 
                  Example: webgl-conformance-tests.html?frames=8
 
-                 Note the tests are not requried to run with anything other than frames = 1.
+                 Note the tests are not required to run with anything other than frames = 1.
 
 History
 -------
