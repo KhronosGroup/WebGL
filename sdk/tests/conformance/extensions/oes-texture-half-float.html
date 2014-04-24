@@ -177,12 +177,12 @@ if (!gl) {
             for (var ii = 0; ii <  uint16Data.length; ii++) {
                 uint16Data[ii] = halfFloatTenK;
             }
-            runRenderTargetTest(format, f.subtractor, uint16Data);
+            runRenderTest(format, f.subtractor, uint16Data);
         });
 
         // Check if attaching texture as FBO target succeeds (Not mandatory)
-        runRenderTargetTest(gl.RGBA, [10000, 10000, 10000, 10000], null);
-        runRenderTargetTest(gl.RGB, [10000, 10000, 10000, 1], null);
+        runRenderTest(gl.RGBA, [10000, 10000, 10000, 10000], null);
+        runRenderTest(gl.RGB, [10000, 10000, 10000, 1], null);
 
         // Check of getExtension() returns same object
         runUniqueObjectTest();
@@ -270,7 +270,7 @@ function checkRenderingResults()
     wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 }
 
-function runRenderTargetTest(format, subtractor, data)
+function runRenderTest(format, subtractor, data)
 {
     var formatString = wtu.glEnumToString(gl, format);
 
