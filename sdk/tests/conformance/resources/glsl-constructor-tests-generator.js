@@ -125,7 +125,6 @@ function getVec4Filler(compCount) {
 
 // Returns substitution object to turn the shader template into testable shader code 
 function getSubstitutions(vecBaseType, compCount, scalarType, argCompCounts) {
-  var args = "";
   var argList = "";
   var argCompValue = 0;
   var subst = {
@@ -133,9 +132,8 @@ function getSubstitutions(vecBaseType, compCount, scalarType, argCompCounts) {
     filler:  getVec4Filler(compCount) 
   };
   
-  var argList = "";
   for (var aa = 0; aa < MAX_ARG_COUNT; ++aa) {
-    var arg    = "";
+    var arg = "";
     var argCompCount = argCompCounts[aa];
     if (argCompCount !== undefined) {
       var argName = "a" + aa; 
@@ -155,10 +153,40 @@ function getSubstitutions(vecBaseType, compCount, scalarType, argCompCounts) {
     }
  
     subst["arg" + aa] = arg;
-    subst["argList"]  = argList;
   }
+  subst["argList"]  = argList;
   
   return subst; 
+}
+
+
+// Returns the constructor expression with only type names
+// Like : vec3(float, vec2)
+function getConstructorTypeExpression(vecBaseType, compCount, scalarType, argCompCounts) {
+  // Create substitution object
+  var subst = {
+    vecType: vecBaseType + compCount 
+  };
+  
+  // Iterate over argument types
+  for (var aa = 0; aa < MAX_ARG_COUNT; ++aa) {
+    var arg = "";
+    var argCompCount = argCompCounts[aa];
+    if (argCompCount !== undefined) {
+      var argVecType = vecBaseType + argCompCount;
+      var argType    = (argCompCount === 1) ? scalarType : argVecType;
+      
+      // Name of argument type with separating comma (if not last argument)
+      arg = argType + ((aa === argCompCounts.length - 1) ? "" : ", ");
+    }
+ 
+    subst["type" + aa] = arg;
+  }
+  
+  return wtu.replaceParams(
+    "$(vecType)($(type0)$(type1)$(type2)$(type3)$(type4))", 
+    subst
+  );
 }
 
 
@@ -199,27 +227,34 @@ function getVectorConstructorValidityType(argCompCounts, compCount) {
 
 
 // Return message for test (will be displayed)
-function getTestMessage(compCount, vecType, scalarType, argCompCounts, expValidity) {
+function getTestMessage(compCount, vecBaseType, scalarType, argCompCounts, expValidity) {
+  var msg;
   switch (expValidity) {
     case EXP_VALID:
-      var msg = "Valid constructor expression";
+      msg = "Valid constructor expression";
       if (argCompCounts.length === 1 && argCompCounts[0] === 1)
-        msg += ", all components set to the same value";
+        msg += " (all components set to the same value)";
          
-      return msg;
+      break;
       
     case EXP_INVALID_NO_ARGS:
-      return "Invalid empty constructor expression";
+      msg = "Invalid constructor expression (no arguments)";
+      break;
       
     case EXP_INVALID_NOT_ENOUGH_COMPS:
-      return "Not all components are set";
+      msg = "Invalid constructor expression (not enough arguments)";
+      break;
       
     case EXP_INVALID_TOO_MANY_ARGS:
-      return "Unused argument in expression is invalid";
-    
+      msg = "Invalid constructor expression (unused argument)";
+      break;
+      
     default:
-      return "Unknown validity constant";
+      msg = "Unknown validity constant";
+      break;
   }
+
+  return msg + " : " + getConstructorTypeExpression(vecBaseType, compCount, scalarType, argCompCounts); 
 }
   
 
@@ -236,7 +271,7 @@ function getVectorTestCase(compCount, vecBaseType, scalarType, argCompCounts, ex
       fShaderSource:  wtu.replaceParams(vectorConstructorFragmentTemplate, substitutions),
       fShaderSuccess: valid_exp,
       linkSuccess:    valid_exp,
-      passMsg:        getTestMessage(compCount, vecBaseType + compCount, scalarType, argCompCounts, expValidity),
+      passMsg:        getTestMessage(compCount, vecBaseType, scalarType, argCompCounts, expValidity),
       render:         false
     }
   ];  
