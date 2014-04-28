@@ -38,29 +38,66 @@ var wtu = WebGLTestUtils;
 
 // Shader code templates 
 var vectorConstructorVertexTemplate = [
+  "attribute vec4 vPosition;",
+
   "precision mediump int;",
   "precision mediump float;",
-  "varying vec4 v_color;",
+
+  // Colors used to signal correctness of component values comparison  
+  "const vec4 green = vec4(0.0, 1.0, 0.0, 1.0);",
+  "const vec4 red   = vec4(1.0, 0.0, 0.0, 1.0);",
+
+  // Error bound used in comparison of floating point values 
+  "$(errorBound)", 
+
+  "varying vec4 vColor;",
   
   "void main() {",
   "  $(argList)",
     
-  "  $(vecType) v = $(vecType)($(arg0)$(arg1)$(arg2)$(arg3)$(arg4)); ",
-  "  gl_Position = vec4(v$(filler));",
+  "  $(vecType) v = $(vecType)($(arg0)$(arg1)$(arg2)$(arg3)$(arg4));",
   
+  "  if ($(checkCompVals))",
+  "    vColor = green;",
+  "  else",
+  "    vColor = red;",
+  
+  "  gl_Position = vPosition;",
   "}"
 ].join("\n");
+
+
+var passThroughColorFragmentShader = [
+  "precision mediump float;",
+  
+  "varying vec4 vColor;",
+  
+  "void main() {",
+  "    gl_FragColor = vColor;",
+  "}"
+].join('\n');
+
 
 var vectorConstructorFragmentTemplate = [
   "precision mediump int;",
   "precision mediump float;",
 
+  // Colors used to signal correctness of component values comparison  
+  "const vec4 green = vec4(0.0, 1.0, 0.0, 1.0); ",
+  "const vec4 red   = vec4(1.0, 0.0, 0.0, 1.0); ",
+  
+  // Error bound used in comparison of floating point values
+  "$(errorBound)", 
+
   "void main() {",
   "  $(argList)",
   
-  "  $(vecType) v = $(vecType)($(arg0)$(arg1)$(arg2)$(arg3)$(arg4)); ",
+  "  $(vecType) v = $(vecType)($(arg0)$(arg1)$(arg2)$(arg3)$(arg4));",
   
-  "  gl_FragColor = vec4(v$(filler));",
+  "  if ($(checkCompVals))",
+  "    gl_FragColor = green;",
+  "  else",
+  "    gl_FragColor = red;",
   "}"
 ].join("\n");
 
@@ -113,13 +150,38 @@ function getArgumentValue(compCount, vecName, argCompValue, scalarType) {
 }
 
 
-// Returns comma separated sequence of numbers so constructor expression has always 4 components
-function getVec4Filler(compCount) {
-  var filler = "";
-  for (var ff = compCount; ff < MAX_COMP_COUNT; ++ff) 
-    filler += ", 0.0";
+// Returns expression which validates if the components are set correctly by the constructor expression
+function getComponentValidationExpression(scalarType, compCount, maxCompVal) {
+
+  var checkComponentValues = "";
   
-  return filler;
+  if (maxCompVal === -1) {
+      // No components set (empty constructor expression)
+      checkComponentValues = "false";
+  }
+  else {
+    var compVal = 0;
+    for (var cc = 0; cc < compCount; ++cc) {
+      var val_str = getScalarTypeValStr(compVal, scalarType);
+      if (scalarType === "float") {
+        // Comparison of floating point values with error bound 
+        checkComponentValues += "v[" + cc + "] >= " + val_str + " - errorBound && "; 
+        checkComponentValues += "v[" + cc + "] <= " + val_str + " + errorBound";
+      }
+      else {
+        // Simple comparison to expected value
+        checkComponentValues += "v[" + cc + "] == " + val_str;
+      }
+        
+      // Add logical and operator if not comparing with last component  
+      checkComponentValues += (cc < compCount - 1) ? " && " : "";
+      
+      if (compVal < maxCompVal)
+        ++compVal;
+    }       
+  }
+  
+  return checkComponentValues;      
 }
 
 
@@ -128,10 +190,10 @@ function getSubstitutions(vecBaseType, compCount, scalarType, argCompCounts) {
   var argList = "";
   var argCompValue = 0;
   var subst = {
-    vecType: vecBaseType + compCount, 
-    filler:  getVec4Filler(compCount) 
+    vecType:    vecBaseType + compCount, 
+    errorBound: (scalarType === "float") ? "const float errorBound = 1.0E-5;" : ""
   };
-  
+
   for (var aa = 0; aa < MAX_ARG_COUNT; ++aa) {
     var arg = "";
     var argCompCount = argCompCounts[aa];
@@ -147,14 +209,15 @@ function getSubstitutions(vecBaseType, compCount, scalarType, argCompCounts) {
       
       // Name of argument with separating comma (if not last argument)
       arg = argName + ((aa === argCompCounts.length - 1) ? "" : ", ");
-      
+
       // Increment argument component value so all argument component arguments have a unique value
       argCompValue += argCompCount;   
     }
- 
+
     subst["arg" + aa] = arg;
   }
   subst["argList"]  = argList;
+  subst["checkCompVals"] = getComponentValidationExpression(scalarType, compCount, argCompValue - 1);
   
   return subst; 
 }
@@ -227,26 +290,26 @@ function getVectorConstructorValidityType(argCompCounts, compCount) {
 
 
 // Return message for test (will be displayed)
-function getTestMessage(compCount, vecBaseType, scalarType, argCompCounts, expValidity) {
-  var msg;
+function getTestMessage(inShaderName, compCount, vecBaseType, scalarType, argCompCounts, expValidity) {
+  var msg = inShaderName + " : ";
   switch (expValidity) {
     case EXP_VALID:
-      msg = "Valid constructor expression";
+      msg += "Valid constructor expression";
       if (argCompCounts.length === 1 && argCompCounts[0] === 1)
         msg += " (all components set to the same value)";
          
       break;
       
     case EXP_INVALID_NO_ARGS:
-      msg = "Invalid constructor expression (no arguments)";
+      msg += "Invalid constructor expression (no arguments)";
       break;
       
     case EXP_INVALID_NOT_ENOUGH_COMPS:
-      msg = "Invalid constructor expression (not enough arguments)";
+      msg += "Invalid constructor expression (not enough arguments)";
       break;
       
     case EXP_INVALID_TOO_MANY_ARGS:
-      msg = "Invalid constructor expression (unused argument)";
+      msg += "Invalid constructor expression (unused argument)";
       break;
       
     default:
@@ -265,14 +328,24 @@ function getVectorTestCase(compCount, vecBaseType, scalarType, argCompCounts, ex
   
   return [
     {
-      // Test constructor argument list in fragment shader
+      // Test constructor argument list in vertex shader
       vShaderSource:  wtu.replaceParams(vectorConstructorVertexTemplate, substitutions),
+      vShaderSuccess: valid_exp,
+      fShaderSource:  passThroughColorFragmentShader,
+      fShaderSuccess: valid_exp,
+      linkSuccess:    valid_exp,
+      passMsg:        getTestMessage("Vertex shader", compCount, vecBaseType, scalarType, argCompCounts, expValidity),
+      render:         valid_exp
+    },
+    {
+      // Test constructor argument list in fragment shader
+      vShaderSource:  GLSLConformanceTester.defaultVertexShader,
       vShaderSuccess: valid_exp,
       fShaderSource:  wtu.replaceParams(vectorConstructorFragmentTemplate, substitutions),
       fShaderSuccess: valid_exp,
       linkSuccess:    valid_exp,
-      passMsg:        getTestMessage(compCount, vecBaseType, scalarType, argCompCounts, expValidity),
-      render:         false
+      passMsg:        getTestMessage("Fragment shader", compCount, vecBaseType, scalarType, argCompCounts, expValidity),
+      render:         valid_exp
     }
   ];  
 }
