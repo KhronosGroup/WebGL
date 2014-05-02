@@ -64,6 +64,7 @@ var imgURLs = [
   '../resources/3x3.png',
   '../resources/blue-1x1.jpg',
   '../resources/red-indexed.png',
+  '../resources/transparent-on-left-indexed.png',
   '../resources/green-2x2-16bit.png',
   '../resources/small-square-with-colorspin-profile.jpg',
   '../resources/small-square-with-colorspin-profile.png',
@@ -421,6 +422,13 @@ function runTests(imgs) {
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   // The image should be red.
   checkPixelRange(buf, middle, center, [ 255, 0, 0, 255 ], 10);
+
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+                imgs['../resources/transparent-on-left-indexed.png']);
+  wtu.clearAndDrawUnitQuad(gl);
+  wtu.checkCanvasRect(gl, 0, 0, 128, 16, [255, 0, 255, 0], "should be transparent purple");
+  wtu.checkCanvasRect(gl, 128, 0,128, 16, [255, 255, 0, 255], "should be yellow");
 
   debug("");
   debug("check uploading of 1-channel JPG images");
