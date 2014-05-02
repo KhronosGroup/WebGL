@@ -35,7 +35,7 @@
 
 </head>
 <body>
-<canvas id="example" width="512" height="512"></canvas>
+<canvas id="example"></canvas>
 <div id="description"></div>
 <div id="console"></div>
 <script>
@@ -99,7 +99,7 @@ function checkPixels() {
 function renderToCanvas() {
   // Clear the 2d canvas then draw the image to it (a blue pixel)
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(image, 0, 0, 512, 512);
+  ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
   // Upload the results to a WebGL texture
   gl.bindTexture(gl.TEXTURE_2D, texture);
