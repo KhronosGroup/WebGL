@@ -173,9 +173,14 @@ function runTextureCreationTest(testProgram, extensionEnabled, opt_format, opt_n
     wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red");
 }
 
-function arrayToString(arr) {
+function arrayToString(arr, size) {
+    var mySize;
+    if (!size)
+        mySize = arr.length;
+    else
+        mySize = size;
     var out = "[";
-    for (var ii = 0; ii < arr.length; ++ii) {
+    for (var ii = 0; ii < mySize; ++ii) {
 	if (ii > 0) {
 	    out += ", ";
 	}
@@ -248,16 +253,12 @@ function runRenderTargetAndReadbackTest(testProgram, format, numberOfChannels, s
 	debug("Checking readback of floating-point values");
 	var arraySize = (implFormat == gl.RGBA) ? 4 : 3
 	var buf = new Float32Array(arraySize);
-	var expected = new Array(arraySize);
-	for (var ii = 0; ii < arraySize; ++ii) {
-	    expected[ii] = 10000;
-	}
 	gl.readPixels(0, 0, 1, 1, implFormat, implType , buf);
 	wtu.glErrorShouldBe(gl, gl.NO_ERROR, "readPixels from floating-point renderbuffer should succeed");
 	var ok = true;
 	var tolerance = 8.0; // TODO: factor this out from both this test and the subtractor shader above.
 	for (var ii = 0; ii < buf.length; ++ii) {
-	    if (Math.abs(buf[ii] - expected[ii]) > tolerance) {
+	    if (Math.abs(buf[ii] - subtractor[ii]) > tolerance) {
 		ok = false;
 		break;
 	    }
@@ -266,7 +267,7 @@ function runRenderTargetAndReadbackTest(testProgram, format, numberOfChannels, s
 	    testPassed("readPixels of float-type data from floating-point renderbuffer succeeded");
 	} else {
 	    testFailed("readPixels of float-type data from floating-point renderbuffer failed: expected "
-		       + arrayToString(expected) + ", got " + arrayToString(buf));
+		       + arrayToString(subtractor, arraySize) + ", got " + arrayToString(buf));
 	}
     }
 }
