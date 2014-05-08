@@ -45,13 +45,14 @@ interface WEBGL_lose_context {
       <code>INVALID_OPERATION</code> error.
     </function>
     <function name="restoreContext" type="void">
-      When this function is called, the context is lost, and the conditions
+      When this function is called while the context is lost, and the conditions
       defined by the WebGL specification for restoring the context are
       met, simulate the context being restored so as to trigger the steps
       described in the WebGL spec for handling the context being restored.
       If the context is already restored when this function is called, or if
       the conditions in the WebGL specification for restoring the
-      context are not satisfied, generate an <code>INVALID_OPERATION</code> error.
+      context are not satisfied, or if the context was not lost via <code>loseContext()</code>,
+      generate an <code>INVALID_OPERATION</code> error.
     </function>
   </newfun>
   <history>
@@ -91,6 +92,9 @@ interface WEBGL_lose_context {
           Indicated that this extension is not disconnected from the WebGLRenderingContext
           when that object loses its drawing buffer (i.e. when it performs the steps
           outlined in "The Context Lost Event" of the WebGL specification).</change>
+    </revision>
+    <revision date="2014/05/08">
+      <change>Added INVALID_OPERATION for restoreContext() without loseContext()</change>
     </revision>
   </history>
 </ratified>
