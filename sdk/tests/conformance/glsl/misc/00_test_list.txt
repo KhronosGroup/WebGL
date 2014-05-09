@@ -12,6 +12,7 @@ non-ascii-comments.vert.html
 non-ascii.vert.html
 --min-version 1.0.2 re-compile-re-link.html
 --min-version 1.0.3 shader-precision-format-obeyed.html
+--min-version 1.0.3 shader-struct-scope.html
 --min-version 1.0.2 shader-uniform-packing-restrictions.html
 --min-version 1.0.2 shader-varying-packing-restrictions.html
 --min-version 1.0.2 shader-with-256-character-define.html
