@@ -31,19 +31,19 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>ANGLE Nested Structs Bug Shader Test</title>
+<title>Struct Scope Test</title>
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
+<link rel="stylesheet" href="../../resources/glsl-feature-tests.css"/>
 <script src="../../../resources/js-test-pre.js"></script>
 <script src="../../resources/webgl-test-utils.js"></script>
 <script src="../../resources/glsl-conformance-test.js"></script>
 </head>
 
 <body>
-<canvas id="example" width="500" height="500" style="width: 16px; height: 16px;"></canvas>
 <div id="description"></div>
 <div id="console"></div>
 
-<script id="shader-vs" type="x-shader/x-vertex">
+<script id="shader-vs-1" type="x-shader/x-vertex">
 void main(void) {
 
   gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
@@ -69,6 +69,74 @@ void main(void) {
 }
 </script>
 
+<script id="shader-vs-2" type="x-shader/x-vertex">
+void main(void) {
+
+  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+
+  struct T {
+    int v1;
+  };
+
+  T x;
+  gl_Position.x += float(x.v1);
+
+  {
+    struct T {
+      float v2;
+    };
+
+    T x;
+    gl_Position.x += x.v2;
+  }
+
+}
+</script>
+
+<script id="shader-vs-3" type="x-shader/x-vertex">
+void main(void) {
+
+  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+
+  {
+    struct T {
+      int v1;
+    };
+
+    T x;
+    gl_Position.x += float(x.v1);
+  }
+
+  struct T {
+    float v2;
+  };
+
+  T x;
+  gl_Position.x += x.v2;
+}
+</script>
+
+<script id="shader-vs-bad" type="x-shader/x-vertex">
+void main(void) {
+
+  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+
+  struct T {
+    int v1;
+  };
+
+  T x;
+  gl_Position.x += float(x.v1);
+
+  struct T {
+    float v2;
+  };
+
+  T y;
+  gl_Position.x += y.v2;
+}
+</script>
+
 <script id="shader-fs" type="x-shader/x-fragment">
 precision mediump float;
 void main(void) {
@@ -78,27 +146,46 @@ void main(void) {
 
 <script>
 "use strict";
-
-description();
-debug("Shaders using multiple nested structs with the same name trigger a bug in ANGLE (see <a href=\"https://code.google.com/p/angleproject/issues/detail?id=618\">https://code.google.com/p/angleproject/issues/detail?id=618</a>)");
+description("Testing struct definition scope");
 
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext("example");
+GLSLConformanceTester.runTests([
+  {
+    vShaderId: "shader-vs-1",
+    vShaderSuccess: true,
+    fShaderId: "shader-fs",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: "Two structs defined within non-overlapping scopes should be able to use the same name",
+  },
+  {
+    vShaderId: "shader-vs-2",
+    vShaderSuccess: true,
+    fShaderId: "shader-fs",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: "A struct defined inside a scope overrides a struct defined in a outer scope with the same name",
+  },
+  {
+    vShaderId: "shader-vs-3",
+    vShaderSuccess: true,
+    fShaderId: "shader-fs",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: "A struct can use the same name of another out-of-scope struct",
+  },
+  {
+    vShaderId: "shader-vs-bad",
+    vShaderSuccess: false,
+    fShaderId: "shader-fs",
+    fShaderSuccess: true,
+    linkSuccess: false,
+    passMsg: "A struct can't be defined with the same name as another struct defined in the same scope",
+  },
+]);
 
-var tests = [{
-  vShaderSource: wtu.getScript("shader-vs"),
-  vShaderSuccess: true,
-  fShaderSource: wtu.getScript("shader-fs"),
-  fShaderSuccess: true,
-  linkSuccess: true,
-  ignoreResults: false,
-  passMsg: "nested structs shader"
-}];
-
-GLSLConformanceTester.runTests(tests);
-
+debug("");
 var successfullyParsed = true;
 </script>
-<script src="../../../resources/js-test-post.js"></script>
 </body>
 </html>
