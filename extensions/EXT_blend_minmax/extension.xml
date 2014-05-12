@@ -23,42 +23,24 @@
 
     <features>
       <feature>
-            Adds the ability to specify min and max blending modes.
+        The <code>blendEquation</code> and <code>blendEquationSeparate</code>
+        entry points are extended to accept <code>MIN_EXT</code> and <code>MAX_EXT</code>
       </feature>
     </features>
   </overview>
 
   <idl xml:space="preserve">
     interface EXT_blend_minmax {
-      const GLenum FUNC_ADD_EXT         = 0x8006;
-      const GLenum MIN_EXT              = 0x8007;
-      const GLenum MAX_EXT              = 0x8008;
-      const GLenum BLEND_EQUATION_EXT   = 0x8009;
-      void blendEquationEXT(GLenum mode);
+      const GLenum MIN_EXT = 0x8007;
+      const GLenum MAX_EXT = 0x8008;
     };
   </idl>
-
-  <newfun>
-    <function name="blendEquationEXT" type="void">
-      <param name="mode" type="GLenum" />
-      Accepts <code>FUNC_ADD_EXT</code>, <code>MIN_EXT</code> and <code>MAX_EXT</code>
-    </function>
-  </newfun>
-
-  <newtok>
-    <function name="getParameter" type="any">
-      <param name="pname" type="GLenum"/>
-      One new enum <code>BLEND_EQUATION_EXT</code> is accepted by <code>pname</code> parameter in <code>getParameter()</code>
-      <br/>
-      Returned is either <code>FUNC_ADD_EXT</code> (default), <code>MIN_EXT</code> or <code>MAX_EXT</code>
-    </function>
-  </newtok>
 
   <samplecode xml:space="preserve">
     <pre>
         var ext = gl.getExtension('EXT_blend_minmax');
-        ext.blendEquationEXT(ext.MAX_EXT);
-        gl.getParameter(ext.BLEND_EQUATION_EXT) == ext.MAX_EXT;
+        gl.blendEquation(ext.MAX_EXT);
+        gl.getParameter(gl.BLEND_EQUATION) == ext.MAX_EXT;
     </pre>
   </samplecode>
 
@@ -68,6 +50,10 @@
     </revision>
     <revision date="2014/02/12">
       <change>Moved to draft.</change>
+    </revision>
+    <revision date="2014/05/12">
+      <change>Removed blendEquationEXT function and the BLEND_EQUATION_EXT and
+        FUNC_ADD_EXT enums, all of which are already have equivalents in WebGL.</change>
     </revision>
   </history>
 </draft>
