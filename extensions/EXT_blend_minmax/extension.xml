@@ -39,7 +39,7 @@
   <samplecode xml:space="preserve">
     <pre>
         var ext = gl.getExtension('EXT_blend_minmax');
-        ext.blendEquation(ext.MAX_EXT);
+        gl.blendEquation(ext.MAX_EXT);
         gl.getParameter(gl.BLEND_EQUATION) == ext.MAX_EXT;
     </pre>
   </samplecode>
