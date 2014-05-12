@@ -1,4 +1,3 @@
---min-version 1.0.3 angle-d3d11-compiler-error.html
 get-active-test.html
 gl-bind-attrib-location-test.html
 --min-version 1.0.2 gl-bind-attrib-location-long-names-test.html
