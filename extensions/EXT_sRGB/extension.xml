@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="EXT_sRGB/">
+<extension href="EXT_sRGB/">
   <name>EXT_sRGB</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -73,5 +73,8 @@
     <revision date="2013/01/26">
       <change>Moved from proposal to draft</change>
     </revision>
+    <revision date="2014/05/13">
+      <change>Moved from draft to community approved</change>
+    </revision>
   </history>
-</draft>
+</extension>
