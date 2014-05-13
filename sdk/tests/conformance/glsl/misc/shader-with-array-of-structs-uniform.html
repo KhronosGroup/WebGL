@@ -73,6 +73,19 @@ void main(void) {
     gl_FragColor = u_colors[0].color1 + u_colors[0].color2 + u_colors[1].color1 +u_colors[1].color2;
 }
 </script>
+<script id="fshader3" type="x-shader/x-fragment">
+precision mediump float;
+struct my_struct {
+  float r;
+  float g;
+  float b;
+  float a;
+};
+uniform my_struct u_colors[2];
+void main(void) {
+    gl_FragColor = vec4(u_colors[0].r, u_colors[0].g, u_colors[1].b, u_colors[1].a);
+}
+</script>
 </head>
 <body>
 <canvas id="canvas" width="50" height="50"></canvas>
@@ -120,6 +133,26 @@ gl.uniform4fv(loc00, [1, 0, 0, 0]);
 gl.uniform4fv(loc01, [0, 1, 0, 0]);
 gl.uniform4fv(loc10, [0, 0, 1, 0]);
 gl.uniform4fv(loc11, [0, 0, 0, 1]);
+wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 0]);
+wtu.checkCanvas(gl, [255, 255, 255, 255], "Should be white");
+
+program = wtu.setupProgram(gl, ["vshader", "fshader3"], ["a_position"]);
+var loc0r = gl.getUniformLocation(program, "u_colors[0].r");
+var loc0g = gl.getUniformLocation(program, "u_colors[0].g");
+var loc0b = gl.getUniformLocation(program, "u_colors[0].b");
+var loc0a = gl.getUniformLocation(program, "u_colors[0].a");
+var loc1r = gl.getUniformLocation(program, "u_colors[1].r");
+var loc1g = gl.getUniformLocation(program, "u_colors[1].g");
+var loc1b = gl.getUniformLocation(program, "u_colors[1].b");
+var loc1a = gl.getUniformLocation(program, "u_colors[1].a");
+shouldBeTrue("loc0r != undefined");
+shouldBeTrue("loc0g != undefined");
+shouldBeTrue("loc1b != undefined");
+shouldBeTrue("loc1a != undefined");
+gl.uniform1f(loc0r, 1);
+gl.uniform1f(loc0g, 1);
+gl.uniform1f(loc1b, 1);
+gl.uniform1f(loc1a, 1);
 wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 0]);
 wtu.checkCanvas(gl, [255, 255, 255, 255], "Should be white");
 
