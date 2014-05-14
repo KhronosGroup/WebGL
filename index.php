@@ -25,10 +25,16 @@
      Web IDL description of the WebGL API. </li>
 </ul>
 
-<h6> <a name="otherextspecs"></a>
-     WebGL Extensions</h6>
+<h6> <a name="otherextspecs">
+     WebGL Extensions</a></h6>
 <ul>
 <li> <a href="extensions/">WebGL extension registry</a> </li>
+</ul>
+
+<h6> <a name="ip-disclosures">
+     IP Disclosures for the WebGL API</a></h6>
+<ul>
+<li> <a href="../../files/ip-disclosures/webgl/">WebGL IP Disclosures</a> </li>
 </ul>
 <?php include("../../_inc/registry/registry_footer.txt"); ?>
 </body>  <!-- END pagewrapper -->
