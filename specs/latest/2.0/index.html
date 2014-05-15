@@ -243,6 +243,27 @@ typedef unsigned long long GLuint64;
     <h3>WebGLQuery</h3>
 
     <p>
+        The <code>WebGLQuery</code> interface represents an OpenGL Query Object.
+        The underlying object is created as if by calling glGenQueries
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0 &sect;2.13</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGenQueries.xhtml">man page</a>)
+        </span>,
+        made active as if by calling glBeginQuery
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0 &sect;2.13</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBeginQuery.xhtml">man page</a>)
+        </span>,
+        concluded as if by calling glEndQuery
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0 &sect;2.13</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBeginQuery.xhtml">man page</a>)
+        </span>
+        and destroyed as if by calling glDeleteQueries
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0 &sect;2.13</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteQueries.xhtml">man page</a>)
+        </span>.
     </p>
     <pre class="idl">interface <dfn id="WebGLQuery">WebGLQuery</dfn> : WebGLObject {
 };</pre>
@@ -252,6 +273,22 @@ typedef unsigned long long GLuint64;
     <h3>WebGLSampler</h3>
 
     <p>
+        The <code>WebGLSampler</code> interface represents an OpenGL Sampler Object.
+        The underlying object is created as if by calling glGenSamplers
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0 &sect;3.8.2</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGenSamplers.xhtml">man page</a>)
+        </span>,
+         bound as if by calling glBindSampler
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0 &sect;3.8.2</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindSampler.xhtml">man page</a>)
+        </span>
+        and destroyed as if by calling glDeleteSamplers
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0 &sect;3.8.2</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteSamplers.xhtml">man page</a>)
+        </span>.
     </p>
     <pre class="idl">interface <dfn id="WebGLSampler">WebGLSampler</dfn> : WebGLObject {
 };</pre>
@@ -270,6 +307,22 @@ typedef unsigned long long GLuint64;
     <h3>WebGLTransformFeedback</h3>
 
     <p>
+        The <code>WebGLTransformFeedback</code> interface represents an OpenGL Transform Feedback Object.
+        The underlying object is created as if by calling glGenTransformFeedbacks
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.1">OpenGL ES 3.0 &sect;2.14.1</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGenTransformFeedbacks.xhtml">man page</a>)
+        </span>,
+        bound as if by calling glBindTransformFeedback
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.1">OpenGL ES 3.0 &sect;2.14.1</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindTransformFeedback.xhtml">man page</a>)
+        </span>
+        and destroyed as if by calling glDeleteTransformFeedbacks
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.1">OpenGL ES 3.0 &sect;2.14.1</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteTransformFeedbacks.xhtml">man page</a>)
+        </span>.
     </p>
     <pre class="idl">interface <dfn id="WebGLTransformFeedback">WebGLTransformFeedback</dfn> : WebGLObject {
 };</pre>
@@ -279,6 +332,22 @@ typedef unsigned long long GLuint64;
     <h3>WebGLVertexArrayObject</h3>
 
     <p>
+        The <code>WebGLVertexArrayObject</code> interface represents an OpenGL Vertex Array Object.
+        The underlying object is created as if by calling glGenVertexArrays
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.10">OpenGL ES 3.0 &sect;2.10</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGenVertexArrays.xhtml">man page</a>)
+        </span>,
+        bound as if by calling glBindVertexArray
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.10">OpenGL ES 3.0 &sect;2.10</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindVertexArray.xhtml">man page</a>)
+        </span>
+        and destroyed as if by calling glDeleteVertexArrays
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.10">OpenGL ES 3.0 &sect;2.10</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteVertexArrays.xhtml">man page</a>)
+        </span>.
     </p>
     <pre class="idl">interface <dfn id="WebGLVertexArrayObject">WebGLVertexArrayObject</dfn> : WebGLObject {
 };</pre>
