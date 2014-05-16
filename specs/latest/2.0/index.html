@@ -1163,6 +1163,47 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <h4>Vertex Array objects</h4>
 
+    <p>
+        Vertex Array objects (sometimes referred to as VAOs) encapsulates all state related to the
+        definition of data used by the vertex processor.
+    </p>
+
+    <dl class="methods">
+        <dt class="idl-code">void bindVertexArray(WebGLVertexArrayObject? vertexArray)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.10">OpenGL ES 3.0 &sect;2.10</a>,
+            <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindVertexArray.xhtml">man page</a>)</span>
+        <dd>
+            Bind the given <code class="interface">WebGLVertexArrayObject</code> object.
+            If <code class="param">vertexArray</code> is null, the default vertex array provided by the context
+            is bound.
+
+        <dt class="idl-code">WebGLVertexArrayObject? createVertexArray()
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.10">OpenGL ES 3.0 &sect;2.10</a>,
+            similar to <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGenVertexArrays.xhtml">glGenVertexArrays</a>)</span>
+        <dd>
+            Create a <code class="interface">WebGLVertexArrayObject</code> object and initialize it with a vertex array object name as if by
+            calling glGenVertexArrays.
+
+        <dt class="idl-code">void deleteVertexArray(WebGLVertexArrayObject? vertexArray)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.10">OpenGL ES 3.0 &sect;2.10</a>,
+            similar to <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteVertexArrays.xhtml">glDeleteVertexArrays</a>)</span>
+        <dd>
+            Delete the vertex array object contained in the passed <code class="interface">WebGLVertexArrayObject</code> as if by calling
+            glDeleteVertexArrays. If the vertex array has already been deleted the call has no effect.
+            Note that the vertex array object will be deleted when the <code class="interface">WebGLVertexArrayObject</code> object is destroyed.
+            This method merely gives the author greater control over when the vertex array object is
+            destroyed.
+
+        <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isVertexArray(WebGLVertexArrayObject? vertexArray)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.10">OpenGL ES 3.0 &sect;6.1.10</a>,
+            <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glIsVertexArray.xhtml">man page</a>)</span>
+        <dd>
+            Return true if the passed <code class="interface">WebGLVertexArrayObject</code> is valid and false otherwise. <br><br>
+
+            Returns false if the vertex array's <a href="#webgl-object-invalidated-flag">invalidated
+            flag</a> is set.
+    </dl>
+
 <!-- ======================================================================================================= -->
 
     <h2><a name="webgl_1_2_differences">Other differences Between WebGL 2.0 and WebGL 1.0</a></h2>
