@@ -1,5 +1,6 @@
 --min-version 1.0.3 angle-instanced-arrays.html
 --min-version 1.0.3 angle-instanced-arrays-out-of-bounds.html
+--min-version 1.0.3 ext-blend-minmax.html
 --min-version 1.0.3 ext-frag-depth.html
 --min-version 1.0.2 ext-texture-filter-anisotropic.html
 --min-version 1.0.2 get-extension.html
