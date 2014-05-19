@@ -517,11 +517,10 @@ interface WebGLRenderingContextBase
     void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, 
                            GLenum srcAlpha, GLenum dstAlpha);
 
+    typedef (ArrayBuffer or ArrayBufferView) BufferDataSource;
     void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
-    void bufferData(GLenum target, ArrayBufferView data, GLenum usage);
-    void bufferData(GLenum target, ArrayBuffer? data, GLenum usage);
-    void bufferSubData(GLenum target, GLintptr offset, ArrayBufferView data);
-    void bufferSubData(GLenum target, GLintptr offset, ArrayBuffer? data);
+    void bufferData(GLenum target, BufferDataSource? data, GLenum usage);
+    void bufferSubData(GLenum target, GLintptr offset, BufferDataSource? data);
 
     [WebGLHandlesContextLoss] GLenum checkFramebufferStatus(GLenum target);
     void clear(GLbitfield mask);
@@ -645,17 +644,15 @@ interface WebGLRenderingContextBase
     void stencilOp(GLenum fail, GLenum zfail, GLenum zpass);
     void stencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass);
 
+    typedef (ImageData or
+             HTMLImageElement or
+             HTMLCanvasElement or
+             HTMLVideoElement) TexImageSource;
     void texImage2D(GLenum target, GLint level, GLenum internalformat, 
                     GLsizei width, GLsizei height, GLint border, GLenum format, 
                     GLenum type, ArrayBufferView? pixels);
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, ImageData? pixels);
-    void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLImageElement image); // May throw DOMException
-    void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLCanvasElement canvas); // May throw DOMException
-    void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLVideoElement video); // May throw DOMException
+                    GLenum format, GLenum type, TexImageSource? source); // May throw DOMException
 
     void texParameterf(GLenum target, GLenum pname, GLfloat param);
     void texParameteri(GLenum target, GLenum pname, GLint param);
@@ -664,13 +661,7 @@ interface WebGLRenderingContextBase
                        GLsizei width, GLsizei height, 
                        GLenum format, GLenum type, ArrayBufferView? pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, ImageData? pixels);
-    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLImageElement image); // May throw DOMException
-    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLCanvasElement canvas); // May throw DOMException
-    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLVideoElement video); // May throw DOMException
+                       GLenum format, GLenum type, TexImageSource? source); // May throw DOMException
 
     void uniform1f(WebGLUniformLocation? location, GLfloat x);
     void uniform1fv(WebGLUniformLocation? location, Float32Array v);

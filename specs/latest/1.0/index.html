@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 17 April 2014</h2>
+    <h2 class="no-toc">Editor's Draft 14 May 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1565,11 +1565,10 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, 
                            GLenum srcAlpha, GLenum dstAlpha);
 
+    typedef (ArrayBuffer or ArrayBufferView) BufferDataSource;
     void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
-    void bufferData(GLenum target, ArrayBufferView data, GLenum usage);
-    void bufferData(GLenum target, ArrayBuffer? data, GLenum usage);
-    void bufferSubData(GLenum target, GLintptr offset, ArrayBufferView data);
-    void bufferSubData(GLenum target, GLintptr offset, ArrayBuffer? data);
+    void bufferData(GLenum target, BufferDataSource? data, GLenum usage);
+    void bufferSubData(GLenum target, GLintptr offset, BufferDataSource? data);
 
     [WebGLHandlesContextLoss] GLenum checkFramebufferStatus(GLenum target);
     void clear(GLbitfield mask);
@@ -1693,17 +1692,15 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void stencilOp(GLenum fail, GLenum zfail, GLenum zpass);
     void stencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass);
 
+    typedef (ImageData or
+             HTMLImageElement or
+             HTMLCanvasElement or
+             HTMLVideoElement) TexImageSource;
     void texImage2D(GLenum target, GLint level, GLenum internalformat, 
                     GLsizei width, GLsizei height, GLint border, GLenum format, 
                     GLenum type, ArrayBufferView? pixels);
     void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, ImageData? pixels);
-    void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLImageElement image); // May throw DOMException
-    void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLCanvasElement canvas); // May throw DOMException
-    void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLVideoElement video); // May throw DOMException
+                    GLenum format, GLenum type, TexImageSource? source); // May throw DOMException
 
     void texParameterf(GLenum target, GLenum pname, GLfloat param);
     void texParameteri(GLenum target, GLenum pname, GLint param);
@@ -1712,13 +1709,7 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
                        GLsizei width, GLsizei height, 
                        GLenum format, GLenum type, ArrayBufferView? pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, ImageData? pixels);
-    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLImageElement image); // May throw DOMException
-    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLCanvasElement canvas); // May throw DOMException
-    void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLVideoElement video); // May throw DOMException
+                       GLenum format, GLenum type, TexImageSource? source); // May throw DOMException
 
     void uniform1f(WebGLUniformLocation? location, GLfloat x);
     void uniform1fv(WebGLUniformLocation? location, Float32Array v);
@@ -2109,16 +2100,14 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             Set the size of the currently bound WebGLBuffer object for the passed target. The
             buffer is initialized to 0.
             
-        <dt><p class="idl-code">void bufferData(GLenum target, ArrayBufferView data, GLenum usage)</p>
-            <p class="idl-code">void bufferData(GLenum target, ArrayBuffer? data, GLenum usage)
+        <dt><p class="idl-code">void bufferData(GLenum target, BufferDataSource? data, GLenum usage)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferData.xml">man page</a>)</span></p>
         <dd>
             Set the size of the currently bound WebGLBuffer object for the passed target to the 
             size of the passed data, then write the contents of data to the buffer object.
             <br><br>
             If the passed data is null then an <code>INVALID_VALUE</code> error is generated.
-        <dt><p class="idl-code">void bufferSubData(GLenum target, GLintptr offset, ArrayBufferView data)</p>
-            <p class="idl-code">void bufferSubData(GLenum target, GLintptr offset, ArrayBuffer? data)
+        <dt><p class="idl-code">void bufferSubData(GLenum target, GLintptr offset, BufferDataSource? data)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferSubData.xml">man page</a>)</span></p>
         <dd>
             For the WebGLBuffer object bound to the passed target write the passed data starting at
@@ -2408,13 +2397,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
         <dt><p class="idl-code"><a name="TEXIMAGE2D_HTML">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, ImageData? pixels)</p>
-            <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLImageElement image) /* May throw DOMException */</p>
-            <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLCanvasElement canvas) /* May throw DOMException */</p>
-            <p class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat,
-                    GLenum format, GLenum type, HTMLVideoElement video) /* May throw DOMException */
+                    GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.1">OpenGL ES 2.0 &sect;3.7.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexImage2D.xml">man page</a>)</span></p>
         <dd>
             Uploads the given element or image data to the currently bound WebGLTexture. <br><br>
@@ -2498,13 +2481,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
         <dt><p class="idl-code"><a name="TEXSUBIMAGE2D_HTML">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, ImageData? pixels)</p>
-            <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLImageElement image) /* May throw DOMException */</p>
-            <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLCanvasElement canvas) /* May throw DOMException */</p>
-            <p class="idl-code">void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
-                       GLenum format, GLenum type, HTMLVideoElement video) /* May throw DOMException */
+                       GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexSubImage2D.xml">man page</a>)</span></p>
         <dd>
             Updates a sub-rectangle of the currently bound WebGLTexture with the contents of the
