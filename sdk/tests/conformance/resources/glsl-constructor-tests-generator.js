@@ -165,8 +165,7 @@ function getComponentValidationExpression(scalarType, compCount, maxCompVal) {
       var val_str = getScalarTypeValStr(compVal, scalarType);
       if (scalarType === "float") {
         // Comparison of floating point values with error bound 
-        checkComponentValues += "v[" + cc + "] >= " + val_str + " - errorBound && "; 
-        checkComponentValues += "v[" + cc + "] <= " + val_str + " + errorBound";
+        checkComponentValues += "abs(v[" + cc + "] - " + val_str + ") <= errorBound";
       }
       else {
         // Simple comparison to expected value
