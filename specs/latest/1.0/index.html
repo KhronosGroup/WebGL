@@ -1565,9 +1565,10 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, 
                            GLenum srcAlpha, GLenum dstAlpha);
 
+    typedef (ArrayBuffer or ArrayBufferView) BufferDataSource;
     void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
-    void bufferData(GLenum target, (ArrayBuffer or ArrayBufferView)? data, GLenum usage);
-    void bufferSubData(GLenum target, GLintptr offset, (ArrayBuffer or ArrayBufferView)? data);
+    void bufferData(GLenum target, BufferDataSource? data, GLenum usage);
+    void bufferSubData(GLenum target, GLintptr offset, BufferDataSource? data);
 
     [WebGLHandlesContextLoss] GLenum checkFramebufferStatus(GLenum target);
     void clear(GLbitfield mask);
@@ -2099,14 +2100,14 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             Set the size of the currently bound WebGLBuffer object for the passed target. The
             buffer is initialized to 0.
             
-        <dt><p class="idl-code">void bufferData(GLenum target, (ArrayBuffer or ArrayBufferView)? data, GLenum usage)
+        <dt><p class="idl-code">void bufferData(GLenum target, BufferDataSource? data, GLenum usage)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferData.xml">man page</a>)</span></p>
         <dd>
             Set the size of the currently bound WebGLBuffer object for the passed target to the 
             size of the passed data, then write the contents of data to the buffer object.
             <br><br>
             If the passed data is null then an <code>INVALID_VALUE</code> error is generated.
-        <dt><p class="idl-code">void bufferSubData(GLenum target, GLintptr offset, (ArrayBuffer or ArrayBufferView)? data)
+        <dt><p class="idl-code">void bufferSubData(GLenum target, GLintptr offset, BufferDataSource? data)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferSubData.xml">man page</a>)</span></p>
         <dd>
             For the WebGLBuffer object bound to the passed target write the passed data starting at

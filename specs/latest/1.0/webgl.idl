@@ -517,9 +517,10 @@ interface WebGLRenderingContextBase
     void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, 
                            GLenum srcAlpha, GLenum dstAlpha);
 
+    typedef (ArrayBuffer or ArrayBufferView) BufferDataSource;
     void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
-    void bufferData(GLenum target, (ArrayBuffer or ArrayBufferView)? data, GLenum usage);
-    void bufferSubData(GLenum target, GLintptr offset, (ArrayBuffer or ArrayBufferView)? data);
+    void bufferData(GLenum target, BufferDataSource? data, GLenum usage);
+    void bufferSubData(GLenum target, GLintptr offset, BufferDataSource? data);
 
     [WebGLHandlesContextLoss] GLenum checkFramebufferStatus(GLenum target);
     void clear(GLbitfield mask);
