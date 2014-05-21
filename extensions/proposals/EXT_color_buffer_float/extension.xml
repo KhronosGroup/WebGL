@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proposal href="proposals/EXT_color_buffer_float/">
+  <name>EXT_color_buffer_float</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Mark Callow, HI Corporation</contributor>
+
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>XX</number>
+
+  <depends>
+    <api version="2.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_color_buffer_float.txt"
+             name="EXT_color_buffer_float"/>
+
+    <features>
+      <feature>
+        <p>The following floating-point internal formats become <span
+        style="font-style: italic">color-renderable</span>: <code>R16F</code>,
+        <code>RG16F</code>, <code>RGBA16F</code>, <code>R32F</code>,
+        <code>RG32F</code>, <code>RGBA32F</code> and
+        <code>R11F_G11F_B10F</code>. A renderbuffer or a texture with a
+        color-renderable internal format can be used as a rendering target by
+        attaching it to a framebuffer object as a color attachment.</p>
+      </feature>
+
+      <feature>
+        <p>Renderbuffers with these internal formats can be created. Note that
+        textures with these internal formats can be created in core WebGL
+        2.0.</p>
+      </feature>
+
+      <feature>
+        <p>NOTE: </p>
+      </feature>
+
+      <feature>
+        <p>The format and type combination <code>RGBA</code> and
+        <code>FLOAT</code> becomes valid for reading from a floating-point
+        color buffer.</p>
+      </feature>
+    </features>
+
+    <p>Notes: <ul style="list-style-type: circle">
+        <li>Fragment shader outputs to buffers with these internal formats are
+        not clamped.</li>
+
+        <li>Colors specified with <code>clearColor</code> and
+        <code>blendColor</code> are not clamped when applied to buffers with
+        these internal formats.</li>
+
+        <li>The format and type combination <code>RGBA</code> and
+        <code>UNSIGNED_BYTE</code> cannot be used for reading from a
+        floating-point color buffer.</li>
+
+        <li>Multi-sample floating-point color buffers are not supported.</li>
+      </ul></p>
+  </overview>
+
+  <idl xml:space="preserve">module webgl {
+  interface EXT_color_buffer_float {
+  }; // interface EXT_color_buffer_float
+}; // module webgl</idl>
+
+  <history>
+    <revision date="2012/11/08">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</proposal>
