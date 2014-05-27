@@ -137,6 +137,28 @@ void main(void) {
 }
 </script>
 
+<script id="shader-vs-anglebug" type="x-shader/x-vertex">
+
+struct T_0 {
+  int v1;
+};
+
+void main(void) {
+
+  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+
+  struct T {
+    float v2;
+  };
+
+  T_0 x;
+  gl_Position.x += float(x.v1);
+
+  T y;
+  gl_Position.x += y.v2;
+}
+</script>
+
 <script id="shader-fs" type="x-shader/x-fragment">
 precision mediump float;
 void main(void) {
@@ -181,6 +203,14 @@ GLSLConformanceTester.runTests([
     fShaderSuccess: true,
     linkSuccess: false,
     passMsg: "A struct can't be defined with the same name as another struct defined in the same scope",
+  },
+  {
+    vShaderId: "shader-vs-anglebug",
+    vShaderSuccess: true,
+    fShaderId: "shader-fs",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: "Structs with appended underscored numbers don't cause link errors (ANGLE bug)",
   },
 ]);
 
