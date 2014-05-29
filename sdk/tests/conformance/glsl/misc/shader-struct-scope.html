@@ -159,6 +159,29 @@ void main(void) {
 }
 </script>
 
+<script id="shader-vs-masked-struct-variable" type="x-shader/x-vertex">
+
+struct T {
+  float f;
+};
+
+void main(void) {
+
+  T a;
+
+  gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+
+  struct T {
+    float q;
+  };
+
+  gl_Position.x += a.f;
+
+  T b;
+  gl_Position.x += b.q;
+}
+</script>
+
 <script id="shader-fs" type="x-shader/x-fragment">
 precision mediump float;
 void main(void) {
@@ -211,6 +234,14 @@ GLSLConformanceTester.runTests([
     fShaderSuccess: true,
     linkSuccess: true,
     passMsg: "Structs with appended underscored numbers don't cause link errors (ANGLE bug)",
+  },
+  {
+    vShaderId: "shader-vs-masked-struct-variable",
+    vShaderSuccess: true,
+    fShaderId: "shader-fs",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: "Variables of masked outer scope struct work with inner scope struct",
   },
 ]);
 
