@@ -695,12 +695,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   /* Uniforms and attributes */
   void vertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset);
 
-  /* TODO: these will have to be exposed differently -- for example,
-     by changing the return type of getVertexAttrib based on the
-     most recently set type for the vertex attrib */
-  // void glGetVertexAttribIiv(GLuint index, GLenum pname, GLint* params);
-  // void glGetVertexAttribIuiv(GLuint index, GLenum pname, GLuint* params);
-
   void uniform1ui(WebGLUniformLocation? location, GLuint v0);
   void uniform2ui(WebGLUniformLocation? location, GLuint v0, GLuint v1);
   void uniform3ui(WebGLUniformLocation? location, GLuint v0, GLuint v1, GLuint v2);
@@ -769,16 +763,14 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param);
   void samplerParameterfv(WebGLSampler? sampler, GLenum pname, Float32Array param);
   void samplerParameterfv(WebGLSampler? sampler, GLenum pname, sequence&lt;GLfloat&gt; param);
-
   any getSamplerParameter(WebGLSampler? sampler, GLenum pname);
 
   /* Sync objects */
   WebGLSync? fenceSync(GLenum condition, GLbitfield flags);
-  GLboolean isSync(WebGLSync? sync);
+  [WebGLHandlesContextLoss] GLboolean isSync(WebGLSync? sync);
   void deleteSync(WebGLSync? sync);
   GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout);
   void waitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout);
-  /* TODO: document return type */
   any getSyncParameter(WebGLSync? sync, GLenum pname);
 
   /* Transform Feedback */
@@ -1202,9 +1194,25 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <h4>Sync objects</h4>
 
-<!-- ======================================================================================================= -->
-
-    <h4>Sync objects</h4>
+    <dl class="methods">
+      <dt class="idl-code">any getSyncParameter(WebGLSync? sync, GLenum pname)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.2 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetSynciv.xml">man page</a>)</span>
+      </dt>
+      <dd>
+          Return the value for the passed pname given the passed WebGLSync object. The type returned is the natural
+          type for the requested pname, as given in the following table:
+          <table>
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>OBJECT_TYPE</td><td>GLenum</td></tr>
+              <tr><td>SYNC_STATUS</td><td>GLenum</td></tr>
+              <tr><td>SYNC_CONDITION</td><td>GLenum</td></tr>
+              <tr><td>SYNC_FLAGS</td><td>GLbitfield</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+          <p>Returns null if any OpenGL errors are generated during the execution of this
+          function.</p>
+      </dd>
+    </dl>
 
 <!-- ======================================================================================================= -->
 
