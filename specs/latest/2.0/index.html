@@ -695,12 +695,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   /* Uniforms and attributes */
   void vertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset);
 
-  /* TODO: these will have to be exposed differently -- for example,
-     by changing the return type of getVertexAttrib based on the
-     most recently set type for the vertex attrib */
-  // void glGetVertexAttribIiv(GLuint index, GLenum pname, GLint* params);
-  // void glGetVertexAttribIuiv(GLuint index, GLenum pname, GLuint* params);
-
   void uniform1ui(WebGLUniformLocation? location, GLuint v0);
   void uniform2ui(WebGLUniformLocation? location, GLuint v0, GLuint v1);
   void uniform3ui(WebGLUniformLocation? location, GLuint v0, GLuint v1, GLuint v2);
