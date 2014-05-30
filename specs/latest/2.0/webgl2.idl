@@ -432,7 +432,6 @@ interface WebGL2RenderingContextBase
   void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param);
   void samplerParameterfv(WebGLSampler? sampler, GLenum pname, Float32Array param);
   void samplerParameterfv(WebGLSampler? sampler, GLenum pname, sequence<GLfloat> param);
-
   any getSamplerParameter(WebGLSampler? sampler, GLenum pname);
 
   /* Sync objects */
@@ -441,7 +440,6 @@ interface WebGL2RenderingContextBase
   void deleteSync(WebGLSync? sync);
   GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout);
   void waitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout);
-  /* TODO: document return type */
   any getSyncParameter(WebGLSync? sync, GLenum pname);
 
   /* Transform Feedback */
