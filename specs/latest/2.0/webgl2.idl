@@ -433,7 +433,6 @@ interface WebGL2RenderingContextBase
   void samplerParameterfv(WebGLSampler? sampler, GLenum pname, Float32Array param);
   void samplerParameterfv(WebGLSampler? sampler, GLenum pname, sequence<GLfloat> param);
 
-  /* TODO: document return type */
   any getSamplerParameter(WebGLSampler? sampler, GLenum pname);
 
   /* Sync objects */
