@@ -410,10 +410,8 @@ interface WebGL2RenderingContextBase
   [WebGLHandlesContextLoss] GLboolean isQuery(WebGLQuery? query);
   void beginQuery(GLenum target, WebGLQuery? query);
   void endQuery(GLenum target);
-  /* TODO: document return type */
-  any getQuery(GLenum target, GLenum pname);
-  /* TODO: document return type */
-  any getQueryParameter(WebGLQuery? query, GLenum pname);
+  WebGLQuery? getQuery(GLenum target, GLenum pname);
+  GLuint getQueryObject(WebGLQuery? query, GLenum pname);
 
   /* Sampler Objects */
   WebGLSampler? createSampler();
