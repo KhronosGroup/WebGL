@@ -44,9 +44,11 @@
 "use strict";
 description("Test vec2 constructor expressions.");
 
+var targetType = "vec2"; 
+var testSet = GLSLConstructorTestsGenerator.getDefaultTestSet(targetType);
+
 // Generate tests
-// Args: prefix scalar type name, component count, scalar type name 
-var testCases = GLSLConstructorTestsGenerator.getVectorConstructorTests("", 2, "float");
+var testCases = GLSLConstructorTestsGenerator.getConstructorTests(targetType, testSet);
  
 // Run the tests 
 GLSLConformanceTester.runTests(testCases);
