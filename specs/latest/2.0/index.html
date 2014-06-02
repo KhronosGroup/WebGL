@@ -66,11 +66,11 @@
                 <a href="http://www.apple.com/">(Apple Inc.)</a>
             </dd>
     </dl>
-    
+
     <span style="font-size: x-small; font-style: oblique">Copyright &copy; 2013 Khronos Group</span>
 
     <hr />
-    
+
     <h2 class="no-toc">Abstract</h2>
     <p>
         This is Version 2.0 of the WebGL Specification.
@@ -89,7 +89,7 @@
         WebGL 1.0 specification</a>. It will only describe the differences from 1.0.</a>
 
     <h2 class="no-toc">Status of this document</h2>
-    
+
     <!--begin-status-->
     <p>
         This document is an editor's draft. Do not cite this document as other than work in
@@ -99,7 +99,7 @@
         <a href="http://www.khronos.org/webgl/public-mailing-list/">instructions</a>).
     </p>
     <!--end-status-->
-    
+
     <h2 class="no-toc">Table of contents</h2>
     <div id="toc"></div>
 
@@ -123,7 +123,7 @@
     <p>
      Many functions described in this document contain links to OpenGL ES
      man pages. While every effort is made to make these pages match the
-     OpenGL ES 3.0 specification <a href="#refsGLES30">[GLES30]</a>, 
+     OpenGL ES 3.0 specification <a href="#refsGLES30">[GLES30]</a>,
      they may contain errors. In the case of a contradiction, the OpenGL
      ES 3.0 specification is the final authority.
     </p>
@@ -149,7 +149,7 @@
         below. This object is used to manage OpenGL state and render to the drawing buffer, which
         must be created at the time of context creation.
     </p>
-    
+
 <!-- ======================================================================================================= -->
 
     <h3>Context Creation</h3>
@@ -216,7 +216,7 @@
 
         </ol>
     </p>
-    
+
 <!-- ======================================================================================================= -->
 
     <h2>DOM Interfaces</h2>
@@ -297,6 +297,34 @@ typedef unsigned long long GLuint64;
 
     <h3>WebGLSync</h3>
 
+    <p>
+        The <code>WebGLSync</code> interface represents an OpenGL Sync Object.
+        The underlying object is created as if by calling glFenceSync
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2">OpenGL ES 3.0 &sect;5.2</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glFenceSync.xhtml">man page</a>)
+        </span>,
+        blocked on as if by calling glClientWaitSync
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2.1">OpenGL ES 3.0 &sect;5.2.1</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glClientWaitSync.xhtml">man page</a>)
+        </span>,
+        waited on internal to GL as if by calling glWaitSync
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2.1">OpenGL ES 3.0 &sect;5.2.1</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glWaitSync.xhtml">man page</a>)
+        </span>,
+        queried as if by calling glGetSynciv
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.8">OpenGL ES 3.0 &sect;6.2.8</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetSynciv.xhtml">man page</a>)
+        </span>,
+        and destroyed as if by calling glDeleteSync
+        <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2">OpenGL ES 3.0 &sect;5.2</a>,
+          <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteSync.xhtml">man page</a>)
+        </span>.
+    </p>
     <p>
     </p>
     <pre class="idl">interface <dfn id="WebGLSync">WebGLSync</dfn> : WebGLObject {
@@ -1021,7 +1049,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.14">OpenGL ES 2.0 &sect;6.1.14</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetRenderbufferParameteriv.xml">glGetRenderbufferParameteriv</a>)</span>
       </dt>
       <dd>
-          Return the value for the passed pname given the passed target. The type returned is the natural 
+          Return the value for the passed pname given the passed target. The type returned is the natural
           type for the requested pname, as given in the following table:
           <table>
               <tr><th>pname</th><th>returned type</th></tr>
@@ -1294,22 +1322,22 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
-    
+
     <h3>Normative references</h3>
     <dl>
         <dt id="refsWEBGL10">[WEBGL10]</dt>
         <dd><cite><a href="http://www.khronos.org/registry/webgl/specs/1.0/">
-            WebGL Specification 1.0.2</a></cite>, 
+            WebGL Specification 1.0.2</a></cite>,
             C. Marrin 2013.
         </dd>
         <dt id="refsGLES30">[GLES30]</dt>
         <dd><cite><a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf">
-            OpenGL&reg; ES Version 3.0.2</a></cite>, 
+            OpenGL&reg; ES Version 3.0.2</a></cite>,
             B. Lipchak 2013.
         </dd>
         <dt id="refsGLES20GLSL">[GLES30GLSL]</dt>
         <dd><cite><a href="http://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.4.pdf">
-            The OpenGL&reg; ES Shading Language Version 3.00</a></cite>, 
+            The OpenGL&reg; ES Shading Language Version 3.00</a></cite>,
             R. Simpson, March 2013.
         </dd>
         <dt id="refsREGISTRY">[REGISTRY]</dt>
@@ -1323,7 +1351,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </dd>
         <dt id="refsWEBIDL">[WEBIDL]</dt>
         <dd><cite><a href="http://dev.w3.org/2006/webapi/WebIDL/">
-            Web IDL: W3C Editor’s Draft</a></cite>, 
+            Web IDL: W3C Editor’s Draft</a></cite>,
             C. McCormack.
         </dd>
     </dl>
