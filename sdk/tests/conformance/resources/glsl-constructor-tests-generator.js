@@ -44,7 +44,7 @@ var constructorVertexTemplate = [
   
   "void main() {",
   "  $(argsList)",
-    
+  
   "  $(type) v = $(type)($(argsConstr));",
   
   "  if ($(checkCompVals))",
@@ -263,15 +263,6 @@ function getGLSLTypeComponentCount(type) {
 }
 
 
-// Returns the concatenation string if the index is not at the last item
-function getConcatStr(ix, count, conCatStr) {
-  if (ix < count - 1)
-    return conCatStr;
-  else
-    return "";
-}
-
-   
 // Returns the constructor expression with the components set to a sequence of scalar values
 // Like vec3(1.0, 2.0, 3.0)
 function getComponentSequenceConstructorExpression(typeCode, firstCompValue, targetType) {
@@ -283,15 +274,12 @@ function getComponentSequenceConstructorExpression(typeCode, firstCompValue, tar
   } 
   else {
     // Structured typeargTypeCode[0] === "m"
-    var constrExp = getGLSLArgumentType(typeCode, targetType) + "(";
-
     compCount = getTypeCodeComponentCount(typeCode);
-    for (var aa = 0; aa < compCount; ++aa) {
-        constrExp += getScalarTypeValStr(firstCompValue + aa, scalarType);
-        constrExp += getConcatStr(aa, compCount, ", ");
-    }
+    var constrExpParts = new Array(compCount);
+    for (var aa = 0; aa < compCount; ++aa) 
+        constrExpParts[aa] = getScalarTypeValStr(firstCompValue + aa, scalarType);  
     
-    return constrExp + ");"; 
+    return getGLSLArgumentType(typeCode, targetType) + "(" + constrExpParts.join(", ") + ");"; 
   }
 }
 
@@ -314,70 +302,59 @@ function getComponentValidationExpression(refCompVals, targetType) {
     return "false";
     
   var scalarType = getGLSLScalarType(targetType);
-  var checkComponentValues = "";
+  var checkComponentValueParts = new Array(refCompVals.length);
   for (var cc = 0; cc < refCompVals.length; ++cc) {
     var val_str = getScalarTypeValStr(refCompVals[cc], scalarType);
     var comp_sel_exp = getComponentSelectorExpStr(targetType, cc);
     if (scalarType === "float") {
       // Comparison of floating point values with error bound 
-      checkComponentValues += "abs(" + comp_sel_exp + " - " + val_str + ") <= errorBound";
+      checkComponentValueParts[cc] = "abs(" + comp_sel_exp + " - " + val_str + ") <= errorBound";
     }
     else {
       // Simple comparison to expected value
-      checkComponentValues += comp_sel_exp + " == " + val_str;
+      checkComponentValueParts[cc] = comp_sel_exp + " == " + val_str;
     }
-    
-    // Add logical and operator if not comparing with last component  
-    checkComponentValues += getConcatStr(cc, refCompVals.length, " && ");
   }       
   
-  return checkComponentValues;      
+  return checkComponentValueParts.join(" && ");
 }
 
 
 // Returns substitution parts to turn the shader template into testable shader code 
 function getTestShaderParts(targetType, argExp, firstCompValue) {
   // glsl code of declarations of arguments 
-  var argsList = "";
+  var argsListParts = new Array(argExp.length);
 
   // glsl code of constructor expression
-  var argsConstr = "";
+  var argsConstrParts = new Array(argExp.length);
   
   // glsl type expression
-  var typeExp  = targetType + "(";    
-
+  var typeExpParts = new Array(argExp.length);
   for (var aa = 0; aa < argExp.length; ++aa) {
-    var arg          = "";
     var typeCode     = argExp[aa];
     var argCompCount = getTypeCodeComponentCount(typeCode);
     var argName      = "a" + aa; 
     var argType      = getGLSLArgumentType(typeCode, targetType);
     var argConstrExp = argType + " " + argName + " = " + getComponentSequenceConstructorExpression(typeCode, firstCompValue, targetType);
     
-    // Indent if not first argument
-    argsList += ((aa > 0) ? "  " : "");
-    
     // Add construction of one argument
-    argsList += argConstrExp + "\n";
+    // Indent if not first argument
+    argsListParts[aa] = ((aa > 0) ? "  " : "") + argConstrExp;
       
     // Add argument name to target type argument list
-    argsConstr += argName;
+    argsConstrParts[aa] = argName;
     
-    // Add separating comma (if not last argument)
-    argsConstr += getConcatStr(aa, argExp.length, ", ");
-        
+    // Add type name to type expression  
+    typeExpParts[aa] = argType;
+
     // Increment argument component value so all argument component arguments have a unique value
     firstCompValue += argCompCount;
-
-    // Add type name to type expression  
-    typeExp += argType;
-    typeExp += getConcatStr(aa, argExp.length, ", ");
   }
   
   return {
-    argsList:   argsList,
-    argsConstr: argsConstr,
-    typeExp:    typeExp + ")"
+    argsList:   argsListParts.join("\n") + "\n",
+    argsConstr: argsConstrParts.join(", "),
+    typeExp:    targetType + "(" + typeExpParts.join(", ") + ")"
   };
 }
 
