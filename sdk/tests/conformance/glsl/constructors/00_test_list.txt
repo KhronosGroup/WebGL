@@ -7,3 +7,6 @@ glsl-construct-ivec4.html
 glsl-construct-bvec2.html
 glsl-construct-bvec3.html
 glsl-construct-bvec4.html
+glsl-construct-mat2.html
+glsl-construct-mat3.html
+glsl-construct-mat4.html
