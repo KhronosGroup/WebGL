@@ -508,7 +508,7 @@ function getConstructorExpressionInfo(targetType, argExp, firstCompValue) {
       // Matrix target type
       if (argCompCountsSum === 1) {
         // One scalar argument
-        // Matrix constructors with one scalar set all components om the diagonal to the same value
+        // Matrix constructors with one scalar set all components on the diagonal to the same value
         // All other components are set to zero 
         refCompVals = matCompArrayCreateDiagonalMatrix(Math.round(Math.sqrt(targetCompCount)), firstCompValue);
         testMsg     = "valid (diagonal components set to the same value, off-diagonal components set to zero)";
@@ -526,7 +526,7 @@ function getConstructorExpressionInfo(targetType, argExp, firstCompValue) {
         else {
           // More than one argument or one argument not of type matrix
           // Can be treated in the same manner
-          // Argments can not be of type matrix
+          // Arguments can not be of type matrix
           var matFound = false;
           for (var aa = 0; aa < argExp.length; ++aa) 
             if (argExp[aa][0] === "m")
