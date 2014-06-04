@@ -50,10 +50,10 @@ var fShaderDB = {};
 
 /**
  * vShaderSource: the source code for vertex shader
- * vShaderSuccess: true if vertex shader compiliation should
+ * vShaderSuccess: true if vertex shader compilation should
  *   succeed.
  * fShaderSource: the source code for fragment shader
- * fShaderSuccess: true if fragment shader compiliation should
+ * fShaderSuccess: true if fragment shader compilation should
  *   succeed.
  * linkSuccess: true of link should succeed
  * passMsg: msg to describe success condition.
@@ -131,7 +131,7 @@ function runOneTest(gl, info) {
     fShader = wtu.loadShader(gl, fSource, gl.FRAGMENT_SHADER);
     if (info.fShaderTest) {
       if (!info.fShaderTest(fShader)) {
-        testFailed("[fragment shdaer test] " + passMsg);
+        testFailed("[fragment shader test] " + passMsg);
         return;
       }
     }
@@ -290,7 +290,7 @@ function getSuccess(msg) {
   if (msg.indexOf("succeed") >= 0) {
     return true;
   }
-  testFailed("bad test description. Must have 'fail' or 'success'");
+  testFailed("bad test description. Must have 'fail' or 'succeed'");
 }
 
 function setupTest() {
