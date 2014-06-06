@@ -411,7 +411,8 @@ interface WebGL2RenderingContextBase
   void beginQuery(GLenum target, WebGLQuery? query);
   void endQuery(GLenum target);
   WebGLQuery? getQuery(GLenum target, GLenum pname);
-  GLuint getQueryObject(WebGLQuery? query, GLenum pname);
+  /* TODO: document return type */
+  any getQueryParameter(WebGLQuery? query, GLenum pname);
 
   /* Sampler Objects */
   WebGLSampler? createSampler();
