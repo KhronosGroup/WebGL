@@ -71,7 +71,7 @@
       bool pixelIxValid   = (floor(gl_FragCoord.xy) == vTargetPixelCoord);
       
       // Check fractional part of coordinates
-      bool fracCoordValid = (fract(gl_FragCoord.xy) == vec2(0.5));
+      bool fracCoordValid = all(lessThan(abs(fract(gl_FragCoord.xy) - vec2(0.5)), vec2(0.0001)));
        
       gl_FragColor = (pixelIxValid && fracCoordValid) ? green : red;
     }
