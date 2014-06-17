@@ -931,6 +931,25 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
                 <tr><td>UNPACK_SKIP_ROWS</td><td>GLboolean</td></tr>
                 <tr><td>VERTEX_ARRAY_BINDING</td><td>WebGLVertexArrayObject</td></tr>
             </table><br>
+
+        <dt class="idl-code">any getIndexedParameter(GLenum target, GLuint index)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.1">OpenGL ES 3.0 &sect;6.1.1</a>,
+            <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGet.xhtml">glGet OpenGL ES 3.0 man page</a>)</span>
+        <dd>
+            Return the indexed value for the passed <code class="param">target</code>. The type returned is the natural type for the requested <code class="param">pname</code>,
+            as given in the following table:
+            <table class="foo">
+                <tr><th>target</th><th>returned type</th></tr>
+                <tr><td>TRANSFORM_FEEDBACK_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+                <tr><td>TRANSFORM_FEEDBACK_BUFFER_SIZE</td><td>GLsizeiptr</td></tr>
+                <tr><td>TRANSFORM_FEEDBACK_BUFFER_START</td><td>GLintptr</td></tr>
+                <tr><td>UNIFORM_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+                <tr><td>UNIFORM_BUFFER_SIZE</td><td>GLsizeiptr</td></tr>
+                <tr><td>UNIFORM_BUFFER_START</td><td>GLintptr</td></tr>
+            </table><br>
+            <p>If <code class="param">target</code> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+            <p>If <code class="param">index</code> is outside of the valid range for the indexed state <code class="param">target</code>, generates an <code>INVALID_VALUE</code> error.</p>
+            <p>If an OpenGL error is generated, returns null.</p>
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -1321,6 +1340,64 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 <!-- ======================================================================================================= -->
 
     <h4>Uniform Buffer objects</h4>
+
+    <p>
+        Uniform buffer objects provide the storage for named uniform blocks, so the values of active uniforms
+        in named uniform blocks may be changed by modifying the contents of the buffer object.
+    </p>
+
+    <dl class="methods">
+        <dt class="idl-code">void bindBufferBase(GLenum target, GLuint index, WebGLBuffer? buffer)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.9.1">OpenGL ES 3.0 &sect;2.9.1</a>,
+            <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindBufferBase.xhtml">man page</a>)</span>
+        <dd>
+            Binds the given <code class="interface">WebGLBuffer</code> object to the binding point at <code class="param">index</code> of the array of targets
+            specified by <code class="param">target</code>.
+
+        <dt class="idl-code">void bindBufferRange(GLenum target, GLuint index, WebGLBuffer? buffer, GLintptr offset, GLsizeiptr size)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.9.1">OpenGL ES 3.0 &sect;2.9.1</a>,
+            <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindBufferRange.xhtml">man page</a>)</span>
+        <dd>
+            Binds a range of the <code class="interface">WebGLBuffer</code> object buffer represented by <code class="param">offset</code> and <code class="param">size</code>
+            to the binding point at <code class="param">index</code> of the array of targets specified by <code class="param">target</code>
+
+        <dt class="idl-code">sequence&lt;GLuint&gt;? getUniformIndices(WebGLProgram? program, sequence&lt;DOMString&gt; uniformNames)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0 &sect;2.11.6</a>,
+            <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetUniformIndices.xhtml">man page</a>)</span>
+        <dd>
+            Retrieves the indices of a number of uniforms within <code class="param">program</code>.
+
+        <dt class="idl-code">sequence&lt;GLint&gt;? getActiveUniforms(WebGLProgram? program, sequence&lt;GLuint&gt; uniformIndices, GLenum pname)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0 &sect;2.11.6</a>,
+            <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetActiveUniformsiv.xhtml">man page</a>)</span>
+        <dd>
+            Queries the value of the parameter named <code class="param">pname</code> for each of the uniforms within <code class="param">program</code> whose indices
+            are specified in the array of <code class="param">uniformIndices</code>.
+
+        <dt class="idl-code">GLuint getUniformBlockIndex(WebGLProgram? program, DOMString uniformBlockName)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0 &sect;2.11.6</a>,
+            <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetUniformBlockIndex.xhtml">man page</a>)</span>
+        <dd>
+            Retrieves the index of a uniform block within <code class="param">program</code>.
+
+        <dt class="idl-code">any getActiveUniformBlockParameter(WebGLProgram? program, GLuint uniformBlockIndex, GLenum pname)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0 &sect;2.11.6</a>,
+            <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetActiveUniformBlockiv.xhtml">man page</a>)</span>
+        <dd>
+            Retrieves information about an active uniform block within <code class="param">program</code>.
+
+        <dt class="idl-code">DOMString? getActiveUniformBlockName(WebGLProgram? program, GLuint uniformBlockIndex)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0 &sect;2.11.6</a>,
+            <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetActiveUniformBlockName.xhtml">man page</a>)</span>
+        <dd>
+            Retrieves the name of the active uniform block at <code class="param">uniformBlockIndex</code> within <code class="param">program</code>.
+
+        <dt class="idl-code">void uniformBlockBinding(WebGLProgram? program, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0 &sect;2.11.6</a>,
+            <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glUniformBlockBinding.xhtml">man page</a>)</span>
+        <dd>
+            Assigns binding points for active uniform blocks.
+    </dl>
 
 <!-- ======================================================================================================= -->
 
