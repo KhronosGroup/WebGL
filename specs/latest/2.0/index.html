@@ -804,7 +804,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   WebGLTransformFeedback? createTransformFeedback();
   void deleteTransformFeedback(WebGLTransformFeedback?);
   [WebGLHandlesContextLoss] GLboolean isTransformFeedback(WebGLTransformFeedback?);
-  void bindTransformFeedback (GLenum target, GLuint id);
+  void bindTransformFeedback (GLenum target, WebGLTransformFeedback? id);
   void beginTransformFeedback(GLenum primitiveMode);
   void endTransformFeedback();
   void transformFeedbackVaryings(WebGLProgram? program, GLsizei count, sequence&lt;DOMString&gt; varyings, GLenum bufferMode);
@@ -1244,6 +1244,79 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 <!-- ======================================================================================================= -->
 
     <h4>Transform feedback</h4>
+
+    <p>
+        Transform feedback mode captures the values of output variables written by the vertex shader. The
+        vertices are captured before flatshading and clipping. The transformed vertices may be optionally
+        discarded after being stored into one or more buffer objects, or they can be passed on down to the
+        clipping stage for further processing. The set of output variables captured is determined when a
+        program is linked.
+    </p>
+
+    <dl class="methods">
+        <dt class="idl-code">WebGLTransformFeedback? createTransformFeedback()
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.1">OpenGL ES 3.0 &sect;2.14.1</a>,
+            similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGenTransformFeedbacks.xhtml">glGenTransformFeedbacks</a>)</span>
+        <dd>
+            Create a <code class="interface">WebGLTransformFeedback</code> object and initialize it with a transform feedback object name as if by
+            calling glGenTransformFeedbacks.
+
+        <dt class="idl-code">void deleteTransformFeedback(WebGLTransformFeedback? transformFeedback)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.1">OpenGL ES 3.0 &sect;2.14.1</a>,
+            similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteTransformFeedbacks.xhtml">glDeleteTransformFeedbacks</a>)</span>
+        <dd>
+            Delete the transform feedback object contained in the passed <code class="interface">WebGLTransformFeedback</code> as if by calling
+            glDeleteTransformFeedbacks. If the transform feedback has already been deleted the call has no effect.
+            Note that the transform feedback object will be deleted when the <code class="interface">WebGLTransformFeedback</code> object is destroyed.
+            This method merely gives the author greater control over when the vertex array object is destroyed.
+
+        <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isTransformFeedback(WebGLTransformFeedback? transformFeedback)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.11">OpenGL ES 3.0 &sect;6.1.11</a>,
+            <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glIsTransformFeedback.xhtml">man page</a>)</span>
+        <dd>
+            Return true if the passed <code class="interface">WebGLTransformFeedback</code> is valid and false otherwise. <br><br>
+
+            Returns false if the transform feedback's <a href="#webgl-object-invalidated-flag">invalidated
+            flag</a> is set.
+
+        <dt class="idl-code">void bindTransformFeedback (GLenum target, WebGLTransformFeedback? transformFeedback)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.1">OpenGL ES 3.0 &sect;2.14.1</a>,
+            <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindTransformFeedback.xhtml">man page</a>)</span>
+        <dd>
+            Bind the given <code class="interface">WebGLTransformFeedback</code> object.
+            If <code class="param">transformFeedback</code> is null, the default transform feedback object provided by the context
+            is bound.
+
+        <dt class="idl-code">void beginTransformFeedback(GLenum primitiveMode)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.2">OpenGL ES 3.0 &sect;2.14.2</a>,
+            <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBeginTransformFeedback.xhtml">man page</a>)</span>
+        <dd>
+
+        <dt class="idl-code">void endTransformFeedback()
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.2">OpenGL ES 3.0 &sect;2.14.2</a>,
+            <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBeginTransformFeedback.xhtml">man page</a>)</span>
+        <dd>
+
+        <dt class="idl-code">void pauseTransformFeedback()
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.2">OpenGL ES 3.0 &sect;2.14.2</a>,
+            <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glPauseTransformFeedback.xhtml">man page</a>)</span>
+        <dd>
+
+        <dt class="idl-code">void resumeTransformFeedback()
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.2">OpenGL ES 3.0 &sect;2.14.2</a>,
+            <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glResumeTransformFeedback.xhtml">man page</a>)</span>
+        <dd>
+
+        <dt class="idl-code">void transformFeedbackVaryings(WebGLProgram? program, GLsizei count, sequence&lt;DOMString&gt; varyings, GLenum bufferMode)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.8">OpenGL ES 3.0 &sect;2.11.8</a>,
+            <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTransformFeedbackVaryings.xhtml">man page</a>)</span>
+        <dd>
+
+        <dt class="idl-code">WebGLActiveInfo? getTransformFeedbackVarying(WebGLProgram? program, GLuint index)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.8">OpenGL ES 3.0 &sect;2.11.8</a>,
+            <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetTransformFeedbackVarying.xhtml">man page</a>)</span>
+        <dd>
+    </dl>
 
 <!-- ======================================================================================================= -->
 
