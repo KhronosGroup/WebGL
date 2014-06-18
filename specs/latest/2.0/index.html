@@ -1384,7 +1384,22 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetActiveUniformBlockiv.xhtml">man page</a>)</span>
         <dd>
-            Retrieves information about an active uniform block within <code class="param">program</code>.
+            Retrieves information about an active uniform block within <code class="param">program</code>. The type returned is the natural type for the requested
+            <code class="param">pname</code>, as given in the following table:
+            <table class="foo">
+                <tr><th>pname</th><th>returned type</th></tr>
+                <tr><td>UNIFORM_BLOCK_BINDING</td><td>GLuint</td></tr>
+                <tr><td>UNIFORM_BLOCK_DATA_SIZE</td><td>GLuint</td></tr>
+                <tr><td>UNIFORM_BLOCK_NAME_LENGTH</td><td>GLuint</td></tr>
+                <tr><td>UNIFORM_BLOCK_ACTIVE_UNIFORMS</td><td>GLuint</td></tr>
+                <tr><td>UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES</td><td>Uint32Array</td></tr>
+                <tr><td>UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER</td><td>GLboolean</td></tr>
+                <tr><td>UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER</td><td>GLboolean</td></tr>
+            </table><br>
+            <p>If <code class="param">pname</code> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+            <p>If <code class="param">uniformBlockIndex</code> is not an active block uniform for <code class="param">program</code> or greater than or equal to the
+            value of <code>ACTIVE_UNIFORM_BLOCKS</code>, generates an <code>INVALID_VALUE</code> error.</p>
+            <p>If an OpenGL error is generated, returns null.</p>
 
         <dt class="idl-code">DOMString? getActiveUniformBlockName(WebGLProgram? program, GLuint uniformBlockIndex)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0 &sect;2.11.6</a>,
