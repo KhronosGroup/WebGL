@@ -54,7 +54,7 @@
           either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
           equal to the following number of bytes:</p>
           <blockquote><code>
-            floor((max(width, 8) * max(height, 8) * 4 + 7) / 8)
+            max(width, 8) * max(height, 8) / 2
           </code></blockquote>
           <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
           </dd>
@@ -65,7 +65,7 @@
           either <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be
           equal to the following number of bytes:</p>
           <blockquote><code>
-            floor((max(width, 16) * max(height, 8) * 2 + 7) / 8)
+            max(width, 16) * max(height, 8) / 4
           </code></blockquote>
           <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
           </dd>
@@ -88,9 +88,6 @@ interface WEBGL_compressed_texture_pvrtc {
     </revision>
     <revision date="2013/07/03">
       <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
-    </revision>
-    <revision date="2014/04/17">
-      <change>Corrected ArrayBufferView length calculations to match IMG_texture_compression_pvrtc spec.</change>
     </revision>
   </history>
 </draft>
