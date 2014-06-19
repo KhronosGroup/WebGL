@@ -180,8 +180,8 @@ function runTestExtension() {
     }
 
     supportedFormats = gl.getParameter(gl.COMPRESSED_TEXTURE_FORMATS);
-    // There should be exactly 3 formats
-    shouldBe("supportedFormats.length", "3");
+    // There should be exactly 4 formats
+    shouldBe("supportedFormats.length", "4");
 
     // check that all 3 formats exist
     for (var name in validFormats.length) {
@@ -341,7 +341,7 @@ function compareRect(
                 if (Math.abs(actual[actualOffset + jj] - expected[jj]) > tolerance) {
                     failed = true;
                     var was = actual[actualOffset + 0].toString();
-                    for (j = 1; j < 4; ++j) {
+                    for (var j = 1; j < 4; ++j) {
                         was += "," + actual[actualOffset + j];
                     }
                     testFailed('at (' + xx + ', ' + yy +
