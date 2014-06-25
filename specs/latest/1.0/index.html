@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 14 May 2014</h2>
+    <h2 class="no-toc">Editor's Draft 25 June 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2324,7 +2324,11 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             For any pixel lying outside the frame buffer, all channels of the associated texel are
             initialized to 0; see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the
-            Framebuffer</a>.
+            Framebuffer</a>. <br><br>
+
+            If this function attempts to read from a complete framebuffer with a missing attachment,
+            an <code>INVALID_OPERATION</code> error is generated
+            per <a href="#READING_FROM_MISSING_ATTACHMENT">Reading from a Missing Attachment</a>.
         <dt class="idl-code">void copyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
                            GLint x, GLint y, GLsizei width, GLsizei height)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCopyTexSubImage2D.xml">man page</a>)</span>
@@ -2334,7 +2338,11 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             For any pixel lying outside the frame buffer, all channels of the associated texel are
             initialized to 0; see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the
-            Framebuffer</a>.
+            Framebuffer</a>. <br><br>
+
+            If this function attempts to read from a complete framebuffer with a missing attachment,
+            an <code>INVALID_OPERATION</code> error is generated
+            per <a href="#READING_FROM_MISSING_ATTACHMENT">Reading from a Missing Attachment</a>.
         <dt class="idl-code">WebGLTexture? createTexture()
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenTextures.xml">man page</a>)</span>
         <dd>
@@ -2928,6 +2936,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the Framebuffer</a>.
             <br><br>
 
+            If this function attempts to read from a complete framebuffer with a missing color
+            attachment, an <code>INVALID_OPERATION</code> error is generated
+            per <a href="#READING_FROM_MISSING_ATTACHMENT">Reading from a Missing Attachment</a>.
     </dl>
     
 <!-- ======================================================================================================= -->
@@ -3637,10 +3648,10 @@ extensions.
     in the OpenGL ES 2.0 spec) will instead generate an <code>INVALID_OPERATION</code> error.
 </p>
 
-<h3>Reading from a missing attachment</h3>
+<h3><a name="READING_FROM_MISSING_ATTACHMENT">Reading From a Missing Attachment</a></h3>
 <p>
     In the OpenGL ES 2.0 API, it is not specified what happens when a command tries to source
-    data from a missing attachment, such as ReadPixels of color data from a complete FB
+    data from a missing attachment, such as ReadPixels of color data from a complete framebuffer
     that does not have a color attachment.
 </p>
 <p>
