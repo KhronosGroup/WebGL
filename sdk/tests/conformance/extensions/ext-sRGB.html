@@ -62,20 +62,15 @@ function toVec3String(val) {
 
 var e = 2; // Amount of variance to allow in result pixels - may need to be tweaked higher
 
-function expectResult(target, successMessage, failureMessage) {
-  var anyDiffer = false;
-  var source = readLocation(0.5, 0.5);
-  for (var m = 0; m < 3; m++) {
-    if (Math.abs(source[m] - target) > e) {
-      anyDiffer = true;
-      testFailed(failureMessage + "; should be " + toVec3String(target) + ", was " + toVec3String(source));
-      break;
-    }
-  }
-
-  if (!anyDiffer) {
-    testPassed(successMessage);
-  }
+function expectResult(target) {
+  wtu.checkCanvasRect(gl,
+                      Math.floor(gl.drawingBufferWidth / 2),
+                      Math.floor(gl.drawingBufferHeight / 2),
+                      1,
+                      1,
+                      target,
+                      undefined,
+                      e);
 }
 
 function createGreysRGBTexture(gl, color) {
@@ -109,7 +104,7 @@ function createGreysRGBTexture(gl, color) {
 
 function testValidFormat(fn, internalFormat, formatName) {
   fn(internalFormat);
-  glErrorShouldBe(gl, gl.NO_ERROR, "was able to create type " + formatName);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "was able to create type " + formatName);
 }
 
 function testInvalidFormat(fn, internalFormat, formatName) {
@@ -267,10 +262,8 @@ function runTextureReadConversionTest() {
 
   for (var ii = 0; ii < conversions.length; ii++) {
     var tex = createGreysRGBTexture(gl, conversions[ii][0]);
-    wtu.drawQuad(gl);
-    expectResult(conversions[ii][1],
-                 "sRGB texture read returned correct data",
-                 "sRGB texture read returned incorrect data");
+    wtu.drawUnitQuad(gl);
+    expectResult(conversions[ii][1]);
   }
 }
 
@@ -283,7 +276,7 @@ function runFramebufferTextureConversionTest() {
   var fbo = gl.createFramebuffer();
   gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
-  glErrorShouldBe(gl, gl.NO_ERROR);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
   shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, ext.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING_EXT)', 'ext.SRGB_EXT');
   shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
@@ -301,10 +294,8 @@ function runFramebufferTextureConversionTest() {
 
   for (var ii = 0; ii < conversions.length; ii++) {
     gl.uniform1f(gl.getUniformLocation(program, "uColor"), conversions[ii][0]/255.0);
-    wtu.drawQuad(gl, [0, 0, 0, 0]);
-    expectResult(conversions[ii][1],
-                 "framebuffer (texture) read returned correct data",
-                 "framebuffer (texture) read returned incorrect data");
+    wtu.drawUnitQuad(gl, [0, 0, 0, 0]);
+    expectResult(conversions[ii][1]);
   }
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -318,13 +309,13 @@ function runFramebufferRenderbufferConversionTest() {
     var rbo = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, rbo);
     gl.renderbufferStorage(gl.RENDERBUFFER, ext.SRGB8_ALPHA8_EXT, width, height);
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
     var fbo = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
                                gl.RENDERBUFFER, rbo);
-    glErrorShouldBe(gl, gl.NO_ERROR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
     shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, ext.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING_EXT)', 'ext.SRGB_EXT');
     shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
@@ -347,10 +338,8 @@ function runFramebufferRenderbufferConversionTest() {
 
   for (var ii = 0; ii < conversions.length; ii++) {
     gl.uniform1f(gl.getUniformLocation(program, "uColor"), conversions[ii][0]/255.0);
-    wtu.drawQuad(gl, [0, 0, 0, 0]);
-    expectResult(conversions[ii][1],
-                 "framebuffer (renderbuffer) read returned the correct data",
-                 "framebuffer (renderbuffer) read returned incorrect data");
+    wtu.drawUnitQuad(gl, [0, 0, 0, 0]);
+    expectResult(conversions[ii][1]);
   }
 }
 
