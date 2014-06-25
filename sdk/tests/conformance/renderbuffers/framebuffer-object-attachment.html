@@ -425,6 +425,7 @@ if (checkValidColorDepthCombination()) {
     testFramebufferIncompleteAttachment();
     testFramebufferIncompleteMissingAttachment();
     testUsingIncompleteFramebuffer();
+    testReadingFromMissingAttachment();
 }
 
 function checkFramebuffer(expected) {
@@ -599,6 +600,59 @@ function testFramebufferIncompleteDimensions() {
     checkFramebuffer(gl.FRAMEBUFFER_COMPLETE);
 
     wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+}
+
+function testReadingFromMissingAttachment() {
+    debug("");
+    debug("Test drawing or reading from a missing framebuffer attachment");
+
+    shouldBeNonNull("fbo = gl.createFramebuffer()");
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+
+    var size = 16;
+
+    // The only scenario we can verify is an attempt to read or copy
+    // from a missing color attachment while the framebuffer is still
+    // complete.
+    shouldBeNonNull("depthBuffer = gl.createRenderbuffer()");
+    gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
+    gl.framebufferRenderbuffer(
+        gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, size, size);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "After depth renderbuffer setup");
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        debug("Unable to allocate a framebuffer with just a depth attachment; this is legal");
+        // Try just a depth/stencil renderbuffer
+        gl.framebufferRenderbuffer(
+            gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, null);
+        shouldBeNonNull("depthStencilBuffer = gl.createRenderbuffer()");
+        gl.bindRenderbuffer(gl.RENDERBUFFER, depthStencilBuffer);
+        gl.framebufferRenderbuffer(
+            gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, depthStencilBuffer);
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, size, size);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "After depth+stencil renderbuffer setup");
+        if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+            debug("Unable to allocate a framebuffer with just a depth+stencil attachment; this is legal");
+            return;
+        }
+    }
+
+    // The FBO has no color attachment. ReadPixels, CopyTexImage2D,
+    // and CopyTexSubImage2D should all generate INVALID_OPERATION.
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Before ReadPixels from missing attachment");
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "After ReadPixels from missing attachment");
+
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Before CopyTexImage2D from missing attachment");
+    gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, size, size, 0);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "After CopyTexImage2D from missing attachment");
+
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Before CopyTexSubImage2D from missing attachment");
+    gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, size, size);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "After CopyTexSubImage2D from missing attachment");
 }
 
 var successfullyParsed = true;
