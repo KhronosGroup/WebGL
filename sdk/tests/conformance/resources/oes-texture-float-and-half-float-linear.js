@@ -140,10 +140,15 @@ function generateTest(extensionTypeName, extensionName, pixelType, prologue) {
 
         if (textureTarget == gl.TEXTURE_2D) {
             gl.texImage2D(gl.TEXTURE_2D, 0, format, format, gl[pixelType], canvas2d);
-            if (minFilter != gl.NEAREST && minFilter !=  gl.LINEAR)
-            gl.generateMipmap(gl.TEXTURE_2D);
-        }
-        else if (textureTarget == gl.TEXTURE_CUBE_MAP) {
+            if (minFilter != gl.NEAREST && minFilter != gl.LINEAR) {
+                wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors during texture setup");
+                gl.generateMipmap(gl.TEXTURE_2D);
+                if (gl.getError() != gl.NO_ERROR) {
+                    debug("generateMipmap failed for floating-point TEXTURE_2D -- this is legal -- skipping the rest of this test");
+                    return;
+                }
+            }
+        } else if (textureTarget == gl.TEXTURE_CUBE_MAP) {
             var targets = [
                 gl.TEXTURE_CUBE_MAP_POSITIVE_X,
                 gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
@@ -153,8 +158,14 @@ function generateTest(extensionTypeName, extensionName, pixelType, prologue) {
                 gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
                 for (var tt = 0; tt < targets.length; ++tt)
                     gl.texImage2D(targets[tt], 0, format, format, gl[pixelType], canvas2d);
-                if (minFilter != gl.NEAREST && minFilter !=  gl.LINEAR)
+                if (minFilter != gl.NEAREST && minFilter != gl.LINEAR) {
+                    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors during texture setup");
                     gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+                    if (gl.getError() != gl.NO_ERROR) {
+                        debug("generateMipmap failed for floating-point TEXTURE_CUBE_MAP -- this is legal -- skipping the rest of this test");
+                        return;
+                    }
+                }
         }
         wtu.clearAndDrawUnitQuad(gl);
         if (!linear) {
