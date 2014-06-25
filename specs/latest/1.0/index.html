@@ -3637,6 +3637,23 @@ extensions.
     in the OpenGL ES 2.0 spec) will instead generate an <code>INVALID_OPERATION</code> error.
 </p>
 
+<h3>Reading from a missing attachment</h3>
+<p>
+    In the OpenGL ES 2.0 API, it is not specified what happens when a command tries to source
+    data from a missing attachment, such as ReadPixels of color data from a complete FB
+    that does not have a color attachment.
+</p>
+<p>
+    In the WebGL API, such operations that require data from an attachment that is missing will
+    generate an <code>INVALID_OPERATION</code> error. This applies to the following functions:
+    
+    <ul>
+    <li> <code>copyTexImage2D</code>
+    <li> <code>copyTexSubImage2D</code>
+    <li> <code>readPixels</code>
+    </ul>
+</p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
