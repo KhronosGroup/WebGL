@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 29 May 2014</h2>
+    <h2 class="no-toc">Editor's Draft 25 June 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -67,7 +67,7 @@
             </dd>
     </dl>
 
-    <span style="font-size: x-small; font-style: oblique">Copyright &copy; 2013 Khronos Group</span>
+    <span style="font-size: x-small; font-style: oblique">Copyright &copy; 2014 Khronos Group</span>
 
     <hr />
 
@@ -429,8 +429,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum CURRENT_QUERY                                 = 0x8865;
   const GLenum QUERY_RESULT                                  = 0x8866;
   const GLenum QUERY_RESULT_AVAILABLE                        = 0x8867;
-  const GLenum BUFFER_MAPPED                                 = 0x88BC; /* TODO: Depends on mapBufferRange */
-  const GLenum BUFFER_MAP_POINTER                            = 0x88BD; /* TODO: Depends on mapBufferRange */
   const GLenum STREAM_READ                                   = 0x88E1;
   const GLenum STREAM_COPY                                   = 0x88E2;
   const GLenum STATIC_READ                                   = 0x88E5;
@@ -531,9 +529,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum UNSIGNED_INT_SAMPLER_3D                       = 0x8DD3;
   const GLenum UNSIGNED_INT_SAMPLER_CUBE                     = 0x8DD4;
   const GLenum UNSIGNED_INT_SAMPLER_2D_ARRAY                 = 0x8DD7;
-  // const GLenum BUFFER_ACCESS_FLAGS                           = 0x911F; /* TODO: Depends on mapBufferRange */
-  // const GLenum BUFFER_MAP_LENGTH                             = 0x9120; /* TODO: Depends on mapBufferRange */
-  // const GLenum BUFFER_MAP_OFFSET                             = 0x9121; /* TODO: Depends on mapBufferRange */
   const GLenum DEPTH_COMPONENT32F                            = 0x8CAC;
   const GLenum DEPTH32F_STENCIL8                             = 0x8CAD;
   const GLenum FLOAT_32_UNSIGNED_INT_24_8_REV                = 0x8DAD;
@@ -577,12 +572,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum FRAMEBUFFER_INCOMPLETE_MULTISAMPLE            = 0x8D56;
   const GLenum MAX_SAMPLES                                   = 0x8D57;
   const GLenum HALF_FLOAT                                    = 0x140B;
-  // const GLenum MAP_READ_BIT                                  = 0x0001; /* TODO: Depends on mapBufferRange */
-  // const GLenum MAP_WRITE_BIT                                 = 0x0002; /* TODO: Depends on mapBufferRange */
-  // const GLenum MAP_INVALIDATE_RANGE_BIT                      = 0x0004; /* TODO: Depends on mapBufferRange */
-  // const GLenum MAP_INVALIDATE_BUFFER_BIT                     = 0x0008; /* TODO: Depends on mapBufferRange */
-  // const GLenum MAP_FLUSH_EXPLICIT_BIT                        = 0x0010; /* TODO: Depends on mapBufferRange */
-  // const GLenum MAP_UNSYNCHRONIZED_BIT                        = 0x0020; /* TODO: Depends on mapBufferRange */
   const GLenum RG                                            = 0x8227;
   const GLenum RG_INTEGER                                    = 0x8228;
   const GLenum R8                                            = 0x8229;
@@ -695,6 +684,11 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
 
   /* Buffer objects */
   void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
+  // MapBufferRange, in particular its read-only and write-only modes,
+  // can not be exposed safely to JavaScript. GetBufferSubData
+  // replaces it for the purpose of fetching data back from the GPU.
+  typedef (ArrayBuffer or ArrayBufferView) GetBufferDataDest;
+  void getBufferSubData(GLenum target, GLintptr offset, GetBufferDataDest returnedData);
 
   /* Framebuffer objects */
   void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
@@ -832,9 +826,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void bindVertexArray(WebGLVertexArrayObject? array);
 
   /* TODO:
-   *  - Consider adding getBufferSubData replacing MapBufferRange, etc.
-   *  - Figure out what to do about glMapBufferRange, glFlushMappedBufferRange, glUnmapBuffer
-   *    - If exposing these, think about glGetBufferPointerv
    *  - Is it necessary to expose glGetInteger64v, glGetInteger64i_v, and glGetBufferParameteri64v?
    *    - Or are they subsumed into other queries' signatures?
    *  - Deliberately not exposing glGetProgramBinary, glProgramBinary, glProgramParameteri
@@ -965,6 +956,13 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dt>
+        <p class="idl-code">void getBufferSubData(GLenum target, GLintptr offset, GetBufferDataDest returnedData);
+        </p>
+      </dt>
+      <dd>
+        For the WebGLBuffer bound to the passed target, read <code>returnedData.byteLength</code> bytes from the buffer starting at byte offset <code>offset</code> and write them to <code>returnedData</code>. If <code>offset + returnedData.byteLength</code> would extend beyond the end of the buffer an <code>INVALID_VALUE</code> error is generated and no data is written to <code>returnedData</code>. If <code>returnedData</code> is null then an <code>INVALID_VALUE</code> error is generated.
+      </dd>
     </dl>
 
 <!-- ======================================================================================================= -->

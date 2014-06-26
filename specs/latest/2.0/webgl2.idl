@@ -64,8 +64,6 @@ interface WebGL2RenderingContextBase
   const GLenum CURRENT_QUERY                                 = 0x8865;
   const GLenum QUERY_RESULT                                  = 0x8866;
   const GLenum QUERY_RESULT_AVAILABLE                        = 0x8867;
-  const GLenum BUFFER_MAPPED                                 = 0x88BC; /* TODO: Depends on mapBufferRange */
-  const GLenum BUFFER_MAP_POINTER                            = 0x88BD; /* TODO: Depends on mapBufferRange */
   const GLenum STREAM_READ                                   = 0x88E1;
   const GLenum STREAM_COPY                                   = 0x88E2;
   const GLenum STATIC_READ                                   = 0x88E5;
@@ -166,9 +164,6 @@ interface WebGL2RenderingContextBase
   const GLenum UNSIGNED_INT_SAMPLER_3D                       = 0x8DD3;
   const GLenum UNSIGNED_INT_SAMPLER_CUBE                     = 0x8DD4;
   const GLenum UNSIGNED_INT_SAMPLER_2D_ARRAY                 = 0x8DD7;
-  // const GLenum BUFFER_ACCESS_FLAGS                           = 0x911F; /* TODO: Depends on mapBufferRange */
-  // const GLenum BUFFER_MAP_LENGTH                             = 0x9120; /* TODO: Depends on mapBufferRange */
-  // const GLenum BUFFER_MAP_OFFSET                             = 0x9121; /* TODO: Depends on mapBufferRange */
   const GLenum DEPTH_COMPONENT32F                            = 0x8CAC;
   const GLenum DEPTH32F_STENCIL8                             = 0x8CAD;
   const GLenum FLOAT_32_UNSIGNED_INT_24_8_REV                = 0x8DAD;
@@ -212,12 +207,6 @@ interface WebGL2RenderingContextBase
   const GLenum FRAMEBUFFER_INCOMPLETE_MULTISAMPLE            = 0x8D56;
   const GLenum MAX_SAMPLES                                   = 0x8D57;
   const GLenum HALF_FLOAT                                    = 0x140B;
-  // const GLenum MAP_READ_BIT                                  = 0x0001; /* TODO: Depends on mapBufferRange */
-  // const GLenum MAP_WRITE_BIT                                 = 0x0002; /* TODO: Depends on mapBufferRange */
-  // const GLenum MAP_INVALIDATE_RANGE_BIT                      = 0x0004; /* TODO: Depends on mapBufferRange */
-  // const GLenum MAP_INVALIDATE_BUFFER_BIT                     = 0x0008; /* TODO: Depends on mapBufferRange */
-  // const GLenum MAP_FLUSH_EXPLICIT_BIT                        = 0x0010; /* TODO: Depends on mapBufferRange */
-  // const GLenum MAP_UNSYNCHRONIZED_BIT                        = 0x0020; /* TODO: Depends on mapBufferRange */
   const GLenum RG                                            = 0x8227;
   const GLenum RG_INTEGER                                    = 0x8228;
   const GLenum R8                                            = 0x8229;
@@ -330,6 +319,11 @@ interface WebGL2RenderingContextBase
 
   /* Buffer objects */
   void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
+  // MapBufferRange, in particular its read-only and write-only modes,
+  // can not be exposed safely to JavaScript. GetBufferSubData
+  // replaces it for the purpose of fetching data back from the GPU.
+  typedef (ArrayBuffer or ArrayBufferView) GetBufferDataDest;
+  void getBufferSubData(GLenum target, GLintptr offset, GetBufferDataDest returnedData);
 
   /* Framebuffer objects */
   void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
@@ -439,7 +433,7 @@ interface WebGL2RenderingContextBase
   WebGLTransformFeedback? createTransformFeedback();
   void deleteTransformFeedback(WebGLTransformFeedback?);
   [WebGLHandlesContextLoss] GLboolean isTransformFeedback(WebGLTransformFeedback?);
-  void bindTransformFeedback (GLenum target, GLuint id);
+  void bindTransformFeedback (GLenum target, WebGLTransformFeedback? id);
   void beginTransformFeedback(GLenum primitiveMode);
   void endTransformFeedback();
   void transformFeedbackVaryings(WebGLProgram? program, GLsizei count, sequence<DOMString> varyings, GLenum bufferMode);
@@ -467,9 +461,6 @@ interface WebGL2RenderingContextBase
   void bindVertexArray(WebGLVertexArrayObject? array);
 
   /* TODO:
-   *  - Consider adding getBufferSubData replacing MapBufferRange, etc.
-   *  - Figure out what to do about glMapBufferRange, glFlushMappedBufferRange, glUnmapBuffer
-   *    - If exposing these, think about glGetBufferPointerv
    *  - Is it necessary to expose glGetInteger64v, glGetInteger64i_v, and glGetBufferParameteri64v?
    *    - Or are they subsumed into other queries' signatures?
    *  - Deliberately not exposing glGetProgramBinary, glProgramBinary, glProgramParameteri
