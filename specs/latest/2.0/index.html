@@ -961,7 +961,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dd>
-        For the WebGLBuffer bound to the passed target, read <code>returnedData.byteLength</code> bytes from the buffer starting at byte offset <code>offset</code> and write them to <code>returnedData</code>. If <code>offset + returnedData.byteLength</code> would extend beyond the end of the buffer an <code>INVALID_VALUE</code> error is generated and no data is written to <code>returnedData</code>. If <code>returnedData</code> is null then an <code>INVALID_VALUE</code> error is generated.
+        For the WebGLBuffer bound to the passed target, read <code>returnedData.byteLength</code>
+        bytes from the buffer starting at byte offset <code>offset</code> and write them
+        to <code>returnedData</code>. If <code>offset + returnedData.byteLength</code> would extend
+        beyond the end of the buffer an <code>INVALID_VALUE</code> error is generated and no data is
+        written to <code>returnedData</code>. If <code>returnedData</code> is null then
+        an <code>INVALID_VALUE</code> error is generated.
       </dd>
     </dl>
 
