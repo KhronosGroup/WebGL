@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<draft href="WEBGL_compressed_texture_pvrtc/">
+<extension href="WEBGL_compressed_texture_pvrtc/">
   <name>WEBGL_compressed_texture_pvrtc</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -89,5 +89,8 @@ interface WEBGL_compressed_texture_pvrtc {
     <revision date="2013/07/03">
       <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
     </revision>
+    <revision date="2014/06/27">
+      <change>Moved to community approved after discussion on public_webgl list.</change>
+    </revision>
   </history>
-</draft>
+</extension>
