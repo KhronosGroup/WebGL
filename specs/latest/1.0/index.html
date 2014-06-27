@@ -321,14 +321,14 @@
         WebGL presents its drawing buffer to the HTML page compositor immediately before a
         compositing operation, but only if at least one of the following has occurred since the
         previous compositing operation:
-        <li>
-            <ul>Context creation</ul>
-            <ul>Canvas resize</ul>
-            <ul>
+        <ul>
+            <li>Context creation</li>
+            <li>Canvas resize</li>
+            <li>
                 <code>clear</code>, <code>drawArrays</code>, or <code>drawElements</code> has been
                 called while the drawing buffer is the currently bound framebuffer
-            </ul>
-        </li>
+            </li>
+        </ul>
     </p>
     <p>
         Before the drawing buffer is presented for compositing the implementation shall ensure that
