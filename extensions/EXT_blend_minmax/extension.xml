@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="EXT_blend_minmax/">
+<extension href="EXT_blend_minmax/">
   <name>EXT_blend_minmax</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -55,5 +55,8 @@
       <change>Removed blendEquationEXT function and the BLEND_EQUATION_EXT and
         FUNC_ADD_EXT enums, all of which are already have equivalents in WebGL.</change>
     </revision>
+    <revision date="2014/06/27">
+      <change>Moved to community approved after discussion on public_webgl list.</change>
+    </revision>
   </history>
-</draft>
+</extension>
