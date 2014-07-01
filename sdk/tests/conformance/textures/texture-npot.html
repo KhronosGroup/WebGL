@@ -219,11 +219,15 @@ gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
 
+gl.activeTexture(gl.TEXTURE1); // Changing texture units here tests http://crbug.com/390514
+
 wtu.clearAndDrawUnitQuad(gl);
 wtu.checkCanvas(
     gl, [0, 0, 0, 255],
     "NPOT cubemap with TEXTURE_WRAP set to REPEAT should draw with 0,0,0,255");
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+
+gl.activeTexture(gl.TEXTURE0);
 
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
