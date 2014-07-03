@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 25 June 2014</h2>
+    <h2 class="no-toc">Editor's Draft 02 July 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -162,12 +162,12 @@
     <p>
         Each <code>WebGLRenderingContext</code> and <code>WebGL2RenderingContext</code> has <b><a name="context-creation-parameters">context
         creation parameters</a></b>, set upon creation, in
-        a <a href="#WEBGLCONTEXTATTRIBUTES"><code>WebGLContextAttributes</code></a> object.
+        a <a href="../1.0/#WEBGLCONTEXTATTRIBUTES"><code>WebGLContextAttributes</code></a> object.
     </p>
     <p>
         Each <code>WebGLRenderingContext</code> and <code>WebGL2RenderingContext</code> has <b><a name="actual-context-parameters">actual
         context parameters</a></b>, set each time the drawing buffer is created, in
-        a <a href="#WEBGLCONTEXTATTRIBUTES"><code>WebGLContextAttributes</code></a> object.
+        a <a href="../1.0/#WEBGLCONTEXTATTRIBUTES"><code>WebGLContextAttributes</code></a> object.
     </p>
     <p>
         Each <code>WebGLRenderingContext</code> and <code>WebGL2RenderingContext</code> has a <b><a name="webgl-context-lost-flag">webgl
@@ -615,11 +615,9 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS        = 0x8A31;
   const GLenum MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS      = 0x8A33;
   const GLenum UNIFORM_BUFFER_OFFSET_ALIGNMENT               = 0x8A34;
-  const GLenum ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH          = 0x8A35;
   const GLenum ACTIVE_UNIFORM_BLOCKS                         = 0x8A36;
   const GLenum UNIFORM_TYPE                                  = 0x8A37;
   const GLenum UNIFORM_SIZE                                  = 0x8A38;
-  const GLenum UNIFORM_NAME_LENGTH                           = 0x8A39;
   const GLenum UNIFORM_BLOCK_INDEX                           = 0x8A3A;
   const GLenum UNIFORM_OFFSET                                = 0x8A3B;
   const GLenum UNIFORM_ARRAY_STRIDE                          = 0x8A3C;
@@ -682,7 +680,8 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLuint64 TIMEOUT_IGNORED                             = 0xFFFFFFFFFFFFFFFF;
 
   /* Buffer objects */
-  void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
+  void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset,
+                         GLintptr writeOffset, GLsizeiptr size);
   // MapBufferRange, in particular its read-only and write-only modes,
   // can not be exposed safely to JavaScript. GetBufferSubData
   // replaces it for the purpose of fetching data back from the GPU.
@@ -690,32 +689,42 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void getBufferSubData(GLenum target, GLintptr offset, GetBufferDataDest returnedData);
 
   /* Framebuffer objects */
-  void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
-  void framebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
+  void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0,
+                       GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
+  void framebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level,
+                               GLint layer);
   any getInternalformatParameter(GLenum target, GLenum internalformat, GLenum pname);
   void invalidateFramebuffer(GLenum target, sequence&lt;GLenum&gt; attachments);
-  void invalidateSubFramebuffer (GLenum target, sequence&lt;GLenum&gt; attachments, GLint x, GLint y, GLsizei width, GLsizei height);
+  void invalidateSubFramebuffer(GLenum target, sequence&lt;GLenum&gt; attachments,
+                                GLint x, GLint y, GLsizei width, GLsizei height);
   void readBuffer(GLenum mode);
-  void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
+
+  /* Renderbuffer objects */
+  void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat,
+                                      GLsizei width, GLsizei height);
 
   /* Texture objects */
   void texStorage2D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
-  void texStorage3D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth);
-  void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, ArrayBufferView? pixels);
-  void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, ImageData? data);
-  void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, HTMLImageElement image);
-  void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, HTMLCanvasElement canvas);
-  void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, HTMLVideoElement video);
-  void copyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height);
-  void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, ArrayBufferView data);
-  void compressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, ArrayBufferView data);
+  void texStorage3D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height,
+                    GLsizei depth);
+  void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
+                     GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type,
+                     ArrayBufferView? pixels);
+  void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
+                     GLenum format, GLenum type, TexImageSource? source);
+  void copyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
+                         GLint x, GLint y, GLsizei width, GLsizei height);
+  void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat,
+                            GLsizei width, GLsizei height, GLsizei depth,
+                            GLint border, GLsizei imageSize, ArrayBufferView data);
+  void compressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
+                               GLsizei width, GLsizei height, GLsizei depth,
+                               GLenum format, GLsizei imageSize, ArrayBufferView data);
 
   /* Programs and shaders */
   [WebGLHandlesContextLoss] GLint getFragDataLocation(WebGLProgram? program, DOMString name);
 
   /* Uniforms and attributes */
-  void vertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset);
-
   void uniform1ui(WebGLUniformLocation? location, GLuint v0);
   void uniform2ui(WebGLUniformLocation? location, GLuint v0, GLuint v1);
   void uniform3ui(WebGLUniformLocation? location, GLuint v0, GLuint v1, GLuint v2);
@@ -724,18 +733,13 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void uniform2uiv(WebGLUniformLocation? location, sequence&lt;GLuint&gt; value);
   void uniform3uiv(WebGLUniformLocation? location, sequence&lt;GLuint&gt; value);
   void uniform4uiv(WebGLUniformLocation? location, sequence&lt;GLuint&gt; value);
-  void uniformMatrix2x3fv(WebGLUniformLocation? location, GLboolean transpose, Float32Array value);
-  void uniformMatrix2x3fv(WebGLUniformLocation? location, GLboolean transpose, sequence&lt;GLfloat&gt; value);
-  void uniformMatrix3x2fv(WebGLUniformLocation? location, GLboolean transpose, Float32Array value);
-  void uniformMatrix3x2fv(WebGLUniformLocation? location, GLboolean transpose, sequence&lt;GLfloat&gt; value);
-  void uniformMatrix2x4fv(WebGLUniformLocation? location, GLboolean transpose, Float32Array value);
-  void uniformMatrix2x4fv(WebGLUniformLocation? location, GLboolean transpose, sequence&lt;GLfloat&gt; value);
-  void uniformMatrix4x2fv(WebGLUniformLocation? location, GLboolean transpose, Float32Array value);
-  void uniformMatrix4x2fv(WebGLUniformLocation? location, GLboolean transpose, sequence&lt;GLfloat&gt; value);
-  void uniformMatrix3x4fv(WebGLUniformLocation? location, GLboolean transpose, Float32Array value);
-  void uniformMatrix3x4fv(WebGLUniformLocation? location, GLboolean transpose, sequence&lt;GLfloat&gt; value);
-  void uniformMatrix4x3fv(WebGLUniformLocation? location, GLboolean transpose, Float32Array value);
-  void uniformMatrix4x3fv(WebGLUniformLocation? location, GLboolean transpose, sequence&lt;GLfloat&gt; value);
+  typedef (Float32Array or sequence&lt;GLfloat&gt;) UniformMatrixFVSource;
+  void uniformMatrix2x3fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
+  void uniformMatrix3x2fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
+  void uniformMatrix2x4fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
+  void uniformMatrix4x2fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
+  void uniformMatrix3x4fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
+  void uniformMatrix4x3fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
   /* TODO: this will be exposed as a couple of additional entries in
      the return type table for getUniform */
   // void glGetUniformuiv (GLuint program, GLint location, GLuint* params);
@@ -743,6 +747,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void vertexAttribI4iv(GLuint index, sequence&lt;GLint&gt; v);
   void vertexAttribI4ui(GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
   void vertexAttribI4uiv(GLuint index, sequence&lt;GLuint&gt; v);
+  void vertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset);
 
   /* Writing to the drawing buffer */
   void vertexAttribDivisor(GLuint index, GLuint divisor);
@@ -754,12 +759,12 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
 
   /* Multiple Render Targets */
   void drawBuffers(sequence&lt;GLenum&gt; buffers);
-  void clearBufferiv(GLenum buffer, GLint drawbuffer, Int32Array value);
-  void clearBufferiv(GLenum buffer, GLint drawbuffer, sequence&lt;GLint&gt; value);
-  void clearBufferuiv(GLenum buffer, GLint drawbuffer, Uint32Array value);
-  void clearBufferuiv(GLenum buffer, GLint drawbuffer, sequence&lt;GLuint&gt; value);
-  void clearBufferfv(GLenum buffer, GLint drawbuffer, Float32Array value);
-  void clearBufferfv(GLenum buffer, GLint drawbuffer, sequence&lt;GLfloat&gt; value);
+  typedef (Int32Array or sequence&lt;GLint&gt;) ClearBufferIVSource;
+  typedef (Uint32Array or sequence&lt;GLuint&gt;) ClearBufferUIVSource;
+  typedef (Float32Array or sequence&lt;GLfloat&gt;) ClearBufferFVSource;
+  void clearBufferiv(GLenum buffer, GLint drawbuffer, ClearBufferIVSource value);
+  void clearBufferuiv(GLenum buffer, GLint drawbuffer, ClearBufferUIVSource value);
+  void clearBufferfv(GLenum buffer, GLint drawbuffer, ClearBufferFVSource value);
   void clearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil);
 
   /* Query Objects */
@@ -769,7 +774,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void beginQuery(GLenum target, WebGLQuery? query);
   void endQuery(GLenum target);
   WebGLQuery? getQuery(GLenum target, GLenum pname);
-  /* TODO: document return type */
   any getQueryParameter(WebGLQuery? query, GLenum pname);
 
   /* Sampler Objects */
@@ -778,11 +782,11 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   [WebGLHandlesContextLoss] GLboolean isSampler(WebGLSampler? sampler);
   void bindSampler(GLuint unit, WebGLSampler? sampler);
   void samplerParameteri(WebGLSampler? sampler, GLenum pname, GLint param);
-  void samplerParameteriv(WebGLSampler? sampler, GLenum pname, Int32Array param);
-  void samplerParameteriv(WebGLSampler? sampler, GLenum pname, sequence&lt;GLint&gt; param);
+  typedef (Int32Array or sequence&lt;GLint&gt;) SamplerParameterIVSource;
+  void samplerParameteriv(WebGLSampler? sampler, GLenum pname, SamplerParameterIVSource param);
   void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param);
-  void samplerParameterfv(WebGLSampler? sampler, GLenum pname, Float32Array param);
-  void samplerParameterfv(WebGLSampler? sampler, GLenum pname, sequence&lt;GLfloat&gt; param);
+  typedef (Float32Array or sequence&lt;GLfloat&gt;) SamplerParameterFVSource;
+  void samplerParameterfv(WebGLSampler? sampler, GLenum pname, SamplerParameterFVSource param);
   any getSamplerParameter(WebGLSampler? sampler, GLenum pname);
 
   /* Sync objects */
@@ -812,7 +816,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   sequence&lt;GLuint&gt;? getUniformIndices(WebGLProgram? program, sequence&lt;DOMString&gt; uniformNames);
   sequence&lt;GLint&gt;? getActiveUniforms(WebGLProgram? program, sequence&lt;GLuint&gt; uniformIndices, GLenum pname);
   GLuint getUniformBlockIndex(WebGLProgram? program, DOMString uniformBlockName);
-  /* TODO: document return type; make sure unnecessary enums are deleted */
   any getActiveUniformBlockParameter(WebGLProgram? program, GLuint uniformBlockIndex, GLenum pname);
   /* TODO: if there were a fake enum for GL_UNIFORM_BLOCK_NAME, then this could be folded into getActiveUniformBlockParameter */
   DOMString? getActiveUniformBlockName(WebGLProgram? program, GLuint uniformBlockIndex);
@@ -948,7 +951,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <dl class="methods">
       <dt>
-        <p class="idl-code">void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);
+        <p class="idl-code">void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-2.9.5">OpenGL ES 3.0.2 &sect;2.9.5</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glCopyBufferSubData.xml" class="nonnormative">man page</a>)
@@ -956,7 +959,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dt>
-        <p class="idl-code">void getBufferSubData(GLenum target, GLintptr offset, GetBufferDataDest returnedData);
+        <p class="idl-code">void getBufferSubData(GLenum target, GLintptr offset, GetBufferDataDest returnedData)
         </p>
       </dt>
       <dd>
@@ -1001,7 +1004,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           <p>If an OpenGL error is generated, returns null.</p>
       </dd>
       <dt>
-        <p class="idl-code">void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
+        <p class="idl-code">void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-4.3.2">OpenGL ES 3.0.2 &sect;4.3.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glBlitFramebuffer.xml" class="nonnormative">man page</a>)
@@ -1009,7 +1012,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dt>
-        <p class="idl-code">void framebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
+        <p class="idl-code">void framebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-4.4">OpenGL ES 3.0.2 &sect;4.4</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glFramebufferTextureLayer.xml" class="nonnormative">man page</a>)
@@ -1017,7 +1020,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dt>
-        <p class="idl-code">any getInternalformatParameter(GLenum target, GLenum internalformat, GLenum pname);
+        <p class="idl-code">any getInternalformatParameter(GLenum target, GLenum internalformat, GLenum pname)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.15">OpenGL ES 3.0.2 &sect;6.1.15</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetInternalformativ.xml" class="nonnormative">man page</a>)
@@ -1037,7 +1040,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           <p>Each query for SAMPLES returns a new typed array object instance.</p>
       </dd>
       <dt>
-        <p class="idl-code">void invalidateFramebuffer(GLenum target, sequence&lt;GLenum&gt; attachments);
+        <p class="idl-code">void invalidateFramebuffer(GLenum target, sequence&lt;GLenum&gt; attachments)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-4.5">OpenGL ES 3.0.2 &sect;4.5</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glInvalidateFramebuffer.xml" class="nonnormative">man page</a>)
@@ -1045,7 +1048,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dt>
-        <p class="idl-code">void invalidateSubFramebuffer (GLenum target, sequence&lt;GLenum&gt; attachments, GLint x, GLint y, GLsizei width, GLsizei height);
+        <p class="idl-code">void invalidateSubFramebuffer (GLenum target, sequence&lt;GLenum&gt; attachments, GLint x, GLint y, GLsizei width, GLsizei height)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-4.5">OpenGL ES 3.0.2 &sect;4.5</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glInvalidateSubFramebuffer.xml" class="nonnormative">man page</a>)
@@ -1053,7 +1056,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dt>
-        <p class="idl-code">void readBuffer(GLenum mode);
+        <p class="idl-code">void readBuffer(GLenum mode)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-4.3.1">OpenGL ES 3.0.2 &sect;4.3.1</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glReadBuffer.xml" class="nonnormative">man page</a>)
@@ -1090,10 +1093,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           <p>If an OpenGL error is generated, returns null.</p>
       </dd>
       <dt>
-        <p class="idl-code">void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
+        <p class="idl-code">void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-4.4.2">OpenGL ES 3.0.2 &sect;4.4.2</a>,
-            <a href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glRenderBufferStorageMultisample.xml" class="nonnormative">man page</a>)
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glRenderbufferStorageMultisample.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
       </dt>
@@ -1133,6 +1136,62 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           <code>INVALID_OPERATION</code> error.</p>
           <p>If an OpenGL error is generated, returns null.</p>
       </dd>
+      <dt>
+        <p class="idl-code">void texStorage2D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.3 &sect;3.8.4</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexStorage2D.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void texStorage3D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.3 &sect;3.8.4</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexStorage3D.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, ArrayBufferView? pixels)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage3D.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLenum format, GLenum type, TexImageSource? source)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage3D.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void copyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCopyTexSubImage3D.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, ArrayBufferView data)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.3 &sect;3.8.6</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexImage3D.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void compressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, ArrayBufferView data)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.3 &sect;3.8.6</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexSubImage3D.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -1140,6 +1199,14 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h4>Programs and Shaders</h4>
 
     <dl class="methods">
+      <dt>
+        <p class="idl-code">[WebGLHandlesContextLoss] GLint getFragDataLocation(WebGLProgram? program, DOMString name)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.9.2">OpenGL ES 3.0.3 &sect;3.9.2</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetFragDataLocation.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
       <dt class="idl-code">any getProgramParameter(WebGLProgram? program, GLenum pname)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.2 &sect;6.1.12</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetProgramiv.xml">man page</a>)</span>
       </dt>
@@ -1169,73 +1236,298 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h4>Uniforms and attributes</h4>
 
     <dl class="methods">
-        <dt class="idl-code">any getVertexAttrib(GLuint index, GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.2 &sect;6.1.12</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetVertexAttrib.xml">man page</a>)</span>
-        </dt>
-        <dd>
-            Return the information requested in pname about the vertex attribute at the passed index. The
-            type returned is dependent on the information requested, as shown in the following table:
-            <table>
-                <tr><th>pname</th><th>returned type</th></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_ENABLED</td><td>GLboolean</td></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_SIZE</td><td>GLint</td></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_STRIDE</td><td>GLint</td></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_TYPE</td><td>GLenum</td></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_NORMALIZED</td><td>GLboolean</td></tr>
-                <tr><td>CURRENT_VERTEX_ATTRIB</td><td>One of Float32Array, Int32Array or Uint32Array (each with 4 elements)</td></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_INTEGER</td><td>GLboolean</td></tr>
-                <tr><td>VERTEX_ATTRIB_ARRAY_DIVISOR</td><td>GLint</td></tr>
-            </table>
-            <p>For CURRENT_VERTEX_ATTRIB, the return type is dictated by the most recent call
-              to the vertexAttrib family of functions for the given index. That is, if
-              vertexAttribI4i* was used, the return type will be Int32Array; If vertexAttribI4ui*
-              was used, the return type will be Uint32Array; Otherwise, Float32Array.
-            </p>
-            <p>All queries returning sequences or typed arrays return a new object each time.</p>
-            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
-            <p>If an OpenGL error is generated, returns null.</p>
-        </dd>
+      <dt>
+        <p class="idl-code">void uniform[1234]ui(WebGLUniformLocation? location, ...)</p>
+        <p class="idl-code">void uniform[1234]uiv(WebGLUniformLocation? location, ...)</p>
+        <p class="idl-code">void uniformMatrix[234]x[234]fv(WebGLUniformLocation? location, ...)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.3 &sect;2.11.6</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glUniform.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dd>
+        Each of the uniform* functions above sets the specified uniform or uniforms to the values
+        provided. If the passed <code>location</code> is not null and was not obtained from the
+        currently used program via an earlier call to <code>getUniformLocation</code>,
+        an <code>INVALID_OPERATION</code> error will be generated. If the passed
+        <code>location</code> is null, the data passed in will be silently ignored and no uniform
+        variables will be changed.
+        <br><br>
+        If the array passed to any of the vector forms (those ending in <code>v</code>) has an
+        invalid length, an <code>INVALID_VALUE</code> error will be generated. The length is invalid
+        if it is too short for or is not an integer multiple of the assigned type.
+      </dd>
+      <dt><p class="idl-code">void vertexAttribI4[u]i(GLuint indx, ...)</p>
+          <p class="idl-code">void vertexAttribI4[u]iv(GLuint indx, ...)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.7">OpenGL ES 3.0.3 &sect;2.7</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glVertexAttrib.xhtml" class="nonnormative">man page</a>)
+          </span>
+      </dt>
+      <dd>
+        Sets the vertex attribute at the passed index to the given constant integer value. Values set via the
+        <code>vertexAttrib</code> are guaranteed to be returned from the <code>getVertexAttrib</code> function
+        with the <code>CURRENT_VERTEX_ATTRIB</code> param, even if there have been intervening calls to 
+        <code>drawArrays</code> or <code>drawElements</code>.
+      </dd>
+      <dt>
+        <p class="idl-code">void vertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8">OpenGL ES 3.0.3 &sect;2.8</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glVertexAttribPointer.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dd>
+        Assign the WebGLBuffer object currently bound to the ARRAY_BUFFER target to the vertex
+        attribute at the passed index. Values are always left as integer values. Size is number of
+        components per attribute. Stride and offset are in units of bytes. Passed stride and offset
+        must be appropriate for the passed type and size or an <code>INVALID_OPERATION</code> error
+        will be generated; see <a href="../1.0/#BUFFER_OFFSET_AND_STRIDE">Buffer Offset and Stride
+        Requirements</a>. If offset is negative, an <code>INVALID_VALUE</code> error will be
+        generated. If no WebGLBuffer is bound to the ARRAY_BUFFER target,
+        an <code>INVALID_OPERATION</code> error will be generated. In WebGL, the maximum supported
+        stride is 255; see <a href="../1.0/#VERTEX_STRIDE"> Vertex Attribute Data Stride</a>.
+      </dd>
+      <dt class="idl-code">any getVertexAttrib(GLuint index, GLenum pname)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.2 &sect;6.1.12</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetVertexAttrib.xml">man page</a>)</span>
+      </dt>
+      <dd>
+          Return the information requested in pname about the vertex attribute at the passed index. The
+          type returned is dependent on the information requested, as shown in the following table:
+          <table>
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>VERTEX_ATTRIB_ARRAY_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
+              <tr><td>VERTEX_ATTRIB_ARRAY_ENABLED</td><td>GLboolean</td></tr>
+              <tr><td>VERTEX_ATTRIB_ARRAY_SIZE</td><td>GLint</td></tr>
+              <tr><td>VERTEX_ATTRIB_ARRAY_STRIDE</td><td>GLint</td></tr>
+              <tr><td>VERTEX_ATTRIB_ARRAY_TYPE</td><td>GLenum</td></tr>
+              <tr><td>VERTEX_ATTRIB_ARRAY_NORMALIZED</td><td>GLboolean</td></tr>
+              <tr><td>CURRENT_VERTEX_ATTRIB</td><td>One of Float32Array, Int32Array or Uint32Array (each with 4 elements)</td></tr>
+              <tr><td>VERTEX_ATTRIB_ARRAY_INTEGER</td><td>GLboolean</td></tr>
+              <tr><td>VERTEX_ATTRIB_ARRAY_DIVISOR</td><td>GLint</td></tr>
+          </table>
+          <p>For CURRENT_VERTEX_ATTRIB, the return type is dictated by the most recent call
+            to the vertexAttrib family of functions for the given index. That is, if
+            vertexAttribI4i* was used, the return type will be Int32Array; If vertexAttribI4ui*
+            was used, the return type will be Uint32Array; Otherwise, Float32Array.
+          </p>
+          <p>All queries returning sequences or typed arrays return a new object each time.</p>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>If an OpenGL error is generated, returns null.</p>
+      </dd>
     </dl>
 
 <!-- ======================================================================================================= -->
 
     <h4>Writing to the drawing buffer</h4>
 
+    <dl class="methods">
+      <dt>
+        <p class="idl-code">void vertexAttribDivisor(GLuint index, GLuint divisor)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8">OpenGL ES 3.0.3 &sect;2.8</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glVertexAttribDivisor.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8.3">OpenGL ES 3.0.3 &sect;2.8.3</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDrawArraysInstanced.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void drawElementsInstanced(GLenum mode, GLsizei count, GLenum type, GLintptr offset, GLsizei instanceCount)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8.3">OpenGL ES 3.0.3 &sect;2.8.3</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDrawElementsInstanced.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLintptr offset)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8.3">OpenGL ES 3.0.3 &sect;2.8.3</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDrawRangeElements.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+    </dl>
+
 <!-- ======================================================================================================= -->
 
     <h4>Multiple render targets</h4>
 
+    <dl class="methods">
+      <dt>
+        <p class="idl-code">void drawBuffers(sequence&lt;GLenum&gt; buffers)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.2.1">OpenGL ES 3.0.3 &sect;4.2.1</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDrawBuffers.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void clearBufferiv(GLenum buffer, GLint drawbuffer, ClearBufferISource value)</p>
+        <p class="idl-code">void clearBufferuiv(GLenum buffer, GLint drawbuffer, ClearBufferUISource value)</p>
+        <p class="idl-code">void clearBufferfv(GLenum buffer, GLint drawbuffer, ClearBufferFSource value)</p>
+        <p class="idl-code">void clearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.2.3">OpenGL ES 3.0.3 &sect;4.2.3</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClearBuffer.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+    </dl>
 <!-- ======================================================================================================= -->
 
     <h4>Query objects</h4>
+
+    <dl class="methods">
+      <dt>
+        <p class="idl-code">WebGLQuery? createQuery()
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0.3 &sect;2.13</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGenQueries.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void deleteQuery(WebGLQuery? query)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0.3 &sect;2.13</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteQueries.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">[WebGLHandlesContextLoss] GLboolean isQuery(WebGLQuery? query)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.3 &sect;6.1.7</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glIsQuery.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void beginQuery(GLenum target, WebGLQuery? query)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0.3 &sect;2.13</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBeginQuery.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void endQuery(GLenum target)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0.3 &sect;2.13</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBeginQuery.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">WebGLQuery? getQuery(GLenum target, GLenum pname)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.3 &sect;6.1.7</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetQueryObjectuiv.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">any getQueryParameter(WebGLQuery? query, GLenum pname)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.3 &sect;6.1.7</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetQueryiv.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dd>
+          Return the value for the passed pname given the passed query. The type returned is the natural
+          type for the requested pname, as given in the following table:
+          <table>
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>ANY_SAMPLES_PASSED</td><td>GLboolean</td></tr>
+              <tr><td>ANY_SAMPLES_PASSED_CONSERVATIVE</td><td>GLboolean</td></tr>
+              <tr><td>TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN</td><td>GLint</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+          <p>Returns null if any OpenGL errors are generated during the execution of this
+          function.</p>
+      </dd>
+    </dl>
 
 <!-- ======================================================================================================= -->
 
     <h4>Sampler objects</h4>
 
     <dl class="methods">
-        <dt class="idl-code">any getSamplerParameter(WebGLSampler? sampler, GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.5">OpenGL ES 3.0.2 &sect;6.1.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetSamplerParameter.xml">man page</a>)</span>
-        </dt>
-        <dd>
-            Return the information requested in pname about the given WebGLSampler, passed as <em>sampler</em>. The
-            type returned is dependent on the information requested, as shown in the following table:
-            <table>
-                <tr><th>pname</th><th>returned type</th></tr>
-                <tr><td>TEXTURE_COMPARE_FUNC</td><td>GLenum</td></tr>
-                <tr><td>TEXTURE_COMPARE_MODE</td><td>GLenum</td></tr>
-                <tr><td>TEXTURE_MAG_FILTER</td><td>GLenum</td></tr>
-                <tr><td>TEXTURE_MAX_LOD</td><td>GLfloat</td></tr>
-                <tr><td>TEXTURE_MIN_FILTER</td><td>GLenum</td></tr>
-                <tr><td>TEXTURE_MIN_LOD</td><td>GLfloat</td></tr>
-                <tr><td>TEXTURE_WRAP_R</td><td>GLenum</td></tr>
-                <tr><td>TEXTURE_WRAP_S</td><td>GLenum</td></tr>
-                <tr><td>TEXTURE_WRAP_T</td><td>GLenum</td></tr>
-            </table>
-            <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
-            <p>If an OpenGL error is generated, returns null.</p>
-        </dd>
+      <dt>
+        <p class="idl-code">WebGLSampler? createSampler()
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGenSamplers.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void deleteSampler(WebGLSampler? sampler)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteSamplers.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">[WebGLHandlesContextLoss] GLboolean isSampler(WebGLSampler? sampler)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glIsSampler.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void bindSampler(GLuint unit, WebGLSampler? sampler)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindSampler.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void samplerParameteri(WebGLSampler? sampler, GLenum pname, GLint param);</p>
+        <p class="idl-code">void samplerParameteriv(WebGLSampler? sampler, GLenum pname, SamplerParameterIVSource param)</p>
+        <p class="idl-code">void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param);</p>
+        <p class="idl-code">void samplerParameterfv(WebGLSampler? sampler, GLenum pname, SamplerParameterFVSource param)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glSamplerParameter.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt class="idl-code">any getSamplerParameter(WebGLSampler? sampler, GLenum pname)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.5">OpenGL ES 3.0.2 &sect;6.1.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetSamplerParameter.xml">man page</a>)</span>
+      </dt>
+      <dd>
+          Return the information requested in pname about the given WebGLSampler, passed as <em>sampler</em>. The
+          type returned is dependent on the information requested, as shown in the following table:
+          <table>
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>TEXTURE_COMPARE_FUNC</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_COMPARE_MODE</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_MAG_FILTER</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_MAX_LOD</td><td>GLfloat</td></tr>
+              <tr><td>TEXTURE_MIN_FILTER</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_MIN_LOD</td><td>GLfloat</td></tr>
+              <tr><td>TEXTURE_WRAP_R</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_WRAP_S</td><td>GLenum</td></tr>
+              <tr><td>TEXTURE_WRAP_T</td><td>GLenum</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>If an OpenGL error is generated, returns null.</p>
+      </dd>
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -1243,6 +1535,46 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h4>Sync objects</h4>
 
     <dl class="methods">
+      <dt>
+        <p class="idl-code">WebGLSync? fenceSync(GLenum condition, GLbitfield flags)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2">OpenGL ES 3.0.3 &sect;5.2</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindSampler.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">[WebGLHandlesContextLoss] GLboolean isSync(WebGLSync? sync)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.3 &sect;6.1.8</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glIsSync.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void deleteSync(WebGLSync? sync)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2">OpenGL ES 3.0.3 &sect;5.2</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteSync.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.3 &sect;5.2.1</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClientWaitSync.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dt>
+        <p class="idl-code">void waitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.3 &sect;5.2.1</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glWaitSync.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
       <dt class="idl-code">any getSyncParameter(WebGLSync? sync, GLenum pname)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.2 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/xhtml/glGetSynciv.xml">man page</a>)</span>
       </dt>
