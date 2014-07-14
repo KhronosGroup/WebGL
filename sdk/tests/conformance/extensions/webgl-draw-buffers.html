@@ -105,7 +105,7 @@ var ext = null;
 var vao = null;
 
 var extensionConstants = [
-  { name: "MAX_COLOR_ATTACHMENTS_WEBGL", enum: 0x8CDF, expectedFn: function(v) { return v > 0; }, passMsg: " should be > 0"},
+  { name: "MAX_COLOR_ATTACHMENTS_WEBGL", enum: 0x8CDF, expectedFn: function(v) { return v >= 4; }, passMsg: " should be >= 4"},
   { name: "MAX_DRAW_BUFFERS_WEBGL",      enum: 0x8824, expectedFn: function(v) { return v > 0; }, passMsg: " should be > 0"},
 
   { name: "COLOR_ATTACHMENT0_WEBGL",     enum: 0x8CE0, },
@@ -219,12 +219,14 @@ function runEnumTestEnabled() {
   extensionConstants.forEach(function(c) {
     shouldBe("ext." + c.name, "0x" + c.enum.toString(16));
     if (c.expectedFn) {
-      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "foo");
-      debug(c.name + ":" + ext[c.name].toString(16));
-      expectTrue(c.expectedFn(gl.getParameter(ext[c.name])), "gl.getParemter(ext." + c.name + ")" + c.passMsg);
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "before getParameter");
+      debug(c.name + ": 0x" + ext[c.name].toString(16));
+      expectTrue(c.expectedFn(gl.getParameter(ext[c.name])), "gl.getParameter(ext." + c.name + ")" + c.passMsg);
       wtu.glErrorShouldBe(gl, gl.NO_ERROR, c.name + " query should succeed if extension is enabled");
     }
   });
+
+  shouldBeTrue("gl.getParameter(ext.MAX_COLOR_ATTACHMENTS_WEBGL) >= gl.getParameter(ext.MAX_DRAW_BUFFERS_WEBGL)");
 
   debug("Testing drawBuffersWEBGL with default drawing buffer");
   shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.BACK");
@@ -346,7 +348,8 @@ function runAttachmentTestEnabled() {
     ext.drawBuffersWEBGL(bufs);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be able to call drawBuffersWEBGL with out of order attachments of size " + maxColorAttachments);
     var bufs = makeColorAttachmentArray(Math.floor(maxDrawingBuffers / 2));
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should not be able to call drawBuffersWEBGL with short array of attachments of size " + maxColorAttachments);
+    ext.drawBuffersWEBGL(bufs);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffersWEBGL with short array of attachments of size " + bufs.length);
   }
 
   gl.deleteFramebuffer(fb);
@@ -639,7 +642,7 @@ function runDrawTests() {
     }
   }
 
-  debug("test switching between fbos keeps drawbuffer state");
+  debug("test switching between fbos does not affect any color attachment contents");
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb2);
   ext.drawBuffersWEBGL(nones);
 
@@ -649,6 +652,7 @@ function runDrawTests() {
   gl.clear(gl.COLOR_BUFFER_BIT);
   checkAttachmentsForColor(attachments, [255, 0, 0, 255]);
 
+  // fb2 still has the NONE draw buffers from before, so this draw should be a no-op.
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb2);
   gl.useProgram(drawProgram);
   wtu.drawUnitQuad(gl);
