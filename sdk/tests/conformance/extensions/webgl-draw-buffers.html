@@ -348,7 +348,8 @@ function runAttachmentTestEnabled() {
     ext.drawBuffersWEBGL(bufs);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be able to call drawBuffersWEBGL with out of order attachments of size " + maxColorAttachments);
     var bufs = makeColorAttachmentArray(Math.floor(maxDrawingBuffers / 2));
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should not be able to call drawBuffersWEBGL with short array of attachments of size " + maxColorAttachments);
+    ext.drawBuffersWEBGL(bufs);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffersWEBGL with short array of attachments of size " + bufs.length);
   }
 
   gl.deleteFramebuffer(fb);
