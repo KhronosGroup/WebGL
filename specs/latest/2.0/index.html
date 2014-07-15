@@ -830,7 +830,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   /* TODO:
    *  - Is it necessary to expose glGetInteger64v, glGetInteger64i_v, and glGetBufferParameteri64v?
    *    - Or are they subsumed into other queries' signatures?
-   *  - Deliberately not exposing glGetProgramBinary, glProgramBinary, glProgramParameteri
    */
 };
 WebGL2RenderingContextBase implements WebGLRenderingContextBase;
@@ -1823,6 +1822,16 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <p>
         The value of the MAX_COLOR_ATTACHMENTS parameter must be equal to that of the MAX_DRAW_BUFFERS
         parameter.
+    </p>
+
+    <h3>No Program Binaries</h3>
+
+    <p>
+        Accessing binary representations of compiled shader programs is not supported in the WebGL 2 API.
+        This includes OpenGL ES 3.0 <code>GetProgramBinary</code>, <code>ProgramBinary</code>, and
+        <code>ProgramParameteri</code> entry points. In addition, querying the program binary length with
+        <code>getProgramParameter</code>, and querying program binary formats with <code>getParameter</code>
+        are not supported in the WebGL 2 API.
     </p>
 
 <!-- ======================================================================================================= -->
