@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 01 July 2014</h2>
+    <h2 class="no-toc">Editor's Draft 15 July 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2464,7 +2464,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             set to false, a <code>SECURITY_ERR</code> exception must be
             thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
 
-            If <code>pixels</code> is null then an <code>INVALID_VALUE</code> error is
+            If <code>source</code> is null then an <code>INVALID_VALUE</code> error is
             generated. <br><br>
 
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
@@ -2529,7 +2529,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             set to false, a <code>SECURITY_ERR</code> exception must be
             thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
 
-            If <code>pixels</code> is null then an <code>INVALID_VALUE</code> error is
+            If <code>source</code> is null then an <code>INVALID_VALUE</code> error is
             generated. <br><br>
 
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
@@ -3412,27 +3412,27 @@ framebuffer being framebuffer complete:
 <p>
 Unless <code>width</code> and <code>height</code> parameters are explicitly specified, the width
 and height of the texture set by <code>texImage2D</code> and the width and height of the
-sub-rectangle updated by <code>texSubImage2D</code> are determined based on the uploaded element or
-image data the following way:
+sub-rectangle updated by <code>texSubImage2D</code> are determined based on the uploaded
+<code>TexImageSource source</code> object:
 </p>
 
     <dl>
-        <dt><code>ImageData pixels</code>
+        <dt><code>source</code> of type <code>ImageData</code>
         <dd>
             The width and height of the texture are set to the current values of the width and
-            height properties of <code>pixels</code>, representing the actual pixel width and height
-            of <code>pixels</code>.
-        <dt><code>HTMLImageElement image</code>
+            height properties of the ImageData object, representing the actual pixel width and height
+            of the <code>ImageData</code> object.
+        <dt><code>source</code> of type <code>HTMLImageElement</code>
         <dd>
             If a bitmap is uploaded, the width and height of the texture are set to the width and
             height of the uploaded bitmap in pixels. If an SVG image is uploaded, the width and
             height of the texture are set to the current values of the width and height properties
-            of <code>image</code>.
-        <dt><code>HTMLCanvasElement canvas</code>
+            of the <code>HTMLImageElement</code> object.
+        <dt><code>source</code> of type <code>HTMLCanvasElement</code>
         <dd>
             The width and height of the texture are set to the current values of the width and
-            height properties of <code>canvas</code>.
-        <dt><code>HTMLVideoElement video</code>
+            height properties of the <code>HTMLCanvasElement</code> object.
+        <dt><code>source</code> of type <code>HTMLVideoElement</code>
         <dd>
             The width and height of the texture are set to the width and height of the uploaded
             frame of the video in pixels.
