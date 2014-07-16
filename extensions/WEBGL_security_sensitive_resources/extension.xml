@@ -92,6 +92,7 @@
   </overview>
 
   <idl xml:space="preserve">
+[NoInterfaceObject]
 interface WEBGL_security_sensitive_resources {
   WebGLFramebuffer? createSecuritySensitiveFramebuffer();
   WebGLTexture? createSecuritySensitiveTexture();
@@ -191,6 +192,9 @@ dictionary WebGLContextAttributes {
   <history>
     <revision date="2013/09/13">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </draft>

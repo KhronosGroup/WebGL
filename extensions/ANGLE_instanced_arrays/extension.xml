@@ -26,6 +26,7 @@
     </p>
   </overview>
   <idl xml:space="preserve">
+[NoInterfaceObject]
 interface ANGLE_instanced_arrays {
     const GLenum VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE = 0x88FE;
     void drawArraysInstancedANGLE(GLenum mode, GLint first, GLsizei count, GLsizei primcount);
@@ -51,6 +52,9 @@ interface ANGLE_instanced_arrays {
     </revision>
     <revision date="2014/03/13">
       <change>Addendum about index validation.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </extension>

@@ -74,6 +74,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
+[NoInterfaceObject]
 interface WEBGL_compressed_texture_pvrtc {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_RGB_PVRTC_4BPPV1_IMG      = 0x8C00;
@@ -91,6 +92,9 @@ interface WEBGL_compressed_texture_pvrtc {
     </revision>
     <revision date="2014/06/27">
       <change>Moved to community approved after discussion on public_webgl list.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </extension>

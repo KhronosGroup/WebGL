@@ -26,6 +26,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
+[NoInterfaceObject]
 interface EXT_texture_filter_anisotropic {
   const GLenum TEXTURE_MAX_ANISOTROPY_EXT       = 0x84FE;
   const GLenum MAX_TEXTURE_MAX_ANISOTROPY_EXT   = 0x84FF;
@@ -43,6 +44,9 @@ interface EXT_texture_filter_anisotropic {
     </revision>
     <revision date="2013/05/15">
       <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </ratified>

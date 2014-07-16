@@ -33,6 +33,7 @@
   </overview>
   
   <idl xml:space="preserve">
+    [NoInterfaceObject]
     interface EXT_frag_depth {
     };
   </idl>
@@ -55,6 +56,9 @@
     </revision>
     <revision date="2014/05/13">
       <change>Moved to community approved.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </extension>

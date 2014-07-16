@@ -29,6 +29,7 @@
   </overview>
 
   <idl xml:space="preserve">
+    [NoInterfaceObject]
     interface EXT_sRGB {
       const GLenum SRGB_EXT                                     = 0x8C40;
       const GLenum SRGB_ALPHA_EXT                               = 0x8C42;
@@ -75,6 +76,9 @@
     </revision>
     <revision date="2014/05/13">
       <change>Moved from draft to community approved</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </extension>

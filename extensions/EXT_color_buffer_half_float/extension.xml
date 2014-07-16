@@ -62,14 +62,15 @@
     </features>
   </overview>
 
-  <idl xml:space="preserve">module webgl {
-  interface EXT_color_buffer_half_float {
-    const GLenum RGBA16F_EXT = 0x881A;
-    const GLenum RGB16F_EXT = 0x881B;
-    const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
-    const GLenum UNSIGNED_NORMALIZED_EXT = 0x8C17;
-  }; // interface EXT_color_buffer_half_float
-}; // module webgl</idl>
+  <idl xml:space="preserve">
+[NoInterfaceObject]
+interface EXT_color_buffer_half_float {
+  const GLenum RGBA16F_EXT = 0x881A;
+  const GLenum RGB16F_EXT = 0x881B;
+  const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
+  const GLenum UNSIGNED_NORMALIZED_EXT = 0x8C17;
+}; // interface EXT_color_buffer_half_float
+</idl>
 
   <additions>
     <p>In section 5.13.12 <cite>Reading back pixels</cite>, change the allowed
@@ -125,6 +126,10 @@
 
     <revision date="2012/11/26">
       <change>Move to draft.</change>
+    </revision>
+
+    <revision date="2014/07/15">
+      <change>Removed webgl module. Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </draft>
