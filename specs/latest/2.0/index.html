@@ -847,12 +847,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <dl class="methods">
         <dt class="idl-code"><a name="GETPARAMETER">any getParameter</a>(GLenum pname)
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGet.xhtml">
-                (glGet OpenGL ES 3.0 man page)
-            </a>
-            <a class="gl-spec" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetString.xhtml">
-                (glGetString OpenGL ES 3.0 man page)
-            </a>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.1">OpenGL ES 3.0.3 &sect;6.1.1</a>,
+            <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGet.xhtml">glGet OpenGL ES 3.0 man page</a>,
+            <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetString.xhtml">glGetString OpenGL ES 3.0 man page</a>)</span>
         <dd>
             Return the value for the passed pname. As well as supporting all
             the pname/type values from WebGL 1.0, the following parameters are supported:
@@ -900,6 +897,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
                 <tr><td>PIXEL_PACK_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
                 <tr><td>PIXEL_UNPACK_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
                 <tr><td>PRIMITIVE_RESTART_FIXED_INDEX</td><td>GLboolean</td></tr>
+                <tr><td>RASTERIZER_DISCARD</td><td>GLboolean</td></tr>
                 <tr><td>READ_BUFFER</td><td>GLenum</td></tr>
                 <tr><td>READ_FRAMEBUFFER_BINDING</td><td>WebGLFramebuffer</td></tr>
                 <tr><td>SAMPLE_ALPHA_TO_COVERAGE</td><td>GLboolean</td></tr>
@@ -942,6 +940,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             <p>If <code class="param">target</code> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
             <p>If <code class="param">index</code> is outside of the valid range for the indexed state <code class="param">target</code>, generates an <code>INVALID_VALUE</code> error.</p>
             <p>If an OpenGL error is generated, returns null.</p>
+        <dt class="idl-code"><a name="ISENABLED">GLboolean isEnabled</a>(GLenum cap)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.1">OpenGL ES 3.0.3 &sect;6.1.1</a>,
+            <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glIsEnabled.xhtml">OpenGL ES 3.0 man page</a>)</span>
+        <dd>
+            In addition to all of the <code class="param">cap</code> values from WebGL 1.0, PRIMITIVE_RESTART_FIXED_INDEX and RASTERIZER_DISCARD are supported.
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -1801,8 +1804,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         Needs update for WebGL 2.0
     </div>
 
+    <h3>New Features Supported in the WebGL 2 API</h3>
+
     <ul>
-      <li>Compressed textures are supported.</li>
+      <li>ETC2 and EAC Compressed texture formats <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=appendix-c">OpenGL ES 3.0.3 Appendix C</a>)</span></li>
+      <li>Primitive restart <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8.1">OpenGL ES 3.0.3 &sect;2.8.1</a>)</span></li>
+      <li>Rasterizer discard <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.1">OpenGL ES 3.0.3 &sect;3.1</a>)</span></li>
     </ul>
 
 <!-- ======================================================================================================= -->
@@ -1834,6 +1841,20 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <code>ProgramParameteri</code> entry points. In addition, querying the program binary length with
         <code>getProgramParameter</code>, and querying program binary formats with <code>getParameter</code>
         are not supported in the WebGL 2 API.
+    </p>
+
+    <h3>Range Checking</h3>
+
+    <p>
+        In addition to the range checking specified in the WebGL 1.0 specification section
+        <a href="http://www.khronos.org/registry/webgl/specs/1.0/#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex
+        Attributes and Range Checking</a>, indices referenced by <code>drawElements</code>,
+        <code>drawRangeElements</code> or <code>drawElementsInstanced</code> that are greater than the
+        <code>MAX_ELEMENT_INDEX</code> parameter cause the draw call to generate an
+        <code>INVALID_OPERATION</code> error even if they lie within the storage of the bound buffer. Range
+        checking is nor performed for indices that trigger primitive restart if primitive restart is enabled.
+        The range checking specified for <code>drawArrays</code> in the WebGL 1.0 API is also applied to
+        <code>drawArraysInstanced</code> in the WebGL 2.0 API.
     </p>
 
 <!-- ======================================================================================================= -->
