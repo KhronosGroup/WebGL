@@ -90,6 +90,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
+[NoInterfaceObject]
 interface WEBGL_compressed_texture_s3tc {
     /* Compressed Texture Formats */
     const GLenum COMPRESSED_RGB_S3TC_DXT1_EXT        = 0x83F0;
@@ -110,6 +111,9 @@ interface WEBGL_compressed_texture_s3tc {
     </revision>
     <revision date="2013/07/03">
       <change>Clarified that length of ArrayBufferView is actually byteLength.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </ratified>

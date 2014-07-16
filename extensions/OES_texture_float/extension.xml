@@ -46,7 +46,9 @@
     </features>
   </overview>
 
-  <idl xml:space="preserve"> interface OES_texture_float { }; </idl>
+  <idl xml:space="preserve">
+[NoInterfaceObject]
+interface OES_texture_float { }; </idl>
 
   <history>
     <revision date="2010/11/29">
@@ -75,6 +77,10 @@
 
     <revision date="2013/05/15">
       <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
+
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </ratified>

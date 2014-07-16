@@ -62,8 +62,9 @@
   </overview>
 
   <idl xml:space="preserve">
-    interface WEBGL_draw_elements_no_range_check {
-    };
+[NoInterfaceObject]
+interface WEBGL_draw_elements_no_range_check {
+};
   </idl>
 
   <issues>
@@ -71,6 +72,9 @@
   <history>
     <revision date="2014/03/14">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </proposal>

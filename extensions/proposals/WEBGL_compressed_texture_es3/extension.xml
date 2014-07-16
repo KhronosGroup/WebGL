@@ -134,6 +134,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
+[NoInterfaceObject]
 interface WEBGL_compressed_texture_es3 {
     /* Compressed Texture Format */
     const GLenum COMPRESSED_R11_EAC                        = 0x9270; 
@@ -151,6 +152,9 @@ interface WEBGL_compressed_texture_es3 {
   <history>
     <revision date="2013/12/9">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </proposal>

@@ -317,6 +317,7 @@ var ctx2 = canvas2.getContext("webgl", {
     </ul>
   </issues>
   <idl xml:space="preserve">
+[NoInterfaceObject]
 interface WEBGL_shared_resources {
      const GLenum READ_ONLY  = 0x0001;
      const GLenum EXCLUSIVE  = 0x0004;
@@ -337,6 +338,7 @@ interface WEBGL_shared_resources {
 
 callback AcquireSharedResourcesCallback = void ();
 
+[NoInterfaceObject]
 interface WebGLShareGroup {
 }
 
@@ -364,6 +366,9 @@ interface WebGLTexture : WebGLSharedObject {
     </revision>
     <revision date="2013/05/14">
       <change>Moved to draft after agreement in working group.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute to extension interface and WebGLShareGroup.</change>
     </revision>
   </history>
 </draft>

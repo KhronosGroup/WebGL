@@ -27,7 +27,9 @@
     </features>
   </overview>
 
-  <idl xml:space="preserve"> interface OES_texture_half_float_linear { }; </idl>
+  <idl xml:space="preserve">
+[NoInterfaceObject]
+interface OES_texture_half_float_linear { };</idl>
 
   <history>
     <revision date="2013/02/20">
@@ -38,6 +40,9 @@
     </revision>
     <revision date="2013/08/06">
       <change>Moved to community approved.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </extension>

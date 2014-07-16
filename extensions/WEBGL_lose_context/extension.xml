@@ -29,6 +29,7 @@
     </p>
   </overview>
   <idl xml:space="preserve">
+[NoInterfaceObject]
 interface WEBGL_lose_context {
       void loseContext();
       void restoreContext();
@@ -95,6 +96,9 @@ interface WEBGL_lose_context {
     </revision>
     <revision date="2014/05/08">
       <change>Added INVALID_OPERATION for restoreContext() without loseContext()</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </ratified>

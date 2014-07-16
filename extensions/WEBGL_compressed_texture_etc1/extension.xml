@@ -59,6 +59,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
+[NoInterfaceObject]
 interface WEBGL_compressed_texture_etc1 {
     /* Compressed Texture Format */
     const GLenum COMPRESSED_RGB_ETC1_WEBGL = 0x8D64; 
@@ -82,6 +83,9 @@ interface WEBGL_compressed_texture_etc1 {
     </revision>
     <revision date="2014/06/27">
       <change>Moved to community approved after discussion on public_webgl list.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </extension>

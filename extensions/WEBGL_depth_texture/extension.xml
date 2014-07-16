@@ -93,6 +93,7 @@
     </features>
   </overview>
   <idl xml:space="preserve">
+[NoInterfaceObject]
 interface WEBGL_depth_texture {
   const GLenum UNSIGNED_INT_24_8_WEBGL = 0x84FA;
 };
@@ -224,6 +225,9 @@ interface WEBGL_depth_texture {
     </revision>
     <revision date="2013/05/15">
       <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </ratified>

@@ -16,6 +16,7 @@
     </p>
   </overview>
   <idl xml:space="preserve">
+[NoInterfaceObject]
 interface WEBGL_debug_shaders {
 
       DOMString getTranslatedShaderSource(WebGLShader shader);
@@ -70,6 +71,9 @@ interface WEBGL_debug_shaders {
     </revision>
     <revision date="2014/01/28">
       <change>Added issue on privacy considerations, replacing security section.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </ratified>

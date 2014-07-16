@@ -47,6 +47,7 @@
     interface WebGLTimerQueryEXT : WebGLObject {
     };
 
+    [NoInterfaceObject]
     interface EXT_disjoint_timer_query {
       const GLenum QUERY_COUNTER_BITS_EXT      = 0x8864;
       const GLenum CURRENT_QUERY_EXT           = 0x8865;
@@ -250,6 +251,9 @@
     </revision>
     <revision date="2014/02/12">
       <change>Recast as EXT_disjoint_timer_query and harmonized with mirrored extension.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </draft>

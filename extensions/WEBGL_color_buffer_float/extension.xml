@@ -58,14 +58,15 @@
     </features>
   </overview>
 
-  <idl xml:space="preserve">module webgl {
-  interface EXT_color_buffer_float {
-    const GLenum RGBA32F_EXT = 0x8814;
-    const GLenum RGB32F_EXT = 0x8815;
-    const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
-    const GLenum UNSIGNED_NORMALIZED_EXT = 0x8C17;
-  }; // interface EXT_color_buffer_float
-}; // module webgl</idl>
+  <idl xml:space="preserve">
+[NoInterfaceObject]
+interface EXT_color_buffer_float {
+  const GLenum RGBA32F_EXT = 0x8814;
+  const GLenum RGB32F_EXT = 0x8815;
+  const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
+  const GLenum UNSIGNED_NORMALIZED_EXT = 0x8C17;
+}; // interface EXT_color_buffer_float
+</idl>
 
   <newtok>
     <function name="renderbufferStorage" type="void"><param name="target"
@@ -101,6 +102,10 @@
 
     <revision date="2012/11/26">
       <change>Move to draft.</change>
+    </revision>
+
+    <revision date="2014/07/15">
+      <change>Removed webgl module. Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </draft>

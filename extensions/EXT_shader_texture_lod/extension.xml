@@ -78,6 +78,7 @@
   </overview>
   
   <idl xml:space="preserve">
+    [NoInterfaceObject]
     interface EXT_shader_texture_lod {
     };
   </idl>
@@ -106,6 +107,9 @@
     </revision>
     <revision date="2014/06/27">
       <change>Moved to community approved after discussion on public_webgl list.</change>
+    </revision>
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </extension>

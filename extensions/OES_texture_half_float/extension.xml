@@ -47,6 +47,7 @@
   </overview>
 
   <idl xml:space="preserve">
+[NoInterfaceObject]
 interface OES_texture_half_float {
   const GLenum HALF_FLOAT_OES = 0x8D61;
 };
@@ -80,6 +81,10 @@ interface OES_texture_half_float {
 
     <revision date="2014/02/12">
       <change>Allow texture uploads of half-floats via Uint16Arrays.</change>
+    </revision>
+
+    <revision date="2014/07/15">
+      <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
   </history>
 </ratified>
