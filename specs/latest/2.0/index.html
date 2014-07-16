@@ -114,7 +114,7 @@
     <p>
       WebGL 2 is backwards compatible with WebGL 1: existing content will run in WebGL 2 without
       modification. To access the new behavior provided in this specification, the content
-      explicitly requests a new context (<a href="#">details below</a>).
+      explicitly requests a new context (<a href="#CONTEXT_CREATION">details below</a>).
     </p>
     </div>
 
@@ -130,7 +130,7 @@
 
     <p>
       The remaining sections of this document are intended to be read in conjunction
-      with the OpenGL ES 3.0 specification (3.0.2 at the time of this writing, available
+      with the OpenGL ES 3.0 specification (3.0.3 at the time of this writing, available
       from the <a href="http://www.khronos.org/registry/gles/">Khronos OpenGL ES API Registry</a>).
       Unless otherwise specified, the behavior of each method is defined by the
       OpenGL ES 3.0 specification.  This specification may diverge from OpenGL ES 3.0
@@ -152,7 +152,7 @@
 
 <!-- ======================================================================================================= -->
 
-    <h3>Context Creation</h3>
+    <h3><a name="CONTEXT_CREATION">Context Creation</a></h3>
 
     <p>
         Each <code>WebGLRenderingContext</code> and <code>WebGL2RenderingContext</code> has an
@@ -1971,6 +1971,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <ul>
       <li>ETC2 and EAC Compressed texture formats <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=appendix-c">OpenGL ES 3.0.3 Appendix C</a>)</span></li>
+      <li>Pixel buffer objects <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.7.1">OpenGL ES 3.0.3 &sect;3.7.1</a> and <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.3">OpenGL ES 3.0.3 &sect;4.3</a>)</span></li>
       <li>Primitive restart <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8.1">OpenGL ES 3.0.3 &sect;2.8.1</a>)</span></li>
       <li>Rasterizer discard <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.1">OpenGL ES 3.0.3 &sect;3.1</a>)</span></li>
     </ul>
