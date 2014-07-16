@@ -10,3 +10,5 @@ glsl-construct-bvec4.html
 glsl-construct-mat2.html
 glsl-construct-mat3.html
 glsl-construct-mat4.html
+--min-version 1.0.3 glsl-construct-vec-mat-corner-cases.html
+--min-version 1.0.3 glsl-construct-vec-mat-index.html
