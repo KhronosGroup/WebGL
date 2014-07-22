@@ -407,7 +407,7 @@ function runDrawTests() {
             var x = Math.round((1 - points[n]) * canvas.width / 2);
             var y = Math.round((1 - points[n]) * canvas.height / 2);
             var source = readLocation(x, y);
-            if (Math.abs(source[0] - expected) > 5) {
+            if (Math.abs(source[0] - expected) > 2) {
                 return false;
             }
         }
