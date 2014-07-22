@@ -1826,6 +1826,29 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         systems and devices.
     </p>
 
+    <h3>Buffer Object Binding</h3>
+
+    <p>
+        In the WebGL 2 API, a given buffer object may not be bound both to <code>ELEMENT_ARRAY_BUFFER</code>
+        and some other buffer binding point in its lifetime. This restriction implies that a given buffer
+        object may contain either indices or other data, but not both.
+    </p>
+
+    <p>
+        The type of a WebGLBuffer is initialized the first time it is passed as an argument to
+        <code>bindBuffer</code>, <code>bindBufferRange</code> or <code>bindBufferBase</code>. A subsequent
+        call to one of these functions which attempts to bind a WebGLBuffer that has been bound to
+        <code>ELEMENT_ARRAY_BUFFER</code> to another binding point, or bind a WebGLBuffer which has been
+        bound to another binding point to <code>ELEMENT_ARRAY_BUFFER</code> will generate an
+        <code>INVALID_OPERATION</code> error, and the state of the binding point will remain untouched.
+    </p>
+
+    <p>
+        These restrictions are similar to
+        <a href="http://www.khronos.org/registry/webgl/specs/1.0/#BUFFER_OBJECT_BINDING">buffer object
+        binding restrictions in the WebGL 1 specification</a>.
+    </p>
+
     <h3>Draw buffers</h3>
 
     <p>
