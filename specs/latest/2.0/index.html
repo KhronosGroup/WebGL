@@ -1826,6 +1826,28 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         systems and devices.
     </p>
 
+    <h3><a name="BUFFER_OBJECT_BINDING">Buffer Object Binding</a></h3>
+
+    <p>
+        In the WebGL 2 API, a given buffer object may not be bound both to <code>ELEMENT_ARRAY_BUFFER</code>
+        and some other buffer binding point in its lifetime. This restriction implies that a given buffer
+        object may contain either indices or other data, but not both.
+    </p>
+
+    <p>
+        The type of a WebGLBuffer is initialized the first time it is passed as an argument to
+        <code>bindBuffer</code>, <code>bindBufferRange</code> or <code>bindBufferBase</code>. A subsequent
+        call to one of these functions which attempts to bind a WebGLBuffer that has been bound to
+        <code>ELEMENT_ARRAY_BUFFER</code> to another binding point, or bind a WebGLBuffer which has been
+        bound to another binding point to <code>ELEMENT_ARRAY_BUFFER</code> will generate an
+        <code>INVALID_OPERATION</code> error, and the state of the binding point will remain untouched.
+    </p>
+
+    <p>
+        These restrictions are similar to <a href="../1.0/#BUFFER_OBJECT_BINDING">buffer object binding
+        restrictions in the WebGL 1 specification</a>.
+    </p>
+
     <h3>Draw buffers</h3>
 
     <p>
@@ -1843,18 +1865,17 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         are not supported in the WebGL 2 API.
     </p>
 
-    <h3>Range Checking</h3>
+    <h3><a name="RANGE_CHECKING">Range Checking</a></h3>
 
     <p>
         In addition to the range checking specified in the WebGL 1.0 specification section
-        <a href="http://www.khronos.org/registry/webgl/specs/1.0/#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex
-        Attributes and Range Checking</a>, indices referenced by <code>drawElements</code>,
-        <code>drawRangeElements</code> or <code>drawElementsInstanced</code> that are greater than the
-        <code>MAX_ELEMENT_INDEX</code> parameter cause the draw call to generate an
-        <code>INVALID_OPERATION</code> error even if they lie within the storage of the bound buffer. Range
-        checking is not performed for indices that trigger primitive restart if primitive restart is enabled.
-        The range checking specified for <code>drawArrays</code> in the WebGL 1.0 API is also applied to
-        <code>drawArraysInstanced</code> in the WebGL 2.0 API.
+        <a href="../1.0/#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range Checking</a>,
+        indices referenced by <code>drawElements</code>, <code>drawRangeElements</code> or
+        <code>drawElementsInstanced</code> that are greater than the <code>MAX_ELEMENT_INDEX</code> parameter
+        cause the draw call to generate an <code>INVALID_OPERATION</code> error even if they lie within the
+        storage of the bound buffer. Range checking is not performed for indices that trigger primitive
+        restart if primitive restart is enabled. The range checking specified for <code>drawArrays</code> in
+        the WebGL 1.0 API is also applied to <code>drawArraysInstanced</code> in the WebGL 2.0 API.
     </p>
 
 <!-- ======================================================================================================= -->
