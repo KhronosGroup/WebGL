@@ -541,7 +541,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE             = 0x8216;
   const GLenum FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE           = 0x8217;
   const GLenum FRAMEBUFFER_DEFAULT                           = 0x8218;
-  const GLenum FRAMEBUFFER_UNDEFINED                         = 0x8219;
   const GLenum DEPTH_STENCIL_ATTACHMENT                      = 0x821A;
   const GLenum DEPTH_STENCIL                                 = 0x84F9;
   const GLenum UNSIGNED_INT_24_8                             = 0x84FA;
@@ -1855,6 +1854,13 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         checking is not performed for indices that trigger primitive restart if primitive restart is enabled.
         The range checking specified for <code>drawArrays</code> in the WebGL 1.0 API is also applied to
         <code>drawArraysInstanced</code> in the WebGL 2.0 API.
+    </p>
+
+    <h3>Default Framebuffer</h3>
+
+    <p>
+        WebGL always has a default framebuffer. The <code>FRAMEBUFFER_UNDEFINED</code> enumerant is removed
+        from the WebGL 2 API.
     </p>
 
 <!-- ======================================================================================================= -->
