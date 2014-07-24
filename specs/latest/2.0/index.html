@@ -825,11 +825,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void deleteVertexArray(WebGLVertexArrayObject? vertexArray);
   [WebGLHandlesContextLoss] GLboolean isVertexArray(WebGLVertexArrayObject? vertexArray);
   void bindVertexArray(WebGLVertexArrayObject? array);
-
-  /* TODO:
-   *  - Is it necessary to expose glGetInteger64v, glGetInteger64i_v, and glGetBufferParameteri64v?
-   *    - Or are they subsumed into other queries' signatures?
-   */
 };
 WebGL2RenderingContextBase implements WebGLRenderingContextBase;
 
@@ -864,11 +859,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
                 <tr><td>MAX_3D_TEXTURE_SIZE</td><td>GLint</td></tr>
                 <tr><td>MAX_ARRAY_TEXTURE_LAYERS</td><td>GLint</td></tr>
                 <tr><td>MAX_COLOR_ATTACHMENTS</td><td>GLint</td></tr>
-                <tr><td>MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS</td><td>GLint</td></tr>
+                <tr><td>MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS</td><td>GLint64</td></tr>
                 <tr><td>MAX_COMBINED_UNIFORM_BLOCKS</td><td>GLint</td></tr>
-                <tr><td>MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS</td><td>GLint</td></tr>
+                <tr><td>MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS</td><td>GLint64</td></tr>
                 <tr><td>MAX_DRAW_BUFFERS</td><td>GLint</td></tr>
-                <tr><td>MAX_ELEMENT_INDEX</td><td>GLint</td></tr>
+                <tr><td>MAX_ELEMENT_INDEX</td><td>GLint64</td></tr>
                 <tr><td>MAX_ELEMENTS_INDICES</td><td>GLint</td></tr>
                 <tr><td>MAX_ELEMENTS_VERTICES</td><td>GLint</td></tr>
                 <tr><td>MAX_FRAGMENT_INPUT_COMPONENTS</td><td>GLint</td></tr>
@@ -876,12 +871,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
                 <tr><td>MAX_FRAGMENT_UNIFORM_COMPONENTS</td><td>GLint</td></tr>
                 <tr><td>MAX_PROGRAM_TEXEL_OFFSET</td><td>GLint</td></tr>
                 <tr><td>MAX_SAMPLES</td><td>GLint</td></tr>
-                <tr><td>MAX_SERVER_WAIT_TIMEOUT</td><td>GLuint64</td></tr>
+                <tr><td>MAX_SERVER_WAIT_TIMEOUT</td><td>GLint64</td></tr>
                 <tr><td>MAX_TEXTURE_LOD_BIAS</td><td>GLint</td></tr>
                 <tr><td>MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS</td><td>GLint</td></tr>
                 <tr><td>MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS</td><td>GLint</td></tr>
                 <tr><td>MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS</td><td>GLint</td></tr>
-                <tr><td>MAX_UNIFORM_BLOCK_SIZE</td><td>GLint</td></tr>
+                <tr><td>MAX_UNIFORM_BLOCK_SIZE</td><td>GLint64</td></tr>
                 <tr><td>MAX_UNIFORM_BUFFER_BINDINGS</td><td>GLint</td></tr>
                 <tr><td>MAX_VARYING_COMPONENTS</td><td>GLint</td></tr>
                 <tr><td>MAX_VERTEX_OUTPUT_COMPONENTS</td><td>GLint</td></tr>
@@ -907,12 +902,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
                 <tr><td>TRANSFORM_FEEDBACK_ACTIVE</td><td>GLboolean</td></tr>
                 <tr><td>TRANSFORM_FEEDBACK_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
                 <tr><td>TRANSFORM_FEEDBACK_PAUSED</td><td>GLboolean</td></tr>
-                <tr><td>TRANSFORM_FEEDBACK_BUFFER_SIZE</td><td>GLint</td></tr>
-                <tr><td>TRANSFORM_FEEDBACK_BUFFER_START</td><td>GLint</td></tr>
                 <tr><td>UNIFORM_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
                 <tr><td>UNIFORM_BUFFER_OFFSET_ALIGNMENT</td><td>GLint</td></tr>
-                <tr><td>UNIFORM_BUFFER_SIZE</td><td>GLint</td></tr>
-                <tr><td>UNIFORM_BUFFER_START</td><td>GLint</td></tr>
                 <tr><td>UNPACK_IMAGE_HEIGHT</td><td>GLint</td></tr>
                 <tr><td>UNPACK_ROW_LENGTH</td><td>GLint</td></tr>
                 <tr><td>UNPACK_SKIP_IMAGES</td><td>GLboolean</td></tr>
@@ -951,6 +942,17 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h4>Buffer objects</h4>
 
     <dl class="methods">
+      <dt class="idl-code">any getBufferParameter(GLenum target, GLenum pname)
+          <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.9">OpenGL ES 3.0.3 &sect;6.1.9</a>,
+          <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetBufferParameter.xhtml" class="nonnormative">man page</a>)
+          </span>
+      </dt>
+      <dd>
+        Return the value for the passed pname. In addition to supporting querying with the pname BUFFER_USAGE
+        as in WebGL 1.0, querying with the pname BUFFER_SIZE returns the buffer size as a value of type
+        GLsizeiptr.
+      </dd>
       <dt>
         <p class="idl-code">void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size)
           <span class="gl-spec">
