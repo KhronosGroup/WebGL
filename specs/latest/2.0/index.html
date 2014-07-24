@@ -486,7 +486,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum UNSIGNED_INT_10F_11F_11F_REV                  = 0x8C3B;
   const GLenum RGB9_E5                                       = 0x8C3D;
   const GLenum UNSIGNED_INT_5_9_9_9_REV                      = 0x8C3E;
-  const GLenum TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH         = 0x8C76;
   const GLenum TRANSFORM_FEEDBACK_BUFFER_MODE                = 0x8C7F;
   const GLenum MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS    = 0x8C80;
   const GLenum TRANSFORM_FEEDBACK_VARYINGS                   = 0x8C83;
@@ -1884,6 +1883,15 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <p>
         WebGL always has a default framebuffer. The <code>FRAMEBUFFER_UNDEFINED</code> enumerant is removed
         from the WebGL 2 API.
+    </p>
+
+    <h3><a name="STRING_LENGTH_QUERIES">String Length Queries</a></h3>
+
+    <p>
+        In the WebGL 2 API, the enumerants <code>ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH</code>,
+        <code>TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH</code>, <code>UNIFORM_BLOCK_NAME_LENGTH</code>, and
+        <code>UNIFORM_NAME_LENGTH</code> are removed in addition to similar
+        <a href="../1.0/#STRING_LENGTH_QUERIES">enumerants removed in the WebGL 1.0 API</a>.
     </p>
 
 <!-- ======================================================================================================= -->
