@@ -1353,6 +1353,18 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <dl class="methods">
       <dt>
+        <p class="idl-code">void clear(GLbitfield mask)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.2.3">OpenGL ES 3.0.3 &sect;4.2.3</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClear.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dd>
+        Clear buffers to preset values. If an integer color buffer is among the buffers that would be
+        cleared, an <code>INVALID_OPERATION</code> error is generated and nothing is cleared.
+      </dd>
+      <dt>
         <p class="idl-code">void vertexAttribDivisor(GLuint index, GLuint divisor)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8">OpenGL ES 3.0.3 &sect;2.8</a>,
@@ -1410,6 +1422,19 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Set every pixel in the specified buffer to a constant value. The clearBuffer function that should be
+        used for a color buffer depends on the type of the color buffer, given in the following table:
+        <table>
+          <tr><th>Type of buffer</th><th>clearBuffer function</th></tr>
+          <tr><td>floating point</td><td>clearBufferfv</td></tr>
+          <tr><td>fixed point</td><td>clearBufferfv</td></tr>
+          <tr><td>signed integer</td><td>clearBufferiv</td></tr>
+          <tr><td>unsigned integer</td><td>clearBufferuiv</td></tr>
+        </table><br>
+        If <code>buffer</code> is <code>COLOR_BUFFER</code> and the function is not chosen according to the
+        above table, an <code>INVALID_OPERATION</code> error is generated and nothing is cleared.
+      </dd>
     </dl>
 <!-- ======================================================================================================= -->
 
@@ -1916,6 +1941,14 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <code>TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH</code>, <code>UNIFORM_BLOCK_NAME_LENGTH</code>, and
         <code>UNIFORM_NAME_LENGTH</code> are removed in addition to similar
         <a href="../1.0/#STRING_LENGTH_QUERIES">enumerants removed in the WebGL 1.0 API</a>.
+    </p>
+
+    <h3>Invalid Clears</h3>
+
+    <p>
+        In the WebGL 2 API, trying to perform a clear when there is a mismatch between the type of the
+        specified clear value and the type of a buffer that is being cleared generates an
+        <code>INVALID_OPERATION</code> error instead of producing undefined results.
     </p>
 
 <!-- ======================================================================================================= -->
