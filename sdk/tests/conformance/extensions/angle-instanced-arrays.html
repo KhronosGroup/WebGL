@@ -169,7 +169,6 @@ function setupCanvas() {
 }
 
 function runOutputTests() {
-    var e = 2; // Amount of variance to allow in result pixels - may need to be tweaked higher
     var instanceCount = 4;
 
     debug("Testing various draws for valid built-in function behavior");
@@ -200,10 +199,20 @@ function runOutputTests() {
     gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
     ext.vertexAttribDivisorANGLE(colorLoc, 1);
 
-    // Draw 1: Draw Non-indexed instances
+    wtu.setupUnitQuad(gl, 0);
+
+    // Draw 1: Regular drawArrays
+    debug("");
+    debug("Testing drawArrays with non-zero divisor");
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "vertex attrib divisor should affect regular drawArrays when the extension is enabled");
+    wtu.checkCanvasRect(gl, 0, canvas.height/2, canvas.width/2, canvas.height/2, [255, 0, 0, 255]);
+
+    // Draw 2: Draw Non-indexed instances
+    debug("");
     debug("Testing drawArraysInstancedANGLE");
     gl.clear(gl.COLOR_BUFFER_BIT);
-    wtu.setupUnitQuad(gl, 0);
 
     // Test drawArraysInstancedANGLE error conditions
     ext.drawArraysInstancedANGLE(gl.TRIANGLES, 0, 6, instanceCount);
@@ -239,10 +248,25 @@ function runOutputTests() {
     ext.drawArraysInstancedANGLE(desktopGL['POLYGON'], 0, 6, instanceCount);
     wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstancedANGLE with POLYGON should return INVALID_ENUM");
 
-    // Draw 2: Draw indexed instances
+    wtu.setupIndexedQuad(gl, 1, 0);
+
+    // Draw 3: Regular drawElements
+    debug("");
+    debug("Testing drawElements with non-zero divisor");
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    // Point to another location in the buffer so that the draw would overflow without the divisor
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 48);
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "vertex attrib divisor should affect regular drawElements when the extension is enabled");
+    wtu.checkCanvasRect(gl, 0, canvas.height/2, canvas.width/2, canvas.height/2, [255, 255, 0, 255]);
+    // Restore the vertex attrib pointer
+    gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
+
+    // Draw 4: Draw indexed instances
+    debug("");
     debug("Testing drawElementsInstancedANGLE");
     gl.clear(gl.COLOR_BUFFER_BIT);
-    wtu.setupIndexedQuad(gl, 1, 0);
     ext.drawElementsInstancedANGLE(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, instanceCount);
     wtu.checkCanvasRect(gl, 0, canvas.height/2, canvas.width/2, canvas.height/2, [255, 0, 0, 255]);
     wtu.checkCanvasRect(gl, canvas.width/2, canvas.height/2, canvas.width/2, canvas.height/2, [0, 255, 0, 255]);
@@ -283,6 +307,7 @@ function runOutputTests() {
 
 function runUniqueObjectTest()
 {
+    debug("");
     debug("Testing that getExtension() returns the same object each time");
     gl.getExtension("ANGLE_instanced_arrays").myProperty = 2;
     gc();
