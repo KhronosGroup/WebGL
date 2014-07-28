@@ -1349,7 +1349,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
 <!-- ======================================================================================================= -->
 
-    <h4>Writing to the drawing buffer</h4>
+    <h4><a name="WRITING_TO_THE_DRAWING_BUFFER">Writing to the drawing buffer</a></h4>
 
     <dl class="methods">
       <dt>
@@ -1372,6 +1372,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Set the rate at which the vertex attribute identified by <code>index</code> advances when drawing.
+      </dd>
       <dt>
         <p class="idl-code">void drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
           <span class="gl-spec">
@@ -1380,6 +1383,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Draw <code>instanceCount</code> instances of geometry using the currently enabled vertex attributes.
+        Vertex attributes which have a non-zero divisor advance once every divisor instances.
+      </dd>
       <dt>
         <p class="idl-code">void drawElementsInstanced(GLenum mode, GLsizei count, GLenum type, GLintptr offset, GLsizei instanceCount)
           <span class="gl-spec">
@@ -1388,6 +1395,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Draw <code>instanceCount</code> instances of geometry using the currently bound element array buffer.
+        Vertex attributes which have a non-zero divisor advance once every divisor instances.
+      </dd>
       <dt>
         <p class="idl-code">void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLintptr offset)
           <span class="gl-spec">
@@ -1396,6 +1407,18 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Draw using the currently bound element array buffer. All error conditions specified for
+        <code>drawElements</code> in the section <a href="../1.0/#WRITING_TO_THE_DRAWING_BUFFER">Writing
+        to the drawing buffer</a> of the WebGL 1.0 specification apply. In addition, indices used to draw
+        must lie between <code>start</code> and <code>end</code> inclusive. If the draw call references
+        indices that are not within this range, an <code>INVALID_OPERATION</code> error is generated and
+        nothing is drawn.<br><br>
+
+        WebGL 2 performs additional error checking beyond that specified in OpenGL ES 3.0 during calls to
+        <code>drawElements</code>, <code>drawArrays</code>, <code>drawRangeElements</code> and their
+        instanced variants. See <a href="#RANGE_CHECKING">Range Checking</a>.
+      </dd>
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -1411,6 +1434,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Define the draw buffers to which all fragment colors are written.
+      </dd>
       <dt>
         <p class="idl-code">void clearBufferiv(GLenum buffer, GLint drawbuffer, ClearBufferISource value)</p>
         <p class="idl-code">void clearBufferuiv(GLenum buffer, GLint drawbuffer, ClearBufferUISource value)</p>
@@ -1860,6 +1886,14 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <li>Primitive restart <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8.1">OpenGL ES 3.0.3 &sect;2.8.1</a>)</span></li>
       <li>Rasterizer discard <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.1">OpenGL ES 3.0.3 &sect;3.1</a>)</span></li>
     </ul>
+
+    <h3>Vertex Attribute Divisor</h3>
+
+    <p>
+        In the WebGL 2 API, vertex attributes which have a non-zero divisor do not advance during calls to
+        <code>drawArrays</code> and <code>drawElements</code>.
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8.3">OpenGL ES 3.0.3 &sect;2.8.3</a>)</span>
+    </p>
 
 <!-- ======================================================================================================= -->
 
