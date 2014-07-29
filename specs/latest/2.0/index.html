@@ -1417,7 +1417,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
         WebGL 2 performs additional error checking beyond that specified in OpenGL ES 3.0 during calls to
         <code>drawElements</code>, <code>drawArrays</code>, <code>drawRangeElements</code> and their
-        instanced variants. See <a href="#RANGE_CHECKING">Range Checking</a>.
+        instanced variants. See <a href="#RANGE_CHECKING">Range Checking</a> and
+        <a href="#ENABLED_ATTRIBUTE">Enabled Attribute</a>.
       </dd>
     </dl>
 
@@ -1959,6 +1960,15 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         storage of the bound buffer. Range checking is not performed for indices that trigger primitive
         restart if primitive restart is enabled. The range checking specified for <code>drawArrays</code> in
         the WebGL 1.0 API is also applied to <code>drawArraysInstanced</code> in the WebGL 2.0 API.
+    </p>
+
+    <h3><a name="ENABLED_ATTRIBUTE">Enabled Attribute</a></h3>
+
+    <p>
+        In the WebGL 2 API, attempting to draw with <code>drawArrays</code>, <code>drawElements</code>,
+        <code>drawRangeElements</code> or their instanced variants generates an <code>INVALID_OPERATION</code>
+        error if there is not at least one enabled vertex attribute array that has a divisor of zero and is
+        bound to an active generic attribute value in the program used for the draw command.
     </p>
 
     <h3>Default Framebuffer</h3>
