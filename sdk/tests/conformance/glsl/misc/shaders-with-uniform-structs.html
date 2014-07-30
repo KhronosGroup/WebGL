@@ -109,7 +109,7 @@ void main()
 // GLSL 1.017 4.2.4
 precision mediump float;
 
-// Add a struct before info to make sure the struct info here is assigend
+// Add a struct before info to make sure the struct info here is assigned
 // a different internal unique ID from the struct info in vertex shader.
 struct extra {
   vec4 p;
@@ -266,7 +266,7 @@ tests.push({
   fShaderSource: wtu.getScript("fragmentShaderStructFieldType"),
   fShaderSuccess: true,
   linkSuccess: false,
-  passMsg: "Structures must have the same type defininations to be considered the same type.",
+  passMsg: "Structures must have the same type definitions to be considered the same type.",
 });
 tests.push({
   vShaderSource: wtu.getScript("vertexShaderStructFieldPrecision"),
@@ -274,7 +274,7 @@ tests.push({
   fShaderSource: wtu.getScript("fragmentShaderStructFieldPrecision"),
   fShaderSuccess: true,
   linkSuccess: false,
-  passMsg: "Structures must have the same type defininations (including precision) to be considered the same type.",
+  passMsg: "Structures must have the same type definitions (including precision) to be considered the same type.",
 });
 
 GLSLConformanceTester.runTests(tests);
