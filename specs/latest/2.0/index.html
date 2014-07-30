@@ -1512,28 +1512,50 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p class="idl-code">WebGLQuery? getQuery(GLenum target, GLenum pname)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.3 &sect;6.1.7</a>,
-            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetQueryObjectuiv.xhtml" class="nonnormative">man page</a>)
-          </span>
-        </p>
-      </dt>
-      <dt>
-        <p class="idl-code">any getQueryParameter(WebGLQuery? query, GLenum pname)
-          <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.3 &sect;6.1.7</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetQueryiv.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
       </dt>
       <dd>
-          Return the value for the passed pname given the passed query. The type returned is the natural
-          type for the requested pname, as given in the following table:
+          <p>Returns information about a query target <em>target</em>, which must be one
+          of <code>ANY_SAMPLES_PASSED</code> or <code>ANY_SAMPLES_PASSED_CONSERVATIVE</code> for
+          occlusion queries, or <code>TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN</code> for primitive
+          queries. <em>pname</em> specifies the symbolic name of a query object target
+          parameter. Currently it must be <code>CURRENT_QUERY</code>, and returns either the
+          currently active query for the target, or null.</p>
+
+          <p>If <em>target</em> or <em>pname</em> are not in the list above, generates
+          an <code>INVALID_ENUM</code> error and returns null.</p>
+
+          <p>Returns null if any OpenGL errors are generated during the execution of this
+          function.</p>
+      </dd>
+      <dt>
+        <p class="idl-code">any getQueryParameter(WebGLQuery? query, GLenum pname)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.3 &sect;6.1.7</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetQueryObjectuiv.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dd>
+          <p>Returns a parameter <em>pname</em> of a query object. <code>QUERY_RESULT</code> returns
+          the value of the query object's passed samples counter.
+          <code>QUERY_RESULT_AVAILABLE</code> returns whether the samples counter is immediately
+          available. The type returned is the natural type for the requested pname, as given in the
+          following table:</p>
           <table>
               <tr><th>pname</th><th>returned type</th></tr>
-              <tr><td>ANY_SAMPLES_PASSED</td><td>GLboolean</td></tr>
-              <tr><td>ANY_SAMPLES_PASSED_CONSERVATIVE</td><td>GLboolean</td></tr>
-              <tr><td>TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN</td><td>GLint</td></tr>
+              <tr><td>QUERY_RESULT</td><td>GLuint</td></tr>
+              <tr><td>QUERY_RESULT_AVAILABLE</td><td>GLboolean</td></tr>
           </table>
-          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code>
+          error and returns null.</p>
+
+          <p>if <em>query</em> is not a valid query object, or is a currently active query object,
+          generates an <code>INVALID_OPERATION</code> error and returns null.
+
           <p>Returns null if any OpenGL errors are generated during the execution of this
           function.</p>
       </dd>
