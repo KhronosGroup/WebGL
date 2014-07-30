@@ -121,7 +121,6 @@ interface WebGL2RenderingContextBase
   const GLenum UNSIGNED_INT_10F_11F_11F_REV                  = 0x8C3B;
   const GLenum RGB9_E5                                       = 0x8C3D;
   const GLenum UNSIGNED_INT_5_9_9_9_REV                      = 0x8C3E;
-  const GLenum TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH         = 0x8C76;
   const GLenum TRANSFORM_FEEDBACK_BUFFER_MODE                = 0x8C7F;
   const GLenum MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS    = 0x8C80;
   const GLenum TRANSFORM_FEEDBACK_VARYINGS                   = 0x8C83;
@@ -176,7 +175,6 @@ interface WebGL2RenderingContextBase
   const GLenum FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE             = 0x8216;
   const GLenum FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE           = 0x8217;
   const GLenum FRAMEBUFFER_DEFAULT                           = 0x8218;
-  const GLenum FRAMEBUFFER_UNDEFINED                         = 0x8219;
   const GLenum DEPTH_STENCIL_ATTACHMENT                      = 0x821A;
   const GLenum DEPTH_STENCIL                                 = 0x84F9;
   const GLenum UNSIGNED_INT_24_8                             = 0x84FA;
@@ -375,9 +373,6 @@ interface WebGL2RenderingContextBase
   void uniformMatrix4x2fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
   void uniformMatrix3x4fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
   void uniformMatrix4x3fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
-  /* TODO: this will be exposed as a couple of additional entries in
-     the return type table for getUniform */
-  // void glGetUniformuiv (GLuint program, GLint location, GLuint* params);
   void vertexAttribI4i(GLuint index, GLint x, GLint y, GLint z, GLint w);
   void vertexAttribI4iv(GLuint index, sequence<GLint> v);
   void vertexAttribI4ui(GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
@@ -439,7 +434,7 @@ interface WebGL2RenderingContextBase
   void bindTransformFeedback (GLenum target, WebGLTransformFeedback? id);
   void beginTransformFeedback(GLenum primitiveMode);
   void endTransformFeedback();
-  void transformFeedbackVaryings(WebGLProgram? program, GLsizei count, sequence<DOMString> varyings, GLenum bufferMode);
+  void transformFeedbackVaryings(WebGLProgram? program, sequence<DOMString> varyings, GLenum bufferMode);
   WebGLActiveInfo? getTransformFeedbackVarying(WebGLProgram? program, GLuint index);
   void pauseTransformFeedback();
   void resumeTransformFeedback();
@@ -461,12 +456,6 @@ interface WebGL2RenderingContextBase
   void deleteVertexArray(WebGLVertexArrayObject? vertexArray);
   [WebGLHandlesContextLoss] GLboolean isVertexArray(WebGLVertexArrayObject? vertexArray);
   void bindVertexArray(WebGLVertexArrayObject? array);
-
-  /* TODO:
-   *  - Is it necessary to expose glGetInteger64v, glGetInteger64i_v, and glGetBufferParameteri64v?
-   *    - Or are they subsumed into other queries' signatures?
-   *  - Deliberately not exposing glGetProgramBinary, glProgramBinary, glProgramParameteri
-   */
 };
 WebGL2RenderingContextBase implements WebGLRenderingContextBase;
 
