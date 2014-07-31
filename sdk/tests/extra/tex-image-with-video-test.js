@@ -78,7 +78,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
 
         document.body.appendChild(video);
         video.type = info.type;
-        video.crossOrigin = 'anonymous';
+        // video.crossOrigin = 'anonymous';
         video.src = info.src;
         wtu.startPlayingAndWaitForVideo(video, runTest);
     }
