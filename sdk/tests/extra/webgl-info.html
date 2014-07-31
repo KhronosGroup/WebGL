@@ -31,6 +31,7 @@
 <meta charset="utf-8">
 <title>WebGL Information</title>
 <script src="../../demos/common/webgl-utils.js"> </script>
+<script src="../conformance/resources/webgl-test-utils.js"> </script>
 <script>
 "use strict";
 window.onload = main;
@@ -56,6 +57,7 @@ function createCell(txt) {
 function main() {
   var canvas = document.getElementById("example");
   var gl = WebGLUtils.setupWebGL(canvas);
+  var wtu = WebGLTestUtils;
   if (!gl) {
     return;
   }
@@ -90,12 +92,36 @@ function main() {
   }
   table.appendChild(tb);
   document.getElementById("info").appendChild(table);
+  var extensionList = document.createElement('ul');
+  var exts = gl.getSupportedExtensions();
+  var extsWithPrefixes = [];
+  while (exts.length > 0) {
+    var prefixedNames = wtu.getExtensionPrefixedNames(exts[0]);
+    var supportedPrefixedNames = [];
+    for (var ii = 0; ii < prefixedNames.length; ++ii) {
+      var index = exts.indexOf(prefixedNames[ii]);
+      if (index >= 0) {
+        supportedPrefixedNames.push(exts[index]);
+        exts.splice(index, 1);
+      }
+    }
+    extsWithPrefixes.push(supportedPrefixedNames.join(" / "));
+  }
+  extsWithPrefixes.sort();
+  for (var ii = 0; ii < extsWithPrefixes.length; ++ii) {
+    var li = document.createElement('li');
+    li.appendChild(document.createTextNode(extsWithPrefixes[ii]));
+    extensionList.appendChild(li);
+  }
+  document.getElementById('extensions').appendChild(extensionList);
 }
 </script>
 </head>
 <body>
 <h1>WebGL Info</h1>
 <div id="info"></div>
+<h2>WebGL Extensions</h2>
+<div id="extensions"></div>
 <canvas id="example" width="256" height="16" style="width: 256px; height: 48px;"></canvas>
 </body>
 </html>
