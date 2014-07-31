@@ -1297,7 +1297,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         Sets the vertex attribute at the passed index to the given constant integer value. Values set via the
         <code>vertexAttrib</code> are guaranteed to be returned from the <code>getVertexAttrib</code> function
         with the <code>CURRENT_VERTEX_ATTRIB</code> param, even if there have been intervening calls to 
-        <code>drawArrays</code> or <code>drawElements</code>.
+        <code>drawArrays</code> or <code>drawElements</code>. If the function is not correct for the base type
+        of the attribute, an <code>INVALID_OPERATION</code> error will be generated; see
+        <a href="#SPECIFYING_VERTEX_ATTRIBUTES">Specifying Vertex Attributes</a>.
       </dd>
       <dt>
         <p class="idl-code">void vertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset)
@@ -1316,7 +1318,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         Requirements</a>. If offset is negative, an <code>INVALID_VALUE</code> error will be
         generated. If no WebGLBuffer is bound to the ARRAY_BUFFER target,
         an <code>INVALID_OPERATION</code> error will be generated. In WebGL, the maximum supported
-        stride is 255; see <a href="../1.0/#VERTEX_STRIDE"> Vertex Attribute Data Stride</a>.
+        stride is 255; see <a href="../1.0/#VERTEX_STRIDE">Vertex Attribute Data Stride</a>. If the
+        function or the given type is not correct for the base type of the attribute, an
+        <code>INVALID_OPERATION</code> error will be generated; see
+        <a href="#SPECIFYING_VERTEX_ATTRIBUTES">Specifying Vertex Attributes</a>.
       </dd>
       <dt class="idl-code">any getVertexAttrib(GLuint index, GLenum pname)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.3 &sect;6.1.12</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetVertexAttrib.xhtml">man page</a>)</span>
@@ -1993,6 +1998,47 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         In the WebGL 2 API, trying to perform a clear when there is a mismatch between the type of the
         specified clear value and the type of a buffer that is being cleared generates an
         <code>INVALID_OPERATION</code> error instead of producing undefined results.
+    </p>
+
+    <h3><a name="SPECIFYING_VERTEX_ATTRIBUTES">Specifying Vertex Attributes</a></h3>
+
+    <p>
+        In the WebGL 2 API, the functions and the <code>type</code> parameter values that should be used to
+        specify vertex attribute values depend on the base type of the attribute, as given in the following
+        table:
+    </p>
+
+    <table>
+        <tr>
+            <th>base type of the attribute</th>
+            <th>vertexAttrib function variants</th>
+            <th>vertexAttribPointer function variant</th>
+            <th>allowed values for the type parameter</th>
+        </tr>
+        <tr>
+            <td>float</td>
+            <td>vertexAttrib[1234]f or vertexAttrib[1234]fv</td>
+            <td>vertexAttribPointer</td>
+            <td>any of the type values listed in <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8">OpenGL ES 3.0.3 &sect;2.8</a></td>
+        </tr>
+        <tr>
+            <td>signed integer</td>
+            <td>vertexAttribI4i or vertexAttribI4iv</td>
+            <td>vertexAttribIPointer</td>
+            <td>BYTE, SHORT, INT</td>
+        </tr>
+        <tr>
+            <td>unsigned integer</td>
+            <td>vertexAttribI4ui or vertexAttribI4uiv</td>
+            <td>vertexAttribIPointer</td>
+            <td>UNSIGNED_BYTE, UNSIGNED_SHORT, UNSIGNED_INT</td>
+        </tr>
+    </table><br>
+
+    <p>
+        Attempting to use another <code>vertexAttrib*</code> function or a <code>type</code> value which is
+        not correct for the given base type generates an <code>INVALID_OPERATION</code> error instead of
+        producing undefined results.
     </p>
 
 <!-- ======================================================================================================= -->
