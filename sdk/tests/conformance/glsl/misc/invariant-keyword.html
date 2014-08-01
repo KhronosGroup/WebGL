@@ -1,0 +1,170 @@
+<!--
+
+/*
+** Copyright (c) 2014 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Varyings with invariant keyword</title>
+<link rel="stylesheet" href="../../../resources/js-test-style.css"/>
+<link rel="stylesheet" href="../../resources/glsl-feature-tests.css"/>
+<script src="../../../resources/js-test-pre.js"></script>
+<script src="../../resources/webgl-test-utils.js"></script>
+<script src="../../resources/glsl-conformance-test.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<canvas id="example" width="2" height="2"> </canvas>
+<script id="vshader-default" type="x-shader/x-vertex">
+    attribute vec4 a_position;
+    varying float v_varying;
+    void main()
+    {
+        gl_Position = a_position;
+        v_varying = a_position.x;
+    }
+</script>
+<script id="vshader-inv-varying" type="x-shader/x-vertex">
+    attribute vec4 a_position;
+    invariant varying float v_varying;
+    void main()
+    {
+        gl_Position = a_position;
+        v_varying = a_position.x;
+    }
+</script>
+<script id="vshader-inv-inner-scope" type="x-shader/x-vertex">
+    attribute vec4 a_position;
+    varying float v_varying;
+    void main()
+    {
+        // Not allowed
+        invariant float temp = a_position.x;
+
+        gl_Position = a_position;
+        v_varying = temp;
+    }
+</script>
+<script id="vshader-inv-attribute" type="x-shader/x-vertex">
+    // Not allowed
+    invariant attribute vec4 a_position;
+    varying float v_varying;
+    void main()
+    {
+        gl_Position = a_position;
+        v_varying = a_position.x;
+    }
+</script>
+<script id="vshader-inv-position" type="x-shader/x-vertex">
+    attribute vec4 a_position;
+    invariant gl_Position;
+    varying float v_varying;
+    void main()
+    {
+        gl_Position = a_position;
+        v_varying = a_position.x;
+    }
+</script>
+<script id="fshader-default" type="x-shader/x-vertex">
+    precision mediump float;
+    varying float v_varying;
+    void main()
+    {
+        gl_FragColor = vec4(v_varying, 0, 0, 1.0);
+    }
+</script>
+<script id="fshader-inv-varying" type="x-shader/x-vertex">
+    precision mediump float;
+    invariant varying float v_varying;
+    void main()
+    {
+        gl_FragColor = vec4(v_varying, 0, 0, 1.0);
+    }
+</script>
+<script>
+"use strict";
+description();
+debug("");
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("example");
+
+var tests = [];
+tests.push({
+  vShaderSource: wtu.getScript("vshader-inv-varying"),
+  vShaderSuccess: true,
+  fShaderSource: wtu.getScript("fshader-default"),
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: "Vertex shader with invariant varying",
+});
+tests.push({
+  vShaderSource: wtu.getScript("vshader-default"),
+  vShaderSuccess: true,
+  fShaderSource: wtu.getScript("fshader-inv-varying"),
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: "Fragment shader with invariant varying",
+});
+tests.push({
+  vShaderSource: wtu.getScript("vshader-inv-varying"),
+  vShaderSuccess: true,
+  fShaderSource: wtu.getScript("fshader-inv-varying"),
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: "Vertex and fragment shader with invariant varying",
+});
+tests.push({
+  vShaderSource: wtu.getScript("vshader-inv-position"),
+  vShaderSuccess: true,
+  fShaderSource: wtu.getScript("fshader-default"),
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: "Vertex shader with gl_Position varying",
+});
+tests.push({
+  vShaderSource: wtu.getScript("vshader-inv-inner-scope"),
+  vShaderSuccess: false,
+  fShaderSource: wtu.getScript("fshader-default"),
+  fShaderSuccess: true,
+  linkSuccess: false,
+  passMsg: "Vertex shader with invariant variable in inner scope",
+});
+tests.push({
+  vShaderSource: wtu.getScript("vshader-inv-attribute"),
+  vShaderSuccess: false,
+  fShaderSource: wtu.getScript("fshader-default"),
+  fShaderSuccess: true,
+  linkSuccess: false,
+  passMsg: "Vertex shader with invariant attribute",
+});
+GLSLConformanceTester.runTests(tests);
+var successfullyParsed = true;
+</script>
+</body>
+</html>
+
