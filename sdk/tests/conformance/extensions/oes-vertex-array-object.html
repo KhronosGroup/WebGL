@@ -140,7 +140,7 @@ function runBindingTestEnabled() {
     shouldBe("ext.VERTEX_ARRAY_BINDING_OES", "0x85B5");
     
     gl.getParameter(ext.VERTEX_ARRAY_BINDING_OES);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "VERTEX_ARRAY_BINDING_OES query should succeed if extension is enable");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "VERTEX_ARRAY_BINDING_OES query should succeed if extension is enabled");
     
     // Default value is null
     if (gl.getParameter(ext.VERTEX_ARRAY_BINDING_OES) === null) {

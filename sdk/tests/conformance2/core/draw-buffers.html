@@ -92,7 +92,7 @@ if (!gl) {
 function createDrawBuffersProgram(scriptId, sub) {
   var fsource = wtu.getScript(scriptId);
   fsource = wtu.replaceParams(fsource, sub);
-  wtu.addShaderSource(output, "fragement shader", fsource);
+  wtu.addShaderSource(output, "fragment shader", fsource);
   return wtu.setupProgram(gl, ["vshader", fsource], ["a_position"]);
 }
 
