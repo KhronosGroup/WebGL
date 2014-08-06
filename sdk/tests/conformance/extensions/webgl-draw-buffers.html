@@ -177,7 +177,7 @@ if (!gl) {
 function createExtDrawBuffersProgram(scriptId, sub) {
   var fsource = wtu.getScript(scriptId);
   fsource = wtu.replaceParams(fsource, sub);
-  wtu.addShaderSource(output, "fragement shader", fsource);
+  wtu.addShaderSource(output, "fragment shader", fsource);
   return wtu.setupProgram(gl, ["vshader", fsource], ["a_position"]);
 }
 
@@ -245,7 +245,7 @@ function testShaders(tests, sub) {
   tests.forEach(function(test) {
     var shaders = [wtu.getScript(test.shaders[0]), wtu.replaceParams(wtu.getScript(test.shaders[1]), sub)];
     wtu.addShaderSource(output, "vertex shader", shaders[0]);
-    wtu.addShaderSource(output, "fragement shader", shaders[1]);
+    wtu.addShaderSource(output, "fragment shader", shaders[1]);
     var program = wtu.setupProgram(gl, shaders, ["a_position"]);
     var programLinkedSuccessfully = (program != null);
     var expectedProgramToLinkSuccessfully = (test.expectFailure == true);
@@ -278,6 +278,9 @@ function runShadersTestEnabled() {
   testShaders([
     { shaders: ["vshader", "fshaderMacroEnabled"],
     msg: "GL_EXT_draw_buffers should be defined as 1 in GLSL",
+    },
+    { shaders: ["vshader", "fshader"],
+    msg: "fragment shader containing the #extension directive should compile",
     },
   ], sub);
 
