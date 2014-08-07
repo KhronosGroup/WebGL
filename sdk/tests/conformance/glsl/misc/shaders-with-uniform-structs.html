@@ -223,6 +223,24 @@ void main()
     gl_FragColor = uni.color;
 }
 </script>
+<script id="vertexShaderUnnamedStruct" type="text/something-not-javascript">
+// ANGLE regression on Windows, crbug.com/401296
+uniform struct {
+  float f;
+  vec4 v;
+} u_struct;
+
+void main()
+{
+    gl_Position = u_struct.f * u_struct.v;
+}
+</script>
+<script id="fragmentShaderSimple" type="text/something-not-javascript">
+void main()
+{
+    gl_FragColor = vec4(1.0);
+}
+</script>
 <script>
 "use strict";
 var wtu = WebGLTestUtils;
@@ -275,6 +293,14 @@ tests.push({
   fShaderSuccess: true,
   linkSuccess: false,
   passMsg: "Structures must have the same type definitions (including precision) to be considered the same type.",
+});
+tests.push({
+  vShaderSource: wtu.getScript("vertexShaderUnnamedStruct"),
+  vShaderSuccess: true,
+  fShaderSource: wtu.getScript("fragmentShaderSimple"),
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: "Shaders with uniforms of unnamed struct type should compile and link successfully.",
 });
 
 GLSLConformanceTester.runTests(tests);
