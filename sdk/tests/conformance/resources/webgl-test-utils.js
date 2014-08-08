@@ -2258,7 +2258,7 @@ var getPrefixedProperty = function(obj, propertyName) {
   for (var ii = 0; ii < propertyPrefixes.length; ++ii) {
     var prefix = propertyPrefixes[ii];
     var name = prefix + propertyName;
-    console.log(name);
+    log(name);
     var property = obj[name];
     if (property) {
       return property;
@@ -2344,8 +2344,8 @@ var fullScreenStateName;
  * @return {boolean} True if fullscreen mode is active.
  */
 var getFullScreenState = function() {
-  console.log("fullscreenstatename:" + fullScreenStateName);
-  console.log(document[fullScreenStateName]);
+  log("fullscreenstatename:" + fullScreenStateName);
+  log(document[fullScreenStateName]);
   return document[fullScreenStateName];
 };
 
@@ -2358,9 +2358,9 @@ var getFullScreenState = function() {
 var onFullScreenChange = function(element, callback) {
   propertyPrefixes.forEach(function(prefix) {
     var eventName = prefix + "fullscreenchange";
-    console.log("addevent: " + eventName);
+    log("addevent: " + eventName);
     document.addEventListener(eventName, function(event) {
-      console.log("event: " + eventName);
+      log("event: " + eventName);
       callback(getFullScreenState());
     });
   });
@@ -2410,8 +2410,10 @@ var waitForComposite = function(gl, callback) {
   var frames = 5;
   var countDown = function() {
     if (frames == 0) {
+      log("waitForComposite: callback");
       callback();
     } else {
+      log("waitForComposite: countdown(" + frames + ")");
       --frames;
       requestAnimFrame.call(window, countDown);
     }
