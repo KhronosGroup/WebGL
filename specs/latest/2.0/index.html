@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 30 July 2014</h2>
+    <h2 class="no-toc">Editor's Draft 11 August 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1477,6 +1477,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Create a WebGLQuery object and initialize it with a query object name as if by calling glGenQueries.
+      </dd>
       <dt>
         <p class="idl-code">void deleteQuery(WebGLQuery? query)
           <span class="gl-spec">
@@ -1485,6 +1488,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Delete the query object contained in the passed <code class="interface">WebGLQuery</code> as if by calling
+        glDeleteQueries. If the query has already been deleted the call has no effect.
+        Note that the query object will be deleted when the <code class="interface">WebGLQuery</code> object is destroyed.
+        This method merely gives the author greater control over when the query object is destroyed.
+      </dd>
       <dt>
         <p class="idl-code">[WebGLHandlesContextLoss] GLboolean isQuery(WebGLQuery? query)
           <span class="gl-spec">
@@ -1493,6 +1502,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Return true if the passed <code class="interface">WebGLQuery</code> is valid and false otherwise.<br><br>
+
+        Returns false if the query's <a href="../1.0/#webgl-object-invalidated-flag">invalidated
+        flag</a> is set.
+      </dd>
       <dt>
         <p class="idl-code">void beginQuery(GLenum target, WebGLQuery? query)
           <span class="gl-spec">
@@ -1501,6 +1516,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Begin an asynchronous query. <em>Target</em> indicates the type of query to be performed.
+      </dd>
       <dt>
         <p class="idl-code">void endQuery(GLenum target)
           <span class="gl-spec">
@@ -1509,6 +1527,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Mark the end of the sequence of commands to be tracked for the query type given by
+        <em>target</em>. When the final query result is available, the query object is updated
+        to indicate this and the result may be retrieved by calling <code>getQueryParameter</code>.
+      </dd>
       <dt>
         <p class="idl-code">WebGLQuery? getQuery(GLenum target, GLenum pname)
           <span class="gl-spec">
@@ -1554,7 +1577,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code>
           error and returns null.</p>
 
-          <p>if <em>query</em> is not a valid query object, or is a currently active query object,
+          <p>If <em>query</em> is not a valid query object, or is a currently active query object,
           generates an <code>INVALID_OPERATION</code> error and returns null.
 
           <p>Returns null if any OpenGL errors are generated during the execution of this
@@ -1724,7 +1747,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             Delete the transform feedback object contained in the passed <code class="interface">WebGLTransformFeedback</code> as if by calling
             glDeleteTransformFeedbacks. If the transform feedback has already been deleted the call has no effect.
             Note that the transform feedback object will be deleted when the <code class="interface">WebGLTransformFeedback</code> object is destroyed.
-            This method merely gives the author greater control over when the vertex array object is destroyed.
+            This method merely gives the author greater control over when the transform feedback object is destroyed.
 
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isTransformFeedback(WebGLTransformFeedback? transformFeedback)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.11">OpenGL ES 3.0.3 &sect;6.1.11</a>,
@@ -1732,7 +1755,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <dd>
             Return true if the passed <code class="interface">WebGLTransformFeedback</code> is valid and false otherwise. <br><br>
 
-            Returns false if the transform feedback's <a href="#webgl-object-invalidated-flag">invalidated
+            Returns false if the transform feedback's <a href="../1.0/#webgl-object-invalidated-flag">invalidated
             flag</a> is set.
 
         <dt class="idl-code">void bindTransformFeedback (GLenum target, WebGLTransformFeedback? transformFeedback)
@@ -1891,7 +1914,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <dd>
             Return true if the passed <code class="interface">WebGLVertexArrayObject</code> is valid and false otherwise. <br><br>
 
-            Returns false if the vertex array's <a href="#webgl-object-invalidated-flag">invalidated
+            Returns false if the vertex array's <a href="../1.0/#webgl-object-invalidated-flag">invalidated
             flag</a> is set.
     </dl>
 
