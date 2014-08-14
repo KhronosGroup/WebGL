@@ -2029,6 +2029,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             flag</a> is set.
         <dt class="idl-code">void lineWidth(GLfloat width)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.4">OpenGL ES 2.0 &sect;3.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glLineWidth.xml">man page</a>)</span>
+        <dd>
+            See <a href="#NAN_LINE_WIDTH">NaN Line Width</a> for restrictions specified for WebGL.
+        </dd>
         <dt class="idl-code">void pixelStorei(GLenum pname, GLint param)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.6.1">OpenGL ES 2.0 &sect;3.6.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glPixelStorei.xml">man page</a>)</span>
             <dd>
@@ -3674,6 +3677,12 @@ extensions.
     <li> <code>copyTexSubImage2D</code>
     <li> <code>readPixels</code>
     </ul>
+</p>
+
+<h3><a name="NAN_LINE_WIDTH">NaN Line Width</a></h3>
+<p>
+    In the WebGL API, if the <code>width</code> parameter passed to <code>lineWidth</code> is set
+    to NaN, an <code>INVALID_VALUE</code> error is generated and the line width is not changed.
 </p>
 
 <!-- ======================================================================================================= -->

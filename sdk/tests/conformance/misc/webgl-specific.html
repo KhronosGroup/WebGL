@@ -119,6 +119,10 @@ debug("Verify that bindAttribLocation rejects names start with webgl_ or _webgl_
 wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindAttribLocation(program, 0, 'webgl_a')");
 wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindAttribLocation(program, 0, '_webgl_a')");
 
+debug("");
+debug("Verify that NaN line width is not accepted");
+wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, "gl.lineWidth(NaN)");
+
 var successfullyParsed = true;
 </script>
 
