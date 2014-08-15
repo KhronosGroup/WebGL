@@ -695,7 +695,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void invalidateFramebuffer(GLenum target, sequence&lt;GLenum&gt; attachments);
   void invalidateSubFramebuffer(GLenum target, sequence&lt;GLenum&gt; attachments,
                                 GLint x, GLint y, GLsizei width, GLsizei height);
-  void readBuffer(GLenum mode);
+  void readBuffer(GLenum src);
 
   /* Renderbuffer objects */
   void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat,
@@ -957,6 +957,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Copy part of the data of the buffer bound to <em>readTarget</em> to the buffer bound to <em>writeTarget</em>.
+      </dd>
       <dt>
         <p class="idl-code">void getBufferSubData(GLenum target, GLintptr offset, GetBufferDataDest returnedData)
         </p>
@@ -1007,15 +1010,21 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt>
         <p class="idl-code">void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.3.2">OpenGL ES 3.0.3 &sect;4.3.2</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.3.3">OpenGL ES 3.0.3 &sect;4.3.3</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBlitFramebuffer.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
       </dt>
+      <dd>
+        Transfer a rectangle of pixel values from one region of the read framebuffer to another in the draw
+        framebuffer. If the value of SAMPLE_BUFFERS for the read framebuffer is one and the value of
+        SAMPLE_BUFFERS for the draw framebuffer is zero, the samples corresponding to each pixel location in
+        the source are converted to a single sample before being written to the destination.
+      </dd>
       <dt>
         <p class="idl-code">void framebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.4">OpenGL ES 3.0.3 &sect;4.4</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.4.2">OpenGL ES 3.0.3 &sect;4.4.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glFramebufferTextureLayer.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1048,6 +1057,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Equivalent to calling <code>invalidateSubFramebuffer</code> with <code>x</code> and <code>y</code>
+        set to 0 and <code>width</code> and <code>height</code> set to the largest framebuffer object's
+        attachments' width and height.
+      </dd>
       <dt>
         <p class="idl-code">void invalidateSubFramebuffer (GLenum target, sequence&lt;GLenum&gt; attachments, GLint x, GLint y, GLsizei width, GLsizei height)
           <span class="gl-spec">
@@ -1056,14 +1070,20 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Signal the GL that it need not preserve all contents of a bound framebuffer object.
+      </dd>
       <dt>
-        <p class="idl-code">void readBuffer(GLenum mode)
+        <p class="idl-code">void readBuffer(GLenum src)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.3.1">OpenGL ES 3.0.3 &sect;4.3.1</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glReadBuffer.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
       </dt>
+      <dd>
+        Specify a color buffer of the read framebuffer as the read buffer.
+      </dd>
     </dl>
 
 <!-- ======================================================================================================= -->
