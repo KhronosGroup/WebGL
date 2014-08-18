@@ -777,11 +777,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   [WebGLHandlesContextLoss] GLboolean isSampler(WebGLSampler? sampler);
   void bindSampler(GLuint unit, WebGLSampler? sampler);
   void samplerParameteri(WebGLSampler? sampler, GLenum pname, GLint param);
-  typedef (Int32Array or sequence&lt;GLint&gt;) SamplerParameterIVSource;
-  void samplerParameteriv(WebGLSampler? sampler, GLenum pname, SamplerParameterIVSource param);
   void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param);
-  typedef (Float32Array or sequence&lt;GLfloat&gt;) SamplerParameterFVSource;
-  void samplerParameterfv(WebGLSampler? sampler, GLenum pname, SamplerParameterFVSource param);
   any getSamplerParameter(WebGLSampler? sampler, GLenum pname);
 
   /* Sync objects */
@@ -1644,9 +1640,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       </dt>
       <dt>
         <p class="idl-code">void samplerParameteri(WebGLSampler? sampler, GLenum pname, GLint param);</p>
-        <p class="idl-code">void samplerParameteriv(WebGLSampler? sampler, GLenum pname, SamplerParameterIVSource param)</p>
         <p class="idl-code">void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param);</p>
-        <p class="idl-code">void samplerParameterfv(WebGLSampler? sampler, GLenum pname, SamplerParameterFVSource param)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glSamplerParameter.xhtml" class="nonnormative">man page</a>)
