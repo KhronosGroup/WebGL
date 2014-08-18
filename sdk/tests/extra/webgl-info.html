@@ -54,6 +54,15 @@ function createCell(txt) {
   return td;
 }
 
+function createRow(values) {
+  var tr = document.createElement("tr");
+  for (var i = 0; i < values.length; ++i) {
+    var td = createCell(values[i]);
+    tr.appendChild(td);
+  }
+  return tr;
+}
+
 function main() {
   var canvas = document.getElementById("example");
   var gl = WebGLUtils.setupWebGL(canvas);
@@ -78,17 +87,25 @@ function main() {
     'MAX_VERTEX_UNIFORM_VECTORS',
     'MAX_VIEWPORT_DIMS'
   ];
+
   var table = document.createElement("table");
   var tb = document.createElement("tbody");
   for (var ii = 0; ii < pnames.length; ++ii) {
     var pname = pnames[ii];
     var value = gl.getParameter(gl[pname]);
-    var tr = document.createElement("tr");
-    var td1 = createCell(pname);
-    var td2 = createCell(value);
-    tr.appendChild(td1);
-    tr.appendChild(td2);
-    tb.appendChild(tr);
+    tb.appendChild(createRow([pname, value]));
+  }
+  var debugExt =  gl.getExtension('WEBGL_debug_renderer_info');
+  if (debugExt) {
+    var extPnames = [
+      'UNMASKED_VENDOR_WEBGL',
+      'UNMASKED_RENDERER_WEBGL'
+    ];
+    for (var ii = 0; ii < extPnames.length; ++ii) {
+      var pname = extPnames[ii];
+      var value = gl.getParameter(debugExt[pname]);
+      tb.appendChild(createRow([pname, value]));
+    }
   }
   table.appendChild(tb);
   document.getElementById("info").appendChild(table);
