@@ -1618,6 +1618,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Create a <code class="interface">WebGLSampler</code> object and initialize it with a sampler object name as if by
+        calling glGenSamplers.
+      </dd>
       <dt>
         <p class="idl-code">void deleteSampler(WebGLSampler? sampler)
           <span class="gl-spec">
@@ -1626,6 +1630,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Delete the sampler object contained in the passed <code class="interface">WebGLSampler</code> as if by calling
+        glDeleteSamplers. If the sampler has already been deleted the call has no effect.
+        Note that the sampler object will be deleted when the <code class="interface">WebGLSampler</code> object is destroyed.
+        This method merely gives the author greater control over when the sampler object is destroyed.
+      </dd>
       <dt>
         <p class="idl-code">[WebGLHandlesContextLoss] GLboolean isSampler(WebGLSampler? sampler)
           <span class="gl-spec">
@@ -1634,6 +1644,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Return true if the passed <code class="interface">WebGLSampler</code> is valid and false otherwise. <br><br>
+
+        Returns false if the sampler's <a href="../1.0/#webgl-object-invalidated-flag">invalidated
+        flag</a> is set.
+      </dd>
       <dt>
         <p class="idl-code">void bindSampler(GLuint unit, WebGLSampler? sampler)
           <span class="gl-spec">
@@ -1642,6 +1658,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Bind the sampler object contained in the passed <code>WebGLSampler</code> to the texture unit at the
+        passed index. If a sampler is bound to a texture unit, the sampler's state supersedes the sampling
+        state of the texture bound to that texture unit.
+      </dd>
       <dt>
         <p class="idl-code">void samplerParameteri(WebGLSampler? sampler, GLenum pname, GLint param);</p>
         <p class="idl-code">void samplerParameteriv(WebGLSampler? sampler, GLenum pname, SamplerParameterIVSource param)</p>
