@@ -1999,12 +1999,14 @@ var loadImagesAsync = function(urls, callback) {
   function countDown() {
     --count;
     if (count == 0) {
+      log("loadImagesAsync: all images loaded");
       callback(images);
     }
   }
   function imageLoaded(url) {
     return function(img) {
       images[url] = img;
+      log("loadImagesAsync: loaded " + url);
       countDown();
     }
   }
