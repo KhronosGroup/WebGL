@@ -225,12 +225,25 @@ var loadTextFileAsynchronous = function(url, callback) {
   }
 };
 
+/**
+ * @param {string} versionString WebGL version string.
+ * @return {number} Integer containing the WebGL major version.
+ */
 var getMajorVersion = function(versionString) {
   if (!versionString) {
     return 1;
   }
   return parseInt(versionString.split(" ")[0].split(".")[0], 10);
-}
+};
+
+/**
+ * @param {string} url Base URL of the test.
+ * @param {number} webglVersion Integer containing the WebGL major version.
+ * @return {string} URL that will run the test with the given WebGL version.
+ */
+var getURLWithVersion = function(url, webglVersion) {
+    return url + "?webglVersion=" + webglVersion;
+};
 
 /**
  * Compare version strings.
@@ -566,7 +579,7 @@ TestHarness.prototype.startTest = function(iframe, testFile, webglVersion) {
   this.runningTests[url] = test;
   log("loading: " + url);
   if (this.reportFunc(TestHarness.reportType.START_PAGE, url, url, undefined)) {
-    iframe.src = url + "?webglVersion=" + webglVersion;
+    iframe.src = getURLWithVersion(url, webglVersion);
     this.setTimeout(test);
   } else {
     this.reportResults(url, !!this.allowSkip, "skipped", true);
@@ -621,7 +634,9 @@ TestHarness.prototype.setTimeoutDelay = function(x) {
 };
 
 return {
-    'TestHarness': TestHarness
+    'TestHarness': TestHarness,
+    'getMajorVersion': getMajorVersion,
+    'getURLWithVersion': getURLWithVersion
   };
 
 }();

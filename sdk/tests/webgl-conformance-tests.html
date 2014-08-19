@@ -237,12 +237,12 @@ function start() {
       autoScroll = false;
       reporter.runTest(url);
     };
-    if (reporter.noWebGL) {
+    if (reporter.noSelectedWebGLVersion) {
       button.disabled = true;
     }
     div.appendChild(button);
     var a = reporter.localDoc.createElement('a');
-    a.href = url;
+    a.href = WebGLTestHarnessModule.getURLWithVersion(url, reporter.selectedWebGLVersion);
     a.target = "_blank";
     var node = reporter.localDoc.createTextNode(url);
     a.appendChild(node);
@@ -382,7 +382,7 @@ function start() {
       autoScroll = autoScrollEnabled;
       that.run();
     };
-    if (reporter.noWebGL) {
+    if (reporter.noSelectedWebGLVersion) {
       button.disabled = true;
     }
     div.appendChild(button);
@@ -501,18 +501,25 @@ function start() {
     // Check to see if WebGL is supported
     var canvas = document.createElement("canvas");
     var ctx = create3DContext(canvas, null, 1);
-    this.noWebGL = !ctx;
 
     // Check to see if WebGL2 is supported
-    this.noWebGL2 = true;
     var canvas2 = document.createElement("canvas");
     var ctx2 = create3DContext(canvas2, null, 2);
 
-    // If the WebGL2 context could be created use it instead
+    this.noSelectedWebGLVersion = false;
+    this.selectedWebGLVersion = WebGLTestHarnessModule.getMajorVersion(OPTIONS.version);
+    if (this.selectedWebGLVersion == 2 && !ctx2) {
+        this.noSelectedWebGLVersion = true;
+    } else if (this.selectedWebGLVersion == 1 && !ctx) {
+        this.noSelectedWebGLVersion = true;
+    }
+
+    // If the WebGL2 context could be created use it to get context info
     if (ctx2) {
-      this.noWebGL2 = false;
       ctx = ctx2;
     }
+
+    this.noWebGL = !ctx;
 
     this.contextInfo = {};
     this.root = new Folder(this, null, 0, "all");
@@ -708,7 +715,7 @@ function start() {
   Reporter.prototype.ready = function() {
     var loading = document.getElementById("loading");
     loading.style.display = "none";
-    if (!this.noWebGL) {
+    if (!this.noSelectedWebGLVersion) {
       var button = document.getElementById("runTestsButton");
       button.disabled = false;
       this.executeListenerEvents_("ready");
@@ -930,11 +937,17 @@ function start() {
       textbutton.setAttribute("value", "display text summary");
     }
   };
-  if (reporter.noWebGL) {
+  if (reporter.noSelectedWebGLVersion) {
     button.disabled = true;
+  }
+  if (reporter.noWebGL) {
     var elem = document.getElementById("nowebgl");
     elem.style.display = "";
     reporter.postResultsToServer("Browser does not appear to support WebGL");
+  } else if (reporter.noSelectedWebGLVersion) {
+    var elem = document.getElementById("noselectedwebgl");
+    elem.style.display = "";
+    reporter.postResultsToServer("Browser does not appear to support the selected version of WebGL");
   }
 }
 </script>
@@ -978,6 +991,9 @@ function start() {
               <input type="button" style="visibility: hidden;" value="display text summary" id="showTextSummary"/>
               <div id="nowebgl" class="nowebgl" style="display: none;">
                 This browser does not appear to support WebGL
+              </div>
+              <div id="noselectedwebgl" class="nowebgl" style="display: none;">
+                This browser does not appear to support the selected version of WebGL
               </div>
             </div>
           </td>
