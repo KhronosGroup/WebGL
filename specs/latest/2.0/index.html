@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 11 August 2014</h2>
+    <h2 class="no-toc">Editor's Draft 22 August 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1969,6 +1969,27 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <li>Rasterizer discard <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.1">OpenGL ES 3.0.3 &sect;3.1</a>)</span></li>
     </ul>
 
+    <h3>GLSL ES 3.0 support</h3>
+
+    <p>
+        In addition to supporting The OpenGL ES Shading Language, Version 1.00, the WebGL 2 API also accepts
+        shaders written in The OpenGL ES Shading Language, Version 3.00
+        <a href="#refsGLES30GLSL">[GLES30GLSL]</a>, with some restrictions.
+    </p>
+
+    <ul>
+        <li>
+            A shader referencing state variables or functions that are available in other versions of GLSL,
+            such as that found in versions of OpenGL for the desktop, must not be allowed to load.
+        </li>
+    </ul>
+
+    <p>
+        As in the WebGL 1.0 API, identifiers starting with "webgl_" and "_webgl_" are reserved for use by
+        WebGL. A shader which declares a function, variable, structure name, or structure field starting with
+        these prefixes must not be allowed to load.
+    </p>
+
     <h3>Vertex Attribute Divisor</h3>
 
     <p>
@@ -2101,7 +2122,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             OpenGL&reg; ES Version 3.0.3</a></cite>,
             B. Lipchak 2013.
         </dd>
-        <dt id="refsGLES20GLSL">[GLES30GLSL]</dt>
+        <dt id="refsGLES30GLSL">[GLES30GLSL]</dt>
         <dd><cite><a href="http://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.4.pdf">
             The OpenGL&reg; ES Shading Language Version 3.00</a></cite>,
             R. Simpson, March 2013.
