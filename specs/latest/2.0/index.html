@@ -2085,6 +2085,14 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <code>INVALID_OPERATION</code> error instead of producing undefined results.
     </p>
 
+    <h3>Clamping Texture Offsets</h3>
+
+    <p>
+        All texture offset values passed to texture lookup functions in GLSL are clamped to the range
+        between the implementation-defined parameters <code>MIN_PROGRAM_TEXEL_OFFSET</code> and
+        <code>MAX_PROGRAM_TEXEL_OFFSET</code> inclusive.
+    </p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
