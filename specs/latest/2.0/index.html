@@ -2126,6 +2126,14 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <code>MAX_PROGRAM_TEXEL_OFFSET</code> inclusive.
     </p>
 
+    <h3>Texel Fetches</h3>
+
+    <p>
+        Texel fetches that have undefined results in the OpenGL ES 3.0 API must return zero, or a texture
+        source color of (0, 0, 0, 1) in the case of a texel fetch from an incomplete texture in the WebGL 2
+        API.
+    </p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
