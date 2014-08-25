@@ -968,7 +968,13 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         If <code>returnedData</code> is null then an <code>INVALID_VALUE</code> error is generated.
         If <code>offset</code> is less than zero, an <code>INVALID_VALUE</code> error is generated.
         If zero is bound to <code>target</code>, an <code>INVALID_OPERATION</code> error is generated.
+        If <code>target</code> is <code>TRANSFORM_FEEDBACK_BUFFER</code>, and any transform feedback object
+        is currently active, an <code>INVALID_OPERATION</code> error is generated.
         If any error is generated, no data is written to <code>returnedData</code>.
+        <br><br>
+        If the buffer is written and read sequentially by other operations and <code>getBufferSubData</code>,
+        it is the responsibility of the WebGL API to ensure that data are accessed consistently. This applies
+        even if the buffer is currently bound to a transform feedback binding point.
       </dd>
     </dl>
 
@@ -2032,6 +2038,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <p>
         These restrictions are similar to <a href="../1.0/#BUFFER_OBJECT_BINDING">buffer object binding
         restrictions in the WebGL 1 specification</a>.
+    </p>
+
+    <p>
+        In addition, a buffer can not be simultaneously bound to a transform feedback buffer binding point
+        and another buffer binding point in the WebGL 2 API. Attempting to violate this rule generates an
+        <code>INVALID_OPERATION</code> error, and the state of the binding point will remain untouched.
     </p>
 
     <h3>Draw buffers</h3>
