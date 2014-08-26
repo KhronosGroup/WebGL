@@ -2134,6 +2134,16 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         API.
     </p>
 
+    <h3>GLSL ES 1.0 Fragment Shader Output</h3>
+
+    <p>
+        A fragment shader written in The OpenGL ES Shading Language, Version 1.00, that statically assigns a
+        value to <code>gl_FragData[n]</code> where <code>n</code> does not equal constant value 0 must fail
+        to compile in the WebGL 2 API. This is to achieve consistency with The OpenGL ES 3.0 specification
+        section 4.2.1 <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.2.1">OpenGL ES 3.0.3 &sect;4.2.1</a>)</span>.
+        Multiple fragment shader outputs are only supported for GLSL 3.0 shaders in the WebGL 2 API.
+    </p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
