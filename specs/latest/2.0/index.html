@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 22 August 2014</h2>
+    <h2 class="no-toc">Editor's Draft 26 August 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -955,6 +955,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       </dt>
       <dd>
         Copy part of the data of the buffer bound to <em>readTarget</em> to the buffer bound to <em>writeTarget</em>.
+        See <a href="COPYING_BUFFERS">Copying Buffers</a> for restrictions imposed by the WebGL 2 API.
       </dd>
       <dt>
         <p class="idl-code">void getBufferSubData(GLenum target, GLintptr offset, GetBufferDataDest returnedData)
@@ -2020,19 +2021,44 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <h3><a name="BUFFER_OBJECT_BINDING">Buffer Object Binding</a></h3>
 
+    <table>
+        <tr>
+            <th>WebGL buffer type</th>
+            <th>Binding points that set this type</th>
+        </tr>
+        <tr>
+            <td><em>undefined</em></td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td><em>element array</em></td>
+            <td>ELEMENT_ARRAY_BUFFER</td>
+        </tr>
+        <tr>
+            <td><em>other data</em></td>
+            <td>all binding points except ELEMENT_ARRAY_BUFFER, COPY_READ_BUFFER and COPY_WRITE_BUFFER</td>
+        </tr>
+    </table><br>
+
     <p>
-        In the WebGL 2 API, a given buffer object may not be bound both to <code>ELEMENT_ARRAY_BUFFER</code>
-        and some other buffer binding point in its lifetime. This restriction implies that a given buffer
-        object may contain either indices or other data, but not both.
+        In the WebGL 2 API, buffers have their WebGL buffer type initially set to <em>undefined</em>. Calling
+        <code>bindBuffer</code>, <code>bindBufferRange</code> or <code>bindBufferBase</code> with the
+        <code>target</code> argument set to any buffer binding point except <code>COPY_READ_BUFFER</code> or
+        <code>COPY_WRITE_BUFFER</code> will then set the WebGL buffer type of the buffer being bound according
+        to the table above.
     </p>
 
     <p>
-        The type of a WebGLBuffer is initialized the first time it is passed as an argument to
-        <code>bindBuffer</code>, <code>bindBufferRange</code> or <code>bindBufferBase</code>. A subsequent
-        call to one of these functions which attempts to bind a WebGLBuffer that has been bound to
-        <code>ELEMENT_ARRAY_BUFFER</code> to another binding point, or bind a WebGLBuffer which has been
-        bound to another binding point to <code>ELEMENT_ARRAY_BUFFER</code> will generate an
-        <code>INVALID_OPERATION</code> error, and the state of the binding point will remain untouched.
+        Any call to one of these functions which attempts to bind a WebGLBuffer that has the <em>element
+        array</em> WebGL buffer type to a binding point that falls under <em>other data</em>, or bind a
+        WebGLBuffer which has the <em>other data</em> WebGL buffer type to <code>ELEMENT_ARRAY_BUFFER</code>
+        will generate an <code>INVALID_OPERATION</code> error, and the state of the binding point will remain
+        untouched.
+    </p>
+
+    <p>
+        This restriction implies that a given buffer object may contain either indices or other data, but
+        not both.
     </p>
 
     <p>
@@ -2046,7 +2072,18 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <code>INVALID_OPERATION</code> error, and the state of the binding point will remain untouched.
     </p>
 
-    <h3>Draw buffers</h3>
+    <h3><a name="COPYING_BUFFERS">Copying Buffers</a></h3>
+
+    <p>
+        Attempting to use <code>copyBufferSubData</code> to copy between buffers that have
+        <em>element array</em> and <em>other data</em> WebGL buffer types as specified in section
+        <a href="#BUFFER_OBJECT_BINDING">Buffer Object Binding</a> generates an
+        <code>INVALID_OPERATION</code> error and no copying is performed. Copying data into a buffer which
+        has the <em>undefined</em> WebGL buffer type sets its WebGL buffer type to the WebGL buffer type of
+        the source buffer.
+    </p>
+
+    <h3>Draw Buffers</h3>
 
     <p>
         The value of the MAX_COLOR_ATTACHMENTS parameter must be equal to that of the MAX_DRAW_BUFFERS
