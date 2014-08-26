@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 11 August 2014</h2>
+    <h2 class="no-toc">Editor's Draft 22 August 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -968,7 +968,13 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         If <code>returnedData</code> is null then an <code>INVALID_VALUE</code> error is generated.
         If <code>offset</code> is less than zero, an <code>INVALID_VALUE</code> error is generated.
         If zero is bound to <code>target</code>, an <code>INVALID_OPERATION</code> error is generated.
+        If <code>target</code> is <code>TRANSFORM_FEEDBACK_BUFFER</code>, and any transform feedback object
+        is currently active, an <code>INVALID_OPERATION</code> error is generated.
         If any error is generated, no data is written to <code>returnedData</code>.
+        <br><br>
+        If the buffer is written and read sequentially by other operations and <code>getBufferSubData</code>,
+        it is the responsibility of the WebGL API to ensure that data are accessed consistently. This applies
+        even if the buffer is currently bound to a transform feedback binding point.
       </dd>
     </dl>
 
@@ -1969,6 +1975,27 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <li>Rasterizer discard <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.1">OpenGL ES 3.0.3 &sect;3.1</a>)</span></li>
     </ul>
 
+    <h3>GLSL ES 3.0 support</h3>
+
+    <p>
+        In addition to supporting The OpenGL ES Shading Language, Version 1.00, the WebGL 2 API also accepts
+        shaders written in The OpenGL ES Shading Language, Version 3.00
+        <a href="#refsGLES30GLSL">[GLES30GLSL]</a>, with some restrictions.
+    </p>
+
+    <ul>
+        <li>
+            A shader referencing state variables or functions that are available in other versions of GLSL,
+            such as that found in versions of OpenGL for the desktop, must not be allowed to load.
+        </li>
+    </ul>
+
+    <p>
+        As in the WebGL 1.0 API, identifiers starting with "webgl_" and "_webgl_" are reserved for use by
+        WebGL. A shader which declares a function, variable, structure name, or structure field starting with
+        these prefixes must not be allowed to load.
+    </p>
+
     <h3>Vertex Attribute Divisor</h3>
 
     <p>
@@ -2011,6 +2038,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <p>
         These restrictions are similar to <a href="../1.0/#BUFFER_OBJECT_BINDING">buffer object binding
         restrictions in the WebGL 1 specification</a>.
+    </p>
+
+    <p>
+        In addition, a buffer can not be simultaneously bound to a transform feedback buffer binding point
+        and another buffer binding point in the WebGL 2 API. Attempting to violate this rule generates an
+        <code>INVALID_OPERATION</code> error, and the state of the binding point will remain untouched.
     </p>
 
     <h3>Draw buffers</h3>
@@ -2085,6 +2118,22 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <code>INVALID_OPERATION</code> error instead of producing undefined results.
     </p>
 
+    <h3>Clamping Texture Offsets</h3>
+
+    <p>
+        All texture offset values passed to texture lookup functions in GLSL are clamped to the range
+        between the implementation-defined parameters <code>MIN_PROGRAM_TEXEL_OFFSET</code> and
+        <code>MAX_PROGRAM_TEXEL_OFFSET</code> inclusive.
+    </p>
+
+    <h3>Texel Fetches</h3>
+
+    <p>
+        Texel fetches that have undefined results in the OpenGL ES 3.0 API must return zero, or a texture
+        source color of (0, 0, 0, 1) in the case of a texel fetch from an incomplete texture in the WebGL 2
+        API.
+    </p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
@@ -2101,7 +2150,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             OpenGL&reg; ES Version 3.0.3</a></cite>,
             B. Lipchak 2013.
         </dd>
-        <dt id="refsGLES20GLSL">[GLES30GLSL]</dt>
+        <dt id="refsGLES30GLSL">[GLES30GLSL]</dt>
         <dd><cite><a href="http://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.4.pdf">
             The OpenGL&reg; ES Shading Language Version 3.00</a></cite>,
             R. Simpson, March 2013.
