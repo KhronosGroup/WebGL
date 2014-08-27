@@ -1977,7 +1977,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <li>Rasterizer discard <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.1">OpenGL ES 3.0.3 &sect;3.1</a>)</span></li>
     </ul>
 
-    <h3>GLSL ES 3.0 support</h3>
+    <h3>GLSL ES 3.00 support</h3>
 
     <p>
         In addition to supporting The OpenGL ES Shading Language, Version 1.00, the WebGL 2 API also accepts
@@ -2172,14 +2172,16 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         API.
     </p>
 
-    <h3>GLSL ES 1.0 Fragment Shader Output</h3>
+    <h3>GLSL ES 1.00 Fragment Shader Output</h3>
 
     <p>
         A fragment shader written in The OpenGL ES Shading Language, Version 1.00, that statically assigns a
         value to <code>gl_FragData[n]</code> where <code>n</code> does not equal constant value 0 must fail
         to compile in the WebGL 2 API. This is to achieve consistency with The OpenGL ES 3.0 specification
-        section 4.2.1 <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.2.1">OpenGL ES 3.0.3 &sect;4.2.1</a>)</span>.
-        Multiple fragment shader outputs are only supported for GLSL 3.0 shaders in the WebGL 2 API.
+        section 4.2.1 <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.2.1">OpenGL ES 3.0.3 &sect;4.2.1</a>)</span>
+        and The OpenGL ES Shading Language 3.00 specification section 1.5 <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.3.pdf#nameddest=section-1.5">GLSL ES 3.00 &sect;1.5</a>)</span>.
+        As in the OpenGL ES 3.0 API, multiple fragment shader outputs are only supported for GLSL ES 3.00
+        shaders in the WebGL 2 API.
     </p>
 
 <!-- ======================================================================================================= -->
