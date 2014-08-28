@@ -2056,7 +2056,7 @@ var makeImageLoadError = function() {
  * @param {string} imageFormat Image format to be passed to toDataUrl().
  * @return {!Image} The created image.
  */
-var makeImage = function(canvas, onload, imageFormat) {
+var makeImageFromCanvas = function(canvas, onload, imageFormat) {
   var img = document.createElement('img');
   if (onload) {
     img.onload = onload;
@@ -2634,7 +2634,7 @@ return {
   loadTexture: loadTexture,
   log: log,
   loggingOff: loggingOff,
-  makeImage: makeImage,
+  makeImageFromCanvas: makeImageFromCanvas,
   error: error,
   shallowCopyObject: shallowCopyObject,
   setupColorQuad: setupColorQuad,

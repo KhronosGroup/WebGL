@@ -133,7 +133,7 @@ function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
     function runTest2(image) {
         runTestOnImage(image);
 
-        wtu.makeImage(imgCanvas, function() {
+        wtu.makeImageFromCanvas(imgCanvas, function() {
             runTest3(this);
         });
     }

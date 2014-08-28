@@ -348,7 +348,7 @@ var runFeatureTest = function(params) {
 
       var refData = draw(
           referenceVertexShader, referenceFragmentShader);
-      var refImg = wtu.makeImage(canvas);
+      var refImg = wtu.makeImageFromCanvas(canvas);
       if (ss == 0) {
         var testData = draw(
             testVertexShader, referenceFragmentShader);
@@ -356,7 +356,7 @@ var runFeatureTest = function(params) {
         var testData = draw(
             referenceVertexShader, testFragmentShader);
       }
-      var testImg = wtu.makeImage(canvas);
+      var testImg = wtu.makeImageFromCanvas(canvas);
 
       reportResults(refData, refImg, testData, testImg, shaderInfo.tolerance);
     }
@@ -387,7 +387,7 @@ var runFeatureTest = function(params) {
     var diffImg = null;
     if (!same) {
       ctx.putImageData(imgData, 0, 0);
-      diffImg = wtu.makeImage(canvas2d);
+      diffImg = wtu.makeImageFromCanvas(canvas2d);
     }
 
     var div = document.createElement("div");
@@ -526,13 +526,13 @@ var runBasicTest = function(params) {
       debug("");
 
       var refData = draw(referenceVertexShader, referenceFragmentShader);
-      var refImg = wtu.makeImage(canvas);
+      var refImg = wtu.makeImageFromCanvas(canvas);
       if (ss == 0) {
         var testData = draw(testVertexShader, referenceFragmentShader);
       } else {
         var testData = draw(referenceVertexShader, testFragmentShader);
       }
-      var testImg = wtu.makeImage(canvas);
+      var testImg = wtu.makeImageFromCanvas(canvas);
 
       reportResults(refData, refImg, testData, testImg, shaderInfo.tolerance);
     }
@@ -563,7 +563,7 @@ var runBasicTest = function(params) {
     var diffImg = null;
     if (!same) {
       ctx.putImageData(imgData, 0, 0);
-      diffImg = wtu.makeImage(canvas2d);
+      diffImg = wtu.makeImageFromCanvas(canvas2d);
     }
 
     var div = document.createElement("div");
@@ -717,7 +717,7 @@ var runReferenceImageTest = function(params) {
       } else {
         refData = drawFragmentReferenceImage(referenceTextureOrArray);
       }
-      var refImg = wtu.makeImage(canvas);
+      var refImg = wtu.makeImageFromCanvas(canvas);
       var testData;
       if (isVertex) {
         var referenceFragmentShader = wtu.loadShader(gl, referenceFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed);
@@ -728,7 +728,7 @@ var runReferenceImageTest = function(params) {
         testData = draw(
           referenceVertexShader, testFragmentShader);
       }
-      var testImg = wtu.makeImage(canvas);
+      var testImg = wtu.makeImageFromCanvas(canvas);
       var testTolerance = shaderInfo.tolerance;
       // Provide per-test tolerance so that we can increase it only for those desired.
       if ('tolerance' in tests[ii])
@@ -773,7 +773,7 @@ var runReferenceImageTest = function(params) {
     var diffImg = null;
     if (!same) {
       ctx.putImageData(imgData, 0, 0);
-      diffImg = wtu.makeImage(canvas2d);
+      diffImg = wtu.makeImageFromCanvas(canvas2d);
     }
 
     var div = document.createElement("div");

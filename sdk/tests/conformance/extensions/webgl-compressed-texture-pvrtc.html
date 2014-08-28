@@ -325,7 +325,7 @@ function makeImage(imageWidth, imageHeight, dataWidth, data, alpha) {
             ctx.fillRect(xx * scale, yy * scale, scale, scale);
         }
     }
-    return wtu.makeImage(c);
+    return wtu.makeImageFromCanvas(c);
 }
 function compareRect(
         actualWidth, actualHeight, actualChannels,

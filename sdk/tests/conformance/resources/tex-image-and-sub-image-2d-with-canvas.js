@@ -152,7 +152,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
         }
 
         if (false) {
-          var m = wtu.makeImage(gl.canvas);
+          var m = wtu.makeImageFromCanvas(gl.canvas);
           document.getElementById("console").appendChild(m);
           document.getElementById("console").appendChild(document.createElement("hr"));
         }

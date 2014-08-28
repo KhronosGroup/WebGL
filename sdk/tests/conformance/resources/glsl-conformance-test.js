@@ -193,7 +193,7 @@ function runOneTest(gl, info) {
 
   var div = document.createElement("div");
   div.className = "testimages";
-  wtu.insertImage(div, "result", wtu.makeImage(gl.canvas));
+  wtu.insertImage(div, "result", wtu.makeImageFromCanvas(gl.canvas));
   div.appendChild(document.createElement('br'));
   consoleDiv.appendChild(div);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
