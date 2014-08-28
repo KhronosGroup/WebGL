@@ -138,7 +138,7 @@ function testFailed(msg)
 {
     reportTestResultsToHarness(false, msg);
     _addSpan('<span><span class="fail">FAIL</span> ' + escapeHTML(msg) + '</span>');
-    _logToConsole(msg);
+    _logToConsole('FAIL ' + msg);
 }
 
 function areArraysEqual(_a, _b)
