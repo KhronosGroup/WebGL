@@ -325,9 +325,7 @@ function makeImage(imageWidth, imageHeight, dataWidth, data, alpha) {
             ctx.fillRect(xx * scale, yy * scale, scale, scale);
         }
     }
-    var img = document.createElement("img");
-    img.src = c.toDataURL();
-    return img;
+    return wtu.makeImage(c);
 }
 function compareRect(
         actualWidth, actualHeight, actualChannels,

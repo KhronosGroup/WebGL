@@ -2044,14 +2044,25 @@ var getUrlArguments = function() {
   return args;
 };
 
+var makeImageLoadError = function() {
+  testFailed("Creating image from canvas failed. Image src: " + this.src);
+  finishTest();
+}
+
 /**
  * Makes an image from a canvas.
  * @param {!HTMLCanvas} canvas Canvas to make image from.
+ * @param {function} onload Callback to call when the image has finised loading.
+ * @param {string} imageFormat Image format to be passed to toDataUrl().
  * @return {!Image} The created image.
  */
-var makeImage = function(canvas) {
+var makeImage = function(canvas, onload, imageFormat) {
   var img = document.createElement('img');
-  img.src = canvas.toDataURL();
+  if (onload) {
+    img.onload = onload;
+  }
+  img.onerror = makeImageLoadError;
+  img.src = canvas.toDataURL(imageFormat);
   return img;
 };
 

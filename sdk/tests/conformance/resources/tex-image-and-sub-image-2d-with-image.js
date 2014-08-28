@@ -123,17 +123,19 @@ function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
         newImage.onload = function() {
             runTest2(newImage);
         };
+        newImage.onerror = function() {
+            testFailed("Creating image from canvas failed. Image src: " + this.src);
+            finishTest();
+        };
         newImage.src = imgCanvas.toDataURL();
     }
 
     function runTest2(image) {
         runTestOnImage(image);
 
-        var newImage = document.createElement("img");
-        newImage.onload = function() {
-            runTest3(newImage);
-        };
-        newImage.src = imgCanvas.toDataURL();
+        wtu.makeImage(imgCanvas, function() {
+            runTest3(this);
+        });
     }
 
     function runTest3(image) {

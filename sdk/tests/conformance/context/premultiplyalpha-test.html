@@ -218,6 +218,11 @@ function doNextTest() {
        doNextTest();
      }
 
+     var loadTextureError = function() {
+      testFailed("Creating image from canvas failed. Image src: " + this.src);
+      finishTest();
+    }
+
      if (test.imageFormat) {
         // Load canvas into string using toDataURL
         var imageUrl = canvas.toDataURL(test.imageFormat);
@@ -230,6 +235,7 @@ function doNextTest() {
           // Load string into the texture
           var input = document.createElement("img");
           input.onload = loadTexture;
+          input.onerror = loadTextureError;
           input.src = imageUrl;
         }
      } else {
