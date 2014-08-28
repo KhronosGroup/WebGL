@@ -535,7 +535,7 @@ function drawWithProgram(program, programInfo, test) {
     width: gl.canvas.width,
     height: gl.canvas.height,
     pixels: pixels,
-    img: wtu.makeImage(gl.canvas)
+    img: wtu.makeImageFromCanvas(gl.canvas)
   };
 }
 
@@ -600,7 +600,7 @@ function compareResults(expected, actual) {
   var diffImg = null;
   if (!same) {
     ctx.putImageData(imgData, 0, 0);
-    diffImg = wtu.makeImage(canvas);
+    diffImg = wtu.makeImageFromCanvas(canvas);
   }
 
   var div = document.createElement("div");

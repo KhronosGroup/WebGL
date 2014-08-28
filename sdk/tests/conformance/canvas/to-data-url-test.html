@@ -77,8 +77,8 @@ var main = function() {
     clearRect(gl, 0, halfHeight, width, topHeight, topColor);
     clearRect(gl, width - 1, 0, 1, height, rightColor);
 
-    var img = new Image();
-    img.onload = function() {
+    // Performs gl.canvas.toDataURL() internally
+    var img = wtu.makeImageFromCanvas(gl.canvas, function() {
       ctx.canvas.width = width;
       ctx.canvas.height = height;
       ctx.drawImage(img, 0, 0);
@@ -87,8 +87,7 @@ var main = function() {
       wtu.checkCanvasRect(ctx, width - 1, 0, 1, height, rightColor);
       debug("");
       callback();
-    };
-    img.src = gl.canvas.toDataURL();
+    });
   };
 
   var tests = [
