@@ -169,8 +169,7 @@ if (!gl) {
     runShadersTestEnabled();
     runAttachmentTestEnabled();
     runDrawTests();
-
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+    runPreserveTests();
   }
 }
 
@@ -699,10 +698,34 @@ function runDrawTests() {
   gl.deleteProgram(drawProgram);
 }
 
-debug("");
-var successfullyParsed = true;
-</script>
-<script src="../../resources/js-test-post.js"></script>
+function runPreserveTests() {
+  debug("");
+  debug("--------- preserve tests -----------");
 
+  debug("Testing that frame buffer is cleared after compositing");
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+  gl.clearColor(1, 1, 0, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  wtu.checkCanvas(gl, [255, 255, 0, 255], "should be yellow");
+
+  // set the draw buffer to NONE
+  ext.drawBuffersWEBGL([gl.NONE]);
+  gl.clearColor(1, 0, 1, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  // make sure the canvas is still clear
+  wtu.checkCanvas(gl, [255, 255, 0, 255], "should be yellow");
+
+  wtu.waitForComposite(gl, function() {
+    gl.clearColor(1, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    wtu.checkCanvas(gl, [0, 0, 0, 0], "should be clear");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+
+    finishTest();
+  });
+}
+</script>
 </body>
 </html>
