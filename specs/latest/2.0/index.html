@@ -1702,6 +1702,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <h4>Sync objects</h4>
 
+    <p>
+        Sync objects can be used to synchronize execution between the GL server and the client.
+    </p>
+
     <dl class="methods">
       <dt>
         <p class="idl-code">WebGLSync? fenceSync(GLenum condition, GLbitfield flags)
@@ -1711,6 +1715,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+          Create a new fence sync object and insert an associated fence command in the GL command stream.
+      </dd>
       <dt>
         <p class="idl-code">[WebGLHandlesContextLoss] GLboolean isSync(WebGLSync? sync)
           <span class="gl-spec">
@@ -1719,6 +1726,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+          Return true if the passed <code class="interface">WebGLSync</code> is valid and false otherwise. <br><br>
+
+          Returns false if the sync's <a href="../1.0/#webgl-object-invalidated-flag">invalidated
+          flag</a> is set.
+      </dd>
       <dt>
         <p class="idl-code">void deleteSync(WebGLSync? sync)
           <span class="gl-spec">
@@ -1727,6 +1740,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+          Delete the sync object contained in the passed <code class="interface">WebGLSync</code> as if by calling
+          glDeleteSync. If the sync has already been deleted the call has no effect.
+          Note that the sync object will be deleted when the <code class="interface">WebGLSync</code> object is destroyed.
+          This method merely gives the author greater control over when the sync object is destroyed.
+      </dd>
       <dt>
         <p class="idl-code">GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout)
           <span class="gl-spec">
@@ -1735,6 +1754,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Block execution until the passed sync object is signaled or the specified timeout has passed. Returns
+        <code>ALREADY_SIGNALED</code>, <code>TIMEOUT_EXPIRED</code>, or <code>CONDITION_SATISFIED</code>.
+      </dd>
       <dt>
         <p class="idl-code">void waitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout)
           <span class="gl-spec">
@@ -1743,6 +1766,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <dd>
+        Return immediately, but wait on the GL server until the passed sync object is signaled or an
+        implementation-dependent timeout has passed. The passed <em>timeout</em> must be set to
+        <code>TIMEOUT_IGNORED</code>.
+      </dd>
       <dt class="idl-code">any getSyncParameter(WebGLSync? sync, GLenum pname)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.3 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetSynciv.xhtml">man page</a>)</span>
       </dt>
