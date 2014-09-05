@@ -243,12 +243,8 @@ function doNextTest() {
         setTimeout(doNextTest, 0);
       } else {
         // Load string into the texture
-        var input = document.createElement("img");
-        input.onload = loadTexture;
-        input.onerror = loadTextureError;
-
         debug("Waiting for image.onload");
-        input.src = imageUrl;
+        var input = wtu.makeImage(imageUrl, loadTexture, loadTextureError);
       }
     } else {
       // Load canvas into the texture asynchronously (to prevent unbounded stack consumption)

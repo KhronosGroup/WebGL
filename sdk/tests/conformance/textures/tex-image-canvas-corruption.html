@@ -50,8 +50,12 @@ canvas.width = 512;
 canvas.height = 512;
 var ctx = canvas.getContext("2d");
 
-var image = new Image();
-image.src = '../resources/blue-1x1.jpg';
+var image = wtu.makeImage('../resources/blue-1x1.jpg', function() {
+  renderToCanvas();
+  renderToCanvas();
+  checkPixels();
+  finishTest();
+});
 
 var gl = wtu.create3DContext();
 var texture = gl.createTexture();
@@ -106,15 +110,6 @@ function renderToCanvas() {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,
       gl.UNSIGNED_BYTE, canvas);
 }
-
-image.onload = function() {
-  renderToCanvas();
-  renderToCanvas();
-
-  checkPixels();
-
-  finishTest();
-};
 
 var successfullyParsed = true;
 </script>

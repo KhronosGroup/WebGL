@@ -475,12 +475,11 @@ ImageWrapper.prototype.setPixel = function(x, y, r, g, b, a) {
 // Generates data into "data" property, possibly asynchronously.
 ImageWrapper.prototype.generateData = function() {
     var that = this;
-    var img = new Image();
-    img.onload = function() {
-        that.data = img;
-        maybeRunTests();
-    };
-    img.src = "data:image/png;base64," + this.pngBuilder_.getBase64();
+    var url = "data:image/png;base64," + this.pngBuilder_.getBase64();
+    var img = wtu.makeImage(url, function() {
+      that.data = img;
+      maybeRunTests();
+    });
 };
 
 function ImageDataWrapper(width, height)
