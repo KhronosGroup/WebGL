@@ -1038,13 +1038,12 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
     var offset = i * 4;
     for (var j = 0; j < color.length; ++j) {
       if (Math.abs(buf[offset + j] - color[j]) > errorRange[j]) {
-        differentFn();
         var was = buf[offset + 0].toString();
         for (j = 1; j < color.length; ++j) {
           was += "," + buf[offset + j];
         }
-        logFn('at (' + (x + (i % width)) + ', ' + (y + Math.floor(i / width)) +
-              ') expected: ' + color + ' was ' + was);
+        differentFn('at (' + (x + (i % width)) + ', ' + (y + Math.floor(i / width)) +
+                    ') expected: ' + color + ' was ' + was);
         return;
       }
     }
@@ -1069,18 +1068,15 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
  *        color checking. 0 by default.
  */
 var checkCanvasRect = function(gl, x, y, width, height, color, opt_msg, opt_errorRange) {
-  var msg = opt_msg;
-  if (msg === undefined) {
-    msg = "should be " + color.toString();
-  }
   checkCanvasRectColor(
       gl, x, y, width, height, color, opt_errorRange,
       function() {
+        var msg = opt_msg;
+        if (msg === undefined)
+          msg = "should be " + color.toString();
         testPassed(msg);
       },
-      function() {
-        testFailed(msg);
-      },
+      testFailed,
       debug);
 };
 
