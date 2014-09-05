@@ -92,6 +92,13 @@ function _logToConsole(msg)
       window.console.log(msg);
 }
 
+var _jsTestPreVerboseLogging = false;
+
+function enableJSTestPreVerboseLogging()
+{
+    _jsTestPreVerboseLogging = true;
+}
+
 function description(msg)
 {
     initTestingHarness();
@@ -106,7 +113,9 @@ function description(msg)
         description.replaceChild(span, description.firstChild);
     else
         description.appendChild(span);
-    _logToConsole(msg);
+    if (_jsTestPreVerboseLogging) {
+        _logToConsole(msg);
+    }
 }
 
 function _addSpan(contents)
@@ -119,7 +128,9 @@ function _addSpan(contents)
 function debug(msg)
 {
     _addSpan(msg);
-    _logToConsole(msg);
+    if (_jsTestPreVerboseLogging) {
+	_logToConsole(msg);
+    }
 }
 
 function escapeHTML(text)
@@ -131,7 +142,9 @@ function testPassed(msg)
 {
     reportTestResultsToHarness(true, msg);
     _addSpan('<span><span class="pass">PASS</span> ' + escapeHTML(msg) + '</span>');
-    _logToConsole('PASS ' + msg);
+    if (_jsTestPreVerboseLogging) {
+	_logToConsole('PASS ' + msg);
+    }
 }
 
 function testFailed(msg)
