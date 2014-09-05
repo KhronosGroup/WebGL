@@ -40,26 +40,25 @@
 <div id="description"></div>
 <div id="console"></div>
 <script id="vshader" type="x-shader/x-vertex">
-    attribute vec4 vPosition;
-    void main()
-    {
-        gl_Position = vPosition;
-    }
+attribute vec4 vPosition;
+void main() {
+  gl_Position = vPosition;
+}
 </script>
 
 <script id="fshader" type="x-shader/x-fragment">
-    void main()
-    {
-        gl_FragColor = vec4(0.0,1.0,0.0,1.0);
-    }
+void main() {
+  gl_FragColor = vec4(0.0,1.0,0.0,1.0);
+}
 </script>
 
 <script>
 "use strict";
-description("Test some of the issues of the difference between attrib 0 on OpenGL vs WebGL");
-debug("");
+description();
+debug("Test some of the issues of the difference between attrib 0 on OpenGL vs WebGL");
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
+
 var g_program;
 var g_attribLocation;
 function setup(attribIndex) {
@@ -110,9 +109,7 @@ for (var ii = 0; ii < 5; ++ii) {
   gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.drawElements(gl.TRIANGLES, 60000, gl.UNSIGNED_SHORT, 0);
-  wtu.glErrorShouldBe(
-      gl, gl.NO_ERROR,
-      "drawing using attrib 0 with 6 verts");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawing using attrib 0 with 6 verts");
   wtu.checkCanvas(gl, [0, 255, 0, 255], "canvas should be green");
   gl.disableVertexAttribArray(0);
 
@@ -122,9 +119,7 @@ for (var ii = 0; ii < 5; ++ii) {
   gl.vertexAttribPointer(3, 3, gl.FLOAT, false, 0, 0);
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.drawArrays(gl.TRIANGLES, 0, 60000);
-  wtu.glErrorShouldBe(
-      gl, gl.NO_ERROR,
-      "drawing using attrib 3 with 60000 verts");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawing using attrib 3 with 60000 verts");
   wtu.checkCanvas(gl, [0, 255, 0, 255], "canvas should be green");
   gl.disableVertexAttribArray(3);
 
@@ -141,7 +136,6 @@ for (var ii = 0; ii < 5; ++ii) {
   wtu.checkCanvas(gl, [0, 255, 0, 255], "canvas should be green");
   gl.disableVertexAttribArray(3);
 }
-
 
 var successfullyParsed = true;
 </script>
