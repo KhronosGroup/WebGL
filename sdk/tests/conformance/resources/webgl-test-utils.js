@@ -2044,7 +2044,7 @@ var getUrlArguments = function() {
  * Makes an image from a src.
  * @param {string} src Image source URL.
  * @param {function} onload Callback to call when the image has finised loading.
- * @param {function} onerror Callback to call when the image loading fails.
+ * @param {function} onerror Callback to call when an error occurs.
  * @return {!Image} The created image.
  */
 var makeImage = function(src, onload, onerror) {
@@ -2056,7 +2056,7 @@ var makeImage = function(src, onload, onerror) {
     img.onerror = onerror;
   } else {
     img.onerror = function() {
-      log("WARNING: creating image failed; image src: " + this.src);
+      log("WARNING: creating image failed; src: " + this.src);
     };
   }
   if (src) {
@@ -2078,8 +2078,9 @@ var makeImageFromCanvas = function(canvas, onload, imageFormat) {
 
 /**
  * Makes a video element from a src.
- * @param {function} onload Callback to call when the video has finised loading.
  * @param {string} src Video source URL.
+ * @param {function} onload Callback to call when the video has finised loading.
+ * @param {function} onerror Callback to call when an error occurs.
  * @return {!Video} The created video.
  */
 var makeVideo = function(src, onload, onerror) {
@@ -2091,10 +2092,9 @@ var makeVideo = function(src, onload, onerror) {
     vid.onerror = onerror;
   } else {
     vid.onerror = function() {
-      log("WARNING: creating video failed; video src: " + this.src);
+      log("WARNING: creating video failed; src: " + this.src);
     };
   }
-  vid.onerror = makeVideoLoadError;
   if (src) {
     vid.src = src;
   }
