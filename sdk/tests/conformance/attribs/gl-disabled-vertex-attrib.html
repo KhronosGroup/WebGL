@@ -88,12 +88,11 @@ for (var ii = 0; ii < numVertexAttribs; ++ii) {
   wtu.clearAndDrawIndexedQuad(gl, gridRes);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 }
+
+debug("");
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
-
-var successfullyParsed = true;
+finishTest();
 </script>
-<script src="../../resources/js-test-post.js"></script>
-
 </body>
 </html>
 

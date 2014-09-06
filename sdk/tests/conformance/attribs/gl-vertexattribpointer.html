@@ -134,9 +134,8 @@ for (var ii = 0; ii < types.length; ++ii) {
 }
 
 debug("");
-var successfullyParsed = true;
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+finishTest();
 </script>
-<script src="../../resources/js-test-post.js"></script>
-
 </body>
 </html>

@@ -47,9 +47,18 @@ void main() {
   gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }
 </script>
-
+</head>
+<body>
+<canvas id="testbed" width="50" height="50"></canvas>
+<div id="description"></div>
+<div id="console"></div>
 <script>
 "use strict";
+description();
+debug('Verify that using constant attributes works.');
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext('testbed', { preserveDrawingBuffer : true });
+
 function checkRedPortion(gl, w, low, high) {
   var buf = new Uint8Array(w * w * 4);
   gl.readPixels(0, 0, w, w, gl.RGBA, gl.UNSIGNED_BYTE, buf);
@@ -63,53 +72,39 @@ function checkRedPortion(gl, w, low, high) {
   return low <= i && i <= high;
 }
 
-function runTest() {
-  var wtu = WebGLTestUtils;
-  var gl = wtu.create3DContext('testbed', { preserveDrawingBuffer : true });
-  var program = wtu.setupProgram(gl, ['vshader', 'fshader'], ['p', 'a'])
+var program = wtu.setupProgram(gl, ['vshader', 'fshader'], ['p', 'a'])
 
-  gl.enableVertexAttribArray(gl.p);
-  var pos = gl.createBuffer();
-  pos.type = gl.FLOAT;
-  pos.size = 2;
-  pos.num = 4;
-  gl.bindBuffer(gl.ARRAY_BUFFER, pos);
-  gl.bufferData(gl.ARRAY_BUFFER,
-                new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
-                gl.STATIC_DRAW);
+gl.enableVertexAttribArray(gl.p);
+var pos = gl.createBuffer();
+pos.type = gl.FLOAT;
+pos.size = 2;
+pos.num = 4;
+gl.bindBuffer(gl.ARRAY_BUFFER, pos);
+gl.bufferData(gl.ARRAY_BUFFER,
+              new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+              gl.STATIC_DRAW);
 
-  gl.vertexAttribPointer(0, pos.size, pos.type, false, 0, 0);
+gl.vertexAttribPointer(0, pos.size, pos.type, false, 0, 0);
 
-  debug('Test vertexAttrib[1..4]fv by setting different combinations ' +
-        'that add up to 1.5 and use that when rendering.');
-  var vals = [[0.5], [0.1, 0.4], [0.2, -0.2, 0.5], [-1.0, 0.3, 0.2, 2.0]];
+debug('Test vertexAttrib[1..4]fv by setting different combinations ' +
+      'that add up to 1.5 and use that when rendering.');
+var vals = [[0.5], [0.1, 0.4], [0.2, -0.2, 0.5], [-1.0, 0.3, 0.2, 2.0]];
 
-  for (var j = 0; j < 4; ++j) {
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl['vertexAttrib' + (j+1) + 'fv'](1, vals[j]);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, pos.num);
+for (var j = 0; j < 4; ++j) {
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl['vertexAttrib' + (j+1) + 'fv'](1, vals[j]);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, pos.num);
 
-    if (checkRedPortion(gl, 50, 50 * 0.7, 50 * 0.8)) {
-      testPassed('Attribute of size ' + (j+1) + ' was set correctly');
-    } else {
-      testFailed('Attribute of size ' + (j+1) + ' was not set correctly');
-    }
+  if (checkRedPortion(gl, 50, 50 * 0.7, 50 * 0.8)) {
+    testPassed('Attribute of size ' + (j+1) + ' was set correctly');
+  } else {
+    testFailed('Attribute of size ' + (j+1) + ' was not set correctly');
   }
 }
-</script>
-</head>
-<body>
-<canvas id="testbed" width="50" height="50"></canvas>
-<div id="description"></div>
-<div id="console"></div>
-<script>
-"use strict";
-description();
-debug('Verify that using constant attributes works.');
-runTest();
-var successfullyParsed = true;
-</script>
-<script src="../../resources/js-test-post.js"></script>
 
+debug("");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+finishTest();
+</script>
 </body>
 </html>

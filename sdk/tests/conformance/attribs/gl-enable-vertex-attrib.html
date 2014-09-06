@@ -75,10 +75,10 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 gl.drawArrays(gl.TRIANGLES, 0, 3);
 wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION);
 
-var successfullyParsed = true;
+debug("");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+finishTest();
 </script>
-<script src="../../resources/js-test-post.js"></script>
-
 </body>
 </html>
 

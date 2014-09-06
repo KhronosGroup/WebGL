@@ -98,10 +98,10 @@ for (var ii = 0; ii < numVertexAttribs; ++ii) {
   shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '8');
   shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '9');
 }
-wtu.glErrorShouldBe(gl, gl.NO_ERROR);
-var successfullyParsed = true;
-</script>
-<script src="../../resources/js-test-post.js"></script>
 
+debug("");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+finishTest();
+</script>
 </body>
 </html>
