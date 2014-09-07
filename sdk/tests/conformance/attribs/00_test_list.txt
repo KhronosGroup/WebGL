@@ -5,4 +5,4 @@ gl-vertex-attrib-zero-issues.html
 gl-vertex-attrib.html
 gl-vertexattribpointer-offsets.html
 gl-vertexattribpointer.html
-
+gl-matrix-attributes.html
