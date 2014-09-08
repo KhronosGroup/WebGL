@@ -2079,15 +2079,11 @@ var makeImageFromCanvas = function(canvas, onload, imageFormat) {
 /**
  * Makes a video element from a src.
  * @param {string} src Video source URL.
- * @param {function} onload Callback to call when the video has finised loading.
  * @param {function} onerror Callback to call when an error occurs.
  * @return {!Video} The created video.
  */
-var makeVideo = function(src, onload, onerror) {
+var makeVideo = function(src, onerror) {
   var vid = document.createElement('video');
-  if (onload) {
-    vid.onload = onload;
-  }
   if (onerror) {
     vid.onerror = onerror;
   } else {
