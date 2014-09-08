@@ -2040,27 +2040,62 @@ var getUrlArguments = function() {
   return args;
 };
 
-var makeImageLoadError = function() {
-  testFailed("Creating image from canvas failed. Image src: " + this.src);
-  finishTest();
+/**
+ * Makes an image from a src.
+ * @param {string} src Image source URL.
+ * @param {function} onload Callback to call when the image has finised loading.
+ * @param {function} onerror Callback to call when an error occurs.
+ * @return {!Image} The created image.
+ */
+var makeImage = function(src, onload, onerror) {
+  var img = document.createElement('img');
+  if (onload) {
+    img.onload = onload;
+  }
+  if (onerror) {
+    img.onerror = onerror;
+  } else {
+    img.onerror = function() {
+      log("WARNING: creating image failed; src: " + this.src);
+    };
+  }
+  if (src) {
+    img.src = src;
+  }
+  return img;
 }
 
 /**
- * Makes an image from a canvas.
+ * Makes an image element from a canvas.
  * @param {!HTMLCanvas} canvas Canvas to make image from.
  * @param {function} onload Callback to call when the image has finised loading.
  * @param {string} imageFormat Image format to be passed to toDataUrl().
  * @return {!Image} The created image.
  */
 var makeImageFromCanvas = function(canvas, onload, imageFormat) {
-  var img = document.createElement('img');
-  if (onload) {
-    img.onload = onload;
-  }
-  img.onerror = makeImageLoadError;
-  img.src = canvas.toDataURL(imageFormat);
-  return img;
+  return makeImage(canvas.toDataURL(imageFormat), onload);
 };
+
+/**
+ * Makes a video element from a src.
+ * @param {string} src Video source URL.
+ * @param {function} onerror Callback to call when an error occurs.
+ * @return {!Video} The created video.
+ */
+var makeVideo = function(src, onerror) {
+  var vid = document.createElement('video');
+  if (onerror) {
+    vid.onerror = onerror;
+  } else {
+    vid.onerror = function() {
+      log("WARNING: creating video failed; src: " + this.src);
+    };
+  }
+  if (src) {
+    vid.src = src;
+  }
+  return vid;
+}
 
 /**
  * Inserts an image with a caption into 'element'.
@@ -2630,7 +2665,9 @@ return {
   loadTexture: loadTexture,
   log: log,
   loggingOff: loggingOff,
+  makeImage: makeImage,
   makeImageFromCanvas: makeImageFromCanvas,
+  makeVideo: makeVideo,
   error: error,
   shallowCopyObject: shallowCopyObject,
   setupColorQuad: setupColorQuad,

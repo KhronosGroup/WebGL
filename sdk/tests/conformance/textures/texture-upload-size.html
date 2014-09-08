@@ -60,7 +60,6 @@ var testUpload = function(upload, expectedWidth, expectedHeight) {
 };
 
 var testImage = function(test, img) {
-  debug("HTMLImageElement" + (test.isSVG ? " (SVG)" : ""));
   var width = img.width;
   var height = img.height;
   testUpload(img, width, height);
@@ -76,8 +75,6 @@ var testImage = function(test, img) {
 };
 
 var testVideo = function(test, video) {
-  debug("HTMLVideoElement (" + test.videoType + ")");
-
   // Assuming that the video is not anamorphic, nor has clean aperture data
   // that would make the frame size in pixels different.
   var width = video.videoWidth;
@@ -100,14 +97,12 @@ var createCanvas2DContext = function(width, height) {
 };
 
 var testImageData = function(test) {
-  debug("ImageData");
   var ctx = createCanvas2DContext(test.width, test.height);
   var imageData = ctx.getImageData(0, 0, test.width, test.height);
   testUpload(imageData, test.width, test.height);
 };
 
 var testCanvas = function(test) {
-  debug("HTMLCanvasElement");
   var ctx = createCanvas2DContext(test.width, test.height);
   testUpload(ctx.canvas, test.width, test.height);
 
@@ -135,17 +130,16 @@ var runNextTest = function() {
     var test = tests[testIndex];
     ++testIndex;
     if (test.type == "img") {
-      var img = document.createElement("img");
-      img.onload = function() {
+      debug("HTMLImageElement" + (test.isSVG ? " (SVG)" : ""));
+      var img = wtu.makeImage(test.src, function() {
         testImage(test, img);
         setTimeout(runNextTest, 0);
-      };
-      img.src = test.src;
+      });
     } else if (test.type == "video") {
-      var video = document.createElement("video");
-      video.src = test.src;
+      debug("HTMLVideoElement (" + test.videoType + ")");
+      var video = wtu.makeVideo(test.src);
       if(!video.canPlayType(test.videoType).replace(/no/, '')) {
-        debug(video.videoType + " unsupported");
+        debug(test.videoType + " unsupported");
         setTimeout(runNextTest, 0);
         return;
       }
@@ -154,9 +148,11 @@ var runNextTest = function() {
         setTimeout(runNextTest, 0);
       });
     } else if (test.type == "ImageData") {
+      debug("ImageData");
       testImageData(test);
       setTimeout(runNextTest, 0);
     } else if (test.type == "canvas") {
+      debug("HTMLCanvasElement");
       testCanvas(test);
       setTimeout(runNextTest, 0);
     }
