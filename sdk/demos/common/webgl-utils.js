@@ -139,7 +139,7 @@ var create3DContext = function(canvas, opt_attribs) {
     }
   }
   return context;
-}
+};
 
 return {
   create3DContext: create3DContext,
