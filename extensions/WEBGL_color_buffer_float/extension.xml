@@ -60,12 +60,12 @@
 
   <idl xml:space="preserve">
 [NoInterfaceObject]
-interface EXT_color_buffer_float {
+interface WEBGL_color_buffer_float {
   const GLenum RGBA32F_EXT = 0x8814;
   const GLenum RGB32F_EXT = 0x8815;
   const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
   const GLenum UNSIGNED_NORMALIZED_EXT = 0x8C17;
-}; // interface EXT_color_buffer_float
+}; // interface WEBGL_color_buffer_float
 </idl>
 
   <newtok>
@@ -106,6 +106,10 @@ interface EXT_color_buffer_float {
 
     <revision date="2014/07/15">
       <change>Removed webgl module. Added NoInterfaceObject extended attribute.</change>
+    </revision>
+
+    <revision date="2014/09/11">
+      <change>Fixed the name of the interface from EXT_color_buffer_float to WEBGL_color_buffer_float.</change>
     </revision>
   </history>
 </draft>

@@ -36,13 +36,13 @@
 
       <feature>Implementations supporting float rendering via this extension
       will implicitly enable the <a
-      href="OES_color_buffer_half_float.html">OES_color_buffer_half_float</a>
+      href="../EXT_color_buffer_half_float/">EXT_color_buffer_half_float</a>
       extension and follow its requirements. This ensures correct behavior
       when a texture with pixel type <code>HALF_FLOAT_OES</code> is attached
       to an FBO. Although this feature has historically been allowed, new
       implementations should not implicitly support float rendering and
       applications should be modified to explicitly enable <a
-      href="OES_color_buffer_half_float.html">OES_color_buffer_half_float</a>.</feature>
+      href="../EXT_color_buffer_half_float/">EXT_color_buffer_half_float</a>.</feature>
     </features>
   </overview>
 
@@ -85,6 +85,10 @@ interface OES_texture_half_float {
 
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+
+    <revision date="2014/09/11">
+      <change>Corrected link to EXT_color_buffer_half_float.</change>
     </revision>
   </history>
 </ratified>
