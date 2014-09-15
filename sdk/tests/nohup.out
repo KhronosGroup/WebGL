@@ -1,0 +1,9 @@
+QDBusConnection: session D-Bus connection created before QCoreApplication. Application may misbehave.
+[31muint DBusMenuExporterDBus::GetLayout(int, int, const QStringList&, DBusMenuLayoutItem&)[0m: Condition failed: menu 
+Object::connect: No such signal org::freedesktop::UPower::DeviceAdded(QDBusObjectPath)
+Object::connect: No such signal org::freedesktop::UPower::DeviceRemoved(QDBusObjectPath)
+[31mvoid DBusMenuExporterPrivate::addAction(QAction*, int)[0m: Already tracking action "Show Confirmation" under id 432 
+[31muint DBusMenuExporterDBus::GetLayout(int, int, const QStringList&, DBusMenuLayoutItem&)[0m: Condition failed: menu 
+[31muint DBusMenuExporterDBus::GetLayout(int, int, const QStringList&, DBusMenuLayoutItem&)[0m: Condition failed: menu 
+[31muint DBusMenuExporterDBus::GetLayout(int, int, const QStringList&, DBusMenuLayoutItem&)[0m: Condition failed: menu 
+[31muint DBusMenuExporterDBus::GetLayout(int, int, const QStringList&, DBusMenuLayoutItem&)[0m: Condition failed: menu 
