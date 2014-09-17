@@ -112,9 +112,12 @@
     </p>
 
     <p>
-      WebGL 2 is backwards compatible with WebGL 1: existing content will run in WebGL 2 without
-      modification. To access the new behavior provided in this specification, the content
-      explicitly requests a new context (<a href="#CONTEXT_CREATION">details below</a>).
+      WebGL 2 is not entirely backwards compatible with WebGL 1. Existing content written against
+      the core WebGL 1 specification without extensions will often run in WebGL 2 without
+      modification, but this is not always the case. All exceptions to backwards compatibility are
+      recorded in the <a href="#BACKWARDS_INCOMPATIBILITY">Backwards Incompatibility</a> section.
+      To access the new behavior provided in this specification, the content explicitly requests
+      a new context (<a href="#CONTEXT_CREATION">details below</a>).
     </p>
     </div>
 
@@ -1994,6 +1997,23 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <div class="note editor">
         Needs update for WebGL 2.0
+    </div>
+
+    <h3><a name="BACKWARDS_INCOMPATIBILITY">Backwards Incompatibility</a></h3>
+    
+    <p>
+        Some extensions that may have been supported in the WebGL 1 API are removed from the WebGL
+        2 API. For more details, see the
+        <a href="http://www.khronos.org/registry/webgl/extensions/">WebGL Extension Registry</a>.
+    </p>
+
+    <div class="note">
+        Extensions are typically removed only if equivalent functionality is available in the WebGL
+        2 API either in the core specification or in an improved extension. When an application
+        using WebGL 1 extensions is modified to run on the WebGL 2 API, it is often possible to
+        create a dummy extension object for each of the promoted extensions which simply
+        redirects calls to the appropriate WebGL 2 API functions. If the application is using shader
+        language extensions, porting shaders to GLSL ES 3.00 is typically required.
     </div>
 
     <h3>New Features Supported in the WebGL 2 API</h3>
