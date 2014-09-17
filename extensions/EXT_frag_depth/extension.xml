@@ -13,6 +13,9 @@
 
   <depends>
     <api version="1.0"/>
+    <core version="2.0">
+      <glsl version="300 es"/>
+    </core>
   </depends>
 
   <overview>
