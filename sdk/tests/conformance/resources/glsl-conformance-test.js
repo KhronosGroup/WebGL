@@ -143,6 +143,7 @@ function runOneTest(gl, info) {
                 info.fShaderSuccess + ") " + passMsg);
       return;
     }
+
     // Safe the shaders so we test shared shader.
     if (fShader) {
       fShaderDB[fSource] = fShader;
@@ -180,6 +181,22 @@ function runOneTest(gl, info) {
       testFailed("[link failed] " + passMsg);
       return;
     }
+  }
+
+  if (parseInt(wtu.getUrlOptions().dumpShaders)) {
+    var vInfo = {
+      shader: vShader,
+      shaderSuccess: info.vShaderSuccess,
+      label: vLabel,
+      source: vSource
+    };
+    var fInfo = {
+      shader: fShader,
+      shaderSuccess: info.fShaderSuccess,
+      label: fLabel,
+      source: fSource
+    };
+    wtu.dumpShadersInfo(gl, window.location.pathname, passMsg, vInfo, fInfo);
   }
 
   if (!info.render) {
