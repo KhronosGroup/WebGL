@@ -46,6 +46,17 @@ http://www.khronos.org/registry/webgl/extensions/
   <depends>
     <api version="1.0"/>
 
+    <core version="2.0"/> <!-- Version in which the extension functionality was integrated into the core spec -->
+
+    <core version="2.0">
+      <glsl version="300 es"/> <!-- GLSL #version required to use the feature, if any -->
+      <addendum>
+        Difference in core spec from extension.
+      </addendum>
+    </core>
+
+    <removed version="2.0"/> <!-- Version as of which extension is no longer supported -->
+
     <ext name="WEBGL_required_ext" require="true"/>
 
     <ext name="WEBGL_base_ext"/>

@@ -11,6 +11,9 @@
   <number>4</number>
   <depends>
     <api version="1.0"/>
+    <core version="2.0">
+      <glsl version="300 es"/>
+    </core>
   </depends>
   <overview>
     <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_standard_derivatives.txt" name="OES_standard_derivatives" />

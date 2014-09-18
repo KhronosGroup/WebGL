@@ -11,6 +11,7 @@
   <number>5</number>
   <depends>
     <api version="1.0"/>
+    <core version="2.0" />
   </depends>
   <overview>
     <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_vertex_array_object.txt" name="OES_vertex_array_object" />

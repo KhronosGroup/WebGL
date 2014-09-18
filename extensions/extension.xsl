@@ -198,6 +198,25 @@
   <p> Written against the <xsl:apply-templates select="."/> specification. </p>
 </xsl:template>
 
+<xsl:template match="core" mode="depends">
+  <p> Promoted to core in <xsl:apply-templates select="."/> specification. <xsl:apply-templates select="glsl" mode="requires" /></p>
+
+  <xsl:choose>
+    <xsl:when test="count(addendum)!=0">
+      <p> The following behavioral changes apply in the core spec:</p>
+    <ul>
+      <xsl:for-each select="addendum">
+        <li><xsl:copy-of select="node()" /></li>
+      </xsl:for-each>
+    </ul>
+    </xsl:when>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="removed" mode="depends">
+  <p> No longer available as of the <xsl:apply-templates select="."/> specification. </p>
+</xsl:template>
+
 <xsl:template match="ext" mode="depends">
   <xsl:choose>
 	<xsl:when test="@require='true'">
@@ -211,6 +230,10 @@
 
 <xsl:template match="glsl" mode="depends">
   <p> Written against the <xsl:apply-templates select="."/> specification. </p>
+</xsl:template>
+
+<xsl:template match="glsl" mode="requires">
+  Requires GLSL #version <xsl:value-of select="@version"/>.
 </xsl:template>
 
 <xsl:template match="rfc" mode="depends">
