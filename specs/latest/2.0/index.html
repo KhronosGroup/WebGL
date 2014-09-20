@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 10 September 2014</h2>
+    <h2 class="no-toc">Editor's Draft 19 September 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1845,8 +1845,44 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dd>
-        Block execution until the passed sync object is signaled or the specified timeout has passed. Returns
-        <code>ALREADY_SIGNALED</code>, <code>TIMEOUT_EXPIRED</code>, or <code>CONDITION_SATISFIED</code>.
+        <p>
+        Block execution until the passed sync object is signaled or the specified timeout has
+        passed. <code>timeout</code> is in units of nanoseconds.
+        </p>
+
+        <p>
+        Returns one of four status values. A return value of <code>ALREADY_SIGNALED</code> indicates
+        that <code>sync</code> was signaled at the time <code>clientWaitSync</code> was
+        called. <code>ALREADY_SIGNALED</code> will always be returned if <code>sync</code> was signaled, even
+        if <code>timeout</code> was zero. A return value of <code>TIMEOUT_EXPIRED</code> indicates that the specified
+        timeout period expired before <code>sync</code> was signaled. A return value of <code>CONDITION_SATISFIED</code>
+        indicates that <code>sync</code> was signaled before the timeout expired. Finally, if an error occurs, in
+        addition to generating an error as specified below, returns <code>WAIT_FAILED</code> without blocking.
+        </p>
+
+        <p>
+        <code>flags</code> controls command flushing behavior and may include <code>SYNC_FLUSH_COMMANDS_BIT</code>. If
+        any other bit is set in <code>flags</code> an <code>INVALID_OPERATION</code> error is
+        generated. If <code>SYNC_FLUSH_COMMANDS_BIT</code> is set in <code>flags</code> and <code>sync</code> is
+        unsignaled when <code>clientWaitSync</code> is called, then the equivalent of <code>flush</code> will be
+        performed before blocking on <code>sync</code>.
+        </p>
+
+        <p>
+        As discussed in the <a href="#CLIENT_WAIT_SYNC">differences section</a>, WebGL implementations must impose a
+        short maximum timeout to prevent blocking the main thread either indefinitely or for long periods of time.
+        </p>
+
+        <div class="note">
+        The implementation-defined maximum timeout is not specified. It should be set low enough to keep applications
+        from compromising interactivity by waiting for long periods of time. It is acceptable for an implementation to
+        impose a zero maximum timeout. WebGL applications should not use clientWaitSync to block execution for long
+        periods of time.
+        </div>
+
+        <p>Returns <code>WAIT_FAILED</code> if any OpenGL errors are generated during the execution of this
+        function.</p>
+
       </dd>
       <dt>
         <p class="idl-code">void waitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout)
@@ -2336,6 +2372,16 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <p>
         The <code>MapBufferRange</code> entry point is removed from the WebGL 2.0 API. The following enum values are removed together with it: <code>BUFFER_ACCESS_FLAGS</code>, <code>BUFFER_MAP_LENGTH</code>, <code>BUFFER_MAP_OFFSET</code>.
     </p>
+
+    <h3><a name="CLIENT_WAIT_SYNC">clientWaitSync</a></h3>
+    <p>
+        In the WebGL 2.0 API, WebGL implementations must enforce a short maximum timeout on calls to clientWaitSync in
+        order to avoid blocking execution of the main thread for excessive periods of time.
+    </p>
+    <div class="note">
+        The implementation-defined maximum timeout is not specified. It is acceptable for an implementation to enforce a
+        zero maximum timeout.
+    </div>
 
 <!-- ======================================================================================================= -->
 
