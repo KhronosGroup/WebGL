@@ -95,4 +95,5 @@ uniform-location-length-limits.html
 --min-version 1.0.2 shader-with-global-variable-precision-mismatch.html
 --min-version 1.0.2 large-loop-compile.html
 --min-version 1.0.3 struct-equals.html
+--min-version 1.0.3 struct-nesting-of-variable-names.html
 --min-version 1.0.3 ternary-operators-in-initializers.html
