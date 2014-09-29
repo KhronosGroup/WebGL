@@ -67,12 +67,12 @@ gl1.clearColor(0,1,0,1);
 gl1.clear(gl1.COLOR_BUFFER_BIT);
 gl2.clearColor(0,1,0,1);
 gl2.clear(gl2.COLOR_BUFFER_BIT);
-wtu.waitForComposite(gl1, function() {
+wtu.waitForComposite(function() {
   gl1.drawArrays(gl1.BLEND, 0, 0);
   wtu.glErrorShouldBe(gl1, gl1.INVALID_ENUM, "no errors");
 });
 
-wtu.waitForComposite(gl2, function() {
+wtu.waitForComposite(function() {
   var buf = gl2.createBuffer();
   gl2.bindBuffer(gl2.ELEMENT_ARRAY_BUFFER, buf);
   gl2.bufferData(gl2.ELEMENT_ARRAY_BUFFER, new Uint8Array(1), gl2.STATIC_DRAW);

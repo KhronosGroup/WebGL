@@ -84,13 +84,13 @@ gl2.clear(gl2.COLOR_BUFFER_BIT);
 gl3.clearColor(0,1,0,1);
 gl3.clear(gl2.COLOR_BUFFER_BIT);
 
-wtu.waitForComposite(gl1, function() {
+wtu.waitForComposite(function() {
   // test drawArrays
   gl1.drawArrays(gl1.TRIANGLES, 0, 0);
   wtu.glErrorShouldBe(gl1, gl1.NO_ERROR, "no errors");
 });
 
-wtu.waitForComposite(gl2, function() {
+wtu.waitForComposite(function() {
   // test drawElements
   var buf = gl2.createBuffer();
   gl2.bindBuffer(gl2.ELEMENT_ARRAY_BUFFER, buf);
@@ -99,7 +99,7 @@ wtu.waitForComposite(gl2, function() {
   wtu.glErrorShouldBe(gl2, gl2.NO_ERROR, "no errors");
 });
 
-wtu.waitForComposite(gl3, function() {
+wtu.waitForComposite(function() {
   // test draw with program.
   wtu.setupProgram(gl3, ["vshader", "fshader"]);
   gl1.drawArrays(gl3.TRIANGLES, 0, 0);
