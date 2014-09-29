@@ -68,18 +68,6 @@ var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("canvas");
 shouldBeNonNull("gl");
 
-function fail(x,y, buf, shouldBe)
-{
-  var i = (y*50+x) * 4;
-  var reason = "pixel at ("+x+","+y+") is ("+buf[i]+","+buf[i+1]+","+buf[i+2]+","+buf[i+3]+"), should be "+shouldBe;
-  testFailed(reason);
-}
-
-function pass()
-{
-  testPassed("drawing is correct");
-}
-
 debug("");
 debug("Checking gl.bindAttribLocation with long names.");
 

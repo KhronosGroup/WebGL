@@ -68,47 +68,6 @@ var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("canvas");
 shouldBeNonNull("gl");
 
-function fail(x,y, buf, shouldBe)
-{
-  var i = (y*50+x) * 4;
-  var reason = "pixel at ("+x+","+y+") is ("+buf[i]+","+buf[i+1]+","+buf[i+2]+","+buf[i+3]+"), should be "+shouldBe;
-  testFailed(reason);
-}
-
-function pass()
-{
-  testPassed("drawing is correct");
-}
-
-function loadShader(shaderType, shaderId) {
-  // Get the shader source.
-  var shaderSource = document.getElementById(shaderId).text;
-
-  // Create the shader object
-  var shader = gl.createShader(shaderType);
-  if (shader == null) {
-    debug("*** Error: unable to create shader '"+shaderId+"'");
-    return null;
-  }
-
-  // Load the shader source
-  gl.shaderSource(shader, shaderSource);
-
-  // Compile the shader
-  gl.compileShader(shader);
-
-  // Check the compile status
-  var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-  if (!compiled) {
-    // Something went wrong during compilation; get the error
-    var error = gl.getShaderInfoLog(shader);
-    debug("*** Error compiling shader '"+shader+"':"+error);
-    gl.deleteShader(shader);
-    return null;
-  }
-  return shader;
-}
-
 debug("");
 debug("Checking gl.bindAttribLocation.");
 
@@ -120,8 +79,8 @@ gl.bindAttribLocation(program, 0, "gl_TexCoord0");
 wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
     "bindAttribLocation should return INVALID_OPERATION if name starts with 'gl_'");
 
-var vs = loadShader(gl.VERTEX_SHADER, "vshader");
-var fs = loadShader(gl.FRAGMENT_SHADER, "fshader");
+var vs = wtu.loadShaderFromScript(gl, 'vshader', gl.VERTEX_SHADER);
+var fs = wtu.loadShaderFromScript(gl, 'fshader', gl.FRAGMENT_SHADER);
 gl.attachShader(program, vs);
 gl.attachShader(program, fs);
 
@@ -168,38 +127,14 @@ function checkDraw(colorLocation, positionLocation, r, g, b, a) {
 
   var width = 50;
   var height = 50;
-  var buf = new Uint8Array(width * height * 4);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
-
-  function checkPixel(x, y, r, g, b, a) {
-    var offset = (y * width + x) * 4;
-    if (buf[offset + 0] != r ||
-        buf[offset + 1] != g ||
-        buf[offset + 2] != b ||
-        buf[offset + 3] != a) {
-        fail(x, y, buf, "(" + r + "," + g + "," + b + "," + a + ")");
-        return false;
-    }
-    return true;
-  }
 
   // Test several locations
-  // First line should be all black
-  var success = true;
-  for (var i = 0; i < 50; ++i)
-    success = success && checkPixel(i, 0, 0, 0, 0, 255);
-
-  // Line 15 should be red for at least 10 rgba pixels starting 20 pixels in
-  var offset = (15 * 50 + 20) * 4;
-  for (var i = 0; i < 10; ++i)
-    success = success && checkPixel(20 + i, 15, r, g, b, a);
-
-  // Last line should be all black
-  for (var i = 0; i < 50; ++i)
-    success = success && checkPixel(i, 49, 0, 0, 0, 255);
-
-  if (success)
-    pass();
+  wtu.checkCanvasRect(gl, 0, 0, width, 1, [0, 0, 0, 255],
+      "First line should be all black");
+  wtu.checkCanvasRect(gl, 20, 15, 10, 1, [r, g, b, a],
+      "Line 15 should be red for at least 10 rgba pixels starting 20 pixels in");
+  wtu.checkCanvasRect(gl, 0, height - 1, width, 0, [0, 0, 0, 255],
+      "Last line should be all black");
 
   gl.disableVertexAttribArray(positionLocation);
   gl.disableVertexAttribArray(colorLocation);
