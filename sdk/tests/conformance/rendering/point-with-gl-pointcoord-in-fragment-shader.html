@@ -85,10 +85,6 @@ var canvasHeight = canvas.height;
 var output = document.getElementById("console");
 var gl = wtu.create3DContext(canvas);
 
-function withinRange(value, expected, delta) {
-  return Math.abs(value - expected) < delta;
-}
-
 function runTest() {
   var pointSizeRange = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE);
   // This test can't really run without a maximum point size of at least 2
@@ -130,17 +126,8 @@ function runTest() {
   gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
   gl.drawArrays(gl.POINTS, 0, 1);
-  var pixel = new Uint8Array(4);
-  // Read from approximately the center of the canvas
-  gl.readPixels(canvasWidth / 2, canvasHeight / 2, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
-  if (withinRange(pixel[0], 0, 2) &&
-      withinRange(pixel[1], 255, 2) &&
-      withinRange(pixel[2], 0, 2) &&
-      withinRange(pixel[3], 255, 2)) {
-    testPassed("Center pixel was green");
-  } else {
-    testFailed("Center pixel was [" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ", " + pixel[3] + "], should be [0, 255, 0, 255]");
-  }
+  wtu.checkCanvasRect(gl, canvasWidth / 2, canvasHeight / 2, 1, 1,
+      [0, 255, 0, 255], "Center pixel should be green", 2);
 }
 
 runTest();
