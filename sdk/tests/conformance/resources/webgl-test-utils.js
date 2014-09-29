@@ -2445,8 +2445,7 @@ var setupFullscreen = function(buttonId, fullscreenId, callback) {
 };
 
 /**
- * Waits for the browser to composite the canvas associated with
- * the WebGL context passed in.
+ * Waits for the browser to composite the web page.
  * @param {function()} callback A function to call after compositing has taken
  *        place.
  */
