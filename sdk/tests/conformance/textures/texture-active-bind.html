@@ -124,24 +124,9 @@ function init()
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
   for (var ii = 0; ii < texunits; ++ii) {
-    var c = colors[ii];
     var x = ii % 2;
     var y = Math.floor(ii / 2);
-    var buf = new Uint8Array(4);
-    gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
-    var msg = 'expected:' +
-        c[0] + ', ' + c[1] + ', ' + c[2] + ', ' + c[3] + ' found: ' +
-        buf[0] + ', ' +
-        buf[1] + ', ' +
-        buf[2] + ', ' +
-        buf[3];
-    if (buf[0] != c[0] ||
-        buf[1] != c[1] ||
-        buf[2] != c[2] ||
-        buf[3] != c[3])
-      testFailed(msg);
-    else
-      testPassed(msg);
+    wtu.checkCanvasRect(gl, x, y, 1, 1, colors[ii]);
   }
 }
 
