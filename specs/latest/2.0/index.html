@@ -1896,6 +1896,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         Return immediately, but wait on the GL server until the passed sync object is signaled or an
         implementation-dependent timeout has passed. The passed <em>timeout</em> must be set to
         <code>TIMEOUT_IGNORED</code>.
+
+        <div class="note">
+          In the absence of the possibility of synchronizing between multiple GL contexts, calling waitSync is effectively a no-op.
+        </div>
       </dd>
       <dt class="idl-code">any getSyncParameter(WebGLSync? sync, GLenum pname)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.3 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetSynciv.xhtml">man page</a>)</span>
