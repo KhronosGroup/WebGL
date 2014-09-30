@@ -48,10 +48,10 @@ void main() {
 </script>
 <script>
 "use strict";
-description("This test verifies that uary operators +, -, !, and ~ do not work on structures. Per the spec, field selectors, equality and assignment are the only operators allowed on structures.");
+description("This test verifies that unary operators +, ++, -, --, !, and ~ do not work on structures. Per the spec, field selectors, equality and assignment are the only operators allowed on structures.");
 var tests = [];
 var wtu = WebGLTestUtils;
-var operators = ['+', '-', '!', '~']
+var operators = ['+', '++', '-', '--', '!', '~']
 var typeInfos = [
     { type: 'float',    initializer: '1.0',                         fragColor: 'vec4(0.0, b.t, 0.0, 1.0)' },
     { type: 'vec2',     initializer: 'vec2(0.0, 1.0)',              fragColor: 'vec4(b.t, 0.0, 1.0)' },
