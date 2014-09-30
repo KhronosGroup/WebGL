@@ -72,24 +72,8 @@ if (!gl) {
 
 debug("");
 
-var vertexShaderSource = document.getElementById("vertexShader").text;
-var fragmentShaderSource = document.getElementById("fragmentShader").text;
-var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-gl.shaderSource(vertexShader, vertexShaderSource);
-gl.compileShader(vertexShader);
-var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-gl.shaderSource(fragmentShader, fragmentShaderSource);
-gl.compileShader(fragmentShader);
-var program = gl.createProgram();
-gl.attachShader(program, vertexShader);
-gl.attachShader(program, fragmentShader);
-
-gl.bindAttribLocation(program, 0, "ATTR0");
-
-gl.linkProgram(program);
-
-var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
-if (linked) {
+var program = wtu.loadProgramFromScript(gl, 'vertexShader', 'fragmentShader');
+if (program) {
   testPassed("Program linked successfully");
 } else {
   testFailed("Program failed to link");
@@ -103,18 +87,8 @@ gl.useProgram(program);
 // that everything worked, clear and read back the frame buffer.
 gl.clearColor(1.0, 0.0, 0.0, 1.0);
 gl.clear(gl.COLOR_BUFFER_BIT);
-var pixels = new Uint8Array(4);
-gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-if (pixels[0] == 255 &&
-    pixels[1] == 0 &&
-    pixels[2] == 0 &&
-    pixels[3] == 255) {
-  testPassed("useProgram, clear and readback executed successfully");
-} else {
-  testFailed("color was (" +
-           pixels[0] + ", " + pixels[1] + ", " + pixels[2] + ", " + pixels[3] +
-           "), should be (255, 0, 0, 255)");
-}
+wtu.checkCanvasRect(gl, 0, 0, 1, 1, [255, 0, 0, 255],
+    "Color should be red");
 
 var successfullyParsed = true;
 </script>
