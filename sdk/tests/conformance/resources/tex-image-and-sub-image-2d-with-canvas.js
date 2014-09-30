@@ -203,7 +203,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
                     return;
                 }
             }
-            wtu.waitForComposite(gl, runNextTest);
+            wtu.waitForComposite(runNextTest);
         }
         runNextTest();
     }

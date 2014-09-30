@@ -2445,13 +2445,11 @@ var setupFullscreen = function(buttonId, fullscreenId, callback) {
 };
 
 /**
- * Waits for the browser to composite the canvas associated with
- * the WebGL context passed in.
- * @param {WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * Waits for the browser to composite the web page.
  * @param {function()} callback A function to call after compositing has taken
  *        place.
  */
-var waitForComposite = function(gl, callback) {
+var waitForComposite = function(callback) {
   var frames = 5;
   var countDown = function() {
     if (frames == 0) {
