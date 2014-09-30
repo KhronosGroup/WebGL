@@ -63,6 +63,7 @@ shader-with-long-line.html
 shader-with-non-ascii-error.frag.html
 --min-version 1.0.2 shader-with-non-reserved-words.html
 shader-with-precision.frag.html
+--min-version 1.0.3 shader-with-preprocessor-whitespace.html
 shader-with-quoted-error.frag.html
 --min-version 1.0.2 shader-with-reserved-words.html
 --min-version 1.0.2 shader-with-similar-uniform-array-names.html

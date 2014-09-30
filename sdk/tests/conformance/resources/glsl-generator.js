@@ -43,9 +43,7 @@ var vertexShaderTemplate = [
 ].join("\n");
 
 var fragmentShaderTemplate = [
-  "#if defined(GL_ES)",
   "precision mediump float;",
-  "#endif",
   "",
   "varying vec4 vColor;",
   "",
@@ -88,9 +86,7 @@ var baseVertexShaderWithColor = [
 ].join("\n");
 
 var baseFragmentShader = [
-  "#if defined(GL_ES)",
   "precision mediump float;",
-  "#endif",
   "varying vec4 vColor;",
   "",
   "void main()",
