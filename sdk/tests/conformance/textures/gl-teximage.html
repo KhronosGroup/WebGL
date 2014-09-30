@@ -88,51 +88,18 @@ function runTests(imgs) {
   var width = gl.canvas.width;
   var height = gl.canvas.height;
 
-  function checkPixel(buf, x, y, color) {
-    var off = (y * width + x) * 4;
-    var msg = "pixel " + x + ", " + y + " should be " +
-              color[0] + ", " +
-              color[1] + ", " +
-              color[2] + ", " +
-              color[3] + " was " +
-              buf[off + 0] + ", " +
-              buf[off + 1] + ", " +
-              buf[off + 2] + ", " +
-              buf[off + 3];
-
-    for (var ii = 0; ii < 4; ++ii) {
-      if (buf[off + ii] != color[ii]) {
-        testFailed(msg);
-        return;
-      }
-    }
-    testPassed(msg);
+  function checkPixel(x, y, color) {
+    wtu.checkCanvasRect(gl, x, y, 1, 1, color);
   }
 
-  function checkPixelRange(buf, x, y, color, allowedRange) {
-    var off = (y * width + x) * 4;
+  function checkPixelRange(x, y, color, allowedRange) {
     var msg = "pixel " + x + ", " + y + " should be within " +
               allowedRange + " units of " +
               color[0] + ", " +
               color[1] + ", " +
               color[2] + ", " +
               color[3];
-    var subMsg = " was " +
-              buf[off + 0] + ", " +
-              buf[off + 1] + ", " +
-              buf[off + 2] + ", " +
-              buf[off + 3];
-    // When running in WebKit's test harness, we don't want to print the
-    // pixel value when the test passes, because different machines might
-    // have different results and we record the text output.
-    var inDumpRenderTree = window.layoutTestController;
-    for (var ii = 0; ii < 4; ++ii) {
-      if (Math.abs(buf[off + ii] - color[ii]) > allowedRange) {
-        testFailed(msg + subMsg);
-        return;
-      }
-    }
-    testPassed(msg + (inDumpRenderTree ? "" : subMsg));
+    wtu.checkCanvasRect(gl, x, y, 1, 1, color, msg, allowedRange);
   }
 
   var tex = gl.createTexture();
@@ -150,7 +117,6 @@ function runTests(imgs) {
                 imgs['../resources/zero-alpha.png']);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   wtu.clearAndDrawUnitQuad(gl);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
 
   var left = 0;
   var middle = Math.floor(width / 2);
@@ -158,15 +124,15 @@ function runTests(imgs) {
   var bottom = 0;
   var center = Math.floor(height / 2);
   var top = height - 1;
-  checkPixel(buf, left,   top,    [  0,   0,   0, 255]);
-  checkPixel(buf, middle, top,    [255,   0, 255, 255]);
-  checkPixel(buf, right,  top,    [  0,   0, 255, 255]);
-  checkPixel(buf, left,   center, [128, 128, 128, 255]);
-  checkPixel(buf, middle, center, [255, 255, 255, 255]);
-  checkPixel(buf, right,  center, [  0, 255, 255, 255]);
-  checkPixel(buf, left,   bottom, [255,   0,   0, 255]);
-  checkPixel(buf, middle, bottom, [255, 255,   0, 255]);
-  checkPixel(buf, right,  bottom, [  0, 255,   0, 255]);
+  checkPixel(left,   top,    [  0,   0,   0, 255]);
+  checkPixel(middle, top,    [255,   0, 255, 255]);
+  checkPixel(right,  top,    [  0,   0, 255, 255]);
+  checkPixel(left,   center, [128, 128, 128, 255]);
+  checkPixel(middle, center, [255, 255, 255, 255]);
+  checkPixel(right,  center, [  0, 255, 255, 255]);
+  checkPixel(left,   bottom, [255,   0,   0, 255]);
+  checkPixel(middle, bottom, [255, 255,   0, 255]);
+  checkPixel(right,  bottom, [  0, 255,   0, 255]);
 
   debug("");
   debug("check quantization");
@@ -291,18 +257,16 @@ function runTests(imgs) {
   ctx.fillRect(0, 0, 256, 1);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d);
   wtu.clearAndDrawUnitQuad(gl);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
-  checkPixelRange(buf, 0, 0, [255, 255, 255, 127], 4);
+  checkPixelRange(0, 0, [255, 255, 255, 127], 4);
 
   debug("");
   debug("check canvas pixels are pre-multiplied");
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d);
   wtu.clearAndDrawUnitQuad(gl);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
-  checkPixelRange(buf, 0, 0, [127, 127, 127, 127], 4);
+  checkPixelRange(0, 0, [127, 127, 127, 127], 4);
 
 
   debug("");
@@ -332,17 +296,16 @@ function runTests(imgs) {
                 imgs['../resources/3x3.png']);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   wtu.clearAndDrawUnitQuad(gl);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
 
-  checkPixel(buf, left,   top,    [255,   0,   0, 255]);
-  checkPixel(buf, middle, top,    [255, 255,   0, 255]);
-  checkPixel(buf, right,  top,    [255,   0,   0, 255]);
-  checkPixel(buf, left,   center, [255,   0, 255, 255]);
-  checkPixel(buf, middle, center, [255,   0,   0, 255]);
-  checkPixel(buf, right,  center, [  0, 255,   0, 255]);
-  checkPixel(buf, left,   bottom, [  0,   0,   0, 255]);
-  checkPixel(buf, middle, bottom, [  0,   0, 255, 255]);
-  checkPixel(buf, right,  bottom, [255,   0,   0, 255]);
+  checkPixel(left,   top,    [255,   0,   0, 255]);
+  checkPixel(middle, top,    [255, 255,   0, 255]);
+  checkPixel(right,  top,    [255,   0,   0, 255]);
+  checkPixel(left,   center, [255,   0, 255, 255]);
+  checkPixel(middle, center, [255,   0,   0, 255]);
+  checkPixel(right,  center, [  0, 255,   0, 255]);
+  checkPixel(left,   bottom, [  0,   0,   0, 255]);
+  checkPixel(middle, bottom, [  0,   0, 255, 255]);
+  checkPixel(right,  bottom, [255,   0,   0, 255]);
 
   debug("");
   debug("check uploading of images with no alpha channel works");
@@ -352,8 +315,7 @@ function runTests(imgs) {
                 imgs['../resources/blue-1x1.jpg']);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   wtu.clearAndDrawUnitQuad(gl);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
-  checkPixelRange(buf, middle, center, [   0,   0, 255, 255], 10);
+  checkPixelRange(middle, center, [   0,   0, 255, 255], 10);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
 
   debug("");
@@ -364,8 +326,7 @@ function runTests(imgs) {
                 imgs['../resources/green-2x2-16bit.png']);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   wtu.clearAndDrawUnitQuad(gl);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
-  checkPixelRange(buf, middle, center, [   15, 121,   0, 255], 10);
+  checkPixelRange(middle, center, [   15, 121,   0, 255], 10);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors");
 
   debug("");
@@ -378,17 +339,15 @@ function runTests(imgs) {
                 imgs['../resources/small-square-with-colorspin-profile.jpg']);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   wtu.clearAndDrawUnitQuad(gl);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   // The image is red.  However, if we ignore the color profile, it is blue.
-  checkPixelRange(buf, middle, center, [ 0, 0, 255, 255], 10);
+  checkPixelRange(middle, center, [ 0, 0, 255, 255], 10);
 
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['../resources/small-square-with-colorspin-profile.png']);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   wtu.clearAndDrawUnitQuad(gl);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   // The image is red.  However, if we ignore the color profile, it is blue.
-  checkPixelRange(buf, middle, center, [ 0, 0, 255, 255], 10);
+  checkPixelRange(middle, center, [ 0, 0, 255, 255], 10);
 
   var iccPNGs = [
     '../resources/small-square-with-cie-rgb-profile.png',
@@ -396,6 +355,7 @@ function runTests(imgs) {
     '../resources/small-square-with-e-srgb-profile.png',
     '../resources/small-square-with-smpte-c-profile.png',
     '../resources/small-square-with-srgb-iec61966-2.1-profile.png'];
+  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   for (var ii = 0; ii < iccPNGs.length; ++ii) {
     var buf2 = new Uint8Array(width * height * 4);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
@@ -420,9 +380,8 @@ function runTests(imgs) {
                 imgs['../resources/red-indexed.png']);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   wtu.clearAndDrawUnitQuad(gl);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   // The image should be red.
-  checkPixelRange(buf, middle, center, [ 255, 0, 0, 255 ], 10);
+  checkPixelRange(middle, center, [ 255, 0, 0, 255 ], 10);
 
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
@@ -437,9 +396,8 @@ function runTests(imgs) {
                 imgs['../resources/1-channel.jpg']);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   wtu.clearAndDrawUnitQuad(gl);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   // The image should be gray.
-  checkPixelRange(buf, middle, center, [ 128, 128, 128, 255 ], 28);
+  checkPixelRange(middle, center, [ 128, 128, 128, 255 ], 28);
 
   debug("")
   debug("check calling texImage2D with NULL clears the texture");
@@ -449,9 +407,8 @@ function runTests(imgs) {
                 0, gl.RGB, gl.UNSIGNED_BYTE, null);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup");
   wtu.clearAndDrawUnitQuad(gl);
-  gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   // The image should be white.
-  checkPixelRange(buf, middle, center, [ 0, 0, 0, 255 ], 10);
+  checkPixelRange(middle, center, [ 0, 0, 0, 255 ], 10);
 
   debug("");
   successfullyParsed = true;
