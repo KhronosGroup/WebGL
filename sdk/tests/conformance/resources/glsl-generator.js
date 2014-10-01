@@ -375,7 +375,8 @@ var runFeatureTest = function(params) {
         type: type.type,
         arg0: type.type
       });
-      debug("Testing: " + str + " in " + shaderInfo.type + " shader");
+      var passMsg = "Testing: " + str + " in " + shaderInfo.type + " shader";
+      debug(passMsg);
 
       var referenceVertexShaderSource = generateReferenceShader(
           shaderInfo,
@@ -407,6 +408,36 @@ var runFeatureTest = function(params) {
       var testVertexShader = wtu.loadShader(gl, testVertexShaderSource, gl.VERTEX_SHADER, testFailed, true, 'test');
       var testFragmentShader = wtu.loadShader(gl, testFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed, true, 'test');
       debug("");
+
+      if (parseInt(wtu.getUrlOptions().dumpShaders)) {
+        var vRefInfo = {
+          shader: referenceVertexShader,
+          shaderSuccess: true,
+          label: "reference vertex shader",
+          source: referenceVertexShaderSource
+        };
+        var fRefInfo = {
+          shader: referenceFragmentShader,
+          shaderSuccess: true,
+          label: "reference fragment shader",
+          source: referenceFragmentShaderSource
+        };
+        wtu.dumpShadersInfo(gl, window.location.pathname, passMsg, vRefInfo, fRefInfo);
+
+        var vTestInfo = {
+          shader: testVertexShader,
+          shaderSuccess: true,
+          label: "test vertex shader",
+          source: testVertexShaderSource
+        };
+        var fTestInfo = {
+          shader: testFragmentShader,
+          shaderSuccess: true,
+          label: "test fragment shader",
+          source: testFragmentShaderSource
+        };
+        wtu.dumpShadersInfo(gl, window.location.pathname, passMsg, vTestInfo, fTestInfo);
+      }
 
       var refData = draw(
           referenceVertexShader, referenceFragmentShader);
@@ -498,7 +529,8 @@ var runBasicTest = function(params) {
     for (var ii = 0; ii < tests.length; ++ii) {
       var test = tests[ii];
       debug("");
-      debug("Testing: " + test.name + " in " + shaderInfo.type + " shader");
+      var passMsg = "Testing: " + test.name + " in " + shaderInfo.type + " shader";
+      debug(passMsg);
 
       function genShader(shaderInfo, template, shader, subs) {
         shader = replaceParams(shader, subs, {
@@ -540,6 +572,36 @@ var runBasicTest = function(params) {
       var testVertexShader = wtu.loadShader(gl, testVertexShaderSource, gl.VERTEX_SHADER, testFailed, true, 'test');
       var testFragmentShader = wtu.loadShader(gl, testFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed, true, 'test');
       debug("");
+
+      if (parseInt(wtu.getUrlOptions().dumpShaders)) {
+        var vRefInfo = {
+          shader: referenceVertexShader,
+          shaderSuccess: true,
+          label: "reference vertex shader",
+          source: referenceVertexShaderSource
+        };
+        var fRefInfo = {
+          shader: referenceFragmentShader,
+          shaderSuccess: true,
+          label: "reference fragment shader",
+          source: referenceFragmentShaderSource
+        };
+        wtu.dumpShadersInfo(gl, window.location.pathname, passMsg, vRefInfo, fRefInfo);
+
+        var vTestInfo = {
+          shader: testVertexShader,
+          shaderSuccess: true,
+          label: "test vertex shader",
+          source: testVertexShaderSource
+        };
+        var fTestInfo = {
+          shader: testFragmentShader,
+          shaderSuccess: true,
+          label: "test fragment shader",
+          source: testFragmentShaderSource
+        };
+        wtu.dumpShadersInfo(gl, window.location.pathname, passMsg, vTestInfo, fTestInfo);
+      }
 
       var refData = draw(referenceVertexShader, referenceFragmentShader);
       var refImg = wtu.makeImageFromCanvas(canvas);
@@ -646,7 +708,8 @@ var runReferenceImageTest = function(params) {
         type: type.type,
         arg0: type.type
       });
-      debug("Testing: " + str + " in " + shaderInfo.type + " shader");
+      var passMsg = "Testing: " + str + " in " + shaderInfo.type + " shader";
+      debug(passMsg);
 
       var referenceVertexShaderSource = generateReferenceShader(
           shaderInfo,
@@ -681,6 +744,37 @@ var runReferenceImageTest = function(params) {
       var testVertexShader = wtu.loadShader(gl, testVertexShaderSource, gl.VERTEX_SHADER, testFailed, true);
       var testFragmentShader = wtu.loadShader(gl, testFragmentShaderSource, gl.FRAGMENT_SHADER, testFailed, true);
       debug("");
+
+
+      if (parseInt(wtu.getUrlOptions().dumpShaders)) {
+        var vRefInfo = {
+          shader: referenceVertexShader,
+          shaderSuccess: true,
+          label: "reference vertex shader",
+          source: referenceVertexShaderSource
+        };
+        var fRefInfo = {
+          shader: referenceFragmentShader,
+          shaderSuccess: true,
+          label: "reference fragment shader",
+          source: referenceFragmentShaderSource
+        };
+        wtu.dumpShadersInfo(gl, window.location.pathname, passMsg, vRefInfo, fRefInfo);
+
+        var vTestInfo = {
+          shader: testVertexShader,
+          shaderSuccess: true,
+          label: "test vertex shader",
+          source: testVertexShaderSource
+        };
+        var fTestInfo = {
+          shader: testFragmentShader,
+          shaderSuccess: true,
+          label: "test fragment shader",
+          source: testFragmentShaderSource
+        };
+        wtu.dumpShadersInfo(gl, window.location.pathname, passMsg, vTestInfo, fTestInfo);
+      }
 
       var refData;
       if (isVertex) {
