@@ -318,8 +318,7 @@ interface WebGL2RenderingContextBase
   // MapBufferRange, in particular its read-only and write-only modes,
   // can not be exposed safely to JavaScript. GetBufferSubData
   // replaces it for the purpose of fetching data back from the GPU.
-  typedef (ArrayBuffer or ArrayBufferView) GetBufferDataDest;
-  void getBufferSubData(GLenum target, GLintptr offset, GetBufferDataDest returnedData);
+  void getBufferSubData(GLenum target, GLintptr offset, ArrayBufferData returnedData);
 
   /* Framebuffer objects */
   void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0,
@@ -330,7 +329,7 @@ interface WebGL2RenderingContextBase
   void invalidateFramebuffer(GLenum target, sequence<GLenum> attachments);
   void invalidateSubFramebuffer(GLenum target, sequence<GLenum> attachments,
                                 GLint x, GLint y, GLsizei width, GLsizei height);
-  void readBuffer(GLenum mode);
+  void readBuffer(GLenum src);
 
   /* Renderbuffer objects */
   void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat,
@@ -412,11 +411,7 @@ interface WebGL2RenderingContextBase
   [WebGLHandlesContextLoss] GLboolean isSampler(WebGLSampler? sampler);
   void bindSampler(GLuint unit, WebGLSampler? sampler);
   void samplerParameteri(WebGLSampler? sampler, GLenum pname, GLint param);
-  typedef (Int32Array or sequence<GLint>) SamplerParameterIVSource;
-  void samplerParameteriv(WebGLSampler? sampler, GLenum pname, SamplerParameterIVSource param);
   void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param);
-  typedef (Float32Array or sequence<GLfloat>) SamplerParameterFVSource;
-  void samplerParameterfv(WebGLSampler? sampler, GLenum pname, SamplerParameterFVSource param);
   any getSamplerParameter(WebGLSampler? sampler, GLenum pname);
 
   /* Sync objects */
