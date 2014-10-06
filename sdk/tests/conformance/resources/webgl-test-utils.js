@@ -2182,6 +2182,41 @@ var addShaderSources = function(
   }
 };
 
+/**
+ * Sends shader information to the server to be dumped into text files
+ * when tests are run from within the test-runner harness.
+ * @param {WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {string} url URL of current.
+ * @param {string} passMsg Test description.
+ * @param {object} vInfo Object containing vertex shader information.
+ * @param {object} fInfo Object containing fragment shader information.
+ */
+var dumpShadersInfo = function(gl, url, passMsg, vInfo, fInfo) {
+  var shaderInfo = {};
+  shaderInfo.url = url;
+  shaderInfo.testDescription = passMsg;
+  shaderInfo.vLabel = vInfo.label;
+  shaderInfo.vShouldCompile = vInfo.shaderSuccess;
+  shaderInfo.vSource = vInfo.source;
+  shaderInfo.fLabel = fInfo.label;
+  shaderInfo.fShouldCompile = fInfo.shaderSuccess;
+  shaderInfo.fSource = fInfo.source;
+  shaderInfo.vTranslatedSource = null;
+  shaderInfo.fTranslatedSource = null;
+  var debugShaders = gl.getExtension('WEBGL_debug_shaders');
+  if (debugShaders) {
+    if (vInfo.shader)
+      shaderInfo.vTranslatedSource = debugShaders.getTranslatedShaderSource(vInfo.shader);
+    if (fInfo.shader)
+      shaderInfo.fTranslatedSource = debugShaders.getTranslatedShaderSource(fInfo.shader);
+  }
+
+  var dumpShaderInfoRequest = new XMLHttpRequest();
+  dumpShaderInfoRequest.open('POST', "/dumpShaderInfo", true);
+  dumpShaderInfoRequest.setRequestHeader("Content-Type", "text/plain");
+  dumpShaderInfoRequest.send(JSON.stringify(shaderInfo));
+};
+
 // Add your prefix here.
 var browserPrefixes = [
   "",
@@ -2627,6 +2662,7 @@ return {
   drawIndexedQuad: drawIndexedQuad,
   drawUByteColorQuad: drawUByteColorQuad,
   drawFloatColorQuad: drawFloatColorQuad,
+  dumpShadersInfo: dumpShadersInfo,
   endsWith: endsWith,
   fillTexture: fillTexture,
   getBytesPerComponent: getBytesPerComponent,

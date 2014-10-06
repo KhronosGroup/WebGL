@@ -242,7 +242,7 @@ function start() {
     }
     div.appendChild(button);
     var a = reporter.localDoc.createElement('a');
-    a.href = WebGLTestHarnessModule.getURLWithVersion(url, reporter.selectedWebGLVersion);
+    a.href = WebGLTestHarnessModule.getURLWithOptions(url, reporter.selectedWebGLVersion);
     a.target = "_blank";
     var node = reporter.localDoc.createTextNode(url);
     a.appendChild(node);
@@ -601,6 +601,11 @@ function start() {
   Reporter.prototype.finishPage = function(url, success) {
     var page = this.pagesByURL[url];
     page.finishPage(success);
+    if (OPTIONS.dumpShaders == 1) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', "/finishIndividualTest", true);
+      xhr.send(null);
+    }
   };
 
   Reporter.prototype.displayFinalResults = function(msg, success) {
