@@ -2183,7 +2183,8 @@ var addShaderSources = function(
 };
 
 /**
- * Send shader information to the server to be dumped into text files.
+ * Sends shader information to the server to be dumped into text files
+ * when tests are run from within the test-runner harness.
  * @param {WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} url URL of current.
  * @param {string} passMsg Test description.
