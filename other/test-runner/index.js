@@ -323,7 +323,8 @@ function start_test_server(config) {
     res.send(200);
   });
 
-  app.post('/finishTest', function(req, res){
+  // Called after each test run if the harness is dumping shaders.
+  app.post('/finishIndividualTest', function(req, res){
     if(!config.args.dump_shaders) {
         res.send(200);
         return;

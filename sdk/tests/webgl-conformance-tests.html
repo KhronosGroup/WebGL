@@ -603,7 +603,7 @@ function start() {
     page.finishPage(success);
     if (OPTIONS.dumpShaders == 1) {
       var xhr = new XMLHttpRequest();
-      xhr.open('POST', "/finishTest", true);
+      xhr.open('POST', "/finishIndividualTest", true);
       xhr.send(null);
     }
   };
