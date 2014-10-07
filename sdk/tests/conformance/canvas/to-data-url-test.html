@@ -115,7 +115,7 @@ var main = function() {
     }
     var test = tests[testIndex++];
     testSize(gl, test.width, test.height, function() {
-      setTimeout(runNextTest, 100);
+      setTimeout(runNextTest, 0);
     })
   };
   runNextTest();

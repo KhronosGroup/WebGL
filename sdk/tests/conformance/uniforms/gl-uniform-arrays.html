@@ -485,7 +485,7 @@ var testIndex = 0;
 function runNextTest() {
   testUniformOptimizationIssues(testIndex++);
   if (testIndex < tests.length) {
-    setTimeout(runNextTest, 10);
+    setTimeout(runNextTest, 0);
   } else {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
     debug("");
