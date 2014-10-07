@@ -393,12 +393,7 @@ function runDrawTests() {
         }
     };
     
-    function readLocation(x, y) {
-        var pixels = new Uint8Array(1 * 1 * 4);
-        gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-        return pixels;
-    };
-    function verifyDiagonalPixels(s, expectedInside) {
+    function verifyDiagonalPixels(s, expectedInside, drawDescription) {
         // Tests pixels along a diagonal running from the center of the canvas to the (0, 0) corner.
         // Values on the points list indicate relative position along this diagonal.
         var points = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0];
@@ -406,23 +401,14 @@ function runDrawTests() {
             var expected = points[n] <= s ? expectedInside : 255;
             var x = Math.round((1 - points[n]) * canvas.width / 2);
             var y = Math.round((1 - points[n]) * canvas.height / 2);
-            var source = readLocation(x, y);
-            if (Math.abs(source[0] - expected) > 2) {
-                return false;
-            }
+            wtu.checkCanvasRect(gl, x, y, 1, 1, [expected, expected, expected, 255],
+                "Drawing " + drawDescription + " should pass", 2);
         }
-        return true;
     };
     function verifyDraw(drawDescription, s, colorsInArray) {
         wtu.clearAndDrawUnitQuad(gl);
-
         var expectedInside = colorsInArray ? 0 : 128;
-
-        if (verifyDiagonalPixels(s, expectedInside)) {
-            testPassed("Drawing " + drawDescription + " passed pixel test");
-        } else {
-            testFailed("Drawing " + drawDescription + " failed pixel test");
-        }
+        verifyDiagonalPixels(s, expectedInside, drawDescription);
     };
     
     // Setup all bindings
