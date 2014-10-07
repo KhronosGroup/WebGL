@@ -135,7 +135,7 @@ GLSLConformanceTester.runTests([
     linkSuccess: true,
     passMsg: "vertex shader with unused varying and fragment shader with used varying must succeed",
   },
-  {
+  {  // See GLSL ES spec 1.0.17 section 4.6.4 "Invariance and linkage".
     vShaderId: "vertexShaderUsedVarying",
     vShaderSuccess: true,
     fShaderId: "fragmentShaderUsedInvariantVarying",
@@ -143,7 +143,7 @@ GLSLConformanceTester.runTests([
     linkSuccess: false,
     passMsg: "vertex shader with variant varying and fragment shader with invariant varying must fail",
   },
-  {
+  {  // See GLSL ES spec 1.0.17 section 4.6.4 "Invariance and linkage".
     vShaderId: "vertexShaderUsedInvariantVarying",
     vShaderSuccess: true,
     fShaderId: "fragmentShaderUsedVarying",
