@@ -45,14 +45,6 @@ function listsExtension() {
   return (supported.indexOf("EXT_sRGB") >= 0);
 }
 
-function readLocation(x, y) {
-  var pixel = new Uint8Array(1 * 1 * 4);
-  var px = Math.floor(x * canvas.drawingBufferWidth);
-  var py = Math.floor(y * canvas.drawingBufferHeight);
-  gl.readPixels(px, py, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
-  return pixel;
-}
-
 function toVec3String(val) {
   if (typeof(val) == 'number') {
     return toVec3String([val, val, val]);

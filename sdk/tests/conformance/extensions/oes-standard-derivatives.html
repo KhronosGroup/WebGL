@@ -282,44 +282,19 @@ function runOutputTests() {
     var program = wtu.setupProgram(gl, ["outputVertexShader", "outputFragmentShader"], ['vPosition', 'texCoord0'], [0, 1]);
     var quadParameters = wtu.setupUnitQuad(gl, positionLoc, texcoordLoc);
 
-    function readLocation(x, y) {
-        var pixels = new Uint8Array(1 * 1 * 4);
-        var px = Math.floor(x * canvas.width);
-        var py = Math.floor(y * canvas.height);
-        gl.readPixels(px, py, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-        return pixels;
-    };
-    function toString(arr) {
-        var s = "[";
-        for (var n = 0; n < arr.length; n++) {
-            s += arr[n];
-            if (n < arr.length - 1) {
-                s += ", ";
-            }
-        }
-        return s + "]";
-    };
-    function expectResult(target, successMessage, failureMessage) {
+    function expectResult(target, message) {
         var locations = [
-            readLocation(0.1, 0.1),
-            readLocation(0.9, 0.1),
-            readLocation(0.1, 0.9),
-            readLocation(0.9, 0.9),
-            readLocation(0.5, 0.5)
+            [ 0.1, 0.1 ],
+            [ 0.9, 0.1 ],
+            [ 0.1, 0.9 ],
+            [ 0.9, 0.9 ],
+            [ 0.5, 0.5 ]
         ];
-        var anyDiffer = false;
         for (var n = 0; n < locations.length; n++) {
-            var source = locations[n];
-            for (var m = 0; m < 4; m++) {
-                if (Math.abs(source[m] - target[m]) > e) {
-                    anyDiffer = true;
-                    testFailed(failureMessage + "; should be " + toString(target) + ", was " + toString(source));
-                    break;
-                }
-            }
-        }
-        if (!anyDiffer) {
-            testPassed(successMessage);
+            var loc = locations[n];
+            var px = Math.floor(loc[0] * canvas.width);
+            var py = Math.floor(loc[1] * canvas.height);
+            wtu.checkCanvasRect(gl, px, py, 1, 1, target, message, 4);
         }
     };
 
@@ -339,30 +314,25 @@ function runOutputTests() {
     setupBuffers(0.0, 0.0, 0.0, 0.0);
     wtu.clearAndDrawUnitQuad(gl);
     expectResult([0, 0, 0, 255],
-                 "Draw 1 (no variation) returned the correct data",
-                 "Draw 1 (no variation) returned incorrect data");
+                 "Draw 1 (no variation) should pass");
 
     // Draw 2: (variation in x)
     setupBuffers(1.0, 0.0, 1.0, 0.0);
     wtu.clearAndDrawUnitQuad(gl);
     expectResult([204, 0, 204, 255],
-                 "Draw 2 (variation in x) returned the correct data",
-                 "Draw 2 (variation in x) returned incorrect data");
+                 "Draw 2 (variation in x) should pass");
 
     // Draw 3: (variation in y)
     setupBuffers(1.0, 1.0, 0.0, 0.0);
     wtu.clearAndDrawUnitQuad(gl);
     expectResult([0, 204, 204, 255],
-                 "Draw 3 (variation in y) returned the correct data",
-                 "Draw 3 (variation in y) returned incorrect data");
+                 "Draw 3 (variation in y) should pass");
 
     // Draw 4: (variation in x & y)
     setupBuffers(1.0, 0.5, 0.5, 0.0);
     wtu.clearAndDrawUnitQuad(gl);
     expectResult([102, 102, 204, 255],
-                 "Draw 4 (variation in x & y) returned the correct data",
-                 "Draw 4 (variation in x & y) returned incorrect data");
-
+                 "Draw 4 (variation in x & y) should pass");
 }
 
 function runUniqueObjectTest()
