@@ -71,13 +71,13 @@ function render() {
     // Draw N frames red, leaving the vertex divisor to 0 after each call.
     gl.clearColor(1,0,0,1);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    setTimeout(render, 10);
+    wtu.requestAnimFrame(render);
   } else {
     // Draw 2 more times in green, setting the divisor to 1 afterward.
     gl.clearColor(0,1,0,1);
     gl.clear(gl.COLOR_BUFFER_BIT);
     if (frame - RED_FRAMES < 2) {
-      setTimeout(render, 10);
+      wtu.requestAnimFrame(render);
     } else {
       finishTest();
     }
@@ -92,7 +92,8 @@ function render() {
 if (!ext) {
   testPassed("No ANGLE_instanced_arrays support -- this is legal");
 }
-setTimeout(render, 10);
+wtu.requestAnimFrame(render);
+var successfullyParsed = true;
 </script>
 </body>
 </html>

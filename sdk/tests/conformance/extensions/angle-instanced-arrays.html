@@ -401,7 +401,7 @@ function runANGLECorruptionTest()
             testPassed("Passed test " + iteration + " of " + totalIterations);
             if (iteration < totalIterations) {
                 ++iteration;
-                setTimeout(cycleAndTest, 100);
+                setTimeout(cycleAndTest, 0);
             } else {
                 finishTest();
             }
