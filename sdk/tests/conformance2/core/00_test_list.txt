@@ -2,5 +2,6 @@ draw-buffers.html
 element-index-uint.html
 frag-depth.html
 instanced-arrays.html
+tex-new-formats.html
 tex-storage.html
 vertex-array-object.html
