@@ -121,9 +121,21 @@ void main()
     gl_FragColor = gl_FragCoord;
 }
 </script>
+<script id="fragmentShaderVariantGlFragCoord" type="text/something-not-javascript">
+void main()
+{
+    gl_FragColor = gl_FragCoord;
+}
+</script>
 <script id="fragmentShaderInvariantGlPointCoord" type="text/something-not-javascript">
 invariant gl_PointCoord;
 
+void main()
+{
+    gl_FragColor = vec4(gl_PointCoord, 0.0, 0.0);
+}
+</script>
+<script id="fragmentShaderVariantGlPointCoord" type="text/something-not-javascript">
 void main()
 {
     gl_FragColor = vec4(gl_PointCoord, 0.0, 0.0);
@@ -211,6 +223,38 @@ GLSLConformanceTester.runTests([
     fShaderSuccess: true,
     linkSuccess: false,
     passMsg: "vertex shader with variant gl_Position and fragment shader with invariant gl_FragCoord must fail",
+  },
+  {
+    vShaderId: "vertexShaderInvariantGlPosition",
+    vShaderSuccess: true,
+    fShaderId: "fragmentShaderVariantGlFragCoord",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: "vertex shader with invariant gl_Position and fragment shader with variant gl_FragCoord must succeed",
+  },
+  {
+    vShaderId: "vertexShaderInvariantGlPointSize",
+    vShaderSuccess: true,
+    fShaderId: "fragmentShaderInvariantGlPointCoord",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: "vertex shader with invariant gl_PointSize and fragment shader with invariant gl_PointCoord must succeed",
+  },
+  {
+    vShaderId: "vertexShaderVariant",
+    vShaderSuccess: true,
+    fShaderId: "fragmentShaderInvariantGlPointCoord",
+    fShaderSuccess: true,
+    linkSuccess: false,
+    passMsg: "vertex shader with variant gl_PointSize and fragment shader with invariant gl_PointCoord must fail",
+  },
+  {
+    vShaderId: "vertexShaderInvariantGlPointSize",
+    vShaderSuccess: true,
+    fShaderId: "fragmentShaderVariantGlPointCoord",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: "vertex shader with invariant gl_PointSize and fragment shader with variant gl_PointCoord must succeed",
   },
   {
     vShaderId: "vertexShaderVariant",
