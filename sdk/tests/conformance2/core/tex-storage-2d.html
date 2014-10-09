@@ -84,8 +84,12 @@ function runTexStorage2DTest()
             unsizedformat: gl.RGB,
             type: gl.UNSIGNED_INT_10F_11F_11F_REV,
             alpha: false,
-            // 0x2f is full red mantissa and 5 is number of red exponent bits
-            redpixel: new Uint32Array([0x2f<<5]),
+            // Red is unsigned floating point with 5 exponent bits followed by 6 mantissa bits.
+            // The effective value is 2^(exponent - 15) * (1 + mantissa / 64)
+            // See OpenGL ES 3.0.3 spec, section 2.1.3
+            // Here we want to encode the value 1.0, which we achieve with a zero mantissa
+            // and an exponent of 15.
+            redpixel: new Uint32Array([15<<6]),
         },
         {
             target: gl.TEXTURE_2D,
@@ -214,7 +218,7 @@ function runTexStorage2DTest()
             var alpha = testcase.alpha ? 0 : 255;
             wtu.checkCanvas(gl, [0, 0, 0, alpha], "texture should sample as uninitialized texture after texStorage2D");
 
-            // Now upload some redpixel texture data
+            // Now upload some red texture data
             var s = texsize;
             var pixels;
             if (testcase.redpixel instanceof Uint8Array) {
