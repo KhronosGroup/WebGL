@@ -3,5 +3,5 @@ element-index-uint.html
 frag-depth.html
 instanced-arrays.html
 tex-new-formats.html
-tex-storage.html
+tex-storage-2d.html
 vertex-array-object.html

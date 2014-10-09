@@ -180,6 +180,11 @@ function runTexStorage2DTest()
                         texsize, texsize);
         wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texStorage2D should succeed with a good sized internalformat");
 
+        // check TEXTURE_IMMUTABLE_FORMAT
+        var immutable = gl.getTexParameter(target, gl.TEXTURE_IMMUTABLE_FORMAT);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "getTexParameter should succeed with TEXTURE_IMMUTABLE_FORMAT");
+        assertMsg(immutable != 0, "getTexParameter with TEXTURE_IMMUTABLE_FORMAT should not return 0");
+
         // check operations disallowed on immutable texture
         gl.texImage2D(imageTargets[0], 0, gl.RGBA, texsize, texsize, 0,
                       gl.RGBA, gl.UNSIGNED_BYTE, null);
