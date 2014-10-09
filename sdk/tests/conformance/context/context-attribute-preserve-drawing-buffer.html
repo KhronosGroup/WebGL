@@ -33,6 +33,10 @@
         <script src="../../resources/js-test-pre.js"></script>
         <script src="../resources/webgl-test-utils.js"></script>
         <style>
+            .pattern {
+                white-space: nowrap;
+                display: inline-block;
+            }
             canvas {
                 width:50px;
                 height:50px;
@@ -90,20 +94,25 @@
         </script>
     </head>
     <body>
-        <div>
+        <div class="pattern">
             <canvas id='c1'></canvas>
             <canvas id='c2'></canvas>
             <canvas id='c3'></canvas>
-            <span>should look as right pattern</span>
+        </div>
+        <span>should look like</span>
+        <div class="pattern">
             <div class='square'></div>
             <div class='square' style='background-color:black'></div>
             <div class='square'></div>
         </div>
-        <div>
+        <hr />
+        <div class="pattern">
             <canvas id='c4'></canvas>
             <canvas id='c5'></canvas>
             <canvas id='c6'></canvas>
-            <span>should look as right pattern</span>
+        </div>
+        <span>should look like</span>
+        <div class="pattern">
             <div class='square'></div>
             <div class='square'></div>
             <div class='square'></div>
