@@ -181,20 +181,20 @@ function runDrawTests(drawType) {
         gl.enableVertexAttribArray(opt_positionLocation);
         gl.vertexAttribPointer(opt_positionLocation, 3, gl.FLOAT, false, 0, 0);
     };
-    function testPixel(blackList, whiteList, drawNumber) {
+    function testPixel(blackList, whiteList) {
         function testList(list, expected) {
             for (var n = 0; n < list.length; n++) {
                 var l = list[n];
                 var x = -Math.floor(l * canvas.width / 2) + canvas.width / 2;
                 var y = -Math.floor(l * canvas.height / 2) + canvas.height / 2;
-                wtu.checkCanvasRect(gl, x, y, 1, 1, [expected, expected, expected, 255],
-                    "Draw " + drawNumber + " should pass", 2);
+                wtu.checkCanvasRect(gl, x, y, 1, 1, [expected, expected, expected],
+                    "Draw should pass", 2);
             }
         }
         testList(blackList, 0);
         testList(whiteList, 255);
     };
-    function verifyDraw(drawNumber, s) {
+    function verifyDraw(s) {
         gl.clearColor(1.0, 1.0, 1.0, 1.0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, 0);
@@ -209,11 +209,11 @@ function runDrawTests(drawType) {
                 whiteList.push(points[n]);
             }
         }
-        testPixel(blackList, whiteList, drawNumber);
+        testPixel(blackList, whiteList);
     };
 
     setupDraw(0.5);
-    verifyDraw(0, 0.5);
+    verifyDraw(0.5);
 }
 
 function runIndexValidationTests(drawType) {
