@@ -6,3 +6,4 @@ tex-new-formats.html
 tex-storage-2d.html
 vertex-array-object.html
 tex-mipmap-levels.html
+texture-npot.html
