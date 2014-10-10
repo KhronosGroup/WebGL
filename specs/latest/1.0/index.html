@@ -3685,6 +3685,14 @@ extensions.
     to NaN, an <code>INVALID_VALUE</code> error is generated and the line width is not changed.
 </p>
 
+<h3><a name="ATTRIBUTE_ALIASING">Attribute Aliasing</a></h3>
+<p>
+    It is possible for an application to bind more than one attribute name to the
+    same location. This is referred to as aliasing. When more than one attributes that
+    are aliased to the same location are active in the executable program,
+    <code>linkProgram</code> should fail.
+</p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
