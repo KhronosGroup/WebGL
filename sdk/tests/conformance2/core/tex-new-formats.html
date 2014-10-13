@@ -478,6 +478,23 @@ function runTexFormatsTest()
             gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, 1, unsizedformat, type, baddata);
             wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "texSubImage2D should fail on immutable-format texture with data of wrong type");
         }
+
+        // now test a 3d texture.
+        // Formats that can't be specified using a sized internalformat, can't be used for 3D textures.
+        // Formats containing a depth component can't be used for 3D textures.
+        var isdepthformat =
+            unsizedformat == gl.DEPTH_COMPONENT ||
+            unsizedformat == gl.DEPTH_STENCIL;
+        if (sizedformat && !isdepthformat) {
+            var tex3d = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_3D, tex3d);
+            gl.texStorage3D(gl.TEXTURE_3D, 1, sizedformat, 1, 1, 1);
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texStorage3D should succeed");
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 1, 1, 1, unsizedformat, type, data);
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texSubImage3D should succeed on immutable-format texture");
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 1, 1, 1, unsizedformat, type, baddata);
+            wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "texSubImage3D should fail on immutable-format texture with data of wrong type");
+        }
     });
 }
 

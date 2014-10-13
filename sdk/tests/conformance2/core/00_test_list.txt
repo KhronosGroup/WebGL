@@ -4,4 +4,5 @@ frag-depth.html
 instanced-arrays.html
 tex-new-formats.html
 tex-storage-2d.html
+tex-storage-and-subimage-3d.html
 vertex-array-object.html
