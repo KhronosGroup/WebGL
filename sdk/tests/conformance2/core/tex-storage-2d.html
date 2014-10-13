@@ -139,7 +139,7 @@ function runTexStorage2DTest()
         gl.bindTexture(target, tex);
         var texsize = 4;
         var levels = testcase.mipmap
-                     ? Math.ceil(Math.log(texsize) / Math.log(2)) + 1
+                     ? Math.floor(Math.log(texsize) / Math.log(2)) + 1
                      : 1;
 
         debug("");
