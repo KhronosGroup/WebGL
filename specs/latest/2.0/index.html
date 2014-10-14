@@ -111,8 +111,8 @@
     </p>
 
     <p>
-      WebGL 2 is not entirely backwards compatible with WebGL 1. Existing content written against
-      the core WebGL 1 specification without extensions will often run in WebGL 2 without
+      WebGL 2 is not entirely backwards compatible with WebGL 1. Existing error-free content written
+      against the core WebGL 1 specification without extensions will often run in WebGL 2 without
       modification, but this is not always the case. All exceptions to backwards compatibility are
       recorded in the <a href="#BACKWARDS_INCOMPATIBILITY">Backwards Incompatibility</a> section.
       To access the new behavior provided in this specification, the content explicitly requests
@@ -2125,7 +2125,17 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     </div>
 
     <h3><a name="BACKWARDS_INCOMPATIBILITY">Backwards Incompatibility</a></h3>
-    
+
+    <h4>Errors</h4>
+
+    <p>
+        The WebGL 2 API may behave differently in cases where the WebGL 1 API generates an error.
+        Code written against the WebGL 1 API that generates errors is not guaranteed to be
+        forward-compatible with WebGL 2.
+    </p>
+
+    <h4>Extensions</h4>
+
     <p>
         Some extensions that may have been supported in the WebGL 1 API are removed from the WebGL
         2 API. For more details, see the
@@ -2140,6 +2150,16 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         redirects calls to the appropriate WebGL 2 API functions. If the application is using shader
         language extensions, porting shaders to GLSL ES 3.00 is typically required.
     </div>
+
+    <h4>Non-Power-of-Two Texture Access</h4>
+
+    <p>
+        Texture access works in the WebGL 2 API as in the OpenGL ES 3.0 API. Sampling a
+        non-power-of-two image with wrapping mode other than CLAMP_TO_EDGE and minification filter
+        other than NEAREST or LINEAR does not always return (R, G, B, A) = (0, 0, 0, 1) in the
+        WebGL 2 API, i.e. mipmapping and all wrapping modes are supported for non-power-of-two
+        images.
+    </p>
 
     <h3>New Features Supported in the WebGL 2 API</h3>
 
