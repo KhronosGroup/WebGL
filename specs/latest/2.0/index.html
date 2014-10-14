@@ -2151,12 +2151,14 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         language extensions, porting shaders to GLSL ES 3.00 is typically required.
     </div>
 
-    <h4>Texture Access</h4>
+    <h4>Non-Power-of-Two Texture Access</h4>
 
     <p>
-        Texture access works in the WebGL 2 API as in the OpenGL ES 3.0 API. Texture access rules
-        that would cause a sampler to return (R, G, B, A) = (0, 0, 0, 1) in the OpenGL ES 2.0
-        specification section 3.8.2 do not apply.
+        Texture access works in the WebGL 2 API as in the OpenGL ES 3.0 API. Sampling a
+        non-power-of-two image with wrapping mode other than CLAMP_TO_EDGE and minification filter
+        other than NEAREST or LINEAR does not always return (R, G, B, A) = (0, 0, 0, 1) in the
+        WebGL 2 API, i.e. mipmapping and all wrapping modes are supported for non-power-of-two
+        images.
     </p>
 
     <h3>New Features Supported in the WebGL 2 API</h3>
