@@ -56,7 +56,7 @@ void main()
     gl_Position = v_varying;
 }
 </script>
-<script id="vertexShaderSeperateInvariant" type="text/something-not-javascript">
+<script id="vertexShaderSeparateInvariant" type="text/something-not-javascript">
 varying vec4 v_varying;
 invariant v_varying;
 
@@ -65,7 +65,7 @@ void main()
     gl_Position = v_varying;
 }
 </script>
-<script id="vertexShaderSeperateInvariantWrongOrder" type="text/something-not-javascript">
+<script id="vertexShaderSeparateInvariantWrongOrder" type="text/something-not-javascript">
 invariant v_varying;
 varying vec4 v_varying;
 
@@ -120,7 +120,7 @@ void main()
     gl_FragColor = v_varying;
 }
 </script>
-<script id="fragmentShaderSeperateInvariant" type="text/something-not-javascript">
+<script id="fragmentShaderSeparateInvariant" type="text/something-not-javascript">
 precision mediump float;
 
 varying vec4 v_varying;
@@ -131,7 +131,7 @@ void main()
     gl_FragColor = v_varying;
 }
 </script>
-<script id="fragmentShaderSeperateInvariantWrongOrder" type="text/something-not-javascript">
+<script id="fragmentShaderSeparateInvariantWrongOrder" type="text/something-not-javascript">
 precision mediump float;
 
 invariant v_varying;
@@ -241,36 +241,36 @@ GLSLConformanceTester.runTests([
     passMsg: "vertex shader with invariant (global setting) varying and fragment shader with invariant varying must succeed",
   },
   {
-    vShaderId: "vertexShaderSeperateInvariant",
+    vShaderId: "vertexShaderSeparateInvariant",
     vShaderSuccess: true,
     fShaderId: "fragmentShaderInvariant",
     fShaderSuccess: true,
     linkSuccess: true,
-    passMsg: "vertex shader with invariant (seperately set) varying and fragment shader with invariant varying must succeed",
+    passMsg: "vertex shader with invariant (separately set) varying and fragment shader with invariant varying must succeed",
   },
   {
     vShaderId: "vertexShaderInvariant",
     vShaderSuccess: true,
-    fShaderId: "fragmentShaderSeperateInvariant",
+    fShaderId: "fragmentShaderSeparateInvariant",
     fShaderSuccess: true,
     linkSuccess: true,
-    passMsg: "vertex shader with invariant varying and fragment shader with invariant (seperately set) varying must succeed",
+    passMsg: "vertex shader with invariant varying and fragment shader with invariant (separately set) varying must succeed",
   },
   {
-    vShaderId: "vertexShaderSeperateInvariantWrongOrder",
+    vShaderId: "vertexShaderSeparateInvariantWrongOrder",
     vShaderSuccess: false,
     fShaderId: "fragmentShaderInvariant",
     fShaderSuccess: true,
     linkSuccess: false,
-    passMsg: "vertex shader with invariant (seperately set in wrong order) varying must fail",
+    passMsg: "vertex shader with invariant (separately set in wrong order) varying must fail",
   },
   {
     vShaderId: "vertexShaderInvariant",
     vShaderSuccess: true,
-    fShaderId: "fragmentShaderSeperateInvariantWrongOrder",
+    fShaderId: "fragmentShaderSeparateInvariantWrongOrder",
     fShaderSuccess: false,
     linkSuccess: false,
-    passMsg: "fragment shader with invariant (seperately set in wrong order) varying must fail",
+    passMsg: "fragment shader with invariant (separately set in wrong order) varying must fail",
   },
   {
     vShaderId: "vertexShaderInvariant",
