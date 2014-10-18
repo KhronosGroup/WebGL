@@ -369,18 +369,18 @@ function makeDebugContext(ctx, opt_onErrorFunc, opt_onFunc, opt_err_ctx) {
   var wrapper = {};
   for (var propertyName in ctx) {
     if (typeof ctx[propertyName] == 'function') {
-       if (propertyName != 'getExtension') {
-	  wrapper[propertyName] = makeErrorWrapper(ctx, propertyName);
-       } else {
-	  var wrapped = makeErrorWrapper(ctx, propertyName);
-	  wrapper[propertyName] = function () {
-	     var result = wrapped.apply(ctx, arguments);
-	     return makeDebugContext(result, opt_onErrorFunc, opt_onFunc, opt_err_ctx);
-	  };
-       }
-     } else {
-       makePropertyWrapper(wrapper, ctx, propertyName);
-     }
+      if (propertyName != 'getExtension') {
+        wrapper[propertyName] = makeErrorWrapper(ctx, propertyName);
+      } else {
+        var wrapped = makeErrorWrapper(ctx, propertyName);
+        wrapper[propertyName] = function () {
+          var result = wrapped.apply(ctx, arguments);
+          return makeDebugContext(result, opt_onErrorFunc, opt_onFunc, opt_err_ctx);
+        };
+      }
+    } else {
+      makePropertyWrapper(wrapper, ctx, propertyName);
+    }
   }
 
   // Override the getError function with one that returns our saved results.
