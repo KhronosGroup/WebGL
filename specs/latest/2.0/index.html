@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 1 October 2014</h2>
+    <h2 class="no-toc">Editor's Draft 17 October 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -706,6 +706,9 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void texStorage2D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
   void texStorage3D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height,
                     GLsizei depth);
+  void texImage3D(GLenum target, GLint level, GLint internalformat,
+                  GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format,
+                  GLenum type, ArrayBufferView? pixels);
   void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                      GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type,
                      ArrayBufferView? pixels);
@@ -1184,9 +1187,13 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         The image contents are set as if a buffer of sufficient size initialized to 0 would be passed to
         each texImage2D call in the pseudocode in The OpenGL ES 3.0 specification section 3.8.4
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.3 &sect;3.8.4</a>)</span>.
+
+        <div class="note"><code>texStorage2D</code> should be considered a preferred alternative to
+        <code>texImage2D</code>. It may have lower memory costs than <code>texImage2D</code> in some
+        implementations.</div>
       </dd>
       <dt>
-        <p class="idl-code">void texStorage3D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)
+        <p class="idl-code"><a name="TEXSTORAGE3D">void texStorage3D</a>(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.3 &sect;3.8.4</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexStorage3D.xhtml" class="nonnormative">man page</a>)
@@ -1199,6 +1206,34 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         The image contents are set as if a buffer of sufficient size initialized to 0 would be passed to
         each texImage3D call in the pseudocode in The OpenGL ES 3.0 specification section 3.8.4
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.3 &sect;3.8.4</a>)</span>.
+      </dd>
+      <dt class="idl-code">void texImage3D(GLenum target, GLint level, GLenum internalformat, 
+                  GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format,
+                  GLenum type, ArrayBufferView? pixels)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a>)</span>
+      </dt>
+      <dd>
+          Allocates and initializes the specified mipmap level of a three-dimensional or
+          two-dimensional array texture. <br><br>
+
+          If <code>pixels</code> is null, a buffer of sufficient size initialized to 0 is
+          passed. <br><br>
+
+          <div class="note editor">Needs update to determine restrictions for <em>format</em> and
+          <em>pixels</em>. These restrictions also need to be updated for texImage2D and texSubImage2D
+          inherited from the WebGL 1.0 API.</div>
+
+          If an attempt is made to call this function with no WebGLTexture bound (see above), an
+          <code>INVALID_OPERATION</code> error is generated. <br><br>
+
+          <div class="note editor">Needs update to determine restrictions for <em>type</em></div>
+
+          See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
+          pixel storage parameters that affect the behavior of this function. <br><br>
+
+          <div class="note">It is recommended to use <a href="#TEXSTORAGE3D">texStorage3D</a>
+          instead of texImage3D to allocate three-dimensional textures. texImage3D may impose a
+          higher memory cost compared to texStorage3D in some implementations.</div>
       </dd>
       <dt>
         <p class="idl-code">void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, ArrayBufferView? pixels)
@@ -2376,18 +2411,6 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         As in the OpenGL ES 3.0 API, multiple fragment shader outputs are only supported for GLSL ES 3.00
         shaders in the WebGL 2 API.
     </p>
-
-    <h3>No TexImage3D</h3>
-
-    <p>
-        The <code>texImage3D</code> entry point is removed from the WebGL 2.0 API. Defining 3D texture images
-        is supported with <code>texStorage3D</code> and <code>compressedTexImage3D</code>.
-    </p>
-
-    <div class="note">
-        <code>texStorage2D</code> should also be considered a preferred alternative to
-        <code>texImage2D</code>, even though <code>texImage2D</code> is supported in the WebGL 2.0 API.
-    </div>
 
     <h3>No MapBufferRange</h3>
 
