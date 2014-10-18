@@ -94,11 +94,11 @@ var glValidEnumContexts = {
   'texParameteri': {3: { 0:true, 1:true, 2:true }},
   'texImage2D': {
      9: { 0:true, 2:true, 6:true, 7:true },
-     6: { 0:true, 2:true, 3:true, 4:true },
+     6: { 0:true, 2:true, 3:true, 4:true }
   },
   'texSubImage2D': {
     9: { 0:true, 6:true, 7:true },
-    7: { 0:true, 4:true, 5:true },
+    7: { 0:true, 4:true, 5:true }
   },
   'copyTexImage2D': {8: { 0:true, 2:true }},
   'copyTexSubImage2D': {8: { 0:true }},
@@ -152,7 +152,7 @@ var glValidEnumContexts = {
 
   // EXT_blend_minmax extension
 
-  'blendEquationEXT': {1: { 0:true }},
+  'blendEquationEXT': {1: { 0:true }}
 };
 
 /**
