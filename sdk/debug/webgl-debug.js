@@ -128,7 +128,7 @@ var glValidEnumContexts = {
 
   // Frame buffer operations (clear, blend, depth test, stencil)
 
-  'clear': {1: { 0:true }},
+  'clear': {1: { 0: { 'enumBitwiseOr': ['COLOR_BUFFER_BIT', 'DEPTH_BUFFER_BIT', 'STENCIL_BUFFER_BIT'] }}},
   'depthFunc': {1: { 0:true }},
   'blendFunc': {2: { 0:true, 1:true }},
   'blendFuncSeparate': {4: { 0:true, 1:true, 2:true, 3:true }},
@@ -162,6 +162,12 @@ var glValidEnumContexts = {
 var glEnums = null;
 
 /**
+ * Map of names to numbers.
+ * @type {Object}
+ */
+var enumStringToValue = null;
+
+/**
  * Initializes this module. Safe to call more than once.
  * @param {!WebGLRenderingContext} ctx A WebGL context. If
  *    you have more than one context it doesn't matter which one
@@ -170,9 +176,11 @@ var glEnums = null;
 function init(ctx) {
   if (glEnums == null) {
     glEnums = { };
+    enumStringToValue = { };
     for (var propertyName in ctx) {
       if (typeof ctx[propertyName] == 'number') {
         glEnums[ctx[propertyName]] = propertyName;
+        enumStringToValue[propertyName] = ctx[propertyName];
       }
     }
   }
@@ -228,7 +236,26 @@ function glFunctionArgToString(functionName, numArgs, argumentIndex, value) {
     var funcInfo = funcInfo[numArgs];
     if (funcInfo !== undefined) {
       if (funcInfo[argumentIndex]) {
-        return glEnumToString(value);
+        if (typeof funcInfo[argumentIndex] === 'object' &&
+            funcInfo[argumentIndex]['enumBitwiseOr'] !== undefined) {
+          var enums = funcInfo[argumentIndex]['enumBitwiseOr'];
+          var orResult = 0;
+          var orEnums = [];
+          for (var i = 0; i < enums.length; ++i) {
+            var enumValue = enumStringToValue[enums[i]];
+            if ((value & enumValue) !== 0) {
+              orResult |= enumValue;
+              orEnums.push(glEnumToString(enumValue));
+            }
+          }
+          if (orResult === value) {
+            return orEnums.join(' | ');
+          } else {
+            return glEnumToString(value);
+          }
+        } else {
+          return glEnumToString(value);
+        }
       }
     }
   }
