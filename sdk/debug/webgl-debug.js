@@ -94,11 +94,11 @@ var glValidEnumContexts = {
   'texParameteri': {3: { 0:true, 1:true, 2:true }},
   'texImage2D': {
      9: { 0:true, 2:true, 6:true, 7:true },
-     6: { 0:true, 2:true, 3:true, 4:true },
+     6: { 0:true, 2:true, 3:true, 4:true }
   },
   'texSubImage2D': {
     9: { 0:true, 6:true, 7:true },
-    7: { 0:true, 4:true, 5:true },
+    7: { 0:true, 4:true, 5:true }
   },
   'copyTexImage2D': {8: { 0:true, 2:true }},
   'copyTexSubImage2D': {8: { 0:true }},
@@ -128,7 +128,7 @@ var glValidEnumContexts = {
 
   // Frame buffer operations (clear, blend, depth test, stencil)
 
-  'clear': {1: { 0:true }},
+  'clear': {1: { 0: { 'enumBitwiseOr': ['COLOR_BUFFER_BIT', 'DEPTH_BUFFER_BIT', 'STENCIL_BUFFER_BIT'] }}},
   'depthFunc': {1: { 0:true }},
   'blendFunc': {2: { 0:true, 1:true }},
   'blendFuncSeparate': {4: { 0:true, 1:true, 2:true, 3:true }},
@@ -152,7 +152,7 @@ var glValidEnumContexts = {
 
   // EXT_blend_minmax extension
 
-  'blendEquationEXT': {1: { 0:true }},
+  'blendEquationEXT': {1: { 0:true }}
 };
 
 /**
@@ -160,6 +160,12 @@ var glValidEnumContexts = {
  * @type {Object}
  */
 var glEnums = null;
+
+/**
+ * Map of names to numbers.
+ * @type {Object}
+ */
+var enumStringToValue = null;
 
 /**
  * Initializes this module. Safe to call more than once.
@@ -170,9 +176,11 @@ var glEnums = null;
 function init(ctx) {
   if (glEnums == null) {
     glEnums = { };
+    enumStringToValue = { };
     for (var propertyName in ctx) {
       if (typeof ctx[propertyName] == 'number') {
         glEnums[ctx[propertyName]] = propertyName;
+        enumStringToValue[propertyName] = ctx[propertyName];
       }
     }
   }
@@ -228,7 +236,26 @@ function glFunctionArgToString(functionName, numArgs, argumentIndex, value) {
     var funcInfo = funcInfo[numArgs];
     if (funcInfo !== undefined) {
       if (funcInfo[argumentIndex]) {
-        return glEnumToString(value);
+        if (typeof funcInfo[argumentIndex] === 'object' &&
+            funcInfo[argumentIndex]['enumBitwiseOr'] !== undefined) {
+          var enums = funcInfo[argumentIndex]['enumBitwiseOr'];
+          var orResult = 0;
+          var orEnums = [];
+          for (var i = 0; i < enums.length; ++i) {
+            var enumValue = enumStringToValue[enums[i]];
+            if ((value & enumValue) !== 0) {
+              orResult |= enumValue;
+              orEnums.push(glEnumToString(enumValue));
+            }
+          }
+          if (orResult === value) {
+            return orEnums.join(' | ');
+          } else {
+            return glEnumToString(value);
+          }
+        } else {
+          return glEnumToString(value);
+        }
       }
     }
   }
@@ -342,18 +369,18 @@ function makeDebugContext(ctx, opt_onErrorFunc, opt_onFunc, opt_err_ctx) {
   var wrapper = {};
   for (var propertyName in ctx) {
     if (typeof ctx[propertyName] == 'function') {
-       if (propertyName != 'getExtension') {
-	  wrapper[propertyName] = makeErrorWrapper(ctx, propertyName);
-       } else {
-	  var wrapped = makeErrorWrapper(ctx, propertyName);
-	  wrapper[propertyName] = function () {
-	     var result = wrapped.apply(ctx, arguments);
-	     return makeDebugContext(result, opt_onErrorFunc, opt_onFunc, opt_err_ctx);
-	  };
-       }
-     } else {
-       makePropertyWrapper(wrapper, ctx, propertyName);
-     }
+      if (propertyName != 'getExtension') {
+        wrapper[propertyName] = makeErrorWrapper(ctx, propertyName);
+      } else {
+        var wrapped = makeErrorWrapper(ctx, propertyName);
+        wrapper[propertyName] = function () {
+          var result = wrapped.apply(ctx, arguments);
+          return makeDebugContext(result, opt_onErrorFunc, opt_onFunc, opt_err_ctx);
+        };
+      }
+    } else {
+      makePropertyWrapper(wrapper, ctx, propertyName);
+    }
   }
 
   // Override the getError function with one that returns our saved results.
