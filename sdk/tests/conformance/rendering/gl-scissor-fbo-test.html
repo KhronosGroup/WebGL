@@ -35,15 +35,12 @@
 <script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
+<canvas id="canvas" width="16" height="16" style="width: 40px; height: 40px;"> </canvas>
 <div id="description"></div>
 <div id="console"></div>
-<canvas id="canvas" width="16" height="16" style="width: 40px; height: 40px;"> </canvas>
 <script>
 "use strict";
-description("checks the scissor does not change when switching framebuffers");
-
-debug("");
-debug("Canvas.getContext");
+description("Checks the scissor does not change when switching framebuffers.");
 
 var wtu = WebGLTestUtils;
 

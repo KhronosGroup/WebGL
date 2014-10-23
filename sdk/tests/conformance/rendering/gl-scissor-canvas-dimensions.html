@@ -1,7 +1,7 @@
 <!--
 
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
+** Copyright (c) 2014 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL Scissor Test</title>
+<title>WebGL Scissor Canvas Dimensions Test</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
@@ -48,65 +48,48 @@ canvas {
 <div id="console"></div>
 <script>
 "use strict";
-description("Check if glScissor setting works.");
+description("Check that scissoring is initially disabled and that the scissor rect does not change when canvas size changes.");
 
 var wtu = WebGLTestUtils;
 
-function test(canvas, attribs) {
+function testInit(canvas, attribs) {
   var gl = wtu.create3DContext(canvas, attribs);
-
-  function test(func) {
-    gl.disable(gl.SCISSOR_TEST);
-    gl.clearColor(0,0,0,0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.enable(gl.SCISSOR_TEST);
-
-    var size = 16;
-    for (var ii = 0; ii < size; ++ii) {
-      // clear a portion of the WebGL drawing buffer
-      gl.scissor(ii, ii, 1, 1);
-      func();
-    }
-
-    for (var ii = 0; ii < size; ++ii) {
-      wtu.checkCanvasRect(gl, 0, ii, ii, 1, [0, 0, 0, 0], "should be black");
-      wtu.checkCanvasRect(gl, ii, ii, 1, 1, [0, 255, 0, 255], "should be green");
-      wtu.checkCanvasRect(gl, ii + 1, ii, size - ii - 1, 1, [0, 0, 0, 0], "should be black");
-    }
-  }
-
   if (!gl) {
     testFailed("context does not exist");
-  } else {
-    testPassed("context exists");
-
-    debug("");
-    debug("test with clear");
-    test(function() {
-      gl.clearColor(0, 1, 0, 1);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-    });
-
-    wtu.setupColorQuad(gl);
-
-    debug("");
-    debug("test with draw");
-    test(function() {
-      wtu.drawFloatColorQuad(gl, [0, 1, 0, 1]);
-    });
-
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+    return;
   }
+  debug("Testing that scissor test is initially disabled");
+  // Setting the scissor rect should have no effect on drawing.
+  gl.scissor(0, 0, 1, 1);
+  gl.clearColor(0, 1, 0, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.checkCanvasRect(gl, 0, 0, canvas.width, canvas.height, [0, 255, 0, 255], "whole canvas should be green");
 }
 
-debug("test antialias: false");
-test(document.getElementById("canvas1"), {antialias: false});
+function testCanvasSizeChange(canvas, attribs) {
+  var gl = wtu.create3DContext(canvas, attribs);
+  if (!gl) {
+    testFailed("context does not exist");
+    return;
+  }
+  debug("Testing that scissor rect dimensions do not change if the canvas is resized.");
+  canvas.width = 32;
+  canvas.height = 32;
+  gl.viewport(0, 0, 32, 32);
+  gl.enable(gl.SCISSOR_TEST);
+  gl.clearColor(0, 1, 0, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.checkCanvasRect(gl, 0, 0, 16, 16, [0, 255, 0, 255], "area inside scissor should be green");
+  wtu.checkCanvasRect(gl, 0, 16, 32, 16, [0, 0, 0, 0], "area outside scissor should be black");
+  wtu.checkCanvasRect(gl, 16, 0, 16, 16, [0, 0, 0, 0], "area outside scissor should be black");
+}
 
+testInit(document.getElementById("canvas1"), {antialias: false});
 debug("");
-debug("test antialias: true");
-test(document.getElementById("canvas2"), {antialias: true});
+testCanvasSizeChange(document.getElementById("canvas2"), {antialias: false});
 
-debug("");
 var successfullyParsed = true;
 
 </script>

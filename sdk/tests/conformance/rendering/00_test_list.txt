@@ -6,6 +6,7 @@ gl-clear.html
 gl-drawelements.html
 gl-scissor-test.html
 --min-version 1.0.2 gl-scissor-fbo-test.html
+--min-version 1.0.3 gl-scissor-canvas-dimensions.html
 --min-version 1.0.3 gl-viewport-test.html
 --min-version 1.0.3 many-draw-calls.html
 more-than-65536-indices.html
