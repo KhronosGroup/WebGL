@@ -33,6 +33,11 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test-utils.js"></script>
+<style>
+canvas {
+    border: 1px solid #000;
+}
+</style>
 </head>
 <body>
 <canvas id="canvas1" width="64" height="128"> </canvas>
@@ -42,7 +47,6 @@
 <script>
 "use strict";
 description();
-debug("");
 var wtu = WebGLTestUtils;
 
 function test(canvas, attribs) {
@@ -112,7 +116,6 @@ function test(canvas, attribs) {
   }
 }
 
-debug("");
 debug("test antialias: false");
 test(document.getElementById("canvas1"), {antialias: false});
 

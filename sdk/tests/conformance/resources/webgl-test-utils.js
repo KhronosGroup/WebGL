@@ -1014,7 +1014,7 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
     var xr = clipToRange(x, width, 0, gl.canvas.width);
     var yr = clipToRange(y, height, 0, gl.canvas.height);
     if (!xr.extent || !yr.extent) {
-      logFn("checking rect: effective width or heigh is zero");
+      logFn("checking rect: effective width or height is zero");
       sameFn();
       return;
     }
