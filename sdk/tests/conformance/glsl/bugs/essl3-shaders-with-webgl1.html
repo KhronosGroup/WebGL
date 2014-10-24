@@ -51,6 +51,7 @@ void main() {
 <script id="ES3FragmentShader" type="x-shader/x-fragment">#version 300 es
 precision mediump float;
 out vec4 my_FragColor;
+
 void main() {
     my_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }
@@ -68,7 +69,7 @@ void main() {
     gl_Position = aPosition;
 }
 </script>
-<script id="fragmentShaderWithOutQualifier" type="x-shader/x-vertex">
+<script id="fragmentShaderWithOutQualifier" type="x-shader/x-fragment">
 precision mediump float;
 out vec4 my_FragColor;
 
