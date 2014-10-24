@@ -41,44 +41,54 @@
 <!-- Shaders for testing fragment depth writing -->
 
 <!-- Shader omitting the required #version -->
-<script id="missingPragmaFragmentShader" type="x-shader/x-fragment">
+<script id="fragmentShaderESSL1" type="x-shader/x-fragment">
 precision mediump float;
 void main() {
     gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
     gl_FragDepth = 1.0;
 }
 </script>
-
 <!-- Shader with required #version -->
-<script id="testFragmentShader" type="x-shader/x-fragment">
-#version 300 es
+<script id="fragmentShaderESSL3" type="x-shader/x-fragment">#version 300 es
 precision mediump float;
+out vec4 my_FragColor;
 void main() {
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    my_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
     gl_FragDepth = 1.0;
+}
+</script>
+<!-- Shader using the EXT suffix -->
+<script id="fragmentShaderESSL3EXT" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+out vec4 my_FragColor;
+void main() {
+    my_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragDepthEXT = 1.0;
 }
 </script>
 <!-- Shaders to link with test fragment shaders -->
-<script id="goodVertexShader" type="x-shader/x-vertex">
+<script id="vertexShaderESSL1" type="x-shader/x-vertex">
 attribute vec4 vPosition;
 void main() {
     gl_Position = vPosition;
 }
 </script>
-<!-- Shaders to test output -->
-<script id="outputVertexShader" type="x-shader/x-vertex">
-attribute vec4 vPosition;
+<script id="vertexShaderESSL3" type="x-shader/x-vertex">#version 300 es
+in vec4 vPosition;
 void main() {
     gl_Position = vPosition;
 }
 </script>
-<script id="outputFragmentShader" type="x-shader/x-fragment">
-#version 300 es
+
+<!-- Shader to test output -->
+<script id="outputFragmentShader" type="x-shader/x-fragment">#version 300 es
 precision mediump float;
 uniform float uDepth;
+
+out vec4 my_FragColor;
 void main() {
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-    gl_FragDepthEXT = uDepth;
+    my_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragDepth = uDepth;
 }
 </script>
 
@@ -98,6 +108,7 @@ if (!gl) {
     testPassed("WebGL context exists");
 
     runShaderTests();
+    debug("");
     runOutputTests();
 }
 
@@ -105,38 +116,45 @@ function runShaderTests() {
     debug("");
     debug("Testing various shader compiles");
 
-    // Always expect the shader missing the #version to fail
-    var missingPragmaFragmentProgram = wtu.loadProgramFromScriptExpectError(gl, "goodVertexShader", "missingPragmaFragmentShader");
-    if (missingPragmaFragmentProgram) {
-        testFailed("Shader built-ins allowed without #version");
+    // Always expect ESSL1 shaders to fail
+    var fragmentProgramESSL1 = wtu.loadProgramFromScriptExpectError(gl, "vertexShaderESSL1", "fragmentShaderESSL1");
+    if (fragmentProgramESSL1) {
+        testFailed("gl_FragDepth allowed in ESSL1 shader - should be disallowed");
     } else {
-        testPassed("Shader built-ins disallowed without #version");
+        testPassed("gl_FragDepth disallowed in ESSL1 shader");
     }
 
     // Try to compile a shader using the built-ins that should only succeed if enabled
-    var testFragmentProgram = wtu.loadProgramFromScriptExpectError(gl, "goodVertexShader", "testFragmentShader");
+    var testFragmentProgram = wtu.loadProgramFromScriptExpectError(gl, "vertexShaderESSL3", "fragmentShaderESSL3");
     if (testFragmentProgram) {
-        testPassed("Shader built-ins compiled successfully");
+        testPassed("gl_FragDepth allowed in ESSL3 shader");
     } else {
-        testFailed("Shader built-ins failed to compile");
+        testFailed("gl_FragDepth disallowed in ESSL3 shader");
+    }
+
+    var testFragmentProgram = wtu.loadProgramFromScriptExpectError(gl, "vertexShaderESSL3", "fragmentShaderESSL3EXT");
+    if (testFragmentProgram) {
+        testFailed("gl_FragDepthEXT allowed in ESSL3 shader - should only allow gl_FragDepth");
+    } else {
+        testPassed("gl_FragDepthEXT disallowed in ESSL3 shader");
     }
 }
 
 function runOutputTests() {
-    debug("Testing various draws for valid built-in function behavior");
+    debug("Testing rendering results from writing to gl_FragData");
 
     canvas.width = 50; canvas.height = 50;
     gl.viewport(0, 0, canvas.width, canvas.height);
     
     // Enable depth testing with a clearDepth of 0.5
     // This makes it so that fragments are only rendered when
-    // gl_fragDepth is < 0.5
+    // gl_FragDepth is < 0.5
     gl.clearDepth(0.5);
     gl.enable(gl.DEPTH_TEST);
 
     var positionLoc = 0;
     var texcoordLoc = 1;
-    var program = wtu.setupProgram(gl, ["outputVertexShader", "outputFragmentShader"], ['vPosition'], [0]);
+    var program = wtu.setupProgram(gl, ["vertexShaderESSL3", "outputFragmentShader"], ['vPosition'], [0]);
     var quadParameters = wtu.setupUnitQuad(gl, 0, 1);
     var depthUniform = gl.getUniformLocation(program, "uDepth");
 

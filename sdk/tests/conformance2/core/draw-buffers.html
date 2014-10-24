@@ -38,32 +38,51 @@
 <div id="description"></div>
 <canvas id="canvas" width="64" height="64"> </canvas>
 <div id="console"></div>
-<script id="vshader" type="x-shader/x-vertex">
+<script id="vshaderESSL3" type="x-shader/x-vertex">#version 300 es
+in vec4 a_position;
+void main() {
+    gl_Position = a_position;
+}
+</script>
+<script id="vshaderESSL1" type="x-shader/x-vertex">
 attribute vec4 a_position;
 void main() {
     gl_Position = a_position;
 }
 </script>
-<script id="fshader" type="x-shader/x-fragment">
-#version 300 es
+<script id="fshader" type="x-shader/x-fragment">#version 300 es
 precision mediump float;
 uniform vec4 u_colors[$(numDrawingBuffers)];
+
+// Only one out variable - does not need explicit output layout (ESSL 3 section 4.3.8.2)
+out vec4 my_FragData[$(numDrawingBuffers)];
 void main() {
     for (int i = 0; i < $(numDrawingBuffers); ++i) {
-        gl_FragData[i] = u_colors[i];
+        my_FragData[i] = u_colors[i];
     }
 }
 </script>
-<script id="fshaderRed" type="x-shader/x-fragment">
+<script id="fshaderRed" type="x-shader/x-fragment">#version 300 es
 precision mediump float;
+
+out vec4 my_FragColor;
 void main() {
-    gl_FragColor = vec4(1,0,0,1);
+    my_FragColor = vec4(1, 0, 0, 1);
 }
 </script>
-<script id="fshaderBuiltInConstEnabled" type="x-shader/x-fragment">
+<script id="fshaderBlueESSL1" type="x-shader/x-fragment">
 precision mediump float;
+
 void main() {
-    gl_FragColor = (gl_MaxDrawBuffers == $(numDrawingBuffers)) ? vec4(0,1,0,1) : vec4(1,0,0,1);
+    gl_FragColor = vec4(0, 0, 1, 1);
+}
+</script>
+<script id="fshaderBuiltInConstEnabled" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+
+out vec4 my_FragColor;
+void main() {
+    my_FragColor = (gl_MaxDrawBuffers == $(numDrawingBuffers)) ? vec4(0, 1, 0, 1) : vec4(1, 0, 0, 1);
 }
 </script>
 <script>
@@ -93,7 +112,7 @@ function createDrawBuffersProgram(scriptId, sub) {
   var fsource = wtu.getScript(scriptId);
   fsource = wtu.replaceParams(fsource, sub);
   wtu.addShaderSource(output, "fragment shader", fsource);
-  return wtu.setupProgram(gl, ["vshader", fsource], ["a_position"]);
+  return wtu.setupProgram(gl, ["vshaderESSL3", fsource], ["a_position"]);
 }
 
 function runShadersTest() {
@@ -152,9 +171,9 @@ function runAttachmentTest() {
     bufs[0] = gl.COLOR_ATTACHMENT1;
     bufs[1] = gl.COLOR_ATTACHMENT0;
     gl.drawBuffers(bufs);
-    glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be able to call drawBuffers with out of order attachments of size " + maxColorAttachments);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be able to call drawBuffers with out of order attachments of size " + maxColorAttachments);
     var bufs = makeColorAttachmentArray(Math.floor(maxDrawingBuffers / 2));
-    glErrorShouldBe(gl, gl.NO_ERROR, "should not be able to call drawBuffers with short array of attachments of size " + maxColorAttachments);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call drawBuffers with short array of attachments of size " + bufs.length);
   }
 
   gl.deleteFramebuffer(fb);
@@ -209,7 +228,8 @@ function runDrawTests() {
   });
 
   var checkProgram = wtu.setupTexturedQuad(gl);
-  var redProgram = wtu.setupProgram(gl, ["vshader", "fshaderRed"], ["a_position"]);
+  var redProgram = wtu.setupProgram(gl, ["vshaderESSL3", "fshaderRed"], ["a_position"]);
+  var blueProgramESSL1 = wtu.setupProgram(gl, ["vshaderESSL1", "fshaderBlueESSL1"], ["a_position"]);
   var drawProgram = createDrawBuffersProgram("fshader", {numDrawingBuffers: maxDrawingBuffers});
   var width = 64;
   var height = 64;
@@ -348,13 +368,26 @@ function runDrawTests() {
 
   checkAttachmentsForColor(attachments, [0, 255, 0, 255]);
 
-  debug("test that gl_FragColor broadcasts");
+  // GLES3 spec section 3.9.2 Shader Outputs
+  debug("test that gl_FragColor only writes to color number zero");
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+  gl.drawBuffers(bufs);
+  gl.useProgram(blueProgramESSL1);
+  wtu.drawUnitQuad(gl);
+
+  checkAttachmentsForColorFn(attachments, function(attachment, index) {
+    return (index == 0) ? [0, 0, 255, 255] : [0, 255, 0, 255];
+  });
+
+  debug("test that an OpenGL ES Shading Language 3.00 shader with a single output color only writes to color number zero");
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   gl.drawBuffers(bufs);
   gl.useProgram(redProgram);
   wtu.drawUnitQuad(gl);
 
-  checkAttachmentsForColor(attachments, [255, 0, 0, 255]);
+  checkAttachmentsForColorFn(attachments, function(attachment, index) {
+    return (index == 0) ? [255, 0, 0, 255] : [0, 255, 0, 255];
+  });
 
   if (maxUsable > 1) {
     var bufs1 = makeColorAttachmentArray(maxUsable);
@@ -480,13 +513,16 @@ function runDrawTests() {
     shouldBe("gl.getParameter(gl.DRAW_BUFFER0 + " + ii + ")", "gl.NONE");
   }
 
+  // GLES3.0 spec section 4.4.4: Mismatching attachment size is not an error.
   debug("test attachment size mis-match");
   gl.bindTexture(gl.TEXTURE_2D, attachments[0].texture);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width * 2, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-  shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
+  shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb2);
-  shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE");
+  shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
+
+  // TODO: Rendering when framebuffer attachments have mismatched size should be tested, maybe in a separate test.
 
   gl.deleteFramebuffer(fb);
   gl.deleteFramebuffer(fb2);
