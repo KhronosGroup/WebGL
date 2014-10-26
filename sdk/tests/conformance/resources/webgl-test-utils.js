@@ -990,7 +990,7 @@ var isWebGLContext = function(ctx) {
 };
 
 /**
- * Checks that a portion of a canvas is 1 color.
+ * Checks that a portion of a canvas or the currently attached framebuffer is 1 color.
  * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
  *         WebGLRenderingContext or 2D context to use.
  * @param {number} x left corner of region to check.
@@ -1052,7 +1052,7 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
 };
 
 /**
- * Checks that a portion of a canvas is 1 color.
+ * Checks that a portion of a canvas or the currently attached framebuffer is 1 color.
  * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
  *         WebGLRenderingContext or 2D context to use.
  * @param {number} x left corner of region to check.
@@ -1081,7 +1081,7 @@ var checkCanvasRect = function(gl, x, y, width, height, color, opt_msg, opt_erro
 };
 
 /**
- * Checks that an entire canvas is 1 color.
+ * Checks that an entire canvas or the currently attached framebuffer is 1 color.
  * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
  *         WebGLRenderingContext or 2D context to use.
  * @param {!Array.<number>} color The color expected. A 4 element array where
