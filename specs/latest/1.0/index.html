@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 19 September 2014</h2>
+    <h2 class="no-toc">Editor's Draft 27 October 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -366,7 +366,7 @@
     
 <!-- ======================================================================================================= -->
 
-    <h3>The WebGL Viewport</h3>
+    <h3><a name="WEBGL_VIEWPORT">The WebGL Viewport</a></h3>
 
     <p>
         OpenGL manages a rectangular viewport as part of its state which defines the placement of
@@ -2069,14 +2069,20 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
     <h4>Viewing and clipping</h4>
 
     <p>
-        The viewport specifies the affine transformation of x and y from normalized device 
-        coordinates to window coordinates. The size of the drawing buffer is determined by 
-        the HTMLCanvasElement. The scissor box defines a rectangle which constrains drawing.
-        When the scissor test is enabled only pixels that lie within  the scissor box can 
-        be modified by drawing commands. When enabled drawing can only occur inside the 
-        intersection of the viewport, canvas area and the scissor box. When the scissor test
-        is not enabled drawing can only occur inside the intersection of the viewport and 
-        canvas area.
+        Drawing commands can only modify pixels inside the currently bound framebuffer. In
+        addition, the viewport and the scissor box affect drawing.
+    </p>
+
+    <p>
+        The viewport specifies the affine transformation of x and y from normalized device
+        coordinates to window coordinates. The size of the viewport is initially determined
+        as specified in section <a href="#WEBGL_VIEWPORT">The WebGL Viewport</a>.
+        The scissor box defines a rectangle which constrains drawing. When the scissor test is
+        enabled only pixels that lie within the scissor box can be modified by drawing commands
+        including <code>clear</code>, and primitives can only be drawn inside the intersection
+        of the viewport, the currently bound framebuffer, and the scissor box. When the scissor
+        test is not enabled primitives can only be drawn inside the intersection of the viewport
+        and the currently bound framebuffer.
     </p>
 
     <dl class="methods">
