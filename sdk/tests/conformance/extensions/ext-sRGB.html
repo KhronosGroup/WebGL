@@ -307,13 +307,14 @@ function runTextureReadConversionTest() {
 
 function runFramebufferTextureConversionTest(format) {
   var formatString;
+  var validFormat;
   switch (format) {
-    case ext.SRGB_EXT: formatString = "sRGB"; break;
-    case ext.SRGB_ALPHA_EXT: formatString = "sRGB_ALPHA"; break;
+    case ext.SRGB_EXT: formatString = "sRGB"; validFormat = false; break;
+    case ext.SRGB_ALPHA_EXT: formatString = "sRGB_ALPHA"; validFormat = true; break;
     default: return null;
   }
   debug("");
-  debug("Test the conversion of colors from linear to " + formatString + " on framebuffer (texture) write");
+  debug("Test " + formatString + " framebuffer attachments." + (validFormat ? "" : " (Invalid)"));
 
   var program = wtu.setupProgram(gl, ['vertexShader', 'fragmentShader'], ['aPosition'], [0]);
   var tex = createGreysRGBTexture(gl, 0, format);
@@ -323,23 +324,37 @@ function runFramebufferTextureConversionTest(format) {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
   shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, ext.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING_EXT)', 'ext.SRGB_EXT');
-  shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
+  
+  if (validFormat) {
+    shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
 
-  // Draw
-  var conversions = [
-    [   0,   0 ],
-    [  13,  63 ],
-    [  54, 127 ],
-    [ 133, 191 ],
-    [ 255, 255 ]
-  ];
+    debug("");
+    debug("Test the conversion of colors from linear to " + formatString + " on framebuffer (texture) write");
 
-  wtu.setupUnitQuad(gl, 0);
+    // Draw
+    var conversions = [
+      [   0,   0 ],
+      [  13,  63 ],
+      [  54, 127 ],
+      [ 133, 191 ],
+      [ 255, 255 ]
+    ];
 
-  for (var ii = 0; ii < conversions.length; ii++) {
-    gl.uniform1f(gl.getUniformLocation(program, "uColor"), conversions[ii][0]/255.0);
+    wtu.setupUnitQuad(gl, 0);
+
+    for (var ii = 0; ii < conversions.length; ii++) {
+      gl.uniform1f(gl.getUniformLocation(program, "uColor"), conversions[ii][0]/255.0);
+      wtu.drawUnitQuad(gl, [0, 0, 0, 0]);
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+      expectResult(conversions[ii][1]);
+    }
+  } else {
+    shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
+
+    wtu.setupUnitQuad(gl, 0);
+    gl.uniform1f(gl.getUniformLocation(program, "uColor"), 0.5);
     wtu.drawUnitQuad(gl, [0, 0, 0, 0]);
-    expectResult(conversions[ii][1]);
+    wtu.glErrorShouldBe(gl, gl.INVALID_FRAMEBUFFER_OPERATION);
   }
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
