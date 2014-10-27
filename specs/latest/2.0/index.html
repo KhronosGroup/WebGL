@@ -2415,8 +2415,15 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h3>No MapBufferRange</h3>
 
     <p>
-        The <code>MapBufferRange</code> entry point is removed from the WebGL 2.0 API. The following enum values are removed together with it: <code>BUFFER_ACCESS_FLAGS</code>, <code>BUFFER_MAP_LENGTH</code>, <code>BUFFER_MAP_OFFSET</code>.
+        The <code>MapBufferRange</code>, <code>FlushMappedBufferRange</code>, and <code>UnmapBuffer</code>
+        entry points are removed from the WebGL 2.0 API. The following enum values are also removed:
+        <code>BUFFER_ACCESS_FLAGS</code>, <code>BUFFER_MAP_LENGTH</code>, and <code>BUFFER_MAP_OFFSET</code>.
     </p>
+
+    <div class="note">
+        Instead of using <code>MapBufferRange</code>, buffer data may be read by using the
+        <code>getBufferSubData</code> entry point.
+    </div>
 
     <h3><a name="CLIENT_WAIT_SYNC">clientWaitSync</a></h3>
     <p>
