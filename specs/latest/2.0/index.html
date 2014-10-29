@@ -2226,6 +2226,14 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         these prefixes must not be allowed to load.
     </p>
 
+    <h4>Maximum GLSL Token Size</h4>
+
+    <p>
+        WebGL 1.0 supports tokens up to 256 characters in length. WebGL 2.0 follows The OpenGL ES Shading Language, Version 3.00
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8">OpenGL ES 3.0.3 &sect;3.8</a>)</span>
+        and allows tokens up to 1024 characters in length. Shaders containing tokens longer than 1024 characters must fail to compile.
+    </p>
+
     <h3>Vertex Attribute Divisor</h3>
 
     <p>
@@ -2434,6 +2442,17 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         The implementation-defined maximum timeout is not specified. It is acceptable for an implementation to enforce a
         zero maximum timeout.
     </div>
+
+    <h3><a name="VERTEX_ATTRIBUTE_ALIASING">Vertex Attribute Aliasing</a></h3>
+    <p>
+        In the WebGL 2.0 API, if more than one active attribute name is bound to the same location, it is considered
+        as aliasing, regardless whether there exists a path through the shader that consumes more than of these
+        attributes. Such definition of aliasing is broader than what is defined in
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.5">OpenGL ES 3.0.3 &sect;2.11.5</a>)</span>.
+    </p>
+    <p>
+        A link error is required when aliasing exists.
+    </p>
 
 <!-- ======================================================================================================= -->
 
