@@ -46,16 +46,21 @@ http://www.khronos.org/registry/webgl/extensions/
   <depends>
     <api version="1.0"/>
 
-    <core version="2.0"/> <!-- Version in which the extension functionality was integrated into the core spec -->
+    <core version="2.0"/>
+
+    <!-- Version in which the extension functionality was integrated into the core spec -->
 
     <core version="2.0">
-      <glsl version="300 es"/> <!-- GLSL #version required to use the feature, if any -->
-      <addendum>
-        Difference in core spec from extension.
-      </addendum>
+      <glsl version="300 es"/>
+
+      <!-- GLSL #version required to use the feature, if any -->
+
+      <addendum> Difference in core spec from extension. </addendum>
     </core>
 
-    <removed version="2.0"/> <!-- Version as of which extension is no longer supported -->
+    <removed version="2.0"/>
+
+    <!-- Version as of which extension is no longer supported -->
 
     <ext name="WEBGL_required_ext" require="true"/>
 
@@ -146,27 +151,21 @@ interface OES_foo_bar {
   </newfun>
 
   <!-- new types -->
+
   <newtypes>
-    <p>These typedef signatures should include &lt;name&gt; markup because
-    C's type syntax is baroquen.</p>
-    <typedef>
-      <type>unsigned long long <name>in_pipe</name></type>
-      XHTML
-    </typedef>
-    <typedef>
-      <type>unsigned long long <name>out_pipe</name></type>
-      XHTML
-    </typedef>
-    <typedef>
-      <type>struct plumber { struct plumber (*work)(in_pipe,
-      out_pipe); } <name>plumber_t</name></type>
-      XHTML
-    </typedef>
-    <typedef>
-      <type>plumber_t (*<name>agency</name>)(uint32_t yp_sz,
-      plumber_t*)</type>
-      XHTML
-    </typedef>
+    <typedef name="in_pipe"> <type>unsigned long long</type> XHTML </typedef>
+
+    <typedef name="out_pipe"> <type>unsigned long long</type> XHTML </typedef>
+
+    <interface name="Plumber">
+      <member>Plumber work(in_pipe,out_pipe);</member>
+
+      <p>After attempting a connection, the plumber is no longer the same.</p>
+    </interface>
+
+    <interface name="Agency" noobject="true"> <member>void
+    register(Plumber);</member> <member>Plumber find();</member> XHTML
+    </interface>
   </newtypes>
 
   <!-- new tokens -->

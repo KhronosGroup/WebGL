@@ -308,27 +308,27 @@ interface WEBGL_dynamic_texture {
   <ipstatus>No known IP claims.</ipstatus>
 
   <newtypes>
-    <p>XXX Need to get the XSL fixed for interfaces ...</p>
-
-    <typedef>
-      <type>double <name>WDTNanoTime</name></type>
+    <typedef name="WDTNanoTime">
+      <type>double</type>
 
       <p>This type is used for nanosecond time stamps and time periods.</p>
     </typedef>
 
-    <typedef>
-      <type>[NoInterfaceObject] interface <name>WDTStreamFrameInfo </name>{ double frameTime;
-      WDTNanoTime presentTime } </type>
+    <interface name="WDTStreamFrameInfo" noobject="true">
+      <member>double frameTime;</member>
 
-      <p>This type is used to provide information about the latched frame.</p>
-    </typedef>
+      <member>WDTNanoTime presentTime</member>
 
-    <typedef>
-      <type>[NoInterfaceObject] interface <name>WDTStream </name>{ ... }</type>
+      <p>This interface is used to obtain information about the latched
+      frame.</p>
+    </interface>
 
-      <p>This type is used to manage the image stream between the producer and
-      consumer.</p>
-    </typedef>
+    <interface name="WDTStream" noobject="true">
+      <member>...</member>
+
+      <p>This interface is used to manage the image stream between the
+      producer and consumer.</p>
+    </interface>
   </newtypes>
 
   <additions>
@@ -1309,6 +1309,11 @@ WDTNanoTime ustnow();</pre></li></p>
 
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+
+    <revision date="2014/10/29">
+      <change>Used updated XSL to properly show interfaces add by this
+      extension under New Types.</change>
     </revision>
   </history>
 </proposal>

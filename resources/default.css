@@ -682,11 +682,6 @@ dl.methods {
   font-weight: bold;
 }
 
-dt.idl-code {
-  text-indent: -1.5em;
-  margin-left: 1.5em;
-}
-
 p.idl-code {
   margin-top: 0.0em;
   margin-bottom: 0.0em;
