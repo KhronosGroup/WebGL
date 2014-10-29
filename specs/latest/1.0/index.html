@@ -628,12 +628,18 @@ image.src = "http://other-domain.com/image.jpg";
     <h3><a name="OUT_OF_RANGE_ARRAY_ACCESSES">Out-of-Range Array Accesses</a></h3>
 
     <p>
-        Shaders must not be allowed to read or write array elements that lie outside the bounds of
-        the array. This includes any variable of array type, as well as vector or matrix types such
-        as <code>vec3</code> or <code>mat4</code> when accessed using array subscripting syntax. If
+        Shaders must not be allowed to read or write array elements that lie outside of the application's own
+        data.  This includes any variable of array type, as well as vector or matrix types such as
+        <code>vec3</code> or <code>mat4</code> when accessed using array subscripting syntax. If
         detected during compilation, such accesses must generate an error and prevent the shader
-        from compiling. Otherwise, at runtime they shall return zero or the value at any valid index
-        of the same array.
+        from compiling. Otherwise, at runtime, out-of-range reads shall return any of the following values:
+    </p>
+    <ul>
+    <li>Values from anywhere within the program.</li>
+    <li>Zero values, or (0,0,0,x) vectors for vector reads where x is either 0.0 or 1.0.</li>
+    </ul>
+    <p>
+      Out-of-range writes are either discarded or modify an unspecified element of the array.
     </p>
     <div class="note">
         <p>
