@@ -47,7 +47,7 @@ texture-complete.html
 --min-version 1.0.2 texture-formats-test.html
 texture-mips.html
 texture-npot-video.html
-texture-npot.html --max-version 1.9.9
+--max-version 1.9.9 texture-npot.html
 texture-size.html
 texture-size-cube-maps.html
 --min-version 1.0.2 texture-size-limit.html
