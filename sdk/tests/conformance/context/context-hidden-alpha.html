@@ -87,20 +87,12 @@ function Reset(gl) {
     gl.canvas.width -= 1;
 }
 
-function ReadCenterPixel(gl) {
-    var w = gl.drawingbufferWidth;
-    var h = gl.drawingbufferHeight;
-    var ret = new Uint8Array(4);
-    gl.readPixels(w/2, h/2, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, ret);
-    return ret;
-}
-
 var iColor;
 var pixel;
 var dataURL_pre;
 var dataURL_post;
 
-function Test(gl, prog) {
+function Test(gl, prog, shouldFinish) {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ZERO, gl.DST_ALPHA);
 
@@ -121,14 +113,11 @@ function Test(gl, prog) {
 
     DrawSquare(gl, prog, 0.7);
 
-    pixel = ReadCenterPixel(gl);
+    WebGLTestUtils.checkCanvasRect(gl, gl.drawingBufferWidth/2,
+                                   gl.drawingBufferHeight/2, 1, 1,
+                                   [iColor, iColor, iColor, 255],
+                                   'Should blend as if alpha is 1.0.');
 
-    shouldBe("pixel[0]", iColor);
-    shouldBe("pixel[1]", iColor);
-    shouldBe("pixel[2]", iColor);
-    shouldBe("pixel[3]", "255");
-
-    debug(1);
     dataURL_post = gl.canvas.toDataURL();
     //console.log('After blending: ' + dataURL_post);
     shouldBe("dataURL_post", "dataURL_pre");
@@ -149,11 +138,10 @@ function Test(gl, prog) {
 
     DrawSquare(gl, prog, 0.7);
 
-    pixel = ReadCenterPixel(gl);
-    shouldBe("pixel[0]", iColor);
-    shouldBe("pixel[1]", iColor);
-    shouldBe("pixel[2]", iColor);
-    shouldBe("pixel[3]", "255");
+    WebGLTestUtils.checkCanvasRect(gl, gl.drawingBufferWidth/2,
+                                   gl.drawingBufferHeight/2, 1, 1,
+                                   [iColor, iColor, iColor, 255],
+                                   'Should blend as if alpha is 1.0.');
 
     dataURL_post = gl.canvas.toDataURL();
     //console.log('After blending: ' + dataURL_post);
@@ -163,69 +151,8 @@ function Test(gl, prog) {
 
     WebGLTestUtils.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 
-    finishTest();
-}
-
-function getContentFromElem(elem) {
-    var str = "";
-    var k = elem.firstChild;
-    while (k) {
-        if (k.nodeType == 3)
-            str += k.textContent;
-
-        k = k.nextSibling;
-    }
-
-    return str;
-}
-
-// Returns a valid shader, or null on errors.
-function createShaderById(gl, id) {
-    var elem = document.getElementById(id);
-    if (!elem) {
-        debug('Failed to create shader from non-existent id \'' + id + '\'.');
-        return null;
-    }
-
-    var src = getContentFromElem(elem);
-
-    var shader;
-    if (elem.type == "x-shader/x-fragment") {
-        shader = gl.createShader(gl.FRAGMENT_SHADER);
-    } else if (elem.type == "x-shader/x-vertex") {
-        shader = gl.createShader(gl.VERTEX_SHADER);
-    } else {
-        debug('Bad MIME type for shader \'' + id + '\': ' + elem.type + '.');
-        return null;
-    }
-
-    gl.shaderSource(shader, src);
-    gl.compileShader(shader);
-
-    return shader;
-}
-
-function createProgramByIds(gl, vsId, fsId) {
-    var vs = createShaderById(gl, vsId);
-    var fs = createShaderById(gl, fsId);
-    if (!vs || !fs)
-        return null;
-
-    var prog = gl.createProgram();
-    gl.attachShader(prog, vs);
-    gl.attachShader(prog, fs);
-    gl.linkProgram(prog);
-
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
-        var str = "Shader program linking failed:";
-        str += "\nShader program info log:\n" + gl.getProgramInfoLog(prog);
-        str += "\n\nVert shader log:\n" + gl.getShaderInfoLog(vs);
-        str += "\n\nFrag shader log:\n" + gl.getShaderInfoLog(fs);
-        debug(str);
-        return null;
-    }
-
-    return prog;
+    if (shouldFinish)
+        finishTest();
 }
 
 var gl;
@@ -240,11 +167,13 @@ function init() {
     shouldBeNonNull(gl);
     shouldBe("gl.getParameter(gl.ALPHA_BITS)", "0");
 
-    var prog = createProgramByIds(gl, 'vs', 'fs');
+    var prog = WebGLTestUtils.setupProgram(gl, ['vs', 'fs']);
     shouldBeNonNull(prog);
     prog.aPosCoord = gl.getAttribLocation(prog, 'aPosCoord');
 
-    setTimeout(function(){ Test(gl, prog); }, 300);
+    Test(gl, prog, false);
+
+    requestAnimationFrame(function(){ Test(gl, prog, true); });
 }
 
 </script>
