@@ -75,6 +75,7 @@
 "use strict";
 description();
 debug("");
+var MaxInt = 4294967296;
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
 
@@ -234,6 +235,7 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
   var info = gl.getActiveUniform(program, 0);
   assertMsg(info.name == "color[0]",
             "uniform name is 'color[0]' not 'color' as per OpenGL ES 2.0.24 section 2.10");
+  shouldBeNull("gl.getUniformLocation(program, 'color[" + MaxInt + "]');");
   var loc = gl.getUniformLocation(program, "color[0]");
   var srcValues = typeInfo.srcValues;
   var srcValuesLess = typeInfo.srcValuesLess;
@@ -271,6 +273,7 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
   assertMsg(typeInfo.checkType(values),
             "gl.getUniform returns the correct type.");
   for (var ii = 0; ii < typeInfo.numSrcValues; ++ii) {
+    shouldBeNull("gl.getUniformLocation(program, 'color[" + (MaxInt + ii) + "]')");
     var elemLoc = gl.getUniformLocation(program, "color[" + ii + "]");
     wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                     "can get location of element " + ii +
@@ -423,6 +426,11 @@ function testUniformOptimizationIssues(testIndex) {
   if (colorbLocation) {
     gl.uniform4fv(colorbLocation, [0, 1, 0, 0]);
   }
+
+  // Ensure that requesting an array uniform past MaxInt returns no uniform
+  var nameMaxInt = test.arrayName + "[" + (test.usedUniformVector + MaxInt) + "]";
+  assertMsg(gl.getUniformLocation(program, nameMaxInt) === null, 
+    "Requesting " + nameMaxInt + " uniform should return a null uniform location");
 
   // Set just the used uniform
   var name = test.arrayName + "[" + test.usedUniformVector + "]";
