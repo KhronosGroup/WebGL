@@ -19,7 +19,7 @@
   </depends>
   <overview>
     <p>
-      This extension enables software emulation of mediump and lowp floating point arithmetic in GLSL shaders for the purposes of shader testing. The emulation is enabled for shaders that are compiled after the extension has been enabled. Shaders compiled before the extension is enabled are not subject to emulation. The emulation does not model any specific device, but hypothetical shader units that implement IEEE half-precision floating point and the minimum requirements for lowp in The OpenGL ES Shading Language specification version 1.00.17. It is suggested that the software emulation is implemented in shader code, but a large performance cost on the order of one magnitude is still expected on all operations subject to emulation.
+      This extension enables software emulation of mediump and lowp floating point arithmetic in GLSL shaders for the purposes of shader testing. The emulation is enabled for shaders that are compiled with compileShader() when the FLOAT_PRECISION_EMULATION_WEBGL flag is toggled on. By default, FLOAT_PRECISION_EMULATION_WEBGL is toggled on when the extension is enabled. Shaders that are compiled when the flag is toggled off are not subject to emulation. The emulation does not model any specific device, but hypothetical shader units that implement IEEE half-precision floating point and the minimum requirements for lowp in The OpenGL ES Shading Language specification version 1.00.17. It is suggested that the software emulation is implemented in shader code, but a large performance cost on the order of one magnitude is still expected on all operations subject to emulation.
     </p>
     <div class="note">
       Many varieties of PC GPUs only implement one precision for floating point operations that corresponds to highp in The OpenGL ES Shading Language, so errors in shader code which uses mediump or lowp precision may not be visible on these GPUs. Testing shaders with this extension enabled is recommended to ensure compatibility with a wide variety of hardware. Due to the large performance cost of emulation, this extension should only be used for testing and not in a production environment.
@@ -68,15 +68,34 @@
     <p>
       Due to hardware limitations, it is allowed that some shaders which compile and link successfully when the extension is disabled do not compile or link when the extension is enabled.
     </p>
+
+    <features>
+      <feature>
+        The <code>enable</code> entry point is extended to accept the
+        <code>cap</code> parameter <code>FLOAT_PRECISION_EMULATION_WEBGL</code>.
+      </feature>
+      <feature>
+        The <code>disable</code> entry point is extended to accept the
+        <code>cap</code> parameter <code>FLOAT_PRECISION_EMULATION_WEBGL</code>.
+      </feature>
+      <feature>
+        The <code>isEnabled</code> entry point is extended to accept the
+        <code>cap</code> parameter <code>FLOAT_PRECISION_EMULATION_WEBGL</code>.
+      </feature>
+    </features>
   </overview>
   <idl xml:space="preserve">
 [NoInterfaceObject]
 interface WEBGL_debug_shader_precision {
+    FLOAT_PRECISION_EMULATION_WEBGL = 0x9247;
 };
   </idl>
   <history>
     <revision date="2014/11/05">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2014/11/06">
+      <change>Added the ability to toggle the emulation on and off.</change>
     </revision>
   </history>
 </proposal>
