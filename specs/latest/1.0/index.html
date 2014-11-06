@@ -635,11 +635,20 @@ image.src = "http://other-domain.com/image.jpg";
         from compiling. Otherwise, at runtime, out-of-range reads shall return any of the following values:
     </p>
     <ul>
-    <li>Values from anywhere within the program.</li>
-    <li>Zero values, or (0,0,0,x) vectors for vector reads where x is either 0.0 or 1.0.</li>
+    <li>Values from anywhere within the storage accessible to the program.</li>
+    <li>Zero values, or (0,0,0,x) vectors for vector reads where x is a
+        valid value represented in the type of the vector components and may
+        be any of
+        <ul>
+          <li>0, 1, or the maximum representable positive integer value, for
+          signed or unsigned integer components</li>
+          <li>0.0 or 1.0, for floating-point components</li>
+        </ul>
+        </li>
     </ul>
     <p>
-      Out-of-range writes are either discarded or modify an unspecified element of the array.
+      Out-of-range writes are either discarded or modify an
+        unspecified value in the storage accessible to the program.
     </p>
     <div class="note">
         <p>
