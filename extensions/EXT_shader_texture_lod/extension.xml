@@ -30,7 +30,7 @@
             OpenGL ES Shading Language which provide the shader writer
             with explicit control of LOD.
       </feature>
-      <glsl extname="EXT_shader_texture_lod">
+      <glsl extname="GL_EXT_shader_texture_lod">
         <stage type="fragment"/>
         <function name="texture2DLodEXT" type="vec4">
           <param name="sampler" type="sampler2D" />
@@ -113,6 +113,9 @@
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2014/11/07">
+      <change>Corrected extension name to include GL_ prefix.</change>
     </revision>
   </history>
 </extension>
