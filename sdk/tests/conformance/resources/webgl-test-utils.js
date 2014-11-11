@@ -1406,14 +1406,14 @@ var linkProgram = function(gl, program, opt_errorCallback) {
 };
 
 /**
- * Loads text from an external file. This function is synchronous.
+ * Loads text from an external file. This function is asynchronous.
  * @param {string} url The url of the external file.
  * @param {!function(bool, string): void} callback that is sent a bool for
  *     success and the string.
  */
 var loadTextFileAsync = function(url, callback) {
   log ("loading: " + url);
-  var error = 'loadTextFileSynchronous failed to load url "' + url + '"';
+  var error = 'loadTextFileAsync failed to load url "' + url + '"';
   var request;
   if (window.XMLHttpRequest) {
     request = new XMLHttpRequest();
@@ -1435,14 +1435,20 @@ var loadTextFileAsync = function(url, callback) {
         var success = request.status == 200 || request.status == 0;
         if (success) {
           text = request.responseText;
+          log("completed load request: " + url);
+        } else {
+          log("loading " + url + " resulted in unexpected status: " + request.status + " " + request.statusText);
         }
-        log("loaded: " + url);
         callback(success, text);
       }
     };
+    request.onerror = function(errorEvent) {
+      log("error occurred loading " + url);
+      callback(false, '');
+    };
     request.send(null);
   } catch (e) {
-    log("failed to load: " + url);
+    log("failed to load: " + url + " with exception " + err.message);
     callback(false, '');
   }
 };
