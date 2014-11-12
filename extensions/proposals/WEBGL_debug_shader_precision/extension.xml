@@ -31,15 +31,14 @@
         <li>accesses to variables in r-value expressions (not on the left side of an assignment operator, includes passing in parameters to a function)</li>
         <li>return values of built-in functions</li>
         <li>return values of binary math operators, including assignment and compound assignment</li>
-        <li>results of math operations evaluated as a part of compound assigment in the case that the l-value expression does not have side effects and does not include function calls</li>
+        <li>results of binary math operations evaluated as a part of compound assignment</li>
     </ul>
     <div class="note">
         <p>
             Examples of operations not subject to emulation:
         </p>
         <ul>
-            <li>The math operator is unary, so storing the result is not subject to emulation: my_float++;</li>
-            <li>The l-value expression has side effects, so the multiplication is not subject to emulation: my_array[i++] *= 2.0;</li>
+            <li>The math operator is unary, so storing the result and the return value are not subject to emulation: my_float++;</li>
         </ul>
     </div>
     <features>
@@ -96,6 +95,9 @@ interface WEBGL_debug_shader_precision {
     </revision>
     <revision date="2014/11/10">
       <change>Added a #pragma directive to use in shaders and did minor clarifications.</change>
+    </revision>
+    <revision date="2014/11/12">
+      <change>Lifted restrictions concerning math operations evaluated as a part of compound assignment.</change>
     </revision>
   </history>
 </proposal>
