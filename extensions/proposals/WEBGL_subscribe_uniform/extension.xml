@@ -18,8 +18,7 @@
 
 
   <overview id="overview">
-
-    <p> This extensions exposes the ability to subscribe to a set of uniform targets 
+    <p> This extension exposes the ability to subscribe to a set of uniform targets 
         which can be used to populate uniforms within shader programs.
     </p><p>Background: 
     </p><p>The depth of the web pipeline makes it difficult to support low latency 
