@@ -19,15 +19,18 @@
 
   <overview id="overview">
     <p> This extension exposes the ability to subscribe to a set of uniform targets 
-        which can be used to populate uniforms within shader programs.
+        which can be used to populate uniforms within shader programs. This extension
+        is generic, but currently only supports mouse position as a subscription target.
     </p><p>Background: 
     </p><p>The depth of the web pipeline makes it difficult to support low latency 
            interaction as event information retrieved via javascript
            is outdated by the time it's displayed to clients. By populating event 
            information later in the pipeline one can reduce perceived input latency.
     </p><p>This extension creates a new buffer type <code>'Valuebuffer'</code> to 
-           maintain uniform states, since a mechanism for buffering uniform information
-           isn't available pre 2.0. See 'New Types' for additional information.</p>
+           maintain the active state for predefined subscription targets. Since a
+           mechanism for buffering uniform information isn't available pre 2.0 (UBOs)
+           an additional data type was needed. See 'New Types' for additional 
+           information.</p>
     <p> When this extension is enabled: </p>
     <ul>
       <li>This extension provides a mechanism to store mouse positional information 
@@ -108,7 +111,9 @@ interface WEBGL_subscribe_uniform {
        active buffer state as well as the uniform location mapping. Clients would be required to
        state all their subscription targets at once to allocate the appropriate amount of memory. 
        Aside from this small change the implementation is essentially the same, with UBOs replacing
-       <code>Valuebuffers</code> and relevant create, delete, bind methods being replaced.</p>
+       <code>Valuebuffers</code> and relevant create, delete, bind methods being replaced.
+       Additionally, the inclusion of UBOs would replace the need for 
+       <code>uniformValueBuffer(...)</code>.</p>
   </newtypes>
 
   <newtok>
