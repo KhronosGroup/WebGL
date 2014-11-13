@@ -25,15 +25,17 @@
            interaction as event information retrieved via javascript
            is outdated by the time it's displayed to clients. By populating event 
            information later in the pipeline one can reduce perceived input latency.
-    </p>
+    </p><p>This extension creates a new buffer type <code>'Valuebuffer'</code> to 
+           maintain uniform states, since a mechanism for buffering uniform information
+           isn't available pre 2.0. See 'New Types' for additional information.</p>
     <p> When this extension is enabled: </p>
     <ul>
       <li>This extension provides a mechanism to store mouse positional information 
           in buffers and defer modification of uniform variables which use mouse 
-          positional information until the WebGL commands are executed
+          positional information until the WebGL commands are executed.
       </li>
       <li>This extension provides a mechanism to explicitly update mouse 
-          positional information to maintain per frame consistency
+          positional information to maintain per frame consistency.
       </li>
     </ul>
   </overview>
@@ -97,6 +99,16 @@ interface WEBGL_subscribe_uniform {
       <p>This interface is used to maintain a reference to internal 
       <code>Valuebuffer</code> subscription states.</p>
     </interface>
+    <p>A <code>Valuebuffer</code> abstracts the mapping of subscription targets to internal 
+       state and acts as a single storage object for subscription information (e.g. current 
+       mouse position). Clients can then use the objects data to populate uniform variables.</p>
+    <p>Post WebGL API 2.0, this abstraction could exist as a layer ontop of UBOs
+       which managers the mapping of subscription targets to internal state and the mapping
+       of subscription targets to offsets within the buffer. The UBO would be used to store the 
+       active buffer state as well as the uniform location mapping. Clients would be required to
+       state all their subscription targets at once to allocate the appropriate amount of memory. 
+       Aside from this small change the implementation is essentially the same, with UBOs replacing
+       <code>Valuebuffers</code> and relevant create, delete, bind methods being replaced.</p>
   </newtypes>
 
   <newtok>
@@ -167,7 +179,7 @@ function draw(gl) {
   <issues/>
 
   <history>
-    <revision date="2014/11/06">
+    <revision date="2014/11/13">
       <change>Initial revision.</change>
     </revision>
   </history>
