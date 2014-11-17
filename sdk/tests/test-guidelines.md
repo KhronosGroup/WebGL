@@ -169,6 +169,6 @@ These lines appears at the top of every html and js file under sdk/tests/conform
     Each folder has a 00_test_list.txt file that lists the test in that folder.
     Each new test should be prefixed with the option `--min-version <version>` where
     version is 1 more than the newest official version. At the time of this writing
-    all new tests should be prefixed with `--min-version 1.0.2`
+    all new tests should be prefixed with `--min-version 1.0.4`
 
 
