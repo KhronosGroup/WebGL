@@ -69,10 +69,13 @@ IterableTest = (function() {
     };
   }
 
-  // Creates a canvas and a texture then exits. There are
-  // no references to either so both should be garbage collected.
+  // Draws rectangle on a passed canvas with preserveDrawingBuffer
+  // and antialiasing ON, tests rect color on every iteration.
   function createMultisampleCorruptionTest(gl) {
     var lastContext = null;
+    // Allocate a read back buffer in advance and reuse it for all iterations
+    // to avoid memory issues because of late garbage collection.
+    var readBackBuf = new Uint8Array(gl.canvas.width * gl.canvas.height * 4);
 
     var program = wtu.loadStandardProgram(gl);
     var uniforms = wtu.getUniformMap(gl, program);
@@ -120,7 +123,7 @@ IterableTest = (function() {
                   testFailed(msg);
                   return false;
               },
-          debug);
+          debug, readBackBuf);
           document.body.removeChild(lastContext.canvas);
       }
 
