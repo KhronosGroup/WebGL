@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="WEBGL_color_buffer_float/">
+<extension href="WEBGL_color_buffer_float/">
   <name>WEBGL_color_buffer_float</name>
 
   <contact><a href="https://www.khronos.org/webgl/public-mailing-list">WebGL
@@ -66,7 +66,7 @@ interface WEBGL_color_buffer_float {
   const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
   const GLenum UNSIGNED_NORMALIZED_EXT = 0x8C17;
 }; // interface WEBGL_color_buffer_float
-</idl>
+  </idl>
 
   <newtok>
     <function name="renderbufferStorage" type="void"><param name="target"
@@ -115,6 +115,9 @@ interface WEBGL_color_buffer_float {
 
     <revision date="2014/11/24">
       <change>Removed the support for RGB32F, since it is not natively supported on all platforms where WebGL is implemented.</change>
+
+    <revision date="2014/11/24">
+      <change>Move to community approved.</change>
     </revision>
   </history>
-</draft>
+</extension>
