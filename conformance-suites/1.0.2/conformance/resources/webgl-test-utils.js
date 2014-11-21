@@ -850,15 +850,17 @@ var clearAndDrawIndexedQuad = function(gl, gridRes, opt_color) {
  * @param {!function()} differentFn Function to call if a pixel
  *        is different than color
  * @param {!function()} logFn Function to call for logging.
+ * @param {Uint8Array} opt_readBackBuf typically passed to reuse existing
+ *        buffer while reading back pixels.
  */
-var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRange, sameFn, differentFn, logFn) {
+var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRange, sameFn, differentFn, logFn, opt_readBackBuf) {
   var errorRange = opt_errorRange || 0;
   if (!errorRange.length) {
     errorRange = [errorRange, errorRange, errorRange, errorRange]
   }
   var buf;
   if (gl instanceof WebGLRenderingContext) {
-    buf = new Uint8Array(width * height * 4);
+    buf = opt_readBackBuf ? opt_readBackBuf : new Uint8Array(width * height * 4);
     gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
   } else {
     buf = gl.getImageData(x, y, width, height).data;
