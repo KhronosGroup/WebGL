@@ -2945,9 +2945,10 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             <br><br>
 
             The type of <code>pixels</code> must match the type of the data to be read. For example,
-	    if it is UNSIGNED_BYTE, a Uint8Array must be supplied; if it is UNSIGNED_SHORT_5_6_5,
-            UNSIGNED_SHORT_4_4_4_4, or UNSIGNED_SHORT_5_5_5_1, a Uint16Array must be supplied. If
-            the types do not match, an INVALID_OPERATION error is generated.
+	          if it is UNSIGNED_BYTE, a Uint8Array must be supplied; if it is UNSIGNED_SHORT_5_6_5,
+            UNSIGNED_SHORT_4_4_4_4, or UNSIGNED_SHORT_5_5_5_1, a Uint16Array must be supplied; if it
+            is FLOAT, a Float32Array must be supplied. If the types do not match, an
+            INVALID_OPERATION error is generated.
             <br><br>
 
             Only two combinations of <code>format</code> and <code>type</code> are accepted. The
