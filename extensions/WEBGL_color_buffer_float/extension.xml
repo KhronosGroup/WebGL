@@ -26,12 +26,13 @@
 
     <features>
       <feature>
-        <p>The 32-bit floating-point types <code>RGB32F</code> and
-        <code>RGBA32F</code> become available as color-renderable formats.
-        Renderbuffers can be created in these formats. These and textures
-        created with <code>type = FLOAT</code>, which will have one of these
-        internal formats, can be attached to framebuffer object color
-        attachments for rendering.</p>
+        <p>The 32-bit floating-point type <code>RGBA32F</code> becomes available
+        as a color-renderable format. Renderbuffers can be created in this
+        format. These and textures created with <code>format = RGBA</code> and
+        <code>type = FLOAT</code> as specified in <a
+        href="http://www.khronos.org/registry/webgl/extensions/OES_texture_float/">OES_texture_float</a>,
+        can be attached to framebuffer object color attachments for rendering.
+        </p>
       </feature>
 
       <feature>
@@ -62,7 +63,6 @@
 [NoInterfaceObject]
 interface WEBGL_color_buffer_float {
   const GLenum RGBA32F_EXT = 0x8814;
-  const GLenum RGB32F_EXT = 0x8815;
   const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
   const GLenum UNSIGNED_NORMALIZED_EXT = 0x8C17;
 }; // interface WEBGL_color_buffer_float
@@ -72,8 +72,8 @@ interface WEBGL_color_buffer_float {
     <function name="renderbufferStorage" type="void"><param name="target"
     type="GLenum"/><param name="internalformat" type="GLenum"/><param
     name="width" type="GLsizei"/><param name="height"
-    type="GLsizei"/><code>RGBA32F_EXT</code> and <code>RGB32F_EXT</code> are
-    accepted as the <code>internalformat</code> parameter of
+    type="GLsizei"/><code>RGBA32F_EXT</code> is accepted as the
+    <code>internalformat</code> parameter of
     <code>renderbufferStorage()</code>.</function>
   </newtok>
 
@@ -82,8 +82,9 @@ interface WEBGL_color_buffer_float {
     buffers specified in <a
     href="http://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_half_float/">EXT_color_buffer_half_float</a>
     are incorporated into WebGL except for the <code>RGB16F</code> and
-    <code>RGBA16F</code> types. All references to these are replaced by the
-    32-bit floating-point types specified above.</p>
+    <code>RGBA16F</code> types. References to <code>RGB16F</code> are ignored,
+    and references to <code>RGBA16F</code> are replaced by references to
+    <code>RGBA32F</code>.</p>
   </additions>
 
   <history>
@@ -110,6 +111,10 @@ interface WEBGL_color_buffer_float {
 
     <revision date="2014/09/11">
       <change>Fixed the name of the interface from EXT_color_buffer_float to WEBGL_color_buffer_float.</change>
+    </revision>
+
+    <revision date="2014/11/24">
+      <change>Removed the support for RGB32F, since it is not natively supported on all platforms where WebGL is implemented.</change>
     </revision>
   </history>
 </draft>
