@@ -115,6 +115,7 @@ interface WEBGL_color_buffer_float {
 
     <revision date="2014/11/24">
       <change>Removed the support for RGB32F, since it is not natively supported on all platforms where WebGL is implemented.</change>
+    </revision>
 
     <revision date="2014/11/24">
       <change>Move to community approved.</change>
