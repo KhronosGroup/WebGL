@@ -17,3 +17,4 @@
 --min-version 1.0.3 conditional-discard-in-loop.html
 --min-version 1.0.3 --max-version 1.99 essl3-shaders-with-webgl1.html
 --min-version 1.0.4 compound-assignment-type-combination.html
+--min-version 1.0.4 undefined-index-should-not-crash.html
