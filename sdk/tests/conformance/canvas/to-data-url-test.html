@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 
 /*
 ** Copyright (c) 2012 The Khronos Group Inc.
@@ -81,6 +81,7 @@ var main = function() {
     var img = wtu.makeImageFromCanvas(gl.canvas, function() {
       ctx.canvas.width = width;
       ctx.canvas.height = height;
+      ctx.imageSmoothingEnabled = false;
       ctx.drawImage(img, 0, 0);
       wtu.checkCanvasRect(ctx, 0, 0, width - 1, topHeight, topColor);
       wtu.checkCanvasRect(ctx, 0, topHeight, width - 1, halfHeight, bottomColor);
