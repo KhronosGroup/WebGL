@@ -228,7 +228,7 @@ function runUniqueObjectTest()
 {
     debug("Testing that getExtension() returns the same object each time");
     gl.getExtension("EXT_frag_depth").myProperty = 2;
-    gc();
+    webglHarnessCollectGarbage();
     shouldBe('gl.getExtension("EXT_frag_depth").myProperty', '2');
 }
 
