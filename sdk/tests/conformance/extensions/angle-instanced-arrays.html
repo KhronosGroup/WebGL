@@ -310,7 +310,7 @@ function runUniqueObjectTest()
     debug("");
     debug("Testing that getExtension() returns the same object each time");
     gl.getExtension("ANGLE_instanced_arrays").myProperty = 2;
-    gc();
+    webglHarnessCollectGarbage();
     shouldBe('gl.getExtension("ANGLE_instanced_arrays").myProperty', '2');
 }
 

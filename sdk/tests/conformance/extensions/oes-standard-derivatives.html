@@ -339,7 +339,7 @@ function runUniqueObjectTest()
 {
     debug("Testing that getExtension() returns the same object each time");
     gl.getExtension("OES_standard_derivatives").myProperty = 2;
-    gc();
+    webglHarnessCollectGarbage();
     shouldBe('gl.getExtension("OES_standard_derivatives").myProperty', '2');
 }
 

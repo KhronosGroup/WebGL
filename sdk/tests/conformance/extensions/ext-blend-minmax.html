@@ -232,7 +232,7 @@ function runUniqueObjectTest()
     debug("");
     debug("Testing that getExtension() returns the same object each time");
     gl.getExtension("EXT_blend_minmax").myProperty = 2;
-    gc();
+    webglHarnessCollectGarbage();
     shouldBe('gl.getExtension("EXT_blend_minmax").myProperty', '2');
 }
 

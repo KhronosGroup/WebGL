@@ -471,7 +471,7 @@ function assertMsg(assertion, msg) {
     }
 }
 
-function gc() {
+function webglHarnessCollectGarbage() {
     if (window.GCController) {
         window.GCController.collect();
         return;
@@ -488,6 +488,11 @@ function gc() {
               .garbageCollect();
         return;
     } catch(e) {}
+
+    if (window.gc) {
+        window.gc();
+        return;
+    }
 
     function gcRec(n) {
         if (n < 1)
