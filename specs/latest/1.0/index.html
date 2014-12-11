@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 27 October 2014</h2>
+    <h2 class="no-toc">Editor's Draft 10 December 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -343,8 +343,10 @@
         either clears or overwrites them. If this flag is false, attempting to perform operations
         using this context as a source image after the rendering function has returned can lead to
         undefined behavior. This includes <code>readPixels</code> or <code>toDataURL</code> calls,
-        or using this context as the source image of another context's <code>texImage2D</code> or
-        <code>drawImage</code> call.
+        using this context as the source image of another context's <code>texImage2D</code> or
+        <code>drawImage</code> call, or creating
+        an <a href="https://html.spec.whatwg.org/multipage/webappapis.html#imagebitmap">ImageBitmap</a> <a href="#refsHTML">[HTML]</a>
+        from this context's canvas.
     </p>
     <div class="note">
         <p>
