@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 27 October 2014</h2>
+    <h2 class="no-toc">Editor's Draft 10 December 2014</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2704,6 +2704,20 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
         <dt class="idl-code">void linkProgram(WebGLProgram? program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glLinkProgram.xml">man page</a>)</span>
         <dd>
+            Links the passed program object. Details of the behavior are defined in the OpenGL ES
+            2.0 specification, with the following clarifications: linkProgram is the only API in
+            this group which affects the passed program's link status, and the internal executable
+            code it references. Operations like attaching and detaching shader objects from a
+            program, modifying shader objects which are attached to a program, or compiling shader
+            objects attached to a program affect neither that program's link status, nor the
+            executable code that program may reference. <br><br>
+
+            If the given program is linked successfully and is also the current program object in
+            use as defined by <code>useProgram</code>, below, then the generated executable code
+            will be immediately installed as part of the current rendering state. Otherwise any
+            executable code referenced by the current rendering state is unmodified by a call to
+            linkProgram. <br><br>
+
             See <a href="#PACKING_RESTRICTIONS">Packing Restrictions for Uniforms and Varyings</a>
             for additional constraints enforced in, and additional validation performed by, WebGL
             implementations.
