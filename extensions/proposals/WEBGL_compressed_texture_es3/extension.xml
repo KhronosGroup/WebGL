@@ -16,7 +16,7 @@
   <overview>
     <p>
       This extension exposes the compressed texture formats defined as core in the
-      <a href="hhttp://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf">
+      <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf">
       OpenGL ES 3.0</a> spec to WebGL.
     </p>
     <features>
