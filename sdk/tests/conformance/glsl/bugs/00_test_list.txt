@@ -18,3 +18,4 @@
 --min-version 1.0.3 --max-version 1.99 essl3-shaders-with-webgl1.html
 --min-version 1.0.4 compound-assignment-type-combination.html
 --min-version 1.0.4 undefined-index-should-not-crash.html
+--min-version 1.0.4 pow-of-small-constant-in-user-defined-function.html
