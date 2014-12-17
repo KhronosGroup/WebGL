@@ -11,7 +11,7 @@
 --min-version 1.0.3 modulo-arithmetic-accuracy.html
 --min-version 1.0.3 multiplication-assignment.html
 --min-version 1.0.3 nested-functions-should-not-crash.html
---min-version 1.0.3 nested-loops-with-break-and-continue.html
+--min-version 1.0.4 nested-loops-with-break-and-continue.html
 --min-version 1.0.3 sampler-array-using-loop-index.html
 --min-version 1.0.3 temp-expressions-should-not-crash.html
 --min-version 1.0.3 uniforms-should-not-lose-values.html
