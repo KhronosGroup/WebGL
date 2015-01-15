@@ -250,7 +250,34 @@ function runOutputTests() {
     ext.drawArraysInstancedANGLE(desktopGL['POLYGON'], 0, 6, instanceCount);
     wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawArraysInstancedANGLE with POLYGON should return INVALID_ENUM");
 
+    debug("");
+    debug("Testing drawArraysInstancedANGLE with param 'first' > 0");
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    wtu.setupQuad(gl, {
+        positionLocation: 0,
+        scale: 0.5
+    });
+    var offsetsHalf = new Float32Array([
+        -0.5,  0.5,
+         0.5,  0.5,
+        -0.5, -0.5,
+         0.5, -0.5
+    ]);
+    gl.bindBuffer(gl.ARRAY_BUFFER, offsetBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, offsetsHalf, gl.STATIC_DRAW);
+
+    ext.drawArraysInstancedANGLE(gl.TRIANGLES, 3, 3, instanceCount);
+    var w = Math.floor(0.25*canvas.width),
+        h = Math.floor(0.25*canvas.height);
+    wtu.checkCanvasRect(gl, Math.ceil(0.25*canvas.width), 0.5*canvas.height, w, h, [255, 0, 0, 255]);
+    wtu.checkCanvasRect(gl, Math.ceil(0.75*canvas.width), 0.5*canvas.height, w, h, [0, 255, 0, 255]);
+    wtu.checkCanvasRect(gl, Math.ceil(0.25*canvas.width), 0, w, h, [0, 0, 255, 255]);
+    wtu.checkCanvasRect(gl, Math.ceil(0.75*canvas.width), 0, w, h, [255, 255, 0, 255]);
+
+    wtu.setupUnitQuad(gl, 0);
     wtu.setupIndexedQuad(gl, 1, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, offsetBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, offsets, gl.STATIC_DRAW);
 
     // Draw 3: Regular drawElements
     debug("");
