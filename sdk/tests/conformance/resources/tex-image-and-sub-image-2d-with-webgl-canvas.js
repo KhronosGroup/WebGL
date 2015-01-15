@@ -77,53 +77,6 @@ function generateTest(pixelFormat, pixelType, prologue) {
       setCanvasToRedGreen(ctx);
     }
 
-    function initCubeMapProgram() {
-        var vshader = [
-            'attribute vec4 vPosition;',
-            'attribute vec2 texCoord0;',
-            'varying vec2 texCoord;',
-            'void main() {',
-            '    gl_Position = vPosition;',
-            '    texCoord = texCoord0;',
-            '}'
-        ].join('\n');
-
-        var fshader = [
-            'precision mediump float;',
-            'uniform samplerCube tex;',
-            'uniform int face;',
-            'varying vec2 texCoord;',
-            'void main() {',
-            // Transform [0, 1] -> [-1, 1]
-            '    vec2 texC2 = (texCoord * 2.) - 1.;',
-            // Transform 2d tex coord. to each face of TEXTURE_CUBE_MAP coord.
-            '    vec3 texCube = vec3(0., 0., 0.);',
-            '    if (face == ' + gl.TEXTURE_CUBE_MAP_POSITIVE_X + ") {",
-            '        texCube = vec3(1., -texC2.y, -texC2.x);',
-            '    } else if (face == ' + gl.TEXTURE_CUBE_MAP_NEGATIVE_X + ") {",
-            '        texCube = vec3(-1., -texC2.y, texC2.x);',
-            '    } else if (face == ' + gl.TEXTURE_CUBE_MAP_POSITIVE_Y + ") {",
-            '        texCube = vec3(texC2.x, 1., texC2.y);',
-            '    } else if (face == ' + gl.TEXTURE_CUBE_MAP_NEGATIVE_Y + ") {",
-            '        texCube = vec3(texC2.x, -1., -texC2.y);',
-            '    } else if (face == ' + gl.TEXTURE_CUBE_MAP_POSITIVE_Z + ") {",
-            '        texCube = vec3(texC2.x, -texC2.y, 1.);',
-            '    } else if (face == ' + gl.TEXTURE_CUBE_MAP_NEGATIVE_Z + ") {",
-            '        texCube = vec3(-texC2.x, -texC2.y, -1.);',
-            '    }',
-            '    gl_FragColor = textureCube(tex, texCube);',
-            '}'
-        ].join('\n');
-
-        var program = wtu.setupProgram(gl, [vshader, fshader], ['vPosition', 'texCoord0'], [0, 1]);
-        if (!program) {
-            testFailed("failed to create cube map program");
-        }
-        var loc = gl.getUniformLocation(program, "tex");
-        gl.uniform1i(loc, 0)
-        return program;
-    }
-
     function runOneIteration(canvas, useTexSubImage2D, flipY, program, bindingTarget, opt_texture)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') + ' with flipY=' +
@@ -229,7 +182,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
             if (bindingTarget == gl.TEXTURE_2D) {
                 program = wtu.setupTexturedQuad(gl);
             } else {
-                program = initCubeMapProgram();
+                program = wtu.setupTexturedQuadWithCubeMap(gl);
             }
 
             return new Promise(function(resolve, reject) {
