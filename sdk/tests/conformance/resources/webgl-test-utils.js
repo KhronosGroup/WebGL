@@ -131,6 +131,36 @@ var simpleTextureFragmentShader = [
   '}'].join('\n');
 
 /**
+ * A fragment shader for a single cube map texture.
+ * @type {string}
+ */
+var simpleCubeMapTextureFragmentShader = [
+  'precision mediump float;',
+  'uniform samplerCube tex;',
+  'uniform int face;',
+  'varying vec2 texCoord;',
+  'void main() {',
+  // Transform [0, 1] -> [-1, 1]
+  '    vec2 texC2 = (texCoord * 2.) - 1.;',
+  // Transform 2d tex coord. to each face of TEXTURE_CUBE_MAP coord.
+  '    vec3 texCube = vec3(0., 0., 0.);',
+  '    if (face == 34069) {',         // TEXTURE_CUBE_MAP_POSITIVE_X
+  '        texCube = vec3(1., -texC2.y, -texC2.x);',
+  '    } else if (face == 34070) {',  // TEXTURE_CUBE_MAP_NEGATIVE_X
+  '        texCube = vec3(-1., -texC2.y, texC2.x);',
+  '    } else if (face == 34071) {',  // TEXTURE_CUBE_MAP_POSITIVE_Y
+  '        texCube = vec3(texC2.x, 1., texC2.y);',
+  '    } else if (face == 34072) {',  // TEXTURE_CUBE_MAP_NEGATIVE_Y
+  '        texCube = vec3(texC2.x, -1., -texC2.y);',
+  '    } else if (face == 34073) {',  // TEXTURE_CUBE_MAP_POSITIVE_Z
+  '        texCube = vec3(texC2.x, -texC2.y, 1.);',
+  '    } else if (face == 34074) {',  // TEXTURE_CUBE_MAP_NEGATIVE_Z
+  '        texCube = vec3(-texC2.x, -texC2.y, -1.);',
+  '    }',
+  '    gl_FragData[0] = textureCube(tex, texCube);',
+  '}'].join('\n');
+
+/**
  * A vertex shader for a single texture.
  * @type {string}
  */
@@ -204,6 +234,16 @@ var setupSimpleTextureVertexShader = function(gl) {
 var setupSimpleTextureFragmentShader = function(gl) {
     return loadShader(
         gl, simpleTextureFragmentShader, gl.FRAGMENT_SHADER);
+};
+
+/**
+ * Creates a simple cube map texture fragment shader.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @return {!WebGLShader}
+ */
+var setupSimpleCubeMapTextureFragmentShader = function(gl) {
+    return loadShader(
+        gl, simpleCubeMapTextureFragmentShader, gl.FRAGMENT_SHADER);
 };
 
 /**
@@ -359,6 +399,35 @@ var setupSimpleTextureProgram = function(
   opt_texcoordLocation = opt_texcoordLocation || 1;
   var vs = setupSimpleTextureVertexShader(gl);
   var fs = setupSimpleTextureFragmentShader(gl);
+  if (!vs || !fs) {
+    return null;
+  }
+  var program = setupProgram(
+      gl,
+      [vs, fs],
+      ['vPosition', 'texCoord0'],
+      [opt_positionLocation, opt_texcoordLocation]);
+  if (!program) {
+    gl.deleteShader(fs);
+    gl.deleteShader(vs);
+  }
+  gl.useProgram(program);
+  return program;
+};
+
+/**
+ * Creates a simple cube map texture program.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number} opt_positionLocation The attrib location for position.
+ * @param {number} opt_texcoordLocation The attrib location for texture coords.
+ * @return {WebGLProgram}
+ */
+var setupSimpleCubeMapTextureProgram = function(
+    gl, opt_positionLocation, opt_texcoordLocation) {
+  opt_positionLocation = opt_positionLocation || 0;
+  opt_texcoordLocation = opt_texcoordLocation || 1;
+  var vs = setupSimpleTextureVertexShader(gl);
+  var fs = setupSimpleCubeMapTextureFragmentShader(gl);
   if (!vs || !fs) {
     return null;
   }
@@ -570,6 +639,24 @@ var setupTexturedQuadWithTexCoords = function(
       gl, opt_positionLocation, opt_texcoordLocation);
   setupUnitQuadWithTexCoords(gl, lowerLeftTexCoords, upperRightTexCoords,
                              opt_positionLocation, opt_texcoordLocation);
+  return program;
+};
+
+/**
+ * Creates a program and buffers for rendering a textured quad with
+ * a cube map texture.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number} opt_positionLocation The attrib location for
+ *        position. Default = 0.
+ * @param {number} opt_texcoordLocation The attrib location for
+ *        texture coords. Default = 1.
+ * @return {!WebGLProgram}
+ */
+var setupTexturedQuadWithCubeMap = function(
+    gl, opt_positionLocation, opt_texcoordLocation) {
+  var program = setupSimpleCubeMapTextureProgram(
+      gl, opt_positionLocation, opt_texcoordLocation);
+  setupUnitQuad(gl, opt_positionLocation, opt_texcoordLocation);
   return program;
 };
 
@@ -2721,7 +2808,9 @@ return {
   setupSimpleColorVertexShader: setupSimpleColorVertexShader,
   setupSimpleColorProgram: setupSimpleColorProgram,
   setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
+  setupSimpleCubeMapTextureFragmentShader: setupSimpleCubeMapTextureFragmentShader,
   setupSimpleTextureProgram: setupSimpleTextureProgram,
+  setupSimpleCubeMapTextureProgram: setupSimpleCubeMapTextureProgram,
   setupSimpleTextureVertexShader: setupSimpleTextureVertexShader,
   setupSimpleVertexColorFragmentShader: setupSimpleVertexColorFragmentShader,
   setupSimpleVertexColorProgram: setupSimpleVertexColorProgram,
@@ -2730,6 +2819,7 @@ return {
   setupNoTexCoordTextureVertexShader: setupNoTexCoordTextureVertexShader,
   setupTexturedQuad: setupTexturedQuad,
   setupTexturedQuadWithTexCoords: setupTexturedQuadWithTexCoords,
+  setupTexturedQuadWithCubeMap: setupTexturedQuadWithCubeMap,
   setupUnitQuad: setupUnitQuad,
   setupUnitQuadWithTexCoords: setupUnitQuadWithTexCoords,
   setFloatDrawColor: setFloatDrawColor,
