@@ -4,6 +4,13 @@
   <!--<ns prefix="" uri="" />-->
 
   <pattern name="Stages" id="stage-patt">
+    <rule context="/rejected">
+      <assert test="self::node()[starts-with(@href,'rejected/')]"
+              >A rejected's @href belongs in the 'rejected' directory.</assert>
+      <assert test="self::node()[@href=concat('rejected/',name,'/')]"
+              >A rejected extension should have a URL matching its name and ending in '/'.</assert>
+    </rule>
+
     <rule context="/proposal">
       <assert test="self::node()[starts-with(@href,'proposals/')]"
               >A proposal's @href belongs in the 'proposals' directory.</assert>
