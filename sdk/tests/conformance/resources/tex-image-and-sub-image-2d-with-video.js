@@ -28,7 +28,7 @@ initTestingHarness();
 
 var old = debug;
 var debug = function(msg) {
-  console.log(msg);
+  bufferedLogToConsole(msg);
   old(msg);
 };
 

@@ -86,10 +86,34 @@ function notifyFinishedToHarness() {
   }
 }
 
-function _logToConsole(msg)
+var _bufferedConsoleLogs = [];
+
+function _bufferedLogToConsole(msg)
 {
-    if (window.console)
-      window.console.log(msg);
+  if (_bufferedConsoleLogs) {
+    _bufferedConsoleLogs.push(msg);
+  } else if (window.console) {
+    window.console.log(msg);
+  }
+}
+
+// Public entry point exposed to many other files.
+function bufferedLogToConsole(msg)
+{
+  _bufferedLogToConsole(msg);
+}
+
+// Called implicitly by testFailed().
+function _flushBufferedLogsToConsole()
+{
+  if (_bufferedConsoleLogs) {
+    if (window.console) {
+      for (var ii = 0; ii < _bufferedConsoleLogs.length; ++ii) {
+        window.console.log(_bufferedConsoleLogs[ii]);
+      }
+    }
+    _bufferedConsoleLogs = null;
+  }
 }
 
 var _jsTestPreVerboseLogging = false;
@@ -114,7 +138,7 @@ function description(msg)
     else
         description.appendChild(span);
     if (_jsTestPreVerboseLogging) {
-        _logToConsole(msg);
+        _bufferedLogToConsole(msg);
     }
 }
 
@@ -129,7 +153,7 @@ function debug(msg)
 {
     _addSpan(msg);
     if (_jsTestPreVerboseLogging) {
-	_logToConsole(msg);
+	_bufferedLogToConsole(msg);
     }
 }
 
@@ -143,7 +167,7 @@ function testPassed(msg)
     reportTestResultsToHarness(true, msg);
     _addSpan('<span><span class="pass">PASS</span> ' + escapeHTML(msg) + '</span>');
     if (_jsTestPreVerboseLogging) {
-	_logToConsole('PASS ' + msg);
+	_bufferedLogToConsole('PASS ' + msg);
     }
 }
 
@@ -151,7 +175,8 @@ function testFailed(msg)
 {
     reportTestResultsToHarness(false, msg);
     _addSpan('<span><span class="fail">FAIL</span> ' + escapeHTML(msg) + '</span>');
-    _logToConsole('FAIL ' + msg);
+    _bufferedLogToConsole('FAIL ' + msg);
+    _flushBufferedLogsToConsole();
 }
 
 function areArraysEqual(_a, _b)
