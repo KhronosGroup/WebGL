@@ -106,9 +106,16 @@ ul li+li {
     <p>
         Extensions move through four states during their
         development: <em>proposed</em>, <em>draft</em>, <em>community approved</em>, and <em>Khronos
-        ratified</em>.
+        ratified</em>. Every extension should advance to <em>Khronos ratified</em>.
+        If an extension cannot advance trough the extension process it can be <em>rejected</em>.
     </p>
     <ul>
+        <li> <em>Rejected</em> extensions should never be implemented.
+        An extension enters <em>rejected</em> status because consensus on it could not be reached at the <em>proposal</em> stage
+        or technical difficulties arise during implementation at the <em>draft</em> stage.
+        Rejecting an extension that reached <em>comunity approved</em> is only warranted in extraordinary circumstances.
+        It is impossible to reject a <em>Khronos ratified</em> extension.
+
         <li> <em>Proposed</em> extensions are intended for discussion on the public WebGL mailing
         list, in order to move to <em>draft</em> status; they should not be implemented, even under
         a vendor prefix. If consensus is reached in the community, the extension can be moved
