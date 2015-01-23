@@ -40,9 +40,7 @@ var defaultFragmentShader = [
 ].join('\n');
 
 function log(msg) {
-  if (window.console && window.console.log) {
-    window.console.log(msg);
-  }
+  bufferedLogToConsole(msg);
 }
 
 var vShaderDB = {};

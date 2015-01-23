@@ -28,9 +28,7 @@ var WebGLTestUtils = (function() {
  * @param {string} msg The message to log.
  */
 var log = function(msg) {
-  if (window.console && window.console.log) {
-    window.console.log(msg);
-  }
+  bufferedLogToConsole(msg);
 };
 
 /**
@@ -38,14 +36,10 @@ var log = function(msg) {
  * @param {string} msg The message to log.
  */
 var error = function(msg) {
-  if (window.console) {
-    if (window.console.error) {
-      window.console.error(msg);
-    }
-    else if (window.console.log) {
-      window.console.log(msg);
-    }
-  }
+  // For the time being, diverting this to window.console.log rather
+  // than window.console.error. If anyone cares enough they can
+  // generalize the mechanism in js-test-pre.js.
+  log(msg);
 };
 
 /**
@@ -2583,10 +2577,12 @@ var waitForComposite = function(callback) {
   var frames = 5;
   var countDown = function() {
     if (frames == 0) {
-      log("waitForComposite: callback");
+      // TODO(kbr): unify with js-test-pre.js and enable these with
+      // verbose logging.
+      // log("waitForComposite: callback");
       callback();
     } else {
-      log("waitForComposite: countdown(" + frames + ")");
+      // log("waitForComposite: countdown(" + frames + ")");
       --frames;
       requestAnimFrame.call(window, countDown);
     }
