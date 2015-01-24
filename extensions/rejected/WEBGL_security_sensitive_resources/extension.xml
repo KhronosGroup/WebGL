@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="WEBGL_security_sensitive_resources/">
+<rejected href="rejected/WEBGL_security_sensitive_resources/">
 
   <name>WEBGL_security_sensitive_resources</name>
 
@@ -196,5 +196,8 @@ dictionary WebGLContextAttributes {
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
+    <revision date="2015/01/24">
+      <change>Moved to rejected.</change>
+    </revision>
   </history>
-</draft>
+</rejected>
