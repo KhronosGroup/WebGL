@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<draft href="WEBGL_shared_resources/">
+<rejected href="rejected/WEBGL_shared_resources/">
   <name>WEBGL_shared_resources</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -370,5 +370,8 @@ interface WebGLTexture : WebGLSharedObject {
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute to extension interface and WebGLShareGroup.</change>
     </revision>
+    <revision date="2015/01/24">
+      <change>Moved to rejected.</change>
+    </revision>
   </history>
-</draft>
+</rejected>
