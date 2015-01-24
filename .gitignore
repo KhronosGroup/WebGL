@@ -41,6 +41,7 @@ other/test-runner/output/
 extensions/MARK_README.txt
 extensions/*/index.html
 extensions/proposals/*/index.html
+extensions/rejected/*/index.html
 extensions/index.atom
 extensions/index.html
 extensions/registry.xml
