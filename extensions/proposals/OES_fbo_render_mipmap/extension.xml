@@ -24,7 +24,7 @@
 
     <features>
       <feature>
-        Any level of a texture can be attached to a framebuffer.
+        Any level of a texture can be attached to a framebuffer object.
       </feature>
     </features>
   </overview>
