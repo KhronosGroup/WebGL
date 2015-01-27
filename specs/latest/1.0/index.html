@@ -640,7 +640,7 @@ image.src = "http://other-domain.com/image.jpg";
     <li>Values from anywhere within the storage accessible to the program.</li>
     <li>Zero values, or (0,0,0,x) vectors for vector reads where x is a
         valid value represented in the type of the vector components and may
-        be any of
+        be any of:
         <ul>
           <li>0, 1, or the maximum representable positive integer value, for
           signed or unsigned integer components</li>
@@ -653,6 +653,9 @@ image.src = "http://other-domain.com/image.jpg";
         unspecified value in the storage accessible to the program.
     </p>
     <div class="note">
+        <p>
+            This behavior replicates that defined in <a href="#refsKHRROBUSTACCESS">[KHRROBUSTACCESS]</a>.
+        </p>
         <p>
             See <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL Constructs</a> for more information
             on restrictions which simplify static analysis of the array indexing operations in shaders.
@@ -3373,13 +3376,39 @@ calls to <code>drawArrays</code> or <code>drawElements</code> will generate an
 <p>
 
 If a vertex attribute is enabled as an array, a buffer is bound to that attribute, and the attribute
-is consumed by the current program, then calls to <code>drawArrays</code>
-and <code>drawElements</code> will verify that each referenced vertex lies within the storage of the
-bound buffer. If the range specified in <code>drawArrays</code> or any referenced index
-in <code>drawElements</code> lies outside the storage of the bound buffer, an INVALID_OPERATION
-error is generated and no geometry is drawn.
+is consumed by the current program, then it is possible that the range specified by a call
+to <code>drawArrays</code>, or any referenced index in a call to <code>drawElements</code>, may
+reference vertices outside the storage of the bound buffer. If this occurs, then one of the
+following behaviors will result:
+
+<ol>
+
+<li> The WebGL implementation may generate an INVALID_OPERATION error and draw no geometry. </li>
+
+<li> Out-of-range vertex fetches may return any of the following values:
+
+  <ul>
+  <li> Values from anywhere within the buffer object. </li>
+  <li> Zero values, or (0,0,0,x) vectors for vector reads where x is a
+       valid value represented in the type of the vector components and may
+       be any of:
+
+       <ul>
+         <li>0, 1, or the maximum representable positive integer value, for
+         signed or unsigned integer components</li>
+         <li>0.0 or 1.0, for floating-point components</li>
+       </ul>
+       </li>
+
+  </ul>
+  </li>
+
+</ol>
 
 </p>
+<div class="note">
+This behavior replicates that defined in <a href="#refsKHRROBUSTACCESS">[KHRROBUSTACCESS]</a>.
+</div>
 <p>
 
 If a vertex attribute is enabled as an array, a buffer is bound to that attribute, but the attribute
@@ -3811,6 +3840,11 @@ extensions.
         <dd><cite><a href="http://www.w3.org/TR/DOM-Level-2-Core/core.html#DOMString">
             Document Object Model Core: The DOMString type</a></cite>,
             World Wide Web Consortium (W3C).
+        </dd>
+        <dt id="refsKHRROBUSTACCESS">[KHRROBUSTACCESS]</dt>
+        <dd><cide><a href="https://www.opengl.org/registry/specs/KHR/robust_buffer_access_behavior.txt">
+            KHR_robust_buffer_access_behavior OpenGL ES extension</a></cite>,
+            Leech, J. and Daniell, P., August, 2014.
         </dd>
     </dl>
 
