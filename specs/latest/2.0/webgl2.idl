@@ -231,7 +231,6 @@ interface WebGL2RenderingContextBase
   const GLenum RGB8_SNORM                                    = 0x8F96;
   const GLenum RGBA8_SNORM                                   = 0x8F97;
   const GLenum SIGNED_NORMALIZED                             = 0x8F9C;
-  const GLenum PRIMITIVE_RESTART_FIXED_INDEX                 = 0x8D69;
   const GLenum COPY_READ_BUFFER                              = 0x8F36;
   const GLenum COPY_WRITE_BUFFER                             = 0x8F37;
   const GLenum COPY_READ_BUFFER_BINDING                      = 0x8F36; /* Same as COPY_READ_BUFFER */
