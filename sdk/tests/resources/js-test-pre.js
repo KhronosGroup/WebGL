@@ -23,6 +23,7 @@
 
 (function() {
   var testHarnessInitialized = false;
+  var _currentTestName;
 
   var initNonKhronosFramework = function() {
     if (testHarnessInitialized) {
@@ -161,6 +162,16 @@ function escapeHTML(text)
 {
     return text.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 }
+/**
+ * Defines the exception type for a test failure.
+ * @param {string} message The error message.
+ */
+
+function TestFailedException(message) {
+   this.message = message;
+   this.name = "TestFailedException";
+}
+ 
 
 function testPassed(msg)
 {
@@ -177,6 +188,57 @@ function testFailed(msg)
     _addSpan('<span><span class="fail">FAIL</span> ' + escapeHTML(msg) + '</span>');
     _bufferedLogToConsole('FAIL ' + msg);
     _flushBufferedLogsToConsole();
+}
+
+/**
+ * Sets the current test name for usage within testPassedOptions/testFailedOptions.
+ * @param {string} name The name to set as the current test name.
+ */
+function setCurrentTestName(name)
+{
+	this._currentTestName = name;
+}
+
+/**
+ * Gets the current test name in use within testPassedOptions/testFailedOptions.
+ * @return {string} The name of the current test.
+ */
+function getCurrentTestName()
+{
+	return this._currentTestName;
+}
+
+/**
+ * Variation of the testPassed function, with the option to not show (and thus not count) the test's pass result.
+ * @param {string} msg The message to be shown in the pass result.
+ * @param {boolean} addSpan Indicates whether the message will be visible (thus counted in the results) or not.
+ */
+function testPassedOptions(msg, addSpan)
+{
+    if (addSpan)
+	{
+        reportTestResultsToHarness(true, msg);
+        _addSpan('<span><span class="pass">PASS</span> ' + escapeHTML(_currentTestName) + ": " + escapeHTML(msg) + '</span>');
+	}
+    if (_jsTestPreVerboseLogging) {
+		_bufferedLogToConsole('PASS ' + msg);
+    }
+}
+
+/**
+ * Variation of the testFailed function, with the option to throw an exception or not.
+ * @param {string} msg The message to be shown in the fail result.
+ * @param {boolean} exthrow Indicates whether the function will throw a TestFailedException or not.
+ */
+function testFailedOptions(msg, exthrow)
+{
+    reportTestResultsToHarness(false, msg);
+    _addSpan('<span><span class="fail">FAIL</span> ' + escapeHTML(_currentTestName) + ": " + escapeHTML(msg) + '</span>');
+    _bufferedLogToConsole('FAIL ' + msg);
+    if (exthrow) {
+        _currentTestName = ""; //Remembering to set the name of current testcase to empty string.
+        throw new TestFailedException(msg);
+	}
 }
 
 function areArraysEqual(_a, _b)
@@ -495,6 +557,23 @@ function assertMsg(assertion, msg) {
         testFailed(msg);
     }
 }
+
+/**
+ * Variation of the assertMsg function, with the option to not show (and thus not count) the test's pass result,
+ * and throw or not a TestFailedException in case of failure.
+ * @param {boolean} assertion If this is true, means success, else failure.
+ * @param {string} msg The message to be shown in the result.
+ * @param {boolean} verbose In case of success, determines if the test will show it's result and count in the results.
+ * @param {boolean} exthrow In case of failure, determines if the function will throw a TestFailedException.
+ */
+function assertMsgOptions(assertion, msg, verbose, exthrow) {
+    if (assertion) {
+        testPassedOptions(msg, verbose);
+    } else {
+        testFailedOptions(msg, exthrow);
+    }
+}
+
 
 function webglHarnessCollectGarbage() {
     if (window.GCController) {
