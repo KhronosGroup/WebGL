@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 17 October 2014</h2>
+    <h2 class="no-toc">Editor's Draft 26 January 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -66,7 +66,7 @@
             </dd>
     </dl>
 
-    <span style="font-size: x-small; font-style: oblique">Copyright &copy; 2014 Khronos Group</span>
+    <span style="font-size: x-small; font-style: oblique">Copyright &copy; 2015 Khronos Group</span>
 
     <hr />
 
@@ -598,7 +598,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum RGB8_SNORM                                    = 0x8F96;
   const GLenum RGBA8_SNORM                                   = 0x8F97;
   const GLenum SIGNED_NORMALIZED                             = 0x8F9C;
-  const GLenum PRIMITIVE_RESTART_FIXED_INDEX                 = 0x8D69;
   const GLenum COPY_READ_BUFFER                              = 0x8F36;
   const GLenum COPY_WRITE_BUFFER                             = 0x8F37;
   const GLenum COPY_READ_BUFFER_BINDING                      = 0x8F36; /* Same as COPY_READ_BUFFER */
@@ -886,7 +885,6 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
                 <tr><td>PACK_SKIP_ROWS</td><td>GLint</td></tr>
                 <tr><td>PIXEL_PACK_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
                 <tr><td>PIXEL_UNPACK_BUFFER_BINDING</td><td>WebGLBuffer</td></tr>
-                <tr><td>PRIMITIVE_RESTART_FIXED_INDEX</td><td>GLboolean</td></tr>
                 <tr><td>RASTERIZER_DISCARD</td><td>GLboolean</td></tr>
                 <tr><td>READ_BUFFER</td><td>GLenum</td></tr>
                 <tr><td>READ_FRAMEBUFFER_BINDING</td><td>WebGLFramebuffer</td></tr>
@@ -930,7 +928,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.1">OpenGL ES 3.0.3 &sect;6.1.1</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glIsEnabled.xhtml">OpenGL ES 3.0 man page</a>)</span>
         <dd>
-            In addition to all of the <code class="param">cap</code> values from WebGL 1.0, PRIMITIVE_RESTART_FIXED_INDEX and RASTERIZER_DISCARD are supported.
+            In addition to all of the <code class="param">cap</code> values from WebGL 1.0, RASTERIZER_DISCARD is supported.
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -2196,6 +2194,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         images.
     </p>
 
+    <h4>Primitive Restart is Always Enabled</h4>
+
+    <p>
+        See section <a href="#NO_PRIMITIVE_RESTART_FIXED_INDEX">PRIMITIVE_RESTART_FIXED_INDEX is always enabled</a>.
+    </p>
+
     <h3>New Features Supported in the WebGL 2 API</h3>
 
     <ul>
@@ -2453,6 +2457,31 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <p>
         A link error is required when aliasing exists.
     </p>
+
+    <h3><a name="NO_PRIMITIVE_RESTART_FIXED_INDEX">PRIMITIVE_RESTART_FIXED_INDEX is always enabled</a></h3>
+
+    <p>
+        The <code>PRIMITIVE_RESTART_FIXED_INDEX</code> context state, controlled
+        with <code>Enable</code>/<code>Disable</code> in OpenGL ES 3.0, is not supported in WebGL
+        2.0. Instead, WebGL 2.0 behaves as though this state were always enabled. <em>This is a
+        compatibility difference compared to WebGL 1.0.</em>
+    </p>
+    <p>
+        When <code>drawElements</code>, <code>drawElementsInstanced</code>,
+        or <code>drawRangeElements</code> processes an index, if the index's value is the maximum
+        for the data type (255 for <code>UNSIGNED_BYTE</code> indices, 65535
+        for <code>UNSIGNED_SHORT</code>, or 4294967295 for <code>UNSIGNED_INT</code>), then the
+        vertex is not processed normally. Instead, it is as if the drawing command ended with the
+        immediately preceding vertex, and another drawing command is immediately started with the
+        same parameters, but only transferring the immediately following index through the end of
+        the originally specified indices.
+    </p>
+    <div class="note">
+        This compatibility difference was introduced in order to avoid performance pitfalls in WebGL
+        2.0 applications on some platforms. Applications and content creation tools can be
+        straightforwardly adjusted to avoid using the maximum vertex index if the primitive restart
+        behavior is not desired.
+    </div>
 
 <!-- ======================================================================================================= -->
 

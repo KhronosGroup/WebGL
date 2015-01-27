@@ -32,6 +32,14 @@
   </xsl:call-template>
 </xsl:template>
 
+<xsl:template match="rejected">
+  <xsl:call-template name="ext_page">
+    <xsl:with-param name="spec_type" select="'Extension Rejected Specification'" />
+    <xsl:with-param name="css" select="concat($basepath,'/resources/Khronos-Rejected.css')" />
+    <xsl:with-param name="spec_status" select="'rejected'" />
+  </xsl:call-template>
+</xsl:template>
+
 <xsl:template match="proposal">
   <xsl:call-template name="ext_page">
     <xsl:with-param name="spec_type" select="'Extension Proposed Specification'" />

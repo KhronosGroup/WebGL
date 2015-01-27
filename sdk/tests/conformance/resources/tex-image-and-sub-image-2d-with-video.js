@@ -28,14 +28,13 @@ initTestingHarness();
 
 var old = debug;
 var debug = function(msg) {
-  console.log(msg);
+  bufferedLogToConsole(msg);
   old(msg);
 };
 
 function generateTest(pixelFormat, pixelType, prologue) {
     var wtu = WebGLTestUtils;
     var gl = null;
-    var textureLoc = null;
     var successfullyParsed = false;
 
     // Test each format separately because many browsers implement each
@@ -45,42 +44,6 @@ function generateTest(pixelFormat, pixelType, prologue) {
       { src: "../resources/red-green.webmvp8.webm", type: 'video/webm; codecs="vp8, vorbis"',           },
       { src: "../resources/red-green.theora.ogv",   type: 'video/ogg; codecs="theora, vorbis"',         },
     ];
-
-    var videoNdx = 0;
-    var video;
-
-    function runNextVideo() {
-        if (video) {
-            video.pause();
-        }
-
-        if (videoNdx == videos.length) {
-            finishTest();
-            return;
-        }
-
-        var info = videos[videoNdx++];
-        debug("");
-        debug("testing: " + info.type);
-        video = document.createElement("video");
-        var canPlay = true;
-        if (!video.canPlayType) {
-          testFailed("video.canPlayType required method missing");
-          runNextVideo();
-          return;
-        }
-
-        if(!video.canPlayType(info.type).replace(/no/, '')) {
-          debug(info.type + " unsupported");
-          runNextVideo();
-          return;
-        };
-
-        document.body.appendChild(video);
-        video.type = info.type;
-        video.src = info.src;
-        wtu.startPlayingAndWaitForVideo(video, runTest);
-    }
 
     var init = function()
     {
@@ -93,42 +56,58 @@ function generateTest(pixelFormat, pixelType, prologue) {
             return;
         }
 
-        var program = wtu.setupTexturedQuad(gl);
-
         gl.clearColor(0,0,0,1);
         gl.clearDepth(1);
 
-        textureLoc = gl.getUniformLocation(program, "tex");
-        runNextVideo();
+        runTest();
     }
 
-    function runOneIteration(videoElement, useTexSubImage2D, flipY, topColor, bottomColor)
+    function runOneIteration(videoElement, useTexSubImage2D, flipY, topColor, bottomColor, program, bindingTarget)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
-              ' with flipY=' + flipY);
+              ' with flipY=' + flipY + ' bindingTarget=' +
+              (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP'));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Disable any writes to the alpha channel
         gl.colorMask(1, 1, 1, 0);
         var texture = gl.createTexture();
         // Bind the texture to texture unit 0
-        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.bindTexture(bindingTarget, texture);
         // Set up texture parameters
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(bindingTarget, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(bindingTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(bindingTarget, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(bindingTarget, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         // Set up pixel store parameters
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+        var targets = [gl.TEXTURE_2D];
+        if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
+            targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+                       gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+                       gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+                       gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+                       gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+                       gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
+        }
         // Upload the videoElement into the texture
-        if (useTexSubImage2D) {
+        for (var tt = 0; tt < targets.length; ++tt) {
             // Initialize the texture to black first
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl[pixelFormat],
-                          videoElement.videoWidth, videoElement.videoHeight, 0,
-                          gl[pixelFormat], gl[pixelType], null);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl[pixelFormat], gl[pixelType], videoElement);
-        } else {
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl[pixelFormat], gl[pixelFormat], gl[pixelType], videoElement);
+            if (useTexSubImage2D) {
+                var width = videoElement.videoWidth;
+                var height = videoElement.videoHeight;
+                if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
+                    // cube map texture must be square.
+                    width = Math.max(width, height);
+                    height = width;
+                }
+                gl.texImage2D(targets[tt], 0, gl[pixelFormat],
+                              width, height, 0,
+                              gl[pixelFormat], gl[pixelType], null);
+                gl.texSubImage2D(targets[tt], 0, 0, 0, gl[pixelFormat], gl[pixelType], videoElement);
+            } else {
+                gl.texImage2D(targets[tt], 0, gl[pixelFormat], gl[pixelFormat], gl[pixelType], videoElement);
+            }
         }
 
         var c = document.createElement("canvas");
@@ -139,33 +118,104 @@ function generateTest(pixelFormat, pixelType, prologue) {
         ctx.drawImage(videoElement, 0, 0, 16, 16);
         document.body.appendChild(c);
 
-        // Point the uniform sampler to texture unit 0
-        gl.uniform1i(textureLoc, 0);
-        // Draw the triangles
-        wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
-        // Check a few pixels near the top and bottom and make sure they have
-        // the right color.
-        var tolerance = 5;
-        debug("Checking lower left corner");
-        wtu.checkCanvasRect(gl, 4, 4, 2, 2, bottomColor,
-                            "shouldBe " + bottomColor, tolerance);
-        debug("Checking upper left corner");
-        wtu.checkCanvasRect(gl, 4, gl.canvas.height - 8, 2, 2, topColor,
-                            "shouldBe " + topColor, tolerance);
+        var loc;
+        if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
+            loc = gl.getUniformLocation(program, "face");
+        }
+
+        for (var tt = 0; tt < targets.length; ++tt) {
+            if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
+                gl.uniform1i(loc, targets[tt]);
+            }
+            // Draw the triangles
+            wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
+            // Check a few pixels near the top and bottom and make sure they have
+            // the right color.
+            var tolerance = 5;
+            debug("Checking lower left corner");
+            wtu.checkCanvasRect(gl, 4, 4, 2, 2, bottomColor,
+                                "shouldBe " + bottomColor, tolerance);
+            debug("Checking upper left corner");
+            wtu.checkCanvasRect(gl, 4, gl.canvas.height - 8, 2, 2, topColor,
+                                "shouldBe " + topColor, tolerance);
+        }
     }
 
     function runTest(videoElement)
     {
         var red = [255, 0, 0];
         var green = [0, 255, 0];
-        runOneIteration(videoElement, false, true, red, green);
-        runOneIteration(videoElement, false, false, green, red);
-        runOneIteration(videoElement, true, true, red, green);
-        runOneIteration(videoElement, true, false, green, red);
+        var cases = [
+            { sub: false, flipY: true, topColor: red, bottomColor: green },
+            { sub: false, flipY: false, topColor: green, bottomColor: red },
+            { sub: true, flipY: true, topColor: red, bottomColor: green },
+            { sub: true, flipY: false, topColor: green, bottomColor: red },
+        ];
 
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+        function runTexImageTest(bindingTarget) {
+            var program;
+            if (bindingTarget == gl.TEXTURE_2D) {
+                program = wtu.setupTexturedQuad(gl);
+            } else {
+                program = wtu.setupTexturedQuadWithCubeMap(gl);
+            }
 
-        runNextVideo();
+            return new Promise(function(resolve, reject) {
+                var videoNdx = 0;
+                var video;
+                function runNextVideo() {
+                    if (video) {
+                        video.pause();
+                    }
+
+                    if (videoNdx == videos.length) {
+                        resolve("SUCCESS");
+                        return;
+                    }
+
+                    var info = videos[videoNdx++];
+                    debug("");
+                    debug("testing: " + info.type);
+                    video = document.createElement("video");
+                    var canPlay = true;
+                    if (!video.canPlayType) {
+                      testFailed("video.canPlayType required method missing");
+                      runNextVideo();
+                      return;
+                    }
+
+                    if(!video.canPlayType(info.type).replace(/no/, '')) {
+                      debug(info.type + " unsupported");
+                      runNextVideo();
+                      return;
+                    };
+
+                    document.body.appendChild(video);
+                    video.type = info.type;
+                    video.src = info.src;
+                    wtu.startPlayingAndWaitForVideo(video, runTest);
+                }
+                function runTest() {
+                    for (var i in cases) {
+                        // cube map texture must be square but video is not square.
+                        if (bindingTarget == gl.TEXTURE_2D || cases[i].sub == true) {
+                            runOneIteration(video, cases[i].sub, cases[i].flipY,
+                                            cases[i].topColor, cases[i].bottomColor,
+                                            program, bindingTarget);
+                        }
+                    }
+                    runNextVideo();
+                }
+                runNextVideo();
+            });
+        }
+
+        runTexImageTest(gl.TEXTURE_2D).then(function(val) {
+            runTexImageTest(gl.TEXTURE_CUBE_MAP).then(function(val) {
+                wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+                finishTest();
+            });
+        })
     }
 
     return init;

@@ -43,6 +43,7 @@ texture-active-bind.html
 --min-version 1.0.2 texture-clear.html
 texture-complete.html
 --min-version 1.0.3 texture-copying-feedback-loops.html
+--min-version 1.0.4 texture-cube-as-fbo-attachment.html
 --min-version 1.0.2 texture-hd-dpi.html
 --min-version 1.0.2 texture-formats-test.html
 texture-mips.html
