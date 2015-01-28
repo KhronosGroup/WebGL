@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>WebGL Shader Conformance Tests</title>
+<link rel="stylesheet" href="../../../../resources/js-test-style.css"/>
+<script src="../../../../resources/js-test-pre.js"></script>
+<script src="../../../../conformance/resources/webgl-test.js"></script>
+<script src="../../../../conformance/resources/webgl-test-utils.js"></script>
+<script src="../../../resources/deqp-tests.js"></script>
+<script src="../../../resources/deqp-utils.js"></script>
+<script src="../../../resources/deqp-program.js"></script>
+<script src="../../../resources/deqp-draw.js"></script>
+<script src="../../../resources/shader-library.js"></script>
+<script src="../../../resources/shader-library-case.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<canvas id="canvas" width="200" height="100"> </canvas>
+<script>
+testName = 'swizzles';
+description("Shader test: " + testName + ".");
+
+var getFilter = function() {
+    var queryVars = window.location.search.substring(1).split('&');
+
+    for (var i = 0; i < queryVars.length; i++) {
+        var value = queryVars[i].split('=');
+        if (decodeURIComponent(value[0]) === 'filter')
+            return decodeURIComponent(value[1]);
+    }
+}
+
+shaderLibrary.run(testName, getFilter());
+</script>
+</body>
+</html>
