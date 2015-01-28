@@ -62,18 +62,28 @@
   <script src="../conformance/resources/webgl-test-utils.js"> </script>
   <script>
 
+var outOfPageSVG = new Image();
+outOfPageSVG.src = "sample.svg";
+
 function runTest() {
   var wtu = WebGLTestUtils;
   var results = document.querySelectorAll(".result");
   for (var i = 0; i < results.length; i++) {
       var result = results[i];
       var img = result.querySelector("img");
+      if (result.classList.contains("out-of-page")) {
+          img = outOfPageSVG;
+      }
+      if (result.classList.contains("set-dimensions")) {
+          img.width = 200;
+          img.height = 200;
+      }
       var out = result.querySelector(".output");
       out.innerHTML = "img.width = " + img.width + "<br>img.height = " + img.height + "<br>img.naturalWidth = " + img.naturalWidth + "<br>img.naturalHeight = " + img.naturalHeight;
 
       var canvas = document.createElement("canvas");
       canvas.width = 200 * window.devicePixelRatio;
-      canvas.height = 400 * window.devicePixelRatio;
+      canvas.height = 200 * window.devicePixelRatio;
       result.querySelector(".render").appendChild(canvas);
       var gl = wtu.create3DContext(canvas);
       gl.enable(gl.BLEND);
@@ -167,10 +177,66 @@ window.addEventListener("load", function () {
   </div>
   <div class="result">
       <div class="description">
+          <p>IMG to SVG with no attributes - 200x200 sizing via CSS</p>
+      </div>
+      <div class="element">
+          <img src="sample.svg" class="viacss">
+      </div>
+      <div class="render">
+      </div>
+      <div class="log">
+          <p class="output"></p>
+      </div>
+  </div>
+  <div class="result">
+      <div class="description">
           <p>IMG to 400x400 PNG with no attributes - 200x200 sizing via CSS</p>
       </div>
       <div class="element">
           <img src="sample-400.png" class="viacss">
+      </div>
+      <div class="render">
+      </div>
+      <div class="log">
+          <p class="output"></p>
+      </div>
+  </div>
+  <div class="result">
+      <div class="description">
+          <p>IMG to SVG with no attributes and no sizing via CSS
+              <br>
+             (although the width and height of the container
+             set a size)
+         </p>
+      </div>
+      <div class="element">
+          <img src="sample.svg">
+      </div>
+      <div class="render">
+      </div>
+      <div class="log">
+          <p class="output"></p>
+      </div>
+  </div>
+  <div class="result out-of-page">
+      <div class="description">
+          <p>Out of page SVG with no dimensions</p>
+      </div>
+      <div class="element">
+          Not a child of document
+      </div>
+      <div class="render">
+      </div>
+      <div class="log">
+          <p class="output"></p>
+      </div>
+  </div>
+  <div class="result out-of-page set-dimensions">
+      <div class="description">
+          <p>Out of page SVG with 200x200 specified</p>
+      </div>
+      <div class="element">
+          Not a child of document
       </div>
       <div class="render">
       </div>
