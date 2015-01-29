@@ -23,7 +23,6 @@
 
 (function() {
   var testHarnessInitialized = false;
-  var _currentTestName;
 
   var initNonKhronosFramework = function() {
     if (testHarnessInitialized) {
@@ -190,13 +189,15 @@ function testFailed(msg)
     _flushBufferedLogsToConsole();
 }
 
+var _currentTestName;
+
 /**
  * Sets the current test name for usage within testPassedOptions/testFailedOptions.
  * @param {string} name The name to set as the current test name.
  */
 function setCurrentTestName(name)
 {
-	this._currentTestName = name;
+    _currentTestName = name;
 }
 
 /**
@@ -205,7 +206,7 @@ function setCurrentTestName(name)
  */
 function getCurrentTestName()
 {
-	return this._currentTestName;
+    return _currentTestName;
 }
 
 /**
