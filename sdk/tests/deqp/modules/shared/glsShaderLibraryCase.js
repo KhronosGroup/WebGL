@@ -18,7 +18,7 @@
  *
  */
 
-var shaderLibraryCase = (function() {
+define(["framework/common/tcuTestCase", "framework/opengl/gluShaderProgram", "framework/opengl/gluShaderUtil", "framework/opengl/gluDrawUtil"], function(deqpTests, deqpProgram, deqpUtils, deqpDraw) {
     'use strict';
 
     /** @const @type {number} */ var VIEWPORT_WIDTH = 128;
@@ -694,7 +694,7 @@ var setUniformValue = function(gl, pipelinePrograms, name, val, arrayNdx) {
     }
 
     if (!foundAnyMatch)
-        _bufferedLogToConsole('WARNING // Uniform \"' + name + '\" location is not valid, location = -1. Cannot set value to the uniform.');
+        bufferedLogToConsole('WARNING // Uniform \"' + name + '\" location is not valid, location = -1. Cannot set value to the uniform.');
 };
 
 var checkPixels = function(surface, minX, maxX, minY, maxY) {
@@ -736,7 +736,7 @@ var init = function() {
     var state = deqpTests.runner.getState();
     var test = state.currentTest;
 
-    _bufferedLogToConsole('Processing ' + test.fullName());
+    bufferedLogToConsole('Processing ' + test.fullName());
 
     if (!test.spec.valueBlockList.length)
         test.spec.valueBlockList.push(genValueBlock());
@@ -886,11 +886,11 @@ var execute = function()
     if (failReason != null)
     {
         // \todo [2010-06-07 petri] These should be handled in the test case?
-        _bufferedLogToConsole('ERROR: ' + failReason);
+        bufferedLogToConsole('ERROR: ' + failReason);
 
         // If implementation parses shader at link time, report it as quality warning.
         if (spec.expectResult === expectResult.EXPECT_COMPILE_FAIL && allCompilesOk && !allLinksOk)
-            _bufferedLogToConsole('Quality warning: implementation parses shader at link time');
+            bufferedLogToConsole('Quality warning: implementation parses shader at link time');
 
         testFailedOptions(failReason, true);
         return false;
@@ -985,7 +985,7 @@ var execute = function()
                     /** @type {string} */ var attribName = attribPrefix + valueName;
                     var attribLoc = gl.getAttribLocation(vertexProgramID, attribName);
                     if (attribLoc === -1) {
-                        _bufferedLogToConsole("Warning: no location found for attribute '" + attribName + "'");
+                        bufferedLogToConsole("Warning: no location found for attribute '" + attribName + "'");
                         continue;
                     }
 
@@ -1116,7 +1116,7 @@ var runTestCases = function() {
             init();
             execute();
         } catch (err) {
-            _bufferedLogToConsole(err);
+           bufferedLogToConsole(err);
         }
         deqpTests.runner.runCallback(runTestCases);
     } else
@@ -1139,6 +1139,6 @@ return {
     genValueBlock: genValueBlock
 };
 
-}());
+});
 
 

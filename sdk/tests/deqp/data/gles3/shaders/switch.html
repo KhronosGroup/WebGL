@@ -6,14 +6,9 @@
 <title>WebGL Shader Conformance Tests</title>
 <link rel="stylesheet" href="../../../../resources/js-test-style.css"/>
 <script src="../../../../resources/js-test-pre.js"></script>
-<script src="../../../../conformance/resources/webgl-test.js"></script>
 <script src="../../../../conformance/resources/webgl-test-utils.js"></script>
-<script src="../../../resources/deqp-tests.js"></script>
-<script src="../../../resources/deqp-utils.js"></script>
-<script src="../../../resources/deqp-program.js"></script>
-<script src="../../../resources/deqp-draw.js"></script>
-<script src="../../../resources/shader-library.js"></script>
-<script src="../../../resources/shader-library-case.js"></script>
+
+<script src="../../../require.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -32,8 +27,13 @@ var getFilter = function() {
             return decodeURIComponent(value[1]);
     }
 }
+requirejs.config({
+    baseUrl: "../../../"
+    });
 
-shaderLibrary.run(testName, getFilter());
+requirejs(["modules/shared/glsShaderLibrary"], function(shaderLibrary) {
+    shaderLibrary.run(testName, getFilter())
+    });
 </script>
 </body>
 </html>

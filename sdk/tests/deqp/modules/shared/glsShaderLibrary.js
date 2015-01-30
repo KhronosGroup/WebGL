@@ -18,10 +18,9 @@
  *
  */
 
-var shaderLibrary = (function() {
+define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/opengl/gluShaderUtil"], function(deqpTests, shaderLibraryCase, deqpUtils ) {
     'use strict';
-
-
+    
     var generateTestCases = function() {
         var parser = new Parser();
         try {
@@ -30,7 +29,8 @@ var shaderLibrary = (function() {
             state.testCases = deqpTests.newTest(state.testName, 'Top level', tree);
         }
         catch (err) {
-            _bufferedLogToConsole(err);
+            console.log(err);
+            bufferedLogToConsole(err);
             return false;
         }
         return true;
@@ -1004,4 +1004,4 @@ return {
     run: run
 };
 
-}());
+});
