@@ -732,8 +732,7 @@ function runEndTests() {
   // Create new context and verify shader tests with no extension still succeeds.
   debug("");
   debug("Testing new context with no extension");
-  var canvas2 = document.getElementById("canvas2");
-  gl = wtu.create3DContext(canvas2);
+  gl = wtu.create3DContext();
   if (!gl) {
     testFailed("New WebGL context does not exist");
   } else {

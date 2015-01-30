@@ -124,8 +124,7 @@ runAllTests();
 // Run all tests against with a new context to test for any cache issues.
 debug("");
 debug("Testing new context to catch cache errors");
-var canvas2 = document.getElementById("canvas2");
-gl = wtu.create3DContext(canvas2);
+gl = wtu.create3DContext();
 ext = null;
 runAllTests();
 
