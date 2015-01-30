@@ -36,7 +36,8 @@
 </head>
 <body>
 <div id="description"></div>
-<canvas id="canvas" style="width: 50px; height: 50px;"> </canvas>
+<canvas id="canvas" style="width: 256px; height: 256px;"> </canvas>
+<canvas id="canvas2" style="width: 256px; height: 256px;"> </canvas>
 <div id="console"></div>
 <!-- Shaders for testing texture LOD functions -->
 
@@ -44,9 +45,11 @@
 <script id="missingPragmaFragmentShader" type="x-shader/x-fragment">
 precision mediump float;
 varying vec2 texCoord0v;
+uniform float lod;
+uniform sampler2D tex;
 void main() {
     vec4 color = texture2DLodEXT(tex, texCoord0v, lod);
-    gl_FragColor = vec4(dx, dy, w, 1.0);
+    gl_FragColor = color;
 }
 </script>
 
@@ -116,34 +119,45 @@ debug("");
 
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
-canvas.width = 256; canvas.height = 256;
-
 var gl = wtu.create3DContext(canvas);
 var ext = null;
 
-if (!gl) {
-    testFailed("WebGL context does not exist");
-} else {
-    testPassed("WebGL context exists");
+// Run all tests once.
+runAllTests();
 
-    // Run tests with extension disabled
-    runShaderTests(false);
+// Run all tests against with a new context to test for any cache issues.
+debug("");
+debug("Testing new context to catch cache errors");
+var canvas2 = document.getElementById("canvas2");
+gl = wtu.create3DContext(canvas2);
+ext = null;
+runAllTests();
 
-    // Query the extension and store globally so shouldBe can access it
-    ext = gl.getExtension("EXT_shader_texture_lod");
-    if (!ext) {
-        testPassed("No EXT_shader_texture_lod support -- this is legal");
-
-        runSupportedTest(false);
+function runAllTests() {
+    if (!gl) {
+        testFailed("WebGL context does not exist");
     } else {
-        testPassed("Successfully enabled EXT_shader_texture_lod extension");
+        testPassed("WebGL context exists");
 
-        runSupportedTest(true);
+        // Run tests with extension disabled
+        runShaderTests(false);
 
-        runShaderTests(true);
-        runOutputTests();
-        runUniqueObjectTest();
-        runReferenceCycleTest();
+        // Query the extension and store globally so shouldBe can access it
+        ext = gl.getExtension("EXT_shader_texture_lod");
+        if (!ext) {
+            testPassed("No EXT_shader_texture_lod support -- this is legal");
+
+            runSupportedTest(false);
+        } else {
+            testPassed("Successfully enabled EXT_shader_texture_lod extension");
+
+            runSupportedTest(true);
+
+            runShaderTests(true);
+            runOutputTests();
+            runUniqueObjectTest();
+            runReferenceCycleTest();
+        }
     }
 }
 

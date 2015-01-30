@@ -106,27 +106,40 @@ var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas);
 var ext = null;
 
-if (!gl) {
-    testFailed("WebGL context does not exist");
-} else {
-    testPassed("WebGL context exists");
+// Run all tests once.
+runAllTests();
 
-    runShaderTests(false);
+// Run all tests against with a new context to test for any cache issues.
+debug("");
+debug("Testing new context to catch cache errors");
+var canvas2 = document.getElementById("canvas2");
+gl = wtu.create3DContext(canvas2);
+ext = null;
+runAllTests();
 
-    // Query the extension and store globally so shouldBe can access it
-    ext = wtu.getExtensionWithKnownPrefixes(gl, "EXT_frag_depth");
-    if (!ext) {
-        testPassed("No EXT_frag_depth support -- this is legal");
-
-        runSupportedTest(false);
+function runAllTests() {
+    if (!gl) {
+        testFailed("WebGL context does not exist");
     } else {
-        testPassed("Successfully enabled EXT_frag_depth extension");
+        testPassed("WebGL context exists");
 
-        runSupportedTest(true);
+        runShaderTests(false);
 
-        runShaderTests(true);
-        runOutputTests();
-        runUniqueObjectTest();
+        // Query the extension and store globally so shouldBe can access it
+        ext = wtu.getExtensionWithKnownPrefixes(gl, "EXT_frag_depth");
+        if (!ext) {
+            testPassed("No EXT_frag_depth support -- this is legal");
+
+            runSupportedTest(false);
+        } else {
+            testPassed("Successfully enabled EXT_frag_depth extension");
+
+            runSupportedTest(true);
+
+            runShaderTests(true);
+            runOutputTests();
+            runUniqueObjectTest();
+        }
     }
 }
 
