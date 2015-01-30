@@ -236,6 +236,7 @@ function testFailedOptions(msg, exthrow)
     reportTestResultsToHarness(false, msg);
     _addSpan('<span><span class="fail">FAIL</span> ' + escapeHTML(_currentTestName) + ": " + escapeHTML(msg) + '</span>');
     _bufferedLogToConsole('FAIL ' + msg);
+    _flushBufferedLogsToConsole();
     if (exthrow) {
         _currentTestName = ""; //Remembering to set the name of current testcase to empty string.
         throw new TestFailedException(msg);

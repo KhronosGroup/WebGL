@@ -19,7 +19,7 @@
  */
 
 
-var deqpDraw = (function() {
+define(function() {
 'use strict';
 
 /**
@@ -195,7 +195,7 @@ var vertexBuffer = function(gl, vertexArray) {
     assertMsgOptions(gl.getError() === gl.NO_ERROR, 'enableVertexAttribArray', false, true);
     gl.vertexAttribPointer(vertexArray.location, vertexArray.components, vertexArray.type, false, 0, 0);
     assertMsgOptions(gl.getError() === gl.NO_ERROR, 'vertexAttribPointer', false, true);
-    _bufferedLogToConsole(vertexArray);
+    bufferedLogToConsole(vertexArray);
     return buffer;
 };
 
@@ -249,5 +249,5 @@ return {
     Surface: Surface,
     VertexArrayBinding: VertexArrayBinding
 };
-}());
+});
 

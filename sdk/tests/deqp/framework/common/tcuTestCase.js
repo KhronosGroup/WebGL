@@ -22,7 +22,7 @@
  * This class allows one to create a hierarchy of tests and iterate over them.
  * It replaces TestCase and TestCaseGroup classes.
  */
-var deqpTests = (function() {
+define(function() {
 'use strict';
 
 /**
@@ -180,4 +180,4 @@ return {
     newTest: newTest
 };
 
-}());
+});

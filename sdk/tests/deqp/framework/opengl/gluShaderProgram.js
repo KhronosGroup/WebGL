@@ -18,7 +18,7 @@
  *
  */
 
- var deqpProgram = (function() {
+define(function() {
 'use strict';
 
 /**
@@ -244,4 +244,4 @@ return {
     genFragmentSource: genFragmentSource
 };
 
-}());
+});

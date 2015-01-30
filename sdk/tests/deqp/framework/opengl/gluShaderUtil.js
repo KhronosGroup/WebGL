@@ -18,7 +18,7 @@
  *
  */
 
-var deqpUtils = (function() {
+define(function() {
     'use strict';
 
 /**
@@ -367,4 +367,4 @@ return {
     getDataTypeName: getDataTypeName
 };
 
-} ());
+});
