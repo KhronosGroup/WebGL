@@ -118,30 +118,42 @@ var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas);
 var ext = null;
 
-if (!gl) {
-    testFailed("WebGL context does not exist");
-} else {
-    testPassed("WebGL context exists");
+// Run all tests once.
+runAllTests();
 
-    // Run tests with extension disabled
-    runHintTestDisabled();
-    runShaderTests(false);
+// Run all tests against with a new context to test for any cache issues.
+debug("");
+debug("Testing new context to catch cache errors");
+gl = wtu.create3DContext();
+ext = null;
+runAllTests();
 
-    // Query the extension and store globally so shouldBe can access it
-    ext = gl.getExtension("OES_standard_derivatives");
-    if (!ext) {
-        testPassed("No OES_standard_derivatives support -- this is legal");
-
-        runSupportedTest(false);
+function runAllTests() {
+    if (!gl) {
+        testFailed("WebGL context does not exist");
     } else {
-        testPassed("Successfully enabled OES_standard_derivatives extension");
+        testPassed("WebGL context exists");
 
-        runSupportedTest(true);
+        // Run tests with extension disabled
+        runHintTestDisabled();
+        runShaderTests(false);
 
-        runHintTestEnabled();
-        runShaderTests(true);
-        runOutputTests();
-        runUniqueObjectTest();
+        // Query the extension and store globally so shouldBe can access it
+        ext = gl.getExtension("OES_standard_derivatives");
+        if (!ext) {
+            testPassed("No OES_standard_derivatives support -- this is legal");
+
+            runSupportedTest(false);
+        } else {
+            testPassed("Successfully enabled OES_standard_derivatives extension");
+
+            runSupportedTest(true);
+
+            runHintTestEnabled();
+            runShaderTests(true);
+            runOutputTests();
+            runUniqueObjectTest();
+        }
     }
 }
 

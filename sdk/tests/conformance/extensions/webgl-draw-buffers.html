@@ -724,8 +724,25 @@ function runPreserveTests() {
     wtu.checkCanvas(gl, [0, 0, 0, 0], "should be clear");
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 
-    finishTest();
+    runEndTests();
   });
+}
+
+function runEndTests() {
+  // Create new context and verify shader tests with no extension still succeeds.
+  debug("");
+  debug("Testing new context with no extension");
+  gl = wtu.create3DContext();
+  if (!gl) {
+    testFailed("New WebGL context does not exist");
+  } else {
+    testPassed("New WebGL context exists");
+    runEnumTestDisabled();
+    runShadersTestDisabled();
+    runAttachmentTestDisabled();
+  }
+
+  finishTest();
 }
 </script>
 </body>
