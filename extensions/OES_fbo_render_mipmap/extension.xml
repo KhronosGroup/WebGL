@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/OES_fbo_render_mipmap/">
+<draft href="OES_fbo_render_mipmap/">
   <name>OES_fbo_render_mipmap</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -10,7 +10,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>28</number>
 
   <depends>
     <api version="1.0"/>
@@ -67,5 +67,8 @@ interface OES_fbo_render_mipmap {
     <revision date="2015/01/26">
       <change>Initial revision.</change>
     </revision>
+    <revision date="2015/01/31">
+      <change>Moved to draft.</change>
+    </revision>
   </history>
-</proposal>
+</draft>
