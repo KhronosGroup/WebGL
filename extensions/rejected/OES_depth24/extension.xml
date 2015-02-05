@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/OES_depth24/">
+<rejected href="rejected/OES_depth24/">
   <name>OES_depth24</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -62,5 +62,8 @@ interface OES_depth24 {
     <revision date="2015/01/26">
       <change>Initial revision.</change>
     </revision>
+    <revision date="2015/02/05">
+      <change>Moved to rejected because WEBGL_depth_texture can be used as a workaround for 24-bit depth for FBOs.</change>
+    </revision>
   </history>
-</proposal>
+</rejected>
