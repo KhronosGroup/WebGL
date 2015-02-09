@@ -7,7 +7,7 @@ several browsers.
 Installation
 ------------
 
-Make sure you have a reasonably new [Node.JS installalled](http://nodejs.org/),
+Make sure you have a reasonably new [Node.JS installed](http://nodejs.org/),
 then run:
 
     cd <WebGL>/other/test-runner
