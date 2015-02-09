@@ -145,7 +145,8 @@
             },
 
             "args": [
-                "-silent"
+                "-silent",
+                "-no-remote"
             ]
         },
 
@@ -167,7 +168,8 @@
             },
 
             "args": [
-                "-silent"
+                "-silent",
+                "-no-remote"
             ]
         },
 
