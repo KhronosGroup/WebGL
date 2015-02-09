@@ -34,7 +34,7 @@ var optimist = require('optimist')
     .boolean('help')
     .describe('help', 'Show this help message')
     .describe('browser', 'Comma-separated list of browsers to run the tests with')
-    .describe('version', 'Version of the conformance test to run.\n     If not specified runs the latest.\n     Example: --version 1.0.1')
+    .describe('version', 'Version of the conformance tests to run.\n     If not specified runs the latest.\n     Example: --version 1.0.1')
     .boolean('fast')
     .describe('fast', 'Only run tests not marked with --slow')
     .describe('skip', 'Comma separated list of regular expressions of which tests to skip.')
@@ -182,7 +182,7 @@ function get_failing_command_line_args_string(browser_name, version, test_result
   out += " --include=";
   var firstMatch = true;
 
-  test_results.replace(/(.*): (\d) tests failed/g, function(match, p1, p2, offset) {
+  test_results.replace(/(.*): (\d+) tests failed/g, function(match, p1, p2, offset) {
     out += (firstMatch ? "" : ",") + p1;
     firstMatch = false;
   });
@@ -266,6 +266,7 @@ function start_test_server(config) {
     // Now that the browser has told us it's working prevent the test from timing out
     if(app.start_timeout) {
       clearTimeout(app.start_timeout);
+      app.start_timeout = null;
     }
 
     res.send(200);
@@ -528,9 +529,9 @@ function run_tests_internal(app, config, callback, browser_id, browser, platform
       all_passed = false;
     }
 
-    if(app.kill_timeout) {
-      clearTimeout(app.kill_timeout);
-      app.kill_timeout = null;
+    if(app.start_timeout) {
+      clearTimeout(app.start_timeout);
+      app.start_timeout = null;
     }
 
     if(profile_dir) {
