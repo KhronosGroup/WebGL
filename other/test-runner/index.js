@@ -21,11 +21,14 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
+"use strict";
+
 var os = require('os');
 var fs = require('fs');
 var rimraf = require("rimraf"); // To provide "rm -rf" functionality
 var path = require('path');
 var child_process = require('child_process');
+var shell = require('shelljs');
 
 var express = require('express');
 
@@ -42,7 +45,8 @@ var optimist = require('optimist')
     .default('config', 'config')
     .describe('config', 'Use a different config file than the default')
     .boolean('dump_shaders')
-    .describe('dump_shaders', 'Dump shader info for GLSL tests');
+    .describe('dump_shaders', 'Dump shader info for GLSL tests')
+    .describe('platform', 'Platform to run tests on.\n     It needs to be explicitly specified only in case of remotely accessed platforms.\n     Example: --platform remote-android');
 
 var all_passed = false;
 
@@ -174,8 +178,11 @@ function get_command_line_args_string() {
   return out;
 }
 
-function get_failing_command_line_args_string(browser_name, version, test_results) {
+function get_failing_command_line_args_string(browser_name, platform, version, test_results) {
   var out = "--browser=" + browser_name;
+  if(platform) {
+    out +=" --platform=" + platform;
+  }
   if(version) {
     out += " --version=" + version;
   }
@@ -233,22 +240,14 @@ function getAvailableShaderFileName(url, shaderType) {
   return path.join(url, shaderType + "_" + count);
 }
 
-function quit(app) {
-  if(app.browser_proc) {
-    process.stdout.write("Finished");
-    if(app.quit_command) {
-      child_process.exec(app.quit_command)
-    } else {
-      app.browser_proc.kill();
-    }
-  }
-}
-
 function start_test_server(config) {
   // Start Express server
   var app = express();
   app.use('/', express.static(__dirname + '/../..'));
   app.use(express.bodyParser());
+
+  var current_time = Date.now();
+  var shaders_dir_name, shaders_dir;
 
   // Allows reading of plain text POSTs
   app.use(function(req, res, next){
@@ -269,13 +268,13 @@ function start_test_server(config) {
       app.start_timeout = null;
     }
 
+    shaders_dir_name = app.browser_name + "_" + current_time + "_shaders";
+    shaders_dir = path.join(__dirname, config.output_dir, shaders_dir_name);
+
     res.send(200);
   });
 
-  var current_time = Date.now();
   if(config.args.dump_shaders) {
-    var shaders_dir_name = config.args.browser + "_" + current_time + "_shaders";
-    var shaders_dir = path.join(__dirname, config.output_dir, shaders_dir_name);
     var shaders_array = [];
     var summary_file = null;
   }
@@ -349,6 +348,8 @@ function start_test_server(config) {
 
     var output = "";
 
+    app.finished_tests = true;
+
     var test_results = req.plainText;
     scan_test_results(test_results);
 
@@ -358,7 +359,7 @@ function start_test_server(config) {
       output += "Executing command line args: " + executing_args + "\n\n";
     }
     if(!all_passed) {
-      var failing_args = get_failing_command_line_args_string(app.browser_name, config.args.version, test_results);
+      var failing_args = get_failing_command_line_args_string(app.browser_name, config.args.platform, config.args.version, test_results);
       output += "To reproduce failures, run with the following args: " + failing_args + "\n\n";
     }
 
@@ -373,10 +374,10 @@ function start_test_server(config) {
         console.error(err);
         all_passed = false;
       }
-      if(!config.args.dump_shaders || config.args.dump_shaders && app.finished_tests) {
-        quit(app);
+      app.wrote_output = true;
+      if(!config.args.dump_shaders || config.args.dump_shaders && app.dumped_shaders) {
+        app.browser_instance.finish();
       }
-      app.finished_tests = true;
     });
 
     if(config.args.dump_shaders) {
@@ -388,11 +389,11 @@ function start_test_server(config) {
         if(err) {
           console.log(err);
         }
+        app.dumped_shaders = true;
         console.log("The compressed shaders are at: " + gz_file_name);
-        if(app.finished_tests) {
-          quit(app);
+        if(app.wrote_output) {
+          app.browser_instance.finish();
         }
-        app.finished_tests = true;
       });
     }
 
@@ -440,108 +441,220 @@ function run_tests(app, config, callback, browser_id) {
 
   process.stdout.write("\n" + browser.name + ": ");
 
-  // Does a browser matching the given configuration exist on this system?
-  var os_platform = os.platform();
-  var platform_id, platform, path_id, browser_path;
-  for(platform_id in browser.platforms) {
+  run_tests_internal(app, config, callback, browser_id, browser);
+}
+
+function determinePlatform(browser, os_platform) {
+  for(var platform_id in browser.platforms) {
     if(os_platform.match(platform_id)) {
-      for(path_id in browser.platforms[platform_id].paths) {
-        if(fs.existsSync(browser.platforms[platform_id].paths[path_id])) {
-          platform = browser.platforms[platform_id];
-          browser_path = platform.paths[path_id];
-          break;
-        }
-      }
+      return browser.platforms[platform_id];
     }
-    if (platform) {
-      break;
+  }
+  return undefined;
+}
+
+var BrowserInstanceLocal = function(app, browser, start_callback, finish_callback) {
+  this.app = app;
+
+  // Does a browser matching the given configuration exist on this system?
+  this.platform = determinePlatform(browser, os.platform());
+  this.browser_path = undefined;
+  if (this.platform !== undefined) {
+    for(var path_id in this.platform.paths) {
+      if(fs.existsSync(this.platform.paths[path_id])) {
+        this.browser_path = this.platform.paths[path_id];
+        break;
+      }
     }
   }
 
-  if(platform) {
-    if(os_platform == "darwin" && browser.osx_defaults) {
-      set_osx_defaults(browser.osx_defaults, function() {
-        run_tests_internal(app, config, callback, browser_id, browser, platform, browser_path);
-      });
-    } else {
-      run_tests_internal(app, config, callback, browser_id, browser, platform, browser_path);
-    }
+  this.browser = browser;
+  this.finish_callback = finish_callback;
+
+  if(os.platform() == "darwin" && browser.osx_defaults) {
+    set_osx_defaults(browser.osx_defaults, start_callback);
   } else {
-    process.stdout.write("Not found, skipped");
-    run_tests(app, config, callback, browser_id + 1);
+    setTimeout(start_callback, 0);
   }
 }
 
-function run_tests_internal(app, config, callback, browser_id, browser, platform, browser_path) {
+BrowserInstanceLocal.prototype.can_launch = function() {
+  return this.browser_path !== undefined;
+}
+
+BrowserInstanceLocal.prototype.launch_browser = function(test_url) {
   // Concatenate the standard browser args and any platform specific ones
   var all_args = [];
-
-  if(browser.args) {
-    all_args = all_args.concat(browser.args);
+  if(this.browser.args) {
+    all_args = all_args.concat(this.browser.args);
   }
-  if(platform.args) {
-    all_args = all_args.concat(platform.args);
+  if(this.platform.args) {
+    all_args = all_args.concat(this.platform.args);
   }
 
   var profile_dir;
-  if(browser.profile_arg) {
+  if(this.browser.profile_arg) {
     profile_dir = path.join(__dirname, PROFILE_DIR_NAME);
     ensure_dir_exists(profile_dir);
-    if(browser.profile_arg.indexOf("=") != -1) {
-      all_args.push(browser.profile_arg + profile_dir);
+    if(this.browser.profile_arg.indexOf("=") != -1) {
+      all_args.push(this.browser.profile_arg + profile_dir);
     } else {
-      all_args.push(browser.profile_arg);
+      all_args.push(this.browser.profile_arg);
       all_args.push(profile_dir);
     }
-    
-    if(browser.firefox_user_prefs) {
-      write_firefox_user_prefs(profile_dir, browser.firefox_user_prefs);
+
+    if(this.browser.firefox_user_prefs) {
+      write_firefox_user_prefs(profile_dir, this.browser.firefox_user_prefs);
     }
   }
 
-  all_args.push(config.test_url);
+  all_args.push(test_url);
 
-  if (platform.command) {
-    browser_path = platform.command;
-  }
+  this.browser_proc = child_process.spawn(this.browser_path, all_args, { stdio: 'ignore' });
 
-  var browser_proc = child_process.spawn(browser_path, all_args, { stdio: 'ignore' });
-  app.browser_proc = browser_proc;
-  app.browser_name = browser.name.replace(' ', '-');
-  app.quit_command = platform.quit_command;
-
-  app.finished_tests = false;
-
-  app.start_timeout = setTimeout(function() {
-    browser_proc.kill();
-    process.stdout.write("Test failed to start in allotted time");
-    all_passed = false;
-  }, TEST_START_TIMEOUT);
-
-  browser_proc.on('exit', function(code) {
+  var app = this.app;
+  var that = this;
+  var exit_callback = function(code) {
     if(code == 20) {
       process.stdout.write("Could not launch new instance, already running");
       all_passed = false;
     }
 
+    if(profile_dir) {
+      rimraf(profile_dir, function() {
+        that.finish_callback();
+      });
+    } else {
+      that.finish_callback();
+    }
+  }
+
+  this.browser_proc.on('exit', exit_callback);
+}
+
+BrowserInstanceLocal.prototype.kill = function() {
+  this.browser_proc.kill();
+}
+
+BrowserInstanceLocal.prototype.finish = function() {
+  if(this.browser_proc) {
+    process.stdout.write("Finished");
+    if(this.platform.quit_command) {
+      child_process.exec(this.platform.quit_command)
+    } else {
+      this.browser_proc.kill();
+    }
+  }
+}
+
+var BrowserInstanceRemoteAndroid = function(app, browser, start_callback, finish_callback) {
+  this.app = app;
+  this.platform = determinePlatform(browser, "remote-android");
+  this.finish_callback = finish_callback;
+
+  // Check if exactly one android device is connected and accessible over adb.
+  var adb_devices_plus2 = shell.exec("adb devices 2>/dev/null | wc -l", {silent:true}).output;
+  if(adb_devices_plus2 < 3) {
+    console.error("\n  ERROR: No Android device connected, check if the device is connected and accessible over adb.\n");
+    process.exit(1);
+  } else if(adb_devices_plus2 > 3 && !process.env.ANDROID_SERIAL) {
+    console.error("\n  ERROR: More than one Android device connected to adb, please define ANDROID_SERIAL to specify which one to use.\n");
+    process.exit(1);
+  }
+
+  setTimeout(start_callback, 0);
+}
+
+function apk_installed(package_name) {
+  var apk_installed = shell.exec("adb shell 'pm list packages | grep " + package_name + " 2>/dev/null'", {silent:true}).output;
+  return !!apk_installed;
+}
+
+BrowserInstanceRemoteAndroid.prototype.can_launch = function() {
+  return this.platform !== undefined && apk_installed(this.platform.package_name);
+}
+
+BrowserInstanceRemoteAndroid.prototype.launch_browser = function(test_url) {
+  // First start port forwarding service on connected android device.
+  if (!apk_installed('org.khronos.portforwarder')) {
+    var service_apk = path.join(__dirname, "android/prebuilt/org.khronos.portforwarder-debug.apk");
+    var service_install_command = "adb install " + service_apk;
+    shell.exec(service_install_command, {silent:true});
+  }
+  var service_start_command = "adb shell am startservice -n org.khronos.portforwarder/.PortForwardService";
+  service_start_command += " --ei port " + this.app.port;
+  shell.exec(service_start_command, {silent:true});
+
+  if (this.platform.pre_launch_command)
+    shell.exec(this.platform.pre_launch_command, {silent:true});
+
+  var launch_command = "adb shell \" am start -a " + this.platform.launch_intent;
+  launch_command += " -n " + this.platform.main_activity;
+  launch_command += " -d '" + test_url + "'\"";
+  shell.exec(launch_command, {silent:true});
+}
+
+BrowserInstanceRemoteAndroid.prototype.kill = function() {
+  if(this.platform.quit_command)
+    shell.exec(this.platform.quit_command, {silent:true});
+
+  // Stop and uninstall port forwarding service.
+  shell.exec("adb shell am stopservice -n org.khronos.portforwarder/.PortForwardService", {silent:true});
+  shell.exec("adb uninstall org.khronos.portforwarder", {silent:true});
+
+  // TODO: We're not monitoring the browser process on the Android device, so we
+  // don't cover the case where it crashes by itself.
+  this.finish_callback();
+}
+
+BrowserInstanceRemoteAndroid.prototype.finish = function() {
+  process.stdout.write("Finished");
+  this.kill();
+}
+
+function run_tests_internal(app, config, callback, browser_id, browser) {
+  app.finished_tests = false;
+  app.wrote_output = false;
+  app.dumped_shaders = false;
+
+  app.browser_name = browser.name.replace(' ', '-');
+
+  var finish_callback = function() {
     if (!app.finished_tests) {
       process.stdout.write("Tests didn't run to successful completion");
       all_passed = false;
     }
 
-    if(app.start_timeout) {
+    if (app.start_timeout) {
       clearTimeout(app.start_timeout);
       app.start_timeout = null;
     }
 
-    if(profile_dir) {
-      rimraf(profile_dir, function() {
-        run_tests(app, config, callback, browser_id + 1);
-      });
+    run_tests(app, config, callback, browser_id + 1);
+  };
+
+  var start_callback = function() {
+    if (app.browser_instance.can_launch()) {
+      app.browser_instance.launch_browser(config.test_url);
+      app.start_timeout = setTimeout(function() {
+        process.stdout.write("Test failed to start in allotted time");
+        app.browser_instance.kill();
+        all_passed = false;
+      }, TEST_START_TIMEOUT);
     } else {
+      process.stdout.write("Not found, skipped");
       run_tests(app, config, callback, browser_id + 1);
     }
-  });
+  };
+
+  if (config.args.platform == "remote-android") {
+    app.browser_instance = new BrowserInstanceRemoteAndroid(app, browser, start_callback, finish_callback);
+  } else if (config.args.platform !== undefined && config.args.platform !== os.platform()) {
+    console.error("\n  ERROR: Unexpected platform parameter: should be 'remote-android', '" + os.platform() + "', or unspecified.\n");
+    process.exit(1);
+  } else {
+    app.browser_instance = new BrowserInstanceLocal(app, browser, start_callback, finish_callback);
+  }
 }
 
 function should_run_browser(browser, config) {
