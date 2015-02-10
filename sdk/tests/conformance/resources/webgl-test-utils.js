@@ -1696,11 +1696,12 @@ var readFileList = function(url) {
  * @param {string} opt_url URL from where the shader source was loaded from.
  *     If opt_logShaders is set, then a link to the source file will also be
  *     added.
+ * @param {boolean} Skip compilation status check. Default = false.
  * @return {!WebGLShader} The created shader.
  */
 var loadShader = function(
     gl, shaderSource, shaderType, opt_errorCallback, opt_logShaders,
-    opt_shaderLabel, opt_url) {
+    opt_shaderLabel, opt_url, opt_skipCompileStatus) {
   var errFn = opt_errorCallback || error;
   // Create the shader object
   var shader = gl.createShader(shaderType);
@@ -1730,13 +1731,15 @@ var loadShader = function(
   }
 
   // Check the compile status
-  var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-  if (!compiled) {
-    // Something went wrong during compilation; get the error
-    lastError = gl.getShaderInfoLog(shader);
-    errFn("*** Error compiling " + glEnumToString(gl, shaderType) + " '" + shader + "':" + lastError);
-    gl.deleteShader(shader);
-    return null;
+  if (!opt_skipCompileStatus) {
+    var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+    if (!compiled) {
+      // Something went wrong during compilation; get the error
+      lastError = gl.getShaderInfoLog(shader);
+      errFn("*** Error compiling " + glEnumToString(gl, shaderType) + " '" + shader + "':" + lastError);
+      gl.deleteShader(shader);
+      return null;
+    }
   }
 
   return shader;
@@ -1749,13 +1752,14 @@ var loadShader = function(
  * @param {number} type The type of shader.
  * @param {function(string): void) opt_errorCallback callback for errors. 
  * @param {boolean} opt_logShaders Whether to log shader source.
+ * @param {boolean} Skip compilation status check. Default = false.
  * @return {!WebGLShader} The created shader.
  */
 var loadShaderFromFile = function(
-    gl, file, type, opt_errorCallback, opt_logShaders) {
+    gl, file, type, opt_errorCallback, opt_logShaders, opt_skipCompileStatus) {
   var shaderSource = readFile(file);
   return loadShader(gl, shaderSource, type, opt_errorCallback,
-      opt_logShaders, undefined, file);
+      opt_logShaders, undefined, file, opt_skipCompileStatus);
 };
 
 /**
@@ -1779,10 +1783,11 @@ var getScript = function(scriptId) {
  *     be derived from the type of the script tag.
  * @param {function(string): void) opt_errorCallback callback for errors. 
  * @param {boolean} opt_logShaders Whether to log shader source.
+ * @param {boolean} Skip compilation status check. Default = false.
  * @return {!WebGLShader} The created shader.
  */
 var loadShaderFromScript = function(
-    gl, scriptId, opt_shaderType, opt_errorCallback, opt_logShaders) {
+    gl, scriptId, opt_shaderType, opt_errorCallback, opt_logShaders, opt_skipCompileStatus) {
   var shaderSource = "";
   var shaderScript = document.getElementById(scriptId);
   if (!shaderScript) {
@@ -1802,7 +1807,7 @@ var loadShaderFromScript = function(
   }
 
   return loadShader(gl, shaderSource, opt_shaderType, opt_errorCallback,
-      opt_logShaders);
+      opt_logShaders, undefined, undefined, opt_skipCompileStatus);
 };
 
 var loadStandardProgram = function(gl) {
