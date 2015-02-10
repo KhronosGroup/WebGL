@@ -128,6 +128,9 @@ gl = wtu.create3DContext();
 ext = null;
 runAllTests();
 
+// Run deferred link tests.
+runDeferredLinkTests();
+
 function runAllTests() {
     if (!gl) {
         testFailed("WebGL context does not exist");
@@ -353,6 +356,66 @@ function runUniqueObjectTest()
     gl.getExtension("OES_standard_derivatives").myProperty = 2;
     webglHarnessCollectGarbage();
     shouldBe('gl.getExtension("OES_standard_derivatives").myProperty', '2');
+}
+
+function runDeferredLinkTests() {
+    debug("");
+    debug("Testing deferred shader compilation tests.");
+
+    // Test for compilation failures that are caused by missing extensions
+    // do not succeed if extensions are enabled during linking. This would
+    // only happen for deferred shader compilations.
+
+    var vertex_element = document.getElementById("goodVertexShader");
+    var fragment_element = document.getElementById("macroFragmentShader");
+    if (!vertex_element || !fragment_element) {
+        testFailed("Could not find shader elements.");
+        return;
+    }
+
+    var err;
+
+    var gl_deferred = wtu.create3DContext();
+
+    var vertex_shader = gl_deferred.createShader(gl_deferred.VERTEX_SHADER);
+    var fragment_shader = gl_deferred.createShader(gl_deferred.FRAGMENT_SHADER);
+    if (vertex_shader == null || fragment_shader == null) {
+        testFailed("Could not create shaders.");
+        return;
+    }
+
+    gl_deferred.shaderSource(vertex_shader, vertex_element.text);
+    err = gl_deferred.getError();
+    if (err != gl_deferred.NO_ERROR) {
+        testFailed("Could not load vertex shader: " + wtu.glEnumToString(gl_deferred, err));
+        return;
+    }
+
+    gl_deferred.shaderSource(fragment_shader, fragment_element.text);
+    err = gl_deferred.getError();
+    if (err != gl_deferred.NO_ERROR) {
+        testFailed("Could not load vertex shader: " + wtu.glEnumToString(gl_deferred, err));
+        return;
+    }
+
+    gl_deferred.compileShader(vertex_shader);
+    gl_deferred.compileShader(fragment_shader);
+
+    // Shader compilations should have failed due to extensions not enabled.
+    gl_deferred.getExtension("OES_standard_derivatives");
+
+    var program = gl_deferred.createProgram();
+    gl_deferred.attachShader(program, vertex_shader);
+    gl_deferred.attachShader(program, fragment_shader);
+    gl_deferred.linkProgram(program);
+
+    var linked = gl_deferred.getProgramParameter(program, gl_deferred.LINK_STATUS);
+    if (linked) {
+        testFailed("Compilation with extension disabled then linking with extension enabled caused successful compile.");
+        return;
+    }
+
+    testPassed("Compilation with extension disabled then linking with extension enabled.");
 }
 
 debug("");
