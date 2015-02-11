@@ -138,11 +138,12 @@ function runAllTests() {
             runShaderTests(true);
             runOutputTests();
             runUniqueObjectTest();
+
+            // Run deferred link tests.
+            runDeferredLinkTests();
         }
     }
 
-    // Run deferred link tests.
-    runDeferredLinkTests();
 }
 
 function runSupportedTest(extensionEnabled) {
@@ -258,6 +259,9 @@ function runDeferredLinkTests() {
     // First test if link succeeds with extension enabled.
     var glEnabled = wtu.create3DContext();
     var extEnabled = glEnabled.getExtension("EXT_frag_depth");
+    if (!extEnabled) {
+        testFailed("Deferred link test expects the extension to be supported");
+    }
 
     var vertexShader = wtu.loadShaderFromScript(glEnabled, "goodVertexShader");
     var fragmentShader = wtu.loadShaderFromScript(glEnabled, "macroFragmentShader");
@@ -269,16 +273,9 @@ function runDeferredLinkTests() {
 
     var program = wtu.setupProgram(glEnabled, [vertexShader, fragmentShader]);
 
-    if (extEnabled) {
-        if (!program) {
-            testFailed("Compilation with extension enabled failed.");
-            return;
-        }
-    } else {
-        if (program) {
-            testFailed("Compilation with extension disabled succeeded.");
-            return;
-        }
+    if (!program) {
+        testFailed("Compilation with extension enabled failed.");
+        return;
     }
 
     // Create new context to test link failure without extension enabled.
