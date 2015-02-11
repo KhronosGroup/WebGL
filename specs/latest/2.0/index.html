@@ -2483,6 +2483,18 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         WebGL 2.0.
     </p>
 
+    <h3>Queries should fail on a program that failed to link</h3>
+
+    <p>
+        OpenGL ES 3.0 allows application to enumerate and query properties of
+        active variables and interface blocks of a speicied program even if
+        that program failed to link <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.3">OpenGL ES 3.0.3 &sect;2.11.3</a>)</span>. The returned information is implementation
+        dependent and may be incomplete. For the behaviors to be consistent
+        across all platforms, in WebGL, these commands will always generate an
+        INVALID_OPERATION error on a program that failed to link, and no
+        information is returned.
+    </p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
