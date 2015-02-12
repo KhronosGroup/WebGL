@@ -59,6 +59,21 @@ void main() {
 }
 </script>
 
+<script id="drawArraysTestVertexShader" type="x-shader/x-vertex">
+attribute vec3 aPosition;
+attribute vec3 aInstancePos;
+uniform vec3 uOffset;
+void main() {
+    gl_Position = vec4(aPosition.xyz + aInstancePos.xyz + uOffset, 1.0);
+}
+</script>
+
+<script id="drawArraysTestFragmentShader" type="x-shader/x-fragment">
+void main() {
+    gl_FragColor = vec4(1.0, 0, 0, 1.0);
+}
+</script>
+
 <script>
 "use strict";
 description("This test verifies the functionality of the ANGLE_instanced_arrays extension, if it is available.");
@@ -100,6 +115,7 @@ if (!gl) {
 
         setupCanvas();
         runOutputTests();
+        runDrawArraysWithOffsetTest();
         runANGLECorruptionTest();
     }
 }
@@ -334,6 +350,76 @@ function runOutputTests() {
     wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "drawElementsInstancedANGLE with POLYGON should return INVALID_ENUM");
 }
 
+function runDrawArraysTest(program, first, count, instanceCount, offset)
+{
+    // Get the attribute and uniform locations
+    var positionLoc = gl.getAttribLocation(program, "aPosition");
+    var instancePosLoc = gl.getAttribLocation(program, "aInstancePos");
+    var uniformLoc = gl.getUniformLocation(program, "uOffset");
+
+    // Load the vertex positions
+    var positions = new Float32Array([
+        -1, -1,
+        -1,  0,
+         0,  0,
+
+         0,  0,
+         0, -1,
+        -1, -1,
+
+         1, -1,
+         1,  0,
+         0,  0,
+
+         0,  0,
+         0, -1,
+         1, -1,
+    ]);
+    var positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(positionLoc);
+    gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
+
+    // Load the instance positions
+    var instancePositions = new Float32Array([
+         0, 0,
+         1, 0
+    ]);
+    var instancePositionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, instancePositionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, instancePositions, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(instancePosLoc);
+    gl.vertexAttribPointer(instancePosLoc, 2, gl.FLOAT, false, 0, 0);
+
+    // Enable instancing
+    ext.vertexAttribDivisorANGLE(instancePosLoc, 1);
+
+    // Offset
+    gl.uniform3fv(uniformLoc, offset);
+
+    // Do the instanced draw
+    ext.drawArraysInstancedANGLE(gl.TRIANGLES, first, count, instanceCount);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArraysInstancedANGLE should succeed");
+}
+
+function runDrawArraysWithOffsetTest()
+{
+    debug("");
+    debug("Testing that the 'first' parameter to drawArraysInstancedANGLE is only an offset into the non-instanced vertex attributes.");
+    // See: http://crbug.com/457269 and http://crbug.com/447140
+
+    var drawArraysProgram = wtu.setupProgram(gl, ["drawArraysTestVertexShader", "drawArraysTestFragmentShader"]);
+
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    runDrawArraysTest(drawArraysProgram, 0, 6, 2, [0, 0, 0]);
+
+    runDrawArraysTest(drawArraysProgram, 6, 6, 2, [-1, 1, 0]);
+
+    wtu.checkCanvasRect(gl, 0, 0, canvas.width, canvas.height, [255, 0, 0, 255]);
+}
+
 function runUniqueObjectTest()
 {
     debug("");
@@ -348,6 +434,8 @@ function runANGLECorruptionTest()
     debug("")
     debug("Testing to ensure that rendering isn't corrupt due to an ANGLE bug");
     // See: https://code.google.com/p/angleproject/issues/detail?id=467
+
+    setupCanvas();
 
     var tolerance = 2; // Amount of variance to allow in result pixels - may need to be tweaked higher
     var instanceCount = 10; // Must be higher than 6
