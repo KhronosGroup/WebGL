@@ -87,24 +87,24 @@ function main() {
 }
 
 function process_args(config) {
-  if(config.args.browser) {
+  if (config.args.browser) {
     config.args.browser = config.args.browser.split(",");
   }
 }
 
 function ensure_dir_exists(dir_path) {
-  if(!dir_path) { 
-    return; 
+  if (!dir_path) {
+    return;
   }
 
   var idx = dir_path.lastIndexOf(path.sep);
   var dir = dir_path.substring(0, idx);
   
-  if(dir) {
+  if (dir) {
     ensure_dir_exists(dir);
   }
   
-  if(idx != dir_path.length - 1) {
+  if (idx != dir_path.length - 1) {
     try {
         fs.mkdirSync(dir_path);
     } catch(ex) {}
@@ -113,7 +113,7 @@ function ensure_dir_exists(dir_path) {
 
 function build_test_url(app, config) {
   var test_url;
-  if(config.args.version) {
+  if (config.args.version) {
     test_url = path.join("conformance-suites", config.args.version)
   } else {
     test_url = path.join("sdk", "tests");
@@ -121,7 +121,7 @@ function build_test_url(app, config) {
 
   test_url = path.join(test_url, "webgl-conformance-tests.html");
 
-  if(!fs.existsSync(path.join(__dirname, "../..", test_url))) {
+  if (!fs.existsSync(path.join(__dirname, "../..", test_url))) {
     console.error("ERROR: Could not find test", test_url);
     process.exit(1);
   }
@@ -141,21 +141,21 @@ function build_test_url(app, config) {
     "allowSkip": 1
   }
 
-  if(config.args.fast) {
+  if (config.args.fast) {
     default_args.fast = true;
   }
 
-  if(config.args.skip) {
+  if (config.args.skip) {
     default_args.skip = config.args.skip;
   }
-  if(config.args.include) {
+  if (config.args.include) {
     default_args.include = config.args.include;
   }
-  if(config.args.dump_shaders) {
+  if (config.args.dump_shaders) {
     default_args.dumpShaders = 1;
   }
 
-  for(arg_name in default_args) {
+  for (arg_name in default_args) {
     full_url += queryArgs ? "&" : "?";
     full_url += arg_name + "=" + default_args[arg_name];
     queryArgs++;
@@ -167,8 +167,8 @@ function build_test_url(app, config) {
 function get_command_line_args_string() {
   var out = ""; //process.argv[0];
 
-  for(var i = 2; i < process.argv.length; ++i) {
-    if(process.argv[i].indexOf(" ") != -1) {
+  for (var i = 2; i < process.argv.length; ++i) {
+    if (process.argv[i].indexOf(" ") != -1) {
       out += " \"" + process.argv[i] + "\""
     } else {
       out += " " + process.argv[i];
@@ -180,10 +180,10 @@ function get_command_line_args_string() {
 
 function get_failing_command_line_args_string(browser_name, platform, version, test_results) {
   var out = "--browser=" + browser_name;
-  if(platform) {
+  if (platform) {
     out +=" --platform=" + platform;
   }
-  if(version) {
+  if (version) {
     out += " --version=" + version;
   }
   out += " --include=";
@@ -235,7 +235,7 @@ function scan_test_results(test_results) {
 
 function getAvailableShaderFileName(url, shaderType) {
   var count = 0;
-  while(fs.existsSync(path.join(url, shaderType + "_" + count)))
+  while (fs.existsSync(path.join(url, shaderType + "_" + count)))
     count++;
   return path.join(url, shaderType + "_" + count);
 }
@@ -250,20 +250,20 @@ function start_test_server(config) {
   var shaders_dir_name, shaders_dir;
 
   // Allows reading of plain text POSTs
-  app.use(function(req, res, next){
+  app.use(function(req, res, next) {
     if (req.is('text/plain')) {
       req.plainText = '';
       req.setEncoding('utf8');
-      req.on('data', function(chunk){ req.plainText += chunk });
+      req.on('data', function(chunk) { req.plainText += chunk });
       req.on('end', next);
     } else {
       next();
     }
   });
 
-  app.post('/start', function(req, res){
+  app.post('/start', function(req, res) {
     // Now that the browser has told us it's working prevent the test from timing out
-    if(app.start_timeout) {
+    if (app.start_timeout) {
       clearTimeout(app.start_timeout);
       app.start_timeout = null;
     }
@@ -274,13 +274,13 @@ function start_test_server(config) {
     res.send(200);
   });
 
-  if(config.args.dump_shaders) {
+  if (config.args.dump_shaders) {
     var shaders_array = [];
     var summary_file = null;
   }
 
-  app.post('/dumpShaderInfo', function(req, res){
-    if(!config.args.dump_shaders) {
+  app.post('/dumpShaderInfo', function(req, res) {
+    if (!config.args.dump_shaders) {
         res.send(200);
         return;
     }
@@ -300,19 +300,19 @@ function start_test_server(config) {
     fShader.source = shaders_info.fSource;
     fShader.translated_source_path = null;
     var translated_shader_file_path = path.join(summary_file_path, path.basename(summary_file_name, '.json') + "_shaders");
-    if(shaders_info.vTranslatedSource) {
+    if (shaders_info.vTranslatedSource) {
       ensure_dir_exists(translated_shader_file_path);
       var translated_vShader_file_name = getAvailableShaderFileName(translated_shader_file_path, "vertex_shader");
       fs.writeFileSync(translated_vShader_file_name, shaders_info.vTranslatedSource, 'utf8');
       vShader.translated_source_path = path.relative(summary_file_path, translated_vShader_file_name);
     }
-    if(shaders_info.fTranslatedSource) {
+    if (shaders_info.fTranslatedSource) {
       ensure_dir_exists(translated_shader_file_path);
       var translated_fShader_file_name = getAvailableShaderFileName(translated_shader_file_path, "fragment_shader");
       fs.writeFileSync(translated_fShader_file_name, shaders_info.fTranslatedSource, 'utf8');
       fShader.translated_source_path = path.relative(summary_file_path, translated_fShader_file_name);
     }
-    if(summary_file == null) {
+    if (summary_file == null) {
       summary_file = path.join(summary_file_path, summary_file_name);
     }
     var shaders = {};
@@ -324,12 +324,12 @@ function start_test_server(config) {
   });
 
   // Called after each test run if the harness is dumping shaders.
-  app.post('/finishIndividualTest', function(req, res){
-    if(!config.args.dump_shaders) {
+  app.post('/finishIndividualTest', function(req, res) {
+    if (!config.args.dump_shaders) {
         res.send(200);
         return;
     }
-    if(shaders_array.length > 0) {
+    if (shaders_array.length > 0) {
       ensure_dir_exists(path.dirname(summary_file));
       fs.writeFileSync(summary_file, JSON.stringify(shaders_array, null, 4));
       shaders_array = [];
@@ -339,7 +339,7 @@ function start_test_server(config) {
   });
 
 
-  app.post('/finish', function(req, res){
+  app.post('/finish', function(req, res) {
     // Output the plain text results to a file
     var file_name = path.join(
         __dirname, config.output_dir,
@@ -355,43 +355,43 @@ function start_test_server(config) {
 
     var executing_args = get_command_line_args_string();
 
-    if(executing_args) {
+    if (executing_args) {
       output += "Executing command line args: " + executing_args + "\n\n";
     }
-    if(!all_passed) {
+    if (!all_passed) {
       var failing_args = get_failing_command_line_args_string(app.browser_name, config.args.platform, config.args.version, test_results);
       output += "To reproduce failures, run with the following args: " + failing_args + "\n\n";
     }
 
-    if(executing_args || !all_passed) {
+    if (executing_args || !all_passed) {
       output += "-------------------\n\n"
     }
 
     output += test_results;
 
     fs.writeFile(file_name, output, 'utf8', function(err, data) {
-      if(err) {
+      if (err) {
         console.error(err);
         all_passed = false;
       }
       app.wrote_output = true;
-      if(!config.args.dump_shaders || config.args.dump_shaders && app.dumped_shaders) {
+      if (!config.args.dump_shaders || config.args.dump_shaders && app.dumped_shaders) {
         app.browser_instance.finish();
       }
     });
 
-    if(config.args.dump_shaders) {
+    if (config.args.dump_shaders) {
       // Compress dumped shaders
       var gz_file_name = path.join(shaders_dir, shaders_dir_name + ".tar.gz");
       console.log("Compressing shaders in folder: " + shaders_dir_name);
       var targz = require('tar.gz');
-      var compress = new targz().compress(shaders_dir, gz_file_name, function(err){
-        if(err) {
+      var compress = new targz().compress(shaders_dir, gz_file_name, function(err) {
+        if (err) {
           console.log(err);
         }
         app.dumped_shaders = true;
         console.log("The compressed shaders are at: " + gz_file_name);
-        if(app.wrote_output) {
+        if (app.wrote_output) {
           app.browser_instance.finish();
         }
       });
@@ -404,7 +404,7 @@ function start_test_server(config) {
   var listening = false;
   
   // Attempt to listen on random ports till we find a free one
-  while(!listening) {
+  while (!listening) {
     port = Math.floor(Math.random() * 8999) + 1000;
     
     try {
@@ -421,12 +421,12 @@ var TEST_START_TIMEOUT = 30000;
 var PROFILE_DIR_NAME = "tmp_profile";
 
 function run_tests(app, config, callback, browser_id) {
-  if(!browser_id) {
+  if (!browser_id) {
     browser_id = 0;
   }
 
-  if(browser_id >= config.browsers.length) {
-    if(callback) {
+  if (browser_id >= config.browsers.length) {
+    if (callback) {
       callback();
     }
     return;
@@ -434,7 +434,7 @@ function run_tests(app, config, callback, browser_id) {
 
   var browser = config.browsers[browser_id];
 
-  if(!should_run_browser(browser.name, config)) {
+  if (!should_run_browser(browser.name, config)) {
     run_tests(app, config, callback, browser_id + 1);
     return;
   }
@@ -445,8 +445,8 @@ function run_tests(app, config, callback, browser_id) {
 }
 
 function determinePlatform(browser, os_platform) {
-  for(var platform_id in browser.platforms) {
-    if(os_platform.match(platform_id)) {
+  for (var platform_id in browser.platforms) {
+    if (os_platform.match(platform_id)) {
       return browser.platforms[platform_id];
     }
   }
@@ -460,8 +460,8 @@ var BrowserInstanceLocal = function(app, browser, start_callback, finish_callbac
   this.platform = determinePlatform(browser, os.platform());
   this.browser_path = undefined;
   if (this.platform !== undefined) {
-    for(var path_id in this.platform.paths) {
-      if(fs.existsSync(this.platform.paths[path_id])) {
+    for (var path_id in this.platform.paths) {
+      if (fs.existsSync(this.platform.paths[path_id])) {
         this.browser_path = this.platform.paths[path_id];
         break;
       }
@@ -471,7 +471,7 @@ var BrowserInstanceLocal = function(app, browser, start_callback, finish_callbac
   this.browser = browser;
   this.finish_callback = finish_callback;
 
-  if(os.platform() == "darwin" && browser.osx_defaults) {
+  if (os.platform() == "darwin" && browser.osx_defaults) {
     set_osx_defaults(browser.osx_defaults, start_callback);
   } else {
     setTimeout(start_callback, 0);
@@ -485,25 +485,25 @@ BrowserInstanceLocal.prototype.can_launch = function() {
 BrowserInstanceLocal.prototype.launch_browser = function(test_url) {
   // Concatenate the standard browser args and any platform specific ones
   var all_args = [];
-  if(this.browser.args) {
+  if (this.browser.args) {
     all_args = all_args.concat(this.browser.args);
   }
-  if(this.platform.args) {
+  if (this.platform.args) {
     all_args = all_args.concat(this.platform.args);
   }
 
   var profile_dir;
-  if(this.browser.profile_arg) {
+  if (this.browser.profile_arg) {
     profile_dir = path.join(__dirname, PROFILE_DIR_NAME);
     ensure_dir_exists(profile_dir);
-    if(this.browser.profile_arg.indexOf("=") != -1) {
+    if (this.browser.profile_arg.indexOf("=") != -1) {
       all_args.push(this.browser.profile_arg + profile_dir);
     } else {
       all_args.push(this.browser.profile_arg);
       all_args.push(profile_dir);
     }
 
-    if(this.browser.firefox_user_prefs) {
+    if (this.browser.firefox_user_prefs) {
       write_firefox_user_prefs(profile_dir, this.browser.firefox_user_prefs);
     }
   }
@@ -515,12 +515,12 @@ BrowserInstanceLocal.prototype.launch_browser = function(test_url) {
   var app = this.app;
   var that = this;
   var exit_callback = function(code) {
-    if(code == 20) {
+    if (code == 20) {
       process.stdout.write("Could not launch new instance, already running");
       all_passed = false;
     }
 
-    if(profile_dir) {
+    if (profile_dir) {
       rimraf(profile_dir, function() {
         that.finish_callback();
       });
@@ -537,9 +537,9 @@ BrowserInstanceLocal.prototype.kill = function() {
 }
 
 BrowserInstanceLocal.prototype.finish = function() {
-  if(this.browser_proc) {
+  if (this.browser_proc) {
     process.stdout.write("Finished");
-    if(this.platform.quit_command) {
+    if (this.platform.quit_command) {
       child_process.exec(this.platform.quit_command)
     } else {
       this.browser_proc.kill();
@@ -554,10 +554,10 @@ var BrowserInstanceRemoteAndroid = function(app, browser, start_callback, finish
 
   // Check if exactly one android device is connected and accessible over adb.
   var adb_devices_plus2 = shell.exec("adb devices 2>/dev/null | wc -l", {silent:true}).output;
-  if(adb_devices_plus2 < 3) {
+  if (adb_devices_plus2 < 3) {
     console.error("\n  ERROR: No Android device connected, check if the device is connected and accessible over adb.\n");
     process.exit(1);
-  } else if(adb_devices_plus2 > 3 && !process.env.ANDROID_SERIAL) {
+  } else if (adb_devices_plus2 > 3 && !process.env.ANDROID_SERIAL) {
     console.error("\n  ERROR: More than one Android device connected to adb, please define ANDROID_SERIAL to specify which one to use.\n");
     process.exit(1);
   }
@@ -595,7 +595,7 @@ BrowserInstanceRemoteAndroid.prototype.launch_browser = function(test_url) {
 }
 
 BrowserInstanceRemoteAndroid.prototype.kill = function() {
-  if(this.platform.quit_command)
+  if (this.platform.quit_command)
     shell.exec(this.platform.quit_command, {silent:true});
 
   // Stop and uninstall port forwarding service.
@@ -658,15 +658,15 @@ function run_tests_internal(app, config, callback, browser_id, browser) {
 }
 
 function should_run_browser(browser, config) {
-  if(!config.args.browser) {
+  if (!config.args.browser) {
     return true;
   }
 
   var found_browser = false;
 
   var i;
-  for(i = 0; i < config.args.browser.length; ++i) {
-    if(browser == config.args.browser[i]) {
+  for (i = 0; i < config.args.browser.length; ++i) {
+    if (browser == config.args.browser[i]) {
       found_browser = true;
       break;
     }
@@ -679,7 +679,7 @@ function write_firefox_user_prefs(profile_dir, user_prefs) {
   var out = "";
 
   var i, val;
-  for(i in user_prefs) {
+  for (i in user_prefs) {
     out += "user_pref(\"" + i + "\", " + JSON.stringify(user_prefs[i]) + ");\n";
   }
 
@@ -689,22 +689,22 @@ function write_firefox_user_prefs(profile_dir, user_prefs) {
 var default_was_changed = false;
 
 function write_osx_default(domain_key, value, callback) {
-  if(!osx_cached_defaults){
+  if (!osx_cached_defaults) {
     osx_cached_defaults = {};
   }
 
   child_process.exec("defaults read " + domain_key,
     function (error, stdout, stderr) {
-      if(stdout == value) {
-        if(callback) { callback(); }
+      if (stdout == value) {
+        if (callback) { callback(); }
         return; // Already has the right value
       }
 
       // Only cache the previous value the first time we read it for a given key
-      if(typeof(osx_cached_defaults[domain_key]) == 'undefined') {
+      if (typeof(osx_cached_defaults[domain_key]) == 'undefined') {
         osx_cached_defaults[domain_key] = stdout;
 
-        if(!default_was_changed) {
+        if (!default_was_changed) {
           default_was_changed = true;
           console.log("WARNING: System defaults have been changed to ensure " +
               "correct test execution. Terminating this process early may " +
@@ -713,7 +713,7 @@ function write_osx_default(domain_key, value, callback) {
         }
       }
 
-      if(value.indexOf(" ") != -1) {
+      if (value.indexOf(" ") != -1) {
         value = "\"" + value + "\"";
       }
 
@@ -724,10 +724,10 @@ function write_osx_default(domain_key, value, callback) {
 }
 
 function set_osx_defaults(defaults, callback, i) {
-  if(!i) { i = 0; }
+  if (!i) { i = 0; }
   var keys = Object.keys(defaults);
-  if(i >= keys.length) {
-    if(callback) {
+  if (i >= keys.length) {
+    if (callback) {
       callback();
     }
     return;
@@ -741,15 +741,15 @@ function set_osx_defaults(defaults, callback, i) {
 }
 
 function restore_osx_defaults(callback) {
-  if(os.platform() != "darwin" || !osx_cached_defaults) {
-    if(callback) { callback(); }
+  if (os.platform() != "darwin" || !osx_cached_defaults) {
+    if (callback) { callback(); }
     return;
   }
 
   set_osx_defaults(osx_cached_defaults, callback);
 }
 
-if(optimist.argv.help) {
+if (optimist.argv.help) {
   optimist.showHelp();
 } else {
   main();
