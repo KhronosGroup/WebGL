@@ -15,7 +15,7 @@
                     "paths": ["C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"]
                 },
                 "remote-android": {
-                    "pre_launch_command": "adb shell \"echo 'chrome --no-first-run --disable-gpu-driver-bug-workarounds --ignore-gpu-blacklist --disable-gesture-requirement-for-media-playback' > /data/local/chrome-command-line\"",
+                    "pre_launch_command": "adb shell \"echo 'chrome --disable-fre --disable-gpu-driver-bug-workarounds --ignore-gpu-blacklist --disable-gesture-requirement-for-media-playback' > /data/local/chrome-command-line\"",
                     "package_name": "com.android.chrome",
                     "main_activity": "com.android.chrome/com.google.android.apps.chrome.Main",
                     "launch_intent": "android.intent.action.VIEW",
