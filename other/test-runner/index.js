@@ -560,6 +560,12 @@ var BrowserInstanceRemoteAndroid = function(app, browser, start_callback, finish
   } else if (adb_devices_plus2 > 3 && !process.env.ANDROID_SERIAL) {
     console.error("\n  ERROR: More than one Android device connected to adb, please define ANDROID_SERIAL to specify which one to use.\n");
     process.exit(1);
+  } else {
+    var adb_root_output = shell.exec("adb root", {silent:true}).output;
+    if (adb_root_output.match(/adbd cannot run as root/)) {
+      console.error("\n ERROR: Test runner cannot be run on non-rooted android device.\n");
+      process.exit(1);
+    }
   }
 
   setTimeout(start_callback, 0);

@@ -57,13 +57,14 @@ The test runner supports following browser configurations on Android:
 
 NOTE: The platform argument needs to be explicitly passed as 'remote-android'
 to run tests remotely on android. To do this, you need the following:
-    - Android device connected to linux host machine
-    - Chrome application installed on connected device
-    - Android SDK installed on your host linux machine
-    - 'adb' in your system path
-    - The 'ant' build system installed in case you want to modify the prebuilt
-      port forwarder apk, see ./android/PortForwarderService/README for more
-      details.
+
+  - Rooted android device connected to linux host machine
+  - Chrome application installed on connected device
+  - Android SDK installed on your host linux machine
+  - 'adb' in your system path
+  - The 'ant' build system installed in case you want to modify the prebuilt
+    port forwarder apk, see ./android/PortForwarderService/README for more
+    details.
 
 The Android test runner has some limitations: it does not detect browser
 crashes, and the Chrome configuration overwrites command line parameters set for
