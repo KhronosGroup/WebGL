@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proposal href="WEBGL_render_to_float/">
+  <name>WEBGL_render_to_float</name>
+
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list">WebGL working
+    group</a> (public_webgl 'at' khronos.org)
+  </contact>
+
+  <contributors>
+    <contributor>Jeff Gilbert, Mozilla Corporation</contributor>
+
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>unassigned</number>
+
+  <depends>
+    <api version="1.0"/>
+
+    <ext name="OES_texture_float"/>
+    <ext name="OES_texture_half_float"/>
+  </depends>
+
+  <overview>
+    <p>Adds support for rendering to floating-point color buffers.</p>
+
+    <features>
+      <feature>
+        <p>
+          Textures created with <code>format = RGBA</code> and
+          <code>type = FLOAT</code> or <code>type = HALF_FLOAT_OES</code>, as
+          specified in <a
+          href="http://www.khronos.org/registry/webgl/extensions/OES_texture_float/">
+          OES_texture_float</a> and <a
+          href="http://www.khronos.org/registry/webgl/extensions/OES_texture_half_float/">
+          OES_texture_half_float</a>, can be attached to framebuffer object
+          color attachments for rendering.
+        </p>
+      </feature>
+
+      <feature>
+        <p>
+          <span style="color: red">NOTE:</span> fragment shaders outputs
+          gl_FragColor and gl_FragData[0] will only be clamped and converted
+          when the color buffer is fixed-point and <code>blendColor()</code> and
+          <code>clearColor()</code> will continue to clamp their parameter
+          values on input. Clamping will be applied as necessary at draw time
+          according to the type of color buffer in use.
+        </p>
+      </feature>
+
+      <feature>
+        <p>
+          If any active draw buffer is a floating-point color buffer:
+          <ul>
+            <li>Drawing with <code>BLEND</code> enabled will generate an
+                <code>INVALID_OPERATION</code> error.</li>
+            <li><code>clear()</code> will generate an
+                <code>INVALID_OPERATION</code> error.</li>
+          </ul>
+        </p>
+      </feature>
+
+      <feature>
+        <p>
+          The format and type combination <code>RGBA</code> and
+          <code>FLOAT</code> becomes valid for reading from a floating-point
+          rendering buffer. Note: <code>RGBA</code> and
+          <code>UNSIGNED_BYTE</code> cannot be used for reading from a
+          floating-point rendering buffer.
+        </p>
+      </feature>
+
+      <feature>
+        <p>
+          The component types of framebuffer object attachments can be queried.
+        </p>
+      </feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+[NoInterfaceObject]
+interface WEBGL_render_to_float {
+  const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
+  const GLenum UNSIGNED_NORMALIZED_EXT = 0x8C17;
+}; // interface WEBGL_render_to_float
+  </idl>
+
+  <newtok>
+    <function name="getParameter" type="any">
+      <param name="pname" type="GLenum"/>
+      <code>FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT</code> is accepted as the
+      <code>pname</code> parameter of <code>getParameter()</code>.
+    </function>
+  </newtok>
+
+  <additions>
+    <p>
+      The behavioral changes for drawing to and reading from floating-point color
+      buffers specified in <a
+      href="http://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_half_float/">
+      EXT_color_buffer_half_float</a> are incorporated into WebGL except for the
+      new color-renderable formats for <code>RenderbufferStorage</code>, and
+      sections regarding <code>BlendColor</code> and <code>ClearColor</code>.
+    </p>
+  </additions>
+
+  <history>
+    <revision date="2015/02/17">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</extension>
