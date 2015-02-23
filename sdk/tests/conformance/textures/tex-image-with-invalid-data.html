@@ -81,6 +81,19 @@ function test(desc, func, expected) {
     }
 }
 
+test("Calling texImage2D with no WebGLTexture bound generates INVALID_OPERATION",
+     function () {
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 64, 64, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+     },
+     gl.INVALID_OPERATION);
+
+test("Calling texSubImage2D with no WebGLTexture bound generates INVALID_OPERATION",
+     function () {
+        var buffer = new Uint8Array(4);
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
+     },
+     gl.INVALID_OPERATION);
+
 setup();
 
 test("Passing a buffer not large enough to texImage2D should generate an INVALID_OPERATION",
