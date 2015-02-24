@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 12 February 2015</h2>
+    <h2 class="no-toc">Editor's Draft 23 February 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -672,6 +672,9 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
 
   const GLuint64 TIMEOUT_IGNORED                             = 0xFFFFFFFFFFFFFFFF;
 
+  /* WebGL-specific enums */
+  const GLenum MAX_CLIENT_WAIT_TIMEOUT_WEBGL                 = 0x9247;
+
   /* Buffer objects */
   void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset,
                          GLintptr writeOffset, GLsizeiptr size);
@@ -845,6 +848,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
                 <tr><td>FRAGMENT_SHADER_DERIVATIVE_HINT</td><td>GLenum</td></tr>
                 <tr><td>MAX_3D_TEXTURE_SIZE</td><td>GLint</td></tr>
                 <tr><td>MAX_ARRAY_TEXTURE_LAYERS</td><td>GLint</td></tr>
+                <tr><td>MAX_CLIENT_WAIT_TIMEOUT_WEBGL</td><td>GLint64</td></tr>
                 <tr><td>MAX_COLOR_ATTACHMENTS</td><td>GLint</td></tr>
                 <tr><td>MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS</td><td>GLint64</td></tr>
                 <tr><td>MAX_COMBINED_UNIFORM_BLOCKS</td><td>GLint</td></tr>
@@ -1887,7 +1891,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
         <p>
         As discussed in the <a href="#CLIENT_WAIT_SYNC">differences section</a>, WebGL implementations must impose a
-        short maximum timeout to prevent blocking the main thread either indefinitely or for long periods of time.
+        short maximum timeout to prevent blocking the main thread either indefinitely or for long periods of time. The
+        implementation-defined timeout may be queried by calling <code>getParameter</code> with the
+        argument <code>MAX_CLIENT_WAIT_TIMEOUT_WEBGL</code>. If <code>timeout</code> is larger than this
+        implementation-defined timeout then an <code>INVALID_OPERATION</code> error is generated.
         </p>
 
         <div class="note">
@@ -2425,8 +2432,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <h3><a name="CLIENT_WAIT_SYNC">clientWaitSync</a></h3>
     <p>
+
         In the WebGL 2.0 API, WebGL implementations must enforce a short maximum timeout on calls to clientWaitSync in
-        order to avoid blocking execution of the main thread for excessive periods of time.
+        order to avoid blocking execution of the main thread for excessive periods of time. This timeout may be queried
+        by calling <code>getParameter</code> with the argument <code>MAX_CLIENT_WAIT_TIMEOUT_WEBGL</code>.
     </p>
     <div class="note">
         The implementation-defined maximum timeout is not specified. It is acceptable for an implementation to enforce a
