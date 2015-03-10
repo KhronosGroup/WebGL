@@ -1,0 +1,538 @@
+<?xml version="1.0"?>
+
+<draft href="WEBGL_compressed_texture_astc_ldr/">
+  <name>WEBGL_compressed_texture_astc_ldr</name>
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
+  </contact>
+  <contributors>
+    <contributor>Christophe Riccio, Unity</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+  <number>TBD</number>
+  <depends>
+    <api version="1.0"/>
+  </depends>
+  <overview>
+    <p>
+      This extension exposes the compressed texture format defined in the 
+      <a href="https://www.opengl.org/registry/specs/KHR/texture_compression_astc_hdr.txt">
+      KHR_texture_compression_astc_hdr</a> OpenGL ES extension LDR profile to WebGL.
+    </p>
+    <features>
+      <feature>
+        Compression format <code>COMPRESSED_RGBA_ASTC_4x4_KHR</code>,
+        <code>COMPRESSED_RGBA_ASTC_5x4_WEBGL</code>,
+        <code>COMPRESSED_RGBA_ASTC_5x5_WEBGL</code>,
+        <code>COMPRESSED_RGBA_ASTC_6x5_WEBGL</code>,
+        <code>COMPRESSED_RGBA_ASTC_6x6_WEBGL</code>,
+        <code>COMPRESSED_RGBA_ASTC_8x5_WEBGL</code>,
+        <code>COMPRESSED_RGBA_ASTC_8x6_WEBGL</code>,
+        <code>COMPRESSED_RGBA_ASTC_8x8_WEBGL</code>,
+        <code>COMPRESSED_RGBA_ASTC_10x5_WEBGL</code>,
+        <code>COMPRESSED_RGBA_ASTC_10x6_WEBGL</code>,
+        <code>COMPRESSED_RGBA_ASTC_10x8_WEBGL</code>,
+        <code>COMPRESSED_RGBA_ASTC_10x10_WEBGL</code>,
+        <code>COMPRESSED_RGBA_ASTC_12x10_WEBGL</code>,
+        <code>COMPRESSED_RGBA_ASTC_12x12_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_WEBGL</code>,
+        <code>COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_WEBGL</code>,
+        and <code>COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_WEBGL</code> may be passed to
+        the <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code> entry points.
+      </feature>
+      <feature>
+        Calling <code>getParameter</code> with the argument <code>COMPRESSED_TEXTURE_FORMATS</code>
+        will include the format from this specification.
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_4x4_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 3) / 4) * floor((height + 3) / 4) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_5x4_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 4) / 5) * floor((height + 3) / 4) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_5x5_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 4) / 5) * floor((height + 4) / 5) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_6x5_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 5) / 6) * floor((height + 4) / 5) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_6x6_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 5) / 6) * floor((height + 5) / 6) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_8x5_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 7) / 8) * floor((height + 4) / 5) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_8x6_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 7) / 8) * floor((height + 5) / 6) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_8x8_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 7) / 8) * floor((height + 7) / 8) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_10x5_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 9) / 10) * floor((height + 4) / 5) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_10x6_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 9) / 10) * floor((height + 5) / 6) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_10x8_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 9) / 10) * floor((height + 7) / 8) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_10x10_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 9) / 10) * floor((height + 9) / 10) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_12x10_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 11) / 12) * floor((height + 9) / 10) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+      <feature>
+        <p>The following format-specific restrictions must be enforced:</p>
+        <dl>
+          <dt>COMPRESSED_RGBA_ASTC_12x12_WEBGL</dt>
+          <dt>COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_WEBGL</dt>
+          <dd>
+            <p>The <code>byteLength</code> of the ArrayBufferView, <code>pixels</code>, passed to
+              <code>compressedTexImage2D</code> or <code>compressedTexSubImage2D</code> must be 
+              equal to the following number of bytes:
+            </p>
+            <blockquote><code>
+              floor((width + 11) / 12) * floor((height + 11) / 12) * 16
+            </code></blockquote>
+            <p>If it is not, an <code>INVALID_VALUE</code> error is generated.</p>
+          </dd>
+        </dl>
+      </feature>
+    </features>
+  </overview>
+  <idl xml:space="preserve">
+[NoInterfaceObject]
+interface WEBGL_compressed_texture_astc {
+    /* Compressed Texture Format */
+    const GLenum COMPRESSED_RGBA_ASTC_4x4_WEBGL = 0x93B0;
+    const GLenum COMPRESSED_RGBA_ASTC_5x4_WEBGL = 0x93B1;
+    const GLenum COMPRESSED_RGBA_ASTC_5x5_WEBGL = 0x93B2;
+    const GLenum COMPRESSED_RGBA_ASTC_6x5_WEBGL = 0x93B3;
+    const GLenum COMPRESSED_RGBA_ASTC_6x6_WEBGL = 0x93B4;
+    const GLenum COMPRESSED_RGBA_ASTC_8x5_WEBGL = 0x93B5;
+    const GLenum COMPRESSED_RGBA_ASTC_8x6_WEBGL = 0x93B6;
+    const GLenum COMPRESSED_RGBA_ASTC_8x8_WEBGL = 0x93B7;
+    const GLenum COMPRESSED_RGBA_ASTC_10x5_WEBGL = 0x93B8;
+    const GLenum COMPRESSED_RGBA_ASTC_10x6_WEBGL = 0x93B9;
+    const GLenum COMPRESSED_RGBA_ASTC_10x8_WEBGL = 0x93BA;
+    const GLenum COMPRESSED_RGBA_ASTC_10x10_WEBGL = 0x93BB;
+    const GLenum COMPRESSED_RGBA_ASTC_12x10_WEBGL = 0x93BC;
+    const GLenum COMPRESSED_RGBA_ASTC_12x12_WEBGL = 0x93BD;
+
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_WEBGL = 0x93D0;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_WEBGL = 0x93D1;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_WEBGL = 0x93D2;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_WEBGL = 0x93D3;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_WEBGL = 0x93D4;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_WEBGL = 0x93D5;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_WEBGL = 0x93D6;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_WEBGL = 0x93D7;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_WEBGL = 0x93D8;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_WEBGL = 0x93D9;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_WEBGL = 0x93DA;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_WEBGL = 0x93DB;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_WEBGL = 0x93DC;
+    const GLenum COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_WEBGL = 0x93DD;
+};
+  </idl>
+
+  <newtok>
+    <function name="compressedTexImage2D">
+      <param name="internalformat" type="GLenum"/>
+      Accepted by the <code>internalformat</code> parameter:
+      <code>COMPRESSED_RGBA_ASTC_4x4_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_5x4_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_5x5_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_6x5_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_6x6_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_8x5_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_8x6_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_8x8_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_10x5_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_10x6_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_10x8_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_10x10_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_12x10_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_12x12_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_WEBGL</code>
+      <br/>
+    </function>
+    
+    <function name="compressedTexSubImage2D">
+      <param name="internalformat" type="GLenum"/>
+      Accepted by the <code>internalformat</code> parameter:
+      <code>COMPRESSED_RGBA_ASTC_4x4_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_5x4_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_5x5_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_6x5_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_6x6_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_8x5_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_8x6_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_8x8_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_10x5_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_10x6_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_10x8_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_10x10_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_12x10_WEBGL</code>,
+      <code>COMPRESSED_RGBA_ASTC_12x12_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_WEBGL</code>,
+      <code>COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_WEBGL</code>
+      <br/>
+    </function>
+  </newtok>
+
+  <errors>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_4x4_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 3) / 4) * floor((height + 3) / 4) * 16
+      </code></blockquote>
+    </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_5x4_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 4) / 5) * floor((height + 3) / 4) * 16
+      </code></blockquote>
+    </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_5x5_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 4) / 5) * floor((height + 4) / 5) * 16
+      </code></blockquote>
+    </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_6x5_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 5) / 6) * floor((height + 4) / 5) * 16
+      </code></blockquote>
+    </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_6x6_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 5) / 6) * floor((height + 5) / 6) * 16
+      </code></blockquote>
+    </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_8x5_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 7) / 8) * floor((height + 4) / 5) * 16
+      </code></blockquote>
+    </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_8x6_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 7) / 8) * floor((height + 5) / 6) * 16
+      </code></blockquote>
+    </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_8x8_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 7) / 8) * floor((height + 7) / 8) * 16
+      </code></blockquote>
+    </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_10x5_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 9) / 10) * floor((height + 4) / 5) * 16
+      </code></blockquote>
+    </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_10x6_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 9) / 10) * floor((height + 5) / 6) * 16
+      </code></blockquote>
+    </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_10x8_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 9) / 10) * floor((height + 7) / 8) * 16
+      </code></blockquote>
+    </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_10x10_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 9) / 10) * floor((height + 9) / 10) * 16
+      </code></blockquote>
+    </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_12x10_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 11) / 12) * floor((height + 9) / 10) * 16
+      </code></blockquote>
+     </error>
+    <error enum="INVALID_VALUE">
+      The error <code>INVALID_VALUE</code> is generated by <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code>
+      if the <code>internalformat</code> parameter is 
+      <code>COMPRESSED_RGBA_ASTC_12x12_WEBGL</code> or <code>COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_WEBGL</code>
+      and the byteLength of the ArrayBufferView is not
+      <blockquote><code>
+        floor((width + 11) / 12) * floor((height + 11) / 12) * 16
+      </code></blockquote>
+     </error>
+  </errors>
+
+  <history>
+    <revision date="2015/03/10">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</draft>
