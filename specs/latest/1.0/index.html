@@ -2964,7 +2964,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             <br><br>
 
             The type of <code>pixels</code> must match the type of the data to be read. For example,
-	          if it is UNSIGNED_BYTE, a Uint8Array must be supplied; if it is UNSIGNED_SHORT_5_6_5,
+            if it is UNSIGNED_BYTE, a Uint8Array must be supplied; if it is UNSIGNED_SHORT_5_6_5,
             UNSIGNED_SHORT_4_4_4_4, or UNSIGNED_SHORT_5_5_5_1, a Uint16Array must be supplied; if it
             is FLOAT, a Float32Array must be supplied. If the types do not match, an
             INVALID_OPERATION error is generated.
@@ -3758,6 +3758,13 @@ extensions.
     same location. This is referred to as aliasing. When more than one attributes that
     are aliased to the same location are active in the executable program,
     <code>linkProgram</code> should fail.
+</p>
+
+<h3><a name="INITIAL_VALUE_GL_POSITION">Initial value for gl_Position</a></h3>
+<p>
+    The GLSL ES <a href="#refsGLES20GLSL">[GLES20GLSL]</a> spec leaves the value of
+    gl_Position as undefined unless it is written to in a vertex shader. WebGL guarantees
+    that gl_Position's initial value is <code>(0,0,0,0)</code>.
 </p>
 
 <!-- ======================================================================================================= -->
