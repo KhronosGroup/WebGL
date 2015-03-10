@@ -66,8 +66,7 @@ function verifyTestExpandos(instance, msg) {
 function testBasicBindings() {
     debug('Basic Bindings');
 
-    // Test data that describes how to create, bind, and
-    // retrieve an object off of the context
+    // Test data that describes how to create, bind, and retrieve an object off of the context
     var glProt = WebGLRenderingContext.prototype;
     var simpleData = [
         {
@@ -122,11 +121,13 @@ function testBasicBindings() {
         test.bindFn.apply(gl, [test.bindConstant, instance]);
         assertMsg(instance === gl.getParameter(test.retrieveConstant), msg + " returns instance that was bound.");
 
+        // Garbage collect Javascript references.  Remaining references should be internal to WebGL.
         instance = null;
         webglHarnessCollectGarbage();
 
         verifyTestExpandos(gl.getParameter(test.retrieveConstant), msg);
     });
+
     debug('');
 }
 
@@ -146,9 +147,10 @@ function testProgramsAndShaders() {
     assertMsg(program === gl.getParameter(gl.CURRENT_PROGRAM), "getParameter(gl.CURRENT_PROGRAM) return instance set with useProgram");
 
     var attachedShaders = gl.getAttachedShaders(program);
-    assertMsg(vs === attachedShaders[0], "getAttachedShaders[0] returns instance set with attachShader");
-    assertMsg(fs === attachedShaders[1], "getAttachedShaders[1] returns instance set with attachShader");
+    assertMsg(attachedShaders.indexOf(vs) !== -1, "Vertex shader instance found in getAttachedShaders");
+    assertMsg(attachedShaders.indexOf(fs) !== -1, "Fragment shader instance found in getAttachedShaders");
 
+    // Garbage collect Javascript references. Remaining references should be internal to WebGL.
     attachedShaders = null;
     program = null;
     vs = null;
@@ -183,6 +185,7 @@ function testVertexAttributeBuffers() {
         "getVertexAttrib(VERTEX_ATTRIB_ARRAY_BUFFER_BINDING) return instance set with vertexAttribPointer");
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     
+    // Garbage collect Javascript references. Remaining references should be internal to WebGL.
     buffer = null;
     program = null;    
     webglHarnessCollectGarbage();
@@ -190,6 +193,7 @@ function testVertexAttributeBuffers() {
     var retrievedBuffer = gl.getVertexAttrib(position, gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING);
     verifyTestExpandos(retrievedBuffer, "Vertex Attribute Buffer");
     shouldBeType(retrievedBuffer, 'WebGLBuffer'); 
+
     debug('');
 }
 
@@ -217,6 +221,7 @@ function testFrameBufferAttachments() {
         renderbuffer = null;
     });
 
+    // Garbage collect Javascript references. Remaining references should be internal to WebGL.
     webglHarnessCollectGarbage();
 
     // Verify all attached renderbuffers have expandos.
@@ -225,6 +230,8 @@ function testFrameBufferAttachments() {
         verifyTestExpandos(retrievedRenderbuffer, attachment.name);
         shouldBeType(retrievedRenderbuffer, 'WebGLRenderbuffer');
     });
+
+    debug('');
 }
 
 var successfullyParsed = true;
