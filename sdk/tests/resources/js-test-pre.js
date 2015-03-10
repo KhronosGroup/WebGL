@@ -600,6 +600,11 @@ function webglHarnessCollectGarbage() {
         return;
     }
 
+    if (window.CollectGarbage) {
+        CollectGarbage();
+        return;
+    }
+
     function gcRec(n) {
         if (n < 1)
             return {};
