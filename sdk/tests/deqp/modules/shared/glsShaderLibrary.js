@@ -984,7 +984,7 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 /**
  * Parse the test file and execute the test cases
  * @param {string} testName Name of the test file (without extension)
- * @param {string} filter Optional filter
+ * @param {string} filter Optional filter. Common substring of the names of the tests that should be run.
  */
 var run = function(testName, filter) {
     WebGLTestUtils.loadTextFileAsync(testName + '.test', function(success, content) {
