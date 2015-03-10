@@ -104,33 +104,6 @@ group valid "Valid scoping and name redeclaration cases"
 		""
 	end
 
-	case while_condition_variable_hides_local_variable
-		version 100 es
-		values
-		{
-			input int in0 = [ 1 | 2 | 3 ];
-			output int out0 = [ 1 | 2 | 3 ];
-		}
-
-		both ""
-			#version 100
-			precision mediump float;
-			${DECLARATIONS}
-			void main()
-			{
-				${SETUP}
-				int a = in0;
-				int i = 0;
-				while (bool a = (i < 1))
-				{
-					i++;
-				}
-				out0 = a;
-				${OUTPUT}
-			}
-		""
-	end
-
 	case for_init_statement_variable_hides_global_variable
 		version 100 es
 		values
@@ -151,35 +124,6 @@ group valid "Valid scoping and name redeclaration cases"
 				${SETUP}
 				for (int a = 0; a < 10; a++)
 				{
-				}
-				out0 = in0 + a - 5;
-				${OUTPUT}
-			}
-		""
-	end
-
-	case while_condition_variable_hides_global_variable
-		version 100 es
-		values
-		{
-			input int in0 = [ 1 | 2 | 3 ];
-			output int out0 = [ 1 | 2 | 3 ];
-		}
-
-		both ""
-			#version 100
-			precision mediump float;
-			${DECLARATIONS}
-
-			int a = 5;
-
-			void main()
-			{
-				${SETUP}
-				int i = 0;
-				while (bool a = (i < 1))
-				{
-					i++;
 				}
 				out0 = in0 + a - 5;
 				${OUTPUT}

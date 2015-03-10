@@ -2368,15 +2368,14 @@ group control_flow "Control Flow In Functions"
 
 			float func (float a)
 			{
-				int i;
-				for (i = 0; i < 6; i++) // negate a
+				for (int i = 0; i < 6; i++) // negate a
 				{
 					a = -a;
 					if (i == 4)
 						a = -a;
 				}
 
-				for (; i < 10; i++) // keep a
+				for (int i = 6; i < 10; i++) // keep a
 				{
 					if (i == 8)
 						continue;
@@ -2410,8 +2409,7 @@ group control_flow "Control Flow In Functions"
 
 			float func (float a)
 			{
-				int i;
-				for (i = 0; i < 6; i++)
+				for (int i = 0; i < 6; i++)
 				{
 					if (i == 0)
 						continue;
