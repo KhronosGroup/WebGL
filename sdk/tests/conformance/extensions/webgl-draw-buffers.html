@@ -102,7 +102,6 @@ var canvas = document.getElementById("canvas");
 var output = document.getElementById("console");
 var gl = wtu.create3DContext(canvas);
 var ext = null;
-var vao = null;
 
 var extensionConstants = [
   { name: "MAX_COLOR_ATTACHMENTS_WEBGL", enum: 0x8CDF, expectedFn: function(v) { return v >= 4; }, passMsg: " should be >= 4"},
@@ -177,8 +176,7 @@ if (!gl) {
 function createExtDrawBuffersProgram(scriptId, sub) {
   var fsource = wtu.getScript(scriptId);
   fsource = wtu.replaceParams(fsource, sub);
-  wtu.addShaderSource(output, "fragment shader", fsource);
-  return wtu.setupProgram(gl, ["vshader", fsource], ["a_position"]);
+  return wtu.setupProgram(gl, ["vshader", fsource], ["a_position"], undefined, true);
 }
 
 function runSupportedTest(extensionEnabled) {
@@ -244,9 +242,7 @@ function runEnumTestEnabled() {
 function testShaders(tests, sub) {
   tests.forEach(function(test) {
     var shaders = [wtu.getScript(test.shaders[0]), wtu.replaceParams(wtu.getScript(test.shaders[1]), sub)];
-    wtu.addShaderSource(output, "vertex shader", shaders[0]);
-    wtu.addShaderSource(output, "fragment shader", shaders[1]);
-    var program = wtu.setupProgram(gl, shaders, ["a_position"]);
+    var program = wtu.setupProgram(gl, shaders, ["a_position"], undefined, true);
     var programLinkedSuccessfully = (program != null);
     var expectedProgramToLinkSuccessfully = (test.expectFailure == true);
     expectTrue(programLinkedSuccessfully != expectedProgramToLinkSuccessfully, test.msg);
