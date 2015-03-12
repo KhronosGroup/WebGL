@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 23 February 2015</h2>
+    <h2 class="no-toc">Editor's Draft 12 March 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -681,7 +681,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   // MapBufferRange, in particular its read-only and write-only modes,
   // can not be exposed safely to JavaScript. GetBufferSubData
   // replaces it for the purpose of fetching data back from the GPU.
-  void getBufferSubData(GLenum target, GLintptr offset, ArrayBufferData returnedData);
+  void getBufferSubData(GLenum target, GLintptr offset, ArrayBuffer returnedData);
 
   /* Framebuffer objects */
   void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0,
@@ -954,7 +954,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         See <a href="#COPYING_BUFFERS">Copying Buffers</a> for restrictions imposed by the WebGL 2 API.
       </dd>
       <dt>
-        <p class="idl-code">void getBufferSubData(GLenum target, GLintptr offset, ArrayBufferData returnedData)
+        <p class="idl-code">void getBufferSubData(GLenum target, GLintptr offset, ArrayBuffer returnedData)
         </p>
       </dt>
       <dd>
