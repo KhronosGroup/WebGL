@@ -323,7 +323,7 @@ testInvalidArgument(
 debug("");
 debug("Test getUniform with all variants of data types");
 // Boolean uniform variables
-var boolProgram = wtu.loadProgramFromFile(gl, "../resources/boolUniformShader.vert", "../resources/noopUniformShader.frag");
+var boolProgram = wtu.loadProgramFromFile(gl, "../../conformance/resources/boolUniformShader.vert", "../../conformance/resources/noopUniformShader.frag");
 shouldBe('gl.getProgramParameter(boolProgram, gl.LINK_STATUS)', 'true');
 var bvalLoc = gl.getUniformLocation(boolProgram, "bval");
 var bval2Loc = gl.getUniformLocation(boolProgram, "bval2");
@@ -340,7 +340,7 @@ shouldBe('gl.getUniform(boolProgram, bval2Loc)', '[true, false]');
 shouldBe('gl.getUniform(boolProgram, bval3Loc)', '[true, false, true]');
 shouldBe('gl.getUniform(boolProgram, bval4Loc)', '[true, false, true, false]');
 // Integer uniform variables
-var intProgram = wtu.loadProgramFromFile(gl, "../resources/intUniformShader.vert", "../resources/noopUniformShader.frag");
+var intProgram = wtu.loadProgramFromFile(gl, "../../conformance/resources/intUniformShader.vert", "../../conformance/resources/noopUniformShader.frag");
 shouldBe('gl.getProgramParameter(intProgram, gl.LINK_STATUS)', 'true');
 var ivalLoc = gl.getUniformLocation(intProgram, "ival");
 var ival2Loc = gl.getUniformLocation(intProgram, "ival2");
@@ -357,7 +357,7 @@ shouldBe('gl.getUniform(intProgram, ival2Loc)', '[2, 3]');
 shouldBe('gl.getUniform(intProgram, ival3Loc)', '[4, 5, 6]');
 shouldBe('gl.getUniform(intProgram, ival4Loc)', '[7, 8, 9, 10]');
 // Float uniform variables
-var floatProgram = wtu.loadProgramFromFile(gl, "../resources/floatUniformShader.vert", "../resources/noopUniformShader.frag");
+var floatProgram = wtu.loadProgramFromFile(gl, "../../conformance/resources/floatUniformShader.vert", "../../conformance/resources/noopUniformShader.frag");
 shouldBe('gl.getProgramParameter(floatProgram, gl.LINK_STATUS)', 'true');
 var fvalLoc = gl.getUniformLocation(floatProgram, "fval");
 var fval2Loc = gl.getUniformLocation(floatProgram, "fval2");
@@ -374,7 +374,7 @@ shouldBe('gl.getUniform(floatProgram, fval2Loc)', '[12, 13]');
 shouldBe('gl.getUniform(floatProgram, fval3Loc)', '[14, 15, 16]');
 shouldBe('gl.getUniform(floatProgram, fval4Loc)', '[17, 18, 19, 20]');
 // Sampler uniform variables
-var samplerProgram = wtu.loadProgramFromFile(gl, "../resources/noopUniformShader.vert", "../resources/samplerUniformShader.frag");
+var samplerProgram = wtu.loadProgramFromFile(gl, "../../conformance/resources/noopUniformShader.vert", "../../conformance/resources/samplerUniformShader.frag");
 shouldBe('gl.getProgramParameter(samplerProgram, gl.LINK_STATUS)', 'true');
 var s2DValLoc = gl.getUniformLocation(samplerProgram, "s2D");
 var sCubeValLoc = gl.getUniformLocation(samplerProgram, "sCube");
@@ -385,7 +385,7 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 shouldBe('gl.getUniform(samplerProgram, s2DValLoc)', '0');
 shouldBe('gl.getUniform(samplerProgram, sCubeValLoc)', '1');
 // Matrix uniform variables
-var matProgram = wtu.loadProgramFromFile(gl, "../resources/matUniformShader.vert", "../resources/noopUniformShader.frag");
+var matProgram = wtu.loadProgramFromFile(gl, "../../conformance/resources/matUniformShader.vert", "../../conformance/resources/noopUniformShader.frag");
 shouldBe('gl.getProgramParameter(matProgram, gl.LINK_STATUS)', 'true');
 var mval2Loc = gl.getUniformLocation(matProgram, "mval2");
 var mval3Loc = gl.getUniformLocation(matProgram, "mval3");
@@ -436,7 +436,9 @@ testInvalidArgument(
       gl.VERTEX_ATTRIB_ARRAY_NORMALIZED,
       gl.VERTEX_ATTRIB_ARRAY_STRIDE,
       gl.VERTEX_ATTRIB_ARRAY_ENABLED,
-      gl.CURRENT_VERTEX_ATTRIB
+      gl.CURRENT_VERTEX_ATTRIB,
+      gl.VERTEX_ATTRIB_ARRAY_INTEGER,
+      gl.VERTEX_ATTRIB_ARRAY_DIVISOR
     ],
     function(parameter) {
       return gl.getVertexAttrib(1, parameter);
