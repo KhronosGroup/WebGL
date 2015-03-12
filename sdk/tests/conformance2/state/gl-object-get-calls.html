@@ -42,23 +42,6 @@
 var wtu = WebGLTestUtils;
 description("Test of get calls against GL objects like getBufferParameter, etc.");
 
-function sizeInBytes(type) {
-  switch (type) {
-  case gl.BYTE:
-  case gl.UNSIGNED_BYTE:
-    return 1;
-  case gl.SHORT:
-  case gl.UNSIGNED_SHORT:
-    return 2;
-  case gl.INT:
-  case gl.UNSIGNED_INT:
-  case gl.FLOAT:
-    return 4;
-  default:
-    throw "unknown type";
-  }
-}
-
 var gl = wtu.create3DContext(null, null, 2);
 
 debug("test getAttachedShaders");
@@ -437,7 +420,6 @@ testInvalidArgument(
       gl.VERTEX_ATTRIB_ARRAY_STRIDE,
       gl.VERTEX_ATTRIB_ARRAY_ENABLED,
       gl.CURRENT_VERTEX_ATTRIB,
-      gl.VERTEX_ATTRIB_ARRAY_INTEGER,
       gl.VERTEX_ATTRIB_ARRAY_DIVISOR
     ],
     function(parameter) {
