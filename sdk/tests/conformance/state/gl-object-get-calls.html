@@ -43,6 +43,7 @@ var wtu = WebGLTestUtils;
 description("Test of get calls against GL objects like getBufferParameter, etc.");
 
 var gl = wtu.create3DContext();
+var version = wtu.getVersion();
 
 debug("test getAttachedShaders");
 var standardVert = wtu.loadStandardVertexShader(gl);
@@ -172,14 +173,21 @@ testInvalidArgument(
       return gl.getFramebufferAttachmentParameter(target, gl.COLOR_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
     }
 );
+var validArrayForFramebufferAttachment = new Array(
+    gl.COLOR_ATTACHMENT0,
+    gl.DEPTH_ATTACHMENT,
+    gl.STENCIL_ATTACHMENT,
+    gl.DEPTH_STENCIL_ATTACHMENT
+);
+if (version > 1) {
+  for (var ii = 1; ii < gl.getParameter(gl.MAX_COLOR_ATTACHMENTS); ++ii) {
+    validArrayForFramebufferAttachment[validArrayForFramebufferAttachment.length] = gl.COLOR_ATTACHMENT0 + ii;
+  }
+}
 testInvalidArgument(
     "getFramebufferAttachmentParameter",
     "attachment",
-    [ gl.COLOR_ATTACHMENT0,
-      gl.DEPTH_ATTACHMENT,
-      gl.STENCIL_ATTACHMENT,
-      gl.DEPTH_STENCIL_ATTACHMENT
-    ],
+    validArrayForFramebufferAttachment,
     function(attachment) {
       return gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, attachment, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
     }
@@ -226,19 +234,24 @@ shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_RE
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_GREEN_SIZE)');
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_BLUE_SIZE)');
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_ALPHA_SIZE)');
+var validArrayForRenderbuffer = new Array(
+    gl.RENDERBUFFER_WIDTH,
+    gl.RENDERBUFFER_HEIGHT,
+    gl.RENDERBUFFER_INTERNAL_FORMAT,
+    gl.RENDERBUFFER_RED_SIZE,
+    gl.RENDERBUFFER_GREEN_SIZE,
+    gl.RENDERBUFFER_BLUE_SIZE,
+    gl.RENDERBUFFER_ALPHA_SIZE,
+    gl.RENDERBUFFER_DEPTH_SIZE,
+    gl.RENDERBUFFER_STENCIL_SIZE
+);
+if (version > 1) {
+  validArrayForRenderbuffer[validArrayForRenderbuffer.length] = gl.RENDERBUFFER_SAMPLES;
+}
 testInvalidArgument(
     "getRenderbufferParameter",
     "parameter",
-    [ gl.RENDERBUFFER_WIDTH,
-      gl.RENDERBUFFER_HEIGHT,
-      gl.RENDERBUFFER_INTERNAL_FORMAT,
-      gl.RENDERBUFFER_RED_SIZE,
-      gl.RENDERBUFFER_GREEN_SIZE,
-      gl.RENDERBUFFER_BLUE_SIZE,
-      gl.RENDERBUFFER_ALPHA_SIZE,
-      gl.RENDERBUFFER_DEPTH_SIZE,
-      gl.RENDERBUFFER_STENCIL_SIZE,
-    ],
+    validArrayForRenderbuffer,
     function(parameter) {
       return gl.getRenderbufferParameter(gl.RENDERBUFFER, parameter);
     });
@@ -407,19 +420,24 @@ shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_ENABLED)', 'false');
 gl.vertexAttrib4f(1, 5, 6, 7, 8);
 shouldBe('gl.getVertexAttrib(1, gl.CURRENT_VERTEX_ATTRIB)', '[5, 6, 7, 8]');
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+var validArrayForVertexAttrib = new Array(
+    gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING,
+    gl.VERTEX_ATTRIB_ARRAY_ENABLED,
+    gl.VERTEX_ATTRIB_ARRAY_SIZE,
+    gl.VERTEX_ATTRIB_ARRAY_STRIDE,
+    gl.VERTEX_ATTRIB_ARRAY_TYPE,
+    gl.VERTEX_ATTRIB_ARRAY_NORMALIZED,
+    gl.VERTEX_ATTRIB_ARRAY_STRIDE,
+    gl.VERTEX_ATTRIB_ARRAY_ENABLED,
+    gl.CURRENT_VERTEX_ATTRIB
+);
+if (version > 1) {
+  validArrayForVertexAttrib[validArrayForVertexAttrib.length] = gl.VERTEX_ATTRIB_ARRAY_DIVISOR;
+}
 testInvalidArgument(
     "getVertexAttrib",
     "parameter",
-    [ gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING,
-      gl.VERTEX_ATTRIB_ARRAY_ENABLED,
-      gl.VERTEX_ATTRIB_ARRAY_SIZE,
-      gl.VERTEX_ATTRIB_ARRAY_STRIDE,
-      gl.VERTEX_ATTRIB_ARRAY_TYPE,
-      gl.VERTEX_ATTRIB_ARRAY_NORMALIZED,
-      gl.VERTEX_ATTRIB_ARRAY_STRIDE,
-      gl.VERTEX_ATTRIB_ARRAY_ENABLED,
-      gl.CURRENT_VERTEX_ATTRIB
-    ],
+    validArrayForVertexAttrib,
     function(parameter) {
       return gl.getVertexAttrib(1, parameter);
     }
