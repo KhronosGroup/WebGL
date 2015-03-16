@@ -1,3 +1,4 @@
 context/00_test_list.txt
 core/00_test_list.txt
 gsl3/00_test_list.txt
+state/00_test_list.txt
