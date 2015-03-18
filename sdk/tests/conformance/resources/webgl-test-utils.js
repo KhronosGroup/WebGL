@@ -1326,13 +1326,6 @@ var getUrlOptions = function() {
 };
 
 /**
- * By default, the contextVersion is 1. If webgl rendering context 2.x (or 3.x
- * or higher) is created by create3DContext, contextVersion should be changed
- * accordingly to record the major version number.
- */
-var contextVersion = 1;
-
-/**
  * Creates a webgl context.
  * @param {!Canvas|string} opt_canvas The canvas tag to get
  *     context from. If one is not passed in one will be
@@ -1362,9 +1355,7 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
   var names;
   switch (opt_version) {
     case 2:
-      names = ["webgl2", "experimental-webgl2"];
-      contextVersion = 2;
-      break;
+      names = ["webgl2", "experimental-webgl2"]; break;
     default:
       names = ["webgl", "experimental-webgl"]; break;
   }
@@ -1382,14 +1373,6 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
     testFailed("Unable to fetch WebGL rendering context for Canvas");
   }
   return context;
-}
-
-/**
- * Return current webgl rendering context version.
- * @return {function} Current rendering context version.
- */
-var getVersion = function() {
-  return contextVersion;
 }
 
 /**
@@ -2759,7 +2742,6 @@ return {
   addShaderSources: addShaderSources,
   cancelAnimFrame: cancelAnimFrame,
   create3DContext: create3DContext,
-  getVersion: getVersion,
   create3DContextWithWrapperThatThrowsOnGLError:
       create3DContextWithWrapperThatThrowsOnGLError,
   checkAreaInAndOut: checkAreaInAndOut,
