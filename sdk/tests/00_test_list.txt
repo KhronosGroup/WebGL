@@ -5,4 +5,5 @@ conformance/00_test_list.txt
 conformance/more/00_test_list.txt
 deqp/data/gles2/shaders/00_test_list.txt
 --min-version 2.0.0 deqp/data/gles3/shaders/00_test_list.txt
+--min-version 2.0.0 deqp/functional/gles3/00_test_list.txt
 --min-version 2.0.0 conformance2/00_test_list.txt
