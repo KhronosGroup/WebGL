@@ -211,6 +211,9 @@ shouldBe('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_HEIGHT)',
 // the implementation is allowed to change it.
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_INTERNAL_FORMAT)');
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_DEPTH_SIZE)');
+if (contextVersion > 1) {
+  shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_SAMPLES)');
+}
 var colorbuffer = gl.createRenderbuffer();
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
