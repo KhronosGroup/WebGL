@@ -497,13 +497,29 @@ function drawWithProgram(program, programInfo, test) {
     }
   }
 
+  // Filter out specified built-in uniforms
+  if (programInfo.builtin_uniforms) {
+    var num_builtins_found = 0;
+    var valid_values = programInfo.builtin_uniforms.valid_values;
+    for (var index in valid_values) {
+      var uniform = uniforms[valid_values[index]];
+      if (uniform) {
+        ++num_builtins_found;
+        uniform.builtin = true;
+      }
+    }
+
+    var min_required = programInfo.builtin_uniforms.min_required;
+    if (num_builtins_found < min_required) {
+      testFailed("only found " + num_builtins_found + " of " + min_required +
+		 " required built-in uniforms: " + valid_values);
+    }
+  }
+
   // Check for unset uniforms
   for (var name in uniforms) {
     var uniform = uniforms[name];
-    if (name.indexOf("gl_") == 0) {
-      continue;
-    }
-    if (!uniform.used) {
+    if (!uniform.used && !uniform.builtin) {
       testFailed("uniform " + name + " never set");
     }
   }

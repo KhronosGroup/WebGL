@@ -58,14 +58,22 @@ OpenGLESTestRunner.run({
               1.0
             ]
           }
-        }, 
+        },
         "fragmentShader": "../default/expected.frag"
       }, 
       "name": "DepthRange_frag.test.html", 
       "pattern": "compare", 
       "testProgram": {
         "vertexShader": "../default/default.vert", 
-        "fragmentShader": "DepthRange_frag.frag"
+        "fragmentShader": "DepthRange_frag.frag",
+        "builtin_uniforms": {
+          "min_required": 2,
+          "valid_values": [
+            "gl_DepthRange.near",
+            "gl_DepthRange.far",
+            "gl_DepthRange.diff"
+          ],
+        }
       }, 
       "state": {
         "depthrange": {
@@ -90,6 +98,14 @@ OpenGLESTestRunner.run({
             ]
           }
         }, 
+        "builtin_uniforms": {
+          "min_required": 2,
+          "valid_values": [
+            "gl_DepthRange.near",
+            "gl_DepthRange.far",
+            "gl_DepthRange.diff"
+          ],
+        },
         "fragmentShader": "../default/expected.frag"
       }, 
       "name": "DepthRange_vert.test.html", 
