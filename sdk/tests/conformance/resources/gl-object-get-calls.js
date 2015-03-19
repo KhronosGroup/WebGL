@@ -211,9 +211,6 @@ shouldBe('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_HEIGHT)',
 // the implementation is allowed to change it.
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_INTERNAL_FORMAT)');
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_DEPTH_SIZE)');
-if (contextVersion > 1) {
-  shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_SAMPLES)');
-}
 var colorbuffer = gl.createRenderbuffer();
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
@@ -223,6 +220,10 @@ shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_RE
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_GREEN_SIZE)');
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_BLUE_SIZE)');
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_ALPHA_SIZE)');
+if (contextVersion > 1) {
+  gl.renderbufferStorageMultisample(gl.RENDERBUFFER, 4, gl.RGBA4, 2, 2);
+  shouldBe('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_SAMPLES)', '4');
+}
 var validArrayForRenderbuffer = new Array(
     gl.RENDERBUFFER_WIDTH,
     gl.RENDERBUFFER_HEIGHT,
