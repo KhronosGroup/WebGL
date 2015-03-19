@@ -60,7 +60,15 @@ OpenGLESTestRunner.run({
     {
       "referenceProgram": {
         "vertexShader": "gl_FragCoord_z_frag_ref.vert", 
-        "fragmentShader": "gl_FragCoord_z_frag_ref.frag"
+        "fragmentShader": "gl_FragCoord_z_frag_ref.frag",
+        "builtin_uniforms": {
+          "min_required": 2,
+          "valid_values": [
+            "gl_DepthRange.near",
+            "gl_DepthRange.far",
+            "gl_DepthRange.diff"
+          ],
+        }
       }, 
       "model": null, 
       "testProgram": {
