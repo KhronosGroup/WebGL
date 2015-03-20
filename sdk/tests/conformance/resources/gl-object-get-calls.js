@@ -223,6 +223,10 @@ shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_RE
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_GREEN_SIZE)');
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_BLUE_SIZE)');
 shouldBeNonZero('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_ALPHA_SIZE)');
+if (contextVersion > 1) {
+  gl.renderbufferStorageMultisample(gl.RENDERBUFFER, 4, gl.RGBA4, 2, 2);
+  shouldBe('gl.getRenderbufferParameter(gl.RENDERBUFFER, gl.RENDERBUFFER_SAMPLES)', '4');
+}
 var validArrayForRenderbuffer = new Array(
     gl.RENDERBUFFER_WIDTH,
     gl.RENDERBUFFER_HEIGHT,
