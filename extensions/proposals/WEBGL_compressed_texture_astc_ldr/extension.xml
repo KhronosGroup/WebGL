@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<proposal href="WEBGL_compressed_texture_astc_ldr/">
+<proposal href="proposals/WEBGL_compressed_texture_astc_ldr/">
   <name>WEBGL_compressed_texture_astc_ldr</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
