@@ -6,7 +6,7 @@
 --min-version 1.0.3 ext-sRGB.html
 --min-version 1.0.2 ext-texture-filter-anisotropic.html
 --min-version 1.0.2 get-extension.html
-oes-standard-derivatives.html
+--max-version 1.9.9 oes-standard-derivatives.html
 oes-texture-float-with-canvas.html
 oes-texture-float-with-image-data.html
 oes-texture-float-with-image.html
