@@ -99,6 +99,7 @@ uniform-location-length-limits.html
 --min-version 1.0.2 shader-with-global-variable-precision-mismatch.html
 --min-version 1.0.2 large-loop-compile.html
 --min-version 1.0.3 struct-equals.html
+--min-version 1.0.4 struct-assign.html
 --min-version 1.0.3 struct-mixed-array-declarators.html
 --min-version 1.0.3 struct-nesting-of-variable-names.html
 --min-version 1.0.3 struct-specifiers-in-uniforms.html
