@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>WebGL Texture Format Tests</title>
+<link rel="stylesheet" href="../../../resources/js-test-style.css"/>
+<script src="../../../resources/js-test-pre.js"></script>
+<script src="../../../conformance/resources/webgl-test-utils.js"></script>
+
+<script src="../../require.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<canvas id="canvas" width="300" height="300"> </canvas>
+<script>
+testName = 'texture_formats';
+setCurrentTestName(testName);
+description("Functional test: " + testName + ".");
+
+requirejs.config({
+    baseUrl: "../../"
+    });
+var wtu = WebGLTestUtils;
+/** @type {WebGLRenderingContext} */ var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 2);
+
+requirejs(["functional/gles3/es3fTextureFormatTests"], function(textureFormatTests) {
+    try{
+        textureFormatTests.run();
+    }
+    catch(err)
+    {
+        bufferedLogToConsole(err);
+    }
+});
+</script>
+</body>
+</html>

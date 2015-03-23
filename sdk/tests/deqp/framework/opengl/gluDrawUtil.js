@@ -18,7 +18,6 @@
  *
  */
 
-
 define(function() {
 'use strict';
 
@@ -36,6 +35,83 @@ var VertexArrayBinding = function(type, location, components, elements, data) {
     this.components = components;
     this.elements = elements;
     this.data = data;
+};
+
+/**
+ * ! Lower named bindings to locations and eliminate bindings that are not used by program.
+ * @param {WebGLRenderingContext} gl WebGL context
+ * @param {number} program ID, ID of the shader program
+ * @param {Array} inputArray, Array with the named binding locations
+ * @param {Array} outputArray, Array with the lowered locations
+ */
+var namedBindingsToProgramLocations = function(gl, program, inputArray, outputArray) {
+    if (typeof outputArray === 'undefined')
+        outputArray = [];
+
+    for (var i = 0; i < inputArray.length; i++)
+    {
+        var cur = inputArray[i];
+        if (typeof cur.location === 'string')
+        {
+            //assert(binding.location >= 0);
+            var location = gl.getAttribLocation(program.getProgram(), cur.location);
+            if (location >= 0)
+            {
+                // Add binding.location as an offset to accomodate matrices.
+                outputArray.push(new VertexArrayBinding(cur.type, location, cur.components, cur.elements, cur.data));
+            }
+        }
+        else
+        {
+            outputArray.push(cur);
+        }
+    }
+
+    return outputArray;
+};
+
+/**
+ * Creates vertex buffer, binds it and draws elements
+ * @param {WebGLRenderingContext} gl WebGL context
+ * @param {number} program ID, vertexProgramID
+ * @param {Array.<number>} vertexArrays
+ * @param {PrimitiveList} primitives to draw
+ * @param {function()} callback
+ */
+var drawFromBuffers = function(gl, program, vertexArrays, primitives, callback) {
+    /** TODO: finish implementation */
+    /** @type {Array.<WebGLBuffer>} */ var objects = [];
+
+    // Lower bindings to locations
+    vertexArrays = namedBindingsToProgramLocations(gl, program, vertexArrays);
+
+    for (var i = 0; i < vertexArrays.length; i++) {
+        /** @type {WebGLBuffer} */ var buffer = vertexBuffer(gl, vertexArrays[i]);
+        objects.push(buffer);
+    }
+
+    if (primitives.indices) {
+        /** @type {WebGLBuffer} */ var elemBuffer = indexBuffer(gl, primitives);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elemBuffer);
+
+        if (callback)
+            callback.beforeDrawCall();
+
+        drawIndexed(gl, primitives, 0);
+
+        if (callback)
+            callback.afterDrawCall();
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+    } else {
+    /** TODO: implement */
+    }
+
+  assertMsgOptions(gl.getError() === gl.NO_ERROR, 'drawArrays', false, true);
+    for (var i = 0; i < vertexArrays.length; i++) {
+        gl.disableVertexAttribArray(vertexArrays[i].location);
+    }
+  gl.bindBuffer(gl.ARRAY_BUFFER, null);
 };
 
 /**
@@ -95,7 +171,6 @@ var drawIndexed = function(gl, primitives, offset) {
 
     gl.drawElements(mode, primitives.indices.length, gl.UNSIGNED_SHORT, offset);
 };
-
 
 /**
  * Enums for primitive types
@@ -215,6 +290,12 @@ Pixel.prototype.getBlue = function() {
 Pixel.prototype.getAlpha = function() {
     return this.rgba[3];
 };
+Pixel.prototype.equals = function(otherPixel) {
+    return this.rgba[0] == otherPixel.rgba[0] &&
+           this.rgba[1] == otherPixel.rgba[1] &&
+           this.rgba[2] == otherPixel.rgba[2] &&
+           this.rgba[3] == otherPixel.rgba[3];
+};
 
 var Surface = function() {
 };
@@ -241,9 +322,12 @@ Surface.prototype.getPixel = function(x, y) {
     return new Pixel(rgba);
 };
 
-
 return {
+    primitiveType: primitiveType,
+    namedBindingsToProgramLocations: namedBindingsToProgramLocations,
+    drawFromBuffers: drawFromBuffers,
     draw: draw,
+    Pixel: Pixel,
     triangles: triangles,
     patches: patches,
     Surface: Surface,

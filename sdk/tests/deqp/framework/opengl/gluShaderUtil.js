@@ -21,6 +21,76 @@
 define(function() {
     'use strict';
 
+var DE_ASSERT = function(x) {
+    if (!x)
+        throw new Error('Assert failed');
+};
+
+/**
+ * ShadingLanguageVersion
+ * @enum
+ */
+var GLSLVersion = {
+    V100_ES: 0, //!< GLSL ES 1.0
+    V300_ES: 1 //!< GLSL ES 3.0
+};
+
+GLSLVersion.V_LAST = Object.keys(GLSLVersion).length;
+
+/**
+ * getGLSLVersion - Returns a GLSLVersion based on a given webgl context.
+ * @param {WebGLRenderingContext} gl
+ * @return {GLSLVersion}
+ */
+var getGLSLVersion = function(gl) {
+    var webglversion = gl.getParameter(gl.VERSION);
+
+    if (webglversion.indexOf('WebGL 1.0') != -1) return GLSLVersion.V100_ES;
+    if (webglversion.indexOf('WebGL 2.0') != -1) return GLSLVersion.V300_ES;
+
+    throw new Error('Invalid WebGL version');
+};
+
+/**
+ * getGLSLVersionDeclaration - Returns a string declaration for the glsl version in a shader.
+ * @param {GLSLVersion} version
+ * @return {string}
+ */
+var getGLSLVersionDeclaration = function(version) {
+    /** @type {Array.<string>} */ var s_decl =
+    [
+        '#version 100',
+        '#version 300 es'
+    ];
+
+    if (version > s_decl.length - 1)
+        DE_ASSERT(false);
+
+    return s_decl[version];
+};
+
+/**
+ * @enum
+ */
+var precision = {
+    PRECISION_LOWP: 0,
+    PRECISION_MEDIUMP: 1,
+    PRECISION_HIGHP: 2
+};
+
+precision.PRECISION_LAST = Object.keys(precision).length;
+
+var getPrecisionName = function(prec) {
+    var s_names = [
+        'lowp',
+        'mediump',
+        'highp'
+    ];
+
+    return s_names[prec];
+};
+
+/** @const */ var deUint32_size = 4; //To replace all sizeof calls
 /**
  * The Type constants
  * @enum {number}
@@ -77,6 +147,8 @@ var DataType = {
     UINT_SAMPLER_3D: 40
 };
 
+DataType.LAST = Object.keys(DataType).length;
+
 /**
  * Returns type of float scalars
  * @param {DataType} dataType
@@ -112,6 +184,46 @@ var getDataTypeFloatScalars = function(dataType) {
         case DataType.BOOL_VEC4: return 'vec4';
     }
     throw Error('Unrecognized dataType ' + dataType);
+};
+
+/**
+ * getDataTypeVector
+ * @param {DataType} scalarType
+ * @param {number} size
+ * @return {DataType}
+ */
+var getDataTypeVector = function(scalarType, size)
+{
+    //DE_ASSERT(deInRange32(size, 1, 4));
+    switch (scalarType)
+    {
+        case DataType.FLOAT:
+        case DataType.INT:
+        case DataType.UINT:
+        case DataType.BOOL:
+            return scalarType + size - 1;
+        default:
+            return DataType.INVALID;
+    }
+};
+
+/**
+ * getDataTypeFloatVec
+ * @param {number} vecSize
+ * @return {DataType}
+ */
+var getDataTypeFloatVec = function(vecSize)
+{
+    return getDataTypeVector(DataType.FLOAT, vecSize);
+};
+
+/**
+ * isDataTypeBoolOrBVec
+ * @param {DataType} dataType
+ * @return {boolean}
+ */
+var isDataTypeBoolOrBVec = function(dataType) {
+    return (dataType >= DataType.BOOL) && (dataType <= DataType.BOOL_VEC4);
 };
 
 /**
@@ -166,6 +278,58 @@ var getDataTypeScalarType = function(dataType) {
 };
 
 /**
+ * Returns type of scalar
+ * @param {DataType} dataType shader
+ * @return {DataType} type of scalar type
+ */
+var getDataTypeScalarTypeAsDataType = function(dataType) {
+    switch (dataType) {
+        case DataType.FLOAT: return DataType.FLOAT;
+        case DataType.FLOAT_VEC2: return DataType.FLOAT;
+        case DataType.FLOAT_VEC3: return DataType.FLOAT;
+        case DataType.FLOAT_VEC4: return DataType.FLOAT;
+        case DataType.FLOAT_MAT2: return DataType.FLOAT;
+        case DataType.FLOAT_MAT2X3: return DataType.FLOAT;
+        case DataType.FLOAT_MAT2X4: return DataType.FLOAT;
+        case DataType.FLOAT_MAT3X2: return DataType.FLOAT;
+        case DataType.FLOAT_MAT3: return DataType.FLOAT;
+        case DataType.FLOAT_MAT3X4: return DataType.FLOAT;
+        case DataType.FLOAT_MAT4X2: return DataType.FLOAT;
+        case DataType.FLOAT_MAT4X3: return DataType.FLOAT;
+        case DataType.FLOAT_MAT4: return DataType.FLOAT;
+        case DataType.INT: return DataType.INT;
+        case DataType.INT_VEC2: return DataType.INT;
+        case DataType.INT_VEC3: return DataType.INT;
+        case DataType.INT_VEC4: return DataType.INT;
+        case DataType.UINT: return DataType.UINT;
+        case DataType.UINT_VEC2: return DataType.UINT;
+        case DataType.UINT_VEC3: return DataType.UINT;
+        case DataType.UINT_VEC4: return DataType.UINT;
+        case DataType.BOOL: return DataType.BOOL;
+        case DataType.BOOL_VEC2: return DataType.BOOL;
+        case DataType.BOOL_VEC3: return DataType.BOOL;
+        case DataType.BOOL_VEC4: return DataType.BOOL;
+        case DataType.SAMPLER_2D:
+        case DataType.SAMPLER_CUBE:
+        case DataType.SAMPLER_2D_ARRAY:
+        case DataType.SAMPLER_3D:
+        case DataType.SAMPLER_2D_SHADOW:
+        case DataType.SAMPLER_CUBE_SHADOW:
+        case DataType.SAMPLER_2D_ARRAY_SHADOW:
+        case DataType.INT_SAMPLER_2D:
+        case DataType.INT_SAMPLER_CUBE:
+        case DataType.INT_SAMPLER_2D_ARRAY:
+        case DataType.INT_SAMPLER_3D:
+        case DataType.UINT_SAMPLER_2D:
+        case DataType.UINT_SAMPLER_CUBE:
+        case DataType.UINT_SAMPLER_2D_ARRAY:
+        case DataType.UINT_SAMPLER_3D:
+            return dataType;
+    }
+    throw Error('Unrecognized dataType ' + dataType);
+};
+
+/**
  * Checks if dataType is integer or vectors of integers
  * @param {DataType} dataType shader
  * @return {boolean} Is dataType integer or integer vector
@@ -177,6 +341,24 @@ var isDataTypeIntOrIVec = function(dataType) {
         case DataType.INT_VEC2:
         case DataType.INT_VEC3:
         case DataType.INT_VEC4:
+            retVal = true;
+    }
+
+    return retVal;
+};
+
+/**
+ * Checks if dataType is unsigned integer or vectors of unsigned integers
+ * @param {DataType} dataType shader
+ * @return {boolean} Is dataType unsigned integer or unsigned integer vector
+ */
+var isDataTypeUintOrUVec = function(dataType) {
+    /** @type {boolean} */ var retVal = false;
+    switch (dataType) {
+        case DataType.UINT:
+        case DataType.UINT_VEC2:
+        case DataType.UINT_VEC3:
+        case DataType.UINT_VEC4:
             retVal = true;
     }
 
@@ -235,6 +417,22 @@ var getDataTypeScalarSize = function(dataType) {
 };
 
 /**
+ * Checks if dataType is float or vector
+ * @param {DataType} dataType shader
+ * @return {boolean} Is dataType float or vector
+ */
+var isDataTypeFloatOrVec = function(dataType) {
+    switch (dataType) {
+        case DataType.FLOAT:
+        case DataType.FLOAT_VEC2:
+        case DataType.FLOAT_VEC3:
+        case DataType.FLOAT_VEC4:
+            return true;
+    }
+    return false;
+};
+
+/**
  * Checks if dataType is a matrix
  * @param {DataType} dataType shader
  * @return {boolean} Is dataType matrix or not
@@ -253,6 +451,83 @@ var isDataTypeMatrix = function(dataType) {
             return true;
     }
     return false;
+};
+
+/**
+ * Checks if dataType is a vector
+ * @param {DataType} dataType shader
+ * @return {boolean} Is dataType vector or not
+ */
+var isDataTypeScalar = function(dataType) {
+    switch (dataType) {
+        case DataType.FLOAT:
+        case DataType.INT:
+        case DataType.UINT:
+        case DataType.BOOL:
+            return true;
+    }
+    return false;
+};
+
+/**
+ * Checks if dataType is a vector
+ * @param {DataType} dataType shader
+ * @return {boolean} Is dataType vector or not
+ */
+var isDataTypeVector = function(dataType) {
+    switch (dataType) {
+        case DataType.FLOAT_VEC2:
+        case DataType.FLOAT_VEC3:
+        case DataType.FLOAT_VEC4:
+        case DataType.INT_VEC2:
+        case DataType.INT_VEC3:
+        case DataType.INT_VEC4:
+        case DataType.UINT_VEC2:
+        case DataType.UINT_VEC3:
+        case DataType.UINT_VEC4:
+        case DataType.BOOL_VEC2:
+        case DataType.BOOL_VEC3:
+        case DataType.BOOL_VEC4:
+            return true;
+    }
+    return false;
+};
+
+/**
+ * Checks if dataType is a vector or a scalar type
+ * @param {DataType} dataType shader
+ * @return {boolean} Is dataType vector or scalar or not
+ */
+var isDataTypeScalarOrVector = function(dataType) {
+    switch (dataType) {
+        case DataType.FLOAT:
+        case DataType.FLOAT_VEC2:
+        case DataType.FLOAT_VEC3:
+        case DataType.FLOAT_VEC4:
+        case DataType.INT:
+        case DataType.INT_VEC2:
+        case DataType.INT_VEC3:
+        case DataType.INT_VEC4:
+        case DataType.UINT:
+        case DataType.UINT_VEC2:
+        case DataType.UINT_VEC3:
+        case DataType.UINT_VEC4:
+        case DataType.BOOL:
+        case DataType.BOOL_VEC2:
+        case DataType.BOOL_VEC3:
+        case DataType.BOOL_VEC4:
+            return true;
+    }
+    return false;
+};
+
+/**
+ * Checks if dataType is a sampler
+ * @param {DataType} dataType shader
+ * @return {boolean} Is dataType vector or scalar or not
+ */
+var isDataTypeSampler = function(dataType) {
+    return (dataType >= DataType.SAMPLER_2D) && (dataType <= DataType.UINT_SAMPLER_3D);
 };
 
 /**
@@ -355,16 +630,97 @@ var getDataTypeName = function(dataType)  {
     throw Error('Unrecognized dataType ' + dataType);
 };
 
+/**
+ * Returns the DataType from the GL type
+ * @param {deMath.deUint32} glType
+ * @return {DataType}
+ */
+var getDataTypeFromGLType = function(glType) {
+    switch (glType)
+    {
+        case gl.FLOAT: return DataType.FLOAT;
+        case gl.FLOAT_VEC2: return DataType.FLOAT_VEC2;
+        case gl.FLOAT_VEC3: return DataType.FLOAT_VEC3;
+        case gl.FLOAT_VEC4: return DataType.FLOAT_VEC4;
+
+        case gl.FLOAT_MAT2: return DataType.FLOAT_MAT2;
+        case gl.FLOAT_MAT2x3: return DataType.FLOAT_MAT2X3;
+        case gl.FLOAT_MAT2x4: return DataType.FLOAT_MAT2X4;
+
+        case gl.FLOAT_MAT3x2: return DataType.FLOAT_MAT3X2;
+        case gl.FLOAT_MAT3: return DataType.FLOAT_MAT3;
+        case gl.FLOAT_MAT3x4: return DataType.FLOAT_MAT3X4;
+
+        case gl.FLOAT_MAT4x2: return DataType.FLOAT_MAT4X2;
+        case gl.FLOAT_MAT4x3: return DataType.FLOAT_MAT4X3;
+        case gl.FLOAT_MAT4: return DataType.FLOAT_MAT4;
+
+        case gl.INT: return DataType.INT;
+        case gl.INT_VEC2: return DataType.INT_VEC2;
+        case gl.INT_VEC3: return DataType.INT_VEC3;
+        case gl.INT_VEC4: return DataType.INT_VEC4;
+
+        case gl.UNSIGNED_INT: return DataType.UINT;
+        case gl.UNSIGNED_INT_VEC2: return DataType.UINT_VEC2;
+        case gl.UNSIGNED_INT_VEC3: return DataType.UINT_VEC3;
+        case gl.UNSIGNED_INT_VEC4: return DataType.UINT_VEC4;
+
+        case gl.BOOL: return DataType.BOOL;
+        case gl.BOOL_VEC2: return DataType.BOOL_VEC2;
+        case gl.BOOL_VEC3: return DataType.BOOL_VEC3;
+        case gl.BOOL_VEC4: return DataType.BOOL_VEC4;
+
+        case gl.SAMPLER_2D: return DataType.SAMPLER_2D;
+        case gl.SAMPLER_CUBE: return DataType.SAMPLER_CUBE;
+        case gl.SAMPLER_2D_ARRAY: return DataType.SAMPLER_2D_ARRAY;
+        case gl.SAMPLER_3D: return DataType.SAMPLER_3D;
+
+        case gl.SAMPLER_2D_SHADOW: return DataType.SAMPLER_2D_SHADOW;
+        case gl.SAMPLER_CUBE_SHADOW: return DataType.SAMPLER_CUBE_SHADOW;
+        case gl.SAMPLER_2D_ARRAY_SHADOW: return DataType.SAMPLER_2D_ARRAY_SHADOW;
+
+        case gl.INT_SAMPLER_2D: return DataType.INT_SAMPLER_2D;
+        case gl.INT_SAMPLER_CUBE: return DataType.INT_SAMPLER_CUBE;
+        case gl.INT_SAMPLER_2D_ARRAY: return DataType.INT_SAMPLER_2D_ARRAY;
+        case gl.INT_SAMPLER_3D: return DataType.INT_SAMPLER_3D;
+
+        case gl.UNSIGNED_INT_SAMPLER_2D: return DataType.UINT_SAMPLER_2D;
+        case gl.UNSIGNED_INT_SAMPLER_CUBE: return DataType.UINT_SAMPLER_CUBE;
+        case gl.UNSIGNED_INT_SAMPLER_2D_ARRAY: return DataType.UINT_SAMPLER_2D_ARRAY;
+        case gl.UNSIGNED_INT_SAMPLER_3D: return DataType.UINT_SAMPLER_3D;
+
+        default:
+            return DataType.LAST;
+    }
+};
+
 return {
+    GLSLVersion: GLSLVersion,
+    getGLSLVersion: getGLSLVersion,
+    getGLSLVersionDeclaration: getGLSLVersionDeclaration,
+    precision: precision,
+    getPrecisionName: getPrecisionName,
+    deUint32_size: deUint32_size,
     DataType: DataType,
     getDataTypeFloatScalars: getDataTypeFloatScalars,
     getDataTypeScalarType: getDataTypeScalarType,
+    getDataTypeScalarTypeAsDataType: getDataTypeScalarTypeAsDataType,
     isDataTypeIntOrIVec: isDataTypeIntOrIVec,
+    isDataTypeUintOrUVec: isDataTypeUintOrUVec,
+    getDataTypeVector: getDataTypeVector,
+    getDataTypeFloatVec: getDataTypeFloatVec,
+    isDataTypeBoolOrBVec: isDataTypeBoolOrBVec,
     getDataTypeScalarSize: getDataTypeScalarSize,
+    isDataTypeFloatOrVec: isDataTypeFloatOrVec,
     isDataTypeMatrix: isDataTypeMatrix,
+    isDataTypeScalar: isDataTypeScalar,
+    isDataTypeVector: isDataTypeVector,
+    isDataTypeScalarOrVector: isDataTypeScalarOrVector,
+    isDataTypeSampler: isDataTypeSampler,
     getDataTypeMatrixNumColumns: getDataTypeMatrixNumColumns,
     getDataTypeMatrixNumRows: getDataTypeMatrixNumRows,
-    getDataTypeName: getDataTypeName
+    getDataTypeName: getDataTypeName,
+    getDataTypeFromGLType: getDataTypeFromGLType
 };
 
 });

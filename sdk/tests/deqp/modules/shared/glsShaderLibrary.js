@@ -18,18 +18,17 @@
  *
  */
 
-define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/opengl/gluShaderUtil"], function(deqpTests, shaderLibraryCase, deqpUtils ) {
+define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/opengl/gluShaderUtil'], function(deqpTests, shaderLibraryCase, deqpUtils) {
     'use strict';
-    
+
     var generateTestCases = function() {
-        var parser = new Parser();
+    /** @type {Parser} */ var parser = new Parser();
         try {
-            var state = deqpTests.runner.getState();
+        /** @type {Object} */ var state = deqpTests.runner.getState();
             var tree = parser.parse(state.testFile);
             state.testCases = deqpTests.newTest(state.testName, 'Top level', tree);
         }
         catch (err) {
-            console.log(err);
             bufferedLogToConsole(err);
             return false;
         }
@@ -60,26 +59,35 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
         return /^[a-zA-Z0-9_\-\.]$/.test(value);
     };
 
-    // removes however many indents there are on the first line from all lines.
+    /**
+     * Removes however many indents there are on the first line from all lines.
+     * @param {Array.<string>} arr
+     * @return {Array.<string>} output
+     */
     var removeExtraIndentation = function(str) {
         return removeExtraIndentationArray(
             str.split(/\r\n|\r|\n/)
         ).join('\n');
     };
 
+    /**
+     * Returns an array of strings without indentation.
+     * @param {Array.<string>} arr
+     * @return {Array.<string>} output
+     */
     var removeExtraIndentationArray = function(arr) {
-        var output = [];
+    /** @type {Array.<string>} */ var output = [];
 
         if (arr.length) {
 
-            var numIndentChars = 0;
+        /** @type {number} */ var numIndentChars = 0;
             for (var i = 0; i < arr[0].length && isWhitespace(arr[0].charAt(i)); ++i) {
                 numIndentChars += arr[0].charAt(i) === '\t' ? 4 : 1;
             }
 
             for (var i = 0; i < arr.length; ++i) {
-                var removed = 0;
-                var j;
+            /** @type {number} */ var removed = 0;
+            /** @type {number} */ var j;
                 for (j = 0; removed < numIndentChars && j < arr[i].length; ++j) {
                     removed += (arr[i].charAt(j) === '\t' ? 4 : 1);
                 }
@@ -92,21 +100,22 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
         return output;
     };
 
-
     var de_assert = function(condition) {
         if (!condition) {
             throw Error();
         }
     };
 
-
     /**
+     * @param {string} str
+     * @param {string} endstr end of string character
+     * @return {string} str
      * @private
      */
     var parseStringLiteralHelper = function(str, endstr) {
 
+    /** @type {number} */ var index_end = 0;
         // isolate the string
-        var index_end = 0;
         do {
             index_end = str.indexOf(endstr, index_end + 1);
         } while (index_end >= 0 && str.charAt(index_end - 1) === '\\');
@@ -129,9 +138,6 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
      * @constructor
      */
     var Parser = function() {
-
-
-
 
     /* data members */
 
@@ -208,11 +214,10 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
             TOKEN_LAST: 59
         };
 
-        var m_input = '';
-        var m_curPtr = 0;
-        var m_curToken;// = Token.TOKEN_INVALID;
-        var m_curTokenStr = '';
-
+        /** @type {string} */ var m_input = '';
+        /** @type {number} */ var m_curPtr = 0;
+        /** @type {number} */ var m_curToken;// = Token.TOKEN_INVALID;
+        /** @type {string} */ var m_curTokenStr = '';
 
         /* function members */
         this.parse = function(input) {
@@ -224,7 +229,7 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
             m_curTokenStr = '';
             advanceToken();
 
-            var nodeList = [];
+            /** @type {Array.<deqpTests.newTest>} */ var nodeList = [];
 
             for (;;) {
 
@@ -246,6 +251,12 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
         };
 
+        /**
+         * ensures that the token exists
+         * otherwise it returns the corresponding token's name depending on enum number value
+         * @param {number} id
+         * @return {string} name
+         */
         var resolveTokenName = function(id) {
             for (var name in Token) {
                 if (Token[name] === id) return name;
@@ -253,19 +264,38 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
             return 'TOKEN_UNKNOWN';
         };
 
+        /**
+         * Throws an error which contains the passed string
+         * @param {string} errorStr that contains an error to notify
+         * @return {string} error
+         */
         var parseError = function(errorStr) {
             // abort
             throw 'Parser error: ' + errorStr + ' near ' + m_curPtr.substr(0, 80);
         };
+
+        /**
+         * Converts string into float
+         * @param {string} str
+         * @return {number}
+         */
         var parseFloatLiteral = function(str) {
             return parseFloat(str);
         };
+
+        /**
+         * Converts string into integer
+         * @param {string} str
+         * @return {number}
+         */
         var parseIntLiteral = function(str) {
             return parseInt(str);
         };
         var parseStringLiteral = function(str) {
-            // find delimitor
-            var endchar = str.substr(0, 1);
+        /**
+        * @type {string}
+        * find delimitor
+        */ var endchar = str.substr(0, 1);
             return parseStringLiteralHelper(str, endchar);
         };
         var parseShaderSource = function(str) {
@@ -274,7 +304,6 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
                 parseStringLiteralHelper(str, '""')
             );
         };
-
 
         var advanceTokenWorker = function() {
 
@@ -310,7 +339,7 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
             } else if (isAlpha(m_input.charAt(m_curPtr))) {
 
-                var end = m_curPtr + 1;
+            /** @type {number} */ var end = m_curPtr + 1;
                 while (isCaseNameChar(m_input.charAt(end))) ++end;
 
                 m_curTokenStr = m_input.substr(m_curPtr, end - m_curPtr);
@@ -364,7 +393,7 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
             } else if (isNumeric(m_input.charAt(m_curPtr))) {
 
-                var p = m_curPtr;
+            /** @type {number} */ var p = m_curPtr;
                 while (isNumeric(m_input.charAt(p))) ++p;
 
                 if (m_input.charAt(p) === '.') { // float
@@ -394,7 +423,7 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
             } else if (m_input.charAt(m_curPtr) === '"' && m_input.charAt(m_curPtr + 1) === '"') { // shader source
 
-                var p = m_curPtr + 2;
+            /** @type {number} */ var p = m_curPtr + 2;
 
                 while (m_input.charAt(p) != '"' || m_input.charAt(p + 1) != '"') {
                     de_assert(p < m_input.length);
@@ -412,8 +441,8 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
             } else if (m_input.charAt(m_curPtr) === '"' || m_input.charAt(m_curPtr) === "'") {
 
-                var delimitor = m_input.charAt(m_curPtr);
-                var p = m_curPtr + 1;
+            /** @type {number} */ var delimitor = m_input.charAt(m_curPtr);
+            /** @type {number} */ var p = m_curPtr + 1;
 
                 while (m_input.charAt(p) != delimitor) {
 
@@ -458,15 +487,18 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
         };
 
+        /**
+         * @return {Object.<number, string, string>}
+         */
         var advanceTokenTester = function(input, current_index) {
             m_input = input;
             m_curPtr = current_index;
             m_curTokenStr = '';
             advanceTokenWorker();
             return {
-                idType: m_curToken,
-                name: resolveTokenName(m_curToken),
-                value: m_curTokenStr
+            /** @type {number} */ idType: m_curToken,
+            /** @type {string} */ name: resolveTokenName(m_curToken),
+            /** @type {string} */ value: m_curTokenStr
             };
         };
 
@@ -480,7 +512,7 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
             if (m_curToken != token) {
                 // parse error
-                var msg = "unexpected token '" + m_curTokenStr + "', expecting '" + getTokenName(token) + "'";
+            /** @type {string} */ var msg = "unexpected token '" + m_curTokenStr + "', expecting '" + getTokenName(token) + "'";
                 throw Error('Parse Error. ' + msg + ' near ' + m_curPtr + ' ...');
             }
         };
@@ -514,6 +546,12 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
                 default: return deqpUtils.DataType.INVALID;
             }
         };
+
+        /**
+         * Returns the corresponding token's name depending on enum number value
+         * @param {number} token
+         * @return {string}
+         */
         var getTokenName = function(token) {
             switch (token) {
                 case Token.TOKEN_INVALID: return '<invalid>';
@@ -583,12 +621,16 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
             }
         };
 
+        /**
+         * @param {string} expectedDataType
+         * @param {Object} result
+         */
         var parseValueElement = function(expectedDataType, result) {
 
-            var scalarType = deqpUtils.getDataTypeScalarType(expectedDataType);
-            var scalarSize = deqpUtils.getDataTypeScalarSize(expectedDataType);
+        /** @type {string} */ var scalarType = deqpUtils.getDataTypeScalarType(expectedDataType);
+        /** @type {string} */ var scalarSize = deqpUtils.getDataTypeScalarSize(expectedDataType);
 
-            var elems = [];
+            /** @type {Array.<number>} */ var elems = [];
 
             if (scalarSize > 1) {
                 de_assert(mapDataTypeToken(m_curToken) === expectedDataType);
@@ -599,7 +641,7 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
             for (var i = 0; i < scalarSize; ++i) {
                 if (scalarType === 'float') {
 
-                    var signMult = 1.0;
+                /** @type {number} */ var signMult = 1.0;
                     if (m_curToken === Token.TOKEN_MINUS) {
                         signMult = -1.0;
                         advanceToken();
@@ -611,7 +653,7 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
                 } else if (scalarType === 'int' || scalarType === 'uint') {
 
-                    var signMult = 1;
+                /** @type {number} */ var signMult = 1;
                     if (m_curToken === Token.TOKEN_MINUS) {
                         signMult = -1;
                         advanceToken();
@@ -646,13 +688,19 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
         };
 
+        /**
+         * @param {Object.<Array, number>} valueBlock
+         */
         var parseValue = function(valueBlock) {
 
+        /**
+        * @type {Object}
+        */
             var result = {
-                dataType: null,
-                storageType: null,
-                valueName: null,
-                elements: []
+            /** @type {string} */ dataType: null,
+            /** @type {string} */ storageType: null,
+            /** @type {string} */ valueName: null,
+            /** @type {Array} */ elements: []
             };
 
             // parse storage
@@ -724,6 +772,9 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
         };
 
+        /**
+         * @param {Object.<Array, number>} valueBlock
+         */
         var parseValueBlock = function(valueBlock) {
 
             advanceToken(Token.TOKEN_VALUES);
@@ -745,8 +796,8 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
             advanceToken(Token.TOKEN_RIGHT_BRACE);
 
+            /** @type {number} */ var arrayLength = 1;
             // compute combined array length of value block.
-            var arrayLength = 1;
             for (var i = 0; i < valueBlock.values.length; ++i) {
                 if (valueBlock.values[i].arrayLength > 1) {
                     de_assert(arrayLength === 1 || arrayLength === valueBlock.values[i].arrayLength);
@@ -758,25 +809,34 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
         };
 
+        /**
+         * @param {Array.<deqpTests.newTest>} shaderNodeList
+         */
         var parseShaderCase = function(shaderNodeList) {
 
             // parse case
             advanceToken(Token.TOKEN_CASE);
 
-            // parse case name
+            /**
+             * @type {string}
+             * parse case name
+             */
             var caseName = m_curTokenStr;
             advanceToken(); // \note [pyry] All token types are allowed here.
 
-            // setup case
+            /**
+             * @type {Array.<Object>}
+             * setup case
+             */
             var valueBlockList = [];
 
             /** TODO: Should the default version be defined elsewhere? */
-            var version = '100';
-            var expectResult = shaderLibraryCase.expectResult.EXPECT_PASS;
-            var description;
-            var bothSource = '';
-            var vertexSource = '';
-            var fragmentSource = '';
+            /** @type {string} */ var version = '100';
+            /** @type {number} */ var expectResult = shaderLibraryCase.expectResult.EXPECT_PASS;
+            /** @type {string} */ var description;
+            /** @type {string} */ var bothSource = '';
+            /** @type {string} */ var vertexSource = '';
+            /** @type {string} */ var fragmentSource = '';
 
             for (;;) {
 
@@ -812,7 +872,7 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
                 } else if (m_curToken === Token.TOKEN_VALUES) {
 
-                    var block = shaderLibraryCase.genValueBlock();
+                /** @type {Object.<Array, number>} */ var block = shaderLibraryCase.genValueBlock();
                     parseValueBlock(block);
                     valueBlockList.push(block);
 
@@ -822,10 +882,10 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
                     m_curToken === Token.TOKEN_FRAGMENT
                 ) {
 
-                    var token = m_curToken;
+                /** @type {number} */ var token = m_curToken;
                     advanceToken();
                     assumeToken(Token.TOKEN_SHADER_SOURCE);
-                    var source = parseShaderSource(m_curTokenStr);
+                /** @type {string} */ var source = parseShaderSource(m_curTokenStr);
 
                 //    console.log("old: " + m_curTokenStr);
                 //    console.log("new: " + source);
@@ -842,8 +902,8 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
                     advanceToken();
 
-                    var versionNum = 0;
-                    var postfix = '';
+                    /** @type {number} */ var versionNum = 0;
+                    /** @type {string} */ var postfix = '';
 
                     assumeToken(Token.TOKEN_INT_LITERAL);
                     versionNum = parseIntLiteral(m_curTokenStr);
@@ -879,15 +939,22 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
             }
 
             advanceToken(Token.TOKEN_END); // case end
-            // no ShaderCase yet?
+
+            /**
+             * no ShaderCase yet?
+             * @param {string} vert
+             * @param {string} frag
+             * @param {number} type
+             * @return {Object}
+             */
             var getShaderSpec = function(vert, frag, type) {
                 return {
-                    expectResult: expectResult,
-                    caseType: type,
-                    valueBlockList: valueBlockList,
-                    targetVersion: version,
-                    vertexSource: vert,
-                    fragmentSource: frag
+                /** @type {number} */ expectResult: expectResult,
+                /** @type {number} */ caseType: type,
+                /** @type {Array.<Object>} */ valueBlockList: valueBlockList,
+                /** @type {string} */ targetVersion: version,
+                /** @type {string} */ vertexSource: vert,
+                /** @type {string} */ fragmentSource: frag
                 };
             };
             getShaderSpec.bind(this);
@@ -896,7 +963,6 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
                 de_assert(!vertexSource);
                 de_assert(!fragmentSource);
-
 
                 shaderNodeList.push(deqpTests.newTest(caseName + '_vertex', description, getShaderSpec(bothSource, null,
                     shaderLibraryCase.caseType.CASETYPE_VERTEX_ONLY)));
@@ -912,21 +978,25 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
                 }
         };
 
+        /**
+         * @param {Array.<deqpTests.newTest>} shaderNodeList
+         */
         var parseShaderGroup = function(shaderNodeList) {
 
             // parse 'case'
             advanceToken(Token.TOKEN_GROUP);
 
-            // parse case name
-            var name = m_curTokenStr;
+            /** @type {string}
+             * parse case name
+             */ var name = m_curTokenStr;
             advanceToken(); // \note [pyry] We don't want to check token type here (for instance to allow "uniform") group.
 
             // Parse description.
             assumeToken(Token.TOKEN_STRING);
-            var description = parseStringLiteral(m_curTokenStr);
+            /** @type {string} */ var description = parseStringLiteral(m_curTokenStr);
             advanceToken(Token.TOKEN_STRING);
 
-            var children = [];
+            /** @type {Array.<deqpTests.newTest>} */ var children = [];
 
             for (;;) {
 
@@ -945,8 +1015,9 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
 
             advanceToken(Token.TOKEN_END); // group end
 
-            // Create group node.
-            var groupNode = deqpTests.newTest(name, description, children);
+            /** @param {deqpTests.newTest}
+             *  Create group node
+             */ var groupNode = deqpTests.newTest(name, description, children);
             shaderNodeList.push(groupNode);
 
         };
@@ -979,7 +1050,6 @@ define(["framework/common/tcuTestCase", "./glsShaderLibraryCase", "framework/ope
         }(this));
         //*/
     };
-
 
 /**
  * Parse the test file and execute the test cases
