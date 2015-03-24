@@ -727,10 +727,11 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void uniform2ui(WebGLUniformLocation? location, GLuint v0, GLuint v1);
   void uniform3ui(WebGLUniformLocation? location, GLuint v0, GLuint v1, GLuint v2);
   void uniform4ui(WebGLUniformLocation? location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
-  void uniform1uiv(WebGLUniformLocation? location, sequence&lt;GLuint&gt; value);
-  void uniform2uiv(WebGLUniformLocation? location, sequence&lt;GLuint&gt; value);
-  void uniform3uiv(WebGLUniformLocation? location, sequence&lt;GLuint&gt; value);
-  void uniform4uiv(WebGLUniformLocation? location, sequence&lt;GLuint&gt; value);
+  typedef (Uint32Array or sequence&lt;GLuint&gt;) UniformUIVSource;
+  void uniform1uiv(WebGLUniformLocation? location, UniformUIVSource value);
+  void uniform2uiv(WebGLUniformLocation? location, UniformUIVSource value);
+  void uniform3uiv(WebGLUniformLocation? location, UniformUIVSource value);
+  void uniform4uiv(WebGLUniformLocation? location, UniformUIVSource value);
   typedef (Float32Array or sequence&lt;GLfloat&gt;) UniformMatrixFVSource;
   void uniformMatrix2x3fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
   void uniformMatrix3x2fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
@@ -1430,7 +1431,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dd>
         Sets the vertex attribute at the passed index to the given constant integer value. Values set via the
         <code>vertexAttrib</code> are guaranteed to be returned from the <code>getVertexAttrib</code> function
-        with the <code>CURRENT_VERTEX_ATTRIB</code> param, even if there have been intervening calls to 
+        with the <code>CURRENT_VERTEX_ATTRIB</code> param, even if there have been intervening calls to
         <code>drawArrays</code> or <code>drawElements</code>.
       </dd>
       <dt>
