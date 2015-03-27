@@ -1,1 +1,2 @@
 buffer-type-restrictions.html
+buffer-copying-restrictions.html
