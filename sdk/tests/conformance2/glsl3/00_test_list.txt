@@ -1,2 +1,4 @@
+array-assign.html
+array-equality.html
 misplaced-version-directive.html
 shader-linking.html
