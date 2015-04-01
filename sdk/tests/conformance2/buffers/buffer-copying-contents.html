@@ -1,0 +1,100 @@
+<!--
+
+/*
+** Copyright (c) 2015 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL buffer copying contents test.</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<link rel="stylesheet" href="../../conformance/resources/glsl-feature-tests.css"/>
+<script src="../../resources/js-test-pre.js"></script>
+<script src="../../conformance/resources/webgl-test-utils.js"></script>
+<script src="../../conformance/resources/glsl-conformance-test.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+description("Test copying a buffer's contents to another buffer governed by the WebGL 2 spec.");
+
+var wtu = WebGLTestUtils;
+
+var gl = wtu.create3DContext(undefined, undefined, 2);
+
+var vertices = [
+     1.1,  1.0,  1.3,
+    -1.0, -1.0,  -5.0,
+     5.3, -1.0,  1.0
+];
+
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+
+debug("");
+debug("Test copying a buffer of other data (gl.ARRAY_BUFFER) bound to gl.COPY_READ_BUFFER to a "
+  + "buffer bound to gl.ARRAY_BUFFER");
+var srcBuffer = gl.createBuffer(), dstBuffer = gl.createBuffer();
+var originalData = new Float32Array(vertices);
+var length = vertices.length * 4;
+
+gl.bindBuffer(gl.ARRAY_BUFFER, srcBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, originalData, gl.STATIC_DRAW);
+gl.bindBuffer(gl.COPY_READ_BUFFER, srcBuffer);
+
+gl.bindBuffer(gl.ARRAY_BUFFER, dstBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(length), gl.STATIC_DRAW);
+
+gl.copyBufferSubData(gl.COPY_READ_BUFFER, gl.ARRAY_BUFFER, 0, 0, length);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Copying gl.ARRAY_BUFFER bound to gl.COPY_READ_BUFFER to a"
+  + " buffer bound to gl.ARRAY_BUFFER should WORK");
+
+var retBuffer = new ArrayBuffer(length);
+gl.getBufferSubData(gl.ARRAY_BUFFER, 0, retBuffer);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "gl.getBufferSubData(gl.ARRAY_BUFFER, 0, retBuffer) should WORK");
+
+debug("");
+debug("Check destination buffer to see if it matches the original data set.");
+var failed = false;
+var retArray = new Float32Array(retBuffer);
+for (var i = 0; i < vertices.length; i++) {
+  if (originalData[i] != retArray[i]) {
+    failed = true;
+    break;
+  }
+}
+if (failed)
+  testFailed("The returned array buffer fails to match original data");
+else
+  testPassed("The returned array buffer matches original data");
+
+finishTest();
+
+var successfullyParsed = true;
+</script>
+</body>
+</html>
