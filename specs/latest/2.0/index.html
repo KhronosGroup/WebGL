@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 1 April 2015</h2>
+    <h2 class="no-toc">Editor's Draft 02 April 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -955,7 +955,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         See <a href="#COPYING_BUFFERS">Copying Buffers</a> for restrictions imposed by the WebGL 2 API.
       </dd>
       <dt>
-        <p class="idl-code">void getBufferSubData(GLenum target, GLintptr offset, ArrayBuffer returnedData)
+        <p class="idl-code">void getBufferSubData(GLenum target, GLintptr offset, ArrayBuffer? returnedData)
         </p>
       </dt>
       <dd>
@@ -1575,9 +1575,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         Define the draw buffers to which all fragment colors are written.
       </dd>
       <dt>
-        <p class="idl-code">void clearBufferiv(GLenum buffer, GLint drawbuffer, ClearBufferISource value)</p>
-        <p class="idl-code">void clearBufferuiv(GLenum buffer, GLint drawbuffer, ClearBufferUISource value)</p>
-        <p class="idl-code">void clearBufferfv(GLenum buffer, GLint drawbuffer, ClearBufferFSource value)</p>
+        <p class="idl-code">void clearBufferiv(GLenum buffer, GLint drawbuffer, ClearBufferIVSource value)</p>
+        <p class="idl-code">void clearBufferuiv(GLenum buffer, GLint drawbuffer, ClearBufferUIVSource value)</p>
+        <p class="idl-code">void clearBufferfv(GLenum buffer, GLint drawbuffer, ClearBufferFVSource value)</p>
         <p class="idl-code">void clearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.2.3">OpenGL ES 3.0.3 &sect;4.2.3</a>,
