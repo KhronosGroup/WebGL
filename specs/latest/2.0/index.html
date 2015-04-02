@@ -900,6 +900,15 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
                 <tr><td>UNPACK_SKIP_ROWS</td><td>GLboolean</td></tr>
                 <tr><td>VERTEX_ARRAY_BINDING</td><td>WebGLVertexArrayObject</td></tr>
             </table><br>
+            <p>All queries returning sequences or typed arrays return a new object each time.</p>
+            <p>If <em>pname</em> is not in the table above and is not one of parameter names supported by WebGL 1.0, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+            <p>The following <em>pname</em> arguments return a string describing some aspect of the current WebGL implementation:</p>
+            <table>
+              <tr><td>VERSION</td>
+                  <td>Returns a version or release number of the form <code>WebGL&lt;space&gt;2.0&lt;space&gt;&lt;vendor-specific information&gt;</code>.</td></tr>
+              <tr><td>SHADING_LANGUAGE_VERSION</td>
+                  <td>Returns a version or release number of the form <code>WebGL&lt;space&gt;GLSL&lt;space&gt;ES&lt;space&gt;3.0&lt;space&gt;&lt;vendor-specific information&gt;</code>.</td></tr>
+            </table><br>
 
         <dt class="idl-code">any getIndexedParameter(GLenum target, GLuint index)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.1">OpenGL ES 3.0.3 &sect;6.1.1</a>,
