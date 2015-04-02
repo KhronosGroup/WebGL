@@ -2316,6 +2316,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <code>INVALID_OPERATION</code> error, and the state of the binding point will remain untouched.
     </p>
 
+    <div class="note rationale">
+        This restriction has been added to prevent writing to index buffers on the GPU, which would make
+        doing any CPU-side checks on index data prohibitively expensive. Handling index buffers as different
+        from other buffer data also maps better to the Direct3D API.
+    </div>
+
     <h3><a name="COPYING_BUFFERS">Copying Buffers</a></h3>
 
     <p>
@@ -2326,6 +2332,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         has the <em>undefined</em> WebGL buffer type sets its WebGL buffer type to the WebGL buffer type of
         the source buffer.
     </p>
+    <div class="note rationale">
+        Same as with <a href="#BUFFER_OBJECT_BINDING">Buffer Object Binding</a> restrictions above.
+    </div>
 
     <h3>Draw Buffers</h3>
 
@@ -2333,6 +2342,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         The value of the MAX_COLOR_ATTACHMENTS parameter must be equal to that of the MAX_DRAW_BUFFERS
         parameter.
     </p>
+    <div class="note rationale">
+        There is no use case for these parameters being different.
+    </div>
 
     <h3>No Program Binaries</h3>
 
@@ -2356,6 +2368,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         restart if primitive restart is enabled. The range checking specified for <code>drawArrays</code> in
         the WebGL 1.0 API is also applied to <code>drawArraysInstanced</code> in the WebGL 2.0 API.
     </p>
+    <div class="note rationale">
+        The OpenGL robustness extensions do not specify what happens if indices above MAX_ELEMENT_INDEX are
+        used, so passing them to the driver is risky. On platforms where MAX_ELEMENT_INDEX is the same as
+        the maximum unsigned integer value this section will have no effect.
+    </div>
 
     <h3><a name="ENABLED_ATTRIBUTE">Enabled Attribute</a></h3>
 
@@ -2365,6 +2382,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         error if there is not at least one enabled vertex attribute array that has a divisor of zero and is
         bound to an active generic attribute value in the program used for the draw command.
     </p>
+    <div class="note rationale">
+        The removed functionality is an exotic corner case, and Direct3D based implementations of WebGL would
+        need to add complex workarounds to support it.
+    </div>
 
     <h3><a name="ACTIVE_UNIFORM_BLOCK_BACKING">Active Uniform Block Backing</a></h3>
 
@@ -2374,6 +2395,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         error if any active uniform block in the program used for the draw command is not backed by a
         sufficiently large buffer object.
     </p>
+    <div class="note rationale">
+        In OpenGL, insufficient uniform block backing is allowed to cause GL interruption or termination.
+    </div>
 
     <h3>Default Framebuffer</h3>
 
@@ -2483,11 +2507,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         same parameters, but only transferring the immediately following index through the end of
         the originally specified indices.
     </p>
-    <div class="note">
-        This compatibility difference was introduced in order to avoid performance pitfalls in WebGL
-        2.0 applications on some platforms. Applications and content creation tools can be
-        straightforwardly adjusted to avoid using the maximum vertex index if the primitive restart
-        behavior is not desired.
+    <div class="note rationale">
+        This compatibility difference was introduced in order to avoid performance pitfalls in
+        Direct3D based WebGL implementations. Applications and content creation tools can be
+        adjusted to avoid using the maximum vertex index if the primitive restart behavior is not
+        desired.
     </div>
 
     <h3>No texture swizzles</h3>
