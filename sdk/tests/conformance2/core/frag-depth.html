@@ -161,12 +161,12 @@ function runOutputTests() {
     // Draw 1: Greater than clear depth
     gl.uniform1f(depthUniform, 1.0);
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.checkCanvasRect(gl, 0, 0, canvas.width, canvas.height, [255, 255, 255, 255]);
+    wtu.checkCanvas(gl, [255, 255, 255, 255]);
 
     // Draw 2: Less than clear depth
     gl.uniform1f(depthUniform, 0.0);
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.checkCanvasRect(gl, 0, 0, canvas.width, canvas.height, [255, 0, 0, 255]);
+    wtu.checkCanvas(gl, [255, 0, 0, 255]);
 }
 
 debug("");

@@ -75,7 +75,7 @@ function test() {
   var uniformLoc = gl.getUniformLocation(program, 'uCount');
   gl.uniform1i(uniformLoc, 5);
   wtu.drawUnitQuad(gl);
-  wtu.checkCanvasRect(gl, 0, 0, 256, 256, [0, 255, 0, 255]);
+  wtu.checkCanvas(gl, [0, 255, 0, 255]);
 };
 
 test();
