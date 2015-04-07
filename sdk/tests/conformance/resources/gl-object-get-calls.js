@@ -182,7 +182,6 @@ testInvalidArgument(
     }
 );
 
-
 debug("");
 debug("Test getProgramParameter");
 shouldBe('gl.getProgramParameter(standardProgram, gl.DELETE_STATUS)', 'false');
@@ -191,18 +190,40 @@ shouldBe('typeof gl.getProgramParameter(standardProgram, gl.VALIDATE_STATUS)', '
 shouldBe('gl.getProgramParameter(standardProgram, gl.ATTACHED_SHADERS)', '2');
 shouldBe('gl.getProgramParameter(standardProgram, gl.ACTIVE_ATTRIBUTES)', '2');
 shouldBe('gl.getProgramParameter(standardProgram, gl.ACTIVE_UNIFORMS)', '1');
+if (contextVersion > 1) {
+  var buffer = gl.createBuffer();
+  gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, buffer);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 1024, gl.DYNAMIC_DRAW);
+  var transformFeedbackVars = ["normal", "ecPosition"];
+  gl.transformFeedbackVaryings(uniformBlockProgram, transformFeedbackVars, gl.INTERLEAVED_ATTRIBS);
+  var uniformBlockProgram = wtu.loadUniformBlockProgram(gl);
+  shouldBe('gl.getProgramParameter(standardProgram, gl.ACTIVE_UNIFORM_BLOCKS)', '1');
+  shouldBe('gl.getProgramParameter(standardProgram, gl.TRANSFORM_FEEDBACK_VARYINGS)', '2');
+  shouldBe('gl.getProgramParameter(standardProgram, gl.TRANSFORM_FEEDBACK_BUFFER_MODE)', 'gl.INTERLEAVED_ATTRIBS');
+}
+var program = standardProgram;
+var validArrayForProgramParameter = [
+    gl.DELETE_STATUS,
+    gl.LINK_STATUS,
+    gl.VALIDATE_STATUS,
+    gl.ATTACHED_SHADERS,
+    gl.ACTIVE_ATTRIBUTES,
+    gl.ACTIVE_UNIFORMS
+]
+if (contextVersion > 1) {
+  validArrayForProgramParameter += [
+      gl.ACTIVE_UNIFORM_BLOCKS,
+      gl.TRANSFORM_FEEDBACK_VARYINGS,
+      gl.TRANSFORM_FEEDBACK_BUFFER_MODE
+  ]
+  program = uniformBlockProgram;
+}
 testInvalidArgument(
     "getProgramParameter",
     "parameter",
-    [ gl.DELETE_STATUS,
-      gl.LINK_STATUS,
-      gl.VALIDATE_STATUS,
-      gl.ATTACHED_SHADERS,
-      gl.ACTIVE_ATTRIBUTES,
-      gl.ACTIVE_UNIFORMS
-    ],
+    validArrayForProgramParameter,
     function(parameter) {
-      return gl.getProgramParameter(standardProgram, parameter);
+      return gl.getProgramParameter(program, parameter);
     }
 );
 
