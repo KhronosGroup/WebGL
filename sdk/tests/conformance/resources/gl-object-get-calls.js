@@ -405,6 +405,12 @@ shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_SIZE)', '4');
 shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_STRIDE)', '0');
 shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_TYPE)', 'gl.FLOAT');
 shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_NORMALIZED)', 'false');
+if (contextVersion > 1) {
+  shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_DIVISOR)', '0');
+  shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_INTEGER)', 'false');
+  gl.vertexAttribDivisor(1, 2);
+  shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_DIVISOR)', '2');
+}
 gl.vertexAttribPointer(1, 4, gl.FLOAT, false, 36, 12);
 shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_STRIDE)', '36');
 shouldBe('gl.getVertexAttribOffset(1, gl.VERTEX_ATTRIB_ARRAY_POINTER)', '12');
@@ -412,6 +418,15 @@ gl.disableVertexAttribArray(1);
 shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_ENABLED)', 'false');
 gl.vertexAttrib4f(1, 5, 6, 7, 8);
 shouldBe('gl.getVertexAttrib(1, gl.CURRENT_VERTEX_ATTRIB)', '[5, 6, 7, 8]');
+if (contextVersion > 1) {
+  var intArray = new Int32Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+  gl.bufferData(gl.ARRAY_BUFFER, intArray, gl.DYNAMIC_DRAW);
+  gl.enableVertexAttribArray(1);
+  // feed fixed-point data to buffer
+  gl.vertexAttribIPointer(1, 4, gl.INT, false, 0, 0);
+  shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_TYPE)', 'gl.INT');
+  shouldBe('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_INTEGER)', 'true');
+}
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 var validArrayForVertexAttrib = new Array(
     gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING,
@@ -420,12 +435,11 @@ var validArrayForVertexAttrib = new Array(
     gl.VERTEX_ATTRIB_ARRAY_STRIDE,
     gl.VERTEX_ATTRIB_ARRAY_TYPE,
     gl.VERTEX_ATTRIB_ARRAY_NORMALIZED,
-    gl.VERTEX_ATTRIB_ARRAY_STRIDE,
-    gl.VERTEX_ATTRIB_ARRAY_ENABLED,
     gl.CURRENT_VERTEX_ATTRIB
 );
 if (contextVersion > 1) {
   validArrayForVertexAttrib[validArrayForVertexAttrib.length] = gl.VERTEX_ATTRIB_ARRAY_DIVISOR;
+  validArrayForVertexAttrib[validArrayForVertexAttrib.length] = gl.VERTEX_ATTRIB_ARRAY_INTEGER;
 }
 testInvalidArgument(
     "getVertexAttrib",
