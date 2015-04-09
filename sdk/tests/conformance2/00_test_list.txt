@@ -1,3 +1,4 @@
+attribs/00_test_list.txt
 context/00_test_list.txt
 core/00_test_list.txt
 glsl3/00_test_list.txt
