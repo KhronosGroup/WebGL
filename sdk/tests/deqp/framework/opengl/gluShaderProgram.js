@@ -50,6 +50,7 @@ var getGLShaderType = function(gl, type) {
 
 /**
  * Declares shader information
+ * @constructor
  */
 var ShaderInfo = function(type, source) {
     this.type = type;               /** Shader type. */
@@ -65,9 +66,7 @@ var ShaderInfo = function(type, source) {
  * @return {ShaderInfo} vertex shader info
  */
 var genVertexSource = function(source) {
-/** @type {ShaderInfo} */ var shader = new ShaderInfo();
-    shader.source = source;
-    shader.type = shaderType.VERTEX;
+/** @type {ShaderInfo} */ var shader = new ShaderInfo(shaderType.VERTEX, source);
     return shader;
 };
 
@@ -77,14 +76,13 @@ var genVertexSource = function(source) {
  * @return {ShaderInfo} fragment shader info
  */
 var genFragmentSource = function(source) {
-/** @type {ShaderInfo} */ var shader = new ShaderInfo();
-    shader.source = source;
-    shader.type = shaderType.FRAGMENT;
+/** @type {ShaderInfo} */ var shader = new ShaderInfo(shaderType.FRAGMENT, source);
     return shader;
 };
 
 /**
  * Generates shader from WebGL context and type
+ * @constructor
  * @param {WebGLRenderingContext} gl WebGL context
  * @param {shaderType} type Shader Type
  */
@@ -129,7 +127,10 @@ var Shader = function(gl, type) {
     };
 
 };
-
+/**
+ * Creates ProgramInfo
+ * @constructor
+ */
 var ProgramInfo = function() {
     /** @type {string} */ var infoLog;
     /** @type {boolean} */ var linkOk = false;
@@ -139,6 +140,7 @@ var ProgramInfo = function() {
 /**
  * Creates program.
  * Inner methods: attach shaders, bind attributes location, link program and transform Feedback Varyings
+ * @constructor
  * @param {WebGLRenderingContext} gl WebGL context
  * @param {WebGLProgram} programID
  */
@@ -188,6 +190,7 @@ var Program = function(gl, programID) {
 
 /**
  * Assigns gl WebGL context and programSources. Declares array of shaders and new program()
+ * @constructor
  * @param {WebGLRenderingContext} gl WebGL context
  * @param {ProgramSources} programSources
  */
@@ -313,6 +316,10 @@ var FragmentSource = function(str) {
     };
 };
 
+/**
+ * Create ProgramSources.
+ * @constructor
+ */
 var ProgramSources = function() {
     /** @type {Array.<ShaderInfo>} */ this.sources = [];
     this.attribLocalBindings = [];

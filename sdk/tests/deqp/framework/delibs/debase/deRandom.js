@@ -25,8 +25,9 @@ define(function() {
 'use strict';
 
 /**
-* Array of pseudo random numbers based on seed
-*/
+ * Array of pseudo random numbers based on seed
+ * @constructor
+ */
 var deRandom = function() {
     var x;
     var y;
@@ -45,7 +46,6 @@ var deRandom_init = function(rnd, seed)
     rnd.y = (362436069 * seed);
     rnd.z = (521288629 ^ (seed >> 7));
     rnd.w = (88675123 ^ (seed << 3));
-
 };
 
 /**
@@ -171,6 +171,7 @@ var shuffle = function(rnd, elements)
  * This function is used to create the Random object and
  * initialise the random number with a seed.
  * It contains functions for generating random numbers in a variety of formats
+ * @constructor
  * @param {number} seed Number to use as a seed
  */
 var Random = function(seed) {
@@ -185,7 +186,6 @@ var Random = function(seed) {
 
 /**
  * Function to get random boolean
- * @param {deRandom} rnd Initialised array of random numbers
  * @return {boolean} Random boolean
  */
 Random.prototype.getBool = function()  { return deRandom_getBool(this.m_rnd) == true; };
@@ -242,4 +242,3 @@ return {
 };
 
 });
-

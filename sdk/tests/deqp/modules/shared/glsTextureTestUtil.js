@@ -19,7 +19,7 @@
  */
 
 define(['framework/opengl/gluDrawUtil', 'framework/opengl/gluShaderProgram', 'framework/common/tcuTexture', 'framework/opengl/gluShaderUtil', 'framework/common/tcuStringTemplate', 'framework/delibs/debase/deMath', 'framework/common/tcuImageCompare'],
-    function(deqpDraw, gluShaderProgram, tcuTexture, gluShaderUtil, tcuStringTemplate, deMath, tcuImageCompare) {
+    function(gluDrawUtil, gluShaderProgram, tcuTexture, gluShaderUtil, tcuStringTemplate, deMath, tcuImageCompare) {
     'use strict';
 var DE_ASSERT = function(x) {
     if (!x)
@@ -738,9 +738,9 @@ TextureRenderer.prototype.renderQuad = function(texUnit, texCoord, params) {
             testFailedOptions("no location found for attribute 'a_texCoord'", true);
         }
 
-        vertexArrays.push(new deqpDraw.VertexArrayBinding(gl.FLOAT, posLoc, 4, 4, position));
-        vertexArrays.push(new deqpDraw.VertexArrayBinding(gl.FLOAT, texLoc, numComps, 4, texCoord));
-        deqpDraw.draw(gl, prog, vertexArrays, deqpDraw.triangles(indices));
+        vertexArrays.push(new gluDrawUtil.VertexArrayBinding(gl.FLOAT, posLoc, 4, 4, position));
+        vertexArrays.push(new gluDrawUtil.VertexArrayBinding(gl.FLOAT, texLoc, numComps, 4, texCoord));
+        gluDrawUtil.draw(gl, prog, vertexArrays, gluDrawUtil.triangles(indices));
     }
 };
 // public:
@@ -874,7 +874,7 @@ var triangleInterpolate = function(v, x, y) {
  * @param {Number} width
  * @param {Number} ny
  * @return {Number}
- */ 
+ */
 var triDerivateX = function(/*const tcu::Vec3&*/ s, /*const tcu::Vec3&*/ w, wx, width, ny) {
     var d = w[1] * w[2] * (width * (ny - 1) + wx) - w[0] * (w[2] * width * ny + w[1] * wx);
     return (w[0] * w[1] * w[2] * width * (w[1] * (s[0] - s[2]) * (ny - 1) + ny * (w[2] * (s[1] - s[0]) + w[0] * (s[2] - s[1])))) / (d * d);

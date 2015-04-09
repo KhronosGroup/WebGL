@@ -31,6 +31,62 @@ var linearInterpolate = function(t, minVal, maxVal)
 };
 
 /**
+ * @enum Clear
+ */
+var Clear = {
+    OPTIMIZE_THRESHOLD: 128,
+    OPTIMIZE_MAX_PIXEL_SIZE: 8
+};
+
+/**
+ * @param {tcuTexture.PixelBufferAccess} dst
+ * @param {number} y
+ * @param {number} z
+ * @param {number} pixelSize
+ * @param {ArrayBuffer} pixel
+ */
+var fillRow = function(dst, y, z, pixelSize, pixel) {
+    var start = z * dst.getSlicePitch() + y * dst.getRowPitch();
+    /** @type {ArrayBuffer} */ var dstPtr = dst.getBuffer();
+    var width = dst.getWidth();
+
+    //TODO: Optimize this for pixel sizes 8 and 4
+    /** @type {Uint8Array} */ var dstPtr8 = new Uint8Array(dstPtr);
+    /** @type {Uint8Array} */ var pixel8 = new Uint8Array(pixel);
+
+    for (var i = 0; i < width; i++)
+        for (var c = 0; c < pixelSize; c++)
+            dstPtr8[start + (i * pixelSize + c)] = pixel8[c];
+};
+
+/**
+ * @param {PixelBufferAccess} access
+ * @param {Array.<number>} color
+ */
+var clear = function(access, color) {
+    /** @type {number} */ var pixelSize = access.getFormat().getPixelSize();
+
+    if (access.getWidth() * access.getHeight() * access.getDepth() >= Clear.OPTIMIZE_THRESHOLD &&
+        pixelSize < Clear.OPTIMIZE_MAX_PIXEL_SIZE) {
+        // Convert to destination format.
+        /** @type {ArrayBuffer} */ var pixel = new ArrayBuffer(Clear.OPTIMIZE_MAX_PIXEL_SIZE);
+
+        DE_ASSERT(pixel.byteLength == Clear.OPTIMIZE_MAX_PIXEL_SIZE);
+        tcuTexture.PixelBufferAccess.newFromTextureFormat(access.getFormat(), 1, 1, 1, 0, 0, pixel).setPixel(color, 0, 0);
+
+        for (var z = 0; z < access.getDepth(); z++)
+            for (var y = 0; y < access.getHeight(); y++)
+                fillRow(access, y, z, pixelSize, pixel);
+    }
+    else {
+        for (var z = 0; z < access.getDepth(); z++)
+            for (var y = 0; y < access.getHeight(); y++)
+                for (var x = 0; x < access.getWidth(); x++)
+                    access.setPixel(color, x, y, z);
+    }
+};
+
+/**
  * Enums for TextureChannelClass
  * @enum {number}
  */
@@ -101,7 +157,8 @@ var getTextureChannelClass = function(channelType) {
 
 };
 
-/** getSubregion
+/**
+ * getSubregion
  * @param {tcuTexture.PixelBufferAccess} access
  * @param {number} x
  * @param {number} y
@@ -116,6 +173,7 @@ var getSubregion = function(access, x, y, z, width, height, depth) {
     DE_ASSERT(deMath.deInBounds32(x, 0, access.getWidth()) && deMath.deInRange32(x + width, x, access.getWidth()));
     DE_ASSERT(deMath.deInBounds32(y, 0, access.getHeight()) && deMath.deInRange32(y + height, y, access.getHeight()));
     DE_ASSERT(deMath.deInBounds32(z, 0, access.getDepth()) && deMath.deInRange32(z + depth, z, access.getDepth()));
+
     return new tcuTexture.PixelBufferAccess({
         format: access.getFormat(),
         width: width,
@@ -123,9 +181,9 @@ var getSubregion = function(access, x, y, z, width, height, depth) {
         depth: depth,
         rowPitch: access.getRowPitch(),
         slicePitch: access.getSlicePitch(),
-        data: access.getDataPtr() + access.getFormat().getPixelSize() * x + access.getRowPitch() * y + access.getSlicePitch() * z
+        offset: access.getFormat().getPixelSize() * x + access.getRowPitch() * y + access.getSlicePitch() * z,
+        data: access.getBuffer()
         });
-
 };
 
 var fillWithComponentGradients2D = function(/*const PixelBufferAccess&*/ access, /*const Vec4&*/ minVal, /*const Vec4&*/ maxVal) {
@@ -171,6 +229,10 @@ var fillWithComponentGradients = function(/*const PixelBufferAccess&*/ access, /
         fillWithComponentGradients3D(access, minVal, maxVal);
 };
 
+/**
+ * Create TextureFormatInfo.
+ * @constructor
+ */
 var TextureFormatInfo = function(valueMin, valueMax, lookupScale, lookupBias) {
     this.valueMin = valueMin;
     this.valueMax = valueMax;
@@ -225,9 +287,9 @@ var select = function(a, b, cond) {
     var dst = [];
     for (var i = 0; i < cond.length; i++)
         if (cond[i])
-            dst.push(a);
+            dst.push(a[i]);
         else
-            dst.push(b);
+            dst.push(b[i]);
     return dst;
 };
 
@@ -360,11 +422,35 @@ var getTextureFormatBitDepth = function(format) {
 
 };
 
+var linearChannelToSRGB = function(cl) {
+    if (cl <= 0)
+        return 0;
+    else if (cl < 0.0031308)
+        return 12.92 * cl;
+    else if (cl < 1.0)
+        return 1.055 * Math.pow(cl, 0.41666) - 0.055;
+    else
+        return 1.0;
+};
+
+var linearToSRGB = function(cl) {
+    return [linearChannelToSRGB(cl[0]),
+                linearChannelToSRGB(cl[1]),
+                linearChannelToSRGB(cl[2]),
+                cl[3]];
+};
+
 return {
+    clear: clear,
+    TextureChannelClass: TextureChannelClass,
+    getTextureChannelClass: getTextureChannelClass,
+    getSubregion: getSubregion,
     fillWithComponentGradients: fillWithComponentGradients,
+    select: select,
     getTextureFormatInfo: getTextureFormatInfo,
     getChannelBitDepth: getChannelBitDepth,
-    getTextureFormatBitDepth: getTextureFormatBitDepth
+    getTextureFormatBitDepth: getTextureFormatBitDepth,
+    linearToSRGB: linearToSRGB
 };
 
 });

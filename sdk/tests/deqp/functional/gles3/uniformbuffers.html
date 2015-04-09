@@ -16,15 +16,15 @@
 <canvas id="canvas" width="200" height="100"> </canvas>
 <script>
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 2);
+var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 1);
 
 requirejs.config({
     baseUrl: "../../"
     });
 
-requirejs(["functional/gles3/es3fUniformBlockTests"], function(uniformBlockTests) {
+requirejs(["functional/gles3/es3fUniformBlockTests"], function(es3fUniformBlockTests) {
     try {
-        uniformBlockTests.run();
+        es3fUniformBlockTests.run();
     }
     catch(err)
     {

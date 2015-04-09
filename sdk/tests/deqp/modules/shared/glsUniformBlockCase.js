@@ -28,10 +28,10 @@ define([
     'framework/delibs/debase/deString'
 ],
 function(
-    deqpTests,
-    deqpProgram,
-    deqpUtils,
-    deqpDraw,
+    tcuTestCase,
+    gluShaderProgram,
+    gluShaderUtil,
+    gluDrawUtil,
     deMath,
     deRandom,
     deString
@@ -104,11 +104,11 @@ var pushUniqueToArray = function(array, object) {
 
 /**
  * isSupportedGLSLVersion
- * @param {deqpUtils.GLSLVersion} version
+ * @param {gluShaderUtil.GLSLVersion} version
  * @return {boolean}
  */
 var isSupportedGLSLVersion = function(version) {
-    return version >= deqpUtils.GLSLVersion.V100_ES; //TODO: set this to V300_ES. Left this way for tests.
+    return version >= gluShaderUtil.GLSLVersion.V100_ES; //TODO: set this to V300_ES. Left this way for tests.
 };
 
 var UniformFlags = {
@@ -169,13 +169,13 @@ var VarType = function() {
      * it will contain any necessary value.
      */
 
-    /** @type {(deqpUtils.DataType|TypeArray|StructType)} */
+    /** @type {(gluShaderUtil.DataType|TypeArray|StructType)} */
     this.m_data = undefined;
 };
 
 /**
 * Creates a basic type VarType. Use this after the constructor call.
-* @param {deqpUtils.DataType} basicType
+* @param {gluShaderUtil.DataType} basicType
 * @param {deMath.deUint32} flags
 * @return {VarType} The currently modified object
 */
@@ -243,7 +243,7 @@ VarType.prototype.getFlags = function() {
 };
 
 /** getBasicType
-* @return {deqpUtils.DataType} returns the basic data type of the VarType.
+* @return {gluShaderUtil.DataType} returns the basic data type of the VarType.
 **/
 VarType.prototype.getBasicType = function() {
     return this.m_data;
@@ -273,7 +273,7 @@ VarType.prototype.getStruct = function() {
 
 /**
  * Creates a basic type VarType.
- * @param {deqpUtils.DataType} basicType
+ * @param {gluShaderUtil.DataType} basicType
  * @param {deMath.deUint32} flags
  * @return {VarType}
  */
@@ -633,7 +633,7 @@ var BlockLayoutEntry = function() {
 var UniformLayoutEntry = function() {
     return {
     /** @type {string} */ name: '',
-    /** @type {deqpUtils.DataType} */ type: deqpUtils.DataType.INVALID,
+    /** @type {gluShaderUtil.DataType} */ type: gluShaderUtil.DataType.INVALID,
     /** @type {number} */ size: 0,
     /** @type {number} */ blockNdx: -1,
     /** @type {number} */ offset: -1,
@@ -750,53 +750,53 @@ UniformBufferManager.prototype.allocBuffer = function() {
 };
 
 var UniformBlockCase = function(name, description, bufferMode) {
-    deqpTests.DeqpTest.call(this, name, description);
+    tcuTestCase.DeqpTest.call(this, name, description);
     /** @type {string} */ this.m_name = name;
     /** @type {string} */ this.m_description = description;
     /** @type {BufferMode} */ this.m_bufferMode = bufferMode;
     /** @type {ShaderInterface} */ this.m_interface = new ShaderInterface();
 };
 
-UniformBlockCase.prototype = Object.create(deqpTests.DeqpTest.prototype);
+UniformBlockCase.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
 UniformBlockCase.prototype.constructor = UniformBlockCase;
 
 /**
  * getDataTypeByteSize
- * @param {deqpUtils.DataType} type
+ * @param {gluShaderUtil.DataType} type
  * @return {number}
  */
 var getDataTypeByteSize = function(type) {
-    return deqpUtils.getDataTypeScalarSize(type) * deqpUtils.deUint32_size;
+    return gluShaderUtil.getDataTypeScalarSize(type) * gluShaderUtil.deUint32_size;
 };
 
 /**
  * getDataTypeByteAlignment
- * @param {deqpUtils.DataType} type
+ * @param {gluShaderUtil.DataType} type
  * @return {number}
  */
 var getDataTypeByteAlignment = function(type)
 {
     switch (type)
     {
-        case deqpUtils.DataType.FLOAT:
-        case deqpUtils.DataType.INT:
-        case deqpUtils.DataType.UINT:
-        case deqpUtils.DataType.BOOL: return 1 * deqpUtils.deUint32_size;
+        case gluShaderUtil.DataType.FLOAT:
+        case gluShaderUtil.DataType.INT:
+        case gluShaderUtil.DataType.UINT:
+        case gluShaderUtil.DataType.BOOL: return 1 * gluShaderUtil.deUint32_size;
 
-        case deqpUtils.DataType.FLOAT_VEC2:
-        case deqpUtils.DataType.INT_VEC2:
-        case deqpUtils.DataType.UINT_VEC2:
-        case deqpUtils.DataType.BOOL_VEC2: return 2 * deqpUtils.deUint32_size;
+        case gluShaderUtil.DataType.FLOAT_VEC2:
+        case gluShaderUtil.DataType.INT_VEC2:
+        case gluShaderUtil.DataType.UINT_VEC2:
+        case gluShaderUtil.DataType.BOOL_VEC2: return 2 * gluShaderUtil.deUint32_size;
 
-        case deqpUtils.DataType.FLOAT_VEC3:
-        case deqpUtils.DataType.INT_VEC3:
-        case deqpUtils.DataType.UINT_VEC3:
-        case deqpUtils.DataType.BOOL_VEC3:    // Fall-through to vec4
+        case gluShaderUtil.DataType.FLOAT_VEC3:
+        case gluShaderUtil.DataType.INT_VEC3:
+        case gluShaderUtil.DataType.UINT_VEC3:
+        case gluShaderUtil.DataType.BOOL_VEC3:    // Fall-through to vec4
 
-        case deqpUtils.DataType.FLOAT_VEC4:
-        case deqpUtils.DataType.INT_VEC4:
-        case deqpUtils.DataType.UINT_VEC4:
-        case deqpUtils.DataType.BOOL_VEC4: return 4 * deqpUtils.deUint32_size;
+        case gluShaderUtil.DataType.FLOAT_VEC4:
+        case gluShaderUtil.DataType.INT_VEC4:
+        case gluShaderUtil.DataType.UINT_VEC4:
+        case gluShaderUtil.DataType.BOOL_VEC4: return 4 * gluShaderUtil.deUint32_size;
 
         default:
             DE_ASSERT(false);
@@ -806,14 +806,14 @@ var getDataTypeByteAlignment = function(type)
 
 /**
  * getDataTypeArrayStride
- * @param {deqpUtils.DataType} type
+ * @param {gluShaderUtil.DataType} type
  * @return {number}
  */
 var getDataTypeArrayStride = function(type) {
-    DE_ASSERT(!deqpUtils.isDataTypeMatrix(type));
+    DE_ASSERT(!gluShaderUtil.isDataTypeMatrix(type));
 
     /** @type {number} */ var baseStride = getDataTypeByteSize(type);
-    /** @type {number} */ var vec4Alignment = deqpUtils.deUint32_size * 4;
+    /** @type {number} */ var vec4Alignment = gluShaderUtil.deUint32_size * 4;
 
     DE_ASSERT(baseStride <= vec4Alignment);
     return Math.max(baseStride, vec4Alignment); // Really? See rule 4.
@@ -838,19 +838,19 @@ var deRoundUp32 = function(a, b)
  * @return {number}
  */
 var computeStd140BaseAlignment = function(type) {
-    /** @type {number} */ var vec4Alignment = deqpUtils.deUint32_size;
+    /** @type {number} */ var vec4Alignment = gluShaderUtil.deUint32_size;
 
     if (type.isBasicType())
     {
-        /** @type {deqpUtils.DataType} */ var basicType = type.getBasicType();
+        /** @type {gluShaderUtil.DataType} */ var basicType = type.getBasicType();
 
-        if (deqpUtils.isDataTypeMatrix(basicType))
+        if (gluShaderUtil.isDataTypeMatrix(basicType))
         {
             /** @type {boolean} */ var isRowMajor = !!(type.getFlags() & UniformFlags.LAYOUT_ROW_MAJOR);
-            /** @type {boolean} */ var vecSize = isRowMajor ? deqpUtils.getDataTypeMatrixNumColumns(basicType) :
-                deqpUtils.getDataTypeMatrixNumRows(basicType);
+            /** @type {boolean} */ var vecSize = isRowMajor ? gluShaderUtil.getDataTypeMatrixNumColumns(basicType) :
+            gluShaderUtil.getDataTypeMatrixNumRows(basicType);
 
-            return getDataTypeArrayStride(deqpUtils.getDataTypeFloatVec(vecSize));
+            return getDataTypeArrayStride(gluShaderUtil.getDataTypeFloatVec(vecSize));
         }
         else
             return getDataTypeByteAlignment(basicType);
@@ -914,7 +914,7 @@ var computeStd140Layout_B = function(layout, curOffset, curBlockNdx, curPrefix, 
 
     if (type.isBasicType())
     {
-        /** @type {deqpUtils.DataType} */ var basicType = type.getBasicType();
+        /** @type {gluShaderUtil.DataType} */ var basicType = type.getBasicType();
         /** @type {UniformLayoutEntry} */ var entry = new UniformLayoutEntry();
 
         entry.name = curPrefix;
@@ -924,15 +924,15 @@ var computeStd140Layout_B = function(layout, curOffset, curBlockNdx, curPrefix, 
         entry.matrixStride = 0;
         entry.blockNdx = curBlockNdx;
 
-        if (deqpUtils.isDataTypeMatrix(basicType))
+        if (gluShaderUtil.isDataTypeMatrix(basicType))
         {
             // Array of vectors as specified in rules 5 & 7.
             /** @type {boolean} */ var isRowMajor = !!(layoutFlags & UniformFlags.LAYOUT_ROW_MAJOR);
-            /** @type {number} */ var vecSize = isRowMajor ? deqpUtils.getDataTypeMatrixNumColumns(basicType) :
-                                             deqpUtils.getDataTypeMatrixNumRows(basicType);
-            /** @type {number} */ var numVecs = isRowMajor ? deqpUtils.getDataTypeMatrixNumRows(basicType) :
-                                             deqpUtils.getDataTypeMatrixNumColumns(basicType);
-            /** @type {number} */ var stride = getDataTypeArrayStride(deqpUtils.getDataTypeFloatVec(vecSize));
+            /** @type {number} */ var vecSize = isRowMajor ? gluShaderUtil.getDataTypeMatrixNumColumns(basicType) :
+            gluShaderUtil.getDataTypeMatrixNumRows(basicType);
+            /** @type {number} */ var numVecs = isRowMajor ? gluShaderUtil.getDataTypeMatrixNumRows(basicType) :
+            gluShaderUtil.getDataTypeMatrixNumColumns(basicType);
+            /** @type {number} */ var stride = getDataTypeArrayStride(gluShaderUtil.getDataTypeFloatVec(vecSize));
 
             entry.offset = curOffset;
             entry.matrixStride = stride;
@@ -954,10 +954,10 @@ var computeStd140Layout_B = function(layout, curOffset, curBlockNdx, curPrefix, 
     {
         /** @type {VarType} */ var elemType = type.getElementType();
 
-        if (elemType.isBasicType() && !deqpUtils.isDataTypeMatrix(elemType.getBasicType()))
+        if (elemType.isBasicType() && !gluShaderUtil.isDataTypeMatrix(elemType.getBasicType()))
         {
             // Array of scalars or vectors.
-            /** @type {deqpUtils.DataType} */ var elemBasicType = elemType.getBasicType();
+            /** @type {gluShaderUtil.DataType} */ var elemBasicType = elemType.getBasicType();
             /** @type {UniformLayoutEntry} */ var entry = new UniformLayoutEntry();
             /** @type {number} */ var stride = getDataTypeArrayStride(elemBasicType);
 
@@ -973,16 +973,16 @@ var computeStd140Layout_B = function(layout, curOffset, curBlockNdx, curPrefix, 
 
             layout.uniforms.push(entry);
         }
-        else if (elemType.isBasicType() && deqpUtils.isDataTypeMatrix(elemType.getBasicType()))
+        else if (elemType.isBasicType() && gluShaderUtil.isDataTypeMatrix(elemType.getBasicType()))
         {
             // Array of matrices.
-            /** @type {deqpUtils.DataType} */ var elemBasicType = elemType.getBasicType();
+            /** @type {gluShaderUtil.DataType} */ var elemBasicType = elemType.getBasicType();
             /** @type {boolean} */ var isRowMajor = !!(layoutFlags & UniformFlags.LAYOUT_ROW_MAJOR);
-            /** @type {number} */ var vecSize = isRowMajor ? deqpUtils.getDataTypeMatrixNumColumns(elemBasicType) :
-                                                                      deqpUtils.getDataTypeMatrixNumRows(elemBasicType);
-            /** @type {number} */ var numVecs = isRowMajor ? deqpUtils.getDataTypeMatrixNumRows(elemBasicType) :
-                                                                      deqpUtils.getDataTypeMatrixNumColumns(elemBasicType);
-            /** @type {number} */ var stride = getDataTypeArrayStride(deqpUtils.getDataTypeFloatVec(vecSize));
+            /** @type {number} */ var vecSize = isRowMajor ? gluShaderUtil.getDataTypeMatrixNumColumns(elemBasicType) :
+            gluShaderUtil.getDataTypeMatrixNumRows(elemBasicType);
+            /** @type {number} */ var numVecs = isRowMajor ? gluShaderUtil.getDataTypeMatrixNumRows(elemBasicType) :
+            gluShaderUtil.getDataTypeMatrixNumColumns(elemBasicType);
+            /** @type {number} */ var stride = getDataTypeArrayStride(gluShaderUtil.getDataTypeFloatVec(vecSize));
             /** @type {UniformLayoutEntry} */ var entry = new UniformLayoutEntry();
 
             entry.name = curPrefix + '[0]'; // Array uniforms are always postfixed with [0]
@@ -1079,13 +1079,13 @@ var computeStd140Layout = function(layout, sinterface)
  */
 var generateValue = function(entry, basePtr, rnd)
 {
-    /** @type {deqpUtils.DataType}*/ var scalarType = deqpUtils.getDataTypeScalarTypeAsDataType(entry.type); //Using a more appropriate function in this case.
-    /** @type {number} */ var scalarSize = deqpUtils.getDataTypeScalarSize(entry.type);
-    /** @type {boolean} */ var isMatrix = deqpUtils.isDataTypeMatrix(entry.type);
-    /** @type {number} */ var numVecs = isMatrix ? (entry.isRowMajor ? deqpUtils.getDataTypeMatrixNumRows(entry.type) : deqpUtils.getDataTypeMatrixNumColumns(entry.type)) : 1;
+    /** @type {gluShaderUtil.DataType}*/ var scalarType = gluShaderUtil.getDataTypeScalarTypeAsDataType(entry.type); //Using a more appropriate function in this case.
+    /** @type {number} */ var scalarSize = gluShaderUtil.getDataTypeScalarSize(entry.type);
+    /** @type {boolean} */ var isMatrix = gluShaderUtil.isDataTypeMatrix(entry.type);
+    /** @type {number} */ var numVecs = isMatrix ? (entry.isRowMajor ? gluShaderUtil.getDataTypeMatrixNumRows(entry.type) : gluShaderUtil.getDataTypeMatrixNumColumns(entry.type)) : 1;
     /** @type {number} */ var vecSize = scalarSize / numVecs;
     /** @type {boolean} */ var isArray = entry.size > 1;
-    /** @type {number} */ var compSize = deqpUtils.deUint32_size;
+    /** @type {number} */ var compSize = gluShaderUtil.deUint32_size;
 
     DE_ASSERT(scalarSize % numVecs == 0);
 
@@ -1110,21 +1110,21 @@ var generateValue = function(entry, basePtr, rnd)
 
                 switch (scalarType)
                 {
-                    case deqpUtils.DataType.FLOAT:
+                    case gluShaderUtil.DataType.FLOAT:
                         _random = rnd.getInt(-9, 9);
                         nview.setFloat32(0, _random);
                         break;
-                    case deqpUtils.DataType.INT:
+                    case gluShaderUtil.DataType.INT:
                         _random = rnd.getInt(-9, 9);
                         nview.setInt32(0, _random);
                         break;
-                    case deqpUtils.DataType.UINT:
+                    case gluShaderUtil.DataType.UINT:
                         _random = rnd.getInt(0, 9);
                         nview.setUint32(0, _random);
                         break;
                     // \note Random bit pattern is used for true values. Spec states that all non-zero values are
                     //       interpreted as true but some implementations fail this.
-                    case deqpUtils.DataType.BOOL:
+                    case gluShaderUtil.DataType.BOOL:
                         _random = rnd.getBool() ? 1 : 0;
                         nview.setUint32(0, _random);
                         break;
@@ -1169,37 +1169,37 @@ var generateValues = function(layout, blockPointers, seed)
 
 /**
  * getCompareFuncForType
- * @param {deqpUtils.DataType} type
+ * @param {gluShaderUtil.DataType} type
  * @return {string}
  */
 var getCompareFuncForType = function(type) {
     switch (type)
     {
-        case deqpUtils.DataType.FLOAT: return 'mediump float compare_float    (highp float a, highp float b)  { return abs(a - b) < 0.05 ? 1.0 : 0.0; }\n';
-        case deqpUtils.DataType.FLOAT_VEC2: return 'mediump float compare_vec2     (highp vec2 a, highp vec2 b)    { return compare_float(a.x, b.x)*compare_float(a.y, b.y); }\n';
-        case deqpUtils.DataType.FLOAT_VEC3: return 'mediump float compare_vec3     (highp vec3 a, highp vec3 b)    { return compare_float(a.x, b.x)*compare_float(a.y, b.y)*compare_float(a.z, b.z); }\n';
-        case deqpUtils.DataType.FLOAT_VEC4: return 'mediump float compare_vec4     (highp vec4 a, highp vec4 b)    { return compare_float(a.x, b.x)*compare_float(a.y, b.y)*compare_float(a.z, b.z)*compare_float(a.w, b.w); }\n';
-        case deqpUtils.DataType.FLOAT_MAT2: return 'mediump float compare_mat2     (highp mat2 a, highp mat2 b)    { return compare_vec2(a[0], b[0])*compare_vec2(a[1], b[1]); }\n';
-        case deqpUtils.DataType.FLOAT_MAT2X3: return 'mediump float compare_mat2x3   (highp mat2x3 a, highp mat2x3 b){ return compare_vec3(a[0], b[0])*compare_vec3(a[1], b[1]); }\n';
-        case deqpUtils.DataType.FLOAT_MAT2X4: return 'mediump float compare_mat2x4   (highp mat2x4 a, highp mat2x4 b){ return compare_vec4(a[0], b[0])*compare_vec4(a[1], b[1]); }\n';
-        case deqpUtils.DataType.FLOAT_MAT3X2: return 'mediump float compare_mat3x2   (highp mat3x2 a, highp mat3x2 b){ return compare_vec2(a[0], b[0])*compare_vec2(a[1], b[1])*compare_vec2(a[2], b[2]); }\n';
-        case deqpUtils.DataType.FLOAT_MAT3: return 'mediump float compare_mat3     (highp mat3 a, highp mat3 b)    { return compare_vec3(a[0], b[0])*compare_vec3(a[1], b[1])*compare_vec3(a[2], b[2]); }\n';
-        case deqpUtils.DataType.FLOAT_MAT3X4: return 'mediump float compare_mat3x4   (highp mat3x4 a, highp mat3x4 b){ return compare_vec4(a[0], b[0])*compare_vec4(a[1], b[1])*compare_vec4(a[2], b[2]); }\n';
-        case deqpUtils.DataType.FLOAT_MAT4X2: return 'mediump float compare_mat4x2   (highp mat4x2 a, highp mat4x2 b){ return compare_vec2(a[0], b[0])*compare_vec2(a[1], b[1])*compare_vec2(a[2], b[2])*compare_vec2(a[3], b[3]); }\n';
-        case deqpUtils.DataType.FLOAT_MAT4X3: return 'mediump float compare_mat4x3   (highp mat4x3 a, highp mat4x3 b){ return compare_vec3(a[0], b[0])*compare_vec3(a[1], b[1])*compare_vec3(a[2], b[2])*compare_vec3(a[3], b[3]); }\n';
-        case deqpUtils.DataType.FLOAT_MAT4: return 'mediump float compare_mat4     (highp mat4 a, highp mat4 b)    { return compare_vec4(a[0], b[0])*compare_vec4(a[1], b[1])*compare_vec4(a[2], b[2])*compare_vec4(a[3], b[3]); }\n';
-        case deqpUtils.DataType.INT: return 'mediump float compare_int      (highp int a, highp int b)      { return a == b ? 1.0 : 0.0; }\n';
-        case deqpUtils.DataType.INT_VEC2: return 'mediump float compare_ivec2    (highp ivec2 a, highp ivec2 b)  { return a == b ? 1.0 : 0.0; }\n';
-        case deqpUtils.DataType.INT_VEC3: return 'mediump float compare_ivec3    (highp ivec3 a, highp ivec3 b)  { return a == b ? 1.0 : 0.0; }\n';
-        case deqpUtils.DataType.INT_VEC4: return 'mediump float compare_ivec4    (highp ivec4 a, highp ivec4 b)  { return a == b ? 1.0 : 0.0; }\n';
-        case deqpUtils.DataType.UINT: return 'mediump float compare_uint     (highp uint a, highp uint b)    { return a == b ? 1.0 : 0.0; }\n';
-        case deqpUtils.DataType.UINT_VEC2: return 'mediump float compare_uvec2    (highp uvec2 a, highp uvec2 b)  { return a == b ? 1.0 : 0.0; }\n';
-        case deqpUtils.DataType.UINT_VEC3: return 'mediump float compare_uvec3    (highp uvec3 a, highp uvec3 b)  { return a == b ? 1.0 : 0.0; }\n';
-        case deqpUtils.DataType.UINT_VEC4: return 'mediump float compare_uvec4    (highp uvec4 a, highp uvec4 b)  { return a == b ? 1.0 : 0.0; }\n';
-        case deqpUtils.DataType.BOOL: return 'mediump float compare_bool     (bool a, bool b)                { return a == b ? 1.0 : 0.0; }\n';
-        case deqpUtils.DataType.BOOL_VEC2: return 'mediump float compare_bvec2    (bvec2 a, bvec2 b)              { return a == b ? 1.0 : 0.0; }\n';
-        case deqpUtils.DataType.BOOL_VEC3: return 'mediump float compare_bvec3    (bvec3 a, bvec3 b)              { return a == b ? 1.0 : 0.0; }\n';
-        case deqpUtils.DataType.BOOL_VEC4: return 'mediump float compare_bvec4    (bvec4 a, bvec4 b)              { return a == b ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.FLOAT: return 'mediump float compare_float    (highp float a, highp float b)  { return abs(a - b) < 0.05 ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.FLOAT_VEC2: return 'mediump float compare_vec2     (highp vec2 a, highp vec2 b)    { return compare_float(a.x, b.x)*compare_float(a.y, b.y); }\n';
+        case gluShaderUtil.DataType.FLOAT_VEC3: return 'mediump float compare_vec3     (highp vec3 a, highp vec3 b)    { return compare_float(a.x, b.x)*compare_float(a.y, b.y)*compare_float(a.z, b.z); }\n';
+        case gluShaderUtil.DataType.FLOAT_VEC4: return 'mediump float compare_vec4     (highp vec4 a, highp vec4 b)    { return compare_float(a.x, b.x)*compare_float(a.y, b.y)*compare_float(a.z, b.z)*compare_float(a.w, b.w); }\n';
+        case gluShaderUtil.DataType.FLOAT_MAT2: return 'mediump float compare_mat2     (highp mat2 a, highp mat2 b)    { return compare_vec2(a[0], b[0])*compare_vec2(a[1], b[1]); }\n';
+        case gluShaderUtil.DataType.FLOAT_MAT2X3: return 'mediump float compare_mat2x3   (highp mat2x3 a, highp mat2x3 b){ return compare_vec3(a[0], b[0])*compare_vec3(a[1], b[1]); }\n';
+        case gluShaderUtil.DataType.FLOAT_MAT2X4: return 'mediump float compare_mat2x4   (highp mat2x4 a, highp mat2x4 b){ return compare_vec4(a[0], b[0])*compare_vec4(a[1], b[1]); }\n';
+        case gluShaderUtil.DataType.FLOAT_MAT3X2: return 'mediump float compare_mat3x2   (highp mat3x2 a, highp mat3x2 b){ return compare_vec2(a[0], b[0])*compare_vec2(a[1], b[1])*compare_vec2(a[2], b[2]); }\n';
+        case gluShaderUtil.DataType.FLOAT_MAT3: return 'mediump float compare_mat3     (highp mat3 a, highp mat3 b)    { return compare_vec3(a[0], b[0])*compare_vec3(a[1], b[1])*compare_vec3(a[2], b[2]); }\n';
+        case gluShaderUtil.DataType.FLOAT_MAT3X4: return 'mediump float compare_mat3x4   (highp mat3x4 a, highp mat3x4 b){ return compare_vec4(a[0], b[0])*compare_vec4(a[1], b[1])*compare_vec4(a[2], b[2]); }\n';
+        case gluShaderUtil.DataType.FLOAT_MAT4X2: return 'mediump float compare_mat4x2   (highp mat4x2 a, highp mat4x2 b){ return compare_vec2(a[0], b[0])*compare_vec2(a[1], b[1])*compare_vec2(a[2], b[2])*compare_vec2(a[3], b[3]); }\n';
+        case gluShaderUtil.DataType.FLOAT_MAT4X3: return 'mediump float compare_mat4x3   (highp mat4x3 a, highp mat4x3 b){ return compare_vec3(a[0], b[0])*compare_vec3(a[1], b[1])*compare_vec3(a[2], b[2])*compare_vec3(a[3], b[3]); }\n';
+        case gluShaderUtil.DataType.FLOAT_MAT4: return 'mediump float compare_mat4     (highp mat4 a, highp mat4 b)    { return compare_vec4(a[0], b[0])*compare_vec4(a[1], b[1])*compare_vec4(a[2], b[2])*compare_vec4(a[3], b[3]); }\n';
+        case gluShaderUtil.DataType.INT: return 'mediump float compare_int      (highp int a, highp int b)      { return a == b ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.INT_VEC2: return 'mediump float compare_ivec2    (highp ivec2 a, highp ivec2 b)  { return a == b ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.INT_VEC3: return 'mediump float compare_ivec3    (highp ivec3 a, highp ivec3 b)  { return a == b ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.INT_VEC4: return 'mediump float compare_ivec4    (highp ivec4 a, highp ivec4 b)  { return a == b ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.UINT: return 'mediump float compare_uint     (highp uint a, highp uint b)    { return a == b ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.UINT_VEC2: return 'mediump float compare_uvec2    (highp uvec2 a, highp uvec2 b)  { return a == b ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.UINT_VEC3: return 'mediump float compare_uvec3    (highp uvec3 a, highp uvec3 b)  { return a == b ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.UINT_VEC4: return 'mediump float compare_uvec4    (highp uvec4 a, highp uvec4 b)  { return a == b ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.BOOL: return 'mediump float compare_bool     (bool a, bool b)                { return a == b ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.BOOL_VEC2: return 'mediump float compare_bvec2    (bvec2 a, bvec2 b)              { return a == b ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.BOOL_VEC3: return 'mediump float compare_bvec3    (bvec3 a, bvec3 b)              { return a == b ? 1.0 : 0.0; }\n';
+        case gluShaderUtil.DataType.BOOL_VEC4: return 'mediump float compare_bvec4    (bvec4 a, bvec4 b)              { return a == b ? 1.0 : 0.0; }\n';
         default:
             DE_ASSERT(false);
             return undefined;
@@ -1208,30 +1208,30 @@ var getCompareFuncForType = function(type) {
 
 /**
  * getCompareDependencies
- * @param {Array.<deqpUtils.DataType>} compareFuncs Should contain unique elements
- * @param {deqpUtils.DataType} basicType
+ * @param {Array.<gluShaderUtil.DataType>} compareFuncs Should contain unique elements
+ * @param {gluShaderUtil.DataType} basicType
  */
 var getCompareDependencies = function(compareFuncs, basicType) {
     switch (basicType)
     {
-        case deqpUtils.DataType.FLOAT_VEC2:
-        case deqpUtils.DataType.FLOAT_VEC3:
-        case deqpUtils.DataType.FLOAT_VEC4:
-            pushUniqueToArray(compareFuncs, deqpUtils.DataType.FLOAT);
+        case gluShaderUtil.DataType.FLOAT_VEC2:
+        case gluShaderUtil.DataType.FLOAT_VEC3:
+        case gluShaderUtil.DataType.FLOAT_VEC4:
+            pushUniqueToArray(compareFuncs, gluShaderUtil.DataType.FLOAT);
             pushUniqueToArray(compareFuncs, basicType);
             break;
 
-        case deqpUtils.DataType.FLOAT_MAT2:
-        case deqpUtils.DataType.FLOAT_MAT2X3:
-        case deqpUtils.DataType.FLOAT_MAT2X4:
-        case deqpUtils.DataType.FLOAT_MAT3X2:
-        case deqpUtils.DataType.FLOAT_MAT3:
-        case deqpUtils.DataType.FLOAT_MAT3X4:
-        case deqpUtils.DataType.FLOAT_MAT4X2:
-        case deqpUtils.DataType.FLOAT_MAT4X3:
-        case deqpUtils.DataType.FLOAT_MAT4:
-            pushUniqueToArray(compareFuncs, deqpUtils.DataType.FLOAT);
-            pushUniqueToArray(compareFuncs, deqpUtils.getDataTypeFloatVec(deqpUtils.getDataTypeMatrixNumRows(basicType)));
+        case gluShaderUtil.DataType.FLOAT_MAT2:
+        case gluShaderUtil.DataType.FLOAT_MAT2X3:
+        case gluShaderUtil.DataType.FLOAT_MAT2X4:
+        case gluShaderUtil.DataType.FLOAT_MAT3X2:
+        case gluShaderUtil.DataType.FLOAT_MAT3:
+        case gluShaderUtil.DataType.FLOAT_MAT3X4:
+        case gluShaderUtil.DataType.FLOAT_MAT4X2:
+        case gluShaderUtil.DataType.FLOAT_MAT4X3:
+        case gluShaderUtil.DataType.FLOAT_MAT4:
+            pushUniqueToArray(compareFuncs, gluShaderUtil.DataType.FLOAT);
+            pushUniqueToArray(compareFuncs, gluShaderUtil.getDataTypeFloatVec(gluShaderUtil.getDataTypeMatrixNumRows(basicType)));
             pushUniqueToArray(compareFuncs, basicType);
             break;
 
@@ -1243,7 +1243,7 @@ var getCompareDependencies = function(compareFuncs, basicType) {
 
 /**
  * collectUniqueBasicTypes_B
- * @param {Array.<deqpUtils.DataType>} basicTypes Should contain unique elements
+ * @param {Array.<gluShaderUtil.DataType>} basicTypes Should contain unique elements
  * @param {VarType} type
  */
 var collectUniqueBasicTypes_B = function(basicTypes, type) {
@@ -1264,7 +1264,7 @@ var collectUniqueBasicTypes_B = function(basicTypes, type) {
 
 /**
  * collectUniqueBasicTypes_A
- * @param {Array.<deqpUtils.DataType>} basicTypes Should contain unique elements
+ * @param {Array.<gluShaderUtil.DataType>} basicTypes Should contain unique elements
  * @param {UniformBlock} uniformBlock
  */
 var collectUniqueBasicTypes_A = function(basicTypes, uniformBlock) {
@@ -1274,7 +1274,7 @@ var collectUniqueBasicTypes_A = function(basicTypes, uniformBlock) {
 
 /**
  * collectUniqueBasicTypes
- * @param {Array.<deqpUtils.DataType>} basicTypes Should contain unique elements
+ * @param {Array.<gluShaderUtil.DataType>} basicTypes Should contain unique elements
  * @param {ShaderInterface} sinterface
  */
 var collectUniqueBasicTypes = function(basicTypes, sinterface) {
@@ -1290,8 +1290,8 @@ var collectUniqueBasicTypes = function(basicTypes, sinterface) {
 var generateCompareFuncs = function(sinterface)
 {
     /** @type {string} */ var str = '';
-    /** @type {Array.<deqpUtils.DataType>} */ var types = []; //Will contain unique elements.
-    /** @type {Array.<deqpUtils.DataType>} */ var compareFuncs = []; //Will contain unique elements.
+    /** @type {Array.<gluShaderUtil.DataType>} */ var types = []; //Will contain unique elements.
+    /** @type {Array.<gluShaderUtil.DataType>} */ var compareFuncs = []; //Will contain unique elements.
 
     // Collect unique basic types
     collectUniqueBasicTypes(types, sinterface);
@@ -1300,7 +1300,7 @@ var generateCompareFuncs = function(sinterface)
     for (var typeNdx = 0; typeNdx < types.length; typeNdx++)
         getCompareDependencies(compareFuncs, types[typeNdx]);
 
-    for (var type = 0; type < deqpUtils.DataType.LAST; ++type)
+    for (var type = 0; type < gluShaderUtil.DataType.LAST; ++type)
     {
         if (compareFuncs.indexOf(type) > -1)
             str += getCompareFuncForType(type);
@@ -1398,7 +1398,7 @@ var generateDeclaration_B = function(type, name, indentLevel, unusedHints) {
         src += PrecisionFlagsFmt(flags & UniformFlags.PRECISION_MASK) + ' ';
 
     if (type.isBasicType())
-        src += deqpUtils.getDataTypeName(type.getBasicType()) + ' ' + name;
+        src += gluShaderUtil.getDataTypeName(type.getBasicType()) + ' ' + name;
     else if (type.isArrayType())
     {
         /** @type {number} */ var arraySizes = [];
@@ -1413,7 +1413,7 @@ var generateDeclaration_B = function(type, name, indentLevel, unusedHints) {
         {
             if ((curType.getFlags() & UniformFlags.PRECISION_MASK) != 0)
                 src += PrecisionFlagsFmt(curType.getFlags() & UniformFlags.PRECISION_MASK) + ' ';
-            src += deqpUtils.getDataTypeName(curType.getBasicType());
+            src += gluShaderUtil.getDataTypeName(curType.getBasicType());
         }
         else
         {
@@ -1532,21 +1532,21 @@ var newArrayBufferFromView = function(view) {
  */
 var generateValueSrc = function(entry, basePtr, elementNdx) {
     /** @type {string} */ var src = '';
-    /** @type {deqpUtils.DataType} */ var scalarType = deqpUtils.getDataTypeScalarTypeAsDataType(entry.type);
-    /** @type {number} */ var scalarSize = deqpUtils.getDataTypeScalarSize(entry.type);
+    /** @type {gluShaderUtil.DataType} */ var scalarType = gluShaderUtil.getDataTypeScalarTypeAsDataType(entry.type);
+    /** @type {number} */ var scalarSize = gluShaderUtil.getDataTypeScalarSize(entry.type);
     /** @type {boolean} */ var isArray = entry.size > 1;
     /** @type {Uint8Array} */ var elemPtr = basePtr.subarray(entry.offset + (isArray ? elementNdx * entry.arrayStride : 0));
-    /** @type {number} */ var compSize = deqpUtils.deUint32_size;
+    /** @type {number} */ var compSize = gluShaderUtil.deUint32_size;
 
     if (scalarSize > 1)
-        src += deqpUtils.getDataTypeName(entry.type) + '(';
+        src += gluShaderUtil.getDataTypeName(entry.type) + '(';
 
-    if (deqpUtils.isDataTypeMatrix(entry.type))
+    if (gluShaderUtil.isDataTypeMatrix(entry.type))
     {
-        /** @type {number} */ var numRows = deqpUtils.getDataTypeMatrixNumRows(entry.type);
-        /** @type {number} */ var numCols = deqpUtils.getDataTypeMatrixNumColumns(entry.type);
+        /** @type {number} */ var numRows = gluShaderUtil.getDataTypeMatrixNumRows(entry.type);
+        /** @type {number} */ var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(entry.type);
 
-        DE_ASSERT(scalarType == deqpUtils.DataType.FLOAT);
+        DE_ASSERT(scalarType == gluShaderUtil.DataType.FLOAT);
 
         // Constructed in column-wise order.
         for (var colNdx = 0; colNdx < numCols; colNdx++)
@@ -1577,10 +1577,10 @@ var generateValueSrc = function(entry, basePtr, elementNdx) {
 
             switch (scalarType)
             {
-                case deqpUtils.DataType.FLOAT: src += parseFloat(newview.getFloat32(0) * 100 / 100).toFixed(1); break;
-                case deqpUtils.DataType.INT: src += newview.getInt32(0); break;
-                case deqpUtils.DataType.UINT: src += newview.getUint32(0) + 'u'; break;
-                case deqpUtils.DataType.BOOL: src += (newview.getUint32(0) != 0 ? 'true' : 'false'); break;
+                case gluShaderUtil.DataType.FLOAT: src += parseFloat(newview.getFloat32(0) * 100 / 100).toFixed(1); break;
+                case gluShaderUtil.DataType.INT: src += newview.getInt32(0); break;
+                case gluShaderUtil.DataType.UINT: src += newview.getUint32(0) + 'u'; break;
+                case gluShaderUtil.DataType.BOOL: src += (newview.getUint32(0) != 0 ? 'true' : 'false'); break;
                 default:
                     DE_ASSERT(false);
             }
@@ -1611,8 +1611,8 @@ var generateCompareSrc_A = function(resultVar, type, srcName, apiName, layout, b
     {
         // Basic type or array of basic types.
         /** @type {boolean} */ var isArray = type.isArrayType();
-        /** @type {deqpUtils.DataType} */ var elementType = isArray ? type.getElementType().getBasicType() : type.getBasicType();
-        /** @type {string} */ var typeName = deqpUtils.getDataTypeName(elementType);
+        /** @type {gluShaderUtil.DataType} */ var elementType = isArray ? type.getElementType().getBasicType() : type.getBasicType();
+        /** @type {string} */ var typeName = gluShaderUtil.getDataTypeName(elementType);
         /** @type {string} */ var fullApiName = apiName + (isArray ? '[0]' : ''); // Arrays are always postfixed with [0]
         /** @type {number} */ var uniformNdx = layout.getUniformIndex(fullApiName);
         /** @type {UniformLayoutentry} */ var entry = layout.uniforms[uniformNdx];
@@ -1722,9 +1722,9 @@ var generateCompareSrc = function(resultVar, sinterface, layout, blockPointers, 
 var generateVertexShader = function(sinterface, layout, blockPointers) {
     /** @type {string} */ var src = '';
 
-    DE_ASSERT(isSupportedGLSLVersion(deqpUtils.getGLSLVersion(gl)));
+    DE_ASSERT(isSupportedGLSLVersion(gluShaderUtil.getGLSLVersion(gl)));
 
-    src += deqpUtils.getGLSLVersionDeclaration(deqpUtils.getGLSLVersion(gl)) + '\n';
+    src += gluShaderUtil.getGLSLVersionDeclaration(gluShaderUtil.getGLSLVersion(gl)) + '\n';
     src += 'in highp vec4 a_position;\n';
     src += 'out mediump float v_vtxResult;\n';
     src += '\n';
@@ -1769,9 +1769,9 @@ var generateVertexShader = function(sinterface, layout, blockPointers) {
  */
 var generateFragmentShader = function(sinterface, layout, blockPointers) {
     /** @type {string} */ var src = '';
-    DE_ASSERT(isSupportedGLSLVersion(deqpUtils.getGLSLVersion(gl)));
+    DE_ASSERT(isSupportedGLSLVersion(gluShaderUtil.getGLSLVersion(gl)));
 
-    src += deqpUtils.getGLSLVersionDeclaration(deqpUtils.getGLSLVersion(gl)) + '\n';
+    src += gluShaderUtil.getGLSLVersionDeclaration(gluShaderUtil.getGLSLVersion(gl)) + '\n';
     src += 'in mediump float v_vtxResult;\n';
     src += 'layout(location = 0) out mediump vec4 dEQP_FragColor;\n';
     src += '\n';
@@ -1904,7 +1904,7 @@ var getGLUniformLayout = function(gl, layout, program) {
                 TCU_FAIL("Values returned by gl.getActiveUniform() don't match with values queried with gl.getActiveUniforms().");
 
             entry.name = nameBuf;
-            entry.type = deqpUtils.getDataTypeFromGLType(types[uniformNdx]);
+            entry.type = gluShaderUtil.getDataTypeFromGLType(types[uniformNdx]);
             entry.size = sizes[uniformNdx];
             entry.blockNdx = blockIndices[uniformNdx];
             entry.offset = offsets[uniformNdx];
@@ -1931,9 +1931,9 @@ var copyUniformData_A = function(dstEntry, dstBlockPtr, srcEntry, srcBlockPtr) {
     DE_ASSERT(dstEntry.size <= srcEntry.size);
     DE_ASSERT(dstEntry.type == srcEntry.type);
 
-    /** @type {number} */ var scalarSize = deqpUtils.getDataTypeScalarSize(dstEntry.type);
-    /** @type {boolean} */ var isMatrix = deqpUtils.isDataTypeMatrix(dstEntry.type);
-    /** @type {number} */ var compSize = deqpUtils.deUin32_size;
+    /** @type {number} */ var scalarSize = gluShaderUtil.getDataTypeScalarSize(dstEntry.type);
+    /** @type {boolean} */ var isMatrix = gluShaderUtil.isDataTypeMatrix(dstEntry.type);
+    /** @type {number} */ var compSize = gluShaderUtil.deUin32_size;
 
     for (var elementNdx = 0; elementNdx < dstEntry.size; elementNdx++)
     {
@@ -1942,8 +1942,8 @@ var copyUniformData_A = function(dstEntry, dstBlockPtr, srcEntry, srcBlockPtr) {
 
         if (isMatrix)
         {
-            /** @type {number} */ var numRows = deqpUtils.getDataTypeMatrixNumRows(dstEntry.type);
-            /** @type {number} */ var numCols = deqpUtils.getDataTypeMatrixNumColumns(dstEntry.type);
+            /** @type {number} */ var numRows = gluShaderUtil.getDataTypeMatrixNumRows(dstEntry.type);
+            /** @type {number} */ var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(dstEntry.type);
 
             for (var colNdx = 0; colNdx < numCols; colNdx++)
             {
@@ -2043,14 +2043,14 @@ var copyUniformData = function(dstLayout, dstBlockPointers, srcLayout, srcBlockP
     /** @type {string} */ var vtxSrc = generateVertexShader(this.m_interface, refLayout, blockPointers);
     /** @type {string} */ var fragSrc = generateFragmentShader(this.m_interface, refLayout, blockPointers);
 
-    /** @type {deqpProgram.ShaderProgram}*/ var program = new deqpProgram.ShaderProgram(gl, deqpProgram.makeVtxFragSources(vtxSrc, fragSrc));
+    /** @type {gluShaderProgram.ShaderProgram}*/ var program = new gluShaderProgram.ShaderProgram(gl, gluShaderProgram.makeVtxFragSources(vtxSrc, fragSrc));
     bufferedLogToConsole(program);
 
     if (!program.isOk())
     {
         // Compile failed.
         testFailedOptions('Compile failed', false);
-        return deqpTests.runner.IterateResult.STOP;
+        return tcuTestCase.runner.IterateResult.STOP;
     }
 
     // Query layout from GL.
@@ -2070,7 +2070,7 @@ var copyUniformData = function(dstLayout, dstBlockPointers, srcLayout, srcBlockP
     if (!this.checkLayoutIndices(glLayout) || !this.checkLayoutBounds(glLayout) || !this.compareTypes(refLayout, glLayout))
     {
         testFailedOptions('Invalid layout', false);
-        return deqpTests.runner.IterateResult.STOP; // It is not safe to use the given layout.
+        return tcuTestCase.runner.IterateResult.STOP; // It is not safe to use the given layout.
     }
 
     // Verify all std140 blocks.
@@ -2180,7 +2180,7 @@ var copyUniformData = function(dstLayout, dstBlockPointers, srcLayout, srcBlockP
     if (!renderOk)
         testFailedOptions('Image compare failed', false);
 
-    return deqpTests.runner.IterateResult.STOP;
+    return tcuTestCase.runner.IterateResult.STOP;
 };
 
 /**
@@ -2255,8 +2255,8 @@ UniformBlockCase.prototype.compareStd140Blocks = function(refLayout, cmpLayout) 
                 refEntry.isRowMajor != cmpEntry.isRowMajor)
             {
                 bufferedLogToConsole("Error: Layout mismatch in '" + refEntry.name + "':\n" +
-                '  expected: type = ' + deqpUtils.getDataTypeName(refEntry.type) + ', size = ' + refEntry.size + ', row major = ' + (refEntry.isRowMajor ? 'true' : 'false') + '\n' +
-                '  got: type = ' + deqpUtils.getDataTypeName(cmpEntry.type) + ', size = ' + cmpEntry.size + ', row major = ' + (cmpEntry.isRowMajor ? 'true' : 'false'));
+                '  expected: type = ' + gluShaderUtil.getDataTypeName(refEntry.type) + ', size = ' + refEntry.size + ', row major = ' + (refEntry.isRowMajor ? 'true' : 'false') + '\n' +
+                '  got: type = ' + gluShaderUtil.getDataTypeName(cmpEntry.type) + ', size = ' + cmpEntry.size + ', row major = ' + (cmpEntry.isRowMajor ? 'true' : 'false'));
                 isOk = false;
             }
         }
@@ -2332,8 +2332,8 @@ UniformBlockCase.prototype.compareSharedBlocks = function(refLayout, cmpLayout) 
                 refEntry.isRowMajor != cmpEntry.isRowMajor)
             {
                 bufferedLogToConsole("Error: Layout mismatch in '" + refEntry.name + "':\n" +
-                '  expected: type = ' + deqpUtils.getDataTypeName(refEntry.type) + ', size = ' + refEntry.size + ', row major = ' + (refEntry.isRowMajor ? 'true' : 'false') + '\n' +
-                '  got: type = ' + deqpUtils.getDataTypeName(cmpEntry.type) + ', size = ' + cmpEntry.size + ', row major = ' + (cmpEntry.isRowMajor ? 'true' : 'false'));
+                '  expected: type = ' + gluShaderUtil.getDataTypeName(refEntry.type) + ', size = ' + refEntry.size + ', row major = ' + (refEntry.isRowMajor ? 'true' : 'false') + '\n' +
+                '  got: type = ' + gluShaderUtil.getDataTypeName(cmpEntry.type) + ', size = ' + cmpEntry.size + ', row major = ' + (cmpEntry.isRowMajor ? 'true' : 'false'));
                 isOk = false;
             }
         }
@@ -2391,8 +2391,8 @@ UniformBlockCase.prototype.compareTypes = function(refLayout, cmpLayout) {
                 if (refEntry.type != cmpEntry.type)
                 {
                     bufferedLogToConsole("Error: Uniform type mismatch in '" + refEntry.name + "':</br>" +
-                        "'  expected: '" + deqpUtils.getDataTypeName(refEntry.type) + "'</br>" +
-                        "'  got: '" + deqpUtils.getDataTypeName(cmpEntry.type) + "'");
+                        "'  expected: '" + gluShaderUtil.getDataTypeName(refEntry.type) + "'</br>" +
+                        "'  got: '" + gluShaderUtil.getDataTypeName(cmpEntry.type) + "'");
                     isOk = false;
                 }
             }
@@ -2457,11 +2457,11 @@ UniformBlockCase.prototype.checkLayoutBounds = function(layout) {
             continue;
 
         /** @type {BlockLayoutEntry}*/ var block = layout.blocks[uniform.blockNdx];
-        /** @type {boolean}*/ var isMatrix = deqpUtils.isDataTypeMatrix(uniform.type);
-        /** @type {number}*/ var numVecs = isMatrix ? (uniform.isRowMajor ? deqpUtils.getDataTypeMatrixNumRows(uniform.type) : deqpUtils.getDataTypeMatrixNumColumns(uniform.type)) : 1;
-        /** @type {number}*/ var numComps = isMatrix ? (uniform.isRowMajor ? deqpUtils.getDataTypeMatrixNumColumns(uniform.type) : deqpUtils.getDataTypeMatrixNumRows(uniform.type)) : deqpUtils.getDataTypeScalarSize(uniform.type);
+        /** @type {boolean}*/ var isMatrix = gluShaderUtil.isDataTypeMatrix(uniform.type);
+        /** @type {number}*/ var numVecs = isMatrix ? (uniform.isRowMajor ? gluShaderUtil.getDataTypeMatrixNumRows(uniform.type) : gluShaderUtil.getDataTypeMatrixNumColumns(uniform.type)) : 1;
+        /** @type {number}*/ var numComps = isMatrix ? (uniform.isRowMajor ? gluShaderUtil.getDataTypeMatrixNumColumns(uniform.type) : gluShaderUtil.getDataTypeMatrixNumRows(uniform.type)) : gluShaderUtil.getDataTypeScalarSize(uniform.type);
         /** @type {number}*/ var numElements = uniform.size;
-        /** @type {number}*/ var compSize = deqpUtils.deUint32_size;
+        /** @type {number}*/ var compSize = gluShaderUtil.deUint32_size;
         /** @type {number}*/ var vecSize = numComps * compSize;
 
         /** @type {number}*/ var minOffset = 0;
@@ -2519,7 +2519,7 @@ UniformBlockCase.prototype.checkIndexQueries = function(program, layout) {
 
 /** Renders a white square, and then tests all pixels are
 * effectively white in the color buffer.
-* @param {deqpProgram.ShaderProgram} program The shader program to use.
+* @param {gluShaderProgram.ShaderProgram} program The shader program to use.
 * @return {boolean} false if there was at least one incorrect pixel
 **/
 UniformBlockCase.prototype.render = function(program) {
@@ -2544,19 +2544,19 @@ UniformBlockCase.prototype.render = function(program) {
 
     gl.viewport(viewportX, viewportY, viewportW, viewportH);
 
-    var posArray = [new deqpDraw.VertexArrayBinding(gl.FLOAT, 'a_position', 4, 4, position)];
-    deqpDraw.drawFromBuffers(gl, program, posArray, deqpDraw.triangles(indices));
+    var posArray = [new gluDrawUtil.VertexArrayBinding(gl.FLOAT, 'a_position', 4, 4, position)];
+    gluDrawUtil.drawFromBuffers(gl, program, posArray, gluDrawUtil.triangles(indices));
     GLU_EXPECT_NO_ERROR(gl.getError(), 'Draw failed');
 
     // Verify that all pixels are white.
     {
-        var pixels = new deqpDraw.Surface();
+        var pixels = new gluDrawUtil.Surface();
         var numFailedPixels = 0;
 
         var buffer = pixels.readSurface(gl, viewportX, viewportY, viewportW, viewportH);
         GLU_EXPECT_NO_ERROR(gl.getError(), 'Reading pixels failed');
 
-        var whitePixel = new deqpDraw.Pixel([255.0, 255.0, 255.0, 255.0]);
+        var whitePixel = new gluDrawUtil.Pixel([255.0, 255.0, 255.0, 255.0]);
         for (var y = 0; y < viewportH; y++)
         {
             for (var x = 0; x < viewportW; x++)
@@ -2596,4 +2596,3 @@ return {
 };
 
 });
-

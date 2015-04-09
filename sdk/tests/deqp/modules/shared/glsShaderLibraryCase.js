@@ -18,7 +18,7 @@
  *
  */
 
-define(['framework/common/tcuTestCase', 'framework/opengl/gluShaderProgram', 'framework/opengl/gluShaderUtil', 'framework/opengl/gluDrawUtil'], function(deqpTests, deqpProgram, deqpUtils, deqpDraw) {
+define(['framework/common/tcuTestCase', 'framework/opengl/gluShaderProgram', 'framework/opengl/gluShaderUtil', 'framework/opengl/gluDrawUtil'], function(tcuTestCase, gluShaderProgram, gluShaderUtil, gluDrawUtil) {
     'use strict';
 
     /** @const @type {number} */ var VIEWPORT_WIDTH = 128;
@@ -107,7 +107,7 @@ var supportsFragmentHighp = function(version) {
  */
 var genVertexShader = function(valueBlock) {
     /** @type {string} */ var res = '';
-    /** @type {Object} */ var state = deqpTests.runner.getState();
+    /** @type {Object} */ var state = tcuTestCase.runner.getState();
     /** @type {boolean} */ var usesInout = usesShaderInoutQualifiers(state.currentTest.spec.targetVersion);
     /** @type {string} */ var vtxIn = usesInout ? 'in' : 'attribute';
     /** @type {string} */ var vtxOut = usesInout ? 'out' : 'varying';
@@ -121,10 +121,10 @@ var genVertexShader = function(valueBlock) {
     for (var ndx = 0; ndx < valueBlock.values.length; ndx++) {
     /** @type {Array} */ var val = valueBlock.values[ndx];
         if (val.storageType === shaderCase.value.STORAGE_INPUT) {
-            /** @type {string} */ var floatType = deqpUtils.getDataTypeFloatScalars(val.dataType);
+            /** @type {string} */ var floatType = gluShaderUtil.getDataTypeFloatScalars(val.dataType);
             res += vtxIn + ' ' + floatType + ' a_' + val.valueName + ';\n';
 
-            if (deqpUtils.getDataTypeScalarType(val.dataType) === 'float')
+            if (gluShaderUtil.getDataTypeScalarType(val.dataType) === 'float')
                 res += vtxOut + ' ' + floatType + ' ' + val.valueName + ';\n';
             else
                 res += vtxOut + ' ' + floatType + ' v_' + val.valueName + ';\n';
@@ -142,7 +142,7 @@ var genVertexShader = function(valueBlock) {
     /** @type {Array} */ var val = valueBlock.values[ndx];
         if (val.storageType === shaderCase.value.STORAGE_INPUT) {
         /** @type {string} */ var name = val.valueName;
-            if (deqpUtils.getDataTypeScalarType(val.dataType) === 'float')
+            if (gluShaderUtil.getDataTypeScalarType(val.dataType) === 'float')
                 res += '\t' + name + ' = a_' + name + ';\n';
             else
                 res += '\tv_' + name + ' = a_' + name + ';\n';
@@ -165,7 +165,7 @@ var genCompareFunctions = function(valueBlock, useFloatTypes) {
     for (var ndx = 0; ndx < valueBlock.values.length; ndx++) {
     /** @type {Array} */ var val = valueBlock.values[ndx];
         if (val.storageType === shaderCase.value.STORAGE_OUTPUT)
-            cmpTypeFound[deqpUtils.getDataTypeName(val.dataType)] = true;
+            cmpTypeFound[gluShaderUtil.getDataTypeName(val.dataType)] = true;
 
     }
     if (useFloatTypes)
@@ -261,7 +261,7 @@ var genCompareOp = function(dstVec4Var, valueBlock, nonFloatNamePrefix, checkVar
                 output += 'RES = RES && ';
 
             // Generate actual comparison.
-            if (deqpUtils.getDataTypeScalarType(val.dataType) === 'float')
+            if (gluShaderUtil.getDataTypeScalarType(val.dataType) === 'float')
                 output += 'isOk(' + valueName + ', ref_' + valueName + ', 0.05);\n';
             else
                 output += 'isOk(' + nonFloatNamePrefix + valueName + ', ref_' + valueName + ');\n';
@@ -283,7 +283,7 @@ var genCompareOp = function(dstVec4Var, valueBlock, nonFloatNamePrefix, checkVar
  */
 var genFragmentShader = function(valueBlock) {
     /** @type {string} */ var shader = '';
-    /** @type {Object} */ var state = deqpTests.runner.getState();
+    /** @type {Object} */ var state = tcuTestCase.runner.getState();
     /** @type {boolean} */ var usesInout = usesShaderInoutQualifiers(state.currentTest.spec.targetVersion);
     /** @type {string} */ var vtxIn = usesInout ? 'in' : 'attribute';
     /** @type {string} */ var vtxOut = usesInout ? 'out' : 'varying';
@@ -309,12 +309,12 @@ var genFragmentShader = function(valueBlock) {
     // Declarations (varying, reference for each output).
     for (var ndx = 0; ndx < valueBlock.values.length; ndx++) {
     /** @type {Array} */ var val = valueBlock.values[ndx];
-    /** @type {string} */ var floatType = deqpUtils.getDataTypeFloatScalars(val.dataType);
-    /** @type {string} */ var refType = deqpUtils.getDataTypeName(val.dataType);
+    /** @type {string} */ var floatType = gluShaderUtil.getDataTypeFloatScalars(val.dataType);
+    /** @type {string} */ var refType = gluShaderUtil.getDataTypeName(val.dataType);
 
         if (val.storageType == shaderCase.value.STORAGE_OUTPUT)
         {
-            if (deqpUtils.getDataTypeScalarType(val.dataType) === 'float')
+            if (gluShaderUtil.getDataTypeScalarType(val.dataType) === 'float')
                 shader += fragIn + ' ' + floatType + ' ' + val.valueName + ';\n';
             else
                 shader += fragIn + ' ' + floatType + ' v_' + val.valueName + ';\n';
@@ -465,7 +465,7 @@ var specializeVertexShader = function(src, valueBlock) {
     /** @type {string} */ var decl = '';
     /** @type {string} */ var setup = '';
     /** @type {string} */ var output = '';
-    /** @type {Object} */ var state = deqpTests.runner.getState();
+    /** @type {Object} */ var state = tcuTestCase.runner.getState();
     /** @type {boolean} */ var usesInout = usesShaderInoutQualifiers(state.currentTest.spec.targetVersion);
     /** @type {string} */ var vtxIn = usesInout ? 'in' : 'attribute';
     /** @type {string} */ var vtxOut = usesInout ? 'out' : 'varying';
@@ -478,12 +478,12 @@ var specializeVertexShader = function(src, valueBlock) {
     for (var ndx = 0; ndx < valueBlock.values.length; ndx++) {
     /** @type {Array} */ var val = valueBlock.values[ndx];
     /** @type {string} */ var valueName = val.valueName;
-    /** @type {string} */ var floatType = deqpUtils.getDataTypeFloatScalars(val.dataType);
-    /** @type {string} */ var dataTypeName = deqpUtils.getDataTypeName(val.dataType);
+    /** @type {string} */ var floatType = gluShaderUtil.getDataTypeFloatScalars(val.dataType);
+    /** @type {string} */ var dataTypeName = gluShaderUtil.getDataTypeName(val.dataType);
 
         if (val.storageType === shaderCase.value.STORAGE_INPUT)
         {
-            if (deqpUtils.getDataTypeScalarType(val.dataType) === 'float')
+            if (gluShaderUtil.getDataTypeScalarType(val.dataType) === 'float')
             {
                 decl += vtxIn + ' ' + floatType + ' ' + valueName + ';\n';
             }
@@ -495,7 +495,7 @@ var specializeVertexShader = function(src, valueBlock) {
         }
         else if (val.storageType === shaderCase.value.STORAGE_OUTPUT)
         {
-            if (deqpUtils.getDataTypeScalarType(val.dataType) === 'float')
+            if (gluShaderUtil.getDataTypeScalarType(val.dataType) === 'float')
                 decl += vtxOut + ' ' + floatType + ' ' + valueName + ';\n';
             else
             {
@@ -516,7 +516,7 @@ var specializeVertexShader = function(src, valueBlock) {
                     .replace(/\$\{POSITION_FRAG_COLOR\}/g, 'gl_Position');
 
     /** @type {string} */
-    var withExt = injectExtensionRequirements(baseSrc, deqpProgram.shaderType.VERTEX, state.currentTest.spec.requirements);
+    var withExt = injectExtensionRequirements(baseSrc, gluShaderProgram.shaderType.VERTEX, state.currentTest.spec.requirements);
 
     return withExt;
 };
@@ -530,7 +530,7 @@ var specializeVertexOnly = function(src, valueBlock) {
     /** @type {string} */ var decl = '';
     /** @type {string} */ var setup = '';
     /** @type {string} */ var output = '';
-    /** @type {Object} */ var state = deqpTests.runner.getState();
+    /** @type {Object} */ var state = tcuTestCase.runner.getState();
     /** @type {boolean} */ var usesInout = usesShaderInoutQualifiers(state.currentTest.spec.targetVersion);
     /** @type {string} */ var vtxIn = usesInout ? 'in' : 'attribute';
 
@@ -543,17 +543,17 @@ var specializeVertexOnly = function(src, valueBlock) {
     for (var ndx = 0; ndx < valueBlock.values.length; ndx++) {
     /** @type {Array} */ var val = valueBlock.values[ndx];
     /** @type {string} */ var valueName = val.valueName;
-    /** @type {string} */ var type = deqpUtils.getDataTypeName(val.dataType);
+    /** @type {string} */ var type = gluShaderUtil.getDataTypeName(val.dataType);
 
         if (val.storageType === shaderCase.value.STORAGE_INPUT)
         {
-            if (deqpUtils.getDataTypeScalarType(val.dataType) === 'float')
+            if (gluShaderUtil.getDataTypeScalarType(val.dataType) === 'float')
             {
                 decl += vtxIn + ' ' + type + ' ' + valueName + ';\n';
             }
             else
             {
-                /** @type {string} */ var floatType = deqpUtils.getDataTypeFloatScalars(val.dataType);
+                /** @type {string} */ var floatType = gluShaderUtil.getDataTypeFloatScalars(val.dataType);
 
                 decl += vtxIn + ' ' + floatType + ' a_' + valueName + ';\n';
                 setup += type + ' ' + valueName + ' = ' + type + '(a_' + valueName + ');\n';
@@ -572,7 +572,7 @@ var specializeVertexOnly = function(src, valueBlock) {
                     .replace(/\$\{VERTEX_OUTPUT\}/g, output);
 
     /** @type {string} */
-    var withExt = injectExtensionRequirements(baseSrc, deqpProgram.shaderType.VERTEX, state.currentTest.spec.requirements);
+    var withExt = injectExtensionRequirements(baseSrc, gluShaderProgram.shaderType.VERTEX, state.currentTest.spec.requirements);
 
     return withExt;
 };
@@ -587,7 +587,7 @@ var specializeFragmentShader = function(src, valueBlock) {
     /** @type {string} */ var setup = '';
     /** @type {string} */ var output = '';
 
-    /** @type {Object} */ var state = deqpTests.runner.getState();
+    /** @type {Object} */ var state = tcuTestCase.runner.getState();
 
     /** @type {boolean} */ var usesInout = usesShaderInoutQualifiers(state.currentTest.spec.targetVersion);
     /** @type {boolean} */ var customColorOut = usesInout;
@@ -603,17 +603,17 @@ var specializeFragmentShader = function(src, valueBlock) {
     for (var ndx = 0; ndx < valueBlock.values.length; ndx++) {
     /** @type {Array} */ var val = valueBlock.values[ndx];
     /** @type {string} */ var valueName = val.valueName;
-    /** @type {string} */ var floatType = deqpUtils.getDataTypeFloatScalars(val.dataType);
-    /** @type {string} */ var refType = deqpUtils.getDataTypeName(val.dataType);
+    /** @type {string} */ var floatType = gluShaderUtil.getDataTypeFloatScalars(val.dataType);
+    /** @type {string} */ var refType = gluShaderUtil.getDataTypeName(val.dataType);
 
         if (val.storageType === shaderCase.value.STORAGE_INPUT)
         {
-            if (deqpUtils.getDataTypeScalarType(val.dataType) === 'float')
+            if (gluShaderUtil.getDataTypeScalarType(val.dataType) === 'float')
                 decl += fragIn + ' ' + floatType + ' ' + valueName + ';\n';
             else
             {
                 decl += fragIn + ' ' + floatType + ' v_' + valueName + ';\n';
-                var offset = deqpUtils.isDataTypeIntOrIVec(val.dataType) ? ' * 1.0025' : ''; // \todo [petri] bit of a hack to avoid errors in chop() due to varying interpolation
+                var offset = gluShaderUtil.isDataTypeIntOrIVec(val.dataType) ? ' * 1.0025' : ''; // \todo [petri] bit of a hack to avoid errors in chop() due to varying interpolation
                 setup += refType + ' ' + valueName + ' = ' + refType + '(v_' + valueName + offset + ');\n';
             }
         }
@@ -635,7 +635,7 @@ var specializeFragmentShader = function(src, valueBlock) {
                     .replace(/\$\{POSITION_FRAG_COLOR\}/g, fragColor);
 
     /** @type {string} */
-    var withExt = injectExtensionRequirements(baseSrc, deqpProgram.shaderType.FRAGMENT, state.currentTest.spec.requirements);
+    var withExt = injectExtensionRequirements(baseSrc, gluShaderProgram.shaderType.FRAGMENT, state.currentTest.spec.requirements);
 
     return withExt;
 };
@@ -648,7 +648,7 @@ var specializeFragmentShader = function(src, valueBlock) {
 var specializeFragmentOnly = function(src, valueBlock) {
     /** @type {string} */ var decl = '';
     /** @type {string} */ var output = '';
-    /** @type {Object} */ var state = deqpTests.runner.getState();
+    /** @type {Object} */ var state = tcuTestCase.runner.getState();
     /** @type {boolean} */ var usesInout = usesShaderInoutQualifiers(state.currentTest.spec.targetVersion);
     /** @type {boolean} */ var customColorOut = usesInout;
     /** @type {string} */ var fragIn = usesInout ? 'in' : 'varying';
@@ -663,8 +663,8 @@ var specializeFragmentOnly = function(src, valueBlock) {
     for (var ndx = 0; ndx < valueBlock.values.length; ndx++) {
     /** @type {Array} */ var val = valueBlock.values[ndx];
     /** @type {string} */ var valueName = val.valueName;
-    /** @type {string} */ var floatType = deqpUtils.getDataTypeFloatScalars(val.dataType);
-    /** @type {string} */ var refType = deqpUtils.getDataTypeName(val.dataType);
+    /** @type {string} */ var floatType = gluShaderUtil.getDataTypeFloatScalars(val.dataType);
+    /** @type {string} */ var refType = gluShaderUtil.getDataTypeName(val.dataType);
 
         if (val.storageType === shaderCase.value.STORAGE_OUTPUT) {
             decl += 'uniform ' + refType + ' ref_' + valueName + ';\n';
@@ -682,7 +682,7 @@ var specializeFragmentOnly = function(src, valueBlock) {
                      .replace(/\$\{FRAG_COLOR\}/g, fragColor);
 
     /** @type {string} */
-    var withExt = injectExtensionRequirements(baseSrc, deqpProgram.shaderType.FRAGMENT, state.currentTest.spec.requirements);
+    var withExt = injectExtensionRequirements(baseSrc, gluShaderProgram.shaderType.FRAGMENT, state.currentTest.spec.requirements);
 
     return withExt;
 };
@@ -702,7 +702,7 @@ var setUniformValue = function(gl, pipelinePrograms, name, val, arrayNdx) {
     for (var programNdx = 0; programNdx < pipelinePrograms.length; ++programNdx)
     {
         /** @const @type {WebGLUniformLocation} */ var loc = gl.getUniformLocation(pipelinePrograms[programNdx], name);
-        /** @const @type {number} */ var scalarSize = deqpUtils.getDataTypeScalarSize(val.dataType);
+        /** @const @type {number} */ var scalarSize = gluShaderUtil.getDataTypeScalarSize(val.dataType);
         /** @const @type {number} */ var elemNdx = (val.arrayLength === 1) ? (0) : (arrayNdx * scalarSize);
 
         if (!loc)
@@ -715,34 +715,34 @@ var setUniformValue = function(gl, pipelinePrograms, name, val, arrayNdx) {
         /** @type {Array} */ var element = val.elements.slice(elemNdx, elemNdx + scalarSize);
         switch (val.dataType)
         {
-            case deqpUtils.DataType.FLOAT: gl.uniform1fv(loc, new Float32Array(element)); break;
-            case deqpUtils.DataType.FLOAT_VEC2: gl.uniform2fv(loc, new Float32Array(element)); break;
-            case deqpUtils.DataType.FLOAT_VEC3: gl.uniform3fv(loc, new Float32Array(element)); break;
-            case deqpUtils.DataType.FLOAT_VEC4: gl.uniform4fv(loc, new Float32Array(element)); break;
-            case deqpUtils.DataType.FLOAT_MAT2: gl.uniformMatrix2fv(loc, gl.FALSE, new Float32Array(element)); break;
-            case deqpUtils.DataType.FLOAT_MAT3: gl.uniformMatrix3fv(loc, gl.FALSE, new Float32Array(element)); break;
-            case deqpUtils.DataType.FLOAT_MAT4: gl.uniformMatrix4fv(loc, gl.FALSE, new Float32Array(element)); break;
-            case deqpUtils.DataType.INT: gl.uniform1iv(loc, new Int32Array(element)); break;
-            case deqpUtils.DataType.INT_VEC2: gl.uniform2iv(loc, new Int32Array(element)); break;
-            case deqpUtils.DataType.INT_VEC3: gl.uniform3iv(loc, new Int32Array(element)); break;
-            case deqpUtils.DataType.INT_VEC4: gl.uniform4iv(loc, new Int32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT: gl.uniform1fv(loc, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT_VEC2: gl.uniform2fv(loc, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT_VEC3: gl.uniform3fv(loc, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT_VEC4: gl.uniform4fv(loc, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT_MAT2: gl.uniformMatrix2fv(loc, gl.FALSE, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT_MAT3: gl.uniformMatrix3fv(loc, gl.FALSE, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT_MAT4: gl.uniformMatrix4fv(loc, gl.FALSE, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.INT: gl.uniform1iv(loc, new Int32Array(element)); break;
+            case gluShaderUtil.DataType.INT_VEC2: gl.uniform2iv(loc, new Int32Array(element)); break;
+            case gluShaderUtil.DataType.INT_VEC3: gl.uniform3iv(loc, new Int32Array(element)); break;
+            case gluShaderUtil.DataType.INT_VEC4: gl.uniform4iv(loc, new Int32Array(element)); break;
 
             /** TODO: What type should be used for bool uniforms? */
-            case deqpUtils.DataType.BOOL: gl.uniform1iv(loc, new Int32Array(element)); break;
-            case deqpUtils.DataType.BOOL_VEC2: gl.uniform2iv(loc, new Int32Array(element)); break;
-            case deqpUtils.DataType.BOOL_VEC3: gl.uniform3iv(loc, new Int32Array(element)); break;
-            case deqpUtils.DataType.BOOL_VEC4: gl.uniform4iv(loc, new Int32Array(element)); break;
+            case gluShaderUtil.DataType.BOOL: gl.uniform1iv(loc, new Int32Array(element)); break;
+            case gluShaderUtil.DataType.BOOL_VEC2: gl.uniform2iv(loc, new Int32Array(element)); break;
+            case gluShaderUtil.DataType.BOOL_VEC3: gl.uniform3iv(loc, new Int32Array(element)); break;
+            case gluShaderUtil.DataType.BOOL_VEC4: gl.uniform4iv(loc, new Int32Array(element)); break;
 
-            case deqpUtils.DataType.UINT: gl.uniform1uiv(loc, new Uint32Array(element)); break;
-            case deqpUtils.DataType.UINT_VEC2: gl.uniform2uiv(loc, new Uint32Array(element)); break;
-            case deqpUtils.DataType.UINT_VEC3: gl.uniform3uiv(loc, new Uint32Array(element)); break;
-            case deqpUtils.DataType.UINT_VEC4: gl.uniform4uiv(loc, new Uint32Array(element)); break;
-            case deqpUtils.DataType.FLOAT_MAT2X3: gl.uniformMatrix2x3fv(loc, gl.FALSE, new Float32Array(element)); break;
-            case deqpUtils.DataType.FLOAT_MAT2X4: gl.uniformMatrix2x4fv(loc, gl.FALSE, new Float32Array(element)); break;
-            case deqpUtils.DataType.FLOAT_MAT3X2: gl.uniformMatrix3x2fv(loc, gl.FALSE, new Float32Array(element)); break;
-            case deqpUtils.DataType.FLOAT_MAT3X4: gl.uniformMatrix3x4fv(loc, gl.FALSE, new Float32Array(element)); break;
-            case deqpUtils.DataType.FLOAT_MAT4X2: gl.uniformMatrix4x2fv(loc, gl.FALSE, new Float32Array(element)); break;
-            case deqpUtils.DataType.FLOAT_MAT4X3: gl.uniformMatrix4x3fv(loc, gl.FALSE, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.UINT: gl.uniform1uiv(loc, new Uint32Array(element)); break;
+            case gluShaderUtil.DataType.UINT_VEC2: gl.uniform2uiv(loc, new Uint32Array(element)); break;
+            case gluShaderUtil.DataType.UINT_VEC3: gl.uniform3uiv(loc, new Uint32Array(element)); break;
+            case gluShaderUtil.DataType.UINT_VEC4: gl.uniform4uiv(loc, new Uint32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT_MAT2X3: gl.uniformMatrix2x3fv(loc, gl.FALSE, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT_MAT2X4: gl.uniformMatrix2x4fv(loc, gl.FALSE, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT_MAT3X2: gl.uniformMatrix3x2fv(loc, gl.FALSE, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT_MAT3X4: gl.uniformMatrix3x4fv(loc, gl.FALSE, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT_MAT4X2: gl.uniformMatrix4x2fv(loc, gl.FALSE, new Float32Array(element)); break;
+            case gluShaderUtil.DataType.FLOAT_MAT4X3: gl.uniformMatrix4x3fv(loc, gl.FALSE, new Float32Array(element)); break;
 
             default:
                 testFailed('Unknown data type ' + val.dataType);
@@ -755,7 +755,7 @@ var setUniformValue = function(gl, pipelinePrograms, name, val, arrayNdx) {
 
 /**
  * Evaluates pixels, if they are white, black or there is any unexpected result
- * @param {deqpDraw.Surface} surface
+ * @param {gluDrawUtil.Surface} surface
  * @param {number} minX
  * @param {number} maxX
  * @param {number} minY
@@ -798,7 +798,7 @@ var checkPixels = function(surface, minX, maxX, minY, maxY) {
  * Initialize a test case
  */
 var init = function() {
-/** @type {Object} */ var state = deqpTests.runner.getState();
+/** @type {Object} */ var state = tcuTestCase.runner.getState();
 /** @type {Object} */ var test = state.currentTest;
 
     bufferedLogToConsole('Processing ' + test.fullName());
@@ -811,19 +811,19 @@ var init = function() {
         for (var ndx = 0; ndx < test.spec.requirements.length; ++ndx)
             test.spec.requirements[ndx].checkRequirements();
 
-    /** @type {Array.<deqpProgram.ShaderInfo>} */ var sources = [];
+    /** @type {Array.<gluShaderProgram.ShaderInfo>} */ var sources = [];
 
     if (test.spec.caseType === caseType.CASETYPE_COMPLETE) {
     /** @type {string} */ var vertex = specializeVertexOnly(test.spec.vertexSource, valueBlock);
     /** @type {string} */ var fragment = specializeFragmentOnly(test.spec.fragmentSource, valueBlock);
-        sources.push(deqpProgram.genVertexSource(vertex));
-        sources.push(deqpProgram.genFragmentSource(fragment));
+        sources.push(gluShaderProgram.genVertexSource(vertex));
+        sources.push(gluShaderProgram.genFragmentSource(fragment));
     } else if (test.spec.caseType === caseType.CASETYPE_VERTEX_ONLY) {
-        sources.push(deqpProgram.genVertexSource(specializeVertexShader(test.spec.vertexSource, valueBlock)));
-        sources.push(deqpProgram.genFragmentSource(genFragmentShader(valueBlock)));
+        sources.push(gluShaderProgram.genVertexSource(specializeVertexShader(test.spec.vertexSource, valueBlock)));
+        sources.push(gluShaderProgram.genFragmentSource(genFragmentShader(valueBlock)));
     } else if (test.spec.caseType === caseType.CASETYPE_FRAGMENT_ONLY) {
-        sources.push(deqpProgram.genVertexSource(genVertexShader(valueBlock)));
-        sources.push(deqpProgram.genFragmentSource(specializeFragmentShader(test.spec.fragmentSource, valueBlock)));
+        sources.push(gluShaderProgram.genVertexSource(genVertexShader(valueBlock)));
+        sources.push(gluShaderProgram.genFragmentSource(specializeFragmentShader(test.spec.fragmentSource, valueBlock)));
     }
 
     test.programs = [];
@@ -860,7 +860,7 @@ var execute = function()
 
     var wtu = WebGLTestUtils;
     /** @type {WebGLRenderingContext} */ var gl = wtu.create3DContext('canvas');
-    /** @type {Object} */ var state = deqpTests.runner.getState();
+    /** @type {Object} */ var state = tcuTestCase.runner.getState();
     /** @type {Object} */ var test = state.currentTest;
     /** @type {Object} */ var spec = test.spec;
 
@@ -878,8 +878,8 @@ var execute = function()
     /** @type {string} */ var failReason = null;
 
     /** @type {number} */ var vertexProgramID = -1;
-    /** @type {Array.<deqpProgram.Program.program>} */ var pipelineProgramIDs = [];
-    /** @type {Array.<deqpProgram.ShaderProgram>} */ var programs = [];
+    /** @type {Array.<gluShaderProgram.Program.program>} */ var pipelineProgramIDs = [];
+    /** @type {Array.<gluShaderProgram.ShaderProgram>} */ var programs = [];
     var programPipeline;
 
     // Set the name of the current test so testFailedOptions/testPassedOptions can use it.
@@ -889,7 +889,7 @@ var execute = function()
 
     if (!test.separatePrograms)
     {
-    /** @type {deqpProgram.ShaderProgram} */ var program = new deqpProgram.ShaderProgram(gl, test.programs[0].programSources);
+    /** @type {gluShaderProgram.ShaderProgram} */ var program = new gluShaderProgram.ShaderProgram(gl, test.programs[0].programSources);
 
         vertexProgramID = program.getProgram();
         pipelineProgramIDs.push(program.getProgram());
@@ -1000,7 +1000,7 @@ var execute = function()
         for (var arrayNdx = 0; arrayNdx < numRenderPasses; arrayNdx++)
         {
             /** @const @type {number} */ var numValues = block.values.length;
-            /** @type {deqpDraw.VertexArrayBinding} */ var vertexArrays = [];
+            /** @type {gluDrawUtil.VertexArrayBinding} */ var vertexArrays = [];
             /** @type {number} */ var attribValueNdx = 0;
             /** @type {gl.enum} */ var postDrawError;
             var beforeDrawValidator = (
@@ -1011,23 +1011,23 @@ var execute = function()
                                        )
             );
 
-            vertexArrays.push(new deqpDraw.VertexArrayBinding(gl.FLOAT, positionLoc, 4, numVerticesPerDraw, s_positions));
+            vertexArrays.push(new gluDrawUtil.VertexArrayBinding(gl.FLOAT, positionLoc, 4, numVerticesPerDraw, s_positions));
 
             // Collect VA pointer for inputs
             for (var valNdx = 0; valNdx < numValues; valNdx++) {
                 /** @const @type {Array} */ var val = block.values[valNdx];
                 /** @const @type {string} */ var valueName = val.valueName;
                 /** @const @type {string} */ var dataType = val.dataType;
-                /** @const @type {number} */ var scalarSize = deqpUtils.getDataTypeScalarSize(val.dataType);
+                /** @const @type {number} */ var scalarSize = gluShaderUtil.getDataTypeScalarSize(val.dataType);
 
                 if (val.storageType === shaderCase.value.STORAGE_INPUT)
                 {
                     // Replicate values four times.
                 /** @type {Array} */ var scalars = [];
 
-                    if (deqpUtils.isDataTypeMatrix(dataType)) {
-                        /** @type {number} */ var numCols = deqpUtils.getDataTypeMatrixNumColumns(dataType);
-                        /** @type {number} */ var numRows = deqpUtils.getDataTypeMatrixNumRows(dataType);
+                    if (gluShaderUtil.isDataTypeMatrix(dataType)) {
+                        /** @type {number} */ var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(dataType);
+                        /** @type {number} */ var numRows = gluShaderUtil.getDataTypeMatrixNumRows(dataType);
                         for (var repNdx = 0; repNdx < numVerticesPerDraw; repNdx++)
                             for (var i = 0; i < numCols; i++)
                                 for (var j = 0; j < numRows; j++)
@@ -1040,7 +1040,7 @@ var execute = function()
                                 // Attribute name prefix.
                     /** @type {string} */ var attribPrefix = '';
                     // \todo [2010-05-27 petri] Should latter condition only apply for vertex cases (or actually non-fragment cases)?
-                    if ((spec.caseType === caseType.CASETYPE_FRAGMENT_ONLY) || (deqpUtils.getDataTypeScalarType(dataType) !== 'float'))
+                    if ((spec.caseType === caseType.CASETYPE_FRAGMENT_ONLY) || (gluShaderUtil.getDataTypeScalarType(dataType) !== 'float'))
                         attribPrefix = 'a_';
 
                     // Input always given as attribute.
@@ -1051,20 +1051,20 @@ var execute = function()
                         continue;
                     }
 
-                    if (deqpUtils.isDataTypeMatrix(dataType)) {
-                        /** @type {number} */ var numCols = deqpUtils.getDataTypeMatrixNumColumns(dataType);
-                        /** @type {number} */ var numRows = deqpUtils.getDataTypeMatrixNumRows(dataType);
+                    if (gluShaderUtil.isDataTypeMatrix(dataType)) {
+                        /** @type {number} */ var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(dataType);
+                        /** @type {number} */ var numRows = gluShaderUtil.getDataTypeMatrixNumRows(dataType);
 
                         assertMsgOptions(scalarSize === numCols * numRows, 'Matrix size sanity check', false, true);
 
                         /** @type {number} */ var colSize = numRows * numVerticesPerDraw;
                         for (var i = 0; i < numCols; i++) {
                         /** @type {Array} */ var colData = scalars.slice(i * colSize, (i + 1) * colSize);
-                            vertexArrays.push(new deqpDraw.VertexArrayBinding(gl.FLOAT, attribLoc + i, numRows, numVerticesPerDraw, colData));
+                            vertexArrays.push(new gluDrawUtil.VertexArrayBinding(gl.FLOAT, attribLoc + i, numRows, numVerticesPerDraw, colData));
                         }
                     }
                     else
-                            vertexArrays.push(new deqpDraw.VertexArrayBinding(gl.FLOAT, attribLoc, scalarSize, numVerticesPerDraw, scalars));
+                            vertexArrays.push(new gluDrawUtil.VertexArrayBinding(gl.FLOAT, attribLoc, scalarSize, numVerticesPerDraw, scalars));
 
                     assertMsgOptions(gl.getError() === gl.NO_ERROR, 'set vertex attrib array', false, true);
                 }
@@ -1109,12 +1109,12 @@ var execute = function()
                 assertMsgOptions(gl.getError() === gl.NO_ERROR, 'set patchParameteri(PATCH_VERTICES, 3)', false, true);
             }
 
-            deqpDraw.draw(gl,
+            gluDrawUtil.draw(gl,
                  vertexProgramID,
                  vertexArrays,
                  (tessellationPresent) ?
-                    (deqpDraw.patches(s_indices)) :
-                    (deqpDraw.triangles(s_indices)),
+                    (gluDrawUtil.patches(s_indices)) :
+                    (gluDrawUtil.triangles(s_indices)),
                  (spec.expectResult === expectResult.EXPECT_VALIDATION_FAIL) ?
                     (beforeDrawValidator) :
                     (null));
@@ -1122,7 +1122,7 @@ var execute = function()
             postDrawError = gl.getError();
 
             if (spec.expectResult === expectResult.EXPECT_PASS) {
-                /** @type {deqpDraw.Surface} */ var surface = new deqpDraw.Surface();
+                /** @type {gluDrawUtil.Surface} */ var surface = new gluDrawUtil.Surface();
                 /** @const @type {number} */ var w = s_positions[3];
                 /** @const @type {number} */ var minY = Math.ceil(((-quadSize / w) * 0.5 + 0.5) * height + 1.0);
                 /** @const @type {number} */ var maxY = Math.floor(((+quadSize / w) * 0.5 + 0.5) * height - 0.5);
@@ -1171,7 +1171,7 @@ var execute = function()
 };
 
 var runTestCases = function() {
-/** @type {Object} */ var state = deqpTests.runner.getState();
+/** @type {Object} */ var state = tcuTestCase.runner.getState();
     state.currentTest = state.testCases.next(state.filter);
     if (state.currentTest) {
         try {
@@ -1180,9 +1180,9 @@ var runTestCases = function() {
         } catch (err) {
            bufferedLogToConsole(err);
         }
-        deqpTests.runner.runCallback(runTestCases);
+        tcuTestCase.runner.runCallback(runTestCases);
     } else
-        deqpTests.runner.terminate();
+    tcuTestCase.runner.terminate();
 
 };
 
@@ -1202,4 +1202,3 @@ return {
 };
 
 });
-
