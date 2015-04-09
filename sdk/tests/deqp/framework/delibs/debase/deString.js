@@ -53,9 +53,20 @@ define(['framework/delibs/debase/deMath'], function(deMath) {
         return hash;
     };
 
+    /**
+     * Checks if a JS string is either empty or undefined
+     * @param {string} str
+     * @return {boolean}
+     */
+    var deIsStringEmpty = function(str) {
+        if (str === undefined || str.length == 0)
+            return true;
+        return false;
+    };
+
     return {
-        deStringHash: deStringHash
+        deStringHash: deStringHash,
+        deIsStringEmpty: deIsStringEmpty
     };
 
 });
-

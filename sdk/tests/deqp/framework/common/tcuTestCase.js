@@ -59,7 +59,9 @@ var getState = function() {
  * @param {function()} callback Callback to schedule
  */
 var runCallback = function(callback) {
-    setTimeout(callback.bind(this), 0);
+    setTimeout(function() {
+        callback();
+    }.bind(this), 0);
 };
 
 /**
@@ -80,6 +82,7 @@ return {
 
 /**
  * Assigns name, description and specification to test
+ * @constructor
  * @param {string} name
  * @param {string} description
  * @param {string} spec
@@ -150,6 +153,15 @@ DeqpTest.prototype.fullName = function() {
         if (parentName)
             return parentName + '.' + this.name;
     return this.name;
+};
+
+/**
+ * Returns the description of the test
+ *
+ * @return {string} Test description.
+ */
+DeqpTest.prototype.getDescription = function() {
+    return this.description;
 };
 
 /**

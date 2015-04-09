@@ -23,6 +23,7 @@ define(function() {
 
 /**
  * Description of a vertex array binding
+ * @constructor
  * @param {WebGLRenderingContext.GLEnum} type GL Type of data
  * @param {string|number} location Binding location
  * @param {number} components Number of components per vertex
@@ -35,6 +36,27 @@ var VertexArrayBinding = function(type, location, components, elements, data) {
     this.components = components;
     this.elements = elements;
     this.data = data;
+};
+
+/**
+ * Description of a vertex array binding
+ * @param {BindingPoint} bindingPoint
+ * @param {VertexArrayPointer} vertexArrayPointer
+ * @return {VertexArrayBinding}
+ */
+function vabFromBindingPointAndArrayPointer(binding, pointer) {
+    var type = gl.FLOAT;
+    var location = binding.location;
+    var components = pointer.numComponents;
+    var elements = pointer.numElements;
+    var data = pointer.data;
+    var vaBinding = new VertexArrayBinding(type, location, components, elements, data);
+    vaBinding.componentType = pointer.componentType;
+    vaBinding.name = binding.name;
+    vaBinding.bindingPointType = binding.type;
+    vaBinding.convert = pointer.convert;
+    vaBinding.stride = pointer.stride;
+    return vaBinding;
 };
 
 /**
@@ -322,6 +344,95 @@ Surface.prototype.getPixel = function(x, y) {
     return new Pixel(rgba);
 };
 
+/**
+ * @enum
+ */
+var VertexComponentType =
+{
+    // Standard types: all conversion types apply.
+    VTX_COMP_UNSIGNED_INT8: 0,
+    VTX_COMP_UNSIGNED_INT16: 1,
+    VTX_COMP_UNSIGNED_INT32: 2,
+    VTX_COMP_SIGNED_INT8: 3,
+    VTX_COMP_SIGNED_INT16: 4,
+    VTX_COMP_SIGNED_INT32: 5,
+
+    // Special types: only CONVERT_NONE is allowed.
+    VTX_COMP_FIXED: 6,
+    VTX_COMP_HALF_FLOAT: 7,
+    VTX_COMP_FLOAT: 8
+};
+
+/**
+ * @enum
+ */
+var VertexComponentConversion = {
+    VTX_COMP_CONVERT_NONE: 0, //!< No conversion: integer types, or floating-point values.
+    VTX_COMP_CONVERT_NORMALIZE_TO_FLOAT: 1, //!< Normalize integers to range [0,1] or [-1,1] depending on type.
+    VTX_COMP_CONVERT_CAST_TO_FLOAT: 2 //!< Convert to floating-point directly.
+};
+
+/**
+ * VertexArrayPointer
+ * @constructor
+ * @param {VertexComponentType} componentType_
+ * @param {VertexComponentConversion} convert_
+ * @param {number} numComponents_
+ * @param {number} numElements_
+ * @param {number} stride_
+ * @const @param {Array.<number>} data_
+ */
+var VertexArrayPointer = function(componentType_, convert_, numComponents_, numElements_, stride_, data_) {
+    this.componentType = componentType_;
+    this.convert = convert_;
+    this.numComponents = numComponents_;
+    this.numElements = numElements_;
+    this.stride = stride_;
+    this.data = data_;
+};
+
+/**
+ * Type
+ * @enum
+ */
+var Type = {
+    TYPE_LOCATION: 0, //!< Binding by numeric location.
+    TYPE_NAME: 1 //!< Binding by input name.
+};
+
+/**
+ * BindingPoint
+ * @constructor
+ * @param {Type} type
+ * @param {string} name
+ * @param {number} location
+ */
+var BindingPoint = function(type, name, location) {
+    /* @type {Type} */ this.type = type;
+    /* @type {string} */ this.name = name;
+    /* @type {number} */ this.location = location;
+};
+
+/**
+ * bindingPointFromLocation
+ * @param {number} location
+ */
+function bindingPointFromLocation(location) {
+    return new BindingPoint(Type.TYPE_LOCATION, '', location);
+}
+
+/**
+ * bindingPointFromName
+ * @param {string} name
+ * @param {number} location
+ */
+function bindingPointFromName(name, location) {
+    var loc = location === undefined ? 0 : location;
+    return new BindingPoint(Type.TYPE_LOCATION, name, loc);
+}
+
+
+
 return {
     primitiveType: primitiveType,
     namedBindingsToProgramLocations: namedBindingsToProgramLocations,
@@ -331,7 +442,14 @@ return {
     triangles: triangles,
     patches: patches,
     Surface: Surface,
-    VertexArrayBinding: VertexArrayBinding
+    VertexArrayBinding: VertexArrayBinding,
+    VertexComponentType: VertexComponentType,
+    VertexComponentConversion: VertexComponentConversion,
+    VertexArrayPointer: VertexArrayPointer,
+    vabFromBindingPointAndArrayPointer: vabFromBindingPointAndArrayPointer,
+    BindingPoint: BindingPoint,
+    bindingPointFromLocation: bindingPointFromLocation,
+    bindingPointFromName: bindingPointFromName,
+    PrimitiveList: PrimitiveList
 };
 });
-

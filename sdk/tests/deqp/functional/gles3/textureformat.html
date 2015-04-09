@@ -25,9 +25,9 @@ requirejs.config({
 var wtu = WebGLTestUtils;
 /** @type {WebGLRenderingContext} */ var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 2);
 
-requirejs(["functional/gles3/es3fTextureFormatTests"], function(textureFormatTests) {
+requirejs(["functional/gles3/es3fTextureFormatTests"], function(es3fTextureFormatTests) {
     try{
-        textureFormatTests.run();
+        es3fTextureFormatTests.run();
     }
     catch(err)
     {

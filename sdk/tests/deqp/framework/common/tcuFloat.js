@@ -26,250 +26,6 @@ var DE_ASSERT = function(x) {
         throw new Error('Assert failed');
 };
 
-/**
- * Converts a byte array to a number
- * @param {Uint8Array} array
- * @return {number}
- */
-var arrayToNumber = function(array) {
-    /** @type {number} */ var result = 0;
-
-    for (var ndx = 0; ndx < array.length; ndx++)
-    {
-        result += array[ndx] * Math.pow(256, ndx);
-    }
-
-    return result;
-};
-
-/**
- * Fills a byte array with a number
- * @param {Uint8Array} array Output array (already resized)
- * @param {number} number
- */
-var numberToArray = function(array, number) {
-    for (var byteNdx = 0; byteNdx < array.length; byteNdx++)
-    {
-        /** @type {number} */ var acumzndx = !byteNdx ? number : Math.floor(number / Math.pow(256, byteNdx));
-        array[byteNdx] = acumzndx & 0xFF;
-    }
-};
-
-/**
- * Obtains the bit fragment from an array in a number
- * @param {Uint8Array} array
- * @param {number} firstNdx
- * @param {number} lastNdx
- * @return {number}
- */
-var getBitRange = function(array, firstNdx, lastNdx) {
-    /** @type {number} */ var bitSize = lastNdx - firstNdx;
-    /** @type {number} */ var byteSize = Math.floor(bitSize / 8) + ((bitSize % 8) > 0 ? 1 : 0);
-
-    /** @type {ArrayBuffer} */ var buffer = new ArrayBuffer(byteSize);
-    /** @type {Uint8Array} */ var outArray = new Uint8Array(buffer);
-
-    for (var bitNdx = firstNdx; bitNdx < lastNdx; bitNdx++)
-    {
-        /** @type {number} */ var sourceByte = Math.floor(bitNdx / 8);
-        /** @type {number} */ var sourceBit = Math.floor(bitNdx % 8);
-
-        /** @type {number} */ var destByte = Math.floor((bitNdx - firstNdx) / 8);
-        /** @type {number} */ var destBit = Math.floor((bitNdx - firstNdx) % 8);
-
-        /** @type {number} */ var sourceBitValue = (array[sourceByte] & Math.pow(2, sourceBit)) != 0 ? 1 : 0;
-
-        outArray[destByte] = outArray[destByte] | (Math.pow(2, destBit) * sourceBitValue);
-    }
-
-    return arrayToNumber(outArray);
-};
-
-//Bit operations with the help of arrays
-
-var BinaryOp = {
-    AND: 0,
-    OR: 1
-};
-
-/**
- * Performs a normal (native) binary operation
- * @param {number} valueA First operand
- * @param {number} valueB Second operand
- * @param {BinaryOp} operation The desired operation to perform
- * @return {number}
- */
-var doNativeBinaryOp = function(valueA, valueB, operation) {
-    switch (operation)
-    {
-    case BinaryOp.AND:
-        return valueA & valueB;
-    case BinaryOp.OR:
-        return valueA | valueB;
-    }
-};
-
-/**
- * Performs a binary operation between two operands
- * with the help of arrays to avoid losing the internal binary representation.
- * If the operation is safe to perform in a native way, it will do that.
- * @param {number} valueA First operand
- * @param {number} valueB Second operand
- * @param {BinaryOp} operation The desired operation to perform
- * @return {number}
- */
-var binaryOp = function(valueA, valueB, binaryOp) {
-    /** @type {number} */ var valueABitSize = Math.floor(Math.log2(valueA) + 1);
-    /** @type {number} */ var valueBBitSize = Math.floor(Math.log2(valueB) + 1);
-    /** @type {number} */ var bitsSize = Math.max(valueABitSize, valueBBitSize);
-
-    if (bitsSize <= 32)
-        return doNativeBinaryOp(valueA, valueB, binaryOp);
-
-    /** @type {number} */ var valueAByteSize = Math.floor(valueABitSize / 8) + ((valueABitSize % 8) > 0 ? 1 : 0);
-    /** @type {number} */ var valueBByteSize = Math.floor(valueBBitSize / 8) + ((valueBBitSize % 8) > 0 ? 1 : 0);
-    /** @type {number} */ var byteSize = Math.floor(bitsSize / 8) + ((bitsSize % 8) > 0 ? 1 : 0);
-
-    /** @type {ArrayBuffer} */ var valueABuffer = new ArrayBuffer(valueAByteSize);
-    /** @type {ArrayBuffer} */ var valueBBuffer = new ArrayBuffer(valueBByteSize);
-    /** @type {ArrayBuffer} */ var buffer = new ArrayBuffer(byteSize);
-
-    /** @type {Uint8Array} */ var inArrayA = new Uint8Array(valueABuffer);
-    /** @type {Uint8Array} */ var inArrayB = new Uint8Array(valueBBuffer);
-    /** @type {Uint8Array} */ var outArray = new Uint8Array(buffer);
-
-    numberToArray(inArrayA, valueA);
-    numberToArray(inArrayB, valueB);
-
-    /** @type {Uint8Array} */ var largestArray = inArrayA.length > inArrayB.length ? inArrayA : inArrayB;
-
-    /** @type {number} */ var minLength = Math.min(inArrayA.length, inArrayB.length);
-
-    for (var byteNdx = 0; byteNdx < minLength; byteNdx++)
-    {
-        outArray[byteNdx] = doNativeBinaryOp(inArrayA[byteNdx], inArrayB[byteNdx], binaryOp);
-    }
-
-    while (byteNdx < byteSize)
-    {
-        outArray[byteNdx] = largestArray[byteNdx];
-        byteNdx++;
-    }
-
-    return arrayToNumber(outArray);
-};
-
-/**
- * Performs a binary NOT operation in an operand
- * with the help of arrays.
- * @param {number} value Operand
- * @return {number}
- */
-var binaryNot = function(value) {
-    /** @type {number} */ var bitsSize = Math.floor(Math.log2(value) + 1);
-
-    //This is not reliable. But left here commented as a warning.
-    /*if (bitsSize <= 32)
-        return ~value;*/
-
-    /** @type {number} */ var byteSize = Math.floor(bitsSize / 8) + ((bitsSize % 8) > 0 ? 1 : 0);
-
-    /** @type {ArrayBuffer} */ var inBuffer = new ArrayBuffer(byteSize);
-    /** @type {Uint8Array} */ var inArray = new Uint8Array(inBuffer);
-
-    /** @type {ArrayBuffer} */ var buffer = new ArrayBuffer(byteSize);
-    /** @type {Uint8Array} */ var outArray = new Uint8Array(buffer);
-
-    numberToArray(inArray, value);
-
-    for (var byteNdx = 0; byteNdx < byteSize; byteNdx++)
-    {
-        outArray[byteNdx] = ~inArray[byteNdx];
-    }
-
-    return arrayToNumber(outArray);
-};
-
-/**
- * Shifts the given value 'steps' bits to the left. Replaces << operator
- * This function should be used if the expected value will be wider than 32-bits.
- * If safe, it will perform a normal << operation
- * @param {number} value
- * @param {number} steps
- * @return {number}
- */
-var shiftLeft = function(value, steps)
-{
-    /** @type {number} */ var totalBitsRequired = Math.floor(Math.log2(value) + 1) + steps;
-
-    if (totalBitsRequired < 32)
-        return value << steps;
-
-    totalBitsRequired = totalBitsRequired > 64 ? 64 : totalBitsRequired; //No more than 64-bits
-
-    /** @type {number} */ var totalBytesRequired = Math.floor(totalBitsRequired / 8) + ((totalBitsRequired % 8) > 0 ? 1 : 0);
-
-    /** @type {ArrayBuffer} */ var inBuffer = new ArrayBuffer(totalBytesRequired);
-    /** @type {Uint8Array} */ var inArray = new Uint8Array(inBuffer);
-
-    /** @type {ArrayBuffer} */ var buffer = new ArrayBuffer(totalBytesRequired);
-    /** @type {Uint8Array} */ var outArray = new Uint8Array(buffer);
-
-    numberToArray(inArray, value);
-
-    for (var bitNdx = 0; bitNdx < totalBitsRequired; bitNdx++)
-    {
-        /** @type {number} */ var sourceByte = Math.floor(bitNdx / 8);
-        /** @type {number} */ var sourceBit = Math.floor(bitNdx % 8);
-        /** @type {number} */ var newbitNdx = bitNdx + steps;
-        /** @type {number} */ var correspondingByte = Math.floor(newbitNdx / 8);
-        /** @type {number} */ var correspondingBit = Math.floor(newbitNdx % 8);
-        /** @type {number} */ var bitValue = (inArray[sourceByte] & Math.pow(2, sourceBit)) != 0 ? 1 : 0;
-        outArray[correspondingByte] = outArray[correspondingByte] | (Math.pow(2, correspondingBit) * bitValue);
-    }
-
-    return arrayToNumber(outArray);
-};
-
-/**
- * Shifts the given value 'steps' bits to the right. Replaces >> operator
- * This function should be used if the expected value will be wider than 32-bits
- * If safe, it will perform a normal >> operation
- * @param {number} value
- * @param {number} steps
- * @return {number}
- */
-var shiftRight = function(value, steps)
-{
-    /** @type {number} */ var totalBitsRequired = Math.floor(Math.log2(value) + 1); //additional bits not needed (will be 0) + steps;
-
-    if (totalBitsRequired < 32)
-        return value >> steps;
-
-    /** @type {number} */ var totalBytesRequired = Math.floor(totalBitsRequired / 8) + ((totalBitsRequired % 8) > 0 ? 1 : 0);
-
-    /** @type {ArrayBuffer} */ var inBuffer = new ArrayBuffer(totalBytesRequired);
-    /** @type {Uint8Array} */ var inArray = new Uint8Array(inBuffer);
-
-    /** @type {ArrayBuffer} */ var buffer = new ArrayBuffer(totalBytesRequired);
-    /** @type {Uint8Array} */ var outArray = new Uint8Array(buffer);
-
-    numberToArray(inArray, value);
-
-    for (var bitNdx = totalBitsRequired - 1; bitNdx >= steps; bitNdx--)
-    {
-        /** @type {number} */ var sourceByte = Math.floor(bitNdx / 8);
-        /** @type {number} */ var sourceBit = Math.floor(bitNdx % 8);
-        /** @type {number} */ var newbitNdx = bitNdx - steps;
-        /** @type {number} */ var correspondingByte = Math.floor(newbitNdx / 8);
-        /** @type {number} */ var correspondingBit = Math.floor(newbitNdx % 8);
-        /** @type {number} */ var bitValue = (inArray[sourceByte] & Math.pow(2, sourceBit)) != 0 ? 1 : 0;
-        outArray[correspondingByte] = outArray[correspondingByte] | (Math.pow(2, correspondingBit) * bitValue);
-    }
-
-    return arrayToNumber(outArray);
-};
-
 var FloatFlags = {
     FLOAT_HAS_SIGN: (1 << 0),
     FLOAT_SUPPORT_DENORM: (1 << 1)
@@ -278,6 +34,7 @@ var FloatFlags = {
 /**
  * Defines a FloatDescription object, which is an essential part of the deFloat type.
  * Holds the information that shapes the deFloat.
+ * @constructor
  */
 var FloatDescription = function(exponentBits, mantissaBits, exponentBias, flags) {
     this.ExponentBits = exponentBits;
@@ -296,7 +53,7 @@ var FloatDescription = function(exponentBits, mantissaBits, exponentBias, flags)
  */
 FloatDescription.prototype.zero = function(sign) {
     return newDeFloatFromParameters(
-        shiftLeft((sign > 0 ? 0 : 1), (this.ExponentBits + this.MantissaBits)),
+        deMath.shiftLeft((sign > 0 ? 0 : 1), (this.ExponentBits + this.MantissaBits)),
         new FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
     );
 };
@@ -308,7 +65,7 @@ FloatDescription.prototype.zero = function(sign) {
  */
 FloatDescription.prototype.inf = function(sign) {
     return newDeFloatFromParameters(((sign > 0 ? 0 : 1) << (this.ExponentBits + this.MantissaBits)) |
-        shiftLeft(((1 << this.ExponentBits) - 1), this.MantissaBits), //Unless using very large exponent types, native shift is safe here, i guess.
+        deMath.shiftLeft(((1 << this.ExponentBits) - 1), this.MantissaBits), //Unless using very large exponent types, native shift is safe here, i guess.
         new FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
     );
 };
@@ -318,7 +75,7 @@ FloatDescription.prototype.inf = function(sign) {
  * @return {deFloat}
  */
 FloatDescription.prototype.nan = function() {
-    return newDeFloatFromParameters(shiftLeft(1, (this.ExponentBits + this.MantissaBits)) - 1,
+    return newDeFloatFromParameters(deMath.shiftLeft(1, (this.ExponentBits + this.MantissaBits)) - 1,
         new FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
     );
 };
@@ -338,27 +95,27 @@ FloatDescription.prototype.construct = function(sign, exponent, mantissa) {
     // Handles the typical notation for zero (min exponent, mantissa 0). Note that the exponent usually used exponent (-ExponentBias) for zero/subnormals is not used.
     // Instead zero/subnormals have the (normally implicit) leading mantissa bit set to zero.
 
-    /** @type {boolean} */ var isDenormOrZero = (exponent == 1 - this.ExponentBias) && (shiftRight(mantissa, this.MantissaBits) == 0);
-    /** @type {number} */ var s = shiftLeft((sign < 0 ? 1 : 0), (this.ExponentBits + this.MantissaBits));
+    /** @type {boolean} */ var isDenormOrZero = (exponent == 1 - this.ExponentBias) && (deMath.shiftRight(mantissa, this.MantissaBits) == 0);
+    /** @type {number} */ var s = deMath.shiftLeft((sign < 0 ? 1 : 0), (this.ExponentBits + this.MantissaBits));
     /** @type {number} */ var exp = (isShorthandZero || isDenormOrZero) ? 0 : exponent + this.ExponentBias;
 
     DE_ASSERT(sign == +1 || sign == -1);
-    DE_ASSERT(isShorthandZero || isDenormOrZero || shiftRight(mantissa, this.MantissaBits) == 1);
+    DE_ASSERT(isShorthandZero || isDenormOrZero || deMath.shiftRight(mantissa, this.MantissaBits) == 1);
     DE_ASSERT((exp >> this.ExponentBits) == 0); //Native shift is safe
 
     return newDeFloatFromParameters(
-        binaryOp(
-            binaryOp(
+        deMath.binaryOp(
+            deMath.binaryOp(
                 s,
-                shiftLeft(exp, this.MantissaBits),
-                BinaryOp.OR
+                deMath.shiftLeft(exp, this.MantissaBits),
+                deMath.BinaryOp.OR
             ),
-            binaryOp(
+            deMath.binaryOp(
                 mantissa,
-                shiftLeft(1, this.MantissaBits) - 1,
-                BinaryOp.AND
+                deMath.shiftLeft(1, this.MantissaBits) - 1,
+                deMath.BinaryOp.AND
             ),
-            BinaryOp.OR
+            deMath.BinaryOp.OR
         ),
         new FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
     );
@@ -378,20 +135,20 @@ FloatDescription.prototype.constructBits = function(sign, exponent, mantissaBits
 
     DE_ASSERT(sign == +1 || sign == -1);
     DE_ASSERT((exponentBits >> this.ExponentBits) == 0);
-    DE_ASSERT(shiftRight(mantissaBits >> this.MantissaBits) == 0);
+    DE_ASSERT(deMath.shiftRight(mantissaBits >> this.MantissaBits) == 0);
 
     return newDeFloatFromParameters(
-        binaryOp(
-            binaryOp(
-                shiftLeft(
+        deMath.binaryOp(
+            deMath.binaryOp(
+                deMath.shiftLeft(
                     signBit,
                     this.ExponentBits + this.MantissaBits
                 ),
-                shiftLeft(exponentBits, this.MantissaBits),
-                BinaryOp.OR
+                deMath.shiftLeft(exponentBits, this.MantissaBits),
+                deMath.BinaryOp.OR
             ),
             mantissaBits,
-            BinaryOp.OR
+            deMath.BinaryOp.OR
         ),
         new FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
     );
@@ -431,14 +188,14 @@ FloatDescription.prototype.convert = function(other) {
         /** @type {number} */ var eMin = 1 - this.ExponentBias;
         /** @type {number} */ var eMax = ((1 << this.ExponentBits) - 2) - this.ExponentBias;
 
-        /** @type {number} */ var s = shiftLeft(other.signBit(), (this.ExponentBits + this.MantissaBits)); // \note Not sign, but sign bit.
+        /** @type {number} */ var s = deMath.shiftLeft(other.signBit(), (this.ExponentBits + this.MantissaBits)); // \note Not sign, but sign bit.
         /** @type {number} */ var e = other.exponent();
         /** @type {number} */ var m = other.mantissa();
 
         // Normalize denormalized values prior to conversion.
-        while (!binaryOp(m, shiftLeft(1, otherMantissaBits), BinaryOp.AND))
+        while (!deMath.binaryOp(m, deMath.shiftLeft(1, otherMantissaBits), deMath.BinaryOp.AND))
         {
-            m = shiftLeft(m, 1);
+            m = deMath.shiftLeft(m, 1);
             e -= 1;
         }
 
@@ -449,17 +206,17 @@ FloatDescription.prototype.convert = function(other) {
             {
                 // Shift and round (RTE).
                 /** @type {number} */ var bitDiff = (otherMantissaBits - this.MantissaBits) + (eMin - e);
-                /** @type {number} */ var half = shiftLeft(1, (bitDiff - 1)) - 1;
-                /** @type {number} */ var bias = binaryOp(shiftRight(m, bitDiff), 1, BinaryOp.AND);
+                /** @type {number} */ var half = deMath.shiftLeft(1, (bitDiff - 1)) - 1;
+                /** @type {number} */ var bias = deMath.binaryOp(deMath.shiftRight(m, bitDiff), 1, deMath.BinaryOp.AND);
 
                 return newDeFloatFromParameters(
-                    binaryOp(
+                    deMath.binaryOp(
                         s,
-                        shiftRight(
+                        deMath.shiftRight(
                             m + half + bias,
                             bitDiff
                         ),
-                        BinaryOp.OR
+                        deMath.BinaryOp.OR
                     ),
                     new FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
                 );
@@ -470,18 +227,18 @@ FloatDescription.prototype.convert = function(other) {
         else
         {
             // Remove leading 1.
-            m = binaryOp(m, binaryNot(shiftLeft(1, otherMantissaBits)), BinaryOp.AND);
+            m = deMath.binaryOp(m, deMath.binaryNot(deMath.shiftLeft(1, otherMantissaBits)), deMath.BinaryOp.AND);
 
             if (this.MantissaBits < otherMantissaBits)
             {
                 // Round mantissa (round to nearest even).
                 /** @type {number} */ var bitDiff = otherMantissaBits - this.MantissaBits;
-                /** @type {number} */ var half = shiftLeft(1, (bitDiff - 1)) - 1;
-                /** @type {number} */ var bias = binaryOp(shiftRight(m, bitDiff), 1, BinaryOp.AND);
+                /** @type {number} */ var half = deMath.shiftLeft(1, (bitDiff - 1)) - 1;
+                /** @type {number} */ var bias = deMath.binaryOp(deMath.shiftRight(m, bitDiff), 1, deMath.BinaryOp.AND);
 
-                m = shiftRight(m + half + bias, bitDiff);
+                m = deMath.shiftRight(m + half + bias, bitDiff);
 
-                if (binaryOp(m, shiftLeft(1, this.MantissaBits), BinaryOp.AND))
+                if (deMath.binaryOp(m, deMath.shiftLeft(1, this.MantissaBits), deMath.BinaryOp.AND))
                 {
                     // Overflow in mantissa.
                     m = 0;
@@ -491,7 +248,7 @@ FloatDescription.prototype.convert = function(other) {
             else
             {
                 /** @type {number} */ var bitDiff = this.MantissaBits - otherMantissaBits;
-                m = shiftLeft(m, bitDiff);
+                m = deMath.shiftLeft(m, bitDiff);
             }
 
             if (e > eMax)
@@ -502,21 +259,21 @@ FloatDescription.prototype.convert = function(other) {
             else
             {
                 DE_ASSERT(deMath.deInRange32(e, eMin, eMax));
-                DE_ASSERT(binaryOp((e + this.ExponentBias), binaryNot(shiftLeft(1, this.ExponentBits) - 1), BinaryOp.AND) == 0);
-                DE_ASSERT(binaryOp(m, binaryNot(shiftLeft(1, this.MantissaBits) - 1), BinaryOp.AND) == 0);
+                DE_ASSERT(deMath.binaryOp((e + this.ExponentBias), deMath.binaryNot(deMath.shiftLeft(1, this.ExponentBits) - 1), deMath.BinaryOp.AND) == 0);
+                DE_ASSERT(deMath.binaryOp(m, deMath.binaryNot(deMath.shiftLeft(1, this.MantissaBits) - 1), deMath.BinaryOp.AND) == 0);
 
                 return newDeFloatFromParameters(
-                    binaryOp(
-                        binaryOp(
+                    deMath.binaryOp(
+                        deMath.binaryOp(
                             s,
-                            shiftLeft(
+                            deMath.shiftLeft(
                                 e + this.ExponentBias,
                                 this.MantissaBits
                             ),
-                            BinaryOp.OR
+                            deMath.BinaryOp.OR
                         ),
                         m,
-                        BinaryOp.OR
+                        deMath.BinaryOp.OR
                     ),
                     new FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
                 );
@@ -527,6 +284,7 @@ FloatDescription.prototype.convert = function(other) {
 
 /**
  * deFloat class - Empty constructor, builds a 32 bit float by default
+ * @constructor
  */
 var deFloat = function() {
     this.description = new FloatDescription(8, 23, 127, FloatFlags.FLOAT_HAS_SIGN | FloatFlags.FLOAT_SUPPORT_DENORM);
@@ -573,7 +331,7 @@ deFloat.prototype.deFloatBuffer = function(buffer, description) {
     this.buffer = buffer;
     this.array = new Uint8Array(this.buffer);
 
-    this.m_value = arrayToNumber(this.array);
+    this.m_value = deMath.arrayToNumber(this.array);
 
     return this;
 };
@@ -581,7 +339,8 @@ deFloat.prototype.deFloatBuffer = function(buffer, description) {
 /**
  * Convenience function to build a deFloat based on a buffer and a format description
  * The buffer is assumed to contain data of the given description.
- * @param {number} jsnumber
+ * @param {ArrayBuffer} buffer
+ * @param {FloatDescription} description
  * @return {deFloat}
  */
 var newDeFloatFromBuffer = function(buffer, description) {
@@ -604,7 +363,7 @@ deFloat.prototype.deFloatParameters = function(jsnumber, description) {
     this.buffer = new ArrayBuffer(this.description.totalByteSize);
     this.array = new Uint8Array(this.buffer);
 
-    numberToArray(this.array, jsnumber);
+    deMath.numberToArray(this.array, jsnumber);
 
     return this;
 };
@@ -626,14 +385,14 @@ var newDeFloatFromParameters = function(jsnumber, description) {
  * Returns the raw binary representation value of the deFloat
  * @return {number}
  */
-deFloat.prototype.bits = function() {return arrayToNumber(this.array);};
+deFloat.prototype.bits = function() {return deMath.arrayToNumber(this.array);};
 
 /**
  * Returns the raw binary sign bit
  * @return {number}
  */
 deFloat.prototype.signBit = function() {
-    return getBitRange(this.array, this.description.totalBitSize - 1, this.description.totalBitSize);
+    return deMath.getBitRange(this.array, this.description.totalBitSize - 1, this.description.totalBitSize);
 };
 
 /**
@@ -641,7 +400,7 @@ deFloat.prototype.signBit = function() {
  * @return {number}
  */
 deFloat.prototype.exponentBits = function() {
-    return getBitRange(this.array, this.description.MantissaBits, this.description.MantissaBits + this.description.ExponentBits);
+    return deMath.getBitRange(this.array, this.description.MantissaBits, this.description.MantissaBits + this.description.ExponentBits);
 };
 
 /**
@@ -649,7 +408,7 @@ deFloat.prototype.exponentBits = function() {
  * @return {number}
  */
 deFloat.prototype.mantissaBits = function() {
-    return getBitRange(this.array, 0, this.description.MantissaBits);
+    return deMath.getBitRange(this.array, 0, this.description.MantissaBits);
 };
 
 /**
@@ -673,7 +432,7 @@ deFloat.prototype.exponent = function() {return this.isDenorm() ? 1 - this.descr
  * Makes the normally implicit bit explicit.
  * @return {number}
  */
-deFloat.prototype.mantissa = function() {return this.isZero() || this.isDenorm() ? this.mantissaBits() : binaryOp(this.mantissaBits(), shiftLeft(1, this.description.MantissaBits), BinaryOp.OR);};
+deFloat.prototype.mantissa = function() {return this.isZero() || this.isDenorm() ? this.mantissaBits() : deMath.binaryOp(this.mantissaBits(), deMath.shiftLeft(1, this.description.MantissaBits), deMath.BinaryOp.OR);};
 
 /**
  * Returns if the number is infinity or not.
@@ -800,6 +559,29 @@ var newFloat16 = function(value) {
 };
 
 /**
+ * Builds a 16 bit deFloat from raw bits
+ * @param {number} value (16-bit value)
+ * @return {deFloat}
+ */
+var newFloat32From16 = function(value) {
+    /**@type {FloatDescription} */ var description16 = new FloatDescription(5, 10, 15, FloatFlags.FLOAT_HAS_SIGN | FloatFlags.FLOAT_SUPPORT_DENORM);
+    var other16 = newDeFloatFromParameters(value, description16);
+    /**@type {FloatDescription} */ var description32 = new FloatDescription(8, 23, 127, FloatFlags.FLOAT_HAS_SIGN | FloatFlags.FLOAT_SUPPORT_DENORM);
+    description32.convert(other16).bits();
+};
+
+/**
+ * Builds a 16 bit deFloat with no denorm support
+ * @param {number} value (64-bit JS float)
+ * @return {deFloat}
+ */
+var newFloat16NoDenorm = function(value) {
+    /**@type {deFloat} */ var other32 = new deFloat().deFloatNumber(value);
+    /**@type {FloatDescription} */ var description16 = new FloatDescription(5, 10, 15, FloatFlags.FLOAT_HAS_SIGN);
+    return description16.convert(other32);
+};
+
+/**
  * Builds a 32 bit deFloat
  * @param {number} value (64-bit JS float)
  * @return {deFloat}
@@ -832,8 +614,18 @@ var numberToHalfFloat = function(value) {
     return newFloat16(value).bits();
 };
 
+var numberToHalfFloatNoDenorm = function(value) {
+    return newFloat16NoDenorm(value).bits();
+};
+
 var halfFloatToNumber = function(half) {
     var description16 = new FloatDescription(5, 10, 15, FloatFlags.FLOAT_HAS_SIGN | FloatFlags.FLOAT_SUPPORT_DENORM);
+    var x = newDeFloatFromParameters(half, description16);
+    return x.getValue();
+};
+
+var halfFloatToNumberNoDenorm = function(half) {
+    var description16 = new FloatDescription(5, 10, 15, FloatFlags.FLOAT_HAS_SIGN);
     var x = newDeFloatFromParameters(half, description16);
     return x.getValue();
 };
@@ -844,7 +636,10 @@ return {
     numberToFloat10: numberToFloat10,
     float10ToNumber: float10ToNumber,
     numberToHalfFloat: numberToHalfFloat,
-    halfFloatToNumber: halfFloatToNumber
+    numberToHalfFloatNoDenorm: numberToHalfFloatNoDenorm,
+    halfFloatToNumber: halfFloatToNumber,
+    halfFloatToNumberNoDenorm: halfFloatToNumberNoDenorm,
+    newFloat32From16: newFloat32From16
 };
 
 });

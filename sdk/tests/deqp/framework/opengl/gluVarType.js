@@ -363,6 +363,13 @@ define(['framework/opengl/gluShaderUtil'], function(deqpUtils) {
          return this.m_typeName;
      };
 
+     /** getNumMembers
+     * @return {number}
+     **/
+     StructType.prototype.getNumMembers = function() {
+         return this.m_members.length;
+     };
+
      /** getMember
      * @param {number} memberNdx The index of the member to retrieve.
      * @return {StructMember}

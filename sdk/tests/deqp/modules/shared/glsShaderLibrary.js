@@ -18,15 +18,15 @@
  *
  */
 
-define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/opengl/gluShaderUtil'], function(deqpTests, shaderLibraryCase, deqpUtils) {
+define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/opengl/gluShaderUtil'], function(tcuTestCase, glsShaderLibraryCase, gluShaderUtil) {
     'use strict';
 
     var generateTestCases = function() {
     /** @type {Parser} */ var parser = new Parser();
         try {
-        /** @type {Object} */ var state = deqpTests.runner.getState();
+        /** @type {Object} */ var state = tcuTestCase.runner.getState();
             var tree = parser.parse(state.testFile);
-            state.testCases = deqpTests.newTest(state.testName, 'Top level', tree);
+            state.testCases = tcuTestCase.newTest(state.testName, 'Top level', tree);
         }
         catch (err) {
             bufferedLogToConsole(err);
@@ -37,9 +37,9 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
 
     var processTestFile = function() {
         if (generateTestCases()) {
-            deqpTests.runner.runCallback(shaderLibraryCase.runTestCases);
+            tcuTestCase.runner.runCallback(glsShaderLibraryCase.runTestCases);
         } else {
-            deqpTests.runner.terminate();
+            tcuTestCase.runner.terminate();
         }
     };
 
@@ -229,7 +229,7 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
             m_curTokenStr = '';
             advanceToken();
 
-            /** @type {Array.<deqpTests.newTest>} */ var nodeList = [];
+            /** @type {Array.<tcuTestCase.newTest>} */ var nodeList = [];
 
             for (;;) {
 
@@ -242,7 +242,7 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
                 } else {
                 //    throw Error("invalid token encountered at main level: '" + m_curTokenStr + "'");
                     testFailed("invalid token encountered at main level: '" + m_curTokenStr + "'");
-                    deqpTests.runner.terminate();
+                    tcuTestCase.runner.terminate();
                 }
 
             }
@@ -518,32 +518,32 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
         };
         var mapDataTypeToken = function(token) {
             switch (token) {
-                case Token.TOKEN_FLOAT: return deqpUtils.DataType.FLOAT;
-                case Token.TOKEN_FLOAT_VEC2: return deqpUtils.DataType.FLOAT_VEC2;
-                case Token.TOKEN_FLOAT_VEC3: return deqpUtils.DataType.FLOAT_VEC3;
-                case Token.TOKEN_FLOAT_VEC4: return deqpUtils.DataType.FLOAT_VEC4;
-                case Token.TOKEN_FLOAT_MAT2: return deqpUtils.DataType.FLOAT_MAT2;
-                case Token.TOKEN_FLOAT_MAT2X3: return deqpUtils.DataType.FLOAT_MAT2X3;
-                case Token.TOKEN_FLOAT_MAT2X4: return deqpUtils.DataType.FLOAT_MAT2X4;
-                case Token.TOKEN_FLOAT_MAT3X2: return deqpUtils.DataType.FLOAT_MAT3X2;
-                case Token.TOKEN_FLOAT_MAT3: return deqpUtils.DataType.FLOAT_MAT3;
-                case Token.TOKEN_FLOAT_MAT3X4: return deqpUtils.DataType.FLOAT_MAT3X4;
-                case Token.TOKEN_FLOAT_MAT4X2: return deqpUtils.DataType.FLOAT_MAT4X2;
-                case Token.TOKEN_FLOAT_MAT4X3: return deqpUtils.DataType.FLOAT_MAT4X3;
-                case Token.TOKEN_FLOAT_MAT4: return deqpUtils.DataType.FLOAT_MAT4;
-                case Token.TOKEN_INT: return deqpUtils.DataType.INT;
-                case Token.TOKEN_INT_VEC2: return deqpUtils.DataType.INT_VEC2;
-                case Token.TOKEN_INT_VEC3: return deqpUtils.DataType.INT_VEC3;
-                case Token.TOKEN_INT_VEC4: return deqpUtils.DataType.INT_VEC4;
-                case Token.TOKEN_UINT: return deqpUtils.DataType.UINT;
-                case Token.TOKEN_UINT_VEC2: return deqpUtils.DataType.UINT_VEC2;
-                case Token.TOKEN_UINT_VEC3: return deqpUtils.DataType.UINT_VEC3;
-                case Token.TOKEN_UINT_VEC4: return deqpUtils.DataType.UINT_VEC4;
-                case Token.TOKEN_BOOL: return deqpUtils.DataType.BOOL;
-                case Token.TOKEN_BOOL_VEC2: return deqpUtils.DataType.BOOL_VEC2;
-                case Token.TOKEN_BOOL_VEC3: return deqpUtils.DataType.BOOL_VEC3;
-                case Token.TOKEN_BOOL_VEC4: return deqpUtils.DataType.BOOL_VEC4;
-                default: return deqpUtils.DataType.INVALID;
+                case Token.TOKEN_FLOAT: return gluShaderUtil.DataType.FLOAT;
+                case Token.TOKEN_FLOAT_VEC2: return gluShaderUtil.DataType.FLOAT_VEC2;
+                case Token.TOKEN_FLOAT_VEC3: return gluShaderUtil.DataType.FLOAT_VEC3;
+                case Token.TOKEN_FLOAT_VEC4: return gluShaderUtil.DataType.FLOAT_VEC4;
+                case Token.TOKEN_FLOAT_MAT2: return gluShaderUtil.DataType.FLOAT_MAT2;
+                case Token.TOKEN_FLOAT_MAT2X3: return gluShaderUtil.DataType.FLOAT_MAT2X3;
+                case Token.TOKEN_FLOAT_MAT2X4: return gluShaderUtil.DataType.FLOAT_MAT2X4;
+                case Token.TOKEN_FLOAT_MAT3X2: return gluShaderUtil.DataType.FLOAT_MAT3X2;
+                case Token.TOKEN_FLOAT_MAT3: return gluShaderUtil.DataType.FLOAT_MAT3;
+                case Token.TOKEN_FLOAT_MAT3X4: return gluShaderUtil.DataType.FLOAT_MAT3X4;
+                case Token.TOKEN_FLOAT_MAT4X2: return gluShaderUtil.DataType.FLOAT_MAT4X2;
+                case Token.TOKEN_FLOAT_MAT4X3: return gluShaderUtil.DataType.FLOAT_MAT4X3;
+                case Token.TOKEN_FLOAT_MAT4: return gluShaderUtil.DataType.FLOAT_MAT4;
+                case Token.TOKEN_INT: return gluShaderUtil.DataType.INT;
+                case Token.TOKEN_INT_VEC2: return gluShaderUtil.DataType.INT_VEC2;
+                case Token.TOKEN_INT_VEC3: return gluShaderUtil.DataType.INT_VEC3;
+                case Token.TOKEN_INT_VEC4: return gluShaderUtil.DataType.INT_VEC4;
+                case Token.TOKEN_UINT: return gluShaderUtil.DataType.UINT;
+                case Token.TOKEN_UINT_VEC2: return gluShaderUtil.DataType.UINT_VEC2;
+                case Token.TOKEN_UINT_VEC3: return gluShaderUtil.DataType.UINT_VEC3;
+                case Token.TOKEN_UINT_VEC4: return gluShaderUtil.DataType.UINT_VEC4;
+                case Token.TOKEN_BOOL: return gluShaderUtil.DataType.BOOL;
+                case Token.TOKEN_BOOL_VEC2: return gluShaderUtil.DataType.BOOL_VEC2;
+                case Token.TOKEN_BOOL_VEC3: return gluShaderUtil.DataType.BOOL_VEC3;
+                case Token.TOKEN_BOOL_VEC4: return gluShaderUtil.DataType.BOOL_VEC4;
+                default: return gluShaderUtil.DataType.INVALID;
             }
         };
 
@@ -627,8 +627,8 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
          */
         var parseValueElement = function(expectedDataType, result) {
 
-        /** @type {string} */ var scalarType = deqpUtils.getDataTypeScalarType(expectedDataType);
-        /** @type {string} */ var scalarSize = deqpUtils.getDataTypeScalarSize(expectedDataType);
+        /** @type {string} */ var scalarType = gluShaderUtil.getDataTypeScalarType(expectedDataType);
+        /** @type {string} */ var scalarSize = gluShaderUtil.getDataTypeScalarSize(expectedDataType);
 
             /** @type {Array.<number>} */ var elems = [];
 
@@ -706,13 +706,13 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
             // parse storage
             switch (m_curToken) {
              case Token.TOKEN_UNIFORM:
-                result.storageType = shaderLibraryCase.shaderCase.value.STORAGE_UNIFORM;
+                result.storageType = glsShaderLibraryCase.shaderCase.value.STORAGE_UNIFORM;
                 break;
              case Token.TOKEN_INPUT:
-                result.storageType = shaderLibraryCase.shaderCase.value.STORAGE_INPUT;
+                result.storageType = glsShaderLibraryCase.shaderCase.value.STORAGE_INPUT;
                 break;
              case Token.TOKEN_OUTPUT:
-                result.storageType = shaderLibraryCase.shaderCase.value.STORAGE_OUTPUT;
+                result.storageType = glsShaderLibraryCase.shaderCase.value.STORAGE_OUTPUT;
                 break;
              default:
                 throw Error('unexpected token encountered when parsing value classifier');
@@ -722,7 +722,7 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
 
             // parse data type
             result.dataType = mapDataTypeToken(m_curToken);
-            if (result.dataType === deqpUtils.DataType.INVALID) {
+            if (result.dataType === gluShaderUtil.DataType.INVALID) {
                 throw Error('unexpected token when parsing value data type: ' + m_curTokenStr);
             }
             advanceToken();
@@ -810,7 +810,7 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
         };
 
         /**
-         * @param {Array.<deqpTests.newTest>} shaderNodeList
+         * @param {Array.<tcuTestCase.newTest>} shaderNodeList
          */
         var parseShaderCase = function(shaderNodeList) {
 
@@ -832,7 +832,7 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
 
             /** TODO: Should the default version be defined elsewhere? */
             /** @type {string} */ var version = '100';
-            /** @type {number} */ var expectResult = shaderLibraryCase.expectResult.EXPECT_PASS;
+            /** @type {number} */ var expectResult = glsShaderLibraryCase.expectResult.EXPECT_PASS;
             /** @type {string} */ var description;
             /** @type {string} */ var bothSource = '';
             /** @type {string} */ var vertexSource = '';
@@ -859,10 +859,10 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
 
                     expectResult = (function(token) {
                         switch (token) {
-                            case 'pass': return shaderLibraryCase.expectResult.EXPECT_PASS;
-                            case 'compile_fail': return shaderLibraryCase.expectResult.EXPECT_COMPILE_FAIL;
-                            case 'link_fail': return shaderLibraryCase.expectResult.EXPECT_LINK_FAIL;
-                            case 'compile_or_link_fail': return shaderLibraryCase.expectResult.EXPECT_COMPILE_OR_LINK_FAIL;
+                            case 'pass': return glsShaderLibraryCase.expectResult.EXPECT_PASS;
+                            case 'compile_fail': return glsShaderLibraryCase.expectResult.EXPECT_COMPILE_FAIL;
+                            case 'link_fail': return glsShaderLibraryCase.expectResult.EXPECT_LINK_FAIL;
+                            case 'compile_or_link_fail': return glsShaderLibraryCase.expectResult.EXPECT_COMPILE_OR_LINK_FAIL;
                             default:
                                 throw Error('invalid expected result value: ' + m_curTokenStr);
                         }
@@ -872,7 +872,7 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
 
                 } else if (m_curToken === Token.TOKEN_VALUES) {
 
-                /** @type {Object.<Array, number>} */ var block = shaderLibraryCase.genValueBlock();
+                /** @type {Object.<Array, number>} */ var block = glsShaderLibraryCase.genValueBlock();
                     parseValueBlock(block);
                     valueBlockList.push(block);
 
@@ -964,22 +964,22 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
                 de_assert(!vertexSource);
                 de_assert(!fragmentSource);
 
-                shaderNodeList.push(deqpTests.newTest(caseName + '_vertex', description, getShaderSpec(bothSource, null,
-                    shaderLibraryCase.caseType.CASETYPE_VERTEX_ONLY)));
-                shaderNodeList.push(deqpTests.newTest(caseName + '_fragment', description, getShaderSpec(null, bothSource,
-                    shaderLibraryCase.caseType.CASETYPE_FRAGMENT_ONLY)));
+                shaderNodeList.push(tcuTestCase.newTest(caseName + '_vertex', description, getShaderSpec(bothSource, null,
+                    glsShaderLibraryCase.caseType.CASETYPE_VERTEX_ONLY)));
+                shaderNodeList.push(tcuTestCase.newTest(caseName + '_fragment', description, getShaderSpec(null, bothSource,
+                    glsShaderLibraryCase.caseType.CASETYPE_FRAGMENT_ONLY)));
 
             } else {
                 de_assert(vertexSource);
                 de_assert(fragmentSource);
 
-                shaderNodeList.push(deqpTests.newTest(caseName, description, getShaderSpec(vertexSource, fragmentSource,
-                    shaderLibraryCase.caseType.CASETYPE_COMPLETE)));
+                shaderNodeList.push(tcuTestCase.newTest(caseName, description, getShaderSpec(vertexSource, fragmentSource,
+                    glsShaderLibraryCase.caseType.CASETYPE_COMPLETE)));
                 }
         };
 
         /**
-         * @param {Array.<deqpTests.newTest>} shaderNodeList
+         * @param {Array.<tcuTestCase.newTest>} shaderNodeList
          */
         var parseShaderGroup = function(shaderNodeList) {
 
@@ -996,7 +996,7 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
             /** @type {string} */ var description = parseStringLiteral(m_curTokenStr);
             advanceToken(Token.TOKEN_STRING);
 
-            /** @type {Array.<deqpTests.newTest>} */ var children = [];
+            /** @type {Array.<tcuTestCase.newTest>} */ var children = [];
 
             for (;;) {
 
@@ -1008,16 +1008,16 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
                     parseShaderCase(children);
                 } else {
                     testFailed('unexpected token while parsing shader group: ' + m_curTokenStr);
-                    deqpTests.runner.terminate();
+                    tcuTestCase.runner.terminate();
                 }
 
             }
 
             advanceToken(Token.TOKEN_END); // group end
 
-            /** @param {deqpTests.newTest}
+            /** @param {tcuTestCase.newTest}
              *  Create group node
-             */ var groupNode = deqpTests.newTest(name, description, children);
+             */ var groupNode = tcuTestCase.newTest(name, description, children);
             shaderNodeList.push(groupNode);
 
         };
@@ -1059,13 +1059,13 @@ define(['framework/common/tcuTestCase', './glsShaderLibraryCase', 'framework/ope
 var run = function(testName, filter) {
     WebGLTestUtils.loadTextFileAsync(testName + '.test', function(success, content) {
         if (success) {
-            deqpTests.runner.getState().testFile = content;
-            deqpTests.runner.getState().testName = testName;
-            deqpTests.runner.getState().filter = filter;
-            deqpTests.runner.runCallback(processTestFile);
+            tcuTestCase.runner.getState().testFile = content;
+            tcuTestCase.runner.getState().testName = testName;
+            tcuTestCase.runner.getState().filter = filter;
+            tcuTestCase.runner.runCallback(processTestFile);
         } else {
             testFailed('Failed to load test file: ' + testName);
-            deqpTests.runner.terminate();
+            tcuTestCase.runner.terminate();
         }
     });
 };

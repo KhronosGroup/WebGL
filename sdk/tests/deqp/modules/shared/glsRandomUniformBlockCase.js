@@ -18,7 +18,7 @@
  *
  */
 
-define(['framework/opengl/gluShaderUtil', 'modules/shared/glsUniformBlockCase', 'framework/common/tcuTestCase', 'framework/delibs/debase/deMath', 'framework/delibs/debase/deRandom'], function(deqpUtils, glsUBC, deqpTests, deMath, deRandom) {
+define(['framework/opengl/gluShaderUtil', 'modules/shared/glsUniformBlockCase', 'framework/common/tcuTestCase', 'framework/delibs/debase/deMath', 'framework/delibs/debase/deRandom'], function(gluShaderUtil, glsUniformBlockCase, tcuTestCase, deMath, deRandom) {
     'use strict';
 
     var FeatureBits = {
@@ -44,12 +44,12 @@ define(['framework/opengl/gluShaderUtil', 'modules/shared/glsUniformBlockCase', 
      * RandomUniformBlockCase class
      * @param {string} name
      * @param {string} description
-     * @param {glsUBC.BufferMode} bufferMode
+     * @param {glsUniformBlockCase.BufferMode} bufferMode
      * @param {deMath.deUint32} features
      * @param {deMath.deUint32} seed
      */
     var RandomUniformBlockCase = function(name, description, bufferMode, features, seed) {
-        glsUBC.UniformBlockCase.call(this, name, description, bufferMode);
+        glsUniformBlockCase.UniformBlockCase.call(this, name, description, bufferMode);
         this.m_features = features;
         this.m_maxVertexBlocks = ((features & FeatureBits.FEATURE_VERTEX_BLOCKS) ? 4 : 0);
         this.m_maxFragmentBlocks = ((features & FeatureBits.FEATURE_FRAGMENT_BLOCKS) ? 4 : 0);
@@ -65,7 +65,7 @@ define(['framework/opengl/gluShaderUtil', 'modules/shared/glsUniformBlockCase', 
         this.m_structNdx = 1;
     };
 
-    RandomUniformBlockCase.prototype = Object.create(glsUBC.UniformBlockCase.prototype);
+    RandomUniformBlockCase.prototype = Object.create(glsUniformBlockCase.UniformBlockCase.prototype);
     RandomUniformBlockCase.prototype.constructor = RandomUniformBlockCase;
 
     /**
@@ -73,7 +73,7 @@ define(['framework/opengl/gluShaderUtil', 'modules/shared/glsUniformBlockCase', 
      * @param {deRandom.Random} rnd
      * @param {number} typeDepth
      * @param {boolean} arrayOk
-     * @return {glsUBC.VarType}
+     * @return {glsUniformBlockCase.VarType}
      */
     RandomUniformBlockCase.prototype.generateType = function(rnd, typeDepth, arrayOk)
     {
@@ -85,14 +85,14 @@ define(['framework/opengl/gluShaderUtil', 'modules/shared/glsUniformBlockCase', 
             /** @type {number} */ var unusedVtxWeight = 0.15;
             /** @type {number} */ var unusedFragWeight = 0.15;
             /** @type {boolean} */ var unusedOk = (this.m_features & FeatureBits.FEATURE_UNUSED_MEMBERS) != 0;
-            /** @type {Array.<glsUBC.VarType>} */ var memberTypes = [];
+            /** @type {Array.<glsUniformBlockCase.VarType>} */ var memberTypes = [];
             /** @type {number} */ var numMembers = rnd.getInt(1, this.m_maxStructMembers);
 
             // Generate members first so nested struct declarations are in correct order.
             for (var ndx = 0; ndx < numMembers; ndx++)
                 memberTypes.push(this.generateType(rnd, typeDepth + 1, true));
 
-            /** @type {glsUBC.StructType} */ var structType = this.m_interface.allocStruct('s' + this.genName('A'.charCodeAt(0), 'Z'.charCodeAt(0), this.m_structNdx));
+            /** @type {glsUniformBlockCase.StructType} */ var structType = this.m_interface.allocStruct('s' + this.genName('A'.charCodeAt(0), 'Z'.charCodeAt(0), this.m_structNdx));
             this.m_structNdx += 1;
 
             assertMsgOptions(this.m_blockNdx <= 'Z'.charCodeAt(0) - 'A'.charCodeAt(0), 'generateType', false, true);
@@ -100,69 +100,69 @@ define(['framework/opengl/gluShaderUtil', 'modules/shared/glsUniformBlockCase', 
             {
                 /** @type {deMath.deUint32} */ var flags = 0;
 
-                flags |= (unusedOk && rnd.getFloat() < unusedVtxWeight) ? glsUBC.UniformFlags.UNUSED_VERTEX : 0;
-                flags |= (unusedOk && rnd.getFloat() < unusedFragWeight) ? glsUBC.UniformFlags.UNUSED_FRAGMENT : 0;
+                flags |= (unusedOk && rnd.getFloat() < unusedVtxWeight) ? glsUniformBlockCase.UniformFlags.UNUSED_VERTEX : 0;
+                flags |= (unusedOk && rnd.getFloat() < unusedFragWeight) ? glsUniformBlockCase.UniformFlags.UNUSED_FRAGMENT : 0;
 
                 structType.addMember('m' + ('A'.charCodeAt(0) + ndx), memberTypes[ndx], flags);
             }
 
-            return glsUBC.newVarTypeStruct(structType);
+            return glsUniformBlockCase.newVarTypeStruct(structType);
         }
         else if (this.m_maxArrayLength > 0 && arrayOk && rnd.getFloat() < arrayWeight)
         {
             /** @type {boolean} */ var arraysOfArraysOk = (this.m_features & FeatureBits.FEATURE_ARRAYS_OF_ARRAYS) != 0;
             /** @type {number} */ var arrayLength = rnd.getInt(1, this.m_maxArrayLength);
-            /** @type {glsUBC.VarType} */ var elementType = this.generateType(rnd, typeDepth, arraysOfArraysOk);
-            return glsUBC.newVarTypeArray(elementType, arrayLength);
+            /** @type {glsUniformBlockCase.VarType} */ var elementType = this.generateType(rnd, typeDepth, arraysOfArraysOk);
+            return glsUniformBlockCase.newVarTypeArray(elementType, arrayLength);
         }
         else
         {
-            /** @type {Array.<deqpUtils.DataType>} */ var typeCandidates = [];
+            /** @type {Array.<gluShaderUtil.DataType>} */ var typeCandidates = [];
 
-            typeCandidates.push(deqpUtils.DataType.FLOAT);
-            typeCandidates.push(deqpUtils.DataType.INT);
-            typeCandidates.push(deqpUtils.DataType.UINT);
-            typeCandidates.push(deqpUtils.DataType.BOOL);
+            typeCandidates.push(gluShaderUtil.DataType.FLOAT);
+            typeCandidates.push(gluShaderUtil.DataType.INT);
+            typeCandidates.push(gluShaderUtil.DataType.UINT);
+            typeCandidates.push(gluShaderUtil.DataType.BOOL);
 
             if (this.m_features & FeatureBits.FEATURE_VECTORS)
             {
-                typeCandidates.push(deqpUtils.DataType.FLOAT_VEC2);
-                typeCandidates.push(deqpUtils.DataType.FLOAT_VEC3);
-                typeCandidates.push(deqpUtils.DataType.FLOAT_VEC4);
-                typeCandidates.push(deqpUtils.DataType.INT_VEC2);
-                typeCandidates.push(deqpUtils.DataType.INT_VEC3);
-                typeCandidates.push(deqpUtils.DataType.INT_VEC4);
-                typeCandidates.push(deqpUtils.DataType.UINT_VEC2);
-                typeCandidates.push(deqpUtils.DataType.UINT_VEC3);
-                typeCandidates.push(deqpUtils.DataType.UINT_VEC4);
-                typeCandidates.push(deqpUtils.DataType.BOOL_VEC2);
-                typeCandidates.push(deqpUtils.DataType.BOOL_VEC3);
-                typeCandidates.push(deqpUtils.DataType.BOOL_VEC4);
+                typeCandidates.push(gluShaderUtil.DataType.FLOAT_VEC2);
+                typeCandidates.push(gluShaderUtil.DataType.FLOAT_VEC3);
+                typeCandidates.push(gluShaderUtil.DataType.FLOAT_VEC4);
+                typeCandidates.push(gluShaderUtil.DataType.INT_VEC2);
+                typeCandidates.push(gluShaderUtil.DataType.INT_VEC3);
+                typeCandidates.push(gluShaderUtil.DataType.INT_VEC4);
+                typeCandidates.push(gluShaderUtil.DataType.UINT_VEC2);
+                typeCandidates.push(gluShaderUtil.DataType.UINT_VEC3);
+                typeCandidates.push(gluShaderUtil.DataType.UINT_VEC4);
+                typeCandidates.push(gluShaderUtil.DataType.BOOL_VEC2);
+                typeCandidates.push(gluShaderUtil.DataType.BOOL_VEC3);
+                typeCandidates.push(gluShaderUtil.DataType.BOOL_VEC4);
             }
 
             if (this.m_features & FeatureBits.FEATURE_MATRICES)
             {
-                typeCandidates.push(deqpUtils.DataType.FLOAT_MAT2);
-                typeCandidates.push(deqpUtils.DataType.FLOAT_MAT2X3);
-                typeCandidates.push(deqpUtils.DataType.FLOAT_MAT3X2);
-                typeCandidates.push(deqpUtils.DataType.FLOAT_MAT3);
-                typeCandidates.push(deqpUtils.DataType.FLOAT_MAT3X4);
-                typeCandidates.push(deqpUtils.DataType.FLOAT_MAT4X2);
-                typeCandidates.push(deqpUtils.DataType.FLOAT_MAT4X3);
-                typeCandidates.push(deqpUtils.DataType.FLOAT_MAT4);
+                typeCandidates.push(gluShaderUtil.DataType.FLOAT_MAT2);
+                typeCandidates.push(gluShaderUtil.DataType.FLOAT_MAT2X3);
+                typeCandidates.push(gluShaderUtil.DataType.FLOAT_MAT3X2);
+                typeCandidates.push(gluShaderUtil.DataType.FLOAT_MAT3);
+                typeCandidates.push(gluShaderUtil.DataType.FLOAT_MAT3X4);
+                typeCandidates.push(gluShaderUtil.DataType.FLOAT_MAT4X2);
+                typeCandidates.push(gluShaderUtil.DataType.FLOAT_MAT4X3);
+                typeCandidates.push(gluShaderUtil.DataType.FLOAT_MAT4);
             }
 
-            /** @type {deqpUtils.DataType} */ var type = rnd.choose(typeCandidates)[0];
+            /** @type {gluShaderUtil.DataType} */ var type = rnd.choose(typeCandidates)[0];
             /** @type {deMath.deUint32} */ var flags = 0;
 
-            if (!deqpUtils.isDataTypeBoolOrBVec(type))
+            if (!gluShaderUtil.isDataTypeBoolOrBVec(type))
             {
                 // Precision.
-                /** @type {Array.<deMath.deUint32>} */ var precisionCandidates = [glsUBC.UniformFlags.PRECISION_LOW, glsUBC.UniformFlags.PRECISION_MEDIUM, glsUBC.UniformFlags.PRECISION_HIGH];
+                /** @type {Array.<deMath.deUint32>} */ var precisionCandidates = [glsUniformBlockCase.UniformFlags.PRECISION_LOW, glsUniformBlockCase.UniformFlags.PRECISION_MEDIUM, glsUniformBlockCase.UniformFlags.PRECISION_HIGH];
                 flags |= rnd.choose(precisionCandidates)[0];
             }
 
-            return glsUBC.newVarTypeBasic(type, flags);
+            return glsUniformBlockCase.newVarTypeBasic(type, flags);
         }
     };
 
@@ -192,7 +192,7 @@ define(['framework/opengl/gluShaderUtil', 'modules/shared/glsUniformBlockCase', 
     /**
      * generateUniform
      * @param {deRandom.Random} rnd
-     * @param {glsUBC.UniformBlock} block
+     * @param {glsUniformBlockCase.UniformBlock} block
      * @param {number} ndx
      */
     RandomUniformBlockCase.prototype.generateUniform = function(rnd, block)
@@ -202,12 +202,12 @@ define(['framework/opengl/gluShaderUtil', 'modules/shared/glsUniformBlockCase', 
         /** @type {boolean} */ var unusedOk = (this.m_features & FeatureBits.FEATURE_UNUSED_UNIFORMS) != 0;
         /** @type {deMath.deUint32} */ var flags = 0;
         /** @type {string} */ var name = this.genName('a'.charCodeAt(0), 'z'.charCodeAt(0), this.m_uniformNdx);
-        /** @type {glsUBC.VarType} */ var type = this.generateType(rnd, 0, true); //TODO: implement this.
+        /** @type {glsUniformBlockCase.VarType} */ var type = this.generateType(rnd, 0, true); //TODO: implement this.
 
-        flags |= (unusedOk && rnd.getFloat() < unusedVtxWeight) ? glsUBC.UniformFlags.UNUSED_VERTEX : 0;
-        flags |= (unusedOk && rnd.getFloat() < unusedFragWeight) ? glsUBC.UniformFlags.UNUSED_FRAGMENT : 0;
+        flags |= (unusedOk && rnd.getFloat() < unusedVtxWeight) ? glsUniformBlockCase.UniformFlags.UNUSED_VERTEX : 0;
+        flags |= (unusedOk && rnd.getFloat() < unusedFragWeight) ? glsUniformBlockCase.UniformFlags.UNUSED_FRAGMENT : 0;
 
-        block.addUniform(new glsUBC.Uniform(name, type, flags));
+        block.addUniform(new glsUniformBlockCase.Uniform(name, type, flags));
 
         this.m_uniformNdx += 1;
     };
@@ -221,7 +221,7 @@ define(['framework/opengl/gluShaderUtil', 'modules/shared/glsUniformBlockCase', 
         assertMsgOptions(this.m_blockNdx <= 'z'.charCodeAt(0) - 'a'.charCodeAt(0), 'generateBlock', false, true);
 
         /** @type {number} */ var instanceArrayWeight = 0.3;
-        /** @type {glsUBC.UniformBlock} */ var block = this.m_interface.allocBlock('Block' + String.fromCharCode('A'.charCodeAt(0) + this.m_blockNdx));
+        /** @type {glsUniformBlockCase.UniformBlock} */ var block = this.m_interface.allocBlock('Block' + String.fromCharCode('A'.charCodeAt(0) + this.m_blockNdx));
         /** @type {number} */ var numInstances = (this.m_maxInstances > 0 && rnd.getFloat() < instanceArrayWeight) ? rnd.getInt(0, this.m_maxInstances) : 0;
         /** @type {number} */ var numUniforms = rnd.getInt(1, this.m_maxBlockMembers);
 
@@ -235,17 +235,17 @@ define(['framework/opengl/gluShaderUtil', 'modules/shared/glsUniformBlockCase', 
         /** @type {Array.<deMath.deUint32>} */ var layoutFlagCandidates = [];
         layoutFlagCandidates.push(0);
         if (this.m_features & FeatureBits.FEATURE_PACKED_LAYOUT)
-            layoutFlagCandidates.push(glsUBC.UniformFlags.LAYOUT_SHARED);
-        if ((this.m_features & FeatureBits.FEATURE_SHARED_LAYOUT) && ((layoutFlags & glsUBC.UniformFlags.DECLARE_BOTH) != glsUBC.UniformFlags.DECLARE_BOTH))
-            layoutFlagCandidates.push(glsUBC.UniformFlags.LAYOUT_PACKED); // \note packed layout can only be used in a single shader stage.
+            layoutFlagCandidates.push(glsUniformBlockCase.UniformFlags.LAYOUT_SHARED);
+        if ((this.m_features & FeatureBits.FEATURE_SHARED_LAYOUT) && ((layoutFlags & glsUniformBlockCase.UniformFlags.DECLARE_BOTH) != glsUniformBlockCase.UniformFlags.DECLARE_BOTH))
+            layoutFlagCandidates.push(glsUniformBlockCase.UniformFlags.LAYOUT_PACKED); // \note packed layout can only be used in a single shader stage.
         if (this.m_features & FeatureBits.FEATURE_STD140_LAYOUT)
-            layoutFlagCandidates.push(glsUBC.UniformFlags.LAYOUT_STD140);
+            layoutFlagCandidates.push(glsUniformBlockCase.UniformFlags.LAYOUT_STD140);
 
         layoutFlags |= rnd.choose(layoutFlagCandidates)[0]; //In Javascript, this function returns an array, so taking element 0.
 
         if (this.m_features & FeatureBits.FEATURE_MATRIX_LAYOUT)
         {
-            /** @type {Array.<deMath.deUint32>}*/ var matrixCandidates = [0, glsUBC.UniformFlags.LAYOUT_ROW_MAJOR, glsUBC.UniformFlags.LAYOUT_COLUMN_MAJOR];
+            /** @type {Array.<deMath.deUint32>}*/ var matrixCandidates = [0, glsUniformBlockCase.UniformFlags.LAYOUT_ROW_MAJOR, glsUniformBlockCase.UniformFlags.LAYOUT_COLUMN_MAJOR];
             layoutFlags |= rnd.choose(matrixCandidates)[0];
         }
 
@@ -268,13 +268,13 @@ define(['framework/opengl/gluShaderUtil', 'modules/shared/glsUniformBlockCase', 
         /** @type {number} */ var numFragBlocks = this.m_maxFragmentBlocks - numShared > 0 ? rnd.getInt(1, this.m_maxFragmentBlocks - numShared) : 0;
 
         for (var ndx = 0; ndx < numShared; ndx++)
-            this.generateBlock(rnd, glsUBC.UniformFlags.DECLARE_VERTEX | glsUBC.UniformFlags.DECLARE_FRAGMENT);
+            this.generateBlock(rnd, glsUniformBlockCase.UniformFlags.DECLARE_VERTEX | glsUniformBlockCase.UniformFlags.DECLARE_FRAGMENT);
 
         for (var ndx = 0; ndx < numVtxBlocks; ndx++)
-            this.generateBlock(rnd, glsUBC.UniformFlags.DECLARE_VERTEX);
+            this.generateBlock(rnd, glsUniformBlockCase.UniformFlags.DECLARE_VERTEX);
 
         for (var ndx = 0; ndx < numFragBlocks; ndx++)
-            this.generateBlock(rnd, glsUBC.UniformFlags.DECLARE_FRAGMENT);
+            this.generateBlock(rnd, glsUniformBlockCase.UniformFlags.DECLARE_FRAGMENT);
     };
 
     return {

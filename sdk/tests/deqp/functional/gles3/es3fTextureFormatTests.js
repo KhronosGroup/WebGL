@@ -17,8 +17,30 @@
  * limitations under the License.
  *
  */
-define(['framework/opengl/gluShaderUtil', 'framework/delibs/debase/deRandom', 'framework/common/tcuTestCase', 'framework/common/tcuSurface', 'framework/opengl/gluTexture', 'framework/opengl/gluTextureUtil', 'framework/common/tcuTexture', 'modules/shared/glsTextureTestUtil', 'framework/common/tcuTextureUtil', 'framework/opengl/gluStrUtil', 'framework/delibs/debase/deMath', 'framework/common/tcuCompressedTexture'],
-     function(gluShaderUtil, deRandom, deqpTests, tcuSurface, gluTexture, gluTextureUtil, tcuTexture, glsTextureTestUtil, tcuTextureUtil, gluStrUtil, deMath, tcuCompressedTexture) {
+define(['framework/opengl/gluShaderUtil',
+    'framework/delibs/debase/deRandom',
+    'framework/common/tcuTestCase',
+    'framework/common/tcuSurface',
+    'framework/opengl/gluTexture',
+    'framework/opengl/gluTextureUtil',
+    'framework/common/tcuTexture',
+    'modules/shared/glsTextureTestUtil',
+    'framework/common/tcuTextureUtil',
+    'framework/opengl/gluStrUtil',
+    'framework/delibs/debase/deMath',
+    'framework/common/tcuCompressedTexture'], function(
+        gluShaderUtil,
+        deRandom,
+        tcuTestCase,
+        tcuSurface,
+        gluTexture,
+        gluTextureUtil,
+        tcuTexture,
+        glsTextureTestUtil,
+        tcuTextureUtil,
+        gluStrUtil,
+        deMath,
+        tcuCompressedTexture) {
     'use strict';
 
 var GLU_EXPECT_NO_ERROR = function(error, message) {
@@ -33,7 +55,7 @@ var DE_ASSERT = function(x) {
 var version = '300 es';
 
 var testDescription = function() {
-    var test = deqpTests.runner.getState().currentTest;
+    var test = tcuTestCase.runner.getState().currentTest;
     return test.description;
 };
 
@@ -44,10 +66,10 @@ var setParentClass = function(child, parent) {
 
 /**
  * @constructor
- * @extends {deqpTests.DeqpTest}
+ * @extends {tcuTestCase.DeqpTest}
  */
 var Texture2DFormatCase = function(descriptor) {
-    deqpTests.DeqpTest.call(this, descriptor.name, descriptor.description);
+    tcuTestCase.DeqpTest.call(this, descriptor.name, descriptor.description);
     this.m_format = descriptor.format;
     this.m_dataType = descriptor.dataType;
     this.m_width = descriptor.width;
@@ -55,7 +77,7 @@ var Texture2DFormatCase = function(descriptor) {
     this.m_renderer = new glsTextureTestUtil.TextureRenderer(version, gluShaderUtil.precision.PRECISION_HIGHP);
 };
 
-setParentClass(Texture2DFormatCase, deqpTests.DeqpTest);
+setParentClass(Texture2DFormatCase, tcuTestCase.DeqpTest);
 
 Texture2DFormatCase.prototype.init = function() {
     /*tcu::TextureFormat*/ var fmt = this.m_dataType ? gluTextureUtil.mapGLTransferFormat(this.m_format, this.m_dataType) : gluTextureUtil.mapGLInternalFormat(this.m_format);
@@ -156,15 +178,15 @@ Texture2DFormatCase.prototype.iterate = function() {
     var isOk = glsTextureTestUtil.compareImages(referenceFrame, renderedFrame, threshold);
 
     assertMsgOptions(isOk, testDescription(), true, true);
-    return deqpTests.runner.IterateResult.STOP;
+    return tcuTestCase.runner.IterateResult.STOP;
 };
 
 /**
  * @constructor
- * @extends {deqpTests.DeqpTest}
+ * @extends {tcuTestCase.DeqpTest}
  */
 var TextureCubeFormatCase = function(descriptor) {
-    deqpTests.DeqpTest.call(this, descriptor.name, descriptor.description);
+    tcuTestCase.DeqpTest.call(this, descriptor.name, descriptor.description);
     this.m_format = descriptor.format;
     this.m_dataType = descriptor.dataType;
     this.m_width = descriptor.width;
@@ -173,7 +195,7 @@ var TextureCubeFormatCase = function(descriptor) {
     DE_ASSERT(this.m_width == this.m_height);
 };
 
-setParentClass(TextureCubeFormatCase, deqpTests.DeqpTest);
+setParentClass(TextureCubeFormatCase, tcuTestCase.DeqpTest);
 
 TextureCubeFormatCase.prototype.init = function() {
     /*tcu::TextureFormat*/ var fmt = this.m_dataType ? gluTextureUtil.mapGLTransferFormat(this.m_format, this.m_dataType) : gluTextureUtil.mapGLInternalFormat(this.m_format);
@@ -197,11 +219,11 @@ TextureCubeFormatCase.prototype.init = function() {
               gluTexture.cubeFromInternalFormat(gl, this.m_format, this.m_width); // Explicit internal format.
 
     // Fill level 0.
-    for (var face = 0; face < tcuTexture.CubeFace.TOTAL_FACES; face++) {
+    for (var face in tcuTexture.CubeFace) {
         var gMin = null;
         var gMax = null;
 
-        switch (face) {
+        switch (tcuTexture.CubeFace[face]) {
             case 0: gMin = deMath.swizzle(spec.valueMin, [0, 1, 2, 3]); gMax = deMath.swizzle(spec.valueMax, [0, 1, 2, 3]); break;
             case 1: gMin = deMath.swizzle(spec.valueMin, [2, 1, 0, 3]); gMax = deMath.swizzle(spec.valueMax, [2, 1, 0, 3]); break;
             case 2: gMin = deMath.swizzle(spec.valueMin, [1, 2, 0, 3]); gMax = deMath.swizzle(spec.valueMax, [1, 2, 0, 3]); break;
@@ -212,8 +234,8 @@ TextureCubeFormatCase.prototype.init = function() {
                 DE_ASSERT(false);
         }
 
-        this.m_texture.getRefTexture().allocLevel(face, 0);
-        tcuTextureUtil.fillWithComponentGradients(this.m_texture.getRefTexture().getLevelFace(0, face), gMin, gMax);
+        this.m_texture.getRefTexture().allocLevel(tcuTexture.CubeFace[face], 0);
+        tcuTextureUtil.fillWithComponentGradients(this.m_texture.getRefTexture().getLevelFace(0, tcuTexture.CubeFace[face]), gMin, gMax);
     }
 
     this.m_texture.upload();
@@ -304,18 +326,18 @@ TextureCubeFormatCase.prototype.iterate = function() {
 
     this.m_curFace += 1;
 
-    if (this.m_curFace == tcuTexture.CubeFace.TOTAL_FACES)
-        return deqpTests.runner.IterateResult.STOP;
+    if (this.m_curFace < Object.keys(tcuTexture.CubeFace).length)
+        return tcuTestCase.runner.IterateResult.CONTINUE;
     else
-        return deqpTests.runner.IterateResult.CONTINUE;
+        return tcuTestCase.runner.IterateResult.STOP;
 };
 
 /**
  * @constructor
- * @extends {deqpTests.DeqpTest}
+ * @extends {tcuTestCase.DeqpTest}
  */
 var Texture2DArrayFormatCase = function(descriptor) {
-    deqpTests.DeqpTest.call(this, descriptor.name, descriptor.description);
+    tcuTestCase.DeqpTest.call(this, descriptor.name, descriptor.description);
     this.m_format = descriptor.format;
     this.m_dataType = descriptor.dataType;
     this.m_width = descriptor.width;
@@ -324,7 +346,7 @@ var Texture2DArrayFormatCase = function(descriptor) {
     this.m_renderer = new glsTextureTestUtil.TextureRenderer(version, gluShaderUtil.precision.PRECISION_HIGHP);
 };
 
-setParentClass(Texture2DArrayFormatCase, deqpTests.DeqpTest);
+setParentClass(Texture2DArrayFormatCase, tcuTestCase.DeqpTest);
 
 Texture2DArrayFormatCase.prototype.init = function() {
     /*tcu::TextureFormat*/ var fmt = this.m_dataType ? gluTextureUtil.mapGLTransferFormat(this.m_format, this.m_dataType) : gluTextureUtil.mapGLInternalFormat(this.m_format);
@@ -434,17 +456,17 @@ Texture2DArrayFormatCase.prototype.iterate = function() {
     this.m_curLayer += 1;
 
     if (this.m_curLayer == this.m_numLayers)
-        return deqpTests.runner.IterateResult.STOP;
+        return tcuTestCase.runner.IterateResult.STOP;
     else
-        return deqpTests.runner.IterateResult.CONTINUE;
+        return tcuTestCase.runner.IterateResult.CONTINUE;
 };
 
 /**
  * @constructor
- * @extends {deqpTests.DeqpTest}
+ * @extends {tcuTestCase.DeqpTest}
  */
 var Texture3DFormatCase = function(descriptor) {
-    deqpTests.DeqpTest.call(this, descriptor.name, descriptor.description);
+    tcuTestCase.DeqpTest.call(this, descriptor.name, descriptor.description);
     this.m_format = descriptor.format;
     this.m_dataType = descriptor.dataType;
     this.m_width = descriptor.width;
@@ -453,7 +475,7 @@ var Texture3DFormatCase = function(descriptor) {
     this.m_renderer = new glsTextureTestUtil.TextureRenderer(version, gluShaderUtil.precision.PRECISION_HIGHP);
 };
 
-setParentClass(Texture3DFormatCase, deqpTests.DeqpTest);
+setParentClass(Texture3DFormatCase, tcuTestCase.DeqpTest);
 
 Texture3DFormatCase.prototype.init = function() {
     /*tcu::TextureFormat*/ var fmt = this.m_dataType ? gluTextureUtil.mapGLTransferFormat(this.m_format, this.m_dataType) : gluTextureUtil.mapGLInternalFormat(this.m_format);
@@ -564,17 +586,17 @@ Texture3DFormatCase.prototype.iterate = function() {
     this.m_curSlice += 1;
 
     if (this.m_curSlice >= this.m_depth)
-        return deqpTests.runner.IterateResult.STOP;
+        return tcuTestCase.runner.IterateResult.STOP;
     else
-        return deqpTests.runner.IterateResult.CONTINUE;
+        return tcuTestCase.runner.IterateResult.CONTINUE;
 };
 
 /**
  * @constructor
- * @extends {deqpTests.DeqpTest}
+ * @extends {tcuTestCase.DeqpTest}
  */
 var Compressed2DFormatCase = function(descriptor) {
-    deqpTests.DeqpTest.call(this, descriptor.name, descriptor.description);
+    tcuTestCase.DeqpTest.call(this, descriptor.name, descriptor.description);
     this.m_format = descriptor.format;
     this.m_dataType = descriptor.dataType;
     this.m_width = descriptor.width;
@@ -582,7 +604,7 @@ var Compressed2DFormatCase = function(descriptor) {
     this.m_renderer = new glsTextureTestUtil.TextureRenderer(version, gluShaderUtil.precision.PRECISION_HIGHP);
 };
 
-setParentClass(Compressed2DFormatCase, deqpTests.DeqpTest);
+setParentClass(Compressed2DFormatCase, tcuTestCase.DeqpTest);
 
 Compressed2DFormatCase.prototype.init = function() {
     var compressed = new tcuCompressedTexture.CompressedTexture(this.m_format, this.m_width, this.m_height);
@@ -664,15 +686,15 @@ Compressed2DFormatCase.prototype.iterate = function() {
     var isOk = glsTextureTestUtil.compareImages(referenceFrame, renderedFrame, threshold);
 
     assertMsgOptions(isOk, testDescription(), true, true);
-    return deqpTests.runner.IterateResult.STOP;
+    return tcuTestCase.runner.IterateResult.STOP;
 };
 
 /**
  * @constructor
- * @extends {deqpTests.DeqpTest}
+ * @extends {tcuTestCase.DeqpTest}
  */
 var CompressedCubeFormatCase = function(descriptor) {
-    deqpTests.DeqpTest.call(this, descriptor.name, descriptor.description);
+    tcuTestCase.DeqpTest.call(this, descriptor.name, descriptor.description);
     this.m_format = descriptor.format;
     this.m_dataType = descriptor.dataType;
     this.m_width = descriptor.width;
@@ -683,7 +705,7 @@ var CompressedCubeFormatCase = function(descriptor) {
     DE_ASSERT(this.m_width == this.m_height);
 };
 
-setParentClass(CompressedCubeFormatCase, deqpTests.DeqpTest);
+setParentClass(CompressedCubeFormatCase, tcuTestCase.DeqpTest);
 
 CompressedCubeFormatCase.prototype.init = function() {
     var compressed = new tcuCompressedTexture.CompressedTexture(this.m_format, this.m_width, this.m_height);
@@ -774,10 +796,10 @@ CompressedCubeFormatCase.prototype.iterate = function() {
 
     this.m_curFace += 1;
 
-    if (this.m_curFace == tcuTexture.CubeFace.TOTAL_FACES)
-        return deqpTests.runner.IterateResult.STOP;
+    if (this.m_curFace < Object.keys(tcuTexture.CubeFace).length)
+        return tcuTestCase.runner.IterateResult.CONTINUE;
     else
-        return deqpTests.runner.IterateResult.CONTINUE;
+        return tcuTestCase.runner.IterateResult.STOP;
 };
 
 /*TODO: remove */
@@ -787,15 +809,15 @@ if (!gl.RGB16F)
     gl.RGB16F = 0x881A;
 
 var genTestCases = function() {
-    var state = deqpTests.runner.getState();
-    state.testCases = deqpTests.newTest(state.testName, 'Top level');
-    var unsizedGroup = deqpTests.newTest('unsized', 'Unsized formats');
-    var sizedGroup = deqpTests.newTest('sized', 'Sized formats');
-    var sized2DGroup = deqpTests.newTest('2d', 'Sized formats (2D)');
-    var sizedCubeGroup = deqpTests.newTest('cube', 'Sized formats (Cubemap)');
-    var sized2DArrayGroup = deqpTests.newTest('2d_array', 'Sized formats (2D Array)');
-    var sized3DGroup = deqpTests.newTest('3d', 'Sized formats (3D)');
-    var compressedGroup = deqpTests.newTest('compressed', 'Compressed formats');
+    var state = tcuTestCase.runner.getState();
+    state.testCases = tcuTestCase.newTest(state.testName, 'Top level');
+    var unsizedGroup = tcuTestCase.newTest('unsized', 'Unsized formats');
+    var sizedGroup = tcuTestCase.newTest('sized', 'Sized formats');
+    var sized2DGroup = tcuTestCase.newTest('2d', 'Sized formats (2D)');
+    var sizedCubeGroup = tcuTestCase.newTest('cube', 'Sized formats (Cubemap)');
+    var sized2DArrayGroup = tcuTestCase.newTest('2d_array', 'Sized formats (2D Array)');
+    var sized3DGroup = tcuTestCase.newTest('3d', 'Sized formats (3D)');
+    var compressedGroup = tcuTestCase.newTest('compressed', 'Compressed formats');
 
     sizedGroup.addChild(sized2DGroup);
     sizedGroup.addChild(sizedCubeGroup);
@@ -1119,10 +1141,10 @@ var genTestCases = function() {
 var run = function() {
     try {
         genTestCases();
-        deqpTests.runner.runCallback(deqpTests.runTestCases);
+        tcuTestCase.runner.runCallback(tcuTestCase.runTestCases);
     } catch (err) {
         bufferedLogToConsole(err);
-        deqpTests.runner.terminate();
+        tcuTestCase.runner.terminate();
     }
 
 };

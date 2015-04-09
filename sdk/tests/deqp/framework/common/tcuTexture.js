@@ -89,7 +89,7 @@ var ChannelType = {
  * @param {ChannelType} type
  *
  * @constructor
- */ 
+ */
 var TextureFormat = function(order, type) {
     this.order = order;
     this.type = type;
@@ -106,11 +106,36 @@ TextureFormat.prototype.isEqual = function(format) {
 
 /**
  * Is format sRGB?
- * @param {TextureFormat} format
  * @return {boolean}
- */ 
-var isSRGB = function(format) {
-    return format.order === ChannelOrder.sRGB || format.order === ChannelOrder.sRGBA;
+ */
+TextureFormat.prototype.isSRGB = function() {
+    return this.order === ChannelOrder.sRGB || this.order === ChannelOrder.sRGBA;
+};
+
+TextureFormat.prototype.getNumStencilBits = function() {
+    switch (this.order) {
+        case ChannelOrder.S:
+            switch (this.type)
+            {
+                case ChannelType.UNSIGNED_INT8: return 8;
+                case ChannelType.UNSIGNED_INT16: return 16;
+                case ChannelType.UNSIGNED_INT32: return 32;
+                default:
+                    throw new Error('Wrong type: ' + this.type);
+            }
+
+        case ChannelOrder.DS:
+            switch (this.type)
+            {
+                case ChannelType.UNSIGNED_INT_24_8: return 8;
+                case ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: return 8;
+                default:
+                    throw new Error('Wrong type: ' + this.type);
+            }
+
+        default:
+            throw new Error('Wrong order: ' + this.order);
+    }
 };
 
 /**
@@ -249,7 +274,6 @@ var CubeFace = {
     CUBEFACE_POSITIVE_Y: 3,
     CUBEFACE_NEGATIVE_Z: 4,
     CUBEFACE_POSITIVE_Z: 5,
-    TOTAL_FACES: 6
 };
 
 /**
@@ -280,7 +304,7 @@ DeqpArrayBuffer.prototype.size = function() {
     return 0;
 };
 
-/** 
+/**
  * Is the buffer empty (zero size)?
  * @return {boolean}
  */
@@ -290,7 +314,7 @@ DeqpArrayBuffer.prototype.empty = function() {
     return this.size() == 0;
 };
 
-/*
+/**
  * @enum
  * The values are negative to avoid conflict with channels 0 - 3
  */
@@ -589,7 +613,7 @@ var sRGBChannelToLinear = function(cs) {
 /**
  * Convert sRGB to linear colorspace
  * @param {Array<Number>} cs Vec4
- * @param {Array<Number>} Vec4
+ * @return {Array<Number>} Vec4
  */
 var sRGBToLinear = function(cs) {
     return [
@@ -606,12 +630,12 @@ var sRGBToLinear = function(cs) {
  * @param {Number} i
  * @param {Number} j
  * @param {Number} k
- * @return {Array<Number>} Vec4 pixel color 
+ * @return {Array<Number>} Vec4 pixel color
  */
 var lookup = function(access, i, j, k) {
     var p = access.getPixel(i, j, k);
     // console.log('Lookup at ' + i + ' ' + j + ' ' + k + ' ' + p);
-    return isSRGB(access.getFormat()) ? sRGBToLinear(p) : p;
+    return access.getFormat().isSRGB() ? sRGBToLinear(p) : p;
 };
 
 /**
@@ -620,7 +644,7 @@ var lookup = function(access, i, j, k) {
  * @param {Number} u
  * @param {Number} v
  * @param {Number} depth (integer)
- * @return {Array<Number>} Vec4 pixel color 
+ * @return {Array<Number>} Vec4 pixel color
  */
 var sampleNearest2D = function(access, sampler, u, v, depth) {
     var width = access.getWidth();
@@ -647,7 +671,7 @@ var sampleNearest2D = function(access, sampler, u, v, depth) {
  * @param {Number} u
  * @param {Number} v
  * @param {Number} w
- * @return {Array<Number>} Vec4 pixel color 
+ * @return {Array<Number>} Vec4 pixel color
  */
 var sampleNearest3D = function(access, sampler, u, v, w) {
     var width = access.getWidth();
@@ -737,7 +761,8 @@ var unpackRGB999E5 = function(color) {
  */
 var ConstPixelBufferAccess = function(descriptor) {
     if (descriptor) {
-        this.m_format = descriptor.format;
+        this.m_offset = descriptor.offset || 0;
+        this.m_format = descriptor.format || new TextureFormat(ChannelOrder.RGBA, ChannelType.FLOAT);
         this.m_width = descriptor.width;
         this.m_height = descriptor.height;
         if (descriptor.depth)
@@ -754,18 +779,21 @@ var ConstPixelBufferAccess = function(descriptor) {
             this.m_slicePitch = descriptor.slicePitch;
         else
             this.m_slicePitch = this.m_rowPitch * this.m_height;
-
     }
 };
 
 /** @return {Number} */
 ConstPixelBufferAccess.prototype.getDataSize = function() { return this.m_depth * this.m_slicePitch; };
+ConstPixelBufferAccess.prototype.isEmpty = function() { return this.m_width == 0 || this.m_height == 0 || this.m_depth == 0; };
 /** @return {TypedArray} */
 ConstPixelBufferAccess.prototype.getDataPtr = function() {
-        var arrayType = getTypedArray(this.m_format.type);
-         return new arrayType(this.m_data);
- };
-
+    var arrayType = getTypedArray(this.m_format.type);
+    return new arrayType(this.m_data, this.m_offset);
+};
+/** @return {ArrayBuffer} */
+ConstPixelBufferAccess.prototype.getBuffer = function() {
+    return this.m_data;
+};
 /** @return {Number} */
 ConstPixelBufferAccess.prototype.getRowPitch = function() { return this.m_rowPitch; };
 /** @return {Number} */
@@ -798,7 +826,7 @@ ConstPixelBufferAccess.prototype.getPixel = function(x, y, z) {
     var pixelSize = this.m_format.getPixelSize();
     var arrayType = getTypedArray(this.m_format.type);
     var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
-    var pixelPtr = new arrayType(this.m_data, z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize);
+    var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
 
     var ub = function(pixel, offset, count) {
         return (pixel >> offset) & ((1 << count) - 1);
@@ -823,14 +851,14 @@ ConstPixelBufferAccess.prototype.getPixel = function(x, y, z) {
         case ChannelType.UNSIGNED_INT_24_8:
             switch (this.m_format.order) {
                 // \note Stencil is always ignored.
-                case ChannelType.D: return [nb(pixel, 8, 24), 0, 0, 1];
-                case ChannelType.DS: return [nb(pixel, 8, 24), 0, 0, 1 /* (float)ub(0, 8) */];
+                case ChannelOrder.D: return [nb(pixel, 8, 24), 0, 0, 1];
+                case ChannelOrder.DS: return [nb(pixel, 8, 24), 0, 0, 1 /* (float)ub(0, 8) */];
                 default:
                     DE_ASSERT(false);
             }
 
         case ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
-            DE_ASSERT(this.m_format.order == ChannelType.DS);
+            DE_ASSERT(this.m_format.order == ChannelOrder.DS);
             // \note Stencil is ignored.
             return [pixel, 0, 0, 1];
         }
@@ -884,7 +912,7 @@ ConstPixelBufferAccess.prototype.getPixelInt = function(x, y, z) {
     var pixelSize = this.m_format.getPixelSize();
     var arrayType = getTypedArray(this.m_format.type);
     var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
-    var pixelPtr = new arrayType(this.m_data, z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize);
+    var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
 
     var ub = function(pixel, offset, count) {
         return (pixel >> offset) & ((1 << count) - 1);
@@ -905,14 +933,14 @@ ConstPixelBufferAccess.prototype.getPixelInt = function(x, y, z) {
         case ChannelType.UNSIGNED_INT_24_8:
             switch (this.m_format.order) {
                 // \note Stencil is always ignored.
-                case ChannelType.D: return [ub(pixel, 8, 24), 0, 0, 1];
-                case ChannelType.DS: return [ub(pixel, 8, 24), 0, 0, 1 /* (float)ub(0, 8) */];
+                case ChannelOrder.D: return [ub(pixel, 8, 24), 0, 0, 1];
+                case ChannelOrder.DS: return [ub(pixel, 8, 24), 0, 0, 1 /* (float)ub(0, 8) */];
                 default:
                     DE_ASSERT(false);
             }
 
         case ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
-            DE_ASSERT(this.m_format.order == ChannelType.DS);
+            DE_ASSERT(this.m_format.order == ChannelOrder.DS);
             // \note Stencil is ignored.
             return [pixel, 0, 0, 1];
         }
@@ -1116,7 +1144,7 @@ PixelBufferAccess.prototype = Object.create(ConstPixelBufferAccess.prototype);
 PixelBufferAccess.prototype.constructor = PixelBufferAccess;
 
 /**
- * @param {Array<Number>} Vec4 color to set
+ * @param {Array<Number>} color Vec4 color to set
  * @param {Number} x
  * @param {Number} y
  * @param {Number} z
@@ -1131,7 +1159,7 @@ PixelBufferAccess.prototype.setPixel = function(color, x, y, z) {
     var pixelSize = this.m_format.getPixelSize();
     var arrayType = getTypedArray(this.m_format.type);
     var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
-    var pixelPtr = new arrayType(this.m_data, offset);
+    var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
 
     var pn = function(val, offs, bits) {
         return normFloatToChannel(val, bits) << offs;
@@ -1200,13 +1228,182 @@ PixelBufferAccess.prototype.setPixel = function(color, x, y, z) {
     }
 };
 
+/**
+ * @param {Array<number>=} color Vec4 color to set, optional.
+ * @param {Array<number>=} x Range in x axis, optional.
+ * @param {Array<number>=} y Range in y axis, optional.
+ * @param {Array<number>=} z Range in z axis, optional.
+ */
+PixelBufferAccess.prototype.clear = function(color, x, y, z) {
+    var c = color || [0, 0, 0, 0];
+    /** @type {ArrayBuffer} */ var pixel = new ArrayBuffer(16);
+    PixelBufferAccess.newFromTextureFormat(this.getFormat(), 1, 1, 1, 0, 0, pixel).setPixel(c, 0, 0);
+    var pixelSize = this.m_format.getPixelSize();
+    var arrayType = getTypedArray(this.m_format.type);
+    var dst = this.getDataPtr();
+    var src = new arrayType(pixel);
+    var numChannels = getNumUsedChannels(this.m_format.order);
+    var elemSize = arrayType.BYTES_PER_ELEMENT;
+    var range_x = x || [0, this.m_width];
+    var range_y = y || [0, this.m_height];
+    var range_z = z || [0, this.m_depth];
+
+    for (var slice = range_z[0]; slice < range_z[1]; slice++) {
+        var slice_offset = slice * this.m_slicePitch;
+        for (var row = range_y[0]; row < range_y[1]; row++) {
+            var row_offset = row * this.m_rowPitch;
+            for (var col = range_x[0]; col < range_x[1]; col++) {
+                var col_offset = col * pixelSize;
+                var index = (slice_offset + row_offset + col_offset) / elemSize;
+                for (var i = 0; i < numChannels; i++) {
+                    dst[index + i] = src[i];
+                }
+            }
+        }
+    }
+};
+
+/**
+ * @param {number} depth to set
+ * @param {number} x
+ * @param {number} y
+ * @param {number=} z
+ */
+PixelBufferAccess.prototype.setPixDepth = function(depth, x, y, z) {
+    if (z == null)
+        z = 0;
+    DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
+    DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
+    DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
+
+    var pixelSize = this.m_format.getPixelSize();
+    var arrayType = getTypedArray(this.m_format.type);
+    var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
+    var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
+
+    var pn = function(val, offs, bits) {
+        return normFloatToChannel(val, bits) << offs;
+    };
+
+
+    // Packed formats.
+    switch (this.m_format.type) {
+        case ChannelType.UNSIGNED_INT_24_8:
+            switch (this.m_format.order) {
+                case ChannelOrder.D: pixelPtr[0] = pn(depth, 8, 24); break;
+                case ChannelOrder.DS: pixelPtr[0] = pn(depth, 8, 24) | (pixelPtr[0] & 0xFF); break;
+                default:
+                    throw new Error('Unsupported channel order ' + this.m_format.order);
+            }
+            break;
+
+        case ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
+            DE_ASSERT(this.m_format.order == ChannelOrder.DS);
+            pixelPtr[0] = depth;
+            break;
+        }
+
+        default: {
+            DE_ASSERT(this.m_format.order == ChannelOrder.D || this.m_format.order == ChannelOrder.DS);
+            pixelPtr[0] = floatToChannel(depth, this.m_format.type);
+        }
+    }
+};
+
+/**
+ * @param {number} stencil to set
+ * @param {number} x
+ * @param {number} y
+ * @param {number=} z
+ */
+PixelBufferAccess.prototype.setPixStencil = function(stencil, x, y, z) {
+    if (z == null)
+        z = 0;
+    DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
+    DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
+    DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
+
+    var pixelSize = this.m_format.getPixelSize();
+    var arrayType = getTypedArray(this.m_format.type);
+    var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
+    var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
+
+    var pu = function(val, offs, bits) {
+        return uintToChannel(val, bits) << offs;
+    };
+
+    // Packed formats.
+    switch (this.m_format.type) {
+        case ChannelType.UNSIGNED_INT_24_8:
+            switch (this.m_format.order) {
+                case ChannelOrder.S: pixelPtr[0] = pu(stencil, 8, 24); break;
+                case ChannelOrder.DS: pixelPtr[0] = pu(stencil, 0, 8) | (pixelPtr[0] & 0xFFFFFF00); break;
+                default:
+                    throw new Error('Unsupported channel order ' + this.m_format.order);
+            }
+            break;
+
+        case ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
+            var u32array = new Uint32Array(this.m_data, offset + 4, 1);
+            u32array[0] = pu(stencil, 0, 8);
+            break;
+        }
+
+        default: {
+            if (this.m_format.order == ChannelOrder.S)
+                pixelPtr[0] = floatToChannel(stencil, this.m_format.type);
+            else {
+                DE_ASSERT(this.m_format.order == ChannelOrder.DS);
+                pixelPtr[3] = floatToChannel(stencil, this.m_format.type);
+            }
+        }
+    }
+};
+
+/**
+ * newFromTextureLevel
+ * @param {TextureLevel} level
+ */
+PixelBufferAccess.newFromTextureLevel = function(level) {
+    var descriptor = new Object();
+    descriptor.format = level.getFormat();
+    descriptor.width = level.getWidth();
+    descriptor.height = level.getHeight();
+    descriptor.depth = level.m_depth;
+    descriptor.data = level.m_data.m_ptr;
+
+    return new PixelBufferAccess(descriptor);
+};
+
+/**
+ * newFromTextureFormat
+ * @param {TextureFormat} format
+ * @param {number} width
+ * @param {number} height
+ * @param {number} depth
+ * @param {number} rowPitch
+ * @param {number} slicePitch
+ * @param {ArrayBuffer} data
+ */
+PixelBufferAccess.newFromTextureFormat = function(format, width, height, depth, rowPitch, slicePitch, data) {
+    var descriptor = new Object();
+    descriptor.format = format;
+    descriptor.width = width;
+    descriptor.height = height;
+    descriptor.depth = depth;
+    descriptor.rowPitch = rowPitch;
+    descriptor.slicePitch = slicePitch;
+    descriptor.data = data;
+
+    return new PixelBufferAccess(descriptor);
+};
+
 /* TODO: Port */
 // {
 // public:
 //                             PixelBufferAccess            (void) {}
-//                             PixelBufferAccess            (TextureLevel& level);
 //                             PixelBufferAccess            (const TextureFormat& format, int width, int height, int depth, void* data);
-//                             PixelBufferAccess            (const TextureFormat& format, int width, int height, int depth, int rowPitch, int slicePitch, void* data);
+
 
 //     void*                    getDataPtr                    (void) const { return m_data; }
 
@@ -1278,7 +1475,7 @@ TextureLevelPyramid.prototype.clearLevel = function(levelNdx) {
  * @param {Number} t
  * @param {Number} depth (integer)
  * @param {Number} lod
- * @return {Array<Number>} Vec4 pixel color 
+ * @return {Array<Number>} Vec4 pixel color
  */
 var sampleLevelArray2D = function(levels, numLevels, sampler, s, t, depth, lod) {
     var magnified = lod <= sampler.lodThreshold;
@@ -1328,7 +1525,7 @@ var sampleLevelArray2D = function(levels, numLevels, sampler, s, t, depth, lod) 
  * @param {Number} t
  * @param {Number} r
  * @param {Number} lod
- * @return {Array<Number>} Vec4 pixel color 
+ * @return {Array<Number>} Vec4 pixel color
  */
 var sampleLevelArray3D = function(levels, numLevels, sampler, s, t, r, lod) {
     var magnified = lod <= sampler.lodThreshold;
@@ -1372,7 +1569,7 @@ var sampleLevelArray3D = function(levels, numLevels, sampler, s, t, r, lod) {
 /**
  * @constructor
  * @param {CubeFace} face
- * @param {Array<Number>} Vec2 coordinates
+ * @param {Array<Number>} coords
  */
 var CubeFaceCoords = function(face, coords) {
     this.face = face;
@@ -1422,7 +1619,7 @@ Texture2DView.prototype.getSubView = function(baseLevel, maxLevel) {
  * @param {Array<Number>} texCoord
  * @param {Number} lod
  * @return {Array<Number>} Pixel color
- */  
+ */
 Texture2DView.prototype.sample = function(sampler, texCoord, lod) {
     return sampleLevelArray2D(this.m_levels, this.m_numLevels, sampler, texCoord[0], texCoord[1], 0 /* depth */, lod);
 };
@@ -1576,6 +1773,9 @@ var Texture2D = function(format, width, height) {
 Texture2D.prototype = Object.create(TextureLevelPyramid.prototype);
 Texture2D.prototype.constructor = Texture2D;
 
+Texture2D.prototype.getWidth = function() { return this.m_width; };
+Texture2D.prototype.getHeight = function() { return this.m_height; };
+
 /**
  * @param {Number} baseLevel
  * @param {Number} maxLevel
@@ -1648,6 +1848,9 @@ var Texture3D = function(format, width, height, depth) {
 Texture3D.prototype = Object.create(TextureLevelPyramid.prototype);
 Texture3D.prototype.constructor = Texture3D;
 
+Texture3D.prototype.getWidth = function() { return this.m_width; };
+Texture3D.prototype.getHeight = function() { return this.m_height; };
+
 /**
  * @param {Number} baseLevel
  * @param {Number} maxLevel
@@ -1714,8 +1917,8 @@ TextureCubeView.prototype.getSubView = function(baseLevel, maxLevel) {
     var clampedMax = deMath.clamp(maxLevel, clampedBase, this.m_numLevels - 1);
     var numLevels = clampedMax - clampedBase + 1;
     var levels = [];
-    for (var face = 0; face < CubeFace.TOTAL_FACES; face++)
-        levels.push(this.getFaceLevels(face).slice(clampedBase, numLevels));
+    for (var face in CubeFace)
+        levels.push(this.getFaceLevels(CubeFace[face]).slice(clampedBase, numLevels));
 
     return new TextureCubeView(numLevels, levels);
 };
@@ -1729,21 +1932,21 @@ var TextureCube = function(format, size) {
     this.m_format = format;
     this.m_size = size;
     this.m_data = [];
-    this.m_data.length = CubeFace.TOTAL_FACES;
+    this.m_data.length = Object.keys(CubeFace).length;
     this.m_access = [];
-    this.m_access.length = CubeFace.TOTAL_FACES;
+    this.m_access.length = Object.keys(CubeFace).length;
 
     var numLevels = computeMipPyramidLevels(this.m_size);
     var levels = [];
-    levels.length = CubeFace.TOTAL_FACES;
+    levels.length = Object.keys(CubeFace).length;
 
-    for (var face = 0; face < CubeFace.TOTAL_FACES; face++) {
-        this.m_data[face] = [];
+    for (var face in CubeFace) {
+        this.m_data[CubeFace[face]] = [];
         for (var i = 0; i < numLevels; i++)
-            this.m_data[face].push(new DeqpArrayBuffer());
-        this.m_access[face] = [];
-        this.m_access[face].length = numLevels;
-        levels[face] = this.m_access[face];
+            this.m_data[CubeFace[face]].push(new DeqpArrayBuffer());
+        this.m_access[CubeFace[face]] = [];
+        this.m_access[CubeFace[face]].length = numLevels;
+        levels[CubeFace[face]] = this.m_access[CubeFace[face]];
     }
 
     this.m_view = new TextureCubeView(numLevels, levels);
@@ -1808,7 +2011,7 @@ TextureCube.prototype.allocLevel = function(face, levelNdx) {
 };
 
 /**
- * @param {Array<Number>} coords Cube coordinates 
+ * @param {Array<Number>} coords Cube coordinates
  * @return {CubeFace}
  */
 var selectCubeFace = function(coords) {
@@ -1878,6 +2081,95 @@ var projectToFace = function(face, coord) {
     return [s, t];
 };
 
+/**
+ * @constructor
+ * @param {TextureFormat} format
+ * @param {number} width
+ * @param {number} height
+ * @param {number} depth
+ */
+var TextureLevel = function(format, width, height, depth) {
+    this.m_format = format;
+    this.m_width = width;
+    this.m_height = height;
+    this.m_depth = depth === undefined ? 1 : depth;
+    this.m_data = new DeqpArrayBuffer();
+    this.setSize(this.m_width, this.m_height, this.m_depth);
+};
+
+TextureLevel.prototype.constructor = TextureLevel;
+
+/**
+ * @param {TextureFormat} format
+ * @param {number} width
+ * @param {number} height
+ * @param {number} depth
+ */
+TextureLevel.prototype.setStorage = function(format, width, height, depth)
+{
+    this.m_format = format;
+    this.setSize(width, height, depth);
+};
+
+/**
+ * @param {number} width
+ * @param {number} height
+ * @param {number} depth
+ */
+TextureLevel.prototype.setSize = function(width, height, depth)
+{
+    var pixelSize = this.m_format.getPixelSize();
+
+    this.m_width = width;
+    this.m_height = height;
+    this.m_depth = depth;
+
+    this.m_data.setStorage(this.m_width * this.m_height * this.m_depth * pixelSize);
+};
+
+TextureLevel.prototype.getAccess = function() {
+    return new PixelBufferAccess({
+                    format: this.m_format,
+                    width: this.m_width,
+                    height: this.m_height,
+                    depth: this.m_depth,
+                    data: this.m_data.m_ptr
+                });
+
+};
+
+/**
+ * @return {number}
+ */
+TextureLevel.prototype.getWidth = function()
+{
+    return this.m_width;
+};
+
+/**
+ * @return {number}
+ */
+TextureLevel.prototype.getHeight = function()
+{
+    return this.m_height;
+};
+
+/**
+ * @return {number}
+ */
+TextureLevel.prototype.getDepth = function()
+{
+    return this.m_depth;
+};
+
+/**
+ * @return {number}
+ */
+TextureLevel.prototype.getFormat = function()
+{
+    return this.m_format;
+};
+
 return {
     TextureFormat: TextureFormat,
     ChannelType: ChannelType,
@@ -1887,13 +2179,16 @@ return {
     ConstPixelBufferAccess: ConstPixelBufferAccess,
     PixelBufferAccess: PixelBufferAccess,
     Texture2D: Texture2D,
+    Texture2DView: Texture2DView,
     TextureCube: TextureCube,
     Texture2DArray: Texture2DArray,
     Texture3D: Texture3D,
     WrapMode: WrapMode,
     FilterMode: FilterMode,
+    CompareMode: CompareMode,
     Sampler: Sampler,
-    selectCubeFace: selectCubeFace
+    selectCubeFace: selectCubeFace,
+    TextureLevel: TextureLevel
 };
 
 });

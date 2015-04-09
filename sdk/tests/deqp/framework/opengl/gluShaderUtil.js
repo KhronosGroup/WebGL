@@ -18,7 +18,7 @@
  *
  */
 
-define(function() {
+define(['framework/delibs/debase/deMath'], function(deMath) {
     'use strict';
 
 var DE_ASSERT = function(x) {
@@ -43,10 +43,10 @@ GLSLVersion.V_LAST = Object.keys(GLSLVersion).length;
  * @return {GLSLVersion}
  */
 var getGLSLVersion = function(gl) {
-    var webglversion = gl.getParameter(gl.VERSION);
+    var glslversion = gl.getParameter(gl.SHADING_LANGUAGE_VERSION);
 
-    if (webglversion.indexOf('WebGL 1.0') != -1) return GLSLVersion.V100_ES;
-    if (webglversion.indexOf('WebGL 2.0') != -1) return GLSLVersion.V300_ES;
+    if (glslversion.indexOf('WebGL GLSL ES 1.0') != -1) return GLSLVersion.V100_ES;
+       if (glslversion.indexOf('WebGL GLSL ES 3.0') != -1) return GLSLVersion.V300_ES;
 
     throw new Error('Invalid WebGL version');
 };
@@ -531,6 +531,17 @@ var isDataTypeSampler = function(dataType) {
 };
 
 /**
+ * Returns a DataType based on given rows and columns
+ * @param {number} numCols
+ * @param {number} numRows
+ * @return {DataType}
+ */
+var getDataTypeMatrix = function(numCols, numRows) {
+    DE_ASSERT(deMath.deInRange32(numCols, 2, 4) && deMath.deInRange32(numRows, 2, 4));
+    return (DataType.FLOAT_MAT2 + (numCols - 2) * 3 + (numRows - 2));
+};
+
+/**
 * Returns number of rows of a DataType Matrix
 * @param {DataType} dataType shader
 * @return {number} with number of rows depending on DataType Matrix
@@ -717,6 +728,7 @@ return {
     isDataTypeVector: isDataTypeVector,
     isDataTypeScalarOrVector: isDataTypeScalarOrVector,
     isDataTypeSampler: isDataTypeSampler,
+    getDataTypeMatrix: getDataTypeMatrix,
     getDataTypeMatrixNumColumns: getDataTypeMatrixNumColumns,
     getDataTypeMatrixNumRows: getDataTypeMatrixNumRows,
     getDataTypeName: getDataTypeName,
