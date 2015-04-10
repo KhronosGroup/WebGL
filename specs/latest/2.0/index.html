@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 27 April 2015</h2>
+    <h2 class="no-toc">Editor's Draft 7 May 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2475,6 +2475,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         source color of (0, 0, 0, 1) in the case of a texel fetch from an incomplete texture in the WebGL 2
         API.
     </p>
+    <div class="note rationale">
+        Behavior of out-of-range texel fetches needs to be testable in order to guarantee security.
+    </div>
 
     <h3>GLSL ES 1.00 Fragment Shader Output</h3>
 
@@ -2556,26 +2559,32 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <p>
         OpenGL ES 3.0 introduces new state on texture objects allowing a four-channel swizzle
         operation to be specified against the texture. The swizzle is applied to every texture
-        lookup performed within any shader referencing that texture.
+        lookup performed within any shader referencing that texture. These texture swizzles are
+        not supported in WebGL 2.0. <code>TEXTURE_SWIZZLE_*</code> enum values are removed from
+        the WebGL 2.0 API.
     </p>
-    <p>
-        On some WebGL implementations, texture swizzles can not be implemented in a performant
-        manner, meaning that applications relying on this functionality will run significantly more
-        slowly on those implementations. For this reason, texture swizzles are not supported in
-        WebGL 2.0.
-    </p>
+
+    <div class="note rationale">
+        Texture swizzles can not be implemented in a performant manner on Direct3D based WebGL
+        implementations. Applications relying on this functionality would run significantly more
+        slowly on those implementations. Applications are still able to swizzle results of texture
+        fetches in shaders and swizzle texture data before uploading without this interface.
+    </div>
 
     <h3>Queries should fail on a program that failed to link</h3>
 
     <p>
         OpenGL ES 3.0 allows applications to enumerate and query properties of
         active variables and interface blocks of a specified program even if
-        that program failed to link <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.3">OpenGL ES 3.0.3 &sect;2.11.3</a>)</span>. The returned information is implementation
-        dependent and may be incomplete. For the behaviors to be consistent
-        across all platforms, in WebGL, these commands will always generate an
-        INVALID_OPERATION error on a program that failed to link, and no
-        information is returned.
+        that program failed to link <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.3">OpenGL ES 3.0.3 &sect;2.11.3</a>)</span>.
+        In WebGL, these commands will always generate an INVALID_OPERATION error
+        on a program that failed to link, and no information is returned.
     </p>
+
+    <div class="note rationale">
+        The returned information in OpenGL ES 3.0 is implementation dependent and may be incomplete.
+        The error condition is added to ensure consistent behavior across all platforms.
+    </div>
 
 <!-- ======================================================================================================= -->
 
