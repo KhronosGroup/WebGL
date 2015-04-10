@@ -23,10 +23,19 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
-in vec3 normal;
-in vec4 ecPosition;
+uniform mat2x3 mval2x3;
+uniform mat2x4 mval2x4;
+uniform mat3x2 mval3x2;
+uniform mat3x4 mval3x4;
+uniform mat4x2 mval4x2;
+uniform mat4x3 mval4x3;
 
 void main()
 {
-    gl_FragColor = vec4(v_normal/2.0+vec3(0.5), 1);
+    gl_Position = vec4(mval2x3 * vec2(1.0, 2.0), 0.0, 0.0)
+            + vec4(mval2x4 * vec2(1.0, 2.0), 0.0, 0.0)
+            + vec4(mval3x2 * vec3(1.0, 2.0, 3.0), 0.0)
+            + vec4(mval3x4 * vec3(1.0, 2.0, 3.0), 0.0)
+            + mval4x2 * vec4(1.0, 2.0, 3.0, 4.0)
+            + mval4x3 * vec4(1.0, 2.0, 3.0, 4.0);
 }

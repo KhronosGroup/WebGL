@@ -1,3 +1,5 @@
+#version 300 es
+
 /*
 ** Copyright (c) 2015 The Khronos Group Inc.
 **
