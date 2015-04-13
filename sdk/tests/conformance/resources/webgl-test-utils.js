@@ -2063,6 +2063,26 @@ var loadStandardFragmentShader = function(gl) {
       gl, getBasePath() + "fragmentShader.frag", gl.FRAGMENT_SHADER);
 };
 
+var loadUniformBlockProgram = function(gl) {
+  var program = gl.createProgram();
+  gl.attachShader(program, loadUniformBlockVertexShader(gl));
+  gl.attachShader(program, loadUniformBlockFragmentShader(gl));
+  gl.bindAttribLocation(program, 0, "a_vertex");
+  gl.bindAttribLocation(program, 1, "a_normal");
+  linkProgram(gl, program);
+  return program;
+};
+
+var loadUniformBlockVertexShader = function(gl) {
+  return loadShaderFromFile(
+      gl, getBasePath() + "uniformBlockShader.vert", gl.VERTEX_SHADER);
+};
+
+var loadUniformBlockFragmentShader = function(gl) {
+  return loadShaderFromFile(
+      gl, getBasePath() + "uniformBlockShader.frag", gl.FRAGMENT_SHADER);
+};
+
 /**
  * Loads an image asynchronously.
  * @param {string} url URL of image to load.
@@ -2791,6 +2811,9 @@ return {
   loadStandardProgram: loadStandardProgram,
   loadStandardVertexShader: loadStandardVertexShader,
   loadStandardFragmentShader: loadStandardFragmentShader,
+  loadUniformBlockProgram: loadUniformBlockProgram,
+  loadUniformBlockVertexShader: loadUniformBlockVertexShader,
+  loadUniformBlockFragmentShader: loadUniformBlockFragmentShader,
   loadTextFileAsync: loadTextFileAsync,
   loadTexture: loadTexture,
   log: log,
