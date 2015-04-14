@@ -1,1 +1,2 @@
+gl-get-tex-parameter.html
 texel-fetch-undefined.html
