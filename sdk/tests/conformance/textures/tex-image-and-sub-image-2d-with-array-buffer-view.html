@@ -192,7 +192,7 @@ function runOneIteration(useTexSubImage2D, type, unpackAlignment, flipY, premult
         // Check the top pixel and bottom pixel and make sure they have
         // the right color.
         var rects = [wtu.makeCheckRect(0, 0, testWidth, testHeight, bottomColor, "bottom pixel should be " + bottomColor, 0),
-                      wtu.makeCheckRect(0, testHeight, testWidth, testHeight, topColor, "top pixel should be " + topColor, 0)];
+                     wtu.makeCheckRect(0, testHeight, testWidth, testHeight, topColor, "top pixel should be " + topColor, 0)];
         wtu.checkCanvasRects(gl, rects);
       }
 

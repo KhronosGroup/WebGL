@@ -1092,8 +1092,8 @@ var makeCheckRect = function(x, y, width, height, color, msg, errorRange) {
     'errorRange': errorRange,
 
     'checkRect': function (buf, l, b, w) {
-      for (var px = (x - l) ; px < (width - l) ; ++px) {
-        for (var py = (y - b) ; py < (height - b) ; ++py) {
+      for (var px = (x - l) ; px < (x + width - l) ; ++px) {
+        for (var py = (y - b) ; py < (y + height - b) ; ++py) {
           var offset = (py * w + px) * 4;
           for (var j = 0; j < color.length; ++j) {
             if (Math.abs(buf[offset + j] - color[j]) > errorRange) {
