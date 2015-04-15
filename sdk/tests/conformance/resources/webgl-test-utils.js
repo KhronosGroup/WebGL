@@ -1071,6 +1071,79 @@ var isWebGLContext = function(ctx) {
 };
 
 /**
+ * Creates a check rect is used by checkCanvasRects.
+ * @param {number} x left corner of region to check.
+ * @param {number} y bottom corner of region to check in case of checking from
+ *        a GL context or top corner in case of checking from a 2D context.
+ * @param {number} width width of region to check.
+ * @param {number} height width of region to check.
+ * @param {!Array.<number>} color The color expected. A 4 element array where
+ *        each element is in the range 0 to 255.
+ * @param {string} opt_msg Message to associate with success. Eg
+ *        ("should be red").
+ * @param {number} opt_errorRange Optional. Acceptable error in
+ *        color checking. 0 by default.
+ */
+var makeCheckRect = function(x, y, width, height, color, msg, errorRange) {
+  var rect = {
+    'x': x, 'y': y,
+    'width': width, 'height': height,
+    'color': color, 'msg': msg,
+    'errorRange': errorRange,
+
+    'checkRect': function (buf, l, b, w) {
+      for (var px = (x - l) ; px < (width - l) ; ++px) {
+        for (var py = (y - b) ; py < (height - b) ; ++py) {
+          var offset = (py * w + px) * 4;
+          for (var j = 0; j < color.length; ++j) {
+            if (Math.abs(buf[offset + j] - color[j]) > errorRange) {
+              testFailed(msg);
+              var was = buf[offset + 0].toString();
+              for (j = 1; j < color.length; ++j) {
+                was += "," + buf[offset + j];
+              }
+              debug('at (' + (i % width) + ', ' + Math.floor(i / width) +
+                    ') expected: ' + color + ' was ' + was);
+              return;
+            }
+          }
+        }
+      }
+      testPassed(msg);
+    }
+  }
+  return rect;
+};
+
+/**
+ * Checks that a portions of a canvas or the currently attached framebuffer is 1 color.
+ * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
+ *         WebGLRenderingContext or 2D context to use.
+ * @param {!Array.<checkRect>} array of rects to check for matching color.
+ */
+var checkCanvasRects = function(gl, rects) {
+  if (rects.length > 0) {
+    var left = rects[0].x;
+    var right = rects[0].x + rects[1].width;
+    var bottom = rects[0].y;
+    var top = rects[0].y + rects[0].height;
+    for (var i = 1; i < rects.length; ++i) {
+      left = Math.min(left, rects[i].x);
+      right = Math.max(right, rects[i].x + rects[i].width);
+      bottom = Math.min(bottom, rects[i].y);
+      top = Math.max(top, rects[i].y + rects[i].height);
+    }
+    var width = right - left;
+    var height = top - bottom;
+    var buf = new Uint8Array(width * height * 4);
+    gl.readPixels(left, bottom, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+    for (var i = 0; i < rects.length; ++i) {
+      rects[i].checkRect(buf, left, bottom, width);
+    }
+  }
+};
+
+/**
  * Checks that a portion of a canvas or the currently attached framebuffer is 1 color.
  * @param {!WebGLRenderingContext|CanvasRenderingContext2D} gl The
  *         WebGLRenderingContext or 2D context to use.
@@ -2768,6 +2841,7 @@ return {
   checkCanvas: checkCanvas,
   checkCanvasRect: checkCanvasRect,
   checkCanvasRectColor: checkCanvasRectColor,
+  checkCanvasRects: checkCanvasRects,
   checkTextureSize: checkTextureSize,
   clipToRange: clipToRange,
   createColoredTexture: createColoredTexture,
@@ -2818,6 +2892,7 @@ return {
   loadTexture: loadTexture,
   log: log,
   loggingOff: loggingOff,
+  makeCheckRect: makeCheckRect,
   makeImage: makeImage,
   makeImageFromCanvas: makeImageFromCanvas,
   makeVideo: makeVideo,
