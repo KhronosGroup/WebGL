@@ -191,9 +191,10 @@ function runOneIteration(useTexSubImage2D, type, unpackAlignment, flipY, premult
 
         // Check the top pixel and bottom pixel and make sure they have
         // the right color.
-        wtu.checkCanvasRect(gl, 0, 0, testWidth, testHeight, bottomColor, "bottom pixel should be " + bottomColor);
-        wtu.checkCanvasRect(gl, 0, testHeight, testWidth, testHeight, topColor, "top pixel should be " + topColor);
-    }
+        var rects = [wtu.makeCheckRect(0, 0, testWidth, testHeight, bottomColor, "bottom pixel should be " + bottomColor, 0),
+                     wtu.makeCheckRect(0, testHeight, testWidth, testHeight, topColor, "top pixel should be " + topColor, 0)];
+        wtu.checkCanvasRects(gl, rects);
+      }
 
     // Change part of the texture.
     var partWidth = 16;
@@ -225,11 +226,13 @@ function runOneIteration(useTexSubImage2D, type, unpackAlignment, flipY, premult
         }
 
         wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
-        wtu.checkCanvasRect(gl, 0, 0, halfWidth, quarterHeight, tcolor0, "bottom left bottom pixels should be " + tcolor0);
-        wtu.checkCanvasRect(gl, 0, quarterHeight, halfWidth, quarterHeight, tcolor1, "bottom left top pixels should be " + tcolor1);
-        wtu.checkCanvasRect(gl, halfWidth, 0, halfWidth, halfHeight, bottomColor, "bottom right pixels should be " + bottomColor);
-        wtu.checkCanvasRect(gl, 0, halfHeight, testWidth, halfHeight, topColor, "top pixels should be " + topColor);
-    }
+        wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
+        var rects = [wtu.makeCheckRect(0, 0, halfWidth, quarterHeight, tcolor0, "bottom left bottom pixels should be " + tcolor0, 0),
+                     wtu.makeCheckRect(0, quarterHeight, halfWidth, quarterHeight, tcolor1, "bottom left top pixels should be " + tcolor1, 0),
+                     wtu.makeCheckRect(halfWidth, 0, halfWidth, halfHeight, bottomColor, "bottom right pixels should be " + bottomColor, 0),
+                     wtu.makeCheckRect(0, halfHeight, testWidth, halfHeight, topColor, "top pixels should be " + topColor, 0)];
+        wtu.checkCanvasRects(gl, rects);
+      }
 
     // set far corner.
     for (var tt = 0; tt < targets.length; ++tt) {
@@ -241,13 +244,14 @@ function runOneIteration(useTexSubImage2D, type, unpackAlignment, flipY, premult
         }
 
         wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
-        wtu.checkCanvasRect(gl, 0, 0, halfWidth, quarterHeight, tcolor0, "bottom left bottom pixels should be " + tcolor0);
-        wtu.checkCanvasRect(gl, 0, quarterHeight, halfWidth, quarterHeight, tcolor1, "bottom left top pixels should be " + tcolor1);
-        wtu.checkCanvasRect(gl, halfWidth, 0, halfWidth, halfHeight, bottomColor, "bottom left pixels should be " + bottomColor);
-        wtu.checkCanvasRect(gl, 0, halfHeight, halfWidth, halfHeight, topColor, "top right pixels should be " + topColor);
-        wtu.checkCanvasRect(gl, halfWidth, halfHeight, halfWidth, quarterHeight, tcolor0, "top right bottom pixels should be " + tcolor0);
-        wtu.checkCanvasRect(gl, halfWidth, halfHeight + quarterHeight, halfWidth, quarterHeight, tcolor1, "top right top pixels should be " + tcolor1);
-    }
+        var rects = [wtu.makeCheckRect(0, 0, halfWidth, quarterHeight, tcolor0, "bottom left bottom pixels should be " + tcolor0, 0),
+                     wtu.makeCheckRect(0, quarterHeight, halfWidth, quarterHeight, tcolor1, "bottom left top pixels should be " + tcolor1, 0),
+                     wtu.makeCheckRect(halfWidth, 0, halfWidth, halfHeight, bottomColor, "bottom left pixels should be " + bottomColor, 0),
+                     wtu.makeCheckRect(0, halfHeight, halfWidth, halfHeight, topColor, "top right pixels should be " + topColor, 0),
+                     wtu.makeCheckRect(halfWidth, halfHeight, halfWidth, quarterHeight, tcolor0, "top right bottom pixels should be " + tcolor0, 0),
+                     wtu.makeCheckRect(halfWidth, halfHeight + quarterHeight, halfWidth, quarterHeight, tcolor1, "top right top pixels should be " + tcolor1, 0)];
+        wtu.checkCanvasRects(gl, rects);
+      }
 }
 
 function runTest(bindingTarget, program)
