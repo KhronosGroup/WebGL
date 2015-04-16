@@ -62,15 +62,9 @@ gl.bufferData(gl.ARRAY_BUFFER, floatArray, gl.STATIC_DRAW);
 
 debug("");
 debug("Test that getBufferSubData successfully works reading buffer data from gl.ARRAY_BUFFER");
-var arrBuffer = new ArrayBuffer(vertices.length * 4);
+var arrBuffer = new ArrayBuffer(vertices.length * Float32Array.BYTES_PER_ELEMENT);
 gl.getBufferSubData(gl.ARRAY_BUFFER, 0, arrBuffer);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "gl.getBufferSubData(gl.ARRAY_BUFFER, 0, arrBuffer) should WORK");
-
-debug("Make sure that the length of the array passed to getBufferSubData doesn't change");
-if (arrBuffer.byteLength / 4 == vertices.length)
-  testPassed("The returned array's length matches the original data length");
-else
-  testFailed("The returned array's length does not match the original data length");
 
 debug("Check array data to match original data set by the buffer");
 var failed = false;
@@ -87,13 +81,13 @@ else
   testPassed("The returned array buffer matches original data");
 
 debug("Test that getBufferSubData fails when given a buffer with its size larger than the original data");
-var extraLargeBuffer = new ArrayBuffer(vertices.length * 4 + 1);
+var extraLargeBuffer = new ArrayBuffer(vertices.length * Float32Array.BYTES_PER_ELEMENT + 1);
 gl.getBufferSubData(gl.ARRAY_BUFFER, 0, extraLargeBuffer);
 wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "gl.getBufferSubData(gl.ARRAY_BUFFER, 0, extraLargeBuffer) with extra length should generate INVALID_VALUE");
 
 debug("Test that getBufferSubData fails when offset summed with buffer length is larger than the size of the original data size");
-gl.getBufferSubData(gl.ARRAY_BUFFER, vertices.length * 4 + 1, arrBuffer);
-wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "gl.getBufferSubData(gl.ARRAY_BUFFER, vertices.length * 4 + 1, arrBuffer) with offset larger than original data size should generate INVALID_VALUE");
+gl.getBufferSubData(gl.ARRAY_BUFFER, vertices.length * Float32Array.BYTES_PER_ELEMENT + 1, arrBuffer);
+wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "gl.getBufferSubData(gl.ARRAY_BUFFER, vertices.length * Float32Array.BYTES_PER_ELEMENT + 1, arrBuffer) with offset larger than original data size should generate INVALID_VALUE");
 
 debug("Test that getBufferSubData fails when 0 is bound to the target");
 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
