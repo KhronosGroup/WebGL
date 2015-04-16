@@ -67,7 +67,7 @@ if (!gl) {
   wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
       "vertexAttribIPointer should not support FLOAT");
 
-  var checkVertexAttribPointer = function(
+  var checkVertexAttribIPointer = function(
       gl, err, reason, size, type, stride, offset) {
     gl.vertexAttribIPointer(0, size, type, stride, offset);
     wtu.glErrorShouldBe(gl, err,
@@ -115,16 +115,16 @@ if (!gl) {
             reason = "because stride is bad";
             err = gl.INVALID_OPERATION;
           }
-          checkVertexAttribPointer(
+          checkVertexAttribIPointer(
               gl, err, reason, size, info.type, stride, offset);
         }
         var stride = Math.floor(255 / info.bytesPerComponent) * info.bytesPerComponent;
 
         if (offset == 0) {
-          checkVertexAttribPointer(
+          checkVertexAttribIPointer(
               gl, gl.NO_ERROR, "at stride limit",
               size, info.type, stride, offset);
-          checkVertexAttribPointer(
+          checkVertexAttribIPointer(
               gl, gl.INVALID_VALUE, "over stride limit",
               size, info.type, stride + info.bytesPerComponent, offset);
         }
