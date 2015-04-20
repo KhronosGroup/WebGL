@@ -105,7 +105,6 @@ testInvalidArgument(
     }
 );
 
-
 debug("");
 debug("Test getFramebufferAttachmentParameter");
 var texture = gl.createTexture();
@@ -122,6 +121,11 @@ gl.bindTexture(gl.TEXTURE_2D, null);
 var framebuffer = gl.createFramebuffer();
 gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
 gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+var colorAttachmentsNum = 1;
+if (contextVersion > 1) {
+  colorAttachmentsNum = gl.getParameter(gl.MAX_COLOR_ATTACHMENTS);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + colorAttachmentsNum - 1, gl.TEXTURE_2D, texture, 0);
+}
 var renderbuffer = gl.createRenderbuffer();
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
@@ -129,40 +133,87 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 2, 2);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, renderbuffer);
+if (contextVersion > 1)
+  gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.RENDERBUFFER, renderbuffer);
 // FIXME: on some machines (in particular the WebKit commit bots) the
 // framebuffer status is FRAMEBUFFER_UNSUPPORTED; more investigation
 // is needed why this is the case, because the FBO allocated
 // internally by the WebKit implementation has almost identical
 // parameters to this one. See https://bugs.webkit.org/show_bug.cgi?id=31843.
 shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
-shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)', 'gl.TEXTURE');
-shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME)', 'texture');
-shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL)', '0');
-shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE)', '0');
-
+// The for loop tests two color attachments for WebGL 2: the first one (gl.COLOR_ATTACHMENT0)
+// and the last one (gl.COLOR_ATTACHMENT0 + gl.MAX_COLOR_ATTACHMENTS - 1).
+for (var ii = 0; ii < colorAttachmentsNum; ii += (colorAttachmentsNum > 1 ? colorAttachmentsNum - 1 : 1)) {
+  shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)', 'gl.TEXTURE');
+  shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME)', 'texture');
+  shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL)', '0');
+  shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE)', '0');
+  if (contextVersion > 1) {
+    shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.FRAMEBUFFER_ATTACHMENT_RED_SIZE)');
+    shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.FRAMEBUFFER_ATTACHMENT_GREEN_SIZE)');
+    shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.FRAMEBUFFER_ATTACHMENT_BLUE_SIZE)');
+    shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE)');
+    shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE)');
+    shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING)');
+    shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + ii, gl.FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER)', '0');
+  }
+}
 shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)', 'gl.RENDERBUFFER');
 shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME)', 'renderbuffer');
-testInvalidArgument(
-    "getFramebufferAttachmentParameter",
-    "parameter",
+if (contextVersion > 1) {
+  shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)', 'gl.RENDERBUFFER');
+  shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME)', 'renderbuffer');
+  shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)', 'gl.RENDERBUFFER');
+  shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME)', 'renderbuffer');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING)');
+}
+var validParametersForFBAttachment =
     [ gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE,
       gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
       gl.FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL,
       gl.FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE
-    ],
+    ];
+if (contextVersion > 1) {
+  validParametersForFBAttachment = validParametersForFBAttachment.concat([
+      gl.FRAMEBUFFER_ATTACHMENT_RED_SIZE,
+      gl.FRAMEBUFFER_ATTACHMENT_GREEN_SIZE,
+      gl.FRAMEBUFFER_ATTACHMENT_BLUE_SIZE,
+      gl.FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE,
+      gl.FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE,
+      gl.FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE,
+      gl.FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE,
+      gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING,
+      gl.FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER
+  ]);
+}
+testInvalidArgument(
+    "getFramebufferAttachmentParameter",
+    "parameter",
+    validParametersForFBAttachment,
     function(parameter) {
       return gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT, parameter);
     }
 );
+var validTargetsForFBAttachment = [gl.FRAMEBUFFER];
+if (contextVersion > 1) {
+  validTargetsForFBAttachment = validTargetsForFBAttachment.concat([gl.READ_FRAMEBUFFER, gl.DRAW_FRAMEBUFFER]);
+}
 testInvalidArgument(
     "getFramebufferAttachmentParameter",
     "target",
-    [ gl.FRAMEBUFFER ],
+    validTargetsForFBAttachment,
     function(target) {
       return gl.getFramebufferAttachmentParameter(target, gl.COLOR_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
     }
 );
-var validArrayForFramebufferAttachment = new Array(
+var validAttachmentsForFBAttachment = new Array(
     gl.COLOR_ATTACHMENT0,
     gl.DEPTH_ATTACHMENT,
     gl.STENCIL_ATTACHMENT,
@@ -170,17 +221,64 @@ var validArrayForFramebufferAttachment = new Array(
 );
 if (contextVersion > 1) {
   for (var ii = 1; ii < gl.getParameter(gl.MAX_COLOR_ATTACHMENTS); ++ii) {
-    validArrayForFramebufferAttachment[validArrayForFramebufferAttachment.length] = gl.COLOR_ATTACHMENT0 + ii;
+    validAttachmentsForFBAttachment[validAttachmentsForFBAttachment.length] = gl.COLOR_ATTACHMENT0 + ii;
   }
 }
 testInvalidArgument(
     "getFramebufferAttachmentParameter",
     "attachment",
-    validArrayForFramebufferAttachment,
+    validAttachmentsForFBAttachment,
     function(attachment) {
       return gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, attachment, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
     }
 );
+if (contextVersion > 1) {
+  // test default framebuffer
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
+  shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)', 'gl.FRAMEBUFFER_DEFAULT');
+  shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)', 'gl.FRAMEBUFFER_DEFAULT');
+  shouldBe('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)', 'gl.FRAMEBUFFER_DEFAULT');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, gl.FRAMEBUFFER_ATTACHMENT_RED_SIZE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, gl.FRAMEBUFFER_ATTACHMENT_GREEN_SIZE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, gl.FRAMEBUFFER_ATTACHMENT_BLUE_SIZE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, gl.FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH, gl.FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL, gl.FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, gl.FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH, gl.FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL, gl.FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE)');
+  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING)');
+  testInvalidArgument(
+      "getFramebufferAttachmentParameter",
+      "parameter",
+      validParametersForFBAttachment,
+      function(parameter) {
+        return gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, parameter);
+      }
+  );
+  testInvalidArgument(
+      "getFramebufferAttachmentParameter",
+      "target",
+      validTargetsForFBAttachment,
+      function(target) {
+        return gl.getFramebufferAttachmentParameter(target, gl.BACK, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
+      }
+  );
+  testInvalidArgument(
+      "getFramebufferAttachmentParameter",
+      "attachment",
+      [ gl.BACK,
+        gl.DEPTH,
+        gl.STENCIL
+      ],
+      function(attachment) {
+        return gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, attachment, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
+      }
+  );
+}
 
 debug("");
 debug("Test getProgramParameter");
