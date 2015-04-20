@@ -104,6 +104,7 @@ if (!gl) {
   runShadersTest();
   runAttachmentTest();
   runDrawTests();
+  testParameters();
 
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
@@ -534,6 +535,14 @@ function runDrawTests() {
   gl.deleteProgram(checkProgram);
   gl.deleteProgram(redProgram);
   gl.deleteProgram(drawProgram);
+}
+
+function testParameters() {
+  debug("");
+  debug("check that MAX_DRAW_BUFFERS and MAX_COLOR_ATTACHMENTS are the same");
+  var maxDrawingBuffers = gl.getParameter(gl.MAX_DRAW_BUFFERS);
+  var maxColorAttachments = gl.getParameter(gl.MAX_COLOR_ATTACHMENTS);
+  shouldBeTrue("gl.getParameter(gl.MAX_DRAW_BUFFERS) == gl.getParameter(gl.MAX_COLOR_ATTACHMENTS)");
 }
 
 debug("");
