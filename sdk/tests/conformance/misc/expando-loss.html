@@ -58,7 +58,7 @@ function setTestExpandos(instance) {
 }
 function verifyTestExpandos(instance, msg) {
     assertMsg(instance.expando1 === expandoValue, msg + ": Expect basic expando to survive despite GC.");
-    assertMsg(instance.expando2.subvalue === expandoValue, msg + ": Expect subobject expando to survive despite GC.");
+    assertMsg(instance.expando2 && instance.expando2.subvalue === expandoValue, msg + ": Expect subobject expando to survive despite GC.");
 }
 
 // Tests that we don't get expando loss for bound resources where the
