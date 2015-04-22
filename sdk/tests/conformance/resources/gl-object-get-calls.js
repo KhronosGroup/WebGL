@@ -306,24 +306,59 @@ shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER)', 'gl.NEAREST
 shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER)', 'gl.NEAREST');
 shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S)', 'gl.CLAMP_TO_EDGE');
 shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T)', 'gl.CLAMP_TO_EDGE');
-testInvalidArgument(
-    "getTexParameter",
-    "parameter",
+if (contextVersion > 1) {
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL, 0);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_COMPARE_FUNC, gl.LEQUAL);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 10);
+  gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MAX_LOD, 10);
+  gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MIN_LOD, 0);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE);
+  shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL)', '0');
+  shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_COMPARE_FUNC)', 'gl.LEQUAL');
+  shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_COMPARE_MODE)', 'gl.COMPARE_REF_TO_TEXTURE');
+  shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL)', '10');
+  shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_MAX_LOD)', '10');
+  shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_MIN_LOD)', '0');
+  shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_WRAP_R)', 'gl.CLAMP_TO_EDGE');
+  shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_IMMUTABLE_FORMAT)', 'false');
+  shouldBeNonZero('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_IMMUTABLE_LEVEL)');
+}
+var validParametersForTexture =
     [ gl.TEXTURE_MAG_FILTER,
       gl.TEXTURE_MIN_FILTER,
       gl.TEXTURE_WRAP_S,
       gl.TEXTURE_WRAP_T
-    ],
+    ];
+if (contextVersion > 1) {
+  validParametersForTexture +=
+      [ gl.TEXTURE_BASE_LEVEL,
+        gl.TEXTURE_COMPARE_FUNC,
+        gl.TEXTURE_COMPARE_MODE,
+        gl.TEXTURE_MAX_LEVEL,
+        gl.TEXTURE_MAX_LOD,
+        gl.TEXTURE_MIN_LOD,
+        gl.TEXTURE_WRAP_R,
+        gl.TEXTURE_IMMUTABLE_FORMAT,
+        gl.TEXTURE_IMMUTABLE_LEVEL
+      ];
+}
+testInvalidArgument(
+    "getTexParameter",
+    "parameter",
+    validParametersForTexture,
     function(parameter) {
       return gl.getTexParameter(gl.TEXTURE_2D, parameter);
     }
 );
+var validTargetsForTexture = [ gl.TEXTURE_2D, gl.TEXTURE_CUBE_MAP];
+if (contextVersion > 1) {
+  validTargetsForTexture += [ gl.TEXTURE_3D, gl.TEXTURE_2D_ARRAY];
+}
 testInvalidArgument(
     "getTexParameter",
     "target",
-    [ gl.TEXTURE_2D,
-      gl.TEXTURE_CUBE_MAP
-    ],
+    validTargetsForTexture,
     function(target) {
       return gl.getTexParameter(target, gl.TEXTURE_MAG_FILTER);
     }
