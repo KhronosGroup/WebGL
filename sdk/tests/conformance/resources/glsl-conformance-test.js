@@ -214,12 +214,12 @@ function runOneTest(gl, info) {
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
 }
 
-function runTests(shaderInfos) {
+function runTests(shaderInfos, opt_contextVersion) {
   var wtu = WebGLTestUtils;
   var canvas = document.createElement('canvas');
   canvas.width = 32;
   canvas.height = 32;
-  var gl = wtu.create3DContext(canvas);
+  var gl = wtu.create3DContext(canvas, undefined, opt_contextVersion);
   if (!gl) {
     testFailed("context does not exist");
     finishTest();
