@@ -58,6 +58,20 @@ void main() {
     gl_Position = vec4(a);
 }
 </script>
+<script id="vertexEmptyStructDeclarationPlus" type="text/something-not-javascript">
+// Vertex shader with an empty declaration followed by declarator should succeed.
+// See shading language grammar rules init_declarator_list and single_declaration
+// in ESSL specs.
+
+struct S {
+    float member;
+}, a;
+
+void main() {
+    a.member = 0.0;
+    gl_Position = vec4(a.member);
+}
+</script>
 <script id="vertexEmptyDeclarationInStruct" type="text/something-not-javascript">
 // Vertex shader with an empty declaration inside struct should fail.
 // In-struct declarations have different grammar from declarations outside structs.
@@ -98,6 +112,13 @@ GLSLConformanceTester.runTests([
       fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'Vertex shader with an empty declaration followed by declarator should succeed'
+    },
+    { vShaderId: 'vertexEmptyStructDeclarationPlus',
+      vShaderSuccess: true,
+      fShaderId: null,
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: 'Vertex shader with an empty struct declaration followed by declarator should succeed'
     },
     { vShaderId: 'vertexEmptyDeclarationInStruct',
       vShaderSuccess: false,
