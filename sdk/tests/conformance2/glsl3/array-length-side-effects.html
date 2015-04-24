@@ -86,6 +86,7 @@ void main() {
 <script type="text/javascript">
 "use strict";
 description();
+debug("These restrictions come from ESSL 3.00 section 5.9 definition of expression, which only allows length to be called on array names, not on arbitrary expressions returning an array.");
 GLSLConformanceTester.runTests([
   {
     vShaderId: "vshader",
