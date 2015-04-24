@@ -1,5 +1,6 @@
 array-assign.html
 array-assign-constructor.html
 array-equality.html
+array-length-side-effects.html
 misplaced-version-directive.html
 shader-linking.html
