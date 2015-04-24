@@ -57,9 +57,7 @@ uniform vec4 u_colors[$(numDrawingBuffers)];
 // Only one out variable - does not need explicit output layout (ESSL 3 section 4.3.8.2)
 out vec4 my_FragData[$(numDrawingBuffers)];
 void main() {
-    for (int i = 0; i < $(numDrawingBuffers); ++i) {
-        my_FragData[i] = u_colors[i];
-    }
+$(assignUColorsToFragData)
 }
 </script>
 <script id="fshaderRed" type="x-shader/x-fragment">#version 300 es
@@ -231,7 +229,14 @@ function runDrawTests() {
   var checkProgram = wtu.setupTexturedQuad(gl);
   var redProgram = wtu.setupProgram(gl, ["vshaderESSL3", "fshaderRed"], ["a_position"]);
   var blueProgramESSL1 = wtu.setupProgram(gl, ["vshaderESSL1", "fshaderBlueESSL1"], ["a_position"]);
-  var drawProgram = createDrawBuffersProgram("fshader", {numDrawingBuffers: maxDrawingBuffers});
+
+  var assignCode = [];
+  for (var i = 0; i < maxDrawingBuffers; ++i) {
+    assignCode.push("    my_FragData[" + i + "] = u_colors[" + i + "];");
+  }
+
+  var drawProgram = createDrawBuffersProgram("fshader",
+      {numDrawingBuffers: maxDrawingBuffers, assignUColorsToFragData: assignCode.join("\n")});
   var width = 64;
   var height = 64;
   var attachments = [];
