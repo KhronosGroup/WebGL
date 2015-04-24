@@ -28,7 +28,7 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test-utils.js"></script>
+<script src="../../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -41,7 +41,7 @@ description('Tests passing a vec4 to a uniform and a canvas to texImage2D');
 
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext();
-var floatProgram = wtu.loadProgramFromFile(gl, "../resources/floatUniformShader.vert", "../resources/noopUniformShader.frag");
+var floatProgram = wtu.loadProgramFromFile(gl, "../../resources/floatUniformShader.vert", "../../resources/noopUniformShader.frag");
 shouldBeUndefined("gl.useProgram(floatProgram)");
 var fval4Loc = gl.getUniformLocation(floatProgram, "fval4");
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);

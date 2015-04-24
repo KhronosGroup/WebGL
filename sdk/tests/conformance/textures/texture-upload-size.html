@@ -32,7 +32,7 @@
 <title>WebGL texture upload size conformance test</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test-utils.js"></script>
+<script src="../../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <canvas id="canvas"></canvas>
@@ -115,11 +115,11 @@ var testCanvas = function(test) {
 var tests = [
   {type: "ImageData", width: 123, height: 456},
   {type: "canvas", width: 123, height: 456},
-  {type: "img", isSVG: false, src: "../resources/red-green.png"},
-  {type: "img", isSVG: true, src: "../resources/red-green.svg"},
-  {type: "video", src: "../resources/red-green.mp4", videoType: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'},
-  {type: "video", src: "../resources/red-green.webmvp8.webm", videoType: 'video/webm; codecs="vp8, vorbis"'},
-  {type: "video", src: "../resources/red-green.theora.ogv", videoType: 'video/ogg; codecs="theora, vorbis"'},
+  {type: "img", isSVG: false, src: "../../resources/red-green.png"},
+  {type: "img", isSVG: true, src: "../../resources/red-green.svg"},
+  {type: "video", src: "../../resources/red-green.mp4", videoType: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'},
+  {type: "video", src: "../../resources/red-green.webmvp8.webm", videoType: 'video/webm; codecs="vp8, vorbis"'},
+  {type: "video", src: "../../resources/red-green.theora.ogv", videoType: 'video/ogg; codecs="theora, vorbis"'},
 ];
 
 var testIndex = 0;

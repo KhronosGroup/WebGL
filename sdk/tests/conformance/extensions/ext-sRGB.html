@@ -4,8 +4,8 @@
 <meta charset="utf-8"/>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test.js"></script>
-<script src="../resources/webgl-test-utils.js"></script>
+<script src="../../resources/webgl-test.js"></script>
+<script src="../../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -410,7 +410,7 @@ function runLoadFromImageTest(callback) {
   debug("");
   debug("Tests to ensure that SRGB textures can successfully use image elements as their source");
 
-  var img = wtu.makeImage("../resources/gray-1024x1024.jpg", function() {
+  var img = wtu.makeImage("../../resources/gray-1024x1024.jpg", function() {
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texImage2D(gl.TEXTURE_2D, 0, ext.SRGB_EXT, ext.SRGB_EXT, gl.UNSIGNED_BYTE, img);
