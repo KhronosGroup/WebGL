@@ -3362,6 +3362,18 @@ size of the data type passed to the call, or an <code>INVALID_OPERATION</code> e
 
 </p>
 
+<div class="note">
+    <p>
+        This enforces the following requirement from OpenGL ES 2.0.25
+        <a href="#refsGLES20">[GLES20]</a> p24:
+    </p>
+    <p>
+        "Clients must align data elements consistent with the requirements of the client
+        platform, with an additional base-level requirement that an offset within a buffer
+        to a datum comprising <code>N</code> basic machine units be a multiple of
+        <code>N</code>."
+    </p>
+</div>
 
     <h3><a name="ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range Checking</a></h3>
 
