@@ -1,2 +1,3 @@
 gl-vertex-attrib.html
 gl-vertexattribipointer.html
+gl-vertexattribipointer-offsets.html
