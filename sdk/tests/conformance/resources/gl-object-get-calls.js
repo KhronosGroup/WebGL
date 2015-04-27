@@ -79,7 +79,7 @@ debug("test getBufferParameter");
 // Test getBufferParameter
 var bufferTypes = [gl.ARRAY_BUFFER, gl.ELEMENT_ARRAY_BUFFER];
 if (contextVersion > 1) {
-  bufferTypes += [gl.COPY_READ_BUFFER, gl.COPY_WRITE_BUFFER, gl.PIXEL_PACK_BUFFER, gl.PIXEL_UNPACK_BUFFER, gl.TRANSFORM_FEEDBACK_BUFFER, gl.UNIFORM_BUFFER];
+  bufferTypes = bufferTypes.concat([gl.COPY_READ_BUFFER, gl.COPY_WRITE_BUFFER, gl.PIXEL_PACK_BUFFER, gl.PIXEL_UNPACK_BUFFER, gl.TRANSFORM_FEEDBACK_BUFFER, gl.UNIFORM_BUFFER]);
 }
 for (var bb = 0; bb < bufferTypes.length; ++bb) {
   var bufferType = bufferTypes[bb];
