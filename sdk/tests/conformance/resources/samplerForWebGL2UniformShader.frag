@@ -23,10 +23,11 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
-in vec3 normal;
-in vec4 ecPosition;
-
+precision mediump float;
+uniform sampler3D s3D;
+uniform sampler2DArray s2DArray;
 void main()
 {
-    gl_FragColor = vec4(v_normal/2.0+vec3(0.5), 1);
+    gl_FragColor = texture(s3D, vec3(0.5, 0.5, 0.5)) +
+                   texture(s2DArray, vec3(0.5, 0.5, 0.5));
 }
