@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 02 April 2015</h2>
+    <h2 class="no-toc">Editor's Draft 27 April 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1171,6 +1171,38 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an
           <code>INVALID_OPERATION</code> error.</p>
           <p>If an OpenGL error is generated, returns null.</p>
+      </dd>
+      <dt class="idl-code">void texParameterf(GLenum target, GLenum pname, GLfloat param)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.7">OpenGL ES 3.0.3 &sect;3.8.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexParameter.xhtml">man page</a>)</span>
+      </dt>
+      <dd>
+          Set the value for the passed pname given the passed target. <em>pname</em> is given in the following table:
+          <table>
+              <tr><th>pname</th></tr>
+              <tr><td>TEXTURE_BASE_LEVEL</td></tr>
+              <tr><td>TEXTURE_COMPARE_FUNC</td></tr>
+              <tr><td>TEXTURE_COMPARE_MODE</td></tr>
+              <tr><td>TEXTURE_MAG_FILTER</td></tr>
+              <tr><td>TEXTURE_MAX_LEVEL</td></tr>
+              <tr><td>TEXTURE_MAX_LOD</td></tr>
+              <tr><td>TEXTURE_MIN_FILTER</td></tr>
+              <tr><td>TEXTURE_MIN_LOD</td></tr>
+              <tr><td>TEXTURE_WRAP_R</td></tr>
+              <tr><td>TEXTURE_WRAP_S</td></tr>
+              <tr><td>TEXTURE_WRAP_T</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an
+          <code>INVALID_OPERATION</code> error.</p>
+      </dd>
+      <dt class="idl-code">void texParameteri(GLenum target, GLenum pname, GLint param)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.7">OpenGL ES 3.0.3 &sect;3.8.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexParameter.xhtml">man page</a>)</span>
+      </dt>
+      <dd>
+          <p>Set the value for the passed pname given the passed target. <em>pname</em> is this same with that of texParameterf, as given in the table above.</p>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an
+          <code>INVALID_OPERATION</code> error.</p>
       </dd>
       <dt>
         <p class="idl-code">void texStorage2D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height)
