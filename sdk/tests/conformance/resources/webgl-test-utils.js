@@ -1398,6 +1398,17 @@ var getUrlOptions = function() {
   return options;
 };
 
+var default3DContextVersion = 1;
+
+/**
+ * Set the default context version for create3DContext.
+ * Initially the default version is 1.
+ * @param {number} Default version of WebGL contexts.
+ */
+var setDefault3DContextVersion = function(version) {
+    default3DContextVersion = version;
+};
+
 /**
  * Creates a webgl context.
  * @param {!Canvas|string} opt_canvas The canvas tag to get
@@ -1405,7 +1416,8 @@ var getUrlOptions = function() {
  *     created. If it's a string it's assumed to be the id of a
  *     canvas.
  * @param {Object} opt_attributes Context attributes.
- * @param {!number} opt_version Version of WebGL context to create
+ * @param {!number} opt_version Version of WebGL context to create.
+ *     The default version can be set by calling setDefault3DContextVersion.
  * @return {!WebGLRenderingContext} The created context.
  */
 var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
@@ -1417,7 +1429,7 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
     attributes.antialias = false;
   }
   if (!opt_version) {
-    opt_version = parseInt(getUrlOptions().webglVersion, 10) || 1;
+    opt_version = parseInt(getUrlOptions().webglVersion, 10) || default3DContextVersion;
   }
   opt_canvas = opt_canvas || document.createElement("canvas");
   if (typeof opt_canvas == 'string') {
@@ -2898,6 +2910,7 @@ return {
   makeVideo: makeVideo,
   error: error,
   shallowCopyObject: shallowCopyObject,
+  setDefault3DContextVersion: setDefault3DContextVersion,
   setupColorQuad: setupColorQuad,
   setupProgram: setupProgram,
   setupQuad: setupQuad,
