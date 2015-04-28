@@ -19,6 +19,7 @@
 <script>
 testName = 'conditionals';
 description("Shader test: " + testName + ".");
+WebGLTestUtils.setDefault3DContextVersion(2);
 
 var getFilter = function() {
     var queryVars = window.location.search.substring(1).split('&');
