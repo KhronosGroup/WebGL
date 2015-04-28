@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 02 April 2015</h2>
+    <h2 class="no-toc">Editor's Draft 27 April 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -59,10 +59,14 @@
                     <b>WebIDL:</b> https://www.khronos.org/registry/webgl/specs/1.0.2/webgl.idl
                 </a>
             </dd>
-        <dt>Editor:
+        <dt>Editors:
             <dd>
                 <a href="mailto:dino@apple.com">Dean Jackson</a>
                 <a href="http://www.apple.com/">(Apple Inc.)</a>
+            </dd>
+            <dd>
+                <a href="mailto:jgilbert@mozilla.com">Jeff Gilbert</a>
+                <a href="https://www.mozilla.org/">(Mozilla Corp.)</a>
             </dd>
     </dl>
 
@@ -1206,7 +1210,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         each texImage3D call in the pseudocode in The OpenGL ES 3.0 specification section 3.8.4
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.3 &sect;3.8.4</a>)</span>.
       </dd>
-      <dt class="idl-code">void texImage3D(GLenum target, GLint level, GLenum internalformat, 
+      <dt class="idl-code">void texImage3D(GLenum target, GLint level, GLenum internalformat,
                   GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format,
                   GLenum type, ArrayBufferView? pixels)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a>)</span>
