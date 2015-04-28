@@ -38,9 +38,9 @@
     }
 
     if (window.layoutTestController) {
-      layoutTestController.overridePreference("WebKitWebGLEnabled", "1");
-      layoutTestController.dumpAsText();
-      layoutTestController.waitUntilDone();
+      window.layoutTestController.overridePreference("WebKitWebGLEnabled", "1");
+      window.layoutTestController.dumpAsText();
+      window.layoutTestController.waitUntilDone();
     }
     if (window.internals) {
       // The WebKit testing system compares console output.
@@ -67,7 +67,7 @@
 function nonKhronosFrameworkNotifyDone() {
   // WebKit Specific code. Add your code here.
   if (window.layoutTestController) {
-    layoutTestController.notifyDone();
+    window.layoutTestController.notifyDone();
   }
 }
 
@@ -163,14 +163,13 @@ function escapeHTML(text)
 }
 /**
  * Defines the exception type for a test failure.
+ * @constructor
  * @param {string} message The error message.
  */
-
-function TestFailedException(message) {
+var TestFailedException = function (message) {
    this.message = message;
    this.name = "TestFailedException";
-}
- 
+};
 
 function testPassed(msg)
 {
@@ -193,7 +192,7 @@ var _currentTestName;
 
 /**
  * Sets the current test name for usage within testPassedOptions/testFailedOptions.
- * @param {string} name The name to set as the current test name.
+ * @param {string=} name The name to set as the current test name.
  */
 function setCurrentTestName(name)
 {
@@ -240,7 +239,7 @@ function testFailedOptions(msg, exthrow)
     if (exthrow) {
         _currentTestName = ""; //Remembering to set the name of current testcase to empty string.
         throw new TestFailedException(msg);
-	}
+    }
 }
 
 function areArraysEqual(_a, _b)
@@ -372,7 +371,7 @@ function shouldEvaluateTo(actual, expected) {
   } else if (typeof expected == "function") {
     // All this fuss is to avoid the string-arg warning from shouldBe().
     try {
-      actualValue = eval(actual);
+      var actualValue = eval(actual);
     } catch (e) {
       testFailed("Evaluating " + actual + ": Threw exception " + e);
       return;
@@ -564,7 +563,7 @@ function assertMsg(assertion, msg) {
  * Variation of the assertMsg function, with the option to not show (and thus not count) the test's pass result,
  * and throw or not a TestFailedException in case of failure.
  * @param {boolean} assertion If this is true, means success, else failure.
- * @param {string} msg The message to be shown in the result.
+ * @param {?string} msg The message to be shown in the result.
  * @param {boolean} verbose In case of success, determines if the test will show it's result and count in the results.
  * @param {boolean} exthrow In case of failure, determines if the function will throw a TestFailedException.
  */

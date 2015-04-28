@@ -8,7 +8,9 @@
 <script src="../../../resources/js-test-pre.js"></script>
 <script src="../../../conformance/resources/webgl-test-utils.js"></script>
 
-<script src="../../require.js"></script>
+<script src="../../../closure-library/closure/goog/base.js"></script>
+<script src="../../deqp-deps.js"></script>
+<script>goog.require('functional.gles3.es3fTextureFormatTests');</script>
 </head>
 <body>
 <div id="description"></div>
@@ -19,21 +21,16 @@ testName = 'texture_formats';
 setCurrentTestName(testName);
 description("Functional test: " + testName + ".");
 
-requirejs.config({
-    baseUrl: "../../"
-    });
 var wtu = WebGLTestUtils;
-/** @type {WebGLRenderingContext} */ var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 2);
+/** @type {WebGL2RenderingContext} */ var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 2);
 
-requirejs(["functional/gles3/es3fTextureFormatTests"], function(es3fTextureFormatTests) {
     try{
-        es3fTextureFormatTests.run();
+        functional.gles3.es3fTextureFormatTests.run(gl);
     }
     catch(err)
     {
         bufferedLogToConsole(err);
     }
-});
 </script>
 </body>
 </html>

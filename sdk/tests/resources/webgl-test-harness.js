@@ -295,10 +295,10 @@ var greaterThanOrEqualToVersion = function(have, want) {
  * other lines are added to the list of files.
  *
  * @param {string} url The url of the file to read.
- * @param {void function(boolean, !Array.<string>)} callback.
+ * @param {function(boolean, !Array.<string>):void} callback
  *      Callback that is called with true for success and an
  *      array of filenames.
- * @param {Object} options. Optional options
+ * @param {Object} options Optional options
  *
  * Options:
  *    version: {string} The version of the conformance test.

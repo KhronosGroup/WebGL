@@ -8,7 +8,9 @@
 <script src="../../../resources/js-test-pre.js"></script>
 <script src="../../../conformance/resources/webgl-test-utils.js"></script>
 
-<script src="../../require.js"></script>
+<script src="../../../closure-library/closure/goog/base.js"></script>
+<script src="../../deqp-deps.js"></script>
+<script>goog.require('functional.gles3.es3fUniformBlockTests');</script>
 </head>
 <body>
 <div id="description"></div>
@@ -16,21 +18,17 @@
 <canvas id="canvas" width="200" height="100"> </canvas>
 <script>
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 1);
+var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 2);
 
-requirejs.config({
-    baseUrl: "../../"
-    });
 
-requirejs(["functional/gles3/es3fUniformBlockTests"], function(es3fUniformBlockTests) {
     try {
-        es3fUniformBlockTests.run();
+        functional.gles3.es3fUniformBlockTests.run();
     }
     catch(err)
     {
         bufferedLogToConsole(err);
     }
-});
+
 </script>
 </body>
 </html>

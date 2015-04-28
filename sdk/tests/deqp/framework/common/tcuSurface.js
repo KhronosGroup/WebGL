@@ -18,26 +18,34 @@
  *
  */
 
-define(['framework/common/tcuTexture', 'framework/delibs/debase/deMath'], function(tcuTexture, deMath) {
-    'use strict';
+'use strict';
+goog.provide('framework.common.tcuSurface');
+goog.require('framework.common.tcuTexture');
+goog.require('framework.delibs.debase.deMath');
+
+goog.scope(function() {
+
+var tcuSurface = framework.common.tcuSurface;
+var tcuTexture = framework.common.tcuTexture;
+var deMath = framework.delibs.debase.deMath;
 
 var DE_ASSERT = function(x) {
     if (!x)
         throw new Error('Assert failed');
 };
-var DE_FALSE = false;
+tcuSurface.DE_FALSE = false;
 
-/**--------------------------------------------------------------------*//*!
+/**
  * \brief RGBA8888 surface
  *
- * Surface provides basic pixel storage functionality. Only single format
+ * tcuSurface.Surface provides basic pixel storage functionality. Only single format
  * (RGBA8888) is supported.
  *
  * PixelBufferAccess (see tcuTexture.h) provides much more flexible API
  * for handling various pixel formats. This is mainly a convinience class.
  * @constructor
- *//*--------------------------------------------------------------------*/
-var Surface = function(width, height) {
+ */
+tcuSurface.Surface = function(width, height) {
     this.m_width = width;
     this.m_height = height;
     if (width * height > 0) {
@@ -46,7 +54,7 @@ var Surface = function(width, height) {
     }
 };
 
-Surface.prototype.setSize = function(width, height) {
+tcuSurface.Surface.prototype.setSize = function(width, height) {
     /* TODO: Duplicated code from constructor */
     this.m_width = width;
     this.m_height = height;
@@ -56,13 +64,13 @@ Surface.prototype.setSize = function(width, height) {
     }
 };
 
-Surface.prototype.getWidth = function() { return this.m_width; };
-Surface.prototype.getHeight = function() { return this.m_height; };
+tcuSurface.Surface.prototype.getWidth = function() { return this.m_width; };
+tcuSurface.Surface.prototype.getHeight = function() { return this.m_height; };
 
 /**
- * @param {Array<Number>} color Vec4 color
+ * @param {Array<number>} color Vec4 color
  */
-Surface.prototype.setPixel = function(x, y, color) {
+tcuSurface.Surface.prototype.setPixel = function(x, y, color) {
     DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
 
@@ -71,7 +79,7 @@ Surface.prototype.setPixel = function(x, y, color) {
         this.m_pixels[offset + i] = color[i];
 };
 
-Surface.prototype.getPixel = function(x, y) {
+tcuSurface.Surface.prototype.getPixel = function(x, y) {
     DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
 
@@ -86,9 +94,9 @@ Surface.prototype.getPixel = function(x, y) {
 };
 
 /**
- * @return {PixelBufferAccess} Pixel Buffer Access object
+ * @return {tcuTexture.PixelBufferAccess} Pixel Buffer Access object
  */
-Surface.prototype.getAccess = function() {
+tcuSurface.Surface.prototype.getAccess = function() {
     return new tcuTexture.PixelBufferAccess({
                     format: new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.UNORM_INT8),
                     width: this.m_width,
@@ -98,15 +106,11 @@ Surface.prototype.getAccess = function() {
 
 };
 
-Surface.prototype.getSubAccess = function(x, y, width, height) {
+tcuSurface.Surface.prototype.getSubAccess = function(x, y, width, height) {
     /* TODO: Implement. the deqp getSubAccess() looks broken. It will probably fail if
      * x != 0 or width != m_width
      */
      throw new Error('Unimplemented');
-};
-
-return {
-    Surface: Surface
 };
 
 });

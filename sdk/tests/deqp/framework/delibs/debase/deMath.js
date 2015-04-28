@@ -18,22 +18,26 @@
  *
  */
 
-define(function() {
 'use strict';
+goog.provide('framework.delibs.debase.deMath');
 
-var DE_ASSERT = function(x) {
-    if (!x)
-        throw new Error('Assert failed');
-};
+/** @typedef { (Int8Array|Uint8Array|Uint8ClampedArray|Int16Array|Uint16Array|Int32Array|Uint32Array|Float32Array|Float64Array) } */
+goog.TypedArray;
 
-/* Dummy type */
-var deUint32 = function() {};
+/** @typedef { (Array<number>|Array<boolean>|goog.TypedArray) } */
+goog.NumberArray;
 
-var deInRange32 = function(a, mn, mx) {
+goog.scope(function() {
+
+var deMath = framework.delibs.debase.deMath;
+
+/** @const */ deMath.INT32_SIZE = 4;
+
+deMath.deInRange32 = function(a, mn, mx) {
     return (a >= mn) && (a <= mx);
 };
 
-var deInBounds32 = function(a, mn, mx) {
+deMath.deInBounds32 = function(a, mn, mx) {
     return (a >= mn) && (a < mx);
 };
 
@@ -41,13 +45,13 @@ var deInBounds32 = function(a, mn, mx) {
  * @param {number} a
  * @return {number}
  */
-var deFloatFrac = function(a) { return a - Math.floor(a); };
+deMath.deFloatFrac = function(a) { return a - Math.floor(a); };
 
 /**
  * @param {number} a
  * @return {number}
  */
-var deCeilFloatToInt32 = function(a) {
+deMath.deCeilFloatToInt32 = function(a) {
     return new Uint32Array([Math.ceil(a)])[0];
 };
 
@@ -57,8 +61,7 @@ var deCeilFloatToInt32 = function(a) {
  * @return {boolean} return True if input is a power-of-two value, false otherwise.
  * (Also returns true for zero).
  */
-var deIsPowerOfTwo32 = function(a)
-{
+deMath.deIsPowerOfTwo32 = function(a) {
     return ((a & (a - 1)) == 0);
 };
 
@@ -68,8 +71,9 @@ var deIsPowerOfTwo32 = function(a)
  * @param {number} align The size to align to.
  * @return {number} The aligned value
  */
-var deAlign32 = function(val, align) {
-    DE_ASSERT(deIsPowerOfTwo32(align));
+deMath.deAlign32 = function(val, align) {
+    if (!deMath.deIsPowerOfTwo32(align))
+        throw new Error('Not a power of 2: ' + align);
     return ((val + align - 1) & ~(align - 1)) & 0xFFFFFFFF; //0xFFFFFFFF make sure it returns a 32 bit calculation in 64 bit browsers.
 };
 
@@ -78,13 +82,13 @@ var deAlign32 = function(val, align) {
  * @param {number} a
  * @return {number} The number of one bits in
  */
-var dePop32 = function(a) {
-    /** @type {deUint32} */ var mask0 = 0x55555555; /* 1-bit values. */
-    /** @type {deUint32} */ var mask1 = 0x33333333; /* 2-bit values. */
-    /** @type {deUint32} */ var mask2 = 0x0f0f0f0f; /* 4-bit values. */
-    /** @type {deUint32} */ var mask3 = 0x00ff00ff; /* 8-bit values. */
-    /** @type {deUint32} */ var mask4 = 0x0000ffff; /* 16-bit values. */
-    /** @type {deUint32} */ var t = a & 0xFFFFFFFF; /* Crop to 32-bit value */
+deMath.dePop32 = function(a) {
+    /** @type {number} */ var mask0 = 0x55555555; /* 1-bit values. */
+    /** @type {number} */ var mask1 = 0x33333333; /* 2-bit values. */
+    /** @type {number} */ var mask2 = 0x0f0f0f0f; /* 4-bit values. */
+    /** @type {number} */ var mask3 = 0x00ff00ff; /* 8-bit values. */
+    /** @type {number} */ var mask4 = 0x0000ffff; /* 16-bit values. */
+    /** @type {number} */ var t = a & 0xFFFFFFFF; /* Crop to 32-bit value */
     t = (t & mask0) + ((t >> 1) & mask0);
     t = (t & mask1) + ((t >> 2) & mask1);
     t = (t & mask2) + ((t >> 4) & mask2);
@@ -93,25 +97,38 @@ var dePop32 = function(a) {
     return t;
 };
 
-var clamp = function(val, min, max) {
-    return Math.max(min, Math.min(val, max));
+deMath.clamp = function(val, minParm, maxParm) {
+    return Math.max(minParm, Math.min(val, maxParm));
 };
 
-var imod = function(a, b) {
+/**
+ * @param {Array<number>} values
+ * @param {number} minParm
+ * @param {number} maxParm
+ * @return {Array<number>}
+ */
+deMath.clampVector = function(values, minParm, maxParm) {
+    var result = [];
+    for (var i = 0; i < values.length; i++)
+        result.push(deMath.clamp(values[i], minParm, maxParm));
+    return result;
+};
+
+deMath.imod = function(a, b) {
     var m = a % b;
     return m < 0 ? m + b : m;
 };
 
-var mirror = function(a) {
+deMath.mirror = function(a) {
     return a >= 0 ? a : -(1 + a);
 };
 
 /**
- * @param {Array.<number>} a Source array
- * @param {Array.<number>} indices
- * @return {Array.<number>} Swizzled array
+ * @param {goog.NumberArray} a Source array
+ * @param {goog.NumberArray} indices
+ * @return {Array<number>} Swizzled array
  */
-var swizzle = function(a, indices) {
+deMath.swizzle = function(a, indices) {
     if (!indices.length)
         throw new Error('Argument must be an array');
     var dst = [];
@@ -122,12 +139,12 @@ var swizzle = function(a, indices) {
 
 /**
  * Multiply two vectors, element by element
- * @param {Array.<number>} a
- * @param {Array.<number>} b
- * @return {Array.<number>} Result array
+ * @param {goog.NumberArray} a
+ * @param {goog.NumberArray} b
+ * @return {Array<number>} Result array
  */
 
-var multiply = function(a, b) {
+deMath.multiply = function(a, b) {
     if (a.length != b.length)
         throw new Error('Arrays must have the same size');
     var dst = [];
@@ -137,13 +154,26 @@ var multiply = function(a, b) {
 };
 
 /**
+ * Multiply vector by a scalar
+ * @param {goog.NumberArray} a
+ * @param {number} b
+ * @return {Array<number>} Result array
+ */
+deMath.scale = function(a, b) {
+    var dst = [];
+    for (var i = 0; i < a.length; i++)
+        dst.push(a[i] * b);
+    return dst;
+};
+
+/**
  * Add two vectors, element by element
- * @param {Array.<number>} a
- * @param {Array.<number>} b
- * @return {Array.<number>} Result array
+ * @param {goog.NumberArray} a
+ * @param {goog.NumberArray} b
+ * @return {Array<number>} Result array
  */
 
-var add = function(a, b) {
+deMath.add = function(a, b) {
     if (a.length != b.length)
         throw new Error('Arrays must have the same size');
     var dst = [];
@@ -154,12 +184,12 @@ var add = function(a, b) {
 
 /**
  * Subtract two vectors, element by element
- * @param {Array.<number>} a
- * @param {Array.<number>} b
- * @return {Array.<number>} Result array
+ * @param {goog.NumberArray} a
+ * @param {goog.NumberArray} b
+ * @return {Array<number>} Result array
  */
 
-var subtract = function(a, b) {
+deMath.subtract = function(a, b) {
     if (a.length != b.length)
         throw new Error('Arrays must have the same size');
     var dst = [];
@@ -170,11 +200,11 @@ var subtract = function(a, b) {
 
 /**
  * Calculate absolute difference between two vectors
- * @param {Array.<number>} a
- * @param {Array.<number>} b
- * @return {Array.<number>} abs(diff(a - b))
+ * @param {goog.NumberArray} a
+ * @param {goog.NumberArray} b
+ * @return {Array<number>} abs(diff(a - b))
  */
-var absDiff = function(a, b) {
+deMath.absDiff = function(a, b) {
     if (a.length != b.length)
         throw new Error('Arrays must have the same size');
     var dst = [];
@@ -185,11 +215,11 @@ var absDiff = function(a, b) {
 
 /**
  * Is a <= b (element by element)?
- * @param {Array.<number>} a
- * @param {Array.<number>} b
- * @return {Array.<boolean>} Result array of booleans
+ * @param {goog.NumberArray} a
+ * @param {goog.NumberArray} b
+ * @return {Array<boolean>} Result array of booleans
  */
-var lessThanEqual = function(a, b) {
+deMath.lessThanEqual = function(a, b) {
     if (a.length != b.length)
         throw new Error('Arrays must have the same size');
     var dst = [];
@@ -200,11 +230,11 @@ var lessThanEqual = function(a, b) {
 
 /**
  * Are all values in the array true?
- * @param {Array.<number>} a
+ * @param {Array<boolean>} a
  * @return {boolean}
  */
 
-var boolAll = function(a) {
+deMath.boolAll = function(a) {
     for (var i = 0; i < a.length; i++)
         if (a[i] == false)
             return false;
@@ -212,12 +242,24 @@ var boolAll = function(a) {
 };
 
 /**
- * max(a, b) element by element
- * @param {Array.<number>} a
- * @param {Array.<number>} b
- * @return {Array.<number>}
+ * deMath.assign(a, b) element by element
+ * @param {goog.NumberArray} a
+ * @return {Array<number>}
  */
-var max = function(a, b) {
+deMath.assign = function(a) {
+    var dst = [];
+    for (var i = 0; i < a.length; i++)
+        dst.push(a[i]);
+    return dst;
+};
+
+/**
+ * deMath.max(a, b) element by element
+ * @param {goog.NumberArray} a
+ * @param {goog.NumberArray} b
+ * @return {Array<number>}
+ */
+deMath.max = function(a, b) {
     if (a.length != b.length)
         throw new Error('Arrays must have the same size');
     var dst = [];
@@ -227,12 +269,12 @@ var max = function(a, b) {
 };
 
 /**
- * min(a, b) element by element
- * @param {Array.<number>} a
- * @param {Array.<number>} b
- * @return {Array.<number>}
+ * deMath.min(a, b) element by element
+ * @param {goog.NumberArray} a
+ * @param {goog.NumberArray} b
+ * @return {Array<number>}
  */
-var min = function(a, b) {
+deMath.min = function(a, b) {
     if (a.length != b.length)
         throw new Error('Arrays must have the same size');
     var dst = [];
@@ -242,7 +284,7 @@ var min = function(a, b) {
 };
 
 // Nearest-even rounding in case of tie (fractional part 0.5), otherwise ordinary rounding.
-var rint = function(a) {
+deMath.rint = function(a) {
     var floorVal = Math.floor(a);
     var fracVal = a - floorVal;
 
@@ -256,11 +298,11 @@ var rint = function(a) {
 
 /**
  * Find intersection of two rectangles
- * @param {Array<number>} a Array [x, y, width, height]
- * @param {Array<number>} b Array [x, y, width, height]
+ * @param {goog.NumberArray} a Array [x, y, width, height]
+ * @param {goog.NumberArray} b Array [x, y, width, height]
  * @return {Array<number>}
  */
-var intersect = function(a, b) {
+deMath.intersect = function(a, b) {
     if (a.length != 4)
         throw new Error('Array "a" must have length 4 but has length: ' + a.length);
     if (b.length != 4)
@@ -275,12 +317,11 @@ var intersect = function(a, b) {
     return [x0, y0, w, h];
 };
 
-
-/** deMathHash
+/** deMath.deMathHash
  * @param {number} a
  * @return {number}
  */
-var deMathHash = function(a) {
+deMath.deMathHash = function(a) {
     var key = a;
     key = (key ^ 61) ^ (key >> 16);
     key = key + (key << 3);
@@ -295,11 +336,10 @@ var deMathHash = function(a) {
  * @param {Uint8Array} array
  * @return {number}
  */
-var arrayToNumber = function(array) {
+deMath.arrayToNumber = function(array) {
     /** @type {number} */ var result = 0;
 
-    for (var ndx = 0; ndx < array.length; ndx++)
-    {
+    for (var ndx = 0; ndx < array.length; ndx++) {
         result += array[ndx] * Math.pow(256, ndx);
     }
 
@@ -311,9 +351,8 @@ var arrayToNumber = function(array) {
  * @param {Uint8Array} array Output array (already resized)
  * @param {number} number
  */
-var numberToArray = function(array, number) {
-    for (var byteNdx = 0; byteNdx < array.length; byteNdx++)
-    {
+deMath.numberToArray = function(array, number) {
+    for (var byteNdx = 0; byteNdx < array.length; byteNdx++) {
         /** @type {number} */ var acumzndx = !byteNdx ? number : Math.floor(number / Math.pow(256, byteNdx));
         array[byteNdx] = acumzndx & 0xFF;
     }
@@ -326,15 +365,14 @@ var numberToArray = function(array, number) {
  * @param {number} lastNdx
  * @return {number}
  */
-var getBitRange = function(array, firstNdx, lastNdx) {
+deMath.getBitRange = function(array, firstNdx, lastNdx) {
     /** @type {number} */ var bitSize = lastNdx - firstNdx;
     /** @type {number} */ var byteSize = Math.floor(bitSize / 8) + ((bitSize % 8) > 0 ? 1 : 0);
 
     /** @type {ArrayBuffer} */ var buffer = new ArrayBuffer(byteSize);
     /** @type {Uint8Array} */ var outArray = new Uint8Array(buffer);
 
-    for (var bitNdx = firstNdx; bitNdx < lastNdx; bitNdx++)
-    {
+    for (var bitNdx = firstNdx; bitNdx < lastNdx; bitNdx++) {
         /** @type {number} */ var sourceByte = Math.floor(bitNdx / 8);
         /** @type {number} */ var sourceBit = Math.floor(bitNdx % 8);
 
@@ -346,12 +384,15 @@ var getBitRange = function(array, firstNdx, lastNdx) {
         outArray[destByte] = outArray[destByte] | (Math.pow(2, destBit) * sourceBitValue);
     }
 
-    return arrayToNumber(outArray);
+    return deMath.arrayToNumber(outArray);
 };
 
 //Bit operations with the help of arrays
 
-var BinaryOp = {
+/**
+ * @enum
+ */
+deMath.BinaryOp = {
     AND: 0,
     OR: 1
 };
@@ -360,16 +401,17 @@ var BinaryOp = {
  * Performs a normal (native) binary operation
  * @param {number} valueA First operand
  * @param {number} valueB Second operand
- * @param {BinaryOp} operation The desired operation to perform
+ * @param {deMath.BinaryOp} operation The desired operation to perform
  * @return {number}
  */
-var doNativeBinaryOp = function(valueA, valueB, operation) {
-    switch (operation)
-    {
-        case BinaryOp.AND:
+deMath.doNativeBinaryOp = function(valueA, valueB, operation) {
+    switch (operation) {
+        case deMath.BinaryOp.AND:
             return valueA & valueB;
-        case BinaryOp.OR:
+        case deMath.BinaryOp.OR:
             return valueA | valueB;
+        default:
+            throw new Error('Unknown operation: ' + operation);
     }
 };
 
@@ -379,16 +421,16 @@ var doNativeBinaryOp = function(valueA, valueB, operation) {
  * If the operation is safe to perform in a native way, it will do that.
  * @param {number} valueA First operand
  * @param {number} valueB Second operand
- * @param {BinaryOp} binaryOp The desired operation to perform
+ * @param {deMath.BinaryOp} binaryOpParm The desired operation to perform
  * @return {number}
  */
-var binaryOp = function(valueA, valueB, binaryOp) {
+deMath.binaryOp = function(valueA, valueB, binaryOpParm) {
     /** @type {number} */ var valueABitSize = Math.floor(Math.log2(valueA) + 1);
     /** @type {number} */ var valueBBitSize = Math.floor(Math.log2(valueB) + 1);
     /** @type {number} */ var bitsSize = Math.max(valueABitSize, valueBBitSize);
 
     if (bitsSize <= 32)
-        return doNativeBinaryOp(valueA, valueB, binaryOp);
+        return deMath.doNativeBinaryOp(valueA, valueB, binaryOpParm);
 
     /** @type {number} */ var valueAByteSize = Math.floor(valueABitSize / 8) + ((valueABitSize % 8) > 0 ? 1 : 0);
     /** @type {number} */ var valueBByteSize = Math.floor(valueBBitSize / 8) + ((valueBBitSize % 8) > 0 ? 1 : 0);
@@ -402,25 +444,23 @@ var binaryOp = function(valueA, valueB, binaryOp) {
     /** @type {Uint8Array} */ var inArrayB = new Uint8Array(valueBBuffer);
     /** @type {Uint8Array} */ var outArray = new Uint8Array(buffer);
 
-    numberToArray(inArrayA, valueA);
-    numberToArray(inArrayB, valueB);
+    deMath.numberToArray(inArrayA, valueA);
+    deMath.numberToArray(inArrayB, valueB);
 
     /** @type {Uint8Array} */ var largestArray = inArrayA.length > inArrayB.length ? inArrayA : inArrayB;
 
     /** @type {number} */ var minLength = Math.min(inArrayA.length, inArrayB.length);
 
-    for (var byteNdx = 0; byteNdx < minLength; byteNdx++)
-    {
-        outArray[byteNdx] = doNativeBinaryOp(inArrayA[byteNdx], inArrayB[byteNdx], binaryOp);
+    for (var byteNdx = 0; byteNdx < minLength; byteNdx++) {
+        outArray[byteNdx] = deMath.doNativeBinaryOp(inArrayA[byteNdx], inArrayB[byteNdx], binaryOpParm);
     }
 
-    while (byteNdx < byteSize)
-    {
+    while (byteNdx < byteSize) {
         outArray[byteNdx] = largestArray[byteNdx];
         byteNdx++;
     }
 
-    return arrayToNumber(outArray);
+    return deMath.arrayToNumber(outArray);
 };
 
 /**
@@ -429,7 +469,7 @@ var binaryOp = function(valueA, valueB, binaryOp) {
  * @param {number} value Operand
  * @return {number}
  */
-var binaryNot = function(value) {
+deMath.binaryNot = function(value) {
     /** @type {number} */ var bitsSize = Math.floor(Math.log2(value) + 1);
 
     //This is not reliable. But left here commented as a warning.
@@ -444,14 +484,13 @@ var binaryNot = function(value) {
     /** @type {ArrayBuffer} */ var buffer = new ArrayBuffer(byteSize);
     /** @type {Uint8Array} */ var outArray = new Uint8Array(buffer);
 
-    numberToArray(inArray, value);
+    deMath.numberToArray(inArray, value);
 
-    for (var byteNdx = 0; byteNdx < byteSize; byteNdx++)
-    {
+    for (var byteNdx = 0; byteNdx < byteSize; byteNdx++) {
         outArray[byteNdx] = ~inArray[byteNdx];
     }
 
-    return arrayToNumber(outArray);
+    return deMath.arrayToNumber(outArray);
 };
 
 /**
@@ -462,8 +501,7 @@ var binaryNot = function(value) {
  * @param {number} steps
  * @return {number}
  */
-var shiftLeft = function(value, steps)
-{
+deMath.shiftLeft = function(value, steps) {
     /** @type {number} */ var totalBitsRequired = Math.floor(Math.log2(value) + 1) + steps;
 
     if (totalBitsRequired < 32)
@@ -479,10 +517,9 @@ var shiftLeft = function(value, steps)
     /** @type {ArrayBuffer} */ var buffer = new ArrayBuffer(totalBytesRequired);
     /** @type {Uint8Array} */ var outArray = new Uint8Array(buffer);
 
-    numberToArray(inArray, value);
+    deMath.numberToArray(inArray, value);
 
-    for (var bitNdx = 0; bitNdx < totalBitsRequired; bitNdx++)
-    {
+    for (var bitNdx = 0; bitNdx < totalBitsRequired; bitNdx++) {
         /** @type {number} */ var sourceByte = Math.floor(bitNdx / 8);
         /** @type {number} */ var sourceBit = Math.floor(bitNdx % 8);
         /** @type {number} */ var newbitNdx = bitNdx + steps;
@@ -492,7 +529,7 @@ var shiftLeft = function(value, steps)
         outArray[correspondingByte] = outArray[correspondingByte] | (Math.pow(2, correspondingBit) * bitValue);
     }
 
-    return arrayToNumber(outArray);
+    return deMath.arrayToNumber(outArray);
 };
 
 /**
@@ -503,8 +540,7 @@ var shiftLeft = function(value, steps)
  * @param {number} steps
  * @return {number}
  */
-var shiftRight = function(value, steps)
-{
+deMath.shiftRight = function(value, steps) {
     /** @type {number} */ var totalBitsRequired = Math.floor(Math.log2(value) + 1); //additional bits not needed (will be 0) + steps;
 
     if (totalBitsRequired < 32)
@@ -518,10 +554,9 @@ var shiftRight = function(value, steps)
     /** @type {ArrayBuffer} */ var buffer = new ArrayBuffer(totalBytesRequired);
     /** @type {Uint8Array} */ var outArray = new Uint8Array(buffer);
 
-    numberToArray(inArray, value);
+    deMath.numberToArray(inArray, value);
 
-    for (var bitNdx = totalBitsRequired - 1; bitNdx >= steps; bitNdx--)
-    {
+    for (var bitNdx = totalBitsRequired - 1; bitNdx >= steps; bitNdx--) {
         /** @type {number} */ var sourceByte = Math.floor(bitNdx / 8);
         /** @type {number} */ var sourceBit = Math.floor(bitNdx % 8);
         /** @type {number} */ var newbitNdx = bitNdx - steps;
@@ -531,37 +566,85 @@ var shiftRight = function(value, steps)
         outArray[correspondingByte] = outArray[correspondingByte] | (Math.pow(2, correspondingBit) * bitValue);
     }
 
-    return arrayToNumber(outArray);
+    return deMath.arrayToNumber(outArray);
 };
 
-    return {
-        deInRange32: deInRange32,
-        deInBounds32: deInBounds32,
-        deAlign32: deAlign32,
-        dePop32: dePop32,
-        deIsPowerOfTwo32: deIsPowerOfTwo32,
-        clamp: clamp,
-        imod: imod,
-        mirror: mirror,
-        swizzle: swizzle,
-        multiply: multiply,
-        add: add,
-        subtract: subtract,
-        absDiff: absDiff,
-        lessThanEqual: lessThanEqual,
-        boolAll: boolAll,
-        max: max,
-        min: min,
-        rint: rint,
-        intersect: intersect,
-        deMathHash: deMathHash,
-        arrayToNumber: arrayToNumber,
-        numberToArray: numberToArray,
-        getBitRange: getBitRange,
-        BinaryOp: BinaryOp,
-        binaryOp: binaryOp,
-        binaryNot: binaryNot,
-        shiftLeft: shiftLeft,
-        shiftRight: shiftRight
-    };
+/** deMath.logicalAndBool over two arrays of booleans
+ * @param {Array<boolean>} a
+ * @param {Array<boolean>} b
+ * @return {Array<boolean>}
+ */
+deMath.logicalAndBool = function(a, b) {
+    if (!Array.isArray(a))
+        throw new Error('The first parameter is not an array: (' + typeof(a) + ')' + a);
+    if (!Array.isArray(b))
+        throw new Error('The second parameter is not an array: (' + typeof(b) + ')' + b);
+    if (a.length != b.length)
+        throw new Error('The lengths of the passed arrays are not equivalent. (' + a.length + ' != ' + b.length + ')');
+
+    /** @type {Array<boolean>} */ var result = [];
+    for (var i = 0; i < a.length; i++) {
+        if (a[i] & b[i])
+            result.push(true);
+        else
+            result.push(false);
+    }
+    return result;
+};
+
+/** deMath.logicalOrBool over two arrays of booleans
+ * @param {Array<boolean>} a
+ * @param {Array<boolean>} b
+ * @return {Array<boolean>}
+ */
+deMath.logicalOrBool = function(a, b) {
+    if (!Array.isArray(a))
+        throw new Error('The first parameter is not an array: (' + typeof(a) + ')' + a);
+    if (!Array.isArray(b))
+        throw new Error('The second parameter is not an array: (' + typeof(b) + ')' + b);
+    if (a.length != b.length)
+        throw new Error('The lengths of the passed arrays are not equivalent. (' + a.length + ' != ' + b.length + ')');
+
+    /** @type {Array<boolean>} */ var result = [];
+    for (var i = 0; i < a.length; i++) {
+        if (a[i] | b[i])
+            result.push(true);
+        else
+            result.push(false);
+    }
+    return result;
+};
+
+/** deMath.logicalNotBool over an array of booleans
+ * @param {Array<boolean>} a
+ * @return {Array<boolean>}
+ */
+deMath.logicalNotBool = function(a) {
+    if (!Array.isArray(a))
+        throw new Error('The passed value is not an array: (' + typeof(a) + ')' + a);
+
+    /** @type {Array<boolean>} */ var result = [];
+    for (var i = 0; i < a.length; i++)
+        result.push(!a[i]);
+    return result;
+};
+
+/** deMath.greaterThan over two arrays of booleans
+ * @param {Array<boolean>} a
+ * @return {Array<boolean>}
+ */
+deMath.greaterThan = function(a, b) {
+    if (!Array.isArray(a))
+        throw new Error('The first parameter is not an array: (' + typeof(a) + ')' + a);
+    if (!Array.isArray(b))
+        throw new Error('The second parameter is not an array: (' + typeof(b) + ')' + b);
+    if (a.length != b.length)
+        throw new Error('The lengths of the passed arrays are not equivalent. (' + a.length + ' != ' + b.length + ')');
+
+    /** @type {Array<boolean>} */ var result = [];
+    for (var i = 0; i < a.length; i++)
+        result.push(a[i] > b[i]);
+    return result;
+};
+
 });
