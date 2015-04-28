@@ -8,7 +8,9 @@
 <script src="../../../../resources/js-test-pre.js"></script>
 <script src="../../../../conformance/resources/webgl-test-utils.js"></script>
 
-<script src="../../../require.js"></script>
+<script src="../../../../closure-library/closure/goog/base.js"></script>
+<script src="../../../deqp-deps.js"></script>
+<script>goog.require('modules.shared.glsShaderLibrary');</script>
 </head>
 <body>
 <div id="description"></div>
@@ -27,13 +29,10 @@ var getFilter = function() {
             return decodeURIComponent(value[1]);
     }
 }
-requirejs.config({
-    baseUrl: "../../../"
-    });
 
-requirejs(["modules/shared/glsShaderLibrary"], function(shaderLibrary) {
-    shaderLibrary.run(testName, getFilter())
-    });
+
+modules.shared.glsShaderLibrary.run(testName, getFilter())
+ 
 </script>
 </body>
 </html>

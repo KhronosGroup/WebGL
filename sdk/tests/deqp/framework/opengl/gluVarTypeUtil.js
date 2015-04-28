@@ -18,85 +18,48 @@
  *
  */
 
-define([
-    'framework/opengl/gluVarType',
-    'framework/opengl/gluShaderUtil'
-], function(gluVarType, deqpUtils) {
-    'use strict';
+'use strict';
+goog.provide('framework.opengl.gluVarTypeUtil');
+goog.require('framework.opengl.gluShaderUtil');
+goog.require('framework.opengl.gluVarType');
 
-    var isNum = (function(c) { return /^[0-9]$/ .test(c); });
-    var isAlpha = (function(c) { return /^[a-zA-Z]$/ .test(c); });
-    var isIdentifierChar = (function(c) { return /^[a-zA-Z0-9_]$/.test(c); });
-    var array_op_equivalent = (function(arr1, arr2) {
+goog.scope(function() {
+
+    var gluVarTypeUtil = framework.opengl.gluVarTypeUtil;
+    var gluVarType = framework.opengl.gluVarType;
+    var gluShaderUtil = framework.opengl.gluShaderUtil;
+
+    gluVarTypeUtil.isNum = function(c) { return /^[0-9]$/.test(c); };
+    gluVarTypeUtil.isAlpha = function(c) { return /^[a-zA-Z]$/.test(c); };
+    gluVarTypeUtil.isIdentifierChar = function(c) { return /^[a-zA-Z0-9_]$/.test(c); };
+    gluVarTypeUtil.array_op_equivalent = function(arr1, arr2) {
         if (arr1.length != arr2.length) return false;
         for (var i = 0; i < arr1.length; ++i) {
             if (arr1[i].isnt(arr2[1])) return false;
         }
         return true;
-    });
+    };
 
     /**
-     * VarTokenizer class.
+     * gluVarTypeUtil.VarTokenizer class.
      * @param {string} str
-     * @return {Object}
+     * @constructor
      */
-    var VarTokenizer = (function(str) {
+    gluVarTypeUtil.VarTokenizer = function(str) {
 
-        var m_str = str;
-        var m_token = VarTokenizer.s_Token.length;
-        var m_tokenStart = 0;
-        var m_tokenLen = 0;
-
-        this.getToken = (function() { return m_token; });
-        this.getIdentifier = (function() { return m_str.substr(m_tokenStart, m_tokenLen); });
-        this.getNumber = (function() { return parseInt(this.getIdentifier()); });
-        this.getCurrentTokenStartLocation = (function() { return m_tokenStart; });
-        this.getCurrentTokenEndLocation = (function() { return m_tokenStart + m_tokenLen; });
-
-        this.advance = (function() {
-
-            if (m_token == VarTokenizer.s_Token.END) {
-                throw new Error('No more tokens.');
-            }
-
-            m_tokenStart += m_tokenLen;
-            m_token = VarTokenizer.s_Token.LAST;
-            m_tokenLen = 1;
-
-            if (m_tokenStart >= m_str.length) {
-                m_token = VarTokenizer.s_Token.END;
-
-            } else if (m_str[m_tokenStart] == '[') {
-                m_token = VarTokenizer.s_Token.LEFT_BRACKET;
-
-            } else if (m_str[m_tokenStart] == ']') {
-                m_token = VarTokenizer.s_Token.RIGHT_BRACKET;
-
-            } else if (m_str[m_tokenStart] == '.') {
-                m_token = VarTokenizer.s_Token.PERIOD;
-
-            } else if (isNum(m_str[m_tokenStart])) {
-                m_token = VarTokenizer.s_Token.NUMBER;
-                while (isNum(m_str[m_tokenStart + m_tokenLen])) {
-                    m_tokenLen += 1;
-                }
-
-            } else if (isIdentifierChar(m_str[m_tokenStart])) {
-                m_token = VarTokenizer.s_Token.IDENTIFIER;
-                while (isIdentifierChar(m_str[m_tokenStart + m_tokenLen])) {
-                    m_tokenLen += 1;
-                }
-
-            } else {
-                throw new Error('Unexpected character');
-            }
-
-        });
+        /** @private */
+        this.m_str = str;
+        /** @private */
+        this.m_token = gluVarTypeUtil.VarTokenizer.s_Token.length;
+        /** @private */
+        this.m_tokenStart = 0;
+        /** @private */
+        this.m_tokenLen = 0;
 
         this.advance();
 
-    });
-    VarTokenizer.s_Token = {
+    };
+    gluVarTypeUtil.VarTokenizer.s_Token = {
         IDENTIFIER: 0,
         LEFT_BRACKET: 1,
         RIGHT_BRACKET: 2,
@@ -104,327 +67,401 @@ define([
         NUMBER: 4,
         END: 5
     };
-    VarTokenizer.s_Token.length = Object.keys(VarTokenizer.s_Token).length;
+    gluVarTypeUtil.VarTokenizer.s_Token.length = Object.keys(gluVarTypeUtil.VarTokenizer.s_Token).length;
+
+    gluVarTypeUtil.VarTokenizer.prototype.getToken = function() {
+        return this.m_token;
+    };
+    gluVarTypeUtil.VarTokenizer.prototype.getIdentifier = function() {
+        return this.m_str.substr(this.m_tokenStart, this.m_tokenLen);
+    };
+    gluVarTypeUtil.VarTokenizer.prototype.getNumber = function() {
+        return parseInt(this.getIdentifier(), 10);
+    };
+    gluVarTypeUtil.VarTokenizer.prototype.getCurrentTokenStartLocation = function() {
+        return this.m_tokenStart;
+    };
+    gluVarTypeUtil.VarTokenizer.prototype.getCurrentTokenEndLocation = function() {
+        return this.m_tokenStart + this.m_tokenLen;
+    };
+
+    gluVarTypeUtil.VarTokenizer.prototype.advance = function() {
+
+        if (this.m_token == gluVarTypeUtil.VarTokenizer.s_Token.END) {
+            throw new Error('No more tokens.');
+        }
+
+        this.m_tokenStart += this.m_tokenLen;
+        this.m_token = gluVarTypeUtil.VarTokenizer.s_Token.length;
+        this.m_tokenLen = 1;
+
+        if (this.m_tokenStart >= this.m_str.length) {
+            this.m_token = gluVarTypeUtil.VarTokenizer.s_Token.END;
+
+        } else if (this.m_str[this.m_tokenStart] == '[') {
+            this.m_token = gluVarTypeUtil.VarTokenizer.s_Token.LEFT_BRACKET;
+
+        } else if (this.m_str[this.m_tokenStart] == ']') {
+            this.m_token = gluVarTypeUtil.VarTokenizer.s_Token.RIGHT_BRACKET;
+
+        } else if (this.m_str[this.m_tokenStart] == '.') {
+            this.m_token = gluVarTypeUtil.VarTokenizer.s_Token.PERIOD;
+
+        } else if (gluVarTypeUtil.isNum(this.m_str[this.m_tokenStart])) {
+            this.m_token = gluVarTypeUtil.VarTokenizer.s_Token.NUMBER;
+            while (gluVarTypeUtil.isNum(this.m_str[this.m_tokenStart + this.m_tokenLen])) {
+                this.m_tokenLen += 1;
+            }
+
+        } else if (gluVarTypeUtil.isIdentifierChar(this.m_str[this.m_tokenStart])) {
+            this.m_token = gluVarTypeUtil.VarTokenizer.s_Token.IDENTIFIER;
+            while (gluVarTypeUtil.isIdentifierChar(this.m_str[this.m_tokenStart + this.m_tokenLen])) {
+                this.m_tokenLen += 1;
+            }
+
+        } else {
+            throw new Error('Unexpected character');
+        }
+
+    };
 
     /**
      * VarType subtype path utilities class.
-     * @param {VarTypeComponent.s_Type} type_
-     * @param {number} index_
-     * @return {Object}
+     * @param {gluVarTypeUtil.VarTypeComponent.s_Type} type
+     * @param {number} index
+     * @constructor
      */
-    var VarTypeComponent = (function(type_, index_) {
+    gluVarTypeUtil.VarTypeComponent = function(type, index) {
+        /** @type {gluVarTypeUtil.VarTypeComponent.s_Type} */ this.type = type;
+        this.index = index || 0;
+    };
 
-        this.type = null;
-        this.index = VarTypeComponent.s_Type.length;
-
-        if (typeof(type_) != 'undefined' && typeof(index_) != 'undefined') {
-            this.type = type_;
-            this.index = index_;
-        }
-
-        this.is = (function(other) {
-            return this.type == other.type && this.index == other.index;
-        });
-        this.isnt = (function(other) {
-            return this.type != other.type || this.index != other.index;
-        });
-    });
+    gluVarTypeUtil.VarTypeComponent.prototype.is = function(other) {
+        return this.type == other.type && this.index == other.index;
+    };
+    gluVarTypeUtil.VarTypeComponent.prototype.isnt = function(other) {
+        return this.type != other.type || this.index != other.index;
+    };
 
     /**
      * @enum
      */
-    VarTypeComponent.s_Type = {
+    gluVarTypeUtil.VarTypeComponent.s_Type = {
         STRUCT_MEMBER: 0,
         ARRAY_ELEMENT: 1,
         MATRIX_COLUMN: 2,
         VECTOR_COMPONENT: 3
     };
-    VarTypeComponent.s_Type.length = Object.keys(VarTypeComponent.s_Type).length;
 
     /**
      * Type path formatter.
      * @param {gluVarType.VarType} type_
-     * @param {Array.<VarTypeComponent>} path_
-     * @return {Object}
+     * @param {Array<gluVarTypeUtil.VarTypeComponent>} path_
+     * @constructor
      */
-    var TypeAccessFormat = (function(type_, path_) {
+    gluVarTypeUtil.TypeAccessFormat = function(type_, path_) {
         this.type = type_;
         this.path = path_;
-    });
+    };
 
-    TypeAccessFormat.prototype.toString = function() {
+    gluVarTypeUtil.TypeAccessFormat.prototype.toString = function() {
         var curType = this.type;
         var str = '';
 
         for (var i = 0; i < this.path.length; i++) {
             var iter = this.path[i];
             switch (iter.type) {
-                case VarTypeComponent.s_Type.ARRAY_ELEMENT:
+                case gluVarTypeUtil.VarTypeComponent.s_Type.ARRAY_ELEMENT:
                     curType = curType.getElementType(); // Update current type.
                     // Fall-through.
 
-                case VarTypeComponent.s_Type.MATRIX_COLUMN:
-                case VarTypeComponent.s_Type.VECTOR_COMPONENT:
-                    str += "[" + iter.index + "]";
+                case gluVarTypeUtil.VarTypeComponent.s_Type.MATRIX_COLUMN:
+                case gluVarTypeUtil.VarTypeComponent.s_Type.VECTOR_COMPONENT:
+                    str += '[' + iter.index + ']';
                     break;
 
-                case VarTypeComponent.s_Type.STRUCT_MEMBER:
-                {
+                case gluVarTypeUtil.VarTypeComponent.s_Type.STRUCT_MEMBER: {
                     var member = curType.getStruct().getMember(i);
-                    str += "." + member.getName();
+                    str += '.' + member.getName();
                     curType = member.getType();
                     break;
                 }
 
                 default:
-                   throw new Error("Unrecognized type:" + iter.type);
+                   throw new Error('Unrecognized type:' + iter.type);
             }
         }
 
-        return str;       
+        return str;
     };
 
-    /** SubTypeAccess
+    /** gluVarTypeUtil.SubTypeAccess
      * @param {gluVarType.VarType} type
-     * @return {SubTypeAccess | array_op_equivalent | boolean}
+     * @constructor
      */
-    var SubTypeAccess = (function(type) {
+    gluVarTypeUtil.SubTypeAccess = function(type) {
 
         this.m_type = null; // VarType
-        this.m_path = [];   // TypeComponentVector
+        this.m_path = []; // TypeComponentVector
 
-        var helper = (function(type, ndx) {
-            this.m_path.push(new VarTypeComponent(type, ndx));
-            if (!this.isValid()) {
-                throw new Error;
-            }
-            return this;
-        });
+    };
 
-        this.member = (function(ndx) { return helper(VarTypeComponent.s_Type.STRUCT_MEMBER); });
-        this.element = (function(ndx) { return helper(VarTypeComponent.s_Type.ARRAY_ELEMENT); });
-        this.column = (function(ndx) { return helper(VarTypeComponent.s_Type.MATRIX_COLUMN); });
-        this.component = (function(ndx) { return helper(VarTypeComponent.s_Type.VECTOR_COMPONENT); });
-        this.parent = (function() {
-            if (this.m_path.empty()) {
-                throw new Error;
-            }
-            this.m_path.pop();
-            return this;
-        });
+    /** @private */
+    gluVarTypeUtil.SubTypeAccess.prototype.helper = function(type, ndx) {
+        this.m_path.push(new gluVarTypeUtil.VarTypeComponent(type, ndx));
+        if (!this.isValid()) {
+            throw new Error;
+        }
+        return this;
+    };
 
-        this.isValid = (function() { return isValidTypePath(this.m_type, this.m_path); });
-        this.getType = (function() { return getVarType(this.m_type, this.m_path); });
-        this.getPath = (function() { return this.m_path; });
-        this.empty = (function() { return this.m_path.empty(); });
-        this.is = (function(other) {
-            return (
-                array_op_equivalent(this.m_path, other.m_path) &&
-                this.m_type.is(other.m_type)
-            );
-        });
-        this.isnt = (function(other) {
-            return (
-                !array_op_equivalent(this.m_path, other.m_path) ||
-                this.m_type.isnt(other.m_type)
-            );
-        });
+    gluVarTypeUtil.SubTypeAccess.prototype.member = function(ndx) {
+        return this.helper(gluVarTypeUtil.VarTypeComponent.s_Type.STRUCT_MEMBER, ndx);
+    };
+    gluVarTypeUtil.SubTypeAccess.prototype.element = function(ndx) {
+        return this.helper(gluVarTypeUtil.VarTypeComponent.s_Type.ARRAY_ELEMENT, ndx);
+    };
+    gluVarTypeUtil.SubTypeAccess.prototype.column = function(ndx) {
+        return this.helper(gluVarTypeUtil.VarTypeComponent.s_Type.MATRIX_COLUMN, ndx);
+    };
+    gluVarTypeUtil.SubTypeAccess.prototype.component = function(ndx) {
+        return this.helper(gluVarTypeUtil.VarTypeComponent.s_Type.VECTOR_COMPONENT, ndx);
+    };
+    gluVarTypeUtil.SubTypeAccess.prototype.parent = function() {
+        if (!this.m_path.length) {
+            throw new Error;
+        }
+        this.m_path.pop();
+        return this;
+    };
 
-    });
+    gluVarTypeUtil.SubTypeAccess.prototype.isValid = function() {
+        return gluVarTypeUtil.isValidTypePath(this.m_type, this.m_path);
+    };
+    gluVarTypeUtil.SubTypeAccess.prototype.getType = function() {
+        return gluVarTypeUtil.getVarType(this.m_type, this.m_path);
+    };
+    gluVarTypeUtil.SubTypeAccess.prototype.getPath = function() {
+        return this.m_path;
+    };
+    gluVarTypeUtil.SubTypeAccess.prototype.empty = function() {
+        return !this.m_path.length;
+    };
+    gluVarTypeUtil.SubTypeAccess.prototype.is = function(other) {
+        return (
+            gluVarTypeUtil.array_op_equivalent(this.m_path, other.m_path) &&
+            this.m_type.is(other.m_type)
+        );
+    };
+    gluVarTypeUtil.SubTypeAccess.prototype.isnt = function(other) {
+        return (
+            !gluVarTypeUtil.array_op_equivalent(this.m_path, other.m_path) ||
+            this.m_type.isnt(other.m_type)
+        );
+    };
 
     /**
      * Subtype iterator parent class.
      * basic usage for all child classes:
-     *     for (var i = new BasicTypeIterator(type) ; !i.end() ; i.next()) {
+     *     for (var i = new gluVarTypeUtil.BasicTypeIterator(type) ; !i.end() ; i.next()) {
      *         var j = i.getType();
      *     }
-     * To inherit from this base class, use this outside the child's definition:
-     *     ChildClass.prototype = new SubTypeIterator();
-     * @return {Object}
+     * @constructor
      */
-    var SubTypeIterator = (function() {
+    gluVarTypeUtil.SubTypeIterator = function(type) {
 
-        var m_type = null;  // const VarType*
-        var m_path = [];    // TypeComponentVector
+        /** @private */
+        this.m_type = null; // const VarType*
+        /** @private */
+        this.m_path = []; // TypeComponentVector
 
-        var removeTraversed = (function() {
+        if (type) {
+            this.m_type = type;
+            this.findNext();
+        }
 
-            while (m_path.length) {
-                var curComp = m_path[m_path.length - 1]; // VarTypeComponent&
-                var parentType = getVarType(m_type, m_path, 0, m_path.length - 1); // VarType
+    };
 
-                if (curComp.type == VarTypeComponent.s_Type.MATRIX_COLUMN) {
-                    if (!deqpUtils.isDataTypeMatrix(parentType.getBasicType())) {
-                        throw new Error('Isn\'t a matrix.');
-                    }
-                    if (curComp.index + 1 < deqpUtils.getDataTypeMatrixNumColumns(parentType.getBasicType())) {
-                        break;
-                    }
+    gluVarTypeUtil.SubTypeIterator.prototype.isExpanded = function(type) {
+        throw new Error('This function must be overriden in child class');
+    };
 
-                } else if (curComp.type == VarTypeComponent.s_Type.VECTOR_COMPONENT) {
-                    if (!deqpUtils.isDataTypeVector(parentType.getBasicType())) {
-                        throw new Error('Isn\'t a vector.');
-                    }
-                    if (curComp.index + 1 < deqpUtils.getDataTypeScalarSize(parentType.getBasicType())) {
-                        break;
-                    }
+    /** removeTraversed
+     * @private
+     */
+    gluVarTypeUtil.SubTypeIterator.prototype.removeTraversed = function() {
 
-                } else if (curComp.type == VarTypeComponent.s_Type.ARRAY_ELEMENT) {
-                    if (!parentType.isArrayType()) {
-                        throw new Error('Isn\'t an array.');
-                    }
-                    if (curComp.index + 1 < parentType.getArraySize()) {
-                        break;
-                    }
+        while (this.m_path.length) {
+            var curComp = this.m_path[this.m_path.length - 1]; // gluVarTypeUtil.VarTypeComponent&
+            var parentType = gluVarTypeUtil.getVarType(this.m_type, this.m_path, 0, this.m_path.length - 1); // VarType
 
-                } else if (curComp.type == VarTypeComponent.s_Type.STRUCT_MEMBER) {
-                    if (!parentType.isStructType()) {
-                        throw new Error('Isn\'t a struct.');
-                    }
-                    if (curComp.index + 1 < parentType.getStruct().getNumMembers()) {
-                        break;
-                    }
-
+            if (curComp.type == gluVarTypeUtil.VarTypeComponent.s_Type.MATRIX_COLUMN) {
+                if (!gluShaderUtil.isDataTypeMatrix(parentType.getBasicType())) {
+                    throw new Error('Isn\'t a matrix.');
+                }
+                if (curComp.index + 1 < gluShaderUtil.getDataTypeMatrixNumColumns(parentType.getBasicType())) {
+                    break;
                 }
 
-                m_path.pop();
-            }
-
-        });
-
-        this.findNext = (function() {
-
-            if (m_path.length > 0) {
-                // Increment child counter in current level.
-                var curComp = m_path[m_path.length - 1]; // VarTypeComponent&
-                curComp.index += 1;
-            }
-
-            for (;;) {
-
-                var curType = getVarType(m_type, m_path); // VarType
-
-                if (this.isExpanded(curType))
+            } else if (curComp.type == gluVarTypeUtil.VarTypeComponent.s_Type.VECTOR_COMPONENT) {
+                if (!gluShaderUtil.isDataTypeVector(parentType.getBasicType())) {
+                    throw new Error('Isn\'t a vector.');
+                }
+                if (curComp.index + 1 < gluShaderUtil.getDataTypeScalarSize(parentType.getBasicType())) {
                     break;
+                }
 
-                // Recurse into child type.
-                if (curType.isBasicType()) {
-                    var basicType = curType.getBasicType(); // DataType
+            } else if (curComp.type == gluVarTypeUtil.VarTypeComponent.s_Type.ARRAY_ELEMENT) {
+                if (!parentType.isArrayType()) {
+                    throw new Error('Isn\'t an array.');
+                }
+                if (curComp.index + 1 < parentType.getArraySize()) {
+                    break;
+                }
 
-                    if (deqpUtils.isDataTypeMatrix(basicType)) {
-                        m_path.push(new VarTypeComponent(VarTypeComponent.s_Type.MATRIX_COLUMN, 0));
+            } else if (curComp.type == gluVarTypeUtil.VarTypeComponent.s_Type.STRUCT_MEMBER) {
+                if (!parentType.isStructType()) {
+                    throw new Error('Isn\'t a struct.');
+                }
+                if (curComp.index + 1 < parentType.getStruct().getNumMembers()) {
+                    break;
+                }
 
-                    } else if (deqpUtils.isDataTypeVector(basicType)) {
-                        m_path.push(new VarTypeComponent(VarTypeComponent.s_Type.VECTOR_COMPONENT, 0));
+            }
 
-                    } else {
-                        throw new Error('Cant expand scalars - isExpanded() is buggy.');
-                    }
+            this.m_path.pop();
+        }
+    };
+    gluVarTypeUtil.SubTypeIterator.prototype.findNext = function() {
 
-                } else if (curType.isArrayType()) {
-                    m_path.push(new VarTypeComponent(VarTypeComponent.s_Type.ARRAY_ELEMENT, 0));
+        if (this.m_path.length > 0) {
+            // Increment child counter in current level.
+            var curComp = this.m_path[this.m_path.length - 1]; // gluVarTypeUtil.VarTypeComponent&
+            curComp.index += 1;
+        }
 
-                } else if (curType.isStructType()) {
-                    m_path.push(new VarTypeComponent(VarTypeComponent.s_Type.STRUCT_MEMBER, 0));
+        for (;;) {
+
+            var curType = gluVarTypeUtil.getVarType(this.m_type, this.m_path); // VarType
+
+            if (this.isExpanded(curType))
+                break;
+
+            // Recurse into child type.
+            if (curType.isBasicType()) {
+                var basicType = curType.getBasicType(); // DataType
+
+                if (gluShaderUtil.isDataTypeMatrix(basicType)) {
+                    this.m_path.push(new gluVarTypeUtil.VarTypeComponent(gluVarTypeUtil.VarTypeComponent.s_Type.MATRIX_COLUMN, 0));
+
+                } else if (gluShaderUtil.isDataTypeVector(basicType)) {
+                    this.m_path.push(new gluVarTypeUtil.VarTypeComponent(gluVarTypeUtil.VarTypeComponent.s_Type.VECTOR_COMPONENT, 0));
 
                 } else {
-                    throw new Error();
+                    throw new Error('Cant expand scalars - isExpanded() is buggy.');
                 }
-            }
 
-        });
+            } else if (curType.isArrayType()) {
+                this.m_path.push(new gluVarTypeUtil.VarTypeComponent(gluVarTypeUtil.VarTypeComponent.s_Type.ARRAY_ELEMENT, 0));
 
-        this.end = (function() {
-            return (m_type == null);
-        });
+            } else if (curType.isStructType()) {
+                this.m_path.push(new gluVarTypeUtil.VarTypeComponent(gluVarTypeUtil.VarTypeComponent.s_Type.STRUCT_MEMBER, 0));
 
-        // equivelant to operator++(), doesnt return.
-        this.next = (function() {
-            if (m_path.length > 0) {
-                // Remove traversed nodes.
-                removeTraversed();
-
-                if (m_path.length > 0)
-                    this.findNext();
-                else
-                    m_type = null; // Unset type to signal end.
             } else {
-                if (!this.isExpanded(getVarType(m_type, m_path))) {
-                    throw new Error('First type was already expanded.');
-                }
-                m_type = null;
+                throw new Error();
             }
-        });
+        }
 
-        this.getType = (function () {
-            return getVarType(m_type, m_path);
-        });
-        this.getPath = (function () {
-            return m_path;
-        });
+    };
+    gluVarTypeUtil.SubTypeIterator.prototype.end = function() {
+        return (this.m_type == null);
+    };
+    /** next
+     * equivelant to operator++(), doesnt return.
+     */
+    gluVarTypeUtil.SubTypeIterator.prototype.next = function() {
+        if (this.m_path.length > 0) {
+            // Remove traversed nodes.
+            this.removeTraversed();
 
-        this.toString = function() {
-            var x = new TypeAccessFormat(m_type, m_path);
-            return x.toString();
-        };
-
-        this.__construct = (function(type) {
-            if (type) {
-                m_type = type;
+            if (this.m_path.length > 0)
                 this.findNext();
+            else
+                this.m_type = null; // Unset type to signal end.
+        } else {
+            if (!this.isExpanded(gluVarTypeUtil.getVarType(this.m_type, this.m_path))) {
+                throw new Error('First type was already expanded.');
             }
-        });
+            this.m_type = null;
+        }
+    };
+    gluVarTypeUtil.SubTypeIterator.prototype.getType = function() {
+        return gluVarTypeUtil.getVarType(this.m_type, this.m_path);
+    };
+    gluVarTypeUtil.SubTypeIterator.prototype.getPath = function() {
+        return this.m_path;
+    };
 
-        this.isExpanded = null;
+    gluVarTypeUtil.SubTypeIterator.prototype.toString = function() {
+        var x = new gluVarTypeUtil.TypeAccessFormat(this.m_type, this.m_path);
+        return x.toString();
+    };
 
-    });
-
-    /** BasicTypeIterator
+    /** gluVarTypeUtil.BasicTypeIterator
      * @param {gluVarType.VarType} type
-     * @return {gluVarType.Type}
+     * @constructor
+     * @extends {gluVarTypeUtil.SubTypeIterator}
      */
-    var BasicTypeIterator = (function(type) {
-        this.isExpanded = (function(type) {
-            return type.isBasicType();
-        });
-        this.__construct(type);
-    });
-    BasicTypeIterator.prototype = new SubTypeIterator();
+    gluVarTypeUtil.BasicTypeIterator = function(type) {
+        gluVarTypeUtil.SubTypeIterator.call(this, type);
+    };
+    gluVarTypeUtil.BasicTypeIterator.prototype = Object.create(gluVarTypeUtil.SubTypeIterator.prototype);
+    gluVarTypeUtil.BasicTypeIterator.prototype.constructor = gluVarTypeUtil.BasicTypeIterator;
 
-    /** VectorTypeIterator
+    gluVarTypeUtil.BasicTypeIterator.prototype.isExpanded = function(type) {
+        return type.isBasicType();
+    };
+
+    /** gluVarTypeUtil.VectorTypeIterator
      * @param {gluVarType.VarType} type
-     * @return {gluVarType.Type}
+     * @constructor
+     * @extends {gluVarTypeUtil.SubTypeIterator}
      */
-    var VectorTypeIterator = (function(type) {
-        this.isExpanded = (function(type) {
-            return type.isBasicType() && deqpUtils.isDataTypeScalarOrVector(type.getBasicType());
-        });
-        this.__construct(type);
-    });
-    VectorTypeIterator.prototype = new SubTypeIterator();
+    gluVarTypeUtil.VectorTypeIterator = function(type) {
+        gluVarTypeUtil.SubTypeIterator.call(this, type);
+    };
+    gluVarTypeUtil.VectorTypeIterator.prototype = Object.create(gluVarTypeUtil.SubTypeIterator.prototype);
+    gluVarTypeUtil.VectorTypeIterator.prototype.constructor = gluVarTypeUtil.VectorTypeIterator;
 
-    /** ScalarTypeIterator
+    gluVarTypeUtil.VectorTypeIterator.prototype.isExpanded = function(type) {
+        return type.isBasicType() && gluShaderUtil.isDataTypeScalarOrVector(type.getBasicType());
+    };
+
+    /** gluVarTypeUtil.ScalarTypeIterator
      * @param {gluVarType.VarType} type
-     * @return {gluVarType.Type}
+     * @constructor
+     * @extends {gluVarTypeUtil.SubTypeIterator}
      */
-    var ScalarTypeIterator = (function(type) {
-        this.isExpanded = (function(type) {
-            return type.isBasicType() && deqpUtils.isDataTypeScalar(type.getBasicType());
-        });
-        this.__construct(type);
-    });
-    ScalarTypeIterator.prototype = new SubTypeIterator();
+     gluVarTypeUtil.ScalarTypeIterator = function(type) {
+        gluVarTypeUtil.SubTypeIterator.call(this, type);
+    };
+    gluVarTypeUtil.ScalarTypeIterator.prototype = Object.create(gluVarTypeUtil.SubTypeIterator.prototype);
+    gluVarTypeUtil.ScalarTypeIterator.prototype.constructor = gluVarTypeUtil.ScalarTypeIterator;
 
-    var inBounds = (function(x, a, b) { return a <= x && x < b; });
+    gluVarTypeUtil.ScalarTypeIterator.prototype.isExpanded = function(type) {
+        return type.isBasicType() && gluShaderUtil.isDataTypeScalar(type.getBasicType());
+    };
 
-    /** isValidTypePath
+    gluVarTypeUtil.inBounds = (function(x, a, b) { return a <= x && x < b; });
+
+    /** gluVarTypeUtil.isValidTypePath
      * @param {gluVarType.VarType} type
-     * @param {Array.<VarTypeComponent>} array
-     * @param {number} begin
-     * @param {number} end
+     * @param {Array<gluVarTypeUtil.VarTypeComponent>} array
+     * @param {number=} begin
+     * @param {number=} end
      * @return {boolean}
      */
-    var isValidTypePath = (function(type, array, begin, end) {
+    gluVarTypeUtil.isValidTypePath = function(type, array, begin, end) {
 
         if (typeof(begin) == 'undefined') {begin = 0;}
         if (typeof(end) == 'undefined') {begin = array.length;}
@@ -436,20 +473,20 @@ define([
         while (pathIter != end) {
             var element = array[pathIter];
 
-            if (element.type == VarTypeComponent.s_Type.STRUCT_MEMBER) {
+            if (element.type == gluVarTypeUtil.VarTypeComponent.s_Type.STRUCT_MEMBER) {
 
-                if (!curType.isStructType() || !inBounds(element.index, 0, curType.getStruct().getNumMembers())) {
+                if (!curType.isStructType() || !gluVarTypeUtil.inBounds(element.index, 0, curType.getStruct().getNumMembers())) {
                     return false;
                 }
 
                 curType = curType.getStruct().getMember(element.index).getType();
 
-            } else if (element.type == VarTypeComponent.s_Type.ARRAY_ELEMENT) {
+            } else if (element.type == gluVarTypeUtil.VarTypeComponent.s_Type.ARRAY_ELEMENT) {
                 if (
                     !curType.isArrayType() ||
                     (
-                        curType.getArraySize() != gluVarType.UNSIZED_ARRAY &&
-                        !inBounds(element.index, 0, curType.getArraySize())
+                        curType.getArraySize() != gluVarType.VarType.UNSIZED_ARRAY &&
+                        !gluVarTypeUtil.inBounds(element.index, 0, curType.getArraySize())
                     )
                 ) {
                     return false;
@@ -465,8 +502,8 @@ define([
 
         if (pathIter != end) {
             if (!(
-                array[pathIter].type == VarTypeComponent.s_Type.MATRIX_COLUMN ||
-                array[pathIter].type == VarTypeComponent.s_Type.VECTOR_COMPONENT
+                array[pathIter].type == gluVarTypeUtil.VarTypeComponent.s_Type.MATRIX_COLUMN ||
+                array[pathIter].type == gluVarTypeUtil.VarTypeComponent.s_Type.VECTOR_COMPONENT
             )) {
                 throw new Error('Not a matrix or a vector');
             }
@@ -478,42 +515,40 @@ define([
 
             var basicType = curType.getBasicType(); // DataType
 
-            if (array[pathIter].type == VarTypeComponent.s_Type.MATRIX_COLUMN)
-            {
-                if (!deqpUtils.isDataTypeMatrix(basicType)) {
+            if (array[pathIter].type == gluVarTypeUtil.VarTypeComponent.s_Type.MATRIX_COLUMN) {
+                if (!gluShaderUtil.isDataTypeMatrix(basicType)) {
                     return false;
                 }
 
-                basicType = deqpUtils.getDataTypeFloatVec(deqpUtils.getDataTypeMatrixNumRows(basicType));
+                basicType = gluShaderUtil.getDataTypeFloatVec(gluShaderUtil.getDataTypeMatrixNumRows(basicType));
                 ++pathIter;
             }
 
-            if (pathIter != end && array[pathIter].type == VarTypeComponent.s_Type.VECTOR_COMPONENT)
-            {
-                if (!deqpUtils.isDataTypeVector(basicType))
+            if (pathIter != end && array[pathIter].type == gluVarTypeUtil.VarTypeComponent.s_Type.VECTOR_COMPONENT) {
+                if (!gluShaderUtil.isDataTypeVector(basicType))
                     return false;
 
-                basicType = deqpUtils.getDataTypeScalarType(basicType);
+                basicType = gluShaderUtil.getDataTypeScalarType(basicType);
                 ++pathIter;
             }
         }
 
         return pathIter == end;
-    });
+    };
 
-    /** getVarType
+    /** gluVarTypeUtil.getVarType
      * @param {gluVarType.VarType} type
-     * @param {Array.<VarTypeComponent>} array
-     * @param {number} start
-     * @param {number} end
+     * @param {Array<gluVarTypeUtil.VarTypeComponent>} array
+     * @param {number=} start
+     * @param {number=} end
      * @return {gluVarType.VarType}
      */
-    var getVarType = (function(type, array, start, end) {
+    gluVarTypeUtil.getVarType = function(type, array, start, end) {
 
-        if (typeof(start) == 'undefined') {start = 0;}
-        if (typeof(end) == 'undefined') {end = array.length;}
+        if (typeof(start) == 'undefined') start = 0;
+        if (typeof(end) == 'undefined') end = array.length;
 
-        if (!isValidTypePath(type, array, start, end)) {
+        if (!gluVarTypeUtil.isValidTypePath(type, array, start, end)) {
             throw new Error('Type is invalid');
         }
 
@@ -525,10 +560,10 @@ define([
         for (pathIter = start; pathIter != end; ++pathIter) {
             element = array[pathIter];
 
-            if (element.type == VarTypeComponent.s_Type.STRUCT_MEMBER) {
+            if (element.type == gluVarTypeUtil.VarTypeComponent.s_Type.STRUCT_MEMBER) {
                 curType = curType.getStruct().getMember(element.index).getType();
 
-            } else if (element.type == VarTypeComponent.s_Type.ARRAY_ELEMENT) {
+            } else if (element.type == gluVarTypeUtil.VarTypeComponent.s_Type.ARRAY_ELEMENT) {
                 curType = curType.getElementType();
 
             } else {
@@ -542,13 +577,13 @@ define([
             var basicType = curType.getBasicType(); // DataType
             var precision = curType.getPrecision(); // Precision
 
-            if (element.type == VarTypeComponent.s_Type.MATRIX_COLUMN) {
-                basicType = deqpUtils.getDataTypeFloatVec(deqpUtils.getDataTypeMatrixNumRows(basicType));
+            if (element.type == gluVarTypeUtil.VarTypeComponent.s_Type.MATRIX_COLUMN) {
+                basicType = gluShaderUtil.getDataTypeFloatVec(gluShaderUtil.getDataTypeMatrixNumRows(basicType));
                 element = array[++pathIter];
             }
 
-            if (pathIter != end && pathIter.type == VarTypeComponent.s_Type.VECTOR_COMPONENT) {
-                basicType = deqpUtils.getDataTypeScalarType(basicType);
+            if (pathIter != end && element.type == gluVarTypeUtil.VarTypeComponent.s_Type.VECTOR_COMPONENT) {
+                basicType = gluShaderUtil.getDataTypeScalarTypeAsDataType(basicType);
                 element = array[++pathIter];
             }
 
@@ -560,36 +595,36 @@ define([
             /* TODO: Original code created an object copy. We are returning reference to the same object */
             return curType;
         }
-    });
+    };
 
-    var parseVariableName = (function(nameWithPath) {
-        var tokenizer = new VarTokenizer(nameWithPath);
-        if (tokenizer.getToken() != VarTokenizer.s_Token.IDENTIFIER) {
+    gluVarTypeUtil.parseVariableName = function(nameWithPath) {
+        var tokenizer = new gluVarTypeUtil.VarTokenizer(nameWithPath);
+        if (tokenizer.getToken() != gluVarTypeUtil.VarTokenizer.s_Token.IDENTIFIER) {
             throw new Error('Not an identifier.');
         }
         return tokenizer.getIdentifier();
-    });
+    };
 
     // returns an array (TypeComponentVector& path)
     // params: const char*, const VarType&
-    var parseTypePath = (function(nameWithPath, type) {
+    gluVarTypeUtil.parseTypePath = function(nameWithPath, type) {
 
-        var tokenizer = new VarTokenizer(nameWithPath);
+        var tokenizer = new gluVarTypeUtil.VarTokenizer(nameWithPath);
 
-        if (tokenizer.getToken() == VarTokenizer.s_Token.IDENTIFIER) {
+        if (tokenizer.getToken() == gluVarTypeUtil.VarTokenizer.s_Token.IDENTIFIER) {
             tokenizer.advance();
         }
 
         var path = [];
 
-        while (tokenizer.getToken() != VarTokenizer.s_Token.END) {
+        while (tokenizer.getToken() != gluVarTypeUtil.VarTokenizer.s_Token.END) {
 
-            var curType = getVarType(type, path);
+            var curType = gluVarTypeUtil.getVarType(type, path);
 
-            if (tokenizer.getToken() == VarTokenizer.s_Token.PERIOD) {
+            if (tokenizer.getToken() == gluVarTypeUtil.VarTokenizer.s_Token.PERIOD) {
 
                 tokenizer.advance();
-                if (tokenizer.getToken() != VarTokenizer.s_Token.IDENTIFIER) {
+                if (tokenizer.getToken() != gluVarTypeUtil.VarTokenizer.s_Token.IDENTIFIER) {
                     throw new Error();
                 }
                 if (!curType.isStructType()) {
@@ -610,29 +645,29 @@ define([
                     throw new Error('Member not found in type: ' + memberName);
                 }
 
-                path.push(VarTypeComponent(VarTypeComponent.s_Type.STRUCT_MEMBER, ndx));
+                path.push(new gluVarTypeUtil.VarTypeComponent(gluVarTypeUtil.VarTypeComponent.s_Type.STRUCT_MEMBER, ndx));
                 tokenizer.advance();
 
-            } else if (tokenizer.getToken() == VarTokenizer.s_Token.LEFT_BRACKET) {
+            } else if (tokenizer.getToken() == gluVarTypeUtil.VarTokenizer.s_Token.LEFT_BRACKET) {
 
                 tokenizer.advance();
-                if (tokenizer.getToken() != VarTokenizer.s_Token.TOKEN_NUMBER) {
+                if (tokenizer.getToken() != gluVarTypeUtil.VarTokenizer.s_Token.NUMBER) {
                     throw new Error();
                 }
 
                 var ndx = tokenizer.getNumber();
 
                 if (curType.isArrayType()) {
-                    if (!inBounds(ndx, 0, curType.getArraySize())) throw new Error;
-                    path.push(VarTypeComponent(VarTypeComponent.s_Type.ARRAY_ELEMENT, ndx));
+                    if (!gluVarTypeUtil.inBounds(ndx, 0, curType.getArraySize())) throw new Error;
+                    path.push(new gluVarTypeUtil.VarTypeComponent(gluVarTypeUtil.VarTypeComponent.s_Type.ARRAY_ELEMENT, ndx));
 
-                } else if (curType.isBasicType() && deqpUtils.isDataTypeMatrix(curType.getBasicType())) {
-                    if (!inBounds(ndx, 0, deqpUtils.getDataTypeMatrixNumColumns(curType.getBasicType()))) throw new Error;
-                    path.push(VarTypeComponent(VarTypeComponent.s_Type.MATRIX_COLUMN, ndx));
+                } else if (curType.isBasicType() && gluShaderUtil.isDataTypeMatrix(curType.getBasicType())) {
+                    if (!gluVarTypeUtil.inBounds(ndx, 0, gluShaderUtil.getDataTypeMatrixNumColumns(curType.getBasicType()))) throw new Error;
+                    path.push(new gluVarTypeUtil.VarTypeComponent(gluVarTypeUtil.VarTypeComponent.s_Type.MATRIX_COLUMN, ndx));
 
-                } else if (curType.isBasicType() && deqpUtils.isDataTypeVector(curType.getBasicType())) {
-                    if (!inBounds(ndx, 0, deqpUtils.getDataTypeScalarSize(curType.getBasicType()))) throw new Error;
-                    path.push(VarTypeComponent(VarTypeComponent.s_Type.VECTOR_COMPONENT, ndx));
+                } else if (curType.isBasicType() && gluShaderUtil.isDataTypeVector(curType.getBasicType())) {
+                    if (!gluVarTypeUtil.inBounds(ndx, 0, gluShaderUtil.getDataTypeScalarSize(curType.getBasicType()))) throw new Error;
+                    path.push(new gluVarTypeUtil.VarTypeComponent(gluVarTypeUtil.VarTypeComponent.s_Type.VECTOR_COMPONENT, ndx));
 
                 } else {
                     //TCU_FAIL
@@ -640,7 +675,7 @@ define([
                 }
 
                 tokenizer.advance();
-                if (tokenizer.getToken() != VarTokenizer.s_Token.RIGHT_BRACKET) {
+                if (tokenizer.getToken() != gluVarTypeUtil.VarTokenizer.s_Token.RIGHT_BRACKET) {
                     throw new Error('Expected token RIGHT_BRACKET');
                 }
                 tokenizer.advance();
@@ -653,17 +688,6 @@ define([
 
         return path;
 
-    });
-
-    return {
-        BasicTypeIterator: BasicTypeIterator,
-        VectorTypeIterator: VectorTypeIterator,
-        ScalarTypeIterator: ScalarTypeIterator,
-        VarTypeComponent: VarTypeComponent,
-        getVarType: getVarType,
-        parseVariableName: parseVariableName,
-        parseTypePath: parseTypePath,
-        VarTokenizer: VarTokenizer
     };
 
 });

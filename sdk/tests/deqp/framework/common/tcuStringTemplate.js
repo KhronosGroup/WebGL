@@ -18,25 +18,25 @@
  *
  */
 
-define(function() {
 'use strict';
+goog.provide('framework.common.tcuStringTemplate');
 
-var escapeRegExp = function(string) {
-    return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
+goog.scope(function() {
+
+var tcuStringTemplate = framework.common.tcuStringTemplate;
+
+tcuStringTemplate.escapeRegExp = function(string) {
+    return string.replace(/([.*+?^=!:$ {}()|\[\]\/\\])/g, '\\$1');
 };
 
-var specialize = function(str, params) {
+tcuStringTemplate.specialize = function(str, params) {
     var dst = str;
     for (var key in params) {
         var value = params[key];
-        var re = new RegExp(escapeRegExp('\$\{' + key + '\}'), 'g');
+        var re = new RegExp(tcuStringTemplate.escapeRegExp('\$\{' + key + '\}'), 'g');
         dst = dst.replace(re, value);
     }
     return dst;
-};
-
-return {
-    specialize: specialize
 };
 
 });
