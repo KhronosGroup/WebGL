@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
- * drawElements Quality Program OpenGL ES Utilities
+ * drawElements Quality gluShaderProgram.Program OpenGL ES Utilities
  * ------------------------------------------------
  *
  * Copyright 2014 The Android Open Source Project
@@ -18,79 +18,83 @@
  *
  */
 
-define(function() {
 'use strict';
+goog.provide('framework.opengl.gluShaderProgram');
+
+goog.scope(function() {
+
+var gluShaderProgram = framework.opengl.gluShaderProgram;
 
 /**
- * Shader type enum
+ * gluShaderProgram.Shader type enum
  * @enum {number}
  */
-var shaderType = {
+gluShaderProgram.shaderType = {
     VERTEX: 0,
     FRAGMENT: 1
 };
 
 /**
- * Get GL shader type from shaderType
- * @param {WebGLRenderingContext} gl WebGL context
- * @param {shaderType} type Shader Type
- * @return {WebGLRenderingContext.GLEnum} GL shader type
+ * Get GL shader type from gluShaderProgram.shaderType
+ * @param {WebGL2RenderingContext} gl WebGL context
+ * @param {gluShaderProgram.shaderType} type gluShaderProgram.Shader Type
+ * @return {number} GL shader type
  */
-var getGLShaderType = function(gl, type) {
+gluShaderProgram.getGLShaderType = function(gl, type) {
     var _glShaderType;
     switch (type) {
-    case shaderType.VERTEX: _glShaderType = gl.VERTEX_SHADER; break;
-    case shaderType.FRAGMENT: _glShaderType = gl.FRAGMENT_SHADER; break;
+    case gluShaderProgram.shaderType.VERTEX: _glShaderType = gl.VERTEX_SHADER; break;
+    case gluShaderProgram.shaderType.FRAGMENT: _glShaderType = gl.FRAGMENT_SHADER; break;
     default:
-        testFailedOptions('Unknown shader type ' + type, true);
+        throw new Error('Unknown shader type ' + type);
     }
-
     return _glShaderType;
 };
 
 /**
  * Declares shader information
  * @constructor
+ * @param {gluShaderProgram.shaderType} type
+ * @param {string=} source
  */
-var ShaderInfo = function(type, source) {
-    this.type = type;               /** Shader type. */
-    this.source = source;             /** Shader source. */
-    this.infoLog;            /** Compile info log. */
-    this.compileOk = false;  /** Did compilation succeed? */
-    this.compileTimeUs = 0;  /** Compile time in microseconds (us). */
+gluShaderProgram.ShaderInfo = function(type, source) {
+    this.type = type; /** gluShaderProgram.Shader type. */
+    this.source = source; /** gluShaderProgram.Shader source. */
+    this.infoLog; /** Compile info log. */
+    this.compileOk = false; /** Did compilation succeed? */
+    this.compileTimeUs = 0; /** Compile time in microseconds (us). */
 };
 
 /**
  * Generates vertex shader info from source
  * @param {string} source
- * @return {ShaderInfo} vertex shader info
+ * @return {gluShaderProgram.ShaderInfo} vertex shader info
  */
-var genVertexSource = function(source) {
-/** @type {ShaderInfo} */ var shader = new ShaderInfo(shaderType.VERTEX, source);
+gluShaderProgram.genVertexSource = function(source) {
+/** @type {gluShaderProgram.ShaderInfo} */ var shader = new gluShaderProgram.ShaderInfo(gluShaderProgram.shaderType.VERTEX, source);
     return shader;
 };
 
 /**
  * Generates fragment shader info from source
  * @param {string} source
- * @return {ShaderInfo} fragment shader info
+ * @return {gluShaderProgram.ShaderInfo} fragment shader info
  */
-var genFragmentSource = function(source) {
-/** @type {ShaderInfo} */ var shader = new ShaderInfo(shaderType.FRAGMENT, source);
+gluShaderProgram.genFragmentSource = function(source) {
+/** @type {gluShaderProgram.ShaderInfo} */ var shader = new gluShaderProgram.ShaderInfo(gluShaderProgram.shaderType.FRAGMENT, source);
     return shader;
 };
 
 /**
  * Generates shader from WebGL context and type
  * @constructor
- * @param {WebGLRenderingContext} gl WebGL context
- * @param {shaderType} type Shader Type
+ * @param {WebGL2RenderingContext} gl WebGL context
+ * @param {gluShaderProgram.shaderType} type gluShaderProgram.Shader Type
  */
-var Shader = function(gl, type) {
+gluShaderProgram.Shader = function(gl, type) {
     this.gl = gl;
-    this.info = new ShaderInfo();  /** Client-side clone of state for debug / perf reasons. */
-    this.info.type = type;
-    this.shader = gl.createShader(getGLShaderType(gl, type));
+    this.info = new gluShaderProgram.ShaderInfo(type); /** Client-side clone of state for debug / perf reasons. */
+    this.shader = gl.createShader(gluShaderProgram.getGLShaderType(gl, type));
     assertMsgOptions(gl.getError() == gl.NO_ERROR, 'glCreateShader()', false, true);
 
     this.setSources = function(source) {
@@ -128,10 +132,10 @@ var Shader = function(gl, type) {
 
 };
 /**
- * Creates ProgramInfo
+ * Creates gluShaderProgram.ProgramInfo
  * @constructor
  */
-var ProgramInfo = function() {
+gluShaderProgram.ProgramInfo = function() {
     /** @type {string} */ var infoLog;
     /** @type {boolean} */ var linkOk = false;
     /** @type {number} */ var linkTimeUs = 0;
@@ -141,109 +145,127 @@ var ProgramInfo = function() {
  * Creates program.
  * Inner methods: attach shaders, bind attributes location, link program and transform Feedback Varyings
  * @constructor
- * @param {WebGLRenderingContext} gl WebGL context
- * @param {WebGLProgram} programID
+ * @param {WebGL2RenderingContext} gl WebGL context
+ * @param {WebGLProgram=} programID
  */
-var Program = function(gl, programID) {
+gluShaderProgram.Program = function(gl, programID) {
     this.gl = gl;
-    this.program = programID;
-    this.info = new ProgramInfo();
+    this.program = programID || null;
+    this.info = new gluShaderProgram.ProgramInfo();
 
-    if (programID == null) {
+    if (!programID) {
         this.program = gl.createProgram();
         assertMsgOptions(gl.getError() == gl.NO_ERROR, 'glCreateProgram()', false, true);
     }
+};
 
-    this.attachShader = function(shader) {
-        this.gl.attachShader(this.program, shader);
-        assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.attachShader()', false, true);
-    };
+/**
+ * @param {WebGLShader} shader
+ */
+gluShaderProgram.Program.prototype.attachShader = function(shader) {
+    this.gl.attachShader(this.program, shader);
+    assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.attachShader()', false, true);
+};
 
-    this.bindAttribLocation = function(location, name) {
-        this.gl.bindAttribLocation(this.program, location, name);
-        assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.bindAttribLocation()', false, true);
-    };
+/**
+ * @param {number} location
+ * @param {string} name
+ */
+gluShaderProgram.Program.prototype.bindAttribLocation = function(location, name) {
+    this.gl.bindAttribLocation(this.program, location, name);
+    assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.bindAttribLocation()', false, true);
+};
 
-    this.link = function() {
-        this.info.linkOk = false;
-        this.info.linkTimeUs = 0;
-        this.info.infoLog = '';
+gluShaderProgram.Program.prototype.link = function() {
+    this.info.linkOk = false;
+    this.info.linkTimeUs = 0;
+    this.info.infoLog = '';
 
-        /** @type {Date} */ var linkStart = new Date();
-        this.gl.linkProgram(this.program);
-        /** @type {Date} */ var linkEnd = new Date();
-        this.info.linkTimeUs = 1000 * (linkEnd.getTime() - linkStart.getTime());
+    /** @type {Date} */ var linkStart = new Date();
+    this.gl.linkProgram(this.program);
+    /** @type {Date} */ var linkEnd = new Date();
+    this.info.linkTimeUs = 1000 * (linkEnd.getTime() - linkStart.getTime());
 
-        assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'glLinkProgram()', false, true);
+    assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'glLinkProgram()', false, true);
 
-        var linkStatus = this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS);
-        assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.getProgramParameter()', false, true);
-        this.info.linkOk = linkStatus;
-        this.info.infoLog = this.gl.getProgramInfoLog(this.program);
-    };
+    var linkStatus = this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS);
+    assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.getProgramParameter()', false, true);
+    this.info.linkOk = linkStatus;
+    this.info.infoLog = this.gl.getProgramInfoLog(this.program);
+};
 
-    this.transformFeedbackVaryings = function(varyings, bufferMode) {
-        this.gl.transformFeedbackVaryings(this.program, varyings, bufferMode);
-        assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.transformFeedbackVaryings()', false, true);
-    };
+/**
+ * @param {Array<string>} varyings
+ * @param {number} bufferMode
+ */
+gluShaderProgram.Program.prototype.transformFeedbackVaryings = function(varyings, bufferMode) {
+    this.gl.transformFeedbackVaryings(this.program, varyings, bufferMode);
+    assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.transformFeedbackVaryings()', false, true);
 };
 
 /**
  * Assigns gl WebGL context and programSources. Declares array of shaders and new program()
  * @constructor
- * @param {WebGLRenderingContext} gl WebGL context
- * @param {ProgramSources} programSources
+ * @param {WebGL2RenderingContext} gl WebGL context
+ * @param {gluShaderProgram.ProgramSources} programSources
  */
-var ShaderProgram = function(gl, programSources) {
+gluShaderProgram.ShaderProgram = function(gl, programSources) {
     this.gl = gl;
     this.programSources = programSources;
     this.shaders = [];
-    this.program = new Program(gl);
-
-    this.getProgram = function() {
-        return this.program.program;
-        };
-
-    this.getProgramInfo = function() {
-        return this.program.info;
-    };
+    this.program = new gluShaderProgram.Program(gl);
 
     /** @type {boolean} */ this.shadersOK = true;
 
-        for (var i = 0; i < programSources.sources.length; i++) {
-        /** @type {Shader} */ var shader = new Shader(gl, programSources.sources[i].type);
-            shader.setSources(programSources.sources[i].source);
-            shader.compile();
-            this.shaders.push(shader);
-            this.shadersOK = this.shadersOK && shader.getCompileStatus();
-        }
+    for (var i = 0; i < programSources.sources.length; i++) {
+    /** @type {gluShaderProgram.Shader} */ var shader = new gluShaderProgram.Shader(gl, programSources.sources[i].type);
+        console.log('gluShaderProgram.Shader:\n' + programSources.sources[i].source);
+        shader.setSources(programSources.sources[i].source);
+        shader.compile();
+        this.shaders.push(shader);
+        this.shadersOK = this.shadersOK && shader.getCompileStatus();
+        console.log('Compile status: ' + shader.getCompileStatus());
+    }
 
-        if (this.shadersOK) {
-            for (var i = 0; i < this.shaders.length; i++)
-                this.program.attachShader(this.shaders[i].getShader());
+    if (this.shadersOK) {
+        for (var i = 0; i < this.shaders.length; i++)
+            this.program.attachShader(this.shaders[i].getShader());
 
-            for (var attrib in programSources.attribLocationBindings)
-                this.program.bindAttribLocation(programSources.attribLocationBindings[attrib], attrib);
+        for (var attrib in programSources.attribLocationBindings)
+            this.program.bindAttribLocation(programSources.attribLocationBindings[attrib], attrib);
 
-            if (programSources.transformFeedbackBufferMode)
-                if (programSources.transformFeedbackBufferMode === gl.NONE)
-                    assertMsgOptions(programSources.transformFeedbackVaryings.length === 0, 'Transform feedback sanity check', false, true);
-                else
-                    this.program.transformFeedbackVaryings(programSources.transformFeedbackVaryings, programSources.transformFeedbackBufferMode);
+        if (programSources.transformFeedbackBufferMode)
+            if (programSources.transformFeedbackBufferMode === gl.NONE)
+                assertMsgOptions(programSources.transformFeedbackVaryings.length === 0, 'Transform feedback sanity check', false, true);
+            else
+                this.program.transformFeedbackVaryings(programSources.transformFeedbackVaryings, programSources.transformFeedbackBufferMode);
 
-            /* TODO: GLES 3.1: set separable flag */
+        /* TODO: GLES 3.1: set separable flag */
 
-            this.program.link();
+        this.program.link();
 
-        }
-
+    }
 };
 
-ShaderProgram.prototype.isOk = function() {
+/**
+ * return {WebGLProgram}
+ */
+gluShaderProgram.ShaderProgram.prototype.getProgram = function() {
+    return this.program.program;
+    };
+
+/**
+ * @return {gluShaderProgram.ProgramInfo}
+ */
+gluShaderProgram.ShaderProgram.prototype.getProgramInfo = function() {
+    return this.program.info;
+};
+
+gluShaderProgram.ShaderProgram.prototype.isOk = function() {
     return this.shadersOK;
 };
 
-var containerTypes = {
+gluShaderProgram.containerTypes = {
     ATTRIB_LOCATION_BINDING: 0,
     TRANSFORM_FEEDBACK_MODE: 1,
     TRANSFORM_FEEDBACK_VARYING: 2,
@@ -253,160 +275,163 @@ var containerTypes = {
     PROGRAM_SOURCES: 6,
 
     CONTAINER_TYPE_LAST: 7,
-    ATTACHABLE_BEGIN: 0,     // ATTRIB_LOCATION_BINDING
+    ATTACHABLE_BEGIN: 0, // ATTRIB_LOCATION_BINDING
     ATTACHABLE_END: 5 + 1 // PROGRAM_SEPARABLE + 1
 };
 
-var AttribLocationBinding = function(name, location) {
+/**
+ * @constructor
+ */
+gluShaderProgram.AttribLocationBinding = function(name, location) {
     this.name = name;
     this.location = location;
 
     this.getContainerType = function() {
-        return containerTypes.ATTRIB_LOCATION_BINDING;
-    };
-};
-
-var TransformFeedbackMode = function(mode) {
-    this.mode = mode;
-
-    this.getContainerType = function() {
-        return containerTypes.TRANSFORM_FEEDBACK_MODE;
-    };
-};
-
-var TransformFeedbackVarying = function(name) {
-    this.name = name;
-
-    this.getContainerType = function() {
-        return containerTypes.TRANSFORM_FEEDBACK_VARYING;
-    };
-};
-
-var TransformFeedbackVaryings = function(array) {
-    this.array = array;
-
-    this.getContainerType = function() {
-        return containerTypes.TRANSFORM_FEEDBACK_VARYINGS;
-    };
-};
-
-var ProgramSeparable = function(separable) {
-    this.separable = separable;
-
-    this.getContainerType = function() {
-        return containerTypes.PROGRAM_SEPARABLE;
-    };
-};
-
-var VertexSource = function(str) {
-    this.shaderType = shaderType.VERTEX;
-    this.source = str;
-
-    this.getContainerType = function() {
-        return containerTypes.SHADER_SOURCE;
-    };
-};
-
-var FragmentSource = function(str) {
-    this.shaderType = shaderType.FRAGMENT;
-    this.source = str;
-
-    this.getContainerType = function() {
-        return containerTypes.SHADER_SOURCE;
+        return gluShaderProgram.containerTypes.ATTRIB_LOCATION_BINDING;
     };
 };
 
 /**
- * Create ProgramSources.
  * @constructor
  */
-var ProgramSources = function() {
-    /** @type {Array.<ShaderInfo>} */ this.sources = [];
-    this.attribLocalBindings = [];
+gluShaderProgram.TransformFeedbackMode = function(mode) {
+    this.mode = mode;
+
+    this.getContainerType = function() {
+        return gluShaderProgram.containerTypes.TRANSFORM_FEEDBACK_MODE;
+    };
+};
+
+/**
+ * @constructor
+ */
+gluShaderProgram.TransformFeedbackVarying = function(name) {
+    this.name = name;
+
+    this.getContainerType = function() {
+        return gluShaderProgram.containerTypes.TRANSFORM_FEEDBACK_VARYING;
+    };
+};
+
+/**
+ * @constructor
+ */
+gluShaderProgram.TransformFeedbackVaryings = function(array) {
+    this.array = array;
+
+    this.getContainerType = function() {
+        return gluShaderProgram.containerTypes.TRANSFORM_FEEDBACK_VARYINGS;
+    };
+};
+
+/**
+ * @constructor
+ */
+gluShaderProgram.ProgramSeparable = function(separable) {
+    this.separable = separable;
+
+    this.getContainerType = function() {
+        return gluShaderProgram.containerTypes.PROGRAM_SEPARABLE;
+    };
+};
+
+/**
+ * @constructor
+ */
+gluShaderProgram.VertexSource = function(str) {
+    this.shaderType = gluShaderProgram.shaderType.VERTEX;
+    this.source = str;
+
+    this.getContainerType = function() {
+        return gluShaderProgram.containerTypes.SHADER_SOURCE;
+    };
+};
+
+/**
+ * @constructor
+ */
+gluShaderProgram.FragmentSource = function(str) {
+    this.shaderType = gluShaderProgram.shaderType.FRAGMENT;
+    this.source = str;
+
+    this.getContainerType = function() {
+        return gluShaderProgram.containerTypes.SHADER_SOURCE;
+    };
+};
+
+/**
+ * Create gluShaderProgram.ProgramSources.
+ * @constructor
+ */
+gluShaderProgram.ProgramSources = function() {
+    /** @type {Array<gluShaderProgram.ShaderInfo>} */ this.sources = [];
+    this.attribLocationBindings = [];
     this.transformFeedbackVaryings = [];
     this.transformFeedbackBufferMode = 0;
     this.separable = false;
+};
 
-    this.getContainerType = function() {
-        return containerTypes.PROGRAM_SOURCES;
-    };
+gluShaderProgram.ProgramSources.prototype.getContainerType = function() {
+    return gluShaderProgram.containerTypes.PROGRAM_SOURCES;
+};
 
-    this.add = function(item) {
-
-        var type = 'undefined';
-        if (typeof(item.getContainerType) == 'function') {
-            type = item.getContainerType();
-            if (
-                typeof(type) != 'number' ||
-                type < containerTypes.ATTACHABLE_BEGIN ||
-                type >= containerTypes.ATTACHABLE_END
-            ) {
-                type = 'undefined';
-            }
+gluShaderProgram.ProgramSources.prototype.add = function(item) {
+    var type = undefined;
+    if (typeof(item.getContainerType) == 'function') {
+        type = item.getContainerType();
+        if (
+            typeof(type) != 'number' ||
+            type < gluShaderProgram.containerTypes.ATTACHABLE_BEGIN ||
+            type >= gluShaderProgram.containerTypes.ATTACHABLE_END
+        ) {
+            type = undefined;
         }
+    }
 
-        switch (type) {
-            case containerTypes.ATTRIB_LOCATION_BINDING:
-                this.attribLocationBindings.push(item);
-                break;
+    switch (type) {
+        case gluShaderProgram.containerTypes.ATTRIB_LOCATION_BINDING:
+            this.attribLocationBindings.push(item);
+            break;
 
-            case containerTypes.TRANSFORM_FEEDBACK_MODE:
-                this.transformFeedbackBufferMode = item.mode;
-                break;
+        case gluShaderProgram.containerTypes.TRANSFORM_FEEDBACK_MODE:
+            this.transformFeedbackBufferMode = item.mode;
+            break;
 
-            case containerTypes.TRANSFORM_FEEDBACK_VARYING:
-                this.transformFeedbackVaryings.push(item);
-                break;
+        case gluShaderProgram.containerTypes.TRANSFORM_FEEDBACK_VARYING:
+            this.transformFeedbackVaryings.push(item);
+            break;
 
-            case containerTypes.TRANSFORM_FEEDBACK_VARYINGS:
-                this.transformFeedbackVaryings.concat(item);
-                break;
+        case gluShaderProgram.containerTypes.TRANSFORM_FEEDBACK_VARYINGS:
+            this.transformFeedbackVaryings.concat(item);
+            break;
 
-            case containerTypes.SHADER_SOURCE:
-                this.sources.push(new ShaderInfo(item.shaderType, item.source));
-                break;
+        case gluShaderProgram.containerTypes.SHADER_SOURCE:
+            this.sources.push(new gluShaderProgram.ShaderInfo(item.shaderType, item.source));
+            break;
 
-            case containerTypes.PROGRAM_SEPARABLE:
-                this.separable = item.separable;
-                break;
+        case gluShaderProgram.containerTypes.PROGRAM_SEPARABLE:
+            this.separable = item.separable;
+            break;
 
-            default:
-                throw Error('Type \"' + type + '\" cannot be added to ProgramSources.');
-                break;
-        }
+        default:
+            throw new Error('Type \"' + type + '\" cannot be added to gluShaderProgram.ProgramSources.');
+            break;
+    }
 
-        return this;
-    };
+    return this;
 };
 
 /**
  * //! Helper for constructing vertex-fragment source pair.
  * @param {string} vertexSrc
  * @param {string} fragmentSrc
- * @return {ProgramSources}
+ * @return {gluShaderProgram.ProgramSources}
  */
-var makeVtxFragSources = function(vertexSrc, fragmentSrc) {
-    /** @type  {ProgramSources} */ var sources = new ProgramSources();
-    sources.sources.push(genVertexSource(vertexSrc));
-    sources.sources.push(genFragmentSource(fragmentSrc));
+gluShaderProgram.makeVtxFragSources = function(vertexSrc, fragmentSrc) {
+    /** @typeÂ  {gluShaderProgram.ProgramSources} */ var sources = new gluShaderProgram.ProgramSources();
+    sources.sources.push(gluShaderProgram.genVertexSource(vertexSrc));
+    sources.sources.push(gluShaderProgram.genFragmentSource(fragmentSrc));
     return sources;
-};
-
-return {
-    ShaderProgram: ShaderProgram,
-    shaderType: shaderType,
-    genVertexSource: genVertexSource,
-    genFragmentSource: genFragmentSource,
-    containerTypes: containerTypes,
-    AttribLocationBinding: AttribLocationBinding,
-    TransformFeedbackMode: TransformFeedbackMode,
-    TransformFeedbackVarying: TransformFeedbackVarying,
-    TransformFeedbackVaryings: TransformFeedbackVaryings,
-    VertexSource: VertexSource,
-    FragmentSource: FragmentSource,
-    ProgramSeparable: ProgramSeparable,
-    ProgramSources: ProgramSources,
-    makeVtxFragSources: makeVtxFragSources
 };
 
 });

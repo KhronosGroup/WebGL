@@ -18,9 +18,14 @@
  *
  */
 
-define(function() {
+'use strict';
+goog.provide('framework.opengl.gluStrUtil');
 
-var getPixelFormatName = function(value) {
+goog.scope(function() {
+
+var gluStrUtil = framework.opengl.gluStrUtil;
+
+gluStrUtil.getPixelFormatName = function(value) {
     switch (value) {
         case gl.LUMINANCE: return 'gl.LUMINANCE';
         case gl.LUMINANCE_ALPHA: return 'gl.LUMINANCE_ALPHA';
@@ -43,8 +48,8 @@ var getPixelFormatName = function(value) {
         case gl.RGBA32F: return 'gl.RGBA32F';
         case gl.RGBA32I: return 'gl.RGBA32I';
         case gl.RGBA32UI: return 'gl.RGBA32UI';
-        case gl.RGBA16: return 'gl.RGBA16';
-        case gl.RGBA16_SNORM: return 'gl.RGBA16_SNORM';
+        // case gl.RGBA16: return 'gl.RGBA16';
+        // case gl.RGBA16_SNORM: return 'gl.RGBA16_SNORM';
         case gl.RGBA16F: return 'gl.RGBA16F';
         case gl.RGBA16I: return 'gl.RGBA16I';
         case gl.RGBA16UI: return 'gl.RGBA16UI';
@@ -60,8 +65,8 @@ var getPixelFormatName = function(value) {
         case gl.RGB32F: return 'gl.RGB32F';
         case gl.RGB32I: return 'gl.RGB32I';
         case gl.RGB32UI: return 'gl.RGB32UI';
-        case gl.RGB16: return 'gl.RGB16';
-        case gl.RGB16_SNORM: return 'gl.RGB16_SNORM';
+        // case gl.RGB16: return 'gl.RGB16';
+        // case gl.RGB16_SNORM: return 'gl.RGB16_SNORM';
         case gl.RGB16F: return 'gl.RGB16F';
         case gl.RGB16I: return 'gl.RGB16I';
         case gl.RGB16UI: return 'gl.RGB16UI';
@@ -73,8 +78,8 @@ var getPixelFormatName = function(value) {
         case gl.RG32F: return 'gl.RG32F';
         case gl.RG32I: return 'gl.RG32I';
         case gl.RG32UI: return 'gl.RG32UI';
-        case gl.RG16: return 'gl.RG16';
-        case gl.RG16_SNORM: return 'gl.RG16_SNORM';
+        // case gl.RG16: return 'gl.RG16';
+        // case gl.RG16_SNORM: return 'gl.RG16_SNORM';
         case gl.RG16F: return 'gl.RG16F';
         case gl.RG16I: return 'gl.RG16I';
         case gl.RG16UI: return 'gl.RG16UI';
@@ -85,8 +90,8 @@ var getPixelFormatName = function(value) {
         case gl.R32F: return 'gl.R32F';
         case gl.R32I: return 'gl.R32I';
         case gl.R32UI: return 'gl.R32UI';
-        case gl.R16: return 'gl.R16';
-        case gl.R16_SNORM: return 'gl.R16_SNORM';
+        // case gl.R16: return 'gl.R16';
+        // case gl.R16_SNORM: return 'gl.R16_SNORM';
         case gl.R16F: return 'gl.R16F';
         case gl.R16I: return 'gl.R16I';
         case gl.R16UI: return 'gl.R16UI';
@@ -98,15 +103,15 @@ var getPixelFormatName = function(value) {
         case gl.DEPTH_COMPONENT24: return 'gl.DEPTH_COMPONENT24';
         case gl.DEPTH32F_STENCIL8: return 'gl.DEPTH32F_STENCIL8';
         case gl.DEPTH24_STENCIL8: return 'gl.DEPTH24_STENCIL8';
-        case gl.RGB10: return 'gl.RGB10';
-        case gl.DEPTH_COMPONENT32: return 'gl.DEPTH_COMPONENT32';
+        // case gl.RGB10: return 'gl.RGB10';
+        // case gl.DEPTH_COMPONENT32: return 'gl.DEPTH_COMPONENT32';
         case gl.SRGB: return 'gl.SRGB';
-        case gl.SRGB_ALPHA: return 'gl.SRGB_ALPHA';
+        // case gl.SRGB_ALPHA: return 'gl.SRGB_ALPHA';
         default: return '';
     }
 };
 
-var getTypeName = function(value) {
+gluStrUtil.getTypeName = function(value) {
     switch (value) {
         case gl.BYTE: return 'gl.BYTE';
         case gl.UNSIGNED_BYTE: return 'gl.UNSIGNED_BYTE';
@@ -115,7 +120,7 @@ var getTypeName = function(value) {
         case gl.INT: return 'gl.INT';
         case gl.UNSIGNED_INT: return 'gl.UNSIGNED_INT';
         case gl.FLOAT: return 'gl.FLOAT';
-        case gl.FIXED: return 'gl.FIXED';
+        // case gl.FIXED: return 'gl.FIXED';
         case gl.UNSIGNED_SHORT_5_6_5: return 'gl.UNSIGNED_SHORT_5_6_5';
         case gl.UNSIGNED_SHORT_4_4_4_4: return 'gl.UNSIGNED_SHORT_4_4_4_4';
         case gl.UNSIGNED_SHORT_5_5_5_1: return 'gl.UNSIGNED_SHORT_5_5_5_1';
@@ -128,14 +133,9 @@ var getTypeName = function(value) {
         case gl.FLOAT_32_UNSIGNED_INT_24_8_REV: return 'gl.FLOAT_32_UNSIGNED_INT_24_8_REV';
         case gl.SIGNED_NORMALIZED: return 'gl.SIGNED_NORMALIZED';
         case gl.UNSIGNED_NORMALIZED: return 'gl.UNSIGNED_NORMALIZED';
-        case gl.HALF_FLOAT_OES: return 'gl.HALF_FLOAT_OES';
+        // case gl.HALF_FLOAT_OES: return 'gl.HALF_FLOAT_OES';
         default: return '';
     }
-};
-
-return {
-    getPixelFormatName: getPixelFormatName,
-    getTypeName: getTypeName
 };
 
 });

@@ -21,8 +21,14 @@
 /**
  * This class allows one to create a random integer, floating point number or boolean (TODO, choose random items from a list and shuffle an array)
  */
-define(['framework/delibs/debase/deMath'], function(deMath) {
 'use strict';
+goog.provide('framework.delibs.debase.deString');
+goog.require('framework.delibs.debase.deMath');
+
+goog.scope(function() {
+
+var deString = framework.delibs.debase.deString;
+var deMath = framework.delibs.debase.deMath;
 
     var DE_ASSERT = function(x) {
         if (!x)
@@ -31,25 +37,25 @@ define(['framework/delibs/debase/deMath'], function(deMath) {
 
     /**
      * Compute hash from string.
-     * @param {string} str String to compute hash value for.
-     * @return {deMath.deUint32} Computed hash value.
+     * @param {?string} str String to compute hash value for.
+     * @return {number} Computed hash value.
      */
-    var deStringHash = function(str) {
+    deString.deStringHash = function(str) {
         /* \note [pyry] This hash is used in DT_GNU_HASH and is proven
         to be robust for symbol hashing. */
         /* \see http://sources.redhat.com/ml/binutils/2006-06/msg00418.html */
-        /** @type {deMath.deUint32} */ var hash = 5381;
-        /** @type {deMath.deUint32} */ var c;
+        /** @type {number} */ var hash = 5381;
+        /** @type {number} */ var c;
 
         DE_ASSERT(str != undefined);
-        var i = 0;
-        while (i < str.length) //(c = (unsigned int)*str++) != 0)
-        {
-            c = str.charCodeAt(i); //trunc to 8-bit
-            hash = (hash << 5) + hash + c;
-            i++;
+        if (str !== null) {
+            var i = 0;
+            while (i < str.length) { //(c = (unsigned int)*str++) != 0)
+                c = str.charCodeAt(i); //trunc to 8-bit
+                hash = (hash << 5) + hash + c;
+                i++;
+            }
         }
-
         return hash;
     };
 
@@ -58,15 +64,10 @@ define(['framework/delibs/debase/deMath'], function(deMath) {
      * @param {string} str
      * @return {boolean}
      */
-    var deIsStringEmpty = function(str) {
+    deString.deIsStringEmpty = function(str) {
         if (str === undefined || str.length == 0)
             return true;
         return false;
-    };
-
-    return {
-        deStringHash: deStringHash,
-        deIsStringEmpty: deIsStringEmpty
     };
 
 });

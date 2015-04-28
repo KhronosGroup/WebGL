@@ -18,401 +18,454 @@
  *
  */
 
-define(['framework/opengl/gluShaderUtil'], function(deqpUtils) {
-    'use strict';
+'use strict';
+goog.provide('framework.opengl.gluVarType');
+goog.require('framework.opengl.gluShaderUtil');
 
-    var DE_ASSERT = function(x) {
-        if (!x)
-            throw new Error('Assert failed');
-    };
+goog.scope(function() {
+
+    var gluVarType = framework.opengl.gluVarType;
+    var gluShaderUtil = framework.opengl.gluShaderUtil;
 
     /**
-    * VarType types enum
+    * gluVarType.VarType types enum
     * @enum {number}
     */
-    var Type = {
+    gluVarType.Type = {
        TYPE_BASIC: 0,
        TYPE_ARRAY: 1,
        TYPE_STRUCT: 2
     };
 
     /**
-    * TypeArray struct
-    * @param {VarType} elementType
+    * gluVarType.TypeArray struct
+    * @param {gluVarType.VarType} elementType
     * @param {number} arraySize
+    * @constructor
     */
-    var TypeArray = function(elementType, arraySize) {
-       /** @type {VarType} */ this.elementType = elementType;
+    gluVarType.TypeArray = function(elementType, arraySize) {
+       /** @type {gluVarType.VarType} */ this.elementType = gluVarType.newClone(elementType);
        /** @type {number} */ this.size = arraySize;
     };
 
     /**
-    * VarType class
-    */
-    var VarType = function() {
-       /** @type {Type} */ this.m_type = undefined;
-       /** @type {deMath.deUint32} */ this.m_flags = 0;
+     * gluVarType.VarType class
+     * @constructor
+     */
+    gluVarType.VarType = function() {
+        /**
+         * @type {gluShaderUtil.precision}
+         * @private
+         */
+        this.m_flags;
 
-       /*
-        * m_data used to be a 'Data' union in C++. Using a var is enough here.
-        * it will contain any necessary value.
+        /**
+         * @type {number}
+         * @private
+         */
+        this.m_type = -1;
+
+        /**
+         * m_data used to be a 'Data' union in C++. Using a var is enough here.
+         * it will contain any necessary value.
+         * case TYPE_BASIC: number
+         * case TYPE_ARRAY: gluVarType.TypeArray
+         * case TYPE_STRUCT: gluVarType.StructType
+         * @private
+         * @type {(number|gluVarType.TypeArray|gluVarType.StructType)}
         */
-       /** @type {(deqpUtils.DataType|TypeArray|StructType)} */
-       this.m_data = undefined;
+        this.m_data = null;
     };
 
-    VarType.UNSIZED_ARRAY = -1;
+    gluVarType.VarType.UNSIZED_ARRAY = -1;
 
     /**
-    * Creates a basic type VarType. Use this after the constructor call.
-    * @param {deqpUtils.DataType} basicType
-    * @param {deMath.deUint32} flags
-    * @return {VarType} The currently modified object
-    */
-    VarType.prototype.VarTypeBasic = function(basicType, flags) {
-       this.m_type = Type.TYPE_BASIC;
-       this.m_flags = flags;
-       this.m_data = basicType;
+     * Creates a basic type gluVarType.VarType. Use this after the constructor call.
+     * @param {number} basicType
+     * @param {gluShaderUtil.precision} flags
+     * @return {gluVarType.VarType} The currently modified object
+     */
+    gluVarType.VarType.prototype.VarTypeBasic = function(basicType, flags) {
+        this.m_type = gluVarType.Type.TYPE_BASIC;
+        this.m_flags = flags;
+        this.m_data = basicType;
 
-       return this;
-    };
-
-    /**
-    * Creates an array type VarType. Use this after the constructor call.
-    * @param {VarType} elementType
-    * @param {number} arraySize
-    * @return {VarType} The currently modified object
-    */
-    VarType.prototype.VarTypeArray = function(elementType, arraySize) {
-       this.m_type = Type.TYPE_ARRAY;
-       this.m_flags = 0;
-       this.m_data = new TypeArray(elementType, arraySize);
-
-       return this;
+        return this;
     };
 
     /**
-    * Creates a struct type VarType. Use this after the constructor call.
-    * @param {StructType} structPtr
-    * @return {VarType} The currently modified object
-    */
-    VarType.prototype.VarTypeStruct = function(structPtr) {
-       this.m_type = Type.TYPE_STRUCT;
-       this.m_flags = 0;
-       this.m_data = structPtr;
+     * Creates an array type gluVarType.VarType. Use this after the constructor call.
+     * @param {gluVarType.VarType} elementType
+     * @param {number} arraySize
+     * @return {gluVarType.VarType} The currently modified object
+     */
+    gluVarType.VarType.prototype.VarTypeArray = function(elementType, arraySize) {
+        this.m_type = gluVarType.Type.TYPE_ARRAY;
+        if (!(arraySize >= 0 || arraySize == gluVarType.VarType.UNSIZED_ARRAY))
+            throw new Error('Illegal array size: ' + arraySize);
+        this.m_data = new gluVarType.TypeArray(elementType, arraySize);
 
-       return this;
+        return this;
+    };
+
+    /**
+     * Creates a struct type gluVarType.VarType. Use this after the constructor call.
+     * @param {gluVarType.StructType} structPtr
+     * @return {gluVarType.VarType} The currently modified object
+     */
+    gluVarType.VarType.prototype.VarTypeStruct = function(structPtr) {
+        this.m_type = gluVarType.Type.TYPE_STRUCT;
+        this.m_data = structPtr;
+
+        return this;
+    };
+
+    /**
+     * Creates a gluVarType.VarType, the same type as the passed in object.
+     * Use this after the constructor call.
+     * @param {gluVarType.VarType} object
+     * @return {gluVarType.VarType} The currently modified object
+     */
+    gluVarType.VarType.prototype.VarTypeClone = function(object) {
+
+        this.m_type = object.m_type;
+
+        switch (this.m_type) {
+          case gluVarType.Type.TYPE_BASIC:
+            this.m_flags = object.m_flags;
+            this.m_data = object.m_data;
+            break;
+          case gluVarType.Type.TYPE_BASIC:
+            this.m_data = new gluVarType.TypeArray(object.m_data.elementType, object.m_data.size);
+            break;
+          case gluVarType.Type.TYPE_STRUCT:
+            this.m_data = object.m_data;
+            break;
+          default:
+            throw new Error('unknown type: ' + this.m_type);
+        }
+
+        return this;
     };
 
     /** isBasicType
-    * @return {boolean} true if the VarType represents a basic type.
-    */
-    VarType.prototype.isBasicType = function() {
-       return this.m_type == Type.TYPE_BASIC;
+     * @return {boolean} true if the gluVarType.VarType represents a basic type.
+     */
+    gluVarType.VarType.prototype.isBasicType = function() {
+        return this.m_type == gluVarType.Type.TYPE_BASIC;
     };
 
     /** isArrayType
-    * @return {boolean} true if the VarType represents an array.
-    */
-    VarType.prototype.isArrayType = function() {
-       return this.m_type == Type.TYPE_ARRAY;
+     * @return {boolean} true if the gluVarType.VarType represents an array.
+     */
+    gluVarType.VarType.prototype.isArrayType = function() {
+        return this.m_type == gluVarType.Type.TYPE_ARRAY;
     };
 
     /** isStructType
-    * @return {boolean} true if the VarType represents a struct.
-    */
-    VarType.prototype.isStructType = function() {
-       return this.m_type == Type.TYPE_STRUCT;
+     * @return {boolean} true if the gluVarType.VarType represents a struct.
+     */
+    gluVarType.VarType.prototype.isStructType = function() {
+        return this.m_type == gluVarType.Type.TYPE_STRUCT;
     };
 
     /** getFlags
-    * @return {deUint32} returns the flags of the VarType.
-    */
-    VarType.prototype.getFlags = function() {
-       return this.m_flags;
+     * @return {number} returns the flags of the gluVarType.VarType.
+     */
+    gluVarType.VarType.prototype.getFlags = function() {
+        return this.m_flags;
     };
 
     /** getBasicType
-    * @return {deqpUtils.DataType} returns the basic data type of the VarType.
-    */
-    VarType.prototype.getBasicType = function() {
-       return this.m_data;
-    };
-
-    /** getElementType
-    * @return {VarType} returns the VarType of the element in case of an Array.
-    */
-    VarType.prototype.getElementType = function() {
-       return this.m_data.elementType;
-    };
-
-    /** getArraySize
-    * (not to be confused with a javascript array)
-    * @return {number} returns the size of the array in case it is an array.
-    */
-    VarType.prototype.getArraySize = function() {
-       return this.m_data.size;
-    };
-
-    /** getStruct
-    * @return {StructType} returns the structure when it is a StructType.
-    */
-    VarType.prototype.getStruct = function() {
-       return this.m_data;
+     * @return {gluShaderUtil.DataType<number>} returns the basic data type of the gluVarType.VarType.
+     */
+    gluVarType.VarType.prototype.getBasicType = function() {
+        if (!this.isBasicType())
+            throw new Error('VarType is not a basic type.');
+        return /** @type {gluShaderUtil.DataType<number>} */ (this.m_data);
     };
 
     /** getPrecision
-    * @return {StructType} returns the precision flag name.
-    */
-    VarType.prototype.getPrecision = function() {
+     * @return {gluShaderUtil.precision} returns the precision flag.
+     */
+    gluVarType.VarType.prototype.getPrecision = function() {
+        if (!this.isBasicType())
+            throw new Error('VarType is not a basic type.');
         return this.m_flags;
      };
 
+    /** getElementType
+     * @return {gluVarType.VarType} returns the gluVarType.VarType of the element in case of an Array.
+     */
+    gluVarType.VarType.prototype.getElementType = function() {
+        if (!this.isArrayType())
+            throw new Error('VarType is not an array type.');
+        return this.m_data.elementType;
+    };
+
+    /** getArraySize
+     * (not to be confused with a javascript array)
+     * @return {number} returns the size of the array in case it is an array.
+     */
+    gluVarType.VarType.prototype.getArraySize = function() {
+        if (!this.isArrayType())
+            throw new Error('VarType is not an array type.');
+        return this.m_data.size;
+    };
+
+    /** getStruct
+     * @return {gluVarType.StructType} returns the structure when it is a gluVarType.StructType.
+     */
+    gluVarType.VarType.prototype.getStruct = function() {
+        if (!this.isStructType())
+            throw new Error('VarType is not a struct type.');
+        return /** @type {gluVarType.StructType} */ (this.m_data);
+    };
+
     /**
-    * getScalarSize
-    * @return {number} size of the scalar
-    */
-    VarType.prototype.getScalarSize = function() {
-        switch (this.m_type)
-        {
-            case Type.TYPE_BASIC:
-            {
-                return deqpUtils.getDataTypeScalarSize(this.getBasicType());
+     * getScalarSize
+     * @return {number} size of the scalar
+     */
+    gluVarType.VarType.prototype.getScalarSize = function() {
+        switch (this.m_type) {
+            case gluVarType.Type.TYPE_BASIC: {
+                return gluShaderUtil.getDataTypeScalarSize(/** @type {gluShaderUtil.DataType} */(this.getBasicType()));
             }
 
             // TODO: check implementation below: return m_data.array.elementType->getScalarSize()*m_data.array.size;
-            case Type.TYPE_ARRAY:
-            {
-                /** @type {TypeArray} */ var m_data = this.m_data;
+            case gluVarType.Type.TYPE_ARRAY: {
+                /** @type {gluVarType.TypeArray} */ var m_data = /** @type {gluVarType.TypeArray} */(this.m_data);
                 return m_data.elementType.getScalarSize() * m_data.size;
             }
 
-            case Type.TYPE_STRUCT:
-            {
+            case gluVarType.Type.TYPE_STRUCT: {
                 var size = 0;
 
-                /** @type {StructType} */ var struct = this.m_data;
+                /** @type {gluVarType.StructType} */ var struct = /** @type {gluVarType.StructType} */ (this.m_data);
 
                 // TODO: check loop conditions below
-                // for (StructType::ConstIterator iter = m_data.structPtr->begin(); iter != m_data.structPtr->end(); iter++)
-                for (var iter = 0; struct.m_members[iter] < struct.getSize; iter++)
+                // for (gluVarType.StructType::ConstIterator iter = m_data.structPtr->begin(); iter != m_data.structPtr->end(); iter++)
+                for (var iter = 0; struct.m_members[iter] < struct.getSize(); iter++)
                     size += struct.getMember(iter).m_type.getScalarSize();
                 return size;
             }
 
             default:
-                // DE_ASSERT(false);
+                // throw new Error('Unexpected type.');
                 return 0;
         }
     };
 
     /**
     * is
-    * @return {bool} returns true if the current object is equivalent to other.
+    * @return {boolean} returns true if the current object is equivalent to other.
     */
-    VarType.prototype.is = function(other) {
+    gluVarType.VarType.prototype.is = function(other) {
         if (this.m_type != other.m_type)
             return false;
 
-        switch (this.m_type)
-        {
-            case Type.TYPE_BASIC:
-                return this.m_data.type == other.m_data.type &&
-                       this.m_data.precision == other.m_data.precision;
+        switch (this.m_type) {
+            case gluVarType.Type.TYPE_BASIC:
+                return this.m_data == other.m_data &&
+                       this.m_flags == other.m_flags;
 
-            case Type.TYPE_ARRAY:
+            case gluVarType.Type.TYPE_ARRAY:
                 return this.m_data.elementType == other.m_data.elementType &&
                        this.m_data.size == other.m_data.size;
 
-            case Type.TYPE_STRUCT:
+            case gluVarType.Type.TYPE_STRUCT:
                 return this.m_data === other.m_data;
 
             default:
-            //    DE_ASSERT(false);
+                // throw new Error('Unexpected type.');
                 return false;
         }
     };
 
     /**
     * isnt
-    * @return {bool} returns true if the current object is not equivalent to other.
+    * @return {boolean} returns true if the current object is not equivalent to other.
     */
-    VarType.prototype.isnt = function(other) {
+    gluVarType.VarType.prototype.isnt = function(other) {
         return !(this.is(other));
     };
 
     /**
-     * Creates a basic type VarType.
-     * @param {deqpUtils.DataType} basicType
-     * @param {deMath.deUint32} flags
-     * @return {VarType}
+     * Creates a basic type gluVarType.VarType.
+     * @param {gluShaderUtil.DataType} basicType
+     * @param {framework.opengl.gluShaderUtil.precision} flags
+     * @return {gluVarType.VarType}
      */
-    var newTypeBasic = function(basicType, flags) {
-       return new VarType().VarTypeBasic(basicType, flags);
+    gluVarType.newTypeBasic = function(basicType, flags) {
+       return new gluVarType.VarType().VarTypeBasic(basicType, flags);
     };
 
     /**
-    * Creates an array type VarType.
-    * @param {VarType} elementType
+    * Creates an array type gluVarType.VarType.
+    * @param {gluVarType.VarType} elementType
     * @param {number} arraySize
-    * @return {VarType}
+    * @return {gluVarType.VarType}
     */
-    var newTypeArray = function(elementType, arraySize) {
-       return new VarType().VarTypeArray(elementType, arraySize);
+    gluVarType.newTypeArray = function(elementType, arraySize) {
+       return new gluVarType.VarType().VarTypeArray(elementType, arraySize);
     };
 
     /**
-    * Creates a struct type VarType.
-    * @param {StructType} structPtr
-    * @return {VarType}
+    * Creates a struct type gluVarType.VarType.
+    * @param {gluVarType.StructType} structPtr
+    * @return {gluVarType.VarType}
     */
-    var newTypeStruct = function(structPtr) {
-        return new VarType().VarTypeStruct(structPtr);
+    gluVarType.newTypeStruct = function(structPtr) {
+        return new gluVarType.VarType().VarTypeStruct(structPtr);
     };
 
     /**
-     * StructMember class
+    * Creates a struct type gluVarType.VarType.
+    * @param {gluVarType.VarType} object
+    * @return {gluVarType.VarType}
+    */
+    gluVarType.newClone = function(object) {
+        return new gluVarType.VarType().VarTypeClone(object);
+    };
+
+    /**
+     * gluVarType.StructMember class
+     * @constructor
      */
-     var StructMember = function() {
-        /** @type {string} */ this.m_name;
-        /** @type {VarType} */ this.m_type;
-        /** @type {deMath.deUint32} */ // this.m_flags = 0; // only in glsUniformBlockCase
-     };
-
-     /**
-      * Creates a StructMember. Use this after the constructor call.
-      * @param {string} name
-      * @param {VarType} type
-      * @return {StructMember} The currently modified object
-      */
-      StructMember.prototype.Constructor = function(name, type) {
-         this.m_type = type;
-         this.m_name = name;
-         // this.m_flags = flags; // only in glsUniformBlockCase
-
-         return this;
-      };
-
-      /** getName
-       * @return {string} name of the StructMember object.
-       */
-      StructMember.prototype.getName = function() {
-          return this.m_name;
-       };
-
-      /** getType
-       * @return {string} type of the StructMember object.
-       */
-      StructMember.prototype.getType = function() {
-           return this.m_type;
-        };
-
-      /**  only in glsUniformBlockCase! getFlags
-      * @return {deMath.deUint32} the flags in the member
-      */
-      StructMember.prototype.getFlags = function() { return this.m_flags; };
-
-      /**
-       * Creates a StructMember.
-       * @param {string} name
-       * @param {VarType} type
-       * @return {StructMember}
-       */
-       var newStructMember = function(name, type) {
-           return new StructMember().Constructor(name, type);
-       };
-
-     /**
-      * StructType class
-      */
-      var StructType = function() {
-         /** @type {string} */ this.m_typeName = undefined;
-         /** @type {Array.<StructMember>} */ this.m_members = [];
-      };
+    gluVarType.StructMember = function() {
+       /** @type {string} */ this.m_name;
+       /** @type {gluVarType.VarType} */ this.m_type;
+       /** @type {number} */ // this.m_flags = 0; // only in glsUniformBlockCase
+    };
 
     /**
-     * Creates a StructType. Use this after the constructor call.
+     * Creates a gluVarType.StructMember. Use this after the constructor call.
      * @param {string} name
-     * @return {StructType} The currently modified object
+     * @param {gluVarType.VarType} type
+     * @return {gluVarType.StructMember} The currently modified object
      */
-      StructType.prototype.Constructor = function(name) {
-          /** @type {string}*/ this.m_typeName = this.setTypeName(name);
-          return this;
-     };
+    gluVarType.StructMember.prototype.Constructor = function(name, type) {
+        this.m_type = type;
+        this.m_name = name;
 
-     /** hasTypeName
-      * Checks if the StructType m_typeName is defined
-      * @return {boolean}
-      **/
-      StructType.prototype.hasTypeName = function() {
-         return (this.m_typeName !== 'undefined');
-     };
+        return this;
+    };
 
-     /** setTypeName
-      * @param {string} name
-      * @return {string} returns StructType.m_typeName
-      **/
-      StructType.prototype.setTypeName = function(name) {
-         return this.m_typeName = name;
-     };
+    /** getName
+     * @return {string} name of the gluVarType.StructMember object.
+     */
+    gluVarType.StructMember.prototype.getName = function() {
+        return this.m_name;
+    };
 
-     /** getTypeName
+    /** getType
+     * @return {gluVarType.VarType} type of the gluVarType.StructMember object.
+     */
+    gluVarType.StructMember.prototype.getType = function() {
+        return this.m_type;
+    };
+
+    /**
+     * Creates a gluVarType.StructMember.
+     * @param {string} name
+     * @param {gluVarType.VarType} type
+     * @return {gluVarType.StructMember}
+     */
+    gluVarType.newStructMember = function(name, type) {
+        return new gluVarType.StructMember().Constructor(name, type);
+    };
+
+    /**
+     * gluVarType.StructType class
+     * @constructor
+     */
+    gluVarType.StructType = function() {
+        /** @type {string} */ this.m_typeName = '';
+        /** @type {Array<gluVarType.StructMember>} */ this.m_members = [];
+    };
+
+    /**
+     * Creates a gluVarType.StructType. Use this after the constructor call.
+     * @param {string} name
+     * @return {gluVarType.StructType} The currently modified object
+     */
+    gluVarType.StructType.prototype.Constructor = function(name) {
+        /** @type {string}*/ this.m_typeName = this.setTypeName(name);
+        return this;
+    };
+
+    /** hasTypeName
+     * Checks if the gluVarType.StructType m_typeName is defined
+     * @return {boolean}
+     */
+    gluVarType.StructType.prototype.hasTypeName = function() {
+        return (this.m_typeName !== 'undefined');
+    };
+
+    /** setTypeName
+     * @param {string} name
+     * @return {string} returns gluVarType.StructType.m_typeName
+     */
+    gluVarType.StructType.prototype.setTypeName = function(name) {
+        return this.m_typeName = name;
+    };
+
+    /** getTypeName
      * @return {string}
-     **/
-     StructType.prototype.getTypeName = function() {
-         return this.m_typeName;
-     };
+     */
+    gluVarType.StructType.prototype.getTypeName = function() {
+        return this.m_typeName;
+    };
 
-     /** getNumMembers
+    /** getNumMembers
      * @return {number}
-     **/
-     StructType.prototype.getNumMembers = function() {
-         return this.m_members.length;
-     };
+     */
+    gluVarType.StructType.prototype.getNumMembers = function() {
+        return this.m_members.length;
+    };
 
-     /** getMember
+    /** getMember
      * @param {number} memberNdx The index of the member to retrieve.
-     * @return {StructMember}
-     **/
-     StructType.prototype.getMember = function(memberNdx) {
-         if (memberNdx >= 0 && memberNdx < this.m_members.length)
-             return this.m_members[memberNdx];
-         else {
-             bufferedLogToConsole('Error: Invalid member index for StructTypes members');
-             return undefined;
-         }
-     };
+     * @return {gluVarType.StructMember}
+     */
+    gluVarType.StructType.prototype.getMember = function(memberNdx) {
+        if (memberNdx >= 0 && memberNdx < this.m_members.length)
+            return this.m_members[memberNdx];
+        else {
+            throw new Error('Invalid member index for StructTypes members');
+        }
+    };
 
-     /** getSize
+    /** getSize
      * @return {number} The size of the m_members array.
-     **/
-     StructType.prototype.getSize = function() {
-         return this.m_members.length;
-     };
+     */
+    gluVarType.StructType.prototype.getSize = function() {
+        return this.m_members.length;
+    };
 
-     /** addMember
+    /** addMember
      * @param {string} name
-     * @param {VarType} type
-     **/
-     StructType.prototype.addMember = function(name, type) {
-        var member = newStructMember(name, type);
-         this.m_members.push(member);
-     };
+     * @param {gluVarType.VarType} type
+     */
+    gluVarType.StructType.prototype.addMember = function(name, type) {
+        var member = gluVarType.newStructMember(name, type);
+        this.m_members.push(member);
+    };
 
-     /**
-      * Creates a StructType.
-      * @param {string} name
-      * @return {StructType}
-      */
-      var newStructType = function(name) {
-          return new StructType().Constructor(name);
-      };
+    /**
+     * Creates a gluVarType.StructType.
+     * @param {string} name
+     * @return {gluVarType.StructType}
+     */
+    gluVarType.newStructType = function(name) {
+        return new gluVarType.StructType().Constructor(name);
+    };
 
-      /**
-       * @param {number} level
-       * @return {string}
-       */
-    var indent = function(level) {
+    /**
+     * @param {number} level
+     * @return {string}
+     */
+    gluVarType.indent = function(level) {
         /** @type {string} */ var str = '';
         for (var i = 0; i < level; i++)
             str += '\t';
@@ -420,49 +473,43 @@ define(['framework/opengl/gluShaderUtil'], function(deqpUtils) {
     };
 
     /**
-     * @param {VarType} varType
+     * @param {gluVarType.VarType} varType
      * @param {string} name
-     * @param {number} level
+     * @param {number=} level
      * @return {string}
      */
-    var declareVariable = function(varType, name, level) {
+    gluVarType.declareVariable = function(varType, name, level) {
         /** @type {string} */ var str = '';
-        /** @type {VarType} */ var type = varType;
-        /** @type {VarType} */ var curType = type;
-        /** @type {Array.<number>} */ var arraySizes = [];
+        /** @type {gluVarType.VarType} */ var type = varType;
+        /** @type {gluVarType.VarType} */ var curType = type;
+        /** @type {Array<number>} */ var arraySizes = [];
 
         // Handle arrays.
-        while (curType.isArrayType())
-        {
+        while (curType.isArrayType()) {
             arraySizes.push(curType.getArraySize());
             curType = curType.getElementType();
         }
 
-        if (curType.isBasicType())
-        {
+        if (curType.isBasicType()) {
             if (curType.getPrecision() !== undefined)
-                str += deqpUtils.getPrecisionName(curType.getPrecision()) + ' ';
-            str += deqpUtils.getDataTypeName(curType.getBasicType());
-        }
-        else if (curType.isStructType())
-        {
-            /** @type {StructType} */ var structPtr = curType.getStruct();
+                str += gluShaderUtil.getPrecisionName(curType.getPrecision()) + ' ';
+            str += gluShaderUtil.getDataTypeName(/** @type {gluShaderUtil.DataType} */(curType.getBasicType()));
+        } else if (curType.isStructType()) {
+            /** @type {gluVarType.StructType} */ var structPtr = curType.getStruct();
 
             if (structPtr.hasTypeName())
                 str += structPtr.getTypeName();
             else
-                str += declareStructType(structPtr, level); // Generate inline declaration.
-        }
-        else
-            DE_ASSERT(false);
+                str += gluVarType.declareStructType(structPtr, level); // Generate inline declaration.
+        } else
+            throw new Error('Unexpected Array typed VarType.');
 
         str += ' ' + name;
 
         // Print array sizes.
-        for (var size = 0; size < arraySizes.length; size++)//std::vector<int>::const_iterator sizeIter = arraySizes.begin(); sizeIter != arraySizes.end(); sizeIter++)
-        {
+        for (var size = 0; size < arraySizes.length; size++) { //std::vector<int>::const_iterator sizeIter = arraySizes.begin(); sizeIter != arraySizes.end(); sizeIter++) {
             /** @type {number} */ var arrSize = arraySizes[size];
-            if (arrSize == VarType.UNSIZED_ARRAY)
+            if (arrSize == gluVarType.VarType.UNSIZED_ARRAY)
                 str += '[]';
             else
                 str += '[' + arrSize + ']';
@@ -472,44 +519,29 @@ define(['framework/opengl/gluShaderUtil'], function(deqpUtils) {
     };
 
     /**
-     * @param {StructType} structType
-     * @param {number} level
+     * @param {gluVarType.StructType} structType
+     * @param {number=} level
      * @return {string}
      */
-    var declareStructType = function(structType, level_) {
+    gluVarType.declareStructType = function(structType, level) {
         /** @type {string} */ var str = 'struct';
-        var level = level_ || 0;
+        level = level || 0;
 
-        // Type name is optional.
+        // gluVarType.Type name is optional.
         if (structType.hasTypeName())
             str += ' ' + structType.getTypeName();
 
-        str += '\n' + indent(level) + '{\n';
+        str += '\n' + gluVarType.indent(level) + ' {\n';
 
-        for (var memberNdx = 0; memberNdx < structType.getSize(); memberNdx++)//StructType::ConstIterator memberIter = decl.structPtr->begin(); memberIter != decl.structPtr->end(); memberIter++)
-        {
-            /** @type {StructMember} */ var memberIter = structType.getMember(memberNdx);
-            str += indent(level + 1);
-            str += declareVariable(memberIter.getType(), memberIter.getName(), level + 1) + ';\n';
+        for (var memberNdx = 0; memberNdx < structType.getSize(); memberNdx++) { //gluVarType.StructType::ConstIterator memberIter = decl.structPtr->begin(); memberIter != decl.structPtr->end(); memberIter++) {
+            /** @type {gluVarType.StructMember} */ var memberIter = structType.getMember(memberNdx);
+            str += gluVarType.indent(level + 1);
+            str += gluVarType.declareVariable(memberIter.getType(), memberIter.getName(), level + 1) + ';\n';
         }
 
-        str += indent(level) + '}';
+        str += gluVarType.indent(level) + '}';
 
         return str;
     };
 
-    return {
-        Type: Type,
-        VarType: VarType,
-        StructMember: StructMember,
-        StructType: StructType,
-        newTypeBasic: newTypeBasic,
-        newTypeArray: newTypeArray,
-        newTypeStruct: newTypeStruct,
-        newStructMember: newStructMember,
-        newStructType: newStructType,
-        declareVariable: declareVariable,
-        declareStructType: declareStructType,
-        UNSIZED_ARRAY: VarType.UNSIZED_ARRAY //!< Array length for unsized arrays.
-    };
 });

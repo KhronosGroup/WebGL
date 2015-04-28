@@ -18,8 +18,16 @@
  *
  */
 
-define(['framework/delibs/debase/deMath', 'framework/common/tcuFloat'], function(deMath, tcuFloat)  {
 'use strict';
+goog.provide('framework.common.tcuTexture');
+goog.require('framework.common.tcuFloat');
+goog.require('framework.delibs.debase.deMath');
+
+goog.scope(function() {
+
+var tcuTexture = framework.common.tcuTexture;
+var deMath = framework.delibs.debase.deMath;
+var tcuFloat = framework.common.tcuFloat;
 
 var DE_ASSERT = function(x) {
     if (!x)
@@ -27,10 +35,10 @@ var DE_ASSERT = function(x) {
 };
 
 /**
- * Texture channel order
+ * Texture tcuTexture.channel order
  * @enum
  */
-var ChannelOrder = {
+tcuTexture.ChannelOrder = {
     R: 0,
     A: 1,
     I: 2,
@@ -52,10 +60,10 @@ var ChannelOrder = {
 };
 
 /**
- * Texture channel type
+ * Texture tcuTexture.channel type
  * @enum
  */
-var ChannelType = {
+tcuTexture.ChannelType = {
     SNORM_INT8: 0,
     SNORM_INT16: 1,
     SNORM_INT32: 2,
@@ -85,22 +93,22 @@ var ChannelType = {
 
 /**
  * Contruct texture format
- * @param {ChannelOrder} order
- * @param {ChannelType} type
+ * @param {tcuTexture.ChannelOrder} order
+ * @param {tcuTexture.ChannelType} type
  *
  * @constructor
  */
-var TextureFormat = function(order, type) {
+tcuTexture.TextureFormat = function(order, type) {
     this.order = order;
     this.type = type;
 };
 
 /**
  * Compare two formats
- * @param {TextureFormat} format Format to compare with
+ * @param {tcuTexture.TextureFormat} format Format to compare with
  * @return {boolean}
  */
-TextureFormat.prototype.isEqual = function(format) {
+tcuTexture.TextureFormat.prototype.isEqual = function(format) {
     return this.order === format.order && this.type === format.type;
 };
 
@@ -108,27 +116,25 @@ TextureFormat.prototype.isEqual = function(format) {
  * Is format sRGB?
  * @return {boolean}
  */
-TextureFormat.prototype.isSRGB = function() {
-    return this.order === ChannelOrder.sRGB || this.order === ChannelOrder.sRGBA;
+tcuTexture.TextureFormat.prototype.isSRGB = function() {
+    return this.order === tcuTexture.ChannelOrder.sRGB || this.order === tcuTexture.ChannelOrder.sRGBA;
 };
 
-TextureFormat.prototype.getNumStencilBits = function() {
+tcuTexture.TextureFormat.prototype.getNumStencilBits = function() {
     switch (this.order) {
-        case ChannelOrder.S:
-            switch (this.type)
-            {
-                case ChannelType.UNSIGNED_INT8: return 8;
-                case ChannelType.UNSIGNED_INT16: return 16;
-                case ChannelType.UNSIGNED_INT32: return 32;
+        case tcuTexture.ChannelOrder.S:
+            switch (this.type) {
+                case tcuTexture.ChannelType.UNSIGNED_INT8: return 8;
+                case tcuTexture.ChannelType.UNSIGNED_INT16: return 16;
+                case tcuTexture.ChannelType.UNSIGNED_INT32: return 32;
                 default:
                     throw new Error('Wrong type: ' + this.type);
             }
 
-        case ChannelOrder.DS:
-            switch (this.type)
-            {
-                case ChannelType.UNSIGNED_INT_24_8: return 8;
-                case ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: return 8;
+        case tcuTexture.ChannelOrder.DS:
+            switch (this.type) {
+                case tcuTexture.ChannelType.UNSIGNED_INT_24_8: return 8;
+                case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: return 8;
                 default:
                     throw new Error('Wrong type: ' + this.type);
             }
@@ -140,123 +146,108 @@ TextureFormat.prototype.getNumStencilBits = function() {
 
 /**
  * Get TypedArray type that can be used to access texture.
- * @param {ChannelType} type
- * @return {TypedArray} TypedArray that supports the channel type.
+ * @param {tcuTexture.ChannelType} type
+ * @return TypedArray that supports the tcuTexture.channel type.
  */
-var getTypedArray = function(type) {
+tcuTexture.getTypedArray = function(type) {
     switch (type) {
-        case ChannelType.SNORM_INT8: return Int8Array;
-        case ChannelType.SNORM_INT16: return Int16Array;
-        case ChannelType.SNORM_INT32: return Int32Array;
-        case ChannelType.UNORM_INT8: return Uint8Array;
-        case ChannelType.UNORM_INT16: return Uint16Array;
-        case ChannelType.UNORM_INT32: return Uint32Array;
-        case ChannelType.UNORM_SHORT_565: return Uint16Array;
-        case ChannelType.UNORM_SHORT_555: return Uint16Array;
-        case ChannelType.UNORM_SHORT_4444: return Uint16Array;
-        case ChannelType.UNORM_SHORT_5551: return Uint16Array;
-        case ChannelType.UNORM_INT_101010: return Uint32Array;
-        case ChannelType.UNORM_INT_1010102_REV: return Uint32Array;
-        case ChannelType.UNSIGNED_INT_1010102_REV: return Uint32Array;
-        case ChannelType.UNSIGNED_INT_11F_11F_10F_REV: return Uint32Array;
-        case ChannelType.UNSIGNED_INT_999_E5_REV: return Uint32Array;
-        case ChannelType.UNSIGNED_INT_24_8: return Uint32Array;
-        case ChannelType.FLOAT: return Float32Array;
-        case ChannelType.SIGNED_INT8: return Int8Array;
-        case ChannelType.SIGNED_INT16: return Int16Array;
-        case ChannelType.SIGNED_INT32: return Int32Array;
-        case ChannelType.UNSIGNED_INT8: return Uint8Array;
-        case ChannelType.UNSIGNED_INT16: return Uint16Array;
-        case ChannelType.UNSIGNED_INT32: return Uint32Array;
-        case ChannelType.HALF_FLOAT: return Uint16Array;
-        case ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: return Float32Array; /* this type is a special case */
+        case tcuTexture.ChannelType.SNORM_INT8: return Int8Array;
+        case tcuTexture.ChannelType.SNORM_INT16: return Int16Array;
+        case tcuTexture.ChannelType.SNORM_INT32: return Int32Array;
+        case tcuTexture.ChannelType.UNORM_INT8: return Uint8Array;
+        case tcuTexture.ChannelType.UNORM_INT16: return Uint16Array;
+        case tcuTexture.ChannelType.UNORM_INT32: return Uint32Array;
+        case tcuTexture.ChannelType.UNORM_SHORT_565: return Uint16Array;
+        case tcuTexture.ChannelType.UNORM_SHORT_555: return Uint16Array;
+        case tcuTexture.ChannelType.UNORM_SHORT_4444: return Uint16Array;
+        case tcuTexture.ChannelType.UNORM_SHORT_5551: return Uint16Array;
+        case tcuTexture.ChannelType.UNORM_INT_101010: return Uint32Array;
+        case tcuTexture.ChannelType.UNORM_INT_1010102_REV: return Uint32Array;
+        case tcuTexture.ChannelType.UNSIGNED_INT_1010102_REV: return Uint32Array;
+        case tcuTexture.ChannelType.UNSIGNED_INT_11F_11F_10F_REV: return Uint32Array;
+        case tcuTexture.ChannelType.UNSIGNED_INT_999_E5_REV: return Uint32Array;
+        case tcuTexture.ChannelType.UNSIGNED_INT_24_8: return Uint32Array;
+        case tcuTexture.ChannelType.FLOAT: return Float32Array;
+        case tcuTexture.ChannelType.SIGNED_INT8: return Int8Array;
+        case tcuTexture.ChannelType.SIGNED_INT16: return Int16Array;
+        case tcuTexture.ChannelType.SIGNED_INT32: return Int32Array;
+        case tcuTexture.ChannelType.UNSIGNED_INT8: return Uint8Array;
+        case tcuTexture.ChannelType.UNSIGNED_INT16: return Uint16Array;
+        case tcuTexture.ChannelType.UNSIGNED_INT32: return Uint32Array;
+        case tcuTexture.ChannelType.HALF_FLOAT: return Uint16Array;
+        case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: return Float32Array; /* this type is a special case */
     }
 
     throw new Error('Unrecognized type ' + type);
 };
 
 /**
- * @return {Number} pixel size in bytes
+ * @return {number} pixel size in bytes
  */
-TextureFormat.prototype.getPixelSize = function() {
-    if (this.type == null || this.order == null)
-    {
+tcuTexture.TextureFormat.prototype.getPixelSize = function() {
+    if (this.type == null || this.order == null) {
         // Invalid/empty format.
         return 0;
-    }
-    else if (this.type == ChannelType.UNORM_SHORT_565 ||
-             this.type == ChannelType.UNORM_SHORT_555 ||
-             this.type == ChannelType.UNORM_SHORT_4444 ||
-             this.type == ChannelType.UNORM_SHORT_5551)
-    {
-        DE_ASSERT(this.order == ChannelOrder.RGB || this.order == ChannelOrder.RGBA);
+    } else if (this.type == tcuTexture.ChannelType.UNORM_SHORT_565 ||
+             this.type == tcuTexture.ChannelType.UNORM_SHORT_555 ||
+             this.type == tcuTexture.ChannelType.UNORM_SHORT_4444 ||
+             this.type == tcuTexture.ChannelType.UNORM_SHORT_5551) {
+        DE_ASSERT(this.order == tcuTexture.ChannelOrder.RGB || this.order == tcuTexture.ChannelOrder.RGBA);
         return 2;
-    }
-    else if (this.type == ChannelType.UNORM_INT_101010 ||
-             this.type == ChannelType.UNSIGNED_INT_999_E5_REV ||
-             this.type == ChannelType.UNSIGNED_INT_11F_11F_10F_REV)
-    {
-        DE_ASSERT(this.order == ChannelOrder.RGB);
+    } else if (this.type == tcuTexture.ChannelType.UNORM_INT_101010 ||
+             this.type == tcuTexture.ChannelType.UNSIGNED_INT_999_E5_REV ||
+             this.type == tcuTexture.ChannelType.UNSIGNED_INT_11F_11F_10F_REV) {
+        DE_ASSERT(this.order == tcuTexture.ChannelOrder.RGB);
         return 4;
-    }
-    else if (this.type == ChannelType.UNORM_INT_1010102_REV ||
-             this.type == ChannelType.UNSIGNED_INT_1010102_REV)
-    {
-        DE_ASSERT(this.order == ChannelOrder.RGBA);
+    } else if (this.type == tcuTexture.ChannelType.UNORM_INT_1010102_REV ||
+             this.type == tcuTexture.ChannelType.UNSIGNED_INT_1010102_REV) {
+        DE_ASSERT(this.order == tcuTexture.ChannelOrder.RGBA);
         return 4;
-    }
-    else if (this.type == ChannelType.UNSIGNED_INT_24_8)
-    {
-        DE_ASSERT(this.order == ChannelOrder.D || this.order == ChannelOrder.DS);
+    } else if (this.type == tcuTexture.ChannelType.UNSIGNED_INT_24_8) {
+        DE_ASSERT(this.order == tcuTexture.ChannelOrder.D || this.order == tcuTexture.ChannelOrder.DS);
         return 4;
-    }
-    else if (this.type == ChannelType.FLOAT_UNSIGNED_INT_24_8_REV)
-    {
-        DE_ASSERT(this.order == ChannelOrder.DS);
+    } else if (this.type == tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV) {
+        DE_ASSERT(this.order == tcuTexture.ChannelOrder.DS);
         return 8;
-    }
-    else
-    {
+    } else {
         var numChannels;
         var channelSize;
 
-        switch (this.order)
-        {
-            case ChannelOrder.R: numChannels = 1; break;
-            case ChannelOrder.A: numChannels = 1; break;
-            case ChannelOrder.I: numChannels = 1; break;
-            case ChannelOrder.L: numChannels = 1; break;
-            case ChannelOrder.LA: numChannels = 2; break;
-            case ChannelOrder.RG: numChannels = 2; break;
-            case ChannelOrder.RA: numChannels = 2; break;
-            case ChannelOrder.RGB: numChannels = 3; break;
-            case ChannelOrder.RGBA: numChannels = 4; break;
-            case ChannelOrder.ARGB: numChannels = 4; break;
-            case ChannelOrder.BGRA: numChannels = 4; break;
-            case ChannelOrder.sRGB: numChannels = 3; break;
-            case ChannelOrder.sRGBA: numChannels = 4; break;
-            case ChannelOrder.D: numChannels = 1; break;
-            case ChannelOrder.S: numChannels = 1; break;
-            case ChannelOrder.DS: numChannels = 2; break;
+        switch (this.order) {
+            case tcuTexture.ChannelOrder.R: numChannels = 1; break;
+            case tcuTexture.ChannelOrder.A: numChannels = 1; break;
+            case tcuTexture.ChannelOrder.I: numChannels = 1; break;
+            case tcuTexture.ChannelOrder.L: numChannels = 1; break;
+            case tcuTexture.ChannelOrder.LA: numChannels = 2; break;
+            case tcuTexture.ChannelOrder.RG: numChannels = 2; break;
+            case tcuTexture.ChannelOrder.RA: numChannels = 2; break;
+            case tcuTexture.ChannelOrder.RGB: numChannels = 3; break;
+            case tcuTexture.ChannelOrder.RGBA: numChannels = 4; break;
+            case tcuTexture.ChannelOrder.ARGB: numChannels = 4; break;
+            case tcuTexture.ChannelOrder.BGRA: numChannels = 4; break;
+            case tcuTexture.ChannelOrder.sRGB: numChannels = 3; break;
+            case tcuTexture.ChannelOrder.sRGBA: numChannels = 4; break;
+            case tcuTexture.ChannelOrder.D: numChannels = 1; break;
+            case tcuTexture.ChannelOrder.S: numChannels = 1; break;
+            case tcuTexture.ChannelOrder.DS: numChannels = 2; break;
             default: DE_ASSERT(false);
         }
 
-        switch (this.type)
-        {
-            case ChannelType.SNORM_INT8: channelSize = 1; break;
-            case ChannelType.SNORM_INT16: channelSize = 2; break;
-            case ChannelType.SNORM_INT32: channelSize = 4; break;
-            case ChannelType.UNORM_INT8: channelSize = 1; break;
-            case ChannelType.UNORM_INT16: channelSize = 2; break;
-            case ChannelType.UNORM_INT32: channelSize = 4; break;
-            case ChannelType.SIGNED_INT8: channelSize = 1; break;
-            case ChannelType.SIGNED_INT16: channelSize = 2; break;
-            case ChannelType.SIGNED_INT32: channelSize = 4; break;
-            case ChannelType.UNSIGNED_INT8: channelSize = 1; break;
-            case ChannelType.UNSIGNED_INT16: channelSize = 2; break;
-            case ChannelType.UNSIGNED_INT32: channelSize = 4; break;
-            case ChannelType.HALF_FLOAT: channelSize = 2; break;
-            case ChannelType.FLOAT: channelSize = 4; break;
+        switch (this.type) {
+            case tcuTexture.ChannelType.SNORM_INT8: channelSize = 1; break;
+            case tcuTexture.ChannelType.SNORM_INT16: channelSize = 2; break;
+            case tcuTexture.ChannelType.SNORM_INT32: channelSize = 4; break;
+            case tcuTexture.ChannelType.UNORM_INT8: channelSize = 1; break;
+            case tcuTexture.ChannelType.UNORM_INT16: channelSize = 2; break;
+            case tcuTexture.ChannelType.UNORM_INT32: channelSize = 4; break;
+            case tcuTexture.ChannelType.SIGNED_INT8: channelSize = 1; break;
+            case tcuTexture.ChannelType.SIGNED_INT16: channelSize = 2; break;
+            case tcuTexture.ChannelType.SIGNED_INT32: channelSize = 4; break;
+            case tcuTexture.ChannelType.UNSIGNED_INT8: channelSize = 1; break;
+            case tcuTexture.ChannelType.UNSIGNED_INT16: channelSize = 2; break;
+            case tcuTexture.ChannelType.UNSIGNED_INT32: channelSize = 4; break;
+            case tcuTexture.ChannelType.HALF_FLOAT: channelSize = 2; break;
+            case tcuTexture.ChannelType.FLOAT: channelSize = 4; break;
             default: DE_ASSERT(false);
         }
 
@@ -267,37 +258,38 @@ TextureFormat.prototype.getPixelSize = function() {
 /**
  * @enum
  */
-var CubeFace = {
+tcuTexture.CubeFace = {
     CUBEFACE_NEGATIVE_X: 0,
     CUBEFACE_POSITIVE_X: 1,
     CUBEFACE_NEGATIVE_Y: 2,
     CUBEFACE_POSITIVE_Y: 3,
     CUBEFACE_NEGATIVE_Z: 4,
-    CUBEFACE_POSITIVE_Z: 5,
+    CUBEFACE_POSITIVE_Z: 5
 };
 
 /**
  * Renamed from ArrayBuffer due to name clash
  * Wraps ArrayBuffer.
  * @constructor
+ * @param {number=} numElements
  */
-var DeqpArrayBuffer = function(numElements) {
+tcuTexture.DeqpArrayBuffer = function(numElements) {
     if (numElements)
         this.m_ptr = new ArrayBuffer(numElements);
 };
 
 /**
  * Set array size
- * @param {Number} numElements Size in bytes
+ * @param {number} numElements Size in bytes
  */
-DeqpArrayBuffer.prototype.setStorage = function(numElements) {
+tcuTexture.DeqpArrayBuffer.prototype.setStorage = function(numElements) {
     this.m_ptr = new ArrayBuffer(numElements);
 };
 
 /**
- * @return {Number} Buffer size
+ * @return {number} Buffer size
  */
-DeqpArrayBuffer.prototype.size = function() {
+tcuTexture.DeqpArrayBuffer.prototype.size = function() {
     if (this.m_ptr)
         return this.m_ptr.byteLength;
 
@@ -308,7 +300,7 @@ DeqpArrayBuffer.prototype.size = function() {
  * Is the buffer empty (zero size)?
  * @return {boolean}
  */
-DeqpArrayBuffer.prototype.empty = function() {
+tcuTexture.DeqpArrayBuffer.prototype.empty = function() {
     if (!this.m_ptr)
         return true;
     return this.size() == 0;
@@ -318,182 +310,182 @@ DeqpArrayBuffer.prototype.empty = function() {
  * @enum
  * The values are negative to avoid conflict with channels 0 - 3
  */
-var channel = {
+tcuTexture.channel = {
     ZERO: -1,
     ONE: -2
 };
 
 /**
- * @param {ChannelOrder} order
- * @return {Array<Number|channel>}
+ * @param {tcuTexture.ChannelOrder} order
+ * @return {Array<Number|tcuTexture.channel>}
  */
-var getChannelReadMap = function(order) {
+tcuTexture.getChannelReadMap = function(order) {
     switch (order) {
-    /*static const Channel INV[]    = { channel.ZERO,    channel.ZERO,    channel.ZERO,    channel.ONE }; */
+    /*static const Channel INV[] = { tcuTexture.channel.ZERO, tcuTexture.channel.ZERO, tcuTexture.channel.ZERO, tcuTexture.channel.ONE }; */
 
-    case ChannelOrder.R: return [0, channel.ZERO, channel.ZERO, channel.ONE];
-    case ChannelOrder.A: return [channel.ZERO, channel.ZERO, channel.ZERO, 0];
-    case ChannelOrder.I: return [0, 0, 0, 0];
-    case ChannelOrder.L: return [0, 0, 0, channel.ONE];
-    case ChannelOrder.LA: return [0, 0, 0, 1];
-    case ChannelOrder.RG: return [0, 1, channel.ZERO, channel.ONE];
-    case ChannelOrder.RA: return [0, channel.ZERO, channel.ZERO, 1];
-    case ChannelOrder.RGB: return [0, 1, 2, channel.ONE];
-    case ChannelOrder.RGBA: return [0, 1, 2, 3];
-    case ChannelOrder.BGRA: return [2, 1, 0, 3];
-    case ChannelOrder.ARGB: return [1, 2, 3, 0];
-    case ChannelOrder.sRGB: return [0, 1, 2, channel.ONE];
-    case ChannelOrder.sRGBA: return [0, 1, 2, 3];
-    case ChannelOrder.D: return [0, channel.ZERO, channel.ZERO, channel.ONE];
-    case ChannelOrder.S: return [channel.ZERO, channel.ZERO, channel.ZERO, 0];
-    case ChannelOrder.DS: return [0, channel.ZERO, channel.ZERO, 1];
+    case tcuTexture.ChannelOrder.R: return [0, tcuTexture.channel.ZERO, tcuTexture.channel.ZERO, tcuTexture.channel.ONE];
+    case tcuTexture.ChannelOrder.A: return [tcuTexture.channel.ZERO, tcuTexture.channel.ZERO, tcuTexture.channel.ZERO, 0];
+    case tcuTexture.ChannelOrder.I: return [0, 0, 0, 0];
+    case tcuTexture.ChannelOrder.L: return [0, 0, 0, tcuTexture.channel.ONE];
+    case tcuTexture.ChannelOrder.LA: return [0, 0, 0, 1];
+    case tcuTexture.ChannelOrder.RG: return [0, 1, tcuTexture.channel.ZERO, tcuTexture.channel.ONE];
+    case tcuTexture.ChannelOrder.RA: return [0, tcuTexture.channel.ZERO, tcuTexture.channel.ZERO, 1];
+    case tcuTexture.ChannelOrder.RGB: return [0, 1, 2, tcuTexture.channel.ONE];
+    case tcuTexture.ChannelOrder.RGBA: return [0, 1, 2, 3];
+    case tcuTexture.ChannelOrder.BGRA: return [2, 1, 0, 3];
+    case tcuTexture.ChannelOrder.ARGB: return [1, 2, 3, 0];
+    case tcuTexture.ChannelOrder.sRGB: return [0, 1, 2, tcuTexture.channel.ONE];
+    case tcuTexture.ChannelOrder.sRGBA: return [0, 1, 2, 3];
+    case tcuTexture.ChannelOrder.D: return [0, tcuTexture.channel.ZERO, tcuTexture.channel.ZERO, tcuTexture.channel.ONE];
+    case tcuTexture.ChannelOrder.S: return [tcuTexture.channel.ZERO, tcuTexture.channel.ZERO, tcuTexture.channel.ZERO, 0];
+    case tcuTexture.ChannelOrder.DS: return [0, tcuTexture.channel.ZERO, tcuTexture.channel.ZERO, 1];
     }
 
     throw new Error('Unrecognized order ' + order);
 };
 
 /**
- * @param {ChannelOrder} order
- * @return {Array<Number>}
+ * @param {tcuTexture.ChannelOrder} order
+ * @return {Array<number>}
  */
-var getChannelWriteMap = function(order) {
+tcuTexture.getChannelWriteMap = function(order) {
     switch (order) {
-        case ChannelOrder.R: return [0];
-        case ChannelOrder.A: return [3];
-        case ChannelOrder.I: return [0];
-        case ChannelOrder.L: return [0];
-        case ChannelOrder.LA: return [0, 3];
-        case ChannelOrder.RG: return [0, 1];
-        case ChannelOrder.RA: return [0, 3];
-        case ChannelOrder.RGB: return [0, 1, 2];
-        case ChannelOrder.RGBA: return [0, 1, 2, 3];
-        case ChannelOrder.ARGB: return [3, 0, 1, 2];
-        case ChannelOrder.BGRA: return [2, 1, 0, 3];
-        case ChannelOrder.sRGB: return [0, 1, 2];
-        case ChannelOrder.sRGBA: return [0, 1, 2, 3];
-        case ChannelOrder.D: return [0];
-        case ChannelOrder.S: return [3];
-        case ChannelOrder.DS: return [0, 3];
+        case tcuTexture.ChannelOrder.R: return [0];
+        case tcuTexture.ChannelOrder.A: return [3];
+        case tcuTexture.ChannelOrder.I: return [0];
+        case tcuTexture.ChannelOrder.L: return [0];
+        case tcuTexture.ChannelOrder.LA: return [0, 3];
+        case tcuTexture.ChannelOrder.RG: return [0, 1];
+        case tcuTexture.ChannelOrder.RA: return [0, 3];
+        case tcuTexture.ChannelOrder.RGB: return [0, 1, 2];
+        case tcuTexture.ChannelOrder.RGBA: return [0, 1, 2, 3];
+        case tcuTexture.ChannelOrder.ARGB: return [3, 0, 1, 2];
+        case tcuTexture.ChannelOrder.BGRA: return [2, 1, 0, 3];
+        case tcuTexture.ChannelOrder.sRGB: return [0, 1, 2];
+        case tcuTexture.ChannelOrder.sRGBA: return [0, 1, 2, 3];
+        case tcuTexture.ChannelOrder.D: return [0];
+        case tcuTexture.ChannelOrder.S: return [3];
+        case tcuTexture.ChannelOrder.DS: return [0, 3];
     }
     throw new Error('Unrecognized order ' + order);
 };
 
 /**
- * @param {ChannelType} type
- * @return {Number}
+ * @param {tcuTexture.ChannelType} type
+ * @return {number}
  */
-var getChannelSize = function(type) {
+tcuTexture.getChannelSize = function(type) {
     switch (type) {
-        case ChannelType.SNORM_INT8: return 1;
-        case ChannelType.SNORM_INT16: return 2;
-        case ChannelType.SNORM_INT32: return 4;
-        case ChannelType.UNORM_INT8: return 1;
-        case ChannelType.UNORM_INT16: return 2;
-        case ChannelType.UNORM_INT32: return 4;
-        case ChannelType.SIGNED_INT8: return 1;
-        case ChannelType.SIGNED_INT16: return 2;
-        case ChannelType.SIGNED_INT32: return 4;
-        case ChannelType.UNSIGNED_INT8: return 1;
-        case ChannelType.UNSIGNED_INT16: return 2;
-        case ChannelType.UNSIGNED_INT32: return 4;
-        case ChannelType.HALF_FLOAT: return 2;
-        case ChannelType.FLOAT: return 4;
+        case tcuTexture.ChannelType.SNORM_INT8: return 1;
+        case tcuTexture.ChannelType.SNORM_INT16: return 2;
+        case tcuTexture.ChannelType.SNORM_INT32: return 4;
+        case tcuTexture.ChannelType.UNORM_INT8: return 1;
+        case tcuTexture.ChannelType.UNORM_INT16: return 2;
+        case tcuTexture.ChannelType.UNORM_INT32: return 4;
+        case tcuTexture.ChannelType.SIGNED_INT8: return 1;
+        case tcuTexture.ChannelType.SIGNED_INT16: return 2;
+        case tcuTexture.ChannelType.SIGNED_INT32: return 4;
+        case tcuTexture.ChannelType.UNSIGNED_INT8: return 1;
+        case tcuTexture.ChannelType.UNSIGNED_INT16: return 2;
+        case tcuTexture.ChannelType.UNSIGNED_INT32: return 4;
+        case tcuTexture.ChannelType.HALF_FLOAT: return 2;
+        case tcuTexture.ChannelType.FLOAT: return 4;
 
     }
     throw new Error('Unrecognized type ' + type);
 };
 
 /**
- * @param {Number} src Source value
- * @param {Number} bits Source value size in bits
- * @return {Number} Normalized value
+ * @param {number} src Source value
+ * @param {number} bits Source value size in bits
+ * @return {number} Normalized value
  */
-var channelToNormFloat = function(src, bits) {
+tcuTexture.channelToNormFloat = function(src, bits) {
     var maxVal = (1 << bits) - 1;
     return src / maxVal;
 };
 
 /**
- * @param {Number} value Source value
- * @param {ChannelType} type
- * @return {Number} Source value converted to float
+ * @param {number} value Source value
+ * @param {tcuTexture.ChannelType} type
+ * @return {number} Source value converted to float
  */
-var channelToFloat = function(value, type) {
+tcuTexture.channelToFloat = function(value, type) {
     switch (type) {
-        case ChannelType.SNORM_INT8: return Math.max(-1, value / 127);
-        case ChannelType.SNORM_INT16: return Math.max(-1, value / 32767);
-        case ChannelType.SNORM_INT32: return Math.max(-1, value / 2147483647);
-        case ChannelType.UNORM_INT8: return value / 255;
-        case ChannelType.UNORM_INT16: return value / 65535;
-        case ChannelType.UNORM_INT32: return value / 4294967295;
-        case ChannelType.SIGNED_INT8: return value;
-        case ChannelType.SIGNED_INT16: return value;
-        case ChannelType.SIGNED_INT32: return value;
-        case ChannelType.UNSIGNED_INT8: return value;
-        case ChannelType.UNSIGNED_INT16: return value;
-        case ChannelType.UNSIGNED_INT32: return value;
-        case ChannelType.HALF_FLOAT: return tcuFloat.halfFloatToNumber(value);
-        case ChannelType.FLOAT: return value;
+        case tcuTexture.ChannelType.SNORM_INT8: return Math.max(-1, value / 127);
+        case tcuTexture.ChannelType.SNORM_INT16: return Math.max(-1, value / 32767);
+        case tcuTexture.ChannelType.SNORM_INT32: return Math.max(-1, value / 2147483647);
+        case tcuTexture.ChannelType.UNORM_INT8: return value / 255;
+        case tcuTexture.ChannelType.UNORM_INT16: return value / 65535;
+        case tcuTexture.ChannelType.UNORM_INT32: return value / 4294967295;
+        case tcuTexture.ChannelType.SIGNED_INT8: return value;
+        case tcuTexture.ChannelType.SIGNED_INT16: return value;
+        case tcuTexture.ChannelType.SIGNED_INT32: return value;
+        case tcuTexture.ChannelType.UNSIGNED_INT8: return value;
+        case tcuTexture.ChannelType.UNSIGNED_INT16: return value;
+        case tcuTexture.ChannelType.UNSIGNED_INT32: return value;
+        case tcuTexture.ChannelType.HALF_FLOAT: return tcuFloat.halfFloatToNumber(value);
+        case tcuTexture.ChannelType.FLOAT: return value;
     }
-    throw new Error('Unrecognized channel type ' + type);
+    throw new Error('Unrecognized tcuTexture.channel type ' + type);
 };
 
 /**
- * @param {Number} value Source value
- * @param {ChannelType} type
- * @return {Number} Source value converted to int
+ * @param {number} value Source value
+ * @param {tcuTexture.ChannelType} type
+ * @return {number} Source value converted to int
  */
-var channelToInt = function(value, type) {
+tcuTexture.channelToInt = function(value, type) {
     switch (type) {
-        case ChannelType.HALF_FLOAT: return Math.round(tcuFloat.halfFloatToNumber(value));
-        case ChannelType.FLOAT: return Math.round(value);
+        case tcuTexture.ChannelType.HALF_FLOAT: return Math.round(tcuFloat.halfFloatToNumber(value));
+        case tcuTexture.ChannelType.FLOAT: return Math.round(value);
         default:
             return value;
     }
 };
 
 /**
- * @param {ChannelOrder} order
- * @return {Number}
+ * @param {tcuTexture.ChannelOrder} order
+ * @return {number}
  */
-var getNumUsedChannels = function(order) {
+tcuTexture.getNumUsedChannels = function(order) {
     switch (order) {
-        case ChannelOrder.R: return 1;
-        case ChannelOrder.A: return 1;
-        case ChannelOrder.I: return 1;
-        case ChannelOrder.L: return 1;
-        case ChannelOrder.LA: return 2;
-        case ChannelOrder.RG: return 2;
-        case ChannelOrder.RA: return 2;
-        case ChannelOrder.RGB: return 3;
-        case ChannelOrder.RGBA: return 4;
-        case ChannelOrder.ARGB: return 4;
-        case ChannelOrder.BGRA: return 4;
-        case ChannelOrder.sRGB: return 3;
-        case ChannelOrder.sRGBA: return 4;
-        case ChannelOrder.D: return 1;
-        case ChannelOrder.S: return 1;
-        case ChannelOrder.DS: return 2;
+        case tcuTexture.ChannelOrder.R: return 1;
+        case tcuTexture.ChannelOrder.A: return 1;
+        case tcuTexture.ChannelOrder.I: return 1;
+        case tcuTexture.ChannelOrder.L: return 1;
+        case tcuTexture.ChannelOrder.LA: return 2;
+        case tcuTexture.ChannelOrder.RG: return 2;
+        case tcuTexture.ChannelOrder.RA: return 2;
+        case tcuTexture.ChannelOrder.RGB: return 3;
+        case tcuTexture.ChannelOrder.RGBA: return 4;
+        case tcuTexture.ChannelOrder.ARGB: return 4;
+        case tcuTexture.ChannelOrder.BGRA: return 4;
+        case tcuTexture.ChannelOrder.sRGB: return 3;
+        case tcuTexture.ChannelOrder.sRGBA: return 4;
+        case tcuTexture.ChannelOrder.D: return 1;
+        case tcuTexture.ChannelOrder.S: return 1;
+        case tcuTexture.ChannelOrder.DS: return 2;
     }
-    throw new Error('Unrecognized channel order ' + order);
+    throw new Error('Unrecognized tcuTexture.channel order ' + order);
 };
 
 /**
  * @enum
  */
-var WrapMode = {
-    CLAMP_TO_EDGE: 0,    //! Clamp to edge
-    CLAMP_TO_BORDER: 1,    //! Use border color at edge
-    REPEAT_GL: 2,            //! Repeat with OpenGL semantics
-    REPEAT_CL: 3,            //! Repeat with OpenCL semantics
-    MIRRORED_REPEAT_GL: 4,    //! Mirrored repeat with OpenGL semantics
+tcuTexture.WrapMode = {
+    CLAMP_TO_EDGE: 0, //! Clamp to edge
+    CLAMP_TO_BORDER: 1, //! Use border color at edge
+    REPEAT_GL: 2, //! Repeat with OpenGL semantics
+    REPEAT_CL: 3, //! Repeat with OpenCL semantics
+    MIRRORED_REPEAT_GL: 4, //! Mirrored repeat with OpenGL semantics
     MIRRORED_REPEAT_CL: 5 //! Mirrored repeat with OpenCL semantics
 };
 
 /**
  * @enum
  */
-var FilterMode = {
+tcuTexture.FilterMode = {
     NEAREST: 0,
     LINEAR: 1,
 
@@ -506,7 +498,7 @@ var FilterMode = {
 /**
  * @enum
  */
-var CompareMode = {
+tcuTexture.CompareMode = {
     COMPAREMODE_NONE: 0,
     COMPAREMODE_LESS: 1,
     COMPAREMODE_LESS_OR_EQUAL: 2,
@@ -520,90 +512,90 @@ var CompareMode = {
 
 /**
  * @constructor
- * @param {WrapMode} wrapS
- * @param {WrapMode} wrapT
- * @param {WrapMode} wrapR
- * @param {FilterMode} minFilter
- * @param {FilterMode} magFilter
- * @param {Number} lodThreshold
- * @param {boolean} normalizedCoords
- * @param {CompareMode} compare
- * @param {Number} compareChannel
- * @param {Array<Number>} borderColor
- * @param {boolean} seamlessCubeMap
+ * @param {tcuTexture.WrapMode} wrapS
+ * @param {tcuTexture.WrapMode} wrapT
+ * @param {tcuTexture.WrapMode} wrapR
+ * @param {tcuTexture.FilterMode} minFilter
+ * @param {tcuTexture.FilterMode} magFilter
+ * @param {number=} lodThreshold
+ * @param {boolean=} normalizedCoords
+ * @param {tcuTexture.CompareMode=} compare
+ * @param {number=} compareChannel
+ * @param {Array<number>=} borderColor
+ * @param {boolean=} seamlessCubeMap
  */
-var Sampler = function(wrapS, wrapT, wrapR, minFilter, magFilter, lodThreshold, normalizedCoords, compare, compareChannel, borderColor, seamlessCubeMap) {
+tcuTexture.Sampler = function(wrapS, wrapT, wrapR, minFilter, magFilter, lodThreshold, normalizedCoords, compare, compareChannel, borderColor, seamlessCubeMap) {
     this.wrapS = wrapS;
     this.wrapT = wrapT;
     this.wrapR = wrapR;
     this.minFilter = minFilter;
     this.magFilter = magFilter;
     this.lodThreshold = lodThreshold || 0;
-    this.normalizedCoords = normalizedCoords || true;
-    this.compare = compare || CompareMode.COMPAREMODE_NONE;
+    this.normalizedCoords = normalizedCoords === undefined ? true : normalizedCoords;
+    this.compare = compare || tcuTexture.CompareMode.COMPAREMODE_NONE;
     this.compareChannel = compareChannel || 0;
     this.borderColor = borderColor || [0, 0, 0, 0];
     this.seamlessCubeMap = seamlessCubeMap || false;
 };
 
 /**
- * Special unnormalization for REPEAT_CL and MIRRORED_REPEAT_CL wrap modes; otherwise ordinary unnormalization.
- * @param {WrapMode} mode
- * @param {Number} c Value to unnormalize
- * @param {Number} size Unnormalized type size (integer)
- * @return {Number}
+ * Special unnormalization for REPEAT_CL and MIRRORED_REPEAT_CL tcuTexture.wrap modes; otherwise ordinary unnormalization.
+ * @param {tcuTexture.WrapMode} mode
+ * @param {number} c Value to tcuTexture.unnormalize
+ * @param {number} size Unnormalized type size (integer)
+ * @return {number}
  */
-var unnormalize = function(mode, c, size) {
+tcuTexture.unnormalize = function(mode, c, size) {
     switch (mode) {
-        case WrapMode.CLAMP_TO_EDGE:
-        case WrapMode.CLAMP_TO_BORDER:
-        case WrapMode.REPEAT_GL:
-        case WrapMode.MIRRORED_REPEAT_GL: // Fall-through (ordinary case).
+        case tcuTexture.WrapMode.CLAMP_TO_EDGE:
+        case tcuTexture.WrapMode.CLAMP_TO_BORDER:
+        case tcuTexture.WrapMode.REPEAT_GL:
+        case tcuTexture.WrapMode.MIRRORED_REPEAT_GL: // Fall-through (ordinary case).
             return size * c;
 
-        case WrapMode.REPEAT_CL:
+        case tcuTexture.WrapMode.REPEAT_CL:
             return size * (c - Math.floor(c));
 
-        case WrapMode.MIRRORED_REPEAT_CL:
+        case tcuTexture.WrapMode.MIRRORED_REPEAT_CL:
             return size * Math.abs(c - 2 * deMath.rint(0.5 * c));
     }
-    throw new Error('Unrecognized wrap mode ' + mode);
+    throw new Error('Unrecognized tcuTexture.wrap mode ' + mode);
 };
 
 /**
- * @param {WrapMode} mode
- * @param {Number} c Source value (integer)
- * @param {Number} size Type size (integer)
- * @return {Number}
+ * @param {tcuTexture.WrapMode} mode
+ * @param {number} c Source value (integer)
+ * @param {number} size Type size (integer)
+ * @return {number}
  */
-var wrap = function(mode, c, size) {
+tcuTexture.wrap = function(mode, c, size) {
     switch (mode) {
-        case WrapMode.CLAMP_TO_BORDER:
+        case tcuTexture.WrapMode.CLAMP_TO_BORDER:
             return deMath.clamp(c, -1, size);
 
-        case WrapMode.CLAMP_TO_EDGE:
+        case tcuTexture.WrapMode.CLAMP_TO_EDGE:
             return deMath.clamp(c, 0, size - 1);
 
-        case WrapMode.REPEAT_GL:
+        case tcuTexture.WrapMode.REPEAT_GL:
             return deMath.imod(c, size);
 
-        case WrapMode.REPEAT_CL:
+        case tcuTexture.WrapMode.REPEAT_CL:
             return deMath.imod(c, size);
 
-        case WrapMode.MIRRORED_REPEAT_GL:
+        case tcuTexture.WrapMode.MIRRORED_REPEAT_GL:
             return (size - 1) - deMath.mirror(deMath.imod(c, 2 * size) - size);
 
-        case WrapMode.MIRRORED_REPEAT_CL:
+        case tcuTexture.WrapMode.MIRRORED_REPEAT_CL:
             return deMath.clamp(c, 0, size - 1); // \note Actual mirroring done already in unnormalization function.
     }
-    throw new Error('Unrecognized wrap mode ' + mode);
+    throw new Error('Unrecognized tcuTexture.wrap mode ' + mode);
 };
 
 /**
- * @param {Number} cs
- * @return {Number}
+ * @param {number} cs
+ * @return {number}
  */
-var sRGBChannelToLinear = function(cs) {
+tcuTexture.sRGBChannelToLinear = function(cs) {
     if (cs <= 0.04045)
         return cs / 12.92;
     else
@@ -612,41 +604,174 @@ var sRGBChannelToLinear = function(cs) {
 
 /**
  * Convert sRGB to linear colorspace
- * @param {Array<Number>} cs Vec4
- * @return {Array<Number>} Vec4
+ * @param {Array<number>} cs Vec4
+ * @return {Array<number>} Vec4
  */
-var sRGBToLinear = function(cs) {
+tcuTexture.sRGBToLinear = function(cs) {
     return [
-        sRGBChannelToLinear(cs[0]),
-        sRGBChannelToLinear(cs[1]),
-        sRGBChannelToLinear(cs[2]),
+        tcuTexture.sRGBChannelToLinear(cs[0]),
+        tcuTexture.sRGBChannelToLinear(cs[1]),
+        tcuTexture.sRGBChannelToLinear(cs[2]),
         cs[3]
         ];
 };
 
 /**
- * Texel lookup with color conversion.
- * @param {ConstPixelBufferAccess} access
- * @param {Number} i
- * @param {Number} j
- * @param {Number} k
- * @return {Array<Number>} Vec4 pixel color
+ * Texel tcuTexture.lookup with color conversion.
+ * @param {tcuTexture.ConstPixelBufferAccess} access
+ * @param {number} i
+ * @param {number} j
+ * @param {number} k
+ * @return {Array<number>} Vec4 pixel color
  */
-var lookup = function(access, i, j, k) {
+tcuTexture.lookup = function(access, i, j, k) {
     var p = access.getPixel(i, j, k);
     // console.log('Lookup at ' + i + ' ' + j + ' ' + k + ' ' + p);
-    return access.getFormat().isSRGB() ? sRGBToLinear(p) : p;
+    return access.getFormat().isSRGB() ? tcuTexture.sRGBToLinear(p) : p;
 };
 
 /**
- * @param {ConstPixelBufferAccess} access
- * @param {Sampler} sampler
- * @param {Number} u
- * @param {Number} v
- * @param {Number} depth (integer)
- * @return {Array<Number>} Vec4 pixel color
+ * @param {tcuTexture.ConstPixelBufferAccess} access
+ * @param {tcuTexture.Sampler} sampler
+ * @param {number} u
+ * @param {number} v
+ * @param {number} depth (integer)
+ * @return {Array<number>} Vec4 pixel color
  */
-var sampleNearest2D = function(access, sampler, u, v, depth) {
+tcuTexture.sampleLinear2D = function(access, sampler, u, v, depth) {
+    /**
+     * @param {Array<number>} p00
+     * @param {Array<number>} p10
+     * @param {Array<number>} p01
+     * @param {Array<number>} p11
+     * @param {number} a
+     * @param {number} b
+     */
+    var interpolateQuad = function(p00, p10, p01, p11, a, b) {
+        var v1 = deMath.scale(p00, (1 - a) * (1 - b));
+        var v2 = deMath.scale(p10, a * (1 - b));
+        var v3 = deMath.scale(p01, (1 - a) * b);
+        var v4 = deMath.scale(p11, a * b);
+        return deMath.add(deMath.add(v1, v2), deMath.add(v3, v4));
+    };
+
+    var w = access.getWidth();
+    var h = access.getHeight();
+
+    var x0 = Math.floor(u - 0.5);
+    var x1 = x0 + 1;
+    var y0 = Math.floor(v - 0.5);
+    var y1 = y0 + 1;
+
+    var i0 = tcuTexture.wrap(sampler.wrapS, x0, w);
+    var i1 = tcuTexture.wrap(sampler.wrapS, x1, w);
+    var j0 = tcuTexture.wrap(sampler.wrapT, y0, h);
+    var j1 = tcuTexture.wrap(sampler.wrapT, y1, h);
+
+    var a = deMath.deFloatFrac(u - 0.5);
+    var b = deMath.deFloatFrac(v - 0.5);
+
+    var i0UseBorder = sampler.wrapS == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(i0, 0, w);
+    var i1UseBorder = sampler.wrapS == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(i1, 0, w);
+    var j0UseBorder = sampler.wrapT == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(j0, 0, h);
+    var j1UseBorder = sampler.wrapT == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(j1, 0, h);
+
+    // Border color for out-of-range coordinates if using CLAMP_TO_BORDER, otherwise execute lookups.
+    var p00 = (i0UseBorder || j0UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i0, j0, depth);
+    var p10 = (i1UseBorder || j0UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i1, j0, depth);
+    var p01 = (i0UseBorder || j1UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i0, j1, depth);
+    var p11 = (i1UseBorder || j1UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i1, j1, depth);
+
+    // Interpolate.
+    return interpolateQuad(p00, p10, p01, p11, a, b);
+};
+
+/**
+ * @param {tcuTexture.ConstPixelBufferAccess} access
+ * @param {tcuTexture.Sampler} sampler
+ * @param {number} u
+ * @param {number} v
+ * @param {number} w
+ * @return {Array<number>} Vec4 pixel color
+ */
+tcuTexture.sampleLinear3D = function(access, sampler, u, v, w) {
+    /**
+     * @param {Array<number>} p000
+     * @param {Array<number>} p100
+     * @param {Array<number>} p010
+     * @param {Array<number>} p110
+     * @param {Array<number>} p001
+     * @param {Array<number>} p101
+     * @param {Array<number>} p011
+     * @param {Array<number>} p111
+     * @param {number} a
+     * @param {number} b
+     * @param {number} c
+     */
+    var interpolateCube = function(p000, p100, p010, p110, p001, p101, p011, p111, a, b, c) {
+        var v1 = deMath.scale(p000, (1 - a) * (1 - b) * (1 - c));
+        var v2 = deMath.scale(p100, a * (1 - b) * (1 - c));
+        var v3 = deMath.scale(p010, (1 - a) * b * (1 - c));
+        var v4 = deMath.scale(p110, a * b * (1 - c));
+        var v5 = deMath.scale(p001, (1 - a) * (1 - b) * c);
+        var v6 = deMath.scale(p101, a * (1 - b) * c);
+        var v7 = deMath.scale(p011, (1 - a) * b * c);
+        var v8 = deMath.scale(p111, a * b * c);
+        return deMath.add(deMath.add(deMath.add(v1, v2), deMath.add(v3, v4)), deMath.add(deMath.add(v5, v6), deMath.add(v7, v8)));
+    };
+
+    var width = access.getWidth();
+    var height = access.getHeight();
+    var depth = access.getDepth();
+
+    var x0 = Math.floor(u - 0.5);
+    var x1 = x0 + 1;
+    var y0 = Math.floor(v - 0.5);
+    var y1 = y0 + 1;
+    var z0 = Math.floor(w - 0.5);
+    var z1 = z0 + 1;
+
+    var i0 = tcuTexture.wrap(sampler.wrapS, x0, width);
+    var i1 = tcuTexture.wrap(sampler.wrapS, x1, width);
+    var j0 = tcuTexture.wrap(sampler.wrapT, y0, height);
+    var j1 = tcuTexture.wrap(sampler.wrapT, y1, height);
+    var k0 = tcuTexture.wrap(sampler.wrapR, z0, depth);
+    var k1 = tcuTexture.wrap(sampler.wrapR, z1, depth);
+
+    var a = deMath.deFloatFrac(u - 0.5);
+    var b = deMath.deFloatFrac(v - 0.5);
+    var c = deMath.deFloatFrac(w - 0.5);
+
+    var i0UseBorder = sampler.wrapS == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(i0, 0, width);
+    var i1UseBorder = sampler.wrapS == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(i1, 0, width);
+    var j0UseBorder = sampler.wrapT == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(j0, 0, height);
+    var j1UseBorder = sampler.wrapT == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(j1, 0, height);
+    var k0UseBorder = sampler.wrapR == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(k0, 0, depth);
+    var k1UseBorder = sampler.wrapR == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(k1, 0, depth);
+
+    // Border color for out-of-range coordinates if using CLAMP_TO_BORDER, otherwise execute lookups.
+    var p000 = (i0UseBorder || j0UseBorder || k0UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i0, j0, k0);
+    var p100 = (i1UseBorder || j0UseBorder || k0UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i1, j0, k0);
+    var p010 = (i0UseBorder || j1UseBorder || k0UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i0, j1, k0);
+    var p110 = (i1UseBorder || j1UseBorder || k0UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i1, j1, k0);
+    var p001 = (i0UseBorder || j0UseBorder || k1UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i0, j0, k1);
+    var p101 = (i1UseBorder || j0UseBorder || k1UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i1, j0, k1);
+    var p011 = (i0UseBorder || j1UseBorder || k1UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i0, j1, k1);
+    var p111 = (i1UseBorder || j1UseBorder || k1UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i1, j1, k1);
+
+    // Interpolate.
+    return interpolateCube(p000, p100, p010, p110, p001, p101, p011, p111, a, b, c);
+};
+
+/**
+ * @param {tcuTexture.ConstPixelBufferAccess} access
+ * @param {tcuTexture.Sampler} sampler
+ * @param {number} u
+ * @param {number} v
+ * @param {number} depth (integer)
+ * @return {Array<number>} Vec4 pixel color
+ */
+tcuTexture.sampleNearest2D = function(access, sampler, u, v, depth) {
     var width = access.getWidth();
     var height = access.getHeight();
 
@@ -655,25 +780,25 @@ var sampleNearest2D = function(access, sampler, u, v, depth) {
     var y = Math.round(Math.floor(v));
 
     // Check for CLAMP_TO_BORDER.
-    if ((sampler.wrapS == WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(x, 0, width)) ||
-        (sampler.wrapT == WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(y, 0, height)))
+    if ((sampler.wrapS == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(x, 0, width)) ||
+        (sampler.wrapT == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(y, 0, height)))
         return sampler.borderColor;
 
-    var i = wrap(sampler.wrapS, x, width);
-    var j = wrap(sampler.wrapT, y, height);
+    var i = tcuTexture.wrap(sampler.wrapS, x, width);
+    var j = tcuTexture.wrap(sampler.wrapT, y, height);
 
-    return lookup(access, i, j, depth);
+    return tcuTexture.lookup(access, i, j, depth);
 };
 
 /**
- * @param {ConstPixelBufferAccess} access
- * @param {Sampler} sampler
- * @param {Number} u
- * @param {Number} v
- * @param {Number} w
- * @return {Array<Number>} Vec4 pixel color
+ * @param {tcuTexture.ConstPixelBufferAccess} access
+ * @param {tcuTexture.Sampler} sampler
+ * @param {number} u
+ * @param {number} v
+ * @param {number} w
+ * @return {Array<number>} Vec4 pixel color
  */
-var sampleNearest3D = function(access, sampler, u, v, w) {
+tcuTexture.sampleNearest3D = function(access, sampler, u, v, w) {
     var width = access.getWidth();
     var height = access.getHeight();
     var depth = access.getDepth();
@@ -683,23 +808,23 @@ var sampleNearest3D = function(access, sampler, u, v, w) {
     var z = Math.round(Math.floor(w));
 
     // Check for CLAMP_TO_BORDER.
-    if ((sampler.wrapS == WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(x, 0, width)) ||
-        (sampler.wrapT == WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(y, 0, height)) ||
-        (sampler.wrapR == WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(z, 0, depth)))
+    if ((sampler.wrapS == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(x, 0, width)) ||
+        (sampler.wrapT == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(y, 0, height)) ||
+        (sampler.wrapR == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(z, 0, depth)))
         return sampler.borderColor;
 
-    var i = wrap(sampler.wrapS, x, width);
-    var j = wrap(sampler.wrapT, y, height);
-    var k = wrap(sampler.wrapR, z, depth);
+    var i = tcuTexture.wrap(sampler.wrapS, x, width);
+    var j = tcuTexture.wrap(sampler.wrapT, y, height);
+    var k = tcuTexture.wrap(sampler.wrapR, z, depth);
 
-    return lookup(access, i, j, k);
+    return tcuTexture.lookup(access, i, j, k);
 };
 
 /**
- * @param {Array<Number>} color Vec4 color
- * @return {Number} The color in packed 32 bit format
+ * @param {Array<number>} color Vec4 color
+ * @return {number} The color in packed 32 bit format
  */
-var packRGB999E5 = function(color) {
+tcuTexture.packRGB999E5 = function(color) {
     /** @const */ var mBits = 9;
     /** @const */ var eBits = 5;
     /** @const */ var eBias = 15;
@@ -728,10 +853,10 @@ var packRGB999E5 = function(color) {
 };
 
 /**
- * @param {Number} color Color in packed 32 bit format
- * @return {Array<Number>} The color in unpacked format
+ * @param {number} color Color in packed 32 bit format
+ * @return {Array<number>} The color in unpacked format
  */
-var unpackRGB999E5 = function(color) {
+tcuTexture.unpackRGB999E5 = function(color) {
     var mBits = 9;
     var eBias = 15;
 
@@ -751,7 +876,7 @@ var unpackRGB999E5 = function(color) {
 /**
  * \brief Read-only pixel data access
  *
- * ConstPixelBufferAccess encapsulates pixel data pointer along with
+ * tcuTexture.ConstPixelBufferAccess encapsulates pixel data pointer along with
  * format and layout information. It can be used for read-only access
  * to arbitrary pixel buffers.
  *
@@ -759,10 +884,10 @@ var unpackRGB999E5 = function(color) {
  * as values and are valid as long as the storage doesn't change.
  * @constructor
  */
-var ConstPixelBufferAccess = function(descriptor) {
+tcuTexture.ConstPixelBufferAccess = function(descriptor) {
     if (descriptor) {
         this.m_offset = descriptor.offset || 0;
-        this.m_format = descriptor.format || new TextureFormat(ChannelOrder.RGBA, ChannelType.FLOAT);
+        this.m_format = descriptor.format || new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.FLOAT);
         this.m_width = descriptor.width;
         this.m_height = descriptor.height;
         if (descriptor.depth)
@@ -782,40 +907,135 @@ var ConstPixelBufferAccess = function(descriptor) {
     }
 };
 
-/** @return {Number} */
-ConstPixelBufferAccess.prototype.getDataSize = function() { return this.m_depth * this.m_slicePitch; };
-ConstPixelBufferAccess.prototype.isEmpty = function() { return this.m_width == 0 || this.m_height == 0 || this.m_depth == 0; };
-/** @return {TypedArray} */
-ConstPixelBufferAccess.prototype.getDataPtr = function() {
-    var arrayType = getTypedArray(this.m_format.type);
+/** @return {number} */
+tcuTexture.ConstPixelBufferAccess.prototype.getDataSize = function() { return this.m_depth * this.m_slicePitch; };
+tcuTexture.ConstPixelBufferAccess.prototype.isEmpty = function() { return this.m_width == 0 || this.m_height == 0 || this.m_depth == 0; };
+/** @return {goog.TypedArray} */
+tcuTexture.ConstPixelBufferAccess.prototype.getDataPtr = function() {
+    var arrayType = tcuTexture.getTypedArray(this.m_format.type);
     return new arrayType(this.m_data, this.m_offset);
 };
 /** @return {ArrayBuffer} */
-ConstPixelBufferAccess.prototype.getBuffer = function() {
+tcuTexture.ConstPixelBufferAccess.prototype.getBuffer = function() {
     return this.m_data;
 };
-/** @return {Number} */
-ConstPixelBufferAccess.prototype.getRowPitch = function() { return this.m_rowPitch; };
-/** @return {Number} */
-ConstPixelBufferAccess.prototype.getWidth = function() { return this.m_width; };
-/** @return {Number} */
-ConstPixelBufferAccess.prototype.getHeight = function() { return this.m_height; };
-/** @return {Number} */
-ConstPixelBufferAccess.prototype.getDepth = function() { return this.m_depth; };
-/** @return {Number} */
-ConstPixelBufferAccess.prototype.getSlicePitch = function() { return this.m_slicePitch; };
-/** @return {TextureFormat} */
-ConstPixelBufferAccess.prototype.getFormat = function() { return this.m_format; };
+/** @return {number} */
+tcuTexture.ConstPixelBufferAccess.prototype.getRowPitch = function() { return this.m_rowPitch; };
+/** @return {number} */
+tcuTexture.ConstPixelBufferAccess.prototype.getWidth = function() { return this.m_width; };
+/** @return {number} */
+tcuTexture.ConstPixelBufferAccess.prototype.getHeight = function() { return this.m_height; };
+/** @return {number} */
+tcuTexture.ConstPixelBufferAccess.prototype.getDepth = function() { return this.m_depth; };
+/** @return {number} */
+tcuTexture.ConstPixelBufferAccess.prototype.getSlicePitch = function() { return this.m_slicePitch; };
+/** @return {tcuTexture.TextureFormat} */
+tcuTexture.ConstPixelBufferAccess.prototype.getFormat = function() { return this.m_format; };
 
 /**
- * @param {Number} x
- * @param {Number} y
- * @param {Number} z
- * @return {Array<Number>} Pixel value as Vec4
+ * @param {number} x
+ * @param {number} y
+ * @param {number=} z
+ * @return {number} stencil value
  */
-ConstPixelBufferAccess.prototype.getPixel = function(x, y, z) {
+tcuTexture.ConstPixelBufferAccess.prototype.getPixStencil = function(x, y, z) {
+    z = z || 0;
+
+    DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
+    DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
+    DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
+
+    var pixelSize = this.m_format.getPixelSize();
+    var arrayType = tcuTexture.getTypedArray(this.m_format.type);
+    var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
+    var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
+
+    switch (this.m_format.type) {
+        case tcuTexture.ChannelType.UNSIGNED_INT_24_8:
+            switch (this.m_format.order) {
+                case tcuTexture.ChannelOrder.S: return (pixelPtr[0] >> 8) & 0xff;
+                case tcuTexture.ChannelOrder.DS: return pixelPtr[0] & 0xff;
+
+                default:
+                    DE_ASSERT(false);
+                    return 0;
+            }
+
+        case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV:
+            DE_ASSERT(this.m_format.order == tcuTexture.ChannelOrder.DS);
+            var u32array = new Uint32Array(this.m_data, offset + this.m_offset + 4, 1);
+            return u32array[0] & 0xff;
+
+        default: {
+            if (this.m_format.order == tcuTexture.ChannelOrder.S)
+                return tcuTexture.channelToInt(pixelPtr[0], this.m_format.type);
+            else {
+                DE_ASSERT(this.m_format.order == tcuTexture.ChannelOrder.DS);
+                var stencilChannelIndex = 3;
+                return tcuTexture.channelToInt(pixelPtr[stencilChannelIndex], this.m_format.type);
+            }
+        }
+    }
+};
+
+/**
+ * @param {number} x
+ * @param {number} y
+ * @param {number=} z
+ * @return {number}
+ */
+tcuTexture.ConstPixelBufferAccess.prototype.getPixDepth = function(x, y, z) {
     if (z == null)
         z = 0;
+    DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
+    DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
+    DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
+
+    var pixelSize = this.m_format.getPixelSize();
+    var arrayType = tcuTexture.getTypedArray(this.m_format.type);
+    var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
+    var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
+
+    var ub = function(pixel, offset, count) {
+        return (pixel >> offset) & ((1 << count) - 1);
+    };
+    var nb = function(pixel, offset, count) {
+        return tcuTexture.channelToNormFloat(ub(pixel, offset, count), count);
+    };
+
+    // Packed formats.
+    switch (this.m_format.type) {
+        case tcuTexture.ChannelType.UNSIGNED_INT_24_8:
+            switch (this.m_format.order) {
+                case tcuTexture.ChannelOrder.D: // fall-through
+                case tcuTexture.ChannelOrder.DS:
+                    return nb(pixelPtr[0], 8, 24);
+                default:
+                    throw new Error('Unsupported tcuTexture.channel order ' + this.m_format.order);
+            }
+            break;
+
+        case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
+            DE_ASSERT(this.m_format.order == tcuTexture.ChannelOrder.DS);
+            return pixelPtr[0];
+            break;
+        }
+
+        default: {
+            DE_ASSERT(this.m_format.order == tcuTexture.ChannelOrder.D || this.m_format.order == tcuTexture.ChannelOrder.DS);
+            return tcuTexture.channelToFloat(pixelPtr[0], this.m_format.type);
+        }
+    }
+};
+
+/**
+ * @param {number} x
+ * @param {number} y
+ * @param {number=} z
+ * @return {Array<number>} Pixel value as Vec4
+ */
+tcuTexture.ConstPixelBufferAccess.prototype.getPixel = function(x, y, z) {
+    z = z || 0;
     // console.log(this);
     // console.log('(' + x + ',' + y + ',' + z + ')');
 
@@ -824,7 +1044,7 @@ ConstPixelBufferAccess.prototype.getPixel = function(x, y, z) {
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
 
     var pixelSize = this.m_format.getPixelSize();
-    var arrayType = getTypedArray(this.m_format.type);
+    var arrayType = tcuTexture.getTypedArray(this.m_format.type);
     var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
     var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
 
@@ -832,38 +1052,38 @@ ConstPixelBufferAccess.prototype.getPixel = function(x, y, z) {
         return (pixel >> offset) & ((1 << count) - 1);
     };
     var nb = function(pixel, offset, count) {
-        return channelToNormFloat(ub(pixel, offset, count), count);
+        return tcuTexture.channelToNormFloat(ub(pixel, offset, count), count);
     };
 
     var pixel = pixelPtr[0];
 
     // Packed formats.
     switch (this.m_format.type) {
-        case ChannelType.UNORM_SHORT_565: return [nb(pixel, 11, 5), nb(pixel, 5, 6), nb(pixel, 0, 5), 1];
-        case ChannelType.UNORM_SHORT_555: return [nb(pixel, 10, 5), nb(pixel, 5, 5), nb(pixel, 0, 5), 1];
-        case ChannelType.UNORM_SHORT_4444: return [nb(pixel, 12, 4), nb(pixel, 8, 4), nb(pixel, 4, 4), nb(pixel, 0, 4)];
-        case ChannelType.UNORM_SHORT_5551: return [nb(pixel, 11, 5), nb(pixel, 6, 5), nb(pixel, 1, 5), nb(pixel, 0, 1)];
-        case ChannelType.UNORM_INT_101010: return [nb(pixel, 22, 10), nb(pixel, 12, 10), nb(pixel, 2, 10), 1];
-        case ChannelType.UNORM_INT_1010102_REV: return [nb(pixel, 0, 10), nb(pixel, 10, 10), nb(pixel, 20, 10), nb(pixel, 30, 2)];
-        case ChannelType.UNSIGNED_INT_1010102_REV: return [ub(pixel, 0, 10), ub(pixel, 10, 10), ub(pixel, 20, 10), ub(pixel, 30, 2)];
-        case ChannelType.UNSIGNED_INT_999_E5_REV: return unpackRGB999E5(pixel);
+        case tcuTexture.ChannelType.UNORM_SHORT_565: return [nb(pixel, 11, 5), nb(pixel, 5, 6), nb(pixel, 0, 5), 1];
+        case tcuTexture.ChannelType.UNORM_SHORT_555: return [nb(pixel, 10, 5), nb(pixel, 5, 5), nb(pixel, 0, 5), 1];
+        case tcuTexture.ChannelType.UNORM_SHORT_4444: return [nb(pixel, 12, 4), nb(pixel, 8, 4), nb(pixel, 4, 4), nb(pixel, 0, 4)];
+        case tcuTexture.ChannelType.UNORM_SHORT_5551: return [nb(pixel, 11, 5), nb(pixel, 6, 5), nb(pixel, 1, 5), nb(pixel, 0, 1)];
+        case tcuTexture.ChannelType.UNORM_INT_101010: return [nb(pixel, 22, 10), nb(pixel, 12, 10), nb(pixel, 2, 10), 1];
+        case tcuTexture.ChannelType.UNORM_INT_1010102_REV: return [nb(pixel, 0, 10), nb(pixel, 10, 10), nb(pixel, 20, 10), nb(pixel, 30, 2)];
+        case tcuTexture.ChannelType.UNSIGNED_INT_1010102_REV: return [ub(pixel, 0, 10), ub(pixel, 10, 10), ub(pixel, 20, 10), ub(pixel, 30, 2)];
+        case tcuTexture.ChannelType.UNSIGNED_INT_999_E5_REV: return tcuTexture.unpackRGB999E5(pixel);
 
-        case ChannelType.UNSIGNED_INT_24_8:
+        case tcuTexture.ChannelType.UNSIGNED_INT_24_8:
             switch (this.m_format.order) {
                 // \note Stencil is always ignored.
-                case ChannelOrder.D: return [nb(pixel, 8, 24), 0, 0, 1];
-                case ChannelOrder.DS: return [nb(pixel, 8, 24), 0, 0, 1 /* (float)ub(0, 8) */];
+                case tcuTexture.ChannelOrder.D: return [nb(pixel, 8, 24), 0, 0, 1];
+                case tcuTexture.ChannelOrder.DS: return [nb(pixel, 8, 24), 0, 0, 1 /* (float)ub(0, 8) */];
                 default:
                     DE_ASSERT(false);
             }
 
-        case ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
-            DE_ASSERT(this.m_format.order == ChannelOrder.DS);
+        case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
+            DE_ASSERT(this.m_format.order == tcuTexture.ChannelOrder.DS);
             // \note Stencil is ignored.
             return [pixel, 0, 0, 1];
         }
 
-        case ChannelType.UNSIGNED_INT_11F_11F_10F_REV: {
+        case tcuTexture.ChannelType.UNSIGNED_INT_11F_11F_10F_REV: {
             var f11 = function(value) {
                 return tcuFloat.float11ToNumber(value);
             };
@@ -880,37 +1100,36 @@ ConstPixelBufferAccess.prototype.getPixel = function(x, y, z) {
     // Generic path.
     var result = [];
     result.length = 4;
-    var channelMap = getChannelReadMap(this.m_format.order);
-    var channelSize = getChannelSize(this.m_format.type);
+    var channelMap = tcuTexture.getChannelReadMap(this.m_format.order);
+    var channelSize = tcuTexture.getChannelSize(this.m_format.type);
 
     for (var c = 0; c < 4; c++) {
         var map = channelMap[c];
-        if (map == channel.ZERO)
+        if (map == tcuTexture.channel.ZERO)
             result[c] = 0;
-        else if (map == channel.ONE)
+        else if (map == tcuTexture.channel.ONE)
             result[c] = 1;
         else
-            result[c] = channelToFloat(pixelPtr[map], this.m_format.type);
+            result[c] = tcuTexture.channelToFloat(pixelPtr[map], this.m_format.type);
     }
 
     return result;
 };
 
 /**
- * @param {Number} x
- * @param {Number} y
- * @param {Number} z
- * @return {Array<Number>} Pixel value as Vec4
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @return {Array<number>} Pixel value as Vec4
  */
-ConstPixelBufferAccess.prototype.getPixelInt = function(x, y, z) {
-    if (z == null)
-        z = 0;
+tcuTexture.ConstPixelBufferAccess.prototype.getPixelInt = function(x, y, z) {
+    z = z || 0;
     DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
 
     var pixelSize = this.m_format.getPixelSize();
-    var arrayType = getTypedArray(this.m_format.type);
+    var arrayType = tcuTexture.getTypedArray(this.m_format.type);
     var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
     var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
 
@@ -922,25 +1141,25 @@ ConstPixelBufferAccess.prototype.getPixelInt = function(x, y, z) {
 
     // Packed formats.
     switch (this.m_format.type) {
-        case ChannelType.UNORM_SHORT_565: return [ub(pixel, 11, 5), ub(pixel, 5, 6), ub(pixel, 0, 5), 1];
-        case ChannelType.UNORM_SHORT_555: return [ub(pixel, 10, 5), ub(pixel, 5, 5), ub(pixel, 0, 5), 1];
-        case ChannelType.UNORM_SHORT_4444: return [ub(pixel, 12, 4), ub(pixel, 8, 4), ub(pixel, 4, 4), ub(pixel, 0, 4)];
-        case ChannelType.UNORM_SHORT_5551: return [ub(pixel, 11, 5), ub(pixel, 6, 5), ub(pixel, 1, 5), ub(pixel, 0, 1)];
-        case ChannelType.UNORM_INT_101010: return [ub(pixel, 22, 10), ub(pixel, 12, 10), ub(pixel, 2, 10), 1];
-        case ChannelType.UNORM_INT_1010102_REV: return [ub(pixel, 0, 10), ub(pixel, 10, 10), ub(pixel, 20, 10), ub(pixel, 30, 2)];
-        case ChannelType.UNSIGNED_INT_1010102_REV: return [ub(pixel, 0, 10), ub(pixel, 10, 10), ub(pixel, 20, 10), ub(pixel, 30, 2)];
+        case tcuTexture.ChannelType.UNORM_SHORT_565: return [ub(pixel, 11, 5), ub(pixel, 5, 6), ub(pixel, 0, 5), 1];
+        case tcuTexture.ChannelType.UNORM_SHORT_555: return [ub(pixel, 10, 5), ub(pixel, 5, 5), ub(pixel, 0, 5), 1];
+        case tcuTexture.ChannelType.UNORM_SHORT_4444: return [ub(pixel, 12, 4), ub(pixel, 8, 4), ub(pixel, 4, 4), ub(pixel, 0, 4)];
+        case tcuTexture.ChannelType.UNORM_SHORT_5551: return [ub(pixel, 11, 5), ub(pixel, 6, 5), ub(pixel, 1, 5), ub(pixel, 0, 1)];
+        case tcuTexture.ChannelType.UNORM_INT_101010: return [ub(pixel, 22, 10), ub(pixel, 12, 10), ub(pixel, 2, 10), 1];
+        case tcuTexture.ChannelType.UNORM_INT_1010102_REV: return [ub(pixel, 0, 10), ub(pixel, 10, 10), ub(pixel, 20, 10), ub(pixel, 30, 2)];
+        case tcuTexture.ChannelType.UNSIGNED_INT_1010102_REV: return [ub(pixel, 0, 10), ub(pixel, 10, 10), ub(pixel, 20, 10), ub(pixel, 30, 2)];
 
-        case ChannelType.UNSIGNED_INT_24_8:
+        case tcuTexture.ChannelType.UNSIGNED_INT_24_8:
             switch (this.m_format.order) {
                 // \note Stencil is always ignored.
-                case ChannelOrder.D: return [ub(pixel, 8, 24), 0, 0, 1];
-                case ChannelOrder.DS: return [ub(pixel, 8, 24), 0, 0, 1 /* (float)ub(0, 8) */];
+                case tcuTexture.ChannelOrder.D: return [ub(pixel, 8, 24), 0, 0, 1];
+                case tcuTexture.ChannelOrder.DS: return [ub(pixel, 8, 24), 0, 0, 1 /* (float)ub(0, 8) */];
                 default:
                     DE_ASSERT(false);
             }
 
-        case ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
-            DE_ASSERT(this.m_format.order == ChannelOrder.DS);
+        case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
+            DE_ASSERT(this.m_format.order == tcuTexture.ChannelOrder.DS);
             // \note Stencil is ignored.
             return [pixel, 0, 0, 1];
         }
@@ -952,31 +1171,31 @@ ConstPixelBufferAccess.prototype.getPixelInt = function(x, y, z) {
     // Generic path.
     var result = [];
     result.length = 4;
-    var channelMap = getChannelReadMap(this.m_format.order);
-    var channelSize = getChannelSize(this.m_format.type);
+    var channelMap = tcuTexture.getChannelReadMap(this.m_format.order);
+    var channelSize = tcuTexture.getChannelSize(this.m_format.type);
 
     for (var c = 0; c < 4; c++) {
         var map = channelMap[c];
-        if (map == channel.ZERO)
+        if (map == tcuTexture.channel.ZERO)
             result[c] = 0;
-        else if (map == channel.ONE)
+        else if (map == tcuTexture.channel.ONE)
             result[c] = 1;
         else
-            result[c] = channelToInt(pixelPtr[map], this.m_format.type);
+            result[c] = tcuTexture.channelToInt(pixelPtr[map], this.m_format.type);
     }
 
     return result;
 };
 
 /**
- * @param {Sampler} sampler
- * @param {FilterMode} filter
- * @param {Number} s
- * @param {Number} t
- * @param {Number} depth (integer)
- * @return {Array<Number>} Sample color
+ * @param {tcuTexture.Sampler} sampler
+ * @param {tcuTexture.FilterMode} filter
+ * @param {number} s
+ * @param {number} t
+ * @param {number} depth (integer)
+ * @return {Array<number>} Sample color
  */
-ConstPixelBufferAccess.prototype.sample2D = function(sampler, filter, s, t, depth) {
+tcuTexture.ConstPixelBufferAccess.prototype.sample2D = function(sampler, filter, s, t, depth) {
     DE_ASSERT(deMath.deInBounds32(depth, 0, this.m_depth));
 
     // Non-normalized coordinates.
@@ -984,74 +1203,67 @@ ConstPixelBufferAccess.prototype.sample2D = function(sampler, filter, s, t, dept
     var v = t;
 
     if (sampler.normalizedCoords) {
-        u = unnormalize(sampler.wrapS, s, this.m_width);
-        v = unnormalize(sampler.wrapT, t, this.m_height);
+        u = tcuTexture.unnormalize(sampler.wrapS, s, this.m_width);
+        v = tcuTexture.unnormalize(sampler.wrapT, t, this.m_height);
     }
 
     switch (filter) {
-        case FilterMode.NEAREST: return sampleNearest2D(this, sampler, u, v, depth);
-        // case Sampler::LINEAR:    return sampleLinear2D    (*this, sampler, u, v, depth);
-        // default:
-        //     DE_ASSERT(false);
-        //     return Vec4(0.0f);
+        case tcuTexture.FilterMode.NEAREST: return tcuTexture.sampleNearest2D(this, sampler, u, v, depth);
+        case tcuTexture.FilterMode.LINEAR: return tcuTexture.sampleLinear2D(this, sampler, u, v, depth);
+        default:
+            throw new Error('Invalid filter:' + filter);
     }
     throw new Error('Unimplemented');
 };
 
 /**
- * @param {Sampler} sampler
- * @param {FilterMode} filter
- * @param {Number} s
- * @param {Number} t
- * @param {Number} r
- * @return {Array<Number>} Sample color
+ * @param {tcuTexture.Sampler} sampler
+ * @param {tcuTexture.FilterMode} filter
+ * @param {number} s
+ * @param {number} t
+ * @param {number} r
+ * @return {Array<number>} Sample color
  */
-ConstPixelBufferAccess.prototype.sample3D = function(sampler, filter, s, t, r) {
+tcuTexture.ConstPixelBufferAccess.prototype.sample3D = function(sampler, filter, s, t, r) {
     // Non-normalized coordinates.
     var u = s;
     var v = t;
     var w = r;
 
     if (sampler.normalizedCoords) {
-        u = unnormalize(sampler.wrapS, s, this.m_width);
-        v = unnormalize(sampler.wrapT, t, this.m_height);
-        w = unnormalize(sampler.wrapR, r, this.m_depth);
+        u = tcuTexture.unnormalize(sampler.wrapS, s, this.m_width);
+        v = tcuTexture.unnormalize(sampler.wrapT, t, this.m_height);
+        w = tcuTexture.unnormalize(sampler.wrapR, r, this.m_depth);
     }
 
     switch (filter) {
-        case FilterMode.NEAREST: return sampleNearest3D(this, sampler, u, v, w);
-        // case Sampler::LINEAR:    return sampleLinear3D    (*this, sampler, u, v, w);
-        // default:
-        //     DE_ASSERT(false);
-        //     return Vec4(0.0f);
+        case tcuTexture.FilterMode.NEAREST: return tcuTexture.sampleNearest3D(this, sampler, u, v, w);
+        case tcuTexture.FilterMode.LINEAR: return tcuTexture.sampleLinear3D(this, sampler, u, v, w);
+        default:
+            throw new Error('Invalid filter:' + filter);
     }
     throw new Error('Unimplemented');
 };
 
-    /* TODO: do we need any of these? */
-    {
+    /* TODO: do we need any of these? */ {
         // template<typename T>
-        // Vector<T, 4>            getPixelT                    (int x, int y, int z = 0) const;
+        // Vector<T, 4> getPixelT (int x, int y, int z = 0) const;
 
-        // float                    getPixDepth                    (int x, int y, int z = 0) const;
-        // int                        getPixStencil                (int x, int y, int z = 0) const;
+        // Vec4 sample3D (const tcuTexture.Sampler& sampler, tcuTexture.Sampler::tcuTexture.FilterMode filter, float s, float t, float r) const;
 
-        // Vec4                    sample1D                    (const Sampler& sampler, Sampler::FilterMode filter, float s, int level) const;
-        // Vec4                    sample3D                    (const Sampler& sampler, Sampler::FilterMode filter, float s, float t, float r) const;
+        // Vec4 sample2DOffset (const tcuTexture.Sampler& sampler, tcuTexture.Sampler::tcuTexture.FilterMode filter, float s, float t, const IVec3& offset) const;
+        // Vec4 sample3DOffset (const tcuTexture.Sampler& sampler, tcuTexture.Sampler::tcuTexture.FilterMode filter, float s, float t, float r, const IVec3& offset) const;
 
-        // Vec4                    sample1DOffset                (const Sampler& sampler, Sampler::FilterMode filter, float s, const IVec2& offset) const;
-        // Vec4                    sample2DOffset                (const Sampler& sampler, Sampler::FilterMode filter, float s, float t, const IVec3& offset) const;
-        // Vec4                    sample3DOffset                (const Sampler& sampler, Sampler::FilterMode filter, float s, float t, float r, const IVec3& offset) const;
-
-        // float                    sample1DCompare                (const Sampler& sampler, Sampler::FilterMode filter, float ref, float s, const IVec2& offset) const;
-        // float                    sample2DCompare                (const Sampler& sampler, Sampler::FilterMode filter, float ref, float s, float t, const IVec3& offset) const;
+        // float sample2DCompare (const tcuTexture.Sampler& sampler, tcuTexture.Sampler::tcuTexture.FilterMode filter, float ref, float s, float t, const IVec3& offset) const;
     };
 
-/* Common type limits */
-var deTypes = {
+/** Common type limits
+ *
+ */
+tcuTexture.deTypes = {
     deInt8: {min: -(1 << 7), max: (1 << 7) - 1},
     deInt16: {min: -(1 << 15), max: (1 << 15) - 1},
-    deMath: {min: -(1 << 31), max: (1 << 31) - 1},
+    deInt32: {min: -(1 << 31), max: (1 << 31) - 1},
     deUint8: {min: 0, max: (1 << 8) - 1},
     deUint16: {min: 0, max: (1 << 16) - 1},
     deUint32: {min: 0, max: 4294967295}
@@ -1059,11 +1271,11 @@ var deTypes = {
 
 /**
  * Round to even and saturate
- * @param {deTypes} deType
- * @param {Number} value
- * @return {Number}
+ * @param { {max: number, min: number}} deType from tcuTexture.deTypes
+ * @param {number} value
+ * @return {number}
  */
-var convertSatRte = function(deType, value) {
+tcuTexture.convertSatRte = function(deType, value) {
     var minVal = deType.min;
     var maxVal = deType.max;
     var floor = Math.floor(value);
@@ -1078,48 +1290,90 @@ var convertSatRte = function(deType, value) {
 };
 
 /**
- * @param {Number} src
- * @param {Number} bits
- * @return {Number}
+ * Saturate value to type range
+ * @param { {max: number, min: number}} deType from tcuTexture.deTypes
+ * @param {number} src
+ * @return {number}
  */
-var normFloatToChannel = function(src, bits) {
+tcuTexture.convertSat = function(deType, src) {
+    var minVal = deType.min;
+    var maxVal = deType.max;
+    if (src < minVal)
+        return minVal;
+    else if (src > maxVal)
+        return maxVal;
+    else
+        return src;
+};
+
+/**
+ * @param {number} src Input integer value
+ * @param {tcuTexture.ChannelType} type
+ * @return {number}
+ */
+tcuTexture.intToChannel = function(src, type) {
+    var dst;
+    switch (type) {
+        case tcuTexture.ChannelType.SNORM_INT8: dst = tcuTexture.convertSat(tcuTexture.deTypes.deInt8, src); break;
+        case tcuTexture.ChannelType.SNORM_INT16: dst = tcuTexture.convertSat(tcuTexture.deTypes.deInt16, src); break;
+        case tcuTexture.ChannelType.UNORM_INT8: dst = tcuTexture.convertSat(tcuTexture.deTypes.deUint8, src); break;
+        case tcuTexture.ChannelType.UNORM_INT16: dst = tcuTexture.convertSat(tcuTexture.deTypes.deUint16, src); break;
+        case tcuTexture.ChannelType.SIGNED_INT8: dst = tcuTexture.convertSat(tcuTexture.deTypes.deInt8, src); break;
+        case tcuTexture.ChannelType.SIGNED_INT16: dst = tcuTexture.convertSat(tcuTexture.deTypes.deInt16, src); break;
+        case tcuTexture.ChannelType.SIGNED_INT32: dst = tcuTexture.convertSat(tcuTexture.deTypes.deInt32, src); break;
+        case tcuTexture.ChannelType.UNSIGNED_INT8: dst = tcuTexture.convertSat(tcuTexture.deTypes.deUint8, src); break;
+        case tcuTexture.ChannelType.UNSIGNED_INT16: dst = tcuTexture.convertSat(tcuTexture.deTypes.deUint16, src); break;
+        case tcuTexture.ChannelType.UNSIGNED_INT32: dst = tcuTexture.convertSat(tcuTexture.deTypes.deUint32, src); break;
+        case tcuTexture.ChannelType.HALF_FLOAT: dst = tcuFloat.numberToHalfFloat(src); break;
+        case tcuTexture.ChannelType.FLOAT: dst = src; break;
+        default:
+            throw new Error('Unrecognized tcuTexture.channel type: ' + type);
+    }
+    return dst;
+};
+
+/**
+ * @param {number} src
+ * @param {number} bits
+ * @return {number}
+ */
+tcuTexture.normFloatToChannel = function(src, bits) {
     var maxVal = (1 << bits) - 1;
-    var intVal = convertSatRte(deTypes.deUint32, src * maxVal);
+    var intVal = tcuTexture.convertSatRte(tcuTexture.deTypes.deUint32, src * maxVal);
     return Math.min(maxVal, intVal);
 };
 
 /**
- * @param {Number} src
- * @param {Number} bits
- * @return {Number}
+ * @param {number} src
+ * @param {number} bits
+ * @return {number}
  */
-var uintToChannel = function(src, bits) {
+tcuTexture.uintToChannel = function(src, bits) {
     var maxVal = (1 << bits) - 1;
     return Math.min(maxVal, src);
 };
 
 /**
- * @param {Number} src
- * @param {ChannelType} type
- * @return {Number} Converted src color value
+ * @param {number} src
+ * @param {tcuTexture.ChannelType} type
+ * @return {number} Converted src color value
  */
-var floatToChannel = function(src, type) {
-    switch (type)
-    {
-        case ChannelType.SNORM_INT8: return convertSatRte(deTypes.deInt8, src * 127);
-        case ChannelType.SNORM_INT16: return convertSatRte(deTypes.deInt16, src * 32767);
-        case ChannelType.SNORM_INT32: return convertSatRte(deTypes.deMath, src * 2147483647);
-        case ChannelType.UNORM_INT8: return convertSatRte(deTypes.deUint8, src * 255);
-        case ChannelType.UNORM_INT16: return convertSatRte(deTypes.deUint16, src * 65535);
-        case ChannelType.UNORM_INT32: return convertSatRte(deTypes.deUint32, src * 4294967295);
-        case ChannelType.SIGNED_INT8: return convertSatRte(deTypes.deInt8, src);
-        case ChannelType.SIGNED_INT16: return convertSatRte(deTypes.deInt16, src);
-        case ChannelType.SIGNED_INT32: return convertSatRte(deTypes.deMath, src);
-        case ChannelType.UNSIGNED_INT8: return convertSatRte(deTypes.deUint8, src);
-        case ChannelType.UNSIGNED_INT16: return convertSatRte(deTypes.deUint16, src);
-        case ChannelType.UNSIGNED_INT32: return convertSatRte(deTypes.deUint32, src);
-        case ChannelType.HALF_FLOAT: return tcuFloat.numberToHalfFloat(src);
-        case ChannelType.FLOAT: return src;
+tcuTexture.floatToChannel = function(src, type) {
+    switch (type) {
+        case tcuTexture.ChannelType.SNORM_INT8: return tcuTexture.convertSatRte(tcuTexture.deTypes.deInt8, src * 127);
+        case tcuTexture.ChannelType.SNORM_INT16: return tcuTexture.convertSatRte(tcuTexture.deTypes.deInt16, src * 32767);
+        case tcuTexture.ChannelType.SNORM_INT32: return tcuTexture.convertSatRte(tcuTexture.deTypes.deInt32, src * 2147483647);
+        case tcuTexture.ChannelType.UNORM_INT8: return tcuTexture.convertSatRte(tcuTexture.deTypes.deUint8, src * 255);
+        case tcuTexture.ChannelType.UNORM_INT16: return tcuTexture.convertSatRte(tcuTexture.deTypes.deUint16, src * 65535);
+        case tcuTexture.ChannelType.UNORM_INT32: return tcuTexture.convertSatRte(tcuTexture.deTypes.deUint32, src * 4294967295);
+        case tcuTexture.ChannelType.SIGNED_INT8: return tcuTexture.convertSatRte(tcuTexture.deTypes.deInt8, src);
+        case tcuTexture.ChannelType.SIGNED_INT16: return tcuTexture.convertSatRte(tcuTexture.deTypes.deInt16, src);
+        case tcuTexture.ChannelType.SIGNED_INT32: return tcuTexture.convertSatRte(tcuTexture.deTypes.deInt32, src);
+        case tcuTexture.ChannelType.UNSIGNED_INT8: return tcuTexture.convertSatRte(tcuTexture.deTypes.deUint8, src);
+        case tcuTexture.ChannelType.UNSIGNED_INT16: return tcuTexture.convertSatRte(tcuTexture.deTypes.deUint16, src);
+        case tcuTexture.ChannelType.UNSIGNED_INT32: return tcuTexture.convertSatRte(tcuTexture.deTypes.deUint32, src);
+        case tcuTexture.ChannelType.HALF_FLOAT: return tcuFloat.numberToHalfFloat(src);
+        case tcuTexture.ChannelType.FLOAT: return src;
     }
     throw new Error('Unrecognized type ' + type);
 };
@@ -1129,76 +1383,77 @@ var floatToChannel = function(src, type) {
  *
  * This class extends read-only access object by providing write functionality.
  *
- * \note PixelBufferAccess may not have any data members nor add any
+ * \note tcuTexture.PixelBufferAccess may not have any data members nor add any
  *         virtual functions. It must be possible to reinterpret_cast<>
- *         PixelBufferAccess to ConstPixelBufferAccess.
+ *         tcuTexture.PixelBufferAccess to tcuTexture.ConstPixelBufferAccess.
  * @constructor
- * @extends {ConstPixelBufferAccess}
+ * @extends {tcuTexture.ConstPixelBufferAccess}
  *
  */
-var PixelBufferAccess = function(descriptor) {
-    ConstPixelBufferAccess.call(this, descriptor);
+tcuTexture.PixelBufferAccess = function(descriptor) {
+    tcuTexture.ConstPixelBufferAccess.call(this, descriptor);
 };
 
-PixelBufferAccess.prototype = Object.create(ConstPixelBufferAccess.prototype);
-PixelBufferAccess.prototype.constructor = PixelBufferAccess;
+tcuTexture.PixelBufferAccess.prototype = Object.create(tcuTexture.ConstPixelBufferAccess.prototype);
+tcuTexture.PixelBufferAccess.prototype.constructor = tcuTexture.PixelBufferAccess;
 
 /**
- * @param {Array<Number>} color Vec4 color to set
- * @param {Number} x
- * @param {Number} y
- * @param {Number} z
+ * @param {Array<number>} color Vec4 color to set
+ * @param {number} x
+ * @param {number} y
+ * @param {number=} z
  */
-PixelBufferAccess.prototype.setPixel = function(color, x, y, z) {
-    if (z == null)
-        z = 0;
+tcuTexture.PixelBufferAccess.prototype.setPixel = function(color, x, y, z) {
+    z = z || 0;
     DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
 
     var pixelSize = this.m_format.getPixelSize();
-    var arrayType = getTypedArray(this.m_format.type);
+    var arrayType = tcuTexture.getTypedArray(this.m_format.type);
     var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
     var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
 
     var pn = function(val, offs, bits) {
-        return normFloatToChannel(val, bits) << offs;
+        /* Check if the value is normalized (in [0, 1] range) */
+        DE_ASSERT(deMath.deInBounds32(val, 0, 1));
+        return tcuTexture.normFloatToChannel(val, bits) << offs;
     };
 
     var pu = function(val, offs, bits) {
-        return uintToChannel(val, bits) << offs;
+        return tcuTexture.uintToChannel(val, bits) << offs;
     };
 
     // Packed formats.
     switch (this.m_format.type) {
-        case ChannelType.UNORM_SHORT_565: pixelPtr[0] = pn(color[0], 11, 5) | pn(color[1], 5, 6) | pn(color[2], 0, 5); break;
-        case ChannelType.UNORM_SHORT_555: pixelPtr[0] = pn(color[0], 10, 5) | pn(color[1], 5, 5) | pn(color[2], 0, 5); break;
-        case ChannelType.UNORM_SHORT_4444: pixelPtr[0] = pn(color[0], 12, 4) | pn(color[1], 8, 4) | pn(color[2], 4, 4) | pn(color[3], 0, 4); break;
-        case ChannelType.UNORM_SHORT_5551: pixelPtr[0] = pn(color[0], 11, 5) | pn(color[1], 6, 5) | pn(color[2], 1, 5) | pn(color[3], 0, 1); break;
-        case ChannelType.UNORM_INT_101010: pixelPtr[0] = pn(color[0], 22, 10) | pn(color[1], 12, 10) | pn(color[2], 2, 10); break;
-        case ChannelType.UNORM_INT_1010102_REV: pixelPtr[0] = pn(color[0], 0, 10) | pn(color[1], 10, 10) | pn(color[2], 20, 10) | pn(color[3], 30, 2); break;
-        case ChannelType.UNSIGNED_INT_1010102_REV: pixelPtr[0] = pu(color[0], 0, 10) | pu(color[1], 10, 10) | pu(color[2], 20, 10) | pu(color[3], 30, 2); break;
-        case ChannelType.UNSIGNED_INT_999_E5_REV: pixelPtr[0] = packRGB999E5(color); break;
+        case tcuTexture.ChannelType.UNORM_SHORT_565: pixelPtr[0] = pn(color[0], 11, 5) | pn(color[1], 5, 6) | pn(color[2], 0, 5); break;
+        case tcuTexture.ChannelType.UNORM_SHORT_555: pixelPtr[0] = pn(color[0], 10, 5) | pn(color[1], 5, 5) | pn(color[2], 0, 5); break;
+        case tcuTexture.ChannelType.UNORM_SHORT_4444: pixelPtr[0] = pn(color[0], 12, 4) | pn(color[1], 8, 4) | pn(color[2], 4, 4) | pn(color[3], 0, 4); break;
+        case tcuTexture.ChannelType.UNORM_SHORT_5551: pixelPtr[0] = pn(color[0], 11, 5) | pn(color[1], 6, 5) | pn(color[2], 1, 5) | pn(color[3], 0, 1); break;
+        case tcuTexture.ChannelType.UNORM_INT_101010: pixelPtr[0] = pn(color[0], 22, 10) | pn(color[1], 12, 10) | pn(color[2], 2, 10); break;
+        case tcuTexture.ChannelType.UNORM_INT_1010102_REV: pixelPtr[0] = pn(color[0], 0, 10) | pn(color[1], 10, 10) | pn(color[2], 20, 10) | pn(color[3], 30, 2); break;
+        case tcuTexture.ChannelType.UNSIGNED_INT_1010102_REV: pixelPtr[0] = pu(color[0], 0, 10) | pu(color[1], 10, 10) | pu(color[2], 20, 10) | pu(color[3], 30, 2); break;
+        case tcuTexture.ChannelType.UNSIGNED_INT_999_E5_REV: pixelPtr[0] = tcuTexture.packRGB999E5(color); break;
 
-        case ChannelType.UNSIGNED_INT_24_8:
+        case tcuTexture.ChannelType.UNSIGNED_INT_24_8:
             switch (this.m_format.order) {
                 // \note Stencil is always ignored.
-                case ChannelOrder.D: pixelPtr[0] = pn(color[0], 8, 24); break;
-                case ChannelOrder.S: pixelPtr[0] = pn(color[3], 8, 24); break;
-                case ChannelOrder.DS: pixelPtr[0] = pn(color[0], 8, 24) | pu(color[3], 0, 8); break;
+                case tcuTexture.ChannelOrder.D: pixelPtr[0] = pn(color[0], 8, 24); break;
+                case tcuTexture.ChannelOrder.S: pixelPtr[0] = pn(color[3], 8, 24); break;
+                case tcuTexture.ChannelOrder.DS: pixelPtr[0] = pn(color[0], 8, 24) | pu(color[3], 0, 8); break;
                 default:
-                    throw new Error('Unsupported channel order ' + this.m_format.order);
+                    throw new Error('Unsupported tcuTexture.channel order ' + this.m_format.order);
             }
             break;
 
-        case ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
+        case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
             pixelPtr[0] = color[0];
-            var u32array = new Uint32Array(this.m_data, offset + 4, 1);
+            var u32array = new Uint32Array(this.m_data, offset + this.m_offset + 4, 1);
             u32array[0] = pu(color[3], 0, 8);
             break;
         }
 
-        case ChannelType.UNSIGNED_INT_11F_11F_10F_REV: {
+        case tcuTexture.ChannelType.UNSIGNED_INT_11F_11F_10F_REV: {
             var f11 = function(value) {
                 return tcuFloat.numberToFloat11(value);
             };
@@ -1209,21 +1464,80 @@ PixelBufferAccess.prototype.setPixel = function(color, x, y, z) {
             pixelPtr[0] = f11(color[0]) | (f11(color[1]) << 11) | (f10(color[2]) << 22);
             break;
         }
-        case ChannelType.FLOAT:
-            if (this.m_format.order == ChannelOrder.D) {
+        case tcuTexture.ChannelType.FLOAT:
+            if (this.m_format.order == tcuTexture.ChannelOrder.D) {
                 pixelPtr[0] = color[0];
                 break;
             }
             // else fall-through to default case!
 
-        default:
-        {
+        default: {
             // Generic path.
-            var numChannels = getNumUsedChannels(this.m_format.order);
-            var map = getChannelWriteMap(this.m_format.order);
+            var numChannels = tcuTexture.getNumUsedChannels(this.m_format.order);
+            var map = tcuTexture.getChannelWriteMap(this.m_format.order);
 
             for (var c = 0; c < numChannels; c++)
-                pixelPtr[c] = floatToChannel(color[map[c]], this.m_format.type);
+                pixelPtr[c] = tcuTexture.floatToChannel(color[map[c]], this.m_format.type);
+        }
+    }
+};
+
+/**
+ * @param {Array<number>} color Vec4 color to set (unnormalized)
+ * @param {number} x
+ * @param {number} y
+ * @param {number=} z
+ */
+tcuTexture.PixelBufferAccess.prototype.setPixelInt = function(color, x, y, z) {
+    z = z || 0;
+    DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
+    DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
+    DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
+
+    var pixelSize = this.m_format.getPixelSize();
+    var arrayType = tcuTexture.getTypedArray(this.m_format.type);
+    var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
+    var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
+
+    var pu = function(val, offs, bits) {
+        return tcuTexture.uintToChannel(val, bits) << offs;
+    };
+
+    // Packed formats.
+    switch (this.m_format.type) {
+        case tcuTexture.ChannelType.UNORM_SHORT_565: pixelPtr[0] = pu(color[0], 11, 5) | pu(color[1], 5, 6) | pu(color[2], 0, 5); break;
+        case tcuTexture.ChannelType.UNORM_SHORT_555: pixelPtr[0] = pu(color[0], 10, 5) | pu(color[1], 5, 5) | pu(color[2], 0, 5); break;
+        case tcuTexture.ChannelType.UNORM_SHORT_4444: pixelPtr[0] = pu(color[0], 12, 4) | pu(color[1], 8, 4) | pu(color[2], 4, 4) | pu(color[3], 0, 4); break;
+        case tcuTexture.ChannelType.UNORM_SHORT_5551: pixelPtr[0] = pu(color[0], 11, 5) | pu(color[1], 6, 5) | pu(color[2], 1, 5) | pu(color[3], 0, 1); break;
+        case tcuTexture.ChannelType.UNORM_INT_101010: pixelPtr[0] = pu(color[0], 22, 10) | pu(color[1], 12, 10) | pu(color[2], 2, 10); break;
+        case tcuTexture.ChannelType.UNORM_INT_1010102_REV: pixelPtr[0] = pu(color[0], 0, 10) | pu(color[1], 10, 10) | pu(color[2], 20, 10) | pu(color[3], 30, 2); break;
+        case tcuTexture.ChannelType.UNSIGNED_INT_1010102_REV: pixelPtr[0] = pu(color[0], 0, 10) | pu(color[1], 10, 10) | pu(color[2], 20, 10) | pu(color[3], 30, 2); break;
+
+        case tcuTexture.ChannelType.UNSIGNED_INT_24_8:
+            switch (this.m_format.order) {
+                // \note Stencil is always ignored.
+                case tcuTexture.ChannelOrder.D: pixelPtr[0] = pu(color[0], 8, 24); break;
+                case tcuTexture.ChannelOrder.S: pixelPtr[0] = pu(color[3], 8, 24); break;
+                case tcuTexture.ChannelOrder.DS: pixelPtr[0] = pu(color[0], 8, 24) | pu(color[3], 0, 8); break;
+                default:
+                    throw new Error('Unsupported tcuTexture.channel order ' + this.m_format.order);
+            }
+            break;
+
+        case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
+            pixelPtr[0] = color[0];
+            var u32array = new Uint32Array(this.m_data, offset + this.m_offset + 4, 1);
+            u32array[0] = pu(color[3], 0, 8);
+            break;
+        }
+
+        default: {
+            // Generic path.
+            var numChannels = tcuTexture.getNumUsedChannels(this.m_format.order);
+            var map = tcuTexture.getChannelWriteMap(this.m_format.order);
+
+            for (var c = 0; c < numChannels; c++)
+                pixelPtr[c] = tcuTexture.intToChannel(color[map[c]], this.m_format.type);
         }
     }
 };
@@ -1234,33 +1548,39 @@ PixelBufferAccess.prototype.setPixel = function(color, x, y, z) {
  * @param {Array<number>=} y Range in y axis, optional.
  * @param {Array<number>=} z Range in z axis, optional.
  */
-PixelBufferAccess.prototype.clear = function(color, x, y, z) {
+tcuTexture.PixelBufferAccess.prototype.clear = function(color, x, y, z) {
     var c = color || [0, 0, 0, 0];
-    /** @type {ArrayBuffer} */ var pixel = new ArrayBuffer(16);
-    PixelBufferAccess.newFromTextureFormat(this.getFormat(), 1, 1, 1, 0, 0, pixel).setPixel(c, 0, 0);
-    var pixelSize = this.m_format.getPixelSize();
-    var arrayType = getTypedArray(this.m_format.type);
-    var dst = this.getDataPtr();
-    var src = new arrayType(pixel);
-    var numChannels = getNumUsedChannels(this.m_format.order);
-    var elemSize = arrayType.BYTES_PER_ELEMENT;
+    var numChannels = tcuTexture.getNumUsedChannels(this.m_format.order);
     var range_x = x || [0, this.m_width];
     var range_y = y || [0, this.m_height];
     var range_z = z || [0, this.m_depth];
+    var pixelSize = this.m_format.getPixelSize();
+    var width = range_x[1] - range_x[0];
+    var height = range_y[1] - range_y[0];
+    var depth = range_z[1] - range_z[0];
 
-    for (var slice = range_z[0]; slice < range_z[1]; slice++) {
-        var slice_offset = slice * this.m_slicePitch;
-        for (var row = range_y[0]; row < range_y[1]; row++) {
-            var row_offset = row * this.m_rowPitch;
-            for (var col = range_x[0]; col < range_x[1]; col++) {
-                var col_offset = col * pixelSize;
-                var index = (slice_offset + row_offset + col_offset) / elemSize;
-                for (var i = 0; i < numChannels; i++) {
-                    dst[index + i] = src[i];
-                }
-            }
+    //copy first pixel over other pixels in the row
+    var fillRow = function(pixelPtr, numChannels, width) {
+        for (var i = 1; i < width; i++)
+            for (var c = 0; c < numChannels; c++)
+                pixelPtr[i * numChannels + c] = pixelPtr[c];
+    };
+    // copy first row to other rows in all planes
+    var fillPlanes = function(buffer, arrayType, src, offset, rowStride, planeStride, width, height, depth) {
+        for (var j = 0; j < depth; j++)
+        for (var i = (j == 0 ? 1 : 0); i < height; i++) {
+            var dst = new arrayType(buffer, offset + i * rowStride + j * planeStride, width);
+            dst.set(src);
         }
-    }
+    };
+
+    this.setPixel(c, range_x[0], range_y[0], range_z[0]);
+    var arrayType = tcuTexture.getTypedArray(this.m_format.type);
+    var offset = range_z[0] * this.m_slicePitch + range_y[0] * this.m_rowPitch + range_x[0] * pixelSize;
+    var pixelPtr = new arrayType(this.m_data, offset + this.m_offset, width * numChannels);
+
+    fillRow(pixelPtr, numChannels, width);
+    fillPlanes(this.m_data, arrayType, pixelPtr, offset + this.m_offset, this.m_rowPitch, this.m_slicePitch, width * numChannels, height, depth);
 };
 
 /**
@@ -1269,7 +1589,7 @@ PixelBufferAccess.prototype.clear = function(color, x, y, z) {
  * @param {number} y
  * @param {number=} z
  */
-PixelBufferAccess.prototype.setPixDepth = function(depth, x, y, z) {
+tcuTexture.PixelBufferAccess.prototype.setPixDepth = function(depth, x, y, z) {
     if (z == null)
         z = 0;
     DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
@@ -1277,35 +1597,34 @@ PixelBufferAccess.prototype.setPixDepth = function(depth, x, y, z) {
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
 
     var pixelSize = this.m_format.getPixelSize();
-    var arrayType = getTypedArray(this.m_format.type);
+    var arrayType = tcuTexture.getTypedArray(this.m_format.type);
     var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
     var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
 
     var pn = function(val, offs, bits) {
-        return normFloatToChannel(val, bits) << offs;
+        return tcuTexture.normFloatToChannel(val, bits) << offs;
     };
-
 
     // Packed formats.
     switch (this.m_format.type) {
-        case ChannelType.UNSIGNED_INT_24_8:
+        case tcuTexture.ChannelType.UNSIGNED_INT_24_8:
             switch (this.m_format.order) {
-                case ChannelOrder.D: pixelPtr[0] = pn(depth, 8, 24); break;
-                case ChannelOrder.DS: pixelPtr[0] = pn(depth, 8, 24) | (pixelPtr[0] & 0xFF); break;
+                case tcuTexture.ChannelOrder.D: pixelPtr[0] = pn(depth, 8, 24); break;
+                case tcuTexture.ChannelOrder.DS: pixelPtr[0] = pn(depth, 8, 24) | (pixelPtr[0] & 0xFF); break;
                 default:
-                    throw new Error('Unsupported channel order ' + this.m_format.order);
+                    throw new Error('Unsupported tcuTexture.channel order ' + this.m_format.order);
             }
             break;
 
-        case ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
-            DE_ASSERT(this.m_format.order == ChannelOrder.DS);
+        case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
+            DE_ASSERT(this.m_format.order == tcuTexture.ChannelOrder.DS);
             pixelPtr[0] = depth;
             break;
         }
 
         default: {
-            DE_ASSERT(this.m_format.order == ChannelOrder.D || this.m_format.order == ChannelOrder.DS);
-            pixelPtr[0] = floatToChannel(depth, this.m_format.type);
+            DE_ASSERT(this.m_format.order == tcuTexture.ChannelOrder.D || this.m_format.order == tcuTexture.ChannelOrder.DS);
+            pixelPtr[0] = tcuTexture.floatToChannel(depth, this.m_format.type);
         }
     }
 };
@@ -1316,7 +1635,7 @@ PixelBufferAccess.prototype.setPixDepth = function(depth, x, y, z) {
  * @param {number} y
  * @param {number=} z
  */
-PixelBufferAccess.prototype.setPixStencil = function(stencil, x, y, z) {
+tcuTexture.PixelBufferAccess.prototype.setPixStencil = function(stencil, x, y, z) {
     if (z == null)
         z = 0;
     DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
@@ -1324,37 +1643,37 @@ PixelBufferAccess.prototype.setPixStencil = function(stencil, x, y, z) {
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
 
     var pixelSize = this.m_format.getPixelSize();
-    var arrayType = getTypedArray(this.m_format.type);
+    var arrayType = tcuTexture.getTypedArray(this.m_format.type);
     var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
     var pixelPtr = new arrayType(this.m_data, offset + this.m_offset);
 
     var pu = function(val, offs, bits) {
-        return uintToChannel(val, bits) << offs;
+        return tcuTexture.uintToChannel(val, bits) << offs;
     };
 
     // Packed formats.
     switch (this.m_format.type) {
-        case ChannelType.UNSIGNED_INT_24_8:
+        case tcuTexture.ChannelType.UNSIGNED_INT_24_8:
             switch (this.m_format.order) {
-                case ChannelOrder.S: pixelPtr[0] = pu(stencil, 8, 24); break;
-                case ChannelOrder.DS: pixelPtr[0] = pu(stencil, 0, 8) | (pixelPtr[0] & 0xFFFFFF00); break;
+                case tcuTexture.ChannelOrder.S: pixelPtr[0] = pu(stencil, 8, 24); break;
+                case tcuTexture.ChannelOrder.DS: pixelPtr[0] = pu(stencil, 0, 8) | (pixelPtr[0] & 0xFFFFFF00); break;
                 default:
-                    throw new Error('Unsupported channel order ' + this.m_format.order);
+                    throw new Error('Unsupported tcuTexture.channel order ' + this.m_format.order);
             }
             break;
 
-        case ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
+        case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
             var u32array = new Uint32Array(this.m_data, offset + 4, 1);
             u32array[0] = pu(stencil, 0, 8);
             break;
         }
 
         default: {
-            if (this.m_format.order == ChannelOrder.S)
-                pixelPtr[0] = floatToChannel(stencil, this.m_format.type);
+            if (this.m_format.order == tcuTexture.ChannelOrder.S)
+                pixelPtr[0] = tcuTexture.floatToChannel(stencil, this.m_format.type);
             else {
-                DE_ASSERT(this.m_format.order == ChannelOrder.DS);
-                pixelPtr[3] = floatToChannel(stencil, this.m_format.type);
+                DE_ASSERT(this.m_format.order == tcuTexture.ChannelOrder.DS);
+                pixelPtr[3] = tcuTexture.floatToChannel(stencil, this.m_format.type);
             }
         }
     }
@@ -1362,9 +1681,9 @@ PixelBufferAccess.prototype.setPixStencil = function(stencil, x, y, z) {
 
 /**
  * newFromTextureLevel
- * @param {TextureLevel} level
+ * @param {tcuTexture.TextureLevel} level
  */
-PixelBufferAccess.newFromTextureLevel = function(level) {
+tcuTexture.PixelBufferAccess.newFromTextureLevel = function(level) {
     var descriptor = new Object();
     descriptor.format = level.getFormat();
     descriptor.width = level.getWidth();
@@ -1372,12 +1691,12 @@ PixelBufferAccess.newFromTextureLevel = function(level) {
     descriptor.depth = level.m_depth;
     descriptor.data = level.m_data.m_ptr;
 
-    return new PixelBufferAccess(descriptor);
+    return new tcuTexture.PixelBufferAccess(descriptor);
 };
 
 /**
  * newFromTextureFormat
- * @param {TextureFormat} format
+ * @param {tcuTexture.TextureFormat} format
  * @param {number} width
  * @param {number} height
  * @param {number} depth
@@ -1385,7 +1704,7 @@ PixelBufferAccess.newFromTextureLevel = function(level) {
  * @param {number} slicePitch
  * @param {ArrayBuffer} data
  */
-PixelBufferAccess.newFromTextureFormat = function(format, width, height, depth, rowPitch, slicePitch, data) {
+tcuTexture.PixelBufferAccess.newFromTextureFormat = function(format, width, height, depth, rowPitch, slicePitch, data) {
     var descriptor = new Object();
     descriptor.format = format;
     descriptor.width = width;
@@ -1395,65 +1714,64 @@ PixelBufferAccess.newFromTextureFormat = function(format, width, height, depth, 
     descriptor.slicePitch = slicePitch;
     descriptor.data = data;
 
-    return new PixelBufferAccess(descriptor);
+    return new tcuTexture.PixelBufferAccess(descriptor);
 };
 
 /* TODO: Port */
 // {
 // public:
-//                             PixelBufferAccess            (void) {}
-//                             PixelBufferAccess            (const TextureFormat& format, int width, int height, int depth, void* data);
+//                             tcuTexture.PixelBufferAccess (void) {}
+//                             tcuTexture.PixelBufferAccess (const tcuTexture.TextureFormat& format, int width, int height, int depth, void* data);
 
+//     void*                    getDataPtr (void) const { return m_data; }
 
-//     void*                    getDataPtr                    (void) const { return m_data; }
+//     void setPixels (const void* buf, int bufSize) const;
+//     void setPixel (const tcu::Vec4& color, int x, int y, int z = 0) const;
+//     void setPixel (const tcu::IVec4& color, int x, int y, int z = 0) const;
+//     void setPixel (const tcu::UVec4& color, int x, int y, int z = 0) const { setPixel(color.cast<int>(), x, y, z); }
 
-//     void                    setPixels                    (const void* buf, int bufSize) const;
-//     void                    setPixel                    (const tcu::Vec4& color, int x, int y, int z = 0) const;
-//     void                    setPixel                    (const tcu::IVec4& color, int x, int y, int z = 0) const;
-//     void                    setPixel                    (const tcu::UVec4& color, int x, int y, int z = 0) const { setPixel(color.cast<int>(), x, y, z); }
-
-//     void                    setPixDepth                    (float depth, int x, int y, int z = 0) const;
-//     void                    setPixStencil                (int stencil, int x, int y, int z = 0) const;
+//     void setPixDepth (float depth, int x, int y, int z = 0) const;
+//     void setPixStencil (int stencil, int x, int y, int z = 0) const;
 // };
 
 /**
  * @constructor
- * @param {TextureFormat} format
- * @param {Number} numLevels
+ * @param {tcuTexture.TextureFormat} format
+ * @param {number} numLevels
  */
-var TextureLevelPyramid = function(format, numLevels) {
-    /* TextureFormat */this.m_format = format;
+tcuTexture.TextureLevelPyramid = function(format, numLevels) {
+    /* tcuTexture.TextureFormat */this.m_format = format;
     /* LevelData */ this.m_data = [];
     for (var i = 0; i < numLevels; i++)
-        this.m_data.push(new DeqpArrayBuffer());
-    /* {Array<PixelBufferAccess>} */ this.m_access = [];
+        this.m_data.push(new tcuTexture.DeqpArrayBuffer());
+    /* {Array<tcuTexture.PixelBufferAccess>} */ this.m_access = [];
     this.m_access.length = numLevels;
 };
 
-/** @return {bool} */
-TextureLevelPyramid.prototype.isLevelEmpty = function(levelNdx) { return this.m_data[levelNdx].empty(); };
-/** @return {TextureFormat} */
-TextureLevelPyramid.prototype.getFormat = function()            { return this.m_format; };
-/** @return {Number} */
-TextureLevelPyramid.prototype.getNumLevels = function()            { return this.m_access.length; };
-/** @return {PixelBufferAccess} */
-TextureLevelPyramid.prototype.getLevel = function(ndx)             { return this.m_access[ndx]; };
-/** @return {Array<PixelBufferAccess>} */
-TextureLevelPyramid.prototype.getLevels = function()            { return this.m_access; };
+/** @return {boolean} */
+tcuTexture.TextureLevelPyramid.prototype.isLevelEmpty = function(levelNdx) { return this.m_data[levelNdx].empty(); };
+/** @return {tcuTexture.TextureFormat} */
+tcuTexture.TextureLevelPyramid.prototype.getFormat = function() { return this.m_format; };
+/** @return {number} */
+tcuTexture.TextureLevelPyramid.prototype.getNumLevels = function() { return this.m_access.length; };
+/** @return {tcuTexture.PixelBufferAccess} */
+tcuTexture.TextureLevelPyramid.prototype.getLevel = function(ndx) { return this.m_access[ndx]; };
+/** @return {Array<tcuTexture.PixelBufferAccess>} */
+tcuTexture.TextureLevelPyramid.prototype.getLevels = function() { return this.m_access; };
 
 /**
- * @param {Number} levelNdx
- * @param {Number} width
- * @param {Number} height
- * @param {Number} depth
+ * @param {number} levelNdx
+ * @param {number} width
+ * @param {number} height
+ * @param {number} depth
  */
-TextureLevelPyramid.prototype.allocLevel = function(levelNdx, width, height, depth) {
+tcuTexture.TextureLevelPyramid.prototype.allocLevel = function(levelNdx, width, height, depth) {
     var size = this.m_format.getPixelSize() * width * height * depth;
 
     DE_ASSERT(this.isLevelEmpty(levelNdx));
 
     this.m_data[levelNdx].setStorage(size);
-    this.m_access[levelNdx] = new PixelBufferAccess({
+    this.m_access[levelNdx] = new tcuTexture.PixelBufferAccess({
         format: this.m_format,
         width: width,
         height: height,
@@ -1462,116 +1780,109 @@ TextureLevelPyramid.prototype.allocLevel = function(levelNdx, width, height, dep
     });
 };
 
-TextureLevelPyramid.prototype.clearLevel = function(levelNdx) {
+tcuTexture.TextureLevelPyramid.prototype.clearLevel = function(levelNdx) {
     /* TODO: Implement */
     throw new Error('Not implemented');
 };
 
 /**
- * @param {Array<ConstPixelBufferAccess>} levels
- * @param {Number} numLevels
- * @param {Sampler} sampler
- * @param {Number} s
- * @param {Number} t
- * @param {Number} depth (integer)
- * @param {Number} lod
- * @return {Array<Number>} Vec4 pixel color
+ * @param {Array<tcuTexture.ConstPixelBufferAccess>} levels
+ * @param {number} numLevels
+ * @param {tcuTexture.Sampler} sampler
+ * @param {number} s
+ * @param {number} t
+ * @param {number} depth (integer)
+ * @param {number} lod
+ * @return {Array<number>} Vec4 pixel color
  */
-var sampleLevelArray2D = function(levels, numLevels, sampler, s, t, depth, lod) {
+tcuTexture.sampleLevelArray2D = function(levels, numLevels, sampler, s, t, depth, lod) {
     var magnified = lod <= sampler.lodThreshold;
     var filterMode = magnified ? sampler.magFilter : sampler.minFilter;
 
     switch (filterMode) {
-        case FilterMode.NEAREST: return levels[0].sample2D(sampler, filterMode, s, t, depth);
-        /* TODO: Implement other filters */
-        // case Sampler::LINEAR:    return levels[0].sample2D(sampler, filterMode, s, t, depth);
+        case tcuTexture.FilterMode.NEAREST: return levels[0].sample2D(sampler, filterMode, s, t, depth);
+        case tcuTexture.FilterMode.LINEAR: return levels[0].sample2D(sampler, filterMode, s, t, depth);
 
-        // case Sampler::NEAREST_MIPMAP_NEAREST:
-        // case Sampler::LINEAR_MIPMAP_NEAREST:
-        // {
-        //     int                    maxLevel    = (int)numLevels-1;
-        //     int                    level        = deClamp32((int)deFloatCeil(lod + 0.5f) - 1, 0, maxLevel);
-        //     Sampler::FilterMode    levelFilter    = (filterMode == Sampler::LINEAR_MIPMAP_NEAREST) ? Sampler::LINEAR : Sampler::NEAREST;
+        case tcuTexture.FilterMode.NEAREST_MIPMAP_NEAREST:
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST: {
+            var maxLevel = numLevels - 1;
+            var level = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
+            var levelFilter = (filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
 
-        //     return levels[level].sample2D(sampler, levelFilter, s, t, depth);
-        // }
+            return levels[level].sample2D(sampler, levelFilter, s, t, depth);
+        }
 
-        // case Sampler::NEAREST_MIPMAP_LINEAR:
-        // case Sampler::LINEAR_MIPMAP_LINEAR:
-        // {
-        //     int                    maxLevel    = (int)numLevels-1;
-        //     int                    level0        = deClamp32((int)deFloatFloor(lod), 0, maxLevel);
-        //     int                    level1        = de::min(maxLevel, level0 + 1);
-        //     Sampler::FilterMode    levelFilter    = (filterMode == Sampler::LINEAR_MIPMAP_LINEAR) ? Sampler::LINEAR : Sampler::NEAREST;
-        //     float                f            = deFloatFrac(lod);
-        //     tcu::Vec4            t0            = levels[level0].sample2D(sampler, levelFilter, s, t, depth);
-        //     tcu::Vec4            t1            = levels[level1].sample2D(sampler, levelFilter, s, t, depth);
+        case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR:
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR: {
+            var maxLevel = numLevels - 1;
+            var level0 = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
+            var level1 = Math.min(maxLevel, level0 + 1);
+            var levelFilter = (filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
+            var f = deMath.deFloatFrac(lod);
+            var t0 = levels[level0].sample2D(sampler, levelFilter, s, t, depth);
+            var t1 = levels[level1].sample2D(sampler, levelFilter, s, t, depth);
 
-        //     return t0*(1.0f - f) + t1*f;
-        // }
+            return deMath.add(deMath.scale(t0, 1 - f), deMath.scale(t1, f));
+        }
 
-        // default:
-        //     DE_ASSERT(false);
-        //     return Vec4(0.0f);
+        default:
+            throw new Error('Invalid filter mode:' + filterMode);
     }
     throw new Error('Unimplemented');
 };
 
 /**
- * @param {Array<ConstPixelBufferAccess>} levels
- * @param {Number} numLevels
- * @param {Sampler} sampler
- * @param {Number} s
- * @param {Number} t
- * @param {Number} r
- * @param {Number} lod
- * @return {Array<Number>} Vec4 pixel color
+ * @param {Array<tcuTexture.ConstPixelBufferAccess>} levels
+ * @param {number} numLevels
+ * @param {tcuTexture.Sampler} sampler
+ * @param {number} s
+ * @param {number} t
+ * @param {number} r
+ * @param {number} lod
+ * @return {Array<number>} Vec4 pixel color
  */
-var sampleLevelArray3D = function(levels, numLevels, sampler, s, t, r, lod) {
+tcuTexture.sampleLevelArray3D = function(levels, numLevels, sampler, s, t, r, lod) {
     var magnified = lod <= sampler.lodThreshold;
     var filterMode = magnified ? sampler.magFilter : sampler.minFilter;
 
     switch (filterMode) {
-        case FilterMode.NEAREST: return levels[0].sample3D(sampler, filterMode, s, t, r);
-        // case Sampler::LINEAR:    return levels[0].sample3D(sampler, filterMode, s, t, r);
+        case tcuTexture.FilterMode.NEAREST: return levels[0].sample3D(sampler, filterMode, s, t, r);
+        case tcuTexture.FilterMode.LINEAR: return levels[0].sample3D(sampler, filterMode, s, t, r);
 
-        // case Sampler::NEAREST_MIPMAP_NEAREST:
-        // case Sampler::LINEAR_MIPMAP_NEAREST:
-        // {
-        //     int                    maxLevel    = (int)numLevels-1;
-        //     int                    level        = deClamp32((int)deFloatCeil(lod + 0.5f) - 1, 0, maxLevel);
-        //     Sampler::FilterMode    levelFilter    = (filterMode == Sampler::LINEAR_MIPMAP_NEAREST) ? Sampler::LINEAR : Sampler::NEAREST;
+        case tcuTexture.FilterMode.NEAREST_MIPMAP_NEAREST:
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST: {
+            var maxLevel = numLevels - 1;
+            var level = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
+            var levelFilter = (filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
 
-        //     return levels[level].sample3D(sampler, levelFilter, s, t, r);
-        // }
+            return levels[level].sample3D(sampler, levelFilter, s, t, r);
+        }
 
-        // case Sampler::NEAREST_MIPMAP_LINEAR:
-        // case Sampler::LINEAR_MIPMAP_LINEAR:
-        // {
-        //     int                    maxLevel    = (int)numLevels-1;
-        //     int                    level0        = deClamp32((int)deFloatFloor(lod), 0, maxLevel);
-        //     int                    level1        = de::min(maxLevel, level0 + 1);
-        //     Sampler::FilterMode    levelFilter    = (filterMode == Sampler::LINEAR_MIPMAP_LINEAR) ? Sampler::LINEAR : Sampler::NEAREST;
-        //     float                f            = deFloatFrac(lod);
-        //     tcu::Vec4            t0            = levels[level0].sample3D(sampler, levelFilter, s, t, r);
-        //     tcu::Vec4            t1            = levels[level1].sample3D(sampler, levelFilter, s, t, r);
+        case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR:
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR: {
+            var maxLevel = numLevels - 1;
+            var level0 = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
+            var level1 = Math.min(maxLevel, level0 + 1);
+            var levelFilter = (filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
+            var f = deMath.deFloatFrac(lod);
+            var t0 = levels[level0].sample3D(sampler, levelFilter, s, t, r);
+            var t1 = levels[level1].sample3D(sampler, levelFilter, s, t, r);
 
-        //     return t0*(1.0f - f) + t1*f;
-        // }
+            return deMath.add(deMath.scale(t0, 1 - f), deMath.scale(t1, f));
+        }
 
-        // default:
-        //     DE_ASSERT(false);
-        //     return Vec4(0.0f);
+        default:
+           throw new Error('Invalid filter mode:' + filterMode);
     }
     throw new Error('Unimplemented');
 };
 
 /**
  * @constructor
- * @param {CubeFace} face
- * @param {Array<Number>} coords
+ * @param {tcuTexture.CubeFace} face
+ * @param {Array<number>} coords
  */
-var CubeFaceCoords = function(face, coords) {
+tcuTexture.CubeFaceCoords = function(face, coords) {
     this.face = face;
     this.s = coords[0];
     this.t = coords[1];
@@ -1580,428 +1891,462 @@ var CubeFaceCoords = function(face, coords) {
 /**
  * \brief 2D Texture View
  * @constructor
- * @param {Number} numLevels
- * @param {Array<ConstPixelBufferAccess>} levels
+ * @param {number} numLevels
+ * @param {?Array<tcuTexture.ConstPixelBufferAccess>} levels
  */
-var Texture2DView = function(numLevels, levels) {
+tcuTexture.Texture2DView = function(numLevels, levels) {
     this.m_numLevels = numLevels;
     this.m_levels = levels;
 };
 
-/** @return {Number} */
-Texture2DView.prototype.getNumLevels = function()    { return this.m_numLevels; };
-/** @return {Number} */
-Texture2DView.prototype.getWidth = function()     { return this.m_numLevels > 0 ? this.m_levels[0].getWidth() : 0; };
-/** @return {Number} */
-Texture2DView.prototype.getHeight = function() { return this.m_numLevels > 0 ? this.m_levels[0].getHeight() : 0; };
+/** @return {number} */
+tcuTexture.Texture2DView.prototype.getNumLevels = function() { return this.m_numLevels; };
+/** @return {number} */
+tcuTexture.Texture2DView.prototype.getWidth = function() { return this.m_numLevels > 0 ? this.m_levels[0].getWidth() : 0; };
+/** @return {number} */
+tcuTexture.Texture2DView.prototype.getHeight = function() { return this.m_numLevels > 0 ? this.m_levels[0].getHeight() : 0; };
 /**
- * @param {Number} ndx
- * @return {ConstPixelBufferAccess}
+ * @param {number} ndx
+ * @return {tcuTexture.ConstPixelBufferAccess}
  */
-Texture2DView.prototype.getLevel = function(ndx) { DE_ASSERT(deMath.deInBounds32(ndx, 0, this.m_numLevels)); return this.m_levels[ndx]; };
-/** @return {Array<ConstPixelBufferAccess>} */
-Texture2DView.prototype.getLevels = function() { return this.m_levels; };
+tcuTexture.Texture2DView.prototype.getLevel = function(ndx) { DE_ASSERT(deMath.deInBounds32(ndx, 0, this.m_numLevels)); return this.m_levels[ndx]; };
+/** @return {Array<tcuTexture.ConstPixelBufferAccess>} */
+tcuTexture.Texture2DView.prototype.getLevels = function() { return this.m_levels; };
 
 /**
- * @param {Number} baseLevel
- * @param {Number} maxLevel
- * return {Texture2DView}
+ * @param {number} baseLevel
+ * @param {number} maxLevel
+ * return {tcuTexture.Texture2DView}
  */
-Texture2DView.prototype.getSubView = function(baseLevel, maxLevel) {
+tcuTexture.Texture2DView.prototype.getSubView = function(baseLevel, maxLevel) {
     var clampedBase = deMath.clamp(baseLevel, 0, this.m_numLevels - 1);
     var clampedMax = deMath.clamp(maxLevel, clampedBase, this.m_numLevels - 1);
     var numLevels = clampedMax - clampedBase + 1;
-    return new Texture2DView(numLevels, this.m_levels.slice(clampedBase, numLevels));
+    return new tcuTexture.Texture2DView(numLevels, this.m_levels.slice(clampedBase, numLevels));
 };
 
 /**
- * @param {Sampler} sampler
- * @param {Array<Number>} texCoord
- * @param {Number} lod
- * @return {Array<Number>} Pixel color
+ * @param {tcuTexture.Sampler} sampler
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @return {Array<number>} Pixel color
  */
-Texture2DView.prototype.sample = function(sampler, texCoord, lod) {
-    return sampleLevelArray2D(this.m_levels, this.m_numLevels, sampler, texCoord[0], texCoord[1], 0 /* depth */, lod);
+tcuTexture.Texture2DView.prototype.sample = function(sampler, texCoord, lod) {
+    return tcuTexture.sampleLevelArray2D(this.m_levels, this.m_numLevels, sampler, texCoord[0], texCoord[1], 0 /* depth */, lod);
+};
+
+/**
+ * @param {tcuTexture.Sampler} sampler
+ * @param {number} ref
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @return {number}
+ */
+tcuTexture.Texture2DView.prototype.sampleCompare = function(sampler, ref, texCoord, lod) {
+    throw new Error('Unimplemented');
 };
 
     /* TODO: Port
-    Vec4                            sample                (const Sampler& sampler, float s, float t, float lod) const;
-    Vec4                            sampleOffset        (const Sampler& sampler, float s, float t, float lod, const IVec2& offset) const;
-    float                            sampleCompare        (const Sampler& sampler, float ref, float s, float t, float lod) const;
-    float                            sampleCompareOffset    (const Sampler& sampler, float ref, float s, float t, float lod, const IVec2& offset) const;
+    Vec4 sample (const tcuTexture.Sampler& sampler, float s, float t, float lod) const;
+    Vec4 sampleOffset (const tcuTexture.Sampler& sampler, float s, float t, float lod, const IVec2& offset) const;
+    float sampleCompare (const tcuTexture.Sampler& sampler, float ref, float s, float t, float lod) const;
+    float sampleCompareOffset (const tcuTexture.Sampler& sampler, float ref, float s, float t, float lod, const IVec2& offset) const;
 
-    Vec4                            gatherOffsets        (const Sampler& sampler, float s, float t, int componentNdx, const IVec2 (&offsets)[4]) const;
-    Vec4                            gatherOffsetsCompare(const Sampler& sampler, float ref, float s, float t, const IVec2 (&offsets)[4]) const;
+    Vec4 gatherOffsets (const tcuTexture.Sampler& sampler, float s, float t, int componentNdx, const IVec2 (&offsets)[4]) const;
+    Vec4 gatherOffsetsCompare(const tcuTexture.Sampler& sampler, float ref, float s, float t, const IVec2 (&offsets)[4]) const;
     */
 
 /**
  * @constructor
- * @param {Number} numLevels
- * @param {Array<ConstPixelBufferAccess>} levels
+ * @param {number} numLevels
+ * @param {Array<tcuTexture.ConstPixelBufferAccess>} levels
  */
-var Texture2DArrayView = function(numLevels, levels) {
+tcuTexture.Texture2DArrayView = function(numLevels, levels) {
     this.m_numLevels = numLevels;
     this.m_levels = levels;
 };
 
-/** @return {Number} */
-Texture2DArrayView.prototype.getNumLevels = function()    { return this.m_numLevels; };
-/** @return {Number} */
-Texture2DArrayView.prototype.getWidth = function()     { return this.m_numLevels > 0 ? this.m_levels[0].getWidth() : 0; };
-/** @return {Number} */
-Texture2DArrayView.prototype.getHeight = function() { return this.m_numLevels > 0 ? this.m_levels[0].getHeight() : 0; };
-/** @return {Number} */
-Texture2DArrayView.prototype.getNumLayers = function() { return this.m_numLevels > 0 ? this.m_levels[0].getDepth() : 0; };
+/** @return {number} */
+tcuTexture.Texture2DArrayView.prototype.getNumLevels = function() { return this.m_numLevels; };
+/** @return {number} */
+tcuTexture.Texture2DArrayView.prototype.getWidth = function() { return this.m_numLevels > 0 ? this.m_levels[0].getWidth() : 0; };
+/** @return {number} */
+tcuTexture.Texture2DArrayView.prototype.getHeight = function() { return this.m_numLevels > 0 ? this.m_levels[0].getHeight() : 0; };
+/** @return {number} */
+tcuTexture.Texture2DArrayView.prototype.getNumLayers = function() { return this.m_numLevels > 0 ? this.m_levels[0].getDepth() : 0; };
 /**
- * @param {Number} ndx
- * @return {ConstPixelBufferAccess}
+ * @param {number} ndx
+ * @return {tcuTexture.ConstPixelBufferAccess}
  */
-Texture2DArrayView.prototype.getLevel = function(ndx) { DE_ASSERT(deMath.deInBounds32(ndx, 0, this.m_numLevels)); return this.m_levels[ndx]; };
-/** @return {Array<ConstPixelBufferAccess>} */
-Texture2DArrayView.prototype.getLevels = function() { return this.m_levels; };
+tcuTexture.Texture2DArrayView.prototype.getLevel = function(ndx) { DE_ASSERT(deMath.deInBounds32(ndx, 0, this.m_numLevels)); return this.m_levels[ndx]; };
+/** @return {Array<tcuTexture.ConstPixelBufferAccess>} */
+tcuTexture.Texture2DArrayView.prototype.getLevels = function() { return this.m_levels; };
 
 /**
- * @param {Number} r
- * @return {Number} layer corresponding to requested sampling 'r' coordinate
+ * @param {number} r
+ * @return {number} layer corresponding to requested sampling 'r' coordinate
  */
-Texture2DArrayView.prototype.selectLayer = function(r) {
+tcuTexture.Texture2DArrayView.prototype.selectLayer = function(r) {
     DE_ASSERT(this.m_numLevels > 0 && this.m_levels);
     return deMath.clamp(Math.round(r), 0, this.m_levels[0].getDepth() - 1);
 };
 
 /**
- * @param {Sampler} sampler
- * @param {Array<Number>} texCoord
- * @param {Number} lod
- * @return {Array<Number>} Pixel color
+ * @param {tcuTexture.Sampler} sampler
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @return {Array<number>} Pixel color
  */
-Texture2DArrayView.prototype.sample = function(sampler, texCoord, lod) {
-    return sampleLevelArray2D(this.m_levels, this.m_numLevels, sampler, texCoord[0], texCoord[1], this.selectLayer(texCoord[2]), lod);
+tcuTexture.Texture2DArrayView.prototype.sample = function(sampler, texCoord, lod) {
+    return tcuTexture.sampleLevelArray2D(this.m_levels, this.m_numLevels, sampler, texCoord[0], texCoord[1], this.selectLayer(texCoord[2]), lod);
+};
+
+/**
+ * @param {tcuTexture.Sampler} sampler
+ * @param {number} ref
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @return {number}
+ */
+tcuTexture.Texture2DArrayView.prototype.sampleCompare = function(sampler, ref, texCoord, lod) {
+    throw new Error('Unimplemented');
 };
 
 /**
  * @constructor
- * @param {Number} numLevels
- * @param {Array<ConstPixelBufferAccess>} levels
+ * @param {number} numLevels
+ * @param {Array<tcuTexture.ConstPixelBufferAccess>} levels
  */
-var Texture3DView = function(numLevels, levels) {
+tcuTexture.Texture3DView = function(numLevels, levels) {
     this.m_numLevels = numLevels;
     this.m_levels = levels;
 };
 
-/** @return {Number} */
-Texture3DView.prototype.getNumLevels = function()    { return this.m_numLevels; };
-/** @return {Number} */
-Texture3DView.prototype.getWidth = function()     { return this.m_numLevels > 0 ? this.m_levels[0].getWidth() : 0; };
-/** @return {Number} */
-Texture3DView.prototype.getHeight = function() { return this.m_numLevels > 0 ? this.m_levels[0].getHeight() : 0; };
-/** @return {Number} */
-Texture3DView.prototype.getDepth = function() { return this.m_numLevels > 0 ? this.m_levels[0].getDepth() : 0; };
+/** @return {number} */
+tcuTexture.Texture3DView.prototype.getNumLevels = function() { return this.m_numLevels; };
+/** @return {number} */
+tcuTexture.Texture3DView.prototype.getWidth = function() { return this.m_numLevels > 0 ? this.m_levels[0].getWidth() : 0; };
+/** @return {number} */
+tcuTexture.Texture3DView.prototype.getHeight = function() { return this.m_numLevels > 0 ? this.m_levels[0].getHeight() : 0; };
+/** @return {number} */
+tcuTexture.Texture3DView.prototype.getDepth = function() { return this.m_numLevels > 0 ? this.m_levels[0].getDepth() : 0; };
 /**
- * @param {Number} ndx
- * @return {ConstPixelBufferAccess}
+ * @param {number} ndx
+ * @return {tcuTexture.ConstPixelBufferAccess}
  */
-Texture3DView.prototype.getLevel = function(ndx) { DE_ASSERT(deMath.deInBounds32(ndx, 0, this.m_numLevels)); return this.m_levels[ndx]; };
-/** @return {Array<ConstPixelBufferAccess>} */
-Texture3DView.prototype.getLevels = function() { return this.m_levels; };
+tcuTexture.Texture3DView.prototype.getLevel = function(ndx) { DE_ASSERT(deMath.deInBounds32(ndx, 0, this.m_numLevels)); return this.m_levels[ndx]; };
+/** @return {Array<tcuTexture.ConstPixelBufferAccess>} */
+tcuTexture.Texture3DView.prototype.getLevels = function() { return this.m_levels; };
 
 /**
- * @param {Number} baseLevel
- * @param {Number} maxLevel
- * return {Texture3DView}
+ * @param {number} baseLevel
+ * @param {number} maxLevel
+ * return {tcuTexture.Texture3DView}
  */
-Texture3DView.prototype.getSubView = function(baseLevel, maxLevel) {
+tcuTexture.Texture3DView.prototype.getSubView = function(baseLevel, maxLevel) {
     var clampedBase = deMath.clamp(baseLevel, 0, this.m_numLevels - 1);
     var clampedMax = deMath.clamp(maxLevel, clampedBase, this.m_numLevels - 1);
     var numLevels = clampedMax - clampedBase + 1;
-    return new Texture3DView(numLevels, this.m_levels.slice(clampedBase, numLevels));
+    return new tcuTexture.Texture3DView(numLevels, this.m_levels.slice(clampedBase, numLevels));
 };
 
 /**
- * @param {Sampler} sampler
- * @param {Array<Number>} texCoord
- * @param {Number} lod
- * @return {Array<Number>} Pixel color
+ * @param {tcuTexture.Sampler} sampler
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @return {Array<number>} Pixel color
  */
-Texture3DView.prototype.sample = function(sampler, texCoord, lod) {
-    return sampleLevelArray3D(this.m_levels, this.m_numLevels, sampler, texCoord[0], texCoord[1], texCoord[2], lod);
+tcuTexture.Texture3DView.prototype.sample = function(sampler, texCoord, lod) {
+    return tcuTexture.sampleLevelArray3D(this.m_levels, this.m_numLevels, sampler, texCoord[0], texCoord[1], texCoord[2], lod);
+};
+
+/**
+ * @param {tcuTexture.Sampler} sampler
+ * @param {number} ref
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @return {number}
+ */
+tcuTexture.Texture3DView.prototype.sampleCompare = function(sampler, ref, texCoord, lod) {
+    throw new Error('Unimplemented');
 };
 
 /* TODO: All view classes are very similar. They should have a common base class */
 
 /**
- * @param {Number} width
- * @param {Number} height
- * @return {Number} Number of pyramid levels
+ * @param {number} width
+ * @param {number=} height
+ * @return {number} Number of pyramid levels
  */
-var computeMipPyramidLevels = function(width, height) {
+tcuTexture.computeMipPyramidLevels = function(width, height) {
     var h = height || width;
     return Math.floor(Math.log2(Math.max(width, h))) + 1;
 };
 
 /**
- * @param {Number} baseLevelSize
- * @param {Number} levelNdx
+ * @param {number} baseLevelSize
+ * @param {number} levelNdx
  */
-var getMipPyramidLevelSize = function(baseLevelSize, levelNdx) {
+tcuTexture.getMipPyramidLevelSize = function(baseLevelSize, levelNdx) {
     return Math.max(baseLevelSize >> levelNdx, 1);
 };
 
 /**
- * @param {Array<Number>} coords Vec3 cube coordinates
- * @return {CubeFaceCoords}
+ * @param {Array<number>} coords Vec3 cube coordinates
+ * @return {tcuTexture.CubeFaceCoords}
  */
-var getCubeFaceCoords = function(coords) {
-    var face = selectCubeFace(coords);
-    return new CubeFaceCoords(face, projectToFace(face, coords));
+tcuTexture.getCubeFaceCoords = function(coords) {
+    var face = tcuTexture.selectCubeFace(coords);
+    return new tcuTexture.CubeFaceCoords(face, tcuTexture.projectToFace(face, coords));
 };
 
 /**
  * @constructor
- * @extends {TextureLevelPyramid}
- * @param {TextureFormat} format
- * @param {Number} width
- * @param {Number} height
+ * @extends {tcuTexture.TextureLevelPyramid}
+ * @param {tcuTexture.TextureFormat} format
+ * @param {number} width
+ * @param {number} height
  */
-var Texture2D = function(format, width, height) {
-    TextureLevelPyramid.call(this, format, computeMipPyramidLevels(width, height));
+tcuTexture.Texture2D = function(format, width, height) {
+    tcuTexture.TextureLevelPyramid.call(this, format, tcuTexture.computeMipPyramidLevels(width, height));
     this.m_width = width;
     this.m_height = height;
-    this.m_view = new Texture2DView(this.getNumLevels(), this.getLevels());
+    this.m_view = new tcuTexture.Texture2DView(this.getNumLevels(), this.getLevels());
 };
 
-Texture2D.prototype = Object.create(TextureLevelPyramid.prototype);
-Texture2D.prototype.constructor = Texture2D;
+tcuTexture.Texture2D.prototype = Object.create(tcuTexture.TextureLevelPyramid.prototype);
+tcuTexture.Texture2D.prototype.constructor = tcuTexture.Texture2D;
 
-Texture2D.prototype.getWidth = function() { return this.m_width; };
-Texture2D.prototype.getHeight = function() { return this.m_height; };
-
-/**
- * @param {Number} baseLevel
- * @param {Number} maxLevel
- * @return {Texture2DView}
- */
-Texture2D.prototype.getSubView = function(baseLevel, maxLevel) { return this.m_view.getSubView(baseLevel, maxLevel); };
+tcuTexture.Texture2D.prototype.getWidth = function() { return this.m_width; };
+tcuTexture.Texture2D.prototype.getHeight = function() { return this.m_height; };
 
 /**
- * @param {Number} levelNdx
+ * @param {number} baseLevel
+ * @param {number} maxLevel
+ * @return {tcuTexture.Texture2DView}
  */
-Texture2D.prototype.allocLevel = function(levelNdx) {
+tcuTexture.Texture2D.prototype.getSubView = function(baseLevel, maxLevel) { return this.m_view.getSubView(baseLevel, maxLevel); };
+
+/**
+ * @param {number} levelNdx
+ */
+tcuTexture.Texture2D.prototype.allocLevel = function(levelNdx) {
     DE_ASSERT(deMath.deInBounds32(levelNdx, 0, this.getNumLevels()));
 
-    var width = getMipPyramidLevelSize(this.m_width, levelNdx);
-    var height = getMipPyramidLevelSize(this.m_height, levelNdx);
+    var width = tcuTexture.getMipPyramidLevelSize(this.m_width, levelNdx);
+    var height = tcuTexture.getMipPyramidLevelSize(this.m_height, levelNdx);
 
     // console.log('w ' + width + ' h ' + height);
-    TextureLevelPyramid.prototype.allocLevel.call(this, levelNdx, width, height, 1);
+    tcuTexture.TextureLevelPyramid.prototype.allocLevel.call(this, levelNdx, width, height, 1);
 };
 
 /**
  * @constructor
- * @extends {TextureLevelPyramid}
- * @param {TextureFormat} format
- * @param {Number} width
- * @param {Number} height
- * @param {Number} numLayers
+ * @extends {tcuTexture.TextureLevelPyramid}
+ * @param {tcuTexture.TextureFormat} format
+ * @param {number} width
+ * @param {number} height
+ * @param {number} numLayers
  */
-var Texture2DArray = function(format, width, height, numLayers) {
-    TextureLevelPyramid.call(this, format, computeMipPyramidLevels(width, height));
+tcuTexture.Texture2DArray = function(format, width, height, numLayers) {
+    tcuTexture.TextureLevelPyramid.call(this, format, tcuTexture.computeMipPyramidLevels(width, height));
     this.m_width = width;
     this.m_height = height;
     this.m_numLayers = numLayers;
-    this.m_view = new Texture2DArrayView(this.getNumLevels(), this.getLevels());
+    this.m_view = new tcuTexture.Texture2DArrayView(this.getNumLevels(), this.getLevels());
 };
 
-Texture2DArray.prototype = Object.create(TextureLevelPyramid.prototype);
-Texture2DArray.prototype.constructor = Texture2DArray;
-/** @return {Texture2DArrayView} */
-Texture2DArray.prototype.getView = function() { return this.m_view; };
+tcuTexture.Texture2DArray.prototype = Object.create(tcuTexture.TextureLevelPyramid.prototype);
+tcuTexture.Texture2DArray.prototype.constructor = tcuTexture.Texture2DArray;
+/** @return {tcuTexture.Texture2DArrayView} */
+tcuTexture.Texture2DArray.prototype.getView = function() { return this.m_view; };
 
 /**
- * @param {Number} levelNdx
+ * @param {number} levelNdx
  */
-Texture2DArray.prototype.allocLevel = function(levelNdx) {
+tcuTexture.Texture2DArray.prototype.allocLevel = function(levelNdx) {
     DE_ASSERT(deMath.deInBounds32(levelNdx, 0, this.getNumLevels()));
 
-    var width = getMipPyramidLevelSize(this.m_width, levelNdx);
-    var height = getMipPyramidLevelSize(this.m_height, levelNdx);
+    var width = tcuTexture.getMipPyramidLevelSize(this.m_width, levelNdx);
+    var height = tcuTexture.getMipPyramidLevelSize(this.m_height, levelNdx);
 
-    TextureLevelPyramid.prototype.allocLevel.call(this, levelNdx, width, height, this.m_numLayers);
+    tcuTexture.TextureLevelPyramid.prototype.allocLevel.call(this, levelNdx, width, height, this.m_numLayers);
 };
 
 /**
  * @constructor
- * @extends {TextureLevelPyramid}
- * @param {TextureFormat} format
- * @param {Number} width
- * @param {Number} height
- * @param {Number} depth
+ * @extends {tcuTexture.TextureLevelPyramid}
+ * @param {tcuTexture.TextureFormat} format
+ * @param {number} width
+ * @param {number} height
+ * @param {number} depth
  */
-var Texture3D = function(format, width, height, depth) {
-    TextureLevelPyramid.call(this, format, computeMipPyramidLevels(width, height));
+tcuTexture.Texture3D = function(format, width, height, depth) {
+    tcuTexture.TextureLevelPyramid.call(this, format, tcuTexture.computeMipPyramidLevels(width, height));
     this.m_width = width;
     this.m_height = height;
     this.m_depth = depth;
-    this.m_view = new Texture3DView(this.getNumLevels(), this.getLevels());
+    this.m_view = new tcuTexture.Texture3DView(this.getNumLevels(), this.getLevels());
 };
 
-Texture3D.prototype = Object.create(TextureLevelPyramid.prototype);
-Texture3D.prototype.constructor = Texture3D;
+tcuTexture.Texture3D.prototype = Object.create(tcuTexture.TextureLevelPyramid.prototype);
+tcuTexture.Texture3D.prototype.constructor = tcuTexture.Texture3D;
 
-Texture3D.prototype.getWidth = function() { return this.m_width; };
-Texture3D.prototype.getHeight = function() { return this.m_height; };
-
-/**
- * @param {Number} baseLevel
- * @param {Number} maxLevel
- * @return {Texture3DView}
- */
-Texture3D.prototype.getSubView = function(baseLevel, maxLevel) { return this.m_view.getSubView(baseLevel, maxLevel); };
+tcuTexture.Texture3D.prototype.getWidth = function() { return this.m_width; };
+tcuTexture.Texture3D.prototype.getHeight = function() { return this.m_height; };
+tcuTexture.Texture3D.prototype.getDepth = function() { return this.m_depth; };
 
 /**
- * @param {Number} levelNdx
+ * @param {number} baseLevel
+ * @param {number} maxLevel
+ * @return {tcuTexture.Texture3DView}
  */
-Texture3D.prototype.allocLevel = function(levelNdx) {
+tcuTexture.Texture3D.prototype.getSubView = function(baseLevel, maxLevel) { return this.m_view.getSubView(baseLevel, maxLevel); };
+
+/**
+ * @param {number} levelNdx
+ */
+tcuTexture.Texture3D.prototype.allocLevel = function(levelNdx) {
     DE_ASSERT(deMath.deInBounds32(levelNdx, 0, this.getNumLevels()));
 
-    var width = getMipPyramidLevelSize(this.m_width, levelNdx);
-    var height = getMipPyramidLevelSize(this.m_height, levelNdx);
-    var depth = getMipPyramidLevelSize(this.m_depth, levelNdx);
+    var width = tcuTexture.getMipPyramidLevelSize(this.m_width, levelNdx);
+    var height = tcuTexture.getMipPyramidLevelSize(this.m_height, levelNdx);
+    var depth = tcuTexture.getMipPyramidLevelSize(this.m_depth, levelNdx);
 
-    TextureLevelPyramid.prototype.allocLevel.call(this, levelNdx, width, height, depth);
+    tcuTexture.TextureLevelPyramid.prototype.allocLevel.call(this, levelNdx, width, height, depth);
 };
-
 
 /**
  * @constructor
- * @param {Number} numLevels
- * @param {Array<Array<ConstPixelBufferAccess>>} levels
+ * @param {number} numLevels
+ * @param {Array<Array<tcuTexture.ConstPixelBufferAccess>>} levels
  */
-var TextureCubeView = function(numLevels, levels) {
+tcuTexture.TextureCubeView = function(numLevels, levels) {
     this.m_numLevels = numLevels;
     this.m_levels = levels;
 };
 
 /**
- * @param {Sampler} sampler
- * @param {Array<Number>} texCoord
- * @param {Number} lod
- * @return {Array<Number>} Pixel color
+ * @param {tcuTexture.Sampler} sampler
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @return {Array<number>} Pixel color
  */
-TextureCubeView.prototype.sample = function(sampler, texCoord, lod) {
-    DE_ASSERT(sampler.compare == CompareMode.COMPAREMODE_NONE);
+tcuTexture.TextureCubeView.prototype.sample = function(sampler, texCoord, lod) {
+    DE_ASSERT(sampler.compare == tcuTexture.CompareMode.COMPAREMODE_NONE);
 
     // Computes (face, s, t).
-    var coords = getCubeFaceCoords(texCoord);
+    var coords = tcuTexture.getCubeFaceCoords(texCoord);
     if (sampler.seamlessCubeMap)
-        return sampleLevelArrayCubeSeamless(this.m_levels, this.m_numLevels, coords.face, sampler, coords.s, coords.t, 0 /* depth */, lod);
+        throw new Error('Not implemented');
+//        return sampleLevelArrayCubeSeamless(this.m_levels, this.m_numLevels, coords.face, sampler, coords.s, coords.t, 0 /* depth */, lod);
     else
-        return sampleLevelArray2D(this.m_levels[coords.face], this.m_numLevels, sampler, coords.s, coords.t, 0 /* depth */, lod);
+        return tcuTexture.sampleLevelArray2D(this.m_levels[coords.face], this.m_numLevels, sampler, coords.s, coords.t, 0 /* depth */, lod);
 };
 
 /**
- * @param {CubeFace} face
- * @return {Array<ConstPixelBufferAccess>}
+ * @param {tcuTexture.CubeFace} face
+ * @return {Array<tcuTexture.ConstPixelBufferAccess>}
  */
-TextureCubeView.prototype.getFaceLevels = function(face) { return this.m_levels[face]; };
-/** @return {Number} */
-TextureCubeView.prototype.getSize = function() { return this.m_numLevels > 0 ? this.m_levels[0][0].getWidth() : 0; };
+tcuTexture.TextureCubeView.prototype.getFaceLevels = function(face) { return this.m_levels[face]; };
+/** @return {number} */
+tcuTexture.TextureCubeView.prototype.getSize = function() { return this.m_numLevels > 0 ? this.m_levels[0][0].getWidth() : 0; };
 
 /**
- * @param {Number} baseLevel
- * @param {Number} maxLevel
- * @return {TextureCubeView}
+ * @param {number} baseLevel
+ * @param {number} maxLevel
+ * @return {tcuTexture.TextureCubeView}
  */
-TextureCubeView.prototype.getSubView = function(baseLevel, maxLevel) {
+tcuTexture.TextureCubeView.prototype.getSubView = function(baseLevel, maxLevel) {
     var clampedBase = deMath.clamp(baseLevel, 0, this.m_numLevels - 1);
     var clampedMax = deMath.clamp(maxLevel, clampedBase, this.m_numLevels - 1);
     var numLevels = clampedMax - clampedBase + 1;
     var levels = [];
-    for (var face in CubeFace)
-        levels.push(this.getFaceLevels(CubeFace[face]).slice(clampedBase, numLevels));
+    for (var face in tcuTexture.CubeFace)
+        levels.push(this.getFaceLevels(tcuTexture.CubeFace[face]).slice(clampedBase, numLevels));
 
-    return new TextureCubeView(numLevels, levels);
+    return new tcuTexture.TextureCubeView(numLevels, levels);
 };
 
 /**
  * @constructor
- * @param {TextureFormat} format
- * @param {Number} size
+ * @param {tcuTexture.TextureFormat} format
+ * @param {number} size
  */
-var TextureCube = function(format, size) {
+tcuTexture.TextureCube = function(format, size) {
     this.m_format = format;
     this.m_size = size;
     this.m_data = [];
-    this.m_data.length = Object.keys(CubeFace).length;
+    this.m_data.length = Object.keys(tcuTexture.CubeFace).length;
     this.m_access = [];
-    this.m_access.length = Object.keys(CubeFace).length;
+    this.m_access.length = Object.keys(tcuTexture.CubeFace).length;
 
-    var numLevels = computeMipPyramidLevels(this.m_size);
+    var numLevels = tcuTexture.computeMipPyramidLevels(this.m_size);
     var levels = [];
-    levels.length = Object.keys(CubeFace).length;
+    levels.length = Object.keys(tcuTexture.CubeFace).length;
 
-    for (var face in CubeFace) {
-        this.m_data[CubeFace[face]] = [];
+    for (var face in tcuTexture.CubeFace) {
+        this.m_data[tcuTexture.CubeFace[face]] = [];
         for (var i = 0; i < numLevels; i++)
-            this.m_data[CubeFace[face]].push(new DeqpArrayBuffer());
-        this.m_access[CubeFace[face]] = [];
-        this.m_access[CubeFace[face]].length = numLevels;
-        levels[CubeFace[face]] = this.m_access[CubeFace[face]];
+            this.m_data[tcuTexture.CubeFace[face]].push(new tcuTexture.DeqpArrayBuffer());
+        this.m_access[tcuTexture.CubeFace[face]] = [];
+        this.m_access[tcuTexture.CubeFace[face]].length = numLevels;
+        levels[tcuTexture.CubeFace[face]] = this.m_access[tcuTexture.CubeFace[face]];
     }
 
-    this.m_view = new TextureCubeView(numLevels, levels);
+    this.m_view = new tcuTexture.TextureCubeView(numLevels, levels);
 };
 
-/** @return {TextureFormat} */
-TextureCube.prototype.getFormat = function() { return this.m_format; };
-/** @return {Number} */
-TextureCube.prototype.getSize = function() { return this.m_size; };
+/** @return {tcuTexture.TextureFormat} */
+tcuTexture.TextureCube.prototype.getFormat = function() { return this.m_format; };
+/** @return {number} */
+tcuTexture.TextureCube.prototype.getSize = function() { return this.m_size; };
 /**
- * @param {Number} ndx Level index
- * @param {CubeFace} face
- * @return {ConstPixelBufferAccess}
+ * @param {number} ndx Level index
+ * @param {tcuTexture.CubeFace} face
+ * @return {tcuTexture.ConstPixelBufferAccess}
  */
-TextureCube.prototype.getLevelFace = function(ndx, face)        { return this.m_access[face][ndx]; };
-/** @return {Number} */
-TextureCube.prototype.getNumLevels = function() { return this.m_access[0].length; };
+tcuTexture.TextureCube.prototype.getLevelFace = function(ndx, face) { return this.m_access[face][ndx]; };
+/** @return {number} */
+tcuTexture.TextureCube.prototype.getNumLevels = function() { return this.m_access[0].length; };
 
 /**
- * @param {Sampler} sampler
- * @param {Array<Number>} texCoord
- * @param {Number} lod
- * @return {Array<Number>} Pixel color
+ * @param {tcuTexture.Sampler} sampler
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @return {Array<number>} Pixel color
  */
-TextureCube.prototype.sample = function(sampler, texCoord, lod) {
-    this.m_view.sample(sampler, texCoord, lod);
+tcuTexture.TextureCube.prototype.sample = function(sampler, texCoord, lod) {
+    return this.m_view.sample(sampler, texCoord, lod);
 };
 
 /**
- * @param {Number} baseLevel
- * @param {Number} maxLevel
- * @return {TextureCubeView}
+ * @param {number} baseLevel
+ * @param {number} maxLevel
+ * @return {tcuTexture.TextureCubeView}
  */
-TextureCube.prototype.getSubView = function(baseLevel, maxLevel) { return this.m_view.getSubView(baseLevel, maxLevel); };
+tcuTexture.TextureCube.prototype.getSubView = function(baseLevel, maxLevel) { return this.m_view.getSubView(baseLevel, maxLevel); };
 
 /**
- * @param {CubeFace} face
- * @param {Number} levelNdx
+ * @param {tcuTexture.CubeFace} face
+ * @param {number} levelNdx
  * @return {boolean}
  */
-TextureCube.prototype.isLevelEmpty = function(face, levelNdx) {
+tcuTexture.TextureCube.prototype.isLevelEmpty = function(face, levelNdx) {
     return this.m_data[face][levelNdx].empty();
 };
 
 /**
- * @param {CubeFace} face
- * @param {Number} levelNdx
+ * @param {tcuTexture.CubeFace} face
+ * @param {number} levelNdx
  */
-TextureCube.prototype.allocLevel = function(face, levelNdx) {
-    /** @const */ var size = getMipPyramidLevelSize(this.m_size, levelNdx);
+tcuTexture.TextureCube.prototype.allocLevel = function(face, levelNdx) {
+    /** @const */ var size = tcuTexture.getMipPyramidLevelSize(this.m_size, levelNdx);
     /** @const*/ var dataSize = this.m_format.getPixelSize() * size * size;
     DE_ASSERT(this.isLevelEmpty(face, levelNdx));
 
     this.m_data[face][levelNdx].setStorage(dataSize);
-    this.m_access[face][levelNdx] = new PixelBufferAccess({
+    this.m_access[face][levelNdx] = new tcuTexture.PixelBufferAccess({
         format: this.m_format,
         width: size,
         height: size,
@@ -2011,10 +2356,10 @@ TextureCube.prototype.allocLevel = function(face, levelNdx) {
 };
 
 /**
- * @param {Array<Number>} coords Cube coordinates
- * @return {CubeFace}
+ * @param {Array<number>} coords Cube coordinates
+ * @return {tcuTexture.CubeFace}
  */
-var selectCubeFace = function(coords) {
+tcuTexture.selectCubeFace = function(coords) {
     var x = coords[0];
     var y = coords[1];
     var z = coords[2];
@@ -2023,39 +2368,39 @@ var selectCubeFace = function(coords) {
     var az = Math.abs(z);
 
     if (ay < ax && az < ax)
-        return x >= 0 ? CubeFace.CUBEFACE_POSITIVE_X : CubeFace.CUBEFACE_NEGATIVE_X;
+        return x >= 0 ? tcuTexture.CubeFace.CUBEFACE_POSITIVE_X : tcuTexture.CubeFace.CUBEFACE_NEGATIVE_X;
     else if (ax < ay && az < ay)
-        return y >= 0 ? CubeFace.CUBEFACE_POSITIVE_Y : CubeFace.CUBEFACE_NEGATIVE_Y;
+        return y >= 0 ? tcuTexture.CubeFace.CUBEFACE_POSITIVE_Y : tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Y;
     else if (ax < az && ay < az)
-        return z >= 0 ? CubeFace.CUBEFACE_POSITIVE_Z : CubeFace.CUBEFACE_NEGATIVE_Z;
+        return z >= 0 ? tcuTexture.CubeFace.CUBEFACE_POSITIVE_Z : tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Z;
     else {
         // Some of the components are equal. Use tie-breaking rule.
         if (ax == ay) {
             if (ax < az)
-                return z >= 0 ? CubeFace.CUBEFACE_POSITIVE_Z : CubeFace.CUBEFACE_NEGATIVE_Z;
+                return z >= 0 ? tcuTexture.CubeFace.CUBEFACE_POSITIVE_Z : tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Z;
             else
-                return x >= 0 ? CubeFace.CUBEFACE_POSITIVE_X : CubeFace.CUBEFACE_NEGATIVE_X;
+                return x >= 0 ? tcuTexture.CubeFace.CUBEFACE_POSITIVE_X : tcuTexture.CubeFace.CUBEFACE_NEGATIVE_X;
         } else if (ax == az) {
             if (az < ay)
-                return y >= 0 ? CubeFace.CUBEFACE_POSITIVE_Y : CubeFace.CUBEFACE_NEGATIVE_Y;
+                return y >= 0 ? tcuTexture.CubeFace.CUBEFACE_POSITIVE_Y : tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Y;
             else
-                return z >= 0 ? CubeFace.CUBEFACE_POSITIVE_Z : CubeFace.CUBEFACE_NEGATIVE_Z;
+                return z >= 0 ? tcuTexture.CubeFace.CUBEFACE_POSITIVE_Z : tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Z;
         } else if (ay == az) {
             if (ay < ax)
-                return x >= 0 ? CubeFace.CUBEFACE_POSITIVE_X : CubeFace.CUBEFACE_NEGATIVE_X;
+                return x >= 0 ? tcuTexture.CubeFace.CUBEFACE_POSITIVE_X : tcuTexture.CubeFace.CUBEFACE_NEGATIVE_X;
             else
-                return y >= 0 ? CubeFace.CUBEFACE_POSITIVE_Y : CubeFace.CUBEFACE_NEGATIVE_Y;
+                return y >= 0 ? tcuTexture.CubeFace.CUBEFACE_POSITIVE_Y : tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Y;
         } else
-            return x >= 0 ? CubeFace.CUBEFACE_POSITIVE_X : CubeFace.CUBEFACE_NEGATIVE_X;
+            return x >= 0 ? tcuTexture.CubeFace.CUBEFACE_POSITIVE_X : tcuTexture.CubeFace.CUBEFACE_NEGATIVE_X;
     }
 };
 
 /**
- * @param {CubeFace} face
- * @param {Array<Number>} coord  Cube coordinates (Vec3)
- * @return {Array<Number>} face coordinates (Vec2)
+ * @param {tcuTexture.CubeFace} face
+ * @param {Array<number>} coord Cube coordinates (Vec3)
+ * @return {Array<number>} face coordinates (Vec2)
  */
-var projectToFace = function(face, coord) {
+tcuTexture.projectToFace = function(face, coord) {
     var rx = coord[0];
     var ry = coord[1];
     var rz = coord[2];
@@ -2064,12 +2409,12 @@ var projectToFace = function(face, coord) {
     var ma = 0;
 
     switch (face) {
-        case CubeFace.CUBEFACE_NEGATIVE_X: sc = +rz; tc = -ry; ma = -rx; break;
-        case CubeFace.CUBEFACE_POSITIVE_X: sc = -rz; tc = -ry; ma = +rx; break;
-        case CubeFace.CUBEFACE_NEGATIVE_Y: sc = +rx; tc = -rz; ma = -ry; break;
-        case CubeFace.CUBEFACE_POSITIVE_Y: sc = +rx; tc = +rz; ma = +ry; break;
-        case CubeFace.CUBEFACE_NEGATIVE_Z: sc = -rx; tc = -ry; ma = -rz; break;
-        case CubeFace.CUBEFACE_POSITIVE_Z: sc = +rx; tc = -ry; ma = +rz; break;
+        case tcuTexture.CubeFace.CUBEFACE_NEGATIVE_X: sc = +rz; tc = -ry; ma = -rx; break;
+        case tcuTexture.CubeFace.CUBEFACE_POSITIVE_X: sc = -rz; tc = -ry; ma = +rx; break;
+        case tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Y: sc = +rx; tc = -rz; ma = -ry; break;
+        case tcuTexture.CubeFace.CUBEFACE_POSITIVE_Y: sc = +rx; tc = +rz; ma = +ry; break;
+        case tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Z: sc = -rx; tc = -ry; ma = -rz; break;
+        case tcuTexture.CubeFace.CUBEFACE_POSITIVE_Z: sc = +rx; tc = -ry; ma = +rz; break;
         default:
             throw new Error('Unrecognized face ' + face);
     }
@@ -2083,30 +2428,29 @@ var projectToFace = function(face, coord) {
 
 /**
  * @constructor
- * @param {TextureFormat} format
+ * @param {tcuTexture.TextureFormat} format
  * @param {number} width
  * @param {number} height
- * @param {number} depth
+ * @param {number=} depth
  */
-var TextureLevel = function(format, width, height, depth) {
+tcuTexture.TextureLevel = function(format, width, height, depth) {
     this.m_format = format;
     this.m_width = width;
     this.m_height = height;
     this.m_depth = depth === undefined ? 1 : depth;
-    this.m_data = new DeqpArrayBuffer();
+    this.m_data = new tcuTexture.DeqpArrayBuffer();
     this.setSize(this.m_width, this.m_height, this.m_depth);
 };
 
-TextureLevel.prototype.constructor = TextureLevel;
+tcuTexture.TextureLevel.prototype.constructor = tcuTexture.TextureLevel;
 
 /**
- * @param {TextureFormat} format
+ * @param {tcuTexture.TextureFormat} format
  * @param {number} width
  * @param {number} height
  * @param {number} depth
  */
-TextureLevel.prototype.setStorage = function(format, width, height, depth)
-{
+tcuTexture.TextureLevel.prototype.setStorage = function(format, width, height, depth) {
     this.m_format = format;
     this.setSize(width, height, depth);
 };
@@ -2116,8 +2460,7 @@ TextureLevel.prototype.setStorage = function(format, width, height, depth)
  * @param {number} height
  * @param {number} depth
  */
-TextureLevel.prototype.setSize = function(width, height, depth)
-{
+tcuTexture.TextureLevel.prototype.setSize = function(width, height, depth) {
     var pixelSize = this.m_format.getPixelSize();
 
     this.m_width = width;
@@ -2127,8 +2470,8 @@ TextureLevel.prototype.setSize = function(width, height, depth)
     this.m_data.setStorage(this.m_width * this.m_height * this.m_depth * pixelSize);
 };
 
-TextureLevel.prototype.getAccess = function() {
-    return new PixelBufferAccess({
+tcuTexture.TextureLevel.prototype.getAccess = function() {
+    return new tcuTexture.PixelBufferAccess({
                     format: this.m_format,
                     width: this.m_width,
                     height: this.m_height,
@@ -2141,54 +2484,29 @@ TextureLevel.prototype.getAccess = function() {
 /**
  * @return {number}
  */
-TextureLevel.prototype.getWidth = function()
-{
+tcuTexture.TextureLevel.prototype.getWidth = function() {
     return this.m_width;
 };
 
 /**
  * @return {number}
  */
-TextureLevel.prototype.getHeight = function()
-{
+tcuTexture.TextureLevel.prototype.getHeight = function() {
     return this.m_height;
 };
 
 /**
  * @return {number}
  */
-TextureLevel.prototype.getDepth = function()
-{
+tcuTexture.TextureLevel.prototype.getDepth = function() {
     return this.m_depth;
 };
 
 /**
- * @return {number}
+ * @return {?tcuTexture.TextureFormat}
  */
-TextureLevel.prototype.getFormat = function()
-{
+tcuTexture.TextureLevel.prototype.getFormat = function() {
     return this.m_format;
-};
-
-return {
-    TextureFormat: TextureFormat,
-    ChannelType: ChannelType,
-    ChannelOrder: ChannelOrder,
-    CubeFace: CubeFace,
-    DeqpArrayBuffer: DeqpArrayBuffer,
-    ConstPixelBufferAccess: ConstPixelBufferAccess,
-    PixelBufferAccess: PixelBufferAccess,
-    Texture2D: Texture2D,
-    Texture2DView: Texture2DView,
-    TextureCube: TextureCube,
-    Texture2DArray: Texture2DArray,
-    Texture3D: Texture3D,
-    WrapMode: WrapMode,
-    FilterMode: FilterMode,
-    CompareMode: CompareMode,
-    Sampler: Sampler,
-    selectCubeFace: selectCubeFace,
-    TextureLevel: TextureLevel
 };
 
 });

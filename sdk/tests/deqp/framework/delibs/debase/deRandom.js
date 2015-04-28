@@ -19,29 +19,33 @@
  */
 
 /**
- * This class allows one to create a random integer, floating point number or boolean (TODO, choose random items from a list and shuffle an array)
+ * This class allows one to create a random integer, floating point number or boolean (TODO, deRandom.choose random items from a list and deRandom.shuffle an array)
  */
-define(function() {
 'use strict';
+goog.provide('framework.delibs.debase.deRandom');
+
+goog.scope(function() {
+
+var deRandom = framework.delibs.debase.deRandom;
 
 /**
  * Array of pseudo random numbers based on seed
  * @constructor
+ * @struct
  */
-var deRandom = function() {
-    var x;
-    var y;
-    var z;
-    var w;
+deRandom.deRandom = function() {
+    /** @type {number} */ this.x = 0;
+    /** @type {number} */ this.y = 0;
+    /** @type {number} */ this.z = 0;
+    /** @type {number} */ this.w = 0;
 };
 
 /**
- * Random number generator init
- * @param {Random} rnd Array to store random numbers
+ * deRandom.Random number generator init
+ * @param {deRandom.deRandom} rnd Array to store random numbers
  * @param {number} seed Number for seed
  */
-var deRandom_init = function(rnd, seed)
-{
+deRandom.deRandom_init = function(rnd, seed) {
     rnd.x = (-seed ^ 123456789);
     rnd.y = (362436069 * seed);
     rnd.z = (521288629 ^ (seed >> 7));
@@ -50,17 +54,16 @@ var deRandom_init = function(rnd, seed)
 
 /**
  * Function to get random int
- * @param {deRandom} rnd Initialised array of random numbers
- * @param {array} opts Min and max for range
- * @return {int} Random int
+ * @param {deRandom.deRandom} rnd Initialised array of random numbers
+ * @param {Array<number>=} opts Min and max for range
+ * @return {number} deRandom.Random int
  */
-var deRandom_getInt = function(rnd, opts)
-{
+deRandom.deRandom_getInt = function(rnd, opts) {
     if (opts != undefined && opts[0] != undefined && opts[1] != undefined) {
         if (opts[0] == 0x80000000 && opts[1] == 0x7fffffff) {
-            return deRandom_getInt(rnd);
+            return deRandom.deRandom_getInt(rnd);
         } else {
-            return opts[0] + (deRandom_getInt(rnd) % (opts[1] - opts[0] + 1));
+            return opts[0] + (deRandom.deRandom_getInt(rnd) % (opts[1] - opts[0] + 1));
         }
     }
     var w = rnd.w;
@@ -76,30 +79,29 @@ var deRandom_getInt = function(rnd, opts)
 
 /**
  * Function to get random float
- * @param {deRandom} rnd Initialised array of random numbers
- * @param {array} opts Min and max for range
- * @return {float} Random float
+ * @param {deRandom.deRandom} rnd Initialised array of random numbers
+ * @param {Array<number>=} opts Min and max for range
+ * @return {number} deRandom.Random float
  */
-var deRandom_getFloat = function(rnd, opts)
-{
+deRandom.deRandom_getFloat = function(rnd, opts) {
     if (opts != undefined && opts[0] != undefined && opts[1] != undefined) {
         if (opts[0] <= opts[1]) {
-            return opts[0] + (opts[1] - opts[0]) * deRandom_getFloat(rnd);
+            return opts[0] + (opts[1] - opts[0]) * deRandom.deRandom_getFloat(rnd);
         }
     } else {
-        return (deRandom_getInt(rnd) & 0xFFFFFFF) / (0xFFFFFFF + 1);
+        return (deRandom.deRandom_getInt(rnd) & 0xFFFFFFF) / (0xFFFFFFF + 1);
     }
+    throw new Error('Invalid arguments');
 };
 
 /**
  * Function to get random boolean
- * @param {deRandom} rnd Initialised array of random numbers
- * @return {boolean} Random boolean
+ * @param {deRandom.deRandom} rnd Initialised array of random numbers
+ * @return {boolean} deRandom.Random boolean
  */
-var deRandom_getBool = function(rnd)
-{
+deRandom.deRandom_getBool = function(rnd) {
     var val;
-    val = deRandom_getInt(rnd);
+    val = deRandom.deRandom_getInt(rnd);
     return ((val & 0xFFFFFF) < 0x800000);
 };
 
@@ -107,27 +109,27 @@ var deRandom_getBool = function(rnd)
  * Function to get a common base seed
  * @return {number} constant
  */
-var getBaseSeed = function()
-{
+deRandom.getBaseSeed = function() {
     return 42;
 };
 
 /**
- * TODO Function to choose random items from a list
- * @param {deRandom} rnd Initialised array of random numbers
- * @param {Array.<Object>} elements Array segment already defined
- * @param {Array.<Object>} resultOut Array where to store the elements in. If undefined, default to array of (num) elements.
- * @param {number} num Number of items to store in resultOut. If undefined, default to 1.
- * @return {Array.<Object>} Even though result is stored in resultOut, return it here as well.
+ * TODO Function to deRandom.choose random items from a list
+ * @template T
+ * @param {deRandom.deRandom} rnd Initialised array of random numbers
+ * @param {Array<T>} elements Array segment already defined
+ * @param {Array<T>=} resultOut Array where to store the elements in. If undefined, default to array of (num) elements.
+ * @param {number=} num Number of items to store in resultOut. If undefined, default to 1.
+ * @return {Array<T>} Even though result is stored in resultOut, return it here as well.
  */
-var choose = function(rnd, elements, resultOut, num) {
+deRandom.choose = function(rnd, elements, resultOut, num) {
     var items = num || 1;
     var temp = elements.slice();
     if (!resultOut)
         resultOut = [];
 
     while (items-- > 0) {
-        var index = deRandom_getInt(rnd, [0, temp.length - 1]);
+        var index = deRandom.deRandom_getInt(rnd, [0, temp.length - 1]);
         resultOut.push(temp[index]);
         temp.splice(index, 1);
     }
@@ -135,30 +137,28 @@ var choose = function(rnd, elements, resultOut, num) {
 };
 
 /**
- * TODO Function to choose weighted random items from a list
- * @param {deRandom} rnd Initialised array of random numbers
+ * TODO Function to deRandom.choose weighted random items from a list
+ * @param {deRandom.deRandom} rnd Initialised array of random numbers
  * @param {Iterator} first Start of array
  * @param {Iterator} last End of array
  * @param {Iterator} weight Weight
  * @return {Iterator} Result output
  */
-var chooseWeighted = function(rnd, first, last, weight)
-{
+deRandom.chooseWeighted = function(rnd, first, last, weight) {
     throw new Error('Function not yet implemented');
 };
 
 /**
- * TODO Function to shuffle an array
- * @param {deRandom} rnd Initialised array of random numbers
- * @param {Array} elements Array to shuffle
- * @return {Iterator} Shuffled array
+ * TODO Function to deRandom.shuffle an array
+ * @param {deRandom.deRandom} rnd Initialised array of random numbers
+ * @param {Array} elements Array to deRandom.shuffle
+ * @return {Array} Shuffled array
  */
-var shuffle = function(rnd, elements)
-{
+deRandom.shuffle = function(rnd, elements) {
     var index = elements.length;
 
     while (index > 0) {
-        var random = deRandom_getInt(rnd, [0, index - 1]);
+        var random = deRandom.deRandom_getInt(rnd, [0, index - 1]);
         index -= 1;
         var elem = elements[index];
         elements[index] = elements[random];
@@ -168,77 +168,71 @@ var shuffle = function(rnd, elements)
 };
 
 /**
- * This function is used to create the Random object and
+ * This function is used to create the deRandom.Random object and
  * initialise the random number with a seed.
  * It contains functions for generating random numbers in a variety of formats
  * @constructor
  * @param {number} seed Number to use as a seed
  */
-var Random = function(seed) {
+deRandom.Random = function(seed) {
     /**
      * Instance of array of pseudo random numbers based on seeds
     */
-    this.m_rnd = new deRandom;
+    this.m_rnd = new deRandom.deRandom();
 
     //initialise the random numbers based on seed
-    deRandom_init(this.m_rnd, seed);
+    deRandom.deRandom_init(this.m_rnd, seed);
 };
 
 /**
  * Function to get random boolean
- * @return {boolean} Random boolean
+ * @return {boolean} deRandom.Random boolean
  */
-Random.prototype.getBool = function()  { return deRandom_getBool(this.m_rnd) == true; };
+deRandom.Random.prototype.getBool = function() { return deRandom.deRandom_getBool(this.m_rnd) == true; };
 /**
  * Function to get random float
- * @param {deRandom} rnd Initialised array of random numbers
- * @param {array} opts Min and max for range
- * @return {float} Random float
+ * @param {number=} min Min for range
+ * @param {number=} max Max for range
+ * @return {number} deRandom.Random float
  */
-Random.prototype.getFloat = function(min, max) { return deRandom_getFloat(this.m_rnd, [min, max]) };
+deRandom.Random.prototype.getFloat = function(min, max) { return deRandom.deRandom_getFloat(this.m_rnd, [min, max]) };
 /**
  * Function to get random int
- * @param {deRandom} rnd Initialised array of random numbers
- * @param {array} opts Min and max for range
- * @return {int} Random int
+ * @param {number=} min Min for range
+ * @param {number=} max Max for range
+ * @return {number} deRandom.Random int
  */
-Random.prototype.getInt = function(min, max) {return deRandom_getInt(this.m_rnd, [min, max])};
+deRandom.Random.prototype.getInt = function(min, max) {return deRandom.deRandom_getInt(this.m_rnd, [min, max])};
 /**
- * TODO Function to choose random items from a list
- * @param {Array.<Object>} elements Array segment already defined
- * @param {Array.<Object>} resultOut Array where to store the elements in. If undefined, default to array of (num) elements.
- * @param {number} num Number of items to store in resultOut. If undefined, default to 1.
- * @return {Array.<Object>} Even though result is stored in resultOut, return it here as well.
+ * TODO Function to deRandom.choose random items from a list
+ * @template T
+ * @param {Array<T>} elements Array segment already defined
+ * @param {Array<T>=} resultOut Array where to store the elements in. If undefined, default to array of (num) elements.
+ * @param {number=} num Number of items to store in resultOut. If undefined, default to 1.
+ * @return {Array<T>} Even though result is stored in resultOut, return it here as well.
  */
-Random.prototype.choose = function(elements, resultOut, num) {return choose(this.m_rnd, elements, resultOut, num)};
+deRandom.Random.prototype.choose = function(elements, resultOut, num) {return deRandom.choose(this.m_rnd, elements, resultOut, num)};
 /**
- * TODO Function to choose weighted random items from a list
- * @param {deRandom} rnd initialised array of random numbers
+ * TODO Function to deRandom.choose weighted random items from a list
  * @param {Iterator} first Start of array
  * @param {Iterator} last End of array
  * @param {Iterator} weight Weight
  * @return {Iterator} Result output
  */
-Random.prototype.chooseWeighted = function(first, last, weight) {return chooseWeighted(this.m_rnd, first, last, weight)};
+deRandom.Random.prototype.chooseWeighted = function(first, last, weight) {return deRandom.chooseWeighted(this.m_rnd, first, last, weight)};
 /**
- * TODO Function to shuffle an array
- * @param {deRandom} rnd Initialised array of random numbers
- * @param {Array} elements Array to shuffle
+ * TODO Function to deRandom.shuffle an array
+ * @param {Array} elements Array to deRandom.shuffle
  * @return {Array} Shuffled array
  */
-Random.prototype.shuffle = function(elements) {return shuffle(this.m_rnd, elements)};
+deRandom.Random.prototype.shuffle = function(elements) {return deRandom.shuffle(this.m_rnd, elements)};
 
 /**
  * Function to get a common base seed
  * @return {number} constant
  */
-Random.prototype.getBaseSeed = function() {
-    return getBaseSeed();
-};
-
-return {
-    Random: Random,
-    getBaseSeed: getBaseSeed
+deRandom.Random.prototype.getBaseSeed = function() {
+    return deRandom.getBaseSeed();
 };
 
 });
