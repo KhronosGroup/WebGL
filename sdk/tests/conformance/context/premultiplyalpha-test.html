@@ -177,6 +177,9 @@ function doNextTest() {
     shouldBeTrue('gl.getContextAttributes().preserveDrawingBuffer');
 
     wtu.log(gl.getContextAttributes());
+    // not needed as it's the default
+    // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);");
     var program = wtu.setupTexturedQuad(gl);
 
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
@@ -195,9 +198,6 @@ function doNextTest() {
     var loadTexture = function() {
       debug("loadTexture called");
       var pngTex = gl.createTexture();
-      // not needed as it's the default
-      // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-      gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
       gl.bindTexture(gl.TEXTURE_2D, pngTex);
       if (test.imageFormat) {
          // create texture from image
