@@ -40,6 +40,8 @@ function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
             return;
         }
 
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+        wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);");
         gl.clearColor(0,0,0,1);
         gl.clearDepth(1);
 
@@ -63,8 +65,6 @@ function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
         gl.texParameteri(bindingTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         // Set up pixel store parameters
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
-        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-        gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
         var targets = [gl.TEXTURE_2D];
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
             targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X,
