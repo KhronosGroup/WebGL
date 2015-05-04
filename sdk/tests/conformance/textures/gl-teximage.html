@@ -173,7 +173,7 @@ function runTests(imgs) {
 
   debug("");
   debug("Check that gamma settings don't effect 8bit pngs");
-  gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
+  wtu.failIfGLError(gl, 'gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);');
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['../resources/gray-ramp-default-gamma.png']);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
@@ -333,7 +333,7 @@ function runTests(imgs) {
   debug("check uploading of images with ICC profiles");
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-  gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
+  wtu.failIfGLError(gl, 'gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);');
 
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE,
                 imgs['../resources/small-square-with-colorspin-profile.jpg']);
