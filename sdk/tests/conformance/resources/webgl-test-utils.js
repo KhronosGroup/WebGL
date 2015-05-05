@@ -1526,12 +1526,42 @@ var shouldGenerateGLError = function(gl, glErrors, evalStr) {
 };
 
 /**
+ * Tests that an evaluated expression does not generate a GL error.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {string} evalStr The string to evaluate.
+ */
+var failIfGLError = function(gl, evalStr) {
+  var exception;
+  try {
+    eval(evalStr);
+  } catch (e) {
+    exception = e;
+  }
+  if (exception) {
+    testFailed(evalStr + " threw exception " + exception);
+  } else {
+    glErrorShouldBeImpl(gl, gl.NO_ERROR, false, "after evaluating: " + evalStr);
+  }
+};
+
+/**
  * Tests that the first error GL returns is the specified error.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
  * @param {string} opt_msg Optional additional message.
  */
 var glErrorShouldBe = function(gl, glErrors, opt_msg) {
+  glErrorShouldBeImpl(gl, glErrors, true, opt_msg);
+};
+
+/**
+ * Tests that the first error GL returns is the specified error. Allows suppression of successes.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
+ * @param {boolean} reportSuccesses Whether to report successes as passes, or to silently pass.
+ * @param {string} opt_msg Optional additional message.
+ */
+var glErrorShouldBeImpl = function(gl, glErrors, reportSuccesses, opt_msg) {
   if (!glErrors.length) {
     glErrors = [glErrors];
   }
@@ -1546,7 +1576,7 @@ var glErrorShouldBe = function(gl, glErrors, opt_msg) {
   if (ndx < 0) {
     var msg = "getError expected" + ((glErrors.length > 1) ? " one of: " : ": ");
     testFailed(msg + expected +  ". Was " + glEnumToString(gl, err) + " : " + opt_msg);
-  } else {
+  } else if (reportSuccesses) {
     var msg = "getError was " + ((glErrors.length > 1) ? "one of: " : "expected value: ");
     testPassed(msg + expected + " : " + opt_msg);
   }
@@ -2868,6 +2898,7 @@ return {
   drawFloatColorQuad: drawFloatColorQuad,
   dumpShadersInfo: dumpShadersInfo,
   endsWith: endsWith,
+  failIfGLError: failIfGLError,
   fillTexture: fillTexture,
   getBytesPerComponent: getBytesPerComponent,
   getExtensionPrefixedNames: getExtensionPrefixedNames,
