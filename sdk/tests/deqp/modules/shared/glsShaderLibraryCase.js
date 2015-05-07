@@ -919,13 +919,14 @@ glsShaderLibraryCase.execute = function() {
 
     if (failReason != null) {
         // \todo [2010-06-07 petri] These should be handled in the test case?
-        bufferedLogToConsole('ERROR: ' + failReason);
 
         // If implementation parses shader at link time, report it as quality warning.
         if (spec.expectResult === glsShaderLibraryCase.expectResult.EXPECT_COMPILE_FAIL && allCompilesOk && !allLinksOk)
-            bufferedLogToConsole('Quality warning: implementation parses shader at link time');
-
-        testFailedOptions(failReason, true);
+            bufferedLogToConsole('Quality warning: implementation parses shader at link time: ' + failReason);
+        else {
+            bufferedLogToConsole('ERROR: ' + failReason);
+            testFailedOptions(failReason, true);
+        }
         return false;
     }
 
