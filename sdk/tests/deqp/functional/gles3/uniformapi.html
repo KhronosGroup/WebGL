@@ -10,7 +10,7 @@
 
 <script src="../../../closure-library/closure/goog/base.js"></script>
 <script src="../../deqp-deps.js"></script>
-<script>goog.require('functional.gles3.es3fUniformBlockTests');</script>
+<script>goog.require('functional.gles3.es3fUniformApiTests');</script>
 </head>
 <body>
 <div id="description"></div>
@@ -19,14 +19,16 @@
 <script>
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 2);
+//gl.getError(); remove comment to remove previous error
 
 
-try {
-    functional.gles3.es3fUniformBlockTests.run();
-}
-catch(err) {
-    bufferedLogToConsole(err);
-}
+    try {
+        functional.gles3.es3fUniformApiTests.run(gl);
+    }
+    catch(err)
+    {
+        bufferedLogToConsole(err);
+    }
 
 </script>
 </body>

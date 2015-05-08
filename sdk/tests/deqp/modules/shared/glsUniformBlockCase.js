@@ -99,7 +99,7 @@ glsUniformBlockCase.BlockPointers.prototype.resize = function(newsize) {
  * @return {boolean}
  */
 glsUniformBlockCase.isSupportedGLSLVersion = function(version) {
-    return version >= gluShaderUtil.GLSLVersion.V100_ES; //TODO: set this to V300_ES. Left this way for tests.
+    return version >= gluShaderUtil.GLSLVersion.V300_ES;
 };
 
 /**
@@ -1896,7 +1896,7 @@ glsUniformBlockCase.copyUniformData_A = function(dstEntry, dstBlockPtr, srcEntry
         } else
             //Copy byte per byte
             for (var i = 0; i < scalarSize * compSize; i++)
-                dstCompPtr[i] = srcCompPtr[i];
+                dstElemPtr[i] = srcElemPtr[i];
     }
 };
 

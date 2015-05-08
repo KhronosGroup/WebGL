@@ -1,6 +1,6 @@
 
 /**
- * @param {string} msg
+ * @param {?string} msg
  */
 function description(msg){};
 
@@ -21,6 +21,13 @@ function bufferedLogToConsole(msg){};
  * @param {string} message The error message.
  */
 var TestFailedException = function (message) {};
+
+/**
+ * Shows a message in case expression test fails.
+ * @param {boolean} exp
+ * @param {string} message
+ */
+function checkMessage(exp, message) {};
 
 /**
  * @param {boolean} assertion
@@ -61,4 +68,5 @@ function testPassed(msg){};
 /** @type {HTMLElement} */ var canvas;
 
 /** @type {{create3DContext: function(string):WebGL2RenderingContext,
-            loadTextFileAsync: function(string, function(boolean, string)) }} */ var WebGLTestUtils;
+            loadTextFileAsync: function(string, function(boolean, string)),
+            glEnumToString: function(WebGL2RenderingContext, number):string }} */ var WebGLTestUtils;

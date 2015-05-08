@@ -41,7 +41,6 @@ var gluShaderUtil = framework.opengl.gluShaderUtil;
             state.setRoot(rootTest);
         }
         catch (err) {
-            console.log(err);
             bufferedLogToConsole(err);
             return false;
         }

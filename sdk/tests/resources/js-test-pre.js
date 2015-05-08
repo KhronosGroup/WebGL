@@ -551,6 +551,16 @@ function shouldBeType(_a, _type) {
     }
 }
 
+/**
+ * Shows a message in case expression test fails.
+ * @param {boolean} exp
+ * @param {straing} message
+ */
+function checkMessage(exp, message) {
+    if ( !exp )
+        _addSpan('<span><span class="warn">WARNING</span> ' + escapeHTML(_currentTestName) + ": " + escapeHTML(msg) + '</span>');
+}
+
 function assertMsg(assertion, msg) {
     if (assertion) {
         testPassed(msg);
