@@ -42,7 +42,53 @@ function testPrologue(gl) {
     }
 
     testPassed("Successfully enabled OES_texture_float extension");
+
+    verifyTexturesAreFloat(gl);
     return true;
+}
+
+function verifyTexturesAreFloat(gl) {
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+
+    var framebuffer = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+
+    var texture = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+
+    function testForSize(width, height) {
+        canvas.width = width;
+        canvas.height = height;
+
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.FLOAT, canvas);
+
+        if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
+            testPassed("Can't read from FLOAT texture, skipping test");
+            return;
+        }
+
+        // Attempt to read a pixel as a Float and ensure there were no errors
+        gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.FLOAT, new Float32Array(4));
+
+        WebGLTestUtils.glErrorShouldBe(gl, gl.NO_ERROR, "Verify texture is FLOAT for size " + width + "x" + height);
+    };
+
+    // Test various sizes to catch bugs with size dependent optimizations
+    testForSize(1, 1);
+    testForSize(256, 256);
+    testForSize(512, 512);
+    testForSize(1024, 1024);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.deleteFramebuffer(framebuffer);
+    gl.deleteTexture(texture);
 }
 </script>
 </head>
