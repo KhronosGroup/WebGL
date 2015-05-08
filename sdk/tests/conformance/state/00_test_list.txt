@@ -2,7 +2,7 @@ gl-enable-enum-test.html
 gl-enum-tests.html
 gl-get-calls.html
 gl-geterror.html
-gl-getstring.html
+--max-version 1.9.9 gl-getstring.html
 --max-version 1.9.9 gl-object-get-calls.html
 --min-version 1.0.3 state-uneffected-after-compositing.html
 
