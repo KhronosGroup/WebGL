@@ -21,3 +21,4 @@
 --min-version 1.0.4 undefined-index-should-not-crash.html
 --min-version 1.0.4 pow-of-small-constant-in-user-defined-function.html
 --min-version 1.0.4 sampler-struct-function-arg.html
+--min-version 1.0.4 sequence-operator-evaluation-order.html
