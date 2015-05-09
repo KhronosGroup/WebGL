@@ -175,7 +175,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
                                     "shouldBe " + green);
             }
 
-            if (!useTexSubImage2D && pixelType == "FLOAT") {
+            if (!useTexSubImage2D && pixelFormat == "RGBA" && pixelType == "FLOAT") {
                 // Attempt to set a pixel in the texture to ensure the texture was
                 // actually created with floats. Regression test for http://crbug.com/484968
                 var pixels = new Float32Array([1000.0, 1000.0, 1000.0, 1000.0]);
