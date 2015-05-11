@@ -174,6 +174,14 @@ function generateTest(pixelFormat, pixelType, prologue) {
                 wtu.checkCanvasRect(gl, 0, top, width, halfHeight, green,
                                     "shouldBe " + green);
             }
+
+            if (!useTexSubImage2D && pixelFormat == "RGBA" && pixelType == "FLOAT") {
+                // Attempt to set a pixel in the texture to ensure the texture was
+                // actually created with floats. Regression test for http://crbug.com/484968
+                var pixels = new Float32Array([1000.0, 1000.0, 1000.0, 1000.0]);
+                gl.texSubImage2D(targets[tt], 0, 0, 0, 1, 1, gl[pixelFormat], gl[pixelType], pixels);
+                wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Texture should be backed by floats");
+            }
         }
 
         if (false) {
