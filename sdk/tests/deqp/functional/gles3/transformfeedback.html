@@ -18,17 +18,15 @@
 <canvas id="canvas" width="320" height="240"></canvas>
 <script>
 
+    var wtu = WebGLTestUtils;
+    var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 2);
 
-
-        var wtu = WebGLTestUtils;
-        var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 2);
-
-        try {
-            functional.gles3.es3fTransformFeedbackTests.run(gl);
-        }
-        catch(err) {
-            bufferedLogToConsole(err);
-        }
+    try {
+        functional.gles3.es3fTransformFeedbackTests.run(gl);
+    }
+    catch(err) {
+        bufferedLogToConsole(err);
+    }
 
 </script>
 </body>
