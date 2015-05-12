@@ -1330,7 +1330,6 @@ goog.scope(function() {
     es3fTransformFeedbackTests.PositionCase = function(name, desc, bufferMode, primitiveType) {
         es3fTransformFeedbackTests.TransformFeedbackCase.call(this, name, desc, bufferMode, primitiveType);
         this.m_progSpec.addTransformFeedbackVarying('gl_Position');
-
     };
 
     setParentClass(es3fTransformFeedbackTests.PositionCase, es3fTransformFeedbackTests.TransformFeedbackCase);
@@ -1896,7 +1895,7 @@ goog.scope(function() {
         description(testDescription);
         try {
             es3fTransformFeedbackTests.init();
-            tcuTestCase.runner.runCallback(tcuTestCase.runTestCases);
+            tcuTestCase.runTestCases();
         } catch (err) {
             console.log(err);
             bufferedLogToConsole(err);
