@@ -175,12 +175,21 @@ function generateTest(pixelFormat, pixelType, prologue) {
                                     "shouldBe " + green);
             }
 
-            if (!useTexSubImage2D && pixelFormat == "RGBA" && pixelType == "FLOAT") {
-                // Attempt to set a pixel in the texture to ensure the texture was
-                // actually created with floats. Regression test for http://crbug.com/484968
-                var pixels = new Float32Array([1000.0, 1000.0, 1000.0, 1000.0]);
-                gl.texSubImage2D(targets[tt], 0, 0, 0, 1, 1, gl[pixelFormat], gl[pixelType], pixels);
-                wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Texture should be backed by floats");
+            if (!useTexSubImage2D && pixelFormat == "RGBA") {
+		if (pixelType == "FLOAT") {
+                    // Attempt to set a pixel in the texture to ensure the texture was
+                    // actually created with floats. Regression test for http://crbug.com/484968
+                    var pixels = new Float32Array([1000.0, 1000.0, 1000.0, 1000.0]);
+                    gl.texSubImage2D(targets[tt], 0, 0, 0, 1, 1, gl[pixelFormat], gl[pixelType], pixels);
+                    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Texture should be backed by floats");
+		} else if (pixelType == "HALF_FLOAT_OES") {
+                    // Attempt to set a pixel in the texture to ensure the texture was
+                    // actually created with half-floats. Regression test for http://crbug.com/484968
+		    var halfFloatTenK = 0x70E2; // Half float 10000
+                    var pixels = new Uint16Array([halfFloatTenK, halfFloatTenK, halfFloatTenK, halfFloatTenK]);
+                    gl.texSubImage2D(targets[tt], 0, 0, 0, 1, 1, gl[pixelFormat], gl[pixelType], pixels);
+                    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Texture should be backed by half-floats");
+		}
             }
         }
 
