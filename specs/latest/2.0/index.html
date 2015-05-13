@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 7 May 2015</h2>
+    <h2 class="no-toc">Editor's Draft 12 May 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1126,6 +1126,17 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </table>
           <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
           <p>If an OpenGL error is generated, returns null.</p>
+      </dd>
+      <dt>
+        <p class="idl-code">void renderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.4.2">OpenGL ES 3.0.3 &sect;4.4.2</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glRenderbufferStorage.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dd>
+        Accepts internal formats from OpenGL ES 3.0 as detailed in the <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.4.2">specification</a> and <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glRenderbufferStorage.xhtml" class="nonnormative">man page</a>.
       </dd>
       <dt>
         <p class="idl-code">void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height)
