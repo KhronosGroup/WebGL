@@ -1,5 +1,5 @@
 gl-enable-enum-test.html
-gl-enum-tests.html
+--max-version 1.9.9 gl-enum-tests.html
 gl-get-calls.html
 gl-geterror.html
 --max-version 1.9.9 gl-getstring.html
