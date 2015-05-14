@@ -44,12 +44,6 @@ var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas, {antialias: false});
 
-// Run tests
-testBasicBindings();
-testProgramsAndShaders();
-testVertexAttributeBuffers();
-testFrameBufferAttachments();
-
 // Helpers that set expandos and verify they are set to the correct value.
 var expandoValue = "WebGL is awesome!"
 function setTestExpandos(instance) {
@@ -233,6 +227,12 @@ function testFrameBufferAttachments() {
 
     debug('');
 }
+
+// Run tests
+testBasicBindings();
+testProgramsAndShaders();
+testVertexAttributeBuffers();
+testFrameBufferAttachments();
 
 var successfullyParsed = true;
 </script>
