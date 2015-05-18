@@ -125,7 +125,7 @@ else {
     shouldBeGreaterThanOrEqual('context.getParameter(context.MAX_FRAGMENT_INPUT_COMPONENTS)', '60');
     shouldBeType('context.getParameter(context.MAX_FRAGMENT_INPUT_COMPONENTS)', 'Number');
 
-    shouldBe('context.getParameter(context.MAX_FRAGMENT_UNIFORM_BLOCKS)', '12');
+    shouldBeGreaterThanOrEqual('context.getParameter(context.MAX_FRAGMENT_UNIFORM_BLOCKS)', '12');
     shouldBeType('context.getParameter(context.MAX_FRAGMENT_INPUT_COMPONENTS)', 'Number');
 
     shouldBeGreaterThanOrEqual('context.getParameter(context.MAX_FRAGMENT_UNIFORM_COMPONENTS)', '896');
