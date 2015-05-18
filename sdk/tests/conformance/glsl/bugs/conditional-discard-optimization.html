@@ -97,7 +97,7 @@ if (!gl) {
   wtu.checkCanvasRect(gl, 128, 128, 128, 128, [ 0, 255, 0, 255 ], "should be green", 1);
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  var programMutable = wtu.setupProgram(gl, ["shader-vs", "shader-fs-mutable"], ["pos"]);
+  var programMutable = wtu.setupProgram(gl, ["shader-vs", "shader-fs-mutable"], ["pos"], undefined, true);
   wtu.drawUnitQuad(gl);
   wtu.checkCanvasRect(gl, 128, 128, 128, 128, [ 0, 255, 0, 255 ], "should be green", 1);
 }

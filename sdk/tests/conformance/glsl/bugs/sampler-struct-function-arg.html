@@ -91,19 +91,23 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       
         var attribBuffers = wtu.setupUnitQuad(gl, 0, 1);
-        var program = wtu.setupProgram(gl, ["shader-vs", "shader-fs"], ["a_position"], [0]);
+        var program = wtu.setupProgram(gl, ["shader-vs", "shader-fs"], ["a_position"], [0], true);
 
-        // Bind texture  
-        var uniformMap = wtu.getUniformMap(gl, program);
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, textureGreen);
-        gl.uniform1i(uniformMap['green.source'].location, 0);
+        if (!program) {
+            testFailed("Shader compilation/link failed");
+        } else {
+            // Bind texture
+            var uniformMap = wtu.getUniformMap(gl, program);
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, textureGreen);
+            gl.uniform1i(uniformMap['green.source'].location, 0);
 
-        // Draw
-        wtu.drawUnitQuad(gl);
+            // Draw
+            wtu.drawUnitQuad(gl);
 
-        // Verify output
-        wtu.checkCanvasRect(gl, 0, 128, 256, 128, [0, 255,0, 255], "should be green",  1);
+            // Verify output
+            wtu.checkCanvasRect(gl, 0, 128, 256, 128, [0, 255,0, 255], "should be green",  1);
+        }
     }
     var successfullyParsed = true;
 </script>
