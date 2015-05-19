@@ -1,0 +1,131 @@
+<!--
+/*
+** Copyright (c) 2015 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL EXT_disjoint_timer_query Conformance Tests</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../resources/js-test-pre.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<canvas id="canvas" style="width: 50px; height: 50px;"> </canvas>
+<div id="console"></div>
+
+<script>
+"use strict";
+description("This test verifies the functionality of the EXT_disjoint_timer_query extension, if it is available.");
+
+var wtu = WebGLTestUtils;
+var canvas = document.getElementById("canvas");
+var gl = wtu.create3DContext(canvas);
+var ext = null;
+var query = null;
+
+if (!gl) {
+    testFailed("WebGL context does not exist");
+} else {
+    testPassed("WebGL context exists");
+
+    // Query the extension and store globally so shouldBe can access it
+    ext = wtu.getExtensionWithKnownPrefixes(gl, "EXT_disjoint_timer_query");
+    if (!ext) {
+        testPassed("No EXT_disjoint_timer_query support -- this is legal");
+    } else {
+        runSanityTests();
+    }
+}
+
+function runSanityTests() {
+    debug("");
+    debug("Testing timer query expectations");
+
+    shouldBe("ext.QUERY_COUNTER_BITS_EXT", "0x8864");
+    shouldBe("ext.CURRENT_QUERY_EXT", "0x8865");
+    shouldBe("ext.QUERY_RESULT_EXT", "0x8866");
+    shouldBe("ext.QUERY_RESULT_AVAILABLE_EXT", "0x8867");
+    shouldBe("ext.TIME_ELAPSED_EXT", "0x88BF");
+    shouldBe("ext.TIMESTAMP_EXT", "0x8E28");
+    shouldBe("ext.GPU_DISJOINT_EXT", "0x8FBB");
+
+    shouldBe("ext.isQueryEXT(null)", "false");
+
+    shouldBe("ext.getQueryEXT(ext.TIME_ELAPSED_EXT, ext.CURRENT_QUERY_EXT)", "null");
+    shouldBe("ext.getQueryEXT(ext.TIME_ELAPSED_EXT, ext.QUERY_COUNTER_BITS_EXT) >= 30", "true");
+    shouldBe("ext.getQueryEXT(ext.TIMESTAMP_EXT, ext.QUERY_COUNTER_BITS_EXT) >= 30", "true");
+
+    debug("");
+    debug("Testing time elapsed query lifecycle");
+    query = ext.createQueryEXT();
+    shouldBe("ext.isQueryEXT(query)", "true");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Query creation must succeed.");
+    ext.beginQueryEXT(ext.TIMESTAMP_EXT, query)
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Beginning a timestamp query should fail.");
+    ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query)
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Beginning an inactive time elapsed query should succeed.");
+    ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query)
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Attempting to begin an active query should fail.");
+    shouldBe("ext.getQueryEXT(ext.TIME_ELAPSED_EXT, ext.CURRENT_QUERY_EXT)", "query");
+    ext.endQueryEXT(ext.TIME_ELAPSED_EXT);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Ending an active time elapsed query should succeed.");
+    ext.getQueryObjectEXT(query, ext.QUERY_RESULT_AVAILABLE_EXT);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Fetching query result availability after query end should succeed.");
+    ext.endQueryEXT(ext.TIME_ELAPSED_EXT);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Attempting to end an inactive query should fail.");
+    ext.queryCounterEXT(query, ext.TIMESTAMP_EXT);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Should not be able to use time elapsed query to store a timestamp.");
+    ext.deleteQueryEXT(query);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Query deletion must succeed.");
+    ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Ending an inactive query must fail.");
+    ext.getQueryObjectEXT(query, ext.QUERY_RESULT_AVAILABLE_EXT);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Fetching query result availability after query deletion should fail.");
+    shouldBe("ext.isQueryEXT(query)", "false");
+
+    debug("");
+    debug("Testing timestamp counter");
+    query = ext.createQueryEXT();
+    ext.queryCounterEXT(query, ext.TIMESTAMP_EXT);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Timestamp counter queries should work.");
+    ext.deleteQueryEXT(query);
+
+    debug("");
+    debug("Performing parameter sanity checks");
+    gl.getParameter(ext.TIMESTAMP_EXT);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "getParameter timestamp calls should work.");
+    gl.getParameter(ext.GPU_DISJOINT_EXT);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "getParameter disjoint calls should work.");
+}
+
+var successfullyParsed = true;
+  debug("");
+</script>
+<script src="../../resources/js-test-post.js"></script>
+
+</body>
+</html>
