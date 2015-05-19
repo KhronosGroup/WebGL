@@ -1,2 +1,3 @@
 gl-get-tex-parameter.html
+tex-input-validation.html
 texel-fetch-undefined.html

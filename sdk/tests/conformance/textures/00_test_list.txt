@@ -33,7 +33,7 @@ tex-image-and-uniform-binding-bugs.html
 --min-version 1.0.2 tex-image-webgl.html
 tex-image-with-format-and-type.html
 tex-image-with-invalid-data.html
-tex-input-validation.html
+--max-version 1.9.9 tex-input-validation.html
 tex-sub-image-2d-bad-args.html
 tex-sub-image-2d.html
 texparameter-test.html
