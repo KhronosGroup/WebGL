@@ -4,7 +4,7 @@ bad-arguments-test.html
 error-reporting.html
 --min-version 1.0.4 expando-loss.html
 functions-returning-strings.html
-instanceof-test.html
+--max-version 1.9.9 instanceof-test.html
 invalid-passed-params.html
 is-object.html
 null-object-behaviour.html
