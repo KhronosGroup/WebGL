@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 12 May 2015</h2>
+    <h2 class="no-toc">Editor's Draft 19 May 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -831,6 +831,62 @@ interface <dfn id="WebGL2RenderingContext">WebGL2RenderingContext</dfn>
 WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
 </pre>
+
+<!-- ======================================================================================================= -->
+
+    <h4>More binding points</h4>
+
+    <dl class="methods">
+      <dt class="idl-code">void bindBuffer(GLenum target, WebGLBuffer? buffer)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.9.1">OpenGL ES 3.0.3 &sect;2.9.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindBuffer.xhtml">man page</a>)</span>
+      </dt>
+      <dd>
+          Binds the given WebGLBuffer object to the given binding point(target). <em>target</em> is given in the following table:
+          <table>
+              <tr><th>target</th></tr>
+              <tr><td>ARRAY_BUFFER</td></tr>
+              <tr><td>ELEMENT_ARRAY_BUFFER</td></tr>
+              <tr><td>PIXEL_PACK_BUFFER</td></tr>
+              <tr><td>PIXEL_UNPACK_BUFFER</td></tr>
+              <tr><td>TRANSFORM_FEEDBACK_BUFFER</td></tr>
+              <tr><td>UNIFORM_BUFFER</td></tr>
+          </table>
+          <p>If <em>target</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+      </dd>
+      <div class="note rationale">
+          Refer to <a href="#BUFFER_OBJECT_BINDING">Buffer Object Binding</a> restrictions below.
+      </div>
+
+      <dt class="idl-code">void bindFramebuffer(GLenum target, WebGLFramebuffer? framebuffer)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.4.1">OpenGL ES 3.0.3 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindFramebuffer.xhtml">man page</a>)</span>
+      </dt>
+      <dd>
+          Binds the given WebGLFramebuffer object to the given binding point(target). <em>target</em> is given in the following table:
+          <table>
+              <tr><th>target</th></tr>
+              <tr><td>FRAMEBUFFER</td></tr>
+              <tr><td>READ_FRAMEBUFFER</td></tr>
+              <tr><td>DRAW_FRAMEBUFFER</td></tr>
+          </table>
+          <p>If <em>framebuffer</em> is null, the default framebuffer provided by the context is bound.</p>
+          <p>If <em>target</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+      </dd>
+
+      <dt class="idl-code">void bindTexture(GLenum target, WebGLTexture? texture)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.1">OpenGL ES 3.0.3 &sect;3.8.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindTexture.xhtml">man page</a>)</span>
+      </dt>
+      <dd>
+          Binds the given WebGLTexture object to the given binding point(target). <em>target</em> is given in the following table:
+          <table>
+              <tr><th>target</th></tr>
+              <tr><td>TEXTURE_2D</td></tr>
+              <tr><td>TEXTURE_3D</td></tr>
+              <tr><td>TEXTURE_2D_ARRAY</td></tr>
+              <tr><td>TEXTURE_CUBE_MAP</td></tr>
+          </table>
+          <p>If <em>target</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+      </dd>
+    </dl>
 
 <!-- ======================================================================================================= -->
 
