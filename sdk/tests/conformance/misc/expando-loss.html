@@ -61,7 +61,7 @@ function testBasicBindings() {
     debug('Basic Bindings');
 
     // Test data that describes how to create, bind, and retrieve an object off of the context
-    var glProt = WebGLRenderingContext.prototype;
+    var glProt = Object.getPrototypeOf(gl);
     var simpleData = [
         {
             creationFn: glProt.createTexture,
