@@ -6,7 +6,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * You may obtain a tcuTextureUtil.copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -185,12 +185,16 @@ tcuTextureUtil.fillWithComponentGradients = function(/*const PixelBufferAccess&*
 /**
  * Create tcuTextureUtil.TextureFormatInfo.
  * @constructor
+ * @param {Array<number>} valueMin
+ * @param {Array<number>} valueMax
+ * @param {Array<number>} lookupScale
+ * @param {Array<number>} lookupBias
  */
 tcuTextureUtil.TextureFormatInfo = function(valueMin, valueMax, lookupScale, lookupBias) {
-    this.valueMin = valueMin;
-    this.valueMax = valueMax;
-    this.lookupScale = lookupScale;
-    this.lookupBias = lookupBias;
+    /** @type {Array<number>} */ this.valueMin = valueMin;
+    /** @type {Array<number>} */ this.valueMax = valueMax;
+    /** @type {Array<number>} */ this.lookupScale = lookupScale;
+    /** @type {Array<number>} */ this.lookupBias = lookupBias;
 };
 
 /*static Vec2*/ tcuTextureUtil.getChannelValueRange = function(/*TextureFormat::ChannelType*/ channelType) {
@@ -313,7 +317,7 @@ tcuTextureUtil.select = function(a, b, cond) {
 };
 
 /** tcuTextureUtil.getChannelBitDepth
- * @param {tcuTexture.ChannelType} channelType
+ * @param {?tcuTexture.ChannelType} channelType
  * @return {Array<number>}
  */
 tcuTextureUtil.getChannelBitDepth = function(channelType) {
@@ -490,7 +494,7 @@ tcuTextureUtil.getTextureFormatMantissaBitDepth = function(format) {
 };
 
 /**
- * @param {tcuTexture.ChannelType} channelType
+ * @param {?tcuTexture.ChannelType} channelType
  * @return {Array<number>}
  */
 tcuTextureUtil.getChannelMantissaBitDepth = function(channelType) {
@@ -522,14 +526,13 @@ tcuTextureUtil.getChannelMantissaBitDepth = function(channelType) {
         case tcuTexture.ChannelType.UNSIGNED_INT_11F_11F_10F_REV: return [6, 6, 5, 0];
         case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: return [23, 0, 0, 8];
         default:
-            DE_ASSERT(false);
-            return [0, 0, 0, 0];
+            throw new Error('Invalid channelType: ' + channelType);
     }
 };
 
 /**
  * @param {tcuTexture.PixelBufferAccess} dst
- * @param {tcuTexture.PixelBufferAccess} src
+ * @param {tcuTexture.ConstPixelBufferAccess} src
  */
 tcuTextureUtil.copy = function(dst, src) {
     var width = dst.getWidth();
@@ -538,7 +541,7 @@ tcuTextureUtil.copy = function(dst, src) {
 
     DE_ASSERT(src.getWidth() == width && src.getHeight() == height && src.getDepth() == depth);
 
-    if (src.getFormat() == dst.getFormat()) {
+    if (src.getFormat().isEqual(dst.getFormat())) {
         var srcData = src.getDataPtr();
         var dstData = dst.getDataPtr();
 

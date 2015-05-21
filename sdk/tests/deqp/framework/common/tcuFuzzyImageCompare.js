@@ -68,6 +68,15 @@ var tcuTextureUtil = framework.common.tcuTextureUtil;
 
     /**
      * @param {number} color
+     * @return {Uint8Array}
+     */
+    tcuFuzzyImageCompare.getChannels = function(color) {
+        var result = new Uint32Array([color]);
+        return new Uint8Array(result.buffer);
+    };
+
+    /**
+     * @param {number} color
      * @param {number} channel
      * @param {number} val
      * @return {number}
@@ -101,6 +110,19 @@ var tcuTextureUtil = framework.common.tcuTextureUtil;
 
     /**
      * @param {Array<number>} v
+     * @return {Uint8Array}
+     */
+    tcuFuzzyImageCompare.roundArray4ToUint8Sat = function(v) {
+        return new Uint8Array([
+            deMath.clamp(v[0] + 0.5, 0, 255),
+            deMath.clamp(v[1] + 0.5, 0, 255),
+            deMath.clamp(v[2] + 0.5, 0, 255),
+            deMath.clamp(v[3] + 0.5, 0, 255)
+        ]);
+    };
+
+    /**
+     * @param {Array<number>} v
      * @return {number}
      */
     tcuFuzzyImageCompare.toColor = function(v) {
@@ -125,7 +147,9 @@ var tcuTextureUtil = framework.common.tcuTextureUtil;
         var start = src.getRowPitch() * y + x * NumChannels;
         var end = start + NumChannels;
         /** @type {goog.TypedArray} */ var ptr = src.getDataPtr().subarray(start, end);
-        /** @type {Uint32Array} */ var v = new Uint32Array(ptr); //Small buffer copy
+        /** @type {Uint32Array} */ var v = new Uint32Array(ptr.buffer).subarray(
+            start * ptr.BYTES_PER_ELEMENT / 4,
+            start * ptr.BYTES_PER_ELEMENT / 4);
 
         return v[0]; //Expected return value is 32-bit max, regardless if it's made of more than 4 channels one byte each.
     };
@@ -153,9 +177,9 @@ var tcuTextureUtil = framework.common.tcuTextureUtil;
      */
     tcuFuzzyImageCompare.compareColors = function(pa, pb, minErrThreshold) {
         /** @type {number}*/ var r = Math.max(Math.abs(tcuFuzzyImageCompare.getChannel(pa, 0) - tcuFuzzyImageCompare.getChannel(pb, 0)) - minErrThreshold, 0);
-        /** @type {number}*/ var g = Math.max(Math.abs(tcuFuzzyImageCompare.getChannel(pa, 1) - tcuFuzzyImageCompare.getChannel(pb, 1)) - minErrThreshold, 1);
-        /** @type {number}*/ var b = Math.max(Math.abs(tcuFuzzyImageCompare.getChannel(pa, 2) - tcuFuzzyImageCompare.getChannel(pb, 2)) - minErrThreshold, 2);
-        /** @type {number}*/ var a = Math.max(Math.abs(tcuFuzzyImageCompare.getChannel(pa, 3) - tcuFuzzyImageCompare.getChannel(pb, 3)) - minErrThreshold, 3);
+        /** @type {number}*/ var g = Math.max(Math.abs(tcuFuzzyImageCompare.getChannel(pa, 1) - tcuFuzzyImageCompare.getChannel(pb, 1)) - minErrThreshold, 0);
+        /** @type {number}*/ var b = Math.max(Math.abs(tcuFuzzyImageCompare.getChannel(pa, 2) - tcuFuzzyImageCompare.getChannel(pb, 2)) - minErrThreshold, 0);
+        /** @type {number}*/ var a = Math.max(Math.abs(tcuFuzzyImageCompare.getChannel(pa, 3) - tcuFuzzyImageCompare.getChannel(pb, 3)) - minErrThreshold, 0);
 
         /** @type {number}*/ var scale = 1.0 / (255 - minErrThreshold);
         /** @type {number}*/ var sqSum = (r * r + g * g + b * b + a * a) * (scale * scale);
@@ -193,14 +217,23 @@ var tcuTextureUtil = framework.common.tcuTextureUtil;
         /** @type {number} */ var p11 = tcuFuzzyImageCompare.readUnorm8(src, i1, j1, NumChannels);
         /** @type {number} */ var dst = 0;
 
+        //Javascript optimization
+        var p00_channels = tcuFuzzyImageCompare.getChannels(p00);
+        var p10_channels = tcuFuzzyImageCompare.getChannels(p10);
+        var p01_channels = tcuFuzzyImageCompare.getChannels(p01);
+        var p11_channels = tcuFuzzyImageCompare.getChannels(p11);
+
         // Interpolate.
         for (var c = 0; c < NumChannels; c++) {
-            /** @type {number}*/ var f = tcuFuzzyImageCompare.getChannel(p00, c) * (1.0 - a) * (1.0 - b) +
-                (tcuFuzzyImageCompare.getChannel(p10, c) * a * (1.0 - b)) +
-                (tcuFuzzyImageCompare.getChannel(p01, c) * (1.0 - a) * b) +
-                (tcuFuzzyImageCompare.getChannel(p11, c) * a * b);
-            dst = tcuFuzzyImageCompare.setChannel(dst, c, tcuFuzzyImageCompare.roundToUint8Sat(f));
+            /** @type {Array<number>}*/ var f = [];
+                f[c] = p00_channels[c] * (1.0 - a) * (1.0 - b) +
+                (p10_channels[c] * a * (1.0 - b)) +
+                (p01_channels[c] * (1.0 - a) * b) +
+                (p11_channels[c] * a * b);
         }
+
+        //Javascript optimization - dst = tcuFuzzyImageCompare.setChannels(dst, c, tcuFuzzyImageCompare.roundArray4ToUint8Sat(f));
+        dst = new Uint32Array(tcuFuzzyImageCompare.roundArray4ToUint8Sat(f).buffer)[0];
 
         return dst;
     };
@@ -345,8 +378,11 @@ var tcuTextureUtil = framework.common.tcuTextureUtil;
      * @return {number}
      */
     tcuFuzzyImageCompare.fuzzyCompare = function(params, ref, cmp, errorMask) {
-        DE_ASSERT(ref.getWidth() == cmp.getWidth() && ref.getHeight() == cmp.getHeight());
-        DE_ASSERT(errorMask.getWidth() == ref.getWidth() && errorMask.getHeight() == ref.getHeight());
+        assertMsgOptions(ref.getWidth() == cmp.getWidth() && ref.getHeight() == cmp.getHeight(),
+            'Reference and result images have different dimensions', false, true);
+
+        assertMsgOptions(ref.getWidth() == errorMask.getWidth() && ref.getHeight() == errorMask.getHeight(),
+            'Reference and error mask images have different dimensions', false, true);
 
         if (!tcuFuzzyImageCompare.isFormatSupported(ref.getFormat()) || !tcuFuzzyImageCompare.isFormatSupported(cmp.getFormat()))
             throw new Error('Unsupported format in fuzzy comparison');

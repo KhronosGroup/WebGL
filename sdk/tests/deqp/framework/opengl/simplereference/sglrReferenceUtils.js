@@ -50,8 +50,7 @@ goog.scope(function() {
     * @throws {Error}
     */
     sglrReferenceUtils.mapGLPureIntegerVertexAttributeType = function(type) {
-        switch (type)
-        {
+        switch (type) {
             case gl.UNSIGNED_BYTE: return rrVertexAttrib.VertexAttribType.PURE_UINT8;
             case gl.UNSIGNED_SHORT: return rrVertexAttrib.VertexAttribType.PURE_UINT16;
             case gl.UNSIGNED_INT: return rrVertexAttrib.VertexAttribType.PURE_UINT32;
@@ -152,14 +151,13 @@ goog.scope(function() {
     * @throws {Error}
     */
     sglrReferenceUtils.mapGLSize = function(size) {
-        switch (size)
-        {
+        switch (size) {
             case 1: return 1;
             case 2: return 2;
             case 3: return 3;
             case 4: return 4;
             /* NOT in GL
-            case GL_BGRA:    return 4;
+            case gl.BGRA: return 4;
             */
 
             default:
@@ -173,8 +171,7 @@ goog.scope(function() {
     * @throws {Error}
     */
     sglrReferenceUtils.mapGLPrimitiveType = function(type) {
-        switch (type)
-        {
+        switch (type) {
             case gl.TRIANGLES: return rrRenderer.PrimitiveType.TRIANGLES;
             case gl.TRIANGLE_STRIP: return rrRenderer.PrimitiveType.TRIANGLE_STRIP;
             case gl.TRIANGLE_FAN: return rrRenderer.PrimitiveType.TRIANGLE_FAN;
@@ -183,11 +180,10 @@ goog.scope(function() {
             case gl.LINE_LOOP: return rrRenderer.PrimitiveType.LINE_LOOP;
             case gl.POINTS: return rrRenderer.PrimitiveType.POINTS;
 
-
-            /*case gl.LINES_ADJACENCY:            return rrRenderer.PrimitiveType.LINES_ADJACENCY;
-            case gl.LINE_STRIP_ADJACENCY:        return rrRenderer.PrimitiveType.LINE_STRIP_ADJACENCY;
-            case gl.TRIANGLES_ADJACENCY:        return rrRenderer.PrimitiveType.TRIANGLES_ADJACENCY;
-            case gl.TRIANGLE_STRIP_ADJACENCY:    return rrRenderer.PrimitiveType.TRIANGLE_STRIP_ADJACENCY;*/
+            /*case gl.LINES_ADJACENCY: return rrRenderer.PrimitiveType.LINES_ADJACENCY;
+            case gl.LINE_STRIP_ADJACENCY: return rrRenderer.PrimitiveType.LINE_STRIP_ADJACENCY;
+            case gl.TRIANGLES_ADJACENCY: return rrRenderer.PrimitiveType.TRIANGLES_ADJACENCY;
+            case gl.TRIANGLE_STRIP_ADJACENCY: return rrRenderer.PrimitiveType.TRIANGLE_STRIP_ADJACENCY;*/
 
             default:
                 throw new Error('Value to do mapping not compatible');
@@ -273,21 +269,21 @@ goog.scope(function() {
     */
     /*sglrReferenceUtils.mapGLBlendEquationAdvanced = function(equation) {
         switch (equation) {
-            case gl.MULTIPLY_KHR:        return rrRenderState.BlendEquationAdvanced.MULTIPLY;
-            case gl.SCREEN_KHR:            return rrRenderState.BlendEquationAdvanced.SCREEN;
-            case gl.OVERLAY_KHR:        return rrRenderState.BlendEquationAdvanced.OVERLAY;
-            case gl.DARKEN_KHR:            return rrRenderState.BlendEquationAdvanced.DARKEN;
-            case gl.LIGHTEN_KHR:        return rrRenderState.BlendEquationAdvanced.LIGHTEN;
-            case gl.COLORDODGE_KHR:        return rrRenderState.BlendEquationAdvanced.COLORDODGE;
-            case gl.COLORBURN_KHR:        return rrRenderState.BlendEquationAdvanced.COLORBURN;
-            case gl.HARDLIGHT_KHR:        return rrRenderState.BlendEquationAdvanced.HARDLIGHT;
-            case gl.SOFTLIGHT_KHR:        return rrRenderState.BlendEquationAdvanced.SOFTLIGHT;
-            case gl.DIFFERENCE_KHR:        return rrRenderState.BlendEquationAdvanced.DIFFERENCE;
-            case gl.EXCLUSION_KHR:        return rrRenderState.BlendEquationAdvanced.EXCLUSION;
-            case gl.HSL_HUE_KHR:        return rrRenderState.BlendEquationAdvanced.HSL_HUE;
-            case gl.HSL_SATURATION_KHR:    return rrRenderState.BlendEquationAdvanced.HSL_SATURATION;
-            case gl.HSL_COLOR_KHR:        return rrRenderState.BlendEquationAdvanced.HSL_COLOR;
-            case gl.HSL_LUMINOSITY_KHR:    return rrRenderState.BlendEquationAdvanced.HSL_LUMINOSITY;
+            case gl.MULTIPLY_KHR: return rrRenderState.BlendEquationAdvanced.MULTIPLY;
+            case gl.SCREEN_KHR: return rrRenderState.BlendEquationAdvanced.SCREEN;
+            case gl.OVERLAY_KHR: return rrRenderState.BlendEquationAdvanced.OVERLAY;
+            case gl.DARKEN_KHR: return rrRenderState.BlendEquationAdvanced.DARKEN;
+            case gl.LIGHTEN_KHR: return rrRenderState.BlendEquationAdvanced.LIGHTEN;
+            case gl.COLORDODGE_KHR: return rrRenderState.BlendEquationAdvanced.COLORDODGE;
+            case gl.COLORBURN_KHR: return rrRenderState.BlendEquationAdvanced.COLORBURN;
+            case gl.HARDLIGHT_KHR: return rrRenderState.BlendEquationAdvanced.HARDLIGHT;
+            case gl.SOFTLIGHT_KHR: return rrRenderState.BlendEquationAdvanced.SOFTLIGHT;
+            case gl.DIFFERENCE_KHR: return rrRenderState.BlendEquationAdvanced.DIFFERENCE;
+            case gl.EXCLUSION_KHR: return rrRenderState.BlendEquationAdvanced.EXCLUSION;
+            case gl.HSL_HUE_KHR: return rrRenderState.BlendEquationAdvanced.HSL_HUE;
+            case gl.HSL_SATURATION_KHR: return rrRenderState.BlendEquationAdvanced.HSL_SATURATION;
+            case gl.HSL_COLOR_KHR: return rrRenderState.BlendEquationAdvanced.HSL_COLOR;
+            case gl.HSL_LUMINOSITY_KHR: return rrRenderState.BlendEquationAdvanced.HSL_LUMINOSITY;
             default:
                 throw new Error("Value to do mapping not compatible");
         }
@@ -299,8 +295,7 @@ goog.scope(function() {
     * @throws {Error}
     */
     sglrReferenceUtils.mapGLBlendFunc = function(func) {
-        switch (func)
-        {
+        switch (func) {
             case gl.ZERO: return rrRenderState.BlendFunc.ZERO;
             case gl.ONE: return rrRenderState.BlendFunc.ONE;
             case gl.SRC_COLOR: return rrRenderState.BlendFunc.SRC_COLOR;
@@ -316,10 +311,10 @@ goog.scope(function() {
             case gl.CONSTANT_ALPHA: return rrRenderState.BlendFunc.CONSTANT_ALPHA;
             case gl.ONE_MINUS_CONSTANT_ALPHA: return rrRenderState.BlendFunc.ONE_MINUS_CONSTANT_ALPHA;
             case gl.SRC_ALPHA_SATURATE: return rrRenderState.BlendFunc.SRC_ALPHA_SATURATE;
-    //         case gl.SRC1_COLOR:                    return rrRenderState.BlendFunc.SRC1_COLOR;
-    //         case gl.ONE_MINUS_SRC1_COLOR:        return rrRenderState.BlendFunc.ONE_MINUS_SRC1_COLOR;
-    //         case gl.SRC1_ALPHA:                    return rrRenderState.BlendFunc.SRC1_ALPHA;
-    //         case gl.ONE_MINUS_SRC1_ALPHA:        return rrRenderState.BlendFunc.ONE_MINUS_SRC1_ALPHA;
+    //         case gl.SRC1_COLOR: return rrRenderState.BlendFunc.SRC1_COLOR;
+    //         case gl.ONE_MINUS_SRC1_COLOR: return rrRenderState.BlendFunc.ONE_MINUS_SRC1_COLOR;
+    //         case gl.SRC1_ALPHA: return rrRenderState.BlendFunc.SRC1_ALPHA;
+    //         case gl.ONE_MINUS_SRC1_ALPHA: return rrRenderState.BlendFunc.ONE_MINUS_SRC1_ALPHA;
             default:
                 throw new Error('Value to do mapping not compatible');
         }

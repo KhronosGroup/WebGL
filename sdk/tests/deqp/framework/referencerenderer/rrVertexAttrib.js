@@ -20,10 +20,9 @@
 
 'use strict';
 goog.provide('framework.referencerenderer.rrVertexAttrib');
-goog.require('framework.delibs.debase.deMath');
 goog.require('framework.common.tcuFloat');
+goog.require('framework.delibs.debase.deMath');
 goog.require('framework.referencerenderer.rrGenericVector');
-
 
 goog.scope(function() {
 
@@ -76,19 +75,19 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         NONPURE_UNORM8: 4,
         NONPURE_UNORM16: 5,
         NONPURE_UNORM32: 6,
-        NONPURE_UNORM_2_10_10_10_REV: 7,          //!< Packed format, only size = 4 is allowed
+        NONPURE_UNORM_2_10_10_10_REV: 7, //!< Packed format, only size = 4 is allowed
 
         // Clamped formats, GLES3-style conversion: max{c / (2^(b-1) - 1), -1 }
         NONPURE_SNORM8_CLAMP: 8,
         NONPURE_SNORM16_CLAMP: 9,
         NONPURE_SNORM32_CLAMP: 10,
-        NONPURE_SNORM_2_10_10_10_REV_CLAMP: 11,    //!< Packed format, only size = 4 is allowed
+        NONPURE_SNORM_2_10_10_10_REV_CLAMP: 11, //!< Packed format, only size = 4 is allowed
 
         // Scaled formats, GLES2-style conversion: (2c + 1) / (2^b - 1)
         NONPURE_SNORM8_SCALE: 12,
         NONPURE_SNORM16_SCALE: 13,
         NONPURE_SNORM32_SCALE: 14,
-        NONPURE_SNORM_2_10_10_10_REV_SCALE: 15,    //!< Packed format, only size = 4 is allowed
+        NONPURE_SNORM_2_10_10_10_REV_SCALE: 15, //!< Packed format, only size = 4 is allowed
 
         // can only be rrVertexAttrib.read as float, will not be normalized
         NONPURE_UINT8: 16,
@@ -99,8 +98,8 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         NONPURE_INT16: 20,
         NONPURE_INT32: 21,
 
-        NONPURE_UINT_2_10_10_10_REV: 22,   //!< Packed format, only size = 4 is allowed
-        NONPURE_INT_2_10_10_10_REV: 23,    //!< Packed format, only size = 4 is allowed
+        NONPURE_UINT_2_10_10_10_REV: 22, //!< Packed format, only size = 4 is allowed
+        NONPURE_INT_2_10_10_10_REV: 23, //!< Packed format, only size = 4 is allowed
 
         // can only be rrVertexAttrib.read as integers
         PURE_UINT8: 24,
@@ -111,14 +110,14 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         PURE_INT16: 28,
         PURE_INT32: 29,
 
-        // reordered formats of GL_ARB_vertex_array_bgra
+        // reordered formats of gl.ARB_vertex_array_bgra
         NONPURE_UNORM8_BGRA: 30,
         NONPURE_UNORM_2_10_10_10_REV_BGRA: 31,
         NONPURE_SNORM_2_10_10_10_REV_CLAMP_BGRA: 32,
         NONPURE_SNORM_2_10_10_10_REV_SCALE_BGRA: 33,
 
         // can be rrVertexAttrib.read as anything
-        DONT_CARE: 34                 //!< Do not enforce type checking when reading GENERIC attribute. Used for current client side attributes.
+        DONT_CARE: 34 //!< Do not enforce type checking when reading GENERIC attribute. Used for current client side attributes.
     };
 
     /**
@@ -130,8 +129,9 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         /** @type {number} */ this.size = 0;
         /** @type {number} */ this.stride = 0;
         /** @type {number} */ this.instanceDivisor = 0;
+        /** @type {number} */ this.offset = 0; //Added this property to compensate functionality (not in original dEQP).
         /** @type {ArrayBuffer} */ this.pointer = rrVertexAttrib.DE_NULL;
-        /** @type {Array.<number>} */ this.generic; //!< Generic attribute, used if pointer is null.
+        /** @type {Array<number>|rrGenericVector.GenericVec4} */ this.generic; //!< Generic attribute, used if pointer is null.
     };
 
     /**
@@ -139,8 +139,7 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
      * @return {number}
      */
     rrVertexAttrib.getComponentSize = function(type) {
-        switch (type)
-        {
+        switch (type) {
             case rrVertexAttrib.VertexAttribType.FLOAT: return 4;
             case rrVertexAttrib.VertexAttribType.HALF: return 2;
             case rrVertexAttrib.VertexAttribType.FIXED: return 4;
@@ -177,7 +176,6 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
             case rrVertexAttrib.VertexAttribType.NONPURE_SNORM_2_10_10_10_REV_SCALE_BGRA: return 1; //sizeof(deUint32)/4;
             default:
                 throw new Error('rrVertexAttrib.getComponentSize - Invalid type');
-                return 0;
         }
     };
 
@@ -218,18 +216,17 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
      * @param {number} instanceNdx
      * @param {number} vertexNdx
      * @param {rrGenericVector.GenericVecType} genericType
-     * @return {TypedArray}
+     * @return {goog.NumberArray}
      */
     rrVertexAttrib.readVertexAttrib = function(vertexAttrib, instanceNdx, vertexNdx, genericType) {
         DE_ASSERT(rrVertexAttrib.isValidVertexAttrib(vertexAttrib));
-        /** @type {TypedArray} */ var dst;
+        /** @type {goog.NumberArray} */ var dst;
 
-        if (vertexAttrib.pointer)
-        {
+        if (vertexAttrib.pointer) {
             /** @type {number} */ var elementNdx = (vertexAttrib.instanceDivisor != 0) ? (instanceNdx / vertexAttrib.instanceDivisor) : vertexNdx;
             /** @type {number} */ var compSize = rrVertexAttrib.getComponentSize(vertexAttrib.type);
             /** @type {number} */ var stride = (vertexAttrib.stride != 0) ? (vertexAttrib.stride) : (vertexAttrib.size * compSize);
-            /** @type {number} */ var byteOffset = elementNdx * stride;
+            /** @type {number} */ var byteOffset = vertexAttrib.offset + (elementNdx * stride);
 
             dst = [0, 0, 0, 1]; // defaults
 
@@ -246,10 +243,8 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
             }
 
             rrVertexAttrib.read(dst, vertexAttrib.type, vertexAttrib.size, new Uint8Array(vertexAttrib.pointer).subarray(byteOffset));
-        }
-        else
-        {
-            dst = new Uint32Array(vertexAttrib.generic);
+        } else {
+            dst = new Uint32Array(/** @type {Array<number>} */ (vertexAttrib.generic));
         }
 
         return dst;
@@ -257,33 +252,30 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
 
     /**
      * rrVertexAttrib.readHalf
-     * @param {TypedArray} dst
+     * @param {goog.NumberArray} dst
      * @param {number} size
      * @param {Uint8Array} ptr
      */
     rrVertexAttrib.readHalf = function(dst, size, ptr) {
         var arraysize16 = 2; //2 bytes
 
-        //Reinterpret ptr as a uint16 array,
-        //assuming original ptr is 8-bits per element.
-        var aligned = new Uint16Array(ptr.buffer).subarray(
-            ptr.byteOffset / arraysize16,
-            (ptr.byteOffset + ptr.byteLength) / arraysize16);
+        var ptrclone = new Uint8Array(ptr.subarray(0, size * arraysize16)); //Small buffer copy (max. 8 bytes)
+        var aligned = new Uint16Array(ptrclone.buffer);
 
         //Reinterpret aligned's values into the dst vector.
-        dst[0] = tcuFloat.newFloat32From16(aligned[0]);
-        if (size >= 2) dst[1] = tcuFloat.newFloat32From16(aligned[1]);
-        if (size >= 3) dst[2] = tcuFloat.newFloat32From16(aligned[2]);
-        if (size >= 4) dst[3] = tcuFloat.newFloat32From16(aligned[3]);
+        dst[0] = tcuFloat.newFloat32From16(aligned[0]).getValue();
+        if (size >= 2) dst[1] = tcuFloat.newFloat32From16(aligned[1]).getValue();
+        if (size >= 3) dst[2] = tcuFloat.newFloat32From16(aligned[2]).getValue();
+        if (size >= 4) dst[3] = tcuFloat.newFloat32From16(aligned[3]).getValue();
     };
 
     /**
      * rrVertexAttrib.readFixed
-     * @param {TypedArray} dst
+     * @param {goog.NumberArray} dst
      * @param {number} size
      * @param {Uint8Array} ptr
      */
-    rrVertexAttrib.readFixed = function(dst, size, ptr) {
+    /*rrVertexAttrib.readFixed = function(dst, size, ptr) {
         var arraysize32 = 4; //4 bytes
 
         //Reinterpret ptr as a uint16 array,
@@ -293,20 +285,20 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
             (ptr.byteOffset + ptr.byteLength) / arraysize32);
 
         //Reinterpret aligned's values into the dst vector.
-        dst[0] = aligned[0] / Float32Array([1 << 16])[0];
-        if (size >= 2) dst[1] = aligned[1] / Float32Array([1 << 16])[0];
-        if (size >= 3) dst[2] = aligned[2] / Float32Array([1 << 16])[0];
-        if (size >= 4) dst[3] = aligned[3] / Float32Array([1 << 16])[0];
-    };
+        dst[0] = aligned[0] / (1 << 16);
+        if (size >= 2) dst[1] = aligned[1] / (1 << 16);
+        if (size >= 3) dst[2] = aligned[2] / (1 << 16);
+        if (size >= 4) dst[3] = aligned[3] / (1 << 16);
+    };*/
 
     /**
      * TODO: Check 64 bit numbers are handled ok
      * rrVertexAttrib.readDouble
-     * @param {TypedArray} dst
+     * @param {goog.NumberArray} dst
      * @param {number} size
      * @param {Uint8Array} ptr
      */
-    rrVertexAttrib.readDouble = function(dst, size, ptr) {
+    /*rrVertexAttrib.readDouble = function(dst, size, ptr) {
         var arraysize64 = 8; //8 bytes
 
         //Reinterpret 'ptr' into 'aligned' as a float64 array,
@@ -320,15 +312,148 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         if (size >= 2) dst[1] = aligned[1];
         if (size >= 3) dst[2] = aligned[2];
         if (size >= 4) dst[3] = aligned[3];
+    };*/
+
+    /**
+     * extendSign
+     * @param {number} integerLen
+     * @param {number} integer_ (deUint32)
+     * @return {number} (deInt32)
+     */
+    rrVertexAttrib.extendSign = function(integerLen, integer_) {
+        return new Int32Array([
+            deMath.binaryOp(
+                0 -
+                deMath.shiftLeft(
+                    deMath.binaryOp(
+                        integer_,
+                        deMath.shiftLeft(
+                            1,
+                            (integerLen - 1)
+                        ),
+                        deMath.BinaryOp.AND
+                    ),
+                    1
+                )
+                ,
+                integer_,
+                deMath.BinaryOp.OR
+            )
+        ])[0];
+    };
+
+    /**
+     * rrVertexAttrib.readUint2101010Rev
+     * @param {goog.NumberArray} dst
+     * @param {number} size
+     * @param {Uint8Array} ptr
+     */
+    rrVertexAttrib.readUint2101010Rev = function(dst, size, ptr) {
+        var arraysize32 = 4; //4 bytes
+
+        var ptrclone = new Uint8Array(ptr.subarray(0, size * arraysize32)); //Small buffer copy (max. 16 bytes)
+        var aligned = new Uint32Array(ptrclone.buffer)[0];
+
+        dst[0] = deMath.binaryOp(deMath.shiftRight(aligned,  0), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND);
+        if (size >= 2) dst[1] = deMath.binaryOp(deMath.shiftRight(aligned,  10), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND);
+        if (size >= 3) dst[2] = deMath.binaryOp(deMath.shiftRight(aligned,  20), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND);
+        if (size >= 4) dst[3] = deMath.binaryOp(deMath.shiftRight(aligned,  30), deMath.shiftLeft(1, 2) - 1, deMath.BinaryOp.AND);
+    };
+
+    /**
+     * rrVertexAttrib.readInt2101010Rev
+     * @param {goog.NumberArray} dst
+     * @param {number} size
+     * @param {Uint8Array} ptr
+     */
+    rrVertexAttrib.readInt2101010Rev = function(dst, size, ptr) {
+        var arraysize32 = 4; //4 bytes
+
+        var ptrclone = new Uint8Array(ptr.subarray(0, size * arraysize32)); //Small buffer copy (max. 16 bytes)
+        var aligned = new Uint32Array(ptrclone.buffer)[0];
+
+        dst[0] = rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned,  0), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND));
+        if (size >= 2) dst[1] = rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned,  10), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND));
+        if (size >= 3) dst[2] = rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned,  20), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND));
+        if (size >= 4) dst[3] = rrVertexAttrib.extendSign(2, deMath.binaryOp(deMath.shiftRight(aligned,  30), deMath.shiftLeft(1, 2) - 1, deMath.BinaryOp.AND));
+    };
+
+    /**
+     * rrVertexAttrib.readUnorm2101010RevOrder
+     * @param {goog.NumberArray} dst
+     * @param {number} size
+     * @param {Uint8Array} ptr
+     * @param {Object<rrVertexAttrib.NormalOrder|rrVertexAttrib.BGRAOrder>} order
+     */
+    rrVertexAttrib.readUnorm2101010RevOrder = function(dst, size, ptr, order) {
+        var arraysize32 = 4; //4 bytes
+
+        //Left shift within 32-bit range as 32-bit int.
+        var range10 = new Uint32Array([deMath.shiftLeft(1, 10) - 1])[0];
+        var range2 = new Uint32Array([deMath.shiftLeft(1, 2) - 1])[0];
+
+        var ptrclone = new Uint8Array(ptr.subarray(0, size * arraysize32)); //Small buffer copy (max. 16 bytes)
+        var aligned = new Uint32Array(ptrclone.buffer)[0];
+
+        dst[order.T0] = deMath.binaryOp(deMath.shiftRight(aligned,  0), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND) / range10;
+        if (size >= 2) dst[order.T1] = deMath.binaryOp(deMath.shiftRight(aligned,  10), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND) / range10;
+        if (size >= 3) dst[order.T2] = deMath.binaryOp(deMath.shiftRight(aligned,  20), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND) / range10;
+        if (size >= 4) dst[order.T3] = deMath.binaryOp(deMath.shiftRight(aligned,  30), deMath.shiftLeft(1, 2) - 1, deMath.BinaryOp.AND) / range2;
+    };
+
+    /**
+     * rrVertexAttrib.readSnorm2101010RevClampOrder
+     * @param {goog.NumberArray} dst
+     * @param {number} size
+     * @param {Uint8Array} ptr
+     * @param {Object<rrVertexAttrib.NormalOrder|rrVertexAttrib.BGRAOrder>} order
+     */
+    rrVertexAttrib.readSnorm2101010RevClampOrder = function(dst, size, ptr, order) {
+        var arraysize32 = 4; //4 bytes
+
+        //Left shift within 32-bit range as 32-bit int.
+        var range10 = new Uint32Array([deMath.shiftLeft(1, 10 - 1) - 1])[0];
+        var range2 = new Uint32Array([deMath.shiftLeft(1, 2 - 1) - 1])[0];
+
+        var ptrclone = new Uint8Array(ptr.subarray(0, size * arraysize32)); //Small buffer copy (max. 16 bytes)
+        var aligned = new Uint32Array(ptrclone.buffer)[0];
+
+        dst[order.T0] = Math.max(-1.0, new Float32Array([rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned, 0), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND))])[0] / range10);
+        if (size >= 2) dst[order.T1] = Math.max(-1.0, new Float32Array([rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned, 10), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND))])[0] / range10);
+        if (size >= 3) dst[order.T2] = Math.max(-1.0, new Float32Array([rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned, 20), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND))])[0] / range10);
+        if (size >= 4) dst[order.T3] = Math.max(-1.0, new Float32Array([rrVertexAttrib.extendSign(2, deMath.binaryOp(deMath.shiftRight(aligned, 30), deMath.shiftLeft(1, 2) - 1, deMath.BinaryOp.AND))])[0] / range2);
+    };
+
+    /**
+     * rrVertexAttrib.readSnorm2101010RevScaleOrder
+     * @param {goog.NumberArray} dst
+     * @param {number} size
+     * @param {Uint8Array} ptr
+     * @param {Object<rrVertexAttrib.NormalOrder|rrVertexAttrib.BGRAOrder>} order
+     */
+    rrVertexAttrib.readSnorm2101010RevScaleOrder = function(dst, size, ptr, order) {
+        var arraysize32 = 4; //4 bytes
+
+        //Left shift within 32-bit range as 32-bit int.
+        var range10 = new Uint32Array([deMath.shiftLeft(1, 10) - 1])[0];
+        var range2 = new Uint32Array([deMath.shiftLeft(1, 2) - 1])[0];
+
+        var ptrclone = new Uint8Array(ptr.subarray(0, size * arraysize32)); //Small buffer copy (max. 16 bytes)
+        var aligned = new Uint32Array(ptrclone.buffer)[0];
+
+        dst[order.T0] = new Float32Array([rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned, 0), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND)) * 2.0 + 1.0])[0] / range10;
+        if (size >= 2) dst[order.T1] = new Float32Array([rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned, 10), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND)) * 2.0 + 1.0])[0] / range10;
+        if (size >= 3) dst[order.T2] = new Float32Array([rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned, 20), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND)) * 2.0 + 1.0])[0] / range10;
+        if (size >= 4) dst[order.T3] = new Float32Array([rrVertexAttrib.extendSign(2, deMath.binaryOp(deMath.shiftRight(aligned, 30), deMath.shiftLeft(1, 2) - 1, deMath.BinaryOp.AND)) * 2.0 + 1.0])[0] / range2;
     };
 
     /**
      * rrVertexAttrib.readUnormOrder
-     * @param {TypedArray} dst
+     * @param {goog.NumberArray} dst
      * @param {number} size
      * @param {Uint8Array} ptr
-     * @param {(rrVertexAttrib.NormalOrder|rrVertexAttrib.BGRAOrder)} order
-     * @param {TypedArray} readAsTypeArray
+     * @param {Object<rrVertexAttrib.NormalOrder|rrVertexAttrib.BGRAOrder>} order
+     * @param readAsTypeArray
      */
     rrVertexAttrib.readUnormOrder = function(dst, size, ptr, order, readAsTypeArray) {
         var arrayelementsize = readAsTypeArray.BYTES_PER_ELEMENT;
@@ -336,12 +461,8 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         //Left shift within 32-bit range as 32-bit float.
         var range = new Float32Array([deMath.shiftLeft(1, arrayelementsize * 8) - 1])[0];
 
-        //Reinterpret aligned as an array the same type of readAsTypeArray
-        //but with ptr's buffer, assuming ptr is an 8-bit element array,
-        //and convert to 32-bit float values.
-        var aligned = new Float32Array(new readAsTypeArray(ptr.buffer).subarray(
-            ptr.byteOffset / arrayelementsize,
-            (ptr.byteOffset + ptr.byteLength) / arrayelementsize));
+        var ptrclone = new Uint8Array(ptr.subarray(0, size * arrayelementsize)); //Small buffer copy (max. 16 bytes)
+        var aligned = new readAsTypeArray(ptrclone.buffer);
 
         //Reinterpret aligned's values into the dst vector.
         dst[order.T0] = aligned[0] / range;
@@ -351,21 +472,41 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
     };
 
     /**
-     * rrVertexAttrib.readOrder
-     * @param {TypedArray} dst
+     * rrVertexAttrib.readSnormClamp
+     * @param {goog.NumberArray} dst
      * @param {number} size
      * @param {Uint8Array} ptr
-     * @param {(rrVertexAttrib.NormalOrder|rrVertexAttrib.BGRAOrder)} order
-     * @param {TypedArray} readAsTypeArray
+     * @param {function(new:ArrayBufferView,(Array<number>|ArrayBuffer|ArrayBufferView|null|number), number=, number=)} readAsTypeArray
+     */
+    rrVertexAttrib.readSnormClamp = function(dst, size, ptr, readAsTypeArray) {
+        var arrayelementsize = readAsTypeArray.BYTES_PER_ELEMENT;
+
+        //Left shift within 32-bit range as 32-bit float.
+        var range = new Float32Array([deMath.shiftLeft(1, arrayelementsize * 8 - 1) - 1])[0];
+
+        var ptrclone = new Uint8Array(ptr.subarray(0, size * arrayelementsize)); //Small buffer copy (max. 16 bytes)
+        var aligned = new readAsTypeArray(ptrclone.buffer);
+
+        //Reinterpret aligned's values into the dst vector.
+        dst[0] = Math.max(-1, aligned[0] / range);
+        if (size >= 2) dst[1] = Math.max(-1, aligned[1] / range);
+        if (size >= 3) dst[2] = Math.max(-1, aligned[2] / range);
+        if (size >= 4) dst[3] = Math.max(-1, aligned[3] / range);
+    };
+
+    /**
+     * rrVertexAttrib.readOrder
+     * @param {goog.NumberArray} dst
+     * @param {number} size
+     * @param {Uint8Array} ptr
+     * @param {Object<rrVertexAttrib.NormalOrder|rrVertexAttrib.BGRAOrder>} order NormalOrder or BGRAOrder
+     * @param readAsTypeArray Typed Array type
      */
     rrVertexAttrib.readOrder = function(dst, size, ptr, order, readAsTypeArray) {
         var arrayelementsize = readAsTypeArray.BYTES_PER_ELEMENT;
 
-        //Reinterpret aligned as an array the same type of readAsTypeArray
-        //but with ptr's buffer, assuming ptr is an 8-bit element array.
-        var aligned = new readAsTypeArray(ptr.buffer).subarray(
-            ptr.byteOffset / arrayelementsize,
-            (ptr.byteOffset + ptr.byteLength) / arrayelementsize);
+        var ptrclone = new Uint8Array(ptr.subarray(0, size * arrayelementsize)); //Small buffer copy (max. 16 bytes)
+        var aligned = new readAsTypeArray(ptrclone.buffer);
 
         //Reinterpret aligned's values into the dst vector.
         //(automatic in JS typed arrays).
@@ -376,8 +517,8 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
     };
 
     /**
-     * TODO: Implement missing rrVertexAttrib.read functions.
-     * @param {TypedArray} dst
+     * TODO: Implement readSNormScale.
+     * @param {goog.NumberArray} dst
      * @param {rrVertexAttrib.VertexAttribType} type
      * @param {number} size
      * @param {Uint8Array} ptr
@@ -392,55 +533,65 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
             case rrVertexAttrib.VertexAttribType.HALF:
                 rrVertexAttrib.readHalf(dst, size, ptr);
                 break;
-            case rrVertexAttrib.VertexAttribType.FIXED:
+            /*case rrVertexAttrib.VertexAttribType.FIXED:
                 rrVertexAttrib.readFixed(dst, size, ptr);
                 break;
             case rrVertexAttrib.VertexAttribType.DOUBLE:
                 rrVertexAttrib.readDouble(dst, size, ptr);
-                break;
+                break;*/
             case rrVertexAttrib.VertexAttribType.NONPURE_UNORM8:
                 rrVertexAttrib.readUnormOrder(dst, size, ptr, rrVertexAttrib.NormalOrder, Uint8Array);
+                break;
             case rrVertexAttrib.VertexAttribType.NONPURE_UNORM16:
                 rrVertexAttrib.readUnormOrder(dst, size, ptr, rrVertexAttrib.NormalOrder, Uint16Array);
+                break;
             case rrVertexAttrib.VertexAttribType.NONPURE_UNORM32:
                 rrVertexAttrib.readUnormOrder(dst, size, ptr, rrVertexAttrib.NormalOrder, Uint32Array);
                 break;
             case rrVertexAttrib.VertexAttribType.NONPURE_UNORM_2_10_10_10_REV:
-                readUnorm2101010RevOrder(dst, size, ptr, rrVertexAttrib.NormalOrder);
+                rrVertexAttrib.readUnorm2101010RevOrder(dst, size, ptr, rrVertexAttrib.NormalOrder);
                 break;
             case rrVertexAttrib.VertexAttribType.NONPURE_SNORM8_CLAMP: //Int8
+                rrVertexAttrib.readSnormClamp(dst, size, ptr, Int8Array);
+                break;
             case rrVertexAttrib.VertexAttribType.NONPURE_SNORM16_CLAMP: //Int16
+                rrVertexAttrib.readSnormClamp(dst, size, ptr, Int16Array);
+                break;
             case rrVertexAttrib.VertexAttribType.NONPURE_SNORM32_CLAMP: //Int32
-                readSnormClamp(dst, size, ptr);
+                rrVertexAttrib.readSnormClamp(dst, size, ptr, Int32Array);
                 break;
             case rrVertexAttrib.VertexAttribType.NONPURE_SNORM_2_10_10_10_REV_CLAMP:
-                readSnorm2101010RevClampOrder(dst, size, ptr, rrVertexAttrib.NormalOrder);
+                rrVertexAttrib.readSnorm2101010RevClampOrder(dst, size, ptr, rrVertexAttrib.NormalOrder);
                 break;
-            case rrVertexAttrib.VertexAttribType.NONPURE_SNORM8_SCALE: //Int8
+            /*case rrVertexAttrib.VertexAttribType.NONPURE_SNORM8_SCALE: //Int8
+                rrVertexAttrib.readSnormScale(dst, size, ptr, Int8Array);
+                break;
             case rrVertexAttrib.VertexAttribType.NONPURE_SNORM16_SCALE: //Int16
-            case rrVertexAttrib.VertexAttribType.NONPURE_SNORM32_SCALE: //Int32
-                readSnormScale(dst, size, ptr);
+                rrVertexAttrib.readSnormScale(dst, size, ptr, Int16Array);
                 break;
+            case rrVertexAttrib.VertexAttribType.NONPURE_SNORM32_SCALE: //Int32
+                rrVertexAttrib.readSnormScale(dst, size, ptr, Int32Array);
+                break;*/
             case rrVertexAttrib.VertexAttribType.NONPURE_SNORM_2_10_10_10_REV_SCALE:
-                readSnorm2101010RevScaleOrder(dst, size, ptr, rrVertexAttrib.NormalOrder);
+                rrVertexAttrib.readSnorm2101010RevScaleOrder(dst, size, ptr, rrVertexAttrib.NormalOrder);
                 break;
             case rrVertexAttrib.VertexAttribType.NONPURE_UINT_2_10_10_10_REV:
-                readUint2101010RevOrder(dst, size, ptr, rrVertexAttrib.NormalOrder);
+                rrVertexAttrib.readUint2101010Rev(dst, size, ptr);
                 break;
             case rrVertexAttrib.VertexAttribType.NONPURE_INT_2_10_10_10_REV:
-                readInt2101010Rev(dst, size, ptr);
+                rrVertexAttrib.readInt2101010Rev(dst, size, ptr);
                 break;
             case rrVertexAttrib.VertexAttribType.NONPURE_UNORM8_BGRA:
                 rrVertexAttrib.readUnormOrder(dst, size, ptr, rrVertexAttrib.BGRAOrder, Uint8Array);
                 break;
             case rrVertexAttrib.VertexAttribType.NONPURE_UNORM_2_10_10_10_REV_BGRA:
-                readUnorm2101010RevOrder(dst, size, ptr, rrVertexAttrib.BGRAOrder);
+                rrVertexAttrib.readUnorm2101010RevOrder(dst, size, ptr, rrVertexAttrib.BGRAOrder);
                 break;
             case rrVertexAttrib.VertexAttribType.NONPURE_SNORM_2_10_10_10_REV_CLAMP_BGRA:
-                readSnorm2101010RevClampOrder(dst, size, ptr, rrVertexAttrib.BGRAOrder);
+                rrVertexAttrib.readSnorm2101010RevClampOrder(dst, size, ptr, rrVertexAttrib.BGRAOrder);
                 break;
             case rrVertexAttrib.VertexAttribType.NONPURE_SNORM_2_10_10_10_REV_SCALE_BGRA:
-                readSnorm2101010RevScaleOrder(dst, size, ptr, rrVertexAttrib.BGRAOrder);
+                rrVertexAttrib.readSnorm2101010RevScaleOrder(dst, size, ptr, rrVertexAttrib.BGRAOrder);
                 break;
             case rrVertexAttrib.VertexAttribType.NONPURE_UINT8:
                 rrVertexAttrib.readOrder(dst, size, ptr, rrVertexAttrib.NormalOrder, Uint8Array);
@@ -484,5 +635,4 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         }
     };
 
-    
 });

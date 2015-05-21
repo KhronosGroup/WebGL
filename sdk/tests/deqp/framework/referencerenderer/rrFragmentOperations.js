@@ -20,10 +20,10 @@
 
 'use strict';
 goog.provide('framework.referencerenderer.rrFragmentOperations');
-goog.require('framework.delibs.debase.deMath');
-goog.require('framework.referencerenderer.rrRenderState');
 goog.require('framework.common.tcuTexture');
 goog.require('framework.common.tcuTextureUtil');
+goog.require('framework.delibs.debase.deMath');
+goog.require('framework.referencerenderer.rrRenderState');
 
 goog.scope(function() {
 
@@ -33,11 +33,21 @@ var rrRenderState = framework.referencerenderer.rrRenderState;
 var tcuTexture = framework.common.tcuTexture;
 var tcuTextureUtil = framework.common.tcuTextureUtil;
 
-// Return oldValue with the bits indicated by mask replaced by corresponding bits of newValue.
-rrFragmentOperations.maskedBitReplace = function(oldValue, newValue, mask){
+/** Return oldValue with the bits indicated by mask replaced by corresponding bits of newValue.
+ * @param {number} oldValue
+ * @param {number} newValue
+ * @param {number} mask
+ * @return {number}
+ */
+rrFragmentOperations.maskedBitReplace = function(oldValue, newValue, mask) {
     return (oldValue & ~mask) | (newValue & mask);
 };
 
+/**
+ * @param {Array<number>} point
+ * @param {?} rect
+ * @return {boolean}
+ */
 rrFragmentOperations.isInsideRect = function(point, rect) {
     return deMath.deInBounds32(point[0], rect.left, rect.left + rect.width) &&
            deMath.deInBounds32(point[1], rect.bottom, rect.bottom + rect.height);
@@ -45,25 +55,28 @@ rrFragmentOperations.isInsideRect = function(point, rect) {
 
 /**
  * @constructor
+ * @param {Array<number>} coefficents
+ * @param {Array<number>} coords
+ * @param {number} depth
  */
-rrFragmentOperations.Fragment = function(coefficents, coords) {
+rrFragmentOperations.Fragment = function(coefficents, coords, depth) {
     /** @type {Array<number>} */ this.barycentric = coefficents;
     /** @type {Array<number>} */ this.pixelCoord = coords;
     /** @type {boolean} */ this.isAlive = true;
-    /** @type {boolean} */ this.stencilPassed = true;    
+    /** @type {boolean} */ this.stencilPassed = true;
     /** @type {boolean} */ this.depthPassed = true;
-    /** @type {Array<number>} */ this.sampleDepths = [];
-    /** @type {Array<number>} */  this.clampedBlendSrcColor = [];
-    /** @type {Array<number>} */  this.clampedBlendSrc1Color = [];
-    /** @type {Array<number>} */  this.clampedBlendDstColor = [];
-    /** @type {Array<number>} */  this.blendSrcFactorRGB = [];
+    /** @type {Array<number>} */ this.sampleDepths = [depth];
+    /** @type {Array<number>} */ this.clampedBlendSrcColor = [];
+    /** @type {Array<number>} */ this.clampedBlendSrc1Color = [];
+    /** @type {Array<number>} */ this.clampedBlendDstColor = [];
+    /** @type {Array<number>} */ this.blendSrcFactorRGB = [];
     /** @type {number} */ this.blendSrcFactorA = NaN;
     /** @type {Array<number>} */ this.blendDstFactorRGB = [];
     /** @type {number} */ this.blendDstFactorA = NaN;
     /** @type {Array<number>} */ this.blendedRGB = [];
     /** @type {number} */ this.blendedA = NaN;
-    /** @type {Array<number>} */ this.signedValue = [];        //!< integer targets
-    /** @type {Array<number>} */ this.unsignedValue = [];      //!< unsigned integer targets
+    /** @type {Array<number>} */ this.signedValue = []; //!< integer targets
+    /** @type {Array<number>} */ this.unsignedValue = []; //!< unsigned integer targets
     /** @type {Array<number>} */ this.value = []; /*TODO: what type should it be? */
     /** @type {Array<number>} */ this.value1 = []; /*TODO: what type should it be? */
 };
@@ -98,7 +111,7 @@ rrFragmentOperations.executeStencilCompare = function(inputFragments, stencilSta
         for (var i = 0; i < inputFragments.length; i++) {
             var frag = inputFragments[i];
             if (frag.isAlive) {
-                var fragSampleNdx = 1;
+                var fragSampleNdx = 0;
                 var stencilBufferValue = stencilBuffer.getPixStencil(fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
                 var maskedRef = stencilState.compMask & clampedStencilRef;
                 var maskedBuf = stencilState.compMask & stencilBufferValue;
@@ -136,7 +149,7 @@ rrFragmentOperations.executeStencilSFail = function(inputFragments, stencilState
        for (var i = 0; i < inputFragments.length; i++) {
             var frag = inputFragments[i];
             if (frag.isAlive && !frag.stencilPassed) {
-                var fragSampleNdx = 1;
+                var fragSampleNdx = 0;
                 var stencilBufferValue = stencilBuffer.getPixStencil(fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
                 stencilBuffer.setPixStencil(rrFragmentOperations.maskedBitReplace(stencilBufferValue, expression(stencilBufferValue, numStencilBits), stencilState.writeMask), fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
                 frag.isAlive = false;
@@ -145,21 +158,21 @@ rrFragmentOperations.executeStencilSFail = function(inputFragments, stencilState
     };
 
     switch (stencilState.sFail) {
-        case rrRenderState.StencilOp.KEEP: 
+        case rrRenderState.StencilOp.KEEP:
             sample_register_sfail(function(stencilBufferValue, numStencilBits) { return stencilBufferValue;}); break;
-        case rrRenderState.StencilOp.ZERO: 
+        case rrRenderState.StencilOp.ZERO:
             sample_register_sfail(function(stencilBufferValue, numStencilBits) { return 0;}); break;
-        case rrRenderState.StencilOp.REPLACE: 
+        case rrRenderState.StencilOp.REPLACE:
             sample_register_sfail(function(stencilBufferValue, numStencilBits) { return clampedStencilRef;}); break;
-        case rrRenderState.StencilOp.INCR: 
+        case rrRenderState.StencilOp.INCR:
             sample_register_sfail(function(stencilBufferValue, numStencilBits) { return deMath.clamp(stencilBufferValue + 1, 0, (1 << numStencilBits) - 1);}); break;
-        case rrRenderState.StencilOp.DECR: 
+        case rrRenderState.StencilOp.DECR:
             sample_register_sfail(function(stencilBufferValue, numStencilBits) { return deMath.clamp(stencilBufferValue - 1, 0, (1 << numStencilBits) - 1);}); break;
-        case rrRenderState.StencilOp.INCR_WRAP: 
+        case rrRenderState.StencilOp.INCR_WRAP:
             sample_register_sfail(function(stencilBufferValue, numStencilBits) { return (stencilBufferValue + 1) & ((1 << numStencilBits) - 1);}); break;
-        case rrRenderState.StencilOp.DECR_WRAP: 
+        case rrRenderState.StencilOp.DECR_WRAP:
             sample_register_sfail(function(stencilBufferValue, numStencilBits) { return (stencilBufferValue - 1) & ((1 << numStencilBits) - 1);}); break;
-        case rrRenderState.StencilOp.INVERT: 
+        case rrRenderState.StencilOp.INVERT:
             sample_register_sfail(function(stencilBufferValue, numStencilBits) { return (~stencilBufferValue) & ((1 << numStencilBits) - 1);}); break;
         default:
             throw new Error('Unrecognized stencil op:' + stencilState.sFail);
@@ -180,7 +193,7 @@ rrFragmentOperations.executeDepthCompare = function(inputFragments, depthFunc, d
       for (var i = 0; i < inputFragments.length; i++) {
             var frag = inputFragments[i];
             if (frag.isAlive) {
-                var fragSampleNdx = 1;
+                var fragSampleNdx = 0;
                 var depthBufferValue = depthBuffer.getPixDepth(fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
                 var sampleDepthFloat = frag.sampleDepths[fragSampleNdx];
                 var sampleDepth = deMath.clamp(sampleDepthFloat, 0.0, 1.0);
@@ -211,7 +224,7 @@ rrFragmentOperations.executeDepthWrite = function(inputFragments, depthBuffer) {
       for (var i = 0; i < inputFragments.length; i++) {
             var frag = inputFragments[i];
             if (frag.isAlive && frag.depthPassed) {
-                var fragSampleNdx = 1;
+                var fragSampleNdx = 0;
                 var clampedDepth = deMath.clamp(frag.sampleDepths[fragSampleNdx], 0.0, 1.0);
                 depthBuffer.setPixDepth(clampedDepth, fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
             }
@@ -235,7 +248,7 @@ rrFragmentOperations.executeStencilDpFailAndPass = function(inputFragments, sten
           for (var i = 0; i < inputFragments.length; i++) {
                 var frag = inputFragments[i];
                 if (frag.isAlive && condition(frag.depthPassed)) {
-                    var fragSampleNdx = 1;
+                    var fragSampleNdx = 0;
                     var stencilBufferValue = stencilBuffer.getPixStencil(fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
                     stencilBuffer.setPixStencil(rrFragmentOperations.maskedBitReplace(stencilBufferValue, expression(stencilBufferValue, numStencilBits), stencilState.writeMask), fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
                 }
@@ -485,10 +498,10 @@ rrFragmentOperations.executeMaskedColorWrite = function(inputFragments, colorMas
        for (var i = 0; i < inputFragments.length; i++) {
             var frag = inputFragments[i];
             if (frag.isAlive) {
-                var fragSampleNdx = 1;
+                var fragSampleNdx = 0;
                 var originalColor = colorBuffer.getPixel(fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
                 var newColor = frag.blendedRGB.slice();
-                newColor[4] = frag.blendedA;
+                newColor[3] = frag.blendedA;
 
                 if (isSRGB)
                     newColor = tcuTextureUtil.linearToSRGB(newColor);
@@ -509,7 +522,7 @@ rrFragmentOperations.executeSignedValueWrite = function(inputFragments, colorMas
       for (var i = 0; i < inputFragments.length; i++) {
             var frag = inputFragments[i];
             if (frag.isAlive) {
-                var fragSampleNdx = 1;
+                var fragSampleNdx = 0;
                 var originalValue = colorBuffer.getPixelInt(fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
                 var newValue = tcuTextureUtil.select(frag.signedValue, originalValue, colorMask);
 
@@ -527,7 +540,7 @@ rrFragmentOperations.executeUnsignedValueWrite = function(inputFragments, colorM
       for (var i = 0; i < inputFragments.length; i++) {
             var frag = inputFragments[i];
             if (frag.isAlive) {
-                var fragSampleNdx = 1;
+                var fragSampleNdx = 0;
                 var originalValue = colorBuffer.getPixelInt(fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
                 var newValue = tcuTextureUtil.select(frag.unsignedValue, originalValue, colorMask);
 

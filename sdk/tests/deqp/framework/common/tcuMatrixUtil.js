@@ -24,7 +24,7 @@ goog.require('framework.common.tcuMatrix');
 goog.scope(function() {
 
     var tcuMatrixUtil = framework.common.tcuMatrixUtil;
-	var tcuMatrix = framework.common.tcuMatrix;
+    var tcuMatrix = framework.common.tcuMatrix;
 
     /**
      * @param {Array<number>} translation

@@ -317,17 +317,12 @@ gluTextureUtil.mapGLChannelType = function(/* deMath.deUint32 */ dataType, /*boo
 };
 
 /**
- * Map generic compressed format to GL compressed format enum.
- *
- * Maps generic compressed format to GL compressed format enum value.
- * If no mapping is found, throws Error.
- *
  * @param {number} format Generic compressed format.
  * @param {number} dataType
- * @return {tcuTexture.TextureFormat} GL compressed texture format.
+ * @return {tcuTexture.TextureFormat} GL texture format.
  * @throws {Error}
  */
-gluTextureUtil.mapGLTransferFormat = function(/*deMath.deUint32*/ format, /*deMath.deUint32*/ dataType) {
+gluTextureUtil.mapGLTransferFormat = function(format, dataType) {
     switch (format) {
         case gl.ALPHA: return new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.A, gluTextureUtil.mapGLChannelType(dataType, true));
         case gl.LUMINANCE: return new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.L, gluTextureUtil.mapGLChannelType(dataType, true));
@@ -346,7 +341,7 @@ gluTextureUtil.mapGLTransferFormat = function(/*deMath.deUint32*/ format, /*deMa
         case gl.DEPTH_STENCIL: return new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.DS, gluTextureUtil.mapGLChannelType(dataType, true));
 
         default:
-            throw new Error("Can't map GL pixel format (" + format + ', ' + dataType.toString(16) + ') to texture format');
+            throw new Error("Can't map GL pixel format (" + format + ', ' + dataType + ') to texture format');
     }
 };
 
@@ -355,7 +350,7 @@ gluTextureUtil.mapGLTransferFormat = function(/*deMath.deUint32*/ format, /*deMa
  *
  * If no mapping is found, throws Error.
  * @param {number} internalFormat
- * @return {tcuTexture.TextureFormat} GL compressed texture format.
+ * @return {tcuTexture.TextureFormat} GL texture format.
  * @throws {Error}
  */
 gluTextureUtil.mapGLInternalFormat = function(/*deMath.deUint32*/ internalFormat) {

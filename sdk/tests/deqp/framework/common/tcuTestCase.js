@@ -260,7 +260,7 @@ goog.scope(function() {
             test = test.next(null);
             if (!test)
                 break;
-            if (test.fullName().match(pattern))
+            if (test.fullName().match(pattern) || test.executeAlways)
                 break;
         }
         return test;

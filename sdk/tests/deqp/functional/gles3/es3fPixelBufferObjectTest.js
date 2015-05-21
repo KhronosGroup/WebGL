@@ -394,7 +394,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
 
         gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pixelBuffer);
         gl.bufferData(gl.PIXEL_PACK_BUFFER, readReference.getLevel(0).getDataSize(), gl.STREAM_READ);
-        gl.readPixels(0, 0, width, height, readPixelsFormat, readPixelsType, 0);
+        gl.readPixels(0, 0, width, height, readPixelsFormat, readPixelsType, null);
 
         var bufferData = new ArrayBuffer(readReference.getLevel(0).getDataSize());
 
