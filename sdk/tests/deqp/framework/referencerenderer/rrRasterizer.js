@@ -34,6 +34,10 @@ var rrRenderState = framework.referencerenderer.rrRenderState;
 /** @const */ rrRasterizer.shlMultiplier = Math.pow(2, rrRasterizer.RASTERIZER_SUBPIXEL_BITS);
 /** @const */ rrRasterizer.shrMultiplier = Math.pow(2, -rrRasterizer.RASTERIZER_SUBPIXEL_BITS);
 
+/**
+ * @param {number}
+ * @return {number}
+ */
 rrRasterizer.toSubpixelCoord = function(v) { return v * rrRasterizer.shlMultiplier + (v < 0 ? -0.5 : 0.5); };
 
 
@@ -50,6 +54,10 @@ rrRasterizer.toSubpixelCoord = function(v) { return v * rrRasterizer.shlMultipli
  * a and b are stored with SUBPIXEL_BITS fractional part, while c is stored
  * with SUBPIXEL_BITS*2 fractional bits.
  * @constructor
+ * @param {boolean=} a_
+ * @param {boolean=} b_
+ * @param {boolean=} c_
+ * @param {boolean=} inclusive_
  */
 rrRasterizer.EdgeFunction = function(a_, b_, c_, inclusive_) {
     this.a = a_ || 0;
@@ -59,7 +67,12 @@ rrRasterizer.EdgeFunction = function(a_, b_, c_, inclusive_) {
 };
 
 /**
- * 
+ * @param {boolean} horizontalFill
+ * @param {boolean} verticalFill
+ * @param {number} x0
+ * @param {number} y0
+ * @param {number} x1
+ * @param {number} y1
  */
 rrRasterizer.EdgeFunction.prototype.initEdgeCCW = function(horizontalFill, verticalFill, x0, y0, x1, y1) {
     // \note See rrRasterizer.EdgeFunction documentation for details.

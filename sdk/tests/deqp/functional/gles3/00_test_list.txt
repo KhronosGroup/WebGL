@@ -1,7 +1,14 @@
+fbocompleteness.html
+fbomultisample.html
+fbostencilbuffer.html
+fragmentoutput.html
+framebufferblit.html
 instancedrendering.html
+pixelbufferobject.html
 primitiverestart.html
 samplerobject.html
 textureformat.html
 transformfeedback.html
 uniformapi.html
 uniformbuffers.html
+vertexarrays.html

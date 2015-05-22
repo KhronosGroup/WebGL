@@ -138,4 +138,29 @@ gluStrUtil.getTypeName = function(value) {
     }
 };
 
+gluStrUtil.getErrorName = function(value) {
+    switch (value) {
+        case gl.NO_ERROR: return 'gl.NO_ERROR';
+        case gl.INVALID_ENUM: return 'gl.INVALID_ENUM';
+        case gl.INVALID_VALUE: return 'gl.INVALID_VALUE';
+        case gl.INVALID_OPERATION: return 'gl.INVALID_OPERATION';
+        case gl.OUT_OF_MEMORY: return 'gl.OUT_OF_MEMORY';
+        // case gl.INVALID_FRAMEBUFFER_OPERATION: return 'gl.INVALID_FRAMEBUFFER_OPERATION';
+        default: return '';
+    }
+};
+
+gluStrUtil.getFramebufferStatusName = function(value) {
+    switch (value) {
+        case gl.FRAMEBUFFER_COMPLETE: return 'gl.FRAMEBUFFER_COMPLETE';
+        case gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT: return 'gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT';
+        case gl.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: return 'gl.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT';
+        case gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS: return 'gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS';
+        case gl.FRAMEBUFFER_UNSUPPORTED: return 'gl.FRAMEBUFFER_UNSUPPORTED';
+        case gl.FRAMEBUFFER_INCOMPLETE_MULTISAMPLE: return 'gl.FRAMEBUFFER_INCOMPLETE_MULTISAMPLE';
+    //    case: gl.FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS: return 'gl.FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS';
+        default: return '';
+    }
+};
+
 });

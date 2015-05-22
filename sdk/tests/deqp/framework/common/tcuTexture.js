@@ -93,8 +93,8 @@ tcuTexture.ChannelType = {
 
 /**
  * Contruct texture format
- * @param {tcuTexture.ChannelOrder} order
- * @param {tcuTexture.ChannelType} type
+ * @param {?tcuTexture.ChannelOrder} order
+ * @param {?tcuTexture.ChannelType} type
  *
  * @constructor
  */
@@ -146,7 +146,7 @@ tcuTexture.TextureFormat.prototype.getNumStencilBits = function() {
 
 /**
  * Get TypedArray type that can be used to access texture.
- * @param {tcuTexture.ChannelType} type
+ * @param {?tcuTexture.ChannelType} type
  * @return TypedArray that supports the tcuTexture.channel type.
  */
 tcuTexture.getTypedArray = function(type) {
@@ -945,6 +945,11 @@ tcuTexture.ConstPixelBufferAccess.prototype.getPixStencil = function(x, y, z) {
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
 
+    // Make sure that the position is 'integer'
+    x = Math.round(x);
+    y = Math.round(y);
+    z = Math.round(z);
+
     var pixelSize = this.m_format.getPixelSize();
     var arrayType = tcuTexture.getTypedArray(this.m_format.type);
     var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
@@ -990,6 +995,11 @@ tcuTexture.ConstPixelBufferAccess.prototype.getPixDepth = function(x, y, z) {
     DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
+
+    // Make sure that the position is 'integer'
+    x = Math.round(x);
+    y = Math.round(y);
+    z = Math.round(z);
 
     var pixelSize = this.m_format.getPixelSize();
     var arrayType = tcuTexture.getTypedArray(this.m_format.type);
@@ -1042,6 +1052,11 @@ tcuTexture.ConstPixelBufferAccess.prototype.getPixel = function(x, y, z) {
     DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
+
+    // Make sure that the position is 'integer'
+    x = Math.round(x);
+    y = Math.round(y);
+    z = Math.round(z);
 
     var pixelSize = this.m_format.getPixelSize();
     var arrayType = tcuTexture.getTypedArray(this.m_format.type);
@@ -1119,7 +1134,7 @@ tcuTexture.ConstPixelBufferAccess.prototype.getPixel = function(x, y, z) {
 /**
  * @param {number} x
  * @param {number} y
- * @param {number} z
+ * @param {number=} z
  * @return {Array<number>} Pixel value as Vec4
  */
 tcuTexture.ConstPixelBufferAccess.prototype.getPixelInt = function(x, y, z) {
@@ -1127,6 +1142,11 @@ tcuTexture.ConstPixelBufferAccess.prototype.getPixelInt = function(x, y, z) {
     DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
+
+    // Make sure that the position is 'integer'
+    x = Math.round(x);
+    y = Math.round(y);
+    z = Math.round(z);
 
     var pixelSize = this.m_format.getPixelSize();
     var arrayType = tcuTexture.getTypedArray(this.m_format.type);
@@ -1151,17 +1171,17 @@ tcuTexture.ConstPixelBufferAccess.prototype.getPixelInt = function(x, y, z) {
 
         case tcuTexture.ChannelType.UNSIGNED_INT_24_8:
             switch (this.m_format.order) {
-                // \note Stencil is always ignored.
                 case tcuTexture.ChannelOrder.D: return [ub(pixel, 8, 24), 0, 0, 1];
-                case tcuTexture.ChannelOrder.DS: return [ub(pixel, 8, 24), 0, 0, 1 /* (float)ub(0, 8) */];
+                case tcuTexture.ChannelOrder.S: return [0, 0, 0, ub(pixel, 8, 24)];
+                case tcuTexture.ChannelOrder.DS: return [ub(pixel, 8, 24), 0, 0, ub(pixel, 0, 8)];
                 default:
                     DE_ASSERT(false);
             }
 
         case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
             DE_ASSERT(this.m_format.order == tcuTexture.ChannelOrder.DS);
-            // \note Stencil is ignored.
-            return [pixel, 0, 0, 1];
+            var u32array = new Uint32Array(this.m_data, offset + 4, 1);
+            return [pixel, 0, 0, ub(u32array[0], 0, 8)];
         }
 
         default:
@@ -1263,7 +1283,7 @@ tcuTexture.ConstPixelBufferAccess.prototype.sample3D = function(sampler, filter,
 tcuTexture.deTypes = {
     deInt8: {min: -(1 << 7), max: (1 << 7) - 1},
     deInt16: {min: -(1 << 15), max: (1 << 15) - 1},
-    deInt32: {min: -(1 << 31), max: (1 << 31) - 1},
+    deInt32: {min: -2147483648, max: 2147483647},
     deUint8: {min: 0, max: (1 << 8) - 1},
     deUint16: {min: 0, max: (1 << 16) - 1},
     deUint32: {min: 0, max: 4294967295}
@@ -1271,7 +1291,7 @@ tcuTexture.deTypes = {
 
 /**
  * Round to even and saturate
- * @param { {max: number, min: number}} deType from tcuTexture.deTypes
+ * @param {{max: number, min: number}} deType from tcuTexture.deTypes
  * @param {number} value
  * @return {number}
  */
@@ -1409,6 +1429,11 @@ tcuTexture.PixelBufferAccess.prototype.setPixel = function(color, x, y, z) {
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
 
+    // Make sure that the position is 'integer'
+    x = Math.round(x);
+    y = Math.round(y);
+    z = Math.round(z);
+
     var pixelSize = this.m_format.getPixelSize();
     var arrayType = tcuTexture.getTypedArray(this.m_format.type);
     var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
@@ -1416,7 +1441,7 @@ tcuTexture.PixelBufferAccess.prototype.setPixel = function(color, x, y, z) {
 
     var pn = function(val, offs, bits) {
         /* Check if the value is normalized (in [0, 1] range) */
-        DE_ASSERT(deMath.deInBounds32(val, 0, 1));
+        DE_ASSERT(deMath.deInRange32(val, 0, 1));
         return tcuTexture.normFloatToChannel(val, bits) << offs;
     };
 
@@ -1493,6 +1518,11 @@ tcuTexture.PixelBufferAccess.prototype.setPixelInt = function(color, x, y, z) {
     DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
+
+    // Make sure that the position is 'integer'
+    x = Math.round(x);
+    y = Math.round(y);
+    z = Math.round(z);
 
     var pixelSize = this.m_format.getPixelSize();
     var arrayType = tcuTexture.getTypedArray(this.m_format.type);
@@ -1596,6 +1626,11 @@ tcuTexture.PixelBufferAccess.prototype.setPixDepth = function(depth, x, y, z) {
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
 
+    // Make sure that the position is 'integer'
+    x = Math.round(x);
+    y = Math.round(y);
+    z = Math.round(z);
+
     var pixelSize = this.m_format.getPixelSize();
     var arrayType = tcuTexture.getTypedArray(this.m_format.type);
     var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
@@ -1642,6 +1677,11 @@ tcuTexture.PixelBufferAccess.prototype.setPixStencil = function(stencil, x, y, z
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
     DE_ASSERT(deMath.deInBounds32(z, 0, this.m_depth));
 
+    // Make sure that the position is 'integer'
+    x = Math.round(x);
+    y = Math.round(y);
+    z = Math.round(z);
+
     var pixelSize = this.m_format.getPixelSize();
     var arrayType = tcuTexture.getTypedArray(this.m_format.type);
     var offset = z * this.m_slicePitch + y * this.m_rowPitch + x * pixelSize;
@@ -1682,6 +1722,7 @@ tcuTexture.PixelBufferAccess.prototype.setPixStencil = function(stencil, x, y, z
 /**
  * newFromTextureLevel
  * @param {tcuTexture.TextureLevel} level
+ * @return {tcuTexture.PixelBufferAccess}
  */
 tcuTexture.PixelBufferAccess.newFromTextureLevel = function(level) {
     var descriptor = new Object();
@@ -1792,10 +1833,11 @@ tcuTexture.TextureLevelPyramid.prototype.clearLevel = function(levelNdx) {
  * @param {number} s
  * @param {number} t
  * @param {number} depth (integer)
- * @param {number} lod
+ * @param {number=} lod
  * @return {Array<number>} Vec4 pixel color
  */
 tcuTexture.sampleLevelArray2D = function(levels, numLevels, sampler, s, t, depth, lod) {
+    if (lod === undefined) lod = 0;
     var magnified = lod <= sampler.lodThreshold;
     var filterMode = magnified ? sampler.magFilter : sampler.minFilter;
 
@@ -1928,7 +1970,7 @@ tcuTexture.Texture2DView.prototype.getSubView = function(baseLevel, maxLevel) {
 /**
  * @param {tcuTexture.Sampler} sampler
  * @param {Array<number>} texCoord
- * @param {number} lod
+ * @param {number=} lod
  * @return {Array<number>} Pixel color
  */
 tcuTexture.Texture2DView.prototype.sample = function(sampler, texCoord, lod) {
@@ -2470,6 +2512,9 @@ tcuTexture.TextureLevel.prototype.setSize = function(width, height, depth) {
     this.m_data.setStorage(this.m_width * this.m_height * this.m_depth * pixelSize);
 };
 
+/**
+ * @return {tcuTexture.PixelBufferAccess}
+ */
 tcuTexture.TextureLevel.prototype.getAccess = function() {
     return new tcuTexture.PixelBufferAccess({
                     format: this.m_format,

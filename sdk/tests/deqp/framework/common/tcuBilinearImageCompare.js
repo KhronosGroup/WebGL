@@ -44,6 +44,15 @@ goog.scope(function() {
 
     /**
      * @param {number} color
+     * @return {goog.TypedArray}
+     */
+    tcuBilinearImageCompare.getChannels = function(color) {
+        var result = new Uint32Array([color]);
+        return new Uint8Array(result.buffer);
+    };
+
+    /**
+     * @param {number} color
      * @param {number} channel
      * @return {number}
      */
@@ -77,14 +86,11 @@ goog.scope(function() {
      * @return {tcuRGBA.RGBA}
      */
     tcuBilinearImageCompare.readRGBA8 = function(src, x, y) {
-        /** @type {number} */ var raw = tcuBilinearImageCompare.readRGBA8Raw(src, x, y);
-        /** @type {Array<number>} */ var res = [
-            tcuBilinearImageCompare.getChannel(raw, 0),
-            tcuBilinearImageCompare.getChannel(raw, 1),
-            tcuBilinearImageCompare.getChannel(raw, 2),
-            tcuBilinearImageCompare.getChannel(raw, 3)
-        ];
-        return tcuRGBA.newRGBAFromArray(res);
+        var start = src.getRowPitch() * y + x * 4;
+        var end = start + 4; // RGBA uses 4 channels
+        /** @type {goog.TypedArray} */
+        var res = src.getDataPtr().subarray(start, end);
+        return tcuRGBA.newRGBAComponents(res[0],res[1],res[2],res[3]);
     };
 
     /**
@@ -131,21 +137,21 @@ goog.scope(function() {
         /** @type {number} */ var fx1 = u - (x0 << tcuBilinearImageCompare.NUM_SUBPIXEL_BITS);
         /** @type {number} */ var fy1 = v - (y0 << tcuBilinearImageCompare.NUM_SUBPIXEL_BITS);
 
-        /** @type {number} */ var p00 = tcuBilinearImageCompare.readRGBA8Raw(access, x0, y0);
-        /** @type {number} */ var p10 = tcuBilinearImageCompare.readRGBA8Raw(access, x1, y0);
-        /** @type {number} */ var p01 = tcuBilinearImageCompare.readRGBA8Raw(access, x0, y1);
-        /** @type {number} */ var p11 = tcuBilinearImageCompare.readRGBA8Raw(access, x1, y1);
+        /** @type {tcuRGBA.RGBA} */ var channelsP00 = tcuBilinearImageCompare.readRGBA8(access, x0, y0);
+        /** @type {tcuRGBA.RGBA} */ var channelsP10 = tcuBilinearImageCompare.readRGBA8(access, x1, y0);
+        /** @type {tcuRGBA.RGBA} */ var channelsP01 = tcuBilinearImageCompare.readRGBA8(access, x0, y1);
+        /** @type {tcuRGBA.RGBA} */ var channelsP11 = tcuBilinearImageCompare.readRGBA8(access, x1, y1);
 
         /** @type {Array<number>} */ var res = [];
 
-        res[0] = tcuBilinearImageCompare.interpolateChannel(fx1, fy1, tcuBilinearImageCompare.getChannel(p00, 0),
-            tcuBilinearImageCompare.getChannel(p01, 0), tcuBilinearImageCompare.getChannel(p10, 0), tcuBilinearImageCompare.getChannel(p11, 0));
-        res[1] = tcuBilinearImageCompare.interpolateChannel(fx1, fy1, tcuBilinearImageCompare.getChannel(p00, 1),
-            tcuBilinearImageCompare.getChannel(p01, 1), tcuBilinearImageCompare.getChannel(p10, 1), tcuBilinearImageCompare.getChannel(p11, 1));
-        res[2] = tcuBilinearImageCompare.interpolateChannel(fx1, fy1, tcuBilinearImageCompare.getChannel(p00, 2),
-            tcuBilinearImageCompare.getChannel(p01, 2), tcuBilinearImageCompare.getChannel(p10, 2), tcuBilinearImageCompare.getChannel(p11, 2));
-        res[3] = tcuBilinearImageCompare.interpolateChannel(fx1, fy1, tcuBilinearImageCompare.getChannel(p00, 3),
-            tcuBilinearImageCompare.getChannel(p01, 3), tcuBilinearImageCompare.getChannel(p10, 3), tcuBilinearImageCompare.getChannel(p11, 3));
+        res[0] = tcuBilinearImageCompare.interpolateChannel(fx1, fy1, channelsP00[0],
+            channelsP01[0], channelsP10[0], channelsP11[0]);
+        res[1] = tcuBilinearImageCompare.interpolateChannel(fx1, fy1, channelsP00[1],
+            channelsP01[1], channelsP10[1], channelsP11[1]);
+        res[2] = tcuBilinearImageCompare.interpolateChannel(fx1, fy1, channelsP00[2],
+            channelsP01[2], channelsP10[2], channelsP11[2]);
+        res[3] = tcuBilinearImageCompare.interpolateChannel(fx1, fy1, channelsP00[3],
+            channelsP01[3], channelsP10[3], channelsP11[3]);
 
         return tcuRGBA.newRGBAFromArray(res);
     };
@@ -161,6 +167,9 @@ goog.scope(function() {
     tcuBilinearImageCompare.comparePixelRGBA8 = function(reference, result, threshold, x, y) {
         /** @const {tcuRGBA.RGBA} */ var resPix = tcuBilinearImageCompare.readRGBA8(result, x, y);
 
+        if (y == 100)
+            console.log('middle');
+
         // Step 1: Compare result pixel to 3x3 neighborhood pixels in reference.
         /** @const {number} */ var x0 = Math.max(x - 1, 0);
         /** @const {number} */ var x1 = x;
@@ -170,6 +179,8 @@ goog.scope(function() {
         /** @const {number} */ var y1 = y;
         /** @const {number} */
         var y2 = Math.min(y + 1, reference.getHeight() - 1);
+
+        //tcuBilinearImageCompare.readRGBA8List (reference, x0, y0, x2, y2);
 
         if (tcuRGBA.compareThreshold(resPix, tcuBilinearImageCompare.readRGBA8(reference, x1, y1), threshold) ||
             tcuRGBA.compareThreshold(resPix, tcuBilinearImageCompare.readRGBA8(reference, x0, y1), threshold) ||
@@ -271,13 +282,11 @@ goog.scope(function() {
      * @return {boolean}
      */
     tcuBilinearImageCompare.bilinearCompare = function(reference, result, errorMask, threshold) {
-        DE_ASSERT(reference.getWidth() == result.getWidth() &&
-                  reference.getHeight() == result.getHeight() &&
-                  reference.getDepth() == result.getDepth() &&
-                  reference.getFormat() == result.getFormat());
-        DE_ASSERT(reference.getWidth() == errorMask.getWidth() &&
-                  reference.getHeight() == errorMask.getHeight() &&
-                  reference.getDepth() == errorMask.getDepth());
+        assertMsgOptions(result.getWidth() == reference.getWidth() && result.getHeight() == reference.getHeight() && result.getDepth() == reference.getDepth(),
+            'Reference and result images have different dimensions', false, true);
+
+        assertMsgOptions(errorMask.getWidth() == reference.getWidth() && errorMask.getHeight() == reference.getHeight() && errorMask.getDepth() == reference.getDepth(),
+            'Reference and error mask images have different dimensions', false, true);
 
         /** @type {boolean} */ var isEqual = reference.getFormat().isEqual(
             new tcuTexture.TextureFormat(

@@ -26,6 +26,27 @@ goog.scope(function() {
 var deUtil = framework.delibs.debase.deUtil;
 
     /**
+     * clone - If you need to pass/assign an object by value, call this
+     * @param {*} obj
+     * @return {*}
+     */
+    deUtil.clone = function(obj) {
+        if(obj == null || typeof(obj) != 'object')
+            return obj;
+
+        var temp;
+        if(ArrayBuffer.isView(obj)) {
+            temp = new obj.constructor(obj);
+        }
+        else {
+            temp = Object.create(obj.constructor.prototype);
+            for(var key in obj)
+                temp[key] = deUtil.clone(obj[key]);
+        }
+        return temp;
+    };
+
+    /**
     * Add a push_unique function to Array. Will insert only if there is no equal element.
     * @template T
     * @param {Array<T>} array Any array

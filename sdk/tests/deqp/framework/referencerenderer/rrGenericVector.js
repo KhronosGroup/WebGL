@@ -21,7 +21,6 @@
 'use strict';
 goog.provide('framework.referencerenderer.rrGenericVector');
 
-
 goog.scope(function() {
 
 var rrGenericVector = framework.referencerenderer.rrGenericVector;
@@ -43,5 +42,15 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         INT32: 2
     };
 
-    
+    /**
+     * @constructor
+     * @param {number=} a
+     * @param {number=} b
+     * @param {number=} c
+     * @param {number=} d
+     */
+    rrGenericVector.GenericVec4 = function(a, b, c, d) {
+        this.data = [a || 0, b || 0, c || 0, d || 0];
+    };
+
 });

@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>WebGL Shader Conformance Tests</title>
+<title>WebGL Uniform Block Conformance Tests</title>
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
 <script src="../../../resources/js-test-pre.js"></script>
 <script src="../../../conformance/resources/webgl-test-utils.js"></script>
@@ -19,7 +19,6 @@
 <script>
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 2);
-
 
 try {
     functional.gles3.es3fUniformBlockTests.run();

@@ -869,6 +869,7 @@ goog.scope(function() {
         this.m_outputBuffers = []; // vector<deUint32>
 
         this.m_iterNdx = 0; // int
+        
     };
 
     setParentClass(es3fTransformFeedbackTests.TransformFeedbackCase, tcuTestCase.DeqpTest);
@@ -1895,6 +1896,7 @@ goog.scope(function() {
         description(testDescription);
         try {
             es3fTransformFeedbackTests.init();
+//            tcuTestCase.runner.runCallback(tcuTestCase.runTestCases);
             tcuTestCase.runTestCases();
         } catch (err) {
             console.log(err);

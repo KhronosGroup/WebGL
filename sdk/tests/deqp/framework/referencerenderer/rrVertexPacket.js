@@ -23,13 +23,11 @@ goog.provide('framework.referencerenderer.rrVertexPacket');
 goog.require('framework.common.tcuTexture');
 goog.require('framework.delibs.debase.deMath');
 
-
 goog.scope(function() {
 
 var rrVertexPacket = framework.referencerenderer.rrVertexPacket;
 var tcuTexture = framework.common.tcuTexture;
 var deMath = framework.delibs.debase.deMath;
-
 
     rrVertexPacket.DE_NULL = null;
 
@@ -37,13 +35,13 @@ var deMath = framework.delibs.debase.deMath;
      * rrVertexPacket.VertexPacket class. (Should only be created by rrVertexPacket.VertexPacketAllocator)
      * @constructor
      */
-    rrVertexPacket.VertexPacket = function () {
+    rrVertexPacket.VertexPacket = function() {
         /** @type {number} */ this.instanceNdx;
         /** @type {number} */ this.vertexNdx;
-        /** @type {Array.<number>} */ this.position; //!< Transformed position - must be written always.
+        /** @type {goog.NumberArray} */ this.position; //!< Transformed position - must be written always.
         /** @type {number} */ this.pointSize; //!< Point size, required when rendering points.
         // /** @type {number} */ this.primitiveID; //!< Geometry shader output (Not used in webGL)
-        /** @type {Array.<Array.<number>>} */ this.outputs = [[0, 0, 0, 0]];
+        /** @type {Array<goog.NumberArray>} */ this.outputs = [[0, 0, 0, 0]];
     };
 
     /**
@@ -51,32 +49,32 @@ var deMath = framework.delibs.debase.deMath;
      * @constructor
      * @param {number} numberOfVertexOutputs
      */
-    rrVertexPacket.VertexPacketAllocator = function (numberOfVertexOutputs) {
+    rrVertexPacket.VertexPacketAllocator = function(numberOfVertexOutputs) {
         /** @type {number} */ this.m_numberOfVertexOutputs = numberOfVertexOutputs;
         /** @type {Uint8Array} */ this.m_allocations;
-        /** @type {Array.<rrVertexPacket.VertexPacket>} */ this.m_singleAllocPool = [];
+        /** @type {Array<rrVertexPacket.VertexPacket>} */ this.m_singleAllocPool = [];
     };
 
     /**
      * @return {number}
      */
-    rrVertexPacket.VertexPacketAllocator.prototype.getNumVertexOutputs = function () {
+    rrVertexPacket.VertexPacketAllocator.prototype.getNumVertexOutputs = function() {
         return this.m_numberOfVertexOutputs;
     };
 
     /**
      * allocArray
      * @param {number} count
-     * @return {Array.<rrVertexPacket.VertexPacket>}
+     * @return {Array<rrVertexPacket.VertexPacket>}
      */
-    rrVertexPacket.VertexPacketAllocator.prototype.allocArray = function (count) {
+    rrVertexPacket.VertexPacketAllocator.prototype.allocArray = function(count) {
         if (!count)
             return [];
 
         /** @type {number} */ var extraVaryings = (this.m_numberOfVertexOutputs == 0) ? (0) : (this.m_numberOfVertexOutputs - 1);
         // /** @type {number} TODO: Check what this size is used for */ var packetSize = sizeof(rrVertexPacket.VertexPacket) + extraVaryings * sizeof(GenericVec4);
 
-        /** @type {Array.<rrVertexPacket.VertexPacket>} */ var retVal = [];
+        /** @type {Array<rrVertexPacket.VertexPacket>} */ var retVal = [];
         // /** @type {Uint8Array} TODO: same as above */ var ptr = new deInt8[packetSize * count]; // throws bad_alloc => ok
 
         //run ctors
@@ -91,7 +89,7 @@ var deMath = framework.delibs.debase.deMath;
     /**
      * @return {rrVertexPacket.VertexPacket}
      */
-    rrVertexPacket.VertexPacketAllocator.prototype.alloc = function () {
+    rrVertexPacket.VertexPacketAllocator.prototype.alloc = function() {
         /** @type {number} */ var poolSize = 8;
 
         if (this.m_singleAllocPool.length == 0)
@@ -101,7 +99,5 @@ var deMath = framework.delibs.debase.deMath;
 
         return packet;
     };
-
-
 
 });

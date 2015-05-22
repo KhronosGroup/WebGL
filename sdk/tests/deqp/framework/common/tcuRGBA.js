@@ -37,7 +37,7 @@ var deMath = framework.delibs.debase.deMath;
      * @constructor
      */
     tcuRGBA.RGBA = function() {
-        /** @type {Uint32Array} */ this.m_value = new Uint32Array(4);
+        /** @type {goog.NumberArray} */ this.m_value;
 
     };
 
@@ -81,25 +81,7 @@ var deMath = framework.delibs.debase.deMath;
         DE_ASSERT(deMath.deInRange32(b, 0, 255));
         DE_ASSERT(deMath.deInRange32(a, 0, 255));
 
-        var result = new Uint8Array(4);
-        result[tcuRGBA.RGBA.Shift.RED] = r;
-        result[tcuRGBA.RGBA.Shift.GREEN] = g;
-        result[tcuRGBA.RGBA.Shift.BLUE] = b;
-        result[tcuRGBA.RGBA.Shift.ALPHA] = a;
-
-        rgba.m_value = new Uint32Array(result);
-
-        return rgba;
-    };
-
-    /**
-     * Builds an tcuRGBA.RGBA object from a 32 bit value
-     * @param {number} val
-     * @return {tcuRGBA.RGBA}
-     */
-    tcuRGBA.newRGBAValue = function(val) {
-        /** @type {tcuRGBA.RGBA} */ var rgba = new tcuRGBA.RGBA();
-        rgba.m_value = new Uint32Array([val]);
+        rgba.m_value = [r, g, b, a];
 
         return rgba;
     };
@@ -111,9 +93,8 @@ var deMath = framework.delibs.debase.deMath;
      */
     tcuRGBA.newRGBAFromArray = function(v) {
         /** @type {tcuRGBA.RGBA} */ var rgba = new tcuRGBA.RGBA();
-        var result = new Uint8Array(v);
 
-        rgba.m_value = new Uint32Array(result);
+        rgba.m_value = v.slice(0, 4);
 
         return rgba;
     };
@@ -157,11 +138,6 @@ var deMath = framework.delibs.debase.deMath;
      * @return {number}
      */
     tcuRGBA.RGBA.prototype.getAlpha = function() { return this.m_value[tcuRGBA.RGBA.Shift.ALPHA]; };
-
-    /**
-     * @return {number}
-     */
-    tcuRGBA.RGBA.prototype.getPacked = function() { return this.m_value[0]; };
 
     /**
      * @param {tcuRGBA.RGBA} thr
@@ -240,6 +216,19 @@ var deMath = framework.delibs.debase.deMath;
             Math.abs(a.getBlue() - b.getBlue()),
             Math.abs(a.getAlpha() - b.getAlpha())
         );
+    };
+
+    /**
+     * @param {tcuRGBA.RGBA} a
+     * @param {number} b
+     * @return {tcuRGBA.RGBA}
+     */
+    tcuRGBA.multiply = function(a, b) {
+        return tcuRGBA.newRGBAComponents(
+            deMath.clamp(a.getRed() * b, 0, 255),
+            deMath.clamp(a.getGreen() * b, 0, 255),
+            deMath.clamp(a.getBlue() * b, 0, 255),
+            deMath.clamp(a.getAlpha() * b, 0, 255));
     };
 
     /**

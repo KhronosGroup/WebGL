@@ -425,8 +425,10 @@ deMath.doNativeBinaryOp = function(valueA, valueB, operation) {
  * @return {number}
  */
 deMath.binaryOp = function(valueA, valueB, binaryOpParm) {
-    /** @type {number} */ var valueABitSize = Math.floor(Math.log2(valueA) + 1);
-    /** @type {number} */ var valueBBitSize = Math.floor(Math.log2(valueB) + 1);
+    valueA = valueA < 0 ? new Uint32Array([valueA])[0] : valueA;
+    valueB = valueB < 0 ? new Uint32Array([valueB])[0] : valueB;
+    /** @type {number} */ var valueABitSize = valueA == 0 ? 0 : Math.floor(Math.log2(valueA) + 1);
+    /** @type {number} */ var valueBBitSize = valueB == 0 ? 0 : Math.floor(Math.log2(valueB) + 1);
     /** @type {number} */ var bitsSize = Math.max(valueABitSize, valueBBitSize);
 
     if (bitsSize <= 32)
@@ -470,11 +472,13 @@ deMath.binaryOp = function(valueA, valueB, binaryOpParm) {
  * @return {number}
  */
 deMath.binaryNot = function(value) {
-    /** @type {number} */ var bitsSize = Math.floor(Math.log2(value) + 1);
+    if (value == 0) return 0;
+    value = value < 0 ? new Uint32Array([value])[0] : value;
+    /** @type {number} */ var bitsSize = value == 0 ? 0 : Math.floor(Math.log2(value) + 1);
 
     //This is not reliable. But left here commented as a warning.
-    /*if (bitsSize <= 32)
-     *      return ~value;*/
+    //if (bitsSize <= 32)
+    //    return ~value;
 
     /** @type {number} */ var byteSize = Math.floor(bitsSize / 8) + ((bitsSize % 8) > 0 ? 1 : 0);
 
@@ -502,7 +506,8 @@ deMath.binaryNot = function(value) {
  * @return {number}
  */
 deMath.shiftLeft = function(value, steps) {
-    /** @type {number} */ var totalBitsRequired = Math.floor(Math.log2(value) + 1) + steps;
+    value = value < 0 ? new Uint32Array([value])[0] : value;
+    /** @type {number} */ var totalBitsRequired = value == 0 ? steps : Math.floor(Math.log2(value) + 1) + steps;
 
     if (totalBitsRequired < 32)
         return value << steps;
@@ -541,7 +546,8 @@ deMath.shiftLeft = function(value, steps) {
  * @return {number}
  */
 deMath.shiftRight = function(value, steps) {
-    /** @type {number} */ var totalBitsRequired = Math.floor(Math.log2(value) + 1); //additional bits not needed (will be 0) + steps;
+    value = value < 0 ? new Uint32Array([value])[0] : value;
+    /** @type {number} */ var totalBitsRequired = value == 0 ? steps : Math.floor(Math.log2(value) + 1); //additional bits not needed (will be 0) + steps;
 
     if (totalBitsRequired < 32)
         return value >> steps;
@@ -630,7 +636,8 @@ deMath.logicalNotBool = function(a) {
 };
 
 /** deMath.greaterThan over two arrays of booleans
- * @param {Array<boolean>} a
+ * @param {Array<number>} a
+ * @param {Array<number>} b
  * @return {Array<boolean>}
  */
 deMath.greaterThan = function(a, b) {
