@@ -1,3 +1,4 @@
+array-as-return-value.html
 array-assign.html
 array-assign-constructor.html
 array-equality.html
