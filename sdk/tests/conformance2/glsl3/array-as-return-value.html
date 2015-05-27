@@ -33,18 +33,11 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../../conformance/resources/webgl-test-utils.js"></script>
+<script src="../../conformance/resources/glsl-conformance-test.js"></script>
 </head>
 <body>
-<canvas id="canvas" width="64" height="64"> </canvas>
 <div id="description"></div>
 <div id="console"></div>
-<script id="vshader" type="x-shader/x-vertex">#version 300 es
-in vec3 aPosition;
-
-void main() {
-    gl_Position = vec4(aPosition, 1);
-}
-</script>
 <script id="fshaderReturnedArrayNotUsed" type="x-shader/x-fragment">#version 300 es
 precision mediump float;
 
@@ -145,43 +138,33 @@ void main() {
 description("Arrays as return values should work");
 debug("");
 debug("This test is targeted to stress syntax tree transformations that might need to be done in shader translation when the platform doesn't natively support arrays as return values.");
-var wtu = WebGLTestUtils;
-function test() {
-  var gl = wtu.create3DContext("canvas", undefined, 2);
-  if (!gl) {
-    testFailed("WebGL 2 context does not exist");
-    return;
-  }
-  wtu.setupUnitQuad(gl);
 
-  debug("");
-  debug("Expression where a returned array is not used");
-  wtu.setupProgram(gl, ["vshader", "fshaderReturnedArrayNotUsed"], ["aPosition"], undefined, true);
-  wtu.clearAndDrawUnitQuad(gl);
-  wtu.checkCanvas(gl, [0, 255, 0, 255]);
-
-  debug("");
-  debug("Expression where a returned array is compared");
-  wtu.setupProgram(gl, ["vshader", "fshaderCompareReturnedArray"], ["aPosition"], undefined, true);
-  wtu.clearAndDrawUnitQuad(gl);
-  wtu.checkCanvas(gl, [0, 255, 0, 255]);
-
-  debug("");
-  debug("Expression where a returned array is returned again");
-  wtu.setupProgram(gl, ["vshader", "fshaderReturnReturnedArray"], ["aPosition"], undefined, true);
-  wtu.clearAndDrawUnitQuad(gl);
-  wtu.checkCanvas(gl, [0, 255, 0, 255]);
-
-  debug("");
-  debug("Expression where a returned array is passed as a parameter");
-  wtu.setupProgram(gl, ["vshader", "fshaderReturnedArrayAsParameter"], ["aPosition"], undefined, true);
-  wtu.clearAndDrawUnitQuad(gl);
-  wtu.checkCanvas(gl, [0, 255, 0, 255]);
-};
-
-test();
-var successfullyParsed = true;
-finishTest();
+GLSLConformanceTester.runRenderTests([
+{
+  fShaderId: 'fshaderReturnedArrayNotUsed',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Expression where a returned array is not used'
+},
+{
+  fShaderId: 'fshaderCompareReturnedArray',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Expression where a returned array is compared'
+},
+{
+  fShaderId: 'fshaderReturnReturnedArray',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Expression where a returned array is returned again'
+},
+{
+  fShaderId: 'fshaderReturnedArrayAsParameter',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Expression where a returned array is passed as a parameter'
+}
+], 2);
 </script>
 </body>
 </html>
