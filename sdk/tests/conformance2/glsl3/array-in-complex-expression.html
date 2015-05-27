@@ -33,18 +33,11 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../../conformance/resources/webgl-test-utils.js"></script>
+<script src="../../conformance/resources/glsl-conformance-test.js"></script>
 </head>
 <body>
-<canvas id="canvas" width="64" height="64"> </canvas>
 <div id="description"></div>
 <div id="console"></div>
-<script id="vshader" type="x-shader/x-vertex">#version 300 es
-in vec3 aPosition;
-
-void main() {
-    gl_Position = vec4(aPosition, 1);
-}
-</script>
 <script id="fshaderAndShortCircuits" type="x-shader/x-fragment">#version 300 es
 precision mediump float;
 
@@ -139,44 +132,33 @@ void main() {
 description("Arrays in complex expressions should work");
 debug("");
 debug("This test is targeted to stress syntax tree transformations that might need to be done in shader translation when the platform doesn't natively support arrays as return values.");
-var wtu = WebGLTestUtils;
-function test() {
-  var gl = wtu.create3DContext("canvas", undefined, 2);
-  if (!gl) {
-    testFailed("WebGL 2 context does not exist");
-    return;
-  }
-  wtu.setupUnitQuad(gl);
 
-  debug("");
-  debug("Expression where an array is returned from a function call inside an operand to && that doesn't get evaluated as result of short-circuiting");
-  wtu.setupProgram(gl, ["vshader", "fshaderAndShortCircuits"], ["aPosition"], undefined, true);
-  wtu.clearAndDrawUnitQuad(gl);
-  wtu.checkCanvas(gl, [0, 255, 0, 255]);
-
-  debug("");
-  debug("Expression where an array is returned from a function call inside an operand to || that doesn't get evaluated as result of short-circuiting");
-  wtu.setupProgram(gl, ["vshader", "fshaderOrShortCircuits"], ["aPosition"], undefined, true);
-  wtu.clearAndDrawUnitQuad(gl);
-  wtu.checkCanvas(gl, [0, 255, 0, 255]);
-
-  debug("");
-  debug("Expression where an array is returned from a function call in an operand of a ternary operator that doesn't get evaluated");
-  wtu.setupProgram(gl, ["vshader", "fshaderTernaryOnlyEvaluatesOneOperand"], ["aPosition"], undefined, true);
-  wtu.clearAndDrawUnitQuad(gl);
-  wtu.checkCanvas(gl, [0, 255, 0, 255]);
-
-  debug("");
-  debug("Expression where first operand of a sequence operator has side effects which affect the second operand that returns an array");
-  wtu.setupProgram(gl, ["vshader", "fshaderSequenceSideEffectsAffectingComparedArrayContent"], ["aPosition"], undefined, true);
-  wtu.clearAndDrawUnitQuad(gl);
-  wtu.checkCanvas(gl, [0, 255, 0, 255]);
-
-};
-
-test();
-var successfullyParsed = true;
-finishTest();
+GLSLConformanceTester.runRenderTests([
+{
+  fShaderId: 'fshaderAndShortCircuits',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: "Expression where an array is returned from a function call inside an operand to && that doesn't get evaluated as result of short-circuiting"
+},
+{
+  fShaderId: 'fshaderOrShortCircuits',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: "Expression where an array is returned from a function call inside an operand to || that doesn't get evaluated as result of short-circuiting"
+},
+{
+  fShaderId: 'fshaderTernaryOnlyEvaluatesOneOperand',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: "Expression where an array is returned from a function call in an operand of a ternary operator that doesn't get evaluated"
+},
+{
+  fShaderId: 'fshaderSequenceSideEffectsAffectingComparedArrayContent',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Expression where first operand of a sequence operator has side effects which affect the second operand that returns an array'
+}
+], 2);
 </script>
 </body>
 </html>

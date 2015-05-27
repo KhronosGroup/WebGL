@@ -33,18 +33,11 @@
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../../conformance/resources/webgl-test-utils.js"></script>
+<script src="../../conformance/resources/glsl-conformance-test.js"></script>
 </head>
 <body>
-<canvas id="canvas" width="64" height="64"> </canvas>
 <div id="description"></div>
 <div id="console"></div>
-<script id="vshader" type="x-shader/x-vertex">#version 300 es
-in vec3 aPosition;
-
-void main() {
-    gl_Position = vec4(aPosition, 1);
-}
-</script>
 <script id="fshaderSimple" type="x-shader/x-fragment">#version 300 es
 precision mediump float;
 
@@ -100,31 +93,21 @@ void main() {
 <script type="text/javascript">
 "use strict";
 description("Assigning arrays should work.");
-debug("");
-var wtu = WebGLTestUtils;
-function test() {
-  var gl = wtu.create3DContext("canvas", undefined, 2);
-  if (!gl) {
-    testFailed("WebGL 2 context does not exist");
-    return;
-  }
-  wtu.setupUnitQuad(gl);
 
-  debug("Testing with arrays of integers");
-  wtu.setupProgram(gl, ["vshader", "fshaderSimple"], ["aPosition"], undefined, true);
-  wtu.drawUnitQuad(gl);
-  wtu.checkCanvas(gl, [0, 255, 0, 255]);
-
-  debug("");
-  debug("Testing with arrays of structs");
-  wtu.setupProgram(gl, ["vshader", "fshaderArrayOfStructs"], ["aPosition"], undefined, true);
-  wtu.clearAndDrawUnitQuad(gl);
-  wtu.checkCanvas(gl, [0, 255, 0, 255]);
-};
-
-test();
-var successfullyParsed = true;
-finishTest();
+GLSLConformanceTester.runRenderTests([
+{
+  fShaderId: 'fshaderSimple',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Arrays of integers'
+},
+{
+  fShaderId: 'fshaderArrayOfStructs',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Arrays of structs'
+}
+], 2);
 </script>
 </body>
 </html>

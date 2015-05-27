@@ -39,6 +39,25 @@ var defaultFragmentShader = [
   "}"
 ].join('\n');
 
+var defaultESSL3VertexShader = [
+  "#version 300 es",
+  "in vec4 vPosition;",
+  "void main()",
+  "{",
+  "    gl_Position = vPosition;",
+  "}"
+].join('\n');
+
+var defaultESSL3FragmentShader = [
+  "#version 300 es",
+  "precision mediump float;",
+  "out vec4 my_FragColor;",
+  "void main()",
+  "{",
+  "    my_FragColor = vec4(1.0,0.0,0.0,1.0);",
+  "}"
+].join('\n');
+
 function log(msg) {
   bufferedLogToConsole(msg);
 }
@@ -82,8 +101,30 @@ function runOneTest(gl, info) {
     }
   }
 
-  var vLabel = (info.vShaderSource == defaultVertexShader ? "default" : "test") + " vertex shader";
-  var fLabel = (info.fShaderSource == defaultFragmentShader ? "default" : "test") + " fragment shader";
+  var vIsDefault = (info.vShaderSource == defaultVertexShader);
+  var fIsDefault = (info.fShaderSource == defaultFragmentShader);
+  var vLabel = (vIsDefault ? "default" : "test") + " vertex shader";
+  var fLabel = (fIsDefault ? "default" : "test") + " fragment shader";
+
+  if (vIsDefault != fIsDefault) {
+    // The language version of the default shader is chosen
+    // according to the language version of the other shader.
+    // We rely on "#version 300 es" being in this usual format.
+    // It must be on the first line of the shader according to the spec.
+    if (fIsDefault) {
+      // If we're using the default fragment shader, we need to make sure that
+      // it's language version matches with the vertex shader.
+      if (info.vShaderSource.split('\n')[0] == '#version 300 es') {
+        info.fShaderSource = defaultESSL3FragmentShader;
+      }
+    } else {
+      // If we're using the default vertex shader, we need to make sure that
+      // it's language version matches with the fragment shader.
+      if (info.fShaderSource.split('\n')[0] == '#version 300 es') {
+        info.vShaderSource = defaultESSL3VertexShader;
+      }
+    }
+  }
 
   var vSource = info.vShaderPrep ? info.vShaderPrep(info.vShaderSource) :
     info.vShaderSource;
@@ -357,11 +398,11 @@ function runTest() {
   runTests([info]);
 }
 
-function runRenderTests(tests) {
+function runRenderTests(tests, opt_contextVersion) {
   for (var ii = 0; ii < tests.length; ++ii) {
     tests[ii].render = true
   }
-  runTests(tests);
+  runTests(tests, opt_contextVersion);
 }
 
 function runRenderTest() {
