@@ -42,6 +42,22 @@ function enumToString(value) {
   return wtu.glEnumToString(gl, value);
 }
 
+function testTexParameter(testCase) {
+  var msg = "paramName: " + enumToString(testCase.pname);
+  error = testCase.expectedError;
+  gl.texParameteri(testCase.target, testCase.pname, testCase.param);
+  wtu.glErrorShouldBe(gl, error, msg);
+  gl.texParameterf(testCase.target, testCase.pname, testCase.param);
+  wtu.glErrorShouldBe(gl, error, msg);
+}
+
+function testGetTexParameter(testCase) {
+  var msg = "paramName: " + enumToString(testCase.pname);
+  error = testCase.expectedError;
+  gl.getTexParameter(testCase.target, testCase.pname);
+  wtu.glErrorShouldBe(gl, error, msg);
+}
+
 function testTexImage2D(testCase) {
   var level = 0;
   var width = 16;
@@ -69,22 +85,6 @@ function testTexSubImage2D(testCase) {
 
   gl.texSubImage2D(testCase.target, level, xoffset, yoffset, width, height, testCase.format, testCase.type, array);
   error = testCase.expectedError;
-  wtu.glErrorShouldBe(gl, error, msg);
-}
-
-function testTexParameter(testCase) {
-  var msg = "paramName: " + enumToString(testCase.pname);
-  error = testCase.expectedError;
-  gl.texParameteri(testCase.target, testCase.pname, testCase.param);
-  wtu.glErrorShouldBe(gl, error, msg);
-  gl.texParameterf(testCase.target, testCase.pname, testCase.param);
-  wtu.glErrorShouldBe(gl, error, msg);
-}
-
-function testGetTexParameter(testCase) {
-  var msg = "paramName: " + enumToString(testCase.pname);
-  error = testCase.expectedError;
-  gl.getTexParameter(testCase.target, testCase.pname);
   wtu.glErrorShouldBe(gl, error, msg);
 }
 
@@ -167,6 +167,41 @@ function testCopyFromInternalFBO(testCase) {
   error = testCase.expectedError;
   wtu.glErrorShouldBe(gl, error, msg);
 }
+
+// Only for WebGL2.0.
+function testTexImage3D(testCase) {
+  var level = 0;
+  var width = 16;
+  var height = 16;
+  var depth = 16;
+  var msg = " internalFormat: " + enumToString(testCase.internalFormat) +
+            " target: " + enumToString(testCase.target) +
+            " format: " + enumToString(testCase.format) +
+            " type: " + enumToString(testCase.type) +
+            " border: " + testCase.border;
+
+  gl.texImage3D(testCase.target, level, testCase.internalFormat, width, height, depth, testCase.border, testCase.format, testCase.type, null);
+  error = testCase.expectedError;
+  wtu.glErrorShouldBe(gl, error, msg);
+}
+
+function testTexSubImage3D(testCase) {
+  var level = 0;
+  var xoffset = 0;
+  var yoffset = 0;
+  var zoffset = 0;
+  var width = 16;
+  var height = 16;
+  var depth = 16;
+  var msg = " format: " + enumToString(testCase.format) +
+            " type: " + enumToString(testCase.type);
+  var array = new Uint8Array(width * height * depth * 4);
+
+  gl.texSubImage3D(testCase.target, level, xoffset, yoffset, zoffset, width, height, depth, testCase.format, testCase.type, array);
+  error = testCase.expectedError;
+  wtu.glErrorShouldBe(gl, error, msg);
+}
+
 
 // Start checking.
 
@@ -392,6 +427,70 @@ testCases = [
 
 for (var ii = 0; ii < testCases.length; ++ii) {
   testCopyFromInternalFBO(testCases[ii]);
+}
+
+if (contextVersion > 1) {
+// Create new texture for testing api of WebGL 2.0.
+shouldBeNonNull("tex = gl.createTexture()");
+gl.bindTexture(gl.TEXTURE_3D, tex);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+debug("");
+debug("Checking TexImage3D: a set of inputs that are valid in GL but invalid in WebGL");
+
+var testCases = [
+  { target: 0x8070, // GL_PROXY_TEXTURE_3D
+    internalFormat: gl.RGBA,
+    border: 0,
+    format: gl.RGBA,
+    type: gl.UNSIGNED_BYTE,
+    expectedError: gl.INVALID_ENUM },
+  { target: gl.TEXTURE_3D,
+    internalFormat: gl.RGBA,
+    border: 0,
+    format: gl.RGB,
+    type: gl.UNSIGNED_BYTE,
+    expectedError: gl.INVALID_OPERATION },
+  { target: gl.TEXTURE_3D,
+    internalFormat: gl.RGBA,
+    border: 0,
+    format: gl.RGBA,
+    type: gl.BYTE,
+    expectedError: gl.INVALID_OPERATION},
+  { target: gl.TEXTURE_3D,
+    internalFormat: gl.RGBA,
+    border: 0,
+    format: gl.RGBA,
+    type: gl.UNSIGNED_BYTE,
+    expectedError: gl.NO_ERROR }
+];
+
+for (var ii = 0; ii < testCases.length; ++ii) {
+  testTexImage3D(testCases[ii]);
+}
+
+debug("");
+debug("Checking TexSubImage3D: a set of inputs that are valid in GL but invalid in WebGL");
+
+testCases = [
+  { target: gl.TEXTURE_3D,
+    format: 0x80E0, // GL_BGR
+    type: gl.UNSIGNED_BYTE,
+    expectedError: gl.INVALID_ENUM },
+  { target: gl.TEXTURE_3D,
+    format: gl.RGBA,
+    type: 0x8032, // GL_UNSIGNED_BYTE_3_3_2
+    expectedError: gl.INVALID_ENUM },
+  { target: gl.TEXTURE_3D,
+    format: gl.RGBA,
+    type: gl.UNSIGNED_BYTE,
+    expectedError: gl.NO_ERROR }
+];
+
+for (var ii = 0; ii < testCases.length; ++ii) {
+  testTexSubImage3D(testCases[ii]);
+}
+
 }
 
 var successfullyParsed = true;
