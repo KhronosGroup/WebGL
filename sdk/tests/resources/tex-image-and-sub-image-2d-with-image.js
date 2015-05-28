@@ -43,7 +43,7 @@ function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
         gl.clearColor(0,0,0,1);
         gl.clearDepth(1);
 
-        wtu.loadTexture(gl, pathToTestRoot + "/resources/red-green.png", runTest);
+        wtu.loadTexture(gl, "/resources/red-green.png", runTest);
     }
 
     function runOneIteration(image, useTexSubImage2D, flipY, topColor, bottomColor,

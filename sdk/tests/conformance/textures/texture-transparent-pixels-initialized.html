@@ -28,7 +28,7 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test-utils.js"></script>
+<script src="../../resources/webgl-test-utils.js"></script>
 <script>
 "use strict";
 var wtu = WebGLTestUtils;
@@ -65,7 +65,7 @@ function init()
     gl.enableVertexAttribArray(1);
     gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
 
-    texture = wtu.loadTexture(gl, "../resources/bug-32888-texture.png", runTest);
+    texture = wtu.loadTexture(gl, "../../resources/bug-32888-texture.png", runTest);
 }
 
 // These two declarations need to be global for "shouldBe" to see them

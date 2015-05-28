@@ -31,7 +31,7 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
-<script src="../resources/webgl-test-utils.js"></script>
+<script src="../../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -46,8 +46,8 @@ var context = wtu.create3DContext();
 var context2 = wtu.create3DContext();
 var program = wtu.loadStandardProgram(context);
 var program2 = wtu.loadProgramFromFile(context2,
-                           "../resources/intArrayUniformShader.vert",
-                           "../resources/noopUniformShader.frag");
+                           "../../resources/intArrayUniformShader.vert",
+                           "../../resources/noopUniformShader.frag");
 
 wtu.glErrorShouldBe(context, context.NO_ERROR);
 shouldBe("context.getActiveUniform(program, 0).name", "'u_modelViewProjMatrix'");
