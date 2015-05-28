@@ -1580,20 +1580,21 @@ tcuTexture.PixelBufferAccess.prototype.setPixelInt = function(color, x, y, z) {
  */
 tcuTexture.PixelBufferAccess.prototype.clear = function(color, x, y, z) {
     var c = color || [0, 0, 0, 0];
-    var numChannels = tcuTexture.getNumUsedChannels(this.m_format.order);
+    var arrayType = tcuTexture.getTypedArray(this.m_format.type);
     var range_x = x || [0, this.m_width];
     var range_y = y || [0, this.m_height];
     var range_z = z || [0, this.m_depth];
     var pixelSize = this.m_format.getPixelSize();
+    var numElements = pixelSize / arrayType.BYTES_PER_ELEMENT;
     var width = range_x[1] - range_x[0];
     var height = range_y[1] - range_y[0];
     var depth = range_z[1] - range_z[0];
 
     //copy first pixel over other pixels in the row
-    var fillRow = function(pixelPtr, numChannels, width) {
+    var fillRow = function(pixelPtr, numElements, width) {
         for (var i = 1; i < width; i++)
-            for (var c = 0; c < numChannels; c++)
-                pixelPtr[i * numChannels + c] = pixelPtr[c];
+            for (var c = 0; c < numElements; c++)
+                pixelPtr[i * numElements + c] = pixelPtr[c];
     };
     // copy first row to other rows in all planes
     var fillPlanes = function(buffer, arrayType, src, offset, rowStride, planeStride, width, height, depth) {
@@ -1605,12 +1606,12 @@ tcuTexture.PixelBufferAccess.prototype.clear = function(color, x, y, z) {
     };
 
     this.setPixel(c, range_x[0], range_y[0], range_z[0]);
-    var arrayType = tcuTexture.getTypedArray(this.m_format.type);
-    var offset = range_z[0] * this.m_slicePitch + range_y[0] * this.m_rowPitch + range_x[0] * pixelSize;
-    var pixelPtr = new arrayType(this.m_data, offset + this.m_offset, width * numChannels);
 
-    fillRow(pixelPtr, numChannels, width);
-    fillPlanes(this.m_data, arrayType, pixelPtr, offset + this.m_offset, this.m_rowPitch, this.m_slicePitch, width * numChannels, height, depth);
+    var offset = range_z[0] * this.m_slicePitch + range_y[0] * this.m_rowPitch + range_x[0] * pixelSize;
+    var pixelPtr = new arrayType(this.m_data, offset + this.m_offset, width * numElements);
+
+    fillRow(pixelPtr, numElements, width);
+    fillPlanes(this.m_data, arrayType, pixelPtr, offset + this.m_offset, this.m_rowPitch, this.m_slicePitch, width * numElements, height, depth);
 };
 
 /**
@@ -2346,7 +2347,7 @@ tcuTexture.TextureCube.prototype.getSize = function() { return this.m_size; };
 /**
  * @param {number} ndx Level index
  * @param {tcuTexture.CubeFace} face
- * @return {tcuTexture.ConstPixelBufferAccess}
+ * @return {tcuTexture.PixelBufferAccess}
  */
 tcuTexture.TextureCube.prototype.getLevelFace = function(ndx, face) { return this.m_access[face][ndx]; };
 /** @return {number} */
@@ -2553,5 +2554,56 @@ tcuTexture.TextureLevel.prototype.getDepth = function() {
 tcuTexture.TextureLevel.prototype.getFormat = function() {
     return this.m_format;
 };
+
+/**
+ * @constructor
+ * @param {tcuTexture.ConstPixelBufferAccess} src
+ */
+tcuTexture.RGBA8View = function(src) {
+    this.src = src;
+    this.data = new Uint8Array(src.getBuffer(), src.m_offset);
+    this.stride = src.getRowPitch();
+    this.width = src.getWidth();
+    this.height = src.getHeight();
+};
+
+/**
+ * @return {tcuTexture.TextureFormat}
+ */
+tcuTexture.RGBA8View.prototype.getFormat = function() { return this.src.getFormat(); };
+
+/**
+ * Read a pixel
+ * @param {number} x
+ * @param {number} y
+ * @param {number=} numChannels
+ * @return {Array<number>}
+ */
+tcuTexture.RGBA8View.prototype.read = function(x, y, numChannels) {
+    numChannels = numChannels || 4;
+    var offset = y * this.stride + x * 4;
+    var result = [];
+    for (var i = 0; i < numChannels; i++)
+        result.push(this.data[offset + i]);
+    return result;
+};
+
+/**
+ * Write a pixel
+ * @param {number} x
+ * @param {number} y
+ * @param {Array<number>} value
+ * @param {number=} numChannels
+ */
+tcuTexture.RGBA8View.prototype.write = function(x, y, value, numChannels) {
+    numChannels = numChannels || 4;
+    var offset = y * this.stride + x * 4;
+    for (var i = 0; i < numChannels; i++)
+        this.data[offset + i] = value[i];
+};
+
+tcuTexture.RGBA8View.prototype.getWidth = function() { return this.width; };
+
+tcuTexture.RGBA8View.prototype.getHeight = function() { return this.height; };
 
 });

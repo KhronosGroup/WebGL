@@ -824,7 +824,6 @@ goog.scope(function() {
         var view = new Uint8Array(buffer);
         for (var i = 0; i < guardSize; ++i) view[i] = 0xcd;
         gl.bufferSubData(target, bufferSize, buffer);
-        es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'guardband write');
     };
 
     /**
@@ -869,7 +868,7 @@ goog.scope(function() {
         this.m_outputBuffers = []; // vector<deUint32>
 
         this.m_iterNdx = 0; // int
-        
+
     };
 
     setParentClass(es3fTransformFeedbackTests.TransformFeedbackCase, tcuTestCase.DeqpTest);
@@ -938,8 +937,6 @@ goog.scope(function() {
             this.m_outputBuffers[i] = gl.createBuffer();
 
         this.m_transformFeedback = gl.createTransformFeedback();
-
-        es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'es3fTransformFeedbackTests.init');
 
         this.m_iterNdx = 0;
 //          this.m_testCtx.setTestResult(QP_TEST_RESULT_PASS, 'Pass');
@@ -1035,7 +1032,6 @@ goog.scope(function() {
         var inputData = es3fTransformFeedbackTests.genInputData(this.m_attributes, numInputs, this.m_inputStride, rnd);
 
         gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, this.m_transformFeedback);
-        es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'glBindTransformFeedback()');
 
         // Allocate storage for transform feedback output buffers and bind to targets.
         for (var bufNdx = 0; bufNdx < this.m_outputBuffers.length; ++bufNdx) {
@@ -1047,21 +1043,16 @@ goog.scope(function() {
             var usage = gl.DYNAMIC_READ; // const deUint32
 
             gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, buffer);
-            es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'bindBuffer');
             gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, size + guardSize, usage);
-            es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'bufferData');
             es3fTransformFeedbackTests.writeBufferGuard(gl.TRANSFORM_FEEDBACK_BUFFER, size, guardSize);
 
             // \todo [2012-07-30 pyry] glBindBufferRange()?
             gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, target, buffer);
-
-            es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'transform feedback buffer setup');
         }
 
         var attribBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, attribBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, inputData, gl.STATIC_DRAW);
-        es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'Attributes buffer setup');
 
         // Setup attributes.
         for (var i = 0; i < this.m_attributes.length; ++i) {
@@ -1102,7 +1093,6 @@ goog.scope(function() {
 
         // Enable query.
         gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, primitiveQuery);
-        es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'glBeginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN)');
 
         // Draw
         var offset = 0;
@@ -1132,17 +1122,14 @@ goog.scope(function() {
                 gl.resumeTransformFeedback();
 
             gl.endTransformFeedback();
-            es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'render');
         }
 
         gl.endQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
-        es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'glEndQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN)');
 
         // Check and log query status right after submit
         (function() {
             var available = false; // deUint32
-            available = gl.getQueryParameter(primitiveQuery, gl.QUERY_RESULT_AVAILABLE);
-            es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'getQueryParameter()'); // formerly glGetQueryObjectuiv()
+            available = gl.getQueryParameter(primitiveQuery, gl.QUERY_RESULT_AVAILABLE); // formerly glGetQueryObjectuiv()
 
             bufferedLogToConsole('gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN status after submit: ' +
                 (available != false ? 'true' : 'false'));
@@ -1159,7 +1146,6 @@ goog.scope(function() {
             gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, this.m_outputBuffers[bufferNdx]);
 
             gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, buffer); // (spec says to use ArrayBufferData)
-            es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'mapping buffer');
 
             // Verify all output variables that are written to this buffer.
             for (var i = 0; i < this.m_transformFeedbackOutputs.length; ++i) {
@@ -1220,8 +1206,7 @@ goog.scope(function() {
         var numPrimitives = 0; // deUint32
 
         available = gl.getQueryParameter(primitiveQuery, gl.QUERY_RESULT_AVAILABLE);
-        numPrimitives = gl.getQueryParameter(primitiveQuery, gl.QUERY_RESULT);
-        es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'getQueryParameter()'); // formerly getQueryObjectuiv()
+        numPrimitives = gl.getQueryParameter(primitiveQuery, gl.QUERY_RESULT); // formerly getQueryObjectuiv()
 
         if (!mustBeReady && available == false) {
 
@@ -1248,8 +1233,6 @@ goog.scope(function() {
         // Read back rendered image.
         gl.readPixels(viewportX, viewportY, viewportW, viewportH, gl.RGBA, gl.UNSIGNED_BYTE, frameWithTf.getAccess().getDataPtr());
 
-        es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'glReadPixels()');
-
         // Render without transform feedback.
         offset = 0; // int
 
@@ -1260,10 +1243,7 @@ goog.scope(function() {
             gl.drawArrays(this.m_primitiveType, offset, call.numElements);
             offset += call.numElements;
         }
-
-        es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'render');
         gl.readPixels(viewportX, viewportY, viewportW, viewportH, gl.RGBA, gl.UNSIGNED_BYTE, frameWithoutTf.getAccess().getDataPtr());
-        es3fTransformFeedbackTests.GLU_EXPECT_NO_ERROR(gl, gl.getError(), 'glReadPixels()');
 
         // Compare images with and without transform feedback.
         imagesOk = tcuImageCompare.pixelThresholdCompare('Result', 'Image comparison result', frameWithoutTf, frameWithTf, [1, 1, 1, 1], tcuImageCompare.CompareLogMode.ON_ERROR);
@@ -1489,7 +1469,7 @@ goog.scope(function() {
             gluShaderUtil.precision.PRECISION_HIGHP
         ];
 
-        var interpModes = [ {name: 'smooth', interp: es3fTransformFeedbackTests.interpolation.SMOOTH}, {name: 'flat', interp: es3fTransformFeedbackTests.interpolation.FLAT}, {name: 'centroid', interp: es3fTransformFeedbackTests.interpolation.CENTROID}
+        var interpModes = [{name: 'smooth', interp: es3fTransformFeedbackTests.interpolation.SMOOTH}, {name: 'flat', interp: es3fTransformFeedbackTests.interpolation.FLAT}, {name: 'centroid', interp: es3fTransformFeedbackTests.interpolation.CENTROID}
         ];
 
         /** @type {number} */ var maxAttributeVectors = 16;
@@ -1607,10 +1587,10 @@ goog.scope(function() {
         /** @const @type {tcuTestCase.DeqpTest} */
         var testGroup = tcuTestCase.runner.testCases;
 
-        var bufferModes = [ {name: 'separate', mode: gl.SEPARATE_ATTRIBS}, {name: 'interleaved', mode: gl.INTERLEAVED_ATTRIBS}
+        var bufferModes = [{name: 'separate', mode: gl.SEPARATE_ATTRIBS}, {name: 'interleaved', mode: gl.INTERLEAVED_ATTRIBS}
         ];
 
-        var primitiveTypes = [ {name: 'points', type: gluDrawUtil.primitiveType.POINTS}, {name: 'lines', type: gluDrawUtil.primitiveType.LINES}, {name: 'triangles', type: gluDrawUtil.primitiveType.TRIANGLES}
+        var primitiveTypes = [{name: 'points', type: gluDrawUtil.primitiveType.POINTS}, {name: 'lines', type: gluDrawUtil.primitiveType.LINES}, {name: 'triangles', type: gluDrawUtil.primitiveType.TRIANGLES}
         ];
 
         /** @type {Array<gluShaderUtil.DataType>} */
@@ -1650,7 +1630,7 @@ goog.scope(function() {
             // glsUBC.UniformFlags.PRECISION_HIGH
         ];
 
-        var interpModes = [ {name: 'smooth', interp: es3fTransformFeedbackTests.interpolation.SMOOTH}, {name: 'flat', interp: es3fTransformFeedbackTests.interpolation.FLAT}, {name: 'centroid', interp: es3fTransformFeedbackTests.interpolation.CENTROID}
+        var interpModes = [{name: 'smooth', interp: es3fTransformFeedbackTests.interpolation.SMOOTH}, {name: 'flat', interp: es3fTransformFeedbackTests.interpolation.FLAT}, {name: 'centroid', interp: es3fTransformFeedbackTests.interpolation.CENTROID}
         ];
 
         // .position

@@ -42,7 +42,6 @@ var deMath = framework.delibs.debase.deMath;
         if (!x)
             throw new Error('Assert failed');
     };
-    tcuCompressedTexture.DE_FALSE = false;
 
 /**
  * @enum
@@ -95,8 +94,9 @@ tcuCompressedTexture.divRoundUp = function(a, b) {
 };
 
 tcuCompressedTexture.isEtcFormat = function(fmt) {
+    // WebGL2 supports ETC2 and EAC formats
     switch (fmt) {
-        case tcuCompressedTexture.Format.ETC1_RGB8:
+        // case tcuCompressedTexture.Format.ETC1_RGB8:
         case tcuCompressedTexture.Format.EAC_R11:
         case tcuCompressedTexture.Format.EAC_SIGNED_R11:
         case tcuCompressedTexture.Format.EAC_RG11:
@@ -800,6 +800,42 @@ return {
 tcuCompressedTexture.CompressedTexture = function(format, width, height, depth) {
     depth = depth === undefined ? 1 : depth;
     this.setStorage(format, width, height, depth);
+    /** @type {Uint8Array} */ this.m_data;
+};
+
+/**
+ * @return {number}
+ */
+tcuCompressedTexture.CompressedTexture.prototype.getDataSize = function() {
+     return this.m_data.length;
+};
+
+/**
+  * @return {Uint8Array}
+  */
+tcuCompressedTexture.CompressedTexture.prototype.getData = function() {
+      return this.m_data;
+};
+
+/**
+  * @return {number}
+  */
+tcuCompressedTexture.CompressedTexture.prototype.getWidth = function() {
+      return this.m_width;
+};
+
+/**
+  * @return {number}
+  */
+tcuCompressedTexture.CompressedTexture.prototype.getHeight = function() {
+      return this.m_height;
+};
+
+/**
+  * @return {tcuCompressedTexture.Format}
+  */
+tcuCompressedTexture.CompressedTexture.prototype.getFormat = function() {
+      return this.m_format;
 };
 
 tcuCompressedTexture.CompressedTexture.prototype.setStorage = function(format, width, height, depth) {
@@ -886,11 +922,11 @@ tcuCompressedTexture.CompressedTexture.prototype.getUncompressedFormat = functio
     // }
 };
 
-/*--------------------------------------------------------------------*//*!
- * \brief Decode to uncompressed pixel data
- * \param dst Destination buffer
- *//*--------------------------------------------------------------------*/
-tcuCompressedTexture.CompressedTexture.prototype.decompress = function(/*const tcu::PixelBufferAccess&*/ dst) {
+/**
+ * Decode to uncompressed pixel data
+ * @param {tcuTexture.PixelBufferAccess} dst Destination buffer
+ */
+tcuCompressedTexture.CompressedTexture.prototype.decompress = function(dst) {
     DE_ASSERT(dst.getWidth() == this.m_width && dst.getHeight() == this.m_height && dst.getDepth() == 1);
     var format = this.getUncompressedFormat();
     if (dst.getFormat().order != format.order || dst.getFormat().type != format.type)

@@ -46,15 +46,6 @@ var DE_ASSERT = function(x) {
         throw new Error('Assert failed');
 };
 
-glsUniformBlockCase.GLU_EXPECT_NO_ERROR = function(x, msg) {
-    if (x) //error
-        throw new Error(msg);
-};
-
-glsUniformBlockCase.TCU_FAIL = function(msg) {
-    testFailedOptions(msg, true);
-};
-
 /**
  * Class to implement some pointers functionality.
  * @constructor
@@ -711,7 +702,7 @@ glsUniformBlockCase.PrecisionFlagsFmt = function(flags) {
 glsUniformBlockCase.LayoutFlagsFmt = function(flags_) {
     var str = '';
     var bitDesc =
-    [ { bit: glsUniformBlockCase.UniformFlags.LAYOUT_SHARED, token: 'shared' }, { bit: glsUniformBlockCase.UniformFlags.LAYOUT_PACKED, token: 'packed' }, { bit: glsUniformBlockCase.UniformFlags.LAYOUT_STD140, token: 'std140' }, { bit: glsUniformBlockCase.UniformFlags.LAYOUT_ROW_MAJOR, token: 'row_major' }, { bit: glsUniformBlockCase.UniformFlags.LAYOUT_COLUMN_MAJOR, token: 'column_major' }
+    [{ bit: glsUniformBlockCase.UniformFlags.LAYOUT_SHARED, token: 'shared' }, { bit: glsUniformBlockCase.UniformFlags.LAYOUT_PACKED, token: 'packed' }, { bit: glsUniformBlockCase.UniformFlags.LAYOUT_STD140, token: 'std140' }, { bit: glsUniformBlockCase.UniformFlags.LAYOUT_ROW_MAJOR, token: 'row_major' }, { bit: glsUniformBlockCase.UniformFlags.LAYOUT_COLUMN_MAJOR, token: 'column_major' }
     ];
 
     /** @type {number} */ var remBits = flags_;
@@ -744,7 +735,6 @@ glsUniformBlockCase.UniformBufferManager.prototype.allocBuffer = function() {
     /** @type {WebGLBuffer} */ var buf = this.m_renderCtx.createBuffer();
 
     this.m_buffers.push(buf);
-    glsUniformBlockCase.GLU_EXPECT_NO_ERROR(this.m_renderCtx.getError(), 'Failed to allocate uniform buffer');
 
     return buf;
 };
@@ -1754,8 +1744,6 @@ glsUniformBlockCase.getGLUniformLayout = function(gl, layout, program) {
     numActiveUniforms = /** @type {number} */ (gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS)); // ACTIVE_UNIFORM* returns GLInt
     numActiveBlocks = /** @type {number} */ (gl.getProgramParameter(program, gl.ACTIVE_UNIFORM_BLOCKS));
 
-    glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'Failed to get number of uniforms and uniform blocks');
-
     /** @type {glsUniformBlockCase.BlockLayoutEntry} */ var entryBlock;
     /** @type {glsUniformBlockCase.UniformLayoutEntry} */ var entryUniform;
     /** @type {number} */ var size;
@@ -1773,8 +1761,6 @@ glsUniformBlockCase.getGLUniformLayout = function(gl, layout, program) {
         // nameLen = gl.getActiveUniformBlockParameter(program, blockNdx, gl.UNIFORM_BLOCK_NAME_LENGTH); // TODO: UNIFORM_BLOCK_NAME_LENGTH is removed in WebGL2
         numBlockUniforms = /** @type {number} */ (gl.getActiveUniformBlockParameter(program, blockNdx, gl.UNIFORM_BLOCK_ACTIVE_UNIFORMS));
 
-        glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'glsUniformBlockCase.Uniform block query failed');
-
         nameBuf = gl.getActiveUniformBlockName(program, blockNdx);
 
         entryBlock.name = nameBuf;
@@ -1783,8 +1769,6 @@ glsUniformBlockCase.getGLUniformLayout = function(gl, layout, program) {
 
         if (numBlockUniforms > 0)
             entryBlock.activeUniformIndices = gl.getActiveUniformBlockParameter(program, blockNdx, gl.UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES);
-
-        glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'glsUniformBlockCase.Uniform block query failed');
 
         layout.blocks.push(entryBlock); //Pushing the block into the array here.
     }
@@ -1814,8 +1798,6 @@ glsUniformBlockCase.getGLUniformLayout = function(gl, layout, program) {
         matrixStrides = gl.getActiveUniforms(program, uniformIndices, gl.UNIFORM_MATRIX_STRIDE);
         rowMajorFlags = gl.getActiveUniforms(program, uniformIndices, gl.UNIFORM_IS_ROW_MAJOR);
 
-        glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'Active uniform query failed');
-
         // Translate to LayoutEntries
         // No resize needed. Will push them: layout.uniforms.resize(numActiveUniforms);
         for (var uniformNdx = 0; uniformNdx < numActiveUniforms; uniformNdx++) {
@@ -1827,8 +1809,6 @@ glsUniformBlockCase.getGLUniformLayout = function(gl, layout, program) {
 
             var uniform = gl.getActiveUniform(program, uniformNdx);
 
-            glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'glsUniformBlockCase.Uniform name query failed');
-
             nameBuf = uniform.name;
             // Remove this: nameLen = nameBuf.length;
             size = uniform.size;
@@ -1837,7 +1817,7 @@ glsUniformBlockCase.getGLUniformLayout = function(gl, layout, program) {
             // Remove this: nameLen != nameLengths[uniformNdx] ||
             if (size != sizes[uniformNdx] ||
                 type != types[uniformNdx])
-                glsUniformBlockCase.TCU_FAIL("Values returned by gl.getActiveUniform() don't match with values queried with gl.getActiveUniforms().");
+                testFailedOptions("Values returned by gl.getActiveUniform() don't match with values queried with gl.getActiveUniforms().", true);
 
             entryUniform.name = nameBuf;
             entryUniform.type = gluShaderUtil.getDataTypeFromGLType(types[uniformNdx]);
@@ -2020,8 +2000,6 @@ glsUniformBlockCase.copyUniformData = function(dstLayout, dstBlockPointers, srcL
         gl.uniformBlockBinding(program.getProgram(), blockNdx, binding);
     }
 
-    glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'Failed to set uniform block bindings');
-
     /** @type {number} */ var numBlocks;
     /** @type {glsUniformBlockCase.BlockPointers} */ var glBlockPointers;
 
@@ -2051,10 +2029,8 @@ glsUniformBlockCase.copyUniformData = function(dstLayout, dstBlockPointers, srcL
 
             gl.bindBuffer(gl.UNIFORM_BUFFER, buffer);
             gl.bufferData(gl.UNIFORM_BUFFER, glBlockPointers.find(blockNdx) /*(glw::GLsizeiptr)glData[blockNdx].size(), &glData[blockNdx][0]*/, gl.STATIC_DRAW);
-            glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'Failed to upload uniform buffer data');
 
             gl.bindBufferBase(gl.UNIFORM_BUFFER, binding, buffer);
-            glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'glBindBufferBase(gl.UNIFORM_BUFFER) failed');
         }
     } else {
         DE_ASSERT(this.m_bufferMode == glsUniformBlockCase.BufferMode.BUFFERMODE_SINGLE);
@@ -2087,13 +2063,10 @@ glsUniformBlockCase.copyUniformData = function(dstLayout, dstBlockPointers, srcL
         if (glBlockPointers.data.byteLength > 0 /*!glData.empty()*/)
             gl.bufferData(gl.UNIFORM_BUFFER, glBlockPointers.find(blockNdx) /*(glw::GLsizeiptr)glData.size(), &glData[0]*/, gl.STATIC_DRAW);
 
-        glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'Failed to upload uniform buffer data');
-
         // Bind ranges to binding points.
         for (var blockNdx = 0; blockNdx < numBlocks; blockNdx++) {
             binding = blockNdx;
             gl.bindBufferRange(gl.UNIFORM_BUFFER, binding, buffer, glBlockPointers.offsets[blockNdx], glLayout.blocks[blockNdx].size);
-            glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'glBindBufferRange(gl.UNIFORM_BUFFER) failed');
         }
     }
 
@@ -2400,8 +2373,6 @@ glsUniformBlockCase.UniformBlockCase.prototype.checkIndexQueries = function(prog
             bufferedLogToConsole('ERROR: glGetUniformBlockIndex(' + block.name + ') returned ' + queriedNdx + ', expected ' + blockNdx + '!');
             allOk = false;
         }
-
-        glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'glGetUniformBlockIndex()');
     }
 
     return allOk;
@@ -2441,14 +2412,12 @@ glsUniformBlockCase.UniformBlockCase.prototype.render = function(program) {
     var posLoc = gl.getAttribLocation(program.program.program, 'a_position');
     var posArray = [new gluDrawUtil.VertexArrayBinding(gl.FLOAT, posLoc, 4, 4, position)];
     gluDrawUtil.drawFromBuffers(gl, program, posArray, gluDrawUtil.triangles(indices));
-    glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'Draw failed');
 
     // Verify that all pixels are white.
     var pixels = new gluDrawUtil.Surface();
     var numFailedPixels = 0;
 
     var buffer = pixels.readSurface(gl, viewportX, viewportY, viewportW, viewportH);
-    glsUniformBlockCase.GLU_EXPECT_NO_ERROR(gl.getError(), 'Reading pixels failed');
 
     var whitePixel = new gluDrawUtil.Pixel([255.0, 255.0, 255.0, 255.0]);
     for (var y = 0; y < viewportH; y++) {

@@ -335,8 +335,12 @@ goog.scope(function() {
             }
             catch (err) {
                 // If the exception was not thrown by a test check, log it, but don't throw it again
-                if (!(err instanceof TestFailedException))
-                    testFailedOptions(err.message, false);
+                if (!(err instanceof TestFailedException)) {
+                    var msg = err;
+                    if (err.message)
+                        msg = err.message;
+                    testFailedOptions(msg, false);
+                }
                 bufferedLogToConsole(err);
             }
 

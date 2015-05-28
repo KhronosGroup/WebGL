@@ -23,7 +23,6 @@ goog.provide('functional.gles3.es3fSamplerObjectTests');
 goog.require('framework.common.tcuTestCase');
 goog.require('modules.shared.glsSamplerObjectTest');
 
-
 goog.scope(function() {
 
 var es3fSamplerObjectTests = functional.gles3.es3fSamplerObjectTests;
@@ -35,7 +34,7 @@ var glsSamplerObjectTest = modules.shared.glsSamplerObjectTest;
     // TODO: implement glsSamplerObjectTest and validate constructors
     es3fSamplerObjectTests.init = function() {
         var testGroup = tcuTestCase.runner.testCases;
-        /** @type {Array.<glsSamplerObjectTest.TestSpec>} */ var simpleTestCases = [
+        /** @type {Array<glsSamplerObjectTest.TestSpec>} */ var simpleTestCases = [
             new glsSamplerObjectTest.TestSpec('diff_wrap_t', 'Different gl.TEXTURE_WRAP_T', gl.TEXTURE_2D,
                 new glsSamplerObjectTest.SamplingState(gl.NEAREST, gl.NEAREST, gl.MIRRORED_REPEAT, gl.REPEAT, gl.REPEAT, -1000.0, 1000.0),
                 new glsSamplerObjectTest.SamplingState(gl.NEAREST, gl.NEAREST, gl.REPEAT, gl.REPEAT, gl.REPEAT, -1000.0, 1000.0)
@@ -73,7 +72,7 @@ var glsSamplerObjectTest = modules.shared.glsSamplerObjectTest;
 
         testGroup.addChild(simpleTexture2D);
 
-        /** @type {Array.<glsSamplerObjectTest.TestSpec>} */ var multiTestCases = [
+        /** @type {Array<glsSamplerObjectTest.TestSpec>} */ var multiTestCases = [
             new glsSamplerObjectTest.TestSpec('diff_wrap_t', 'Different gl.TEXTURE_WRAP_T', gl.TEXTURE_2D,
                     new glsSamplerObjectTest.SamplingState(gl.NEAREST, gl.NEAREST, gl.MIRRORED_REPEAT, gl.REPEAT, gl.REPEAT, -1000.0, 1000.0),
                     new glsSamplerObjectTest.SamplingState(gl.NEAREST, gl.NEAREST, gl.MIRRORED_REPEAT, gl.REPEAT, gl.REPEAT, -1000.0, 1000.0),
@@ -118,7 +117,7 @@ var glsSamplerObjectTest = modules.shared.glsSamplerObjectTest;
 
         testGroup.addChild(multiTexture2D);
 
-        /** @type {Array.<glsSamplerObjectTest.TestSpec>} */ var simpleTestCases3D = [
+        /** @type {Array<glsSamplerObjectTest.TestSpec>} */ var simpleTestCases3D = [
         new glsSamplerObjectTest.TestSpec('diff_wrap_t', 'Different gl.TEXTURE_WRAP_T', gl.TEXTURE_3D,
                 new glsSamplerObjectTest.SamplingState(gl.NEAREST, gl.NEAREST, gl.MIRRORED_REPEAT, gl.REPEAT, gl.REPEAT, -1000.0, 1000.0),
                 new glsSamplerObjectTest.SamplingState(gl.NEAREST, gl.NEAREST, gl.REPEAT, gl.REPEAT, gl.REPEAT, -1000.0, 1000.0)
@@ -156,7 +155,7 @@ var glsSamplerObjectTest = modules.shared.glsSamplerObjectTest;
 
         testGroup.addChild(simpleTexture3D);
 
-        /** @type {Array.<glsSamplerObjectTest.TestSpec>} */ var multiTestCases3D = [
+        /** @type {Array<glsSamplerObjectTest.TestSpec>} */ var multiTestCases3D = [
             new glsSamplerObjectTest.TestSpec('diff_wrap_t', 'Different gl.TEXTURE_WRAP_T', gl.TEXTURE_3D,
                 new glsSamplerObjectTest.SamplingState(gl.NEAREST, gl.NEAREST, gl.MIRRORED_REPEAT, gl.REPEAT, gl.REPEAT, -1000.0, 1000.0),
                 new glsSamplerObjectTest.SamplingState(gl.NEAREST, gl.NEAREST, gl.MIRRORED_REPEAT, gl.REPEAT, gl.REPEAT, -1000.0, 1000.0),
@@ -201,7 +200,7 @@ var glsSamplerObjectTest = modules.shared.glsSamplerObjectTest;
 
         testGroup.addChild(multiTexture3D);
 
-        /** @type {Array.<glsSamplerObjectTest.TestSpec>} */ var simpleTestCasesCube = [
+        /** @type {Array<glsSamplerObjectTest.TestSpec>} */ var simpleTestCasesCube = [
             new glsSamplerObjectTest.TestSpec('diff_wrap_t', 'Different gl.TEXTURE_WRAP_T', gl.TEXTURE_CUBE_MAP,
                 new glsSamplerObjectTest.SamplingState(gl.NEAREST, gl.NEAREST, gl.MIRRORED_REPEAT, gl.REPEAT, gl.REPEAT, -1000.0, 1000.0),
                 new glsSamplerObjectTest.SamplingState(gl.NEAREST, gl.NEAREST, gl.REPEAT, gl.REPEAT, gl.REPEAT, -1000.0, 1000.0)
@@ -239,7 +238,7 @@ var glsSamplerObjectTest = modules.shared.glsSamplerObjectTest;
 
         testGroup.addChild(simpleTextureCube);
 
-        /** @type {Array.<glsSamplerObjectTest.TestSpec>} */ var multiTestCasesCube = [
+        /** @type {Array<glsSamplerObjectTest.TestSpec>} */ var multiTestCasesCube = [
             new glsSamplerObjectTest.TestSpec('diff_wrap_t', 'Different gl.TEXTURE_WRAP_T', gl.TEXTURE_CUBE_MAP,
                 new glsSamplerObjectTest.SamplingState(gl.NEAREST, gl.NEAREST, gl.MIRRORED_REPEAT, gl.REPEAT, gl.REPEAT, -1000.0, 1000.0),
                 new glsSamplerObjectTest.SamplingState(gl.NEAREST, gl.NEAREST, gl.MIRRORED_REPEAT, gl.REPEAT, gl.REPEAT, -1000.0, 1000.0),
@@ -285,7 +284,6 @@ var glsSamplerObjectTest = modules.shared.glsSamplerObjectTest;
         testGroup.addChild(multiTextureCube);
     };
 
-
     es3fSamplerObjectTests.run = function(context) {
         gl = context;
         //Set up Test Root parameters
@@ -311,7 +309,5 @@ var glsSamplerObjectTest = modules.shared.glsSamplerObjectTest;
             tcuTestCase.runner.terminate();
         }
     };
-
-
 
 });

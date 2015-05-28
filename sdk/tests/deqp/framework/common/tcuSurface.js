@@ -33,7 +33,6 @@ var DE_ASSERT = function(x) {
     if (!x)
         throw new Error('Assert failed');
 };
-tcuSurface.DE_FALSE = false;
 
 /**
  * \brief RGBA8888 surface
@@ -92,6 +91,11 @@ tcuSurface.Surface.prototype.getPixel = function(x, y) {
 
     return color;
 };
+
+/**
+ * @return {Uint8Array}
+ */
+tcuSurface.Surface.prototype.getPixels = function() { return this.m_pixels || null; };
 
 /**
  * @return {tcuTexture.PixelBufferAccess} Pixel Buffer Access object

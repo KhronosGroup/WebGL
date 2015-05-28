@@ -29,8 +29,6 @@ var rrVertexPacket = framework.referencerenderer.rrVertexPacket;
 var tcuTexture = framework.common.tcuTexture;
 var deMath = framework.delibs.debase.deMath;
 
-    rrVertexPacket.DE_NULL = null;
-
     /**
      * rrVertexPacket.VertexPacket class. (Should only be created by rrVertexPacket.VertexPacketAllocator)
      * @constructor

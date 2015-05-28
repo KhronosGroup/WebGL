@@ -53,15 +53,6 @@ goog.scope(function() {
     var rrRenderState = framework.referencerenderer.rrRenderState;
     var rrVertexAttrib = framework.referencerenderer.rrVertexAttrib;
 
-    sglrGLContext.DE_NULL = null;
-
-    sglrGLContext.GLU_EXPECT_NO_ERROR = function(error, message) {
-        if (error !== gl.NONE) {
-            console.log('Assertion failed message:' + message);
-            // throw new Error(message);
-        }
-    };
-
     var DE_ASSERT = function(x) {
         if (!x)
             throw new Error('Assert failed');
@@ -76,99 +67,101 @@ goog.scope(function() {
      */
     sglrGLContext.GLContext = function(context, viewport) {
         DE_ASSERT(context);
-        this.m_context = context;
-        this.m_programs = [];
 
-        // Copy all properties from the context.
+        var functionwrapper = function(context, fname) {
+            return function() {
+                return context[fname].apply(context, arguments);
+            };
+        };
 
-        var prototypes = [];
-        var prototype = Object.getPrototypeOf(/** @type {!WebGL2RenderingContext} */ (this.m_context));
-
-        //Traverse all the prototype hierarchy of the context object.
-        while (prototype && prototype !== Object.prototype) {
-            prototypes.push(prototype);
-            prototype = Object.getPrototypeOf(prototype);
-        }
-
-        for (prototype in prototypes) {
-            var keys = Object.keys(prototypes[prototype]);
-            for (var key in keys) {
-                var name = keys[key];
-
-                var exists = false;
-                var selfkeys = Object.keys(sglrGLContext.GLContext.prototype);
-                for (var selfkey in selfkeys) {
-                    var selfname = selfkeys[selfkey];
-
-                    if (selfname == name) {
-                        exists = true;
-                        break;
-                    }
-                }
-
-                if (!exists) {
-                    Object.getPrototypeOf(this)[name] = (
-                        function(originalobject, originalfunction) {
-                            return function() {
-                                return originalfunction.apply(originalobject, arguments);
-                            };
-                        }
-                    )(this.m_context, this.m_context[name]);
-                }
+        var wrap = {};
+        for (var i in context) {
+            try {
+              if (typeof context[i] == 'function') {
+                wrap[i] = functionwrapper(context, i);
+              } else {
+                wrap[i] = context[i];
+              }
+            } catch (e) {
+              throw new Error("GLContext: Error accessing " + i);
             }
         }
-
-        this.m_programs = [];
-
         if (viewport)
-            gl.viewport(viewport[0], viewport[1], viewport[2], viewport[3]);
-    };
+            context.viewport(viewport[0], viewport[1], viewport[2], viewport[3]);
 
-    /**
-     * createProgram
-     * @override
-     * @param {sglrShaderProgram.ShaderProgram=} shader
-     * @return {!WebGLProgram}
-     */
-    sglrGLContext.GLContext.prototype.createProgram = function(shader) {
-        var program = new gluShaderProgram.ShaderProgram(
-            this.m_context,
-            gluShaderProgram.makeVtxFragSources(
-                shader.m_vertSrc,
-                shader.m_fragSrc
-            )
-        );
+        /**
+         * createProgram
+         * @override
+         * @param {sglrShaderProgram.ShaderProgram=} shader
+         * @return {!WebGLProgram}
+         */
+        var createProgram = function(shader) {
+            var program = new gluShaderProgram.ShaderProgram(
+                    context,
+                    gluShaderProgram.makeVtxFragSources(
+                        shader.m_vertSrc,
+                        shader.m_fragSrc
+                    )
+                );
 
-        if (!program.isOk()) {
-            bufferedLogToConsole(program.toString());
-            testFailedOptions('Compile failed', true);
-        }
+            if (!program.isOk()) {
+                bufferedLogToConsole(program.toString());
+                testFailedOptions('Compile failed', true);
+            }
+            return program.getProgram();
+        };
+        wrap['createProgram'] = createProgram;
 
-        this.m_programs.push(program);
-        return program.getProgram();
-    };
+        /**
+         * Draws quads from vertex arrays
+         * @param {number} first First vertex to begin drawing with
+         * @param {number} count How many quads to draw (array should provide first + (count * 6) vertices at least)
+         */
+        var drawQuads = function(first, count) {
+            context.drawArrays(gl.TRIANGLES, first, (count * 6) - first);
+        };
+        wrap['drawQuads'] = drawQuads;
 
-    /**
-     * Draws quads from vertex arrays
-     * @param {number} first First vertex to begin drawing with
-     * @param {number} count How many quads to draw (array should provide first + (count * 6) vertices at least)
-     */
-    sglrGLContext.GLContext.prototype.drawQuads = function(first, count) {
-        this.m_context.drawArrays(gl.TRIANGLES, first, (count * 6) - first);
-    };
+        /**
+         * @return {number}
+         */
+        var getWidth = function() {
+            return context.getParameter(gl.VIEWPORT)[2];
+        };
+        wrap['getWidth'] = getWidth;
 
-    /**
-     * @return {number}
-     */
-    sglrGLContext.GLContext.prototype.getWidth = function() {
-        return this.m_context.getParameter(gl.VIEWPORT)[2];
-    };
+        /**
+         * @return {number}
+         */
+        var getHeight = function() {
+            return context.getParameter(gl.VIEWPORT)[3];
+        };
+        wrap['getHeight'] = getHeight;
 
-    /**
-     * @return {number}
-     */
-    sglrGLContext.GLContext.prototype.getHeight = function() {
-        return this.m_context.getParameter(gl.VIEWPORT)[3];
+        /**
+         * @param {number} x
+         * @param {number} y
+         * @param {number} width
+         * @param {number} height
+         * @param {number} format
+         * @param {number} dataType
+         * @param {ArrayBuffer|ArrayBufferView} data
+         */
+        var readPixels = function(x, y, width, height, format, dataType, data) {
+            /** @type {?ArrayBufferView} */ var dataArr;
+            if (!ArrayBuffer.isView(data)) {
+                var type = gluTextureUtil.mapGLChannelType(dataType, true);
+                var dataArrType = tcuTexture.getTypedArray(type);
+                dataArr = new dataArrType(data);
+            } else {
+                dataArr = /** @type {?ArrayBufferView} */ (data);
+            }
+
+            context.readPixels(x, y, width, height, format, dataType, dataArr);
+        };
+        wrap['readPixels'] = readPixels;
+
+        return wrap;
     };
 
     /**
@@ -186,27 +179,5 @@ goog.scope(function() {
         }
         return found;
     };
-
-    /**
-     * @param {number} x
-     * @param {number} y
-     * @param {number} width
-     * @param {number} height
-     * @param {number} format
-     * @param {number} dataType
-     * @param {ArrayBuffer|ArrayBufferView} data
-     */
-    sglrGLContext.GLContext.prototype.readPixels = function (x, y, width, height, format, dataType, data) {
-        /** @type {?ArrayBufferView} */ var dataArr;
-        if (!ArrayBuffer.isView(data)) {
-            var type = gluTextureUtil.mapGLChannelType(dataType, true);
-            var dataArrType = tcuTexture.getTypedArray(type);
-            dataArr = new dataArrType(data);
-        } else {
-            dataArr = /** @type {?ArrayBufferView} */ (data)
-        }
-
-        this.m_context.readPixels(x, y, width, height, format, dataType, dataArr);
-    }
 
 });
