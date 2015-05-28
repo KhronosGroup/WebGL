@@ -671,7 +671,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum COMPRESSED_SRGB8_ALPHA8_ETC2_EAC              = 0x9279;
   const GLenum TEXTURE_IMMUTABLE_FORMAT                      = 0x912F;
   const GLenum MAX_ELEMENT_INDEX                             = 0x8D6B;
-  const GLenum NUM_SAMPLE_COUNTS                             = 0x9380;
   const GLenum TEXTURE_IMMUTABLE_LEVELS                      = 0x82DF;
 
   const GLuint64 TIMEOUT_IGNORED                             = 0xFFFFFFFFFFFFFFFF;
@@ -1112,7 +1111,6 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           returned is given in the following table:
           <table>
               <tr><th>pname</th><th>returned type</th></tr>
-              <tr><td>NUM_SAMPLE_COUNTS</td><td>GLint</td></tr>
               <tr><td>SAMPLES</td><td>Int32Array</td></tr>
           </table>
           <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
