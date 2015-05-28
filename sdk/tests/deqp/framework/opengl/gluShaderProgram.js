@@ -160,6 +160,11 @@ gluShaderProgram.Program = function(gl, programID) {
 };
 
 /**
+ * @return {WebGLProgram}
+ */
+gluShaderProgram.Program.prototype.getProgram = function() { return this.program; };
+
+/**
  * @param {WebGLShader} shader
  */
 gluShaderProgram.Program.prototype.attachShader = function(shader) {
@@ -304,9 +309,10 @@ gluShaderProgram.TransformFeedbackMode = function(mode) {
 
 /**
  * @constructor
+ * @param {string} name
  */
 gluShaderProgram.TransformFeedbackVarying = function(name) {
-    this.name = name;
+    /** @type {string} */ this.name = name;
 
     this.getContainerType = function() {
         return gluShaderProgram.containerTypes.TRANSFORM_FEEDBACK_VARYING;
@@ -315,9 +321,10 @@ gluShaderProgram.TransformFeedbackVarying = function(name) {
 
 /**
  * @constructor
+ * @param {Array<string>} array
  */
 gluShaderProgram.TransformFeedbackVaryings = function(array) {
-    this.array = array;
+    /** @type {Array<string>} */ this.array = array;
 
     this.getContainerType = function() {
         return gluShaderProgram.containerTypes.TRANSFORM_FEEDBACK_VARYINGS;
@@ -366,7 +373,7 @@ gluShaderProgram.FragmentSource = function(str) {
 gluShaderProgram.ProgramSources = function() {
     /** @type {Array<gluShaderProgram.ShaderInfo>} */ this.sources = [];
     this.attribLocationBindings = [];
-    this.transformFeedbackVaryings = [];
+    /** @type {Array<string>} */ this.transformFeedbackVaryings = [];
     this.transformFeedbackBufferMode = 0;
     this.separable = false;
 };
@@ -398,11 +405,11 @@ gluShaderProgram.ProgramSources.prototype.add = function(item) {
             break;
 
         case gluShaderProgram.containerTypes.TRANSFORM_FEEDBACK_VARYING:
-            this.transformFeedbackVaryings.push(item);
+            this.transformFeedbackVaryings.push(item.name);
             break;
 
         case gluShaderProgram.containerTypes.TRANSFORM_FEEDBACK_VARYINGS:
-            this.transformFeedbackVaryings.concat(item);
+            this.transformFeedbackVaryings.concat(item.array);
             break;
 
         case gluShaderProgram.containerTypes.SHADER_SOURCE:

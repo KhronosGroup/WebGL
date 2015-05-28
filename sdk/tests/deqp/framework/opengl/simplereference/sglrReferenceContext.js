@@ -59,9 +59,11 @@ goog.scope(function() {
 
     sglrReferenceContext.rrMPBA = rrMultisamplePixelBufferAccess;
 
+    //TODO: Implement automatic error checking in sglrReferenceContext, optional on creation.
+
     /**
     * @param {number} error
-    * @param {number}  message
+    * @param {number} message
     * @throws {Error}
     */
     sglrReferenceContext.GLU_EXPECT_NO_ERROR = function(error, message) {
@@ -228,14 +230,14 @@ goog.scope(function() {
 
     /**
     * @param {Array<number>} pos
-    * @param {number=}  lod
+    * @param {number=} lod
     * @throws {Error}
     */
     sglrReferenceContext.Texture.prototype.sample = function(pos, lod) {throw new Error('Intentionally empty. Call method from child class instead'); };
 
     /**
     * @param {Array<Array<number>>} packetTexcoords
-    * @param {number}  lodBias
+    * @param {number} lodBias
     * @throws {Error}
     */
     sglrReferenceContext.Texture.prototype.sample4 = function(packetTexcoords, lodBias) {throw new Error('Intentionally empty. Call method from child class instead'); };
@@ -276,7 +278,6 @@ goog.scope(function() {
     /**
     */
     sglrReferenceContext.Texture.prototype.setImmutable = function() { this.m_immutable = true; };
-
 
     /**
     * @return {tcuTexture.Sampler}
@@ -343,7 +344,6 @@ goog.scope(function() {
         delete this.m_access[level];
     };
 
-
     /**
     */
     sglrReferenceContext.TextureLevelArray.prototype.clear = function() {
@@ -363,7 +363,6 @@ goog.scope(function() {
         /** @type {tcuTexture.Texture2DView} */ this.m_view = new tcuTexture.Texture2DView(0, null);
         /** @type {sglrReferenceContext.TextureLevelArray} */ this.m_levels = new sglrReferenceContext.TextureLevelArray();
     };
-
 
     /**
     */
@@ -386,9 +385,9 @@ goog.scope(function() {
 
     /**
     * @param {number} level
-    * @param {?tcuTexture.TextureFormat}  format
-    * @param {number}  width
-    * @param {number}  height
+    * @param {?tcuTexture.TextureFormat} format
+    * @param {number} width
+    * @param {number} height
     */
     sglrReferenceContext.Texture2D.prototype.allocLevel = function(level, format, width, height) { this.m_levels.allocLevel(level, format, width, height, 1); };
 
@@ -1033,9 +1032,9 @@ goog.scope(function() {
 
     /**
     * @param {number} x
-    * @param {number}  y
-    * @param {number}  width
-    * @param {number}  height
+    * @param {number} y
+    * @param {number} width
+    * @param {number} height
     */
     sglrReferenceContext.ReferenceContext.prototype.viewport = function(x, y, width, height) { this.m_viewport = [x, y, width, height]; };
 
@@ -1048,7 +1047,6 @@ goog.scope(function() {
         else
             this.setError(gl.INVALID_ENUM);
     };
-
 
     /**
     * @param {number} error
@@ -1130,10 +1128,9 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} unitNdx
-    * @param {?sglrReferenceContext.TextureContainer}  texture
+    * @param {?sglrReferenceContext.TextureContainer} texture
     */
     sglrReferenceContext.ReferenceContext.prototype.setTex2DBinding = function(unitNdx, texture) {
         if (this.m_textureUnits[unitNdx].tex2DBinding) {
@@ -1147,16 +1144,14 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @return {sglrReferenceContext.TextureContainer}
     */
     sglrReferenceContext.ReferenceContext.prototype.createTexture = function() { return new sglrReferenceContext.TextureContainer(); };
 
-
     /**
     * @param {number} target
-    * @param {framework.opengl.simplereference.sglrReferenceContext.Framebuffer}  fbo
+    * @param {framework.opengl.simplereference.sglrReferenceContext.Framebuffer} fbo
     */
     sglrReferenceContext.ReferenceContext.prototype.bindFramebuffer = function(target, fbo) {
         if (this.condtionalSetError((target != gl.FRAMEBUFFER &&
@@ -1176,16 +1171,14 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @return {sglrReferenceContext.Framebuffer}
     */
     sglrReferenceContext.ReferenceContext.prototype.createFramebuffer = function() { return new sglrReferenceContext.Framebuffer(); };
 
-
     /**
     * @param {number} target
-    * @param {sglrReferenceContext.Renderbuffer}  rbo
+    * @param {sglrReferenceContext.Renderbuffer} rbo
     */
     sglrReferenceContext.ReferenceContext.prototype.bindRenderbuffer = function(target, rbo) {
         if (this.condtionalSetError(target != gl.RENDERBUFFER, gl.INVALID_ENUM))
@@ -1194,16 +1187,14 @@ goog.scope(function() {
         this.m_renderbufferBinding = rbo;
     };
 
-
     /**
     * @return {sglrReferenceContext.Renderbuffer}
     */
     sglrReferenceContext.ReferenceContext.prototype.createRenderbuffer = function() { return new sglrReferenceContext.Renderbuffer(); };
 
-
     /**
     * @param {number} pname
-    * @param {number}  param
+    * @param {number} param
     */
     sglrReferenceContext.ReferenceContext.prototype.pixelStorei = function(pname, param) {
         switch (pname) {
@@ -1247,12 +1238,11 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} red
-    * @param {number}  green
-    * @param {number}  blue
-    * @param {number}  alpha
+    * @param {number} green
+    * @param {number} blue
+    * @param {number} alpha
     */
     sglrReferenceContext.ReferenceContext.prototype.clearColor = function(red, green, blue, alpha) {
         this.m_clearColor = [deMath.clamp(red, 0, 1),
@@ -1261,14 +1251,12 @@ goog.scope(function() {
                             deMath.clamp(alpha, 0, 1)];
     };
 
-
     /**
     * @param {number} depth
     */
     sglrReferenceContext.ReferenceContext.prototype.clearDepthf = function(depth) {
         this.m_clearDepth = deMath.clamp(depth, 0, 1);
     };
-
 
     /**
     * @param {number} stencil
@@ -1277,19 +1265,17 @@ goog.scope(function() {
         this.m_clearStencil = stencil;
     };
 
-
     /**
     * @param {number} x
-    * @param {number}  y
-    * @param {number}  width
-    * @param {number}  height
+    * @param {number} y
+    * @param {number} width
+    * @param {number} height
     */
     sglrReferenceContext.ReferenceContext.prototype.scissor = function(x, y, width, height) {
         if (this.condtionalSetError(width < 0 || height < 0, gl.INVALID_VALUE))
             return;
         this.m_scissorBox = [x, y, width, height];
     };
-
 
     /**
     * @param {number} cap
@@ -1312,7 +1298,6 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} cap
     */
@@ -1334,22 +1319,20 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} func
-    * @param {number}  ref
-    * @param {number}  mask
+    * @param {number} ref
+    * @param {number} mask
     */
     sglrReferenceContext.ReferenceContext.prototype.stencilFunc = function(func, ref, mask) {
         this.stencilFuncSeparate(gl.FRONT_AND_BACK, func, ref, mask);
     };
 
-
     /**
     * @param {number} face
-    * @param {number}  func
-    * @param {number}  ref
-    * @param {number}  mask
+    * @param {number} func
+    * @param {number} ref
+    * @param {number} mask
     */
     sglrReferenceContext.ReferenceContext.prototype.stencilFuncSeparate = function(face, func, ref, mask) {
         /** @type {boolean} */ var setFront = face == gl.FRONT || face == gl.FRONT_AND_BACK;
@@ -1370,7 +1353,6 @@ goog.scope(function() {
             }
         }
     };
-
 
     /**
     * @param {number} func
@@ -1393,7 +1375,6 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} op
     * @return {boolean}
@@ -1415,22 +1396,20 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} sfail
-    * @param {number}  dpfail
-    * @param {number}  dppass
+    * @param {number} dpfail
+    * @param {number} dppass
     */
     sglrReferenceContext.ReferenceContext.prototype.stencilOp = function(sfail, dpfail, dppass) {
         this.stencilOpSeparate(gl.FRONT_AND_BACK, sfail, dpfail, dppass);
     };
 
-
     /**
     * @param {number} face
-    * @param {number}  sfail
-    * @param {number}  dpfail
-    * @param {number}  dppass
+    * @param {number} sfail
+    * @param {number} dpfail
+    * @param {number} dppass
     */
     sglrReferenceContext.ReferenceContext.prototype.stencilOpSeparate = function(face, sfail, dpfail, dppass) {
         /** @type {boolean} */ var setFront = face == gl.FRONT || face == gl.FRONT_AND_BACK;
@@ -1456,7 +1435,6 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} func
     */
@@ -1466,26 +1444,23 @@ goog.scope(function() {
         this.m_depthFunc = func;
     };
 
-
     /**
     * @param {number} n
-    * @param {number}  f
+    * @param {number} f
     */
     sglrReferenceContext.ReferenceContext.prototype.depthRange = function(n, f) {
         this.m_depthRangeNear = deMath.clamp(n, 0, 1);
         this.m_depthRangeFar = deMath.clamp(f, 0, 1);
     };
 
-
     /**
     * @param {number} factor
-    * @param {number}  units
+    * @param {number} units
     */
     sglrReferenceContext.ReferenceContext.prototype.polygonOffset = function(factor, units) {
         this.m_polygonOffsetFactor = factor;
         this.m_polygonOffsetUnits = units;
     };
-
 
     /**
     * @param {number} mode
@@ -1498,7 +1473,6 @@ goog.scope(function() {
             mode == gl.MIN ||
             mode == gl.MAX;
     };
-
 
     /**
     * @param {number} factor
@@ -1528,7 +1502,6 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} mode
     */
@@ -1539,10 +1512,9 @@ goog.scope(function() {
         this.m_blendModeAlpha = mode;
     };
 
-
     /**
     * @param {number} modeRGB
-    * @param {number}  modeAlpha
+    * @param {number} modeAlpha
     */
     sglrReferenceContext.ReferenceContext.prototype.blendEquationSeparate = function(modeRGB, modeAlpha) {
         if (this.condtionalSetError(!sglrReferenceContext.isValidBlendEquation(modeRGB) ||
@@ -1554,10 +1526,9 @@ goog.scope(function() {
         this.m_blendModeAlpha = modeAlpha;
     };
 
-
     /**
     * @param {number} src
-    * @param {number}  dst
+    * @param {number} dst
     */
     sglrReferenceContext.ReferenceContext.prototype.blendFunc = function(src, dst) {
         if (this.condtionalSetError(!sglrReferenceContext.isValidBlendFactor(src) ||
@@ -1571,12 +1542,11 @@ goog.scope(function() {
         this.m_blendFactorDstAlpha = dst;
     };
 
-
     /**
     * @param {number} srcRGB
-    * @param {number}  dstRGB
-    * @param {number}  srcAlpha
-    * @param {number}  dstAlpha
+    * @param {number} dstRGB
+    * @param {number} srcAlpha
+    * @param {number} dstAlpha
     */
     sglrReferenceContext.ReferenceContext.prototype.blendFuncSeparate = function(srcRGB, dstRGB, srcAlpha, dstAlpha) {
         if (this.condtionalSetError(!sglrReferenceContext.isValidBlendFactor(srcRGB) ||
@@ -1592,12 +1562,11 @@ goog.scope(function() {
         this.m_blendFactorDstAlpha = dstAlpha;
     };
 
-
     /**
     * @param {number} red
-    * @param {number}  green
-    * @param {number}  blue
-    * @param {number}  alpha
+    * @param {number} green
+    * @param {number} blue
+    * @param {number} alpha
     */
     sglrReferenceContext.ReferenceContext.prototype.blendColor = function(red, green, blue, alpha) {
         this.m_blendColor = [deMath.clamp(red, 0, 1),
@@ -1606,17 +1575,15 @@ goog.scope(function() {
                             deMath.clamp(alpha, 0, 1)];
     };
 
-
     /**
     * @param {boolean} r
-    * @param {boolean}  g
-    * @param {boolean}  b
-    * @param {boolean}  a
+    * @param {boolean} g
+    * @param {boolean} b
+    * @param {boolean} a
     */
     sglrReferenceContext.ReferenceContext.prototype.colorMask = function(r, g, b, a) {
         this.m_colorMask = [r, g, b, a];
     };
-
 
     /**
     * @param {boolean} mask
@@ -1625,7 +1592,6 @@ goog.scope(function() {
         this.m_depthMask = mask;
     };
 
-
     /**
     * @param {number} mask
     */
@@ -1633,10 +1599,9 @@ goog.scope(function() {
         this.stencilMaskSeparate(gl.FRONT_AND_BACK, mask);
     };
 
-
     /**
     * @param {number} face
-    * @param {number}  mask
+    * @param {number} mask
     */
     sglrReferenceContext.ReferenceContext.prototype.stencilMaskSeparate = function(face, mask) {
         /** @type {boolean} */ var setFront = face == gl.FRONT || face == gl.FRONT_AND_BACK;
@@ -1649,7 +1614,6 @@ goog.scope(function() {
         if (setBack) this.m_stencil[rrDefs.FaceType.FACETYPE_BACK].writeMask = mask;
     };
 
-
     /**
     * @param {sglrReferenceContext.VertexArray} array
     */
@@ -1659,7 +1623,6 @@ goog.scope(function() {
         else
             this.m_vertexArrayBinding = this.m_defaultVAO;
     };
-
 
     /**
     * @return {sglrReferenceContext.VertexArray}
@@ -1671,14 +1634,13 @@ goog.scope(function() {
     */
     sglrReferenceContext.ReferenceContext.prototype.deleteVertexArray = function(array) {};
 
-
     /**
     * @param {number} index
-    * @param {number}  rawSize
-    * @param {number}  type
-    * @param {boolean}  normalized
-    * @param {number}  stride
-    * @param {number}  offset
+    * @param {number} rawSize
+    * @param {number} type
+    * @param {boolean} normalized
+    * @param {number} stride
+    * @param {number} offset
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttribPointer = function(index, rawSize, type, normalized, stride, offset) {
         /** @type {boolean} */ var allowBGRA = false;
@@ -1715,13 +1677,12 @@ goog.scope(function() {
         array_.bufferBinding = this.m_arrayBufferBinding;
     };
 
-
     /**
     * @param {number} index
-    * @param {number}  size
-    * @param {number}  type
-    * @param {number}  stride
-    * @param {number}  offset
+    * @param {number} size
+    * @param {number} type
+    * @param {number} stride
+    * @param {number} offset
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttribIPointer = function(index, size, type, stride, offset) {
         if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
@@ -1749,7 +1710,6 @@ goog.scope(function() {
         array_.bufferBinding = this.m_arrayBufferBinding;
     };
 
-
     /**
     * @param {number} index
     */
@@ -1759,7 +1719,6 @@ goog.scope(function() {
 
         this.m_vertexArrayBinding.m_arrays[index].enabled = true;
     };
-
 
     /**
     * @param {number} index
@@ -1771,10 +1730,9 @@ goog.scope(function() {
         this.m_vertexArrayBinding.m_arrays[index].enabled = false;
     };
 
-
     /**
     * @param {number} index
-    * @param {number}  divisor
+    * @param {number} divisor
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttribDivisor = function(index, divisor) {
         if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
@@ -1783,10 +1741,9 @@ goog.scope(function() {
         this.m_vertexArrayBinding.m_arrays[index].divisor = divisor;
     };
 
-
     /**
     * @param {number} index
-    * @param {number}  x
+    * @param {number} x
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttrib1f = function(index, x) {
         if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
@@ -1795,11 +1752,10 @@ goog.scope(function() {
         this.m_currentAttribs[index] = new rrGenericVector.GenericVec4(x, 0, 0, 1);
     };
 
-
     /**
     * @param {number} index
-    * @param {number}  x
-    * @param {number}  y
+    * @param {number} x
+    * @param {number} y
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttrib2f = function(index, x, y) {
         if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
@@ -1808,12 +1764,11 @@ goog.scope(function() {
         this.m_currentAttribs[index] = new rrGenericVector.GenericVec4(x, y, 0, 1);
     };
 
-
     /**
     * @param {number} index
-    * @param {number}  x
-    * @param {number}  y
-    * @param {number}  z
+    * @param {number} x
+    * @param {number} y
+    * @param {number} z
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttrib3f = function(index, x, y, z) {
         if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
@@ -1824,10 +1779,10 @@ goog.scope(function() {
 
     /**
     * @param {number} index
-    * @param {number}  x
-    * @param {number}  y
-    * @param {number}  z
-    * @param {number}  w
+    * @param {number} x
+    * @param {number} y
+    * @param {number} z
+    * @param {number} w
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttrib4f = function(index, x, y, z, w) {
         if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
@@ -1838,10 +1793,10 @@ goog.scope(function() {
 
     /**
     * @param {number} index
-    * @param {number}  x
-    * @param {number}  y
-    * @param {number}  z
-    * @param {number}  w
+    * @param {number} x
+    * @param {number} y
+    * @param {number} z
+    * @param {number} w
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttribI4i = function(index, x, y, z, w) {
         if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
@@ -1852,10 +1807,10 @@ goog.scope(function() {
 
     /**
     * @param {number} index
-    * @param {number}  x
-    * @param {number}  y
-    * @param {number}  z
-    * @param {number}  w
+    * @param {number} x
+    * @param {number} y
+    * @param {number} z
+    * @param {number} w
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttribI4ui = function(index, x, y, z, w) {
         if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
@@ -1864,10 +1819,9 @@ goog.scope(function() {
         this.m_currentAttribs[index] = new rrGenericVector.GenericVec4(x, y, z, w);
     };
 
-
     /**
     * @param {sglrShaderProgram.ShaderProgram} program
-    * @param {string}  name
+    * @param {string} name
     * @return {number}
     */
     sglrReferenceContext.ReferenceContext.prototype.getAttribLocation = function(program, name) {
@@ -1881,11 +1835,10 @@ goog.scope(function() {
         return -1;
     };
 
-
     /**
     * @param {number} location
-    * @param {gluShaderUtil.DataType}  type
-    * @param {Array<number>}  value
+    * @param {gluShaderUtil.DataType} type
+    * @param {Array<number>} value
     */
     sglrReferenceContext.ReferenceContext.prototype.uniformValue = function(location, type, value) {
         if (this.condtionalSetError(!this.m_currentProgram, gl.INVALID_OPERATION))
@@ -2048,7 +2001,6 @@ goog.scope(function() {
         return this.uniformValue(location, gluShaderUtil.DataType.INT_VEC4, x);
     };
 
-
     /**
     * @return {Array<number>}
     */
@@ -2092,10 +2044,9 @@ goog.scope(function() {
         return this.uniformValue(location, gluShaderUtil.DataType.FLOAT_MAT4, transpose ? sglrReferenceContext.trans(4, x) : x);
     };
 
-
     /**
     * @param {sglrShaderProgram.ShaderProgram} program
-    * @param {string}  name
+    * @param {string} name
     * @return {number}
     */
     sglrReferenceContext.ReferenceContext.prototype.getUniformLocation = function(program, name) {
@@ -2109,7 +2060,6 @@ goog.scope(function() {
         return -1;
     };
 
-
     /**
     * @param {number} w
     */
@@ -2118,7 +2068,6 @@ goog.scope(function() {
             return;
         this.m_lineWidth = w;
     };
-
 
     /**
     * @param {number} target
@@ -2141,10 +2090,9 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} target
-    * @param {sglrReferenceContext.DataBuffer}  buffer
+    * @param {sglrReferenceContext.DataBuffer} buffer
     * @throws {Error}
     */
     sglrReferenceContext.ReferenceContext.prototype.setBufferBinding = function(target, buffer) {
@@ -2161,7 +2109,6 @@ goog.scope(function() {
                 throw new Error('Unrecognized target: ' + target);
         }
     };
-
 
     /**
     * @param {number} target
@@ -2183,10 +2130,9 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} target
-    * @param {sglrReferenceContext.DataBuffer}  buffer
+    * @param {sglrReferenceContext.DataBuffer} buffer
     */
     sglrReferenceContext.ReferenceContext.prototype.bindBuffer = function(target, buffer) {
         if (this.condtionalSetError(!sglrReferenceContext.isValidBufferTarget(target), gl.INVALID_ENUM))
@@ -2195,18 +2141,15 @@ goog.scope(function() {
         this.setBufferBinding(target, buffer);
     };
 
-
     /**
     * @return {sglrReferenceContext.DataBuffer}
     */
     sglrReferenceContext.ReferenceContext.prototype.createBuffer = function() { return new sglrReferenceContext.DataBuffer(); };
 
-
     /**
     * @param {number} buffer
     */
     sglrReferenceContext.ReferenceContext.prototype.deleteBuffer = function(buffer) {};
-
 
     /**
     * @param {number} target
@@ -2229,11 +2172,10 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} target
-    * @param {number}  offset
-    * @param {goog.NumberArray}  data
+    * @param {number} offset
+    * @param {goog.NumberArray} data
     */
     sglrReferenceContext.ReferenceContext.prototype.bufferSubData = function(target, offset, data) {
         if (this.condtionalSetError(!sglrReferenceContext.isValidBufferTarget(target), gl.INVALID_ENUM))
@@ -2249,15 +2191,14 @@ goog.scope(function() {
         buffer.setSubData(offset, data);
     };
 
-
     /**
     * @param {number} x
-    * @param {number}  y
-    * @param {number}  width
-    * @param {number}  height
-    * @param {number}  format
-    * @param {number}  type
-    * @param {goog.NumberArray}  pixels
+    * @param {number} y
+    * @param {number} width
+    * @param {number} height
+    * @param {number} format
+    * @param {number} type
+    * @param {goog.NumberArray} pixels
     */
     sglrReferenceContext.ReferenceContext.prototype.readPixels = function(x, y, width, height, format, type, pixels) {
         /** @type {rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess} */ var src = this.getReadColorbuffer();
@@ -2303,14 +2244,12 @@ goog.scope(function() {
         src.resolveMultisampleColorBuffer(tcuTextureUtil.getSubregion(dst, 0, 0, 0, copyWidth, copyHeight, 1));
     };
 
-
     /**
     * @return {number}
     */
     sglrReferenceContext.ReferenceContext.prototype.getType = function() {
         return this.m_type;
     };
-
 
     /**
     * @return {tcuTexture.PixelBufferAccess}
@@ -2321,10 +2260,9 @@ goog.scope(function() {
             height: 0});
     };
 
-
     /**
     * @param {sglrReferenceContext.Framebuffer} framebuffer
-    * @param {sglrReferenceContext.AttachmentPoint}  point
+    * @param {sglrReferenceContext.AttachmentPoint} point
     * @return {tcuTexture.PixelBufferAccess}
     */
     sglrReferenceContext.ReferenceContext.prototype.getFboAttachment = function(framebuffer, point) {
@@ -2369,7 +2307,6 @@ goog.scope(function() {
                 return sglrReferenceContext.nullAccess();
         }
     };
-
 
     /**
     * @return {rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess}
@@ -2591,7 +2528,6 @@ goog.scope(function() {
     */
     sglrReferenceContext.getBufferRect = function(access) { return [0, 0, access.raw().getHeight(), access.raw().getDepth()]; };
 
-
     /**
     * @return {rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess}
     */
@@ -2600,7 +2536,6 @@ goog.scope(function() {
             return rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess.fromSinglesampleAccess(this.getFboAttachment(this.m_drawFramebufferBinding, sglrReferenceContext.AttachmentPoint.ATTACHMENTPOINT_COLOR0));
         return this.m_defaultColorbuffer;
     };
-
 
     /**
     * @return {rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess}
@@ -2611,7 +2546,6 @@ goog.scope(function() {
         return this.m_defaultDepthbuffer;
     };
 
-
     /**
     * @return {rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess}
     */
@@ -2621,7 +2555,6 @@ goog.scope(function() {
         return this.m_defaultStencilbuffer;
     };
 
-
     /**
     * @return {rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess}
     */
@@ -2630,7 +2563,6 @@ goog.scope(function() {
             return rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess.fromSinglesampleAccess(this.getFboAttachment(this.m_readFramebufferBinding, sglrReferenceContext.AttachmentPoint.ATTACHMENTPOINT_DEPTH));
         return this.m_defaultDepthbuffer;
     };
-
 
     /**
     * @return {rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess}
@@ -2663,14 +2595,12 @@ goog.scope(function() {
         access.raw().setPixStencil((oldVal & ~writeMask) | (stencil & writeMask), s, x, y);
     };
 
-
     /**
     * @param {number} bits
-    * @param {number}  s
+    * @param {number} s
     * @return {number}
     */
     sglrReferenceContext.maskStencil = function(bits, s) { return s & ((1 << bits) - 1); };
-
 
     /**
     * @param {number} buffers
@@ -2741,11 +2671,10 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} buffer
-    * @param {number}  drawbuffer
-    * @param {Array<number>}  value
+    * @param {number} drawbuffer
+    * @param {Array<number>} value
     * @throws {Error}
     */
     sglrReferenceContext.ReferenceContext.prototype.clearBufferiv = function(buffer, drawbuffer, value) {
@@ -2795,11 +2724,10 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} buffer
-    * @param {number}  drawbuffer
-    * @param {Array<number>}  value
+    * @param {number} drawbuffer
+    * @param {Array<number>} value
     * @throws {Error}
     */
     sglrReferenceContext.ReferenceContext.prototype.clearBufferfv = function(buffer, drawbuffer, value) {
@@ -2847,11 +2775,10 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} buffer
-    * @param {number}  drawbuffer
-    * @param {Array<number>}  value
+    * @param {number} drawbuffer
+    * @param {Array<number>} value
     */
     sglrReferenceContext.ReferenceContext.prototype.clearBufferuiv = function(buffer, drawbuffer, value) {
         if (this.condtionalSetError(buffer != gl.COLOR, gl.INVALID_ENUM))
@@ -2880,12 +2807,11 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} buffer
-    * @param {number}  drawbuffer
-    * @param {number}  depth
-    * @param {number}  stencil
+    * @param {number} drawbuffer
+    * @param {number} depth
+    * @param {number} stencil
     */
     sglrReferenceContext.ReferenceContext.prototype.clearBufferfi = function(buffer, drawbuffer, depth, stencil) {
         if (this.condtionalSetError(buffer != gl.DEPTH_STENCIL, gl.INVALID_ENUM))
@@ -2894,13 +2820,12 @@ goog.scope(function() {
         this.clearBufferiv(gl.STENCIL, drawbuffer, [stencil]);
     };
 
-
     /**
     * @param {number} target
-    * @param {number}  attachment
-    * @param {sglrReferenceContext.TexTarget}  textarget
-    * @param {sglrReferenceContext.TextureContainer}  texture
-    * @param {number}  level
+    * @param {number} attachment
+    * @param {sglrReferenceContext.TexTarget} textarget
+    * @param {sglrReferenceContext.TextureContainer} texture
+    * @param {number} level
     * @throws {Error}
     */
     sglrReferenceContext.ReferenceContext.prototype.framebufferTexture2D = function(target, attachment, textarget, texture, level) {
@@ -2951,12 +2876,11 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} target
-    * @param {number}  attachment
-    * @param {number}  renderbuffertarget
-    * @param {sglrReferenceContext.Renderbuffer}  renderbuffer
+    * @param {number} attachment
+    * @param {number} renderbuffertarget
+    * @param {sglrReferenceContext.Renderbuffer} renderbuffer
     */
     sglrReferenceContext.ReferenceContext.prototype.framebufferRenderbuffer = function(target, attachment, renderbuffertarget, renderbuffer) {
         if (attachment == gl.DEPTH_STENCIL_ATTACHMENT) {
@@ -2993,12 +2917,11 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} target
-    * @param {number}  internalformat
-    * @param {number}  width
-    * @param {number}  height
+    * @param {number} internalformat
+    * @param {number} width
+    * @param {number} height
     */
     sglrReferenceContext.ReferenceContext.prototype.renderbufferStorage = function(target, internalformat, width, height) {
         /** @type {tcuTexture.TextureFormat} */ var format = gluTextureUtil.mapGLInternalFormat(internalformat);
@@ -3275,38 +3198,35 @@ goog.scope(function() {
         rrRenderer.drawQuads(state, renderTarget, program, vertexAttribs, first, count);
     };
 
-
     /**
     * @param {Array<number>} rect
     * @return {boolean}
     */
     sglrReferenceContext.isEmpty = function(rect) { return rect[2] == 0 || rect[3] == 0; };
 
-
     /**
     * @param {number} mask
-    * @param {Array<number>}  srcRect
-    * @param {Array<number>}  dstRect
-    * @param {boolean}  flipX
-    * @param {boolean}  flipY
+    * @param {Array<number>} srcRect
+    * @param {Array<number>} dstRect
+    * @param {boolean} flipX
+    * @param {boolean} flipY
     * @throws {Error}
     */
     sglrReferenceContext.ReferenceContext.prototype.blitResolveMultisampleFramebuffer = function(mask, srcRect, dstRect, flipX, flipY) {
         throw new Error('Unimplemented');
     };
 
-
     /**
     * @param {number} srcX0
-    * @param {number}  srcY0
-    * @param {number}  srcX1
-    * @param {number}  srcY1
-    * @param {number}  dstX0
-    * @param {number}  dstY0
-    * @param {number}  dstX1
-    * @param {number}  dstY1
-    * @param {number}  mask
-    * @param {number}  filter
+    * @param {number} srcY0
+    * @param {number} srcX1
+    * @param {number} srcY1
+    * @param {number} dstX0
+    * @param {number} dstY0
+    * @param {number} dstX1
+    * @param {number} dstY1
+    * @param {number} mask
+    * @param {number} filter
     */
     sglrReferenceContext.ReferenceContext.prototype.blitFramebuffer = function(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter) {
         // p0 in inclusive, p1 exclusive.
@@ -3483,7 +3403,6 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} internalFormat
     * @return {tcuTexture.TextureFormat}
@@ -3521,17 +3440,16 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * @param {number} target
-    * @param {number}  level
-    * @param {number}  internalFormat
-    * @param {number}  width
-    * @param {number}  height
-    * @param {number}  border
-    * @param {number}  format
-    * @param {number}  type
-    * @param {number}  pixels
+    * @param {number} level
+    * @param {number} internalFormat
+    * @param {number} width
+    * @param {number} height
+    * @param {number} border
+    * @param {number} format
+    * @param {number} type
+    * @param {number} pixels
     */
     sglrReferenceContext.ReferenceContext.prototype.texImage2D = function(target, level, internalFormat, width, height, border, format, type, pixels) {
         this.texImage3D(target, level, internalFormat, width, height, 1, border, format, type, pixels);
@@ -3820,11 +3738,10 @@ goog.scope(function() {
         return null;
     };
 
-
     /**
     * @param {number} target
-    * @param {number}  pname
-    * @param {number}  value
+    * @param {number} pname
+    * @param {number} value
     */
     sglrReferenceContext.ReferenceContext.prototype.texParameteri = function(target, pname, value) {
         /** @type {sglrReferenceContext.TextureUnit} */ var unit = this.m_textureUnits[this.m_activeTexture];

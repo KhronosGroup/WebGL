@@ -1152,7 +1152,6 @@ goog.scope(function() {
     /** es3fUniformApiTests.UniformCase prototype restore */
     es3fUniformApiTests.UniformCase.prototype.constructor = es3fUniformApiTests.UniformCase;
 
-
     /**
      * es3fUniformApiTests.UniformCase newC. Creates a es3fUniformApiTests.UniformCase. Use after constructor.
      * @param {number} seed
@@ -1373,172 +1372,147 @@ goog.scope(function() {
 
         dst += '\n';
 
-        var compareFuncs = [
-            {
+        var compareFuncs = [{
                 requiringTypes: [gluShaderUtil.isDataTypeFloatOrVec, gluShaderUtil.isDataTypeMatrix],
                 definition: 'mediump float compare_float (mediump float a, mediump float b) { return abs(a - b) < 0.05 ? 1.0 : 0.0; }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.FLOAT_VEC2, t);},
                     function(t) {return es3fUniformApiTests.dataTypeIsMatrixWithNRows(2, t);}
                 ],
                 definition: 'mediump float compare_vec2 (mediump vec2 a, mediump vec2 b) { return compare_float(a.x, b.x)*compare_float(a.y, b.y); }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.FLOAT_VEC3, t);},
                     function(t) {return es3fUniformApiTests.dataTypeIsMatrixWithNRows(3, t);}
                 ],
                 definition: 'mediump float compare_vec3 (mediump vec3 a, mediump vec3 b) { return compare_float(a.x, b.x)*compare_float(a.y, b.y)*compare_float(a.z, b.z); }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.FLOAT_VEC4, t);},
                     function(t) {return es3fUniformApiTests.dataTypeIsMatrixWithNRows(4, t);}],
                 definition: 'mediump float compare_vec4 (mediump vec4 a, mediump vec4 b) { return compare_float(a.x, b.x)*compare_float(a.y, b.y)*compare_float(a.z, b.z)*compare_float(a.w, b.w); }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.FLOAT_MAT2, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_mat2 (mediump mat2 a, mediump mat2 b) { return compare_vec2(a[0], b[0])*compare_vec2(a[1], b[1]); }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.FLOAT_MAT2X3, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_mat2x3 (mediump mat2x3 a, mediump mat2x3 b) { return compare_vec3(a[0], b[0])*compare_vec3(a[1], b[1]); }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.FLOAT_MAT2X4, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_mat2x4 (mediump mat2x4 a, mediump mat2x4 b) { return compare_vec4(a[0], b[0])*compare_vec4(a[1], b[1]); }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.FLOAT_MAT3X2, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_mat3x2 (mediump mat3x2 a, mediump mat3x2 b) { return compare_vec2(a[0], b[0])*compare_vec2(a[1], b[1])*compare_vec2(a[2], b[2]); }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.FLOAT_MAT3, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_mat3 (mediump mat3 a, mediump mat3 b) { return compare_vec3(a[0], b[0])*compare_vec3(a[1], b[1])*compare_vec3(a[2], b[2]); }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.FLOAT_MAT3X4, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_mat3x4 (mediump mat3x4 a, mediump mat3x4 b) { return compare_vec4(a[0], b[0])*compare_vec4(a[1], b[1])*compare_vec4(a[2], b[2]); }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.FLOAT_MAT4X2, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_mat4x2 (mediump mat4x2 a, mediump mat4x2 b) { return compare_vec2(a[0], b[0])*compare_vec2(a[1], b[1])*compare_vec2(a[2], b[2])*compare_vec2(a[3], b[3]); }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.FLOAT_MAT4X3, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_mat4x3 (mediump mat4x3 a, mediump mat4x3 b) { return compare_vec3(a[0], b[0])*compare_vec3(a[1], b[1])*compare_vec3(a[2], b[2])*compare_vec3(a[3], b[3]); }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.FLOAT_MAT4, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_mat4 (mediump mat4 a, mediump mat4 b) { return compare_vec4(a[0], b[0])*compare_vec4(a[1], b[1])*compare_vec4(a[2], b[2])*compare_vec4(a[3], b[3]); }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INT, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_int (mediump int a, mediump int b) { return a == b ? 1.0 : 0.0; }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INT_VEC2, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_ivec2 (mediump ivec2 a, mediump ivec2 b) { return a == b ? 1.0 : 0.0; }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INT_VEC3, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_ivec3 (mediump ivec3 a, mediump ivec3 b) { return a == b ? 1.0 : 0.0; }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INT_VEC4, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_ivec4 (mediump ivec4 a, mediump ivec4 b) { return a == b ? 1.0 : 0.0; }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.UINT, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_uint (mediump uint a, mediump uint b) { return a == b ? 1.0 : 0.0; }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.UINT_VEC2, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_uvec2 (mediump uvec2 a, mediump uvec2 b) { return a == b ? 1.0 : 0.0; }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.UINT_VEC3, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_uvec3 (mediump uvec3 a, mediump uvec3 b) { return a == b ? 1.0 : 0.0; }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.UINT_VEC4, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_uvec4 (mediump uvec4 a, mediump uvec4 b) { return a == b ? 1.0 : 0.0; }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.BOOL, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_bool (bool a, bool b) { return a == b ? 1.0 : 0.0; }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.BOOL_VEC2, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_bvec2 (bvec2 a, bvec2 b) { return a == b ? 1.0 : 0.0; }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.BOOL_VEC3, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
                 ],
                 definition: 'mediump float compare_bvec3 (bvec3 a, bvec3 b) { return a == b ? 1.0 : 0.0; }'
-            },
-            {
+            },{
                 requiringTypes: [
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.BOOL_VEC4, t);},
                     function(t) {return es3fUniformApiTests.dataTypeEquals(gluShaderUtil.DataType.INVALID, t);}
@@ -2981,7 +2955,6 @@ goog.scope(function() {
                 collectionCase = collectionGroup.cases[collectionNdx];
                 collName = collectionCase.namePrefix;
                 uniformCollection = collectionCase.uniformCollection;
-
 
                 for (var i = 0; i < shaderTypes.length; i++) {
                     name = collName + es3fUniformApiTests.getCaseShaderTypeName(es3fUniformApiTests.CaseShaderType[shaderTypes[i]]);

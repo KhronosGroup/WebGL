@@ -23,29 +23,28 @@ goog.provide('framework.opengl.gluObjectWrapper');
 
 goog.scope(function() {
     var gluObjectWrapper = framework.opengl.gluObjectWrapper;
-    
+
     /**
     * @typedef {function(this:WebGLRenderingContextBase): WebGLObject}
     */
     gluObjectWrapper.funcGenT;
-    
+
     /**
     * @typedef {function(this:WebGLRenderingContextBase, WebGLObject)}
     */
     gluObjectWrapper.funcDelT;
-    
+
     /**
     * @typedef {{name: string, funcGen: !gluObjectWrapper.funcGenT, funcDel: !gluObjectWrapper.funcDelT}}
     */
     gluObjectWrapper.traitsT;
-    
-    
+
     /**
     * Returns an object containing a configuration for an ObjectWrapper
     * @param {string} name
     * @param {gluObjectWrapper.funcGenT} funcGen
     * @param {gluObjectWrapper.funcDelT} funcDel
-    * @return {gluObjectWrapper.traitsT} 
+    * @return {gluObjectWrapper.traitsT}
     */
     gluObjectWrapper.traits = function(name, funcGen, funcDel) {
         return {
@@ -55,7 +54,6 @@ goog.scope(function() {
         };
     };
 
-    
     /**
     * @constructor
     * @param {WebGLRenderingContextBase} gl
@@ -67,22 +65,21 @@ goog.scope(function() {
         * @type {WebGLRenderingContextBase}
         */
         this.m_gl = gl;
-        
+
         /**
         * @protected
         * @type {gluObjectWrapper.traitsT}
         */
         this.m_traits = traits;
-        
+
         /**
         * @protected
         * @type {WebGLObject}
         */
-        this.m_object = this.m_traits.funcGen.call(gl);;
-        
+        this.m_object = this.m_traits.funcGen.call(gl);
+
     };
 
-    
     /**
     * Destorys the WebGLObject associated with this object.
     */
@@ -90,16 +87,14 @@ goog.scope(function() {
         this.m_traits.funcDel.call(this.m_gl, this.m_object);
     };
 
-    
     /**
     * Returns the WebGLObject associated with this object.
-    * @return {WebGLObject} 
+    * @return {WebGLObject}
     */
     gluObjectWrapper.ObjectWrapper.prototype.get = function() {
         return this.m_object;
     };
 
-    
     /**
     * @constructor
     * @extends {gluObjectWrapper.ObjectWrapper}
@@ -114,9 +109,9 @@ goog.scope(function() {
     };
     gluObjectWrapper.Framebuffer.prototype = Object.create(gluObjectWrapper.ObjectWrapper.prototype);
     gluObjectWrapper.Framebuffer.prototype.constructor = gluObjectWrapper.Framebuffer;
-    
+
     /**
-    * @return {WebGLFramebuffer} 
+    * @return {WebGLFramebuffer}
     */
     gluObjectWrapper.Framebuffer.prototype.get;
 });

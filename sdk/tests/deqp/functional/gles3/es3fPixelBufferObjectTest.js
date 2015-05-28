@@ -436,7 +436,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
 
         /** @type {tcuTestCase.DeqpTest} */ var nativeFramebufferGroup = tcuTestCase.newTest('native', 'Tests with reading from native framebuffer');
 
-        var nativeFramebufferTests = [ {
+        var nativeFramebufferTests = [{
                 name: 'clears',
                 description: 'Simple read pixels test with color clears',
                 useColorClear: true,

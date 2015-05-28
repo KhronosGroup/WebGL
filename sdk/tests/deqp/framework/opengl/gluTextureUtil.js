@@ -438,7 +438,7 @@ gluTextureUtil.mapGLInternalFormat = function(/*deMath.deUint32*/ internalFormat
  * @param {number} format
  * @return {boolean}
  */
-gluTextureUtil.isGLInternalColorFormatFilterable = function(/* deMath.deUint32 */ format) {
+gluTextureUtil.isGLInternalColorFormatFilterable = function(format) {
     switch (format) {
         case gl.R8:
         case gl.R8_SNORM:
@@ -498,36 +498,39 @@ gluTextureUtil.isGLInternalColorFormatFilterable = function(/* deMath.deUint32 *
     }
 };
 
+/**
+ * @param {number} wrapMode
+ * @return {tcuTexture.WrapMode}
+ */
+gluTextureUtil.mapGLWrapMode = function(wrapMode) {
+    switch (wrapMode) {
+        case gl.CLAMP_TO_EDGE: return tcuTexture.WrapMode.CLAMP_TO_EDGE;
+        case gl.REPEAT: return tcuTexture.WrapMode.REPEAT_GL;
+        case gl.MIRRORED_REPEAT: return tcuTexture.WrapMode.MIRRORED_REPEAT_GL;
+        default:
+            throw new Error("Can't map GL wrap mode " + wrapMode);
+    }
+};
+
+/**
+ * @param {number} filterMode
+ * @return {tcuTexture.FilterMode}
+ * @throws {Error}
+ */
+gluTextureUtil.mapGLFilterMode = function(filterMode) {
+    switch (filterMode) {
+        case gl.NEAREST: return tcuTexture.FilterMode.NEAREST;
+        case gl.LINEAR: return tcuTexture.FilterMode.LINEAR;
+        case gl.NEAREST_MIPMAP_NEAREST: return tcuTexture.FilterMode.NEAREST_MIPMAP_NEAREST;
+        case gl.NEAREST_MIPMAP_LINEAR: return tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR;
+        case gl.LINEAR_MIPMAP_NEAREST: return tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST;
+        case gl.LINEAR_MIPMAP_LINEAR: return tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR;
+        default:
+            throw new Error("Can't map GL filter mode" + filterMode);
+    }
+};
+
 /* TODO: Port the code below */
-
-// static inline tcu::Sampler::WrapMode mapGLWrapMode (deUint32 wrapMode)
-// {
-//     switch (wrapMode)
-//     {
-//         case gl.CLAMP_TO_EDGE: return tcu::Sampler::CLAMP_TO_EDGE;
-//         case gl.CLAMP_TO_BORDER: return tcu::Sampler::CLAMP_TO_BORDER;
-//         case gl.REPEAT: return tcu::Sampler::REPEAT_GL;
-//         case gl.MIRRORED_REPEAT: return tcu::Sampler::MIRRORED_REPEAT_GL;
-//         default:
-//             throw tcu::InternalError("Can't map GL wrap mode " + tcu::toHex(wrapMode).toString());
-//     }
-// }
-
-// static inline tcu::Sampler::FilterMode mapGLFilterMode (deUint32 filterMode)
-// {
-//     switch (filterMode)
-//     {
-//         case gl.NEAREST: return tcu::Sampler::NEAREST;
-//         case gl.LINEAR: return tcu::Sampler::LINEAR;
-//         case gl.NEAREST_MIPMAP_NEAREST: return tcu::Sampler::NEAREST_MIPMAP_NEAREST;
-//         case gl.NEAREST_MIPMAP_LINEAR: return tcu::Sampler::NEAREST_MIPMAP_LINEAR;
-//         case gl.LINEAR_MIPMAP_NEAREST: return tcu::Sampler::LINEAR_MIPMAP_NEAREST;
-//         case gl.LINEAR_MIPMAP_LINEAR: return tcu::Sampler::LINEAR_MIPMAP_LINEAR;
-//         default:
-//             throw tcu::InternalError("Can't map GL filter mode" + tcu::toHex(filterMode).toString());
-//     }
-// }
-
 // /*--------------------------------------------------------------------*//*!
 //  * \brief Map GL sampler parameters to tcu::Sampler.
 //  *
@@ -538,50 +541,51 @@ gluTextureUtil.isGLInternalColorFormatFilterable = function(/* deMath.deUint32 *
 //  * \param magFilter Magnification filter mode
 //  * \return Sampler description.
 //  *//*--------------------------------------------------------------------*/
-// /*tcu::Sampler mapGLSampler (deUint32 wrapS, deUint32 minFilter, deUint32 magFilter)
+// /*tcu::Sampler mapGLSamplerWrapS (deUint32 wrapS, deUint32 minFilter, deUint32 magFilter)
 // {
 //     return mapGLSampler(wrapS, wrapS, wrapS, minFilter, magFilter);
 // }
 // */
 
-// /*--------------------------------------------------------------------*//*!
-//  * \brief Map GL sampler parameters to tcu::Sampler.
-//  *
-//  * If no mapping is found, throws tcu::InternalError.
-//  *
-//  * \param wrapS S-component wrap mode
-//  * \param wrapT T-component wrap mode
-//  * \param minFilter Minification filter mode
-//  * \param magFilter Magnification filter mode
-//  * \return Sampler description.
-//  *//*--------------------------------------------------------------------*/
-// tcu::Sampler mapGLSampler (deUint32 wrapS, deUint32 wrapT, deUint32 minFilter, deUint32 magFilter)
-// {
-//     return mapGLSampler(wrapS, wrapT, wrapS, minFilter, magFilter);
-// }
+/**
+ * Map GL sampler parameters to tcu::Sampler.
+ *
+ * If no mapping is found, throws tcu::InternalError.
+ *
+ * @param {number} wrapS S-component wrap mode
+ * @param {number} wrapT T-component wrap mode
+ * @param {number} minFilter Minification filter mode
+ * @param {number} magFilter Magnification filter mode
+ * @return {tcuTexture.Sampler}
+ */
+gluTextureUtil.mapGLSamplerWrapST = function(wrapS, wrapT, minFilter, magFilter) {
+    return gluTextureUtil.mapGLSampler(wrapS, wrapT, wrapS, minFilter, magFilter);
+};
 
-// /*--------------------------------------------------------------------*//*!
-//  * \brief Map GL sampler parameters to tcu::Sampler.
-//  *
-//  * If no mapping is found, throws tcu::InternalError.
-//  *
-//  * \param wrapS S-component wrap mode
-//  * \param wrapT T-component wrap mode
-//  * \param wrapR R-component wrap mode
-//  * \param minFilter Minification filter mode
-//  * \param magFilter Magnification filter mode
-//  * \return Sampler description.
-//  *//*--------------------------------------------------------------------*/
-// tcu::Sampler mapGLSampler (deUint32 wrapS, deUint32 wrapT, deUint32 wrapR, deUint32 minFilter, deUint32 magFilter)
-// {
-//     return tcu::Sampler(mapGLWrapMode(wrapS), mapGLWrapMode(wrapT), mapGLWrapMode(wrapR),
-//                         mapGLFilterMode(minFilter), mapGLFilterMode(magFilter),
-//                         0.0f /* lod threshold */,
-//                         true /* normalized coords */,
-//                         tcu::Sampler::COMPAREMODE_NONE /* no compare */,
-//                         0 /* compare channel */,
-//                         tcu::Vec4(0.0f) /* border color, not used */);
-// }
+/**
+ * Map GL sampler parameters to tcu::Sampler.
+ *
+ * If no mapping is found, throws tcu::InternalError.
+ * @param {number} wrapS S-component wrap mode
+ * @param {number} wrapT T-component wrap mode
+ * @param {number} wrapR R-component wrap mode
+ * @param {number} minFilter Minification filter mode
+ * @param {number} magFilter Magnification filter mode
+ * @return {tcuTexture.Sampler}
+ */
+gluTextureUtil.mapGLSampler = function(wrapS, wrapT, wrapR, minFilter, magFilter) {
+    return new tcuTexture.Sampler(
+        gluTextureUtil.mapGLWrapMode(wrapS),
+        gluTextureUtil.mapGLWrapMode(wrapT),
+        gluTextureUtil.mapGLWrapMode(wrapR),
+        gluTextureUtil.mapGLFilterMode(minFilter),
+        gluTextureUtil.mapGLFilterMode(magFilter),
+        0.0,
+        true,
+        tcuTexture.CompareMode.COMPAREMODE_NONE,
+        0,
+        [0.0, 0.0, 0.0, 0.0]);
+};
 
 // /*--------------------------------------------------------------------*//*!
 //  * \brief Map GL compare function to tcu::Sampler::CompareMode.

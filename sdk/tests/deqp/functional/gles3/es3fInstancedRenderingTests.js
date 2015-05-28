@@ -23,6 +23,7 @@ goog.provide('functional.gles3.es3fInstancedRenderingTests');
 goog.require('framework.common.tcuImageCompare');
 goog.require('framework.common.tcuSurface');
 goog.require('framework.common.tcuTestCase');
+goog.require('framework.delibs.debase.deMath');
 goog.require('framework.delibs.debase.deRandom');
 goog.require('framework.delibs.debase.deString');
 goog.require('framework.opengl.gluShaderProgram');
@@ -40,6 +41,7 @@ var deString = framework.delibs.debase.deString;
 var deRandom = framework.delibs.debase.deRandom;
 var tcuImageCompare = framework.common.tcuImageCompare;
 var gluTextureUtil = framework.opengl.gluTextureUtil;
+var deMath = framework.delibs.debase.deMath;
 
     /** @type {?WebGL2RenderingContext} */ var gl;
 
@@ -62,10 +64,6 @@ var gluTextureUtil = framework.opengl.gluTextureUtil;
     /** @const @type {number} */es3fInstancedRenderingTests.FLOAT_UINT_BIAS = 0.0;
 
     var DE_ASSERT = function(expression) {
-        if (!expression) throw new Error('Assert failed');
-    };
-
-    es3fInstancedRenderingTests.DE_STATIC_ASSERT = function(expression) {
         if (!expression) throw new Error('Assert failed');
     };
 
@@ -188,7 +186,7 @@ var gluTextureUtil = framework.opengl.gluTextureUtil;
             if (this.m_instancingType == es3fInstancedRenderingTests.InstancingType.TYPE_ATTRIB_DIVISOR) {
                 posExpression = 'a_position + vec4(a_instanceOffset';
 
-                es3fInstancedRenderingTests.DE_STATIC_ASSERT(es3fInstancedRenderingTests.OFFSET_COMPONENTS >= 1 && es3fInstancedRenderingTests.OFFSET_COMPONENTS <= 4);
+                DE_ASSERT(es3fInstancedRenderingTests.OFFSET_COMPONENTS >= 1 && es3fInstancedRenderingTests.OFFSET_COMPONENTS <= 4);
 
                 for (var i = 0; i < 4 - es3fInstancedRenderingTests.OFFSET_COMPONENTS; i++)
                     posExpression += ', 0.0';
@@ -268,8 +266,7 @@ var gluTextureUtil = framework.opengl.gluTextureUtil;
         // TODO: bufferedLogToConsole?
         //bufferedLogToConsole(this.m_program);
 
-        if (!this.m_program.isOk())
-            es3fInstancedRenderingTests.TCU_FAIL('Failed to compile shader');
+        assertMsgOptions(this.m_program.isOk(), 'Failed to compile shader', false, true);
 
         // Vertex shader attributes.
 
@@ -342,7 +339,7 @@ var gluTextureUtil = framework.opengl.gluTextureUtil;
                 for (var i = 0; i < this.m_numInstances; i++) {
                     this.m_instanceOffsets.push(i * 2.0 / this.m_numInstances);
 
-                    es3fInstancedRenderingTests.DE_STATIC_ASSERT(es3fInstancedRenderingTests.OFFSET_COMPONENTS >= 1 && es3fInstancedRenderingTests.OFFSET_COMPONENTS <= 4);
+                    DE_ASSERT(es3fInstancedRenderingTests.OFFSET_COMPONENTS >= 1 && es3fInstancedRenderingTests.OFFSET_COMPONENTS <= 4);
 
                     for (var j = 0; j < es3fInstancedRenderingTests.OFFSET_COMPONENTS - 1; j++)
                         this.m_instanceOffsets.push(0.0);
@@ -393,6 +390,7 @@ var gluTextureUtil = framework.opengl.gluTextureUtil;
         // Draw result.
 
         gl.viewport(xOffset, yOffset, width, height);
+        gl.clear(gl.COLOR_BUFFER_BIT);
 
         this.setupAndRender();
 
@@ -568,11 +566,14 @@ var gluTextureUtil = framework.opengl.gluTextureUtil;
                 b = (uintB - es3fInstancedRenderingTests.FLOAT_UINT_BIAS) / es3fInstancedRenderingTests.FLOAT_UINT_SCALE;
             }
 
-            // Draw rectangle.
+            // Convert from float to unorm8.
+            var color = deMath.add(deMath.scale([r, g, b, 1.0], 255), [0.5, 0.5, 0.5, 0.5]);
+            color = deMath.clampVector(color, 0, 255);
 
+            // Draw rectangle.
             for (var y = 0; y < hei; y++)
                 for (var x = xStart; x < xEnd; x++)
-                    dst.setPixel(x, y, [r, g, b, 1.0]);
+                    dst.setPixel(x, y, color);
         }
     };
 
