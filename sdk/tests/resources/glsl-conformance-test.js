@@ -280,55 +280,6 @@ function runTests(shaderInfos, opt_contextVersion) {
   runNextTest();
 };
 
-function loadExternalShaders(filename, passMsg) {
-  var shaderInfos = [];
-  var lines = wtu.readFileList(filename);
-  for (var ii = 0; ii < lines.length; ++ii) {
-    var info = {
-      vShaderSource:  defaultVertexShader,
-      vShaderSuccess: true,
-      fShaderSource:  defaultFragmentShader,
-      fShaderSuccess: true,
-      linkSuccess:    true,
-    };
-
-    var line = lines[ii];
-    var files = line.split(/ +/);
-    var passMsg = "";
-    for (var jj = 0; jj < files.length; ++jj) {
-      var file = files[jj];
-      var shaderSource = wtu.readFile(file);
-      var firstLine = shaderSource.split("\n")[0];
-      var success = undefined;
-      if (firstLine.indexOf("fail") >= 0) {
-        success = false;
-      } else if (firstLine.indexOf("succeed") >= 0) {
-        success = true;
-      }
-      if (success === undefined) {
-        testFailed("bad first line in " + file + ":" + firstLine);
-        continue;
-      }
-      if (!wtu.startsWith(firstLine, "// ")) {
-        testFailed("bad first line in " + file + ":" + firstLine);
-        continue;
-      }
-      passMsg = passMsg + (passMsg.length ? ", " : "") + firstLine.substr(3);
-      if (wtu.endsWith(file, ".vert")) {
-        info.vShaderSource = shaderSource;
-        info.vShaderSuccess = success;
-      } else if (wtu.endsWith(file, ".frag")) {
-        info.fShaderSource = shaderSource;
-        info.fShaderSuccess = success;
-      }
-    }
-    info.linkSuccess = info.vShaderSuccess && info.fShaderSuccess;
-    info.passMsg = passMsg;
-    shaderInfos.push(info);
-  }
-  return shaderInfos;
-}
-
 function getSource(elem) {
   var str = elem.text;
   return str.replace(/^\s*/, '').replace(/\s*$/, '');
@@ -415,9 +366,6 @@ return {
   runTest: runTest,
   runTests: runTests,
   runRenderTest: runRenderTest,
-  runRenderTests: runRenderTests,
-  loadExternalShaders: loadExternalShaders,
-
-  none: false,
+  runRenderTests: runRenderTests
 };
 }());
