@@ -43,57 +43,6 @@ goog.scope(function() {
     // tcu::RGBA::*_SHIFT values.
 
     /**
-     * @param {number} color
-     * @return {goog.TypedArray}
-     */
-    tcuBilinearImageCompare.getChannels = function(color) {
-        var result = new Uint32Array([color]);
-        return new Uint8Array(result.buffer);
-    };
-
-    /**
-     * @param {number} color
-     * @param {number} channel
-     * @return {number}
-     */
-    tcuBilinearImageCompare.getChannel = function(color, channel) {
-        if (channel > 4) return 0;
-        var buffer = new ArrayBuffer(4);
-        var result = new Uint32Array(buffer);
-        result[0] = color;
-        return (new Uint8Array(buffer))[channel];
-    };
-
-    /**
-     * @param {tcuTexture.ConstPixelBufferAccess} src
-     * @param {number} x
-     * @param {number} y
-     * @return {number}
-     */
-    tcuBilinearImageCompare.readRGBA8Raw = function(src, x, y) {
-        var start = src.getRowPitch() * y + x * 4;
-        var end = start + 4; // RGBA uses 4 channels
-        /** @type {goog.TypedArray} */
-        var ptr = src.getDataPtr().subarray(start, end);
-        /** @type {Uint32Array} */ var v = new Uint32Array(ptr);
-        return v[0];
-    };
-
-    /**
-     * @param {tcuTexture.ConstPixelBufferAccess} src
-     * @param {number} x
-     * @param {number} y
-     * @return {tcuRGBA.RGBA}
-     */
-    tcuBilinearImageCompare.readRGBA8 = function(src, x, y) {
-        var start = src.getRowPitch() * y + x * 4;
-        var end = start + 4; // RGBA uses 4 channels
-        /** @type {goog.TypedArray} */
-        var res = src.getDataPtr().subarray(start, end);
-        return tcuRGBA.newRGBAComponents(res[0],res[1],res[2],res[3]);
-    };
-
-    /**
     * @param {number} fx1 deUint32
     * @param {number} fy1 deUint32
     * @param {number} p00 deUint8
@@ -120,27 +69,27 @@ goog.scope(function() {
     };
 
     /**
-     * @param {tcuTexture.ConstPixelBufferAccess} access
+     * @param {tcuTexture.RGBA8View} view
      * @param {number} u
      * @param {number} v
      * @return {tcuRGBA.RGBA}
      */
-    tcuBilinearImageCompare.bilinearSampleRGBA8 = function(access, u, v) {
+    tcuBilinearImageCompare.bilinearSampleRGBA8 = function(view, u, v) {
         /** @type {number} */ var x0 = u >> tcuBilinearImageCompare.NUM_SUBPIXEL_BITS;
         /** @type {number} */ var y0 = v >> tcuBilinearImageCompare.NUM_SUBPIXEL_BITS;
         /** @type {number} */ var x1 = x0 + 1;
         /** @type {number} */ var y1 = y0 + 1;
 
-        DE_ASSERT(x1 < access.getWidth());
-        DE_ASSERT(y1 < access.getHeight());
+        DE_ASSERT(x1 < view.getWidth());
+        DE_ASSERT(y1 < view.getHeight());
 
         /** @type {number} */ var fx1 = u - (x0 << tcuBilinearImageCompare.NUM_SUBPIXEL_BITS);
         /** @type {number} */ var fy1 = v - (y0 << tcuBilinearImageCompare.NUM_SUBPIXEL_BITS);
 
-        /** @type {tcuRGBA.RGBA} */ var channelsP00 = tcuBilinearImageCompare.readRGBA8(access, x0, y0);
-        /** @type {tcuRGBA.RGBA} */ var channelsP10 = tcuBilinearImageCompare.readRGBA8(access, x1, y0);
-        /** @type {tcuRGBA.RGBA} */ var channelsP01 = tcuBilinearImageCompare.readRGBA8(access, x0, y1);
-        /** @type {tcuRGBA.RGBA} */ var channelsP11 = tcuBilinearImageCompare.readRGBA8(access, x1, y1);
+        /** @type {Array<number>} */ var channelsP00 = view.read(x0, y0);
+        /** @type {Array<number>} */ var channelsP10 = view.read(x1, y0);
+        /** @type {Array<number>} */ var channelsP01 = view.read(x0, y1);
+        /** @type {Array<number>} */ var channelsP11 = view.read(x1, y1);
 
         /** @type {Array<number>} */ var res = [];
 
@@ -157,18 +106,15 @@ goog.scope(function() {
     };
 
     /**
-     * @param {tcuTexture.ConstPixelBufferAccess} reference
-     * @param {tcuTexture.ConstPixelBufferAccess} result
+     * @param {tcuTexture.RGBA8View} reference
+     * @param {tcuTexture.RGBA8View} result
      * @param {tcuRGBA.RGBA} threshold
      * @param {number} x
      * @param {number} y
      * @return {boolean}
      */
     tcuBilinearImageCompare.comparePixelRGBA8 = function(reference, result, threshold, x, y) {
-        /** @const {tcuRGBA.RGBA} */ var resPix = tcuBilinearImageCompare.readRGBA8(result, x, y);
-
-        if (y == 100)
-            console.log('middle');
+        /** @const {tcuRGBA.RGBA} */ var resPix = tcuRGBA.newRGBAFromArray(result.read(x, y));
 
         // Step 1: Compare result pixel to 3x3 neighborhood pixels in reference.
         /** @const {number} */ var x0 = Math.max(x - 1, 0);
@@ -182,15 +128,15 @@ goog.scope(function() {
 
         //tcuBilinearImageCompare.readRGBA8List (reference, x0, y0, x2, y2);
 
-        if (tcuRGBA.compareThreshold(resPix, tcuBilinearImageCompare.readRGBA8(reference, x1, y1), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuBilinearImageCompare.readRGBA8(reference, x0, y1), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuBilinearImageCompare.readRGBA8(reference, x2, y1), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuBilinearImageCompare.readRGBA8(reference, x0, y0), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuBilinearImageCompare.readRGBA8(reference, x1, y0), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuBilinearImageCompare.readRGBA8(reference, x2, y0), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuBilinearImageCompare.readRGBA8(reference, x0, y2), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuBilinearImageCompare.readRGBA8(reference, x1, y2), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuBilinearImageCompare.readRGBA8(reference, x2, y2), threshold))
+        if (tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x1, y1)), threshold) ||
+            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x0, y1)), threshold) ||
+            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x2, y1)), threshold) ||
+            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x0, y0)), threshold) ||
+            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x1, y0)), threshold) ||
+            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x2, y0)), threshold) ||
+            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x0, y2)), threshold) ||
+            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x1, y2)), threshold) ||
+            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x2, y2)), threshold))
             return true;
 
         // Step 2: Compare using bilinear sampling.
@@ -244,8 +190,8 @@ goog.scope(function() {
     };
 
     /**
-     * @param {tcuTexture.ConstPixelBufferAccess} reference
-     * @param {tcuTexture.ConstPixelBufferAccess} result
+     * @param {tcuTexture.RGBA8View} reference
+     * @param {tcuTexture.RGBA8View} result
      * @param {tcuTexture.PixelBufferAccess} errorMask
      * @param {tcuRGBA.RGBA} threshold
      * @return {boolean}
@@ -292,8 +238,11 @@ goog.scope(function() {
             new tcuTexture.TextureFormat(
                 tcuTexture.ChannelOrder.RGBA,
                 tcuTexture.ChannelType.UNORM_INT8));
-        if (isEqual)
-            return tcuBilinearImageCompare.bilinearCompareRGBA8(reference, result, errorMask, threshold);
+        if (isEqual) {
+            /** @type {tcuTexture.RGBA8View} */ var refView = new tcuTexture.RGBA8View(reference);
+            /** @type {tcuTexture.RGBA8View} */ var resView = new tcuTexture.RGBA8View(result);
+            return tcuBilinearImageCompare.bilinearCompareRGBA8(refView, resView, errorMask, threshold);
+        }
         else
             throw new Error('Unsupported format for bilinear comparison');
     };

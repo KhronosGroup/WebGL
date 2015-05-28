@@ -2,10 +2,9 @@
 // FboCompletenessTests
 'use strict';
 goog.provide('functional.gles3.es3fFboCompletenessTests');
-goog.require('modules.shared.glsFboUtil');
-goog.require('modules.shared.glsFboCompletenessTests');
 goog.require('framework.common.tcuTestCase');
-
+goog.require('modules.shared.glsFboCompletenessTests');
+goog.require('modules.shared.glsFboUtil');
 
 goog.scope(function() {
 
@@ -13,7 +12,7 @@ goog.scope(function() {
     var glsFboUtil = modules.shared.glsFboUtil;
     var glsFboCompletenessTests = modules.shared.glsFboCompletenessTests;
     var tcuTestCase = framework.common.tcuTestCase;
-    
+
     es3fFboCompletenessTests.initGlDependents = function(gl) {
         if (!(gl = gl || window.gl)) throw new Error('Invalid gl object');
 
@@ -23,24 +22,24 @@ goog.scope(function() {
         es3fFboCompletenessTests.s_es3ColorRenderables = [
             // GLES3, 4.4.4: "An internal format is color-renderable if it is one of
             // the formats from table 3.12 noted as color-renderable..."
-            gl.R8,     gl.RG8,     gl.RGB8,   gl.RGB565,   gl.RGBA4,   gl.RGB5_A1, gl.RGBA8,
+            gl.R8, gl.RG8, gl.RGB8, gl.RGB565, gl.RGBA4, gl.RGB5_A1, gl.RGBA8,
             gl.RGB10_A2, gl.RGB10_A2UI, gl.SRGB8_ALPHA8,
-            gl.R8I,    gl.R8UI,    gl.R16I,   gl.R16UI,    gl.R32I,    gl.R32UI,
-            gl.RG8I,   gl.RG8UI,   gl.RG16I,  gl.RG16UI,   gl.RG32I,   gl.RG32UI,
+            gl.R8I, gl.R8UI, gl.R16I, gl.R16UI, gl.R32I, gl.R32UI,
+            gl.RG8I, gl.RG8UI, gl.RG16I, gl.RG16UI, gl.RG32I, gl.RG32UI,
             gl.RGBA81, gl.RGBA8UI, gl.RGB16I, gl.RGBA16UI, gl.RGBA32I, gl.RGBA32UI
         ];
-        
+
         /**
         * @type {Array<number>}
         */
         es3fFboCompletenessTests.s_es3UnsizedColorRenderables = [
             // "...or if it is unsized format RGBA or RGB."
             // See Table 3.3 in GLES3.
-            glsFboUtil.formatkey(gl.RGBA,  gl.UNSIGNED_BYTE),
-            glsFboUtil.formatkey(gl.RGBA,  gl.UNSIGNED_SHORT_4_4_4_4),
-            glsFboUtil.formatkey(gl.RGBA,  gl.UNSIGNED_SHORT_5_5_5_1),
-            glsFboUtil.formatkey(gl.RGB,   gl.UNSIGNED_BYTE),
-            glsFboUtil.formatkey(gl.RGB,   gl.UNSIGNED_SHORT_5_6_5)
+            glsFboUtil.formatkey(gl.RGBA, gl.UNSIGNED_BYTE),
+            glsFboUtil.formatkey(gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4),
+            glsFboUtil.formatkey(gl.RGBA, gl.UNSIGNED_SHORT_5_5_5_1),
+            glsFboUtil.formatkey(gl.RGB, gl.UNSIGNED_BYTE),
+            glsFboUtil.formatkey(gl.RGB, gl.UNSIGNED_SHORT_5_6_5)
         ];
 
         /**
@@ -76,8 +75,8 @@ goog.scope(function() {
         */
         es3fFboCompletenessTests.s_es3TextureFloatFormats = [
             gl.RGBA32F, gl.RGBA16F, gl.R11F_G11F_B10F,
-            gl.RG32F,   gl.RG16F,   gl.R32F,  gl.R16F,
-            gl.RGBA16F, gl.RGB16F,  gl.RG16F, gl.R16F
+            gl.RG32F, gl.RG16F, gl.R32F, gl.R16F,
+            gl.RGBA16F, gl.RGB16F, gl.RG16F, gl.R16F
         ];
 
         /**
@@ -87,7 +86,7 @@ goog.scope(function() {
             [
                 (
                     glsFboUtil.FormatFlags.REQUIRED_RENDERABLE |
-                    glsFboUtil.FormatFlags.COLOR_RENDERABLE    |
+                    glsFboUtil.FormatFlags.COLOR_RENDERABLE |
                     glsFboUtil.FormatFlags.TEXTURE_VALID
                 ),
                 glsFboUtil.rangeArray(es3fFboCompletenessTests.s_es3UnsizedColorRenderables)
@@ -95,76 +94,73 @@ goog.scope(function() {
             [
                 (
                     glsFboUtil.FormatFlags.REQUIRED_RENDERABLE |
-                    glsFboUtil.FormatFlags.COLOR_RENDERABLE    |
-                    glsFboUtil.FormatFlags.RENDERBUFFER_VALID  |
+                    glsFboUtil.FormatFlags.COLOR_RENDERABLE |
+                    glsFboUtil.FormatFlags.RENDERBUFFER_VALID |
                     glsFboUtil.FormatFlags.TEXTURE_VALID
                 ),
                 glsFboUtil.rangeArray(es3fFboCompletenessTests.s_es3ColorRenderables)
             ], [
                 (
                     glsFboUtil.FormatFlags.REQUIRED_RENDERABLE |
-                    glsFboUtil.FormatFlags.DEPTH_RENDERABLE    |
-                    glsFboUtil.FormatFlags.RENDERBUFFER_VALID  |
+                    glsFboUtil.FormatFlags.DEPTH_RENDERABLE |
+                    glsFboUtil.FormatFlags.RENDERBUFFER_VALID |
                     glsFboUtil.FormatFlags.TEXTURE_VALID
                 ),
                 glsFboUtil.rangeArray(es3fFboCompletenessTests.s_es3DepthRenderables)
             ], [
                 (
                     glsFboUtil.FormatFlags.REQUIRED_RENDERABLE |
-                    glsFboUtil.FormatFlags.STENCIL_RENDERABLE  |
+                    glsFboUtil.FormatFlags.STENCIL_RENDERABLE |
                     glsFboUtil.FormatFlags.RENDERBUFFER_VALID
                 ),
                 glsFboUtil.rangeArray(es3fFboCompletenessTests.s_es3StencilRboRenderables)
             ], [
                 (
                     glsFboUtil.FormatFlags.REQUIRED_RENDERABLE |
-                    glsFboUtil.FormatFlags.STENCIL_RENDERABLE  |
-                    glsFboUtil.FormatFlags.RENDERBUFFER_VALID  |
+                    glsFboUtil.FormatFlags.STENCIL_RENDERABLE |
+                    glsFboUtil.FormatFlags.RENDERBUFFER_VALID |
                     glsFboUtil.FormatFlags.TEXTURE_VALID
                 ),
                 glsFboUtil.rangeArray(es3fFboCompletenessTests.s_es3StencilRenderables)
             ],
 
             // These are not color-renderable in vanilla ES3, but we need to mark them
-	        // as valid for textures, since EXT_color_buffer_(half_)float brings in
-	        // color-renderability and only renderbuffer-validity.
-	        [
-	            glsFboUtil.FormatFlags.TEXTURE_VALID,
-	            glsFboUtil.rangeArray(es3fFboCompletenessTests.s_es3TextureFloatFormats)
-	        ]
-	    ];
+            // as valid for textures, since EXT_color_buffer_(half_)float brings in
+            // color-renderability and only renderbuffer-validity.
+            [
+                glsFboUtil.FormatFlags.TEXTURE_VALID,
+                glsFboUtil.rangeArray(es3fFboCompletenessTests.s_es3TextureFloatFormats)
+            ]
+        ];
 
-
-        // GL_EXT_color_buffer_float
+        // gl.EXT_color_buffer_float
         es3fFboCompletenessTests.s_extColorBufferFloatFormats = [
             gl.RGBA32F, gl.RGBA16F, gl.R11F_G11F_B10F, gl.RG32F, gl.RG16F, gl.R32F, gl.R16F
         ];
 
-        // GL_OES_texture_stencil8
+        // gl.OES_texture_stencil8
         es3fFboCompletenessTests.s_extOESTextureStencil8 = [
             gl.STENCIL_INDEX8
         ];
 
-        es3fFboCompletenessTests.s_es3ExtFormats = [
-            {
-                extensions: 'GL_EXT_color_buffer_float',
-                flags:      glsFboUtil.FormatFlags.REQUIRED_RENDERABLE |
-                            glsFboUtil.FormatFlags.COLOR_RENDERABLE    |
+        es3fFboCompletenessTests.s_es3ExtFormats = [{
+                extensions: 'gl.EXT_color_buffer_float',
+                flags: glsFboUtil.FormatFlags.REQUIRED_RENDERABLE |
+                            glsFboUtil.FormatFlags.COLOR_RENDERABLE |
                             glsFboUtil.FormatFlags.RENDERBUFFER_VALID,
-                formats:    new glsFboUtil.Range(es3fFboCompletenessTests.s_extColorBufferFloatFormats)
+                formats: new glsFboUtil.Range(es3fFboCompletenessTests.s_extColorBufferFloatFormats)
             }, {
-                extensions: 'GL_OES_texture_stencil8',
-                flags:      glsFboUtil.FormatFlags.REQUIRED_RENDERABLE |
-                            glsFboUtil.FormatFlags.STENCIL_RENDERABLE  |
+                extensions: 'gl.OES_texture_stencil8',
+                flags: glsFboUtil.FormatFlags.REQUIRED_RENDERABLE |
+                            glsFboUtil.FormatFlags.STENCIL_RENDERABLE |
                             glsFboUtil.FormatFlags.TEXTURE_VALID,
-                formats:    new glsFboUtil.Range(es3fFboCompletenessTests.s_extOESTextureStencil8)
+                formats: new glsFboUtil.Range(es3fFboCompletenessTests.s_extOESTextureStencil8)
             }
         ];
-        
+
         glsFboCompletenessTests.initGlDependents(gl);
     };
-    
-    
+
     /**
      * @constructor
      * @extends {glsFboUtil.Checker}
@@ -177,7 +173,6 @@ goog.scope(function() {
     };
     es3fFboCompletenessTests.ES3Checker.prototype = Object.create(glsFboUtil.Checker.prototype);
     es3fFboCompletenessTests.ES3Checker.prototype.constructor = es3fFboCompletenessTests.ES3Checker;
-    
 
     es3fFboCompletenessTests.ES3Checker.prototype.check = function(attPoint, att, image) {
 
@@ -218,7 +213,7 @@ goog.scope(function() {
         if (attPoint == gl.DEPTH_ATTACHMENT || attPoint == gl.STENCIL_ATTACHMENT) {
             if (this.m_depthStencilImage == 0) {
                 this.m_depthStencilImage = att.imageName;
-                this.m_depthStencilType  = glsFboUtil.attachmentType(att);
+                this.m_depthStencilType = glsFboUtil.attachmentType(att);
 
             } else {
                 this.require(
@@ -243,17 +238,17 @@ goog.scope(function() {
     */
     es3fFboCompletenessTests.numLayersParams = function(textureKind, numLayers, attachmentLayer) {
         if (typeof(attachmentLayer) == 'undefined') {
-            textureKind     = 0;
-            numLayers       = 0;
+            textureKind = 0;
+            numLayers = 0;
             attachmentLayer = 0;
         }
         return {
-            textureKind:     textureKind,     //< GL_TEXTURE_3D or GL_TEXTURE_2D_ARRAY
-            numLayers:       numLayers,       //< Number of layers in texture
-            attachmentLayer: attachmentLayer  //< Layer referenced by attachment
+            textureKind: textureKind, //< gl.TEXTURE_3D or gl.TEXTURE_2D_ARRAY
+            numLayers: numLayers, //< Number of layers in texture
+            attachmentLayer: attachmentLayer //< Layer referenced by attachment
         };
     };
-    
+
     /**
      * es3fFboCompletenessTests.numLayersParams.getName
      * @param {es3fFboCompletenessTests.numLayersParamsT} params
@@ -292,11 +287,9 @@ goog.scope(function() {
         glsFboCompletenessTests.TestBase.call(this, name, desc, params);
         this.m_ctx = ctx;
     };
-    
+
     es3fFboCompletenessTests.NumLayersTest.prototype = Object.create(glsFboCompletenessTests.TestBase.prototype);
     es3fFboCompletenessTests.NumLayersTest.prototype.constructor = es3fFboCompletenessTests.NumLayersTest;
-
-
 
     es3fFboCompletenessTests.NumLayersTest.prototype.build = function(builder, gl) {
 
@@ -338,19 +331,19 @@ goog.scope(function() {
         NONE: -2,
         TEXTURE: -1
     };
-    
+
     /**
     * @typedef {{numSamples: Array<number>}}
     */
     es3fFboCompletenessTests.numSamplesParamsT;
-    
+
     /**
     * @param {number} colour
     * @param {number} depth
     * @param {number} stencil
     * @return {es3fFboCompletenessTests.numSamplesParamsT}
     */
-    es3fFboCompletenessTests.numSamplesParams = function(colour,depth,stencil) {
+    es3fFboCompletenessTests.numSamplesParams = function(colour, depth, stencil) {
         var ret = {
             numSamples: new Array(3)
         };
@@ -365,25 +358,25 @@ goog.scope(function() {
         }
         return ret;
     };
-    
+
     /**
     * @param {es3fFboCompletenessTests.numSamplesParamsT} params
     * @return {string}
     */
     es3fFboCompletenessTests.numSamplesParams.getName = function(params) {
         var out = '';
-        
+
         var first = true;
-        for (var i = 0 ; i < 3 ; ++i) {
+        for (var i = 0; i < 3; ++i) {
             if (first)
                 first = false;
             else
                 out += '_';
-            
+
             switch (params.numSamples[i]) {
                 case es3fFboCompletenessTests.e_samples.NONE: out += 'none'; break;
                 case es3fFboCompletenessTests.e_samples.TEXTURE: out += 'tex'; break;
-                default:  out += 'rbo'; break;
+                default: out += 'rbo'; break;
             }
         }
         return out;
@@ -396,13 +389,13 @@ goog.scope(function() {
         var out = '';
         var names = ['color', 'depth', 'stencil'];
         var first = true;
-        
-        for (var i = 0 ; i < 3 ; ++i) {
+
+        for (var i = 0; i < 3; ++i) {
             if (first)
                 first = false;
             else
                 out += ', ';
-        
+
             if (params.numSamples[i] == es3fFboCompletenessTests.e_samples.TEXTURE) {
                 out += 'texture ' + names[i] + ' attachment';
             } else {
@@ -411,7 +404,7 @@ goog.scope(function() {
         }
         return out;
     };
-    
+
     /**
     * @constructor
     * @extends {glsFboCompletenessTests.TestBase}
@@ -439,15 +432,15 @@ goog.scope(function() {
         var s_formats = [
             gl.RGBA8, gl.RGB565, gl.DEPTH_COMPONENT24
         ];
-        
+
         var l = s_targets.length;
         if (this.m_params.numSamples.length != l)
             throw new Error('Wrong number of params.');
-        
-        for (var i = 0 ; i < l ; ++i) {
+
+        for (var i = 0; i < l; ++i) {
             var target = s_targets[i];
             var fmt = new glsFboUtil.ImageFormat(s_formats[i], gl.NONE);
-            
+
             var ns = this.m_params.numSamples[i];
             if (ns == es3fFboCompletenessTests.e_samples.NONE)
                 continue;
@@ -458,7 +451,7 @@ goog.scope(function() {
                 rboCfg.internalFormat = fmt;
                 rboCfg.width = rboCfg.height = 64;
                 rboCfg.numSamples = ns;
-                
+
                 var rbo = builder.glCreateRbo(rboCfg);
                 // Implementations do not necessarily support sample sizes greater than 1.
                 if (builder.getError() == gl.INVALID_OPERATION) {
@@ -469,20 +462,17 @@ goog.scope(function() {
                 builder.glAttach(target, att);
             }
         }
-        
+
         return true;
     };
 
-
-
-
     es3fFboCompletenessTests.init = function() {
-    
+
         //(testCtx, renderCtx, factory) {
         var fboCtx = new glsFboCompletenessTests.Context(null, gl, function() {
             return new es3fFboCompletenessTests.ES3Checker();
         });
-    
+
         fboCtx.addFormats(glsFboUtil.rangeArray(es3fFboCompletenessTests.s_es3Formats));
 
         /** @const @type {tcuTestCase.DeqpTest} */
@@ -491,24 +481,23 @@ goog.scope(function() {
         testGroup.addChild(fboCtx.createRenderableTests(gl));
         testGroup.addChild(fboCtx.createAttachmentTests(gl));
         testGroup.addChild(fboCtx.createSizeTests(gl));
-        
-        
+
         /** @type {tcuTestCase.DeqpTest} */
         var layerTests = tcuTestCase.newTest('layer', 'Tests for layer attachments');
-        
+
         /** @static */
         var s_latersParams = [
-            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_2D_ARRAY, 1,  0),
-            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_2D_ARRAY, 1,  3),
-            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_2D_ARRAY, 4,  3),
+            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_2D_ARRAY, 1, 0),
+            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_2D_ARRAY, 1, 3),
+            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_2D_ARRAY, 4, 3),
             es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_2D_ARRAY, 4, 15),
-            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_3D,       1,  0),
-            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_3D,       1, 15),
-            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_3D,       4, 15),
-            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_3D,      64, 15)
+            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_3D, 1, 0),
+            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_3D, 1, 15),
+            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_3D, 4, 15),
+            es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_3D, 64, 15)
         ];
-        
-        for (var i = 0 ; i < s_latersParams.length ; ++i) {
+
+        for (var i = 0; i < s_latersParams.length; ++i) {
             var name = 'name';
             var desc = 'desc';
             layerTests.addChild(new es3fFboCompletenessTests.NumLayersTest(
@@ -518,7 +507,7 @@ goog.scope(function() {
             ));
         }
         testGroup.addChild(layerTests);
-        
+
         /** @type {tcuTestCase.DeqpTest} */
         var sampleTests = tcuTestCase.newTest('sample', 'Tests for multisample attachments');
         // some short hand
@@ -526,22 +515,22 @@ goog.scope(function() {
         // sample tests
         /** @static */
         var s_samplesParams = [
-            es3fFboCompletenessTests.numSamplesParams(0,  samples.NONE,     samples.NONE),
-            es3fFboCompletenessTests.numSamplesParams(1,  samples.NONE,     samples.NONE),
-            es3fFboCompletenessTests.numSamplesParams(2,  samples.NONE,     samples.NONE),
-            es3fFboCompletenessTests.numSamplesParams(0,  samples.TEXTURE,  samples.NONE),
-            es3fFboCompletenessTests.numSamplesParams(1,  samples.TEXTURE,  samples.NONE),
-            es3fFboCompletenessTests.numSamplesParams(2,  samples.TEXTURE,  samples.NONE),
-            es3fFboCompletenessTests.numSamplesParams(2,  1,                samples.NONE),
-            es3fFboCompletenessTests.numSamplesParams(2,  2,                samples.NONE),
-            es3fFboCompletenessTests.numSamplesParams(0,  0,                samples.TEXTURE),
-            es3fFboCompletenessTests.numSamplesParams(1,  2,                0),
-            es3fFboCompletenessTests.numSamplesParams(2,  2,                0),
-            es3fFboCompletenessTests.numSamplesParams(1,  1,                1),
-            es3fFboCompletenessTests.numSamplesParams(1,  2,                4)
+            es3fFboCompletenessTests.numSamplesParams(0, samples.NONE, samples.NONE),
+            es3fFboCompletenessTests.numSamplesParams(1, samples.NONE, samples.NONE),
+            es3fFboCompletenessTests.numSamplesParams(2, samples.NONE, samples.NONE),
+            es3fFboCompletenessTests.numSamplesParams(0, samples.TEXTURE, samples.NONE),
+            es3fFboCompletenessTests.numSamplesParams(1, samples.TEXTURE, samples.NONE),
+            es3fFboCompletenessTests.numSamplesParams(2, samples.TEXTURE, samples.NONE),
+            es3fFboCompletenessTests.numSamplesParams(2, 1, samples.NONE),
+            es3fFboCompletenessTests.numSamplesParams(2, 2, samples.NONE),
+            es3fFboCompletenessTests.numSamplesParams(0, 0, samples.TEXTURE),
+            es3fFboCompletenessTests.numSamplesParams(1, 2, 0),
+            es3fFboCompletenessTests.numSamplesParams(2, 2, 0),
+            es3fFboCompletenessTests.numSamplesParams(1, 1, 1),
+            es3fFboCompletenessTests.numSamplesParams(1, 2, 4)
         ];
-        
-        for (var i = 0 ; i < s_samplesParams.length ; ++i) {
+
+        for (var i = 0; i < s_samplesParams.length; ++i) {
             var name = 'name';
             var desc = 'desc';
             sampleTests.addChild(new es3fFboCompletenessTests.NumSamplesTest(
@@ -551,7 +540,7 @@ goog.scope(function() {
             ));
         }
         testGroup.addChild(sampleTests);
-        
+
     };
 
     es3fFboCompletenessTests.run = function() {
@@ -575,7 +564,5 @@ goog.scope(function() {
         }
 
     };
-
-    
 
 });

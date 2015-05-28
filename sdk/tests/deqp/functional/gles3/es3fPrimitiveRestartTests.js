@@ -57,14 +57,6 @@ var gluTextureUtil = framework.opengl.gluTextureUtil;
         if (!expression) throw new Error('Assert failed');
     };
 
-    es3fPrimitiveRestartTests.GLU_CHECK_MSG = function(message) {
-        console.log(message);
-    };
-
-    es3fPrimitiveRestartTests.TCU_FAIL = function(message) {
-        throw new Error(message);
-    };
-
     /**
      * @enum
      */
@@ -217,23 +209,23 @@ var gluTextureUtil = framework.opengl.gluTextureUtil;
     };
 
     es3fPrimitiveRestartTests.PrimitiveRestartCase.prototype.renderWithRestart = function() {
-        es3fPrimitiveRestartTests.GLU_CHECK_MSG('renderWithRestart() begin');
+        bufferedLogToConsole('renderWithRestart() begin');
 
         // Primitive Restart is always on in WebGL2
         //gl.enable(gl.PRIMITIVE_RESTART_FIXED_INDEX);
-        //es3fPrimitiveRestartTests.GLU_CHECK_MSG('Enable primitive restart');
+        //bufferedLogToConsole('Enable primitive restart');
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-        es3fPrimitiveRestartTests.GLU_CHECK_MSG('Clear in renderWithRestart()');
+        bufferedLogToConsole('Clear in renderWithRestart()');
 
         this.draw(0, this.getNumIndices());
-        es3fPrimitiveRestartTests.GLU_CHECK_MSG('Draw in renderWithRestart()');
+        bufferedLogToConsole('Draw in renderWithRestart()');
 
-        es3fPrimitiveRestartTests.GLU_CHECK_MSG('renderWithRestart() end');
+        bufferedLogToConsole('renderWithRestart() end');
     };
 
     es3fPrimitiveRestartTests.PrimitiveRestartCase.prototype.renderWithoutRestart = function() {
-        es3fPrimitiveRestartTests.GLU_CHECK_MSG('renderWithoutRestart() begin');
+        bufferedLogToConsole('renderWithoutRestart() begin');
 
         /** @type {number} */ var restartIndex = this.m_indexType == es3fPrimitiveRestartTests.IndexType.INDEX_UNSIGNED_BYTE ? es3fPrimitiveRestartTests.RESTART_INDEX_UNSIGNED_BYTE :
                                                  this.m_indexType == es3fPrimitiveRestartTests.IndexType.INDEX_UNSIGNED_SHORT ? es3fPrimitiveRestartTests.RESTART_INDEX_UNSIGNED_SHORT :
@@ -243,10 +235,10 @@ var gluTextureUtil = framework.opengl.gluTextureUtil;
         DE_ASSERT(restartIndex != 0);
         // Primitive Restart is always on in WebGL2
         //gl.disable(gl.PRIMITIVE_RESTART_FIXED_INDEX);
-        //es3fPrimitiveRestartTests.GLU_CHECK_MSG('Disable primitive restart');
+        //bufferedLogToConsole('Disable primitive restart');
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-        es3fPrimitiveRestartTests.GLU_CHECK_MSG('Clear in renderWithoutRestart()');
+        bufferedLogToConsole('Clear in renderWithoutRestart()');
 
         // Draw, emulating primitive restart.
 
@@ -262,14 +254,14 @@ var gluTextureUtil = framework.opengl.gluTextureUtil;
                     // Draw from index indexArrayStartNdx to index indexArrayNdx-1 .
 
                     this.draw(indexArrayStartNdx, indexArrayNdx - indexArrayStartNdx);
-                    es3fPrimitiveRestartTests.GLU_CHECK_MSG('Draw in renderWithoutRestart()');
+                    bufferedLogToConsole('Draw in renderWithoutRestart()');
                 }
 
                 indexArrayStartNdx = indexArrayNdx + 1; // Next draw starts just after this restart index.
             }
         }
 
-        es3fPrimitiveRestartTests.GLU_CHECK_MSG('renderWithoutRestart() end');
+        bufferedLogToConsole('renderWithoutRestart() end');
     };
 
     /**
@@ -374,7 +366,7 @@ var gluTextureUtil = framework.opengl.gluTextureUtil;
 
         if (!this.m_program.isOk()) {
             //m_testCtx.getLog() << *this.m_program;
-            es3fPrimitiveRestartTests.TCU_FAIL('Failed to compile shader');
+            testFailedOptions('Failed to compile shader', true);
         }
 
         /** @type {number} */ var restartIndex = this.m_indexType == es3fPrimitiveRestartTests.IndexType.INDEX_UNSIGNED_BYTE ? es3fPrimitiveRestartTests.RESTART_INDEX_UNSIGNED_BYTE :

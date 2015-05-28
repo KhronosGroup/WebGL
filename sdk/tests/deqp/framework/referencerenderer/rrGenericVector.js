@@ -25,8 +25,6 @@ goog.scope(function() {
 
 var rrGenericVector = framework.referencerenderer.rrGenericVector;
 
-    rrGenericVector.DE_NULL = null;
-
     var DE_ASSERT = function(x) {
         if (!x)
             throw new Error('Assert failed');
