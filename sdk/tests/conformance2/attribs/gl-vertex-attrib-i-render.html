@@ -32,8 +32,7 @@
     <link rel="stylesheet" href="../../resources/js-test-style.css"/>
     <script src="../../resources/js-test-pre.js"></script>
     <script src="../../resources/webgl-test-utils.js"></script>
-    <script id='vshader' type='x-shader'>
-        #version 300 es
+    <script id='vshader' type='x-shader/x-vertex'>#version 300 es
         layout(location=0) in ivec2 p;
         layout(location=1) in ivec4 a;
         void main()
@@ -41,8 +40,7 @@
             gl_Position = vec4(p.x + a.x + a.y + a.z + a.w, p.y, 0.0, 10.0);
         }
     </script>
-    <script id='fshader' type='x-shader'>
-        #version 300 es
+    <script id='fshader' type='x-shader/x-fragment'>#version 300 es
         precision mediump float;
         layout(location=0) out vec4 oColor;
         void main()
