@@ -62,15 +62,13 @@ void main()
 <script>
 "use strict";
 GLSLConformanceTester.runTests([
-    { vShaderId: 'vertexWhitespace',
+    {
+      vShaderId: 'vertexWhitespace',
       vShaderSuccess: true,
-      fShaderId: null,
-      fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'Vertex shader using space and tab characters around # should succeed'
     },
-    { vShaderId: null,
-      vShaderSuccess: true,
+    {
       fShaderId: 'fragmentWhitespace',
       fShaderSuccess: true,
       linkSuccess: true,

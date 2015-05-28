@@ -66,13 +66,16 @@ var vShaderDB = {};
 var fShaderDB = {};
 
 /**
+ * The info parameter should contain the following keys. Note that you may leave
+ * the parameters for one shader out, in which case the default shader will be
+ * used.
  * vShaderSource: the source code for vertex shader
  * vShaderSuccess: true if vertex shader compilation should
  *   succeed.
  * fShaderSource: the source code for fragment shader
  * fShaderSuccess: true if fragment shader compilation should
  *   succeed.
- * linkSuccess: true of link should succeed
+ * linkSuccess: true if link should succeed
  * passMsg: msg to describe success condition.
  * render: if true render to unit quad. Green = success
  *
@@ -84,27 +87,34 @@ function runOneTest(gl, info) {
 
   var consoleDiv = document.getElementById("console");
 
+  var vIsDefault = false;
+  var fIsDefault = false;
+
   if (info.vShaderSource === undefined) {
     if (info.vShaderId) {
       info.vShaderSource = document.getElementById(info.vShaderId).text;
     } else {
-      info.vShader = 'defaultVertexShader';
-      info.vShaderSource = defaultVertexShader;
+      vIsDefault = true;
     }
   }
   if (info.fShaderSource === undefined) {
     if (info.fShaderId) {
       info.fShaderSource = document.getElementById(info.fShaderId).text;
     } else {
-      info.fShader = 'defaultFragmentShader';
-      info.fShaderSource = defaultFragmentShader;
+      fIsDefault = true;
     }
   }
 
-  var vIsDefault = (info.vShaderSource == defaultVertexShader);
-  var fIsDefault = (info.fShaderSource == defaultFragmentShader);
   var vLabel = (vIsDefault ? "default" : "test") + " vertex shader";
   var fLabel = (fIsDefault ? "default" : "test") + " fragment shader";
+  if (vIsDefault) {
+    info.vShaderSource = defaultVertexShader;
+    info.vShaderSuccess = true;
+  }
+  if (fIsDefault) {
+    info.fShaderSource = defaultFragmentShader;
+    info.fShaderSuccess = true;
+  }
 
   if (vIsDefault != fIsDefault) {
     // The language version of the default shader is chosen
@@ -301,44 +311,30 @@ function getSuccess(msg) {
 }
 
 function setupTest() {
+  var info = {};
+
   var vShaderElem = document.getElementById('vertexShader');
-  var vShaderSource = defaultVertexShader;
-  var vShaderSuccess = true;
+  if (vShaderElem) {
+    info.vShaderSource = getSource(vShaderElem);
+    info.passMsg = getPassMessage(info.vShaderSource);
+    info.vShaderSuccess = getSuccess(info.passMsg);
+  }
 
   var fShaderElem = document.getElementById('fragmentShader');
-  var fShaderSource = defaultFragmentShader;
-  var fShaderSuccess = true;
-
-  var passMsg = undefined;
-
-  if (vShaderElem) {
-    vShaderSource = getSource(vShaderElem);
-    passMsg = getPassMessage(vShaderSource);
-    vShaderSuccess = getSuccess(passMsg);
-  }
-
   if (fShaderElem) {
-    fShaderSource = getSource(fShaderElem);
-    passMsg = getPassMessage(fShaderSource);
-    fShaderSuccess = getSuccess(passMsg);
+    info.fShaderSource = getSource(fShaderElem);
+    info.passMsg = getPassMessage(info.fShaderSource);
+    info.fShaderSuccess = getSuccess(info.passMsg);
   }
 
-  var linkSuccess = vShaderSuccess && fShaderSuccess;
+  // linkSuccess should be true if shader success value is undefined or true for both shaders.
+  info.linkSuccess = info.vShaderSuccess !== false && info.fShaderSuccess !== false;
 
-  if (passMsg === undefined) {
+  if (info.passMsg === undefined) {
     testFailed("no test shader found.");
     finishTest();
     return;
   }
-
-  var info = {
-    vShaderSource: vShaderSource,
-    vShaderSuccess: vShaderSuccess,
-    fShaderSource: fShaderSource,
-    fShaderSuccess: fShaderSuccess,
-    linkSuccess: linkSuccess,
-    passMsg: passMsg
-  };
 
   return info;
 }
