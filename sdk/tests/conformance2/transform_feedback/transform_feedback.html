@@ -1,0 +1,136 @@
+<!--
+
+/*
+** Copyright (c) 2015 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL Transform Feedback Conformance Tests</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../resources/js-test-pre.js"></script>
+<script src="../../conformance/resources/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<canvas id="canvas" style="width: 50px; height: 50px;"> </canvas>
+<div id="console"></div>
+<script id="vshader" type="x-shader/x-vertex">
+attribute vec4 a_position;
+attribute vec4 a_color;
+varying vec4 v_color;
+void main(void) {
+    gl_Position = a_position;
+    v_color = a_color;
+}
+</script>
+<script id="fshader" type="x-shader/x-fragment">
+precision mediump float;
+varying vec4 v_color;
+void main(void) {
+    gl_FragColor = v_color;
+}
+</script>
+<script>
+"use strict";
+description("This test verifies the functionality of the Transform Feedback objects.");
+
+debug("");
+
+var wtu = WebGLTestUtils;
+var canvas = document.getElementById("canvas");
+var gl = wtu.create3DContext(canvas, null, 2);
+var tf = null;
+var tf1 = null;
+
+if (!gl) {
+    testFailed("WebGL context does not exist");
+} else {
+    testPassed("WebGL context exists");
+
+    runBindingTest();
+    runObjectTest();
+    // TODO: Test buffer binding, drawing, etc.
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+}
+
+function runBindingTest() {
+    debug("Testing binding enum");
+    
+    shouldBe("gl.TRANSFORM_FEEDBACK_BINDING", "0x8E25");
+    
+    gl.getParameter(gl.TRANSFORM_FEEDBACK_BINDING);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "TRANSFORM_FEEDBACK_BINDING query should succeed");
+    
+    // Default value is null
+    shouldBe("gl.getParameter(gl.TRANSFORM_FEEDBACK_BINDING)", "null");
+    
+    debug("Testing binding a Transform Feedback object");
+    tf = gl.createTransformFeedback();
+    tf1 = gl.createTransformFeedback();
+    shouldBeNull("gl.getParameter(gl.TRANSFORM_FEEDBACK_BINDING)");
+    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
+    shouldBe("gl.getParameter(gl.TRANSFORM_FEEDBACK_BINDING)", "tf");
+    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf1);
+    shouldBe("gl.getParameter(gl.TRANSFORM_FEEDBACK_BINDING)", "tf1");
+    gl.deleteTransformFeedback(tf);
+    gl.deleteTransformFeedback(tf1);
+    shouldBeNull("gl.getParameter(gl.TRANSFORM_FEEDBACK_BINDING)");
+    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf1);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "binding a deleted Transform Feedback object");
+    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
+    shouldBeNull("gl.getParameter(gl.TRANSFORM_FEEDBACK_BINDING)");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+}
+
+function runObjectTest() {
+    debug("Testing object creation");
+    
+    tf = gl.createTransformFeedback();
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "createTransformFeedback should not set an error");
+    shouldBeNonNull("tf");
+    
+    // Expect false if never bound
+    shouldBeFalse("gl.isTransformFeedback(tf)");
+    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
+    shouldBeTrue("gl.isTransformFeedback(tf)");
+    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
+    shouldBeTrue("gl.isTransformFeedback(tf)");
+    gl.deleteTransformFeedback(tf);
+    shouldBeFalse("gl.isTransformFeedback(tf)");
+    
+    shouldBeFalse("gl.isTransformFeedback(null)");
+
+    tf = null;
+}
+
+debug("");
+var successfullyParsed = true;
+</script>
+<script src="../../resources/js-test-post.js"></script>
+
+</body>
+</html>
