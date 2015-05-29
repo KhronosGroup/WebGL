@@ -40,8 +40,7 @@ There is supposed to be an example drawing here, but it's not important.
 </canvas>
 <div id="description"></div>
 <div id="console"></div>
-    <script id="vshader" type="x-shader/x-vertex">
-        #version 300 es
+    <script id="vshader" type="x-shader/x-vertex">#version 300 es
         layout(location=0) in ivec4 aPosition;
         layout(location=1) in vec4 aColor;
         out vec4 vColor;
@@ -52,8 +51,7 @@ There is supposed to be an example drawing here, but it's not important.
         }
     </script>
 
-    <script id="fshader" type="x-shader/x-fragment">
-        #version 300 es
+    <script id="fshader" type="x-shader/x-fragment">#version 300 es
         precision mediump float;
         in vec4 vColor;
         layout(location=0) out vec4 oColor;
