@@ -108,5 +108,6 @@ uniform-location-length-limits.html
 --min-version 1.0.3 struct-nesting-of-variable-names.html
 --min-version 1.0.3 struct-specifiers-in-uniforms.html
 --min-version 1.0.3 struct-unary-operators.html
+--min-version 1.0.4 --max-version 1.9.9 ternary-operator-on-arrays.html
 --min-version 1.0.3 ternary-operators-in-global-initializers.html
 --min-version 1.0.3 ternary-operators-in-initializers.html
