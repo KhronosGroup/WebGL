@@ -31,8 +31,6 @@ var deMath = framework.delibs.debase.deMath;
 var tcuFloat = framework.common.tcuFloat;
 var rrGenericVector = framework.referencerenderer.rrGenericVector;
 
-    rrVertexAttrib.DE_NULL = null;
-
     var DE_ASSERT = function(x) {
         if (!x)
             throw new Error('Assert failed');
@@ -130,7 +128,7 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         /** @type {number} */ this.stride = 0;
         /** @type {number} */ this.instanceDivisor = 0;
         /** @type {number} */ this.offset = 0; //Added this property to compensate functionality (not in original dEQP).
-        /** @type {ArrayBuffer} */ this.pointer = rrVertexAttrib.DE_NULL;
+        /** @type {ArrayBuffer} */ this.pointer = null;
         /** @type {Array<number>|rrGenericVector.GenericVec4} */ this.generic; //!< Generic attribute, used if pointer is null.
     };
 
@@ -334,9 +332,9 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
                         deMath.BinaryOp.AND
                     ),
                     1
-                )
-                ,
-                integer_,
+                ) ,
+
+integer_,
                 deMath.BinaryOp.OR
             )
         ])[0];
@@ -354,10 +352,10 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         var ptrclone = new Uint8Array(ptr.subarray(0, size * arraysize32)); //Small buffer copy (max. 16 bytes)
         var aligned = new Uint32Array(ptrclone.buffer)[0];
 
-        dst[0] = deMath.binaryOp(deMath.shiftRight(aligned,  0), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND);
-        if (size >= 2) dst[1] = deMath.binaryOp(deMath.shiftRight(aligned,  10), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND);
-        if (size >= 3) dst[2] = deMath.binaryOp(deMath.shiftRight(aligned,  20), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND);
-        if (size >= 4) dst[3] = deMath.binaryOp(deMath.shiftRight(aligned,  30), deMath.shiftLeft(1, 2) - 1, deMath.BinaryOp.AND);
+        dst[0] = deMath.binaryOp(deMath.shiftRight(aligned, 0), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND);
+        if (size >= 2) dst[1] = deMath.binaryOp(deMath.shiftRight(aligned, 10), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND);
+        if (size >= 3) dst[2] = deMath.binaryOp(deMath.shiftRight(aligned, 20), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND);
+        if (size >= 4) dst[3] = deMath.binaryOp(deMath.shiftRight(aligned, 30), deMath.shiftLeft(1, 2) - 1, deMath.BinaryOp.AND);
     };
 
     /**
@@ -372,10 +370,10 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         var ptrclone = new Uint8Array(ptr.subarray(0, size * arraysize32)); //Small buffer copy (max. 16 bytes)
         var aligned = new Uint32Array(ptrclone.buffer)[0];
 
-        dst[0] = rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned,  0), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND));
-        if (size >= 2) dst[1] = rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned,  10), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND));
-        if (size >= 3) dst[2] = rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned,  20), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND));
-        if (size >= 4) dst[3] = rrVertexAttrib.extendSign(2, deMath.binaryOp(deMath.shiftRight(aligned,  30), deMath.shiftLeft(1, 2) - 1, deMath.BinaryOp.AND));
+        dst[0] = rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned, 0), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND));
+        if (size >= 2) dst[1] = rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned, 10), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND));
+        if (size >= 3) dst[2] = rrVertexAttrib.extendSign(10, deMath.binaryOp(deMath.shiftRight(aligned, 20), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND));
+        if (size >= 4) dst[3] = rrVertexAttrib.extendSign(2, deMath.binaryOp(deMath.shiftRight(aligned, 30), deMath.shiftLeft(1, 2) - 1, deMath.BinaryOp.AND));
     };
 
     /**
@@ -395,10 +393,10 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         var ptrclone = new Uint8Array(ptr.subarray(0, size * arraysize32)); //Small buffer copy (max. 16 bytes)
         var aligned = new Uint32Array(ptrclone.buffer)[0];
 
-        dst[order.T0] = deMath.binaryOp(deMath.shiftRight(aligned,  0), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND) / range10;
-        if (size >= 2) dst[order.T1] = deMath.binaryOp(deMath.shiftRight(aligned,  10), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND) / range10;
-        if (size >= 3) dst[order.T2] = deMath.binaryOp(deMath.shiftRight(aligned,  20), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND) / range10;
-        if (size >= 4) dst[order.T3] = deMath.binaryOp(deMath.shiftRight(aligned,  30), deMath.shiftLeft(1, 2) - 1, deMath.BinaryOp.AND) / range2;
+        dst[order.T0] = deMath.binaryOp(deMath.shiftRight(aligned, 0), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND) / range10;
+        if (size >= 2) dst[order.T1] = deMath.binaryOp(deMath.shiftRight(aligned, 10), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND) / range10;
+        if (size >= 3) dst[order.T2] = deMath.binaryOp(deMath.shiftRight(aligned, 20), deMath.shiftLeft(1, 10) - 1, deMath.BinaryOp.AND) / range10;
+        if (size >= 4) dst[order.T3] = deMath.binaryOp(deMath.shiftRight(aligned, 30), deMath.shiftLeft(1, 2) - 1, deMath.BinaryOp.AND) / range2;
     };
 
     /**

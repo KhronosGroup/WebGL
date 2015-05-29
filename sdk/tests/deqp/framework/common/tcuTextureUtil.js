@@ -34,6 +34,12 @@ var DE_ASSERT = function(x) {
         throw new Error('Assert failed');
 };
 
+/**
+ * @param {number} t
+ * @param {number} minVal
+ * @param {number} maxVal
+ * @return {number}
+ */
 tcuTextureUtil.linearInterpolate = function(t, minVal, maxVal) {
     return minVal + (maxVal - minVal) * t;
 };
@@ -78,6 +84,10 @@ tcuTextureUtil.linearToSRGB = function(cl) {
             ];
 };
 
+/**
+ * @param {?tcuTexture.ChannelType} channelType
+ * @return {tcuTextureUtil.TextureChannelClass}
+ */
 tcuTextureUtil.getTextureChannelClass = function(channelType) {
 
     switch (channelType) {
@@ -138,7 +148,12 @@ tcuTextureUtil.getSubregion = function(access, x, y, z, width, height, depth) {
         });
 };
 
-tcuTextureUtil.fillWithComponentGradients2D = function(/*const PixelBufferAccess&*/ access, /*const Vec4&*/ minVal, /*const Vec4&*/ maxVal) {
+/**
+ * @param {tcuTexture.PixelBufferAccess} access
+ * @param {Array<number>} minVal
+ * @param {Array<number>} maxVal
+ */
+tcuTextureUtil.fillWithComponentGradients2D = function(access, minVal, maxVal) {
     for (var y = 0; y < access.getHeight(); y++) {
         for (var x = 0; x < access.getWidth(); x++) {
             var s = (x + 0.5) / access.getWidth();
@@ -154,7 +169,12 @@ tcuTextureUtil.fillWithComponentGradients2D = function(/*const PixelBufferAccess
     }
 };
 
-tcuTextureUtil.fillWithComponentGradients3D = function(/*const PixelBufferAccess&*/ dst, /*const Vec4&*/ minVal, /*const Vec4&*/ maxVal) {
+/**
+ * @param {tcuTexture.PixelBufferAccess} dst
+ * @param {Array<number>} minVal
+ * @param {Array<number>} maxVal
+ */
+tcuTextureUtil.fillWithComponentGradients3D = function(dst, minVal, maxVal) {
     for (var z = 0; z < dst.getDepth(); z++) {
         for (var y = 0; y < dst.getHeight(); y++) {
             for (var x = 0; x < dst.getWidth(); x++) {
@@ -172,7 +192,12 @@ tcuTextureUtil.fillWithComponentGradients3D = function(/*const PixelBufferAccess
     }
 };
 
-tcuTextureUtil.fillWithComponentGradients = function(/*const PixelBufferAccess&*/ access, /*const Vec4&*/ minVal, /*const Vec4&*/ maxVal) {
+/**
+ * @param {tcuTexture.PixelBufferAccess} access
+ * @param {Array<number>} minVal
+ * @param {Array<number>} maxVal
+ */
+tcuTextureUtil.fillWithComponentGradients = function(access, minVal, maxVal) {
     if (access.getHeight() == 1 && access.getDepth() == 1)
         throw new Error('Inimplemented');
         //fillWithComponentGradients1D(access, minVal, maxVal);
@@ -197,7 +222,11 @@ tcuTextureUtil.TextureFormatInfo = function(valueMin, valueMax, lookupScale, loo
     /** @type {Array<number>} */ this.lookupBias = lookupBias;
 };
 
-/*static Vec2*/ tcuTextureUtil.getChannelValueRange = function(/*TextureFormat::ChannelType*/ channelType) {
+/**
+ * @param {?tcuTexture.ChannelType} channelType
+ * @return {Array<number>}
+ */
+tcuTextureUtil.getChannelValueRange = function(channelType) {
     var cMin = 0;
     var cMax = 0;
 
@@ -262,15 +291,18 @@ tcuTextureUtil.select = function(a, b, cond) {
     return dst;
 };
 
-/*--------------------------------------------------------------------*//*!
- * \brief Get standard parameters for testing texture format
+/**
+ * Get standard parameters for testing texture format
  *
  * Returns tcuTextureUtil.TextureFormatInfo that describes good parameters for exercising
  * given TextureFormat. Parameters include value ranges per channel and
  * suitable lookup scaling and bias in order to reduce result back to
  * 0..1 range.
- *//*--------------------------------------------------------------------*/
-/*tcuTextureUtil.TextureFormatInfo*/ tcuTextureUtil.getTextureFormatInfo = function(/*const TextureFormat&*/ format) {
+ *
+ * @param {tcuTexture.TextureFormat} format
+ * @return {tcuTextureUtil.TextureFormatInfo}
+ */
+tcuTextureUtil.getTextureFormatInfo = function(format) {
     // Special cases.
     if (format.isEqual(new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.UNSIGNED_INT_1010102_REV)))
         return new tcuTextureUtil.TextureFormatInfo([0, 0, 0, 0],

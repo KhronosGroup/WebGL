@@ -1461,6 +1461,18 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
 }
 
 /**
+ * Defines the exception type for a GL error.
+ * @constructor
+ * @param {string} message The error message.
+ * @param {number} error GL error code
+ */
+var GLErrorException = function (message, error) {
+   this.message = message;
+   this.name = "GLErrorException";
+   this.error = error;
+};
+
+/**
  * Wraps a WebGL function with a function that throws an exception if there is
  * an error.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
@@ -1471,8 +1483,10 @@ var createGLErrorWrapper = function(context, fname) {
   return function() {
     var rv = context[fname].apply(context, arguments);
     var err = context.getError();
-    if (err != context.NO_ERROR)
-      throw "GL error " + glEnumToString(context, err) + " in " + fname;
+    if (err != context.NO_ERROR) {
+      var msg = "GL error " + glEnumToString(context, err) + " in " + fname;
+      throw new GLErrorException(msg, err);
+    }
     return rv;
   };
 };
@@ -1553,6 +1567,8 @@ var failIfGLError = function(gl, evalStr) {
 var glErrorShouldBe = function(gl, glErrors, opt_msg) {
   glErrorShouldBeImpl(gl, glErrors, true, opt_msg);
 };
+
+
 
 /**
  * Tests that the first error GL returns is the specified error. Allows suppression of successes.

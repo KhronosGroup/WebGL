@@ -19,20 +19,20 @@
  */
 'use strict';
 goog.provide('functional.gles3.es3fFramebufferBlitTests');
-goog.require('functional.gles3.es3fFboTestCase');
-goog.require('functional.gles3.es3fFboTestUtil');
-goog.require('framework.common.tcuTestCase');
-goog.require('framework.common.tcuSurface');
-goog.require('framework.common.tcuRGBA');
 goog.require('framework.common.tcuImageCompare');
+goog.require('framework.common.tcuRGBA');
+goog.require('framework.common.tcuSurface');
+goog.require('framework.common.tcuTestCase');
 goog.require('framework.common.tcuTexture');
 goog.require('framework.common.tcuTextureUtil');
 goog.require('framework.delibs.debase.deMath');
-goog.require('framework.opengl.gluTextureUtil');
 goog.require('framework.opengl.gluShaderUtil');
-goog.require('framework.referencerenderer.rrUtil');
-goog.require('framework.opengl.simplereference.sglrReferenceContext');
+goog.require('framework.opengl.gluTextureUtil');
 goog.require('framework.opengl.simplereference.sglrGLContext');
+goog.require('framework.opengl.simplereference.sglrReferenceContext');
+goog.require('framework.referencerenderer.rrUtil');
+goog.require('functional.gles3.es3fFboTestCase');
+goog.require('functional.gles3.es3fFboTestUtil');
 
 goog.scope(function() {
 
