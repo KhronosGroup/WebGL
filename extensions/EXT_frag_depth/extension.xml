@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension href="EXT_frag_depth/">
+<ratified href="EXT_frag_depth/">
   <name>EXT_frag_depth</name>
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
   working group</a> (public_webgl 'at' khronos.org) </contact>
@@ -63,5 +63,8 @@
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
+    <revision date="2015/05/29">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
   </history>
-</extension>
+</ratified>
