@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension href="EXT_blend_minmax/">
+<ratified href="EXT_blend_minmax/">
   <name>EXT_blend_minmax</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -63,5 +63,8 @@ interface EXT_blend_minmax {
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
+    <revision date="2015/05/29">
+      <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
   </history>
-</extension>
+</ratified>
