@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
+** Copyright (c) 2013 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
@@ -31,7 +31,7 @@ function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
 
     var init = function()
     {
-        description('Verify texImage2D and texSubImage2D code paths taking image elements (' + pixelFormat + '/' + pixelType + ')');
+        description('Verify texImage2D and texSubImage2D code paths taking SVG image elements (' + pixelFormat + '/' + pixelType + ')');
 
         gl = wtu.create3DContext("example");
 
@@ -43,11 +43,10 @@ function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
         gl.clearColor(0,0,0,1);
         gl.clearDepth(1);
 
-        wtu.loadTexture(gl, "/resources/red-green.png", runTest);
+        wtu.loadTexture(gl, "../../resources/red-green.svg", runTest);
     }
 
-    function runOneIteration(image, useTexSubImage2D, flipY, topColor, bottomColor,
-                             bindingTarget, program)
+    function runOneIteration(image, useTexSubImage2D, flipY, topColor, bottomColor, bindingTarget, program)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
               ' with flipY=' + flipY + ' bindingTarget=' +
@@ -95,7 +94,6 @@ function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
             if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
                 gl.uniform1i(loc, targets[tt]);
             }
-
             // Draw the triangles
             wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
             // Check a few pixels near the top and bottom and make sure they have
@@ -109,78 +107,29 @@ function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
         }
     }
 
-    function runTestOnImage(image) {
+    function runTest(image)
+    {
+        var program = wtu.setupTexturedQuad(gl);
+        runTestOnBindingTarget(image, gl.TEXTURE_2D, program);
+        program = wtu.setupTexturedQuadWithCubeMap(gl);
+        runTestOnBindingTarget(image, gl.TEXTURE_CUBE_MAP, program);
+
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
+        finishTest();
+    }
+
+    function runTestOnBindingTarget(image, bindingTarget, program) {
         var cases = [
             { sub: false, flipY: true, topColor: red, bottomColor: green },
             { sub: false, flipY: false, topColor: green, bottomColor: red },
             { sub: true, flipY: true, topColor: red, bottomColor: green },
             { sub: true, flipY: false, topColor: green, bottomColor: red },
         ];
-
-        var program = wtu.setupTexturedQuad(gl);
         for (var i in cases) {
             runOneIteration(image, cases[i].sub, cases[i].flipY,
                             cases[i].topColor, cases[i].bottomColor,
-                            gl.TEXTURE_2D, program);
+                            bindingTarget, program);
         }
-        // cube map texture must be square.
-        if (image.width != image.height)
-            return;
-        program = wtu.setupTexturedQuadWithCubeMap(gl);
-        for (var i in cases) {
-            runOneIteration(image, cases[i].sub, cases[i].flipY,
-                            cases[i].topColor, cases[i].bottomColor,
-                            gl.TEXTURE_CUBE_MAP, program);
-        }
-    }
-
-    function runTest(image)
-    {
-        runTestOnImage(image);
-
-        imgCanvas = document.createElement("canvas");
-        imgCanvas.width = 2;
-        imgCanvas.height = 2;
-        var imgCtx = imgCanvas.getContext("2d");
-        var imgData = imgCtx.createImageData(1, 2);
-        for (var i = 0; i < 2; i++) {
-            var stride = i * 8;
-            imgData.data[stride + 0] = red[0];
-            imgData.data[stride + 1] = red[1];
-            imgData.data[stride + 2] = red[2];
-            imgData.data[stride + 3] = 255;
-            imgData.data[stride + 4] = green[0];
-            imgData.data[stride + 5] = green[1];
-            imgData.data[stride + 6] = green[2];
-            imgData.data[stride + 7] = 255;
-        }
-        imgCtx.putImageData(imgData, 0, 0);
-
-        // apparently Image is different than <img>.
-        var newImage =  new Image();
-        newImage.onload = function() {
-            runTest2(newImage);
-        };
-        newImage.onerror = function() {
-            testFailed("Creating image from canvas failed. Image src: " + this.src);
-            finishTest();
-        };
-        newImage.src = imgCanvas.toDataURL();
-    }
-
-    function runTest2(image) {
-        runTestOnImage(image);
-
-        wtu.makeImageFromCanvas(imgCanvas, function() {
-            runTest3(this);
-        });
-    }
-
-    function runTest3(image) {
-        runTestOnImage(image);
-
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
-        finishTest();
     }
 
     return init;
