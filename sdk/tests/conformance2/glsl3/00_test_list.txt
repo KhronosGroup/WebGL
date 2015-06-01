@@ -7,3 +7,4 @@ array-length-side-effects.html
 frag-depth.html
 misplaced-version-directive.html
 shader-linking.html
+ternary-operator-on-arrays-glsl3.html
