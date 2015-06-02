@@ -7,5 +7,6 @@ array-length-side-effects.html
 compare-structs-containing-arrays.html
 frag-depth.html
 misplaced-version-directive.html
+sequence-operator-returns-non-constant.html
 shader-linking.html
 ternary-operator-on-arrays-glsl3.html
