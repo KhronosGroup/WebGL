@@ -34,6 +34,7 @@ var debug = function(msg) {
 
 function generateTest(pixelFormat, pixelType, prologue) {
     var wtu = WebGLTestUtils;
+    var video = null;
     var gl = null;
     var successfullyParsed = false;
 
@@ -48,6 +49,14 @@ function generateTest(pixelFormat, pixelType, prologue) {
     var init = function()
     {
         description('Verify texImage2D and texSubImage2D code paths taking video elements (' + pixelFormat + '/' + pixelType + ')');
+
+        video = document.createElement("video");
+        if (!video.canPlayType) {
+            debug("video.canPlayType required method missing");
+            finishTest();
+            return;
+        }
+        document.body.appendChild(video);
 
         gl = wtu.create3DContext("example");
 
@@ -162,12 +171,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
 
             return new Promise(function(resolve, reject) {
                 var videoNdx = 0;
-                var video;
                 function runNextVideo() {
-                    if (video) {
-                        video.pause();
-                    }
-
                     if (videoNdx == videos.length) {
                         resolve("SUCCESS");
                         return;
@@ -176,21 +180,12 @@ function generateTest(pixelFormat, pixelType, prologue) {
                     var info = videos[videoNdx++];
                     debug("");
                     debug("testing: " + info.type);
-                    video = document.createElement("video");
-                    var canPlay = true;
-                    if (!video.canPlayType) {
-                      testFailed("video.canPlayType required method missing");
-                      runNextVideo();
-                      return;
-                    }
-
                     if(!video.canPlayType(info.type).replace(/no/, '')) {
                       debug(info.type + " unsupported");
                       runNextVideo();
                       return;
                     };
 
-                    document.body.appendChild(video);
                     video.type = info.type;
                     video.src = info.src;
                     wtu.startPlayingAndWaitForVideo(video, runTest);
@@ -204,6 +199,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
                                             program, bindingTarget);
                         }
                     }
+                    video.pause();
                     runNextVideo();
                 }
                 runNextVideo();

@@ -2766,10 +2766,10 @@ var startPlayingAndWaitForVideo = function(video, callback) {
 
   var maybeCallCallback = function() {
     if (gotPlaying && gotTimeUpdate && callback) {
-      callback(video);
-      callback = undefined;
       video.removeEventListener('playing', playingListener, true);
       video.removeEventListener('timeupdate', timeupdateListener, true);
+      callback(video);
+      callback = undefined;
     }
   };
 
