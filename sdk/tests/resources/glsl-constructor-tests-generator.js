@@ -612,8 +612,6 @@ function getVertexAndFragmentShaderTestCase(targetType, argExp) {
       render:         expInfo.valid
     }, {
       // Test constructor argument list in fragment shader
-      vShaderSource:  GLSLConformanceTester.defaultVertexShader,
-      vShaderSuccess: true,
       fShaderSource:  wtu.replaceParams(constructorFragmentTemplate, substitutions),
       fShaderSuccess: expInfo.valid,
       linkSuccess:    expInfo.valid,

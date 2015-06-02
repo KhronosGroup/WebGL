@@ -87,36 +87,31 @@ void main()
 <script>
 "use strict";
 GLSLConformanceTester.runTests([
-    { vShaderId: undefined,
-      vShaderSuccess: true,
+    {
       fShaderId: 'fragmentShader256',
       fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'shader with 256 character identifier should succeed'
     },
-    { vShaderId: undefined,
-      vShaderSuccess: true,
+    {
       fShaderId: 'fragmentShader_before',
       fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'shader with 256 character identifier that starts with underscore should succeed'
     },
-    { vShaderId: undefined,
-      vShaderSuccess: true,
+    {
       fShaderId: 'fragmentShader_after',
       fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'shader with 256 character identifier that ends with underscore should succeed'
     },
-    { vShaderId: undefined,
-      vShaderSuccess: true,
+    {
       fShaderId: 'fragmentShader256_odd',
       fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'shader with 256 character identifier with odd characters as underscores should succeed'
     },
-    { vShaderId: undefined,
-      vShaderSuccess: true,
+    {
       fShaderId: 'fragmentShader256_even',
       fShaderSuccess: true,
       linkSuccess: true,

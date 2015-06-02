@@ -56,8 +56,7 @@ description("checks shader with long line succeeds");
 
 var wtu = WebGLTestUtils;
 GLSLConformanceTester.runTests([
-    { vShaderId: undefined,
-      vShaderSuccess: true,
+    {
       fShaderId: 'fshaderWithLongLine',
       fShaderSuccess: true,
       fShaderPrep: function(str) {

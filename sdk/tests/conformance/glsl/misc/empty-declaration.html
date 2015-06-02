@@ -101,36 +101,26 @@ void main() {
 GLSLConformanceTester.runTests([
     { vShaderId: 'vertexEmptyDeclaration',
       vShaderSuccess: true,
-      fShaderId: null,
-      fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'Vertex shader with an empty declaration should succeed'
     },
     { vShaderId: 'vertexEmptyDeclarationPlus',
       vShaderSuccess: true,
-      fShaderId: null,
-      fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'Vertex shader with an empty declaration followed by declarator should succeed'
     },
     { vShaderId: 'vertexEmptyStructDeclarationPlus',
       vShaderSuccess: true,
-      fShaderId: null,
-      fShaderSuccess: true,
       linkSuccess: true,
       passMsg: 'Vertex shader with an empty struct declaration followed by declarator should succeed'
     },
     { vShaderId: 'vertexEmptyDeclarationInStruct',
       vShaderSuccess: false,
-      fShaderId: null,
-      fShaderSuccess: true,
       linkSuccess: false,
       passMsg: 'Vertex shader with an empty declaration in a struct should fail'
     },
     { vShaderId: 'vertexEmptyDeclarationPlusInStruct',
       vShaderSuccess: false,
-      fShaderId: null,
-      fShaderSuccess: true,
       linkSuccess: false,
       passMsg: 'Vertex shader with an empty declaration followed by declarator in a struct should fail'
     }
