@@ -1307,34 +1307,80 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         each texImage3D call in the pseudocode in The OpenGL ES 3.0 specification section 3.8.4
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.3 &sect;3.8.4</a>)</span>.
       </dd>
-      <dt class="idl-code">void texImage3D(GLenum target, GLint level, GLenum internalformat,
-                  GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format,
-                  GLenum type, ArrayBufferView? pixels)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a>)</span>
+      <dt class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, ArrayBufferView? pixels) <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
       </dt>
       <dd>
-          Allocates and initializes the specified mipmap level of a three-dimensional or
-          two-dimensional array texture. <br><br>
-
-          If <code>pixels</code> is null, a buffer of sufficient size initialized to 0 is
-          passed. <br><br>
-
-          <div class="note editor">Needs update to determine restrictions for <em>format</em> and
-          <em>pixels</em>. These restrictions also need to be updated for texImage2D and texSubImage2D
-          inherited from the WebGL 1.0 API.</div>
-
-          If an attempt is made to call this function with no WebGLTexture bound (see above), an
-          <code>INVALID_OPERATION</code> error is generated. <br><br>
-
-          <div class="note editor">Needs update to determine restrictions for <em>type</em></div>
-
-          See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
-          pixel storage parameters that affect the behavior of this function. <br><br>
-
-          <div class="note">It is recommended to use <a href="#TEXSTORAGE3D">texStorage3D</a>
-          instead of texImage3D to allocate three-dimensional textures. texImage3D may impose a
-          higher memory cost compared to texStorage3D in some implementations.</div>
+        <p>Only differences from <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#TEXIMAGE2D">texImage2D</a> in WebGL 1 are described here. </p>
+        <p>Sized internal formats are supported in WebGL 2 and <em>internalformat</em> is no longer required to be the same as <em>format</em>. Instead, the combination of <em>internalformat</em>, <em>format</em>, and <em>type</em> must be listed in Tabel 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
+        <p>If <em>type</em> is specified as <code>FLOAT_32_UNSIGNED_INT_24_8_REV</code>, <em>pixels</em> must be null; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>If <em>pixels</em> is non-null, the type of <em>pixels</em> must
+match the <em>type</em> according to the following table; otherwise, generates an <code>INVALID_OPERATION</code> error:
+        <table id="TEXTURE_PIXELS_TYPE_TABLE">
+          <tr><th>type of <em>pixels</em></th><th><em>type</em></th></tr>
+          <tr><td>Int8Array</td><td>BYTE</td></tr>
+          <tr><td>Uint8Array</td><td>UNSIGNED_BYTE</td></tr>
+          <tr><td>Int16Array</td><td>SHORT</td></tr>
+          <tr><td>Uint16Array</td><td>UNSIGNED_SHORT</td></tr>
+          <tr><td>Uint16Array</td><td>UNSIGNED_SHORT_5_6_5</td></tr>
+          <tr><td>Uint16Array</td><td>UNSIGNED_SHORT_5_5_5_1</td></tr>
+          <tr><td>Uint16Array</td><td>UNSIGNED_SHORT_4_4_4_4</td></tr>
+          <tr><td>Int32Array</td><td>INT</td></tr>
+          <tr><td>Uint32Array</td><td>UNSIGNED_INT</td></tr>
+          <tr><td>Uint32Array</td><td>UNSIGNED_INT_5_9_9_9_REV</td></tr>
+          <tr><td>Uint32Array</td><td>UNSIGNED_INT_2_10_10_10_REV</td></tr>
+          <tr><td>Uint32Array</td><td>UNSIGNED_INT_10F_11F_11F_REV</td></tr>
+          <tr><td>Uint32Array</td><td>UNSIGNED_INT_24_8</td></tr>
+          <tr><td>Uint16Array</td><td>HALF_FLOAT</td></tr>
+          <tr><td>Float32Array</td><td>FLOAT</td></tr>
+        </table>
       </dd>
+
+      <dt class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat, GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
+      </dt>
+      <dd>
+        <p>Only differences from <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#TEXIMAGE2D_HTML">texImage2D</a> in WebGL 1 are described here. </p>
+        <p>Sized internal formats are supported in WebGL 2 and <em>internalformat</em> is no longer required to be the same as <em>format</em>. Instead, the combination of <em>internalformat</em>, <em>format</em>, and <em>type</em> must be listed in Tabel 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
+      </dd>
+
+      <dt class="idl-code"><a name="TEXSUBIMAGE2D">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, ArrayBufferView? pixels)
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage2D.xhtml">man page</a>)</span>
+      </dt>
+      <dd>
+        <p>Only differences from <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#TEXSUBIMAGE2D">texSubImage2D</a> in WebGL 1 are described here. </p>
+        <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in Tabel 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
+        <p>If <em>pixels</em> is non-null, the type of <em>pixels</em> must
+match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">above table</a>; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>If <em>pixels</em> is null, or <em>pixels</em> is non-null and its size is less than what is required by the specified <em>width</em>, <em>height</em>, <em>format</em>, and <em>type</em>, generates an <code>INVALID_VALUE</code> error.</p>
+        <p>See <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/index.html#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific pixel storage parameters that affect the behavior of this function.</p>
+      </dd>
+
+
+      <dt><p class="idl-code"><a name="TEXSUBIMAGE2D_HTML">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage2D.xhtml">man page</a>)</span>
+      </dt>
+      <dd>
+        <p>Only differences from <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#TEXSUBIMAGE2D_HTML">texSubImage2D</a> in WebGL 1 are described here. </p>
+        <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in Tabel 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
+      </dd>
+
+      <dt class="idl-code">void texImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, ArrayBufferView? pixels)
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a>)</span>
+      </dt>
+      <dd>
+        <p>Allocates and initializes the specified mipmap level of a three-dimensional or two-dimensional array texture. </p>
+        <p>If <code>pixels</code> is null, a buffer of sufficient size initialized to 0 is passed. </p>
+        <p>If <code>pixels</code> is non-null and its size is less than what is required by the specified <em>width</em>, <em>height</em>, <em>depth</em>, <em>format</em>, and <em>type</em>, generates an <code>INVALID_VALUE</code> error.</p>
+        <p>The combination of <em>internalformat</em>, <em>format</em>, and <em>type</em> must be listed in Tabel 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a></span>.</p>
+        <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>If <em>type</em> is specified as <code>FLOAT_32_UNSIGNED_INT_24_8_REV</code>, <em>pixels</em> must be null; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>If <em>pixels</em> is non-null, the type of <em>pixels</em> must
+match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">above table</a>; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>See <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/index.html#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific pixel storage parameters that affect the behavior of this function. </p>
+
+        <div class="note">It is recommended to use <a href="#TEXSTORAGE3D">texStorage3D</a> instead of texImage3D to allocate three-dimensional textures. texImage3D may impose a higher memory cost compared to texStorage3D in some implementations.</div>
+      </dd>
+
       <dt>
         <p class="idl-code">void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, ArrayBufferView? pixels)
           <span class="gl-spec">
@@ -1344,21 +1390,13 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dd>
-        Update a rectangular subregion of the currently bound WebGLTexture. <br><br>
-
-        <div class="note editor">Needs update to determine restrictions for <em>format</em> and
-        <em>pixels</em>. These restrictions also need to be updated for texImage2D and texSubImage2D
-        inherited from the WebGL 1.0 API.</div>
-
-        If an attempt is made to call this function with no WebGLTexture bound (see above), an
-        <code>INVALID_OPERATION</code> error is generated. <br><br>
-
-        <div class="note editor">Needs update to determine restrictions for <em>type</em></div>
-
-        If <code>pixels</code> is null then an </code>INVALID_VALUE</code> error is generated. <br><br>
-
-        See <a href="../1.0/#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
-        pixel storage parameters that affect the behavior of this function.
+        <p>Update a rectangular subregion of the currently bound WebGLTexture. </p>
+        <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error. </p>
+        <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in Tabel 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a></span>.</p>
+        <p>If <em>pixels</em> is non-null, the type of <em>pixels</em> must
+match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">above table</a>; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>If <em>pixels</em> is null, or <em>pixels</em> is non-null and its size is less than what is required by the specified <em>width</em>, <em>height</em>, <em>depth</em>, <em>format</em>, and <em>type</em>, generates an <code>INVALID_VALUE</code> error.</p>
+        <p>See <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/index.html#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific pixel storage parameters that affect the behavior of this function.</p>
       </dd>
       <dt>
         <p class="idl-code">void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
@@ -1369,37 +1407,14 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dd>
-        Update a rectangular subregion of the currently bound WebGLTexture. <br><br>
-
-        The depth of the updated subregion is set to 1. The width and height of the updated subregion are
-        determined as specified in section <a href="../1.0/#TEXTURE_UPLOAD_SIZE">Texture Upload Width and
-        Height</a>. <br><br>
-
-        See <a href="../1.0/#TEXIMAGE2D_HTML">texImage2D</a> for the interpretation of
-        the <em>format</em> and <em>type</em> arguments, and notes on
-        the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter. <br><br>
-
-        The first pixel transferred from the source to the WebGL implementation corresponds to
-        the upper left corner of the source. This behavior is modified by the
-        the <code>UNPACK_FLIP_Y_WEBGL</code> <a href="../1.0/#PIXEL_STORAGE_PARAMETERS">pixel storage
-        parameter</a>. <br><br>
-
-        If an attempt is made to call this function with no WebGLTexture bound (see above), an
-        <code>INVALID_OPERATION</code> error is generated. <br><br>
-
-        <div class="note editor">Needs update to determine restrictions for <em>type</em></div>
-
-        If this function is called with an <code>HTMLImageElement</code>
-        or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
-        Document, or with an <code>HTMLCanvasElement</code> whose <i>origin-clean</i> flag is
-        set to false, a <code>SECURITY_ERR</code> exception must be
-        thrown. See <a href="../1.0/#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
-
-        If <code>source</code> is null then an <code>INVALID_VALUE</code> error is
-        generated. <br><br>
-
-        See <a href="../1.0/#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
-        pixel storage parameters that affect the behavior of this function.
+        <p>Update a rectangular subregion of the currently bound WebGLTexture. </p>
+        <p>The depth of the updated subregion is set to 1. The width and height of the updated subregion are determined as specified in section <a href="../1.0/#TEXTURE_UPLOAD_SIZE">Texture Upload Width and Height</a>. </p>
+        <p>See <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#TEXIMAGE2D_HTML">texImage2D</a> for the interpretation of the <em>format</em> and <em>type</em> arguments, and notes on the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter. </p>
+        <p>The first pixel transferred from the source to the WebGL implementation corresponds to the upper left corner of the source. This behavior is modified by the the <code>UNPACK_FLIP_Y_WEBGL</code> <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#PIXEL_STORAGE_PARAMETERS">pixel storage parameter</a>. </p>
+        <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>If this function is called with an <code>HTMLImageElement</code> or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing Document, or with an <code>HTMLCanvasElement</code> whose <i>origin-clean</i> flag is set to false, a <code>SECURITY_ERR</code> exception must be thrown. See <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.</p>
+        <p>If <code>source</code> is null then generates an <code>INVALID_VALUE</code> error.</p>
+        <p>See <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific pixel storage parameters that affect the behavior of this function.</p>
       </dd>
       <dt>
         <p class="idl-code">void copyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height)
