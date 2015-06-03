@@ -1,7 +1,7 @@
 <!--
 
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
+** Copyright (c) 2015 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL Framebuffer Test</title>
+<title>WebGL Framebuffer Test Against WebGL 2</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../../resources/webgl-test-utils.js"></script>
@@ -61,11 +61,11 @@ if (!gl) {
      gl.FRAMEBUFFER,
      gl.COLOR_ATTACHMENT0,
      gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
-  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "calling getFramebufferAttachmentParameter on the default framebuffer should generate INVALID_OPERATION.");
-
-  assertMsg(gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE,
-            "calling checkFramebufferStatus on the default framebuffer should generate FRAMEBUFFER_COMPLETE.");
+  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
+            "calling getFramebufferAttachmentParameter with attachment = COLOR_ATTACHMENT0 on the default framebuffer should generate INVALID_ENUM.");
+  gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+            "calling checkFramebufferStatus on the default framebuffer should succeed");
 
   var tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -127,40 +127,46 @@ if (!gl) {
      target,
      gl.COLOR_ATTACHMENT0,
      gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
-  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
-            "calling getFramebufferAttachmentParameter with target = READ_FRAMEBUFFER should generate INVALID_ENUM.");
-  assertMsg(gl.checkFramebufferStatus(target) == 0,
-            "calling checkFramebufferStatus with target = READ_FRAMEBUFFER should return 0.");
-  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
-            "calling checkFramebufferStatus with target = READ_FRAMEBUFFER should generate INVALID_ENUM.");
-  gl.bindFramebuffer(target, gl.createFramebuffer());
-  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
-            "calling bindFramebuffer with target = READ_FRAMEBUFFER should generate INVALID_ENUM.");
-  assertMsg(fb == gl.getParameter(gl.FRAMEBUFFER_BINDING),
-            "calling bindFramebuffer with target = READ_FRAMEBUFFER should not change FRAMEBUFFER_BINDING.");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+            "calling getFramebufferAttachmentParameter with target = READ_FRAMEBUFFER on the default framebuffer should succeed.");
+  assertMsg(gl.checkFramebufferStatus(target) != 0,
+            "calling checkFramebufferStatus with target = READ_FRAMEBUFFER should succeed.");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+            "calling checkFramebufferStatus with target = READ_FRAMEBUFFER should succeed.");
+  var readFB = gl.createFramebuffer();
+  gl.bindFramebuffer(target, readFB);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+            "calling bindFramebuffer with target = READ_FRAMEBUFFER should succeed.");
+  assertMsg(readFB == gl.getParameter(gl.READ_FRAMEBUFFER_BINDING),
+            "calling bindFramebuffer with target = READ_FRAMEBUFFER should change READ_FRAMEBUFFER_BINDING.");
+  assertMsg(fb == gl.getParameter(gl.DRAW_FRAMEBUFFER_BINDING),
+            "calling bindFramebuffer with target = READ_FRAMEBUFFER should not change DRAW_FRAMEBUFFER_BINDING.");
   gl.getFramebufferAttachmentParameter(target, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
-  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
-            "calling getFramebufferAttachmentParameter with target = READ_FRAMEBUFFER should generate INVALID_ENUM.");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE without any attachment should succeed.");
   gl.framebufferTexture2D(target, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, 0);
-  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
-            "calling framebufferTexImage2D with target = READ_FRAMEBUFFER should generate INVALID_ENUM.");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+            "calling framebufferTexImage2D with target = READ_FRAMEBUFFER should succeed.");
   gl.framebufferRenderbuffer(target, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb);
-  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
-            "calling framebufferRenderbuffer with target = READ_FRAMEBUFFER should generate INVALID_ENUM.");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+            "calling framebufferRenderbuffer with target = READ_FRAMEBUFFER should succeed.");
 
-  var attachment = desktopGL.COLOR_ATTACHMENT1
-  gl.framebufferTexture2D(gl.FRAMEBUFFER, attachment, gl.TEXTURE_2D, fbtex, 0);
-  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
-            "calling framebufferTexImage2D with attachment = COLOR_ATTACHMENT1 should generate INVALID_ENUM.");
-  gl.framebufferRenderbuffer(gl.FRAMEBUFFER, attachment, gl.RENDERBUFFER, rb);
-  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
-            "calling framebufferRenderbuffer with attachment = COLOR_ATTACHMENT1 should generate INVALID_ENUM.");
+  var colorAttachmentsNum = gl.getParameter(gl.MAX_COLOR_ATTACHMENTS);
+  if (colorAttachmentsNum >= 2) {
+    var attachment = desktopGL.COLOR_ATTACHMENT1
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachment, gl.TEXTURE_2D, fbtex, 0);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+            "calling framebufferTexImage2D with attachment = COLOR_ATTACHMENT1 should succeed.");
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, attachment, gl.RENDERBUFFER, rb);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+            "calling framebufferRenderbuffer with attachment = COLOR_ATTACHMENT1 should succeed.");
+  }
 
   gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER,
                                        gl.COLOR_ATTACHMENT0,
                                        desktopGL.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
-  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING should generate INVALID_ENUM.");
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
+            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING without any attachment should generate INVALID_OPERATION.");
 
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, 0);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,

@@ -1,1 +1,2 @@
+framebuffer-test.html
 multisampled-renderbuffer-initialization.html
