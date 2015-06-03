@@ -83,29 +83,52 @@ function testCopyBuffers(srcTarget, dstTarget, copyRead, copyWrite) {
   if (copyWrite)
     gl.bindBuffer(gl.COPY_WRITE_BUFFER, dstBuffer);
 
+  var expectedGLError = gl.NO_ERROR;
+
+  if (srcTarget == dstTarget) {
+    if (!copyRead && copyWrite) {
+      // srcBuffer isn't bound to any targets because of setting up dstBuffer.
+      gl.bindBuffer(srcTarget, srcBuffer);
+    }
+    if (!copyRead && !copyWrite) {
+      // Same buffer object, overlapping range.
+      expectedGLError = gl.INVALID_VALUE;
+    }
+  }
+  if ((srcTarget == gl.ELEMENT_ARRAY_BUFFER &&
+       dstTarget != gl.ELEMENT_ARRAY_BUFFER) ||
+      (srcTarget != gl.ELEMENT_ARRAY_BUFFER &&
+       dstTarget == gl.ELEMENT_ARRAY_BUFFER)) {
+    expectedGLError = gl.INVALID_OPERATION;
+  }
+
   gl.copyBufferSubData(copyRead ? gl.COPY_READ_BUFFER : srcTarget,
                        copyWrite ? gl.COPY_WRITE_BUFFER : dstTarget,
                        0, 0, length);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Copying should work");
+  if (expectedGLError == gl.NO_ERROR) {
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Copying should work");
 
-  var retBuffer = new ArrayBuffer(length);
-  gl.getBufferSubData(dstTarget, 0, retBuffer);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-      "gl.getBufferSubData(" + targetToString(gl, dstTarget) +
-      ", 0, retBuffer) should work");
+    var retBuffer = new ArrayBuffer(length);
+    gl.getBufferSubData(dstTarget, 0, retBuffer);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+        "gl.getBufferSubData(" + targetToString(gl, dstTarget) +
+        ", 0, retBuffer) should work");
 
-  var failed = false;
-  var retArray = new Float32Array(retBuffer);
-  for (var i = 0; i < vertices.length; i++) {
-    if (originalData[i] != retArray[i]) {
-      failed = true;
-      break;
+    var failed = false;
+    var retArray = new Float32Array(retBuffer);
+    for (var i = 0; i < vertices.length; i++) {
+      if (originalData[i] != retArray[i]) {
+        failed = true;
+        break;
+      }
     }
+    if (failed)
+      testFailed("The returned array buffer fails to match original data");
+    else
+      testPassed("The returned array buffer matches original data");
+  } else {
+    wtu.glErrorShouldBe(gl, expectedGLError, "Copying should fail");
   }
-  if (failed)
-    testFailed("The returned array buffer fails to match original data");
-  else
-    testPassed("The returned array buffer matches original data");
 
   gl.deleteBuffer(srcBuffer);
   gl.deleteBuffer(dstBuffer);
