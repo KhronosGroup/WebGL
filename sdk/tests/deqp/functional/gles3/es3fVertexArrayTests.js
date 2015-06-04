@@ -184,7 +184,7 @@ goog.scope(function() {
             glsVertexArrayTests.deArray.Storage.BUFFER
         ];
         var counts = [1, 256];
-        var strides = [/*0,*/ -1, 17, 32]; // Tread negative value as sizeof input. Same as 0, but done outside of GL.
+        var strides = [/*0,*/ -1, 17, 32]; // Treat negative value as sizeof input. Same as 0, but done outside of GL.
 
         for (var storageNdx = 0; storageNdx < storages.length; storageNdx++) {
             for (var componentCount = 2; componentCount < 5; componentCount++) {

@@ -19,8 +19,9 @@
  */
 'use strict';
 goog.provide('framework.opengl.simplereference.sglrReferenceContextTest');
-goog.require('framework.common.tcuImageCompare');
+goog.require('framework.common.tcuLogImage');
 goog.require('framework.common.tcuPixelFormat');
+goog.require('framework.common.tcuRGBA');
 goog.require('framework.common.tcuSurface');
 goog.require('framework.common.tcuTestCase');
 goog.require('framework.opengl.gluDrawUtil');
@@ -39,13 +40,14 @@ goog.scope(function() {
     var tcuPixelFormat = framework.common.tcuPixelFormat;
     var gluDrawUtil = framework.opengl.gluDrawUtil;
     var tcuSurface = framework.common.tcuSurface;
-    var tcuImageCompare = framework.common.tcuImageCompare;
+    var tcuLogImage = framework.common.tcuLogImage;
     var sglrShaderProgram = framework.opengl.simplereference.sglrShaderProgram;
     var rrGenericVector = framework.referencerenderer.rrGenericVector;
     var rrVertexAttrib = framework.referencerenderer.rrVertexAttrib;
     var rrShadingContext = framework.referencerenderer.rrShadingContext;
     var rrVertexPacket = framework.referencerenderer.rrVertexPacket;
     var rrFragmentOperations = framework.referencerenderer.rrFragmentOperations;
+    var tcuRGBA = framework.common.tcuRGBA;
 
     /**
      * @constructor
@@ -87,7 +89,7 @@ goog.scope(function() {
 
         var access = pixels.getAccess();
 
-        tcuImageCompare.displayImages(access, null, null);
+        tcuLogImage.logImage('Result', '', access);
 
         if (numFailedPixels > 0)
             testFailedOptions('Image comparison failed, got ' + numFailedPixels + ' non-equal pixels.', false);
@@ -115,7 +117,7 @@ goog.scope(function() {
 
         access = pixels.getAccess();
 
-        tcuImageCompare.displayImages(access, null, null);
+        tcuLogImage.logImage('Result', '', access);
 
         if (numFailedPixels > 0)
             testFailedOptions('Image comparison failed, got ' + numFailedPixels + ' non-equal pixels.', false);
@@ -170,7 +172,7 @@ goog.scope(function() {
                     numFailedPixels += 1;
             }
         var access = pixels.getAccess();
-        tcuImageCompare.displayImages(access, null, null);
+        tcuLogImage.logImage('Result', '', access);
 
         if (numFailedPixels > 0)
             testFailedOptions('Image comparison failed, got ' + numFailedPixels + ' non-equal pixels.', false);
@@ -198,7 +200,7 @@ goog.scope(function() {
 
         access = pixels.getAccess();
 
-        tcuImageCompare.displayImages(access, null, null);
+        tcuLogImage.logImage('Result', '', access);
 
         if (numFailedPixels > 0)
             testFailedOptions('Image comparison failed, got ' + numFailedPixels + ' non-equal pixels.', false);
@@ -216,7 +218,7 @@ goog.scope(function() {
                     numFailedPixels += 1;
             }
         access = pixels.getAccess();
-        tcuImageCompare.displayImages(access, null, null);
+        tcuLogImage.logImage('Result', '', access);
 
         if (numFailedPixels > 0)
             testFailedOptions('Image comparison failed, got ' + numFailedPixels + ' non-equal pixels.', false);
@@ -313,7 +315,7 @@ goog.scope(function() {
         ctx.bindBuffer(gl.ARRAY_BUFFER, squareColorsBuffer);
         ctx.vertexAttribPointer(vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
 
-        ctx.drawQuads(0, 1);
+        ctx.drawQuads(gl.TRIANGLES, 0, 6);
 
         var pixels = new tcuSurface.Surface(width, height);
         ctx.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels.getAccess().getDataPtr());
@@ -333,7 +335,386 @@ goog.scope(function() {
 
         var access = pixels.getAccess();
 
-        tcuImageCompare.displayImages(access, null, null);
+        tcuLogImage.logImage('Result', '', access);
+
+        if (numFailedPixels > 0)
+            testFailedOptions('Image comparison failed, got ' + numFailedPixels + ' non-equal pixels.', false);
+        else
+            testPassedOptions('Image comparison succeed', true);
+
+        return tcuTestCase.IterateResult.STOP;
+    };
+
+    /**
+     * @constructor
+     * @extends {tcuTestCase.DeqpTest}
+     * @param {string} name
+     * @param {string} description
+     */
+    sglrReferenceContextTest.TriangleStrip = function(name, description) {
+        tcuTestCase.DeqpTest.call(this, name, description);
+    };
+
+    sglrReferenceContextTest.TriangleStrip.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
+    sglrReferenceContextTest.TriangleStrip.prototype.constructor = sglrReferenceContextTest.TriangleStrip;
+
+    sglrReferenceContextTest.TriangleStrip.prototype.init = function() {};
+
+    sglrReferenceContextTest.TriangleStrip.prototype.iterate = function() {
+        var limits = new sglrReferenceContext.ReferenceContextLimits(gl);
+        var format = new tcuPixelFormat.PixelFormat(8, 8, 8, 8);
+        var width = 200;
+        var height = 188;
+        var samples = 1;
+        var buffers = new sglrReferenceContext.ReferenceContextBuffers(format, 24, 8, width, height, samples);
+        var ctx = new sglrReferenceContext.ReferenceContext(limits, buffers.getColorbuffer(), buffers.getDepthbuffer(), buffers.getStencilbuffer());
+        ctx.clearColor(0, 0, 1, 1);
+        ctx.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+
+        var vertices = [
+            -0.5, 0.5,
+            0.5, 0.5,
+            -0.5, 0,
+            0.5, 0,
+            -0.5, -0.5,
+            0.5, -0.5
+        ];
+
+        var vertices32 = new Float32Array(vertices);
+
+        var squareVerticesBuffer = ctx.createBuffer();
+        ctx.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+        ctx.bufferData(gl.ARRAY_BUFFER, vertices32, gl.STATIC_DRAW);
+
+        var colors = [
+            1, 0, 0, 1,
+            1, 0, 0, 1,
+            1, 0, 0, 1,
+            1, 0, 0, 1,
+            1, 0, 0, 1,
+            1, 0, 0, 1
+        ];
+
+        var colors32 = new Float32Array(colors);
+
+        var squareColorsBuffer = ctx.createBuffer();
+        ctx.bindBuffer(gl.ARRAY_BUFFER, squareColorsBuffer);
+        ctx.bufferData(gl.ARRAY_BUFFER, colors32, gl.STATIC_DRAW);
+
+        /** @type {sglrShaderProgram.ShaderProgramDeclaration} */ var progDecl = new sglrShaderProgram.ShaderProgramDeclaration();
+
+        progDecl.pushVertexAttribute(new sglrShaderProgram.VertexAttribute('aVertexPosition', rrGenericVector.GenericVecType.FLOAT));
+
+        progDecl.pushVertexAttribute(new sglrShaderProgram.VertexAttribute('aVertexColor', rrGenericVector.GenericVecType.FLOAT));
+
+        progDecl.pushVertexSource(new sglrShaderProgram.VertexSource(''));
+
+        progDecl.pushFragmentOutput(new sglrShaderProgram.FragmentOutput(rrGenericVector.GenericVecType.FLOAT));
+
+        progDecl.pushFragmentSource(new sglrShaderProgram.FragmentSource(''));
+
+        /** @type {sglrReferenceContextTest.ContextShaderProgram} */ var program = new sglrReferenceContextTest.ContextShaderProgram(progDecl);
+
+        //Create program
+        ctx.createProgram(program);
+
+        //Use program
+        ctx.useProgram(program);
+
+        var vertexPositionAttribute = ctx.getAttribLocation(program, 'aVertexPosition');
+        var vertexColorAttribute = ctx.getAttribLocation(program, 'aVertexColor');
+        ctx.enableVertexAttribArray(vertexPositionAttribute);
+        ctx.enableVertexAttribArray(vertexColorAttribute);
+
+        ctx.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+        ctx.vertexAttribPointer(vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
+
+        ctx.bindBuffer(gl.ARRAY_BUFFER, squareColorsBuffer);
+        ctx.vertexAttribPointer(vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
+
+        ctx.drawQuads(gl.TRIANGLE_STRIP, 0, 6);
+
+        var pixels = new tcuSurface.Surface(width, height);
+        ctx.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels.getAccess().getDataPtr());
+
+        var numFailedPixels = 0;
+
+        var redPixel = new gluDrawUtil.Pixel([255, 0, 0, 255]);
+        var bluePixel = new gluDrawUtil.Pixel([0, 0, 255, 255]);
+
+        var pixel = new gluDrawUtil.Pixel(pixels.getPixel(0, 0));
+        if (!pixel.equals(bluePixel))
+            numFailedPixels += 1;
+
+        pixel = new gluDrawUtil.Pixel(pixels.getPixel(100, 94));
+        if (!pixel.equals(redPixel))
+            numFailedPixels += 1;
+
+        var access = pixels.getAccess();
+
+        tcuLogImage.logImage('Result', '', access);
+
+        if (numFailedPixels > 0)
+            testFailedOptions('Image comparison failed, got ' + numFailedPixels + ' non-equal pixels.', false);
+        else
+            testPassedOptions('Image comparison succeed', true);
+
+        return tcuTestCase.IterateResult.STOP;
+    };
+
+    /**
+     * @constructor
+     * @extends {tcuTestCase.DeqpTest}
+     * @param {string} name
+     * @param {string} description
+     */
+    sglrReferenceContextTest.TriangleFan = function(name, description) {
+        tcuTestCase.DeqpTest.call(this, name, description);
+    };
+
+    sglrReferenceContextTest.TriangleFan.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
+    sglrReferenceContextTest.TriangleFan.prototype.constructor = sglrReferenceContextTest.TriangleFan;
+
+    sglrReferenceContextTest.TriangleFan.prototype.init = function() {};
+
+    sglrReferenceContextTest.TriangleFan.prototype.iterate = function() {
+        var limits = new sglrReferenceContext.ReferenceContextLimits(gl);
+        var format = new tcuPixelFormat.PixelFormat(8, 8, 8, 8);
+        var width = 200;
+        var height = 188;
+        var samples = 1;
+        var buffers = new sglrReferenceContext.ReferenceContextBuffers(format, 24, 8, width, height, samples);
+        var ctx = new sglrReferenceContext.ReferenceContext(limits, buffers.getColorbuffer(), buffers.getDepthbuffer(), buffers.getStencilbuffer());
+        ctx.clearColor(0, 0, 1, 1);
+        ctx.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+
+        var vertices = [
+            -0.5, 0,
+            -0.5, 0.5,
+            0.5, 0.5,
+            0.5, 0,
+            0.5, -0.5,
+            -0.5, -0.5
+        ];
+
+        var vertices32 = new Float32Array(vertices);
+
+        var squareVerticesBuffer = ctx.createBuffer();
+        ctx.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+        ctx.bufferData(gl.ARRAY_BUFFER, vertices32, gl.STATIC_DRAW);
+
+        var colors = [
+            1, 0, 0, 1,
+            1, 0, 0, 1,
+            1, 0, 0, 1,
+            1, 0, 0, 1,
+            1, 0, 0, 1,
+            1, 0, 0, 1
+        ];
+
+        var colors32 = new Float32Array(colors);
+
+        var squareColorsBuffer = ctx.createBuffer();
+        ctx.bindBuffer(gl.ARRAY_BUFFER, squareColorsBuffer);
+        ctx.bufferData(gl.ARRAY_BUFFER, colors32, gl.STATIC_DRAW);
+
+        /** @type {sglrShaderProgram.ShaderProgramDeclaration} */ var progDecl = new sglrShaderProgram.ShaderProgramDeclaration();
+
+        progDecl.pushVertexAttribute(new sglrShaderProgram.VertexAttribute('aVertexPosition', rrGenericVector.GenericVecType.FLOAT));
+
+        progDecl.pushVertexAttribute(new sglrShaderProgram.VertexAttribute('aVertexColor', rrGenericVector.GenericVecType.FLOAT));
+
+        progDecl.pushVertexSource(new sglrShaderProgram.VertexSource(''));
+
+        progDecl.pushFragmentOutput(new sglrShaderProgram.FragmentOutput(rrGenericVector.GenericVecType.FLOAT));
+
+        progDecl.pushFragmentSource(new sglrShaderProgram.FragmentSource(''));
+
+        /** @type {sglrReferenceContextTest.ContextShaderProgram} */ var program = new sglrReferenceContextTest.ContextShaderProgram(progDecl);
+
+        //Create program
+        ctx.createProgram(program);
+
+        //Use program
+        ctx.useProgram(program);
+
+        var vertexPositionAttribute = ctx.getAttribLocation(program, 'aVertexPosition');
+        var vertexColorAttribute = ctx.getAttribLocation(program, 'aVertexColor');
+        ctx.enableVertexAttribArray(vertexPositionAttribute);
+        ctx.enableVertexAttribArray(vertexColorAttribute);
+
+        ctx.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+        ctx.vertexAttribPointer(vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
+
+        ctx.bindBuffer(gl.ARRAY_BUFFER, squareColorsBuffer);
+        ctx.vertexAttribPointer(vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
+
+        ctx.drawQuads(gl.TRIANGLE_FAN, 0, 6);
+
+        var pixels = new tcuSurface.Surface(width, height);
+        ctx.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels.getAccess().getDataPtr());
+
+        var numFailedPixels = 0;
+
+        var redPixel = new gluDrawUtil.Pixel([255, 0, 0, 255]);
+        var bluePixel = new gluDrawUtil.Pixel([0, 0, 255, 255]);
+
+        var pixel = new gluDrawUtil.Pixel(pixels.getPixel(0, 0));
+        if (!pixel.equals(bluePixel))
+            numFailedPixels += 1;
+
+        pixel = new gluDrawUtil.Pixel(pixels.getPixel(100, 94));
+        if (!pixel.equals(redPixel))
+            numFailedPixels += 1;
+
+        var access = pixels.getAccess();
+
+        tcuLogImage.logImage('Result', '', access);
+
+        if (numFailedPixels > 0)
+            testFailedOptions('Image comparison failed, got ' + numFailedPixels + ' non-equal pixels.', false);
+        else
+            testPassedOptions('Image comparison succeed', true);
+
+        return tcuTestCase.IterateResult.STOP;
+    };
+
+    /**
+     * @constructor
+     * @extends {tcuTestCase.DeqpTest}
+     * @param {string} name
+     * @param {string} description
+     */
+    sglrReferenceContextTest.DrawElements = function(name, description) {
+        tcuTestCase.DeqpTest.call(this, name, description);
+    };
+
+    sglrReferenceContextTest.DrawElements.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
+    sglrReferenceContextTest.DrawElements.prototype.constructor = sglrReferenceContextTest.DrawElements;
+
+    sglrReferenceContextTest.DrawElements.prototype.init = function() {};
+
+    sglrReferenceContextTest.DrawElements.prototype.iterate = function() {
+        var limits = new sglrReferenceContext.ReferenceContextLimits(gl);
+        var format = new tcuPixelFormat.PixelFormat(8, 8, 8, 8);
+        var width = 200;
+        var height = 188;
+        var samples = 1;
+        var buffers = new sglrReferenceContext.ReferenceContextBuffers(format, 24, 8, width, height, samples);
+        var ctx = new sglrReferenceContext.ReferenceContext(limits, buffers.getColorbuffer(), buffers.getDepthbuffer(), buffers.getStencilbuffer());
+        ctx.clearColor(0, 0, 1, 1);
+        ctx.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+
+        var vertices = [
+            -0.5, 0.5,
+            0, 0.5,
+            0.4, 0.5,
+
+            -0.5, 0.1,
+            0, 0.1,
+            0.4, 0.1,
+
+            -0.5, -0.7,
+            0, -0.7,
+            0.4, -0.7
+        ];
+
+        var vertices32 = new Float32Array(vertices);
+
+        var squareVerticesBuffer = ctx.createBuffer();
+        ctx.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+        ctx.bufferData(gl.ARRAY_BUFFER, vertices32, gl.STATIC_DRAW);
+
+        var indices = [
+            0, 1, 3, 1, 3, 4,
+            1, 2, 4, 2, 4, 5,
+            3, 4, 6, 4, 6, 7,
+            4, 5, 7, 5, 7, 8
+        ];
+        var indicesBuffer = ctx.createBuffer();
+        ctx.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indicesBuffer);
+        ctx.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+        var colors = [
+            1, 0, 0, 1,
+            0, 1, 0, 1,
+            0, 0, 1, 1,
+            1, 1, 1, 1,
+            1, 1, 0, 1,
+            0, 1, 1, 1,
+            1, 0, 1, 1,
+            0.5, 0.5, 0.5, 1,
+            0, 0, 0, 0
+        ];
+
+        var colors32 = new Float32Array(colors);
+
+        var squareColorsBuffer = ctx.createBuffer();
+        ctx.bindBuffer(gl.ARRAY_BUFFER, squareColorsBuffer);
+        ctx.bufferData(gl.ARRAY_BUFFER, colors32, gl.STATIC_DRAW);
+
+        /** @type {sglrShaderProgram.ShaderProgramDeclaration} */ var progDecl = new sglrShaderProgram.ShaderProgramDeclaration();
+
+        progDecl.pushVertexAttribute(new sglrShaderProgram.VertexAttribute('aVertexPosition', rrGenericVector.GenericVecType.FLOAT));
+
+        progDecl.pushVertexAttribute(new sglrShaderProgram.VertexAttribute('aVertexColor', rrGenericVector.GenericVecType.FLOAT));
+
+        progDecl.pushVertexSource(new sglrShaderProgram.VertexSource(''));
+
+        progDecl.pushFragmentOutput(new sglrShaderProgram.FragmentOutput(rrGenericVector.GenericVecType.FLOAT));
+
+        progDecl.pushFragmentSource(new sglrShaderProgram.FragmentSource(''));
+
+        /** @type {sglrReferenceContextTest.ContextShaderProgram} */ var program = new sglrReferenceContextTest.ContextShaderProgram(progDecl);
+
+        //Create program
+        ctx.createProgram(program);
+
+        //Use program
+        ctx.useProgram(program);
+
+        var vertexPositionAttribute = ctx.getAttribLocation(program, 'aVertexPosition');
+        var vertexColorAttribute = ctx.getAttribLocation(program, 'aVertexColor');
+        ctx.enableVertexAttribArray(vertexPositionAttribute);
+        ctx.enableVertexAttribArray(vertexColorAttribute);
+
+        ctx.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+        ctx.vertexAttribPointer(vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
+
+        ctx.bindBuffer(gl.ARRAY_BUFFER, squareColorsBuffer);
+        ctx.vertexAttribPointer(vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
+
+        ctx.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+
+        var pixels = new tcuSurface.Surface(width, height);
+        ctx.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels.getAccess().getDataPtr());
+
+        var numFailedPixels = 0;
+
+        var access = pixels.getAccess();
+
+        var pixelsTotest = [
+            // location, color
+            [2, 1], [0, 0, 255, 255],
+            [50, 140], [255, 0, 0, 255],
+            [50, 28], [255, 0, 255, 255],
+            [139, 28], [0, 0, 0, 255],
+            [50, 102], [255, 255, 255, 255],
+            [139, 102], [0, 255, 255, 255]
+        ];
+
+        var threshold = new tcuRGBA.RGBA([5, 5, 5, 5]);
+
+        for (var i = 0; i < pixelsTotest.length; i += 2) {
+            var location = pixelsTotest[i];
+            var reference = new tcuRGBA.RGBA(pixelsTotest[i + 1]);
+            var color = access.getPixelInt(location[0], location[1]);
+            var pixel = new tcuRGBA.RGBA(color);
+            if (!tcuRGBA.compareThreshold(pixel, reference, threshold))
+                numFailedPixels++;
+        }
+
+        tcuLogImage.logImage('Result', '', access);
 
         if (numFailedPixels > 0)
             testFailedOptions('Image comparison failed, got ' + numFailedPixels + ' non-equal pixels.', false);
@@ -414,6 +795,10 @@ goog.scope(function() {
         referenceContextGroup.addChild(new sglrReferenceContextTest.ClearContext('clear_context', 'Clear Context Test'));
         referenceContextGroup.addChild(new sglrReferenceContextTest.Framebuffer('Framebuffer', 'Framebuffer Test'));
         referenceContextGroup.addChild(new sglrReferenceContextTest.Shader('Shaders', 'Shaders'));
+        referenceContextGroup.addChild(new sglrReferenceContextTest.Shader('Shaders', 'Drawinf using TRIANGLES'));
+        referenceContextGroup.addChild(new sglrReferenceContextTest.TriangleStrip('TriangleStrip', 'Drawing using TRIANGLE_STRIP'));
+        referenceContextGroup.addChild(new sglrReferenceContextTest.TriangleFan('TriangleFan', 'Drawing using TRIANGLE_FAN'));
+        referenceContextGroup.addChild(new sglrReferenceContextTest.DrawElements('DrawElements', 'Drawing using DrawElements and TRIANGLES'));
 
         testGroup.addChild(referenceContextGroup);
 

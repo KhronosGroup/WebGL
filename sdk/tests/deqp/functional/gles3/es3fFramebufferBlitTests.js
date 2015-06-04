@@ -239,7 +239,7 @@ goog.scope(function() {
             deMath.clamp(Math.max(this.m_dstRect[0], this.m_dstRect[2]), 0, result.getWidth()),
             deMath.clamp(Math.max(this.m_dstRect[1], this.m_dstRect[3]), 0, result.getHeight())];
 
-        /** @const {tcuRGBA.RGBA} */ var baseColor = result.getPixel(destinationArea[0], destinationArea[1]);
+        /** @const {tcuRGBA.RGBA} */ var baseColor = new tcuRGBA.RGBA(result.getPixel(destinationArea[0], destinationArea[1]));
 
         /** @const {boolean} */ var signConfig = tcuRGBA.compareThreshold(baseColor, cellColorA, threshold);
 
@@ -266,7 +266,7 @@ goog.scope(function() {
 
         for (var dy = 0; dy < destinationArea[3] - destinationArea[1]; ++dy) {
             for (var dx = 0; dx < destinationArea[2] - destinationArea[0]; ++dx) {
-                color = result.getPixel(destinationArea[0] + dx, destinationArea[1] + dy);
+                color = new tcuRGBA.RGBA(result.getPixel(destinationArea[0] + dx, destinationArea[1] + dy));
 
                 /** @const {boolean} */
                 var isValidColor =
@@ -297,7 +297,7 @@ goog.scope(function() {
         // Blitting a grid should result in a grid-like image. ('sign changes' should be consistent)
 
         for (var dx = 0; dx < destinationArea[2] - destinationArea[0]; ++dx) {
-            color = result.getPixel(destinationArea[0] + dx, destinationArea[1]);
+            color = new tcuRGBA.RGBA(result.getPixel(destinationArea[0] + dx, destinationArea[1]));
             if (tcuRGBA.compareThreshold(color, cellColorA, threshold))
                 horisontalSign[dx] = true;
             else if (tcuRGBA.compareThreshold(color, cellColorB, threshold))
@@ -306,7 +306,7 @@ goog.scope(function() {
                 DE_ASSERT(false);
         }
         for (var dy = 0; dy < destinationArea[3] - destinationArea[1]; ++dy) {
-            color = result.getPixel(destinationArea[0], destinationArea[1] + dy);
+            color = new tcuRGBA.RGBA(result.getPixel(destinationArea[0], destinationArea[1] + dy));
 
             if (tcuRGBA.compareThreshold(color, cellColorA, threshold))
                 verticalSign[dy] = true;
@@ -320,7 +320,7 @@ goog.scope(function() {
 
         for (var dy = 0; dy < destinationArea[3] - destinationArea[1]; ++dy) {
             for (var dx = 0; dx < destinationArea[2] - destinationArea[0]; ++dx) {
-                color = result.getPixel(destinationArea[0] + dx, destinationArea[1] + dy);
+                color = new tcuRGBA.RGBA(result.getPixel(destinationArea[0] + dx, destinationArea[1] + dy));
                 /** @const {boolean} */ var resultSign = tcuRGBA.compareThreshold(cellColorA, color, threshold);
                 /** @const {boolean} */ var correctSign = (horisontalSign[dx] == verticalSign[dy]) == signConfig;
 

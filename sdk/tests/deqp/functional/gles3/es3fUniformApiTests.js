@@ -2321,7 +2321,7 @@ goog.scope(function() {
 
         gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
-        gl.readPixels(viewportX, viewportY, viewportW, viewportH, gl.RGBA, gl.UNSIGNED_BYTE, renderedImg.getAccess().getDataPtr());
+        renderedImg.readViewport(gl, [viewportX, viewportY, viewportW, viewportH]);
 
         /** @type {number} */ var numFailedPixels = 0;
         var whitePixel = new gluDrawUtil.Pixel([255.0, 255.0, 255.0, 255.0]);

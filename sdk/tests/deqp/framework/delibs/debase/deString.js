@@ -70,4 +70,42 @@ var deMath = framework.delibs.debase.deMath;
         return false;
     };
 
+    /**
+     * @private
+     * @param {Object} enumType
+     * @param {?} value
+     * @return {string}
+     */
+    deString.getString = function(enumType, value) {
+        for (var p in enumType)
+            if (enumType[p] == value)
+                return p;
+
+        if (typeof value === 'undefined')
+            return 'undefined';
+
+        if (!value)
+            return 'null';
+
+        return value.toString(10);
+    };
+
+    /**
+     * @param {Object} enumType
+     * @param {?} value
+     * @return {string}
+     */
+    deString.enumToString = function(enumType, value) {
+        if (typeof deString.enumToString[enumType] === 'undefined')
+            deString.enumToString[enumType] = {};
+
+        var table = deString.enumToString[enumType];
+        if (typeof table[value] === 'undefined') {
+            var v = deString.getString(enumType, value);
+            table[value] = v;
+        }
+
+        return table[value];
+    };
+
 });

@@ -154,8 +154,7 @@ var DE_ASSERT = function(x) {
     * @param {number} height
     */
     es3fFboTestCase.FboTestCase.prototype.readPixels = function(dst, x, y, width, height) {
-        dst.setSize(width, height);
-        this.getCurrentContext().readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, dst.getPixels());
+        dst.readViewport(this.getCurrentContext(), [x, y, width, height]);
     };
 
     /**

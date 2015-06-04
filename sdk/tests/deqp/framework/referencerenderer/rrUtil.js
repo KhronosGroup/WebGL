@@ -88,7 +88,7 @@ goog.scope(function() {
             ctx.bindBuffer(gl.ARRAY_BUFFER, null);
         }
 
-        ctx.drawQuads(0, 1);
+        ctx.drawQuads(gl.TRIANGLES, 0, 6);
 
         ctx.bindVertexArray(null);
         ctx.deleteBuffer(bufIDs[0]);

@@ -35,9 +35,11 @@ var deMath = framework.delibs.debase.deMath;
     /**
      * class tcuRGBA.RGBA
      * @constructor
+     * @struct
+     * @param {goog.NumberArray=} value
      */
-    tcuRGBA.RGBA = function() {
-        /** @type {goog.NumberArray} */ this.m_value;
+    tcuRGBA.RGBA = function(value) {
+        /** @type {goog.NumberArray} */ this.m_value = value || null;
 
     };
 
@@ -75,15 +77,12 @@ var deMath = framework.delibs.debase.deMath;
      * @return {tcuRGBA.RGBA}
      */
     tcuRGBA.newRGBAComponents = function(r, g, b, a) {
-        /** @type {tcuRGBA.RGBA} */ var rgba = new tcuRGBA.RGBA();
         DE_ASSERT(deMath.deInRange32(r, 0, 255));
         DE_ASSERT(deMath.deInRange32(g, 0, 255));
         DE_ASSERT(deMath.deInRange32(b, 0, 255));
         DE_ASSERT(deMath.deInRange32(a, 0, 255));
 
-        rgba.m_value = [r, g, b, a];
-
-        return rgba;
+        return new tcuRGBA.RGBA([r, g, b, a]);
     };
 
     /**
@@ -92,10 +91,17 @@ var deMath = framework.delibs.debase.deMath;
      * @return {tcuRGBA.RGBA}
      */
     tcuRGBA.newRGBAFromArray = function(v) {
-        /** @type {tcuRGBA.RGBA} */ var rgba = new tcuRGBA.RGBA();
+        return new tcuRGBA.RGBA(v.slice(0, 4));
+    };
 
-        rgba.m_value = v.slice(0, 4);
-
+    /**
+     * @param {number} value
+     * @return {tcuRGBA.RGBA}
+     */
+    tcuRGBA.newRGBAFromValue = function(value) {
+        var rgba = new tcuRGBA.RGBA();
+        var array32 = new Uint32Array([value]);
+        rgba.m_value = (new Uint8Array(array32.buffer));
         return rgba;
     };
 
@@ -243,6 +249,10 @@ var deMath = framework.delibs.debase.deMath;
             Math.max(a.getBlue(), b.getBlue()),
             Math.max(a.getAlpha(), b.getAlpha())
         );
+    };
+
+    tcuRGBA.RGBA.prototype.toString = function() {
+        return '[' + this.m_value[0] + ',' + this.m_value[1] + ',' + this.m_value[2] + ',' + this.m_value[3] + ']';
     };
 
     // Color constants
