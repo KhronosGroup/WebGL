@@ -34,11 +34,16 @@ var deUtil = framework.delibs.debase.deUtil;
         if (obj == null || typeof(obj) != 'object')
             return obj;
 
-        var temp;
+        var temp = {};
         if (ArrayBuffer.isView(obj)) {
             temp = new obj.constructor(obj);
+        } else if (obj instanceof Array) {
+            temp = new Array(obj.length);
+            for (var akey in obj)
+                temp[akey] = deUtil.clone(obj[akey]);
         } else {
             temp = Object.create(obj.constructor.prototype);
+            temp.constructor = obj.constructor;
             for (var key in obj)
                 temp[key] = deUtil.clone(obj[key]);
         }

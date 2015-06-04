@@ -13,12 +13,15 @@ goog.scope(function() {
     var gluStrUtil = framework.opengl.gluStrUtil;
     var tcuTestCase = framework.common.tcuTestCase;
 
+    /**
+     * @param {WebGL2RenderingContext} gl
+     */
     glsFboCompletenessTests.initGlDependents = function(gl) {
         if (!(gl = gl || window.gl)) throw new Error('Invalid gl object');
 
         // The following extensions are applicable both to ES2 and ES3.
         /**
-         * gl.OES_depth_texture
+         * OES_depth_texture
          * @type {Array<number>}
          */
         glsFboCompletenessTests.s_oesDepthTextureFormats = [
@@ -27,7 +30,7 @@ goog.scope(function() {
         ];
 
         /**
-         * gl.OES_packed_depth_stencil
+         * OES_packed_depth_stencil
          * @type {Array<number>}
          */
         glsFboCompletenessTests.s_oesPackedDepthStencilSizedFormats = [
@@ -43,7 +46,7 @@ goog.scope(function() {
         ];
 
         /**
-         * gl.OES_required_internalformat
+         * OES_required_internalformat
          * @type {Array<number>}
          */
         glsFboCompletenessTests.s_oesRequiredInternalFormatColorFormats = [
@@ -60,7 +63,7 @@ goog.scope(function() {
         ];
 
         /**
-         * gl.EXT_color_buffer_half_float
+         * EXT_color_buffer_half_float
          * @type {Array<number>}
          */
         glsFboCompletenessTests.s_extColorBufferHalfFloatFormats = [
@@ -80,7 +83,7 @@ goog.scope(function() {
          * @type {Array<number>}
          */
         glsFboCompletenessTests.s_oesDepth32SizedFormats = [
-            gl.DEPTH_COMPONENT32
+            gl['DEPTH_COMPONENT32']
         ];
 
         /**
@@ -113,7 +116,7 @@ goog.scope(function() {
          * @type {Array<number>}
          */
         glsFboCompletenessTests.s_oesRequiredInternalFormat10bitColorFormats = [
-            gl.RGB10_A2, gl.RGB10
+            gl.RGB10_A2, gl['RGB10']
         ];
 
         /**
@@ -147,8 +150,8 @@ goog.scope(function() {
          * @type {Array<number>}
          */
         glsFboCompletenessTests.s_extTextureRgHalfFloatTexFormats = [
-            glsFboUtil.formatkey(gl.RED, gl.HALF_FLOAT_OES),
-            glsFboUtil.formatkey(gl.RG, gl.HALF_FLOAT_OES)
+            glsFboUtil.formatkey(gl.RED, gl['HALF_FLOAT_OES']),
+            glsFboUtil.formatkey(gl.RG, gl['HALF_FLOAT_OES'])
         ];
 
         /**
@@ -180,7 +183,7 @@ goog.scope(function() {
          * @type {Array<number>}
          */
         glsFboCompletenessTests.s_extSrgbRenderableTexFormats = [
-            glsFboUtil.formatkey(gl.SRGB_ALPHA, gl.UNSIGNED_BYTE)
+            glsFboUtil.formatkey(gl['SRGB_ALPHA'], gl.UNSIGNED_BYTE)
         ];
 
         /**
@@ -229,17 +232,17 @@ goog.scope(function() {
          */
         glsFboCompletenessTests.s_esExtFormats = [
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_depth_texture',
+                'OES_depth_texture',
                 fmt.REQUIRED_RENDERABLE | fmt.DEPTH_RENDERABLE | fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesDepthTextureFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_packed_depth_stencil',
+                'OES_packed_depth_stencil',
                 fmt.REQUIRED_RENDERABLE | fmt.DEPTH_RENDERABLE | fmt.STENCIL_RENDERABLE | fmt.RENDERBUFFER_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesPackedDepthStencilSizedFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_packed_depth_stencil gl.OES_required_internalformat',
+                'OES_packed_depth_stencil OES_required_internalformat',
                 fmt.DEPTH_RENDERABLE | fmt.STENCIL_RENDERABLE | fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesPackedDepthStencilTexFormats)
             ),
@@ -248,7 +251,7 @@ goog.scope(function() {
             // requirement on ES3 also. Or is color_buffer_half_float applicatble at
             // all on ES3, since there's also EXT_color_buffer_float?
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_texture_half_float gl.EXT_color_buffer_half_float',
+                'OES_texture_half_float EXT_color_buffer_half_float',
                 fmt.REQUIRED_RENDERABLE | fmt.COLOR_RENDERABLE | fmt.RENDERBUFFER_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_extColorBufferHalfFloatFormats)
             ),
@@ -256,19 +259,19 @@ goog.scope(function() {
             // OES_required_internalformat doesn't actually specify that these are renderable,
             // since it was written against ES 1.1.
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_required_internalformat',
+                'OES_required_internalformat',
                 // Allow but don't require RGBA8 to be color-renderable if
                 // OES_rgb8_rgba8 is not present.
                 fmt.COLOR_RENDERABLE | fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesRequiredInternalFormatColorFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_required_internalformat',
+                'OES_required_internalformat',
                 fmt.DEPTH_RENDERABLE | fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesRequiredInternalFormatDepthFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.EXT_texture_rg',
+                'EXT_texture_rg',
                 fmt.REQUIRED_RENDERABLE | fmt.COLOR_RENDERABLE | fmt.RENDERBUFFER_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_extTextureRgRboFormats)
             ),
@@ -276,17 +279,17 @@ goog.scope(function() {
             // These are not specified to be color-renderable, but the wording is
             // exactly as ambiguous as the wording in the ES2 spec.
             new glsFboUtil.FormatExtEntry(
-                'gl.EXT_texture_rg',
+                'EXT_texture_rg',
                 fmt.REQUIRED_RENDERABLE | fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_extTextureRgTexFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.EXT_texture_rg gl.OES_texture_float',
+                'EXT_texture_rg OES_texture_float',
                 fmt.REQUIRED_RENDERABLE | fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_extTextureRgFloatTexFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.EXT_texture_rg gl.OES_texture_half_float',
+                'EXT_texture_rg OES_texture_half_float',
                 fmt.REQUIRED_RENDERABLE | fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_extTextureRgHalfFloatTexFormats)
             ),
@@ -294,37 +297,37 @@ goog.scope(function() {
             // Some Tegra drivers report gl.EXT_packed_float even for ES. Treat it as
             // a synonym for the NV_ version.
             new glsFboUtil.FormatExtEntry(
-                'gl.EXT_packed_float',
+                'EXT_packed_float',
                 fmt.REQUIRED_RENDERABLE | fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_nvPackedFloatTexFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.EXT_packed_float gl.EXT_color_buffer_half_float',
+                'EXT_packed_float EXT_color_buffer_half_float',
                 fmt.REQUIRED_RENDERABLE | fmt.COLOR_RENDERABLE | fmt.RENDERBUFFER_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_nvPackedFloatRboFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.EXT_sRGB',
+                'EXT_sRGB',
                 fmt.COLOR_RENDERABLE | fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_extSrgbRenderableTexFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.EXT_sRGB',
+                'EXT_sRGB',
                 fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_extSrgbNonRenderableTexFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.EXT_sRGB',
+                'EXT_sRGB',
                 fmt.REQUIRED_RENDERABLE | fmt.COLOR_RENDERABLE | fmt.RENDERBUFFER_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_extSrgbRboFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.NV_sRGB_formats',
+                'NV_sRGB_formats',
                 fmt.REQUIRED_RENDERABLE | fmt.COLOR_RENDERABLE | fmt.RENDERBUFFER_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_nvSrgbFormatsRboFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.NV_sRGB_formats',
+                'NV_sRGB_formats',
                 fmt.REQUIRED_RENDERABLE | fmt.COLOR_RENDERABLE | fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_nvSrgbFormatsTextureFormats)
             ),
@@ -333,17 +336,17 @@ goog.scope(function() {
             // formats, at least, should be color-renderable. Still, that cannot be
             // found in any extension specs, so only allow it, not require it.
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_rgb8_rgba8',
+                'OES_rgb8_rgba8',
                 fmt.COLOR_RENDERABLE | fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesRgb8Rgba8TexFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_rgb8_rgba8',
+                'OES_rgb8_rgba8',
                 fmt.REQUIRED_RENDERABLE | fmt.COLOR_RENDERABLE | fmt.RENDERBUFFER_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesRgb8Rgba8RboFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_rgb8_rgba8 gl.OES_required_internalformat',
+                'OES_rgb8_rgba8 OES_required_internalformat',
                 fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesRequiredInternalFormatRgb8ColorFormat)
             ),
@@ -351,34 +354,34 @@ goog.scope(function() {
             // The depth-renderability of the depth RBO formats is not explicitly
             // spelled out, but all renderbuffer formats are meant to be renderable.
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_depth24',
+                'OES_depth24',
                 fmt.REQUIRED_RENDERABLE | fmt.DEPTH_RENDERABLE | fmt.RENDERBUFFER_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesDepth24SizedFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_depth24 gl.OES_required_internalformat gl.OES_depth_texture',
+                'OES_depth24 OES_required_internalformat OES_depth_texture',
                 fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesDepth24SizedFormats)
             ),
 
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_depth32',
+                'OES_depth32',
                 fmt.REQUIRED_RENDERABLE | fmt.DEPTH_RENDERABLE | fmt.RENDERBUFFER_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesDepth32SizedFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.OES_depth32 gl.OES_required_internalformat gl.OES_depth_texture',
+                'OES_depth32 OES_required_internalformat OES_depth_texture',
                 fmt.TEXTURE_VALID,
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesDepth32SizedFormats)
             ),
 
             new glsFboUtil.FormatExtEntry(
-                'gl.EXT_texture_type_2_10_10_10_REV',
+                'EXT_texture_type_2_10_10_10_REV',
                 fmt.TEXTURE_VALID, // explicitly unrenderable
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_extTextureType2101010RevFormats)
             ),
             new glsFboUtil.FormatExtEntry(
-                'gl.EXT_texture_type_2_10_10_10_REV gl.OES_required_internalformat',
+                'EXT_texture_type_2_10_10_10_REV OES_required_internalformat',
                 fmt.TEXTURE_VALID, // explicitly unrenderable
                 glsFboUtil.rangeArray(glsFboCompletenessTests.s_oesRequiredInternalFormat10bitColorFormats)
             )

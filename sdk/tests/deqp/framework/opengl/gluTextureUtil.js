@@ -595,22 +595,23 @@ gluTextureUtil.mapGLSampler = function(wrapS, wrapT, wrapR, minFilter, magFilter
 //  * \param mode GL compare mode
 //  * \return Compare mode
 //  *//*--------------------------------------------------------------------*/
-// tcu::Sampler::CompareMode mapGLCompareFunc (deUint32 mode)
-// {
-//     switch (mode)
-//     {
-//         case gl.LESS: return tcu::Sampler::COMPAREMODE_LESS;
-//         case gl.LEQUAL: return tcu::Sampler::COMPAREMODE_LESS_OR_EQUAL;
-//         case gl.GREATER: return tcu::Sampler::COMPAREMODE_GREATER;
-//         case gl.GEQUAL: return tcu::Sampler::COMPAREMODE_GREATER_OR_EQUAL;
-//         case gl.EQUAL: return tcu::Sampler::COMPAREMODE_EQUAL;
-//         case gl.NOTEQUAL: return tcu::Sampler::COMPAREMODE_NOT_EQUAL;
-//         case gl.ALWAYS: return tcu::Sampler::COMPAREMODE_ALWAYS;
-//         case gl.NEVER: return tcu::Sampler::COMPAREMODE_NEVER;
-//         default:
-//             throw tcu::InternalError("Can't map GL compare mode " + tcu::toHex(mode).toString());
-//     }
-// }
+/**
+ * @param {number} mode
+ */
+gluTextureUtil.mapGLCompareFunc = function(mode) {
+     switch (mode) {
+     case gl.LESS: return tcuTexture.CompareMode.COMPAREMODE_LESS;
+         case gl.LEQUAL: return tcuTexture.CompareMode.COMPAREMODE_LESS_OR_EQUAL;
+         case gl.GREATER: return tcuTexture.CompareMode.COMPAREMODE_GREATER;
+         case gl.GEQUAL: return tcuTexture.CompareMode.COMPAREMODE_GREATER_OR_EQUAL;
+         case gl.EQUAL: return tcuTexture.CompareMode.COMPAREMODE_EQUAL;
+         case gl.NOTEQUAL: return tcuTexture.CompareMode.COMPAREMODE_NOT_EQUAL;
+         case gl.ALWAYS: return tcuTexture.CompareMode.COMPAREMODE_ALWAYS;
+         case gl.NEVER: return tcuTexture.CompareMode.COMPAREMODE_NEVER;
+         default:
+             throw new Error("Can't map GL compare mode " + mode);
+     }
+};
 
 // /*--------------------------------------------------------------------*//*!
 //  * \brief Get GL wrap mode.

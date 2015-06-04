@@ -27,6 +27,10 @@ var tcuPixelFormat = framework.common.tcuPixelFormat;
 
 /**
  * @constructor
+ * @param {number=} r
+ * @param {number=} g
+ * @param {number=} b
+ * @param {number=} a
  */
 tcuPixelFormat.PixelFormat = function(r, g, b, a) {
     this.redBits = r || 0;
@@ -35,6 +39,13 @@ tcuPixelFormat.PixelFormat = function(r, g, b, a) {
     this.alphaBits = a || 0;
 };
 
+/**
+ * @param {number} r
+ * @param {number} g
+ * @param {number} b
+ * @param {number} a
+ * @return {boolean}
+ */
 tcuPixelFormat.PixelFormat.prototype.equals = function(r, g, b, a) {
     return this.redBits === r &&
             this.greenBits === g &&

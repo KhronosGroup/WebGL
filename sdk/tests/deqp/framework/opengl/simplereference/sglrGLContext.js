@@ -83,7 +83,7 @@ goog.scope(function() {
                 wrap[i] = context[i];
               }
             } catch (e) {
-              throw new Error("GLContext: Error accessing " + i);
+              throw new Error('GLContext: Error accessing ' + i);
             }
         }
         if (viewport)
@@ -114,11 +114,12 @@ goog.scope(function() {
 
         /**
          * Draws quads from vertex arrays
+         * @param {number} primitive Primitive type
          * @param {number} first First vertex to begin drawing with
-         * @param {number} count How many quads to draw (array should provide first + (count * 6) vertices at least)
+         * @param {number} count Number of vertices
          */
-        var drawQuads = function(first, count) {
-            context.drawArrays(gl.TRIANGLES, first, (count * 6) - first);
+        var drawQuads = function(primitive, first, count) {
+            context.drawArrays(primitive, first, count);
         };
         wrap['drawQuads'] = drawQuads;
 

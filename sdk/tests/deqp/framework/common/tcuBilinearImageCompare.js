@@ -242,8 +242,7 @@ goog.scope(function() {
             /** @type {tcuTexture.RGBA8View} */ var refView = new tcuTexture.RGBA8View(reference);
             /** @type {tcuTexture.RGBA8View} */ var resView = new tcuTexture.RGBA8View(result);
             return tcuBilinearImageCompare.bilinearCompareRGBA8(refView, resView, errorMask, threshold);
-        }
-        else
+        } else
             throw new Error('Unsupported format for bilinear comparison');
     };
 

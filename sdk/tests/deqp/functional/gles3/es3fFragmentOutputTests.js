@@ -136,7 +136,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                     frag += interp + ' in ' + precName + ' ' + typeName + ' var' + outNdx + '_' + elemNdx + ';\n';
                 }
                 frag += 'layout(location = ' + output.location + ') out ' + precName + ' ' + typeName + ' out' + outNdx + '[' + output.arrayLength + '];\n';
-            } else{
+            } else {
                 vtx += 'in ' + precName + ' ' + typeName + ' in' + outNdx + ';\n' +
                 interp + ' out ' + precName + ' ' + typeName + ' var' + outNdx + ';\n';
                 frag += interp + ' in ' + precName + ' ' + typeName + ' var' + outNdx + ';\n' +
@@ -159,7 +159,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                     vtx += '\tvar' + outNdx + '_' + elemNdx + ' = in' + outNdx + '_' + elemNdx + ';\n';
                     frag += '\tout' + outNdx + '[' + elemNdx + '] = var' + outNdx + '_' + elemNdx + ';\n';
                 }
-            } else{
+            } else {
                 vtx += '\tvar' + outNdx + ' = in' + outNdx + ';\n';
                 frag += '\tout' + outNdx + ' = var' + outNdx + ';\n';
             }
@@ -836,7 +836,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
             bufferedLogToConsole('Attachment ' + attachNdx + ': ' + numValidChannels + ' channels have defined values and used for comparison');
 
             switch (texClass) {
-                case tcuTextureUtil.TextureChannelClass.FLOATING_POINT:{
+                case tcuTextureUtil.TextureChannelClass.FLOATING_POINT: {
                     /** @type {Array<number>} */ var formatThreshold = []; // UVec4 //!< Threshold computed based on format.
                     formatThreshold.length = 4;
                     /** @type {number} */ var precThreshold = 0; // deUint32 //!< Threshold computed based on output type precision
@@ -881,7 +881,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                     break;
                 }
 
-                case tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT:{
+                case tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT: {
                     // \note glReadPixels() allows only 8 bits to be read. This means that RGB10_A2 will loose some
                     // bits in the process and it must be taken into account when computing threshold.
                     /** @type {Array<number>} */ var bits = deMath.min([8, 8, 8, 8], tcuTextureUtil.getTextureFormatBitDepth(format)); // IVec4
@@ -900,7 +900,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                 }
 
                 case tcuTextureUtil.TextureChannelClass.SIGNED_INTEGER:
-                case tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER:{
+                case tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER: {
                     threshold = tcuTextureUtil.select(
                                     [0, 0, 0, 0],
                                     [1, 1, 1, 1],

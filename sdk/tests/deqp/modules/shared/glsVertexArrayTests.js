@@ -22,6 +22,7 @@
 goog.provide('modules.shared.glsVertexArrayTests');
 goog.require('framework.common.tcuFloat');
 goog.require('framework.common.tcuImageCompare');
+goog.require('framework.common.tcuLogImage');
 goog.require('framework.common.tcuPixelFormat');
 goog.require('framework.common.tcuRGBA');
 goog.require('framework.common.tcuSurface');
@@ -47,6 +48,7 @@ goog.scope(function() {
     var tcuPixelFormat = framework.common.tcuPixelFormat;
     var tcuSurface = framework.common.tcuSurface;
     var tcuImageCompare = framework.common.tcuImageCompare;
+    var tcuLogImage = framework.common.tcuLogImage;
     var gluShaderUtil = framework.opengl.gluShaderUtil;
     var sglrGLContext = framework.opengl.simplereference.sglrGLContext;
     var sglrReferenceContext = framework.opengl.simplereference.sglrReferenceContext;
@@ -862,7 +864,7 @@ goog.scope(function() {
 
         DE_ASSERT((firstVertex % 6) == 0);
         //this.m_ctx.drawArrays(glsVertexArrayTests.ContextArray.primitiveToGL(primitive), firstVertex, vertexCount - firstVertex);
-        this.m_ctx.drawQuads(firstVertex, Math.floor((vertexCount - firstVertex) / 6));
+        this.m_ctx.drawQuads(gl.TRIANGLES, firstVertex, vertexCount);
 
         for (var arrayNdx = 0; arrayNdx < this.m_arrays.length; arrayNdx++) {
             if (this.m_arrays[arrayNdx].isBound()) {
@@ -2089,7 +2091,11 @@ goog.scope(function() {
     glsVertexArrayTests.VertexArrayTest = function(name, description) {
         tcuTestCase.DeqpTest.call(this, name, description);
 
-        this.m_pixelformat = new tcuPixelFormat.PixelFormat(gl.getParameter(gl.RED_BITS), gl.getParameter(gl.GREEN_BITS), gl.getParameter(gl.BLUE_BITS), gl.getParameter(gl.ALPHA_BITS));
+        var r = /** @type {number} */ (gl.getParameter(gl.RED_BITS));
+        var g = /** @type {number} */ (gl.getParameter(gl.GREEN_BITS));
+        var b = /** @type {number} */ (gl.getParameter(gl.BLUE_BITS));
+        var a = /** @type {number} */ (gl.getParameter(gl.ALPHA_BITS));
+        this.m_pixelformat = new tcuPixelFormat.PixelFormat(r, g, b, a);
 
         /** @type {sglrReferenceContext.ReferenceContextBuffers} */ this.m_refBuffers = null;
         /** @type {sglrReferenceContext.ReferenceContext} */ this.m_refContext = null;
@@ -2097,9 +2103,9 @@ goog.scope(function() {
         /** @type {glsVertexArrayTests.ContextArrayPack} */ this.m_glArrayPack = null;
         /** @type {glsVertexArrayTests.ContextArrayPack} */ this.m_rrArrayPack = null;
         /** @type {boolean} */ this.m_isOk = false;
-        /** @type {number} */ this.m_maxDiffRed = deMath.deCeilFloatToInt32(256.0 * (2.0 / (1 << this.m_pixelformat.redBits)));
-        /** @type {number} */ this.m_maxDiffGreen = deMath.deCeilFloatToInt32(256.0 * (2.0 / (1 << this.m_pixelformat.greenBits)));
-        /** @type {number} */ this.m_maxDiffBlue = deMath.deCeilFloatToInt32(256.0 * (2.0 / (1 << this.m_pixelformat.blueBits)));
+        /** @type {number} */ this.m_maxDiffRed = Math.ceil(256.0 * (2.0 / (1 << this.m_pixelformat.redBits)));
+        /** @type {number} */ this.m_maxDiffGreen = Math.ceil(256.0 * (2.0 / (1 << this.m_pixelformat.greenBits)));
+        /** @type {number} */ this.m_maxDiffBlue = Math.ceil(256.0 * (2.0 / (1 << this.m_pixelformat.blueBits)));
     };
 
     glsVertexArrayTests.VertexArrayTest.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
@@ -2209,7 +2215,7 @@ goog.scope(function() {
                 tcuImageCompare.displayImages(screen.getAccess(), ref.getAccess(), error.getAccess());
             } else {
                 //log << TestLog::ImageSet("Compare result", "Result of rendering")
-                tcuImageCompare.displayImages(screen.getAccess(), null);
+                tcuLogImage.logImage('Result', '', screen.getAccess());
             }
         }
     };

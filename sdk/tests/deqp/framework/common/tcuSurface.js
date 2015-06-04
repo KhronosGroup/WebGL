@@ -43,30 +43,44 @@ var DE_ASSERT = function(x) {
  * PixelBufferAccess (see tcuTexture.h) provides much more flexible API
  * for handling various pixel formats. This is mainly a convinience class.
  * @constructor
+ * @param {number=} width
+ * @param {number=} height
  */
 tcuSurface.Surface = function(width, height) {
-    this.m_width = width;
-    this.m_height = height;
-    if (width * height > 0) {
-        this.m_data = new ArrayBuffer(4 * width * height);
-        this.m_pixels = new Uint8Array(this.m_data);
-    }
+    width = width || 0;
+    height = height || 0;
+    this.setSize(width, height);
 };
 
+/**
+ * @param {number} width
+ * @param {number} height
+ */
 tcuSurface.Surface.prototype.setSize = function(width, height) {
-    /* TODO: Duplicated code from constructor */
     this.m_width = width;
     this.m_height = height;
     if (width * height > 0) {
         this.m_data = new ArrayBuffer(4 * width * height);
         this.m_pixels = new Uint8Array(this.m_data);
+    } else {
+        this.m_data = null;
+        this.m_pixels = null;
     }
 };
 
+/**
+ * @return {number}
+ */
 tcuSurface.Surface.prototype.getWidth = function() { return this.m_width; };
+
+/**
+ * @return {number}
+ */
 tcuSurface.Surface.prototype.getHeight = function() { return this.m_height; };
 
 /**
+ * @param {number} x
+ * @param {number} y
  * @param {Array<number>} color Vec4 color
  */
 tcuSurface.Surface.prototype.setPixel = function(x, y, color) {
@@ -78,6 +92,11 @@ tcuSurface.Surface.prototype.setPixel = function(x, y, color) {
         this.m_pixels[offset + i] = color[i];
 };
 
+/**
+ * @param {number} x
+ * @param {number} y
+ * @return {Array<number>}
+ */
 tcuSurface.Surface.prototype.getPixel = function(x, y) {
     DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
@@ -90,6 +109,34 @@ tcuSurface.Surface.prototype.getPixel = function(x, y) {
         color[i] = this.m_pixels[offset + i];
 
     return color;
+};
+
+/**
+ * Read the viewport contents into this surface
+ * @param {*} ctx WebGL or ref context
+ * @param {(Array<number>|{x: number, y: number, width: number, height: number})=} view
+ */
+tcuSurface.Surface.prototype.readViewport = function(ctx, view) {
+    ctx = ctx || gl;
+    var v = view || /** @type {Array<number>} */ (ctx.getParameter(gl.VIEWPORT));
+    /** @type {number} */ var x;
+    /** @type {number} */ var y;
+    /** @type {number} */ var width;
+    /** @type {number} */ var height;
+    if (v instanceof Array) {
+        x = v[0];
+        y = v[1];
+        width = v[2];
+        height = v[3];
+    } else {
+        x = v.x;
+        y = v.y;
+        width = v.width;
+        height = v.height;
+    }
+    if (width != this.m_width || height != this.m_height)
+        this.setSize(width, height);
+    ctx.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, this.m_pixels);
 };
 
 /**

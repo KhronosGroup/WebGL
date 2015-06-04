@@ -180,11 +180,6 @@ goog.scope(function() {
             case gl.LINE_LOOP: return rrRenderer.PrimitiveType.LINE_LOOP;
             case gl.POINTS: return rrRenderer.PrimitiveType.POINTS;
 
-            /*case gl.LINES_ADJACENCY: return rrRenderer.PrimitiveType.LINES_ADJACENCY;
-            case gl.LINE_STRIP_ADJACENCY: return rrRenderer.PrimitiveType.LINE_STRIP_ADJACENCY;
-            case gl.TRIANGLES_ADJACENCY: return rrRenderer.PrimitiveType.TRIANGLES_ADJACENCY;
-            case gl.TRIANGLE_STRIP_ADJACENCY: return rrRenderer.PrimitiveType.TRIANGLE_STRIP_ADJACENCY;*/
-
             default:
                 throw new Error('Value to do mapping not compatible');
         }

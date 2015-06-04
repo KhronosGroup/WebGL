@@ -23,6 +23,7 @@ goog.provide('framework.referencerenderer.rrRenderer');
 goog.require('framework.common.tcuTexture');
 goog.require('framework.common.tcuTextureUtil');
 goog.require('framework.delibs.debase.deMath');
+goog.require('framework.delibs.debase.deString');
 goog.require('framework.opengl.simplereference.sglrShaderProgram');
 goog.require('framework.referencerenderer.rrDefs');
 goog.require('framework.referencerenderer.rrFragmentOperations');
@@ -48,6 +49,7 @@ var rrShadingContext = framework.referencerenderer.rrShadingContext;
 var rrGenericVector = framework.referencerenderer.rrGenericVector;
 var sglrShaderProgram = framework.opengl.simplereference.sglrShaderProgram;
 var rrVertexAttrib = framework.referencerenderer.rrVertexAttrib;
+var deString = framework.delibs.debase.deString;
 
 /**
  * @enum
@@ -180,6 +182,7 @@ rrRenderer.PrimitiveList = function(primitiveType, numElements, indices) {
         this.m_indexType = indices.indexType;
         this.m_baseVertex = indices.baseVertex;
     }
+    this.m_iterator = 0;
 };
 
 /**
@@ -224,6 +227,42 @@ rrRenderer.PrimitiveList.prototype.getPrimitiveType = function() {return this.m_
  * @return {?rrDefs.IndexType}
  */
 rrRenderer.PrimitiveList.prototype.getIndexType = function() {return this.m_indexType;};
+
+/**
+ * Generate a primitive from indices
+ * @param {boolean=} reset Restart generating primitives. Default false
+ * @return {Array<number>}
+ */
+rrRenderer.PrimitiveList.prototype.getNextPrimitive = function(reset) {
+    if (reset)
+        this.m_iterator = 0;
+    var result = [];
+    var i = this.m_iterator;
+    switch (this.m_primitiveType) {
+        case rrRenderer.PrimitiveType.TRIANGLES:
+            if (this.m_iterator + 6 <= this.m_numElements) {
+                result = [i, i + 1, i + 2, i + 3, i + 4, i + 5];
+                this.m_iterator += 6;
+            }
+            break;
+        case rrRenderer.PrimitiveType.TRIANGLE_STRIP:
+            if (this.m_iterator + 4 <= this.m_numElements) {
+                result = [i, i + 1, i + 2, i + 3];
+                this.m_iterator += 2;
+            }
+            break;
+        case rrRenderer.PrimitiveType.TRIANGLE_FAN:
+            if (this.m_iterator + 4 <= this.m_numElements) {
+                result = [0, i + 1, i + 2, i + 3];
+                this.m_iterator += 2;
+            }
+            break;
+        default:
+            throw new Error('Unsupported primitive type: ' + deString.enumToString(rrRenderer.PrimitiveType, this.m_primitiveType));
+    }
+
+    return result;
+};
 
 /**
  * @param {Array<number>} v
@@ -447,13 +486,13 @@ rrRenderer.getIndexOfCorner = function(isTop, isRight, vertexPackets) {
     var ycriteria = isTop ? Math.max : Math.min;
 
     // Determine corner values
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < vertexPackets.length; i++) {
         x = x != null ? xcriteria(vertexPackets[i].position[0], x) : vertexPackets[i].position[0];
         y = y != null ? ycriteria(vertexPackets[i].position[1], y) : vertexPackets[i].position[1];
     }
 
     // Search for mathing vertex
-    for (var v = 0; v < 6; v++)
+    for (var v = 0; v < vertexPackets.length; v++)
         if (vertexPackets[v].position[0] == x && vertexPackets[v].position[1] == y)
             return v;
 
@@ -478,14 +517,26 @@ rrRenderer.calculateDepth = function(x, y, depths) {
  * @param {rrRenderer.RenderTarget} renderTarget
  * @param {sglrShaderProgram.ShaderProgram} program
  * @param {Array<rrVertexAttrib.VertexAttrib>} vertexAttribs
- * @param {number} first Index of first quad vertex
- * @param {number} count Number of quads to draw
+ * @param {rrRenderer.PrimitiveType} primitive
+ * @param {(number|rrRenderer.DrawIndices)} first Index of first quad vertex
+ * @param {number} count Number of indices
+ * @param {number} instanceID
  */
-rrRenderer.drawQuads = function(state, renderTarget, program, vertexAttribs, first, count) {
-    //The count of primitives to draw depends on which vertex we start to draw first.
-    count = Math.floor(((count * 6) - first) / 6);
+rrRenderer.drawQuads = function(state, renderTarget, program, vertexAttribs, primitive, first, count, instanceID) {
 
-    var primitives = new rrRenderer.PrimitiveList(rrRenderer.PrimitiveType.TRIANGLES, count * 6, first); // 2 triangles per quad with 3 vertices each = 6 vertices.
+    /**
+     * @param {Array<rrVertexPacket.VertexPacket>} vertices
+     * @param {Array<number>} indices
+     * @return {Array<rrVertexPacket.VertexPacket>}
+     */
+    var selectVertices = function(vertices, indices) {
+        var result = [];
+        for (var i = 0; i < indices.length; i++)
+            result.push(vertices[indices[i]]);
+        return result;
+    };
+
+    var primitives = new rrRenderer.PrimitiveList(primitive, count, first);
     // Do not draw if nothing to draw
     if (primitives.getNumElements() == 0)
         return;
@@ -496,7 +547,6 @@ rrRenderer.drawQuads = function(state, renderTarget, program, vertexAttribs, fir
     var vertexPackets = vpalloc.allocArray(primitives.getNumElements());
     var drawContext = new rrRenderer.DrawContext();
     drawContext.primitiveID = 0;
-    var instanceID = 0;
 
     var numberOfVertices = primitives.getNumElements();
     var numVertexPackets = 0;
@@ -516,10 +566,8 @@ rrRenderer.drawQuads = function(state, renderTarget, program, vertexAttribs, fir
     program.shadeVertices(vertexAttribs, vertexPackets, numVertexPackets);
 
     // For each quad, we get a group of six vertex packets
-    for (var quad = 0; quad < count; quad++) {
-        var quadoffset = quad * 6;
-        var quadPackets = [vertexPackets[quadoffset], vertexPackets[quadoffset + 1], vertexPackets[quadoffset + 2],
-            vertexPackets[quadoffset + 3], vertexPackets[quadoffset + 4], vertexPackets[quadoffset + 5]];
+    for (var prim = primitives.getNextPrimitive(true); prim.length > 0; prim = primitives.getNextPrimitive()) {
+        var quadPackets = selectVertices(vertexPackets, prim);
 
         var bottomLeftVertexNdx = rrRenderer.getIndexOfCorner(false, false, quadPackets);
         var bottomRightVertexNdx = rrRenderer.getIndexOfCorner(false, true, quadPackets);

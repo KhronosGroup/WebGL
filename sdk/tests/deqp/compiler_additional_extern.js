@@ -67,7 +67,7 @@ function checkMessage(exp, message) {};
 function assertMsgOptions(assertion, msg, verbose, exthrow) {};
 
 /**
- * @param {string} msg
+ * @param {Object|string} msg
  */
 function debug(msg){};
 
