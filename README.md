@@ -1,4 +1,4 @@
-The Official Khronos WebGL Repository
+# The Official Khronos WebGL Repository
 
 This is the official home of the Khronos
 WebGL repository for the WebGL specifications
@@ -20,4 +20,11 @@ https://www.khronos.org/registry/webgl/conformance-suites/
 The WebGL Wiki can be found here
 http://www.khronos.org/webgl/wiki/
 
+## Cloning this repository
 
+When cloning this repository please pass the --recursive flag to git:
+
+    git clone --recursive [URL]
+
+This will properly install the [WebGLDeveloperTools](https://github.com/KhronosGroup/WebGLDeveloperTools)
+repository as a git submodule under sdk/devtools/.
