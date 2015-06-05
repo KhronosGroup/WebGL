@@ -6,6 +6,7 @@ array-in-complex-expression.html
 array-length-side-effects.html
 compare-structs-containing-arrays.html
 frag-depth.html
+invalid-default-precision.html
 misplaced-version-directive.html
 sequence-operator-returns-non-constant.html
 shader-linking.html
