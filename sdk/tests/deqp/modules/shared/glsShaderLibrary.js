@@ -121,10 +121,12 @@ var gluShaderUtil = framework.opengl.gluShaderUtil;
     /**
      * @param {string} str
      * @param {string} endstr end of string character
+     * @param {boolean=} trimFront trim leading whitespace
      * @return {string} str
      * @private
      */
-    glsShaderLibrary.parseStringLiteralHelper = function(str, endstr) {
+    glsShaderLibrary.parseStringLiteralHelper = function(str, endstr, trimFront) {
+        trimFront = trimFront || false;
 
     /** @type {number} */ var index_end = 0;
         // isolate the string
@@ -137,8 +139,10 @@ var gluShaderUtil = framework.opengl.gluShaderUtil;
         }
 
         // strip quotes, replace \n and \t with nl and tabs respectively
+        str = str.substr(endstr.length, index_end - endstr.length);
+        if (trimFront)
+            str = str.replace(/^\s*\n/, '');
         return str
-            .substr(endstr.length, index_end - endstr.length)
             .replace('\\n', '\n')
             .replace('\\t', '\t')
             .replace(/\\/g, '');
@@ -313,7 +317,7 @@ var gluShaderUtil = framework.opengl.gluShaderUtil;
         var parseShaderSource = function(str) {
             // similar to parse literal, delimitors are two double quotes ("")
             return glsShaderLibrary.removeExtraIndentation(
-                glsShaderLibrary.parseStringLiteralHelper(str, '""')
+                glsShaderLibrary.parseStringLiteralHelper(str, '""', true)
             );
         };
 
