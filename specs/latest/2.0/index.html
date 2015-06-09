@@ -1360,7 +1360,7 @@ match the <em>type</em> according to the following table; otherwise, generates a
       </dt>
       <dd>
         <p>Only differences from <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#TEXSUBIMAGE2D">texSubImage2D</a> in WebGL 1 are described here. </p>
-        <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code>. error</p>
+        <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
         <p>If <em>pixels</em> is non-null, the type of <em>pixels</em> must
 match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">above table</a>; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
@@ -1383,7 +1383,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       </dt>
       <dd>
         <p>Updates a sub-rectangle of the currently bound WebGLTexture with data from the WebGLBuffer bound to <code>PIXEL_UNPACK_BUFFER</code> target.</p>
-        <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> if it's less than 0.</p>
+        <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> error if it's less than 0.</p>
         <p>If an attempt is made to call the function with no WebGLTexture bound, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If no WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
       </dd>
@@ -1411,7 +1411,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       </dt>
       <dd>
         <p>Upload data to the currently bound WebGLTexture from the WebGLBuffer bound to the <code>PIXEL_UNPACK_BUFFER</code> target.</p>
-        <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> if it's less than 0.</p>
+        <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> error if it's less than 0.</p>
         <p>If an attempt is made to call the function with no WebGLTexture bound, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If no WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
       </dd>
@@ -1464,7 +1464,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       </dt>
       <dd>
         <p>Updates a sub-rectangle of the currently bound WebGLTexture with data from the WebGLBuffer bound to <code>PIXEL_UNPACK_BUFFER</code> target.</p>
-        <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> if it's less than 0.</p>
+        <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> error if it's less than 0.</p>
         <p>If an attempt is made to call the function with no WebGLTexture bound, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If no WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
       </dd>
@@ -1561,7 +1561,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dd>
         <p>If an attempt is made to call these functions with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If no WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
-        <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> if it's less than 0.</p>
+        <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> error if it's less than 0.</p>
       </dd>
     </dl>
 
