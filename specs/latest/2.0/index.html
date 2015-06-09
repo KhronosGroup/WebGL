@@ -2405,8 +2405,10 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         In the WebGL 2 API, buffers have their WebGL buffer type initially set to <em>undefined</em>. Calling
         <code>bindBuffer</code>, <code>bindBufferRange</code> or <code>bindBufferBase</code> with the
         <code>target</code> argument set to any buffer binding point except <code>COPY_READ_BUFFER</code> or
-        <code>COPY_WRITE_BUFFER</code> will then set the WebGL buffer type of the buffer being bound according
-        to the table above.
+        <code>COPY_WRITE_BUFFER</code> will then set the WebGL buffer type of the buffer being bound
+        according to the table above. Binding a buffer with type <em>undefined</em> to
+        the <code>COPY_READ_BUFFER</code> or <code>COPY_WRITE_BUFFER</code> binding points will set
+        its type to <em>other data</em>.
     </p>
 
     <p>
