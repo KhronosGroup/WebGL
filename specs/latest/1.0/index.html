@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 27 April 2015</h2>
+    <h2 class="no-toc">Editor's Draft 9 June 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -219,11 +219,16 @@
 
           </ol>
 
-        <li> Set the attributes of <em>contextAttributes</em> based on the properties of the newly
+        <li> Create a new <code>WebGLContextAttributes</code> object, <em>actualAttributes</em>.
+
+        <li> Set the attributes of <em>actualAttributes</em> based on the properties of the newly
              created drawing buffer.
 
         <li> Set <em>context's</em> <a href="#context-creation-parameters">context creation
         parameters</a> to <em>contextAttributes</em>.
+
+        <li> Set <em>context's</em> <a href="#actual-context-parameters">actual context
+        parameters</a> to <em>actualAttributes</em>.
 
         <li> Return <em>context</em>.
 
