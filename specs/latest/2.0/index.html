@@ -1346,7 +1346,7 @@ match the <em>type</em> according to the following table; otherwise, generates a
         <p>Sized internal formats are supported in WebGL 2 and <em>internalformat</em> is no longer required to be the same as <em>format</em>. Instead, the combination of <em>internalformat</em>, <em>format</em>, and <em>type</em> must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
       </dd>
 
-      <dt class="idl-code"><a name="TEXIMAGE2D_SERVICE_SIDE">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, GLintptr offset) <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
+      <dt class="idl-code"><a name="TEXIMAGE2D_SERVER_SIDE">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, GLintptr offset) <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
       </dt>
       <dd>
         <p>Upload data to the currently bound WebGLTexture from the WebGLBuffer bound to the <code>PIXEL_UNPACK_BUFFER</code> target.</p>
@@ -1378,7 +1378,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
       </dd>
 
-      <dt><p class="idl-code"><a name="TEXSUBIMAGE2D_SERVICE_SIDE">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLenum format, GLenum type, GLintptr offset)
+      <dt><p class="idl-code"><a name="TEXSUBIMAGE2D_SERVER_SIDE">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLenum format, GLenum type, GLintptr offset)
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage2D.xhtml">man page</a>)</span>
       </dt>
       <dd>
@@ -1406,7 +1406,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <div class="note">It is recommended to use <a href="#TEXSTORAGE3D">texStorage3D</a> instead of texImage3D to allocate three-dimensional textures. texImage3D may impose a higher memory cost compared to texStorage3D in some implementations.</div>
       </dd>
 
-      <dt class="idl-code"><a name="TEXIMAGE3D_SERVICE_SIDE">void texImage3D</a>(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLintptr offset)
+      <dt class="idl-code"><a name="TEXIMAGE3D_SERVER_SIDE">void texImage3D</a>(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLintptr offset)
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a>)</span>
       </dt>
       <dd>
@@ -1455,7 +1455,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       </dd>
 
       <dt>
-        <p class="idl-code"><a name="TEXSUBIMAGE3D_SERVICE_SIDE">void texSubImage3D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLenum format, GLenum type, GLintptr offset)
+        <p class="idl-code"><a name="TEXSUBIMAGE3D_SERVER_SIDE">void texSubImage3D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLenum format, GLenum type, GLintptr offset)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage3D.xhtml" class="nonnormative">man page</a>)
