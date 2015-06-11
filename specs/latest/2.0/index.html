@@ -2442,6 +2442,19 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         See section <a href="#NO_PRIMITIVE_RESTART_FIXED_INDEX">PRIMITIVE_RESTART_FIXED_INDEX is always enabled</a>.
     </p>
 
+    <h4>Framebuffer Object Attachments</h4>
+
+    <p>In WebGL 1, <code>DEPTH_STENCIL_ATTACHMENT</code> is an alternative attachment point other than <code>DEPTH_ATTACHMENT</code> and <code>STENCIL_ATTACHMENT</code>. In WebGL 2, however, <code>DEPTH_STENCIL_ATTACHMENT</code> is considered an alias for <code>DEPTH_ATTACHMENT</code> + <code>STENCIL_ATTACHMENT</code>, i.e., the same image is attached to both <code>DEPTH_ATTACHMENT</code> and <code>STENCIL_ATTACHMENT</code>, overwriting the original images attached to the two attachment points.<p>
+    <p>Consider the following sequence of actions:
+      <ol>
+       <li>attach renderbuffer 1 to <code>DEPTH_ATTACHMENT</code>;</li>
+       <li>attach renderbuffer 2 to <code>DEPTH_STENCIL_ATTACHMENT</code>;</li>
+       <li>attach <em>null</em> to <code>DEPTH_STENCIL_ATTACHMENT</code>.</li>
+      </ol>
+      In WebGL 1, the framebuffer ends up with renderbuffer 1 attached to <code>DEPTH_ATTACHMENT</code> and no image attached to <code>STENCIL_ATTACHMENT</code>; in WebGL 2, however, neither <code>DEPTH_ATTACHMENT</code> nor <code>STENCIL_ATTACHMENT</code> has an image attached.</p>
+    <p>The constraints defined in <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/index.html#FBO_ATTACHMENTS">Framebuffer Object Attachments</a> no longer apply in WebGL 2.</p>
+    <p>If different images are bound to the depth and stencil attachment points, <code>checkFramebufferStatus</code> returns <code>FRAMEBUFFER_UNSUPPORTED</code>, and <code>getFramebufferAttachmentParameter</code> with <em>attachment</em> of <code>DEPTH_STENCIL_ATTACHMENT</code> generates an <code>INVALID_OPERATION</code> error.</p>
+
     <h3>New Features Supported in the WebGL 2 API</h3>
 
     <ul>
