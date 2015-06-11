@@ -1066,6 +1066,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt class="idl-code">[WebGLHandlesContextLoss] GLenum checkFramebufferStatus(GLenum target)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.4.5">OpenGL ES 3.0.3 &sect;4.4.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCheckFramebufferStatus.xhtml">man page</a>)</span>
       <dd>
+        <p>Only differences from <a href="https://www.khronos.org/registry/webgl/specs/latest/1.0/#CHECK_FRAMEBUFFER_STATUS">checkFramebufferStatus</a> in WebGL 1 are described here.</p>
         <p><em>target</em> must be <code>DRAW_FRAMEBUFFER</code>, <code>READ_FRAMEBUFFER</code> or <code>FRAMEBUFFER</code>. <code>FRAMEBUFFER</code> is equivalent to <code>DRAW_FRAMEBUFFER</code>.</p>
         <p>Returns <code>FRAMEBUFFER_UNSUPPORTED</code> if depth and stencil attachments, if present, are not the same image. See <a href="#FBO_ATTACHMENTS">Framebuffer Object Attachments</a> for detailed discussion.</p>
         <p>Returns <code>FRAMEBUFFER_INCOMPLETE_MULTISAMPLE</code> if the values of <code>RENDERBUFFER_SAMPLES</code> are different among attached renderbuffers, or are non-zero if the attached images are a mix of renderbuffers and textures.</p>
