@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 11 June 2015</h2>
+    <h2 class="no-toc">Editor's Draft 12 June 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -704,13 +704,13 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
                        GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
   void framebufferTextureLayer(GLenum target, GLenum attachment, WebGLTexture? texture, GLint level,
                                GLint layer);
-  any getInternalformatParameter(GLenum target, GLenum internalformat, GLenum pname);
   void invalidateFramebuffer(GLenum target, sequence&lt;GLenum&gt; attachments);
   void invalidateSubFramebuffer(GLenum target, sequence&lt;GLenum&gt; attachments,
                                 GLint x, GLint y, GLsizei width, GLsizei height);
   void readBuffer(GLenum src);
 
   /* Renderbuffer objects */
+  any getInternalformatParameter(GLenum target, GLenum internalformat, GLenum pname);
   void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat,
                                       GLsizei width, GLsizei height);
 
@@ -1122,25 +1122,6 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dt>
-        <p class="idl-code">any getInternalformatParameter(GLenum target, GLenum internalformat, GLenum pname)
-          <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.15">OpenGL ES 3.0.3 &sect;6.1.15</a>,
-            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetInternalformativ.xhtml" class="nonnormative">man page</a>)
-          </span>
-        </p>
-      </dt>
-      <dd>
-          Return the value for the passed pname given the passed target and internalformat. The type
-          returned is given in the following table:
-          <table>
-              <tr><th>pname</th><th>returned type</th></tr>
-              <tr><td>SAMPLES</td><td>Int32Array</td></tr>
-          </table>
-          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
-          <p>If an OpenGL error is generated, returns null.</p>
-          <p>Each query for SAMPLES returns a new typed array object instance.</p>
-      </dd>
-      <dt>
         <p class="idl-code">void invalidateFramebuffer(GLenum target, sequence&lt;GLenum&gt; attachments)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.5">OpenGL ES 3.0.3 &sect;4.5</a>,
@@ -1182,6 +1163,25 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h4>Renderbuffer objects</h4>
 
     <dl class="methods">
+      <dt>
+        <p class="idl-code">any getInternalformatParameter(GLenum target, GLenum internalformat, GLenum pname)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.15">OpenGL ES 3.0.3 &sect;6.1.15</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetInternalformativ.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dd>
+          Return the value for the passed pname given the passed target and internalformat. The type
+          returned is given in the following table:
+          <table>
+              <tr><th>pname</th><th>returned type</th></tr>
+              <tr><td>SAMPLES</td><td>Int32Array</td></tr>
+          </table>
+          <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>If an OpenGL error is generated, returns null.</p>
+          <p>Each query for SAMPLES returns a new typed array object instance.</p>
+      </dd>
       <dt class="idl-code">any getRenderbufferParameter(GLenum target, GLenum pname)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.14">OpenGL ES 2.0 &sect;6.1.14</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetRenderbufferParameteriv.xhtml">glGetRenderbufferParameteriv</a>)</span>
       </dt>

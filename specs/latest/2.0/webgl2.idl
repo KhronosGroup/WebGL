@@ -300,7 +300,6 @@ interface WebGL2RenderingContextBase
   const GLenum COMPRESSED_SRGB8_ALPHA8_ETC2_EAC              = 0x9279;
   const GLenum TEXTURE_IMMUTABLE_FORMAT                      = 0x912F;
   const GLenum MAX_ELEMENT_INDEX                             = 0x8D6B;
-  const GLenum NUM_SAMPLE_COUNTS                             = 0x9380;
   const GLenum TEXTURE_IMMUTABLE_LEVELS                      = 0x82DF;
 
   const GLuint64 TIMEOUT_IGNORED                             = 0xFFFFFFFFFFFFFFFF;
@@ -319,15 +318,15 @@ interface WebGL2RenderingContextBase
   /* Framebuffer objects */
   void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0,
                        GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
-  void framebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level,
+  void framebufferTextureLayer(GLenum target, GLenum attachment, WebGLTexture? texture, GLint level,
                                GLint layer);
-  any getInternalformatParameter(GLenum target, GLenum internalformat, GLenum pname);
   void invalidateFramebuffer(GLenum target, sequence<GLenum> attachments);
   void invalidateSubFramebuffer(GLenum target, sequence<GLenum> attachments,
                                 GLint x, GLint y, GLsizei width, GLsizei height);
   void readBuffer(GLenum src);
 
   /* Renderbuffer objects */
+  any getInternalformatParameter(GLenum target, GLenum internalformat, GLenum pname);
   void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat,
                                       GLsizei width, GLsizei height);
 
