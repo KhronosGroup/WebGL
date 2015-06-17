@@ -95,6 +95,7 @@ for (var bb = 0; bb < bufferTypes.length; ++bb) {
       return gl.getBufferParameter(bufferType, parameter);
     };
   }(bufferType));
+  gl.bindBuffer(bufferType, null);
 }
 testInvalidArgument(
     "getBufferParameter",
