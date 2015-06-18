@@ -133,7 +133,7 @@ if (!gl) {
      gl.COLOR_ATTACHMENT0,
      gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling getFramebufferAttachmentParameter with target = READ_FRAMEBUFFER on the default framebuffer should succeed.");
+            "calling getFramebufferAttachmentParameter with target = READ_FRAMEBUFFER should succeed.");
   assertMsg(gl.checkFramebufferStatus(target) != 0,
             "calling checkFramebufferStatus with target = READ_FRAMEBUFFER should succeed.");
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
@@ -183,9 +183,22 @@ if (!gl) {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
             "detaching a texture from a framebuffer should succeed.");
 
-  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, 1);
+  function numLevelsFromSize(size) {
+    var levels = 0;
+    while ((size >> levels) > 0) {
+      ++levels;
+    }
+    return levels;
+  }
+
+  var maxTexSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+  var maxLevels = numLevelsFromSize(maxTexSize);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, maxLevels);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+            "calling framebufferTexture2D with an appropriate mipmap level should succeed.");
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, maxLevels + 1);
   wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
-            "calling framebufferTexture2D with non-zero mipmap level should generate INVALID_VALUE.");
+            "calling framebufferTexture2D with a mipmap level out of range should generate INVALID_VALUE.");
 
   gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
