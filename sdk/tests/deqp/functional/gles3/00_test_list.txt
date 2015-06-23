@@ -1,4 +1,5 @@
 attriblocation.html
+draw.html
 fbocompleteness.html
 fbomultisample.html
 fbostencilbuffer.html
@@ -6,10 +7,18 @@ fragmentoutput.html
 framebufferblit.html
 instancedrendering.html
 lifetime.html
+multisample.html
+negativebufferapi.html
+negativefragmentapi.html
+negativeshaderapi.html
+negativestateapi.html
+negativetextureapi.html
+negativevertexarrayapi.html
 pixelbufferobject.html
 primitiverestart.html
 samplerobject.html
 textureformat.html
+textureshadow.html
 texturewrap.html
 transformfeedback.html
 uniformapi.html

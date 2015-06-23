@@ -5162,7 +5162,7 @@ WebGL2RenderingContextBase.prototype.fenceSync = function(condition, flags) {};
 /**
  * @param {number} target
  * @param {number} attachment
- * @param {number} texture
+ * @param {WebGLTexture} texture
  * @param {number} level
  * @param {number} layer
  */

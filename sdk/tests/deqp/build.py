@@ -64,10 +64,19 @@ targets = {
     'uniformbuffers': 'functional.gles3.es3fUniformBlockTests',
     'vertexarrays': 'functional.gles3.es3fVertexArrayTests',
     'shaderlibrary': 'modules.shared.glsShaderLibrary',
+    'negativebuffer': 'functional.gles3.es3fNegativeBufferApiTests',
     'sglrReferenceContextTest': 'framework.opengl.simplereference.sglrReferenceContextTest',
     'lifetime': 'functional.gles3.es3fLifetimeTests',
+    'draw': 'functional.gles3.es3fDrawTests',
     'attriblocation': 'functional.gles3.es3fAttribLocationTests',
-    'texturewrap': 'functional.gles3.es3fTextureWrapTests'
+    'textureShadowTests': 'functional.gles3.es3fTextureShadowTests',
+    'texturewrap': 'functional.gles3.es3fTextureWrapTests',
+    'negativetextureapi': 'functional.gles3.es3fNegativeTextureApiTests',
+    'multisample': 'functional.gles3.es3fMultisampleTests',
+    'negativefragmentapi': 'functional.gles3.es3fNegativeFragmentApiTests',
+    'negativevertexarrayapi': 'functional.gles3.es3fNegativeVertexArrayApiTests',
+    'negativestateapi' : 'functional.gles3.es3fNegativeStateApiTests',
+    'negativeshaderapi' : 'functional.gles3.es3fNegativeShaderApiTests'
 }
 
 total_errors = 0
@@ -91,7 +100,7 @@ def write_to_file(outfile, cmdLine, redirect_stderr):
             while proc.poll() is None:
                 line = proc.stdout.readline()
                 out_file.write(line)
-            
+
             out_file.flush()
             proc.wait()
 
@@ -161,7 +170,7 @@ def build_all_targets():
 
 def format_target(target):
     deps = read_file(dep_filename(target))
-    fixjsstyle = 'fixjsstyle-script.py'
+    fixjsstyle = 'fixjsstyle.py'
     reformat = 'reformatting_tool.py'
     for dep in deps.split('\n'):
         dep = dep.strip()
@@ -192,7 +201,7 @@ def pass_or_fail():
             warnings = failed[target][1]
             print "{0:>30}\tErrors: {1:4}\tWarnings: {2:4}".format(target+":", errors, warnings)
         print "Compilation failed: {} error(s), {} warning(s).".format(total_errors, total_warnings)
-   
+
 def main(argv):
     if len(argv) == 0:
         build_all_deps()
@@ -230,6 +239,6 @@ def main(argv):
         build_target(target, targets[target])
         pass_or_fail()
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     main(sys.argv[1:])
 

@@ -41,6 +41,11 @@ var deUtil = framework.delibs.debase.deUtil;
             temp = new Array(obj.length);
             for (var akey in obj)
                 temp[akey] = deUtil.clone(obj[akey]);
+        } else if (obj instanceof ArrayBuffer) {
+            temp = new ArrayBuffer(obj.byteLength);
+            var dst = new Uint8Array(temp);
+            var src = new Uint8Array(obj);
+            dst.set(src);
         } else {
             temp = Object.create(obj.constructor.prototype);
             temp.constructor = obj.constructor;

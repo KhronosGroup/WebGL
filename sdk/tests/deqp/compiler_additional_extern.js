@@ -93,8 +93,17 @@ function testFailed(msg){};
  */
 function testPassed(msg){};
 
+/**
+ * Defines the exception type for a GL error.
+ * @constructor
+ * @param {string} message The error message.
+ * @param {number} error GL error code
+ */
+ WebGLTestUtils.GLErrorException = function (message, error){ /** @type {string} */ this.message; };
+
 /** @type {WebGL2RenderingContext} */ var gl;
 /** @type {HTMLElement} */ var canvas;
+/** @type {Object} */ var wtu;
 
 /** @type {{create3DContext: function(string):WebGL2RenderingContext,
             loadTextFileAsync: function(string, function(boolean, string)),
