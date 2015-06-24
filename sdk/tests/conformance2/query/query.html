@@ -129,11 +129,6 @@ function runCurrentQueryTest() {
 
     gl.endQuery(gl.ANY_SAMPLES_PASSED);
 
-    gl.beginQuery(gl.ANY_SAMPLES_PASSED_CONSERVATIVE, q2);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be able to re-use query object with compatible targets");
-    shouldBe("gl.getQuery(gl.ANY_SAMPLES_PASSED_CONSERVATIVE, gl.CURRENT_QUERY)", "q2");
-    shouldBeNull("gl.getQuery(gl.ANY_SAMPLES_PASSED, gl.CURRENT_QUERY)");
-
     gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, q1);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be able to have multiple unrelated query types active at once");
     shouldBe("gl.getQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, gl.CURRENT_QUERY)", "q1");
