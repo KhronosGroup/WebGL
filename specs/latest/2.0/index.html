@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 12 June 2015</h2>
+    <h2 class="no-toc">Editor's Draft 25 June 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1339,7 +1339,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p>Sized internal formats are supported in WebGL 2 and <em>internalformat</em> is no longer required to be the same as <em>format</em>. Instead, the combination of <em>internalformat</em>, <em>format</em>, and <em>type</em> must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
         <p>If <em>type</em> is specified as <code>FLOAT_32_UNSIGNED_INT_24_8_REV</code>, <em>pixels</em> must be null; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If <em>pixels</em> is non-null, the type of <em>pixels</em> must
-match the <em>type</em> according to the following table; otherwise, generates an <code>INVALID_OPERATION</code> error:
+match the <em>type</em> according to the following table; otherwise, generates an <code>INVALID_OPERATION</code> error:</p>
         <table id="TEXTURE_PIXELS_TYPE_TABLE">
           <tr><th>type of <em>pixels</em></th><th><em>type</em></th></tr>
           <tr><td>Int8Array</td><td>BYTE</td></tr>
@@ -1366,7 +1366,38 @@ match the <em>type</em> according to the following table; otherwise, generates a
       <dd>
         <p>Only differences from <a href="../1.0/index.html#TEXIMAGE2D_HTML">texImage2D</a> in WebGL 1 are described here. </p>
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
-        <p>Sized internal formats are supported in WebGL 2 and <em>internalformat</em> is no longer required to be the same as <em>format</em>. Instead, the combination of <em>internalformat</em>, <em>format</em>, and <em>type</em> must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
+        <p>Sized internal formats are supported in WebGL 2 and <em>internalformat</em> is no longer required to be the same as <em>format</em>. Instead, the combination of <em>internalformat</em>, <em>format</em>, and <em>type</em> must be listed in the following table:</p>
+        <table id="TEXTURE_TYPES_FORMATS_FROM_DOM_ELEMENTS_TABLE">
+        <tr><th>Internal Format</th><th>Format</th><th>Type</th></tr>
+        <tr><td>RGB</td><td>RGB</td><td>UNSIGNED_BYTE<br>UNSIGNED_SHORT_5_6_5</td></tr>
+        <tr><td>RGBA</td><td>RGBA</td><td>UNSIGNED_BYTE,<br>UNSIGNED_SHORT_4_4_4_4<br>UNSIGNED_SHORT_5_5_5_1</td></tr>
+        <tr><td>LUMINANCE_ALPHA</td><td>LUMINANCE_ALPHA</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>ALPHA</td><td>ALPHA</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>R8</td><td>RED</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>R16F</td><td>RED</td><td>HALF_FLOAT<br>FLOAT</td></tr>
+        <tr><td>R32F</td><td>RED</td><td>FLOAT</td></tr>
+        <tr><td>R8UI</td><td>RED_INTEGER</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>RG8</td><td>RG</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>RG16F</td><td>RG</td><td>HALF_FLOAT<br>FLOAT</td></tr>
+        <tr><td>RG32F</td><td>RG</td><td>FLOAT</td></tr>
+        <tr><td>RG8UI</td><td>RG_INTEGER</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>RGB8</td><td>RGB</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>SRGB8</td><td>RGB</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>RGB565</td><td>RGB</td><td>UNSIGNED_BYTE<br>UNSIGNED_SHORT_5_6_5</td></tr>
+        <tr><td>R11F_G11F_B10F</td><td>RGB</td><td>UNSIGNED_INT_10F_11F_11F_REV<br>HALF_FLOAT<br>FLOAT</td></tr>
+        <tr><td>RGB9_E5</td><td>RGB</td><td>HALF_FLOAT<br>FLOAT</td></tr>
+        <tr><td>RGB16F</td><td>RGB</td><td>HALF_FLOAT<br>FLOAT</td></tr>
+        <tr><td>RGB32F</td><td>RGB</td><td>FLOAT</td></tr>
+        <tr><td>RGB8UI</td><td>RGB_INTEGER</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>RGBA8</td><td>RGBA</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>SRGB8_ALPHA8</td><td>RGBA</td><td>UNSIGNED_BYTE</td></tr>
+        <tr><td>RGB5_A1</td><td>RGBA</td><td>UNSIGNED_BYTE<br>UNSIGNED_SHORT_5_5_5_1</td></tr>
+        <tr><td>RGBA4444</td><td>RGBA</td><td>UNSIGNED_BYTE<br>UNSIGNED_SHORT_4_4_4_4</td></tr>
+        <tr><td>RGBA16F</td><td>RGBA</td><td>HALF_FLOAT<br>FLOAT</td></tr>
+        <tr><td>RGBA32F</td><td>RGBA</td><td>FLOAT</td></tr>
+        <tr><td>RGBA8UI</td><td>RGBA_INTEGER</td><td>UNSIGNED_BYTE</td></tr>
+        </table>
+        <div class="note">When the data source is a DOM element (<code>Image</code>, <code>Canvas</code>, or <code>Video</code>), commonly each channel's representation is an unsigned integer type of at least 8 bits. Converting such representation to signed integers or unsigned integers with more bits is not clearly defined. For example, when converting RGBA8 to RGBA16UI,  it is unclear whether or not the intention is to scale up values to the full range of a 16-bit unsigned integer. Therefore, only converting to unsigned integer of at most 8 bits, half float, or float is allowed.</div>
       </dd>
 
       <dt class="idl-code"><a name="TEXIMAGE2D_SERVER_SIDE">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, GLintptr offset) <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
@@ -1374,6 +1405,7 @@ match the <em>type</em> according to the following table; otherwise, generates a
       <dd>
         <p>Upload data to the currently bound WebGLTexture from the WebGLBuffer bound to the <code>PIXEL_UNPACK_BUFFER</code> target.</p>
         <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> if it's less than 0.</p>
+        <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
         <p>If an attempt is made to call the function with no WebGLTexture bound, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If no WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
       </dd>
@@ -1398,7 +1430,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dd>
         <p>Only differences from <a href="../1.0/index.html#TEXSUBIMAGE2D_HTML">texSubImage2D</a> in WebGL 1 are described here. </p>
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
-        <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
+        <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in <a href="#TEXTURE_TYPES_FORMATS_FROM_DOM_ELEMENTS_TABLE">this table</a>.</p>
       </dd>
 
       <dt><p class="idl-code"><a name="TEXSUBIMAGE2D_SERVER_SIDE">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLenum format, GLenum type, GLintptr offset)
@@ -1470,6 +1502,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p>The depth of the updated subregion is set to 1. The width and height of the updated subregion are determined as specified in section <a href="../1.0/index.html#TEXTURE_UPLOAD_SIZE">Texture Upload Width and Height</a>. </p>
         <p>See <a href="../1.0/index.html#TEXIMAGE2D_HTML">texImage2D</a> for the interpretation of the <em>format</em> and <em>type</em> arguments, and notes on the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter. </p>
         <p>The first pixel transferred from the source to the WebGL implementation corresponds to the upper left corner of the source. This behavior is modified by the the <code>UNPACK_FLIP_Y_WEBGL</code> <a href="../1.0/index.html#PIXEL_STORAGE_PARAMETERS">pixel storage parameter</a>. </p>
+        <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in <a href="#TEXTURE_TYPES_FORMATS_FROM_DOM_ELEMENTS_TABLE">this table</a>.</p>
         <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If this function is called with an <code>HTMLImageElement</code> or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing Document, or with an <code>HTMLCanvasElement</code> whose <i>origin-clean</i> flag is set to false, a <code>SECURITY_ERR</code> exception must be thrown. See <a href="../1.0/index.html#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.</p>
