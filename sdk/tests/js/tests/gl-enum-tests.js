@@ -55,6 +55,11 @@ if (!gl) {
     "gl.isEnabled(desktopGL['CLIP_PLANE0'])",
     "gl.isEnabled(desktopGL['POINT_SPRITE'])",
     "gl.pixelStorei(desktopGL['PACK_SWAP_BYTES'], 1)",
+    "gl.getParameter(desktopGL['NUM_COMPRESSED_TEXTURE_FORMATS'])",
+    "gl.getParameter(desktopGL['EXTENSIONS'])",
+    "gl.getParameter(desktopGL['SHADER_COMPILER'])",
+    "gl.getParameter(desktopGL['SHADER_BINARY_FORMATS'])",
+    "gl.getParameter(desktopGL['NUM_SHADER_BINARY_FORMATS'])",
   ];
 
   if (contextVersion < 2) {
