@@ -101,7 +101,10 @@ if (!gl) {
     ]);
   } else {
     tests = tests.concat([
-      "gl.texParameteri(desktopGL['TEXTURE_2D'], gl.TEXTURE_SWIZZLE_R, gl.RED)",
+      "gl.texParameteri(desktopGL['TEXTURE_2D'], desktopGL['TEXTURE_SWIZZLE_R_EXT'], gl.RED)",
+      "gl.texParameteri(desktopGL['TEXTURE_2D'], desktopGL['TEXTURE_SWIZZLE_G_EXT'], gl.RED)",
+      "gl.texParameteri(desktopGL['TEXTURE_2D'], desktopGL['TEXTURE_SWIZZLE_B_EXT'], gl.RED)",
+      "gl.texParameteri(desktopGL['TEXTURE_2D'], desktopGL['TEXTURE_SWIZZLE_A_EXT'], gl.RED)",
       "gl.texParameteri(desktopGL['TEXTURE_2D'], gl.TEXTURE_WRAP_R, desktopGL['CLAMP_TO_BORDER'])",
     ]);
   }
