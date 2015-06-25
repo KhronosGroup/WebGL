@@ -48,13 +48,6 @@ if (!gl) {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
   var tests = [
-    "gl.blendEquation(desktopGL['MIN'])",
-    "gl.blendEquation(desktopGL['MAX'])",
-    "gl.blendEquationSeparate(desktopGL['MIN'], gl.FUNC_ADD)",
-    "gl.blendEquationSeparate(desktopGL['MAX'], gl.FUNC_ADD)",
-    "gl.blendEquationSeparate(gl.FUNC_ADD, desktopGL['MIN'])",
-    "gl.blendEquationSeparate(gl.FUNC_ADD, desktopGL['MAX'])",
-    "gl.bufferData(gl.ARRAY_BUFFER, 3, desktopGL['STATIC_READ'])",
     "gl.disable(desktopGL['CLIP_PLANE0'])",
     "gl.disable(desktopGL['POINT_SPRITE'])",
     "gl.getBufferParameter(gl.ARRAY_BUFFER, desktopGL['PIXEL_PACK_BUFFER'])",
@@ -66,6 +59,18 @@ if (!gl) {
 
   if (contextVersion < 2) {
     tests = tests.concat([
+      "gl.blendEquation(desktopGL['MIN'])",
+      "gl.blendEquation(desktopGL['MAX'])",
+      "gl.blendEquationSeparate(desktopGL['MIN'], gl.FUNC_ADD)",
+      "gl.blendEquationSeparate(desktopGL['MAX'], gl.FUNC_ADD)",
+      "gl.blendEquationSeparate(gl.FUNC_ADD, desktopGL['MIN'])",
+      "gl.blendEquationSeparate(gl.FUNC_ADD, desktopGL['MAX'])",
+      "gl.bufferData(gl.ARRAY_BUFFER, 16, desktopGL['STREAM_READ'])",
+      "gl.bufferData(gl.ARRAY_BUFFER, 16, desktopGL['STREAM_COPY'])",
+      "gl.bufferData(gl.ARRAY_BUFFER, 16, desktopGL['STATIC_READ'])",
+      "gl.bufferData(gl.ARRAY_BUFFER, 16, desktopGL['STATIC_COPY'])",
+      "gl.bufferData(gl.ARRAY_BUFFER, 16, desktopGL['DYNAMIC_READ'])",
+      "gl.bufferData(gl.ARRAY_BUFFER, 16, desktopGL['DYNAMIC_COPY'])",
       "gl.bindTexture(desktopGL['TEXTURE_2D_ARRAY'], tex)",
       "gl.bindTexture(desktopGL['TEXTURE_3D'], tex)",
     ]);
@@ -96,7 +101,10 @@ if (!gl) {
     ]);
   } else {
     tests = tests.concat([
-      "gl.texParameteri(desktopGL['TEXTURE_2D'], gl.TEXTURE_SWIZZLE_R, gl.RED)",
+      "gl.texParameteri(desktopGL['TEXTURE_2D'], desktopGL['TEXTURE_SWIZZLE_R_EXT'], gl.RED)",
+      "gl.texParameteri(desktopGL['TEXTURE_2D'], desktopGL['TEXTURE_SWIZZLE_G_EXT'], gl.RED)",
+      "gl.texParameteri(desktopGL['TEXTURE_2D'], desktopGL['TEXTURE_SWIZZLE_B_EXT'], gl.RED)",
+      "gl.texParameteri(desktopGL['TEXTURE_2D'], desktopGL['TEXTURE_SWIZZLE_A_EXT'], gl.RED)",
       "gl.texParameteri(desktopGL['TEXTURE_2D'], gl.TEXTURE_WRAP_R, desktopGL['CLAMP_TO_BORDER'])",
     ]);
   }

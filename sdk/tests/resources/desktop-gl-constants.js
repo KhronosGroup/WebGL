@@ -24,6 +24,9 @@
 // Defines a bunch of DesktopGL constants so we can make sure WebGL
 // implementations disallow them.
 
+// Some of these are also GLES2/GLES3 constants that have been removed from
+// WebGL.
+
 var desktopGL = {
   'MIN': 0x8007,
   'MAX': 0x8008,
