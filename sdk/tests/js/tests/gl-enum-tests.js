@@ -48,12 +48,6 @@ if (!gl) {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
   var tests = [
-    "gl.blendEquation(desktopGL['MIN'])",
-    "gl.blendEquation(desktopGL['MAX'])",
-    "gl.blendEquationSeparate(desktopGL['MIN'], gl.FUNC_ADD)",
-    "gl.blendEquationSeparate(desktopGL['MAX'], gl.FUNC_ADD)",
-    "gl.blendEquationSeparate(gl.FUNC_ADD, desktopGL['MIN'])",
-    "gl.blendEquationSeparate(gl.FUNC_ADD, desktopGL['MAX'])",
     "gl.disable(desktopGL['CLIP_PLANE0'])",
     "gl.disable(desktopGL['POINT_SPRITE'])",
     "gl.getBufferParameter(gl.ARRAY_BUFFER, desktopGL['PIXEL_PACK_BUFFER'])",
@@ -65,6 +59,12 @@ if (!gl) {
 
   if (contextVersion < 2) {
     tests = tests.concat([
+      "gl.blendEquation(desktopGL['MIN'])",
+      "gl.blendEquation(desktopGL['MAX'])",
+      "gl.blendEquationSeparate(desktopGL['MIN'], gl.FUNC_ADD)",
+      "gl.blendEquationSeparate(desktopGL['MAX'], gl.FUNC_ADD)",
+      "gl.blendEquationSeparate(gl.FUNC_ADD, desktopGL['MIN'])",
+      "gl.blendEquationSeparate(gl.FUNC_ADD, desktopGL['MAX'])",
       "gl.bufferData(gl.ARRAY_BUFFER, 16, desktopGL['STREAM_READ'])",
       "gl.bufferData(gl.ARRAY_BUFFER, 16, desktopGL['STREAM_COPY'])",
       "gl.bufferData(gl.ARRAY_BUFFER, 16, desktopGL['STATIC_READ'])",
