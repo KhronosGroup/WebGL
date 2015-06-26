@@ -1,5 +1,3 @@
-<!--
-
 /*
 ** Copyright (c) 2012 The Khronos Group Inc.
 **
@@ -22,28 +20,13 @@
 ** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
+/**
+ * Calls eval.
+ *
+ * This is here so other modules can use "use strict":
+ */
+TestEval = function(str) {
+  return eval(str);
+};
 
--->
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>WebGL vertexAttrib Conformance Tests</title>
-<link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../js/js-test-pre.js"></script>
-<script src="../../js/webgl-test-utils.js"></script>
-</head>
-<body>
-<div id="description"></div>
-<div id="console"></div>
-<canvas id="canvas" width="2" height="2"> </canvas>
-
-<script>
-var contextVersion = 1;
-</script>
-<script src="../../js/tests/gl-vertex-attrib.js"></script>
-<script src="../../js/js-test-post.js"></script>
-
-</body>
-</html>
