@@ -31,15 +31,15 @@
 <meta charset="utf-8">
 <title>WebGL Texture Format Conformance Tests</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../resources/desktop-gl-constants.js" type="text/javascript"></script>
-<script src="../../resources/js-test-pre.js"></script>
-<script src="../../resources/webgl-test-utils.js"></script>
+<script src="../../js/desktop-gl-constants.js"></script>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
 <div id="console"></div>
 <canvas id="canvas2d" width="2" height="2" style="width: 50px; height: 50px; border: 1px solid black;"></canvas>
-<canvas id="canvas" width="2" height="2" style="width: 100px; height:100px; border: 1px solid black;"> </canvas>
+<canvas id="canvas" width="2" height="2" style="width: 100px; height:100px; border: 1px solid black;"></canvas>
 <script>
 "use strict";
 description("This test ensures WebGL implementations allow the OpenGL ES 2.0 texture formats and do not allow DesktopGL texture formats.");
@@ -282,9 +282,8 @@ if (!gl) {
 
 debug("");
 var successfullyParsed = true;
-
 </script>
-<script src="../../resources/js-test-post.js"></script>
+<script src="../../js/js-test-post.js"></script>
 
 </body>
 </html>
