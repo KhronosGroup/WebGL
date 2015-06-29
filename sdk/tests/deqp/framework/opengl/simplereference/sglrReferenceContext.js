@@ -2511,7 +2511,6 @@ goog.scope(function() {
         this.drawElements(mode, count, type, offset);
     };
 
-
     /**
     * @param {number} mode GL primitive type to draw with.
     * @param {number} count How many vertices to draw (not counting vertices before first)
@@ -2558,7 +2557,7 @@ goog.scope(function() {
             return;
         // All is ok
         var data = vao.m_elementArrayBufferBinding.getData();
-        var indices = new rrRenderer.DrawIndices(data, sglrReferenceUtils.mapGLIndexType(type), baseVertex);
+        var indices = new rrRenderer.DrawIndices(data, sglrReferenceUtils.mapGLIndexType(type), offset, baseVertex);
 
         this.drawQuads(mode, indices, count, instanceCount);
     };
@@ -3252,8 +3251,17 @@ goog.scope(function() {
         }
 
         var primitiveType = sglrReferenceUtils.mapGLPrimitiveType(primitive);
+
+        var renderFunction = rrRenderer.drawQuads;
+        if (primitiveType == rrRenderer.PrimitiveType.LINES ||
+            primitiveType == rrRenderer.PrimitiveType.LINE_STRIP ||
+            primitiveType == rrRenderer.PrimitiveType.LINE_LOOP)
+            renderFunction = rrRenderer.drawLines;
+        else if (primitiveType == rrRenderer.PrimitiveType.POINTS)
+            renderFunction = rrRenderer.drawPoints;
+
         for (var instanceID = 0; instanceID < instances; instanceID++)
-            rrRenderer.drawQuads(state, renderTarget, program, vertexAttribs, primitiveType, first, count, instanceID);
+            renderFunction(state, renderTarget, program, vertexAttribs, primitiveType, first, count, instanceID);
     };
 
     /**
@@ -3388,10 +3396,10 @@ goog.scope(function() {
         if (mask & gl.COLOR_BUFFER_BIT) {
             src = tcuTextureUtil.getSubregion(this.getReadColorbuffer().toSinglesampleAccess(), srcRect[0], srcRect[1], 0, srcRect[2], srcRect[3], 1);
             dst = tcuTextureUtil.getSubregion(this.getDrawColorbuffer().toSinglesampleAccess(), dstRect[0], dstRect[1], 0, dstRect[2], dstRect[3], 1);
-            /** @type {tcuTextureUtil.TextureChannelClass} */ var dstClass = tcuTextureUtil.getTextureChannelClass(dst.getFormat().type);
-            /** @type {boolean} */ var dstIsFloat = dstClass == tcuTextureUtil.TextureChannelClass.FLOATING_POINT ||
-                                                        dstClass == tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT ||
-                                                        dstClass == tcuTextureUtil.TextureChannelClass.SIGNED_FIXED_POINT;
+            /** @type {tcuTexture.TextureChannelClass} */ var dstClass = tcuTexture.getTextureChannelClass(dst.getFormat().type);
+            /** @type {boolean} */ var dstIsFloat = dstClass == tcuTexture.TextureChannelClass.FLOATING_POINT ||
+                                                        dstClass == tcuTexture.TextureChannelClass.UNSIGNED_FIXED_POINT ||
+                                                        dstClass == tcuTexture.TextureChannelClass.SIGNED_FIXED_POINT;
             /** @type {tcuTexture.FilterMode} */ var sFilter = (scale && filter == gl.LINEAR) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
             /** @type {tcuTexture.Sampler} */ var sampler = new tcuTexture.Sampler(tcuTexture.WrapMode.CLAMP_TO_EDGE, tcuTexture.WrapMode.CLAMP_TO_EDGE, tcuTexture.WrapMode.CLAMP_TO_EDGE,
                                                         sFilter, sFilter, 0.0 /* lod threshold */, false /* non-normalized coords */);

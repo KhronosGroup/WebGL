@@ -44,19 +44,6 @@ tcuTextureUtil.linearInterpolate = function(t, minVal, maxVal) {
     return minVal + (maxVal - minVal) * t;
 };
 
-/**
- * Enums for tcuTextureUtil.TextureChannelClass
- * @enum {number}
- */
-tcuTextureUtil.TextureChannelClass = {
-
-        SIGNED_FIXED_POINT: 0,
-        UNSIGNED_FIXED_POINT: 1,
-        SIGNED_INTEGER: 2,
-        UNSIGNED_INTEGER: 3,
-        FLOATING_POINT: 4
-};
-
 /** tcuTextureUtil.linearChannelToSRGB
  * @param {number} cl
  * @return {number}
@@ -108,41 +95,6 @@ tcuTextureUtil.linearToSRGB = function(cl) {
 };
 
 /**
- * @param {?tcuTexture.ChannelType} channelType
- * @return {tcuTextureUtil.TextureChannelClass}
- */
-tcuTextureUtil.getTextureChannelClass = function(channelType) {
-
-    switch (channelType) {
-
-    case tcuTexture.ChannelType.SNORM_INT8: return tcuTextureUtil.TextureChannelClass.SIGNED_FIXED_POINT;
-    case tcuTexture.ChannelType.SNORM_INT16: return tcuTextureUtil.TextureChannelClass.SIGNED_FIXED_POINT;
-    case tcuTexture.ChannelType.UNORM_INT8: return tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT;
-    case tcuTexture.ChannelType.UNORM_INT16: return tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT;
-    case tcuTexture.ChannelType.UNORM_SHORT_565: return tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT;
-    case tcuTexture.ChannelType.UNORM_SHORT_555: return tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT;
-    case tcuTexture.ChannelType.UNORM_SHORT_4444: return tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT;
-    case tcuTexture.ChannelType.UNORM_SHORT_5551: return tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT;
-    case tcuTexture.ChannelType.UNORM_INT_101010: return tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT;
-    case tcuTexture.ChannelType.UNORM_INT_1010102_REV: return tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT;
-    case tcuTexture.ChannelType.UNSIGNED_INT_1010102_REV: return tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER;
-    case tcuTexture.ChannelType.UNSIGNED_INT_11F_11F_10F_REV: return tcuTextureUtil.TextureChannelClass.FLOATING_POINT;
-    case tcuTexture.ChannelType.UNSIGNED_INT_999_E5_REV: return tcuTextureUtil.TextureChannelClass.FLOATING_POINT;
-    case tcuTexture.ChannelType.SIGNED_INT8: return tcuTextureUtil.TextureChannelClass.SIGNED_INTEGER;
-    case tcuTexture.ChannelType.SIGNED_INT16: return tcuTextureUtil.TextureChannelClass.SIGNED_INTEGER;
-    case tcuTexture.ChannelType.SIGNED_INT32: return tcuTextureUtil.TextureChannelClass.SIGNED_INTEGER;
-    case tcuTexture.ChannelType.UNSIGNED_INT8: return tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER;
-    case tcuTexture.ChannelType.UNSIGNED_INT16: return tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER;
-    case tcuTexture.ChannelType.UNSIGNED_INT32: return tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER;
-    case tcuTexture.ChannelType.HALF_FLOAT: return tcuTextureUtil.TextureChannelClass.FLOATING_POINT;
-    case tcuTexture.ChannelType.FLOAT: return tcuTextureUtil.TextureChannelClass.FLOATING_POINT;
-
-    default: throw new Error('Unrecognized channel type: ' + channelType);
-    }
-
-};
-
-/**
  * tcuTextureUtil.getSubregion
  * @param {tcuTexture.PixelBufferAccess} access
  * @param {number} x
@@ -169,6 +121,25 @@ tcuTextureUtil.getSubregion = function(access, x, y, z, width, height, depth) {
         offset: access.getFormat().getPixelSize() * x + access.getRowPitch() * y + access.getSlicePitch() * z,
         data: access.getBuffer()
         });
+};
+
+/**
+ * @param {tcuTexture.PixelBufferAccess} access
+ * @param {Array<number>} minVal
+ * @param {Array<number>} maxVal
+ */
+tcuTextureUtil.fillWithComponentGradients1D = function(access, minVal, maxVal) {
+    DE_ASSERT(access.getHeight() == 1);
+    for (var x = 0; x < access.getWidth(); x++) {
+        var s = (x + 0.5) / access.getWidth();
+
+        var r = tcuTextureUtil.linearInterpolate(s, minVal[0], maxVal[0]);
+        var g = tcuTextureUtil.linearInterpolate(s, minVal[1], maxVal[1]);
+        var b = tcuTextureUtil.linearInterpolate(s, minVal[2], maxVal[2]);
+        var a = tcuTextureUtil.linearInterpolate(s, minVal[3], maxVal[3]);
+
+        access.setPixel([r, g, b, a], x, 0);
+    }
 };
 
 /**
@@ -222,8 +193,7 @@ tcuTextureUtil.fillWithComponentGradients3D = function(dst, minVal, maxVal) {
  */
 tcuTextureUtil.fillWithComponentGradients = function(access, minVal, maxVal) {
     if (access.getHeight() == 1 && access.getDepth() == 1)
-        throw new Error('Inimplemented');
-        //fillWithComponentGradients1D(access, minVal, maxVal);
+        tcuTextureUtil.fillWithComponentGradients1D(access, minVal, maxVal);
     else if (access.getDepth() == 1)
         tcuTextureUtil.fillWithComponentGradients2D(access, minVal, maxVal);
     else
@@ -602,10 +572,10 @@ tcuTextureUtil.copy = function(dst, src) {
 
         dstData.set(srcData);
     } else {
-        var srcClass = tcuTextureUtil.getTextureChannelClass(src.getFormat().type);
-        var dstClass = tcuTextureUtil.getTextureChannelClass(dst.getFormat().type);
-        var srcIsInt = srcClass == tcuTextureUtil.TextureChannelClass.SIGNED_INTEGER || srcClass == tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER;
-        var dstIsInt = dstClass == tcuTextureUtil.TextureChannelClass.SIGNED_INTEGER || dstClass == tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER;
+        var srcClass = tcuTexture.getTextureChannelClass(src.getFormat().type);
+        var dstClass = tcuTexture.getTextureChannelClass(dst.getFormat().type);
+        var srcIsInt = srcClass == tcuTexture.TextureChannelClass.SIGNED_INTEGER || srcClass == tcuTexture.TextureChannelClass.UNSIGNED_INTEGER;
+        var dstIsInt = dstClass == tcuTexture.TextureChannelClass.SIGNED_INTEGER || dstClass == tcuTexture.TextureChannelClass.UNSIGNED_INTEGER;
 
         if (srcIsInt && dstIsInt) {
             for (var z = 0; z < depth; z++)

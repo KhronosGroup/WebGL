@@ -327,7 +327,7 @@ goog.scope(function() {
 
                     //If it's a leaf test, notify of it's execution.
                     if (state.currentTest.isLeaf())
-                        debug('Start testcase: ' + fullTestName);
+                        debug('<hr/><br/>Start testcase: ' + fullTestName);
                 }
 
                 // Run the test, save the result.
@@ -336,6 +336,8 @@ goog.scope(function() {
             catch (err) {
                 // If the exception was not thrown by a test check, log it, but don't throw it again
                 if (!(err instanceof TestFailedException)) {
+                    //Stop execution of current test.
+                    tcuTestCase.lastResult = tcuTestCase.IterateResult.STOP;
                     var msg = err;
                     if (err.message)
                         msg = err.message;

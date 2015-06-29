@@ -163,7 +163,7 @@ var DE_ASSERT = function(x) {
     es3fFboTestCase.FboTestCase.prototype.checkFramebufferStatus = function(target) {
         /** @type {number} */ var status = this.getCurrentContext().checkFramebufferStatus(target);
         if (status != gl.FRAMEBUFFER_COMPLETE)
-            throw new Error('Framebuffer Status: ' + status);
+            throw new Error('Framebuffer Status: ' + WebGLTestUtils.glEnumToString(gl,status));
     };
 
     es3fFboTestCase.FboTestCase.prototype.checkError = function() {

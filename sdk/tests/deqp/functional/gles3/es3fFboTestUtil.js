@@ -1093,16 +1093,16 @@ es3fFboTestUtil.FboIncompleteException.prototype.getReason = function() {return 
      * @return {gluShaderUtil.DataType}
      */
     es3fFboTestUtil.getFragmentOutputType = function(format) {
-        switch (tcuTextureUtil.getTextureChannelClass(format.type)) {
-            case tcuTextureUtil.TextureChannelClass.FLOATING_POINT:
-            case tcuTextureUtil.TextureChannelClass.SIGNED_FIXED_POINT:
-            case tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT:
+        switch (tcuTexture.getTextureChannelClass(format.type)) {
+            case tcuTexture.TextureChannelClass.FLOATING_POINT:
+            case tcuTexture.TextureChannelClass.SIGNED_FIXED_POINT:
+            case tcuTexture.TextureChannelClass.UNSIGNED_FIXED_POINT:
                 return gluShaderUtil.DataType.FLOAT_VEC4;
 
-            case tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER:
+            case tcuTexture.TextureChannelClass.UNSIGNED_INTEGER:
                 return gluShaderUtil.DataType.UINT_VEC4;
 
-            case tcuTextureUtil.TextureChannelClass.SIGNED_INTEGER:
+            case tcuTexture.TextureChannelClass.SIGNED_INTEGER:
                 return gluShaderUtil.DataType.INT_VEC4;
 
             default:
@@ -1115,18 +1115,18 @@ es3fFboTestUtil.FboIncompleteException.prototype.getReason = function() {return 
      * @return {tcuTexture.TextureFormat}
      */
     es3fFboTestUtil.getFramebufferReadFormat = function(format) {
-        switch (tcuTextureUtil.getTextureChannelClass(format.type)) {
-            case tcuTextureUtil.TextureChannelClass.FLOATING_POINT:
+        switch (tcuTexture.getTextureChannelClass(format.type)) {
+            case tcuTexture.TextureChannelClass.FLOATING_POINT:
                 return new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.FLOAT);
 
-            case tcuTextureUtil.TextureChannelClass.SIGNED_FIXED_POINT:
-            case tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT:
+            case tcuTexture.TextureChannelClass.SIGNED_FIXED_POINT:
+            case tcuTexture.TextureChannelClass.UNSIGNED_FIXED_POINT:
                 return new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.UNORM_INT8);
 
-            case tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER:
+            case tcuTexture.TextureChannelClass.UNSIGNED_INTEGER:
                 return new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.UNSIGNED_INT32);
 
-            case tcuTextureUtil.TextureChannelClass.SIGNED_INTEGER:
+            case tcuTexture.TextureChannelClass.SIGNED_INTEGER:
                 return new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.SIGNED_INT32);
 
             default:
@@ -1140,21 +1140,21 @@ es3fFboTestUtil.FboIncompleteException.prototype.getReason = function() {return 
      * @param {Array<number>} value
      */
     es3fFboTestUtil.clearColorBuffer = function(ctx, format, value) {
-        /** @const @type {tcuTextureUtil.TextureChannelClass} */
-        var fmtClass = tcuTextureUtil.getTextureChannelClass(format.type);
+        /** @const @type {tcuTexture.TextureChannelClass} */
+        var fmtClass = tcuTexture.getTextureChannelClass(format.type);
 
         switch (fmtClass) {
-            case tcuTextureUtil.TextureChannelClass.FLOATING_POINT:
-            case tcuTextureUtil.TextureChannelClass.SIGNED_FIXED_POINT:
-            case tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT:
+            case tcuTexture.TextureChannelClass.FLOATING_POINT:
+            case tcuTexture.TextureChannelClass.SIGNED_FIXED_POINT:
+            case tcuTexture.TextureChannelClass.UNSIGNED_FIXED_POINT:
                 ctx.clearBufferfv(gl.COLOR, 0, value);
                 break;
 
-            case tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER:
+            case tcuTexture.TextureChannelClass.UNSIGNED_INTEGER:
                 ctx.clearBufferuiv(gl.COLOR, 0, value);
                 break;
 
-            case tcuTextureUtil.TextureChannelClass.SIGNED_INTEGER:
+            case tcuTexture.TextureChannelClass.SIGNED_INTEGER:
                 ctx.clearBufferiv(gl.COLOR, 0, value);
                 break;
 

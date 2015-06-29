@@ -336,6 +336,15 @@ deMath.rint = function(a) {
 };
 
 /**
+ * @param {number} a
+ * @return {number}
+ */
+deMath.logToFloor = function(a) {
+    assertMsgOptions(a > 0, 'Value is less or equal than zero', false, true);
+    return 31 - deMath.clz32(a);
+};
+
+/**
  * Find intersection of two rectangles
  * @param {goog.NumberArray} a Array [x, y, width, height]
  * @param {goog.NumberArray} b Array [x, y, width, height]
@@ -433,7 +442,8 @@ deMath.getBitRange = function(array, firstNdx, lastNdx) {
  */
 deMath.BinaryOp = {
     AND: 0,
-    OR: 1
+    OR: 1,
+    XOR: 2
 };
 
 /**
@@ -449,6 +459,8 @@ deMath.doNativeBinaryOp = function(valueA, valueB, operation) {
             return valueA & valueB;
         case deMath.BinaryOp.OR:
             return valueA | valueB;
+        case deMath.BinaryOp.XOR:
+            return valueA ^ valueB;
         default:
             throw new Error('Unknown operation: ' + operation);
     }

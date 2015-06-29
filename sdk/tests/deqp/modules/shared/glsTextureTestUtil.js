@@ -258,6 +258,50 @@ glsTextureTestUtil.computeQuadTexCoordCube = function(face) {
 };
 
 /**
+ * @param {tcuTexture.CubeFace} face
+ * @param {Array<number>} bottomLeft
+ * @param {Array<number>} topRight
+ * @return {Array<number>}
+ */
+glsTextureTestUtil.computeQuadTexCoordCubeFace = function(face, bottomLeft, topRight) {
+    var dst = [];
+    /** @type {number} */ var sRow = 0;
+    /** @type {number} */ var tRow = 0;
+    /** @type {number} */ var mRow = 0;
+    /** @type {number} */ var sSign = 1.0;
+    /** @type {number} */ var tSign = 1.0;
+    /** @type {number} */ var mSign = 1.0;
+
+    switch (face) {
+        case tcuTexture.CubeFace.CUBEFACE_NEGATIVE_X: mRow = 0; sRow = 2; tRow = 1; mSign = -1.0; tSign = -1.0; break;
+        case tcuTexture.CubeFace.CUBEFACE_POSITIVE_X: mRow = 0; sRow = 2; tRow = 1; sSign = -1.0; tSign = -1.0; break;
+        case tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Y: mRow = 1; sRow = 0; tRow = 2; mSign = -1.0; tSign = -1.0; break;
+        case tcuTexture.CubeFace.CUBEFACE_POSITIVE_Y: mRow = 1; sRow = 0; tRow = 2; break;
+        case tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Z: mRow = 2; sRow = 0; tRow = 1; mSign = -1.0; sSign = -1.0; tSign = -1.0; break;
+        case tcuTexture.CubeFace.CUBEFACE_POSITIVE_Z: mRow = 2; sRow = 0; tRow = 1; tSign = -1.0; break;
+        default:
+            throw new Error('Invalid cube face specified.');
+    }
+
+    dst[0 + mRow] = mSign;
+    dst[3 + mRow] = mSign;
+    dst[6 + mRow] = mSign;
+    dst[9 + mRow] = mSign;
+
+    dst[0 + sRow] = sSign * bottomLeft[0];
+    dst[3 + sRow] = sSign * bottomLeft[0];
+    dst[6 + sRow] = sSign * topRight[0];
+    dst[9 + sRow] = sSign * topRight[0];
+
+    dst[0 + tRow] = tSign * bottomLeft[1];
+    dst[3 + tRow] = tSign * topRight[1];
+    dst[6 + tRow] = tSign * bottomLeft[1];
+    dst[9 + tRow] = tSign * topRight[1];
+
+    return dst;
+};
+
+/**
  * @param {number} layerNdx
  * @param {Array<number>} bottomLeft
  * @param {Array<number>} topRight
@@ -749,7 +793,8 @@ glsTextureTestUtil.TextureRenderer.prototype.renderQuad = function(texUnit, texC
     var prog = program.getProgram();
     gl.useProgram(prog);
 
-    gl.uniform1i(gl.getUniformLocation(prog, 'u_sampler'), texUnit);
+    var loc = gl.getUniformLocation(prog, 'u_sampler');
+    gl.uniform1i(loc, texUnit);
     // if (logUniforms)
     //     log << TestLog::Message << "u_sampler = " << texUnit << TestLog::EndMessage;
 
@@ -942,7 +987,7 @@ glsTextureTestUtil.triDerivateY = function(s, w, wy, height, nx) {
 };
 
 /**
- * @param {(tcuTexture.Texture2DView|tcuTexture.Texture2DArrayView|framework.common.tcuTexture.TextureCubeView)} src
+ * @param {(tcuTexture.Texture2DView|tcuTexture.Texture2DArrayView|tcuTexture.TextureCubeView)} src
  * @param {glsTextureTestUtil.ReferenceParams} params
  * @param {Array<number>} texCoord Texture coordinates
  * @param {number} lod
@@ -1344,7 +1389,7 @@ glsTextureTestUtil.sampleTexture3D = function(dst, src, texCoord, params) {
  *
  * @return {boolean}
  */
-glsTextureTestUtil.compareImages = function(/*const tcu::Surface&*/ reference, /*const tcu::Surface&*/ rendered, /*tcu::RGBA*/ threshold) {
+glsTextureTestUtil.compareImages = function(reference, rendered, threshold) {
     return tcuImageCompare.pixelThresholdCompare('Result', 'Image comparison result', reference, rendered, threshold, undefined /*tcu::COMPARE_LOG_RESULT*/);
 };
 
@@ -1378,6 +1423,7 @@ glsTextureTestUtil.verifyTexture2DResult = function(result, src, texCoord, sampl
 /**
  * @param {tcuTexture.ConstPixelBufferAccess} result
  * @param {tcuTexture.ConstPixelBufferAccess} reference
+ * @param {tcuTexture.PixelBufferAccess} errorMask
  * @param {tcuTexture.Texture2DView} src
  * @param {Array<number>} texCoord
  * @param {glsTextureTestUtil.ReferenceParams} sampleParams
@@ -1386,7 +1432,117 @@ glsTextureTestUtil.verifyTexture2DResult = function(result, src, texCoord, sampl
  * @param {Array<number>} nonShadowThreshold
  * @return {number}
  */
-glsTextureTestUtil.computeTextureCompareDiff = function(result, reference, errorMask, src, texCoord, sampleParams, comparePrec, lodPrec, nonShadowThreshold) {
+glsTextureTestUtil.computeTextureCompareDiff2D = function(result, reference, errorMask, src, texCoord, sampleParams, comparePrec, lodPrec, nonShadowThreshold) {
+    DE_ASSERT(result.getWidth() == reference.getWidth() && result.getHeight() == reference.getHeight());
+    DE_ASSERT(result.getWidth() == errorMask.getWidth() && result.getHeight() == errorMask.getHeight());
+
+    var sq = [texCoord[0 + 0], texCoord[2 + 0], texCoord[4 + 0], texCoord[6 + 0]];
+    var tq = [texCoord[0 + 1], texCoord[2 + 1], texCoord[4 + 1], texCoord[6 + 1]];
+
+    var dstSize = [result.getWidth(), result.getHeight()];
+    var dstW = dstSize[0];
+    var dstH = dstSize[1];
+    var srcSize = [src.getWidth(), src.getHeight()];
+
+    // Coordinates and lod per triangle.
+    var triS = [deMath.swizzle(sq, [0, 1, 2]), deMath.swizzle(sq, [3, 2, 1])];
+    var triT = [deMath.swizzle(tq, [0, 1, 2]), deMath.swizzle(tq, [3, 2, 1])];
+    var triW = [deMath.swizzle(sampleParams.w, [0, 1, 2]), deMath.swizzle(sampleParams.w, [3, 2, 1])];
+
+    var lodBias = sampleParams.flags.use_bias ? [sampleParams.bias, sampleParams.bias] : [0, 0];
+    var numFailed = 0;
+
+    var lodOffsets = [
+        [-1, 0],
+        [1, 0],
+        [0, -1],
+        [0, 1]
+    ];
+
+    /** @type {Array<number>} */ var green = [0, 255, 0, 255];
+    errorMask.clear(green);
+
+    /** @type {Array<number>} */ var red = [];
+    for (var py = 0; py < result.getHeight(); py++) {
+        for (var px = 0; px < result.getWidth(); px++) {
+            /** @type {Array<number>} */
+            var resPix = result.getPixel(px, py);
+            /** @type {Array<number>} */
+            var refPix = reference.getPixel(px, py);
+
+            if (!deMath.boolAll(deMath.lessThanEqual(deMath.absDiff(deMath.swizzle(refPix, [1, 2, 3]), deMath.swizzle(resPix, [1, 2, 3])), nonShadowThreshold))) {
+                red = [255, 0, 0, 255];
+                errorMask.setPixel(red, px, py);
+                numFailed += 1;
+                continue;
+            }
+
+            var wx = px + 0.5;
+            var wy = py + 0.5;
+            var nx = wx / dstW;
+            var ny = wy / dstH;
+
+            var triNdx = nx + ny >= 1.0 ? 1 : 0;
+            var triWx = triNdx ? dstW - wx : wx;
+            var triWy = triNdx ? dstH - wy : wy;
+            var triNx = triNdx ? 1.0 - nx : nx;
+            var triNy = triNdx ? 1.0 - ny : ny;
+
+            var coord = [glsTextureTestUtil.projectedTriInterpolate(triS[triNdx], triW[triNdx], triNx, triNy),
+                         glsTextureTestUtil.projectedTriInterpolate(triT[triNdx], triW[triNdx], triNx, triNy)];
+            var coordDx = deMath.multiply([glsTextureTestUtil.triDerivateX(triS[triNdx], triW[triNdx], wx, dstW, triNy),
+                                        glsTextureTestUtil.triDerivateX(triT[triNdx], triW[triNdx], wx, dstW, triNy)], srcSize);
+            var coordDy = deMath.multiply([glsTextureTestUtil.triDerivateY(triS[triNdx], triW[triNdx], wy, dstH, triNx),
+                                        glsTextureTestUtil.triDerivateY(triT[triNdx], triW[triNdx], wy, dstH, triNx)], srcSize);
+
+            var lodBounds = tcuTexLookupVerifier.computeLodBoundsFromDerivatesUV(coordDx[0], coordDx[1], coordDy[0], coordDy[1], lodPrec);
+
+            // Compute lod bounds across lodOffsets range.
+            for (var lodOffsNdx = 0; lodOffsNdx < lodOffsets.length; lodOffsNdx++) {
+                var wxo = triWx + lodOffsets[lodOffsNdx][0];
+                var wyo = triWy + lodOffsets[lodOffsNdx][1];
+                var nxo = wxo / dstW;
+                var nyo = wyo / dstH;
+
+                var coordO = [glsTextureTestUtil.projectedTriInterpolate(triS[triNdx], triW[triNdx], nxo, nyo),
+                              glsTextureTestUtil.projectedTriInterpolate(triT[triNdx], triW[triNdx], nxo, nyo)];
+                var coordDxo = deMath.multiply([glsTextureTestUtil.triDerivateX(triS[triNdx], triW[triNdx], wxo, dstW, nyo),
+                                             glsTextureTestUtil.triDerivateX(triT[triNdx], triW[triNdx], wxo, dstW, nyo)], srcSize);
+                var coordDyo = deMath.multiply([glsTextureTestUtil.triDerivateY(triS[triNdx], triW[triNdx], wyo, dstH, nxo),
+                                             glsTextureTestUtil.triDerivateY(triT[triNdx], triW[triNdx], wyo, dstH, nxo)], srcSize);
+                var lodO = tcuTexLookupVerifier.computeLodBoundsFromDerivatesUV(coordDxo[0], coordDxo[1], coordDyo[0], coordDyo[1], lodPrec);
+
+                lodBounds[0] = Math.min(lodBounds[0], lodO[0]);
+                lodBounds[1] = Math.max(lodBounds[1], lodO[1]);
+            }
+
+            var clampedLod = tcuTexLookupVerifier.clampLodBounds(deMath.add(lodBounds, lodBias), [sampleParams.minLod, sampleParams.maxLod], lodPrec);
+            var isOk = tcuTexCompareVerifier.isTexCompareResultValid2D(src, sampleParams.sampler, comparePrec, coord, clampedLod, sampleParams.ref, resPix[0]);
+
+            if (!isOk) {
+                red = [255, 0, 0, 255];
+                errorMask.setPixel(red, px, py);
+                numFailed += 1;
+            }
+        }
+    }
+
+    return numFailed;
+};
+
+/**
+ * @param {tcuTexture.ConstPixelBufferAccess} result
+ * @param {tcuTexture.ConstPixelBufferAccess} reference
+ * @param {tcuTexture.PixelBufferAccess} errorMask
+ * @param {tcuTexture.Texture2DArrayView} src
+ * @param {Array<number>} texCoord
+ * @param {glsTextureTestUtil.ReferenceParams} sampleParams
+ * @param {tcuTexCompareVerifier.TexComparePrecision} comparePrec
+ * @param {tcuTexLookupVerifier.LodPrecision} lodPrec
+ * @param {Array<number>} nonShadowThreshold
+ * @return {number}
+ */
+glsTextureTestUtil.computeTextureCompareDiff2DArray = function(result, reference, errorMask, src, texCoord, sampleParams, comparePrec, lodPrec, nonShadowThreshold) {
     DE_ASSERT(result.getWidth() == reference.getWidth() && result.getHeight() == reference.getHeight());
     DE_ASSERT(result.getWidth() == errorMask.getWidth() && result.getHeight() == errorMask.getHeight());
 
@@ -1397,7 +1553,120 @@ glsTextureTestUtil.computeTextureCompareDiff = function(result, reference, error
     var dstSize = [result.getWidth(), result.getHeight()];
     var dstW = dstSize[0];
     var dstH = dstSize[1];
-    var srcSize = src.length;
+    var srcSize = [src.getWidth(), src.getHeight()];
+
+    // Coordinates and lod per triangle.
+    var triS = [deMath.swizzle(sq, [0, 1, 2]), deMath.swizzle(sq, [3, 2, 1])];
+    var triT = [deMath.swizzle(tq, [0, 1, 2]), deMath.swizzle(tq, [3, 2, 1])];
+    var triR = [deMath.swizzle(rq, [0, 1, 2]), deMath.swizzle(rq, [3, 2, 1])];
+    var triW = [deMath.swizzle(sampleParams.w, [0, 1, 2]), deMath.swizzle(sampleParams.w, [3, 2, 1])];
+
+    var lodBias = sampleParams.flags.use_bias ? [sampleParams.bias, sampleParams.bias] : [0, 0];
+    var numFailed = 0;
+
+    var lodOffsets = [
+        [-1, 0],
+        [1, 0],
+        [0, -1],
+        [0, 1]
+    ];
+
+    /** @type {Array<number>} */ var green = [0, 255, 0, 255];
+    errorMask.clear(green);
+
+    /** @type {Array<number>} */ var red = [];
+    for (var py = 0; py < result.getHeight(); py++) {
+        for (var px = 0; px < result.getWidth(); px++) {
+            /** @type {Array<number>} */
+            var resPix = result.getPixel(px, py);
+            /** @type {Array<number>} */
+            var refPix = reference.getPixel(px, py);
+
+            if (!deMath.boolAll(deMath.lessThanEqual(deMath.absDiff(deMath.swizzle(refPix, [1, 2, 3]), deMath.swizzle(resPix, [1, 2, 3])), nonShadowThreshold))) {
+                red = [255, 0, 0, 255];
+                errorMask.setPixel(red, px, py);
+                numFailed += 1;
+                continue;
+            }
+
+            var wx = px + 0.5;
+            var wy = py + 0.5;
+            var nx = wx / dstW;
+            var ny = wy / dstH;
+
+            var triNdx = nx + ny >= 1.0 ? 1 : 0;
+            var triWx = triNdx ? dstW - wx : wx;
+            var triWy = triNdx ? dstH - wy : wy;
+            var triNx = triNdx ? 1.0 - nx : nx;
+            var triNy = triNdx ? 1.0 - ny : ny;
+
+            var coord = [glsTextureTestUtil.projectedTriInterpolate(triS[triNdx], triW[triNdx], triNx, triNy),
+                         glsTextureTestUtil.projectedTriInterpolate(triT[triNdx], triW[triNdx], triNx, triNy),
+                         glsTextureTestUtil.projectedTriInterpolate(triR[triNdx], triW[triNdx], triNx, triNy)];
+            var coordDx = deMath.multiply([glsTextureTestUtil.triDerivateX(triS[triNdx], triW[triNdx], wx, dstW, triNy),
+                           glsTextureTestUtil.triDerivateX(triT[triNdx], triW[triNdx], wx, dstW, triNy)], srcSize);
+            var coordDy = deMath.multiply([glsTextureTestUtil.triDerivateY(triS[triNdx], triW[triNdx], wy, dstH, triNx),
+                           glsTextureTestUtil.triDerivateY(triT[triNdx], triW[triNdx], wy, dstH, triNx)], srcSize);
+
+            var lodBounds = tcuTexLookupVerifier.computeLodBoundsFromDerivatesUV(coordDx[0], coordDx[1], coordDy[0], coordDy[1], lodPrec);
+
+            // Compute lod bounds across lodOffsets range.
+            for (var lodOffsNdx = 0; lodOffsNdx < lodOffsets.length; lodOffsNdx++) {
+                var wxo = triWx + lodOffsets[lodOffsNdx][0];
+                var wyo = triWy + lodOffsets[lodOffsNdx][1];
+                var nxo = wxo / dstW;
+                var nyo = wyo / dstH;
+
+                var coordO = [glsTextureTestUtil.projectedTriInterpolate(triS[triNdx], triW[triNdx], nxo, nyo),
+                              glsTextureTestUtil.projectedTriInterpolate(triT[triNdx], triW[triNdx], nxo, nyo)];
+                var coordDxo = deMath.multiply([glsTextureTestUtil.triDerivateX(triS[triNdx], triW[triNdx], wxo, dstW, nyo),
+                                             glsTextureTestUtil.triDerivateX(triT[triNdx], triW[triNdx], wxo, dstW, nyo)], srcSize);
+                var coordDyo = deMath.multiply([glsTextureTestUtil.triDerivateY(triS[triNdx], triW[triNdx], wyo, dstH, nxo),
+                                             glsTextureTestUtil.triDerivateY(triT[triNdx], triW[triNdx], wyo, dstH, nxo)], srcSize);
+                var lodO = tcuTexLookupVerifier.computeLodBoundsFromDerivatesUV(coordDxo[0], coordDxo[1], coordDyo[0], coordDyo[1], lodPrec);
+
+                lodBounds[0] = Math.min(lodBounds[0], lodO[0]);
+                lodBounds[1] = Math.max(lodBounds[1], lodO[1]);
+            }
+
+            var clampedLod = tcuTexLookupVerifier.clampLodBounds(deMath.add(lodBounds, lodBias), [sampleParams.minLod, sampleParams.maxLod], lodPrec);
+            var isOk = tcuTexCompareVerifier.isTexCompareResultValid2DArray(src, sampleParams.sampler, comparePrec, coord, clampedLod, sampleParams.ref, resPix[0]);
+
+            if (!isOk) {
+                red = [255, 0, 0, 255];
+                errorMask.setPixel(red, px, py);
+                numFailed += 1;
+            }
+        }
+    }
+
+    return numFailed;
+};
+
+/**
+ * @param {tcuTexture.ConstPixelBufferAccess} result
+ * @param {tcuTexture.ConstPixelBufferAccess} reference
+ * @param {tcuTexture.PixelBufferAccess} errorMask
+ * @param {tcuTexture.TextureCubeView} src
+ * @param {Array<number>} texCoord
+ * @param {glsTextureTestUtil.ReferenceParams} sampleParams
+ * @param {tcuTexCompareVerifier.TexComparePrecision} comparePrec
+ * @param {tcuTexLookupVerifier.LodPrecision} lodPrec
+ * @param {Array<number>} nonShadowThreshold
+ * @return {number}
+ */
+glsTextureTestUtil.computeTextureCompareDiffCube = function(result, reference, errorMask, src, texCoord, sampleParams, comparePrec, lodPrec, nonShadowThreshold) {
+    DE_ASSERT(result.getWidth() == reference.getWidth() && result.getHeight() == reference.getHeight());
+    DE_ASSERT(result.getWidth() == errorMask.getWidth() && result.getHeight() == errorMask.getHeight());
+
+    var sq = [texCoord[0 + 0], texCoord[3 + 0], texCoord[6 + 0], texCoord[9 + 0]];
+    var tq = [texCoord[0 + 1], texCoord[3 + 1], texCoord[6 + 1], texCoord[9 + 1]];
+    var rq = [texCoord[0 + 2], texCoord[3 + 2], texCoord[6 + 2], texCoord[9 + 2]];
+
+    var dstSize = [result.getWidth(), result.getHeight()];
+    var dstW = dstSize[0];
+    var dstH = dstSize[1];
+    var srcSize = src.getSize();
 
     // Coordinates per triangle.
     var triS = [deMath.swizzle(sq, [0, 1, 2]), deMath.swizzle(sq, [3, 2, 1])];
@@ -1422,11 +1691,11 @@ glsTextureTestUtil.computeTextureCompareDiff = function(result, reference, error
     for (var py = 0; py < result.getHeight(); py++) {
         for (var px = 0; px < result.getWidth(); px++) {
             /** @type {Array<number>} */
-            var resPix = deMath.divide(deMath.subtract(result.getPixel(px, py), sampleParams.colorBias), sampleParams.colorScale);
+            var resPix = result.getPixel(px, py);
             /** @type {Array<number>} */
-            var refPix = deMath.divide(deMath.subtract(reference.getPixel(px, py), sampleParams.colorBias), sampleParams.colorScale);
+            var refPix = reference.getPixel(px, py);
 
-            if (!deMath.boolAll(deMath.lessThanEqual(deMath.absDiff(resPix, refPix), nonShadowThreshold))) {
+            if (!deMath.boolAll(deMath.lessThanEqual(deMath.absDiff(deMath.swizzle(resPix, [1, 2, 3]), deMath.swizzle(refPix, [1, 2, 3])), nonShadowThreshold))) {
                 red = [255, 0, 0, 255];
                 errorMask.setPixel(red, px, py);
                 numFailed += 1;
@@ -1445,16 +1714,16 @@ glsTextureTestUtil.computeTextureCompareDiff = function(result, reference, error
             var triNy = triNdx ? 1.0 - ny : ny;
 
             var coord = [glsTextureTestUtil.projectedTriInterpolate(triS[triNdx], triW[triNdx], triNx, triNy),
-                glsTextureTestUtil.projectedTriInterpolate(triT[triNdx], triW[triNdx], triNx, triNy),
-                glsTextureTestUtil.projectedTriInterpolate(triR[triNdx], triW[triNdx], triNx, triNy)];
+                         glsTextureTestUtil.projectedTriInterpolate(triT[triNdx], triW[triNdx], triNx, triNy),
+                         glsTextureTestUtil.projectedTriInterpolate(triR[triNdx], triW[triNdx], triNx, triNy)];
             var coordDx = [glsTextureTestUtil.triDerivateX(triS[triNdx], triW[triNdx], wx, dstW, triNy),
-                glsTextureTestUtil.triDerivateX(triT[triNdx], triW[triNdx], wx, dstW, triNy),
-                glsTextureTestUtil.triDerivateX(triR[triNdx], triW[triNdx], wx, dstW, triNy)];
+                           glsTextureTestUtil.triDerivateX(triT[triNdx], triW[triNdx], wx, dstW, triNy),
+                           glsTextureTestUtil.triDerivateX(triR[triNdx], triW[triNdx], wx, dstW, triNy)];
             var coordDy = [glsTextureTestUtil.triDerivateY(triS[triNdx], triW[triNdx], wy, dstH, triNx),
-                glsTextureTestUtil.triDerivateY(triT[triNdx], triW[triNdx], wy, dstH, triNx),
-                glsTextureTestUtil.triDerivateY(triR[triNdx], triW[triNdx], wy, dstH, triNx)];
+                           glsTextureTestUtil.triDerivateY(triT[triNdx], triW[triNdx], wy, dstH, triNx),
+                           glsTextureTestUtil.triDerivateY(triR[triNdx], triW[triNdx], wy, dstH, triNx)];
 
-            var lodBounds = tcuTexLookupVerifier.computeLodBoundsFromDerivatesUV(coordDx[0], coordDx[1], coordDy[0], coordDy[1], lodPrec);
+            var lodBounds = tcuTexLookupVerifier.computeCubeLodBoundsFromDerivates(coord, coordDx, coordDy, srcSize, lodPrec);
 
             // Compute lod bounds across lodOffsets range.
             for (var lodOffsNdx = 0; lodOffsNdx < lodOffsets.length; lodOffsNdx++) {
@@ -1464,22 +1733,22 @@ glsTextureTestUtil.computeTextureCompareDiff = function(result, reference, error
                 var nyo = wyo / dstH;
 
                 var coordO = [glsTextureTestUtil.projectedTriInterpolate(triS[triNdx], triW[triNdx], nxo, nyo),
-                    glsTextureTestUtil.projectedTriInterpolate(triT[triNdx], triW[triNdx], nxo, nyo),
-                    glsTextureTestUtil.projectedTriInterpolate(triR[triNdx], triW[triNdx], nxo, nyo)];
+                              glsTextureTestUtil.projectedTriInterpolate(triT[triNdx], triW[triNdx], nxo, nyo),
+                              glsTextureTestUtil.projectedTriInterpolate(triR[triNdx], triW[triNdx], nxo, nyo)];
                 var coordDxo = [glsTextureTestUtil.triDerivateX(triS[triNdx], triW[triNdx], wxo, dstW, nyo),
-                    glsTextureTestUtil.triDerivateX(triT[triNdx], triW[triNdx], wxo, dstW, nyo),
-                    glsTextureTestUtil.triDerivateX(triR[triNdx], triW[triNdx], wxo, dstW, nyo)];
+                                glsTextureTestUtil.triDerivateX(triT[triNdx], triW[triNdx], wxo, dstW, nyo),
+                                glsTextureTestUtil.triDerivateX(triR[triNdx], triW[triNdx], wxo, dstW, nyo)];
                 var coordDyo = [glsTextureTestUtil.triDerivateY(triS[triNdx], triW[triNdx], wyo, dstH, nxo),
-                    glsTextureTestUtil.triDerivateY(triT[triNdx], triW[triNdx], wyo, dstH, nxo),
-                    glsTextureTestUtil.triDerivateY(triR[triNdx], triW[triNdx], wyo, dstH, nxo)];
-                var lodO = tcuTexLookupVerifier.computeLodBoundsFromDerivatesUV(coordDxo[0], coordDxo[1], coordDyo[0], coordDyo[1], lodPrec);
+                                glsTextureTestUtil.triDerivateY(triT[triNdx], triW[triNdx], wyo, dstH, nxo),
+                                glsTextureTestUtil.triDerivateY(triR[triNdx], triW[triNdx], wyo, dstH, nxo)];
+                var lodO = tcuTexLookupVerifier.computeCubeLodBoundsFromDerivates(coordO, coordDxo, coordDyo, srcSize, lodPrec);
 
                 lodBounds[0] = Math.min(lodBounds[0], lodO[0]);
                 lodBounds[1] = Math.max(lodBounds[1], lodO[1]);
             }
 
             var clampedLod = tcuTexLookupVerifier.clampLodBounds(deMath.add(lodBounds, lodBias), [sampleParams.minLod, sampleParams.maxLod], lodPrec);
-            var isOk = tcuTexCompareVerifier.isTexCompareResultValid2D(src, sampleParams.sampler, comparePrec, coord, clampedLod, sampleParams.ref, resPix[0]);
+            var isOk = tcuTexCompareVerifier.isTexCompareResultValidCube(src, sampleParams.sampler, comparePrec, coord, clampedLod, sampleParams.ref, resPix[0]);
 
             if (!isOk) {
                 red = [255, 0, 0, 255];
