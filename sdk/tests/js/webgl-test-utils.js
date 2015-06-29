@@ -1458,7 +1458,7 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
     testFailed("Unable to fetch WebGL rendering context for Canvas");
   }
   return context;
-}
+};
 
 /**
  * Defines the exception type for a GL error.
@@ -1466,7 +1466,7 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
  * @param {string} message The error message.
  * @param {number} error GL error code
  */
-var GLErrorException = function (message, error) {
+function GLErrorException (message, error) {
    this.message = message;
    this.name = "GLErrorException";
    this.error = error;
@@ -1602,7 +1602,7 @@ var glErrorShouldBeImpl = function(gl, glErrors, reportSuccesses, opt_msg) {
  * Links a WebGL program, throws if there are errors.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!WebGLProgram} program The WebGLProgram to link.
- * @param {function(string): void} opt_errorCallback callback for errors. 
+ * @param {function(string): void} opt_errorCallback callback for errors.
  */
 var linkProgram = function(gl, program, opt_errorCallback) {
   var errFn = opt_errorCallback || testFailed;
@@ -1821,8 +1821,8 @@ var readFileList = function(url) {
  * Loads a shader.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} shaderSource The shader source.
- * @param {number} shaderType The type of shader. 
- * @param {function(string): void} opt_errorCallback callback for errors. 
+ * @param {number} shaderType The type of shader.
+ * @param {function(string): void} opt_errorCallback callback for errors.
  * @param {boolean} opt_logShaders Whether to log shader source.
  * @param {string} opt_shaderLabel Label that identifies the shader source in
  *     the log.
@@ -1883,7 +1883,7 @@ var loadShader = function(
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {file} file The URL of the shader source.
  * @param {number} type The type of shader.
- * @param {function(string): void} opt_errorCallback callback for errors. 
+ * @param {function(string): void} opt_errorCallback callback for errors.
  * @param {boolean} opt_logShaders Whether to log shader source.
  * @param {boolean} Skip compilation status check. Default = false.
  * @return {!WebGLShader} The created shader.
@@ -1914,7 +1914,7 @@ var getScript = function(scriptId) {
  * @param {string} scriptId The id of the script tag.
  * @param {number} opt_shaderType The type of shader. If not passed in it will
  *     be derived from the type of the script tag.
- * @param {function(string): void} opt_errorCallback callback for errors. 
+ * @param {function(string): void} opt_errorCallback callback for errors.
  * @param {boolean} opt_logShaders Whether to log shader source.
  * @param {boolean} Skip compilation status check. Default = false.
  * @return {!WebGLShader} The created shader.
@@ -1958,7 +1958,7 @@ var loadStandardProgram = function(gl) {
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} vertexShaderPath The URL of the vertex shader.
  * @param {string} fragmentShaderPath The URL of the fragment shader.
- * @param {function(string): void} opt_errorCallback callback for errors. 
+ * @param {function(string): void} opt_errorCallback callback for errors.
  * @return {!WebGLProgram} The created program.
  */
 var loadProgramFromFile = function(
@@ -1990,7 +1990,7 @@ var loadProgramFromFile = function(
  *        vertex shader.
  * @param {string} fragmentScriptId The id of the script tag that contains the
  *        fragment shader.
- * @param {function(string): void} opt_errorCallback callback for errors. 
+ * @param {function(string): void} opt_errorCallback callback for errors.
  * @return {!WebGLProgram} The created program.
  */
 var loadProgramFromScript = function loadProgramFromScript(
@@ -2031,7 +2031,7 @@ var createProgram = function(gl, vertexShader, fragmentShader, opt_errorCallback
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} vertexShader The vertex shader source.
  * @param {string} fragmentShader The fragment shader source.
- * @param {function(string): void} opt_errorCallback callback for errors. 
+ * @param {function(string): void} opt_errorCallback callback for errors.
  * @param {boolean} opt_logShaders Whether to log shader source.
  * @return {!WebGLProgram} The created program.
  */
@@ -2170,32 +2170,30 @@ var getUniformMap = function(gl, program) {
   });
 };
 
-var resourcePath;
-var getResourcePath = function() {
-  // Assume resource/ and js/ are next to each other.
+var basePath;
+var getBasePath = function() {
   if (!basePath) {
-    var expectedBase = "js/webgl-test-utils.js";
+    var expectedBase = "webgl-test-utils.js";
     var scripts = document.getElementsByTagName('script');
     for (var script, i = 0; script = scripts[i]; i++) {
       var src = script.src;
       var l = src.length;
       if (src.substr(l - expectedBase.length) == expectedBase) {
-        var basePath = src.substr(0, l - expectedBase.length);
-        resourcePath = basePath + "resources/"
+        basePath = src.substr(0, l - expectedBase.length);
       }
     }
   }
-  return resourcePath;
+  return basePath;
 };
 
 var loadStandardVertexShader = function(gl) {
   return loadShaderFromFile(
-      gl, getResourcePath() + "vertexShader.vert", gl.VERTEX_SHADER);
+      gl, getBasePath() + "vertexShader.vert", gl.VERTEX_SHADER);
 };
 
 var loadStandardFragmentShader = function(gl) {
   return loadShaderFromFile(
-      gl, getResourcePath() + "fragmentShader.frag", gl.FRAGMENT_SHADER);
+      gl, getBasePath() + "fragmentShader.frag", gl.FRAGMENT_SHADER);
 };
 
 var loadUniformBlockProgram = function(gl) {
@@ -2210,12 +2208,12 @@ var loadUniformBlockProgram = function(gl) {
 
 var loadUniformBlockVertexShader = function(gl) {
   return loadShaderFromFile(
-      gl, getResourcePath() + "uniformBlockShader.vert", gl.VERTEX_SHADER);
+      gl, getBasePath() + "uniformBlockShader.vert", gl.VERTEX_SHADER);
 };
 
 var loadUniformBlockFragmentShader = function(gl) {
   return loadShaderFromFile(
-      gl, getResourcePath() + "uniformBlockShader.frag", gl.FRAGMENT_SHADER);
+      gl, getBasePath() + "uniformBlockShader.frag", gl.FRAGMENT_SHADER);
 };
 
 /**
@@ -2605,7 +2603,7 @@ var _requestAnimFrame;
  */
 var requestAnimFrame = function(callback) {
   if (!_requestAnimFrame) {
-    _requestAnimFrame = getPrefixedProperty(window, "requestAnimationFrame") || 
+    _requestAnimFrame = getPrefixedProperty(window, "requestAnimationFrame") ||
       function(callback, element) {
         return window.setTimeout(callback, 1000 / 70);
       };
@@ -2897,8 +2895,8 @@ return {
   addShaderSources: addShaderSources,
   cancelAnimFrame: cancelAnimFrame,
   create3DContext: create3DContext,
-  create3DContextWithWrapperThatThrowsOnGLError:
-      create3DContextWithWrapperThatThrowsOnGLError,
+  GLErrorException: GLErrorException,
+  create3DContextWithWrapperThatThrowsOnGLError: create3DContextWithWrapperThatThrowsOnGLError,
   checkAreaInAndOut: checkAreaInAndOut,
   checkCanvas: checkCanvas,
   checkCanvasRect: checkCanvasRect,
