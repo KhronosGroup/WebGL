@@ -490,9 +490,9 @@ var tcuImageCompare = framework.common.tcuImageCompare;
         // Initialize attachment data.
         for (var ndx = 0; ndx < numAttachments; ndx++) {
             /** @type {tcuTexture.TextureFormat} */ var texFmt = gluTextureUtil.mapGLInternalFormat(this.m_fboSpec[ndx].format);
-            /** @type {tcuTextureUtil.TextureChannelClass} */ var chnClass = tcuTextureUtil.getTextureChannelClass(texFmt.type);
-            /** @type {boolean} */ var isFixedPoint = (chnClass == tcuTextureUtil.TextureChannelClass.SIGNED_FIXED_POINT ||
-                                                              chnClass == tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT);
+            /** @type {tcuTexture.TextureChannelClass} */ var chnClass = tcuTexture.getTextureChannelClass(texFmt.type);
+            /** @type {boolean} */ var isFixedPoint = (chnClass == tcuTexture.TextureChannelClass.SIGNED_FIXED_POINT ||
+                                                              chnClass == tcuTexture.TextureChannelClass.UNSIGNED_FIXED_POINT);
 
             // \note Fixed-point formats use float reference to enable more accurate result verification.
             /** @type {tcuTexture.TextureFormat} */ var refFmt = isFixedPoint ? new tcuTexture.TextureFormat(texFmt.order, tcuTexture.ChannelType.FLOAT) : texFmt;
@@ -827,7 +827,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                     data: attachments[attachNdx].referenceData // ArrayBuffer
             };
             /** @type {tcuTexture.ConstPixelBufferAccess} */ var reference = new tcuTexture.ConstPixelBufferAccess(referenceDescriptor);
-            /** @type {tcuTextureUtil.TextureChannelClass} */ var texClass = tcuTextureUtil.getTextureChannelClass(format.type);
+            /** @type {tcuTexture.TextureChannelClass} */ var texClass = tcuTexture.getTextureChannelClass(format.type);
             /** @type {boolean} */ var isOk = true;
             name = 'Attachment ' + attachNdx;
             /** @type {string} */ var desc = 'Color attachment ' + attachNdx;
@@ -836,7 +836,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
             bufferedLogToConsole('Attachment ' + attachNdx + ': ' + numValidChannels + ' channels have defined values and used for comparison');
 
             switch (texClass) {
-                case tcuTextureUtil.TextureChannelClass.FLOATING_POINT: {
+                case tcuTexture.TextureChannelClass.FLOATING_POINT: {
                     /** @type {Array<number>} */ var formatThreshold = []; // UVec4 //!< Threshold computed based on format.
                     formatThreshold.length = 4;
                     /** @type {number} */ var precThreshold = 0; // deUint32 //!< Threshold computed based on output type precision
@@ -881,7 +881,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                     break;
                 }
 
-                case tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT: {
+                case tcuTexture.TextureChannelClass.UNSIGNED_FIXED_POINT: {
                     // \note glReadPixels() allows only 8 bits to be read. This means that RGB10_A2 will loose some
                     // bits in the process and it must be taken into account when computing threshold.
                     /** @type {Array<number>} */ var bits = deMath.min([8, 8, 8, 8], tcuTextureUtil.getTextureFormatBitDepth(format)); // IVec4
@@ -899,8 +899,8 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                     break;
                 }
 
-                case tcuTextureUtil.TextureChannelClass.SIGNED_INTEGER:
-                case tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER: {
+                case tcuTexture.TextureChannelClass.SIGNED_INTEGER:
+                case tcuTexture.TextureChannelClass.UNSIGNED_INTEGER: {
                     threshold = tcuTextureUtil.select(
                                     [0, 0, 0, 0],
                                     [1, 1, 1, 1],

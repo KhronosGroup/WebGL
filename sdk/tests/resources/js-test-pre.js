@@ -558,7 +558,7 @@ function shouldBeType(_a, _type) {
  */
 function checkMessage(exp, message) {
     if ( !exp )
-        _addSpan('<span><span class="warn">WARNING</span> ' + escapeHTML(_currentTestName) + ": " + escapeHTML(msg) + '</span>');
+        _addSpan('<span><span class="warn">WARNING</span> ' + escapeHTML(_currentTestName) + ": " + escapeHTML(message) + '</span>');
 }
 
 function assertMsg(assertion, msg) {

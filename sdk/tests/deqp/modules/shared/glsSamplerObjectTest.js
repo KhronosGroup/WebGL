@@ -222,10 +222,10 @@ var deString = framework.delibs.debase.deString;
         gl.useProgram(this.m_program.getProgram());
 
         samplerLoc = gl.getUniformLocation(this.m_program.getProgram(), 'u_sampler');
-        DE_ASSERT(samplerLoc != -1);
+        DE_ASSERT(samplerLoc != null);
 
         scaleLoc = gl.getUniformLocation(this.m_program.getProgram(), 'u_posScale');
-        DE_ASSERT(scaleLoc != -1);
+        DE_ASSERT(scaleLoc != null);
 
         gl.clearColor(0.5, 0.5, 0.5, 1.0);
 
@@ -445,15 +445,18 @@ var deString = framework.delibs.debase.deString;
         switch (target) {
             case gl.TEXTURE_2D:
                 texture = glsSamplerObjectTest.TextureSamplerTest.createTexture2D();
+                break;
 
             case gl.TEXTURE_3D:
                 texture = glsSamplerObjectTest.TextureSamplerTest.createTexture3D();
+                break;
 
             case gl.TEXTURE_CUBE_MAP:
                 texture = glsSamplerObjectTest.TextureSamplerTest.createTextureCube();
+                break;
 
             default:
-                DE_ASSERT(false);
+                throw new Error('Unsupported target: ' + WebGLTestUtils.glEnumToString(gl, target));
         }
 
         return texture;
@@ -1029,12 +1032,15 @@ var deString = framework.delibs.debase.deString;
         switch (target) {
             case gl.TEXTURE_2D:
                 texture = glsSamplerObjectTest.MultiTextureSamplerTest.createTexture2D(id);
+                break;
 
             case gl.TEXTURE_3D:
                 texture = glsSamplerObjectTest.MultiTextureSamplerTest.createTexture3D(id);
+                break;
 
             case gl.TEXTURE_CUBE_MAP:
                 texture = glsSamplerObjectTest.MultiTextureSamplerTest.createTextureCube(id);
+                break;
 
             default:
                 DE_ASSERT(false);

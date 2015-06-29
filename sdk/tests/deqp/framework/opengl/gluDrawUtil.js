@@ -419,11 +419,11 @@ gluDrawUtil.VertexArrayPointer = function(componentType_, convert_, numComponent
  * gluDrawUtil.BindingPoint
  * @constructor
  * @param {string} name
- * @param {number=} location
+ * @param {number} location
  */
 gluDrawUtil.BindingPoint = function(name, location) {
     /** @type {string} */ this.name = name;
-    /** @type {(number|undefined)} */ this.location = location;
+    /** @type {number} */ this.location = location;
 };
 
 /**
@@ -442,6 +442,7 @@ gluDrawUtil.bindingPointFromLocation = function(location) {
  * return {gluDrawUtil.BindingPoint}
  */
 gluDrawUtil.bindingPointFromName = function(name, location) {
+    location = location || 0;
     return new gluDrawUtil.BindingPoint(name, location);
 };
 

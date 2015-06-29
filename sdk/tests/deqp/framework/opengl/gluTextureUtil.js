@@ -32,11 +32,13 @@ goog.provide('framework.opengl.gluTextureUtil');
 goog.require('framework.common.tcuCompressedTexture');
 goog.require('framework.common.tcuTexture');
 goog.require('framework.common.tcuTextureUtil');
+goog.require('framework.delibs.debase.deString');
 goog.require('framework.opengl.gluShaderUtil');
 
 goog.scope(function() {
 
 var gluTextureUtil = framework.opengl.gluTextureUtil;
+var deString = framework.delibs.debase.deString;
 var tcuTexture = framework.common.tcuTexture;
 var tcuTextureUtil = framework.common.tcuTextureUtil;
 var tcuCompressedTexture = framework.common.tcuCompressedTexture;
@@ -508,7 +510,7 @@ gluTextureUtil.mapGLWrapMode = function(wrapMode) {
         case gl.REPEAT: return tcuTexture.WrapMode.REPEAT_GL;
         case gl.MIRRORED_REPEAT: return tcuTexture.WrapMode.MIRRORED_REPEAT_GL;
         default:
-            throw new Error("Can't map GL wrap mode " + wrapMode);
+            throw new Error("Can't map GL wrap mode " + deString.enumToString(gl, wrapMode));
     }
 };
 
@@ -763,16 +765,16 @@ gluTextureUtil.getSampler2DType = function(format) {
     if (format.order == tcuTexture.ChannelOrder.S)
     return Object.keys(gluShaderUtil.DataType).length;
 
-    switch (tcuTextureUtil.getTextureChannelClass(format.type)) {
-        case tcuTextureUtil.TextureChannelClass.FLOATING_POINT:
-        case tcuTextureUtil.TextureChannelClass.SIGNED_FIXED_POINT:
-        case tcuTextureUtil.TextureChannelClass.UNSIGNED_FIXED_POINT:
+    switch (tcuTexture.getTextureChannelClass(format.type)) {
+        case tcuTexture.TextureChannelClass.FLOATING_POINT:
+        case tcuTexture.TextureChannelClass.SIGNED_FIXED_POINT:
+        case tcuTexture.TextureChannelClass.UNSIGNED_FIXED_POINT:
             return gluShaderUtil.DataType.SAMPLER_2D;
 
-        case tcuTextureUtil.TextureChannelClass.SIGNED_INTEGER:
+        case tcuTexture.TextureChannelClass.SIGNED_INTEGER:
             return gluShaderUtil.DataType.INT_SAMPLER_2D;
 
-        case tcuTextureUtil.TextureChannelClass.UNSIGNED_INTEGER:
+        case tcuTexture.TextureChannelClass.UNSIGNED_INTEGER:
             return gluShaderUtil.DataType.UINT_SAMPLER_2D;
 
         default:

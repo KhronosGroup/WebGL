@@ -138,14 +138,37 @@ deRandom.choose = function(rnd, elements, resultOut, num) {
 
 /**
  * TODO Function to deRandom.choose weighted random items from a list
- * @param {deRandom.deRandom} rnd Initialised array of random numbers
- * @param {Iterator} first Start of array
- * @param {Iterator} last End of array
- * @param {Iterator} weight Weight
- * @return {Iterator} Result output
+ * @param {deRandom.deRandom} rnd Initialised randomizer
+ * @param {Array<number>} array Array to choose items from
+ * @param {Array<number>} weights Weights array
+ * @return {number} Result output
  */
-deRandom.chooseWeighted = function(rnd, first, last, weight) {
-    throw new Error('Function not yet implemented');
+deRandom.chooseWeighted = function(rnd, array, weights) {
+    // Compute weight sum
+    /** @type {number} */ var weightSum = 0.0;
+    /** @type {number} */ var ndx;
+    for (ndx = 0; ndx < array.length; ndx++)
+        weightSum += weights[ndx];
+
+    // Random point in 0..weightSum
+    /** @type {number} */ var p = deRandom.deRandom_getFloat(rnd, [0.0, weightSum]);
+
+    // Find item in range
+    /** @type {number} */ var lastNonZero = array.length;
+    /** @type {number} */ var curWeight = 0.0;
+    for (ndx = 0; ndx != array.length; ndx++) {
+        /** @type {number} */ var w = weights[ndx];
+
+        curWeight += w;
+
+        if (p < curWeight)
+            return array[ndx];
+        else if (w > 0.0)
+            lastNonZero = ndx;
+    }
+
+    assertMsgOptions(lastNonZero != array.length, 'Index went out of bounds', false, true);
+    return array[lastNonZero];
 };
 
 /**
@@ -213,13 +236,12 @@ deRandom.Random.prototype.getInt = function(min, max) {return deRandom.deRandom_
  */
 deRandom.Random.prototype.choose = function(elements, resultOut, num) {return deRandom.choose(this.m_rnd, elements, resultOut, num)};
 /**
- * TODO Function to deRandom.choose weighted random items from a list
- * @param {Iterator} first Start of array
- * @param {Iterator} last End of array
- * @param {Iterator} weight Weight
- * @return {Iterator} Result output
+ * choose weighted random items from a list
+ * @param {Array<number>} array Array to choose items from
+ * @param {Array<number>} weights Weights array
+ * @return {number} Result output
  */
-deRandom.Random.prototype.chooseWeighted = function(first, last, weight) {return deRandom.chooseWeighted(this.m_rnd, first, last, weight)};
+deRandom.Random.prototype.chooseWeighted = function(array, weights) {return deRandom.chooseWeighted(this.m_rnd, array, weights)};
 /**
  * TODO Function to deRandom.shuffle an array
  * @param {Array} elements Array to deRandom.shuffle
