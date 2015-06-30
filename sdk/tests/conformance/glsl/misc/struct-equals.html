@@ -1,4 +1,3 @@
-
 <!--
 
 /*
@@ -33,9 +32,9 @@
 <title>GLSL Structure Equals Test</title>
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
 <link rel="stylesheet" href="../../../resources/glsl-feature-tests.css"/>
-<script src="../../../resources/js-test-pre.js"></script>
-<script src="../../../resources/webgl-test-utils.js"> </script>
-<script src="../../../resources/glsl-conformance-test.js"></script>
+<script src="../../../js/js-test-pre.js"></script>
+<script src="../../../js/webgl-test-utils.js"> </script>
+<script src="../../../js/glsl-conformance-test.js"></script>
 
 <script id="simple-vs" type="x-shader/x-vertex">
 attribute vec4 a_position;
@@ -56,7 +55,7 @@ void main(void) {
     gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 
     if (a == b) {
-      gl_FragColor.y = 1.0;
+        gl_FragColor.y = 1.0;
     }
 }
 </script>
@@ -73,7 +72,7 @@ void main(void) {
     gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 
     if (a == b) {
-      gl_FragColor.y = 1.0;
+        gl_FragColor.y = 1.0;
     }
 }
 </script>
@@ -82,12 +81,12 @@ precision mediump float;
 
 struct s1
 {
-  float f;
+    float f;
 };
 
 struct s2
 {
-  s1 s;
+    s1 s;
 };
 
 s2 a = s2(s1(1.0));
@@ -97,7 +96,7 @@ void main(void) {
     gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 
     if (a == b) {
-      gl_FragColor.y = 1.0;
+        gl_FragColor.y = 1.0;
     }
 }
 </script>
@@ -106,12 +105,12 @@ precision mediump float;
 
 struct s1
 {
-  vec3 v;
+    vec3 v;
 };
 
 struct s2
 {
-  s1 s;
+    s1 s;
 };
 
 s2 a = s2(s1(vec3(1.0, 2.0, 3.0)));
@@ -121,7 +120,7 @@ void main(void) {
     gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 
     if (a == b) {
-      gl_FragColor.y = 1.0;
+        gl_FragColor.y = 1.0;
     }
 }
 </script>
@@ -130,7 +129,7 @@ precision mediump float;
 
 struct my_struct
 {
-  float f[3];
+    float f[3];
 };
 
 void main(void) {
@@ -143,7 +142,7 @@ void main(void) {
     }
 
     if (a == b) {
-      gl_FragColor.x = 1.0;
+        gl_FragColor.x = 1.0;
     }
 }
 </script>
@@ -162,7 +161,7 @@ void main(void) {
     gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 
     if (a == b) {
-      gl_FragColor.x = 1.0;
+        gl_FragColor.x = 1.0;
     }
 }
 </script>
