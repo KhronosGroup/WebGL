@@ -2171,9 +2171,9 @@ var getUniformMap = function(gl, program) {
 };
 
 var basePath;
-var getBasePath = function() {
+var getResourcePath = function() {
   if (!basePath) {
-    var expectedBase = "webgl-test-utils.js";
+    var expectedBase = "js/webgl-test-utils.js";
     var scripts = document.getElementsByTagName('script');
     for (var script, i = 0; script = scripts[i]; i++) {
       var src = script.src;
@@ -2183,17 +2183,17 @@ var getBasePath = function() {
       }
     }
   }
-  return basePath;
+  return basePath + "resources/";
 };
 
 var loadStandardVertexShader = function(gl) {
   return loadShaderFromFile(
-      gl, getBasePath() + "vertexShader.vert", gl.VERTEX_SHADER);
+      gl, getResourcePath() + "vertexShader.vert", gl.VERTEX_SHADER);
 };
 
 var loadStandardFragmentShader = function(gl) {
   return loadShaderFromFile(
-      gl, getBasePath() + "fragmentShader.frag", gl.FRAGMENT_SHADER);
+      gl, getResourcePath() + "fragmentShader.frag", gl.FRAGMENT_SHADER);
 };
 
 var loadUniformBlockProgram = function(gl) {
@@ -2208,12 +2208,12 @@ var loadUniformBlockProgram = function(gl) {
 
 var loadUniformBlockVertexShader = function(gl) {
   return loadShaderFromFile(
-      gl, getBasePath() + "uniformBlockShader.vert", gl.VERTEX_SHADER);
+      gl, getResourcePath() + "uniformBlockShader.vert", gl.VERTEX_SHADER);
 };
 
 var loadUniformBlockFragmentShader = function(gl) {
   return loadShaderFromFile(
-      gl, getBasePath() + "uniformBlockShader.frag", gl.FRAGMENT_SHADER);
+      gl, getResourcePath() + "uniformBlockShader.frag", gl.FRAGMENT_SHADER);
 };
 
 /**
