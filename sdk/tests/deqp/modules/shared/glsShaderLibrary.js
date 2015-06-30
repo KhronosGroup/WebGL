@@ -100,7 +100,8 @@ var gluShaderUtil = framework.opengl.gluShaderUtil;
             for (var i = 0; i < arr.length; ++i) {
             /** @type {number} */ var removed = 0;
             /** @type {number} */ var j;
-                for (j = 0; removed < numIndentChars && j < arr[i].length; ++j) {
+                // Some tests are indented inconsistently, so we have to check for non-whitespace characters here.
+                for (j = 0; removed < numIndentChars && j < arr[i].length && glsShaderLibrary.isWhitespace(arr[i].charAt(j)); ++j) {
                     removed += (arr[i].charAt(j) === '\t' ? 4 : 1);
                 }
 
