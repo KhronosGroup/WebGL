@@ -33,16 +33,18 @@
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
 <script src="../../js/tests/tex-image-and-sub-image-2d-with-canvas.js"></script>
+</head>
+<body>
+<canvas id="example" width="32" height="32"></canvas>
+<div id="description"></div>
+<div id="console"></div>
 <script>
 "use strict";
 function testPrologue(gl) {
     return true;
 }
+
+generateTest("RGBA", "RGBA", "UNSIGNED_SHORT_5_5_5_1", testPrologue)();
 </script>
-</head>
-<body onload='generateTest("RGBA", "UNSIGNED_SHORT_5_5_5_1", testPrologue)()'>
-<canvas id="example" width="32" height="32"></canvas>
-<div id="description"></div>
-<div id="console"></div>
 </body>
 </html>

@@ -21,14 +21,14 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
-function generateTest(pixelFormat, pixelType, prologue) {
+function generateTest(internalFormat, pixelFormat, pixelType, prologue) {
     var wtu = WebGLTestUtils;
     var gl = null;
     var successfullyParsed = false;
 
     var init = function()
     {
-        description('Verify texImage2D and texSubImage2D code paths taking canvas elements (' + pixelFormat + '/' + pixelType + ')');
+        description('Verify texImage2D and texSubImage2D code paths taking canvas elements (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
         gl = wtu.create3DContext("example");
 
@@ -120,11 +120,11 @@ function generateTest(pixelFormat, pixelType, prologue) {
         for (var tt = 0; tt < targets.length; ++tt) {
             // Initialize the texture to black first
             if (useTexSubImage2D) {
-                gl.texImage2D(targets[tt], 0, gl[pixelFormat], canvas.width, canvas.height, 0,
+                gl.texImage2D(targets[tt], 0, gl[internalFormat], canvas.width, canvas.height, 0,
                               gl[pixelFormat], gl[pixelType], null);
                 gl.texSubImage2D(targets[tt], 0, 0, 0, gl[pixelFormat], gl[pixelType], canvas);
             } else {
-                gl.texImage2D(targets[tt], 0, gl[pixelFormat], gl[pixelFormat], gl[pixelType], canvas);
+                gl.texImage2D(targets[tt], 0, gl[internalFormat], gl[pixelFormat], gl[pixelType], canvas);
             }
         }
 
@@ -182,7 +182,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
                     var pixels = new Float32Array([1000.0, 1000.0, 1000.0, 1000.0]);
                     gl.texSubImage2D(targets[tt], 0, 0, 0, 1, 1, gl[pixelFormat], gl[pixelType], pixels);
                     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Texture should be backed by floats");
-                } else if (pixelType == "HALF_FLOAT_OES") {
+                } else if (pixelType == "HALF_FLOAT_OES" || pixelType == "HALF_FLOAT") {
                     // Attempt to set a pixel in the texture to ensure the texture was
                     // actually created with half-floats. Regression test for http://crbug.com/484968
                     var halfFloatTenK = 0x70E2; // Half float 10000
