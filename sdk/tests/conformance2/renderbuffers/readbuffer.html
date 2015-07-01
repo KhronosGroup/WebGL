@@ -1,0 +1,173 @@
+<!--
+
+/*
+** Copyright (c) 2015 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Test readBuffer Against WebGL 2</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<canvas id="canvas" width="20" height="20"> </canvas>
+<script>
+"use strict";
+description("This tests reading from fbo");
+
+debug("");
+debug("Canvas.getContext");
+
+var wtu = WebGLTestUtils;
+var canvas = document.getElementById("canvas");
+var gl = wtu.create3DContext(canvas);
+if (!gl) {
+  testFailed("context does not exist");
+} else {
+  testPassed("context exists");
+
+  debug("");
+  debug("Checking reading from framebuffer.");
+
+
+  // test on the default framebuffer, GL_BACK is the read buffer
+  // var backColor = new Uint8Array([255, 0, 0, 255]);
+  // gl.clearColor(backColor);
+
+  var backColor = [255, 0, 0, 255];
+  gl.clearColor(backColor[0] / 255, backColor[1] / 255, backColor[2] / 255, backColor[3] / 255);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  gl.readBuffer(gl.NONE);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+      "should be no errors when reading from GL_NONE on the default framebuffer");
+  gl.readBuffer(gl.BACK);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+      "should be no errors when reading from GL_BACK on the default framebuffer");
+  
+  gl.readBuffer(gl.COLOR_ATTACHMENT0);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
+      "should generate INVALID_OPERATION when reading from GL_COLOR_ATTACHMENT0 on the default framebuffer");
+
+  shouldBe('gl.getParameter(gl.READ_BUFFER)', 'gl.BACK');
+
+  var tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, canvas.width, canvas.height, 0,
+                      gl.RGBA, gl.UNSIGNED_BYTE, null);
+  gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, canvas.width, canvas.height, 0);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+      "should be no errors when reading from GL_BACK on the default framebuffer");
+  testPixels(0, 0, backColor);
+
+  // switch to fbo from default fb, read buffer will switch to GL_COLOR_ATTACHMENT0 from GL_BACK
+  var fb = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+  var colorbuffer = gl.createRenderbuffer();
+  gl.bindRenderbuffer(gl.RENDERBUFFER, colorbuffer);
+  gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, colorbuffer);
+  gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA8, canvas.width, canvas.height);
+
+  shouldBe('gl.getParameter(gl.READ_BUFFER)', 'gl.COLOR_ATTACHMENT0');
+  var fboColor = [0, 255, 0, 255];
+  gl.clearColor(fboColor[0] / 255, fboColor[1] / 255, fboColor[2] / 255, fboColor[3] / 255);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, canvas.width, canvas.height, 0);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+      "should succeed to read from GL_COLOR_ATTACHMENT0 when switch to fbo from default fb.");
+  testPixels(0, 0, fboColor);
+
+  // test on the fbo, GL_COLOR_ATTACHMENT1 is the read buffer
+  gl.readBuffer(gl.BACK);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
+      "should generate INVALID_OPERATION when reading from GL_BACK on fbo");
+  
+  gl.readBuffer(gl.NONE);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+      "should be no errors when reading from GL_NONE on fbo");
+  gl.readBuffer(gl.COLOR_ATTACHMENT0);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+      "should be no errors when reading from GL_COLOR_ATTACHMENT0 on the fbo");
+
+  var maxColorAttachments = gl.getParameter(gl.MAX_COLOR_ATTACHMENTS);
+    testPassed("pixel test passed, max color attachments number: " + maxColorAttachments);
+  gl.readBuffer(gl.COLOR_ATTACHMENT0 + maxColorAttachments);
+  wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
+      "should generate INVALID_ENUM when reading from COLOR_ATTACHMENT that exceeds MAX_COLOR_ATTACHMENT on fbo.");
+  gl.readBuffer(gl.COLOR_ATTACHMENT1);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+      "should be no errors when reading from GL_COLOR_ATTACHMENT1 on the fbo");
+  shouldBe('gl.getParameter(gl.READ_BUFFER)', 'gl.COLOR_ATTACHMENT1');
+  
+  gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, canvas.width, canvas.height, 0);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
+      "should generate INVALID_OPERATION when reading from GL_COLOR_ATTACHMENT1 but this attachment has no image currently.");
+
+  var colorbuffer1 = gl.createRenderbuffer();
+  gl.bindRenderbuffer(gl.RENDERBUFFER, colorbuffer1);
+  gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA8, canvas.width, canvas.height);
+  gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.RENDERBUFFER, colorbuffer1);
+  var fboColor1 = [0, 0, 255, 255];
+  gl.clearColor(fboColor1[0] / 255, fboColor1[1] / 255, fboColor1[2] / 255, fboColor[3] / 255);
+  gl.drawBuffers([gl.NONE, gl.COLOR_ATTACHMENT1]);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+      "should succeed after clear render buffer");
+  gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, canvas.width, canvas.height, 0);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+      "should succeed when reading from GL_COLOR_ATTACHMENT1");
+  testPixels(0, 0, fboColor1);
+
+  // switch from fbo to default fb, read buffer will switch to GL_BACK from GL_COLOR_ATTACHMENT1
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.deleteFramebuffer(fb);
+  gl.deleteRenderbuffer(colorbuffer);
+  gl.deleteRenderbuffer(colorbuffer1);
+  shouldBe('gl.getParameter(gl.READ_BUFFER)', 'gl.BACK');
+  gl.copyTexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 0, 0, canvas.width, canvas.height, 0);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+      "should succeed and read from GL_BACK when switch to default fb from fbo"); 
+  testPixels(0, 0, backColor);
+}
+
+function testPixels(x, y, expected) {
+  var pixels = new Uint8Array(1 * 1 * 4);
+  gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+  shouldBe(pixels, expected);
+}
+
+debug("");
+var successfullyParsed = true;
+
+</script>
+<script src="../../js/js-test-post.js"></script>
+
+</body>
+</html>
