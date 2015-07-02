@@ -21,7 +21,7 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
-function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
+function generateTest(internalFormat, pixelFormat, pixelType, pathToTestRoot, prologue) {
     var wtu = WebGLTestUtils;
     var gl = null;
     var successfullyParsed = false;
@@ -31,7 +31,7 @@ function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
 
     var init = function()
     {
-        description('Verify texImage2D and texSubImage2D code paths taking SVG image elements (' + pixelFormat + '/' + pixelType + ')');
+        description('Verify texImage2D and texSubImage2D code paths taking SVG image elements (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
         gl = wtu.create3DContext("example");
 
@@ -77,11 +77,11 @@ function generateTest(pixelFormat, pixelType, pathToTestRoot, prologue) {
         for (var tt = 0; tt < targets.length; ++tt) {
             if (useTexSubImage2D) {
                 // Initialize the texture to black first
-                gl.texImage2D(targets[tt], 0, gl[pixelFormat], image.width, image.height, 0,
+                gl.texImage2D(targets[tt], 0, gl[internalFormat], image.width, image.height, 0,
                               gl[pixelFormat], gl[pixelType], null);
                 gl.texSubImage2D(targets[tt], 0, 0, 0, gl[pixelFormat], gl[pixelType], image);
             } else {
-                gl.texImage2D(targets[tt], 0, gl[pixelFormat], gl[pixelFormat], gl[pixelType], image);
+                gl.texImage2D(targets[tt], 0, gl[internalFormat], gl[pixelFormat], gl[pixelType], image);
             }
         }
 

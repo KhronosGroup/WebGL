@@ -32,7 +32,7 @@ var debug = function(msg) {
   old(msg);
 };
 
-function generateTest(pixelFormat, pixelType, prologue) {
+function generateTest(internalFormat, pixelFormat, pixelType, prologue) {
     var wtu = WebGLTestUtils;
     var gl = null;
     var successfullyParsed = false;
@@ -47,7 +47,7 @@ function generateTest(pixelFormat, pixelType, prologue) {
 
     var init = function()
     {
-        description('Verify texImage2D and texSubImage2D code paths taking video elements (' + pixelFormat + '/' + pixelType + ')');
+        description('Verify texImage2D and texSubImage2D code paths taking video elements (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
         gl = wtu.create3DContext("example");
 
@@ -101,12 +101,12 @@ function generateTest(pixelFormat, pixelType, prologue) {
                     width = Math.max(width, height);
                     height = width;
                 }
-                gl.texImage2D(targets[tt], 0, gl[pixelFormat],
+                gl.texImage2D(targets[tt], 0, gl[internalFormat],
                               width, height, 0,
                               gl[pixelFormat], gl[pixelType], null);
                 gl.texSubImage2D(targets[tt], 0, 0, 0, gl[pixelFormat], gl[pixelType], videoElement);
             } else {
-                gl.texImage2D(targets[tt], 0, gl[pixelFormat], gl[pixelFormat], gl[pixelType], videoElement);
+                gl.texImage2D(targets[tt], 0, gl[internalFormat], gl[pixelFormat], gl[pixelType], videoElement);
             }
         }
 
