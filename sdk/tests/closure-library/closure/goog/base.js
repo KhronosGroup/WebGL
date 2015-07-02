@@ -1164,18 +1164,18 @@ if (goog.DEPENDENCIES_ENABLED) {
       if (opt_sourceText === undefined) {
         if (!isOldIE) {
           doc.write(
-              '<script type="text/javascript" src="' +
+              '<script type="application/javascript" src="' +
                   src + '"></' + 'script>');
         } else {
           var state = " onreadystatechange='goog.onScriptLoad_(this, " +
               ++goog.lastNonModuleScriptIndex_ + ")' ";
           doc.write(
-              '<script type="text/javascript" src="' +
+              '<script type="application/javascript" src="' +
                   src + '"' + state + '></' + 'script>');
         }
       } else {
         doc.write(
-            '<script type="text/javascript">' +
+            '<script type="application/javascript">' +
             opt_sourceText +
             '</' + 'script>');
       }
@@ -1904,7 +1904,7 @@ goog.globalEval = function(script) {
     } else {
       var doc = goog.global.document;
       var scriptElt = doc.createElement('SCRIPT');
-      scriptElt.type = 'text/javascript';
+      scriptElt.type = 'application/javascript';
       scriptElt.defer = false;
       // Note(user): can't use .innerHTML since "t('<test>')" will fail and
       // .text doesn't work in Safari 2.  Therefore we append a text node.

@@ -279,7 +279,7 @@ o3djs.writeScriptTag_ = function(src) {
   if (typeof doc != 'undefined' &&
       !o3djs.dependencies_.written[src]) {
     o3djs.dependencies_.written[src] = true;
-    doc.write('<script type="text/javascript" src="' +
+    doc.write('<script type="application/javascript" src="' +
               src + '"></' + 'script>');
   }
 };
