@@ -99,7 +99,7 @@ function testPassed(msg){};
  * @param {string} message The error message.
  * @param {number} error GL error code
  */
- WebGLTestUtils.GLErrorException = function (message, error){ /** @type {string} */ this.message; };
+WebGLTestUtils.GLErrorException = function(message, error){ /** @type {string} */ this.message; };
 
 /** @type {WebGL2RenderingContext} */ var gl;
 /** @type {HTMLElement} */ var canvas;

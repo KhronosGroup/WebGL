@@ -1,4 +1,5 @@
 attriblocation.html
+buffercopy.html
 draw.html
 fbocompleteness.html
 fbomultisample.html
