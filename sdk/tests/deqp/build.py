@@ -76,7 +76,8 @@ targets = {
     'negativefragmentapi': 'functional.gles3.es3fNegativeFragmentApiTests',
     'negativevertexarrayapi': 'functional.gles3.es3fNegativeVertexArrayApiTests',
     'negativestateapi' : 'functional.gles3.es3fNegativeStateApiTests',
-    'negativeshaderapi' : 'functional.gles3.es3fNegativeShaderApiTests'
+    'negativeshaderapi' : 'functional.gles3.es3fNegativeShaderApiTests',
+    'buffercopy' : 'functional.gles3.es3fBufferCopyTests'
 }
 
 total_errors = 0

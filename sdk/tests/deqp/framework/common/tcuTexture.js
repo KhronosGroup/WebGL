@@ -210,7 +210,7 @@ tcuTexture.sampleLevelArray2DCompare = function(levels, numLevels, sampler, ref,
         case tcuTexture.FilterMode.LINEAR: return levels[0].sample2DCompare(sampler, filterMode, ref, s, t, offset);
 
         case tcuTexture.FilterMode.NEAREST_MIPMAP_NEAREST:
-        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST:{
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST: {
             var maxLevel = numLevels - 1;
             var level = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
             var levelFilter = filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
@@ -219,7 +219,7 @@ tcuTexture.sampleLevelArray2DCompare = function(levels, numLevels, sampler, ref,
         }
 
         case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR:
-        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR:{
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR: {
             var maxLevel = numLevels - 1;
             var level0 = deMath.clamp(Math.ceil(lod), 0, maxLevel);
             var level1 = Math.min(maxLevel, level0 + 1);
@@ -2552,7 +2552,7 @@ tcuTexture.sampleLevelArrayCubeSeamless = function(faces, numLevels, face, sampl
         case tcuTexture.FilterMode.NEAREST:
             return tcuTexture.sampleCubeSeamlessNearest(faces[face][0], sampler, s, t, depth);
 
-        case tcuTexture.FilterMode.LINEAR:{
+        case tcuTexture.FilterMode.LINEAR: {
             faceAccesses = [];
             for (var i = 0; i < Object.keys(tcuTexture.CubeFace).length; i++)
                 faceAccesses[i] = faces[i][0];
@@ -2561,14 +2561,14 @@ tcuTexture.sampleLevelArrayCubeSeamless = function(faces, numLevels, face, sampl
         }
 
         case tcuTexture.FilterMode.NEAREST_MIPMAP_NEAREST:
-        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST:{
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST: {
             var maxLevel = numLevels - 1;
             var level = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
             levelFilter = (filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
 
             if (levelFilter == tcuTexture.FilterMode.NEAREST)
                 return tcuTexture.sampleCubeSeamlessNearest(faces[face][level], sampler, s, t, depth);
-            else{
+            else {
                 DE_ASSERT(levelFilter == tcuTexture.FilterMode.LINEAR);
 
                 faceAccesses = [];
@@ -2580,7 +2580,7 @@ tcuTexture.sampleLevelArrayCubeSeamless = function(faces, numLevels, face, sampl
         }
 
         case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR:
-        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR:{
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR: {
             var maxLevel = numLevels - 1;
             var level0 = deMath.clamp(deMath.deFloatFrac(lod), 0, maxLevel);
             var level1 = Math.min(maxLevel, level0 + 1);
@@ -2592,7 +2592,7 @@ tcuTexture.sampleLevelArrayCubeSeamless = function(faces, numLevels, face, sampl
             if (levelFilter == tcuTexture.FilterMode.NEAREST) {
                 t0 = tcuTexture.sampleCubeSeamlessNearest(faces[face][level0], sampler, s, t, depth);
                 t1 = tcuTexture.sampleCubeSeamlessNearest(faces[face][level1], sampler, s, t, depth);
-            } else{
+            } else {
                 DE_ASSERT(levelFilter == tcuTexture.FilterMode.LINEAR);
 
                 /** @type {Array<tcuTexture.ConstPixelBufferAccess>}*/ var faceAccesses0 = [];
@@ -2756,7 +2756,7 @@ tcuTexture.sampleLevelArrayCubeSeamlessCompare = function(faces, numLevels, face
         case tcuTexture.FilterMode.NEAREST:
             return tcuTexture.sampleCubeSeamlessNearestCompare(faces[face][0], sampler, ref, s, t);
 
-        case tcuTexture.FilterMode.LINEAR:{
+        case tcuTexture.FilterMode.LINEAR: {
             faceAccesses = [];
             for (var i = 0; i < Object.keys(tcuTexture.CubeFace).length; i++)
                 faceAccesses[i] = faces[i][0];
@@ -2765,14 +2765,14 @@ tcuTexture.sampleLevelArrayCubeSeamlessCompare = function(faces, numLevels, face
         }
 
         case tcuTexture.FilterMode.NEAREST_MIPMAP_NEAREST:
-        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST:{
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST: {
             var maxLevel = numLevels - 1;
             var level = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
             levelFilter = filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
 
             if (levelFilter == tcuTexture.FilterMode.NEAREST)
                 return tcuTexture.sampleCubeSeamlessNearestCompare(faces[face][level], sampler, ref, s, t);
-            else{
+            else {
                 DE_ASSERT(levelFilter == tcuTexture.FilterMode.LINEAR);
 
                 faceAccesses = [];
@@ -2784,7 +2784,7 @@ tcuTexture.sampleLevelArrayCubeSeamlessCompare = function(faces, numLevels, face
         }
 
         case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR:
-        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR:{
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR: {
             var maxLevel = numLevels - 1;
             var level0 = deMath.clamp(Math.floor(lod), 0, maxLevel);
             var level1 = Math.min(maxLevel, level0 + 1);
@@ -2796,7 +2796,7 @@ tcuTexture.sampleLevelArrayCubeSeamlessCompare = function(faces, numLevels, face
             if (levelFilter == tcuTexture.FilterMode.NEAREST) {
                 t0 = tcuTexture.sampleCubeSeamlessNearestCompare(faces[face][level0], sampler, ref, s, t);
                 t1 = tcuTexture.sampleCubeSeamlessNearestCompare(faces[face][level1], sampler, ref, s, t);
-            } else{
+            } else {
                 DE_ASSERT(levelFilter == tcuTexture.FilterMode.LINEAR);
 
                 /** @type {Array<tcuTexture.ConstPixelBufferAccess>} */ var faceAccesses0 = [];
