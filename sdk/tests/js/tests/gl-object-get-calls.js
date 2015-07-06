@@ -131,7 +131,10 @@ var renderbuffer = gl.createRenderbuffer();
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
-gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 2, 2);
+if (contextVersion == 1)
+  gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 2, 2);
+else
+  gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH24_STENCIL8, 2, 2);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, renderbuffer);
 if (contextVersion > 1)
