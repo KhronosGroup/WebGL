@@ -123,7 +123,7 @@ tcuSurface.Surface.prototype.readViewport = function(ctx, view) {
     /** @type {number} */ var y;
     /** @type {number} */ var width;
     /** @type {number} */ var height;
-    if (v instanceof Array) {
+    if (v instanceof Array || ArrayBuffer.isView(v)) {
         x = v[0];
         y = v[1];
         width = v[2];

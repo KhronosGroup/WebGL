@@ -147,12 +147,17 @@ goog.scope(function() {
     };
 
     /**
-     * Abstract init function(each particular test will implement it)
+     * Abstract init function(each particular test will implement it, or not)
      */
     tcuTestCase.DeqpTest.prototype.init = function() {};
 
     /**
-     * Abstract iterate function(each particular test will implement it)
+     * Abstract deinit function(each particular test will implement it, or not)
+     */
+    tcuTestCase.DeqpTest.prototype.deinit = function() {};
+
+    /**
+     * Abstract iterate function(each particular test will implement it, or not)
      * @return {tcuTestCase.IterateResult}
      */
     tcuTestCase.DeqpTest.prototype.iterate = function() { return tcuTestCase.IterateResult.STOP; };
@@ -231,10 +236,11 @@ goog.scope(function() {
     * @return {?string} Full test name.
     */
     tcuTestCase.DeqpTest.prototype.fullName = function() {
-        if (this.parentTest)
+        if (this.parentTest) {
             var parentName = this.parentTest.fullName();
             if (parentName)
                 return parentName + '.' + this.name;
+        }
         return this.name;
     };
 
@@ -332,12 +338,23 @@ goog.scope(function() {
 
                 // Run the test, save the result.
                 tcuTestCase.lastResult = state.currentTest.iterate();
+
+                // Cleanup
+                if (tcuTestCase.lastResult == tcuTestCase.IterateResult.STOP)
+                    state.currentTest.deinit();
             }
             catch (err) {
                 // If the exception was not thrown by a test check, log it, but don't throw it again
                 if (!(err instanceof TestFailedException)) {
                     //Stop execution of current test.
                     tcuTestCase.lastResult = tcuTestCase.IterateResult.STOP;
+                    try {
+                        // Cleanup
+                        if (tcuTestCase.lastResult == tcuTestCase.IterateResult.STOP)
+                            state.currentTest.deinit();
+                    } catch (cerr) {
+                        bufferedLogToConsole('Error while cleaning up test: ' + cerr);
+                    }
                     var msg = err;
                     if (err.message)
                         msg = err.message;
