@@ -15,8 +15,8 @@ tex-image-and-sub-image-2d-with-canvas-rgb565-rgb-unsigned_short_5_6_5.html
 tex-image-and-sub-image-2d-with-canvas-r11f_g11f_b10f-rgb-unsigned_int_10f_11f_11f_rev.html
 tex-image-and-sub-image-2d-with-canvas-r11f_g11f_b10f-rgb-half_float.html
 tex-image-and-sub-image-2d-with-canvas-r11f_g11f_b10f-rgb-float.html
-tex-image-and-sub-image-2d-with-canvas-rrg9e5-rgb-half_float.html
-tex-image-and-sub-image-2d-with-canvas-rrg9e5-rgb-float.html
+tex-image-and-sub-image-2d-with-canvas-rgb9_e5-rgb-half_float.html
+tex-image-and-sub-image-2d-with-canvas-rgb9_e5-rgb-float.html
 tex-image-and-sub-image-2d-with-canvas-rgb16f-rgb-half_float.html
 tex-image-and-sub-image-2d-with-canvas-rgb16f-rgb-float.html
 tex-image-and-sub-image-2d-with-canvas-rgb32f-rgb-float.html

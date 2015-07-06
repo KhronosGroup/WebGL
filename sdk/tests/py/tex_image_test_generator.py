@@ -75,7 +75,15 @@ _ELEMENT_TYPES = [
   'webgl-canvas'
 ]
 
-_FORMATS_TYPES = [
+_FORMATS_TYPES_WEBGL1 = [
+  {'internal_format': 'RGB', 'format': 'RGB', 'type': 'UNSIGNED_BYTE' },
+  {'internal_format': 'RGB', 'format': 'RGB', 'type': 'UNSIGNED_SHORT_5_6_5' },
+  {'internal_format': 'RGBA', 'format': 'RGBA', 'type': 'UNSIGNED_BYTE' },
+  {'internal_format': 'RGBA', 'format': 'RGBA', 'type': 'UNSIGNED_SHORT_4_4_4_4' },
+  {'internal_format': 'RGBA', 'format': 'RGBA', 'type': 'UNSIGNED_SHORT_5_5_5_1' },
+]
+    
+_FORMATS_TYPES_WEBGL2 = [
   {'internal_format': 'R8', 'format': 'RED', 'type': 'UNSIGNED_BYTE' },
   {'internal_format': 'R16F', 'format': 'RED', 'type': 'HALF_FLOAT' },
   {'internal_format': 'R16F', 'format': 'RED', 'type': 'FLOAT' },
@@ -93,8 +101,8 @@ _FORMATS_TYPES = [
   {'internal_format': 'R11F_G11F_B10F', 'format': 'RGB', 'type': 'UNSIGNED_INT_10F_11F_11F_REV' },
   {'internal_format': 'R11F_G11F_B10F', 'format': 'RGB', 'type': 'HALF_FLOAT' },
   {'internal_format': 'R11F_G11F_B10F', 'format': 'RGB', 'type': 'FLOAT' },
-  {'internal_format': 'RRG9E5', 'format': 'RGB', 'type': 'HALF_FLOAT' },
-  {'internal_format': 'RRG9E5', 'format': 'RGB', 'type': 'FLOAT' },
+  {'internal_format': 'RGB9_E5', 'format': 'RGB', 'type': 'HALF_FLOAT' },
+  {'internal_format': 'RGB9_E5', 'format': 'RGB', 'type': 'FLOAT' },
   {'internal_format': 'RGB16F', 'format': 'RGB', 'type': 'HALF_FLOAT' },
   {'internal_format': 'RGB16F', 'format': 'RGB', 'type': 'FLOAT' },
   {'internal_format': 'RGB32F', 'format': 'RGB', 'type': 'FLOAT' },
@@ -132,8 +140,15 @@ def WriteTest(filename, element_type, internal_format, format, type):
 <script src="../../../js/webgl-test-utils.js"></script>
 <script src="../../../js/tests/tex-image-and-sub-image-2d-with-%(element_type)s.js"></script>
 </head>
-<body>
-<canvas id="example" width="32" height="32"></canvas>
+<body>"""
+  if element_type == 'image-data':
+    code += """
+<canvas id="texcanvas" width="1" height="2"></canvas>
+<canvas id="example" width="1" height="2"></canvas>"""
+  else:
+    code += """
+<canvas id="example" width="32" height="32"></canvas>"""
+  code += """
 <div id="description"></div>
 <div id="console"></div>
 <script>
@@ -155,15 +170,12 @@ generateTest("%(internal_format)s", "%(format)s", "%(type)s", testPrologue)();
   })
   file.close()
 
-def main(argv):
-  """This is the main function."""
-  py_dir = os.path.dirname(os.path.realpath(__file__))
-  tex_test_dir = os.path.realpath(py_dir + '/../conformance2/textures')
-  test_dir_template = tex_test_dir + '/%s'
+def GenerateTests(test_dir, test_cases):
+  test_dir_template = test_dir + '/%s'
   for element_type in _ELEMENT_TYPES:
     os.chdir(test_dir_template % element_type.replace('-', '_'))
     index_file = open("00_test_list.txt", "wb")
-    for tex_info in _FORMATS_TYPES:
+    for tex_info in test_cases:
       internal_format = tex_info['internal_format']
       format = tex_info['format']
       type = tex_info['type']
@@ -172,6 +184,12 @@ def main(argv):
       index_file.write('\n')
       WriteTest(filename, element_type, internal_format, format, type)
     index_file.close();
+
+def main(argv):
+  """This is the main function."""
+  py_dir = os.path.dirname(os.path.realpath(__file__))
+  GenerateTests(os.path.realpath(py_dir + '/../conformance/textures'), _FORMATS_TYPES_WEBGL1)
+  GenerateTests(os.path.realpath(py_dir + '/../conformance2/textures'), _FORMATS_TYPES_WEBGL2)
 
 if __name__ == '__main__':
   sys.exit(main(sys.argv[1:]))
