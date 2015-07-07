@@ -23,14 +23,14 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
-attribute vec4 a_vertex;
-attribute vec3 a_normal;
+in vec4 a_vertex;
+in vec3 a_normal;
 
 uniform Transform {
     mat4 u_modelViewMatrix;
     mat4 u_projectionMatrix;
     mat3 u_normalMatrix;
-}
+};
 
 out vec3 normal;
 out vec4 ecPosition;
