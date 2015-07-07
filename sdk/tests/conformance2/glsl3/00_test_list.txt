@@ -11,4 +11,8 @@ invalid-default-precision.html
 misplaced-version-directive.html
 sequence-operator-returns-non-constant.html
 shader-linking.html
+shader-with-1024-character-define.html
+shader-with-1024-character-identifier.frag.html
+shader-with-1025-character-define.html
+shader-with-1025-character-identifier.frag.html
 ternary-operator-on-arrays-glsl3.html
