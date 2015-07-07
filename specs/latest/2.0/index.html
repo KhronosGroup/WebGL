@@ -2630,6 +2630,12 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         restrictions in the WebGL 1 specification</a>.
     </p>
 
+    <div class="note rationale">
+        This restriction has been added to prevent writing to index buffers on the GPU, which would make
+        doing any CPU-side checks on index data prohibitively expensive. Handling index buffers as different
+        from other buffer data also maps better to the Direct3D API.
+    </div>
+
     <p>
         In addition, a buffer can not be simultaneously bound to a transform feedback buffer binding point
         and another buffer binding point in the WebGL 2 API. Attempting to violate this rule generates an
@@ -2637,9 +2643,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
     </p>
 
     <div class="note rationale">
-        This restriction has been added to prevent writing to index buffers on the GPU, which would make
-        doing any CPU-side checks on index data prohibitively expensive. Handling index buffers as different
-        from other buffer data also maps better to the Direct3D API.
+        This restriction has been added to prevent undefined values when reading from or writing to a buffer object that is simultanenously bound to a transform feedback buffer binding point and elsewhere in the GL. An example of such bindings is <code>ReadPixels</code> to a pixel buffer object binding point.
     </div>
 
     <h3><a name="COPYING_BUFFERS">Copying Buffers</a></h3>
