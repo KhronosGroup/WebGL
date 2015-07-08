@@ -21,7 +21,7 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
-function generateTest(internalFormat, pixelFormat, pixelType, prologue) {
+function generateTest(internalFormat, pixelFormat, pixelType, prologue, resourcePath) {
     var wtu = WebGLTestUtils;
     var gl = null;
     var successfullyParsed = false;
@@ -43,7 +43,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue) {
         gl.clearColor(0,0,0,1);
         gl.clearDepth(1);
 
-        wtu.loadTexture(gl, "../../../resources/red-green.png", runTest);
+        wtu.loadTexture(gl, resourcePath + "red-green.png", runTest);
     }
 
     function runOneIteration(image, useTexSubImage2D, flipY, topColor, bottomColor,
