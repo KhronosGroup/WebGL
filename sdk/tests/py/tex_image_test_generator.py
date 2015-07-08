@@ -157,7 +157,7 @@ function testPrologue(gl) {
     return true;
 }
 
-generateTest("%(internal_format)s", "%(format)s", "%(type)s", testPrologue)();
+generateTest("%(internal_format)s", "%(format)s", "%(type)s", testPrologue, "../../../resources/")();
 </script>
 </body>
 </html>

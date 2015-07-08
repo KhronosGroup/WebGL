@@ -32,7 +32,7 @@ var debug = function(msg) {
   old(msg);
 };
 
-function generateTest(internalFormat, pixelFormat, pixelType, prologue) {
+function generateTest(internalFormat, pixelFormat, pixelType, prologue, resourcePath) {
     var wtu = WebGLTestUtils;
     var gl = null;
     var successfullyParsed = false;
@@ -40,9 +40,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue) {
     // Test each format separately because many browsers implement each
     // differently. Some might be GPU accelerated, some might not. Etc...
     var videos = [
-      { src: "../../../resources/red-green.mp4"         , type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"', },
-      { src: "../../../resources/red-green.webmvp8.webm", type: 'video/webm; codecs="vp8, vorbis"',           },
-      { src: "../../../resources/red-green.theora.ogv",   type: 'video/ogg; codecs="theora, vorbis"',         },
+      { src: resourcePath + "red-green.mp4"         , type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"', },
+      { src: resourcePath + "red-green.webmvp8.webm", type: 'video/webm; codecs="vp8, vorbis"',           },
+      { src: resourcePath + "red-green.theora.ogv",   type: 'video/ogg; codecs="theora, vorbis"',         },
     ];
 
     var init = function()
