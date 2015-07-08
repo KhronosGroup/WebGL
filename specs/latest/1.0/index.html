@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 9 June 2015</h2>
+    <h2 class="no-toc">Editor's Draft 7 July 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -3787,6 +3787,49 @@ extensions.
     gl_Position as undefined unless it is written to in a vertex shader. WebGL guarantees
     that gl_Position's initial value is <code>(0,0,0,0)</code>.
 </p>
+
+<h3>GLSL ES Global Variable Initialization</h3>
+<p>
+    The GLSL ES 1.00 <a href="#refsGLES20GLSL">[GLES20GLSL]</a> spec restricts global variable
+    initializers to be constant expressions. In the WebGL API, it is allowed to use other global
+    variables not qualified with the <code>const</code> qualifier and uniform values in global
+    variable initializers in GLSL ES 1.00 shaders. Global variable initializers must be global
+    initializer expressions, which are defined as one of:
+</p>
+<ul>
+<li>a literal value</li>
+<li>a global variable</li>
+<li>a uniform</li>
+<li>
+    an expression formed by an operator on operands that are global initializer expressions,
+    including getting an element of a global initializer vector or global initializer matrix,
+    or a field of a global initializer structure
+</li>
+<li>a constructor whose arguments are all global initializer expressions</li>
+<li>
+    a built-in function call whose arguments are all global initializer expressions, with the
+    exception of the texture lookup functions
+</li>
+</ul>
+<p>
+    The following may not be used in global initializer expressions:
+</p>
+<ul>
+<li>User-defined functions</li>
+<li>Attributes and varyings</li>
+<li>Global variables as l-values in an assignment or other operation</li>
+</ul>
+
+<p>
+    Compilers should generate a warning when a global variable initializer is in violation of the
+    unmodified GLSL ES spec i.e. when a global variable initializer is not a constant expression.
+</p>
+
+<div class="note rationale">
+    This behavior has existed in WebGL implementations for several years. Fixing this behavior to be
+    consistent with the GLSL ES specification would have a large compatibility impact with existing
+    content.
+</div>
 
 <!-- ======================================================================================================= -->
 
