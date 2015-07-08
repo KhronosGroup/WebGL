@@ -68,6 +68,10 @@ var testReadBufferOnDefaultFB = function() {
   gl.readBuffer(gl.NONE);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "calling readBuffer with GL_NONE on the default framebuffer should succeed.");
+  var pixels = new Uint8Array(1 * 1 * 4);
+  gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
+      "should generate INVALID_OPERATION when reading from framebuffer and read buffer is GL_NONE.");
   gl.readBuffer(gl.BACK);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "calling readBuffer with GL_BACK on the default framebuffer should succeed.");
@@ -77,7 +81,7 @@ var testReadBufferOnDefaultFB = function() {
       "calling readBuffer with GL_COLOR_ATTACHMENT0 on the default framebuffer should generate INVALID_OPERATION.");
 }
 
-var testReadbufferOnFBO = function() {
+var testReadBufferOnFBO = function() {
   gl.readBuffer(gl.BACK);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
       "calling readBuffer with GL_BACK on fbo should generate INVALID_OPERATION.");
@@ -85,6 +89,10 @@ var testReadbufferOnFBO = function() {
   gl.readBuffer(gl.NONE);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "calling readBuffer with GL_NONE on fbo should succeed.");
+  var pixels = new Uint8Array(1 * 1 * 4);
+  gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
+      "should generate INVALID_OPERATION when reading from framebuffer and read buffer is GL_NONE.");
   gl.readBuffer(gl.COLOR_ATTACHMENT0);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "calling readBuffer with GL_COLOR_ATTACHMENT0 on fbo should succeed.");
@@ -132,7 +140,7 @@ if (!gl) {
       "should be no errors when reading from GL_COLOR_ATTACHMENT0 on fbo.");
 
   shouldBe('gl.getParameter(gl.READ_BUFFER)', 'gl.COLOR_ATTACHMENT0');
-  testReadbufferOnFBO();
+  testReadBufferOnFBO();
 
   // Test on user defined read buffer (GL_COLOR_ATTACHMENT1) with or without corresponding image on fbo.
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
