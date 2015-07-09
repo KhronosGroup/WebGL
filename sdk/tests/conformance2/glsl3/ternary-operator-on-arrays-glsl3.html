@@ -65,9 +65,6 @@ void main()
 "use strict";
 description("Checks ternary operators for structs and arrays.");
 
-var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext();
-
 GLSLConformanceTester.runTests([
 { fShaderId: 'fshader-array-ternary-operator',
   fShaderSuccess: true,
@@ -79,7 +76,7 @@ GLSLConformanceTester.runTests([
   linkSuccess: true,
   passMsg: "By implication, using ternary operators with structs containing arrays is allowed in glsl3",
 },
-]);
+], 2);
 
 debug("");
 var successfullyParsed = true;
