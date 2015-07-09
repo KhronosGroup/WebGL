@@ -1410,6 +1410,15 @@ var setDefault3DContextVersion = function(version) {
 };
 
 /**
+ * Get the default contex version for create3DContext.
+ * First it looks at the URI option |webglVersion|. If it does not exist,
+ * then look at the global default3DContextVersion variable.
+ */
+var getDefault3DContextVersion = function() {
+    return parseInt(getUrlOptions().webglVersion, 10) || default3DContextVersion;
+};
+
+/**
  * Creates a webgl context.
  * @param {!Canvas|string} opt_canvas The canvas tag to get
  *     context from. If one is not passed in one will be
@@ -2917,6 +2926,7 @@ return {
   failIfGLError: failIfGLError,
   fillTexture: fillTexture,
   getBytesPerComponent: getBytesPerComponent,
+  getDefault3DContextVersion: getDefault3DContextVersion,
   getExtensionPrefixedNames: getExtensionPrefixedNames,
   getExtensionWithKnownPrefixes: getExtensionWithKnownPrefixes,
   getFileListAsync: getFileListAsync,

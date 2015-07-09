@@ -103,10 +103,10 @@ function init()
     var vertexObject = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexObject);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array([ 0, 1, 2]), gl.STATIC_DRAW);
-
     checkDrawElements(
         gl.TRIANGLES, 3, gl.UNSIGNED_INT,
-        gl.INVALID_ENUM, "gl.DrawElements should return INVALID_ENUM with UNSIGNED_INT");
+        wtu.getDefault3DContextVersion() > 1 ? gl.NO_ERROR : gl.INVALID_ENUM,
+        "gl.DrawElements should return INVALID_ENUM with UNSIGNED_INT");
     checkDrawElements(
         gl.TRIANGLES, 3, gl.FLOAT,
         gl.INVALID_ENUM, "gl.DrawElements should return INVALID_ENUM with FLOAT");
