@@ -6,6 +6,7 @@ misc/00_test_list.txt
 query/00_test_list.txt
 renderbuffers/00_test_list.txt
 rendering/00_test_list.txt
+samplers/00_test_list.txt
 state/00_test_list.txt
 textures/00_test_list.txt
 transform_feedback/00_test_list.txt
