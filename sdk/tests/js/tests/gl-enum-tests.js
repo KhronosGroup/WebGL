@@ -44,6 +44,7 @@ if (!gl) {
   var buffer = new ArrayBuffer(2);
   var buf = new Uint16Array(buffer);
   var tex = gl.createTexture();
+  var program = wtu.loadUniformBlockProgram(gl);
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
@@ -82,6 +83,14 @@ if (!gl) {
   } else {
     tests = tests.concat([
       "gl.bindTexture(desktopGL['TEXTURE_RECTANGLE_EXT'], tex)",
+      "gl.enable(desktopGL['PRIMITIVE_RESTART_FIXED_INDEX'])",
+      "gl.getActiveUniforms(program, [0], desktopGL['UNIFORM_NAME_LENGTH'])",
+      "gl.getActiveUniformBlockParameter(program, 0, desktopGL['UNIFORM_BLOCK_NAME_LENGTH'])",
+      "gl.getProgramParameter(program, desktopGL['ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH'])",
+      "gl.getProgramParameter(program, desktopGL['TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH'])",
+      "gl.getProgramParameter(program, desktopGL['PROGRAM_BINARY_RETRIEVABLE_HINT'])",
+      "gl.getProgramParameter(program, desktopGL['PROGRAM_BINARY_LENGTH'])",
+      "gl.getParameter(program, desktopGL['NUM_PROGRAM_BINARY_FORMATS'])",
     ]);
   }
 
