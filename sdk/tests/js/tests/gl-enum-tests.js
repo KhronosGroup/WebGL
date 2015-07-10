@@ -44,7 +44,7 @@ if (!gl) {
   var buffer = new ArrayBuffer(2);
   var buf = new Uint16Array(buffer);
   var tex = gl.createTexture();
-  var program = wtu.loadUniformBlockProgram(gl);
+  var program = wtu.createProgram(gl, wtu.loadStandardVertexShader(gl), wtu.loadStandardFragmentShader(gl));
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
