@@ -193,10 +193,10 @@ if (!gl) {
 
   var maxTexSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
   var maxLevels = numLevelsFromSize(maxTexSize);
-  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, maxLevels);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, maxLevels - 1);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
             "calling framebufferTexture2D with an appropriate mipmap level should succeed.");
-  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, maxLevels + 1);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, maxLevels);
   wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
             "calling framebufferTexture2D with a mipmap level out of range should generate INVALID_VALUE.");
 
