@@ -40,19 +40,10 @@
 <canvas id="canvas" width="2" height="2"> </canvas>
 <script>
 "use strict";
-description("This tests framebuffer/renderbuffer-related functions");
-
-debug("");
-debug("Canvas.getContext");
-
 var wtu = WebGLTestUtils;
-var canvas = document.getElementById("canvas");
-var gl = wtu.create3DContext(canvas);
-if (!gl) {
-  testFailed("context does not exist");
-} else {
-  testPassed("context exists");
-
+var gl;
+ 
+function testFramebufferRenderbuffer() {
   debug("");
   debug("Checking framebuffer/renderbuffer stuff.");
 
@@ -338,6 +329,13 @@ if (!gl) {
             "binding draw framebuffer to default (null) framebuffer should succeed.");
 }
 
+description("This tests framebuffer/renderbuffer-related functions");
+ 
+var canvas = document.getElementById("canvas");
+shouldBeNonNull("gl = wtu.create3DContext(canvas)");
+
+testFramebufferRenderbuffer();
+ 
 debug("");
 var successfullyParsed = true;
 
