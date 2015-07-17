@@ -25,6 +25,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var wtu = WebGLTestUtils;
     var gl = null;
     var successfullyParsed = false;
+    var whiteColor = [255, 255, 255, 255];
+    var redColor = [255, 0, 0];
+    var greenColor = [0, 255, 0];
 
     var init = function()
     {
@@ -35,6 +38,20 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         if (!prologue(gl)) {
             finishTest();
             return;
+        }
+
+        switch (gl[pixelFormat]) {
+          case gl.RED:
+          case gl.RED_INTEGER:
+            whiteColor = [255, 0, 0, 255];
+            greenColor = [0, 0, 0];
+            break;
+          case gl.RG:
+          case gl.RG_INTEGER:
+            whiteColor = [255, 255, 0, 255];
+            break;
+          default:
+            break;
         }
 
         gl.clearColor(0,0,0,1);
@@ -150,12 +167,12 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                 // check half is a solid color.
                 wtu.checkCanvasRect(
                       gl, 0, top, width, halfHeight,
-                      [255, 255, 255, 255],
+                      whiteColor,
                       "should be white");
                 // check other half is not a solid color.
                 wtu.checkCanvasRectColor(
                       gl, 0, bottom, width, halfHeight,
-                      [255, 255, 255, 255], 0,
+                      whiteColor, 0,
                       function() {
                         testFailed("font missing");
                       },
@@ -165,14 +182,12 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                       debug);
             } else {
                 // Check the top and bottom halves and make sure they have the right color.
-                var red = [255, 0, 0];
-                var green = [0, 255, 0];
                 debug("Checking " + (flipY ? "top" : "bottom"));
-                wtu.checkCanvasRect(gl, 0, bottom, width, halfHeight, red,
-                                    "shouldBe " + red);
+                wtu.checkCanvasRect(gl, 0, bottom, width, halfHeight, redColor,
+                                    "shouldBe " + redColor);
                 debug("Checking " + (flipY ? "bottom" : "top"));
-                wtu.checkCanvasRect(gl, 0, top, width, halfHeight, green,
-                                    "shouldBe " + green);
+                wtu.checkCanvasRect(gl, 0, top, width, halfHeight, greenColor,
+                                    "shouldBe " + greenColor);
             }
 
             if (!useTexSubImage2D && pixelFormat == "RGBA") {
