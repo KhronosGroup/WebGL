@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 7 July 2015</h2>
+    <h2 class="no-toc">Editor's Draft 16 July 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1699,7 +1699,7 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
 
     any getVertexAttrib(GLuint index, GLenum pname);
 
-    [WebGLHandlesContextLoss] GLsizeiptr getVertexAttribOffset(GLuint index, GLenum pname);
+    [WebGLHandlesContextLoss] GLintptr getVertexAttribOffset(GLuint index, GLenum pname);
 
     void hint(GLenum target, GLenum mode);
     [WebGLHandlesContextLoss] GLboolean isBuffer(WebGLBuffer? buffer);
