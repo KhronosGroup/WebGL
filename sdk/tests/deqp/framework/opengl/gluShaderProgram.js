@@ -229,6 +229,8 @@ gluShaderProgram.ShaderProgram = function(gl, programSources) {
         shader.compile();
         this.shaders.push(shader);
         this.shadersOK = this.shadersOK && shader.getCompileStatus();
+        if (!this.shadersOK)
+            console.log('Shader infoLog: ' + shader.info.infoLog);
         console.log('Compile status: ' + shader.getCompileStatus());
     }
 

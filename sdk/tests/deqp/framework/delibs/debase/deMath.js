@@ -181,10 +181,26 @@ deMath.scale = function(a, b) {
 /**
  * Add two vectors, element by element
  * @param {goog.NumberArray} a
+ * @param {number} b
+ * @return {Array<number>} Result array
+ */
+deMath.addScalar= function(a, b) {
+    if (!Array.isArray(a))
+        throw new Error('First argument must be an array.');
+    if (typeof b !== 'number')
+        throw new Error('Second argument must be a number.');
+    var dst = [];
+    for (var i = 0; i < a.length; i++)
+        dst.push(a[i] + b);
+    return dst;
+};
+
+/**
+ * Add two vectors, element by element
+ * @param {goog.NumberArray} a
  * @param {goog.NumberArray} b
  * @return {Array<number>} Result array
  */
-
 deMath.add = function(a, b) {
     if (a.length != b.length)
         throw new Error('Arrays must have the same size');

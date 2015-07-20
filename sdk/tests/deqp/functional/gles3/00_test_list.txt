@@ -17,7 +17,11 @@ negativetextureapi.html
 negativevertexarrayapi.html
 pixelbufferobject.html
 primitiverestart.html
+rasterizerdiscard.html
 samplerobject.html
+shaderindexing.html
+shaderloop.html
+shaderstruct.html
 textureformat.html
 textureshadow.html
 texturewrap.html

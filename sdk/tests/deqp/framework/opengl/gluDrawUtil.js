@@ -140,7 +140,7 @@ gluDrawUtil.drawFromBuffers = function(gl, program, vertexArrays, primitives, ca
 /**
  * Creates vertex buffer, binds it and draws elements
  * @param {WebGL2RenderingContext} gl WebGL context
- * @param {number} program ID, vertexProgramID
+ * @param {?WebGLProgram} program ID, vertexProgramID TODO: check type, was number
  * @param {Array<gluDrawUtil.VertexArrayBinding>} vertexArrays
  * @param {gluDrawUtil.PrimitiveList} primitives to gluDrawUtil.draw
  * @param { {beforeDrawCall:function(), afterDrawCall:function()}=} callback
@@ -444,6 +444,21 @@ gluDrawUtil.bindingPointFromLocation = function(location) {
 gluDrawUtil.bindingPointFromName = function(name, location) {
     location = location || 0;
     return new gluDrawUtil.BindingPoint(name, location);
+};
+
+/**
+ * @param  {string} name
+ * @param  {number} numComponents
+ * @param  {number} numElements
+ * @param  {number} stride
+ * @param  {Array<number>} data
+ * @return {gluDrawUtil.VertexArrayBinding}
+ */
+gluDrawUtil.newFloatVertexArrayBinding = function(name, numComponents, numElements, stride, data) {
+    var bindingPoint = gluDrawUtil.bindingPointFromName(name);
+    var arrayPointer = new gluDrawUtil.VertexArrayPointer(gluDrawUtil.VertexComponentType.VTX_COMP_FLOAT,
+        gluDrawUtil.VertexComponentConversion.VTX_COMP_CONVERT_NONE, numComponents, numElements, stride, data);
+    return gluDrawUtil.vabFromBindingPointAndArrayPointer(bindingPoint, arrayPointer);
 };
 
 });

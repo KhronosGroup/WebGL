@@ -615,78 +615,68 @@ gluTextureUtil.mapGLCompareFunc = function(mode) {
      }
 };
 
-// /*--------------------------------------------------------------------*//*!
-//  * \brief Get GL wrap mode.
-//  *
-//  * If no mapping is found, throws tcu::InternalError.
-//  *
-//  * \param wrapMode Wrap mode
-//  * \return GL wrap mode
-//  *//*--------------------------------------------------------------------*/
-// deUint32 getGLWrapMode (tcu::Sampler::WrapMode wrapMode)
-// {
-//     DE_ASSERT(wrapMode != tcu::Sampler::WRAPMODE_LAST);
-//     switch (wrapMode)
-//     {
-//         case tcu::Sampler::CLAMP_TO_EDGE: return gl.CLAMP_TO_EDGE;
-//         case tcu::Sampler::CLAMP_TO_BORDER: return gl.CLAMP_TO_BORDER;
-//         case tcu::Sampler::REPEAT_GL: return gl.REPEAT;
-//         case tcu::Sampler::MIRRORED_REPEAT_GL: return gl.MIRRORED_REPEAT;
-//         default:
-//             throw tcu::InternalError("Can't map wrap mode");
-//     }
-// }
+/**
+ * Get GL wrap mode.
+ *
+ * If no mapping is found, throws tcu::InternalError.
+ *
+ * @param {tcuTexture.WrapMode} wrapMode
+ * @return {number} GL wrap mode
+ */
+gluTextureUtil.getGLWrapMode = function(wrapMode) {
+    switch (wrapMode) {
+        case tcuTexture.WrapMode.CLAMP_TO_EDGE: return gl.CLAMP_TO_EDGE;
+        case tcuTexture.WrapMode.REPEAT_GL: return gl.REPEAT;
+        case tcuTexture.WrapMode.MIRRORED_REPEAT_GL: return gl.MIRRORED_REPEAT;
+        default:
+            throw new Error("Can't map wrap mode");
+    }
+};
 
-// /*--------------------------------------------------------------------*//*!
-//  * \brief Get GL filter mode.
-//  *
-//  * If no mapping is found, throws tcu::InternalError.
-//  *
-//  * \param filterMode Filter mode
-//  * \return GL filter mode
-//  *//*--------------------------------------------------------------------*/
-// deUint32 getGLFilterMode (tcu::Sampler::FilterMode filterMode)
-// {
-//     DE_ASSERT(filterMode != tcu::Sampler::FILTERMODE_LAST);
-//     switch (filterMode)
-//     {
-//         case tcu::Sampler::NEAREST: return gl.NEAREST;
-//         case tcu::Sampler::LINEAR: return gl.LINEAR;
-//         case tcu::Sampler::NEAREST_MIPMAP_NEAREST: return gl.NEAREST_MIPMAP_NEAREST;
-//         case tcu::Sampler::NEAREST_MIPMAP_LINEAR: return gl.NEAREST_MIPMAP_LINEAR;
-//         case tcu::Sampler::LINEAR_MIPMAP_NEAREST: return gl.LINEAR_MIPMAP_NEAREST;
-//         case tcu::Sampler::LINEAR_MIPMAP_LINEAR: return gl.LINEAR_MIPMAP_LINEAR;
-//         default:
-//             throw tcu::InternalError("Can't map filter mode");
-//     }
-// }
+/**
+ * Get GL filter mode.
+ *
+ * If no mapping is found, throws tcu::InternalError.
+ *
+ * @param {tcuTexture.FilterMode} filterMode Filter mode
+ * @return {number} GL filter mode
+ */
+gluTextureUtil.getGLFilterMode = function(filterMode) {
+    switch (filterMode) {
+        case tcuTexture.FilterMode.NEAREST: return gl.NEAREST;
+        case tcuTexture.FilterMode.LINEAR: return gl.LINEAR;
+        case tcuTexture.FilterMode.NEAREST_MIPMAP_NEAREST: return gl.NEAREST_MIPMAP_NEAREST;
+        case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR: return gl.NEAREST_MIPMAP_LINEAR;
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST: return gl.LINEAR_MIPMAP_NEAREST;
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR: return gl.LINEAR_MIPMAP_LINEAR;
+        default:
+            throw new Error("Can't map filter mode");
+    }
+};
 
-// /*--------------------------------------------------------------------*//*!
-//  * \brief Get GL compare mode.
-//  *
-//  * If no mapping is found, throws tcu::InternalError.
-//  *
-//  * \param compareMode Compare mode
-//  * \return GL compare mode
-//  *//*--------------------------------------------------------------------*/
-// deUint32 getGLCompareFunc (tcu::Sampler::CompareMode compareMode)
-// {
-//     DE_ASSERT(compareMode != tcu::Sampler::COMPAREMODE_NONE);
-//     switch (compareMode)
-//     {
-//         case tcu::Sampler::COMPAREMODE_NONE: return gl.NONE;
-//         case tcu::Sampler::COMPAREMODE_LESS: return gl.LESS;
-//         case tcu::Sampler::COMPAREMODE_LESS_OR_EQUAL: return gl.LEQUAL;
-//         case tcu::Sampler::COMPAREMODE_GREATER: return gl.GREATER;
-//         case tcu::Sampler::COMPAREMODE_GREATER_OR_EQUAL: return gl.GEQUAL;
-//         case tcu::Sampler::COMPAREMODE_EQUAL: return gl.EQUAL;
-//         case tcu::Sampler::COMPAREMODE_NOT_EQUAL: return gl.NOTEQUAL;
-//         case tcu::Sampler::COMPAREMODE_ALWAYS: return gl.ALWAYS;
-//         case tcu::Sampler::COMPAREMODE_NEVER: return gl.NEVER;
-//         default:
-//             throw tcu::InternalError("Can't map compare mode");
-//     }
-// }
+/**
+ * Get GL compare mode.
+ *
+ * If no mapping is found, throws tcu::InternalError.
+ *
+ * @param {tcuTexture.CompareMode} compareMode Compare mode
+ * @return {number} GL compare mode
+ */
+gluTextureUtil.getGLCompareFunc = function(compareMode) {
+    switch (compareMode) {
+        case tcuTexture.CompareMode.COMPAREMODE_NONE: return gl.NONE;
+        case tcuTexture.CompareMode.COMPAREMODE_LESS: return gl.LESS;
+        case tcuTexture.CompareMode.COMPAREMODE_LESS_OR_EQUAL: return gl.LEQUAL;
+        case tcuTexture.CompareMode.COMPAREMODE_GREATER: return gl.GREATER;
+        case tcuTexture.CompareMode.COMPAREMODE_GREATER_OR_EQUAL: return gl.GEQUAL;
+        case tcuTexture.CompareMode.COMPAREMODE_EQUAL: return gl.EQUAL;
+        case tcuTexture.CompareMode.COMPAREMODE_NOT_EQUAL: return gl.NOTEQUAL;
+        case tcuTexture.CompareMode.COMPAREMODE_ALWAYS: return gl.ALWAYS;
+        case tcuTexture.CompareMode.COMPAREMODE_NEVER: return gl.NEVER;
+        default:
+            throw new Error("Can't map compare mode");
+    }
+};
 
 /**
  * Get GL cube face.
