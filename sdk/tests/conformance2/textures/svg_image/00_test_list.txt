@@ -25,8 +25,8 @@ tex-image-and-sub-image-2d-with-svg-image-rgba8-rgba-unsigned_byte.html
 tex-image-and-sub-image-2d-with-svg-image-srgb8_alpha8-rgba-unsigned_byte.html
 tex-image-and-sub-image-2d-with-svg-image-rgb5_a1-rgba-unsigned_byte.html
 tex-image-and-sub-image-2d-with-svg-image-rgb5_a1-rgba-unsigned_short_5_5_5_1.html
-tex-image-and-sub-image-2d-with-svg-image-rgba4444-rgba-unsigned_byte.html
-tex-image-and-sub-image-2d-with-svg-image-rgba4444-rgba-unsigned_short_4_4_4_4.html
+tex-image-and-sub-image-2d-with-svg-image-rgba4-rgba-unsigned_byte.html
+tex-image-and-sub-image-2d-with-svg-image-rgba4-rgba-unsigned_short_4_4_4_4.html
 tex-image-and-sub-image-2d-with-svg-image-rgba16f-rgba-half_float.html
 tex-image-and-sub-image-2d-with-svg-image-rgba16f-rgba-float.html
 tex-image-and-sub-image-2d-with-svg-image-rgba32f-rgba-float.html
