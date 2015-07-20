@@ -38,10 +38,11 @@ DO NOT EDIT!
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
 <script src="../../../js/js-test-pre.js"></script>
 <script src="../../../js/webgl-test-utils.js"></script>
-<script src="../../../js/tests/tex-image-and-sub-image-2d-with-canvas.js"></script>
+<script src="../../../js/tests/tex-image-and-sub-image-2d-with-image-data.js"></script>
 </head>
 <body>
-<canvas id="example" width="32" height="32"></canvas>
+<canvas id="texcanvas" width="1" height="2"></canvas>
+<canvas id="example" width="1" height="2"></canvas>
 <div id="description"></div>
 <div id="console"></div>
 <script>
@@ -50,7 +51,7 @@ function testPrologue(gl) {
     return true;
 }
 
-generateTest("RGBA4444", "RGBA", "UNSIGNED_SHORT_4_4_4_4", testPrologue, "../../../resources/")();
+generateTest("RGBA4", "RGBA", "UNSIGNED_SHORT_4_4_4_4", testPrologue, "../../../resources/")();
 </script>
 </body>
 </html>
