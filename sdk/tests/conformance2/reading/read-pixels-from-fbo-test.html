@@ -105,7 +105,7 @@ for (var tt = 0; tt < testCases.length; ++tt) {
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
                           gl.TEXTURE_2D, colorImage, 0);
   wtu.glErrorShouldBe(
-      gl, gl.NO_ERROR, "Setting up fbo should generate no erro");
+      gl, gl.NO_ERROR, "Setting up fbo should generate no error");
   if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
     debug("fbo is not complete, skip");
     continue;
@@ -114,13 +114,13 @@ for (var tt = 0; tt < testCases.length; ++tt) {
   gl.clearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
   gl.clear(gl.COLOR_BUFFER_BIT);
   wtu.glErrorShouldBe(
-      gl, gl.NO_ERROR, "Clear color should generate no erro");
+      gl, gl.NO_ERROR, "Clear color should generate no error");
 
   var buf = new test.arrayType(width * height * 4);
   gl.readPixels(0, 0, width, height, gl[test.readFormat], gl[test.readType], buf);
   if (test.succeed) {
     wtu.glErrorShouldBe(
-        gl, gl.NO_ERROR, "readPixels should generate no erro");
+        gl, gl.NO_ERROR, "readPixels should generate no error");
     var diffFound = false;
     for (var ii = 0; ii < width * height; ++ii) {
       var offset = ii * 4;
