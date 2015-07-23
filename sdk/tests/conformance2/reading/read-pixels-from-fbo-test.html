@@ -1,0 +1,159 @@
+<!--
+
+/*
+** Copyright (c) 2015 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL 2 ReadPixels Test.</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"> </script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+description("Checks that ReadPixels from a fbo works as expected.");
+
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext();
+
+function rgba8_f(buf, index) {
+  return [buf[index]/255.0, buf[index + 1]/255.0, buf[index + 2]/255.0, buf[index + 3]/255.0];
+}
+
+function rgb10a2_f(buf, index) {
+  var color = buf[index];
+  var r = (color & 0x3FF);
+  var g = ((color >> 10) & 0x3FF);
+  var b = ((color >> 20) & 0x3FF);
+  var a = (color >> 30);
+  return [r/1023.0, g/1023.0, b/1023.0, a/3.0];
+}
+
+var tol = 2.0 / 255.0;
+
+var testCases = [
+  {
+    texInternalFormat: 'RGBA8', texFormat: 'RGBA', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', arrayType: Uint8Array,
+    colorFunc: rgba8_f, succeed: true
+  },
+  {
+    texInternalFormat: 'RGBA8UI', texFormat: 'RGBA_INTEGER', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT', arrayType: Uint32Array,
+    colorFunc: rgba8_f, succeed: true
+  },
+  {
+    texInternalFormat: 'RGBA8I', texFormat: 'RGBA_INTEGER', texType: 'BYTE',
+    readFormat: 'RGBA_INTEGER', readType: 'INT', arrayType: Int32Array,
+    colorFunc: rgba8_f, succeed: true
+  },
+  {
+    texInternalFormat: 'RGB10_A2', texFormat: 'RGBA', texType: 'UNSIGNED_INT_2_10_10_10_REV',
+    readFormat: 'RGBA', readType: 'UNSIGNED_INT_2_10_10_10_REV', arrayType: Uint32Array,
+    colorFunc: rgb10a2_f, succeed: true
+  },
+  {
+    texInternalFormat: 'RGBA8', texFormat: 'RGBA', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_BYTE', arrayType: Uint8Array,
+    colorFunc: rgba8_f, succeed: false, msg: 'try to read '
+  },
+  // TODO(zmo): add float/half_float test cases with extension supports.
+];
+
+for (var tt = 0; tt < testCases.length; ++tt) {
+  var test = testCases[tt];
+  debug("");
+  debug("ReadPixels from fbo with color image = (" + test.texInternalFormat +
+        ", " + test.texFormat + ", " + test.texType +
+        "), format = " + test.readFormat + ", type = " + test.readType);
+  var width = 2;
+  var height = 2;
+  var fbo = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+  var colorImage = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, colorImage);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl[test.texInternalFormat], width, height, 0,
+                gl[test.texFormat], gl[test.texType], null);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
+                          gl.TEXTURE_2D, colorImage, 0);
+  wtu.glErrorShouldBe(
+      gl, gl.NO_ERROR, "Setting up fbo should generate no erro");
+  if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+    debug("fbo is not complete, skip");
+    continue;
+  }
+  var clearColor = [0.5, 0.7, 1.0, 1.0];
+  gl.clearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  wtu.glErrorShouldBe(
+      gl, gl.NO_ERROR, "Clear color should generate no erro");
+
+  var buf = new test.arrayType(width * height * 4);
+  gl.readPixels(0, 0, width, height, gl[test.readFormat], gl[test.readType], buf);
+  if (test.succeed) {
+    wtu.glErrorShouldBe(
+        gl, gl.NO_ERROR, "readPixels should generate no erro");
+    var diffFound = false;
+    for (var ii = 0; ii < width * height; ++ii) {
+      var offset = ii * 4;
+      var readColor = test.colorFunc(buf, offset);
+      for (var c = 0; c < 4; ++c) {
+        if (Math.abs(clearColor[c] - readColor[c]) > tol) {
+          diffFound = true;
+          break;
+        }
+      }
+      if (diffFound) {
+        testFailed("Expected = " + clearColor + ", was = " + readColor);
+        break;
+      }
+    }
+    if (!diffFound) {
+      testPassed("Color read back as expected");
+    }
+  } else {
+    if (gl.getError() == gl.NO_ERROR) {
+      testFailed("Test should fail but didn't: " + test.msg);
+    } else {
+      testPassed("Test failed as expected: " + test.msg);
+    }
+  }
+  gl.deleteTexture(colorImage);
+  gl.deleteFramebuffer(fbo);
+}
+
+debug("")
+var successfullyParsed = true;
+</script>
+<script src="../../js/js-test-post.js"></script>
+</body>
+</html>
+
