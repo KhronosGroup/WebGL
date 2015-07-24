@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 9 July 2015</h2>
+    <h2 class="no-toc">Editor's Draft 24 July 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -254,7 +254,6 @@
     </p>
     <pre class="idl">
 typedef long long GLint64;
-typedef unsigned long long GLuint64;
 </pre>
 
 <!-- ======================================================================================================= -->
@@ -686,7 +685,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum MAX_ELEMENT_INDEX                             = 0x8D6B;
   const GLenum TEXTURE_IMMUTABLE_LEVELS                      = 0x82DF;
 
-  const GLuint64 TIMEOUT_IGNORED                             = 0xFFFFFFFFFFFFFFFF;
+  const GLint64 TIMEOUT_IGNORED                              = -1;
 
   /* WebGL-specific enums */
   const GLenum MAX_CLIENT_WAIT_TIMEOUT_WEBGL                 = 0x9247;
@@ -801,8 +800,8 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   WebGLSync? fenceSync(GLenum condition, GLbitfield flags);
   [WebGLHandlesContextLoss] GLboolean isSync(WebGLSync? sync);
   void deleteSync(WebGLSync? sync);
-  GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout);
-  void waitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout);
+  GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout);
+  void waitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout);
   any getSyncParameter(WebGLSync? sync, GLenum pname);
 
   /* Transform Feedback */
@@ -2174,7 +2173,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
           This method merely gives the author greater control over when the sync object is destroyed.
       </dd>
       <dt>
-        <p class="idl-code">GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout)
+        <p class="idl-code">GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.3 &sect;5.2.1</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClientWaitSync.xhtml" class="nonnormative">man page</a>)
@@ -2210,7 +2209,8 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         short maximum timeout to prevent blocking the main thread either indefinitely or for long periods of time. The
         implementation-defined timeout may be queried by calling <code>getParameter</code> with the
         argument <code>MAX_CLIENT_WAIT_TIMEOUT_WEBGL</code>. If <code>timeout</code> is larger than this
-        implementation-defined timeout then an <code>INVALID_OPERATION</code> error is generated.
+        implementation-defined timeout then an <code>INVALID_OPERATION</code> error is generated. If <code>timeout</code>
+        is less than -1 then an <code>INVALID_VALUE</code> error is generated.
         </p>
 
         <div class="note">
@@ -2225,7 +2225,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
 
       </dd>
       <dt>
-        <p class="idl-code">void waitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout)
+        <p class="idl-code">void waitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.3 &sect;5.2.1</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glWaitSync.xhtml" class="nonnormative">man page</a>)
@@ -2794,6 +2794,14 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         Instead of using <code>MapBufferRange</code>, buffer data may be read by using the
         <code>getBufferSubData</code> entry point.
     </div>
+
+    <h3><a name="TIMEOUT_IGNORED">TIMEOUT_IGNORED</a></h3>
+    <p>
+        In the WebGL 2.0 API TIMEOUT_IGNORED is defined as a GLint64 with the value -1 instead of a GLuint64
+        with the value 0xFFFFFFFFFFFFFFFF. This is because Javascript cannot accurately represent an integer
+        that large. For the same reason clientWaitSync and waitSync both take GLint64 values instead of GLuint64
+        for timeout.
+    </p>
 
     <h3><a name="CLIENT_WAIT_SYNC">clientWaitSync</a></h3>
     <p>

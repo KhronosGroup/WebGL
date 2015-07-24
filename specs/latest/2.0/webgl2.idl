@@ -7,7 +7,6 @@
 // https://www.khronos.org/registry/typedarray/specs/latest/typedarrays.idl
 
 typedef long long GLint64;
-typedef unsigned long long GLuint64;
 
 
 interface WebGLQuery : WebGLObject {
@@ -302,7 +301,7 @@ interface WebGL2RenderingContextBase
   const GLenum MAX_ELEMENT_INDEX                             = 0x8D6B;
   const GLenum TEXTURE_IMMUTABLE_LEVELS                      = 0x82DF;
 
-  const GLuint64 TIMEOUT_IGNORED                             = 0xFFFFFFFFFFFFFFFF;
+  const GLint64 TIMEOUT_IGNORED                              = -1;
 
   /* WebGL-specific enums */
   const GLenum MAX_CLIENT_WAIT_TIMEOUT_WEBGL                 = 0x9247;
@@ -417,8 +416,8 @@ interface WebGL2RenderingContextBase
   WebGLSync? fenceSync(GLenum condition, GLbitfield flags);
   [WebGLHandlesContextLoss] GLboolean isSync(WebGLSync? sync);
   void deleteSync(WebGLSync? sync);
-  GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout);
-  void waitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout);
+  GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout);
+  void waitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout);
   any getSyncParameter(WebGLSync? sync, GLenum pname);
 
   /* Transform Feedback */
