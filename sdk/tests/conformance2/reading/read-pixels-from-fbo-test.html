@@ -44,54 +44,362 @@ description("Checks that ReadPixels from a fbo works as expected.");
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext();
 
-function rgba8_f(buf, index) {
-  return [buf[index]/255.0, buf[index + 1]/255.0, buf[index + 2]/255.0, buf[index + 3]/255.0];
+function rgba8(buf, index, expectedColor) {
+  var scale = 1.0 / 0xFF;
+  var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
+  var tol = 2.0 * scale;
+  for (var ii = 0; ii < 4; ++ii) {
+    if (Math.abs(color[ii] - expectedColor[ii]) > tol) {
+      testFailed("Expected = " + expectedColor + ", was = " + color);
+      return false;
+    }
+  }
+  return true;
 }
 
-function rgb10a2_f(buf, index) {
-  var color = buf[index];
-  var r = (color & 0x3FF);
-  var g = ((color >> 10) & 0x3FF);
-  var b = ((color >> 20) & 0x3FF);
-  var a = (color >> 30);
-  return [r/1023.0, g/1023.0, b/1023.0, a/3.0];
+function rgba7(buf, index, expectedColor) {
+  var scale = 1.0 / 0x7F;
+  var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
+  var tol = 2.0 * scale;
+  for (var ii = 0; ii < 4; ++ii) {
+    if (Math.abs(color[ii] - expectedColor[ii]) > tol) {
+      testFailed("Expected = " + expectedColor + ", was = " + color);
+      return false;
+    }
+  }
+  return true;
 }
 
-var tol = 2.0 / 255.0;
+function rgba16(buf, index, expectedColor) {
+  var scale = 1.0 / 0xFFFFF;
+  var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
+  var tol = 2.0 * scale;
+  for (var ii = 0; ii < 4; ++ii) {
+    if (Math.abs(color[ii] - expectedColor[ii]) > tol) {
+      testFailed("Expected = " + expectedColor + ", was = " + color);
+      return false;
+    }
+  }
+  return true;
+}
 
-var testCases = [
+function rgba15(buf, index, expectedColor) {
+  var scale = 1.0 / 0x7FFFF;
+  var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
+  var tol = 2.0 * scale;
+  for (var ii = 0; ii < 4; ++ii) {
+    if (Math.abs(color[ii] - expectedColor[ii]) > tol) {
+      testFailed("Expected = " + expectedColor + ", was = " + color);
+      return false;
+    }
+  }
+  return true;
+}
+
+function rgba32(buf, index, expectedColor) {
+  var scale = 1.0 / 0xFFFFFFFFF;
+  var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
+  var tol = 2.0 * scale;
+  for (var ii = 0; ii < 4; ++ii) {
+    if (Math.abs(color[ii] - expectedColor[ii]) > tol) {
+      testFailed("Expected = " + expectedColor + ", was = " + color);
+      return false;
+    }
+  }
+  return true;
+}
+
+function rgba31(buf, index, expectedColor) {
+  var scale = 1.0 / 0x7FFFFFFFF;
+  var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
+  var tol = 2.0 * scale;
+  for (var ii = 0; ii < 4; ++ii) {
+    if (Math.abs(color[ii] - expectedColor[ii]) > tol) {
+      testFailed("Expected = " + expectedColor + ", was = " + color);
+      return false;
+    }
+  }
+  return true;
+}
+
+function r5g6b5a(buf, index, expectedColor) {
+  var scale = 1.0 / 0xFF;
+  var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
+  for (var ii = 0; ii < 4; ++ii) {
+    var tol = (ii == 1 ? 2.0 / 0x1F : (ii == 3 ? 0.0 : 2.0 / 0x3F));
+    if (Math.abs(color[ii] - expectedColor[ii]) > tol) {
+      testFailed("Expected = " + expectedColor + ", was = " + color);
+      return false;
+    }
+  }
+  return true;
+}
+
+function r5g5b5a1(buf, index, expectedColor) {
+  var scale = 1.0 / 0xFF;
+  var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
+  for (var ii = 0; ii < 4; ++ii) {
+    var tol = (ii == 3 ? 0.0 : 2.0 / 0x1F);
+    if (Math.abs(color[ii] - expectedColor[ii]) > tol) {
+      testFailed("Expected = " + expectedColor + ", was = " + color);
+      return false;
+    }
+  }
+  return true;
+}
+
+function rgba4(buf, index, expectedColor) {
+  var scale = 1.0 / 0xFF;
+  var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
+  var tol = 2.0 / 0xF;
+  for (var ii = 0; ii < 4; ++ii) {
+    if (Math.abs(color[ii] - expectedColor[ii]) > tol) {
+      testFailed("Expected = " + expectedColor + ", was = " + color);
+      return false;
+    }
+  }
+  return true;
+}
+
+function r10g10b10a2(buf, index, expectedColor) {
+  var scale = 1.0 / 0xFF;
+  var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
+  for (var ii = 0; ii < 4; ++ii) {
+    var tol = (ii == 3 ? 0.0 : 2.0 / 0xFF);
+    if (Math.abs(color[ii] - expectedColor[ii]) > tol) {
+      testFailed("Expected = " + expectedColor + ", was = " + color);
+      return false;
+    }
+  }
+  return true;
+}
+
+function r10g10b10a2_int32(buf, index, expectedColor) {
+  var r = (buf[index] & 0x3FF);
+  var g = ((buf[index] >> 10) & 0x3FF);
+  var b = ((buf[index] >> 20) & 0x3FF);
+  var a = (buf[index] >> 30);
+  var scale = 1.0 / 0x3FF, scaleAlpha = 1.0 / 0x3;
+  var color = [r * scale, g * scale, b * scale, a * scaleAlpha];
+  for (var ii = 0; ii < 4; ++ii) {
+    var tol = (ii == 3 ? scaleAlpha : 2.0 * scale);
+    if (Math.abs(color[ii] - expectedColor[ii]) > tol) {
+      testFailed("Expected = " + expectedColor + ", was = " + color);
+      return false;
+    }
+  }
+  return true;
+}
+
+function filter_r(color) {
+  return [color[0], 0.0, 0.0, 1.0];
+}
+
+function filter_rg(color) {
+  return [color[0], color[1], 0.0, 1.0];
+}
+
+function filter_rgb(color) {
+  return [color[0], color[1], color[2], 1.0];
+}
+
+function filter_rgba(color) {
+  return color;
+}
+
+var textureTestCases = [
+  {
+    texInternalFormat: 'R8', texFormat: 'RED', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: rgba8,
+    colorFilterFunc: filter_r
+  },
+  {
+    texInternalFormat: 'R8UI', texFormat: 'RED_INTEGER', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT', colorCheckFunc: rgba8,
+    colorFilterFunc: filter_r
+  },
+  {
+    texInternalFormat: 'R8I', texFormat: 'RED_INTEGER', texType: 'BYTE',
+    readFormat: 'RGBA_INTEGER', readType: 'INT', colorCheckFunc: rgba7,
+    colorFilterFunc: filter_r
+  },
+  {
+    texInternalFormat: 'R16UI', texFormat: 'RED_INTEGER', texType: 'UNSIGNED_SHORT',
+    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT', colorCheckFunc: rgba16,
+    colorFilterFunc: filter_r
+  },
+  {
+    texInternalFormat: 'R16I', texFormat: 'RED_INTEGER', texType: 'SHORT',
+    readFormat: 'RGBA_INTEGER', readType: 'INT', colorCheckFunc: rgba15,
+    colorFilterFunc: filter_r
+  },
+  {
+    texInternalFormat: 'R32UI', texFormat: 'RED_INTEGER', texType: 'UNSIGNED_INT',
+    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT', colorCheckFunc: rgba32,
+    colorFilterFunc: filter_r
+  },
+  {
+    texInternalFormat: 'R32I', texFormat: 'RED_INTEGER', texType: 'INT',
+    readFormat: 'RGBA_INTEGER', readType: 'INT', colorCheckFunc: rgba31,
+    colorFilterFunc: filter_r
+  },
+
+
+  {
+    texInternalFormat: 'RG8', texFormat: 'RG', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: rgba8,
+    colorFilterFunc: filter_rg
+  },
+  {
+    texInternalFormat: 'RG8UI', texFormat: 'RG_INTEGER', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT', colorCheckFunc: rgba8,
+    colorFilterFunc: filter_rg
+  },
+  {
+    texInternalFormat: 'RG8I', texFormat: 'RG_INTEGER', texType: 'BYTE',
+    readFormat: 'RGBA_INTEGER', readType: 'INT', colorCheckFunc: rgba7,
+    colorFilterFunc: filter_rg
+  },
+  {
+    texInternalFormat: 'RG16UI', texFormat: 'RG_INTEGER', texType: 'UNSIGNED_SHORT',
+    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT', colorCheckFunc: rgba16,
+    colorFilterFunc: filter_rg
+  },
+  {
+    texInternalFormat: 'RG16I', texFormat: 'RG_INTEGER', texType: 'SHORT',
+    readFormat: 'RGBA_INTEGER', readType: 'INT', colorCheckFunc: rgba15,
+    colorFilterFunc: filter_rg
+  },
+  {
+    texInternalFormat: 'RG32UI', texFormat: 'RG_INTEGER', texType: 'UNSIGNED_INT',
+    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT', colorCheckFunc: rgba32,
+    colorFilterFunc: filter_rg
+  },
+  {
+    texInternalFormat: 'RG32I', texFormat: 'RG_INTEGER', texType: 'INT',
+    readFormat: 'RGBA_INTEGER', readType: 'INT', colorCheckFunc: rgba31,
+    colorFilterFunc: filter_rg
+  },
+
+
+  {
+    texInternalFormat: 'RGB8', texFormat: 'RGB', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: rgba8,
+    colorFilterFunc: filter_rgb
+  },
+  {
+    texInternalFormat: 'RGB565', texFormat: 'RGB', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: r5g6b5a,
+    colorFilterFunc: filter_rgb
+  },
+  {
+    texInternalFormat: 'RGB565', texFormat: 'RGB', texType: 'UNSIGNED_SHORT_5_6_5',
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: r5g6b5a,
+    colorFilterFunc: filter_rgb
+  },
+
+
   {
     texInternalFormat: 'RGBA8', texFormat: 'RGBA', texType: 'UNSIGNED_BYTE',
-    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', arrayType: Uint8Array,
-    colorFunc: rgba8_f, succeed: true
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: rgba8,
+    colorFilterFunc: filter_rgba
   },
   {
-    texInternalFormat: 'RGBA8UI', texFormat: 'RGBA_INTEGER', texType: 'UNSIGNED_BYTE',
-    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT', arrayType: Uint32Array,
-    colorFunc: rgba8_f, succeed: true
+    texInternalFormat: 'SRGB8_ALPHA8', texFormat: 'RGBA', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: rgba8,
+    colorFilterFunc: filter_rgba
   },
   {
-    texInternalFormat: 'RGBA8I', texFormat: 'RGBA_INTEGER', texType: 'BYTE',
-    readFormat: 'RGBA_INTEGER', readType: 'INT', arrayType: Int32Array,
-    colorFunc: rgba8_f, succeed: true
+    texInternalFormat: 'RGB5_A1', texFormat: 'RGBA', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: r5g5b5a1,
+    colorFilterFunc: filter_rgba
+  },
+  {
+    texInternalFormat: 'RGB5_A1', texFormat: 'RGBA', texType: 'UNSIGNED_SHORT_5_5_5_1',
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: r5g5b5a1,
+    colorFilterFunc: filter_rgba
+  },
+  {
+    texInternalFormat: 'RGB5_A1', texFormat: 'RGBA', texType: 'UNSIGNED_INT_2_10_10_10_REV',
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: r5g5b5a1,
+    colorFilterFunc: filter_rgba
+  },
+  {
+    texInternalFormat: 'RGBA4', texFormat: 'RGBA', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: rgba4,
+    colorFilterFunc: filter_rgba
+  },
+  {
+    texInternalFormat: 'RGBA4', texFormat: 'RGBA', texType: 'UNSIGNED_SHORT_4_4_4_4',
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: rgba4,
+    colorFilterFunc: filter_rgba
   },
   {
     texInternalFormat: 'RGB10_A2', texFormat: 'RGBA', texType: 'UNSIGNED_INT_2_10_10_10_REV',
-    readFormat: 'RGBA', readType: 'UNSIGNED_INT_2_10_10_10_REV', arrayType: Uint32Array,
-    colorFunc: rgb10a2_f, succeed: true
+    readFormat: 'RGBA', readType: 'UNSIGNED_BYTE', colorCheckFunc: r10g10b10a2,
+    colorFilterFunc: filter_rgba
   },
   {
-    texInternalFormat: 'RGBA8', texFormat: 'RGBA', texType: 'UNSIGNED_BYTE',
-    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_BYTE', arrayType: Uint8Array,
-    colorFunc: rgba8_f, succeed: false, msg: 'try to read '
+    texInternalFormat: 'RGB10_A2', texFormat: 'RGBA', texType: 'UNSIGNED_INT_2_10_10_10_REV',
+    readFormat: 'RGBA', readType: 'UNSIGNED_INT_2_10_10_10_REV', colorCheckFunc: r10g10b10a2_int32,
+    colorFilterFunc: filter_rgba
+  },
+  {
+    texInternalFormat: 'RGBA8UI', texFormat: 'RGBA_INTEGER', texType: 'UNSIGNED_BYTE',
+    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT', colorCheckFunc: rgba8,
+    colorFilterFunc: filter_rgba
+  },
+  {
+    texInternalFormat: 'RGBA8I', texFormat: 'RGBA_INTEGER', texType: 'BYTE',
+    readFormat: 'RGBA_INTEGER', readType: 'INT', colorCheckFunc: rgba7,
+    colorFilterFunc: filter_rgba
+  },
+  {
+    texInternalFormat: 'RGB10_A2UI', texFormat: 'RGBA_INTEGER', texType: 'UNSIGNED_INT_2_10_10_10_REV',
+    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT', colorCheckFunc: r10g10b10a2,
+    colorFilterFunc: filter_rgba
+  },
+  {
+    texInternalFormat: 'RGBA16UI', texFormat: 'RGBA_INTEGER', texType: 'UNSIGNED_SHORT',
+    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT', colorCheckFunc: rgba16,
+    colorFilterFunc: filter_rgba
+  },
+  {
+    texInternalFormat: 'RGBA16I', texFormat: 'RGBA_INTEGER', texType: 'SHORT',
+    readFormat: 'RGBA_INTEGER', readType: 'INT', colorCheckFunc: rgba15,
+    colorFilterFunc: filter_rgba
+  },
+  {
+    texInternalFormat: 'RGBA32UI', texFormat: 'RGBA_INTEGER', texType: 'UNSIGNED_INT',
+    readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT', colorCheckFunc: rgba32,
+    colorFilterFunc: filter_rgba
+  },
+  {
+    texInternalFormat: 'RGBA32I', texFormat: 'RGBA_INTEGER', texType: 'INT',
+    readFormat: 'RGBA_INTEGER', readType: 'INT', colorCheckFunc: rgba31,
+    colorFilterFunc: filter_rgba
   },
   // TODO(zmo): add float/half_float test cases with extension supports.
 ];
 
-for (var tt = 0; tt < testCases.length; ++tt) {
-  var test = testCases[tt];
+function getArrayTypeFromReadPixelsType(gl, type) {
+  switch (type) {
+    case gl.UNSIGNED_BYTE:
+      return Uint8Array;
+    case gl.INT:
+      return Int32Array;
+    case gl.UNSIGNED_INT:
+    case gl.UNSIGNED_INT_2_10_10_10_REV:
+      return Uint32Array;
+    default:
+      return null;
+  }
+}
+
+for (var tt = 0; tt < textureTestCases.length; ++tt) {
+  var test = textureTestCases[tt];
   debug("");
-  debug("ReadPixels from fbo with color image = (" + test.texInternalFormat +
+  debug("ReadPixels from fbo with texture = (" + test.texInternalFormat +
         ", " + test.texFormat + ", " + test.texType +
         "), format = " + test.readFormat + ", type = " + test.readType);
   var width = 2;
@@ -116,35 +424,22 @@ for (var tt = 0; tt < testCases.length; ++tt) {
   wtu.glErrorShouldBe(
       gl, gl.NO_ERROR, "Clear color should generate no error");
 
-  var buf = new test.arrayType(width * height * 4);
+  var arrayType = getArrayTypeFromReadPixelsType(gl, gl[test.readType]);
+  var buf = new arrayType(width * height * 4);
   gl.readPixels(0, 0, width, height, gl[test.readFormat], gl[test.readType], buf);
-  if (test.succeed) {
-    wtu.glErrorShouldBe(
-        gl, gl.NO_ERROR, "readPixels should generate no error");
-    var diffFound = false;
-    for (var ii = 0; ii < width * height; ++ii) {
-      var offset = ii * 4;
-      var readColor = test.colorFunc(buf, offset);
-      for (var c = 0; c < 4; ++c) {
-        if (Math.abs(clearColor[c] - readColor[c]) > tol) {
-          diffFound = true;
-          break;
-        }
-      }
-      if (diffFound) {
-        testFailed("Expected = " + clearColor + ", was = " + readColor);
-        break;
-      }
+  wtu.glErrorShouldBe(
+      gl, gl.NO_ERROR, "readPixels should generate no error");
+  var diffFound = false;
+  for (var ii = 0; ii < width * height; ++ii) {
+    var offset = ii * 4;
+    var expectedColor = test.colorFilterFunc(clearColor);
+    if (!test.colorCheckFunc(buf, offset, expectedColor)) {
+      diffFound = true;
+      break;
     }
-    if (!diffFound) {
-      testPassed("Color read back as expected");
-    }
-  } else {
-    if (gl.getError() == gl.NO_ERROR) {
-      testFailed("Test should fail but didn't: " + test.msg);
-    } else {
-      testPassed("Test failed as expected: " + test.msg);
-    }
+  }
+  if (!diffFound) {
+    testPassed("Color read back as expected");
   }
   gl.deleteTexture(colorImage);
   gl.deleteFramebuffer(fbo);
