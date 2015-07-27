@@ -396,6 +396,13 @@ function runDrawTests() {
   });
 
   if (maxUsable > 1) {
+    // Prepare for following tests by clearing all attachments to red.
+    debug("prepare by clearing all attachments to red");
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.clearColor(1, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    checkAttachmentsForColor(attachments, [255, 0, 0, 255]);
+
     var bufs1 = makeColorAttachmentArray(maxUsable);
     var bufs2 = makeColorAttachmentArray(maxUsable);
     for (var ii = 0; ii < maxUsable; ++ii) {
