@@ -386,13 +386,108 @@ function getArrayTypeFromReadPixelsType(gl, type) {
   switch (type) {
     case gl.UNSIGNED_BYTE:
       return Uint8Array;
-    case gl.INT:
-      return Int32Array;
+    case gl.BYTE:
+      return Int8Array;
+    case gl.UNSIGNED_SHORT:
+    case gl.UNSIGNED_SHORT_5_6_5:
+    case gl.UNSIGNED_SHORT_4_4_4_4:
+    case gl.UNSIGNED_SHORT_5_5_5_1:
+      return Uint16Array;
+    case gl.SHORT:
+      return Int16Array;
     case gl.UNSIGNED_INT:
     case gl.UNSIGNED_INT_2_10_10_10_REV:
+    case gl.UNSIGNED_INT_10F_11F_11F_REV:
+    case gl.UNSIGNED_INT_5_9_9_9_REV:
       return Uint32Array;
+    case gl.INT:
+      return Int32Array;
+    case gl.HALF_FLOAT:
+      return Uint16Array;
+    case gl.FLOAT:
+      return Float32Array;
     default:
       return null;
+  }
+}
+
+function getFormatString(gl, format) {
+  switch (format) {
+    case gl.RED:
+      return 'RED';
+    case gl.RED_INTEGER:
+      return 'RED_INTEGER';
+    case gl.RG:
+      return 'RG';
+    case gl.RG_INTEGER:
+      return 'RG_INTEGER';
+    case gl.RGB:
+      return 'RGB';
+    case gl.RGB_INTEGER:
+      return 'RGB_INTEGER';
+    case gl.RGBA:
+      return 'RGBA';
+    case gl.RGBA_INTEGER:
+      return 'RGBA_INTEGER';
+    case gl.LUMINANCE:
+      return 'LUMINANCE';
+    case gl.LUMINANCE_ALPHA:
+      return 'LUMINANCE_ALPHA';
+    case gl.ALPHA:
+      return 'ALPHA';
+    default:
+      return '';
+  };
+}
+
+function getTypeString(gl, type) {
+  switch (type) {
+    case gl.UNSIGNED_BYTE:
+      return 'UNSIGNED_BYTE';
+    case gl.BYTE:
+      return 'BYTE';
+    case gl.UNSIGNED_SHORT:
+      return 'UNSIGNED_SHORT';
+    case gl.SHORT:
+      return 'SHORT';
+    case gl.UNSIGNED_INT:
+      return 'UNSIGNED_INT';
+    case gl.INT:
+      return 'INT';
+    case gl.UNSIGNED_SHORT_5_6_5:
+      return 'UNSIGNED_SHORT_5_6_5';
+    case gl.UNSIGNED_SHORT_4_4_4_4:
+      return 'UNSIGNED_SHORT_4_4_4_4';
+    case gl.UNSIGNED_SHORT_5_5_5_1:
+      return 'UNSIGNED_SHORT_5_5_5_1';
+    case gl.UNSIGNED_INT_2_10_10_10_REV:
+      return 'UNSIGNED_INT_2_10_10_10_REV';
+    case gl.UNSIGNED_INT_10F_11F_11F_REV:
+      return 'UNSIGNED_INT_10F_11F_11F_REV';
+    case gl.UNSIGNED_INT_5_9_9_9_REV:
+      return 'UNSIGNED_INT_5_9_9_9_REV';
+    default:
+      return '';
+  };
+}
+
+function testReadPixels(gl, readFormat, readType, colorFilterFunc, colorCheckFunc) {
+  var arrayType = getArrayTypeFromReadPixelsType(gl, readType);
+  var buf = new arrayType(width * height * 4);
+  gl.readPixels(0, 0, width, height, readFormat, readType, buf);
+  wtu.glErrorShouldBe(
+      gl, gl.NO_ERROR, "readPixels should generate no error");
+  var diffFound = false;
+  for (var ii = 0; ii < width * height; ++ii) {
+    var offset = ii * 4;
+    var expectedColor = colorFilterFunc(clearColor);
+    if (!colorCheckFunc(buf, offset, expectedColor)) {
+      diffFound = true;
+      break;
+    }
+  }
+  if (!diffFound) {
+    testPassed("Color read back as expected");
   }
 }
 
@@ -423,24 +518,25 @@ for (var tt = 0; tt < textureTestCases.length; ++tt) {
   gl.clear(gl.COLOR_BUFFER_BIT);
   wtu.glErrorShouldBe(
       gl, gl.NO_ERROR, "Clear color should generate no error");
+  testReadPixels(gl, gl[test.readFormat], gl[test.readType],
+                 test.colorFilterFunc, test.colorCheckFunc);
 
-  var arrayType = getArrayTypeFromReadPixelsType(gl, gl[test.readType]);
-  var buf = new arrayType(width * height * 4);
-  gl.readPixels(0, 0, width, height, gl[test.readFormat], gl[test.readType], buf);
-  wtu.glErrorShouldBe(
-      gl, gl.NO_ERROR, "readPixels should generate no error");
-  var diffFound = false;
-  for (var ii = 0; ii < width * height; ++ii) {
-    var offset = ii * 4;
-    var expectedColor = test.colorFilterFunc(clearColor);
-    if (!test.colorCheckFunc(buf, offset, expectedColor)) {
-      diffFound = true;
-      break;
-    }
+  var implFormat = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT);
+  var implType = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE);
+  var implFormatString = getFormatString(implFormat);
+  var implTypeString = getTypeString(implType);
+  debug("Testing implementation dependent color read format = " + implFormatString +
+        ", type = " + implTypeString);
+  if (implFormatString == '') {
+    testFailed("Invalid IMPLEMENTATION_COLOR_READ_FORMAT = " + implFormat);
+    continue;
   }
-  if (!diffFound) {
-    testPassed("Color read back as expected");
+  if (implTypeString == '') {
+    testFailed("Invalid IMPLEMENTATION_COLOR_READ_TYPE = " + implType);
+    continue;
   }
+  testReadPixels(gl, implFormat, implType, test.colorFilterFunc, test.colorCheckFunc);
+
   gl.deleteTexture(colorImage);
   gl.deleteFramebuffer(fbo);
 }
