@@ -102,9 +102,21 @@ function runTexStorage2DTest()
         },
         {
             target: gl.TEXTURE_CUBE_MAP,
+            mipmap: true,
+            sizedformat: gl.RGBA8,
+            unsizedformat: gl.RGBA,
+            type: gl.UNSIGNED_BYTE,
+            alpha: true,
+            redpixel: new Uint8Array([0xff, 0x00, 0x00, 0x00]),
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP,
             mipmap: false,
             sizedformat: gl.RGB8,
-            unsizedformat: gl.NONE,
+            unsizedformat: gl.RGB,
+            type: gl.UNSIGNED_BYTE,
+            alpha: false,
+            redpixel: new Uint8Array([0xff, 0x00, 0x00]),
         },
         {
             target: gl.TEXTURE_CUBE_MAP,
@@ -205,18 +217,12 @@ function runTexStorage2DTest()
         gl.copyTexImage2D(imageTargets[0], 0, gl.RGBA, 0, 0, texsize, texsize, 0);
         wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "copyTexImage2D should fail on immutable texture");
 
-        // Check texture sampling on 2D target at least
-        if (target == gl.TEXTURE_2D) {
-
+        if ('redpixel' in testcase) {
             // At this point, the texture images have only been defined by
             // texStorage2D, which per spec should be equivalent to having
             // defined texture images with null data, which should sample as RGBA 0,0,0,0.
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,
+            gl.texParameteri(target, gl.TEXTURE_MIN_FILTER,
                              testcase.mipmap ? gl.NEAREST_MIPMAP_NEAREST : gl.NEAREST);
-            wtu.setupTexturedQuad(gl);
-            wtu.clearAndDrawUnitQuad(gl);
-            var alpha = testcase.alpha ? 0 : 255;
-            wtu.checkCanvas(gl, [0, 0, 0, alpha], "texture should sample as uninitialized texture after texStorage2D");
 
             // Now upload some red texture data
             var s = texsize;
@@ -235,15 +241,41 @@ function runTexStorage2DTest()
                     pixels[i * testcase.redpixel.length + j] = testcase.redpixel[j];
                 }
             }
-            for (var l = 0; l < levels; l++) {
-                gl.texSubImage2D(gl.TEXTURE_2D,
-                                 l, 0, 0,
-                                 s, s,
-                                 testcase.unsizedformat, testcase.type,
-                                 pixels);
-                s /= 2;
-                wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texSubImage2D should succeed on immutable texture as long as the format is compatible");
+
+            if (target == gl.TEXTURE_2D) {
+                wtu.setupTexturedQuad(gl);
+            } else if (target == gl.TEXTURE_CUBE_MAP) {
+                wtu.setupTexturedQuadWithCubeMap(gl);
             }
+
+            wtu.clearAndDrawUnitQuad(gl);
+            var alpha = testcase.alpha ? 0 : 255;
+            wtu.checkCanvas(gl, [0, 0, 0, alpha], "texture should sample as uninitialized texture after texStorage2D");
+
+            if (target == gl.TEXTURE_2D) {
+                for (var l = 0; l < levels; l++) {
+                    gl.texSubImage2D(gl.TEXTURE_2D,
+                                     l, 0, 0,
+                                     s, s,
+                                     testcase.unsizedformat, testcase.type,
+                                     pixels);
+                    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texSubImage2D should succeed on immutable texture as long as the format is compatible");
+                    s /= 2;
+                }
+            } else if (target == gl.TEXTURE_CUBE_MAP) {
+                for (var l = 0; l < levels; l++) {
+                    for (var f = 0; f < 6; f++) {
+                        gl.texSubImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + f,
+                                         l, 0, 0,
+                                         s, s,
+                                         testcase.unsizedformat, testcase.type,
+                                         pixels);
+                        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texSubImage2D should succeed on immutable texture as long as the format is compatible");
+                    }
+                    s /= 2;
+                }
+            }
+
             wtu.clearAndDrawUnitQuad(gl);
             wtu.checkCanvas(gl, [255, 0, 0, alpha], "texture should sample as red after uploading red pixels with texSubImage2D");
         }
