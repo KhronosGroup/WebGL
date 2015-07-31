@@ -2,3 +2,4 @@ buffer-copying-contents.html
 buffer-copying-restrictions.html
 buffer-type-restrictions.html
 getBufferSubData.html
+uniform-buffers.html
