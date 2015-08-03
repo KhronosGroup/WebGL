@@ -24,3 +24,4 @@
 --min-version 1.0.4 sampler-struct-function-arg.html
 --min-version 1.0.4 sequence-operator-evaluation-order.html
 --min-version 1.0.4 logic-inside-block-without-braces.html
+--min-version 1.0.4 qualcomm-crash.html
