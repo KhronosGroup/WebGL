@@ -1,8 +1,10 @@
 attriblocation.html
 buffercopy.html
+builtinprecision.html
 draw.html
 fbocompleteness.html
 fbomultisample.html
+fborender.html
 fbostencilbuffer.html
 fragmentoutput.html
 framebufferblit.html
@@ -19,9 +21,12 @@ pixelbufferobject.html
 primitiverestart.html
 rasterizerdiscard.html
 samplerobject.html
+shaderderivate.html
 shaderindexing.html
 shaderloop.html
 shaderstruct.html
+shaderswitch.html
+texturefiltering.html
 textureformat.html
 textureshadow.html
 texturewrap.html

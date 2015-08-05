@@ -21,9 +21,11 @@
 'use strict';
 goog.provide('functional.gles3.es3fShaderIndexingTests');
 goog.require('framework.common.tcuImageCompare');
+goog.require('framework.common.tcuStringTemplate');
 goog.require('framework.common.tcuTestCase');
 goog.require('framework.delibs.debase.deMath');
 goog.require('framework.opengl.gluShaderUtil');
+goog.require('framework.opengl.gluShaderProgram');
 goog.require('framework.opengl.gluTexture');
 goog.require('modules.shared.glsShaderRenderCase');
 
@@ -35,7 +37,7 @@ goog.scope(function() {
     var gluShaderUtil = framework.opengl.gluShaderUtil;
     var gluTexture = framework.opengl.gluTexture;
     var tcuTestCase = framework.common.tcuTestCase;
-
+    var tcuStringTemplate = framework.common.tcuStringTemplate;
     /**
      * @enum {number}
      */
@@ -243,100 +245,113 @@ goog.scope(function() {
      */
     es3fShaderIndexingTests.createVaryingArrayCase = function(caseName, description, varType, vertAccess, fragAccess) {
         /** @type {string} */ var vtx = '';
-        vtx += '#version 300 es\n';
-        vtx += 'in highp vec4 a_position;\n';
-        vtx += 'in highp vec4 a_coords;\n';
+        vtx += '#version 300 es\n' +
+               'in highp vec4 a_position;\n' +
+               'in highp vec4 a_coords;\n';
+
         if (vertAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC)
             vtx += 'uniform mediump int ui_zero, ui_one, ui_two, ui_three;\n';
         else if (vertAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC_LOOP)
             vtx += 'uniform mediump int ui_four;\n';
-        vtx += 'out ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' var[' + 4 + '];\n';
-        vtx += '\n';
-        vtx += 'void main()\n';
-        vtx += '{\n';
-        vtx += '    gl_Position = a_position;\n';
+
+        vtx += 'out ${PRECISION} ${VAR_TYPE} var[${ARRAY_LEN}];\n' +
+               '\n' +
+               'void main()\n' +
+               '{\n' +
+               '    gl_Position = a_position;\n';
+
         if (vertAccess === es3fShaderIndexingTests.IndexAccessType.STATIC) {
-            vtx += '    var[0] = ' + gluShaderUtil.getDataTypeName(varType) + '(a_coords);\n';
-            vtx += '    var[1] = ' + gluShaderUtil.getDataTypeName(varType) + '(a_coords) * 0.5;\n';
-            vtx += '    var[2] = ' + gluShaderUtil.getDataTypeName(varType) + '(a_coords) * 0.25;\n';
-            vtx += '    var[3] = ' + gluShaderUtil.getDataTypeName(varType) + '(a_coords) * 0.125;\n';
+            vtx += '    var[0] = ${VAR_TYPE}(a_coords);\n' +
+                   '    var[1] = ${VAR_TYPE}(a_coords) * 0.5;\n' +
+                   '    var[2] = ${VAR_TYPE}(a_coords) * 0.25;\n' +
+                   '    var[3] = ${VAR_TYPE}(a_coords) * 0.125;\n';
         }
         else if (vertAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC) {
-            vtx += '    var[ui_zero]  = ' + gluShaderUtil.getDataTypeName(varType) + '(a_coords);\n';
-            vtx += '    var[ui_one]   = ' + gluShaderUtil.getDataTypeName(varType) + '(a_coords) * 0.5;\n';
-            vtx += '    var[ui_two]   = ' + gluShaderUtil.getDataTypeName(varType) + '(a_coords) * 0.25;\n';
-            vtx += '    var[ui_three] = ' + gluShaderUtil.getDataTypeName(varType) + '(a_coords) * 0.125;\n';
+            vtx += '    var[ui_zero]  = ${VAR_TYPE}(a_coords);\n' +
+                   '    var[ui_one]   = ${VAR_TYPE}(a_coords) * 0.5;\n' +
+                   '    var[ui_two]   = ${VAR_TYPE}(a_coords) * 0.25;\n' +
+                   '    var[ui_three] = ${VAR_TYPE}(a_coords) * 0.125;\n';
         }
         else if (vertAccess === es3fShaderIndexingTests.IndexAccessType.STATIC_LOOP) {
-            vtx += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' coords = ' + gluShaderUtil.getDataTypeName(varType) + '(a_coords);\n';
-            vtx += '    for (int i = 0; i < 4; i++)\n';
-            vtx += '    {\n';
-            vtx += '        var[i] = ' + gluShaderUtil.getDataTypeName(varType) + '(coords);\n';
-            vtx += '        coords = coords * 0.5;\n';
-            vtx += '    }\n';
+            vtx += '	${PRECISION} ${VAR_TYPE} coords = ${VAR_TYPE}(a_coords);\n' +
+                   '    for (int i = 0; i < 4; i++)\n' +
+                   '    {\n' +
+                   '		var[i] = ${VAR_TYPE}(coords);\n' +
+                   '        coords = coords * 0.5;\n' +
+                   '    }\n';
         }
         else {
             assertMsgOptions(vertAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC_LOOP, 'Not Dynamic_Loop', false, true);
-            vtx += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' coords = ' + gluShaderUtil.getDataTypeName(varType) + '(a_coords);\n';
-            vtx += '    for (int i = 0; i < ui_four; i++)\n';
-            vtx += '    {\n';
-            vtx += '        var[i] = ' + gluShaderUtil.getDataTypeName(varType) + '(coords);\n';
-            vtx += '        coords = coords * 0.5;\n';
-            vtx += '    }\n';
+            vtx += '	${PRECISION} ${VAR_TYPE} coords = ${VAR_TYPE}(a_coords);\n' +
+                   '    for (int i = 0; i < ui_four; i++)\n' +
+                   '    {\n' +
+                   '		var[i] = ${VAR_TYPE}(coords);\n' +
+                   '        coords = coords * 0.5;\n' +
+                   '    }\n';
         }
         vtx += '}\n';
 
         /** @type {string} */ var frag = '';
-        frag += '#version 300 es\n';
-        frag += 'precision mediump int;\n';
-        frag += 'layout(location = 0) out mediump vec4 o_color;\n';
+        frag += '#version 300 es\n' +
+                'precision mediump int;\n' +
+                'layout(location = 0) out mediump vec4 o_color;\n';
+
         if (fragAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC)
             frag += 'uniform mediump int ui_zero, ui_one, ui_two, ui_three;\n';
         else if (fragAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC_LOOP)
             frag += 'uniform int ui_four;\n';
-        frag += 'in ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' var[' + 4 + '];\n';
-        frag += '\n';
-        frag += 'void main()\n';
-        frag += '{\n';
-        frag += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' res = ' + gluShaderUtil.getDataTypeName(varType) + '(0.0);\n';
+
+        frag += 'in ${PRECISION} ${VAR_TYPE} var[${ARRAY_LEN}];\n' +
+                '\n' +
+                'void main()\n' +
+                '{\n' +
+                '	${PRECISION} ${VAR_TYPE} res = ${VAR_TYPE}(0.0);\n';
+
         if (fragAccess === es3fShaderIndexingTests.IndexAccessType.STATIC) {
-            frag += '    res += var[0];\n';
-            frag += '    res += var[1];\n';
-            frag += '    res += var[2];\n';
-            frag += '    res += var[3];\n';
+            frag += '    res += var[0];\n' +
+                    '    res += var[1];\n' +
+                    '    res += var[2];\n' +
+                    '    res += var[3];\n';
         }
         else if (fragAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC) {
-            frag += '    res += var[ui_zero];\n';
-            frag += '    res += var[ui_one];\n';
-            frag += '    res += var[ui_two];\n';
-            frag += '    res += var[ui_three];\n';
+            frag += '    res += var[ui_zero];\n' +
+                    '    res += var[ui_one];\n' +
+                    '    res += var[ui_two];\n' +
+                    '    res += var[ui_three];\n';
         }
         else if (fragAccess === es3fShaderIndexingTests.IndexAccessType.STATIC_LOOP) {
-            frag += '    for (int i = 0; i < 4; i++)\n';
-            frag += '        res += var[i];\n';
+            frag += '    for (int i = 0; i < 4; i++)\n' +
+                    '        res += var[i];\n';
         }
         else {
             assertMsgOptions(fragAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC_LOOP, 'Not Dynamic_Loop', false, true);
-            frag += '    for (int i = 0; i < ui_four; i++)\n';
-            frag += '        res += var[i];\n';
+            frag += '    for (int i = 0; i < ui_four; i++)\n' +
+                    '        res += var[i];\n';
         }
-        frag += '    o_color = vec4(res${PADDING});\n';
-        frag += '}\n';
+        frag += '	o_color = vec4(res${PADDING});\n' +
+                '}\n';
 
         // Fill in shader templates.
+        /** @type {Object} */ var params = {};
+	    params['VAR_TYPE'] = gluShaderUtil.getDataTypeName(varType);
+	    params['ARRAY_LEN'] = '4';
+	    params['PRECISION'] = 'mediump';
+
         if (varType === gluShaderUtil.DataType.FLOAT)
-            frag = frag.replace('${PADDING}', ', 0.0, 0.0, 1.0');
+            params['PADDING'] = ', 0.0, 0.0, 1.0';
         else if (varType === gluShaderUtil.DataType.FLOAT_VEC2)
-            frag = frag.replace('${PADDING}', ', 0.0, 1.0');
+            params['PADDING'] = ', 0.0, 1.0';
         else if (varType === gluShaderUtil.DataType.FLOAT_VEC3)
-            frag = frag.replace('${PADDING}', ', 1.0');
+            params['PADDING'] = ', 1.0';
         else
-            frag = frag.replace('${PADDING}', '');
+            params['PADDING'] = '';
+
+        /** @type {string} */ var vertexShaderSource = tcuStringTemplate.specialize(vtx, params);
+    	/** @type {string} */ var fragmentShaderSource = tcuStringTemplate.specialize(frag, params);
 
         /** @type {function(glsShaderRenderCase.ShaderEvalContext)} */
         var evalFunc = es3fShaderIndexingTests.getArrayCoordsEvalFunc(varType);
-        return new es3fShaderIndexingTests.ShaderIndexingCase(caseName, description, true, varType, evalFunc, vtx, frag);
-
+        return new es3fShaderIndexingTests.ShaderIndexingCase(caseName, description, true, varType, evalFunc, vertexShaderSource, fragmentShaderSource);
     };
 
     /**
@@ -350,7 +365,7 @@ goog.scope(function() {
     es3fShaderIndexingTests.createUniformArrayCase = function(caseName, description, isVertexCase, varType, readAccess) {
         /** @type {string} */ var vtx = '';
         /** @type {string} */ var frag = '';
-        /** @type {string} */ var op = ''; //isVertexCase ? vtx : frag;
+        /** @type {string} */ var op = '';
 
         vtx += '#version 300 es\n';
         frag += '#version 300 es\n';
@@ -373,12 +388,10 @@ goog.scope(function() {
         else if (readAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC_LOOP)
             op += 'uniform mediump int ui_four;\n';
 
-        op += 'uniform ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' u_arr[' + 4 + '];\n';
+        op += 'uniform ${PRECISION} ${VAR_TYPE} u_arr[${ARRAY_LEN}];\n';
 
-        if (isVertexCase)
-            vtx += op;
-        else
-            frag += op;
+        vtx += isVertexCase ? op : '';
+        frag += isVertexCase ? '' : op;
         op = '';
 
         vtx += '\n';
@@ -391,7 +404,7 @@ goog.scope(function() {
         frag += '{\n';
 
         // Read array.
-        op += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' res = ' + gluShaderUtil.getDataTypeName(varType) + '(0.0);\n';
+        op += '	${PRECISION} ${VAR_TYPE} res = ${VAR_TYPE}(0.0);\n';
         if (readAccess === es3fShaderIndexingTests.IndexAccessType.STATIC) {
             op += '    res += u_arr[0];\n';
             op += '    res += u_arr[1];\n';
@@ -414,10 +427,8 @@ goog.scope(function() {
             op += '        res += u_arr[i];\n';
         }
 
-        if (isVertexCase)
-            vtx += op;
-        else
-            frag += op;
+        vtx += isVertexCase ? op : '';
+        frag += isVertexCase ? '' : op;
         op = '';
 
         if (isVertexCase) {
@@ -433,26 +444,27 @@ goog.scope(function() {
         frag += '}\n';
 
         // Fill in shader templates.
-        if (varType === gluShaderUtil.DataType.FLOAT) {
-            vtx = vtx.replace('${PADDING}', ', 0.0, 0.0, 1.0');
-            frag = frag.replace('${PADDING}', ', 0.0, 0.0, 1.0');
-        }
-        else if (varType === gluShaderUtil.DataType.FLOAT_VEC2) {
-            vtx = vtx.replace('${PADDING}', ', 0.0, 1.0');
-            frag = frag.replace('${PADDING}', ', 0.0, 1.0');
-        }
-        else if (varType === gluShaderUtil.DataType.FLOAT_VEC3) {
-            vtx = vtx.replace('${PADDING}', ', 1.0');
-            frag = frag.replace('${PADDING}', ', 1.0');
-        }
-        else {
-            vtx = vtx.replace('${PADDING}', '');
-            frag = frag.replace('${PADDING}', '');
-        }
+        /** @type {Object} */ var params = {};
+	    params['VAR_TYPE'] = gluShaderUtil.getDataTypeName(varType);
+	    params['ARRAY_LEN'] = '4';
+	    params['PRECISION'] = 'mediump';
+
+        if (varType === gluShaderUtil.DataType.FLOAT)
+            params['PADDING'] = ', 0.0, 0.0, 1.0';
+        else if (varType === gluShaderUtil.DataType.FLOAT_VEC2)
+            params['PADDING'] = ', 0.0, 1.0';
+        else if (varType === gluShaderUtil.DataType.FLOAT_VEC3)
+            params['PADDING'] = ', 1.0';
+        else
+            params['PADDING'] = '';
+
+
+        /** @type {string} */ var vertexShaderSource = tcuStringTemplate.specialize(vtx, params);
+        /** @type {string} */ var fragmentShaderSource = tcuStringTemplate.specialize(frag, params);
 
         /** @type {function(glsShaderRenderCase.ShaderEvalContext)} */
         var evalFunc = es3fShaderIndexingTests.getArrayUniformEvalFunc(varType);
-        return new es3fShaderIndexingTests.ShaderIndexingCase(caseName, description, isVertexCase, varType, evalFunc, vtx, frag);
+        return new es3fShaderIndexingTests.ShaderIndexingCase(caseName, description, isVertexCase, varType, evalFunc, vertexShaderSource, fragmentShaderSource);
     };
 
     /**
@@ -467,13 +479,13 @@ goog.scope(function() {
     es3fShaderIndexingTests.createTmpArrayCase = function(caseName, description, isVertexCase, varType, writeAccess, readAccess)    {
         /** @type {string} */ var vtx = '';
         /** @type {string} */ var frag = '';
-        /** @type {string} */ var op = ''; // isVertexCase ? vtx : frag;
+        /** @type {string} */ var op = '';
 
         vtx += '#version 300 es\n';
         frag += '#version 300 es\n';
 
-        vtx += 'in highp vec4 a_position;\n';
-        vtx += 'in highp vec4 a_coords;\n';
+        vtx += 'in highp vec4 a_position;\n' +
+               'in highp vec4 a_coords;\n';
         frag += 'layout(location = 0) out mediump vec4 o_color;\n';
 
         if (isVertexCase) {
@@ -491,84 +503,80 @@ goog.scope(function() {
         if (writeAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC_LOOP || readAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC_LOOP)
             op += 'uniform mediump int ui_four;\n';
 
-        if (isVertexCase)
-            vtx += op;
-        else
-            frag += op;
+        vtx += isVertexCase ? op : '';
+        frag += isVertexCase ? '' : op;
         op = '';
 
-        vtx += '\n';
-        vtx += 'void main()\n';
-        vtx += '{\n';
-        vtx += '    gl_Position = a_position;\n';
+        vtx += '\n' +
+               'void main()\n' +
+               '{\n' +
+               '    gl_Position = a_position;\n';
 
-        frag += '\n';
-        frag += 'void main()\n';
-        frag += '{\n';
+        frag += '\n' +
+                'void main()\n' +
+                '{\n';
 
         // Write array.
         if (isVertexCase)
-            op += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' coords = ' + gluShaderUtil.getDataTypeName(varType) + '(a_coords);\n';
+            op += '	${PRECISION} ${VAR_TYPE} coords = ${VAR_TYPE}(a_coords);\n';
         else
-            op += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' coords = ' + gluShaderUtil.getDataTypeName(varType) + '(v_coords);\n';
+            op += '	${PRECISION} ${VAR_TYPE} coords = ${VAR_TYPE}(v_coords);\n';
 
-        op += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' arr[' + 4 + '];\n';
+        op += '	${PRECISION} ${VAR_TYPE} arr[${ARRAY_LEN}];\n';
         if (writeAccess === es3fShaderIndexingTests.IndexAccessType.STATIC) {
-            op += '    arr[0] = ' + gluShaderUtil.getDataTypeName(varType) + '(coords);\n';
-            op += '    arr[1] = ' + gluShaderUtil.getDataTypeName(varType) + '(coords) * 0.5;\n';
-            op += '    arr[2] = ' + gluShaderUtil.getDataTypeName(varType) + '(coords) * 0.25;\n';
-            op += '    arr[3] = ' + gluShaderUtil.getDataTypeName(varType) + '(coords) * 0.125;\n';
+            op += '	arr[0] = ${VAR_TYPE}(coords);\n' +
+    		      '	arr[1] = ${VAR_TYPE}(coords) * 0.5;\n' +
+    		      '	arr[2] = ${VAR_TYPE}(coords) * 0.25;\n' +
+    		      '	arr[3] = ${VAR_TYPE}(coords) * 0.125;\n';
         }
         else if (writeAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC) {
-            op += '    arr[ui_zero]  = ' + gluShaderUtil.getDataTypeName(varType) + '(coords);\n';
-            op += '    arr[ui_one]   = ' + gluShaderUtil.getDataTypeName(varType) + '(coords) * 0.5;\n';
-            op += '    arr[ui_two]   = ' + gluShaderUtil.getDataTypeName(varType) + '(coords) * 0.25;\n';
-            op += '    arr[ui_three] = ' + gluShaderUtil.getDataTypeName(varType) + '(coords) * 0.125;\n';
+    		op += '	arr[ui_zero]  = ${VAR_TYPE}(coords);\n' +
+    		      '	arr[ui_one]   = ${VAR_TYPE}(coords) * 0.5;\n' +
+    		      '	arr[ui_two]   = ${VAR_TYPE}(coords) * 0.25;\n' +
+    		      '	arr[ui_three] = ${VAR_TYPE}(coords) * 0.125;\n';
         }
         else if (writeAccess === es3fShaderIndexingTests.IndexAccessType.STATIC_LOOP) {
-            op += '    for (int i = 0; i < 4; i++)\n';
-            op += '    {\n';
-            op += '        arr[i] = ' + gluShaderUtil.getDataTypeName(varType) + '(coords);\n';
-            op += '        coords = coords * 0.5;\n';
-            op += '    }\n';
+            op += '    for (int i = 0; i < 4; i++)\n' +
+                  '    {\n' +
+                  '        arr[i] = ${VAR_TYPE}(coords);\n' +
+                  '        coords = coords * 0.5;\n' +
+                  '    }\n';
         }
         else {
             assertMsgOptions(writeAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC_LOOP, 'writeAccess not supported', false, true);
-            op += '    for (int i = 0; i < ui_four; i++)\n';
-            op += '    {\n';
-            op += '        arr[i] = ' + gluShaderUtil.getDataTypeName(varType) + '(coords);\n';
-            op += '        coords = coords * 0.5;\n';
-            op += '    }\n';
+            op += '    for (int i = 0; i < ui_four; i++)\n' +
+                  '    {\n' +
+                  '        arr[i] = ${VAR_TYPE}(coords);\n' +
+                  '        coords = coords * 0.5;\n' +
+                  '    }\n';
         }
 
         // Read array.
-        op += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' res = ' + gluShaderUtil.getDataTypeName(varType) + '(0.0);\n';
+        op += '	${PRECISION} ${VAR_TYPE} res = ${VAR_TYPE}(0.0);\n';
         if (readAccess === es3fShaderIndexingTests.IndexAccessType.STATIC) {
-            op += '    res += arr[0];\n';
-            op += '    res += arr[1];\n';
-            op += '    res += arr[2];\n';
-            op += '    res += arr[3];\n';
+            op += '    res += arr[0];\n' +
+                  '    res += arr[1];\n' +
+                  '    res += arr[2];\n' +
+                  '    res += arr[3];\n';
         }
         else if (readAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC) {
-            op += '    res += arr[ui_zero];\n';
-            op += '    res += arr[ui_one];\n';
-            op += '    res += arr[ui_two];\n';
-            op += '    res += arr[ui_three];\n';
+            op += '    res += arr[ui_zero];\n' +
+                  '    res += arr[ui_one];\n' +
+                  '    res += arr[ui_two];\n' +
+                  '    res += arr[ui_three];\n';
         }
         else if (readAccess === es3fShaderIndexingTests.IndexAccessType.STATIC_LOOP) {
-            op += '    for (int i = 0; i < 4; i++)\n';
-            op += '        res += arr[i];\n';
+            op += '    for (int i = 0; i < 4; i++)\n' +
+                  '        res += arr[i];\n';
         }
         else {
             assertMsgOptions(readAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC_LOOP, 'readAccess not supported.', false, true);
-            op += '    for (int i = 0; i < ui_four; i++)\n';
-            op += '        res += arr[i];\n';
+            op += '    for (int i = 0; i < ui_four; i++)\n' +
+                  '        res += arr[i];\n';
         }
 
-        if (isVertexCase)
-            vtx += op;
-        else
-            frag += op;
+        vtx += isVertexCase ? op : '';
+        frag += isVertexCase ? '' : op;
         op = '';
 
         if (isVertexCase) {
@@ -584,26 +592,26 @@ goog.scope(function() {
         frag += '}\n';
 
         // Fill in shader templates.
-        if (varType === gluShaderUtil.DataType.FLOAT) {
-            vtx = vtx.replace('${PADDING}', ', 0.0, 0.0, 1.0');
-            frag = frag.replace('${PADDING}', ', 0.0, 0.0, 1.0');
-        }
-        else if (varType === gluShaderUtil.DataType.FLOAT_VEC2) {
-            vtx = vtx.replace('${PADDING}', ', 0.0, 1.0');
-            frag = frag.replace('${PADDING}', ', 0.0, 1.0');
-        }
-        else if (varType === gluShaderUtil.DataType.FLOAT_VEC3) {
-            vtx = vtx.replace('${PADDING}', ', 1.0');
-            frag = frag.replace('${PADDING}', ', 1.0');
-        }
-        else {
-            vtx = vtx.replace('${PADDING}', '');
-            frag = frag.replace('${PADDING}', '');
-        }
+        /** @type {Object} */ var params = {};
+    	params["VAR_TYPE"] = gluShaderUtil.getDataTypeName(varType);
+    	params["ARRAY_LEN"] = "4";
+    	params["PRECISION"] = "mediump";
+
+        if (varType === gluShaderUtil.DataType.FLOAT)
+            params['PADDING'] = ', 0.0, 0.0, 1.0';
+        else if (varType === gluShaderUtil.DataType.FLOAT_VEC2)
+            params['PADDING'] = ', 0.0, 1.0';
+        else if (varType === gluShaderUtil.DataType.FLOAT_VEC3)
+            params['PADDING'] = ', 1.0';
+        else
+            params['PADDING'] = '';
+
+    	/** @type {string} */ var vertexShaderSource = tcuStringTemplate.specialize(vtx, params);
+    	/** @type {string} */ var fragmentShaderSource = tcuStringTemplate.specialize(frag, params);
 
         /** @type {function(glsShaderRenderCase.ShaderEvalContext)} */
         var evalFunc = es3fShaderIndexingTests.getArrayCoordsEvalFunc(varType);
-        return new es3fShaderIndexingTests.ShaderIndexingCase(caseName, description, isVertexCase, varType, evalFunc, vtx, frag);
+        return new es3fShaderIndexingTests.ShaderIndexingCase(caseName, description, isVertexCase, varType, evalFunc, vertexShaderSource, fragmentShaderSource);
     };
 
     // VECTOR SUBSCRIPT.
@@ -650,7 +658,7 @@ goog.scope(function() {
     es3fShaderIndexingTests.createVectorSubscriptCase = function(caseName, description, isVertexCase, varType, writeAccess, readAccess) {
         /** @type {string} */ var vtx;
         /** @type {string} */ var frag;
-        /** @type {string} */ var op = '' ; //isVertexCase ? vtx : frag;
+        /** @type {string} */ var op = '' ;
 
         /** @type {number} */ var vecLen = gluShaderUtil.getDataTypeScalarSize(varType);
         /** @type {string} */ var vecLenName = glsShaderRenderCase.getIntUniformName(vecLen);
@@ -658,8 +666,8 @@ goog.scope(function() {
         vtx += '#version 300 es\n';
         frag += '#version 300 es\n';
 
-        vtx += 'in highp vec4 a_position;\n';
-        vtx += 'in highp vec4 a_coords;\n';
+        vtx += 'in highp vec4 a_position;\n' +
+               'in highp vec4 a_coords;\n';
         frag += 'layout(location = 0) out mediump vec4 o_color;\n';
 
         if (isVertexCase) {
@@ -684,28 +692,26 @@ goog.scope(function() {
             readAccess === es3fShaderIndexingTests.VectorAccessType.SUBSCRIPT_DYNAMIC_LOOP)
             op += 'uniform mediump int ' + vecLenName + ';\n';
 
-        if (isVertexCase)
-            vtx += op;
-        else
-            frag += op;
+        vtx += isVertexCase ? op : '';
+        frag += isVertexCase ? '' : op;
         op = '';
 
-        vtx += '\n';
-        vtx += 'void main()\n';
-        vtx += '{\n';
-        vtx += '    gl_Position = a_position;\n';
+        vtx += '\n' +
+               'void main()\n' +
+               '{\n' +
+               '    gl_Position = a_position;\n';
 
-        frag += '\n';
-        frag += 'void main()\n';
-        frag += '{\n';
+        frag += '\n' +
+                'void main()\n' +
+                '{\n';
 
         // Write vector.
         if (isVertexCase)
-            op += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' coords = ' + gluShaderUtil.getDataTypeName(varType) + '(a_coords);\n';
+            op += '	${PRECISION} ${VAR_TYPE} coords = ${VAR_TYPE}(a_coords);\n';
         else
-            op += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' coords = ' + gluShaderUtil.getDataTypeName(varType) + '(v_coords);\n';
+            op += '	${PRECISION} ${VAR_TYPE} coords = ${VAR_TYPE}(v_coords);\n';
 
-        op += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' tmp;\n';
+        op += '	${PRECISION} ${VAR_TYPE} tmp;\n';
         if (writeAccess === es3fShaderIndexingTests.VectorAccessType.DIRECT)
             op += '    tmp = coords.${SWIZZLE} * vec4(1.0, 0.5, 0.25, 0.125).${SWIZZLE};\n';
         else if (writeAccess === es3fShaderIndexingTests.VectorAccessType.COMPONENT) {
@@ -743,9 +749,9 @@ goog.scope(function() {
         }
 
         // Read vector.
-        op += '    ' + 'mediump' + ' float res = 0.0;\n';
+        op += '	${PRECISION} float res = 0.0;\n';
         if (readAccess === es3fShaderIndexingTests.VectorAccessType.DIRECT)
-            op += '    res = dot(tmp, ' + gluShaderUtil.getDataTypeName(varType) + '(1.0));\n';
+            op += '	res = dot(tmp, ${VAR_TYPE}(1.0));\n';
         else if (readAccess === es3fShaderIndexingTests.VectorAccessType.COMPONENT) {
             op += '    res += tmp.x;\n';
             if (vecLen >= 2) op += '    res += tmp.y;\n';
@@ -774,10 +780,8 @@ goog.scope(function() {
             op += '        res += tmp[i];\n';
         }
 
-        if (isVertexCase)
-            vtx += op;
-        else
-            frag += op;
+        vtx += isVertexCase ? op : '';
+        frag += isVertexCase ? '' : op;
         op = '';
 
         if (isVertexCase) {
@@ -796,15 +800,18 @@ goog.scope(function() {
         /** @type {Array<string>} */ var s_swizzles = ['', 'x', 'xy', 'xyz', 'xyzw'];
         /** @type {Array<string>} */ var s_rotSwizzles = ['', 'x', 'yx', 'yzx', 'yzwx'];
 
-        vtx = vtx.replace('${SWIZZLE}', s_swizzles[vecLen]);
-        vtx = vtx.replace('${ROT_SWIZZLE}', s_rotSwizzles[vecLen]);
+        /** @type {Object} */ var params = {};
+        params["VAR_TYPE"] = gluShaderUtil.getDataTypeName(varType);
+	    params["PRECISION"] = "mediump";
+	    params["SWIZZLE"] = s_swizzles[vecLen];
+	    params["ROT_SWIZZLE"] = s_rotSwizzles[vecLen];
 
-        frag = frag.replace('${SWIZZLE}', s_swizzles[vecLen]);
-        frag = frag.replace('${ROT_SWIZZLE}', s_rotSwizzles[vecLen]);
+        /** @type {string} */ var vertexShaderSource = tcuStringTemplate.specialize(vtx, params);
+        /** @type {string} */ var fragmentShaderSource = tcuStringTemplate.specialize(frag, params);
 
         /** @type {function(glsShaderRenderCase.ShaderEvalContext)} */
         var evalFunc = es3fShaderIndexingTests.getVectorSubscriptEvalFunc(varType);
-        return new es3fShaderIndexingTests.ShaderIndexingCase(caseName, description, isVertexCase, varType, evalFunc, vtx, frag);
+        return new es3fShaderIndexingTests.ShaderIndexingCase(caseName, description, isVertexCase, varType, evalFunc, vertexShaderSource, fragmentShaderSource);
     };
 
     // MATRIX SUBSCRIPT.
@@ -931,7 +938,7 @@ goog.scope(function() {
     es3fShaderIndexingTests.createMatrixSubscriptCase = function(caseName, description, isVertexCase, varType, writeAccess, readAccess) {
         /** @type {string} */ var vtx = '';
         /** @type {string} */ var frag = '';
-        /** @type {string} */ var op = ''; //isVertexCase ? vtx : frag;
+        /** @type {string} */ var op = '';
 
         /** @type {number} */ var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(varType);
         /** @type {number} */ var numRows = gluShaderUtil.getDataTypeMatrixNumRows(varType);
@@ -941,8 +948,8 @@ goog.scope(function() {
         vtx += '#version 300 es\n';
         frag += '#version 300 es\n';
 
-        vtx += 'in highp vec4 a_position;\n';
-        vtx += 'in highp vec4 a_coords;\n';
+        vtx += 'in highp vec4 a_position;\n' +
+               'in highp vec4 a_coords;\n';
         frag += 'layout(location = 0) out mediump vec4 o_color;\n';
 
         if (isVertexCase) {
@@ -965,44 +972,42 @@ goog.scope(function() {
         if (writeAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC_LOOP || readAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC_LOOP)
             op += 'uniform mediump int ' + matSizeName + ';\n';
 
-        if (isVertexCase)
-            vtx += op;
-        else
-            frag += op;
+        vtx += isVertexCase ? op : '';
+        frag += isVertexCase ? '' : op;
         op = '';
 
-        vtx += '\n';
-        vtx += 'void main()\n';
-        vtx += '{\n';
-        vtx += '    gl_Position = a_position;\n';
+        vtx += '\n' +
+               'void main()\n' +
+               '{\n' +
+               '    gl_Position = a_position;\n';
 
-        frag += '\n';
-        frag += 'void main()\n';
-        frag += '{\n';
+        frag += '\n' +
+                'void main()\n' +
+                '{\n';
 
         // Write matrix.
         if (isVertexCase)
-            op += '    ' + 'mediump' + ' vec4 coords = a_coords;\n';
+            op += '	${PRECISION} vec4 coords = a_coords;\n';
         else
-            op += '    ' + 'mediump' + ' vec4 coords = v_coords;\n';
+            op += '	${PRECISION} vec4 coords = v_coords;\n';
 
-        op += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(varType) + ' tmp;\n';
+        op += '	${PRECISION} ${MAT_TYPE} tmp;\n';
         if (writeAccess === es3fShaderIndexingTests.IndexAccessType.STATIC) {
-            op += '    tmp[0] = ' + gluShaderUtil.getDataTypeName(vecType) + '(coords);\n';
-            if (numCols >= 2) op += '    tmp[1] = ' + gluShaderUtil.getDataTypeName(vecType) + '(coords.yzwx) * 0.5;\n';
-            if (numCols >= 3) op += '    tmp[2] = ' + gluShaderUtil.getDataTypeName(vecType) + '(coords.zwxy) * 0.25;\n';
-            if (numCols >= 4) op += '    tmp[3] = ' + gluShaderUtil.getDataTypeName(vecType) + '(coords.wxyz) * 0.125;\n';
+            op += '	tmp[0] = ${VEC_TYPE}(coords);\n';
+            if (numCols >= 2) op += '    tmp[1] = ${VEC_TYPE}(coords.yzwx) * 0.5;\n';
+            if (numCols >= 3) op += '    tmp[2] = ${VEC_TYPE}(coords.zwxy) * 0.25;\n';
+            if (numCols >= 4) op += '    tmp[3] = ${VEC_TYPE}(coords.wxyz) * 0.125;\n';
         }
         else if (writeAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC) {
-            op += '    tmp[ui_zero]  = ' + gluShaderUtil.getDataTypeName(vecType) + '(coords);\n';
-            if (numCols >= 2) op += '    tmp[ui_one]   = ' + gluShaderUtil.getDataTypeName(vecType) + '(coords.yzwx) * 0.5;\n';
-            if (numCols >= 3) op += '    tmp[ui_two]   = ' + gluShaderUtil.getDataTypeName(vecType) + '(coords.zwxy) * 0.25;\n';
-            if (numCols >= 4) op += '    tmp[ui_three] = ' + gluShaderUtil.getDataTypeName(vecType) + '(coords.wxyz) * 0.125;\n';
+            op += '	tmp[ui_zero]  = ${VEC_TYPE}(coords);\n';
+            if (numCols >= 2) op += '    tmp[ui_one]   = ${VEC_TYPE}(coords.yzwx) * 0.5;\n';
+            if (numCols >= 3) op += '    tmp[ui_two]   = ${VEC_TYPE}(coords.zwxy) * 0.25;\n';
+            if (numCols >= 4) op += '    tmp[ui_three] = ${VEC_TYPE}(coords.wxyz) * 0.125;\n';
         }
         else if (writeAccess === es3fShaderIndexingTests.IndexAccessType.STATIC_LOOP) {
             op += '    for (int i = 0; i < ' + numCols + '; i++)\n';
             op += '    {\n';
-            op += '        tmp[i] = ' + gluShaderUtil.getDataTypeName(vecType) + '(coords);\n';
+            op += '		tmp[i] = ${VEC_TYPE}(coords);\n';
             op += '        coords = coords.yzwx * 0.5;\n';
             op += '    }\n';
         }
@@ -1010,13 +1015,13 @@ goog.scope(function() {
             assertMsgOptions(writeAccess === es3fShaderIndexingTests.IndexAccessType.DYNAMIC_LOOP, 'writeAccess not supported', false, true);
             op += '    for (int i = 0; i < ' + matSizeName + '; i++)\n';
             op += '    {\n';
-            op += '        tmp[i] = ' + gluShaderUtil.getDataTypeName(vecType) + '(coords);\n';
+            op += '        tmp[i] = ${VEC_TYPE}(coords);\n';
             op += '        coords = coords.yzwx * 0.5;\n';
             op += '    }\n';
         }
 
         // Read matrix.
-        op += '    ' + 'mediump' + ' ' + gluShaderUtil.getDataTypeName(vecType) + ' res = ' + gluShaderUtil.getDataTypeName(vecType) + '(0.0);\n';
+        op += '	${PRECISION} ${VEC_TYPE} res = ${VEC_TYPE}(0.0);\n';
         if (readAccess === es3fShaderIndexingTests.IndexAccessType.STATIC) {
             op += '    res += tmp[0];\n';
             if (numCols >= 2) op += '    res += tmp[1];\n';
@@ -1039,10 +1044,8 @@ goog.scope(function() {
             op += '        res += tmp[i];\n';
         }
 
-        if (isVertexCase)
-            vtx += op;
-        else
-            frag += op;
+        vtx += isVertexCase ? op : '';
+        frag += isVertexCase ? '' : op;
         op = '';
 
         if (isVertexCase) {
@@ -1059,24 +1062,25 @@ goog.scope(function() {
 
         // Fill in shader templates.
 
+        /** @type {Object} */ var params = {};
+        params['MAT_TYPE'] = gluShaderUtil.getDataTypeName(varType);
+        params['VEC_TYPE'] = gluShaderUtil.getDataTypeName(vecType);
+        params['PRECISION'] = "mediump";
 
 
+        if (numRows === 2)
+              params['PADDING'] = ', 0.0, 1.0';
+        else if (numRows === 3)
+              params['PADDING'] = ', 1.0';
+        else
+              params['PADDING'] = '';
 
-        if (numRows === 2) {
-            vtx = vtx.replace('${PADDING}', ', 0.0, 1.0');
-            frag = frag.replace('${PADDING}', ', 0.0, 1.0');
-        }
-        else if (numRows === 3) {
-            vtx = vtx.replace('${PADDING}', ', 1.0');
-            frag = frag.replace('${PADDING}', ', 1.0');
-        }
-        else {
-            vtx = vtx.replace('${PADDING}', '');
-            frag = frag.replace('${PADDING}', '');
-        }
+      	/** @type {string} */ var vertexShaderSource = tcuStringTemplate.specialize(vtx, params);
+      	/** @type {string} */ var fragmentShaderSource = tcuStringTemplate.specialize(frag, params);
+
         /** @type {function(glsShaderRenderCase.ShaderEvalContext)} */
         var evalFunc = es3fShaderIndexingTests.getMatrixSubscriptEvalFunc(varType);
-        return new es3fShaderIndexingTests.ShaderIndexingCase(caseName, description, isVertexCase, varType, evalFunc, vtx, frag);
+        return new es3fShaderIndexingTests.ShaderIndexingCase(caseName, description, isVertexCase, varType, evalFunc, vertexShaderSource, fragmentShaderSource);
     };
 
     /**
@@ -1092,9 +1096,9 @@ goog.scope(function() {
 
     es3fShaderIndexingTests.ShaderIndexingTests.prototype.init = function() {
         var testGroup = tcuTestCase.runner.testCases;
-        /** @type {Array<gluShaderUtil.ShaderType>} */ var s_shaderTypes = [
-            gluShaderUtil.ShaderType.VERTEX,
-            gluShaderUtil.ShaderType.FRAGMENT
+        /** @type {Array<gluShaderProgram.shaderType>} */ var s_shaderTypes = [
+            gluShaderProgram.shaderType.VERTEX,
+            gluShaderProgram.shaderType.FRAGMENT
         ];
         /** @type {Array<gluShaderUtil.DataType>} */ var s_floatAndVecTypes = [
             gluShaderUtil.DataType.FLOAT,
@@ -1106,7 +1110,7 @@ goog.scope(function() {
         /** @type {string} */ var desc;
         /** @type {string} */ var shaderTypeName;
         /** @type {boolean} */ var isVertexCase;
-        /** @type {gluShaderUtil.ShaderType} */ var shaderType;
+        /** @type {gluShaderProgram.shaderType} */ var shaderType;
         /** @type {string} */ var writeAccessName;
         /** @type {string} */ var readAccessName;
         // Varying array access cases.
@@ -1139,10 +1143,10 @@ goog.scope(function() {
                 readAccessName = es3fShaderIndexingTests.getIndexAccessTypeName(readAccess);
                 for (var shaderTypeNdx = 0; shaderTypeNdx < s_shaderTypes.length; shaderTypeNdx++) {
                     shaderType = s_shaderTypes[shaderTypeNdx];
-                    shaderTypeName = gluShaderUtil.getShaderTypeName(shaderType);
+                    shaderTypeName = gluShaderProgram.getShaderTypeName(shaderType);
                     name = gluShaderUtil.getDataTypeName(varType) + "_" + readAccessName + "_read_" + shaderTypeName;
                     desc = "Uniform array with " + readAccessName + " read in " + shaderTypeName + " shader.";
-                    isVertexCase = shaderType === gluShaderUtil.ShaderType.VERTEX;
+                    isVertexCase = shaderType === gluShaderProgram.shaderType.VERTEX;
                     uniformGroup.addChild(es3fShaderIndexingTests.createUniformArrayCase(name, desc, isVertexCase, varType, readAccess));
                 }
             }
@@ -1161,10 +1165,10 @@ goog.scope(function() {
 
                     for (var shaderTypeNdx = 0; shaderTypeNdx < s_shaderTypes.length; shaderTypeNdx++) {
                         shaderType = s_shaderTypes[shaderTypeNdx];
-                        shaderTypeName = gluShaderUtil.getShaderTypeName(shaderType);
+                        shaderTypeName = gluShaderProgram.getShaderTypeName(shaderType);
                         name = gluShaderUtil.getDataTypeName(varType) + "_" + writeAccessName + "_write_" + readAccessName + "_read_" + shaderTypeName;
                         desc = "Temporary array with " + writeAccessName + " write and " + readAccessName + " read in " + shaderTypeName + " shader.";
-                        isVertexCase = (shaderType === gluShaderUtil.ShaderType.VERTEX);
+                        isVertexCase = (shaderType === gluShaderProgram.shaderType.VERTEX);
                         tmpGroup.addChild(es3fShaderIndexingTests.createTmpArrayCase(name, desc, isVertexCase, varType, es3fShaderIndexingTests.IndexAccessType[writeAccess], es3fShaderIndexingTests.IndexAccessType[readAccess]));
                     }
                 }
@@ -1190,10 +1194,10 @@ goog.scope(function() {
 
                     for (var shaderTypeNdx = 0; shaderTypeNdx < s_shaderTypes.length; shaderTypeNdx++) {
                         shaderType = s_shaderTypes[shaderTypeNdx];
-                        shaderTypeName = gluShaderUtil.getShaderTypeName(shaderType);
+                        shaderTypeName = gluShaderProgram.getShaderTypeName(shaderType);
                         name = gluShaderUtil.getDataTypeName(varType) + "_" + writeAccessName + "_write_" + readAccessName + "_read_" + shaderTypeName;
                         desc = "Vector subscript access with " + writeAccessName + " write and " + readAccessName + " read in " + shaderTypeName + " shader.";
-                        isVertexCase = shaderType === gluShaderUtil.ShaderType.VERTEX;
+                        isVertexCase = shaderType === gluShaderProgram.shaderType.VERTEX;
                         vecGroup.addChild(es3fShaderIndexingTests.createVectorSubscriptCase(name, desc, isVertexCase, varType, es3fShaderIndexingTests.VectorAccessType[writeAccess], es3fShaderIndexingTests.VectorAccessType[readAccess]));
                     }
                 }
@@ -1225,10 +1229,10 @@ goog.scope(function() {
 
                     for (var shaderTypeNdx = 0; shaderTypeNdx < s_shaderTypes.length; shaderTypeNdx++) {
                         shaderType = s_shaderTypes[shaderTypeNdx];
-                        shaderTypeName = gluShaderUtil.getShaderTypeName(shaderType);
+                        shaderTypeName = gluShaderProgram.getShaderTypeName(shaderType);
                         name = gluShaderUtil.getDataTypeName(varType) + "_" + writeAccessName + "_write_" + readAccessName + "_read_" + shaderTypeName;
                         desc = "Vector subscript access with " + writeAccessName + " write and " + readAccessName + " read in " + shaderTypeName + " shader.";
-                        isVertexCase = shaderType === gluShaderUtil.ShaderType.VERTEX;
+                        isVertexCase = shaderType === gluShaderProgram.shaderType.VERTEX;
                         matGroup.addChild(es3fShaderIndexingTests.createMatrixSubscriptCase(name, desc, isVertexCase, varType, es3fShaderIndexingTests.IndexAccessType[writeAccess], es3fShaderIndexingTests.IndexAccessType[readAccess]));
                     }
                 }

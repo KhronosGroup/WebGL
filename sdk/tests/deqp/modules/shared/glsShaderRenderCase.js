@@ -505,7 +505,7 @@ goog.scope(function() {
         this.m_program = new gluShaderProgram.ShaderProgram(gl, gluShaderProgram.makeVtxFragSources(this.m_vertShaderSource, this.m_fragShaderSource));
 
         try {
-            //bufferedLogToConsole(this.m_program.getProgram().getProgramInfo().infoLog); // Always log shader program.
+            bufferedLogToConsole(this.m_program.program.info.infoLog); // Always log shader program.
 
             if (!this.m_program.isOk())
                 throw new Error("Shader compile error.");
@@ -517,7 +517,10 @@ goog.scope(function() {
         }
     };
 
-    glsShaderRenderCase.ShaderRenderCase.prototype.iterate = function() {
+    /**
+     * @return {tcuTestCase.IterateResult}
+     */
+    glsShaderRenderCase.ShaderRenderCase.prototype.postiterate = function() {
         assertMsgOptions(this.m_program !== null, 'Program not specified.', false, true);
         /** @type {?WebGLProgram} */ var programID = this.m_program.getProgram();
         gl.useProgram(programID);
@@ -556,6 +559,13 @@ goog.scope(function() {
             testPassedOptions("Pass", true);
 
         return tcuTestCase.IterateResult.STOP;
+    };
+
+    /**
+     * @return {tcuTestCase.IterateResult}
+     */
+    glsShaderRenderCase.ShaderRenderCase.prototype.iterate = function() {
+        return this.postiterate();
     };
 
     glsShaderRenderCase.ShaderRenderCase.prototype.setupShaderData = function() {};
@@ -649,10 +659,10 @@ goog.scope(function() {
         /** @type {number} */ var yOffsetMax = gl.drawingBufferHeight - height;
 
         /** @type {number} */ var hash = deString.deStringHash(this.m_vertShaderSource) + deString.deStringHash(this.m_fragShaderSource);
-        /** @type {deRandom.deRandom} */ var rnd = new deRandom.deRandom();
+        /** @type {deRandom.Random} */ var rnd = new deRandom.Random(hash);
 
-        /** @type {number} */ var xOffset = deRandom.deRandom_getInt(rnd, [0, xOffsetMax]);
-        /** @type {number} */ var yOffset = deRandom.deRandom_getInt(rnd, [0, yOffsetMax]);
+        /** @type {number} */ var xOffset = rnd.getInt(0, xOffsetMax);
+        /** @type {number} */ var yOffset = rnd.getInt(0, yOffsetMax);
 
         gl.viewport(xOffset, yOffset, width, height);
 
@@ -687,7 +697,7 @@ goog.scope(function() {
         /** @type {number} */ var height = result.getHeight();
         /** @type {number} */ var gridSize = quadGrid.getGridSize();
         /** @type {number} */ var stride = gridSize + 1;
-        /** @type {boolean} */ var hasAlpha    = gl.getContextAttributes().alpha;
+        /** @type {boolean} */ var hasAlpha = gl.getContextAttributes().alpha;
         /** @type {glsShaderRenderCase.ShaderEvalContext} */
         var evalCtx = new glsShaderRenderCase.ShaderEvalContext(quadGrid);
         /** @type {Array<number>} */ var color = [];

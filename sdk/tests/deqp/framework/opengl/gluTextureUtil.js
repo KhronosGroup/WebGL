@@ -746,14 +746,14 @@ gluTextureUtil.getGLCubeFace = function(face) {
  * If no mapping is found, glu::TYPE_LAST is returned.
  *
  * @param {tcuTexture.TextureFormat} format
- * @return {gluShaderUtil.DataType | number} GLSL 2D sampler type for format
+ * @return {gluShaderUtil.DataType} GLSL 2D sampler type for format
  */
 gluTextureUtil.getSampler2DType = function(format) {
     if (format.order == tcuTexture.ChannelOrder.D || format.order == tcuTexture.ChannelOrder.DS)
     return gluShaderUtil.DataType.SAMPLER_2D;
 
     if (format.order == tcuTexture.ChannelOrder.S)
-    return Object.keys(gluShaderUtil.DataType).length;
+    return /** @type {gluShaderUtil.DataType} */ (Object.keys(gluShaderUtil.DataType).length);
 
     switch (tcuTexture.getTextureChannelClass(format.type)) {
         case tcuTexture.TextureChannelClass.FLOATING_POINT:
@@ -768,7 +768,7 @@ gluTextureUtil.getSampler2DType = function(format) {
             return gluShaderUtil.DataType.UINT_SAMPLER_2D;
 
         default:
-            return Object.keys(gluShaderUtil.DataType).length;
+            return /** @type {gluShaderUtil.DataType} */ (Object.keys(gluShaderUtil.DataType).length);
     }
 };
 

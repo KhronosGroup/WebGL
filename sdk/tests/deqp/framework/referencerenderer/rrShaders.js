@@ -79,16 +79,16 @@ var rrVertexPacket = framework.referencerenderer.rrVertexPacket;
         for (var ndx = 0; ndx < numOutputs; ndx++) this.m_outputs[ndx] = new rrShaders.VertexVaryingInfo();
     };
 
-     /**
-      * getInputs
-      * @return {Array<rrShaders.VertexInputInfo>}
-      */
-     rrShaders.VertexShader.prototype.getInputs = function() {return this.m_inputs;};
+    /**
+     * getInputs
+     * @return {Array<rrShaders.VertexInputInfo>}
+     */
+    rrShaders.VertexShader.prototype.getInputs = function() {return this.m_inputs;};
 
-     /**
-      * getOutputs
-      * @return {Array<rrShaders.VertexVaryingInfo>}
-      */
+    /**
+     * getOutputs
+     * @return {Array<rrShaders.VertexVaryingInfo>}
+     */
     rrShaders.VertexShader.prototype.getOutputs = function() {return this.m_outputs;};
 
     /**

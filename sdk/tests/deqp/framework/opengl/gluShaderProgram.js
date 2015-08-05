@@ -35,6 +35,21 @@ gluShaderProgram.shaderType = {
 };
 
 /**
+ * gluShaderProgram.Shader type enum name
+ * @param {gluShaderProgram.shaderType} shaderType
+ * @return {string}
+ */
+gluShaderProgram.getShaderTypeName = function(shaderType) {
+	var s_names =
+	[
+		'vertex',
+		'fragment'
+	];
+
+    return s_names[shaderType];
+};
+
+/**
  * Get GL shader type from gluShaderProgram.shaderType
  * @param {WebGL2RenderingContext} gl WebGL context
  * @param {gluShaderProgram.shaderType} type gluShaderProgram.Shader Type
