@@ -71,7 +71,7 @@ function rgba7(buf, index, expectedColor) {
 }
 
 function rgba16(buf, index, expectedColor) {
-  var scale = 1.0 / 0xFFFFF;
+  var scale = 1.0 / 0xFFFF;
   var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
   var tol = 2.0 * scale;
   for (var ii = 0; ii < 4; ++ii) {
@@ -84,7 +84,7 @@ function rgba16(buf, index, expectedColor) {
 }
 
 function rgba15(buf, index, expectedColor) {
-  var scale = 1.0 / 0x7FFFF;
+  var scale = 1.0 / 0x7FFF;
   var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
   var tol = 2.0 * scale;
   for (var ii = 0; ii < 4; ++ii) {
@@ -97,7 +97,7 @@ function rgba15(buf, index, expectedColor) {
 }
 
 function rgba32(buf, index, expectedColor) {
-  var scale = 1.0 / 0xFFFFFFFFF;
+  var scale = 1.0 / 0xFFFFFFFF;
   var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
   var tol = 2.0 * scale;
   for (var ii = 0; ii < 4; ++ii) {
@@ -110,7 +110,7 @@ function rgba32(buf, index, expectedColor) {
 }
 
 function rgba31(buf, index, expectedColor) {
-  var scale = 1.0 / 0x7FFFFFFFF;
+  var scale = 1.0 / 0x7FFFFFFF;
   var color = [buf[index] * scale, buf[index + 1] * scale, buf[index + 2] * scale, buf[index + 3] * scale];
   var tol = 2.0 * scale;
   for (var ii = 0; ii < 4; ++ii) {
@@ -523,8 +523,8 @@ for (var tt = 0; tt < textureTestCases.length; ++tt) {
 
   var implFormat = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT);
   var implType = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE);
-  var implFormatString = getFormatString(implFormat);
-  var implTypeString = getTypeString(implType);
+  var implFormatString = getFormatString(gl, implFormat);
+  var implTypeString = getTypeString(gl, implType);
   debug("Testing implementation dependent color read format = " + implFormatString +
         ", type = " + implTypeString);
   if (implFormatString == '') {
