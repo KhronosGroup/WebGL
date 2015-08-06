@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 24 July 2015</h2>
+    <h2 class="no-toc">Editor's Draft 5 August 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -981,6 +981,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
               <tr><td>SHADING_LANGUAGE_VERSION</td>
                   <td>Returns a version or release number of the form <code>WebGL&lt;space&gt;GLSL&lt;space&gt;ES&lt;space&gt;3.00&lt;space&gt;&lt;vendor-specific information&gt;</code>.</td></tr>
             </table><br>
+            <p>For <code>RED_BITS</code>, <code>GREEN_BITS</code>, <code>BLUE_BITS</code>, and <code>ALPHA_BITS</code>, if active color attachments of the draw framebuffer do not have identical formats, generates an <code>INVALID_OPERATION</code> error and returns 0.</p>
 
         <dt class="idl-code">any getIndexedParameter(GLenum target, GLuint index)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.1">OpenGL ES 3.0.3 &sect;6.1.1</a>,
@@ -2881,6 +2882,39 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         The returned information in OpenGL ES 3.0 is implementation dependent and may be incomplete.
         The error condition is added to ensure consistent behavior across all platforms.
     </div>
+
+    <h3>Color values from a fragment shader must match the color buffer format</h3>
+
+    <p>
+        Color values written by a fragment shader may be floating-point, signed integer, or unsigned
+        integer. If the values written by the fragment shader do not match the format(s) of the
+        corresponding color buffer(s), the result is undefined in OpenGL ES 3.0  <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.9.2">OpenGL ES 3.0.4 &sect;3.9.2</a>)</span>. In WebGL, generates
+        an <code>INVALID_OPERATION</code> error in the corresponding draw call, including
+        <code>drawArrays</code>, <code>drawElements</code>, <code>drawArraysInstanced
+        </code>, <code>drawElementsInstanced </code>, and <code>drawRangeElements</code>.
+    </p>
+    <p>
+        If the color buffer has a normalized fixed-point format, floating-point color
+        values are converted to match the format; generates no error in such situation.
+    </p>
+
+    <h3>A sampler type must match the internal texture format</h3>
+
+    <p>
+        Texture lookup functions return values as floating point, unsigned integer or signed integer,
+        depending on the sampler type passed to the lookup function. If the wrong sampler type is
+        used for texture access, i.e., the sampler type does not match the texture internal format,
+        the returned values are undefined in OpenGL ES Shading Language 3.00.4
+        <span class="gl-spec">(<a href="https://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.4.pdf#nameddest=section-8.8">OpenGL ES Shading Language 3.00.4 &sect;8.8</a>)</span>.
+        In WebGL, generates an <code>INVALID_OPERATION</code> error in the corresponding draw call,
+        including <code>drawArrays</code>, <code>drawElements</code>, <code>drawArraysInstanced</code>,
+        <code>drawElementsInstanced </code>, and <code>drawRangeElements</code>.
+    </p>
+    <p>
+        If the sampler type is floating point and the internal texture format is
+        normalized integer, it is considered as a match and the returned values are converted to
+        floating point in the range [0, 1].
+    </p>
 
 <!-- ======================================================================================================= -->
 
