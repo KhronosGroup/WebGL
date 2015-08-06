@@ -130,6 +130,22 @@ deMath.swizzle = function(a, indices) {
 };
 
 /**
+ * Shift left elements of array a by elements of array b
+ * dst[n] a[n] << b[n]
+ * @param {goog.NumberArray} a
+ * @param {goog.NumberArray} b
+ * @return {Array<number>} Result array
+ */
+deMath.arrayShiftLeft = function(a, b) {
+    if (a.length != b.length)
+        throw new Error('Arrays must have the same size');
+    var dst = [];
+    for (var i = 0; i < a.length; i++)
+        dst.push(a[i] << b[i]);
+    return dst;
+};
+
+/**
  * Multiply two vectors, element by element
  * @param {goog.NumberArray} a
  * @param {goog.NumberArray} b
@@ -179,12 +195,12 @@ deMath.scale = function(a, b) {
 };
 
 /**
- * Add two vectors, element by element
+ * Add vector and scalar, element by element
  * @param {goog.NumberArray} a
  * @param {number} b
  * @return {Array<number>} Result array
  */
-deMath.addScalar= function(a, b) {
+deMath.addScalar = function(a, b) {
     if (!Array.isArray(a))
         throw new Error('First argument must be an array.');
     if (typeof b !== 'number')
@@ -539,7 +555,7 @@ deMath.binaryOp = function(valueA, valueB, binaryOpParm) {
  * @return {number}
  */
 deMath.binaryNot = function(value) {
-    if (value == 0) return 0;
+    if (value == 0) return 0xffffffff;
     value = value < 0 ? new Uint32Array([value])[0] : value;
     /** @type {number} */ var bitsSize = value == 0 ? 0 : Math.floor(Math.log2(value) + 1);
 
@@ -749,7 +765,7 @@ deMath.greaterThanEqual = function(a, b) {
 deMath.toIVec = function(a) {
     /** @type {Array<number>} */ var res = [];
     for (var i = 0; i < a.length; i++)
-        res.push(Math.floor(a[i] * 255));
+        res.push(deMath.clamp(Math.floor(a[i] * 255), 0, 255));
     return res;
 };
 
@@ -765,6 +781,99 @@ deMath.toIVec = function(a) {
      leadingZeros++;
    }
    return leadingZeros;
+};
+
+/**
+ * Helper function to create and initialize arrays
+ * @param {Array<number>} a
+ * @param {number} b
+ * @return {Array<number>}
+ */
+deMath.addScalarToVector = function(a, b) {
+    if (!Array.isArray(a))
+        throw new Error('The first parameter is not an array: (' + typeof(a) + ')' + a);
+    /** @type {Array<number>} */ var res = [];
+    for (var i = 0; i < a.length; i++)
+        res.push(a[i] + b);
+    return res;
+};
+/**
+ * @param {number} a
+ * @param {number} exponent
+ * @return {number}
+ */
+deMath.deLdExp = function(a, exponent) {
+    return deMath.ldexp(a, exponent);
+};
+
+/**
+ * @param {number} a
+ * @param {number} exponent
+ * @return {number}
+ */
+deMath.deFloatLdExp = function(a, exponent) {
+    return deMath.ldexp(a, exponent);
+};
+
+/**
+ * @param {number} value
+ * @return {Array<number>}
+ */
+deMath.frexp = function(value) {
+   if (value === 0) return [value, 0];
+   var data = new DataView(new ArrayBuffer(8));
+   data.setFloat64(0, value);
+   var bits = (data.getUint32(0) >>> 20) & 0x7FF;
+   if (bits === 0) {
+       data.setFloat64(0, value * Math.pow(2, 64));
+       bits = ((data.getUint32(0) >>> 20) & 0x7FF) - 64;
+   }
+   var exponent = bits - 1022,
+       mantissa = deMath.ldexp(value, -exponent);
+   return [mantissa, exponent];
+};
+
+/**
+ * @param {number} mantissa
+ * @param {number} exponent
+ * @return {number}
+ */
+deMath.ldexp = function(mantissa, exponent) {
+    return exponent > 1023 ? // avoid multiplying by infinity
+            mantissa * Math.pow(2, 1023) * Math.pow(2, exponent - 1023) :
+            exponent < -1074 ? // avoid multiplying by zero
+            mantissa * Math.pow(2, -1074) * Math.pow(2, exponent + 1074) :
+            mantissa * Math.pow(2, exponent);
+};
+
+/**
+ * @param {number} a
+ * @return {number}
+ */
+deMath.deCbrt = function(a) {
+    return deMath.deSign(a) * Math.pow(Math.abs(a), 1.0 / 3.0);
+};
+
+/**
+ * @param {number} x
+ * @return {number}
+ */
+deMath.deSign = function(x) {
+    return isNaN(x) ? x : ((x > 0.0) - (x < 0.0));
+};
+
+deMath.deFractExp = function(x) {
+    var result = {
+        significand: x,
+        exponent: 0
+    };
+
+    if (isFinite(x)) {
+        var r = deMath.frexp(x);
+        result.exponent = r[1] - 1;
+        result.significand = r[0] * 2;
+    }
+    return result;
 };
 
 });

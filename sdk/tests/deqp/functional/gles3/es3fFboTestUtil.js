@@ -171,7 +171,7 @@ es3fFboTestUtil.FboIncompleteException.prototype.getReason = function() {return 
      */
     es3fFboTestUtil.FlatColorShader.prototype.shadeFragments = function(packet, context) {
         var numPackets = packet.length;
-        /** @const {Array<number>} */ var color = deMath.clampVector(this.m_uniforms[0].value, 0, 1);
+        /** @const {Array<number>} */ var color = this.m_uniforms[0].value;
         /** @const {Array<number>} */ var icolor = es3fFboTestUtil.castVectorSaturate(color, tcuTexture.deTypes.deInt32);
         /** @const {Array<number>} */ var uicolor = es3fFboTestUtil.castVectorSaturate(color, tcuTexture.deTypes.deUint32);
 
@@ -506,7 +506,7 @@ es3fFboTestUtil.FboIncompleteException.prototype.getReason = function() {return 
             }
 
             // write out
-            /** @const {Array<number>} */ var color = deMath.clampVector(deMath.add(deMath.multiply(colors, outScale), outBias), 0, 1);
+            /** @const {Array<number>} */ var color = deMath.add(deMath.multiply(colors, outScale), outBias);
             /** @const {Array<number>} */ var icolor = es3fFboTestUtil.castVectorSaturate(color, tcuTexture.deTypes.deInt32);
             /** @const {Array<number>} */ var uicolor = es3fFboTestUtil.castVectorSaturate(color, tcuTexture.deTypes.deUint32);
 

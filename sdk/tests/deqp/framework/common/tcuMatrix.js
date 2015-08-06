@@ -35,17 +35,19 @@ goog.scope(function() {
      * @constructor
      * @param {number} rows
      * @param {number} cols
+     * @param {*=} value
      * Initialize to identity.
      */
-    tcuMatrix.Matrix = function(rows, cols) {
+    tcuMatrix.Matrix = function(rows, cols, value) {
+        value = value == undefined ? 1 : value;
         this.rows = rows;
         this.cols = cols;
         this.matrix = [];
-        for (var i = 0; i < rows; i++)
+        for (var i = 0; i < cols; i++)
             this.matrix[i] = [];
         for (var row = 0; row < rows; row++)
             for (var col = 0; col < cols; col++)
-                this.set(row, col, (row == col) ? 1 : 0);
+                this.set(row, col, (row == col) ? value : 0);
     };
 
     /**
@@ -67,16 +69,28 @@ goog.scope(function() {
         this.matrix[y][x] = value;
     };
 
+    tcuMatrix.Matrix.prototype.setRow = function(row, values) {
+        if (!deMath.deInBounds32(row, 0, this.rows))
+            throw new Error('Rows out of range');
+        if (values.length > this.cols)
+            throw new Error('Too many columns');
+        this.matrix[row] = values;
+    };
+
     tcuMatrix.Matrix.prototype.get = function(x, y) {
         this.isRangeValid(x, y);
         return this.matrix[y][x];
     };
 
+    tcuMatrix.Matrix.prototype.getColumn = function(y) {
+        return this.matrix[y];
+    };
+
     tcuMatrix.Matrix.prototype.isRangeValid = function(x, y) {
-        if (!deMath.deInBounds32(x, 0, this.cols))
-            throw new Error('Columns out of range');
-        if (!deMath.deInBounds32(y, 0, this.rows))
+        if (!deMath.deInBounds32(x, 0, this.rows))
             throw new Error('Rows out of range');
+        if (!deMath.deInBounds32(y, 0, this.cols))
+            throw new Error('Columns out of range');
     };
 
     /**
@@ -144,6 +158,27 @@ goog.scope(function() {
         }
 
         return res;
+    };
+
+    tcuMatrix.Matrix.prototype.toString = function() {
+        var str = 'mat' + this.cols;
+        if (this.rows !== this.cols)
+            str += 'x' + this.rows;
+        str += '(';
+        for (var col = 0; col < this.cols; col++) {
+            str += '[';
+            for (var row = 0; row < this.rows; row++) {
+                str += this.matrix[col][row];
+                if (row != this.rows - 1)
+                    str += ', ';
+            }
+            str += ']';
+
+            if (col != this.cols - 1)
+                str += ', ';
+        }
+        str += ')';
+        return str;
     };
 
     /**

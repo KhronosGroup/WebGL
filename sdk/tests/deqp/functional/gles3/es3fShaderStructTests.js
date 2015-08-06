@@ -83,7 +83,6 @@ goog.scope(function() {
 
 			assertMsgOptions(this.m_textures.length === 1, 'Only one texture required', false, true);
 		}
-		// glsShaderRenderCase.ShaderRenderCase.prototype.init.call(this);
 		this.postinit();
 	};
 
@@ -1936,7 +1935,6 @@ goog.scope(function() {
         //Set up name and description of this test series.
         setCurrentTestName(state.testCases.fullName());
         description(state.testCases.getDescription());
-		debugger;
         try {
             //Run test cases
             tcuTestCase.runTestCases();

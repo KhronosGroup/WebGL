@@ -544,4 +544,263 @@ goog.scope(function() {
         return str;
     };
 
+    /**
+     * @param {*} T
+     * @param {number=} size
+     * @param {gluShaderUtil.precision=} precision
+     * @return {gluVarType.VarType}
+     */
+    gluVarType.getVarTypeOf = function(T, size, precision) {
+        size = size || 1;
+        precision = precision || gluShaderUtil.precision.PRECISION_LOWP;
+        switch (size) {
+            case 4: return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_VEC4, precision);
+            case 3: return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_VEC3, precision);
+            case 2: return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_VEC2, precision);
+        }
+        switch (T) {
+            case 'float' : return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT, precision);
+            case 'vec4': return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_VEC4, precision);
+            case 'vec3': return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_VEC3, precision);
+            case 'vec2': return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_VEC2, precision);
+            case 'mat2': return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_MAT2, precision);
+            case 'mat2x3': return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_MAT2X3, precision);
+            case 'mat2x4': return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_MAT2X4, precision);
+            case 'mat3x2': return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_MAT3X2, precision);
+            case 'mat3': return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_MAT3, precision);
+            case 'mat3x4': return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_MAT3X4, precision);
+            case 'mat4x2': return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_MAT4X2, precision);
+            case 'mat4x3': return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_MAT4X3, precision);
+            case 'mat4': return gluVarType.newTypeBasic(gluShaderUtil.DataType.FLOAT_MAT4, precision);
+        }
+        throw new Error('Invalid input type ' + T + ' or size ' + size);
+    };
+
+    /**
+     * @enum
+     */
+    gluVarType.Storage = {
+            STORAGE_IN: 0,
+            STORAGE_OUT: 1,
+            STORAGE_CONST: 2,
+            STORAGE_UNIFORM: 3,
+            STORAGE_BUFFER: 4
+    };
+
+    /**
+     * @param {gluVarType.Storage} storage
+     * @return {string}
+     */
+    gluVarType.getStorageName = function(storage) {
+        switch (storage)
+        {
+            case gluVarType.Storage.STORAGE_IN: return 'in';
+            case gluVarType.Storage.STORAGE_OUT: return 'out';
+            case gluVarType.Storage.STORAGE_CONST: return 'const';
+            case gluVarType.Storage.STORAGE_UNIFORM: return 'uniform';
+            case gluVarType.Storage.STORAGE_BUFFER: return 'buffer';
+            default:
+                throw new Error('Unknown storage: ' + storage);
+        }
+    };
+
+    /**
+     * @enum
+     */
+    gluVarType.Interpolation = {
+        INTERPOLATION_SMOOTH: 0,
+        INTERPOLATION_FLAT: 1,
+        INTERPOLATION_CENTROID: 2
+    };
+
+    /**
+     * @param {gluVarType.Interpolation} interpolation
+     * @return {string}
+     */
+    gluVarType.getInterpolationName = function(interpolation) {
+        switch (interpolation)
+        {
+            case gluVarType.Interpolation.INTERPOLATION_SMOOTH: return 'smooth';
+            case gluVarType.Interpolation.INTERPOLATION_FLAT: return 'flat';
+            case gluVarType.Interpolation.INTERPOLATION_CENTROID: return 'centrod';
+            default:
+                throw new Error('Unknown interpolation: ' + interpolation);
+        }
+    };
+
+    /**
+     * @enum
+     */
+    gluVarType.FormatLayout = {
+        FORMATLAYOUT_RGBA32F: 0,
+        FORMATLAYOUT_RGBA16F: 1,
+        FORMATLAYOUT_R32F: 2,
+        FORMATLAYOUT_RGBA8: 3,
+        FORMATLAYOUT_RGBA8_SNORM: 4,
+
+        FORMATLAYOUT_RGBA32I: 5,
+        FORMATLAYOUT_RGBA16I: 6,
+        FORMATLAYOUT_RGBA8I: 7,
+        FORMATLAYOUT_R32I: 8,
+
+        FORMATLAYOUT_RGBA32UI: 9,
+        FORMATLAYOUT_RGBA16UI: 10,
+        FORMATLAYOUT_RGBA8UI: 11,
+        FORMATLAYOUT_R32UI: 12
+    };
+
+    /**
+     * @param {gluVarType.FormatLayout} layout
+     * @return {string}
+     */
+    gluVarType.getFormatLayoutName = function(layout) {
+        switch (layout)
+        {
+            case gluVarType.FormatLayout.FORMATLAYOUT_RGBA32F: return 'rgba32f';
+            case gluVarType.FormatLayout.FORMATLAYOUT_RGBA16F: return 'rgba16f';
+            case gluVarType.FormatLayout.FORMATLAYOUT_R32F: return 'r32f';
+            case gluVarType.FormatLayout.FORMATLAYOUT_RGBA8: return 'rgba8';
+            case gluVarType.FormatLayout.FORMATLAYOUT_RGBA8_SNORM: return 'rgba8_snorm';
+            case gluVarType.FormatLayout.FORMATLAYOUT_RGBA32I: return 'rgba32i';
+            case gluVarType.FormatLayout.FORMATLAYOUT_RGBA16I: return 'rgba16i';
+            case gluVarType.FormatLayout.FORMATLAYOUT_RGBA8I: return 'rgba8i';
+            case gluVarType.FormatLayout.FORMATLAYOUT_R32I: return 'r32i';
+            case gluVarType.FormatLayout.FORMATLAYOUT_RGBA32UI: return 'rgba32ui';
+            case gluVarType.FormatLayout.FORMATLAYOUT_RGBA16UI: return 'rgba16ui';
+            case gluVarType.FormatLayout.FORMATLAYOUT_RGBA8UI: return 'rgba8ui';
+            case gluVarType.FormatLayout.FORMATLAYOUT_R32UI: return 'r32ui';
+            default:
+                throw new Error('Unknown layout: ' + layout);
+        }
+    };
+
+    /**
+     * @enum
+     */
+    gluVarType.MatrixOrder = {
+        MATRIXORDER_COLUMN_MAJOR: 0,
+        MATRIXORDER_ROW_MAJOR: 1
+    };
+
+   /**
+     * @param {gluVarType.MatrixOrder} qualifier
+     * @return {string}
+     */
+    gluVarType.getMatrixOrderName = function(qualifier) {
+        switch (qualifier)
+        {
+            case gluVarType.MatrixOrder.MATRIXORDER_COLUMN_MAJOR: return 'column_major';
+            case gluVarType.MatrixOrder.MATRIXORDER_ROW_MAJOR: return 'row_major';
+            default:
+                throw new Error('Unknown qualifier: ' + qualifier);
+        }
+    };
+
+    gluVarType.MemoryAccessQualifier = {
+        MEMORYACCESSQUALIFIER_COHERENT_BIT: 0x01,
+        MEMORYACCESSQUALIFIER_VOLATILE_BIT: 0x02,
+        MEMORYACCESSQUALIFIER_RESTRICT_BIT: 0x04,
+        MEMORYACCESSQUALIFIER_READONLY_BIT: 0x08,
+        MEMORYACCESSQUALIFIER_WRITEONLY_BIT: 0x10
+    };
+    gluVarType.MemoryAccessQualifier.MEMORYACCESSQUALIFIER_MASK = (gluVarType.MemoryAccessQualifier.MEMORYACCESSQUALIFIER_WRITEONLY_BIT << 1) - 1;
+
+    /**
+     * @param {number} qualifier
+     * @return {string}
+     */
+    gluVarType.getMemoryAccessQualifierName = function(qualifier) {
+        switch (qualifier)
+        {
+            case gluVarType.MemoryAccessQualifier.MEMORYACCESSQUALIFIER_COHERENT_BIT: return 'coherent';
+            case gluVarType.MemoryAccessQualifier.MEMORYACCESSQUALIFIER_VOLATILE_BIT: return 'volatile';
+            case gluVarType.MemoryAccessQualifier.MEMORYACCESSQUALIFIER_RESTRICT_BIT: return 'restrict';
+            case gluVarType.MemoryAccessQualifier.MEMORYACCESSQUALIFIER_READONLY_BIT: return 'readonly';
+            case gluVarType.MemoryAccessQualifier.MEMORYACCESSQUALIFIER_WRITEONLY_BIT: return 'writeonly';
+            default:
+                throw new Error('Unknown qualifier: ' + qualifier);
+        }
+    };
+
+    /**
+     * @constructor
+     * @param {number=} location
+     * @param {number=} binding
+     * @param {number=} offset
+     * @param {gluVarType.FormatLayout=} format
+     * @param {gluVarType.MatrixOrder=} matrixOrder
+     */
+    gluVarType.Layout = function(location, binding, offset, format, matrixOrder) {
+        this.location = location;
+        this.binding = binding;
+        this.offset = offset;
+        this.format = format;
+        this.matrixOrder = matrixOrder;
+    };
+
+    gluVarType.Layout.prototype.toString = function() {
+        var strings = [];
+        var str = '';
+        if (typeof this.location !== 'undefined')
+            strings.push('location=' + this.location);
+        if (typeof this.binding !== 'undefined')
+            strings.push('binding=' + this.binding);
+        if (typeof this.offset !== 'undefined')
+            strings.push('offset=' + this.offset);
+        if (typeof this.format !== 'undefined')
+            strings.push(gluVarType.getFormatLayoutName(this.format));
+        if (typeof this.matrixOrder !== 'undefined')
+            strings.push(gluVarType.getMatrixOrderName(this.matrixOrder));
+
+        if (strings.length > 0)
+        {
+            str += 'layout(' + strings[0];
+
+            for (var i = 1; i < strings.length; i++)
+                str += ', ' + strings[i];
+            str += ')';
+        }
+
+        return str;
+    };
+
+    /**
+     * @constructor
+     * @param {gluVarType.VarType} varType
+     * @param {string} name
+     * @param {gluVarType.Storage=} storage
+     * @param {gluVarType.Interpolation=} interpolation
+     * @param {gluVarType.Layout=} layout
+     * @param {number=} memoryAccessQualifierBits
+     */
+    gluVarType.VariableDeclaration = function(varType, name, storage, interpolation, layout, memoryAccessQualifierBits) {
+        this.varType = varType;
+        this.name = name;
+        this.storage = storage;
+        this.interpolation = interpolation;
+        this.layout = layout;
+        this.memoryAccessQualifierBits = memoryAccessQualifierBits || 0;
+    };
+
+    gluVarType.VariableDeclaration.prototype.toString = function() {
+        var str = '';
+        if (typeof this.layout !== 'undefined')
+            str += this.layout.toString() + ' ';
+
+        for (var bitNdx = 0; (1 << bitNdx) & gluVarType.MemoryAccessQualifier.MEMORYACCESSQUALIFIER_MASK; ++bitNdx)
+            if (this.memoryAccessQualifierBits & (1 << bitNdx))
+                str += gluVarType.getMemoryAccessQualifierName((1 << bitNdx)) + ' ';
+
+
+        if (typeof this.interpolation !== 'undefined')
+            str += gluVarType.getInterpolationName(this.interpolation) + ' ';
+
+        if (typeof this.storage !== 'undefined')
+            str += gluVarType.getStorageName(this.storage) + ' ';
+
+        str += gluVarType.declareVariable(this.varType, this.name);
+
+        return str;
+    };
+
 });

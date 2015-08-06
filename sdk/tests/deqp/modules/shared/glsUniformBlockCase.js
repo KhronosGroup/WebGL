@@ -2411,7 +2411,7 @@ glsUniformBlockCase.UniformBlockCase.prototype.render = function(program) {
     // Access
     var posLoc = gl.getAttribLocation(program.program.program, 'a_position');
     var posArray = [new gluDrawUtil.VertexArrayBinding(gl.FLOAT, posLoc, 4, 4, position)];
-    gluDrawUtil.drawFromBuffers(gl, program, posArray, gluDrawUtil.triangles(indices));
+    gluDrawUtil.draw(gl, program.getProgram(), posArray, gluDrawUtil.triangles(indices));
 
     // Verify that all pixels are white.
     var pixels = new gluDrawUtil.Surface();

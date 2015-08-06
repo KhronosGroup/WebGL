@@ -1142,13 +1142,13 @@ goog.scope(function() {
                 var attrib = rrVertexAttrib.readVertexAttrib(inputs[attribNdx], packet.instanceNdx, packet.vertexNdx, this.m_attrType[attribNdx]);
 
                 if (isCoord) {
-                    coord = glsDrawTests.calcShaderCoord (
+                    coord = glsDrawTests.calcShaderCoord(
                         coord,
                         attrib,
                         numComponents
                     );
                 } else {
-                    color = glsDrawTests.calcShaderColor (
+                    color = glsDrawTests.calcShaderColor(
                         color,
                         attrib,
                         numComponents

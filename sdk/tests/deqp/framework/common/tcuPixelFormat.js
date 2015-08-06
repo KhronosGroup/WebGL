@@ -40,6 +40,19 @@ tcuPixelFormat.PixelFormat = function(r, g, b, a) {
 };
 
 /**
+ * @param {WebGL2RenderingContext} context
+ * @return {tcuPixelFormat.PixelFormat}
+ */
+tcuPixelFormat.PixelFormatFromContext = function(context) {
+    /** @type {number} */ var r = /** @type {number} */ (context.getParameter(gl.RED_BITS));
+    /** @type {number} */ var g = /** @type {number} */ (context.getParameter(gl.GREEN_BITS));
+    /** @type {number} */ var b = /** @type {number} */ (context.getParameter(gl.BLUE_BITS));
+    /** @type {number} */ var a = /** @type {number} */ (context.getParameter(gl.ALPHA_BITS));
+
+    return new tcuPixelFormat.PixelFormat(r, g, b, a);
+};
+
+/**
  * @param {number} r
  * @param {number} g
  * @param {number} b
@@ -51,6 +64,16 @@ tcuPixelFormat.PixelFormat.prototype.equals = function(r, g, b, a) {
             this.greenBits === g &&
             this.blueBits === b &&
             this.alphaBits === a;
+};
+
+/**
+ * @return {Array<number>}
+ */
+tcuPixelFormat.PixelFormat.prototype.getColorThreshold = function() {
+    return [1 << (8 - this.redBits),
+			1 << (8 - this.greenBits),
+			1 << (8 - this.blueBits),
+			(this.alphaBits > 0) ? (1 << (8 - this.alphaBits)) : 0];
 };
 
 });

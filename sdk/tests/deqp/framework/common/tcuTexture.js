@@ -590,11 +590,13 @@ tcuTexture.getChannelSize = function(type) {
         case tcuTexture.ChannelType.UNSIGNED_INT8: return 1;
         case tcuTexture.ChannelType.UNSIGNED_INT16: return 2;
         case tcuTexture.ChannelType.UNSIGNED_INT32: return 4;
+        case tcuTexture.ChannelType.UNSIGNED_INT_11F_11F_10F_REV: return 4;
+        case tcuTexture.ChannelType.UNSIGNED_INT_999_E5_REV: return 4;
         case tcuTexture.ChannelType.HALF_FLOAT: return 2;
         case tcuTexture.ChannelType.FLOAT: return 4;
 
     }
-    throw new Error('Unrecognized type ' + type);
+    throw new Error('Unrecognized type ' + deString.enumToString(tcuTexture.ChannelType, type));
 };
 
 /**
@@ -1422,7 +1424,7 @@ tcuTexture.ConstPixelBufferAccess.prototype.getPixelInt = function(x, y, z) {
 
         case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
             DE_ASSERT(this.m_format.order == tcuTexture.ChannelOrder.DS);
-            var u32array = new Uint32Array(this.m_data, offset + 4, 1);
+            var u32array = new Uint32Array(this.m_data, this.m_offset + offset + 4, 1);
             return [pixel, 0, 0, ub(u32array[0], 0, 8)];
         }
 
@@ -1712,11 +1714,11 @@ tcuTexture.PixelBufferAccess.prototype.setPixel = function(color, x, y, z) {
     // Quick paths
     if (z == 0) {
         if (this.m_rgba8View) {
-            color = deMath.scale(color, 255);
+            color = deMath.toIVec(color);
             this.m_rgba8View.write(x, y, color, 4);
             return;
         } else if (this.m_rgb8View) {
-            color = deMath.scale(color, 255);
+            color = deMath.toIVec(color);
             this.m_rgb8View.write(x, y, color, 3);
             return;
         }
@@ -2001,7 +2003,7 @@ tcuTexture.PixelBufferAccess.prototype.setPixStencil = function(stencil, x, y, z
             break;
 
         case tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV: {
-            var u32array = new Uint32Array(this.m_data, offset + 4, 1);
+            var u32array = new Uint32Array(this.m_data, this.m_offset + offset + 4, 1);
             u32array[0] = pu(stencil, 0, 8);
             break;
         }
@@ -2416,11 +2418,16 @@ tcuTexture.Texture3DView.prototype.sampleCompare = function(sampler, ref, texCoo
 /**
  * @param {number} width
  * @param {number=} height
+ * @param {number=} depth
  * @return {number} Number of pyramid levels
  */
-tcuTexture.computeMipPyramidLevels = function(width, height) {
-    var h = height || width;
-    return Math.floor(Math.log2(Math.max(width, h))) + 1;
+tcuTexture.computeMipPyramidLevels = function(width, height, depth) {
+    if (depth !== undefined)
+        return Math.floor(Math.log2(Math.max(width, Math.max(height, depth)))) + 1;
+    else if (height !== undefined)
+        return Math.floor(Math.log2(Math.max(width, height))) + 1;
+    else
+        return Math.floor(Math.log2(width)) + 1;
 };
 
 /**
@@ -2881,6 +2888,12 @@ tcuTexture.Texture2DArray.prototype.constructor = tcuTexture.Texture2DArray;
 /** @return {tcuTexture.Texture2DArrayView} */
 tcuTexture.Texture2DArray.prototype.getView = function() { return this.m_view; };
 
+/** @return {number} */
+tcuTexture.Texture2DArray.prototype.getWidth = function() { return this.m_width; };
+
+/** @return {number} */
+tcuTexture.Texture2DArray.prototype.getHeight = function() { return this.m_height; };
+
 /**
  * @param {number} levelNdx
  */
@@ -2902,7 +2915,7 @@ tcuTexture.Texture2DArray.prototype.allocLevel = function(levelNdx) {
  * @param {number} depth
  */
 tcuTexture.Texture3D = function(format, width, height, depth) {
-    tcuTexture.TextureLevelPyramid.call(this, format, tcuTexture.computeMipPyramidLevels(width, height));
+    tcuTexture.TextureLevelPyramid.call(this, format, tcuTexture.computeMipPyramidLevels(width, height, depth));
     this.m_width = width;
     this.m_height = height;
     this.m_depth = depth;

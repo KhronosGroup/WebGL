@@ -1808,7 +1808,8 @@ goog.scope(function() {
 
                 // If any of samples is out of both edges, implementations can do pretty much anything according to spec.
                 // \todo [2013-07-08 pyry] Test the special case where all corner pixels have exactly the same color.
-                if (c00.face == null || c01.face == null || c10.face == null || c11.face == null)
+                if (c00 == null || c01 == null || c10 == null || c11 == null ||
+                    c00.face == null || c01.face == null || c10.face == null || c11.face == null)
                     return true;
 
                 // Bounds for filtering factors
@@ -1817,7 +1818,8 @@ goog.scope(function() {
                 /** @type {number} */ var minB = deMath.clamp((vBounds[0] - 0.5) - j, 0, 1);
                 /** @type {number} */ var maxB = deMath.clamp((vBounds[1] - 0.5) - j, 0, 1);
 
-                /** @type {tcuTexLookupVerifier.ColorQuad} */ var quad;
+                /** @type {tcuTexLookupVerifier.ColorQuad} */
+                var quad = new tcuTexLookupVerifier.ColorQuad([], [], [], []);
                 quad.p00 = tcuTexLookupVerifier.lookupFloat(faces[c00.face], sampler, c00.s, c00.t, 0);
                 quad.p10 = tcuTexLookupVerifier.lookupFloat(faces[c10.face], sampler, c10.s, c10.t, 0);
                 quad.p01 = tcuTexLookupVerifier.lookupFloat(faces[c01.face], sampler, c01.s, c01.t, 0);
@@ -1877,7 +1879,8 @@ goog.scope(function() {
 
         for (var j0 = minJ0; j0 <= maxJ0; j0++) {
             for (var i0 = minI0; i0 <= maxI0; i0++) {
-                /** @type {tcuTexLookupVerifier.ColorQuad} */ var quad0;
+                /** @type {tcuTexLookupVerifier.ColorQuad} */
+                var quad0 = new tcuTexLookupVerifier.ColorQuad([], [], [], []);
                 /** @type {number} */ var searchStep0;
 
                 c00 = tcuTexture.remapCubeEdgeCoords(new tcuTexture.CubeFaceCoords(coords.face, [i0 + 0, j0 + 0]), size0);
@@ -1887,7 +1890,8 @@ goog.scope(function() {
 
                 // If any of samples is out of both edges, implementations can do pretty much anything according to spec.
                 // \todo [2013-07-08 pyry] Test the special case where all corner pixels have exactly the same color.
-                if (c00.face == null || c01.face == null || c10.face == null || c11.face == null)
+                if (c00 == null || c01 == null || c10 == null || c11 == null ||
+                    c00.face == null || c01.face == null || c10.face == null || c11.face == null)
                     return true;
 
                 quad0.p00 = tcuTexLookupVerifier.lookupFloat(faces0[c00.face], sampler, c00.s, c00.t, 0);
@@ -1907,7 +1911,8 @@ goog.scope(function() {
 
                 for (var j1 = minJ1; j1 <= maxJ1; j1++) {
                     for (var i1 = minI1; i1 <= maxI1; i1++) {
-                        /** @type {tcuTexLookupVerifier.ColorQuad} */ var quad1;
+                        /** @type {tcuTexLookupVerifier.ColorQuad} */
+                        var quad1 = new tcuTexLookupVerifier.ColorQuad([], [], [], []);
                         /** @type {number} */ var searchStep1;
 
                         c00 = tcuTexture.remapCubeEdgeCoords(new tcuTexture.CubeFaceCoords(coords.face, [i1 + 0, j1 + 0]), size1);
@@ -1915,7 +1920,8 @@ goog.scope(function() {
                         c01 = tcuTexture.remapCubeEdgeCoords(new tcuTexture.CubeFaceCoords(coords.face, [i1 + 0, j1 + 1]), size1);
                         c11 = tcuTexture.remapCubeEdgeCoords(new tcuTexture.CubeFaceCoords(coords.face, [i1 + 1, j1 + 1]), size1);
 
-                        if (c00.face == null || c01.face == null || c10.face == null || c11.face == null)
+                        if (c00 == null || c01 == null || c10 == null || c11 == null ||
+                            c00.face == null || c01.face == null || c10.face == null || c11.face == null)
                             return true;
 
                         quad1.p00 = tcuTexLookupVerifier.lookupFloat(faces1[c00.face], sampler, c00.s, c00.t, 0);
