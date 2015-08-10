@@ -99,7 +99,7 @@ shader-without-precision.frag.html
 shared.html
 struct-nesting-exceeds-maximum.html
 struct-nesting-under-maximum.html
-uniform-location-length-limits.html
+--max-version 1.9.9 uniform-location-length-limits.html
 --min-version 1.0.2 shader-with-short-circuiting-operators.html
 --min-version 1.0.2 shader-with-global-variable-precision-mismatch.html
 --min-version 1.0.2 large-loop-compile.html
