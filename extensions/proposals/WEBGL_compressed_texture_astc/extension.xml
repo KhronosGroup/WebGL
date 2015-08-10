@@ -17,7 +17,8 @@
     <p>
       This extension exposes the compressed texture format defined in the 
       <a href="https://www.opengl.org/registry/specs/KHR/texture_compression_astc_hdr.txt">
-      KHR_texture_compression_astc_hdr</a> OpenGL ES extension to WebGL.
+      KHR_texture_compression_astc_hdr</a> OpenGL ES extension to WebGL. Consult that extension
+      specification for behavioral definitions, including error behaviors.
     </p>
     <p>
       ASTC textures may be encoded using either high or low dynamic range, corresponding to an "HDR
@@ -349,6 +350,12 @@ interface WEBGL_compressed_texture_astc {
       GL_KHR_texture_compression_astc_hdr extension string. More profiles may be added in the
       future.
     </function>
+    <div class="note">
+      The intent of the <code>getSupportedProfiles</code> function is to allow easy reconstruction
+      of the underlying OpenGL or OpenGL ES extension strings for environments like Emscripten, by
+      prepending the string <code>GL_KHR_texture_compression_astc_</code> to the returned profile
+      names.
+    </div>
   </newfun>
 
   <newtok>
@@ -556,6 +563,9 @@ interface WEBGL_compressed_texture_astc {
     </revision>
     <revision date="2015/08/07">
       <change>Added profile string support. Renamed constants back to _KHR.</change>
+    </revision>
+    <revision date="2015/08/10">
+      <change>Clarified intent of getSupportedProfiles. Stressed that OpenGL ES extension defines the behavior.</change>
     </revision>
   </history>
 </proposal>
