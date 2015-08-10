@@ -1,4 +1,4 @@
-attrib-location-length-limits.html
+--max-version 1.9.9 attrib-location-length-limits.html
 --min-version 1.0.3 boolean_precision.html
 --min-version 1.0.4 const-variable-initialization.html
 embedded-struct-definitions-forbidden.html
