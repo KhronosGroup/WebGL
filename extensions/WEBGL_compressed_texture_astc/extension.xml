@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<proposal href="proposals/WEBGL_compressed_texture_astc/">
+<draft href="WEBGL_compressed_texture_astc/">
   <name>WEBGL_compressed_texture_astc</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -9,7 +9,7 @@
     <contributor>Christophe Riccio, Unity</contributor>
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
-  <number>TBD</number>
+  <number>30</number>
   <depends>
     <api version="1.0"/>
   </depends>
@@ -567,5 +567,8 @@ interface WEBGL_compressed_texture_astc {
     <revision date="2015/08/10">
       <change>Clarified intent of getSupportedProfiles. Stressed that OpenGL ES extension defines the behavior.</change>
     </revision>
+    <revision date="2015/08/10">
+      <change>Moved to draft status.</change>
+    </revision>
   </history>
-</proposal>
+</draft>
