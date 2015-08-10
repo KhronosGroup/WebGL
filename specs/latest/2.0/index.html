@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 5 August 2015</h2>
+    <h2 class="no-toc">Editor's Draft 10 August 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2559,6 +2559,12 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         WebGL 1.0 supports tokens up to 256 characters in length. WebGL 2.0 follows The OpenGL ES Shading Language, Version 3.00
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8">OpenGL ES 3.0.3 &sect;3.8</a>)</span>
         and allows tokens up to 1024 characters in length for both ESSL 1 and ESSL 3 shaders. Shaders containing tokens longer than 1024 characters must fail to compile.
+    </p>
+
+    <h4>Maximum Uniform and Attribute Location Lengths</h4>
+
+    <p>
+        WebGL 2.0 imposes a limit of 1024 characters on the lengths of uniform and attribute locations.
     </p>
 
     <h3>Vertex Attribute Divisor</h3>
