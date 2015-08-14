@@ -47,8 +47,10 @@ debug("");
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas, null, 2);
+var s = null;
 var s1 = null;
 var s2 = null;
+var testCases = null;
 
 if (!gl) {
     testFailed("WebGL context does not exist");
@@ -57,8 +59,13 @@ if (!gl) {
 
     runBindingTest();
     runObjectTest();
+    runParameterTest();
     // TODO: Test drawing, etc.
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+}
+
+function enumToString(value) {
+    return wtu.glEnumToString(gl, value);
 }
 
 function runBindingTest() {
@@ -69,7 +76,7 @@ function runBindingTest() {
     // Default value is null
     shouldBeNull("gl.getParameter(gl.SAMPLER_BINDING)");
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "SAMPLER_BINDING query should succeed");
-    
+
     debug("Testing binding a Sampler object");
     s1 = gl.createSampler();
     s2 = gl.createSampler();
@@ -124,6 +131,108 @@ function runObjectTest() {
     shouldBeFalse("gl.isSampler(null)");
 
     s1 = null;
+}
+
+function runParameterTest() {
+    // TODO: Add params checking cases.
+    debug("Testing getSamplerParameter and samplerParameter[if]");
+
+    s = gl.createSampler();
+    gl.bindSampler(0, s);
+
+    debug("Checking samplerParameteri");
+    testCases = [
+      { pname: gl.TEXTURE_WRAP_S,
+        defaultParam: gl.REPEAT,
+        param: gl.REPEAT,
+        expectedError: gl.NO_ERROR },
+      { pname: gl.TEXTURE_WRAP_T,
+        defaultParam: gl.REPEAT,
+        param: gl.CLAMP_TO_EDGE,
+        expectedError: gl.NO_ERROR },
+      { pname: gl.TEXTURE_WRAP_R,
+        defaultParam: gl.REPEAT,
+        param: gl.MIRRORED_REPEAT,
+        expectedError: gl.NO_ERROR },
+      { pname: gl.TEXTURE_MIN_FILTER,
+        defaultParam: gl.NEAREST_MIPMAP_LINEAR,
+        param: gl.LINEAR,
+        expectedError: gl.NO_ERROR },
+      { pname: gl.TEXTURE_MAG_FILTER,
+        defaultParam: gl.LINEAR,
+        param: gl.NEAREST,
+        expectedError: gl.NO_ERROR },
+      { pname: gl.TEXTURE_COMPARE_MODE,
+        defaultParam: gl.NONE,
+        param: gl.COMPARE_REF_TO_TEXTURE,
+        expectedError: gl.NO_ERROR },
+      { pname: gl.TEXTURE_COMPARE_FUNC,
+        defaultParam: gl.LEQUAL,
+        param: gl.GREATER,
+        expectedError: gl.NO_ERROR },
+      { pname: gl.TEXTURE_IMMUTABLE_FORMAT,
+        defaultParam: null,
+        param: 0,
+        expectedError: gl.INVALID_ENUM },
+    ];
+
+    for (var ii = 0; ii < testCases.length; ++ii) {
+        var pname = testCases[ii].pname;
+        var defaultParam = testCases[ii].defaultParam;
+        var param = testCases[ii].param;
+        var expectedError = testCases[ii].expectedError;
+        // Test default param.
+        if (expectedError == gl.NO_ERROR) {
+            shouldBe("gl.getSamplerParameter(s, " + pname + ")", "gl['" + enumToString(defaultParam) + "']");
+            wtu.glErrorShouldBe(gl, expectedError);
+        }
+
+        // Test setting param.
+        wtu.shouldGenerateGLError(gl, expectedError, "gl.samplerParameteri(s, " + pname + ", " + param + ")");
+        if (expectedError == gl.NO_ERROR) {
+            shouldBe("gl.getSamplerParameter(s, " + pname + ")", "gl['" + enumToString(param) + "']");
+            wtu.glErrorShouldBe(gl, expectedError);
+        }
+    }
+
+    debug("Checking samplerParameterf");
+    testCases = [
+      { pname: gl.TEXTURE_MIN_LOD,
+        defaultParam: -1000,
+        param: -50,
+        expectedError: gl.NO_ERROR },
+      { pname: gl.TEXTURE_MAX_LOD,
+        defaultParam: 1000,
+        param: 50,
+        expectedError: gl.NO_ERROR },
+      { pname: gl.TEXTURE_BASE_LEVEL,
+        defaultParam: null,
+        param: 0,
+        expectedError: gl.INVALID_ENUM },
+      { pname: gl.TEXTURE_MAX_LEVEL,
+        defaultParam: null,
+        param: 50,
+        expectedError: gl.INVALID_ENUM },
+    ];
+
+    for (var ii = 0; ii < testCases.length; ++ii) {
+        var pname = testCases[ii].pname;
+        var defaultParam = testCases[ii].defaultParam;
+        var param = testCases[ii].param;
+        var expectedError = testCases[ii].expectedError;
+        // Test default param.
+        if (expectedError == gl.NO_ERROR) {
+            shouldBe("gl.getSamplerParameter(s, " + pname + ")", defaultParam.toString());
+            wtu.glErrorShouldBe(gl, expectedError);
+        }
+
+        // Test setting param.
+        wtu.shouldGenerateGLError(gl, expectedError, "gl.samplerParameterf(s, " + pname + ", " + param + ")");
+        if (expectedError == gl.NO_ERROR) {
+            shouldBe("gl.getSamplerParameter(s, " + pname + ")", param.toString());
+            wtu.glErrorShouldBe(gl, expectedError);
+        }
+    }
 }
 
 debug("");
