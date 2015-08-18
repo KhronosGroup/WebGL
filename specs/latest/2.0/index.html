@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 10 August 2015</h2>
+    <h2 class="no-toc">Editor's Draft 18 August 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2091,17 +2091,37 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dd>
         Bind the sampler object contained in the passed <code>WebGLSampler</code> to the texture unit at the
         passed index. If a sampler is bound to a texture unit, the sampler's state supersedes the sampling
-        state of the texture bound to that texture unit.
+        state of the texture bound to that texture unit. If <code class="param">sampler</code> is null, the
+        currently bound sampler is unbound from the texture unit. A single sampler object may be bound to
+        multiple texture units simultaneously. <br><br>
+        If <em>unit</em> is greater than or equal to the value of <code>MAX_COMBINED_TEXTURE_IMAGE_UNITS</code>, generates an <code>INVALID_VALUE</code> error.
       </dd>
       <dt>
-        <p class="idl-code">void samplerParameteri(WebGLSampler? sampler, GLenum pname, GLint param);</p>
-        <p class="idl-code">void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param);</p>
+        <p class="idl-code">void samplerParameteri(WebGLSampler? sampler, GLenum pname, GLint param)</p>
+        <p class="idl-code">void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param)</p>
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glSamplerParameter.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
       </dt>
+      <dd>
+        Set the value for the passed pname given the passed sampler. <em>pname</em> is given in the following table:
+        <table>
+            <tr><th>pname</th></tr>
+            <tr><td>TEXTURE_COMPARE_FUNC</td></tr>
+            <tr><td>TEXTURE_COMPARE_MODE</td></tr>
+            <tr><td>TEXTURE_MAG_FILTER</td></tr>
+            <tr><td>TEXTURE_MAX_LOD</td></tr>
+            <tr><td>TEXTURE_MIN_FILTER</td></tr>
+            <tr><td>TEXTURE_MIN_LOD</td></tr>
+            <tr><td>TEXTURE_WRAP_R</td></tr>
+            <tr><td>TEXTURE_WRAP_S</td></tr>
+            <tr><td>TEXTURE_WRAP_T</td></tr>
+        </table>
+        <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+        <p>If <em>sampler</em> is not a valid sampler object, generates an <code>INVALID_OPERATION</code> error.</p>
+      </dd>
       <dt class="idl-code">any getSamplerParameter(WebGLSampler? sampler, GLenum pname)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.5">OpenGL ES 3.0.3 &sect;6.1.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetSamplerParameter.xhtml">man page</a>)</span>
       </dt>
@@ -2121,7 +2141,8 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
               <tr><td>TEXTURE_WRAP_T</td><td>GLenum</td></tr>
           </table>
           <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
-          <p>If an OpenGL error is generated, returns null.</p>
+          <p>If <em>sampler</em> is not a valid sampler object, generates an <code>INVALID_OPERATION</code> error.</p>
+          <p>Returns null if any OpenGL errors are generated during the execution of this function.</p>
       </dd>
     </dl>
 
