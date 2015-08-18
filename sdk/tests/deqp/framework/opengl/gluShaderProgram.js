@@ -239,14 +239,15 @@ gluShaderProgram.ShaderProgram = function(gl, programSources) {
 
     for (var i = 0; i < programSources.sources.length; i++) {
     /** @type {gluShaderProgram.Shader} */ var shader = new gluShaderProgram.Shader(gl, programSources.sources[i].type);
-        console.log('gluShaderProgram.Shader:\n' + programSources.sources[i].source);
         shader.setSources(programSources.sources[i].source);
         shader.compile();
         this.shaders.push(shader);
         this.shadersOK = this.shadersOK && shader.getCompileStatus();
-        if (!this.shadersOK)
+        if (!shader.getCompileStatus()) {
+            console.log('gluShaderProgram.Shader:\n' + programSources.sources[i].source);
+            console.log('Compile status: ' + shader.getCompileStatus());
             console.log('Shader infoLog: ' + shader.info.infoLog);
-        console.log('Compile status: ' + shader.getCompileStatus());
+        }
     }
 
     if (this.shadersOK) {
