@@ -112,6 +112,11 @@
     font-weight: bold;
   }
 
+  .folderMessage {
+    margin-left: 1em;
+    font-size: 0.9em;
+  }
+
   .pageHeader {
     white-space: nowrap;
   }
@@ -228,6 +233,8 @@ function start() {
     this.totalTimeouts = 0;
     this.totalSkipped = 0;
     this.testIndex = testIndex;
+    this.startTime = 0;
+    this.totalTime = 0;
 
     this.elementId = "page" + pageCount++;
     var li = reporter.localDoc.createElement('li');
@@ -300,6 +307,7 @@ function start() {
     this.totalTests = 0;
     this.totalSuccessful = 0;
     this.totalTimeouts = 0;
+    this.totalTime = 0;
     // remove previous results.
     while (this.resultElem.hasChildNodes()) {
       this.resultElem.removeChild(this.resultElem.childNodes[0]);
@@ -313,6 +321,7 @@ function start() {
       this.elem.classList.remove('testpageskipped');
       this.elem.classList.remove('testpagefail');
       this.elem.classList.remove('testpagesuccess');
+      this.startTime = performance.now();
     }
 
     return this.check.checked && this.folder.checked();
@@ -323,10 +332,11 @@ function start() {
   };
 
   Page.prototype.finishPage = function(success) {
+    this.totalTime = performance.now() - this.startTime;
     if(this.totalSkipped) {
-      var msg = ' (' + this.totalSkipped + ' of ' + this.totalTests + ' skipped)';
+      var msg = ' (' + this.totalSkipped + ' of ' + this.totalTests + ' skipped in ' + this.totalTime.toFixed(1) + ' ms )';
     } else {
-      var msg = ' (' + this.totalSuccessful + ' of ' + this.totalTests + ' passed)';
+      var msg = ' (' + this.totalSuccessful + ' of ' + this.totalTests + ' passed in ' + this.totalTime.toFixed(1) + ' ms )';
     }
 
     if (success === undefined) {
@@ -343,6 +353,7 @@ function start() {
     }
     this.elem.classList.add(css);
     this.totalsElem.textContent = msg;
+    this.folder.pageFinished(this, success);
   };
 
   Page.prototype.enableTest = function(re) {
@@ -370,6 +381,7 @@ function start() {
     this.pages = [];
     this.items = [];
     this.folder = folder;
+    this.cachedTotalTime = 0;
     var that = this;
 
     var doc = reporter.localDoc;
@@ -398,6 +410,11 @@ function start() {
     h.classList.add('folderName');
     h.appendChild(doc.createTextNode(this.displayName));
     div.appendChild(h);
+    var m = doc.createElement('span');
+    m.classList.add('folderMessage');
+    this.msgNode = doc.createTextNode('');
+    m.appendChild(this.msgNode);
+    div.appendChild(m);
     var ul = doc.createElement('ul');
     li.appendChild(div);
     li.appendChild(ul);
@@ -424,11 +441,34 @@ function start() {
     return numChildren + this.pages.length;
   };
 
+  Folder.prototype.totalTime = function() {
+    // Check to see if the cached total time needs to be recomputed
+    if (this.cachedTotalTime == -1) {
+      this.cachedTotalTime = 0;
+      for (var name in this.subFolders) {
+        this.cachedTotalTime += this.subFolders[name].totalTime();
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.cachedTotalTime += this.pages[ii].totalTime;
+      }
+    }
+    return this.cachedTotalTime;
+  };
+
   Folder.prototype.run = function() {
+    this.msgNode.textContent = '';
     var firstTestIndex = this.firstTestIndex();
     var count = this.numChildren();
     log("run tests: " + firstTestIndex + " to " + (firstTestIndex + count - 1))
     testHarness.runTests({start: firstTestIndex, count: count});
+  };
+
+  Folder.prototype.pageFinished = function(page, success) {
+    this.cachedTotalTime = -1;
+    this.msgNode.textContent = (this.totalTime() / 1000).toFixed(2) + ' seconds';
+    if (this.folder) {
+      this.folder.pageFinished(page, success);
+    }
   };
 
   Folder.prototype.getSubFolder = function(name) {
@@ -533,6 +573,7 @@ function start() {
     this.root = new Folder(this, null, 0, "all");
     this.resultElem.appendChild(this.root.elem);
     this.callbacks = { };
+    this.startTime = 0;
 
     if (ctx) {
       this.contextInfo["VENDOR"] = ctx.getParameter(ctx.VENDOR);
@@ -622,6 +663,7 @@ function start() {
       var totalSuccessful = 0;
       var totalTimeouts = 0;
       var totalSkipped = 0;
+      var totalTime = performance.now() - this.startTime;
       for (var url in this.pagesByURL) {
         var page = this.pagesByURL[url];
         totalTests += page.totalTests;
@@ -653,6 +695,7 @@ function start() {
       tx += "\n";
       tx += "-------------------\n\n";
       tx += "Test Summary (" + totalTests + " total tests):\n";
+      tx += "Tests ran in " + (totalTime / 1000.0).toFixed(2) + " seconds\n";
       tx += "Tests PASSED: " + totalSuccessful + "\n";
       tx += "Tests FAILED: " + (totalTests - totalSuccessful - totalSkipped) + "\n";
       tx += "Tests TIMED OUT: " + totalTimeouts + "\n";
@@ -705,6 +748,7 @@ function start() {
   };
 
   Reporter.prototype.postTestStartToServer = function(resultText) {
+    this.startTime = performance.now();
     if(OPTIONS.postResults == undefined || OPTIONS.postResults == 0) {
       return;
     }
