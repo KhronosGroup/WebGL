@@ -19,3 +19,4 @@ shader-with-1025-character-identifier.frag.html
 short-circuiting-in-loop-condition.html
 ternary-operator-on-arrays-glsl3.html
 uniform-location-length-limits.html
+vector-dynamic-indexing.html
