@@ -35,6 +35,7 @@ function description(msg){};
 
 function finishTest(){};
 
+/** @type {string} */ var _currentTestName;
 /**
  * @param {?string} name
  */

@@ -740,9 +740,10 @@ goog.scope(function() {
 
 		/** @type {boolean} */ var isOk = this.verify(resultSurface.getAccess(), errorMask.getAccess());
 
-		tcuLogImage.logImage('Rendered', 'Rendered image', resultSurface.getAccess());
+
 
 		if (!isOk) {
+			tcuLogImage.logImage('Rendered', 'Rendered image', resultSurface.getAccess());
 			tcuLogImage.logImage('ErrorMask', 'Error mask', errorMask.getAccess());
 			testFailedOptions('Fail', false);
 		}

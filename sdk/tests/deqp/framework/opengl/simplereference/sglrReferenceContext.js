@@ -98,6 +98,16 @@ goog.scope(function() {
     };
 
     /**
+     * @param {number} width
+     * @param {number} height
+     * @param {number} depth
+     * @return {number}
+     */
+    sglrReferenceContext.getNumMipLevels3D = function(width, height, depth) {
+        return Math.floor(Math.log2(Math.max(width, height, depth)) + 1);
+    };
+
+    /**
      * @param {number} baseLevelSize
      * @param {number} levelNdx
      * @return {number}
@@ -106,12 +116,41 @@ goog.scope(function() {
         return Math.max(baseLevelSize >> levelNdx, 1);
     };
 
+    sglrReferenceContext.mapGLCubeFace = function(face) {
+        switch (face) {
+            case gl.TEXTURE_CUBE_MAP_NEGATIVE_X: return tcuTexture.CubeFace.CUBEFACE_NEGATIVE_X;
+            case gl.TEXTURE_CUBE_MAP_POSITIVE_X: return tcuTexture.CubeFace.CUBEFACE_POSITIVE_X;
+            case gl.TEXTURE_CUBE_MAP_NEGATIVE_Y: return tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Y;
+            case gl.TEXTURE_CUBE_MAP_POSITIVE_Y: return tcuTexture.CubeFace.CUBEFACE_POSITIVE_Y;
+            case gl.TEXTURE_CUBE_MAP_NEGATIVE_Z: return tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Z;
+            case gl.TEXTURE_CUBE_MAP_POSITIVE_Z: return tcuTexture.CubeFace.CUBEFACE_POSITIVE_Z;
+            default: throw new Error('Invalid cube face: ' + face);
+        }
+    };
+
     /**
      * @param {tcuTexture.FilterMode} mode
      * @return {boolean}
      */
     sglrReferenceContext.isMipmapFilter = function(/*const tcu::Sampler::FilterMode*/ mode) {
         return mode != tcuTexture.FilterMode.NEAREST && mode != tcuTexture.FilterMode.LINEAR;
+    };
+
+    sglrReferenceContext.getNumMipLevels1D = function(size) {
+        return Math.floor(Math.log2(size)) + 1;
+    };
+
+    /**
+     * @param {?sglrReferenceContext.TextureType} type
+     * @return {sglrReferenceContext.TexTarget}
+     */
+    sglrReferenceContext.texLayeredTypeToTarget = function(type) {
+        switch (type) {
+            case sglrReferenceContext.TextureType.TYPE_2D_ARRAY: return sglrReferenceContext.TexTarget.TEXTARGET_2D_ARRAY;
+            case sglrReferenceContext.TextureType.TYPE_3D: return sglrReferenceContext.TexTarget.TEXTARGET_3D;
+            case sglrReferenceContext.TextureType.TYPE_CUBE_MAP_ARRAY: return sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_ARRAY;
+            default: throw new Error('Invalid texture type: ' + type);
+        }
     };
 
     /**
@@ -419,7 +458,7 @@ goog.scope(function() {
 
                         if (level.getWidth() != expectedW ||
                             level.getHeight() != expectedH ||
-                            level.getFormat() != format)
+                            !level.getFormat().isEqual(format))
                             return false;
                     } else
                         return false;
@@ -453,7 +492,9 @@ goog.scope(function() {
      * @param {number=} lod
      * @return {Array<number>}
      */
-    sglrReferenceContext.Texture2D.prototype.sample = function(pos, lod) { return this.m_view.sample(this.getSampler(), pos, lod) };
+    sglrReferenceContext.Texture2D.prototype.sample = function(pos, lod) {
+     return this.m_view.sample(this.getSampler(), pos, lod);
+    };
 
     /**
     * @param {Array<Array<number>>} packetTexcoords 4 vec2 coordinates
@@ -488,11 +529,319 @@ goog.scope(function() {
     };
 
     /**
+    * @constructor
+    * @extends {sglrReferenceContext.Texture}
+    */
+    sglrReferenceContext.TextureCube = function() {
+        sglrReferenceContext.Texture.call(this, sglrReferenceContext.TextureType.TYPE_CUBE_MAP);
+        /** @type {tcuTexture.TextureCubeView} */ this.m_view = new tcuTexture.TextureCubeView(0, null);
+        /** @type {Array<sglrReferenceContext.TextureLevelArray>} */ this.m_levels = [];
+        for (var face in tcuTexture.CubeFace)
+            this.m_levels[tcuTexture.CubeFace[face]] = new sglrReferenceContext.TextureLevelArray();
+    };
+
+    /**
+    */
+    sglrReferenceContext.TextureCube.prototype = Object.create(sglrReferenceContext.Texture.prototype);
+    sglrReferenceContext.TextureCube.prototype.constructor = sglrReferenceContext.Texture2D;
+
+    sglrReferenceContext.TextureCube.prototype.clearLevels = function() {
+        for (var face in tcuTexture.CubeFace)
+            this.m_levels[tcuTexture.CubeFace[face]].clear();
+    };
+
+    /**
+    * @param {number} level
+    * @param {tcuTexture.CubeFace} face
+    * @return {boolean}
+    */
+    sglrReferenceContext.TextureCube.prototype.hasFace = function(level, face) { return this.m_levels[face].hasLevel(level); };
+
+    /**
+    * @param {number} level
+    * @param {tcuTexture.CubeFace} face
+    * @return {tcuTexture.PixelBufferAccess}
+    */
+    sglrReferenceContext.TextureCube.prototype.getFace = function(level, face) { return this.m_levels[face].getLevel(level); };
+
+    /**
+    * @param {number} level
+    * @param {tcuTexture.CubeFace} face
+    * @param {?tcuTexture.TextureFormat} format
+    * @param {number} width
+    * @param {number} height
+    */
+    sglrReferenceContext.TextureCube.prototype.allocLevel = function(level, face, format, width, height) {
+        this.m_levels[face].allocLevel(level, format, width, height, 1);
+    };
+
+    sglrReferenceContext.TextureCube.prototype.isComplete = function() {
+        var baseLevel = this.getBaseLevel();
+
+        if (this.hasFace(baseLevel, tcuTexture.CubeFace.CUBEFACE_NEGATIVE_X)) {
+            var level = this.getFace(baseLevel, tcuTexture.CubeFace.CUBEFACE_NEGATIVE_X);
+            var width = level.getWidth();
+            var height = level.getHeight();
+            var format = level.getFormat();
+            var mipmap = sglrReferenceContext.isMipmapFilter(this.getSampler().minFilter);
+            var numLevels = mipmap ? Math.min(this.getMaxLevel() - baseLevel + 1, sglrReferenceContext.getNumMipLevels2D(width, height)) : 1;
+
+            if (width != height)
+                return false; // Non-square is not supported.
+
+            // \note Level 0 is always checked for consistency
+            for (var levelNdx = 0; levelNdx < numLevels; levelNdx++) {
+                var levelW = sglrReferenceContext.getMipLevelSize(width, levelNdx);
+                var levelH = sglrReferenceContext.getMipLevelSize(height, levelNdx);
+
+                for (var face in tcuTexture.CubeFace) {
+                    if (this.hasFace(baseLevel + levelNdx, tcuTexture.CubeFace[face])) {
+                        level = this.getFace(baseLevel + levelNdx, tcuTexture.CubeFace[face]);
+
+                        if (level.getWidth() != levelW ||
+                            level.getHeight() != levelH ||
+                            !level.getFormat().isEqual(format))
+                            return false;
+                    } else
+                        return false;
+                }
+            }
+
+            return true;
+        } else
+            return false;
+    };
+
+    sglrReferenceContext.TextureCube.prototype.updateView = function() {
+
+        var baseLevel = this.getBaseLevel();
+        var faces = [];
+
+        if (this.isComplete()) {
+            var size = this.getFace(baseLevel, tcuTexture.CubeFace.CUBEFACE_NEGATIVE_X).getWidth();
+            var isMipmap = sglrReferenceContext.isMipmapFilter(this.getSampler().minFilter);
+            var numLevels = isMipmap ? Math.min(this.getMaxLevel() - baseLevel + 1, sglrReferenceContext.getNumMipLevels1D(size)) : 1;
+
+            for (var face in tcuTexture.CubeFace)
+                faces[tcuTexture.CubeFace[face]] = this.m_levels[tcuTexture.CubeFace[face]].getLevels().slice(baseLevel);
+
+            this.m_view = new tcuTexture.TextureCubeView(numLevels, faces);
+        } else
+            this.m_view = new tcuTexture.TextureCubeView(0, null);
+    };
+
+    /**
+     * @param {Array<number>} pos
+     * @param {number=} lod
+     * @return {Array<number>}
+     */
+    sglrReferenceContext.TextureCube.prototype.sample = function(pos, lod) { return this.m_view.sample(this.getSampler(), pos, lod) };
+
+    /**
+    * @constructor
+    * @extends {sglrReferenceContext.Texture}
+    */
+    sglrReferenceContext.Texture2DArray = function() {
+        sglrReferenceContext.Texture.call(this, sglrReferenceContext.TextureType.TYPE_2D_ARRAY);
+        /** @type {tcuTexture.Texture2DArrayView} */ this.m_view = new tcuTexture.Texture2DArrayView(0, null);
+        /** @type {sglrReferenceContext.TextureLevelArray} */ this.m_levels = new sglrReferenceContext.TextureLevelArray();
+    };
+
+    /**
+    */
+    sglrReferenceContext.Texture2DArray.prototype = Object.create(sglrReferenceContext.Texture.prototype);
+    sglrReferenceContext.Texture2DArray.prototype.constructor = sglrReferenceContext.Texture2DArray;
+
+    sglrReferenceContext.Texture2DArray.prototype.clearLevels = function() { this.m_levels.clear(); };
+
+    /**
+    * @param {number} level
+    * @return {boolean}
+    */
+    sglrReferenceContext.Texture2DArray.prototype.hasLevel = function(level) { return this.m_levels.hasLevel(level); };
+
+    /**
+    * @param {number} level
+    * @return {tcuTexture.PixelBufferAccess}
+    */
+    sglrReferenceContext.Texture2DArray.prototype.getLevel = function(level) { return this.m_levels.getLevel(level); };
+
+    /**
+    * @param {number} level
+    * @param {?tcuTexture.TextureFormat} format
+    * @param {number} width
+    * @param {number} height
+    * @param {number} numLayers
+    */
+    sglrReferenceContext.Texture2DArray.prototype.allocLevel = function(level, format, width, height, numLayers) {
+        this.m_levels.allocLevel(level, format, width, height, numLayers);
+    };
+
+    /**
+     * @return {boolean}
+     */
+    sglrReferenceContext.Texture2DArray.prototype.isComplete = function() {
+        /** @type {number} */ var baseLevel = this.getBaseLevel();
+
+        if (this.hasLevel(baseLevel)) {
+            /** @type {tcuTexture.PixelBufferAccess} */ var level0 = this.getLevel(baseLevel);
+            /** @type {boolean} */ var mipmap = sglrReferenceContext.isMipmapFilter(this.getSampler().minFilter);
+
+            if (mipmap) {
+                /** @type {tcuTexture.TextureFormat} */ var format = level0.getFormat();
+                /** @type {number} */ var w = level0.getWidth();
+                /** @type {number} */ var h = level0.getHeight();
+                /** @type {number} */ var numLayers = level0.getDepth();
+                /** @type {number} */ var numLevels = Math.min(this.getMaxLevel() - baseLevel + 1, sglrReferenceContext.getNumMipLevels2D(w, h));
+
+                for (var levelNdx = 1; levelNdx < numLevels; levelNdx++) {
+                    if (this.hasLevel(baseLevel + levelNdx)) {
+                        /** @type {tcuTexture.PixelBufferAccess} */ var level = this.getLevel(baseLevel + levelNdx);
+                        /** @type {number} */ var expectedW = sglrReferenceContext.getMipLevelSize(w, levelNdx);
+                        /** @type {number} */ var expectedH = sglrReferenceContext.getMipLevelSize(h, levelNdx);
+
+                        if (level.getWidth() != expectedW ||
+                            level.getHeight() != expectedH ||
+                            level.getDepth() != numLayers ||
+                            !level.getFormat().isEqual(format))
+                            return false;
+                    } else
+                        return false;
+                }
+            }
+
+            return true;
+        } else
+            return false;
+    };
+
+    /**
+     */
+    sglrReferenceContext.Texture2DArray.prototype.updateView = function() {
+        /** @type {number} */ var baseLevel = this.getBaseLevel();
+
+        if (this.hasLevel(baseLevel) && !this.getLevel(baseLevel).isEmpty()) {
+            // Update number of levels in mipmap pyramid.
+            /** @type {number} */ var width = this.getLevel(baseLevel).getWidth();
+            /** @type {number} */ var height = this.getLevel(baseLevel).getHeight();
+            /** @type {boolean} */ var isMipmap = sglrReferenceContext.isMipmapFilter(this.getSampler().minFilter);
+            /** @type {number} */ var numLevels = isMipmap ? Math.min(this.getMaxLevel() - baseLevel + 1, sglrReferenceContext.getNumMipLevels2D(width, height)) : 1;
+
+            this.m_view = new tcuTexture.Texture2DArrayView(numLevels, this.m_levels.getLevels().slice(baseLevel));
+        } else
+            this.m_view = new tcuTexture.Texture2DArrayView(0, null);
+    };
+
+    /**
+    * @constructor
+    * @extends {sglrReferenceContext.Texture}
+    */
+    sglrReferenceContext.Texture3D = function() {
+        sglrReferenceContext.Texture.call(this, sglrReferenceContext.TextureType.TYPE_2D_ARRAY);
+        /** @type {tcuTexture.Texture3DView} */ this.m_view = new tcuTexture.Texture3DView(0, null);
+        /** @type {sglrReferenceContext.TextureLevelArray} */ this.m_levels = new sglrReferenceContext.TextureLevelArray();
+    };
+
+    /**
+    */
+    sglrReferenceContext.Texture3D.prototype = Object.create(sglrReferenceContext.Texture.prototype);
+    sglrReferenceContext.Texture3D.prototype.constructor = sglrReferenceContext.Texture3D;
+
+    sglrReferenceContext.Texture3D.prototype.clearLevels = function() { this.m_levels.clear(); };
+
+    /**
+    * @param {number} level
+    * @return {boolean}
+    */
+    sglrReferenceContext.Texture3D.prototype.hasLevel = function(level) { return this.m_levels.hasLevel(level); };
+
+    /**
+    * @param {number} level
+    * @return {tcuTexture.PixelBufferAccess}
+    */
+    sglrReferenceContext.Texture3D.prototype.getLevel = function(level) { return this.m_levels.getLevel(level); };
+
+    /**
+    * @param {number} level
+    * @param {?tcuTexture.TextureFormat} format
+    * @param {number} width
+    * @param {number} height
+    * @param {number} depth
+    */
+    sglrReferenceContext.Texture3D.prototype.allocLevel = function(level, format, width, height, depth) {
+        this.m_levels.allocLevel(level, format, width, height, depth);
+    };
+
+    /**
+     * @return {boolean}
+     */
+    sglrReferenceContext.Texture3D.prototype.isComplete = function() {
+        /** @type {number} */ var baseLevel = this.getBaseLevel();
+
+        if (this.hasLevel(baseLevel)) {
+            /** @type {tcuTexture.PixelBufferAccess} */ var level0 = this.getLevel(baseLevel);
+            /** @type {boolean} */ var mipmap = sglrReferenceContext.isMipmapFilter(this.getSampler().minFilter);
+
+            if (mipmap) {
+                /** @type {tcuTexture.TextureFormat} */ var format = level0.getFormat();
+                /** @type {number} */ var w = level0.getWidth();
+                /** @type {number} */ var h = level0.getHeight();
+                /** @type {number} */ var d = level0.getDepth();
+                /** @type {number} */ var numLevels = Math.min(this.getMaxLevel() - baseLevel + 1, sglrReferenceContext.getNumMipLevels3D(w, h, d));
+
+                for (var levelNdx = 1; levelNdx < numLevels; levelNdx++) {
+                    if (this.hasLevel(baseLevel + levelNdx)) {
+                        /** @type {tcuTexture.PixelBufferAccess} */ var level = this.getLevel(baseLevel + levelNdx);
+                        /** @type {number} */ var expectedW = sglrReferenceContext.getMipLevelSize(w, levelNdx);
+                        /** @type {number} */ var expectedH = sglrReferenceContext.getMipLevelSize(h, levelNdx);
+                        /** @type {number} */ var expectedD = sglrReferenceContext.getMipLevelSize(d, levelNdx);
+
+                        if (level.getWidth() != expectedW ||
+                            level.getHeight() != expectedH ||
+                            level.getDepth() != expectedD ||
+                            !level.getFormat().isEqual(format))
+                            return false;
+                    } else
+                        return false;
+                }
+            }
+
+            return true;
+        } else
+            return false;
+    };
+
+    /**
+     */
+    sglrReferenceContext.Texture3D.prototype.updateView = function() {
+        /** @type {number} */ var baseLevel = this.getBaseLevel();
+
+        if (this.hasLevel(baseLevel) && !this.getLevel(baseLevel).isEmpty()) {
+            // Update number of levels in mipmap pyramid.
+            /** @type {number} */ var width = this.getLevel(baseLevel).getWidth();
+            /** @type {number} */ var height = this.getLevel(baseLevel).getHeight();
+            /** @type {boolean} */ var isMipmap = sglrReferenceContext.isMipmapFilter(this.getSampler().minFilter);
+            /** @type {number} */ var numLevels = isMipmap ? Math.min(this.getMaxLevel() - baseLevel + 1, sglrReferenceContext.getNumMipLevels2D(width, height)) : 1;
+
+            this.m_view = new tcuTexture.Texture3DView(numLevels, this.m_levels.getLevels().slice(baseLevel));
+        } else
+            this.m_view = new tcuTexture.Texture3DView(0, null);
+    };
+
+    /**
+     * @param {Array<number>} pos
+     * @param {number=} lod
+     * @return {Array<number>}
+     */
+    sglrReferenceContext.Texture3D.prototype.sample = function(pos, lod) { return this.m_view.sample(this.getSampler(), pos, lod) };
+
+    /**
     * A container object for storing one of texture types;
     * @constructor
     */
     sglrReferenceContext.TextureContainer = function() {
-        /** @type {sglrReferenceContext.Texture2D} */ this.texture = null;
+        /** @type {sglrReferenceContext.Texture2D | sglrReferenceContext.TextureCube|sglrReferenceContext.Texture2DArray|sglrReferenceContext.Texture3D} */
+         this.texture = null;
         /** @type {?sglrReferenceContext.TextureType} */ this.textureType = null;
     };
 
@@ -511,16 +860,19 @@ goog.scope(function() {
                 this.texture = new sglrReferenceContext.Texture2D();
                 this.textureType = sglrReferenceContext.TextureType.TYPE_2D;
                 break;
+            case gl.TEXTURE_CUBE_MAP:
+                this.texture = new sglrReferenceContext.TextureCube();
+                this.textureType = sglrReferenceContext.TextureType.TYPE_CUBE_MAP;
+                break;
+            case gl.TEXTURE_2D_ARRAY:
+                this.texture = new sglrReferenceContext.Texture2DArray();
+                this.textureType = sglrReferenceContext.TextureType.TYPE_2D_ARRAY;
+                break;
+            case gl.TEXTURE_3D:
+                this.texture = new sglrReferenceContext.Texture3D();
+                this.textureType = sglrReferenceContext.TextureType.TYPE_3D;
+                break;
             /* TODO: Implement other types */
-            // case gl.TEXTURE_CUBE_MAP:
-            //     his.textureType = sglrReferenceContext.TextureType.TYPE_CUBE_MAP;
-            //     break;
-            // case gl.TEXTURE_2D_ARRAY:
-            //     this.textureType = sglrReferenceContext.TextureType.TYPE_2D_ARRAY;
-            //     break;
-            // case gl.TEXTURE_3D:
-            //     this.textureType = sglrReferenceContext.TextureType.TYPE_3D;
-            //     break;
             // case gl.TEXTURE_CUBE_MAP_ARRAY:
             //     this.textureType = sglrReferenceContext.TextureType.TYPE_CUBE_MAP_ARRAY;
             //     break;
@@ -577,7 +929,7 @@ goog.scope(function() {
 
     /**
      * @param {?sglrReferenceContext.TexTarget} target
-     * @return {?tcuTexture.CubeFace}
+     * @return {tcuTexture.CubeFace}
      */
     sglrReferenceContext.texTargetToFace = function(target) {
         switch (target) {
@@ -587,7 +939,7 @@ goog.scope(function() {
             case sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_POSITIVE_Y: return tcuTexture.CubeFace.CUBEFACE_POSITIVE_Y;
             case sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_NEGATIVE_Z: return tcuTexture.CubeFace.CUBEFACE_NEGATIVE_Z;
             case sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_POSITIVE_Z: return tcuTexture.CubeFace.CUBEFACE_POSITIVE_Z;
-            default: return null;
+            default: throw new Error('Invalid target ' + target);
         }
     };
 
@@ -1015,6 +1367,42 @@ goog.scope(function() {
         this.m_emptyTex2D.texture.getLevel(0).setPixel([0, 0, 0, 1], 0, 0);
         this.m_emptyTex2D.texture.updateView();
 
+        /** @type {sglrReferenceContext.TextureContainer} */ this.m_emptyTexCube = new sglrReferenceContext.TextureContainer();
+        this.m_emptyTexCube.init(gl.TEXTURE_CUBE_MAP);
+        this.m_emptyTexCube.texture.getSampler().wrapS = tcuTexture.WrapMode.CLAMP_TO_EDGE;
+        this.m_emptyTexCube.texture.getSampler().wrapT = tcuTexture.WrapMode.CLAMP_TO_EDGE;
+        this.m_emptyTexCube.texture.getSampler().minFilter = tcuTexture.FilterMode.NEAREST;
+        this.m_emptyTexCube.texture.getSampler().magFilter = tcuTexture.FilterMode.NEAREST;
+
+        for (var face in tcuTexture.CubeFace) {
+            this.m_emptyTexCube.texture.allocLevel(0, tcuTexture.CubeFace[face],
+                new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.UNORM_INT8), 1, 1);
+            this.m_emptyTexCube.texture.getFace(0, tcuTexture.CubeFace[face]).setPixel([0, 0, 0, 1], 0, 0);
+        }
+        this.m_emptyTexCube.texture.updateView();
+
+        /** @type {sglrReferenceContext.TextureContainer} */ this.m_emptyTex2DArray = new sglrReferenceContext.TextureContainer();
+        this.m_emptyTex2DArray.init(gl.TEXTURE_2D_ARRAY);
+        this.m_emptyTex2DArray.texture.getSampler().wrapS = tcuTexture.WrapMode.CLAMP_TO_EDGE;
+        this.m_emptyTex2DArray.texture.getSampler().wrapT = tcuTexture.WrapMode.CLAMP_TO_EDGE;
+        this.m_emptyTex2DArray.texture.getSampler().wrapR = tcuTexture.WrapMode.CLAMP_TO_EDGE;
+        this.m_emptyTex2DArray.texture.getSampler().minFilter = tcuTexture.FilterMode.NEAREST;
+        this.m_emptyTex2DArray.texture.getSampler().magFilter = tcuTexture.FilterMode.NEAREST;
+        this.m_emptyTex2DArray.texture.allocLevel(0, new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.UNORM_INT8), 1, 1);
+        this.m_emptyTex2DArray.texture.getLevel(0).setPixel([0, 0, 0, 1], 0, 0);
+        this.m_emptyTex2DArray.texture.updateView();
+
+        /** @type {sglrReferenceContext.TextureContainer} */ this.m_emptyTex3D = new sglrReferenceContext.TextureContainer();
+        this.m_emptyTex3D.init(gl.TEXTURE_3D);
+        this.m_emptyTex3D.texture.getSampler().wrapS = tcuTexture.WrapMode.CLAMP_TO_EDGE;
+        this.m_emptyTex3D.texture.getSampler().wrapT = tcuTexture.WrapMode.CLAMP_TO_EDGE;
+        this.m_emptyTex3D.texture.getSampler().wrapR = tcuTexture.WrapMode.CLAMP_TO_EDGE;
+        this.m_emptyTex3D.texture.getSampler().minFilter = tcuTexture.FilterMode.NEAREST;
+        this.m_emptyTex3D.texture.getSampler().magFilter = tcuTexture.FilterMode.NEAREST;
+        this.m_emptyTex3D.texture.allocLevel(0, new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.UNORM_INT8), 1, 1);
+        this.m_emptyTex3D.texture.getLevel(0).setPixel([0, 0, 0, 1], 0, 0);
+        this.m_emptyTex3D.texture.updateView();
+
         /** @type {sglrReferenceContext.TextureType} */ this.m_type;
 
         /** @type {boolean} */ this.m_immutable;
@@ -1099,9 +1487,9 @@ goog.scope(function() {
             // Clear binding.
             switch (target) {
                 case gl.TEXTURE_2D: this.setTex2DBinding(unitNdx, null); break;
-                //TODO: Implement - case gl.TEXTURE_CUBE_MAP: this.setTexCubeBinding (unitNdx, null); break;
-                //TODO: Implement - case gl.TEXTURE_2D_ARRAY: this.setTex2DArrayBinding (unitNdx, null); break;
-                //TODO: Implement - case gl.TEXTURE_3D: this.setTex3DBinding (unitNdx, null); break;
+                case gl.TEXTURE_CUBE_MAP: this.setTexCubeBinding(unitNdx, null); break;
+                case gl.TEXTURE_2D_ARRAY: this.setTex2DArrayBinding(unitNdx, null); break;
+                case gl.TEXTURE_3D: this.setTex3DBinding(unitNdx, null); break;
                 default:
                     throw new Error('Unrecognized target: ' + target);
             }
@@ -1123,12 +1511,26 @@ goog.scope(function() {
             }
             switch (target) {
                 case gl.TEXTURE_2D: this.setTex2DBinding(unitNdx, texture); break;
-                //TODO: Implement - case gl.TEXTURE_CUBE_MAP: this.setTexCubeBinding (unitNdx, texture); break;
-                //TODO: Implement - case gl.TEXTURE_2D_ARRAY: this.setTex2DArrayBinding (unitNdx, texture); break;
-                //TODO: Implement - case gl.TEXTURE_3D: this.setTex3DBinding (unitNdx, texture); break;
+                case gl.TEXTURE_CUBE_MAP: this.setTexCubeBinding(unitNdx, texture); break;
+                case gl.TEXTURE_2D_ARRAY: this.setTex2DArrayBinding(unitNdx, texture); break;
+                case gl.TEXTURE_3D: this.setTex3DBinding(unitNdx, texture); break;
                 default:
                     throw new Error('Unrecognized target: ' + target);
             }
+        }
+    };
+
+    /**
+    * @param {number} unitNdx
+    * @param {?sglrReferenceContext.TextureContainer} texture
+    */
+    sglrReferenceContext.ReferenceContext.prototype.setTexCubeBinding = function(unitNdx, texture) {
+        if (this.m_textureUnits[unitNdx].texCubeBinding) {
+            this.m_textureUnits[unitNdx].texCubeBinding = null;
+        }
+
+        if (texture) {
+            this.m_textureUnits[unitNdx].texCubeBinding = texture;
         }
     };
 
@@ -1145,6 +1547,38 @@ goog.scope(function() {
         if (texture) {
             // this.m_textures.acquireReference(texture);
             this.m_textureUnits[unitNdx].tex2DBinding = texture;
+        }
+    };
+
+    /**
+    * @param {number} unitNdx
+    * @param {?sglrReferenceContext.TextureContainer} texture
+    */
+    sglrReferenceContext.ReferenceContext.prototype.setTex2DArrayBinding = function(unitNdx, texture) {
+        if (this.m_textureUnits[unitNdx].tex2DArrayBinding) {
+            // this.m_textures.releaseReference(this.m_textureUnits[unitNdx].tex2DArrayBinding);
+            this.m_textureUnits[unitNdx].tex2DArrayBinding = null;
+        }
+
+        if (texture) {
+            // this.m_textures.acquireReference(texture);
+            this.m_textureUnits[unitNdx].tex2DArrayBinding = texture;
+        }
+    };
+
+    /**
+    * @param {number} unitNdx
+    * @param {?sglrReferenceContext.TextureContainer} texture
+    */
+    sglrReferenceContext.ReferenceContext.prototype.setTex3DBinding = function(unitNdx, texture) {
+        if (this.m_textureUnits[unitNdx].tex3DBinding) {
+            // this.m_textures.releaseReference(this.m_textureUnits[unitNdx].tex3DBinding);
+            this.m_textureUnits[unitNdx].tex3DBinding = null;
+        }
+
+        if (texture) {
+            // this.m_textures.acquireReference(texture);
+            this.m_textureUnits[unitNdx].tex3DBinding = texture;
         }
     };
 
@@ -2055,7 +2489,8 @@ goog.scope(function() {
      * @param {Array<number>} x
      */
     sglrReferenceContext.ReferenceContext.prototype.uniformMatrix2fv = function(location, transpose, x) {
-        return this.uniformValue(location, gluShaderUtil.DataType.FLOAT_MAT2, transpose ? sglrReferenceContext.trans(2, x) : x);
+        /* change from column-major to internal row-major if transpose if FALSE */
+        return this.uniformValue(location, gluShaderUtil.DataType.FLOAT_MAT2, !transpose ? sglrReferenceContext.trans(2, x) : x);
     };
 
     /**
@@ -2063,7 +2498,8 @@ goog.scope(function() {
      * @param {Array<number>} x
      */
     sglrReferenceContext.ReferenceContext.prototype.uniformMatrix3fv = function(location, transpose, x) {
-        return this.uniformValue(location, gluShaderUtil.DataType.FLOAT_MAT3, transpose ? sglrReferenceContext.trans(3, x) : x);
+        /* change from column-major to internal row-major if transpose if FALSE */
+        return this.uniformValue(location, gluShaderUtil.DataType.FLOAT_MAT3, !transpose ? sglrReferenceContext.trans(3, x) : x);
     };
 
     /**
@@ -2071,7 +2507,8 @@ goog.scope(function() {
      * @param {Array<number>} x
      */
     sglrReferenceContext.ReferenceContext.prototype.uniformMatrix4fv = function(location, transpose, x) {
-        return this.uniformValue(location, gluShaderUtil.DataType.FLOAT_MAT4, transpose ? sglrReferenceContext.trans(4, x) : x);
+        /* change from column-major to internal row-major if transpose if FALSE */
+        return this.uniformValue(location, gluShaderUtil.DataType.FLOAT_MAT4, !transpose ? sglrReferenceContext.trans(4, x) : x);
     };
 
     /**
@@ -2302,14 +2739,12 @@ goog.scope(function() {
             case sglrReferenceContext.AttachmentType.ATTACHMENTTYPE_TEXTURE: {
                 /** @type {sglrReferenceContext.TextureContainer} */ var container = /** @type {sglrReferenceContext.TextureContainer} */ (attachment.object);
                 /** @type {?sglrReferenceContext.TextureType} */ var type = container.getType();
-                /** @type {?sglrReferenceContext.Texture2D} */ var texture = container.texture;
+                var texture = container.texture;
 
                 if (type == sglrReferenceContext.TextureType.TYPE_2D)
                     return texture.getLevel(attachment.level);
                 else if (type == sglrReferenceContext.TextureType.TYPE_CUBE_MAP)
-                    //TODO: Implement getFace for cubemaps
-                    //return texture.getFace(attachment.level, sglrReferenceContext.texTargetToFace(attachment.texTarget));
-                    throw new Error('Not implemented.');
+                    return texture.getFace(attachment.level, sglrReferenceContext.texTargetToFace(attachment.texTarget));
                 else if (type == sglrReferenceContext.TextureType.TYPE_2D_ARRAY ||
                         type == sglrReferenceContext.TextureType.TYPE_3D ||
                         type == sglrReferenceContext.TextureType.TYPE_CUBE_MAP_ARRAY) {
@@ -2322,7 +2757,7 @@ goog.scope(function() {
                         depth: 1,
                         rowPitch: level.getRowPitch(),
                         slicePitch: 0,
-                        data: level.getDataPtr(),
+                        data: level.getBuffer(),
                         offset: level.getSlicePitch() * attachment.layer});
                 } else
                     return sglrReferenceContext.nullAccess();
@@ -2389,32 +2824,32 @@ goog.scope(function() {
 
                 if (attachment.texTarget == sglrReferenceContext.TexTarget.TEXTARGET_2D) {
                     DE_ASSERT(container.textureType == sglrReferenceContext.TextureType.TYPE_2D);
-                    /** @type {sglrReferenceContext.Texture2D} */ var tex2D = container.texture;
+                    /** @type {sglrReferenceContext.Texture2D} */ var tex2D = /** @type {sglrReferenceContext.Texture2D} */ (container.texture);
 
                     if (tex2D.hasLevel(attachment.level))
                         level = tex2D.getLevel(attachment.level);
                 // TODO: implement CUBE_MAP, 2D_ARRAY, 3D, CUBE_MAP_ARRAY
-                // } else if (deMath.deInRange32(attachment.texTarget, sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_POSITIVE_X,
-                //                                         sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_NEGATIVE_Z)) {
-                //     DE_ASSERT(container.textureType == sglrReferenceContext.TextureType.TYPE_CUBE_MAP);
-                //
-                //     var texCube = container.texture;
-                //     var face = sglrReferenceContext.texTargetToFace(attachment.texTarget);
-                //
-                //     if (texCube.hasFace(attachment.level, face))
-                //         level = texCube.getFace(attachment.level, face);
-                // } else if (attachment.texTarget == sglrReferenceContext.TexTarget.TEXTARGET_2D_ARRAY) {
-                //     DE_ASSERT(container.textureType == sglrReferenceContext.TextureType.TYPE_2D_ARRAY);
-                //     var tex2DArr = container.texture;
-                //
-                //     if (tex2DArr.hasLevel(attachment.level))
-                //         level = tex2DArr.getLevel(attachment.level); // \note Slice doesn't matter here.
-                // } else if (attachment.texTarget == sglrReferenceContext.TexTarget.TEXTARGET_3D) {
-                //     DE_ASSERT(container.textureType == sglrReferenceContext.TextureType.TYPE_3D);
-                //     var tex3D = container.texture;
-                //
-                //     if (tex3D.hasLevel(attachment.level))
-                //         level = tex3D.getLevel(attachment.level); // \note Slice doesn't matter here.
+                } else if (deMath.deInRange32(attachment.texTarget, sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_POSITIVE_X,
+                                                        sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_NEGATIVE_Z)) {
+                    DE_ASSERT(container.textureType == sglrReferenceContext.TextureType.TYPE_CUBE_MAP);
+
+                    var texCube = /** @type {sglrReferenceContext.TextureCube} */ (container.texture);
+                    var face = sglrReferenceContext.texTargetToFace(attachment.texTarget);
+
+                    if (texCube.hasFace(attachment.level, face))
+                        level = texCube.getFace(attachment.level, face);
+                } else if (attachment.texTarget == sglrReferenceContext.TexTarget.TEXTARGET_2D_ARRAY) {
+                    DE_ASSERT(container.textureType == sglrReferenceContext.TextureType.TYPE_2D_ARRAY);
+                    var tex2DArr = /** @type {sglrReferenceContext.Texture2DArray} */ (container.texture);
+
+                    if (tex2DArr.hasLevel(attachment.level))
+                        level = tex2DArr.getLevel(attachment.level); // \note Slice doesn't matter here.
+                } else if (attachment.texTarget == sglrReferenceContext.TexTarget.TEXTARGET_3D) {
+                    DE_ASSERT(container.textureType == sglrReferenceContext.TextureType.TYPE_3D);
+                    var tex3D = /** @type {sglrReferenceContext.Texture3D} */ (container.texture);
+
+                    if (tex3D.hasLevel(attachment.level))
+                        level = tex3D.getLevel(attachment.level); // \note Slice doesn't matter here.
                 // } else if (attachment.texTarget == sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_ARRAY) {
                 //     DE_ASSERT(container.textureType == sglrReferenceContext.TextureType.TYPE_CUBE_MAP_ARRAY);
                 //     var texCubeArr = container.texture;
@@ -2422,7 +2857,7 @@ goog.scope(function() {
                 //     if (texCubeArr.hasLevel(attachment.level))
                 //         level = texCubeArr.getLevel(attachment.level); // \note Slice doesn't matter here.
                 } else
-                    throw new Error('sglrReferenceContext.Framebuffer attached to a texture but no valid target specified. Only TEXTARGET_2D is supported.');
+                    throw new Error('sglrReferenceContext.Framebuffer attached to a texture but no valid target specified.');
 
                 attachmentWidth = level.getWidth();
                 attachmentHeight = level.getHeight();
@@ -2927,7 +3362,7 @@ goog.scope(function() {
                     if (this.condtionalSetError(fboTexTarget != sglrReferenceContext.TexTarget.TEXTARGET_2D, gl.INVALID_OPERATION))
                         return;
                 } else {
-                    if (texture.getType() == sglrReferenceContext.TextureType.TYPE_CUBE_MAP)
+                    if (!texture.getType() == sglrReferenceContext.TextureType.TYPE_CUBE_MAP)
                         throw new Error('Unsupported texture type');
                     if (this.condtionalSetError(!deMath.deInRange32(fboTexTarget, sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_POSITIVE_X, sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_NEGATIVE_Z), gl.INVALID_OPERATION))
                         return;
@@ -2943,6 +3378,70 @@ goog.scope(function() {
                 fboAttachment.level = level;
             }
             framebufferBinding.setAttachment(point, fboAttachment);
+        }
+    };
+
+    /**
+    * @param {number} target
+    * @param {number} attachment
+    * @param {sglrReferenceContext.TextureContainer} texture
+    * @param {number} level
+    * @param {number} layer
+    * @throws {Error}
+    */
+    sglrReferenceContext.ReferenceContext.prototype.framebufferTextureLayer = function(target, attachment, texture, level, layer) {
+        if (attachment == gl.DEPTH_STENCIL_ATTACHMENT) {
+            // Attach to both depth and stencil.
+            this.framebufferTextureLayer(target, gl.DEPTH_ATTACHMENT, texture, level, layer);
+            this.framebufferTextureLayer(target, gl.STENCIL_ATTACHMENT, texture, level, layer);
+        } else {
+            /** @type {sglrReferenceContext.AttachmentPoint} */ var point = sglrReferenceContext.mapGLAttachmentPoint(attachment);
+
+            if (this.condtionalSetError(target != gl.FRAMEBUFFER &&
+                        target != gl.DRAW_FRAMEBUFFER &&
+                        target != gl.READ_FRAMEBUFFER, gl.INVALID_ENUM))
+                return;
+            if (this.condtionalSetError(point === undefined, gl.INVALID_ENUM))
+                return;
+
+            // Select binding point.
+            /** @type {sglrReferenceContext.Framebuffer} */ var framebufferBinding = (target == gl.FRAMEBUFFER || target == gl.DRAW_FRAMEBUFFER) ? this.m_drawFramebufferBinding : this.m_readFramebufferBinding;
+            if (this.condtionalSetError(!framebufferBinding, gl.INVALID_OPERATION))
+                return;
+
+            if (texture) {
+                if (this.condtionalSetError(level != 0, gl.INVALID_VALUE))
+                    return;
+
+                if (this.condtionalSetError(texture.getType() != sglrReferenceContext.TextureType.TYPE_2D_ARRAY &&
+                            texture.getType() != sglrReferenceContext.TextureType.TYPE_3D &&
+                            texture.getType() != sglrReferenceContext.TextureType.TYPE_CUBE_MAP_ARRAY, gl.INVALID_OPERATION))
+                    return;
+
+                if (texture.getType() == sglrReferenceContext.TextureType.TYPE_2D_ARRAY || texture.getType() == sglrReferenceContext.TextureType.TYPE_CUBE_MAP_ARRAY) {
+                    if (this.condtionalSetError((layer < 0) || (layer >= gl.MAX_ARRAY_TEXTURE_LAYERS), gl.INVALID_VALUE))
+                        return;
+                    if (this.condtionalSetError((level < 0) || (level > Math.floor(Math.log2(gl.MAX_TEXTURE_SIZE))), gl.INVALID_VALUE))
+                        return;
+                } else if (texture.getType() == sglrReferenceContext.TextureType.TYPE_3D) {
+                    if (this.condtionalSetError((layer < 0) || (layer >= gl.MAX_3D_TEXTURE_SIZE), gl.INVALID_VALUE))
+                        return;
+                    if (this.condtionalSetError((level < 0) || (level > Math.floor(Math.log2(gl.MAX_3D_TEXTURE_SIZE))), gl.INVALID_VALUE))
+                        return;
+                }
+            }
+
+            /** @type {sglrReferenceContext.Attachment} */ var fboAttachment = new sglrReferenceContext.Attachment();
+
+            if (texture) {
+                fboAttachment.type = sglrReferenceContext.AttachmentType.ATTACHMENTTYPE_TEXTURE;
+                fboAttachment.object = texture;
+                fboAttachment.texTarget = sglrReferenceContext.texLayeredTypeToTarget(texture.getType());
+                fboAttachment.level = level;
+                fboAttachment.layer = layer;
+            }
+            framebufferBinding.setAttachment(point, fboAttachment);
+
         }
     };
 
@@ -3198,7 +3697,7 @@ goog.scope(function() {
                     /** @type {sglrReferenceContext.Texture2D} */ var tex;
 
                     if (texNdx >= 0 && texNdx < this.m_textureUnits.length)
-                        tex = this.m_textureUnits[texNdx].tex2DBinding.texture;
+                        tex = /** @type {sglrReferenceContext.Texture2D} */ (this.m_textureUnits[texNdx].tex2DBinding.texture);
 
                     if (tex && tex.isComplete()) {
                         tex.updateView();
@@ -3208,55 +3707,55 @@ goog.scope(function() {
 
                     break;
                 }
-                /* TODO: Port
                 case gluShaderUtil.DataType.SAMPLER_CUBE:
                 case gluShaderUtil.DataType.UINT_SAMPLER_CUBE:
-                case gluShaderUtil.DataType.INT_SAMPLER_CUBE:{
-                    rc::TextureCube* tex = DE_NULL;
+                case gluShaderUtil.DataType.INT_SAMPLER_CUBE: {
+                    /** @type {sglrReferenceContext.TextureCube} */ var texCube;
 
-                    if (texNdx >= 0 && (size_t)texNdx < this.m_textureUnits.length)
-                        tex = (this.m_textureUnits[texNdx].texCubeBinding) ? (this.m_textureUnits[texNdx].texCubeBinding) : (&this.m_textureUnits[texNdx].defaultCubeTex);
+                    if (texNdx >= 0 && texNdx < this.m_textureUnits.length)
+                        texCube = /** @type {sglrReferenceContext.TextureCube} */ (this.m_textureUnits[texNdx].texCubeBinding.texture);
 
-                    if (tex && tex.isComplete()) {
-                        tex.updateView();
-                        this.m_currentProgram.m_uniforms[uniformNdx].sampler.texCube = tex;
+                    if (texCube && texCube.isComplete()) {
+                        texCube.updateView();
+                        this.m_currentProgram.m_uniforms[uniformNdx].sampler = texCube;
                     } else
-                        this.m_currentProgram.m_uniforms[uniformNdx].sampler.texCube = &this.m_emptyTexCube;
+                        this.m_currentProgram.m_uniforms[uniformNdx].sampler = this.m_emptyTexCube.texture;
 
                     break;
                 }
                 case gluShaderUtil.DataType.SAMPLER_2D_ARRAY:
                 case gluShaderUtil.DataType.UINT_SAMPLER_2D_ARRAY:
-                case gluShaderUtil.DataType.INT_SAMPLER_2D_ARRAY:{
-                    rc::Texture2DArray* tex = DE_NULL;
+                case gluShaderUtil.DataType.INT_SAMPLER_2D_ARRAY: {
+                    /** @type {sglrReferenceContext.Texture2DArray} */ var tex2DArray;
 
-                    if (texNdx >= 0 && (size_t)texNdx < this.m_textureUnits.length)
-                        tex = (this.m_textureUnits[texNdx].tex2DArrayBinding) ? (this.m_textureUnits[texNdx].tex2DArrayBinding) : (&this.m_textureUnits[texNdx].default2DArrayTex);
+                    if (texNdx >= 0 && texNdx < this.m_textureUnits.length)
+                        tex2DArray = /** @type {sglrReferenceContext.Texture2DArray} */ (this.m_textureUnits[texNdx].tex2DArrayBinding.texture);
 
-                    if (tex && tex.isComplete()) {
-                        tex.updateView();
-                        this.m_currentProgram.m_uniforms[uniformNdx].sampler.tex2DArray = tex;
+                    if (tex2DArray && tex2DArray.isComplete()) {
+                        tex2DArray.updateView();
+                        this.m_currentProgram.m_uniforms[uniformNdx].sampler = tex2DArray;
                     } else
-                        this.m_currentProgram.m_uniforms[uniformNdx].sampler.tex2DArray = &this.m_emptyTex2DArray;
+                        this.m_currentProgram.m_uniforms[uniformNdx].sampler = this.m_emptyTex2DArray.texture;
 
                     break;
                 }
                 case gluShaderUtil.DataType.SAMPLER_3D:
                 case gluShaderUtil.DataType.UINT_SAMPLER_3D:
-                case gluShaderUtil.DataType.INT_SAMPLER_3D:{
-                    rc::Texture3D* tex = DE_NULL;
+                case gluShaderUtil.DataType.INT_SAMPLER_3D: {
+                    /** @type {sglrReferenceContext.Texture3D} */ var tex3D;
 
-                    if (texNdx >= 0 && (size_t)texNdx < m_textureUnits.length)
-                        tex = (this.m_textureUnits[texNdx].tex3DBinding) ? (this.m_textureUnits[texNdx].tex3DBinding) : (&this.m_textureUnits[texNdx].default3DTex);
+                    if (texNdx >= 0 && texNdx < this.m_textureUnits.length)
+                        tex3D = /** @type {sglrReferenceContext.Texture3D} */ (this.m_textureUnits[texNdx].tex3DBinding.texture);
 
-                    if (tex && tex.isComplete()) {
-                        tex.updateView();
-                        this.m_currentProgram.m_uniforms[uniformNdx].sampler.tex3D = tex;
+                    if (tex3D && tex3D.isComplete()) {
+                        tex3D.updateView();
+                        this.m_currentProgram.m_uniforms[uniformNdx].sampler = tex3D;
                     } else
-                        this.m_currentProgram.m_uniforms[uniformNdx].sampler.tex3D = &this.m_emptyTex3D;
+                        this.m_currentProgram.m_uniforms[uniformNdx].sampler = this.m_emptyTex3D.texture;
 
                     break;
                 }
+                /* TODO: Port
                 case gluShaderUtil.DataType.SAMPLER_CUBE_ARRAY:
                 case gluShaderUtil.DataType.UINT_SAMPLER_CUBE_ARRAY:
                 case gluShaderUtil.DataType.INT_SAMPLER_CUBE_ARRAY:{
@@ -3555,6 +4054,8 @@ goog.scope(function() {
         /** @type {sglrReferenceContext.TextureUnit} */var unit = this.m_textureUnits[this.m_activeTexture];
         /** @type {ArrayBuffer} */ var data = null;
         /** @type {number} */ var offset = 0;
+        /** @type {tcuTexture.PixelBufferAccess} */ var dst;
+        /** @type {tcuTexture.ConstPixelBufferAccess} */ var src;
         if (this.m_pixelUnpackBufferBinding) {
             if (this.condtionalSetError(typeof pixels !== 'number', gl.INVALID_VALUE))
                 return;
@@ -3594,10 +4095,7 @@ goog.scope(function() {
                 return;
 
             /** @type {sglrReferenceContext.Texture2D} */
-            var texture = unit.tex2DBinding.texture;
-
-            /** @type {tcuTexture.PixelBufferAccess} */
-            var dst;
+            var texture = /** @type {sglrReferenceContext.Texture2D} */ (unit.tex2DBinding.texture);
 
             if (texture.isImmutable()) {
                 if (this.condtionalSetError(!texture.hasLevel(level), gl.INVALID_OPERATION))
@@ -3606,7 +4104,7 @@ goog.scope(function() {
                 //NOTE: replaces this: var dst = tcuTexture.PixelBufferAccess.newFromTextureLevel(texture.getLevel(level));
                 dst = texture.getLevel(level);
 
-                if (this.condtionalSetError(storageFmt != dst.getFormat() ||
+                if (this.condtionalSetError(!storageFmt.isEqual(dst.getFormat()) ||
                             width != dst.getWidth() ||
                             height != dst.getHeight(), gl.INVALID_OPERATION))
                     return;
@@ -3614,11 +4112,12 @@ goog.scope(function() {
                 texture.allocLevel(level, storageFmt, width, height);
 
             if (data) {
-                /** @type {tcuTexture.ConstPixelBufferAccess} */
-                var src = new tcuTexture.ConstPixelBufferAccess({
+                var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+                src = new tcuTexture.ConstPixelBufferAccess({
                     format: transferFmt,
                     width: width,
                     height: height,
+                    rowPitch: rowPitch,
                     data: data,
                     offset: offset});
 
@@ -3636,130 +4135,152 @@ goog.scope(function() {
                 dst = texture.getLevel(level);
                 dst.clear([0.0, 0.0, 0.0, 1.0]);
             }
+        } else if (target == gl.TEXTURE_CUBE_MAP_NEGATIVE_X ||
+                 target == gl.TEXTURE_CUBE_MAP_POSITIVE_X ||
+                 target == gl.TEXTURE_CUBE_MAP_NEGATIVE_Y ||
+                 target == gl.TEXTURE_CUBE_MAP_POSITIVE_Y ||
+                 target == gl.TEXTURE_CUBE_MAP_NEGATIVE_Z ||
+                 target == gl.TEXTURE_CUBE_MAP_POSITIVE_Z) {
+            // Validate size and level.
+            if (this.condtionalSetError(width != height || width > this.m_limits.maxTextureCubeSize || depth != 1, gl.INVALID_VALUE))
+                return;
+            if (this.condtionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTextureCubeSize)), gl.INVALID_VALUE))
+                return;
+
+            /** @type {sglrReferenceContext.TextureCube} */
+            var textureCube = /** @type {sglrReferenceContext.TextureCube} */ (unit.texCubeBinding.texture);
+
+            var face = sglrReferenceContext.mapGLCubeFace(target);
+
+            if (textureCube.isImmutable()) {
+                if (this.condtionalSetError(!textureCube.hasFace(level, face), gl.INVALID_OPERATION))
+                    return;
+
+                dst = textureCube.getFace(level, face);
+
+                if (this.condtionalSetError(!storageFmt.isEqual(dst.getFormat()) ||
+                            width != dst.getWidth() ||
+                            height != dst.getHeight(), gl.INVALID_OPERATION))
+                    return;
+            } else
+                textureCube.allocLevel(level, face, storageFmt, width, height);
+
+            if (data) {
+                var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+                src = new tcuTexture.ConstPixelBufferAccess({
+                    format: transferFmt,
+                    width: width,
+                    height: height,
+                    rowPitch: rowPitch,
+                    data: data,
+                    offset: offset});
+
+                dst = textureCube.getFace(level, face);
+
+                if (isDstFloatDepthFormat)
+                    sglrReferenceContext.depthValueFloatClampCopy(dst, src);
+                else
+                    tcuTextureUtil.copy(dst, src);
+            } else {
+                // No data supplied, clear to black.
+                dst = textureCube.getFace(level, face);
+                dst.clear([0.0, 0.0, 0.0, 1.0]);
+            }
+        } else if (target == gl.TEXTURE_2D_ARRAY) {
+            // Validate size and level.
+            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize ||
+                        height > this.m_limits.maxTexture2DSize ||
+                        depth > this.m_limits.maxTexture2DArrayLayers, gl.INVALID_VALUE))
+                return;
+            if (this.condtionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTexture2DSize)), gl.INVALID_VALUE))
+                return;
+
+            /** @type {sglrReferenceContext.Texture2DArray} */
+            var texture2DArray = /** @type {sglrReferenceContext.Texture2DArray} */ (unit.tex2DArrayBinding.texture);
+
+            if (texture2DArray.isImmutable()) {
+                if (this.condtionalSetError(!texture2DArray.hasLevel(level), gl.INVALID_OPERATION))
+                    return;
+
+                dst = texture2DArray.getLevel(level);
+                if (this.condtionalSetError(!storageFmt.isEqual(dst.getFormat()) ||
+                            width != dst.getWidth() ||
+                            height != dst.getHeight() ||
+                            depth != dst.getDepth(), gl.INVALID_OPERATION))
+                    return;
+            } else
+                texture2DArray.allocLevel(level, storageFmt, width, height, depth);
+
+            if (data) {
+                var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+                src = new tcuTexture.ConstPixelBufferAccess({
+                    format: transferFmt,
+                    width: width,
+                    height: height,
+                    depth: depth,
+                    rowPitch: rowPitch,
+                    data: data,
+                    offset: offset});
+
+                dst = texture2DArray.getLevel(level);
+
+                if (isDstFloatDepthFormat)
+                    sglrReferenceContext.depthValueFloatClampCopy(dst, src);
+                else
+                    tcuTextureUtil.copy(dst, src);
+            } else {
+                // No data supplied, clear to black.
+                dst = texture2DArray.getLevel(level);
+                dst.clear([0.0, 0.0, 0.0, 1.0]);
+            }
+        } else if (target == gl.TEXTURE_3D) {
+            // Validate size and level.
+            if (this.condtionalSetError(width > this.m_limits.maxTexture3DSize ||
+                        height > this.m_limits.maxTexture3DSize ||
+                        depth > this.m_limits.maxTexture3DSize, gl.INVALID_VALUE))
+                return;
+            if (this.condtionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTexture3DSize)), gl.INVALID_VALUE))
+                return;
+
+            var texture3D = /** @type {sglrReferenceContext.Texture3D} */ (unit.tex3DBinding.texture);
+
+            if (texture3D.isImmutable()) {
+                if (this.condtionalSetError(!texture3D.hasLevel(level), gl.INVALID_OPERATION))
+                    return;
+
+                dst = texture3D.getLevel(level);
+                if (this.condtionalSetError(!storageFmt.isEqual(dst.getFormat()) ||
+                            width != dst.getWidth() ||
+                            height != dst.getHeight() ||
+                            depth != dst.getDepth(), gl.INVALID_OPERATION))
+                    return;
+            } else
+                texture3D.allocLevel(level, storageFmt, width, height, depth);
+
+            if (data) {
+                var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+                src = new tcuTexture.ConstPixelBufferAccess({
+                    format: transferFmt,
+                    width: width,
+                    height: height,
+                    depth: depth,
+                    rowPitch: rowPitch,
+                    data: data,
+                    offset: offset});
+
+                dst = texture3D.getLevel(level);
+
+                if (isDstFloatDepthFormat)
+                    sglrReferenceContext.depthValueFloatClampCopy(dst, src);
+                else
+                    tcuTextureUtil.copy(dst, src);
+
+            } else {
+                // No data supplied, clear to black.
+                dst = texture3D.getLevel(level);
+                dst.clear([0.0, 0.0, 0.0, 1.0]);
+            }
         }
-        // else if (target == gl.TEXTURE_CUBE_MAP_NEGATIVE_X ||
-        //          target == gl.TEXTURE_CUBE_MAP_POSITIVE_X ||
-        //          target == gl.TEXTURE_CUBE_MAP_NEGATIVE_Y ||
-        //          target == gl.TEXTURE_CUBE_MAP_POSITIVE_Y ||
-        //          target == gl.TEXTURE_CUBE_MAP_NEGATIVE_Z ||
-        //          target == gl.TEXTURE_CUBE_MAP_POSITIVE_Z)
-        // {
-        //     // Validate size and level.
-        //     RC_IF_ERROR(width != height || width > m_limits.maxTextureCubeSize || depth != 1, gl.INVALID_VALUE, RC_RET_VOID);
-        //     RC_IF_ERROR(level > deLog2Floor32(m_limits.maxTextureCubeSize), gl.INVALID_VALUE, RC_RET_VOID);
-
-        //     TextureCube*    texture = unit.texCubeBinding ? unit.texCubeBinding : &unit.defaultCubeTex;
-        //     tcu::CubeFace face = mapGLCubeFace(target);
-
-        //     if (texture->isImmutable())
-        //     {
-        //         RC_IF_ERROR(!texture->hasFace(level, face), gl.INVALID_OPERATION, RC_RET_VOID);
-
-        //         ConstPixelBufferAccess dst(texture->getFace(level, face));
-        //         RC_IF_ERROR(storageFmt != dst.getFormat() ||
-        //                     width != dst.getWidth() ||
-        //                     height != dst.getHeight(), gl.INVALID_OPERATION, RC_RET_VOID);
-        //     }
-        //     else
-        //         texture->allocFace(level, face, storageFmt, width, height);
-
-        //     if (unpackPtr)
-        //     {
-        //         ConstPixelBufferAccess src = getUnpack2DAccess(transferFmt, width, height, unpackPtr);
-        //         PixelBufferAccess dst (texture->getFace(level, face));
-
-        //         if (isDstFloatDepthFormat)
-        //             sglrReferenceContext.depthValueFloatClampCopy(dst, src);
-        //         else
-        //             tcu::copy(dst, src);
-        //     }
-        //     else
-        //     {
-        //         // No data supplied, clear to black.
-        //         PixelBufferAccess dst = texture->getFace(level, face);
-        //         tcu::clear(dst, Vec4(0.0f, 0.0f, 0.0f, 1.0f));
-        //     }
-        // }
-        // else if (target == gl.TEXTURE_2D_ARRAY)
-        // {
-        //     // Validate size and level.
-        //     RC_IF_ERROR(width > m_limits.maxTexture2DSize ||
-        //                 height > m_limits.maxTexture2DSize ||
-        //                 depth > m_limits.maxTexture2DArrayLayers, gl.INVALID_VALUE, RC_RET_VOID);
-        //     RC_IF_ERROR(level > deLog2Floor32(m_limits.maxTexture2DSize), gl.INVALID_VALUE, RC_RET_VOID);
-
-        //     Texture2DArray* texture = unit.tex2DArrayBinding ? unit.tex2DArrayBinding : &unit.default2DArrayTex;
-
-        //     if (texture->isImmutable())
-        //     {
-        //         RC_IF_ERROR(!texture->hasLevel(level), gl.INVALID_OPERATION, RC_RET_VOID);
-
-        //         ConstPixelBufferAccess dst(texture->getLevel(level));
-        //         RC_IF_ERROR(storageFmt != dst.getFormat() ||
-        //                     width != dst.getWidth() ||
-        //                     height != dst.getHeight() ||
-        //                     depth != dst.getDepth(), gl.INVALID_OPERATION, RC_RET_VOID);
-        //     }
-        //     else
-        //         texture->allocLevel(level, storageFmt, width, height, depth);
-
-        //     if (unpackPtr)
-        //     {
-        //         ConstPixelBufferAccess src = getUnpack3DAccess(transferFmt, width, height, depth, unpackPtr);
-        //         PixelBufferAccess dst (texture->getLevel(level));
-
-        //         if (isDstFloatDepthFormat)
-        //             sglrReferenceContext.depthValueFloatClampCopy(dst, src);
-        //         else
-        //             tcu::copy(dst, src);
-        //     }
-        //     else
-        //     {
-        //         // No data supplied, clear to black.
-        //         PixelBufferAccess dst = texture->getLevel(level);
-        //         tcu::clear(dst, Vec4(0.0f, 0.0f, 0.0f, 1.0f));
-        //     }
-        // }
-        // else if (target == gl.TEXTURE_3D)
-        // {
-        //     // Validate size and level.
-        //     RC_IF_ERROR(width > m_limits.maxTexture3DSize ||
-        //                 height > m_limits.maxTexture3DSize ||
-        //                 depth > m_limits.maxTexture3DSize, gl.INVALID_VALUE, RC_RET_VOID);
-        //     RC_IF_ERROR(level > deLog2Floor32(m_limits.maxTexture3DSize), gl.INVALID_VALUE, RC_RET_VOID);
-
-        //     Texture3D* texture = unit.tex3DBinding ? unit.tex3DBinding : &unit.default3DTex;
-
-        //     if (texture->isImmutable())
-        //     {
-        //         RC_IF_ERROR(!texture->hasLevel(level), gl.INVALID_OPERATION, RC_RET_VOID);
-
-        //         ConstPixelBufferAccess dst(texture->getLevel(level));
-        //         RC_IF_ERROR(storageFmt != dst.getFormat() ||
-        //                     width != dst.getWidth() ||
-        //                     height != dst.getHeight() ||
-        //                     depth != dst.getDepth(), gl.INVALID_OPERATION, RC_RET_VOID);
-        //     }
-        //     else
-        //         texture->allocLevel(level, storageFmt, width, height, depth);
-
-        //     if (unpackPtr)
-        //     {
-        //         ConstPixelBufferAccess src = getUnpack3DAccess(transferFmt, width, height, depth, unpackPtr);
-        //         PixelBufferAccess dst (texture->getLevel(level));
-
-        //         if (isDstFloatDepthFormat)
-        //             sglrReferenceContext.depthValueFloatClampCopy(dst, src);
-        //         else
-        //             tcu::copy(dst, src);
-        //     }
-        //     else
-        //     {
-        //         // No data supplied, clear to black.
-        //         PixelBufferAccess dst = texture->getLevel(level);
-        //         tcu::clear(dst, Vec4(0.0f, 0.0f, 0.0f, 1.0f));
-        //     }
-        // }
         // else if (target == gl.TEXTURE_CUBE_MAP_ARRAY)
         // {
         //     // Validate size and level.
@@ -3802,6 +4323,317 @@ goog.scope(function() {
         //     }
         // } /**/
         else
+            this.setError(gl.INVALID_ENUM);
+    };
+
+    sglrReferenceContext.ReferenceContext.prototype.texSubImage2D = function(target, level, xoffset, yoffset, width, height, format, type, pixels) {
+        this.texSubImage3D(target, level, xoffset, yoffset, 0, width, height, 1, format, type, pixels);
+    };
+
+    sglrReferenceContext.ReferenceContext.prototype.texSubImage3D = function(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels) {
+        /** @type {sglrReferenceContext.TextureUnit} */var unit = this.m_textureUnits[this.m_activeTexture];
+        /** @type {ArrayBuffer} */ var data = null;
+        /** @type {number} */ var offset = 0;
+        /** @type {tcuTexture.PixelBufferAccess} */ var dst;
+        /** @type {tcuTexture.PixelBufferAccess} */ var sub;
+        /** @type {tcuTexture.ConstPixelBufferAccess} */ var src;
+        /** @type {boolean} */ var isDstFloatDepthFormat;
+        if (this.m_pixelUnpackBufferBinding) {
+            if (this.condtionalSetError(typeof pixels !== 'number', gl.INVALID_VALUE))
+                return;
+            data = this.m_pixelUnpackBufferBinding.getData();
+            offset = pixels;
+        } else if (pixels) {
+            if (pixels instanceof ArrayBuffer) {
+                data = pixels;
+                offset = 0;
+            } else {
+                data = pixels.buffer;
+                offset = pixels.byteOffset;
+            }
+        }
+
+        if (this.condtionalSetError(xoffset < 0 || yoffset < 0 || zoffset < 0, gl.INVALID_VALUE))
+            return;
+        if (this.condtionalSetError(width < 0 || height < 0 || depth < 0 || level < 0, gl.INVALID_VALUE))
+            return;
+
+        // Map transfer format.
+        /** @type {tcuTexture.TextureFormat} */ var transferFmt = gluTextureUtil.mapGLTransferFormat(format, type);
+        if (this.condtionalSetError(!transferFmt, gl.INVALID_ENUM))
+            return;
+
+        if (target == gl.TEXTURE_2D) {
+            // Validate size and level.
+            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize || height > this.m_limits.maxTexture2DSize || depth != 1, gl.INVALID_VALUE))
+                return;
+            if (this.condtionalSetError(level > Math.log2(this.m_limits.maxTexture2DSize), gl.INVALID_VALUE))
+                return;
+
+            /** @type {sglrReferenceContext.Texture2D} */
+            var texture = /** @type {sglrReferenceContext.Texture2D} */ (unit.tex2DBinding.texture);
+
+            if (this.condtionalSetError(!texture.hasLevel(level), gl.INVALID_OPERATION))
+                return;
+
+            //NOTE: replaces this: var dst = tcuTexture.PixelBufferAccess.newFromTextureLevel(texture.getLevel(level));
+            dst = texture.getLevel(level);
+
+            if (this.condtionalSetError(xoffset + width > dst.getWidth() ||
+                                        yoffset + height > dst.getHeight() ||
+                                        zoffset + depth > dst.getDepth(),
+                                        gl.INVALID_VALUE))
+                return;
+
+            var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+            src = new tcuTexture.ConstPixelBufferAccess({
+                format: transferFmt,
+                width: width,
+                height: height,
+                rowPitch: rowPitch,
+                data: data,
+                offset: offset});
+
+            sub = tcuTextureUtil.getSubregion(dst, xoffset, yoffset, zoffset, width, height, depth);
+            isDstFloatDepthFormat = (dst.getFormat().order == tcuTexture.ChannelOrder.D || dst.getFormat().order == tcuTexture.ChannelOrder.DS); // depth components are limited to [0,1] range
+
+            if (isDstFloatDepthFormat)
+                sglrReferenceContext.depthValueFloatClampCopy(sub, src);
+            else
+                tcuTextureUtil.copy(sub, src);
+        } else if (target == gl.TEXTURE_CUBE_MAP_NEGATIVE_X ||
+                 target == gl.TEXTURE_CUBE_MAP_POSITIVE_X ||
+                 target == gl.TEXTURE_CUBE_MAP_NEGATIVE_Y ||
+                 target == gl.TEXTURE_CUBE_MAP_POSITIVE_Y ||
+                 target == gl.TEXTURE_CUBE_MAP_NEGATIVE_Z ||
+                 target == gl.TEXTURE_CUBE_MAP_POSITIVE_Z) {
+            // Validate size and level.
+            if (this.condtionalSetError(width != height || width > this.m_limits.maxTextureCubeSize || depth != 1, gl.INVALID_VALUE))
+                return;
+            if (this.condtionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTextureCubeSize)), gl.INVALID_VALUE))
+                return;
+
+            /** @type {sglrReferenceContext.TextureCube} */
+            var textureCube = /** @type {sglrReferenceContext.TextureCube} */ (unit.texCubeBinding.texture);
+
+            var face = sglrReferenceContext.mapGLCubeFace(target);
+
+            if (this.condtionalSetError(!textureCube.hasFace(level, face), gl.INVALID_OPERATION))
+                return;
+
+            dst = textureCube.getFace(level, face);
+
+            if (this.condtionalSetError(xoffset + width > dst.getWidth() ||
+                                        yoffset + height > dst.getHeight() ||
+                                        zoffset + depth > dst.getDepth(),
+                                        gl.INVALID_VALUE))
+                return;
+
+            var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+            src = new tcuTexture.ConstPixelBufferAccess({
+                format: transferFmt,
+                width: width,
+                height: height,
+                rowPitch: rowPitch,
+                data: data,
+                offset: offset});
+
+            sub = tcuTextureUtil.getSubregion(dst, xoffset, yoffset, zoffset, width, height, depth);
+            isDstFloatDepthFormat = (dst.getFormat().order == tcuTexture.ChannelOrder.D || dst.getFormat().order == tcuTexture.ChannelOrder.DS); // depth components are limited to [0,1] range
+
+            if (isDstFloatDepthFormat)
+                sglrReferenceContext.depthValueFloatClampCopy(sub, src);
+            else
+                tcuTextureUtil.copy(sub, src);
+        } else if (target == gl.TEXTURE_2D_ARRAY) {
+            // Validate size and level.
+            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize ||
+                        height > this.m_limits.maxTexture2DSize ||
+                        depth > this.m_limits.maxTexture2DArrayLayers, gl.INVALID_VALUE))
+                return;
+            if (this.condtionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTexture2DSize)), gl.INVALID_VALUE))
+                return;
+
+            /** @type {sglrReferenceContext.Texture2DArray} */
+            var texture2DArray = /** @type {sglrReferenceContext.Texture2DArray} */ (unit.tex2DArrayBinding.texture);
+
+            if (this.condtionalSetError(!texture2DArray.hasLevel(level), gl.INVALID_OPERATION))
+                return;
+
+            dst = texture2DArray.getLevel(level);
+            if (this.condtionalSetError(xoffset + width > dst.getWidth() ||
+                                        yoffset + height > dst.getHeight() ||
+                                        zoffset + depth > dst.getDepth(),
+                                        gl.INVALID_VALUE))
+                return;
+
+            var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+            src = new tcuTexture.ConstPixelBufferAccess({
+                format: transferFmt,
+                width: width,
+                height: height,
+                depth: depth,
+                rowPitch: rowPitch,
+                data: data,
+                offset: offset});
+
+            sub = tcuTextureUtil.getSubregion(dst, xoffset, yoffset, zoffset, width, height, depth);
+            isDstFloatDepthFormat = (dst.getFormat().order == tcuTexture.ChannelOrder.D || dst.getFormat().order == tcuTexture.ChannelOrder.DS); // depth components are limited to [0,1] range
+
+            if (isDstFloatDepthFormat)
+                sglrReferenceContext.depthValueFloatClampCopy(sub, src);
+            else
+                tcuTextureUtil.copy(sub, src);
+        } else if (target == gl.TEXTURE_3D) {
+            // Validate size and level.
+            if (this.condtionalSetError(width > this.m_limits.maxTexture3DSize ||
+                        height > this.m_limits.maxTexture3DSize ||
+                        depth > this.m_limits.maxTexture3DSize, gl.INVALID_VALUE))
+                return;
+            if (this.condtionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTexture3DSize)), gl.INVALID_VALUE))
+                return;
+
+            var texture3D = /** @type {sglrReferenceContext.Texture3D} */ (unit.tex3DBinding.texture);
+
+            if (this.condtionalSetError(!texture3D.hasLevel(level), gl.INVALID_OPERATION))
+                return;
+
+            dst = texture3D.getLevel(level);
+            if (this.condtionalSetError(xoffset + width > dst.getWidth() ||
+                                        yoffset + height > dst.getHeight() ||
+                                        zoffset + depth > dst.getDepth(),
+                                        gl.INVALID_VALUE))
+                return;
+
+            var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+            src = new tcuTexture.ConstPixelBufferAccess({
+                format: transferFmt,
+                width: width,
+                height: height,
+                depth: depth,
+                rowPitch: rowPitch,
+                data: data,
+                offset: offset});
+
+            sub = tcuTextureUtil.getSubregion(dst, xoffset, yoffset, zoffset, width, height, depth);
+
+            isDstFloatDepthFormat = (dst.getFormat().order == tcuTexture.ChannelOrder.D || dst.getFormat().order == tcuTexture.ChannelOrder.DS); // depth components are limited to [0,1] range
+            if (isDstFloatDepthFormat)
+                sglrReferenceContext.depthValueFloatClampCopy(sub, src);
+            else
+                tcuTextureUtil.copy(sub, src);
+        } else
+            this.setError(gl.INVALID_ENUM);
+    };
+
+    sglrReferenceContext.ReferenceContext.prototype.texStorage3D = function(target, levels, internalFormat, width, height, depth) {
+        /** @type {sglrReferenceContext.TextureUnit} */var unit = this.m_textureUnits[this.m_activeTexture];
+
+        if (this.condtionalSetError(width <= 0 || height <= 0, gl.INVALID_VALUE))
+            return;
+        if (this.condtionalSetError(levels < 1 || levels > Math.floor(Math.log2(Math.max(width, height))) + 1, gl.INVALID_VALUE))
+            return;
+
+        // Map storage format.
+        /** @type {tcuTexture.TextureFormat} */ var storageFmt = sglrReferenceContext.mapInternalFormat(internalFormat);
+        if (this.condtionalSetError(!storageFmt, gl.INVALID_ENUM))
+            return;
+
+        if (target == gl.TEXTURE_2D_ARRAY) {
+            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize ||
+                                        height > this.m_limits.maxTexture2DSize ||
+                                        depth >= this.m_limits.maxTexture2DArrayLayers, gl.INVALID_VALUE))
+                return;
+
+            /** @type {sglrReferenceContext.Texture2DArray} */
+            var textureArray = /** @type {sglrReferenceContext.Texture2DArray} */ (unit.tex2DArrayBinding.texture);
+            if (this.condtionalSetError(textureArray.isImmutable(), gl.INVALID_OPERATION))
+                return;
+
+            textureArray.clearLevels();
+            textureArray.setImmutable();
+
+            for (var level = 0; level < levels; level++) {
+                var levelW = Math.max(1, width >> level);
+                var levelH = Math.max(1, height >> level);
+
+                textureArray.allocLevel(level, storageFmt, levelW, levelH, depth);
+            }
+        } else if (target == gl.TEXTURE_3D) {
+            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize ||
+                                        height > this.m_limits.maxTexture2DSize ||
+                                        depth >= this.m_limits.maxTexture3DSize, gl.INVALID_VALUE))
+                return;
+
+            /** @type {sglrReferenceContext.Texture3D} */
+            var texture3D = /** @type {sglrReferenceContext.Texture3D} */ (unit.tex3DBinding.texture);
+            if (this.condtionalSetError(texture3D.isImmutable(), gl.INVALID_OPERATION))
+                return;
+
+            texture3D.clearLevels();
+            texture3D.setImmutable();
+
+            for (var level = 0; level < levels; level++) {
+                var levelW = Math.max(1, width >> level);
+                var levelH = Math.max(1, height >> level);
+                var levelD = Math.max(1, depth >> level);
+
+                texture3D.allocLevel(level, storageFmt, levelW, levelH, levelD);
+            }
+        } else
+            this.setError(gl.INVALID_ENUM);
+    };
+
+    sglrReferenceContext.ReferenceContext.prototype.texStorage2D = function(target, levels, internalFormat, width, height) {
+        /** @type {sglrReferenceContext.TextureUnit} */var unit = this.m_textureUnits[this.m_activeTexture];
+
+        if (this.condtionalSetError(width <= 0 || height <= 0, gl.INVALID_VALUE))
+            return;
+        if (this.condtionalSetError(levels < 1 || levels > Math.floor(Math.log2(Math.max(width, height))) + 1, gl.INVALID_VALUE))
+            return;
+
+        // Map storage format.
+        /** @type {tcuTexture.TextureFormat} */ var storageFmt = sglrReferenceContext.mapInternalFormat(internalFormat);
+        if (this.condtionalSetError(!storageFmt, gl.INVALID_ENUM))
+            return;
+
+        if (target == gl.TEXTURE_2D) {
+            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize || height > this.m_limits.maxTexture2DSize, gl.INVALID_VALUE))
+                return;
+
+                /** @type {sglrReferenceContext.Texture2D} */
+            var texture = /** @type {sglrReferenceContext.Texture2D} */ (unit.tex2DBinding.texture);
+            if (this.condtionalSetError(texture.isImmutable(), gl.INVALID_OPERATION))
+                return;
+
+            texture.clearLevels();
+            texture.setImmutable();
+
+            for (var level = 0; level < levels; level++) {
+                var levelW = Math.max(1, width >> level);
+                var levelH = Math.max(1, height >> level);
+
+                texture.allocLevel(level, storageFmt, levelW, levelH);
+            }
+        } else if (target == gl.TEXTURE_CUBE_MAP) {
+            if (this.condtionalSetError(width != height || width > this.m_limits.maxTextureCubeSize, gl.INVALID_VALUE))
+                return;
+            /** @type {sglrReferenceContext.TextureCube} */
+            var textureCube = /** @type {sglrReferenceContext.TextureCube} */ (unit.texCubeBinding.texture);
+            if (this.condtionalSetError(textureCube.isImmutable(), gl.INVALID_OPERATION))
+                return;
+
+            textureCube.clearLevels();
+            textureCube.setImmutable();
+
+            for (var level = 0; level < levels; level++) {
+                var levelW = Math.max(1, width >> level);
+                var levelH = Math.max(1, height >> level);
+
+                for (var face in tcuTexture.CubeFace)
+                    textureCube.allocLevel(level, tcuTexture.CubeFace[face], storageFmt, levelW, levelH);
+            }
+        } else
             this.setError(gl.INVALID_ENUM);
     };
 

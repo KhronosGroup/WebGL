@@ -592,8 +592,7 @@ goog.scope(function() {
      * @return {string}
      */
     gluVarType.getStorageName = function(storage) {
-        switch (storage)
-        {
+        switch (storage) {
             case gluVarType.Storage.STORAGE_IN: return 'in';
             case gluVarType.Storage.STORAGE_OUT: return 'out';
             case gluVarType.Storage.STORAGE_CONST: return 'const';
@@ -618,8 +617,7 @@ goog.scope(function() {
      * @return {string}
      */
     gluVarType.getInterpolationName = function(interpolation) {
-        switch (interpolation)
-        {
+        switch (interpolation) {
             case gluVarType.Interpolation.INTERPOLATION_SMOOTH: return 'smooth';
             case gluVarType.Interpolation.INTERPOLATION_FLAT: return 'flat';
             case gluVarType.Interpolation.INTERPOLATION_CENTROID: return 'centrod';
@@ -654,8 +652,7 @@ goog.scope(function() {
      * @return {string}
      */
     gluVarType.getFormatLayoutName = function(layout) {
-        switch (layout)
-        {
+        switch (layout) {
             case gluVarType.FormatLayout.FORMATLAYOUT_RGBA32F: return 'rgba32f';
             case gluVarType.FormatLayout.FORMATLAYOUT_RGBA16F: return 'rgba16f';
             case gluVarType.FormatLayout.FORMATLAYOUT_R32F: return 'r32f';
@@ -687,8 +684,7 @@ goog.scope(function() {
      * @return {string}
      */
     gluVarType.getMatrixOrderName = function(qualifier) {
-        switch (qualifier)
-        {
+        switch (qualifier) {
             case gluVarType.MatrixOrder.MATRIXORDER_COLUMN_MAJOR: return 'column_major';
             case gluVarType.MatrixOrder.MATRIXORDER_ROW_MAJOR: return 'row_major';
             default:
@@ -710,8 +706,7 @@ goog.scope(function() {
      * @return {string}
      */
     gluVarType.getMemoryAccessQualifierName = function(qualifier) {
-        switch (qualifier)
-        {
+        switch (qualifier) {
             case gluVarType.MemoryAccessQualifier.MEMORYACCESSQUALIFIER_COHERENT_BIT: return 'coherent';
             case gluVarType.MemoryAccessQualifier.MEMORYACCESSQUALIFIER_VOLATILE_BIT: return 'volatile';
             case gluVarType.MemoryAccessQualifier.MEMORYACCESSQUALIFIER_RESTRICT_BIT: return 'restrict';
@@ -752,8 +747,7 @@ goog.scope(function() {
         if (typeof this.matrixOrder !== 'undefined')
             strings.push(gluVarType.getMatrixOrderName(this.matrixOrder));
 
-        if (strings.length > 0)
-        {
+        if (strings.length > 0) {
             str += 'layout(' + strings[0];
 
             for (var i = 1; i < strings.length; i++)
@@ -790,7 +784,6 @@ goog.scope(function() {
         for (var bitNdx = 0; (1 << bitNdx) & gluVarType.MemoryAccessQualifier.MEMORYACCESSQUALIFIER_MASK; ++bitNdx)
             if (this.memoryAccessQualifierBits & (1 << bitNdx))
                 str += gluVarType.getMemoryAccessQualifierName((1 << bitNdx)) + ' ';
-
 
         if (typeof this.interpolation !== 'undefined')
             str += gluVarType.getInterpolationName(this.interpolation) + ' ';

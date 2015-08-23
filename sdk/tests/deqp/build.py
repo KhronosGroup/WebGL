@@ -86,7 +86,15 @@ targets = {
     'fborender' : 'functional.gles3.es3fFboRenderTest',
     'shaderderivate' : 'functional.gles3.es3fShaderDerivateTests',
     'builtinprecision' : 'functional.gles3.es3fBuiltinPrecisionTests',
-    'texturefiltering' : 'functional.gles3.es3fTextureFilteringTests'
+    'shaderbuiltinvar' : 'functional.gles3.es3fShaderBuiltinVarTests',
+    'texturefiltering' : 'functional.gles3.es3fTextureFilteringTests',
+    'fbocolor' : 'functional.gles3.es3fFboColorbufferTests',
+    'fragdepth' : 'functional.gles3.es3fFragDepthTests',
+    'vao' : 'functional.gles3.es3fVertexArrayObjectTests',
+    'shadercommonfunction' : 'functional.gles3.es3fShaderCommonFunctionTests',
+    'shadermatrix' : 'functional.gles3.es3fShaderMatrixTest',
+    'shaderprecision' : 'functional.gles3.es3fShaderPrecisionTests',
+    'texturespecification' : 'functional.gles3.es3fTextureSpecificationTests'
 }
 
 total_errors = 0

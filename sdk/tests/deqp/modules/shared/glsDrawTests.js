@@ -22,7 +22,6 @@
 goog.provide('modules.shared.glsDrawTests');
 goog.require('framework.common.tcuFloat');
 goog.require('framework.common.tcuImageCompare');
-goog.require('framework.common.tcuLogImage');
 goog.require('framework.common.tcuPixelFormat');
 goog.require('framework.common.tcuRGBA');
 goog.require('framework.common.tcuSurface');
@@ -47,7 +46,6 @@ goog.scope(function() {
     var tcuTestCase = framework.common.tcuTestCase;
     var tcuRGBA = framework.common.tcuRGBA;
     var tcuFloat = framework.common.tcuFloat;
-    var tcuLogImage = framework.common.tcuLogImage;
     var tcuPixelFormat = framework.common.tcuPixelFormat;
     var tcuSurface = framework.common.tcuSurface;
     var tcuImageCompare = framework.common.tcuImageCompare;
@@ -3003,7 +3001,6 @@ goog.scope(function() {
             bufferedLogToConsole(spec.getMultilineDesc());
 
             // Data
-
             this.m_glArrayPack.clearArrays();
             this.m_rrArrayPack.clearArrays();
 
@@ -3124,13 +3121,15 @@ goog.scope(function() {
                     checkMessage(false, 'Failed to draw with unaligned stride.');
                 else
                     testFailedOptions('Image comparison failed.', false);
+                return iterateResult;
             }
         } else {
             testFailedOptions('Image comparison failed.', false);
             return tcuTestCase.IterateResult.STOP;
         }
 
-        //this.m_result.setTestContextResult(this.m_testCtx);
+        if (iterateResult == tcuTestCase.IterateResult.STOP)
+            testPassed('');
 
         this.m_iteration++;
         return iterateResult;
@@ -3433,9 +3432,6 @@ goog.scope(function() {
 
             return false;
         } else {
-            tcuLogImage.logImageWithInfo(result.getAccess(), 'Result');
-            //tcuLogImage.logImageWithInfo(reference.getAccess(), 'Reference');
-
             return true;
         }
     };
@@ -3519,9 +3515,6 @@ goog.scope(function() {
 
             return false;
         } else {
-            tcuLogImage.logImageWithInfo(result.getAccess(), 'Result');
-            //tcuLogImage.logImageWithInfo(reference.getAccess(), 'Reference');
-
             return true;
         }
     };

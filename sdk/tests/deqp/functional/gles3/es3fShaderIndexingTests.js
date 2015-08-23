@@ -36,6 +36,7 @@ goog.scope(function() {
     var glsShaderRenderCase = modules.shared.glsShaderRenderCase;
     var gluShaderUtil = framework.opengl.gluShaderUtil;
     var gluTexture = framework.opengl.gluTexture;
+    var gluShaderProgram = framework.opengl.gluShaderProgram;
     var tcuTestCase = framework.common.tcuTestCase;
     var tcuStringTemplate = framework.common.tcuStringTemplate;
     /**

@@ -618,4 +618,14 @@ tcuFloat.halfFloatToNumberNoDenorm = function(half) {
     return x.getValue();
 };
 
+/**
+ * Builds a 64 bit tcuFloat.deFloat
+ * @param {number} value (64-bit JS float)
+ * @return {tcuFloat.deFloat}
+ */
+tcuFloat.newFloat64 = function(value) {
+    /**@type {tcuFloat.FloatDescription} */ var description64 = new tcuFloat.FloatDescription(11, 52, 1023, tcuFloat.FloatFlags.FLOAT_HAS_SIGN | tcuFloat.FloatFlags.FLOAT_SUPPORT_DENORM);
+    return new tcuFloat.deFloat().deFloatParameters(value, description64);
+};
+
 });

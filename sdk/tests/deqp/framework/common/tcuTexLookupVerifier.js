@@ -116,7 +116,7 @@ goog.scope(function() {
      */
     tcuTexLookupVerifier.lookupScalar = function(access, sampler, i, j, k) {
         if (tcuTexLookupVerifier.coordsInBounds(access, i, j, k))
-            return access.getPixelInt(i, j, k);
+            return access.getPixel(i, j, k);
         else
             return deMath.toIVec(sampler.borderColor);
     };

@@ -169,6 +169,8 @@ goog.scope(function() {
         /** @type {Array<Array<number>>} */ this.m_unitCoords = [];        //!< Positive-only coordinates [0.0 .. 1.5].
         /** @type {Array<number>} */ this.m_attribOne = [];
         /** @type {Array<Array<number>>} */ this.m_userAttribs = [];
+        for (var attribNdx = 0; attribNdx < this.getNumUserAttribs(); attribNdx++)
+            this.m_userAttribs[attribNdx] = [];
         /** @type {Array<number>} */ this.m_indices = [];
 
         /** @type Array<number>} */ var viewportScale = [width, height, 0, 0];
@@ -344,6 +346,8 @@ goog.scope(function() {
         for (var ndx = 0; ndx < bindings.length; ndx++) {
             /** @type {glsShaderRenderCase.TextureBinding} */ var binding = bindings[ndx];
 
+            this.textures[ndx] = new glsShaderRenderCase.ShaderSampler();
+            
             if (binding.getType() == gluTexture.Type.TYPE_NONE)
                 continue;
 
@@ -435,10 +439,10 @@ goog.scope(function() {
 
     /**
      * @constructor
-     * @param  {glsShaderRenderCase.ShaderEvalFunc=} evalFunc
+     * @param  {?glsShaderRenderCase.ShaderEvalFunc=} evalFunc
      */
     glsShaderRenderCase.ShaderEvaluator = function(evalFunc) {
-        /** @type {?glsShaderRenderCase.ShaderEvalFunc} */ this.m_evalFunc = evalFunc === undefined ? null :  evalFunc;
+        /** @type {?glsShaderRenderCase.ShaderEvalFunc} */ this.m_evalFunc = evalFunc || null;
     };
 
     /**
@@ -459,12 +463,12 @@ goog.scope(function() {
      */
     glsShaderRenderCase.ShaderRenderCase = function(name, description, isVertexCase, evalFunc) {
         tcuTestCase.DeqpTest.call(this, name, description);
-        evalFunc = evalFunc === undefined ? null : evalFunc;
+        // evalFunc = evalFunc || null;
         /** @type {boolean} */ this.m_isVertexCase = isVertexCase;
-        /** @type {?glsShaderRenderCase.ShaderEvalFunc} */ this.m_defaultEvaluator = evalFunc;
+        /** @type {?glsShaderRenderCase.ShaderEvalFunc} */ this.m_defaultEvaluator = evalFunc || null;
         /** @type {glsShaderRenderCase.ShaderEvaluator} */ this.m_evaluator = new glsShaderRenderCase.ShaderEvaluator(this.m_defaultEvaluator);
-        /** @type {string} */ this.m_vertShaderSource;
-        /** @type {string} */ this.m_fragShaderSource;
+        /** @type {string} */ this.m_vertShaderSource = '';
+        /** @type {string} */ this.m_fragShaderSource = '';
         /** @type {Array<number>} */ this.m_clearColor = glsShaderRenderCase.DEFAULT_CLEAR_COLOR;
         /** @type {Array<tcuMatrix.Matrix>} */ this.m_userAttribTransforms = [];
         /** @type {Array<glsShaderRenderCase.TextureBinding>} */ this.m_textures = [];
@@ -1187,8 +1191,10 @@ goog.scope(function() {
             /** @type {number} */ var numRows = matrices[matNdx].numRows;
             /** @type {number} */ var numCols = matrices[matNdx].numCols;
 
-            for (var colNdx = 0; colNdx < numCols; colNdx++)
-                vertexArrays.push(new gluDrawUtil.VertexArrayBinding(loc + colNdx, numRows, numElements, 4 * 4, quadGrid.getUserAttribByIndex(colNdx)));
+            for (var colNdx = 0; colNdx < numCols; colNdx++) {
+                var data = [].concat.apply([], quadGrid.getUserAttribByIndex(colNdx));
+                vertexArrays.push(gluDrawUtil.newFloatColumnVertexArrayBinding(matrices[matNdx].name, colNdx, numRows, numElements, 4 * 4, data));
+            }
         }
     };
 });

@@ -113,7 +113,7 @@ tcuSurface.Surface.prototype.getPixel = function(x, y) {
 
 /**
  * Read the viewport contents into this surface
- * @param {*} ctx WebGL or ref context
+ * @param {*=} ctx WebGL or ref context
  * @param {(Array<number>|{x: number, y: number, width: number, height: number})=} view
  */
 tcuSurface.Surface.prototype.readViewport = function(ctx, view) {

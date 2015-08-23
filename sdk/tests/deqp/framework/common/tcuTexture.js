@@ -289,7 +289,7 @@ tcuTexture.sampleLinear2DCompare = function(access, sampler, ref, u, v, offset, 
 };
 
 /**
- * Contruct texture format
+ * Construct texture format
  * @param {?tcuTexture.ChannelOrder} order
  * @param {?tcuTexture.ChannelType} type
  *
@@ -2157,7 +2157,7 @@ tcuTexture.sampleLevelArray2D = function(levels, numLevels, sampler, s, t, depth
         case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR:
         case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR: {
             var maxLevel = numLevels - 1;
-            var level0 = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
+            var level0 = deMath.clamp(Math.floor(lod + 0.5) - 1, 0, maxLevel);
             var level1 = Math.min(maxLevel, level0 + 1);
             var levelFilter = (filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
             var f = deMath.deFloatFrac(lod);
@@ -2336,10 +2336,11 @@ tcuTexture.Texture2DArrayView.prototype.selectLayer = function(r) {
 /**
  * @param {tcuTexture.Sampler} sampler
  * @param {Array<number>} texCoord
- * @param {number} lod
+ * @param {number=} lod
  * @return {Array<number>} Pixel color
  */
 tcuTexture.Texture2DArrayView.prototype.sample = function(sampler, texCoord, lod) {
+    lod = lod || 0;
     return tcuTexture.sampleLevelArray2D(this.m_levels, this.m_numLevels, sampler, texCoord[0], texCoord[1], this.selectLayer(texCoord[2]), lod);
 };
 
@@ -2395,10 +2396,11 @@ tcuTexture.Texture3DView.prototype.getSubView = function(baseLevel, maxLevel) {
 /**
  * @param {tcuTexture.Sampler} sampler
  * @param {Array<number>} texCoord
- * @param {number} lod
+ * @param {number=} lod
  * @return {Array<number>} Pixel color
  */
 tcuTexture.Texture3DView.prototype.sample = function(sampler, texCoord, lod) {
+    lod = lod || 0;
     return tcuTexture.sampleLevelArray3D(this.m_levels, this.m_numLevels, sampler, texCoord[0], texCoord[1], texCoord[2], lod);
 };
 
@@ -2546,10 +2548,11 @@ tcuTexture.sampleCubeSeamlessLinear = function(faceAccesses, baseFace, sampler, 
  * @param {number} s
  * @param {number} t
  * @param {number} depth
- * @param {number} lod
+ * @param {number=} lod
  * @return {Array<number>}
  */
 tcuTexture.sampleLevelArrayCubeSeamless = function(faces, numLevels, face, sampler, s, t, depth, lod) {
+    lod = lod || 0;
     var magnified = lod <= sampler.lodThreshold;
     /** @type {tcuTexture.FilterMode} */ var filterMode = magnified ? sampler.magFilter : sampler.minFilter;
     /** @type {Array<tcuTexture.ConstPixelBufferAccess>} */ var faceAccesses = [];
@@ -2589,7 +2592,7 @@ tcuTexture.sampleLevelArrayCubeSeamless = function(faces, numLevels, face, sampl
         case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR:
         case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR: {
             var maxLevel = numLevels - 1;
-            var level0 = deMath.clamp(deMath.deFloatFrac(lod), 0, maxLevel);
+            var level0 = deMath.clamp(Math.floor(lod), 0, maxLevel);
             var level1 = Math.min(maxLevel, level0 + 1);
             levelFilter = (filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
             var f = deMath.deFloatFrac(lod);
@@ -2962,7 +2965,7 @@ tcuTexture.TextureCubeView = function(numLevels, levels) {
 /**
  * @param {tcuTexture.Sampler} sampler
  * @param {Array<number>} texCoord
- * @param {number} lod
+ * @param {number=} lod
  * @return {Array<number>} Pixel color
  */
 tcuTexture.TextureCubeView.prototype.sample = function(sampler, texCoord, lod) {
@@ -3194,14 +3197,14 @@ tcuTexture.projectToFace = function(face, coord) {
 /**
  * @constructor
  * @param {tcuTexture.TextureFormat} format
- * @param {number} width
- * @param {number} height
+ * @param {number=} width
+ * @param {number=} height
  * @param {number=} depth
  */
 tcuTexture.TextureLevel = function(format, width, height, depth) {
     this.m_format = format;
-    this.m_width = width;
-    this.m_height = height;
+    this.m_width = width || 0;
+    this.m_height = height || 0;
     this.m_depth = depth === undefined ? 1 : depth;
     this.m_data = new tcuTexture.DeqpArrayBuffer();
     this.setSize(this.m_width, this.m_height, this.m_depth);
@@ -3211,9 +3214,9 @@ tcuTexture.TextureLevel.prototype.constructor = tcuTexture.TextureLevel;
 
 /**
  * @param {tcuTexture.TextureFormat} format
- * @param {number} width
- * @param {number} height
- * @param {number} depth
+ * @param {number=} width
+ * @param {number=} height
+ * @param {number=} depth
  */
 tcuTexture.TextureLevel.prototype.setStorage = function(format, width, height, depth) {
     this.m_format = format;
@@ -3221,16 +3224,16 @@ tcuTexture.TextureLevel.prototype.setStorage = function(format, width, height, d
 };
 
 /**
- * @param {number} width
- * @param {number} height
- * @param {number} depth
+ * @param {number=} width
+ * @param {number=} height
+ * @param {number=} depth
  */
 tcuTexture.TextureLevel.prototype.setSize = function(width, height, depth) {
     var pixelSize = this.m_format.getPixelSize();
 
-    this.m_width = width;
-    this.m_height = height;
-    this.m_depth = depth;
+    this.m_width = width || 0;
+    this.m_height = height || 0;
+    this.m_depth = depth === undefined ? 1 : depth;
 
     this.m_data.setStorage(this.m_width * this.m_height * this.m_depth * pixelSize);
 };

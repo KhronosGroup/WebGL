@@ -452,7 +452,7 @@ void FragmentProcessor::render (const rr::MultisamplePixelBufferAccess& msColorB
                     var frag = fragments[i];
                     if (frag.isAlive) {
                         frag.blendedRGB = deMath.swizzle(frag.value, [0, 1, 2]);
-                        frag.blendedA = 1.0; //frag.value[3];
+                        frag.blendedA = frag.value[3];
                     }
                 }
             }
@@ -624,6 +624,7 @@ rrRenderer.drawQuads = function(state, renderTarget, program, vertexAttribs, pri
             quadPackets[topLeftVertexNdx].outputs,
             quadPackets[bottomRightVertexNdx].outputs
         );
+        shadingContextTopLeft.setSize(width, height);
         var packetsTopLeft = [];
 
         var shadingContextBottomRight = new rrShadingContext.FragmentShadingContext(
@@ -631,6 +632,7 @@ rrRenderer.drawQuads = function(state, renderTarget, program, vertexAttribs, pri
             quadPackets[topLeftVertexNdx].outputs,
             quadPackets[topRightVertexNdx].outputs
         );
+        shadingContextBottomRight.setSize(width, height);
         var packetsBottomRight = [];
 
         for (var i = 0; i < width; i++)
