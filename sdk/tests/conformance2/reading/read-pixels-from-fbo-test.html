@@ -110,7 +110,7 @@ var textureTestCases = [
     colorCheckFunc: r
   },
   {
-    texInternalFormat: 'R8I', texFormat: 'RED_INTEGER', texType: 'UNSIGNED_BYTE',
+    texInternalFormat: 'R8UI', texFormat: 'RED_INTEGER', texType: 'UNSIGNED_BYTE',
     readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT',
     clearColor: [250, 0, 0, 0], readBackColor: [250, 0, 0, 0], tol: [0, 0, 0, 0],
     colorCheckFunc: r
@@ -118,7 +118,7 @@ var textureTestCases = [
   {
     texInternalFormat: 'R8I', texFormat: 'RED_INTEGER', texType: 'BYTE',
     readFormat: 'RGBA_INTEGER', readType: 'INT',
-    clearColor: [-250, 0, 0, 0], readBackColor: [-250, 0, 0, 0], tol: [0, 0, 0, 0],
+    clearColor: [-126, 0, 0, 0], readBackColor: [-126, 0, 0, 0], tol: [0, 0, 0, 0],
     colorCheckFunc: r
   },
   {
@@ -277,7 +277,7 @@ var textureTestCases = [
   {
     texInternalFormat: 'RGB10_A2UI', texFormat: 'RGBA_INTEGER', texType: 'UNSIGNED_INT_2_10_10_10_REV',
     readFormat: 'RGBA_INTEGER', readType: 'UNSIGNED_INT',
-    clearColor: [178, 0, 127, 255], readBackColor: [178, 0, 127, 255], tol: [0, 0, 0, 0],
+    clearColor: [178, 0, 127, 3], readBackColor: [178, 0, 127, 3], tol: [0, 0, 0, 0],
     colorCheckFunc: rgba
   },
   {
