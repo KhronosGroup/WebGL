@@ -325,7 +325,7 @@ function start() {
       this.elem.classList.remove('testpageskipped');
       this.elem.classList.remove('testpagefail');
       this.elem.classList.remove('testpagesuccess');
-      this.startTime = performance.now();
+      this.startTime = Date.now();
     }
 
     return this.check.checked && this.folder.checked();
@@ -336,7 +336,7 @@ function start() {
   };
 
   Page.prototype.finishPage = function(success) {
-    this.totalTime = performance.now() - this.startTime;
+    this.totalTime = Date.now() - this.startTime;
     if(this.totalSkipped) {
       var msg = ' (' + this.totalSkipped + ' of ' + this.totalTests + ' skipped in ' + this.totalTime.toFixed(1) + ' ms )';
     } else {
@@ -667,7 +667,7 @@ function start() {
       var totalSuccessful = 0;
       var totalTimeouts = 0;
       var totalSkipped = 0;
-      var totalTime = performance.now() - this.startTime;
+      var totalTime = Date.now() - this.startTime;
       for (var url in this.pagesByURL) {
         var page = this.pagesByURL[url];
         totalTests += page.totalTests;
@@ -752,7 +752,7 @@ function start() {
   };
 
   Reporter.prototype.postTestStartToServer = function(resultText) {
-    this.startTime = performance.now();
+    this.startTime = Date.now();
     if(OPTIONS.postResults == undefined || OPTIONS.postResults == 0) {
       return;
     }
