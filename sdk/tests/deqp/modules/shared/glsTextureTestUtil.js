@@ -923,7 +923,7 @@ glsTextureTestUtil.computeLodFromDerivates3D = function(mode, dudx, dvdx, dwdx, 
             DE_ASSERT(false);
     }
 
-    return Math.round(Math.log2(p));
+    return Math.log(p) * 1.44269504089;
 };
 
 /**
@@ -959,7 +959,7 @@ glsTextureTestUtil.computeNonProjectedTriLod = function(mode, dstSize, srcSize, 
  * @return {number}
  */
 glsTextureTestUtil.triangleInterpolate = function(v, x, y) {
-    return v[0] + (v[2] - v[0]) * x + (v[1] - v[0]) * y;
+    return Number((v[0] + (v[2] - v[0]) * x + (v[1] - v[0]) * y).toFixed(10));
 };
 
 /**
@@ -1203,7 +1203,7 @@ glsTextureTestUtil.computeLodFromDerivates2D = function(mode, dudx, dvdx, dudy, 
             throw new Error('Unrecognized mode:' + mode);
     }
 
-    return Math.round(Math.log2(p));
+    return Math.log(p) * 1.44269504089;
 };
 
 /**
@@ -1316,13 +1316,13 @@ glsTextureTestUtil.sampleTextureCube = function(dst, src, texCoord, params) {
 /**
  * @param {glsTextureTestUtil.SurfaceAccess} dst
  * @param {tcuTexture.Texture2DArrayView} src
- * @param {Array<Array<number>>} texCoord
+ * @param {Array<number>} texCoord
  * @param {glsTextureTestUtil.ReferenceParams} params
  */
 glsTextureTestUtil.sampleTexture2DArray = function(dst, src, texCoord, params) {
-    var sq = [texCoord[0][0], texCoord[1][0], texCoord[2][0], texCoord[3][0]];
-    var tq = [texCoord[0][1], texCoord[1][1], texCoord[2][1], texCoord[3][1]];
-    var rq = [texCoord[0][2], texCoord[1][2], texCoord[2][2], texCoord[3][2]];
+    var sq = [texCoord[0 + 0], texCoord[3 + 0], texCoord[6 + 0], texCoord[9 + 0]];
+    var tq = [texCoord[0 + 1], texCoord[3 + 1], texCoord[6 + 1], texCoord[9 + 1]];
+    var rq = [texCoord[0 + 2], texCoord[3 + 2], texCoord[6 + 2], texCoord[9 + 2]];
 
     DE_ASSERT(!(params.flags.projected)); // \todo [2012-02-17 pyry] Support projected lookups.
     glsTextureTestUtil.sampleTextureNonProjected2DArray(dst, src, sq, tq, rq, params);
@@ -2046,7 +2046,7 @@ glsTextureTestUtil.computeTextureLookupDiffCube = function(
                             );
 
                         lodBounds[0] = Math.min(lodBounds[0], lodO[0]);
-                        lodBounds[1] = Math.max(lodBounds[0], lodO[0]);
+                        lodBounds[1] = Math.max(lodBounds[1], lodO[1]);
                     }
 
                     var clampedLod = tcuTexLookupVerifier.clampLodBounds(
@@ -2080,7 +2080,7 @@ glsTextureTestUtil.computeTextureLookupDiffCube = function(
 /**
  * @param {tcuTexture.ConstPixelBufferAccess} result
  * @param {tcuTexture.Texture2DArrayView} src
- * @param {Array<Array<number>>} texCoord
+ * @param {Array<number>} texCoord
  * @param {glsTextureTestUtil.ReferenceParams} sampleParams
  * @param {tcuTexLookupVerifier.LookupPrecision} lookupPrec
  * @param {tcuTexLookupVerifier.LodPrecision} lodPrec
@@ -2478,7 +2478,7 @@ glsTextureTestUtil.computeTextureLookupDiff2D = function(result, reference, erro
  * @param {tcuTexture.ConstPixelBufferAccess} reference
  * @param {tcuTexture.PixelBufferAccess} errorMask
  * @param {tcuTexture.Texture2DArrayView} src
- * @param {Array<Array<number>>} texCoord
+ * @param {Array<number>} texCoord
  * @param {glsTextureTestUtil.ReferenceParams} sampleParams
  * @param {tcuTexLookupVerifier.LookupPrecision} lookupPrec
  * @param {tcuTexLookupVerifier.LodPrecision} lodPrec
@@ -2489,9 +2489,9 @@ glsTextureTestUtil.computeTextureLookupDiff2DArray = function(result, reference,
     DE_ASSERT(result.getWidth() == reference.getWidth() && result.getHeight() == reference.getHeight());
     DE_ASSERT(result.getWidth() == errorMask.getWidth() && result.getHeight() == errorMask.getHeight());
 
-    /** @type {Array<number>} */ var sq = [texCoord[0][0], texCoord[1][0], texCoord[2][0], texCoord[3][0]];
-    /** @type {Array<number>} */ var tq = [texCoord[0][1], texCoord[1][1], texCoord[2][1], texCoord[3][1]];
-    /** @type {Array<number>} */ var rq = [texCoord[0][2], texCoord[1][1], texCoord[2][2], texCoord[3][2]];
+    /** @type {Array<number>} */ var sq = [texCoord[0 + 0], texCoord[3 + 0], texCoord[6 + 0], texCoord[9 + 0]];
+    /** @type {Array<number>} */ var tq = [texCoord[0 + 1], texCoord[3 + 1], texCoord[6 + 1], texCoord[9 + 1]];
+    /** @type {Array<number>} */ var rq = [texCoord[0 + 2], texCoord[3 + 1], texCoord[6 + 2], texCoord[9 + 2]];
 
     /** @type {Array<number>} */ var dstSize = [result.getWidth(), result.getHeight()];
     /** @type {number} */ var dstW = dstSize[0];

@@ -38,4 +38,33 @@ goog.scope(function() {
         return res;
     };
 
+    /**
+     * Flatten an array of arrays or matrices
+     * @param {(Array<Array<number>> | Array<tcuMatrix.Matrix>)} a
+     * @return {Array<number>}
+     */
+    tcuMatrixUtil.flatten = function(a) {
+        if (a[0] instanceof Array) {
+            var merged = [];
+            return merged.concat.apply(merged, a);
+        }
+
+        if (a[0] instanceof tcuMatrix.Matrix) {
+            /** @type {tcuMatrix.Matrix} */ var m = a[0];
+            var rows = m.rows;
+            var cols = m.cols;
+            var size = a.length;
+            var result = [];
+            for (var col = 0; col < cols; col++)
+                for (var i = 0; i < size; i++)
+                    result.push(a[i].getColumn(col));
+            return [].concat.apply([], result);
+        }
+
+        if (typeof(a[0]) === 'number')
+            return a;
+
+        throw new Error('Invalid input');
+    };
+
 });

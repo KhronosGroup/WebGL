@@ -80,7 +80,8 @@ rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess.prototype.toSinglesa
                                   depth: 1,
                                   rowPitch: this.m_access.getSlicePitch(),
                                   slicePitch: this.m_access.getSlicePitch() * this.m_access.getDepth(),
-                                  data: this.m_access.m_data});
+                                  data: this.m_access.m_data,
+                                  offset: this.m_access.m_offset});
 };
 
 /**
@@ -96,7 +97,8 @@ rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess.fromSinglesampleAcce
                                 depth: original.getHeight(),
                                 rowPitch: original.getFormat().getPixelSize(),
                                 slicePitch: original.getRowPitch(),
-                                data: original.m_data}));
+                                data: original.m_data,
+                                offset: original.m_offset}));
 };
 
 /**

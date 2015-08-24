@@ -802,7 +802,7 @@ goog.scope(function() {
 
             for (var quadNdx = 0; quadNdx < 8; quadNdx++) {
                 /** @type {Array<number>} */
-                var center = deMath.addScalarToVector(
+                var center = deMath.addScalar(
                     deMath.scale([quadNdx % 3, quadNdx / 3], (2.0 - quadDiagLen)/ 2.0),
                     (-0.5 * (2.0 - quadDiagLen)));
 
@@ -945,10 +945,10 @@ goog.scope(function() {
         /** @type {boolean} */ var errorsDetected = false;
         for (var i = 0; i < unicoloredRegions.length; i++) {
             /** @type {es3fMultisampleTests.QuadCorners} */ var region = unicoloredRegions[i];
-            /** @type {Array<number>} */ var p0Win = deMath.scale(deMath.addScalarToVector(region.p0, 1.0), 0.5 * (this.m_viewportSize - 1) + 0.5);
-            /** @type {Array<number>} */ var p1Win = deMath.scale(deMath.addScalarToVector(region.p1, 1.0), 0.5 * (this.m_viewportSize - 1) + 0.5);
-            /** @type {Array<number>} */ var p2Win = deMath.scale(deMath.addScalarToVector(region.p2, 1.0), 0.5 * (this.m_viewportSize - 1) + 0.5);
-            /** @type {Array<number>} */ var p3Win = deMath.scale(deMath.addScalarToVector(region.p3, 1.0), 0.5 * (this.m_viewportSize - 1) + 0.5);
+            /** @type {Array<number>} */ var p0Win = deMath.scale(deMath.addScalar(region.p0, 1.0), 0.5 * (this.m_viewportSize - 1) + 0.5);
+            /** @type {Array<number>} */ var p1Win = deMath.scale(deMath.addScalar(region.p1, 1.0), 0.5 * (this.m_viewportSize - 1) + 0.5);
+            /** @type {Array<number>} */ var p2Win = deMath.scale(deMath.addScalar(region.p2, 1.0), 0.5 * (this.m_viewportSize - 1) + 0.5);
+            /** @type {Array<number>} */ var p3Win = deMath.scale(deMath.addScalar(region.p3, 1.0), 0.5 * (this.m_viewportSize - 1) + 0.5);
             /** @type {boolean} */ var errorsInCurrentRegion = !es3fMultisampleTests.isPixelRegionUnicolored(renderedImg, p0Win, p1Win, p2Win, p3Win);
 
             if (errorsInCurrentRegion)

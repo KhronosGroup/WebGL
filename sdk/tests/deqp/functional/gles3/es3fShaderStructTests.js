@@ -22,6 +22,7 @@
 goog.provide('functional.gles3.es3fShaderStructTests');
 goog.require('framework.common.tcuTestCase');
 goog.require('framework.common.tcuTexture');
+goog.require('framework.common.tcuTextureUtil');
 goog.require('framework.delibs.debase.deMath');
 // goog.require('framework.opengl.gluShaderUtil');
 goog.require('framework.opengl.gluTexture');
@@ -32,13 +33,14 @@ goog.scope(function() {
 	var es3fShaderStructTests = functional.gles3.es3fShaderStructTests;
 	var tcuTestCase = framework.common.tcuTestCase;
 	var tcuTexture = framework.common.tcuTexture;
+	var tcuTextureUtil = framework.common.tcuTextureUtil;
 	var deMath = framework.delibs.debase.deMath;
 	// var gluShaderUtil = framework.opengl.gluShaderUtil;
 	var glsShaderRenderCase = modules.shared.glsShaderRenderCase;
 	var gluTexture = framework.opengl.gluTexture;
 	var tcuStringTemplate = framework.common.tcuStringTemplate;
 
-	/** @typedef {function(WebGL2RenderingContext, WebGLProgram, Array<Array<number>>)} */
+	/** @typedef {function(WebGLProgram, Array<number>)} */
 	es3fShaderStructTests.SetupUniformsFunc;
 
 	/** @const {number} */ es3fShaderStructTests.TEXTURE_BRICK = 0;
@@ -70,8 +72,14 @@ goog.scope(function() {
 
 	es3fShaderStructTests.ShaderStructCase.prototype.init = function() {
 		if (this.m_usesTexture) {
-			// TODO Textutr2D.create()
-			//m_brickTexture = glu::Texture2D::create(m_renderCtx, m_ctxInfo, m_testCtx.getArchive(), "data/brick.png");
+			this.m_brickTexture = gluTexture.texture2DFromInternalFormat(gl, gl.RGBA8, 256, 256);
+			var ref = this.m_brickTexture.getRefTexture();
+			for (var i = 0 ; i < ref.getNumLevels(); i++) {
+				ref.allocLevel(i);
+				tcuTextureUtil.fillWithGrid(ref.getLevel(i), 8, [0.2, 0.7, 0.1, 1.0], [0.7, 0.1, 0.5, 0.8]);
+			}
+			this.m_brickTexture.upload();
+
 			this.m_textures.push(new glsShaderRenderCase.TextureBinding(
 				this.m_brickTexture,
 				new tcuTexture.Sampler(

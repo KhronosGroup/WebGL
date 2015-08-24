@@ -127,7 +127,7 @@ goog.scope(function() {
          * @return {number}
          */
         var getWidth = function() {
-            return context.getParameter(gl.VIEWPORT)[2];
+            return context.drawingBufferWidth;
         };
         wrap['getWidth'] = getWidth;
 
@@ -135,7 +135,7 @@ goog.scope(function() {
          * @return {number}
          */
         var getHeight = function() {
-            return context.getParameter(gl.VIEWPORT)[3];
+            return context.drawingBufferHeight;
         };
         wrap['getHeight'] = getHeight;
 

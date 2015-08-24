@@ -120,7 +120,7 @@ tcuTextureUtil.getSubregion = function(access, x, y, z, width, height, depth) {
         depth: depth,
         rowPitch: access.getRowPitch(),
         slicePitch: access.getSlicePitch(),
-        offset: access.getFormat().getPixelSize() * x + access.getRowPitch() * y + access.getSlicePitch() * z,
+        offset: access.m_offset + access.getFormat().getPixelSize() * x + access.getRowPitch() * y + access.getSlicePitch() * z,
         data: access.getBuffer()
         });
 };
@@ -621,24 +621,26 @@ tcuTextureUtil.copy = function(dst, src) {
         var srcData = src.getDataPtr();
         var dstData = dst.getDataPtr();
 
-        dstData.set(srcData);
-    } else {
-        var srcClass = tcuTexture.getTextureChannelClass(src.getFormat().type);
-        var dstClass = tcuTexture.getTextureChannelClass(dst.getFormat().type);
-        var srcIsInt = srcClass == tcuTexture.TextureChannelClass.SIGNED_INTEGER || srcClass == tcuTexture.TextureChannelClass.UNSIGNED_INTEGER;
-        var dstIsInt = dstClass == tcuTexture.TextureChannelClass.SIGNED_INTEGER || dstClass == tcuTexture.TextureChannelClass.UNSIGNED_INTEGER;
-
-        if (srcIsInt && dstIsInt) {
-            for (var z = 0; z < depth; z++)
-            for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-                dst.setPixelInt(src.getPixelInt(x, y, z), x, y, z);
-        } else {
-            for (var z = 0; z < depth; z++)
-            for (var y = 0; y < height; y++)
-            for (var x = 0; x < width; x++)
-                dst.setPixel(src.getPixel(x, y, z), x, y, z);
+        if (srcData.length == dstData.length) {
+            dstData.set(srcData);
+            return;
         }
+    }
+    var srcClass = tcuTexture.getTextureChannelClass(src.getFormat().type);
+    var dstClass = tcuTexture.getTextureChannelClass(dst.getFormat().type);
+    var srcIsInt = srcClass == tcuTexture.TextureChannelClass.SIGNED_INTEGER || srcClass == tcuTexture.TextureChannelClass.UNSIGNED_INTEGER;
+    var dstIsInt = dstClass == tcuTexture.TextureChannelClass.SIGNED_INTEGER || dstClass == tcuTexture.TextureChannelClass.UNSIGNED_INTEGER;
+
+    if (srcIsInt && dstIsInt) {
+        for (var z = 0; z < depth; z++)
+        for (var y = 0; y < height; y++)
+        for (var x = 0; x < width; x++)
+            dst.setPixelInt(src.getPixelInt(x, y, z), x, y, z);
+    } else {
+        for (var z = 0; z < depth; z++)
+        for (var y = 0; y < height; y++)
+        for (var x = 0; x < width; x++)
+            dst.setPixel(src.getPixel(x, y, z), x, y, z);
     }
 };
 

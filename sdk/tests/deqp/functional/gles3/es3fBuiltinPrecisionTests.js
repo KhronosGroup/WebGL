@@ -44,11 +44,11 @@ goog.scope(function() {
         /** @type {Array<gluShaderProgram.shaderType>} */ var shaderTypes = [];
         var es3Cases = glsBuiltinPrecisionTests.createES3BuiltinCases();
 
-    	shaderTypes.push(gluShaderProgram.shaderType.VERTEX);
-    	shaderTypes.push(gluShaderProgram.shaderType.FRAGMENT);
+        shaderTypes.push(gluShaderProgram.shaderType.VERTEX);
+        shaderTypes.push(gluShaderProgram.shaderType.FRAGMENT);
 
-    	glsBuiltinPrecisionTests.addBuiltinPrecisionTests(es3Cases, shaderTypes, group);
-    	return group;
+        glsBuiltinPrecisionTests.addBuiltinPrecisionTests(es3Cases, shaderTypes, group);
+        return group;
     };
 
     /**

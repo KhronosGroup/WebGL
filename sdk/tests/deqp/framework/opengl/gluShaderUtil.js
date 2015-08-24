@@ -580,7 +580,7 @@ gluShaderUtil.getDataTypeMatrix = function(numCols, numRows) {
     if (!(deMath.deInRange32(numCols, 2, 4) && deMath.deInRange32(numRows, 2, 4)))
         throw new Error('Out of bounds: (' + numCols + ',' + numRows + ')');
 
-    var size = numRows.toString() + 'x' + numCols.toString();
+    var size = numCols.toString() + 'x' + numRows.toString();
     var datatypes = {
         '2x2': gluShaderUtil.DataType.FLOAT_MAT2,
         '2x3': gluShaderUtil.DataType.FLOAT_MAT2X3,

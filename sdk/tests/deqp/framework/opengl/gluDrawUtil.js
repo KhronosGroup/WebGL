@@ -49,10 +49,11 @@ gluDrawUtil.VertexArrayBinding = function(type, location, components, elements, 
  * Description of a vertex array binding
  * @param {gluDrawUtil.BindingPoint} binding
  * @param {gluDrawUtil.VertexArrayPointer} pointer
+ * @param {number=} dataType GL Data Type
  * @return {gluDrawUtil.VertexArrayBinding}
  */
-gluDrawUtil.vabFromBindingPointAndArrayPointer = function(binding, pointer) {
-    var type = gl.FLOAT;
+gluDrawUtil.vabFromBindingPointAndArrayPointer = function(binding, pointer, dataType) {
+    var type = dataType === undefined ? gl.FLOAT : dataType;
     var location = binding.location;
     var components = pointer.numComponents;
     var elements = pointer.numElements;
@@ -271,10 +272,21 @@ gluDrawUtil.indexBuffer = function(gl, primitives) {
  * @return {WebGLBuffer} buffer of vertices
  */
 gluDrawUtil.vertexBuffer = function(gl, vertexArray) {
+    /** @type {goog.TypedArray} */ var typedArray;
+    switch (vertexArray.type) {
+        case gl.BYTE: typedArray = new Int8Array(vertexArray.data); break;
+        case gl.UNSIGNED_BYTE: typedArray = new Uint8Array(vertexArray.data); break;
+        case gl.SHORT: typedArray = new Int16Array(vertexArray.data); break;
+        case gl.UNSIGNED_SHORT: typedArray = new Uint16Array(vertexArray.data); break;
+        case gl.INT: typedArray = new Int16Array(vertexArray.data); break;
+        case gl.UNSIGNED_INT: typedArray = new Uint16Array(vertexArray.data); break;
+        default: typedArray = new Float32Array(vertexArray.data); break;
+    }
+
     /** @type {WebGLBuffer} */ var buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     assertMsgOptions(gl.getError() === gl.NO_ERROR, 'bindBuffer', false, true);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexArray.data), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, typedArray, gl.STATIC_DRAW);
     assertMsgOptions(gl.getError() === gl.NO_ERROR, 'bufferData', false, true);
     gl.enableVertexAttribArray(vertexArray.location);
     assertMsgOptions(gl.getError() === gl.NO_ERROR, 'enableVertexAttribArray', false, true);
@@ -425,6 +437,36 @@ gluDrawUtil.bindingPointFromName = function(name, location) {
  * @param {Array<number>} data
  * @return {gluDrawUtil.VertexArrayBinding}
  */
+gluDrawUtil.newInt32VertexArrayBinding = function(name, numComponents, numElements, stride, data) {
+    var bindingPoint = gluDrawUtil.bindingPointFromName(name);
+    var arrayPointer = new gluDrawUtil.VertexArrayPointer(gluDrawUtil.VertexComponentType.VTX_COMP_SIGNED_INT32,
+        gluDrawUtil.VertexComponentConversion.VTX_COMP_CONVERT_NONE, numComponents, numElements, stride, data);
+    return gluDrawUtil.vabFromBindingPointAndArrayPointer(bindingPoint, arrayPointer, gl.INT);
+};
+
+/**
+ * @param {string} name
+ * @param {number} numComponents
+ * @param {number} numElements
+ * @param {number} stride
+ * @param {Array<number>} data
+ * @return {gluDrawUtil.VertexArrayBinding}
+ */
+gluDrawUtil.newUint32VertexArrayBinding = function(name, numComponents, numElements, stride, data) {
+    var bindingPoint = gluDrawUtil.bindingPointFromName(name);
+    var arrayPointer = new gluDrawUtil.VertexArrayPointer(gluDrawUtil.VertexComponentType.VTX_COMP_UNSIGNED_INT32,
+        gluDrawUtil.VertexComponentConversion.VTX_COMP_CONVERT_NONE, numComponents, numElements, stride, data);
+    return gluDrawUtil.vabFromBindingPointAndArrayPointer(bindingPoint, arrayPointer, gl.UNSIGNED_INT);
+};
+
+/**
+ * @param {string} name
+ * @param {number} numComponents
+ * @param {number} numElements
+ * @param {number} stride
+ * @param {Array<number>} data
+ * @return {gluDrawUtil.VertexArrayBinding}
+ */
 gluDrawUtil.newFloatVertexArrayBinding = function(name, numComponents, numElements, stride, data) {
     var bindingPoint = gluDrawUtil.bindingPointFromName(name);
     var arrayPointer = new gluDrawUtil.VertexArrayPointer(gluDrawUtil.VertexComponentType.VTX_COMP_FLOAT,
@@ -433,12 +475,12 @@ gluDrawUtil.newFloatVertexArrayBinding = function(name, numComponents, numElemen
 };
 
 /**
- * @param  {string} name
- * @param  {number} column
- * @param  {number} rows
- * @param  {number} numElements
- * @param  {number} stride
- * @param  {Array<number>} data
+ * @param {string} name
+ * @param {number} column
+ * @param {number} rows
+ * @param {number} numElements
+ * @param {number} stride
+ * @param {Array<number>} data
  * @return {gluDrawUtil.VertexArrayBinding}
  */
 gluDrawUtil.newFloatColumnVertexArrayBinding = function(name, column, rows, numElements, stride, data) {

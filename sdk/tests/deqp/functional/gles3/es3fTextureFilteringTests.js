@@ -251,9 +251,9 @@ goog.scope(function() {
                 /** @type {number} */ var lodY = cases[caseNdx].lodY;
                 /** @type {number} */ var oX = cases[caseNdx].oX;
                 /** @type {number} */ var oY = cases[caseNdx].oY;
-                /** @type {number} */ var sX = Math.exp(lodX) * viewportW /
+                /** @type {number} */ var sX = Math.exp(lodX * Math.log(2)) * viewportW /
                     this.m_textures[texNdx].getRefTexture().getWidth();
-                /** @type {number} */ var sY = Math.exp(lodY) * viewportH /
+                /** @type {number} */ var sY = Math.exp(lodY * Math.log(2)) * viewportH /
                     this.m_textures[texNdx].getRefTexture().getHeight();
 
                 this.m_cases.push(
@@ -304,7 +304,7 @@ goog.scope(function() {
         /** @type {tcuTextureUtil.TextureFormatInfo} */
         var fmtInfo = tcuTextureUtil.getTextureFormatInfo(texFmt);
         var curCase = this.m_cases[this.m_caseNdx];
-        debug('Test ' + this.m_caseNdx);
+        bufferedLogToConsole('Test ' + this.m_caseNdx);
         var refParams = new glsTextureTestUtil.ReferenceParams(
             glsTextureTestUtil.textureType.TEXTURETYPE_2D
         );
@@ -325,7 +325,7 @@ goog.scope(function() {
         refParams.colorScale = fmtInfo.lookupScale;
 
         // Compute texture coordinates.
-        debug(
+        bufferedLogToConsole(
             'Texture coordinates: ' + curCase.minCoord +
             ' -> ' + curCase.maxCoord
         );
@@ -408,15 +408,22 @@ goog.scope(function() {
                     'precision requirements failed, failing test case.'
                 );
                 testFailedOptions('Image verification failed', false);
+                //In JS version, one mistake and you're out
+                return tcuTestCase.IterateResult.STOP;
             } else
-                checkMessage(false, 'Low-quality filtering result');
-        } else
-            testPassed('High quality verification passed.');
+                checkMessage(
+                    false,
+                    'Low-quality filtering result in iteration no. ' +
+                    this.m_caseNdx
+                );
+        }
 
         this.m_caseNdx += 1;
-        return this.m_caseNdx < this.m_cases.length ?
-            tcuTestCase.IterateResult.CONTINUE :
-            tcuTestCase.IterateResult.STOP;
+        if (this.m_caseNdx < this.m_cases.length)
+            return tcuTestCase.IterateResult.CONTINUE;
+
+        testPassed('Verified');
+        return tcuTestCase.IterateResult.STOP;
     };
 
     /**
@@ -712,7 +719,7 @@ goog.scope(function() {
                 deMath.BinaryOp.XOR
             )
         );
-        debug('Test' + this.m_caseNdx);
+        bufferedLogToConsole('Test' + this.m_caseNdx);
         /** @type {es3fTextureFilteringTests.
          *      TextureCubeFilteringCase.FilterCase}
          */
@@ -758,7 +765,7 @@ goog.scope(function() {
         sampleParams.colorScale = fmtInfo.lookupScale;
         sampleParams.lodMode = glsTextureTestUtil.lodMode.EXACT;
 
-        debug(
+        bufferedLogToConsole(
             'Coordinates: ' + curCase.bottomLeft + ' -> ' + curCase.topRight
         );
 
@@ -777,7 +784,7 @@ goog.scope(function() {
                 face, curCase.bottomLeft, curCase.topRight
             );
 
-            debug(
+            bufferedLogToConsole(
                 'Face ' + es3fTextureFilteringTests.getFaceDesc(face)
             );
 
@@ -826,6 +833,7 @@ goog.scope(function() {
                 pixelFormat
             );
 
+
             if (!isHighQuality) {
                 // Evaluate against lower precision requirements.
                 lodPrecision.lodBits = 4;
@@ -845,17 +853,23 @@ goog.scope(function() {
                     bufferedLogToConsole('ERROR: Verification against low' +
                         'precision requirements failed, failing test case.');
                     testFailedOptions('Image verification failed', false);
+                    //In JS version, one mistake and you're out
+                    return tcuTestCase.IterateResult.STOP;
                 } else
-                    checkMessage(false, 'Low-quality filtering result');
-            } else {
-                testPassed('High quality verification passed.');
+                    checkMessage(
+                        false,
+                        'Low-quality filtering result in iteration no. ' +
+                        this.m_caseNdx
+                    );
             }
         }
 
         this.m_caseNdx += 1;
-        return this.m_caseNdx < this.m_cases.length ?
-            tcuTestCase.IterateResult.CONTINUE :
-            tcuTestCase.IterateResult.STOP;
+        if (this.m_caseNdx < this.m_cases.length)
+            return tcuTestCase.IterateResult.CONTINUE;
+
+        testPassed('Verified');
+        return tcuTestCase.IterateResult.STOP;
     };
 
     // 2D array filtering
@@ -1116,7 +1130,7 @@ goog.scope(function() {
         /** @type {tcuTextureUtil.TextureFormatInfo} */
         var fmtInfo = tcuTextureUtil.getTextureFormatInfo(texFmt);
 
-        debug('Test' + this.m_caseNdx);
+        bufferedLogToConsole('Test' + this.m_caseNdx);
 
         /** @type {glsTextureTestUtil.ReferenceParams} */
         var refParams = new glsTextureTestUtil.ReferenceParams(
@@ -1143,7 +1157,7 @@ goog.scope(function() {
         refParams.colorScale = fmtInfo.lookupScale;
 
         // Compute texture coordinates.
-        debug(
+        bufferedLogToConsole(
             'Approximate lod per axis = ' + curCase.lod +
             ', offset = ' + curCase.offset
         );
@@ -1242,15 +1256,22 @@ goog.scope(function() {
                     'failed, failing test case.'
                 );
                 testFailedOptions('Image verification failed', false);
+                //In JS version, one mistake and you're out
+                return tcuTestCase.IterateResult.STOP;
             } else
-                checkMessage(false, 'Low-quality filtering result');
-        } else
-            testPassed('High quality verification passed.');
+                checkMessage(
+                    false,
+                    'Low-quality filtering result in iteration no. ' +
+                    this.m_caseNdx
+                );
+        }
 
         this.m_caseNdx += 1;
-        return this.m_caseNdx < this.m_cases.length ?
-            tcuTestCase.IterateResult.CONTINUE :
-            tcuTestCase.IterateResult.STOP;
+        if (this.m_caseNdx < this.m_cases.length)
+            return tcuTestCase.IterateResult.CONTINUE;
+
+        testPassed('Verified');
+        return tcuTestCase.IterateResult.STOP;
     };
 
     // 3D filtering
@@ -1465,7 +1486,7 @@ goog.scope(function() {
         /** @type {tcuTextureUtil.TextureFormatInfo} */
         var fmtInfo = tcuTextureUtil.getTextureFormatInfo(texFmt);
 
-        debug('Test' + this.m_caseNdx);
+        bufferedLogToConsole('Test' + this.m_caseNdx);
         /** @type {glsTextureTestUtil.ReferenceParams} */
         var refParams = new glsTextureTestUtil.ReferenceParams(
             glsTextureTestUtil.textureType.TEXTURETYPE_3D
@@ -1493,7 +1514,7 @@ goog.scope(function() {
         refParams.colorScale = fmtInfo.lookupScale;
 
         // Compute texture coordinates.
-        debug('Approximate lod per axis = ' + curCase.lod +
+        bufferedLogToConsole('Approximate lod per axis = ' + curCase.lod +
             ', offset = ' + curCase.offset);
 
         /** @type {number} */ var lodX = curCase.lod[0];
@@ -1586,15 +1607,22 @@ goog.scope(function() {
                     'precision requirements failed, failing test case.'
                 );
                 testFailedOptions('Image verification failed', false);
+                //In JS version, one mistake and you're out
+                return tcuTestCase.IterateResult.STOP;
             } else
-                checkMessage(false, 'Low-quality filtering result');
-        } else
-            testPassed('High quality verification passed.');
+                checkMessage(
+                    false,
+                    'Low-quality filtering result in iteration no. ' +
+                    this.m_caseNdx
+                );
+        }
 
         this.m_caseNdx += 1;
-        return this.m_caseNdx < this.m_cases.length ?
-            tcuTestCase.IterateResult.CONTINUE :
-            tcuTestCase.IterateResult.STOP;
+        if (this.m_caseNdx < this.m_cases.length)
+            return tcuTestCase.IterateResult.CONTINUE;
+
+        testPassed('Verified');
+        return tcuTestCase.IterateResult.STOP;
     };
 
     /** @typedef {{name: string, mode: number}} */

@@ -654,7 +654,7 @@ goog.scope(function() {
         // verify image
 
         if (this.verifyImage(surface))
-            testPassed('Pass');
+            testPassed('');
         else
             testFailed('Incorrect rendering result');
         return tcuTestCase.IterateResult.STOP;
@@ -803,7 +803,6 @@ goog.scope(function() {
             tcuLogImage.logImageWithInfo(error.getAccess(), 'Error mask');
         } else {
             debug('Verfication result');
-            tcuLogImage.logImageWithInfo(image.getAccess(), 'Result');
         }
 
         return isOk;

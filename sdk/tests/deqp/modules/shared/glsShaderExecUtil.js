@@ -23,13 +23,13 @@
 'use strict';
 goog.provide('modules.shared.glsShaderExecUtil');
 goog.require('framework.common.tcuMatrix');
+goog.require('framework.common.tcuMatrixUtil');
 goog.require('framework.common.tcuTexture');
 goog.require('framework.opengl.gluDrawUtil');
 goog.require('framework.opengl.gluShaderProgram');
 goog.require('framework.opengl.gluShaderUtil');
 goog.require('framework.opengl.gluTextureUtil');
 goog.require('framework.opengl.gluVarType');
-
 
 goog.scope(function() {
 
@@ -41,6 +41,7 @@ goog.scope(function() {
     var gluTextureUtil = framework.opengl.gluTextureUtil;
     var tcuTexture = framework.common.tcuTexture;
     var tcuMatrix = framework.common.tcuMatrix;
+    var tcuMatrixUtil = framework.common.tcuMatrixUtil;
 
     var DE_ASSERT = function(x) {
         if (!x)
@@ -63,17 +64,16 @@ goog.scope(function() {
          /** @type {gluVarType.VarType} */ this.varType = varType || null;
      };
 
-
     //! Complete shader specification.
     /**
      * @constructor
      */
     glsShaderExecUtil.ShaderSpec = function() {
         /** @type {gluShaderUtil.GLSLVersion} */ this.version = gluShaderUtil.GLSLVersion.V300_ES; //!< Shader version.
-    	/** @type {Array<glsShaderExecUtil.Symbol>} */ this.inputs = [];
-    	/** @type {Array<glsShaderExecUtil.Symbol>} */ this.outputs = [];
-    	/** @type {string} */ this.globalDeclarations = ''; //!< These are placed into global scope. Can contain uniform declarations for example.
-    	/** @type {*} */ this.source; //!< Source snippet to be executed.
+        /** @type {Array<glsShaderExecUtil.Symbol>} */ this.inputs = [];
+        /** @type {Array<glsShaderExecUtil.Symbol>} */ this.outputs = [];
+        /** @type {string} */ this.globalDeclarations = ''; //!< These are placed into global scope. Can contain uniform declarations for example.
+        /** @type {*} */ this.source; //!< Source snippet to be executed.
     };
 
     /**
@@ -83,12 +83,12 @@ goog.scope(function() {
      */
     glsShaderExecUtil.ShaderExecutor = function(shaderSpec) {
         /** @type {Array<glsShaderExecUtil.Symbol>} */ this.m_inputs = shaderSpec.inputs;
-    	/** @type {Array<glsShaderExecUtil.Symbol>} */ this.m_outputs = shaderSpec.outputs;
+        /** @type {Array<glsShaderExecUtil.Symbol>} */ this.m_outputs = shaderSpec.outputs;
     };
 
     glsShaderExecUtil.ShaderExecutor.prototype.useProgram = function() {
-    	DE_ASSERT(this.isOk);
-    	gl.useProgram(this.getProgram());
+        DE_ASSERT(this.isOk);
+        gl.useProgram(this.getProgram());
     };
 
     /**
@@ -98,14 +98,12 @@ goog.scope(function() {
         throw new Error('Virtual function. Please override.');
     };
 
-
     /**
      * @return {WebGLProgram}
      */
     glsShaderExecUtil.ShaderExecutor.prototype.getProgram = function() {
         throw new Error('Virtual function. Please override.');
     };
-
 
     /**
      * @param {number} numValues
@@ -123,8 +121,7 @@ goog.scope(function() {
      * @return {glsShaderExecUtil.ShaderExecutor}
      */
     glsShaderExecUtil.createExecutor = function(shaderType, shaderSpec) {
-       switch (shaderType)
-       {
+       switch (shaderType) {
            case gluShaderProgram.shaderType.VERTEX: return new glsShaderExecUtil.VertexShaderExecutor(shaderSpec);
            case gluShaderProgram.shaderType.FRAGMENT: return new glsShaderExecUtil.FragmentShaderExecutor(shaderSpec);
            default:
@@ -137,85 +134,83 @@ goog.scope(function() {
      * @return {string}
      */
     glsShaderExecUtil.generateVertexShader = function(shaderSpec) {
-    	/** @type {boolean} */ var usesInout	= true;
-    	/** @type {string} */ var in_ = usesInout ? 'in' : 'attribute';
-    	/** @type {string} */ var out = usesInout ? 'out' : 'varying';
-    	/** @type {string} */ var src = '';
+        /** @type {boolean} */ var usesInout = true;
+        /** @type {string} */ var in_ = usesInout ? 'in' : 'attribute';
+        /** @type {string} */ var out = usesInout ? 'out' : 'varying';
+        /** @type {string} */ var src = '';
         /** @type {number} */ var vecSize;
         /** @type {gluShaderUtil.DataType} */ var intBaseType;
 
-    	src += '#version 300 es\n';
+        src += '#version 300 es\n';
 
-    	if (shaderSpec.globalDeclarations.length > 0)
-    		src += (shaderSpec.globalDeclarations + '\n');
+        if (shaderSpec.globalDeclarations.length > 0)
+            src += (shaderSpec.globalDeclarations + '\n');
 
-    	for (var i = 0; i < shaderSpec.inputs.length; ++i)
-    		src += (in_ + ' ' + gluVarType.declareVariable(shaderSpec.inputs[i].varType, shaderSpec.inputs[i].name) + ';\n');
+        for (var i = 0; i < shaderSpec.inputs.length; ++i)
+            src += (in_ + ' ' + gluVarType.declareVariable(shaderSpec.inputs[i].varType, shaderSpec.inputs[i].name) + ';\n');
 
-    	for (var i = 0; i < shaderSpec.outputs.length; i++)	{
+        for (var i = 0; i < shaderSpec.outputs.length; i++) {
             var output = shaderSpec.outputs[i];
-    		DE_ASSERT(output.varType.isBasicType());
+            DE_ASSERT(output.varType.isBasicType());
 
-    		if (gluShaderUtil.isDataTypeBoolOrBVec(output.varType.getBasicType())) {
-    			vecSize = gluShaderUtil.getDataTypeScalarSize(output.varType.getBasicType());
-    			intBaseType = vecSize > 1 ? gluShaderUtil.getDataTypeVector(gluShaderUtil.DataType.INT, vecSize) : gluShaderUtil.DataType.INT;
-    			/** @type {gluVarType.VarType} */ var intType = new gluVarType.VarType().VarTypeBasic(intBaseType, gluShaderUtil.precision.PRECISION_HIGHP);
+            if (gluShaderUtil.isDataTypeBoolOrBVec(output.varType.getBasicType())) {
+                vecSize = gluShaderUtil.getDataTypeScalarSize(output.varType.getBasicType());
+                intBaseType = vecSize > 1 ? gluShaderUtil.getDataTypeVector(gluShaderUtil.DataType.INT, vecSize) : gluShaderUtil.DataType.INT;
+                /** @type {gluVarType.VarType} */ var intType = new gluVarType.VarType().VarTypeBasic(intBaseType, gluShaderUtil.precision.PRECISION_HIGHP);
 
-    			src += ('flat ' + out + ' ' + gluVarType.declareVariable(intType, 'o_' + output.name) + ';\n');
-    		}
-    		else
-    			src += ('flat ' + out + ' ' + gluVarType.declareVariable(output.varType, output.name) + ';\n');
-    	}
+                src += ('flat ' + out + ' ' + gluVarType.declareVariable(intType, 'o_' + output.name) + ';\n');
+            } else
+                src += ('flat ' + out + ' ' + gluVarType.declareVariable(output.varType, output.name) + ';\n');
+        }
 
-    	src += '\n' +
-    		'void main (void)\n' +
-    		'{\n' +
-    		'	gl_Position = vec4(0.0);\n' +
-    		'	gl_PointSize = 1.0;\n\n';
+        src += '\n' +
+            'void main (void)\n' +
+            '{\n' +
+            ' gl_Position = vec4(0.0);\n' +
+            ' gl_PointSize = 1.0;\n\n';
 
-    	// Declare necessary output variables (bools).
-    	for (var i = 0; i < shaderSpec.outputs.length; i++)	{
-    		if (gluShaderUtil.isDataTypeBoolOrBVec(shaderSpec.outputs[i].varType.getBasicType()))
-    			src += ('\t' + gluVarType.declareVariable(shaderSpec.outputs[i].varType, shaderSpec.outputs[i].name) + ';\n');
-    	}
+        // Declare necessary output variables (bools).
+        for (var i = 0; i < shaderSpec.outputs.length; i++) {
+            if (gluShaderUtil.isDataTypeBoolOrBVec(shaderSpec.outputs[i].varType.getBasicType()))
+                src += ('\t' + gluVarType.declareVariable(shaderSpec.outputs[i].varType, shaderSpec.outputs[i].name) + ';\n');
+        }
 
-    	//Operation - indented to correct level.
+        //Operation - indented to correct level.
         // TODO: Add indenting
         src += shaderSpec.source;
 
-    	// Assignments to outputs.
-    	for (var i = 0; i < shaderSpec.outputs.length; i++)	{
-    		if (gluShaderUtil.isDataTypeBoolOrBVec(output.varType.getBasicType())) {
-    			vecSize = gluShaderUtil.getDataTypeScalarSize(output.varType.getBasicType());
-    			intBaseType = vecSize > 1 ? gluShaderUtil.getDataTypeVector(gluShaderUtil.DataType.INT, vecSize) : gluShaderUtil.DataType.INT;
+        // Assignments to outputs.
+        for (var i = 0; i < shaderSpec.outputs.length; i++) {
+            if (gluShaderUtil.isDataTypeBoolOrBVec(output.varType.getBasicType())) {
+                vecSize = gluShaderUtil.getDataTypeScalarSize(output.varType.getBasicType());
+                intBaseType = vecSize > 1 ? gluShaderUtil.getDataTypeVector(gluShaderUtil.DataType.INT, vecSize) : gluShaderUtil.DataType.INT;
 
-    			src += ('\to_' + output.name + ' = ' + gluShaderUtil.getDataTypeName(intBaseType) + '(' + output.name + ');\n');
-    		}
-    	}
+                src += ('\to_' + output.name + ' = ' + gluShaderUtil.getDataTypeName(intBaseType) + '(' + output.name + ');\n');
+            }
+        }
 
-    	src += '}\n';
+        src += '}\n';
 
-    	return src;
+        return src;
     };
-
 
     /**
      * @return {string}
      */
     glsShaderExecUtil.generateEmptyFragmentSource = function() {
-    	/** @type {boolean} */ var customOut = true;
-    	/** @type {string} */ var src;
+        /** @type {boolean} */ var customOut = true;
+        /** @type {string} */ var src;
 
-    	src = '#version 300 es\n';
+        src = '#version 300 es\n';
 
-    	// \todo [2013-08-05 pyry] Do we need one dummy output?
+        // \todo [2013-08-05 pyry] Do we need one dummy output?
 
-    	src += 'void main (void)\n{\n';
-    	if (!customOut)
-    		src += '	gl.FragColor = vec4(0.0);\n';
-    	src += '}\n';
+        src += 'void main (void)\n{\n';
+        if (!customOut)
+            src += ' gl.FragColor = vec4(0.0);\n';
+        src += '}\n';
 
-    	return src;
+        return src;
     };
 
     /**
@@ -225,29 +220,29 @@ goog.scope(function() {
      * @return {string}
      */
     glsShaderExecUtil.generatePassthroughVertexShader = function(shaderSpec, inputPrefix, outputPrefix) {
-    	// flat qualifier is not present in earlier versions?
-    	// DE_ASSERT(glu::glslVersionUsesInOutQualifiers(shaderSpec.version));
+        // flat qualifier is not present in earlier versions?
+        // DE_ASSERT(glu::glslVersionUsesInOutQualifiers(shaderSpec.version));
 
-    	/** @type {string} */ var src;
+        /** @type {string} */ var src;
 
-    	src = '#version 300 es\n' +
-    		'in highp vec4 a_position;\n';
+        src = '#version 300 es\n' +
+            'in highp vec4 a_position;\n';
 
-    	for (var i = 0; i < shaderSpec.inputs.length; i++) {
-    		src += ('in ' + gluVarType.declareVariable(shaderSpec.inputs[i].varType, inputPrefix + shaderSpec.inputs[i].name) + ';\n' +
-    			'flat out ' + gluVarType.declareVariable(shaderSpec.inputs[i].varType, outputPrefix + shaderSpec.inputs[i].name) + ';\n');
-    	}
+        for (var i = 0; i < shaderSpec.inputs.length; i++) {
+            src += ('in ' + gluVarType.declareVariable(shaderSpec.inputs[i].varType, inputPrefix + shaderSpec.inputs[i].name) + ';\n' +
+                'flat out ' + gluVarType.declareVariable(shaderSpec.inputs[i].varType, outputPrefix + shaderSpec.inputs[i].name) + ';\n');
+        }
 
-    	src += '\nvoid main (void)\n{\n' +
-    		'	gl_Position = a_position;\n' +
-    		'	gl_PointSize = 1.0;\n';
+        src += '\nvoid main (void)\n{\n' +
+            ' gl_Position = a_position;\n' +
+            ' gl_PointSize = 1.0;\n';
 
-    	for (var i = 0; i < shaderSpec.inputs.length; i++)
-    		src += ('\t' + outputPrefix + shaderSpec.inputs[i].name + ' = ' + inputPrefix + shaderSpec.inputs[i].name + ';\n');
+        for (var i = 0; i < shaderSpec.inputs.length; i++)
+            src += ('\t' + outputPrefix + shaderSpec.inputs[i].name + ' = ' + inputPrefix + shaderSpec.inputs[i].name + ';\n');
 
-    	src += '}\n';
+        src += '}\n';
 
-    	return src;
+        return src;
     };
 
     /**
@@ -264,97 +259,95 @@ goog.scope(function() {
         /** @type {gluVarType.VarType} */ var uintType;
         /** @type {gluVarType.VarType} */ var intType;
 
+        /** @type {string} */ var src;
+        src = '#version 300 es\n';
 
-    	/** @type {string} */ var src;
-    	src = '#version 300 es\n';
+        if (!shaderSpec.globalDeclarations.length > 0)
+            src += (shaderSpec.globalDeclarations + '\n');
 
-    	if (!shaderSpec.globalDeclarations.length > 0)
-    		src += (shaderSpec.globalDeclarations + '\n');
+        for (var i = 0; i < shaderSpec.inputs.length; i++)
+            src += ('flat in ' + gluVarType.declareVariable(shaderSpec.inputs[i].varType, shaderSpec.inputs[i].name) + ';\n');
 
-    	for (var i = 0; i < shaderSpec.inputs.length; i++)
-        	src += ('flat in ' + gluVarType.declareVariable(shaderSpec.inputs[i].varType, shaderSpec.inputs[i].name) + ';\n');
+        for (var outNdx = 0; outNdx < shaderSpec.outputs.length; ++outNdx) {
+            /** @type {glsShaderExecUtil.Symbol} */ var output = shaderSpec.outputs[outNdx];
+            /** @type {number} */ var location = outLocationMap[output.name];
+            /** @type {string} */ var outVarName = 'o_' + output.name;
+            /** @type {gluVarType.VariableDeclaration} */ var decl = new gluVarType.VariableDeclaration(output.varType, outVarName, gluVarType.Storage.STORAGE_OUT, undefined, new gluVarType.Layout(location));
 
-    	for (var outNdx = 0; outNdx < shaderSpec.outputs.length; ++outNdx) {
-    		/** @type {glsShaderExecUtil.Symbol} */ var output = shaderSpec.outputs[outNdx];
-    		/** @type {number} */ var location = outLocationMap[output.name];
-    		/** @type {string} */ var outVarName	= 'o_' + output.name;
-    		/** @type {gluVarType.VariableDeclaration} */ var	decl	= new gluVarType.VariableDeclaration(output.varType, outVarName, gluVarType.Storage.STORAGE_OUT, undefined, new gluVarType.Layout(location));
+            DE_ASSERT(output.varType.isBasicType());
 
-    		DE_ASSERT(output.varType.isBasicType());
+            if (useIntOutputs && gluShaderUtil.isDataTypeFloatOrVec(output.varType.getBasicType())) {
+                vecSize = gluShaderUtil.getDataTypeScalarSize(output.varType.getBasicType());
+                uintBasicType = vecSize > 1 ? gluShaderUtil.getDataTypeVector(gluShaderUtil.DataType.UINT, vecSize) : gluShaderUtil.DataType.UINT;
+                uintType = gluVarType.newTypeBasic(uintBasicType, gluShaderUtil.precision.PRECISION_HIGHP);
 
-    		if (useIntOutputs && gluShaderUtil.isDataTypeFloatOrVec(output.varType.getBasicType()))	{
-    			vecSize = gluShaderUtil.getDataTypeScalarSize(output.varType.getBasicType());
-    			uintBasicType	= vecSize > 1 ? gluShaderUtil.getDataTypeVector(gluShaderUtil.DataType.UINT, vecSize) : gluShaderUtil.DataType.UINT;
-    			uintType = gluVarType.newTypeBasic(uintBasicType, gluShaderUtil.precision.PRECISION_HIGHP);
+                decl.varType = uintType;
+                src += (decl + ';\n');
+            } else if (gluShaderUtil.isDataTypeBoolOrBVec(output.varType.getBasicType())) {
+                vecSize = gluShaderUtil.getDataTypeScalarSize(output.varType.getBasicType());
+                intBasicType = vecSize > 1 ? gluShaderUtil.getDataTypeVector(gluShaderUtil.DataType.INT, vecSize) : gluShaderUtil.DataType.INT;
+                intType = gluVarType.newTypeBasic(intBasicType, gluShaderUtil.precision.PRECISION_HIGHP);
 
-    			decl.varType = uintType;
-    			src += (decl + ';\n');
-    		} else if (gluShaderUtil.isDataTypeBoolOrBVec(output.varType.getBasicType())) {
-    			vecSize = gluShaderUtil.getDataTypeScalarSize(output.varType.getBasicType());
-    			intBasicType = vecSize > 1 ? gluShaderUtil.getDataTypeVector(gluShaderUtil.DataType.INT, vecSize) : gluShaderUtil.DataType.INT;
-    			intType = gluVarType.newTypeBasic(intBasicType, gluShaderUtil.precision.PRECISION_HIGHP);
+                decl.varType = intType;
+                src += (decl + ';\n');
+            } else if (gluShaderUtil.isDataTypeMatrix(output.varType.getBasicType())) {
+                vecSize = gluShaderUtil.getDataTypeMatrixNumRows(output.varType.getBasicType());
+                numVecs = gluShaderUtil.getDataTypeMatrixNumColumns(output.varType.getBasicType());
+                uintBasicType = gluShaderUtil.getDataTypeVector(gluShaderUtil.DataType.UINT, vecSize);
+                uintType = gluVarType.newTypeBasic(uintBasicType, gluShaderUtil.precision.PRECISION_HIGHP);
 
-    			decl.varType = intType;
-    			src += (decl + ';\n');
-    		} else if (gluShaderUtil.isDataTypeMatrix(output.varType.getBasicType())) {
-    			vecSize = gluShaderUtil.getDataTypeMatrixNumRows(output.varType.getBasicType());
-    			numVecs = gluShaderUtil.getDataTypeMatrixNumColumns(output.varType.getBasicType());
-    			uintBasicType	= gluShaderUtil.getDataTypeVector(gluShaderUtil.DataType.UINT, vecSize);
-    			uintType = gluVarType.newTypeBasic(uintBasicType, gluShaderUtil.precision.PRECISION_HIGHP);
+                decl.varType = uintType;
+                for (var vecNdx = 0; vecNdx < numVecs; ++vecNdx) {
+                    decl.name = outVarName + '_' + (vecNdx);
+                    decl.layout.location = location + vecNdx;
+                    src += (decl + ';\n');
+                }
+            } else //src += '';//glu::VariableDeclaration(output.varType, output.name, glu::STORAGE_OUT, glu::INTERPOLATION_LAST, location) << ";\n";
+                src += new gluVarType.VariableDeclaration(output.varType, output.name, gluVarType.Storage.STORAGE_OUT, undefined, new gluVarType.Layout(location)) + ';\n';
+        }
 
-    			decl.varType = uintType;
-    			for (var vecNdx = 0; vecNdx < numVecs; ++vecNdx) {
-    				decl.name	= outVarName + '_' + (vecNdx);
-    				decl.layout.location	= location + vecNdx;
-    				src += (decl + ';\n');
-    			}
-    		}
-    		else //src += '';//glu::VariableDeclaration(output.varType, output.name, glu::STORAGE_OUT, glu::INTERPOLATION_LAST, location) << ";\n";
-    		    src += new gluVarType.VariableDeclaration(output.varType, output.name, gluVarType.Storage.STORAGE_OUT, undefined, new gluVarType.Layout(location)) + ';\n';
-    	}
+        src += '\nvoid main (void)\n{\n';
 
-    	src += '\nvoid main (void)\n{\n';
+        for (var i = 0; i < shaderSpec.outputs.length; i++) {
+            if ((useIntOutputs && gluShaderUtil.isDataTypeFloatOrVec(shaderSpec.outputs[i].varType.getBasicType())) ||
+                gluShaderUtil.isDataTypeBoolOrBVec(shaderSpec.outputs[i].varType.getBasicType()) ||
+                gluShaderUtil.isDataTypeMatrix(shaderSpec.outputs[i].varType.getBasicType()))
+                src += ('\t' + gluVarType.declareVariable(shaderSpec.outputs[i].varType, shaderSpec.outputs[i].name) + ';\n');
+        }
 
-    	for (var i = 0; i < shaderSpec.outputs.length; i++)	{
-    		if ((useIntOutputs && gluShaderUtil.isDataTypeFloatOrVec(shaderSpec.outputs[i].varType.getBasicType())) ||
-    			gluShaderUtil.isDataTypeBoolOrBVec(shaderSpec.outputs[i].varType.getBasicType()) ||
-    			gluShaderUtil.isDataTypeMatrix(shaderSpec.outputs[i].varType.getBasicType()))
-    			src += ('\t' + gluVarType.declareVariable(shaderSpec.outputs[i].varType, shaderSpec.outputs[i].name) + ';\n');
-    	}
-
-    	// Operation - indented to correct level.
+        // Operation - indented to correct level.
         // TODO: Add indenting
         src += shaderSpec.source;
-    	// {
-    	// 	std::istringstream	opSrc	(shaderSpec.source);
-    	// 	/** @type{number} */ var line;
+        // {
+        //     std::istringstream opSrc (shaderSpec.source);
+        //     /** @type{number} */ var line;
         //
-    	// 	while (std::getline(opSrc, line))
-    	// 		src += ('\t' << line << '\n');
-    	// }
+        //     while (std::getline(opSrc, line))
+        //         src += ('\t' << line << '\n');
+        // }
 
-    	for (var i = 0; i < shaderSpec.outputs.length; i++) {
-    		if (useIntOutputs && gluShaderUtil.isDataTypeFloatOrVec(shaderSpec.outputs[i].varType.getBasicType()))
-    			src += ('	o_' + shaderSpec.outputs[i].name + ' = floatBitsToUint(' + shaderSpec.outputs[i].name + ');\n');
-    		else if (gluShaderUtil.isDataTypeMatrix(shaderSpec.outputs[i].varType.getBasicType())) {
-    			numVecs = gluShaderUtil.getDataTypeMatrixNumColumns(shaderSpec.outputs[i].varType.getBasicType());
+        for (var i = 0; i < shaderSpec.outputs.length; i++) {
+            if (useIntOutputs && gluShaderUtil.isDataTypeFloatOrVec(shaderSpec.outputs[i].varType.getBasicType()))
+                src += (' o_' + shaderSpec.outputs[i].name + ' = floatBitsToUint(' + shaderSpec.outputs[i].name + ');\n');
+            else if (gluShaderUtil.isDataTypeMatrix(shaderSpec.outputs[i].varType.getBasicType())) {
+                numVecs = gluShaderUtil.getDataTypeMatrixNumColumns(shaderSpec.outputs[i].varType.getBasicType());
 
-    			for (var vecNdx = 0; vecNdx < numVecs; ++vecNdx)
-    				if (useIntOutputs)
-    					src += ('\to_' + shaderSpec.outputs[i].name + '_' + vecNdx + ' = floatBitsToUint(' + shaderSpec.outputs[i].name + '[' + vecNdx + ']);\n');
-    				else
-    					src += ('\to_' + shaderSpec.outputs[i].name + '_' + vecNdx + ' = ' + shaderSpec.outputs[i].name + '[' + vecNdx + '];\n');
-    		} else if (gluShaderUtil.isDataTypeBoolOrBVec(shaderSpec.outputs[i].varType.getBasicType())) {
-    			vecSize = gluShaderUtil.getDataTypeScalarSize(shaderSpec.outputs[i].varType.getBasicType());
-    			intBasicType = vecSize > 1 ? gluShaderUtil.getDataTypeVector(gluShaderUtil.DataType.INT, vecSize) : gluShaderUtil.DataType.INT;
+                for (var vecNdx = 0; vecNdx < numVecs; ++vecNdx)
+                    if (useIntOutputs)
+                        src += ('\to_' + shaderSpec.outputs[i].name + '_' + vecNdx + ' = floatBitsToUint(' + shaderSpec.outputs[i].name + '[' + vecNdx + ']);\n');
+                    else
+                        src += ('\to_' + shaderSpec.outputs[i].name + '_' + vecNdx + ' = ' + shaderSpec.outputs[i].name + '[' + vecNdx + '];\n');
+            } else if (gluShaderUtil.isDataTypeBoolOrBVec(shaderSpec.outputs[i].varType.getBasicType())) {
+                vecSize = gluShaderUtil.getDataTypeScalarSize(shaderSpec.outputs[i].varType.getBasicType());
+                intBasicType = vecSize > 1 ? gluShaderUtil.getDataTypeVector(gluShaderUtil.DataType.INT, vecSize) : gluShaderUtil.DataType.INT;
 
-    			src += ('\to_' + shaderSpec.outputs[i].name + ' = ' + gluShaderUtil.getDataTypeName(intBasicType) + '(' + shaderSpec.outputs[i].name + ');\n');
-    		}
-    	}
+                src += ('\to_' + shaderSpec.outputs[i].name + ' = ' + gluShaderUtil.getDataTypeName(intBasicType) + '(' + shaderSpec.outputs[i].name + ');\n');
+            }
+        }
 
-    	src += '}\n';
+        src += '}\n';
 
-    	return src;
+        return src;
     };
 
     /**
@@ -369,7 +362,6 @@ goog.scope(function() {
     };
 
     // VertexProcessorExecutor (base class for vertex and geometry executors)
-
 
     /**
      * @constructor
@@ -405,10 +397,10 @@ goog.scope(function() {
      * @return {number}
      */
     glsShaderExecUtil.computeTotalScalarSize = function(arr) {
-    	/** @type {number} */ var size = 0;
-    	for (var i = 0; i < arr.length; i++)
-    		size += arr[i].varType.getScalarSize();
-    	return size;
+        /** @type {number} */ var size = 0;
+        for (var i = 0; i < arr.length; i++)
+            size += arr[i].varType.getScalarSize();
+        return size;
     };
 
     /**
@@ -426,82 +418,80 @@ goog.scope(function() {
     glsShaderExecUtil.VertexProcessorExecutor.prototype.execute = function(numValues, inputs) {
         /** @type {glsShaderExecUtil.Symbol} */ var symbol;
         var outputs = [];
-    	/** @type {boolean} */ var useTFObject	= true;
-    	/** @type {Array<gluDrawUtil.VertexArrayBinding>} */ var vertexArrays = [];
-    	var transformFeedback = gl.createTransformFeedback();
-    	var outputBuffer = gl.createBuffer();
+        /** @type {boolean} */ var useTFObject = true;
+        /** @type {Array<gluDrawUtil.VertexArrayBinding>} */ var vertexArrays = [];
+        var transformFeedback = gl.createTransformFeedback();
+        var outputBuffer = gl.createBuffer();
 
-    	/** @type {number} */ var outputBufferStride = glsShaderExecUtil.computeTotalScalarSize(this.m_outputs) * 4;
+        /** @type {number} */ var outputBufferStride = glsShaderExecUtil.computeTotalScalarSize(this.m_outputs) * 4;
 
-    	// Setup inputs.
-    	for (var inputNdx = 0; inputNdx < this.m_inputs.length; inputNdx++) {
-    		symbol	= this.m_inputs[inputNdx];
-    		/*const void* */var ptr = inputs[inputNdx];
-    		/** @type {gluShaderUtil.DataType} */ var basicType	= symbol.varType.getBasicType();
-    		/** @type {number} */ var vecSize = gluShaderUtil.getDataTypeScalarSize(basicType);
+        // Setup inputs.
+        for (var inputNdx = 0; inputNdx < this.m_inputs.length; inputNdx++) {
+            symbol = this.m_inputs[inputNdx];
+            /*const void* */var ptr = inputs[inputNdx];
+            /** @type {gluShaderUtil.DataType} */ var basicType = symbol.varType.getBasicType();
+            /** @type {number} */ var vecSize = gluShaderUtil.getDataTypeScalarSize(basicType);
 
-    		if (gluShaderUtil.isDataTypeFloatOrVec(basicType))
+            if (gluShaderUtil.isDataTypeFloatOrVec(basicType))
                 vertexArrays.push(gluDrawUtil.newFloatVertexArrayBinding(symbol.name, vecSize, numValues, 0, ptr));
-    		else if (gluShaderUtil.isDataTypeIntOrIVec(basicType))
-    			vertexArrays.push(0);//glu::va::Int32(symbol.name, vecSize, numValues, 0, (const deInt32*)ptr));
-    		else if (gluShaderUtil.isDataTypeUintOrUVec(basicType))
-    			vertexArrays.push(0);//glu::va::Uint32(symbol.name, vecSize, numValues, 0, (const deUint32*)ptr));
-    		else if (gluShaderUtil.isDataTypeMatrix(basicType))	{
-    			/** @type {number} */ var numRows	= gluShaderUtil.getDataTypeMatrixNumRows(basicType);
-    			/** @type {number} */ var numCols	= gluShaderUtil.getDataTypeMatrixNumColumns(basicType);
-    			/** @type {number} */ var stride	= numRows * numCols * 4;//sizeof(float);
+            else if (gluShaderUtil.isDataTypeIntOrIVec(basicType))
+                vertexArrays.push(gluDrawUtil.newInt32VertexArrayBinding(symbol.name, vecSize, numValues, 0, ptr));
+            else if (gluShaderUtil.isDataTypeUintOrUVec(basicType))
+                vertexArrays.push(gluDrawUtil.newUint32VertexArrayBinding(symbol.name, vecSize, numValues, 0, ptr));
+            else if (gluShaderUtil.isDataTypeMatrix(basicType)) {
+                /** @type {number} */ var numRows = gluShaderUtil.getDataTypeMatrixNumRows(basicType);
+                /** @type {number} */ var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(basicType);
+                /** @type {number} */ var stride = numRows * numCols * 4;//sizeof(float);
 
-    			for (var colNdx = 0; colNdx < numCols; ++colNdx)
+                for (var colNdx = 0; colNdx < numCols; ++colNdx)
                     vertexArrays.push(gluDrawUtil.newFloatColumnVertexArrayBinding(symbol.name,
                                             colNdx,
                                             numRows,
                                             numValues,
                                             stride,
                                             glsShaderExecUtil.getColumn(ptr, colNdx, numRows * numValues)));
-    		}
-    		else
-    			DE_ASSERT(false);
-    	}
+            } else
+                DE_ASSERT(false);
+        }
 
-    	// Setup TF outputs.
-    	if (useTFObject)
-    		gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);
-    	gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, outputBuffer);
-    	gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, outputBufferStride*numValues, gl.STREAM_READ);
-    	gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, outputBuffer);
+        // Setup TF outputs.
+        if (useTFObject)
+            gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);
+        gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, outputBuffer);
+        gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, outputBufferStride * numValues, gl.STREAM_READ);
+        gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, outputBuffer);
 
-    	// Draw with rasterization disabled.
-    	gl.beginTransformFeedback(gl.POINTS);
-    	gl.enable(gl.RASTERIZER_DISCARD);
-    	gluDrawUtil.draw(gl, this.m_program.getProgram(), vertexArrays,
-    			  new gluDrawUtil.PrimitiveList(gluDrawUtil.primitiveType.POINTS, numValues));
-    	gl.disable(gl.RASTERIZER_DISCARD);
-    	gl.endTransformFeedback();
+        // Draw with rasterization disabled.
+        gl.beginTransformFeedback(gl.POINTS);
+        gl.enable(gl.RASTERIZER_DISCARD);
+        gluDrawUtil.draw(gl, this.m_program.getProgram(), vertexArrays,
+                  new gluDrawUtil.PrimitiveList(gluDrawUtil.primitiveType.POINTS, numValues));
+        gl.disable(gl.RASTERIZER_DISCARD);
+        gl.endTransformFeedback();
 
-    	// Read back data.
+        // Read back data.
         var result = new ArrayBuffer(outputBufferStride * numValues);
         gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, result);
-		  /** @type {number} */ var curOffset	= 0; // Offset in buffer in bytes.
+          /** @type {number} */ var curOffset = 0; // Offset in buffer in bytes.
 
-
-  		for (var outputNdx = 0; outputNdx < this.m_outputs.length; outputNdx++) {
-  			symbol	= this.m_outputs[outputNdx];
-  			/** @type {number} */ var scalarSize	= symbol.varType.getScalarSize();
+          for (var outputNdx = 0; outputNdx < this.m_outputs.length; outputNdx++) {
+              symbol = this.m_outputs[outputNdx];
+              /** @type {number} */ var scalarSize = symbol.varType.getScalarSize();
               /*void* */var dstPtr = new Uint8Array(scalarSize * numValues * 4);
 
-  		  for (var ndx = 0; ndx < numValues; ndx++) {
+            for (var ndx = 0; ndx < numValues; ndx++) {
             for (var j = 0; j < scalarSize * 4; j++) {
                 dstPtr[scalarSize * ndx + j] = result[curOffset + ndx * outputBufferStride + j];
             }
         }
         outputs[outputNdx] = dstPtr;
 
-  			curOffset += scalarSize * 4;
-  		}
+              curOffset += scalarSize * 4;
+          }
 
-    	if (useTFObject)
-    		gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
-    	gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, null);
+        if (useTFObject)
+            gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
+        gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, null);
 
       return outputs;
     };
@@ -556,8 +546,7 @@ glsShaderExecUtil.FragmentShaderExecutor.prototype.getProgram = function() {
  * @param {boolean} useIntOutputs
  * @return {tcuTexture.TextureFormat}
  */
-glsShaderExecUtil.getRenderbufferFormatForOutput = function(outputType, useIntOutputs)
-{
+glsShaderExecUtil.getRenderbufferFormatForOutput = function(outputType, useIntOutputs) {
   var channelOrderMap = [
     tcuTexture.ChannelOrder.R,
     tcuTexture.ChannelOrder.RG,
@@ -569,8 +558,7 @@ glsShaderExecUtil.getRenderbufferFormatForOutput = function(outputType, useIntOu
   var numComps = gluShaderUtil.getDataTypeNumComponents(basicType);
   var channelType;
 
-  switch (gluShaderUtil.getDataTypeScalarType(basicType))
-  {
+  switch (gluShaderUtil.getDataTypeScalarType(basicType)) {
     case 'uint': channelType = tcuTexture.ChannelType.UNSIGNED_INT32; break;
     case 'int': channelType = tcuTexture.ChannelType.SIGNED_INT32; break;
     case 'bool': channelType = tcuTexture.ChannelType.SIGNED_INT32; break;
@@ -615,8 +603,7 @@ glsShaderExecUtil.FragmentShaderExecutor.prototype.execute = function(numValues,
  // Vertex inputs.
  vertexArrays.push(gluDrawUtil.newFloatVertexArrayBinding('a_position', 2, numValues, 0, positions));
 
- for (var inputNdx = 0; inputNdx < this.m_inputs.length; inputNdx++)
- {
+ for (var inputNdx = 0; inputNdx < this.m_inputs.length; inputNdx++) {
    symbol = this.m_inputs[inputNdx];
    var attribName = 'a_' + symbol.name;
    var ptr = inputs[inputNdx];
@@ -625,13 +612,11 @@ glsShaderExecUtil.FragmentShaderExecutor.prototype.execute = function(numValues,
 
    if (gluShaderUtil.isDataTypeFloatOrVec(basicType))
      vertexArrays.push(gluDrawUtil.newFloatVertexArrayBinding(attribName, vecSize, numValues, 0, ptr));
-   //TODO: Add other types
-   // else if (gluShaderUtil.isDataTypeIntOrIVec(basicType))
-   //   vertexArrays.push(glu::va::Int32(attribName, vecSize, numValues, 0, (const deInt32*)ptr));
-   // else if (gluShaderUtil.isDataTypeUintOrUVec(basicType))
-   //   vertexArrays.push(glu::va::Uint32(attribName, vecSize, numValues, 0, (const deUint32*)ptr));
-   else if (gluShaderUtil.isDataTypeMatrix(basicType))
-   {
+   else if (gluShaderUtil.isDataTypeIntOrIVec(basicType))
+        vertexArrays.push(gluDrawUtil.newInt32VertexArrayBinding(attribName, vecSize, numValues, 0, ptr));
+   else if (gluShaderUtil.isDataTypeUintOrUVec(basicType))
+        vertexArrays.push(gluDrawUtil.newUint32VertexArrayBinding(attribName, vecSize, numValues, 0, ptr));
+   else if (gluShaderUtil.isDataTypeMatrix(basicType)) {
         var numRows = gluShaderUtil.getDataTypeMatrixNumRows(basicType);
         var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(basicType);
         var stride = numRows * numCols * 4;
@@ -643,16 +628,14 @@ glsShaderExecUtil.FragmentShaderExecutor.prototype.execute = function(numValues,
                                     numValues,
                                     stride,
                                     glsShaderExecUtil.getColumn(ptr, colNdx, numRows * numValues)));
-   }
-   else
+   } else
         DE_ASSERT(false);
  }
 
  // Construct framebuffer.
  gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
 
- for (var outNdx = 0; outNdx < this.m_outLocationSymbols.length; ++outNdx)
- {
+ for (var outNdx = 0; outNdx < this.m_outLocationSymbols.length; ++outNdx) {
    symbol = this.m_outLocationSymbols[outNdx];
    var renderbuffer = renderbuffers[outNdx];
    var format = gluTextureUtil.getInternalFormat(glsShaderExecUtil.getRenderbufferFormatForOutput(symbol.varType, useIntOutputs));
@@ -678,8 +661,7 @@ glsShaderExecUtil.FragmentShaderExecutor.prototype.execute = function(numValues,
 
    // \todo [2013-08-07 pyry] Some fast-paths could be added here.
 
-   for (var outNdx = 0; outNdx < this.m_outputs.length; ++outNdx)
-   {
+   for (var outNdx = 0; outNdx < this.m_outputs.length; ++outNdx) {
      symbol = this.m_outputs[outNdx];
      /** @type {number} */ var outSize = symbol.varType.getScalarSize();
      /** @type {number} */ var outVecSize = gluShaderUtil.getDataTypeNumComponents(symbol.varType.getBasicType());
@@ -690,19 +672,16 @@ glsShaderExecUtil.FragmentShaderExecutor.prototype.execute = function(numValues,
      /** @type {number} */ var outLocation = this.m_outLocationMap[symbol.name];
      var tmpBuf = new tcuTexture.TextureLevel(readFormat, framebufferW, framebufferH);
 
-     for (var locNdx = 0; locNdx < outNumLocs; ++locNdx)
-     {
+     for (var locNdx = 0; locNdx < outNumLocs; ++locNdx) {
        gl.readBuffer(gl.COLOR_ATTACHMENT0 + outLocation + locNdx);
        gl.readPixels(0, 0, framebufferW, framebufferH, transferFormat.format, transferFormat.dataType, tmpBuf.getAccess().getDataPtr());
 
        if (outSize == 4 && outNumLocs == 1)
          outputs[outNdx] = new Uint8Array(tmpBuf.getAccess().getBuffer());
-       else
-       {
+       else {
          outputs[outNdx] = new Uint32Array(numValues * outVecSize);
          var srcPtr = new Uint32Array(tmpBuf.getAccess().getBuffer());
-         for (var valNdx = 0; valNdx < numValues; valNdx++)
-         {
+         for (var valNdx = 0; valNdx < numValues; valNdx++) {
            var srcOffset = valNdx * 4;
            var dstOffset = outSize * valNdx + outVecSize * locNdx;
            for (var j = 0; j < outVecSize; j++)
@@ -712,13 +691,10 @@ glsShaderExecUtil.FragmentShaderExecutor.prototype.execute = function(numValues,
      }
    }
 
-
  // \todo [2013-08-07 pyry] Clear draw buffers & viewport?
  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
  return outputs;
 };
-
-
 
 glsShaderExecUtil.generateLocationMap = function(symbols, locationSymbols) {
   var ret = [];
@@ -737,6 +713,5 @@ glsShaderExecUtil.generateLocationMap = function(symbols, locationSymbols) {
 
   return ret;
 };
-
 
 });

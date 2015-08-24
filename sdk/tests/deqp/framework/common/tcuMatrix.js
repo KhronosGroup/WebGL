@@ -60,7 +60,39 @@ goog.scope(function() {
         var matrix = new tcuMatrix.Matrix(rows, cols);
         for (var row = 0; row < vector.length; row++)
             for (var col = 0; col < vector.length; col++)
-                matrix.matrix[row][col] = row == col ? vector[row] : 0;
+                matrix.matrix[col][row] = row == col ? vector[row] : 0;
+        return matrix;
+    };
+
+    /**
+     * @param {number} rows
+     * @param {number} cols
+     * @param {Array<number>} src
+     * @return {tcuMatrix.Matrix}
+     */
+    tcuMatrix.matrixFromDataArray = function(rows, cols, src) {
+        var matrix = new tcuMatrix.Matrix(rows, cols);
+        for (var row = 0; row < rows; row++) {
+            for (var col = 0; col < cols; col++) {
+                matrix.matrix[col][row] = src[row * cols + col];
+            }
+        }
+        return matrix;
+    };
+
+    /**
+     * Fill the Matrix with data from array
+     * @param {number} rows
+     * @param {number} cols
+     * @param {Array<number>} array
+     * @return {tcuMatrix.Matrix}
+     */
+    tcuMatrix.matrixFromArray = function(rows, cols, array) {
+        DE_ASSERT(array.length === rows * cols);
+        var matrix = new tcuMatrix.Matrix(rows, cols);
+        for (var row = 0; row < rows; row++)
+            for (var col = 0; col < cols; col++)
+                matrix.matrix[col][row] = array[row * cols + col];
         return matrix;
     };
 
@@ -74,7 +106,17 @@ goog.scope(function() {
             throw new Error('Rows out of range');
         if (values.length > this.cols)
             throw new Error('Too many columns');
-        this.matrix[row] = values;
+        for (var col = 0; col < values.length; col++)
+            this.matrix[col][row] = values[col];
+    };
+
+    tcuMatrix.Matrix.prototype.setCol = function(col, values) {
+        if (!deMath.deInBounds32(col, 0, this.cols))
+            throw new Error('Columns out of range');
+        if (values.length > this.rows)
+            throw new Error('Too many rows');
+        for (var row = 0; row < values.length; row++)
+            this.matrix[col][row] = values[row];
     };
 
     tcuMatrix.Matrix.prototype.get = function(x, y) {
@@ -108,6 +150,32 @@ goog.scope(function() {
      * @param {tcuMatrix.Matrix} matrixA
      * @param {tcuMatrix.Matrix} matrixB
      * @return {tcuMatrix.Matrix}
+     */
+    tcuMatrix.add = function(matrixA, matrixB) {
+        var res = new tcuMatrix.Matrix(matrixA.rows, matrixB.cols);
+        for (var col = 0; col < matrixA.cols; col++)
+            for (var row = 0; row < matrixA.rows; row++)
+                res.set(row, col, matrixA.get(row, col) + matrixB.get(row, col));
+        return res;
+    };
+
+    /**
+     * @param {tcuMatrix.Matrix} matrixA
+     * @param {tcuMatrix.Matrix} matrixB
+     * @return {tcuMatrix.Matrix}
+     */
+    tcuMatrix.subtract = function(matrixA, matrixB) {
+        var res = new tcuMatrix.Matrix(matrixA.rows, matrixB.cols);
+        for (var col = 0; col < matrixA.cols; col++)
+            for (var row = 0; row < matrixA.rows; row++)
+                res.set(row, col, matrixA.get(row, col) - matrixB.get(row, col));
+        return res;
+    };
+
+    /**
+     * @param {tcuMatrix.Matrix} matrixA
+     * @param {tcuMatrix.Matrix} matrixB
+     * @return {tcuMatrix.Matrix}
      * Multiplication of two matrices.
      */
     tcuMatrix.multiply = function(matrixA, matrixB) {
@@ -121,6 +189,19 @@ goog.scope(function() {
                     v += matrixA.get(row, ndx) * matrixB.get(ndx, col);
                 res.set(row, col, v);
             }
+        return res;
+    };
+
+    /**
+     * @param {tcuMatrix.Matrix} matrixA
+     * @param {tcuMatrix.Matrix} matrixB
+     * @return {tcuMatrix.Matrix}
+     */
+    tcuMatrix.divide = function(matrixA, matrixB) {
+        var res = new tcuMatrix.Matrix(matrixA.rows, matrixA.cols);
+        for (var col = 0; col < matrixA.cols; col++)
+            for (var row = 0; row < matrixA.rows; row++)
+                res.set(row, col, matrixA.get(row, col) / matrixB.get(row, col));
         return res;
     };
 
@@ -182,6 +263,73 @@ goog.scope(function() {
     };
 
     /**
+     * @param {tcuMatrix.Matrix} mtx
+     * @param {number} scalar
+     * @return {tcuMatrix.Matrix}
+     */
+    tcuMatrix.subtractMatScal = function(mtx, scalar) {
+        /** @type {tcuMatrix.Matrix} */ var res = new tcuMatrix.Matrix(mtx.rows, mtx.cols);
+        for (var col = 0; col < mtx.cols; col++)
+            for (var row = 0; row < mtx.rows; row++)
+                res.set(row, col, mtx.get(row, col) - scalar);
+
+        return res;
+    };
+
+    /**
+     * @param {tcuMatrix.Matrix} mtx
+     * @param {number} scalar
+     * @return {tcuMatrix.Matrix}
+     */
+    tcuMatrix.addMatScal = function(mtx, scalar) {
+        /** @type {tcuMatrix.Matrix} */ var res = new tcuMatrix.Matrix(mtx.rows, mtx.cols);
+        for (var col = 0; col < mtx.cols; col++)
+            for (var row = 0; row < mtx.rows; row++)
+                res.set(row, col, mtx.get(row, col) + scalar);
+
+        return res;
+    };
+
+    /**
+     * @param {tcuMatrix.Matrix} mtx
+     * @param {number} scalar
+     * @return {tcuMatrix.Matrix}
+     */
+    tcuMatrix.multiplyMatScal = function(mtx, scalar) {
+        /** @type {tcuMatrix.Matrix} */ var res = new tcuMatrix.Matrix(mtx.rows, mtx.cols);
+        for (var col = 0; col < mtx.cols; col++)
+            for (var row = 0; row < mtx.rows; row++)
+                res.set(row, col, mtx.get(row, col) * scalar);
+
+        return res;
+    };
+
+    /**
+     * @param {tcuMatrix.Matrix} mtx
+     * @param {number} scalar
+     * @return {tcuMatrix.Matrix}
+     */
+    tcuMatrix.divideMatScal = function(mtx, scalar) {
+        /** @type {tcuMatrix.Matrix} */ var res = new tcuMatrix.Matrix(mtx.rows, mtx.cols);
+        for (var col = 0; col < mtx.cols; col++)
+            for (var row = 0; row < mtx.rows; row++)
+                res.set(row, col, mtx.get(row, col) / scalar);
+
+        return res;
+    };
+
+    /**
+     * @constructor
+     * @extends {tcuMatrix.Matrix}
+     */
+    tcuMatrix.Mat2 = function() {
+        tcuMatrix.Matrix.call(this, 2, 2);
+    };
+
+    tcuMatrix.Mat2.prototype = Object.create(tcuMatrix.Matrix.prototype);
+    tcuMatrix.Mat2.prototype.constructor = tcuMatrix.Mat2;
+
+    /**
      * @constructor
      * @extends {tcuMatrix.Matrix}
      */
@@ -191,5 +339,16 @@ goog.scope(function() {
 
     tcuMatrix.Mat3.prototype = Object.create(tcuMatrix.Matrix.prototype);
     tcuMatrix.Mat3.prototype.constructor = tcuMatrix.Mat3;
+
+    /**
+     * @constructor
+     * @extends {tcuMatrix.Matrix}
+     */
+    tcuMatrix.Mat4 = function() {
+        tcuMatrix.Matrix.call(this, 4, 4);
+    };
+
+    tcuMatrix.Mat4.prototype = Object.create(tcuMatrix.Matrix.prototype);
+    tcuMatrix.Mat4.prototype.constructor = tcuMatrix.Mat4;
 
 });
