@@ -238,21 +238,16 @@ var getMajorVersion = function(versionString) {
 
 /**
  * @param {string} url Base URL of the test.
- * @param {number} webglVersion Integer containing the WebGL major version.
- * @param {boolean} dumpShaders add dumpShader query parameter if true.
+ * @param {map} options Map of options to append to the URL's query string.
  * @return {string} URL that will run the test with the given WebGL version.
  */
-var getURLWithOptions = function(url, webglVersion, dumpShaders) {
+var getURLWithOptions = function(url, options) {
   var queryArgs = 0;
 
-  if (webglVersion) {
-    url += "?webglVersion=" + webglVersion;
-    queryArgs++;
-  }
-
-  if (dumpShaders) {
+  for (i in options) {
     url += queryArgs ? "&" : "?";
-    url += "dumpShaders=1";
+    url += i + "=" + options[i];
+    queryArgs++;
   }
 
   return url;
@@ -498,6 +493,7 @@ var TestHarness = function(iframe, filelistUrl, reportFunc, options) {
   this.allowSkip = options.allowSkip;
   this.webglVersion = getMajorVersion(options.version);
   this.dumpShaders = options.dumpShaders;
+  this.quiet = options.quiet;
 
   var that = this;
   getFileList(filelistUrl, function() {
@@ -593,10 +589,11 @@ TestHarness.prototype.startTest = function(iframe, testFile, webglVersion) {
   this.runningTests[url] = test;
   log("loading: " + url);
   if (this.reportFunc(TestHarness.reportType.START_PAGE, url, url, undefined)) {
-    if (this.dumpShaders == 1)
-      iframe.src = getURLWithOptions(url, webglVersion, true);
-    else
-      iframe.src = getURLWithOptions(url, webglVersion);
+    iframe.src = getURLWithOptions(url, {
+      "webglVersion": webglVersion,
+      "dumpShaders": this.dumpShaders,
+      "quiet": this.quiet
+    });
     this.setTimeout(test);
   } else {
     this.reportResults(url, !!this.allowSkip, "skipped", true);

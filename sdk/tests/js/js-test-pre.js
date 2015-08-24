@@ -64,6 +64,46 @@
   }
 }());
 
+var getUrlOptions = (function() {
+  var _urlOptionsParsed = false;
+  var _urlOptions = {};
+  return function() {
+    if (!_urlOptionsParsed) {
+      var s = window.location.href;
+      var q = s.indexOf("?");
+      var e = s.indexOf("#");
+      if (e < 0) {
+        e = s.length;
+      }
+      var query = s.substring(q + 1, e);
+      var pairs = query.split("&");
+      for (var ii = 0; ii < pairs.length; ++ii) {
+        var keyValue = pairs[ii].split("=");
+        var key = keyValue[0];
+        var value = decodeURIComponent(keyValue[1]);
+        _urlOptions[key] = value;
+      }
+      _urlOptionsParsed = true;
+    }
+
+    return _urlOptions;
+  }
+})();
+
+if (typeof quietMode == 'undefined') {
+  var quietMode = (function() {
+    var _quietModeChecked = false;
+    var _isQuiet = false;
+    return function() {
+      if (!_quietModeChecked) {
+        _isQuiet = (getUrlOptions().quiet == 1);
+        _quietModeChecked = true;
+      }
+      return _isQuiet;
+    }
+  })();
+}
+
 function nonKhronosFrameworkNotifyDone() {
   // WebKit Specific code. Add your code here.
   if (window.layoutTestController) {
@@ -151,7 +191,8 @@ function _addSpan(contents)
 
 function debug(msg)
 {
-    _addSpan(msg);
+    if (!quietMode())
+      _addSpan(msg);
     if (_jsTestPreVerboseLogging) {
 	_bufferedLogToConsole(msg);
     }
@@ -174,7 +215,9 @@ var TestFailedException = function (message) {
 function testPassed(msg)
 {
     reportTestResultsToHarness(true, msg);
-    _addSpan('<span><span class="pass">PASS</span> ' + escapeHTML(msg) + '</span>');
+
+    if (!quietMode())
+      _addSpan('<span><span class="pass">PASS</span> ' + escapeHTML(msg) + '</span>');
     if (_jsTestPreVerboseLogging) {
 	_bufferedLogToConsole('PASS ' + msg);
     }
@@ -215,7 +258,7 @@ function getCurrentTestName()
  */
 function testPassedOptions(msg, addSpan)
 {
-    if (addSpan)
+    if (addSpan && !quietMode())
 	{
         reportTestResultsToHarness(true, _currentTestName + ": " + msg);
         _addSpan('<span><span class="pass">PASS</span> ' + escapeHTML(_currentTestName) + ": " + escapeHTML(msg) + '</span>');

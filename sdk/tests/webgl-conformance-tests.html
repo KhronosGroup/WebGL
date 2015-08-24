@@ -171,7 +171,8 @@ var OPTIONS = {
   version: DEFAULT_CONFORMANCE_TEST_VERSION,
   frames: 1,
   allowSkip: 0,
-  root: null
+  root: null,
+  quiet: 0
 };
 
 var testVersions = [
@@ -257,7 +258,10 @@ function start() {
     }
     div.appendChild(button);
     var a = reporter.localDoc.createElement('a');
-    a.href = WebGLTestHarnessModule.getURLWithOptions(url, reporter.selectedWebGLVersion);
+    a.href = WebGLTestHarnessModule.getURLWithOptions(url, {
+      webglVersion: reporter.selectedWebGLVersion,
+      quiet: OPTIONS.quiet
+    });
     a.target = "_blank";
     var node = reporter.localDoc.createTextNode(url);
     a.appendChild(node);

@@ -139,7 +139,8 @@ function runOneTest(gl, info) {
   var vSource = info.vShaderPrep ? info.vShaderPrep(info.vShaderSource) :
     info.vShaderSource;
 
-  wtu.addShaderSource(consoleDiv, vLabel, vSource);
+  if (!quietMode())
+    wtu.addShaderSource(consoleDiv, vLabel, vSource);
 
   // Reuse identical shaders so we test shared shader.
   var vShader = vShaderDB[vSource];
@@ -164,7 +165,7 @@ function runOneTest(gl, info) {
   }
 
   var debugShaders = gl.getExtension('WEBGL_debug_shaders');
-  if (debugShaders && vShader) {
+  if (debugShaders && vShader && !quietMode()) {
     wtu.addShaderSource(consoleDiv, vLabel + " translated for driver",
                         debugShaders.getTranslatedShaderSource(vShader));
   }
@@ -172,7 +173,8 @@ function runOneTest(gl, info) {
   var fSource = info.fShaderPrep ? info.fShaderPrep(info.fShaderSource) :
     info.fShaderSource;
 
-  wtu.addShaderSource(consoleDiv, fLabel, fSource);
+  if (!quietMode())
+    wtu.addShaderSource(consoleDiv, fLabel, fSource);
 
   // Reuse identical shaders so we test shared shader.
   var fShader = fShaderDB[fSource];
@@ -199,7 +201,7 @@ function runOneTest(gl, info) {
     }
   }
 
-  if (debugShaders && fShader) {
+  if (debugShaders && fShader && !quietMode()) {
     wtu.addShaderSource(consoleDiv, fLabel + " translated for driver",
                         debugShaders.getTranslatedShaderSource(fShader));
   }
