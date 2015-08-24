@@ -1374,6 +1374,36 @@ var hasAttributeCaseInsensitive = function(obj, attr) {
   }
 };
 
+/**   
+ * Returns a map of URL querystring options    
+ * @return {Object?} Object containing all the values in the URL querystring   
+ */
+var getUrlOptions = (function() {
+  var _urlOptionsParsed = false;
+  var _urlOptions = {};
+  return function() {
+    if (!_urlOptionsParsed) {
+      var s = window.location.href;
+      var q = s.indexOf("?");
+      var e = s.indexOf("#");
+      if (e < 0) {
+        e = s.length;
+      }
+      var query = s.substring(q + 1, e);
+      var pairs = query.split("&");
+      for (var ii = 0; ii < pairs.length; ++ii) {
+        var keyValue = pairs[ii].split("=");
+        var key = keyValue[0];
+        var value = decodeURIComponent(keyValue[1]);
+        _urlOptions[key] = value;
+      }
+      _urlOptionsParsed = true;
+    }
+
+    return _urlOptions;
+  }
+})();
+
 var default3DContextVersion = 1;
 
 /**
