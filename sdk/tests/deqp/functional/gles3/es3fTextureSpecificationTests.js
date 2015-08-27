@@ -7258,12 +7258,15 @@ goog.scope(function() {
     /**
     * Run test
     * @param {WebGL2RenderingContext} context
+    * @param {Array<number>=} range Test range
     */
-    es3fTextureSpecificationTests.run = function(context) {
+    es3fTextureSpecificationTests.run = function(context, range) {
         gl = context;
         //Set up Test Root parameters
         var state = tcuTestCase.runner;
         state.setRoot(new es3fTextureSpecificationTests.TextureSpecificationTests());
+        if (range)
+            state.setRange(range);
 
         //Set up name and description of this test series.
         setCurrentTestName(state.testCases.fullName());

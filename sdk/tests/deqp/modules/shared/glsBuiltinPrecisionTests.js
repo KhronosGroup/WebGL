@@ -193,7 +193,7 @@ var setParentClass = function(child, parent) {
      * @param {*} value
      */
     glsBuiltinPrecisionTests.Environment.prototype.bind = function(variable, value) {
-        this.m_map[variable.getName()] = deUtil.clone(value);
+        this.m_map[variable.getName()] = value;
     };
 
     /**

@@ -78,6 +78,10 @@ goog.scope(function() {
         this.testCases = root;
     };
 
+    tcuTestCase.Runner.prototype.setRange = function(range) {
+        this.range = range;
+    };
+
     /**
     * Searches the test tree for the next executable test
     * @return {?tcuTestCase.DeqpTest }
@@ -97,7 +101,10 @@ goog.scope(function() {
         if (tcuTestCase.lastResult == tcuTestCase.IterateResult.STOP) {
             // Look for next executable test
             do {
-                this.currentTest = this.currentTest.next(this.filter);
+                if (this.range)
+                    this.currentTest = this.currentTest.nextInRange(this.filter, this.range);
+                else
+                    this.currentTest = this.currentTest.next(this.filter);
             } while (this.currentTest && !this.currentTest.isExecutable());
         }
 
@@ -229,6 +236,26 @@ goog.scope(function() {
 
         return test;
     };
+
+    /**
+    * Returns the next test in the hierarchy of tests
+    * whose 1st level is in the given range
+    *
+    * @param {?string } pattern Optional pattern to search for
+    * @param {Array<number>} range
+    * @return {tcuTestCase.DeqpTest}
+    */
+    tcuTestCase.DeqpTest.prototype.nextInRange = function(pattern, range) {
+        while(true) {
+            var test = this.next(pattern);
+            if (!test)
+                return null;
+            var topLevelId = tcuTestCase.runner.testCases.currentTestNdx - 1;
+            if (topLevelId >= range[0] && topLevelId < range[1])
+                return test;
+        }
+    };
+
 
     /**
     * Returns the full name of the test
