@@ -288,14 +288,14 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
         fShaderSource: wtu.replaceParams(shaderType.fragUniformTest, generateCodeArray(), info),
         fShaderSuccess: true,
         linkSuccess: true,
-        passMsg: shaderType.type + " shader with " + maxPerRow + "uniform arrays of " + info.type + " with " + itemcount + " elements should succeed",
+        passMsg: shaderType.type + " shader with " + maxPerRow + " uniform arrays of " + info.type + " with " + itemcount + " elements should succeed",
       });
       
       for (var ut = ii + 1 ; ut < uniformTypes.length; ++ut) { 
         var info2 = uniformTypes[ut];
         if (info.componentsPerRow + info2.componentsPerRow <= 4){
           
-          var itemcount2 = Math.max(Math.floor(shaderType.maxVectors / info2.rows / 2) + 1, minVars ); 
+          var itemcount2 = Math.max(Math.floor(shaderType.maxVectors / info2.rows / 2) + 1, Math.floor(minVars / info2.rows) ); 
 
           var generateCodeDifferentTypes= function() {
             var uniforms = [];
