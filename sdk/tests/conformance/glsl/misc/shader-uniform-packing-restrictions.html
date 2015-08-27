@@ -265,10 +265,11 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
     
     if (maxPerRow > 1) {
       
+      var itemcount = Math.max(Math.floor(shaderType.maxVectors / 2) + 1, minVars ); 
+      
       var generateCodeArray = function() {
         var uniforms = [];
         var sumTerms = [];
-        var itemcount = Math.max(Math.floor(shaderType.maxVectors / maxPerRow) + 1, minVars ); 
         for (var uu = 0; uu < maxPerRow; ++uu) {
           uniforms.push("    uniform " + info.type + " u_uniform" + uu + "[" + itemcount + "];");
           sumTerms.push(wtu.replaceParams(info.uniToF, {id: uu, index: "[" + (itemcount - 1) + "]"}));
@@ -280,25 +281,20 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
         };
       };
       
-      // Test required uniforms of type.
+      // Test if multiple arrays of one type are being packed
       tests.push({
         vShaderSource: wtu.replaceParams(shaderType.vertUniformTest, generateCodeArray(), info),
         vShaderSuccess: true,
         fShaderSource: wtu.replaceParams(shaderType.fragUniformTest, generateCodeArray(), info),
         fShaderSuccess: true,
         linkSuccess: true,
-        passMsg: shaderType.type + " shader with " + maxPerRow + "uniform arrays of " + info.type + " with " + (Math.floor(shaderType.maxVectors / maxPerRow) + 1) + " elements should succeed",
+        passMsg: shaderType.type + " shader with " + maxPerRow + "uniform arrays of " + info.type + " with " + itemcount + " elements should succeed",
       });
       
       for (var ut = ii + 1 ; ut < uniformTypes.length; ++ut) { 
         var info2 = uniformTypes[ut];
         if (info.componentsPerRow + info2.componentsPerRow <= 4){
-          // Compute the minimum required to work in a single array.
-          var minVars2 = Math.floor(shaderType.minVectors / info2.rows);
-          // Compute the maximum allowed as single elements
-          var maxPerRow2 = Math.floor(4 / info.componentsPerRow);
           
-          var itemcount = Math.max(Math.floor(shaderType.maxVectors / info.rows / 2) + 1, minVars ); 
           var itemcount2 = Math.max(Math.floor(shaderType.maxVectors / info2.rows / 2) + 1, minVars ); 
 
           var generateCodeDifferentTypes= function() {
@@ -319,7 +315,7 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
             };
           };
           
-          // Test required uniforms of type.
+          // Test if multiple arrays of multiple type are being packed
           tests.push({
             vShaderSource: wtu.replaceParams(shaderType.vertUniformTest, generateCodeDifferentTypes(), info),
             vShaderSuccess: true,
