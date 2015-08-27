@@ -213,7 +213,6 @@ goog.scope(function() {
 
         // Create program.
         this.m_program = es3fShaderPrecisionTests.createFloatPrecisionEvalProgram(this.m_precision, this.m_op, this.m_isVertexCase);
-        bufferedLogToConsole(this.m_program.getProgramInfo().infoLog);
 
 		if (!this.m_program.isOk())
 			assertMsgOptions(false, 'Compile failed', false, true);
@@ -441,8 +440,6 @@ goog.scope(function() {
 		// Create program.
 		this.m_program = es3fShaderPrecisionTests.createIntUintPrecisionEvalProgram(gluShaderUtil.DataType.INT, this.m_precision, this.m_op, this.m_isVertexCase);
 
-		bufferedLogToConsole(this.m_program.getProgramInfo().infoLog);
-
 		if (!this.m_program.isOk())
 			assertMsgOptions(false, 'Compile failed', false, true);
 
@@ -482,7 +479,7 @@ goog.scope(function() {
 	 */
 
 	es3fShaderPrecisionTests.extendTo32Bit = function(value, bits) {
-		return (value & ((1 << (bits - 1)) - 1)) | deMath.shiftRight(((value & (1 << (bits - 1))) << (32 - bits)), (32 - bits));
+		return (value & ((1 << (bits - 1)) - 1)) | ((value & (1 << (bits - 1))) << (32 - bits)) >> (32 - bits);
 	};
 
 	/**
@@ -521,8 +518,8 @@ goog.scope(function() {
 
 		// Compute values and reference.
 		for (var testNdx = 0; testNdx < this.m_numTestsPerIter; testNdx++) {
-			/** @type {number} */ var in0 = es3fShaderPrecisionTests.extendTo32Bit(((isMaxRangeA ? Math.abs(this.m_rnd.getInt()) : this.m_rnd.getInt(this.m_rangeA[0], this.m_rangeA[1])) & mask), this.m_bits);
-			/** @type {number} */ var in1 = es3fShaderPrecisionTests.extendTo32Bit(((isMaxRangeB ? Math.abs(this.m_rnd.getInt()) : this.m_rnd.getInt(this.m_rangeB[0], this.m_rangeB[1])) & mask), this.m_bits);
+			/** @type {number} */ var in0 = this.m_rnd.getInt(this.m_rangeA[0], this.m_rangeA[1]); //es3fShaderPrecisionTests.extendTo32Bit(((isMaxRangeA ? Math.abs(this.m_rnd.getInt()) : this.m_rnd.getInt(this.m_rangeA[0], this.m_rangeA[1])) & mask), this.m_bits);
+			/** @type {number} */ var in1 = this.m_rnd.getInt(this.m_rangeB[0], this.m_rangeB[1]); //es3fShaderPrecisionTests.extendTo32Bit(((isMaxRangeB ? Math.abs(this.m_rnd.getInt()) : this.m_rnd.getInt(this.m_rangeB[0], this.m_rangeB[1])) & mask), this.m_bits);
 			/** @type {number} */ var refMasked = this.m_evalFunc(in0, in1) & mask;
 			/** @type {number} */ var refOut = es3fShaderPrecisionTests.extendTo32Bit(refMasked, this.m_bits);
 
@@ -613,8 +610,6 @@ goog.scope(function() {
 		assertMsgOptions(!this.m_program && !this.m_framebuffer && !this.m_renderbuffer, 'Program/Framebuffer/Renderbuffer should be null at this point.', false, true);
 		// Create program.
 		this.m_program = es3fShaderPrecisionTests.createIntUintPrecisionEvalProgram(gluShaderUtil.DataType.UINT, this.m_precision, this.m_op, this.m_isVertexCase);
-
-		bufferedLogToConsole(this.m_program.getProgramInfo().infoLog);
 
 		if (!this.m_program.isOk())
 			assertMsgOptions(false, 'Compile failed', false, true);
@@ -754,14 +749,14 @@ goog.scope(function() {
 
         // /** @type {number} */ var minF16 = tcuFloat.newFloat16(((1 << 15) | (0x1d << 10) | 0x0)).getValue();
         // /** @type {number} */ var maxF16 = tcuFloat.newFloat16(((0 << 15) | (0x1d << 10) | 0x0)).getValue();
-        /** @type {number} */ var minF16 = -1 << 14; // 1 << 15 | 0x1d | 0x0 == 0b1111010000000000; -1 * (2**(29-15)) * 1
-        /** @type {number} */ var maxF16 = 1 << 14; // 0 << 15 | 0x1d | 0x0 == 0b0111010000000000; +1 * (2**(29-15)) * 1
+        /** @type {number} */ var minF16 = -16384; //-1 << 14; // 1 << 15 | 0x1d | 0x0 == 0b1111010000000000; -1 * (2**(29-15)) * 1
+        /** @type {number} */ var maxF16 = 16384; //1 << 14; // 0 << 15 | 0x1d | 0x0 == 0b0111010000000000; +1 * (2**(29-15)) * 1
 
 		/** @type {Array<number>} */ var fullRange32F = [minF32, maxF32];
         /** @type {Array<number>} */ var fullRange16F = [minF16, maxF16];
-        /** @type {Array<number>} */ var fullRange32I = [0x80000000, 0x7fffffff];
-        /** @type {Array<number>} */ var fullRange16I = [-(1 << 15), (1 << 15) - 1];
-        /** @type {Array<number>} */ var fullRange8I = [-(1 << 7), (1 << 7) - 1];
+        /** @type {Array<number>} */ var fullRange32I = [-2147483648, 2147483647]; // [0x80000000|0, 0x7fffffff|0]; // |0 to force the number as a 32-bit integer
+        /** @type {Array<number>} */ var fullRange16I = [minF16, maxF16 - 1]; //[-(1 << 15), (1 << 15) - 1]; // Added the negative sign to index 0
+        /** @type {Array<number>} */ var fullRange8I = [-128, 127]; //[-(1 << 7), (1 << 7) - 1]; // Added the negative sign to index 0
         /** @type {Array<number>} */ var fullRange32U = [0, 0xffffffff];
         /** @type {Array<number>} */ var fullRange16U = [0, 0xffff];
         /** @type {Array<number>} */ var fullRange8U = [0, 0xff];

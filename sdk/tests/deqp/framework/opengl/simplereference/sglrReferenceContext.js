@@ -1461,7 +1461,7 @@ goog.scope(function() {
      * @param {boolean} condition
      * @param {number} error
      */
-    sglrReferenceContext.ReferenceContext.prototype.condtionalSetError = function(condition, error) {
+    sglrReferenceContext.ReferenceContext.prototype.conditionalSetError = function(condition, error) {
         if (condition)
             this.setError(error);
         return condition;
@@ -1475,7 +1475,7 @@ goog.scope(function() {
     sglrReferenceContext.ReferenceContext.prototype.bindTexture = function(target, texture) {
         /** @type {number} */ var unitNdx = this.m_activeTexture;
 
-        if (this.condtionalSetError((target != gl.TEXTURE_2D &&
+        if (this.conditionalSetError((target != gl.TEXTURE_2D &&
                     target != gl.TEXTURE_CUBE_MAP &&
                     target != gl.TEXTURE_2D_ARRAY &&
                     target != gl.TEXTURE_3D), // &&
@@ -1506,7 +1506,7 @@ goog.scope(function() {
                     case gl.TEXTURE_3D: expectedType = sglrReferenceContext.TextureType.TYPE_3D; break;
                     default: throw new Error('Unrecognized target: ' + target);
                 }
-                if (this.condtionalSetError((texture.textureType != expectedType), gl.INVALID_OPERATION))
+                if (this.conditionalSetError((texture.textureType != expectedType), gl.INVALID_OPERATION))
                     return;
             }
             switch (target) {
@@ -1597,7 +1597,7 @@ goog.scope(function() {
     * @param {framework.opengl.simplereference.sglrReferenceContext.Framebuffer} fbo
     */
     sglrReferenceContext.ReferenceContext.prototype.bindFramebuffer = function(target, fbo) {
-        if (this.condtionalSetError((target != gl.FRAMEBUFFER &&
+        if (this.conditionalSetError((target != gl.FRAMEBUFFER &&
                     target != gl.DRAW_FRAMEBUFFER &&
                     target != gl.READ_FRAMEBUFFER), gl.INVALID_ENUM))
                     return;
@@ -1629,7 +1629,7 @@ goog.scope(function() {
     * @param {sglrReferenceContext.Renderbuffer} rbo
     */
     sglrReferenceContext.ReferenceContext.prototype.bindRenderbuffer = function(target, rbo) {
-        if (this.condtionalSetError(target != gl.RENDERBUFFER, gl.INVALID_ENUM))
+        if (this.conditionalSetError(target != gl.RENDERBUFFER, gl.INVALID_ENUM))
             return;
 
         this.m_renderbufferBinding = rbo;
@@ -1652,37 +1652,37 @@ goog.scope(function() {
     sglrReferenceContext.ReferenceContext.prototype.pixelStorei = function(pname, param) {
         switch (pname) {
             case gl.UNPACK_ALIGNMENT:
-                if (this.condtionalSetError((param != 1 && param != 2 && param != 4 && param != 8), gl.INVALID_VALUE)) return;
+                if (this.conditionalSetError((param != 1 && param != 2 && param != 4 && param != 8), gl.INVALID_VALUE)) return;
                 this.m_pixelUnpackAlignment = param;
                 break;
 
             case gl.PACK_ALIGNMENT:
-                if (this.condtionalSetError((param != 1 && param != 2 && param != 4 && param != 8), gl.INVALID_VALUE)) return;
+                if (this.conditionalSetError((param != 1 && param != 2 && param != 4 && param != 8), gl.INVALID_VALUE)) return;
                 this.m_pixelPackAlignment = param;
                 break;
 
             case gl.UNPACK_ROW_LENGTH:
-                if (this.condtionalSetError(param < 0, gl.INVALID_VALUE)) return;
+                if (this.conditionalSetError(param < 0, gl.INVALID_VALUE)) return;
                 this.m_pixelUnpackRowLength = param;
                 break;
 
             case gl.UNPACK_SKIP_ROWS:
-                if (this.condtionalSetError(param < 0, gl.INVALID_VALUE)) return;
+                if (this.conditionalSetError(param < 0, gl.INVALID_VALUE)) return;
                 this.m_pixelUnpackSkipRows = param;
                 break;
 
             case gl.UNPACK_SKIP_PIXELS:
-                if (this.condtionalSetError(param < 0, gl.INVALID_VALUE)) return;
+                if (this.conditionalSetError(param < 0, gl.INVALID_VALUE)) return;
                 this.m_pixelUnpackSkipPixels = param;
                 break;
 
             case gl.UNPACK_IMAGE_HEIGHT:
-                if (this.condtionalSetError(param < 0, gl.INVALID_VALUE)) return;
+                if (this.conditionalSetError(param < 0, gl.INVALID_VALUE)) return;
                 this.m_pixelUnpackImageHeight = param;
                 break;
 
             case gl.UNPACK_SKIP_IMAGES:
-                if (this.condtionalSetError(param < 0, gl.INVALID_VALUE)) return;
+                if (this.conditionalSetError(param < 0, gl.INVALID_VALUE)) return;
                 this.m_pixelUnpackSkipImages = param;
                 break;
 
@@ -1725,7 +1725,7 @@ goog.scope(function() {
     * @param {number} height
     */
     sglrReferenceContext.ReferenceContext.prototype.scissor = function(x, y, width, height) {
-        if (this.condtionalSetError(width < 0 || height < 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(width < 0 || height < 0, gl.INVALID_VALUE))
             return;
         this.m_scissorBox = [x, y, width, height];
     };
@@ -1791,9 +1791,9 @@ goog.scope(function() {
         /** @type {boolean} */ var setFront = face == gl.FRONT || face == gl.FRONT_AND_BACK;
         /** @type {boolean} */ var setBack = face == gl.BACK || face == gl.FRONT_AND_BACK;
 
-        if (this.condtionalSetError(!sglrReferenceContext.isValidCompareFunc(func), gl.INVALID_ENUM))
+        if (this.conditionalSetError(!sglrReferenceContext.isValidCompareFunc(func), gl.INVALID_ENUM))
             return;
-        if (this.condtionalSetError(!setFront && !setBack, gl.INVALID_ENUM))
+        if (this.conditionalSetError(!setFront && !setBack, gl.INVALID_ENUM))
             return;
 
         for (var key in rrDefs.FaceType) {
@@ -1868,13 +1868,13 @@ goog.scope(function() {
         /** @type {boolean} */ var setFront = face == gl.FRONT || face == gl.FRONT_AND_BACK;
         /** @type {boolean} */ var setBack = face == gl.BACK || face == gl.FRONT_AND_BACK;
 
-        if (this.condtionalSetError((!sglrReferenceContext.isValidStencilOp(sfail) ||
+        if (this.conditionalSetError((!sglrReferenceContext.isValidStencilOp(sfail) ||
                     !sglrReferenceContext.isValidStencilOp(dpfail) ||
                     !sglrReferenceContext.isValidStencilOp(dppass)),
                     gl.INVALID_ENUM))
             return;
 
-        if (this.condtionalSetError(!setFront && !setBack, gl.INVALID_ENUM))
+        if (this.conditionalSetError(!setFront && !setBack, gl.INVALID_ENUM))
             return;
 
     for (var key in rrDefs.FaceType) {
@@ -1892,7 +1892,7 @@ goog.scope(function() {
     * @param {number} func
     */
     sglrReferenceContext.ReferenceContext.prototype.depthFunc = function(func) {
-        if (this.condtionalSetError(!sglrReferenceContext.isValidCompareFunc(func), gl.INVALID_ENUM))
+        if (this.conditionalSetError(!sglrReferenceContext.isValidCompareFunc(func), gl.INVALID_ENUM))
             return;
         this.m_depthFunc = func;
     };
@@ -1959,7 +1959,7 @@ goog.scope(function() {
     * @param {number} mode
     */
     sglrReferenceContext.ReferenceContext.prototype.blendEquation = function(mode) {
-        if (this.condtionalSetError(!sglrReferenceContext.isValidBlendEquation(mode), gl.INVALID_ENUM))
+        if (this.conditionalSetError(!sglrReferenceContext.isValidBlendEquation(mode), gl.INVALID_ENUM))
             return;
         this.m_blendModeRGB = mode;
         this.m_blendModeAlpha = mode;
@@ -1970,7 +1970,7 @@ goog.scope(function() {
     * @param {number} modeAlpha
     */
     sglrReferenceContext.ReferenceContext.prototype.blendEquationSeparate = function(modeRGB, modeAlpha) {
-        if (this.condtionalSetError(!sglrReferenceContext.isValidBlendEquation(modeRGB) ||
+        if (this.conditionalSetError(!sglrReferenceContext.isValidBlendEquation(modeRGB) ||
                     !sglrReferenceContext.isValidBlendEquation(modeAlpha),
                     gl.INVALID_ENUM))
             return;
@@ -1984,7 +1984,7 @@ goog.scope(function() {
     * @param {number} dst
     */
     sglrReferenceContext.ReferenceContext.prototype.blendFunc = function(src, dst) {
-        if (this.condtionalSetError(!sglrReferenceContext.isValidBlendFactor(src) ||
+        if (this.conditionalSetError(!sglrReferenceContext.isValidBlendFactor(src) ||
                     !sglrReferenceContext.isValidBlendFactor(dst),
                     gl.INVALID_ENUM))
             return;
@@ -2002,7 +2002,7 @@ goog.scope(function() {
     * @param {number} dstAlpha
     */
     sglrReferenceContext.ReferenceContext.prototype.blendFuncSeparate = function(srcRGB, dstRGB, srcAlpha, dstAlpha) {
-        if (this.condtionalSetError(!sglrReferenceContext.isValidBlendFactor(srcRGB) ||
+        if (this.conditionalSetError(!sglrReferenceContext.isValidBlendFactor(srcRGB) ||
                     !sglrReferenceContext.isValidBlendFactor(dstRGB) ||
                     !sglrReferenceContext.isValidBlendFactor(srcAlpha) ||
                     !sglrReferenceContext.isValidBlendFactor(dstAlpha),
@@ -2060,7 +2060,7 @@ goog.scope(function() {
         /** @type {boolean} */ var setFront = face == gl.FRONT || face == gl.FRONT_AND_BACK;
         /** @type {boolean} */ var setBack = face == gl.BACK || face == gl.FRONT_AND_BACK;
 
-        if (this.condtionalSetError(!setFront && !setBack, gl.INVALID_ENUM))
+        if (this.conditionalSetError(!setFront && !setBack, gl.INVALID_ENUM))
             return;
 
         if (setFront) this.m_stencil[rrDefs.FaceType.FACETYPE_FRONT].writeMask = mask;
@@ -2099,23 +2099,23 @@ goog.scope(function() {
         /** @type {boolean} */ var allowBGRA = false;
         /** @type {number} */ var effectiveSize = rawSize;
 
-        if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
+        if (this.conditionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
             return;
-        if (this.condtionalSetError(effectiveSize <= 0 || effectiveSize > 4, gl.INVALID_VALUE))
+        if (this.conditionalSetError(effectiveSize <= 0 || effectiveSize > 4, gl.INVALID_VALUE))
             return;
-        if (this.condtionalSetError(type != gl.BYTE && type != gl.UNSIGNED_BYTE &&
+        if (this.conditionalSetError(type != gl.BYTE && type != gl.UNSIGNED_BYTE &&
                     type != gl.SHORT && type != gl.UNSIGNED_SHORT &&
                     type != gl.INT && type != gl.UNSIGNED_INT &&
                     type != gl.FLOAT && type != gl.HALF_FLOAT &&
                     type != gl.INT_2_10_10_10_REV && type != gl.UNSIGNED_INT_2_10_10_10_REV, gl.INVALID_ENUM))
             return;
-        if (this.condtionalSetError(normalized != true && normalized != false, gl.INVALID_ENUM))
+        if (this.conditionalSetError(normalized != true && normalized != false, gl.INVALID_ENUM))
             return;
-        if (this.condtionalSetError(stride < 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(stride < 0, gl.INVALID_VALUE))
             return;
-        if (this.condtionalSetError((type == gl.INT_2_10_10_10_REV || type == gl.UNSIGNED_INT_2_10_10_10_REV) && effectiveSize != 4, gl.INVALID_OPERATION))
+        if (this.conditionalSetError((type == gl.INT_2_10_10_10_REV || type == gl.UNSIGNED_INT_2_10_10_10_REV) && effectiveSize != 4, gl.INVALID_OPERATION))
             return;
-        if (this.condtionalSetError(this.m_vertexArrayBinding != null && this.m_arrayBufferBinding == null && offset != 0, gl.INVALID_OPERATION))
+        if (this.conditionalSetError(this.m_vertexArrayBinding != null && this.m_arrayBufferBinding == null && offset != 0, gl.INVALID_OPERATION))
             return;
 
         /** @type {?(sglrReferenceContext.VertexArray.VertexAttribArray)} */ var array_ = this.m_vertexArrayBinding.m_arrays[index]; // TODO: fix type
@@ -2138,17 +2138,17 @@ goog.scope(function() {
     * @param {number} offset
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttribIPointer = function(index, size, type, stride, offset) {
-        if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
+        if (this.conditionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
             return;
-        if (this.condtionalSetError(size <= 0 || size > 4, gl.INVALID_VALUE))
+        if (this.conditionalSetError(size <= 0 || size > 4, gl.INVALID_VALUE))
             return;
-        if (this.condtionalSetError(type != gl.BYTE && type != gl.UNSIGNED_BYTE &&
+        if (this.conditionalSetError(type != gl.BYTE && type != gl.UNSIGNED_BYTE &&
                     type != gl.SHORT && type != gl.UNSIGNED_SHORT &&
                     type != gl.INT && type != gl.UNSIGNED_INT, gl.INVALID_ENUM))
             return;
-        if (this.condtionalSetError(stride < 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(stride < 0, gl.INVALID_VALUE))
             return;
-        if (this.condtionalSetError(this.m_vertexArrayBinding != null && this.m_arrayBufferBinding == null && offset != 0, gl.INVALID_OPERATION))
+        if (this.conditionalSetError(this.m_vertexArrayBinding != null && this.m_arrayBufferBinding == null && offset != 0, gl.INVALID_OPERATION))
             return;
 
         /** @type {?(sglrReferenceContext.VertexArray.VertexAttribArray)} */ var array_ = this.m_vertexArrayBinding.m_arrays[index]; // TODO: fix type
@@ -2167,7 +2167,7 @@ goog.scope(function() {
     * @param {number} index
     */
     sglrReferenceContext.ReferenceContext.prototype.enableVertexAttribArray = function(index) {
-        if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
+        if (this.conditionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
             return;
 
         this.m_vertexArrayBinding.m_arrays[index].enabled = true;
@@ -2177,7 +2177,7 @@ goog.scope(function() {
     * @param {number} index
     */
     sglrReferenceContext.ReferenceContext.prototype.disableVertexAttribArray = function(index) {
-        if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
+        if (this.conditionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
             return;
 
         this.m_vertexArrayBinding.m_arrays[index].enabled = false;
@@ -2188,7 +2188,7 @@ goog.scope(function() {
     * @param {number} divisor
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttribDivisor = function(index, divisor) {
-        if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
+        if (this.conditionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
             return;
 
         this.m_vertexArrayBinding.m_arrays[index].divisor = divisor;
@@ -2199,7 +2199,7 @@ goog.scope(function() {
     * @param {number} x
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttrib1f = function(index, x) {
-        if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
+        if (this.conditionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
             return;
 
         this.m_currentAttribs[index] = new rrGenericVector.GenericVec4(x, 0, 0, 1);
@@ -2211,7 +2211,7 @@ goog.scope(function() {
     * @param {number} y
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttrib2f = function(index, x, y) {
-        if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
+        if (this.conditionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
             return;
 
         this.m_currentAttribs[index] = new rrGenericVector.GenericVec4(x, y, 0, 1);
@@ -2224,7 +2224,7 @@ goog.scope(function() {
     * @param {number} z
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttrib3f = function(index, x, y, z) {
-        if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
+        if (this.conditionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
             return;
 
         this.m_currentAttribs[index] = new rrGenericVector.GenericVec4(x, y, z, 1);
@@ -2238,7 +2238,7 @@ goog.scope(function() {
     * @param {number} w
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttrib4f = function(index, x, y, z, w) {
-        if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
+        if (this.conditionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
             return;
 
         this.m_currentAttribs[index] = new rrGenericVector.GenericVec4(x, y, z, w);
@@ -2252,7 +2252,7 @@ goog.scope(function() {
     * @param {number} w
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttribI4i = function(index, x, y, z, w) {
-        if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
+        if (this.conditionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
             return;
 
         this.m_currentAttribs[index] = new rrGenericVector.GenericVec4(x, y, z, w);
@@ -2266,7 +2266,7 @@ goog.scope(function() {
     * @param {number} w
     */
     sglrReferenceContext.ReferenceContext.prototype.vertexAttribI4ui = function(index, x, y, z, w) {
-        if (this.condtionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
+        if (this.conditionalSetError(index >= this.m_limits.maxVertexAttribs, gl.INVALID_VALUE))
             return;
 
         this.m_currentAttribs[index] = new rrGenericVector.GenericVec4(x, y, z, w);
@@ -2278,7 +2278,7 @@ goog.scope(function() {
     * @return {number}
     */
     sglrReferenceContext.ReferenceContext.prototype.getAttribLocation = function(program, name) {
-        if (this.condtionalSetError(!(program), gl.INVALID_OPERATION))
+        if (this.conditionalSetError(!(program), gl.INVALID_OPERATION))
             return -1;
 
         for (var i = 0; i < program.m_attributeNames.length; i++)
@@ -2294,7 +2294,7 @@ goog.scope(function() {
     * @param {Array<number>} value
     */
     sglrReferenceContext.ReferenceContext.prototype.uniformValue = function(location, type, value) {
-        if (this.condtionalSetError(!this.m_currentProgram, gl.INVALID_OPERATION))
+        if (this.conditionalSetError(!this.m_currentProgram, gl.INVALID_OPERATION))
             return;
 
         if (location === null)
@@ -2302,13 +2302,13 @@ goog.scope(function() {
 
         /** @type {sglrShaderProgram.Uniform} */ var uniform = this.m_currentProgram.m_uniforms[location];
 
-        if (this.condtionalSetError(!uniform, gl.INVALID_OPERATION))
+        if (this.conditionalSetError(!uniform, gl.INVALID_OPERATION))
             return;
 
         if (gluShaderUtil.isDataTypeSampler(uniform.type)) {
-            if (this.condtionalSetError(type != gluShaderUtil.DataType.INT, gl.INVALID_OPERATION))
+            if (this.conditionalSetError(type != gluShaderUtil.DataType.INT, gl.INVALID_OPERATION))
                 return;
-        } else if (this.condtionalSetError(uniform.type != type, gl.INVALID_OPERATION))
+        } else if (this.conditionalSetError(uniform.type != type, gl.INVALID_OPERATION))
             return;
         /* TODO: Do we need to copy objects? */
         uniform.value = value;
@@ -2517,7 +2517,7 @@ goog.scope(function() {
     * @return {number}
     */
     sglrReferenceContext.ReferenceContext.prototype.getUniformLocation = function(program, name) {
-        if (this.condtionalSetError(!program, gl.INVALID_OPERATION))
+        if (this.conditionalSetError(!program, gl.INVALID_OPERATION))
             return -1;
 
         for (var i = 0; i < program.m_uniforms.length; i++)
@@ -2531,7 +2531,7 @@ goog.scope(function() {
     * @param {number} w
     */
     sglrReferenceContext.ReferenceContext.prototype.lineWidth = function(w) {
-        if (this.condtionalSetError(w < 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(w < 0, gl.INVALID_VALUE))
             return;
         this.m_lineWidth = w;
     };
@@ -2602,7 +2602,7 @@ goog.scope(function() {
     * @param {sglrReferenceContext.DataBuffer} buffer
     */
     sglrReferenceContext.ReferenceContext.prototype.bindBuffer = function(target, buffer) {
-        if (this.condtionalSetError(!sglrReferenceContext.isValidBufferTarget(target), gl.INVALID_ENUM))
+        if (this.conditionalSetError(!sglrReferenceContext.isValidBufferTarget(target), gl.INVALID_ENUM))
             return;
 
         this.setBufferBinding(target, buffer);
@@ -2624,14 +2624,14 @@ goog.scope(function() {
     * @param {number} usage
     */
     sglrReferenceContext.ReferenceContext.prototype.bufferData = function(target, input, usage) {
-        if (this.condtionalSetError(!sglrReferenceContext.isValidBufferTarget(target), gl.INVALID_ENUM))
+        if (this.conditionalSetError(!sglrReferenceContext.isValidBufferTarget(target), gl.INVALID_ENUM))
             return;
         /** @type {sglrReferenceContext.DataBuffer} */ var buffer = this.getBufferBinding(target);
-        if (this.condtionalSetError(!buffer, gl.INVALID_OPERATION))
+        if (this.conditionalSetError(!buffer, gl.INVALID_OPERATION))
             return;
 
         if (typeof input == 'number') {
-            if (this.condtionalSetError(input < 0, gl.INVALID_VALUE))
+            if (this.conditionalSetError(input < 0, gl.INVALID_VALUE))
                 return;
             buffer.setStorage(input);
         } else {
@@ -2645,15 +2645,15 @@ goog.scope(function() {
     * @param {goog.NumberArray} data
     */
     sglrReferenceContext.ReferenceContext.prototype.bufferSubData = function(target, offset, data) {
-        if (this.condtionalSetError(!sglrReferenceContext.isValidBufferTarget(target), gl.INVALID_ENUM))
+        if (this.conditionalSetError(!sglrReferenceContext.isValidBufferTarget(target), gl.INVALID_ENUM))
             return;
-        if (this.condtionalSetError(offset < 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(offset < 0, gl.INVALID_VALUE))
             return;
         /** @type {sglrReferenceContext.DataBuffer} */ var buffer = this.getBufferBinding(target);
-        if (this.condtionalSetError(!buffer, gl.INVALID_OPERATION))
+        if (this.conditionalSetError(!buffer, gl.INVALID_OPERATION))
             return;
 
-        if (this.condtionalSetError(offset + data.byteLength > buffer.getSize(), gl.INVALID_VALUE))
+        if (this.conditionalSetError(offset + data.byteLength > buffer.getSize(), gl.INVALID_VALUE))
             return;
         buffer.setSubData(offset, data);
     };
@@ -2682,7 +2682,7 @@ goog.scope(function() {
         /** @type {?ArrayBuffer} */ var data;
         /** @type {number} */ var offset;
         if (this.m_pixelPackBufferBinding) {
-            if (this.condtionalSetError(typeof pixels !== 'number', gl.INVALID_VALUE))
+            if (this.conditionalSetError(typeof pixels !== 'number', gl.INVALID_VALUE))
                 return;
             data = this.m_pixelPackBufferBinding.getData();
             offset = pixels.byteOffset;
@@ -2793,7 +2793,7 @@ goog.scope(function() {
      * @throws {Error}
      */
     sglrReferenceContext.ReferenceContext.prototype.checkFramebufferStatus = function(target) {
-        if (this.condtionalSetError(target != gl.FRAMEBUFFER &&
+        if (this.conditionalSetError(target != gl.FRAMEBUFFER &&
                     target != gl.DRAW_FRAMEBUFFER &&
                     target != gl.READ_FRAMEBUFFER, gl.INVALID_ENUM))
             return 0;
@@ -2926,7 +2926,7 @@ goog.scope(function() {
      * @return {boolean}
      */
     sglrReferenceContext.ReferenceContext.prototype.predrawErrorChecks = function(mode) {
-        if (this.condtionalSetError(mode != gl.POINTS &&
+        if (this.conditionalSetError(mode != gl.POINTS &&
                     mode != gl.LINE_STRIP && mode != gl.LINE_LOOP && mode != gl.LINES &&
                     mode != gl.TRIANGLE_STRIP && mode != gl.TRIANGLE_FAN && mode != gl.TRIANGLES,
                     gl.INVALID_ENUM))
@@ -2937,7 +2937,7 @@ goog.scope(function() {
         //  if (vao.m_arrays[ndx].enabled && vao.m_arrays[ndx].bufferBinding && vao.m_arrays[ndx].bufferBinding->isMapped)
         //      RC_ERROR_RET(gl.INVALID_OPERATION, RC_RET_VOID);
 
-        if (this.condtionalSetError(this.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE, gl.INVALID_FRAMEBUFFER_OPERATION))
+        if (this.conditionalSetError(this.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE, gl.INVALID_FRAMEBUFFER_OPERATION))
             return false;
 
         return true;
@@ -2951,7 +2951,7 @@ goog.scope(function() {
     * @param {number} instanceCount
     */
     sglrReferenceContext.ReferenceContext.prototype.drawArraysInstanced = function(mode, first, count, instanceCount) {
-        if (this.condtionalSetError(first < 0 || count < 0 || instanceCount < 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(first < 0 || count < 0 || instanceCount < 0, gl.INVALID_VALUE))
             return;
 
         if (!this.predrawErrorChecks(mode))
@@ -2970,7 +2970,7 @@ goog.scope(function() {
     * @param {number} offset
     */
     sglrReferenceContext.ReferenceContext.prototype.drawRangeElements = function(mode, start, end, count, type, offset) {
-        if (this.condtionalSetError(end < start, gl.INVALID_VALUE))
+        if (this.conditionalSetError(end < start, gl.INVALID_VALUE))
             return;
 
         this.drawElements(mode, count, type, offset);
@@ -3008,17 +3008,17 @@ goog.scope(function() {
     sglrReferenceContext.ReferenceContext.prototype.drawElementsInstancedBaseVertex = function(mode, count, type, offset, instanceCount, baseVertex) {
         var vao = this.m_vertexArrayBinding;
 
-        if (this.condtionalSetError(type != gl.UNSIGNED_BYTE &&
+        if (this.conditionalSetError(type != gl.UNSIGNED_BYTE &&
                     type != gl.UNSIGNED_SHORT &&
                     type != gl.UNSIGNED_INT, gl.INVALID_ENUM))
             return;
-        if (this.condtionalSetError(count < 0 || instanceCount < 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(count < 0 || instanceCount < 0, gl.INVALID_VALUE))
             return;
 
         if (!this.predrawErrorChecks(mode))
             return;
 
-        if (this.condtionalSetError(count > 0 && !vao.m_elementArrayBufferBinding, gl.INVALID_OPERATION))
+        if (this.conditionalSetError(count > 0 && !vao.m_elementArrayBufferBinding, gl.INVALID_OPERATION))
             return;
         // All is ok
         var data = vao.m_elementArrayBufferBinding.getData();
@@ -3111,7 +3111,7 @@ goog.scope(function() {
     * @param {number} buffers
     */
     sglrReferenceContext.ReferenceContext.prototype.clear = function(buffers) {
-        if (this.condtionalSetError((buffers & ~(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT)) != 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError((buffers & ~(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT)) != 0, gl.INVALID_VALUE))
             return;
 
         /** @type {rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess} */ var colorBuf0 = this.getDrawColorbuffer();
@@ -3183,9 +3183,9 @@ goog.scope(function() {
     * @throws {Error}
     */
     sglrReferenceContext.ReferenceContext.prototype.clearBufferiv = function(buffer, drawbuffer, value) {
-        if (this.condtionalSetError(buffer != gl.COLOR && buffer != gl.STENCIL, gl.INVALID_ENUM))
+        if (this.conditionalSetError(buffer != gl.COLOR && buffer != gl.STENCIL, gl.INVALID_ENUM))
             return;
-        if (this.condtionalSetError(drawbuffer != 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(drawbuffer != 0, gl.INVALID_VALUE))
             return;
 
         /** @type {Array<number>} */ var baseArea = this.m_scissorEnabled ? this.m_scissorBox : [0, 0, 0x7fffffff, 0x7fffffff];
@@ -3236,9 +3236,9 @@ goog.scope(function() {
     * @throws {Error}
     */
     sglrReferenceContext.ReferenceContext.prototype.clearBufferfv = function(buffer, drawbuffer, value) {
-        if (this.condtionalSetError(buffer != gl.COLOR && buffer != gl.DEPTH, gl.INVALID_ENUM))
+        if (this.conditionalSetError(buffer != gl.COLOR && buffer != gl.DEPTH, gl.INVALID_ENUM))
             return;
-        if (this.condtionalSetError(drawbuffer != 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(drawbuffer != 0, gl.INVALID_VALUE))
             return;
 
         /** @type {Array<number>} */ var baseArea = this.m_scissorEnabled ? this.m_scissorBox : [0, 0, 0x7fffffff, 0x7fffffff];
@@ -3286,9 +3286,9 @@ goog.scope(function() {
     * @param {Array<number>} value
     */
     sglrReferenceContext.ReferenceContext.prototype.clearBufferuiv = function(buffer, drawbuffer, value) {
-        if (this.condtionalSetError(buffer != gl.COLOR, gl.INVALID_ENUM))
+        if (this.conditionalSetError(buffer != gl.COLOR, gl.INVALID_ENUM))
             return;
-        if (this.condtionalSetError(drawbuffer != 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(drawbuffer != 0, gl.INVALID_VALUE))
             return;
 
         /** @type {Array<number>} */ var baseArea = this.m_scissorEnabled ? this.m_scissorBox : [0, 0, 0x7fffffff, 0x7fffffff];
@@ -3319,7 +3319,7 @@ goog.scope(function() {
     * @param {number} stencil
     */
     sglrReferenceContext.ReferenceContext.prototype.clearBufferfi = function(buffer, drawbuffer, depth, stencil) {
-        if (this.condtionalSetError(buffer != gl.DEPTH_STENCIL, gl.INVALID_ENUM))
+        if (this.conditionalSetError(buffer != gl.DEPTH_STENCIL, gl.INVALID_ENUM))
             return;
         this.clearBufferfv(gl.DEPTH, drawbuffer, [depth]);
         this.clearBufferiv(gl.STENCIL, drawbuffer, [stencil]);
@@ -3342,29 +3342,29 @@ goog.scope(function() {
             /** @type {sglrReferenceContext.AttachmentPoint} */ var point = sglrReferenceContext.mapGLAttachmentPoint(attachment);
             /** @type {sglrReferenceContext.TexTarget} */ var fboTexTarget = sglrReferenceContext.mapGLFboTexTarget(textarget);
 
-            if (this.condtionalSetError(target != gl.FRAMEBUFFER &&
+            if (this.conditionalSetError(target != gl.FRAMEBUFFER &&
                         target != gl.DRAW_FRAMEBUFFER &&
                         target != gl.READ_FRAMEBUFFER, gl.INVALID_ENUM))
                 return;
-            if (this.condtionalSetError(point == undefined, gl.INVALID_ENUM))
+            if (this.conditionalSetError(point == undefined, gl.INVALID_ENUM))
                 return;
 
             // Select binding point.
             /** @type {sglrReferenceContext.Framebuffer} */ var framebufferBinding = (target == gl.FRAMEBUFFER || target == gl.DRAW_FRAMEBUFFER) ? this.m_drawFramebufferBinding : this.m_readFramebufferBinding;
-            if (this.condtionalSetError(!framebufferBinding, gl.INVALID_OPERATION))
+            if (this.conditionalSetError(!framebufferBinding, gl.INVALID_OPERATION))
                 return;
 
             if (texture) {
-                if (this.condtionalSetError(level != 0, gl.INVALID_VALUE))
+                if (this.conditionalSetError(level != 0, gl.INVALID_VALUE))
                     return;
 
                 if (texture.getType() == sglrReferenceContext.TextureType.TYPE_2D) {
-                    if (this.condtionalSetError(fboTexTarget != sglrReferenceContext.TexTarget.TEXTARGET_2D, gl.INVALID_OPERATION))
+                    if (this.conditionalSetError(fboTexTarget != sglrReferenceContext.TexTarget.TEXTARGET_2D, gl.INVALID_OPERATION))
                         return;
                 } else {
                     if (!texture.getType() == sglrReferenceContext.TextureType.TYPE_CUBE_MAP)
                         throw new Error('Unsupported texture type');
-                    if (this.condtionalSetError(!deMath.deInRange32(fboTexTarget, sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_POSITIVE_X, sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_NEGATIVE_Z), gl.INVALID_OPERATION))
+                    if (this.conditionalSetError(!deMath.deInRange32(fboTexTarget, sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_POSITIVE_X, sglrReferenceContext.TexTarget.TEXTARGET_CUBE_MAP_NEGATIVE_Z), gl.INVALID_OPERATION))
                         return;
                 }
             }
@@ -3397,36 +3397,36 @@ goog.scope(function() {
         } else {
             /** @type {sglrReferenceContext.AttachmentPoint} */ var point = sglrReferenceContext.mapGLAttachmentPoint(attachment);
 
-            if (this.condtionalSetError(target != gl.FRAMEBUFFER &&
+            if (this.conditionalSetError(target != gl.FRAMEBUFFER &&
                         target != gl.DRAW_FRAMEBUFFER &&
                         target != gl.READ_FRAMEBUFFER, gl.INVALID_ENUM))
                 return;
-            if (this.condtionalSetError(point === undefined, gl.INVALID_ENUM))
+            if (this.conditionalSetError(point === undefined, gl.INVALID_ENUM))
                 return;
 
             // Select binding point.
             /** @type {sglrReferenceContext.Framebuffer} */ var framebufferBinding = (target == gl.FRAMEBUFFER || target == gl.DRAW_FRAMEBUFFER) ? this.m_drawFramebufferBinding : this.m_readFramebufferBinding;
-            if (this.condtionalSetError(!framebufferBinding, gl.INVALID_OPERATION))
+            if (this.conditionalSetError(!framebufferBinding, gl.INVALID_OPERATION))
                 return;
 
             if (texture) {
-                if (this.condtionalSetError(level != 0, gl.INVALID_VALUE))
+                if (this.conditionalSetError(level != 0, gl.INVALID_VALUE))
                     return;
 
-                if (this.condtionalSetError(texture.getType() != sglrReferenceContext.TextureType.TYPE_2D_ARRAY &&
+                if (this.conditionalSetError(texture.getType() != sglrReferenceContext.TextureType.TYPE_2D_ARRAY &&
                             texture.getType() != sglrReferenceContext.TextureType.TYPE_3D &&
                             texture.getType() != sglrReferenceContext.TextureType.TYPE_CUBE_MAP_ARRAY, gl.INVALID_OPERATION))
                     return;
 
                 if (texture.getType() == sglrReferenceContext.TextureType.TYPE_2D_ARRAY || texture.getType() == sglrReferenceContext.TextureType.TYPE_CUBE_MAP_ARRAY) {
-                    if (this.condtionalSetError((layer < 0) || (layer >= gl.MAX_ARRAY_TEXTURE_LAYERS), gl.INVALID_VALUE))
+                    if (this.conditionalSetError((layer < 0) || (layer >= gl.MAX_ARRAY_TEXTURE_LAYERS), gl.INVALID_VALUE))
                         return;
-                    if (this.condtionalSetError((level < 0) || (level > Math.floor(Math.log2(gl.MAX_TEXTURE_SIZE))), gl.INVALID_VALUE))
+                    if (this.conditionalSetError((level < 0) || (level > Math.floor(Math.log2(gl.MAX_TEXTURE_SIZE))), gl.INVALID_VALUE))
                         return;
                 } else if (texture.getType() == sglrReferenceContext.TextureType.TYPE_3D) {
-                    if (this.condtionalSetError((layer < 0) || (layer >= gl.MAX_3D_TEXTURE_SIZE), gl.INVALID_VALUE))
+                    if (this.conditionalSetError((layer < 0) || (layer >= gl.MAX_3D_TEXTURE_SIZE), gl.INVALID_VALUE))
                         return;
-                    if (this.condtionalSetError((level < 0) || (level > Math.floor(Math.log2(gl.MAX_3D_TEXTURE_SIZE))), gl.INVALID_VALUE))
+                    if (this.conditionalSetError((level < 0) || (level > Math.floor(Math.log2(gl.MAX_3D_TEXTURE_SIZE))), gl.INVALID_VALUE))
                         return;
                 }
             }
@@ -3459,20 +3459,20 @@ goog.scope(function() {
         } else {
             /** @type {sglrReferenceContext.AttachmentPoint} */ var point = sglrReferenceContext.mapGLAttachmentPoint(attachment);
 
-            if (this.condtionalSetError(target != gl.FRAMEBUFFER &&
+            if (this.conditionalSetError(target != gl.FRAMEBUFFER &&
                         target != gl.DRAW_FRAMEBUFFER &&
                         target != gl.READ_FRAMEBUFFER, gl.INVALID_ENUM))
                 return;
-            if (this.condtionalSetError(point == undefined, gl.INVALID_ENUM))
+            if (this.conditionalSetError(point == undefined, gl.INVALID_ENUM))
                 return;
 
             // Select binding point.
             /** @type {sglrReferenceContext.Framebuffer} */ var framebufferBinding = (target == gl.FRAMEBUFFER || target == gl.DRAW_FRAMEBUFFER) ? this.m_drawFramebufferBinding : this.m_readFramebufferBinding;
-            if (this.condtionalSetError(!framebufferBinding, gl.INVALID_OPERATION))
+            if (this.conditionalSetError(!framebufferBinding, gl.INVALID_OPERATION))
                 return;
 
             if (renderbuffer) {
-                if (this.condtionalSetError(renderbuffertarget != gl.RENDERBUFFER, gl.INVALID_ENUM))
+                if (this.conditionalSetError(renderbuffertarget != gl.RENDERBUFFER, gl.INVALID_ENUM))
                     return;
             }
 
@@ -3495,15 +3495,15 @@ goog.scope(function() {
     sglrReferenceContext.ReferenceContext.prototype.renderbufferStorage = function(target, internalformat, width, height) {
         /** @type {tcuTexture.TextureFormat} */ var format = gluTextureUtil.mapGLInternalFormat(internalformat);
 
-        if (this.condtionalSetError(target != gl.RENDERBUFFER, gl.INVALID_ENUM))
+        if (this.conditionalSetError(target != gl.RENDERBUFFER, gl.INVALID_ENUM))
             return;
-        if (this.condtionalSetError(!this.m_renderbufferBinding, gl.INVALID_OPERATION))
+        if (this.conditionalSetError(!this.m_renderbufferBinding, gl.INVALID_OPERATION))
             return;
-        if (this.condtionalSetError(!deMath.deInRange32(width, 0, this.m_limits.maxRenderbufferSize) ||
+        if (this.conditionalSetError(!deMath.deInRange32(width, 0, this.m_limits.maxRenderbufferSize) ||
                     !deMath.deInRange32(height, 0, this.m_limits.maxRenderbufferSize),
                     gl.INVALID_OPERATION))
             return;
-        if (this.condtionalSetError(!format, gl.INVALID_ENUM))
+        if (this.conditionalSetError(!format, gl.INVALID_ENUM))
             return;
 
         this.m_renderbufferBinding.setStorage(format, width, height);
@@ -3842,35 +3842,35 @@ goog.scope(function() {
         /** @type {Array<number>} */ var srcRect = [srcOriginX, srcOriginY, srcW, srcH];
         /** @type {Array<number>} */ var dstRect = [dstOriginX, dstOriginY, dstW, dstH];
 
-        if (this.condtionalSetError(filter != gl.NEAREST && filter != gl.LINEAR, gl.INVALID_ENUM))
+        if (this.conditionalSetError(filter != gl.NEAREST && filter != gl.LINEAR, gl.INVALID_ENUM))
             return;
-        if (this.condtionalSetError((mask & (gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT)) != 0 && filter != gl.NEAREST, gl.INVALID_OPERATION))
+        if (this.conditionalSetError((mask & (gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT)) != 0 && filter != gl.NEAREST, gl.INVALID_OPERATION))
             return;
 
         // Validate that both targets are complete.
-        if (this.condtionalSetError(this.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE ||
+        if (this.conditionalSetError(this.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE ||
                     this.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE, gl.INVALID_OPERATION))
             return;
 
         // Check samples count is valid
-        if (this.condtionalSetError(this.getDrawColorbuffer().getNumSamples() != 1, gl.INVALID_OPERATION))
+        if (this.conditionalSetError(this.getDrawColorbuffer().getNumSamples() != 1, gl.INVALID_OPERATION))
             return;
 
         // Check size restrictions of multisampled case
         if (this.getReadColorbuffer().getNumSamples() != 1) {
             // Src and Dst rect dimensions must be the same
-            if (this.condtionalSetError(srcW != dstW || srcH != dstH, gl.INVALID_OPERATION))
+            if (this.conditionalSetError(srcW != dstW || srcH != dstH, gl.INVALID_OPERATION))
                 return;
 
             // sglrReferenceContext.Framebuffer formats must match
             if (mask & gl.COLOR_BUFFER_BIT)
-                if (this.condtionalSetError(this.getReadColorbuffer().raw().getFormat() != this.getDrawColorbuffer().raw().getFormat(), gl.INVALID_OPERATION))
+                if (this.conditionalSetError(this.getReadColorbuffer().raw().getFormat() != this.getDrawColorbuffer().raw().getFormat(), gl.INVALID_OPERATION))
                     return;
             if (mask & gl.DEPTH_BUFFER_BIT)
-                if (this.condtionalSetError(this.getReadDepthbuffer().raw().getFormat() != this.getDrawDepthbuffer().raw().getFormat(), gl.INVALID_OPERATION))
+                if (this.conditionalSetError(this.getReadDepthbuffer().raw().getFormat() != this.getDrawDepthbuffer().raw().getFormat(), gl.INVALID_OPERATION))
                     return;
             if (mask & gl.STENCIL_BUFFER_BIT)
-            if (this.condtionalSetError(this.getReadStencilbuffer().raw().getFormat() != this.getDrawStencilbuffer().raw().getFormat(), gl.INVALID_OPERATION))
+            if (this.conditionalSetError(this.getReadStencilbuffer().raw().getFormat() != this.getDrawStencilbuffer().raw().getFormat(), gl.INVALID_OPERATION))
                 return;
         }
 
@@ -4057,7 +4057,7 @@ goog.scope(function() {
         /** @type {tcuTexture.PixelBufferAccess} */ var dst;
         /** @type {tcuTexture.ConstPixelBufferAccess} */ var src;
         if (this.m_pixelUnpackBufferBinding) {
-            if (this.condtionalSetError(typeof pixels !== 'number', gl.INVALID_VALUE))
+            if (this.conditionalSetError(typeof pixels !== 'number', gl.INVALID_VALUE))
                 return;
             data = this.m_pixelUnpackBufferBinding.getData();
             offset = pixels;
@@ -4072,39 +4072,39 @@ goog.scope(function() {
         }
         /** @type {boolean} */ var isDstFloatDepthFormat = (internalFormat == gl.DEPTH_COMPONENT32F || internalFormat == gl.DEPTH32F_STENCIL8); // depth components are limited to [0,1] range
 
-        if (this.condtionalSetError(border != 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(border != 0, gl.INVALID_VALUE))
             return;
-        if (this.condtionalSetError(width < 0 || height < 0 || depth < 0 || level < 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(width < 0 || height < 0 || depth < 0 || level < 0, gl.INVALID_VALUE))
             return;
 
         // Map storage format.
         /** @type {tcuTexture.TextureFormat} */ var storageFmt = sglrReferenceContext.mapInternalFormat(internalFormat);
-        if (this.condtionalSetError(!storageFmt, gl.INVALID_ENUM))
+        if (this.conditionalSetError(!storageFmt, gl.INVALID_ENUM))
             return;
 
         // Map transfer format.
         /** @type {tcuTexture.TextureFormat} */ var transferFmt = gluTextureUtil.mapGLTransferFormat(format, type);
-        if (this.condtionalSetError(!transferFmt, gl.INVALID_ENUM))
+        if (this.conditionalSetError(!transferFmt, gl.INVALID_ENUM))
             return;
 
         if (target == gl.TEXTURE_2D) {
             // Validate size and level.
-            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize || height > this.m_limits.maxTexture2DSize || depth != 1, gl.INVALID_VALUE))
+            if (this.conditionalSetError(width > this.m_limits.maxTexture2DSize || height > this.m_limits.maxTexture2DSize || depth != 1, gl.INVALID_VALUE))
                 return;
-            if (this.condtionalSetError(level > Math.log2(this.m_limits.maxTexture2DSize), gl.INVALID_VALUE))
+            if (this.conditionalSetError(level > Math.log2(this.m_limits.maxTexture2DSize), gl.INVALID_VALUE))
                 return;
 
             /** @type {sglrReferenceContext.Texture2D} */
             var texture = /** @type {sglrReferenceContext.Texture2D} */ (unit.tex2DBinding.texture);
 
             if (texture.isImmutable()) {
-                if (this.condtionalSetError(!texture.hasLevel(level), gl.INVALID_OPERATION))
+                if (this.conditionalSetError(!texture.hasLevel(level), gl.INVALID_OPERATION))
                     return;
 
                 //NOTE: replaces this: var dst = tcuTexture.PixelBufferAccess.newFromTextureLevel(texture.getLevel(level));
                 dst = texture.getLevel(level);
 
-                if (this.condtionalSetError(!storageFmt.isEqual(dst.getFormat()) ||
+                if (this.conditionalSetError(!storageFmt.isEqual(dst.getFormat()) ||
                             width != dst.getWidth() ||
                             height != dst.getHeight(), gl.INVALID_OPERATION))
                     return;
@@ -4142,9 +4142,9 @@ goog.scope(function() {
                  target == gl.TEXTURE_CUBE_MAP_NEGATIVE_Z ||
                  target == gl.TEXTURE_CUBE_MAP_POSITIVE_Z) {
             // Validate size and level.
-            if (this.condtionalSetError(width != height || width > this.m_limits.maxTextureCubeSize || depth != 1, gl.INVALID_VALUE))
+            if (this.conditionalSetError(width != height || width > this.m_limits.maxTextureCubeSize || depth != 1, gl.INVALID_VALUE))
                 return;
-            if (this.condtionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTextureCubeSize)), gl.INVALID_VALUE))
+            if (this.conditionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTextureCubeSize)), gl.INVALID_VALUE))
                 return;
 
             /** @type {sglrReferenceContext.TextureCube} */
@@ -4153,12 +4153,12 @@ goog.scope(function() {
             var face = sglrReferenceContext.mapGLCubeFace(target);
 
             if (textureCube.isImmutable()) {
-                if (this.condtionalSetError(!textureCube.hasFace(level, face), gl.INVALID_OPERATION))
+                if (this.conditionalSetError(!textureCube.hasFace(level, face), gl.INVALID_OPERATION))
                     return;
 
                 dst = textureCube.getFace(level, face);
 
-                if (this.condtionalSetError(!storageFmt.isEqual(dst.getFormat()) ||
+                if (this.conditionalSetError(!storageFmt.isEqual(dst.getFormat()) ||
                             width != dst.getWidth() ||
                             height != dst.getHeight(), gl.INVALID_OPERATION))
                     return;
@@ -4188,22 +4188,22 @@ goog.scope(function() {
             }
         } else if (target == gl.TEXTURE_2D_ARRAY) {
             // Validate size and level.
-            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize ||
+            if (this.conditionalSetError(width > this.m_limits.maxTexture2DSize ||
                         height > this.m_limits.maxTexture2DSize ||
                         depth > this.m_limits.maxTexture2DArrayLayers, gl.INVALID_VALUE))
                 return;
-            if (this.condtionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTexture2DSize)), gl.INVALID_VALUE))
+            if (this.conditionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTexture2DSize)), gl.INVALID_VALUE))
                 return;
 
             /** @type {sglrReferenceContext.Texture2DArray} */
             var texture2DArray = /** @type {sglrReferenceContext.Texture2DArray} */ (unit.tex2DArrayBinding.texture);
 
             if (texture2DArray.isImmutable()) {
-                if (this.condtionalSetError(!texture2DArray.hasLevel(level), gl.INVALID_OPERATION))
+                if (this.conditionalSetError(!texture2DArray.hasLevel(level), gl.INVALID_OPERATION))
                     return;
 
                 dst = texture2DArray.getLevel(level);
-                if (this.condtionalSetError(!storageFmt.isEqual(dst.getFormat()) ||
+                if (this.conditionalSetError(!storageFmt.isEqual(dst.getFormat()) ||
                             width != dst.getWidth() ||
                             height != dst.getHeight() ||
                             depth != dst.getDepth(), gl.INVALID_OPERATION))
@@ -4235,21 +4235,21 @@ goog.scope(function() {
             }
         } else if (target == gl.TEXTURE_3D) {
             // Validate size and level.
-            if (this.condtionalSetError(width > this.m_limits.maxTexture3DSize ||
+            if (this.conditionalSetError(width > this.m_limits.maxTexture3DSize ||
                         height > this.m_limits.maxTexture3DSize ||
                         depth > this.m_limits.maxTexture3DSize, gl.INVALID_VALUE))
                 return;
-            if (this.condtionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTexture3DSize)), gl.INVALID_VALUE))
+            if (this.conditionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTexture3DSize)), gl.INVALID_VALUE))
                 return;
 
             var texture3D = /** @type {sglrReferenceContext.Texture3D} */ (unit.tex3DBinding.texture);
 
             if (texture3D.isImmutable()) {
-                if (this.condtionalSetError(!texture3D.hasLevel(level), gl.INVALID_OPERATION))
+                if (this.conditionalSetError(!texture3D.hasLevel(level), gl.INVALID_OPERATION))
                     return;
 
                 dst = texture3D.getLevel(level);
-                if (this.condtionalSetError(!storageFmt.isEqual(dst.getFormat()) ||
+                if (this.conditionalSetError(!storageFmt.isEqual(dst.getFormat()) ||
                             width != dst.getWidth() ||
                             height != dst.getHeight() ||
                             depth != dst.getDepth(), gl.INVALID_OPERATION))
@@ -4339,7 +4339,7 @@ goog.scope(function() {
         /** @type {tcuTexture.ConstPixelBufferAccess} */ var src;
         /** @type {boolean} */ var isDstFloatDepthFormat;
         if (this.m_pixelUnpackBufferBinding) {
-            if (this.condtionalSetError(typeof pixels !== 'number', gl.INVALID_VALUE))
+            if (this.conditionalSetError(typeof pixels !== 'number', gl.INVALID_VALUE))
                 return;
             data = this.m_pixelUnpackBufferBinding.getData();
             offset = pixels;
@@ -4353,33 +4353,33 @@ goog.scope(function() {
             }
         }
 
-        if (this.condtionalSetError(xoffset < 0 || yoffset < 0 || zoffset < 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(xoffset < 0 || yoffset < 0 || zoffset < 0, gl.INVALID_VALUE))
             return;
-        if (this.condtionalSetError(width < 0 || height < 0 || depth < 0 || level < 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(width < 0 || height < 0 || depth < 0 || level < 0, gl.INVALID_VALUE))
             return;
 
         // Map transfer format.
         /** @type {tcuTexture.TextureFormat} */ var transferFmt = gluTextureUtil.mapGLTransferFormat(format, type);
-        if (this.condtionalSetError(!transferFmt, gl.INVALID_ENUM))
+        if (this.conditionalSetError(!transferFmt, gl.INVALID_ENUM))
             return;
 
         if (target == gl.TEXTURE_2D) {
             // Validate size and level.
-            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize || height > this.m_limits.maxTexture2DSize || depth != 1, gl.INVALID_VALUE))
+            if (this.conditionalSetError(width > this.m_limits.maxTexture2DSize || height > this.m_limits.maxTexture2DSize || depth != 1, gl.INVALID_VALUE))
                 return;
-            if (this.condtionalSetError(level > Math.log2(this.m_limits.maxTexture2DSize), gl.INVALID_VALUE))
+            if (this.conditionalSetError(level > Math.log2(this.m_limits.maxTexture2DSize), gl.INVALID_VALUE))
                 return;
 
             /** @type {sglrReferenceContext.Texture2D} */
             var texture = /** @type {sglrReferenceContext.Texture2D} */ (unit.tex2DBinding.texture);
 
-            if (this.condtionalSetError(!texture.hasLevel(level), gl.INVALID_OPERATION))
+            if (this.conditionalSetError(!texture.hasLevel(level), gl.INVALID_OPERATION))
                 return;
 
             //NOTE: replaces this: var dst = tcuTexture.PixelBufferAccess.newFromTextureLevel(texture.getLevel(level));
             dst = texture.getLevel(level);
 
-            if (this.condtionalSetError(xoffset + width > dst.getWidth() ||
+            if (this.conditionalSetError(xoffset + width > dst.getWidth() ||
                                         yoffset + height > dst.getHeight() ||
                                         zoffset + depth > dst.getDepth(),
                                         gl.INVALID_VALUE))
@@ -4408,9 +4408,9 @@ goog.scope(function() {
                  target == gl.TEXTURE_CUBE_MAP_NEGATIVE_Z ||
                  target == gl.TEXTURE_CUBE_MAP_POSITIVE_Z) {
             // Validate size and level.
-            if (this.condtionalSetError(width != height || width > this.m_limits.maxTextureCubeSize || depth != 1, gl.INVALID_VALUE))
+            if (this.conditionalSetError(width != height || width > this.m_limits.maxTextureCubeSize || depth != 1, gl.INVALID_VALUE))
                 return;
-            if (this.condtionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTextureCubeSize)), gl.INVALID_VALUE))
+            if (this.conditionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTextureCubeSize)), gl.INVALID_VALUE))
                 return;
 
             /** @type {sglrReferenceContext.TextureCube} */
@@ -4418,12 +4418,12 @@ goog.scope(function() {
 
             var face = sglrReferenceContext.mapGLCubeFace(target);
 
-            if (this.condtionalSetError(!textureCube.hasFace(level, face), gl.INVALID_OPERATION))
+            if (this.conditionalSetError(!textureCube.hasFace(level, face), gl.INVALID_OPERATION))
                 return;
 
             dst = textureCube.getFace(level, face);
 
-            if (this.condtionalSetError(xoffset + width > dst.getWidth() ||
+            if (this.conditionalSetError(xoffset + width > dst.getWidth() ||
                                         yoffset + height > dst.getHeight() ||
                                         zoffset + depth > dst.getDepth(),
                                         gl.INVALID_VALUE))
@@ -4447,21 +4447,21 @@ goog.scope(function() {
                 tcuTextureUtil.copy(sub, src);
         } else if (target == gl.TEXTURE_2D_ARRAY) {
             // Validate size and level.
-            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize ||
+            if (this.conditionalSetError(width > this.m_limits.maxTexture2DSize ||
                         height > this.m_limits.maxTexture2DSize ||
                         depth > this.m_limits.maxTexture2DArrayLayers, gl.INVALID_VALUE))
                 return;
-            if (this.condtionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTexture2DSize)), gl.INVALID_VALUE))
+            if (this.conditionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTexture2DSize)), gl.INVALID_VALUE))
                 return;
 
             /** @type {sglrReferenceContext.Texture2DArray} */
             var texture2DArray = /** @type {sglrReferenceContext.Texture2DArray} */ (unit.tex2DArrayBinding.texture);
 
-            if (this.condtionalSetError(!texture2DArray.hasLevel(level), gl.INVALID_OPERATION))
+            if (this.conditionalSetError(!texture2DArray.hasLevel(level), gl.INVALID_OPERATION))
                 return;
 
             dst = texture2DArray.getLevel(level);
-            if (this.condtionalSetError(xoffset + width > dst.getWidth() ||
+            if (this.conditionalSetError(xoffset + width > dst.getWidth() ||
                                         yoffset + height > dst.getHeight() ||
                                         zoffset + depth > dst.getDepth(),
                                         gl.INVALID_VALUE))
@@ -4486,20 +4486,20 @@ goog.scope(function() {
                 tcuTextureUtil.copy(sub, src);
         } else if (target == gl.TEXTURE_3D) {
             // Validate size and level.
-            if (this.condtionalSetError(width > this.m_limits.maxTexture3DSize ||
+            if (this.conditionalSetError(width > this.m_limits.maxTexture3DSize ||
                         height > this.m_limits.maxTexture3DSize ||
                         depth > this.m_limits.maxTexture3DSize, gl.INVALID_VALUE))
                 return;
-            if (this.condtionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTexture3DSize)), gl.INVALID_VALUE))
+            if (this.conditionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTexture3DSize)), gl.INVALID_VALUE))
                 return;
 
             var texture3D = /** @type {sglrReferenceContext.Texture3D} */ (unit.tex3DBinding.texture);
 
-            if (this.condtionalSetError(!texture3D.hasLevel(level), gl.INVALID_OPERATION))
+            if (this.conditionalSetError(!texture3D.hasLevel(level), gl.INVALID_OPERATION))
                 return;
 
             dst = texture3D.getLevel(level);
-            if (this.condtionalSetError(xoffset + width > dst.getWidth() ||
+            if (this.conditionalSetError(xoffset + width > dst.getWidth() ||
                                         yoffset + height > dst.getHeight() ||
                                         zoffset + depth > dst.getDepth(),
                                         gl.INVALID_VALUE))
@@ -4529,25 +4529,25 @@ goog.scope(function() {
     sglrReferenceContext.ReferenceContext.prototype.texStorage3D = function(target, levels, internalFormat, width, height, depth) {
         /** @type {sglrReferenceContext.TextureUnit} */var unit = this.m_textureUnits[this.m_activeTexture];
 
-        if (this.condtionalSetError(width <= 0 || height <= 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(width <= 0 || height <= 0, gl.INVALID_VALUE))
             return;
-        if (this.condtionalSetError(levels < 1 || levels > Math.floor(Math.log2(Math.max(width, height))) + 1, gl.INVALID_VALUE))
+        if (this.conditionalSetError(levels < 1 || levels > Math.floor(Math.log2(Math.max(width, height))) + 1, gl.INVALID_VALUE))
             return;
 
         // Map storage format.
         /** @type {tcuTexture.TextureFormat} */ var storageFmt = sglrReferenceContext.mapInternalFormat(internalFormat);
-        if (this.condtionalSetError(!storageFmt, gl.INVALID_ENUM))
+        if (this.conditionalSetError(!storageFmt, gl.INVALID_ENUM))
             return;
 
         if (target == gl.TEXTURE_2D_ARRAY) {
-            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize ||
+            if (this.conditionalSetError(width > this.m_limits.maxTexture2DSize ||
                                         height > this.m_limits.maxTexture2DSize ||
                                         depth >= this.m_limits.maxTexture2DArrayLayers, gl.INVALID_VALUE))
                 return;
 
             /** @type {sglrReferenceContext.Texture2DArray} */
             var textureArray = /** @type {sglrReferenceContext.Texture2DArray} */ (unit.tex2DArrayBinding.texture);
-            if (this.condtionalSetError(textureArray.isImmutable(), gl.INVALID_OPERATION))
+            if (this.conditionalSetError(textureArray.isImmutable(), gl.INVALID_OPERATION))
                 return;
 
             textureArray.clearLevels();
@@ -4560,14 +4560,14 @@ goog.scope(function() {
                 textureArray.allocLevel(level, storageFmt, levelW, levelH, depth);
             }
         } else if (target == gl.TEXTURE_3D) {
-            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize ||
+            if (this.conditionalSetError(width > this.m_limits.maxTexture2DSize ||
                                         height > this.m_limits.maxTexture2DSize ||
                                         depth >= this.m_limits.maxTexture3DSize, gl.INVALID_VALUE))
                 return;
 
             /** @type {sglrReferenceContext.Texture3D} */
             var texture3D = /** @type {sglrReferenceContext.Texture3D} */ (unit.tex3DBinding.texture);
-            if (this.condtionalSetError(texture3D.isImmutable(), gl.INVALID_OPERATION))
+            if (this.conditionalSetError(texture3D.isImmutable(), gl.INVALID_OPERATION))
                 return;
 
             texture3D.clearLevels();
@@ -4587,23 +4587,23 @@ goog.scope(function() {
     sglrReferenceContext.ReferenceContext.prototype.texStorage2D = function(target, levels, internalFormat, width, height) {
         /** @type {sglrReferenceContext.TextureUnit} */var unit = this.m_textureUnits[this.m_activeTexture];
 
-        if (this.condtionalSetError(width <= 0 || height <= 0, gl.INVALID_VALUE))
+        if (this.conditionalSetError(width <= 0 || height <= 0, gl.INVALID_VALUE))
             return;
-        if (this.condtionalSetError(levels < 1 || levels > Math.floor(Math.log2(Math.max(width, height))) + 1, gl.INVALID_VALUE))
+        if (this.conditionalSetError(levels < 1 || levels > Math.floor(Math.log2(Math.max(width, height))) + 1, gl.INVALID_VALUE))
             return;
 
         // Map storage format.
         /** @type {tcuTexture.TextureFormat} */ var storageFmt = sglrReferenceContext.mapInternalFormat(internalFormat);
-        if (this.condtionalSetError(!storageFmt, gl.INVALID_ENUM))
+        if (this.conditionalSetError(!storageFmt, gl.INVALID_ENUM))
             return;
 
         if (target == gl.TEXTURE_2D) {
-            if (this.condtionalSetError(width > this.m_limits.maxTexture2DSize || height > this.m_limits.maxTexture2DSize, gl.INVALID_VALUE))
+            if (this.conditionalSetError(width > this.m_limits.maxTexture2DSize || height > this.m_limits.maxTexture2DSize, gl.INVALID_VALUE))
                 return;
 
                 /** @type {sglrReferenceContext.Texture2D} */
             var texture = /** @type {sglrReferenceContext.Texture2D} */ (unit.tex2DBinding.texture);
-            if (this.condtionalSetError(texture.isImmutable(), gl.INVALID_OPERATION))
+            if (this.conditionalSetError(texture.isImmutable(), gl.INVALID_OPERATION))
                 return;
 
             texture.clearLevels();
@@ -4616,11 +4616,11 @@ goog.scope(function() {
                 texture.allocLevel(level, storageFmt, levelW, levelH);
             }
         } else if (target == gl.TEXTURE_CUBE_MAP) {
-            if (this.condtionalSetError(width != height || width > this.m_limits.maxTextureCubeSize, gl.INVALID_VALUE))
+            if (this.conditionalSetError(width != height || width > this.m_limits.maxTextureCubeSize, gl.INVALID_VALUE))
                 return;
             /** @type {sglrReferenceContext.TextureCube} */
             var textureCube = /** @type {sglrReferenceContext.TextureCube} */ (unit.texCubeBinding.texture);
-            if (this.condtionalSetError(textureCube.isImmutable(), gl.INVALID_OPERATION))
+            if (this.conditionalSetError(textureCube.isImmutable(), gl.INVALID_OPERATION))
                 return;
 
             textureCube.clearLevels();
@@ -4693,7 +4693,7 @@ goog.scope(function() {
         switch (pname) {
             case gl.TEXTURE_WRAP_S: {
                 /** @type {?tcuTexture.WrapMode} */ var wrapS = sglrReferenceContext.mapGLWrapMode(value);
-                if (this.condtionalSetError(null == wrapS, gl.INVALID_VALUE))
+                if (this.conditionalSetError(null == wrapS, gl.INVALID_VALUE))
                     return;
                 texture.getSampler().wrapS = /** @type {tcuTexture.WrapMode} */ (wrapS);
                 break;
@@ -4701,7 +4701,7 @@ goog.scope(function() {
 
             case gl.TEXTURE_WRAP_T: {
                 /** @type {?tcuTexture.WrapMode} */ var wrapT = sglrReferenceContext.mapGLWrapMode(value);
-                if (this.condtionalSetError(null == wrapT, gl.INVALID_VALUE))
+                if (this.conditionalSetError(null == wrapT, gl.INVALID_VALUE))
                     return;
                 texture.getSampler().wrapT = /** @type {tcuTexture.WrapMode} */ (wrapT);
                 break;
@@ -4709,7 +4709,7 @@ goog.scope(function() {
 
             case gl.TEXTURE_WRAP_R: {
                 /** @type {?tcuTexture.WrapMode} */ var wrapR = sglrReferenceContext.mapGLWrapMode(value);
-                if (this.condtionalSetError(null == wrapR, gl.INVALID_VALUE))
+                if (this.conditionalSetError(null == wrapR, gl.INVALID_VALUE))
                     return;
                 texture.getSampler().wrapR = /** @type {tcuTexture.WrapMode} */ (wrapR);
                 break;
@@ -4717,7 +4717,7 @@ goog.scope(function() {
 
             case gl.TEXTURE_MIN_FILTER: {
                 /** @type {?tcuTexture.FilterMode} */ var minMode = sglrReferenceContext.mapGLFilterMode(value);
-                if (this.condtionalSetError(null == minMode, gl.INVALID_VALUE))
+                if (this.conditionalSetError(null == minMode, gl.INVALID_VALUE))
                     return;
                 texture.getSampler().minFilter = /** @type {tcuTexture.FilterMode} */ (minMode);
                 break;
@@ -4725,14 +4725,14 @@ goog.scope(function() {
 
             case gl.TEXTURE_MAG_FILTER: {
                 /** @type {?tcuTexture.FilterMode} */ var magMode = sglrReferenceContext.mapGLFilterMode(value);
-                if (this.condtionalSetError(null == magMode, gl.INVALID_VALUE))
+                if (this.conditionalSetError(null == magMode, gl.INVALID_VALUE))
                     return;
                 texture.getSampler().magFilter = /** @type {tcuTexture.FilterMode} */ (magMode);
                 break;
             }
 
             case gl.TEXTURE_MAX_LEVEL: {
-                if (this.condtionalSetError(value < 0, gl.INVALID_VALUE))
+                if (this.conditionalSetError(value < 0, gl.INVALID_VALUE))
                     return;
                 texture.setMaxLevel(value);
                 break;

@@ -1139,8 +1139,6 @@ goog.scope(function() {
 
         /** @type {tcuSurface.Surface} */
         var rendered = new tcuSurface.Surface(viewport.width, viewport.height);
-        /** @type {Array<Array<number>>}*/
-        var texCoord = [];
 
         if (viewport.width < TEX3D_MIN_VIEWPORT_WIDTH ||
             viewport.height < TEX3D_MIN_VIEWPORT_HEIGHT)
@@ -1173,10 +1171,13 @@ goog.scope(function() {
         /** @type {number} */ var l0 = curCase.layerRange[0];
         /** @type {number} */ var l1 = curCase.layerRange[1];
 
-        texCoord[0] = [oX, oY, l0];
-        texCoord[1] = [oX, oY + sY, l0 * 0.5 + l1 * 0.5];
-        texCoord[2] = [oX + sX, oY, l0 * 0.5 + l1 * 0.5];
-        texCoord[3] = [oX + sX, oY + sY, l1];
+        /** @type {Array<number>}*/
+        var texCoord = [
+            oX, oY, l0,
+            oX, oY + sY, l0 * 0.5 + l1 * 0.5,
+            oX + sX, oY, l0 * 0.5 + l1 * 0.5,
+            oX + sX, oY + sY, l1
+            ];
 
         gl.bindTexture(gl.TEXTURE_2D_ARRAY, curCase.texture.getGLTexture());
         gl.texParameteri(
@@ -1190,10 +1191,7 @@ goog.scope(function() {
 
         gl.viewport(viewport.x, viewport.y, viewport.width, viewport.height);
         this.m_renderer.renderQuad(
-            0, texCoord[0].
-            concat(texCoord[1]).
-            concat(texCoord[2]).
-            concat(texCoord[3]),
+            0, texCoord,
             refParams
         );
         rendered.readViewport(
@@ -1770,18 +1768,14 @@ goog.scope(function() {
             }
         ];
 
-           // 2D texture filtering.
+        // 2D texture filtering.
 
-         /** @type {tcuTestCase.DeqpTest} */
-        var group2D = new tcuTestCase.DeqpTest('2d', '2D Texture Filtering');
-         this.addChild(group2D);
-
-         // Formats.
-         /** @type {tcuTestCase.DeqpTest} */
+        // Formats.
+        /** @type {tcuTestCase.DeqpTest} */
         var formatsGroup = new tcuTestCase.DeqpTest(
-            'formats', '2D Texture Formats');
+            '2d_formats', '2D Texture Formats');
 
-        group2D.addChild(formatsGroup);
+        this.addChild(formatsGroup);
 
         for (var fmtNdx = 0;
             fmtNdx < filterableFormatsByType.length;
@@ -1821,8 +1815,8 @@ goog.scope(function() {
 
         // Sizes.
         /** @type {tcuTestCase.DeqpTest} */
-        var sizesGroup = new tcuTestCase.DeqpTest('sizes', 'Texture Sizes');
-        group2D.addChild(sizesGroup);
+        var sizesGroup = new tcuTestCase.DeqpTest('2d_sizes', '2D Texture Sizes');
+        this.addChild(sizesGroup);
         for (var sizeNdx = 0; sizeNdx < sizes2D.length; sizeNdx++) {
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
@@ -1851,9 +1845,9 @@ goog.scope(function() {
         // Wrap modes.
         /** @type {tcuTestCase.DeqpTest} */
         var combinationsGroup = new tcuTestCase.DeqpTest(
-            'combinations', 'Filter and wrap mode combinations'
+            '2d_combinations', '2D Filter and wrap mode combinations'
         );
-        group2D.addChild(combinationsGroup);
+        this.addChild(combinationsGroup);
 
         for (var minFilterNdx = 0;
             minFilterNdx < minFilterModes.length;
@@ -1893,17 +1887,11 @@ goog.scope(function() {
 
         // Cube map texture filtering.
 
-        /** @type {tcuTestCase.DeqpTest} */
-        var groupCube = new tcuTestCase.DeqpTest(
-            'cube', 'Cube Map Texture Filtering'
-        );
-        this.addChild(groupCube);
-
         // Formats.
         formatsGroup = new tcuTestCase.DeqpTest(
-            'formats', '2D Texture Formats'
+            'cube+formats', 'Cube Texture Formats'
         );
-        groupCube.addChild(formatsGroup);
+        this.addChild(formatsGroup);
         for (var fmtNdx = 0;
             fmtNdx < filterableFormatsByType.length;
             fmtNdx++) {
@@ -1935,9 +1923,9 @@ goog.scope(function() {
 
         // Sizes.
         sizesGroup = new tcuTestCase.DeqpTest(
-            'sizes', 'Texture Sizes'
+            'cube_sizes', 'Cube Texture Sizes'
         );
-        groupCube.addChild(sizesGroup);
+        this.addChild(sizesGroup);
         for (var sizeNdx = 0; sizeNdx < sizesCube.length; sizeNdx++) {
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
@@ -1965,9 +1953,9 @@ goog.scope(function() {
 
         // Filter/wrap mode combinations.
         combinationsGroup = new tcuTestCase.DeqpTest(
-            'combinations', 'Filter and wrap mode combinations'
+            'cube_combinations', 'Cube Filter and wrap mode combinations'
         );
-        groupCube.addChild(combinationsGroup);
+        this.addChild(combinationsGroup);
         for (var minFilterNdx = 0;
             minFilterNdx < minFilterModes.length;
             minFilterNdx++) {
@@ -2007,9 +1995,9 @@ goog.scope(function() {
         // Cases with no visible cube edges.
         /** @type {tcuTestCase.DeqpTest} */
         var onlyFaceInteriorGroup = new tcuTestCase.DeqpTest(
-            'no_edges_visible', "Don't sample anywhere near a face's edges"
+            'cube_no_edges_visible', "Don't sample anywhere near a face's edges"
         );
-        groupCube.addChild(onlyFaceInteriorGroup);
+        this.addChild(onlyFaceInteriorGroup);
 
         for (var isLinearI = 0; isLinearI <= 1; isLinearI++) {
             var isLinear = isLinearI != 0;
@@ -2024,18 +2012,11 @@ goog.scope(function() {
             );
         }
 
-        // 2D array texture filtering.
-        /** @type {tcuTestCase.DeqpTest} */
-        var group2DArray = new tcuTestCase.DeqpTest(
-            '2d_array', '2D Array Texture Filtering'
-        );
-        this.addChild(group2DArray);
-
         // Formats.
         formatsGroup = new tcuTestCase.DeqpTest(
-            'formats', '2D Array Texture Formats'
+            '2d_array_formats', '2D Array Texture Formats'
         );
-        group2DArray.addChild(formatsGroup);
+        this.addChild(formatsGroup);
         for (var fmtNdx = 0;
             fmtNdx < filterableFormatsByType.length;
             fmtNdx++) {
@@ -2066,8 +2047,8 @@ goog.scope(function() {
         }
 
         // Sizes.
-        sizesGroup = new tcuTestCase.DeqpTest('sizes', 'Texture Sizes');
-        group2DArray.addChild(sizesGroup);
+        sizesGroup = new tcuTestCase.DeqpTest('2d_array_sizes', '2D Array Texture Sizes');
+        this.addChild(sizesGroup);
         for (var sizeNdx = 0; sizeNdx < sizes2DArray.length; sizeNdx++) {
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
@@ -2097,9 +2078,9 @@ goog.scope(function() {
 
         // Wrap modes.
         combinationsGroup = new tcuTestCase.DeqpTest(
-            'combinations', 'Filter and wrap mode combinations'
+            '2d_array_combinations', '2D Array Filter and wrap mode combinations'
         );
-        group2DArray.addChild(combinationsGroup);
+        this.addChild(combinationsGroup);
         for (var minFilterNdx = 0;
             minFilterNdx < minFilterModes.length;
             minFilterNdx++) {
@@ -2140,17 +2121,11 @@ goog.scope(function() {
 
         // 3D texture filtering.
 
-        /** @type {tcuTestCase.DeqpTest} */
-        var group3D = new tcuTestCase.DeqpTest(
-            '3d', '3D Texture Filtering'
-        );
-        this.addChild(group3D);
-
         // Formats.
         formatsGroup = new tcuTestCase.DeqpTest(
-            'formats', '3D Texture Formats'
+            '3d_formats', '3D Texture Formats'
         );
-        group3D.addChild(formatsGroup);
+        this.addChild(formatsGroup);
         /** @type {number} */ var depth = 64;
         for (var fmtNdx = 0;
             fmtNdx < filterableFormatsByType.length;
@@ -2185,9 +2160,9 @@ goog.scope(function() {
 
         // Sizes.
         sizesGroup = new tcuTestCase.DeqpTest(
-            'sizes', 'Texture Sizes'
+            '3d_sizes', '3D Texture Sizes'
         );
-        group3D.addChild(sizesGroup);
+        this.addChild(sizesGroup);
         for (var sizeNdx = 0; sizeNdx < sizes3D.length; sizeNdx++) {
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
@@ -2220,9 +2195,9 @@ goog.scope(function() {
 
         // Wrap modes.
         combinationsGroup = new tcuTestCase.DeqpTest(
-            'combinations', 'Filter and wrap mode combinations'
+            '3d_combinations', '3D Filter and wrap mode combinations'
         );
-        group3D.addChild(combinationsGroup);
+        this.addChild(combinationsGroup);
         for (var minFilterNdx = 0;
             minFilterNdx < minFilterModes.length;
             minFilterNdx++) {
@@ -2272,13 +2247,16 @@ goog.scope(function() {
     /**
      * Create and execute the test cases
      * @param {WebGL2RenderingContext} context
+     * @param {Array<number>=} range Test range
      */
-    es3fTextureFilteringTests.run = function(context) {
+    es3fTextureFilteringTests.run = function(context, range) {
         gl = context;
         //Set up Test Root parameters
         var state = tcuTestCase.runner;
 
         state.setRoot(new es3fTextureFilteringTests.TextureFilteringTests());
+        if (range)
+            state.setRange(range);
 
         //Set up name and description of this test series.
         setCurrentTestName(state.testCases.fullName());
