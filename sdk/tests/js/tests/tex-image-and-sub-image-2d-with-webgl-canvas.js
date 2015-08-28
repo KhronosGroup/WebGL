@@ -26,6 +26,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var tiu = TexImageUtils;
     var gl = null;
     var successfullyParsed = false;
+    var redColor = [255, 0, 0];
+    var greenColor = [0, 255, 0];
 
     function init()
     {
@@ -36,6 +38,15 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         if (!prologue(gl)) {
             finishTest();
             return;
+        }
+
+        switch (gl[pixelFormat]) {
+          case gl.RED:
+          case gl.RED_INTEGER:
+            greenColor = [0, 0, 0];
+            break;
+          default:
+            break;
         }
 
         gl.clearColor(0,0,0,1);
@@ -77,7 +88,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
       ctx.canvas.height = 2;
       setCanvasToRedGreen(ctx);
     }
-
+  
     function runOneIteration(canvas, useTexSubImage2D, flipY, program, bindingTarget, opt_texture)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') + ' with flipY=' +
@@ -127,8 +138,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var top = flipY ? (height - halfHeight) : 0;
         var bottom = flipY ? 0 : (height - halfHeight);
 
-        var red = [255, 0, 0];
-        var green = [0, 255, 0];
         var loc;
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
             loc = gl.getUniformLocation(program, "face");
@@ -143,11 +152,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
             // Check the top and bottom halves and make sure they have the right color.
             debug("Checking " + (flipY ? "top" : "bottom"));
-            wtu.checkCanvasRect(gl, 0, bottom, width, halfHeight, red,
-                    "shouldBe " + red);
+            wtu.checkCanvasRect(gl, 0, bottom, width, halfHeight, redColor,
+                    "shouldBe " + redColor);
             debug("Checking " + (flipY ? "bottom" : "top"));
-            wtu.checkCanvasRect(gl, 0, top, width, halfHeight, green,
-                    "shouldBe " + green);
+            wtu.checkCanvasRect(gl, 0, top, width, halfHeight, greenColor,
+                    "shouldBe " + greenColor);
         }
 
         if (false) {
