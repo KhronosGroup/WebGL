@@ -34,8 +34,11 @@ var debug = function(msg) {
 
 function generateTest(internalFormat, pixelFormat, pixelType, prologue, resourcePath) {
     var wtu = WebGLTestUtils;
+    var tiu = TexImageUtils;
     var gl = null;
     var successfullyParsed = false;
+    var redColor = [255, 0, 0];
+    var greenColor = [0, 255, 0];
 
     // Test each format separately because many browsers implement each
     // differently. Some might be GPU accelerated, some might not. Etc...
@@ -45,7 +48,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
       { src: resourcePath + "red-green.theora.ogv",   type: 'video/ogg; codecs="theora, vorbis"',         },
     ];
 
-    var init = function()
+    function init()
     {
         description('Verify texImage2D and texSubImage2D code paths taking video elements (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
@@ -54,6 +57,15 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         if (!prologue(gl)) {
             finishTest();
             return;
+        }
+
+        switch (gl[pixelFormat]) {
+          case gl.RED:
+          case gl.RED_INTEGER:
+            greenColor = [0, 0, 0];
+            break;
+          default:
+            break;
         }
 
         gl.clearColor(0,0,0,1);
@@ -143,21 +155,19 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function runTest(videoElement)
     {
-        var red = [255, 0, 0];
-        var green = [0, 255, 0];
         var cases = [
-            { sub: false, flipY: true, topColor: red, bottomColor: green },
-            { sub: false, flipY: false, topColor: green, bottomColor: red },
-            { sub: true, flipY: true, topColor: red, bottomColor: green },
-            { sub: true, flipY: false, topColor: green, bottomColor: red },
+            { sub: false, flipY: true, topColor: redColor, bottomColor: greenColor },
+            { sub: false, flipY: false, topColor: greenColor, bottomColor: redColor },
+            { sub: true, flipY: true, topColor: redColor, bottomColor: greenColor },
+            { sub: true, flipY: false, topColor: greenColor, bottomColor: redColor },
         ];
 
         function runTexImageTest(bindingTarget) {
             var program;
             if (bindingTarget == gl.TEXTURE_2D) {
-                program = wtu.setupTexturedQuad(gl);
+                program = tiu.setupTexturedQuad(gl, internalFormat);
             } else {
-                program = wtu.setupTexturedQuadWithCubeMap(gl);
+                program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
             }
 
             return new Promise(function(resolve, reject) {
@@ -215,7 +225,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
                 finishTest();
             });
-        })
+        });
     }
 
     return init;

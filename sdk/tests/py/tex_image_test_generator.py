@@ -138,15 +138,14 @@ def WriteTest(filename, element_type, internal_format, format, type):
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
 <script src="../../../js/js-test-pre.js"></script>
 <script src="../../../js/webgl-test-utils.js"></script>
+<script src="../../../js/tests/tex-image-and-sub-image-2d-utils.js"></script>
 <script src="../../../js/tests/tex-image-and-sub-image-2d-with-%(element_type)s.js"></script>
 </head>
 <body>"""
   if element_type == 'image-data':
     code += """
-<canvas id="texcanvas" width="1" height="2"></canvas>
-<canvas id="example" width="1" height="2"></canvas>"""
-  else:
-    code += """
+<canvas id="texcanvas" width="2" height="2"></canvas>"""
+  code += """
 <canvas id="example" width="32" height="32"></canvas>"""
   code += """
 <div id="description"></div>

@@ -23,13 +23,14 @@
 
 function generateTest(internalFormat, pixelFormat, pixelType, prologue, resourcePath) {
     var wtu = WebGLTestUtils;
+    var tiu = TexImageUtils;
     var gl = null;
     var successfullyParsed = false;
     var imgCanvas;
-    var red = [255, 0, 0];
-    var green = [0, 255, 0];
+    var redColor = [255, 0, 0];
+    var greenColor = [0, 255, 0];
 
-    var init = function()
+    function init()
     {
         description('Verify texImage2D and texSubImage2D code paths taking SVG image elements (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
@@ -38,6 +39,15 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         if (!prologue(gl)) {
             finishTest();
             return;
+        }
+
+        switch (gl[pixelFormat]) {
+          case gl.RED:
+          case gl.RED_INTEGER:
+            greenColor = [0, 0, 0];
+            break;
+          default:
+            break;
         }
 
         gl.clearColor(0,0,0,1);
@@ -109,9 +119,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function runTest(image)
     {
-        var program = wtu.setupTexturedQuad(gl);
+        var program = tiu.setupTexturedQuad(gl, internalFormat);
         runTestOnBindingTarget(image, gl.TEXTURE_2D, program);
-        program = wtu.setupTexturedQuadWithCubeMap(gl);
+        program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
         runTestOnBindingTarget(image, gl.TEXTURE_CUBE_MAP, program);
 
         wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
@@ -120,10 +130,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function runTestOnBindingTarget(image, bindingTarget, program) {
         var cases = [
-            { sub: false, flipY: true, topColor: red, bottomColor: green },
-            { sub: false, flipY: false, topColor: green, bottomColor: red },
-            { sub: true, flipY: true, topColor: red, bottomColor: green },
-            { sub: true, flipY: false, topColor: green, bottomColor: red },
+            { sub: false, flipY: true, topColor: redColor, bottomColor: greenColor },
+            { sub: false, flipY: false, topColor: greenColor, bottomColor: redColor },
+            { sub: true, flipY: true, topColor: redColor, bottomColor: greenColor },
+            { sub: true, flipY: false, topColor: greenColor, bottomColor: redColor },
         ];
         for (var i in cases) {
             runOneIteration(image, cases[i].sub, cases[i].flipY,
