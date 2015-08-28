@@ -23,10 +23,11 @@
 
 function generateTest(internalFormat, pixelFormat, pixelType, prologue, resourcePath) {
     var wtu = WebGLTestUtils;
+    var tiu = TexImageUtils;
     var gl = null;
     var successfullyParsed = false;
 
-    var init = function()
+    function init()
     {
         description('Verify texImage2D and texSubImage2D code paths taking webgl canvas elements (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
@@ -180,9 +181,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         function runTexImageTest(bindingTarget) {
             var program;
             if (bindingTarget == gl.TEXTURE_2D) {
-                program = wtu.setupTexturedQuad(gl);
+                program = tiu.setupTexturedQuad(gl, internalFormat);
             } else {
-                program = wtu.setupTexturedQuadWithCubeMap(gl);
+                program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
             }
 
             return new Promise(function(resolve, reject) {
@@ -219,7 +220,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
                 finishTest();
             });
-        })
+        });
     }
 
     return init;

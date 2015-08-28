@@ -23,13 +23,14 @@
 
 function generateTest(internalFormat, pixelFormat, pixelType, prologue, resourcePath) {
     var wtu = WebGLTestUtils;
+    var tiu = TexImageUtils;
     var gl = null;
     var successfullyParsed = false;
     var imgCanvas;
     var red = [255, 0, 0];
     var green = [0, 255, 0];
 
-    var init = function()
+    function init()
     {
         description('Verify texImage2D and texSubImage2D code paths taking SVG image elements (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
@@ -109,9 +110,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function runTest(image)
     {
-        var program = wtu.setupTexturedQuad(gl);
+        var program = tiu.setupTexturedQuad(gl, internalFormat);
         runTestOnBindingTarget(image, gl.TEXTURE_2D, program);
-        program = wtu.setupTexturedQuadWithCubeMap(gl);
+        program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
         runTestOnBindingTarget(image, gl.TEXTURE_CUBE_MAP, program);
 
         wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");

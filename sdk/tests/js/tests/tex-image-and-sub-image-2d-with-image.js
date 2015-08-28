@@ -23,13 +23,14 @@
 
 function generateTest(internalFormat, pixelFormat, pixelType, prologue, resourcePath) {
     var wtu = WebGLTestUtils;
+    var tiu = TexImageUtils;
     var gl = null;
     var successfullyParsed = false;
     var imgCanvas;
     var red = [255, 0, 0];
     var green = [0, 255, 0];
 
-    var init = function()
+    function init()
     {
         description('Verify texImage2D and texSubImage2D code paths taking image elements (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
@@ -117,7 +118,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             { sub: true, flipY: false, topColor: green, bottomColor: red },
         ];
 
-        var program = wtu.setupTexturedQuad(gl);
+        var program = tiu.setupTexturedQuad(gl, internalFormat);
         for (var i in cases) {
             runOneIteration(image, cases[i].sub, cases[i].flipY,
                             cases[i].topColor, cases[i].bottomColor,
@@ -126,7 +127,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         // cube map texture must be square.
         if (image.width != image.height)
             return;
-        program = wtu.setupTexturedQuadWithCubeMap(gl);
+        program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
         for (var i in cases) {
             runOneIteration(image, cases[i].sub, cases[i].flipY,
                             cases[i].topColor, cases[i].bottomColor,
