@@ -27,6 +27,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var gl = null;
     var successfullyParsed = false;
     var imageData = null;
+    var blackColor = [0, 0, 0];
+    var redColor = [255, 0, 0];
+    var greenColor = [0, 255, 0];
 
     function init()
     {
@@ -37,6 +40,15 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         if (!prologue(gl)) {
             finishTest();
             return;
+        }
+
+        switch (gl[pixelFormat]) {
+          case gl.RED:
+          case gl.RED_INTEGER:
+            greenColor = [0, 0, 0];
+            break;
+          default:
+            break;
         }
 
         gl.clearColor(0,0,0,1);
@@ -54,11 +66,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         data[4] = 255;
         data[5] = 0;
         data[6] = 0;
-        data[7] = 255;
+        data[7] = 0;
         data[8] = 0;
         data[9] = 255;
         data[10] = 0;
-        data[11] = 0;
+        data[11] = 255;
         data[12] = 0;
         data[13] = 255;
         data[14] = 0;
@@ -67,7 +79,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         runTest();
     }
 
-    function runOneIteration(useTexSubImage2D, flipY, premultiplyAlpha, topColor, bottomColor, bindingTarget, program)
+    function runOneIteration(useTexSubImage2D, flipY, premultiplyAlpha, bindingTarget, program)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
               ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
@@ -105,6 +117,19 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             }
         }
 
+        var width = gl.canvas.width;
+        var halfWidth = Math.floor(width / 2);
+        var height = gl.canvas.height;
+        var halfHeight = Math.floor(height / 2);
+
+        var top = flipY ? 0 : (height - halfHeight);
+        var bottom = flipY ? (height - halfHeight) : 0;
+
+        var tl = redColor;
+        var tr = premultiplyAlpha ? blackColor : redColor;
+        var bl = greenColor;
+        var br = premultiplyAlpha ? blackColor : greenColor;
+
         var loc;
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
             loc = gl.getUniformLocation(program, "face");
@@ -119,10 +144,12 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
             // Check the top pixel and bottom pixel and make sure they have
             // the right color.
-            debug("Checking bottom pixel");
-            wtu.checkCanvasRect(gl, 0, 0, 1, 1, bottomColor, "shouldBe " + bottomColor);
-            debug("Checking top pixel");
-            wtu.checkCanvasRect(gl, 0, 1, 1, 1, topColor, "shouldBe " + topColor);
+            debug("Checking " + (flipY ? "top" : "bottom"));
+            wtu.checkCanvasRect(gl, 0, bottom, halfWidth, halfHeight, tl, "shouldBe " + tl);
+            wtu.checkCanvasRect(gl, halfWidth, bottom, width, halfHeight, tr, "shouldBe " + tr);
+            debug("Checking " + (flipY ? "bottom" : "top"));
+            wtu.checkCanvasRect(gl, 0, top, halfWidth, halfHeight, bl, "shouldBe " + bl);
+            wtu.checkCanvasRect(gl, halfWidth, top, width, halfHeight, br, "shouldBe " + br);
         }
     }
 
@@ -138,24 +165,20 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function runTestOnBindingTarget(bindingTarget, program) {
-        var red = [255, 0, 0, 255];
-        var green = [0, 255, 0, 255];
-        var redPremultiplyAlpha = [255, 0, 0, 255];
-        var greenPremultiplyAlpha = [0, 0, 0, 255];
         var cases = [
-            { sub: false, flipY: true, premultiplyAlpha: false, topColor: red, bottomColor: green },
-            { sub: false, flipY: false, premultiplyAlpha: false, topColor: green, bottomColor: red },
-            { sub: false, flipY: true, premultiplyAlpha: true, topColor: redPremultiplyAlpha, bottomColor: greenPremultiplyAlpha },
-            { sub: false, flipY: false, premultiplyAlpha: true, topColor: greenPremultiplyAlpha, bottomColor: redPremultiplyAlpha },
-            { sub: true, flipY: true, premultiplyAlpha: false, topColor: red, bottomColor: green },
-            { sub: true, flipY: false, premultiplyAlpha: false, topColor: green, bottomColor: red },
-            { sub: true, flipY: true, premultiplyAlpha: true, topColor: redPremultiplyAlpha, bottomColor: greenPremultiplyAlpha },
-            { sub: true, flipY: false, premultiplyAlpha: true, topColor: greenPremultiplyAlpha, bottomColor: redPremultiplyAlpha },
+            { sub: false, flipY: true, premultiplyAlpha: false },
+            { sub: false, flipY: false, premultiplyAlpha: false },
+            { sub: false, flipY: true, premultiplyAlpha: true },
+            { sub: false, flipY: false, premultiplyAlpha: true },
+            { sub: true, flipY: true, premultiplyAlpha: false },
+            { sub: true, flipY: false, premultiplyAlpha: false },
+            { sub: true, flipY: true, premultiplyAlpha: true },
+            { sub: true, flipY: false, premultiplyAlpha: true },
         ];
 
         for (var i in cases) {
             runOneIteration(cases[i].sub, cases[i].flipY, cases[i].premultiplyAlpha,
-                            cases[i].topColor, cases[i].bottomColor, bindingTarget, program);
+                            bindingTarget, program);
         }
     }
 
