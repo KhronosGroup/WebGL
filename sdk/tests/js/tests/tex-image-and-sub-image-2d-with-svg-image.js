@@ -27,8 +27,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var gl = null;
     var successfullyParsed = false;
     var imgCanvas;
-    var red = [255, 0, 0];
-    var green = [0, 255, 0];
+    var redColor = [255, 0, 0];
+    var greenColor = [0, 255, 0];
 
     function init()
     {
@@ -39,6 +39,15 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         if (!prologue(gl)) {
             finishTest();
             return;
+        }
+
+        switch (gl[pixelFormat]) {
+          case gl.RED:
+          case gl.RED_INTEGER:
+            greenColor = [0, 0, 0];
+            break;
+          default:
+            break;
         }
 
         gl.clearColor(0,0,0,1);
@@ -121,10 +130,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function runTestOnBindingTarget(image, bindingTarget, program) {
         var cases = [
-            { sub: false, flipY: true, topColor: red, bottomColor: green },
-            { sub: false, flipY: false, topColor: green, bottomColor: red },
-            { sub: true, flipY: true, topColor: red, bottomColor: green },
-            { sub: true, flipY: false, topColor: green, bottomColor: red },
+            { sub: false, flipY: true, topColor: redColor, bottomColor: greenColor },
+            { sub: false, flipY: false, topColor: greenColor, bottomColor: redColor },
+            { sub: true, flipY: true, topColor: redColor, bottomColor: greenColor },
+            { sub: true, flipY: false, topColor: greenColor, bottomColor: redColor },
         ];
         for (var i in cases) {
             runOneIteration(image, cases[i].sub, cases[i].flipY,
