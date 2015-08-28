@@ -27,8 +27,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var gl = null;
     var successfullyParsed = false;
     var imgCanvas;
-    var red = [255, 0, 0];
-    var green = [0, 255, 0];
+    var redColor = [255, 0, 0];
+    var greenColor = [0, 255, 0];
 
     function init()
     {
@@ -39,6 +39,16 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         if (!prologue(gl)) {
             finishTest();
             return;
+        }
+
+        switch (gl[pixelFormat]) {
+        case gl.RED:
+        case gl.RED_INTEGER:
+          greenColor = [0, 0, 0];
+          break;
+
+        default:
+          break;
         }
 
         gl.clearColor(0,0,0,1);
@@ -112,10 +122,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function runTestOnImage(image) {
         var cases = [
-            { sub: false, flipY: true, topColor: red, bottomColor: green },
-            { sub: false, flipY: false, topColor: green, bottomColor: red },
-            { sub: true, flipY: true, topColor: red, bottomColor: green },
-            { sub: true, flipY: false, topColor: green, bottomColor: red },
+            { sub: false, flipY: true, topColor: redColor, bottomColor: greenColor },
+            { sub: false, flipY: false, topColor: greenColor, bottomColor: redColor },
+            { sub: true, flipY: true, topColor: redColor, bottomColor: greenColor },
+            { sub: true, flipY: false, topColor: greenColor, bottomColor: redColor },
         ];
 
         var program = tiu.setupTexturedQuad(gl, internalFormat);
@@ -146,13 +156,13 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var imgData = imgCtx.createImageData(1, 2);
         for (var i = 0; i < 2; i++) {
             var stride = i * 8;
-            imgData.data[stride + 0] = red[0];
-            imgData.data[stride + 1] = red[1];
-            imgData.data[stride + 2] = red[2];
+            imgData.data[stride + 0] = redColor[0];
+            imgData.data[stride + 1] = redColor[1];
+            imgData.data[stride + 2] = redColor[2];
             imgData.data[stride + 3] = 255;
-            imgData.data[stride + 4] = green[0];
-            imgData.data[stride + 5] = green[1];
-            imgData.data[stride + 6] = green[2];
+            imgData.data[stride + 4] = greenColor[0];
+            imgData.data[stride + 5] = greenColor[1];
+            imgData.data[stride + 6] = greenColor[2];
             imgData.data[stride + 7] = 255;
         }
         imgCtx.putImageData(imgData, 0, 0);
