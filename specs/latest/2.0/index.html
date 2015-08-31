@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 18 August 2015</h2>
+    <h2 class="no-toc">Editor's Draft 26 August 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1869,7 +1869,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         </dt>
         <dd>
           <p>If no WebGLBuffer is bound to the <code>PIXEL_PACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
-          <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> error if it's less than 0.</p>
+          <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> error if it's less than 0. If the remainder of the WebGLBuffer's data store is not large enough to retrieve all of the pixels in the specified rectangle taking into account pixel store modes, generates an <code>INVALID_OPERATION</code>.</p>
         </dd>
     </dl>
 
