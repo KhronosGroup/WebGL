@@ -673,4 +673,56 @@ gl.deleteBuffer(buffer);
 shouldBeNull('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING)');
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
+
+if (contextVersion > 1) {
+    debug("");
+    debug("Test getInternalformatParameter")
+
+    gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+    shouldBeNonZero('gl.getInternalformatParameter(gl.RENDERBUFFER, gl.R32I, gl.SAMPLES)');
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+    testInvalidArgument(
+        "getInternalformatParameter",
+        "target",
+        [ gl.RENDERBUFFER ],
+        function(target) {
+            return gl.getInternalformatParameter(target, gl.R32I, gl.SAMPLES);
+    });
+
+    testInvalidArgument(
+        "getInternalformatParameter",
+        "pname",
+        [ gl.SAMPLES ],
+        function(pname){
+            return gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA4, pname);
+    });
+
+    var validArrayForInterformat = new Array(
+        gl.R8, gl.R8_SNORM, gl.RG8, gl.RG8_SNORM,
+        gl.RGB8, gl.RGB8_SNORM, gl.RGB565, gl.RGBA4,
+        gl.RGB5_A1, gl.RGBA8, gl.RGBA8_SNORM, gl.RGB10_A2,
+        gl.RGB10_A2UI, gl.SRGB8, gl.SRGB8_ALPHA8, gl.R16F,
+        gl.RG16F, gl.RGB16F, gl.RGBA16F, gl.R32F,
+        gl.RG32F, gl.RGB32F, gl.RGBA32F, gl.R11F_G11F_B10F,
+        gl.RGB9_E5, gl.R8I, gl.R8UI, gl.R16I,
+        gl.R16UI, gl.R32I, gl.R32UI, gl.RG8I,
+        gl.RG8UI, gl.RG16I, gl.RG16UI, gl.RG32I,
+        gl.RG32UI, gl.RGB8I, gl.RGB8UI, gl.RGB16I,
+        gl.RGB16UI, gl.RGB32I, gl.RGB32UI, gl.RGBA8I,
+        gl.RGBA8UI, gl.RGBA16I, gl.RGBA16UI, gl.RGBA32I,
+        gl.RGBA32UI, gl.RGB, gl.RGBA, gl.DEPTH_COMPONENT16,
+        gl.DEPTH_COMPONENT24, gl.DEPTH_COMPONENT32F, gl.DEPTH24_STENCIL8,
+        gl.DEPTH32F_STENCIL8, gl.STENCIL_INDEX8
+    );
+    testInvalidArgument(
+        "getInternalformatParameter",
+        "internalformat",
+        validArrayForInterformat,
+        function(internalformat){
+            return gl.getInternalformatParameter(gl.RENDERBUFFER, internalformat, gl.SAMPLES);
+    });
+}
+
 var successfullyParsed = true;
