@@ -427,7 +427,7 @@ gluShaderProgram.ProgramSources.prototype.add = function(item) {
             break;
 
         case gluShaderProgram.containerTypes.TRANSFORM_FEEDBACK_VARYINGS:
-            this.transformFeedbackVaryings.concat(item.array);
+            this.transformFeedbackVaryings = this.transformFeedbackVaryings.concat(item.array);
             break;
 
         case gluShaderProgram.containerTypes.SHADER_SOURCE:
