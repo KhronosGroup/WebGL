@@ -67,13 +67,31 @@ var testCopyBuffer = function(srcTarget, dstTarget) {
   gl.copyBufferSubData(srcTarget, dstTarget, 8, 0, 4);
   if (srcTarget == dstTarget)
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, testCopyStr + " should work.");
-  else if (srcTarget == gl.ELEMENT_ARRAY_BUFFER && dstTarget != gl.COPY_READ_BUFFER
-    && dstTarget != gl.COPY_WRITE_BUFFER
-    || dstTarget == gl.ELEMENT_ARRAY_BUFFER && srcTarget != gl.COPY_READ_BUFFER
-    && srcTarget != gl.COPY_WRITE_BUFFER)
+  else if (srcTarget == gl.ELEMENT_ARRAY_BUFFER || dstTarget == gl.ELEMENT_ARRAY_BUFFER )
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, testCopyStr + " should fail.");
   else
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, testCopyStr + " should work.");
+
+  // Special case: COPY_READ_BUFFER and COPY_WRITE_BUFFER are compatible with ELEMENT_ARRAY_BUFFER
+  // only if the bound had been initially bound to an ELEMENT_ARRAY_BUFFER
+  if (srcTarget == gl.ELEMENT_ARRAY_BUFFER &&
+      (dstTarget == gl.COPY_READ_BUFFER || dstTarget == gl.COPY_WRITE_BUFFER)) {
+    dstBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, dstBuffer);
+  } else if (dstTarget == gl.ELEMENT_ARRAY_BUFFER &&
+      (srcTarget == gl.COPY_READ_BUFFER || srcTarget == gl.COPY_WRITE_BUFFER)) {
+    srcBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, srcBuffer);
+  } else {
+    return;
+  }
+
+  gl.bindBuffer(srcTarget, srcBuffer);
+  gl.bufferData(srcTarget, new Float32Array(32), gl.STATIC_DRAW);
+  gl.bindBuffer(dstTarget, dstBuffer);
+  gl.bufferData(dstTarget, new Float32Array(32), gl.STATIC_DRAW);
+  gl.copyBufferSubData(srcTarget, dstTarget, 8, 0, 4);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, testCopyStr + " should work if all buffers were initially bound to ELEMENT_ARRAY_BUFFER.");
 };
 
 for (var i = 0; i < validTargets.length; i++) {
