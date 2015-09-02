@@ -505,6 +505,11 @@ function testDXTTexture(test) {
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, wrongFormat, data);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "format does not match");
 
+    gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 4, 0, width, height, format, data);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "dimension out of range");
+    gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 4, width, height, format, data);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "dimension out of range");
+
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width + 4, height, format, data);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "data size does not match dimensions");
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height + 4, format, data);
