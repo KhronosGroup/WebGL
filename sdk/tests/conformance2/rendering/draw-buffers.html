@@ -99,10 +99,11 @@ if (!gl) {
 } else {
   testPassed("WebGL context exists");
 
-  runShadersTest();
-  runAttachmentTest();
-  runDrawTests();
-  testParameters();
+  if (testParameters()) {
+    runShadersTest();
+    runAttachmentTest();
+    runDrawTests();
+  }
 
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
@@ -551,10 +552,20 @@ function runDrawTests() {
 
 function testParameters() {
   debug("");
-  debug("check that MAX_DRAW_BUFFERS and MAX_COLOR_ATTACHMENTS are the same");
-  var maxDrawingBuffers = gl.getParameter(gl.MAX_DRAW_BUFFERS);
+  debug("check that MAX_DRAW_BUFFERS and MAX_COLOR_ATTACHMENTS are valid");
+  var maxDrawBuffers = gl.getParameter(gl.MAX_DRAW_BUFFERS);
   var maxColorAttachments = gl.getParameter(gl.MAX_COLOR_ATTACHMENTS);
-  shouldBeTrue("gl.getParameter(gl.MAX_DRAW_BUFFERS) == gl.getParameter(gl.MAX_COLOR_ATTACHMENTS)");
+  debug("MAX_DRAW_BUFFERS = " + maxDrawBuffers);
+  debug("MAX_COLOR_ATTACHMENTS = " + maxColorAttachments);
+  if (maxDrawBuffers != maxColorAttachments) {
+    testFailed("MAX_DRAW_BUFFERS and MAX_COLOR_ATTACHMENTS should be the same");
+    return false;
+  }
+  if (maxDrawBuffers < 4) {
+    testFailed("MAX_DRAW_BUFFERS should be at least 4");
+    return false;
+  }
+  return true;
 }
 
 debug("");
