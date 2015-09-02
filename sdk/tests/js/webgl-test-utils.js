@@ -66,7 +66,7 @@ var glEnumToString = function(gl, value) {
       return p;
     }
   }
-  return "0x" + value.toString(16);
+  return "0x" + Number(value).toString(16);
 };
 
 var lastError = "";
