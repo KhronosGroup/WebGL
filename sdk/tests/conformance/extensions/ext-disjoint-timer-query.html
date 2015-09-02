@@ -82,11 +82,12 @@ function runSanityTests() {
     debug("");
     debug("Testing time elapsed query lifecycle");
     query = ext.createQueryEXT();
-    shouldBe("ext.isQueryEXT(query)", "true");
+    shouldBe("ext.isQueryEXT(query)", "false");
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Query creation must succeed.");
     ext.beginQueryEXT(ext.TIMESTAMP_EXT, query)
     wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Beginning a timestamp query should fail.");
     ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query)
+    shouldBe("ext.isQueryEXT(query)", "true");
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Beginning an inactive time elapsed query should succeed.");
     ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query)
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Attempting to begin an active query should fail.");
@@ -102,9 +103,9 @@ function runSanityTests() {
     ext.deleteQueryEXT(query);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Query deletion must succeed.");
     ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query);
-    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Ending an inactive query must fail.");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Beginning a deleted query must fail.");
     ext.getQueryObjectEXT(query, ext.QUERY_RESULT_AVAILABLE_EXT);
-    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Fetching query result availability after query deletion should fail.");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Fetching query result availability after query deletion should fail.");
     shouldBe("ext.isQueryEXT(query)", "false");
 
     debug("");
