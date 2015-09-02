@@ -77,6 +77,9 @@ array = new ArrayBuffer(64);
 gl.bufferSubData(gl.ARRAY_BUFFER, -10, array);
 wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
 
+gl.bufferSubData(gl.ARRAY_BUFFER, 65, array);
+wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "buffer overflow");
+
 gl.bufferSubData(gl.ARRAY_BUFFER, -10, new Float32Array(8));
 wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
 
