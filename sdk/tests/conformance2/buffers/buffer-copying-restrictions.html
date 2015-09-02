@@ -73,7 +73,7 @@ var testCopyBuffer = function(srcTarget, dstTarget) {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, testCopyStr + " should work.");
 
   // Special case: COPY_READ_BUFFER and COPY_WRITE_BUFFER are compatible with ELEMENT_ARRAY_BUFFER
-  // only if the bound had been initially bound to an ELEMENT_ARRAY_BUFFER
+  // only if the buffer had been initially bound to an ELEMENT_ARRAY_BUFFER
   if (srcTarget == gl.ELEMENT_ARRAY_BUFFER &&
       (dstTarget == gl.COPY_READ_BUFFER || dstTarget == gl.COPY_WRITE_BUFFER)) {
     dstBuffer = gl.createBuffer();
