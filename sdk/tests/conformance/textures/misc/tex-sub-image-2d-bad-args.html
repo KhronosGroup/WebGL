@@ -46,6 +46,9 @@ var c = document.getElementById("c");
 
 var gl = wtu.create3DContext("testbed");
 var tex = gl.createTexture();
+var maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+var maxTextureLevel = Math.floor(Math.log2(maxTextureSize)) + 1;
+
 gl.bindTexture(gl.TEXTURE_2D, tex);
 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 1, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "no previously defined texture image");
@@ -62,6 +65,8 @@ gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, -1, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "negative y");
 gl.texSubImage2D(gl.TEXTURE_2D, -1, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "negative level");
+gl.texSubImage2D(gl.TEXTURE_2D, maxTextureLevel + 1, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
+wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "too high level");
 gl.texSubImage2D(gl.FLOAT, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "bad target");
 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
@@ -86,6 +91,17 @@ gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "format not same as original RGBA 4_4_4_4");
 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original RGBA 4_4_4_4");
+
+var maxCubeMapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
+var maxCubeMapTextureLevel = Math.floor(Math.log2(maxCubeMapTextureSize)) + 1;
+for (var f = 0; f < 6; f++) {
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, tex);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + f, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, c);
+    gl.texSubImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + f, maxCubeMapTextureLevel + 1, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, c);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "too high level");
+    gl.deleteTexture(tex);
+}
 
 var successfullyParsed = true;
 </script>
