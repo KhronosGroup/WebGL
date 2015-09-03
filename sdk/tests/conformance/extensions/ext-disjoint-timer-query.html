@@ -49,6 +49,7 @@ var query = null;
 var elapsed_query = null;
 var timestamp_query1 = null;
 var timestamp_query2 = null;
+var availability_retry = 16;
 
 if (!gl) {
     testFailed("WebGL context does not exist");
@@ -68,6 +69,7 @@ if (!gl) {
         runElapsedTimeTest();
         runTimeStampTest();
 
+        gl.finish();
         setTimeout(checkQueryResults, 0);
     }
 }
@@ -160,11 +162,16 @@ function runTimeStampTest() {
 }
 
 function checkQueryResults() {
+    if (availability_retry <= 0 || !ext.getQueryObjectEXT(timestamp_query2, ext.QUERY_RESULT_AVAILABLE_EXT)) {
+        availability_retry--;
+        setTimeout(checkQueryResults, 1);
+        return;
+    }
+
     debug("");
     debug("Testing query results");
 
     // Make sure queries are available.
-    gl.finish();
     shouldBe("ext.getQueryObjectEXT(elapsed_query, ext.QUERY_RESULT_AVAILABLE_EXT)", "true");
     shouldBe("ext.getQueryObjectEXT(timestamp_query1, ext.QUERY_RESULT_AVAILABLE_EXT)", "true");
     shouldBe("ext.getQueryObjectEXT(timestamp_query2, ext.QUERY_RESULT_AVAILABLE_EXT)", "true");
