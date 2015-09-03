@@ -46,10 +46,11 @@ var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas);
 var ext = null;
 var query = null;
+var query2 = null;
 var elapsed_query = null;
 var timestamp_query1 = null;
 var timestamp_query2 = null;
-var availability_retry = 16;
+var availability_retry = 500;
 
 if (!gl) {
     testFailed("WebGL context does not exist");
@@ -70,7 +71,7 @@ if (!gl) {
         runTimeStampTest();
 
         gl.finish();
-        setTimeout(checkQueryResults, 0);
+        window.requestAnimationFrame(checkQueryResults);
     }
 }
 
@@ -134,6 +135,44 @@ function runSanityTests() {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "getParameter timestamp calls should work.");
     gl.getParameter(ext.GPU_DISJOINT_EXT);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "getParameter disjoint calls should work.");
+
+    debug("");
+    debug("Testing current query conditions");
+    query = ext.createQueryEXT();
+    query2 = ext.createQueryEXT();
+    shouldBe("ext.getQueryEXT(ext.TIME_ELAPSED_EXT, ext.CURRENT_QUERY_EXT)", "null");
+    ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query);
+    shouldBe("ext.getQueryEXT(ext.TIME_ELAPSED_EXT, ext.CURRENT_QUERY_EXT)", "query");
+
+    debug("");
+    debug("Testing failed begin query should not change the current query.");
+    ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query2);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Beginning an elapsed query without ending should fail.");
+    shouldBe("ext.getQueryEXT(ext.TIME_ELAPSED_EXT, ext.CURRENT_QUERY_EXT)", "query");
+
+    debug("");
+    debug("Testing beginning a timestamp query should not change the elapsed query.");
+    ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query2)
+    shouldBe("ext.getQueryEXT(ext.TIME_ELAPSED_EXT, ext.CURRENT_QUERY_EXT)", "query");;
+
+    debug("");
+    debug("Testing timestamp queries end immediately so are never current.");
+    ext.queryCounterEXT(query2, ext.TIMESTAMP_EXT);
+    shouldBe("ext.getQueryEXT(ext.TIMESTAMP_EXT, ext.CURRENT_QUERY_EXT)", "null");
+
+    debug("");
+    debug("Testing ending the query should clear the current query.");
+    ext.endQueryEXT(ext.TIME_ELAPSED_EXT);
+    shouldBe("ext.getQueryEXT(ext.TIME_ELAPSED_EXT, ext.CURRENT_QUERY_EXT)", "null");
+
+    debug("");
+    debug("Testing beginning a elapsed query using a timestamp query should fail and not affect current query.")
+    ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query2);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Switching query targets should fail.");
+    shouldBe("ext.getQueryEXT(ext.TIME_ELAPSED_EXT, ext.CURRENT_QUERY_EXT)", "null");
+
+    ext.deleteQueryEXT(query);
+    ext.deleteQueryEXT(query2);
 }
 
 function runElapsedTimeTest() {
@@ -162,9 +201,16 @@ function runTimeStampTest() {
 }
 
 function checkQueryResults() {
-    if (availability_retry <= 0 || !ext.getQueryObjectEXT(timestamp_query2, ext.QUERY_RESULT_AVAILABLE_EXT)) {
+    if (availability_retry > 0 && !ext.getQueryObjectEXT(timestamp_query2, ext.QUERY_RESULT_AVAILABLE_EXT)) {
+        var error = gl.getError();
+        if (error != gl.NO_ERROR) {
+            testFailed("getQueryObjectEXT should have no errors: " + wtu.glEnumToString(gl, error));
+            debug("");
+            finishTest();
+            return;
+        }
         availability_retry--;
-        setTimeout(checkQueryResults, 1);
+        window.requestAnimationFrame(checkQueryResults);
         return;
     }
 
