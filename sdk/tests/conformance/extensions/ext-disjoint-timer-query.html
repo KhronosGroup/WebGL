@@ -46,6 +46,9 @@ var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas);
 var ext = null;
 var query = null;
+var elapsed_query = null;
+var timestamp_query1 = null;
+var timestamp_query2 = null;
 
 if (!gl) {
     testFailed("WebGL context does not exist");
@@ -58,6 +61,14 @@ if (!gl) {
         testPassed("No EXT_disjoint_timer_query support -- this is legal");
     } else {
         runSanityTests();
+
+        // Clear disjoint value.
+        gl.getParameter(ext.GPU_DISJOINT_EXT);
+
+        runElapsedTimeTest();
+        runTimeStampTest();
+
+        setTimeout(checkQueryResults, 0);
     }
 }
 
@@ -84,12 +95,12 @@ function runSanityTests() {
     query = ext.createQueryEXT();
     shouldBe("ext.isQueryEXT(query)", "false");
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Query creation must succeed.");
-    ext.beginQueryEXT(ext.TIMESTAMP_EXT, query)
+    ext.beginQueryEXT(ext.TIMESTAMP_EXT, query);
     wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Beginning a timestamp query should fail.");
-    ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query)
+    ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query);
     shouldBe("ext.isQueryEXT(query)", "true");
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Beginning an inactive time elapsed query should succeed.");
-    ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query)
+    ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Attempting to begin an active query should fail.");
     shouldBe("ext.getQueryEXT(ext.TIME_ELAPSED_EXT, ext.CURRENT_QUERY_EXT)", "query");
     ext.endQueryEXT(ext.TIME_ELAPSED_EXT);
@@ -123,10 +134,65 @@ function runSanityTests() {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "getParameter disjoint calls should work.");
 }
 
+function runElapsedTimeTest() {
+    debug("");
+    debug("Testing elapsed time query");
+
+    elapsed_query = ext.createQueryEXT();
+    ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, elapsed_query);
+    gl.clearColor(0, 0, 1, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    ext.endQueryEXT(ext.TIME_ELAPSED_EXT);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Time elapsed query should have no errors");
+}
+
+function runTimeStampTest() {
+    debug("");
+    debug("Testing timestamp query");
+
+    timestamp_query1 = ext.createQueryEXT();
+    timestamp_query2 = ext.createQueryEXT();
+    ext.queryCounterEXT(timestamp_query1, ext.TIMESTAMP_EXT);
+    gl.clearColor(1, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    ext.queryCounterEXT(timestamp_query2, ext.TIMESTAMP_EXT);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Timestamp queries should have no errors");
+}
+
+function checkQueryResults() {
+    debug("");
+    debug("Testing query results");
+
+    // Make sure queries are available.
+    gl.finish();
+    shouldBe("ext.getQueryObjectEXT(elapsed_query, ext.QUERY_RESULT_AVAILABLE_EXT)", "true");
+    shouldBe("ext.getQueryObjectEXT(timestamp_query1, ext.QUERY_RESULT_AVAILABLE_EXT)", "true");
+    shouldBe("ext.getQueryObjectEXT(timestamp_query2, ext.QUERY_RESULT_AVAILABLE_EXT)", "true");
+
+    var disjoint_value = gl.getParameter(ext.GPU_DISJOINT_EXT);
+    if (disjoint_value) {
+        // Cannot validate results make sense, but this is okay.
+        testPassed("Disjoint triggered.");
+    } else {
+        var elapsed_result = ext.getQueryObjectEXT(elapsed_query, ext.QUERY_RESULT_EXT);
+        var timestamp_result1 = ext.getQueryObjectEXT(timestamp_query1, ext.QUERY_RESULT_EXT);
+        var timestamp_result2 = ext.getQueryObjectEXT(timestamp_query2, ext.QUERY_RESULT_EXT);
+        if (elapsed_result <= 0) {
+            testFailed("Time elapsed query returned invalid data.");
+        } else if (timestamp_result1 <= 0 ||
+                   timestamp_result2 <= 0 ||
+                   timestamp_result2 <= timestamp_result1) {
+            testFailed("Timestamp queries returned invalid data.");
+        }
+        testPassed("Query results were valid.");
+    }
+
+    debug("");
+    finishTest();
+}
+
 var successfullyParsed = true;
-  debug("");
 </script>
-<script src="../../js/js-test-post.js"></script>
 
 </body>
 </html>
