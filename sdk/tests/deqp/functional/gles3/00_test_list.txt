@@ -1,4 +1,5 @@
 attriblocation.html
+booleanstatequery.html
 buffercopy.html
 builtinprecision00.html
 builtinprecision01.html
@@ -56,10 +57,12 @@ builtinprecision52.html
 builtinprecision53.html
 builtinprecision54.html
 builtinprecision55.html
+clipping.html
 draw.html
 fbocolorbuffer.html
 fbocompleteness.html
 fbodepthbuffer.html
+fboinvalidate.html
 fbomultisample.html
 fborender.html
 fbostencilbuffer.html
@@ -79,6 +82,7 @@ pixelbufferobject.html
 primitiverestart.html
 rasterizerdiscard.html
 samplerobject.html
+shaderapi.html
 shaderbuiltinvar.html
 shadercommonfunction.html
 shaderderivate.html
@@ -89,6 +93,7 @@ shaderpackingfunction.html
 shaderprecision.html
 shaderstruct.html
 shaderswitch.html
+sync.html
 texturefiltering00.html
 texturefiltering01.html
 texturefiltering02.html

@@ -62,6 +62,19 @@ goog.scope(function() {
     es3fApiCase.ApiCase.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
     es3fApiCase.ApiCase.prototype.constructor = es3fApiCase.ApiCase;
 
+    /**
+     * @param {boolean} condition
+     * @param {string=} message
+     */
+    es3fApiCase.ApiCase.prototype.check = function(condition, message) {
+        if (this.m_pass && !condition) {
+            bufferedLogToConsole('Condition is false. Test failed.');
+            if (message)
+                this.m_comment += ' ' + message;
+            this.m_pass = condition;
+        }
+    };
+
     es3fApiCase.ApiCase.prototype.iterate = function() {
 
         this.test();
