@@ -175,7 +175,7 @@ if (contextVersion > 1) {
   shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING)');
   shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE)');
   shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING)');
-  shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE)');
+  wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, 'gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE)');
   shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING)');
 }
 var validParametersForFBAttachment =
