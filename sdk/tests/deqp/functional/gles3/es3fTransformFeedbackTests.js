@@ -212,7 +212,7 @@ goog.scope(function() {
         );
 
         for (var i = 0; i < spec.getVaryings().length; ++i) {
-            for (var v_iter = new gluVarTypeUtil.VectorTypeIterator(spec.getVaryings()[i]); !v_iter.end(); v_iter.next()) {
+            for (var v_iter = new gluVarTypeUtil.VectorTypeIterator(spec.getVaryings()[i].type); !v_iter.end(); v_iter.next()) {
                 totalVertexAttribs += 1;
             }
         }
@@ -868,6 +868,18 @@ goog.scope(function() {
 
     setParentClass(es3fTransformFeedbackTests.TransformFeedbackCase, tcuTestCase.DeqpTest);
 
+    es3fTransformFeedbackTests.TransformFeedbackCase.prototype.dumpShaderText = function() {
+        var dbgext = gl.getExtension('WEBGL_debug_shaders');
+        for (var ii = 0; ii < this.m_program.shaders.length; ++ii) {
+            debug('Shader source ' + ii + ' before translation:')
+            debug(this.m_program.shaders[ii].info.source);
+            debug('');
+            debug('Shader source ' + ii + ' after translation:');
+            debug(dbgext.getTranslatedShaderSource(this.m_program.shaders[ii].shader));
+        }
+    };
+
+
     es3fTransformFeedbackTests.TransformFeedbackCase.prototype.init = function() {
         this.m_program = es3fTransformFeedbackTests.createVertexCaptureProgram(
             this.m_progSpec,
@@ -876,6 +888,7 @@ goog.scope(function() {
         );
 
         if (!this.m_program.isOk()) {
+            // this.dumpShaderText();
 
             var linkFail = this.m_program.shadersOK &&
                            !this.m_program.getProgramInfo().linkOk;
@@ -886,20 +899,15 @@ goog.scope(function() {
                 } else if (es3fTransformFeedbackTests.hasArraysInTFVaryings(this.m_progSpec)) {
                     throw new Error('Capturing arrays is not supported (undefined in specification)');
                 } else {
-                    throw new Error('Link failed');
+                    throw new Error('Link failed: ' + this.m_program.getProgramInfo().infoLog);
                 }
             } else {
                 throw new Error('Compile failed');
             }
         } else {
-            // var dbgext = gl.getExtension('WEBGL_debug_shaders');
-            // for (var ii = 0; ii < this.m_program.shaders.length; ++ii) {
-            //     debug('Shader source ' + ii + ' before translation:')
-            //     debug(this.m_program.shaders[ii].info.source);
-            //     debug('');
-            //     debug('Shader source ' + ii + ' after translation:');
-            //     debug(dbgext.getTranslatedShaderSource(this.m_program.shaders[ii].shader));
-            // }
+            // debug('Program is ' +
+            //       (gl.getProgramParameter(this.m_program.getProgram(), gl.LINK_STATUS) ? 'linked' : 'not linked'));
+            // this.dumpShaderText();
         }
 
 //          bufferedLogToConsole('Transform feedback varyings: ' + tcu.formatArray(this.m_progSpec.getTransformFeedbackVaryings()));
@@ -994,6 +1002,8 @@ goog.scope(function() {
             // fail the test
             testFailedOptions('Result comparison failed', false);
 //              this.m_testCtx.setTestResult(QP_TEST_RESULT_FAIL, 'Result comparison failed');
+        } else {
+            testPassedOptions('Result comparison succeeded', true);
         }
 
         this.m_iterNdx += 1;
@@ -1121,11 +1131,11 @@ goog.scope(function() {
 
             gl.drawArrays(gluDrawUtil.getPrimitiveGLType(gl, this.m_primitiveType), offset, call.numElements);
             offset += call.numElements;
-
-            // Resume feedback before finishing it.
-            if (!tfEnabled)
-                gl.resumeTransformFeedback();
         }
+
+        // Resume feedback before finishing it.
+        if (!tfEnabled)
+            gl.resumeTransformFeedback();
 
         gl.endTransformFeedback();
 
@@ -1318,7 +1328,9 @@ goog.scope(function() {
             var tfVar = spec.getTransformFeedbackVaryings()[i];
             var varName = gluVarTypeUtil.parseVariableName(tfVar);
 
-            if (es3fTransformFeedbackTests.findAttributeNameEquals(spec.getVaryings(), varName)) return true;
+	    var attr = es3fTransformFeedbackTests.findAttributeNameEquals(spec.getVaryings(), varName);
+	    if (attr && attr.type.isArrayType())
+                return true;
         }
         return false;
 
