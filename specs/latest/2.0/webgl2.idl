@@ -371,8 +371,10 @@ interface WebGL2RenderingContextBase
   void uniformMatrix3x4fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
   void uniformMatrix4x3fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
   void vertexAttribI4i(GLuint index, GLint x, GLint y, GLint z, GLint w);
+  void vertexAttribI4iv(GLuint index, Int32Array v);
   void vertexAttribI4iv(GLuint index, sequence<GLint> v);
   void vertexAttribI4ui(GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
+  void vertexAttribI4uiv(GLuint index, Uint32Array);
   void vertexAttribI4uiv(GLuint index, sequence<GLuint> v);
   void vertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset);
 
