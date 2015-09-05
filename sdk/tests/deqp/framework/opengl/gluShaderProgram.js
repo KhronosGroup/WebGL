@@ -215,6 +215,13 @@ gluShaderProgram.Program.prototype.link = function() {
 };
 
 /**
+ * return {boolean}
+ */
+gluShaderProgram.Program.prototype.getLinkStatus = function() {
+    return this.info.linkOk;
+};
+
+/**
  * @param {Array<string>} varyings
  * @param {number} bufferMode
  */
@@ -285,7 +292,7 @@ gluShaderProgram.ShaderProgram.prototype.getProgramInfo = function() {
 };
 
 gluShaderProgram.ShaderProgram.prototype.isOk = function() {
-    return this.shadersOK;
+    return this.shadersOK && this.program.getLinkStatus();
 };
 
 gluShaderProgram.containerTypes = {
