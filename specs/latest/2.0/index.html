@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 4 September 2015</h2>
+    <h2 class="no-toc">Editor's Draft 5 September 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -755,11 +755,11 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void uniformMatrix3x4fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
   void uniformMatrix4x3fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
   void vertexAttribI4i(GLuint index, GLint x, GLint y, GLint z, GLint w);
-  void vertexAttribI4iv(GLuint index, Int32Array v);
-  void vertexAttribI4iv(GLuint index, sequence&lt;GLint&gt; v);
+  typedef (Int32Array or sequence&lt;GLint&gt;) VertexAttribIVSource;
+  void vertexAttribI4iv(GLuint index, VertexAttribIVSource value);
   void vertexAttribI4ui(GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
-  void vertexAttribI4uiv(GLuint index, Uint32Array);
-  void vertexAttribI4uiv(GLuint index, sequence&lt;GLuint&gt; v);
+  typedef (Uint32Array or sequence&lt;GLuint&gt;) VertexAttribUIVSource;
+  void vertexAttribI4uiv(GLuint index, VertexAttribUIVSource v);
   void vertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset);
 
   /* Writing to the drawing buffer */
