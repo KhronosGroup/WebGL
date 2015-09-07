@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 16 July 2015</h2>
+    <h2 class="no-toc">Editor's Draft 07 September 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -3738,6 +3738,18 @@ extensions.
     <li> when counting varying variables: <code>getParameter(MAX_VARYING_VECTORS)</code>
     </ul>
 </p>
+<div class="note">
+    <p>
+        The text above defines the circumstances under which compilation or linking of a shader or
+        program must fail due to the constraints enforced by the packing algorithm. It is not
+        guaranteed that a shader which uses more variables than the minimum required amount whose
+        variables pack successfully according to this algorithm will compile successfully.
+        Inefficiencies have been observed in implementations, including expansion of scalar arrays
+        to consume multiple columns. Developers should avoid relying heavily upon automatic packing
+        of multiple variables into columns. Instead, define larger variables (like vec4) and
+        explicitly pack values into the rightmost columns.
+    </p>
+</div>
 
 <h3>Feedback Loops Between Textures and the Framebuffer</h3>
 <p>
