@@ -171,6 +171,7 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
     // Test array[1] of the type
     var uniToF = wtu.replaceParams(info.uniToF, {id: "", index: "[0]"});
     var vec4 = wtu.replaceParams(info.fToVec4, {f: uniToF});
+/*
     tests.push({
       vShaderSource: wtu.replaceParams(shaderType.vertArrayTest, {numTestType: 1, result: vec4}, info),
       vShaderSuccess: true,
@@ -179,6 +180,7 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
       linkSuccess: true,
       passMsg: shaderType.type + " shader with uniform array of " + info.type + " with 1 element should succeed",
     });
+*/
 
     // Note: We can't test an array filling all uniform space as actual GL drivers are
     // only required to be able to do the minimum number. After that it can fail for
@@ -188,6 +190,7 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
     // Test required number of uniforms
     var uniToF = wtu.replaceParams(info.uniToF, {id: "", index: "[" + (minVars - 1) + "]"});
     var vec4 = wtu.replaceParams(info.fToVec4, {f: uniToF});
+/*
     tests.push({
       vShaderSource: wtu.replaceParams(shaderType.vertArrayTest, {numTestType: minVars, result: vec4}, info),
       vShaderSuccess: true,
@@ -196,10 +199,12 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
       linkSuccess: true,
       passMsg: shaderType.type + " shader with uniform array of " + info.type + " with " + minVars + " elements (the minimum required) should succeed",
     });
+*/
 
     // Test array[max + 1] accessing last element. WebGL requires this to fail.
     var uniToF = wtu.replaceParams(info.uniToF, {id: "", index: "[" + maxInArray + "]"});
     var vec4 = wtu.replaceParams(info.fToVec4, {f: uniToF});
+/*
     tests.push({
       vShaderSource: wtu.replaceParams(shaderType.vertArrayTest, {numTestType: maxInArray + 1, result: vec4}, info),
       vShaderSuccess: shaderType.vertExpectation,
@@ -208,10 +213,12 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
       linkSuccess: false,
       passMsg: shaderType.type + " shader with uniform array of " + info.type + " with " + (maxInArray + 1) + " elements (one past maximum) accessing last element should fail",
     });
+*/
 
     // Test array[max + 1] accessing first element. WebGL requires this to fail but ES allows truncating array.
     var uniToF = wtu.replaceParams(info.uniToF, {id: "", index: "[0]"});
     var vec4 = wtu.replaceParams(info.fToVec4, {f: uniToF});
+/*
     tests.push({
       vShaderSource: wtu.replaceParams(shaderType.vertArrayTest, {numTestType: maxInArray + 1, result: vec4}, info),
       vShaderSuccess: shaderType.vertExpectation,
@@ -220,6 +227,7 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
       linkSuccess: false,
       passMsg: shaderType.type + " shader with uniform array of " + info.type + " with " + (maxInArray + 1) + " elements (one past maximum) accessing first element should fail",
     });
+*/
 
     // Note: We can't test max uniforms as actual GL drivers are only required to be able
     // to do the minimum number. After that it can fail for multiple reasons, including
@@ -243,6 +251,7 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
       };
     };
 
+/*
     // Test max+1 uniforms of type.
     tests.push({
       vShaderSource: wtu.replaceParams(shaderType.vertUniformTest, generateCode(maxPacked + 1), info),
@@ -252,7 +261,9 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
       linkSuccess: false,
       passMsg: shaderType.type + " shader with " + (maxPacked + 1) + " uniforms of " + info.type + " (one past maximum) should fail",
     });
+*/
 
+/*
     // Test required uniforms of type.
     tests.push({
       vShaderSource: wtu.replaceParams(shaderType.vertUniformTest, generateCode(minVars), info),
@@ -262,6 +273,81 @@ for (var ss = 0; ss < shaderTypes.length; ++ss) {
       linkSuccess: true,
       passMsg: shaderType.type + " shader with " + minVars + " uniforms of " + info.type + " (the minimum required) should succeed",
     });
+*/
+
+    if (maxPerRow > 1) {
+
+      var itemcount = 0;
+
+      var generateCodeArray = function() {
+        var uniforms = [];
+        var sumTerms = [];
+        itemcount = Math.max(Math.floor(shaderType.maxVectors / maxPerRow) + 1, minVars );
+        for (var uu = 0; uu < maxPerRow; ++uu) {
+          uniforms.push("    uniform " + info.type + " u_uniform" + uu + "[" + itemcount + "];");
+          sumTerms.push(wtu.replaceParams(info.uniToF, {id: uu, index: "[" + (itemcount - 1) + "]"}));
+        }
+        return {
+          uniforms: uniforms.join("\n"),
+          code: info.fType + " sum = " + sumTerms.join(" + \n            ") + ";",
+          result: wtu.replaceParams(info.fToVec4, {f: 'sum'})
+        };
+      };
+
+      // Test required uniforms of type.
+      tests.push({
+        vShaderSource: wtu.replaceParams(shaderType.vertUniformTest, generateCodeArray(), info),
+        vShaderSuccess: true,
+        fShaderSource: wtu.replaceParams(shaderType.fragUniformTest, generateCodeArray(), info),
+        fShaderSuccess: true,
+        linkSuccess: true,
+        passMsg: shaderType.type + " shader with " + maxPerRow + " uniform arrays of " + info.type + " with " + itemcount + " elements should succeed",
+      });
+
+      for (var ut = ii + 1 ; ut < uniformTypes.length; ++ut) {
+        var info2 = uniformTypes[ut];
+        if (info.componentsPerRow + info2.componentsPerRow <= 4){
+          // Compute the minimum required to work in a single array.
+          var minVars2 = Math.floor(shaderType.minVectors / info2.rows);
+          // Compute the maximum allowed as single elements
+          var maxPerRow2 = Math.floor(4 / info.componentsPerRow);
+
+          var itemcount = Math.max(Math.floor(shaderType.maxVectors / info.rows / 2) + 1, minVars );
+          var itemcount2 = Math.max(Math.floor(shaderType.maxVectors / info2.rows / 2) + 1, minVars );
+
+          var generateCodeDifferentTypes= function() {
+            var uniforms = [];
+            var sumTerms = [];
+
+            uniforms.push("    uniform " + info.type + " u_uniform1[" + itemcount + "];");
+            uniforms.push("    uniform " + info2.type + " u_uniform2[" + itemcount2 + "];");
+
+
+            sumTerms.push(wtu.replaceParams(info.fToVec4, {f: wtu.replaceParams(info.uniToF, {id: 1, index: "[" + (itemcount - 1 ) + "]"})}));
+            sumTerms.push(wtu.replaceParams(info2.fToVec4, {f: wtu.replaceParams(info2.uniToF, {id: 2, index: "[" + (itemcount2 - 1 ) + "]"})}));
+
+            return {
+              uniforms: uniforms.join("\n"),
+              code: "vec4 sum = " + sumTerms.join(" + \n            ") + ";",
+              result: 'sum'
+            };
+          };
+
+          // Test required uniforms of type.
+          tests.push({
+            vShaderSource: wtu.replaceParams(shaderType.vertUniformTest, generateCodeDifferentTypes(), info),
+            vShaderSuccess: true,
+            fShaderSource: wtu.replaceParams(shaderType.fragUniformTest, generateCodeDifferentTypes(), info),
+            fShaderSuccess: true,
+            linkSuccess: true,
+            passMsg: shaderType.type + " shader with an uniform array of " + info.type + " with " + itemcount + " elements and an uniform array of " + info2.type + " with " + itemcount2 + " should succeed",
+          });
+
+        };
+      };
+
+
+    };
   }
 }
 GLSLConformanceTester.runTests(tests);
