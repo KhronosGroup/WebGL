@@ -110,8 +110,10 @@ es3fFboTestUtil.FboIncompleteException.prototype.getReason = function() {return 
      * @constructor
      * @extends {sglrShaderProgram.ShaderProgram}
      * @param {gluShaderUtil.DataType} outputType
+     * @param {number=} pointSize
      */
-    es3fFboTestUtil.FlatColorShader = function(outputType) {
+    es3fFboTestUtil.FlatColorShader = function(outputType, pointSize) {
+        pointSize = pointSize || 1;
         /** @type {sglrShaderProgram.ShaderProgramDeclaration} */
         var decl = new sglrShaderProgram.ShaderProgramDeclaration();
         /** @type {gluShaderUtil.DataType} */ this.m_outputType = outputType;
@@ -126,6 +128,7 @@ es3fFboTestUtil.FboIncompleteException.prototype.getReason = function() {return 
             'void main (void)\n' +
             '{\n' +
             ' gl_Position = a_position;\n' +
+            ' gl_PointSize = ' + pointSize + '.0;\n' +
             '}\n'));
         decl.pushFragmentSource(new sglrShaderProgram.FragmentSource(
             '#version 300 es\n' +
@@ -136,6 +139,7 @@ es3fFboTestUtil.FboIncompleteException.prototype.getReason = function() {return 
             ' o_color = ' + gluShaderUtil.getDataTypeName(outputType) + '(u_color);\n' +
             '}\n'));
         sglrShaderProgram.ShaderProgram.call(this, decl);
+        this.m_pointSize = pointSize;
     };
 
     es3fFboTestUtil.FlatColorShader.prototype = Object.create(sglrShaderProgram.ShaderProgram.prototype);
@@ -162,6 +166,7 @@ es3fFboTestUtil.FboIncompleteException.prototype.getReason = function() {return 
         for (var packetNdx = 0; packetNdx < numPackets; ++packetNdx) {
             /** @type {rrVertexPacket.VertexPacket} */ var packet = packets[packetNdx];
             packet.position = rrVertexAttrib.readVertexAttrib(inputs[0], packet.instanceNdx, packet.vertexNdx, rrGenericVector.GenericVecType.FLOAT);
+            packet.pointSize = this.m_pointSize;
         }
     };
 

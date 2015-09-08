@@ -75,6 +75,14 @@ var DE_ASSERT = function(x) {
     es3fFboTestCase.FboTestCase.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
     es3fFboTestCase.FboTestCase.prototype.constructor = es3fFboTestCase.FboTestCase;
 
+    es3fFboTestCase.FboTestCase.prototype.getWidth = function() {
+        return Math.min(gl.drawingBufferWidth, this.m_viewportWidth);
+    };
+
+    es3fFboTestCase.FboTestCase.prototype.getHeight = function() {
+        return Math.min(gl.drawingBufferHeight, this.m_viewportHeight);
+    };
+
     /**
      * Sets the current context (inherited from sglrContextWrapper)
      * @param {es3fFboTestCase.Context} context
@@ -95,7 +103,7 @@ var DE_ASSERT = function(x) {
      * @param {tcuSurface.Surface} reference
      * @param {tcuSurface.Surface} result
      */
-    es3fFboTestCase.FboTestCase.compare = function(reference, result) {
+    es3fFboTestCase.FboTestCase.prototype.compare = function(reference, result) {
         return tcuImageCompare.fuzzyCompare('Result', 'Image comparison result', reference.getAccess(), result.getAccess(), 0.05, tcuImageCompare.CompareLogMode.RESULT);
     };
 
@@ -197,6 +205,23 @@ var DE_ASSERT = function(x) {
         if (this.preCheck)
             this.preCheck();
 
+        // clear some GL state variables
+        // TODO: maybe we should place in tuTestCase.js
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        gl.depthFunc(gl.LESS);
+        gl.disable(gl.DEPTH_TEST);
+        gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+        gl.stencilFunc(gl.ALWAYS, 0, 0xffff);
+        gl.disable(gl.STENCIL_TEST);
+        gl.blendFunc(gl.ONE, gl.ZERO);
+        gl.blendEquation(gl.FUNC_ADD);
+        gl.disable(gl.BLEND);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+        gl.scissor(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+
         // Render using GLES3.
         try {
             /** @type {sglrGLContext.GLContext} */ var context = new sglrGLContext.GLContext(
@@ -245,7 +270,7 @@ var DE_ASSERT = function(x) {
         this.render(reference);
         this.setContext(null);
 
-        /** @type {boolean} */ var isOk = es3fFboTestCase.FboTestCase.compare(reference, result);
+        /** @type {boolean} */ var isOk = this.compare(reference, result);
 
         assertMsgOptions(isOk, '', true, false);
 
