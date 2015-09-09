@@ -87,7 +87,7 @@ debug("Test that getBufferSubData fails when offset summed with buffer length is
 gl.getBufferSubData(gl.ARRAY_BUFFER, vertices.length * Float32Array.BYTES_PER_ELEMENT + 1, arrBuffer);
 wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "gl.getBufferSubData(gl.ARRAY_BUFFER, vertices.length * Float32Array.BYTES_PER_ELEMENT + 1, arrBuffer) with offset larger than original data size should generate INVALID_VALUE");
 gl.getBufferSubData(gl.ARRAY_BUFFER, 1, arrBuffer);
-wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "gl.getBufferSubData(gl.ARRAY_BUFFER, 1, arrBuffer) with offset add length larger than buffer size should generate INVALID_VALUE");
+wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "gl.getBufferSubData(gl.ARRAY_BUFFER, 1, arrBuffer) with offset and length larger than buffer size should generate INVALID_VALUE");
 
 debug("Test that getBufferSubData fails when 0 is bound to the target");
 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
