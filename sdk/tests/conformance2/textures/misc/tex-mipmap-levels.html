@@ -85,11 +85,11 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   // Test that filling partial levels is enough for mipmapping.
   gl.bindTexture(gl.TEXTURE_2D, tex);
   wtu.fillTexture(gl, tex, 8, 8, [255, 0, 0, 255], 2, gl.RGBA, gl.UNSIGNED_BYTE);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(8,8,2) should succeed");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(8x8, level=2) should succeed");
   wtu.fillTexture(gl, tex, 4, 4, [0, 255, 0, 255], 3, gl.RGBA, gl.UNSIGNED_BYTE);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(4,4,3) should succeed");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(4x4, level=3) should succeed");
   wtu.fillTexture(gl, tex, 2, 2, [0, 0, 255, 255], 4, gl.RGBA, gl.UNSIGNED_BYTE);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(2,2,4) should succeed");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(2x2, level=4) should succeed");
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL, 2);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texParameter(TEXTURE_BASE_LEVEL) should succeed");
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 4);
@@ -112,9 +112,9 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   var tex = gl.createTexture()
   gl.bindTexture(gl.TEXTURE_2D, tex);
   wtu.fillTexture(gl, tex, 8, 8, [255, 0, 0, 255], 2, gl.RGBA, gl.UNSIGNED_BYTE);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(8,8,2) should succeed");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(8x8, level=2) should succeed");
   wtu.fillTexture(gl, tex, 4, 4, [255, 0, 0, 255], 3, gl.RGBA, gl.UNSIGNED_BYTE);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(4,4,3) should succeed");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(4x4, level=3) should succeed");
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL, 2);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texParameter(TEXTURE_BASE_LEVEL) should succeed");
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 4);
@@ -122,6 +122,23 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   wtu.clearAndDrawUnitQuad(gl);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "clearAndDrawQuad should succeed");
   wtu.checkCanvas(gl, [0, 0, 0, 255], "incomplete; should draw with [0, 0, 0, 255]");
+
+  // Test base level texture isn't specified.
+  var tex = gl.createTexture()
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  wtu.fillTexture(gl, tex, 8, 8, [255, 0, 0, 255], 2, gl.RGBA, gl.UNSIGNED_BYTE);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(8x8, level=2) should succeed");
+  wtu.fillTexture(gl, tex, 4, 4, [255, 0, 0, 255], 3, gl.RGBA, gl.UNSIGNED_BYTE);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(4x4, level=3) should succeed");
+  wtu.fillTexture(gl, tex, 2, 2, [0, 0, 255, 255], 4, gl.RGBA, gl.UNSIGNED_BYTE);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(2x2, level=4) should succeed");
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL, 1);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texParameter(TEXTURE_BASE_LEVEL) should succeed");
+  gl.generateMipmap(gl.TEXTURE_2D);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "generateMipmap should fail if base level texture is not specified");
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL, 2);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
 })();
 
 var successfullyParsed = true;
