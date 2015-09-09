@@ -217,11 +217,11 @@ function runTexStorageAndSubImage3DTest()
                          pixels);
         wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "texSubImage3D should fail for too-high level");
         gl.texSubImage3D(gl.TEXTURE_3D,
-                         levels, 1, 0, 0,
+                         0, 1, 0, 0,
                          texsize, texsize, texsize,
                          testcase.unsizedformat, testcase.type,
                          pixels);
-        wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "texSubImage3D should fail for dimension out for range");
+        wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "texSubImage3D should fail for dimension out of range");
     });
 }
 
