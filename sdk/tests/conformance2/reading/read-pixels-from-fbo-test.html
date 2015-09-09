@@ -486,7 +486,7 @@ function clearBuffer(gl, texInternalFormat, clearColor) {
       value = new Int32Array(4);
       for (var ii = 0; ii < 4; ++ii)
         value[ii] = clearColor[ii];
-      gl.clearBufferiv(gl.COLOR, 0, clearColor);
+      gl.clearBufferiv(gl.COLOR, 0, value);
       break;
     default:
       gl.clearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
