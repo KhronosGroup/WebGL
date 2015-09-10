@@ -500,6 +500,40 @@ for (var ii = 0; ii < testCases.length; ++ii) {
 }
 
 debug("");
+debug("Checking TexImage3D: bad target, internalformats, formats, types");
+
+var testCases = [
+  { target: gl.TEXTURE_2D,
+    internalFormat: gl.RGBA,
+    border: 0,
+    format: gl.RGBA,
+    type: gl.UNSIGNED_BYTE,
+    expectedError: gl.INVALID_ENUM },
+  { target: gl.TEXTURE_3D,
+    internalFormat: gl.RG,
+    border: 0,
+    format: gl.RGBA,
+    type: gl.UNSIGNED_BYTE,
+    expectedError: gl.INVALID_ENUM},
+  { target: gl.TEXTURE_3D,
+    internalFormat: gl.RGBA,
+    border: 0,
+    format: gl.RG8,
+    type: gl.UNSIGNED_BYTE,
+    expectedError: gl.INVALID_ENUM },
+  { target: gl.TEXTURE_3D,
+    internalFormat: gl.RGBA,
+    border: 0,
+    format: gl.RGBA,
+    type: gl.INT,
+    expectedError: gl.INVALID_OPERATION},
+];
+
+for (var ii = 0; ii < testCases.length; ++ii) {
+  testTexImage3D(testCases[ii]);
+}
+
+debug("");
 debug("Checking TexSubImage3D: a set of inputs that are valid in GL but invalid in WebGL");
 
 testCases = [
