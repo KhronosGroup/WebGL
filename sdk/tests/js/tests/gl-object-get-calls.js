@@ -296,12 +296,15 @@ if (contextVersion > 1) {
   var buffer = gl.createBuffer();
   gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, buffer);
   gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 1024, gl.DYNAMIC_DRAW);
+  var uniformBlockProgram = wtu.loadUniformBlockProgram(gl);
   var transformFeedbackVars = ["normal", "ecPosition"];
   gl.transformFeedbackVaryings(uniformBlockProgram, transformFeedbackVars, gl.INTERLEAVED_ATTRIBS);
-  var uniformBlockProgram = wtu.loadUniformBlockProgram(gl);
-  shouldBe('gl.getProgramParameter(standardProgram, gl.ACTIVE_UNIFORM_BLOCKS)', '1');
-  shouldBe('gl.getProgramParameter(standardProgram, gl.TRANSFORM_FEEDBACK_VARYINGS)', '2');
-  shouldBe('gl.getProgramParameter(standardProgram, gl.TRANSFORM_FEEDBACK_BUFFER_MODE)', 'gl.INTERLEAVED_ATTRIBS');
+  gl.linkProgram(uniformBlockProgram);
+  shouldBe('gl.getProgramParameter(uniformBlockProgram, gl.LINK_STATUS)', 'true');
+  shouldBe('gl.getError()', 'gl.NO_ERROR');
+  shouldBe('gl.getProgramParameter(uniformBlockProgram, gl.ACTIVE_UNIFORM_BLOCKS)', '1');
+  shouldBe('gl.getProgramParameter(uniformBlockProgram, gl.TRANSFORM_FEEDBACK_VARYINGS)', '2');
+  shouldBe('gl.getProgramParameter(uniformBlockProgram, gl.TRANSFORM_FEEDBACK_BUFFER_MODE)', 'gl.INTERLEAVED_ATTRIBS');
 }
 var program = standardProgram;
 var validArrayForProgramParameter = [
