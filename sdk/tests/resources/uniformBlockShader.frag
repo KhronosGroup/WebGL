@@ -23,10 +23,14 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
+precision mediump float;
+
 in vec3 normal;
 in vec4 ecPosition;
 
+out vec4 fragColor;
+
 void main()
 {
-    gl_FragColor = vec4(v_normal/2.0+vec3(0.5), 1);
+    fragColor = vec4(normal/2.0+vec3(0.5), 1);
 }
