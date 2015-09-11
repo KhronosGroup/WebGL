@@ -182,6 +182,32 @@ deMath.divide = function(a, b) {
 };
 
 /**
+ * Divide vector by a scalar
+ * @param {goog.NumberArray} a
+ * @param {number} b
+ * @return {Array<number>} Result array
+ */
+deMath.divideScale = function(a, b) {
+    var dst = [];
+    for (var i = 0; i < a.length; i++)
+        dst.push(a[i] / b);
+    return dst;
+};
+
+/**
+ * Modulus vector by a scalar
+ * @param {goog.NumberArray} a
+ * @param {number} b
+ * @return {Array<number>} Result array
+ */
+deMath.modScale = function(a, b) {
+    var dst = [];
+    for (var i = 0; i < a.length; i++)
+        dst.push(a[i] % b);
+    return dst;
+};
+
+/**
  * Multiply vector by a scalar
  * @param {goog.NumberArray} a
  * @param {number} b
@@ -239,6 +265,23 @@ deMath.subtract = function(a, b) {
     var dst = [];
     for (var i = 0; i < a.length; i++)
         dst.push(a[i] - b[i]);
+    return dst;
+};
+
+/**
+ * Subtract vector and scalar, element by element
+ * @param {goog.NumberArray} a
+ * @param {number} b
+ * @return {Array<number>} Result array
+ */
+deMath.subScalar = function(a, b) {
+    if (!Array.isArray(a))
+        throw new Error('First argument must be an array.');
+    if (typeof b !== 'number')
+        throw new Error('Second argument must be a number.');
+    var dst = [];
+    for (var i = 0; i < a.length; i++)
+        dst.push(a[i] - b);
     return dst;
 };
 
@@ -367,18 +410,50 @@ deMath.rint = function(a) {
     return floorVal + (roundUp ? 1 : 0);
 };
 
-// Round number to int by dropping fractional part
-deMath.intCast = function(a) {
-    if (a >= 0)
-        return Math.floor(a);
-    return Math.ceil(a);
+/**
+ * wrap the number, so that it fits in the range [minValue, maxValue]
+ * @param {number} v
+ * @param {number} minValue
+ * @param {number} maxValue
+ * @return {number}
+ */
+deMath.wrap = function(v, minValue, maxValue) {
+    var range = maxValue - minValue + 1;
+
+    if (v < minValue) {
+        v += range * (Math.floor((minValue - v) / range) + 1);
+    }
+    return minValue + Math.floor((v - minValue) % range);
 };
 
-// Round number to uint32 by dropping fractional part
-deMath.uintCast = function(a) {
+/**
+ * Round number to int by dropping fractional part
+ * it is equivalent of GLSL int() constructor
+ * @param {number} a
+ * @return {number}
+ */
+deMath.intCast = function(a) {
+    var v;
     if (a >= 0)
-        return Math.floor(a);
-    return Math.floor(0xFFFFFFFF + a);
+        v = Math.floor(a);
+    else
+        v = Math.ceil(a);
+    return deMath.wrap(v, -0x80000000, 0x7FFFFFFF);
+};
+
+/**
+ * Round number to uint by dropping fractional part
+ * it is equivalent of GLSL uint() constructor
+ * @param {number} a
+ * @return {number}
+ */
+deMath.uintCast = function(a) {
+    var v;
+    if (a >= 0)
+        v = Math.floor(a);
+    else
+        v = Math.ceil(a);
+    return deMath.wrap(v, 0, 0xFFFFFFFF);
 };
 
 /**
@@ -464,7 +539,7 @@ deMath.getBitRange = function(x, firstNdx, lastNdx) {
     var bitSize = lastNdx - firstNdx;
     var mask;
     if (bitSize < 32)
-        mask = (1 << bitSize) -1
+        mask = (1 << bitSize) - 1;
     else
         mask = Math.pow(2, bitSize) - 1;
     var masked = deMath.binaryAnd(shifted, mask);
@@ -555,6 +630,22 @@ deMath.binaryOp = function(valueA, valueB, binaryOpParm) {
  */
 deMath.binaryAnd = function(a, b) {
     return deMath.binaryOp(a, b, deMath.BinaryOp.AND);
+};
+
+/**
+ * @param {goog.NumberArray} a
+ * @param {number} b
+ * @return {Array<number>}
+ */
+deMath.binaryAndVecScalar = function(a, b) {
+    if (!Array.isArray(a))
+        throw new Error('First argument must be an array.');
+    if (typeof b !== 'number')
+        throw new Error('Second argument must be a number.');
+    var dst = [];
+    for (var i = 0; i < a.length; i++)
+        dst.push(deMath.binaryOp(a[i], b, deMath.BinaryOp.AND));
+    return dst;
 };
 
 /**

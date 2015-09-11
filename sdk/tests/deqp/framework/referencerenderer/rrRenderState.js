@@ -286,12 +286,13 @@ rrRenderState.LineState = function() {
 rrRenderState.ViewportState = function(rect_) {
     /** @type {number} */ this.zn = 0.0;
     /** @type {number} */ this.zf = 1.0;
+    /** @type {rrRenderState.WindowRectangle} */ this.rect;
 
     if (rect_.raw) {
         this.rect = new rrRenderState.WindowRectangle(0, 0, rect_.raw().getHeight(),
             rect_.raw().getDepth());
     } else {
-        this.rect = rect_;
+        this.rect = /** @type {rrRenderState.WindowRectangle} */ (rect_);
     }
 };
 

@@ -410,7 +410,7 @@ es3fLifetimeTests.TfDeleteActiveTest.prototype.iterate = function() {
     assertMsgOptions(errCode == gl.INVALID_OPERATION,
         'Deleting active transform feedback must produce INVALID_OPERATION', false, true);
 
-    testPassed(this.fullName() + ' ' + this.description);
+    testPassed('Passed');
     return tcuTestCase.IterateResult.STOP;
 };
 
