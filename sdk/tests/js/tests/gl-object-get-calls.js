@@ -105,6 +105,7 @@ testInvalidArgument(
       return gl.getBufferParameter(target, gl.BUFFER_SIZE);
     }
 );
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
 debug("Test getFramebufferAttachmentParameter");
@@ -283,6 +284,7 @@ if (contextVersion > 1) {
       }
   );
 }
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
 debug("Test getProgramParameter");
@@ -314,7 +316,7 @@ var validArrayForProgramParameter = [
     gl.ATTACHED_SHADERS,
     gl.ACTIVE_ATTRIBUTES,
     gl.ACTIVE_UNIFORMS
-]
+];
 if (contextVersion > 1) {
   validArrayForProgramParameter = validArrayForProgramParameter.concat([
       gl.ACTIVE_UNIFORM_BLOCKS,
@@ -331,6 +333,7 @@ testInvalidArgument(
       return gl.getProgramParameter(program, parameter);
     }
 );
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
 debug("Test getRenderbufferParameter");
@@ -380,7 +383,9 @@ testInvalidArgument(
     [ gl.RENDERBUFFER ],
     function(target) {
       return gl.getRenderbufferParameter(target, gl.RENDERBUFFER_WIDTH);
-    });
+    }
+);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
 debug("Test getShaderParameter");
@@ -398,6 +403,7 @@ testInvalidArgument(
       return gl.getShaderParameter(standardVert, parameter);
     }
 );
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
 debug("Test getTexParameter");
@@ -429,24 +435,24 @@ if (contextVersion > 1) {
   shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_IMMUTABLE_FORMAT)', 'false');
   shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_IMMUTABLE_LEVELS)', '0');
 }
-var validParametersForTexture =
-    [ gl.TEXTURE_MAG_FILTER,
-      gl.TEXTURE_MIN_FILTER,
-      gl.TEXTURE_WRAP_S,
-      gl.TEXTURE_WRAP_T
-    ];
+var validParametersForTexture = [
+    gl.TEXTURE_MAG_FILTER,
+    gl.TEXTURE_MIN_FILTER,
+    gl.TEXTURE_WRAP_S,
+    gl.TEXTURE_WRAP_T,
+];
 if (contextVersion > 1) {
   validParametersForTexture = validParametersForTexture.concat([
-        gl.TEXTURE_BASE_LEVEL,
-        gl.TEXTURE_COMPARE_FUNC,
-        gl.TEXTURE_COMPARE_MODE,
-        gl.TEXTURE_MAX_LEVEL,
-        gl.TEXTURE_MAX_LOD,
-        gl.TEXTURE_MIN_LOD,
-        gl.TEXTURE_WRAP_R,
-        gl.TEXTURE_IMMUTABLE_FORMAT,
-        gl.TEXTURE_IMMUTABLE_LEVELS
-      ]);
+      gl.TEXTURE_BASE_LEVEL,
+      gl.TEXTURE_COMPARE_FUNC,
+      gl.TEXTURE_COMPARE_MODE,
+      gl.TEXTURE_MAX_LEVEL,
+      gl.TEXTURE_MAX_LOD,
+      gl.TEXTURE_MIN_LOD,
+      gl.TEXTURE_WRAP_R,
+      gl.TEXTURE_IMMUTABLE_FORMAT,
+      gl.TEXTURE_IMMUTABLE_LEVELS,
+  ]);
 }
 testInvalidArgument(
     "getTexParameter",
@@ -468,10 +474,11 @@ testInvalidArgument(
       return gl.getTexParameter(target, gl.TEXTURE_MAG_FILTER);
     }
 );
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
 debug("Test getUniform with all variants of data types");
-// Boolean uniform variables
+debug("Boolean uniform variables");
 var boolProgram = wtu.loadProgramFromFile(gl, "../../resources/boolUniformShader.vert", "../../resources/noopUniformShader.frag");
 shouldBe('gl.getProgramParameter(boolProgram, gl.LINK_STATUS)', 'true');
 var bvalLoc = gl.getUniformLocation(boolProgram, "bval");
@@ -488,7 +495,9 @@ shouldBe('gl.getUniform(boolProgram, bvalLoc)', 'true');
 shouldBe('gl.getUniform(boolProgram, bval2Loc)', '[true, false]');
 shouldBe('gl.getUniform(boolProgram, bval3Loc)', '[true, false, true]');
 shouldBe('gl.getUniform(boolProgram, bval4Loc)', '[true, false, true, false]');
-// Integer uniform variables
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+debug("Integer uniform variables");
 var intProgram = wtu.loadProgramFromFile(gl, "../../resources/intUniformShader.vert", "../../resources/noopUniformShader.frag");
 shouldBe('gl.getProgramParameter(intProgram, gl.LINK_STATUS)', 'true');
 var ivalLoc = gl.getUniformLocation(intProgram, "ival");
@@ -505,7 +514,9 @@ shouldBe('gl.getUniform(intProgram, ivalLoc)', '1');
 shouldBe('gl.getUniform(intProgram, ival2Loc)', '[2, 3]');
 shouldBe('gl.getUniform(intProgram, ival3Loc)', '[4, 5, 6]');
 shouldBe('gl.getUniform(intProgram, ival4Loc)', '[7, 8, 9, 10]');
-// Float uniform variables
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+debug("Float uniform variables");
 var floatProgram = wtu.loadProgramFromFile(gl, "../../resources/floatUniformShader.vert", "../../resources/noopUniformShader.frag");
 shouldBe('gl.getProgramParameter(floatProgram, gl.LINK_STATUS)', 'true');
 var fvalLoc = gl.getUniformLocation(floatProgram, "fval");
@@ -522,7 +533,9 @@ shouldBe('gl.getUniform(floatProgram, fvalLoc)', '11');
 shouldBe('gl.getUniform(floatProgram, fval2Loc)', '[12, 13]');
 shouldBe('gl.getUniform(floatProgram, fval3Loc)', '[14, 15, 16]');
 shouldBe('gl.getUniform(floatProgram, fval4Loc)', '[17, 18, 19, 20]');
-// Sampler uniform variables
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+debug("Sampler uniform variables");
 var samplerProgram = wtu.loadProgramFromFile(gl, "../../resources/noopUniformShader.vert", "../../resources/samplerUniformShader.frag");
 shouldBe('gl.getProgramParameter(samplerProgram, gl.LINK_STATUS)', 'true');
 var s2DValLoc = gl.getUniformLocation(samplerProgram, "s2D");
@@ -533,7 +546,9 @@ gl.uniform1i(sCubeValLoc, 1);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 shouldBe('gl.getUniform(samplerProgram, s2DValLoc)', '0');
 shouldBe('gl.getUniform(samplerProgram, sCubeValLoc)', '1');
-// Matrix uniform variables
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+debug("Matrix uniform variables");
 var matProgram = wtu.loadProgramFromFile(gl, "../../resources/matUniformShader.vert", "../../resources/noopUniformShader.frag");
 shouldBe('gl.getProgramParameter(matProgram, gl.LINK_STATUS)', 'true');
 var mval2Loc = gl.getUniformLocation(matProgram, "mval2");
@@ -547,9 +562,11 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 shouldBe('gl.getUniform(matProgram, mval2Loc)', '[1, 2, 3, 4]');
 shouldBe('gl.getUniform(matProgram, mval3Loc)', '[5, 6, 7, 8, 9, 10, 11, 12, 13]');
 shouldBe('gl.getUniform(matProgram, mval4Loc)', '[14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]');
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
 if (contextVersion > 1) {
-  // Unsigned Integer uniform variables
-  var uintProgram = wtu.loadProgramFromFile(gl, "../../resources/uintUniformShader.vert", "../../resources/noopUniformShader.frag");
+  debug("Unsigned Integer uniform variables");
+  var uintProgram = wtu.loadProgramFromFile(gl, "../../resources/uintUniformShader.vert", "../../resources/noopUniformShaderES3.frag");
   shouldBe('gl.getProgramParameter(uintProgram, gl.LINK_STATUS)', 'true');
   var uvalLoc = gl.getUniformLocation(uintProgram, "uval");
   var uval2Loc = gl.getUniformLocation(uintProgram, "uval2");
@@ -565,8 +582,10 @@ if (contextVersion > 1) {
   shouldBe('gl.getUniform(uintProgram, uval2Loc)', '[2, 3]');
   shouldBe('gl.getUniform(uintProgram, uval3Loc)', '[4, 5, 6]');
   shouldBe('gl.getUniform(uintProgram, uval4Loc)', '[7, 8, 9, 10]');
-  // Matrix uniform variables for WebGL 2
-  var matForWebGL2Program = wtu.loadProgramFromFile(gl, "../../resources/matForWebGL2UniformShader.vert", "../../resources/noopUniformShader.frag");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+  debug("Matrix uniform variables for WebGL 2");
+  var matForWebGL2Program = wtu.loadProgramFromFile(gl, "../../resources/matForWebGL2UniformShader.vert", "../../resources/noopUniformShaderES3.frag");
   shouldBe('gl.getProgramParameter(matForWebGL2Program, gl.LINK_STATUS)', 'true');
   var mval2x3Loc = gl.getUniformLocation(matProgram, "mval2x3");
   var mval2x4Loc = gl.getUniformLocation(matProgram, "mval2x4");
@@ -588,8 +607,10 @@ if (contextVersion > 1) {
   shouldBe('gl.getUniform(matForWebGL2Program, mval3x4Loc)', '[21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]');
   shouldBe('gl.getUniform(matForWebGL2Program, mval4x2Loc)', '[33, 34, 35, 36, 37, 38, 39, 40]');
   shouldBe('gl.getUniform(matForWebGL2Program, mval4x3Loc)', '[41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52]');
-  // Sampler uniform variables for WebGL2
-  var samplerForWebGL2Program = wtu.loadProgramFromFile(gl, "../../resources/noopUniformShader.vert", "../../resources/samplerForWebGL2UniformShader.frag");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+  
+  debug("Sampler uniform variables for WebGL2");
+  var samplerForWebGL2Program = wtu.loadProgramFromFile(gl, "../../resources/noopUniformShaderES3.vert", "../../resources/samplerForWebGL2UniformShader.frag");
   shouldBe('gl.getProgramParameter(samplerForWebGL2Program, gl.LINK_STATUS)', 'true');
   var s3DValLoc = gl.getUniformLocation(samplerForWebGL2Program, "s3D");
   var s2DArrayValLoc = gl.getUniformLocation(samplerForWebGL2Program, "s2DArray");
@@ -599,8 +620,8 @@ if (contextVersion > 1) {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
   shouldBe('gl.getUniform(samplerForWebGL2Program, s3DValLoc)', '0');
   shouldBe('gl.getUniform(samplerForWebGL2Program, s2DArrayValLoc)', '1');
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 }
-wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
 debug("test getVertexAttrib");
@@ -677,7 +698,6 @@ gl.deleteBuffer(buffer);
 shouldBeNull('gl.getVertexAttrib(1, gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING)');
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
-
 if (contextVersion > 1) {
     debug("");
     debug("Test getInternalformatParameter")
@@ -728,5 +748,6 @@ if (contextVersion > 1) {
             return gl.getInternalformatParameter(gl.RENDERBUFFER, internalformat, gl.SAMPLES);
     });
 }
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 var successfullyParsed = true;
