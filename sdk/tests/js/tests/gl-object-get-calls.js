@@ -316,11 +316,11 @@ var validArrayForProgramParameter = [
     gl.ACTIVE_UNIFORMS
 ]
 if (contextVersion > 1) {
-  validArrayForProgramParameter += [
+  validArrayForProgramParameter = validArrayForProgramParameter.concat([
       gl.ACTIVE_UNIFORM_BLOCKS,
       gl.TRANSFORM_FEEDBACK_VARYINGS,
       gl.TRANSFORM_FEEDBACK_BUFFER_MODE
-  ]
+  ]);
   program = uniformBlockProgram;
 }
 testInvalidArgument(
@@ -427,7 +427,7 @@ if (contextVersion > 1) {
   shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_MIN_LOD)', '0');
   shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_WRAP_R)', 'gl.CLAMP_TO_EDGE');
   shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_IMMUTABLE_FORMAT)', 'false');
-  shouldBeNonZero('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_IMMUTABLE_LEVEL)');
+  shouldBe('gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_IMMUTABLE_LEVELS)', '0');
 }
 var validParametersForTexture =
     [ gl.TEXTURE_MAG_FILTER,
@@ -436,8 +436,8 @@ var validParametersForTexture =
       gl.TEXTURE_WRAP_T
     ];
 if (contextVersion > 1) {
-  validParametersForTexture +=
-      [ gl.TEXTURE_BASE_LEVEL,
+  validParametersForTexture = validParametersForTexture.concat([
+        gl.TEXTURE_BASE_LEVEL,
         gl.TEXTURE_COMPARE_FUNC,
         gl.TEXTURE_COMPARE_MODE,
         gl.TEXTURE_MAX_LEVEL,
@@ -445,8 +445,8 @@ if (contextVersion > 1) {
         gl.TEXTURE_MIN_LOD,
         gl.TEXTURE_WRAP_R,
         gl.TEXTURE_IMMUTABLE_FORMAT,
-        gl.TEXTURE_IMMUTABLE_LEVEL
-      ];
+        gl.TEXTURE_IMMUTABLE_LEVELS
+      ]);
 }
 testInvalidArgument(
     "getTexParameter",
@@ -458,7 +458,7 @@ testInvalidArgument(
 );
 var validTargetsForTexture = [ gl.TEXTURE_2D, gl.TEXTURE_CUBE_MAP];
 if (contextVersion > 1) {
-  validTargetsForTexture += [ gl.TEXTURE_3D, gl.TEXTURE_2D_ARRAY];
+  validTargetsForTexture = validTargetsForTexture.concat([ gl.TEXTURE_3D, gl.TEXTURE_2D_ARRAY]);
 }
 testInvalidArgument(
     "getTexParameter",
@@ -566,7 +566,7 @@ if (contextVersion > 1) {
   shouldBe('gl.getUniform(uintProgram, uval3Loc)', '[4, 5, 6]');
   shouldBe('gl.getUniform(uintProgram, uval4Loc)', '[7, 8, 9, 10]');
   // Matrix uniform variables for WebGL 2
-  var matForWebGL2Program = wtu.loadProgramFromFile(gl, "/resources/matForWebGL2UniformShader.vert", "/resources/noopUniformShader.frag");
+  var matForWebGL2Program = wtu.loadProgramFromFile(gl, "../../resources/matForWebGL2UniformShader.vert", "../../resources/noopUniformShader.frag");
   shouldBe('gl.getProgramParameter(matForWebGL2Program, gl.LINK_STATUS)', 'true');
   var mval2x3Loc = gl.getUniformLocation(matProgram, "mval2x3");
   var mval2x4Loc = gl.getUniformLocation(matProgram, "mval2x4");
@@ -600,6 +600,7 @@ if (contextVersion > 1) {
   shouldBe('gl.getUniform(samplerForWebGL2Program, s3DValLoc)', '0');
   shouldBe('gl.getUniform(samplerForWebGL2Program, s2DArrayValLoc)', '1');
 }
+wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 debug("");
 debug("test getVertexAttrib");
@@ -698,7 +699,7 @@ if (contextVersion > 1) {
         "getInternalformatParameter",
         "pname",
         [ gl.SAMPLES ],
-        function(pname){
+        function(pname) {
             return gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA4, pname);
     });
 
@@ -723,7 +724,7 @@ if (contextVersion > 1) {
         "getInternalformatParameter",
         "internalformat",
         validArrayForInterformat,
-        function(internalformat){
+        function(internalformat) {
             return gl.getInternalformatParameter(gl.RENDERBUFFER, internalformat, gl.SAMPLES);
     });
 }
