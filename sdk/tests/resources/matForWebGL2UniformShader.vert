@@ -34,8 +34,8 @@ out vec4 position;
 
 void main()
 {
-  position = vec4(mval2x3 * vec2(1.0, 2.0), 0.0); +
-      mval2x4 * vec2(1.0, 2.0); +
+  position = vec4(mval2x3 * vec2(1.0, 2.0), 0.0) +
+      mval2x4 * vec2(1.0, 2.0) +
       vec4(mval3x2 * vec3(1.0, 2.0, 3.0), 0.0, 0.0) +
       mval3x4 * vec3(1.0, 2.0, 3.0) +
       vec4(mval4x2 * vec4(1.0, 2.0, 3.0, 4.0), 0.0, 0.0) +
