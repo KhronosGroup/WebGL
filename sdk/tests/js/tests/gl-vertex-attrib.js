@@ -50,10 +50,24 @@ if (!gl) {
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '0');
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '1');
 
+    gl.vertexAttrib1fv(ii, new Float32Array([-1]));
+    shouldBeType('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)', 'Float32Array');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[0]', '-1');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[1]', '0');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '0');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '1');
+
     gl.vertexAttrib2fv(ii, [1, 2]);
     shouldBeType('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)', 'Float32Array');
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[0]', '1');
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[1]', '2');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '0');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '1');
+
+    gl.vertexAttrib2fv(ii, new Float32Array([1, -2]));
+    shouldBeType('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)', 'Float32Array');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[0]', '1');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[1]', '-2');
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '0');
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '1');
 
@@ -64,11 +78,25 @@ if (!gl) {
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '3');
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '1');
 
+    gl.vertexAttrib3fv(ii, new Float32Array([1, -2, 3]));
+    shouldBeType('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)', 'Float32Array');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[0]', '1');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[1]', '-2');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '3');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '1');
+
     gl.vertexAttrib4fv(ii, [1, 2, 3, 4]);
     shouldBeType('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)', 'Float32Array');
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[0]', '1');
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[1]', '2');
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '3');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '4');
+
+    gl.vertexAttrib4fv(ii, new Float32Array([1, 2, -3, 4]));
+    shouldBeType('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)', 'Float32Array');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[0]', '1');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[1]', '2');
+    shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '-3');
     shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '4');
 
     gl.vertexAttrib1f(ii, 5);
@@ -121,11 +149,25 @@ if (!gl) {
       shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '1');
       shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '2');
 
+      gl.vertexAttribI4iv(ii, new Int32Array([1, 0, -1, 2]));
+      shouldBeType('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)', 'Int32Array');
+      shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[0]', '1');
+      shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[1]', '0');
+      shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '-1');
+      shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '2');
+
       gl.vertexAttribI4uiv(ii, [0, 1, 2, 3]);
       shouldBeType('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)', 'Uint32Array');
       shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[0]', '0');
       shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[1]', '1');
       shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '2');
+      shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '3');
+
+      gl.vertexAttribI4uiv(ii, new Uint32Array([0, 2, 1, 3]));
+      shouldBeType('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)', 'Uint32Array');
+      shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[0]', '0');
+      shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[1]', '2');
+      shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[2]', '1');
       shouldBe('gl.getVertexAttrib(' + ii + ', gl.CURRENT_VERTEX_ATTRIB)[3]', '3');
     }
   }
