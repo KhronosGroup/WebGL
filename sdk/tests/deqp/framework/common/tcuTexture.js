@@ -839,10 +839,21 @@ tcuTexture.lookup = function(access, i, j, k) {
  * @param {tcuTexture.Sampler} sampler
  * @param {number} u
  * @param {number} v
- * @param {number} depth (integer)
+ * @param {(number|Array<number>)} depthOrOffset depth (int) or offset (ivec3)
  * @return {Array<number>} Vec4 pixel color
  */
-tcuTexture.sampleLinear2D = function(access, sampler, u, v, depth) {
+tcuTexture.sampleLinear2D = function(access, sampler, u, v, depthOrOffset) {
+    /** @type {number} */ var xOffset = 0;
+    /** @type {number} */ var yOffset = 0;
+    /** @type {number} */ var value;
+    if (Array.isArray(depthOrOffset)) {
+        xOffset = depthOrOffset[0];
+        yOffset = depthOrOffset[1];
+        value = depthOrOffset[2];
+    } else {
+        value = /** @type {number} */ (depthOrOffset);
+    }
+
     /**
      * @param {Array<number>} p00
      * @param {Array<number>} p10
@@ -862,9 +873,9 @@ tcuTexture.sampleLinear2D = function(access, sampler, u, v, depth) {
     var w = access.getWidth();
     var h = access.getHeight();
 
-    var x0 = Math.floor(u - 0.5);
+    var x0 = Math.floor(u - 0.5) + xOffset;
     var x1 = x0 + 1;
-    var y0 = Math.floor(v - 0.5);
+    var y0 = Math.floor(v - 0.5) + yOffset;
     var y1 = y0 + 1;
 
     var i0 = tcuTexture.wrap(sampler.wrapS, x0, w);
@@ -881,10 +892,10 @@ tcuTexture.sampleLinear2D = function(access, sampler, u, v, depth) {
     var j1UseBorder = sampler.wrapT == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(j1, 0, h);
 
     // Border color for out-of-range coordinates if using CLAMP_TO_BORDER, otherwise execute lookups.
-    var p00 = (i0UseBorder || j0UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i0, j0, depth);
-    var p10 = (i1UseBorder || j0UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i1, j0, depth);
-    var p01 = (i0UseBorder || j1UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i0, j1, depth);
-    var p11 = (i1UseBorder || j1UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i1, j1, depth);
+    var p00 = (i0UseBorder || j0UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i0, j0, value);
+    var p10 = (i1UseBorder || j0UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i1, j0, value);
+    var p01 = (i0UseBorder || j1UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i0, j1, value);
+    var p11 = (i1UseBorder || j1UseBorder) ? sampler.borderColor : tcuTexture.lookup(access, i1, j1, value);
 
     // Interpolate.
     return interpolateQuad(p00, p10, p01, p11, a, b);
@@ -896,9 +907,10 @@ tcuTexture.sampleLinear2D = function(access, sampler, u, v, depth) {
  * @param {number} u
  * @param {number} v
  * @param {number} w
+ * @param {Array<number>=} offset
  * @return {Array<number>} Vec4 pixel color
  */
-tcuTexture.sampleLinear3D = function(access, sampler, u, v, w) {
+tcuTexture.sampleLinear3D = function(access, sampler, u, v, w, offset) {
     /**
      * @param {Array<number>} p000
      * @param {Array<number>} p100
@@ -928,11 +940,21 @@ tcuTexture.sampleLinear3D = function(access, sampler, u, v, w) {
     var height = access.getHeight();
     var depth = access.getDepth();
 
-    var x0 = Math.floor(u - 0.5);
+    /** @type {number} */ var xOffset = 0;
+    /** @type {number} */ var yOffset = 0;
+    /** @type {number} */ var zOffset = 0;
+
+    if (offset !== undefined && offset.length === 3) {
+        xOffset = offset[0];
+        yOffset = offset[1];
+        zOffset = offset[2];
+    }
+
+    var x0 = Math.floor(u - 0.5) + xOffset;
     var x1 = x0 + 1;
-    var y0 = Math.floor(v - 0.5);
+    var y0 = Math.floor(v - 0.5) + yOffset;
     var y1 = y0 + 1;
-    var z0 = Math.floor(w - 0.5);
+    var z0 = Math.floor(w - 0.5) + zOffset;
     var z1 = z0 + 1;
 
     var i0 = tcuTexture.wrap(sampler.wrapS, x0, width);
@@ -972,16 +994,27 @@ tcuTexture.sampleLinear3D = function(access, sampler, u, v, w) {
  * @param {tcuTexture.Sampler} sampler
  * @param {number} u
  * @param {number} v
- * @param {number} depth (integer)
+ * @param {(number|Array<number>)} depthOrOffset depth (integer) or offset (ivec3)
  * @return {Array<number>} Vec4 pixel color
  */
-tcuTexture.sampleNearest2D = function(access, sampler, u, v, depth) {
+tcuTexture.sampleNearest2D = function(access, sampler, u, v, depthOrOffset) {
+    /** @type {number} */ var xOffset = 0;
+    /** @type {number} */ var yOffset = 0;
+    /** @type {number} */ var value;
+    if (Array.isArray(depthOrOffset)) {
+        xOffset = depthOrOffset[0];
+        yOffset = depthOrOffset[1];
+        value = depthOrOffset[2];
+    } else {
+        value = /** @type {number} */ (depthOrOffset);
+    }
+
     var width = access.getWidth();
     var height = access.getHeight();
 
     /* TODO: Shouldn't it be just Math.round? */
-    var x = Math.round(Math.floor(u));
-    var y = Math.round(Math.floor(v));
+    var x = Math.round(Math.floor(u)) + xOffset;
+    var y = Math.round(Math.floor(v)) + yOffset;
 
     // Check for CLAMP_TO_BORDER.
     if ((sampler.wrapS == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(x, 0, width)) ||
@@ -991,7 +1024,7 @@ tcuTexture.sampleNearest2D = function(access, sampler, u, v, depth) {
     var i = tcuTexture.wrap(sampler.wrapS, x, width);
     var j = tcuTexture.wrap(sampler.wrapT, y, height);
 
-    return tcuTexture.lookup(access, i, j, depth);
+    return tcuTexture.lookup(access, i, j, value);
 };
 
 /**
@@ -1000,16 +1033,26 @@ tcuTexture.sampleNearest2D = function(access, sampler, u, v, depth) {
  * @param {number} u
  * @param {number} v
  * @param {number} w
+ * @param {Array<number>=} offset
  * @return {Array<number>} Vec4 pixel color
  */
-tcuTexture.sampleNearest3D = function(access, sampler, u, v, w) {
+tcuTexture.sampleNearest3D = function(access, sampler, u, v, w, offset) {
     var width = access.getWidth();
     var height = access.getHeight();
     var depth = access.getDepth();
+    /** @type {number} */ var xOffset = 0;
+    /** @type {number} */ var yOffset = 0;
+    /** @type {number} */ var zOffset = 0;
 
-    var x = Math.round(Math.floor(u));
-    var y = Math.round(Math.floor(v));
-    var z = Math.round(Math.floor(w));
+    if (offset !== undefined && offset.length === 3) {
+        xOffset = offset[0];
+        yOffset = offset[1];
+        zOffset = offset[2];
+    }
+
+    var x = Math.round(Math.floor(u)) + xOffset;
+    var y = Math.round(Math.floor(v)) + yOffset;
+    var z = Math.round(Math.floor(w)) + zOffset;
 
     // Check for CLAMP_TO_BORDER.
     if ((sampler.wrapS == tcuTexture.WrapMode.CLAMP_TO_BORDER && !deMath.deInBounds32(x, 0, width)) ||
@@ -1478,6 +1521,63 @@ tcuTexture.ConstPixelBufferAccess.prototype.sample2D = function(sampler, filter,
             throw new Error('Invalid filter:' + filter);
     }
     throw new Error('Unimplemented');
+};
+
+/**
+ * @param {tcuTexture.Sampler} sampler
+ * @param {?tcuTexture.FilterMode} filter
+ * @param {number} s
+ * @param {number} t
+ * @param {Array<number>} offset
+ * @return {Array<number>} Sample color
+ */
+tcuTexture.ConstPixelBufferAccess.prototype.sample2DOffset = function(sampler, filter, s, t, offset) {
+    DE_ASSERT(deMath.deInBounds32(offset[2], 0, this.m_depth));
+
+    // Non-normalized coordinates.
+    var u = s;
+    var v = t;
+
+    if (sampler.normalizedCoords) {
+        u = tcuTexture.unnormalize(sampler.wrapS, s, this.m_width);
+        v = tcuTexture.unnormalize(sampler.wrapT, t, this.m_height);
+    }
+
+    switch (filter) {
+        case tcuTexture.FilterMode.NEAREST: return tcuTexture.sampleNearest2D(this, sampler, u, v, offset);
+        case tcuTexture.FilterMode.LINEAR: return tcuTexture.sampleLinear2D(this, sampler, u, v, offset);
+        default:
+            throw new Error('Invalid filter:' + filter);
+    }
+};
+
+/**
+ * @param {tcuTexture.Sampler} sampler
+ * @param {?tcuTexture.FilterMode} filter
+ * @param {number} s
+ * @param {number} t
+ * @param {number} r
+ * @param {Array<number>} offset
+ * @return {Array<number>} Sample color
+ */
+tcuTexture.ConstPixelBufferAccess.prototype.sample3DOffset = function(sampler, filter, s, t, r, offset) {
+    // Non-normalized coordinates.
+    /** @type {number} */ var u = s;
+    /** @type {number} */ var v = t;
+    /** @type {number} */ var w = r;
+
+    if (sampler.normalizedCoords) {
+        u = tcuTexture.unnormalize(sampler.wrapS, s, this.m_width);
+        v = tcuTexture.unnormalize(sampler.wrapT, t, this.m_height);
+        w = tcuTexture.unnormalize(sampler.wrapR, r, this.m_depth);
+    }
+
+    switch (filter) {
+        case tcuTexture.FilterMode.NEAREST: return tcuTexture.sampleNearest3D(this, sampler, u, v, w, offset);
+        case tcuTexture.FilterMode.LINEAR: return tcuTexture.sampleLinear3D(this, sampler, u, v, w, offset);
+        default:
+            throw new Error('Invalid filter:' + filter);
+    }
 };
 
 /**
@@ -2279,6 +2379,17 @@ tcuTexture.Texture2DView.prototype.sample = function(sampler, texCoord, lod) {
 
 /**
  * @param {tcuTexture.Sampler} sampler
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @param {Array<number>} offset
+ * @return {Array<number>} Pixel color
+ */
+tcuTexture.Texture2DView.prototype.sampleOffset = function(sampler, texCoord, lod, offset) {
+    return tcuTexture.sampleLevelArray2DOffset(this.m_levels, this.m_numLevels, sampler, texCoord, lod, [offset[0], offset[1], 0]);
+};
+
+/**
+ * @param {tcuTexture.Sampler} sampler
  * @param {number} ref
  * @param {Array<number>} texCoord
  * @param {number} lod
@@ -2286,6 +2397,18 @@ tcuTexture.Texture2DView.prototype.sample = function(sampler, texCoord, lod) {
  */
 tcuTexture.Texture2DView.prototype.sampleCompare = function(sampler, ref, texCoord, lod) {
     return tcuTexture.sampleLevelArray2DCompare(this.m_levels, this.m_numLevels, sampler, ref, texCoord[0], texCoord[1], lod, [0, 0, 0]);
+};
+
+/**
+ * @param {tcuTexture.Sampler} sampler
+ * @param {number} ref
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @param {Array<number>} offset
+ * @return {number}
+ */
+tcuTexture.Texture2DView.prototype.sampleCompareOffset = function(sampler, ref, texCoord, lod, offset) {
+    return tcuTexture.sampleLevelArray2DCompare(this.m_levels, this.m_numLevels, sampler, ref, texCoord[0], texCoord[1], lod, [offset[0], offset[1], 0]);
 };
 
     /* TODO: Port
@@ -2346,6 +2469,29 @@ tcuTexture.Texture2DArrayView.prototype.sample = function(sampler, texCoord, lod
 
 /**
  * @param {tcuTexture.Sampler} sampler
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @param {Array<number>} offset
+ * @return {Array<number>}
+ */
+tcuTexture.Texture2DArrayView.prototype.sampleOffset = function(sampler, texCoord, lod, offset) {
+    return tcuTexture.sampleLevelArray2DOffset(this.m_levels, this.m_numLevels, sampler, texCoord, lod, [offset[0], offset[1], this.selectLayer(texCoord[2])]);
+};
+
+/**
+ * @param {tcuTexture.Sampler} sampler
+ * @param {number} ref
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @param {Array<number>} offset
+ * @return {number}
+ */
+tcuTexture.Texture2DArrayView.prototype.sampleCompareOffset = function(sampler, ref, texCoord, lod, offset) {
+    return tcuTexture.sampleLevelArray2DCompare(this.m_levels, this.m_numLevels, sampler, ref, texCoord[0], texCoord[1], lod, [offset[0], offset[1], this.selectLayer(texCoord[2])]);
+};
+
+/**
+ * @param {tcuTexture.Sampler} sampler
  * @param {number} ref
  * @param {Array<number>} texCoord
  * @param {number} lod
@@ -2353,6 +2499,49 @@ tcuTexture.Texture2DArrayView.prototype.sample = function(sampler, texCoord, lod
  */
 tcuTexture.Texture2DArrayView.prototype.sampleCompare = function(sampler, ref, texCoord, lod) {
     return tcuTexture.sampleLevelArray2DCompare(this.m_levels, this.m_numLevels, sampler, ref, texCoord[0], texCoord[1], lod, [0, 0, this.selectLayer(texCoord[2])]);
+};
+
+/**
+ * @param {Array<tcuTexture.ConstPixelBufferAccess>} levels
+ * @param {number} numLevels
+ * @param {tcuTexture.Sampler} sampler
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @param {Array<number>} offset
+ * @return {Array<number>}
+ */
+tcuTexture.sampleLevelArray2DOffset = function(levels, numLevels, sampler, texCoord, lod, offset) {
+    /** @type {boolean} */ var magnified = lod <= sampler.lodThreshold;
+    /** @type {tcuTexture.FilterMode} */ var filterMode = magnified ? sampler.magFilter : sampler.minFilter;
+    /** @type {number} */ var maxLevel;
+    /** @type {tcuTexture.FilterMode} */ var levelFilter;
+    switch (filterMode) {
+        case tcuTexture.FilterMode.NEAREST: return levels[0].sample2DOffset(sampler, filterMode, texCoord[0], texCoord[1], offset);
+        case tcuTexture.FilterMode.LINEAR: return levels[0].sample2DOffset(sampler, filterMode, texCoord[0], texCoord[1], offset);
+
+        case tcuTexture.FilterMode.NEAREST_MIPMAP_NEAREST:
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST:
+            maxLevel = numLevels - 1;
+            /** @type {number} */ var level = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
+            levelFilter = (filterMode === tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
+
+            return levels[level].sample2DOffset(sampler, levelFilter, texCoord[0], texCoord[1], offset);
+
+        case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR:
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR:
+            maxLevel = numLevels - 1;
+            /** @type {number} */ var level0 = deMath.clamp(Math.floor(lod), 0, maxLevel);
+            /** @type {number} */ var level1 = Math.min(maxLevel, level0 + 1);
+            levelFilter = (filterMode === tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
+            /** @type {number} */ var f = deMath.deFloatFrac(lod);
+            /** @type {Array<number>} */ var t0 = levels[level0].sample2DOffset(sampler, levelFilter, texCoord[0], texCoord[1], offset);
+            /** @type {Array<number>} */ var t1 = levels[level1].sample2DOffset(sampler, levelFilter, texCoord[0], texCoord[1], offset);
+
+            return deMath.add(deMath.scale(t0, (1.0 - f)), deMath.scale(t1, f));
+
+        default:
+            return [0.0, 0.0, 0.0, 0.0];
+    }
 };
 
 /**
@@ -2415,7 +2604,63 @@ tcuTexture.Texture3DView.prototype.sampleCompare = function(sampler, ref, texCoo
     throw new Error('Unimplemented');
 };
 
+/**
+ * @param {tcuTexture.Sampler} sampler
+ * @param {Array<number>} texCoord
+ * @param {number} lod
+ * @param {Array<number>} offset
+ * @return {Array<number>}
+ */
+tcuTexture.Texture3DView.prototype.sampleOffset = function(sampler, texCoord, lod, offset) {
+    return tcuTexture.sampleLevelArray3DOffset(this.m_levels, this.m_numLevels, sampler, texCoord[0], texCoord[1], texCoord[2], lod, offset);
+};
+
 /* TODO: All view classes are very similar. They should have a common base class */
+
+/**
+ * @param {Array<tcuTexture.ConstPixelBufferAccess>} levels
+ * @param {number} numLevels
+ * @param {tcuTexture.Sampler} sampler
+ * @param {number} s
+ * @param {number} t
+ * @param {number} r
+ * @param {number} lod
+ * @param {Array<number>} offset
+ * @return {Array<number>}
+ */
+tcuTexture.sampleLevelArray3DOffset = function(levels, numLevels, sampler, s, t, r, lod, offset) {
+    /** @type {boolean} */ var magnified = lod <= sampler.lodThreshold;
+    /** @type {tcuTexture.FilterMode} */ var filterMode = magnified ? sampler.magFilter : sampler.minFilter;
+    /** @type {number} */ var maxLevel;
+    /** @type {tcuTexture.FilterMode} */ var levelFilter;
+    switch (filterMode) {
+        case tcuTexture.FilterMode.NEAREST: return levels[0].sample3DOffset(sampler, filterMode, s, t, r, offset);
+        case tcuTexture.FilterMode.LINEAR: return levels[0].sample3DOffset(sampler, filterMode, s, t, r, offset);
+
+        case tcuTexture.FilterMode.NEAREST_MIPMAP_NEAREST:
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST:
+            maxLevel = numLevels - 1;
+            /** @type {number} */ var level = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
+            levelFilter = (filterMode === tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
+
+            return levels[level].sample3DOffset(sampler, levelFilter, s, t, r, offset);
+
+        case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR:
+        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR:
+            maxLevel = numLevels - 1;
+            /** @type {number} */ var level0 = deMath.clamp(Math.floor(lod), 0, maxLevel);
+            /** @type {number} */ var level1 = Math.min(maxLevel, level0 + 1);
+            levelFilter = (filterMode === tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
+            /** @type {number} */ var f = deMath.deFloatFrac(lod);
+            /** @type {Array<number>} */ var t0 = levels[level0].sample3DOffset(sampler, levelFilter, s, t, r, offset);
+            /** @type {Array<number>} */ var t1 = levels[level1].sample3DOffset(sampler, levelFilter, s, t, r, offset);
+
+            return deMath.add(deMath.scale(t0, (1.0 - f)), deMath.scale(t1, f));
+
+        default:
+            throw new Error('Filter mode not supported');
+    }
+};
 
 /**
  * @param {number} width

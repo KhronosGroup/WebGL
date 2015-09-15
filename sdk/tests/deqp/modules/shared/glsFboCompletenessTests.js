@@ -762,7 +762,7 @@ goog.scope(function() {
             testFailedOptions('Framebuffer object could have checked as complete but did not.', true);
         } else {
             // pass
-            testPassed(this.name + ' ' + this.description);
+            testPassed('Passed');
         }
 
         return tcuTestCase.IterateResult.STOP;

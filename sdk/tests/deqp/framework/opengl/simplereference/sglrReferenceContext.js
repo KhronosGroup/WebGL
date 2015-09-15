@@ -2288,6 +2288,18 @@ goog.scope(function() {
         return -1;
     };
 
+   /**
+    * @param {number} pname
+    */
+    sglrReferenceContext.ReferenceContext.prototype.getParameter = function(pname) {
+        switch (pname) {
+            case (gl.VIEWPORT): return new Int32Array(this.m_viewport);
+            case (gl.SCISSOR_BOX): return new Int32Array(this.m_scissorBox);
+            default:
+                throw new Error('Unimplemented');
+        }
+    };
+
     /**
     * @param {number} location
     * @param {gluShaderUtil.DataType} type
@@ -4743,5 +4755,8 @@ goog.scope(function() {
                 return;
         }
     };
+
+    sglrReferenceContext.ReferenceContext.prototype.invalidateFramebuffer = function(target, attachments) {};
+    sglrReferenceContext.ReferenceContext.prototype.invalidateSubFramebuffer = function(target, attachments, x, y, width, height) {};
 
 });

@@ -55,7 +55,7 @@ goog.scope(function() {
 
         this.m_gl = gl;
         this.m_pass = true;
-        this.m_comment = this.name + ' ' + this.description;
+        this.m_comment = '';
 
     };
 
@@ -73,6 +73,7 @@ goog.scope(function() {
                 this.m_comment += ' ' + message;
             this.m_pass = condition;
         }
+        return condition;
     };
 
     es3fApiCase.ApiCase.prototype.iterate = function() {

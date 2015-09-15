@@ -214,6 +214,9 @@ var TestFailedException = function (message) {
 
 function testPassed(msg)
 {
+    if (_currentTestName)
+      msg = _currentTestName + ': ' + msg;
+
     reportTestResultsToHarness(true, msg);
 
     if (!quietMode())
@@ -225,6 +228,9 @@ function testPassed(msg)
 
 function testFailed(msg)
 {
+    if (_currentTestName)
+      msg = _currentTestName + ': ' + msg;
+
     reportTestResultsToHarness(false, msg);
     _addSpan('<span><span class="fail">FAIL</span> ' + escapeHTML(msg) + '</span>');
     _bufferedLogToConsole('FAIL ' + msg);

@@ -144,8 +144,8 @@ goog.scope(function() {
     * @param {Object=} spec
     */
     tcuTestCase.DeqpTest = function(name, description, spec) {
-        this.name = name;
-        this.description = description;
+        this.name = name || '';
+        this.description = description || '';
         this.spec = spec;
         this.currentTestNdx = 0;
         this.parentTest = null;
@@ -246,7 +246,7 @@ goog.scope(function() {
     * @return {tcuTestCase.DeqpTest}
     */
     tcuTestCase.DeqpTest.prototype.nextInRange = function(pattern, range) {
-        while(true) {
+        while (true) {
             var test = this.next(pattern);
             if (!test)
                 return null;
@@ -256,11 +256,10 @@ goog.scope(function() {
         }
     };
 
-
     /**
     * Returns the full name of the test
     *
-    * @return {?string} Full test name.
+    * @return {string} Full test name.
     */
     tcuTestCase.DeqpTest.prototype.fullName = function() {
         if (this.parentTest) {
@@ -274,7 +273,7 @@ goog.scope(function() {
     /**
     * Returns the description of the test
     *
-    * @return {?string} Test description.
+    * @return {string} Test description.
     */
     tcuTestCase.DeqpTest.prototype.getDescription = function() {
         return this.description;

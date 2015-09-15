@@ -93,14 +93,25 @@ targets = {
     'vao' : 'functional.gles3.es3fVertexArrayObjectTests',
     'clip' : 'functional.gles3.es3fClippingTests',
     'inv' : 'functional.gles3.es3fFboInvalidateTests',
+    'defvertattr' : 'functional.gles3.es3fDefaultVertexAttributeTests',
+    'occlusion' : 'functional.gles3.es3fOcclusionQueryTests',
     'shaderapi' : 'functional.gles3.es3fShaderApiTests',
     'shaderpackingfunction' : 'functional.gles3.es3fShaderPackingFunctionTests',
     'shadercommonfunction' : 'functional.gles3.es3fShaderCommonFunctionTests',
     'shadermatrix' : 'functional.gles3.es3fShaderMatrixTest',
     'shaderprecision' : 'functional.gles3.es3fShaderPrecisionTests',
     'bstate': 'functional.gles3.es3fBooleanStateQuery',
+    'shaderstate': 'functional.gles3.es3fShaderStateQueryTests',
+    'fbostate' : 'functional.gles3.es3fFboStateQueryTests',
+    'rbostate' : 'functional.gles3.es3fRboStateQueryTests',
+    'bufferstate' : 'functional.gles3.es3fBufferObjectQueryTests',
+    'internalformatstate' : 'functional.gles3.es3fInternalFormatQueryTests',
     'texturespecification' : 'functional.gles3.es3fTextureSpecificationTests',
-    'sync' : 'functional.gles3.es3fSyncTests'
+    'shadertexturefunction' : 'functional.gles3.es3fShaderTextureFunctionTests',
+    'sync' : 'functional.gles3.es3fSyncTests',
+    'readpixel' : 'functional.gles3.es3fReadPixelTests',
+    'stringquery' : 'functional.gles3.es3fStringQueryTests',
+    'indexedstate' : 'functional.gles3.es3fIndexedStateQueryTests'
 }
 
 total_errors = 0

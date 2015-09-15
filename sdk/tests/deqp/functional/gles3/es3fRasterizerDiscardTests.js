@@ -364,8 +364,7 @@ es3fRasterizerDiscardTests.RasterizerDiscardCase.prototype.iterate = function() 
 
     if (!testOk) {
         tcuLogImage.logImage('Result image', '', pixels.getAccess());
-        console.log('Primitive or buffer clear was not discarded.');
-        testFailed(this.fullName() + ' ' + this.description);
+        testFailed('Primitive or buffer clear was not discarded.');
         return tcuTestCase.IterateResult.STOP;
     }
     console.log('Primitive or buffer clear was discarded correctly.');
@@ -373,7 +372,7 @@ es3fRasterizerDiscardTests.RasterizerDiscardCase.prototype.iterate = function() 
     if (++this.m_iterNdx < NUM_CASE_ITERATIONS)
         return tcuTestCase.IterateResult.CONTINUE;
 
-    testPassed(this.fullName() + ' ' + this.description);
+    testPassed('Passed');
     return tcuTestCase.IterateResult.STOP;
 };
 

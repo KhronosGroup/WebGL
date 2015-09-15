@@ -2979,6 +2979,8 @@ goog.scope(function() {
         if (drawStep && this.m_specs.length != 1)
             debug('Iteration ' + specNdx + ' of ' + (this.m_specs.length - 1) + ': ' + this.m_iteration_descriptions[specNdx]);
 
+        this.m_iteration++;
+
         if (drawStep) {
             /** @type {glsDrawTests.MethodInfo} */ var methodInfo = glsDrawTests.getMethodInfo(spec.drawMethod);
             /** @type {boolean} */ var indexed = methodInfo.indexed;
@@ -3131,7 +3133,6 @@ goog.scope(function() {
         if (iterateResult == tcuTestCase.IterateResult.STOP)
             testPassed('');
 
-        this.m_iteration++;
         return iterateResult;
     };
 

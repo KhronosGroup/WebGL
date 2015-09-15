@@ -289,7 +289,9 @@ goog.scope(function() {
 
         // Verify results.
         if (this.verifyTexture(webgl2Context, refContext))
-            testPassed(this.fullName() || '');
+            testPassed('Passed');
+        else
+            testFailed('Verification failed');
 
         return tcuTestCase.IterateResult.STOP;
     };

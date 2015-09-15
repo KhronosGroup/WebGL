@@ -110,7 +110,7 @@ gluShaderProgram.Shader = function(gl, type) {
     this.gl = gl;
     this.info = new gluShaderProgram.ShaderInfo(type); /** Client-side clone of state for debug / perf reasons. */
     this.shader = gl.createShader(gluShaderProgram.getGLShaderType(gl, type));
-    assertMsgOptions(gl.getError() == gl.NO_ERROR, 'glCreateShader()', false, true);
+    assertMsgOptions(gl.getError() == gl.NO_ERROR, 'gl.createShader()', false, true);
 
     this.setSources = function(source) {
         this.gl.shaderSource(this.shader, source);
@@ -132,7 +132,7 @@ gluShaderProgram.Shader = function(gl, type) {
         /** @type {Date} */ var compileEnd = new Date();
         this.info.compileTimeUs = 1000 * (compileEnd.getTime() - compileStart.getTime());
 
-        assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'glCompileShader()', false, true);
+        assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.compileShader()', false, true);
 
         var compileStatus = this.gl.getShaderParameter(this.shader, this.gl.COMPILE_STATUS);
         assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'glGetShaderParameter()', false, true);
@@ -143,6 +143,10 @@ gluShaderProgram.Shader = function(gl, type) {
 
     this.getShader = function() {
         return this.shader;
+    };
+
+    this.destroy = function() {
+        this.gl.deleteShader(this.shader);
     };
 
 };
@@ -170,7 +174,7 @@ gluShaderProgram.Program = function(gl, programID) {
 
     if (!programID) {
         this.program = gl.createProgram();
-        assertMsgOptions(gl.getError() == gl.NO_ERROR, 'glCreateProgram()', false, true);
+        assertMsgOptions(gl.getError() == gl.NO_ERROR, 'gl.createProgram()', false, true);
     }
 };
 
@@ -180,11 +184,24 @@ gluShaderProgram.Program = function(gl, programID) {
 gluShaderProgram.Program.prototype.getProgram = function() { return this.program; };
 
 /**
+ * @return {gluShaderProgram.ProgramInfo}
+ */
+gluShaderProgram.Program.prototype.getInfo = function() { return this.info; };
+
+/**
  * @param {WebGLShader} shader
  */
 gluShaderProgram.Program.prototype.attachShader = function(shader) {
     this.gl.attachShader(this.program, shader);
     assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.attachShader()', false, true);
+};
+
+/**
+ * @param {WebGLShader} shader
+ */
+gluShaderProgram.Program.prototype.detachShader = function(shader) {
+    this.gl.detachShader(this.program, shader);
+    assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.detachShader()', false, true);
 };
 
 /**
@@ -206,7 +223,7 @@ gluShaderProgram.Program.prototype.link = function() {
     /** @type {Date} */ var linkEnd = new Date();
     this.info.linkTimeUs = 1000 * (linkEnd.getTime() - linkStart.getTime());
 
-    assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'glLinkProgram()', false, true);
+    assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.linkProgram()', false, true);
 
     var linkStatus = this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS);
     assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.getProgramParameter()', false, true);
