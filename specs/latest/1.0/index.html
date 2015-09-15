@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 07 September 2015</h2>
+    <h2 class="no-toc">Editor's Draft 14 September 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1792,17 +1792,14 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void validateProgram(WebGLProgram? program);
 
     void vertexAttrib1f(GLuint indx, GLfloat x);
-    void vertexAttrib1fv(GLuint indx, Float32Array values);
-    void vertexAttrib1fv(GLuint indx, sequence&lt;GLfloat&gt; values);
+    typedef (Float32Array or sequence&lt;GLfloat&gt;) VertexAttribFVSource;
+    void vertexAttrib1fv(GLuint indx, VertexAttribFVSource values);
     void vertexAttrib2f(GLuint indx, GLfloat x, GLfloat y);
-    void vertexAttrib2fv(GLuint indx, Float32Array values);
-    void vertexAttrib2fv(GLuint indx, sequence&lt;GLfloat&gt; values);
+    void vertexAttrib2fv(GLuint indx, VertexAttribFVSource values);
     void vertexAttrib3f(GLuint indx, GLfloat x, GLfloat y, GLfloat z);
-    void vertexAttrib3fv(GLuint indx, Float32Array values);
-    void vertexAttrib3fv(GLuint indx, sequence&lt;GLfloat&gt; values);
+    void vertexAttrib3fv(GLuint indx, VertexAttribFVSource values);
     void vertexAttrib4f(GLuint indx, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-    void vertexAttrib4fv(GLuint indx, Float32Array values);
-    void vertexAttrib4fv(GLuint indx, sequence&lt;GLfloat&gt; values);
+    void vertexAttrib4fv(GLuint indx, VertexAttribFVSource values);
     void vertexAttribPointer(GLuint indx, GLint size, GLenum type,
                              GLboolean normalized, GLsizei stride, GLintptr offset);
 
