@@ -585,21 +585,23 @@ if (contextVersion > 1) {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
   debug("Matrix uniform variables for WebGL 2");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
   var matForWebGL2Program = wtu.loadProgramFromFile(gl, "../../resources/matForWebGL2UniformShader.vert", "../../resources/noopUniformShaderES3.frag");
   shouldBe('gl.getProgramParameter(matForWebGL2Program, gl.LINK_STATUS)', 'true');
-  var mval2x3Loc = gl.getUniformLocation(matProgram, "mval2x3");
-  var mval2x4Loc = gl.getUniformLocation(matProgram, "mval2x4");
-  var mval3x2Loc = gl.getUniformLocation(matProgram, "mval3x2");
-  var mval3x4Loc = gl.getUniformLocation(matProgram, "mval3x4");
-  var mval4x2Loc = gl.getUniformLocation(matProgram, "mval4x2");
-  var mval4x3Loc = gl.getUniformLocation(matProgram, "mval4x3");
+  var mval2x3Loc = gl.getUniformLocation(matForWebGL2Program, "mval2x3");
+  var mval2x4Loc = gl.getUniformLocation(matForWebGL2Program, "mval2x4");
+  var mval3x2Loc = gl.getUniformLocation(matForWebGL2Program, "mval3x2");
+  var mval3x4Loc = gl.getUniformLocation(matForWebGL2Program, "mval3x4");
+  var mval4x2Loc = gl.getUniformLocation(matForWebGL2Program, "mval4x2");
+  var mval4x3Loc = gl.getUniformLocation(matForWebGL2Program, "mval4x3");
   gl.useProgram(matForWebGL2Program);
   gl.uniformMatrix2x3fv(mval2x3Loc, false, [1, 2, 3, 4, 5, 6]);
   gl.uniformMatrix2x4fv(mval2x4Loc, false, [7, 8, 9, 10, 11, 12, 13, 14]);
   gl.uniformMatrix3x2fv(mval3x2Loc, false, [15, 16, 17, 18, 19, 20]);
   gl.uniformMatrix3x4fv(mval3x4Loc, false, [21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]);
   gl.uniformMatrix4x2fv(mval4x2Loc, false, [33, 34, 35, 36, 37, 38, 39, 40]);
-  gl.uniformMatrix4x3fv(mval4x2Loc, false, [41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52]);
+  gl.uniformMatrix4x3fv(mval4x3Loc, false, [41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52]);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
   shouldBe('gl.getUniform(matForWebGL2Program, mval2x3Loc)', '[1, 2, 3, 4, 5, 6]');
   shouldBe('gl.getUniform(matForWebGL2Program, mval2x4Loc)', '[7, 8, 9, 10, 11, 12, 13, 14]');
@@ -608,7 +610,7 @@ if (contextVersion > 1) {
   shouldBe('gl.getUniform(matForWebGL2Program, mval4x2Loc)', '[33, 34, 35, 36, 37, 38, 39, 40]');
   shouldBe('gl.getUniform(matForWebGL2Program, mval4x3Loc)', '[41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52]');
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
-  
+
   debug("Sampler uniform variables for WebGL2");
   var samplerForWebGL2Program = wtu.loadProgramFromFile(gl, "../../resources/noopUniformShaderES3.vert", "../../resources/samplerForWebGL2UniformShader.frag");
   shouldBe('gl.getProgramParameter(samplerForWebGL2Program, gl.LINK_STATUS)', 'true');
