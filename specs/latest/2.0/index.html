@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 5 September 2015</h2>
+    <h2 class="no-toc">Editor's Draft 14 September 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -823,7 +823,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void bindBufferRange(GLenum target, GLuint index, WebGLBuffer? buffer, GLintptr offset, GLsizeiptr size);
   any getIndexedParameter(GLenum target, GLuint index);
   sequence&lt;GLuint&gt;? getUniformIndices(WebGLProgram? program, sequence&lt;DOMString&gt; uniformNames);
-  sequence&lt;GLint&gt;? getActiveUniforms(WebGLProgram? program, sequence&lt;GLuint&gt; uniformIndices, GLenum pname);
+  any getActiveUniforms(WebGLProgram? program, sequence&lt;GLuint&gt; uniformIndices, GLenum pname);
   GLuint getUniformBlockIndex(WebGLProgram? program, DOMString uniformBlockName);
   any getActiveUniformBlockParameter(WebGLProgram? program, GLuint uniformBlockIndex, GLenum pname);
   /* TODO: if there were a fake enum for GL_UNIFORM_BLOCK_NAME, then this could be folded into getActiveUniformBlockParameter */
@@ -2391,12 +2391,24 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <dd>
             Retrieves the indices of a number of uniforms within <code class="param">program</code>.
 
-        <dt class="idl-code">sequence&lt;GLint&gt;? getActiveUniforms(WebGLProgram? program, sequence&lt;GLuint&gt; uniformIndices, GLenum pname)
+        <dt class="idl-code">any getActiveUniforms(WebGLProgram? program, sequence&lt;GLuint&gt; uniformIndices, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.3 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetActiveUniformsiv.xhtml">man page</a>)</span>
         <dd>
             Queries the value of the parameter named <code class="param">pname</code> for each of the uniforms within <code class="param">program</code> whose indices
-            are specified in the array of <code class="param">uniformIndices</code>.
+            are specified in the array of <code class="param">uniformIndices</code>. The type returned is the natural type for the requested
+            <code class="param">pname</code>, as given in the following table:
+            <table class="foo">
+                <tr><th>pname</th><th>returned type</th></tr>
+                <tr><td>UNIFORM_TYPE</td><td>sequence&lt;GLenum&gt;</td></tr>
+                <tr><td>UNIFORM_SIZE</td><td>sequence&lt;GLuint&gt;</td></tr>
+                <tr><td>UNIFORM_BLOCK_INDEX</td><td>sequence&lt;GLint&gt;</td></tr>
+                <tr><td>UNIFORM_OFFSET</td><td>sequence&lt;GLint&gt;</td></tr>
+                <tr><td>UNIFORM_ARRAY_STRIDE</td><td>sequence&lt;GLint&gt;</td></tr>
+                <tr><td>UNIFORM_MATRIX_STRIDE</td><td>sequence&lt;GLint&gt;</td></tr>
+                <tr><td>UNIFORM_IS_ROW_MAJOR</td><td>sequence&lt;GLboolean&gt;</td></tr>
+            </table><br>
+            <p>If <code class="param">pname</code> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
 
         <dt class="idl-code">GLuint getUniformBlockIndex(WebGLProgram? program, DOMString uniformBlockName)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.3 &sect;2.11.6</a>,
