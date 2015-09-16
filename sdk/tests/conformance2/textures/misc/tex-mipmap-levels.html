@@ -139,6 +139,13 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL, 2);
   gl.generateMipmap(gl.TEXTURE_2D);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
+
+  // Test 3D texture.
+  var tex3d = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_3D, tex3d);
+  gl.texImage3D( gl.TEXTURE_3D, 0, gl.RGBA, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
+  gl.generateMipmap(gl.TEXTURE_3D);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
 })();
 
 var successfullyParsed = true;
