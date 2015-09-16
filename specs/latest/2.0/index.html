@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 14 September 2015</h2>
+    <h2 class="no-toc">Editor's Draft 16 September 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2123,6 +2123,9 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         </table>
         <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
         <p>If <em>sampler</em> is not a valid sampler object, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>Modifying a parameter of a sampler object affects all texture units to which that sampler object is bound.
+        Calling <code>TexParameter</code> has no effect on the sampler object bound to the active texture unit.
+        It will modify the parameters of the texture object bound to that unit.</p>
       </dd>
       <dt class="idl-code">any getSamplerParameter(WebGLSampler? sampler, GLenum pname)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.5">OpenGL ES 3.0.3 &sect;6.1.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetSamplerParameter.xhtml">man page</a>)</span>
