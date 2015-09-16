@@ -706,7 +706,7 @@ if (contextVersion > 1) {
 
     gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR);
-    shouldBeNonZero('gl.getInternalformatParameter(gl.RENDERBUFFER, gl.R32I, gl.SAMPLES)');
+    shouldBeNonNull('gl.getInternalformatParameter(gl.RENDERBUFFER, gl.R32I, gl.SAMPLES)');
     wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
     testInvalidArgument(
