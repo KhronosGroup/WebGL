@@ -44,6 +44,8 @@ var TexImageUtils = (function() {
    * A fragment shader for a single integer texture.
    * @type {string}
    */
+  // Note we always output 1.0 for alpha because if the texture does not contain
+  // alpha channel, sampling returns 1; for RGBA textures, sampling returns [0,255].
   var simpleUintTextureFragmentShaderES3 = [
     '#version 300 es',
     'precision mediump float;',
@@ -51,15 +53,19 @@ var TexImageUtils = (function() {
     'in vec2 texCoord;',
     'out vec4 fragData;',
     'void main() {',
-    '    fragData.rgb = texture(tex, texCoord).rgb / 255.0;',
-    '    fragData.a = 1;',
+    '    uvec4 data = texture(tex, texCoord);',
+    '    fragData = vec4(float(data[0])/255.0,',
+    '                    float(data[1])/255.0,',
+    '                    float(data[2])/255.0,',
+    '                    1.0);',
     '}'].join('\n');
 
   /**
    * A fragment shader for a single cube map integer texture.
    * @type {string}
    */
-    // A fragment shader for a single integer cube map texture.
+  // Note we always output 1.0 for alpha because if the texture does not contain
+  // alpha channel, sampling returns 1; for RGBA textures, sampling returns [0,255].
   var simpleCubeMapUintTextureFragmentShaderES3 = [
     '#version 300 es',
     'precision mediump float;',
@@ -85,8 +91,11 @@ var TexImageUtils = (function() {
     '    } else if (face == 34074) {',  // TEXTURE_CUBE_MAP_NEGATIVE_Z
     '        texCube = vec3(-texC2.x, -texC2.y, -1.);',
     '    }',
-    '    fragData.rgb = texture(tex, texCube).rgb / 255.0;',
-    '    fragData.a = 1;',
+    '    uvec4 data = texture(tex, texCube);',
+    '    fragData = vec4(float(data[0])/255.0,',
+    '                    float(data[1])/255.0,',
+    '                    float(data[2])/255.0,',
+    '                    1.0);',
     '}'].join('\n');
 
   /**
