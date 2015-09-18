@@ -227,8 +227,9 @@ goog.scope(function() {
                 ' one of the following: ' +
                 requiredExts.join(', ')
             );
+            checkMessage(false, errMsg);
 
-            throw new Error(errMsg);
+            throw new TestFailedException(errMsg);
         }
     };
 

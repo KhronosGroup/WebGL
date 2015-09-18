@@ -744,87 +744,41 @@ es3fShaderStateQueryTests.ProgramActiveUniformBlocksCase.prototype.test = functi
 
     var uniformIndices = gl.getUniformIndices(program, uniformNames);
 
-    /* TODO: wait for spec clarification */
+    var uniformsBlockIndices = gl.getActiveUniforms(program, uniformIndices, gl.UNIFORM_BLOCK_INDEX);
+    this.check(uniformsBlockIndices[0] == longlongUniformBlockIndex &&
+        uniformsBlockIndices[1] == shortUniformBlockIndex &&
+        uniformsBlockIndices[2] == shortUniformBlockIndex,
+        'Expected [' + longlongUniformBlockIndex + ", " + shortUniformBlockIndex + ", " + shortUniformBlockIndex + ']; got ' +
+        uniformsBlockIndices[0] + ", " + uniformsBlockIndices[1] + ", " + uniformsBlockIndices[2] + "]");
 
-    // glGetActiveUniformsiv(program, DE_LENGTH_OF_ARRAY(uniformNames), uniformIndices, gl.UNIFORM_BLOCK_INDEX, uniformsBlockIndices);
-    // uniformsBlockIndices.verifyValidity(m_testCtx);
-    // expectError(gl.NO_ERROR);
+    // test UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER & UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER
 
-    // if (uniformsBlockIndices[0] != longlongUniformBlockIndex ||
-    //     uniformsBlockIndices[1] != shortUniformBlockIndex ||
-    //     uniformsBlockIndices[2] != shortUniformBlockIndex)
-    // {
-    //     m_testCtx.getLog() << TestLog::Message
-    //         << "// ERROR: Expected [" << longlongUniformBlockIndex << ", " << shortUniformBlockIndex << ", " << shortUniformBlockIndex << "];"
-    //         << "got [" << uniformsBlockIndices[0] << ", " << uniformsBlockIndices[1] << ", " << uniformsBlockIndices[2] << "]" << TestLog::EndMessage;
-    //     if (m_testCtx.getTestResult() == QP_TEST_RESULT_PASS)
-    //         m_testCtx.setTestResult(QP_TEST_RESULT_FAIL, "got wrong uniform block index");
-    // }
+    this.check(glsStateQuery.verifyActiveUniformBlock(program, longlongUniformBlockIndex, gl.UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER, true));
+    this.check(glsStateQuery.verifyActiveUniformBlock(program, longlongUniformBlockIndex, gl.UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER, true));
+    this.check(glsStateQuery.verifyActiveUniformBlock(program, shortUniformBlockIndex, gl.UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER, true));
+    this.check(glsStateQuery.verifyActiveUniformBlock(program, shortUniformBlockIndex, gl.UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER, false));
 
-    // // test UNIFORM_BLOCK_NAME_LENGTH
+    // test UNIFORM_BLOCK_ACTIVE_UNIFORMS
 
-    // verifyActiveUniformBlockParam(m_testCtx, *this, program, longlongUniformBlockIndex, gl.UNIFORM_BLOCK_NAME_LENGTH, (GLint)std::string("longlongUniformBlockName").length() + 1); // including null-terminator
-    // verifyActiveUniformBlockParam(m_testCtx, *this, program, shortUniformBlockIndex, gl.UNIFORM_BLOCK_NAME_LENGTH, (GLint)std::string("shortUniformBlockName").length() + 1); // including null-terminator
-    // expectError(gl.NO_ERROR);
+    this.check(glsStateQuery.verifyActiveUniformBlock(program, longlongUniformBlockIndex, gl.UNIFORM_BLOCK_ACTIVE_UNIFORMS, 1));
+    this.check(glsStateQuery.verifyActiveUniformBlock(program, shortUniformBlockIndex, gl.UNIFORM_BLOCK_ACTIVE_UNIFORMS, 2));
 
-    // // test UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER & UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER
+    // test UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES
 
-    // verifyActiveUniformBlockParam(m_testCtx, *this, program, longlongUniformBlockIndex, gl.UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER, true);
-    // verifyActiveUniformBlockParam(m_testCtx, *this, program, longlongUniformBlockIndex, gl.UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER, true);
-    // verifyActiveUniformBlockParam(m_testCtx, *this, program, shortUniformBlockIndex, gl.UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER, true);
-    // verifyActiveUniformBlockParam(m_testCtx, *this, program, shortUniformBlockIndex, gl.UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER, false);
-    // expectError(gl.NO_ERROR);
+    var shortUniformBlockIndices = gl.getActiveUniformBlockParameter(program, shortUniformBlockIndex, gl.UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES);
+    this.check(shortUniformBlockIndices.length == 2, 'Expected 2 indices; got ' + shortUniformBlockIndices.length);
 
-    // // test UNIFORM_BLOCK_ACTIVE_UNIFORMS
+    this.check(glsStateQuery.compare(shortUniformBlockIndices, new Uint32Array([uniformIndices[1], uniformIndices[2]])) ||
+               glsStateQuery.compare(shortUniformBlockIndices, new Uint32Array([uniformIndices[2], uniformIndices[1]])),
+                'Expected { ' + uniformIndices[1] +', ' + uniformIndices[2] +
+                '}; got {' + shortUniformBlockIndices[0] + ', ' + shortUniformBlockIndices[1] + '}');
 
-    // verifyActiveUniformBlockParam(m_testCtx, *this, program, longlongUniformBlockIndex, gl.UNIFORM_BLOCK_ACTIVE_UNIFORMS, 1);
-    // verifyActiveUniformBlockParam(m_testCtx, *this, program, shortUniformBlockIndex, gl.UNIFORM_BLOCK_ACTIVE_UNIFORMS, 2);
-    // expectError(gl.NO_ERROR);
+    // check block names
 
-    // // test UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES
-
-    // {
-    //     StateQueryMemoryWriteGuard<GLint> longlongUniformBlockUniforms;
-    //     glGetActiveUniformBlockiv(program, longlongUniformBlockIndex, gl.UNIFORM_BLOCK_ACTIVE_UNIFORMS, &longlongUniformBlockUniforms);
-    //     longlongUniformBlockUniforms.verifyValidity(m_testCtx);
-
-    //     if (longlongUniformBlockUniforms == 2)
-    //     {
-    //         StateQueryMemoryWriteGuard<GLint[2]> longlongUniformBlockUniformIndices;
-    //         glGetActiveUniformBlockiv(program, longlongUniformBlockIndex, gl.UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, longlongUniformBlockUniformIndices);
-    //         longlongUniformBlockUniformIndices.verifyValidity(m_testCtx);
-
-    //         if ((GLuint(longlongUniformBlockUniformIndices[0]) != uniformIndices[0] || GLuint(longlongUniformBlockUniformIndices[1]) != uniformIndices[1]) &&
-    //             (GLuint(longlongUniformBlockUniformIndices[1]) != uniformIndices[0] || GLuint(longlongUniformBlockUniformIndices[0]) != uniformIndices[1]))
-    //         {
-    //             m_testCtx.getLog() << TestLog::Message
-    //                 << "// ERROR: Expected {" << uniformIndices[0] << ", " << uniformIndices[1] << "};"
-    //                 << "got {" << longlongUniformBlockUniformIndices[0] << ", " << longlongUniformBlockUniformIndices[1] << "}" << TestLog::EndMessage;
-
-    //             if (m_testCtx.getTestResult() == QP_TEST_RESULT_PASS)
-    //                 m_testCtx.setTestResult(QP_TEST_RESULT_FAIL, "got wrong uniform indices");
-    //         }
-
-    //     }
-    // }
-
-    // // check block names
-
-    // {
-    //     char buffer[2048] = {'x'};
-    //     GLint written = 0;
-    //     glGetActiveUniformBlockName(program, longlongUniformBlockIndex, DE_LENGTH_OF_ARRAY(buffer), &written, buffer);
-    //     checkIntEquals(m_testCtx, written, (GLint)std::string("longlongUniformBlockName").length());
-
-    //     written = 0;
-    //     glGetActiveUniformBlockName(program, shortUniformBlockIndex, DE_LENGTH_OF_ARRAY(buffer), &written, buffer);
-    //     checkIntEquals(m_testCtx, written, (GLint)std::string("shortUniformBlockName").length());
-
-    //     // and one with too small buffer
-    //     written = 0;
-    //     glGetActiveUniformBlockName(program, longlongUniformBlockIndex, 1, &written, buffer);
-    //     checkIntEquals(m_testCtx, written, 0);
-    // }
+    var name = gl.getActiveUniformBlockName(program, longlongUniformBlockIndex);
+    this.check(name == "longlongUniformBlockName", 'Wrong uniform block name, expected longlongUniformBlockName; got ' + name);
+    name = gl.getActiveUniformBlockName(program, shortUniformBlockIndex)
+    this.check(name == "shortUniformBlockName", 'Wrong uniform block name, expected shortUniformBlockName; got ' + name);
 
     gl.deleteShader(shaderVert);
     gl.deleteShader(shaderFrag);
@@ -2172,8 +2126,7 @@ es3fShaderStateQueryTests.ShaderStateQueryTests.prototype.init = function() {
 
     this.addChild(new es3fShaderStateQueryTests.ProgramActiveUniformNameCase('program_active_uniform_name', 'ACTIVE_UNIFORMS'));
     this.addChild(new es3fShaderStateQueryTests.ProgramUniformCase('program_active_uniform_types', 'UNIFORM_TYPE, UNIFORM_SIZE, and UNIFORM_IS_ROW_MAJOR'));
-    // this.addChild(new es3fShaderStateQueryTests.ProgramActiveUniformBlocksCase ("program_active_uniform_blocks", "ACTIVE_UNIFORM_BLOCK_x"));
-    // this.addChild(new es3fShaderStateQueryTests.ProgramBinaryCase ("program_binary", "PROGRAM_BINARY_LENGTH and PROGRAM_BINARY_RETRIEVABLE_HINT"));
+    this.addChild(new es3fShaderStateQueryTests.ProgramActiveUniformBlocksCase ("program_active_uniform_blocks", "ACTIVE_UNIFORM_BLOCK_x"));
 
     // transform feedback
     this.addChild(new es3fShaderStateQueryTests.TransformFeedbackCase('transform_feedback', 'TRANSFORM_FEEDBACK_BUFFER_MODE, TRANSFORM_FEEDBACK_VARYINGS, TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH'));

@@ -105,13 +105,17 @@ targets = {
     'fbostate' : 'functional.gles3.es3fFboStateQueryTests',
     'rbostate' : 'functional.gles3.es3fRboStateQueryTests',
     'bufferstate' : 'functional.gles3.es3fBufferObjectQueryTests',
+    'samplerstate' : 'functional.gles3.es3fSamplerStateQueryTests',
+    'texstate' : 'functional.gles3.es3fTextureStateQuery',
     'internalformatstate' : 'functional.gles3.es3fInternalFormatQueryTests',
     'texturespecification' : 'functional.gles3.es3fTextureSpecificationTests',
     'shadertexturefunction' : 'functional.gles3.es3fShaderTextureFunctionTests',
     'sync' : 'functional.gles3.es3fSyncTests',
     'readpixel' : 'functional.gles3.es3fReadPixelTests',
     'stringquery' : 'functional.gles3.es3fStringQueryTests',
-    'indexedstate' : 'functional.gles3.es3fIndexedStateQueryTests'
+    'indexedstate' : 'functional.gles3.es3fIndexedStateQueryTests',
+    'integerstate' : 'functional.gles3.es3fIntegerStateQueryTests',
+    'floatstate' : 'functional.gles3.es3fFloatStateQueryTests'
 }
 
 total_errors = 0

@@ -658,12 +658,44 @@ deMath.binaryOr = function(a, b) {
 };
 
 /**
+ * @param {goog.NumberArray} a
+ * @param {number} b
+ * @return {Array<number>}
+ */
+deMath.binaryOrVecScalar = function(a, b) {
+    if (!Array.isArray(a))
+        throw new Error('First argument must be an array.');
+    if (typeof b !== 'number')
+        throw new Error('Second argument must be a number.');
+    var dst = [];
+    for (var i = 0; i < a.length; i++)
+        dst.push(deMath.binaryOp(a[i], b, deMath.BinaryOp.OR));
+    return dst;
+};
+
+/**
  * @param {number} a
  * @param {number} b
  * @return {number}
  */
 deMath.binaryXor = function(a, b) {
     return deMath.binaryOp(a, b, deMath.BinaryOp.XOR);
+};
+
+/**
+ * @param {goog.NumberArray} a
+ * @param {number} b
+ * @return {Array<number>}
+ */
+deMath.binaryXorVecScalar = function(a, b) {
+    if (!Array.isArray(a))
+        throw new Error('First argument must be an array.');
+    if (typeof b !== 'number')
+        throw new Error('Second argument must be a number.');
+    var dst = [];
+    for (var i = 0; i < a.length; i++)
+        dst.push(deMath.binaryOp(a[i], b, deMath.BinaryOp.XOR));
+    return dst;
 };
 
 /**
@@ -725,6 +757,17 @@ deMath.shiftLeft = function(value, steps) {
 };
 
 /**
+ * @param {Array<number>} a
+ * @param {number} b
+ */
+deMath.shiftLeftVecScalar = function(a, b) {
+    var dst = [];
+	for (var i = 0; i < a.length; i++)
+		dst.push(deMath.shiftLeft(a[i], b));
+	return dst;
+};
+
+/**
  * Shifts the given value 'steps' bits to the right. Replaces >> operator
  * This function should be used if the value is wider than 32-bits
  * @param {number} value
@@ -757,6 +800,17 @@ deMath.shiftRight = function(value, steps) {
         result[1] = value < 0 ? -1 : 0;
         return deMath.join32(result);
     }
+};
+
+/**
+ * @param {Array<number>} a
+ * @param {number} b
+ */
+deMath.shiftRightVecScalar = function(a, b) {
+    var dst = [];
+	for (var i = 0; i < a.length; i++)
+		dst.push(deMath.shiftRight(a[i], b));
+	return dst;
 };
 
 /** deMath.logicalAndBool over two arrays of booleans

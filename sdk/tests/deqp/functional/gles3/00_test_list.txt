@@ -69,11 +69,13 @@ fbomultisample.html
 fborender.html
 fbostatequery.html
 fbostencilbuffer.html
+floatstatequery.html
 fragdepth.html
 fragmentoutput.html
 framebufferblit.html
 indexedstatequery.html
 instancedrendering.html
+integerstatequery.html
 internalformatquery.html
 lifetime.html
 multisample.html
@@ -90,6 +92,7 @@ rasterizerdiscard.html
 rbostatequery.html
 readpixel.html
 samplerobject.html
+samplerstatequery.html
 shaderapi.html
 shaderbuiltinvar.html
 shadercommonfunction.html
@@ -160,6 +163,7 @@ texturespecification22.html
 texturespecification23.html
 texturespecification24.html
 texturespecification25.html
+texturestatequery.html
 texturewrap.html
 transformfeedback.html
 uniformapi.html
