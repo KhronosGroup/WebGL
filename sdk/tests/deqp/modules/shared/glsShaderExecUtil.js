@@ -472,21 +472,25 @@ goog.scope(function() {
         // Read back data.
         var result = new ArrayBuffer(outputBufferStride * numValues);
         gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, result);
-          /** @type {number} */ var curOffset = 0; // Offset in buffer in bytes.
+        /** @type {number} */ var curOffset = 0; // Offset in buffer in bytes.
 
-          for (var outputNdx = 0; outputNdx < this.m_outputs.length; outputNdx++) {
-              symbol = this.m_outputs[outputNdx];
-              /** @type {number} */ var scalarSize = symbol.varType.getScalarSize();
-              /*void* */var dstPtr = new Uint8Array(scalarSize * numValues * 4);
+        for (var outputNdx = 0; outputNdx < this.m_outputs.length; outputNdx++) {
+            symbol = this.m_outputs[outputNdx];
+            /** @type {number} */ var scalarSize = symbol.varType.getScalarSize();
+            var readPtr = new Uint8Array(result, curOffset);
 
-            for (var ndx = 0; ndx < numValues; ndx++) {
-            for (var j = 0; j < scalarSize * 4; j++) {
-                dstPtr[scalarSize * ndx + j] = result[curOffset + ndx * outputBufferStride + j];
+            if (scalarSize * 4 === outputBufferStride)
+                outputs[outputNdx] = readPtr;
+            else {
+                var dstPtr = new Uint8Array(scalarSize * numValues * 4);
+
+                for (var ndx = 0; ndx < numValues; ndx++)
+                    for (var j = 0; j < scalarSize * 4; j++) {
+                        dstPtr[scalarSize * 4 * ndx + j] = readPtr[ndx * outputBufferStride + j];
+                    }
+                outputs[outputNdx] = dstPtr;
             }
-        }
-        outputs[outputNdx] = dstPtr;
-
-              curOffset += scalarSize * 4;
+            curOffset += scalarSize * 4;
           }
 
         if (useTFObject)

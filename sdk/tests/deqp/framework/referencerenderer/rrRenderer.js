@@ -24,6 +24,7 @@ goog.require('framework.common.tcuTexture');
 goog.require('framework.common.tcuTextureUtil');
 goog.require('framework.delibs.debase.deMath');
 goog.require('framework.delibs.debase.deString');
+goog.require('framework.delibs.debase.deUtil');
 goog.require('framework.opengl.simplereference.sglrShaderProgram');
 goog.require('framework.referencerenderer.rrDefs');
 goog.require('framework.referencerenderer.rrFragmentOperations');
@@ -50,6 +51,7 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
 var sglrShaderProgram = framework.opengl.simplereference.sglrShaderProgram;
 var rrVertexAttrib = framework.referencerenderer.rrVertexAttrib;
 var deString = framework.delibs.debase.deString;
+var deUtil = framework.delibs.debase.deUtil;
 
 /**
  * @enum

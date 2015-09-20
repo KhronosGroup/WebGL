@@ -156,6 +156,38 @@ glsStateQuery.verifyProgram = function(program, param, reference) {
 };
 
 /**
+ * Verify that WebGL sampler state 'param' has the expected value
+ * @param {WebGLSampler} sampler
+ * @param {number} param
+ * @param {*} reference
+ * @return {boolean}
+ */
+glsStateQuery.verifySampler = function(sampler, param, reference) {
+    var value = gl.getSamplerParameter(sampler, param);
+    var result = glsStateQuery.compare(value, reference);
+    if (!result) {
+        bufferedLogToConsole('Result: ' + value + ' Expected: ' + reference);
+    }
+    return result;
+};
+
+/**
+ * Verify that WebGL texture state 'param' has the expected value
+ * @param {number} target
+ * @param {number} param
+ * @param {*} reference
+ * @return {boolean}
+ */
+glsStateQuery.verifyTexture = function(target, param, reference) {
+    var value = gl.getTexParameter(target, param);
+    var result = glsStateQuery.compare(value, reference);
+    if (!result) {
+        bufferedLogToConsole('Result: ' + value + ' Expected: ' + reference);
+    }
+    return result;
+};
+
+/**
  * Verify that WebGL state 'param' has one of the expected values
  * @param {number} param
  * @param {Array<*>} reference
@@ -285,6 +317,49 @@ glsStateQuery.verifyRenderbuffer = function(param, reference) {
         bufferedLogToConsole('Result: ' + value + ' Expected: ' + reference);
     }
     return result;
+};
+
+/**
+ * Verify that WebGL active uniform block's attribute 'param' has the expected value
+ * @param {WebGLProgram} program
+ * @param {number} index
+ * @param {number} param
+ * @param {*} reference
+ * @return {boolean}
+ */
+glsStateQuery.verifyActiveUniformBlock = function(program, index, param, reference) {
+    var value = gl.getActiveUniformBlockParameter(program, index, param);
+    var result = glsStateQuery.compare(value, reference);
+    if (!result) {
+        bufferedLogToConsole('Result: ' + value + ' Expected: ' + reference);
+    }
+    return result;
+};
+
+/**
+	 * @param  {number} param
+	 * @param  {Array<number>} reference
+	 * @param  {Array<boolean>} enableRef
+	 * @return  {boolean}
+	 */
+
+glsStateQuery.verifyMask = function(param, reference, enableRef) {
+	/** @type {Array<number>} */ var intVector4 = /** @type {Array<number>} */ (gl.getParameter(param));
+
+	if ((enableRef[0] && (intVector4[0] != reference[0])) ||
+		(enableRef[1] && (intVector4[1] != reference[1])) ||
+		(enableRef[2] && (intVector4[2] != reference[2])) ||
+		(enableRef[3] && (intVector4[3] != reference[3])))
+	{
+		bufferedLogToConsole("// ERROR: expected " +
+			(enableRef[0] ? "" : "(") + reference[0] + (enableRef[0] ? "" : ")") + ", " +
+			(enableRef[1] ? "" : "(") + reference[1] + (enableRef[1] ? "" : ")") + ", " +
+			(enableRef[2] ? "" : "(") + reference[2] + (enableRef[2] ? "" : ")") + ", " +
+			(enableRef[3] ? "" : "(") + reference[3] + (enableRef[3] ? "" : ")"));
+
+		return false;
+	}
+    return true;
 };
 
 });

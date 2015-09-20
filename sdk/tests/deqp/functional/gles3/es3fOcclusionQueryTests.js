@@ -63,6 +63,18 @@ var setParentClass = function(child, parent) {
 /** @const */ var OCCLUDER_STENCIL_CLEAR = (1 << 4);
 
 /**
+ * @enum
+ */
+es3fOcclusionQueryTests.State = {
+    DRAW: 0,
+    VERIFY: 1,
+    FINISH: 2
+};
+
+/* Maximum time to wait for query result (in seconds) */
+/** @const */ var MAX_VERIFY_WAIT = 5;
+
+/**
  * @constructor
  * @extends {tcuTestCase.DeqpTest}
  */
@@ -79,6 +91,8 @@ es3fOcclusionQueryTests.OcclusionQueryCase = function(name, description, numOccl
     this.m_program = null;
     this.m_iterNdx = 0;
     this.m_rnd = new deRandom.Random(deString.deStringHash(name));
+    this.m_state = es3fOcclusionQueryTests.State.DRAW;
+    /** @type {WebGLQuery} */ this.m_query;
 };
 
 setParentClass(es3fOcclusionQueryTests.OcclusionQueryCase, tcuTestCase.DeqpTest);
@@ -140,7 +154,7 @@ es3fOcclusionQueryTests.OcclusionQueryCase.prototype.init = function() {
     gl.vertexAttribPointer(0, ELEMENTS_PER_VERTEX, gl.FLOAT, false, 0, 0);
 };
 
-es3fOcclusionQueryTests.OcclusionQueryCase.prototype.iterate = function() {
+es3fOcclusionQueryTests.OcclusionQueryCase.prototype.draw = function() {
     var colorUnif = gl.getUniformLocation(this.m_program.getProgram(), 'u_color');
 
     var targetW = gl.drawingBufferWidth;
@@ -263,8 +277,8 @@ es3fOcclusionQueryTests.OcclusionQueryCase.prototype.iterate = function() {
         gl.scissor(scissorBoxX, scissorBoxY, scissorBoxW, scissorBoxH);
     }
 
-    var query = gl.createQuery();
-    gl.beginQuery(this.m_queryMode, query);
+    this.m_query = gl.createQuery();
+    gl.beginQuery(this.m_queryMode, this.m_query);
 
     // Draw target primitives
 
@@ -283,20 +297,34 @@ es3fOcclusionQueryTests.OcclusionQueryCase.prototype.iterate = function() {
     }
 
     gl.endQuery(this.m_queryMode);
-    gl.finish();
     gl.disable(gl.SCISSOR_TEST);
     gl.disable(gl.STENCIL_TEST);
     gl.disable(gl.DEPTH_TEST);
+    this.m_state = es3fOcclusionQueryTests.State.VERIFY;
+};
 
+es3fOcclusionQueryTests.OcclusionQueryCase.prototype.verify = function() {
     // Check that query result is available.
-    var resultAvailable = /** @type {boolean} */ (gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE));
-    assertMsgOptions(resultAvailable, 'Occlusion query failed to return a result after glFinish()', false, true);
+    var resultAvailable = /** @type {boolean} */ (gl.getQueryParameter(this.m_query, gl.QUERY_RESULT_AVAILABLE));
+    if (!resultAvailable) {
+        if (!this.m_verifyStart)
+            this.m_verifyStart = new Date();
+        else {
+            var current = new Date();
+            var elapsedTime = 0.001 * (current.getTime() - this.m_verifyStart.getTime());
+            if (elapsedTime > MAX_VERIFY_WAIT) {
+                testFailed('Query result not available after ' + elapsedTime + ' seconds.');
+                this.m_state = es3fOcclusionQueryTests.State.FINISH;
+            }
+        }
+        return;
+    }
 
     // Read query result.
-    var result = /** @type {number} */ (gl.getQueryParameter(query, gl.QUERY_RESULT));
+    var result = /** @type {number} */ (gl.getQueryParameter(this.m_query, gl.QUERY_RESULT));
     var queryResult = (result > 0);
 
-    gl.deleteQuery(query);
+    gl.deleteQuery(this.m_query);
 
     // Read pixel data
 
@@ -331,17 +359,37 @@ es3fOcclusionQueryTests.OcclusionQueryCase.prototype.iterate = function() {
     if (!testOk) {
         tcuLogImage.logImage('Result image', 'Result image', pixels.getAccess());
         testFailed(message);
-        return tcuTestCase.IterateResult.STOP;
+        this.m_state = es3fOcclusionQueryTests.State.FINISH;
+        return;
     }
 
     bufferedLogToConsole(message);
     bufferedLogToConsole('Case passed!');
 
-    if (++this.m_iterNdx < NUM_CASE_ITERATIONS)
-        return tcuTestCase.IterateResult.CONTINUE;
+    if (++this.m_iterNdx < NUM_CASE_ITERATIONS) {
+        this.m_state = es3fOcclusionQueryTests.State.DRAW
+    } else {
+        this.m_state = es3fOcclusionQueryTests.State.FINISH;
+        testPassed('Passed');
+    }
+};
 
-    testPassed('Passed');
-    return tcuTestCase.IterateResult.STOP;
+
+es3fOcclusionQueryTests.OcclusionQueryCase.prototype.iterate = function() {
+    switch(this.m_state) {
+        case es3fOcclusionQueryTests.State.DRAW:
+            this.draw();
+            break;
+        case es3fOcclusionQueryTests.State.VERIFY:
+            this.verify();
+            break;
+        case es3fOcclusionQueryTests.State.FINISH:
+            return tcuTestCase.IterateResult.STOP;
+        default:
+            throw new Error('Invalid state: ' + this.m_state);
+    }
+
+    return tcuTestCase.IterateResult.CONTINUE;
 };
 
 /**

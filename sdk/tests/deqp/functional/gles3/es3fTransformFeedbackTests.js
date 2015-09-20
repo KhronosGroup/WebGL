@@ -895,9 +895,13 @@ goog.scope(function() {
 
             if (linkFail) {
                 if (!es3fTransformFeedbackTests.isProgramSupported(this.m_progSpec, this.m_bufferMode)) {
-                    throw new Error('Not Supported. Implementation limits exceeded.');
+                    var msg = 'Not Supported. Implementation limits exceeded.';
+                    checkMessage(false, msg);
+                    throw new TestFailedException(msg);
                 } else if (es3fTransformFeedbackTests.hasArraysInTFVaryings(this.m_progSpec)) {
-                    throw new Error('Capturing arrays is not supported (undefined in specification)');
+                    msg = 'Capturing arrays is not supported (undefined in specification)';
+                    checkMessage(false, msg);
+                    throw new TestFailedException(msg);
                 } else {
                     throw new Error('Link failed: ' + this.m_program.getProgramInfo().infoLog);
                 }
