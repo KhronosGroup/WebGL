@@ -260,6 +260,21 @@ void main() {
     my_FragColor = vec4(1.0 - f, f, 0.0, 1.0);
 }
 </script>
+<script id="fshaderIndexLValueWithUint" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+
+out vec4 my_FragColor;
+
+uniform uint u_zero;
+
+void main() {
+    vec4 v = vec4(1.0, 2.0, 3.0, 4.0);
+    v[u_zero] = 5.0;
+    vec4 expected = vec4(5.0, 2.0, 3.0, 4.0);
+    float f = 1.0 - distance(v, expected);
+    my_FragColor = vec4(1.0 - f, f, 0.0, 1.0);
+}
+</script>
 <script type="application/javascript">
 "use strict";
 description("Dynamic indexing of vectors and matrices should work.");
@@ -332,6 +347,12 @@ GLSLConformanceTester.runRenderTests([
   fShaderSuccess: true,
   linkSuccess: true,
   passMsg: 'Index a vector expression that itself has side effects, in an l-value'
+},
+{
+  fShaderId: 'fshaderIndexLValueWithUint',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Index on the left-hand side of assignment with an uint'
 }
 ], 2);
 </script>
