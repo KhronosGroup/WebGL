@@ -749,6 +749,40 @@ if (contextVersion > 1) {
         function(internalformat) {
             return gl.getInternalformatParameter(gl.RENDERBUFFER, internalformat, gl.SAMPLES);
     });
+
+
+    debug("");
+    debug("Test getIndexedParameter");
+    var buffer = gl.createBuffer();
+    gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, buffer);
+    gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 64, gl.DYNAMIC_DRAW);
+    gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 0, buffer, 4, 8);
+    shouldBe('gl.getIndexedParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING, 0)', 'buffer');
+    shouldBe('gl.getIndexedParameter(gl.TRANSFORM_FEEDBACK_BUFFER_SIZE, 0)', '8');
+    shouldBe('gl.getIndexedParameter(gl.TRANSFORM_FEEDBACK_BUFFER_START, 0)', '4');
+    var buffer1 = gl.createBuffer();
+    gl.bindBuffer(gl.UNIFORM_BUFFER, buffer1);
+    gl.bufferData(gl.UNIFORM_BUFFER, 64, gl.DYNAMIC_DRAW);
+    var offsetUniform = gl.getParameter(gl.UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+    gl.bindBufferRange(gl.UNIFORM_BUFFER, 1, buffer1, offsetUniform, 8);
+    shouldBe('gl.getIndexedParameter(gl.UNIFORM_BUFFER_BINDING, 1)', 'buffer1');
+    shouldBe('gl.getIndexedParameter(gl.UNIFORM_BUFFER_SIZE, 1)', '8');
+    shouldBe('gl.getIndexedParameter(gl.UNIFORM_BUFFER_START, 1)', 'offsetUniform');
+    var validArrayForTarget = new Array(
+        gl.TRANSFORM_FEEDBACK_BUFFER_BINDING,
+        gl.TRANSFORM_FEEDBACK_BUFFER_SIZE,
+        gl.TRANSFORM_FEEDBACK_BUFFER_START,
+        gl.UNIFORM_BUFFER_BINDING,
+        gl.UNIFORM_BUFFER_SIZE,
+        gl.UNIFORM_BUFFER_START
+    );
+    testInvalidArgument(
+        "getIndexedParameter",
+        "target",
+        validArrayForTarget,
+        function(target) {
+            return gl.getIndexedParameter(target, 0);
+    });
 }
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
