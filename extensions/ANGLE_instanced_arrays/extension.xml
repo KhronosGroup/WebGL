@@ -35,6 +35,17 @@ interface ANGLE_instanced_arrays {
     void vertexAttribDivisorANGLE(GLuint index, GLuint divisor); 
 };
   </idl>
+  <issues>
+    <p>How does ANGLE_instanced_arrays interact with OES_vertex_array_object?</p>
+    <ul>
+      <li>
+        <p>RESOLVED: When the ANGLE_instanced_arrays and OES_vertex_array_object
+        extensions are both enabled, attribute divisors are tracked by the
+        vertex array objects like any other vertex array state.
+        </p>
+      </li>
+    </ul>
+  </issues>
   <history>
     <revision date="2012/03/06">
       <change>Initial revision.</change>
