@@ -71,5 +71,8 @@ interface ANGLE_instanced_arrays {
     <revision date="2014/08/08">
       <change>Ratified by Khronos Board of Promoters.</change>
     </revision>
+    <revision date="2015/09/23">
+      <change>Clarified interaction with OES_vertex_array_object.</change>
+    </revision>
   </history>
 </ratified>
