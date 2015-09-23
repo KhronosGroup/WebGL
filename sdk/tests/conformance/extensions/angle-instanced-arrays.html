@@ -84,6 +84,7 @@ var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas);
 var ext = null;
+var vaoext = null;
 
 var positionLoc = 0;
 var offsetLoc = 2;
@@ -116,6 +117,7 @@ if (!gl) {
         setupCanvas();
         runOutputTests();
         runDrawArraysWithOffsetTest();
+        runVAOInstancingInteractionTest();
         runANGLECorruptionTest();
     }
 }
@@ -427,6 +429,119 @@ function runUniqueObjectTest()
     gl.getExtension("ANGLE_instanced_arrays").myProperty = 2;
     webglHarnessCollectGarbage();
     shouldBe('gl.getExtension("ANGLE_instanced_arrays").myProperty', '2');
+}
+
+function runVAOInstancingInteractionTest()
+{
+    debug("")
+    debug("Testing that ANGLE_instanced_arrays interacts correctly with OES_vertex_array_object if present");
+    // See: https://github.com/KhronosGroup/WebGL/issues/1228
+
+    // Query the extension and store globally so shouldBe can access it
+    vaoext = gl.getExtension("OES_vertex_array_object");
+    if (!vaoext) {
+        testPassed("No OES_vertex_array_object support -- this is legal");
+        return;
+    }
+
+    testPassed("Successfully enabled OES_vertex_array_object extension");
+
+    gl.useProgram(program);
+
+    var positions = new Float32Array([
+         0.0,  1.0, // Left quad
+        -1.0,  1.0,
+        -1.0, -1.0,
+         0.0,  1.0,
+        -1.0, -1.0,
+         0.0, -1.0,
+
+         1.0,  1.0, // Right quad
+         0.0,  1.0,
+         0.0, -1.0,
+         1.0,  1.0,
+         0.0, -1.0,
+         1.0, -1.0
+    ]);
+    var positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+    var colors = new Float32Array([
+        1.0, 0.0, 0.0, 1.0, // Red
+        1.0, 0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0, 1.0,
+
+        0.0, 0.0, 1.0, 1.0, // Blue
+        0.0, 0.0, 1.0, 1.0,
+        0.0, 0.0, 1.0, 1.0,
+        0.0, 0.0, 1.0, 1.0,
+        0.0, 0.0, 1.0, 1.0,
+        0.0, 0.0, 1.0, 1.0,
+    ]);
+    var colorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+
+    // Reset the divisor of the default VAO to 0
+    ext.vertexAttribDivisorANGLE(colorLoc, 0);
+
+    // Set up VAO with an attrib divisor
+    var vao1 = vaoext.createVertexArrayOES();
+    vaoext.bindVertexArrayOES(vao1);
+    {
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.enableVertexAttribArray(positionLoc);
+        gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.enableVertexAttribArray(colorLoc);
+        gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
+        ext.vertexAttribDivisorANGLE(colorLoc, 1);
+
+        gl.vertexAttrib2fv(offsetLoc, [0.0, 0.0]);
+    }
+    vaoext.bindVertexArrayOES(null);
+
+    // Set up VAO with no attrib divisor
+    var vao2 = vaoext.createVertexArrayOES();
+    vaoext.bindVertexArrayOES(vao2);
+    {
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.enableVertexAttribArray(positionLoc);
+        gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.enableVertexAttribArray(colorLoc);
+        gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
+        // Note that no divisor is set here, which implies that it's 0
+
+        gl.vertexAttrib2fv(offsetLoc, [0.0, 0.0]);
+    }
+    vaoext.bindVertexArrayOES(null);
+
+    debug("");
+    debug("Ensure that Vertex Array Objects retain attrib divisors");
+
+    vaoext.bindVertexArrayOES(vao1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 12);
+    // If the divisor is properly managed by the VAO a single red quad will be drawn
+    wtu.checkCanvas(gl, [255, 0, 0, 255], "entire canvas should be red");
+
+    vaoext.bindVertexArrayOES(vao2);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 12);
+    // If the divisor is properly managed by the VAO a red and blue quad will be drawn.
+    wtu.checkCanvasRects(gl, [
+        wtu.makeCheckRect(0, 0, canvas.width * 0.5, canvas.height, [255, 0, 0, 255], "left half of canvas should be red", 1),
+        wtu.makeCheckRect(canvas.width * 0.5, 0, canvas.width * 0.5, canvas.height, [0, 0, 255, 255], "right half of canvas should be blue", 1)
+    ]);
+
+    vaoext.bindVertexArrayOES(null);
 }
 
 function runANGLECorruptionTest()
