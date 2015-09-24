@@ -2856,21 +2856,6 @@ group extensions "Extension Tests"
 			}
 		""
 	end
-
-	case after_non_preprocessing_tokens
-		expect compile_fail
-		both ""
-	#extension all : warn
-
-			precision mediump float;
-			${DECLARATIONS}
-			void main()
-			{
-	#extension all : disable
-				${POSITION_FRAG_COLOR} = vec4(1.0);
-			}
-		""
-	end
 end # extensions
 
 group expressions "Expression Tests"
