@@ -218,23 +218,6 @@ goog.scope(function() {
         */
     };
 
-    // /**
-    //  * @constructor
-    //  */
-    // var NamedObject = function(name) {
-    //     this.m_name = name;
-    //     this.m_refCount = 1;
-    // };
-
-    // NamedObject.prototype.getName = function() { return this.m_name; };
-    // NamedObject.prototype.getRefCount = function() { return this.m_refCount; };
-    // NamedObject.prototype.incRefCount = function() { this.m_refCount += 1; };
-    // NamedObject.prototype.decRefCount = function() {
-    //     if (this.m_refCount == 0)
-    //         throw new Error("Refcount is already 0");
-    //     this.m_refCount -= 1;
-    // };
-
     /**
     * @enum
     */

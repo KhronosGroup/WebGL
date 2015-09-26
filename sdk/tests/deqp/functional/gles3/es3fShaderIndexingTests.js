@@ -193,7 +193,7 @@ goog.scope(function() {
      * @param {Array<number>} constCoords
      */
     es3fShaderIndexingTests.ShaderIndexingCase.prototype.setupUniforms = function(programID, constCoords) {
-        /** @type {(Array<number>|number)} */ var arr = [];
+        /** @type {(Array<number>|Float32Array)} */ var arr = [];
         /** @type {Array<number>} */ var array1d = [];
         /** @type {?WebGLUniformLocation} */ var arrLoc = gl.getUniformLocation(programID, 'u_arr');
         if (arrLoc != null) {

@@ -265,7 +265,7 @@ var DE_ASSERT = function(x) {
      */
     es3fFboMultisampleTests.BasicFboMultisampleCase.prototype.compare = function(reference, result) {
         if (this.m_depthStencilFormat != gl.NONE)
-            return es3fFboTestCase.FboTestCase.compare(reference, result); // FboTestCase.compare
+            return es3fFboTestCase.FboTestCase.prototype.compare(reference, result); // FboTestCase.compare
         else
             return this.colorCompare(reference, result);
     };

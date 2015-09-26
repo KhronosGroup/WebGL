@@ -216,9 +216,8 @@ goog.scope(function() {
 	 * @param {boolean} isVertexCase
 	 */
 	es3fShaderBuiltinVarTests.ShaderDepthRangeTest = function(name, desc, isVertexCase) {
-		glsShaderRenderCase.ShaderRenderCase.call(this, name, desc, isVertexCase, this.m_evaluator);
+		glsShaderRenderCase.ShaderRenderCase.call(this, name, desc, isVertexCase);
 		/** @type {es3fShaderBuiltinVarTests.DepthRangeParams} */ this.m_depthRange = new es3fShaderBuiltinVarTests.DepthRangeParams();
-		// TODO: there is an issue with types below
 		/** @type {es3fShaderBuiltinVarTests.DepthRangeEvaluator} */ this.m_evaluator = new es3fShaderBuiltinVarTests.DepthRangeEvaluator(this.m_depthRange);
 		/** @type {number} */ this.m_iterNdx = 0;
 	};
