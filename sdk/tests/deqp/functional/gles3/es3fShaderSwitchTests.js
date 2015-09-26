@@ -39,7 +39,7 @@ goog.scope(function() {
      * @param {boolean} isVertexCase
      * @param {string} vtxSource
      * @param {string} fragSource
-     * @param {glsShaderRenderCase.ShaderEvalFunc} evalFunc
+     * @param {glsShaderRenderCase.ShaderEvalFunc=} evalFunc
      */
     es3fShaderSwitchTests.ShaderSwitchCase = function(name, description, isVertexCase, vtxSource, fragSource, evalFunc) {
         glsShaderRenderCase.ShaderRenderCase.call(this, name, description, isVertexCase, evalFunc);
@@ -180,9 +180,9 @@ goog.scope(function() {
         frag += "}\n";
 
         return new es3fShaderSwitchTests.ShaderSwitchCase(name, desc, isVertex, vtx, frag,
-                                    type == es3fShaderSwitchTests.SwitchType.STATIC ? es3fShaderSwitchTests.evalSwitchStatic    :
-                                    type == es3fShaderSwitchTests.SwitchType.UNIFORM ? es3fShaderSwitchTests.evalSwitchUniform :
-                                    type == es3fShaderSwitchTests.SwitchType.DYNAMIC ? es3fShaderSwitchTests.evalSwitchDynamic : null);
+                                    type === es3fShaderSwitchTests.SwitchType.STATIC ? es3fShaderSwitchTests.evalSwitchStatic :
+                                    type === es3fShaderSwitchTests.SwitchType.UNIFORM ? es3fShaderSwitchTests.evalSwitchUniform :
+                                    type === es3fShaderSwitchTests.SwitchType.DYNAMIC ? es3fShaderSwitchTests.evalSwitchDynamic : undefined);
     };
 
     /**

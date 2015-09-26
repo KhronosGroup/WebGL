@@ -54,6 +54,18 @@ goog.scope(function() {
         child.prototype.constructor = child;
     };
 
+    /**
+     * @enum
+     */
+    es3fTransformFeedbackTests.State = {
+        DRAW: 0,
+        VERIFY: 1,
+        FINISH: 2
+    };
+
+    /* Maximum time to wait for query result (in seconds) */
+    /** @const */ es3fTransformFeedbackTests.MAX_VERIFY_WAIT = 5;
+
     /** @const @type {number} */ es3fTransformFeedbackTests.VIEWPORT_WIDTH = 128;
     /** @const @type {number} */ es3fTransformFeedbackTests.VIEWPORT_HEIGHT = 128;
     /** @const @type {number} */ es3fTransformFeedbackTests.BUFFER_GUARD_MULTIPLIER = 2;
@@ -793,7 +805,7 @@ goog.scope(function() {
     /**
      * Returns (for all the draw calls) the type of Primitive Mode, as it calls "es3fTransformFeedbackTests.getTransformFeedbackPrimitiveCount".
      * @param {gluDrawUtil.primitiveType} primitiveType GLenum that specifies what kind of primitive is
-     * @param {Object.<number, boolean>} array es3fTransformFeedbackTests.DrawCall object
+     * @param {Array<es3fTransformFeedbackTests.DrawCall>} array Object.<number, boolean>
      * @return {number} primCount
      */
     es3fTransformFeedbackTests.computeTransformFeedbackPrimitiveCount = function(primitiveType, array) {
@@ -863,6 +875,21 @@ goog.scope(function() {
         this.m_outputBuffers = []; // vector<deUint32>
 
         this.m_iterNdx = 0; // int
+        this.m_testPassed = true;
+        // State machine
+        this.m_state = es3fTransformFeedbackTests.State.DRAW;
+        this.m_verifyStart = null;
+
+        this.m_frameWithTf = null;
+        this.m_frameWithoutTf = null;
+
+        this.m_viewportW = 0;
+        this.m_viewportH = 0;
+        this.m_viewportX = 0;
+        this.m_viewportY = 0;
+
+        this.m_primitiveQuery = null;
+        this.m_outputsOk = true;
 
     };
 
@@ -978,323 +1005,296 @@ goog.scope(function() {
     };
 
     es3fTransformFeedbackTests.TransformFeedbackCase.prototype.iterate = function() {
-
-        // static vars
         var s = es3fTransformFeedbackTests.TransformFeedbackCase.s_iterate;
-
-//          var log = this.m_textCtx.getLog();
-        var isOk = true;
-        var seed = /*deString.deStringHash(getName()) ^ */ deMath.deMathHash(this.m_iterNdx);
-        var numIterations = es3fTransformFeedbackTests.TransformFeedbackCase.s_iterate.iterations.length;
-        // first and end ignored.
-
-        var sectionName = 'Iteration' + (this.m_iterNdx + 1);
-        var sectionDesc = 'Iteration ' + (this.m_iterNdx + 1) + ' / ' + numIterations;
-//            var section; // something weird.
-
-        bufferedLogToConsole('Testing ' +
-            s.testCases[s.iterations[this.m_iterNdx]].length +
-            ' draw calls, (element es3fTransformFeedbackTests.count, TF state): ' +
-        //  tcu.formatArray(
-                s.testCases[s.iterations[this.m_iterNdx]]
-        //  )
-        );
-
-        isOk = this.runTest(s.testCases[s.iterations[this.m_iterNdx]], seed);
-
-        if (!isOk) {
-            // fail the test
-            testFailedOptions('Result comparison failed', false);
-//              this.m_testCtx.setTestResult(QP_TEST_RESULT_FAIL, 'Result comparison failed');
-        } else {
-            testPassedOptions('Result comparison succeeded', true);
+        var numIterations = s.iterations.length;
+        var seed = deMath.deMathHash(this.m_iterNdx);
+        switch(this.m_state) {
+            case es3fTransformFeedbackTests.State.DRAW:
+                bufferedLogToConsole('Testing ' +
+                    s.testCases[s.iterations[this.m_iterNdx]].length +
+                    ' draw calls, (element es3fTransformFeedbackTests.count, TF state): ' +
+                    s.testCases[s.iterations[this.m_iterNdx]]
+                );
+                this.draw(s.testCases[s.iterations[this.m_iterNdx]], seed);
+                this.m_state = es3fTransformFeedbackTests.State.VERIFY;
+                break;
+            case es3fTransformFeedbackTests.State.VERIFY:
+                this.m_testPassed = this.verify(s.testCases[s.iterations[this.m_iterNdx]]);
+                this.m_iterNdx += 1;
+                if (this.m_testPassed && this.m_iterNdx < numIterations) {
+                    this.m_state = es3fTransformFeedbackTests.State.DRAW;
+                    break;
+                } else
+                    this.m_state = es3fTransformFeedbackTests.State.FINISH;
+            case es3fTransformFeedbackTests.State.FINISH:
+                if (!this.m_testPassed) testFailedOptions('Result comparison failed', false);
+                else testPassedOptions('Result comparison succeeded', true);
+                return tcuTestCase.IterateResult.STOP;
         }
 
-        this.m_iterNdx += 1;
-
-        return (isOk && this.m_iterNdx < numIterations) ?
-               tcuTestCase.IterateResult.CONTINUE :
-               tcuTestCase.IterateResult.STOP;
+        return tcuTestCase.IterateResult.CONTINUE;
 
     };
 
-    es3fTransformFeedbackTests.TransformFeedbackCase.prototype.runTest = function(calls, seed) {
+    es3fTransformFeedbackTests.TransformFeedbackCase.prototype.draw = function(calls, seed) {
+    	var _min = function(x, y) { return x < y ? x : y; };
 
-        var _min = function(x, y) { return x < y ? x : y; };
+    	var rnd = new deRandom.Random(seed);
+    	var numInputs = 0;
+    	var numOutputs = 0;
+    	var width = gl.drawingBufferWidth;
+    	var height = gl.drawingBufferHeight;
+    	this.m_viewportW = _min(es3fTransformFeedbackTests.VIEWPORT_WIDTH, width);
+    	this.m_viewportH = _min(es3fTransformFeedbackTests.VIEWPORT_HEIGHT, height);
+    	this.m_viewportX = rnd.getInt(0, width - this.m_viewportW);
+    	this.m_viewportY = rnd.getInt(0, height - this.m_viewportH);
+    	this.m_frameWithTf = new tcuSurface.Surface(this.m_viewportW, this.m_viewportH); // tcu::Surface
+    	this.m_frameWithoutTf = new tcuSurface.Surface(this.m_viewportW, this.m_viewportH); // tcu::Surface
+    	this.m_primitiveQuery = gl.createQuery();
+    	this.m_outputsOk = true;
 
-    //  var log = this.m_testCtx.getLog();
-        var rnd = new deRandom.Random(seed);
-        var numInputs = 0;
-        var numOutputs = 0;
-        var width = gl.drawingBufferWidth;
-        var height = gl.drawingBufferHeight;
-        var viewportW = _min(es3fTransformFeedbackTests.VIEWPORT_WIDTH, width);
-        var viewportH = _min(es3fTransformFeedbackTests.VIEWPORT_HEIGHT, height);
-        var viewportX = rnd.getInt(0, width - viewportW);
-        var viewportY = rnd.getInt(0, height - viewportH);
-        var frameWithTf = new tcuSurface.Surface(viewportW, viewportH); // tcu::Surface
-        var frameWithoutTf = new tcuSurface.Surface(viewportW, viewportH); // tcu::Surface
-        var primitiveQuery = gl.createQuery();
-        var outputsOk = true;
-        var imagesOk = true;
+    	// Compute totals.
+    	for (var i = 0; i < calls.length; ++i) {
+    		var call = calls[i];
+    		numInputs += call.numElements;
+    		numOutputs += call.transformFeedbackEnabled ? es3fTransformFeedbackTests.getTransformFeedbackOutputCount(this.m_primitiveType, call.numElements) : 0;
+    	}
+
+    	// Input data.
+    	var inputData = es3fTransformFeedbackTests.genInputData(this.m_attributes, numInputs, this.m_inputStride, rnd);
+
+    	gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, this.m_transformFeedback);
+
+    	// Allocate storage for transform feedback output buffers and bind to targets.
+    	for (var bufNdx = 0; bufNdx < this.m_outputBuffers.length; ++bufNdx) {
+    		var buffer = this.m_outputBuffers[bufNdx]; // deUint32
+    		var stride = this.m_bufferStrides[bufNdx]; // int
+    		var target = bufNdx; // int
+    		var size = stride * numOutputs; // int
+    		var guardSize = stride * es3fTransformFeedbackTests.BUFFER_GUARD_MULTIPLIER; // int
+    		var usage = gl.DYNAMIC_READ; // const deUint32
+
+    		gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, buffer);
+    		gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, size + guardSize, usage);
+    		es3fTransformFeedbackTests.writeBufferGuard(gl.TRANSFORM_FEEDBACK_BUFFER, size, guardSize);
+
+    		// \todo [2012-07-30 pyry] glBindBufferRange()?
+    		gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, target, buffer);
+    	}
+
+    	var attribBuffer = gl.createBuffer();
+    	gl.bindBuffer(gl.ARRAY_BUFFER, attribBuffer);
+    	gl.bufferData(gl.ARRAY_BUFFER, inputData, gl.STATIC_DRAW);
+
+    	// Setup attributes.
+    	for (var i = 0; i < this.m_attributes.length; ++i) {
+    		var attrib = this.m_attributes[i];
+    		var loc = gl.getAttribLocation(this.m_program.getProgram(), attrib.name);
+    		/** @type {string} */
+    		var scalarType = gluShaderUtil.getDataTypeScalarType(attrib.type.getBasicType());
+    		/** @type {number} */
+    		var numComponents = gluShaderUtil.getDataTypeScalarSize(attrib.type.getBasicType());
+
+    		if (loc >= 0) {
+    			gl.enableVertexAttribArray(loc);
+    			switch (scalarType) {
+    				case 'float':
+    					gl.vertexAttribPointer(loc, numComponents, gl.FLOAT, false, this.m_inputStride, attrib.offset); break;
+    				case 'int':
+    					gl.vertexAttribIPointer(loc, numComponents, gl.INT, this.m_inputStride, attrib.offset); break;
+    				case 'uint':
+    					gl.vertexAttribPointer(loc, numComponents, gl.UNSIGNED_INT, false, this.m_inputStride, attrib.offset); break;
+    			}
+    		}
+    	}
+
+    	// Setup viewport.
+    	gl.viewport(this.m_viewportX, this.m_viewportY, this.m_viewportW, this.m_viewportH);
+
+    	// Setup program.
+    	gl.useProgram(this.m_program.getProgram());
+
+    	gl.uniform4fv(
+    		gl.getUniformLocation(this.m_program.getProgram(), 'u_scale'),
+    		[0.01, 0.01, 0.01, 0.01]
+    	);
+    	gl.uniform4fv(
+    		gl.getUniformLocation(this.m_program.getProgram(), 'u_bias'),
+    		[0.5, 0.5, 0.5, 0.5]
+    	);
+
+    	// Enable query.
+    	gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, this.m_primitiveQuery);
+
+    	// Draw
+    	var offset = 0;
+    	var tfEnabled = true;
+
+    	gl.clear(gl.COLOR_BUFFER_BIT);
+
+    	var tfPrimitiveMode = es3fTransformFeedbackTests.getTransformFeedbackPrimitiveMode(this.m_primitiveType);
+    	gl.beginTransformFeedback(tfPrimitiveMode);
+
+    	for (var i = 0; i < calls.length; ++i) {
+    		var call = calls[i];
+
+    		// Pause or resume transform feedback if necessary.
+    		if (call.transformFeedbackEnabled != tfEnabled) {
+    			if (call.transformFeedbackEnabled)
+    				gl.resumeTransformFeedback();
+    			else
+    				gl.pauseTransformFeedback();
+    			tfEnabled = call.transformFeedbackEnabled;
+    		}
+
+    		gl.drawArrays(gluDrawUtil.getPrimitiveGLType(gl, this.m_primitiveType), offset, call.numElements);
+    		offset += call.numElements;
+    	}
+
+    	// Resume feedback before finishing it.
+    	if (!tfEnabled)
+    		gl.resumeTransformFeedback();
+
+    	gl.endTransformFeedback();
+
+    	gl.endQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+
+    	// Check and log query status right after submit
+    	var query = this.m_primitiveQuery;
+
+		var available = gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE);
+
+        if (available) {
+            this.m_testPassed = false;
+            this.m_state = es3fTransformFeedbackTests.State.FINISH;
+            testFailedOptions('Transform feedback query result must not be available the same frame as they are issued.', true);
+        }
+
+    	// Compare result buffers.
+    	for (var bufferNdx = 0; bufferNdx < this.m_outputBuffers.length; ++bufferNdx) {
+    		var stride = this.m_bufferStrides[bufferNdx]; // int
+    		var size = stride * numOutputs; // int
+    		var guardSize = stride * es3fTransformFeedbackTests.BUFFER_GUARD_MULTIPLIER; // int
+    		var buffer = new ArrayBuffer(size + guardSize); // const void*
+
+    		// Bind buffer for reading.
+    		gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, this.m_outputBuffers[bufferNdx]);
+
+    		gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, buffer);
+
+    		// Verify all output variables that are written to this buffer.
+    		for (var i = 0; i < this.m_transformFeedbackOutputs.length; ++i) {
+    			var out = this.m_transformFeedbackOutputs[i];
+
+    			if (out.bufferNdx != bufferNdx)
+    				continue;
+
+    			var inputOffset = 0;
+    			var outputOffset = 0;
+
+    			// Process all draw calls and check ones with transform feedback enabled
+    			for (var callNdx = 0; callNdx < calls.length; ++callNdx) {
+    				var call = calls[callNdx];
+
+    				if (call.transformFeedbackEnabled) {
+    					var inputPtr = inputData[0] + inputOffset * this.m_inputStride; // const deUint8*
+    					var outputPtr = outputOffset * stride; // const deUint8*
+
+    					if (!es3fTransformFeedbackTests.compareTransformFeedbackOutput(this.m_primitiveType, out, call.numElements, {
+    							 input: {
+    								buffer: inputData,
+    								offset: inputOffset * this.m_inputStride,
+    								stride: this.m_inputStride
+    							},
+    							output: {
+    								buffer: buffer,
+    								offset: outputOffset * stride,
+    								stride: stride
+    							}
+    						})) {
+    						this.m_outputsOk = false;
+    						break;
+    					}
+    				}
+
+    				inputOffset += call.numElements;
+    				outputOffset += call.transformFeedbackEnabled ? es3fTransformFeedbackTests.getTransformFeedbackOutputCount(this.m_primitiveType, call.numElements) : 0;
+    			}
+    		}
+
+    		// Verify guardband.
+    		if (!es3fTransformFeedbackTests.verifyGuard(buffer, size)) {
+    			bufferedLogToConsole('Error: Transform feedback buffer overrun detected');
+    			this.m_outputsOk = false;
+    		}
+    	}
+    };
+
+    es3fTransformFeedbackTests.TransformFeedbackCase.prototype.verify = function(calls) {
+    	// Check status after mapping buffers.
+    	var mustBeReady = this.m_outputBuffers.length > 0; // Mapping buffer forces synchronization. // const bool
+    	var expectedCount = es3fTransformFeedbackTests.computeTransformFeedbackPrimitiveCount(this.m_primitiveType, calls); // const int
+    	var available = /** @type {boolean} */ (gl.getQueryParameter(this.m_primitiveQuery, gl.QUERY_RESULT_AVAILABLE));
+        var verify_offset = 0;
         var queryOk = true;
+    	if (!available) {
+    		if (!this.m_verifyStart)
+    			this.m_verifyStart = new Date();
+    		else {
+    			var current = new Date();
+    			var elapsedTime = 0.001 * (current.getTime() - this.m_verifyStart.getTime());
+    			if (elapsedTime > es3fTransformFeedbackTests.MAX_VERIFY_WAIT) {
+    				testFailed('Query result not available after ' + elapsedTime + ' seconds.');
+    				this.m_state = es3fTransformFeedbackTests.State.FINISH;
+    			}
+    		}
+    		return;
+    	}
 
-        // Compute totals.
-        for (var i = 0; i < calls.length; ++i) {
-            var call = calls[i];
-            numInputs += call.numElements;
-            numOutputs += call.transformFeedbackEnabled ? es3fTransformFeedbackTests.getTransformFeedbackOutputCount(this.m_primitiveType, call.numElements) : 0;
-        }
+    	var numPrimitives = /** @type {number} */ (gl.getQueryParameter(this.m_primitiveQuery, gl.QUERY_RESULT));
 
-        // Input data.
-        var inputData = es3fTransformFeedbackTests.genInputData(this.m_attributes, numInputs, this.m_inputStride, rnd);
+    	if (!mustBeReady && available == false)
+    		bufferedLogToConsole('ERROR: gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN result not available after mapping buffers!');
 
-        gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, this.m_transformFeedback);
+    	bufferedLogToConsole('gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN = ' + numPrimitives);
 
-        // Allocate storage for transform feedback output buffers and bind to targets.
-        for (var bufNdx = 0; bufNdx < this.m_outputBuffers.length; ++bufNdx) {
-            var buffer = this.m_outputBuffers[bufNdx]; // deUint32
-            var stride = this.m_bufferStrides[bufNdx]; // int
-            var target = bufNdx; // int
-            var size = stride * numOutputs; // int
-            var guardSize = stride * es3fTransformFeedbackTests.BUFFER_GUARD_MULTIPLIER; // int
-            var usage = gl.DYNAMIC_READ; // const deUint32
+    	if (numPrimitives != expectedCount)
+    		bufferedLogToConsole('ERROR: Expected ' + expectedCount + ' primitives!');
 
-            gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, buffer);
-            gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, size + guardSize, usage);
-            es3fTransformFeedbackTests.writeBufferGuard(gl.TRANSFORM_FEEDBACK_BUFFER, size, guardSize);
+    	// Clear transform feedback state.
+    	gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
+    	for (var bufNdx = 0; bufNdx < this.m_outputBuffers.length; ++bufNdx) {
+    		gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, null);
+    		gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, bufNdx, null);
+    	}
 
-            // \todo [2012-07-30 pyry] glBindBufferRange()?
-            gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, target, buffer);
-        }
+    	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-        var attribBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, attribBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, inputData, gl.STATIC_DRAW);
+    	// Read back rendered image.
+    	this.m_frameWithTf.readViewport(gl, [this.m_viewportX, this.m_viewportY, this.m_viewportW, this.m_viewportH]);
 
-        // Setup attributes.
-        for (var i = 0; i < this.m_attributes.length; ++i) {
-            var attrib = this.m_attributes[i];
-            var loc = gl.getAttribLocation(this.m_program.getProgram(), attrib.name);
-            /** @type {string} */
-            var scalarType = gluShaderUtil.getDataTypeScalarType(attrib.type.getBasicType());
-            /** @type {number} */
-            var numComponents = gluShaderUtil.getDataTypeScalarSize(attrib.type.getBasicType());
+    	// Render without transform feedback.
 
-            if (loc >= 0) {
-                gl.enableVertexAttribArray(loc);
-                switch (scalarType) {
-                    case 'float':
-                        gl.vertexAttribPointer(loc, numComponents, gl.FLOAT, false, this.m_inputStride, attrib.offset); break;
-                    case 'int':
-                        gl.vertexAttribIPointer(loc, numComponents, gl.INT, this.m_inputStride, attrib.offset); break;
-                    case 'uint':
-                        gl.vertexAttribPointer(loc, numComponents, gl.UNSIGNED_INT, false, this.m_inputStride, attrib.offset); break;
-                }
-            }
-        }
+    	gl.clear(gl.COLOR_BUFFER_BIT);
 
-        // Setup viewport.
-        gl.viewport(viewportX, viewportY, viewportW, viewportH);
+    	for (var i = 0; i < calls.length; ++i) {
+    		var call = calls[i];
+    		gl.drawArrays(gluDrawUtil.getPrimitiveGLType(gl, this.m_primitiveType), verify_offset, call.numElements);
+    		verify_offset += call.numElements;
+    	}
+    	this.m_frameWithoutTf.readViewport(gl, [this.m_viewportX, this.m_viewportY, this.m_viewportW, this.m_viewportH]);
 
-        // Setup program.
-        gl.useProgram(this.m_program.getProgram());
+    	// Compare images with and without transform feedback.
+    	var imagesOk = tcuImageCompare.pixelThresholdCompare('Result', 'Image comparison result', this.m_frameWithoutTf, this.m_frameWithTf, [1, 1, 1, 1], tcuImageCompare.CompareLogMode.ON_ERROR);
 
-        gl.uniform4fv(
-            gl.getUniformLocation(this.m_program.getProgram(), 'u_scale'),
-            [0.01, 0.01, 0.01, 0.01]
-        );
-        gl.uniform4fv(
-            gl.getUniformLocation(this.m_program.getProgram(), 'u_bias'),
-            [0.5, 0.5, 0.5, 0.5]
-        );
+    	if (imagesOk)
+    		bufferedLogToConsole('Rendering result comparison between TF enabled and TF disabled passed.');
+    	else
+    		bufferedLogToConsole('ERROR: Rendering result comparison between TF enabled and TF disabled failed!');
 
-        // Enable query.
-        gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, primitiveQuery);
+    	return this.m_outputsOk && imagesOk && queryOk;
 
-        // Draw
-        var offset = 0;
-        var tfEnabled = true;
-
-        gl.clear(gl.COLOR_BUFFER_BIT);
-
-        var tfPrimitiveMode = es3fTransformFeedbackTests.getTransformFeedbackPrimitiveMode(this.m_primitiveType);
-        gl.beginTransformFeedback(tfPrimitiveMode);
-
-        for (var i = 0; i < calls.length; ++i) {
-            var call = calls[i];
-
-            // Pause or resume transform feedback if necessary.
-            if (call.transformFeedbackEnabled != tfEnabled) {
-                if (call.transformFeedbackEnabled)
-                    gl.resumeTransformFeedback();
-                else
-                    gl.pauseTransformFeedback();
-                tfEnabled = call.transformFeedbackEnabled;
-            }
-
-            gl.drawArrays(gluDrawUtil.getPrimitiveGLType(gl, this.m_primitiveType), offset, call.numElements);
-            offset += call.numElements;
-        }
-
-        // Resume feedback before finishing it.
-        if (!tfEnabled)
-            gl.resumeTransformFeedback();
-
-        gl.endTransformFeedback();
-
-        gl.endQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
-
-        // Check and log query status right after submit
-        (function() {
-            var available = false; // deUint32
-            available = gl.getQueryParameter(primitiveQuery, gl.QUERY_RESULT_AVAILABLE); // formerly glGetQueryObjectuiv()
-
-            bufferedLogToConsole('gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN status after submit: ' +
-                (available != false ? 'true' : 'false'));
-        })();
-
-        // Compare result buffers.
-        for (var bufferNdx = 0; bufferNdx < this.m_outputBuffers.length; ++bufferNdx) {
-            var stride = this.m_bufferStrides[bufferNdx]; // int
-            var size = stride * numOutputs; // int
-            var guardSize = stride * es3fTransformFeedbackTests.BUFFER_GUARD_MULTIPLIER; // int
-            var buffer = new ArrayBuffer(size + guardSize); // const void*
-
-            // Bind buffer for reading.
-            gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, this.m_outputBuffers[bufferNdx]);
-
-            gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, buffer);
-
-            // function genString(buffer, prefix) {
-            //     var str = prefix + ":";
-            //     var arr = new Float32Array(buffer);
-            //     var len = (arr.length < 12 ? arr.length : 12);
-            //     for (var ii = 0; ii < len; ++ii) {
-            //         if (ii > 0) {
-            //             str += ",";
-            //         }
-            //         str += " " + arr[ii];
-            //     }
-            //     return str;
-            // }
-            // debug(genString(inputData, "input data"));
-            // debug(genString(buffer, "output data"));
-
-            // Verify all output variables that are written to this buffer.
-            for (var i = 0; i < this.m_transformFeedbackOutputs.length; ++i) {
-                var out = this.m_transformFeedbackOutputs[i];
-
-                if (out.bufferNdx != bufferNdx)
-                    continue;
-
-                var inputOffset = 0;
-                var outputOffset = 0;
-
-                // Process all draw calls and check ones with transform feedback enabled
-                for (var callNdx = 0; callNdx < calls.length; ++callNdx) {
-                    var call = calls[callNdx];
-
-                    if (call.transformFeedbackEnabled) {
-                        var inputPtr = inputData[0] + inputOffset * this.m_inputStride; // const deUint8*
-                        var outputPtr = outputOffset * stride; // const deUint8*
-
-                        if (!es3fTransformFeedbackTests.compareTransformFeedbackOutput(this.m_primitiveType, out, call.numElements, {
-                                 input: {
-                                    buffer: inputData,
-                                    offset: inputOffset * this.m_inputStride,
-                                    stride: this.m_inputStride
-                                },
-                                output: {
-                                    buffer: buffer,
-                                    offset: outputOffset * stride,
-                                    stride: stride
-                                }
-                            })) {
-                            outputsOk = false;
-                            break;
-                        }
-                    }
-
-                    inputOffset += call.numElements;
-                    outputOffset += call.transformFeedbackEnabled ? es3fTransformFeedbackTests.getTransformFeedbackOutputCount(this.m_primitiveType, call.numElements) : 0;
-
-                }
-            }
-
-            // Verify guardband.
-            if (!es3fTransformFeedbackTests.verifyGuard(buffer, size)) {
-                bufferedLogToConsole('Error: Transform feedback buffer overrun detected');
-                outputsOk = false;
-            }
-
-        //    Javascript, and lazy memory management
-        //    gl.unmapBuffer(gl.TRANSFORM_FEEDBACK_BUFFER);
-
-        }
-
-        // Check status after mapping buffers.
-        var mustBeReady = this.m_outputBuffers.length > 0; // Mapping buffer forces synchronization. // const bool
-        var expectedCount = es3fTransformFeedbackTests.computeTransformFeedbackPrimitiveCount(this.m_primitiveType, calls); // const int
-        var available = false; // deUint32
-        var numPrimitives = 0; // deUint32
-
-        available = gl.getQueryParameter(primitiveQuery, gl.QUERY_RESULT_AVAILABLE);
-        numPrimitives = gl.getQueryParameter(primitiveQuery, gl.QUERY_RESULT); // formerly getQueryObjectuiv()
-
-        if (!mustBeReady && available == false) {
-
-            bufferedLogToConsole('ERROR: gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN result not available after mapping buffers!');
-            // TODO(kbr): queries must not be available the same frame as they're issued. Have to
-            // restructure the logic to make this work.
-            // queryOk = false;
-        }
-
-        bufferedLogToConsole('gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN = ' + numPrimitives);
-
-        if (numPrimitives != expectedCount) {
-            bufferedLogToConsole('ERROR: Expected ' + expectedCount + ' primitives!');
-            // TODO(kbr): queries must not be available the same frame as they're issued. Have to
-            // restructure the logic to make this work.
-            // queryOk = false;
-        }
-
-        // Clear transform feedback state.
-        gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
-        for (var bufNdx = 0; bufNdx < this.m_outputBuffers.length; ++bufNdx) {
-            gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, null);
-            gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, bufNdx, null);
-        }
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-        // Read back rendered image.
-        frameWithTf.readViewport(gl, [viewportX, viewportY, viewportW, viewportH]);
-
-        // Render without transform feedback.
-        offset = 0; // int
-
-        gl.clear(gl.COLOR_BUFFER_BIT);
-
-        for (var i = 0; i < calls.length; ++i) {
-            var call = calls[i];
-            gl.drawArrays(gluDrawUtil.getPrimitiveGLType(gl, this.m_primitiveType), offset, call.numElements);
-            offset += call.numElements;
-        }
-        frameWithoutTf.readViewport(gl, [viewportX, viewportY, viewportW, viewportH]);
-
-        // Compare images with and without transform feedback.
-        imagesOk = tcuImageCompare.pixelThresholdCompare('Result', 'Image comparison result', frameWithoutTf, frameWithTf, [1, 1, 1, 1], tcuImageCompare.CompareLogMode.ON_ERROR);
-
-        if (imagesOk) {
-            bufferedLogToConsole('Rendering result comparison between TF enabled and TF disabled passed.');
-        } else {
-            bufferedLogToConsole('ERROR: Rendering result comparison between TF enabled and TF disabled failed!');
-        }
-
-        return outputsOk && imagesOk && queryOk;
-
-    }; // runTest();
+    };
 
     es3fTransformFeedbackTests.dc = function(numElements, tfEnabled) {
         return new es3fTransformFeedbackTests.DrawCall(numElements, tfEnabled);

@@ -2220,16 +2220,9 @@ goog.scope(function() {
      * @param {number} width
      * @param {number} height
      * @param {number} depth
-     * @param {number} imageHeight
-     * @param {number} rowLength
-     * @param {number} skipImages
-     * @param {number} skipRows
-     * @param {number} skipPixels
-     * @param {number} alignment
      */
     es3fTextureSpecificationTests.BasicTexSubImage3DCase = function(
-        name, desc, internalFormat, width, height, depth, imageHeight,
-        rowLength, skipImages, skipRows, skipPixels, alignment
+        name, desc, internalFormat, width, height, depth
     ) {
         es3fTextureSpecificationTests.Texture3DSpecCase.call(
             this, name, desc,
@@ -2908,9 +2901,9 @@ goog.scope(function() {
 
         // Fill data with grid.
         var rowLength = this.m_rowLength > 0 ? this.m_rowLength : this.m_subW;
-        var rowPitch = deMath.deAlign32(rowLength * pixelSize, this.m_alignment);
+        rowPitch = deMath.deAlign32(rowLength * pixelSize, this.m_alignment);
         var imageHeight = this.m_imageHeight > 0 ? this.m_imageHeight : this.m_subH;
-        var slicePitch = imageHeight * rowPitch;
+        slicePitch = imageHeight * rowPitch;
         var cScale = deMath.subtract(this.m_texFormatInfo.valueMax, this.m_texFormatInfo.valueMin);
         var cBias = this.m_texFormatInfo.valueMin;
         var colorA = deMath.add(
@@ -4516,7 +4509,7 @@ goog.scope(function() {
 
         // Fill data with grid.
         var rowLength = this.m_rowLength > 0 ? this.m_rowLength : this.m_subW;
-        var rowPitch = deMath.deAlign32(
+        rowPitch = deMath.deAlign32(
             rowLength * pixelSize, this.m_alignment
         );
         var height = this.m_subH + this.m_skipRows;
@@ -4659,12 +4652,12 @@ goog.scope(function() {
 
         // Fill data with grid.
         var rowLength = this.m_rowLength > 0 ? this.m_rowLength : this.m_subW;
-        var rowPitch = deMath.deAlign32(
+        rowPitch = deMath.deAlign32(
             rowLength * pixelSize, this.m_alignment
         );
         var imageHeight = this.m_imageHeight > 0 ?
             this.m_imageHeight : this.m_subH;
-        var slicePitch = imageHeight * rowPitch;
+        slicePitch = imageHeight * rowPitch;
         var cScale = deMath.subtract(this.m_texFormatInfo.valueMax, this.m_texFormatInfo.valueMin);
         var cBias = this.m_texFormatInfo.valueMin;
         var colorA = deMath.add(
@@ -5668,11 +5661,6 @@ goog.scope(function() {
         );
         this.addChild(paramGroup);
 
-        /**
-         * @type {Array<{name: string, format: number, width: number,
-         * height: number, rowLength: number, skipRows: number,
-         * skipPixels: number, alignment: number}>}
-         */
         var cases = [{
                 name: 'rgb8_alignment', format: gl.RGB8, width: 31,
                 height: 30, rowLength: 0, skipRows: 0, skipPixels: 0,
@@ -5913,8 +5901,7 @@ goog.scope(function() {
         }
 
         // TexSubImage2D alignment cases.
-        /** @type {tcuTestCase.DeqpTest} */
-        var alignGroup = new tcuTestCase.DeqpTest(
+        alignGroup = new tcuTestCase.DeqpTest(
             'texsubimage2d_align', 'glTexSubImage2D() unpack alignment tests'
         );
         this.addChild(alignGroup);
@@ -6122,19 +6109,12 @@ goog.scope(function() {
         );
 
         // glTexSubImage2D() pixel transfer mode cases.
-        /** @type {tcuTestCase.DeqpTest} */
-        var paramGroup = new tcuTestCase.DeqpTest(
+        paramGroup = new tcuTestCase.DeqpTest(
             'texsubimage2d_unpack_params',
             'glTexSubImage2D() pixel transfer mode cases'
         );
         this.addChild(paramGroup);
 
-        /**
-         * @type {Array<{name: string, format: number, width: number,
-         * height: number, subX: number, subY: number, subW: number,
-         * subH: number, rowLength: number, skipRows: number,
-         * skipPixels: number, alignment: number}>}
-         */
         cases = [{
                 name: 'rgb8_alignment', format: gl.RGB8, width: 54,
                 height: 60, subX: 11, subY: 7, subW: 31, subH: 30,
@@ -6202,8 +6182,7 @@ goog.scope(function() {
             );
 
         // glTexSubImage2D() PBO cases.
-        /** @type {tcuTestCase.DeqpTest} */
-        var pboGroup = new tcuTestCase.DeqpTest(
+        pboGroup = new tcuTestCase.DeqpTest(
             'texsubimage2d_pbo',
             'glTexSubImage2D() pixel buffer object tests'
         );
@@ -6313,8 +6292,7 @@ goog.scope(function() {
         }
 
         // glTexSubImage2D() depth cases.
-        /** @type {tcuTestCase.DeqpTest} */
-        var shadow2dGroup = new tcuTestCase.DeqpTest(
+        shadow2dGroup = new tcuTestCase.DeqpTest(
             'texsubimage2d_depth',
             'glTexSubImage2D() with depth or depth/stencil format'
         );
@@ -6452,8 +6430,7 @@ goog.scope(function() {
         );
 
         // Basic TexImage3D usage.
-        /** @type {tcuTestCase.DeqpTest} */
-        var basicTexImageGroup = new tcuTestCase.DeqpTest(
+        basicTexImageGroup = new tcuTestCase.DeqpTest(
             'basic_teximage3d', 'Basic glTexImage3D() usage'
         );
         this.addChild(basicTexImageGroup);
@@ -6482,19 +6459,12 @@ goog.scope(function() {
         }
 
         // glTexImage3D() unpack params cases.
-        /** @type {tcuTestCase.DeqpTest} */
-        var paramGroup = new tcuTestCase.DeqpTest(
+        paramGroup = new tcuTestCase.DeqpTest(
             'teximage3d_unpack_params', 'glTexImage3D() unpack parameters'
         );
         this.addChild(paramGroup);
 
-        /** @type {Array<{
-         * name: string, format: number, width: number, height: number,
-         * depth: number, imageHeight: number, rowLength:number,
-         * skipImages:number, skipRows:number, skipPixels: number,
-         * alignment:number}>}
-         */
-        var cases = [{
+        cases = [{
                 name: 'rgb8_image_height', format: gl.RGB8, width: 23,
                 height: 19, depth: 8, imageHeight: 26, rowLength: 0,
                 skipImages: 0, skipRows: 0, skipPixels: 0, alignment: 4
@@ -6565,19 +6535,13 @@ goog.scope(function() {
             );
 
         // glTexImage3D() pbo cases.
-        /** @type {tcuTestCase.DeqpTest} */
-        var pboGroup = new tcuTestCase.DeqpTest(
+        pboGroup = new tcuTestCase.DeqpTest(
             'teximage3d_pbo', 'glTexImage3D() from PBO'
         );
         this.addChild(pboGroup);
 
         // Parameter cases
-        /** @type {Array<{name: string, format: number, width: number,
-         * height: number, depth: number, imageHeight: number,
-         * rowLength: number, skipImages: number, skipRows: number,
-         * skipPixels: number, alignment: number, offset: number}>}
-         */
-        var parameterCases = [{
+        parameterCases = [{
                 name: 'rgb8_offset', format: gl.RGB8, width: 23,
                 height: 19, depth: 8, imageHeight: 0, rowLength: 0,
                 skipImages: 0, skipRows: 0, skipPixels: 0, alignment: 1,
@@ -6827,19 +6791,11 @@ goog.scope(function() {
             );
 
         // glTexSubImage3D() PBO cases.
-        /** @type {tcuTestCase.DeqpTest} */
         pboGroup = new tcuTestCase.DeqpTest(
             'texsubimage3d_pbo', 'glTexSubImage3D() pixel buffer object tests'
         );
         this.addChild(pboGroup);
 
-        /** @type {Array<{name: string, format: number, width: number,
-         * height: number, depth: number, subX: number, subY: number,
-         * subZ: number, subW: number, subH: number, subD: number,
-         * imageHeight: number, rowLength: number, skipImages: number,
-         * skipRows: number, skipPixels: number, alignment: number,
-         * offset: number}>}
-         */
         paramCases = [{
                 name: 'rgb8_offset', format: gl.RGB8, width: 26,
                 height: 25, depth: 10, subX: 1, subY: 2, subZ: 1, subW: 23,

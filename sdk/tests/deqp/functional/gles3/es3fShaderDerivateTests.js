@@ -1202,7 +1202,7 @@ goog.scope(function() {
 	};
 
 	/**
-	 * @param  {tcuTexture.ConstPixelBufferAccess} result
+	 * @param  {tcuTexture.PixelBufferAccess} result
 	 * @param  {tcuTexture.PixelBufferAccess} errorMask
 	 * @return {boolean}
 	 */
@@ -1211,7 +1211,7 @@ goog.scope(function() {
 		if (result.getWidth() < 2 || result.getHeight() < 2)
 			throw new Error('Too small viewport');
 
-		/** @type {tcuTexture.ConstPixelBufferAccess} */ var compareArea = tcuTextureUtil.getSubregion(result, 1, 1, 0, result.getWidth() - 2, result.getHeight() - 2, 1);
+		/** @type {tcuTexture.PixelBufferAccess} */ var compareArea = tcuTextureUtil.getSubregion(result, 1, 1, 0, result.getWidth() - 2, result.getHeight() - 2, 1);
 		/** @type {tcuTexture.PixelBufferAccess} */ var maskArea = tcuTextureUtil.getSubregion(errorMask, 1, 1, 0, errorMask.getWidth() - 2, errorMask.getHeight() - 2, 1);
 		/** @type {Array<number>} */ var xScale = [1.0, 0.0, 0.5, -0.5];
 		/** @type {Array<number>} */ var yScale = [0.0, 1.0, 0.5, -0.5];
