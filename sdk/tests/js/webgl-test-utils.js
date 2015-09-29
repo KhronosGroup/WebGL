@@ -1102,7 +1102,7 @@ var makeCheckRect = function(x, y, width, height, color, msg, errorRange) {
               for (j = 1; j < color.length; ++j) {
                 was += "," + buf[offset + j];
               }
-              debug('at (' + (i % width) + ', ' + Math.floor(i / width) +
+              debug('at (' + px + ', ' + py +
                     ') expected: ' + color + ' was ' + was);
               return;
             }
