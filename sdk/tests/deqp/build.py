@@ -90,6 +90,7 @@ targets = {
     'texturefiltering' : 'functional.gles3.es3fTextureFilteringTests',
     'fbocolor' : 'functional.gles3.es3fFboColorbufferTests',
     'fragdepth' : 'functional.gles3.es3fFragDepthTests',
+    'shaderop' : 'functional.gles3.es3fShaderOperatorTests',
     'vao' : 'functional.gles3.es3fVertexArrayObjectTests',
     'clip' : 'functional.gles3.es3fClippingTests',
     'inv' : 'functional.gles3.es3fFboInvalidateTests',
