@@ -745,7 +745,7 @@ glsLifetimeTests.LifeTest.testGen = function() {
     else
         assertMsgOptions(!this.m_type.exists(obj), 'create* should not have created an object, but did', false, true);
     this.m_type.release(obj);
-    testPassed('Passed');
+    testPassed();
 };
 
 /**
@@ -755,7 +755,7 @@ glsLifetimeTests.LifeTest.testDelete = function() {
     var obj = this.m_type.gen();
     this.m_type.release(obj);
     assertMsgOptions(!this.m_type.exists(obj), 'Object still exists after deletion', false, true);
-    testPassed('Passed');
+    testPassed();
 };
 
 /**
@@ -769,7 +769,7 @@ glsLifetimeTests.LifeTest.testBind = function() {
     assertMsgOptions(this.m_type.exists(obj), 'Object does not exist after binding', false, true);
     this.m_type.binder().bind(null);
     this.m_type.release(obj);
-    testPassed('Passed');
+    testPassed();
 };
 
 /**
@@ -792,7 +792,7 @@ glsLifetimeTests.LifeTest.testDeleteBound = function() {
     }
     assertMsgOptions(this.m_type.binder().getBinding() === null, "Unbinding didn't remove binding", false, true);
     assertMsgOptions(!this.m_type.exists(obj), 'Name is still valid after deleting and unbinding', false, true);
-    testPassed('Passed');
+    testPassed();
 };
 
 /**
@@ -813,7 +813,7 @@ glsLifetimeTests.LifeTest.testDeleteUsed = function() {
     assertMsgOptions(deleteFlagged == true, 'Program object was not flagged as deleted', false, true);
     gl.useProgram(null);
     assertMsgOptions(!gl.isProgram(programId), 'Deleted program name still valid after being made non-current', false, true);
-    testPassed('Passed');
+    testPassed();
 };
 
 /**
@@ -881,7 +881,7 @@ glsLifetimeTests.AttachmentTest.testDeletedNames = function() {
                  'Attachment name returned by query even after detachment.', false, true);
     assertMsgOptions(!elemType.exists(element),
                  'Deleted attached object name still usable after detachment.', false, true);
-    testPassed('Passed');
+    testPassed();
 };
 
 /**
@@ -952,7 +952,7 @@ glsLifetimeTests.InputAttachmentTest.prototype.iterate = function() {
     assertMsgOptions(surfacesMatch,
         'Writing to a fresh object modified the container with a deleted attachment.', false, true);
 
-    testPassed('Passed');
+    testPassed();
     return tcuTestCase.IterateResult.STOP;
 };
 
@@ -1031,7 +1031,7 @@ glsLifetimeTests.OutputAttachmentTest.prototype.iterate = function() {
     assertMsgOptions(surfacesMatch,
                  'Writing to container with deleted attachment modified a new object.', false, true);
 
-    testPassed('Passed');
+    testPassed();
     return tcuTestCase.IterateResult.STOP;
 };
 

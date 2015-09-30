@@ -85,12 +85,12 @@ function testFailedOptions(msg, exthrow){};
 function testPassedOptions(msg, exthrow){};
 
 /**
- * @param {string} msg
+ * @param {string=} msg
  */
 function testFailed(msg){};
 
 /**
- * @param {string} msg
+ * @param {string=} msg
  */
 function testPassed(msg){};
 

@@ -94,6 +94,18 @@ goog.scope(function() {
     };
 
     /**
+     * Creates a basic type gluVarType.VarType with type boolean and undefined precision.
+     * @param {number} basicType
+     * @return {gluVarType.VarType} The currently modified object
+     */
+    gluVarType.VarType.prototype.VarTypeBoolean = function(basicType) {
+        this.m_type = gluVarType.Type.TYPE_BASIC;
+        this.m_data = basicType;
+
+        return this;
+    };
+
+    /**
      * Creates an array type gluVarType.VarType. Use this after the constructor call.
      * @param {gluVarType.VarType} elementType
      * @param {number} arraySize
@@ -293,11 +305,14 @@ goog.scope(function() {
     /**
      * Creates a basic type gluVarType.VarType.
      * @param {gluShaderUtil.DataType} basicType
-     * @param {framework.opengl.gluShaderUtil.precision} flags
+     * @param {framework.opengl.gluShaderUtil.precision=} flags
      * @return {gluVarType.VarType}
      */
     gluVarType.newTypeBasic = function(basicType, flags) {
-       return new gluVarType.VarType().VarTypeBasic(basicType, flags);
+        if (!gluShaderUtil.isDataTypeBoolOrBVec(basicType))
+            return new gluVarType.VarType().VarTypeBasic(basicType, /** @type {framework.opengl.gluShaderUtil.precision}*/ (flags));
+        else
+            return new gluVarType.VarType().VarTypeBoolean(basicType);
     };
 
     /**
