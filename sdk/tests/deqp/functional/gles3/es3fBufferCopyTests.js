@@ -244,16 +244,8 @@ goog.scope(function() {
                 // In WebGL 2, a copy between an ELEMENT_ARRAY_BUFFER and other data buffer
                 // (not COPY_WRITE_BUFFER nor COPY_READ_BUFFER nor ELEMENT_ARRAY_BUFFER)
                 // cannot be made, so let's skip those cases.
-                if (
-                    (bufferTargets[srcTargetNdx] == gl.ELEMENT_ARRAY_BUFFER &&
-                        bufferTargets[dstTargetNdx] != gl.COPY_READ_BUFFER &&
-                        bufferTargets[dstTargetNdx] != gl.COPY_WRITE_BUFFER &&
-                        bufferTargets[dstTargetNdx] != gl.ELEMENT_ARRAY_BUFFER) ||
-                    (bufferTargets[dstTargetNdx] == gl.ELEMENT_ARRAY_BUFFER &&
-                        bufferTargets[srcTargetNdx] != gl.COPY_READ_BUFFER &&
-                        bufferTargets[srcTargetNdx] != gl.COPY_WRITE_BUFFER &&
-                        bufferTargets[srcTargetNdx] != gl.ELEMENT_ARRAY_BUFFER)
-                )
+                if (bufferTargets[srcTargetNdx] == gl.ELEMENT_ARRAY_BUFFER ||
+                    bufferTargets[dstTargetNdx] == gl.ELEMENT_ARRAY_BUFFER)
                     continue;
 
                 var srcTarget = bufferTargets[srcTargetNdx];
