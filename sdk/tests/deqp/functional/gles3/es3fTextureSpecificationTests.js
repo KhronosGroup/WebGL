@@ -289,7 +289,7 @@ goog.scope(function() {
 
         // Verify results.
         if (this.verifyTexture(webgl2Context, refContext))
-            testPassed('Passed');
+            testPassed();
         else
             testFailed('Verification failed');
 

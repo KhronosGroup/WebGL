@@ -5548,7 +5548,7 @@ WebGL2RenderingContextBase.prototype.vertexAttribI4i = function(index, x, y, z, 
 
 /**
  * @param {number} index
- * @param {Array.<number>} v
+ * @param {(Array.<number>|Int32Array)} v
  */
 WebGL2RenderingContextBase.prototype.vertexAttribI4iv = function(index, v) {};
 
@@ -5563,7 +5563,7 @@ WebGL2RenderingContextBase.prototype.vertexAttribI4ui = function(index, x, y, z,
 
 /**
  * @param {number} index
- * @param {Array.<number>} v
+ * @param {(Array.<number>|Uint32Array)} v
  */
 WebGL2RenderingContextBase.prototype.vertexAttribI4uiv = function(index, v) {};
 
