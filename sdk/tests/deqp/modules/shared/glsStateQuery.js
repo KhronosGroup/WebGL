@@ -32,7 +32,7 @@ var glsStateQuery = modules.shared.glsStateQuery;
  * return {boolean}
  */
 glsStateQuery.compare = function(a, b) {
-    /** @const */ var eps = 0.00001;
+    /** @const */ var eps = 0.01;
     if (a === b)
         return true;
 

@@ -111,7 +111,7 @@ goog.scope(function() {
     /**
      * @struct
      * @constructor
-     * @param {?es3fShaderTextureFunctionTests.TexFunction} func
+     * @param {es3fShaderTextureFunctionTests.TexFunction} func
      * @param {Array<number>} minCoord
      * @param {Array<number>} maxCoord
      * @param {boolean} useBias
@@ -125,7 +125,7 @@ goog.scope(function() {
      * @param {Array<number>} offset
      */
     es3fShaderTextureFunctionTests.TextureLookupSpec = function(func, minCoord, maxCoord, useBias, minLodBias, maxLodBias, minDX, maxDX, minDY, maxDY, useOffset, offset) {
-        /** @type {?es3fShaderTextureFunctionTests.TexFunction} */ this.func = func;
+        /** @type {es3fShaderTextureFunctionTests.TexFunction} */ this.func = func;
         /** @type {Array<number>} */ this.minCoord = minCoord;
         /** @type {Array<number>} */ this.maxCoord = maxCoord;
         // Bias
