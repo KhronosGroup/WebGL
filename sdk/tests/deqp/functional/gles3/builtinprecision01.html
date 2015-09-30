@@ -17,9 +17,9 @@
 <script>
 var canvas = document.getElementById('canvas');
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', {preserveDrawingBuffer: true}, 2);
+var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', null, 2);
 
-gl.getError();
+
     try {
         functional.gles3.es3fBuiltinPrecisionTests.run(gl, [1, 2]);
     }

@@ -16,7 +16,7 @@
 <canvas id="canvas" width="256" height="256"> </canvas>
 <script>
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', {preserveDrawingBuffer: true, stencil: true}, 2);
+var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', {stencil: true}, 2);
 
     try {
         functional.gles3.es3fRasterizerDiscardTests.run(gl);
