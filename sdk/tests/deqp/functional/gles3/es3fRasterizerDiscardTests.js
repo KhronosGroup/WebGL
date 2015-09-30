@@ -372,7 +372,7 @@ es3fRasterizerDiscardTests.RasterizerDiscardCase.prototype.iterate = function() 
     if (++this.m_iterNdx < NUM_CASE_ITERATIONS)
         return tcuTestCase.IterateResult.CONTINUE;
 
-    testPassed('Passed');
+    testPassed();
     return tcuTestCase.IterateResult.STOP;
 };
 
@@ -483,4 +483,3 @@ es3fRasterizerDiscardTests.run = function(context) {
 };
 
 });
-

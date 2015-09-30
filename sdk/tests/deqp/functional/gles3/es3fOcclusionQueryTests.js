@@ -370,7 +370,7 @@ es3fOcclusionQueryTests.OcclusionQueryCase.prototype.verify = function() {
         this.m_state = es3fOcclusionQueryTests.State.DRAW
     } else {
         this.m_state = es3fOcclusionQueryTests.State.FINISH;
-        testPassed('Passed');
+        testPassed();
     }
 };
 

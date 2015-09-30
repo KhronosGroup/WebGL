@@ -297,7 +297,7 @@ es3fDefaultVertexAttributeTests.AttributeCase.prototype.iterate = function() {
         return tcuTestCase.IterateResult.CONTINUE;
 
     if (this.m_allIterationsPassed)
-        testPassed('Pass');
+        testPassed();
     else
         testFailed('Got unexpected values');
 

@@ -1461,10 +1461,10 @@ goog.scope(function() {
     /**
      * @param {Array<glsDrawTests.GLValue>} previousComponents
      * @param {glsDrawTests.RandomArrayGenerator.VertexParameters} vertexParameters
-     * @return {Array<glsDrawTests.GLValue>}
+     * @return {Array<glsDrawTests.GLValue>|Array<number>}
      */
     glsDrawTests.RandomArrayGenerator.generateVertex = function(previousComponents, vertexParameters) {
-        /** @type {Array<glsDrawTests.GLValue>} */ var components = [];
+        /** @type {Array<glsDrawTests.GLValue>|Array<number>} */ var components = [];
         /** @type {number} */ var limit10 = (1 << 10);
         /** @type {number} */ var limit2 = (1 << 2);
 

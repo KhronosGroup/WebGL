@@ -15,12 +15,12 @@
 #  closure/
 #    compiler.jar
 #
+# The externs.zip file inside the closure compiler needs to be modified
+# to support WebGL2.
 # and that the shell is cd'd into the directory containing this
 # script.
 #
-# Note that Closure's --warnings_whitelist_file argument doesn't work
-# to suppress the two warnings coming from require.js.
 
 : ${JAVA:=java}
 
-$JAVA -jar ../../../../closure/compiler.jar --js \*\*.js --language_in ECMASCRIPT5_STRICT --compilation_level ADVANCED --js_output_file /dev/null
+$JAVA -jar ../../../../closure/compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --warning_level VERBOSE --externs compiler_additional_extern.js --js functional/**.js framework/**.js modules/**.js --js_output_file /dev/null --js ../closure-library/closure/**.js
