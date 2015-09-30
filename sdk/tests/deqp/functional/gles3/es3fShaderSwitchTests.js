@@ -126,8 +126,7 @@ goog.scope(function() {
         if (isVertex) {
             vtx += "out mediump vec4 v_color;\n";
             frag += "in mediump vec4 v_color;\n";
-        }
-        else {
+        } else {
             vtx += "out highp vec4 v_coords;\n";
             frag += "in highp vec4 v_coords;\n";
         }
@@ -170,8 +169,7 @@ goog.scope(function() {
         if (isVertex) {
             vtx += "    v_color = vec4(res, 1.0);\n";
             frag += "    o_color = v_color;\n";
-        }
-        else {
+        } else {
             vtx += "    v_coords = a_coords;\n";
             frag += "    o_color = vec4(res, 1.0);\n";
         }
