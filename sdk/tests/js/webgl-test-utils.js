@@ -357,6 +357,81 @@ var setupProgram = function(
 };
 
 /**
+ * Creates a program, attaches shader, sets up trasnform feedback varyings,
+ * binds attrib locations, links the program and calls useProgram.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {!Array.<!WebGLShader|string>} shaders The shaders to
+ *        attach, or the source, or the id of a script to get
+ *        the source from.
+ * @param {!Array.<string>} varyings The transform feedback varying names.
+ * @param {number} bufferMode The mode used to capture the varying variables.
+ * @param {!Array.<string>} opt_attribs The attribs names.
+ * @param {!Array.<number>} opt_locations The locations for the attribs.
+ * @param {boolean} opt_logShaders Whether to log shader source.
+ */
+var setupTransformFeedbackProgram = function(
+    gl, shaders, varyings, bufferMode, opt_attribs, opt_locations, opt_logShaders) {
+  var realShaders = [];
+  var program = gl.createProgram();
+  var shaderCount = 0;
+  for (var ii = 0; ii < shaders.length; ++ii) {
+    var shader = shaders[ii];
+    var shaderType = undefined;
+    if (typeof shader == 'string') {
+      var element = document.getElementById(shader);
+      if (element) {
+        if (element.type != "x-shader/x-vertex" && element.type != "x-shader/x-fragment")
+          shaderType = ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER;
+        shader = loadShaderFromScript(gl, shader, shaderType, undefined, opt_logShaders);
+      } else if (endsWith(shader, ".vert")) {
+        shader = loadShaderFromFile(gl, shader, gl.VERTEX_SHADER, undefined, opt_logShaders);
+      } else if (endsWith(shader, ".frag")) {
+        shader = loadShaderFromFile(gl, shader, gl.FRAGMENT_SHADER, undefined, opt_logShaders);
+      } else {
+        shader = loadShader(gl, shader, ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER, undefined, opt_logShaders);
+      }
+    } else if (opt_logShaders) {
+      throw 'Shader source logging requested but no shader source provided';
+    }
+    if (shader) {
+      ++shaderCount;
+      gl.attachShader(program, shader);
+    }
+  }
+  if (shaderCount != 2) {
+    error("Error in compiling shader");
+    return null;
+  }
+
+  if (opt_attribs) {
+    for (var ii = 0; ii < opt_attribs.length; ++ii) {
+      gl.bindAttribLocation(
+          program,
+          opt_locations ? opt_locations[ii] : ii,
+          opt_attribs[ii]);
+    }
+  }
+
+  gl.transformFeedbackVaryings(program, varyings, bufferMode);
+
+  gl.linkProgram(program);
+
+  // Check the link status
+  var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+  if (!linked) {
+      // something went wrong with the link
+      lastError = gl.getProgramInfoLog (program);
+      error("Error in program linking:" + lastError);
+
+      gl.deleteProgram(program);
+      return null;
+  }
+
+  gl.useProgram(program);
+  return program;
+};
+
+/**
  * Creates a simple texture program.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @return {WebGLProgram}
@@ -1279,6 +1354,37 @@ var checkAreaInAndOut = function(gl, x, y, width, height, innerColor, outerColor
   checkCanvasRect(gl, x + width + edgeSize, 0, outerDimensions.width - x - width - edgeSize, outerDimensions.height, outerColor);
   checkCanvasRect(gl, 0, 0, outerDimensions.width, y - edgeSize, outerColor);
   checkCanvasRect(gl, 0, y + height + edgeSize, outerDimensions.width, outerDimensions.height - y - height - edgeSize, outerColor);
+};
+
+/**
+ * Checks that an entire buffer matches the floating point values provided.
+ * (WebGL 2.0 only)
+ * @param {!WebGL2RenderingContext} gl The WebGL2RenderingContext to use.
+ * @param {number} target The buffer target to bind to.
+ * @param {!Array.<number>} expected The values expected.
+ * @param {string} opt_msg Optional. Message to associate with success. Eg ("should be red").
+ * @param {number} opt_errorRange Optional. Acceptable error in
+ *        color checking. 0 by default.
+ */
+var checkFloatBuffer = function(gl, target, expected, opt_msg, opt_errorRange) {
+  if (opt_msg === undefined)
+    opt_msg = "buffer should match expected values";
+
+  if (opt_errorRange === undefined)
+    opt_errorRange = 0.001;
+
+  var outData = new ArrayBuffer(Float32Array.BYTES_PER_ELEMENT * expected.length);
+  gl.getBufferSubData(target, 0, outData);
+
+  var floatArray = new Float32Array(outData);
+  for (var i = 0; i < expected.length; i++) {
+    if (Math.abs(floatArray[i] - expected[i]) > opt_errorRange) {
+      testFailed(opt_msg);
+      debug('at [' + i + '] expected: ' + expected[i] + ' was ' + floatArray[i]);
+      return;
+    }
+  }
+  testPassed(opt_msg);
 };
 
 /**
@@ -2917,6 +3023,7 @@ return {
   checkCanvasRect: checkCanvasRect,
   checkCanvasRectColor: checkCanvasRectColor,
   checkCanvasRects: checkCanvasRects,
+  checkFloatBuffer: checkFloatBuffer,
   checkTextureSize: checkTextureSize,
   clipToRange: clipToRange,
   createColoredTexture: createColoredTexture,
@@ -2978,6 +3085,7 @@ return {
   setDefault3DContextVersion: setDefault3DContextVersion,
   setupColorQuad: setupColorQuad,
   setupProgram: setupProgram,
+  setupTransformFeedbackProgram: setupTransformFeedbackProgram,
   setupQuad: setupQuad,
   setupIndexedQuad: setupIndexedQuad,
   setupIndexedQuadWithOptions: setupIndexedQuadWithOptions,
