@@ -264,7 +264,12 @@ function runOneTest(gl, info) {
   wtu.insertImage(div, "result", wtu.makeImageFromCanvas(gl.canvas));
   div.appendChild(document.createElement('br'));
   consoleDiv.appendChild(div);
-  wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
+
+  var tolerance = 0;
+  if (info.renderTolerance !== undefined) {
+    tolerance = info.renderTolerance;
+  }
+  wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", tolerance);
 }
 
 function runTests(shaderInfos, opt_contextVersion) {
