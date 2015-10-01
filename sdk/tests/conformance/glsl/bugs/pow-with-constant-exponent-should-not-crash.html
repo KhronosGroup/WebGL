@@ -62,17 +62,21 @@ void main()
 <script>
 "use strict";
 
+// This test has quite a lot of tolerance since pow() doesn't have explicit precision requirements
+// in ESSL1, and in ESSL3 the limits are very loose.
 GLSLConformanceTester.runRenderTests([
   {
     fShaderId: "fshaderTest",
     fShaderSuccess: true,
     linkSuccess: true,
+    renderTolerance: 20,
     passMsg: "shader with pow() with a constant vector exponent should not crash",
   },
   {
     fShaderId: "fshaderNestedTest",
     fShaderSuccess: true,
     linkSuccess: true,
+    renderTolerance: 20,
     passMsg: "shader with nested pow() calls with constant vector exponents should not crash",
   }
 ]);
