@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 14 September 2015</h2>
+    <h2 class="no-toc">Editor's Draft 02 October 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2007,7 +2007,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
           function.</p>
       </dd>
       <dt>
-        <p class="idl-code">any getQueryParameter(WebGLQuery? query, GLenum pname)
+        <p class="idl-code"><a name="GET_QUERY_PARAMETER">any getQueryParameter</a>(WebGLQuery? query, GLenum pname)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.3 &sect;6.1.7</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetQueryObjectuiv.xhtml" class="nonnormative">man page</a>)
@@ -2034,6 +2034,33 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
 
           <p>Returns null if any OpenGL errors are generated during the execution of this
           function.</p>
+
+          <p>In order to ensure consistent behavior across platforms, queries' results must only be made
+          available when the user agent's <a
+          href="http://www.whatwg.org/specs/web-apps/current-work/multipage/webappapis.html#event-loops">event
+          loop</a> is not executing a task. In other words:
+          <ul>
+            <li> A query's result must not be made available until the current frame has completed
+                 rendering. </li>
+            <li> Repeatedly fetching a query's QUERY_RESULT_AVAILABLE parameter in a loop, without
+                 returning control to the user agent, must always return the same value. </li>
+          </ul>
+          </p>
+
+          <div class="note">
+            The "current frame" may or may not change when control returns to the user agent's event
+            loop. For example, multiple <code>requestAnimationFrame</code>
+            or <code>setTimeout</code> callbacks may be executed in a single frame. It is guaranteed
+            that the frame will advance when the canvas is composed with the rest of the web page.
+          </div>
+
+          <div class="note rationale">
+            This change compared to the OpenGL ES 3.0 specification is enforced in order to prevent
+            applications from relying on being able to issue a query and fetch its result in the
+            same frame. In order to ensure best portability among devices and best performance among
+            implementations, applications must expect that queries' results will become available
+            asynchronously.
+          </div>
       </dd>
     </dl>
 
@@ -2955,6 +2982,17 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         If the sampler type is floating point and the internal texture format is
         normalized integer, it is considered as a match and the returned values are converted to
         floating point in the range [0, 1].
+    </p>
+
+    <h3>Queries' results must not be made available in the current frame</h3>
+
+    <p>
+        In OpenGL ES 3.0, if the appropriate primitives (e.g. <code>glFinish()</code> or another
+        synchronous API) are called, a query's result may be made available in the same frame it was
+        issued. In WebGL, in order to improve application portability, a query's result must never
+        be made available to the application in the same frame the query was issued. See the
+        specification of <a href="#GET_QUERY_PARAMETER">getQueryParameter</a> for discussion and
+        rationale.
     </p>
 
 <!-- ======================================================================================================= -->
