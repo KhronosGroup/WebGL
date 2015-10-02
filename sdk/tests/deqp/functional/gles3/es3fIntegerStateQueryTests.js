@@ -89,7 +89,7 @@ goog.scope(function() {
 		gl.shaderSource(shaderVert, transformFeedbackTestVertSource);
 		gl.compileShader(shaderVert);
 
-		/** @type {boolean} */ var compileStatus = /** @type {boolean} */ (gl.getShaderParameter(shaderVert, gl.COMPILE_STATUS));
+		var compileStatus = /** @type {boolean} */ (gl.getShaderParameter(shaderVert, gl.COMPILE_STATUS));
 		glsStateQuery.compare(compileStatus, true);
 
 		/** @type {WebGLShader} */ var shaderFrag = gl.createShader(gl.FRAGMENT_SHADER);
@@ -106,7 +106,7 @@ goog.scope(function() {
 		gl.transformFeedbackVaryings(shaderProg, transform_feedback_outputs, gl.INTERLEAVED_ATTRIBS);
 		gl.linkProgram(shaderProg);
 
-		/** @type {boolean} */ var linkStatus = /** @type {boolean} */ (gl.getProgramParameter(shaderProg, gl.LINK_STATUS));
+		var linkStatus = /** @type {boolean} */ (gl.getProgramParameter(shaderProg, gl.LINK_STATUS));
 		glsStateQuery.compare(linkStatus, true);
 
 		gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, this.m_transformfeedback);
@@ -234,7 +234,7 @@ goog.scope(function() {
 	es3fIntegerStateQueryTests.SamplesTestCase.prototype.constructor = es3fIntegerStateQueryTests.SamplesTestCase;
 
 	es3fIntegerStateQueryTests.SamplesTestCase.prototype.test = function() {
-		/** @type {number} */ var numSamples = /** @type {number} */ (gl.getParameter(gl.SAMPLES));
+		var numSamples = /** @type {number} */ (gl.getParameter(gl.SAMPLES));
 		// MSAA?
 		if (numSamples > 1) {
 			bufferedLogToConsole('Sample count is ' + numSamples);
@@ -365,7 +365,7 @@ goog.scope(function() {
 	es3fIntegerStateQueryTests.ViewPortTestCase.prototype.test = function() {
 		/** @type {deRandom.Random} */ var rnd = new deRandom.Random(0xabcdef);
 
-		/** @type {Array<number>} */ var maxViewportDimensions = /** @type {Array<number>} */ (gl.getParameter(gl.MAX_VIEWPORT_DIMS));
+		var maxViewportDimensions = /** @type {Array<number>} */ (gl.getParameter(gl.MAX_VIEWPORT_DIMS));
 
 		// verify initial value of first two values
 		this.check(glsStateQuery.verify(gl.VIEWPORT, new Int32Array([0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight])));
@@ -448,7 +448,7 @@ goog.scope(function() {
 	es3fIntegerStateQueryTests.StencilRefTestCase.prototype.test = function() {
 		this.check(glsStateQuery.verify(this.m_testTargetName, 0));
 
-		/** @type {number} */ var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
+		var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
 
 		for (var stencilBit = 0; stencilBit < stencilBits; ++stencilBit) {
 			/** @type {number} */ var ref = 1 << stencilBit;
@@ -483,7 +483,7 @@ goog.scope(function() {
 	es3fIntegerStateQueryTests.StencilRefSeparateTestCase.prototype.test = function() {
 		this.check(glsStateQuery.verify(this.m_testTargetName, 0));
 
-		/** @type {number} */ var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
+		var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
 
 		for (var stencilBit = 0; stencilBit < stencilBits; ++stencilBit) {
 			/** @type {number} */ var ref = 1 << stencilBit;
@@ -680,7 +680,7 @@ goog.scope(function() {
 	es3fIntegerStateQueryTests.StencilMaskTestCase.prototype.constructor = es3fIntegerStateQueryTests.StencilMaskTestCase;
 
 	es3fIntegerStateQueryTests.StencilMaskTestCase.prototype.test = function() {
-		/** @type {number} */ var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
+		var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
 
 		this.check(glsStateQuery.verify(this.m_testTargetName, stencilBits));
 
@@ -711,7 +711,7 @@ goog.scope(function() {
 	es3fIntegerStateQueryTests.StencilMaskSeparateTestCase.prototype.constructor = es3fIntegerStateQueryTests.StencilMaskSeparateTestCase;
 
 	es3fIntegerStateQueryTests.StencilMaskSeparateTestCase.prototype.test = function() {
-		/** @type {number} */ var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
+		var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
 
 		this.check(glsStateQuery.verify(this.m_testTargetName, stencilBits));
 
@@ -740,7 +740,7 @@ goog.scope(function() {
 	es3fIntegerStateQueryTests.StencilWriteMaskTestCase.prototype.constructor = es3fIntegerStateQueryTests.StencilWriteMaskTestCase;
 
 	es3fIntegerStateQueryTests.StencilWriteMaskTestCase.prototype.test = function() {
-		/** @type {number} */ var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
+		var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
 
 		for (var stencilBit = 0; stencilBit < stencilBits; ++stencilBit) {
 			/** @type {number} */ var mask = 1 << stencilBit;
@@ -769,7 +769,7 @@ goog.scope(function() {
 	es3fIntegerStateQueryTests.StencilWriteMaskSeparateTestCase.prototype.constructor = es3fIntegerStateQueryTests.StencilWriteMaskSeparateTestCase;
 
 	es3fIntegerStateQueryTests.StencilWriteMaskSeparateTestCase.prototype.test = function() {
-		/** @type {number} */ var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
+		var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
 
 		for (var stencilBit = 0; stencilBit < stencilBits; ++stencilBit) {
 			/** @type {number} */ var mask = 1 << stencilBit;
@@ -1042,7 +1042,7 @@ goog.scope(function() {
 	es3fIntegerStateQueryTests.ImplementationArrayTestCase.prototype.constructor = es3fIntegerStateQueryTests.ImplementationArrayTestCase;
 
 	es3fIntegerStateQueryTests.ImplementationArrayTestCase.prototype.test = function() {
-		/** @type {Array<number>} */ var queryResult = /** @type {Array<number>} */ (gl.getParameter(this.m_testTargetName));
+		var queryResult = /** @type {Array<number>} */ (gl.getParameter(this.m_testTargetName));
 		this.check(glsStateQuery.compare(queryResult.length, this.m_minValue));
 
 		/** @type {Array<number>} */ var textureFormats = [
@@ -1077,7 +1077,7 @@ goog.scope(function() {
 		/** @type {WebGLShader} */ var shaderVert = gl.createShader(gl.VERTEX_SHADER);
 		gl.shaderSource(shaderVert, testVertSource);
 		gl.compileShader(shaderVert);
-		/** @type {boolean} */ var compileStatus = /** @type {boolean} */ (gl.getShaderParameter(shaderVert, gl.COMPILE_STATUS));
+		var compileStatus = /** @type {boolean} */ (gl.getShaderParameter(shaderVert, gl.COMPILE_STATUS));
 		this.check(glsStateQuery.compare(compileStatus, true));
 
 		/** @type {WebGLShader} */ var shaderFrag = gl.createShader(gl.FRAGMENT_SHADER);
@@ -1090,7 +1090,7 @@ goog.scope(function() {
 		gl.attachShader(shaderProg, shaderVert);
 		gl.attachShader(shaderProg, shaderFrag);
 		gl.linkProgram(shaderProg);
-		/** @type {boolean} */ var linkStatus = /** @type {boolean} */ (gl.getProgramParameter(shaderProg, gl.LINK_STATUS));
+		var linkStatus = /** @type {boolean} */ (gl.getProgramParameter(shaderProg, gl.LINK_STATUS));
 		this.check(glsStateQuery.compare(linkStatus, true));
 
 		gl.useProgram(shaderProg);
@@ -1247,7 +1247,7 @@ goog.scope(function() {
 	es3fIntegerStateQueryTests.StencilClearValueTestCase.prototype.test = function() {
 		this.check(glsStateQuery.verify(gl.STENCIL_CLEAR_VALUE, 0));
 
-		/** @type {number} */ var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
+		var stencilBits = /** @type {number} */ (gl.getParameter(gl.STENCIL_BITS));
 
 		for (var stencilBit = 0; stencilBit < stencilBits; ++stencilBit) {
 			/** @type {number} */ var ref = 1 << stencilBit;
@@ -1274,7 +1274,7 @@ goog.scope(function() {
 	es3fIntegerStateQueryTests.ActiveTextureTestCase.prototype.test = function() {
 		this.check(glsStateQuery.verify(gl.ACTIVE_TEXTURE, gl.TEXTURE0));
 
-		/** @type {number} */ var textureUnits = /** @type {number} */ (gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS));
+		var textureUnits = /** @type {number} */ (gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS));
 
 		for (var ndx = 0; ndx < textureUnits; ++ndx) {
 			gl.activeTexture(gl.TEXTURE0 + ndx);
@@ -1658,9 +1658,9 @@ goog.scope(function() {
 	es3fIntegerStateQueryTests.MaxCombinedStageUniformComponentsCase.prototype.constructor = es3fIntegerStateQueryTests.MaxCombinedStageUniformComponentsCase;
 
 	es3fIntegerStateQueryTests.MaxCombinedStageUniformComponentsCase.prototype.test = function() {
-		/** @type {number} */ var uniformBlockSize = /** @type {number} */ (gl.getParameter(gl.MAX_UNIFORM_BLOCK_SIZE));
-		/** @type {number} */ var maxUniformBlocks = /** @type {number} */ (gl.getParameter(this.m_targetMaxUniformBlocksName));
-		/** @type {number} */ var maxUniformComponents = /** @type {number} */ (gl.getParameter(this.m_targetMaxUniformComponentsName));
+		var uniformBlockSize = /** @type {number} */ (gl.getParameter(gl.MAX_UNIFORM_BLOCK_SIZE));
+		var maxUniformBlocks = /** @type {number} */ (gl.getParameter(this.m_targetMaxUniformBlocksName));
+		var maxUniformComponents = /** @type {number} */ (gl.getParameter(this.m_targetMaxUniformComponentsName));
 
 		// MAX_stage_UNIFORM_BLOCKS * MAX_UNIFORM_BLOCK_SIZE / 4 + MAX_stage_UNIFORM_COMPONENTS
 		/** @type {number} */ var minCombinedUniformComponents = maxUniformBlocks * uniformBlockSize / 4 + maxUniformComponents;

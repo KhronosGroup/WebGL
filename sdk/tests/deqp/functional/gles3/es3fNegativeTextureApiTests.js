@@ -77,7 +77,7 @@ goog.scope(function() {
             bufferedLogToConsole('gl.INVALID_ENUM is generated if texture is not one of gl.TEXTUREi, where i ranges from 0 to (gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1).');
             gl.activeTexture(-1);
             this.expectError(gl.INVALID_ENUM);
-            /** @type {number} */ var numMaxTextureUnits = /** @type {number} */(gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS));
+            var numMaxTextureUnits = /** @type {number} */(gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS));
             gl.activeTexture(gl.TEXTURE0 + numMaxTextureUnits);
             this.expectError(gl.INVALID_ENUM);
 
@@ -347,8 +347,8 @@ goog.scope(function() {
             gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture[1]);
 
 
-            /** @type {number} */ var maxTextureSize = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE)) + 1;
-            /** @type {number} */ var maxCubemapSize = /** @type {number} */ (gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE)) + 1;
+            var maxTextureSize = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE)) + 1;
+            var maxCubemapSize = /** @type {number} */ (gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE)) + 1;
             bufferedLogToConsole('gl.INVALID_VALUE is generated if width or height is greater than gl.MAX_TEXTURE_SIZE.');
 
             bufferedLogToConsole('gl.TEXTURE_2D target');
@@ -743,8 +743,8 @@ goog.scope(function() {
             gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture[1]);
 
 
-            /** @type {number} */ var maxTextureSize = /** @type {number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)) + 1;
-            /** @type {number} */ var maxCubemapSize = /** @type {number} */(gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE)) + 1;
+            var maxTextureSize = /** @type {number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)) + 1;
+            var maxCubemapSize = /** @type {number} */(gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE)) + 1;
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if width or height is greater than gl.MAX_TEXTURE_SIZE.');
 
@@ -1409,8 +1409,8 @@ goog.scope(function() {
             gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture[1]);
 
 
-            /** @type{number} */ var maxTextureSize = /** @type{number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)) + 1;
-            /** @type{number} */ var maxCubemapSize = /** @type{number} */(gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE)) + 1;
+            var maxTextureSize = /** @type{number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)) + 1;
+            var maxCubemapSize = /** @type{number} */(gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE)) + 1;
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if width or height is greater than gl.MAX_TEXTURE_SIZE.');
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, maxTextureSize, 1, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
@@ -2187,8 +2187,8 @@ goog.scope(function() {
             gl.bindTexture (gl.TEXTURE_3D, texture[0]);
             gl.bindTexture (gl.TEXTURE_2D_ARRAY, texture[1]);
 
-            /** @type{number} */ var max3DTextureSize = /** @type{number} */ (gl.getParameter(gl.MAX_3D_TEXTURE_SIZE)) + 1;
-            /** @type{number} */ var maxTextureSize = /** @type{number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE)) + 1;
+            var max3DTextureSize = /** @type{number} */ (gl.getParameter(gl.MAX_3D_TEXTURE_SIZE)) + 1;
+            var maxTextureSize = /** @type{number} */ (gl.getParameter(gl.MAX_TEXTURE_SIZE)) + 1;
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if width, height or depth is greater than gl.MAX_3D_TEXTURE_SIZE.');
             gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA, max3DTextureSize, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
@@ -2600,7 +2600,7 @@ goog.scope(function() {
             texture = gl.createTexture();
             gl.bindTexture (gl.TEXTURE_2D_ARRAY, texture);
 
-            /** @type{number} */ var maxTextureSize = /** @type{number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)) + 1;
+            var maxTextureSize = /** @type{number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)) + 1;
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if width, height or depth is greater than gl.MAX_TEXTURE_SIZE.');
             gl.compressedTexImage3D(gl.TEXTURE_2D_ARRAY, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxTextureSize, 0, 0, 0, new Uint8Array(0));

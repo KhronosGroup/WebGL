@@ -578,7 +578,7 @@ goog.scope(function() {
         /** @type {boolean} */ var useIntOutputs = true;
         /** @type {glsShaderExecUtil.Symbol} */ var symbol;
         var outputs = [];
-        /** @type {number} */ var maxRenderbufferSize = /** @type {number} */ (gl.getParameter(gl.MAX_RENDERBUFFER_SIZE));
+        var maxRenderbufferSize = /** @type {number} */ (gl.getParameter(gl.MAX_RENDERBUFFER_SIZE));
         /** @type {number} */ var framebufferW = Math.min(maxRenderbufferSize, numValues);
         /** @type {number} */ var framebufferH = Math.ceil(numValues / framebufferW);
 

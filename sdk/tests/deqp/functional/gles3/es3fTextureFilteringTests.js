@@ -772,7 +772,6 @@ goog.scope(function() {
         for (var faceNdx = 0;
             faceNdx < Object.keys(tcuTexture.CubeFace).length;
             faceNdx++) {
-            /** @type {tcuTexture.CubeFace} */
             var face = /** @type {tcuTexture.CubeFace} */ (faceNdx);
             /** @type {tcuSurface.Surface} */
             var result = new tcuSurface.Surface(

@@ -246,14 +246,14 @@ goog.scope(function() {
 
             // TODO: check implementation below: return m_data.array.elementType->getScalarSize()*m_data.array.size;
             case gluVarType.Type.TYPE_ARRAY: {
-                /** @type {gluVarType.TypeArray} */ var m_data = /** @type {gluVarType.TypeArray} */(this.m_data);
+                var m_data = /** @type {gluVarType.TypeArray} */(this.m_data);
                 return m_data.elementType.getScalarSize() * m_data.size;
             }
 
             case gluVarType.Type.TYPE_STRUCT: {
                 var size = 0;
 
-                /** @type {gluVarType.StructType} */ var struct = /** @type {gluVarType.StructType} */ (this.m_data);
+                var struct = /** @type {gluVarType.StructType} */ (this.m_data);
 
                 // TODO: check loop conditions below
                 // for (gluVarType.StructType::ConstIterator iter = m_data.structPtr->begin(); iter != m_data.structPtr->end(); iter++)

@@ -426,7 +426,7 @@ goog.scope(function() {
 
 
 
-        /** @type {number} */ var numSamples = /** @type {number} */  (gl.getParameter(gl.SAMPLES));
+        var numSamples = /** @type {number} */  (gl.getParameter(gl.SAMPLES));
         if (!this.m_fboParams.useFbo && numSamples <= 1)
             throw new Error('No multisample buffers');
 

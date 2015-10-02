@@ -68,7 +68,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('vertex_attribf', 'Invalid glVertexAttrib{1234}f() usage', gl, function() {
             bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater than or equal to gl.MAX_VERTEX_ATTRIBS.');
-            /** @type{number} */ var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
+            var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
             gl.vertexAttrib1f(maxVertexAttribs, 0.0);
             this.expectError(gl.INVALID_VALUE);
             gl.vertexAttrib2f(maxVertexAttribs, 0.0, 0.0);
@@ -82,7 +82,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('vertex_attribfv', 'Invalid glVertexAttrib{1234}fv() usage', gl, function() {
             bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater than or equal to gl.MAX_VERTEX_ATTRIBS.');
-            /** @type{number} */ var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
+            var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
             /** @type{Array<number>} */ var v = [0.0];
             gl.vertexAttrib1fv(maxVertexAttribs, v);
             this.expectError(gl.INVALID_VALUE);
@@ -96,7 +96,7 @@ goog.scope(function() {
         }));
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('vertex_attribi4', 'Invalid glVertexAttribI4{i|ui}f() usage', gl, function() {
-            /** @type{number} */ var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
+            var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
             /** @type{number} */ var valInt = 0;
             /** @type{number} */ var valUint = 0;
 
@@ -109,7 +109,7 @@ goog.scope(function() {
         }));
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('vertex_attribi4v', 'Invalid glVertexAttribI4{i|ui}fv() usage', gl, function() {
-            /** @type{number} */ var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
+            var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
             /** @type{Array<number>} */ var valInt = [0];
             /** @type{Array<number>} */ var valUint = [0];
 
@@ -127,7 +127,7 @@ goog.scope(function() {
             this.expectError(gl.INVALID_ENUM);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater than or equal to gl.MAX_VERTEX_ATTRIBS.');
-            /** @type{number} */ var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
+            var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
             gl.vertexAttribPointer(maxVertexAttribs, 1, gl.BYTE, true, 0, 0);
             this.expectError(gl.INVALID_VALUE);
 
@@ -176,7 +176,7 @@ goog.scope(function() {
             this.expectError(gl.INVALID_ENUM);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater than or equal to gl.MAX_VERTEX_ATTRIBS.');
-            /** @type{number} */ var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
+            var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
             gl.vertexAttribIPointer(maxVertexAttribs, 1, gl.BYTE, 0, 0);
             this.expectError(gl.INVALID_VALUE);
 
@@ -207,7 +207,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('enable_vertex_attrib_array', 'Invalid gl.enableVertexAttribArray() usage', gl, function() {
             bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater than or equal to gl.MAX_VERTEX_ATTRIBS.');
-            /** @type{number} */ var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
+            var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
             gl.enableVertexAttribArray(maxVertexAttribs);
             this.expectError(gl.INVALID_VALUE);
 
@@ -215,7 +215,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('disable_vertex_attrib_array', 'Invalid gl.disableVertexAttribArray() usage', gl, function() {
             bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater than or equal to gl.MAX_VERTEX_ATTRIBS.');
-            /** @type{number} */ var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
+            var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
             gl.disableVertexAttribArray(maxVertexAttribs);
             this.expectError(gl.INVALID_VALUE);
 
@@ -223,7 +223,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('vertex_attrib_divisor', 'Invalid gl.vertexAttribDivisor() usage', gl, function() {
             bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater than or equal to gl.MAX_VERTEX_ATTRIBS.');
-            /** @type{number} */ var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
+            var maxVertexAttribs = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
             gl.vertexAttribDivisor(maxVertexAttribs, 0);
             this.expectError(gl.INVALID_VALUE);
 

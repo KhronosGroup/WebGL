@@ -249,7 +249,7 @@ var DE_ASSERT = function(x) {
          }
 
         // Render reference.
-        /** @type {number} */ var alphaBits = /** @type {number} */ (gl.getParameter(gl.ALPHA_BITS));
+        var alphaBits = /** @type {number} */ (gl.getParameter(gl.ALPHA_BITS));
         /** @type {sglrReferenceContext.ReferenceContextBuffers} */
         var buffers = new sglrReferenceContext.ReferenceContextBuffers(new tcuPixelFormat.PixelFormat(
                                                                             8,

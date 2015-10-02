@@ -2732,7 +2732,7 @@ goog.scope(function() {
 
         switch (attachment.type) {
             case sglrReferenceContext.AttachmentType.ATTACHMENTTYPE_TEXTURE: {
-                /** @type {sglrReferenceContext.TextureContainer} */ var container = /** @type {sglrReferenceContext.TextureContainer} */ (attachment.object);
+                var container = /** @type {sglrReferenceContext.TextureContainer} */ (attachment.object);
                 /** @type {?sglrReferenceContext.TextureType} */ var type = container.getType();
                 var texture = container.texture;
 
@@ -2759,7 +2759,7 @@ goog.scope(function() {
             }
 
             case sglrReferenceContext.AttachmentType.ATTACHMENTTYPE_RENDERBUFFER: {
-                /** @type {sglrReferenceContext.Renderbuffer} */ var rbo = /** @type {sglrReferenceContext.Renderbuffer} */ (attachment.object);
+                var rbo = /** @type {sglrReferenceContext.Renderbuffer} */ (attachment.object);
                 return rbo.getAccess();
             }
 
@@ -2814,7 +2814,7 @@ goog.scope(function() {
             /** @type {tcuTexture.TextureFormat} */ var attachmentFormat;
 
             if (attachment.type == sglrReferenceContext.AttachmentType.ATTACHMENTTYPE_TEXTURE) {
-                /** @type {sglrReferenceContext.TextureContainer} */ var container = /** @type {sglrReferenceContext.TextureContainer} */ (attachment.object);
+                var container = /** @type {sglrReferenceContext.TextureContainer} */ (attachment.object);
                 /** @type {tcuTexture.ConstPixelBufferAccess} */ var level;
 
                 if (attachment.texTarget == sglrReferenceContext.TexTarget.TEXTARGET_2D) {
@@ -4142,7 +4142,6 @@ goog.scope(function() {
             if (this.conditionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTextureCubeSize)), gl.INVALID_VALUE))
                 return;
 
-            /** @type {sglrReferenceContext.TextureCube} */
             var textureCube = /** @type {sglrReferenceContext.TextureCube} */ (unit.texCubeBinding.texture);
 
             var face = sglrReferenceContext.mapGLCubeFace(target);
@@ -4408,7 +4407,6 @@ goog.scope(function() {
             if (this.conditionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTextureCubeSize)), gl.INVALID_VALUE))
                 return;
 
-            /** @type {sglrReferenceContext.TextureCube} */
             var textureCube = /** @type {sglrReferenceContext.TextureCube} */ (unit.texCubeBinding.texture);
 
             var face = sglrReferenceContext.mapGLCubeFace(target);
@@ -4613,7 +4611,6 @@ goog.scope(function() {
         } else if (target == gl.TEXTURE_CUBE_MAP) {
             if (this.conditionalSetError(width != height || width > this.m_limits.maxTextureCubeSize, gl.INVALID_VALUE))
                 return;
-            /** @type {sglrReferenceContext.TextureCube} */
             var textureCube = /** @type {sglrReferenceContext.TextureCube} */ (unit.texCubeBinding.texture);
             if (this.conditionalSetError(textureCube.isImmutable(), gl.INVALID_OPERATION))
                 return;

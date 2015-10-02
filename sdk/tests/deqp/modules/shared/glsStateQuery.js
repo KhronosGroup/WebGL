@@ -344,7 +344,7 @@ glsStateQuery.verifyActiveUniformBlock = function(program, index, param, referen
 	 */
 
 glsStateQuery.verifyMask = function(param, reference, enableRef) {
-	/** @type {Array<number>} */ var intVector4 = /** @type {Array<number>} */ (gl.getParameter(param));
+	var intVector4 = /** @type {Array<number>} */ (gl.getParameter(param));
 
 	if ((enableRef[0] && (intVector4[0] != reference[0])) ||
 		(enableRef[1] && (intVector4[1] != reference[1])) ||

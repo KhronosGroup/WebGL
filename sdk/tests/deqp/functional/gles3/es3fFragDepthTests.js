@@ -117,7 +117,7 @@ goog.scope(function() {
 		/** @type {tcuSurface.Surface} */ var renderedFrame = new tcuSurface.Surface(viewportW, viewportH);
 		/** @type {tcuSurface.Surface} */ var referenceFrame = new tcuSurface.Surface(viewportW, viewportH);
 		/** @type {number} */ var constDepth = 0.1;
-		/** @type {number} */ var depthBits = /** @type {number} */ (gl.getParameter(gl.DEPTH_BITS));
+		var depthBits = /** @type {number} */ (gl.getParameter(gl.DEPTH_BITS));
 
 		/** @type {number} */ var xf;
 		/** @type {number} */ var d;
@@ -270,7 +270,7 @@ goog.scope(function() {
 		/** @type {tcuSurface.Surface} */ var referenceFrame = new tcuSurface.Surface(viewportW, viewportH);
 		/** @type {number} */ var numDepthSteps = 16;
 		/** @type {number} */ var depthStep = 1.0 / (numDepthSteps - 1);
-		/** @type {number} */ var depthBits = /** @type {number} */ (gl.getParameter(gl.DEPTH_BITS));
+		var depthBits = /** @type {number} */ (gl.getParameter(gl.DEPTH_BITS));
 
 		if (depthBits === 0)
 			throw new Error('Depth buffer is required');
