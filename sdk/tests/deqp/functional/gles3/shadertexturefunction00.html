@@ -16,9 +16,7 @@
 <canvas id="canvas" width="256" height="256"> </canvas>
 <script>
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', {preserveDrawingBuffer: true}, 2);
-
-gl.getError();
+var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', null, 2);
     try {
         functional.gles3.es3fShaderTextureFunctionTests.run(gl, [0, 1]);
     }
