@@ -2021,8 +2021,7 @@ goog.scope(function() {
             var levelSize = Math.max(1, this.m_size >> ndx);
             data.setSize(levelSize, levelSize);
 
-            for (/** @type {framework.common.tcuTexture.CubeFace} */
-        var face = /** @type {tcuTexture.CubeFace} */ (0);
+            for (var face = /** @type {tcuTexture.CubeFace} */ (0);
                 face < es3fTextureSpecificationTests.s_cubeMapFaces.length;
                 face++) {
                 var gMin = es3fTextureSpecificationTests.randomVector(

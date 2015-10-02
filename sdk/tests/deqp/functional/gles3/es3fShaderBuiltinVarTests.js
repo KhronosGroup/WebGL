@@ -91,7 +91,7 @@ goog.scope(function() {
      * @return {number} forcing number
      */
     es3fShaderBuiltinVarTests.getVectorsFromComps = function(pname) {
-        /** @type {number} */ var value = /** @type {number} */ (gl.getParameter(pname));
+        var value = /** @type {number} */ (gl.getParameter(pname));
         assertMsgOptions(value%4 === 0, 'Expected value to be divisible by 4.', false, true);
         return value;
     };

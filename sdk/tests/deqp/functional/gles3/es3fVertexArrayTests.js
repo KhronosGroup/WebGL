@@ -1000,7 +1000,6 @@ goog.scope(function() {
                 glsVertexArrayTests.GLValue.getMaxValue(glsVertexArrayTests.deArray.InputType.FLOAT)
             );
 
-            /** @type {glsVertexArrayTests.MultiVertexArrayTest.Spec} */
             var _spec = /** @type {glsVertexArrayTests.MultiVertexArrayTest.Spec} */ (deUtil.clone(spec)); //To assign spec by value;
             _spec.arrays.push(arraySpec);
             this.addStrideCases(_spec, depth - 1);
@@ -1092,7 +1091,7 @@ goog.scope(function() {
                 glsVertexArrayTests.GLValue.getMaxValue(inputTypes[inputTypeNdx])
             );
 
-            /** @type {glsVertexArrayTests.MultiVertexArrayTest.Spec} */ var _spec = /** @type {glsVertexArrayTests.MultiVertexArrayTest.Spec} */ (deUtil.clone(spec));
+            var _spec = /** @type {glsVertexArrayTests.MultiVertexArrayTest.Spec} */ (deUtil.clone(spec));
             _spec.arrays.push(arraySpec);
             this.addInputTypeCases(_spec, depth - 1);
         }

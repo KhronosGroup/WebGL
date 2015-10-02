@@ -127,7 +127,6 @@ goog.scope(function() {
 
 		// test TRANSFORM_FEEDBACK_BUFFER_BINDING
 		for (var ndx = 0; ndx < feedbackBuffers.length; ndx++) {
-			/** @type {WebGLBuffer} */
 			var boundBuffer = /** @type {WebGLBuffer} */ (gl.getIndexedParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING, ndx));
 			this.check(boundBuffer === feedbackBuffers[ndx], 'buffers do not match');
 		}
@@ -179,7 +178,6 @@ goog.scope(function() {
 		];
 
 		for (var ndx = 0; ndx < requirements.length; ndx++) {
-			/** @type {number} */
 			var state = /** @type {number} */ (gl.getIndexedParameter(requirements[ndx].pname, requirements[ndx].index));
 			this.check(state === requirements[ndx].value, 'got ' + state + '; expected ' + requirements[ndx].value);
 		}
@@ -338,7 +336,7 @@ goog.scope(function() {
 		];
 
 		for (var ndx = 0; ndx < requirements.length; ndx++) {
-			/** @type {number} */ var state = /** @type {number} */ (gl.getIndexedParameter(requirements[ndx].pname, requirements[ndx].index));
+			var state = /** @type {number} */ (gl.getIndexedParameter(requirements[ndx].pname, requirements[ndx].index));
 
 			this.check(state === requirements[ndx].value, 'got ' + state + '; expected ' + requirements[ndx].value);
 		}
@@ -352,7 +350,7 @@ goog.scope(function() {
 	 * @return {number}
 	 */
 	es3fIndexedStateQueryTests.UniformBufferBufferCase.prototype.getAlignment = function() {
-		/** @type {number} */ var state = /** @type {number} */ (gl.getParameter(gl.UNIFORM_BUFFER_OFFSET_ALIGNMENT));
+		var state = /** @type {number} */ (gl.getParameter(gl.UNIFORM_BUFFER_OFFSET_ALIGNMENT));
 
 		if (state <= 256)
 			return state;

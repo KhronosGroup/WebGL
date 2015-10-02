@@ -1266,9 +1266,9 @@ goog.scope(function() {
         /** @type {number} */ var vertexTexUnitsRequired = this.m_caseShaderType != es3fUniformApiTests.CaseShaderType.FRAGMENT ? numSamplerUniforms : 0;
         /** @type {number} */ var fragmentTexUnitsRequired = this.m_caseShaderType != es3fUniformApiTests.CaseShaderType.VERTEX ? numSamplerUniforms : 0;
         /** @type {number} */ var combinedTexUnitsRequired = vertexTexUnitsRequired + fragmentTexUnitsRequired;
-        /** @type {number} */ var vertexTexUnitsSupported = /** @type {number} */ (gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS));
-        /** @type {number} */ var fragmentTexUnitsSupported = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS));
-        /** @type {number} */ var combinedTexUnitsSupported = /** @type {number} */ (gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS));
+        var vertexTexUnitsSupported = /** @type {number} */ (gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS));
+        var fragmentTexUnitsSupported = /** @type {number} */ (gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS));
+        var combinedTexUnitsSupported = /** @type {number} */ (gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS));
 
         assertMsgOptions(
             numSamplerUniforms <= es3fUniformApiTests.MAX_NUM_SAMPLER_UNIFORMS,
@@ -2223,7 +2223,7 @@ goog.scope(function() {
                 if (assignByValue)
                    gl.uniform1i(location, uniform.finalValue.val.samplerV.unit);
                 else {
-                    /** @type {Array<number>} */ var unit = /** @type {Array<number>} */ (uniform.finalValue.val);
+                    var unit = /** @type {Array<number>} */ (uniform.finalValue.val);
                    gl.uniform1iv(location, unit);
                 }
             } else

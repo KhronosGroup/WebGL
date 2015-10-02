@@ -41,19 +41,19 @@ goog.scope(function() {
 
     es3fStringQueryTests.StringQueryTests.prototype.init = function() {
         this.addChild(new es3fApiCase.ApiCaseCallback('renderer', 'RENDERER', gl, function() {
-            /** @type {string} */ var string = /** @type {string} */ (gl.getParameter(gl.RENDERER));
+            var string = /** @type {string} */ (gl.getParameter(gl.RENDERER));
             this.check(string !== null,
                 'Got invalid string: ' + string);
         }));
 
         this.addChild(new es3fApiCase.ApiCaseCallback('vendor', 'VENDOR', gl, function() {
-            /** @type {string} */ var string = /** @type {string} */ (gl.getParameter(gl.VENDOR));
+            var string = /** @type {string} */ (gl.getParameter(gl.VENDOR));
             this.check(string !== null,
                 'Got invalid string: ' + string);
         }));
 
         this.addChild(new es3fApiCase.ApiCaseCallback('version', 'VERSION', gl, function() {
-            /** @type {string} */ var string = /** @type {string} */ (gl.getParameter(gl.VERSION));
+            var string = /** @type {string} */ (gl.getParameter(gl.VERSION));
             /** @type {string} */ var referenceString = 'WebGL 2.0';
 
             this.check(string !== null && string.indexOf(referenceString) === 0,
@@ -61,7 +61,7 @@ goog.scope(function() {
         }));
 
         this.addChild(new es3fApiCase.ApiCaseCallback('shading_language_version', 'SHADING_LANGUAGE_VERSION', gl, function() {
-            /** @type {string} */ var string = /** @type {string} */ (gl.getParameter(gl.SHADING_LANGUAGE_VERSION));
+            var string = /** @type {string} */ (gl.getParameter(gl.SHADING_LANGUAGE_VERSION));
             /** @type {string} */ var referenceString = 'WebGL GLSL ES 3.00';
 
             this.check(string !== null, 'Got invalid string');

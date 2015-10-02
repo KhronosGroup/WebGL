@@ -214,7 +214,7 @@ goog.scope(function() {
      * @return {tcuTexture.Sampler}
      */
     tcuTexVerifierUtil.getUnnormalizedCoordSampler = function(sampler) {
-        /** @type {tcuTexture.Sampler} */ var copy = /** @type {tcuTexture.Sampler} */ (deUtil.clone(sampler));
+        var copy = /** @type {tcuTexture.Sampler} */ (deUtil.clone(sampler));
         copy.normalizedCoords = false;
         return copy;
     };

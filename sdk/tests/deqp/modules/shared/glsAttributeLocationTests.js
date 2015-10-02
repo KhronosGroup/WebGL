@@ -297,7 +297,7 @@ goog.scope(function() {
     };
 
     glsAttributeLocationTests.logProgram = function(program) {
-        /**@type{boolean} */ var programLinkOk = /** @type {boolean} */ (gl.getProgramParameter(program, gl.LINK_STATUS));
+        var programLinkOk = /** @type {boolean} */ (gl.getProgramParameter(program, gl.LINK_STATUS));
         /**@type{string} */ var programInfoLog = gl.getProgramInfoLog(program);
         /**@type{string} */ var log = 'Program Link Info: ' + programInfoLog +
         'Link result: ' + (programLinkOk ? 'Ok' : 'Fail');
@@ -448,7 +448,7 @@ goog.scope(function() {
         for (var attribNdx = 0; attribNdx < attributes.length; attribNdx++) {
             /** @type {glsAttributeLocationTests.Attribute} */ var attrib = attributes[attribNdx];
             /** @type {number} */ var expectedLocation = (attrib.getLayoutLocation() != glsAttributeLocationTests.LocationEnum.UNDEF ? attrib.getLayoutLocation() : glsAttributeLocationTests.getBoundLocation(bindings, attrib.getName()));
-            /** @type {number} */ var location = /** @type {number} */ (gl.getAttribLocation(program, attrib.getName()));
+            var location = /** @type {number} */ (gl.getAttribLocation(program, attrib.getName()));
 
             if (attrib.getCondition().equals(glsAttributeLocationTests.NewCondWithEnum(glsAttributeLocationTests.ConstCond.NEVER)) && location != -1)
                 bufferedLogToConsole('Note: Inactive attribute with location.');
@@ -499,8 +499,8 @@ goog.scope(function() {
         gl.attachShader(program, vertexShader);
         gl.attachShader(program, fragmentShader);
 
-        /** @type {boolean} */ var vertexShaderCompileOk = /** @type {boolean} */ (gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS));
-        /** @type {boolean} */ var fragmentShaderCompileOk = /** @type {boolean} */ (gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS));
+        var vertexShaderCompileOk = /** @type {boolean} */ (gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS));
+        var fragmentShaderCompileOk = /** @type {boolean} */ (gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS));
 
         // log shaders
         glsAttributeLocationTests.logShaders(vertexShaderSource, gl.getShaderInfoLog(vertexShader),

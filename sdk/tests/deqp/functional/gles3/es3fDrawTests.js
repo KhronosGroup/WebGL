@@ -86,7 +86,7 @@ goog.scope(function() {
      * @param {?es3fDrawTests.TestIterationType} type
      */
     es3fDrawTests.addTestIterations = function(test, baseSpec, type) {
-        /** @type {glsDrawTests.DrawTestSpec} */ var spec = /** @type {glsDrawTests.DrawTestSpec} */ (deUtil.clone(baseSpec));
+        var spec = /** @type {glsDrawTests.DrawTestSpec} */ (deUtil.clone(baseSpec));
 
         //JS RefRast only draws quads, so changing the primitive counts, leave original commented
         if (type == es3fDrawTests.TestIterationType.DRAW_COUNT) {

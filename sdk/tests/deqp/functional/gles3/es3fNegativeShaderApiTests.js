@@ -344,7 +344,7 @@ goog.scope(function() {
             'bind_attrib_location', 'Invalid gl.bindAttribLocation() usage', gl,
             function() {
                 /** @type {WebGLProgram} */ var program = gl.createProgram();
-                /** @type {number} */ var maxIndex = /** @type {number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
+                var maxIndex = /** @type {number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
 
                 bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater than or equal to gl.MAX_VERTEX_ATTRIBS.');
                 gl.bindAttribLocation(program, maxIndex, 'test');

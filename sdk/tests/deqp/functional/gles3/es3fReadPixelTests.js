@@ -78,7 +78,7 @@ goog.scope(function() {
      * @param {tcuTexture.Texture2D} reference
      */
     es3fReadPixelTests.ReadPixelsTest.prototype.render = function(reference) {
-        /** @type {tcuTexture.ChannelType} */ var refType = /** @type {tcuTexture.ChannelType} */ (reference.getFormat().type);
+        var refType = /** @type {tcuTexture.ChannelType} */ (reference.getFormat().type);
         /** @type {number} */ var width = reference.getWidth();
         /** @type {number} */ var height = reference.getHeight();
         /** @return {tcuTexture.PixelBufferAccess} */ var level0 = reference.getLevel(0);
@@ -360,10 +360,10 @@ goog.scope(function() {
         /** @type {number} */ var greenThreshold;
         /** @type {number} */ var blueThreshold;
         /** @type {number} */ var alphaThreshold;
-        /** @type {number} */ var redBits = /** @type {number} */ (gl.getParameter(gl.RED_BITS));
-        /** @type {number} */ var blueBits = /** @type {number} */ (gl.getParameter(gl.BLUE_BITS));
-        /** @type {number} */ var greenBits = /** @type {number} */ (gl.getParameter(gl.GREEN_BITS));
-        /** @type {number} */ var alphaBits = /** @type {number} */ (gl.getParameter(gl.ALPHA_BITS));
+        var redBits = /** @type {number} */ (gl.getParameter(gl.RED_BITS));
+        var blueBits = /** @type {number} */ (gl.getParameter(gl.BLUE_BITS));
+        var greenBits = /** @type {number} */ (gl.getParameter(gl.GREEN_BITS));
+        var alphaBits = /** @type {number} */ (gl.getParameter(gl.ALPHA_BITS));
         /** @type {(tcuRGBA.RGBA|Array<number>)} */ var threshold;
         /** @type {tcuTexture.PixelBufferAccess} */ var result;
         // \note gl.RGBA_INTEGER uses always renderbuffers that are never multisampled. Otherwise default framebuffer is used.
