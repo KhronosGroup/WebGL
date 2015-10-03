@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2012 The Khronos Group Inc.
+** Copyright (c) 2015 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
@@ -33,7 +33,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function init()
     {
-        description('Verify texImage2D and texSubImage2D code paths taking ImageData (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
+        description('Verify texImage3D and texSubImage3D code paths taking ImageData (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
         gl = wtu.create3DContext("example");
 
@@ -79,11 +79,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         runTest();
     }
 
-    function runOneIteration(useTexSubImage2D, flipY, premultiplyAlpha, bindingTarget, program)
+    function runOneIteration(flipY, premultiplyAlpha, bindingTarget, program)
     {
-        debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
-              ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
-              ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP'));
+        debug('Testing ' + ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
+              ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Enable writes to the RGBA channels
         gl.colorMask(1, 1, 1, 0);
@@ -96,26 +95,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         // Set up pixel store parameters
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, premultiplyAlpha);
-        var targets = [gl.TEXTURE_2D];
-        if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-            targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X,
-                       gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
-                       gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
-                       gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
-                       gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
-                       gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
-        }
         // Upload the image into the texture
-        for (var tt = 0; tt < targets.length; ++tt) {
-            if (useTexSubImage2D) {
-                // Initialize the texture to black first
-                gl.texImage2D(targets[tt], 0, gl[internalFormat], imageData.width, imageData.height, 0,
-                              gl[pixelFormat], gl[pixelType], null);
-                gl.texSubImage2D(targets[tt], 0, 0, 0, gl[pixelFormat], gl[pixelType], imageData);
-            } else {
-                gl.texImage2D(targets[tt], 0, gl[internalFormat], gl[pixelFormat], gl[pixelType], imageData);
-            }
-        }
+        // Initialize the texture to black first
+        gl.texImage3D(bindingTarget, 0, gl[internalFormat], imageData.width, imageData.height, 1 /* depth */, 0,
+                      gl[pixelFormat], gl[pixelType], null);
+        gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, gl[pixelFormat], gl[pixelType], imageData);
 
         var width = gl.canvas.width;
         var halfWidth = Math.floor(width / 2);
@@ -130,35 +114,25 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var bl = greenColor;
         var br = premultiplyAlpha ? blackColor : greenColor;
 
-        var loc;
-        if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-            loc = gl.getUniformLocation(program, "face");
-        }
+        // Draw the triangles
+        wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
 
-        for (var tt = 0; tt < targets.length; ++tt) {
-            if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-                gl.uniform1i(loc, targets[tt]);
-            }
-            // Draw the triangles
-            wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
-
-            // Check the top pixel and bottom pixel and make sure they have
-            // the right color.
-            debug("Checking " + (flipY ? "top" : "bottom"));
-            wtu.checkCanvasRect(gl, 0, bottom, halfWidth, halfHeight, tl, "shouldBe " + tl);
-            wtu.checkCanvasRect(gl, halfWidth, bottom, width, halfHeight, tr, "shouldBe " + tr);
-            debug("Checking " + (flipY ? "bottom" : "top"));
-            wtu.checkCanvasRect(gl, 0, top, halfWidth, halfHeight, bl, "shouldBe " + bl);
-            wtu.checkCanvasRect(gl, halfWidth, top, width, halfHeight, br, "shouldBe " + br);
-        }
+        // Check the top pixel and bottom pixel and make sure they have
+        // the right color.
+        debug("Checking " + (flipY ? "top" : "bottom"));
+        wtu.checkCanvasRect(gl, 0, bottom, halfWidth, halfHeight, tl, "shouldBe " + tl);
+        wtu.checkCanvasRect(gl, halfWidth, bottom, width, halfHeight, tr, "shouldBe " + tr);
+        debug("Checking " + (flipY ? "bottom" : "top"));
+        wtu.checkCanvasRect(gl, 0, top, halfWidth, halfHeight, bl, "shouldBe " + bl);
+        wtu.checkCanvasRect(gl, halfWidth, top, width, halfHeight, br, "shouldBe " + br);
     }
 
     function runTest()
     {
-        var program = tiu.setupTexturedQuad(gl, internalFormat);
-        runTestOnBindingTarget(gl.TEXTURE_2D, program);
-        program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
-        runTestOnBindingTarget(gl.TEXTURE_CUBE_MAP, program);
+        var program = tiu.setupTexturedQuadWith3D(gl, internalFormat);
+        runTestOnBindingTarget(gl.TEXTURE_3D, program);
+        program = tiu.setupTexturedQuadWith2DArray(gl, internalFormat);
+        runTestOnBindingTarget(gl.TEXTURE_2D_ARRAY, program);
 
         wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
         finishTest();
@@ -166,18 +140,14 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function runTestOnBindingTarget(bindingTarget, program) {
         var cases = [
-            { sub: false, flipY: true, premultiplyAlpha: false },
-            { sub: false, flipY: false, premultiplyAlpha: false },
-            { sub: false, flipY: true, premultiplyAlpha: true },
-            { sub: false, flipY: false, premultiplyAlpha: true },
-            { sub: true, flipY: true, premultiplyAlpha: false },
-            { sub: true, flipY: false, premultiplyAlpha: false },
-            { sub: true, flipY: true, premultiplyAlpha: true },
-            { sub: true, flipY: false, premultiplyAlpha: true },
+            { flipY: true, premultiplyAlpha: false },
+            { flipY: false, premultiplyAlpha: false },
+            { flipY: true, premultiplyAlpha: true },
+            { flipY: false, premultiplyAlpha: true },
         ];
 
         for (var i in cases) {
-            runOneIteration(cases[i].sub, cases[i].flipY, cases[i].premultiplyAlpha,
+            runOneIteration(cases[i].flipY, cases[i].premultiplyAlpha,
                             bindingTarget, program);
         }
     }

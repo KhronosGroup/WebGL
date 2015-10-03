@@ -1,5 +1,5 @@
 /*
-** Copyright (c) 2014 The Khronos Group Inc.
+** Copyright (c) 2015 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
@@ -31,7 +31,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function init()
     {
-        description('Verify texImage2D and texSubImage2D code paths taking webgl canvas elements (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
+        description('Verify texImage3D and texSubImage3D code paths taking webgl canvas elements (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
         gl = wtu.create3DContext("example");
 
@@ -79,20 +79,14 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function setCanvasToMin(ctx, bindingTarget) {
-      if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-        // cube map texture must be square.
-        ctx.canvas.width = 2;
-      } else {
-        ctx.canvas.width = 1;
-      }
+      ctx.canvas.width = 1;
       ctx.canvas.height = 2;
       setCanvasToRedGreen(ctx);
     }
   
-    function runOneIteration(canvas, useTexSubImage2D, flipY, program, bindingTarget, opt_texture)
+    function runOneIteration(canvas, flipY, program, bindingTarget, opt_texture)
     {
-        debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') + ' with flipY=' +
-              flipY + ' bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP') +
+        debug('Testing ' + flipY + ' bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY') +
               ' canvas size: ' + canvas.width + 'x' + canvas.height + ' with red-green');
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         if (!opt_texture) {
@@ -102,6 +96,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             // Set up texture parameters
             gl.texParameteri(bindingTarget, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
             gl.texParameteri(bindingTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(bindingTarget, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE);
             gl.texParameteri(bindingTarget, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(bindingTarget, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         } else {
@@ -111,26 +106,12 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
         wtu.failIfGLError(gl, 'gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);');
-        var targets = [gl.TEXTURE_2D];
-        if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-            targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X,
-                       gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
-                       gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
-                       gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
-                       gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
-                       gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
-        }
+
         // Upload the image into the texture
-        for (var tt = 0; tt < targets.length; ++tt) {
-            // Initialize the texture to black first
-            if (useTexSubImage2D) {
-                gl.texImage2D(targets[tt], 0, gl[internalFormat], canvas.width, canvas.height, 0,
-                              gl[pixelFormat], gl[pixelType], null);
-                gl.texSubImage2D(targets[tt], 0, 0, 0, gl[pixelFormat], gl[pixelType], canvas);
-            } else {
-                gl.texImage2D(targets[tt], 0, gl[internalFormat], gl[pixelFormat], gl[pixelType], canvas);
-            }
-        }
+        // Initialize the texture to black first
+        gl.texImage3D(bindingTarget, 0, gl[internalFormat], canvas.width, canvas.height, 1 /* depth */, 0,
+                      gl[pixelFormat], gl[pixelType], null);
+        gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, gl[pixelFormat], gl[pixelType], canvas);
 
         var width = gl.canvas.width;
         var height = gl.canvas.height;
@@ -138,26 +119,14 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var top = flipY ? (height - halfHeight) : 0;
         var bottom = flipY ? 0 : (height - halfHeight);
 
-        var loc;
-        if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-            loc = gl.getUniformLocation(program, "face");
-        }
+        // Draw the triangles
+        wtu.clearAndDrawUnitQuad(gl, [0, 255, 0, 255]);
 
-        for (var tt = 0; tt < targets.length; ++tt) {
-            if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-                gl.uniform1i(loc, targets[tt]);
-            }
-            // Draw the triangles
-            wtu.clearAndDrawUnitQuad(gl, [0, 255, 0, 255]);
-
-            // Check the top and bottom halves and make sure they have the right color.
-            debug("Checking " + (flipY ? "top" : "bottom"));
-            wtu.checkCanvasRect(gl, 0, bottom, width, halfHeight, redColor,
-                    "shouldBe " + redColor);
-            debug("Checking " + (flipY ? "bottom" : "top"));
-            wtu.checkCanvasRect(gl, 0, top, width, halfHeight, greenColor,
-                    "shouldBe " + greenColor);
-        }
+        // Check the top and bottom halves and make sure they have the right color.
+        debug("Checking " + (flipY ? "top" : "bottom"));
+        wtu.checkCanvasRect(gl, 0, bottom, width, halfHeight, redColor, "shouldBe " + redColor);
+        debug("Checking " + (flipY ? "bottom" : "top"));
+        wtu.checkCanvasRect(gl, 0, top, width, halfHeight, greenColor, "shouldBe " + greenColor);
 
         if (false) {
           var ma = wtu.makeImageFromCanvas(canvas);
@@ -177,22 +146,18 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var canvas = ctx.canvas;
 
         var cases = [
-            { sub: false, flipY: true, init: setCanvasToMin },
-            { sub: false, flipY: false },
-            { sub: true,  flipY: true },
-            { sub: true,  flipY: false },
-            { sub: false, flipY: true, init: setCanvasTo257x257 },
-            { sub: false, flipY: false },
-            { sub: true,  flipY: true },
-            { sub: true,  flipY: false },
+            { flipY: true, init: setCanvasToMin },
+            { flipY: false },
+            { flipY: true, init: setCanvasTo257x257 },
+            { flipY: false },
         ];
 
         function runTexImageTest(bindingTarget) {
             var program;
-            if (bindingTarget == gl.TEXTURE_2D) {
-                program = tiu.setupTexturedQuad(gl, internalFormat);
+            if (bindingTarget == gl.TEXTURE_3D) {
+                program = tiu.setupTexturedQuadWith3D(gl, internalFormat);
             } else {
-                program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
+                program = tiu.setupTexturedQuadWith2DArray(gl, internalFormat);
             }
 
             return new Promise(function(resolve, reject) {
@@ -204,7 +169,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                     if (c.init) {
                       c.init(ctx, bindingTarget);
                     }
-                    texture = runOneIteration(canvas, c.sub, c.flipY, program, bindingTarget, texture);
+                    texture = runOneIteration(canvas, c.flipY, program, bindingTarget, texture);
                     // for the first 2 iterations always make a new texture.
                     if (count > 2) {
                       texture = undefined;
@@ -224,8 +189,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             });
         }
 
-        runTexImageTest(gl.TEXTURE_2D).then(function(val) {
-            runTexImageTest(gl.TEXTURE_CUBE_MAP).then(function(val) {
+        runTexImageTest(gl.TEXTURE_3D).then(function(val) {
+            runTexImageTest(gl.TEXTURE_2D_ARRAY).then(function(val) {
                 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
                 finishTest();
             });
