@@ -71,8 +71,8 @@ if (!gl) {
 
         runElapsedTimeTest();
         runTimeStampTest();
+        verifyQueryResultsNotAvailable();
 
-        gl.finish();
         window.requestAnimationFrame(checkQueryResults);
     }
 }
@@ -200,6 +200,28 @@ function runTimeStampTest() {
     gl.clear(gl.COLOR_BUFFER_BIT);
     ext.queryCounterEXT(timestamp_query2, ext.TIMESTAMP_EXT);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Timestamp queries should have no errors");
+}
+
+function verifyQueryResultsNotAvailable() {
+    debug("");
+    debug("Verifying queries' results don't become available too early");
+
+    // Verify as best as possible that the implementation doesn't
+    // allow a query's result to become available the same frame, by
+    // spin-looping for some time and ensuring that none of the
+    // queries' results become available.
+    var startTime = Date.now();
+    while (Date.now() - startTime < 2000) {
+        gl.finish();
+        if (ext.getQueryObjectEXT(elapsed_query, ext.QUERY_RESULT_AVAILABLE_EXT) ||
+            ext.getQueryObjectEXT(timestamp_query1, ext.QUERY_RESULT_AVAILABLE_EXT) ||
+            ext.getQueryObjectEXT(timestamp_query2, ext.QUERY_RESULT_AVAILABLE_EXT)) {
+            testFailed("One of the queries' results became available too early");
+            return;
+        }
+    }
+
+    testPassed("Queries' results didn't become available in a spin loop");
 }
 
 function checkQueryResults() {
