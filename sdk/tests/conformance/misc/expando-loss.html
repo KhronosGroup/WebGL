@@ -208,6 +208,8 @@ function testFrameBufferAttachments() {
     // Attach a renderbuffer to all attachment points.
     attachments.forEach(function(attachment) {
         var renderbuffer = gl.createRenderbuffer();
+        gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
+        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
         setTestExpandos(renderbuffer);
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, attachment.enum, gl.RENDERBUFFER, renderbuffer);
         assertMsg(renderbuffer === gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, attachment.enum, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME),
