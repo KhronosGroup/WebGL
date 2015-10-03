@@ -231,6 +231,7 @@ function runUniqueObjectTest()
 {
     debug("");
     debug("Testing that getExtension() returns the same object each time");
+    ext = null;
     gl.getExtension("EXT_blend_minmax").myProperty = 2;
     webglHarnessCollectGarbage();
     shouldBe('gl.getExtension("EXT_blend_minmax").myProperty', '2');

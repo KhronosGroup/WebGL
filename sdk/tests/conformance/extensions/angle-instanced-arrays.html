@@ -186,6 +186,7 @@ function setupCanvas() {
     gl.clearColor(0, 0, 0, 0);
 
     program = wtu.setupProgram(gl, ["outputVertexShader", "outputFragmentShader"], ['aPosition', 'aOffset', 'aColor'], [positionLoc, offsetLoc, colorLoc]);
+    ext = gl.getExtension("ANGLE_instanced_arrays");
 }
 
 function runOutputTests() {
@@ -426,6 +427,7 @@ function runUniqueObjectTest()
 {
     debug("");
     debug("Testing that getExtension() returns the same object each time");
+    ext = null;
     gl.getExtension("ANGLE_instanced_arrays").myProperty = 2;
     webglHarnessCollectGarbage();
     shouldBe('gl.getExtension("ANGLE_instanced_arrays").myProperty', '2');

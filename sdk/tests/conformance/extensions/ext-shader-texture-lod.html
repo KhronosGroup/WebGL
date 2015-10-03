@@ -280,6 +280,7 @@ function runUniqueObjectTest()
 {
     debug("");
     debug("Testing that getExtension() returns the same object each time");
+    ext = null;
     gl.getExtension("EXT_shader_texture_lod").myProperty = 2;
     webglHarnessCollectGarbage();
     shouldBe('gl.getExtension("EXT_shader_texture_lod").myProperty', '2');
