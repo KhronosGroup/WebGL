@@ -78,7 +78,7 @@
     <p><strong>Terminology note:</strong> throughout this specification
     <em>opaque black</em> refers to the RGBA value (0,0,0,1).</p>
 
-    <mirrors href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt"
+    <mirrors href="https://www.khronos.org/registry/gles/extensions/NV/NV_EGL_stream_consumer_external.txt"
              name="NV_EGL_stream_consumer_external">
       <!-- list the deviations here if there are any -->
 
@@ -121,7 +121,7 @@
 
       <p>For ease of reading, this specification briefly describes the new
       functions and enumerants of <a
-      href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>.
+      href="https://www.khronos.org/registry/gles/extensions/NV/NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>.
       Consult that extension for detailed documentation of their meaning and
       behavior. Changes to the language of that extension are given <a
       href="#differences">later</a> in this specification.</p>
@@ -269,7 +269,7 @@ interface WEBGL_dynamic_texture {
 
   <newtok>
     <p>The meaning and use of these tokens is exactly as described in <a
-    href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>.</p>
+    href="https://www.khronos.org/registry/gles/extensions/NV/NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>.</p>
 
     <function name="bindTexture" type="void"><param name="target"
     type="GLenum"/><param name="texture"
@@ -340,7 +340,7 @@ interface WEBGL_dynamic_texture {
     shaders which conform to The OpenGL ES Shading Language, Version 1.00 <a
     href="https://www.khronos.org/registry/webgl/specs/1.0.2/#refsGLES20GLSL">[GLES20GLSL]</a>,
     as extended by <a
-    href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>,
+    href="https://www.khronos.org/registry/gles/extensions/NV/NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>,
     and which do not exceed the minimum functionality mandated in Sections 4
     and 5 of Appendix A. In particular, a shader referencing state variables
     or commands that are available in other versions of GLSL (such as that
@@ -423,7 +423,7 @@ WDTNanoTime ustnow();</pre></li></p>
       previously used with a different target or binding a WebGLTexture
       previously used with TEXTURE_EXTERNAL_OES to a different target
       generates a <code>GL_INVALID_OPERATION</code> error as documented in <a
-      href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">GL_NV_EGL_stream_consumer_external.txt</a>.</p>
+      href="https://www.khronos.org/registry/gles/extensions/NV/NV_EGL_stream_consumer_external.txt">GL_NV_EGL_stream_consumer_external.txt</a>.</p>
     </blockquote>
 
     <p>In section 5.14.10 <cite>Uniforms and attributes</cite>, add the
@@ -734,7 +734,7 @@ WDTNanoTime ustnow();</pre></li></p>
     WebGL and OpenGL ES</cite>, add the following new sections. Note that
     differences are considered with respect to the OpenGL ES 2.0 specification
     as extended by <a
-    href="https://cvs.khronos.org/svn/repos/registry/trunk/public/gles/extensions/NV/GL_NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>
+    href="https://www.khronos.org/registry/gles/extensions/NV/NV_EGL_stream_consumer_external.txt">NV_EGL_stream_consumer_external</a>
     in the absence of <a
     href="http://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt">OES_EGL_image_external</a>.</p>
 
@@ -1314,6 +1314,11 @@ WDTNanoTime ustnow();</pre></li></p>
     <revision date="2014/10/29">
       <change>Used updated XSL to properly show interfaces add by this
       extension under New Types.</change>
+    </revision>
+
+    <revision date="2015/10/02">
+      <change>Updated link to GL_NV_EGL_stream_consumer_external
+      extension.</change>
     </revision>
   </history>
 </proposal>
