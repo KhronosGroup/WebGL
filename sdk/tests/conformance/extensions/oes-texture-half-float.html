@@ -336,6 +336,7 @@ function runUniqueObjectTest()
 {
     debug("");
     debug("Testing that getExtension() returns the same object each time");
+    ext = null;
     gl.getExtension("OES_texture_half_float").myProperty = 2;
     webglHarnessCollectGarbage();
     shouldBe('gl.getExtension("OES_texture_half_float").myProperty', '2');
