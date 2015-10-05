@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 29 September 2015</h2>
+    <h2 class="no-toc">Editor's Draft 05 October 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -3860,6 +3860,26 @@ extensions.
     This behavior is enforced across GLES implementations by dEQP tests, so shaders created on other
     platforms may rely on it. In addition, the ported dEQP tests in the WebGL conformance suite are
     only valid if this behavior is specified.
+</div>
+
+<h3><a name="EXTENSION_DIRECTIVE_LOCATION">GLSL ES #extension directive location</a></h3>
+
+<p>
+    The GLSL ES 1.00 <a href="#refsGLES20GLSL">[GLES20GLSL]</a> specification mandates that
+    <code>#extension</code> directives must occur before any non-preprocessor tokens unless the
+    extension specification says otherwise. In the WebGL API, <code>#extension</code> directives
+    may always occur after non-preprocessor tokens in GLSL ES 1.00 shaders. The scope of
+    <code>#extension</code> directives in GLSL ES 1.00 shaders is always the whole shader, and
+    <code>#extension</code> directives that occur later override those seen earlier for the whole
+    shader.
+</p>
+
+<div class="note rationale">
+    Letting extensions determine where the <code>#extension</code> directives should be placed has
+    resulted in a lot of room for interpretation in the spec. In practice GLES implementations have
+    not enforced the rule that's written in the GLSL ES spec, and neither have WebGL
+    implementations, so relaxing the rule is the only way to make the spec well-defined while being
+    compatible with existing content.
 </div>
 
 <!-- ======================================================================================================= -->

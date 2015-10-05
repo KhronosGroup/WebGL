@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 02 October 2015</h2>
+    <h2 class="no-toc">Editor's Draft 05 October 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2994,6 +2994,23 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         specification of <a href="#GET_QUERY_PARAMETER">getQueryParameter</a> for discussion and
         rationale.
     </p>
+
+    <h3>GLSL ES 3.00 #extension directive location</h3>
+
+    <p>
+        The WebGL 1.0 specification section <a href="../1.0/index.html#EXTENSION_DIRECTIVE_LOCATION">
+        GLSL ES #extension directive location</a> only applies to OpenGL ES Shading Language 1.00
+        shaders. It does not apply to shaders that are written in OpenGL ES Shading Language 3.00.
+        In shaders written in OpenGL ES Shading Language 3.00, <code>#extension</code> directives
+        must occur before non-preprocessor tokens regardless of what is written in the extension
+        specification.
+    </p>
+
+    <div class="note rationale">
+        This is done to make WebGL 2.0 to follow the written GLSL ES 3.00 specification more
+        closely. Enforcing the restriction more strictly than native GLES drivers makes the behavior
+        well-defined.
+    </div>
 
 <!-- ======================================================================================================= -->
 
