@@ -99,6 +99,79 @@ var TexImageUtils = (function() {
     '}'].join('\n');
 
   /**
+   * A fragment shader for a single 3D texture.
+   * @type {string}
+   */
+  // Note we always set the tex coordinate t to 0.
+  var simple3DTextureFragmentShaderES3 = [
+    '#version 300 es',
+    'precision mediump float;',
+    'uniform sampler3D tex;',
+    'in vec2 texCoord;',
+    'out vec4 fragData;',
+    'void main() {',
+    '    fragData = vec4(texture(tex, vec3(texCoord, 0.0)).rgb, 1.0);',
+    '}'].join('\n');
+
+  /**
+   * A fragment shader for a single 3D integer texture.
+   * @type {string}
+   */
+  // Note we always set the tex coordinate t to 0.
+  // Note we always output 1.0 for alpha because if the texture does not contain
+  // alpha channel, sampling returns 1; for RGBA textures, sampling returns [0,255].
+  var simple3DUintTextureFragmentShaderES3 = [
+    '#version 300 es',
+    'precision mediump float;',
+    'uniform sampler3D tex;',
+    'in vec2 texCoord;',
+    'out vec4 fragData;',
+    'void main() {',
+    '    vec4 data = vec4(texture(tex, vec3(texCoord, 0.0)).rgb, 1.0);',
+    '    fragData = vec4(float(data[0])/255.0,',
+    '                    float(data[1])/255.0,',
+    '                    float(data[2])/255.0,',
+    '                    1.0);',
+    '}'].join('\n');
+
+  /**
+   * A fragment shader for a single 2D_ARRAY texture.
+   * @type {string}
+   */
+  // Note we always use the first image in the array.
+  var simple2DArrayTextureFragmentShaderES3 = [
+    '#version 300 es',
+    'precision mediump float;',
+    'uniform sampler2DArray tex;',
+    'in vec2 texCoord;',
+    'out vec4 fragData;',
+    'void main() {',
+    '    fragData = vec4(texture(tex, texCoord, 0).rgb 1.0);',
+    '}'].join('\n');
+
+  /**
+   * A fragment shader for a single 2D_ARRAY unsigned integer texture.
+   * @type {string}
+   */
+  // Note we always use the first image in the array.
+  // Note we always output 1.0 for alpha because if the texture does not contain
+  // alpha channel, sampling returns 1; for RGBA textures, sampling returns [0,255].
+  var simple2DArrayUintTextureFragmentShaderES3 = [
+    '#version 300 es',
+    'precision mediump float;',
+    'uniform sampler2DArray tex;',
+    'in vec2 texCoord;',
+    'out vec4 fragData;',
+    'void main() {',
+    '    vec4 data = vec4(texture(tex, texCoord, 0).rgb 1.0);',
+    '    fragData = vec4(float(data[0])/255.0,',
+    '                    float(data[1])/255.0,',
+    '                    float(data[2])/255.0,',
+    '                    1.0);',
+    '}'].join('\n');
+
+
+  /**
    * Creates a simple texture vertex shader.
    * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
    * @return {!WebGLShader}
@@ -124,6 +197,42 @@ var TexImageUtils = (function() {
    */
   var setupSimpleCubeMapUintTextureFragmentShader = function(gl) {
     return WebGLTestUtils.loadShader(gl, simpleCubeMapUintTextureFragmentShaderES3, gl.FRAGMENT_SHADER);
+  };
+
+  /**
+   * Creates a simple 3D texture fragment shader.
+   * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+   * @return {!WebGLShader}
+   */
+  var setupSimple3DTextureFragmentShader = function(gl) {
+    return WebGLTestUtils.loadShader(gl, simple3DTextureFragmentShaderES3, gl.FRAGMENT_SHADER);
+  };
+
+  /**
+   * Creates a simple 3D integer texture fragment shader.
+   * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+   * @return {!WebGLShader}
+   */
+  var setupSimple3DUintTextureFragmentShader = function(gl) {
+    return WebGLTestUtils.loadShader(gl, simple3DUintTextureFragmentShaderES3, gl.FRAGMENT_SHADER);
+  };
+
+  /**
+   * Creates a simple 2D_ARRAY texture fragment shader.
+   * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+   * @return {!WebGLShader}
+   */
+  var setupSimple2DArrayTextureFragmentShader = function(gl) {
+    return WebGLTestUtils.loadShader(gl, simple2DArrayTextureFragmentShaderES3, gl.FRAGMENT_SHADER);
+  };
+
+  /**
+   * Creates a simple 2D_ARRAY integer texture fragment shader.
+   * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+   * @return {!WebGLShader}
+   */
+  var setupSimple2DArrayUintTextureFragmentShader = function(gl) {
+    return WebGLTestUtils.loadShader(gl, simple2DArrayUintTextureFragmentShaderES3, gl.FRAGMENT_SHADER);
   };
 
   /**
@@ -167,6 +276,122 @@ var TexImageUtils = (function() {
     opt_texcoordLocation = opt_texcoordLocation || 1;
     var vs = setupSimpleTextureVertexShader(gl);
     var fs = setupSimpleCubeMapUintTextureFragmentShader(gl);
+    if (!vs || !fs) {
+      return null;
+    }
+    var program = WebGLTestUtils.setupProgram(
+      gl,
+      [vs, fs],
+      ['vPosition', 'texCoord0'],
+      [opt_positionLocation, opt_texcoordLocation]);
+    if (!program) {
+      gl.deleteShader(fs);
+      gl.deleteShader(vs);
+    }
+    gl.useProgram(program);
+    return program;
+  };
+
+  /**
+   * Creates a simple 3D texture program.
+   * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+   * @param {number} opt_positionLocation The attrib location for position.
+   * @param {number} opt_texcoordLocation The attrib location for texture coords.
+   * @return {WebGLProgram}
+   */
+  var setupSimple3DTextureProgram = function(gl, opt_positionLocation, opt_texcoordLocation)
+  {
+    opt_positionLocation = opt_positionLocation || 0;
+    opt_texcoordLocation = opt_texcoordLocation || 1;
+    var vs = setupSimpleTextureVertexShader(gl),
+        fs = setupSimple3DTextureFragmentShader(gl);
+    if (!vs || !fs) {
+      return null;
+    }
+    var program = WebGLTestUtils.setupProgram(
+      gl,
+      [vs, fs],
+      ['vPosition', 'texCoord0'],
+      [opt_positionLocation, opt_texcoordLocation]);
+    if (!program) {
+      gl.deleteShader(fs);
+      gl.deleteShader(vs);
+    }
+    gl.useProgram(program);
+    return program;
+  };
+
+  /**
+   * Creates a simple 3D unsigned integer texture program.
+   * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+   * @param {number} opt_positionLocation The attrib location for position.
+   * @param {number} opt_texcoordLocation The attrib location for texture coords.
+   * @return {WebGLProgram}
+   */
+  var setupSimple3DUintTextureProgram = function(gl, opt_positionLocation, opt_texcoordLocation)
+  {
+    opt_positionLocation = opt_positionLocation || 0;
+    opt_texcoordLocation = opt_texcoordLocation || 1;
+    var vs = setupSimpleTextureVertexShader(gl),
+        fs = setupSimple3DUintTextureFragmentShader(gl);
+    if (!vs || !fs) {
+      return null;
+    }
+    var program = WebGLTestUtils.setupProgram(
+      gl,
+      [vs, fs],
+      ['vPosition', 'texCoord0'],
+      [opt_positionLocation, opt_texcoordLocation]);
+    if (!program) {
+      gl.deleteShader(fs);
+      gl.deleteShader(vs);
+    }
+    gl.useProgram(program);
+    return program;
+  };
+
+  /**
+   * Creates a simple 2D_ARRAY texture program.
+   * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+   * @param {number} opt_positionLocation The attrib location for position.
+   * @param {number} opt_texcoordLocation The attrib location for texture coords.
+   * @return {WebGLProgram}
+   */
+  var setupSimple2DArrayTextureProgram = function(gl, opt_positionLocation, opt_texcoordLocation)
+  {
+    opt_positionLocation = opt_positionLocation || 0;
+    opt_texcoordLocation = opt_texcoordLocation || 1;
+    var vs = setupSimpleTextureVertexShader(gl),
+        fs = setupSimple2DArrayTextureFragmentShader(gl);
+    if (!vs || !fs) {
+      return null;
+    }
+    var program = WebGLTestUtils.setupProgram(
+      gl,
+      [vs, fs],
+      ['vPosition', 'texCoord0'],
+      [opt_positionLocation, opt_texcoordLocation]);
+    if (!program) {
+      gl.deleteShader(fs);
+      gl.deleteShader(vs);
+    }
+    gl.useProgram(program);
+    return program;
+  };
+
+  /**
+   * Creates a simple 2D_ARRAY unsigned integer texture program.
+   * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+   * @param {number} opt_positionLocation The attrib location for position.
+   * @param {number} opt_texcoordLocation The attrib location for texture coords.
+   * @return {WebGLProgram}
+   */
+  var setupSimple2DArrayUintTextureProgram = function(gl, opt_positionLocation, opt_texcoordLocation)
+  {
+    opt_positionLocation = opt_positionLocation || 0;
+    opt_texcoordLocation = opt_texcoordLocation || 1;
+    var vs = setupSimpleTextureVertexShader(gl),
+        fs = setupSimple2DArrayUintTextureFragmentShader(gl);
     if (!vs || !fs) {
       return null;
     }
@@ -250,9 +475,47 @@ var TexImageUtils = (function() {
     return wtu.setupTexturedQuadWithCubeMap(gl);
   }
 
+  /**
+   * Createa a program and buffers for rendering a textured quad with a 3D texture
+   * for tex-image-and-sub-image tests. Handle selection of correct
+   * program to handle texture format.
+   * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+   * @param {string} internalFormat The internal format for texture to be tested.
+   */
+  var setupTexturedQuadWith3D = function(gl, internalFormat)
+  {
+    var program;
+    if (isUintFormat(internalFormat))
+      program = setupSimple3DUintTextureProgram(gl);
+    else
+      program = setupSimple3DTextureProgram(gl);
+    wtu.setupUnitQuad(gl);
+    return program;
+  };
+
+  /**
+   * Createa a program and buffers for rendering a textured quad with a 2D_ARRAY
+   * texture for tex-image-and-sub-image tests. Handle selection of correct
+   * program to handle texture format.
+   * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+   * @param {string} internalFormat The internal format for texture to be tested.
+   */
+  var setupTexturedQuadWith2DArray = function(gl, internalFormat)
+  {
+    var program;
+    if (isUintFormat(internalFormat))
+      program = setupSimple2DArrayUintTextureProgram(gl);
+    else
+      program = setupSimple2DArrayTextureProgram(gl);
+    wtu.setupUnitQuad(gl);
+    return program;
+  };
+
   return {
     setupTexturedQuad: setupTexturedQuad,
-    setupTexturedQuadWithCubeMap: setupTexturedQuadWithCubeMap
+    setupTexturedQuadWithCubeMap: setupTexturedQuadWithCubeMap,
+    setupTexturedQuadWith3D: setupTexturedQuadWith3D,
+    setupTexturedQuadWith2DArray: setupTexturedQuadWith2DArray
   };
 
 }());
