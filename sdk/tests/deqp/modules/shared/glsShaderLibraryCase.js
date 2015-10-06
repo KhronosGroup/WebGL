@@ -45,7 +45,8 @@ glsShaderLibraryCase.expectResult = {
     EXPECT_COMPILE_FAIL: 1,
     EXPECT_LINK_FAIL: 2,
     EXPECT_COMPILE_LINK_FAIL: 3,
-    EXPECT_VALIDATION_FAIL: 4
+    EXPECT_VALIDATION_FAIL: 4,
+    EXPECT_BUILD_SUCCESSFUL: 5
 };
 
 /**
@@ -887,6 +888,7 @@ glsShaderLibraryCase.execute = function() {
     switch (spec.expectResult) {
         case glsShaderLibraryCase.expectResult.EXPECT_PASS:
         case glsShaderLibraryCase.expectResult.EXPECT_VALIDATION_FAIL:
+        case glsShaderLibraryCase.expectResult.EXPECT_BUILD_SUCCESSFUL:
             if (!allCompilesOk)
                 failReason = 'expected shaders to compile and link properly, but failed to compile.';
             else if (!allLinksOk)
@@ -933,8 +935,13 @@ glsShaderLibraryCase.execute = function() {
     // Return if compile/link expected to fail.
     if (spec.expectResult === glsShaderLibraryCase.expectResult.EXPECT_COMPILE_FAIL ||
         spec.expectResult === glsShaderLibraryCase.expectResult.EXPECT_COMPILE_LINK_FAIL ||
-        spec.expectResult === glsShaderLibraryCase.expectResult.EXPECT_LINK_FAIL) {
-        testPassedOptions('Compile/link is expected to fail', true);
+        spec.expectResult === glsShaderLibraryCase.expectResult.EXPECT_LINK_FAIL ||
+        spec.expectResult === glsShaderLibraryCase.expectResult.EXPECT_BUILD_SUCCESSFUL) {
+        if (spec.expectResult === glsShaderLibraryCase.expectResult.EXPECT_BUILD_SUCCESSFUL) {
+            testPassedOptions('Compile/link is expected to succeed', true);
+        } else {
+            testPassedOptions('Compile/link is expected to fail', true);
+        }
         setCurrentTestName('');
         return (failReason === null);
     }

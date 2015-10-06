@@ -42,6 +42,7 @@ var gluShaderUtil = framework.opengl.gluShaderUtil;
         }
         catch (err) {
             bufferedLogToConsole(err);
+            testFailed('Failed to parse shader test case file');
             return false;
         }
         return true;
@@ -886,6 +887,7 @@ var gluShaderUtil = framework.opengl.gluShaderUtil;
                             case 'compile_fail': return glsShaderLibraryCase.expectResult.EXPECT_COMPILE_FAIL;
                             case 'link_fail': return glsShaderLibraryCase.expectResult.EXPECT_LINK_FAIL;
                             case 'compile_or_link_fail': return glsShaderLibraryCase.expectResult.EXPECT_COMPILE_LINK_FAIL;
+                            case 'build_successful': return glsShaderLibraryCase.expectResult.EXPECT_BUILD_SUCCESSFUL;
                             default:
                                 throw Error('invalid expected result value: ' + m_curTokenStr);
                         }
