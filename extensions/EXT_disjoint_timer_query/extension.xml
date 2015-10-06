@@ -146,11 +146,26 @@
       href="http://www.whatwg.org/specs/web-apps/current-work/multipage/webappapis.html#event-loops">event
       loop</a> is not executing a task. In other words:
       <ul>
-        <li> A query's result must not be made available until the current frame has completed
-             rendering. </li>
+        <li> A query's result must not be made available until control has returned to the user
+             agent's main loop. </li>
         <li> Repeatedly fetching a query's QUERY_RESULT_AVAILABLE_EXT parameter in a loop, without
              returning control to the user agent, must always return the same value. </li>
       </ul>
+
+      <div class="note">
+        A query's result may or may not be made available when control returns to the user
+        agent's event loop. It is not guaranteed that using a single setTimeout callback with a
+        delay of 0, or a single requestAnimationFrame callback, will allow sufficient time for
+        the WebGL implementation to supply the query's results.
+      </div>
+
+      <div class="note rationale">
+        This change compared to the original extension specification is enforced in order to prevent
+        applications from relying on being able to issue a query and fetch its result in the same
+        frame. In order to ensure best portability among devices and best performance among
+        implementations, applications must expect that queries' results will become available
+        asynchronously.
+      </div>
     </function>
   </newfun>
   
@@ -254,6 +269,9 @@
     </revision>
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
+    </revision>
+    <revision date="2015/10/05">
+      <change>Revised language regarding queries' availability based on feedback from Jeff Gilbert.</change>
     </revision>
   </history>
 </draft>
