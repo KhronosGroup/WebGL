@@ -1363,8 +1363,7 @@ var checkAreaInAndOut = function(gl, x, y, width, height, innerColor, outerColor
  * @param {number} target The buffer target to bind to.
  * @param {!Array.<number>} expected The values expected.
  * @param {string} opt_msg Optional. Message to associate with success. Eg ("should be red").
- * @param {number} opt_errorRange Optional. Acceptable error in
- *        color checking. 0 by default.
+ * @param {number} opt_errorRange Optional. Acceptable error in value checking. 0.001 by default.
  */
 var checkFloatBuffer = function(gl, target, expected, opt_msg, opt_errorRange) {
   if (opt_msg === undefined)
