@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 05 October 2015</h2>
+    <h2 class="no-toc">Editor's Draft 12 October 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -3880,6 +3880,20 @@ extensions.
     not enforced the rule that's written in the GLSL ES spec, and neither have WebGL
     implementations, so relaxing the rule is the only way to make the spec well-defined while being
     compatible with existing content.
+</div>
+
+<h3>Completeness of Cube Map Framebuffer Attachments</h3>
+
+<p>
+    In the WebGL API, a face of a cube map that is not cube complete is not framebuffer attachment
+    complete. Querying framebuffer status when a face of an incomplete cube map is attached must
+    return <code>FRAMEBUFFER_INCOMPLETE_ATTACHMENT</code>.
+</p>
+
+<div class="note rationale">
+    APIs that WebGL is implemented on, including recent OpenGL core versions and OpenGL ES 3.0 and
+    newer have a requirement that cube map faces used as a framebuffer attachment must be part of
+    a cube complete cube map.
 </div>
 
 <!-- ======================================================================================================= -->
