@@ -783,6 +783,51 @@ if (contextVersion > 1) {
         function(target) {
             return gl.getIndexedParameter(target, 0);
     });
+
+    debug("");
+    debug("Test getQueryParameter");
+    var buffer = gl.createBuffer();
+    gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, buffer);
+    gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 64, gl.DYNAMIC_DRAW);
+    var query = gl.createQuery();
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, buffer);
+    var requestAnimationFrame = window.requestAnimationFrame ||
+	                        window.mozRequestAnimationFrame ||
+			        window.webkitRequestAnimationFrame ||
+			        window.msRequestAnimationFrame;
+    var cancelRAF = window.cancelAnimationFrame ||
+	            window.mozCancelAnimationFrame ||
+		    window.webkitCancelAnimationFrame ||
+		    window.msCancelAnimationFrame;
+    var requestId;
+    function stopAnimation() {
+        cancelRAF(requestId);
+    }
+    function animate() {
+        gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
+        gl.beginTransformFeedback(gl.TRIANGLES);
+        gl.drawArrays(gl.POINTS, 0, 3);
+        gl.endTransformFeedback();
+        gl.endQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+        if(gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE) == true)
+           stopAnimation();
+        else
+           requestId = requestAnimationFrame(animate);
+    }
+    animate();
+    shouldBe('gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE)', 'true');
+    shouldBe('gl.getQueryParameter(query, gl.QUERY_RESULT)', '3');
+    var validArrayForPname = new Array(
+	gl.QUERY_RESULT,
+	gl.QUERY_RESULT_AVAILABLE
+    );
+    testInvalidArgument(
+	"getQueryParameter",
+	"pname",
+	validArrayForPname,
+	function(pname) {
+	    return gl.getQueryParameter(query, pname);
+    });
 }
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
