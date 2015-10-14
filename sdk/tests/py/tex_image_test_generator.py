@@ -119,13 +119,13 @@ _FORMATS_TYPES_WEBGL2 = [
   {'internal_format': 'RGBA8UI', 'format': 'RGBA_INTEGER', 'type': 'UNSIGNED_BYTE' },
 ]
     
-def GenerateFilename(element_type, internal_format, format, type):
+def GenerateFilename(dimension, element_type, internal_format, format, type):
   """Generate test filename."""
-  filename = ("tex-image-and-sub-image-2d-with-" + element_type + "-" +
+  filename = ("tex-image-and-sub-image-" + dimension + "d-with-" + element_type + "-" +
               internal_format + "-" + format + "-" + type + ".html")
   return filename.lower()
     
-def WriteTest(filename, element_type, internal_format, format, type):
+def WriteTest(filename, dimension, element_type, internal_format, format, type):
   """Write one test."""
   file = open(filename, "wb")
   file.write(_LICENSE)
@@ -139,7 +139,7 @@ def WriteTest(filename, element_type, internal_format, format, type):
 <script src="../../../js/js-test-pre.js"></script>
 <script src="../../../js/webgl-test-utils.js"></script>
 <script src="../../../js/tests/tex-image-and-sub-image-utils.js"></script>
-<script src="../../../js/tests/tex-image-and-sub-image-2d-with-%(element_type)s.js"></script>
+<script src="../../../js/tests/tex-image-and-sub-image-%(dimension)sd-with-%(element_type)s.js"></script>
 </head>
 <body>"""
   if element_type == 'image-data':
@@ -162,6 +162,7 @@ generateTest("%(internal_format)s", "%(format)s", "%(type)s", testPrologue, "../
 </html>
 """
   file.write(code % {
+    'dimension': dimension,
     'element_type': element_type,
     'internal_format': internal_format,
     'format': format,
@@ -169,26 +170,31 @@ generateTest("%(internal_format)s", "%(format)s", "%(type)s", testPrologue, "../
   })
   file.close()
 
-def GenerateTests(test_dir, test_cases):
+def GenerateTests(test_dir, test_cases, dimension):
   test_dir_template = test_dir + '/%s'
   for element_type in _ELEMENT_TYPES:
     os.chdir(test_dir_template % element_type.replace('-', '_'))
-    index_file = open("00_test_list.txt", "wb")
+    if dimension == '3':
+      # Assume we write 2D tests first.
+      index_file = open("00_test_list.txt", "ab")
+    else:
+      index_file = open("00_test_list.txt", "wb")
     for tex_info in test_cases:
       internal_format = tex_info['internal_format']
       format = tex_info['format']
       type = tex_info['type']
-      filename = GenerateFilename(element_type, internal_format, format, type)
+      filename = GenerateFilename(dimension, element_type, internal_format, format, type)
       index_file.write(filename)
       index_file.write('\n')
-      WriteTest(filename, element_type, internal_format, format, type)
+      WriteTest(filename, dimension, element_type, internal_format, format, type)
     index_file.close();
 
 def main(argv):
   """This is the main function."""
   py_dir = os.path.dirname(os.path.realpath(__file__))
-  GenerateTests(os.path.realpath(py_dir + '/../conformance/textures'), _FORMATS_TYPES_WEBGL1)
-  GenerateTests(os.path.realpath(py_dir + '/../conformance2/textures'), _FORMATS_TYPES_WEBGL2)
+  GenerateTests(os.path.realpath(py_dir + '/../conformance/textures'), _FORMATS_TYPES_WEBGL1, '2')
+  GenerateTests(os.path.realpath(py_dir + '/../conformance2/textures'), _FORMATS_TYPES_WEBGL2, '2')
+  GenerateTests(os.path.realpath(py_dir + '/../conformance2/textures'), _FORMATS_TYPES_WEBGL2, '3')
 
 if __name__ == '__main__':
   sys.exit(main(sys.argv[1:]))
