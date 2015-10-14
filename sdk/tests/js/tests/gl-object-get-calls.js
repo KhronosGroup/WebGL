@@ -783,6 +783,27 @@ if (contextVersion > 1) {
         function(target) {
             return gl.getIndexedParameter(target, 0);
     });
+
+    debug("");
+    debug("Test getQueryParameter");
+    var query = gl.createQuery();
+    gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
+    gl.endQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+    shouldBe('gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE)', 'false');
+    // Queries' results are tested elsewhere in the conformance suite. It's complicated
+    // to wait for this query's result to become available and verify it.
+    var validArrayForPname = new Array(
+	gl.QUERY_RESULT,
+	gl.QUERY_RESULT_AVAILABLE
+    );
+    testInvalidArgument(
+	"getQueryParameter",
+	"pname",
+	validArrayForPname,
+	function(pname) {
+	    return gl.getQueryParameter(query, pname);
+	}
+    );
 }
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
