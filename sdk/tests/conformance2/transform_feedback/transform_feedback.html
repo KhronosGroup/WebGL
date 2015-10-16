@@ -68,6 +68,8 @@ var tf = null;
 var tf1 = null;
 var program = null;
 var activeInfo = null;
+var query = null;
+var numberOfQueryCompletionAttempts = 0;
 
 if (!gl) {
     testFailed("WebGL context does not exist");
@@ -77,8 +79,6 @@ if (!gl) {
     runBindingTest();
     runObjectTest();
     runFeedbackTest();
-    runVaryingsTest();
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function runBindingTest() {
@@ -163,6 +163,9 @@ function runFeedbackTest() {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "linking transform feedback shader should not set an error");
     shouldBeNonNull("program");
 
+    // Create a query object to check the number of primitives written
+    query = gl.createQuery();
+
     // Draw the the transform feedback buffers
     tf = gl.createTransformFeedback();
 
@@ -176,9 +179,11 @@ function runFeedbackTest() {
 
     gl.enable(gl.RASTERIZER_DISCARD);
     gl.beginTransformFeedback(gl.POINTS);
+    gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
 
     gl.drawArrays(gl.POINTS, 0, 3);
 
+    gl.endQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
     gl.endTransformFeedback();
     gl.disable(gl.RASTERIZER_DISCARD);
 
@@ -204,6 +209,50 @@ function runFeedbackTest() {
 
     tf = null;
     program = null;
+
+    // Check the result of the query. It should not be available yet.
+    // This constant was chosen arbitrarily to take around 1 second on
+    // one WebGL implementation on one desktop operating system. (Busy-
+    // loops based on calling Date.now() have been found unreliable.)
+    var numEarlyTests = 50000;
+    while (--numEarlyTests > 0) {
+        gl.finish();
+        if (gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE)) {
+            testFailed("Query's result became available too early");
+            finishTest();
+            return;
+        }
+    }
+    testPassed("TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN query's result didn't become available too early");
+
+    // Complete the rest of the test asynchronously.
+    requestAnimationFrame(completeTransformFeedbackQueryTest);
+}
+
+function completeTransformFeedbackQueryTest() {
+    debug("");
+    debug("Testing TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN query");
+
+    ++numberOfQueryCompletionAttempts;
+    if (numberOfQueryCompletionAttempts > 500) {
+        testFailed("Query didn't become available in a reasonable time");
+        finishTest();
+        return;
+    }
+
+    if (!gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE)) {
+        requestAnimationFrame(completeTransformFeedbackQueryTest);
+        return;
+    }
+
+    var result = gl.getQueryParameter(query, gl.QUERY_RESULT);
+    if (result == 3) {
+        testPassed("TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN query returned a correct result (3)");
+    } else {
+        testFailed("TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN query returned an incorrect result " + result + " (expected 3)");
+    }
+
+    runVaryingsTest();
 }
 
 function runVaryingsTest() {
@@ -236,12 +285,13 @@ function runVaryingsTest() {
     activeInfo = gl.getTransformFeedbackVarying(program, 2);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Should be GL_INVALID_VALUE when calling getTransformFeedbackVarying with an invalid index.");
     shouldBeNull("activeInfo");
+
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+    finishTest();
 }
 
 debug("");
-var successfullyParsed = true;
 </script>
-<script src="../../js/js-test-post.js"></script>
 
 </body>
 </html>

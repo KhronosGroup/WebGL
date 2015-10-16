@@ -648,10 +648,10 @@ goog.scope(function() {
     es3fTransformFeedbackTests.getTransformFeedbackPrimitiveCount = function(primitiveType, numElements) {
 
     switch (primitiveType) {
-        case gluDrawUtil.primitiveType.TRIANGLES: return numElements - numElements / 3;
+        case gluDrawUtil.primitiveType.TRIANGLES: return Math.floor(numElements / 3);
         case gluDrawUtil.primitiveType.TRIANGLE_STRIP: return Math.max(0, numElements - 2);
         case gluDrawUtil.primitiveType.TRIANGLE_FAN: return Math.max(0, numElements - 2);
-        case gluDrawUtil.primitiveType.LINES: return numElements - numElements / 2;
+        case gluDrawUtil.primitiveType.LINES: return Math.floor(numElements / 2);
         case gluDrawUtil.primitiveType.LINE_STRIP: return Math.max(0, numElements - 1);
         case gluDrawUtil.primitiveType.LINE_LOOP: return numElements > 1 ? numElements : 0;
         case gluDrawUtil.primitiveType.POINTS: return numElements;
@@ -1257,8 +1257,10 @@ goog.scope(function() {
 
         bufferedLogToConsole('gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN = ' + numPrimitives);
 
-        if (numPrimitives != expectedCount)
+        if (numPrimitives != expectedCount) {
+            queryOk = false;
             bufferedLogToConsole('ERROR: Expected ' + expectedCount + ' primitives!');
+        }
 
         // Clear transform feedback state.
         gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
