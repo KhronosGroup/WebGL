@@ -3143,60 +3143,6 @@ group reserved_keywords "Usage of reserved keywords as identifiers."
 end # reserved_keywords
 group invalid_identifiers "Usage of invalid identifiers."
 
-	case two_underscores_begin
-		expect compile_fail
-		values {}
-		version 300 es
-
-		both ""
-			#version 300 es
-			precision mediump float;
-			${DECLARATIONS}
-
-			void main()
-			{
-				${SETUP}
-				float __invalid = 1.0;
-				${OUTPUT}
-			}
-		""
-	end
-	case two_underscores_middle
-		expect compile_fail
-		values {}
-		version 300 es
-
-		both ""
-			#version 300 es
-			precision mediump float;
-			${DECLARATIONS}
-
-			void main()
-			{
-				${SETUP}
-				float in__valid = 1.0;
-				${OUTPUT}
-			}
-		""
-	end
-	case two_underscores_end
-		expect compile_fail
-		values {}
-		version 300 es
-
-		both ""
-			#version 300 es
-			precision mediump float;
-			${DECLARATIONS}
-
-			void main()
-			{
-				${SETUP}
-				float invalid__ = 1.0;
-				${OUTPUT}
-			}
-		""
-	end
 	case gl_begin
 		expect compile_fail
 		values {}
