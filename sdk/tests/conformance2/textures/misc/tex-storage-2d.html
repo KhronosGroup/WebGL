@@ -223,6 +223,9 @@ function runTexStorage2DTest()
             // defined texture images with null data, which should sample as RGBA 0,0,0,0.
             gl.texParameteri(target, gl.TEXTURE_MIN_FILTER,
                              testcase.mipmap ? gl.NEAREST_MIPMAP_NEAREST : gl.NEAREST);
+            if (testcase.type == gl.FLOAT) {
+                gl.texParameteri(target, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            }
 
             // Now upload some red texture data
             var s = texsize;
