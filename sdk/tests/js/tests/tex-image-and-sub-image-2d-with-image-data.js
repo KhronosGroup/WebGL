@@ -146,10 +146,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             // the right color.
             debug("Checking " + (flipY ? "top" : "bottom"));
             wtu.checkCanvasRect(gl, 0, bottom, halfWidth, halfHeight, tl, "shouldBe " + tl);
-            wtu.checkCanvasRect(gl, halfWidth, bottom, width, halfHeight, tr, "shouldBe " + tr);
+            wtu.checkCanvasRect(gl, halfWidth, bottom, halfWidth, halfHeight, tr, "shouldBe " + tr);
             debug("Checking " + (flipY ? "bottom" : "top"));
             wtu.checkCanvasRect(gl, 0, top, halfWidth, halfHeight, bl, "shouldBe " + bl);
-            wtu.checkCanvasRect(gl, halfWidth, top, width, halfHeight, br, "shouldBe " + br);
+            wtu.checkCanvasRect(gl, halfWidth, top, halfWidth, halfHeight, br, "shouldBe " + br);
         }
     }
 
