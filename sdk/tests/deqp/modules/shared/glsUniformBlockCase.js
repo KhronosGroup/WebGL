@@ -2070,7 +2070,7 @@ glsUniformBlockCase.copyUniformData = function(dstLayout, dstBlockPointers, srcL
         }
     }
 
-    /** @type {boolean} */ var renderOk = this.render(program.getProgram());
+    /** @type {boolean} */ var renderOk = this.render(program);
     if (!renderOk)
         testFailedOptions('Image compare failed', false);
 
@@ -2409,7 +2409,7 @@ glsUniformBlockCase.UniformBlockCase.prototype.render = function(program) {
     gl.viewport(viewportX, viewportY, viewportW, viewportH);
 
     // Access
-    var posLoc = gl.getAttribLocation(program.program.program, 'a_position');
+    var posLoc = gl.getAttribLocation(program.getProgram(), 'a_position');
     var posArray = [new gluDrawUtil.VertexArrayBinding(gl.FLOAT, posLoc, 4, 4, position)];
     gluDrawUtil.draw(gl, program.getProgram(), posArray, gluDrawUtil.triangles(indices));
 
