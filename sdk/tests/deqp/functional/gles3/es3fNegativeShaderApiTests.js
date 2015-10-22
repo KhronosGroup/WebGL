@@ -84,7 +84,7 @@ goog.scope(function() {
     * @const
     */
     var uniformBlockVertSource = '#version 300 es\n' +
-    'layout(shared) uniform Block { lowp float var; };\n' +
+    'layout(std140) uniform Block { lowp float var; };\n' +
     'void main (void)\n' +
     '{\n' +
     ' gl_Position = vec4(var);\n' +

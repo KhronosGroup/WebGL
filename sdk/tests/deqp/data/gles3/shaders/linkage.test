@@ -3641,43 +3641,6 @@ group uniform "Uniform linkage"
 			""
 		end
 
-		case layout_qualifier_mismatch_2
-			version 300 es
-			expect link_fail
-			vertex ""
-				#version 300 es
-
-				layout(shared) uniform Block
-				{
-					highp vec4 val;
-				};
-
-				${VERTEX_DECLARATIONS}
-				out mediump float res;
-				void main()
-				{
-					res = val.x;
-					${VERTEX_OUTPUT}
-				}
-			""
-			fragment ""
-				#version 300 es
-
-				layout(packed) uniform Block
-				{
-					highp vec4 val;
-				};
-
-				precision mediump float;
-				${FRAGMENT_DECLARATIONS}
-				in mediump float res;
-				void main()
-				{
-					dEQP_FragColor = vec4(val);
-				}
-			""
-		end
-
 		case layout_qualifier_mismatch_3
 			version 300 es
 			expect link_fail
