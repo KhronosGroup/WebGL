@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 05 October 2015</h2>
+    <h2 class="no-toc">Editor's Draft 22 October 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -136,7 +136,7 @@
 
     <p>
       The remaining sections of this document are intended to be read in conjunction
-      with the OpenGL ES 3.0 specification (3.0.3 at the time of this writing, available
+      with the OpenGL ES 3.0 specification (3.0.4 at the time of this writing, available
       from the <a href="http://www.khronos.org/registry/gles/">Khronos OpenGL ES API Registry</a>).
       Unless otherwise specified, the behavior of each method is defined by the
       OpenGL ES 3.0 specification.  This specification may diverge from OpenGL ES 3.0
@@ -264,22 +264,22 @@ typedef long long GLint64;
         The <code>WebGLQuery</code> interface represents an OpenGL Query Object.
         The underlying object is created as if by calling glGenQueries
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0.3 &sect;2.13</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.13">OpenGL ES 3.0.4 &sect;2.13</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGenQueries.xhtml">man page</a>)
         </span>,
         made active as if by calling glBeginQuery
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0.3 &sect;2.13</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.13">OpenGL ES 3.0.4 &sect;2.13</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBeginQuery.xhtml">man page</a>)
         </span>,
         concluded as if by calling glEndQuery
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0.3 &sect;2.13</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.13">OpenGL ES 3.0.4 &sect;2.13</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBeginQuery.xhtml">man page</a>)
         </span>
         and destroyed as if by calling glDeleteQueries
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0.3 &sect;2.13</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.13">OpenGL ES 3.0.4 &sect;2.13</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteQueries.xhtml">man page</a>)
         </span>.
     </p>
@@ -294,17 +294,17 @@ typedef long long GLint64;
         The <code>WebGLSampler</code> interface represents an OpenGL Sampler Object.
         The underlying object is created as if by calling glGenSamplers
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.4 &sect;3.8.2</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGenSamplers.xhtml">man page</a>)
         </span>,
          bound as if by calling glBindSampler
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.4 &sect;3.8.2</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindSampler.xhtml">man page</a>)
         </span>
         and destroyed as if by calling glDeleteSamplers
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.4 &sect;3.8.2</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteSamplers.xhtml">man page</a>)
         </span>.
     </p>
@@ -319,27 +319,27 @@ typedef long long GLint64;
         The <code>WebGLSync</code> interface represents an OpenGL Sync Object.
         The underlying object is created as if by calling glFenceSync
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2">OpenGL ES 3.0.3 &sect;5.2</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-5.2">OpenGL ES 3.0.4 &sect;5.2</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glFenceSync.xhtml">man page</a>)
         </span>,
         blocked on as if by calling glClientWaitSync
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.3 &sect;5.2.1</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.4 &sect;5.2.1</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glClientWaitSync.xhtml">man page</a>)
         </span>,
         waited on internal to GL as if by calling glWaitSync
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.3 &sect;5.2.1</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.4 &sect;5.2.1</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glWaitSync.xhtml">man page</a>)
         </span>,
         queried as if by calling glGetSynciv
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.3 &sect;6.2.8</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.4 &sect;6.2.8</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetSynciv.xhtml">man page</a>)
         </span>,
         and destroyed as if by calling glDeleteSync
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2">OpenGL ES 3.0.3 &sect;5.2</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-5.2">OpenGL ES 3.0.4 &sect;5.2</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteSync.xhtml">man page</a>)
         </span>.
     </p>
@@ -356,17 +356,17 @@ typedef long long GLint64;
         The <code>WebGLTransformFeedback</code> interface represents an OpenGL Transform Feedback Object.
         The underlying object is created as if by calling glGenTransformFeedbacks
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.3 &sect;2.14.1</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.4 &sect;2.14.1</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGenTransformFeedbacks.xhtml">man page</a>)
         </span>,
         bound as if by calling glBindTransformFeedback
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.3 &sect;2.14.1</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.4 &sect;2.14.1</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindTransformFeedback.xhtml">man page</a>)
         </span>
         and destroyed as if by calling glDeleteTransformFeedbacks
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.3 &sect;2.14.1</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.4 &sect;2.14.1</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteTransformFeedbacks.xhtml">man page</a>)
         </span>.
     </p>
@@ -381,17 +381,17 @@ typedef long long GLint64;
         The <code>WebGLVertexArrayObject</code> interface represents an OpenGL Vertex Array Object.
         The underlying object is created as if by calling glGenVertexArrays
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.10">OpenGL ES 3.0.3 &sect;2.10</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.10">OpenGL ES 3.0.4 &sect;2.10</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGenVertexArrays.xhtml">man page</a>)
         </span>,
         bound as if by calling glBindVertexArray
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.10">OpenGL ES 3.0.3 &sect;2.10</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.10">OpenGL ES 3.0.4 &sect;2.10</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindVertexArray.xhtml">man page</a>)
         </span>
         and destroyed as if by calling glDeleteVertexArrays
         <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.10">OpenGL ES 3.0.3 &sect;2.10</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.10">OpenGL ES 3.0.4 &sect;2.10</a>,
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteVertexArrays.xhtml">man page</a>)
         </span>.
     </p>
@@ -851,7 +851,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <dl class="methods">
       <dt class="idl-code">void bindBuffer(GLenum target, WebGLBuffer? buffer)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.9.1">OpenGL ES 3.0.3 &sect;2.9.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindBuffer.xhtml">man page</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.9.1">OpenGL ES 3.0.4 &sect;2.9.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindBuffer.xhtml">man page</a>)</span>
       </dt>
       <dd>
           Binds the given WebGLBuffer object to the given binding point(target). <em>target</em> is given in the following table:
@@ -871,7 +871,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       </div>
 
       <dt class="idl-code">void bindFramebuffer(GLenum target, WebGLFramebuffer? framebuffer)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.4.1">OpenGL ES 3.0.3 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindFramebuffer.xhtml">man page</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.4.1">OpenGL ES 3.0.4 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindFramebuffer.xhtml">man page</a>)</span>
       </dt>
       <dd>
           Binds the given WebGLFramebuffer object to the given binding point(target). <em>target</em> is given in the following table:
@@ -886,7 +886,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       </dd>
 
       <dt class="idl-code">void bindTexture(GLenum target, WebGLTexture? texture)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.1">OpenGL ES 3.0.3 &sect;3.8.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindTexture.xhtml">man page</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.1">OpenGL ES 3.0.4 &sect;3.8.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindTexture.xhtml">man page</a>)</span>
       </dt>
       <dd>
           Binds the given WebGLTexture object to the given binding point(target). <em>target</em> is given in the following table:
@@ -907,7 +907,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <dl class="methods">
         <dt class="idl-code"><a name="GETPARAMETER">any getParameter</a>(GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.1">OpenGL ES 3.0.3 &sect;6.1.1</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.1">OpenGL ES 3.0.4 &sect;6.1.1</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGet.xhtml">glGet OpenGL ES 3.0 man page</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetString.xhtml">glGetString OpenGL ES 3.0 man page</a>)</span>
         <dd>
@@ -986,7 +986,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             <p>For <code>RED_BITS</code>, <code>GREEN_BITS</code>, <code>BLUE_BITS</code>, and <code>ALPHA_BITS</code>, if active color attachments of the draw framebuffer do not have identical formats, generates an <code>INVALID_OPERATION</code> error and returns 0.</p>
 
         <dt class="idl-code">any getIndexedParameter(GLenum target, GLuint index)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.1">OpenGL ES 3.0.3 &sect;6.1.1</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.1">OpenGL ES 3.0.4 &sect;6.1.1</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGet.xhtml">glGet OpenGL ES 3.0 man page</a>)</span>
         <dd>
             Return the indexed value for the passed <code class="param">target</code>. The type returned is the natural type for the requested <code class="param">pname</code>,
@@ -1004,7 +1004,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             <p>If <code class="param">index</code> is outside of the valid range for the indexed state <code class="param">target</code>, generates an <code>INVALID_VALUE</code> error.</p>
             <p>If an OpenGL error is generated, returns null.</p>
         <dt class="idl-code"><a name="ISENABLED">GLboolean isEnabled</a>(GLenum cap)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.1">OpenGL ES 3.0.3 &sect;6.1.1</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.1">OpenGL ES 3.0.4 &sect;6.1.1</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glIsEnabled.xhtml">OpenGL ES 3.0 man page</a>)</span>
         <dd>
             In addition to all of the <code class="param">cap</code> values from WebGL 1.0, RASTERIZER_DISCARD is supported.
@@ -1017,7 +1017,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <dl class="methods">
       <dt class="idl-code">any getBufferParameter(GLenum target, GLenum pname)
           <span class="gl-spec">
-          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.9">OpenGL ES 3.0.3 &sect;6.1.9</a>,
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.9">OpenGL ES 3.0.4 &sect;6.1.9</a>,
           <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetBufferParameter.xhtml" class="nonnormative">man page</a>)
           </span>
       </dt>
@@ -1029,7 +1029,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt>
         <p class="idl-code">void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.9.5">OpenGL ES 3.0.3 &sect;2.9.5</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.9.5">OpenGL ES 3.0.4 &sect;2.9.5</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCopyBufferSubData.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1066,7 +1066,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <dl class="methods">
       <dt class="idl-code">[WebGLHandlesContextLoss] GLenum checkFramebufferStatus(GLenum target)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.4.5">OpenGL ES 3.0.3 &sect;4.4.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCheckFramebufferStatus.xhtml">man page</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.4.5">OpenGL ES 3.0.4 &sect;4.4.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCheckFramebufferStatus.xhtml">man page</a>)</span>
       <dd>
         <p>Only differences from <a href="../1.0/index.html#CHECK_FRAMEBUFFER_STATUS">checkFramebufferStatus</a> in WebGL 1 are described here.</p>
         <p><em>target</em> must be <code>DRAW_FRAMEBUFFER</code>, <code>READ_FRAMEBUFFER</code> or <code>FRAMEBUFFER</code>. <code>FRAMEBUFFER</code> is equivalent to <code>DRAW_FRAMEBUFFER</code>.</p>
@@ -1076,7 +1076,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       </dd>
 
       <dt class="idl-code">any getFramebufferAttachmentParameter(GLenum target, GLenum attachment, GLenum pname)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.13">OpenGL ES 3.0.3 &sect;6.1.13</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetFramebufferAttachmentParameteriv.xhtml">glGetFramebufferAttachmentParameteriv</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.13">OpenGL ES 3.0.4 &sect;6.1.13</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetFramebufferAttachmentParameteriv.xhtml">glGetFramebufferAttachmentParameteriv</a>)</span>
       </dt>
       <dd>
           Return the value for the passed pname given the passed target and attachment. The type
@@ -1104,7 +1104,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt>
         <p class="idl-code">void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.3.3">OpenGL ES 3.0.3 &sect;4.3.3</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.3.3">OpenGL ES 3.0.4 &sect;4.3.3</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBlitFramebuffer.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1118,7 +1118,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt>
         <p class="idl-code">void framebufferTextureLayer(GLenum target, GLenum attachment, WebGLTexture? texture, GLint level, GLint layer)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.4.2">OpenGL ES 3.0.3 &sect;4.4.2</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.4.2">OpenGL ES 3.0.4 &sect;4.4.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glFramebufferTextureLayer.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1126,7 +1126,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt>
         <p class="idl-code">void invalidateFramebuffer(GLenum target, sequence&lt;GLenum&gt; attachments)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.5">OpenGL ES 3.0.3 &sect;4.5</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.5">OpenGL ES 3.0.4 &sect;4.5</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glInvalidateFramebuffer.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1139,7 +1139,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt>
         <p class="idl-code">void invalidateSubFramebuffer (GLenum target, sequence&lt;GLenum&gt; attachments, GLint x, GLint y, GLsizei width, GLsizei height)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.5">OpenGL ES 3.0.3 &sect;4.5</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.5">OpenGL ES 3.0.4 &sect;4.5</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glInvalidateSubFramebuffer.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1150,7 +1150,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt>
         <p class="idl-code">void readBuffer(GLenum src)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.3.1">OpenGL ES 3.0.3 &sect;4.3.1</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.3.1">OpenGL ES 3.0.4 &sect;4.3.1</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glReadBuffer.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1168,7 +1168,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt>
         <p class="idl-code">any getInternalformatParameter(GLenum target, GLenum internalformat, GLenum pname)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.15">OpenGL ES 3.0.3 &sect;6.1.15</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.15">OpenGL ES 3.0.4 &sect;6.1.15</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetInternalformativ.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1185,7 +1185,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           <p>Each query for SAMPLES returns a new typed array object instance.</p>
       </dd>
       <dt class="idl-code">any getRenderbufferParameter(GLenum target, GLenum pname)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.14">OpenGL ES 2.0 &sect;6.1.14</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetRenderbufferParameteriv.xhtml">glGetRenderbufferParameteriv</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.14">OpenGL ES 2.0 &sect;6.1.14</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetRenderbufferParameteriv.xhtml">glGetRenderbufferParameteriv</a>)</span>
       </dt>
       <dd>
           Return the value for the passed pname given the passed target. The type returned is the natural
@@ -1209,19 +1209,19 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt>
         <p class="idl-code">void renderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.4.2">OpenGL ES 3.0.3 &sect;4.4.2</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.4.2">OpenGL ES 3.0.4 &sect;4.4.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glRenderbufferStorage.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
       </dt>
       <dd>        
-        <p>Accepts internal formats from OpenGL ES 3.0 as detailed in the <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.4.2">specification</a> and <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glRenderbufferStorage.xhtml" class="nonnormative">man page</a>.</p>
+        <p>Accepts internal formats from OpenGL ES 3.0 as detailed in the <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.4.2">specification</a> and <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glRenderbufferStorage.xhtml" class="nonnormative">man page</a>.</p>
         <p>To be backward compatible with WebGL 1, also accepts internal format <code>DEPTH_STENCIL</code>, which should be mapped to <code>DEPTH24_STENCIL8</code> by implementations.</p>
       </dd>
       <dt>
         <p class="idl-code">void renderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.4.2">OpenGL ES 3.0.3 &sect;4.4.2</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.4.2">OpenGL ES 3.0.4 &sect;4.4.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glRenderbufferStorageMultisample.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1241,7 +1241,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <dl class="methods">
       <dt class="idl-code">any getTexParameter(GLenum target, GLenum pname)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.3">OpenGL ES 3.0.3 &sect;6.1.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetTexParameter.xhtml">man page</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.3">OpenGL ES 3.0.4 &sect;6.1.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetTexParameter.xhtml">man page</a>)</span>
       </dt>
       <dd>
           Return the value for the passed pname given the passed target. The type returned is the natural type for the
@@ -1268,7 +1268,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           <p>If an OpenGL error is generated, returns null.</p>
       </dd>
       <dt class="idl-code">void texParameterf(GLenum target, GLenum pname, GLfloat param)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.7">OpenGL ES 3.0.3 &sect;3.8.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexParameter.xhtml">man page</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.7">OpenGL ES 3.0.4 &sect;3.8.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexParameter.xhtml">man page</a>)</span>
       </dt>
       <dd>
           Set the value for the passed pname given the passed target. <em>pname</em> is given in the following table:
@@ -1291,7 +1291,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           <code>INVALID_OPERATION</code> error.</p>
       </dd>
       <dt class="idl-code">void texParameteri(GLenum target, GLenum pname, GLint param)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.7">OpenGL ES 3.0.3 &sect;3.8.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexParameter.xhtml">man page</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.7">OpenGL ES 3.0.4 &sect;3.8.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexParameter.xhtml">man page</a>)</span>
       </dt>
       <dd>
           <p>Set the value for the passed pname given the passed target. <em>pname</em> is this same with that of texParameterf, as given in the table above.</p>
@@ -1302,7 +1302,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt>
         <p class="idl-code">void texStorage2D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.3 &sect;3.8.4</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.4 &sect;3.8.4</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexStorage2D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1312,7 +1312,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
         The image contents are set as if a buffer of sufficient size initialized to 0 would be passed to
         each texImage2D call in the pseudocode in The OpenGL ES 3.0 specification section 3.8.4
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.3 &sect;3.8.4</a>)</span>.
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.4 &sect;3.8.4</a>)</span>.
 
         <div class="note"><code>texStorage2D</code> should be considered a preferred alternative to
         <code>texImage2D</code>. It may have lower memory costs than <code>texImage2D</code> in some
@@ -1321,7 +1321,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt>
         <p class="idl-code"><a name="TEXSTORAGE3D">void texStorage3D</a>(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.3 &sect;3.8.4</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.4 &sect;3.8.4</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexStorage3D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1331,10 +1331,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
         The image contents are set as if a buffer of sufficient size initialized to 0 would be passed to
         each texImage3D call in the pseudocode in The OpenGL ES 3.0 specification section 3.8.4
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.3 &sect;3.8.4</a>)</span>.
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.4 &sect;3.8.4</a>)</span>.
       </dd>
 
-      <dt class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, ArrayBufferView? pixels) <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
+      <dt class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, ArrayBufferView? pixels) <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.4 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
       </dt>
       <dd>
         <p>Only differences from <a href="../1.0/index.html#TEXIMAGE2D">texImage2D</a> in WebGL 1 are described here. </p>
@@ -1364,7 +1364,7 @@ match the <em>type</em> according to the following table; otherwise, generates a
       </dd>
 
       <dt class="idl-code">void texImage2D(GLenum target, GLint level, GLenum internalformat, GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.4 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
       </dt>
       <dd>
         <p>Only differences from <a href="../1.0/index.html#TEXIMAGE2D_HTML">texImage2D</a> in WebGL 1 are described here. </p>
@@ -1403,7 +1403,7 @@ match the <em>type</em> according to the following table; otherwise, generates a
         <div class="note rationale">When the data source is a DOM element (<code>Image</code>, <code>Canvas</code>, or <code>Video</code>), commonly each channel's representation is an unsigned integer type of at least 8 bits. Converting such representation to signed integers or unsigned integers with more bits is not clearly defined. For example, when converting RGBA8 to RGBA16UI,  it is unclear whether or not the intention is to scale up values to the full range of a 16-bit unsigned integer. Therefore, only converting to unsigned integer of at most 8 bits, half float, or float is allowed.</div>
       </dd>
 
-      <dt class="idl-code"><a name="TEXIMAGE2D_SERVER_SIDE">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, GLintptr offset) <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
+      <dt class="idl-code"><a name="TEXIMAGE2D_SERVER_SIDE">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, GLintptr offset) <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.4 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
       </dt>
       <dd>
         <p>Upload data to the currently bound WebGLTexture from the WebGLBuffer bound to the <code>PIXEL_UNPACK_BUFFER</code> target.</p>
@@ -1414,7 +1414,7 @@ match the <em>type</em> according to the following table; otherwise, generates a
       </dd>
 
       <dt class="idl-code"><a name="TEXSUBIMAGE2D">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, ArrayBufferView? pixels)
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage2D.xhtml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.4 &sect;3.8.5</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage2D.xhtml">man page</a>)</span>
       </dt>
       <dd>
         <p>Only differences from <a href="../1.0/index.html#TEXSUBIMAGE2D">texSubImage2D</a> in WebGL 1 are described here. </p>
@@ -1428,7 +1428,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
 
 
       <dt><p class="idl-code"><a name="TEXSUBIMAGE2D_HTML">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage2D.xhtml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.4 &sect;3.8.5</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage2D.xhtml">man page</a>)</span>
       </dt>
       <dd>
         <p>Only differences from <a href="../1.0/index.html#TEXSUBIMAGE2D_HTML">texSubImage2D</a> in WebGL 1 are described here. </p>
@@ -1437,7 +1437,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       </dd>
 
       <dt><p class="idl-code"><a name="TEXSUBIMAGE2D_SERVER_SIDE">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLenum format, GLenum type, GLintptr offset)
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage2D.xhtml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.4 &sect;3.8.5</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage2D.xhtml">man page</a>)</span>
       </dt>
       <dd>
         <p>Updates a sub-rectangle of the currently bound WebGLTexture with data from the WebGLBuffer bound to <code>PIXEL_UNPACK_BUFFER</code> target.</p>
@@ -1447,7 +1447,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       </dd>
 
       <dt class="idl-code">void texImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, ArrayBufferView? pixels)
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.4 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a>)</span>
       </dt>
       <dd>
         <p>Allocates and initializes the specified mipmap level of a three-dimensional or two-dimensional array texture. </p>
@@ -1465,7 +1465,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       </dd>
 
       <dt class="idl-code"><a name="TEXIMAGE3D_SERVER_SIDE">void texImage3D</a>(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLintptr offset)
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_full_spec_3.0.3.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.3 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.4 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a>)</span>
       </dt>
       <dd>
         <p>Upload data to the currently bound WebGLTexture from the WebGLBuffer bound to the <code>PIXEL_UNPACK_BUFFER</code> target.</p>
@@ -1477,7 +1477,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, ArrayBufferView? pixels)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.4 &sect;3.8.5</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage3D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1495,7 +1495,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.4 &sect;3.8.5</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage3D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1516,7 +1516,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code"><a name="TEXSUBIMAGE3D_SERVER_SIDE">void texSubImage3D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLenum format, GLenum type, GLintptr offset)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.4 &sect;3.8.5</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage3D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1531,7 +1531,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void copyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.3 &sect;3.8.5</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.4 &sect;3.8.5</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCopyTexSubImage3D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1548,7 +1548,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void compressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, ArrayBufferView data)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.3 &sect;3.8.6</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.4 &sect;3.8.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexImage2D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1556,7 +1556,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, ArrayBufferView data)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.3 &sect;3.8.6</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.4 &sect;3.8.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexSubImage2D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1565,7 +1565,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, ArrayBufferView data)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.3 &sect;3.8.6</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.4 &sect;3.8.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexImage3D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1573,7 +1573,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void compressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, ArrayBufferView data)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.3 &sect;3.8.6</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.4 &sect;3.8.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexSubImage3D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1588,7 +1588,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void compressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLintptr offset)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.3 &sect;3.8.6</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.4 &sect;3.8.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexImage2D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1596,7 +1596,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLintptr offset)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.3 &sect;3.8.6</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.4 &sect;3.8.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexSubImage2D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1604,7 +1604,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLintptr offset)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.3 &sect;3.8.6</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.4 &sect;3.8.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexImage3D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1612,7 +1612,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void compressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLintptr offset)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.3 &sect;3.8.6</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.4 &sect;3.8.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexSubImage3D.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1632,13 +1632,13 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">[WebGLHandlesContextLoss] GLint getFragDataLocation(WebGLProgram? program, DOMString name)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.9.2">OpenGL ES 3.0.3 &sect;3.9.2</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.9.2">OpenGL ES 3.0.4 &sect;3.9.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetFragDataLocation.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
       </dt>
       <dt class="idl-code">any getProgramParameter(WebGLProgram? program, GLenum pname)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.3 &sect;6.1.12</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetProgramiv.xhtml">man page</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.4 &sect;6.1.12</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetProgramiv.xhtml">man page</a>)</span>
       </dt>
       <dd>
           Return the value for the passed pname given the passed program. The type returned is the natural
@@ -1669,7 +1669,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt class="idl-code">
         any getUniform(WebGLProgram? program, WebGLUniformLocation? location)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.3 &sect;6.1.12</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.4 &sect;6.1.12</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetUniform.xhtml" class="nonnormative">man page</a>)
           </span>
       </dt>
@@ -1698,7 +1698,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p class="idl-code">void uniform[1234]uiv(WebGLUniformLocation? location, ...)</p>
         <p class="idl-code">void uniformMatrix[234]x[234]fv(WebGLUniformLocation? location, ...)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.3 &sect;2.11.6</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glUniform.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1718,7 +1718,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt><p class="idl-code">void vertexAttribI4[u]i(GLuint indx, ...)</p>
           <p class="idl-code">void vertexAttribI4[u]iv(GLuint indx, ...)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.7">OpenGL ES 3.0.3 &sect;2.7</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.7">OpenGL ES 3.0.4 &sect;2.7</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glVertexAttrib.xhtml" class="nonnormative">man page</a>)
           </span>
       </dt>
@@ -1731,7 +1731,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void vertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8">OpenGL ES 3.0.3 &sect;2.8</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.8">OpenGL ES 3.0.4 &sect;2.8</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glVertexAttribPointer.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1748,7 +1748,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         stride is 255; see <a href="../1.0/index.html#VERTEX_STRIDE"> Vertex Attribute Data Stride</a>.
       </dd>
       <dt class="idl-code">any getVertexAttrib(GLuint index, GLenum pname)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.3 &sect;6.1.12</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetVertexAttrib.xhtml">man page</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.4 &sect;6.1.12</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetVertexAttrib.xhtml">man page</a>)</span>
       </dt>
       <dd>
           Return the information requested in pname about the vertex attribute at the passed index. The
@@ -1784,7 +1784,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void clear(GLbitfield mask)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.2.3">OpenGL ES 3.0.3 &sect;4.2.3</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.2.3">OpenGL ES 3.0.4 &sect;4.2.3</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClear.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1796,7 +1796,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void vertexAttribDivisor(GLuint index, GLuint divisor)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8">OpenGL ES 3.0.3 &sect;2.8</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.8">OpenGL ES 3.0.4 &sect;2.8</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glVertexAttribDivisor.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1807,7 +1807,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8.3">OpenGL ES 3.0.3 &sect;2.8.3</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.8.3">OpenGL ES 3.0.4 &sect;2.8.3</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDrawArraysInstanced.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1819,7 +1819,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void drawElementsInstanced(GLenum mode, GLsizei count, GLenum type, GLintptr offset, GLsizei instanceCount)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8.3">OpenGL ES 3.0.3 &sect;2.8.3</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.8.3">OpenGL ES 3.0.4 &sect;2.8.3</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDrawElementsInstanced.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1831,7 +1831,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLintptr offset)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8.3">OpenGL ES 3.0.3 &sect;2.8.3</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.8.3">OpenGL ES 3.0.4 &sect;2.8.3</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDrawRangeElements.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1860,14 +1860,14 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
     <p>Only differences from <a href="../1.0/index.html#readpixels">Reading back pixels</a> in WebGL 1 are described here.</p>
     <dl class="methods">
         <dt class="idl-code">void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, ArrayBufferView? pixels)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.3.2">OpenGL ES 3.0 &sect;4.3.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glReadPixels.xhtml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.3.2">OpenGL ES 3.0 &sect;4.3.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glReadPixels.xhtml">man page</a>)</span>
         </dt>
         <dd>
           <p>If a WebGLBuffer is bound to the <code>PIXEL_PACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
         </dd>
 
         <dt class="idl-code">void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLintptr offset)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.3.2">OpenGL ES 3.0 &sect;4.3.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glReadPixels.xhtml">man page</a>)</span>
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.3.2">OpenGL ES 3.0 &sect;4.3.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glReadPixels.xhtml">man page</a>)</span>
         </dt>
         <dd>
           <p>If no WebGLBuffer is bound to the <code>PIXEL_PACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
@@ -1883,7 +1883,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void drawBuffers(sequence&lt;GLenum&gt; buffers)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.2.1">OpenGL ES 3.0.3 &sect;4.2.1</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.2.1">OpenGL ES 3.0.4 &sect;4.2.1</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDrawBuffers.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1897,7 +1897,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p class="idl-code">void clearBufferfv(GLenum buffer, GLint drawbuffer, ClearBufferFVSource value)</p>
         <p class="idl-code">void clearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.2.3">OpenGL ES 3.0.3 &sect;4.2.3</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.2.3">OpenGL ES 3.0.4 &sect;4.2.3</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClearBuffer.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1924,7 +1924,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">WebGLQuery? createQuery()
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0.3 &sect;2.13</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.13">OpenGL ES 3.0.4 &sect;2.13</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGenQueries.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1935,7 +1935,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void deleteQuery(WebGLQuery? query)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0.3 &sect;2.13</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.13">OpenGL ES 3.0.4 &sect;2.13</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteQueries.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1949,7 +1949,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">[WebGLHandlesContextLoss] GLboolean isQuery(WebGLQuery? query)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.3 &sect;6.1.7</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.4 &sect;6.1.7</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glIsQuery.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1963,7 +1963,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void beginQuery(GLenum target, WebGLQuery? query)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0.3 &sect;2.13</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.13">OpenGL ES 3.0.4 &sect;2.13</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBeginQuery.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1974,7 +1974,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void endQuery(GLenum target)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.13">OpenGL ES 3.0.3 &sect;2.13</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.13">OpenGL ES 3.0.4 &sect;2.13</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBeginQuery.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -1987,7 +1987,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">WebGLQuery? getQuery(GLenum target, GLenum pname)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.3 &sect;6.1.7</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.4 &sect;6.1.7</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetQueryiv.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -2009,7 +2009,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code"><a name="GET_QUERY_PARAMETER">any getQueryParameter</a>(WebGLQuery? query, GLenum pname)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.3 &sect;6.1.7</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.4 &sect;6.1.7</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetQueryObjectuiv.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -2072,7 +2072,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">WebGLSampler? createSampler()
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.4 &sect;3.8.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGenSamplers.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -2084,7 +2084,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void deleteSampler(WebGLSampler? sampler)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.4 &sect;3.8.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteSamplers.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -2098,7 +2098,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">[WebGLHandlesContextLoss] GLboolean isSampler(WebGLSampler? sampler)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.4 &sect;3.8.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glIsSampler.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -2112,7 +2112,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void bindSampler(GLuint unit, WebGLSampler? sampler)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.4 &sect;3.8.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindSampler.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -2129,7 +2129,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p class="idl-code">void samplerParameteri(WebGLSampler? sampler, GLenum pname, GLint param)</p>
         <p class="idl-code">void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param)</p>
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.3 &sect;3.8.2</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.4 &sect;3.8.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glSamplerParameter.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -2152,7 +2152,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p>If <em>sampler</em> is not a valid sampler object, generates an <code>INVALID_OPERATION</code> error.</p>
       </dd>
       <dt class="idl-code">any getSamplerParameter(WebGLSampler? sampler, GLenum pname)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.5">OpenGL ES 3.0.3 &sect;6.1.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetSamplerParameter.xhtml">man page</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.5">OpenGL ES 3.0.4 &sect;6.1.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetSamplerParameter.xhtml">man page</a>)</span>
       </dt>
       <dd>
           Return the information requested in pname about the given WebGLSampler, passed as <em>sampler</em>. The
@@ -2187,7 +2187,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">WebGLSync? fenceSync(GLenum condition, GLbitfield flags)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2">OpenGL ES 3.0.3 &sect;5.2</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-5.2">OpenGL ES 3.0.4 &sect;5.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glFenceSync.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -2198,7 +2198,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">[WebGLHandlesContextLoss] GLboolean isSync(WebGLSync? sync)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.3 &sect;6.1.8</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.4 &sect;6.1.8</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glIsSync.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -2212,7 +2212,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void deleteSync(WebGLSync? sync)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2">OpenGL ES 3.0.3 &sect;5.2</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-5.2">OpenGL ES 3.0.4 &sect;5.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteSync.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -2226,7 +2226,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.3 &sect;5.2.1</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.4 &sect;5.2.1</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClientWaitSync.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -2278,7 +2278,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dt>
         <p class="idl-code">void waitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout)
           <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.3 &sect;5.2.1</a>,
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.4 &sect;5.2.1</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glWaitSync.xhtml" class="nonnormative">man page</a>)
           </span>
         </p>
@@ -2293,7 +2293,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         </div>
       </dd>
       <dt class="idl-code">any getSyncParameter(WebGLSync? sync, GLenum pname)
-          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.3 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetSynciv.xhtml">man page</a>)</span>
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.4 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetSynciv.xhtml">man page</a>)</span>
       </dt>
       <dd>
           Return the value for the passed pname given the passed WebGLSync object. The type returned is the natural
@@ -2325,14 +2325,14 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
 
     <dl class="methods">
         <dt class="idl-code">WebGLTransformFeedback? createTransformFeedback()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.3 &sect;2.14.1</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.4 &sect;2.14.1</a>,
             similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGenTransformFeedbacks.xhtml">glGenTransformFeedbacks</a>)</span>
         <dd>
             Create a <code class="interface">WebGLTransformFeedback</code> object and initialize it with a transform feedback object name as if by
             calling glGenTransformFeedbacks.
 
         <dt class="idl-code">void deleteTransformFeedback(WebGLTransformFeedback? transformFeedback)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.3 &sect;2.14.1</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.4 &sect;2.14.1</a>,
             similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteTransformFeedbacks.xhtml">glDeleteTransformFeedbacks</a>)</span>
         <dd>
             Delete the transform feedback object contained in the passed <code class="interface">WebGLTransformFeedback</code> as if by calling
@@ -2341,7 +2341,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
             This method merely gives the author greater control over when the transform feedback object is destroyed.
 
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isTransformFeedback(WebGLTransformFeedback? transformFeedback)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.11">OpenGL ES 3.0.3 &sect;6.1.11</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.11">OpenGL ES 3.0.4 &sect;6.1.11</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glIsTransformFeedback.xhtml">man page</a>)</span>
         <dd>
             Return true if the passed <code class="interface">WebGLTransformFeedback</code> is valid and false otherwise. <br><br>
@@ -2350,7 +2350,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
             flag</a> is set.
 
         <dt class="idl-code">void bindTransformFeedback (GLenum target, WebGLTransformFeedback? transformFeedback)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.3 &sect;2.14.1</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.4 &sect;2.14.1</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBindTransformFeedback.xhtml">man page</a>)</span>
         <dd>
             Bind the given <code class="interface">WebGLTransformFeedback</code> object.
@@ -2358,32 +2358,32 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
             is bound.
 
         <dt class="idl-code">void beginTransformFeedback(GLenum primitiveMode)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.2">OpenGL ES 3.0.3 &sect;2.14.2</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.2">OpenGL ES 3.0.4 &sect;2.14.2</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBeginTransformFeedback.xhtml">man page</a>)</span>
         <dd>
 
         <dt class="idl-code">void endTransformFeedback()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.2">OpenGL ES 3.0.3 &sect;2.14.2</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.2">OpenGL ES 3.0.4 &sect;2.14.2</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBeginTransformFeedback.xhtml">man page</a>)</span>
         <dd>
 
         <dt class="idl-code">void pauseTransformFeedback()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.2">OpenGL ES 3.0.3 &sect;2.14.2</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.2">OpenGL ES 3.0.4 &sect;2.14.2</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glPauseTransformFeedback.xhtml">man page</a>)</span>
         <dd>
 
         <dt class="idl-code">void resumeTransformFeedback()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.14.2">OpenGL ES 3.0.3 &sect;2.14.2</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.2">OpenGL ES 3.0.4 &sect;2.14.2</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glResumeTransformFeedback.xhtml">man page</a>)</span>
         <dd>
 
         <dt class="idl-code">void transformFeedbackVaryings(WebGLProgram? program, sequence&lt;DOMString&gt; varyings, GLenum bufferMode)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.8">OpenGL ES 3.0.3 &sect;2.11.8</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.8">OpenGL ES 3.0.4 &sect;2.11.8</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTransformFeedbackVaryings.xhtml">man page</a>)</span>
         <dd>
 
         <dt class="idl-code">WebGLActiveInfo? getTransformFeedbackVarying(WebGLProgram? program, GLuint index)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.8">OpenGL ES 3.0.3 &sect;2.11.8</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.8">OpenGL ES 3.0.4 &sect;2.11.8</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetTransformFeedbackVarying.xhtml">man page</a>)</span>
         <dd>
     </dl>
@@ -2399,27 +2399,27 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
 
     <dl class="methods">
         <dt class="idl-code">void bindBufferBase(GLenum target, GLuint index, WebGLBuffer? buffer)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.9.1">OpenGL ES 3.0.3 &sect;2.9.1</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.9.1">OpenGL ES 3.0.4 &sect;2.9.1</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindBufferBase.xhtml">man page</a>)</span>
         <dd>
             Binds the given <code class="interface">WebGLBuffer</code> object to the binding point at <code class="param">index</code> of the array of targets
             specified by <code class="param">target</code>.
 
         <dt class="idl-code">void bindBufferRange(GLenum target, GLuint index, WebGLBuffer? buffer, GLintptr offset, GLsizeiptr size)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.9.1">OpenGL ES 3.0.3 &sect;2.9.1</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.9.1">OpenGL ES 3.0.4 &sect;2.9.1</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindBufferRange.xhtml">man page</a>)</span>
         <dd>
             Binds a range of the <code class="interface">WebGLBuffer</code> object buffer represented by <code class="param">offset</code> and <code class="param">size</code>
             to the binding point at <code class="param">index</code> of the array of targets specified by <code class="param">target</code>
 
         <dt class="idl-code">sequence&lt;GLuint&gt;? getUniformIndices(WebGLProgram? program, sequence&lt;DOMString&gt; uniformNames)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.3 &sect;2.11.6</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetUniformIndices.xhtml">man page</a>)</span>
         <dd>
             Retrieves the indices of a number of uniforms within <code class="param">program</code>.
 
         <dt class="idl-code">any getActiveUniforms(WebGLProgram? program, sequence&lt;GLuint&gt; uniformIndices, GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.3 &sect;2.11.6</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetActiveUniformsiv.xhtml">man page</a>)</span>
         <dd>
             Queries the value of the parameter named <code class="param">pname</code> for each of the uniforms within <code class="param">program</code> whose indices
@@ -2438,13 +2438,13 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
             <p>If <code class="param">pname</code> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
 
         <dt class="idl-code">GLuint getUniformBlockIndex(WebGLProgram? program, DOMString uniformBlockName)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.3 &sect;2.11.6</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetUniformBlockIndex.xhtml">man page</a>)</span>
         <dd>
             Retrieves the index of a uniform block within <code class="param">program</code>.
 
         <dt class="idl-code">any getActiveUniformBlockParameter(WebGLProgram? program, GLuint uniformBlockIndex, GLenum pname)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.3 &sect;2.11.6</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetActiveUniformBlockiv.xhtml">man page</a>)</span>
         <dd>
             Retrieves information about an active uniform block within <code class="param">program</code>. The type returned is the natural type for the requested
@@ -2464,13 +2464,13 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
             <p>If an OpenGL error is generated, returns null.</p>
 
         <dt class="idl-code">DOMString? getActiveUniformBlockName(WebGLProgram? program, GLuint uniformBlockIndex)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.3 &sect;2.11.6</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetActiveUniformBlockName.xhtml">man page</a>)</span>
         <dd>
             Retrieves the name of the active uniform block at <code class="param">uniformBlockIndex</code> within <code class="param">program</code>.
 
         <dt class="idl-code">void uniformBlockBinding(WebGLProgram? program, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.3 &sect;2.11.6</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glUniformBlockBinding.xhtml">man page</a>)</span>
         <dd>
             Assigns binding points for active uniform blocks.
@@ -2487,7 +2487,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
 
     <dl class="methods">
         <dt class="idl-code">void bindVertexArray(WebGLVertexArrayObject? vertexArray)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.10">OpenGL ES 3.0.3 &sect;2.10</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.10">OpenGL ES 3.0.4 &sect;2.10</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindVertexArray.xhtml">man page</a>)</span>
         <dd>
             Bind the given <code class="interface">WebGLVertexArrayObject</code> object.
@@ -2495,14 +2495,14 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
             is bound.
 
         <dt class="idl-code">WebGLVertexArrayObject? createVertexArray()
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.10">OpenGL ES 3.0.3 &sect;2.10</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.10">OpenGL ES 3.0.4 &sect;2.10</a>,
             similar to <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGenVertexArrays.xhtml">glGenVertexArrays</a>)</span>
         <dd>
             Create a <code class="interface">WebGLVertexArrayObject</code> object and initialize it with a vertex array object name as if by
             calling glGenVertexArrays.
 
         <dt class="idl-code">void deleteVertexArray(WebGLVertexArrayObject? vertexArray)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.10">OpenGL ES 3.0.3 &sect;2.10</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.10">OpenGL ES 3.0.4 &sect;2.10</a>,
             similar to <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteVertexArrays.xhtml">glDeleteVertexArrays</a>)</span>
         <dd>
             Delete the vertex array object contained in the passed <code class="interface">WebGLVertexArrayObject</code> as if by calling
@@ -2512,7 +2512,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
             destroyed.
 
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isVertexArray(WebGLVertexArrayObject? vertexArray)
-            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-6.1.10">OpenGL ES 3.0.3 &sect;6.1.10</a>,
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.10">OpenGL ES 3.0.4 &sect;6.1.10</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glIsVertexArray.xhtml">man page</a>)</span>
         <dd>
             Return true if the passed <code class="interface">WebGLVertexArrayObject</code> is valid and false otherwise. <br><br>
@@ -2588,10 +2588,10 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
     <h3>New Features Supported in the WebGL 2 API</h3>
 
     <ul>
-      <li>ETC2 and EAC Compressed texture formats <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=appendix-c">OpenGL ES 3.0.3 Appendix C</a>)</span></li>
-      <li>Pixel buffer objects <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.7.1">OpenGL ES 3.0.3 &sect;3.7.1</a> and <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.3">OpenGL ES 3.0.3 &sect;4.3</a>)</span></li>
-      <li>Primitive restart <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8.1">OpenGL ES 3.0.3 &sect;2.8.1</a>)</span></li>
-      <li>Rasterizer discard <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.1">OpenGL ES 3.0.3 &sect;3.1</a>)</span></li>
+      <li>ETC2 and EAC Compressed texture formats <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=appendix-c">OpenGL ES 3.0.4 Appendix C</a>)</span></li>
+      <li>Pixel buffer objects <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.7.1">OpenGL ES 3.0.4 &sect;3.7.1</a> and <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.3">OpenGL ES 3.0.4 &sect;4.3</a>)</span></li>
+      <li>Primitive restart <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.8.1">OpenGL ES 3.0.4 &sect;2.8.1</a>)</span></li>
+      <li>Rasterizer discard <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.1">OpenGL ES 3.0.4 &sect;3.1</a>)</span></li>
     </ul>
 
     <h3>GLSL ES 3.00 support</h3>
@@ -2619,7 +2619,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
 
     <p>
         WebGL 1.0 supports tokens up to 256 characters in length. WebGL 2.0 follows The OpenGL ES Shading Language, Version 3.00
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-3.8">OpenGL ES 3.0.3 &sect;3.8</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8">OpenGL ES 3.0.4 &sect;3.8</a>)</span>
         and allows tokens up to 1024 characters in length for both ESSL 1 and ESSL 3 shaders. Shaders containing tokens longer than 1024 characters must fail to compile.
     </p>
 
@@ -2634,7 +2634,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
     <p>
         In the WebGL 2 API, vertex attributes which have a non-zero divisor do not advance during calls to
         <code>drawArrays</code> and <code>drawElements</code>.
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.8.3">OpenGL ES 3.0.3 &sect;2.8.3</a>)</span>
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.8.3">OpenGL ES 3.0.4 &sect;2.8.3</a>)</span>
     </p>
 
 <!-- ======================================================================================================= -->
@@ -2713,7 +2713,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
     </p>
 
     <div class="note rationale">
-        This restriction has been added to prevent undefined values when reading from or writing to a buffer object that is simultanenously bound to a transform feedback buffer binding point and elsewhere in the GL. An example of such a situation is <code>ReadPixels</code> to a pixel buffer object binding point. See <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.15.2">OpenGL ES 3.0.3 &sect;2.15.2</a>)</span>.
+        This restriction has been added to prevent undefined values when reading from or writing to a buffer object that is simultanenously bound to a transform feedback buffer binding point and elsewhere in the GL. An example of such a situation is <code>ReadPixels</code> to a pixel buffer object binding point. See <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.15.2">OpenGL ES 3.0.4 &sect;2.15.2</a>)</span>.
     </div>
 
     <h3><a name="COPYING_BUFFERS">Copying Buffers</a></h3>
@@ -2842,7 +2842,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         A fragment shader written in The OpenGL ES Shading Language, Version 1.00, that statically assigns a
         value to <code>gl_FragData[n]</code> where <code>n</code> does not equal constant value 0 must fail
         to compile in the WebGL 2 API. This is to achieve consistency with The OpenGL ES 3.0 specification
-        section 4.2.1 <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-4.2.1">OpenGL ES 3.0.3 &sect;4.2.1</a>)</span>
+        section 4.2.1 <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.2.1">OpenGL ES 3.0.4 &sect;4.2.1</a>)</span>
         and The OpenGL ES Shading Language 3.00 specification section 1.5 <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.3.pdf#nameddest=section-1.5">GLSL ES 3.00 &sect;1.5</a>)</span>.
         As in the OpenGL ES 3.0 API, multiple fragment shader outputs are only supported for GLSL ES 3.00
         shaders in the WebGL 2 API.
@@ -2888,7 +2888,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         In the WebGL 2.0 API, if more than one active attribute name is bound to the same location, it is considered
         aliased, regardless whether there exists a path through the shader that consumes more than of these
         attributes. Such definition of aliasing is broader than what is defined in
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.5">OpenGL ES 3.0.3 &sect;2.11.5</a>)</span>.
+        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.5">OpenGL ES 3.0.4 &sect;2.11.5</a>)</span>.
     </p>
     <p>
         A link error is required when aliasing exists.
@@ -2941,7 +2941,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
     <p>
         OpenGL ES 3.0 allows applications to enumerate and query properties of
         active variables and interface blocks of a specified program even if
-        that program failed to link <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf#nameddest=section-2.11.3">OpenGL ES 3.0.3 &sect;2.11.3</a>)</span>.
+        that program failed to link <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.3">OpenGL ES 3.0.4 &sect;2.11.3</a>)</span>.
         In WebGL, these commands will always generate an INVALID_OPERATION error
         on a program that failed to link, and no information is returned.
     </p>
@@ -3034,9 +3034,9 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
             WHATWG.
         </dd>
         <dt id="refsGLES30">[GLES30]</dt>
-        <dd><cite><a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.3.pdf">
-            OpenGL&reg; ES Version 3.0.3</a></cite>,
-            B. Lipchak 2013.
+        <dd><cite><a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf">
+            OpenGL&reg; ES Version 3.0.4</a></cite>,
+            B. Lipchak 2014.
         </dd>
         <dt id="refsGLES30GLSL">[GLES30GLSL]</dt>
         <dd><cite><a href="http://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.4.pdf">
