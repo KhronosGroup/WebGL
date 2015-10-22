@@ -3419,7 +3419,7 @@ group pragmas "Pragma Tests"
 		expect build_successful
 		both ""
 			#version 300 es
-			#pragma ¤¤½
+			#pragma **%
 
 			// trailing bytes form a valid but unrecognized preprocessor token
 
@@ -3582,7 +3582,7 @@ group extensions "Extension Tests"
 		expect compile_fail
 		both ""
 			#version 300 es
-			#extension all¤ : warn
+			#extension all* : warn
 			precision mediump float;
 			${DECLARATIONS}
 			void main()
@@ -3597,7 +3597,7 @@ group extensions "Extension Tests"
 		expect compile_fail
 		both ""
 			#version 300 es
-			#extension all : war¤n
+			#extension all : war*n
 			precision mediump float;
 			${DECLARATIONS}
 			void main()

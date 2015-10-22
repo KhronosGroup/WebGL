@@ -2737,7 +2737,7 @@ group pragmas "Pragma Tests"
 	case pragma_unrecognized_token
 		expect build_successful
 		both ""
-			#pragma ¤¤½
+			#pragma **%
 
 			// trailing bytes form a valid but unrecognized preprocessor token
 
@@ -2872,7 +2872,7 @@ group extensions "Extension Tests"
 	case invalid_char_in_name
 		expect compile_fail
 		both ""
-	#extension all¤ : warn
+	#extension all* : warn
 			precision mediump float;
 			void main()
 			{
@@ -2884,7 +2884,7 @@ group extensions "Extension Tests"
 	case invalid_char_in_behavior
 		expect compile_fail
 		both ""
-	#extension all : war¤n
+	#extension all : war*n
 			precision mediump float;
 			void main()
 			{
