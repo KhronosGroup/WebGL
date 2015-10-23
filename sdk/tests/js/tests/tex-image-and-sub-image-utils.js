@@ -146,7 +146,7 @@ var TexImageUtils = (function() {
     'in vec2 texCoord;',
     'out vec4 fragData;',
     'void main() {',
-    '    fragData = vec4(texture(tex, texCoord, 0).rgb 1.0);',
+    '    fragData = vec4(texture(tex, vec3(texCoord, 0.0)).rgb, 1.0);',
     '}'].join('\n');
 
   /**
