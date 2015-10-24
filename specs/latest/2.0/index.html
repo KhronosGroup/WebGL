@@ -3012,6 +3012,24 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         well-defined.
     </div>
 
+    <h3>Only <code>std140</code> layout supported in uniform blocks</h3>
+
+    <p>
+        The GLSL ES 3.00 specification supports the <code>shared</code>, <code>packed</code>,
+        and <code>std140</code> layout qualifiers for uniform blocks, defining how variables are
+        laid out in uniform buffers' storage. Of these, the WebGL 2.0 specification supports only
+        the <code>std140</code> layout, which is defined
+        in <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.12">OpenGL
+        ES 3.0.4 &sect;2.12 "Vertex Shaders"</a>, subsection "Standard Uniform Block
+        Layout". Shaders attempting to use the <code>shared</code> or <code>packed</code> layout
+        qualifiers will fail either the compilation or linking stages.
+    </p>
+
+    <div class="note rationale">
+        This restriction is enforced to improve portability by avoiding exposing uniform block
+        layouts that are specific to one vendor's GPUs.
+    </div>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
