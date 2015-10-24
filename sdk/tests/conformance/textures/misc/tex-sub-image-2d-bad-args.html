@@ -42,6 +42,7 @@
 description('Tests texSubImage2D with bad arguments');
 
 var wtu = WebGLTestUtils;
+var contextVersion = wtu.getDefault3DContextVersion();
 var c = document.getElementById("c");
 
 var gl = wtu.create3DContext("testbed");
@@ -73,24 +74,30 @@ gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "good args");
 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "format not same as original");
-gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c);
-wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original");
+if (contextVersion < 2) {
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original");
+}
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "make texture RGB");
 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "format same as original RGB");
 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "format not same as original RGB");
-gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_SHORT_5_6_5, c);
-wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original RGB");
+if (contextVersion < 2) {
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_SHORT_5_6_5, c);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original RGB");
+}
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "make texture RGBA 4_4_4_4");
 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "format same as original RGBA 4_4_4_4");
 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "format not same as original RGBA 4_4_4_4");
-gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c);
-wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original RGBA 4_4_4_4");
+if (contextVersion < 2) {
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original RGBA 4_4_4_4");
+}
 
 var maxCubeMapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
 var maxCubeMapTextureLevel = Math.floor(Math.log2(maxCubeMapTextureSize)) + 1;
