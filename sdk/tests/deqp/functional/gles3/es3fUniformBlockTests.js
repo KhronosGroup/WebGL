@@ -393,7 +393,7 @@ goog.scope(function() {
         ];
 
         /** @type {Array<Object.<string, glsUniformBlockCase.UniformFlags>>} */
-        var layoutFlags = [{ name: 'shared', flags: glsUniformBlockCase.UniformFlags.LAYOUT_SHARED },
+        var layoutFlags = [ /* { name: 'shared', flags: glsUniformBlockCase.UniformFlags.LAYOUT_SHARED }, */
             /* { name: 'packed', flags: glsUniformBlockCase.UniformFlags.LAYOUT_PACKED }, */ { name: 'std140', flags: glsUniformBlockCase.UniformFlags.LAYOUT_STD140 }
         ];
 
@@ -688,7 +688,7 @@ goog.scope(function() {
 
         /* ubo.random */
          /** @type {number} */ var allShaders = glsRandomUniformBlockCase.FeatureBits.FEATURE_VERTEX_BLOCKS | glsRandomUniformBlockCase.FeatureBits.FEATURE_FRAGMENT_BLOCKS | glsRandomUniformBlockCase.FeatureBits.FEATURE_SHARED_BLOCKS;
-         /** @type {number} */ var allLayouts = glsRandomUniformBlockCase.FeatureBits.FEATURE_PACKED_LAYOUT | glsRandomUniformBlockCase.FeatureBits.FEATURE_SHARED_LAYOUT | glsRandomUniformBlockCase.FeatureBits.FEATURE_STD140_LAYOUT;
+         /** @type {number} */ var allLayouts = glsRandomUniformBlockCase.FeatureBits.FEATURE_STD140_LAYOUT;
          /** @type {number} */ var allBasicTypes = glsRandomUniformBlockCase.FeatureBits.FEATURE_VECTORS | glsRandomUniformBlockCase.FeatureBits.FEATURE_MATRICES;
          /** @type {number} */ var unused = glsRandomUniformBlockCase.FeatureBits.FEATURE_UNUSED_MEMBERS | glsRandomUniformBlockCase.FeatureBits.FEATURE_UNUSED_UNIFORMS;
          /** @type {number} */ var matFlags = glsRandomUniformBlockCase.FeatureBits.FEATURE_MATRIX_LAYOUT;

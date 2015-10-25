@@ -41,7 +41,7 @@ goog.scope(function() {
     var uniformTestVertSource = '#version 300 es\n' +
     'uniform mediump vec4 vUnif_vec4;\n' +
     'in mediump vec4 attr;\n' +
-    'layout(shared) uniform Block { mediump vec4 blockVar; };\n' +
+    'layout(std140) uniform Block { mediump vec4 blockVar; };\n' +
     'void main (void)\n' +
     '{\n' +
     ' gl_Position = vUnif_vec4 + blockVar + attr;\n' +
