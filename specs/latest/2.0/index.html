@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 22 October 2015</h2>
+    <h2 class="no-toc">Editor's Draft 24 October 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2584,6 +2584,14 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       In WebGL 1, the framebuffer ends up with renderbuffer 1 attached to <code>DEPTH_ATTACHMENT</code> and no image attached to <code>STENCIL_ATTACHMENT</code>; in WebGL 2, however, neither <code>DEPTH_ATTACHMENT</code> nor <code>STENCIL_ATTACHMENT</code> has an image attached.</p>
     <p>The constraints defined in <a href="../1.0/index.html#FBO_ATTACHMENTS">Framebuffer Object Attachments</a> no longer apply in WebGL 2.</p>
     <p>If different images are bound to the depth and stencil attachment points, <code>checkFramebufferStatus</code> returns <code>FRAMEBUFFER_UNSUPPORTED</code>, and <code>getFramebufferAttachmentParameter</code> with <em>attachment</em> of <code>DEPTH_STENCIL_ATTACHMENT</code> generates an <code>INVALID_OPERATION</code> error.</p>
+
+    <h4>Texture Type in TexSubImage2D Calls</h4>
+
+    <p>
+        In the WebGL 1.0 API, the <em>type</em> argument passed to <code>texSubImage2D</code> must
+        match the type used to originally define the texture object (i.e., using <code>texImage2D</code>).
+        In the WebGL 2.0 API, this restriction has been lifted.
+    </p>
 
     <h3>New Features Supported in the WebGL 2 API</h3>
 
