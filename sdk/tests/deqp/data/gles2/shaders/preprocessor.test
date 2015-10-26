@@ -112,6 +112,21 @@ group basic "Basic Tests"
 		""
 	end
 
+	case identifier_with_double_underscore
+		values { output float out0 = 1.0; }
+		both ""
+			precision mediump float;
+			${DECLARATIONS}
+			# define __VALUE__	1
+
+			void main()
+			{
+				// __VALUE__ not used since it might be set by an "underlying software layer"
+				out0 = float(1.0);
+				${OUTPUT}
+			}
+		""
+	end
 end # basic
 
 group definitions "Symbol Definition Tests"
@@ -558,19 +573,6 @@ group object_redefinitions "Object Redefinition Tests"
 end # object_redefinitions
 
 group invalid_redefinitions "Invalid Redefinitions Tests"
-
-	case invalid_identifier_1
-		expect compile_fail
-		both ""
-			precision mediump float;
-			# define __VALUE__	1
-
-			void main()
-			{
-				${POSITION_FRAG_COLOR} = vec4(__VALUE__);
-			}
-		""
-	end
 
 	case invalid_identifier_2
 		expect compile_fail
@@ -2640,20 +2642,62 @@ end # builtin
 
 group pragmas "Pragma Tests"
 
-	case pragma
+	case pragma_vertex
 		values { output float out0 = 1.0; }
-		both ""
-	#pragma
-	#pragma STDGL invariant(all)
-	#pragma debug(off)
-	#pragma optimize(off)
+
+		vertex ""
+			#pragma
+			#pragma STDGL invariant(all)
+			#pragma debug(off)
+			#pragma optimize(off)
 
 			precision mediump float;
-			${DECLARATIONS}
+			${VERTEX_DECLARATIONS}
+			varying float v_val;
 			void main()
 			{
-				out0 = 1.0;
-				${OUTPUT}
+				v_val = 1.0;
+				${VERTEX_OUTPUT}
+			}
+		""
+		fragment ""
+			precision mediump float;
+			${FRAGMENT_DECLARATIONS}
+			invariant varying float v_val;
+			void main()
+			{
+				out0 = v_val;
+				${FRAGMENT_OUTPUT}
+			}
+		""
+	end
+
+	case pragma_fragment
+		values { output float out0 = 1.0; }
+
+		vertex ""
+			precision mediump float;
+			${VERTEX_DECLARATIONS}
+			varying float v_val;
+			void main()
+			{
+				v_val = 1.0;
+				${VERTEX_OUTPUT}
+			}
+		""
+		fragment ""
+			#pragma
+			#pragma STDGL invariant(all)
+			#pragma debug(off)
+			#pragma optimize(off)
+
+			precision mediump float;
+			${FRAGMENT_DECLARATIONS}
+			varying float v_val;
+			void main()
+			{
+				out0 = v_val;
+				${FRAGMENT_OUTPUT}
 			}
 		""
 	end
@@ -2675,10 +2719,12 @@ group pragmas "Pragma Tests"
 		""
 	end
 
-	case invalid_pragma_invalid_debug
-		expect compile_fail
+	case pragma_unrecognized_debug
+		expect build_successful
 		both ""
 			#pragma debug(1.23)
+
+			// unrecognized preprocessor token
 
 			precision mediump float;
 			void main()
@@ -2688,10 +2734,12 @@ group pragmas "Pragma Tests"
 		""
 	end
 
-	case invalid_pragma_invalid_token
-		expect compile_fail
+	case pragma_unrecognized_token
+		expect build_successful
 		both ""
-			#pragma ¤¤½
+			#pragma **%
+
+			// trailing bytes form a valid but unrecognized preprocessor token
 
 			precision mediump float;
 			void main()
@@ -2824,7 +2872,7 @@ group extensions "Extension Tests"
 	case invalid_char_in_name
 		expect compile_fail
 		both ""
-	#extension all¤ : warn
+	#extension all* : warn
 			precision mediump float;
 			void main()
 			{
@@ -2836,7 +2884,7 @@ group extensions "Extension Tests"
 	case invalid_char_in_behavior
 		expect compile_fail
 		both ""
-	#extension all : war¤n
+	#extension all : war*n
 			precision mediump float;
 			void main()
 			{
