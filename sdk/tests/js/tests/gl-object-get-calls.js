@@ -785,6 +785,46 @@ if (contextVersion > 1) {
     });
 
     debug("");
+    debug("Test getSamplerParameter");
+    var sampler = gl.createSampler();
+    gl.samplerParameteri(sampler, gl.TEXTURE_COMPARE_FUNC, gl.LEQUAL);
+    gl.samplerParameteri(sampler, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
+    gl.samplerParameteri(sampler, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.samplerParameterf(sampler, gl.TEXTURE_MAX_LOD, 10);
+    gl.samplerParameteri(sampler, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.samplerParameterf(sampler, gl.TEXTURE_MIN_LOD, 0);
+    gl.samplerParameteri(sampler, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE);
+    gl.samplerParameteri(sampler, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.samplerParameteri(sampler, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    shouldBe('gl.getSamplerParameter(sampler, gl.TEXTURE_COMPARE_FUNC)', 'gl.LEQUAL');
+    shouldBe('gl.getSamplerParameter(sampler, gl.TEXTURE_COMPARE_MODE)', 'gl.COMPARE_REF_TO_TEXTURE');
+    shouldBe('gl.getSamplerParameter(sampler, gl.TEXTURE_MAG_FILTER)', 'gl.NEAREST');
+    shouldBe('gl.getSamplerParameter(sampler, gl.TEXTURE_MAX_LOD)', '10');
+    shouldBe('gl.getSamplerParameter(sampler, gl.TEXTURE_MIN_FILTER)', 'gl.NEAREST');
+    shouldBe('gl.getSamplerParameter(sampler, gl.TEXTURE_MIN_LOD)', '0');
+    shouldBe('gl.getSamplerParameter(sampler, gl.TEXTURE_WRAP_R)', 'gl.CLAMP_TO_EDGE');
+    shouldBe('gl.getSamplerParameter(sampler, gl.TEXTURE_WRAP_S)', 'gl.CLAMP_TO_EDGE');
+    shouldBe('gl.getSamplerParameter(sampler, gl.TEXTURE_WRAP_T)', 'gl.CLAMP_TO_EDGE');
+    var validArrayForSamplerParameter = new Array(
+        gl.TEXTURE_COMPARE_FUNC,
+        gl.TEXTURE_COMPARE_MODE,
+        gl.TEXTURE_MAG_FILTER,
+        gl.TEXTURE_MAX_LOD,
+        gl.TEXTURE_MIN_FILTER,
+        gl.TEXTURE_MIN_LOD,
+        gl.TEXTURE_WRAP_R,
+        gl.TEXTURE_WRAP_S,
+        gl.TEXTURE_WRAP_T
+    );
+    testInvalidArgument(
+        "getSamplerParameter",
+        "pname",
+        validArrayForSamplerParameter,
+        function(pname) {
+	    return gl.getSamplerParameter(sampler, pname);
+    });
+
+    debug("");
     debug("Test getQueryParameter");
     var query = gl.createQuery();
     gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
