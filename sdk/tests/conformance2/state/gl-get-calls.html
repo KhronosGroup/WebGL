@@ -166,11 +166,11 @@ else {
 
     shouldBeGreaterThanOrEqual('context.getParameter(context.MAX_VERTEX_UNIFORM_BLOCKS)', '12');
     shouldBeType('context.getParameter(context.MAX_VERTEX_UNIFORM_BLOCKS)', 'Number');
-    
+
     shouldBeGreaterThanOrEqual('context.getParameter(context.MAX_VERTEX_UNIFORM_COMPONENTS)', '1024');
     shouldBeType('context.getParameter(context.MAX_VERTEX_UNIFORM_COMPONENTS)', 'Number');
 
-    shouldBeGreaterThanOrEqual('context.getParameter(context.MIN_PROGRAM_TEXEL_OFFSET)', '-8');
+    shouldBeLessThanOrEqual('context.getParameter(context.MIN_PROGRAM_TEXEL_OFFSET)', '-8');
     shouldBeType('context.getParameter(context.MIN_PROGRAM_TEXEL_OFFSET)', 'Number');
 
     shouldBeGreaterThanOrEqual('context.getParameter(context.UNIFORM_BUFFER_OFFSET_ALIGNMENT)', '1');
