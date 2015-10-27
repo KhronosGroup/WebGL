@@ -275,6 +275,21 @@ void main() {
     my_FragColor = vec4(1.0 - f, f, 0.0, 1.0);
 }
 </script>
+<script id="fshaderIndexUniform" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+
+out vec4 my_FragColor;
+
+uniform vec4 u_zeroVec;
+uniform uint u_zero;
+
+void main() {
+    // This test is just to catch a crash bug that occurred in ANGLE's workaround.
+    // Rendering result is not meaningful.
+    float f = u_zeroVec[u_zero];
+    my_FragColor = vec4(f, 1.0, 0.0, 1.0);
+}
+</script>
 <script type="application/javascript">
 "use strict";
 description("Dynamic indexing of vectors and matrices should work.");
@@ -353,6 +368,12 @@ GLSLConformanceTester.runRenderTests([
   fShaderSuccess: true,
   linkSuccess: true,
   passMsg: 'Index on the left-hand side of assignment with an uint'
+},
+{
+  fShaderId: 'fshaderIndexUniform',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Index a uniform with a uniform'
 }
 ], 2);
 </script>
