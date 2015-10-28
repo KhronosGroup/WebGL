@@ -289,7 +289,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
         [
             [-(1 << 7), (1 << 7) - 1],
             [-(1 << 15), (1 << 15) - 1],
-            [0x80000000, 0x7fffffff]
+            [-0x80000000, 0x7fffffff]
         ];
         // DE_STATIC_ASSERT(DE_LENGTH_OF_ARRAY(ranges) == glu::PRECISION_LAST);
         // DE_ASSERT(de::inBounds<int>(precision, 0, DE_LENGTH_OF_ARRAY(ranges)));
@@ -318,16 +318,17 @@ var tcuImageCompare = framework.common.tcuImageCompare;
     /**
      * es3fFragmentOutputTests.readVec4
      * @param {Array<number>} ptr
+     * @param {number} index
      * @param {number} numComponents
      * @return {Array<number>} Vec4
      */
-    es3fFragmentOutputTests.readVec4 = function(ptr, numComponents) {
+    es3fFragmentOutputTests.readVec4 = function(ptr, index, numComponents) {
         DE_ASSERT(numComponents >= 1);
         return [
-                ptr[0],
-                numComponents >= 2 ? ptr[1] : 0.0,
-                numComponents >= 3 ? ptr[2] : 0.0,
-                numComponents >= 4 ? ptr[3] : 0.0
+                ptr[index + 0],
+                numComponents >= 2 ? ptr[index + 1] : 0.0,
+                numComponents >= 3 ? ptr[index + 2] : 0.0,
+                numComponents >= 4 ? ptr[index + 3] : 0.0
                 ];
     };
 
@@ -337,13 +338,13 @@ var tcuImageCompare = framework.common.tcuImageCompare;
      * @param {number} numComponents
      * @return {Array<number>} IVec4
      */
-    es3fFragmentOutputTests.readIVec4 = function(ptr, numComponents) {
+    es3fFragmentOutputTests.readIVec4 = function(ptr, index, numComponents) {
         DE_ASSERT(numComponents >= 1);
         return [
-                ptr[0],
-                numComponents >= 2 ? ptr[1] : 0,
-                numComponents >= 3 ? ptr[2] : 0,
-                numComponents >= 4 ? ptr[3] : 0
+                ptr[index + 0],
+                numComponents >= 2 ? ptr[index + 1] : 0,
+                numComponents >= 3 ? ptr[index + 2] : 0,
+                numComponents >= 4 ? ptr[index + 3] : 0
                 ];
     };
 
@@ -358,20 +359,20 @@ var tcuImageCompare = framework.common.tcuImageCompare;
     es3fFragmentOutputTests.renderFloatReference = function(dst, gridWidth, gridHeight, numComponents, vertices) {
 
         /** @type {boolean} */ var isSRGB = dst.getFormat().order == tcuTexture.ChannelOrder.sRGB || dst.getFormat().order == tcuTexture.ChannelOrder.sRGBA;
-        /** @type {number} */ var cellW = Math.floor(dst.getWidth() / (gridWidth - 1));
-        /** @type {number} */ var cellH = Math.floor(dst.getHeight() / (gridHeight - 1));
+        /** @type {number} */ var cellW = dst.getWidth() / (gridWidth - 1);
+        /** @type {number} */ var cellH = dst.getHeight() / (gridHeight - 1);
 
         for (var y = 0; y < dst.getHeight(); y++) {
             for (var x = 0; x < dst.getWidth(); x++) {
                 /** @type {number} */ var cellX = deMath.clamp(Math.floor(x / cellW), 0, gridWidth - 2);
                 /** @type {number} */ var cellY = deMath.clamp(Math.floor(y / cellH), 0, gridHeight - 2);
-                /** @type {number} */ var xf = Math.floor((x - cellX * cellW + 0.5) / cellW);
-                /** @type {number} */ var yf = Math.floor((y - cellY * cellH + 0.5) / cellH);
+                /** @type {number} */ var xf = (x - cellX * cellW + 0.5) / cellW;
+                /** @type {number} */ var yf = (y - cellY * cellH + 0.5) / cellH;
 
-                /** @type {Array<number>} */ var v00 = es3fFragmentOutputTests.readVec4([vertices[((cellY + 0) * gridWidth + cellX + 0) * numComponents]], numComponents); // Vec4
-                /** @type {Array<number>} */ var v01 = es3fFragmentOutputTests.readVec4([vertices[((cellY + 1) * gridWidth + cellX + 0) * numComponents]], numComponents); // Vec4
-                /** @type {Array<number>} */ var v10 = es3fFragmentOutputTests.readVec4([vertices[((cellY + 0) * gridWidth + cellX + 1) * numComponents]], numComponents); // Vec4
-                /** @type {Array<number>} */ var v11 = es3fFragmentOutputTests.readVec4([vertices[((cellY + 1) * gridWidth + cellX + 1) * numComponents]], numComponents); // Vec4
+                /** @type {Array<number>} */ var v00 = es3fFragmentOutputTests.readVec4(vertices, ((cellY + 0) * gridWidth + cellX + 0) * numComponents, numComponents); // Vec4
+                /** @type {Array<number>} */ var v01 = es3fFragmentOutputTests.readVec4(vertices, ((cellY + 1) * gridWidth + cellX + 0) * numComponents, numComponents); // Vec4
+                /** @type {Array<number>} */ var v10 = es3fFragmentOutputTests.readVec4(vertices, ((cellY + 0) * gridWidth + cellX + 1) * numComponents, numComponents); // Vec4
+                /** @type {Array<number>} */ var v11 = es3fFragmentOutputTests.readVec4(vertices, ((cellY + 1) * gridWidth + cellX + 1) * numComponents, numComponents); // Vec4
 
                 /** @type {boolean} */ var tri = xf + yf >= 1.0;
                 /** @type {Array<number>} */ var v0 = tri ? v11 : v00; // Vec4&
@@ -396,16 +397,16 @@ var tcuImageCompare = framework.common.tcuImageCompare;
      */
     es3fFragmentOutputTests.renderIntReference = function(dst, gridWidth, gridHeight, numComponents, vertices) {
 
-        /** @type {number} */ var cellW = Math.floor(dst.getWidth() / (gridWidth - 1));
-        /** @type {number} */ var cellH = Math.floor(dst.getHeight() / (gridHeight - 1));
+        /** @type {number} */ var cellW = dst.getWidth() / (gridWidth - 1);
+        /** @type {number} */ var cellH = dst.getHeight() / (gridHeight - 1);
 
         for (var y = 0; y < dst.getHeight(); y++) {
             for (var x = 0; x < dst.getWidth(); x++) {
                 /** @type {number} */ var cellX = deMath.clamp(Math.floor(x / cellW), 0, gridWidth - 2);
                 /** @type {number} */ var cellY = deMath.clamp(Math.floor(y / cellH), 0, gridHeight - 2);
-                /** @type {Array<number>} */ var c = es3fFragmentOutputTests.readIVec4([vertices[(cellY * gridWidth + cellX + 1) * numComponents]], numComponents); // IVec4
+                /** @type {Array<number>} */ var c = es3fFragmentOutputTests.readIVec4(vertices, (cellY * gridWidth + cellX + 1) * numComponents, numComponents); // IVec4
 
-                dst.setPixel(c, x, y);
+                dst.setPixelInt(c, x, y);
             }
         }
     };
@@ -526,8 +527,8 @@ var tcuImageCompare = framework.common.tcuImageCompare;
         /** @type {number} */ var yf = 0;
         for (var y = 0; y < gridHeight; y++) {
             for (var x = 0; x < gridWidth; x++) {
-                xf = Math.floor(x / (gridWidth - 1));
-                yf = Math.floor(y / (gridHeight - 1));
+                xf = x / (gridWidth - 1);
+                yf = y / (gridHeight - 1);
 
                 positions[(y * gridWidth + x) * 4 + 0] = 2.0 * xf - 1.0;
                 positions[(y * gridWidth + x) * 4 + 1] = 2.0 * yf - 1.0;
@@ -588,8 +589,8 @@ var tcuImageCompare = framework.common.tcuImageCompare;
 
                     for (var y = 0; y < gridHeight; y++) {
                         for (var x = 0; x < gridWidth; x++) {
-                            xf = Math.floor(x / (gridWidth - 1));
-                            yf = Math.floor(y / (gridHeight - 1));
+                            xf = x / (gridWidth - 1);
+                            yf = y / (gridHeight - 1);
                             /** @type {number} */ var f0 = (xf + yf) * 0.5;
                             /** @type {number} */ var f1 = 0.5 + (xf - yf) * 0.5;
 
@@ -720,17 +721,19 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                 if (loc >= 0) {
                     buffer = gl.createBuffer();
                     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-                    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(inputs[curInVec]), gl.STATIC_DRAW);
 
                     gl.enableVertexAttribArray(loc);
-                    if (isFloat)
+                    if (isFloat) {
+                        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(inputs[curInVec]), gl.STATIC_DRAW);
                         // KHRONOS WebGL 1.0 specification:
                         // void vertexAttribPointer(GLuint indx, GLint size, GLenum type, GLboolean normalized, GLsizei stride, GLintptr offset);
                         gl.vertexAttribPointer(loc, scalarSize, glScalarType, false, 0, 0); // offset = 0
-                    else
+                    } else {
+                        gl.bufferData(gl.ARRAY_BUFFER, new Int32Array(inputs[curInVec]), gl.STATIC_DRAW);
                         // KHRONOS WebGL 2.0 specification:
                         // void vertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset)
                         gl.vertexAttribIPointer(loc, scalarSize, glScalarType, 0, 0); // offset = 0
+                    }
                 } else
                     bufferedLogToConsole('Warning: No location for attribute "' + name + '" found.');
 
@@ -750,7 +753,6 @@ var tcuImageCompare = framework.common.tcuImageCompare;
         /** @type {WebGLBuffer} */ var indexObject = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexObject);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
         gl.drawElements(gl.TRIANGLES, numIndices, gl.UNSIGNED_SHORT, 0); // offset = 0
 
@@ -816,6 +818,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
             };
             /** @type {tcuTexture.PixelBufferAccess} */ var rendered = new tcuTexture.PixelBufferAccess(renderedDescriptor);
             /** @type {gluTextureUtil.TransferFormat} */ var transferFmt = gluTextureUtil.getTransferFormat(attachments[attachNdx].readFormat);
+            gl.readBuffer(gl.COLOR_ATTACHMENT0 + attachNdx);
             gl.readPixels(0, 0, attachmentW, attachmentH, transferFmt.format, transferFmt.dataType, rendered.getDataPtr());
 
             /** @type {Object} */
@@ -919,6 +922,18 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                 allLevelsOk = false;
         }
 
+        if (numAttachments > 1) {
+            if (allLevelsOk)
+                testPassed('Image comparison passed for ' +  numAttachments + ' attachments');
+            else
+                testFailed('Image comparison failed for some of ' +  numAttachments + ' attachments');
+        } else {
+            if (allLevelsOk)
+                testPassed('Image comparison passed');
+            else
+                testFailed('Image comparison failed');
+        }
+
         return tcuTestCase.IterateResult.STOP;
     };
 
@@ -930,7 +945,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
      * @param {number} seed
      * @return {es3fFragmentOutputTests.FragmentOutputCase} The currently modified object
      */
-    es3fFragmentOutputTests.createRandomCase = function(minRenderTargets, maxRenderTargets, seed) {
+    es3fFragmentOutputTests.createRandomCase = function(minRenderTargets, maxRenderTargets, seed, colorBufferFloatSupported) {
 
         /** @type {Array<gluShaderUtil.DataType>} */
         var outputTypes = [
@@ -974,6 +989,18 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                             gl.RG8,
                             gl.R8
                             ];
+
+        /** @type {Array<WebGLRenderingContextBase.GLenum>} */
+        var colorBufferFloatFormats = [
+                                       gl.RGBA32F,
+                                       gl.RGBA16F,
+                                       gl.R11F_G11F_B10F,
+                                       gl.RG32F,
+                                       gl.RG16F,
+                                       gl.R32F,
+                                       gl.R16F
+        ];
+
 
         /** @type {Array<WebGLRenderingContextBase.GLenum>} */
         var intFormats = [
@@ -1046,6 +1073,8 @@ var tcuImageCompare = framework.common.tcuImageCompare;
             if (isFloat) {
                 formatArray = rnd.choose(floatFormats, undefined, 1);
                 format = formatArray[0];
+                if (colorBufferFloatFormats.indexOf(format) >= 0 && !colorBufferFloatSupported)
+                    return null;
             } else if (isInt) {
                 formatArray = rnd.choose(intFormats, undefined, 1);
                 format = formatArray[0];
@@ -1062,7 +1091,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
 
     };
 
-    es3fFragmentOutputTests.init = function() {
+    es3fFragmentOutputTests.init = function(gl) {
         var state = tcuTestCase.runner;
         state.testCases = tcuTestCase.newTest('fragment_outputs', 'Top level');
         /** @const @type {tcuTestCase.DeqpTest} */ var testGroup = state.testCases;
@@ -1140,25 +1169,27 @@ var tcuImageCompare = framework.common.tcuImageCompare;
         /** @type {string} */ var precName;
 
     // .float
-        /** @type {tcuTestCase.DeqpTest} */ var floatGroup = tcuTestCase.newTest('float', 'Floating-point output tests');
-        basicGroup.addChild(floatGroup);
+        if (gl.getExtension('EXT_color_buffer_float')) {
+            /** @type {tcuTestCase.DeqpTest} */ var floatGroup = tcuTestCase.newTest('float', 'Floating-point output tests');
+            basicGroup.addChild(floatGroup);
 
-        for (var fmtNdx = 0; fmtNdx < requiredFloatFormats.length; fmtNdx++) {
-            var format = requiredFloatFormats[fmtNdx];
-            var fmtName = es3fFboTestUtil.getFormatName(format);
-            fboSpec = [];
+            for (var fmtNdx = 0; fmtNdx < requiredFloatFormats.length; fmtNdx++) {
+                var format = requiredFloatFormats[fmtNdx];
+                var fmtName = es3fFboTestUtil.getFormatName(format);
+                fboSpec = [];
 
-            fboSpec.push(new es3fFragmentOutputTests.BufferSpec(format, width, height, samples));
+                fboSpec.push(new es3fFragmentOutputTests.BufferSpec(format, width, height, samples));
 
-            for (var precNdx = 0; precNdx < precisions.length; precNdx++) {
-                prec = precisions[precNdx];
-                precName = gluShaderUtil.getPrecisionName(prec);
+                for (var precNdx = 0; precNdx < precisions.length; precNdx++) {
+                    prec = precisions[precNdx];
+                    precName = gluShaderUtil.getPrecisionName(prec);
 
-                // NOTE: Eliminated original OutputVec and toVec(), as it only returned an element of the outputs array in OutputVec
-                floatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_float', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT, prec, 0)]));
-                floatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_vec2', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT_VEC2, prec, 0)]));
-                floatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_vec3', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT_VEC3, prec, 0)]));
-                floatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_vec4', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT_VEC4, prec, 0)]));
+                    // NOTE: Eliminated original OutputVec and toVec(), as it only returned an element of the outputs array in OutputVec
+                    floatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_float', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT, prec, 0)]));
+                    floatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_vec2', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT_VEC2, prec, 0)]));
+                    floatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_vec3', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT_VEC3, prec, 0)]));
+                    floatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_vec4', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT_VEC4, prec, 0)]));
+                }
             }
         }
 
@@ -1234,25 +1265,27 @@ var tcuImageCompare = framework.common.tcuImageCompare;
         /** @type {number} */ var numTargets = 3;
 
         // .float
-        /** @type {tcuTestCase.DeqpTest} */ var arrayFloatGroup = tcuTestCase.newTest('float', 'Floating-point output tests');
-        arrayGroup.addChild(arrayFloatGroup);
-        for (var fmtNdx = 0; fmtNdx < requiredFloatFormats.length; fmtNdx++) {
-            var format = requiredFloatFormats[fmtNdx];
-            var fmtName = es3fFboTestUtil.getFormatName(format);
-            fboSpec = [];
+        if (gl.getExtension('EXT_color_buffer_float')) {
+            /** @type {tcuTestCase.DeqpTest} */ var arrayFloatGroup = tcuTestCase.newTest('float', 'Floating-point output tests');
+            arrayGroup.addChild(arrayFloatGroup);
+            for (var fmtNdx = 0; fmtNdx < requiredFloatFormats.length; fmtNdx++) {
+                var format = requiredFloatFormats[fmtNdx];
+                var fmtName = es3fFboTestUtil.getFormatName(format);
+                fboSpec = [];
 
-            for (var ndx = 0; ndx < numTargets; ndx++)
-                fboSpec.push(new es3fFragmentOutputTests.BufferSpec(format, width, height, samples));
+                for (var ndx = 0; ndx < numTargets; ndx++)
+                    fboSpec.push(new es3fFragmentOutputTests.BufferSpec(format, width, height, samples));
 
-            for (var precNdx = 0; precNdx < precisions.length; precNdx++) {
-                prec = precisions[precNdx];
-                precName = gluShaderUtil.getPrecisionName(prec);
+                for (var precNdx = 0; precNdx < precisions.length; precNdx++) {
+                    prec = precisions[precNdx];
+                    precName = gluShaderUtil.getPrecisionName(prec);
 
-                arrayFloatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_float', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT, prec, 0, numTargets)]));
-                arrayFloatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_vec2', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT_VEC2, prec, 0, numTargets)]));
-                arrayFloatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_vec3', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT_VEC3, prec, 0, numTargets)]));
-                arrayFloatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_vec4', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT_VEC4, prec, 0, numTargets)]));
-        }
+                    arrayFloatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_float', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT, prec, 0, numTargets)]));
+                    arrayFloatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_vec2', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT_VEC2, prec, 0, numTargets)]));
+                    arrayFloatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_vec3', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT_VEC3, prec, 0, numTargets)]));
+                    arrayFloatGroup.addChild(new es3fFragmentOutputTests.FragmentOutputCase(fmtName + '_' + precName + '_vec4', '', fboSpec, [new es3fFragmentOutputTests.FragmentOutput(gluShaderUtil.DataType.FLOAT_VEC4, prec, 0, numTargets)]));
+                }
+            }
         }
 
         // .fixed
@@ -1326,8 +1359,13 @@ var tcuImageCompare = framework.common.tcuImageCompare;
         /** @type {tcuTestCase.DeqpTest} */ var randomGroup = tcuTestCase.newTest('random', 'Random fragment output cases');
         testGroup.addChild(randomGroup);
 
-        for (var seed = 0; seed < 100; seed++)
-            randomGroup.addChild(es3fFragmentOutputTests.createRandomCase(2, 4, seed));
+        /** @type {boolean} */ var colorBufferFloatSupported = (gl.getExtension('EXT_color_buffer_float') != null);
+        for (var seed = 0; seed < 100; seed++) {
+            var test = es3fFragmentOutputTests.createRandomCase(2, 4, seed, colorBufferFloatSupported);
+            if (test !== null) {
+                randomGroup.addChild(test);
+            }
+        }
 
     };
 
@@ -1349,7 +1387,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
         description(testDescription);
 
         try {
-            es3fFragmentOutputTests.init();
+            es3fFragmentOutputTests.init(gl);
             tcuTestCase.runTestCases();
         } catch (err) {
             testFailedOptions('Failed to es3fFragmentOutputTests.run tests', false);
