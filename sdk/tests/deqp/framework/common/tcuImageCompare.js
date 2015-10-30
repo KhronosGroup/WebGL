@@ -288,7 +288,7 @@ tcuImageCompare.floatUlpThresholdCompare = function(imageSetName, imageSetDesc, 
 
                 maxDiff = deMath.max(maxDiff, diff);
 
-                errorMask.setPixel(x, y, isOk ? [0, 1, 0, 1] : [1, 0, 0, 1]);
+                errorMask.setPixel(x, y, isOk ? [0, 255, 0, 255] : [255, 0, 0, 255]);
             }
         }
     }
@@ -361,7 +361,7 @@ tcuImageCompare.floatThresholdCompare = function(imageSetName, imageSetDesc, ref
 
                 maxDiff = deMath.max(maxDiff, diff);
 
-                errorMask.setPixel(x, y, isOk ? [0, 1, 0, 1] : [1, 0, 0, 1]);
+                errorMask.setPixel(x, y, isOk ? [0, 255, 0, 255] : [255, 0, 0, 255]);
             }
         }
     }

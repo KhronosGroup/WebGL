@@ -76,6 +76,22 @@ tcuLogImage.logImageWithInfo = function(image, info) {
     ctx.putImageData(data, 0, 0);
 };
 
+
+/**
+ * @param {Array<number>=} scale
+ * @param {Array<number>=} bias
+ * @return {string} HTML string to add to log.
+ */
+tcuLogImage.logScaleAndBias = function(scale, bias) {
+    if (scale && bias)
+        return '<br> Image normalized with formula p * (' + scale + ') + (' + bias + ')';
+    else if (scale)
+        return '<br> Image normalized with formula p * (' + scale + ')';
+    else if (bias)
+        return '<br> Image normalized with formula p + (' + bias + ')';
+    return '';
+};
+
 /**
  * @param {string} name
  * @param {string} description
@@ -87,10 +103,8 @@ tcuLogImage.logImageRGB = function(name, description, image, scale, bias) {
     var elem = document.getElementById('console');
     var span = document.createElement('span');
     var info = name + ' ' + description + '<br> ' + image;
-    if (scale)
-        info += '<br> Scale: ' + scale;
-    if (bias)
-        info += '<br> Bias: ' + bias;
+    if (scale || bias)
+        info += tcuLogImage.logScaleAndBias(scale, bias);
     tcuLogImage.logImageWithInfo(image, info);
 };
 
@@ -137,8 +151,7 @@ tcuLogImage.logImage = function(name, description, access, pixelScale, pixelBias
         }
         var info = name + ' ' + description + '<br> ' + access;
         if (needScaling) {
-            info += '<br> Scale: ' + pixelScale;
-            info += '<br> Bias: ' + pixelBias;
+            info += tcuLogImage.logScaleAndBias(pixelScale, pixelBias);
         }
 
         tcuLogImage.logImageWithInfo(logImageAccess, info);

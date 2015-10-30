@@ -410,7 +410,7 @@ goog.scope(function() {
         /** @type {Array<Array<number>>} */ var intRanges = [
             [-(1 << 7) + 1, (1 << 7) - 1],
             [-(1 << 15) + 1, (1 << 15) - 1],
-            [0x80000001, 0x7fffffff]
+            [-0x80000000 + 1, 0x7fffffff]
         ];
 
         /** @type {deRandom.Random} */ var rnd = new deRandom.Random(deString.deStringHash(this.name) ^ 0x235fac);
