@@ -39,7 +39,7 @@ Tests.startUnit = function () {
   return [gl];
 }
 
-Tests.testUniformf = function(gl) {
+Tests.testUniformi = function(gl) {
   var sh = new Filter(gl, 'foobar-vert', 'foobar-frag');
   sh.apply(function(f){
     var foo = f.uniform('foo');
