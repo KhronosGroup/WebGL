@@ -7,6 +7,7 @@ array-in-complex-expression.html
 array-length-side-effects.html
 attrib-location-length-limits.html
 compare-structs-containing-arrays.html
+const-array-init.html
 frag-depth.html
 invalid-default-precision.html
 misplaced-version-directive.html
