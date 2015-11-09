@@ -40,6 +40,27 @@ void main()
     gl_Position = vec4(p.xyz, 1.0);
 }
 </script>
+<script id='fbadshader' type='x-shader/x-fragment'>#version 300 es
+precision mediump float;
+layout(location=0) out vec4 oColor;
+
+uniform UBOData {
+    float UBORed;
+    float UBOGreen;
+    float UBOBlue;
+};
+
+uniform Color {
+    float Red;
+    float UBOGreen;
+    float Blue;
+};
+
+void main()
+{
+    oColor = vec4(UBORed * Red, UBOGreen * UBOGreen, UBOBlue * Blue, 1.0);
+}
+</script>
 <script id='fshader' type='x-shader/x-fragment'>#version 300 es
 precision mediump float;
 layout(location=0) out vec4 oColor;
@@ -127,8 +148,15 @@ function runDrawTest() {
 
     wtu.setupUnitQuad(gl);
 
+    var testProgram = wtu.setupProgram(gl, ['vshader', 'fbadshader']);
+    if (!testProgram) {
+        testPassed("To define the same uniform in two uniform blocks should fail");
+    }
+
     var program = wtu.setupProgram(gl, ['vshader', 'fshader']);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to compile shader with uniform blocks without error");
+    if (program) {
+        testPassed("should be able to compile shader with uniform blocks without error");
+    }
 
     var blockIndex = gl.getUniformBlockIndex(program, "UBOData");
     var blockSize = gl.getActiveUniformBlockParameter(program, blockIndex, gl.UNIFORM_BLOCK_DATA_SIZE);
