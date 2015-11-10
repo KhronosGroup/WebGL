@@ -1,4 +1,5 @@
 gl-get-tex-parameter.html
+tex-3d-size-limit.html
 tex-input-validation.html
 tex-mipmap-levels.html
 tex-new-formats.html
