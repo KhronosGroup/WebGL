@@ -53,6 +53,10 @@ function numLevelsFromSize(size) {
     return levels;
 }
 
+function enumToString(value) {
+    return wtu.glEnumToString(gl, value);
+}
+
 function test3DTextureDimensions() {
     debug("");
     debug("Checking 3D texture dimensions.");
@@ -101,11 +105,75 @@ function test3DTextureDimensions() {
     gl.deleteTexture(tex3d);
 }
 
+function test3DTexturePixelSize() {
+    debug("");
+    debug("Checking pixel data array is big enough for request.");
+
+    var tex3d = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_3D, tex3d);
+    var tests = [
+        {
+            internalformat: gl.RGBA,
+            format: gl.RGBA,
+            type: gl.UNSIGNED_BYTE,
+            size: 4,
+            dataType: Uint8Array
+        },
+        {
+            internalformat: gl.R8,
+            format: gl.RED,
+            type: gl.UNSIGNED_BYTE,
+            size: 1,
+            dataType: Uint8Array
+        },
+        {
+            internalformat: gl.RGB565,
+            format: gl.RGB,
+            type: gl.UNSIGNED_SHORT_5_6_5,
+            size: 1,
+            dataType: Uint16Array
+        },
+        {
+            internalformat: gl.RGBA32I,
+            format: gl.RGBA_INTEGER,
+            type: gl.INT,
+            size: 4,
+            dataType: Int32Array
+        },
+        {
+            internalformat: gl.RGBA32F,
+            format: gl.RGBA,
+            type: gl.FLOAT,
+            size: 4,
+            dataType: Float32Array
+        },
+    ];
+
+    tests.forEach(function(test) {
+        debug("");
+        debug("Testing internalformat " + enumToString(test.internalformat)
+              + ", format " + enumToString(test.format)
+              + ", type " + enumToString(test.type));
+
+        var pixels = new test.dataType(256 * 256 * 4 * test.size);
+        gl.texImage3D(gl.TEXTURE_3D, 0, test.internalformat, 256, 256, 256, 0, test.format, test.type, pixels);
+        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "ArrayBufferView not big enough for request by texImage3D.");
+        gl.texImage3D(gl.TEXTURE_3D, 0, test.internalformat, 256, 256, 4, 0, test.format, test.type, pixels);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "ArrayBufferView big enough for request by texImage3D.");
+        pixels = new test.dataType(256 * 256 * 1 * test.size);
+        gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 256, 256, 2, test.format, test.type, pixels);
+        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "ArrayBufferView not big enough for request by texSubImage3D.");
+    });
+
+    gl.deleteTexture(tex3d);
+}
+
 description("This tests size limits of 3D textures.");
 
 shouldBeNonNull("gl = wtu.create3DContext(undefined, undefined, 2)");
 
 test3DTextureDimensions();
+test3DTexturePixelSize();
 
 debug("");
 var successfullyParsed = true;
