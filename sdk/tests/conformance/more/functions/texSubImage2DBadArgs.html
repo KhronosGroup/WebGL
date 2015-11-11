@@ -91,7 +91,7 @@ Tests.testTexImage2D = function(gl) {
     assertGLError(gl, gl.INVALID_ENUM, "bad format", function(){
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, 1,1,gl.FLOAT,gl.UNSIGNED_BYTE, new Uint8Array([0,0,0,0]));
     });
-    assertGLError(gl, gl.INVALID_ENUM, "bad type", function(){
+    assertGLErrorIn(gl, [gl.INVALID_ENUM, gl.INVALID_OPERATION], "bad type", function(){
         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, 1,1,gl.RGBA,gl.TEXTURE_2D, new Uint8Array([0,0,0,0]));
     });
     assertGLError(gl, gl.INVALID_OPERATION, "not enough data", function(){
