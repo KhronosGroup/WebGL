@@ -207,7 +207,7 @@
 </xsl:template>
 
 <xsl:template match="core" mode="depends">
-  <p> Promoted to core in <xsl:apply-templates select="."/> specification. <xsl:apply-templates select="glsl" mode="requires" /></p>
+  <p> Promoted to core and no longer available as an extension in <xsl:apply-templates select="."/> specification. <xsl:apply-templates select="glsl" mode="requires" /></p>
 
   <xsl:choose>
     <xsl:when test="count(addendum)!=0">
