@@ -163,7 +163,7 @@ var TexImageUtils = (function() {
     'in vec2 texCoord;',
     'out vec4 fragData;',
     'void main() {',
-    '    vec4 data = vec4(texture(tex, texCoord, 0).rgb 1.0);',
+    '    vec4 data = vec4(texture(tex, vec3(texCoord, 0.0)).rgb, 1.0);',
     '    fragData = vec4(float(data[0])/255.0,',
     '                    float(data[1])/255.0,',
     '                    float(data[2])/255.0,',
