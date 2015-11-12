@@ -1479,9 +1479,9 @@ var hasAttributeCaseInsensitive = function(obj, attr) {
   }
 };
 
-/**   
- * Returns a map of URL querystring options    
- * @return {Object?} Object containing all the values in the URL querystring   
+/**
+ * Returns a map of URL querystring options
+ * @return {Object?} Object containing all the values in the URL querystring
  */
 var getUrlOptions = (function() {
   var _urlOptionsParsed = false;
@@ -1640,26 +1640,6 @@ function create3DContextWithWrapperThatThrowsOnGLError(canvas, opt_attributes, o
 };
 
 /**
- * Tests that an evaluated expression generates a specific GL error.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
- * @param {string} evalStr The string to evaluate.
- */
-var shouldGenerateGLError = function(gl, glErrors, evalStr) {
-  var exception;
-  try {
-    eval(evalStr);
-  } catch (e) {
-    exception = e;
-  }
-  if (exception) {
-    testFailed(evalStr + " threw exception " + exception);
-  } else {
-    glErrorShouldBe(gl, glErrors, "after evaluating: " + evalStr);
-  }
-};
-
-/**
  * Tests that an evaluated expression does not generate a GL error.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {string} evalStr The string to evaluate.
@@ -1688,7 +1668,35 @@ var glErrorShouldBe = function(gl, glErrors, opt_msg) {
   glErrorShouldBeImpl(gl, glErrors, true, opt_msg);
 };
 
+/**
+ * Tests that the first error GL returns is in the specified error list.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!Array.<number>} expectedErrorList The list of expected gl errors.
+ * @param {string} opt_msg
+ */
+var glErrorShouldBeIn = function(gl, expectedErrorList, opt_msg) {
+  opt_msg = opt_msg || "";
 
+  var expectedErrorStrList = [];
+  var expectedErrorSet = {};
+
+  for (var i in expectedErrorList) {
+    var cur = expectedErrorList[i];
+
+    expectedErrorStrList.push(glEnumToString(gl, cur));
+    expectedErrorSet[cur] = true;
+  }
+
+  var expectedErrorStr = "[" + expectedErrorStrList.join(", ") + "]";
+
+  var actualError = gl.getError();
+  if (actualError in expectedErrorSet) {
+    testPassed("getError was in expected values: " + expectedErrorStr + " : " + opt_msg);
+  } else {
+    testFailed("getError expected: " + expectedErrorStr +
+               ". Was " + glEnumToString(gl, actualError) + " : " + opt_msg);
+  }
+};
 
 /**
  * Tests that the first error GL returns is the specified error. Allows suppression of successes.
@@ -1715,6 +1723,46 @@ var glErrorShouldBeImpl = function(gl, glErrors, reportSuccesses, opt_msg) {
   } else if (reportSuccesses) {
     var msg = "getError was " + ((glErrors.length > 1) ? "one of: " : "expected value: ");
     testPassed(msg + expected + " : " + opt_msg);
+  }
+};
+
+/**
+ * Tests that an evaluated expression generates a specific GL error.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {number} glError The expected gl error.
+ * @param {string} evalSTr The string to evaluate.
+ */
+var shouldGenerateGLError = function(gl, glError, evalStr) {
+  var exception;
+  try {
+    eval(evalStr);
+  } catch (e) {
+    exception = e;
+  }
+  if (exception) {
+    testFailed(evalStr + " threw exception " + exception);
+  } else {
+    glErrorShouldBe(gl, glError, evalStr);
+  }
+};
+
+/**
+ * Tests that an evaluated expression generates a GL error from a list.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param {!Array.<number>} expectedErrorList The list of expected gl errors.
+ * @param {string} evalSTr The string to evaluate.
+ */
+var shouldGenerateGLErrorIn = function(gl, expectedErrorList, evalStr) {
+  var exception;
+  try {
+    eval(evalStr);
+  } catch (e) {
+    exception = e;
+  }
+  if (exception) {
+    testFailed(evalStr + " threw exception " + exception);
+  } else {
+    glErrorShouldBeIn(gl, expectedErrorList, evalStr);
   }
 };
 
@@ -3053,6 +3101,7 @@ return {
   getUniformMap: getUniformMap,
   glEnumToString: glEnumToString,
   glErrorShouldBe: glErrorShouldBe,
+  glErrorShouldBeIn: glErrorShouldBeIn,
   glTypeToTypedArrayType: glTypeToTypedArrayType,
   hasAttributeCaseInsensitive: hasAttributeCaseInsensitive,
   insertImage: insertImage,
@@ -3111,6 +3160,7 @@ return {
   startPlayingAndWaitForVideo: startPlayingAndWaitForVideo,
   startsWith: startsWith,
   shouldGenerateGLError: shouldGenerateGLError,
+  shouldGenerateGLErrorIn: shouldGenerateGLErrorIn,
   readFile: readFile,
   readFileList: readFileList,
   replaceParams: replaceParams,

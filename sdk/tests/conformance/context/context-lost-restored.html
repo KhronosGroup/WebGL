@@ -157,7 +157,7 @@ function testLosingAndRestoringContext()
       // restore the context after this event has exited.
       setTimeout(function() {
         shouldGenerateGLError(gl, gl.NO_ERROR, "WEBGL_lose_context.restoreContext()");
-        // The context should still be lost. It will not get restored until the 
+        // The context should still be lost. It will not get restored until the
         // webglrestorecontext event is fired.
         shouldBeTrue("gl.isContextLost()");
         shouldBe("gl.getError()", "gl.NO_ERROR");
@@ -248,7 +248,8 @@ function testOESTextureFloat() {
     // Extension must still be lost.
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    shouldGenerateGLError(gl, gl.INVALID_ENUM, "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.FLOAT, null)");
+    wtu.shouldGenerateGLErrorIn(gl, [gl.INVALID_ENUM, gl.INVALID_OPERATION],
+                                "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.FLOAT, null)");
     // Try re-enabling extension
     OES_texture_float = reGetExtensionAndTestForProperty(gl, "OES_texture_float", false);
     shouldGenerateGLError(gl, gl.NO_ERROR, "gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.FLOAT, null)");
