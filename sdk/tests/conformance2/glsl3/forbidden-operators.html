@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL GLSL Conformance Tests - Ternary operator on arrays</title>
+<title>WebGL GLSL Conformance Tests - Unsupported variants of operators</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <link rel="stylesheet" href="../../resources/glsl-feature-tests.css"/>
 <script src="../../js/js-test-pre.js"></script>
@@ -61,21 +61,81 @@ void main()
   MyStruct d = true ? b : c;
 }
 </script>
+<script id="fshader-void-ternary-operator" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+void foo() {}
+
+void main()
+{
+  true ? foo() : foo();
+}
+</script>
+<script id="fshader-array-sequence-operator" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+void main()
+{
+  float a[3];
+  float b[3] = (true, a);
+}
+</script>
+<script id="fshader-struct-array-sequence-operator" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+struct MyStruct {
+    bool a[3];
+};
+
+void main()
+{
+  MyStruct b;
+  MyStruct c = (true, b);
+}
+</script>
+<script id="fshader-void-sequence-operator" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+void foo() {}
+
+void main()
+{
+  (foo(), foo());
+}
+</script>
 <script>
 "use strict";
-description("Checks ternary operators for structs and arrays.");
+description("Check unsupported variants of operators.");
+
+// WebGL 2.0 spec section "Unsupported variants of GLSL ES 3.00 operators"
 
 GLSLConformanceTester.runTests([
 { fShaderId: 'fshader-array-ternary-operator',
-  fShaderSuccess: true,
-  linkSuccess: true,
-  passMsg: "Using ternary operators with arrays is allowed in glsl3",
+  fShaderSuccess: false,
+  linkSuccess: false,
+  passMsg: "Using ternary operators with arrays is not allowed",
 },
 { fShaderId: 'fshader-struct-array-ternary-operator',
-  fShaderSuccess: true,
-  linkSuccess: true,
-  passMsg: "By implication, using ternary operators with structs containing arrays is allowed in glsl3",
+  fShaderSuccess: false,
+  linkSuccess: false,
+  passMsg: "Using ternary operators with structs containing arrays is not allowed",
 },
+{ fShaderId: 'fshader-void-ternary-operator',
+  fShaderSuccess: false,
+  linkSuccess: false,
+  passMsg: "Using ternary operators with void is not allowed",
+},
+{ fShaderId: 'fshader-array-sequence-operator',
+  fShaderSuccess: false,
+  linkSuccess: false,
+  passMsg: "Using sequence operators with arrays is not allowed",
+},
+{ fShaderId: 'fshader-struct-array-sequence-operator',
+  fShaderSuccess: false,
+  linkSuccess: false,
+  passMsg: "Using sequence operators with structs containing arrays is not allowed",
+},
+{ fShaderId: 'fshader-void-sequence-operator',
+  fShaderSuccess: false,
+  linkSuccess: false,
+  passMsg: "Using sequence operators with void is not allowed",
+}
 ], 2);
 
 debug("");
