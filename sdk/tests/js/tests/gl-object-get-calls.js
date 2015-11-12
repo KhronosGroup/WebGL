@@ -825,6 +825,27 @@ if (contextVersion > 1) {
     });
 
     debug("");
+    debug("Test getSyncParameter");
+    var sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+    shouldBe('gl.getSyncParameter(sync, gl.OBJECT_TYPE)', 'gl.SYNC_FENCE');
+    shouldBe('gl.getSyncParameter(sync, gl.SYNC_STATUS)', 'gl.UNSIGNALED');
+    shouldBe('gl.getSyncParameter(sync, gl.SYNC_CONDITION)', 'gl.SYNC_GPU_COMMANDS_COMPLETE');
+    shouldBe('gl.getSyncParameter(sync, gl.SYNC_FLAGS)', '0');
+    var validArrayForSyncParameter = new Array(
+        gl.OBJECT_TYPE,
+        gl.SYNC_STATUS,
+        gl.SYNC_CONDITION,
+        gl.SYNC_FLAGS
+    );
+    testInvalidArgument(
+        "getSyncParameter",
+        "pname",
+        validArrayForSyncParameter,
+        function(pname) {
+            return gl.getSyncParameter(sync, pname);
+    });
+
+    debug("");
     debug("Test getQueryParameter");
     var query = gl.createQuery();
     gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
