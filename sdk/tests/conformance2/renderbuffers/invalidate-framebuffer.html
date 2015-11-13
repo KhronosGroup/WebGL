@@ -78,7 +78,8 @@ if (!gl) {
   gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, rb);
   // invalidate the framebuffer when the attachment is incomplete: no storage allocated to the attached renderbuffer
   invalidateIncompleteAttachment(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT);
-  gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, canvas.width, canvas.height);
+  gl.renderbufferStorageMultisample(gl.RENDERBUFFER, samples[0], gl.DEPTH_COMPONENT16, canvas.width, canvas.height);
+  gl.clear(gl.DEPTH_BUFFER_BIT);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "should be no errors after attaching a renderbuffer to fbo.");
 
