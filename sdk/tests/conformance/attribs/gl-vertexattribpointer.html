@@ -67,7 +67,7 @@ if (!gl) {
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(0), gl.STATIC_DRAW);
   
-  if(getUrlOptions().webglVersion < 2) {
+  if (wtu.getDefault3DContextVersion() < 2) {
     gl.vertexAttribPointer(0, 1, gl.INT, 0, 0, 0);
     wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
 	    "vertexAttribPointer should not support INT");
