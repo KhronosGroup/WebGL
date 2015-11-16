@@ -123,7 +123,7 @@ var TexImageUtils = (function() {
   var simple3DUintTextureFragmentShaderES3 = [
     '#version 300 es',
     'precision mediump float;',
-    'uniform sampler3D tex;',
+    'uniform usampler3D tex;',
     'in vec2 texCoord;',
     'out vec4 fragData;',
     'void main() {',
@@ -159,7 +159,7 @@ var TexImageUtils = (function() {
   var simple2DArrayUintTextureFragmentShaderES3 = [
     '#version 300 es',
     'precision mediump float;',
-    'uniform sampler2DArray tex;',
+    'uniform usampler2DArray tex;',
     'in vec2 texCoord;',
     'out vec4 fragData;',
     'void main() {',
