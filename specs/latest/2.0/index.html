@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 24 October 2015</h2>
+    <h2 class="no-toc">Editor's Draft 18 November 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -3036,6 +3036,22 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
     <div class="note rationale">
         This restriction is enforced to improve portability by avoiding exposing uniform block
         layouts that are specific to one vendor's GPUs.
+    </div>
+
+    <h3>Disallowed variants of GLSL ES 3.00 operators</h3>
+
+    <p>
+        In the WebGL 2.0 API, the following shading language constructs are not allowed and
+        attempting to use them must result in a compile error:
+    </p>
+
+    <ul>
+        <li>Ternary operator applied to void, arrays, or structs containing arrays</li>
+        <li>Sequence operator applied to void, arrays, or structs containing arrays</li>
+    </ul>
+
+    <div class="note rationale">
+        This restriction ensures easy portability across OpenGL ES 3.0 supporting devices.
     </div>
 
 <!-- ======================================================================================================= -->
