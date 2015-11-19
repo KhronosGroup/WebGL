@@ -19,5 +19,6 @@ shader-with-1024-character-identifier.frag.html
 shader-with-1025-character-define.html
 shader-with-1025-character-identifier.frag.html
 short-circuiting-in-loop-condition.html
+texture-offset-out-of-range.html
 uniform-location-length-limits.html
 vector-dynamic-indexing.html
