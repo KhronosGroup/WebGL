@@ -230,8 +230,8 @@ function runEnumTestEnabled() {
 
   debug("Testing drawBuffersWEBGL with default drawing buffer");
   shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.BACK");
-  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, "ext.drawBuffersWEBGL([])");
-  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, "ext.drawBuffersWEBGL([gl.NONE, gl.NONE])");
+  wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "ext.drawBuffersWEBGL([])");
+  wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "ext.drawBuffersWEBGL([gl.NONE, gl.NONE])");
   wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "ext.drawBuffersWEBGL([ext.COLOR_ATTACHMENT0_WEBGL])");
   shouldBe("gl.getParameter(ext.DRAW_BUFFER0_WEBGL)", "gl.BACK");
   wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "ext.drawBuffersWEBGL([gl.NONE])");
