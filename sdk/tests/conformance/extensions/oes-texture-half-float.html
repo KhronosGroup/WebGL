@@ -244,8 +244,7 @@ function runTextureCreationTest(extensionEnabled, opt_format, opt_data, opt_expe
     var height = 2;
     gl.texImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, format, halfFloatOESEnum, data);
     if(!extensionEnabled) {
-        wtu.glErrorShouldBeIn(gl, [gl.INVALID_ENUM, gl.INVALID_OPERATION],
-                              "Half floating point texture must be disallowed if OES_texture_half_float isn't enabled");
+        wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Half floating point texture must be disallowed if OES_texture_half_float isn't enabled");
         return;
     } else if (!opt_expected) {
         wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Half floating point texture allocation must be disallowed when ArrayBufferView is not-null and not-Uint16");
