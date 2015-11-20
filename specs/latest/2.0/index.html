@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 19 November 2015</h2>
+    <h2 class="no-toc">Editor's Draft 20 November 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -969,9 +969,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
                 <tr><td>UNIFORM_BUFFER_OFFSET_ALIGNMENT</td><td>GLint</td></tr>
                 <tr><td>UNPACK_IMAGE_HEIGHT</td><td>GLint</td></tr>
                 <tr><td>UNPACK_ROW_LENGTH</td><td>GLint</td></tr>
-                <tr><td>UNPACK_SKIP_IMAGES</td><td>GLboolean</td></tr>
-                <tr><td>UNPACK_SKIP_PIXELS</td><td>GLboolean</td></tr>
-                <tr><td>UNPACK_SKIP_ROWS</td><td>GLboolean</td></tr>
+                <tr><td>UNPACK_SKIP_IMAGES</td><td>GLint</td></tr>
+                <tr><td>UNPACK_SKIP_PIXELS</td><td>GLint</td></tr>
+                <tr><td>UNPACK_SKIP_ROWS</td><td>GLint</td></tr>
                 <tr><td>VERTEX_ARRAY_BINDING</td><td>WebGLVertexArrayObject</td></tr>
             </table><br>
             <p>All queries returning sequences or typed arrays return a new object each time.</p>
@@ -1008,6 +1008,21 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glIsEnabled.xhtml">OpenGL ES 3.0 man page</a>)</span>
         <dd>
             In addition to all of the <code class="param">cap</code> values from WebGL 1.0, RASTERIZER_DISCARD is supported.
+        <dt class="idl-code">void pixelStorei(GLenum pname, GLint param)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.7.1">OpenGL ES 3.0.4 &sect;3.7.1</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glPixelStorei.xhtml">OpenGL ES 3.0 man page</a>)</span>
+        <dd>
+            In addition to the parameters from WebGL 1.0, the WebGL 2 specification accepts the following extra parameters:
+            <table class="foo">
+                <tr><th>pname</th></tr>
+                <tr><td>PACK_ROW_LENGTH</td></tr>
+                <tr><td>PACK_SKIP_PIXELS</td></tr>
+                <tr><td>PACK_SKIP_ROWS</td></tr>
+                <tr><td>UNPACK_ROW_LENGTH</td></tr>
+                <tr><td>UNPACK_IMAGE_HEIGHT</td></tr>
+                <tr><td>UNPACK_SKIP_PIXELS</td></tr>
+                <tr><td>UNPACK_SKIP_ROWS</td></tr>
+                <tr><td>UNPACK_SKIP_IMAGES</td></tr>
+            </table><br>
     </dl>
 
 <!-- ======================================================================================================= -->
