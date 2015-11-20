@@ -24,8 +24,8 @@
 */
 
 precision mediump float;
-uniform sampler3D s3D;
-uniform sampler2DArray s2DArray;
+uniform mediump sampler3D s3D;
+uniform mediump sampler2DArray s2DArray;
 out vec4 fragColor;
 void main()
 {
