@@ -265,7 +265,7 @@ function testFramebufferIncompleteMissingAttachment() {
 
 function testFramebufferWithImagesOfDifferentSizes() {
     debug("");
-    debug("Attachments of different sizes should be allowed");
+    debug("Attachments of different sizes should NOT be allowed");
 
     var fbo = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
@@ -284,10 +284,10 @@ function testFramebufferWithImagesOfDifferentSizes() {
     checkFramebuffer([gl.FRAMEBUFFER_COMPLETE]);
 
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 32, 16);
-    checkFramebuffer([gl.FRAMEBUFFER_COMPLETE]);
+    checkFramebuffer([gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS]);
     gl.bindRenderbuffer(gl.RENDERBUFFER, colorBuffer);
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 16, 32);
-    checkFramebuffer([gl.FRAMEBUFFER_COMPLETE]);
+    checkFramebuffer([gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS]);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
     var tex = gl.createTexture();
@@ -297,7 +297,7 @@ function testFramebufferWithImagesOfDifferentSizes() {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 32, 16, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-        checkFramebuffer([gl.FRAMEBUFFER_COMPLETE]);
+        checkFramebuffer([gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS]);
     }
 
     gl.deleteTexture(tex);
