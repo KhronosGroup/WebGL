@@ -1,6 +1,7 @@
 buffer-offscreen-test.html
 buffer-preserve-test.html
 canvas-test.html
+--min-version 1.0.4 canvas-preservedrawingbuffer-resize-test.html
 canvas-zero-size.html
 drawingbuffer-static-canvas-test.html
 --min-version 1.0.2 drawingbuffer-hd-dpi-test.html
@@ -13,4 +14,3 @@ drawingbuffer-test.html
 --min-version 1.0.2 texture-bindings-unaffected-on-resize.html
 --min-version 1.0.2 to-data-url-test.html
 viewport-unchanged-upon-resize.html
-
