@@ -1,0 +1,134 @@
+<!--
+
+/*
+** Copyright (c) 2015 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL Canvas PreserveDrawingBuffer Resizing Test</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<canvas id="canvas" style="width: 256px; height: 256px;"> </canvas>
+<div id="console"></div>
+<script id="vshader" type="x-shader/x-vertex">
+attribute vec2 position;
+void main()
+{
+  gl_Position = vec4(position, 0.0, 1.0);
+}
+</script>
+
+<script id="fshader" type="x-shader/x-fragment">
+void main()
+{
+  // The upper right corner should only be green when the canvas is the larger size.
+  if (gl_FragCoord.x > 150.0 && gl_FragCoord.y > 150.0)
+    gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+  else
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+</script>
+<script>
+"use strict";
+
+description("Repeatedly resizing the canvas with preserveDrawingBuffer=true should work properly.");
+
+debug("");
+debug("Test for Chromium <a href='http://crbug.com/557848'>Issue 557848</a>");
+debug("");
+
+var err;
+var wtu = WebGLTestUtils;
+var canvas = document.getElementById("canvas");
+var largeSize = 256;
+var smallSize = 128;
+var currentSize = largeSize;
+canvas.width = smallSize;
+canvas.height = smallSize;
+var gl = wtu.create3DContext(canvas, { preserveDrawingBuffer: true });
+var numFrames = 0;
+
+if (!gl) {
+  testFailed("context does not exist");
+} else {
+  testPassed("context exists");
+
+  gl.clearColor(0, 0, 0, 1);
+
+  var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["position"]);
+  shouldBeNonNull("program");
+
+  wtu.setupUnitQuad(gl);
+
+  wtu.requestAnimFrame(render);
+}
+
+function render() {
+  var resultGreen = false;
+
+  // Switch the size of the canvas every few frames.
+  ++numFrames;
+  if ((numFrames % 4) == 0) {
+    if (currentSize == largeSize) {
+      canvas.width = smallSize;
+      canvas.height = smallSize;
+      currentSize = smallSize;
+    } else {
+      canvas.width = largeSize;
+      canvas.height = largeSize;
+      currentSize = largeSize;
+    }
+  }
+
+  if (currentSize == largeSize) {
+    resultGreen = true;
+  }
+
+  gl.viewport(0, 0, currentSize, currentSize);
+
+  wtu.drawUnitQuad(gl);
+
+  wtu.checkCanvasRect(gl, currentSize - 2, currentSize - 2, 1, 1,
+                      (resultGreen ? [ 0, 255, 0, 255 ] : [ 255, 0, 0, 255 ]),
+                      "Upper-right corner should be " + (resultGreen ? "green" : "red"),
+                      1);
+
+  if (numFrames < 60) {
+    wtu.requestAnimFrame(render);
+  } else {
+    finishTest();
+  }
+}
+
+</script>
+
+</body>
+</html>
