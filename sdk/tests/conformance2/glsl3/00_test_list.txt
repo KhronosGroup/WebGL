@@ -12,6 +12,7 @@ forbidden-operators.html
 frag-depth.html
 invalid-default-precision.html
 misplaced-version-directive.html
+sampler-no-precision.html
 sequence-operator-returns-non-constant.html
 shader-linking.html
 shader-with-1024-character-define.html
