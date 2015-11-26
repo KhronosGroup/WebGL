@@ -25,6 +25,7 @@
 --min-version 1.0.3 sampler-array-using-loop-index.html
 --min-version 1.0.4 sampler-struct-function-arg.html
 --min-version 1.0.4 sequence-operator-evaluation-order.html
+--min-version 1.0.4 sketchfab-lighting-shader-crash.html
 --min-version 1.0.4 struct-constructor-highp-bug.html
 --min-version 1.0.3 temp-expressions-should-not-crash.html
 --min-version 1.0.4 undefined-index-should-not-crash.html
