@@ -258,14 +258,23 @@ function checkQueryResults() {
         var elapsed_result = ext.getQueryObjectEXT(elapsed_query, ext.QUERY_RESULT_EXT);
         var timestamp_result1 = ext.getQueryObjectEXT(timestamp_query1, ext.QUERY_RESULT_EXT);
         var timestamp_result2 = ext.getQueryObjectEXT(timestamp_query2, ext.QUERY_RESULT_EXT);
-        if (elapsed_result <= 0) {
-            testFailed("Time elapsed query returned invalid data.");
-        } else if (timestamp_result1 <= 0 ||
-                   timestamp_result2 <= 0 ||
-                   timestamp_result2 <= timestamp_result1) {
-            testFailed("Timestamp queries returned invalid data.");
+        // Do some basic validity checking of the elapsed time query. There's no way it should
+        // take more than about half a second for a no-op query.
+        var halfSecondInNanos = 0.5 * 1000 * 1000 * 1000;
+        if (elapsed_result < 0 || elapsed_result > halfSecondInNanos) {
+            testFailed("Time elapsed query returned invalid data: " + elapsed_result);
+        } else {
+            testPassed("Time elapsed query results were valid.");
         }
-        testPassed("Query results were valid.");
+
+        if (timestamp_result1 <= 0 ||
+            timestamp_result2 <= 0 ||
+            timestamp_result2 <= timestamp_result1) {
+            testFailed("Timestamp queries returned invalid data: timestamp_result1 = " +
+                       timestamp_result1 + ", timestamp_result2 = " + timestamp_result2);
+        } else {
+            testPassed("Timestamp query results were valid.");
+        }
     }
 
     debug("");
