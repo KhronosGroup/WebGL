@@ -865,7 +865,48 @@ if (contextVersion > 1) {
 	    return gl.getQueryParameter(query, pname);
 	}
     );
+
+    debug("");
+    debug("Test getFragDataLocation");
+    var baseVertShader = '' +
+    '#version 300 es\n' +
+    'uniform mat4 modelViewMatrix;\n' +
+    'uniform mat4 projectionMatrix;\n' +
+    'in vec4 vertex;\n' +
+    'out vec4 position;\n' +
+    'void main (void)\n' +
+    '{\n' +
+    '       position = modelViewMatrix * vertex;\n' +
+    '       gl_Position = projectionMatrix * position;\n' +
+    '}\n';
+    var baseFragShader = '' +
+    '#version 300 es\n' +
+    'in lowp vec4 position;\n' +
+    'layout(location = 0) out mediump vec4 fragColor;\n' +
+    'void main (void)\n' +
+    '{\n' +
+    '       fragColor = position;\n' +
+    '}\n';
+    var vertShader = gl.createShader(gl.VERTEX_SHADER);
+    gl.shaderSource(vertShader, baseVertShader);
+    gl.compileShader(vertShader);
+    shouldBe('gl.getShaderParameter(vertShader, gl.COMPILE_STATUS)', 'true');
+    var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
+    gl.shaderSource(fragShader, baseFragShader);
+    gl.compileShader(fragShader);
+    shouldBe('gl.getShaderParameter(fragShader, gl.COMPILE_STATUS)', 'true');
+    var program = gl.createProgram();
+    gl.attachShader(program, vertShader);
+    gl.attachShader(program, fragShader);
+    gl.linkProgram(program);
+    shouldBe('gl.getProgramParameter(program, gl.LINK_STATUS)','true');
+    shouldBe('gl.getFragDataLocation(program, "vertexColor")', '-1');
+    shouldBe('gl.getFragDataLocation(program, "modelViewMatrix")', '-1');
+    shouldBe('gl.getFragDataLocation(program, "projectionMatrix")', '-1');
+    shouldBe('gl.getFragDataLocation(program, "position")', '-1');
+    shouldBe('gl.getFragDataLocation(program, "fragColor")', '0');
 }
+
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
 var successfullyParsed = true;
