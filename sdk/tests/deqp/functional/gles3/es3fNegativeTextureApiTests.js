@@ -488,8 +488,8 @@ goog.scope(function() {
 
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and contents of the specified compressed image data.');
-            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, new Uint8Array(0)); //-1
-            this.expectError(gl.INVALID_VALUE);
+            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, new Uint8Array(0));
+            this.expectError(gl.NO_ERROR);
             gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 16, 16, 0, new Uint8Array(4 * 4 * 8));
             this.expectError(gl.INVALID_VALUE);
             gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGB8_ETC2, 16, 16, 0, new Uint8Array(4 * 4 * 16));
@@ -2642,7 +2642,7 @@ goog.scope(function() {
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and contents of the specified compressed image data.');
             gl.compressedTexImage3D(gl.TEXTURE_2D_ARRAY, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, 0, new Uint8Array(0));
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError(gl.NO_ERROR);
             gl.compressedTexImage3D(gl.TEXTURE_2D_ARRAY, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 16, 16, 1, 0, new Uint8Array(4*4*8));
             this.expectError(gl.INVALID_VALUE);
             gl.compressedTexImage3D(gl.TEXTURE_2D_ARRAY, 0, gl.COMPRESSED_RGB8_ETC2, 16, 16, 1, 0, new Uint8Array(4*4*16));
