@@ -429,7 +429,7 @@ es3fTextureFormatTests.Texture2DArrayFormatCase.prototype.testLayer = function(l
 
     // // Compute reference.
     glsTextureTestUtil.sampleTexture2DArray(new glsTextureTestUtil.SurfaceAccess(referenceFrame, undefined /*m_renderCtx.getRenderTarget().getPixelFormat()*/),
-        this.m_texture.getRefTexture(), texCoord, renderParams);
+        this.m_texture.getRefTexture().getView(), texCoord, renderParams);
 
     // Compare and log.
     var isOk = glsTextureTestUtil.compareImages(referenceFrame, renderedFrame, threshold);
