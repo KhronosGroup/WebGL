@@ -1891,7 +1891,7 @@ goog.scope(function() {
             this.expectError (gl.NO_ERROR);
 
             bufferedLogToConsole('gl.INVALID_OPERATION is generated if format does not match the internal format of the texture image being modified.');
-            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, gl.COMPRESSED_RGB8_ETC2, null);
+            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, gl.COMPRESSED_RGB8_ETC2, new Uint8Array(0));
             this.expectError(gl.INVALID_OPERATION);
 
             bufferedLogToConsole('For ETC2/EAC images gl.INVALID_OPERATION is generated if width is not a multiple of four, and width + xoffset is not equal to the width of the texture level.');
