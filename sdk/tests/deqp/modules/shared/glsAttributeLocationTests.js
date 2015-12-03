@@ -113,7 +113,8 @@ goog.scope(function() {
         for (var i = 0; i < attributes.length; i++) {
             if (attributes[i].getCondition().notEquals(glsAttributeLocationTests.NewCondWithEnum(glsAttributeLocationTests.ConstCond.NEVER)) &&
                 attributes[i].getCondition().notEquals(glsAttributeLocationTests.NewCondWithEnum(glsAttributeLocationTests.ConstCond.ALWAYS)))
-            conditions.push(attributes[i].getCondition().getName());
+                if (conditions.indexOf(attributes[i].getCondition().getName()) == -1)
+                    conditions.push(attributes[i].getCondition().getName());
         }
 
         for (var i = 0; i < conditions.length; i++)
