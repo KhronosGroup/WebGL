@@ -1024,7 +1024,7 @@ goog.scope(function() {
 
                 var rbo = gl.createRenderbuffer();
                 gl.bindRenderbuffer(gl.RENDERBUFFER, rbo);
-                var samplesSupportedRGBA4 = gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA4, gl.SAMPLES);
+                /** @type {Int32Array} */ var samplesSupportedRGBA4 = /** @type {Int32Array} */ gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA4, gl.SAMPLES);
                 // supported samples are written in descending numeric order, so the first one is the max samples
                 var maxSamplesSupportedRGBA4 = samplesSupportedRGBA4[0];
 
