@@ -565,21 +565,22 @@ goog.scope(function() {
                 this.expectError(gl.NO_ERROR);
 
                 bufferedLogToConsole('gl.INVALID_ENUM is generated if one of the values in bufs is not an accepted value.');
-                gl.drawBuffers(values.splice(2, 2));
+                gl.drawBuffers(values.slice(2, 4));
                 this.expectError(gl.INVALID_ENUM);
 
-                bufferedLogToConsole('gl.INVALID_OPERATION is generated if the GL is bound to the default framebuffer and n is not 1.');
-                gl.drawBuffers(values.splice(0, 2));
+                bufferedLogToConsole('gl.INVALID_OPERATION is generated if the GL is bound to the default framebuffer and the number of queried buffers is not 1.');
+                gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+                gl.drawBuffers(values.slice(0, 2));
                 this.expectError(gl.INVALID_OPERATION);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if the GL is bound to the default framebuffer and the value in bufs is one of the gl.COLOR_ATTACHMENTn tokens.');
                 gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-                gl.drawBuffers(values.splice(1, 2));
+                gl.drawBuffers(values.slice(2, 3));
                 this.expectError(gl.INVALID_OPERATION);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if the GL is bound to a framebuffer object and the ith buffer listed in bufs is anything other than gl.NONE or gl.COLOR_ATTACHMENTSi.');
                 gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-                gl.drawBuffers(values.splice(1, 1));
+                gl.drawBuffers(values.slice(1, 2));
                 this.expectError(gl.INVALID_OPERATION);
 
                 gl.deleteTexture(texture);
