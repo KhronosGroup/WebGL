@@ -1024,7 +1024,9 @@ goog.scope(function() {
 
                 var rbo = gl.createRenderbuffer();
                 gl.bindRenderbuffer(gl.RENDERBUFFER, rbo);
-                var maxSamplesSupportedRGBA4 = /** @type {number} */ (gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA4, gl.SAMPLES));
+                var samplesSupportedRGBA4 = gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA4, gl.SAMPLES);
+                // supported samples are written in descending numeric order, so the first one is the max samples
+                var maxSamplesSupportedRGBA4 = samplesSupportedRGBA4[0];
 
                 bufferedLogToConsole('gl.INVALID_ENUM is generated if target is not gl.RENDERBUFFER.');
                 gl.renderbufferStorageMultisample(-1, 2, gl.RGBA4, 1, 1);
