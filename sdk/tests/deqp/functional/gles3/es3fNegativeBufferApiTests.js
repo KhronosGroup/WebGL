@@ -481,16 +481,15 @@ goog.scope(function() {
         testGroup.addChild(new es3fApiCase.ApiCaseCallback(
             'copy_buffer_sub_data', 'Invalid gl.copyBufferSubData() usage', gl,
             function() {
-                var data = new Float32Array(32 * 32);
                 var buf = {
                     r: gl.createBuffer(),
                     w: gl.createBuffer()
                 };
 
                 gl.bindBuffer(gl.COPY_READ_BUFFER, buf.r);
-                gl.bufferData(gl.COPY_READ_BUFFER, data, gl.DYNAMIC_COPY);
+                gl.bufferData(gl.COPY_READ_BUFFER, 32, gl.DYNAMIC_COPY);
                 gl.bindBuffer(gl.COPY_WRITE_BUFFER, buf.w);
-                gl.bufferData(gl.COPY_WRITE_BUFFER, data, gl.DYNAMIC_COPY);
+                gl.bufferData(gl.COPY_WRITE_BUFFER, 32, gl.DYNAMIC_COPY);
                 this.expectError(gl.NO_ERROR);
 
                 bufferedLogToConsole('gl.INVALID_VALUE is generated if any of readoffset, writeoffset or size is negative.');
