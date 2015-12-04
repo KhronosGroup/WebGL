@@ -993,7 +993,7 @@ glsShaderLibraryCase.execute = function() {
                         for (var repNdx = 0; repNdx < numVerticesPerDraw; repNdx++)
                             for (var i = 0; i < numCols; i++)
                                 for (var j = 0; j < numRows; j++)
-                                    scalars[repNdx * numCols + i * numRows * numVerticesPerDraw + j] = val.elements[arrayNdx * scalarSize + i * numRows + j];
+                                    scalars[repNdx * numRows + i * numRows * numVerticesPerDraw + j] = val.elements[arrayNdx * scalarSize + i * numRows + j];
                     } else
                         for (var repNdx = 0; repNdx < numVerticesPerDraw; repNdx++)
                             for (var ndx = 0; ndx < scalarSize; ndx++)
