@@ -188,7 +188,7 @@ function runTestIteration(width, height, packParams)
 
     var actualWidth = packParams.rowLength > 0 ? packParams.rowLength : width;
 
-    var bytesPerPixel = 4; // see readPixels' parameters below, the format is gl.RED, type is gl.UNSIGNED_BYTE
+    var bytesPerPixel = 4; // see readPixels' parameters below, the format is gl.RGBA, type is gl.UNSIGNED_BYTE
     var padding = calculatePaddingBytes(bytesPerPixel, packParams.alignment, actualWidth);
 
     var size = bytesPerPixel * actualWidth * height + padding * (height - 1);
@@ -216,13 +216,13 @@ function runTestIteration(width, height, packParams)
 
     // Check the last pixel of the last row.
     var bytesPerRow = actualWidth * bytesPerPixel + padding;
-    var pos = bytesPerRow * (height - 1) + (width - 1) * bytesPerPixel;
+    var pos = skipSize + bytesPerRow * (height - 1) + (width - 1) * bytesPerPixel;
     for (var i = 0; i < bytesPerPixel; ++i)
         pixel[i] = array[pos + i];
     shouldBe("pixel", "expectedColor");
 }
 
-function testPackAlignment()
+function testPackParameters()
 {
     debug("");
     debug("Verify that reading pixels to PIXEL_PACK buffer works fine with various pack alignments.");
@@ -272,9 +272,9 @@ if (!gl) {
   testPassed("context exists");
 
   debug("");
-  description('ReadPixels Into PIXEL_PACK Buffer');
+  description('ReadPixels into PIXEL_PACK buffer');
   validatePixelPackBufferAndParameters(4, 4);
-  testPackAlignment();
+  testPackParameters();
 }
 
 debug("");
