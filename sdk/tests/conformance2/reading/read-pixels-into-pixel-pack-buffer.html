@@ -164,38 +164,44 @@ function calculatePaddingBytes(bytesPerPixel, packAlignment, width)
     }
 }
 
-function runTestIteration(
-    width, height, packAlignment, packRowLength, packSkipPixels, packSkipRows)
+function runTestIteration(width, height, packParams)
 {
+    if (!("alignment" in packParams))
+        packParams.alignment = 4;
+    if (!("rowLength" in packParams))
+        packParams.rowLength = 0;
+    if (!("skipPixels" in packParams))
+        packParams.skipPixels = 0;
+    if (!("skipRows" in packParams))
+        packParams.skipRows = 0;
     debug("Testing width = " + width + ", height = " + height +
-          ", PACK_ALIGNMENT = " + packAlignment + ", ROW_LENGTH = " + packRowLength +
-          ", SKIP_PIXELS = " + packSkipPixels + " , SKIP_ROWS = " + packSkipRows);
-
-    gl.pixelStorei(gl.PACK_ALIGNMENT, packAlignment);
-    gl.pixelStorei(gl.PACK_ROW_LENGTH, packRowLength);
-    gl.pixelStorei(gl.PACK_SKIP_PIXELS, packSkipPixels);
-    gl.pixelStorei(gl.PACK_SKIP_ROWS, packSkipRows);
+          ", PACK_ALIGNMENT = " + packParams.alignment + ", PACK_ROW_LENGTH = " + packParams.rowLength +
+          ", PACK_SKIP_PIXELS = " + packParams.skipPixels + " , PACK_SKIP_ROWS = " + packParams.skipRows);
+    gl.pixelStorei(gl.PACK_ALIGNMENT, packParams.alignment);
+    gl.pixelStorei(gl.PACK_ROW_LENGTH, packParams.rowLength);
+    gl.pixelStorei(gl.PACK_SKIP_PIXELS, packParams.skipPixels);
+    gl.pixelStorei(gl.PACK_SKIP_ROWS, packParams.skipRows);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
     gl.clearColor(expectedColor[0] / 255.0, expectedColor[1] / 255.0, expectedColor[2] / 255.0, expectedColor[3] / 255.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    var actualWidth = packRowLength > 0 ? packRowLength : width;
+    var actualWidth = packParams.rowLength > 0 ? packParams.rowLength : width;
 
     var bytesPerPixel = 4; // see readPixels' parameters below, the format is gl.RED, type is gl.UNSIGNED_BYTE
-    var padding = calculatePaddingBytes(bytesPerPixel, packAlignment, actualWidth);
+    var padding = calculatePaddingBytes(bytesPerPixel, packParams.alignment, actualWidth);
 
     var size = bytesPerPixel * actualWidth * height + padding * (height - 1);
     if (size < 0)
         size = 0;
-    var skipSize = (packSkipPixels * bytesPerPixel +
-                    packSkipRows * (bytesPerPixel * actualWidth + padding));
+    var skipSize = (packParams.skipPixels * bytesPerPixel +
+                    packParams.skipRows * (bytesPerPixel * actualWidth + padding));
     var buffer = gl.createBuffer();
     gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buffer);
     gl.bufferData(gl.PIXEL_PACK_BUFFER, size + skipSize, gl.STATIC_DRAW);
     var offset = 0;
     gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, offset);
-    if (packRowLength > 0 && packRowLength < width) {
+    if (packParams.rowLength > 0 && packParams.rowLength < width) {
         // Revisit this if spec goes the other way.
         wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION);
         return;
@@ -209,7 +215,7 @@ function runTestIteration(
     var array = new Uint8Array(arrBuffer);
 
     // Check the last pixel of the last row.
-    var bytesPerRow = width * bytesPerPixel + padding;
+    var bytesPerRow = actualWidth * bytesPerPixel + padding;
     var pos = bytesPerRow * (height - 1) + (width - 1) * bytesPerPixel;
     for (var i = 0; i < bytesPerPixel; ++i)
         pixel[i] = array[pos + i];
@@ -220,33 +226,34 @@ function testPackAlignment()
 {
     debug("");
     debug("Verify that reading pixels to PIXEL_PACK buffer works fine with various pack alignments.");
-    runTestIteration(1, 3, 1, 0, 0, 0);
-    runTestIteration(1, 3, 2, 0, 0, 0);
-    runTestIteration(1, 3, 4, 0, 0, 0);
-    runTestIteration(1, 3, 8, 0, 0, 0);
-    runTestIteration(2, 3, 4, 0, 0, 0);
-    runTestIteration(2, 3, 8, 0, 0, 0);
-    runTestIteration(3, 3, 4, 0, 0, 0);
-    runTestIteration(3, 3, 8, 0, 0, 0);
-    runTestIteration(0, 0, 1, 0, 0, 0);
-    runTestIteration(1, 3, 4, 0, 0, 0);
-    runTestIteration(1, 3, 8, 0, 0, 0);
+    runTestIteration(1, 3, {alignment:1});
+    runTestIteration(1, 3, {alignment:2});
+    runTestIteration(1, 3, {alignment:4});
+    runTestIteration(1, 3, {alignment:8});
+    runTestIteration(2, 3, {alignment:4});
+    runTestIteration(2, 3, {alignment:8});
+    runTestIteration(3, 3, {alignment:4});
+    runTestIteration(3, 3, {alignment:8});
+    runTestIteration(0, 0, {alignment:1});
+    runTestIteration(1, 3, {alignment:4});
+    runTestIteration(1, 3, {alignment:8});
 
     debug("");
     debug("Verify that reading pixels to PIXEL_PACK buffer works fine with pack row length.");
-    runTestIteration(3, 3, 8, 2, 0, 0);  // PACK_ROW_LENTH < width
-    runTestIteration(3, 3, 8, 3, 0, 0);  // PACK_ROW_LENTH == width
-    runTestIteration(3, 3, 8, 4, 0, 0);  // PACK_ROW_LENTH > width, no padding
-    runTestIteration(3, 3, 8, 5, 0, 0);  // PACK_ROW_LENTH > width, extra padding
+    // PACK_ROW_LENGTH < width case, pending working group decision.
+    // runTestIteration(3, 3, {alignment:8, rowLength:2});  // PACK_ROW_LENTH < width
+    runTestIteration(3, 3, {alignment:8, rowLength:3});  // PACK_ROW_LENTH == width
+    runTestIteration(3, 3, {alignment:8, rowLength:4});  // PACK_ROW_LENTH > width, no padding
+    runTestIteration(3, 3, {alignment:8, rowLength:5});  // PACK_ROW_LENTH > width, extra padding
 
     debug("");
     debug("Verify that reading pixels to PIXEL_PACK buffer works fine with pack skip parameters.");
-    runTestIteration(3, 3, 8, 0, 2, 0);
-    runTestIteration(3, 3, 8, 0, 1, 3);
-    runTestIteration(3, 3, 8, 0, 0, 3);
-    runTestIteration(2, 3, 8, 0, 2, 0);
-    runTestIteration(2, 3, 8, 0, 1, 3);
-    runTestIteration(2, 3, 8, 0, 0, 3);
+    runTestIteration(3, 3, {alignment:8, skipPixels:2});
+    runTestIteration(3, 3, {alignment:8, skipPixels:1, skipRows:3});
+    runTestIteration(3, 3, {alignment:8, skipRows:3});
+    runTestIteration(2, 3, {alignment:8, skipPixels:2});
+    runTestIteration(2, 3, {alignment:8, skipPixels:1, skipRows:3});
+    runTestIteration(2, 3, {alignment:8, skipRows:3});
 }
 
 debug("");
