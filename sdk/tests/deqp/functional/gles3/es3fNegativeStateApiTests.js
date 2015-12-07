@@ -274,10 +274,6 @@ goog.scope(function() {
             gl.getActiveUniform(program.getProgram(), numActiveUniforms);
             this.expectError(gl.INVALID_VALUE);
 
-            bufferedLogToConsole('gl.INVALID_VALUE is generated if bufSize is less than 0.');
-            gl.getActiveUniform(program.getProgram(), 0);
-            this.expectError(gl.INVALID_VALUE);
-
             gl.useProgram(null);
             gl.deleteShader(shader);
         }));
@@ -377,10 +373,6 @@ goog.scope(function() {
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater than or equal to gl.ACTIVE_ATTRIBUTES.');
             activeInfo = gl.getActiveAttrib(program.getProgram(), numActiveAttributes);
-            this.expectError(gl.INVALID_VALUE);
-
-            bufferedLogToConsole('gl.INVALID_VALUE is generated if bufSize is less than 0.');
-            activeInfo = gl.getActiveAttrib(program.getProgram(), 0);
             this.expectError(gl.INVALID_VALUE);
 
             gl.useProgram(null);
