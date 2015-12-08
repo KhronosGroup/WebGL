@@ -85,7 +85,6 @@ if (!gl) {
       "gl.bindTexture(desktopGL['TEXTURE_RECTANGLE_EXT'], tex)",
       "gl.enable(desktopGL['PRIMITIVE_RESTART_FIXED_INDEX'])",
       "gl.getActiveUniforms(program, [0], desktopGL['UNIFORM_NAME_LENGTH'])",
-      "gl.getActiveUniformBlockParameter(program, 0, desktopGL['UNIFORM_BLOCK_NAME_LENGTH'])",
       "gl.getProgramParameter(program, desktopGL['ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH'])",
       "gl.getProgramParameter(program, desktopGL['TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH'])",
       "gl.getProgramParameter(program, desktopGL['PROGRAM_BINARY_RETRIEVABLE_HINT'])",
@@ -126,6 +125,14 @@ if (!gl) {
   for (var ii = 0; ii < tests.length; ++ii) {
     TestEval(tests[ii]);
     wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, tests[ii] + " should return INVALID_ENUM.");
+  }
+  if (contextVersion >= 2) {
+    var uniformBlockProgram = wtu.loadUniformBlockProgram(gl);
+    gl.linkProgram(uniformBlockProgram);
+    shouldBe('gl.getProgramParameter(uniformBlockProgram, gl.LINK_STATUS)', 'true');
+    shouldBe('gl.getError()', 'gl.NO_ERROR');
+    gl.getActiveUniformBlockParameter(uniformBlockProgram, 0, desktopGL['UNIFORM_BLOCK_NAME_LENGTH']);
+    shouldBe('gl.getError()', 'gl.INVALID_ENUM');
   }
 }
 
