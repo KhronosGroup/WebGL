@@ -1557,7 +1557,7 @@ goog.scope(function() {
             texture[1] = gl.createTexture();
             gl.bindTexture(gl.TEXTURE_2D, texture[0]);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 32, 32, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
-            gl.bindTexture(gl.TEXTURE_2D, texture[1]);
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture[1]);
             es3fNegativeTextureApiTests.forCubeFaces(function(faceGL) {
                 gl.texImage2D(faceGL, 0, gl.RGB, 32, 32, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
             });
