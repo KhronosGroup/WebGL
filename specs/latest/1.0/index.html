@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 12 October 2015</h2>
+    <h2 class="no-toc">Editor's Draft 03 December 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2448,7 +2448,10 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             <code>INVALID_OPERATION</code> error is generated. <br><br>
 
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
-            pixel storage parameters that affect the behavior of this function.
+            pixel storage parameters that affect the behavior of this function. <br><br>
+
+            If <code>pixels</code> is non-null but its size is less than what is required by the specified <em>width</em>, <em>height</em>, <em>format</em>, <em>type</em>, and pixel storage parameters, generates an <code>INVALID_OPERATION</code> error.
+
         <dt><p class="idl-code"><a name="TEXIMAGE2D_HTML">void texImage2D</a>(GLenum target, GLint level, GLenum internalformat,
                     GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.1">OpenGL ES 2.0 &sect;3.7.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexImage2D.xml">man page</a>)</span></p>
@@ -2493,6 +2496,8 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
 
+            If this function is called with an <code>ImageData</code> whose <code>data</code> attribute has been neutered, an <code>INVALID_VALUE</code> error is generated. <br><br>
+
             If this function is called with an <code>HTMLImageElement</code>
             or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
             Document, or with an <code>HTMLCanvasElement</code> whose <i>origin-clean</i> flag is
@@ -2531,6 +2536,8 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             If <code>pixels</code> is null then an <code>INVALID_VALUE</code> error is
             generated. <br><br>
 
+            If <code>pixels</code> is non-null but its size is less than what is required by the specified <em>width</em>, <em>height</em>, <em>format</em>, <em>type</em>, and pixel storage parameters, generates an <code>INVALID_OPERATION</code> error. <br><br>
+
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
         <dt><p class="idl-code"><a name="TEXSUBIMAGE2D_HTML">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset,
@@ -2557,6 +2564,8 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             If <em>type</em> does not match the type originally used to define the texture, an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
+
+            If this function is called with an <code>ImageData</code> whose <code>data</code> attribute has been neutered, an <code>INVALID_VALUE</code> error is generated. <br><br>
 
             If this function is called with an <code>HTMLImageElement</code>
             or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
