@@ -66,6 +66,10 @@ gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, -1, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "negative y");
 gl.texSubImage2D(gl.TEXTURE_2D, -1, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "negative level");
+gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "no image data");
+gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "null pixels");
 
 // GL_INVALID_VALUE may be generated if level is greater than log 2 max, where max is the returned value of GL_MAX_TEXTURE_SIZE.
 // GL_INVALID_OPERATION is generated if the texture array has not been defined by a previous  glTexImage2D or glCopyTexImage2D operation whose internalformat matches the format of glTexSubImage2D.
