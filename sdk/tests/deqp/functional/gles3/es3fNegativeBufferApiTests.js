@@ -863,7 +863,7 @@ goog.scope(function() {
                 gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER);
 
                 gl.bindRenderbuffer(gl.RENDERBUFFER, rbo[1]);
-                gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo[1]);
+                gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo[1]);
                 this.expectError(gl.NO_ERROR);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if the value of gl.SAMPLE_BUFFERS for the draw buffer is greater than zero.');
