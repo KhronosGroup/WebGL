@@ -115,12 +115,22 @@ function runTestIteration(width, height, packParams, usePixelPackBuffer)
         var array = new Uint8Array(arrBuffer);
     }
 
-    // Check the last pixel of the last row.
-    var bytesPerRow = actualWidth * bytesPerPixel + padding;
-    var pos = skipSize + bytesPerRow * (height - 1) + (width - 1) * bytesPerPixel;
-    for (var i = 0; i < bytesPerPixel; ++i)
-        pixel[i] = array[pos + i];
-    shouldBe("pixel", "expectedColor");
+    // Check the first and last pixels of each row.
+    // TODO(zmo): Revisit this if row_length < width cases are allowed.
+    for (var row = 0; row < height; ++row) {
+        var bytesPerRow = actualWidth * bytesPerPixel + padding;
+        // First pixel
+        var pos = skipSize + bytesPerRow * row;
+        for (var i = 0; i < bytesPerPixel; ++i)
+            pixel[i] = array[pos + i];
+        shouldBe("pixel", "expectedColor");
+
+        // Last pixel
+        pos = skipSize + bytesPerRow * row + (width - 1) * bytesPerPixel;
+        for (var i = 0; i < bytesPerPixel; ++i)
+            pixel[i] = array[pos + i];
+        shouldBe("pixel", "expectedColor");
+    }
 }
 
 function testPackParameters(usePixelPackBuffer)
