@@ -72,9 +72,10 @@ void main() {
 // operations that can be constant folded at compile-time.
 // It's here to provide a point of comparison.
 uniform mediump float uTest;
+uniform highp float uTestHigh;
 
 void main() {
-    highp float c = 4096.5 + uTest;
+    highp float c = 4096.5 + uTestHigh;
     mediump float a = 0.0;
     a = fract(c + uTest);
     gl_FragColor = vec4(0.0, 2.0 * a, 0.0, 1.0);
@@ -119,6 +120,8 @@ function test() {
     debug("Testing shader where the precision qualifier of a variable affects built-in function results");
     program = wtu.setupProgram(gl, ["vshader", "fshaderNoConstants"], ["aPosition"], undefined, true);
     uniformLoc = gl.getUniformLocation(program, 'uTest');
+    gl.uniform1f(uniformLoc, 0);
+    uniformLoc = gl.getUniformLocation(program, 'uTestHigh');
     gl.uniform1f(uniformLoc, 0);
     wtu.drawUnitQuad(gl);
     wtu.checkCanvasRect(gl, 0, 0, 256, 256, [0, 255, 0, 255]);
