@@ -113,14 +113,6 @@ tests.push({
     passMsg: "Shaders with constant variables in the loop condition should compile and link.",
 });
 tests.push({
-    vShaderSource: wtu.getScript("vertexShaderConstVarLoopCondition"),
-    vShaderSuccess: true,
-    fShaderSource: wtu.getScript("fragmentShaderConstVarLoopCondition"),
-    fShaderSuccess: true,
-    linkSuccess: true,
-    passMsg: "Shaders with constant variables in the loop condition should compile and link.",
-});
-tests.push({
     vShaderSource: wtu.getScript("vertexShaderNonConstVarLoopCondition"),
     vShaderSuccess: false,
     fShaderSource: wtu.getScript("fragmentShaderLiteralLoopCondition"),
