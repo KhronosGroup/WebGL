@@ -245,7 +245,9 @@ es3fRboStateQueryTests.RboSamplesCase.prototype.test = function() {
 
     this.check(glsStateQuery.verifyRenderbuffer(gl.RENDERBUFFER_SAMPLES, 0));
 
-    var max_samples = /** @type {number} */ (gl.getParameter(gl.MAX_SAMPLES));
+    /** @type {Int32Array} */ var samplesSupportedRGBA8 = /** @type {Int32Array} */ gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA8, gl.SAMPLES);
+    // supported samples are written in descending numeric order, so the first one is the max samples
+    var max_samples = samplesSupportedRGBA8[0];
 
     // 0 samples is a special case
     gl.renderbufferStorageMultisample(gl.RENDERBUFFER, 0, gl.RGBA8, 128, 128);
