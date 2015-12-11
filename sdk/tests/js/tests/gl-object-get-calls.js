@@ -905,6 +905,61 @@ if (contextVersion > 1) {
     shouldBe('gl.getFragDataLocation(program, "projectionMatrix")', '-1');
     shouldBe('gl.getFragDataLocation(program, "position")', '-1');
     shouldBe('gl.getFragDataLocation(program, "fragColor")', '0');
+
+    debug("");
+    debug("Test getActiveUniforms");
+    var program = wtu.loadUniformBlockProgram(gl);
+    gl.linkProgram(program);
+    shouldBe('gl.getProgramParameter(program, gl.LINK_STATUS)', 'true');
+    shouldBe('gl.getError()', 'gl.NO_ERROR');
+
+    var numActiveUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    var blockIndex = gl.getUniformBlockIndex(program, "Transform")
+    var uniformIndices = [];
+    for (var i = 0; i < numActiveUniforms; i++)
+      uniformIndices.push(i);
+    var types = gl.getActiveUniforms(program, uniformIndices, gl.UNIFORM_TYPE);
+    var sizes = gl.getActiveUniforms(program, uniformIndices, gl.UNIFORM_SIZE);
+    var blockIndices = gl.getActiveUniforms(program, uniformIndices, gl.UNIFORM_BLOCK_INDEX);
+    var offsets = gl.getActiveUniforms(program, uniformIndices, gl.UNIFORM_OFFSET);
+    var arrayStrides = gl.getActiveUniforms(program, uniformIndices, gl.UNIFORM_ARRAY_STRIDE);
+    var matrixStrides = gl.getActiveUniforms(program, uniformIndices, gl.UNIFORM_MATRIX_STRIDE);
+    var rowMajors = gl.getActiveUniforms(program, uniformIndices, gl.UNIFORM_IS_ROW_MAJOR);
+    for (var i = 0; i < numActiveUniforms; i++) {
+      if (types[i] != gl.FLOAT_MAT4 && types[i] != gl.FLOAT_MAT3)
+        testFailed("expected value: GL_FLOAT_MAT4 or GL_FLOAT_MAT3" + " actual value for UNIFORM_TYPE for uniform index[" + i + "]:" + wtu.glEnumToString(gl, types[i]));
+      if (sizes[i] != 1)
+        testFailed("expected value: 1" + " actual value for UNIFORM_SIZE for uniform index[" + i + "]:" + sizes[i]);
+      if (blockIndices[i] != blockIndex)
+        testFailed("expected value: 0" + " actual value for UNIFORM_BLOCK_INDEX for uniform index[" + i + "]:" + blockIndices[i]);
+      if (offsets[i] < 0)
+        testFailed("expected value >= 0" + " actual value for UNIFORM_OFFSET for uniform index[" + i + "]:" + offsets[i]);
+      if (arrayStrides[i] != 0)
+        testFailed("expected value: 0" + " actual value for UNIFORM_ARRAY_STRIDE for uniform index[" + i + "]:" + arrayStrides[i]);
+      if (matrixStrides[i] < 0)
+        testFailed("expected value >= 0" + " actual value for UNIFORM_MATRIX_STRIDE for uniform index[" + i + "]:" + matrixStrides[i]);
+      shouldBe('typeof rowMajors[i]', '"boolean"');
+      if (rowMajors[i] != false)
+        testFailed("expected value: 0" + " actual value for UNIFORM_IS_ROW_MAJOR for uniform index[" + i + "]:" + rowMajors[i]);
+    }
+
+    var validArrayForPname = new Array(
+        gl.UNIFORM_TYPE,
+        gl.UNIFORM_SIZE,
+        gl.UNIFORM_BLOCK_INDEX,
+        gl.UNIFORM_OFFSET,
+        gl.UNIFORM_ARRAY_STRIDE,
+        gl.UNIFORM_MATRIX_STRIDE,
+        gl.UNIFORM_IS_ROW_MAJOR
+    );
+    testInvalidArgument(
+	"getActiveUniforms",
+	"pname",
+	validArrayForPname,
+	function(pname) {
+	    return gl.getActiveUniforms(program, uniformIndices, pname);
+        }
+    );
 }
 
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
