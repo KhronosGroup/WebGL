@@ -91,11 +91,6 @@ es3fInternalFormatQueryTests.InternalFormatQueryTests.prototype.constructor = es
 es3fInternalFormatQueryTests.InternalFormatQueryTests.prototype.init = function() {
     var internalFormats = [
         //name, format, is_integer
-        // color renderable and unsized
-        // \note These unsized formats seem to allowed by the spec, but they are not useful in any way. (You can't create a renderbuffer with such internalFormat)
-        ['rgba', gl.RGBA, false],
-        ['rgb', gl.RGB, false],
-
         // color renderable
         ['r8', gl.R8, false],
         ['rg8', gl.RG8, false],
