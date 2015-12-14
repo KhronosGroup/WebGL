@@ -134,9 +134,10 @@ goog.scope(function() {
 
 
             bufferedLogToConsole('gl.INVALID_ENUM is generated if target is invalid.');
-            gl.compressedTexImage2D(0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, null);
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(0);
+            gl.compressedTexImage2D(0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, uint8);
             this.expectError(gl.INVALID_ENUM);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, uint8);
             this.expectError(gl.INVALID_ENUM);
 
 
@@ -274,59 +275,60 @@ goog.scope(function() {
             bufferedLogToConsole('gl.INVALID_VALUE is generated if width or height is less than 0.');
 
             bufferedLogToConsole('gl.TEXTURE_2D target');
-            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, null);
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(0);
+            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.TEXTURE_CUBE_MAP_POSITIVE_X target');
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.TEXTURE_CUBE_MAP_POSITIVE_Y target');
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.TEXTURE_CUBE_MAP_POSITIVE_Z target');
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.TEXTURE_CUBE_MAP_NEGATIVE_X target');
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.TEXTURE_CUBE_MAP_NEGATIVE_Y target');
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.TEXTURE_CUBE_MAP_NEGATIVE_Z target');
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, 0, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, -1, -1, 0, uint8);
             this.expectError(gl.INVALID_VALUE);
 
 
@@ -488,7 +490,7 @@ goog.scope(function() {
 
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and contents of the specified compressed image data.');
-            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, new Uint8Array(1));
             this.expectError(gl.INVALID_VALUE);
             gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 16, 16, 0, new Uint8Array(4 * 4 * 8));
             this.expectError(gl.INVALID_VALUE);
@@ -1134,7 +1136,7 @@ goog.scope(function() {
 
             bufferedLogToConsole('gl.INVALID_OPERATION is generated if the zero level array is stored in a compressed internal format.');
             gl.bindTexture(gl.TEXTURE_2D, texture[1]);
-            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, null);
+            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, new Uint8Array(0));
             gl.generateMipmap(gl.TEXTURE_2D);
             this.expectError(gl.INVALID_OPERATION);
 
@@ -1928,13 +1930,13 @@ goog.scope(function() {
             this.expectError(gl.NO_ERROR);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is less than 0.');
-            gl.compressedTexSubImage2D(gl.TEXTURE_2D, -1, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, null);
+            gl.compressedTexSubImage2D(gl.TEXTURE_2D, -1, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is less than 0.');
             var local = this;
             es3fNegativeTextureApiTests.forCubeFaces(function(faceGL) {
-                gl.compressedTexSubImage2D(faceGL, -1, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, null);
+                gl.compressedTexSubImage2D(faceGL, -1, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
                 local.expectError(gl.INVALID_VALUE);
             });
 
@@ -1958,14 +1960,14 @@ goog.scope(function() {
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_TEXTURE_SIZE).');
             /** @type{number} */ var log2MaxTextureSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)))) + 1;
-            gl.compressedTexSubImage2D(gl.TEXTURE_2D, log2MaxTextureSize, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, null);
+            gl.compressedTexSubImage2D(gl.TEXTURE_2D, log2MaxTextureSize, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_CUBE_MAP_TEXTURE_SIZE).');
             /** @type{number} */ var log2MaxCubemapSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE)))) + 1;
             var local = this;
             es3fNegativeTextureApiTests.forCubeFaces(function(faceGL) {
-                gl.compressedTexSubImage2D(faceGL, log2MaxCubemapSize, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, null);
+                gl.compressedTexSubImage2D(faceGL, log2MaxCubemapSize, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
                 local.expectError(gl.INVALID_VALUE);
             });
 
@@ -1985,11 +1987,11 @@ goog.scope(function() {
             //         are not negative.
             bufferedLogToConsole('gl.INVALID_VALUE or gl.INVALID_OPERATION is generated if xoffset or yoffset are negative.');
 
-            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, -4, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, null);
+            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, -4, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
             this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
-            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, -4, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, null);
+            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, -4, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
             this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
-            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, -4, -4, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, null);
+            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, -4, -4, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
             this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
 
             gl.deleteTexture(texture);
@@ -2024,11 +2026,11 @@ goog.scope(function() {
             this.expectError (gl.NO_ERROR);
 
             bufferedLogToConsole('gl.INVALID_VALUE or gl.INVALID_OPERATION is generated if width or height is less than 0.');
-            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, -4, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, null);
+            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, -4, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
             this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
-            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, -4, gl.COMPRESSED_RGBA8_ETC2_EAC, null);
+            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, -4, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
             this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
-            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, -4, -4, gl.COMPRESSED_RGBA8_ETC2_EAC, null);
+            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, -4, -4, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
             this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
 
             gl.deleteTexture(texture);
@@ -2043,7 +2045,7 @@ goog.scope(function() {
             this.expectError (gl.NO_ERROR);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and contents of the specified compressed image data.');
-            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, null);
+            gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(1));
             this.expectError(gl.INVALID_VALUE);
 
             gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 16, 16, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(4*4*16-1));
@@ -2641,7 +2643,7 @@ goog.scope(function() {
             gl.bindTexture (gl.TEXTURE_2D_ARRAY, texture);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and contents of the specified compressed image data.');
-            gl.compressedTexImage3D(gl.TEXTURE_2D_ARRAY, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, 0, null);
+            gl.compressedTexImage3D(gl.TEXTURE_2D_ARRAY, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, 0, new Uint8Array(1));
             this.expectError(gl.INVALID_VALUE);
             gl.compressedTexImage3D(gl.TEXTURE_2D_ARRAY, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 16, 16, 1, 0, new Uint8Array(4*4*8));
             this.expectError(gl.INVALID_VALUE);
