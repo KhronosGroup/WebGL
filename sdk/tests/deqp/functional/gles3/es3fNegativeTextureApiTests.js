@@ -2799,7 +2799,7 @@ goog.scope(function() {
             this.expectError (gl.NO_ERROR);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if imageSize is not consistent with the format, dimensions, and contents of the specified compressed image data.');
-            gl.compressedTexSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, 0, 0, 16, 16, 1, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
+            gl.compressedTexSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, 0, 0, 16, 16, 1, gl.COMPRESSED_RGBA8_ETC2_EAC, null);
             this.expectError(gl.INVALID_VALUE);
 
             gl.compressedTexSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, 0, 0, 16, 16, 1, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(4*4*16-1));
