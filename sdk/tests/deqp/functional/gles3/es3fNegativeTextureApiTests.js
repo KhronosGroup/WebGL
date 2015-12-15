@@ -1088,18 +1088,18 @@ goog.scope(function() {
 
         // glDeleteTextures
 
-        testGroup.addChild(new es3fApiCase.ApiCaseCallback('deletetextures', 'Invalid glDeleteTextures() usage', gl,
+        testGroup.addChild(new es3fApiCase.ApiCaseCallback('deletetextures', 'glDeleteTextures() usage', gl,
         function() {
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
 
-            bufferedLogToConsole('gl.INVALID_VALUE is generated if n is negative.');
+            bufferedLogToConsole('gl.NO_ERROR is generated if texture is null.');
             gl.deleteTexture(null);
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError(gl.NO_ERROR);
 
             gl.bindTexture(gl.TEXTURE_2D, texture);
             gl.deleteTexture(null);
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError(gl.NO_ERROR);
 
             gl.deleteTexture(texture);
         }));
