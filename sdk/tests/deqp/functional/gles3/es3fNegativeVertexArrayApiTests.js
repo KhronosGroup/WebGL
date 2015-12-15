@@ -122,6 +122,9 @@ goog.scope(function() {
         }));
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('vertex_attrib_pointer', 'Invalid gl.vertexAttribPointer() usage', gl, function() {
+            /** @type{WebGLBuffer} */ var buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
             bufferedLogToConsole('gl.INVALID_ENUM is generated if type is not an accepted value.');
             gl.vertexAttribPointer(0, 1, 0, true, 0, 0);
             this.expectError(gl.INVALID_ENUM);
@@ -166,7 +169,7 @@ goog.scope(function() {
 
         }));
 
-        testGroup.addChild(new es3fApiCase.ApiCaseCallback('vertex_attrib_i_pointer', 'Invalid gl.vertexAttribPointer() usage', gl, function() {
+        testGroup.addChild(new es3fApiCase.ApiCaseCallback('vertex_attrib_i_pointer', 'Invalid gl.vertexAttribIPointer() usage', gl, function() {
             bufferedLogToConsole('gl.INVALID_ENUM is generated if type is not an accepted value.');
             gl.vertexAttribIPointer(0, 1, 0, 0, 0);
             this.expectError(gl.INVALID_ENUM);
