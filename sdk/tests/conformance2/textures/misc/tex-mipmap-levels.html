@@ -107,9 +107,10 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
   wtu.clearAndDrawUnitQuad(gl);
   wtu.checkCanvas(gl, [255, 0, 0, 255], "should draw with [255, 0, 0, 255]");
+  gl.deleteTexture(tex);
 
   // Test incompleteless for partial levels.
-  var tex = gl.createTexture()
+  tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
   wtu.fillTexture(gl, tex, 8, 8, [255, 0, 0, 255], 2, gl.RGBA, gl.UNSIGNED_BYTE);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(8x8, level=2) should succeed");
@@ -121,10 +122,11 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texParameter(TEXTURE_MAX_LEVEL) should succeed");
   wtu.clearAndDrawUnitQuad(gl);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "clearAndDrawQuad should succeed");
-  wtu.checkCanvas(gl, [0, 0, 0, 255], "incomplete; should draw with [0, 0, 0, 255]");
+  wtu.checkCanvas(gl, [0, 0, 0, 255], "incomplete texture should draw with [0, 0, 0, 255]");
+  gl.deleteTexture(tex);
 
   // Test base level texture isn't specified.
-  var tex = gl.createTexture()
+  tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
   wtu.fillTexture(gl, tex, 8, 8, [255, 0, 0, 255], 2, gl.RGBA, gl.UNSIGNED_BYTE);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "fillTexture(8x8, level=2) should succeed");
@@ -139,6 +141,7 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL, 2);
   gl.generateMipmap(gl.TEXTURE_2D);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
+  gl.deleteTexture(tex);
 
   // Test 3D texture.
   var tex3d = gl.createTexture();
@@ -146,6 +149,18 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   gl.texImage3D( gl.TEXTURE_3D, 0, gl.RGBA, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
   gl.generateMipmap(gl.TEXTURE_3D);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
+  gl.deleteTexture(tex3d);
+
+  // Test sized internal format should be both color-renderable and texture-filterable
+  tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8UI, 0, 0, 0, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, null);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "generateMipmap should fail for non-texture-filterable format");
+  gl.deleteTexture(tex);
 })();
 
 var successfullyParsed = true;
