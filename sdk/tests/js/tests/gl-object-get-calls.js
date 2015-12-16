@@ -768,6 +768,10 @@ if (contextVersion > 1) {
     shouldBe('gl.getIndexedParameter(gl.UNIFORM_BUFFER_BINDING, 1)', 'buffer1');
     shouldBe('gl.getIndexedParameter(gl.UNIFORM_BUFFER_SIZE, 1)', '8');
     shouldBe('gl.getIndexedParameter(gl.UNIFORM_BUFFER_START, 1)', 'offsetUniform');
+
+    gl.bindBufferBase(gl.UNIFORM_BUFFER, 1, null);
+    shouldBe('gl.getIndexedParameter(gl.UNIFORM_BUFFER_BINDING, 1)', 'null');
+
     var validArrayForTarget = new Array(
         gl.TRANSFORM_FEEDBACK_BUFFER_BINDING,
         gl.TRANSFORM_FEEDBACK_BUFFER_SIZE,
