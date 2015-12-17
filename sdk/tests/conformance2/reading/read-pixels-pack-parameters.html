@@ -35,14 +35,13 @@
 </head>
 <body>
 <canvas id="example" width="4" height="4"></canvas>
-<canvas id="canvas2d" width="4" height="4"></canvas>
 <div id="description"></div>
 <div id="console"></div>
 <script>
 "use strict"
 
 var wtu = WebGLTestUtils;
-var expectedColor = [[255, 102, 0, 255],
+var expectedColor = [[249, 102, 0, 255],
                      [2, 200, 102, 255],
                      [134, 87, 234, 255],
                      [99, 5, 76, 255]];
@@ -67,23 +66,26 @@ function calculatePaddingBytes(bytesPerPixel, packAlignment, width)
 
 function paintWebGLCanvas(gl)
 {
-    var canvas2d = document.getElementById("canvas2d");
-    var ctx2d = canvas2d.getContext("2d");
-    for (var row = 0; row < 4; ++row) {
-        ctx2d.fillStyle = "rgba(" + expectedColor[row][0] + ", " +
-            expectedColor[row][1] + ", " + expectedColor[row][2] + ", " +
-            expectedColor[row][3] + ")";
-        ctx2d.fillRect(0, row, 4, 1);
-    }
-
     var program = wtu.setupTexturedQuad(gl);
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.BLEND);
 
+    var data = new Uint8Array(4 * 4);
+    for (var ii = 0; ii < 4; ++ii) {
+        data[ii * 4] = expectedColor[ii][0];
+        data[ii * 4 + 1] = expectedColor[ii][1];
+        data[ii * 4 + 2] = expectedColor[ii][2];
+        data[ii * 4 + 3] = expectedColor[ii][3];
+    }
+
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas2d);
-    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 4, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
     var loc = gl.getUniformLocation(program, "tex");
     gl.uniform1i(loc, 0);
@@ -187,10 +189,10 @@ function testPackParameters(usePixelPackBuffer)
 
     debug("");
     debug("Verify that reading pixels to " + destText + " works fine with pack row length.");
-    runTestIteration(3, 3, {alignment:8, rowLength:2}, usePixelPackBuffer);  // PACK_ROW_LENTH < width
-    runTestIteration(3, 3, {alignment:8, rowLength:3}, usePixelPackBuffer);  // PACK_ROW_LENTH == width
-    runTestIteration(3, 3, {alignment:8, rowLength:4}, usePixelPackBuffer);  // PACK_ROW_LENTH > width, no padding
-    runTestIteration(3, 3, {alignment:8, rowLength:5}, usePixelPackBuffer);  // PACK_ROW_LENTH > width, extra padding
+    runTestIteration(3, 3, {alignment:8, rowLength:2}, usePixelPackBuffer);  // PACK_ROW_LENGTH < width
+    runTestIteration(3, 3, {alignment:8, rowLength:3}, usePixelPackBuffer);  // PACK_ROW_LENGTH == width
+    runTestIteration(3, 3, {alignment:8, rowLength:4}, usePixelPackBuffer);  // PACK_ROW_LENGTH > width, no padding
+    runTestIteration(3, 3, {alignment:8, rowLength:5}, usePixelPackBuffer);  // PACK_ROW_LENGTH > width, extra padding
 
     debug("");
     debug("Verify that reading pixels to " + destText + " works fine with pack skip parameters.");
@@ -206,7 +208,7 @@ debug("");
 debug("Canvas.getContext");
 
 var canvas = document.getElementById("example");
-var gl = wtu.create3DContext(canvas, {preserveDrawingBuffer: true});
+var gl = wtu.create3DContext(canvas);
 
 if (!gl) {
   testFailed("context does not exist");
