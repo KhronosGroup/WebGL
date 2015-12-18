@@ -1174,6 +1174,9 @@ goog.scope(function() {
 
                 bufferedLogToConsole('gl.INVALID_VALUE is generated if bufferMode is gl.SEPARATE_ATTRIBS and count is greater than gl.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS.');
                 maxTransformFeedbackSeparateAttribs = /** @type {number} */ (gl.getParameter(gl.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS));
+                for (var count = 0; count < maxTransformFeedbackSeparateAttribs; ++count) {
+                    tfVarying = tfVarying.concat(['gl_Position']);
+                }
                 gl.transformFeedbackVaryings(program.getProgram(), tfVarying, gl.SEPARATE_ATTRIBS);
                 this.expectError(gl.INVALID_VALUE);
 
