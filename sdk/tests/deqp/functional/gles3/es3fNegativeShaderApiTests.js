@@ -453,13 +453,13 @@ goog.scope(function() {
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if the size of the uniform variable declared in the shader does not match the size indicated by the glUniform command.');
                 gl.useProgram(program.getProgram());
-                gl.uniform1fv(vec4_v, data);
+                gl.uniform1fv(vec4_v, new Float32Array(1));
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform2fv(vec4_v, data);
+                gl.uniform2fv(vec4_v, new Float32Array(2));
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform3fv(vec4_v, data);
+                gl.uniform3fv(vec4_v, new Float32Array(3));
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform4fv(vec4_v, data);
+                gl.uniform4fv(vec4_v, new Float32Array(4));
                 this.expectError(gl.NO_ERROR);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if glUniform{1234}fv is used to load a uniform variable of type /** @type {number} */ var , ivec2, ivec3, ivec4, unsigned /** @type {number} */ var , uvec2, uvec3, uvec4.');
@@ -471,7 +471,7 @@ goog.scope(function() {
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if a sampler is loaded using a command other than glUniform1i and glUniform1iv.');
                 gl.useProgram(program.getProgram());
-                gl.uniform1fv(sampler_f, data);
+                gl.uniform1fv(sampler_f, new Float32Array(1));
                 this.expectError(gl.INVALID_OPERATION);
 
                 gl.useProgram(null);
@@ -489,7 +489,7 @@ goog.scope(function() {
                 if (vec4_v == null)
                     assertMsgOptions(false, 'Failed to retrieve uniform location', false, true);
 
-                /** @type {Float32Array} */ var data = new Float32Array(8);
+                /** @type {Float32Array} */ var data = new Float32Array(12);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if count is greater than 1 and the indicated uniform variable is not an array variable.');
                 gl.useProgram(program.getProgram());
@@ -571,39 +571,42 @@ goog.scope(function() {
                 if (vec4_v == null || ivec4_f == null || uvec4_f == null || sampler_f == null)
                     assertMsgOptions(false, 'Failed to retrieve uniform location', false, true);
 
-                /** @type {Int32Array} */ var data = new Int32Array(4);
+                /** @type {Int32Array} */ var data1 = new Int32Array(1);
+                /** @type {Int32Array} */ var data2 = new Int32Array(2);
+                /** @type {Int32Array} */ var data3 = new Int32Array(3);
+                /** @type {Int32Array} */ var data4 = new Int32Array(4);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if the size of the uniform variable declared in the shader does not match the size indicated by the glUniform command.');
                 gl.useProgram(program.getProgram());
-                gl.uniform1iv(ivec4_f, data);
+                gl.uniform1iv(ivec4_f, data1);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform2iv(ivec4_f, data);
+                gl.uniform2iv(ivec4_f, data2);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform3iv(ivec4_f, data);
+                gl.uniform3iv(ivec4_f, data3);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform4iv(ivec4_f, data);
+                gl.uniform4iv(ivec4_f, data4);
                 this.expectError(gl.NO_ERROR);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if glUniform{1234}iv is used to load a uniform variable of type /** @type {number} */ var , vec2, vec3, or vec4.');
                 gl.useProgram(program.getProgram());
-                gl.uniform1iv(vec4_v, data);
+                gl.uniform1iv(vec4_v, data1);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform2iv(vec4_v, data);
+                gl.uniform2iv(vec4_v, data2);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform3iv(vec4_v, data);
+                gl.uniform3iv(vec4_v, data3);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform4iv(vec4_v, data);
+                gl.uniform4iv(vec4_v, data4);
                 this.expectError(gl.INVALID_OPERATION);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if glUniform{1234}iv is used to load a uniform variable of type unsigned /** @type {number} */ var , uvec2, uvec3 or uvec4.');
                 gl.useProgram(program.getProgram());
-                gl.uniform1iv(uvec4_f, data);
+                gl.uniform1iv(uvec4_f, data1);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform2iv(uvec4_f, data);
+                gl.uniform2iv(uvec4_f, data2);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform3iv(uvec4_f, data);
+                gl.uniform3iv(uvec4_f, data3);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform4iv(uvec4_f, data);
+                gl.uniform4iv(uvec4_f, data4);
                 this.expectError(gl.INVALID_OPERATION);
 
                 gl.useProgram(null);
@@ -621,7 +624,7 @@ goog.scope(function() {
                 if (ivec4_f == null)
                     assertMsgOptions(false, 'Failed to retrieve uniform location', false, true);
 
-                /** @type {Int32Array} */ var data = new Int32Array(8);
+                /** @type {Int32Array} */ var data = new Int32Array(12);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if count is greater than 1 and the indicated uniform variable is not an array variable.');
                 gl.useProgram(program.getProgram());
@@ -708,44 +711,47 @@ goog.scope(function() {
                 if (vec4_v == null || ivec4_f == null || uvec4_f == null || sampler_f == null)
                     assertMsgOptions(false, 'Failed to retrieve uniform location', false, true);
 
-                /** @type {Uint32Array} */ var data = new Uint32Array(4);
+                /** @type {Uint32Array} */ var data1 = new Uint32Array(1);
+                /** @type {Uint32Array} */ var data2 = new Uint32Array(2);
+                /** @type {Uint32Array} */ var data3 = new Uint32Array(3);
+                /** @type {Uint32Array} */ var data4 = new Uint32Array(4);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if the size of the uniform variable declared in the shader does not match the size indicated by the glUniform command.');
                 gl.useProgram(program.getProgram());
-                gl.uniform1uiv(uvec4_f, data);
+                gl.uniform1uiv(uvec4_f, data1);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform2uiv(uvec4_f, data);
+                gl.uniform2uiv(uvec4_f, data2);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform3uiv(uvec4_f, data);
+                gl.uniform3uiv(uvec4_f, data3);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform4uiv(uvec4_f, data);
+                gl.uniform4uiv(uvec4_f, data4);
                 this.expectError(gl.NO_ERROR);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if glUniform{1234}uiv is used to load a uniform variable of type /** @type {number} */ var , vec2, vec3, or vec4.');
                 gl.useProgram(program.getProgram());
-                gl.uniform1uiv(vec4_v, data);
+                gl.uniform1uiv(vec4_v, data1);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform2uiv(vec4_v, data);
+                gl.uniform2uiv(vec4_v, data2);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform3uiv(vec4_v, data);
+                gl.uniform3uiv(vec4_v, data3);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform4uiv(vec4_v, data);
+                gl.uniform4uiv(vec4_v, data4);
                 this.expectError(gl.INVALID_OPERATION);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if glUniform{1234}uiv is used to load a uniform variable of type /** @type {number} */ var , ivec2, ivec3 or ivec4.');
                 gl.useProgram(program.getProgram());
-                gl.uniform1uiv(ivec4_f, data);
+                gl.uniform1uiv(ivec4_f, data1);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform2uiv(ivec4_f, data);
+                gl.uniform2uiv(ivec4_f, data2);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform3uiv(ivec4_f, data);
+                gl.uniform3uiv(ivec4_f, data3);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniform4uiv(ivec4_f, data);
+                gl.uniform4uiv(ivec4_f, data4);
                 this.expectError(gl.INVALID_OPERATION);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if a sampler is loaded using a command other than glUniform1i and glUniform1iv.');
                 gl.useProgram(program.getProgram());
-                gl.uniform1uiv(sampler_f, data);
+                gl.uniform1uiv(sampler_f, data1);
                 this.expectError(gl.INVALID_OPERATION);
 
                 gl.useProgram(null);
@@ -763,7 +769,7 @@ goog.scope(function() {
                 if (uvec4_f == null)
                     assertMsgOptions(false, 'Failed to retrieve uniform location', false, true);
 
-                /** @type {Uint32Array} */ var data = new Uint32Array(4);
+                /** @type {Uint32Array} */ var data = new Uint32Array(12);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if count is greater than 1 and the indicated uniform variable is not an array variable.');
                 gl.useProgram(program.getProgram());
@@ -792,50 +798,55 @@ goog.scope(function() {
                 if (mat4_v == null || sampler_f == null)
                     assertMsgOptions(false, 'Failed to retrieve uniform location', false, true);
 
-                /** @type {Float32Array} */ var data = new Float32Array(16);
+                /** @type {Float32Array} */ var data4 = new Float32Array(4);
+                /** @type {Float32Array} */ var data9 = new Float32Array(9);
+                /** @type {Float32Array} */ var data16 = new Float32Array(16);
+                /** @type {Float32Array} */ var data6 = new Float32Array(6);
+                /** @type {Float32Array} */ var data8 = new Float32Array(8);
+                /** @type {Float32Array} */ var data12 = new Float32Array(12);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if the size of the uniform variable declared in the shader does not match the size indicated by the glUniform command.');
                 gl.useProgram(program.getProgram());
-                gl.uniformMatrix2fv(mat4_v, false, data);
+                gl.uniformMatrix2fv(mat4_v, false, data4);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix3fv(mat4_v, false, data);
+                gl.uniformMatrix3fv(mat4_v, false, data9);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix4fv(mat4_v, false, data);
+                gl.uniformMatrix4fv(mat4_v, false, data16);
                 this.expectError(gl.NO_ERROR);
 
-                gl.uniformMatrix2x3fv(mat4_v, false, data);
+                gl.uniformMatrix2x3fv(mat4_v, false, data6);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix3x2fv(mat4_v, false, data);
+                gl.uniformMatrix3x2fv(mat4_v, false, data6);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix2x4fv(mat4_v, false, data);
+                gl.uniformMatrix2x4fv(mat4_v, false, data8);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix4x2fv(mat4_v, false, data);
+                gl.uniformMatrix4x2fv(mat4_v, false, data8);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix3x4fv(mat4_v, false, data);
+                gl.uniformMatrix3x4fv(mat4_v, false, data12);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix4x3fv(mat4_v, false, data);
+                gl.uniformMatrix4x3fv(mat4_v, false, data12);
                 this.expectError(gl.INVALID_OPERATION);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if a sampler is loaded using a command other than glUniform1i and glUniform1iv.');
                 gl.useProgram(program.getProgram());
-                gl.uniformMatrix2fv(sampler_f, false, data);
+                gl.uniformMatrix2fv(sampler_f, false, data4);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix3fv(sampler_f, false, data);
+                gl.uniformMatrix3fv(sampler_f, false, data9);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix4fv(sampler_f, false, data);
+                gl.uniformMatrix4fv(sampler_f, false, data16);
                 this.expectError(gl.INVALID_OPERATION);
 
-                gl.uniformMatrix2x3fv(sampler_f, false, data);
+                gl.uniformMatrix2x3fv(sampler_f, false, data6);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix3x2fv(sampler_f, false, data);
+                gl.uniformMatrix3x2fv(sampler_f, false, data6);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix2x4fv(sampler_f, false, data);
+                gl.uniformMatrix2x4fv(sampler_f, false, data8);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix4x2fv(sampler_f, false, data);
+                gl.uniformMatrix4x2fv(sampler_f, false, data8);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix3x4fv(sampler_f, false, data);
+                gl.uniformMatrix3x4fv(sampler_f, false, data12);
                 this.expectError(gl.INVALID_OPERATION);
-                gl.uniformMatrix4x3fv(sampler_f, false, data);
+                gl.uniformMatrix4x3fv(sampler_f, false, data12);
                 this.expectError(gl.INVALID_OPERATION);
 
                 gl.useProgram(null);
@@ -853,7 +864,7 @@ goog.scope(function() {
                 if (mat4_v == null)
                     assertMsgOptions(false, 'Failed to retrieve uniform location', false, true);
 
-                /** @type {Float32Array} */ var data = new Float32Array(32);
+                /** @type {Float32Array} */ var data = new Float32Array(144);
 
                 bufferedLogToConsole('gl.INVALID_OPERATION is generated if count is greater than 1 and the indicated uniform variable is not an array variable.');
                 gl.useProgram(program.getProgram());
