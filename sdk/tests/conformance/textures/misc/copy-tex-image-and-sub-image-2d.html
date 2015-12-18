@@ -80,10 +80,13 @@ function runTestIteration(antialias)
       [0, 0, 1, 1],
       [0.5, 0.5, 0.5, 0.5],
     ];
+    var data = new Uint8Array(2 * 2 * 4);
+    for (var ii = 0; ii < 2 * 2 * 4; ++ii)
+      data[ii] = 136; // A random number other than 0.
     var count = 0;
     for (var yy = -2; yy <= 2; ++yy) {
       for (var xx = -2; xx <= 2; ++xx) {
-         for (var ii = 0; ii < 2; ++ii) {
+        for (var ii = 0; ii < 2; ++ii) {
           var texColor = colors[count];
           var clearColor = colors[(count + 1) % colors.length];
           // clear to some color
@@ -98,6 +101,7 @@ function runTestIteration(antialias)
                 "using copyTexImage2D: x = " + xx + ", y = " + yy);
             break;
           case 1:
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
             gl.copyTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, xx, yy, 2, 2);
             wtu.glErrorShouldBe(gl, gl.NO_ERROR,
                 "using copyTexSubImage2D: x = " + xx + ", y = " + yy);
@@ -117,7 +121,7 @@ function runTestIteration(antialias)
               var x = xx + ix;
               var y = yy + iy;
               var expectedColor = (x < 0 || y < 0 || x >= 2 || y >= 2) ?
-                  [0,0,0,0] :
+                  (ii == 0 ? [0, 0, 0, 0] : [136, 136, 136, 136]) :
                   [Math.floor(255 * texColor[0]),
                    Math.floor(255 * texColor[1]),
                    Math.floor(255 * texColor[2]),

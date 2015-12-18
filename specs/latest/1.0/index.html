@@ -2381,9 +2381,8 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
 
-            For any pixel lying outside the frame buffer, all channels of the associated texel are
-            initialized to 0; see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the
-            Framebuffer</a>. <br><br>
+            For any pixel lying outside the frame buffer, the corresponding destination pixel remains untouched;
+            see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the Framebuffer</a>. <br><br>
 
             If this function attempts to read from a complete framebuffer with a missing attachment,
             an <code>INVALID_OPERATION</code> error is generated
@@ -3004,8 +3003,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             error is generated.
             <br><br>
 
-            For any pixel lying outside the frame buffer, the value read contains 0 in all channels;
-            see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the Framebuffer</a>.
+            For any pixel lying outside the frame buffer, the corresponding destination buffer range
+            remains untouched; see <a href="#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the
+            Framebuffer</a>.
             <br><br>
 
             If this function attempts to read from a complete framebuffer with a missing color
@@ -3568,10 +3568,11 @@ is <code>BROWSER_DEFAULT_WEBGL</code>.
 <h3><a name="READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the Framebuffer</a></h3>
 
 <p>
-In the WebGL API, functions which read the framebuffer
-(<code>copyTexImage2D</code>, <code>copyTexSubImage2D</code>, and <code>readPixels</code>) are
-defined to generate the RGBA value (0, 0, 0, 0) for any pixel which is outside of the bound
-framebuffer.
+In the WebGL API, three functions read the framebuffer: <code>copyTexImage2D</code>,
+<code>copyTexSubImage2D</code>, and <code>readPixels</code>. <code>copyTexImage2D</code> is defined to
+generate the RGBA value (0, 0, 0, 0) for any pixel outside of the bound framebuffer.
+<code>copyTexSubImage2D</code> and <code>readPixels</code> are defined not to touch the corresponding
+destination range for any pixel outside the bound framebuffer.
 </p>
 
 <h3><a name="STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a></h3>
