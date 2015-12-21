@@ -435,38 +435,6 @@ goog.scope(function() {
             }
         ));
 
-        testGroup.addChild(new es3fApiCase.ApiCaseCallback('uniformf_invalid_location', 'Invalid glUniform{1234}f() usage', gl,
-            function() {
-                /** @type {gluShaderProgram.ShaderProgram} */ var program = new gluShaderProgram.ShaderProgram(gl, gluShaderProgram.makeVtxFragSources(uniformTestVertSource, uniformTestFragSource));
-
-                gl.useProgram(program.getProgram());
-                this.expectError(gl.NO_ERROR);
-
-                bufferedLogToConsole('gl.INVALID_OPERATION is generated if location is an invalid uniform location for the current program object and location is not equal to -1.');
-                gl.useProgram(program.getProgram());
-                gl.uniform1f(null, 0.0);
-                this.expectError(gl.INVALID_OPERATION);
-                gl.uniform2f(null, 0.0, 0.0);
-                this.expectError(gl.INVALID_OPERATION);
-                gl.uniform3f(null, 0.0, 0.0, 0.0);
-                this.expectError(gl.INVALID_OPERATION);
-                gl.uniform4f(null, 0.0, 0.0, 0.0, 0.0);
-                this.expectError(gl.INVALID_OPERATION);
-
-                gl.useProgram(program.getProgram());
-                gl.uniform1f(null, 0.0);
-                this.expectError(gl.NO_ERROR);
-                gl.uniform2f(null, 0.0, 0.0);
-                this.expectError(gl.NO_ERROR);
-                gl.uniform3f(null, 0.0, 0.0, 0.0);
-                this.expectError(gl.NO_ERROR);
-                gl.uniform4f(null, 0.0, 0.0, 0.0, 0.0);
-                this.expectError(gl.NO_ERROR);
-
-                gl.useProgram(null);
-            }
-        ));
-
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('uniformfv_incompatible_type', 'Invalid glUniform{1234}fv() usage', gl,
             function() {
                 /** @type {gluShaderProgram.ShaderProgram} */ var program = new gluShaderProgram.ShaderProgram(gl, gluShaderProgram.makeVtxFragSources(uniformTestVertSource, uniformTestFragSource));
