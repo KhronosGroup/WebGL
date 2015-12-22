@@ -2728,7 +2728,6 @@ var requestAnimFrame = function(callback) {
         return window.setTimeout(callback, 1000 / 70);
       };
   }
-  log("requestAnimFrame: document.hidden = " + document.hidden);
   _requestAnimFrame.call(window, callback);
 };
 
