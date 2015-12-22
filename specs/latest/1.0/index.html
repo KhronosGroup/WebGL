@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 14 December 2015</h2>
+    <h2 class="no-toc">Editor's Draft 22 December 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2690,13 +2690,16 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
             <p>Returns null if any OpenGL errors are generated during the execution of this
             function.</p>
-        <dt class="idl-code">WebGLShaderPrecisionFormat getShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype)
+        <dt class="idl-code">WebGLShaderPrecisionFormat? getShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man/xhtml/glGetShaderPrecisionFormat.xml">man page</a>)</span>
         <dd>
-            Return a new <code>WebGLShaderPrecisionFormat</code> describing the range and precision
+            <p>Return a new <code>WebGLShaderPrecisionFormat</code> describing the range and precision
             for the specified shader numeric format. The shadertype value can be FRAGMENT_SHADER or
             VERTEX_SHADER. The precisiontype value can be LOW_FLOAT, MEDIUM_FLOAT, HIGH_FLOAT,
-            LOW_INT, MEDIUM_INT or HIGH_INT.
+            LOW_INT, MEDIUM_INT or HIGH_INT.</p>
+
+            <p>Returns null if any OpenGL errors are generated during the execution of this
+            function.</p>
         <dt class="idl-code">DOMString? getShaderInfoLog(WebGLShader? shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderInfoLog.xml">man page</a>)</span>
         <dd>
