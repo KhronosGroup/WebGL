@@ -102,6 +102,20 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
       setCanvasToRedGreen(ctx);
     }
 
+    function checkSourceCanvasImageData(imageDataBefore, imageDataAfter) {
+      if (imageDataBefore.length != imageDataAfter.length) {
+        testFailed("The size of image data in source canvas become different after it is used in webgl texture.");
+        return;
+      }
+      for (var i = 0; i < imageDataAfter.length; i++) {
+        if (imageDataBefore[i] != imageDataAfter[i]) {
+          testFailed("Pixel values in source canvas have changed after canvas used in webgl texture.");
+          return;
+        }
+      }
+      testPassed("Pixel values in source canvas remain unchanged after canvas used in webgl texture.");
+    }    
+
     function runOneIteration(canvas, useTexSubImage2D, flipY, program, bindingTarget, opt_texture, opt_fontTest)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
@@ -251,10 +265,16 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                 var texture = undefined;
                 function runNextTest() {
                     var c = cases[caseNdx];
+                    var imageDataBefore = null;
                     if (c.init) {
                       c.init(ctx, bindingTarget);
+                      imageDataBefore = ctx.getImageData(0, 0, canvas.width, canvas.height);
                     }
                     texture = runOneIteration(canvas, c.sub, c.flipY, program, bindingTarget, texture, c.font);
+                    if (c.init) {
+                        debug("Checking if pixel values in source canvas change after canvas used as webgl texture");
+                        checkSourceCanvasImageData(imageDataBefore, ctx.getImageData(0, 0, canvas.width, canvas.height));
+                    }
                     // for the first 2 iterations always make a new texture.
                     if (count > 2) {
                       texture = undefined;
