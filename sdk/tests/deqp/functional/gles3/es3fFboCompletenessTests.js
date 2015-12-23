@@ -486,7 +486,7 @@ goog.scope(function() {
         var layerTests = tcuTestCase.newTest('layer', 'Tests for layer attachments');
 
         /** @static */
-        var s_latersParams = [
+        var s_layersParams = [
             es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_2D_ARRAY, 1, 0),
             es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_2D_ARRAY, 1, 3),
             es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_2D_ARRAY, 4, 3),
@@ -497,13 +497,13 @@ goog.scope(function() {
             es3fFboCompletenessTests.numLayersParams(gl.TEXTURE_3D, 64, 15)
         ];
 
-        for (var i = 0; i < s_latersParams.length; ++i) {
+        for (var i = 0; i < s_layersParams.length; ++i) {
             var name = 'name';
             var desc = 'desc';
             layerTests.addChild(new es3fFboCompletenessTests.NumLayersTest(
-                es3fFboCompletenessTests.numLayersParams.getName(s_latersParams[i]),
-                es3fFboCompletenessTests.numLayersParams.getDescription(s_latersParams[i]),
-                fboCtx, s_latersParams[i]
+                es3fFboCompletenessTests.numLayersParams.getName(s_layersParams[i]),
+                es3fFboCompletenessTests.numLayersParams.getDescription(s_layersParams[i]),
+                fboCtx, s_layersParams[i]
             ));
         }
         testGroup.addChild(layerTests);
