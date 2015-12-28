@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 03 December 2015</h2>
+    <h2 class="no-toc">Editor's Draft 28 December 2015</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -979,9 +979,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             <p>The following <em>pname</em> arguments return a string describing some aspect of the current WebGL implementation:</p>
             <table>
               <tr><td>VERSION</td>
-                  <td>Returns a version or release number of the form <code>WebGL&lt;space&gt;2.0&lt;space&gt;&lt;vendor-specific information&gt;</code>.</td></tr>
+                  <td>Returns a version or release number of the form <code>WebGL&lt;space&gt;2.0&lt;optional&gt;&lt;space&gt;&lt;vendor-specific information&gt;&lt;/optional&gt;</code>.</td></tr>
               <tr><td>SHADING_LANGUAGE_VERSION</td>
-                  <td>Returns a version or release number of the form <code>WebGL&lt;space&gt;GLSL&lt;space&gt;ES&lt;space&gt;3.00&lt;space&gt;&lt;vendor-specific information&gt;</code>.</td></tr>
+                  <td>Returns a version or release number of the form <code>WebGL&lt;space&gt;GLSL&lt;space&gt;ES&lt;space&gt;3.00&lt;optional&gt;&lt;space&gt;&lt;vendor-specific information&gt;&lt;/optional&gt;</code>.</td></tr>
             </table><br>
             <p>For <code>RED_BITS</code>, <code>GREEN_BITS</code>, <code>BLUE_BITS</code>, and <code>ALPHA_BITS</code>, if active color attachments of the draw framebuffer do not have identical formats, generates an <code>INVALID_OPERATION</code> error and returns 0.</p>
 
