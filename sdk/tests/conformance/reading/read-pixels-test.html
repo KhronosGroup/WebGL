@@ -75,11 +75,11 @@ function continueTestAfterContextRestored() {
 }
 
 function continueTestPart1() {
-  gl.clearColor(0.5, 0.7, 1.0, 1);
+  gl.clearColor(0.2, 0.6, 0.4, 1);
   gl.clear(gl.COLOR_BUFFER_BIT);
 
-  var innerColor = [0.5, 0.7, 1.0, 1];
-  var outerColor = [0, 0, 0, 0];
+  var innerColor = [51, 153, 102, 255]; // (0.2, 0.6, 0.4, 1)
+  var outerColor = [19, 72, 0, 198]; // Random color other than [0, 0, 0, 0]
 
   var tests = [
     { msg: 'in range', checkColor: innerColor, x:  0, y:  0,
@@ -110,18 +110,31 @@ function continueTestPart1() {
 
   function checkBuffer(checkColor, x, y, oneColor, oneX, oneY) {
     var buf = new Uint8Array(width * height * 4);
+    // Initialize buf.
+    for (var ii = 0; ii < width * height; ++ii) {
+      buf[ii * 4] = outerColor[0];
+      buf[ii * 4 + 1] = outerColor[1];
+      buf[ii * 4 + 2] = outerColor[2];
+      buf[ii * 4 + 3] = outerColor[3];
+    }
     gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
     for (var yy = 0; yy < height; ++yy) {
       for (var xx = 0; xx < width; ++xx) {
         var offset = (yy * width + xx) * 4;
         var expectedColors = (oneX == xx && oneY == yy) ? oneColor : checkColor;
+        var mismatch = false;
         for (var cc = 0; cc < 4; ++cc) {
-          var expectedColor = expectedColors[cc] * 255;
+          var expectedColor = expectedColors[cc];
           var color = buf[offset + cc];
           var diff = Math.abs(expectedColor - color);
-          assertMsg(diff < 3,
-                    "color pixel at " + xx + ", " + yy + " should be about " + expectedColor);
+          if (diff >= 3) {
+            mismatch = true;
+            break;
+          }
         }
+        assertMsg(!mismatch,
+                  "color pixel at " + xx + ", " + yy + " should be about " + expectedColors +
+                  ", was = " + [buf[offset], buf[offset + 1], buf[offset + 2], buf[offset + 3]]);
       }
     }
   }
