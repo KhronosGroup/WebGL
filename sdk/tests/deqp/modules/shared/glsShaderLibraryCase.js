@@ -987,19 +987,11 @@ glsShaderLibraryCase.execute = function() {
                     // Replicate values four times.
                 /** @type {Array} */ var scalars = [];
 
-                    if (gluShaderUtil.isDataTypeMatrix(dataType)) {
-                        /** @type {number} */ var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(dataType);
-                        /** @type {number} */ var numRows = gluShaderUtil.getDataTypeMatrixNumRows(dataType);
-                        for (var repNdx = 0; repNdx < numVerticesPerDraw; repNdx++)
-                            for (var i = 0; i < numCols; i++)
-                                for (var j = 0; j < numRows; j++)
-                                    scalars[repNdx * numRows + i * numRows * numVerticesPerDraw + j] = val.elements[arrayNdx * scalarSize + i * numRows + j];
-                    } else
-                        for (var repNdx = 0; repNdx < numVerticesPerDraw; repNdx++)
-                            for (var ndx = 0; ndx < scalarSize; ndx++)
-                                scalars[repNdx * scalarSize + ndx] = val.elements[arrayNdx * scalarSize + ndx];
+                    for (var repNdx = 0; repNdx < numVerticesPerDraw; repNdx++)
+                        for (var ndx = 0; ndx < scalarSize; ndx++)
+                            scalars[repNdx * scalarSize + ndx] = val.elements[arrayNdx * scalarSize + ndx];
 
-                                // Attribute name prefix.
+                    // Attribute name prefix.
                     /** @type {string} */ var attribPrefix = '';
                     // \todo [2010-05-27 petri] Should latter condition only apply for vertex cases (or actually non-fragment cases)?
                     if ((spec.caseType === glsShaderLibraryCase.caseType.CASETYPE_FRAGMENT_ONLY) || (gluShaderUtil.getDataTypeScalarType(dataType) !== 'float'))
@@ -1019,11 +1011,8 @@ glsShaderLibraryCase.execute = function() {
 
                         assertMsgOptions(scalarSize === numCols * numRows, 'Matrix size sanity check', false, true);
 
-                        /** @type {number} */ var colSize = numRows * numVerticesPerDraw;
-                        for (var i = 0; i < numCols; i++) {
-                        /** @type {Array} */ var colData = scalars.slice(i * colSize, (i + 1) * colSize);
-                            vertexArrays.push(new gluDrawUtil.VertexArrayBinding(gl.FLOAT, attribLoc + i, numRows, numVerticesPerDraw, colData));
-                        }
+                        for (var i = 0; i < numCols; i++)
+                            vertexArrays.push(new gluDrawUtil.VertexArrayBinding(gl.FLOAT, attribLoc + i, numRows, numVerticesPerDraw, scalars, scalarSize * 4, i * numRows * 4));
                     } else
                             vertexArrays.push(new gluDrawUtil.VertexArrayBinding(gl.FLOAT, attribLoc, scalarSize, numVerticesPerDraw, scalars));
 

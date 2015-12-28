@@ -35,14 +35,18 @@ var gluShaderProgram = framework.opengl.gluShaderProgram;
  * @param {number} components Number of components per vertex
  * @param {number} elements Number of elements in the array
  * @param {Array<number>} data Source data
+ * @param {number=} stride
+ * @param {number=} offset
  */
-gluDrawUtil.VertexArrayBinding = function(type, location, components, elements, data) {
+gluDrawUtil.VertexArrayBinding = function(type, location, components, elements, data, stride, offset) {
     this.type = type;
     this.location = location === undefined ? -1 : location;
     this.components = components;
     this.elements = elements;
     this.data = data;
     /** @type {?string} */ this.name = null;
+    this.stride = stride || 0;
+    this.offset = offset || 0;
 };
 
 /**
@@ -290,7 +294,7 @@ gluDrawUtil.vertexBuffer = function(gl, vertexArray) {
     assertMsgOptions(gl.getError() === gl.NO_ERROR, 'bufferData', false, true);
     gl.enableVertexAttribArray(vertexArray.location);
     assertMsgOptions(gl.getError() === gl.NO_ERROR, 'enableVertexAttribArray', false, true);
-    gl.vertexAttribPointer(vertexArray.location, vertexArray.components, vertexArray.type, false, 0, 0);
+    gl.vertexAttribPointer(vertexArray.location, vertexArray.components, vertexArray.type, false, vertexArray.stride, vertexArray.offset);
     assertMsgOptions(gl.getError() === gl.NO_ERROR, 'vertexAttribPointer', false, true);
     return buffer;
 };
