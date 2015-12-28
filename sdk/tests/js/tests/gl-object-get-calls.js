@@ -918,7 +918,7 @@ if (contextVersion > 1) {
     shouldBe('gl.getError()', 'gl.NO_ERROR');
 
     var numActiveUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-    var blockIndex = gl.getUniformBlockIndex(program, "Transform")
+    var blockIndex = gl.getUniformBlockIndex(program, "Transform");
     var uniformIndices = [];
     for (var i = 0; i < numActiveUniforms; i++)
       uniformIndices.push(i);
@@ -964,6 +964,21 @@ if (contextVersion > 1) {
 	    return gl.getActiveUniforms(program, uniformIndices, pname);
         }
     );
+
+    debug("");
+    debug("Test getUniformBlockIndex");
+    var program = wtu.loadUniformBlockProgram(gl);
+    gl.linkProgram(program);
+    shouldBeTrue('gl.getProgramParameter(program, gl.LINK_STATUS)');
+    shouldBe('gl.getUniformBlockIndex(program, "Transform")', '0');
+    shouldBe('gl.getUniformBlockIndex(program, "u_modelViewMatrix")', 'gl.INVALID_INDEX');
+    shouldBe('gl.getUniformBlockIndex(program, "normal")', 'gl.INVALID_INDEX');
+    shouldBe('gl.getUniformBlockIndex(program, "u_normal")', 'gl.INVALID_INDEX');
+    var noUniformProgram = wtu.loadStandardProgram(gl);
+    gl.linkProgram(noUniformProgram);
+    shouldBeTrue('gl.getProgramParameter(noUniformProgram, gl.LINK_STATUS)');
+    shouldBe('gl.getUniformBlockIndex(noUniformProgram, "u_modelViewProjMatrix")', 'gl.INVALID_INDEX');
+    shouldBe('gl.getUniformBlockIndex(noUniformProgram, "u_normal")', 'gl.INVALID_INDEX');
 }
 
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
