@@ -32,19 +32,6 @@ goog.scope(function() {
         /**
         * @type {Array<number>}
         */
-        es3fFboCompletenessTests.s_es3UnsizedColorRenderables = [
-            // "...or if it is unsized format RGBA or RGB."
-            // See Table 3.3 in GLES3.
-            glsFboUtil.formatkey(gl.RGBA, gl.UNSIGNED_BYTE),
-            glsFboUtil.formatkey(gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4),
-            glsFboUtil.formatkey(gl.RGBA, gl.UNSIGNED_SHORT_5_5_5_1),
-            glsFboUtil.formatkey(gl.RGB, gl.UNSIGNED_BYTE),
-            glsFboUtil.formatkey(gl.RGB, gl.UNSIGNED_SHORT_5_6_5)
-        ];
-
-        /**
-        * @type {Array<number>}
-        */
         es3fFboCompletenessTests.s_es3DepthRenderables = [
             // GLES3, 4.4.4: "An internal format is depth-renderable if it is one of
             // the formats from table 3.13."
@@ -83,14 +70,6 @@ goog.scope(function() {
         * @type {Array<glsFboUtil.formatT>}
         */
         es3fFboCompletenessTests.s_es3Formats = [
-            [
-                (
-                    glsFboUtil.FormatFlags.REQUIRED_RENDERABLE |
-                    glsFboUtil.FormatFlags.COLOR_RENDERABLE |
-                    glsFboUtil.FormatFlags.TEXTURE_VALID
-                ),
-                glsFboUtil.rangeArray(es3fFboCompletenessTests.s_es3UnsizedColorRenderables)
-            ],
             [
                 (
                     glsFboUtil.FormatFlags.REQUIRED_RENDERABLE |
