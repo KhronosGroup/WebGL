@@ -2078,9 +2078,9 @@ goog.scope(function() {
             gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA, 1, 1, 1, 0, 0, gl.UNSIGNED_BYTE, null);
             this.expectError(gl.INVALID_ENUM);
 
-            bufferedLogToConsole('gl.INVALID_VALUE is generated if internalFormat is not one of the accepted resolution and format symbolic constants.');
+            bufferedLogToConsole('gl.INVALID_ENUM is generated if internalFormat is not one of the accepted resolution and format symbolic constants.');
             gl.texImage3D(gl.TEXTURE_3D, 0, 0, 1, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError(gl.INVALID_ENUM);
 
             bufferedLogToConsole('gl.INVALID_OPERATION is generated if target is gl.TEXTURE_3D and format is gl.DEPTH_COMPONENT, or gl.DEPTH_STENCIL.');
             gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA, 1, 1, 1, 0, gl.DEPTH_STENCIL, gl.UNSIGNED_BYTE, null);
