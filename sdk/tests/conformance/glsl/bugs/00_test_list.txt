@@ -12,6 +12,7 @@
 --min-version 1.0.4 floor-div-cos-should-not-truncate.html
 --min-version 1.0.3 floored-division-accuracy.html
 --min-version 1.0.3 fragcoord-linking-bug.html
+--min-version 1.0.4 gl-fragcoord-multisampling-bug.html
 --min-version 1.0.4 logic-inside-block-without-braces.html
 --min-version 1.0.3 long-expressions-should-not-crash.html
 --min-version 1.0.4 loop-if-loop-gradient.html
