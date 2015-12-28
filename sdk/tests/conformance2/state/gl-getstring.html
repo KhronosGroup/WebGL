@@ -53,8 +53,8 @@ if (!gl) {
   testPassed("context exists");
 
   debug("");
-  checkPrefix("WebGL 2.0", "VERSION");
-  checkPrefix("WebGL GLSL ES 3.00", "SHADING_LANGUAGE_VERSION");
+  checkPrefix("WebGL 2.0 ", "VERSION");
+  checkPrefix("WebGL GLSL ES 3.00 ", "SHADING_LANGUAGE_VERSION");
   shouldBeNonNull("gl.getParameter(gl.VENDOR)");
   shouldBeNonNull("gl.getParameter(gl.RENDERER)");
   shouldBe("gl.getError()", "gl.NO_ERROR");
