@@ -2015,6 +2015,21 @@ var loadShaderFromFile = function(
       opt_logShaders, undefined, file, opt_skipCompileStatus);
 };
 
+var loadShaderFromFileAsync = function(
+    gl, file, type, opt_errorCallback, opt_logShaders, opt_skipCompileStatus, callback) {
+  loadTextFileAsync(file, function(gl, type, opt_errorCallback, opt_logShaders, file, opt_skipCompileStatus){
+      return function(success, shaderSource) {
+        if (success) {
+          var shader = loadShader(gl, shaderSource, type, opt_errorCallback,
+              opt_logShaders, undefined, file, opt_skipCompileStatus);
+          callback(true, shader);
+        } else {
+          callback(false, null);
+        }
+      }
+  }(gl, type, opt_errorCallback, opt_logShaders, file, opt_skipCompileStatus));
+};
+
 /**
  * Gets the content of script.
  * @param {string} scriptId The id of the script tag.
@@ -2071,6 +2086,32 @@ var loadStandardProgram = function(gl) {
   gl.bindAttribLocation(program, 1, "a_normal");
   linkProgram(gl, program);
   return program;
+};
+
+var loadStandardProgramAsync = function(gl, callback) {
+  loadStandardVertexShaderAsync(gl, function(gl) {
+    return function(success, vs) {
+      if (success) {
+        loadStandardFragmentShaderAsync(gl, function(vs) {
+          return function(success, fs) {
+            if (success) {
+              var program = gl.createProgram();
+              gl.attachShader(program, vs);
+              gl.attachShader(program, fs);
+              gl.bindAttribLocation(program, 0, "a_vertex");
+              gl.bindAttribLocation(program, 1, "a_normal");
+              linkProgram(gl, program);
+              callback(true, program);
+            } else {
+              callback(false, null);
+            }
+          };
+        }(vs));
+      } else {
+        callback(false, null);
+      }
+    };
+  }(gl));
 };
 
 /**
@@ -2310,10 +2351,16 @@ var loadStandardVertexShader = function(gl) {
   return loadShaderFromFile(
       gl, getResourcePath() + "vertexShader.vert", gl.VERTEX_SHADER);
 };
+var loadStandardVertexShaderAsync = function(gl, callback) {
+  loadShaderFromFileAsync(gl, getResourcePath() + "vertexShader.vert", gl.VERTEX_SHADER, undefined, undefined, undefined, callback);
+};
 
 var loadStandardFragmentShader = function(gl) {
   return loadShaderFromFile(
       gl, getResourcePath() + "fragmentShader.frag", gl.FRAGMENT_SHADER);
+};
+var loadStandardFragmentShaderAsync = function(gl, callback) {
+  loadShaderFromFileAsync(gl, getResourcePath() + "fragmentShader.frag", gl.FRAGMENT_SHADER, undefined, undefined, undefined, callback);
 };
 
 var loadUniformBlockProgram = function(gl) {
@@ -3065,8 +3112,11 @@ return {
   loadShaderFromFile: loadShaderFromFile,
   loadShaderFromScript: loadShaderFromScript,
   loadStandardProgram: loadStandardProgram,
+  loadStandardProgramAsync: loadStandardProgramAsync,
   loadStandardVertexShader: loadStandardVertexShader,
+  loadStandardVertexShaderAsync: loadStandardVertexShaderAsync,
   loadStandardFragmentShader: loadStandardFragmentShader,
+  loadStandardFragmentShaderAsync: loadStandardFragmentShaderAsync,
   loadUniformBlockProgram: loadUniformBlockProgram,
   loadUniformBlockVertexShader: loadUniformBlockVertexShader,
   loadUniformBlockFragmentShader: loadUniformBlockFragmentShader,
