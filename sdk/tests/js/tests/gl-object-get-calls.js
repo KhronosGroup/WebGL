@@ -979,6 +979,31 @@ if (contextVersion > 1) {
     shouldBeTrue('gl.getProgramParameter(noUniformProgram, gl.LINK_STATUS)');
     shouldBe('gl.getUniformBlockIndex(noUniformProgram, "u_modelViewProjMatrix")', 'gl.INVALID_INDEX');
     shouldBe('gl.getUniformBlockIndex(noUniformProgram, "u_normal")', 'gl.INVALID_INDEX');
+
+    debug("");
+    debug("Test getActiveUniformBlockName");
+    var program = wtu.loadUniformBlockProgram(gl);
+    gl.linkProgram(program);
+    shouldBeTrue('gl.getProgramParameter(program, gl.LINK_STATUS)');
+    shouldBeEqualToString('gl.getActiveUniformBlockName(program, 0)', 'Transform');
+    shouldBeNull('gl.getActiveUniformBlockName(program, -1)');
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+    shouldBeNull('gl.getActiveUniformBlockName(program, 1)');
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+    shouldBeNull('gl.getActiveUniformBlockName(program, gl.INVALID_INDEX)');
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+    var noLinkProgram = gl.createProgram();
+    shouldBeFalse('gl.getProgramParameter(noLinkProgram, gl.LINK_STATUS)');
+    wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, 'gl.getActiveUniformBlockName(noLinkProgram, 0)');
+    var noUniformProgram = wtu.loadStandardProgram(gl);
+    gl.linkProgram(noUniformProgram);
+    shouldBeTrue('gl.getProgramParameter(noUniformProgram, gl.LINK_STATUS)');
+    shouldBeNull('gl.getActiveUniformBlockName(noUniformProgram, -1)');
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+    shouldBeNull('gl.getActiveUniformBlockName(noUniformProgram, 0)');
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+    shouldBeNull('gl.getActiveUniformBlockName(noUniformProgram, gl.INVALID_INDEX)');
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
 }
 
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
