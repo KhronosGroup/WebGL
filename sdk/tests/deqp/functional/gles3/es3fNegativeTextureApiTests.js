@@ -2385,6 +2385,7 @@ goog.scope(function() {
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
             gl.bindTexture (gl.TEXTURE_3D, texture);
+            gl.texImage3D (gl.TEXTURE_3D, 0, gl.RGBA, 4, 4, 4, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if width, height or depth is less than 0.');
             gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, -1, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
