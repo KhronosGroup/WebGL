@@ -527,14 +527,15 @@ function runDrawTests() {
     shouldBe("gl.getParameter(gl.DRAW_BUFFER0 + " + ii + ")", "gl.NONE");
   }
 
-  // GLES3.0 spec section 4.4.4: Mismatching attachment size is not an error.
+  // WebGL generates FRAMEBUFFER_INCOMPLETE_DIMENSIONS when attached images have different sizes.
+  // This behavior differs from GLES 3.
   debug("test attachment size mis-match");
   gl.bindTexture(gl.TEXTURE_2D, attachments[0].texture);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width * 2, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-  shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
+  shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS");
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb2);
-  shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE");
+  shouldBeTrue("gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_INCOMPLETE_DIMENSIONS");
 
   // TODO: Rendering when framebuffer attachments have mismatched size should be tested, maybe in a separate test.
 
