@@ -1210,6 +1210,14 @@ goog.scope(function() {
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, 0, null);
             this.expectError(gl.INVALID_ENUM);
 
+            bufferedLogToConsole('gl.INVALID_ENUM is generated if format is not an accepted format constant.');
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, 0, gl.UNSIGNED_BYTE, null);
+            this.expectError(gl.INVALID_ENUM);
+
+            bufferedLogToConsole('gl.INVALID_VALUE is generated if internalFormat is not one of the accepted resolution and format symbolic constants.');
+            gl.texImage2D(gl.TEXTURE_2D, 0, 0, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            this.expectError(gl.INVALID_VALUE);
+
             bufferedLogToConsole('gl.INVALID_OPERATION is generated if the combination of internalFormat, format and type is invalid.');
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             this.expectError(gl.INVALID_OPERATION);
