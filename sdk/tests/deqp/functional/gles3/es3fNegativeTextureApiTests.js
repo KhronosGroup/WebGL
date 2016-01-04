@@ -1674,21 +1674,21 @@ goog.scope(function() {
         function() {
             bufferedLogToConsole('gl.INVALID_ENUM is generated if target or pname is not one of the accepted defined values.');
             gl.texParameteri(0, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            this.expectError(gl.INVALID_ENUM);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
             gl.texParameteri(gl.TEXTURE_2D, 0, gl.LINEAR);
-            this.expectError(gl.INVALID_ENUM);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
             gl.texParameteri(0, 0, gl.LINEAR);
-            this.expectError(gl.INVALID_ENUM);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
 
             bufferedLogToConsole('gl.INVALID_ENUM is generated if params should have a defined symbolic constant value (based on the value of pname) and does not.');
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, 0);
-            this.expectError(gl.INVALID_ENUM);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.REPEAT);
-            this.expectError(gl.INVALID_ENUM);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, 0);
-            this.expectError(gl.INVALID_ENUM);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.NEAREST);
-            this.expectError(gl.INVALID_ENUM);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
 
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -1719,6 +1719,23 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('texparameterf', 'Invalid gl.texParameterf() usage', gl,
         function() {
+            bufferedLogToConsole('gl.INVALID_ENUM is generated if target or pname is not one of the accepted defined values.');
+            gl.texParameterf(0, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
+            gl.texParameterf(gl.TEXTURE_2D, 0, gl.LINEAR);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
+            gl.texParameterf(0, 0, gl.LINEAR);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
+
+            bufferedLogToConsole('gl.INVALID_ENUM is generated if params should have a defined symbolic constant value (based on the value of pname) and does not.');
+            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, 0);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
+            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.REPEAT);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
+            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, 0);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
+            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.NEAREST);
+            this.expectError([gl.INVALID_ENUM, gl.INVALID_OPERATION]);
 
             /** @type{ WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -1740,138 +1757,6 @@ goog.scope(function() {
             gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, 0);
             this.expectError(gl.INVALID_ENUM);
             gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.NEAREST);
-            this.expectError(gl.INVALID_ENUM);
-
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if target or pname is not one of the accepted defined values.');
-            gl.texParameterf(0, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameterf(gl.TEXTURE_2D, 0, gl.LINEAR);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameterf(0, 0, gl.LINEAR);
-            this.expectError(gl.INVALID_ENUM);
-
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if params should have a defined symbolic constant value (based on the value of pname) and does not.');
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, 0);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.REPEAT);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, 0);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.NEAREST);
-            this.expectError(gl.INVALID_ENUM);
-
-            gl.deleteTexture(texture);
-        }));
-
-        // gl.texparameteriv
-
-        testGroup.addChild(new es3fApiCase.ApiCaseCallback('texparameteriv', 'Invalid gl.getTexParameter() usage', gl,
-        function() {
-            /** @type{ WebGLTexture} */ var texture;
-            texture = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if target or pname is not one of the accepted defined values.');
-            /** @type{Array<number>} */ var params = [gl.LINEAR];
-            gl.texParameteri(0, gl.TEXTURE_MIN_FILTER, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameteri(gl.TEXTURE_2D, 0, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameteri(0, 0, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if params should have a defined symbolic constant value (based on the value of pname) and does not.');
-            params[0] = 0;
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            params[0] = gl.REPEAT;
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            params[0] = 0;
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            params[0] = gl.NEAREST;
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if target or pname is not one of the accepted defined values.');
-            params[0] = gl.LINEAR;
-            gl.texParameteri(0, gl.TEXTURE_MIN_FILTER, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameteri(gl.TEXTURE_2D, 0, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameteri(0, 0, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if params should have a defined symbolic constant value (based on the value of pname) and does not.');
-            params[0] = 0;
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            params[0] = gl.REPEAT;
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            params[0] = 0;
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            params[0] = gl.NEAREST;
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-
-            gl.deleteTexture(texture);
-        }));
-
-        // gl.texparameterf
-
-        testGroup.addChild(new es3fApiCase.ApiCaseCallback('getTexParameter', 'Invalid gl.getTexParameter() usage', gl,
-        function() {
-            /** @type{ WebGLTexture} */ var texture;
-            texture = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if target or pname is not one of the accepted defined values.');
-            /** @type{Array<number>} */ var params = [gl.LINEAR];
-            gl.texParameterf(0, gl.TEXTURE_MIN_FILTER, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameterf(gl.TEXTURE_2D, 0, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameterf(0, 0, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if params should have a defined symbolic constant value (based on the value of pname) and does not.');
-            params[0] = 0;
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            params[0] = gl.REPEAT;
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            params[0] = 0;
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            params[0] = gl.NEAREST;
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if target or pname is not one of the accepted defined values.');
-            params[0] = gl.LINEAR;
-            gl.texParameterf(0, gl.TEXTURE_MIN_FILTER, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameterf(gl.TEXTURE_2D, 0, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            gl.texParameterf(0, 0, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if params should have a defined symbolic constant value (based on the value of pname) and does not.');
-            params[0] = 0;
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            params[0] = gl.REPEAT;
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            params[0] = 0;
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, params[0]);
-            this.expectError(gl.INVALID_ENUM);
-            params[0] = gl.NEAREST;
-            gl.texParameterf(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, params[0]);
             this.expectError(gl.INVALID_ENUM);
 
             gl.deleteTexture(texture);
