@@ -2420,8 +2420,8 @@ goog.scope(function() {
             this.expectError(gl.NO_ERROR);
 
             fbo = gl.createFramebuffer();
-            gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-            gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+            gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo);
+            gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER);
             this.expectError(gl.NO_ERROR);
 
             gl.copyTexSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 0, 0, 4, 4);
