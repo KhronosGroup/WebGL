@@ -2521,6 +2521,35 @@ goog.scope(function() {
             gl.deleteTexture(texture);
         }));
 
+        testGroup.addChild(new es3fApiCase.ApiCaseCallback('copytexsubimage3d_incomplete_framebuffer', 'Invalid gl.copyTexSubImage3D() usage', gl,
+        function() {
+            bufferedLogToConsole('gl.INVALID_FRAMEBUFFER_OPERATION is generated if the currently bound framebuffer is not framebuffer complete.');
+            /** @type{Array<WebGLTexture>} */ var texture = [];
+            /** @type{WebGLFramebuffer} */ var fbo;
+            texture[0] = gl.createTexture();
+            texture[1] = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_3D, texture[0]);
+            gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGBA, 4, 4, 4, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.bindTexture(gl.TEXTURE_2D_ARRAY, texture[1]);
+            gl.texImage3D(gl.TEXTURE_2D_ARRAY, 0, gl.RGBA, 4, 4, 4, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            this.expectError(gl.NO_ERROR);
+
+            fbo = gl.createFramebuffer();
+            gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+            gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+            this.expectError(gl.NO_ERROR);
+
+            gl.copyTexSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 0, 0, 4, 4);
+            this.expectError(gl.INVALID_FRAMEBUFFER_OPERATION);
+            gl.copyTexSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, 0, 0, 0, 0, 4, 4);
+            this.expectError(gl.INVALID_FRAMEBUFFER_OPERATION);
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            gl.deleteFramebuffer(fbo);
+            gl.deleteTexture(texture[0]);
+            gl.deleteTexture(texture[1]);
+        }));
+
         // gl.compressedTexImage3D
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage3d', 'Invalid gl.compressedTexImage3D() usage', gl,
