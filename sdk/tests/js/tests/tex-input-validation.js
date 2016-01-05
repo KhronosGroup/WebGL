@@ -514,7 +514,7 @@ var testCases = [
     border: 0,
     format: gl.RGBA,
     type: gl.UNSIGNED_BYTE,
-    expectedError: gl.INVALID_ENUM},
+    expectedError: gl.INVALID_VALUE},
   { target: gl.TEXTURE_3D,
     internalFormat: gl.RGBA,
     border: 0,
