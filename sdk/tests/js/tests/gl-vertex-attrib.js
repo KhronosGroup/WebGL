@@ -172,6 +172,107 @@ if (!gl) {
     }
   }
   wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+
+  debug("");
+  debug("Checking out-of-range vertexAttrib index");
+  gl.getVertexAttrib(numVertexAttribs, gl.CURRENT_VERTEX_ATTRIB);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib1fv(numVertexAttribs, [1]);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib1fv(numVertexAttribs, new Float32Array([-1]));
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib2fv(numVertexAttribs, [1, 2]);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib2fv(numVertexAttribs, new Float32Array([1, -2]));
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib3fv(numVertexAttribs, [1, 2, 3]);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib3fv(numVertexAttribs, new Float32Array([1, -2, 3]));
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib4fv(numVertexAttribs, [1, 2, 3, 4]);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib4fv(numVertexAttribs, new Float32Array([1, 2, -3, 4]));
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib1f(numVertexAttribs, 5);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib2f(numVertexAttribs, 6, 7);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib3f(numVertexAttribs, 7, 8, 9);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib4f(numVertexAttribs, 6, 7, 8, 9);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  if (contextVersion > 1) {
+    gl.vertexAttribI4i(numVertexAttribs, -1, 0, 1, 2);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+    gl.vertexAttribI4ui(numVertexAttribs, 0, 1, 2, 3);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+    gl.vertexAttribI4iv(numVertexAttribs, [-1, 0, 1, 2]);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+    gl.vertexAttribI4iv(numVertexAttribs, new Int32Array([1, 0, -1, 2]));
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+    gl.vertexAttribI4uiv(numVertexAttribs, [0, 1, 2, 3]);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+    gl.vertexAttribI4uiv(numVertexAttribs, new Uint32Array([0, 2, 1, 3]));
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+  }
+
+  debug("");
+  debug("Checking invalid array lengths");
+  gl.vertexAttrib1fv(numVertexAttribs, []);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib1fv(numVertexAttribs, new Float32Array([]));
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib2fv(numVertexAttribs, [1]);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib2fv(numVertexAttribs, new Float32Array([1]));
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib3fv(numVertexAttribs, [1, 2]);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib3fv(numVertexAttribs, new Float32Array([1, -2]));
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib4fv(numVertexAttribs, [1, 2, 3]);
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  gl.vertexAttrib4fv(numVertexAttribs, new Float32Array([1, 2, -3]));
+  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+  if (contextVersion > 1) {
+    gl.vertexAttribI4iv(numVertexAttribs, [-1, 0, 1]);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+    gl.vertexAttribI4iv(numVertexAttribs, new Int32Array([1, 0, -1]));
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+    gl.vertexAttribI4uiv(numVertexAttribs, [0, 1, 2]);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+    gl.vertexAttribI4uiv(numVertexAttribs, new Uint32Array([0, 2, 1]));
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+  }
 }
 
 debug("");
