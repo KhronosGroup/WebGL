@@ -76,34 +76,59 @@ wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "null pixels");
 gl.texSubImage2D(gl.TEXTURE_2D, maxTextureLevel + 1, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, [gl.INVALID_VALUE, gl.INVALID_OPERATION], "too high level");
 
-gl.texSubImage2D(gl.FLOAT, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c);
+gl.texSubImage2D(gl.FLOAT, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "bad target");
 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "good args");
-gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_BYTE, c);
+gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "format not same as original");
 if (contextVersion < 2) {
-    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original");
 }
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "make texture RGB");
-gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_BYTE, c);
+gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "format same as original RGB");
-gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c);
+gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "format not same as original RGB");
 if (contextVersion < 2) {
-    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_SHORT_5_6_5, c);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_SHORT_5_6_5, c);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original RGB");
 }
 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "make texture RGBA 4_4_4_4");
-gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c);
+gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "format same as original RGBA 4_4_4_4");
-gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGB, gl.UNSIGNED_BYTE, c);
+gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "format not same as original RGBA 4_4_4_4");
 if (contextVersion < 2) {
-    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0,0, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original RGBA 4_4_4_4");
+}
+
+// Large canvas will trigger GPU-to-GPU fast path in chrome,
+// while small canvas will go into normal path, i.e. read pixles from canvas then upload to texture.
+var largeCanvas = document.createElement("canvas");
+largeCanvas.width = 257;
+largeCanvas.height = 257;
+var largeCanvasContext = largeCanvas.getContext("2d");
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, largeCanvas);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "make texture RGBA 4_4_4_4");
+gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, c);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "format same as original RGBA 4_4_4_4");
+gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, c);
+wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "format not same as original RGBA 4_4_4_4");
+if (contextVersion < 2) {
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original RGBA 4_4_4_4");
+}
+gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_SHORT_4_4_4_4, largeCanvas);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "format same as original RGBA 4_4_4_4");
+gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, largeCanvas);
+wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "format not same as original RGBA 4_4_4_4");
+if (contextVersion < 2) {
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, largeCanvas);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "type not same as original RGBA 4_4_4_4");
 }
 
