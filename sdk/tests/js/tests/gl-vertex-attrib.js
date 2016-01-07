@@ -236,6 +236,7 @@ if (!gl) {
 
   debug("");
   debug("Checking invalid array lengths");
+  numVertexAttribs = numVertexAttribs - 1;
   gl.vertexAttrib1fv(numVertexAttribs, []);
   wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
 
