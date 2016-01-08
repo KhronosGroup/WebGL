@@ -138,15 +138,31 @@ function runTestIteration(xoffset, yoffset, width, height, packParams, usePixelP
     for (var ii = 0; ii < skipSize + size; ++ii) {
         array[ii] = initialColor[ii % bytesPerPixel];
     }
+    var arrayWrongSize = null;
+    if (size > 0)
+        arrayWrongSize = new Uint8Array(skipSize + size - 1);
     if (usePixelPackBuffer) {
+        var offset = 0;
+
         var buffer = gl.createBuffer();
         gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buffer);
+        if (size > 0) {
+            gl.bufferData(gl.PIXEL_PACK_BUFFER, arrayWrongSize, gl.STATIC_DRAW);
+            gl.readPixels(xoffset, yoffset, width, height, gl.RGBA, gl.UNSIGNED_BYTE, offset);
+            wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "buffer too small");
+        }
         gl.bufferData(gl.PIXEL_PACK_BUFFER, array, gl.STATIC_DRAW);
-        var offset = 0;
         gl.readPixels(xoffset, yoffset, width, height, gl.RGBA, gl.UNSIGNED_BYTE, offset);
+        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer too small");
     } else {
+        if (size > 0) {
+            gl.readPixels(xoffset, yoffset, width, height, gl.RGBA, gl.UNSIGNED_BYTE, arrayWrongSize);
+            wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer too small");
+        }
         gl.readPixels(xoffset, yoffset, width, height, gl.RGBA, gl.UNSIGNED_BYTE, array);
     }
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "readPixels succeeded");
+
     if (size == 0)
         return;
 
@@ -225,7 +241,6 @@ function testPackParameters(usePixelPackBuffer)
     runTestIteration(0, 0, 0, 0, {alignment:1}, usePixelPackBuffer);
     runTestIteration(0, 0, 1, 3, {alignment:4}, usePixelPackBuffer);
     runTestIteration(0, 0, 1, 3, {alignment:8}, usePixelPackBuffer);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
     debug("");
     debug("Verify that reading pixels to " + destText + " works fine with pack row length.");
@@ -277,7 +292,6 @@ function testPackParameters(usePixelPackBuffer)
     runTestIteration(2, 2, 3, 3, {alignment:8, rowLength:5}, usePixelPackBuffer);
     runTestIteration(5, 0, 3, 3, {alignment:8, rowLength:5}, usePixelPackBuffer);
     runTestIteration(0, 5, 3, 3, {alignment:8, rowLength:5}, usePixelPackBuffer);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
     debug("");
     debug("Verify that reading pixels to " + destText + " works fine with pack skip parameters.");
@@ -287,7 +301,6 @@ function testPackParameters(usePixelPackBuffer)
     runTestIteration(0, 0, 2, 3, {alignment:8, skipPixels:2}, usePixelPackBuffer);
     runTestIteration(0, 0, 2, 3, {alignment:8, skipPixels:1, skipRows:3}, usePixelPackBuffer);
     runTestIteration(0, 0, 2, 3, {alignment:8, skipRows:3}, usePixelPackBuffer);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 }
 
 debug("");
