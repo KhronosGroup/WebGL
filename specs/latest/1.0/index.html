@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 30 December 2015</h2>
+    <h2 class="no-toc">Editor's Draft 11 January 2016</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -503,14 +503,15 @@ gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
         <ul>
         <li> Image or video elements whose origin is not the same as the origin of the Document that
              contains the WebGLRenderingContext's canvas element
-        <li> Canvas elements whose <i>origin-clean</i> flag is set to false
+        <li> Canvas elements whose bitmap's <i>origin-clean</i> flag is set to false
+        <li> ImageBitmap objects whose bitmap's <i>origin-clean</i> flag is set to false
         </ul>
     </p>
     <p>
         If the <code>texImage2D</code> or <code>texSubImage2D</code> method is called with otherwise
         correct arguments and an <code>HTMLImageElement</code>, <code>HTMLVideoElement</code>,
-        or <code>HTMLCanvasElement</code> violating these restrictions, a <code>SECURITY_ERR</code>
-        exception must be thrown.
+        <code>HTMLCanvasElement</code>, or <code>ImageBitmap</code> violating these restrictions, a
+        <code>SECURITY_ERR</code> exception must be thrown.
     </p>
     <div class="note">
         <p>
@@ -1731,7 +1732,8 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void stencilOp(GLenum fail, GLenum zfail, GLenum zpass);
     void stencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass);
 
-    typedef (ImageData or
+    typedef (ImageBitmap or
+             ImageData or
              HTMLImageElement or
              HTMLCanvasElement or
              HTMLVideoElement) TexImageSource;
@@ -2495,13 +2497,17 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
 
-            If this function is called with an <code>ImageData</code> whose <code>data</code> attribute has been neutered, an <code>INVALID_VALUE</code> error is generated. <br><br>
+            If this function is called with an <code>ImageData</code> whose <code>data</code>
+            attribute has been neutered, an <code>INVALID_VALUE</code> error is generated. <br><br>
+
+            If this function is called with an <code>ImageBitmap</code> that has been neutered,
+            an <code>INVALID_VALUE</code> error is generated. <br><br>
 
             If this function is called with an <code>HTMLImageElement</code>
             or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
-            Document, or with an <code>HTMLCanvasElement</code> whose <i>origin-clean</i> flag is
-            set to false, a <code>SECURITY_ERR</code> exception must be
-            thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
+            Document, or with an <code>HTMLCanvasElement</code> or <code>ImageBitmap</code> whose
+            bitmap's <i>origin-clean</i> flag is set to false, a <code>SECURITY_ERR</code> exception
+            must be thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
 
             If <code>source</code> is null then an <code>INVALID_VALUE</code> error is
             generated. <br><br>
@@ -2564,13 +2570,17 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             If <em>type</em> does not match the type originally used to define the texture, an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
 
-            If this function is called with an <code>ImageData</code> whose <code>data</code> attribute has been neutered, an <code>INVALID_VALUE</code> error is generated. <br><br>
+            If this function is called with an <code>ImageData</code> whose <code>data</code>
+            attribute has been neutered, an <code>INVALID_VALUE</code> error is generated. <br><br>
+
+            If this function is called with an <code>ImageBitmap</code> that has been neutered,
+            an <code>INVALID_VALUE</code> error is generated. <br><br>
 
             If this function is called with an <code>HTMLImageElement</code>
             or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
-            Document, or with an <code>HTMLCanvasElement</code> whose <i>origin-clean</i> flag is
-            set to false, a <code>SECURITY_ERR</code> exception must be
-            thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
+            Document, or with an <code>HTMLCanvasElement</code> or <code>ImageBitmap</code> whose
+            bitmap's <i>origin-clean</i> flag is set to false, a <code>SECURITY_ERR</code> exception
+            must be thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
 
             If <code>source</code> is null then an <code>INVALID_VALUE</code> error is
             generated. <br><br>
