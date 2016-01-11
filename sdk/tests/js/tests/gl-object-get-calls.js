@@ -1004,6 +1004,40 @@ if (contextVersion > 1) {
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
     shouldBeNull('gl.getActiveUniformBlockName(noUniformProgram, gl.INVALID_INDEX)');
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+
+    debug("");
+    debug("Test getActiveUniformBlockParameter");
+    var program = wtu.loadUniformBlockProgram(gl);
+    gl.linkProgram(program);
+    shouldBeTrue('gl.getProgramParameter(program, gl.LINK_STATUS)');
+    shouldBe('gl.getActiveUniformBlockParameter(program, 0, gl.UNIFORM_BLOCK_BINDING)', '0');
+    gl.uniformBlockBinding(program, 0, 1);
+    shouldBe('gl.getActiveUniformBlockParameter(program, 0, gl.UNIFORM_BLOCK_BINDING)', '1');
+    shouldBe('gl.getActiveUniformBlockParameter(program, 0, gl.UNIFORM_BLOCK_DATA_SIZE)', '164');
+    shouldBe('gl.getActiveUniformBlockParameter(program, 0, gl.UNIFORM_BLOCK_ACTIVE_UNIFORMS)', '3');
+    shouldBeTrue('gl.getActiveUniformBlockParameter(program, 0, gl.UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER)');
+    shouldBeFalse('gl.getActiveUniformBlockParameter(program, 0, gl.UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER)');
+    var indices = gl.getActiveUniformBlockParameter(program, 0, gl.UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES);
+    for (var i = 0; i < 3; i++) {
+      if (indices[i] < 0)
+        testFailed("expected value >= 0" + " actual value for UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES for uniform index[" + i + "]:" + indices[i]);
+    }
+    var validArrayForPname = new Array(
+	gl.UNIFORM_BLOCK_BINDING,
+	gl.UNIFORM_BLOCK_DATA_SIZE,
+	gl.UNIFORM_BLOCK_ACTIVE_UNIFORMS,
+	gl.UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES,
+	gl.UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER,
+	gl.UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER
+    );
+    testInvalidArgument(
+	"getActiveUniformBlockParameter",
+	"pname",
+	validArrayForPname,
+	function(pname) {
+	    return gl.getActiveUniformBlockParameter(program, 0, pname);
+	}
+    );
 }
 
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
