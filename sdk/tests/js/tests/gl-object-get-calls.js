@@ -29,7 +29,8 @@
 var wtu = WebGLTestUtils;
 description("Test of get calls against GL objects like getBufferParameter, etc.");
 
-var gl = wtu.create3DContext();
+
+var gl = wtu.create3DContext(null, {stencil: true});
 
 debug("test getAttachedShaders");
 var standardVert = wtu.loadStandardVertexShader(gl);
