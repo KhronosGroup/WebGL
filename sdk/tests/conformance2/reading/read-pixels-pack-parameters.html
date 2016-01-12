@@ -149,11 +149,10 @@ function runTestIteration(xoffset, yoffset, width, height, packParams, usePixelP
         if (size > 0) {
             gl.bufferData(gl.PIXEL_PACK_BUFFER, arrayWrongSize, gl.STATIC_DRAW);
             gl.readPixels(xoffset, yoffset, width, height, gl.RGBA, gl.UNSIGNED_BYTE, offset);
-            wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "buffer too small");
+            wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer too small");
         }
         gl.bufferData(gl.PIXEL_PACK_BUFFER, array, gl.STATIC_DRAW);
         gl.readPixels(xoffset, yoffset, width, height, gl.RGBA, gl.UNSIGNED_BYTE, offset);
-        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer too small");
     } else {
         if (size > 0) {
             gl.readPixels(xoffset, yoffset, width, height, gl.RGBA, gl.UNSIGNED_BYTE, arrayWrongSize);
@@ -161,7 +160,7 @@ function runTestIteration(xoffset, yoffset, width, height, packParams, usePixelP
         }
         gl.readPixels(xoffset, yoffset, width, height, gl.RGBA, gl.UNSIGNED_BYTE, array);
     }
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "readPixels succeeded");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "readPixels should succeed");
 
     if (size == 0)
         return;
@@ -211,12 +210,29 @@ function runTestIteration(xoffset, yoffset, width, height, packParams, usePixelP
             refColor = expectedColor[yIndex];
         samePixel(array, pos, refColor, row, "last");
 
-        // Check padding bytes or bytes beyond rowLength are unchanged.
+        // Check padding bytes are unchanged and bytes beyond rowLength set correctly.
         pos += bytesPerPixel;
         if (row + 1 < height) {
-            for (var ii = 0; ii < bytesPerRow - xSpan * bytesPerPixel; ++ii) {
+            // Beyond bytes filled for PACK_ROW_LENGTH, the row could have extra bytes due to
+            // padding. These extra bytes could be either filled with pixel data if
+            // PACK_ROW_LENGTH is set to be less than width, or they could be left unchanged
+            // if they are beyond |width| pixels.
+            if (packParams.rowLength > 0 && packParams.rowLength < width) {
+                var trailingBytes = Math.min((width - packParams.rowLength) * bytesPerPixel,
+                                             bytesPerRow - packParams.rowLength * bytesPerPixel);
+                for (var ii = 0; ii < trailingBytes; ++ii) {
+                    if (array[pos + ii] != refColor[ii % bytesPerPixel]) {
+                        testFailed("Trailing byte " + ii + " after rowLength of row " + row + " : expected " +
+                                   refColor[ii % bytesPerPixel] + ", got " + array[pos + ii]);
+                        break;
+                    }
+                }
+                pos += trailingBytes;
+            }
+            var paddingBytes = skipSize + bytesPerRow * (row + 1) - pos;
+            for (var ii = 0; ii < paddingBytes; ++ii) {
                 if (array[pos + ii] != initialColor[ii % bytesPerPixel]) {
-                    testFailed("Byte " + ii + " after the end of row " + row + " changed: expected " +
+                    testFailed("Padding byte " + ii + " of row " + row + " changed: expected " +
                                initialColor[ii % bytesPerPixel] + ", got " + array[pos + ii]);
                     break;
                 }
@@ -256,6 +272,7 @@ function testPackParameters(usePixelPackBuffer)
     runTestIteration(2, 2, 3, 3, {alignment:8, rowLength:2}, usePixelPackBuffer);
     runTestIteration(5, 0, 3, 3, {alignment:8, rowLength:2}, usePixelPackBuffer);
     runTestIteration(0, 5, 3, 3, {alignment:8, rowLength:2}, usePixelPackBuffer);
+    runTestIteration(0, 0, 3, 3, {alignment:8, rowLength:1}, usePixelPackBuffer);
     // PACK_ROW_LENGTH == width
     runTestIteration(0, 0, 3, 3, {alignment:8, rowLength:3}, usePixelPackBuffer);
     runTestIteration(-1, 0, 3, 3, {alignment:8, rowLength:3}, usePixelPackBuffer);
