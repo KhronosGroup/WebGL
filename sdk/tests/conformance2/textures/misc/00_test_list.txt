@@ -1,4 +1,5 @@
 compressed-tex-image.html
+copy-texture-image.html
 gl-get-tex-parameter.html
 mipmap-fbo.html
 tex-3d-size-limit.html
