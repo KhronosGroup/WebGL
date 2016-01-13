@@ -85,7 +85,7 @@ gl.bufferSubData(gl.ARRAY_BUFFER, 10, array);
 glErrorShouldBe(gl, gl.NO_ERROR);
 
 gl.bufferSubData(gl.ARRAY_BUFFER, 10, null);
-glErrorShouldBe(gl, gl.NO_ERROR);
+glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_VALUE]);
 
 var successfullyParsed = true;
 </script>

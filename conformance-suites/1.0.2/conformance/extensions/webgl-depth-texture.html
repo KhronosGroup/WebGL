@@ -117,8 +117,8 @@ function runTestDisabled() {
 
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    shouldGenerateGLError(gl, gl.INVALID_ENUM, 'gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, 1, 1, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, null)');
-    shouldGenerateGLError(gl, gl.INVALID_ENUM, 'gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, 1, 1, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null)');
+    shouldGenerateGLError(gl, [gl.INVALID_ENUM, gl.INVALID_VALUE], 'gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, 1, 1, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, null)');
+    shouldGenerateGLError(gl, [gl.INVALID_ENUM, gl.INVALID_VALUE], 'gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, 1, 1, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null)');
 }
 
 
