@@ -400,14 +400,12 @@ function runTexFormatsTest()
             unsizedformat: "DEPTH_STENCIL",
             type: "UNSIGNED_INT_24_8",
         },
-        /* FIXME - test this - but do we even know what the spec for this would look like?
-           What typed array type would texImage2D expect?
+        // No good typed array type for this format, just allow this format when  pixel is null.
         {
             sizedformat: "DEPTH32F_STENCIL8",
             unsizedformat: "DEPTH_STENCIL",
             type: "FLOAT_32_UNSIGNED_INT_24_8_REV",
         },
-        */
         // internalFormat of texImage2D may be unsized format according Table 3.3 in OpenGL ES 3.0.4 spec.
         {
             sizedformat: undefined,
@@ -494,6 +492,9 @@ function runTexFormatsTest()
                 break;
             case gl.FLOAT:
                 data = new Float32Array(4);
+                break;
+            case gl.FLOAT_32_UNSIGNED_INT_24_8_REV:
+                data = null;
         }
 
         // prepare some bad data that doesn't fit this type
@@ -516,19 +517,23 @@ function runTexFormatsTest()
         }
 
         // test texSubImage2D
-        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, 1, unsizedformat, type, data);
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texSubImage2D should succeed");
-        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, 1, unsizedformat, type, baddata);
-        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "texSubImage2D should fail with data of wrong type");
+        if (gl.FLOAT_32_UNSIGNED_INT_24_8_REV != type) {
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, 1, unsizedformat, type, data);
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texSubImage2D should succeed");
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, 1, unsizedformat, type, baddata);
+            wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "texSubImage2D should fail with data of wrong type");
+        }
 
         // test texStorage2D
         if (sizedformat) {
             gl.texStorage2D(gl.TEXTURE_2D, 1, sizedformat, 1, 1);
             wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texStorage2D should succeed");
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, 1, unsizedformat, type, data);
-            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texSubImage2D should succeed on immutable-format texture");
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, 1, unsizedformat, type, baddata);
-            wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "texSubImage2D should fail on immutable-format texture with data of wrong type");
+            if (gl.FLOAT_32_UNSIGNED_INT_24_8_REV != type) {
+                gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, 1, unsizedformat, type, data);
+                wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texSubImage2D should succeed on immutable-format texture");
+                gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 1, 1, unsizedformat, type, baddata);
+                wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "texSubImage2D should fail on immutable-format texture with data of wrong type");
+            }
         }
 
         // Test a 3D texture.
