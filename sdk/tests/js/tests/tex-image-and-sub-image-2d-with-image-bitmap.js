@@ -26,7 +26,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var tiu = TexImageUtils;
     var gl = null;
     var successfullyParsed = false;
-    var imageData = null;
     var blackColor = [0, 0, 0];
     var redColor = [255, 0, 0];
     var greenColor = [0, 255, 0];
@@ -35,6 +34,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     function init()
     {
         description('Verify texImage2D and texSubImage2D code paths taking ImageBitmap (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
+
+        if(!window.createImageBitmap || !window.ImageBitmap) {
+            finishTest();
+            return;
+        }
 
         gl = wtu.create3DContext("example");
 
@@ -56,26 +60,12 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl.clearDepth(1);
         gl.disable(gl.BLEND);
 
-        var canvas2d = document.getElementById("texcanvas");
-        var context2d = canvas2d.getContext("2d");
-        imageData = context2d.createImageData(2, 2);
-        var data = imageData.data;
-        data[0] = 255;
-        data[1] = 0;
-        data[2] = 0;
-        data[3] = 255;
-        data[4] = 255;
-        data[5] = 0;
-        data[6] = 0;
-        data[7] = 0;
-        data[8] = 0;
-        data[9] = 255;
-        data[10] = 0;
-        data[11] = 255;
-        data[12] = 0;
-        data[13] = 255;
-        data[14] = 0;
-        data[15] = 0;
+        var imageData = new ImageData(new Uint8ClampedArray(
+                                      [255, 0, 0, 255,
+                                      255, 0, 0, 0,
+                                      0, 255, 0, 255,
+                                      0, 255, 0, 0]),
+                                      2, 2);
 
         createImageBitmap(imageData).then(imageBitmap => {
             bitmap = imageBitmap;
