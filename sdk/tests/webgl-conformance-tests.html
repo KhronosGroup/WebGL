@@ -336,7 +336,13 @@ function start() {
   };
 
   Page.prototype.finishPage = function(success) {
-    this.totalTime = Date.now() - this.startTime;
+    var shouldRun = this.check.checked && this.folder.checked();
+    if (shouldRun) {
+      this.totalTime = Date.now() - this.startTime;
+    } else {
+      this.totalTime = 0;
+    }
+
     if(this.totalSkipped) {
       var msg = ' (' + this.totalSkipped + ' of ' + this.totalTests + ' skipped in ' + this.totalTime.toFixed(1) + ' ms )';
     } else {
