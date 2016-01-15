@@ -296,7 +296,7 @@ es3fRasterizerDiscardTests.RasterizerDiscardCase.prototype.iterate = function() 
             break;
         case es3fRasterizerDiscardTests.CaseType.CLEAR_STENCIL:
             if (this.m_caseOptions.useFBO)
-                gl.clearBufferfv(gl.STENCIL, 0, [FAIL_STENCIL]);
+                gl.clearBufferiv(gl.STENCIL, 0, [FAIL_STENCIL]);
             else
                 gl.clear(gl.STENCIL_BUFFER_BIT);
             break;
