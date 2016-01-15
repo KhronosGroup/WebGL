@@ -344,9 +344,9 @@ function start() {
     }
 
     if(this.totalSkipped) {
-      var msg = ' (' + this.totalSkipped + ' of ' + this.totalTests + ' skipped in ' + this.totalTime.toFixed(1) + ' ms )';
+      var msg = ' (' + this.totalSkipped + ' of ' + this.totalTests + ' skipped in ' + this.totalTime.toFixed(1) + ' ms)';
     } else {
-      var msg = ' (' + this.totalSuccessful + ' of ' + this.totalTests + ' passed in ' + this.totalTime.toFixed(1) + ' ms )';
+      var msg = ' (' + this.totalSuccessful + ' of ' + this.totalTests + ' passed in ' + this.totalTime.toFixed(1) + ' ms)';
     }
 
     if (success === undefined) {
@@ -392,6 +392,8 @@ function start() {
     this.items = [];
     this.folder = folder;
     this.cachedTotalTime = 0;
+    this.cachedTotalSuccessful = 0;
+    this.cachedTotalTests = 0;
     var that = this;
 
     var doc = reporter.localDoc;
@@ -465,6 +467,32 @@ function start() {
     return this.cachedTotalTime;
   };
 
+  Folder.prototype.totalSuccessful = function() {
+    if (this.cachedTotalSuccessful == -1) {
+      this.cachedTotalSuccessful = 0;
+      for (var name in this.subFolders) {
+        this.cachedTotalSuccessful += this.subFolders[name].totalSuccessful();
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.cachedTotalSuccessful += this.pages[ii].totalSuccessful;
+      }
+    }
+    return this.cachedTotalSuccessful;
+  };
+
+  Folder.prototype.totalTests = function() {
+    if (this.cachedTotalTests == -1) {
+      this.cachedTotalTests = 0;
+      for (var name in this.subFolders) {
+        this.cachedTotalTests += this.subFolders[name].totalTests();
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.cachedTotalTests += this.pages[ii].totalTests;
+      }
+    }
+    return this.cachedTotalTests;
+  };
+
   Folder.prototype.run = function() {
     this.msgNode.textContent = '';
     var firstTestIndex = this.firstTestIndex();
@@ -475,7 +503,9 @@ function start() {
 
   Folder.prototype.pageFinished = function(page, success) {
     this.cachedTotalTime = -1;
-    this.msgNode.textContent = (this.totalTime() / 1000).toFixed(2) + ' seconds';
+    this.cachedTotalSuccessful = -1;
+    this.cachedTotalTests = -1;
+    this.msgNode.textContent = ' (' + this.totalSuccessful() + ' of ' + this.totalTests() + ' passed in ' + (this.totalTime() / 1000).toFixed(2) + ' seconds)';
     if (this.folder) {
       this.folder.pageFinished(page, success);
     }
