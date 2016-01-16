@@ -89,7 +89,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl.texParameteri(bindingTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         // Set up pixel store parameters
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
-        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, premultiplyAlpha);
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
         var targets = [gl.TEXTURE_2D];
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
             targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X,
