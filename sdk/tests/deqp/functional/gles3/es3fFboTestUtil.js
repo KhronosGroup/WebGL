@@ -1004,8 +1004,8 @@ es3fFboTestUtil.FboIncompleteException.prototype.getReason = function() {return 
      */
     es3fFboTestUtil.DepthGradientShader.prototype.setUniforms = function(ctx, program, gradientMin, gradientMax, color) {
         ctx.useProgram(program);
-        ctx.uniform1fv(ctx.getUniformLocation(program, 'u_minGradient'), gradientMin);
-        ctx.uniform1fv(ctx.getUniformLocation(program, 'u_maxGradient'), gradientMax);
+        ctx.uniform1fv(ctx.getUniformLocation(program, 'u_minGradient'), [gradientMin]);
+        ctx.uniform1fv(ctx.getUniformLocation(program, 'u_maxGradient'), [gradientMax]);
         ctx.uniform4fv(ctx.getUniformLocation(program, 'u_color'), color);
     };
 
