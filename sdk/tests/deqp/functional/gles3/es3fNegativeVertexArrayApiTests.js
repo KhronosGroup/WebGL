@@ -262,30 +262,10 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('draw_arrays_invalid_program', 'Invalid gl.drawArrays() usage', gl, function() {
             gl.useProgram(null);
-            /** @type{WebGLFramebuffer} */ var fbo;
-
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if mode is not an accepted value.');
-            gl.drawArrays(-1, 0, 1);
-            this.expectError(gl.INVALID_ENUM);
-            bufferedLogToConsole('gl.INVALID_VALUE is generated if count is negative.');
-            gl.drawArrays(gl.POINTS, 0, -1);
-            this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.INVALID_OPERATION is generated if gl.useProgram(null) is used.');
             gl.drawArrays(gl.POINTS, 0, 1);
             this.expectError(gl.INVALID_OPERATION);
-
-            bufferedLogToConsole('gl.INVALID_FRAMEBUFFER_OPERATION is generated if the currently bound framebuffer is not framebuffer complete.');
-            fbo = gl.createFramebuffer();
-            var rbo = gl.createRenderbuffer();
-            gl.bindRenderbuffer(gl.RENDERBUFFER, rbo);
-            gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rbo);
-            gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-            gl.drawArrays(gl.POINTS, 0, 1);
-            this.expectError([gl.INVALID_FRAMEBUFFER_OPERATION, gl.INVALID_OPERATION]);
-            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-            gl.deleteFramebuffer(fbo);
 
         }));
 
@@ -387,38 +367,15 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('draw_elements_invalid_program', 'Invalid gl.drawElements() usage', gl, function() {
             gl.useProgram(null);
-            /** @type{WebGLFramebuffer} */ var fbo;
             /** @type{number} */ var vertices = 0;
 
             /** @type{WebGLBuffer} */ var bufElements = gl.createBuffer();
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufElements);
 
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if mode is not an accepted value.');
-            gl.drawElements(-1, 1, gl.UNSIGNED_BYTE, vertices);
-            this.expectError(gl.INVALID_ENUM);
-
-            bufferedLogToConsole('gl.INVALID_ENUM is generated if type is not one of the accepted values.');
-            gl.drawElements(gl.POINTS, 1, -1, vertices);
-            this.expectError(gl.INVALID_ENUM);
-            gl.drawElements(gl.POINTS, 1, gl.FLOAT, vertices);
-            this.expectError(gl.INVALID_ENUM);
-
-            bufferedLogToConsole('gl.INVALID_VALUE is generated if count is negative.');
-            gl.drawElements(gl.POINTS, -1, gl.UNSIGNED_BYTE, vertices);
-            this.expectError(gl.INVALID_VALUE);
-
             bufferedLogToConsole('gl.INVALID_OPERATION is generated if gl.useProgram(null) was set.');
             gl.drawElements(gl.POINTS, 1, gl.UNSIGNED_BYTE, vertices);
             this.expectError(gl.INVALID_OPERATION);
 
-            bufferedLogToConsole('gl.INVALID_FRAMEBUFFER_OPERATION is generated if the currently bound framebuffer is not framebuffer complete.');
-            fbo = gl.createFramebuffer();
-            gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-            gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-            gl.drawElements(gl.POINTS, 1, gl.UNSIGNED_BYTE, vertices);
-            this.expectError([gl.INVALID_FRAMEBUFFER_OPERATION, gl.INVALID_OPERATION]);
-            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-            gl.deleteFramebuffer(fbo);
             gl.deleteBuffer(bufElements);
 
         }));
