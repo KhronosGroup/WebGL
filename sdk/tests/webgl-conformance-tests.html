@@ -236,6 +236,7 @@ function start() {
     this.testIndex = testIndex;
     this.startTime = 0;
     this.totalTime = 0;
+    var that = this;
 
     this.elementId = "page" + pageCount++;
     var li = reporter.localDoc.createElement('li');
@@ -245,6 +246,14 @@ function start() {
     var check = reporter.localDoc.createElement('input');
     check.type = 'checkbox';
     check.checked = true;
+    check.onclick = function() {
+      if (this.checked) {
+        that.folder.enableUp_();
+      }
+      else {
+        that.folder.disableUp_();
+      }
+    };
     div.appendChild(check);
     var button = reporter.localDoc.createElement('input');
     button.type = 'button';
@@ -277,6 +286,10 @@ function start() {
     this.elem = li;
     this.check = check;
   };
+
+  Page.prototype.checked = function() {
+    return this.check.checked;
+  }
 
   Page.prototype.addResult = function(msg, success, skipped) {
     ++this.totalTests;
@@ -406,6 +419,14 @@ function start() {
     var check = doc.createElement('input');
     check.type = 'checkbox';
     check.checked = true;
+    check.onclick = function() {
+      if (this.checked) {
+        that.enableTest(".*");
+      }
+      else {
+        that.disableTest(".*", true);
+      }
+    };
     div.appendChild(check);
     var button = doc.createElement('input');
     button.type = 'button';
@@ -559,6 +580,24 @@ function start() {
     var parent = this.folder;
     if (parent) {
       parent.enableUp_();
+    }
+  }
+
+  Folder.prototype.disableUp_ = function() {
+    var checked = false;
+    for (var name in this.subFolders) {
+      checked = this.subFolders[name].checked();
+      if (checked) {
+        break;
+      }
+    }
+    for (var ii = 0; ii < this.pages.length && checked == false; ++ii) {
+      checked = this.pages[ii].checked();
+    }
+    this.check.checked = checked;
+    var parent = this.folder;
+    if (parent) {
+      parent.disableUp_();
     }
   }
 
