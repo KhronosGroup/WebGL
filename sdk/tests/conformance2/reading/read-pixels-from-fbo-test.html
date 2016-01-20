@@ -468,10 +468,11 @@ function getTypeString(gl, type) {
     case gl.UNSIGNED_INT_2_10_10_10_REV:
       return 'UNSIGNED_INT_2_10_10_10_REV';
     case gl.UNSIGNED_SHORT_4_4_4_4:
+      return 'UNSIGNED_SHORT_4_4_4_4';
     case gl.UNSIGNED_INT_10F_11F_11F_REV:
+      return 'UNSIGNED_INT_10F_11F_11F_REV';
     case gl.UNSIGNED_INT_5_9_9_9_REV:
-      // TODO(zmo): Implement handling these implementation specific types.
-      return '';
+      return 'UNSIGNED_INT_5_9_9_9_REV';
     default:
       return '';
   };
