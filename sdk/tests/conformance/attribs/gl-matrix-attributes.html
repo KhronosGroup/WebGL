@@ -50,7 +50,7 @@ var maxAttributes = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
 debug('MAX_VERTEX_ATTRIBUTES is ' + maxAttributes);
 shouldBeGreaterThanOrEqual('maxAttributes', '4');
 
-var glFragmentShader = wtu.setupSimpleColorFragmentShader(gl);
+var glFragmentShader = wtu.loadShader(gl, wtu.simpleColorFragmentShader, gl.FRAGMENT_SHADER);
 
 // prepareMatrixProgram creates a program with glFragmentShader as the fragment shader.
 // The vertex shader has numVector number of vectors and a matrix with numMatrixDimensions

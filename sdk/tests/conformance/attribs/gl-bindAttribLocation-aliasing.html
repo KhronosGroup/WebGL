@@ -49,7 +49,7 @@ description("This test verifies combinations of valid, active attribute types ca
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas, {antialias: false});
-var glFragmentShader = wtu.setupSimpleColorFragmentShader(gl);
+var glFragmentShader = wtu.loadShader(gl, wtu.simpleColorFragmentShader, gl.FRAGMENT_SHADER);
 var typeInfo = [
     { type: 'float',    asVec4: 'vec4(0.0, $(var), 0.0, 1.0)' },
     { type: 'vec2',     asVec4: 'vec4($(var), 0.0, 1.0)' },

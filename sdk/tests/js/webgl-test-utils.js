@@ -170,7 +170,7 @@ var noTexCoordTextureVertexShader = [
  * A vertex shader for a uniform color.
  * @type {string}
  */
-var simpleColorVertexShader = [
+var simpleVertexShader = [
   'attribute vec4 vPosition;',
   'void main() {',
   '    gl_Position = vPosition;',
@@ -210,82 +210,6 @@ var simpleVertexColorFragmentShader = [
   'void main() {',
   '    gl_FragData[0] = v_color;',
   '}'].join('\n');
-
-/**
- * Creates a simple texture vertex shader.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @return {!WebGLShader}
- */
-var setupSimpleTextureVertexShader = function(gl) {
-    return loadShader(gl, simpleTextureVertexShader, gl.VERTEX_SHADER);
-};
-
-/**
- * Creates a simple texture fragment shader.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @return {!WebGLShader}
- */
-var setupSimpleTextureFragmentShader = function(gl) {
-    return loadShader(
-        gl, simpleTextureFragmentShader, gl.FRAGMENT_SHADER);
-};
-
-/**
- * Creates a simple cube map texture fragment shader.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @return {!WebGLShader}
- */
-var setupSimpleCubeMapTextureFragmentShader = function(gl) {
-    return loadShader(
-        gl, simpleCubeMapTextureFragmentShader, gl.FRAGMENT_SHADER);
-};
-
-/**
- * Creates a texture vertex shader that doesn't need texcoords.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @return {!WebGLShader}
- */
-var setupNoTexCoordTextureVertexShader = function(gl) {
-    return loadShader(gl, noTexCoordTextureVertexShader, gl.VERTEX_SHADER);
-};
-
-/**
- * Creates a simple vertex color vertex shader.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @return {!WebGLShader}
- */
-var setupSimpleVertexColorVertexShader = function(gl) {
-    return loadShader(gl, simpleVertexColorVertexShader, gl.VERTEX_SHADER);
-};
-
-/**
- * Creates a simple vertex color fragment shader.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @return {!WebGLShader}
- */
-var setupSimpleVertexColorFragmentShader = function(gl) {
-    return loadShader(
-        gl, simpleVertexColorFragmentShader, gl.FRAGMENT_SHADER);
-};
-
-/**
- * Creates a simple color vertex shader.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @return {!WebGLShader}
- */
-var setupSimpleColorVertexShader = function(gl) {
-    return loadShader(gl, simpleColorVertexShader, gl.VERTEX_SHADER);
-};
-
-/**
- * Creates a simple color fragment shader.
- * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
- * @return {!WebGLShader}
- */
-var setupSimpleColorFragmentShader = function(gl) {
-    return loadShader(
-        gl, simpleColorFragmentShader, gl.FRAGMENT_SHADER);
-};
 
 /**
  * Creates a program, attaches shaders, binds attrib locations, links the
@@ -437,22 +361,10 @@ var setupTransformFeedbackProgram = function(
  * @return {WebGLProgram}
  */
 var setupNoTexCoordTextureProgram = function(gl) {
-  var vs = setupNoTexCoordTextureVertexShader(gl);
-  var fs = setupSimpleTextureFragmentShader(gl);
-  if (!vs || !fs) {
-    return null;
-  }
-  var program = setupProgram(
-      gl,
-      [vs, fs],
-      ['vPosition'],
-      [0]);
-  if (!program) {
-    gl.deleteShader(fs);
-    gl.deleteShader(vs);
-  }
-  gl.useProgram(program);
-  return program;
+  return setupProgram(gl,
+                      [noTexCoordTextureVertexShader, simpleTextureFragmentShader],
+                      ['vPosition'],
+                      [0]);
 };
 
 /**
@@ -466,22 +378,10 @@ var setupSimpleTextureProgram = function(
     gl, opt_positionLocation, opt_texcoordLocation) {
   opt_positionLocation = opt_positionLocation || 0;
   opt_texcoordLocation = opt_texcoordLocation || 1;
-  var vs = setupSimpleTextureVertexShader(gl);
-  var fs = setupSimpleTextureFragmentShader(gl);
-  if (!vs || !fs) {
-    return null;
-  }
-  var program = setupProgram(
-      gl,
-      [vs, fs],
-      ['vPosition', 'texCoord0'],
-      [opt_positionLocation, opt_texcoordLocation]);
-  if (!program) {
-    gl.deleteShader(fs);
-    gl.deleteShader(vs);
-  }
-  gl.useProgram(program);
-  return program;
+  return setupProgram(gl,
+                      [simpleTextureVertexShader, simpleTextureFragmentShader],
+                      ['vPosition', 'texCoord0'],
+                      [opt_positionLocation, opt_texcoordLocation]);
 };
 
 /**
@@ -495,22 +395,10 @@ var setupSimpleCubeMapTextureProgram = function(
     gl, opt_positionLocation, opt_texcoordLocation) {
   opt_positionLocation = opt_positionLocation || 0;
   opt_texcoordLocation = opt_texcoordLocation || 1;
-  var vs = setupSimpleTextureVertexShader(gl);
-  var fs = setupSimpleCubeMapTextureFragmentShader(gl);
-  if (!vs || !fs) {
-    return null;
-  }
-  var program = setupProgram(
-      gl,
-      [vs, fs],
-      ['vPosition', 'texCoord0'],
-      [opt_positionLocation, opt_texcoordLocation]);
-  if (!program) {
-    gl.deleteShader(fs);
-    gl.deleteShader(vs);
-  }
-  gl.useProgram(program);
-  return program;
+  return setupProgram(gl,
+                      [simpleTextureVertexShader, simpleCubeMapTextureFragmentShader],
+                      ['vPosition', 'texCoord0'],
+                      [opt_positionLocation, opt_texcoordLocation]);
 };
 
 /**
@@ -525,22 +413,10 @@ var setupSimpleVertexColorProgram = function(
     gl, opt_positionLocation, opt_vertexColorLocation) {
   opt_positionLocation = opt_positionLocation || 0;
   opt_vertexColorLocation = opt_vertexColorLocation || 1;
-  var vs = setupSimpleVertexColorVertexShader(gl);
-  var fs = setupSimpleVertexColorFragmentShader(gl);
-  if (!vs || !fs) {
-    return null;
-  }
-  var program = setupProgram(
-      gl,
-      [vs, fs],
-      ['vPosition', 'a_color'],
-      [opt_positionLocation, opt_vertexColorLocation]);
-  if (!program) {
-    gl.deleteShader(fs);
-    gl.deleteShader(vs);
-  }
-  gl.useProgram(program);
-  return program;
+  return setupProgram(gl,
+                      [simpleVertexColorVertexShader, simpleVertexColorFragmentShader],
+                      ['vPosition', 'a_color'],
+                      [opt_positionLocation, opt_vertexColorLocation]);
 };
 
 /**
@@ -551,22 +427,10 @@ var setupSimpleVertexColorProgram = function(
  */
 var setupSimpleColorProgram = function(gl, opt_positionLocation) {
   opt_positionLocation = opt_positionLocation || 0;
-  var vs = setupSimpleColorVertexShader(gl);
-  var fs = setupSimpleColorFragmentShader(gl);
-  if (!vs || !fs) {
-    return null;
-  }
-  var program = setupProgram(
-      gl,
-      [vs, fs],
-      ['vPosition'],
-      [opt_positionLocation]);
-  if (!program) {
-    gl.deleteShader(fs);
-    gl.deleteShader(vs);
-  }
-  gl.useProgram(program);
-  return program;
+  return setupProgram(gl,
+                      [simpleVertexShader, simpleColorFragmentShader],
+                      ['vPosition'],
+                      [opt_positionLocation]);
 };
 
 /**
@@ -3056,7 +2920,7 @@ var setupImageForCrossOriginTest = function(img, imgUrl, localUrl, callback) {
   }, false);
 }
 
-return {
+var API = {
   addShaderSource: addShaderSource,
   addShaderSources: addShaderSources,
   cancelAnimFrame: cancelAnimFrame,
@@ -3137,19 +3001,11 @@ return {
   setupQuad: setupQuad,
   setupIndexedQuad: setupIndexedQuad,
   setupIndexedQuadWithOptions: setupIndexedQuadWithOptions,
-  setupSimpleColorFragmentShader: setupSimpleColorFragmentShader,
-  setupSimpleColorVertexShader: setupSimpleColorVertexShader,
   setupSimpleColorProgram: setupSimpleColorProgram,
-  setupSimpleTextureFragmentShader: setupSimpleTextureFragmentShader,
-  setupSimpleCubeMapTextureFragmentShader: setupSimpleCubeMapTextureFragmentShader,
   setupSimpleTextureProgram: setupSimpleTextureProgram,
   setupSimpleCubeMapTextureProgram: setupSimpleCubeMapTextureProgram,
-  setupSimpleTextureVertexShader: setupSimpleTextureVertexShader,
-  setupSimpleVertexColorFragmentShader: setupSimpleVertexColorFragmentShader,
   setupSimpleVertexColorProgram: setupSimpleVertexColorProgram,
-  setupSimpleVertexColorVertexShader: setupSimpleVertexColorVertexShader,
   setupNoTexCoordTextureProgram: setupNoTexCoordTextureProgram,
-  setupNoTexCoordTextureVertexShader: setupNoTexCoordTextureVertexShader,
   setupTexturedQuad: setupTexturedQuad,
   setupTexturedQuadWithTexCoords: setupTexturedQuadWithTexCoords,
   setupTexturedQuadWithCubeMap: setupTexturedQuadWithCubeMap,
@@ -3179,5 +3035,19 @@ return {
 
   none: false
 };
+
+Object.defineProperties(API, {
+  noTexCoordTextureVertexShader: { value: noTexCoordTextureVertexShader, writable: false },
+  simpleTextureVertexShader: { value: simpleTextureVertexShader, writable: false },
+  simpleColorFragmentShader: { value: simpleColorFragmentShader, writable: false },
+  simpleVertexShader: { value: simpleVertexShader, writable: false },
+  simpleTextureFragmentShader: { value: simpleTextureFragmentShader, writable: false },
+  simpleCubeMapTextureFragmentShader: { value: simpleCubeMapTextureFragmentShader, writable: false },
+  simpleTextureVertexShader: { value: simpleTextureVertexShader, writable: false },
+  simpleVertexColorFragmentShader: { value: simpleVertexColorFragmentShader, writable: false },
+  simpleVertexColorVertexShader: { value: simpleVertexColorVertexShader, writable: false }
+});
+
+return API;
 
 }());

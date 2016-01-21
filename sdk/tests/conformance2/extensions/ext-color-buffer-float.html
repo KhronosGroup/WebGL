@@ -58,13 +58,6 @@ void main()
 }
 </script>
 <!-- Shaders for testing floating-point render targets -->
-<script id="positionVertexShader" type="x-shader/x-vertex">
-attribute vec4 vPosition;
-void main()
-{
-    gl_Position = vPosition;
-}
-</script>
 <script id="floatingPointFragmentShader" type="x-shader/x-fragment">
 void main()
 {
@@ -177,7 +170,7 @@ function runFloatTextureRenderTargetTest(enabled, internalFormat, format, testPr
 
     var renderProgram =
         wtu.setupProgram(gl,
-                         ["positionVertexShader", "floatingPointFragmentShader"],
+                         [wtu.simpleVertexShader, "floatingPointFragmentShader"],
                          ['vPosition'],
                          [0]);
     wtu.clearAndDrawUnitQuad(gl);
@@ -256,7 +249,7 @@ if (!gl) {
   testPassed("WebGL context exists");
 
   var texturedShaders = [
-      wtu.setupSimpleTextureVertexShader(gl),
+      wtu.simpleTextureVertexShader,
       "testFragmentShader"
   ];
   var testProgram =
