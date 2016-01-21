@@ -64,14 +64,9 @@ debug("Texture size: " + texSize);
 var shaderSource =
     document.getElementById("slow").text.replace(/\$size/g, texSize + ".0");
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "after getting a context");
-var vs = wtu.setupSimpleTextureVertexShader(gl);
-var fs = wtu.loadShader(
-    gl,
-    shaderSource,
-    gl.FRAGMENT_SHADER)
 var program = wtu.setupProgram(
     gl,
-    [vs, fs],
+    [wtu.simpleTextureVertexShader, shaderSource],
     ['vPosition', 'texCoord0'],
     [0, 1]);
 wtu.setupUnitQuad(gl, 0, 1);

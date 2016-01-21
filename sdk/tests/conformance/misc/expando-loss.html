@@ -130,10 +130,10 @@ function testBasicBindings() {
 function testProgramsAndShaders() {
     debug('Programs and Shaders');
 
-    var vs = wtu.setupSimpleColorVertexShader(gl);
+    var vs = wtu.loadShader(gl, wtu.simpleVertexShader, gl.VERTEX_SHADER);
     setTestExpandos(vs);
 
-    var fs = wtu.setupSimpleColorFragmentShader(gl);
+    var fs = wtu.loadShader(gl, wtu.simpleColorFragmentShader, gl.FRAGMENT_SHADER);
     setTestExpandos(fs);
 
     var program = wtu.setupProgram(gl, [vs, fs]);

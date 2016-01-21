@@ -58,13 +58,6 @@ void main()
 }
 </script>
 <!-- Shaders for testing half-floating-point render targets -->
-<script id="positionVertexShader" type="x-shader/x-vertex">
-attribute vec4 vPosition;
-void main()
-{
-    gl_Position = vPosition;
-}
-</script>
 <script id="floatingPointFragmentShader" type="x-shader/x-fragment">
 void main()
 {
@@ -305,7 +298,7 @@ function runRenderTest(format, subtractor, data)
 
         var renderProgram =
             wtu.setupProgram(gl,
-                             ["positionVertexShader", "floatingPointFragmentShader"],
+                             [wtu.simpleVertexShader, "floatingPointFragmentShader"],
                              ['vPosition'],
                              [0]);
         wtu.drawUnitQuad(gl);
@@ -314,12 +307,12 @@ function runRenderTest(format, subtractor, data)
 
     // Now sample from the half floating-point texture and verify we got the correct values.
     var texturedShaders = [
-      wtu.setupSimpleTextureVertexShader(gl),
+          wtu.simpleTextureVertexShader,
           "testFragmentShader"
       ];
     var testProgram =
         wtu.setupProgram(gl,
-                        [wtu.setupSimpleTextureVertexShader(gl), "testFragmentShader"],
+                        [wtu.simpleTextureVertexShader, "testFragmentShader"],
                         ['vPosition', 'texCoord0'],
                         [0, 1]);
     var quadParameters = wtu.setupUnitQuad(gl, 0, 1);
