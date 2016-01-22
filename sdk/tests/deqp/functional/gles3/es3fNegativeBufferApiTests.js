@@ -818,9 +818,10 @@ goog.scope(function() {
                 gl.bindTexture(gl.TEXTURE_2D, texture[0]);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32UI, 32, 32, 0, gl.RGBA_INTEGER, gl.UNSIGNED_INT, null);
                 gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture[0], 0);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, 32, 32, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+                gl.bindTexture(gl.TEXTURE_2D, texture[1]);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32UI, 32, 32, 0, gl.RGBA_INTEGER, gl.UNSIGNED_INT, null);
                 gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture[1], 0);
-                bufferedLogToConsole('// Read buffer: gl.RGBA32I, draw buffer: gl.RGBA8');
+                bufferedLogToConsole('// Read buffer: gl.RGBA32UI, filter: gl.LINEAR');
                 gl.blitFramebuffer(0, 0, 16, 16, 0, 0, 16, 16, gl.COLOR_BUFFER_BIT, gl.LINEAR);
                 this.expectError(gl.INVALID_OPERATION);
 

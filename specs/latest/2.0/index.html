@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 11 January 2016</h2>
+    <h2 class="no-toc">Editor's Draft 12 January 2016</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2608,6 +2608,25 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         In the WebGL 1.0 API, the <em>type</em> argument passed to <code>texSubImage2D</code> must
         match the type used to originally define the texture object (i.e., using <code>texImage2D</code>).
         In the WebGL 2.0 API, this restriction has been lifted.
+    </p>
+
+    <h4>Out-of-bounds Behaviors in copyTexSubImage2D and readPixels calls</h4>
+
+    <p>
+        In WebGL 1.0, <a href="../1.0/index.html#READS_OUTSIDE_FRAMEBUFFER">
+        Reading Pixels Outside the Framebuffer</a>, it is required that
+        <code>copyTexSubImage2D</code> and <code>readPixels</code> do not touch
+        the corresponding destination range for out-of-bound pixels.
+    </p>
+
+    <p>
+        In WebGL 2.0, when a <code>PACK_BUFFER</code> object is bound and
+        <code>PACK_ROW_LENGTH</code> is not zero and less than <em>width</em>,
+        or when a <code>UNPACK_BUFFER</code> object is bound and
+        <code>UNPACK_ROW_LENGTH</code> is not zero and less than <em>width</em>
+        or <code>UNPACK_IMAGE_HEIGHT</code> is not zero and less than <em>height</em>,
+        packing/unpacking a row/image may extend to the next row/image. If that
+        portion is out-of-bounds, the values may change accordingly.
     </p>
 
     <h3>New Features Supported in the WebGL 2 API</h3>
