@@ -88,8 +88,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl.texParameteri(bindingTarget, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.texParameteri(bindingTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         // Set up pixel store parameters
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
-        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, premultiplyAlpha);
+        // In the case of ImageBitmap, we ignore these parameters.
+        // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
+        // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
         var targets = [gl.TEXTURE_2D];
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
             targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -116,13 +117,17 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var height = gl.canvas.height;
         var halfHeight = Math.floor(height / 2);
 
-        var top = flipY ? 0 : (height - halfHeight);
-        var bottom = flipY ? (height - halfHeight) : 0;
+        var top = height - halfHeight;
+        var bottom = 0;
+        // var top = flipY ? 0 : (height - halfHeight);
+        // var bottom = flipY ? (height - halfHeight) : 0;
 
         var tl = redColor;
-        var tr = premultiplyAlpha ? blackColor : redColor;
+        var tr = blackColor;
+        // var tr = premultiplyAlpha ? blackColor : redColor;
         var bl = greenColor;
-        var br = premultiplyAlpha ? blackColor : greenColor;
+        var br = blackColor;
+        // var br = premultiplyAlpha ? blackColor : greenColor;
 
         var loc;
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
@@ -160,14 +165,14 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function runTestOnBindingTarget(bindingTarget, program) {
         var cases = [
-            { sub: false, flipY: true, premultiplyAlpha: false },
+            // { sub: false, flipY: true, premultiplyAlpha: false },
             { sub: false, flipY: false, premultiplyAlpha: false },
-            { sub: false, flipY: true, premultiplyAlpha: true },
-            { sub: false, flipY: false, premultiplyAlpha: true },
-            { sub: true, flipY: true, premultiplyAlpha: false },
+            // { sub: false, flipY: true, premultiplyAlpha: true },
+            // { sub: false, flipY: false, premultiplyAlpha: true },
+            // { sub: true, flipY: true, premultiplyAlpha: false },
             { sub: true, flipY: false, premultiplyAlpha: false },
-            { sub: true, flipY: true, premultiplyAlpha: true },
-            { sub: true, flipY: false, premultiplyAlpha: true },
+            // { sub: true, flipY: true, premultiplyAlpha: true },
+            // { sub: true, flipY: false, premultiplyAlpha: true },
         ];
 
         for (var i in cases) {
