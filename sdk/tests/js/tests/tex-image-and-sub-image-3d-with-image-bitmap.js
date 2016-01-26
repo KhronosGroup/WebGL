@@ -73,10 +73,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         });
     }
 
-    function runOneIteration(useTexSubImage2D, flipY, premultiplyAlpha, bindingTarget, program)
+    function runOneIteration(useTexSubImage2D, bindingTarget, program)
     {
-        debug('Testing ' + ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
-                              ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
+        debug('Testing ' + ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Enable writes to the RGBA channels
         gl.colorMask(1, 1, 1, 0);
@@ -86,10 +85,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         // Set up texture parameters
         gl.texParameteri(bindingTarget, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.texParameteri(bindingTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        // Set up pixel store parameters
-        // In the case of ImageBitmap, we ignore these parameters.
-        // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
-        // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
         // Upload the image into the texture
         gl.texImage3D(bindingTarget, 0, gl[internalFormat], bitmap.width, bitmap.height, 1 /* depth */, 0,
@@ -103,25 +98,21 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         var top = height - halfHeight;
         var bottom = 0;
-        // var top = flipY ? 0 : (height - halfHeight);
-        // var bottom = flipY ? (height - halfHeight) : 0;
 
         var tl = redColor;
         var tr = blackColor;
-        // var tr = premultiplyAlpha ? blackColor : redColor;
         var bl = greenColor;
         var br = blackColor;
-        // var br = premultiplyAlpha ? blackColor : greenColor;
 
         // Draw the triangles
         wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
 
         // Check the top pixel and bottom pixel and make sure they have
         // the right color.
-        debug("Checking " + (flipY ? "top" : "bottom"));
+        debug("Checking top");
         wtu.checkCanvasRect(gl, 0, bottom, halfWidth, halfHeight, tl, "shouldBe " + tl);
         wtu.checkCanvasRect(gl, halfWidth, bottom, halfWidth, halfHeight, tr, "shouldBe " + tr);
-        debug("Checking " + (flipY ? "bottom" : "top"));
+        debug("Checking bottom");
         wtu.checkCanvasRect(gl, 0, top, halfWidth, halfHeight, bl, "shouldBe " + bl);
         wtu.checkCanvasRect(gl, halfWidth, top, halfWidth, halfHeight, br, "shouldBe " + br);
     }
@@ -139,12 +130,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function runTestOnBindingTarget(bindingTarget, program) {
         var cases = [
-            { flipY: false, premultiplyAlpha: false },
+            { },
         ];
 
         for (var i in cases) {
-            runOneIteration(cases[i].sub, cases[i].flipY, cases[i].premultiplyAlpha,
-                            bindingTarget, program);
+            runOneIteration(cases[i].sub, bindingTarget, program);
         }
     }
 
