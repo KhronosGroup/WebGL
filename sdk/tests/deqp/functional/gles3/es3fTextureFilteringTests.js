@@ -1228,7 +1228,7 @@ goog.scope(function() {
             glsTextureTestUtil.getCompareMask(pixelFormat);
 
         var isHighQuality = glsTextureTestUtil.verifyTexture2DArrayResult(
-            rendered.getAccess(), curCase.texture.getRefTexture(),
+            rendered.getAccess(), curCase.texture.getRefTexture().getView(),
             texCoord, refParams, lookupPrecision, lodPrecision, pixelFormat);
 
         if (!isHighQuality) {
@@ -1243,7 +1243,7 @@ goog.scope(function() {
             );
 
             var isOk = glsTextureTestUtil.verifyTexture2DArrayResult(
-                rendered.getAccess(), curCase.texture.getRefTexture(),
+                rendered.getAccess(), curCase.texture.getRefTexture().getView(),
                 texCoord, refParams, lookupPrecision, lodPrecision, pixelFormat
             );
 
