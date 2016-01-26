@@ -73,10 +73,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         });
     }
 
-    function runOneIteration(useTexSubImage2D, flipY, premultiplyAlpha, bindingTarget, program)
+    function runOneIteration(useTexSubImage2D, bindingTarget, program)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
-              ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
               ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP'));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Enable writes to the RGBA channels
@@ -87,10 +86,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         // Set up texture parameters
         gl.texParameteri(bindingTarget, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.texParameteri(bindingTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        // Set up pixel store parameters
-        // In the case of ImageBitmap, we ignore these parameters.
-        // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
-        // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+
         var targets = [gl.TEXTURE_2D];
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
             targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -119,15 +115,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         var top = height - halfHeight;
         var bottom = 0;
-        // var top = flipY ? 0 : (height - halfHeight);
-        // var bottom = flipY ? (height - halfHeight) : 0;
 
         var tl = redColor;
         var tr = blackColor;
-        // var tr = premultiplyAlpha ? blackColor : redColor;
         var bl = greenColor;
         var br = blackColor;
-        // var br = premultiplyAlpha ? blackColor : greenColor;
 
         var loc;
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
@@ -143,10 +135,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
             // Check the top pixel and bottom pixel and make sure they have
             // the right color.
-            debug("Checking " + (flipY ? "top" : "bottom"));
+            debug("Checking top");
             wtu.checkCanvasRect(gl, 0, bottom, halfWidth, halfHeight, tl, "shouldBe " + tl);
             wtu.checkCanvasRect(gl, halfWidth, bottom, halfWidth, halfHeight, tr, "shouldBe " + tr);
-            debug("Checking " + (flipY ? "bottom" : "top"));
+            debug("Checking bottom");
             wtu.checkCanvasRect(gl, 0, top, halfWidth, halfHeight, bl, "shouldBe " + bl);
             wtu.checkCanvasRect(gl, halfWidth, top, halfWidth, halfHeight, br, "shouldBe " + br);
         }
@@ -165,19 +157,12 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function runTestOnBindingTarget(bindingTarget, program) {
         var cases = [
-            // { sub: false, flipY: true, premultiplyAlpha: false },
-            { sub: false, flipY: false, premultiplyAlpha: false },
-            // { sub: false, flipY: true, premultiplyAlpha: true },
-            // { sub: false, flipY: false, premultiplyAlpha: true },
-            // { sub: true, flipY: true, premultiplyAlpha: false },
-            { sub: true, flipY: false, premultiplyAlpha: false },
-            // { sub: true, flipY: true, premultiplyAlpha: true },
-            // { sub: true, flipY: false, premultiplyAlpha: true },
+            { sub: false },
+            { sub: true },
         ];
 
         for (var i in cases) {
-            runOneIteration(cases[i].sub, cases[i].flipY, cases[i].premultiplyAlpha,
-                            bindingTarget, program);
+            runOneIteration(cases[i].sub, bindingTarget, program);
         }
     }
 
