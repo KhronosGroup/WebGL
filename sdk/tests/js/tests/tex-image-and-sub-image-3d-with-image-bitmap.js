@@ -73,7 +73,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         });
     }
 
-    function runOneIteration(useTexSubImage2D, bindingTarget, program)
+    function runOneIteration(bindingTarget, program)
     {
         debug('Testing ' + ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -129,13 +129,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function runTestOnBindingTarget(bindingTarget, program) {
-        var cases = [
-            { },
-        ];
-
-        for (var i in cases) {
-            runOneIteration(cases[i].sub, bindingTarget, program);
-        }
+        runOneIteration(bindingTarget, program);
     }
 
     return init;
