@@ -476,7 +476,7 @@ goog.scope(function() {
      * @return {Array<number>}
      */
     sglrReferenceContext.Texture2D.prototype.sample = function(pos, lod) {
-     return this.m_view.sample(this.getSampler(), pos, lod);
+        return this.m_view.sample(this.getSampler(), pos, lod);
     };
 
     /**
@@ -713,6 +713,15 @@ goog.scope(function() {
             this.m_view = new tcuTexture.Texture2DArrayView(numLevels, this.m_levels.getLevels().slice(baseLevel));
         } else
             this.m_view = new tcuTexture.Texture2DArrayView(0, null);
+    };
+
+    /**
+     * @param {Array<number>} pos
+     * @param {number=} lod
+     * @return {Array<number>}
+     */
+    sglrReferenceContext.Texture2DArray.prototype.sample = function(pos, lod) {
+        return this.m_view.sample(this.getSampler(), pos, lod);
     };
 
     /**
