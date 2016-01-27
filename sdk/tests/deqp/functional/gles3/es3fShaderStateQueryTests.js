@@ -2011,21 +2011,21 @@ es3fShaderStateQueryTests.UniformValueMatrixCase.prototype.test = function() {
     // the values of the matrix are returned in column major order but they can be given in either order
 
     location = gl.getUniformLocation(program, 'mat2Uniform');
-    var m2 = new Float32Array(matrixValues.splice(0, 2 * 2));
+    var m2 = new Float32Array(matrixValues.slice(0, 2 * 2));
     gl.uniformMatrix2fv(location, false, m2);
     this.check(glsStateQuery.verifyUniform(program, location, m2));
     gl.uniformMatrix2fv(location, true, m2);
     this.check(glsStateQuery.verifyUniform(program, location, transpose(2, 2, m2)));
 
     location = gl.getUniformLocation(program, 'mat3Uniform');
-    var m3 = new Float32Array(matrixValues.splice(0, 3 * 3));
+    var m3 = new Float32Array(matrixValues.slice(0, 3 * 3));
     gl.uniformMatrix3fv(location, false, m3);
     this.check(glsStateQuery.verifyUniform(program, location, m3));
     gl.uniformMatrix3fv(location, true, m3);
     this.check(glsStateQuery.verifyUniform(program, location, transpose(3, 3, m3)));
 
     location = gl.getUniformLocation(program, 'mat4Uniform');
-    var m4 = new Float32Array(matrixValues.splice(0, 4 * 4));
+    var m4 = new Float32Array(matrixValues.slice(0, 4 * 4));
     gl.uniformMatrix4fv(location, false, m4);
     this.check(glsStateQuery.verifyUniform(program, location, m4));
     gl.uniformMatrix4fv(location, true, m4);
