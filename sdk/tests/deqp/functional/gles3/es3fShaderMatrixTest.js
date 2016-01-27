@@ -1523,20 +1523,46 @@ goog.scope(function() {
 
                 switch (input.dataType)
                 {
-                    case gluShaderUtil.DataType.FLOAT:        gl.uniform1f(loc, s_constInFloat[inNdx]);                       break;
-                    case gluShaderUtil.DataType.FLOAT_VEC2:   gl.uniform2fv(loc, s_constInVec2[inNdx]);           break;
-                    case gluShaderUtil.DataType.FLOAT_VEC3:   gl.uniform3fv(loc, s_constInVec3[inNdx]);           break;
-                    case gluShaderUtil.DataType.FLOAT_VEC4:   gl.uniform4fv(loc, s_constInVec4[inNdx]);           break;
-                    // \note GLES3 supports transpose in matrix upload.
-                    case gluShaderUtil.DataType.FLOAT_MAT2:   gl.uniformMatrix2fv (loc, true, s_constInMat2x2[inNdx]);  break;
-                    case gluShaderUtil.DataType.FLOAT_MAT2X3: gl.uniformMatrix2x3fv(loc, true, s_constInMat2x3[inNdx]); break;
-                    case gluShaderUtil.DataType.FLOAT_MAT2X4: gl.uniformMatrix2x4fv(loc, true, s_constInMat2x4[inNdx]); break;
-                    case gluShaderUtil.DataType.FLOAT_MAT3X2: gl.uniformMatrix3x2fv(loc, true, s_constInMat3x2[inNdx]); break;
-                    case gluShaderUtil.DataType.FLOAT_MAT3:   gl.uniformMatrix3fv (loc, true, s_constInMat3x3[inNdx]);  break;
-                    case gluShaderUtil.DataType.FLOAT_MAT3X4: gl.uniformMatrix3x4fv(loc, true, s_constInMat3x4[inNdx]); break;
-                    case gluShaderUtil.DataType.FLOAT_MAT4X2: gl.uniformMatrix4x2fv(loc, true, s_constInMat4x2[inNdx]); break;
-                    case gluShaderUtil.DataType.FLOAT_MAT4X3: gl.uniformMatrix4x3fv(loc, true, s_constInMat4x3[inNdx]); break;
-                    case gluShaderUtil.DataType.FLOAT_MAT4:   gl.uniformMatrix4fv (loc, true, s_constInMat4x4[inNdx]);  break;
+                    case gluShaderUtil.DataType.FLOAT:
+                        gl.uniform1f(loc, s_constInFloat[inNdx]);
+                        break;
+                    case gluShaderUtil.DataType.FLOAT_VEC2:
+                        gl.uniform2fv(loc, s_constInVec2[inNdx]);
+                        break;
+                    case gluShaderUtil.DataType.FLOAT_VEC3:
+                        gl.uniform3fv(loc, s_constInVec3[inNdx]);
+                        break;
+                    case gluShaderUtil.DataType.FLOAT_VEC4:
+                        gl.uniform4fv(loc, s_constInVec4[inNdx]);
+                        break;
+                    // \note GLES3 supports transpose in matrix upload, but WebGL doesn't support transpose.
+                    case gluShaderUtil.DataType.FLOAT_MAT2:
+                        gl.uniformMatrix2fv(loc, false, deMath.transpose(s_constInMat2x2[inNdx], 2, 2));
+                        break;
+                    case gluShaderUtil.DataType.FLOAT_MAT2X3:
+                        gl.uniformMatrix2x3fv(loc, false, deMath.transpose(s_constInMat2x3[inNdx], 3, 2));
+                        break;
+                    case gluShaderUtil.DataType.FLOAT_MAT2X4:
+                        gl.uniformMatrix2x4fv(loc, false, deMath.transpose(s_constInMat2x4[inNdx], 4, 2));
+                        break;
+                    case gluShaderUtil.DataType.FLOAT_MAT3X2:
+                        gl.uniformMatrix3x2fv(loc, false, deMath.transpose(s_constInMat3x2[inNdx], 2, 3));
+                        break;
+                    case gluShaderUtil.DataType.FLOAT_MAT3:
+                        gl.uniformMatrix3fv(loc, false, deMath.transpose(s_constInMat3x3[inNdx], 3, 3));
+                        break;
+                    case gluShaderUtil.DataType.FLOAT_MAT3X4:
+                        gl.uniformMatrix3x4fv(loc, false, deMath.transpose(s_constInMat3x4[inNdx], 4, 3));
+                        break;
+                    case gluShaderUtil.DataType.FLOAT_MAT4X2:
+                        gl.uniformMatrix4x2fv(loc, false, deMath.transpose(s_constInMat4x2[inNdx], 2, 4));
+                        break;
+                    case gluShaderUtil.DataType.FLOAT_MAT4X3:
+                        gl.uniformMatrix4x3fv(loc, false, deMath.transpose(s_constInMat4x3[inNdx], 3, 4));
+                        break;
+                    case gluShaderUtil.DataType.FLOAT_MAT4:
+                        gl.uniformMatrix4fv  (loc, false, deMath.transpose(s_constInMat4x4[inNdx], 4, 4));
+                        break;
                     default:
                         throw new Error('Invalid datatype' + input.dataType);
                 }

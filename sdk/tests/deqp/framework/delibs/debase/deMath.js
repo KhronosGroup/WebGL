@@ -130,6 +130,22 @@ deMath.swizzle = function(a, indices) {
 };
 
 /**
+ *  @param {goog.NumberArray} a Source array
+ *  @param {number} row
+ *  @param {number} col
+ *  @return {Array<number>} Transposed array
+ */
+deMath.transpose = function(a, row, col) {
+    if (a.length != row * col)
+        throw new Error('Arrays size must equal row * col');
+    var dst = [];
+    for (var i = 0 ; i < col; i++)
+        for (var j = 0; j < row; j++)
+            dst.push(a[j * col + i]);
+    return dst;
+}
+
+/**
  * Shift left elements of array a by elements of array b
  * dst[n] a[n] << b[n]
  * @param {goog.NumberArray} a
