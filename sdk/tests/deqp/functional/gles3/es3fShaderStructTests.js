@@ -1420,25 +1420,25 @@ goog.scope(function() {
 				es3fShaderStructTests.setUniform1f(programID, "s[0].a", constCoords[0]);
 				arr = deMath.swizzle(constCoords, [0,1,2,3]);
 				es3fShaderStructTests.setUniform1f(programID, "s[0].b[0].a", 0.5);
-				es3fShaderStructTests.setUniform1fv(programID, "s[0].b[0].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[0].b[0].b", arr);
 				arr = deMath.swizzle(constCoords, [2,3,0,1]);
 				es3fShaderStructTests.setUniform1f(programID, "s[0].b[1].a", 1.0/3.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[0].b[1].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[0].b[1].b", arr);
 				arr = deMath.swizzle(constCoords, [0,2,1,3]);
 				es3fShaderStructTests.setUniform1f(programID, "s[0].b[2].a", 1.0/4.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[0].b[2].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[0].b[2].b", arr);
 				es3fShaderStructTests.setUniform1i(programID, "s[0].c", 0);
 
 				es3fShaderStructTests.setUniform1f(programID, "s[1].a", constCoords[3]);
 				arr = deMath.swizzle(constCoords, [0,0,1,1]);
 				es3fShaderStructTests.setUniform1f(programID, "s[1].b[0].a", 2.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[1].b[0].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[1].b[0].b", arr);
 				arr = deMath.swizzle(constCoords, [2,2,3,3]);
 				es3fShaderStructTests.setUniform1f(programID, "s[1].b[1].a", 3.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[1].b[1].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[1].b[1].b", arr);
 				arr = deMath.swizzle(constCoords, [1,0,3,2]);
 				es3fShaderStructTests.setUniform1f(programID, "s[1].b[2].a", 4.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[1].b[2].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[1].b[2].b", arr);
 				es3fShaderStructTests.setUniform1i(programID, "s[1].c", 1);
 			},
 			function(c) {
@@ -1479,25 +1479,25 @@ goog.scope(function() {
 				es3fShaderStructTests.setUniform1f(programID, "s[0].a", constCoords[0]);
 				arr = constCoords;
 				es3fShaderStructTests.setUniform1f(programID, "s[0].b[0].a", 0.5);
-				es3fShaderStructTests.setUniform1fv(programID, "s[0].b[0].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[0].b[0].b", arr);
 				arr = deMath.swizzle(constCoords, [2,3,0,1]);
 				es3fShaderStructTests.setUniform1f(programID, "s[0].b[1].a", 1.0/3.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[0].b[1].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[0].b[1].b", arr);
 				arr = deMath.swizzle(constCoords, [0,2,1,3]);
 				es3fShaderStructTests.setUniform1f(programID, "s[0].b[2].a", 1.0/4.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[0].b[2].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[0].b[2].b", arr);
 				es3fShaderStructTests.setUniform1i(programID, "s[0].c", 0);
 
 				es3fShaderStructTests.setUniform1f(programID, "s[1].a", constCoords[3]);
 				arr = deMath.swizzle(constCoords, [0,0,1,1]);
 				es3fShaderStructTests.setUniform1f(programID, "s[1].b[0].a", 2.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[1].b[0].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[1].b[0].b", arr);
 				arr = deMath.swizzle(constCoords, [2,2,3,3]);
 				es3fShaderStructTests.setUniform1f(programID, "s[1].b[1].a", 3.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[1].b[1].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[1].b[1].b", arr);
 				arr = deMath.swizzle(constCoords, [1,0,3,2]);
 				es3fShaderStructTests.setUniform1f(programID, "s[1].b[2].a", 4.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[1].b[2].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[1].b[2].b", arr);
 				es3fShaderStructTests.setUniform1i(programID, "s[1].c", 1);
 			},
 			function(c) {
@@ -1593,25 +1593,25 @@ goog.scope(function() {
 				es3fShaderStructTests.setUniform1f(programID, "s[0].a", constCoords[0]);
 				arr = deMath.swizzle(constCoords, [1,0,2,0]);
 				es3fShaderStructTests.setUniform1f(programID, "s[0].b[0].a", 0.5);
-				es3fShaderStructTests.setUniform1fv(programID, "s[0].b[0].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[0].b[0].b", arr);
 				arr = deMath.swizzle(constCoords, [1,1,3,1]);
 				es3fShaderStructTests.setUniform1f(programID, "s[0].b[1].a", 1.0/3.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[0].b[1].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[0].b[1].b", arr);
 				arr = deMath.swizzle(constCoords, [2,1,2,1]);
 				es3fShaderStructTests.setUniform1f(programID, "s[0].b[2].a", 1.0/4.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[0].b[2].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[0].b[2].b", arr);
 				es3fShaderStructTests.setUniform1i(programID, "s[0].c", 0);
 
 				es3fShaderStructTests.setUniform1f(programID, "s[1].a", constCoords[3]);
 				arr = deMath.swizzle(constCoords, [2,0,2,1]);
 				es3fShaderStructTests.setUniform1f(programID, "s[1].b[0].a", 2.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[1].b[0].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[1].b[0].b", arr);
 				arr = deMath.swizzle(constCoords, [2,2,3,3]);
 				es3fShaderStructTests.setUniform1f(programID, "s[1].b[1].a", 3.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[1].b[1].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[1].b[1].b", arr);
 				arr = deMath.swizzle(constCoords, [1,0,3,2]);
 				es3fShaderStructTests.setUniform1f(programID, "s[1].b[2].a", 4.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[1].b[2].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[1].b[2].b", arr);
 				es3fShaderStructTests.setUniform1i(programID, "s[1].c", 1);
 			},
 			function(c) {
@@ -1709,25 +1709,25 @@ goog.scope(function() {
 				es3fShaderStructTests.setUniform1f(programID, "s[0].a", constCoords[0]);
 				arr = deMath.swizzle(constCoords, [1,0,2,0]);
 				es3fShaderStructTests.setUniform1f(programID, "s[0].b[0].a", 0.5);
-				es3fShaderStructTests.setUniform1fv(programID, "s[0].b[0].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[0].b[0].b", arr);
 				arr = deMath.swizzle(constCoords, [1,1,3,1]);
 				es3fShaderStructTests.setUniform1f(programID, "s[0].b[1].a", 1.0/3.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[0].b[1].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[0].b[1].b", arr);
 				arr = deMath.swizzle(constCoords, [2,1,2,1]);
 				es3fShaderStructTests.setUniform1f(programID, "s[0].b[2].a",    1.0/4.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[0].b[2].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[0].b[2].b", arr);
 				es3fShaderStructTests.setUniform1i(programID, "s[0].c", 0);
 
 				es3fShaderStructTests.setUniform1f(programID, "s[1].a", constCoords[3]);
 				arr = deMath.swizzle(constCoords, [2,0,2,1]);
 				es3fShaderStructTests.setUniform1f(programID, "s[1].b[0].a", 2.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[1].b[0].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[1].b[0].b", arr);
 				arr = deMath.swizzle(constCoords, [2,2,3,3]);
 				es3fShaderStructTests.setUniform1f(programID, "s[1].b[1].a", 3.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[1].b[1].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[1].b[1].b", arr);
 				arr = deMath.swizzle(constCoords, [1,0,3,2]);
 				es3fShaderStructTests.setUniform1f(programID, "s[1].b[2].a", 4.0);
-				es3fShaderStructTests.setUniform1fv(programID, "s[1].b[2].b", arr);
+				es3fShaderStructTests.setUniform2fv(programID, "s[1].b[2].b", arr);
 				es3fShaderStructTests.setUniform1i(programID, "s[1].c", 1);
 			},
 			function(c) {
