@@ -160,6 +160,11 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8UI, 0, 0, 0, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, null);
   gl.generateMipmap(gl.TEXTURE_2D);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "generateMipmap should fail for non-texture-filterable format");
+  if (gl.getExtension('EXT_color_buffer_float') && gl.getExtension('OES_texture_float_linear')) {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 0, 0, 0, gl.RGBA, gl.FLOAT, null);
+      gl.generateMipmap(gl.TEXTURE_2D);
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
+  }
   gl.deleteTexture(tex);
 })();
 
