@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 12 January 2016</h2>
+    <h2 class="no-toc">Editor's Draft 2 February 2016</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -3102,6 +3102,20 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
     <p>All attached images much have the same width and height; otherwise, <code>checkFramebufferStatus</code> returns <code>FRAMEBUFFER_INCOMPLETE_DIMENSIONS</code>.</p>
 
     <div class="note rationale">In OpenGL ES 3, attached images for a framebuffer need not to have the same width and height to be framebuffer complete, and <code>FRAMEBUFFER_INCOMPLETE_DIMENSIONS</code> is not one of the valid return values for <code>checkFramebufferStatus</code>. However, in Direct3D 11, on top of which OpenGL ES 3 behavior is emulated in Windows, all render targets must have the same size in all dimensions (see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ff476464(v=vs.85).aspx">msdn manual page</a>). Emulation of the ES3 semantic on top of DirectX 11 will be inefficient. In order to have consistent WebGL 2 behaviors across platforms, it is reasonable to keep the OpenGL ES 2 / WebGL 1 restriction for WebGL 2 that all attached images must have the same width and height.</div>
+
+    <h3>Uniform block matching</h3>
+
+    <p>
+        In the WebGL 2.0 API, layout qualifiers <code>row_major</code> and <code>column_major</code>
+        are required to match in matched uniform blocks even when they are applied exclusively on
+        non-matrix variables.
+    </p>
+
+    <div class="note rationale">
+        This uniform block matching rule is known to be inconsistent across OpenGL ES 3.0
+        implementations.
+    </div>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
