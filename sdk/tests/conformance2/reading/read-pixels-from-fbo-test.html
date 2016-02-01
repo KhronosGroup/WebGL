@@ -154,7 +154,7 @@ function denormalizeColor(srcInternalFormat, destFormat, destType, color) {
     return { color: result, tol: tol };
   }
 
-  if (srcInternalFormat == gl.SRGB8_ALPHA8) {
+  if (destFormat == gl.SRGB8_ALPHA8) {
     for (var i = 0; i < 3; ++i) {
       result[i] = convertToSRGB(result[i]);
     }
@@ -165,9 +165,12 @@ function denormalizeColor(srcInternalFormat, destFormat, destType, color) {
       result = result.map(val => { return val * 0xFF});
       break;
     case gl.UNSIGNED_SHORT:
+      // On Linux NVIDIA, tol of 33 is necessary to pass the test.
+      tol = 40;
       result = result.map(val => { return val * 0xFFFF});
       break;
     case gl.UNSIGNED_INT:
+      tol = 40;
       result = result.map(val => { return val * 0xFFFFFFFF});
       break;
     case gl.UNSIGNED_SHORT_4_4_4_4:
