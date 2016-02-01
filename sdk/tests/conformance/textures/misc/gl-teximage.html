@@ -411,6 +411,11 @@ function runTests(imgs) {
   checkPixelRange(middle, center, [ 0, 0, 0, 255 ], 10);
 
   debug("");
+  debug("check zero size cases");
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, 2, 0, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, new Uint8Array());
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from zero sized textures");
+
+  debug("");
   successfullyParsed = true;
   shouldBeTrue("successfullyParsed");
   debug('<br /><span class="pass">TEST COMPLETE</span>');
