@@ -146,22 +146,34 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   // Test 3D texture.
   var tex3d = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_3D, tex3d);
-  gl.texImage3D( gl.TEXTURE_3D, 0, gl.RGBA, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
+  gl.texImage3D( gl.TEXTURE_3D, 0, gl.RGBA, 8, 8, 8, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(8 * 8 * 8 * 4));
   gl.generateMipmap(gl.TEXTURE_3D);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
+  gl.texSubImage3D(gl.TEXTURE_3D, 1, 0, 0, 0, 4, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4 * 4 * 4 * 4));
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texSubImage3D should succeed");
   gl.deleteTexture(tex3d);
+
+  // Test 2D array texture.
+  var tex2dArray = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D_ARRAY, tex2dArray);
+  gl.texImage3D( gl.TEXTURE_2D_ARRAY, 0, gl.RGBA, 8, 8, 4, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(8 * 8 * 4 * 4));
+  gl.generateMipmap(gl.TEXTURE_2D_ARRAY);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
+  gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, 1, 0, 0, 0, 4, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4 * 4 * 4 * 4));
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texSubImage3D should succeed");
+  gl.deleteTexture(tex2dArray);
 
   // Test sized internal format should be both color-renderable and texture-filterable
   tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, 8, 8, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(8 * 8 * 4));
   gl.generateMipmap(gl.TEXTURE_2D);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8UI, 0, 0, 0, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, null);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8UI, 8, 8, 0, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, new Uint8Array(8 * 8 * 4));
   gl.generateMipmap(gl.TEXTURE_2D);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "generateMipmap should fail for non-texture-filterable format");
   if (gl.getExtension('EXT_color_buffer_float') && gl.getExtension('OES_texture_float_linear')) {
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 0, 0, 0, gl.RGBA, gl.FLOAT, null);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 8, 8, 0, gl.RGBA, gl.FLOAT, new Float32Array(8 * 8 * 4));
       gl.generateMipmap(gl.TEXTURE_2D);
       wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
   }
