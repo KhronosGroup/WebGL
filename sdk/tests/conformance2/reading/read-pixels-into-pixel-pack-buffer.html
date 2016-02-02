@@ -45,7 +45,7 @@ function checkFormatAndType()
 {
     debug("");
     debug("check format / type");
-    var invalidFormat = [gl.DEPTH_COMPONENT, gl.DEPTH_STENCIL, gl.R8, gl.RGBA4];
+    var invalidFormat = [gl.DEPTH_COMPONENT, gl.DEPTH_STENCIL, gl.R8, gl.RGBA4, gl.ALPHA, gl.LUMINANCE, gl.LUMINANCE_ALPHA];
     var invalidType = [gl.UNSIGNED_INT_24_8];
     for (var ff = 0; ff < invalidFormat.length; ++ff) {
         var format = invalidFormat[ff];
@@ -66,8 +66,6 @@ function checkFormatAndType()
         {format: gl.RGB,          type: gl.UNSIGNED_SHORT_5_6_5},
         {format: gl.RGBA,         type: gl.UNSIGNED_SHORT_5_5_5_1},
         {format: gl.RGBA,         type: gl.UNSIGNED_SHORT_4_4_4_4},
-        {format: gl.ALPHA,        type: gl.UNSIGNED_BYTE},
-        {format: gl.LUMINANCE,    type: gl.UNSIGNED_BYTE},
         {format: gl.RED,          type: gl.UNSIGNED_BYTE},
         {format: gl.RGBA_INTEGER, type: gl.UNSIGNED_INT},
         {format: gl.RGBA_INTEGER, type: gl.INT}

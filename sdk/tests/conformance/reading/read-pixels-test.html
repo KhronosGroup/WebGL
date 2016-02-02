@@ -143,10 +143,13 @@ function continueTestPart1() {
 }
 
 function continueTestPart2() {
-  var invalidFormat = [gl.DEPTH_COMPONENT, gl.DEPTH_STENCIL, desktopGL.R8, gl.RGBA4];
+  var invalidFormat = [gl.DEPTH_COMPONENT, gl.DEPTH_STENCIL, desktopGL.R8, gl.RGBA4, gl.LUMINANCE, gl.LUMINANCE_ALPHA];
   if (contextVersion < 2) {
   // They are valid in WebGL 2 or higher
-    invalidFormat = invalidFormat.concat([gl.LUMINANCE, gl.LUMINANCE_ALPHA, desktopGL.RED, desktopGL.RG_INTEGER, desktopGL.RGBA_INTEGER]);
+    invalidFormat = invalidFormat.concat([desktopGL.RED, desktopGL.RG_INTEGER, desktopGL.RGBA_INTEGER]);
+  }
+  if (contextVersion > 1) {
+    invalidFormat = invalidFormat.concat([gl.ALPHA]);
   }
 
   var invalidTypeInfo = [
@@ -205,21 +208,19 @@ function continueTestPart2() {
       format: gl.RGBA,
       type: gl.UNSIGNED_SHORT_4_4_4_4,
       dest: new Uint16Array(1),
-    },
-    {
-      format: gl.ALPHA,
-      type: gl.UNSIGNED_BYTE,
-      dest: new Uint8Array(1),
     }
   ];
-
-  if (contextVersion > 1) {
+  if (contextVersion < 2) {
     combinations = combinations.concat([
       {
-        format: gl.LUMINANCE,
+        format: gl.ALPHA,
         type: gl.UNSIGNED_BYTE,
         dest: new Uint8Array(1),
-      },
+      }
+    ]);
+  }
+  if (contextVersion > 1) {
+    combinations = combinations.concat([
       {
         format: gl.RED,
         type: gl.UNSIGNED_BYTE,
