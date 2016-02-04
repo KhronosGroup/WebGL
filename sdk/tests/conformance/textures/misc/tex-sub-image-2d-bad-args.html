@@ -78,6 +78,10 @@ wtu.glErrorShouldBe(gl, [gl.INVALID_VALUE, gl.INVALID_OPERATION], "too high leve
 
 gl.texSubImage2D(gl.FLOAT, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "bad target");
+if (contextVersion > 1) {
+    gl.texSubImage2D(gl.TEXTURE_3D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "bad target");
+}
 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, c);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "good args");
 gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, c);
