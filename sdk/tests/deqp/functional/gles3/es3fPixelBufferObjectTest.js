@@ -176,7 +176,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
      */
     es3fPixelBufferObjectTest.ReadPixelsTest.prototype.renderTriangle = function(a, b, c) {
 
-        var positions = [];
+        var positions = new Float32Array(36);
 
         positions[0] = a[0];
         positions[1] = a[1];
@@ -190,10 +190,10 @@ var tcuImageCompare = framework.common.tcuImageCompare;
         positions[7] = c[1];
         positions[8] = c[2];
 
-        var colors = [
+        var colors = new Float32Array([
             1.0, 0.0, 0.0, 1.0,
             0.0, 1.0, 0.0, 1.0,
-            0.0, 0.0, 1.0, 1.0];
+            0.0, 0.0, 1.0, 1.0]);
 
         gl.useProgram(this.m_program.getProgram());
         assertMsgOptions(gl.getError() === gl.NO_ERROR, 'useProgram failed ', false, true);
@@ -214,8 +214,15 @@ var tcuImageCompare = framework.common.tcuImageCompare;
         gl.enableVertexAttribArray(coordLoc);
         assertMsgOptions(gl.getError() === gl.NO_ERROR, 'enableVertexAttribArray failed ', false, true);
 
-        gl.vertexAttribPointer(coordLoc, 3, gl.FLOAT, false, 0, positions[0]);
-        gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, colors[0]);
+        var pos = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, pos);
+        gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+        gl.vertexAttribPointer(coordLoc, 3, gl.FLOAT, false, 0, 0);
+
+        var c = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, c);
+        gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+        gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
 
         gl.drawArrays(gl.TRIANGLES, 0, 3);
 
@@ -394,7 +401,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
 
         gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pixelBuffer);
         gl.bufferData(gl.PIXEL_PACK_BUFFER, readReference.getLevel(0).getDataSize(), gl.STREAM_READ);
-        gl.readPixels(0, 0, width, height, readPixelsFormat, readPixelsType, null);
+        gl.readPixels(0, 0, width, height, readPixelsFormat, readPixelsType, 0);
 
         var bufferData = new ArrayBuffer(readReference.getLevel(0).getDataSize());
 
