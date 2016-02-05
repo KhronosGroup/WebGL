@@ -459,7 +459,12 @@ function testDXTTexture(test) {
     gl.generateMipmap(gl.TEXTURE_2D);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "trying to generate mipmaps from compressed texture");
     wtu.clearAndDrawUnitQuad(gl);
-    compareRect(width, height, test.channels, width, height, uncompressedData, data, format);
+    compareRect(width, height, test.channels, width, height, uncompressedData, data, format, "NEAREST");
+    // Test again with linear filtering.
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    wtu.clearAndDrawUnitQuad(gl);
+    compareRect(width, height, test.channels, width, height, uncompressedData, data, format, "LINEAR");
 
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 1, data);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "non 0 border");
@@ -553,8 +558,16 @@ function testDXTTexture(test) {
             copyRect(uncompressedData, 0, 0, xoff, yoff, 4, 4, stride);
             gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, xoff, yoff, 4, 4, format, subData);
             wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture");
+            // First test NEAREST filtering.
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
             wtu.clearAndDrawUnitQuad(gl);
-            compareRect(width, height, test.channels, width, height, uncompressedData, data, format);
+            compareRect(width, height, test.channels, width, height, uncompressedData, data, format, "NEAREST");
+            // Next test LINEAR filtering.
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            wtu.clearAndDrawUnitQuad(gl);
+            compareRect(width, height, test.channels, width, height, uncompressedData, data, format, "LINEAR");
         }
     }
 }
@@ -590,7 +603,7 @@ function makeImage(imageWidth, imageHeight, dataWidth, data, alpha) {
 function compareRect(
         actualWidth, actualHeight, actualChannels,
         dataWidth, dataHeight, expectedData,
-        testData, testFormat) {
+        testData, testFormat, filteringMode) {
     var actual = new Uint8Array(actualWidth * actualHeight * 4);
     gl.readPixels(
             0, 0, actualWidth, actualHeight, gl.RGBA, gl.UNSIGNED_BYTE, actual);
@@ -631,12 +644,8 @@ function compareRect(
         }
     }
     if (!failed) {
-        testPassed("texture rendered correctly");
+        testPassed("texture rendered correctly with " + filteringMode + " filtering");
     }
-}
-
-function testPVRTCTextures() {
-    testFailed("PVRTC test not yet implemented");
 }
 
 debug("");
