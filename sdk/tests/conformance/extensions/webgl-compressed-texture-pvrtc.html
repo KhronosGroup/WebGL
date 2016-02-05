@@ -282,7 +282,12 @@ function testPVRTCTexture(test) {
     gl.generateMipmap(gl.TEXTURE_2D);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "trying to generate mipmaps from compressed texture");
     wtu.drawQuad(gl);
-    compareRect(width, height, test.channels, width, height, uncompressedData, data, format);
+    compareRect(width, height, test.channels, width, height, uncompressedData, data, format, undefined, "NEAREST");
+    // Test again with linear filtering.
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    wtu.clearAndDrawUnitQuad(gl);
+    compareRect(width, height, test.channels, width, height, uncompressedData, data, format, undefined, "LINEAR");
 
     gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 1, data);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "non 0 border");
@@ -340,7 +345,7 @@ function makeImage(imageWidth, imageHeight, dataWidth, data, alpha) {
 function compareRect(
         actualWidth, actualHeight, actualChannels,
         dataWidth, dataHeight, expectedData,
-        testData, testFormat, tolerance) {
+        testData, testFormat, tolerance, filteringMode) {
     if(typeof(tolerance) == 'undefined') { tolerance = 5; }
     var actual = new Uint8Array(actualWidth * actualHeight * 4);
     gl.readPixels(
@@ -382,7 +387,7 @@ function compareRect(
         }
     }
     if (!failed) {
-        testPassed("texture rendered correctly");
+        testPassed("texture rendered correctly with " + filteringMode + " filtering");
     }
 }
 
