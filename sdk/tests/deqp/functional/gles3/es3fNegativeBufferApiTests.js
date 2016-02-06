@@ -160,15 +160,15 @@ goog.scope(function() {
                 gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_SHORT_5_6_5, ushortData);
                 this.expectError(gl.INVALID_OPERATION);
                 gl.readPixels(0, 0, 1, 1, gl.ALPHA, gl.UNSIGNED_SHORT_5_6_5, ushortData);
-                this.expectError(gl.INVALID_OPERATION);
+                this.expectError(gl.INVALID_ENUM);
                 gl.readPixels(0, 0, 1, 1, gl.RGB, gl.UNSIGNED_SHORT_4_4_4_4, ushortData);
                 this.expectError(gl.INVALID_OPERATION);
                 gl.readPixels(0, 0, 1, 1, gl.ALPHA, gl.UNSIGNED_SHORT_4_4_4_4, ushortData);
-                this.expectError(gl.INVALID_OPERATION);
+                this.expectError(gl.INVALID_ENUM);
                 gl.readPixels(0, 0, 1, 1, gl.RGB, gl.UNSIGNED_SHORT_5_5_5_1, ushortData);
                 this.expectError(gl.INVALID_OPERATION);
                 gl.readPixels(0, 0, 1, 1, gl.ALPHA, gl.UNSIGNED_SHORT_5_5_5_1, ushortData);
-                this.expectError(gl.INVALID_OPERATION);
+                this.expectError(gl.INVALID_ENUM);
 
                 bufferedLogToConsole('gl.RGBA/gl.UNSIGNED_BYTE is always accepted and the other acceptable pair can be discovered by querying gl.IMPLEMENTATION_COLOR_READ_FORMAT and gl.IMPLEMENTATION_COLOR_READ_TYPE.');
                 gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, ubyteData);
