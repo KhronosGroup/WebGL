@@ -419,35 +419,38 @@ goog.scope(function() {
                 var data = new Float32Array(32 * 32);
 
                 var texture = gl.createTexture();
-                gl.bindTexture(gl.TEXTURE_2D, texture);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 32, 32, 0, gl.RGBA, gl.FLOAT, null);
+                // Float type texture isn't color-renderable without EXT_color_buffer_float extension.
+                if (gl.getExtension('EXT_color_buffer_float')) {
+                    gl.bindTexture(gl.TEXTURE_2D, texture);
+                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 32, 32, 0, gl.RGBA, gl.FLOAT, null);
 
-                var fbo = gl.createFramebuffer();
-                gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-                gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-                gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-                this.expectError(gl.NO_ERROR);
+                    var fbo = gl.createFramebuffer();
+                    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+                    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+                    gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+                    this.expectError(gl.NO_ERROR);
 
-                bufferedLogToConsole('gl.INVALID_ENUM is generated if buffer is not an accepted value.');
-                gl.clearBufferfv(-1, 0, data);
-                this.expectError(gl.INVALID_ENUM);
-                gl.clearBufferfv(gl.FRAMEBUFFER, 0, data);
-                this.expectError(gl.INVALID_ENUM);
+                    bufferedLogToConsole('gl.INVALID_ENUM is generated if buffer is not an accepted value.');
+                    gl.clearBufferfv(-1, 0, data);
+                    this.expectError(gl.INVALID_ENUM);
+                    gl.clearBufferfv(gl.FRAMEBUFFER, 0, data);
+                    this.expectError(gl.INVALID_ENUM);
 
-                bufferedLogToConsole('gl.INVALID_VALUE is generated if buffer is gl.COLOR, gl.FRONT, gl.BACK, gl.LEFT, gl.RIGHT, or gl.FRONT_AND_BACK and drawBuffer is greater than or equal to gl.MAX_DRAW_BUFFERS.');
-                var maxDrawBuffers = /** @type {number} */ (gl.getParameter(gl.MAX_DRAW_BUFFERS));
-                gl.clearBufferfv(gl.COLOR, maxDrawBuffers, data);
-                this.expectError(gl.INVALID_VALUE);
+                    bufferedLogToConsole('gl.INVALID_VALUE is generated if buffer is gl.COLOR, gl.FRONT, gl.BACK, gl.LEFT, gl.RIGHT, or gl.FRONT_AND_BACK and drawBuffer is greater than or equal to gl.MAX_DRAW_BUFFERS.');
+                    var maxDrawBuffers = /** @type {number} */ (gl.getParameter(gl.MAX_DRAW_BUFFERS));
+                    gl.clearBufferfv(gl.COLOR, maxDrawBuffers, data);
+                    this.expectError(gl.INVALID_VALUE);
 
-                bufferedLogToConsole('gl.INVALID_ENUM is generated if buffer is gl.STENCIL or gl.DEPTH_STENCIL.');
-                gl.clearBufferfv(gl.STENCIL, 1, data);
-                this.expectError(gl.INVALID_ENUM);
-                gl.clearBufferfv(gl.DEPTH_STENCIL, 1, data);
-                this.expectError(gl.INVALID_ENUM);
+                    bufferedLogToConsole('gl.INVALID_ENUM is generated if buffer is gl.STENCIL or gl.DEPTH_STENCIL.');
+                    gl.clearBufferfv(gl.STENCIL, 1, data);
+                    this.expectError(gl.INVALID_ENUM);
+                    gl.clearBufferfv(gl.DEPTH_STENCIL, 1, data);
+                    this.expectError(gl.INVALID_ENUM);
 
-                bufferedLogToConsole('gl.INVALID_VALUE is generated if buffer is gl.DEPTH and drawBuffer is not zero.');
-                gl.clearBufferfv(gl.DEPTH, 1, data);
-                this.expectError(gl.INVALID_VALUE);
+                    bufferedLogToConsole('gl.INVALID_VALUE is generated if buffer is gl.DEPTH and drawBuffer is not zero.');
+                    gl.clearBufferfv(gl.DEPTH, 1, data);
+                    this.expectError(gl.INVALID_VALUE);
+                }
 
                 gl.deleteFramebuffer(fbo);
                 gl.deleteTexture(texture);
