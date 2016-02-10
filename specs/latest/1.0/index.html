@@ -2503,10 +2503,6 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             If this function is called with an <code>ImageBitmap</code> that has been neutered,
             an <code>INVALID_VALUE</code> error is generated. <br><br>
 
-            If this function is called with an <code>ImageBitmap</code>, the
-            <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> associated with this
-            function are ignored. <br><br>
-
             If this function is called with an <code>HTMLImageElement</code>
             or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
             Document, or with an <code>HTMLCanvasElement</code> or <code>ImageBitmap</code> whose
@@ -2579,10 +2575,6 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             If this function is called with an <code>ImageBitmap</code> that has been neutered,
             an <code>INVALID_VALUE</code> error is generated. <br><br>
-
-            If this function is called with an <code>ImageBitmap</code>, the
-            <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> associated with this
-            function are ignored. <br><br>
 
             If this function is called with an <code>HTMLImageElement</code>
             or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
@@ -3582,6 +3574,11 @@ and file type. If set to <code>NONE</code>, no colorspace conversion is applied.
 is <code>BROWSER_DEFAULT_WEBGL</code>.
 
 </dl>
+
+<p>
+If the TexImageSource is an ImageBitmap, then these three parameters will be ignored. Instead
+the equivalent <a href="https://html.spec.whatwg.org/multipage/webappapis.html#imagebitmapfactories">createImageBitmap</a>
+parameters should be used to obtain an ImageBitmap with desired format.
 
 <h3><a name="READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the Framebuffer</a></h3>
 

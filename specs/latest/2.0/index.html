@@ -27,7 +27,7 @@
     <!--end-logo-->
 
     <h1>WebGL 2 Specification</h1>
-    <h2 class="no-toc">Editor's Draft 9 February 2016</h2>
+    <h2 class="no-toc">Editor's Draft 2 February 2016</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -1525,7 +1525,6 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If this function is called with an <code>ImageData</code> whose <code>data</code> attribute has been neutered, an <code>INVALID_VALUE</code> error is generated. </p>
         <p>If this function is called with an <code>ImageBitmap</code> that has been neutered, an <code>INVALID_VALUE</code> error is generated. </p>
-        <p>If this function is called with an <code>ImageBitmap</code>, the <a href="../1.0/index.html#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> associated with this function are ignored. </p>
         <p>If this function is called with an <code>HTMLImageElement</code> or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing Document, or with an <code>HTMLCanvasElement</code> or <code>ImageBitmap</code> whose bitmap's <i>origin-clean</i> flag is set to false, a <code>SECURITY_ERR</code> exception must be thrown. See <a href="../1.0/index.html#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.</p>
         <p>If <code>source</code> is null then generates an <code>INVALID_VALUE</code> error.</p>
         <p>See <a href="../1.0/index.html#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific pixel storage parameters that affect the behavior of this function.</p>
