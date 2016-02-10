@@ -1519,7 +1519,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p>Update a rectangular subregion of the currently bound WebGLTexture. </p>
         <p>The depth of the updated subregion is set to 1. The width and height of the updated subregion are determined as specified in section <a href="../1.0/index.html#TEXTURE_UPLOAD_SIZE">Texture Upload Width and Height</a>. </p>
         <p>See <a href="../1.0/index.html#TEXIMAGE2D_HTML">texImage2D</a> for the interpretation of the <em>format</em> and <em>type</em> arguments, and notes on the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter. </p>
-        <p>The first pixel transferred from the source to the WebGL implementation corresponds to the upper left corner of the source. This behavior is modified by the the <code>UNPACK_FLIP_Y_WEBGL</code> <a href="../1.0/index.html#PIXEL_STORAGE_PARAMETERS">pixel storage parameter</a>. </p>
+        <p>The first pixel transferred from the source to the WebGL implementation corresponds to the upper left corner of the source. This behavior is modified by the <code>UNPACK_FLIP_Y_WEBGL</code> <a href="../1.0/index.html#PIXEL_STORAGE_PARAMETERS">pixel storage parameter</a>. </p>
         <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in <a href="#TEXTURE_TYPES_FORMATS_FROM_DOM_ELEMENTS_TABLE">this table</a>.</p>
         <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
@@ -2757,7 +2757,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
     </p>
 
     <div class="note rationale">
-        This restriction has been added to prevent undefined values when reading from or writing to a buffer object that is simultanenously bound to a transform feedback buffer binding point and elsewhere in the GL. An example of such a situation is <code>ReadPixels</code> to a pixel buffer object binding point. See <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.15.2">OpenGL ES 3.0.4 &sect;2.15.2</a>)</span>.
+        This restriction has been added to prevent undefined values when reading from or writing to a buffer object that is simultaneously bound to a transform feedback buffer binding point and elsewhere in the GL. An example of such a situation is <code>ReadPixels</code> to a pixel buffer object binding point. See <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.15.2">OpenGL ES 3.0.4 &sect;2.15.2</a>)</span>.
     </div>
 
     <h3><a name="COPYING_BUFFERS">Copying Buffers</a></h3>
