@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 11 January 2016</h2>
+    <h2 class="no-toc">Editor's Draft 9 February 2016</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -2503,6 +2503,10 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             If this function is called with an <code>ImageBitmap</code> that has been neutered,
             an <code>INVALID_VALUE</code> error is generated. <br><br>
 
+            If this function is called with an <code>ImageBitmap</code>, the
+            <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> associated with this
+            function are ignored. <br><br>
+
             If this function is called with an <code>HTMLImageElement</code>
             or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
             Document, or with an <code>HTMLCanvasElement</code> or <code>ImageBitmap</code> whose
@@ -2575,6 +2579,10 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             If this function is called with an <code>ImageBitmap</code> that has been neutered,
             an <code>INVALID_VALUE</code> error is generated. <br><br>
+
+            If this function is called with an <code>ImageBitmap</code>, the
+            <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> associated with this
+            function are ignored. <br><br>
 
             If this function is called with an <code>HTMLImageElement</code>
             or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
