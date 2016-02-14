@@ -657,8 +657,8 @@ goog.scope(function() {
      * @return {es3fShaderIndexingTests.ShaderIndexingCase}
      */
     es3fShaderIndexingTests.createVectorSubscriptCase = function(caseName, description, isVertexCase, varType, writeAccess, readAccess) {
-        /** @type {string} */ var vtx;
-        /** @type {string} */ var frag;
+        /** @type {string} */ var vtx = '';
+        /** @type {string} */ var frag = '';
         /** @type {string} */ var op = '' ;
 
         /** @type {number} */ var vecLen = gluShaderUtil.getDataTypeScalarSize(varType);
