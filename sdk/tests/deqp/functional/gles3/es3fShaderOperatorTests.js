@@ -1939,7 +1939,7 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
     unary.push(op('plus', '+', IGT, [v(IGT, -5.0, 5.0)], f(0.1), f(0.5), all,
         es3fShaderOperatorTests.unaryGenTypeFuncs(nop, gluShaderUtil.DataType.INT,
         gluShaderUtil.DataType.INT)));
-    unary.push(op('plus', '+', UGT, [v(UGT, 0.0, 2.0)], f(0.5), f(0.0), all,
+    unary.push(op('plus', '+', UGT, [v(UGT, 0.0, 2e2)], f(5e-3), f(0.0), all,
         es3fShaderOperatorTests.unaryGenTypeFuncs(nop, gluShaderUtil.DataType.UINT,
         gluShaderUtil.DataType.UINT)));
     unary.push(op('minus', '-', GT, [v(GT, -1.0, 1.0)], f(0.5), f(0.5), all,
@@ -1955,15 +1955,15 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         es3fShaderOperatorTests.unaryGenTypeFuncs(negate, gluShaderUtil.DataType.UINT,
         gluShaderUtil.DataType.UINT), s(mUMaxR),
         s(es3fShaderOperatorTests.Symbol.SYMBOL_ONE_MINUS_UINT32MAX_DIV_MEDIUMP_UINT_MAX)));
-    unary.push(op('minus', '-', UGT, [v(UGT, 0.0, 4000000000.0)], f(20000000000), f(0.0), highp,
+    unary.push(op('minus', '-', UGT, [v(UGT, 0.0, 4e9)], f(2e-10), f(0.0), highp,
         es3fShaderOperatorTests.unaryGenTypeFuncs(negate, gluShaderUtil.DataType.UINT,
         gluShaderUtil.DataType.UINT)));
     unary.push(op('not', '!', B, [v(B, -1.0, 1.0)], f(1.0), f(0.0), na,{'scalar': es3fShaderOperatorTests.unaryGenTypeFuncs(boolNot, gluShaderUtil.DataType.BOOL,
         gluShaderUtil.DataType.BOOL).scalar}));
-    unary.push(op('bitwise_not', '~', IGT, [v(IGT, -10000.0, 10000.0)], f(-50000.0), f(0.5), highp,
+    unary.push(op('bitwise_not', '~', IGT, [v(IGT, -1e5, 1e5)], f(5e-5), f(0.5), highp,
         es3fShaderOperatorTests.unaryGenTypeFuncs(bitwiseNot, gluShaderUtil.DataType.INT,
         gluShaderUtil.DataType.INT)));
-    unary.push(op('bitwise_not', '~', UGT, [v(UGT, -0.0, 200000000.0)], f(-5000000000.0), f(0.0), highp,
+    unary.push(op('bitwise_not', '~', UGT, [v(UGT, 0.0, 2e9)], f(2e-10), f(0.0), highp,
         es3fShaderOperatorTests.unaryGenTypeFuncs(bitwiseNot, gluShaderUtil.DataType.UINT,
         gluShaderUtil.DataType.UINT)));
 
@@ -1978,10 +1978,10 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         gluShaderUtil.DataType.UINT)));
     unary.push(side('pre_decrement_effect', '--', GT, [v(GT, -1.0, 1.0)], f(0.5), f(1.0), all,
         es3fShaderOperatorTests.unaryGenTypeFuncs(subOne)));
-    unary.push(side('pre_decrement_effect', '--', IGT, [v(IGT, -6.0, 4.0)], f(0.1), f(0.5), all,
+    unary.push(side('pre_decrement_effect', '--', IGT, [v(IGT, -4.0, 6.0)], f(0.1), f(0.5), all,
         es3fShaderOperatorTests.unaryGenTypeFuncs(subOne, gluShaderUtil.DataType.INT,
         gluShaderUtil.DataType.INT)));
-    unary.push(side('pre_decrement_effect', '--', UGT, [v(UGT, 0.0, 9.0)], f(0.1), f(0.5), all,
+    unary.push(side('pre_decrement_effect', '--', UGT, [v(UGT, 0.0, 10.0)], f(0.1), f(0.0), all,
         es3fShaderOperatorTests.unaryGenTypeFuncs(subOne, gluShaderUtil.DataType.UINT,
         gluShaderUtil.DataType.UINT)));
     unary.push(postSide('post_increment_result', '++', GT, [v(GT, -1.0, 1.0)], f(0.5), f(0.0), all,
@@ -2031,7 +2031,7 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         unary.push(postOp('post_decrement_result', '--', IGT, [v(IGT, -5.0, 5.0)], f(0.1), f(0.5), all,
             es3fShaderOperatorTests.unaryGenTypeFuncs(nop, gluShaderUtil.DataType.INT,
             gluShaderUtil.DataType.INT)));
-        unary.push(postOp('post_decrement_result', '--', UGT, [v(UGT, 0.0, 10.0)], f(0.1), f(0.0), all,
+        unary.push(postOp('post_decrement_result', '--', UGT, [v(UGT, 1.0, 10.0)], f(0.1), f(0.0), all,
             es3fShaderOperatorTests.unaryGenTypeFuncs(nop, gluShaderUtil.DataType.UINT,
             gluShaderUtil.DataType.UINT)));
 
@@ -2082,11 +2082,11 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         binary.push(op(addName, addOp, UGT, [v(UGT, 0.0, 1e2), v(UGT, 0.0, 1e2)], f(5e-3), f(0.0),
             mediump, es3fShaderOperatorTests.binaryGenTypeFuncs(add, gluShaderUtil.DataType.UINT,
             gluShaderUtil.DataType.UINT)));
-        binary.push(op(addName, addOp, UGT, [v(UGT, -2e9, 2e9), v(UGT, -2e9, 2e9)], f(2e-10), f(0.0),
+        binary.push(op(addName, addOp, UGT, [v(UGT, 0.0, 4e9), v(UGT, 0.0, 4e9)], f(2e-10), f(0.0),
             highp, es3fShaderOperatorTests.binaryGenTypeFuncs(add, gluShaderUtil.DataType.UINT,
             gluShaderUtil.DataType.UINT)));
 
-        binary.push(op(addName, addOp, FV, [v(FV, 0.0, 4e9), v(F, 0.0, 4e9)], f(1.0), f(0.0),
+        binary.push(op(addName, addOp, FV, [v(FV, -1.0, 1.0), v(F, -1.0, 1.0)], f(1.0), f(0.0),
             all, es3fShaderOperatorTests.binaryVecScalarFuncs(deMath.addScalar)));
         binary.push(op(addName, addOp, IV, [v(IV, -4.0, 6.0), v(I, -6.0, 5.0)], f(0.1), f(0.5),
             mediump, es3fShaderOperatorTests.binaryVecScalarFuncs(deMath.addScalar, gluShaderUtil.DataType.INT,
@@ -2094,12 +2094,12 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         binary.push(op(addName, addOp, IV, [v(IV, -2e9, 2e9), v(I, -2e9, 2e9)], f(4e-10), f(0.5),
             highp, es3fShaderOperatorTests.binaryVecScalarFuncs(deMath.addScalar, gluShaderUtil.DataType.INT,
             gluShaderUtil.DataType.INT)));
-        binary.push(op(addName, addOp, UV, [v(UV, 0.0, 1e2), v(U, 0.0, 1e2)], f(0.1), f(0.5),
-            mediump, es3fShaderOperatorTests.binaryVecScalarFuncs(deMath.addScalar, gluShaderUtil.DataType.INT,
-            gluShaderUtil.DataType.INT)));
-        binary.push(op(addName, addOp, UV, [v(UV, -2e9, 2e9), v(U, -2e9, 2e9)], f(4e-10), f(0.5),
-            highp, es3fShaderOperatorTests.binaryVecScalarFuncs(deMath.addScalar, gluShaderUtil.DataType.INT,
-            gluShaderUtil.DataType.INT)));
+        binary.push(op(addName, addOp, UV, [v(UV, 0.0, 1e2), v(U, 0.0, 1e2)], f(5e-3), f(0.0),
+            mediump, es3fShaderOperatorTests.binaryVecScalarFuncs(deMath.addScalar, gluShaderUtil.DataType.UINT,
+            gluShaderUtil.DataType.UINT)));
+        binary.push(op(addName, addOp, UV, [v(UV, 0.0, 4e9), v(U, 0.0, 4e9)], f(2e-10), f(0.0),
+            highp, es3fShaderOperatorTests.binaryVecScalarFuncs(deMath.addScalar, gluShaderUtil.DataType.UINT,
+            gluShaderUtil.DataType.UINT)));
 
         if (isNormalOp) {
             binary.push(op(addName, addOp, FV, [v(F, -1.0, 1.0), v(FV, -1.0, 1.0)], f(1.0), f(0.0),
@@ -2110,10 +2110,10 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
             binary.push(op(addName, addOp, IV, [v(I, -2e9, 2e9), v(IV, -2e9, 2e9)], f(4e-10), f(0.5),
                 highp, es3fShaderOperatorTests.binaryScalarVecFuncs(addScalarVec, gluShaderUtil.DataType.INT,
                 gluShaderUtil.DataType.INT)));
-            binary.push(op(addName, addOp, UV, [v(U, 0.0, 1e2), v(UV, 0.0, 1e2)], f(0.1), f(0.5),
+            binary.push(op(addName, addOp, UV, [v(U, 0.0, 1e2), v(UV, 0.0, 1e2)], f(5e-3), f(0.0),
                 mediump, es3fShaderOperatorTests.binaryScalarVecFuncs(addScalarVec, gluShaderUtil.DataType.UINT,
                 gluShaderUtil.DataType.UINT)));
-            binary.push(op(addName, addOp, UV, [v(U, -2e9, 2e9), v(UV, -2e9, 2e9)], f(4e-10), f(0.5),
+            binary.push(op(addName, addOp, UV, [v(U, 0.0, 4e9), v(UV, 0.0, 4e9)], f(2e-10), f(0.0),
                 highp, es3fShaderOperatorTests.binaryScalarVecFuncs(addScalarVec, gluShaderUtil.DataType.UINT,
                 gluShaderUtil.DataType.UINT)));
         }
@@ -2536,7 +2536,7 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
     binary.push(op('equal', '==', B, [v(UGT, 0.0, 8.0), v(UGT, 3.5, 4.5)], f(1.0), f(0.0),
         all, es3fShaderOperatorTests.binaryScalarGenTypeFuncs(allEqual, gluShaderUtil.DataType.UINT,
         gluShaderUtil.DataType.UINT)));
-    binary.push(op('equal', '==', B, [v(BGT, -2.1, 2.1), v(BGT, -1.1, 16.0)], f(1.0), f(0.0),
+    binary.push(op('equal', '==', B, [v(BGT, -2.1, 2.1), v(BGT, -1.1, 3.0)], f(1.0), f(0.0),
         na, es3fShaderOperatorTests.binaryScalarGenTypeFuncs(allEqual, gluShaderUtil.DataType.BOOL,
         gluShaderUtil.DataType.BOOL)));
     binary.push(op('not_equal', '!=', B, [v(GT, -1.0, 1.0), v(GT, -1.0, 1.0)], f(1.0), f(0.0),
@@ -2547,7 +2547,7 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
     binary.push(op('not_equal', '!=', B, [v(UGT, 0.0, 8.0), v(UGT, 3.5, 4.5)], f(1.0), f(0.0),
         all, es3fShaderOperatorTests.binaryScalarGenTypeFuncs(anyNotEqual, gluShaderUtil.DataType.UINT,
         gluShaderUtil.DataType.UINT)));
-    binary.push(op('not_equal', '!=', B, [v(BGT, -2.1, 2.1), v(BGT, -1.1, 16.0)], f(1.0), f(0.0),
+    binary.push(op('not_equal', '!=', B, [v(BGT, -2.1, 2.1), v(BGT, -1.1, 3.0)], f(1.0), f(0.0),
         na, es3fShaderOperatorTests.binaryScalarGenTypeFuncs(anyNotEqual, gluShaderUtil.DataType.BOOL,
         gluShaderUtil.DataType.BOOL)));
 
@@ -2581,7 +2581,7 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         lowp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.cos)));
     trig.push(op("tan", "tan", GT, [v(GT, -5.0, 5.0)], f(0.5), f(0.5),
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.tan)));
-    trig.push(op("tan", "tan", GT, [v(GT, -1.5, 1.5)], f(0.5), f(0.5),
+    trig.push(op("tan", "tan", GT, [v(GT, -1.5, 5.5)], f(0.5), f(0.5),
         lowp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.tan)));
     trig.push(op("asin", "asin", GT, [v(GT, -1.0, 1.0)], f(1.0), f(0.0),
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.asin)));
@@ -2601,12 +2601,13 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         lowp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.cosh)));
     trig.push(op("tanh", "tanh", GT, [v(GT, -5.0, 5.0)], f(0.5), f(0.5),
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.tanh)));
-    trig.push(op("tanh", "tanh", GT, [v(GT, -1.5, 1.5)], f(0.5), f(0.5),
+    trig.push(op("tanh", "tanh", GT, [v(GT, -1.5, 5.5)], f(0.5), f(0.5),
         lowp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.tanh)));
     trig.push(op("asinh", "asinh", GT, [v(GT, -1.0, 1.0)], f(1.0), f(0.0),
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.asinh)));
     trig.push(op("acosh", "acosh", GT, [v(GT, 1.0, 2.2)], f(1.0), f(0.0),
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.acosh)));
+    // Results are undefined if |x| >= 1, so it diverses from C++ version here.
     trig.push(op("atanh", "atanh", GT, [v(GT, -0.99, 0.99)], f(1.0), f(0.0),
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.atanh)));
 
@@ -2647,7 +2648,7 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         all, es3fShaderOperatorTests.unaryGenTypeFuncs(roundToEven)));
     comm.push(op("ceil", "ceil", GT, [v(GT, 2.5, 2.5)], f(0.2), f(0.5),
         all, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.ceil)));
-    comm.push(op("fract", "fract", GT, [v(GT, 2.5, 2.5)], f(0.8), f(0.1),
+    comm.push(op("fract", "fract", GT, [v(GT, -1.5, 1.5)], f(0.8), f(0.1),
         all, es3fShaderOperatorTests.unaryGenTypeFuncs(fract)));
     comm.push(op("mod", "mod", GT, [v(GT, -2.0, 2.0), v(GT, 0.9, 6.0)], f(0.5), f(0.5),
         mediumhighp, es3fShaderOperatorTests.binaryGenTypeFuncs(mod)));
@@ -2685,9 +2686,9 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
     comm.push(op("max", "max", UGT, [v(UV, 0.0, 8.0), v(U, 0.0, 8.0)], f(0.125), f(0.0),
         all, es3fShaderOperatorTests.binaryVecScalarFuncs(maxVecScalar, gluShaderUtil.DataType.UINT,
         gluShaderUtil.DataType.UINT)));
-    comm.push(op("clamp", "clamp", GT, [v(GT, -1.0, 1.0), v(GT, -1.0, 1.0), v(GT, 0.5, 1.0)], f(0.5), f(0.5),
+    comm.push(op("clamp", "clamp", GT, [v(GT, -1.0, 1.0), v(GT, -0.5, 0.5), v(GT, 0.5, 1.0)], f(0.5), f(0.5),
         all, es3fShaderOperatorTests.ternaryGenTypeFuncs(deMath.clamp)));
-    comm.push(op("clamp", "clamp", GT, [v(FV, -1.0, 1.0), v(F, -1.0, 1.0), v(F, 0.5, 1.0)], f(0.5), f(0.5),
+    comm.push(op("clamp", "clamp", GT, [v(FV, -1.0, 1.0), v(F, -0.5, 0.5), v(F, 0.5, 1.0)], f(0.5), f(0.5),
         all, es3fShaderOperatorTests.ternaryVecScalarScalarFuncs(clampVecScalarScalar)));
     comm.push(op("clamp", "clamp", IGT, [v(IGT, -4.0, 4.0), v(IGT, -2.0, 2.0), v(IGT, 2.0, 4.0)], f(0.125), f(0.5),
         all, es3fShaderOperatorTests.ternaryGenTypeFuncs(deMath.clamp, gluShaderUtil.DataType.INT,
@@ -2701,11 +2702,11 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
     comm.push(op("clamp", "clamp", UGT, [v(UV, 0.0, 8.0), v(U, 2.0, 6.0), v(U, 6.0, 8.0)], f(0.125), f(0.0),
         all, es3fShaderOperatorTests.ternaryVecScalarScalarFuncs(clampVecScalarScalar, gluShaderUtil.DataType.UINT,
         gluShaderUtil.DataType.UINT)));
-    comm.push(op("mix", "mix", GT, [v(GT, -1.0, 1.0), v(GT, -1.0, 1.0), v(GT, 0.5, 1.0)], f(0.5), f(0.5),
+    comm.push(op("mix", "mix", GT, [v(GT, -1.0, 1.0), v(GT, -1.0, 1.0), v(GT, 0.0, 1.0)], f(0.5), f(0.5),
         all, es3fShaderOperatorTests.ternaryGenTypeFuncs(mix)));
-    comm.push(op("mix", "mix", GT, [v(FV, -1.0, 1.0), v(FV, -1.0, 1.0), v(F, 0.5, 1.0)], f(0.5), f(0.5),
+    comm.push(op("mix", "mix", GT, [v(FV, -1.0, 1.0), v(FV, -1.0, 1.0), v(F, 0.0, 1.0)], f(0.5), f(0.5),
         all, es3fShaderOperatorTests.ternaryVecVecScalarFuncs(mixVecVecScalar)));
-    comm.push(op("step", "step", GT, [v(GT, -1.0, 1.0), v(GT, -1.0, 1.0)], f(0.5), f(0.25),
+    comm.push(op("step", "step", GT, [v(GT, -1.0, 1.0), v(GT, -1.0, 0.0)], f(0.5), f(0.25),
         all, es3fShaderOperatorTests.binaryGenTypeFuncs(step)));
     comm.push(op("step", "step", GT, [v(F, -1.0, 1.0), v(FV, -1.0, 0.0)], f(0.5), f(0.25),
         all, es3fShaderOperatorTests.binaryScalarVecFuncs(stepScalarVec)));
@@ -2728,7 +2729,7 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         mediumhighp, {vec3: es3fShaderOperatorTests.binaryVecVecFuncs(cross).vec3}));
     geom.push(op("normalize", "normalize", GT, [v(GT, 0.1, 4.0)], f(0.5), f(0.5),
         mediumhighp, es3fShaderOperatorTests.unaryArrayFuncs(normalize)));
-    geom.push(op("faceforward", "faceforward", GT, [v(GT, 0.1, 4.0), v(GT, -5.0, 5.0), v(GT, -1.0, 1.0)], f(0.5), f(0.5),
+    geom.push(op("faceforward", "faceforward", GT, [v(GT, -5.0, 5.0), v(GT, -5.0, 5.0), v(GT, -1.0, 1.0)], f(0.5), f(0.5),
         mediumhighp, es3fShaderOperatorTests.ternaryVecVecVecFuncs(faceforward)));
     geom.push(op("reflect", "reflect", GT, [v(GT, -0.8, -0.5), v(GT, 0.5, 0.8)], f(0.5), f(0.5),
         mediumhighp, es3fShaderOperatorTests.binaryVecVecFuncs(reflect)));
@@ -2758,19 +2759,19 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
     intComp.push(op("lessThan", "lessThan", BV, [v(IV, 5.2, 4.9), v(IV, -5.0, 5.0)], f(1.0), f(0.0),
         all, es3fShaderOperatorTests.binaryVecVecFuncs(lessThanVec, gluShaderUtil.DataType.INT,
         gluShaderUtil.DataType.INT)));
-    intComp.push(op("lessThanEqual", "lessThanEqual", BV, [v(IV, 5.2, 4.9), v(IV, -5.0, 5.0)], f(1.0), f(0.0),
+    intComp.push(op("lessThanEqual", "lessThanEqual", BV, [v(IV, -5.2, 4.9), v(IV, -5.0, 5.0)], f(1.0), f(0.0),
         all, es3fShaderOperatorTests.binaryVecVecFuncs(lessThanEqualVec, gluShaderUtil.DataType.INT,
         gluShaderUtil.DataType.INT)));
-    intComp.push(op("greaterThan", "greaterThan", BV, [v(IV, 5.2, 4.9), v(IV, -5.0, 5.0)], f(1.0), f(0.0),
+    intComp.push(op("greaterThan", "greaterThan", BV, [v(IV, -5.2, 4.9), v(IV, -5.0, 5.0)], f(1.0), f(0.0),
         all, es3fShaderOperatorTests.binaryVecVecFuncs(greaterThanVec, gluShaderUtil.DataType.INT,
         gluShaderUtil.DataType.INT)));
-    intComp.push(op("greaterThanEqual", "greaterThanEqual", BV, [v(IV, 5.2, 4.9), v(IV, -5.0, 5.0)], f(1.0), f(0.0),
+    intComp.push(op("greaterThanEqual", "greaterThanEqual", BV, [v(IV, -5.2, 4.9), v(IV, -5.0, 5.0)], f(1.0), f(0.0),
         all, es3fShaderOperatorTests.binaryVecVecFuncs(greaterThanEqualVec, gluShaderUtil.DataType.INT,
         gluShaderUtil.DataType.INT)));
-    intComp.push(op("equal", "equal", BV, [v(IV, 5.2, 4.9), v(IV, -5.0, 5.0)], f(1.0), f(0.0),
+    intComp.push(op("equal", "equal", BV, [v(IV, -5.2, 4.9), v(IV, -5.0, 5.0)], f(1.0), f(0.0),
         all, es3fShaderOperatorTests.binaryVecVecFuncs(allEqualVec, gluShaderUtil.DataType.INT,
         gluShaderUtil.DataType.INT)));
-    intComp.push(op("notEqual", "notEqual", BV, [v(IV, 5.2, 4.9), v(IV, -5.0, 5.0)], f(1.0), f(0.0),
+    intComp.push(op("notEqual", "notEqual", BV, [v(IV, -5.2, 4.9), v(IV, -5.0, 5.0)], f(1.0), f(0.0),
         all, es3fShaderOperatorTests.binaryVecVecFuncs(anyNotEqualVec, gluShaderUtil.DataType.INT,
         gluShaderUtil.DataType.INT)));
 
@@ -2791,9 +2792,9 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         gluShaderUtil.DataType.BOOL);
     evalBoolNot.scalar = null;
 
-    boolComp.push(op("equal", "equal", BV, [v(BV, 5.2, 4.9), v(BV, -5.0, 5.0)], f(1.0), f(0.0),
+    boolComp.push(op("equal", "equal", BV, [v(BV, -5.2, 4.9), v(BV, -5.0, 5.0)], f(1.0), f(0.0),
         na, evalBoolEqual));
-    boolComp.push(op("notEqual", "notEqual", BV, [v(BV, 5.2, 4.9), v(BV, -5.0, 5.0)], f(1.0), f(0.0),
+    boolComp.push(op("notEqual", "notEqual", BV, [v(BV, -5.2, 4.9), v(BV, -5.0, 5.0)], f(1.0), f(0.0),
         na, evalBoolNotEqual));
     boolComp.push(op("any", "any", B, [v(BV, -1.0, 0.3)], f(1.0), f(0.0),
         na, evalBoolAny));
