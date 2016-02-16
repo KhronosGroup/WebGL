@@ -63,6 +63,9 @@ var glEnumToString = function(gl, value) {
   }
   for (var p in gl) {
     if (gl[p] == value) {
+      if (p == 'drawingBufferWidth' || p == 'drawingBufferHeight') {
+        continue;
+      }
       return p;
     }
   }
