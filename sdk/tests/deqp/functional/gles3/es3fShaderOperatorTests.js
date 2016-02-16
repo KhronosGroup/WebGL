@@ -1174,9 +1174,9 @@ es3fShaderOperatorTests.ternaryScalarScalarVecFuncs = function(func, dataTypeOut
         cp(output, value);
     };
     var functions = {};
-    functions.vec2 = function(c) { run(c.color, func, c.in_[0][3], c.in_[1][0], deMath.swizzle(c.in_[2], [2, 1])); };
-    functions.vec3 = function(c) { run(c.color, func, c.in_[0][3], c.in_[1][0], deMath.swizzle(c.in_[2], [3, 1, 2])); };
-    functions.vec4 = function(c) { run(c.color, func, c.in_[0][3], c.in_[1][0], deMath.swizzle(c.in_[2], [0, 3, 2, 1])); };
+    functions.vec2 = function(c) { run(c.color, func, c.in_[0][2], c.in_[1][0], deMath.swizzle(c.in_[2], [2, 1])); };
+    functions.vec3 = function(c) { run(c.color, func, c.in_[0][2], c.in_[1][0], deMath.swizzle(c.in_[2], [3, 1, 2])); };
+    functions.vec4 = function(c) { run(c.color, func, c.in_[0][2], c.in_[1][0], deMath.swizzle(c.in_[2], [0, 3, 2, 1])); };
     return functions;
 };
 
