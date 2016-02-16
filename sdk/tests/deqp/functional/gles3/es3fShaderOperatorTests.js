@@ -107,15 +107,6 @@ var div = function(a, b) {
  * @param {number} b
  * @return {number}
  */
-var mod = function(a, b) {
-    return a % b;
-};
-
-/**
- * @param {number} a
- * @param {number} b
- * @return {number}
- */
 var lessThan = function(a, b) {
     return a < b ? 1 : 0;
 };
@@ -2265,16 +2256,16 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         // The modulus operator.
 
         binary.push(op(modName, modOp, IGT, [v(IGT, 0.0, 6.0), v(IGT, 1.1, 6.1)], f(0.25), f(0.5),
-            mediump, es3fShaderOperatorTests.binaryGenTypeFuncs(mod, gluShaderUtil.DataType.INT,
+            mediump, es3fShaderOperatorTests.binaryGenTypeFuncs(deMath.mod, gluShaderUtil.DataType.INT,
             gluShaderUtil.DataType.INT)));
         binary.push(op(modName, modOp, IGT, [v(IGT, 0.0, 14.0), v(IGT, 1.1, 11.1)], f(0.1), f(0.5),
-            highp, es3fShaderOperatorTests.binaryGenTypeFuncs(mod, gluShaderUtil.DataType.INT,
+            highp, es3fShaderOperatorTests.binaryGenTypeFuncs(deMath.mod, gluShaderUtil.DataType.INT,
             gluShaderUtil.DataType.INT)));
         binary.push(op(modName, modOp, UGT, [v(UGT, 0.0, 6.0), v(UGT, 1.1, 6.1)], f(0.25), f(0.0),
-            mediump, es3fShaderOperatorTests.binaryGenTypeFuncs(mod, gluShaderUtil.DataType.INT,
+            mediump, es3fShaderOperatorTests.binaryGenTypeFuncs(deMath.mod, gluShaderUtil.DataType.INT,
             gluShaderUtil.DataType.INT)));
         binary.push(op(modName, modOp, UGT, [v(UGT, 0.0, 24.0), v(UGT, 1.1, 11.1)], f(0.1), f(0.0),
-            highp, es3fShaderOperatorTests.binaryGenTypeFuncs(mod, gluShaderUtil.DataType.UINT,
+            highp, es3fShaderOperatorTests.binaryGenTypeFuncs(deMath.mod, gluShaderUtil.DataType.UINT,
             gluShaderUtil.DataType.UINT)));
         binary.push(op(modName, modOp, IV, [v(IV, 0.0, 6.0), v(I, 1.1, 6.1)], f(0.25), f(0.5),
             mediump, es3fShaderOperatorTests.binaryVecScalarFuncs(deMath.modScale, gluShaderUtil.DataType.INT,
@@ -2650,7 +2641,7 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
     comm.push(op("fract", "fract", GT, [v(GT, 2.5, 2.5)], f(0.8), f(0.1),
         all, es3fShaderOperatorTests.unaryGenTypeFuncs(fract)));
     comm.push(op("mod", "mod", GT, [v(GT, -2.0, 2.0), v(GT, 0.9, 6.0)], f(0.5), f(0.5),
-        mediumhighp, es3fShaderOperatorTests.binaryGenTypeFuncs(mod)));
+        mediumhighp, es3fShaderOperatorTests.binaryGenTypeFuncs(deMath.mod)));
     comm.push(op("mod", "mod", GT, [v(FV, -2.0, 2.0), v(F, 0.9, 6.0)], f(0.5), f(0.5),
         mediumhighp, es3fShaderOperatorTests.binaryVecScalarFuncs(deMath.modScale)));
     comm.push(op("min", "min", GT, [v(GT, -1.0, 1.0), v(GT, -1.0, 1.0)], f(0.5), f(0.5),

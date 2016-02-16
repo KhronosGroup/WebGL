@@ -195,6 +195,15 @@ deMath.divideScale = function(a, b) {
 };
 
 /**
+ * @param {number} a
+ * @param {number} b
+ * @return {number}
+ */
+deMath.mod = function(a, b) {
+    return a - b * Math.floor(a / b);
+};
+
+/**
  * Modulus vector by a scalar
  * @param {goog.NumberArray} a
  * @param {number} b
@@ -203,7 +212,7 @@ deMath.divideScale = function(a, b) {
 deMath.modScale = function(a, b) {
     var dst = [];
     for (var i = 0; i < a.length; i++)
-        dst.push(a[i] % b);
+        dst.push(deMath.mod(a[i], b));
     return dst;
 };
 
