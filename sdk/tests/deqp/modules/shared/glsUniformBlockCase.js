@@ -46,6 +46,13 @@ var DE_ASSERT = function(x) {
         throw new Error('Assert failed');
 };
 
+var littleEndian = (function() {
+    var buffer = new ArrayBuffer(2);
+    new DataView(buffer).setInt16(0, 256, true /* littleEndian */);
+    // Int16Array uses the platform's endianness.
+    return new Int16Array(buffer)[0] === 256;
+})();
+
 /**
  * Class to implement some pointers functionality.
  * @constructor
@@ -1081,21 +1088,21 @@ glsUniformBlockCase.generateValue = function(entry, basePtr, rnd) {
                 switch (scalarType) {
                     case gluShaderUtil.DataType.FLOAT:
                         _random = rnd.getInt(-9, 9);
-                        nview.setFloat32(0, _random);
+                        nview.setFloat32(0, _random, littleEndian);
                         break;
                     case gluShaderUtil.DataType.INT:
                         _random = rnd.getInt(-9, 9);
-                        nview.setInt32(0, _random);
+                        nview.setInt32(0, _random, littleEndian);
                         break;
                     case gluShaderUtil.DataType.UINT:
                         _random = rnd.getInt(0, 9);
-                        nview.setUint32(0, _random);
+                        nview.setUint32(0, _random, littleEndian);
                         break;
                     // \note Random bit pattern is used for true values. Spec states that all non-zero values are
                     //       interpreted as true but some implementations fail this.
                     case gluShaderUtil.DataType.BOOL:
                         _random = rnd.getBool() ? 1 : 0;
-                        nview.setUint32(0, _random);
+                        nview.setUint32(0, _random, littleEndian);
                         break;
                     default:
                         DE_ASSERT(false);
@@ -1502,7 +1509,9 @@ glsUniformBlockCase.generateValueSrc = function(entry, basePtr, elementNdx) {
                 if (colNdx > 0 || rowNdx > 0)
                     src += ', ';
 
-                src += parseFloat(new Uint32Array(compPtr.subarray(0, 4))[0]).toFixed(1);
+                var newbuffer = new Uint8Array(compPtr.subarray(0, 4)).buffer;
+                var newview = new DataView(newbuffer);
+                src += parseFloat(newview.getFloat32(0, littleEndian)).toFixed(1);
             }
         }
     } else {
@@ -1516,10 +1525,10 @@ glsUniformBlockCase.generateValueSrc = function(entry, basePtr, elementNdx) {
             var newview = new DataView(newbuffer);
 
             switch (scalarType) {
-                case gluShaderUtil.DataType.FLOAT: src += parseFloat(newview.getFloat32(0) * 100 / 100).toFixed(1); break;
-                case gluShaderUtil.DataType.INT: src += newview.getInt32(0); break;
-                case gluShaderUtil.DataType.UINT: src += newview.getUint32(0) + 'u'; break;
-                case gluShaderUtil.DataType.BOOL: src += (newview.getUint32(0) != 0 ? 'true' : 'false'); break;
+                case gluShaderUtil.DataType.FLOAT: src += parseFloat(newview.getFloat32(0, littleEndian) * 100 / 100).toFixed(1); break;
+                case gluShaderUtil.DataType.INT: src += newview.getInt32(0, littleEndian); break;
+                case gluShaderUtil.DataType.UINT: src += newview.getUint32(0, littleEndian) + 'u'; break;
+                case gluShaderUtil.DataType.BOOL: src += (newview.getUint32(0, littleEndian) != 0 ? 'true' : 'false'); break;
                 default:
                     DE_ASSERT(false);
             }
@@ -2026,10 +2035,8 @@ glsUniformBlockCase.copyUniformData = function(dstLayout, dstBlockPointers, srcL
         for (var blockNdx = 0; blockNdx < numBlocks; blockNdx++) {
             buffer = bufferManager.allocBuffer();
             binding = blockNdx;
-
             gl.bindBuffer(gl.UNIFORM_BUFFER, buffer);
             gl.bufferData(gl.UNIFORM_BUFFER, glBlockPointers.find(blockNdx) /*(glw::GLsizeiptr)glData[blockNdx].size(), &glData[blockNdx][0]*/, gl.STATIC_DRAW);
-
             gl.bindBufferBase(gl.UNIFORM_BUFFER, binding, buffer);
         }
     } else {
@@ -2417,11 +2424,16 @@ glsUniformBlockCase.UniformBlockCase.prototype.render = function(program) {
     var pixels = new gluDrawUtil.Surface();
     var numFailedPixels = 0;
 
-    var buffer = pixels.readSurface(gl, viewportX, viewportY, viewportW, viewportH);
+    var readPixelsX = (viewportX + viewportW) > gl.canvas.width
+        ? (gl.canvas.width - viewportX) : viewportW;
+    var readPixelsY = (viewportY + viewportH) > gl.canvas.height
+        ? (gl.canvas.height - viewportY) : viewportH;
+
+    var buffer = pixels.readSurface(gl, viewportX, viewportY, readPixelsX, readPixelsY);
 
     var whitePixel = new gluDrawUtil.Pixel([255.0, 255.0, 255.0, 255.0]);
-    for (var y = 0; y < viewportH; y++) {
-        for (var x = 0; x < viewportW; x++) {
+    for (var y = 0; y < readPixelsY; y++) {
+        for (var x = 0; x < readPixelsX; x++) {
             if (!pixels.getPixel(x, y).equals(whitePixel))
                 numFailedPixels += 1;
         }
