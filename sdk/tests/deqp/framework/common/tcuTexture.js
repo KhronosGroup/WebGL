@@ -1676,11 +1676,12 @@ tcuTexture.convertSatRte = function(deType, value) {
     var maxVal = deType.max;
     var floor = Math.floor(value);
     var frac = value - floor;
-    if (frac == 0.5)
+    if (frac == 0.5) {
         if (floor % 2 != 0)
             floor += 1;
-    else if (frac > 0.5)
+    } else if (frac > 0.5) {
         floor += 1;
+    }
 
     return Math.max(minVal, Math.min(maxVal, floor));
 };
