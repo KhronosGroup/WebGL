@@ -1,0 +1,145 @@
+<!--
+
+/*
+** Copyright (c) 2016 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL 2 Uninitialized GL Resources Tests</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<canvas id="canvas" width="2" height="2"> </canvas>
+<script>
+"use strict";
+description("Tests to check user code cannot access uninitialized data from GL resources.");
+
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("canvas");
+if (!gl)
+  testFailed("Context created.");
+else
+  testPassed("Context created.");
+
+function setupTexture(target, texWidth, texHeight, texDepth) {
+    var texture = gl.createTexture();
+    gl.bindTexture(target, texture);
+    gl.texImage3D(target, 0, gl.RGBA8, texWidth, texHeight, texDepth, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+    // this can be quite undeterministic so to improve odds of seeing uninitialized data write bits
+    // into tex then delete texture then re-create one with same characteristics (driver will likely reuse mem)
+    // with this trick on r59046 WebKit/OSX I get FAIL 100% of the time instead of ~15% of the time.
+
+    var badData = new Uint8Array(texWidth * texHeight * texDepth * 4);
+    for (var i = 0; i < badData.length; ++i)
+        badData[i] = i % 255;
+
+    gl.texSubImage3D(target, 0, 0, 0, 0, texWidth, texHeight, texDepth, gl.RGBA, gl.UNSIGNED_BYTE, badData);
+    gl.finish(); // make sure it has been uploaded
+
+    gl.deleteTexture(texture);
+    gl.finish(); // make sure it has been deleted
+
+    var texture = gl.createTexture();
+    gl.bindTexture(target, texture);
+    return texture;
+}
+
+function checkNonZeroPixels(texture, target, texWidth, texHeight, level, layer) {
+    gl.bindTexture(target, null);
+    var fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTextureLayer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, texture, level, layer);
+    shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
+
+    var data = new Uint8Array(texWidth * texHeight * 4);
+    gl.readPixels(0, 0, texWidth, texHeight, gl.RGBA, gl.UNSIGNED_BYTE, data);
+
+    var k = 0;
+    for (var y = 0; y < texHeight; ++y) {
+        for (var x = 0; x < texWidth; ++x) {
+            var index = (y * texWidth + x) * 4;
+            for (var i = 0; i < 4; ++i) {
+                if (data[index + i] != 0)
+                   k++;
+            }
+        }
+    }
+    var info = "Level = " + level + ", layer = " + layer + " : ";
+    if (k) {
+        testFailed(info + "found " + k + " non-zero bytes");
+    } else {
+        testPassed(info + "all data initialized");
+    }
+}
+
+var width = 512;
+var height = 512;
+var depth = 2;
+
+var targets = [ "TEXTURE_3D", "TEXTURE_2D_ARRAY" ];
+for (var ii = 0; ii < targets.length; ++ii) {
+    debug("");
+    debug("Reading an uninitialized texture (texImage3D) should succeed with all bytes set to 0 : target = " + targets[ii]);
+    var tex = setupTexture(gl[targets[ii]], width, height, depth);
+    gl.texImage3D(gl[targets[ii]], 0, gl.RGBA8, width, height, depth, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    for (var layer = 0; layer < depth; ++layer)
+        checkNonZeroPixels(tex, gl[targets[ii]], width, height, 0, layer);
+    gl.deleteTexture(tex);
+    gl.finish();
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+}
+
+for (var ii = 0; ii < targets.length; ++ii) {
+    debug("");
+    debug("Reading an uninitialized texture (texStorage3D) should succeed with all bytes set to 0 : target = " + targets[ii]);
+    var tex = setupTexture(gl[targets[ii]], width, height, depth);
+    var levels = 5;
+    gl.texStorage3D(gl[targets[ii]], levels, gl.RGBA8, width, height, depth);
+    var level_depth = depth;
+    for (var level = 0; level < levels; ++level) {
+        for (var layer = 0; layer < level_depth; ++layer) {
+            checkNonZeroPixels(tex, gl[targets[ii]], width, height, level, layer);
+        }
+        if (gl[targets[ii]] == gl.TEXTURE_3D)
+            level_depth = Math.max(1, level_depth >> 1);
+    }
+    gl.deleteTexture(tex);
+    gl.finish();
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+}
+
+debug("");
+var successfullyParsed = true;
+</script>
+<script src="../../js/js-test-post.js"></script>
+</body>
+</html>
+
