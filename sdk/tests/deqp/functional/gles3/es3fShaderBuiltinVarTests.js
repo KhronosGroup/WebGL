@@ -93,7 +93,7 @@ goog.scope(function() {
     es3fShaderBuiltinVarTests.getVectorsFromComps = function(pname) {
         var value = /** @type {number} */ (gl.getParameter(pname));
         assertMsgOptions(value%4 === 0, 'Expected value to be divisible by 4.', false, true);
-        return value;
+        return value / 4;
     };
 
     /**
