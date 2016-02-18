@@ -156,7 +156,7 @@ goog.scope(function() {
         shaderExecutor.useProgram();
 
         shaderExecutorResult = shaderExecutor.execute(1, null);
-        result = new Uint32Array(shaderExecutorResult[0].buffer)[0];
+        result = new Int32Array(shaderExecutorResult[0].buffer)[0];
 
         bufferedLogToConsole(this.m_varName + ' = ' + result);
 
