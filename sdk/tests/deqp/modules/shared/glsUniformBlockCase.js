@@ -839,7 +839,7 @@ glsUniformBlockCase.deRoundUp32 = function(a, b) {
  * @return {number}
  */
 glsUniformBlockCase.computeStd140BaseAlignment = function(type) {
-    /** @type {number} */ var vec4Alignment = deMath.INT32_SIZE;
+    /** @type {number} */ var vec4Alignment = deMath.INT32_SIZE * 4;
 
     if (type.isBasicType()) {
         /** @type {gluShaderUtil.DataType} */ var basicType = type.getBasicType();
