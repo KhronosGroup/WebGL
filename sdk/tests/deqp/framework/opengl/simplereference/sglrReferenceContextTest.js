@@ -794,8 +794,7 @@ goog.scope(function() {
 
         referenceContextGroup.addChild(new sglrReferenceContextTest.ClearContext('clear_context', 'Clear Context Test'));
         referenceContextGroup.addChild(new sglrReferenceContextTest.Framebuffer('Framebuffer', 'Framebuffer Test'));
-        referenceContextGroup.addChild(new sglrReferenceContextTest.Shader('Shaders', 'Shaders'));
-        referenceContextGroup.addChild(new sglrReferenceContextTest.Shader('Shaders', 'Drawinf using TRIANGLES'));
+        referenceContextGroup.addChild(new sglrReferenceContextTest.Shader('Shaders', 'Drawing using TRIANGLES'));
         referenceContextGroup.addChild(new sglrReferenceContextTest.TriangleStrip('TriangleStrip', 'Drawing using TRIANGLE_STRIP'));
         referenceContextGroup.addChild(new sglrReferenceContextTest.TriangleFan('TriangleFan', 'Drawing using TRIANGLE_FAN'));
         referenceContextGroup.addChild(new sglrReferenceContextTest.DrawElements('DrawElements', 'Drawing using DrawElements and TRIANGLES'));
