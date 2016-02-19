@@ -37,6 +37,15 @@ gluShaderUtil.GLSLVersion = {
 };
 
 /**
+ * gluShaderUtil.glslVersionUsesInOutQualifiers
+ * @param {gluShaderUtil.GLSLVersion} version
+ * @return {boolean}
+ */
+gluShaderUtil.glslVersionUsesInOutQualifiers = function(version) {
+    return version == gluShaderUtil.GLSLVersion.V300_ES;
+};
+
+/**
  * gluShaderUtil.isGLSLVersionSupported
  * @param {WebGL2RenderingContext|WebGLRenderingContextBase} ctx
  * @param {gluShaderUtil.GLSLVersion} version

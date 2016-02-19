@@ -234,26 +234,18 @@ goog.scope(function() {
     glsAttributeLocationTests.createVertexShaderSource = function(attributes, attributeAliasing) {
         // \note On GLES only GLSL #version 100 supports aliasing
         /** @type {gluShaderUtil.GLSLVersion} */ var glslVersion = gluShaderUtil.getGLSLVersion(gl);
+        glslVersion = attributeAliasing ? gluShaderUtil.GLSLVersion.V100_ES : glslVersion;
+        /** @type {boolean} */ var usesInOutQualifiers = gluShaderUtil.glslVersionUsesInOutQualifiers(glslVersion);
         /** @type {string} */ var vertexShaderTemplate = glsAttributeLocationTests.generateVertexShaderTemplate(attributes);
 
         /** @type {Array<string>} */ var parameters = [];
 
-        if (gluShaderUtil.isGLSLVersionSupported(gl, gluShaderUtil.GLSLVersion.V300_ES)) {
-            parameters['VERSION'] = gluShaderUtil.getGLSLVersionDeclaration(glslVersion);
-            parameters['VTX_OUTPUT'] = 'out';
-            parameters['VTX_INPUT'] = 'in';
-            parameters['FRAG_INPUT'] = 'in';
-            parameters['FRAG_OUTPUT_VAR'] = 'dEQP_FragColor';
-            parameters['FRAG_OUTPUT_DECLARATION'] = 'layout(location=0) out mediump vec4 dEQP_FragColor;';
-        } else if (gluShaderUtil.isGLSLVersionSupported(gl, gluShaderUtil.GLSLVersion.V100_ES)) {
-            parameters['VERSION'] = gluShaderUtil.getGLSLVersionDeclaration(glslVersion);
-            parameters['VTX_OUTPUT'] = 'varying';
-            parameters['VTX_INPUT'] = 'attribute';
-            parameters['FRAG_INPUT'] = 'varying';
-            parameters['FRAG_OUTPUT_VAR'] = 'gl.FragColor';
-            parameters['FRAG_OUTPUT_DECLARATION'] = '';
-        } else
-            throw new Error('Invalid GL version');
+        parameters['VERSION'] = gluShaderUtil.getGLSLVersionDeclaration(glslVersion);
+        parameters['VTX_OUTPUT'] = usesInOutQualifiers ? 'out' : 'varying';
+        parameters['VTX_INPUT'] = usesInOutQualifiers ? 'in' : 'attribute';
+        parameters['FRAG_INPUT'] = usesInOutQualifiers ? 'in' : 'varying';
+        parameters['FRAG_OUTPUT_VAR'] = usesInOutQualifiers ? 'dEQP_FragColor' : 'gl_FragColor';
+        parameters['FRAG_OUTPUT_DECLARATION'] = usesInOutQualifiers ? 'layout(location=0) out mediump vec4 dEQP_FragColor;' : '';
 
         return tcuStringTemplate.specialize(vertexShaderTemplate, parameters);
     };
@@ -274,25 +266,17 @@ goog.scope(function() {
 
         // \note On GLES only GLSL #version 100 supports aliasing
         /** @type {gluShaderUtil.GLSLVersion} */ var glslVersion = gluShaderUtil.getGLSLVersion(gl);
+        glslVersion = attributeAliasing ? gluShaderUtil.GLSLVersion.V100_ES : glslVersion;
+        /** @type {boolean} */ var usesInOutQualifiers = gluShaderUtil.glslVersionUsesInOutQualifiers(glslVersion);
 
         /** @type {Array<string>} */ var parameters = [];
 
-        if (gluShaderUtil.isGLSLVersionSupported(gl, gluShaderUtil.GLSLVersion.V300_ES)) {
-            parameters['VERSION'] = gluShaderUtil.getGLSLVersionDeclaration(glslVersion);
-            parameters['VTX_OUTPUT'] = 'out';
-            parameters['VTX_INPUT'] = 'in';
-            parameters['FRAG_INPUT'] = 'in';
-            parameters['FRAG_OUTPUT_VAR'] = 'dEQP_FragColor';
-            parameters['FRAG_OUTPUT_DECLARATION'] = 'layout(location=0) out mediump vec4 dEQP_FragColor;';
-        } else if (gluShaderUtil.isGLSLVersionSupported(gl, gluShaderUtil.GLSLVersion.V100_ES)) {
-            parameters['VERSION'] = gluShaderUtil.getGLSLVersionDeclaration(glslVersion);
-            parameters['VTX_OUTPUT'] = 'varying';
-            parameters['VTX_INPUT'] = 'attribute';
-            parameters['FRAG_INPUT'] = 'varying';
-            parameters['FRAG_OUTPUT_VAR'] = 'gl_FragColor';
-            parameters['FRAG_OUTPUT_DECLARATION'] = '';
-        } else
-            throw new Error('Invalid GL version');
+        parameters['VERSION'] = gluShaderUtil.getGLSLVersionDeclaration(glslVersion);
+        parameters['VTX_OUTPUT'] = usesInOutQualifiers ? 'out' : 'varying';
+        parameters['VTX_INPUT'] = usesInOutQualifiers ? 'in' : 'attribute';
+        parameters['FRAG_INPUT'] = usesInOutQualifiers ? 'in' : 'varying';
+        parameters['FRAG_OUTPUT_VAR'] = usesInOutQualifiers ? 'dEQP_FragColor' : 'gl_FragColor';
+        parameters['FRAG_OUTPUT_DECLARATION'] = usesInOutQualifiers ? 'layout(location=0) out mediump vec4 dEQP_FragColor;' : '';
 
         return tcuStringTemplate.specialize(fragmentShaderSource, parameters);
     };
@@ -872,117 +856,6 @@ goog.scope(function() {
         for (var loc = maxAttributes - (arrayElementCount * this.m_type.getLocationSize()); loc >= 0; loc -= (arrayElementCount * this.m_type.getLocationSize())) {
             attributes.push(new glsAttributeLocationTests.Attribute(this.m_type, 'a_' + ndx, glsAttributeLocationTests.LocationEnum.UNDEF, glsAttributeLocationTests.NewCondWithEnum(glsAttributeLocationTests.ConstCond.ALWAYS), this.m_arraySize));
             bindings.push(new glsAttributeLocationTests.Bind('a_' + ndx, loc));
-            ndx++;
-        }
-
-        glsAttributeLocationTests.runTest(attributes, noBindings, bindings, noBindings, false);
-        return tcuTestCase.IterateResult.STOP;
-    };
-
-    /**
-     * @constructor
-     * @extends {tcuTestCase.DeqpTest}
-     * @param {glsAttributeLocationTests.AttribType} type
-     * @param {number=} offset
-     * @param {number=} arraySize
-     */
-    glsAttributeLocationTests.BindAliasingAttributeTest = function(type, offset, arraySize) {
-        /** @type {number} */ this.m_arraySize = arraySize === undefined ? glsAttributeLocationTests.ArrayEnum.NOT : arraySize;
-        /** @type {glsAttributeLocationTests.AttribType} */ this.m_type = type;
-        tcuTestCase.DeqpTest.call(this, glsAttributeLocationTests.generateTestName(this.m_type, this.m_arraySize), glsAttributeLocationTests.generateTestName(this.m_type, this.m_arraySize));
-        /** @type {number} */ this.m_offset = offset === undefined ? 0 : offset;
-    };
-
-    glsAttributeLocationTests.BindAliasingAttributeTest.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
-    glsAttributeLocationTests.BindAliasingAttributeTest.prototype.constructor = glsAttributeLocationTests.BindAliasingAttributeTest;
-
-    glsAttributeLocationTests.BindAliasingAttributeTest.prototype.iterate = function() {
-        /** @type {Array<glsAttributeLocationTests.Bind>} */ var noBindings = [];
-
-        /** @type {Array<glsAttributeLocationTests.Attribute>} */ var attributes = [];
-        /** @type {Array<glsAttributeLocationTests.Bind>} */ var bindings = [];
-
-        attributes.push(new glsAttributeLocationTests.Attribute(this.m_type, 'a_0', glsAttributeLocationTests.LocationEnum.UNDEF, new glsAttributeLocationTests.Cond('A', true), this.m_arraySize));
-        attributes.push(new glsAttributeLocationTests.Attribute(new glsAttributeLocationTests.AttribType('vec4', 1, gl.FLOAT_VEC4), 'a_1', glsAttributeLocationTests.LocationEnum.UNDEF, new glsAttributeLocationTests.Cond('A', false)));
-        bindings.push(new glsAttributeLocationTests.Bind('a_0', 1));
-        bindings.push(new glsAttributeLocationTests.Bind('a_1', 1 + this.m_offset));
-
-        glsAttributeLocationTests.runTest(attributes, noBindings, bindings, noBindings, false);
-        return tcuTestCase.IterateResult.STOP;
-    };
-
-    /**
-     * @constructor
-     * @extends {tcuTestCase.DeqpTest}
-     * @param {glsAttributeLocationTests.AttribType} type
-     * @param {number=} arraySize
-     */
-    glsAttributeLocationTests.BindMaxAliasingAttributeTest = function(type, arraySize) {
-        /** @type {number} */ this.m_arraySize = arraySize === undefined ? glsAttributeLocationTests.ArrayEnum.NOT : arraySize;
-        /** @type {glsAttributeLocationTests.AttribType} */ this.m_type = type;
-        tcuTestCase.DeqpTest.call(this, glsAttributeLocationTests.generateTestName(this.m_type, this.m_arraySize), glsAttributeLocationTests.generateTestName(this.m_type, this.m_arraySize));
-    };
-
-    glsAttributeLocationTests.BindMaxAliasingAttributeTest.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
-    glsAttributeLocationTests.BindMaxAliasingAttributeTest.prototype.constructor = glsAttributeLocationTests.BindMaxAliasingAttributeTest;
-
-    glsAttributeLocationTests.BindMaxAliasingAttributeTest.prototype.iterate = function() {
-        /** @type {Array<glsAttributeLocationTests.Bind>} */ var noBindings = [];
-        /** @type {number} */ var maxAttributes = glsAttributeLocationTests.getMaxAttributeLocations();
-        /** @type {number} */ var arrayElementCount = (this.m_arraySize != glsAttributeLocationTests.ArrayEnum.NOT ? this.m_arraySize : 1);
-
-        /** @type {Array<glsAttributeLocationTests.Attribute>} */ var attributes = [];
-        /** @type {Array<glsAttributeLocationTests.Bind>} */ var bindings = [];
-        /** @type {number} */ var ndx = 0;
-
-        bufferedLogToConsole('MAX_VERTEX_ATTRIBS: ' + maxAttributes);
-
-        for (var loc = maxAttributes - arrayElementCount * this.m_type.getLocationSize(); loc >= 0; loc -= this.m_type.getLocationSize() * arrayElementCount) {
-            attributes.push(new glsAttributeLocationTests.Attribute(this.m_type, 'a_' + ndx, glsAttributeLocationTests.LocationEnum.UNDEF, new glsAttributeLocationTests.Cond('A', true)));
-            bindings.push(new glsAttributeLocationTests.Bind('a_' + ndx, loc));
-
-            attributes.push(new glsAttributeLocationTests.Attribute(this.m_type, 'a_' + (ndx + maxAttributes), glsAttributeLocationTests.LocationEnum.UNDEF, new glsAttributeLocationTests.Cond('A', false)));
-            bindings.push(new glsAttributeLocationTests.Bind('a_' + (ndx + maxAttributes), loc));
-            ndx++;
-        }
-
-        glsAttributeLocationTests.runTest(attributes, noBindings, bindings, noBindings, false);
-        return tcuTestCase.IterateResult.STOP;
-    };
-
-    /**
-     * @constructor
-     * @extends {tcuTestCase.DeqpTest}
-     * @param {glsAttributeLocationTests.AttribType} type
-     * @param {number=} arraySize
-     */
-    glsAttributeLocationTests.BindInactiveAliasingAttributeTest = function(type, arraySize) {
-        /** @type {number} */ this.m_arraySize = arraySize === undefined ? glsAttributeLocationTests.ArrayEnum.NOT : arraySize;
-        /** @type {glsAttributeLocationTests.AttribType} */ this.m_type = type;
-        tcuTestCase.DeqpTest.call(this, glsAttributeLocationTests.generateTestName(this.m_type, this.m_arraySize), glsAttributeLocationTests.generateTestName(this.m_type, this.m_arraySize));
-    };
-
-    glsAttributeLocationTests.BindInactiveAliasingAttributeTest.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
-    glsAttributeLocationTests.BindInactiveAliasingAttributeTest.prototype.constructor = glsAttributeLocationTests.BindInactiveAliasingAttributeTest;
-
-    glsAttributeLocationTests.BindInactiveAliasingAttributeTest.prototype.iterate = function() {
-        /** @type {Array<glsAttributeLocationTests.Bind>} */ var noBindings = [];
-        /** @type {number} */ var maxAttributes = glsAttributeLocationTests.getMaxAttributeLocations();
-        /** @type {glsAttributeLocationTests.AttribType} */ var vec4 = new glsAttributeLocationTests.AttribType('vec4', 1, gl.FLOAT_VEC4);
-        /** @type {number} */ var arrayElementCount = (this.m_arraySize != glsAttributeLocationTests.ArrayEnum.NOT ? this.m_arraySize : 1);
-
-        /** @type {Array<glsAttributeLocationTests.Attribute>} */ var attributes = [];
-        /** @type {Array<glsAttributeLocationTests.Bind>} */ var bindings = [];
-        /** @type {number} */ var ndx = 0;
-
-        bufferedLogToConsole('MAX_VERTEX_ATTRIBS: ' + maxAttributes);
-
-        for (var loc = maxAttributes - arrayElementCount * this.m_type.getLocationSize(); loc >= 0; loc -= this.m_type.getLocationSize() * arrayElementCount) {
-            attributes.push(new glsAttributeLocationTests.Attribute(this.m_type, 'a_' + ndx, glsAttributeLocationTests.LocationEnum.UNDEF, new glsAttributeLocationTests.Cond('A')));
-            bindings.push(new glsAttributeLocationTests.Bind('a_' + (ndx), loc));
-
-            attributes.push(new glsAttributeLocationTests.Attribute(this.m_type, 'a_' + (ndx + maxAttributes), glsAttributeLocationTests.LocationEnum.UNDEF, glsAttributeLocationTests.NewCondWithEnum(glsAttributeLocationTests.ConstCond.NEVER)));
-            bindings.push(new glsAttributeLocationTests.Bind('a_' + (ndx + maxAttributes), loc));
             ndx++;
         }
 

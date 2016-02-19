@@ -108,29 +108,6 @@ goog.scope(function() {
             bindMaxAttributeGroup.addChild(new glsAttributeLocationTests.BindMaxAttributesTest(type));
         }
 
-        // Test aliasing
-        /** @type {tcuTestCase.DeqpTest} */
-        var aliasingGroup = tcuTestCase.newTest('bind_aliasing', 'Test binding aliasing locations.');
-
-        root.addChild(aliasingGroup);
-
-        for (typeNdx = 0; typeNdx < es2Types.length; typeNdx++) {
-            type = es2Types[typeNdx];
-
-            // Simple aliasing cases
-            aliasingGroup.addChild(new glsAttributeLocationTests.BindAliasingAttributeTest(type));
-
-            // For types which occupy more than one location. Alias second location.
-            if (type.getLocationSize() > 1)
-                aliasingGroup.addChild(new glsAttributeLocationTests.BindAliasingAttributeTest(type, 1));
-
-            // Use more than maximum attributes with aliasing
-            aliasingGroup.addChild(new glsAttributeLocationTests.BindMaxAliasingAttributeTest(type));
-
-            // Use more than maximum attributes but inactive
-            aliasingGroup.addChild(new glsAttributeLocationTests.BindInactiveAliasingAttributeTest(type));
-        }
-
         // Test filling holes in attribute location
         /** @type {tcuTestCase.DeqpTest} */
         var holeGroup = tcuTestCase.newTest('bind_hole', 'Bind all, but one attribute and leave hole in location space for it.');
