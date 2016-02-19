@@ -338,8 +338,8 @@ tcuFloat.newDeFloatFromBuffer = function(buffer, description) {
 /**
  * Initializes a tcuFloat.deFloat from the given number,
  * with the specified format description.
- * It does not perform any conversion, it assumes the number contains a
- * binary representation of the given description.
+ * It does not perform any conversion; it assumes the number is compatible with
+ * the given description.
  * @param {number} jsnumber
  * @param {tcuFloat.FloatDescription} description
  * @return {tcuFloat.deFloat}
@@ -359,8 +359,8 @@ tcuFloat.deFloat.prototype.deFloatParameters = function(jsnumber, description) {
 /**
  * Convenience function to create a tcuFloat.deFloat from the given number,
  * with the specified format description.
- * It does not perform any conversion, it assumes the number contains a
- * binary representation of the given description.
+ * It does not perform any conversion; it assumes the number is compatible with
+ * the given description.
  * @param {number} jsnumber
  * @param {tcuFloat.FloatDescription} description
  * @return {tcuFloat.deFloat}
