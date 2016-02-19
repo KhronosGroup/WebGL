@@ -99,7 +99,9 @@ glsStateQuery.verifyCurrentVertexAttrib = function(index, reference) {
  * @return {boolean}
  */
 glsStateQuery.verifyVertexAttrib = function(index, param, reference) {
-    var value = gl.getVertexAttrib(index, param);
+    var value = (param == gl.VERTEX_ATTRIB_ARRAY_POINTER) ?
+        gl.getVertexAttribOffset(index, param) :
+        gl.getVertexAttrib(index, param);
     var result = glsStateQuery.compare(value, reference);
     if (!result) {
         bufferedLogToConsole('Result: ' + value + ' Expected: ' + reference);
