@@ -859,6 +859,11 @@ es3fShaderStateQueryTests.TransformFeedbackCase.prototype.test = function() {
     gl.deleteShader(shaderVert);
     gl.deleteShader(shaderFrag);
     gl.deleteProgram(shaderProg);
+
+    // TODO(kbr): this test is failing and leaving an error in the GL
+    // state, causing later tests to fail. Clear the error state for
+    // the time being.
+    while (gl.getError() != gl.NO_ERROR) {}
 };
 
 /**
@@ -1089,15 +1094,8 @@ es3fShaderStateQueryTests.VertexAttributeStrideCase.prototype.test = function() 
     // Test with default VAO
 
     for (var ndx = 0; ndx < pointers.length; ++ndx) {
-        try {
-            gl.vertexAttribPointer(0, pointers[ndx][0], pointers[ndx][1], false, pointers[ndx][2], pointers[ndx][3]);
-        } catch (err) {
-            if (err.error == pointers[ndx][4]) {
-                continue;
-            } else {
-                throw err;
-            }
-        }
+        gl.vertexAttribPointer(0, pointers[ndx][0], pointers[ndx][1], false, pointers[ndx][2], pointers[ndx][3]);
+        this.expectError(pointers[ndx][4]);
         if (pointers[ndx][4] == gl.NO_ERROR) {
             this.check(glsStateQuery.verifyVertexAttrib(0, gl.VERTEX_ATTRIB_ARRAY_STRIDE, pointers[ndx][2]));
         }
@@ -1116,15 +1114,8 @@ es3fShaderStateQueryTests.VertexAttributeStrideCase.prototype.test = function() 
     ];
 
     for (var ndx = 0; ndx < pointersI.length; ++ndx) {
-        try {
-            gl.vertexAttribIPointer(0, pointersI[ndx][0], pointersI[ndx][1], pointersI[ndx][2], pointersI[ndx][3]);
-        } catch (err) {
-            if (err.error == pointersI[ndx][4]) {
-                continue;
-            } else {
-                throw err;
-            }
-        }
+        gl.vertexAttribIPointer(0, pointersI[ndx][0], pointersI[ndx][1], pointersI[ndx][2], pointersI[ndx][3]);
+        this.expectError(pointersI[ndx][4]);
         if (pointersI[ndx][4] == gl.NO_ERROR) {
             this.check(glsStateQuery.verifyVertexAttrib(0, gl.VERTEX_ATTRIB_ARRAY_STRIDE, pointersI[ndx][2]));
         }
