@@ -2467,15 +2467,21 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             the WebGL implementation. If a packed pixel format is specified which would imply loss
             of bits of precision from the image data, this loss of precision must occur. <br><br>
 
-            The first pixel transferred from the source to the WebGL implementation corresponds to
-            the upper left corner of the source. This behavior is modified by
-            the <code>UNPACK_FLIP_Y_WEBGL</code> <a href="#PIXEL_STORAGE_PARAMETERS">pixel storage
-            parameter</a>. <br><br>
+            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
+            pixel storage parameters that affect the behavior of this function when it is called
+            with any argument type other than <code>ImageBitmap</code>. <br><br>
 
-            If the source image is an RGB or RGBA lossless image with 8 bits per channel, the
-            browser guarantees that the full precision of all channels is preserved. <br><br>
+            The first pixel transferred from the source to the WebGL implementation corresponds
+            to the upper left corner of the source. This behavior is modified by the
+            <code>UNPACK_FLIP_Y_WEBGL</code> <a href="#PIXEL_STORAGE_PARAMETERS">pixel storage
+            parameter</a>, except for <code>ImageBitmap</code> arguments, as described in the
+            abovementioned section. <br><br>
 
-            If the original image contains an alpha channel and the
+            If the source is an <code>HTMLImageElement</code> or <code>ImageBitmap</code> containing
+            an RGB or RGBA lossless image with 8 bits per channel, the browser guarantees that the
+            full precision of all channels is preserved. <br><br>
+
+            If the original <code>HTMLImageElement</code> contains an alpha channel and the
             <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter is false, then the
             RGB values are guaranteed to never have been premultiplied by the alpha channel, whether
             those values are derived directly from the original file format or converted from some
@@ -2511,9 +2517,6 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             If <code>source</code> is null then an <code>INVALID_VALUE</code> error is
             generated. <br><br>
-
-            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
-            pixel storage parameters that affect the behavior of this function.
         <dt class="idl-code">void texParameterf(GLenum target, GLenum pname, GLfloat param)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.4">OpenGL ES 2.0 &sect;3.7.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexParameter.xml">man page</a>)</span>
         <dd>
@@ -2559,10 +2562,15 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             the <em>format</em> and <em>type</em> arguments, and notes on
             the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter. <br><br>
 
-            The first pixel transferred from the source to the WebGL implementation corresponds to
-            the upper left corner of the source. This behavior is modified by the
-            the <code>UNPACK_FLIP_Y_WEBGL</code> <a href="#PIXEL_STORAGE_PARAMETERS">pixel storage
-            parameter</a>. <br><br>
+            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
+            pixel storage parameters that affect the behavior of this function when it is called
+            with any argument type other than <code>ImageBitmap</code>. <br><br>
+
+            The first pixel transferred from the source to the WebGL implementation corresponds
+            to the upper left corner of the source. This behavior is modified by the
+            <code>UNPACK_FLIP_Y_WEBGL</code> <a href="#PIXEL_STORAGE_PARAMETERS">pixel storage
+            parameter</a>, except for <code>ImageBitmap</code> arguments, as described in the
+            abovementioned section. <br><br>
 
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
@@ -2584,9 +2592,6 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             If <code>source</code> is null then an <code>INVALID_VALUE</code> error is
             generated. <br><br>
-
-            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
-            pixel storage parameters that affect the behavior of this function.
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -3576,9 +3581,10 @@ is <code>BROWSER_DEFAULT_WEBGL</code>.
 </dl>
 
 <p>
-If the TexImageSource is an ImageBitmap, then these three parameters will be ignored. Instead
-the equivalent <a href="https://wiki.whatwg.org/wiki/ImageBitmap_Options">ImageBitmapOptions</a>
-should be used to create an ImageBitmap with desired format.
+If the <code>TexImageSource</code> is an <code>ImageBitmap</code>, then these three parameters will
+be ignored. Instead the equivalent
+<a href="https://wiki.whatwg.org/wiki/ImageBitmap_Options">ImageBitmapOptions</a> should be used to
+create an <code>ImageBitmap</code> with the desired format.
 
 <h3><a name="READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the Framebuffer</a></h3>
 
