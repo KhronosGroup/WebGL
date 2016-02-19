@@ -1075,12 +1075,12 @@ setParentClass(es3fShaderStateQueryTests.VertexAttributeStrideCase, es3fApiCase.
 
 es3fShaderStateQueryTests.VertexAttributeStrideCase.prototype.test = function() {
     var pointers = [
-        [1, gl.FLOAT, 0, 0],
-        [1, gl.FLOAT, 1, 0],
-        [1, gl.FLOAT, 4, 0],
-        [1, gl.HALF_FLOAT, 0, 0],
-        [1, gl.HALF_FLOAT, 1, 0],
-        [1, gl.HALF_FLOAT, 4, 0]
+        [1, gl.FLOAT, 0, 0, gl.NO_ERROR],
+        [1, gl.FLOAT, 1, 0, gl.INVALID_OPERATION],
+        [1, gl.FLOAT, 4, 0, gl.NO_ERROR],
+        [1, gl.HALF_FLOAT, 0, 0, gl.NO_ERROR],
+        [1, gl.HALF_FLOAT, 1, 0, gl.INVALID_OPERATION],
+        [1, gl.HALF_FLOAT, 4, 0, gl.NO_ERROR]
     ];
 
     var buf = gl.createBuffer();
@@ -1089,25 +1089,45 @@ es3fShaderStateQueryTests.VertexAttributeStrideCase.prototype.test = function() 
     // Test with default VAO
 
     for (var ndx = 0; ndx < pointers.length; ++ndx) {
-        gl.vertexAttribPointer(0, pointers[ndx][0], pointers[ndx][1], false, pointers[ndx][2], pointers[ndx][3]);
-        this.check(glsStateQuery.verifyVertexAttrib(0, gl.VERTEX_ATTRIB_ARRAY_STRIDE, pointers[ndx][2]));
+        try {
+            gl.vertexAttribPointer(0, pointers[ndx][0], pointers[ndx][1], false, pointers[ndx][2], pointers[ndx][3]);
+        } catch (err) {
+            if (err.error == pointers[ndx][4]) {
+                continue;
+            } else {
+                throw err;
+            }
+        }
+        if (pointers[ndx][4] == gl.NO_ERROR) {
+            this.check(glsStateQuery.verifyVertexAttrib(0, gl.VERTEX_ATTRIB_ARRAY_STRIDE, pointers[ndx][2]));
+        }
     }
 
     var pointersI = [
-        [1, gl.INT, 0, 0],
-        [1, gl.INT, 1, 0],
-        [1, gl.INT, 4, 0],
-        [4, gl.UNSIGNED_BYTE, 0, 0],
-        [4, gl.UNSIGNED_BYTE, 1, 0],
-        [4, gl.UNSIGNED_BYTE, 4, 0],
-        [2, gl.SHORT, 0, 0],
-        [2, gl.SHORT, 1, 0],
-        [2, gl.SHORT, 4, 0]
+        [1, gl.INT, 0, 0, gl.NO_ERROR],
+        [1, gl.INT, 1, 0, gl.INVALID_OPERATION],
+        [1, gl.INT, 4, 0, gl.NO_ERROR],
+        [4, gl.UNSIGNED_BYTE, 0, 0, gl.NO_ERROR],
+        [4, gl.UNSIGNED_BYTE, 1, 0, gl.NO_ERROR],
+        [4, gl.UNSIGNED_BYTE, 4, 0, gl.NO_ERROR],
+        [2, gl.SHORT, 0, 0, gl.NO_ERROR],
+        [2, gl.SHORT, 1, 0, gl.INVALID_OPERATION],
+        [2, gl.SHORT, 4, 0, gl.NO_ERROR]
     ];
 
     for (var ndx = 0; ndx < pointersI.length; ++ndx) {
-        gl.vertexAttribIPointer(0, pointersI[ndx][0], pointersI[ndx][1], pointersI[ndx][2], pointersI[ndx][3]);
-        this.check(glsStateQuery.verifyVertexAttrib(0, gl.VERTEX_ATTRIB_ARRAY_STRIDE, pointersI[ndx][2]));
+        try {
+            gl.vertexAttribIPointer(0, pointersI[ndx][0], pointersI[ndx][1], pointersI[ndx][2], pointersI[ndx][3]);
+        } catch (err) {
+            if (err.error == pointersI[ndx][4]) {
+                continue;
+            } else {
+                throw err;
+            }
+        }
+        if (pointersI[ndx][4] == gl.NO_ERROR) {
+            this.check(glsStateQuery.verifyVertexAttrib(0, gl.VERTEX_ATTRIB_ARRAY_STRIDE, pointersI[ndx][2]));
+        }
     }
 
     // Test with multiple VAOs
