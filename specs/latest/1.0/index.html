@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 11 January 2016</h2>
+    <h2 class="no-toc">Editor's Draft 19 February 2016</h2>
     <dl>
         <dt>This version:
             <dd>
@@ -3574,6 +3574,11 @@ and file type. If set to <code>NONE</code>, no colorspace conversion is applied.
 is <code>BROWSER_DEFAULT_WEBGL</code>.
 
 </dl>
+
+<p>
+If the TexImageSource is an ImageBitmap, then these three parameters will be ignored. Instead
+the equivalent <a href="https://wiki.whatwg.org/wiki/ImageBitmap_Options">ImageBitmapOptions</a>
+should be used to create an ImageBitmap with desired format.
 
 <h3><a name="READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the Framebuffer</a></h3>
 
