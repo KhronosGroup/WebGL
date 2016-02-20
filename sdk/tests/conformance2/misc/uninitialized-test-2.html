@@ -49,9 +49,21 @@ else
   testPassed("Context created.");
 
 function setupTexture(target, texWidth, texHeight, texDepth) {
+    var is3d = (target == gl.TEXTURE_3D || target == gl.TEXTURE_2D_ARRAY);
     var texture = gl.createTexture();
     gl.bindTexture(target, texture);
-    gl.texImage3D(target, 0, gl.RGBA8, texWidth, texHeight, texDepth, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    if (is3d) {
+        gl.texImage3D(target, 0, gl.RGBA8, texWidth, texHeight, texDepth, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    } else if (target == gl.TEXTURE_2D) {
+        gl.texImage2D(target, 0, gl.RGBA8, texWidth, texHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    } else {
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA8, texWidth, texHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA8, texWidth, texHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGBA8, texWidth, texHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGBA8, texWidth, texHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA8, texWidth, texHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA8, texWidth, texHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    }
 
     // this can be quite undeterministic so to improve odds of seeing uninitialized data write bits
     // into tex then delete texture then re-create one with same characteristics (driver will likely reuse mem)
@@ -61,7 +73,18 @@ function setupTexture(target, texWidth, texHeight, texDepth) {
     for (var i = 0; i < badData.length; ++i)
         badData[i] = i % 255;
 
-    gl.texSubImage3D(target, 0, 0, 0, 0, texWidth, texHeight, texDepth, gl.RGBA, gl.UNSIGNED_BYTE, badData);
+    if (is3d) {
+        gl.texSubImage3D(target, 0, 0, 0, 0, texWidth, texHeight, texDepth, gl.RGBA, gl.UNSIGNED_BYTE, badData);
+    } else if (target == gl.TEXTURE_2D) {
+        gl.texSubImage2D(target, 0, 0, 0, texWidth, texHeight, gl.RGBA, gl.UNSIGNED_BYTE, badData);
+    } else {
+        gl.texSubImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, 0, 0, texWidth, texHeight, gl.RGBA, gl.UNSIGNED_BYTE, badData);
+        gl.texSubImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, 0, 0, texWidth, texHeight, gl.RGBA, gl.UNSIGNED_BYTE, badData);
+        gl.texSubImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, 0, 0, texWidth, texHeight, gl.RGBA, gl.UNSIGNED_BYTE, badData);
+        gl.texSubImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, 0, 0, texWidth, texHeight, gl.RGBA, gl.UNSIGNED_BYTE, badData);
+        gl.texSubImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, 0, 0, texWidth, texHeight, gl.RGBA, gl.UNSIGNED_BYTE, badData);
+        gl.texSubImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, 0, 0, texWidth, texHeight, gl.RGBA, gl.UNSIGNED_BYTE, badData);
+    }
     gl.finish(); // make sure it has been uploaded
 
     gl.deleteTexture(texture);
@@ -72,31 +95,87 @@ function setupTexture(target, texWidth, texHeight, texDepth) {
     return texture;
 }
 
-function checkNonZeroPixels(texture, target, texWidth, texHeight, level, layer) {
-    gl.bindTexture(target, null);
+function checkNonZeroPixels(texture, target, format, type, texWidth, texHeight, level, layer, exceptions) {
+    var tol = 2;
+    var is3d = (target == gl.TEXTURE_3D || target == gl.TEXTURE_2D_ARRAY);
+    switch (target) {
+      case gl.TEXTURE_CUBE_MAP_POSITIVE_X:
+      case gl.TEXTURE_CUBE_MAP_NEGATIVE_X:
+      case gl.TEXTURE_CUBE_MAP_POSITIVE_Y:
+      case gl.TEXTURE_CUBE_MAP_NEGATIVE_Y:
+      case gl.TEXTURE_CUBE_MAP_POSITIVE_Z:
+      case gl.TEXTURE_CUBE_MAP_NEGATIVE_Z:
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+        break;
+      default:
+        gl.bindTexture(target, null);
+        break;
+    }
     var fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.framebufferTextureLayer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, texture, level, layer);
+    if (is3d) {
+        gl.framebufferTextureLayer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, texture, level, layer);
+    } else {
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, target, texture, level);
+    }
     shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
 
-    var data = new Uint8Array(texWidth * texHeight * 4);
-    gl.readPixels(0, 0, texWidth, texHeight, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    var data;
+    switch (type) {
+      case gl.UNSIGNED_INT:
+        data = new Uint32Array(texWidth * texHeight * 4);
+        break;
+      case gl.INT:
+        data = new Int32Array(texWidth * texHeight * 4);
+        break;
+      case gl.UNSIGNED_BYTE:
+      default:
+        data = new Uint8Array(texWidth * texHeight * 4);
+        break;
+    }
+    gl.readPixels(0, 0, texWidth, texHeight, format, type, data);
 
     var k = 0;
+    var failed_exceptions = 0;
     for (var y = 0; y < texHeight; ++y) {
         for (var x = 0; x < texWidth; ++x) {
             var index = (y * texWidth + x) * 4;
+            var is_exception = false;
+            for (var ii = 0; ii < exceptions.length; ++ii) {
+                if (exceptions[ii].x == x && exceptions[ii].y == y) {
+                    is_exception = true;
+                    if (Math.abs(data[index] - exceptions[ii].r) > tol ||
+                        Math.abs(data[index + 1] - exceptions[ii].g) > tol ||
+                        Math.abs(data[index + 2] - exceptions[ii].b) > tol ||
+                        Math.abs(data[index + 3] - exceptions[ii].a) > tol) {
+                        failed_exceptions++;
+                    }
+                }
+            }
+            if (is_exception)
+                continue;
             for (var i = 0; i < 4; ++i) {
-                if (data[index + i] != 0)
-                   k++;
+                if (data[index + i] != 0) {
+                    k++;
+                }
             }
         }
     }
-    var info = "Level = " + level + ", layer = " + layer + " : ";
+    var info = "Level = " + level;
+    if (is3d)
+        info  += ", layer = " + layer;
+    info += " : ";
     if (k) {
-        testFailed(info + "found " + k + " non-zero bytes");
+        testFailed(info + "found " + k + " non-zero elements");
     } else {
         testPassed(info + "all data initialized");
+    }
+    if (exceptions.length > 0) {
+        if (failed_exceptions) {
+            testFailed(info + "found " + failed_exceptions + " elements incorrectly overwritten");
+        } else {
+            testPassed(info + "all initialized elements stay untouched");
+        }
     }
 }
 
@@ -104,36 +183,121 @@ var width = 512;
 var height = 512;
 var depth = 2;
 
-var targets = [ "TEXTURE_3D", "TEXTURE_2D_ARRAY" ];
+var targets = [ "TEXTURE_2D", "TEXTURE_CUBE_MAP" ];
 for (var ii = 0; ii < targets.length; ++ii) {
     debug("");
-    debug("Reading an uninitialized texture (texImage3D) should succeed with all bytes set to 0 : target = " + targets[ii]);
-    var tex = setupTexture(gl[targets[ii]], width, height, depth);
-    gl.texImage3D(gl[targets[ii]], 0, gl.RGBA8, width, height, depth, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    for (var layer = 0; layer < depth; ++layer)
-        checkNonZeroPixels(tex, gl[targets[ii]], width, height, 0, layer);
+    debug("Reading an uninitialized texture (texStorage2D) should succeed with all bytes set to 0 : target = " + targets[ii]);
+    var tex = setupTexture(gl[targets[ii]], width, height, 1);
+    var levels = 5;
+    gl.texStorage2D(gl[targets[ii]], levels, gl.RGBA8, width, height);
+    for (var level = 0; level < levels; ++level) {
+        if (gl[targets[ii]] == gl.TEXTURE_2D) {
+            checkNonZeroPixels(tex, gl[targets[ii]], gl.RGBA, gl.UNSIGNED_BYTE, width, height, level, 0, []);
+        } else {
+            checkNonZeroPixels(tex, gl.TEXTURE_CUBE_MAP_POSITIVE_X, gl.RGBA, gl.UNSIGNED_BYTE, width, height, level, 0, []);
+            checkNonZeroPixels(tex, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, gl.RGBA, gl.UNSIGNED_BYTE, width, height, level, 0, []);
+            checkNonZeroPixels(tex, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, gl.RGBA, gl.UNSIGNED_BYTE, width, height, level, 0, []);
+            checkNonZeroPixels(tex, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, gl.RGBA, gl.UNSIGNED_BYTE, width, height, level, 0, []);
+            checkNonZeroPixels(tex, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, gl.RGBA, gl.UNSIGNED_BYTE, width, height, level, 0, []);
+            checkNonZeroPixels(tex, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, gl.RGBA, gl.UNSIGNED_BYTE, width, height, level, 0, []);
+        }
+    }
     gl.deleteTexture(tex);
     gl.finish();
     wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 }
 
+// The minimum max_texture_3d is 256.
+width = 256;
+height = 256;
+depth = 8;
+
+targets = [ "TEXTURE_3D", "TEXTURE_2D_ARRAY" ];
+var internal_formats = [ "RGBA8", "RGBA8UI", "RGBA8I" ];
+var formats = [ gl.RGBA, gl.RGBA_INTEGER, gl.RGBA_INTEGER ];
+var types = [ gl.UNSIGNED_BYTE, gl.UNSIGNED_BYTE, gl.BYTE ];
+var read_types = [ gl.UNSIGNED_BYTE, gl.UNSIGNED_INT, gl.INT ];
+
+for (var ii = 0; ii < targets.length; ++ii) {
+    debug("");
+    debug("Reading an uninitialized texture (texImage3D) should succeed with all bytes set to 0 : target = " + targets[ii]);
+    for (var jj = 0; jj < internal_formats.length; ++jj) {
+        debug("");
+        debug("Internal format : " + internal_formats[jj]);
+        var tex = setupTexture(gl[targets[ii]], width, height, depth);
+        gl.texImage3D(gl[targets[ii]], 0, gl[internal_formats[jj]], width, height, depth, 0, formats[jj], types[jj], null);
+        for (var layer = 0; layer < depth; ++layer)
+            checkNonZeroPixels(tex, gl[targets[ii]], formats[jj], read_types[jj], width, height, 0, layer, []);
+        gl.deleteTexture(tex);
+        gl.finish();
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+    }
+}
+
+for (var ii = 0; ii < targets.length; ++ii) {
+    debug("");
+    debug("Reading a partially initialized texture (texImage3D) should succeed with all uninitialized bytes set to 0 " +
+          "and initialized untouched: target = " + targets[ii]);
+    for (var jj = 0; jj < internal_formats.length; ++jj) {
+        debug("");
+        debug("Internal format : " + internal_formats[jj]);
+        var tex = setupTexture(gl[targets[ii]], width, height, depth);
+        gl.texImage3D(gl[targets[ii]], 0, gl[internal_formats[jj]], width, height, depth, 0, formats[jj], types[jj], null);
+        var data;
+        switch (types[jj]) {
+          case gl.BYTE:
+            data = new Int8Array(4 * depth);
+            break;
+          case gl.UNSIGNED_BYTE:
+          default:
+            data = new Uint8Array(4 * depth);
+            break;
+        }
+        for (var pixel = 0; pixel < depth; ++pixel) {
+            data[pixel * 4] = 108;
+            data[pixel * 4 + 1] = 72;
+            data[pixel * 4 + 2] = 36;
+            data[pixel * 4 + 3] = 9;
+        }
+        gl.texSubImage3D(gl[targets[ii]], 0, width/2, height/2, 0, 1, 1, depth, formats[jj], types[jj], data);
+        var exceptions = [];
+        exceptions.push({
+            x: width/2,
+            y: height/2,
+            r: 108,
+            g: 72,
+            b: 36,
+            a: 9
+        });
+        for (var layer = 0; layer < depth; ++layer)
+            checkNonZeroPixels(tex, gl[targets[ii]], formats[jj], read_types[jj], width, height, 0, layer, exceptions);
+        gl.deleteTexture(tex);
+        gl.finish();
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+    }
+}
+
 for (var ii = 0; ii < targets.length; ++ii) {
     debug("");
     debug("Reading an uninitialized texture (texStorage3D) should succeed with all bytes set to 0 : target = " + targets[ii]);
-    var tex = setupTexture(gl[targets[ii]], width, height, depth);
-    var levels = 5;
-    gl.texStorage3D(gl[targets[ii]], levels, gl.RGBA8, width, height, depth);
-    var level_depth = depth;
-    for (var level = 0; level < levels; ++level) {
-        for (var layer = 0; layer < level_depth; ++layer) {
-            checkNonZeroPixels(tex, gl[targets[ii]], width, height, level, layer);
+    for (var jj = 0; jj < internal_formats.length; ++jj) {
+        debug("");
+        debug("Internal format : " + internal_formats[jj]);
+        var tex = setupTexture(gl[targets[ii]], width, height, depth);
+        var levels = 5;
+        gl.texStorage3D(gl[targets[ii]], levels, gl[internal_formats[jj]], width, height, depth);
+        var level_depth = depth;
+        for (var level = 0; level < levels; ++level) {
+            for (var layer = 0; layer < level_depth; ++layer) {
+                checkNonZeroPixels(tex, gl[targets[ii]], formats[jj], read_types[jj], width, height, level, layer, []);
+            }
+            if (gl[targets[ii]] == gl.TEXTURE_3D)
+                level_depth = Math.max(1, level_depth >> 1);
         }
-        if (gl[targets[ii]] == gl.TEXTURE_3D)
-            level_depth = Math.max(1, level_depth >> 1);
+        gl.deleteTexture(tex);
+        gl.finish();
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR);
     }
-    gl.deleteTexture(tex);
-    gl.finish();
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 }
 
 debug("");
