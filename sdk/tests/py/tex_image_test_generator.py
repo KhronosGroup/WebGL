@@ -73,7 +73,8 @@ _ELEMENT_TYPES = [
   'svg-image',
   'video',
   'webgl-canvas',
-  'image-bitmap-from-image-data'
+  'image-bitmap-from-image-data',
+  'image-bitmap-from-image'
 ]
 
 _FORMATS_TYPES_WEBGL1 = [
