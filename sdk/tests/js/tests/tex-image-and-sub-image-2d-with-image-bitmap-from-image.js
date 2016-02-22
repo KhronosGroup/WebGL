@@ -26,7 +26,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var tiu = TexImageUtils;
     var gl = null;
     var successfullyParsed = false;
-    var blackColor = [0, 0, 0];
     var redColor = [255, 0, 0];
     var greenColor = [0, 255, 0];
     var bitmap;
@@ -60,13 +59,13 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl.clearDepth(1);
 
         var image = new Image();
-        image.src = resourcePath + "red-green.png";
         image.onload = function() {
             createImageBitmap(image).then(imageBitmap => {
                 bitmap = imageBitmap;
                 runTest();
             });
         }
+        image.src = resourcePath + "red-green.png";
     }
 
     function runOneIteration(useTexSubImage2D, bindingTarget, program)
