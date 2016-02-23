@@ -74,7 +74,8 @@ _ELEMENT_TYPES = [
   'video',
   'webgl-canvas',
   'image-bitmap-from-image-data',
-  'image-bitmap-from-image'
+  'image-bitmap-from-image',
+  'image-bitmap-from-video'
 ]
 
 _FORMATS_TYPES_WEBGL1 = [
