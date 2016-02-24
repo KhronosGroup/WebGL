@@ -1531,30 +1531,31 @@ goog.scope(function() {
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 32, 32, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             this.expectError(gl.NO_ERROR);
 
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(64);
             bufferedLogToConsole('gl.INVALID_ENUM is generated if target is invalid.');
-            gl.texSubImage2D(0, 0, 0, 0, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(0, 0, 0, 0, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_ENUM);
 
             bufferedLogToConsole('gl.INVALID_ENUM is generated if format is not an accepted format constant.');
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 4, 4, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 4, 4, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_ENUM);
 
             bufferedLogToConsole('gl.INVALID_ENUM is generated if type is not a type constant.');
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGB, 0, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGB, 0, uint8);
             this.expectError(gl.INVALID_ENUM);
 
             bufferedLogToConsole('gl.INVALID_OPERATION is generated if the combination of internalFormat of the previously specified texture array, format and type is not valid.');
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGBA, gl.UNSIGNED_SHORT_5_6_5, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGBA, gl.UNSIGNED_SHORT_5_6_5, uint8);
             this.expectError(gl.INVALID_OPERATION);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGB, gl.UNSIGNED_SHORT_4_4_4_4, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGB, gl.UNSIGNED_SHORT_4_4_4_4, uint8);
             this.expectError(gl.INVALID_OPERATION);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGB, gl.UNSIGNED_SHORT_5_5_5_1, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGB, gl.UNSIGNED_SHORT_5_5_5_1, uint8);
             this.expectError(gl.INVALID_OPERATION);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGB, gl.UNSIGNED_SHORT_5_5_5_1, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGB, gl.UNSIGNED_SHORT_5_5_5_1, uint8);
             this.expectError(gl.INVALID_OPERATION);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGBA_INTEGER, gl.UNSIGNED_INT, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGBA_INTEGER, gl.UNSIGNED_INT, uint8);
             this.expectError(gl.INVALID_OPERATION);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGB, gl.FLOAT, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 4, 4, gl.RGB, gl.FLOAT, uint8);
             this.expectError(gl.INVALID_OPERATION);
 
             gl.deleteTexture(texture);
@@ -1573,14 +1574,15 @@ goog.scope(function() {
             });
             this.expectError(gl.NO_ERROR);
 
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(4);
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is less than 0.');
-            gl.texSubImage2D(gl.TEXTURE_2D, -1, 0, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, -1, 0, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is less than 0.');
             var local = this;
             es3fNegativeTextureApiTests.forCubeFaces(function(faceGL) {
-                gl.texSubImage2D(faceGL, -1, 0, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
+                gl.texSubImage2D(faceGL, -1, 0, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, uint8);
                 local.expectError(gl.INVALID_VALUE);
             });
 
@@ -1602,16 +1604,17 @@ goog.scope(function() {
 
             this.expectError (gl.NO_ERROR);
 
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(4);
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_TEXTURE_SIZE).');
             /** @type{number} */ var log2MaxTextureSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)))) + 1;
-            gl.texSubImage2D(gl.TEXTURE_2D, log2MaxTextureSize, 0, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, log2MaxTextureSize, 0, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_CUBE_MAP_TEXTURE_SIZE).');
             /** @type{number} */ var log2MaxCubemapSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE)))) + 1;
             var local = this;
             es3fNegativeTextureApiTests.forCubeFaces(function(faceGL) {
-                gl.texSubImage2D(faceGL, log2MaxCubemapSize, 0, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
+                gl.texSubImage2D(faceGL, log2MaxCubemapSize, 0, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, uint8);
                 local.expectError(gl.INVALID_VALUE);
             });
 
@@ -1627,12 +1630,13 @@ goog.scope(function() {
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 32, 32, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
             this.expectError(gl.NO_ERROR);
 
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(4);
             bufferedLogToConsole('gl.INVALID_VALUE is generated if xoffset or yoffset are negative.');
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, -1, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, -1, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, -1, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, -1, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, -1, -1, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, -1, -1, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             gl.deleteTexture(texture);
@@ -1646,12 +1650,13 @@ goog.scope(function() {
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 32, 32, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             this.expectError(gl.NO_ERROR);
 
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(64);
             bufferedLogToConsole('gl.INVALID_VALUE is generated if xoffset + width > texture_width or yoffset + height > texture_height.');
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 30, 0, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 30, 0, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 30, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 30, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 30, 30, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 30, 30, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             gl.deleteTexture(texture);
@@ -1665,12 +1670,13 @@ goog.scope(function() {
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 32, 32, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             this.expectError(gl.NO_ERROR);
 
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(4);
             bufferedLogToConsole('gl.INVALID_VALUE is generated if width or height is less than 0.');
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, -1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, -1, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, -1, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, -1, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, -1, -1, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, -1, -1, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             gl.deleteTexture(texture);
@@ -2141,30 +2147,31 @@ goog.scope(function() {
             gl.texImage3D (gl.TEXTURE_3D, 0, gl.RGBA, 4, 4, 4, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             this.expectError (gl.NO_ERROR);
 
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(256);
             bufferedLogToConsole('gl.INVALID_ENUM is generated if target is invalid.');
-            gl.texSubImage3D(0, 0, 0, 0, 0, 4, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(0, 0, 0, 0, 0, 4, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_ENUM);
-            gl.texSubImage3D(gl.TEXTURE_2D, 0, 0, 0, 0, 4, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_2D, 0, 0, 0, 0, 4, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_ENUM);
 
             bufferedLogToConsole('gl.INVALID_ENUM is generated if format is not an accepted format constant.');
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 0, 4, 4, 4, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 0, 4, 4, 4, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_ENUM);
 
             bufferedLogToConsole('gl.INVALID_ENUM is generated if type is not a type constant.');
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 4, 4, 4, gl.RGB, 0, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 4, 4, 4, gl.RGB, 0, uint8);
             this.expectError(gl.INVALID_ENUM);
 
             bufferedLogToConsole('gl.INVALID_OPERATION is generated if the combination of internalFormat of the previously specified texture array, format and type is not valid.');
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 4, 4, 4, gl.RGB, gl.UNSIGNED_SHORT_4_4_4_4, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 4, 4, 4, gl.RGB, gl.UNSIGNED_SHORT_4_4_4_4, uint8);
             this.expectError(gl.INVALID_OPERATION);
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 4, 4, 4, gl.RGB, gl.UNSIGNED_SHORT_5_5_5_1, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 4, 4, 4, gl.RGB, gl.UNSIGNED_SHORT_5_5_5_1, uint8);
             this.expectError(gl.INVALID_OPERATION);
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 4, 4, 4, gl.RGB, gl.UNSIGNED_SHORT_5_5_5_1, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 4, 4, 4, gl.RGB, gl.UNSIGNED_SHORT_5_5_5_1, uint8);
             this.expectError(gl.INVALID_OPERATION);
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 4, 4, 4, gl.RGBA_INTEGER, gl.UNSIGNED_INT, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 4, 4, 4, gl.RGBA_INTEGER, gl.UNSIGNED_INT, uint8);
             this.expectError(gl.INVALID_OPERATION);
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 4, 4, 4, gl.RGB, gl.FLOAT, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 4, 4, 4, gl.RGB, gl.FLOAT, uint8);
             this.expectError(gl.INVALID_OPERATION);
 
             gl.deleteTexture(texture);
@@ -2181,10 +2188,11 @@ goog.scope(function() {
             gl.texImage3D (gl.TEXTURE_2D_ARRAY, 0, gl.RGBA, 4, 4, 4, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             this.expectError (gl.NO_ERROR);
 
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(4);
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is less than 0.');
-            gl.texSubImage3D(gl.TEXTURE_3D, -1, 0, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, -1, 0, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, -1, 0, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, -1, 0, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             gl.deleteTexture(texture[0]);
@@ -2205,12 +2213,13 @@ goog.scope(function() {
             /** @type{number} */ var log2Max3DTextureSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_3D_TEXTURE_SIZE)))) + 1;
             /** @type{number} */ var log2MaxTextureSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)))) + 1;
 
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(4);
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_3D_TEXTURE_SIZE).');
-            gl.texSubImage3D(gl.TEXTURE_3D, log2Max3DTextureSize, 0, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, log2Max3DTextureSize, 0, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_TEXTURE_SIZE).');
-            gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, log2MaxTextureSize, 0, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, log2MaxTextureSize, 0, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             gl.deleteTexture(texture[0]);
@@ -2228,22 +2237,23 @@ goog.scope(function() {
             gl.texImage3D (gl.TEXTURE_2D_ARRAY, 0, gl.RGBA, 4, 4, 4, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             this.expectError (gl.NO_ERROR);
 
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(4);
             bufferedLogToConsole('gl.INVALID_VALUE is generated if xoffset, yoffset or zoffset are negative.');
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, -1, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, -1, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, -1, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, -1, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, -1, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, -1, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, -1, -1, -1, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, -1, -1, -1, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, 0, -1, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, 0, -1, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, -1, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, -1, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, 0, -1, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, 0, -1, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, 0, -1, -1, -1, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, 0, -1, -1, -1, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             gl.deleteTexture(texture[0]);
@@ -2258,16 +2268,17 @@ goog.scope(function() {
             gl.texImage3D (gl.TEXTURE_3D, 0, gl.RGBA, 4, 4, 4, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             this.expectError (gl.NO_ERROR);
 
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(256);
             bufferedLogToConsole('gl.INVALID_VALUE is generated if xoffset + width > texture_width.');
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 2, 0, 0, 4, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 2, 0, 0, 4, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if yoffset + height > texture_height.');
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 2, 0, 4, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 2, 0, 4, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if zoffset + depth > texture_depth.');
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 2, 4, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 2, 4, 4, 4, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             gl.deleteTexture(texture);
@@ -2280,14 +2291,15 @@ goog.scope(function() {
             gl.bindTexture (gl.TEXTURE_3D, texture);
             gl.texImage3D (gl.TEXTURE_3D, 0, gl.RGBA, 4, 4, 4, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
+            /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(4);
             bufferedLogToConsole('gl.INVALID_VALUE is generated if width, height or depth is less than 0.');
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, -1, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, -1, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 0, -1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 0, -1, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 0, 0, -1, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, 0, 0, -1, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
-            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, -1, -1, -1, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            gl.texSubImage3D(gl.TEXTURE_3D, 0, 0, 0, 0, -1, -1, -1, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
             this.expectError(gl.INVALID_VALUE);
 
             gl.deleteTexture(texture);
