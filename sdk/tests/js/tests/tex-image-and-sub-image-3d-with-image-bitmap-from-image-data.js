@@ -29,7 +29,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var blackColor = [0, 0, 0];
     var redColor = [255, 0, 0];
     var greenColor = [0, 255, 0];
-    var bitmap;
+    var bitmaps = [];
 
     function init()
     {
@@ -67,13 +67,19 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                                       0, 255, 0, 0]),
                                       2, 2);
 
-        createImageBitmap(imageData).then(imageBitmap => {
-            bitmap = imageBitmap;
+        var p1 = createImageBitmap(imageData).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
+        var p2 = createImageBitmap(imageData, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.noFlipY = imageBitmap });
+        var p3 = createImageBitmap(imageData, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.flipY = imageBitmap });
+        Promise.all([p1, p2, p3]).then(function() {
             runTest();
+        }, function() {
+            // createImageBitmap with options could be rejected if it is not supported
+            finishTest();
+            return;
         });
     }
 
-    function runOneIteration(bindingTarget, program)
+    function runOneIteration(bindingTarget, program, bitmap, flipY)
     {
         debug('Testing ' + ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -96,8 +102,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var height = gl.canvas.height;
         var halfHeight = Math.floor(height / 2);
 
-        var top = height - halfHeight;
-        var bottom = 0;
+        var top = flipY ? 0 : (height - halfHeight);
+        var bottom = flipY ? (height - halfHeight) : 0;
 
         var tl = redColor;
         var tr = blackColor;
@@ -109,10 +115,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         // Check the top pixel and bottom pixel and make sure they have
         // the right color.
-        debug("Checking top");
+        debug("Checking " + (flipY ? "top" : "bottom"));
         wtu.checkCanvasRect(gl, 0, bottom, halfWidth, halfHeight, tl, "shouldBe " + tl);
         wtu.checkCanvasRect(gl, halfWidth, bottom, halfWidth, halfHeight, tr, "shouldBe " + tr);
-        debug("Checking bottom");
+        debug("Checking " + (flipY ? "bottom" : "top"));
         wtu.checkCanvasRect(gl, 0, top, halfWidth, halfHeight, bl, "shouldBe " + bl);
         wtu.checkCanvasRect(gl, halfWidth, top, halfWidth, halfHeight, br, "shouldBe " + br);
     }
@@ -129,7 +135,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function runTestOnBindingTarget(bindingTarget, program) {
-        runOneIteration(bindingTarget, program);
+        runOneIteration(bindingTarget, program, bitmaps.defaultOption, false);
+        runOneIteration(bindingTarget, program, bitmaps.noFlipY, false);
+        runOneIteration(bindingTarget, program, bitmaps.flipY, true);
     }
 
     return init;
