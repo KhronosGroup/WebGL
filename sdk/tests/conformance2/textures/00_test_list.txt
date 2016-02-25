@@ -8,3 +8,4 @@ webgl_canvas/00_test_list.txt
 image_bitmap_from_image_data/00_test_list.txt
 image_bitmap_from_image/00_test_list.txt
 image_bitmap_from_video/00_test_list.txt
+image_bitmap_from_canvas/00_test_list.txt
