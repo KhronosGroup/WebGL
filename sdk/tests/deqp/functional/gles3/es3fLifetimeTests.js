@@ -100,8 +100,12 @@ es3fLifetimeTests.ScaleProgram.prototype.draw = function(vao, scale, tf, dst) {
 es3fLifetimeTests.ScaleProgram.prototype.setPos = function(buffer, vao) {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bindVertexArray(vao);
-    if (buffer)
+    if (buffer) {
         gl.vertexAttribPointer(this.m_posLoc, NUM_COMPONENTS, gl.FLOAT, false, 0, 0);
+    } else {
+        var name = gl.getVertexAttrib(this.m_posLoc, gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING);
+        gl.deleteBuffer(name);
+    }
     gl.bindVertexArray(null);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 };
@@ -254,7 +258,7 @@ es3fLifetimeTests.BufferVAOAttacher.prototype.detach = function(element, target)
 es3fLifetimeTests.BufferVAOAttacher.prototype.getAttachment = function(target) {
     var vao = /** @type {WebGLVertexArrayObject} */ (target);
     gl.bindVertexArray(vao);
-    var name = gl.getVertexAttrib(0, gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING);
+    var name = gl.getVertexAttrib(this.m_posLoc, gl.VERTEX_ATTRIB_ARRAY_BUFFER_BINDING);
     gl.bindVertexArray(null);
     return name;
 };
