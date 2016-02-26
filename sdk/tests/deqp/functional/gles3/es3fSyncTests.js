@@ -206,9 +206,9 @@ goog.scope(function() {
 
         gl.finish();
 
-        if (this.m_caseOptions & es3fSyncTests.CaseOptions.FINISH_BEFORE_WAIT && waitValue != gl.ALREADY_SIGNALED) {
+        if (this.m_caseOptions & es3fSyncTests.CaseOptions.FINISH_BEFORE_WAIT && waitValue == gl.ALREADY_SIGNALED) {
             testOk = false;
-            bufferedLogToConsole('Expected glClientWaitSync to return gl.ALREADY_SIGNALED.');
+            bufferedLogToConsole('glClientWaitSync should not return gl.ALREADY_SIGNALED in the same frame as glFinish issued.');
         }
 
         // Delete sync object
