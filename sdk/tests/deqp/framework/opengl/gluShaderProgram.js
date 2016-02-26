@@ -155,9 +155,9 @@ gluShaderProgram.Shader = function(gl, type) {
  * @constructor
  */
 gluShaderProgram.ProgramInfo = function() {
-    /** @type {string} */ var infoLog;
-    /** @type {boolean} */ var linkOk = false;
-    /** @type {number} */ var linkTimeUs = 0;
+    /** @type {string} */  this.infoLog = ''; /** Link info log. */
+    /** @type {boolean} */ this.linkOk = false; /** Did link succeed? */
+    /** @type {number} */ this.linkTimeUs = 0; /** Link time in microseconds (us). */
 };
 
 /**
