@@ -315,7 +315,7 @@ es3fLifetimeTests.BufferTfAttacher.prototype.detach = function(element, target) 
 es3fLifetimeTests.BufferTfAttacher.prototype.getAttachment = function(target) {
     var tf = /** @type {WebGLTransformFeedback} */ (target);
     gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
-    var name = gl.getParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING);
+    var name = gl.getIndexedParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING, 0);
     gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
     return name;
 };
@@ -421,7 +421,7 @@ es3fLifetimeTests.genTestCases = function() {
     var types = new es3fLifetimeTests.ES3Types();
     glsLifetimeTests.addTestCases(state.testCases, types);
     /* TODO: Add TfDeleteActiveTest test */
-   var deleteActiveGroup = tcuTestCase.newTest('delete_active', 'Delete active object');
+    var deleteActiveGroup = tcuTestCase.newTest('delete_active', 'Delete active object');
     state.testCases.addChild(deleteActiveGroup);
     deleteActiveGroup.addChild(
         new es3fLifetimeTests.TfDeleteActiveTest('transform_feedback', 'Transform Feedback'));
