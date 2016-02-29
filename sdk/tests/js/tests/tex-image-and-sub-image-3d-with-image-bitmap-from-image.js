@@ -28,7 +28,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var successfullyParsed = false;
     var redColor = [255, 0, 0];
     var greenColor = [0, 255, 0];
-    var bitmap;
+    var bitmaps = [];
 
     function init()
     {
@@ -60,15 +60,21 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         var image = new Image();
         image.onload = function() {
-            createImageBitmap(image).then(imageBitmap => {
-                bitmap = imageBitmap;
+            var p1 = createImageBitmap(image).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
+            var p2 = createImageBitmap(image, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.noFlipY = imageBitmap });
+            var p3 = createImageBitmap(image, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.flipY = imageBitmap });
+            Promise.all([p1, p2, p3]).then(function() {
                 runTest();
+            }, function() {
+                // createImageBitmap with options could be rejected if it is not supported
+                finishTest();
+                return;
             });
         }
         image.src = resourcePath + "red-green.png";
     }
 
-    function runOneIteration(bindingTarget, program)
+    function runOneIteration(bindingTarget, program, bitmap, flipY)
     {
         debug('Testing ' + ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -86,8 +92,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                       gl[pixelFormat], gl[pixelType], null);
         gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, gl[pixelFormat], gl[pixelType], bitmap);
 
-        var topColor = greenColor;
-        var bottomColor = redColor;
+        var topColor = flipY ? redColor : greenColor;
+        var bottomColor = flipY ? greenColor : redColor;
 
         // Draw the triangles
         wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
@@ -112,7 +118,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function runTestOnBindingTarget(bindingTarget, program) {
-        runOneIteration(bindingTarget, program);
+        runOneIteration(bindingTarget, program, bitmaps.defaultOption, false);
+        runOneIteration(bindingTarget, program, bitmaps.noFlipY, false);
+        runOneIteration(bindingTarget, program, bitmaps.flipY, true);
     }
 
     return init;
