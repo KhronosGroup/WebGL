@@ -400,20 +400,47 @@ es3fLifetimeTests.TfDeleteActiveTest = function(name, description) {
 setParentClass(es3fLifetimeTests.TfDeleteActiveTest, tcuTestCase.DeqpTest);
 
 es3fLifetimeTests.TfDeleteActiveTest.prototype.iterate = function() {
+/** @const */ var s_xfbVertexSource =
+    '#version 300 es\n' +
+    'void main ()\n' +
+    '{\n' +
+    ' gl_Position = vec4(float(gl_VertexID) / 2.0, float(gl_VertexID % 2) / 2.0, 0.0, 1.0);\n' +
+    '}\n';
+
+/** @const */  var s_xfbFragmentSource =
+    '#version 300 es\n' +
+    'layout(location=0) out mediump vec4 dEQP_FragColor;\n' +
+    'void main (void)\n' +
+    '{\n' +
+    ' dEQP_FragColor = vec4(1.0, 1.0, 0.0, 1.0);\n' +
+    '}\n';
+    var buf = gl.createBuffer();
+
+    var sources = new gluShaderProgram.ProgramSources();
+    sources.add(new gluShaderProgram.VertexSource(s_xfbVertexSource));
+    sources.add(new gluShaderProgram.FragmentSource(s_xfbFragmentSource));
+    sources.add(new gluShaderProgram.TransformFeedbackMode(gl.SEPARATE_ATTRIBS));
+    sources.add(new gluShaderProgram.TransformFeedbackVarying('gl_Position'));
+    var program = new gluShaderProgram.ShaderProgram(gl, sources);
+    if (!program.isOk()) {
+        bufferedLogToConsole(program.getProgramInfo().infoLog);
+        testFailedOptions('failed to build program', true);
+    }
+    gl.useProgram(program.getProgram());
+
     var tf = gl.createTransformFeedback();
     gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
+    gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, buf);
+    gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 48, gl.STATIC_DRAW);
+
     gl.beginTransformFeedback(gl.TRIANGLES);
     var errCode = gl.NONE;
-    try {
-        gl.deleteTransformFeedback(tf);
-    } catch (err) {
-        errCode = err.error;
-    }
-    gl.endTransformFeedback();
     gl.deleteTransformFeedback(tf);
+    errCode = gl.getError();
     assertMsgOptions(errCode == gl.INVALID_OPERATION,
         'Deleting active transform feedback must produce INVALID_OPERATION', false, true);
-
+    gl.endTransformFeedback();
+    gl.deleteTransformFeedback(tf);
     testPassed();
     return tcuTestCase.IterateResult.STOP;
 };
