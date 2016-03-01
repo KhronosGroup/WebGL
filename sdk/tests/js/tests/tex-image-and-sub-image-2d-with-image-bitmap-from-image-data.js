@@ -33,7 +33,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function init()
     {
-        description('Verify texImage2D and texSubImage2D code paths taking ImageBitmap (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
+        description('Verify texImage2D and texSubImage2D code paths taking ImageBitmap created from ImageData (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
         if(!window.createImageBitmap || !window.ImageBitmap) {
             finishTest();
@@ -68,9 +68,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                                       2, 2);
 
         var p1 = createImageBitmap(imageData).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
-        var p2 = createImageBitmap(imageData, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.noFlipY = imageBitmap });
-        var p3 = createImageBitmap(imageData, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.flipY = imageBitmap });
-        Promise.all([p1, p2, p3]).then(function() {
+        var p2 = createImageBitmap(imageData, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
+        var p3 = createImageBitmap(imageData, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul = imageBitmap });
+        var p4 = createImageBitmap(imageData, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
+        var p5 = createImageBitmap(imageData, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
+        Promise.all([p1, p2, p3, p4, p5]).then(function() {
             runTest();
         }, function() {
             // createImageBitmap with options could be rejected if it is not supported
@@ -79,9 +81,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         });
     }
 
-    function runOneIteration(useTexSubImage2D, bindingTarget, program, bitmap, flipY)
+    function runOneIteration(useTexSubImage2D, bindingTarget, program, bitmap, flipY, premultiplyAlpha)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
+              ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
               ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP'));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Enable writes to the RGBA channels
@@ -123,9 +126,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var bottom = flipY ? (height - halfHeight) : 0;
 
         var tl = redColor;
-        var tr = blackColor;
+        var tr = premultiplyAlpha ? blackColor : redColor;
         var bl = greenColor;
-        var br = blackColor;
+        var br = premultiplyAlpha ? blackColor : greenColor;
 
         var loc;
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
@@ -168,9 +171,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         ];
 
         for (var i in cases) {
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.defaultOption, false);
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.noFlipY, false);
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.flipY, true);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.defaultOption, false, true);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.noFlipYPremul, false, true);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.noFlipYUnpremul, false, false);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.flipYPremul, true, true);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.flipYUnpremul, true, false);
         }
     }
 

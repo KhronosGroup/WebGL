@@ -28,7 +28,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var successfullyParsed = false;
     var redColor = [255, 0, 0];
     var greenColor = [0, 255, 0];
-    var bitmap;
+    var bitmaps = [];
 
     function init()
     {
@@ -60,16 +60,22 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         var video = document.createElement("video");
         video.oncanplaythrough = function() {
-            createImageBitmap(video).then(imageBitmap => {
-                bitmap = imageBitmap;
+            var p1 = createImageBitmap(video).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
+            var p2 = createImageBitmap(video, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.noFlipY = imageBitmap });
+            var p3 = createImageBitmap(video, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.flipY = imageBitmap });
+            Promise.all([p1, p2, p3]).then(function() {
                 runTest();
+            }, function() {
+                // createImageBitmap with options could be rejected if it is not supported
+                finishTest();
+                return;
             });
         }
         video.src = resourcePath + "red-green.theora.ogv";
         document.body.appendChild(video);
     }
 
-    function runOneIteration(useTexSubImage2D, bindingTarget, program)
+    function runOneIteration(useTexSubImage2D, bindingTarget, program, bitmap, flipY)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
               ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP'));
@@ -106,8 +112,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             }
         }
 
-        var topColor = greenColor;
-        var bottomColor = redColor;
+        var topColor = flipY ? redColor : greenColor;
+        var bottomColor = flipY ? greenColor : redColor;
 
         var loc;
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
@@ -136,7 +142,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         runTestOnBindingTarget(gl.TEXTURE_2D, program);
 
         // cube map texture must be square.
-        if (bitmap.width == bitmap.height) {
+        if (bitmaps.defaultOption.width == bitmaps.defaultOption.height) {
             program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
             runTestOnBindingTarget(gl.TEXTURE_CUBE_MAP, program);
         }
@@ -152,7 +158,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         ];
 
         for (var i in cases) {
-            runOneIteration(cases[i].sub, bindingTarget, program);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.defaultOption, false);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.noFlipY, false);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.flipY, true);
         }
     }
 
