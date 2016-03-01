@@ -33,7 +33,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function init()
     {
-        description('Verify texImage3D and texSubImage3D code paths taking ImageBitmap (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
+        description('Verify texImage3D and texSubImage3D code paths taking ImageBitmap created from ImageData (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
         if(!window.createImageBitmap || !window.ImageBitmap) {
             finishTest();
@@ -68,9 +68,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                                       2, 2);
 
         var p1 = createImageBitmap(imageData).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
-        var p2 = createImageBitmap(imageData, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.noFlipY = imageBitmap });
-        var p3 = createImageBitmap(imageData, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.flipY = imageBitmap });
-        Promise.all([p1, p2, p3]).then(function() {
+        var p2 = createImageBitmap(imageData, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
+        var p3 = createImageBitmap(imageData, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul = imageBitmap });
+        var p4 = createImageBitmap(imageData, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
+        var p5 = createImageBitmap(imageData, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
+        Promise.all([p1, p2, p3, p4, p5]).then(function() {
             runTest();
         }, function() {
             // createImageBitmap with options could be rejected if it is not supported
@@ -79,9 +81,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         });
     }
 
-    function runOneIteration(bindingTarget, program, bitmap, flipY)
+    function runOneIteration(bindingTarget, program, bitmap, flipY, premultiplyAlpha)
     {
-        debug('Testing ' + ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
+        debug('Testing ' + ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
+              ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Enable writes to the RGBA channels
         gl.colorMask(1, 1, 1, 0);
@@ -106,9 +109,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var bottom = flipY ? (height - halfHeight) : 0;
 
         var tl = redColor;
-        var tr = blackColor;
+        var tr = premultiplyAlpha ? blackColor : redColor;
         var bl = greenColor;
-        var br = blackColor;
+        var br = premultiplyAlpha ? blackColor : greenColor;
 
         // Draw the triangles
         wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
@@ -135,9 +138,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function runTestOnBindingTarget(bindingTarget, program) {
-        runOneIteration(bindingTarget, program, bitmaps.defaultOption, false);
-        runOneIteration(bindingTarget, program, bitmaps.noFlipY, false);
-        runOneIteration(bindingTarget, program, bitmaps.flipY, true);
+        runOneIteration(bindingTarget, program, bitmaps.defaultOption, false, true);
+        runOneIteration(bindingTarget, program, bitmaps.noFlipYPremul, false, true);
+        runOneIteration(bindingTarget, program, bitmaps.noFlipYUnpremul, false, false);
+        runOneIteration(bindingTarget, program, bitmaps.flipYPremul, true, true);
+        runOneIteration(bindingTarget, program, bitmaps.flipYUnpremul, true, false);
     }
 
     return init;
