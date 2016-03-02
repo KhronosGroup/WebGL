@@ -1110,7 +1110,7 @@ goog.scope(function() {
                     case 'int':
                         gl.vertexAttribIPointer(loc, numComponents, gl.INT, this.m_inputStride, attrib.offset); break;
                     case 'uint':
-                        gl.vertexAttribPointer(loc, numComponents, gl.UNSIGNED_INT, false, this.m_inputStride, attrib.offset); break;
+                        gl.vertexAttribIPointer(loc, numComponents, gl.UNSIGNED_INT, this.m_inputStride, attrib.offset); break;
                 }
             }
         }
