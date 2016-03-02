@@ -26,6 +26,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var tiu = TexImageUtils;
     var gl = null;
     var successfullyParsed = false;
+    var halfRedColor = [128, 0, 0];
+    var halfGreenColor = [0, 128, 0];
     var redColor = [255, 0, 0];
     var greenColor = [0, 255, 0];
     var bitmaps = [];
@@ -58,12 +60,18 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl.clearColor(0,0,0,1);
         gl.clearDepth(1);
 
+        var testCanvas = document.createElement('canvas');
+        var ctx = testCanvas.getContext("2d");
+        setCanvasToRedGreen(ctx);
+
         var image = new Image();
         image.onload = function() {
             var p1 = createImageBitmap(image).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
-            var p2 = createImageBitmap(image, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.noFlipY = imageBitmap });
-            var p3 = createImageBitmap(image, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.flipY = imageBitmap });
-            Promise.all([p1, p2, p3]).then(function() {
+            var p2 = createImageBitmap(image, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
+            var p3 = createImageBitmap(image, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul = imageBitmap });
+            var p4 = createImageBitmap(image, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
+            var p5 = createImageBitmap(image, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
+            Promise.all([p1, p2, p3, p4, p5]).then(function() {
                 runTest();
             }, function() {
                 // createImageBitmap with options could be rejected if it is not supported
@@ -71,12 +79,30 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                 return;
             });
         }
-        image.src = resourcePath + "red-green.png";
+        image.src = testCanvas.toDataURL();
     }
 
-    function runOneIteration(bindingTarget, program, bitmap, flipY)
+    function setCanvasToRedGreen(ctx) {
+      ctx.canvas.width = 2;
+      ctx.canvas.height = 2;
+      var width = ctx.canvas.width;
+      var halfWidth = Math.floor(width / 2);
+      var height = ctx.canvas.height;
+      var halfHeight = Math.floor(height / 2);
+      ctx.fillStyle = "rgba(255, 0, 0, 1)";
+      ctx.fillRect(0, 0, halfWidth, halfHeight);
+      ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+      ctx.fillRect(halfWidth, 0, halfWidth, halfHeight);
+      ctx.fillStyle = "rgba(0, 255, 0, 1)";
+      ctx.fillRect(0, halfHeight, halfWidth, halfHeight);
+      ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+      ctx.fillRect(halfWidth, halfHeight, halfWidth, halfHeight);
+    }
+
+    function runOneIteration(bindingTarget, program, bitmap, flipY, premultiplyAlpha)
     {
-        debug('Testing ' + ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
+        debug('Testing ' + + ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
+              ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Enable writes to the RGBA channels
         gl.colorMask(1, 1, 1, 0);
@@ -92,18 +118,33 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                       gl[pixelFormat], gl[pixelType], null);
         gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, gl[pixelFormat], gl[pixelType], bitmap);
 
-        var topColor = flipY ? redColor : greenColor;
-        var bottomColor = flipY ? greenColor : redColor;
+        var width = gl.canvas.width;
+        var halfWidth = Math.floor(width / 2);
+        var quaterWidth = Math.floor(halfWidth / 2);
+        var height = gl.canvas.height;
+        var halfHeight = Math.floor(height / 2);
+        var quaterHeight = Math.floor(halfHeight / 2);
+
+        var top = flipY ? quaterHeight : (height - halfHeight + quaterHeight);
+        var bottom = flipY ? (height - halfHeight + quaterHeight) : quaterHeight;
+
+        var tl = redColor;
+        var tr = premultiplyAlpha ? halfRedColor : redColor;
+        var bl = greenColor;
+        var br = premultiplyAlpha ? halfGreenColor : greenColor;
 
         // Draw the triangles
         wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
 
         // Check a few pixels near the top and bottom and make sure they have
         // the right color.
-        debug("Checking lower left corner");
-        wtu.checkCanvasRect(gl, 4, 4, 2, 2, bottomColor, "shouldBe " + bottomColor);
-        debug("Checking upper left corner");
-        wtu.checkCanvasRect(gl, 4, gl.canvas.height - 8, 2, 2, topColor, "shouldBe " + topColor);
+        var tolerance = 10;
+        debug("Checking " + (flipY ? "top" : "bottom"));
+        wtu.checkCanvasRect(gl, quaterWidth, bottom, 2, 2, tl, "shouldBe " + tl);
+        wtu.checkCanvasRect(gl, halfWidth + quaterWidth, bottom, 2, 2, tr, "shouldBe " + tr, tolerance);
+        debug("Checking " + (flipY ? "bottom" : "top"));
+        wtu.checkCanvasRect(gl, quaterWidth, top, 2, 2, bl, "shouldBe " + bl);
+        wtu.checkCanvasRect(gl, halfWidth + quaterWidth, top, 2, 2, br, "shouldBe " + br, tolerance);
     }
 
     function runTest()
@@ -118,9 +159,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function runTestOnBindingTarget(bindingTarget, program) {
-        runOneIteration(bindingTarget, program, bitmaps.defaultOption, false);
-        runOneIteration(bindingTarget, program, bitmaps.noFlipY, false);
-        runOneIteration(bindingTarget, program, bitmaps.flipY, true);
+        runOneIteration(bindingTarget, program, bitmaps.defaultOption, false, true);
+        runOneIteration(bindingTarget, program, bitmaps.noFlipYPremul, false, true);
+        runOneIteration(bindingTarget, program, bitmaps.noFlipYUnpremul, false, false);
+        runOneIteration(bindingTarget, program, bitmaps.flipYPremul, true, true);
+        runOneIteration(bindingTarget, program, bitmaps.flipYUnpremul, true, false);
     }
 
     return init;

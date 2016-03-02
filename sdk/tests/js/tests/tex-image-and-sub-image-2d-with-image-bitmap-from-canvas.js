@@ -26,6 +26,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var tiu = TexImageUtils;
     var gl = null;
     var successfullyParsed = false;
+    var halfRedColor = [128, 0, 0];
+    var halfGreenColor = [0, 128, 0];
     var redColor = [255, 0, 0];
     var greenColor = [0, 255, 0];
     var bitmaps = [];
@@ -62,13 +64,18 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var ctx = testCanvas.getContext("2d");
         setCanvasToMin(ctx);
         var p1 = createImageBitmap(testCanvas).then(function(imageBitmap) { bitmaps.minDefaultOption = imageBitmap });
-        var p2 = createImageBitmap(testCanvas, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.minNoFlipY = imageBitmap });
-        var p3 = createImageBitmap(testCanvas, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.minFlipY = imageBitmap });
+        var p2 = createImageBitmap(testCanvas, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.minNoFlipYPremul = imageBitmap });
+        var p3 = createImageBitmap(testCanvas, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.minNoFlipYUnpremul = imageBitmap });
+        var p4 = createImageBitmap(testCanvas, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.minFlipYPremul = imageBitmap });
+        var p5 = createImageBitmap(testCanvas, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.minFlipYUnpremul = imageBitmap });
+
         setCanvasTo257x257(ctx);
-        var p4 = createImageBitmap(testCanvas).then(function(imageBitmap) { bitmaps.bigDefaultOption = imageBitmap });
-        var p5 = createImageBitmap(testCanvas, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.bigNoFlipY = imageBitmap });
-        var p6 = createImageBitmap(testCanvas, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.bigFlipY = imageBitmap });
-        Promise.all([p1, p2, p3, p4, p5, p6]).then(function() {
+        var p6 = createImageBitmap(testCanvas).then(function(imageBitmap) { bitmaps.bigDefaultOption = imageBitmap });
+        var p7 = createImageBitmap(testCanvas, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.bigNoFlipYPremul = imageBitmap });
+        var p8 = createImageBitmap(testCanvas, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.bigNoFlipYUnpremul = imageBitmap });
+        var p9 = createImageBitmap(testCanvas, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.bigFlipYPremul = imageBitmap });
+        var p10 = createImageBitmap(testCanvas, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.bigFlipYUnpremul = imageBitmap });
+        Promise.all([p1, p2, p3, p4, p5, p6, p7, p8, p9, p10]).then(function() {
             runTest();
         }, function() {
             // createImageBitmap with options could be rejected if it is not supported
@@ -79,12 +86,17 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function setCanvasToRedGreen(ctx) {
         var width = ctx.canvas.width;
+        var halfWidth = Math.floor(width / 2);
         var height = ctx.canvas.height;
         var halfHeight = Math.floor(height / 2);
-        ctx.fillStyle = "#ff0000";
-        ctx.fillRect(0, 0, width, halfHeight);
-        ctx.fillStyle = "#00ff00";
-        ctx.fillRect(0, halfHeight, width, height - halfHeight);
+        ctx.fillStyle = "rgba(255, 0, 0, 1)";
+        ctx.fillRect(0, 0, halfWidth, halfHeight);
+        ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+        ctx.fillRect(halfWidth, 0, halfWidth, halfHeight);
+        ctx.fillStyle = "rgba(0, 255, 0, 1)";
+        ctx.fillRect(0, halfHeight, halfWidth, halfHeight);
+        ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+        ctx.fillRect(halfWidth, halfHeight, halfWidth, halfHeight);
     }
 
     function setCanvasToMin(ctx) {
@@ -99,9 +111,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         setCanvasToRedGreen(ctx);
     }
 
-    function runOneIteration(useTexSubImage2D, bindingTarget, program, bitmap, flipY)
+    function runOneIteration(useTexSubImage2D, bindingTarget, program, bitmap, flipY, premultiplyAlpha)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
+              ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
               ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP'));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Enable writes to the RGBA channels
@@ -137,10 +150,19 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         }
 
         var width = gl.canvas.width;
+        var halfWidth = Math.floor(width / 2);
+        var quaterWidth = Math.floor(halfWidth / 2);
         var height = gl.canvas.height;
         var halfHeight = Math.floor(height / 2);
-        var top = flipY ? 0 : (height - halfHeight);
-        var bottom = flipY ? (height - halfHeight) : 0;
+        var quaterHeight = Math.floor(halfHeight / 2);
+
+        var top = flipY ? quaterHeight : (height - halfHeight + quaterHeight);
+        var bottom = flipY ? (height - halfHeight + quaterHeight) : quaterHeight;
+
+        var tl = redColor;
+        var tr = premultiplyAlpha ? halfRedColor : redColor;
+        var bl = greenColor;
+        var br = premultiplyAlpha ? halfGreenColor : greenColor;
 
         var loc;
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
@@ -156,10 +178,13 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
             // Check the top pixel and bottom pixel and make sure they have
             // the right color.
+            var tolerance = 10;
             debug("Checking " + (flipY ? "top" : "bottom"));
-            wtu.checkCanvasRect(gl, 0, bottom, width, halfHeight, redColor, "shouldBe " + redColor);
+            wtu.checkCanvasRect(gl, quaterWidth, bottom, 2, 2, tl, "shouldBe " + tl);
+            wtu.checkCanvasRect(gl, halfWidth + quaterWidth, bottom, 2, 2, tr, "shouldBe " + tr, tolerance);
             debug("Checking " + (flipY ? "bottom" : "top"));
-            wtu.checkCanvasRect(gl, 0, top, width, halfHeight, greenColor, "shouldBe " + greenColor);
+            wtu.checkCanvasRect(gl, quaterWidth, top, 2, 2, bl, "shouldBe " + bl);
+            wtu.checkCanvasRect(gl, halfWidth + quaterWidth, top, 2, 2, br, "shouldBe " + br, tolerance);
         }
     }
 
@@ -181,12 +206,16 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         ];
 
         for (var i in cases) {
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.minDefaultOption, false);
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.minNoFlipY, false);
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.minFlipY, true);
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.bigDefaultOption, false);
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.bigNoFlipY, false);
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.bigFlipY, true);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.bigDefaultOption, false, true);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.bigNoFlipYPremul, false, true);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.bigNoFlipYUnpremul, false, false);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.bigFlipYPremul, true, true);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.bigFlipYUnpremul, true, false);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.minDefaultOption, false, true);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.minNoFlipYPremul, false, true);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.minNoFlipYUnpremul, false, false);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.minFlipYPremul, true, true);
+            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.minFlipYUnpremul, true, false);
         }
     }
 
