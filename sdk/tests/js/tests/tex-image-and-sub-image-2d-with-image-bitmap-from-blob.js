@@ -34,7 +34,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function init()
     {
-        description('Verify texImage2D and texSubImage2D code paths taking ImageBitmap created from an HTMLImageElement (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
+        description('Verify texImage2D and texSubImage2D code paths taking ImageBitmap created from a Blob (' + internalFormat + '/' + pixelFormat + '/' + pixelType + ')');
 
         if(!window.createImageBitmap || !window.ImageBitmap) {
             finishTest();
@@ -60,13 +60,17 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl.clearColor(0,0,0,1);
         gl.clearDepth(1);
 
-        var image = new Image();
-        image.onload = function() {
-            var p1 = createImageBitmap(image).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
-            var p2 = createImageBitmap(image, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
-            var p3 = createImageBitmap(image, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul = imageBitmap });
-            var p4 = createImageBitmap(image, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
-            var p5 = createImageBitmap(image, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", resourcePath + "red-green-semi-transparent.png");
+        xhr.responseType = 'blob';
+        xhr.send();
+        xhr.onload = function() {
+            var blob = xhr.response;
+            var p1 = createImageBitmap(blob).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
+            var p2 = createImageBitmap(blob, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
+            var p3 = createImageBitmap(blob, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul = imageBitmap });
+            var p4 = createImageBitmap(blob, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
+            var p5 = createImageBitmap(blob, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
             Promise.all([p1, p2, p3, p4, p5]).then(function() {
                 runTest();
             }, function() {
@@ -75,7 +79,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                 return;
             });
         }
-        image.src = resourcePath + "red-green-semi-transparent.png";
     }
 
     function runOneIteration(useTexSubImage2D, bindingTarget, program, bitmap, flipY, premultiplyAlpha)
