@@ -992,11 +992,11 @@ glsLifetimeTests.OutputAttachmentTest.prototype.iterate = function() {
     var element = elementType.gen();
 
     attacher.initAttachment(0, element);
+    this.m_outputAttacher.drawAttachment(element, refSurface);
     attacher.attach(element, container);
 
     // For reference purposes, make note of what refSeed looks like.
     this.m_outputAttacher.setupContainer(refSeed, container);
-    this.m_outputAttacher.drawAttachment(element, refSurface);
     elementType.release(element);
 
     bufferedLogToConsole('Writing to a container after deletion of attachment');
