@@ -282,8 +282,8 @@ gluDrawUtil.vertexBuffer = function(gl, vertexArray) {
         case gl.UNSIGNED_BYTE: typedArray = new Uint8Array(vertexArray.data); break;
         case gl.SHORT: typedArray = new Int16Array(vertexArray.data); break;
         case gl.UNSIGNED_SHORT: typedArray = new Uint16Array(vertexArray.data); break;
-        case gl.INT: typedArray = new Int16Array(vertexArray.data); break;
-        case gl.UNSIGNED_INT: typedArray = new Uint16Array(vertexArray.data); break;
+        case gl.INT: typedArray = new Int32Array(vertexArray.data); break;
+        case gl.UNSIGNED_INT: typedArray = new Uint32Array(vertexArray.data); break;
         default: typedArray = new Float32Array(vertexArray.data); break;
     }
 
@@ -294,7 +294,11 @@ gluDrawUtil.vertexBuffer = function(gl, vertexArray) {
     assertMsgOptions(gl.getError() === gl.NO_ERROR, 'bufferData', false, true);
     gl.enableVertexAttribArray(vertexArray.location);
     assertMsgOptions(gl.getError() === gl.NO_ERROR, 'enableVertexAttribArray', false, true);
-    gl.vertexAttribPointer(vertexArray.location, vertexArray.components, vertexArray.type, false, vertexArray.stride, vertexArray.offset);
+    if (vertexArray.type === gl.FLOAT) {
+        gl.vertexAttribPointer(vertexArray.location, vertexArray.components, vertexArray.type, false, vertexArray.stride, vertexArray.offset);
+    } else {
+        gl.vertexAttribIPointer(vertexArray.location, vertexArray.components, vertexArray.type, vertexArray.stride, vertexArray.offset);
+    }
     assertMsgOptions(gl.getError() === gl.NO_ERROR, 'vertexAttribPointer', false, true);
     return buffer;
 };
