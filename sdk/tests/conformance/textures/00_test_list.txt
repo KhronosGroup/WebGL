@@ -10,3 +10,4 @@ image_bitmap_from_image/00_test_list.txt
 image_bitmap_from_video/00_test_list.txt
 image_bitmap_from_canvas/00_test_list.txt
 image_bitmap_from_blob/00_test_list.txt
+image_bitmap_from_image_bitmap/00_test_list.txt
