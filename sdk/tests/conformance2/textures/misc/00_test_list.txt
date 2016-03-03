@@ -9,5 +9,6 @@ tex-new-formats.html
 tex-storage-2d.html
 tex-storage-and-subimage-3d.html
 tex-storage-compressed-formats.html
+tex-unpack-params.html
 texel-fetch-undefined.html
 texture-npot.html
