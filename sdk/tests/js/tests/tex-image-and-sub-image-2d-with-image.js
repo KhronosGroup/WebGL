@@ -27,6 +27,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var gl = null;
     var successfullyParsed = false;
     var imgCanvas;
+    var halfRedColor = [128, 0, 0];
+    var halfGreenColor = [0, 128, 0];
     var redColor = [255, 0, 0];
     var greenColor = [0, 255, 0];
 
@@ -54,7 +56,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl.clearColor(0,0,0,1);
         gl.clearDepth(1);
 
-        wtu.loadTexture(gl, resourcePath + "red-green.png", runTest);
+        wtu.loadTexture(gl, resourcePath + "red-green-semi-transparent.png", runTest);
     }
 
     function runOneIteration(image, useTexSubImage2D, flipY, topColor, bottomColor,
@@ -74,7 +76,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl.texParameteri(bindingTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         // Set up pixel store parameters
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
-        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
         wtu.failIfGLError(gl, 'gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);');
         var targets = [gl.TEXTURE_2D];
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
@@ -102,6 +104,21 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             loc = gl.getUniformLocation(program, "face");
         }
 
+        var width = gl.canvas.width;
+        var halfWidth = Math.floor(width / 2);
+        var quaterWidth = Math.floor(halfWidth / 2);
+        var height = gl.canvas.height;
+        var halfHeight = Math.floor(height / 2);
+        var quaterHeight = Math.floor(halfHeight / 2);
+
+        var top = flipY ? quaterHeight : (height - halfHeight + quaterHeight);
+        var bottom = flipY ? (height - halfHeight + quaterHeight) : quaterHeight;
+
+        var tl = redColor;
+        var tr = halfRedColor; // tr should be halfRedColor because UNPACK_PREMULTIPLY_ALPHA_WEBGL=true
+        var bl = greenColor;
+        var br = halfGreenColor;
+
         for (var tt = 0; tt < targets.length; ++tt) {
             if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
                 gl.uniform1i(loc, targets[tt]);
@@ -111,12 +128,13 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
             // Check a few pixels near the top and bottom and make sure they have
             // the right color.
-            debug("Checking lower left corner");
-            wtu.checkCanvasRect(gl, 4, 4, 2, 2, bottomColor,
-                                "shouldBe " + bottomColor);
-            debug("Checking upper left corner");
-            wtu.checkCanvasRect(gl, 4, gl.canvas.height - 8, 2, 2, topColor,
-                                "shouldBe " + topColor);
+            var tolerance = 8;
+            debug("Checking " + (flipY ? "top" : "bottom"));
+            wtu.checkCanvasRect(gl, quaterWidth, bottom, 2, 2, tl, "shouldBe " + tl);
+            wtu.checkCanvasRect(gl, halfWidth + quaterWidth, bottom, 2, 2, tr, "shouldBe " + tr, tolerance);
+            debug("Checking " + (flipY ? "bottom" : "top"));
+            wtu.checkCanvasRect(gl, quaterWidth, top, 2, 2, bl, "shouldBe " + bl);
+            wtu.checkCanvasRect(gl, halfWidth + quaterWidth, top, 2, 2, br, "shouldBe " + br, tolerance);
         }
     }
 
@@ -148,8 +166,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     function runTest(image)
     {
         runTestOnImage(image);
+        finishTest();
 
-        imgCanvas = document.createElement("canvas");
+        /*imgCanvas = document.createElement("canvas");
         imgCanvas.width = 2;
         imgCanvas.height = 2;
         var imgCtx = imgCanvas.getContext("2d");
@@ -176,7 +195,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             testFailed("Creating image from canvas failed. Image src: " + this.src);
             finishTest();
         };
-        newImage.src = imgCanvas.toDataURL();
+        newImage.src = imgCanvas.toDataURL();*/
     }
 
     function runTest2(image) {
