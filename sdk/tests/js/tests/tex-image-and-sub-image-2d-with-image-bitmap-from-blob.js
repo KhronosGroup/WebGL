@@ -67,9 +67,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         xhr.onload = function() {
             var blob = xhr.response;
             var p1 = createImageBitmap(blob).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
-            var p2 = createImageBitmap(blob, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
+            var p2 = createImageBitmap(blob, {imageOrientation: "none", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
             var p3 = createImageBitmap(blob, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul = imageBitmap });
-            var p4 = createImageBitmap(blob, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
+            var p4 = createImageBitmap(blob, {imageOrientation: "flipY", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
             var p5 = createImageBitmap(blob, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
             Promise.all([p1, p2, p3, p4, p5]).then(function() {
                 runTest();
