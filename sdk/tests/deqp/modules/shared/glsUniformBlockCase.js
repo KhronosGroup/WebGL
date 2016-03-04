@@ -2080,6 +2080,8 @@ glsUniformBlockCase.copyUniformData = function(dstLayout, dstBlockPointers, srcL
     /** @type {boolean} */ var renderOk = this.render(program);
     if (!renderOk)
         testFailedOptions('Image compare failed', false);
+    else
+        assertMsgOptions(renderOk, '', true, false);
 
     return tcuTestCase.IterateResult.STOP;
 };
