@@ -46,6 +46,18 @@ goog.scope(function() {
 	es3fShaderPrecisionTests.add = function(a, b) { return a + b; };
 	es3fShaderPrecisionTests.sub = function(a, b) { return a - b; };
 	es3fShaderPrecisionTests.mul = function(a, b) { return a * b; };
+	// a * b = (a1 * 2^16 + a0) * (b1 * 2^16 + b0) = a1 * b1 * 2^32 + (a0 * b1 + a1 * b0) * 2^16 + a0 * b0
+	// 32bit integer multiplication may overflow in JavaScript. Only return low 32bit of the result.
+	es3fShaderPrecisionTests.mul32 = function(a, b) {
+	  var sign = Math.sign(a) * Math.sign(b);
+	  a = Math.abs(a);
+	  b = Math.abs(b);
+	  var a1 = deMath.split16(a)[1];
+	  var a0 = deMath.split16(a)[0];
+	  var b1 = deMath.split16(b)[1];
+	  var b0 = deMath.split16(b)[0];
+	  return sign * ((a0 * b1 + a1 * b0) * 0x10000 + a0 * b0);
+	}
 	es3fShaderPrecisionTests.div = function(a, b) { if (b !== 0) return a / b; else throw new Error('division by zero.')};
 
     /**
@@ -818,7 +830,7 @@ goog.scope(function() {
         /** @type {Array<IntCase>} */ var intCases = [
             new IntCase('highp_add', 'in0 + in1', es3fShaderPrecisionTests.add, gluShaderUtil.precision.PRECISION_HIGHP, 32, fullRange32I, fullRange32I),
             new IntCase('highp_sub', 'in0 - in1', es3fShaderPrecisionTests.sub, gluShaderUtil.precision.PRECISION_HIGHP, 32, fullRange32I, fullRange32I),
-            new IntCase('highp_mul', 'in0 * in1', es3fShaderPrecisionTests.mul, gluShaderUtil.precision.PRECISION_HIGHP, 32, fullRange32I, fullRange32I),
+            new IntCase('highp_mul', 'in0 * in1', es3fShaderPrecisionTests.mul32, gluShaderUtil.precision.PRECISION_HIGHP, 32, fullRange32I, fullRange32I),
             new IntCase('highp_div', 'in0 / in1', es3fShaderPrecisionTests.div, gluShaderUtil.precision.PRECISION_HIGHP, 32, fullRange32I, [-10000, -1]),
             new IntCase('mediump_add', 'in0 + in1', es3fShaderPrecisionTests.add, gluShaderUtil.precision.PRECISION_MEDIUMP, 16, fullRange16I, fullRange16I),
             new IntCase('mediump_sub', 'in0 - in1', es3fShaderPrecisionTests.sub, gluShaderUtil.precision.PRECISION_MEDIUMP, 16, fullRange16I, fullRange16I),
@@ -854,7 +866,7 @@ goog.scope(function() {
         /** @type {Array<UintCase>} */ var uintCases = [
             new UintCase('highp_add', 'in0 + in1', es3fShaderPrecisionTests.add, gluShaderUtil.precision.PRECISION_HIGHP, 32, fullRange32U, fullRange32U),
             new UintCase('highp_sub', 'in0 - in1', es3fShaderPrecisionTests.sub, gluShaderUtil.precision.PRECISION_HIGHP, 32, fullRange32U, fullRange32U),
-            new UintCase('highp_mul', 'in0 * in1', es3fShaderPrecisionTests.mul, gluShaderUtil.precision.PRECISION_HIGHP, 32, fullRange32U, fullRange32U),
+            new UintCase('highp_mul', 'in0 * in1', es3fShaderPrecisionTests.mul32, gluShaderUtil.precision.PRECISION_HIGHP, 32, fullRange32U, fullRange32U),
             new UintCase('highp_div', 'in0 / in1', es3fShaderPrecisionTests.div, gluShaderUtil.precision.PRECISION_HIGHP, 32, fullRange32U, [1, 10000]),
             new UintCase('mediump_add', 'in0 + in1', es3fShaderPrecisionTests.add, gluShaderUtil.precision.PRECISION_MEDIUMP, 16, fullRange16U, fullRange16U),
             new UintCase('mediump_sub', 'in0 - in1', es3fShaderPrecisionTests.sub, gluShaderUtil.precision.PRECISION_MEDIUMP, 16, fullRange16U, fullRange16U),
