@@ -568,6 +568,19 @@ deMath.split32 = function(x) {
 };
 
 /**
+ * Split a signed number's low 32bit dwords into low and high 16bit dwords.
+ * @param {number} x
+ * @return {Array<number>}
+ */
+deMath.split16 = function(x) {
+    var ret = [];
+    x = x & 0xffffffff;
+    ret[1] = Math.floor(x / 0x10000);
+    ret[0] = x - ret[1] * 0x10000;
+    return ret;
+};
+
+/**
  * Recontruct a number from high and low 32 bit dwords
  * @param {Array<number>} x
  * @return {number}
