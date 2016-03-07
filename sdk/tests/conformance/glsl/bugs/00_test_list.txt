@@ -1,3 +1,4 @@
+--min-version 1.0.4 angle-ambiguous-function-call.html
 --min-version 1.0.4 angle-constructor-invalid-parameters.html
 --min-version 1.0.3 angle-d3d11-compiler-error.html
 --min-version 1.0.3 angle-dx-variable-bug.html
