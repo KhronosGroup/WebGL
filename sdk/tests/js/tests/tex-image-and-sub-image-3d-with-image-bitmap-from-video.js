@@ -60,10 +60,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         video = document.createElement("video");
         video.oncanplaythrough = function() {
-            var p1 = createImageBitmap(video).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
-            var p2 = createImageBitmap(video, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.noFlipY = imageBitmap });
-            var p3 = createImageBitmap(video, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.flipY = imageBitmap });
-            Promise.all([p1, p2, p3]).then(function() {
+            var p1 = createImageBitmap(video, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.noFlipY = imageBitmap });
+            var p2 = createImageBitmap(video, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.flipY = imageBitmap });
+            Promise.all([p1, p2]).then(function() {
                 runTest();
             }, function() {
                 // createImageBitmap with options could be rejected if it is not supported
@@ -122,7 +121,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function runTestOnBindingTarget(bindingTarget, program) {
-        runOneIteration(bindingTarget, program, bitmaps.defaultOption, false);
         runOneIteration(bindingTarget, program, bitmaps.noFlipY, false);
         runOneIteration(bindingTarget, program, bitmaps.flipY, true);
     }

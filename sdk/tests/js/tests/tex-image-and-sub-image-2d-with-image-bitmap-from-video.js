@@ -60,10 +60,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         var video = document.createElement("video");
         video.oncanplaythrough = function() {
-            var p1 = createImageBitmap(video).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
-            var p2 = createImageBitmap(video, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.noFlipY = imageBitmap });
-            var p3 = createImageBitmap(video, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.flipY = imageBitmap });
-            Promise.all([p1, p2, p3]).then(function() {
+            var p1 = createImageBitmap(video, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.noFlipY = imageBitmap });
+            var p2 = createImageBitmap(video, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.flipY = imageBitmap });
+            Promise.all([p1, p2]).then(function() {
                 runTest();
             }, function() {
                 // createImageBitmap with options could be rejected if it is not supported
@@ -142,7 +141,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         runTestOnBindingTarget(gl.TEXTURE_2D, program);
 
         // cube map texture must be square.
-        if (bitmaps.defaultOption.width == bitmaps.defaultOption.height) {
+        if (bitmaps.noFlipY.width == bitmaps.noFlipY.height) {
             program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
             runTestOnBindingTarget(gl.TEXTURE_CUBE_MAP, program);
         }
@@ -158,7 +157,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         ];
 
         for (var i in cases) {
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.defaultOption, false);
             runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.noFlipY, false);
             runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.flipY, true);
         }

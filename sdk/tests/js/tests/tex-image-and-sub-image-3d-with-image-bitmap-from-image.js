@@ -62,12 +62,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         var image = new Image();
         image.onload = function() {
-            var p1 = createImageBitmap(image).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
-            var p2 = createImageBitmap(image, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
-            var p3 = createImageBitmap(image, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul = imageBitmap });
-            var p4 = createImageBitmap(image, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
-            var p5 = createImageBitmap(image, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
-            Promise.all([p1, p2, p3, p4, p5]).then(function() {
+            var p1 = createImageBitmap(image, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
+            var p2 = createImageBitmap(image, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul = imageBitmap });
+            var p3 = createImageBitmap(image, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
+            var p4 = createImageBitmap(image, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
+            Promise.all([p1, p2, p3, p4]).then(function() {
                 runTest();
             }, function() {
                 // createImageBitmap with options could be rejected if it is not supported
@@ -138,7 +137,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function runTestOnBindingTarget(bindingTarget, program) {
-        runOneIteration(bindingTarget, program, bitmaps.defaultOption, false, true);
         runOneIteration(bindingTarget, program, bitmaps.noFlipYPremul, false, true);
         runOneIteration(bindingTarget, program, bitmaps.noFlipYUnpremul, false, false);
         runOneIteration(bindingTarget, program, bitmaps.flipYPremul, true, true);
