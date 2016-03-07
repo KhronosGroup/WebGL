@@ -63,19 +63,17 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var testCanvas = document.createElement('canvas');
         var ctx = testCanvas.getContext("2d");
         setCanvasToMin(ctx);
-        var p1 = createImageBitmap(testCanvas).then(function(imageBitmap) { bitmaps.minDefaultOption = imageBitmap });
-        var p2 = createImageBitmap(testCanvas, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.minNoFlipYPremul = imageBitmap });
-        var p3 = createImageBitmap(testCanvas, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.minNoFlipYUnpremul = imageBitmap });
-        var p4 = createImageBitmap(testCanvas, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.minFlipYPremul = imageBitmap });
-        var p5 = createImageBitmap(testCanvas, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.minFlipYUnpremul = imageBitmap });
+        var p1 = createImageBitmap(testCanvas, {imageOrientation: "none", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.minNoFlipYPremul = imageBitmap });
+        var p2 = createImageBitmap(testCanvas, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.minNoFlipYUnpremul = imageBitmap });
+        var p3 = createImageBitmap(testCanvas, {imageOrientation: "flipY", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.minFlipYPremul = imageBitmap });
+        var p4 = createImageBitmap(testCanvas, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.minFlipYUnpremul = imageBitmap });
 
         setCanvasTo257x257(ctx);
-        var p6 = createImageBitmap(testCanvas).then(function(imageBitmap) { bitmaps.bigDefaultOption = imageBitmap });
-        var p7 = createImageBitmap(testCanvas, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.bigNoFlipYPremul = imageBitmap });
-        var p8 = createImageBitmap(testCanvas, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.bigNoFlipYUnpremul = imageBitmap });
-        var p9 = createImageBitmap(testCanvas, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.bigFlipYPremul = imageBitmap });
-        var p10 = createImageBitmap(testCanvas, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.bigFlipYUnpremul = imageBitmap });
-        Promise.all([p1, p2, p3, p4, p5, p6, p7, p8, p9, p10]).then(function() {
+        var p5 = createImageBitmap(testCanvas, {imageOrientation: "none", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.bigNoFlipYPremul = imageBitmap });
+        var p6 = createImageBitmap(testCanvas, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.bigNoFlipYUnpremul = imageBitmap });
+        var p7 = createImageBitmap(testCanvas, {imageOrientation: "flipY", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.bigFlipYPremul = imageBitmap });
+        var p8 = createImageBitmap(testCanvas, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.bigFlipYUnpremul = imageBitmap });
+        Promise.all([p1, p2, p3, p4, p5, p6, p7, p8]).then(function() {
             runTest();
         }, function() {
             // createImageBitmap with options could be rejected if it is not supported
@@ -173,12 +171,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function runTestOnBindingTarget(bindingTarget, program) {
-        runOneIteration(bindingTarget, program, bitmaps.bigDefaultOption, false, true);
         runOneIteration(bindingTarget, program, bitmaps.bigNoFlipYPremul, false, true);
         runOneIteration(bindingTarget, program, bitmaps.bigNoFlipYUnpremul, false, false);
         runOneIteration(bindingTarget, program, bitmaps.bigFlipYPremul, true, true);
         runOneIteration(bindingTarget, program, bitmaps.bigFlipYUnpremul, true, false);
-        runOneIteration(bindingTarget, program, bitmaps.minDefaultOption, false, true);
         runOneIteration(bindingTarget, program, bitmaps.minNoFlipYPremul, false, true);
         runOneIteration(bindingTarget, program, bitmaps.minNoFlipYUnpremul, false, false);
         runOneIteration(bindingTarget, program, bitmaps.minFlipYPremul, true, true);

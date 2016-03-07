@@ -67,12 +67,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                                       0, 255, 0, 0]),
                                       2, 2);
 
-        var p1 = createImageBitmap(imageData).then(function(imageBitmap) { bitmaps.defaultOption = imageBitmap });
-        var p2 = createImageBitmap(imageData, {imageOrientation: "none", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
-        var p3 = createImageBitmap(imageData, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul = imageBitmap });
-        var p4 = createImageBitmap(imageData, {imageOrientation: "flipY", premultiplyAlpha: "default"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
-        var p5 = createImageBitmap(imageData, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
-        Promise.all([p1, p2, p3, p4, p5]).then(function() {
+        var p1 = createImageBitmap(imageData, {imageOrientation: "none", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
+        var p2 = createImageBitmap(imageData, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul = imageBitmap });
+        var p3 = createImageBitmap(imageData, {imageOrientation: "flipY", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
+        var p4 = createImageBitmap(imageData, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
+        Promise.all([p1, p2, p3, p4]).then(function() {
             runTest();
         }, function() {
             // createImageBitmap with options could be rejected if it is not supported
@@ -171,7 +170,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         ];
 
         for (var i in cases) {
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.defaultOption, false, true);
             runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.noFlipYPremul, false, true);
             runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.noFlipYUnpremul, false, false);
             runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.flipYPremul, true, true);
