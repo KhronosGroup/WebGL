@@ -984,25 +984,30 @@ goog.scope(function() {
         }
 
         var strides = [0, -1, 17, 32];
+        var inputType = glsVertexArrayTests.deArray.InputType.FLOAT;
 
         for (var strideNdx = 0; strideNdx < strides.length; strideNdx++) {
             var componentCount = 2;
+            var stride = strides[strideNdx] >= 0 ? strides[strideNdx] : componentCount * glsVertexArrayTests.deArray.inputTypeSize(glsVertexArrayTests.deArray.InputType.FLOAT);
             var arraySpec = new glsVertexArrayTests.MultiVertexArrayTest.Spec.ArraySpec(
-                glsVertexArrayTests.deArray.InputType.FLOAT,
+                inputType,
                 glsVertexArrayTests.deArray.OutputType.VEC2,
                 glsVertexArrayTests.deArray.Storage.BUFFER, //USER storage not supported in WebGL 2.0
                 glsVertexArrayTests.deArray.Usage.DYNAMIC_DRAW,
                 componentCount,
                 0,
-                strides[strideNdx] >= 0 ? strides[strideNdx] : componentCount * glsVertexArrayTests.deArray.inputTypeSize(glsVertexArrayTests.deArray.InputType.FLOAT),
+                stride,
                 false,
                 glsVertexArrayTests.GLValue.getMinValue(glsVertexArrayTests.deArray.InputType.FLOAT),
                 glsVertexArrayTests.GLValue.getMaxValue(glsVertexArrayTests.deArray.InputType.FLOAT)
             );
 
-            var _spec = /** @type {glsVertexArrayTests.MultiVertexArrayTest.Spec} */ (deUtil.clone(spec)); //To assign spec by value;
-            _spec.arrays.push(arraySpec);
-            this.addStrideCases(_spec, depth - 1);
+            /** @type {boolean} */ var aligned = (stride % glsVertexArrayTests.deArray.inputTypeSize(inputType)) == 0;
+            if (aligned) {
+                var _spec = /** @type {glsVertexArrayTests.MultiVertexArrayTest.Spec} */ (deUtil.clone(spec)); //To assign spec by value;
+                _spec.arrays.push(arraySpec);
+                this.addStrideCases(_spec, depth - 1);
+            }
         }
     };
 
