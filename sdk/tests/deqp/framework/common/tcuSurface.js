@@ -22,12 +22,14 @@
 goog.provide('framework.common.tcuSurface');
 goog.require('framework.common.tcuTexture');
 goog.require('framework.delibs.debase.deMath');
+goog.require('framework.opengl.gluTextureUtil');
 
 goog.scope(function() {
 
 var tcuSurface = framework.common.tcuSurface;
 var tcuTexture = framework.common.tcuTexture;
 var deMath = framework.delibs.debase.deMath;
+var gluTextureUtil = framework.opengl.gluTextureUtil;
 
 var DE_ASSERT = function(x) {
     if (!x)
