@@ -1004,6 +1004,7 @@ goog.scope(function() {
             if (!spec.valid())
                 continue;
 
+            var hasZeroDivisor = false;
             for (var attrNdx = 0; attrNdx < attributeCount;) {
                 /** @type {boolean} */ var valid;
                 /** @type {glsDrawTests.DrawTestSpec.AttributeSpec} */ var attribSpec = new glsDrawTests.DrawTestSpec.AttributeSpec();
@@ -1030,12 +1031,22 @@ goog.scope(function() {
                 if (valid) {
                     spec.attribs.push(attribSpec);
                     ++attrNdx;
+                    if (attribSpec.instanceDivisor == 0)
+                        hasZeroDivisor = true;
                 }
             }
 
             // Do not collapse all vertex positions to a single positions
-            if (spec.primitive != glsDrawTests.DrawTestSpec.Primitive.POINTS)
+            if (spec.primitive != glsDrawTests.DrawTestSpec.Primitive.POINTS) {
                 spec.attribs[0].instanceDivisor = 0;
+                hasZeroDivisor = true;
+            }
+
+            // There should be at least one enabled vertex attribute array that has a divisor of zero in WebGL.
+            // This limitation is added to keep compatible with D3D. It differs from the feature in gles.
+            // See the section <Enabled Attribute> in WebGL spec: https://www.khronos.org/registry/webgl/specs/latest/2.0/#5.6
+            if (hasZeroDivisor == false)
+                continue;
 
             // Is render result meaningful?
             // Only one vertex
