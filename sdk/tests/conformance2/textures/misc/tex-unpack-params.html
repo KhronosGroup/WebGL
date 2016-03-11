@@ -44,6 +44,11 @@
 var wtu = WebGLTestUtils;
 var __verbose__ = false;
 
+// Some drivers (for example, NVIDIA Linux) incorrectly require padding for
+// the last row. The below flag is only for testing convenience. Browsers should
+// work around the bug.
+var __apply_alignment_workaround__ = false;
+
 function setupArrayBuffer(size, initData) {
   var array = new Uint8Array(size);
   if (initData) {
@@ -255,9 +260,8 @@ function runTestIteration2D(gl, testCase, useUnpackBuffer) {
   }
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer too small");
 
-  // Uncomment the next line to make the test pass on NVIDIA Linux drivers.
-  // They incorrectly require padding for the last row.
-  // bufferSize += imageSizes.padding;
+  if (__apply_alignment_workaround__)
+    bufferSize += imageSizes.padding;
   array = setupArrayBuffer(bufferSize, true);
   if (useUnpackBuffer) {
     gl.bufferData(gl.PIXEL_UNPACK_BUFFER, array, gl.DYNAMIC_DRAW);
@@ -288,9 +292,8 @@ function runTestIteration2D(gl, testCase, useUnpackBuffer) {
   }
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer too small");
 
-  // Uncomment the next line to make the test pass on NVIDIA Linux drivers.
-  // They incorrectly require padding for the last row.
-  // bufferSize += imageSizes.padding;
+  if (__apply_alignment_workaround__)
+    bufferSize += imageSizes.padding;
   array = setupArrayBuffer(bufferSize, true);
   if (useUnpackBuffer) {
     gl.bufferData(gl.PIXEL_UNPACK_BUFFER, array, gl.DYNAMIC_DRAW);
@@ -350,9 +353,8 @@ function runTestIteration3D(gl, testCase, useUnpackBuffer) {
   }
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer too small");
 
-  // Uncomment the next line to make the test pass on NVIDIA Linux drivers.
-  // They incorrectly require padding for the last row.
-  // bufferSize += imageSizes.padding;
+  if (__apply_alignment_workaround__)
+    bufferSize += imageSizes.padding;
   array = setupArrayBuffer(bufferSize, true);
   if (useUnpackBuffer) {
     gl.bufferData(gl.PIXEL_UNPACK_BUFFER, array, gl.DYNAMIC_DRAW);
@@ -385,9 +387,8 @@ function runTestIteration3D(gl, testCase, useUnpackBuffer) {
   }
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer too small");
 
-  // Uncomment the next line to make the test pass on NVIDIA Linux drivers.
-  // They incorrectly require padding for the last row.
-  // bufferSize += imageSizes.padding;
+  if (__apply_alignment_workaround__)
+    bufferSize += imageSizes.padding;
   array = setupArrayBuffer(bufferSize, true);
   if (useUnpackBuffer) {
     gl.bufferData(gl.PIXEL_UNPACK_BUFFER, array, gl.DYNAMIC_DRAW);
