@@ -49,10 +49,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var testCanvas = document.createElement('canvas');
         var ctx = testCanvas.getContext("2d");
         setCanvasToMin(ctx);
-        generateImageBitmap(testCanvas, 0.5, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+        runImageBitmapTest(testCanvas, 0.5, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
 
-        setCanvasTo256x256(ctx);
-        generateImageBitmap(testCanvas, 0.5, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+        setCanvasTo257x257(ctx);
+        runImageBitmapTest(testCanvas, 0.5, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
         finishTest();
     }
 
@@ -77,9 +77,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         setCanvasToRedGreen(ctx);
     }
 
-    function setCanvasTo256x256(ctx) {
-        ctx.canvas.width = 256;
-        ctx.canvas.height = 256;
+    function setCanvasTo257x257(ctx) {
+        ctx.canvas.width = 257;
+        ctx.canvas.height = 257;
         setCanvasToRedGreen(ctx);
     }
 

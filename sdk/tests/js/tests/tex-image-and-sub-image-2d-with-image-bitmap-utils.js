@@ -135,7 +135,7 @@ function runTestOnBindingTargetImageBitmap(bindingTarget, program, bitmaps, opti
     }
 }
 
-function runImageBitmapTest(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu)
+function runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu)
 {
     var optionsVal = {alpha: alphaVal};
     var program = tiu.setupTexturedQuad(gl, internalFormat);
@@ -152,7 +152,7 @@ function runImageBitmapTest(bitmaps, alphaVal, internalFormat, pixelFormat, pixe
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 }
 
-function generateImageBitmap(source, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu)
+function runImageBitmapTest(source, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu)
 {
     var bitmaps = [];
     var p1 = createImageBitmap(source, {imageOrientation: "none", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
@@ -160,7 +160,7 @@ function generateImageBitmap(source, alphaVal, internalFormat, pixelFormat, pixe
     var p3 = createImageBitmap(source, {imageOrientation: "flipY", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
     var p4 = createImageBitmap(source, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
     Promise.all([p1, p2, p3, p4]).then(function() {
-        runImageBitmapTest(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+        runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
     }, function() {
         // createImageBitmap with options could be rejected if it is not supported
         finishTest();

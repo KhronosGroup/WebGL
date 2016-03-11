@@ -48,7 +48,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         video = document.createElement("video");
         video.oncanplaythrough = function() {
-            generateImageBitmap(video, 1, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+            runImageBitmapTest(video, 1, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
             finishTest();
         }
         video.src = resourcePath + "red-green.theora.ogv";

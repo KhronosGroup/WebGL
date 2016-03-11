@@ -54,7 +54,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                                       0, 255, 0, 0]),
                                       2, 2);
 
-        generateImageBitmap(imageData, 0, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+        runImageBitmapTest(imageData, 0, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
         finishTest();
     }
 
