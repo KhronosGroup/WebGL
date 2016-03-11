@@ -26,9 +26,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var tiu = TexImageUtils;
     var gl = null;
     var successfullyParsed = false;
-    var redColor = [255, 0, 0];
-    var greenColor = [0, 255, 0];
-    var bitmaps = [];
 
     function init()
     {
@@ -46,120 +43,16 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             return;
         }
 
-        switch (gl[pixelFormat]) {
-          case gl.RED:
-          case gl.RED_INTEGER:
-            greenColor = [0, 0, 0];
-            break;
-          default:
-            break;
-        }
-
         gl.clearColor(0,0,0,1);
         gl.clearDepth(1);
 
         var video = document.createElement("video");
         video.oncanplaythrough = function() {
-            var p1 = createImageBitmap(video, {imageOrientation: "none"}).then(function(imageBitmap) { bitmaps.noFlipY = imageBitmap });
-            var p2 = createImageBitmap(video, {imageOrientation: "flipY"}).then(function(imageBitmap) { bitmaps.flipY = imageBitmap });
-            Promise.all([p1, p2]).then(function() {
-                runTest();
-            }, function() {
-                // createImageBitmap with options could be rejected if it is not supported
-                finishTest();
-                return;
-            });
+            generateImageBitmap(video, 1, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+            finishTest();
         }
         video.src = resourcePath + "red-green.theora.ogv";
         document.body.appendChild(video);
-    }
-
-    function runOneIteration(useTexSubImage2D, bindingTarget, program, bitmap, flipY)
-    {
-        debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
-              ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP'));
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        // Enable writes to the RGBA channels
-        gl.colorMask(1, 1, 1, 0);
-        var texture = gl.createTexture();
-        // Bind the texture to texture unit 0
-        gl.bindTexture(bindingTarget, texture);
-        // Set up texture parameters
-        gl.texParameteri(bindingTarget, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(bindingTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(bindingTarget, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(bindingTarget, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-        var targets = [gl.TEXTURE_2D];
-        if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-            targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X,
-                       gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
-                       gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
-                       gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
-                       gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
-                       gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
-        }
-        // Upload the image into the texture
-        for (var tt = 0; tt < targets.length; ++tt) {
-            if (useTexSubImage2D) {
-                // Initialize the texture to black first
-                gl.texImage2D(targets[tt], 0, gl[internalFormat], bitmap.width, bitmap.height, 0,
-                              gl[pixelFormat], gl[pixelType], null);
-                gl.texSubImage2D(targets[tt], 0, 0, 0, gl[pixelFormat], gl[pixelType], bitmap);
-            } else {
-                gl.texImage2D(targets[tt], 0, gl[internalFormat], gl[pixelFormat], gl[pixelType], bitmap);
-            }
-        }
-
-        var topColor = flipY ? redColor : greenColor;
-        var bottomColor = flipY ? greenColor : redColor;
-
-        var loc;
-        if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-            loc = gl.getUniformLocation(program, "face");
-        }
-
-        for (var tt = 0; tt < targets.length; ++tt) {
-            if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-                gl.uniform1i(loc, targets[tt]);
-            }
-            // Draw the triangles
-            wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
-
-            // Check a few pixels near the top and bottom and make sure they have
-            // the right color.
-            debug("Checking lower left corner");
-            wtu.checkCanvasRect(gl, 4, 4, 2, 2, bottomColor, "shouldBe " + bottomColor);
-            debug("Checking upper left corner");
-            wtu.checkCanvasRect(gl, 4, gl.canvas.height - 8, 2, 2, topColor, "shouldBe " + topColor);
-        }
-    }
-
-    function runTest()
-    {
-        var program = tiu.setupTexturedQuad(gl, internalFormat);
-        runTestOnBindingTarget(gl.TEXTURE_2D, program);
-
-        // cube map texture must be square.
-        if (bitmaps.noFlipY.width == bitmaps.noFlipY.height) {
-            program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
-            runTestOnBindingTarget(gl.TEXTURE_CUBE_MAP, program);
-        }
-
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
-        finishTest();
-    }
-
-    function runTestOnBindingTarget(bindingTarget, program) {
-        var cases = [
-            { sub: false },
-            { sub: true },
-        ];
-
-        for (var i in cases) {
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.noFlipY, false);
-            runOneIteration(cases[i].sub, bindingTarget, program, bitmaps.flipY, true);
-        }
     }
 
     return init;
