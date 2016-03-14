@@ -1,9 +1,7 @@
 #! /bin/bash
 
-# Smudge driver for the kwexpander filter for expanding keywords. Currently
-# only $Date$ is supported.
-#
-# See CONTRIBUTING.md for usage information.
+# Smudge driver for the inserting a date where <span id="LastEditDate"></span>
+# is found.
 
 last_date=$(git log --pretty=format:"%ad" -1 HEAD -- "$1")
 sed -e 's/\(<span id=\"LastEditDate\">\).*\(<\/span>\)/\1'"$last_date"'\2/'
