@@ -187,7 +187,7 @@ var gluTextureUtil = framework.opengl.gluTextureUtil;
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, bufferIndex, gl.STATIC_DRAW);
 
         if (this.m_function == es3fPrimitiveRestartTests.DrawFunction.FUNCTION_DRAW_ELEMENTS) {
-            gl.drawElements(primTypeGL, count - 1, indexTypeGL, 0);
+            gl.drawElements(primTypeGL, count, indexTypeGL, 0);
         } else if (this.m_function == es3fPrimitiveRestartTests.DrawFunction.FUNCTION_DRAW_ELEMENTS_INSTANCED) {
             gl.drawElementsInstanced(primTypeGL, count, indexTypeGL, 0, 1);
         } else {
