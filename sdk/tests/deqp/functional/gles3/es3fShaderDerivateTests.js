@@ -24,6 +24,7 @@ goog.require('framework.delibs.debase.deMath');
 goog.require('framework.delibs.debase.deRandom');
 goog.require('framework.delibs.debase.deString');
 goog.require('framework.opengl.gluDrawUtil');
+goog.require('framework.opengl.gluPixelTransfer');
 goog.require('framework.opengl.gluShaderProgram');
 goog.require('framework.opengl.gluShaderUtil');
 goog.require('framework.opengl.gluTexture');
@@ -46,6 +47,7 @@ goog.scope(function() {
     var deRandom = framework.delibs.debase.deRandom;
     var deString = framework.delibs.debase.deString;
     var gluDrawUtil = framework.opengl.gluDrawUtil;
+    var gluPixelTransfer = framework.opengl.gluPixelTransfer;
     var gluShaderProgram = framework.opengl.gluShaderProgram;
     var gluShaderUtil = framework.opengl.gluShaderUtil;
     var gluTexture = framework.opengl.gluTexture;
@@ -365,7 +367,7 @@ goog.scope(function() {
      * @constructor
      */
     es3fShaderDerivateTests.Linear2DFunctionEvaluator = function() {
-        /** @type {tcuMatrix.Matrix} */ this.matrix;
+        /** @type {tcuMatrix.Matrix} */ this.matrix = new tcuMatrix.Matrix(4, 3);
     };
 
     es3fShaderDerivateTests.Linear2DFunctionEvaluator.prototype.evaluateAt = function(screenX, screenY) {
@@ -589,7 +591,7 @@ goog.scope(function() {
         /** @type {number} */ var viewportY = useFbo ? 0 : rnd.getInt(0, gl.drawingBufferHeight - viewportSize[1]);
         /** @type {?WebGLFramebuffer} */ var fbo = null;
         /** @type {?WebGLRenderbuffer} */ var rbo = null;
-        /** @type {tcuTexture.TextureLevel} */ var result;
+        /** @type {tcuTexture.TextureLevel} */ var result = null;
 
         bufferedLogToConsole(program.getProgramInfo().infoLog);
 
@@ -706,17 +708,19 @@ goog.scope(function() {
 
             gl.bindFramebuffer(gl.READ_FRAMEBUFFER, resFbo);
         }
-        /** @type {tcuSurface.Surface} */ var resultSurface;
         switch (this.m_surfaceType) {
             case es3fShaderDerivateTests.SurfaceType.DEFAULT_FRAMEBUFFER:
             case es3fShaderDerivateTests.SurfaceType.UNORM_FBO:
-                resultSurface = new tcuSurface.Surface(viewportSize[0], viewportSize[1]);
-                resultSurface.readViewport(gl, [viewportX, viewportY, viewportSize[0], viewportSize[1]]);
+                var dataFormat = new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.UNORM_INT8);
+                result = new tcuTexture.TextureLevel(dataFormat, viewportSize[0], viewportSize[1]);
+                gluPixelTransfer.readPixels(gl, viewportX, viewportY, dataFormat, result);
                 break;
 
             case es3fShaderDerivateTests.SurfaceType.FLOAT_FBO:
-                resultSurface = new tcuSurface.Surface(viewportSize[0], viewportSize[1]);
-                resultSurface.readViewport(gl, [viewportX, viewportY, viewportSize[0], viewportSize[1]]);
+                var dataFormat = new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.FLOAT);
+                var transferFormat = new tcuTexture.TextureFormat(tcuTexture.ChannelOrder.RGBA, tcuTexture.ChannelType.UNSIGNED_INT32);
+                result = new tcuTexture.TextureLevel(dataFormat, viewportSize[0], viewportSize[1]);
+                gluPixelTransfer.readPixels(gl, viewportX, viewportY, transferFormat, result);
                 break;
 
             default:
@@ -725,14 +729,14 @@ goog.scope(function() {
 
         // Verify
         /** @type {tcuSurface.Surface} */
-        var errorMask = new tcuSurface.Surface(resultSurface.getWidth(), resultSurface.getHeight());
+        var errorMask = new tcuSurface.Surface(result.getWidth(), result.getHeight());
 
         errorMask.getAccess().clear(tcuRGBA.RGBA.green.toVec());
 
-        /** @type {boolean} */ var isOk = this.verify(resultSurface.getAccess(), errorMask.getAccess());
+        /** @type {boolean} */ var isOk = this.verify(result.getAccess(), errorMask.getAccess());
 
         if (!isOk) {
-            tcuLogImage.logImage('Rendered', 'Rendered image', resultSurface.getAccess());
+            tcuLogImage.logImage('Rendered', 'Rendered image', result.getAccess());
             tcuLogImage.logImage('ErrorMask', 'Error mask', errorMask.getAccess());
             testFailedOptions('Fail', false);
         } else
@@ -979,7 +983,7 @@ goog.scope(function() {
 
             /** @type {Array<number>} */ var viewportSize = this.getViewportSize();
             /** @type {Array<number>} */ var valueRamp = deMath.subtract(this.m_coordMax, this.m_coordMin);
-            /** @type {es3fShaderDerivateTests.Linear2DFunctionEvaluator} */ var function_;
+            /** @type {es3fShaderDerivateTests.Linear2DFunctionEvaluator} */ var function_ = new es3fShaderDerivateTests.Linear2DFunctionEvaluator();
             w = viewportSize[0];
             h = viewportSize[1];
 
