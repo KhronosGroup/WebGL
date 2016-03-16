@@ -354,9 +354,9 @@ var tcuImageCompare = framework.common.tcuImageCompare;
         } else if (this.m_framebuffeType == es3fPixelBufferObjectTest.FramebufferType.FRAMEBUFFERTYPE_RENDERBUFFER) {
             switch (this.m_texChannelClass) {
                 case tcuTexture.TextureChannelClass.UNSIGNED_FIXED_POINT:
-                    readFormat = gluTextureUtil.mapGLTransferFormat(gl.RGBA_INTEGER, gl.INT);
-                    readPixelsFormat = gl.RGBA_INTEGER;
-                    readPixelsType = gl.INT;
+                    readFormat = gluTextureUtil.mapGLTransferFormat(gl.RGBA, gl.UNSIGNED_BYTE);
+                    readPixelsFormat = gl.RGBA;
+                    readPixelsType = gl.UNSIGNED_BYTE;
                     floatCompare = true;
                     break;
                 case tcuTexture.TextureChannelClass.SIGNED_INTEGER:
@@ -518,12 +518,13 @@ var tcuImageCompare = framework.common.tcuImageCompare;
             'rg16i',
             'rg16ui',
             'rg32i',
-            'rg32ui'];
+            'rg32ui'
+        ];
         es3fPixelBufferObjectTest.DE_STATIC_ASSERT(renderbufferFormatsStr.length == renderbufferFormats.length);
 
         for (var formatNdx = 0; formatNdx < renderbufferFormats.length; formatNdx++) {
             for (var trianglesClears = 0; trianglesClears < 2; trianglesClears++) {
-                var nameDescription = renderbufferFormatsStr[formatNdx] + '_' + trianglesClears == 0 ? 'triangles' : 'clears';
+                var nameDescription = renderbufferFormatsStr[formatNdx] + '_' + (trianglesClears == 0 ? 'triangles' : 'clears');
                 var testSpec = new es3fPixelBufferObjectTest.TestSpec();
                 testSpec.name = nameDescription;
                 testSpec.description = nameDescription;
