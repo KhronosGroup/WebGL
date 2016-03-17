@@ -315,7 +315,7 @@ es3fRasterizerDiscardTests.RasterizerDiscardCase.prototype.iterate = function() 
             var square = [new gluDrawUtil.VertexArrayBinding(gl.FLOAT, posLoc, 4, UNIT_SQUARE.length / 4, UNIT_SQUARE)];
 
             gl.stencilFunc(gl.EQUAL, 1, 0xFF);
-            gluDrawUtil.draw(gl, program, vertexArrays,
+            gluDrawUtil.draw(gl, program, square,
              new gluDrawUtil.PrimitiveList(gluDrawUtil.primitiveType.TRIANGLE_STRIP, UNIT_SQUARE.length / 4));
         }
         // \note If no stencil buffers are present and test is rendering to default framebuffer, test will always pass.
