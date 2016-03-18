@@ -117,6 +117,12 @@ function reportTestResultsToHarness(success, msg) {
   }
 }
 
+function reportSkippedTestResultsToHarness(success, msg) {
+  if (window.parent.webglTestHarness) {
+    window.parent.webglTestHarness.reportResults(window.location.pathname, success, msg, true);
+  }
+}
+
 function notifyFinishedToHarness() {
   if (window.parent.webglTestHarness) {
     window.parent.webglTestHarness.notifyFinished(window.location.pathname);
@@ -277,6 +283,23 @@ function testPassedOptions(msg, addSpan)
 	}
     if (_jsTestPreVerboseLogging) {
 		_bufferedLogToConsole('PASS ' + msg);
+    }
+}
+
+/**
+ * Report skipped tests.
+ * @param {string} msg The message to be shown in the skip result.
+ * @param {boolean} addSpan Indicates whether the message will be visible (thus counted in the results) or not.
+ */
+function testSkippedOptions(msg, addSpan)
+{
+    if (addSpan && !quietMode())
+	{
+        reportSkippedTestResultsToHarness(true, _currentTestName + ": " + msg);
+        _addSpan('<span><span class="warn">SKIP</span> ' + escapeHTML(_currentTestName) + ": " + escapeHTML(msg) + '</span>');
+	}
+    if (_jsTestPreVerboseLogging) {
+		_bufferedLogToConsole('SKIP' + msg);
     }
 }
 

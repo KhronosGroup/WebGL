@@ -212,6 +212,51 @@ goog.scope(function() {
     /** Copy the constructor */
     es3fMultisampleTests.MultisampleCase.prototype.constructor = es3fMultisampleTests.MultisampleCase;
 
+    /* Rest states */
+    es3fMultisampleTests.MultisampleCase.prototype.deinit = function() {
+        gl.colorMask(true, true, true, true);
+        gl.depthMask(true);
+
+        gl.clearColor(0.0, 0.0, 0.0, 0.0);
+        gl.clearDepth(1.0);
+        gl.clearStencil(0);
+
+        gl.disable(gl.STENCIL_TEST);
+        gl.disable(gl.DEPTH_TEST);
+        gl.disable(gl.BLEND)
+        gl.disable(gl.SAMPLE_COVERAGE);
+        gl.disable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+
+        if (this.m_program) {
+            gl.deleteProgram(this.m_program.getProgram());
+            this.m_program = null;
+        }
+        if (this.m_msColorRbo) {
+          gl.deleteRenderbuffer(this.m_msColorRbo);
+          this.m_msColorRbo = null;
+        }
+        if (this.m_msDepthStencilRbo) {
+          gl.deleteRenderbuffer(this.m_msDepthStencilRbo);
+          this.m_msDepthStencilRbo = null;
+        }
+        if (this.m_resolveColorRbo) {
+          gl.deleteRenderbuffer(this.m_resolveColorRbo);
+          this.m_resolveColorRbo = null;
+        }
+
+        if (this.m_msFbo) {
+          gl.deleteFramebuffer(this.m_msFbo);
+          this.m_msFbo = null;
+        }
+        if (this.m_resolveFbo) {
+          gl.deleteFramebuffer(this.m_resolveFbo);
+          this.m_resolveFbo = null;
+        }
+
+        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    }
+
     /**
      * @protected
      * @param  {Array<number>} p0
@@ -427,8 +472,11 @@ goog.scope(function() {
 
 
         var numSamples = /** @type {number} */  (gl.getParameter(gl.SAMPLES));
-        if (!this.m_fboParams.useFbo && numSamples <= 1)
-            throw new Error('No multisample buffers');
+        if (!this.m_fboParams.useFbo && numSamples <= 1) {
+            var msg = 'No multisample buffers';
+            testSkippedOptions(msg, true);
+            return false;
+        }
 
         if (this.m_fboParams.useFbo) {
             if (this.m_fboParams.numSamples > 0)
@@ -723,7 +771,10 @@ goog.scope(function() {
     };
 
     es3fMultisampleTests.CommonEdgeCase.prototype.init = function() {
-        es3fMultisampleTests.MultisampleCase.prototype.init.call(this);
+        var inited = es3fMultisampleTests.MultisampleCase.prototype.init.call(this);
+        if (!inited) {
+            return false;
+        }
 
         if (this.m_caseType === es3fMultisampleTests.CommonEdgeCase.CaseType.SMALL_QUADS) {
             // Check for a big enough viewport. With too small viewports the test case can't analyze the resulting image well enough.
@@ -1005,7 +1056,10 @@ goog.scope(function() {
     es3fMultisampleTests.SampleDepthCase.prototype.constructor = es3fMultisampleTests.SampleDepthCase;
 
     es3fMultisampleTests.SampleDepthCase.prototype.init = function() {
-        es3fMultisampleTests.MultisampleCase.prototype.init.call(this);
+        var inited = es3fMultisampleTests.MultisampleCase.prototype.init.call(this);
+        if (!inited) {
+            return false;
+        }
 
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LESS);
@@ -1183,7 +1237,10 @@ goog.scope(function() {
     };
 
     es3fMultisampleTests.MaskProportionalityCase.prototype.init = function() {
-        es3fMultisampleTests.MultisampleCase.prototype.init.call(this);
+        var inited = es3fMultisampleTests.MultisampleCase.prototype.init.call(this);
+        if (!inited) {
+            return false;
+        }
 
         if (this.m_type == es3fMultisampleTests.MaskProportionalityCase.CaseType.ALPHA_TO_COVERAGE) {
             gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);

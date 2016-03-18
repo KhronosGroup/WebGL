@@ -349,21 +349,28 @@ goog.scope(function() {
             try {
                 // If proceeding with the next test, prepare it.
                 var fullTestName = state.currentTest.fullName();
+                var inited = true;
                 if (tcuTestCase.lastResult == tcuTestCase.IterateResult.STOP) {
                     // Update current test name
                     setCurrentTestName(fullTestName);
                     bufferedLogToConsole('Init testcase: ' + fullTestName); //Show also in console so we can see which test crashed the browser's tab
 
                     // Initialize particular test
-                    state.currentTest.init();
+                    inited = state.currentTest.init();
+                    inited = inited === undefined ? true : inited;
 
                     //If it's a leaf test, notify of it's execution.
-                    if (state.currentTest.isLeaf())
+                    if (state.currentTest.isLeaf() && inited)
                         debug('<hr/><br/>Start testcase: ' + fullTestName);
                 }
 
-                // Run the test, save the result.
-                tcuTestCase.lastResult = state.currentTest.iterate();
+                if (inited) {
+                    // Run the test, save the result.
+                    tcuTestCase.lastResult = state.currentTest.iterate();
+                } else {
+                    // Skip uninitialized test.
+                    tcuTestCase.lastResult = tcuTestCase.IterateResult.STOP;
+                }
 
                 // Cleanup
                 if (tcuTestCase.lastResult == tcuTestCase.IterateResult.STOP)
