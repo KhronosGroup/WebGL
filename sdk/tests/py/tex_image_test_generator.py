@@ -144,7 +144,13 @@ def WriteTest(filename, dimension, element_type, internal_format, format, type):
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
 <script src="../../../js/js-test-pre.js"></script>
 <script src="../../../js/webgl-test-utils.js"></script>
-<script src="../../../js/tests/tex-image-and-sub-image-utils.js"></script>
+<script src="../../../js/tests/tex-image-and-sub-image-utils.js"></script>"""
+  if element_type == 'image-bitmap-from-image-data' or element_type == 'image-bitmap-from-image' or \
+     element_type == 'image-bitmap-from-video' or element_type == 'image-bitmap-from-canvas' or \
+     element_type == 'image-bitmap-from-blob' or element_type == 'image-bitmap-from-image-bitmap':
+    code += """
+<script src="../../../js/tests/tex-image-and-sub-image-2d-with-image-bitmap-utils.js"></script>"""
+  code += """
 <script src="../../../js/tests/tex-image-and-sub-image-%(dimension)sd-with-%(element_type)s.js"></script>
 </head>
 <body>"""
