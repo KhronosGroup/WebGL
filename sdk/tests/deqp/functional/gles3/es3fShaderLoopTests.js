@@ -1204,7 +1204,7 @@ es3fShaderLoopTests.ShaderLoopTests.prototype.init = function() {
                 /** @type {string} */ var loopCaseName = es3fShaderLoopTests.getLoopCaseName(es3fShaderLoopTests.LoopCase[loopCase]);
 
                 // no-iterations not possible with do-while.
-                if ((loopCase == es3fShaderLoopTests.LoopCase.LOOPCASE_NO_ITERATIONS) && (loopType == es3fShaderLoopTests.LoopType.LOOPTYPE_DO_WHILE))
+                if ((es3fShaderLoopTests.LoopCase[loopCase] == es3fShaderLoopTests.LoopCase.LOOPCASE_NO_ITERATIONS) && (es3fShaderLoopTests.LoopType[loopType] == es3fShaderLoopTests.LoopType.LOOPTYPE_DO_WHILE))
                     continue;
 
                 for (var shaderTypeNdx = 0; shaderTypeNdx < s_shaderTypes.length; shaderTypeNdx++) {
