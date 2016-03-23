@@ -1771,14 +1771,13 @@ goog.scope(function() {
 
         // Formats.
         /** @type {tcuTestCase.DeqpTest} */
-        var formatsGroup = new tcuTestCase.DeqpTest(
-            '2d_formats', '2D Texture Formats');
-
-        this.addChild(formatsGroup);
-
+        var formatsGroup;
         for (var fmtNdx = 0;
             fmtNdx < filterableFormatsByType.length;
             fmtNdx++) {
+            formatsGroup = new tcuTestCase.DeqpTest(
+                '2d_formats', '2D Texture Formats');
+            this.addChild(formatsGroup);
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
                 filterNdx++) {
@@ -1814,9 +1813,11 @@ goog.scope(function() {
 
         // Sizes.
         /** @type {tcuTestCase.DeqpTest} */
-        var sizesGroup = new tcuTestCase.DeqpTest('2d_sizes', '2D Texture Sizes');
-        this.addChild(sizesGroup);
+        var sizesGroup;
         for (var sizeNdx = 0; sizeNdx < sizes2D.length; sizeNdx++) {
+            sizesGroup = new tcuTestCase.DeqpTest(
+                '2d_sizes', '2D Texture Sizes');
+            this.addChild(sizesGroup);
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
                 filterNdx++) {
@@ -1843,14 +1844,13 @@ goog.scope(function() {
 
         // Wrap modes.
         /** @type {tcuTestCase.DeqpTest} */
-        var combinationsGroup = new tcuTestCase.DeqpTest(
-            '2d_combinations', '2D Filter and wrap mode combinations'
-        );
-        this.addChild(combinationsGroup);
-
+        var combinationsGroup;
         for (var minFilterNdx = 0;
             minFilterNdx < minFilterModes.length;
             minFilterNdx++) {
+            combinationsGroup = new tcuTestCase.DeqpTest(
+                '2d_combinations', '2D Filter and wrap mode combinations');
+            this.addChild(combinationsGroup);
             for (var magFilterNdx = 0;
                 magFilterNdx < magFilterModes.length;
                 magFilterNdx++) {
@@ -1887,13 +1887,12 @@ goog.scope(function() {
         // Cube map texture filtering.
 
         // Formats.
-        formatsGroup = new tcuTestCase.DeqpTest(
-            'cube+formats', 'Cube Texture Formats'
-        );
-        this.addChild(formatsGroup);
         for (var fmtNdx = 0;
             fmtNdx < filterableFormatsByType.length;
             fmtNdx++) {
+            formatsGroup = new tcuTestCase.DeqpTest(
+                'cube_formats', 'Cube Texture Formats');
+            this.addChild(formatsGroup);
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
                 filterNdx++) {
