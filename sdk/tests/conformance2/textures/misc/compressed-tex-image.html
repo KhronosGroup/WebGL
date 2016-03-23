@@ -44,7 +44,7 @@ description("This test ensures WebGL implementations correctly implement compres
 debug("");
 
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext();
+var gl = wtu.create3DContext(undefined, undefined, 2);
 
 var formats = null;
 

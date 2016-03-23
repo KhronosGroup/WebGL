@@ -68,7 +68,7 @@ function init()
     description("test vertexAttribIPointer offsets work");
 
     var wtu = WebGLTestUtils;
-    var gl = wtu.create3DContext("example");
+    var gl = wtu.create3DContext("example", undefined, 2);
     var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 
     var tests = [

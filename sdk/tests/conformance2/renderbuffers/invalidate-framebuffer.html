@@ -47,7 +47,7 @@ debug("Canvas.getContext");
 
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
-var gl = wtu.create3DContext(canvas, { depth : true, stencil : false });
+var gl = wtu.create3DContext(canvas, { depth : true, stencil : false }, 2);
 if (!gl) {
   testFailed("context does not exist");
 } else {

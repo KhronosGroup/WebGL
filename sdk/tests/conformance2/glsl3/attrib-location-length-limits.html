@@ -70,7 +70,7 @@ void main() {
 description("test attrib location length limit");
 
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext("example");
+var gl = wtu.create3DContext("example", undefined, 2);
 
 debug("Test attrib location underneath the length limit");
 var program = wtu.loadProgramFromScript(gl, "goodVertexShader", "fragmentShader");

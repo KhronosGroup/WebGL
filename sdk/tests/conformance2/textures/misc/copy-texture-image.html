@@ -45,7 +45,7 @@ var wtu = WebGLTestUtils;
 description("This test verifies the functionality of copyTexImage2D.");
 debug("");
 
-var gl = wtu.create3DContext("example");
+var gl = wtu.create3DContext("example", undefined, 2);
 
 function enumToString(value) {
     return wtu.glEnumToString(gl, value);
