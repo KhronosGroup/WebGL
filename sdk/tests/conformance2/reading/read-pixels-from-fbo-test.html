@@ -129,7 +129,7 @@ function convertToSRGB(val) {
   }
 }
 
-function denormalizeColor(srcInternalFormat, destFormat, destType, color) {
+function denormalizeColor(srcInternalFormat, destType, color) {
   var result = color.slice();
   var tol = 0;
 
@@ -154,7 +154,7 @@ function denormalizeColor(srcInternalFormat, destFormat, destType, color) {
     return { color: result, tol: tol };
   }
 
-  if (destFormat == gl.SRGB8_ALPHA8) {
+  if (srcInternalFormat == gl.SRGB8_ALPHA8) {
     for (var i = 0; i < 3; ++i) {
       result[i] = convertToSRGB(result[i]);
     }
@@ -210,7 +210,7 @@ function compareColor(buf, index, expectedColor, srcInternalFormat,
   var readChannelCount = getChannelCount(readFormat);
 
   var color = getColor(buf, index, readFormat, readType);
-  expectedColor = denormalizeColor(srcInternalFormat, readFormat, readType, expectedColor);
+  expectedColor = denormalizeColor(srcInternalFormat, readType, expectedColor);
 
   var minChannel = Math.min(srcChannelCount, readChannelCount);
   for (var i = 0; i < minChannel; ++i) {
