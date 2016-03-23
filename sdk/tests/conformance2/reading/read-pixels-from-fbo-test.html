@@ -42,7 +42,7 @@
 description("Checks that ReadPixels from a fbo works as expected.");
 
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext();
+var gl = wtu.create3DContext(undefined, undefined, 2);
 gl.pixelStorei(gl.PACK_ALIGNMENT, 1);
 
 function getChannelCount(format) {

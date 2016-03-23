@@ -332,7 +332,7 @@ function testFramebufferRenderbuffer() {
 description("This tests framebuffer/renderbuffer-related functions");
  
 var canvas = document.getElementById("canvas");
-shouldBeNonNull("gl = wtu.create3DContext(canvas)");
+shouldBeNonNull("gl = wtu.create3DContext(canvas, undefined, 2)");
 
 testFramebufferRenderbuffer();
  

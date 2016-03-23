@@ -62,7 +62,7 @@ void main()
 "use strict";
 description(document.title);
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext("example");
+var gl = wtu.create3DContext("example", undefined, 2);
 var program = wtu.setupTexturedQuad(gl);
 
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");

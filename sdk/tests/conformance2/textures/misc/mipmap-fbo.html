@@ -44,7 +44,7 @@
 var wtu = WebGLTestUtils;
 description();
 
-var gl = wtu.create3DContext("example");
+var gl = wtu.create3DContext("example", undefined, 2);
 
 var testIncompleteMipmapInFBO = function () {
     // Create a texture that's not mipmap complete.

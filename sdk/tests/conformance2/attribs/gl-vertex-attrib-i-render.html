@@ -64,7 +64,7 @@ function checkRedPortion(gl, w, low, high) {
 
 function runTest() {
     var wtu = WebGLTestUtils;
-    var gl = wtu.create3DContext('testbed', { preserveDrawingBuffer : true });
+    var gl = wtu.create3DContext('testbed', { preserveDrawingBuffer : true }, 2);
     if (!gl) {
         testFailed('could not create context');
         return;
