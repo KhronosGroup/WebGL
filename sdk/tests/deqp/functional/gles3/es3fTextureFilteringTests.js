@@ -1920,11 +1920,10 @@ goog.scope(function() {
         }
 
         // Sizes.
-        sizesGroup = new tcuTestCase.DeqpTest(
-            'cube_sizes', 'Cube Texture Sizes'
-        );
-        this.addChild(sizesGroup);
         for (var sizeNdx = 0; sizeNdx < sizesCube.length; sizeNdx++) {
+            sizesGroup = new tcuTestCase.DeqpTest(
+                'cube_sizes', 'Cube Texture Sizes');
+            this.addChild(sizesGroup);
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
                 filterNdx++) {
@@ -1950,13 +1949,13 @@ goog.scope(function() {
         }
 
         // Filter/wrap mode combinations.
-        combinationsGroup = new tcuTestCase.DeqpTest(
-            'cube_combinations', 'Cube Filter and wrap mode combinations'
-        );
-        this.addChild(combinationsGroup);
         for (var minFilterNdx = 0;
             minFilterNdx < minFilterModes.length;
             minFilterNdx++) {
+            combinationsGroup = new tcuTestCase.DeqpTest(
+                'cube_combinations', 'Cube Filter and wrap mode combinations'
+            );
+            this.addChild(combinationsGroup);
             for (var magFilterNdx = 0;
                 magFilterNdx < magFilterModes.length;
                 magFilterNdx++) {
