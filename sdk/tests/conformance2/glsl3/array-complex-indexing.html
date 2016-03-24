@@ -77,17 +77,6 @@ void main() {
   color = (a == 2.0) ? vec4(0, 1.0, 0, 1.0) : vec4(1.0, 0, 0, 1.0);
 }
 </script>
-<script id="fshader-ternary" type="x-shader/x-fragment">#version 300 es
-precision mediump float;
-out vec4 color;
-
-void main() {
-  float a[2] = float[2](1.0, 1.0);
-  float b[2] = float[2](2.0, 2.0);
-  float c = (true ? a : b)[0];
-  color = (c == 1.0) ? vec4(0, 1.0, 0, 1.0) : vec4(1.0, 0, 0, 1.0);
-}
-</script>
 <script id="fshader-sequence-operator" type="x-shader/x-fragment">#version 300 es
 precision mediump float;
 out vec4 color;
@@ -122,12 +111,6 @@ GLSLConformanceTester.runRenderTests([
   fShaderSuccess: true,
   linkSuccess: true,
   passMsg: 'Test indexing an array initialization: (float[3](2.0, 1.0, 0.0))[0]'
-},
-{
-  fShaderId: 'fshader-ternary',
-  fShaderSuccess: true,
-  linkSuccess: true,
-  passMsg: 'Test indexing a ternary expression: (true ? a : b)[0]'
 },
 {
   fShaderId: 'fshader-sequence-operator',
