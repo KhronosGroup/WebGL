@@ -2119,10 +2119,6 @@ goog.scope(function() {
         // 3D texture filtering.
 
         // Formats.
-        formatsGroup = new tcuTestCase.DeqpTest(
-            '3d_formats', '3D Texture Formats'
-        );
-        this.addChild(formatsGroup);
         /** @type {number} */ var depth = 64;
         for (var fmtNdx = 0;
             fmtNdx < filterableFormatsByType.length;
@@ -2130,6 +2126,9 @@ goog.scope(function() {
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
                 filterNdx++) {
+                formatsGroup = new tcuTestCase.DeqpTest(
+                    '3d_formats', '3D Texture Formats');
+                this.addChild(formatsGroup);
                 minFilter = minFilterModes[filterNdx].mode;
                 filterName = minFilterModes[filterNdx].name;
                 format = filterableFormatsByType[fmtNdx].format;
@@ -2156,11 +2155,10 @@ goog.scope(function() {
         }
 
         // Sizes.
-        sizesGroup = new tcuTestCase.DeqpTest(
-            '3d_sizes', '3D Texture Sizes'
-        );
-        this.addChild(sizesGroup);
         for (var sizeNdx = 0; sizeNdx < sizes3D.length; sizeNdx++) {
+            sizesGroup = new tcuTestCase.DeqpTest(
+                '3d_sizes', '3D Texture Sizes');
+            this.addChild(sizesGroup);
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
                 filterNdx++) {
@@ -2191,10 +2189,6 @@ goog.scope(function() {
         }
 
         // Wrap modes.
-        combinationsGroup = new tcuTestCase.DeqpTest(
-            '3d_combinations', '3D Filter and wrap mode combinations'
-        );
-        this.addChild(combinationsGroup);
         for (var minFilterNdx = 0;
             minFilterNdx < minFilterModes.length;
             minFilterNdx++) {
@@ -2204,6 +2198,10 @@ goog.scope(function() {
                 for (var wrapSNdx = 0;
                     wrapSNdx < wrapModes.length;
                     wrapSNdx++) {
+                    combinationsGroup = new tcuTestCase.DeqpTest(
+                        '3d_combinations',
+                        '3D Filter and wrap mode combinations');
+                    this.addChild(combinationsGroup);
                     for (var wrapTNdx = 0;
                         wrapTNdx < wrapModes.length;
                         wrapTNdx++) {
