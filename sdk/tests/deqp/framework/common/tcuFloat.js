@@ -60,7 +60,7 @@ tcuFloat.FloatDescription = function(exponentBits, mantissaBits, exponentBias, f
 tcuFloat.FloatDescription.prototype.zero = function(sign) {
     return tcuFloat.newDeFloatFromParameters(
         deMath.shiftLeft((sign > 0 ? 0 : 1), (this.ExponentBits + this.MantissaBits)),
-        new tcuFloat.FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
+        this
     );
 };
 
@@ -72,7 +72,7 @@ tcuFloat.FloatDescription.prototype.zero = function(sign) {
 tcuFloat.FloatDescription.prototype.inf = function(sign) {
     return tcuFloat.newDeFloatFromParameters(((sign > 0 ? 0 : 1) << (this.ExponentBits + this.MantissaBits)) |
         deMath.shiftLeft(((1 << this.ExponentBits) - 1), this.MantissaBits), //Unless using very large exponent types, native shift is safe here, i guess.
-        new tcuFloat.FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
+        this
     );
 };
 
@@ -82,7 +82,7 @@ tcuFloat.FloatDescription.prototype.inf = function(sign) {
  */
 tcuFloat.FloatDescription.prototype.nan = function() {
     return tcuFloat.newDeFloatFromParameters(deMath.shiftLeft(1, (this.ExponentBits + this.MantissaBits)) - 1,
-        new tcuFloat.FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
+        this
     );
 };
 
@@ -123,7 +123,7 @@ tcuFloat.FloatDescription.prototype.construct = function(sign, exponent, mantiss
             ),
             deMath.BinaryOp.OR
         ),
-        new tcuFloat.FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
+        this
     );
 };
 
@@ -156,7 +156,7 @@ tcuFloat.FloatDescription.prototype.constructBits = function(sign, exponent, man
             mantissaBits,
             deMath.BinaryOp.OR
         ),
-        new tcuFloat.FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
+        this
     );
 };
 
@@ -216,7 +216,7 @@ tcuFloat.FloatDescription.prototype.convert = function(other) {
                         ),
                         deMath.BinaryOp.OR
                     ),
-                    new tcuFloat.FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
+                    this
                 );
             } else
                 return this.zero(other.sign());
@@ -263,7 +263,7 @@ tcuFloat.FloatDescription.prototype.convert = function(other) {
                         m,
                         deMath.BinaryOp.OR
                     ),
-                    new tcuFloat.FloatDescription(this.ExponentBits, this.MantissaBits, this.ExponentBias, this.Flags)
+                    this
                 );
             }
         }
@@ -277,10 +277,30 @@ tcuFloat.FloatDescription.prototype.convert = function(other) {
 tcuFloat.deFloat = function() {
     this.description = tcuFloat.description32;
 
-    this.buffer = new ArrayBuffer(this.description.totalByteSize);
-    this.array = new Uint8Array(this.buffer);
+    this.m_buffer = null;
+    this.m_array = null;
 
     this.m_value = 0;
+};
+
+/**
+ * buffer - Get the deFloat's existing ArrayBuffer or create one if none exists.
+ * @return {ArrayBuffer}
+ */
+tcuFloat.deFloat.prototype.buffer = function() {
+    if (!this.m_buffer)
+        this.m_buffer = new ArrayBuffer(this.description.totalByteSize);
+    return this.m_buffer;
+};
+
+/**
+ * array - Get the deFloat's existing Uint8Array or create one if none exists.
+ * @return {Uint8Array}
+ */
+tcuFloat.deFloat.prototype.array = function() {
+    if (!this.m_array)
+        this.m_array = new Uint8Array(this.buffer());
+    return this.m_array;
 };
 
 /**
@@ -290,7 +310,7 @@ tcuFloat.deFloat = function() {
  * @return {tcuFloat.deFloat}
  */
 tcuFloat.deFloat.prototype.deFloatNumber = function(jsnumber) {
-    var view32 = new DataView(this.buffer);
+    var view32 = new DataView(this.buffer());
     view32.setFloat32(0, jsnumber, true); //little-endian
     this.m_value = view32.getFloat32(0, true); //little-endian
 
@@ -316,10 +336,10 @@ tcuFloat.newDeFloatFromNumber = function(jsnumber) {
  * @return {tcuFloat.deFloat}
  */
 tcuFloat.deFloat.prototype.deFloatBuffer = function(buffer, description) {
-    this.buffer = buffer;
-    this.array = new Uint8Array(this.buffer);
+    this.m_buffer = buffer;
+    this.m_array = new Uint8Array(this.m_buffer);
 
-    this.m_value = deMath.arrayToNumber(this.array);
+    this.m_value = deMath.arrayToNumber(this.m_array);
 
     return this;
 };
@@ -336,6 +356,20 @@ tcuFloat.newDeFloatFromBuffer = function(buffer, description) {
 };
 
 /**
+ * Set the tcuFloat.deFloat to the given number.
+ * It does not perform any conversion; it assumes the number is compatible with
+ * the previously set description.
+ * @param {number} jsnumber
+ * @return {tcuFloat.deFloat}
+ **/
+tcuFloat.deFloat.prototype.deFloatParametersNumber = function(jsnumber) {
+    this.m_value = jsnumber;
+    deMath.numberToArray(this.m_array, jsnumber);
+
+    return this;
+};
+
+/**
  * Initializes a tcuFloat.deFloat from the given number,
  * with the specified format description.
  * It does not perform any conversion; it assumes the number is compatible with
@@ -345,15 +379,12 @@ tcuFloat.newDeFloatFromBuffer = function(buffer, description) {
  * @return {tcuFloat.deFloat}
  **/
 tcuFloat.deFloat.prototype.deFloatParameters = function(jsnumber, description) {
-    this.m_value = jsnumber;
     this.description = description;
 
-    this.buffer = new ArrayBuffer(this.description.totalByteSize);
-    this.array = new Uint8Array(this.buffer);
+    this.m_buffer = new ArrayBuffer(this.description.totalByteSize);
+    this.m_array = new Uint8Array(this.m_buffer);
 
-    deMath.numberToArray(this.array, jsnumber);
-
-    return this;
+    return this.deFloatParametersNumber(jsnumber);
 };
 
 /**
@@ -385,7 +416,7 @@ tcuFloat.deFloat.prototype.getBitRange = function(begin, end) {
  */
 tcuFloat.deFloat.prototype.bits = function() {
     if (typeof this.bitValue === 'undefined')
-        this.bitValue = deMath.arrayToNumber(this.array);
+        this.bitValue = deMath.arrayToNumber(this.array());
     return this.bitValue;
 };
 
@@ -533,6 +564,12 @@ tcuFloat.deFloat.prototype.getValue = function() {
     return value;
 };
 
+tcuFloat.description10 = new tcuFloat.FloatDescription(5, 5, 15, 0);
+tcuFloat.description11 = new tcuFloat.FloatDescription(5, 6, 15, 0);
+tcuFloat.description16 = new tcuFloat.FloatDescription(5, 10, 15, tcuFloat.FloatFlags.FLOAT_HAS_SIGN);
+tcuFloat.description32 = new tcuFloat.FloatDescription(8, 23, 127, tcuFloat.FloatFlags.FLOAT_HAS_SIGN | tcuFloat.FloatFlags.FLOAT_SUPPORT_DENORM);
+tcuFloat.description64 = new tcuFloat.FloatDescription(11, 52, 1023, tcuFloat.FloatFlags.FLOAT_HAS_SIGN | tcuFloat.FloatFlags.FLOAT_SUPPORT_DENORM);
+
 /**
  * Builds a 10 bit tcuFloat.deFloat
  * @param {number} value (64-bit JS float)
@@ -596,37 +633,81 @@ tcuFloat.numberToFloat11 = function(value) {
     return tcuFloat.newFloat11(value).bits();
 };
 
-tcuFloat.float11ToNumber = function(float11) {
-    var x = tcuFloat.newDeFloatFromParameters(float11, tcuFloat.description11);
-    return x.getValue();
-};
+tcuFloat.float11ToNumber = (function() {
+    var x = tcuFloat.newDeFloatFromParameters(0, tcuFloat.description11);
+    return function(float11) {
+        x.deFloatParametersNumber(float11);
+        return x.getValue();
+    };
+})();
 
 tcuFloat.numberToFloat10 = function(value) {
     return tcuFloat.newFloat10(value).bits();
 };
 
-tcuFloat.float10ToNumber = function(float10) {
-    var x = tcuFloat.newDeFloatFromParameters(float10, tcuFloat.description10);
-    return x.getValue();
-};
+tcuFloat.float10ToNumber = (function() {
+    var x = tcuFloat.newDeFloatFromParameters(0, tcuFloat.description10);
+    return function(float10) {
+        x.deFloatParametersNumber(float10);
+        return x.getValue();
+    };
+})();
 
-tcuFloat.numberToHalfFloat = function(value) {
-    return tcuFloat.newFloat16(value).bits();
-};
+/**
+ * Converts a Javascript number to a IEEE 754 half-precision float
+ * @param {number} value (64-bit JS float)
+ * @return {number} IEEE 754 value represented as an integer
+ *
+ * Conversion code from http://stackoverflow.com/questions/32633585/how-do-you-convert-to-half-floats-in-javascript
+ */
+tcuFloat.numberToHalfFloat = (function() {
+    var float32View = new Float32Array(1);
+    var int32View = new Int32Array(float32View.buffer);
+
+    return function toHalf( fval ) {
+        float32View[0] = fval;
+        var fbits = int32View[0];
+        var sign  = (fbits >> 16) & 0x8000; // sign only
+        var val   = ( fbits & 0x7fffffff ) + 0x1000; // rounded value
+
+        if( val >= 0x47800000 ) {  // might be or become NaN/Inf
+            if( ( fbits & 0x7fffffff ) >= 0x47800000 ) {
+                // is or must become NaN/Inf
+                if( val < 0x7f800000 ) { // was value but too large
+                    return sign | 0x7c00; // make it +/-Inf
+                }
+                return sign | 0x7c00 | // remains +/-Inf or NaN
+                    ( fbits & 0x007fffff ) >> 13; // keep NaN (and Inf) bits
+            }
+            return sign | 0x7bff; // unrounded not quite Inf
+        }
+        if( val >= 0x38800000 ) { // remains normalized value
+            return sign | val - 0x38000000 >> 13; // exp - 127 + 15
+        }
+        if( val < 0x33000000 )  { // too small for subnormal
+            return sign; // becomes +/-0
+        }
+        val = ( fbits & 0x7fffffff ) >> 23; // tmp exp for subnormal calc
+        return sign | ( ( fbits & 0x7fffff | 0x800000 ) // add subnormal bit
+             + ( 0x800000 >>> val - 102 ) // round depending on cut off
+             >> 126 - val ); // div by 2^(1-(exp-127+15)) and >> 13 | exp=0
+    };
+})();
+// Previously was: return tcuFloat.newFloat16(value).bits();
 
 tcuFloat.numberToHalfFloatNoDenorm = function(value) {
     return tcuFloat.newFloat16NoDenorm(value).bits();
 };
 
-tcuFloat.halfFloatToNumber = function(half) {
-    var x = tcuFloat.newDeFloatFromParameters(half, tcuFloat.description16);
-    return x.getValue();
-};
+tcuFloat.halfFloatToNumber = (function() {
+    var x = tcuFloat.newDeFloatFromParameters(0, tcuFloat.description16);
+    return function(half) {
+        x.deFloatParametersNumber(half);
+        return x.getValue();
+    };
+})();
 
-tcuFloat.halfFloatToNumberNoDenorm = function(half) {
-    var x = tcuFloat.newDeFloatFromParameters(half, tcuFloat.description16);
-    return x.getValue();
-};
+tcuFloat.halfFloatToNumberNoDenorm = tcuFloat.halfFloatToNumber;
 
 /**
  * Builds a 64 bit tcuFloat.deFloat
@@ -636,11 +717,5 @@ tcuFloat.halfFloatToNumberNoDenorm = function(half) {
 tcuFloat.newFloat64 = function(value) {
     return new tcuFloat.deFloat().deFloatParameters(value, tcuFloat.description64);
 };
-
-tcuFloat.description10 = new tcuFloat.FloatDescription(5, 5, 15, 0);
-tcuFloat.description11 = new tcuFloat.FloatDescription(5, 6, 15, 0);
-tcuFloat.description16 = new tcuFloat.FloatDescription(5, 10, 15, tcuFloat.FloatFlags.FLOAT_HAS_SIGN);
-tcuFloat.description32 = new tcuFloat.FloatDescription(8, 23, 127, tcuFloat.FloatFlags.FLOAT_HAS_SIGN | tcuFloat.FloatFlags.FLOAT_SUPPORT_DENORM);
-tcuFloat.description64 = new tcuFloat.FloatDescription(11, 52, 1023, tcuFloat.FloatFlags.FLOAT_HAS_SIGN | tcuFloat.FloatFlags.FLOAT_SUPPORT_DENORM);
 
 });
