@@ -2894,7 +2894,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         value to <code>gl_FragData[n]</code> where <code>n</code> does not equal constant value 0 must fail
         to compile in the WebGL 2 API. This is to achieve consistency with The OpenGL ES 3.0 specification
         section 4.2.1 <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.2.1">OpenGL ES 3.0.4 &sect;4.2.1</a>)</span>
-        and The OpenGL ES Shading Language 3.00 specification section 1.5 <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.3.pdf#nameddest=section-1.5">GLSL ES 3.00 &sect;1.5</a>)</span>.
+        and The OpenGL ES Shading Language 3.00.6 specification section 1.5 <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.pdf#nameddest=section-1.5">GLSL ES 3.00.6 &sect;1.5</a>)</span>.
         As in the OpenGL ES 3.0 API, multiple fragment shader outputs are only supported for GLSL ES 3.00
         shaders in the WebGL 2 API.
     </p>
@@ -3023,8 +3023,8 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         Texture lookup functions return values as floating point, unsigned integer or signed integer,
         depending on the sampler type passed to the lookup function. If the wrong sampler type is
         used for texture access, i.e., the sampler type does not match the texture internal format,
-        the returned values are undefined in OpenGL ES Shading Language 3.00.4
-        <span class="gl-spec">(<a href="https://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.4.pdf#nameddest=section-8.8">OpenGL ES Shading Language 3.00.4 &sect;8.8</a>)</span>.
+        the returned values are undefined in OpenGL ES Shading Language 3.00.6
+        <span class="gl-spec">(<a href="https://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.pdf#nameddest=section-8.8">OpenGL ES Shading Language 3.00.6 &sect;8.8</a>)</span>.
         In WebGL, generates an <code>INVALID_OPERATION</code> error in the corresponding draw call,
         including <code>drawArrays</code>, <code>drawElements</code>, <code>drawArraysInstanced</code>,
         <code>drawElementsInstanced </code>, and <code>drawRangeElements</code>.
@@ -3143,9 +3143,9 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
             B. Lipchak 2014.
         </dd>
         <dt id="refsGLES30GLSL">[GLES30GLSL]</dt>
-        <dd><cite><a href="http://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.4.pdf">
-            The OpenGL&reg; ES Shading Language Version 3.00</a></cite>,
-            R. Simpson, March 2013.
+        <dd><cite><a href="http://www.khronos.org/registry/gles/specs/3.0/GLSL_ES_Specification_3.00.pdf">
+            The OpenGL&reg; ES Shading Language Version 3.00.6</a></cite>,
+            R. Simpson, January 2016.
         </dd>
         <dt id="refsREGISTRY">[REGISTRY]</dt>
         <dd><cite><a href="http://www.khronos.org/registry/webgl/extensions/">
