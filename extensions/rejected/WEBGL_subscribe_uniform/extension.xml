@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/WEBGL_subscribe_uniform/">
+<rejected href="rejected/WEBGL_subscribe_uniform/">
   <name>WEBGL_subscribe_uniform</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
@@ -187,5 +187,8 @@ function draw(gl) {
     <revision date="2014/11/13">
       <change>Initial revision.</change>
     </revision>
+    <revision date="2015/01/24">
+      <change>Moved to rejected.</change>
+    </revision>
   </history>
-</proposal>
+</rejected>
