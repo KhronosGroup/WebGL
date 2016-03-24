@@ -514,9 +514,21 @@ goog.scope(function() {
         if (gluShaderUtil.isDataTypeFloatOrVec(type)) {
             // Special cases.
             // [dag] The special cases are 1, -1, and 0
-            return [1.0, -1.0, 0.0].concat(es3fShaderCommonFunctionTests.fillRandomScalars(es3fShaderCommonFunctionTests.Types.FLOAT, rnd, floatRanges[precision][0], floatRanges[precision][1], (numValues - 3) * scalarSize));
+            var specialCases = [1.0, -1.0, 0.0];
+            var ret = [];
+            for (var caseNdx = 0; caseNdx < specialCases.length; caseNdx++)
+                for (var scalarNdx = 0; scalarNdx < scalarSize; scalarNdx++) {
+                    ret.push(specialCases[caseNdx]);
+                }
+            return ret.concat(es3fShaderCommonFunctionTests.fillRandomScalars(es3fShaderCommonFunctionTests.Types.FLOAT, rnd, floatRanges[precision][0], floatRanges[precision][1], (numValues - 3) * scalarSize));
         } else {
-            return [1, -1, 0].concat(es3fShaderCommonFunctionTests.fillRandomScalars(es3fShaderCommonFunctionTests.Types.INT, rnd, intRanges[precision][0], intRanges[precision][1], (numValues - 3) * scalarSize));
+            var specialCases = [1, -1, 0];
+            var ret = [];
+            for (var caseNdx = 0; caseNdx < specialCases.length; caseNdx++)
+                for (var scalarNdx = 0; scalarNdx < scalarSize; scalarNdx++) {
+                    ret.push(specialCases[caseNdx]);
+                }
+            return ret.concat(es3fShaderCommonFunctionTests.fillRandomScalars(es3fShaderCommonFunctionTests.Types.INT, rnd, intRanges[precision][0], intRanges[precision][1], (numValues - 3) * scalarSize));
         }
     };
 
@@ -624,7 +636,9 @@ goog.scope(function() {
             assertMsgOptions(numValues >= 20, 'numValues should be greater or equal than 20', false, true);
             for (var ndx = 0; ndx < 20; ndx++) {
                 /** @type {number} */ var v = deMath.clamp(ndx - 10.5, ranges[precision][0], ranges[precision][1]);
-                values.push(v);
+                for (var scalarNdx = 0; scalarNdx < scalarSize; scalarNdx++) {
+                    values.push(v);
+                }
                 numSpecialCases += 1;
             }
         }
@@ -1652,7 +1666,9 @@ goog.scope(function() {
             assertMsgOptions(numValues >= 10, 'Sample too small.', false, true);
             for (var ndx = 0; ndx < 10; ndx++) {
                 /** @type {number} */ var v = deMath.clamp(ndx - 5.5, ranges[precision][0], ranges[precision][1]);
-                values.push(v);
+                for (var scalarNdx = 0; scalarNdx < scalarSize; scalarNdx++) {
+                    values.push(v);
+                }
                 numSpecialCases += 1;
             }
         }
