@@ -1341,8 +1341,8 @@ goog.scope(function() {
             for (var compNdx = 0; compNdx < scalarSize; compNdx++) {
                 in0 = inputs[0][compNdx];
                 out0 = outputs[0][compNdx];
-                /** @type {number} */ var minRes = Math.floor(in0 - eps);
-                /** @type {number} */ var maxRes = Math.floor(in0 + eps);
+                /** @type {number} */ var minRes = Math.trunc(in0 - eps);
+                /** @type {number} */ var maxRes = Math.trunc(in0 + eps);
                 /** @type {boolean} */ var anyOk = false;
 
                 for (var roundedVal = minRes; roundedVal <= maxRes; roundedVal++) {
