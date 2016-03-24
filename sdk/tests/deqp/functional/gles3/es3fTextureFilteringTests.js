@@ -2010,16 +2010,15 @@ goog.scope(function() {
         }
 
         // Formats.
-        formatsGroup = new tcuTestCase.DeqpTest(
-            '2d_array_formats', '2D Array Texture Formats'
-        );
-        this.addChild(formatsGroup);
         for (var fmtNdx = 0;
             fmtNdx < filterableFormatsByType.length;
             fmtNdx++) {
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
                 filterNdx++) {
+                formatsGroup = new tcuTestCase.DeqpTest(
+                    '2d_array_formats', '2D Array Texture Formats');
+                this.addChild(formatsGroup);
                 minFilter = minFilterModes[filterNdx].mode;
                 filterName = minFilterModes[filterNdx].name;
                 format = filterableFormatsByType[fmtNdx].format;
@@ -2044,9 +2043,10 @@ goog.scope(function() {
         }
 
         // Sizes.
-        sizesGroup = new tcuTestCase.DeqpTest('2d_array_sizes', '2D Array Texture Sizes');
-        this.addChild(sizesGroup);
         for (var sizeNdx = 0; sizeNdx < sizes2DArray.length; sizeNdx++) {
+            sizesGroup = new tcuTestCase.DeqpTest(
+                '2d_array_sizes', '2D Array Texture Sizes');
+            this.addChild(sizesGroup);
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
                 filterNdx++) {
@@ -2074,13 +2074,13 @@ goog.scope(function() {
         }
 
         // Wrap modes.
-        combinationsGroup = new tcuTestCase.DeqpTest(
-            '2d_array_combinations', '2D Array Filter and wrap mode combinations'
-        );
-        this.addChild(combinationsGroup);
         for (var minFilterNdx = 0;
             minFilterNdx < minFilterModes.length;
             minFilterNdx++) {
+            combinationsGroup = new tcuTestCase.DeqpTest(
+                '2d_array_combinations',
+                '2D Array Filter and wrap mode combinations');
+            this.addChild(combinationsGroup);
             for (var magFilterNdx = 0;
                 magFilterNdx < magFilterModes.length;
                 magFilterNdx++) {

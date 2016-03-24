@@ -106,9 +106,9 @@ _GROUP_TEST_COUNTS = [
     _SIZE_CUBE_COUNT, # cube_sizes
     _MIN_FILTER_MODE_COUNT, # cube_combinations
     1, # cube_no_edges_visible
-    1, # 2d_array_formats
-    1, # 2d_array_sizes
-    1, # 2d_array_combinations
+    _FILTERABLE_FORMAT_COUNT * _MIN_FILTER_MODE_COUNT, # 2d_array_formats
+    _SIZE_2D_ARRAY_COUNT, # 2d_array_sizes
+    _MIN_FILTER_MODE_COUNT, # 2d_array_combinations
     1, # 3d_formats
     1, # 3d_sizes,
     1, # 3d_combinations
