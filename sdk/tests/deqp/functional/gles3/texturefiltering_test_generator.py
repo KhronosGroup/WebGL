@@ -109,9 +109,9 @@ _GROUP_TEST_COUNTS = [
     _FILTERABLE_FORMAT_COUNT * _MIN_FILTER_MODE_COUNT, # 2d_array_formats
     _SIZE_2D_ARRAY_COUNT, # 2d_array_sizes
     _MIN_FILTER_MODE_COUNT, # 2d_array_combinations
-    1, # 3d_formats
-    1, # 3d_sizes,
-    1, # 3d_combinations
+    _FILTERABLE_FORMAT_COUNT * _MIN_FILTER_MODE_COUNT, # 3d_formats
+    _SIZE_3D_COUNT, # 3d_sizes,
+    _MIN_FILTER_MODE_COUNT * _MAG_FILTER_MODE_COUNT * _WRAP_MODE_COUNT, # 3d_combinations
 ]
 
 def GenerateFilename(group, count, index):
