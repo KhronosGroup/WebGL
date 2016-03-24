@@ -356,8 +356,13 @@ goog.scope(function() {
      */
     glsShaderExecUtil.getTFVaryings = function(outputs) {
         var names = [];
-        for (var i = 0; i < outputs.length; i++)
-            names.push(outputs[i].name);
+        for (var i = 0; i < outputs.length; i++) {
+            if (gluShaderUtil.isDataTypeBoolOrBVec(outputs[i].varType.getBasicType())) {
+                names.push('o_' + outputs[i].name);
+            } else {
+                names.push(outputs[i].name);
+            }
+        }
         return new gluShaderProgram.TransformFeedbackVaryings(names);
     };
 
