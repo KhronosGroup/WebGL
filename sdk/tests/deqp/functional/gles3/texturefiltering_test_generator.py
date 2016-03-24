@@ -26,8 +26,6 @@
   This file needs to be run in its folder.
 """
 
-import os
-import os.path
 import sys
 
 _DO_NOT_EDIT_WARNING = """<!--
@@ -129,6 +127,7 @@ def GenerateFilename(group, count, index):
 def WriteTest(filename, start, end):
   """Write one test."""
   file = open(filename, "wb")
+  file.write(_DO_NOT_EDIT_WARNING)
   file.write(_HTML_TEMPLATE % {
     'start': start,
     'end': end
