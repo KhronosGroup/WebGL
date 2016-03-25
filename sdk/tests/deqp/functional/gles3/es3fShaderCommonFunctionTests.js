@@ -587,11 +587,11 @@ goog.scope(function() {
      */
     es3fShaderCommonFunctionTests.roundEven = function(v) {
         /** @type {number} */ var q = deMath.deFloatFrac(v);
-        /** @type {number} */ var truncated = Math.floor(v - q);
+        /** @type {number} */ var truncated = Math.trunc(v - q);
         /** @type {number} */ var rounded = (q > 0.5) ? (truncated + 1) : // Rounded up
             (q == 0.5 && (truncated % 2 != 0)) ? (truncated + 1) : // Round to nearest even at 0.5
             truncated; // Rounded down
-        return rounded;
+        return rounded === 0 && v < 0 ? -0 : rounded;
     };
 
     /**
