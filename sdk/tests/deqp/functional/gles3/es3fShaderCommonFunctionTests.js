@@ -1051,8 +1051,14 @@ goog.scope(function() {
         for (var compNdx = 0; compNdx < scalarSize; compNdx++) {
             in0 = inputs[0][compNdx];
             out0 = outputs[0][compNdx];
+
+            // Convert int to uint because ref out is in uint format.
+            var view = new DataView(new ArrayBuffer(4));
+            view.setInt32(0, out0, true);
+            out0 = view.getUint32(0, true);
+
             refOut0 = tcuFloat.newFloat32(in0).bits();
-            ulpDiff = Math.abs(Math.floor(out0) - Math.floor(refOut0));
+            ulpDiff = Math.abs(out0 - refOut0);
             if (ulpDiff > maxUlpDiff) {
                 this.m_failMsg += 'Expected [' + compNdx + '] = ' + refOut0 + ' with threshold ' +
                             maxUlpDiff + ', got diff ' + ulpDiff;
@@ -1144,9 +1150,13 @@ goog.scope(function() {
         for (var compNdx = 0; compNdx < scalarSize; compNdx++) {
             in0 = inputs[0][compNdx];
             out0 = outputs[0][compNdx];
-            refOut0 = tcuFloat.newFloat32(in0).bits();
-            ulpDiff = Math.abs(Math.floor(in0) - Math.floor(out0));
 
+            // Convert int to float
+            var view = new DataView(new ArrayBuffer(4));
+            view.setInt32(0, in0, true);
+            in0 = view.getFloat32(0, true);
+
+            ulpDiff = es3fShaderCommonFunctionTests.getUlpDiff(in0, out0);
             if (ulpDiff > maxUlpDiff) {
                 this.m_failMsg += 'Expected [' + compNdx + '] = ' + in0 + ' with ULP threshold ' +
                             maxUlpDiff + ', got ULP diff ' + ulpDiff;
