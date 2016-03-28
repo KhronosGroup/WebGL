@@ -279,6 +279,10 @@ tcuFloat.deFloat = function() {
 
     this.m_buffer = null;
     this.m_array = null;
+    this.bitValue = undefined;
+    this.signValue = undefined;
+    this.expValue = undefined;
+    this.mantissaValue = undefined;
 
     this.m_value = 0;
 };
@@ -314,6 +318,12 @@ tcuFloat.deFloat.prototype.deFloatNumber = function(jsnumber) {
     view32.setFloat32(0, jsnumber, true); //little-endian
     this.m_value = view32.getFloat32(0, true); //little-endian
 
+    // Clear cached values
+    this.bitValue = undefined;
+    this.signValue = undefined;
+    this.expValue = undefined;
+    this.mantissaValue = undefined;
+
     return this;
 };
 
@@ -341,6 +351,12 @@ tcuFloat.deFloat.prototype.deFloatBuffer = function(buffer, description) {
 
     this.m_value = deMath.arrayToNumber(this.m_array);
 
+    // Clear cached values
+    this.bitValue = undefined;
+    this.signValue = undefined;
+    this.expValue = undefined;
+    this.mantissaValue = undefined;
+
     return this;
 };
 
@@ -365,6 +381,12 @@ tcuFloat.newDeFloatFromBuffer = function(buffer, description) {
 tcuFloat.deFloat.prototype.deFloatParametersNumber = function(jsnumber) {
     this.m_value = jsnumber;
     deMath.numberToArray(this.m_array, jsnumber);
+
+    // Clear cached values
+    this.bitValue = undefined;
+    this.signValue = undefined;
+    this.expValue = undefined;
+    this.mantissaValue = undefined;
 
     return this;
 };
@@ -552,6 +574,14 @@ tcuFloat.deFloat.prototype.constructBits = function(sign, exponent, mantissaBits
  * @return {number} The JS float value represented by this tcuFloat.deFloat.
  */
 tcuFloat.deFloat.prototype.getValue = function() {
+    if ((this.description.Flags | tcuFloat.FloatFlags.FLOAT_HAS_SIGN) === 0 && this.sign() < 0)
+        return 0;
+    if (this.isInf())
+        return Number.Infinity;
+    if (this.isNaN())
+        return Number.NaN;
+    if (this.isZero())
+        return this.sign() * 0;
     /**@type {number} */ var mymantissa = this.mantissa();
     /**@type {number} */ var myexponent = this.exponent();
     /**@type {number} */ var sign = this.sign();
