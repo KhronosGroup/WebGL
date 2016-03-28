@@ -872,7 +872,11 @@ goog.scope(function() {
             /** @type {number} */ var sign = Math.abs(rnd.getInt()) & 0x1;
             /** @type {number} */ var value = (sign << 31) | (exp << 23) | mantissa;
 
-            // TODO: check the following assert
+            // Convert int to float.
+            var view = new DataView(new ArrayBuffer(4));
+            view.setInt32(0, value, true);
+            value = view.getFloat32(0, true);
+
             assertMsgOptions(tcuFloat.newFloat32(value).isInf() === isInf && tcuFloat.newFloat32(value).isNaN() === isNan, 'Assert error.', false, true);
 
             values[0].push(value);
@@ -967,6 +971,11 @@ goog.scope(function() {
             /** @type {number} */ var exp = !isNan && !isInf ? (Math.abs(rnd.getInt()) & 0x7f) : 0xff;
             /** @type {number} */ var sign = Math.abs(rnd.getInt()) & 0x1;
             /** @type {number} */ var value = (sign << 31) | (exp << 23) | mantissa;
+
+            // Convert int to float.
+            var view = new DataView(new ArrayBuffer(4));
+            view.setInt32(0, value, true);
+            value = view.getFloat32(0, true);
 
             assertMsgOptions(tcuFloat.newFloat32(value).isInf() === isInf && tcuFloat.newFloat32(value).isNaN() === isNan, 'Assert error.', false, true);
 
