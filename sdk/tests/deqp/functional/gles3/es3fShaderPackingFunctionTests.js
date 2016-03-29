@@ -263,7 +263,7 @@ goog.scope(function() {
 		// Convert outputs if we get them as Uint8Array.
 		// - VertexShaderExecutor.execute() returns either an array of Uint8Array
 		// - FragmentShaderExecutor.execute() returns either an array of Uint8Array or Uint32Array
-		outputs = new Uint32Array(shaderExecutorOutput.buffer);
+		outputs = new Float32Array(shaderExecutorOutput.buffer);
 
 		// Verify
 		/** @type {number} */ var numValues = inputs.length;
@@ -272,11 +272,19 @@ goog.scope(function() {
 
 		for (var valNdx = 0; valNdx < inputs.length; valNdx++) {
 			/** @type {number} */ var in0 = Math.floor(inputs[valNdx] & 0xffff);
+			// Convert 16-bit uint to 16-bit int
+			var view = new DataView(new ArrayBuffer(4));
+			view.setUint16(0, in0, true);
+			in0 = view.getInt16(0, true);
 			/** @type {number} */ var in1 = Math.floor(deMath.shiftRight(inputs[valNdx], 16));
+			// Convert 16-bit uint to 16-bit int
+			var view = new DataView(new ArrayBuffer(4));
+			view.setUint16(0, in1, true);
+			in1 = view.getInt16(0, true);
 			/** @type {number} */ var ref0 = deMath.clamp(in0 / 32767., -1.0, 1.0);
 			/** @type {number} */ var ref1 = deMath.clamp(in1 / 32767., -1.0, 1.0);
-			/** @type {number} */ var res0 = outputs[valNdx][0];
-			/** @type {number} */ var res1 = outputs[valNdx][1];
+			/** @type {number} */ var res0 = outputs[2 * valNdx];
+			/** @type {number} */ var res1 = outputs[2 * valNdx + 1];
 
 			/** @type {number} */ var diff0 = es3fShaderPackingFunctionTests.getUlpDiff(ref0, res0);
 			/** @type {number} */ var diff1 = es3fShaderPackingFunctionTests.getUlpDiff(ref1, res1);
@@ -456,7 +464,7 @@ goog.scope(function() {
 		// Convert outputs if we get them as Uint8Array.
 		// - VertexShaderExecutor.execute() returns either an array of Uint8Array
 		// - FragmentShaderExecutor.execute() returns either an array of Uint8Array or Uint32Array
-	    outputs = new Uint32Array(shaderExecutorOutput.buffer);
+		outputs = new Float32Array(shaderExecutorOutput.buffer);
 
 		// Verify
 		/** @type {number} */ var numValues = inputs.length;
@@ -468,8 +476,8 @@ goog.scope(function() {
 			/** @type {number} */ var in1 = Math.floor(deMath.shiftRight(inputs[valNdx], 16));
 			/** @type {number} */ var ref0 = in0 / 65535.0;
 			/** @type {number} */ var ref1 = in1 / 65535.0;
-			/** @type {number} */ var res0 = outputs[valNdx][0];
-			/** @type {number} */ var res1 = outputs[valNdx][1];
+			/** @type {number} */ var res0 = outputs[2 * valNdx];
+			/** @type {number} */ var res1 = outputs[2 * valNdx + 1];
 
 			/** @type {number} */ var diff0 = es3fShaderPackingFunctionTests.getUlpDiff(ref0, res0);
 			/** @type {number} */ var diff1 = es3fShaderPackingFunctionTests.getUlpDiff(ref1, res1);
@@ -664,7 +672,7 @@ goog.scope(function() {
 		// Convert outputs if we get them as Uint8Array.
 		// - VertexShaderExecutor.execute() returns either an array of Uint8Array
 		// - FragmentShaderExecutor.execute() returns either an array of Uint8Array or Uint32Array
-	    outputs = new Uint32Array(shaderExecutorOutput.buffer);
+		outputs = new Float32Array(shaderExecutorOutput.buffer);
 
 		// Verify
 		/** @type {number} */ var numValues = inputs.length
@@ -674,11 +682,10 @@ goog.scope(function() {
 		for (var valNdx = 0; valNdx < inputs.length; valNdx++) {
 			/** @type {number} */ var in0 = (inputs[valNdx] & 0xffff);
 			/** @type {number} */ var in1 = deMath.shiftRight(inputs[valNdx], 16);
-			/** @type {number} */ var ref0 = tcuFloat.newFloat16(in0).getValue();
-			/** @type {number} */ var ref1 = tcuFloat.newFloat16(in1).getValue();
-			/** @type {number} */ var res0 = outputs[valNdx][0];
-			/** @type {number} */ var res1 = outputs[valNdx][1];
-
+			/** @type {number} */ var ref0 = tcuFloat.halfFloatToNumber(in0);
+			/** @type {number} */ var ref1 = tcuFloat.halfFloatToNumber(in1);
+			/** @type {number} */ var res0 = outputs[2 * valNdx];
+			/** @type {number} */ var res1 = outputs[2 * valNdx + 1];
 			/** @type {number} */ var refBits0 = tcuFloat.newFloat32(ref0).bits();
 			/** @type {number} */ var refBits1 = tcuFloat.newFloat32(ref1).bits();
 			/** @type {number} */ var resBits0 = tcuFloat.newFloat32(res0).bits();
@@ -686,6 +693,11 @@ goog.scope(function() {
 
 			/** @type {number} */ var diff0 = Math.abs(refBits0 - resBits0);
 			/** @type {number} */ var diff1 = Math.abs(refBits1 - resBits1);
+
+			if (isNaN(ref0) && isNaN(res0))
+			    diff0 = 0;
+			if (isNaN(ref1) && isNaN(res1))
+			    diff1 = 0;
 
 			if (diff0 > maxDiff || diff1 > maxDiff) {
 				if (numFailed < maxPrints)
