@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+# Add [include] of repo's .gitconfig in clone's .git/config.
+
 #
 # Copyright (c) 2016 The Khronos Group Inc.
 #
@@ -20,19 +23,11 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+# Set colors
 
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+GREEN='\033[1;32m'
+NC='\033[0m'
 
-against=HEAD~1
+git config --local include.path '../.gitconfig'
+printf "${GREEN}Git config was successfully set.${NC}\n"
 
-# Redirect output to stderr.
-exec 1>&2
-
-# Check that spec is not updated without updating the date
-if test $(git diff --cached --name-status -z $against -- "specs/latest/*/index.html" | wc -c) != 0 &&
-	test $(git diff --cached -z $against -- "specs/latest/*/index.html" | grep "Editor's Draft" | wc -c) = 0
-then
-	echo "${RED}Warning: Edited spec without changing the date.${NC}"
-	exit 1
-fi
