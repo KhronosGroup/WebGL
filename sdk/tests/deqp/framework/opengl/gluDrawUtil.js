@@ -87,10 +87,10 @@ gluDrawUtil.namedBindingsToProgramLocations = function(gl, program, inputArray, 
             //assert(binding.location >= 0);
             var location = gl.getAttribLocation(program, cur.name);
             if (location >= 0) {
-                if (cur.offset)
-                    location += cur.offset;
+                if (cur.location >= 0)
+                    location += cur.location;
                 // Add binding.location as an offset to accomodate matrices.
-                outputArray.push(new gluDrawUtil.VertexArrayBinding(cur.type, location, cur.components, cur.elements, cur.data));
+                outputArray.push(new gluDrawUtil.VertexArrayBinding(cur.type, location, cur.components, cur.elements, cur.data, cur.stride, cur.offset));
             }
         } else {
             outputArray.push(cur);
@@ -493,7 +493,7 @@ gluDrawUtil.newFloatVertexArrayBinding = function(name, numComponents, numElemen
  */
 gluDrawUtil.newFloatColumnVertexArrayBinding = function(name, column, rows, numElements, stride, data) {
     var bindingPoint = gluDrawUtil.bindingPointFromName(name);
-    bindingPoint.offset = column;
+    bindingPoint.location = column;
     var arrayPointer = new gluDrawUtil.VertexArrayPointer(gluDrawUtil.VertexComponentType.VTX_COMP_FLOAT,
         gluDrawUtil.VertexComponentConversion.VTX_COMP_CONVERT_NONE, rows, numElements, stride, data);
     return gluDrawUtil.vabFromBindingPointAndArrayPointer(bindingPoint, arrayPointer);
