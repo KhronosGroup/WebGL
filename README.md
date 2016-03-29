@@ -33,10 +33,19 @@ The last edited date in several specifications is automatically updated
 via a smudge filter. To benefit from this you must issue the following
 commands in the root of your clone.
 
+On Unix (Linux, Mac OS X, etc.) platforms, and Windows with Git for Windows' auxiliary commands (bash.exe) on your PATH:
+
 ```bash
-./.gitconfig.sh
+./install-gitconfig.sh
 rm specs/latest/*/index.html
 git checkout !$
 ```
 
-The first command adds an [include] of the repo's `.gitconfig` to the local git config file`.git/config` in your clone of the repo. `.gitconfig` contains the config of the "dater" filter. The remaining commands force a new checkout of the index.html files to smudge them with the date. These two are unnecessary if you plan to edit these files. All are unecessary if you do not care about  having the dates shown.
+On Windows with the Command Prompt:
+
+```install-gitconfig.bat
+del specs/latest/1.0/index.html specs/latest/2.0/index.html 
+git checkout specs/latest/1.0/index.html specs/latest/2.0/index.html 
+```
+
+The first command adds an [include] of the repo's `.gitconfig` to the local git config file`.git/config` in your clone of the repo. `.gitconfig` contains the config of the "dater" filter. The remaining commands force a new checkout of the index.html files to smudge them with the date. These two are unnecessary if you plan to edit these files. All are unecessary if you do not care about having the dates shown.
