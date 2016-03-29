@@ -21,7 +21,7 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
-function generateTest(internalFormat, pixelFormat, pixelType, prologue, resourcePath) {
+function generateTest(internalFormat, pixelFormat, pixelType, prologue, resourcePath, defaultContextVersion) {
     var wtu = WebGLTestUtils;
     var tiu = TexImageUtils;
     var gl = null;
@@ -36,6 +36,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             return;
         }
 
+        // Set the default context version while still allowing the webglVersion URL query string to override it.
+        wtu.setDefault3DContextVersion(defaultContextVersion);
         gl = wtu.create3DContext("example");
 
         if (!prologue(gl)) {

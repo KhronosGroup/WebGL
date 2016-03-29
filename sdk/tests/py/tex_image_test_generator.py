@@ -131,7 +131,7 @@ def GenerateFilename(dimension, element_type, internal_format, format, type):
               internal_format + "-" + format + "-" + type + ".html")
   return filename.lower()
     
-def WriteTest(filename, dimension, element_type, internal_format, format, type):
+def WriteTest(filename, dimension, element_type, internal_format, format, type, default_context_version):
   """Write one test."""
   file = open(filename, "wb")
   file.write(_LICENSE)
@@ -168,7 +168,7 @@ function testPrologue(gl) {
     return true;
 }
 
-generateTest("%(internal_format)s", "%(format)s", "%(type)s", testPrologue, "../../../resources/")();
+generateTest("%(internal_format)s", "%(format)s", "%(type)s", testPrologue, "../../../resources/", %(default_context_version)s)();
 </script>
 </body>
 </html>
@@ -179,10 +179,11 @@ generateTest("%(internal_format)s", "%(format)s", "%(type)s", testPrologue, "../
     'internal_format': internal_format,
     'format': format,
     'type': type,
+    'default_context_version': default_context_version,
   })
   file.close()
 
-def GenerateTests(test_dir, test_cases, dimension):
+def GenerateTests(test_dir, test_cases, dimension, default_context_version):
   test_dir_template = test_dir + '/%s'
   for element_type in _ELEMENT_TYPES:
     os.chdir(test_dir_template % element_type.replace('-', '_'))
@@ -198,15 +199,15 @@ def GenerateTests(test_dir, test_cases, dimension):
       filename = GenerateFilename(dimension, element_type, internal_format, format, type)
       index_file.write(filename)
       index_file.write('\n')
-      WriteTest(filename, dimension, element_type, internal_format, format, type)
+      WriteTest(filename, dimension, element_type, internal_format, format, type, default_context_version)
     index_file.close();
 
 def main(argv):
   """This is the main function."""
   py_dir = os.path.dirname(os.path.realpath(__file__))
-  GenerateTests(os.path.realpath(py_dir + '/../conformance/textures'), _FORMATS_TYPES_WEBGL1, '2')
-  GenerateTests(os.path.realpath(py_dir + '/../conformance2/textures'), _FORMATS_TYPES_WEBGL2, '2')
-  GenerateTests(os.path.realpath(py_dir + '/../conformance2/textures'), _FORMATS_TYPES_WEBGL2, '3')
+  GenerateTests(os.path.realpath(py_dir + '/../conformance/textures'), _FORMATS_TYPES_WEBGL1, '2', '1')
+  GenerateTests(os.path.realpath(py_dir + '/../conformance2/textures'), _FORMATS_TYPES_WEBGL2, '2', '2')
+  GenerateTests(os.path.realpath(py_dir + '/../conformance2/textures'), _FORMATS_TYPES_WEBGL2, '3', '2')
 
 if __name__ == '__main__':
   sys.exit(main(sys.argv[1:]))
