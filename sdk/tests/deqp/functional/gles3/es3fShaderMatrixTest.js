@@ -401,12 +401,12 @@ goog.scope(function() {
                 case gluShaderUtil.DataType.FLOAT_MAT2X3:
                     var m = new tcuMatrix.Matrix(3, 2);
                     m.setCol(0, deMath.swizzle(evalCtx.in_[0], [0, 1, 2]));
-                    m.setCol(1, deMath.swizzle(evalCtx.in_[0], [0, 1, 2]));
+                    m.setCol(1, deMath.swizzle(evalCtx.in_[1], [0, 1, 2]));
                     return m;
                 case gluShaderUtil.DataType.FLOAT_MAT2X4:
                     var m = new tcuMatrix.Matrix(4, 2);
-                    m.setCol(0, deMath.swizzle(evalCtx.in_[0], [0, 1, 2]));
-                    m.setCol(1, deMath.swizzle(evalCtx.in_[1], [0, 1, 2]));
+                    m.setCol(0, deMath.swizzle(evalCtx.in_[0], [0, 1, 2, 3]));
+                    m.setCol(1, deMath.swizzle(evalCtx.in_[1], [0, 1, 2, 3]));
                     return m;
                 case gluShaderUtil.DataType.FLOAT_MAT3X2:
                     var m = new tcuMatrix.Matrix(2, 3);
@@ -1466,7 +1466,7 @@ goog.scope(function() {
 
         // \todo [2012-02-14 pyry] Compute better values for matrix tests.
     	for (var attribNdx = 0; attribNdx < 4; attribNdx++) {
-    		this.m_userAttribTransforms[attribNdx] = new tcuMatrix.Mat4();
+    		this.m_userAttribTransforms[attribNdx] = new tcuMatrix.Matrix(4, 4, 0);
     		this.m_userAttribTransforms[attribNdx].set(0, 3, 0.2);// !< prevent matrix*vec from going into zero (assuming vec.w != 0)
     		this.m_userAttribTransforms[attribNdx].set(1, 3, 0.1);// !<
     		this.m_userAttribTransforms[attribNdx].set(2, 3, 0.4 + 0.15 * attribNdx);// !<
