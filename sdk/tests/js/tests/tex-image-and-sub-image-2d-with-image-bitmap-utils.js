@@ -35,6 +35,18 @@ function runOneIterationImageBitmapTest(useTexSubImage2D, bindingTarget, program
       case gl.RED:
       case gl.RED_INTEGER:
         greenColor = [0, 0, 0];
+        halfGreen = [0, 0, 0];
+        break;
+      default:
+        break;
+    }
+
+    switch (gl[internalFormat]) {
+      case gl.SRGB8:
+      case gl.SRGB8_ALPHA8:
+        // Math.pow((128 / 255 + 0.055) / 1.055, 2.4) * 255 = 55
+        halfRed = [55, 0, 0];
+        halfGreen = [0, 55, 0];
         break;
       default:
         break;
