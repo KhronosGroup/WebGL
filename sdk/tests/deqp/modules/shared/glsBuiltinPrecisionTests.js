@@ -3355,15 +3355,15 @@ var setParentClass = function(child, parent) {
         // Variables<In, Out> variables;
         //
         variables.out0 = new glsBuiltinPrecisionTests.Variable(this.Out.Out0, 'out0');
-        variables.out1 = new glsBuiltinPrecisionTests.Variable(this.Out.Out1, 'out1');
+        variables.out1 = new glsBuiltinPrecisionTests.Variable(this.Arg1, 'out1');
         variables.in0 = new glsBuiltinPrecisionTests.Variable(this.Arg0, 'in0');
-        variables.in1 = new glsBuiltinPrecisionTests.Variable(this.Arg1, 'in1');
-        variables.in2 = new glsBuiltinPrecisionTests.Variable(this.Arg2, 'in2');
-        variables.in3 = new glsBuiltinPrecisionTests.Variable(this.Arg3, 'in3');
+        variables.in1 = new glsBuiltinPrecisionTests.Variable(this.Arg2, 'in1');
+        variables.in2 = new glsBuiltinPrecisionTests.Variable(this.Arg3, 'in2');
+        variables.in3 = new glsBuiltinPrecisionTests.Variable('void', 'in3');
 
         var expr = glsBuiltinPrecisionTests.applyVar(this.m_func,
-                                       variables.in0, variables.in1,
-                                       variables.in2, variables.in3);
+                                       variables.in0, variables.out1,
+                                       variables.in1, variables.in2);
         var stmt = glsBuiltinPrecisionTests.variableAssignment(variables.out0, expr);
 
         this.testStatement(variables, inputs, stmt);
