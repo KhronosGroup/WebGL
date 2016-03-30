@@ -43,7 +43,8 @@ git checkout !$
 
 On Windows with the Command Prompt:
 
-```install-gitconfig.bat
+```cmd
+install-gitconfig.bat
 del specs/latest/1.0/index.html specs/latest/2.0/index.html 
 git checkout specs/latest/1.0/index.html specs/latest/2.0/index.html 
 ```
