@@ -4811,7 +4811,7 @@ var setParentClass = function(child, parent) {
      * @extends {glsBuiltinPrecisionTests.PreciseFunc1}
      */
     glsBuiltinPrecisionTests.RoundEven = function() {
-        glsBuiltinPrecisionTests.PreciseFunc1.call(this, 'roundeven', deMath.rint);
+        glsBuiltinPrecisionTests.PreciseFunc1.call(this, 'roundEven', deMath.rint);
     };
     setParentClass(glsBuiltinPrecisionTests.RoundEven, glsBuiltinPrecisionTests.PreciseFunc1);
 
