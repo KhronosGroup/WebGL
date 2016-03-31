@@ -58,7 +58,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         createImageBitmap(imageData, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(bitmap) {
             // bitmap is in unpremultiplied form
-            runImageBitmapTest(bitmap, 0, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+            runImageBitmapTest(bitmap, 0, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, true);
             finishTest();
         });
     }

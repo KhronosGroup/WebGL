@@ -149,7 +149,7 @@ def WriteTest(filename, dimension, element_type, internal_format, format, type, 
      element_type == 'image-bitmap-from-video' or element_type == 'image-bitmap-from-canvas' or \
      element_type == 'image-bitmap-from-blob' or element_type == 'image-bitmap-from-image-bitmap':
     code += """
-<script src="../../../js/tests/tex-image-and-sub-image-2d-with-image-bitmap-utils.js"></script>"""
+<script src="../../../js/tests/tex-image-and-sub-image-with-image-bitmap-utils.js"></script>"""
   code += """
 <script src="../../../js/tests/tex-image-and-sub-image-%(dimension)sd-with-%(element_type)s.js"></script>
 </head>

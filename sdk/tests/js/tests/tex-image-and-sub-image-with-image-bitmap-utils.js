@@ -52,9 +52,13 @@ function runOneIterationImageBitmapTest(useTexSubImage2D, bindingTarget, program
         break;
     }
 
-    debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
-          ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
-          ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP'));
+    if (optionsVal.is3D)
+        debug('Testing texSubImage3D' + ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
+                ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
+    else
+        debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
+              ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
+              ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP'));
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     // Enable writes to the RGBA channels
     gl.colorMask(1, 1, 1, 0);
@@ -67,7 +71,7 @@ function runOneIterationImageBitmapTest(useTexSubImage2D, bindingTarget, program
     gl.texParameteri(bindingTarget, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(bindingTarget, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-    var targets = [gl.TEXTURE_2D];
+    var targets = [bindingTarget];
     if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
         targets = [gl.TEXTURE_CUBE_MAP_POSITIVE_X,
                    gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
@@ -78,13 +82,19 @@ function runOneIterationImageBitmapTest(useTexSubImage2D, bindingTarget, program
     }
     // Upload the image into the texture
     for (var tt = 0; tt < targets.length; ++tt) {
-        if (useTexSubImage2D) {
-            // Initialize the texture to black first
-            gl.texImage2D(targets[tt], 0, gl[internalFormat], bitmap.width, bitmap.height, 0,
-                          gl[pixelFormat], gl[pixelType], null);
-            gl.texSubImage2D(targets[tt], 0, 0, 0, gl[pixelFormat], gl[pixelType], bitmap);
+        if (optionsVal.is3D) {
+            gl.texImage3D(targets[tt], 0, gl[internalFormat], bitmap.width, bitmap.height, 1 /* depth */, 0,
+                    gl[pixelFormat], gl[pixelType], null);
+            gl.texSubImage3D(targets[tt], 0, 0, 0, 0, gl[pixelFormat], gl[pixelType], bitmap);
         } else {
-            gl.texImage2D(targets[tt], 0, gl[internalFormat], gl[pixelFormat], gl[pixelType], bitmap);
+            if (useTexSubImage2D) {
+                // Initialize the texture to black first
+                gl.texImage2D(targets[tt], 0, gl[internalFormat], bitmap.width, bitmap.height, 0,
+                              gl[pixelFormat], gl[pixelType], null);
+                gl.texSubImage2D(targets[tt], 0, 0, 0, gl[pixelFormat], gl[pixelType], bitmap);
+            } else {
+                gl.texImage2D(targets[tt], 0, gl[internalFormat], gl[pixelFormat], gl[pixelType], bitmap);
+            }
         }
     }
 
@@ -147,24 +157,37 @@ function runTestOnBindingTargetImageBitmap(bindingTarget, program, bitmaps, opti
     }
 }
 
-function runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu)
+function runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D)
 {
-    var optionsVal = {alpha: alphaVal};
-    var program = tiu.setupTexturedQuad(gl, internalFormat);
-    runTestOnBindingTargetImageBitmap(gl.TEXTURE_2D, program, bitmaps, optionsVal,
-        internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+    var optionsVal = {alpha: alphaVal, is3D: is3D};
+    var program;
+    if (is3D) {
+        program = tiu.setupTexturedQuadWith3D(gl, internalFormat);
+        runTestOnBindingTargetImageBitmap(gl.TEXTURE_3D, program, bitmaps, optionsVal,
+            internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+    } else {
+        program = tiu.setupTexturedQuad(gl, internalFormat);
+        runTestOnBindingTargetImageBitmap(gl.TEXTURE_2D, program, bitmaps, optionsVal,
+            internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+    }
 
     // cube map texture must be square
     if (bitmaps.noFlipYPremul.width == bitmaps.noFlipYPremul.height) {
-        program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
-        runTestOnBindingTargetImageBitmap(gl.TEXTURE_CUBE_MAP, program, bitmaps, optionsVal,
-            internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+        if (is3D) {
+            program = tiu.setupTexturedQuadWith2DArray(gl, internalFormat);
+            runTestOnBindingTargetImageBitmap(gl.TEXTURE_2D_ARRAY, program, bitmaps, optionsVal,
+                internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+        } else {
+            program = tiu.setupTexturedQuadWithCubeMap(gl, internalFormat);
+            runTestOnBindingTargetImageBitmap(gl.TEXTURE_CUBE_MAP, program, bitmaps, optionsVal,
+                internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+        }
     }
 
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 }
 
-function runImageBitmapTest(source, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu)
+function runImageBitmapTest(source, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D)
 {
     var bitmaps = [];
     var p1 = createImageBitmap(source, {imageOrientation: "none", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
@@ -172,7 +195,7 @@ function runImageBitmapTest(source, alphaVal, internalFormat, pixelFormat, pixel
     var p3 = createImageBitmap(source, {imageOrientation: "flipY", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
     var p4 = createImageBitmap(source, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
     Promise.all([p1, p2, p3, p4]).then(function() {
-        runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+        runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D);
     }, function() {
         // createImageBitmap with options could be rejected if it is not supported
         finishTest();
