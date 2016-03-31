@@ -27,6 +27,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var gl = null;
     var successfullyParsed = false;
     var imageData = null;
+    var halfRedColor = [128, 0, 0];
+    var halfGreenColor = [0, 128, 0];
     var blackColor = [0, 0, 0];
     var redColor = [255, 0, 0];
     var greenColor = [0, 255, 0];
@@ -68,7 +70,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         data[4] = 255;
         data[5] = 0;
         data[6] = 0;
-        data[7] = 0;
+        data[7] = 128;
         data[8] = 0;
         data[9] = 255;
         data[10] = 0;
@@ -76,7 +78,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         data[12] = 0;
         data[13] = 255;
         data[14] = 0;
-        data[15] = 0;
+        data[15] = 128;
 
         runTest();
     }
@@ -128,9 +130,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var bottom = flipY ? (height - halfHeight) : 0;
 
         var tl = redColor;
-        var tr = premultiplyAlpha ? blackColor : redColor;
+        var tr = premultiplyAlpha ? halfRedColor : redColor;
         var bl = greenColor;
-        var br = premultiplyAlpha ? blackColor : greenColor;
+        var br = premultiplyAlpha ? halfGreenColor : greenColor;
 
         var loc;
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
