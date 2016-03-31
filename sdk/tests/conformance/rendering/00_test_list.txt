@@ -2,6 +2,7 @@
 --min-version 1.0.4 default-texture-draw-bug.html
 draw-arrays-out-of-bounds.html
 draw-elements-out-of-bounds.html
+--min-version 1.0.4 draw-with-changing-start-vertex-bug.html
 --min-version 1.0.3 framebuffer-switch.html
 --min-version 1.0.3 framebuffer-texture-switch.html
 gl-clear.html
