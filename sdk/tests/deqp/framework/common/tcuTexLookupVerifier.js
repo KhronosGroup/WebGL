@@ -435,11 +435,8 @@ goog.scope(function() {
         // This is basically line segment - AABB test. Valid interpolation line is checked
         // against result AABB constructed by applying threshold.
 
-        /** @type {Array<number>} */ var i0 = deMath.add(deMath.scale(c0, (1 - fBounds[0])), deMath.scale(c1, fBounds[0]));
-        /** @type {Array<number>} */ var i1 = deMath.add(deMath.scale(c0, (1 - fBounds[1])), deMath.scale(c1, fBounds[1]));
         /** @type {Array<number>} */ var rMin = deMath.subtract(result, prec.colorThreshold);
         /** @type {Array<number>} */ var rMax = deMath.add(result, prec.colorThreshold);
-        /** @type {boolean} */ var allIntersect = true;
 
         // Algorithm: For each component check whether segment endpoints are inside, or intersect with slab.
         // If all intersect or are inside, line segment intersects the whole 4D AABB.
@@ -447,20 +444,15 @@ goog.scope(function() {
             if (!prec.colorMask[compNdx])
                 continue;
 
-            // Signs for both bounds: false = left, true = right.
-            /** @type {boolean} */ var sMin0 = i0[compNdx] >= rMin[compNdx];
-            /** @type {boolean} */ var sMin1 = i1[compNdx] >= rMin[compNdx];
-            /** @type {boolean} */ var sMax0 = i0[compNdx] > rMax[compNdx];
-            /** @type {boolean} */ var sMax1 = i1[compNdx] > rMax[compNdx];
-
-            // If all signs are equal, line segment is outside bounds.
-            if (sMin0 == sMin1 && sMin1 == sMax0 && sMax0 == sMax1) {
-                allIntersect = false;
-                break;
+            /** @type {number} */ var i0 = c0[compNdx] * (1 - fBounds[0]) + c1[compNdx] * fBounds[0];
+            /** @type {number} */ var i1 = c0[compNdx] * (1 - fBounds[1]) + c1[compNdx] * fBounds[1];
+            if ((i0 > rMax[compNdx] && i1 > rMax[compNdx]) ||
+                (i0 < rMin[compNdx] && i1 < rMin[compNdx])) {
+                return false;
             }
         }
 
-        return allIntersect;
+        return true;
     };
 
     /**
@@ -625,56 +617,58 @@ goog.scope(function() {
         if (!tcuTexLookupVerifier.isInColorBounds_4Quad(prec, quad00, quad01, quad10, quad11, result))
             return false;
 
+        function biInterp(result, p00, p01, p10, p11, s00, s01, s10, s11) {
+            for (var ii = 0; ii < 4; ++ii) {
+                result[ii] = p00[ii] * s00 + p10[ii] * s10 + p01[ii] * s01 + p11[ii] * s11;
+            }
+        }
+
+        function interp(result, p0, p1, s) {
+            for (var ii = 0; ii < 4; ++ii) {
+                result = p0[ii] * (1 - s) + p1[ii] * s;
+            }
+        }
+
+        /** @type {Array<number>} */ var c00 = [0, 0, 0, 0];
+        /** @type {Array<number>} */ var c01 = [0, 0, 0, 0];
+        /** @type {Array<number>} */ var c10 = [0, 0, 0, 0];
+        /** @type {Array<number>} */ var c11 = [0, 0, 0, 0];
+        /** @type {Array<number>} */ var cz0 = [0, 0, 0, 0];
+        /** @type {Array<number>} */ var cz1 = [0, 0, 0, 0];
+
         for (var x0 = xBounds0[0]; x0 < xBounds0[1] + searchStep; x0 += searchStep) {
             for (var y0 = yBounds0[0]; y0 < yBounds0[1] + searchStep; y0 += searchStep) {
                 /** @type {number} */ var a0 = Math.min(x0, xBounds0[1]);
                 /** @type {number} */ var b0 = Math.min(y0, yBounds0[1]);
-                /** @type {Array<number>} */
-                var c00 = deMath.add(
-                            deMath.add(
-                                deMath.add(
-                                    deMath.scale(quad00.p00, (1 - a0) * (1 - b0)),
-                                    deMath.scale(quad00.p10, a0 * (1 - b0))),
-                                deMath.scale(quad00.p01, (1 - a0) * b0)),
-                            deMath.scale(quad00.p11, a0 * b0));
-                /** @type {Array<number>} */
-                var c01 = deMath.add(
-                            deMath.add(
-                                deMath.add(
-                                    deMath.scale(quad01.p00, (1 - a0) * (1 - b0)),
-                                    deMath.scale(quad01.p10, a0 * (1 - b0))),
-                                deMath.scale(quad01.p01, (1 - a0) * b0)),
-                            deMath.scale(quad01.p11, a0 * b0));
+
+                /** @type {number} */ var s00 = (1 - a0) * (1 - b0);
+                /** @type {number} */ var s01 = (1 - a0) * b0;
+                /** @type {number} */ var s10 = a0 * (1 - b0);
+                /** @type {number} */ var s11 = a0 * b0;
+
+                biInterp(c00, quad00.p00, quad00.p01, quad00.p10, quad00.p11, s00, s01, s10, s11);
+                biInterp(c01, quad01.p00, quad01.p01, quad01.p10, quad01.p11, s00, s01, s10, s11);
 
                 for (var z0 = zBounds0[0]; z0 < zBounds0[1] + searchStep; z0 += searchStep) {
                     /** @type {number} */ var c0 = Math.min(z0, zBounds0[1]);
-                    /** @type {Array<number>} */ var cz0 = deMath.add(deMath.scale(c00, (1 - c0)), deMath.scale(c01, c0));
+                    interp(cz0, c00, c01, c0);
 
                     for (var x1 = xBounds1[0]; x1 < xBounds1[1] + searchStep; x1 += searchStep) {
                         for (var y1 = yBounds1[0]; y1 < yBounds1[1] + searchStep; y1 += searchStep) {
                             /** @type {number} */ var a1 = Math.min(x1, xBounds1[1]);
                             /** @type {number} */ var b1 = Math.min(y1, yBounds1[1]);
-                            /** @type {Array<number>} */
-                            var c10 = deMath.add(
-                                        deMath.add(
-                                            deMath.add(
-                                                deMath.scale(quad10.p00, (1 - a1) * (1 - b1)),
-                                                deMath.scale(quad10.p10, a1 * (1 - b1))),
-                                            deMath.scale(quad10.p01, (1 - a1) * b1)),
-                                        deMath.scale(quad10.p11, a1 * b1));
-                            /** @type {Array<number>} */
-                            var c11 = deMath.add(
-                                        deMath.add(
-                                            deMath.add(
-                                                deMath.scale(quad11.p00, (1 - a1) * (1 - b1)),
-                                                deMath.scale(quad11.p10, a1 * (1 - b1))),
-                                            deMath.scale(quad11.p01, (1 - a1) * b1)),
-                                        deMath.scale(quad11.p11, a1 * b1));
+
+                            /** @type {number} */ var t00 = (1 - a1) * (1 - b1);
+                            /** @type {number} */ var t01 = (1 - a1) * b1;
+                            /** @type {number} */ var t10 = a1 * (1 - b1);
+                            /** @type {number} */ var t11 = a1 * b1;
+
+                            biInterp(c10, quad10.p00, quad10.p01, quad10.p10, quad10.p11, t00, t01, t10, t11);
+                            biInterp(c11, quad11.p00, quad11.p01, quad11.p10, quad11.p11, t00, t01, t10, t11);
 
                             for (var z1 = zBounds1[0]; z1 < zBounds1[1] + searchStep; z1 += searchStep) {
                                 /** @type {number} */ var c1 = Math.min(z1, zBounds1[1]);
-                                /** @type {Array<number>} */
-                                var cz1 = deMath.add(deMath.scale(c10, (1 - c1)), deMath.scale(c11, c1));
+                                interp(cz1, c10, c11, c1);
 
                                 if (tcuTexLookupVerifier.isLinearRangeValid(prec, cz0, cz1, wBounds, result))
                                     return true;
