@@ -54,7 +54,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         xhr.send();
         xhr.onload = function() {
             var blob = xhr.response;
-            runImageBitmapTest(blob, 0.5, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+            runImageBitmapTest(blob, 0.5, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, true);
             finishTest();
         }
     }
