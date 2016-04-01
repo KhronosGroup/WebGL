@@ -779,7 +779,7 @@ tcuFloat.float10ToNumber = (function() {
     };
 })();
 
-tcuFloat.numberToHalfFloat = function() {
+tcuFloat.numberToHalfFloat = function(value) {
     return tcuFloat.convertFloat32Inline(value, tcuFloat.description16);
 };
 
