@@ -33,7 +33,8 @@ The last edited date in several specifications is automatically updated
 via a smudge filter. To benefit from this you must issue the following
 commands in the root of your clone.
 
-On Unix (Linux, Mac OS X, etc.) platforms, and Windows with Git for Windows' auxiliary commands (bash.exe) on your PATH:
+On Unix (Linux, Mac OS X, etc.) platforms and Windows using Git for Windows'
+Git Bash or Cygwin's bash terminal:
 
 ```bash
 ./install-gitconfig.sh
@@ -41,7 +42,8 @@ rm specs/latest/*/index.html
 git checkout !$
 ```
 
-On Windows with the Command Prompt:
+On Windows with the Command Prompt (requires `git.exe` in a directory
+on your %PATH%):
 
 ```cmd
 install-gitconfig.bat
