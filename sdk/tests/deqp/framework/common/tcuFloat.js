@@ -58,10 +58,11 @@ tcuFloat.FloatDescription = function(exponentBits, mantissaBits, exponentBias, f
  * @return {tcuFloat.deFloat}
  */
 tcuFloat.FloatDescription.prototype.zero = function(sign) {
-    return tcuFloat.newDeFloatFromParameters(
-        deMath.shiftLeft((sign > 0 ? 0 : 1), (this.ExponentBits + this.MantissaBits)),
-        this
-    );
+    return tcuFloat.newDeFloatFromParameters(this.zeroNumber(sign), this);
+};
+
+tcuFloat.FloatDescription.prototype.zeroNumber = function(sign) {
+    return deMath.shiftLeft((sign > 0 ? 0 : 1), (this.ExponentBits + this.MantissaBits));
 };
 
 /**
@@ -70,10 +71,12 @@ tcuFloat.FloatDescription.prototype.zero = function(sign) {
  * @return {tcuFloat.deFloat}
  */
 tcuFloat.FloatDescription.prototype.inf = function(sign) {
-    return tcuFloat.newDeFloatFromParameters(((sign > 0 ? 0 : 1) << (this.ExponentBits + this.MantissaBits)) |
-        deMath.shiftLeft(((1 << this.ExponentBits) - 1), this.MantissaBits), //Unless using very large exponent types, native shift is safe here, i guess.
-        this
-    );
+    return tcuFloat.newDeFloatFromParameters(this.infNumber(sign), this);
+};
+
+tcuFloat.FloatDescription.prototype.infNumber = function(sign) {
+    return ((sign > 0 ? 0 : 1) << (this.ExponentBits + this.MantissaBits)) |
+        deMath.shiftLeft(((1 << this.ExponentBits) - 1), this.MantissaBits); //Unless using very large exponent types, native shift is safe here, i guess.
 };
 
 /**
@@ -81,9 +84,11 @@ tcuFloat.FloatDescription.prototype.inf = function(sign) {
  * @return {tcuFloat.deFloat}
  */
 tcuFloat.FloatDescription.prototype.nan = function() {
-    return tcuFloat.newDeFloatFromParameters(deMath.shiftLeft(1, (this.ExponentBits + this.MantissaBits)) - 1,
-        this
-    );
+    return tcuFloat.newDeFloatFromParameters(this.nanNumber(), this);
+};
+
+tcuFloat.FloatDescription.prototype.nanNumber = function() {
+    return deMath.shiftLeft(1, (this.ExponentBits + this.MantissaBits)) - 1;
 };
 
 /**
@@ -600,6 +605,97 @@ tcuFloat.description16 = new tcuFloat.FloatDescription(5, 10, 15, tcuFloat.Float
 tcuFloat.description32 = new tcuFloat.FloatDescription(8, 23, 127, tcuFloat.FloatFlags.FLOAT_HAS_SIGN | tcuFloat.FloatFlags.FLOAT_SUPPORT_DENORM);
 tcuFloat.description64 = new tcuFloat.FloatDescription(11, 52, 1023, tcuFloat.FloatFlags.FLOAT_HAS_SIGN | tcuFloat.FloatFlags.FLOAT_SUPPORT_DENORM);
 
+tcuFloat.convertFloat32Inline = (function() {
+    var float32View = new Float32Array(1);
+    var int32View = new Int32Array(float32View.buffer);
+
+    return function(fval, description) {
+        float32View[0] = fval;
+        var fbits = int32View[0];
+
+        var exponentBits = (fbits >> 23) & 0xff;
+        var mantissaBits = fbits & 0x7fffff;
+        var signBit = (fbits & 0x8000000) ? 1 : 0;
+        var sign = signBit ? -1 : 1;
+
+        var isZero = exponentBits == 0 && mantissaBits == 0;
+
+        var bitDiff;
+        var half;
+        var bias;
+
+        if (!(description.Flags & tcuFloat.FloatFlags.FLOAT_HAS_SIGN) && sign < 0) {
+            // Negative number, truncate to zero.
+            return description.zeroNumber(+1);
+        } else if (exponentBits == ((1 << tcuFloat.description32.ExponentBits) - 1) && mantissaBits == 0) { // isInf
+            return description.infNumber(sign);
+        } else if (exponentBits == ((1 << tcuFloat.description32.ExponentBits) - 1) && mantissaBits != 0) { // isNaN
+            return description.nanNumber();
+        } else if (isZero) {
+            return description.zeroNumber(sign);
+        } else {
+            var eMin = 1 - description.ExponentBias;
+            var eMax = ((1 << description.ExponentBits) - 2) - description.ExponentBias;
+
+            var isDenorm = exponentBits == 0 && mantissaBits != 0;
+
+            var s = signBit << (description.ExponentBits + description.MantissaBits); // \note Not sign, but sign bit.
+            var e = isDenorm ? 1 - tcuFloat.description32.ExponentBias : exponentBits - tcuFloat.description32.ExponentBias;// other.exponent();
+            var m = isZero || isDenorm ? mantissaBits : mantissaBits | (1 << tcuFloat.description32.MantissaBits); // other.mantissa();
+
+            // Normalize denormalized values prior to conversion.
+            while (!(m & (1 << tcuFloat.description32.MantissaBits))) {
+                m = deMath.shiftLeft(m, 1);
+                e -= 1;
+            }
+
+            if (e < eMin) {
+                // Underflow.
+                if ((description.Flags & tcuFloat.FloatFlags.FLOAT_SUPPORT_DENORM) && (eMin - e - 1 <= description.MantissaBits)) {
+                    // Shift and round (RTE).
+                    bitDiff = (tcuFloat.description32.MantissaBits - description.MantissaBits) + (eMin - e);
+                    half = (1 << (bitDiff - 1)) - 1;
+                    bias = ((m >> bitDiff) & 1);
+                    return (s | ((m + half + bias) >> bitDiff));
+                } else
+                    return description.zeroNumber(sign);
+            } else {
+                // Remove leading 1.
+                m = (m & ~(1 << tcuFloat.description32.MantissaBits));
+
+                if (description.MantissaBits < tcuFloat.description32.MantissaBits) {
+                    // Round mantissa (round to nearest even).
+                    bitDiff = tcuFloat.description32.MantissaBits - description.MantissaBits;
+                    half = (1 << (bitDiff - 1)) - 1;
+                    bias = ((m >> bitDiff) & 1);
+
+                    m = (m + half + bias) >> bitDiff;
+
+                    if ((m & (1 << description.MantissaBits))) {
+                        // Overflow in mantissa.
+                        m = 0;
+                        e += 1;
+                    }
+                } else {
+                    bitDiff = description.MantissaBits - tcuFloat.description32.MantissaBits;
+                    m = (m << bitDiff);
+                }
+
+                if (e > eMax) {
+                    // Overflow.
+                    return description.infNumber(sign);
+                } else {
+                    DE_ASSERT(deMath.deInRange32(e, eMin, eMax));
+                    DE_ASSERT(((e + description.ExponentBias) & ~((1 << description.ExponentBits) - 1)) == 0);
+                    DE_ASSERT((m & ~((1 << description.MantissaBits) - 1)) == 0);
+
+                    return (s | ((e + description.ExponentBias) << description.MantissaBits)) | m;
+                }
+            }
+        }
+    };
+})();
+
 /**
  * Builds a 10 bit tcuFloat.deFloat
  * @param {number} value (64-bit JS float)
@@ -660,7 +756,7 @@ tcuFloat.newFloat32 = function(value) {
 };
 
 tcuFloat.numberToFloat11 = function(value) {
-    return tcuFloat.newFloat11(value).bits();
+    return tcuFloat.convertFloat32Inline(value, tcuFloat.description11);
 };
 
 tcuFloat.float11ToNumber = (function() {
@@ -672,7 +768,7 @@ tcuFloat.float11ToNumber = (function() {
 })();
 
 tcuFloat.numberToFloat10 = function(value) {
-    return tcuFloat.newFloat10(value).bits();
+    return tcuFloat.convertFloat32Inline(value, tcuFloat.description10);
 };
 
 tcuFloat.float10ToNumber = (function() {
@@ -683,47 +779,9 @@ tcuFloat.float10ToNumber = (function() {
     };
 })();
 
-/**
- * Converts a Javascript number to a IEEE 754 half-precision float
- * @param {number} value (64-bit JS float)
- * @return {number} IEEE 754 value represented as an integer
- *
- * Conversion code from http://stackoverflow.com/questions/32633585/how-do-you-convert-to-half-floats-in-javascript
- */
-tcuFloat.numberToHalfFloat = (function() {
-    var float32View = new Float32Array(1);
-    var int32View = new Int32Array(float32View.buffer);
-
-    return function toHalf( fval ) {
-        float32View[0] = fval;
-        var fbits = int32View[0];
-        var sign  = (fbits >> 16) & 0x8000; // sign only
-        var val   = ( fbits & 0x7fffffff ) + 0x1000; // rounded value
-
-        if( val >= 0x47800000 ) {  // might be or become NaN/Inf
-            if( ( fbits & 0x7fffffff ) >= 0x47800000 ) {
-                // is or must become NaN/Inf
-                if( val < 0x7f800000 ) { // was value but too large
-                    return sign | 0x7c00; // make it +/-Inf
-                }
-                return sign | 0x7c00 | // remains +/-Inf or NaN
-                    ( fbits & 0x007fffff ) >> 13; // keep NaN (and Inf) bits
-            }
-            return sign | 0x7bff; // unrounded not quite Inf
-        }
-        if( val >= 0x38800000 ) { // remains normalized value
-            return sign | val - 0x38000000 >> 13; // exp - 127 + 15
-        }
-        if( val < 0x33000000 )  { // too small for subnormal
-            return sign; // becomes +/-0
-        }
-        val = ( fbits & 0x7fffffff ) >> 23; // tmp exp for subnormal calc
-        return sign | ( ( fbits & 0x7fffff | 0x800000 ) // add subnormal bit
-             + ( 0x800000 >>> val - 102 ) // round depending on cut off
-             >> 126 - val ); // div by 2^(1-(exp-127+15)) and >> 13 | exp=0
-    };
-})();
-// Previously was: return tcuFloat.newFloat16(value).bits();
+tcuFloat.numberToHalfFloat = function() {
+    return tcuFloat.convertFloat32Inline(value, tcuFloat.description16);
+};
 
 tcuFloat.numberToHalfFloatNoDenorm = function(value) {
     return tcuFloat.newFloat16NoDenorm(value).bits();
