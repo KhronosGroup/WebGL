@@ -22,7 +22,7 @@
 # MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 
 """
-  Generator for tex-image-and-sub-image-2d* tests.
+  Generator for tex-2d* and tex-3d* tests.
   This file needs to be run in its folder.
 """
 
@@ -88,7 +88,7 @@ _FORMATS_TYPES_WEBGL1 = [
   {'internal_format': 'RGBA', 'format': 'RGBA', 'type': 'UNSIGNED_SHORT_4_4_4_4' },
   {'internal_format': 'RGBA', 'format': 'RGBA', 'type': 'UNSIGNED_SHORT_5_5_5_1' },
 ]
-    
+
 _FORMATS_TYPES_WEBGL2 = [
   {'internal_format': 'R8', 'format': 'RED', 'type': 'UNSIGNED_BYTE' },
   {'internal_format': 'R16F', 'format': 'RED', 'type': 'HALF_FLOAT' },
@@ -124,13 +124,13 @@ _FORMATS_TYPES_WEBGL2 = [
   {'internal_format': 'RGBA32F', 'format': 'RGBA', 'type': 'FLOAT' },
   {'internal_format': 'RGBA8UI', 'format': 'RGBA_INTEGER', 'type': 'UNSIGNED_BYTE' },
 ]
-    
+
 def GenerateFilename(dimension, element_type, internal_format, format, type):
   """Generate test filename."""
-  filename = ("tex-image-and-sub-image-" + dimension + "d-with-" + element_type + "-" +
+  filename = ("tex-" + dimension + "d-" +
               internal_format + "-" + format + "-" + type + ".html")
   return filename.lower()
-    
+
 def WriteTest(filename, dimension, element_type, internal_format, format, type, default_context_version):
   """Write one test."""
   file = open(filename, "wb")
