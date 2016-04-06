@@ -5251,71 +5251,70 @@ var setParentClass = function(child, parent) {
     };
 
     /**
+     * @param {number} caseId test case Id
      * @return {glsBuiltinPrecisionTests.CaseFactories}
      */
-    glsBuiltinPrecisionTests.createES3BuiltinCases = function() {
+    glsBuiltinPrecisionTests.createES3BuiltinCases = function(caseId) {
         /** @type {glsBuiltinPrecisionTests.CaseFactories} */ var funcs = new glsBuiltinPrecisionTests.BuiltinFuncs();
 
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Add, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Sub, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Mul, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Div, funcs);
-
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Radians, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Degrees, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Sin, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Cos, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Tan, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ASin, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ACos, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ATan, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ATan2, funcs, 'atan2');
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Sinh, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Cosh, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Tanh, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ASinh, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ACosh, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ATanh, funcs);
-
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Pow, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Exp, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Exp2, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Log, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Log2, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Sqrt, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.InverseSqrt, funcs);
-
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Abs, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Sign, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Floor, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Trunc, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Round, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.RoundEven, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Ceil, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Fract, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Mod, funcs);
-        funcs.addFactory(glsBuiltinPrecisionTests.createSimpleFuncCaseFactory(glsBuiltinPrecisionTests.Modf));
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Min, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Max, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Mix, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Step, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.SmoothStep, funcs);
-        glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Clamp, funcs);
-
-        funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.Length));
-        funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.Distance));
-        funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.Dot));
-        funcs.addFactory(glsBuiltinPrecisionTests.createSimpleFuncCaseFactory(glsBuiltinPrecisionTests.Cross));
-        funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.Normalize));
-        funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.FaceForward));
-        funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.Reflect));
-        funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.Refract));
-
-        funcs.addFactory(new glsBuiltinPrecisionTests.MatrixFuncCaseFactory(glsBuiltinPrecisionTests.MatrixCompMult));
-        funcs.addFactory(new glsBuiltinPrecisionTests.MatrixFuncCaseFactory(glsBuiltinPrecisionTests.OuterProduct));
-        funcs.addFactory(new glsBuiltinPrecisionTests.MatrixFuncCaseFactory(glsBuiltinPrecisionTests.Transpose));
-        funcs.addFactory(new glsBuiltinPrecisionTests.SquareMatrixFuncCaseFactory(glsBuiltinPrecisionTests.Determinant));
-        funcs.addFactory(new glsBuiltinPrecisionTests.SquareMatrixFuncCaseFactory(glsBuiltinPrecisionTests.Inverse));
+        switch (caseId) {
+            case 0: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Add, funcs); break;
+            case 1: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Sub, funcs); break;
+            case 2: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Mul, funcs); break;
+            case 3: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Div, funcs); break;
+            case 4: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Radians, funcs); break;
+            case 5: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Degrees, funcs); break;
+            case 6: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Sin, funcs); break;
+            case 7: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Cos, funcs); break;
+            case 8: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Tan, funcs); break;
+            case 9: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ASin, funcs); break;
+            case 10: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ACos, funcs); break;
+            case 11: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ATan, funcs); break;
+            case 12: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ATan2, funcs, 'atan2'); break;
+            case 13: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Sinh, funcs); break;
+            case 14: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Cosh, funcs); break;
+            case 15: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Tanh, funcs); break;
+            case 16: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ASinh, funcs); break;
+            case 17: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ACosh, funcs); break;
+            case 18: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.ATanh, funcs); break;
+            case 19: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Pow, funcs); break;
+            case 20: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Exp, funcs); break;
+            case 21: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Exp2, funcs); break;
+            case 22: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Log, funcs); break;
+            case 23: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Log2, funcs); break;
+            case 24: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Sqrt, funcs); break;
+            case 25: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.InverseSqrt, funcs); break;
+            case 26: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Abs, funcs); break;
+            case 27: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Sign, funcs); break;
+            case 28: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Floor, funcs); break;
+            case 29: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Trunc, funcs); break;
+            case 30: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Round, funcs); break;
+            case 31: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.RoundEven, funcs); break;
+            case 32: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Ceil, funcs); break;
+            case 33: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Fract, funcs); break;
+            case 34: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Mod, funcs); break;
+            case 35: funcs.addFactory(glsBuiltinPrecisionTests.createSimpleFuncCaseFactory(glsBuiltinPrecisionTests.Modf)); break;
+            case 36: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Min, funcs); break;
+            case 37: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Max, funcs); break;
+            case 38: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Mix, funcs); break;
+            case 39: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Step, funcs); break;
+            case 40: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.SmoothStep, funcs); break;
+            case 41: glsBuiltinPrecisionTests.addScalarFactory(glsBuiltinPrecisionTests.Clamp, funcs); break;
+            case 42: funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.Length)); break;
+            case 43: funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.Distance)); break;
+            case 44: funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.Dot)); break;
+            case 45: funcs.addFactory(glsBuiltinPrecisionTests.createSimpleFuncCaseFactory(glsBuiltinPrecisionTests.Cross)); break;
+            case 46: funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.Normalize)); break;
+            case 47: funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.FaceForward)); break;
+            case 48: funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.Reflect)); break;
+            case 49: funcs.addFactory(new glsBuiltinPrecisionTests.TemplateFuncCaseFactory(glsBuiltinPrecisionTests.Refract)); break;
+            case 50: funcs.addFactory(new glsBuiltinPrecisionTests.MatrixFuncCaseFactory(glsBuiltinPrecisionTests.MatrixCompMult)); break;
+            case 51: funcs.addFactory(new glsBuiltinPrecisionTests.MatrixFuncCaseFactory(glsBuiltinPrecisionTests.OuterProduct)); break;
+            case 52: funcs.addFactory(new glsBuiltinPrecisionTests.MatrixFuncCaseFactory(glsBuiltinPrecisionTests.Transpose)); break;
+            case 53: funcs.addFactory(new glsBuiltinPrecisionTests.SquareMatrixFuncCaseFactory(glsBuiltinPrecisionTests.Determinant)); break;
+            case 54: funcs.addFactory(new glsBuiltinPrecisionTests.SquareMatrixFuncCaseFactory(glsBuiltinPrecisionTests.Inverse)); break;
+            default: break;
+        }
 
         return funcs;
     };
