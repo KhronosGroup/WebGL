@@ -57,10 +57,10 @@ var tcuTextureUtil = framework.common.tcuTextureUtil;
      */
     tcuFuzzyImageCompare.roundArray4ToUint8Sat = function(v) {
         return [
-            Math.round(deMath.clamp(v[0] + 0.5, 0, 255)),
-            Math.round(deMath.clamp(v[1] + 0.5, 0, 255)),
-            Math.round(deMath.clamp(v[2] + 0.5, 0, 255)),
-            Math.round(deMath.clamp(v[3] + 0.5, 0, 255))
+            deMath.clamp(Math.trunc(v[0] + 0.5), 0, 255),
+            deMath.clamp(Math.trunc(v[1] + 0.5), 0, 255),
+            deMath.clamp(Math.trunc(v[2] + 0.5), 0, 255),
+            deMath.clamp(Math.trunc(v[3] + 0.5), 0, 255)
         ];
     };
 
@@ -158,6 +158,7 @@ var tcuTextureUtil = framework.common.tcuTextureUtil;
                     sum = deMath.add(sum, deMath.scale(p, f));
                 }
 
+                sum = tcuFuzzyImageCompare.roundArray4ToUint8Sat(sum);
                 tmpView.write(j, i, sum, DstChannels);
             }
         }
@@ -172,6 +173,7 @@ var tcuTextureUtil = framework.common.tcuTextureUtil;
                     sum = deMath.add(sum, deMath.scale(p, f));
                 }
 
+                sum = tcuFuzzyImageCompare.roundArray4ToUint8Sat(sum);
                 dst.write(i, j, sum, DstChannels);
             }
         }
