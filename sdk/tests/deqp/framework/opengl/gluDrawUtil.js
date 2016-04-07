@@ -358,6 +358,14 @@ gluDrawUtil.Surface.prototype.getPixel = function(x, y) {
     return new gluDrawUtil.Pixel(rgba);
 };
 
+gluDrawUtil.Surface.prototype.getPixelUintRGB8 = function(x, y) {
+    /** @type {number} */ var base = (x + y * this.width) * 4;
+    /** @type {number} */
+    return (this.buffer[base] << 16) +
+        (this.buffer[base + 1] << 8) +
+        this.buffer[base + 2];
+};
+
 /**
  * @enum
  */
