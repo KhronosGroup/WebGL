@@ -35,14 +35,15 @@ goog.scope(function() {
 
     /**
      * @param {*} context
+     * @param {number} caseId test case Id
      * @return {tcuTestCase.DeqpTest}
      */
-    es3fBuiltinPrecisionTests.createBuiltinPrecisionTests = function(context) {
+    es3fBuiltinPrecisionTests.createBuiltinPrecisionTests = function(context, caseId) {
         /** @type {tcuTestCase.DeqpTest} */
         var group = tcuTestCase.newTest('precision', 'Builtin precision tests');
 
         /** @type {Array<gluShaderProgram.shaderType>} */ var shaderTypes = [];
-        var es3Cases = glsBuiltinPrecisionTests.createES3BuiltinCases();
+        var es3Cases = glsBuiltinPrecisionTests.createES3BuiltinCases(caseId);
 
         shaderTypes.push(gluShaderProgram.shaderType.VERTEX);
         shaderTypes.push(gluShaderProgram.shaderType.FRAGMENT);
@@ -54,21 +55,19 @@ goog.scope(function() {
     /**
      * Create and execute the test cases
      * @param {WebGL2RenderingContext} context
-     * @param {Array<number>=} range Test range
+     * @param {number} caseId test case Id
      */
-    es3fBuiltinPrecisionTests.run = function(context, range) {
+    es3fBuiltinPrecisionTests.run = function(context, caseId) {
         gl = context;
         // Set up root Test
         var state = tcuTestCase.runner;
 
-        var test = es3fBuiltinPrecisionTests.createBuiltinPrecisionTests(context);
+        var test = es3fBuiltinPrecisionTests.createBuiltinPrecisionTests(context, caseId);
         var testName = test.fullName();
         var testDescription = test.getDescription() === undefined ? '' : test.getDescription();
 
         state.testName = testName;
         state.setRoot(test);
-        if (range)
-            state.setRange(range);
         //Set up name and description of this test series.
         setCurrentTestName(testName);
         description(testDescription);
