@@ -879,7 +879,7 @@ goog.scope(function() {
     es3fShaderBuiltinVarTests.VertexIDReferenceShader.prototype.shadeFragments = function(packets, context) {
         for (var packetNdx = 0; packetNdx < packets.length; ++packetNdx) {
             /** @type {rrFragmentOperations.Fragment} */ var packet = packets[packetNdx];
-            packet.output = rrShadingContext.readVarying(packet, context, es3fShaderBuiltinVarTests.VertexIDReferenceShader.VARYINGLOC_COLOR);
+            packet.value = rrShadingContext.readVarying(packet, context, es3fShaderBuiltinVarTests.VertexIDReferenceShader.VARYINGLOC_COLOR);
         }
     };
 
