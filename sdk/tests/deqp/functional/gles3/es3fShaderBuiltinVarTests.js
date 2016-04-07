@@ -917,7 +917,7 @@ goog.scope(function() {
         attribs[1].stride = 0;
         attribs[1].instanceDivisor = 0;
         attribs[1].pointer = colors.buffer;
-        rrRenderer.drawQuads(referenceState, referenceTarget, referenceShaderProgram,
+        rrRenderer.drawTriangles(referenceState, referenceTarget, referenceShaderProgram,
             attribs, rrRenderer.PrimitiveType.TRIANGLES, 0, indices.length, /*instanceID = */ 0);
     };
 

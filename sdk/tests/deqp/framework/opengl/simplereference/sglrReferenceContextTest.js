@@ -696,7 +696,8 @@ goog.scope(function() {
         var pixelsTotest = [
             // location, color
             [2, 1], [0, 0, 255, 255],
-            [50, 140], [255, 0, 0, 255],
+            // The red vertex is between 140 and 141 so account for some blending with the white vertex
+            [50, 140], [255, 5, 5, 255],
             [50, 28], [255, 0, 255, 255],
             [139, 28], [0, 0, 0, 255],
             [50, 102], [255, 255, 255, 255],
