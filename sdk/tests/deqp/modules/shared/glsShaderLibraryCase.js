@@ -755,15 +755,17 @@ glsShaderLibraryCase.checkPixels = function(surface, minX, maxX, minY, maxY) {
 
     for (var y = minY; y <= maxY; y++) {
         for (var x = minX; x <= maxX; x++) {
-            /** @type {gluDrawUtil.Pixel} */ var pixel = surface.getPixel(x, y);
-            // Note: we really do not want to involve alpha in the check comparison
-            // \todo [2010-09-22 kalle] Do we know that alpha would be one? If yes, could use color constants white and black.
-            /** @type {boolean} */ var isWhite = (pixel.getRed() == 255) && (pixel.getGreen() == 255) && (pixel.getBlue() == 255);
-            /** @type {boolean} */ var isBlack = (pixel.getRed() == 0) && (pixel.getGreen() == 0) && (pixel.getBlue() == 0);
+            /** @type {number} */ var pixel = surface.getPixelUintRGB8(x, y);
+            /** @type {boolean} */ var isWhite = (pixel == 0xFFFFFF);
+            /** @type {boolean} */ var isBlack = (pixel == 0x000000);
 
             allWhite = allWhite && isWhite;
             allBlack = allBlack && isBlack;
             anyUnexpected = anyUnexpected || (!isWhite && !isBlack);
+
+            // Early terminate as soon as we know the check hasn't passed
+            if (!allWhite && !allBlack)
+                break;
         }
     }
 

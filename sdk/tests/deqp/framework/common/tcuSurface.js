@@ -114,6 +114,21 @@ tcuSurface.Surface.prototype.getPixel = function(x, y) {
 };
 
 /**
+ * @param {number} x
+ * @param {number} y
+ * @return {number}
+ */
+tcuSurface.Surface.prototype.getPixelUintRGB8 = function(x, y) {
+    DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
+    DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
+
+    var offset = 4 * (x + y * this.m_width);
+    return (this.m_pixels[offset] << 16) +
+        (this.m_pixels[offset + 1] << 8) +
+        this.m_pixels[offset + 2];
+};
+
+/**
  * Read the viewport contents into this surface
  * @param {*=} ctx WebGL or ref context
  * @param {(Array<number>|{x: number, y: number, width: number, height: number})=} view
