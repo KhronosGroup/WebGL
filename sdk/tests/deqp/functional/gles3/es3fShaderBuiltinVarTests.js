@@ -538,7 +538,7 @@ goog.scope(function() {
 
         // /** @type {gluDrawUtil.VertexArrayBinding} */ var posBinding = gluDrawUtil.newFloatVertexArrayBinding('a_positionSize', 3, coords.length, 0, coords);
         /** @type {gluDrawUtil.VertexArrayBinding} */
-        var posBinding = gluDrawUtil.newFloatVertexArrayBinding('a_positionSize', 3, coords.length, 3, newCoords);
+        var posBinding = gluDrawUtil.newFloatVertexArrayBinding('a_positionSize', 3, coords.length, 12, newCoords);
         /** @type {number} */ var viewportX = rnd.getInt(0, gl.drawingBufferWidth - width);
         /** @type {number} */ var viewportY = rnd.getInt(0, gl.drawingBufferHeight - height);
 
