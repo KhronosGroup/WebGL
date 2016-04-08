@@ -3170,12 +3170,15 @@ goog.scope(function() {
     };
 
     /**
-     * @param {tcuRGBA.RGBA} c
+     * @param {number} c1
+     * @param {number} c2
+     * @param {Array<number>} threshold
      * @return {boolean}
      */
-    glsDrawTests.isBlack = function(c) {
-        // ignore alpha channel
-        return c.getRed() == 0 && c.getGreen() == 0 && c.getBlue() == 0;
+    glsDrawTests.compareUintRGB8 = function(c1, c2, threshold) {
+        return (Math.abs(((c1 >> 16) & 0xff) - ((c2 >> 16) & 0xff)) <= threshold[0] &&  // Red
+                Math.abs(((c1 >> 8) & 0xff) - ((c2 >> 8) & 0xff)) <= threshold[1] &&    // Green
+                Math.abs((c1 & 0xff) - (c2 & 0xff)) <= threshold[2]);                   // Blue
     };
 
     /**
@@ -3203,9 +3206,9 @@ goog.scope(function() {
      */
     glsDrawTests.isEdgeTriplet = function(c1, c2, c3, renderTargetThreshold) {
         // black (background color) and non-black is always an edge
-        /** @type {boolean} */ var b1 = glsDrawTests.isBlack(c1);
-        /** @type {boolean} */ var b2 = glsDrawTests.isBlack(c2);
-        /** @type {boolean} */ var b3 = glsDrawTests.isBlack(c3);
+        /** @type {boolean} */ var b1 = c1 == 0x000000;
+        /** @type {boolean} */ var b2 = c2 == 0x000000;
+        /** @type {boolean} */ var b3 = c3 == 0x000000;
 
         // both pixels with coverage and pixels without coverage
         if ((b1 && b2 && b3) == false && (b1 || b2 || b3) == true)
@@ -3222,9 +3225,9 @@ goog.scope(function() {
         // Edge detection (this function) is run against the reference image
         // => no dithering to worry about
 
-        return glsDrawTests.isEdgeTripletComponent(c1.getRed(), c2.getRed(), c3.getRed(), renderTargetThreshold[0]) ||
-            glsDrawTests.isEdgeTripletComponent(c1.getGreen(), c2.getGreen(), c3.getGreen(), renderTargetThreshold[1]) ||
-            glsDrawTests.isEdgeTripletComponent(c1.getBlue(), c2.getBlue(), c3.getBlue(), renderTargetThreshold[2]);
+        return glsDrawTests.isEdgeTripletComponent((c1 >> 16) && 0xff, (c2 >> 16) && 0xff, (c3 >> 16) && 0xff, renderTargetThreshold[0]) ||
+            glsDrawTests.isEdgeTripletComponent((c1 >> 8) && 0xff, (c2 >> 8) && 0xff, (c3 >> 8) && 0xff, renderTargetThreshold[1]) ||
+            glsDrawTests.isEdgeTripletComponent(c1 && 0xff, c2 && 0xff, c3 && 0xff, renderTargetThreshold[2]);
     };
 
     /**
@@ -3241,14 +3244,14 @@ goog.scope(function() {
 
         // horizontal
 
-        /** @type {tcuRGBA.RGBA} */ var c1;
-        /** @type {tcuRGBA.RGBA} */ var c2;
-        /** @type {tcuRGBA.RGBA} */ var c3;
+        /** @type {number} */ var c1;
+        /** @type {number} */ var c2;
+        /** @type {number} */ var c3;
 
         for (var dy = -1; dy < 2; ++dy) {
-            c1 = tcuRGBA.newRGBAFromArray(ref.getPixel(x - 1, y + dy));
-            c2 = tcuRGBA.newRGBAFromArray(ref.getPixel(x, y + dy));
-            c3 = tcuRGBA.newRGBAFromArray(ref.getPixel(x + 1, y + dy));
+            c1 = ref.getPixelUintRGB8(x - 1, y + dy);
+            c2 = ref.getPixelUintRGB8(x, y + dy);
+            c3 = ref.getPixelUintRGB8(x + 1, y + dy);
             if (glsDrawTests.isEdgeTriplet(c1, c2, c3, renderTargetThreshold))
                 return true;
         }
@@ -3256,9 +3259,9 @@ goog.scope(function() {
         // vertical
 
         for (var dx = -1; dx < 2; ++dx) {
-            c1 = tcuRGBA.newRGBAFromArray(ref.getPixel(x + dx, y - 1));
-            c2 = tcuRGBA.newRGBAFromArray(ref.getPixel(x + dx, y));
-            c3 = tcuRGBA.newRGBAFromArray(ref.getPixel(x + dx, y + 1));
+            c1 = ref.getPixelUintRGB8(x + dx, y - 1);
+            c2 = ref.getPixelUintRGB8(x + dx, y);
+            c3 = ref.getPixelUintRGB8(x + dx, y + 1);
             if (glsDrawTests.isEdgeTriplet(c1, c2, c3, renderTargetThreshold))
                 return true;
         }
@@ -3267,15 +3270,15 @@ goog.scope(function() {
     };
 
     /**
-     * @param {tcuRGBA.RGBA} c
+     * @param {number} c
      * @return {number}
      */
-    glsDrawTests.getVisualizationGrayscaleColor = function(c) {
+    glsDrawTests.getVisualizationGrayscaleColorUintRGB8 = function(c) {
         // make triangle coverage and error pixels obvious by converting coverage to grayscale
-        if (glsDrawTests.isBlack(c))
+        if (c == 0x000000)
             return 0;
         else
-            return new Uint32Array([50 + Math.floor(new Uint32Array([c.getRed() + c.getBlue() + c.getGreen()])[0] / 8)])[0];
+            return 50 + Math.floor((((c >> 16) & 0xff) + ((c >> 8) & 0xff) + (c & 0xff)) / 8);
     };
 
     /**
@@ -3293,7 +3296,7 @@ goog.scope(function() {
 
         for (var dy = -1; dy < 2; dy++)
         for (var dx = -1; dx < 2; dx++) {
-            var targetCoverage = !glsDrawTests.isBlack(tcuRGBA.newRGBAFromArray(target.getPixel(x + dx, y + dy)));
+            var targetCoverage = target.getPixelUintRGB8(x + dx, y + dy);
             if (targetCoverage) {
                 ++coveredPixels;
 
@@ -3322,12 +3325,7 @@ goog.scope(function() {
 
         for (var dy = -1; dy < 2; dy++)
         for (var dx = -1; dx < 2; dx++) {
-            /** @type {tcuRGBA.RGBA} */ var targetCmpPixel = tcuRGBA.newRGBAFromArray(target.getPixel(x + dx, y + dy));
-            /** @type {number} */ var r = Math.abs(color.getRed() - targetCmpPixel.getRed());
-            /** @type {number} */ var g = Math.abs(color.getGreen() - targetCmpPixel.getGreen());
-            /** @type {number} */ var b = Math.abs(color.getBlue() - targetCmpPixel.getBlue());
-
-            if (r <= compareThreshold[0] && g <= compareThreshold[1] && b <= compareThreshold[2])
+            if (glsDrawTests.compareUintRGB8(color, target.getPixelUintRGB8(x + dx, y + dy), compareThreshold))
                 return true;
         }
 
@@ -3349,7 +3347,7 @@ goog.scope(function() {
 
         for (var dy = -1; dy < 2; dy++)
         for (var dx = -1; dx < 2; dx++) {
-            var targetCmpCoverage = !glsDrawTests.isBlack(tcuRGBA.newRGBAFromArray(target.getPixel(x + dx, y + dy)));
+            var targetCmpCoverage = target.getPixelUintRGB8(x + dx, y + dy) != 0x000000; // Pixel is not black
             if (targetCmpCoverage == coverage)
                 return true;
         }
@@ -3388,14 +3386,14 @@ goog.scope(function() {
 
         for (var y = 1; y < height - 1; ++y)
         for (var x = 1; x < width - 1; ++x) {
-            /** @type {tcuRGBA.RGBA} */ var refPixel = tcuRGBA.newRGBAFromArray(reference.getPixel(x, y));
-            /** @type {tcuRGBA.RGBA} */ var screenPixel = tcuRGBA.newRGBAFromArray(result.getPixel(x, y));
+            /** @type {number} */ var refPixel = reference.getPixelUintRGB8(x, y);
+            /** @type {number} */ var screenPixel = result.getPixelUintRGB8(x, y);
             /** @type {boolean} */ var isOkReferencePixel = glsDrawTests.pixelNeighborhoodContainsColor(result, x, y, refPixel, compareThreshold); // screen image has a matching pixel nearby (~= If something is drawn on reference, it must be drawn to screen too.)
             /** @type {boolean} */ var isOkScreenPixel = glsDrawTests.pixelNeighborhoodContainsColor(reference, x, y, screenPixel, compareThreshold); // reference image has a matching pixel nearby (~= If something is drawn on screen, it must be drawn to reference too.)
 
             if (isOkScreenPixel && isOkReferencePixel) {
                 // pixel valid, write greenish pixels to make the result image easier to read
-                /** @type {number} */ var grayscaleValue = glsDrawTests.getVisualizationGrayscaleColor(screenPixel);
+                /** @type {number} */ var grayscaleValue = glsDrawTests.getVisualizationGrayscaleColorUintRGB8(screenPixel);
                 errorMask.getAccess().setPixel([grayscaleValue / 255, 1, grayscaleValue / 255, 1], x, y);
             } else if (!glsDrawTests.pixelNearEdge(x, y, reference, renderTargetThreshold)) {
                 // non-edge pixel values must be within threshold of the reference values
@@ -3403,14 +3401,14 @@ goog.scope(function() {
                 ++numFailingPixels;
             } else {
                 // we are on/near an edge, verify only coverage (coverage == not background colored)
-                /** @type {boolean} */ var referenceCoverage = !glsDrawTests.isBlack(refPixel);
-                /** @type {boolean} */ var screenCoverage = !glsDrawTests.isBlack(screenPixel);
+                /** @type {boolean} */ var referenceCoverage = refPixel != 0x000000; // Not black
+                /** @type {boolean} */ var screenCoverage = screenPixel != 0x000000; // Not black
                 /** @type {boolean} */ var isOkReferenceCoverage = glsDrawTests.pixelNeighborhoodContainsCoverage(result, x, y, referenceCoverage); // Check reference pixel against screen pixel
                 /** @type {boolean} */ var isOkScreenCoverage = glsDrawTests.pixelNeighborhoodContainsCoverage(reference, x, y, screenCoverage); // Check screen pixels against reference pixel
 
                 if (isOkScreenCoverage && isOkReferenceCoverage) {
                     // pixel valid, write greenish pixels to make the result image easier to read
-                    var grayscaleValue = glsDrawTests.getVisualizationGrayscaleColor(screenPixel);
+                    var grayscaleValue = glsDrawTests.getVisualizationGrayscaleColorUintRGB8(screenPixel);
                     errorMask.getAccess().setPixel([grayscaleValue / 255, 1, grayscaleValue / 255, 1], x, y);
                 } else {
                     // coverage does not match
@@ -3467,8 +3465,8 @@ goog.scope(function() {
 
         for (var y = 1; y < height - 1; ++y)
         for (var x = 1; x < width - 1; ++x) {
-            /** @type {tcuRGBA.RGBA} */ var refPixel = tcuRGBA.newRGBAFromArray(reference.getPixel(x, y));
-            /** @type {tcuRGBA.RGBA} */ var screenPixel = tcuRGBA.newRGBAFromArray(result.getPixel(x, y));
+            /** @type {number} */ var refPixel = reference.getPixelUintRGB8(x, y);
+            /** @type {number} */ var screenPixel = result.getPixelUintRGB8(x, y);
             /** @type {boolean} */ var isOkScreenPixel = glsDrawTests.pixelNeighborhoodContainsColor(reference, x, y, screenPixel, compareThreshold); // reference image has a matching pixel nearby (~= If something is drawn on screen, it must be drawn to reference too.)
             /** @type {boolean} */ var isOkReferencePixel = glsDrawTests.pixelNeighborhoodContainsColor(result, x, y, refPixel, compareThreshold); // screen image has a matching pixel nearby (~= If something is drawn on reference, it must be drawn to screen too.)
 
@@ -3476,7 +3474,7 @@ goog.scope(function() {
 
             if (isOkScreenPixel && isOkReferencePixel) {
                 // pixel valid, write greenish pixels to make the result image easier to read
-                grayscaleValue = glsDrawTests.getVisualizationGrayscaleColor(screenPixel);
+                grayscaleValue = glsDrawTests.getVisualizationGrayscaleColorUintRGB8(screenPixel);
                 errorMask.getAccess().setPixel([grayscaleValue / 255, 1, grayscaleValue / 255, 1], x, y);
             } else if (!glsDrawTests.pixelNearLineIntersection(x, y, reference) &&
                      !glsDrawTests.pixelNearLineIntersection(x, y, result)) {
@@ -3486,14 +3484,14 @@ goog.scope(function() {
             } else {
                 // pixel is near a line intersection
                 // we are on/near an edge, verify only coverage (coverage == not background colored)
-                /** @type {boolean} */ var referenceCoverage = !glsDrawTests.isBlack(refPixel);
-                /** @type {boolean} */ var screenCoverage = !glsDrawTests.isBlack(screenPixel);
+                /** @type {boolean} */ var referenceCoverage = refPixel != 0x000000; // Not Black
+                /** @type {boolean} */ var screenCoverage = screenPixel != 0x000000; // Not Black
                 /** @type {boolean} */ var isOkScreenCoverage = glsDrawTests.pixelNeighborhoodContainsCoverage(reference, x, y, screenCoverage); // Check screen pixels against reference pixel
                 /** @type {boolean} */ var isOkReferenceCoverage = glsDrawTests.pixelNeighborhoodContainsCoverage(result, x, y, referenceCoverage); // Check reference pixel against screen pixel
 
                 if (isOkScreenCoverage && isOkReferenceCoverage) {
                     // pixel valid, write greenish pixels to make the result image easier to read
-                    grayscaleValue = glsDrawTests.getVisualizationGrayscaleColor(screenPixel);
+                    grayscaleValue = glsDrawTests.getVisualizationGrayscaleColorUintRGB8(screenPixel);
                     errorMask.getAccess().setPixel([grayscaleValue / 255, 1, grayscaleValue / 255, 1], x, y);
                 } else {
                     // coverage does not match
