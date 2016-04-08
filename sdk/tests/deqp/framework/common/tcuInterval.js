@@ -131,12 +131,12 @@
     tcuInterval.Interval = function(val) {
         if (val === undefined) {
             this.m_hasNaN = false;
-            this.m_lo = Number.POSITIVE_INFINITY;
-            this.m_hi = Number.NEGATIVE_INFINITY;
+            this.m_hi = Number.POSITIVE_INFINITY;
+            this.m_lo = Number.NEGATIVE_INFINITY;
         } else {
             this.m_hasNaN = isNaN(val);
-            this.m_lo = this.m_hasNaN ? Number.POSITIVE_INFINITY : val;
-            this.m_hi = this.m_hasNaN ? Number.NEGATIVE_INFINITY : val;
+            this.m_hi = this.m_hasNaN ? Number.POSITIVE_INFINITY : val;
+            this.m_lo = this.m_hasNaN ? Number.NEGATIVE_INFINITY : val;
         }
     };
 
