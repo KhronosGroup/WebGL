@@ -23,6 +23,7 @@ goog.provide('framework.common.tcuTexture');
 goog.require('framework.common.tcuFloat');
 goog.require('framework.delibs.debase.deMath');
 goog.require('framework.delibs.debase.deString');
+goog.require('framework.delibs.debase.deUtil');
 
 goog.scope(function() {
 
@@ -30,6 +31,7 @@ var tcuTexture = framework.common.tcuTexture;
 var deMath = framework.delibs.debase.deMath;
 var tcuFloat = framework.common.tcuFloat;
 var deString = framework.delibs.debase.deString;
+var deUtil = framework.delibs.debase.deUtil;
 
 var DE_ASSERT = function(x) {
     if (!x)
@@ -2880,7 +2882,7 @@ tcuTexture.sampleLevelArrayCubeSeamless = function(faces, numLevels, face, sampl
  */
 tcuTexture.sampleCubeSeamlessNearestCompare = function(faceAccess, sampler, ref, s, t, depth) {
     depth = depth ? depth : 0;
-    /** @type {tcuTexture.Sampler} */ var clampingSampler = sampler;
+    /** @type {tcuTexture.Sampler} */ var clampingSampler = deUtil.clone(sampler);
     clampingSampler.wrapS = tcuTexture.WrapMode.CLAMP_TO_EDGE;
     clampingSampler.wrapT = tcuTexture.WrapMode.CLAMP_TO_EDGE;
     return faceAccess.sample2DCompare(clampingSampler, tcuTexture.FilterMode.NEAREST, ref, s, t, [0, 0, depth]);
