@@ -42,6 +42,19 @@ goog.scope(function() {
     // Algorithm assumes that colors are packed to 32-bit values as dictated by
     // tcu::RGBA::*_SHIFT values.
 
+    function UintRGBA8_R(color) {
+        return (color >> 24) && 0xff;
+    }
+    function UintRGBA8_G(color) {
+        return (color >> 16) && 0xff;
+    }
+    function UintRGBA8_B(color) {
+        return (color >> 8) && 0xff;
+    }
+    function UintRGBA8_A(color) {
+        return color && 0xff;
+    }
+
     /**
     * @param {number} fx1 deUint32
     * @param {number} fy1 deUint32
@@ -68,13 +81,23 @@ goog.scope(function() {
         return rounded;
     };
 
+    tcuBilinearImageCompare.compareUintRGBA8Threshold = function(a, b, thr) {
+        if (a == b)
+            return true;
+
+        return (Math.abs(UintRGBA8_R(a) - UintRGBA8_R(b)) <= thr.getRed() &&
+            Math.abs(UintRGBA8_G(a) - UintRGBA8_G(b)) <= thr.getGreen() &&
+            Math.abs(UintRGBA8_B(a) - UintRGBA8_B(b)) <= thr.getBlue() &&
+            Math.abs(UintRGBA8_A(a) - UintRGBA8_A(b)) <= thr.getAlpha());
+    };
+
     /**
      * @param {tcuTexture.RGBA8View} view
      * @param {number} u
      * @param {number} v
-     * @return {tcuRGBA.RGBA}
+     * @return {number}
      */
-    tcuBilinearImageCompare.bilinearSampleRGBA8 = function(view, u, v) {
+    tcuBilinearImageCompare.bilinearSampleUintRGBA8 = function(view, u, v) {
         /** @type {number} */ var x0 = u >> tcuBilinearImageCompare.NUM_SUBPIXEL_BITS;
         /** @type {number} */ var y0 = v >> tcuBilinearImageCompare.NUM_SUBPIXEL_BITS;
         /** @type {number} */ var x1 = x0 + 1;
@@ -86,23 +109,23 @@ goog.scope(function() {
         /** @type {number} */ var fx1 = u - (x0 << tcuBilinearImageCompare.NUM_SUBPIXEL_BITS);
         /** @type {number} */ var fy1 = v - (y0 << tcuBilinearImageCompare.NUM_SUBPIXEL_BITS);
 
-        /** @type {Array<number>} */ var channelsP00 = view.read(x0, y0);
-        /** @type {Array<number>} */ var channelsP10 = view.read(x1, y0);
-        /** @type {Array<number>} */ var channelsP01 = view.read(x0, y1);
-        /** @type {Array<number>} */ var channelsP11 = view.read(x1, y1);
+        /** @type {Array<number>} */ var channelsP00 = view.readUintRGBA8(x0, y0);
+        /** @type {Array<number>} */ var channelsP10 = view.readUintRGBA8(x1, y0);
+        /** @type {Array<number>} */ var channelsP01 = view.readUintRGBA8(x0, y1);
+        /** @type {Array<number>} */ var channelsP11 = view.readUintRGBA8(x1, y1);
 
-        /** @type {Array<number>} */ var res = [];
+        /** @type {number} */ var res = 0;
 
-        res[0] = tcuBilinearImageCompare.interpolateChannel(fx1, fy1, channelsP00[0],
-            channelsP01[0], channelsP10[0], channelsP11[0]);
-        res[1] = tcuBilinearImageCompare.interpolateChannel(fx1, fy1, channelsP00[1],
-            channelsP01[1], channelsP10[1], channelsP11[1]);
-        res[2] = tcuBilinearImageCompare.interpolateChannel(fx1, fy1, channelsP00[2],
-            channelsP01[2], channelsP10[2], channelsP11[2]);
-        res[3] = tcuBilinearImageCompare.interpolateChannel(fx1, fy1, channelsP00[3],
-            channelsP01[3], channelsP10[3], channelsP11[3]);
+        res = (tcuBilinearImageCompare.interpolateChannel(fx1, fy1, UintRGBA8_R(channelsP00),
+            UintRGBA8_R(channelsP01), UintRGBA8_R(channelsP10), UintRGBA8_R(channelsP11)) & 0xff) << 24;
+        res += (tcuBilinearImageCompare.interpolateChannel(fx1, fy1, UintRGBA8_G(channelsP00),
+            UintRGBA8_G(channelsP01), UintRGBA8_G(channelsP10), UintRGBA8_G(channelsP11)) & 0xff) << 16;
+        res += (tcuBilinearImageCompare.interpolateChannel(fx1, fy1, UintRGBA8_B(channelsP00),
+            UintRGBA8_B(channelsP01), UintRGBA8_B(channelsP10), UintRGBA8_B(channelsP11)) & 0xff) << 8;
+        res += tcuBilinearImageCompare.interpolateChannel(fx1, fy1, UintRGBA8_A(channelsP00),
+            UintRGBA8_A(channelsP01), UintRGBA8_A(channelsP10), UintRGBA8_A(channelsP11)) & 0xff;
 
-        return tcuRGBA.newRGBAFromArray(res);
+        return res;
     };
 
     /**
@@ -114,7 +137,7 @@ goog.scope(function() {
      * @return {boolean}
      */
     tcuBilinearImageCompare.comparePixelRGBA8 = function(reference, result, threshold, x, y) {
-        /** @const {tcuRGBA.RGBA} */ var resPix = tcuRGBA.newRGBAFromArray(result.read(x, y));
+        /** @const {tcuRGBA.RGBA} */ var resPix = result.readUintRGBA8(x, y);
 
         // Step 1: Compare result pixel to 3x3 neighborhood pixels in reference.
         /** @const {number} */ var x0 = Math.max(x - 1, 0);
@@ -128,15 +151,15 @@ goog.scope(function() {
 
         //tcuBilinearImageCompare.readRGBA8List (reference, x0, y0, x2, y2);
 
-        if (tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x1, y1)), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x0, y1)), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x2, y1)), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x0, y0)), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x1, y0)), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x2, y0)), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x0, y2)), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x1, y2)), threshold) ||
-            tcuRGBA.compareThreshold(resPix, tcuRGBA.newRGBAFromArray(reference.read(x2, y2)), threshold))
+        if (tcuBilinearImageCompare.compareUintRGBA8Threshold(resPix, reference.readUintRGBA8(x1, y1), threshold) ||
+            tcuBilinearImageCompare.compareUintRGBA8Threshold(resPix, reference.readUintRGBA8(x0, y1), threshold) ||
+            tcuBilinearImageCompare.compareUintRGBA8Threshold(resPix, reference.readUintRGBA8(x2, y1), threshold) ||
+            tcuBilinearImageCompare.compareUintRGBA8Threshold(resPix, reference.readUintRGBA8(x0, y0), threshold) ||
+            tcuBilinearImageCompare.compareUintRGBA8Threshold(resPix, reference.readUintRGBA8(x1, y0), threshold) ||
+            tcuBilinearImageCompare.compareUintRGBA8Threshold(resPix, reference.readUintRGBA8(x2, y0), threshold) ||
+            tcuBilinearImageCompare.compareUintRGBA8Threshold(resPix, reference.readUintRGBA8(x0, y2), threshold) ||
+            tcuBilinearImageCompare.compareUintRGBA8Threshold(resPix, reference.readUintRGBA8(x1, y2), threshold) ||
+            tcuBilinearImageCompare.compareUintRGBA8Threshold(resPix, reference.readUintRGBA8(x2, y2), threshold))
             return true;
 
         // Step 2: Compare using bilinear sampling.
@@ -182,7 +205,7 @@ goog.scope(function() {
                 !deMath.deInBounds32(v, 0, (reference.getHeight() - 1) << tcuBilinearImageCompare.NUM_SUBPIXEL_BITS))
                 continue;
 
-            if (tcuRGBA.compareThreshold(resPix, tcuBilinearImageCompare.bilinearSampleRGBA8(reference, u, v), threshold))
+            if (tcuBilinearImageCompare.compareUintRGBA8Threshold(resPix, tcuBilinearImageCompare.bilinearSampleUintRGBA8(reference, u, v), threshold))
                 return true;
         }
 

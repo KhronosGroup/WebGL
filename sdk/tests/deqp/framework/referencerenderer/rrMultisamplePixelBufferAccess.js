@@ -137,14 +137,27 @@ rrMultisamplePixelBufferAccess.MultisamplePixelBufferAccess.prototype.resolveMul
     DE_ASSERT(dst.getWidth() == src.raw().getHeight());
     DE_ASSERT(dst.getHeight() == src.raw().getDepth());
 
+    var numSamples = src.getNumSamples();
+    var sum = [0, 0, 0, 0];
     for (var y = 0; y < dst.getHeight(); y++) {
         for (var x = 0; x < dst.getWidth(); x++) {
-            var sum = [0, 0, 0, 0];
-            for (var s = 0; s < src.raw().getWidth(); s++)
-                sum = deMath.add(sum, src.raw().getPixel(s, x, y));
+            sum[0] = 0;
+            sum[1] = 0;
+            sum[2] = 0;
+            sum[3] = 0;
 
-            for (var i = 0; i < sum.length; i++)
-                sum[i] = sum[i] / src.getNumSamples();
+            for (var s = 0; s < src.raw().getWidth(); s++) {
+                var pixel = src.raw().getPixel(s, x, y);
+                sum[0] += pixel[0];
+                sum[1] += pixel[1];
+                sum[2] += pixel[2];
+                sum[3] += pixel[3];
+            }
+
+            sum[0] /= numSamples;
+            sum[1] /= numSamples;
+            sum[2] /= numSamples;
+            sum[3] /= numSamples;
 
             dst.setPixel(sum, x, y);
         }
