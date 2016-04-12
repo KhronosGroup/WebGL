@@ -243,21 +243,21 @@ rrRenderer.PrimitiveList.prototype.getNextPrimitive = function(reset) {
     var i = this.m_iterator;
     switch (this.m_primitiveType) {
         case rrRenderer.PrimitiveType.TRIANGLES:
-            if (this.m_iterator + 6 <= this.m_numElements) {
-                result = [i, i + 1, i + 2, i + 3, i + 4, i + 5];
-                this.m_iterator += 6;
+            if (this.m_iterator + 3 <= this.m_numElements) {
+                result = [i, i + 1, i + 2];
+                this.m_iterator += 3;
             }
             break;
         case rrRenderer.PrimitiveType.TRIANGLE_STRIP:
-            if (this.m_iterator + 4 <= this.m_numElements) {
-                result = [i, i + 1, i + 2, i + 3];
-                this.m_iterator += 2;
+            if (this.m_iterator + 3 <= this.m_numElements) {
+                result = [i, i + 1, i + 2];
+                this.m_iterator += 1;
             }
             break;
         case rrRenderer.PrimitiveType.TRIANGLE_FAN:
-            if (this.m_iterator + 4 <= this.m_numElements) {
-                result = [0, i + 1, i + 2, i + 3];
-                this.m_iterator += 2;
+            if (this.m_iterator + 3 <= this.m_numElements) {
+                result = [0, i + 1, i + 2];
+                this.m_iterator += 1;
             }
             break;
         case rrRenderer.PrimitiveType.LINES:
@@ -316,8 +316,8 @@ rrRenderer.getBarycentricCoefficients = function(v, v1, v2, v3) {
 
     var det = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3);
 
-    b[0] = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / det;
-    b[1] = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / det;
+    b[0] = ((y2 - y3) * (x - x3) + (x3 - x2) * (y - y3)) / det;
+    b[1] = ((y3 - y1) * (x - x3) + (x1 - x3) * (y - y3)) / det;
     b[2] = 1 - b[0] - b[1];
 
     return b;
@@ -531,19 +531,6 @@ rrRenderer.getIndexOfCorner = function(isTop, isRight, vertexPackets) {
 };
 
 /**
- * @param {number} x
- * @param {number} y
- * @param {Array<number>} depths
- * @return {number}
- */
-rrRenderer.calculateDepth = function(x, y, depths) {
-    var d1 = x * depths[1] + (1 - x) * depths[0];
-    var d2 = x * depths[3] + (1 - x) * depths[2];
-    var d = y * d1 + (1 - y) * d2;
-    return d;
-};
-
-/**
  * Check that point is in the clipping volume
  * @param {number} x
  * @param {number} y
@@ -573,7 +560,7 @@ rrRenderer.clipTest = function(x, y, z, rect) {
  * @param {number} count Number of indices
  * @param {number} instanceID
  */
-rrRenderer.drawQuads = function(state, renderTarget, program, vertexAttribs, primitive, first, count, instanceID) {
+rrRenderer.drawTriangles = function(state, renderTarget, program, vertexAttribs, primitive, first, count, instanceID) {
 
     /**
      * @param {Array<rrVertexPacket.VertexPacket>} vertices
@@ -621,73 +608,49 @@ rrRenderer.drawQuads = function(state, renderTarget, program, vertexAttribs, pri
     var depthScale = (zf - zn) / 2;
     var depthBias = (zf + zn) / 2;
 
-    // For each quad, we get a group of six vertex packets
     for (var prim = primitives.getNextPrimitive(true); prim.length > 0; prim = primitives.getNextPrimitive()) {
-        var quadPackets = selectVertices(vertexPackets, prim);
+        var vertices = selectVertices(vertexPackets, prim);
 
-        var bottomLeftVertexNdx = rrRenderer.getIndexOfCorner(false, false, quadPackets);
-        var bottomRightVertexNdx = rrRenderer.getIndexOfCorner(false, true, quadPackets);
-        var topLeftVertexNdx = rrRenderer.getIndexOfCorner(true, false, quadPackets);
-        var topRightVertexNdx = rrRenderer.getIndexOfCorner(true, true, quadPackets);
+        var v0 = rrRenderer.transformGLToWindowCoords(state, vertices[0]);
+        var v1 = rrRenderer.transformGLToWindowCoords(state, vertices[1]);
+        var v2 = rrRenderer.transformGLToWindowCoords(state, vertices[2]);
 
-        var topLeft = rrRenderer.transformGLToWindowCoords(state, quadPackets[topLeftVertexNdx]);
-        var bottomRight = rrRenderer.transformGLToWindowCoords(state, quadPackets[bottomRightVertexNdx]);
+        // Compute a conservative integer bounding box for the triangle
+        var minX = Math.floor(Math.min(v0[0], v1[0], v2[0]));
+        var maxX = Math.ceil(Math.max(v0[0], v1[0], v2[0]));
+        var minY = Math.floor(Math.min(v0[1], v1[1], v2[1]));
+        var maxY = Math.ceil(Math.max(v0[1], v1[1], v2[1]));
 
-        topLeft[0] = Math.round(topLeft[0]);
-        topLeft[1] = Math.round(topLeft[1]);
-        bottomRight[0] = Math.round(bottomRight[0]);
-        bottomRight[1] = Math.round(bottomRight[1]);
+        var fragmentPackets = [];
+        for (var i = minX; i <= maxX; i++) {
+            for (var j = minY; j <= maxY; j++) {
+                var x = i + 0.5;
+                var y = j + 0.5;
 
-        var v0 = [topLeft[0], topLeft[1], quadPackets[topLeftVertexNdx].position[2]];
-        var v1 = [topLeft[0], bottomRight[1], quadPackets[topRightVertexNdx].position[2]];
-        var v2 = [bottomRight[0], topLeft[1], quadPackets[bottomLeftVertexNdx].position[2]];
-        var v3 = [bottomRight[0], bottomRight[1], quadPackets[bottomRightVertexNdx].position[2]];
-        var width = bottomRight[0] - topLeft[0];
-        var height = topLeft[1] - bottomRight[1];
-
-        // Generate two rrRenderer.triangles [v0, v1, v2] and [v2, v1, v3]
-        var shadingContextTopLeft = new rrShadingContext.FragmentShadingContext(
-            quadPackets[bottomLeftVertexNdx].outputs,
-            quadPackets[topLeftVertexNdx].outputs,
-            quadPackets[bottomRightVertexNdx].outputs
-        );
-        shadingContextTopLeft.setSize(width, height);
-        var packetsTopLeft = [];
-
-        var shadingContextBottomRight = new rrShadingContext.FragmentShadingContext(
-            quadPackets[bottomRightVertexNdx].outputs,
-            quadPackets[topLeftVertexNdx].outputs,
-            quadPackets[topRightVertexNdx].outputs
-        );
-        shadingContextBottomRight.setSize(width, height);
-        var packetsBottomRight = [];
-
-        for (var i = 0; i < width; i++)
-            for (var j = 0; j < height; j++) {
-                var x = v0[0] + i + 0.5;
-                var y = v1[1] + j + 0.5;
-
-                var xf = (i + 0.5) / width;
-                var yf = (j + 0.5) / height;
-                var depth = rrRenderer.calculateDepth(xf, yf, [v0[2], v1[2], v2[2], v3[2]]);
-                depth = depth * depthScale + depthBias;
-                if (!rrRenderer.clipTest(v0[0] + i, v1[1] + j, depth, state.viewport.rect))
+                // A pixel is inside the triangle iff all its barycentric coordinates are non-negative
+                var b = rrRenderer.getBarycentricCoefficients([x, y], v0, v1, v2);
+                if (b[0] < 0 || b[1] < 0 || b[2] < 0) {
                     continue;
-                var triNdx = xf + yf >= 1;
-                if (!triNdx) {
-                    var b = rrRenderer.getBarycentricCoefficients([x, y], v0, v1, v3);
-                    packetsTopLeft.push(new rrFragmentOperations.Fragment(b, [v0[0] + i, v1[1] + j], depth));
-                } else {
-                    var b = rrRenderer.getBarycentricCoefficients([x, y], v0, v3, v2);
-                    packetsBottomRight.push(new rrFragmentOperations.Fragment(b, [v0[0] + i, v1[1] + j], depth));
                 }
+
+                var depth = v0[2] * b[0] + v1[2] * b[1] + v2[2] * b[2];
+                depth = depth * depthScale + depthBias;
+                if (!rrRenderer.clipTest(i, j, depth, state.viewport.rect))
+                    continue;
+                fragmentPackets.push(new rrFragmentOperations.Fragment(b, [i, j], depth));
             }
+        }
 
-        program.shadeFragments(packetsTopLeft, shadingContextTopLeft);
-        program.shadeFragments(packetsBottomRight, shadingContextBottomRight);
+        var shadingContext = new rrShadingContext.FragmentShadingContext(
+            vertices[0].outputs,
+            vertices[1].outputs,
+            vertices[2].outputs
+        );
+        shadingContext.setSize(maxX - minX, maxY - minY);
 
-        rrRenderer.writeFragments2(state, renderTarget, packetsTopLeft);
-        rrRenderer.writeFragments2(state, renderTarget, packetsBottomRight);
+        program.shadeFragments(fragmentPackets, shadingContext);
+
+        rrRenderer.writeFragments2(state, renderTarget, fragmentPackets);
     }
 };
 

@@ -3785,7 +3785,7 @@ goog.scope(function() {
 
         var primitiveType = sglrReferenceUtils.mapGLPrimitiveType(primitive);
 
-        var renderFunction = rrRenderer.drawQuads;
+        var renderFunction = rrRenderer.drawTriangles;
         if (primitiveType == rrRenderer.PrimitiveType.LINES ||
             primitiveType == rrRenderer.PrimitiveType.LINE_STRIP ||
             primitiveType == rrRenderer.PrimitiveType.LINE_LOOP)

@@ -538,7 +538,7 @@ goog.scope(function() {
 
         // /** @type {gluDrawUtil.VertexArrayBinding} */ var posBinding = gluDrawUtil.newFloatVertexArrayBinding('a_positionSize', 3, coords.length, 0, coords);
         /** @type {gluDrawUtil.VertexArrayBinding} */
-        var posBinding = gluDrawUtil.newFloatVertexArrayBinding('a_positionSize', 3, coords.length, 3, newCoords);
+        var posBinding = gluDrawUtil.newFloatVertexArrayBinding('a_positionSize', 3, coords.length, 12, newCoords);
         /** @type {number} */ var viewportX = rnd.getInt(0, gl.drawingBufferWidth - width);
         /** @type {number} */ var viewportY = rnd.getInt(0, gl.drawingBufferHeight - height);
 
@@ -879,7 +879,7 @@ goog.scope(function() {
     es3fShaderBuiltinVarTests.VertexIDReferenceShader.prototype.shadeFragments = function(packets, context) {
         for (var packetNdx = 0; packetNdx < packets.length; ++packetNdx) {
             /** @type {rrFragmentOperations.Fragment} */ var packet = packets[packetNdx];
-            packet.output = rrShadingContext.readVarying(packet, context, es3fShaderBuiltinVarTests.VertexIDReferenceShader.VARYINGLOC_COLOR);
+            packet.value = rrShadingContext.readVarying(packet, context, es3fShaderBuiltinVarTests.VertexIDReferenceShader.VARYINGLOC_COLOR);
         }
     };
 
@@ -917,7 +917,7 @@ goog.scope(function() {
         attribs[1].stride = 0;
         attribs[1].instanceDivisor = 0;
         attribs[1].pointer = colors.buffer;
-        rrRenderer.drawQuads(referenceState, referenceTarget, referenceShaderProgram,
+        rrRenderer.drawTriangles(referenceState, referenceTarget, referenceShaderProgram,
             attribs, rrRenderer.PrimitiveType.TRIANGLES, 0, indices.length, /*instanceID = */ 0);
     };
 
