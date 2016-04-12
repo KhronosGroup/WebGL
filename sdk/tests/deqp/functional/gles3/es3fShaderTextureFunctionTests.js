@@ -1085,9 +1085,9 @@ goog.scope(function() {
      * @param {es3fShaderTextureFunctionTests.TexLookupParams} p
      */
     es3fShaderTextureFunctionTests.evalTexelFetch2D = function(c, p) {
-        /** @type {number} */ var x    = Math.floor(c.in_[0][0]) + p.offset[0];
-        /** @type {number} */ var y    = Math.floor(c.in_[0][1]) + p.offset[1];
-        /** @type {number} */ var lod = Math.floor(c.in_[1][0]);
+        /** @type {number} */ var x    = Math.trunc(c.in_[0][0]) + p.offset[0];
+        /** @type {number} */ var y    = Math.trunc(c.in_[0][1]) + p.offset[1];
+        /** @type {number} */ var lod = Math.trunc(c.in_[1][0]);
         c.color = deMath.add(deMath.multiply(c.textures[0].tex2D.getLevel(lod).getPixel(x, y), p.scale), p.bias);
     };
 
@@ -1096,10 +1096,10 @@ goog.scope(function() {
      * @param {es3fShaderTextureFunctionTests.TexLookupParams} p
      */
     es3fShaderTextureFunctionTests.evalTexelFetch2DArray = function(c, p) {
-        /** @type {number} */ var x    = Math.floor(c.in_[0][0]) + p.offset[0];
-        /** @type {number} */ var y    = Math.floor(c.in_[0][1]) + p.offset[1];
-        /** @type {number} */ var l    = Math.floor(c.in_[0][2]);
-        /** @type {number} */ var lod = Math.floor(c.in_[1][0]);
+        /** @type {number} */ var x    = Math.trunc(c.in_[0][0]) + p.offset[0];
+        /** @type {number} */ var y    = Math.trunc(c.in_[0][1]) + p.offset[1];
+        /** @type {number} */ var l    = Math.trunc(c.in_[0][2]);
+        /** @type {number} */ var lod = Math.trunc(c.in_[1][0]);
         c.color = deMath.add(deMath.multiply(c.textures[0].tex2DArray.getLevel(lod).getPixel(x, y, l), p.scale), p.bias);
     };
 
@@ -1108,10 +1108,10 @@ goog.scope(function() {
      * @param {es3fShaderTextureFunctionTests.TexLookupParams} p
      */
     es3fShaderTextureFunctionTests.evalTexelFetch3D = function(c, p) {
-        /** @type {number} */ var x    = Math.floor(c.in_[0][0]) + p.offset[0];
-        /** @type {number} */ var y    = Math.floor(c.in_[0][1]) + p.offset[1];
-        /** @type {number} */ var z    = Math.floor(c.in_[0][2]) + p.offset[2];
-        /** @type {number} */ var lod = Math.floor(c.in_[1][0]);
+        /** @type {number} */ var x    = Math.trunc(c.in_[0][0]) + p.offset[0];
+        /** @type {number} */ var y    = Math.trunc(c.in_[0][1]) + p.offset[1];
+        /** @type {number} */ var z    = Math.trunc(c.in_[0][2]) + p.offset[2];
+        /** @type {number} */ var lod = Math.trunc(c.in_[1][0]);
         c.color = deMath.add(deMath.multiply(c.textures[0].tex3D.getLevel(lod).getPixel(x, y, z), p.scale), p.bias);
     };
 
