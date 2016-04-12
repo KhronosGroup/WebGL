@@ -1338,7 +1338,7 @@ goog.scope(function() {
 
             case es3fShaderTextureFunctionTests.TextureType.TEXTURETYPE_2D_ARRAY:
                 /** @type {number} */ var layerStep = 1.0 / this.m_textureSpec.depth;
-                levelStep = isAutoLod ? 0.0 : 1.0 / Math.max(1, this.m_textureSpec.numLevels - 1) * this.m_textureSpec.depth;
+                levelStep = isAutoLod ? 0.0 : 1.0 / (Math.max(1, this.m_textureSpec.numLevels - 1) * this.m_textureSpec.depth);
                 cScale = deMath.subtract(fmtInfo.valueMax, fmtInfo.valueMin);
                 cBias = fmtInfo.valueMin;
                 baseCellSize = Math.min(this.m_textureSpec.width / 4, this.m_textureSpec.height / 4);
