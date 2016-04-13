@@ -142,11 +142,14 @@ function denormalizeColor(srcInternalFormat, destType, color) {
     case gl.RGB565:
     case gl.RGBA8:
     case gl.RGB5_A1:
-    case gl.RGBA4:
     case gl.SRGB8_ALPHA8:
     case gl.RGB10_A2:
       srcIsNormalized = true;
       tol = 5;
+      break;
+    case gl.RGBA4:
+      srcIsNormalized = true;
+      tol = 10;
       break;
   }
 
