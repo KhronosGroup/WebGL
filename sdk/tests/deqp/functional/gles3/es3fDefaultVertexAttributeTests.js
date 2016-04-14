@@ -360,6 +360,11 @@ es3fDefaultVertexAttributeTests.AttributeCase.prototype.renderWithValue = functi
     gl.useProgram(this.m_program.getProgram());
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     gl.useProgram(null);
+    // The original c++ test does not disable vertex attrib array, which is wrong.
+    // On most drivers all tests pass because a_position is assigned location 0.
+    // On MacOSX some tests fail because a_value is assigned location 0 and vertex
+    // attrib array is left enabled and affects later tests.
+    gl.disableVertexAttribArray(positionIndex);
     dest.readViewport(gl);
 
     // check whole result is colored correctly
