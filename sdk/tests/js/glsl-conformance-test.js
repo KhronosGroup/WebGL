@@ -70,15 +70,25 @@ var fShaderDB = {};
  * the parameters for one shader out, in which case the default shader will be
  * used.
  * vShaderSource: the source code for vertex shader
+ * vShaderId: id of an element containing vertex shader source code. Used if
+ *   vShaderSource is not specified.
  * vShaderSuccess: true if vertex shader compilation should
  *   succeed.
  * fShaderSource: the source code for fragment shader
+ * fShaderId: id of an element containing fragment shader source code. Used if
+ *   fShaderSource is not specified.
  * fShaderSuccess: true if fragment shader compilation should
  *   succeed.
  * linkSuccess: true if link should succeed
  * passMsg: msg to describe success condition.
  * render: if true render to unit quad. Green = success
- *
+ * uniforms: an array of objects specifying uniforms to set prior to rendering.
+ *   Each object should have the following keys:
+ *     name: uniform variable name in the shader source. Uniform location will
+ *       be queried based on its name.
+ *     functionName: name of the function used to set the uniform. For example:
+ *       'uniform1i'
+ *     value: value of the uniform to set.
  */
 function runOneTest(gl, info) {
   var passMsg = info.passMsg
@@ -256,6 +266,15 @@ function runOneTest(gl, info) {
   }
 
   gl.useProgram(program);
+
+  if (info.uniforms !== undefined) {
+    for (var i = 0; i < info.uniforms.length; ++i) {
+      var uniformLocation = gl.getUniformLocation(program, info.uniforms[i].name);
+      gl[info.uniforms[i].functionName](uniformLocation, info.uniforms[i].value);
+      debug(info.uniforms[i].name + ' set to ' + info.uniforms[i].value);
+    }
+  }
+
   wtu.setupUnitQuad(gl);
   wtu.clearAndDrawUnitQuad(gl);
 
