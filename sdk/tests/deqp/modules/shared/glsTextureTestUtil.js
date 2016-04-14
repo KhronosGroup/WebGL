@@ -1006,12 +1006,24 @@ glsTextureTestUtil.execSample = function(src, params, texCoord, lod) {
  * @param {Array<number>} pixel
  * @param {Array<number>} scale
  * @param {Array<number>} bias
- * @return {Array<number>}
  */
 glsTextureTestUtil.applyScaleAndBias = function(pixel, scale, bias) {
-    var pixel1 = deMath.multiply(pixel, scale);
-    var pixel2 = deMath.add(pixel1, bias);
-    return pixel2;
+    pixel[0] = pixel[0] * scale[0] + bias[0];
+    pixel[1] = pixel[1] * scale[1] + bias[1];
+    pixel[2] = pixel[2] * scale[2] + bias[2];
+    pixel[3] = pixel[3] * scale[3] + bias[3];
+};
+
+/**
+ * @param {Array<number>} pixel
+ * @param {Array<number>} scale
+ * @param {Array<number>} bias
+ */
+glsTextureTestUtil.deapplyScaleAndBias = function(pixel, scale, bias) {
+    pixel[0] = (pixel[0] - bias[0]) / scale[0];
+    pixel[1] = (pixel[1] - bias[1]) / scale[1];
+    pixel[2] = (pixel[2] - bias[2]) / scale[2];
+    pixel[3] = (pixel[3] - bias[3]) / scale[3];
 };
 
 /**
@@ -1053,7 +1065,8 @@ glsTextureTestUtil.sampleTextureProjected2D = function(dst, src, sq, tq, params)
             /** @type {number} */ var lod = glsTextureTestUtil.computeProjectedTriLod2D(params.lodMode, triU[triNdx], triV[triNdx], triW[triNdx], triWx, triWy, dst.getWidth(), dst.getHeight()) + lodBias;
 
             var pixel = glsTextureTestUtil.execSample(src, params, [s, t], lod);
-            dst.setPixel(glsTextureTestUtil.applyScaleAndBias(pixel, params.colorScale, params.colorBias), px, py);
+            glsTextureTestUtil.applyScaleAndBias(pixel, params.colorScale, params.colorBias);
+            dst.setPixel(pixel, px, py);
         }
     }
 };
@@ -1112,7 +1125,8 @@ glsTextureTestUtil.sampleTextureNonProjected2D = function(dst, src, sq, tq, para
             var lod = triLod[triNdx];
 
             var pixel = glsTextureTestUtil.execSample(src, params, [s, t], lod);
-            dst.setPixel(glsTextureTestUtil.applyScaleAndBias(pixel, params.colorScale, params.colorBias), x, y);
+            glsTextureTestUtil.applyScaleAndBias(pixel, params.colorScale, params.colorBias);
+            dst.setPixel(pixel, x, y);
         }
     }
 };
@@ -1153,7 +1167,8 @@ glsTextureTestUtil.sampleTextureNonProjected2DArray = function(dst, src, sq, tq,
             var lod = triLod[triNdx];
 
             var pixel = glsTextureTestUtil.execSample(src, params, [s, t, r], lod);
-            dst.setPixel(glsTextureTestUtil.applyScaleAndBias(pixel, params.colorScale, params.colorBias), x, y);
+            glsTextureTestUtil.applyScaleAndBias(pixel, params.colorScale, params.colorBias);
+            dst.setPixel(pixel, x, y);
         }
     }
 };
@@ -1293,7 +1308,8 @@ glsTextureTestUtil.sampleTextureCube_str = function(dst, src, sq, tq, rq, params
             var lod = deMath.clamp((glsTextureTestUtil.computeCubeLodFromDerivates(params.lodMode, coord, coordDx, coordDy, srcSize) + lodBias), params.minLod, params.maxLod);
 
             var pixel = glsTextureTestUtil.execSample(src, params, coord, lod);
-            dst.setPixel(glsTextureTestUtil.applyScaleAndBias(pixel, params.colorScale, params.colorBias), px, py);
+            glsTextureTestUtil.applyScaleAndBias(pixel, params.colorScale, params.colorBias);
+            dst.setPixel(pixel, px, py);
         }
     }
 };
@@ -1364,7 +1380,8 @@ glsTextureTestUtil.sampleTextureNonProjected3D = function(dst, src, sq, tq, rq, 
             var lod = triLod[triNdx];
 
             var pixel = src.sample(params.sampler, [s, t, r], lod);
-            dst.setPixel(glsTextureTestUtil.applyScaleAndBias(pixel, params.colorScale, params.colorBias), x, y);
+            glsTextureTestUtil.applyScaleAndBias(pixel, params.colorScale, params.colorBias);
+            dst.setPixel(pixel, x, y);
         }
     }
 };
@@ -1922,8 +1939,12 @@ glsTextureTestUtil.computeTextureLookupDiffCube = function(
             qpWatchDog_touch(watchDog);*/
 
         for (var px = 0; px < result.getWidth(); px++) {
+            /** @type {Array<number>} */
             var resPix = result.getPixel(px, py);
+            glsTextureTestUtil.deapplyScaleAndBias(resPix, sampleParams.colorScale, sampleParams.colorBias);
+            /** @type {Array<number>} */
             var refPix = reference.getPixel(px, py);
+            glsTextureTestUtil.deapplyScaleAndBias(refPix, sampleParams.colorScale, sampleParams.colorBias);
 
             // Try comparison to ideal reference first,
             // and if that fails use slower verificator.
@@ -2400,9 +2421,11 @@ glsTextureTestUtil.computeTextureLookupDiff2D = function(result, reference, erro
 
         for (var px = 0; px < result.getWidth(); px++) {
             /** @type {Array<number>} */
-            var resPix = deMath.divide(deMath.subtract(result.getPixel(px, py), sampleParams.colorBias), sampleParams.colorScale);
+            var resPix = result.getPixel(px, py);
+            glsTextureTestUtil.deapplyScaleAndBias(resPix, sampleParams.colorScale, sampleParams.colorBias);
             /** @type {Array<number>} */
-            var refPix = deMath.divide(deMath.subtract(reference.getPixel(px, py), sampleParams.colorBias), sampleParams.colorScale);
+            var refPix = reference.getPixel(px, py);
+            glsTextureTestUtil.deapplyScaleAndBias(refPix, sampleParams.colorScale, sampleParams.colorBias);
 
             // Try comparison to ideal reference first, and if that fails use slower verificator.
             if (!deMath.boolAll(deMath.lessThanEqual(deMath.absDiff(resPix, refPix), lookupPrec.colorThreshold))) {
@@ -2527,9 +2550,12 @@ glsTextureTestUtil.computeTextureLookupDiff2DArray = function(result, reference,
 
         for (var px = 0; px < result.getWidth(); px++) {
             /** @type {Array<number>} */
-            var resPix = deMath.divide(deMath.subtract(result.getPixel(px, py), sampleParams.colorBias), sampleParams.colorScale);
+            var resPix = result.getPixel(px, py);
+            glsTextureTestUtil.deapplyScaleAndBias(resPix, sampleParams.colorScale, sampleParams.colorBias);
             /** @type {Array<number>} */
-            var refPix = deMath.divide(deMath.subtract(reference.getPixel(px, py), sampleParams.colorBias), sampleParams.colorScale);
+            var refPix = reference.getPixel(px, py);
+            glsTextureTestUtil.deapplyScaleAndBias(refPix, sampleParams.colorScale, sampleParams.colorBias);
+
 
             // Try comparison to ideal reference first, and if that fails use slower verificator.
             if (!deMath.boolAll(deMath.lessThanEqual(deMath.absDiff(resPix, refPix), lookupPrec.colorThreshold))) {
