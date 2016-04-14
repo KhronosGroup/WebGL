@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<draft href="EXT_color_buffer_float/">
+<extension href="EXT_color_buffer_float/">
   <name>EXT_color_buffer_float</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list">WebGL
@@ -11,7 +11,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>XX</number>
+  <number>31</number>
 
   <depends>
     <api version="2.0"/>
@@ -79,5 +79,9 @@ interface EXT_color_buffer_float {
     <revision date="2014/10/29">
       <change>Moved to draft status.</change>
     </revision>
+
+    <revision date="2016/04/14">
+      <change>Moved to community approved status.</change>
+    </revision>
   </history>
-</draft>
+</extension>
