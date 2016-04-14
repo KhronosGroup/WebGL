@@ -186,6 +186,30 @@ void main() {
     gl_FragColor = vec4(0.0, f, 0.0, 1.0);
 }
 </script>
+<script id="globalUniformTernary2" type="x-shader/x-fragment">
+precision mediump float;
+uniform float u_zero;
+float green = 1.0;
+float f = (u_zero < 0.1) ? green : 0.0;
+
+void main() {
+    gl_FragColor = vec4(0.0, f, 0.0, 1.0);
+}
+</script>
+<script id="globalUniformStruct" type="x-shader/x-fragment">
+precision mediump float;
+struct S {
+    float zero;
+    int one;
+};
+uniform S us;
+S s = us;
+
+void main() {
+    float green = (s.one == 1) ? 1.0 : 0.0;
+    gl_FragColor = vec4(0.0, green, 0.0, 1.0);
+}
+</script>
 <script type="application/javascript">
 "use strict";
 description();
@@ -264,7 +288,24 @@ GLSLConformanceTester.runTests([
     fShaderSuccess: true,
     linkSuccess: true,
     render: true,
-    passMsg: "An uniform as an operand for a ternary operator in a global variable initializer should be accepted by WebGL."
+    passMsg: "A uniform as the second operand for a ternary operator in a global variable initializer should be accepted by WebGL."
+  },
+  {
+    fShaderId: "globalUniformTernary2",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    render: true,
+    passMsg: "Referencing a uniform inside the first operand for a ternary operator in a global variable initializer should be accepted by WebGL."
+  },
+  {
+    fShaderId: "globalUniformStruct",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    render: true,
+    uniforms: [
+        { name: 'us.one', functionName: 'uniform1i', value: 1 }
+    ],
+    passMsg: "A global struct initialized with a uniform struct should be accepted by WebGL."
   }
 ]);
 var successfullyParsed = true;
