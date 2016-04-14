@@ -1117,7 +1117,9 @@ var setParentClass = function(child, parent) {
     glsBuiltinPrecisionTests.ApplyVar.prototype.doEvaluate = function(ctx) {
         return this.m_func.applyFunction(ctx,
                     ctx.env.lookup(this.m_args.a), ctx.env.lookup(this.m_args.b),
-                    ctx.env.lookup(this.m_args.c), ctx.env.lookup(this.m_args.d));
+                    ctx.env.lookup(this.m_args.c), ctx.env.lookup(this.m_args.d),
+                    [this.m_args.a.getName(), this.m_args.b.getName(),
+                    this.m_args.c.getName(), this.m_args.d.getName()]);
     };
 
     /**
@@ -1225,8 +1227,8 @@ var setParentClass = function(child, parent) {
      * @param {glsBuiltinPrecisionTests.Intervals=} Iarg3
      * @return {glsBuiltinPrecisionTests.Intervals}
      */
-    glsBuiltinPrecisionTests.Func.prototype.applyFunction = function(ctx, Iarg0, Iarg1, Iarg2, Iarg3) {
-        return this.applyArgs(ctx, new glsBuiltinPrecisionTests.Tuple4(Iarg0, Iarg1, Iarg2, Iarg3));
+    glsBuiltinPrecisionTests.Func.prototype.applyFunction = function(ctx, Iarg0, Iarg1, Iarg2, Iarg3, variablenames) {
+        return this.applyArgs(ctx, new glsBuiltinPrecisionTests.Tuple4(Iarg0, Iarg1, Iarg2, Iarg3), variablenames);
     };
 
     /**
@@ -1234,8 +1236,8 @@ var setParentClass = function(child, parent) {
      * @param {glsBuiltinPrecisionTests.Tuple4} args
      * @return {glsBuiltinPrecisionTests.Intervals}
      */
-    glsBuiltinPrecisionTests.Func.prototype.applyArgs = function(ctx, args) {
-        return this.doApply(ctx, args);
+    glsBuiltinPrecisionTests.Func.prototype.applyArgs = function(ctx, args, variablenames) {
+        return this.doApply(ctx, args, variablenames);
     };
 
     /**
@@ -4558,20 +4560,20 @@ var setParentClass = function(child, parent) {
         return 'modf';
     };
 
-    glsBuiltinPrecisionTests.Modf.prototype.doApply = function(ctx, iargs) {
+    glsBuiltinPrecisionTests.Modf.prototype.doApply = function(ctx, iargs, variablenames) {
         var intPart;
         var func1 = function(x) {
-            intPart = Math.floor(x);
+            intPart = Math.trunc(x);
             return x - intPart;
         };
         var func2 = function(x) {
-            return Math.floor(x);
+            return Math.trunc(x);
         };
 
         var fracIV = tcuInterval.applyMonotone1p(func1, iargs.a);
         var wholeIV = tcuInterval.applyMonotone1p(func2, iargs.a);
 
-        iargs.b = wholeIV;
+        ctx.env.m_map[variablenames[1]] = wholeIV;
         return fracIV;
     };
 
