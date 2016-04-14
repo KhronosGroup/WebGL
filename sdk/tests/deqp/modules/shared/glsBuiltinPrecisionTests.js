@@ -1655,7 +1655,10 @@ var setParentClass = function(child, parent) {
         var fract = x - truncated;
         var ret = new tcuInterval.Interval();
 
-        if (Math.abs(fract) <= 0.5)
+        // When x is inf or -inf, truncated would be inf or -inf too. Then fract
+        // would be NaN (inf - inf). While in native c code, it would be 0 (inf) or -0 (-inf).
+        // This behavior in JS differs from that in native c code.
+        if (Math.abs(fract) <= 0.5 || isNaN(fract))
             ret.operatorOrAssignBinary(new tcuInterval.Interval(truncated));
         if (Math.abs(fract) >= 0.5)
             ret.operatorOrAssignBinary(new tcuInterval.Interval(truncated + deMath.deSign(fract)));
