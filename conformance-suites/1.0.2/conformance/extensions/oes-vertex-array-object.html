@@ -539,6 +539,8 @@ function runDeleteTests() {
         testFailed("buffer removed too early");
       }
     }
+
+    ext.bindVertexArrayOES(null);
     gl.deleteBuffer(positionBuffer);
 
     // Render with the deleted buffers. As they are referenced by VAOs they
