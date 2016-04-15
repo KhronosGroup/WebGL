@@ -24,6 +24,14 @@ interface WebGLTransformFeedback : WebGLObject {
 interface WebGLVertexArrayObject : WebGLObject {
 };
 
+typedef (Uint32Array or sequence<GLuint>) UniformUIVSource;
+typedef (Float32Array or sequence<GLfloat>) UniformMatrixFVSource;
+typedef (Int32Array or sequence<GLint>) VertexAttribIVSource;
+typedef (Uint32Array or sequence<GLuint>) VertexAttribUIVSource;
+typedef (Int32Array or sequence<GLint>) ClearBufferIVSource;
+typedef (Uint32Array or sequence<GLuint>) ClearBufferUIVSource;
+typedef (Float32Array or sequence<GLfloat>) ClearBufferFVSource;
+
 [NoInterfaceObject]
 interface WebGL2RenderingContextBase
 {
@@ -358,12 +366,10 @@ interface WebGL2RenderingContextBase
   void uniform2ui(WebGLUniformLocation? location, GLuint v0, GLuint v1);
   void uniform3ui(WebGLUniformLocation? location, GLuint v0, GLuint v1, GLuint v2);
   void uniform4ui(WebGLUniformLocation? location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
-  typedef (Uint32Array or sequence<GLuint>) UniformUIVSource;
   void uniform1uiv(WebGLUniformLocation? location, UniformUIVSource value);
   void uniform2uiv(WebGLUniformLocation? location, UniformUIVSource value);
   void uniform3uiv(WebGLUniformLocation? location, UniformUIVSource value);
   void uniform4uiv(WebGLUniformLocation? location, UniformUIVSource value);
-  typedef (Float32Array or sequence<GLfloat>) UniformMatrixFVSource;
   void uniformMatrix2x3fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
   void uniformMatrix3x2fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
   void uniformMatrix2x4fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
@@ -371,10 +377,8 @@ interface WebGL2RenderingContextBase
   void uniformMatrix3x4fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
   void uniformMatrix4x3fv(WebGLUniformLocation? location, GLboolean transpose, UniformMatrixFVSource value);
   void vertexAttribI4i(GLuint index, GLint x, GLint y, GLint z, GLint w);
-  typedef (Int32Array or sequence<GLint>) VertexAttribIVSource;
   void vertexAttribI4iv(GLuint index, VertexAttribIVSource values);
   void vertexAttribI4ui(GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
-  typedef (Uint32Array or sequence<GLuint>) VertexAttribUIVSource;
   void vertexAttribI4uiv(GLuint index, VertexAttribUIVSource values);
   void vertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset);
 
@@ -388,9 +392,6 @@ interface WebGL2RenderingContextBase
 
   /* Multiple Render Targets */
   void drawBuffers(sequence<GLenum> buffers);
-  typedef (Int32Array or sequence<GLint>) ClearBufferIVSource;
-  typedef (Uint32Array or sequence<GLuint>) ClearBufferUIVSource;
-  typedef (Float32Array or sequence<GLfloat>) ClearBufferFVSource;
   void clearBufferiv(GLenum buffer, GLint drawbuffer, ClearBufferIVSource value);
   void clearBufferuiv(GLenum buffer, GLint drawbuffer, ClearBufferUIVSource value);
   void clearBufferfv(GLenum buffer, GLint drawbuffer, ClearBufferFVSource value);
