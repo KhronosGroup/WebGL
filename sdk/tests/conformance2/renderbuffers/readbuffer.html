@@ -153,6 +153,9 @@ if (!gl) {
   validateReadingFromFramebuffer(green, gl.NO_ERROR,
       "should be no errors when reading from GL_COLOR_ATTACHMENT1 on fbo.");
   shouldBe('gl.getParameter(gl.READ_BUFFER)', 'gl.COLOR_ATTACHMENT1');
+  // Need to reset draw buffers, otherwise it triggers a mac driver bug.
+  // We add a separate test for that bug: conformance2/rendering/framebuffer-completeness-unaffected.html
+  gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
 
   gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.RENDERBUFFER, null)
   gl.readBuffer(gl.COLOR_ATTACHMENT1);
