@@ -176,12 +176,11 @@ goog.scope(function() {
      * @return {tcuTexLookupVerifier.ColorQuad}
      */
     tcuTexLookupVerifier.lookupQuad = function(level, sampler, x0, x1, y0, y1, z) {
-        return new tcuTexLookupVerifier.ColorQuad(
-            tcuTexLookupVerifier.lookupFloat(level, sampler, x0, y0, z),
-            tcuTexLookupVerifier.lookupFloat(level, sampler, x1, y0, z),
-            tcuTexLookupVerifier.lookupFloat(level, sampler, x0, y1, z),
-            tcuTexLookupVerifier.lookupFloat(level, sampler, x1, y1, z)
-        );
+        var p00 = tcuTexLookupVerifier.lookupFloat(level, sampler, x0, y0, z);
+        var p10 = tcuTexLookupVerifier.lookupFloat(level, sampler, x1, y0, z);
+        var p01 = tcuTexLookupVerifier.lookupFloat(level, sampler, x0, y1, z);
+        var p11 = tcuTexLookupVerifier.lookupFloat(level, sampler, x1, y1, z);
+        return new tcuTexLookupVerifier.ColorQuad(p00, p01, p10, p11);
     };
 
     /**
