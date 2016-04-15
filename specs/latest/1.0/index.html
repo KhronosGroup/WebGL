@@ -1158,6 +1158,14 @@ for (var i = 0; i < numVertices; i++) {
     See <a href="#CONTEXT_LOST">the context lost event</a> for further details.
     </p>
     <pre class="idl">
+typedef (ArrayBuffer or ArrayBufferView) BufferDataSource;
+typedef (ImageBitmap or
+         ImageData or
+         HTMLImageElement or
+         HTMLCanvasElement or
+         HTMLVideoElement) TexImageSource;
+typedef (Float32Array or sequence&lt;GLfloat&gt;) VertexAttribFVSource;
+
 [NoInterfaceObject]
 interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
 {
@@ -1605,7 +1613,6 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB,
                            GLenum srcAlpha, GLenum dstAlpha);
 
-    typedef (ArrayBuffer or ArrayBufferView) BufferDataSource;
     void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
     void bufferData(GLenum target, BufferDataSource? data, GLenum usage);
     void bufferSubData(GLenum target, GLintptr offset, BufferDataSource? data);
@@ -1732,11 +1739,6 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void stencilOp(GLenum fail, GLenum zfail, GLenum zpass);
     void stencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass);
 
-    typedef (ImageBitmap or
-             ImageData or
-             HTMLImageElement or
-             HTMLCanvasElement or
-             HTMLVideoElement) TexImageSource;
     void texImage2D(GLenum target, GLint level, GLint internalformat,
                     GLsizei width, GLsizei height, GLint border, GLenum format,
                     GLenum type, ArrayBufferView? pixels);
@@ -1794,7 +1796,6 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void validateProgram(WebGLProgram? program);
 
     void vertexAttrib1f(GLuint indx, GLfloat x);
-    typedef (Float32Array or sequence&lt;GLfloat&gt;) VertexAttribFVSource;
     void vertexAttrib1fv(GLuint indx, VertexAttribFVSource values);
     void vertexAttrib2f(GLuint indx, GLfloat x, GLfloat y);
     void vertexAttrib2fv(GLuint indx, VertexAttribFVSource values);
