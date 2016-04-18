@@ -298,7 +298,7 @@ function runTextureReadConversionTest() {
   ];
 
   var program = wtu.setupTexturedQuad(gl);
-  gl.uniform1i(gl.getUniformLocation(program, "tex2d"), 0);
+  gl.uniform1i(gl.getUniformLocation(program, "tex"), 0);
 
   for (var ii = 0; ii < conversions.length; ii++) {
     var tex = createGreysRGBTexture(gl, conversions[ii][0], ext.SRGB_EXT);
@@ -395,7 +395,7 @@ function runFramebufferRenderbufferConversionTest() {
 
   var program = wtu.setupProgram(gl, ['vertexShader', 'fragmentShader'], ['aPosition'], [0]);
   wtu.setupUnitQuad(gl, 0);
-  var fbo = createsRGBFramebuffer(gl, 4, 4);
+  var fbo = createsRGBFramebuffer(gl, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
   for (var ii = 0; ii < conversions.length; ii++) {
     gl.uniform1f(gl.getUniformLocation(program, "uColor"), conversions[ii][0]/255.0);
