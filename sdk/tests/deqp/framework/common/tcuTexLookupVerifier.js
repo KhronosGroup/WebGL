@@ -624,7 +624,7 @@ goog.scope(function() {
 
         function interp(result, p0, p1, s) {
             for (var ii = 0; ii < 4; ++ii) {
-                result = p0[ii] * (1 - s) + p1[ii] * s;
+                result[ii] = p0[ii] * (1 - s) + p1[ii] * s;
             }
         }
 

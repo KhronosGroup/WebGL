@@ -223,7 +223,7 @@ tcuTexture.sampleLevelArray2DCompare = function(levels, numLevels, sampler, ref,
         case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR:
         case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR: {
             var maxLevel = numLevels - 1;
-            var level0 = deMath.clamp(Math.ceil(lod), 0, maxLevel);
+            var level0 = deMath.clamp(Math.floor(lod), 0, maxLevel);
             var level1 = Math.min(maxLevel, level0 + 1);
             var levelFilter = filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
             var f = deMath.deFloatFrac(lod);
@@ -2282,40 +2282,8 @@ tcuTexture.TextureLevelPyramid.prototype.clearLevel = function(levelNdx) {
  * @return {Array<number>} Vec4 pixel color
  */
 tcuTexture.sampleLevelArray2D = function(levels, numLevels, sampler, s, t, depth, lod) {
-    if (lod === undefined) lod = 0;
-    var magnified = lod <= sampler.lodThreshold;
-    var filterMode = magnified ? sampler.magFilter : sampler.minFilter;
-
-    switch (filterMode) {
-        case tcuTexture.FilterMode.NEAREST: return levels[0].sample2D(sampler, filterMode, s, t, depth);
-        case tcuTexture.FilterMode.LINEAR: return levels[0].sample2D(sampler, filterMode, s, t, depth);
-
-        case tcuTexture.FilterMode.NEAREST_MIPMAP_NEAREST:
-        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST: {
-            var maxLevel = numLevels - 1;
-            var level = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
-            var levelFilter = (filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
-
-            return levels[level].sample2D(sampler, levelFilter, s, t, depth);
-        }
-
-        case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR:
-        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR: {
-            var maxLevel = numLevels - 1;
-            var level0 = deMath.clamp(Math.floor(lod + 0.5) - 1, 0, maxLevel);
-            var level1 = Math.min(maxLevel, level0 + 1);
-            var levelFilter = (filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
-            var f = deMath.deFloatFrac(lod);
-            var t0 = levels[level0].sample2D(sampler, levelFilter, s, t, depth);
-            var t1 = levels[level1].sample2D(sampler, levelFilter, s, t, depth);
-
-            return deMath.add(deMath.scale(t0, 1 - f), deMath.scale(t1, f));
-        }
-
-        default:
-            throw new Error('Invalid filter mode:' + filterMode);
-    }
-    throw new Error('Unimplemented');
+    // z-offset in 2D textures is layer selector
+    return tcuTexture.sampleLevelArray2DOffset(levels, numLevels, sampler, [s, t], lod, [0, 0, depth]);
 };
 
 /**
@@ -2329,39 +2297,7 @@ tcuTexture.sampleLevelArray2D = function(levels, numLevels, sampler, s, t, depth
  * @return {Array<number>} Vec4 pixel color
  */
 tcuTexture.sampleLevelArray3D = function(levels, numLevels, sampler, s, t, r, lod) {
-    var magnified = lod <= sampler.lodThreshold;
-    var filterMode = magnified ? sampler.magFilter : sampler.minFilter;
-
-    switch (filterMode) {
-        case tcuTexture.FilterMode.NEAREST: return levels[0].sample3D(sampler, filterMode, s, t, r);
-        case tcuTexture.FilterMode.LINEAR: return levels[0].sample3D(sampler, filterMode, s, t, r);
-
-        case tcuTexture.FilterMode.NEAREST_MIPMAP_NEAREST:
-        case tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST: {
-            var maxLevel = numLevels - 1;
-            var level = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
-            var levelFilter = (filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_NEAREST) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
-
-            return levels[level].sample3D(sampler, levelFilter, s, t, r);
-        }
-
-        case tcuTexture.FilterMode.NEAREST_MIPMAP_LINEAR:
-        case tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR: {
-            var maxLevel = numLevels - 1;
-            var level0 = deMath.clamp(Math.ceil(lod + 0.5) - 1, 0, maxLevel);
-            var level1 = Math.min(maxLevel, level0 + 1);
-            var levelFilter = (filterMode == tcuTexture.FilterMode.LINEAR_MIPMAP_LINEAR) ? tcuTexture.FilterMode.LINEAR : tcuTexture.FilterMode.NEAREST;
-            var f = deMath.deFloatFrac(lod);
-            var t0 = levels[level0].sample3D(sampler, levelFilter, s, t, r);
-            var t1 = levels[level1].sample3D(sampler, levelFilter, s, t, r);
-
-            return deMath.add(deMath.scale(t0, 1 - f), deMath.scale(t1, f));
-        }
-
-        default:
-           throw new Error('Invalid filter mode:' + filterMode);
-    }
-    throw new Error('Unimplemented');
+    return tcuTexture.sampleLevelArray3DOffset(levels, numLevels, sampler, s, t, r, lod, [0, 0, 0]);
 };
 
 /**

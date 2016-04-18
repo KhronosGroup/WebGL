@@ -1655,8 +1655,12 @@ glsTextureTestUtil.computeTextureLookupDiff3D = function(
             qpWatchDog_touch(watchDog);*/
 
         for (var px = 0; px < result.getWidth(); px++) {
+            /** @type {Array<number>} */
             var resPix = result.getPixel(px, py);
+            glsTextureTestUtil.deapplyScaleAndBias(resPix, sampleParams.colorScale, sampleParams.colorBias);
+            /** @type {Array<number>} */
             var refPix = reference.getPixel(px, py);
+            glsTextureTestUtil.deapplyScaleAndBias(refPix, sampleParams.colorScale, sampleParams.colorBias);
 
             // Try comparison to ideal reference first,
             // and if that fails use slower verificator.
