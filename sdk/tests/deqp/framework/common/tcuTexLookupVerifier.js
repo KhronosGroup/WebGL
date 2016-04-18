@@ -702,7 +702,12 @@ goog.scope(function() {
 
         for (var i = minI; i <= maxI; i++) {
             /** @type {number} */ var x = tcuTexVerifierUtil.wrap(sampler.wrapS, i, level.getWidth());
-            /** @type {Array<number>} */ var color = tcuTexLookupVerifier.lookupScalar(level, sampler, x, coordY, 0);
+            /** @type {Array<number>} */ var color;
+            if (tcuTexLookupVerifier.isSRGB(level.getFormat())) {
+                color = tcuTexLookupVerifier.lookupFloat(level, sampler, x, coordY, 0);
+            } else {
+                color = tcuTexLookupVerifier.lookupScalar(level, sampler, x, coordY, 0);
+            }
 
             if (tcuTexLookupVerifier.isColorValid(prec, color, result))
                 return true;
@@ -740,7 +745,12 @@ goog.scope(function() {
         for (var i = minI; i <= maxI; i++) {
             /** @type {number} */ var x = tcuTexVerifierUtil.wrap(sampler.wrapS, i, level.getWidth());
             /** @type {number} */ var y = tcuTexVerifierUtil.wrap(sampler.wrapT, j, level.getHeight());
-            /** @type {Array<number>} */ var color = tcuTexLookupVerifier.lookupScalar(level, sampler, x, y, coordZ);
+            /** @type {Array<number>} */ var color;
+            if (tcuTexLookupVerifier.isSRGB(level.getFormat())) {
+                color = tcuTexLookupVerifier.lookupFloat(level, sampler, x, y, coordZ);
+            } else {
+                color = tcuTexLookupVerifier.lookupScalar(level, sampler, x, y, coordZ);
+            }
 
             if (tcuTexLookupVerifier.isColorValid(prec, color, result))
                 return true;
@@ -784,7 +794,12 @@ goog.scope(function() {
                     /** @type {number} */ var x = tcuTexVerifierUtil.wrap(sampler.wrapS, i, level.getWidth());
                     /** @type {number} */ var y = tcuTexVerifierUtil.wrap(sampler.wrapT, j, level.getHeight());
                     /** @type {number} */ var z = tcuTexVerifierUtil.wrap(sampler.wrapR, k, level.getDepth());
-                    /** @type {Array<number>} */ var color = tcuTexLookupVerifier.lookupScalar(level, sampler, x, y, z);
+                    /** @type {Array<number>} */ var color;
+                    if (tcuTexLookupVerifier.isSRGB(level.getFormat())) {
+                        color = tcuTexLookupVerifier.lookupFloat(level, sampler, x, y, z);
+                    } else {
+                        color = tcuTexLookupVerifier.lookupScalar(level, sampler, x, y, z);
+                    }
 
                     if (tcuTexLookupVerifier.isColorValid(prec, color, result))
                         return true;
