@@ -544,9 +544,6 @@ goog.scope(function() {
         sizeTests.addChild(new glsFboCompletenessTests.EmptyImageTest(
             'zero', 'Test for zero-sized image attachment', this
         ));
-        sizeTests.addChild(new glsFboCompletenessTests.DistinctSizeTest(
-            'distinct', 'Test for attachments with different sizes', this
-        ));
 
         return sizeTests;
 
@@ -976,28 +973,6 @@ goog.scope(function() {
     glsFboCompletenessTests.EmptyImageTest.prototype.build = function(builder, gl) {
         this.attachTargetToNew(gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER,
                                glsFboUtil.ImageFormat.none(), 0, 0, builder, gl);
-        return true;
-    };
-
-    /**
-    * @constructor
-    * @extends {glsFboCompletenessTests.TestBase}
-    * @param {string} name
-    * @param {string} desc
-    * @param {glsFboCompletenessTests.Context} ctx
-    */
-    glsFboCompletenessTests.DistinctSizeTest = function(name, desc, ctx) {
-        glsFboCompletenessTests.TestBase.call(this, name, desc, null);
-        this.m_ctx = ctx;
-    };
-    glsFboCompletenessTests.DistinctSizeTest.prototype = Object.create(glsFboCompletenessTests.TestBase.prototype);
-    glsFboCompletenessTests.DistinctSizeTest.prototype.constructor = glsFboCompletenessTests.DistinctSizeTest;
-
-    glsFboCompletenessTests.DistinctSizeTest.prototype.build = function(builder, gl) {
-        this.attachTargetToNew(gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER,
-                               glsFboUtil.ImageFormat.none(), 64, 64, builder, gl);
-        this.attachTargetToNew(gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER,
-                               glsFboUtil.ImageFormat.none(), 128, 128, builder, gl);
         return true;
     };
 
