@@ -69,7 +69,7 @@ goog.scope(function() {
     glsFboUtil.Map.prototype.findInsertionPoint = function(key) {
         var /** @type {number} */i, /** @type {number} */length;
         for (i = 0, length = this.store.length; i < length; ++i) {
-            if (!this.compare(key, this.store[i])) break;
+            if (!this.compare(key, this.store[i].first)) break;
         }
         return i;
     };
@@ -86,7 +86,7 @@ goog.scope(function() {
     glsFboUtil.Map.prototype.foundIndexMatches = function(key, index) {
         return (
             this.store[index] !== undefined &&
-            !this.compare(this.store[index], key)
+            !this.compare(this.store[index].first, key)
         );
     };
 
@@ -500,7 +500,7 @@ goog.scope(function() {
         return obj;
     };
 
-    // where key is a FormatKey, and a FormatKey is a 32bit int.
+    // where key is a FormatKey, and a FormatKey is a unsigned 32bit int.
 
     /**
     * @param {number} key
@@ -509,7 +509,7 @@ goog.scope(function() {
     glsFboUtil.formatKeyInfo = function(key) {
         return new glsFboUtil.ImageFormat(
             (key & 0x0000ffff),
-            (key & 0xffff0000) >> 16
+            (key & 0xffff0000) >>> 16
         );
     };
 
@@ -1003,7 +1003,8 @@ goog.scope(function() {
     * @return {number}
     */
     glsFboUtil.formatkey = function(format, type) {
-        return (type << 16 | format) & 0xFFFFFFFF;
+        // The formatkey value should be 32-bit unsigned int.
+        return ((type << 16) >>> 0 | format) & 0xFFFFFFFF;
     };
 
     /**
@@ -1211,7 +1212,10 @@ goog.scope(function() {
         // Allowed return values for gl.CheckFramebufferStatus
         // formarly an std::set
         // @private
-        this.m_statusCodes = [gl.FRAMEBUFFER_COMPLETE];
+        this.m_statusCodes = [];
+
+        // Whether allow to return gl.FRAMEBUFFER_COMPLETE status
+        this.m_allowComplete = true;
 
         // this.check = function(attPoint, attachment, image) =0; virtual
         if (typeof(this.check) != 'function')
@@ -1226,6 +1230,7 @@ goog.scope(function() {
         if (!condition) {
             glsFboUtil.remove_from_array(this.m_statusCodes, gl.FRAMEBUFFER_COMPLETE);
             this.m_statusCodes.push(error);
+            this.m_allowComplete = false;
         }
     };
 
@@ -1243,6 +1248,8 @@ goog.scope(function() {
     * @return {Array<number>}
     */
     glsFboUtil.Checker.prototype.getStatusCodes = function() {
+        if (this.m_allowComplete)
+            this.m_statusCodes.push(gl.FRAMEBUFFER_COMPLETE);
         return this.m_statusCodes;
     };
 
@@ -1293,8 +1300,9 @@ goog.scope(function() {
         }
 
         var count = 0;
-        for (var attPoint = 0; attPoint < cfg.attachments.length; ++attPoint) {
-            var att = cfg.attachments.getIndex(attPoint).second;
+        for (var index = 0; index < cfg.attachments.length; ++index) {
+            var attPoint = cfg.attachments.getIndex(index).first;
+            var att = cfg.attachments.getIndex(index).second;
             /** @type {glsFboUtil.Image}*/
             var image = cfg.getImage(glsFboUtil.attachmentType(att, gl), att.imageName);
             glsFboUtil.checkAttachmentCompleteness(cctx, att, attPoint, image, this.m_formats, gl);
