@@ -3968,6 +3968,10 @@ var setParentClass = function(child, parent) {
             this.m_body[ndx].execute(funCtx);
 
         var ret = this.m_ret.evaluate(funCtx);
+        if (this.m_ret_alternative !== undefined) {
+            var ret_alternative = this.m_ret_alternative.evaluate(funCtx);
+            ret = tcuInterval.withIntervals(ret, ret_alternative);
+        }
 
         // \todo [lauri] Store references instead of values in environment
         args.a = funEnv.lookup(this.m_var0);
@@ -3992,6 +3996,9 @@ var setParentClass = function(child, parent) {
                 this.m_var1, this.m_var2, this.m_var3);
 
             this.m_ret = this.doExpand(ctx, args);
+            if (this.doExpandAlternative !== undefined) {
+                this.m_ret_alternative = this.doExpandAlternative(ctx, args);
+            }
             this.m_body = ctx.getStatements();
         }
     };
@@ -4607,6 +4614,17 @@ var setParentClass = function(child, parent) {
         var v2 = app(new glsBuiltinPrecisionTests.Mul(), y, a);
         var v3 = app(new glsBuiltinPrecisionTests.Add(), v1, v2);
         return v3;
+    };
+
+    glsBuiltinPrecisionTests.Mix.prototype.doExpandAlternative = function(ctx, args) {
+        // x + (y - x) * a
+        var x = args.a;
+        var y = args.b;
+        var a = args.c;
+        var v0 = app(new glsBuiltinPrecisionTests.Sub(), y, x);
+        var v1 = app(new glsBuiltinPrecisionTests.Mul(), a, v0);
+        var v2 = app(new glsBuiltinPrecisionTests.Add(), x, v1);
+        return v2;
     };
 
     /**
