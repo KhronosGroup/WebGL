@@ -24,10 +24,12 @@
  */
 'use strict';
 goog.provide('framework.common.tcuTestCase');
+goog.require('framework.common.tcuSkipList');
 
 goog.scope(function() {
 
     var tcuTestCase = framework.common.tcuTestCase;
+    var tcuSkipList = framework.common.tcuSkipList;
 
     /**
      * Reads the filter parameter from the URL to filter tests.
@@ -217,8 +219,47 @@ goog.scope(function() {
     * @return {tcuTestCase.DeqpTest}
     */
     tcuTestCase.DeqpTest.prototype.next = function(pattern) {
+        return this._nextHonoringSkipList(pattern);
+    };
+
+    /**
+    * Returns the next test in the hierarchy of tests, honoring the
+    * skip list, and reporting skipped tests.
+    *
+    * @param {?string } pattern Optional pattern to search for
+    * @return {tcuTestCase.DeqpTest}
+    */
+    tcuTestCase.DeqpTest.prototype._nextHonoringSkipList = function(pattern) {
+        var tryAgain = false;
+        var test = null;
+        do {
+            tryAgain = false;
+            test = this._nextIgnoringSkipList(pattern);
+            if (test != null) {
+                // See whether the skip list vetoes the execution of
+                // this test.
+                var fullTestName = test.fullName();
+                var skipDisposition = tcuSkipList.getSkipStatus(fullTestName);
+                if (skipDisposition.skip) {
+                    tryAgain = true;
+                    checkMessage(false, 'Skipping test due to tcuSkipList: ' + fullTestName);
+                }
+            }
+        } while (tryAgain);
+        return test;
+    };
+
+
+    /**
+    * Returns the next test in the hierarchy of tests, ignoring the
+    * skip list.
+    *
+    * @param {?string } pattern Optional pattern to search for
+    * @return {tcuTestCase.DeqpTest}
+    */
+    tcuTestCase.DeqpTest.prototype._nextIgnoringSkipList = function(pattern) {
         if (pattern)
-            return this.find(pattern);
+            return this._findIgnoringSkipList(pattern);
 
         var test = null;
 
@@ -231,7 +272,7 @@ goog.scope(function() {
         // If no more children, get the next brother
         if (test == null && this.parentTest != null) {
             this.currentTestNdx = 0;
-            test = this.parentTest.next(null);
+            test = this.parentTest._nextIgnoringSkipList(null);
         }
 
         return test;
@@ -247,7 +288,7 @@ goog.scope(function() {
     */
     tcuTestCase.DeqpTest.prototype.nextInRange = function(pattern, range) {
         while (true) {
-            var test = this.next(pattern);
+            var test = this._nextHonoringSkipList(pattern);
             if (!test)
                 return null;
             var topLevelId = tcuTestCase.runner.testCases.currentTestNdx - 1;
@@ -280,16 +321,55 @@ goog.scope(function() {
     };
 
     /**
-    * Find a test with a matching name
-    * Fast-forwards to a test whose full name matches the given pattern
+    * Find a test with a matching name.  Fast-forwards to a test whose
+    * full name matches the given pattern.
     *
     * @param {string} pattern Regular expression to search for
     * @return {?tcuTestCase.DeqpTest } Found test or null.
     */
     tcuTestCase.DeqpTest.prototype.find = function(pattern) {
+        return this._findHonoringSkipList(pattern);
+    };
+
+    /**
+    * Find a test with a matching name. Fast-forwards to a test whose
+    * full name matches the given pattern, honoring the skip list, and
+    * reporting skipped tests.
+    *
+    * @param {string} pattern Regular expression to search for
+    * @return {?tcuTestCase.DeqpTest } Found test or null.
+    */
+    tcuTestCase.DeqpTest.prototype._findHonoringSkipList = function(pattern) {
+        var tryAgain = false;
+        var test = null;
+        do {
+            tryAgain = false;
+            test = this._findIgnoringSkipList(pattern);
+            if (test != null) {
+                // See whether the skip list vetoes the execution of
+                // this test.
+                var fullTestName = test.fullName();
+                var skipDisposition = tcuSkipList.getSkipStatus(fullTestName);
+                if (skipDisposition.skip) {
+                    tryAgain = true;
+                    checkMessage(false, 'Skipping test due to tcuSkipList: ' + fullTestName);
+                }
+            }
+        } while (tryAgain);
+        return test;
+    };
+
+    /**
+    * Find a test with a matching name. Fast-forwards to a test whose
+    * full name matches the given pattern.
+    *
+    * @param {string} pattern Regular expression to search for
+    * @return {?tcuTestCase.DeqpTest } Found test or null.
+    */
+    tcuTestCase.DeqpTest.prototype._findIgnoringSkipList = function(pattern) {
         var test = this;
         while (true) {
-            test = test.next(null);
+            test = test._nextIgnoringSkipList(null);
             if (!test)
                 break;
             if (test.fullName().match(pattern) || test.executeAlways)
