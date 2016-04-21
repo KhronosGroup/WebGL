@@ -70,6 +70,15 @@ goog.scope(function() {
         //
         // _setReason("Bugs in FooVendor 30.03 driver");
         // _skip("transform_feedback.basic_types.separate.points.lowp_mat2");
+
+        // Please see https://android.googlesource.com/platform/external/deqp/+/7c5323116bb164d64bfecb68e8da1af634317b24
+        _setReason("Native dEQP also fails on these tests and suppresses them");
+        _skip("texture_functions.textureoffset.sampler3d_fixed_fragment");
+        _skip("texture_functions.textureoffset.isampler3d_fragment");
+        _skip("texture_functions.textureoffset.usampler3d_fragment");
+        _skip("texture_functions.textureprojoffset.sampler3d_fixed_fragment");
+        _skip("texture_functions.textureprojoffset.isampler3d_fragment");
+        _skip("texture_functions.textureprojoffset.usampler3d_fragment");
     } // if (!runSkippedTests)
 
     /*
