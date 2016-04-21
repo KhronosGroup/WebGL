@@ -1500,7 +1500,7 @@ goog.scope(function() {
 
         // Setup params for reference.
         refParams.sampler = gluTextureUtil.mapGLSampler(
-            this.m_wrapS, this.m_wrapT, this.m_wrapT,
+            this.m_wrapS, this.m_wrapT, this.m_wrapR,
             this.m_minFilter, this.m_magFilter
         );
 
