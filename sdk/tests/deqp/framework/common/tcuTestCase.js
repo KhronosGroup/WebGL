@@ -242,6 +242,7 @@ goog.scope(function() {
                 var skipDisposition = tcuSkipList.getSkipStatus(fullTestName);
                 if (skipDisposition.skip) {
                     tryAgain = true;
+                    setCurrentTestName(fullTestName);
                     checkMessage(false, 'Skipping test due to tcuSkipList: ' + fullTestName);
                 }
             }
@@ -271,7 +272,6 @@ goog.scope(function() {
 
         // If no more children, get the next brother
         if (test == null && this.parentTest != null) {
-            this.currentTestNdx = 0;
             test = this.parentTest._nextIgnoringSkipList(null);
         }
 
