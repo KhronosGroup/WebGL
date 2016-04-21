@@ -2518,7 +2518,7 @@ glsTextureTestUtil.computeTextureLookupDiff2DArray = function(result, reference,
 
     /** @type {Array<number>} */ var sq = [texCoord[0 + 0], texCoord[3 + 0], texCoord[6 + 0], texCoord[9 + 0]];
     /** @type {Array<number>} */ var tq = [texCoord[0 + 1], texCoord[3 + 1], texCoord[6 + 1], texCoord[9 + 1]];
-    /** @type {Array<number>} */ var rq = [texCoord[0 + 2], texCoord[3 + 1], texCoord[6 + 2], texCoord[9 + 2]];
+    /** @type {Array<number>} */ var rq = [texCoord[0 + 2], texCoord[3 + 2], texCoord[6 + 2], texCoord[9 + 2]];
 
     /** @type {Array<number>} */ var dstSize = [result.getWidth(), result.getHeight()];
     /** @type {number} */ var dstW = dstSize[0];
