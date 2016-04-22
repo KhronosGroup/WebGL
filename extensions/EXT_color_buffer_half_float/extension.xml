@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension href="EXT_color_buffer_half_float/">
+<draft href="EXT_color_buffer_half_float/">
   <name>EXT_color_buffer_half_float</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list">WebGL
@@ -134,5 +134,9 @@ interface EXT_color_buffer_half_float {
     <revision date="2014/11/24">
       <change>Move to community approved.</change>
     </revision>
+    
+    <revision date="2015/02/07">
+      <change>Moved back to draft because of technical difficulties.</change>
+    </revision>
   </history>
-</extension>
+</draft>
