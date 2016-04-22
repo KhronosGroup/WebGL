@@ -2013,12 +2013,12 @@ goog.scope(function() {
         for (var fmtNdx = 0;
             fmtNdx < filterableFormatsByType.length;
             fmtNdx++) {
+            formatsGroup = new tcuTestCase.DeqpTest(
+                '2d_array_formats', '2D Array Texture Formats');
+            this.addChild(formatsGroup);
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
                 filterNdx++) {
-                formatsGroup = new tcuTestCase.DeqpTest(
-                    '2d_array_formats', '2D Array Texture Formats');
-                this.addChild(formatsGroup);
                 minFilter = minFilterModes[filterNdx].mode;
                 filterName = minFilterModes[filterNdx].name;
                 format = filterableFormatsByType[fmtNdx].format;
@@ -2123,12 +2123,12 @@ goog.scope(function() {
         for (var fmtNdx = 0;
             fmtNdx < filterableFormatsByType.length;
             fmtNdx++) {
+            formatsGroup = new tcuTestCase.DeqpTest(
+                '3d_formats', '3D Texture Formats');
+            this.addChild(formatsGroup);
             for (var filterNdx = 0;
                 filterNdx < minFilterModes.length;
                 filterNdx++) {
-                formatsGroup = new tcuTestCase.DeqpTest(
-                    '3d_formats', '3D Texture Formats');
-                this.addChild(formatsGroup);
                 minFilter = minFilterModes[filterNdx].mode;
                 filterName = minFilterModes[filterNdx].name;
                 format = filterableFormatsByType[fmtNdx].format;
