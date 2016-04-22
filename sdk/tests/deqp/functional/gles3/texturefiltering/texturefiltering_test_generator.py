@@ -41,12 +41,12 @@ _HTML_TEMPLATE = """<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>WebGL Texture Filtering Tests</title>
-<link rel="stylesheet" href="../../../resources/js-test-style.css"/>
-<script src="../../../js/js-test-pre.js"></script>
-<script src="../../../js/webgl-test-utils.js"></script>
+<link rel="stylesheet" href="../../../../resources/js-test-style.css"/>
+<script src="../../../../js/js-test-pre.js"></script>
+<script src="../../../../js/webgl-test-utils.js"></script>
 
-<script src="../../../closure-library/closure/goog/base.js"></script>
-<script src="../../deqp-deps.js"></script>
+<script src="../../../../closure-library/closure/goog/base.js"></script>
+<script src="../../../deqp-deps.js"></script>
 <script>goog.require('functional.gles3.es3fTextureFilteringTests');</script>
 </head>
 <body>
@@ -104,10 +104,10 @@ _GROUP_TEST_COUNTS = [
     _SIZE_CUBE_COUNT, # cube_sizes
     _MIN_FILTER_MODE_COUNT, # cube_combinations
     1, # cube_no_edges_visible
-    _FILTERABLE_FORMAT_COUNT * _MIN_FILTER_MODE_COUNT, # 2d_array_formats
+    _FILTERABLE_FORMAT_COUNT, # 2d_array_formats
     _SIZE_2D_ARRAY_COUNT, # 2d_array_sizes
     _MIN_FILTER_MODE_COUNT, # 2d_array_combinations
-    _FILTERABLE_FORMAT_COUNT * _MIN_FILTER_MODE_COUNT, # 3d_formats
+    _FILTERABLE_FORMAT_COUNT, # 3d_formats
     _SIZE_3D_COUNT, # 3d_sizes,
     _MIN_FILTER_MODE_COUNT * _MAG_FILTER_MODE_COUNT * _WRAP_MODE_COUNT, # 3d_combinations
 ]
@@ -115,7 +115,7 @@ _GROUP_TEST_COUNTS = [
 def GenerateFilename(group, count, index):
   """Generate test filename."""
   assert index >= 0 and index < count
-  filename = "texturefiltering_" + group
+  filename = group
   if count > 1:
     index_str = str(index)
     if index < 10:
@@ -149,35 +149,15 @@ def GenerateTests():
       test_index += 1
   return filelist
 
-def UpdateTestList(filelist):
-  before = []
-  after = []
-  file = open("00_test_list.txt", "rb")
-  lines = file.readlines()
-  file.close
-  encountered = False
-  for line in lines:
-    if line.startswith("texturefiltering"):
-      encountered = True
-      continue
-    if encountered:
-      after.append(line)
-    else:
-      before.append(line)
-
+def GenerateTestList(filelist):
   file = open("00_test_list.txt", "wb")
-  file.write(''.join(before))
   file.write('\n'.join(filelist))
-  file.write('\n')
-  file.write(''.join(after))
   file.close
 
 def main(argv):
   """This is the main function."""
   filelist = GenerateTests()
-  UpdateTestList(filelist)
+  GenerateTestList(filelist)
 
 if __name__ == '__main__':
   sys.exit(main(sys.argv[1:]))
-
-    
