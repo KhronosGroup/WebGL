@@ -3117,6 +3117,18 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         implementations.
     </div>
 
+    <h3>Framebuffer contents after invalidation</h3>
+    <p>
+        In OpenGL ES 3.0, after calling <code>invalidateFramebuffer</code> or <code>invalidateSubFramebuffer</code>,
+        the affected region's contents are undefined. In WebGL 2.0, it is required for the contents to either stay
+        unchanged or become all 0.
+    </p>
+
+    <div class="note rationale">
+        It is acceptable for WebGL 2.0 implementations to make <code>invalidateFramebuffer</code> or
+        <code>invalidateSubFramebuffer</code> a no-op.
+    </div>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
