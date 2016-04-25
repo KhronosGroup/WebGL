@@ -3066,8 +3066,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
         any loss of context. Any objects referenced by a disabled extension, such as the object returned
         by <code>getExtension</code>, are no longer associated with the WebGL rendering context. Any
         extension objects that derive from <code>WebGLObject</code> have their
-        <a href="#webgl-object-invalidated-flag">invalidated</a> flag set to true. Any use of a disabled
-        extension or its referenced objects generates an INVALID_OPERATION error.
+        <a href="#webgl-object-invalidated-flag">invalidated</a> flag set to true. Behavior of
+        extensions' methods after context loss is defined by the steps in the
+        section <a href="#WEBGLRENDERINGCONTEXT">"The WebGL context"</a>.
     <p>
         There are no other mechanisms to disable an extension.
     </p>
