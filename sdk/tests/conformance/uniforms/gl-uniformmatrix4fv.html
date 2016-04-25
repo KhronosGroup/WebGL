@@ -66,6 +66,7 @@ debug("Checking gl.uniformMatrix.");
 
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
+var contextVersion = wtu.getDefault3DContextVersion();
 var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["vPosition"]);
 for (var ii = 2; ii <= 4; ++ii) {
   var loc = gl.getUniformLocation(program, "world" + ii);
@@ -90,8 +91,13 @@ for (var ii = 2; ii <= 4; ++ii) {
   mat[ii * ii - 1] = 1;
   gl[name](loc, false, mat);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "can call " + name + "with transpose = false");
-  gl[name](loc, true, mat);
-  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, name + " should return INVALID_VALUE with transpose = true");
+  if (contextVersion < 1) {
+    gl[name](loc, true, mat);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, name + " should return INVALID_VALUE with transpose = true");
+  } else {
+    gl[name](loc, true, mat);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "can call " + name + "with transpose = true");
+  }
 }
 
 debug("");
