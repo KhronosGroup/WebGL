@@ -358,29 +358,6 @@ group valid "Valid scoping and name redeclaration cases"
 		""
 	end
 
-	case local_variable_hides_function_parameter
-		version 100 es
-		values
-		{
-			input int in0 = [ 1 | 2 | 3 ];
-			output int out0 = [ 1 | 2 | 3 ];
-		}
-
-		both ""
-			#version 100
-			precision mediump float;
-			${DECLARATIONS}
-			int func (int inp, int x) { int x = 5; return inp + x - 5; }
-
-			void main()
-			{
-				${SETUP}
-				out0 = func(in0, 42);
-				${OUTPUT}
-			}
-		""
-	end
-
 end
 
 group invalid "Invalid scoping behavior"
