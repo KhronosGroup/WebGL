@@ -1233,7 +1233,7 @@ goog.scope(function() {
                 '\tVerifying each result derivative is within its range of legal result values.');
 
             /** @type {Array<number>} */ var valueRamp = deMath.subtract(this.m_texValueMax, this.m_texValueMin);
-            /** @type {es3fShaderDerivateTests.Linear2DFunctionEvaluator} */ var function_;
+            /** @type {es3fShaderDerivateTests.Linear2DFunctionEvaluator} */ var function_ = new es3fShaderDerivateTests.Linear2DFunctionEvaluator();
 
             function_.matrix.setRow(0, [valueRamp[0] / w, 0.0, this.m_texValueMin[0]]);
             function_.matrix.setRow(1, [0.0, valueRamp[1] / h, this.m_texValueMin[1]]);
