@@ -615,7 +615,7 @@ tcuFloat.convertFloat32Inline = (function() {
 
         var exponentBits = (fbits >> 23) & 0xff;
         var mantissaBits = fbits & 0x7fffff;
-        var signBit = (fbits & 0x8000000) ? 1 : 0;
+        var signBit = (fbits & 0x80000000) ? 1 : 0;
         var sign = signBit ? -1 : 1;
 
         var isZero = exponentBits == 0 && mantissaBits == 0;
