@@ -127,7 +127,10 @@ goog.scope(function() {
          * @return {number}
          */
         var getWidth = function() {
-            return context.drawingBufferWidth;
+            if(viewport)
+                return viewport[2];
+            else
+                return context.drawingBufferWidth;
         };
         wrap['getWidth'] = getWidth;
 
@@ -135,7 +138,10 @@ goog.scope(function() {
          * @return {number}
          */
         var getHeight = function() {
-            return context.drawingBufferHeight;
+            if(viewport)
+                return viewport[3];
+            else
+                return context.drawingBufferHeight;
         };
         wrap['getHeight'] = getHeight;
 
@@ -162,7 +168,40 @@ goog.scope(function() {
         };
         wrap['readPixels'] = readPixels;
 
-        return wrap;
+        /**
+         * @param {number} target
+         * @param {number} level
+         * @param {number} internalFormat
+         * @param {number} width
+         * @param {number} height
+         */
+        var texImage2DDelegate = function(target, level, internalFormat, width, height) {
+            var format;
+            var dataType;
+
+            switch(internalFormat)
+            {
+                case gl.ALPHA:
+                case gl.LUMINANCE:
+                case gl.LUMINANCE_ALPHA:
+                case gl.RGB:
+                case gl.RGBA:
+                    format = internalFormat;
+                    dataType = gl.UNSIGNED_BYTE;
+                    break;
+                default:
+                {
+                    var transferFmt = gluTextureUtil.getTransferFormat(gluTextureUtil.mapGLInternalFormat(internalFormat));
+                    format = transferFmt.format;
+                    dataType = transferFmt.dataType;
+                    break;
+                }
+             }
+             context.texImage2D(target, level, internalFormat, width, height, 0, format, dataType, null);
+         };
+         wrap['texImage2DDelegate'] = texImage2DDelegate;
+
+         return wrap;
     };
 
     /**
