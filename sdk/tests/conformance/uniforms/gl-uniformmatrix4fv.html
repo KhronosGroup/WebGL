@@ -91,7 +91,7 @@ for (var ii = 2; ii <= 4; ++ii) {
   mat[ii * ii - 1] = 1;
   gl[name](loc, false, mat);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "can call " + name + "with transpose = false");
-  if (contextVersion < 1) {
+  if (contextVersion <= 1) {
     gl[name](loc, true, mat);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, name + " should return INVALID_VALUE with transpose = true");
   } else {
