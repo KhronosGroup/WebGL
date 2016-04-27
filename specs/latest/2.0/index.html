@@ -1451,7 +1451,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in <a href="#TEXTURE_TYPES_FORMATS_FROM_DOM_ELEMENTS_TABLE">this table</a>.</p>
       </dd>
 
-      <dt><p class="idl-code"><a name="TEXSUBIMAGE2D_SERVER_SIDE">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLenum format, GLenum type, GLintptr offset)
+      <dt><p class="idl-code"><a name="TEXSUBIMAGE2D_SERVER_SIDE">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLintptr offset)
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.4 &sect;3.8.5</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage2D.xhtml">man page</a>)</span>
       </dt>
       <dd>
@@ -1532,7 +1532,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       </dd>
 
       <dt>
-        <p class="idl-code"><a name="TEXSUBIMAGE3D_SERVER_SIDE">void texSubImage3D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLenum format, GLenum type, GLintptr offset)
+        <p class="idl-code"><a name="TEXSUBIMAGE3D_SERVER_SIDE">void texSubImage3D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLintptr offset)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.4 &sect;3.8.5</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage3D.xhtml" class="nonnormative">man page</a>)
