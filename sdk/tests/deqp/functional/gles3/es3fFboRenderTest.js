@@ -413,9 +413,8 @@ goog.scope(function() {
             name = this.m_context.createTexture();
 
         this.m_context.bindTexture(gl.TEXTURE_2D, name);
-        this.m_context.texImage2D(
-            gl.TEXTURE_2D, 0, format, width, height,
-            0, gl.RGBA, gl.UNSIGNED_BYTE, null
+        this.m_context.texImage2DDelegate(
+            gl.TEXTURE_2D, 0, format, width, height
         );
 
         if (!deMath.deIsPowerOfTwo32(width) ||
@@ -570,7 +569,7 @@ goog.scope(function() {
      */
     es3fFboRenderTest.FboRenderCase.prototype.iterate = function() {
         var clearColor = [0.125, 0.25, 0.5, 1.0];
-        /** @type {?string} */ var failReason = null;
+        /** @type {?string} */ var failReason = "";
 
         // Position & size for context
         var rnd = new deRandom.deRandom();
@@ -671,9 +670,6 @@ goog.scope(function() {
             );
             failReason = 'Got unexpected error';
         }
-
-        // TODO: Remove
-        gles3Frame.setSize(refFrame.getWidth(), refFrame.getHeight());
 
         // Compare images
         var imagesOk = this.compare(refFrame, gles3Frame);
@@ -1042,7 +1038,7 @@ goog.scope(function() {
         if (fboA.getConfig().colorType == gl.TEXTURE_2D) {
             texShader.setUniforms(context, texShaderID);
 
-            context.bindFramebuffer(gl.FRAMEBUFFER, 0);
+            context.bindFramebuffer(gl.FRAMEBUFFER, null);
             context.bindTexture(gl.TEXTURE_2D, fboA.getColorBuffer());
             context.viewport(0, 0, context.getWidth(), context.getHeight());
             rrUtil.drawQuad(
@@ -1107,9 +1103,8 @@ goog.scope(function() {
         // Single colorbuffer
         if (this.m_config.colorType == gl.TEXTURE_2D) {
             context.bindTexture(gl.TEXTURE_2D, colorbuffer);
-            context.texImage2D(
-                gl.TEXTURE_2D, 0, this.m_config.colorFormat, width, height,
-                0, gl.RGBA, gl.UNSIGNED_BYTE, null
+            context.texImage2DDelegate(
+                gl.TEXTURE_2D, 0, this.m_config.colorFormat, width, height
             );
             context.texParameteri(
                 gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST
@@ -1135,7 +1130,7 @@ goog.scope(function() {
             context.createFramebuffer()
         ];
 
-        for (var fboi = 1; fboi <= fbo.length; fboi++) {
+        for (var fboi = 0; fboi < fbo.length; fboi++) {
             context.bindFramebuffer(gl.FRAMEBUFFER, fbo[fboi]);
 
             if (this.m_config.colorType == gl.TEXTURE_2D)
@@ -1150,7 +1145,7 @@ goog.scope(function() {
                 );
         }
 
-        context.bindFramebuffer(gl.FRAMEBUFFER, fbo[1]);
+        context.bindFramebuffer(gl.FRAMEBUFFER, fbo[0]);
 
         // Check completeness
 
@@ -1165,7 +1160,7 @@ goog.scope(function() {
 
         context.enable(gl.SCISSOR_TEST);
 
-        context.bindFramebuffer(gl.FRAMEBUFFER, fbo[2]);
+        context.bindFramebuffer(gl.FRAMEBUFFER, fbo[1]);
         context.clearColor(0.6, 0.0, 0.0, 1.0);
         context.scissor(10, 10, 64, 64);
         context.clear(gl.COLOR_BUFFER_BIT);
@@ -1173,12 +1168,12 @@ goog.scope(function() {
         context.scissor(60, 60, 40, 20);
         context.clear(gl.COLOR_BUFFER_BIT);
 
-        context.bindFramebuffer(gl.FRAMEBUFFER, fbo[3]);
+        context.bindFramebuffer(gl.FRAMEBUFFER, fbo[2]);
         context.clearColor(0.0, 0.0, 0.6, 1.0);
         context.scissor(20, 20, 100, 10);
         context.clear(gl.COLOR_BUFFER_BIT);
 
-        context.bindFramebuffer(gl.FRAMEBUFFER, fbo[1]);
+        context.bindFramebuffer(gl.FRAMEBUFFER, fbo[0]);
         context.clearColor(0.6, 0.0, 0.6, 1.0);
         context.scissor(20, 20, 5, 100);
         context.clear(gl.COLOR_BUFFER_BIT);
@@ -1476,7 +1471,7 @@ goog.scope(function() {
         /** @type {WebGLProgram} */
         var texFromFboShaderID = context.createProgram(texFromFboShader);
         /** @type {WebGLProgram} */
-        var flatShaderID = context.createProgram(texFromFboShader);
+        var flatShaderID = context.createProgram(flatShader);
 
         var quadsTex = context.createTexture();
         var metaballsTex = context.createTexture();
@@ -1548,9 +1543,9 @@ goog.scope(function() {
         switch (fbo.getConfig().colorType) {
             case gl.TEXTURE_2D:
                 context.bindTexture(gl.TEXTURE_2D, fbo.getColorBuffer());
-                context.texImage2D(
+                context.texImage2DDelegate(
                     gl.TEXTURE_2D, 0, fbo.getConfig().colorFormat,
-                    newWidth, newHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null
+                    newWidth, newHeight
                 );
                 break;
 
@@ -1572,9 +1567,9 @@ goog.scope(function() {
                     context.bindTexture(
                         gl.TEXTURE_2D, fbo.getDepthStencilBuffer()
                     );
-                    context.texImage2D(
+                    context.texImage2DDelegate(
                         gl.TEXTURE_2D, 0, fbo.getConfig().depthStencilFormat,
-                        newWidth, newHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null
+                        newWidth, newHeight
                     );
                     break;
 
@@ -1818,9 +1813,8 @@ goog.scope(function() {
                 case gl.TEXTURE_2D:
                     ctx.deleteTexture(/** @type {WebGLTexture} */ (buf));
                     ctx.bindTexture(gl.TEXTURE_2D, buf);
-                    ctx.texImage2D(
-                        gl.TEXTURE_2D, 0, format, width, height,
-                        0, gl.RGBA, gl.UNSIGNED_BYTE, null
+                    ctx.texImage2DDelegate(
+                        gl.TEXTURE_2D, 0, format, width, height
                     );
                     ctx.texParameteri(
                         gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST

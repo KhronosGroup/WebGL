@@ -4045,6 +4045,38 @@ goog.scope(function() {
     * @param {number} internalFormat
     * @param {number} width
     * @param {number} height
+    */
+    sglrReferenceContext.ReferenceContext.prototype.texImage2DDelegate = function (target, level, internalFormat, width, height) {
+        var format;
+        var dataType;
+
+        switch (internalFormat)
+        {
+            case gl.ALPHA:
+            case gl.LUMINANCE:
+            case gl.LUMINANCE_ALPHA:
+            case gl.RGB:
+            case gl.RGBA:
+                format = internalFormat;
+                dataType = GL.UNSIGNED_BYTE;
+                break;
+            default:
+            {
+                var transferFmt = gluTextureUtil.getTransferFormat(gluTextureUtil.mapGLInternalFormat(internalFormat));
+                format = transferFmt.format;
+                dataType = transferFmt.dataType;
+                break;
+            }
+        }
+        this.texImage2D(target, level, internalFormat, width, height, 0, format, dataType, null);
+    };
+
+    /**
+    * @param {number} target
+    * @param {number} level
+    * @param {number} internalFormat
+    * @param {number} width
+    * @param {number} height
     * @param {number} border
     * @param {number} format
     * @param {number} type
