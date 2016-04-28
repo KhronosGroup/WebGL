@@ -1366,7 +1366,7 @@ goog.scope(function() {
 
         images = rnd.shuffle(images);
 
-        for (var ndx = 0; ndx < this.m_numLevels; ndx++) {
+        for (var ndx = 0; ndx < images.length; ndx++) {
             var levelNdx = images[ndx].ndx;
             /** @type {framework.common.tcuTexture.CubeFace} */
             var face = images[ndx].face;
