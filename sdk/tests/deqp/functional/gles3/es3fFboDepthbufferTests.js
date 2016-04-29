@@ -121,7 +121,7 @@ es3fFboDepthbufferTests.BasicFboDepthCase.prototype.render = function(dst) {
 
         // Render gradient with depth = [-1..1]
         ctx.enable(gl.DEPTH_TEST);
-        rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, 0.0], [1.0, 1.0, 0.0]);
+        rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, -1.0], [1.0, 1.0, 1.0]);
 
         // Render grid pattern with depth = 0
         var format = gl.RGBA;
@@ -212,18 +212,18 @@ es3fFboDepthbufferTests.DepthWriteClampCase.prototype.render = function(dst) {
         ctx.enable(gl.DEPTH_TEST);
         ctx.depthFunc(gl.ALWAYS);
         gradShader.setUniforms(ctx, gradShaderID, -1, 2, green);
-        rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, 0.0], [1.0, 1.0, 0.0]);
+        rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, -1.0], [1.0, 1.0, 1.0]);
         ctx.depthMask(false);
 
         // Test if any fragment has greater depth than 1; there should be none
         ctx.depthFunc(gl.LESS); // (1 < depth) ?
         gradShader.setUniforms(ctx, gradShaderID, 1, 1, red);
-        rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, 0.0], [1.0, 1.0, 0.0]);
+        rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, -1.0], [1.0, 1.0, 1.0]);
 
         // Test if any fragment has smaller depth than 0; there should be none
         ctx.depthFunc(gl.GREATER); // (0 > depth) ?
         gradShader.setUniforms(ctx, gradShaderID, 0, 0, red);
-        rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, 0.0], [1.0, 1.0, 0.0]);
+        rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, -1.0], [1.0, 1.0, 1.0]);
 
         // Read results.
         this.readPixelsUsingFormat(dst, 0, 0, this.m_width, this.m_height,
@@ -299,13 +299,13 @@ es3fFboDepthbufferTests.DepthTestClampCase.prototype.render = function(dst) {
         ctx.depthFunc(gl.ALWAYS);
 
         gradShader.setUniforms(ctx, gradShaderID, -1, 2, green);
-        rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, 0.0], [1.0, 1.0, 0.0]);
+        rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, -1.0], [1.0, 1.0, 1.0]);
 
         // Render yellow quad, depth gradient = [-0.5..3]. Gradients have equal values only outside [0, 1] range due to clamping
         ctx.depthFunc(gl.EQUAL);
 
         gradShader.setUniforms(ctx, gradShaderID, -0.5, 3, yellow);
-        rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, 0.0], [1.0, 1.0, 0.0]);
+        rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, -1.0], [1.0, 1.0, 1.0]);
 
         // Read results.
         this.readPixelsUsingFormat(dst, 0, 0, this.m_width, this.m_height,

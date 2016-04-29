@@ -1035,7 +1035,7 @@ es3fFboTestUtil.FboIncompleteException.prototype.getReason = function() {return 
         /** @type {Array<number>} */ var icolor = es3fFboTestUtil.castVectorSaturate(color, tcuTexture.deTypes.deInt32);
         /** @type {Array<number>} */ var uicolor = es3fFboTestUtil.castVectorSaturate(color, tcuTexture.deTypes.deUint32);
 
-        for (var packetNdx = 0; packetNdx < numPackets; ++packetNdx)
+        for (var packetNdx = 0; packetNdx < numPackets; ++packetNdx) {
             /** @type {Array<number>} */ var coord = rrShadingContext.readTriangleVarying(packet[packetNdx], context, 0);
             /** @const {number} */ var x = coord[0];
             /** @const {number} */ var y = coord[1];
@@ -1049,6 +1049,7 @@ es3fFboTestUtil.FboIncompleteException.prototype.getReason = function() {return 
                 packet[packetNdx].value = icolor;
             else if (this.m_outputType == gluShaderUtil.DataType.UINT_VEC4)
                 packet[packetNdx].value = uicolor;
+        }
     };
 
     es3fFboTestUtil.getFormatName = function(format) {
