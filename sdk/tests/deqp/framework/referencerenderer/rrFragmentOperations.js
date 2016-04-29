@@ -193,11 +193,27 @@ rrFragmentOperations.executeDepthCompare = function(inputFragments, depthFunc, d
       for (var i = 0; i < inputFragments.length; i++) {
             var frag = inputFragments[i];
             if (frag.isAlive) {
-                var fragSampleNdx = 0;
-                var depthBufferValue = depthBuffer.getPixDepth(fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
-                var sampleDepthFloat = frag.sampleDepths[fragSampleNdx];
-                var sampleDepth = sampleDepthFloat;
-                frag.depthPassed = expression(sampleDepth, depthBufferValue);
+                if (depthBuffer.m_format.type == tcuTexture.ChannelType.FLOAT
+                    || depthBuffer.m_format.type == tcuTexture.ChannelType.FLOAT_UNSIGNED_INT_24_8_REV) {
+                    var fragSampleNdx = 0;
+                    var depthBufferValue = depthBuffer.getPixDepth(fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
+                    var sampleDepthFloat = frag.sampleDepths[fragSampleNdx];
+                    var sampleDepth = deMath.clamp(sampleDepthFloat, 0.0, 1.0);
+                    frag.depthPassed = expression(sampleDepth, depthBufferValue);
+                } else {
+                    var fragSampleNdx = 0;
+                    var depthBufferValue = depthBuffer.getPixDepth(fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
+                    var sampleDepthFloat = frag.sampleDepths[fragSampleNdx];
+                    var buffer = new Uint32Array(2);
+                    var access = new tcuTexture.PixelBufferAccess({format:depthBuffer.m_format,
+                                                                   width: 1,
+                                                                   height: 1,
+                                                                   depth: 1,
+                                                                   data: buffer});
+                    access.setPixDepth(sampleDepthFloat, 0, 0, 0);
+                    var sampleDepth = access.getPixDepth(0, 0, 0);
+                    frag.depthPassed = expression(sampleDepth, depthBufferValue);
+                }
             }
         }
     };
