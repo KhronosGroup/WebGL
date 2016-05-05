@@ -704,7 +704,48 @@ goog.scope(function() {
         );
     };
 
+    /**
+     * deinit
+     */
     es3fFboRenderTest.FboRenderCase.prototype.deinit = function() {
+        gl.colorMask(true, true, true, true);
+        gl.depthMask(true);
+
+        gl.clearColor(0.0, 0.0, 0.0, 0.0);
+        gl.clearDepth(1.0);
+        gl.clearStencil(0);
+
+        gl.disable(gl.STENCIL_TEST);
+        gl.disable(gl.DEPTH_TEST);
+        gl.disable(gl.BLEND)
+        gl.disable(gl.SAMPLE_COVERAGE);
+        gl.disable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+
+        if (this.m_program) {
+            gl.deleteProgram(this.m_program.getProgram());
+            this.m_program = null;
+        }
+        if (this.m_msColorRbo) {
+          gl.deleteRenderbuffer(this.m_msColorRbo);
+          this.m_msColorRbo = null;
+        }
+        if (this.m_msDepthStencilRbo) {
+          gl.deleteRenderbuffer(this.m_msDepthStencilRbo);
+          this.m_msDepthStencilRbo = null;
+        }
+        if (this.m_resolveColorRbo) {
+          gl.deleteRenderbuffer(this.m_resolveColorRbo);
+          this.m_resolveColorRbo = null;
+        }
+
+        if (this.m_msFbo) {
+          gl.deleteFramebuffer(this.m_msFbo);
+          this.m_msFbo = null;
+        }
+        if (this.m_resolveFbo) {
+          gl.deleteFramebuffer(this.m_resolveFbo);
+          this.m_resolveFbo = null;
+        }
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.bindRenderbuffer(gl.RENDERBUFFER, null);
     };
