@@ -47,20 +47,26 @@ var gl = wtu.create3DContext(undefined, undefined, 2);
 
 debug("");
 var buffer1 = gl.createBuffer();
-gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 0, buffer1, 0, 4); 
-wtu.glErrorShouldBe(gl, gl.NO_ERROR, 
+gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 0, buffer1, 0, 4);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR,
     "Calling bindBufferRange on a buffer where no storage is allocated should succeed.");
+shouldBe("buffer1", "gl.getIndexedParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING, 0)");
+shouldBe("4", "gl.getIndexedParameter(gl.TRANSFORM_FEEDBACK_BUFFER_SIZE, 0)");
+shouldBe("0", "gl.getIndexedParameter(gl.TRANSFORM_FEEDBACK_BUFFER_START, 0)");
 
 var buffer2 = gl.createBuffer();
-gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, buffer2);
-gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4, gl.STATIC_DRAW);
-gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 0, buffer2, 0, 8);
-wtu.glErrorShouldBe(gl, gl.NO_ERROR, 
+gl.bindBuffer(gl.UNIFORM_BUFFER, buffer2);
+gl.bufferData(gl.UNIFORM_BUFFER, 4, gl.STATIC_DRAW);
+gl.bindBufferRange(gl.UNIFORM_BUFFER, 1, buffer2, 0, 8);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR,
     "Calling bindBufferRange on a buffer where the storage is not big enough should succeed.");
+shouldBe("buffer2", "gl.getIndexedParameter(gl.UNIFORM_BUFFER_BINDING, 1)");
+shouldBe("8", "gl.getIndexedParameter(gl.UNIFORM_BUFFER_SIZE, 1)");
+shouldBe("0", "gl.getIndexedParameter(gl.UNIFORM_BUFFER_START, 1)");
 
-finishTest();
-
+debug("");
 var successfullyParsed = true;
 </script>
+<script src="../../js/js-test-post.js"></script>
 </body>
 </html>
