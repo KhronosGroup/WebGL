@@ -221,6 +221,10 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template match="subsumed" mode="depends">
+  <p> <xsl:apply-templates select="."/> </p>
+</xsl:template>
+
 <xsl:template match="removed" mode="depends">
   <p> No longer available as of the <xsl:apply-templates select="."/> specification. </p>
 </xsl:template>
