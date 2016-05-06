@@ -42,26 +42,22 @@
 "use strict";
 var wtu = WebGLTestUtils;
 var gl;
- 
+
 function testFramebufferRenderbuffer() {
   debug("");
   debug("Checking framebuffer/renderbuffer stuff.");
 
   gl.getFramebufferAttachmentParameter(
-     gl.FRAMEBUFFER,
-     gl.COLOR_ATTACHMENT0,
-     gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
+      gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
   wtu.glErrorShouldBe(gl, gl.INVALID_ENUM,
-            "calling getFramebufferAttachmentParameter with attachment = COLOR_ATTACHMENT0 on the default framebuffer should generate INVALID_ENUM.");
+      "getFramebufferAttachmentParameter(COLOR_ATTACHMENT0) on the default framebuffer should generate INVALID_ENUM.");
   gl.getFramebufferAttachmentParameter(
-     gl.FRAMEBUFFER,
-     gl.BACK,
-     gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
+      gl.FRAMEBUFFER, gl.BACK, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling getFramebufferAttachmentParameter with attachment = GL_BACK on the default framebuffer should succeed.");
+      "getFramebufferAttachmentParameter(GL_BACK) on the default framebuffer should succeed.");
   gl.checkFramebufferStatus(gl.FRAMEBUFFER);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling checkFramebufferStatus on the default framebuffer should succeed");
+      "calling checkFramebufferStatus on the default framebuffer should succeed");
 
   var tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -79,35 +75,25 @@ function testFramebufferRenderbuffer() {
                 gl.UNSIGNED_BYTE,  // type
                 null);             // data
   gl.framebufferTexture2D(
-      gl.FRAMEBUFFER,
-      gl.COLOR_ATTACHMENT0,
-      gl.TEXTURE_2D,
-      tex,
-      0);
+      gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "trying to attach a texture to default framebuffer should generate INVALID_OPERATION.");
+      "trying to attach a texture to default framebuffer should generate INVALID_OPERATION.");
 
   gl.framebufferRenderbuffer(
-      gl.FRAMEBUFFER,
-      gl.COLOR_ATTACHMENT0,
-      gl.RENDERBUFFER,
-      null);
+      gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, null);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "trying to detach default renderbuffer from default framebuffer should generate INVALID_OPERATION.");
+      "trying to detach default renderbuffer from default framebuffer should generate INVALID_OPERATION.");
 
   var rb = gl.createRenderbuffer();
   gl.bindRenderbuffer(gl.RENDERBUFFER, rb);
   gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, canvas.width, canvas.height);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "allocating renderbuffer storage of a newly created renderbuffer should succeed.");
+      "allocating renderbuffer storage of a newly created renderbuffer should succeed.");
 
   gl.framebufferRenderbuffer(
-      gl.FRAMEBUFFER,
-      gl.COLOR_ATTACHMENT0,
-      gl.RENDERBUFFER,
-      rb);
+      gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "trying to attach a renderbuffer to the default framebuffer should generate INVALID_OPERATION.");
+      "trying to attach a renderbuffer to the default framebuffer should generate INVALID_OPERATION.");
 
   var fbtex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, fbtex);
@@ -116,63 +102,59 @@ function testFramebufferRenderbuffer() {
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "binding a newly created framebuffer should succeed.");
+      "binding a newly created framebuffer should succeed.");
 
-  var target = gl.READ_FRAMEBUFFER
+  var target = gl.READ_FRAMEBUFFER;
   gl.getFramebufferAttachmentParameter(
-     target,
-     gl.COLOR_ATTACHMENT0,
-     gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
+      target, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling getFramebufferAttachmentParameter with target = READ_FRAMEBUFFER should succeed.");
+      "getFramebufferAttachmentParameter(READ_FRAMEBUFFER) should succeed.");
   assertMsg(gl.checkFramebufferStatus(target) != 0,
-            "calling checkFramebufferStatus with target = READ_FRAMEBUFFER should succeed.");
+            "checkFramebufferStatus(READ_FRAMEBUFFER) should succeed.");
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling checkFramebufferStatus with target = READ_FRAMEBUFFER should succeed.");
+      "checkFramebufferStatus(READ_FRAMEBUFFER) should succeed.");
   var readFB = gl.createFramebuffer();
   gl.bindFramebuffer(target, readFB);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling bindFramebuffer with target = READ_FRAMEBUFFER should succeed.");
+      "bindFramebuffer(READ_FRAMEBUFFER) should succeed.");
   assertMsg(readFB == gl.getParameter(gl.READ_FRAMEBUFFER_BINDING),
-            "calling bindFramebuffer with target = READ_FRAMEBUFFER should change READ_FRAMEBUFFER_BINDING.");
+            "bindFramebuffer(READ_FRAMEBUFFER) should change READ_FRAMEBUFFER_BINDING.");
   assertMsg(fb == gl.getParameter(gl.DRAW_FRAMEBUFFER_BINDING),
-            "calling bindFramebuffer with target = READ_FRAMEBUFFER should not change DRAW_FRAMEBUFFER_BINDING.");
+            "bindFramebuffer(READ_FRAMEBUFFER) should not change DRAW_FRAMEBUFFER_BINDING.");
   gl.getFramebufferAttachmentParameter(target, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE without any attachment should succeed.");
+      "getFramebufferAttachmentParameter(FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE) with no attachment should succeed.");
   gl.framebufferTexture2D(target, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, 0);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling framebufferTexImage2D with target = READ_FRAMEBUFFER should succeed.");
+      "framebufferTexImage2D(READ_FRAMEBUFFER) should succeed.");
   gl.framebufferRenderbuffer(target, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling framebufferRenderbuffer with target = READ_FRAMEBUFFER should succeed.");
+      "framebufferRenderbuffer(READ_FRAMEBUFFER) should succeed.");
 
   var colorAttachmentsNum = gl.getParameter(gl.MAX_COLOR_ATTACHMENTS);
   if (colorAttachmentsNum >= 2) {
-    var attachment = gl.COLOR_ATTACHMENT1
+    var attachment = gl.COLOR_ATTACHMENT1;
     gl.framebufferTexture2D(gl.FRAMEBUFFER, attachment, gl.TEXTURE_2D, fbtex, 0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling framebufferTexImage2D with attachment = COLOR_ATTACHMENT1 should succeed.");
+        "framebufferTexImage2D(COLOR_ATTACHMENT1) should succeed.");
     gl.framebufferTexture2D(gl.FRAMEBUFFER, attachment, gl.TEXTURE_2D, null, 0);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, attachment, gl.RENDERBUFFER, rb);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling framebufferRenderbuffer with attachment = COLOR_ATTACHMENT1 should succeed.");
+        "framebufferRenderbuffer(COLOR_ATTACHMENT1) should succeed.");
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, attachment, gl.RENDERBUFFER, null);
   }
 
-  gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER,
-                                       gl.COLOR_ATTACHMENT0,
-                                       gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
+  gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING without any attachment should generate INVALID_OPERATION.");
+      "getFramebufferAttachmentParameter(GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING) with no attachment should generate INVALID_OPERATION.");
 
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, 0);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "attaching a texture to a framebuffer should succeed.");
+      "attaching a texture to a framebuffer should succeed.");
 
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, null, 0);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "detaching a texture from a framebuffer should succeed.");
+      "detaching a texture from a framebuffer should succeed.");
 
   function numLevelsFromSize(size) {
     var levels = 0;
@@ -186,41 +168,37 @@ function testFramebufferRenderbuffer() {
   var maxLevels = numLevelsFromSize(maxTexSize);
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, maxLevels - 1);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling framebufferTexture2D with an appropriate mipmap level should succeed.");
+      "framebufferTexture2D with an appropriate mipmap level should succeed.");
   gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, maxLevels);
   wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
-            "calling framebufferTexture2D with a mipmap level out of range should generate INVALID_VALUE.");
+      "framebufferTexture2D with a mipmap level out of range should generate INVALID_VALUE.");
 
   gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "attaching a renderbuffer to a framebuffer should succeed.");
+      "attaching a renderbuffer to a framebuffer should succeed.");
 
   gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, null);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "detaching a renderbuffer from a framebuffer should succeed.");
+      "detaching a renderbuffer from a framebuffer should succeed.");
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "binding default (null) framebuffer should succeed.");
+      "binding default (null) framebuffer should succeed.");
 
   // attach/detach a 2d texture to one framebuffer binding point, while no attachment to the other binding point.
   function attachAndDetachTexture(targetA, targetB) {
     gl.framebufferTexture2D(targetA, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fbtex, 0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "attaching a texture to read/draw framebuffer binding point should succeed.");
-    gl.getFramebufferAttachmentParameter(targetA,
-                                       gl.COLOR_ATTACHMENT0,
-                                       gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
+        "attaching a texture to read/draw framebuffer binding point should succeed.");
+    gl.getFramebufferAttachmentParameter(targetA, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING on read/draw framebuffer should succeed.");
-    gl.getFramebufferAttachmentParameter(targetB,
-                                       gl.COLOR_ATTACHMENT0,
-                                       gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
+        "getFramebufferAttachmentParameter(FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING) on read/draw framebuffer should succeed.");
+    gl.getFramebufferAttachmentParameter(targetB, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING on read/draw framebuffer without any attachment should generate INVALID_OPERATION.");
+        "getFramebufferAttachmentParameter(FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING) on read/draw framebuffer with no attachment should generate INVALID_OPERATION.");
     gl.framebufferTexture2D(targetA, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, null, 0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "detaching a texture from read/draw framebuffer should succeed.");
+        "detaching a texture from read/draw framebuffer should succeed.");
   }
 
   var readFBWithTexture = gl.createFramebuffer();
@@ -240,41 +218,31 @@ function testFramebufferRenderbuffer() {
   shouldBe('gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_BLUE_SIZE)', '0');
 
   gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, null, 0);
-  gl.getFramebufferAttachmentParameter(gl.READ_FRAMEBUFFER,
-                                       gl.COLOR_ATTACHMENT0,
-                                       gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
+  gl.getFramebufferAttachmentParameter(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING on read framebuffer without any attachment should generate INVALID_OPERATION.");
-  gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER,
-                                       gl.COLOR_ATTACHMENT0,
-                                       gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
+      "getFramebufferAttachmentParameter(FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING) on read framebuffer with no attachment should generate INVALID_OPERATION.");
+  gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING on draw framebuffer should succeed.");
+      "getFramebufferAttachmentParameter(FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING) on draw framebuffer should succeed.");
   gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, null, 0);
-  gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER,
-                                       gl.COLOR_ATTACHMENT0,
-                                       gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
+  gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING on draw framebuffer without any attachment should generate INVALID_OPERATION.");
+      "getFramebufferAttachmentParameter(FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING) on draw framebuffer with no attachment should generate INVALID_OPERATION.");
 
   // attach/detach a renderbuffer to one framebuffer binding point, while no attachment to the other binding point.
   function attachAndDetachRenderbuffer(targetA, targetB) {
     gl.framebufferRenderbuffer(targetA, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "attaching a renderbuffer to a read/draw framebuffer should succeed.");
-    gl.getFramebufferAttachmentParameter(targetA,
-                                       gl.COLOR_ATTACHMENT0,
-                                       gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
+        "attaching a renderbuffer to a read/draw framebuffer should succeed.");
+    gl.getFramebufferAttachmentParameter(targetA, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING on read/draw framebuffer should succeed.");
-    gl.getFramebufferAttachmentParameter(targetB,
-                                       gl.COLOR_ATTACHMENT0,
-                                       gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
+        "getFramebufferAttachmentParameter(FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING) on read/draw framebuffer should succeed.");
+    gl.getFramebufferAttachmentParameter(targetB, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING on read/draw framebuffer without any attachment should generate INVALID_OPERATION.");
+        "getFramebufferAttachmentParameter(FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING) on read/draw framebuffer with no attachment should generate INVALID_OPERATION.");
     gl.framebufferRenderbuffer(targetA, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, null);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "detaching a renderbuffer from a read/draw framebuffer should succeed.");
+        "detaching a renderbuffer from a read/draw framebuffer should succeed.");
   }
 
   var readFBWithRenderbuffer = gl.createFramebuffer();
@@ -289,53 +257,45 @@ function testFramebufferRenderbuffer() {
   gl.bindRenderbuffer(gl.RENDERBUFFER, depthRB);
   gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, canvas.width, canvas.height);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "allocating renderbuffer storage of a newly created renderbuffer should succeed.");
+      "allocating renderbuffer storage of a newly created renderbuffer should succeed.");
   gl.framebufferRenderbuffer(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthRB);
   gl.framebufferRenderbuffer(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb);
   shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_RED_SIZE)');
-  gl.getFramebufferAttachmentParameter(gl.READ_FRAMEBUFFER,
-                                       gl.DEPTH_ATTACHMENT,
-                                       gl.FRAMEBUFFER_DEPTH_SIZE);
+  gl.getFramebufferAttachmentParameter(gl.READ_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_DEPTH_SIZE);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE on read framebuffer without depth attachment should generate INVALID_OPERATION.");
+      "getFramebufferAttachmentParameter(FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE) on read framebuffer without depth attachment should generate INVALID_OPERATION.");
   shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE)');
-  gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER,
-                                       gl.COLOR_ATTACHMENT0,
-                                       gl.FRAMEBUFFER_RED_SIZE);
+  gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_RED_SIZE);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE on draw framebuffer without color attachment should generate INVALID_OPERATION.");
+      "getFramebufferAttachmentParameter(FRAMEBUFFER_ATTACHMENT_RED_SIZE) on draw framebuffer without color attachment should generate INVALID_OPERATION.");
 
   gl.framebufferRenderbuffer(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, null);
-  gl.getFramebufferAttachmentParameter(gl.READ_FRAMEBUFFER,
-                                       gl.COLOR_ATTACHMENT0,
-                                       gl.FRAMEBUFFER_RED_SIZE);
+  gl.getFramebufferAttachmentParameter(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_RED_SIZE);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE on read framebuffer without any attachment should generate INVALID_OPERATION.");
+      "getFramebufferAttachmentParameter(FRAMEBUFFER_ATTACHMENT_RED_SIZE) on read framebuffer with no attachment should generate INVALID_OPERATION.");
   shouldBeNonZero('gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE)');
   gl.framebufferRenderbuffer(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, null);
-  gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER,
-                                       gl.DEPTH_ATTACHMENT,
-                                       gl.FRAMEBUFFER_DEPTH_SIZE);
+  gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.FRAMEBUFFER_DEPTH_SIZE);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION,
-            "calling getFramebufferAttachmentParameter with pname = GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE on draw framebuffer without any attachment should generate INVALID_OPERATION.");
+      "getFramebufferAttachmentParameter(FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE) on draw framebuffer with no attachment should generate INVALID_OPERATION.");
 
   // binding read/draw framebuffer to default framebuffer
   gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "binding read framebuffer to default (null) framebuffer should succeed.");
+      "binding read framebuffer to default (null) framebuffer should succeed.");
 
   gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-            "binding draw framebuffer to default (null) framebuffer should succeed.");
+      "binding draw framebuffer to default (null) framebuffer should succeed.");
 }
 
 description("This tests framebuffer/renderbuffer-related functions");
- 
+
 var canvas = document.getElementById("canvas");
 shouldBeNonNull("gl = wtu.create3DContext(canvas, undefined, 2)");
 
 testFramebufferRenderbuffer();
- 
+
 debug("");
 var successfullyParsed = true;
 
