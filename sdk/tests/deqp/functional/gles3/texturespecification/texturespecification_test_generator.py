@@ -71,13 +71,38 @@ var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', null, 2);
 </html>
 """
 
-def GenerateFilename(index):
+_GROUPS = [
+    'basic_teximage2d',
+    'random_teximage2d',
+    'teximage2d_align',
+    'teximage2d_unpack_params',
+    'teximage2d_pbo',
+    'teximage2d_depth',
+    'teximage2d_depth_pbo',
+    'basic_texsubimage2d',
+    'texsubimage2d_empty_tex',
+    'texsubimage2d_align',
+    'texsubimage2d_unpack_params',
+    'texsubimage2d_pbo',
+    'texsubimage2d_depth',
+    'basic_copyteximage2d',
+    'basic_copytexsubimage2d',
+    'basic_teximage3d',
+    'teximage3d_unpack_params',
+    'teximage3d_pbo',
+    'teximage3d_depth',
+    'teximage3d_depth_pbo',
+    'basic_texsubimage3d',
+    'texsubimage3d_unpack_params',
+    'texsubimage3d_pbo',
+    'texsubimage3d_depth',
+    'texstorage2d',
+    'texstorage3d'
+]
+
+def GenerateFilename(group):
   """Generate test filename."""
-  filename = "texturespecification"
-  index_str = str(index)
-  if index < 10:
-    index_str = "0" + index_str
-  filename += index_str
+  filename = group
   filename += ".html"
   return filename
 
@@ -94,8 +119,8 @@ def WriteTest(filename, start, end):
 def GenerateTests():
   """Generate all tests."""
   filelist = []
-  for ii in range(26):
-    filename = GenerateFilename(ii)
+  for ii in range(len(_GROUPS)):
+    filename = GenerateFilename(_GROUPS[ii])
     filelist.append(filename)
     WriteTest(filename, ii, ii + 1)
   return filelist
