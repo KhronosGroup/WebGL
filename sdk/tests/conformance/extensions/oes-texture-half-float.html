@@ -457,12 +457,18 @@ function runFramebufferTest() {
             "IMPLEMENTATION_COLOR_READ_FORMAT should be color renderable: RGBA or RGB. Received: " + getFormatName(implementationColorReadFormat));
 
         var implementationColorReadType = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE);
+
+        // There is nothing in the specifications that keeps the
+        // implementation color read format and type from being the
+        // same as the implicitly supported one. For this reason, keep
+        // gl.FLOAT as one of the valid options.
         assertMsg(implementationColorReadType === gl.UNSIGNED_BYTE ||
+                  implementationColorReadType === gl.FLOAT ||
                   implementationColorReadType === ext.HALF_FLOAT_OES ||
                   implementationColorReadType === gl.UNSIGNED_SHORT_4_4_4_4 ||
                   implementationColorReadType === gl.UNSIGNED_SHORT_5_5_5_1 ||
                   implementationColorReadType === gl.UNSIGNED_SHORT_5_6_5,
-                  "IMPLEMENTATION_COLOR_READ_TYPE must be one of UNSIGNED_BYTE, UNSIGNED_SHORT_4_4_4_4, UNSIGNED_SHORT_5_5_5_1, UNSIGNED_SHORT_5_6_5 or HALF_FLOAT_OES. " +
+                  "IMPLEMENTATION_COLOR_READ_TYPE must be one of UNSIGNED_BYTE, UNSIGNED_SHORT_4_4_4_4, UNSIGNED_SHORT_5_5_5_1, UNSIGNED_SHORT_5_6_5, FLOAT, or HALF_FLOAT_OES. " +
                   "Received: " + getTypeName(implementationColorReadType));
 
         // Test the RGBA/HALF_FLOAT_OES combination
