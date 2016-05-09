@@ -996,7 +996,12 @@ glsLifetimeTests.OutputAttachmentTest.prototype.iterate = function() {
 
     // For reference purposes, make note of what refSeed looks like.
     this.m_outputAttacher.setupContainer(refSeed, container);
+    // Since in WebGL, buffer bound to TRANSFORM_FEEDBACK_BUFFER can not be bound to other targets.
+    // Unfortunately, element will be bound again in drawAttachment() for drawing.
+    // Detach element from container before drawing, then reattach it after drawing.
+    attacher.detach(element, container);
     this.m_outputAttacher.drawAttachment(element, refSurface);
+    attacher.attach(element, container);
     elementType.release(element);
 
     bufferedLogToConsole('Writing to a container after deletion of attachment');
