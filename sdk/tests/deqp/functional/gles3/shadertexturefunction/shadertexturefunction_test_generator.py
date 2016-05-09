@@ -71,13 +71,27 @@ var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', null, 2);
 </html>
 """
 
-def GenerateFilename(index):
+_GROUPS = [
+    'texture',
+    'textureoffset',
+    'textureproj',
+    'textureprojoffset',
+    'texturelod',
+    'texturelodoffset',
+    'textureprojlod',
+    'textureprojlodoffset',
+    'texturegrad',
+    'texturegradoffset',
+    'textureprojgrad',
+    'textureprojgradoffset',
+    'texelfetch',
+    'texelfetchoffset',
+    'texturesize'
+]
+    
+def GenerateFilename(group):
   """Generate test filename."""
-  filename = "shadertexturefunction"
-  index_str = str(index)
-  if index < 10:
-    index_str = "0" + index_str
-  filename += index_str
+  filename = group
   filename += ".html"
   return filename
 
@@ -94,8 +108,8 @@ def WriteTest(filename, start, end):
 def GenerateTests():
   """Generate all tests."""
   filelist = []
-  for ii in range(15):
-    filename = GenerateFilename(ii)
+  for ii in range(len(_GROUPS)):
+    filename = GenerateFilename(_GROUPS[ii])
     filelist.append(filename)
     WriteTest(filename, ii, ii + 1)
   return filelist
