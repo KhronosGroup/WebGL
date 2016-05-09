@@ -218,7 +218,7 @@ function getTypeName(type) {
     else if (type === gl.UNSIGNED_SHORT_4_4_4_4)
         return "UNSIGNED_SHORT_4_4_4_4";
     else if (type === gl.UNSIGNED_SHORT_5_5_5_1)
-        return "UNSIGNED_SHORT_5_6_5";   
+        return "UNSIGNED_SHORT_5_6_5";
     else if (type === gl.FLOAT)
         return "FLOAT";
 }
@@ -357,11 +357,11 @@ function verifyReadPixelsColors(red, green, blue, alpha, alphaRGB, glFormat, glT
     var typeName = getTypeName(glType);
 
     debug(getFormatName(glFormat) + " framebuffer with " + typeName + " readback.");
-    
+
     var arrayBuffer = new arrayBufferConstructor(4);
-    gl.readPixels(0, 0, 1, 1, gl.RGBA, glType, arrayBuffer);    
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, glType, arrayBuffer);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "readPixels should return NO_ERROR when reading " + typeName + " data.");
-    
+
     assertMsg(arrayBuffer[0] === red, "Red channel should be " + red + " for " + typeName + " readPixels. Received: " + arrayBuffer[0]);
     assertMsg(arrayBuffer[1] === green, "Green channel should be " + green + " for " + typeName + " readPixels. Received: " + arrayBuffer[1]);
     assertMsg(arrayBuffer[2] === blue, "Blue channel should be " + blue + " for " + typeName + " readPixels. Received: " + arrayBuffer[2]);
@@ -370,21 +370,21 @@ function verifyReadPixelsColors(red, green, blue, alpha, alphaRGB, glFormat, glT
     } else if (glFormat === gl.RGB) {
         assertMsg(arrayBuffer[3] === alphaRGB, "Alpha channel should be " + alphaRGB + " for " + typeName + " readPixels. Received: " + arrayBuffer[3]);
     }
-    
+
     // Make sure any arrayBuffer types that are not equal to arrayBufferConstructor fail readPixels.
     if (arrayBufferConstructor !== Uint8Array) {
         arrayBuffer = new Uint8Array(4);
-        gl.readPixels(0, 0, 1, 1, gl.RGBA, glType, arrayBuffer);    
+        gl.readPixels(0, 0, 1, 1, gl.RGBA, glType, arrayBuffer);
         wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "readPixels should return INVALID_OPERATION when reading mismatched types. " + Uint8Array.toString());
     }
     if (arrayBufferConstructor !== Float32Array) {
         arrayBuffer = new Float32Array(4);
-        gl.readPixels(0, 0, 1, 1, gl.RGBA, glType, arrayBuffer);    
+        gl.readPixels(0, 0, 1, 1, gl.RGBA, glType, arrayBuffer);
         wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "readPixels should return INVALID_OPERATION when reading mismatched types. " + Float32Array.toString());
     }
     if (arrayBufferConstructor !== Uint16Array) {
         arrayBuffer = new Uint16Array(4);
-        gl.readPixels(0, 0, 1, 1, gl.RGBA, glType, arrayBuffer);    
+        gl.readPixels(0, 0, 1, 1, gl.RGBA, glType, arrayBuffer);
         wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "readPixels should return INVALID_OPERATION when reading mismatched types. " + Uint16Array.toString());
     }
 }
@@ -394,7 +394,7 @@ function verifyReadPixelsColors(red, green, blue, alpha, alphaRGB, glFormat, glT
 function runFramebufferTest() {
     debug("");
     debug("Framebuffer Tests");
-    
+
     var texture = allocateTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, ext.HALF_FLOAT_OES, null);
@@ -410,37 +410,37 @@ function runFramebufferTest() {
     var arrayBufferFloatOutput = new Float32Array(4); // 4 color channels
     [gl.LUMINANCE, gl.LUMINANCE_ALPHA, gl.ALPHA].forEach(function(badFormat) {
         debug(getFormatName(badFormat) + " framebuffer");
-        
+
         gl.texImage2D(gl.TEXTURE_2D, 0, badFormat, 1, 1, 0, badFormat, ext.HALF_FLOAT_OES, null);
         shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
-        
+
         shouldBeNull("gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT)");
         wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "IMPLEMENTATION_COLOR_READ_FORMAT should fail for incomplete framebuffers.");
-        
+
         shouldBeNull("gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE)");
         wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "IMPLEMENTATION_COLOR_READ_TYPE should fail for incomplete framebuffers.");
-        
+
         gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.FLOAT, arrayBufferFloatOutput);
         wtu.glErrorShouldBe(gl, gl.INVALID_FRAMEBUFFER_OPERATION , "readPixels should fail on incomplete framebuffers.");
         debug("");
     });
-    
+
     debug("Ensure color renderable formats [RGBA, RGB] succeed.");
     var arrayBufferHalfFloatInput = new Uint16Array(4); // 4 color channels
     arrayBufferHalfFloatInput[0] = 0;      // 0 in half float
     arrayBufferHalfFloatInput[1] = 0x3400; // 0.25 in half float
     arrayBufferHalfFloatInput[2] = 0x3800; // 0.50 in half float
     arrayBufferHalfFloatInput[3] = 0x3A00; // 0.75 in half float
-    
+
     [gl.RGBA, gl.RGB].forEach(function(goodFormat) {
         debug(getFormatName(goodFormat) + " framebuffer tests");
         debug("");
-        
+
         gl.texImage2D(gl.TEXTURE_2D, 0, goodFormat, 1, 1, 0, goodFormat, ext.HALF_FLOAT_OES, arrayBufferHalfFloatInput);
         shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
-        
+
         // To avoid GPU idiosyncrasies, dispense with clearing or rendering to the texture. Go straight to readPixels.
-        
+
         // Per the OES_color_buffer_half_float, RGBA/FLOAT should always succeed for readPixels
         verifyReadPixelsColors(
             0.00, // red
@@ -451,20 +451,20 @@ function runFramebufferTest() {
             goodFormat,
             gl.FLOAT,
             Float32Array);
-            
+
         var implementationColorReadFormat = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT);
-        assertMsg(implementationColorReadFormat === gl.RGBA || implementationColorReadFormat === gl.RGB, 
+        assertMsg(implementationColorReadFormat === gl.RGBA || implementationColorReadFormat === gl.RGB,
             "IMPLEMENTATION_COLOR_READ_FORMAT should be color renderable: RGBA or RGB. Received: " + getFormatName(implementationColorReadFormat));
-        
+
         var implementationColorReadType = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE);
-        assertMsg(implementationColorReadType === gl.UNSIGNED_BYTE || 
+        assertMsg(implementationColorReadType === gl.UNSIGNED_BYTE ||
                   implementationColorReadType === ext.HALF_FLOAT_OES ||
-                  implementationColorReadType === gl.UNSIGNED_SHORT_4_4_4_4 || 
+                  implementationColorReadType === gl.UNSIGNED_SHORT_4_4_4_4 ||
                   implementationColorReadType === gl.UNSIGNED_SHORT_5_5_5_1 ||
-                  implementationColorReadType === gl.UNSIGNED_SHORT_5_6_5, 
-                  "IMPLEMENTATION_COLOR_READ_TYPE must be one of UNSIGNED_BYTE, UNSIGNED_SHORT_4_4_4_4, UNSIGNED_SHORT_5_5_5_1, UNSIGNED_SHORT_5_6_5 or HALF_FLOAT_OES. " + 
+                  implementationColorReadType === gl.UNSIGNED_SHORT_5_6_5,
+                  "IMPLEMENTATION_COLOR_READ_TYPE must be one of UNSIGNED_BYTE, UNSIGNED_SHORT_4_4_4_4, UNSIGNED_SHORT_5_5_5_1, UNSIGNED_SHORT_5_6_5 or HALF_FLOAT_OES. " +
                   "Received: " + getTypeName(implementationColorReadType));
-                  
+
         // Test the RGBA/HALF_FLOAT_OES combination
         if (implementationColorReadFormat === gl.RGBA && implementationColorReadType === ext.HALF_FLOAT_OES) {
             verifyReadPixelsColors(
@@ -473,8 +473,8 @@ function runFramebufferTest() {
                 0x3800, // blue
                 0x3A00, // alpha
                 0x3C00, // alphaRGB
-                goodFormat, 
-                ext.HALF_FLOAT_OES, 
+                goodFormat,
+                ext.HALF_FLOAT_OES,
                 Uint16Array);
         }
         debug("");
