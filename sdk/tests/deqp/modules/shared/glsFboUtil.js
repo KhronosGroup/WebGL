@@ -1286,7 +1286,7 @@ goog.scope(function() {
         var cctx = this.m_factory();
 
         for (var id = 0; id < cfg.textures.length; ++id) {
-            var flags = this.m_formats.getFormatInfo(cfg.textures.getIndex(id).second, glsFboUtil.FormatFlags.ANY_FORMAT);
+            var flags = this.m_formats.getFormatInfo(cfg.textures.getIndex(id).second.internalFormat, glsFboUtil.FormatFlags.ANY_FORMAT);
             var textureIsValid = (flags & glsFboUtil.FormatFlags.TEXTURE_VALID) != 0;
             cctx.require(textureIsValid, gl.INVALID_ENUM);
             cctx.require(textureIsValid, gl.INVALID_OPERATION);
@@ -1294,7 +1294,7 @@ goog.scope(function() {
         }
 
         for (var id = 0; id < cfg.rbos.length; ++id) {
-            var flags = this.m_formats.getFormatInfo(cfg.rbos.getIndex(id).second, glsFboUtil.FormatFlags.ANY_FORMAT);
+            var flags = this.m_formats.getFormatInfo(cfg.rbos.getIndex(id).second.internalFormat, glsFboUtil.FormatFlags.ANY_FORMAT);
             var rboIsValid = (flags & glsFboUtil.FormatFlags.RENDERBUFFER_VALID) != 0;
             cctx.require(rboIsValid, gl.INVALID_ENUM);
         }
