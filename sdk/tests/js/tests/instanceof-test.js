@@ -38,7 +38,7 @@ function checkGLError(message) {
   }
 }
 
-var gl = wtu.create3DContext("canvas");
+var gl = wtu.create3DContext("canvas", undefined, contextVersion);
 if (contextVersion === 1) {
   shouldBeTrue('gl instanceof WebGLRenderingContext');
 } else if (contextVersion === 2) {

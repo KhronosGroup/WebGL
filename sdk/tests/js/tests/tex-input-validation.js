@@ -33,7 +33,7 @@ var gl = null;
 var tex = null;
 var error = 0;
 
-shouldBeNonNull("gl = wtu.create3DContext()");
+shouldBeNonNull("gl = wtu.create3DContext(undefined, undefined, contextVersion)");
 shouldBeNonNull("tex = gl.createTexture()");
 gl.bindTexture(gl.TEXTURE_2D, tex);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR);
@@ -149,9 +149,9 @@ function testCopyFromInternalFBO(testCase) {
             " internalFormat: " + enumToString(testCase.internalFormat);
 
   if (testCase.contextAlpha) {
-    gl = wtu.create3DContext(null, { alpha: true });
+    gl = wtu.create3DContext(null, { alpha: true }, contextVersion);
   } else {
-    gl = wtu.create3DContext(null, { alpha: false });
+    gl = wtu.create3DContext(null, { alpha: false }, contextVersion);
   }
   shouldBeNonNull("gl");
   shouldBeNonNull("tex = gl.createTexture()");

@@ -29,7 +29,7 @@
 var wtu = WebGLTestUtils;
 description("Test of get calls against GL objects like getBufferParameter, etc.");
 
-var gl = wtu.create3DContext();
+var gl = wtu.create3DContext(undefined, undefined, contextVersion);
 
 function testInvalidArgument(funcName, argumentName, validArgumentArray, func) {
   var validArguments = {};
@@ -101,9 +101,9 @@ for (var run = 0; run < testCases.length; ++run) {
   debug("Test getFramebufferAttachmentParameter with stencil " + testCases[run].contextStencil);
 
   if (testCases[run].contextStencil) {
-    gl = wtu.create3DContext(null, {stencil: true});
+    gl = wtu.create3DContext(null, {stencil: true}, contextVersion);
   } else {
-    gl = wtu.create3DContext(null, {stencil: false});
+    gl = wtu.create3DContext(null, {stencil: false}, contextVersion);
   }
 
   var texture = gl.createTexture();

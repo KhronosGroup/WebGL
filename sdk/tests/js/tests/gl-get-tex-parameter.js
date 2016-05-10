@@ -28,7 +28,7 @@
 "use strict";
 description();
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext("example");
+var gl = wtu.create3DContext("example", undefined, contextVersion);
 
 // NOTE: We explicitly do this in a funky order
 // to hopefully find subtle bugs.
