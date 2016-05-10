@@ -982,19 +982,22 @@ deMath.deFloatLdExp = function(a, exponent) {
  * @param {number} value
  * @return {Array<number>}
  */
-deMath.frexp = function(value) {
-   if (value === 0) return [value, 0];
+deMath.frexp = (function() {
    var data = new DataView(new ArrayBuffer(8));
-   data.setFloat64(0, value);
-   var bits = (data.getUint32(0) >>> 20) & 0x7FF;
-   if (bits === 0) {
-       data.setFloat64(0, value * Math.pow(2, 64));
-       bits = ((data.getUint32(0) >>> 20) & 0x7FF) - 64;
+
+   return function(value) {
+       if (value === 0) return [value, 0];
+       data.setFloat64(0, value);
+       var bits = (data.getUint32(0) >>> 20) & 0x7FF;
+       if (bits === 0) {
+           data.setFloat64(0, value * Math.pow(2, 64));
+           bits = ((data.getUint32(0) >>> 20) & 0x7FF) - 64;
+       }
+       var exponent = bits - 1022,
+           mantissa = deMath.ldexp(value, -exponent);
+       return [mantissa, exponent];
    }
-   var exponent = bits - 1022,
-       mantissa = deMath.ldexp(value, -exponent);
-   return [mantissa, exponent];
-};
+})();
 
 /**
  * @param {number} mantissa
