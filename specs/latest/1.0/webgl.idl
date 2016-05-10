@@ -734,5 +734,5 @@ interface WebGLContextEvent : Event {
 
 // EventInit is defined in the DOM4 specification.
 dictionary WebGLContextEventInit : EventInit {
-    DOMString statusMessage;
+    DOMString statusMessage = "";
 };
