@@ -5814,6 +5814,9 @@ goog.scope(function() {
         this.addChild(shadow2dGroup);
 
         for (var ndx = 0; ndx < depthStencilFormats.length; ndx++) {
+            // WebGL 2 specific constraint.
+            if (depthStencilFormats[ndx].internalFormat == gl.DEPTH32F_STENCIL8)
+                continue;
             var tex2DWidth = 64;
             var tex2DHeight = 128;
 
@@ -6298,6 +6301,9 @@ goog.scope(function() {
         this.addChild(shadow2dGroup);
 
         for (var ndx = 0; ndx < depthStencilFormats.length; ndx++) {
+            // WebGL 2 specific constraint.
+            if (depthStencilFormats[ndx].internalFormat == gl.DEPTH32F_STENCIL8)
+                continue;
             tex2DWidth = 64;
             tex2DHeight = 32;
 
@@ -6637,6 +6643,9 @@ goog.scope(function() {
         this.addChild(shadow3dGroup);
 
         for (var ndx = 0; ndx < depthStencilFormats.length; ndx++) {
+            // WebGL 2 specific constraint.
+            if (depthStencilFormats[ndx].internalFormat == gl.DEPTH32F_STENCIL8)
+                continue;
             tex3DWidth = 32;
             tex3DHeight = 64;
             tex3DDepth = 8;
@@ -6914,6 +6923,9 @@ goog.scope(function() {
         this.addChild(shadow3dGroup);
 
         for (var ndx = 0; ndx < depthStencilFormats.length; ndx++) {
+            // WebGL 2 specific constraint.
+            if (depthStencilFormats[ndx].internalFormat == gl.DEPTH32F_STENCIL8)
+                continue;
             tex2DArrayWidth = 57;
             tex2DArrayHeight = 44;
             tex2DArrayLevels = 5;
