@@ -20,7 +20,7 @@ setCurrentTestName(testName);
 description("Functional test: " + testName + ".");
 
 var wtu = WebGLTestUtils;
-/** @type {WebGL2RenderingContext} */ var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', null, 2);
+/** @type {WebGL2RenderingContext} */ var gl = wtu.create3DContext('canvas', null, 2);
 
     try{
         functional.gles3.es3fLifetimeTests.run(gl);
