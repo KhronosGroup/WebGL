@@ -72,13 +72,67 @@ var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', null, 2);
 </html>
 """
 
-def GenerateFilename(index):
+_GROUPS = [
+    'add',
+    'sub',
+    'mul',
+    'div',
+    'radians',
+    'degrees',
+    'sin',
+    'cos',
+    'tan',
+    'asin',
+    'acos',
+    'atan',
+    'atan2',
+    'sinh',
+    'cosh',
+    'tanh',
+    'asinh',
+    'acosh',
+    'atanh',
+    'pow',
+    'exp',
+    'exp2',
+    'log',
+    'log2',
+    'sqrt',
+    'inversesqrt',
+    'abs',
+    'sign',
+    'floor',
+    'trunc',
+    'round',
+    'roundeven',
+    'ceil',
+    'fract',
+    'mod',
+    'modf',
+    'min',
+    'max',
+    'mix',
+    'step',
+    'smoothstep',
+    'clamp',
+    'length',
+    'distance',
+    'dot',
+    'cross',
+    'normalize',
+    'faceforward',
+    'reflect',
+    'refract',
+    'matrixcompmult',
+    'outerproduct',
+    'transpose',
+    'determinant',
+    'inverse'
+]
+
+def GenerateFilename(group):
   """Generate test filename."""
-  filename = "builtinprecision"
-  index_str = str(index)
-  if index < 10:
-    index_str = "0" + index_str
-  filename += index_str
+  filename = group
   filename += ".html"
   return filename
 
@@ -94,8 +148,8 @@ def WriteTest(filename, index):
 def GenerateTests():
   """Generate all tests."""
   filelist = []
-  for ii in range(56):
-    filename = GenerateFilename(ii)
+  for ii in range(len(_GROUPS)):
+    filename = GenerateFilename(_GROUPS[ii])
     filelist.append(filename)
     WriteTest(filename, ii)
   return filelist
