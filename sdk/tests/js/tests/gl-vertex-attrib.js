@@ -32,7 +32,7 @@ debug("");
 debug("Canvas.getContext");
 
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext("canvas");
+var gl = wtu.create3DContext("canvas", undefined, contextVersion);
 if (!gl) {
   testFailed("context does not exist");
 } else {
