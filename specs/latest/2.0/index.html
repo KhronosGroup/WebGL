@@ -2630,6 +2630,22 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         portion is out-of-bounds, the values may change accordingly.
     </p>
 
+    <h4>Color conversion in copyTex{Sub}Image2D</h4>
+
+    <p>
+        In WebGL 1 (OpenGL ES 2.0), it is allowed for the component sizes of
+        <em>internalformat</em> to be less than the corresponding component sizes
+        of the source buffer's internal format. However, in WebGL 2 (OpenGL ES 3.0),
+        if <em>internalformat</em> is sized, its component sizes must exactly
+        match the corresponding component sizes of the source buffer's effective
+        internal format.
+    </p>
+
+    <p>
+        In both WebGL 1 and 2, source buffer components can be dropped during the
+        conversion to <em>internalformat</em>, but new components cannot be added.
+    </p>
+
     <h3>New Features Supported in the WebGL 2 API</h3>
 
     <ul>
