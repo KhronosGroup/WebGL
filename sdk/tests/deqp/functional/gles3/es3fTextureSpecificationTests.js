@@ -2781,14 +2781,14 @@ goog.scope(function() {
             this.m_texFormat.getPixelSize() * this.m_subW, this.m_alignment
         );
         data = new ArrayBuffer(rowPitch * this.m_subH);
-        tcuTextureUtil.fillWithGrid(
-            new tcuTexture.PixelBufferAccess({
-                            format: this.m_texFormat,
-                            width: this.m_subW,
-                            height: this.m_subH,
-                            rowPitch: rowPitch,
-                            data: data
-                        }), 4, [1, 0, 0, 1], [0, 1, 0, 1]
+        access = new tcuTexture.PixelBufferAccess({
+                format: this.m_texFormat,
+                width: this.m_subW,
+                height: this.m_subH,
+                rowPitch: rowPitch,
+                data: data
+        });
+        tcuTextureUtil.fillWithGrid(access, 4, [1, 0, 0, 1], [0, 1, 0, 1]
         );
         this.m_context.pixelStorei(gl.UNPACK_ALIGNMENT, this.m_alignment);
         for (var f in tcuTexture.CubeFace) {
@@ -2796,7 +2796,7 @@ goog.scope(function() {
             this.m_context.texSubImage2D(
                 es3fTextureSpecificationTests.s_cubeMapFaces[face],
                 0, this.m_subX, this.m_subY, this.m_subW, this.m_subH,
-                this.m_format, this.m_dataType, new Uint8Array(data)
+                this.m_format, this.m_dataType, access.getDataPtr()
             );
         }
     };
