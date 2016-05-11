@@ -21,11 +21,17 @@
 'use strict';
 goog.provide('modules.shared.glsFboUtil');
 goog.require('framework.opengl.gluTextureUtil');
+goog.require('framework.opengl.gluStrUtil');
 
 goog.scope(function() {
 
     var glsFboUtil = modules.shared.glsFboUtil;
     var gluTextureUtil = framework.opengl.gluTextureUtil;
+    var gluStrUtil = framework.opengl.gluStrUtil;
+    var DE_ASSERT = function(x) {
+        if (!x)
+            throw new Error('Assert failed');
+    };
 
     /**
     * @constructor
@@ -964,14 +970,14 @@ goog.scope(function() {
             // two-dimensional array texture, then the value of
             // FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER must be smaller than the
             // number of layers in the texture.
-            cctx.require(
+            cctx.addFBOStatus(
                 glsFboUtil.textureLayer(att) < image.numLayers,
                 gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT
             );
         }
 
         // "The width and height of image are non-zero."
-        cctx.require(
+        cctx.addFBOStatus(
             image.width > 0 && image.height > 0,
             gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT
         );
@@ -981,13 +987,13 @@ goog.scope(function() {
 
         // If the format does not have the proper renderability flag, the
         // completeness check _must_ fail.
-        cctx.require(
+        cctx.addFBOStatus(
             (flags & glsFboUtil.formatFlag(attPoint)) != 0,
             gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT
         );
 
         // If the format is only optionally renderable, the completeness check _can_ fail.
-        cctx.canRequire(
+        cctx.addPotentialFBOStatus(
             (flags & glsFboUtil.FormatFlags.REQUIRED_RENDERABLE) != 0,
             gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT
         );
@@ -1184,7 +1190,7 @@ goog.scope(function() {
     */
     glsFboUtil.FboBuilder.prototype.checkError = function() {
         var error = this.m_gl.getError();
-        if (error != this.m_gl.NO_ERROR && this.m_error != this.m_gl.NO_ERROR) {
+        if (error != this.m_gl.NO_ERROR && this.m_error == this.m_gl.NO_ERROR) {
             this.m_error = error;
         }
     };
@@ -1194,6 +1200,80 @@ goog.scope(function() {
     */
     glsFboUtil.FboBuilder.prototype.getError = function() {
         return this.m_error;
+    };
+
+    glsFboUtil.isFramebufferStatus = function(fboStatus) {
+        return gluStrUtil.getFramebufferStatusName(fboStatus) != '';
+    }
+
+    glsFboUtil.isErrorCode = function(errorCode) {
+        return gluStrUtil.getErrorName(errorCode) != '';
+    }
+
+    /**
+    * @typedef {funcion(): glsFboUtil.ValidStatusCodes}
+    */
+    glsFboUtil.ValidStatusCodes = function() {
+        this.m_errorCodes = [];
+        this.m_errorStatusCodes = [];
+        this.m_allowComplete = false;
+    };
+
+    glsFboUtil.ValidStatusCodes.prototype.isFBOStatusValid = function(fboStatus) {
+        if (fboStatus == gl.FRAMEBUFFER_COMPLETE)
+            return this.m_allowComplete;
+        else {
+            for(var ndx = 0; ndx < this.m_errorStatusCodes.length; ++ndx) {
+                if (this.m_errorStatusCodes[ndx] == fboStatus)
+                    return true;
+            }
+            return false;
+        }
+    };
+
+    glsFboUtil.ValidStatusCodes.prototype.isFBOStatusRequired = function(fboStatus) {
+        if (fboStatus == gl.FRAMEBUFFER_COMPLETE)
+            return m_allowComplete && this.m_errorStatusCodes.length == 0;
+        else
+            // fboStatus is the only allowed error status and succeeding is forbidden
+            return !m_allowComplete && this.m_errorStatusCodes.length == 1 && this.m_errorStatusCodes[0] == fboStatus;
+    };
+
+    glsFboUtil.ValidStatusCodes.prototype.isErrorCodeValid = function(errorCode) {
+        if (errorCode == gl.NO_ERROR)
+            return this.m_errorCodes.length == 0;
+        else {
+            // rule violation exists?
+            for (var ndx = 0; ndx < this.m_errorCodes.length; ++ndx) {
+                if (this.m_errorCodes[ndx] == errorCode)
+                    return true;
+            }
+            return false;
+        }
+    };
+
+    glsFboUtil.ValidStatusCodes.prototype.isErrorCodeRequired = function(errorCode) {
+        if (this.m_errorCodes.length == 0 && errorCode == gl.NO_ERROR)
+            return true;
+        else
+            // only this error code listed
+            return this.m_errorCodes.length == 1 && merrorCodes[0] == errorCode;
+    };
+
+    glsFboUtil.ValidStatusCodes.prototype.addErrorCode = function(error) {
+        DE_ASSERT(glsFboUtil.isErrorCode(error));
+        DE_ASSERT(error != gl.NO_ERROR)
+        this.m_errorCodes.push(error);
+    };
+
+    glsFboUtil.ValidStatusCodes.prototype.addFBOErrorStatus = function(status) {
+        DE_ASSERT(glsFboUtil.isFramebufferStatus(status));
+        DE_ASSERT(status != gl.FRAMEBUFFER_COMPLETE)
+        this.m_errorStatusCodes.push(status);
+    };
+
+    glsFboUtil.ValidStatusCodes.prototype.setAllowComplete = function(b) {
+        this.m_allowComplete = b;
     };
 
     /**
@@ -1209,47 +1289,59 @@ goog.scope(function() {
     glsFboUtil.Checker = function(gl) {
         if (!(gl = gl || window.gl)) throw new Error('Invalid gl object');
 
-        // Allowed return values for gl.CheckFramebufferStatus
-        // formarly an std::set
-        // @private
-        this.m_statusCodes = [];
+        this.m_statusCodes = new glsFboUtil.ValidStatusCodes();
+        this.m_statusCodes.setAllowComplete(true);
 
-        // Whether allow to return gl.FRAMEBUFFER_COMPLETE status
-        this.m_allowComplete = true;
-
-        // this.check = function(attPoint, attachment, image) =0; virtual
         if (typeof(this.check) != 'function')
             throw new Error('Constructor called on virtual class: glsFboUtil.Checker');
     };
 
-    /**  *generated by script*
+    /**
     * @param {boolean} condition
     * @param {number} error
     */
-    glsFboUtil.Checker.prototype.require = function(condition, error) {
+    glsFboUtil.Checker.prototype.addGLError = function(condition, error) {
         if (!condition) {
-            glsFboUtil.remove_from_array(this.m_statusCodes, gl.FRAMEBUFFER_COMPLETE);
-            this.m_statusCodes.push(error);
-            this.m_allowComplete = false;
+            this.m_statusCodes.addErrorCode(error);
+            this.m_statusCodes.setAllowComplete(false);
         }
     };
 
-    /**  *generated by script*
+    /**
     * @param {boolean} condition
     * @param {number} error
     */
-    glsFboUtil.Checker.prototype.canRequire = function(condition, error) {
+    glsFboUtil.Checker.prototype.addPotentialGLError = function(condition, error) {
         if (!condition) {
-            this.m_statusCodes.push(error);
+            this.m_statusCodes.addErrorCode(error);
         }
     };
 
-    /**  *generated by script*
+    /**
+    * @param {boolean} condition
+    * @param {number} status
+    */
+    glsFboUtil.Checker.prototype.addFBOStatus = function(condition, status) {
+        if (!condition) {
+            this.m_statusCodes.addFBOErrorStatus(status);
+            this.m_statusCodes.setAllowComplete(false);
+        }
+    };
+
+    /**
+    * @param {boolean} condition
+    * @param {number} status
+    */
+    glsFboUtil.Checker.prototype.addPotentialFBOStatus = function(condition, status) {
+        if (!condition) {
+            this.m_statusCodes.addFBOErrorStatus(status);
+        }
+    };
+
+    /**
     * @return {Array<number>}
     */
-    glsFboUtil.Checker.prototype.getStatusCodes = function() {
-        if (this.m_allowComplete)
-            this.m_statusCodes.push(gl.FRAMEBUFFER_COMPLETE);
+    glsFboUtil.Checker.prototype.getStatusCodes = function () {
         return this.m_statusCodes;
     };
 
@@ -1288,15 +1380,15 @@ goog.scope(function() {
         for (var id = 0; id < cfg.textures.length; ++id) {
             var flags = this.m_formats.getFormatInfo(cfg.textures.getIndex(id).second.internalFormat, glsFboUtil.FormatFlags.ANY_FORMAT);
             var textureIsValid = (flags & glsFboUtil.FormatFlags.TEXTURE_VALID) != 0;
-            cctx.require(textureIsValid, gl.INVALID_ENUM);
-            cctx.require(textureIsValid, gl.INVALID_OPERATION);
-            cctx.require(textureIsValid, gl.INVALID_VALUE);
+            cctx.addGLError(textureIsValid, gl.INVALID_ENUM);
+            cctx.addGLError(textureIsValid, gl.INVALID_OPERATION);
+            cctx.addGLError(textureIsValid, gl.INVALID_VALUE);
         }
 
         for (var id = 0; id < cfg.rbos.length; ++id) {
             var flags = this.m_formats.getFormatInfo(cfg.rbos.getIndex(id).second.internalFormat, glsFboUtil.FormatFlags.ANY_FORMAT);
             var rboIsValid = (flags & glsFboUtil.FormatFlags.RENDERBUFFER_VALID) != 0;
-            cctx.require(rboIsValid, gl.INVALID_ENUM);
+            cctx.addGLError(rboIsValid, gl.INVALID_ENUM);
         }
 
         var count = 0;
@@ -1312,7 +1404,7 @@ goog.scope(function() {
 
         // "There is at least one image attached to the framebuffer."
         // TODO: support XXX_framebuffer_no_attachments
-        cctx.require(count > 0, gl.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT);
+        cctx.addFBOStatus(count > 0, gl.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT);
 
         return cctx.getStatusCodes();
 

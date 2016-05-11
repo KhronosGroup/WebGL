@@ -193,7 +193,7 @@ goog.scope(function() {
 
             // Either all attachments are zero-sample renderbuffers and/or
             // textures, or none of them are.
-            this.require(
+            this.addFBOStatus(
                 (this.m_numSamples == 0) == (imgSamples == 0),
                 gl.FRAMEBUFFER_INCOMPLETE_MULTISAMPLE
             );
@@ -203,7 +203,7 @@ goog.scope(function() {
             // is also possible that despite the different requests, the
             // implementation allocated the same number of samples to both. Hence
             // reporting the framebuffer as complete is also legal.
-            this.canRequire(
+            this.addPotentialFBOStatus(
                 this.m_numSamples == imgSamples,
                 gl.FRAMEBUFFER_INCOMPLETE_MULTISAMPLE
             );
@@ -216,7 +216,7 @@ goog.scope(function() {
                 this.m_depthStencilType = glsFboUtil.attachmentType(att);
 
             } else {
-                this.require(
+                this.addFBOStatus(
                     this.m_depthStencilImage == att.imageName && this.m_depthStencilType == glsFboUtil.attachmentType(att),
                     gl.FRAMEBUFFER_UNSUPPORTED
                 );
