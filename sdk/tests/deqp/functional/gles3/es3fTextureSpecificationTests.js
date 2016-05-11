@@ -2639,8 +2639,7 @@ goog.scope(function() {
                 format: this.m_texFormat,
                 width: this.m_width,
                 height: this.m_height,
-                data: data,
-                offset: this.m_texFormat.getPixelSize() * this.m_width * this.m_height
+                data: data
             });
         tcuTextureUtil.fillWithComponentGradients(access, [0, 0, 0, 0], [1, 1, 1, 1]);
 
