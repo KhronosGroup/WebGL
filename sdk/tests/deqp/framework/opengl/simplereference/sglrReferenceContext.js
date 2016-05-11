@@ -4442,12 +4442,6 @@ goog.scope(function() {
                  target == gl.TEXTURE_CUBE_MAP_POSITIVE_Y ||
                  target == gl.TEXTURE_CUBE_MAP_NEGATIVE_Z ||
                  target == gl.TEXTURE_CUBE_MAP_POSITIVE_Z) {
-            // Validate size and level.
-            if (this.conditionalSetError(width != height || width > this.m_limits.maxTextureCubeSize || depth != 1, gl.INVALID_VALUE))
-                return;
-            if (this.conditionalSetError(level > Math.floor(Math.log2(this.m_limits.maxTextureCubeSize)), gl.INVALID_VALUE))
-                return;
-
             var textureCube = /** @type {sglrReferenceContext.TextureCube} */ (unit.texCubeBinding.texture);
 
             var face = sglrReferenceContext.mapGLCubeFace(target);
