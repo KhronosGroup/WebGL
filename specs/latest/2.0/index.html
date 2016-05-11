@@ -1436,6 +1436,7 @@ match the <em>type</em> according to the following table; otherwise, generates a
         <p>Only differences from <a href="../1.0/index.html#TEXSUBIMAGE2D">texSubImage2D</a> in WebGL 1 are described here. </p>
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
+        <p>If <em>type</em> is <code>FLOAT_32_UNSIGNED_INT_24_8_REV</code>, generates an <code>INVALID_ENUM</code> error.</p>
         <p>If <em>pixels</em> is non-null, the type of <em>pixels</em> must
 match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">above table</a>; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>See <a href="../1.0/index.html#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific pixel storage parameters that affect the behavior of this function.</p>
@@ -1502,6 +1503,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error. </p>
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a></span>.</p>
+        <p>If <em>type</em> is <code>FLOAT_32_UNSIGNED_INT_24_8_REV</code>, generates an <code>INVALID_ENUM</code> error.</p>
         <p>If <code>pixels</code> is null then an <code>INVALID_VALUE</code> error is generated. </p>
         <p>If <em>pixels</em> is non-null, the type of <em>pixels</em> must
 match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">above table</a>; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
@@ -3144,6 +3146,19 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         It is acceptable for WebGL 2.0 implementations to make <code>invalidateFramebuffer</code> or
         <code>invalidateSubFramebuffer</code> a no-op.
     </div>
+
+    <h3>No ArrayBuffer matching texture type FLOAT_32_UNSIGNED_INT_24_8_REV</h3>
+
+    <p>
+        In <code>texImage2D</code> and <code>texImage3D</code> with ArrayBufferView, if <em>type</em> is
+        <code>FLOAT_32_UNSIGNED_INT_24_8_REV</code> and <em>pixels</em> is not <code>null</code>, generates
+        an <code>INVALID_OPERATION</code>.
+    </p>
+
+    <p>
+        In <code>texSubImage2D</code> and <code>texSubImage3D</code> with ArrayBufferView, if <em>type</em> is
+        <code>FLOAT_32_UNSIGNED_INT_24_8_REV</code>, generates an <code>INVALID_ENUM</code>.
+    </p>
 
 <!-- ======================================================================================================= -->
 
