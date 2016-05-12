@@ -714,53 +714,36 @@ goog.scope(function() {
         var ret = this.build(builder, gl);
         var statuses = this.m_ctx.getVerifier().validStatusCodes(builder, gl);
 
-        var glStatus = builder.getError();
-        if (glStatus == gl.NO_ERROR)
-            glStatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-
-        var it = 1;
-        var err = statuses[0];
-    //  glsFboUtil.logFramebufferConfig(builder, this.m_testCtx.getLog());
-
-        builder.deinit();
-
-        var msg = '';
-    //  msg += this.m_testCtx.getLog();
-        msg = 'Expected ';
-        if (it < statuses.length) {
-            msg += 'one of ';
-            while (it < statuses.length) {
-                msg += glsFboCompletenessTests.statusName(err, gl);
-                err = statuses[it++];
-                msg += (it == statuses.length ? ' or ' : ', ');
-            }
-        }
-        msg += glsFboCompletenessTests.statusName(err, gl) + '.';
-        bufferedLogToConsole(msg);
-
-        bufferedLogToConsole(
-            'Received ' + glsFboCompletenessTests.statusName(glStatus, gl) + '.'
-        );
-
-        if (!glsFboUtil.contains(statuses, glStatus)) {
-            // the returned status value was not acceptable.
-            if (glStatus == gl.FRAMEBUFFER_COMPLETE) {
-                testFailedOptions('Framebuffer checked as complete, expected incomplete', true);
-            } else if (statuses.length == 1 && glsFboUtil.contains(statuses, gl.FRAMEBUFFER_COMPLETE)) {
-                testFailedOptions('Framebuffer checked as incomplete, expected complete', true);
-            } else {
-                // An incomplete status is allowed, but not _this_ incomplete status.
-                testFailedOptions('Framebuffer checked as incomplete, but with wrong status', true);
-            }
-        } else if (
-            glStatus != gl.FRAMEBUFFER_COMPLETE &&
-            glsFboUtil.contains(statuses, gl.FRAMEBUFFER_COMPLETE)
-        ) {
-            testFailedOptions('Framebuffer object could have checked as complete but did not.', true);
+        var errorCode = builder.getError();
+        if (errorCode != gl.NO_ERROR) {
+            bufferedLogToConsole('Received ' + gluStrUtil.getErrorName(errorCode) + ' (during FBO initialization).');
+            if (statuses.isErrorCodeValid(errorCode))
+                testPassed();
+            else if (statuses.isErrorCodeRequired(gl.NO_ERROR))
+                testFailedOptions('Excepted no error but got ' + gluStrUtil.getErrorName(errorCode), true);
+            else
+                testFailedOptions('Got wrong error code', true);
         } else {
-            // pass
-            testPassed();
+            var fboStatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+            var validStatus = statuses.isFBOStatusValid(fboStatus);
+            bufferedLogToConsole('Received ' + gluStrUtil.getFramebufferStatusName(fboStatus));
+            if (!validStatus) {
+                if (fboStatus == gl.FRAMEBUFFER_COMPLETE) {
+                    testFailedOptions('Framebuffer checked as complete, expected incomplete', true);
+                } else if (statuses.isFBOStatusRequired(gl.FRAMEBUFFER_COMPLETE)) {
+                    testFailedOptions('Framebuffer checked as incomplete, expected complete', true);
+                } else {
+                    // An incomplete status is allowed, but not _this_ incomplete status.
+                    testFailedOptions('Framebuffer checked as incomplete, but with wrong status', true);
+                }
+            } else if (fboStatus != gl.FRAMEBUFFER_COMPLETE && statuses.isFBOStatusValid(gl.FRAMEBUFFER_COMPLETE)) {
+                testFailedOptions('Framebuffer object could have checked as complete but did not.', true);
+            } else {
+                // pass
+                testPassed();
+            }
         }
+        builder.deinit();
 
         return tcuTestCase.IterateResult.STOP;
     };
