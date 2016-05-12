@@ -405,7 +405,7 @@ goog.scope(function() {
             for (var ndx = 0; ndx < 2; ndx++) {
                 /** @type {tcuSurface.Surface} */
                 var dst = ndx ? reference : result;
-                ctx = ndx ? refContext : webgl2Context;
+                var ctx = ndx ? refContext : webgl2Context;
                 var shaderID = ndx ? shaderIDRef : shaderIDgles;
 
                 this.m_context = ctx;
@@ -1415,10 +1415,7 @@ goog.scope(function() {
         es3fTextureSpecificationTests.Texture2DSpecCase.call(
             this, name, desc, gluTextureUtil.mapGLTransferFormat(
                 format, dataType
-            ), width, height,
-            es3fTextureSpecificationTests.maxLevelCount(
-                width, height
-            )
+            ), width, height, numLevels
         );
 
         this.m_internalFormat = format;
