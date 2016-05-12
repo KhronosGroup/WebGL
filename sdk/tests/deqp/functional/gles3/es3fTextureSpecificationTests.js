@@ -3731,7 +3731,7 @@ goog.scope(function() {
         var height = this.m_height + this.m_skipRows;
         var buf = null;
         var tex = null;
-        var data = new ArrayBuffer(rowPitch * height + this.m_offset);
+        var data = new ArrayBuffer(rowPitch * height + this.m_skipPixels * pixelSize + this.m_offset);
 
         assertMsgOptions(
             this.m_numLevels == 1, 'Number of levels different than 1',
@@ -3834,7 +3834,7 @@ goog.scope(function() {
         );
         var height = this.m_size + this.m_skipRows;
 
-        var data = new ArrayBuffer(rowPitch * height + this.m_offset);
+        var data = new ArrayBuffer(rowPitch * height + this.m_skipPixels * pixelSize + this.m_offset);
         var access = new tcuTexture.PixelBufferAccess({
                             format: this.m_texFormat,
                             width: this.m_size,
