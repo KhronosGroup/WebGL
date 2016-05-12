@@ -4148,14 +4148,16 @@ goog.scope(function() {
                 texture.allocLevel(level, storageFmt, width, height);
 
             if (data) {
-                var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+                var rowLen = this.m_pixelUnpackRowLength > 0 ? this.m_pixelUnpackRowLength : width;
+                var rowPitch = deMath.deAlign32(rowLen * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+                var skip = this.m_pixelUnpackSkipRows * rowPitch + this.m_pixelUnpackSkipPixels * transferFmt.getPixelSize();
                 src = new tcuTexture.ConstPixelBufferAccess({
                     format: transferFmt,
                     width: width,
                     height: height,
                     rowPitch: rowPitch,
                     data: data,
-                    offset: offset});
+                    offset: offset + skip});
 
                 //NOTE: replaces this: var dst = tcuTexture.PixelBufferAccess.newFromTextureLevel(texture.getLevel(level));
                 dst = texture.getLevel(level);

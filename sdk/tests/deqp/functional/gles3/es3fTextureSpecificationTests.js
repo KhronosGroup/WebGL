@@ -1674,7 +1674,7 @@ goog.scope(function() {
         );
 
         // Fill data with grid.
-        data = new ArrayBuffer(rowPitch * height);
+        data = new ArrayBuffer(rowPitch * height + this.m_skipPixels * pixelSize);
 
         var cScale = deMath.subtract(
             this.m_texFormatInfo.valueMax, this.m_texFormatInfo.valueMin
@@ -1691,7 +1691,7 @@ goog.scope(function() {
             ), cBias
         );
 
-        var access = new tcuTexture.PixelBufferAccess({
+        var accessWithOffset = new tcuTexture.PixelBufferAccess({
                 format: this.m_texFormat,
                 width: this.m_width,
                 height: this.m_height,
@@ -1699,8 +1699,15 @@ goog.scope(function() {
                 data: data,
                 offset: this.m_skipRows * rowPitch + this.m_skipPixels * pixelSize
                 });
-        tcuTextureUtil.fillWithGrid(access, 4, colorA, colorB
+        tcuTextureUtil.fillWithGrid(accessWithOffset, 4, colorA, colorB
         );
+        var access = new tcuTexture.PixelBufferAccess({
+                format: this.m_texFormat,
+                width: this.m_width,
+                height: this.m_height,
+                rowPitch: rowPitch,
+                data: data,
+                });
 
         this.m_context.pixelStorei(gl.UNPACK_ROW_LENGTH, this.m_rowLength);
         this.m_context.pixelStorei(gl.UNPACK_SKIP_ROWS, this.m_skipRows);
