@@ -133,6 +133,7 @@ var runDrawArraysTest = function(callTemplate, gl, wtu, ext) {
 
 var runDrawElementsTest = function(callTemplate, gl, wtu, ext) {
     var program = setupProgramAndBindVertexArray(gl, wtu);
+    var contextVersion = wtu.getDefault3DContextVersion();
 
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([ 0,0.5,0, -0.5,-0.5,0, 0.5,-0.5,0 ]), gl.STATIC_DRAW);
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
@@ -190,14 +191,27 @@ var runDrawElementsTest = function(callTemplate, gl, wtu, ext) {
 
     var ebo = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ebo);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(
-        [ 0, 1, 2,
-          1, 2, 0,
-          2, 0, 1,
-          200, 200, 200,
-          0x7fff, 0x7fff, 0x7fff,
-          0xffff, 0xffff, 0xffff ]),
-        gl.STATIC_DRAW);
+    // For WebGL 2, PRIMITIVE_RESTART_FIXED_INDEX is always enabled.
+    // 0xffff will be handled as a primitive restart.
+    if (contextVersion <= 1) {
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(
+            [ 0, 1, 2,
+              1, 2, 0,
+              2, 0, 1,
+              201, 202, 203,
+              0x7fff, 0x7fff, 0x7fff,
+              0xffff, 0xffff, 0xffff ]),
+            gl.STATIC_DRAW);
+    } else {
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(
+            [ 0, 1, 2,
+              1, 2, 0,
+              2, 0, 1,
+              201, 202, 203,
+              0x7fff, 0x7fff, 0x7fff,
+              0xffff - 1, 0xffff - 1, 0xffff - 1 ]),
+            gl.STATIC_DRAW);
+    }
 
     wtu.shouldGenerateGLError(gl, gl.NO_ERROR, wtu.replaceParams(callTemplate, {count: 9, type: 'gl.UNSIGNED_SHORT', offset: 0}));
 
