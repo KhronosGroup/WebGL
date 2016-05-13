@@ -182,13 +182,13 @@ function runTest() {
         degenInd[j] = j;
     }
     degenInd = degenInd.concat([252, 253, 254, 255]);
-    indices = new Uint8Array(degenInd);
+    indices = new Uint16Array(degenInd);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indBuf);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 
     debug('Draw a square using an ubyte indexed line loop with 256 indices and verify that it draws all four sides and nothing else.');
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.drawElements(gl.LINE_LOOP, indices.length, gl.UNSIGNED_BYTE, 0);
+    gl.drawElements(gl.LINE_LOOP, indices.length, gl.UNSIGNED_SHORT, 0);
     checkLineLoop(gl, w);
 
     //---------- TRIANGLE_FAN ----------
