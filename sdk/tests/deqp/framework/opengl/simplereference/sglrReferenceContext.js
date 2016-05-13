@@ -4251,15 +4251,21 @@ goog.scope(function() {
                 texture2DArray.allocLevel(level, storageFmt, width, height, depth);
 
             if (data) {
-                var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+                var rowLen = this.m_pixelUnpackRowLength > 0 ? this.m_pixelUnpackRowLength : width;
+                var imageHeight = this.m_pixelUnpackImageHeight > 0 ? this.m_pixelUnpackImageHeight : height;
+                var rowPitch = deMath.deAlign32(rowLen * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+                var slicePitch = imageHeight * rowPitch;
+                var skip = this.m_pixelUnpackSkipImages * slicePitch + this.m_pixelUnpackSkipRows * rowPitch +
+                    this.m_pixelUnpackSkipPixels * transferFmt.getPixelSize();
                 src = new tcuTexture.ConstPixelBufferAccess({
                     format: transferFmt,
                     width: width,
                     height: height,
                     depth: depth,
                     rowPitch: rowPitch,
+                    slicePitch: slicePitch,
                     data: data,
-                    offset: offset});
+                    offset: offset + skip});
 
                 dst = texture2DArray.getLevel(level);
 
@@ -4297,15 +4303,21 @@ goog.scope(function() {
                 texture3D.allocLevel(level, storageFmt, width, height, depth);
 
             if (data) {
-                var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+                var rowLen = this.m_pixelUnpackRowLength > 0 ? this.m_pixelUnpackRowLength : width;
+                var imageHeight = this.m_pixelUnpackImageHeight > 0 ? this.m_pixelUnpackImageHeight : height;
+                var rowPitch = deMath.deAlign32(rowLen * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+                var slicePitch = imageHeight * rowPitch;
+                var skip = this.m_pixelUnpackSkipImages * slicePitch + this.m_pixelUnpackSkipRows * rowPitch +
+                    this.m_pixelUnpackSkipPixels * transferFmt.getPixelSize();
                 src = new tcuTexture.ConstPixelBufferAccess({
                     format: transferFmt,
                     width: width,
                     height: height,
                     depth: depth,
                     rowPitch: rowPitch,
+                    slicePitch: slicePitch,
                     data: data,
-                    offset: offset});
+                    offset: offset + skip});
 
                 dst = texture3D.getLevel(level);
 
@@ -4424,14 +4436,16 @@ goog.scope(function() {
                                         gl.INVALID_VALUE))
                 return;
 
-            var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+            var rowLen = this.m_pixelUnpackRowLength > 0 ? this.m_pixelUnpackRowLength : width;
+            var rowPitch = deMath.deAlign32(rowLen * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+            var skip = this.m_pixelUnpackSkipRows * rowPitch + this.m_pixelUnpackSkipPixels * transferFmt.getPixelSize();
             src = new tcuTexture.ConstPixelBufferAccess({
                 format: transferFmt,
                 width: width,
                 height: height,
                 rowPitch: rowPitch,
                 data: data,
-                offset: offset});
+                offset: offset + skip});
 
             sub = tcuTextureUtil.getSubregion(dst, xoffset, yoffset, zoffset, width, height, depth);
             isDstFloatDepthFormat = (dst.getFormat().order == tcuTexture.ChannelOrder.D || dst.getFormat().order == tcuTexture.ChannelOrder.DS); // depth components are limited to [0,1] range
@@ -4461,14 +4475,17 @@ goog.scope(function() {
                                         gl.INVALID_VALUE))
                 return;
 
-            var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+            var rowLen = this.m_pixelUnpackRowLength > 0 ? this.m_pixelUnpackRowLength : width;
+            var rowPitch = deMath.deAlign32(rowLen * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+            var skip = this.m_pixelUnpackSkipRows * rowPitch + this.m_pixelUnpackSkipPixels * transferFmt.getPixelSize();
             src = new tcuTexture.ConstPixelBufferAccess({
                 format: transferFmt,
                 width: width,
                 height: height,
                 rowPitch: rowPitch,
+                slicePitach: slicePitch,
                 data: data,
-                offset: offset});
+                offset: offset + skip});
 
             sub = tcuTextureUtil.getSubregion(dst, xoffset, yoffset, zoffset, width, height, depth);
             isDstFloatDepthFormat = (dst.getFormat().order == tcuTexture.ChannelOrder.D || dst.getFormat().order == tcuTexture.ChannelOrder.DS); // depth components are limited to [0,1] range
@@ -4499,15 +4516,21 @@ goog.scope(function() {
                                         gl.INVALID_VALUE))
                 return;
 
-            var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+            var rowLen = this.m_pixelUnpackRowLength > 0 ? this.m_pixelUnpackRowLength : width;
+            var imageHeight = this.m_pixelUnpackImageHeight > 0 ? this.m_pixelUnpackImageHeight : height;
+            var rowPitch = deMath.deAlign32(rowLen * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+            var slicePitch = imageHeight * rowPitch;
+            var skip = this.m_pixelUnpackSkipImages * slicePitch + this.m_pixelUnpackSkipRows * rowPitch +
+                this.m_pixelUnpackSkipPixels * transferFmt.getPixelSize();
             src = new tcuTexture.ConstPixelBufferAccess({
                 format: transferFmt,
                 width: width,
                 height: height,
                 depth: depth,
                 rowPitch: rowPitch,
+                slicePitch: slicePitch,
                 data: data,
-                offset: offset});
+                offset: offset + skip});
 
             sub = tcuTextureUtil.getSubregion(dst, xoffset, yoffset, zoffset, width, height, depth);
             isDstFloatDepthFormat = (dst.getFormat().order == tcuTexture.ChannelOrder.D || dst.getFormat().order == tcuTexture.ChannelOrder.DS); // depth components are limited to [0,1] range
@@ -4537,15 +4560,21 @@ goog.scope(function() {
                                         gl.INVALID_VALUE))
                 return;
 
-            var rowPitch = deMath.deAlign32(width * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+            var rowLen = this.m_pixelUnpackRowLength > 0 ? this.m_pixelUnpackRowLength : width;
+            var imageHeight = this.m_pixelUnpackImageHeight > 0 ? this.m_pixelUnpackImageHeight : height;
+            var rowPitch = deMath.deAlign32(rowLen * transferFmt.getPixelSize(), this.m_pixelUnpackAlignment);
+            var slicePitch = imageHeight * rowPitch;
+            var skip = this.m_pixelUnpackSkipImages * slicePitch + this.m_pixelUnpackSkipRows * rowPitch +
+                this.m_pixelUnpackSkipPixels * transferFmt.getPixelSize();
             src = new tcuTexture.ConstPixelBufferAccess({
                 format: transferFmt,
                 width: width,
                 height: height,
                 depth: depth,
                 rowPitch: rowPitch,
+                slicePitch: slicePitch,
                 data: data,
-                offset: offset});
+                offset: offset + skip});
 
             sub = tcuTextureUtil.getSubregion(dst, xoffset, yoffset, zoffset, width, height, depth);
 
