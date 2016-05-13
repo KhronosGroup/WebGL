@@ -75,6 +75,7 @@ void main()
 description();
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("example");
+var contextVersion = wtu.getDefault3DContextVersion();
 
 var variables = [
   { name: 'MaxVertexAttribs',             min:   8, },
@@ -84,8 +85,13 @@ var variables = [
   { name: 'MaxCombinedTextureImageUnits', min:   8, },
   { name: 'MaxTextureImageUnits',         min:   8, },
   { name: 'MaxFragmentUniformVectors',    min:  16, },
-  { name: 'MaxDrawBuffers',               min:   1, max: 1},  // MAX_DRAW_BUFFERS is not defined for WebGL :-(
 ];
+
+if (contextVersion <= 1) {
+  variables.push({ name: 'MaxDrawBuffers', min: 1, max: 1});
+} else {
+  variables.push({ name: 'MaxDrawBuffers', min: 1, });
+}
 
 var toUnderscore = function(str) {
   return str.replace(/([a-z])([A-Z])/g, function (g) { return g[0] + "_" + g[1].toUpperCase() }).toUpperCase();
