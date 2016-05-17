@@ -1802,7 +1802,8 @@ goog.scope(function() {
         );
 
         // Fill data with grid.
-        data = new ArrayBuffer(slicePitch * (this.m_depth + this.m_skipImages) + this.m_skipPixels * pixelSize);
+        data = new ArrayBuffer(slicePitch * (this.m_depth + this.m_skipImages) +
+                               this.m_skipRows * rowPitch + this.m_skipPixels * pixelSize);
 
         var cScale = deMath.subtract(
             this.m_texFormatInfo.valueMax, this.m_texFormatInfo.valueMin
@@ -2947,7 +2948,8 @@ goog.scope(function() {
             deMath.multiply([0.0, 1.0, 0.0, 1.0], cScale), cBias
         );
 
-        data = new ArrayBuffer(slicePitch * (this.m_depth + this.m_skipImages) + this.m_skipPixels * pixelSize);
+        data = new ArrayBuffer(slicePitch * (this.m_depth + this.m_skipImages) +
+                               this.m_skipRows * rowPitch + this.m_skipPixels * pixelSize);
         var accessWithOffset = new tcuTexture.PixelBufferAccess({
                 format: this.m_texFormat,
                 width: this.m_subW,
@@ -3993,7 +3995,7 @@ goog.scope(function() {
         var buf = null;
         var data = new ArrayBuffer(
             slicePitch * (this.m_numLayers + this.m_skipImages) +
-            this.m_offset
+            this.m_skipRows * rowPitch + this.m_skipPixels * pixelSize + this.m_offset
         );
 
         assertMsgOptions(
@@ -4038,7 +4040,7 @@ goog.scope(function() {
         this.m_context.pixelStorei(gl.UNPACK_SKIP_PIXELS, this.m_skipPixels);
         this.m_context.pixelStorei(gl.UNPACK_ALIGNMENT, this.m_alignment);
 
-        tex = this.createTexture();
+        tex = this.m_context.createTexture();
         this.m_context.bindTexture(gl.TEXTURE_2D_ARRAY, tex);
         this.m_context.texImage3D(
             gl.TEXTURE_2D_ARRAY, 0, this.m_internalFormat, this.m_width,
@@ -4114,7 +4116,7 @@ goog.scope(function() {
         var buf = null;
         var data = new ArrayBuffer(
             slicePitch * (this.m_depth + this.m_skipImages) +
-            this.m_offset
+            rowPitch * this.m_skipRows + pixelSize * this.m_skipPixels + this.m_offset
         );
 
         assertMsgOptions(
@@ -4159,7 +4161,7 @@ goog.scope(function() {
         this.m_context.pixelStorei(gl.UNPACK_SKIP_PIXELS, this.m_skipPixels);
         this.m_context.pixelStorei(gl.UNPACK_ALIGNMENT, this.m_alignment);
 
-        tex = this.createTexture();
+        tex = this.m_context.createTexture();
         this.m_context.bindTexture(gl.TEXTURE_3D, tex);
         this.m_context.texImage3D(
             gl.TEXTURE_3D, 0, this.m_internalFormat, this.m_width,
@@ -4711,6 +4713,8 @@ goog.scope(function() {
             deMath.multiply([0.0, 1.0, 0.0, 1.0], cScale), cBias
         );
 
+        data = new ArrayBuffer(slicePitch * (this.m_subD + this.m_skipImages) +
+                               rowPitch * this.m_skipRows + pixelSize * this.m_skipPixels + this.m_offset);
         var accessSub = new tcuTexture.PixelBufferAccess({
                         format: this.m_texFormat,
                         width: this.m_subW,
@@ -4718,7 +4722,7 @@ goog.scope(function() {
                         depth: this.m_subD,
                         rowPitch: rowPitch,
                         slicePitch: slicePitch,
-                        data: new ArrayBuffer(slicePitch * (this.m_depth + this.m_skipImages) + this.m_offset),
+                        data: data,
                         offset: this.m_skipImages * slicePitch +
                                 this.m_skipRows * rowPitch +
                                 this.m_skipPixels * pixelSize +
@@ -4730,12 +4734,12 @@ goog.scope(function() {
         buf = this.m_context.createBuffer();
         this.m_context.bindBuffer(gl.PIXEL_UNPACK_BUFFER, buf);
         this.m_context.bufferData(
-            gl.PIXEL_UNPACK_BUFFER, accessSub.getBuffer(), gl.STATIC_DRAW
+            gl.PIXEL_UNPACK_BUFFER, data, gl.STATIC_DRAW
         );
 
-        this.m_context.pixelStorei(gl.UNPACK_IMAGE_HEIGHT, this.m_rowLength);
+        this.m_context.pixelStorei(gl.UNPACK_IMAGE_HEIGHT, this.m_imageHeight);
         this.m_context.pixelStorei(gl.UNPACK_ROW_LENGTH, this.m_rowLength);
-        this.m_context.pixelStorei(gl.UNPACK_SKIP_IMAGES, this.m_skipRows);
+        this.m_context.pixelStorei(gl.UNPACK_SKIP_IMAGES, this.m_skipImages);
         this.m_context.pixelStorei(gl.UNPACK_SKIP_ROWS, this.m_skipRows);
         this.m_context.pixelStorei(gl.UNPACK_SKIP_PIXELS, this.m_skipPixels);
         this.m_context.pixelStorei(gl.UNPACK_ALIGNMENT, this.m_alignment);
@@ -6654,7 +6658,7 @@ goog.scope(function() {
                 new es3fTextureSpecificationTests.TexImage2DArrayBufferCase(
                     parameterCases[ndx].name + '_2d_array', '',
                     parameterCases[ndx].format, parameterCases[ndx].width,
-                    parameterCases[ndx].depth, parameterCases[ndx].height,
+                    parameterCases[ndx].height, parameterCases[ndx].depth,
                     parameterCases[ndx].imageHeight,
                     parameterCases[ndx].rowLength,
                     parameterCases[ndx].skipImages,
@@ -6667,7 +6671,7 @@ goog.scope(function() {
                 new es3fTextureSpecificationTests.TexImage3DBufferCase(
                     parameterCases[ndx].name + '_3d', '',
                     parameterCases[ndx].format, parameterCases[ndx].width,
-                    parameterCases[ndx].depth, parameterCases[ndx].height,
+                    parameterCases[ndx].height, parameterCases[ndx].depth,
                     parameterCases[ndx].imageHeight,
                     parameterCases[ndx].rowLength,
                     parameterCases[ndx].skipImages,
@@ -6901,7 +6905,7 @@ goog.scope(function() {
                     0, // Skip rows
                     0, // Skip pixels
                     4, // Alignment
-                    0 /* offset */
+                    0 // offset
                 )
             );
             pboGroup.addChild(
@@ -6923,7 +6927,7 @@ goog.scope(function() {
                     0, // Skip rows
                     0, // Skip pixels
                     4, // Alignment
-                    0 /* offset */
+                    0 // offset
                 )
             );
         }
