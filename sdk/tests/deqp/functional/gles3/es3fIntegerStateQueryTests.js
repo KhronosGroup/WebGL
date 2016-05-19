@@ -849,18 +849,15 @@ goog.scope(function() {
 	 * @param {number} testTargetName
 	 * @param {number} initialValue
 	 */
-	es3fIntegerStateQueryTests.BlendFuncTestCase = function(name, description, testTargetName, initialValue) {
+	es3fIntegerStateQueryTests.BlendFuncTestCase = function(name, description, testTargetName) {
 		es3fApiCase.ApiCase.call(this, name, description, gl);
 		/** @type {number} */ this.m_testTargetName = testTargetName;
-		/** @type {number} */ this.m_initialValue = initialValue;
 	};
 
 	es3fIntegerStateQueryTests.BlendFuncTestCase.prototype = Object.create(es3fApiCase.ApiCase.prototype);
 	es3fIntegerStateQueryTests.BlendFuncTestCase.prototype.constructor = es3fIntegerStateQueryTests.BlendFuncTestCase;
 
 	es3fIntegerStateQueryTests.BlendFuncTestCase.prototype.test = function() {
-		this.check(glsStateQuery.verify(this.m_testTargetName, this.m_initialValue));
-
 		/** @type {Array<number>} */ var blendFuncValues = [
 			gl.ZERO, gl.ONE, gl.SRC_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.DST_COLOR, gl.ONE_MINUS_DST_COLOR,
 			gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.DST_ALPHA, gl.ONE_MINUS_DST_ALPHA, gl.CONSTANT_COLOR,
@@ -897,7 +894,7 @@ goog.scope(function() {
 	};
 
 	es3fIntegerStateQueryTests.BlendFuncTestCase.prototype.deinit = function() {
-		gl.blendFunc(this.m_initialValue, this.m_initialValue);
+		gl.blendFunc(gl.ONE, gl.ZERO);
 	};
 
 	/**
@@ -908,10 +905,9 @@ goog.scope(function() {
 	 * @param {number} testTargetName
 	 * @param {number} initialValue
 	 */
-	es3fIntegerStateQueryTests.BlendFuncSeparateTestCase = function(name, description, testTargetName, initialValue) {
-		es3fIntegerStateQueryTests.BlendFuncTestCase.call(this, name, description, testTargetName, initialValue);
-	 /** @type {number} */ this.m_testTargetName = testTargetName;
-	 /** @type {number} */ this.m_initialValue = initialValue;
+	es3fIntegerStateQueryTests.BlendFuncSeparateTestCase = function(name, description, testTargetName) {
+		es3fIntegerStateQueryTests.BlendFuncTestCase.call(this, name, description, testTargetName);
+		/** @type {number} */ this.m_testTargetName = testTargetName;
 	};
 
 	es3fIntegerStateQueryTests.BlendFuncSeparateTestCase.prototype = Object.create(es3fIntegerStateQueryTests.BlendFuncTestCase.prototype);
@@ -944,7 +940,7 @@ goog.scope(function() {
 	};
 
 	es3fIntegerStateQueryTests.BlendFuncSeparateTestCase.prototype.deinit = function() {
-		gl.blendFuncSeparate(this.m_initialValue, this.m_initialValue, this.m_initialValue, this.m_initialValue);
+		gl.blendFuncSeparate(gl.ONE, gl.ZERO, gl.ONE, gl.ZERO);
 	};
 
 	/**
@@ -1865,15 +1861,15 @@ goog.scope(function() {
 		};
 
 		/** @type {Array<PixelStoreState>} */ var blendColorStates = [
-			new BlendColorState('blend_src_rgb', 'BLEND_SRC_RGB', gl.BLEND_SRC_RGB, gl.ONE),
-			new BlendColorState('blend_src_alpha', 'BLEND_SRC_ALPHA', gl.BLEND_SRC_ALPHA, gl.ONE),
-			new BlendColorState('blend_dst_rgb', 'BLEND_DST_RGB', gl.BLEND_DST_RGB, gl.ZERO),
-			new BlendColorState('blend_dst_alpha', 'BLEND_DST_ALPHA', gl.BLEND_DST_ALPHA, gl.ZERO)
+			new BlendColorState('blend_src_rgb', 'BLEND_SRC_RGB', gl.BLEND_SRC_RGB),
+			new BlendColorState('blend_src_alpha', 'BLEND_SRC_ALPHA', gl.BLEND_SRC_ALPHA),
+			new BlendColorState('blend_dst_rgb', 'BLEND_DST_RGB', gl.BLEND_DST_RGB),
+			new BlendColorState('blend_dst_alpha', 'BLEND_DST_ALPHA', gl.BLEND_DST_ALPHA)
 		];
 
 		for (var testNdx = 0; testNdx < blendColorStates.length; testNdx++) {
-			testCtx.addChild(new es3fIntegerStateQueryTests.BlendFuncTestCase(blendColorStates[testNdx].name, blendColorStates[testNdx].description, blendColorStates[testNdx].target, blendColorStates[testNdx].initialValue));
-			testCtx.addChild(new es3fIntegerStateQueryTests.BlendFuncSeparateTestCase(blendColorStates[testNdx].name + '_separate', blendColorStates[testNdx].description, blendColorStates[testNdx].target, blendColorStates[testNdx].initialValue));
+			testCtx.addChild(new es3fIntegerStateQueryTests.BlendFuncTestCase(blendColorStates[testNdx].name, blendColorStates[testNdx].description, blendColorStates[testNdx].target));
+			testCtx.addChild(new es3fIntegerStateQueryTests.BlendFuncSeparateTestCase(blendColorStates[testNdx].name + '_separate', blendColorStates[testNdx].description, blendColorStates[testNdx].target));
 		}
 
 		/**
