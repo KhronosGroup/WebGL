@@ -666,6 +666,12 @@ goog.scope(function() {
             for (var levelNdx = 0; levelNdx < this.m_numLevels; levelNdx++) {
                 var levelW = Math.max(1, this.m_width >> levelNdx);
                 var levelH = Math.max(1, this.m_height >> levelNdx);
+
+                if (levelW == 1 || levelH == 1) {
+                    // Rendering to texture of size x1 is problematic in referencerenderer
+                    // due to its deviation from c++ code: crbug.com/613206
+                    continue;
+                }
                 /** @type {tcuSurface.Surface} */
                 var reference = new tcuSurface.Surface();
                 /** @type {tcuSurface.Surface} */
@@ -797,6 +803,12 @@ goog.scope(function() {
             var levelH = Math.max(1, this.m_height >> levelNdx);
             var levelD = Math.max(1, this.m_depth >> levelNdx);
             var levelOk = true;
+
+            if (levelW == 1 || levelH == 1) {
+                // Rendering to texture of size x1 is problematic in referencerenderer
+                // due to its deviation from c++ code: crbug.com/613206
+                continue;
+            }
 
             for (var depth = 0; depth < levelD; depth++) {
                 /** @type {tcuSurface.Surface} */
@@ -7029,6 +7041,10 @@ goog.scope(function() {
         for (var formatNdx = 0; formatNdx < depthStencilFormats.length; formatNdx++) {
             fmtName = depthStencilFormats[formatNdx].name;
             internalFormat = depthStencilFormats[formatNdx].internalFormat;
+            // WebGL 2 specific constraint.
+            if (internalFormat == gl.DEPTH32F_STENCIL8)
+                continue;
+
             tex2DWidth = 117;
             tex2DHeight = 97;
             tex2DLevels = es3fTextureSpecificationTests.maxLevelCount(
@@ -7173,6 +7189,10 @@ goog.scope(function() {
             formatNdx++) {
             fmtName = depthStencilFormats[formatNdx].name;
             internalFormat = depthStencilFormats[formatNdx].internalFormat;
+            // WebGL 2 specific constraint.
+            if (internalFormat == gl.DEPTH32F_STENCIL8)
+                continue;
+
             tex2DArrayWidth = 57;
             tex2DArrayHeight = 13;
             tex2DArrayLayers = 7;
