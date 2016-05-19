@@ -883,12 +883,12 @@ goog.scope(function() {
 		switch (this.m_testTargetName) {
 			case gl.BLEND_SRC_RGB:
 			case gl.BLEND_SRC_ALPHA:
-				gl.blendFunc(func, gl.getParameter(gl.BLEND_DST_RGB));
+				gl.blendFunc(func, gl.ZERO);
 				break;
 
 			case gl.BLEND_DST_RGB:
 			case gl.BLEND_DST_ALPHA:
-				gl.blendFunc(gl.getParameter(gl.BLEND_SRC_RGB), func);
+				gl.blendFunc(gl.ZERO, func);
 				break;
 
 			default:
@@ -897,7 +897,7 @@ goog.scope(function() {
 	};
 
 	es3fIntegerStateQueryTests.BlendFuncTestCase.prototype.deinit = function() {
-		this.setBlendFunc(this.m_initialValue);
+		gl.blendFunc(this.m_initialValue, this.m_initialValue);
 	};
 
 	/**
@@ -921,25 +921,21 @@ goog.scope(function() {
 	 * @param  {number} func
 	 */
 	es3fIntegerStateQueryTests.BlendFuncSeparateTestCase.prototype.setBlendFunc = function(func) {
-		var srcRgb = gl.getParameter(gl.BLEND_SRC_RGB);
-		var dstRgb = gl.getParameter(gl.BLEND_DST_RGB);
-		var srcAlpha = gl.getParameter(gl.BLEND_SRC_ALPHA);
-		var dstAlpha = gl.getParameter(gl.BLEND_DST_ALPHA);
 		switch (this.m_testTargetName) {
 			case gl.BLEND_SRC_RGB:
-				gl.blendFuncSeparate(func, dstRgb, srcAlpha, dstAlpha);
+				gl.blendFuncSeparate(func, gl.ZERO, gl.ZERO, gl.ZERO);
 				break;
 
 			case gl.BLEND_DST_RGB:
-				gl.blendFuncSeparate(srcRgb, func, srcAlpha, dstAlpha);
+				gl.blendFuncSeparate(gl.ZERO, func, gl.ZERO, gl.ZERO);
 				break;
 
 			case gl.BLEND_SRC_ALPHA:
-				gl.blendFuncSeparate(srcRgb, dstRgb, func, dstAlpha);
+				gl.blendFuncSeparate(gl.ZERO, gl.ZERO, func, gl.ZERO);
 				break;
 
 			case gl.BLEND_DST_ALPHA:
-				gl.blendFuncSeparate(srcRgb, dstRgb, srcAlpha, func);
+				gl.blendFuncSeparate(gl.ZERO, gl.ZERO, gl.ZERO, func);
 				break;
 
 			default:
@@ -948,7 +944,7 @@ goog.scope(function() {
 	};
 
 	es3fIntegerStateQueryTests.BlendFuncSeparateTestCase.prototype.deinit = function() {
-		this.setBlendFunc(this.m_initialValue);
+		gl.blendFuncSeparate(this.m_initialValue, this.m_initialValue, this.m_initialValue, this.m_initialValue);
 	};
 
 	/**
