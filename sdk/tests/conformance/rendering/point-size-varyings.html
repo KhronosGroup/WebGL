@@ -51,17 +51,12 @@ void main()
 </script>
 
 <script id="fshader" type="x-shader/x-fragment">
-uniform mediump float defaultsToZero; // never set
-
 varying mediump vec2 vPos;
 
 void main()
 {
+    gl_FragColor = vec4(gl_PointCoord.xy, 0, 1);
     gl_FragColor = vec4(vPos * -2.0, 0, 1);
-
-    if (defaultsToZero == 1.0) {
-        gl_FragColor = vec4(gl_PointCoord.xy, 0, 1);
-    }
 }
 </script>
 
