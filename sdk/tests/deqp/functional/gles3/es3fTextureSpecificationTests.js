@@ -5929,11 +5929,24 @@ goog.scope(function() {
         }
 
         // Basic TexSubImage2D usage.
-        /** @type {tcuTestCase.DeqpTest} */
-        var basicTexSubImageGroup = new tcuTestCase.DeqpTest(
-            'basic_texsubimage2d', 'Basic glTexSubImage2D() usage'
-        );
-        this.addChild(basicTexSubImageGroup);
+        splitBasicTex2D = 3;
+        splitBasicTexCube = 5;
+        /** @type {Array<{tcuTestCase.DeqpTest}>} */
+        var basicTexSubImageGroup2D = [];
+        for (var ii = 0; ii < splitBasicTex2D; ++ii) {
+            basicTexSubImageGroup2D.push(
+                new tcuTestCase.DeqpTest('basic_texsubimage2d', 'Basic glTexSubImage2D() usage')
+            );
+            this.addChild(basicTexSubImageGroup2D[ii]);
+        }
+        /** @type {Array<{tcuTestCase.DeqpTest}>} */
+        var basicTexSubImageGroupCube = [];
+        for (var ii = 0; ii < splitBasicTexCube; ++ii) {
+            basicTexSubImageGroupCube.push(
+                new tcuTestCase.DeqpTest('basic_texsubimage2d', 'Basic glTexSubImage2D() usage')
+            );
+            this.addChild(basicTexSubImageGroupCube[ii]);
+        }
         for (var formatNdx = 0; formatNdx < colorFormats.length; formatNdx++) {
             fmtName = colorFormats[formatNdx].name;
             format = colorFormats[formatNdx].internalFormat;
@@ -5941,12 +5954,12 @@ goog.scope(function() {
             tex2DHeight = 128;
             texCubeSize = 64;
 
-            basicTexSubImageGroup.addChild(
+            basicTexSubImageGroup2D[formatNdx % splitBasicTex2D].addChild(
                 es3fTextureSpecificationTests.newBasicTexSubImage2DCaseInternal(
                     fmtName + '_2d', '', format, tex2DWidth, tex2DHeight
                 )
             );
-            basicTexSubImageGroup.addChild(
+            basicTexSubImageGroupCube[formatNdx % splitBasicTexCube].addChild(
                 es3fTextureSpecificationTests.newBasicTexImageCubeCaseInternal(
                     fmtName + '_cube', '', format, texCubeSize
                 )
@@ -6791,7 +6804,7 @@ goog.scope(function() {
         }
 
         // Basic TexSubImage3D usage.
-        basicTexSubImageGroup = new tcuTestCase.DeqpTest(
+        var basicTexSubImageGroup = new tcuTestCase.DeqpTest(
             'basic_texsubimage3d', 'Basic glTexSubImage3D() usage'
         );
         this.addChild(basicTexSubImageGroup);
