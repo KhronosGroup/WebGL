@@ -19,7 +19,14 @@ texsubimage2d_pbo.html
 texsubimage2d_depth.html
 basic_copyteximage2d.html
 basic_copytexsubimage2d.html
-basic_teximage3d.html
+basic_teximage3d_2d_array_00.html
+basic_teximage3d_2d_array_01.html
+basic_teximage3d_2d_array_02.html
+basic_teximage3d_3d_00.html
+basic_teximage3d_3d_01.html
+basic_teximage3d_3d_02.html
+basic_teximage3d_3d_03.html
+basic_teximage3d_3d_04.html
 teximage3d_unpack_params.html
 teximage3d_pbo.html
 teximage3d_depth.html

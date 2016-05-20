@@ -6506,10 +6506,23 @@ goog.scope(function() {
         );
 
         // Basic TexImage3D usage.
-        var basicTexImageGroup3D = new tcuTestCase.DeqpTest(
-            'basic_teximage3d', 'Basic glTexImage3D() usage'
-        );
-        this.addChild(basicTexImageGroup3D);
+        var splitBasicTex2DArray = 3, splitBasicTex3D = 5;
+        /** @type {Array<{tcuTestCase.DeqpTest}>} */
+        var basicTexImageGroup2DArray = [];
+        for (var ii = 0; ii < splitBasicTex2DArray; ++ii) {
+            basicTexImageGroup2DArray.push(
+                new tcuTestCase.DeqpTest('basic_teximage3d', 'Basic glTexImage3D() usage')
+            );
+            this.addChild(basicTexImageGroup2DArray[ii]);
+        }
+        /** @type {Array<{tcuTestCase.DeqpTest}>} */
+        var basicTexImageGroup3D = [];
+        for (var ii = 0; ii < splitBasicTex3D; ++ii) {
+            basicTexImageGroup3D.push(
+                new tcuTestCase.DeqpTest('basic_teximage3d', 'Basic glTexImage3D() usage')
+            );
+            this.addChild(basicTexImageGroup3D[ii]);
+        }
         for (var formatNdx = 0; formatNdx < colorFormats.length; formatNdx++) {
             fmtName = colorFormats[formatNdx].name;
             format = colorFormats[formatNdx].internalFormat;
@@ -6520,13 +6533,13 @@ goog.scope(function() {
             /** @type {number} */ var tex3DHeight = 29;
             /** @type {number} */ var tex3DDepth = 11;
 
-            basicTexImageGroup3D.addChild(
+            basicTexImageGroup2DArray[formatNdx % splitBasicTex2DArray].addChild(
                 new es3fTextureSpecificationTests.BasicTexImage2DArrayCase(
                     fmtName + '_2d_array', '', format,
                     tex2DArrayWidth, tex2DArrayHeight, tex2DArrayLevels
                 )
             );
-            basicTexImageGroup3D.addChild(
+            basicTexImageGroup3D[formatNdx % splitBasicTex3D].addChild(
                 new es3fTextureSpecificationTests.BasicTexImage3DCase(
                     fmtName + '_3d', '', format,
                     tex3DWidth, tex3DHeight, tex3DDepth
