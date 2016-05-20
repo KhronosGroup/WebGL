@@ -22,18 +22,10 @@ DO NOT EDIT!
 <div id="console"></div>
 <canvas id="canvas" width="300" height="300"> </canvas>
 <script>
-
 var wtu = WebGLTestUtils;
-/** @type {WebGL2RenderingContext} */
-var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', null, 2);
+var gl = wtu.create3DContext('canvas', null, 2);
 
-try {
-    functional.gles3.es3fTextureFilteringTests.run(gl, [80, 81]);
-}
-catch(err) {
-    bufferedLogToConsole(err);
-}
-
+functional.gles3.es3fTextureFilteringTests.run(gl, [80, 81]);
 </script>
 </body>
 </html>
