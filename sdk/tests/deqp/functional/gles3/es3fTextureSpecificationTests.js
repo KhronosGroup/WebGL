@@ -3255,7 +3255,7 @@ goog.scope(function() {
             );
 
             this.m_context.texImage2D(
-                gl.TEXTURE_2D, ndx, this.m_format, levelW, levelH, this.m_format, this.m_dataType, data.getAccess().getDataPtr()
+                gl.TEXTURE_2D, ndx, this.m_format, levelW, levelH, 0, this.m_format, this.m_dataType, data.getAccess().getDataPtr()
             );
         }
 
