@@ -64,7 +64,13 @@ functional.gles3.es3fTextureSpecificationTests.run(gl, [%(start)s, %(end)s]);
 """
 
 _GROUPS = [
-    'basic_teximage2d',
+    'basic_teximage2d_2d_00',
+    'basic_teximage2d_2d_01',
+    'basic_teximage2d_cube_00',
+    'basic_teximage2d_cube_01',
+    'basic_teximage2d_cube_02',
+    'basic_teximage2d_cube_03',
+    'basic_teximage2d_cube_04',
     'random_teximage2d',
     'teximage2d_align',
     'teximage2d_unpack_params',

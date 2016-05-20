@@ -5469,12 +5469,23 @@ goog.scope(function() {
         ];
 
         // Basic TexImage2D usage.
-
-        /** @type {tcuTestCase.DeqpTest} */
-        var basicTexImageGroup = new tcuTestCase.DeqpTest(
-            'basic_teximage2d', 'Basic glTexImage2D() usage'
-        );
-        this.addChild(basicTexImageGroup);
+        var splitBasicTex2D = 2, splitBasicTexCube = 5;
+        /** @type {Array<{tcuTestCase.DeqpTest}>} */
+        var basicTexImageGroup2D = [];
+        for (var ii = 0; ii < splitBasicTex2D; ++ii) {
+            basicTexImageGroup2D.push(
+                new tcuTestCase.DeqpTest('basic_teximage2d', 'Basic glTexImage2D() usage')
+            );
+            this.addChild(basicTexImageGroup2D[ii]);
+        }
+        /** @type {Array<{tcuTestCase.DeqpTest}>} */
+        var basicTexImageGroupCube = [];
+        for (var ii = 0; ii < splitBasicTexCube; ++ii) {
+            basicTexImageGroupCube.push(
+                new tcuTestCase.DeqpTest('basic_teximage2d', 'Basic glTexImage2D() usage')
+            );
+            this.addChild(basicTexImageGroupCube[ii]);
+        }
         for (var formatNdx = 0; formatNdx < colorFormats.length; formatNdx++) {
             /** @type {string} */
             var fmtName = colorFormats[formatNdx].name;
@@ -5487,12 +5498,12 @@ goog.scope(function() {
             /** @type {number} */
             var texCubeSize = 64;
 
-            basicTexImageGroup.addChild(
+            basicTexImageGroup2D[formatNdx % splitBasicTex2D].addChild(
                 es3fTextureSpecificationTests.newBasicTexImage2DCaseInternal(
                     fmtName + '_2d', '', format, tex2DWidth, tex2DHeight
                 )
             );
-            basicTexImageGroup.addChild(
+            basicTexImageGroupCube[formatNdx % splitBasicTexCube].addChild(
                 es3fTextureSpecificationTests.newBasicTexImageCubeCaseInternal(
                     fmtName + '_cube', '', format, texCubeSize
                 )
@@ -6495,10 +6506,10 @@ goog.scope(function() {
         );
 
         // Basic TexImage3D usage.
-        basicTexImageGroup = new tcuTestCase.DeqpTest(
+        var basicTexImageGroup3D = new tcuTestCase.DeqpTest(
             'basic_teximage3d', 'Basic glTexImage3D() usage'
         );
-        this.addChild(basicTexImageGroup);
+        this.addChild(basicTexImageGroup3D);
         for (var formatNdx = 0; formatNdx < colorFormats.length; formatNdx++) {
             fmtName = colorFormats[formatNdx].name;
             format = colorFormats[formatNdx].internalFormat;
@@ -6509,13 +6520,13 @@ goog.scope(function() {
             /** @type {number} */ var tex3DHeight = 29;
             /** @type {number} */ var tex3DDepth = 11;
 
-            basicTexImageGroup.addChild(
+            basicTexImageGroup3D.addChild(
                 new es3fTextureSpecificationTests.BasicTexImage2DArrayCase(
                     fmtName + '_2d_array', '', format,
                     tex2DArrayWidth, tex2DArrayHeight, tex2DArrayLevels
                 )
             );
-            basicTexImageGroup.addChild(
+            basicTexImageGroup3D.addChild(
                 new es3fTextureSpecificationTests.BasicTexImage3DCase(
                     fmtName + '_3d', '', format,
                     tex3DWidth, tex3DHeight, tex3DDepth
