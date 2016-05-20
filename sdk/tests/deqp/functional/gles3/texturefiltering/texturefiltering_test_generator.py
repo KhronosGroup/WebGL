@@ -54,18 +54,10 @@ _HTML_TEMPLATE = """<html>
 <div id="console"></div>
 <canvas id="canvas" width="300" height="300"> </canvas>
 <script>
-
 var wtu = WebGLTestUtils;
-/** @type {WebGL2RenderingContext} */
-var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', null, 2);
+var gl = wtu.create3DContext('canvas', null, 2);
 
-try {
-    functional.gles3.es3fTextureFilteringTests.run(gl, [%(start)s, %(end)s]);
-}
-catch(err) {
-    bufferedLogToConsole(err);
-}
-
+functional.gles3.es3fTextureFilteringTests.run(gl, [%(start)s, %(end)s]);
 </script>
 </body>
 </html>
