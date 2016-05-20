@@ -36,7 +36,8 @@
 <canvas id="c" width="64" height="64"></canvas>
 <div id="description"></div>
 <div id="console"></div>
-<script id="vshader" type="x-shader/x-vertex">
+
+<script id="vs" type="x-shader/x-vertex">
 attribute vec2 aPosition;
 
 varying vec2 vPos;
@@ -50,7 +51,7 @@ void main()
 }
 </script>
 
-<script id="fshader" type="x-shader/x-fragment">
+<script id="fs-overwrite" type="x-shader/x-fragment">
 varying mediump vec2 vPos;
 
 void main()
@@ -60,13 +61,27 @@ void main()
 }
 </script>
 
+<script id="fs-unused-branch" type="x-shader/x-fragment">
+varying mediump vec2 vPos;
+uniform mediump float uDefaultsToZero;
+
+void main()
+{
+    gl_FragColor = vec4(vPos * -2.0, 0, 1);
+    if (uDefaultsToZero == 1.0) {
+        gl_FragColor = vec4(gl_PointCoord.xy, 0, 1);
+    }
+}
+</script>
+
 <script>
 "use strict";
 description(document.title);
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContext("c");
+var gl = wtu.create3DContext("c", {depth: false});
 
-var program = wtu.setupProgram(gl, ["vshader", "fshader"], ["aPosition"]);
+var prog_overwrite = wtu.setupProgram(gl, ["vs", "fs-overwrite"], ["aPosition"]);
+var prog_branch = wtu.setupProgram(gl, ["vs", "fs-unused-branch"], ["aPosition"]);
 
 var vertData = new Float32Array([
     -1, -1,
@@ -81,8 +96,30 @@ gl.bufferData(gl.ARRAY_BUFFER, vertData, gl.STATIC_DRAW);
 gl.enableVertexAttribArray(0);
 gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
+//////////
+
+debug("fs-overwrite");
+
+gl.clear(gl.COLOR_BUFFER_BIT);
+wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 0, 0, 0]); // Bottom-left
+
+gl.useProgram(prog_overwrite);
 gl.drawArrays(gl.TRIANGLES, 0, 3);
 
+wtu.checkCanvasRect(gl, 0, 0, 1, 1, [255, 255, 0, 255]); // Bottom-left
+wtu.checkCanvasRect(gl, 63, 63, 1, 1, [0, 0, 0, 0]); // Top-right
+
+
+//////////
+
+debug("");
+debug("fs-unused-branch");
+
+gl.clear(gl.COLOR_BUFFER_BIT);
+wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 0, 0, 0]); // Bottom-left
+
+gl.useProgram(prog_branch);
+gl.drawArrays(gl.TRIANGLES, 0, 3);
 
 wtu.checkCanvasRect(gl, 0, 0, 1, 1, [255, 255, 0, 255]); // Bottom-left
 wtu.checkCanvasRect(gl, 63, 63, 1, 1, [0, 0, 0, 0]); // Top-right
