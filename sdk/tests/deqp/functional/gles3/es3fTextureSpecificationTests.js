@@ -5797,13 +5797,43 @@ goog.scope(function() {
             );
 
         // glTexImage2D() pbo cases.
-        /** @type {tcuTestCase.DeqpTest} */
-        var pboGroup = new tcuTestCase.DeqpTest(
-            'teximage2d_pbo', 'glTexImage2D() from PBO'
-        );
-        this.addChild(pboGroup);
+        var splitPboTex2D = 2, splitPboTexCube = 5;
+        /** @type {Array<{tcuTestCase.DeqpTest}>} */ var pboGroup2D = [];
+        for (var ii = 0; ii < splitPboTex2D; ++ii) {
+            pboGroup2D.push(new tcuTestCase.DeqpTest('teximage2d_pbo', 'glTexImage2D() from PBO'));
+            this.addChild(pboGroup2D[ii]);
+        }
+        /** @type {Array<{tcuTestCase.DeqpTest}>} */ var pboGroupCube = [];
+        for (var ii = 0; ii < splitPboTexCube; ++ii) {
+            pboGroupCube.push(new tcuTestCase.DeqpTest('teximage2d_pbo', 'glTexImage2D() from PBO'));
+           this.addChild(pboGroupCube[ii]);
+        }
+        for (var formatNdx = 0; formatNdx < colorFormats.length; formatNdx++) {
+            fmtName = colorFormats[formatNdx].name;
+            format = colorFormats[formatNdx].internalFormat;
+            tex2DWidth = 65;
+            tex2DHeight = 37;
+            texCubeSize = 64;
+
+            pboGroup2D[formatNdx % splitPboTex2D].addChild(
+                new es3fTextureSpecificationTests.TexImage2DBufferCase(
+                    fmtName + '_2d', '', format,
+                    tex2DWidth, tex2DHeight, 0, 0, 0, 4, 0
+                )
+            );
+            pboGroupCube[formatNdx % splitPboTexCube].addChild(
+                new es3fTextureSpecificationTests.TexImageCubeBufferCase(
+                    fmtName + '_cube', '', format,
+                    texCubeSize, 0, 0, 0, 4, 0
+                )
+            );
+        }
 
         // Parameter cases
+        var pboGroupParams = new tcuTestCase.DeqpTest(
+            'teximage2d_pbo', 'glTexImage2D() from PBO'
+        );
+        this.addChild(pboGroupParams);
         /**
          * @type {Array<{name: string, format: number, width: number,
          * height: number, rowLength: number, skipRows: number,
@@ -5831,30 +5861,8 @@ goog.scope(function() {
                 alignment: 4, offset: 0
             }
         ];
-
-        for (var formatNdx = 0; formatNdx < colorFormats.length; formatNdx++) {
-            fmtName = colorFormats[formatNdx].name;
-            format = colorFormats[formatNdx].internalFormat;
-            tex2DWidth = 65;
-            tex2DHeight = 37;
-            texCubeSize = 64;
-
-            pboGroup.addChild(
-                new es3fTextureSpecificationTests.TexImage2DBufferCase(
-                    fmtName + '_2d', '', format,
-                    tex2DWidth, tex2DHeight, 0, 0, 0, 4, 0
-                )
-            );
-            pboGroup.addChild(
-                new es3fTextureSpecificationTests.TexImageCubeBufferCase(
-                    fmtName + '_cube', '', format,
-                    texCubeSize, 0, 0, 0, 4, 0
-                )
-            );
-        }
-
         for (var ndx = 0; ndx < parameterCases.length; ndx++) {
-            pboGroup.addChild(
+            pboGroupParams.addChild(
                 new es3fTextureSpecificationTests.TexImage2DBufferCase(
                     parameterCases[ndx].name + '_2d', '',
                     parameterCases[ndx].format, parameterCases[ndx].width,
@@ -5865,7 +5873,7 @@ goog.scope(function() {
                     parameterCases[ndx].offset
                 )
             );
-            pboGroup.addChild(
+            pboGroupParams.addChild(
                 new es3fTextureSpecificationTests.TexImageCubeBufferCase(
                     parameterCases[ndx].name + '_cube', '',
                     parameterCases[ndx].format, parameterCases[ndx].width,
@@ -6255,12 +6263,66 @@ goog.scope(function() {
             );
 
         // glTexSubImage2D() PBO cases.
-        pboGroup = new tcuTestCase.DeqpTest(
+        splitPboTex2D = 2;
+        splitPboTexCube = 5;
+        pboGroup2D = [];
+        for (var ii = 0; ii < splitPboTex2D; ++ii) {
+            pboGroup2D.push(new tcuTestCase.DeqpTest(
+                'texsubimage2d_pbo',
+                'glTexSubImage2D() pixel buffer object tests'
+            ));
+            this.addChild(pboGroup2D[ii]);
+        }
+        pboGroupCube = [];
+        for (var ii = 0; ii < splitPboTexCube; ++ii) {
+            pboGroupCube.push(new tcuTestCase.DeqpTest(
+                'texsubimage2d_pbo',
+                'glTexSubImage2D() pixel buffer object tests'
+            ));
+            this.addChild(pboGroupCube[ii]);
+        }
+
+        for (var ndx = 0; ndx < colorFormats.length; ndx++) {
+            pboGroup2D[ndx % splitPboTex2D].addChild(
+                new es3fTextureSpecificationTests.TexSubImage2DBufferCase(
+                    colorFormats[ndx].name + '_2d', '',
+                    colorFormats[ndx].internalFormat,
+                    54, // Width
+                    60, // Height
+                    11, // Sub X
+                    7, // Sub Y
+                    31, // Sub W
+                    30, // Sub H
+                    0, // Row len
+                    0, // Skip rows
+                    0, // Skip pixels
+                    4, // Alignment
+                    0 /* offset */
+                )
+            );
+            pboGroupCube[ndx % splitPboTexCube].addChild(
+                new es3fTextureSpecificationTests.TexSubImageCubeBufferCase(
+                    colorFormats[ndx].name + '_cube', '',
+                    colorFormats[ndx].internalFormat,
+                    64, // Size
+                    11, // Sub X
+                    7, // Sub Y
+                    31, // Sub W
+                    30, // Sub H
+                    0, // Row len
+                    0, // Skip rows
+                    0, // Skip pixels
+                    4, // Alignment
+                    0 /* offset */
+                )
+            );
+        }
+
+        pboGroupParams = new tcuTestCase.DeqpTest(
             'texsubimage2d_pbo',
             'glTexSubImage2D() pixel buffer object tests'
         );
-        this.addChild(pboGroup);
-
+        this.addChild(pboGroupParams);
         /** @type {Array<{name: string, format: number, width: number,
          * height: number, subX: number, subY: number,
          * subW: number, subH: number, rowLength: number, skipRows: number,
@@ -6294,44 +6356,8 @@ goog.scope(function() {
             }
         ];
 
-        for (var ndx = 0; ndx < colorFormats.length; ndx++) {
-            pboGroup.addChild(
-                new es3fTextureSpecificationTests.TexSubImage2DBufferCase(
-                    colorFormats[ndx].name + '_2d', '',
-                    colorFormats[ndx].internalFormat,
-                    54, // Width
-                    60, // Height
-                    11, // Sub X
-                    7, // Sub Y
-                    31, // Sub W
-                    30, // Sub H
-                    0, // Row len
-                    0, // Skip rows
-                    0, // Skip pixels
-                    4, // Alignment
-                    0 /* offset */
-                )
-            );
-            pboGroup.addChild(
-                new es3fTextureSpecificationTests.TexSubImageCubeBufferCase(
-                    colorFormats[ndx].name + '_cube', '',
-                    colorFormats[ndx].internalFormat,
-                    64, // Size
-                    11, // Sub X
-                    7, // Sub Y
-                    31, // Sub W
-                    30, // Sub H
-                    0, // Row len
-                    0, // Skip rows
-                    0, // Skip pixels
-                    4, // Alignment
-                    0 /* offset */
-                )
-            );
-        }
-
         for (var ndx = 0; ndx < paramCases.length; ndx++) {
-            pboGroup.addChild(
+            pboGroupParams.addChild(
                 new es3fTextureSpecificationTests.TexSubImage2DBufferCase(
                     paramCases[ndx].name + '_2d', '',
                     paramCases[ndx].format,
@@ -6346,7 +6372,7 @@ goog.scope(function() {
                     paramCases[ndx].skipPixels,
                     paramCases[ndx].alignment,
                     paramCases[ndx].offset));
-            pboGroup.addChild(
+            pboGroupParams.addChild(
                 new es3fTextureSpecificationTests.TexSubImageCubeBufferCase(
                     paramCases[ndx].name + '_cube', '',
                     paramCases[ndx].format,
@@ -6624,7 +6650,7 @@ goog.scope(function() {
             );
 
         // glTexImage3D() pbo cases.
-        pboGroup = new tcuTestCase.DeqpTest(
+        var pboGroup = new tcuTestCase.DeqpTest(
             'teximage3d_pbo', 'glTexImage3D() from PBO'
         );
         this.addChild(pboGroup);
