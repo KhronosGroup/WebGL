@@ -6663,10 +6663,42 @@ goog.scope(function() {
             );
 
         // glTexImage3D() pbo cases.
-        var pboGroup = new tcuTestCase.DeqpTest(
-            'teximage3d_pbo', 'glTexImage3D() from PBO'
-        );
-        this.addChild(pboGroup);
+        var splitTex2DArray = 2, splitTex3D = 2;
+        /** @type {Array<{tcuTestCase.DeqpTest}>} */ var pboGroup2DArray = [];
+        for (var ii = 0; ii < splitTex2DArray; ++ii) {
+            pboGroup2DArray.push(
+                new tcuTestCase.DeqpTest('teximage3d_pbo', 'glTexImage3D() from PBO')
+            );
+            this.addChild(pboGroup2DArray[ii]);
+        }
+        /** @type {Array<{tcuTestCase.DeqpTest}>} */ var pboGroup3D = [];
+        for (var ii = 0; ii < splitTex3D; ++ii) {
+            pboGroup3D.push(
+                new tcuTestCase.DeqpTest('teximage3d_pbo', 'glTexImage3D() from PBO')
+            );
+            this.addChild(pboGroup3D[ii]);
+        }
+
+        for (var formatNdx = 0; formatNdx < colorFormats.length; formatNdx++) {
+            fmtName = colorFormats[formatNdx].name;
+            format = colorFormats[formatNdx].internalFormat;
+            tex3DWidth = 11;
+            tex3DHeight = 20;
+            tex3DDepth = 8;
+
+            pboGroup2DArray[formatNdx % splitTex2DArray].addChild(
+                new es3fTextureSpecificationTests.TexImage2DArrayBufferCase(
+                    fmtName + '_2d_array', '', format, tex3DWidth, tex3DHeight,
+                    tex3DDepth, 0, 0, 0, 0, 0, 4, 0
+                )
+            );
+            pboGroup3D[formatNdx % splitTex3D].addChild(
+                new es3fTextureSpecificationTests.TexImage3DBufferCase(
+                    fmtName + '_3d', '', format, tex3DWidth, tex3DHeight,
+                    tex3DDepth, 0, 0, 0, 0, 0, 4, 0
+                )
+            );
+        }
 
         // Parameter cases
         parameterCases = [{
@@ -6707,29 +6739,10 @@ goog.scope(function() {
             }
         ];
 
-        for (var formatNdx = 0; formatNdx < colorFormats.length; formatNdx++) {
-            fmtName = colorFormats[formatNdx].name;
-            format = colorFormats[formatNdx].internalFormat;
-            tex3DWidth = 11;
-            tex3DHeight = 20;
-            tex3DDepth = 8;
-
-            pboGroup.addChild(
-                new es3fTextureSpecificationTests.TexImage2DArrayBufferCase(
-                    fmtName + '_2d_array', '', format, tex3DWidth, tex3DHeight,
-                    tex3DDepth, 0, 0, 0, 0, 0, 4, 0
-                )
-            );
-            pboGroup.addChild(
-                new es3fTextureSpecificationTests.TexImage3DBufferCase(
-                    fmtName + '_3d', '', format, tex3DWidth, tex3DHeight,
-                    tex3DDepth, 0, 0, 0, 0, 0, 4, 0
-                )
-            );
-        }
-
+        pboGroupParams = new tcuTestCase.DeqpTest('teximage3d_pbo', 'glTexImage3D() from PBO');
+        this.addChild(pboGroupParams);
         for (var ndx = 0; ndx < parameterCases.length; ndx++) {
-            pboGroup.addChild(
+            pboGroupParams.addChild(
                 new es3fTextureSpecificationTests.TexImage2DArrayBufferCase(
                     parameterCases[ndx].name + '_2d_array', '',
                     parameterCases[ndx].format, parameterCases[ndx].width,
@@ -6742,7 +6755,7 @@ goog.scope(function() {
                     parameterCases[ndx].alignment, parameterCases[ndx].offset
                 )
             );
-            pboGroup.addChild(
+            pboGroupParams.addChild(
                 new es3fTextureSpecificationTests.TexImage3DBufferCase(
                     parameterCases[ndx].name + '_3d', '',
                     parameterCases[ndx].format, parameterCases[ndx].width,
@@ -6922,7 +6935,7 @@ goog.scope(function() {
             );
 
         // glTexSubImage3D() PBO cases.
-        pboGroup = new tcuTestCase.DeqpTest(
+        var pboGroup = new tcuTestCase.DeqpTest(
             'texsubimage3d_pbo', 'glTexSubImage3D() pixel buffer object tests'
         );
         this.addChild(pboGroup);
