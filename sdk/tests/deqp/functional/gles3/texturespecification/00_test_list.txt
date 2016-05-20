@@ -18,7 +18,14 @@ teximage2d_pbo_cube_04.html
 teximage2d_pbo_params.html
 teximage2d_depth.html
 teximage2d_depth_pbo.html
-basic_texsubimage2d.html
+basic_texsubimage2d_2d_00.html
+basic_texsubimage2d_2d_01.html
+basic_texsubimage2d_2d_02.html
+basic_texsubimage2d_cube_00.html
+basic_texsubimage2d_cube_01.html
+basic_texsubimage2d_cube_02.html
+basic_texsubimage2d_cube_03.html
+basic_texsubimage2d_cube_04.html
 texsubimage2d_empty_tex.html
 texsubimage2d_align.html
 texsubimage2d_unpack_params.html
