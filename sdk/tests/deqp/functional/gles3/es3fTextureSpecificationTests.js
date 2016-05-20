@@ -6817,10 +6817,15 @@ goog.scope(function() {
         }
 
         // Basic TexSubImage3D usage.
-        var basicTexSubImageGroup = new tcuTestCase.DeqpTest(
-            'basic_texsubimage3d', 'Basic glTexSubImage3D() usage'
-        );
-        this.addChild(basicTexSubImageGroup);
+        splitTex3D = 5;
+        /** @type {Array<{tcuTestCase.DeqpTest}>} */ var basicTexSubImageGroup = [];
+        for (var ii = 0; ii < splitTex3D; ++ii) {
+            basicTexSubImageGroup.push(
+                new tcuTestCase.DeqpTest('basic_texsubimage3d', 'Basic glTexSubImage3D() usage')
+            );
+            this.addChild(basicTexSubImageGroup[ii]);
+        }
+
         for (var formatNdx = 0; formatNdx < colorFormats.length; formatNdx++) {
             fmtName = colorFormats[formatNdx].name;
             format = colorFormats[formatNdx].internalFormat;
@@ -6828,7 +6833,7 @@ goog.scope(function() {
             tex3DHeight = 64;
             tex3DDepth = 8;
 
-            basicTexSubImageGroup.addChild(
+            basicTexSubImageGroup[formatNdx % splitTex3D].addChild(
                 new es3fTextureSpecificationTests.BasicTexSubImage3DCase(
                     fmtName + '_3d', '', format,
                     tex3DWidth, tex3DHeight, tex3DDepth
@@ -6935,10 +6940,70 @@ goog.scope(function() {
             );
 
         // glTexSubImage3D() PBO cases.
-        var pboGroup = new tcuTestCase.DeqpTest(
-            'texsubimage3d_pbo', 'glTexSubImage3D() pixel buffer object tests'
-        );
-        this.addChild(pboGroup);
+        splitTex2DArray = 2;
+        pboGroup2DArray = [];
+        for (var ii = 0; ii < splitTex2DArray; ++ii) {
+            pboGroup2DArray.push(
+                new tcuTestCase.DeqpTest('texsubimage3d_pbo', 'glTexSubImage3D() pixel buffer object tests')
+            );
+            this.addChild(pboGroup2DArray[ii]);
+        }
+
+        splitTex3D = 2;
+        pboGroup3D = [];
+        for (var ii = 0; ii < splitTex3D; ++ii) {
+            pboGroup3D.push(
+                new tcuTestCase.DeqpTest('texsubimage3d_pbo', 'glTexSubImage3D() pixel buffer object tests')
+            );
+            this.addChild(pboGroup3D[ii]);
+        }
+
+        for (var ndx = 0; ndx < colorFormats.length; ndx++) {
+            pboGroup2DArray[ndx % splitTex2DArray].addChild(
+                new es3fTextureSpecificationTests.TexSubImage2DArrayBufferCase(
+                    colorFormats[ndx].name + '_2d_array', '',
+                    colorFormats[ndx].internalFormat,
+                    26, // Width
+                    25, // Height
+                    10, // Depth
+                    1, // Sub X
+                    2, // Sub Y
+                    0, // Sub Z
+                    23, // Sub W
+                    19, // Sub H
+                    8, // Sub D
+                    0, // Image height
+                    0, // Row length
+                    0, // Skip images
+                    0, // Skip rows
+                    0, // Skip pixels
+                    4, // Alignment
+                    0 // offset
+                )
+            );
+            pboGroup3D[ndx % splitTex3D].addChild(
+                new es3fTextureSpecificationTests.TexSubImage3DBufferCase(
+                    colorFormats[ndx].name + '_3d', '',
+                    colorFormats[ndx].internalFormat,
+                    26, // Width
+                    25, // Height
+                    10, // Depth
+                    1, // Sub X
+                    2, // Sub Y
+                    0, // Sub Z
+                    23, // Sub W
+                    19, // Sub H
+                    8, // Sub D
+                    0, // Image height
+                    0, // Row length
+                    0, // Skip images
+                    0, // Skip rows
+                    0, // Skip pixels
+                    4, // Alignment
+                    0 // offset
+                )
+            );
+        }
 
         paramCases = [{
                 name: 'rgb8_offset', format: gl.RGB8, width: 26,
@@ -6973,55 +7038,13 @@ goog.scope(function() {
             }
         ];
 
-        for (var ndx = 0; ndx < colorFormats.length; ndx++) {
-            pboGroup.addChild(
-                new es3fTextureSpecificationTests.TexSubImage2DArrayBufferCase(
-                    colorFormats[ndx].name + '_2d_array', '',
-                    colorFormats[ndx].internalFormat,
-                    26, // Width
-                    25, // Height
-                    10, // Depth
-                    1, // Sub X
-                    2, // Sub Y
-                    0, // Sub Z
-                    23, // Sub W
-                    19, // Sub H
-                    8, // Sub D
-                    0, // Image height
-                    0, // Row length
-                    0, // Skip images
-                    0, // Skip rows
-                    0, // Skip pixels
-                    4, // Alignment
-                    0 // offset
-                )
-            );
-            pboGroup.addChild(
-                new es3fTextureSpecificationTests.TexSubImage3DBufferCase(
-                    colorFormats[ndx].name + '_3d', '',
-                    colorFormats[ndx].internalFormat,
-                    26, // Width
-                    25, // Height
-                    10, // Depth
-                    1, // Sub X
-                    2, // Sub Y
-                    0, // Sub Z
-                    23, // Sub W
-                    19, // Sub H
-                    8, // Sub D
-                    0, // Image height
-                    0, // Row length
-                    0, // Skip images
-                    0, // Skip rows
-                    0, // Skip pixels
-                    4, // Alignment
-                    0 // offset
-                )
-            );
-        }
+        pboGroupParams = new tcuTestCase.DeqpTest(
+            'texsubimage3d_pbo', 'glTexSubImage3D() pixel buffer object tests'
+        );
+        this.addChild(pboGroupParams);
 
         for (var ndx = 0; ndx < paramCases.length; ndx++) {
-            pboGroup.addChild(
+            pboGroupParams.addChild(
                 new es3fTextureSpecificationTests.TexSubImage2DArrayBufferCase(
                     paramCases[ndx].name + '_2d_array', '',
                     paramCases[ndx].format, paramCases[ndx].width,
@@ -7035,7 +7058,7 @@ goog.scope(function() {
                     paramCases[ndx].offset
                 )
             );
-            pboGroup.addChild(
+            pboGroupParams.addChild(
                 new es3fTextureSpecificationTests.TexSubImage3DBufferCase(
                     paramCases[ndx].name + '_3d', '',
                     paramCases[ndx].format, paramCases[ndx].width,
