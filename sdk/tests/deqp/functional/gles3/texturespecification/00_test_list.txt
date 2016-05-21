@@ -5,7 +5,8 @@ basic_teximage2d_cube_01.html
 basic_teximage2d_cube_02.html
 basic_teximage2d_cube_03.html
 basic_teximage2d_cube_04.html
-random_teximage2d.html
+random_teximage2d_2d.html
+random_teximage2d_cube.html
 teximage2d_align.html
 teximage2d_unpack_params.html
 teximage2d_pbo_2d_00.html
