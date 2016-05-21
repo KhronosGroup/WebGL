@@ -134,8 +134,25 @@ _GROUPS = [
     'texsubimage3d_pbo_3d_01',
     'texsubimage3d_pbo_params',
     'texsubimage3d_depth',
-    'texstorage2d',
-    'texstorage3d'
+    'texstorage2d_format_2d_00',
+    'texstorage2d_format_2d_01',
+    'texstorage2d_format_2d_02',
+    'texstorage2d_format_cube_00',
+    'texstorage2d_format_cube_01',
+    'texstorage2d_format_cube_02',
+    'texstorage2d_format_cube_03',
+    'texstorage2d_format_cube_04',
+    'texstorage2d_format_depth_stencil',
+    'texstorage2d_format_size',
+    'texstorage3d_format_2d_array_00',
+    'texstorage3d_format_2d_array_01',
+    'texstorage3d_format_2d_array_02',
+    'texstorage3d_format_3d_00',
+    'texstorage3d_format_3d_01',
+    'texstorage3d_format_3d_02',
+    'texstorage3d_format_3d_03',
+    'texstorage3d_format_depth_stencil',
+    'texstorage3d_format_size',
 ]
 
 def GenerateFilename(group):
