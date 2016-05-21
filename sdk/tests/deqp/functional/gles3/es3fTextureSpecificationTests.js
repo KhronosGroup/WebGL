@@ -5526,20 +5526,25 @@ goog.scope(function() {
 
             randomTexImageGroup.addChild(
                 es3fTextureSpecificationTests.newRandomOrderTexImage2DCaseInternal(
-                    '2d_' + ndx, '', colorFormats[formatNdx].internalFormat,
-                    width, height
+                    '2d.' + colorFormats[formatNdx].name, '',
+                    colorFormats[formatNdx].internalFormat, width, height
                 )
             );
         }
 
         // Cubemap cases.
+        randomTexImageGroup = new tcuTestCase.DeqpTest(
+            'random_teximage2d', 'Randomized glTexImage2D() usage'
+        );
+        this.addChild(randomTexImageGroup);
+
         for (var ndx = 0; ndx < 10; ndx++) {
             formatNdx = rnd.getInt(0, colorFormats.length - 1);
             /** @type {number} */ var size = 1 << rnd.getInt(2, 8);
 
             randomTexImageGroup.addChild(
                 es3fTextureSpecificationTests.newRandomOrderTexImageCubeCaseInternal(
-                    'cube_' + ndx, '',
+                    'cube.' + colorFormats[formatNdx].name, '',
                     colorFormats[formatNdx].internalFormat, size
                 )
             );
