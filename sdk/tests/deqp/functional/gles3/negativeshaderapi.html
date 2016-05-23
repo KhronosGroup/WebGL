@@ -17,13 +17,8 @@
 <script>
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext('canvas', null, 2);
-    try {
-        functional.gles3.es3fNegativeShaderApiTests.run(gl);
-    }
-    catch(err)
-    {
-        bufferedLogToConsole(err);
-    }
+
+functional.gles3.es3fNegativeShaderApiTests.run(gl);
 </script>
 </body>
 </html>

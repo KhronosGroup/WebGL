@@ -16,17 +16,9 @@
 <canvas id="canvas" width="128" height="128"> </canvas>
 <script>
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', null, 2);
+var gl = wtu.create3DContext('canvas', null, 2);
 
-
-    try {
-        functional.gles3.es3fClippingTests.run(gl);
-    }
-    catch(err)
-    {
-        bufferedLogToConsole(err);
-    }
-
+functional.gles3.es3fClippingTests.run(gl);
 </script>
 </body>
 </html>

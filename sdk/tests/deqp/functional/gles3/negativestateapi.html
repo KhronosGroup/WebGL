@@ -14,17 +14,10 @@
 <div id="console"></div>
 <canvas id="canvas" width="320" height="240"></canvas>
 <script>
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext('canvas', null, 2);
 
-    var wtu = WebGLTestUtils;
-    var gl = wtu.create3DContext('canvas', null, 2);
-
-    try {
-        functional.gles3.es3fNegativeStateApiTests.run(gl);
-    }
-    catch(err) {
-        bufferedLogToConsole(err);
-    }
-
+functional.gles3.es3fNegativeStateApiTests.run(gl);
 </script>
 </body>
 </html>
