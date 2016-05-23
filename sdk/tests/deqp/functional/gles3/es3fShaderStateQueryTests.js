@@ -230,7 +230,7 @@ es3fShaderStateQueryTests.CurrentVertexAttribInitialCase.prototype.test = functi
 
     for (var index = 0; index < attribute_count; ++index) {
         var attrib = gl.getVertexAttrib(index, gl.CURRENT_VERTEX_ATTRIB);
-        this.check(glsStateQuery.compare(attrib, initial), 'Initial attrib value should be [0, 0, 0, 0]');
+        this.check(glsStateQuery.compare(attrib, initial), 'Initial attrib value should be [0, 0, 0, 1]');
     }
 };
 

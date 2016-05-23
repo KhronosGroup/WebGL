@@ -101,12 +101,12 @@ var DE_ASSERT = function(x) {
         /** @type {es3fFboTestUtil.FlatColorShader} */ var flatShader = new es3fFboTestUtil.FlatColorShader(es3fFboTestUtil.getFragmentOutputType(colorFmt));
         var gradShaderID = this.getCurrentContext().createProgram(gradShader);
         var flatShaderID = this.getCurrentContext().createProgram(flatShader);
-        var msaaFbo = 0;
-        var resolveFbo = 0;
-        var msaaColorRbo = 0;
-        var resolveColorRbo = 0;
-        var msaaDepthStencilRbo = 0;
-        var resolveDepthStencilRbo = 0;
+        var msaaFbo = null;
+        var resolveFbo = null;
+        var msaaColorRbo = null;
+        var resolveColorRbo = null;
+        var msaaDepthStencilRbo = null;
+        var resolveDepthStencilRbo = null;
 
         // Create framebuffers.
         msaaColorRbo = ctx.createRenderbuffer();

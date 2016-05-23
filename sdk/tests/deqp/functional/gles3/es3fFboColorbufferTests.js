@@ -114,6 +114,46 @@ es3fFboColorbufferTests.FboColorbufferCase.prototype.compare = function(referenc
     };
 
 /**
+ * Deinit. Clear some GL state variables
+ */
+es3fFboColorbufferTests.FboColorbufferCase.prototype.deinit = function() {
+        // Texture state
+        {
+            // Only TEXTURE0 and TEXTURE1 are used in this test
+            var numTexUnits = 2;
+
+            for (var ndx = 0; ndx < numTexUnits; ndx++) {
+                gl.activeTexture(gl.TEXTURE0 + ndx);
+
+                // Reset 2D texture
+                gl.bindTexture(gl.TEXTURE_2D, null);
+
+                // Reset cube map texture
+                gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+
+                // Reset 2D array texture
+                gl.bindTexture(gl.TEXTURE_2D_ARRAY, null);
+
+                // Reset 3D texture
+                gl.bindTexture(gl.TEXTURE_3D, null);
+            }
+
+            gl.activeTexture(gl.TEXTURE0);
+        }
+
+        // Pixel operations
+        {
+            gl.disable(gl.SCISSOR_TEST);
+            gl.disable(gl.BLEND);
+        }
+
+        // Framebuffer control
+        {
+            gl.clearColor(0.0, 0.0, 0.0, 0.0);
+        }
+    };
+
+/**
  * @constructor
  * @extends {es3fFboColorbufferTests.FboColorbufferCase}
  * @param {string} name

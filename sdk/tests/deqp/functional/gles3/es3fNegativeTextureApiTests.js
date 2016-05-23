@@ -2461,10 +2461,12 @@ goog.scope(function() {
         function() {
 
             /** @type{Array<WebGLTexture>} */ var texture = [];
+
+            // We have to create and bind textures to each target for the test because default textures are not supported by WebGL.
             texture[0] = gl.createTexture();
             texture[1] = gl.createTexture();
-            // gl.bindTexture (gl.TEXTURE_CUBE_MAP, texture[0]);
-            // gl.bindTexture (gl.TEXTURE_2D_ARRAY, texture[1]);
+            gl.bindTexture (gl.TEXTURE_CUBE_MAP, texture[0]);
+            gl.bindTexture (gl.TEXTURE_2D_ARRAY, texture[1]);
 
             bufferedLogToConsole('gl.INVALID_ENUM is generated if target is invalid.');
             gl.compressedTexImage3D(0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, 0, new Uint8Array(0));
