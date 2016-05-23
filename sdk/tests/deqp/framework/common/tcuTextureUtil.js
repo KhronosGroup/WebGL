@@ -151,9 +151,9 @@ tcuTextureUtil.fillWithComponentGradients1D = function(access, minVal, maxVal) {
  */
 tcuTextureUtil.fillWithComponentGradients2D = function(access, minVal, maxVal) {
     for (var y = 0; y < access.getHeight(); y++) {
+        var t = (y + 0.5) / access.getHeight();
         for (var x = 0; x < access.getWidth(); x++) {
             var s = (x + 0.5) / access.getWidth();
-            var t = (y + 0.5) / access.getHeight();
 
             var r = tcuTextureUtil.linearInterpolate((s + t) * 0.5, minVal[0], maxVal[0]);
             var g = tcuTextureUtil.linearInterpolate((s + (1 - t)) * 0.5, minVal[1], maxVal[1]);
@@ -172,15 +172,14 @@ tcuTextureUtil.fillWithComponentGradients2D = function(access, minVal, maxVal) {
  */
 tcuTextureUtil.fillWithComponentGradients3D = function(dst, minVal, maxVal) {
     for (var z = 0; z < dst.getDepth(); z++) {
+        var p = (z + 0.5) / dst.getDepth();
+        var b = tcuTextureUtil.linearInterpolate(p, minVal[2], maxVal[2]);
         for (var y = 0; y < dst.getHeight(); y++) {
+            var t = (y + 0.5) / dst.getHeight();
+            var g = tcuTextureUtil.linearInterpolate(t, minVal[1], maxVal[1]);
             for (var x = 0; x < dst.getWidth(); x++) {
                 var s = (x + 0.5) / dst.getWidth();
-                var t = (y + 0.5) / dst.getHeight();
-                var p = (z + 0.5) / dst.getDepth();
-
                 var r = tcuTextureUtil.linearInterpolate(s, minVal[0], maxVal[0]);
-                var g = tcuTextureUtil.linearInterpolate(t, minVal[1], maxVal[1]);
-                var b = tcuTextureUtil.linearInterpolate(p, minVal[2], maxVal[2]);
                 var a = tcuTextureUtil.linearInterpolate(1 - (s + t + p) / 3, minVal[3], maxVal[3]);
                 dst.setPixel([r, g, b, a], x, y, z);
             }

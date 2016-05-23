@@ -2033,6 +2033,12 @@ tcuTexture.PixelBufferAccess.prototype.clear = function(color, x, y, z) {
     var width = range_x[1] - range_x[0];
     var height = range_y[1] - range_y[0];
     var depth = range_z[1] - range_z[0];
+    if (x === undefined && y === undefined && z == undefined &&
+        c[0] == 0 && c[1] == 0 && c[2] == 0 && c[3] == 0) {
+        var pixelPtr = new arrayType(this.m_data, this.m_offset);
+        pixelPtr.fill(0);
+        return;
+    }
 
     //copy first pixel over other pixels in the row
     var fillRow = function(pixelPtr, numElements, width) {

@@ -285,7 +285,9 @@ goog.scope(function() {
         // Clear color buffer.
         for (var ndx = 0; ndx < 2; ndx++) {
             this.m_context = ndx ? refContext : webgl2Context;
-            this.m_context.clearColor(0.125, 0.25, 0.5, 1.0);
+            // C++ port uses (0.125, 0.25, 0.5, 1.0), but here we use (0, 0, 0, 0)
+            // in order to optimize the `clear' op in ReferenceContext.
+            this.m_context.clearColor(0, 0, 0, 0);
             this.m_context.clear(
                 gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT |
                 gl.STENCIL_BUFFER_BIT
