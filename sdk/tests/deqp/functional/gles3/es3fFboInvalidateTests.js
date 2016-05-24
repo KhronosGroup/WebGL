@@ -616,7 +616,7 @@ es3fFboInvalidateTests.InvalidateFboUnbindReadCase.prototype.render = function(d
     ctx.disable(gl.DEPTH_TEST);
     ctx.disable(gl.STENCIL_TEST);
 
-    if ((this.m_invalidateBuffers & gl.COLOR_BUFFER_BIT) != 0) {
+    if ((this.m_invalidateBuffers & gl.DEPTH_BUFFER_BIT) != 0) {
         // Render color.
         /** @type {es3fFboTestUtil.Texture2DShader} */
         var texShader = new es3fFboTestUtil.Texture2DShader(
