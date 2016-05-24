@@ -89,6 +89,11 @@ if (!gl) {
         ", " + stride +
         ", " + offset +
         ") should " + (err == gl.NO_ERROR ? "succeed " : "fail ") + reason);
+    shouldBe('gl.getVertexAttrib(0, gl.VERTEX_ATTRIB_ARRAY_SIZE)', size.toString());
+    shouldBe('gl.getVertexAttrib(0, gl.VERTEX_ATTRIB_ARRAY_TYPE)', 'gl.' + wtu.glEnumToString(gl, type));
+    shouldBe('gl.getVertexAttrib(0, gl.VERTEX_ATTRIB_ARRAY_NORMALIZED)', normalize.toString());
+    shouldBe('gl.getVertexAttrib(0, gl.VERTEX_ATTRIB_ARRAY_STRIDE)', stride.toString());
+    shouldBe('gl.getVertexAttribOffset(0, gl.VERTEX_ATTRIB_ARRAY_POINTER)', offset.toString());
   }
 
   var types = [
