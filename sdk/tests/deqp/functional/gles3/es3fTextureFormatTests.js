@@ -783,18 +783,6 @@ es3fTextureFormatTests.CompressedCubeFormatCase.prototype.iterate = function() {
 es3fTextureFormatTests.genTestCases = function() {
     var state = tcuTestCase.runner;
     state.setRoot(tcuTestCase.newTest('texture_format', 'Top level'));
-    var unsizedGroup = tcuTestCase.newTest('unsized', 'Unsized formats');
-    var sizedGroup = tcuTestCase.newTest('sized', 'Sized formats');
-    var sized2DGroup = tcuTestCase.newTest('2d', 'Sized formats (2D)');
-    var sizedCubeGroup = tcuTestCase.newTest('cube', 'Sized formats (Cubemap)');
-    var sized2DArrayGroup = tcuTestCase.newTest('2d_array', 'Sized formats (2D Array)');
-    var sized3DGroup = tcuTestCase.newTest('3d', 'Sized formats (3D)');
-    var compressedGroup = tcuTestCase.newTest('compressed', 'Compressed formats');
-
-    sizedGroup.addChild(sized2DGroup);
-    sizedGroup.addChild(sizedCubeGroup);
-    sizedGroup.addChild(sized2DArrayGroup);
-    sizedGroup.addChild(sized3DGroup);
 
     var texFormats = [
         ['alpha', gl.ALPHA, gl.UNSIGNED_BYTE],
@@ -806,82 +794,87 @@ es3fTextureFormatTests.genTestCases = function() {
         ['rgba_unsigned_short_5_5_5_1', gl.RGBA, gl.UNSIGNED_SHORT_5_5_5_1],
         ['rgba_unsigned_byte', gl.RGBA, gl.UNSIGNED_BYTE]
     ];
+
+    var unsized2DGroup = tcuTestCase.newTest('unsized', 'Unsized formats (2D, Cubemap)');
+    state.testCases.addChild(unsized2DGroup);
+    var unsized2DArrayGroup = tcuTestCase.newTest('unsized', 'Unsized formats (2D Array)');
+    state.testCases.addChild(unsized2DArrayGroup);
+    var unsized3DGroup = tcuTestCase.newTest('unsized', 'Unsized formats (3D)');
+    state.testCases.addChild(unsized3DGroup);
+
     texFormats.forEach(function(elem) {
         var format = elem[1];
         var dataType = elem[2];
         var nameBase = elem[0];
         var descriptionBase = gluStrUtil.getPixelFormatName(format) + ', ' + gluStrUtil.getTypeName(dataType);
-        unsizedGroup.addChild(new es3fTextureFormatTests.Texture2DFormatCase({
-                                    name: nameBase + '_2d_pot',
-                                    description: descriptionBase + ' gl.TEXTURE_2D',
-                                    format: format,
-                                    dataType: dataType,
-                                    width: 128,
-                                    height: 128
-                                })
-        );
-        unsizedGroup.addChild(new es3fTextureFormatTests.Texture2DFormatCase({
-                                                name: nameBase + '_2d_npot',
-                                                description: descriptionBase + ' gl.TEXTURE_2D',
-                                                        format: format,
-                                                        dataType: dataType,
-                                                        width: 63,
-                                                        height: 112
-                                                    })
-        );
-        unsizedGroup.addChild(new es3fTextureFormatTests.TextureCubeFormatCase({
-                                                name: nameBase + '_cube_pot',
-                                                description: descriptionBase + ' gl.TEXTURE_CUBE_MAP',
-                                                        format: format,
-                                                        dataType: dataType,
-                                                        width: 64,
-                                                        height: 64
-                                                    })
-        );
-        unsizedGroup.addChild(new es3fTextureFormatTests.TextureCubeFormatCase({name: nameBase + '_cube_npot',
-                                                description: descriptionBase + ' gl.TEXTURE_CUBE_MAP',
-                                                        format: format,
-                                                        dataType: dataType,
-                                                        width: 57,
-                                                        height: 57
-                                                    })
-        );
-        unsizedGroup.addChild(new es3fTextureFormatTests.Texture2DArrayFormatCase({name: nameBase + '_2d_array_pot',
-                                                description: descriptionBase + ' gl.TEXTURE_2D_ARRAY',
-                                                        format: format,
-                                                        dataType: dataType,
-                                                        width: 64,
-                                                        height: 64,
-                                                        numLayers: 8
-                                                    })
-        );
-        unsizedGroup.addChild(new es3fTextureFormatTests.Texture2DArrayFormatCase({name: nameBase + '_2d_array_npot',
-                                                description: descriptionBase + ' gl.TEXTURE_2D_ARRAY',
-                                                        format: format,
-                                                        dataType: dataType,
-                                                        width: 63,
-                                                        height: 57,
-                                                        numLayers: 7
-                                                    })
-        );
-        unsizedGroup.addChild(new es3fTextureFormatTests.Texture3DFormatCase({name: nameBase + '_3d_pot',
-                                                description: descriptionBase + ' gl.TEXTURE_3D',
-                                                        format: format,
-                                                        dataType: dataType,
-                                                        width: 8,
-                                                        height: 32,
-                                                        depth: 16
-                                                    })
-        );
-        unsizedGroup.addChild(new es3fTextureFormatTests.Texture3DFormatCase({name: nameBase + '_3d_npot',
-                                                description: descriptionBase + ' gl.TEXTURE_3D',
-                                                        format: format,
-                                                        dataType: dataType,
-                                                        width: 11,
-                                                        height: 31,
-                                                        depth: 7
-                                                    })
-        );
+        unsized2DGroup.addChild(new es3fTextureFormatTests.Texture2DFormatCase({
+            name: nameBase + '_2d_pot',
+            description: descriptionBase + ' gl.TEXTURE_2D',
+            format: format,
+            dataType: dataType,
+            width: 128,
+            height: 128
+        }));
+        unsized2DGroup.addChild(new es3fTextureFormatTests.Texture2DFormatCase({
+            name: nameBase + '_2d_npot',
+            description: descriptionBase + ' gl.TEXTURE_2D',
+            format: format,
+            dataType: dataType,
+            width: 63,
+            height: 112
+        }));
+        unsized2DGroup.addChild(new es3fTextureFormatTests.TextureCubeFormatCase({
+            name: nameBase + '_cube_pot',
+            description: descriptionBase + ' gl.TEXTURE_CUBE_MAP',
+            format: format,
+            dataType: dataType,
+            width: 64,
+            height: 64
+        }));
+        unsized2DGroup.addChild(new es3fTextureFormatTests.TextureCubeFormatCase({
+            name: nameBase + '_cube_npot',
+            description: descriptionBase + ' gl.TEXTURE_CUBE_MAP',
+            format: format,
+            dataType: dataType,
+            width: 57,
+            height: 57
+        }));
+        unsized2DArrayGroup.addChild(new es3fTextureFormatTests.Texture2DArrayFormatCase({
+            name: nameBase + '_2d_array_pot',
+            description: descriptionBase + ' gl.TEXTURE_2D_ARRAY',
+            format: format,
+            dataType: dataType,
+            width: 64,
+            height: 64,
+            numLayers: 8
+        }));
+        unsized2DArrayGroup.addChild(new es3fTextureFormatTests.Texture2DArrayFormatCase({
+            name: nameBase + '_2d_array_npot',
+            description: descriptionBase + ' gl.TEXTURE_2D_ARRAY',
+            format: format,
+            dataType: dataType,
+            width: 63,
+            height: 57,
+            numLayers: 7
+        }));
+        unsized3DGroup.addChild(new es3fTextureFormatTests.Texture3DFormatCase({
+            name: nameBase + '_3d_pot',
+            description: descriptionBase + ' gl.TEXTURE_3D',
+            format: format,
+            dataType: dataType,
+            width: 8,
+            height: 32,
+            depth: 16
+        }));
+        unsized3DGroup.addChild(new es3fTextureFormatTests.Texture3DFormatCase({
+            name: nameBase + '_3d_npot',
+            description: descriptionBase + ' gl.TEXTURE_3D',
+            format: format,
+            dataType: dataType,
+            width: 11,
+            height: 31,
+            depth: 7
+        }));
     });
 
     var sizedColorFormats = [
@@ -936,130 +929,180 @@ es3fTextureFormatTests.genTestCases = function() {
         ['r8_snorm', gl.R8_SNORM]
     ];
 
-    sizedColorFormats.forEach(function(elem) {
-        var internalFormat = elem[1];
-        var nameBase = elem[0];
+    var splitSizedColorTests = 4;
+    var sizedColor2DPOTGroup = [];
+    for (var ii = 0; ii < splitSizedColorTests; ++ii) {
+        sizedColor2DPOTGroup.push(tcuTestCase.newTest('sized', 'Sized formats (2D POT)'));
+        state.testCases.addChild(sizedColor2DPOTGroup[ii]);
+    }
+    var sizedColor2DNPOTGroup = [];
+    for (var ii = 0; ii < splitSizedColorTests; ++ii) {
+        sizedColor2DNPOTGroup.push(tcuTestCase.newTest('sized', 'Sized formats (2D NPOT)'));
+        state.testCases.addChild(sizedColor2DNPOTGroup[ii]);
+    }
+    var sizedColorCubePOTGroup = [];
+    for (var ii = 0; ii < splitSizedColorTests; ++ii) {
+        sizedColorCubePOTGroup.push(tcuTestCase.newTest('sized', 'Sized formats (Cubemap POT)'));
+        state.testCases.addChild(sizedColorCubePOTGroup[ii]);
+    }
+    var sizedColorCubeNPOTGroup = [];
+    for (var ii = 0; ii < splitSizedColorTests; ++ii) {
+        sizedColorCubeNPOTGroup.push(tcuTestCase.newTest('sized', 'Sized formats (Cubemap NPOT)'));
+        state.testCases.addChild(sizedColorCubeNPOTGroup[ii]);
+    }
+    var sizedColor2DArrayPOTGroup = [];
+    for (var ii = 0; ii < splitSizedColorTests; ++ii) {
+        sizedColor2DArrayPOTGroup.push(tcuTestCase.newTest('sized', 'Sized formats (2D Array POT)'));
+        state.testCases.addChild(sizedColor2DArrayPOTGroup[ii]);
+    }
+    var sizedColor2DArrayNPOTGroup = [];
+    for (var ii = 0; ii < splitSizedColorTests; ++ii) {
+        sizedColor2DArrayNPOTGroup.push(tcuTestCase.newTest('sized', 'Sized formats (2D Array NPOT)'));
+        state.testCases.addChild(sizedColor2DArrayNPOTGroup[ii]);
+    }
+    var sizedColor3DPOTGroup = [];
+    for (var ii = 0; ii < splitSizedColorTests; ++ii) {
+        sizedColor3DPOTGroup.push(tcuTestCase.newTest('sized', 'Sized formats (3D POT)'));
+        state.testCases.addChild(sizedColor3DPOTGroup[ii]);
+    }
+    var sizedColor3DNPOTGroup = [];
+    for (var ii = 0; ii < splitSizedColorTests; ++ii) {
+        sizedColor3DNPOTGroup.push(tcuTestCase.newTest('sized', 'Sized formats (3D NPOT)'));
+        state.testCases.addChild(sizedColor3DNPOTGroup[ii]);
+    }
+
+    for (var ii = 0; ii < sizedColorFormats.length; ++ii) {
+        var internalFormat = sizedColorFormats[ii][1];
+        var nameBase = sizedColorFormats[ii][0];
         var descriptionBase = gluStrUtil.getPixelFormatName(internalFormat);
-        sized2DGroup.addChild(new es3fTextureFormatTests.Texture2DFormatCase({name: nameBase + '_pot',
-                                                description: descriptionBase + ' gl.TEXTURE_2D',
-                                                        format: internalFormat,
-                                                        width: 128,
-                                                        height: 128
-                                                    })
-        );
-        sized2DGroup.addChild(new es3fTextureFormatTests.Texture2DFormatCase({name: nameBase + '_npot',
-                                                description: descriptionBase + ' gl.TEXTURE_2D',
-                                                        format: internalFormat,
-                                                        width: 63,
-                                                        height: 112
-                                                    })
-        );
-        sizedCubeGroup.addChild(new es3fTextureFormatTests.TextureCubeFormatCase({name: nameBase + '_pot',
-                                                description: descriptionBase + ' gl.TEXTURE_CUBE_MAP',
-                                                        format: internalFormat,
-                                                        width: 64,
-                                                        height: 64
-                                                    })
-        );
-        sizedCubeGroup.addChild(new es3fTextureFormatTests.TextureCubeFormatCase({name: nameBase + '_npot',
-                                                description: descriptionBase + ' gl.TEXTURE_CUBE_MAP',
-                                                        format: internalFormat,
-                                                        width: 57,
-                                                        height: 57
-                                                    })
-        );
-        sized2DArrayGroup.addChild(new es3fTextureFormatTests.Texture2DArrayFormatCase({name: nameBase + '_pot',
-                                                description: descriptionBase + ' gl.TEXTURE_2D_ARRAY',
-                                                        format: internalFormat,
-                                                        width: 64,
-                                                        height: 64,
-                                                        numLayers: 8
-                                                    })
-        );
-        sized2DArrayGroup.addChild(new es3fTextureFormatTests.Texture2DArrayFormatCase({name: nameBase + '_npot',
-                                                description: descriptionBase + ' gl.TEXTURE_2D_ARRAY',
-                                                        format: internalFormat,
-                                                        width: 63,
-                                                        height: 57,
-                                                        numLayers: 7
-                                                    })
-        );
-        sized3DGroup.addChild(new es3fTextureFormatTests.Texture3DFormatCase({name: nameBase + '_pot',
-                                                description: descriptionBase + ' gl.TEXTURE_3D',
-                                                        format: internalFormat,
-                                                        width: 8,
-                                                        height: 32,
-                                                        depth: 16
-                                                    })
-        );
-        sized3DGroup.addChild(new es3fTextureFormatTests.Texture3DFormatCase({name: nameBase + '_npot',
-                                                description: descriptionBase + ' gl.TEXTURE_3D',
-                                                        format: internalFormat,
-                                                        width: 11,
-                                                        height: 31,
-                                                        depth: 7
-                                                    })
-        );
-    });
+        sizedColor2DPOTGroup[ii % splitSizedColorTests].addChild(new es3fTextureFormatTests.Texture2DFormatCase({
+            name: nameBase + '_pot',
+            description: descriptionBase + ' gl.TEXTURE_2D',
+            format: internalFormat,
+            width: 128,
+            height: 128
+        }));
+        sizedColor2DNPOTGroup[ii % splitSizedColorTests].addChild(new es3fTextureFormatTests.Texture2DFormatCase({
+            name: nameBase + '_npot',
+            description: descriptionBase + ' gl.TEXTURE_2D',
+            format: internalFormat,
+            width: 63,
+            height: 112
+        }));
+        sizedColorCubePOTGroup[ii % splitSizedColorTests].addChild(new es3fTextureFormatTests.TextureCubeFormatCase({
+            name: nameBase + '_pot',
+            description: descriptionBase + ' gl.TEXTURE_CUBE_MAP',
+            format: internalFormat,
+            width: 64,
+            height: 64
+        }));
+        sizedColorCubeNPOTGroup[ii % splitSizedColorTests].addChild(new es3fTextureFormatTests.TextureCubeFormatCase({
+            name: nameBase + '_npot',
+            description: descriptionBase + ' gl.TEXTURE_CUBE_MAP',
+            format: internalFormat,
+            width: 57,
+            height: 57
+        }));
+        sizedColor2DArrayPOTGroup[ii % splitSizedColorTests].addChild(new es3fTextureFormatTests.Texture2DArrayFormatCase({
+            name: nameBase + '_pot',
+            description: descriptionBase + ' gl.TEXTURE_2D_ARRAY',
+            format: internalFormat,
+            width: 64,
+            height: 64,
+            numLayers: 8
+
+        }));
+        sizedColor2DArrayNPOTGroup[ii % splitSizedColorTests].addChild(new es3fTextureFormatTests.Texture2DArrayFormatCase({
+            name: nameBase + '_npot',
+            description: descriptionBase + ' gl.TEXTURE_2D_ARRAY',
+            format: internalFormat,
+            width: 63,
+            height: 57,
+            numLayers: 7
+        }));
+        sizedColor3DPOTGroup[ii % splitSizedColorTests].addChild(new es3fTextureFormatTests.Texture3DFormatCase({
+            name: nameBase + '_pot',
+            description: descriptionBase + ' gl.TEXTURE_3D',
+            format: internalFormat,
+            width: 8,
+            height: 32,
+            depth: 16
+        }));
+        sizedColor3DNPOTGroup[ii % splitSizedColorTests].addChild(new es3fTextureFormatTests.Texture3DFormatCase({
+            name: nameBase + '_npot',
+            description: descriptionBase + ' gl.TEXTURE_3D',
+            format: internalFormat,
+            width: 11,
+            height: 31,
+            depth: 7
+        }));
+    }
 
     var sizedDepthStencilFormats = [
         // Depth and stencil formats
         ['depth_component32f', gl.DEPTH_COMPONENT32F],
         ['depth_component24', gl.DEPTH_COMPONENT24],
         ['depth_component16', gl.DEPTH_COMPONENT16],
-        ['depth32f_stencil8', gl.DEPTH32F_STENCIL8],
+        // The following format is restricted in WebGL2.
+        // ['depth32f_stencil8', gl.DEPTH32F_STENCIL8],
         ['depth24_stencil8', gl.DEPTH24_STENCIL8]
     ];
+    var sizedDepthStencilGroup = tcuTestCase.newTest('sized', 'Sized formats (Depth Stencil)');
+    state.testCases.addChild(sizedDepthStencilGroup);
     sizedDepthStencilFormats.forEach(function(elem) {
         var internalFormat = elem[1];
         var nameBase = elem[0];
         var descriptionBase = gluStrUtil.getPixelFormatName(internalFormat);
-        sized2DGroup.addChild(new es3fTextureFormatTests.Texture2DFormatCase({name: nameBase + '_pot',
-                                                description: descriptionBase + ' gl.TEXTURE_2D',
-                                                        format: internalFormat,
-                                                        width: 128,
-                                                        height: 128
-                                                    })
-        );
-        sized2DGroup.addChild(new es3fTextureFormatTests.Texture2DFormatCase({name: nameBase + '_npot',
-                                                description: descriptionBase + ' gl.TEXTURE_2D',
-                                                        format: internalFormat,
-                                                        width: 63,
-                                                        height: 112
-                                                    })
-        );
-        sizedCubeGroup.addChild(new es3fTextureFormatTests.TextureCubeFormatCase({name: nameBase + '_pot',
-                                                description: descriptionBase + ' gl.TEXTURE_CUBE_MAP',
-                                                        format: internalFormat,
-                                                        width: 64,
-                                                        height: 64
-                                                    })
-        );
-        sizedCubeGroup.addChild(new es3fTextureFormatTests.TextureCubeFormatCase({name: nameBase + '_npot',
-                                                description: descriptionBase + ' gl.TEXTURE_CUBE_MAP',
-                                                        format: internalFormat,
-                                                        width: 57,
-                                                        height: 57
-                                                    })
-        );
-        sized2DArrayGroup.addChild(new es3fTextureFormatTests.Texture2DArrayFormatCase({name: nameBase + '_pot',
-                                                description: descriptionBase + ' gl.TEXTURE_2D_ARRAY',
-                                                        format: internalFormat,
-                                                        width: 64,
-                                                        height: 64,
-                                                        numLayers: 8
-                                                    })
-        );
-        sized2DArrayGroup.addChild(new es3fTextureFormatTests.Texture2DArrayFormatCase({name: nameBase + '_npot',
-                                                description: descriptionBase + ' gl.TEXTURE_2D_ARRAY',
-                                                        format: internalFormat,
-                                                        width: 63,
-                                                        height: 57,
-                                                        numLayers: 7
-                                                    })
-        );
+        sizedDepthStencilGroup.addChild(new es3fTextureFormatTests.Texture2DFormatCase({
+            name: nameBase + '_pot',
+            description: descriptionBase + ' gl.TEXTURE_2D',
+            format: internalFormat,
+            width: 128,
+            height: 128
+        }));
+        sizedDepthStencilGroup.addChild(new es3fTextureFormatTests.Texture2DFormatCase({
+            name: nameBase + '_npot',
+            description: descriptionBase + ' gl.TEXTURE_2D',
+            format: internalFormat,
+            width: 63,
+            height: 112
+        }));
+        sizedDepthStencilGroup.addChild(new es3fTextureFormatTests.TextureCubeFormatCase({
+            name: nameBase + '_pot',
+            description: descriptionBase + ' gl.TEXTURE_CUBE_MAP',
+            format: internalFormat,
+            width: 64,
+            height: 64
+        }));
+        sizedDepthStencilGroup.addChild(new es3fTextureFormatTests.TextureCubeFormatCase({
+            name: nameBase + '_npot',
+            description: descriptionBase + ' gl.TEXTURE_CUBE_MAP',
+            format: internalFormat,
+            width: 57,
+            height: 57
+        }));
+        sizedDepthStencilGroup.addChild(new es3fTextureFormatTests.Texture2DArrayFormatCase({
+            name: nameBase + '_pot',
+            description: descriptionBase + ' gl.TEXTURE_2D_ARRAY',
+            format: internalFormat,
+            width: 64,
+            height: 64,
+            numLayers: 8
+        }));
+        sizedDepthStencilGroup.addChild(new es3fTextureFormatTests.Texture2DArrayFormatCase({
+            name: nameBase + '_npot',
+            description: descriptionBase + ' gl.TEXTURE_2D_ARRAY',
+            format: internalFormat,
+            width: 63,
+            height: 57,
+            numLayers: 7
+        }));
     });
 
+    var compressed2DGroup = tcuTestCase.newTest('compressed', 'Compressed formats (2D)');
+    state.testCases.addChild(compressed2DGroup);
+    var compressedCubeGroup = tcuTestCase.newTest('compressed', 'Compressed formats (Cubemap)');
+    state.testCases.addChild(compressedCubeGroup);
     var etc2Formats = [
         ['gl.COMPRESSED_R11_EAC', 'eac_r11', tcuCompressedTexture.Format.EAC_R11],
         ['gl.COMPRESSED_SIGNED_R11_EAC', 'eac_signed_r11', tcuCompressedTexture.Format.EAC_SIGNED_R11],
@@ -1076,48 +1119,53 @@ es3fTextureFormatTests.genTestCases = function() {
         var nameBase = elem[1];
         var descriptionBase = elem[0];
         var format = elem[2];
-        compressedGroup.addChild(new es3fTextureFormatTests.Compressed2DFormatCase({name: nameBase + '_2d_pot', description: descriptionBase + ', gl.TEXTURE_2D',
-                                                format: format,
-                                                width: 128,
-                                                height: 64
-                                            })
-                                );
-        compressedGroup.addChild(new es3fTextureFormatTests.CompressedCubeFormatCase({name: nameBase + '_cube_pot', description: descriptionBase + ', gl.TEXTURE_CUBE_MAP',
-                                                format: format,
-                                                width: 64,
-                                                height: 64
-                                            })
-                                );
-        compressedGroup.addChild(new es3fTextureFormatTests.Compressed2DFormatCase({name: nameBase + '_2d_pot', description: descriptionBase + ', gl.TEXTURE_2D',
-                                                format: format,
-                                                width: 128,
-                                                height: 64
-                                            })
-                                );
-        compressedGroup.addChild(new es3fTextureFormatTests.CompressedCubeFormatCase({name: nameBase + '_cube_npot', description: descriptionBase + ', gl.TEXTURE_CUBE_MAP',
-                                                format: format,
-                                                width: 51,
-                                                height: 51
-                                            })
-                                );
+        compressed2DGroup.addChild(new es3fTextureFormatTests.Compressed2DFormatCase({
+            name: nameBase + '_2d_pot',
+            description: descriptionBase + ', gl.TEXTURE_2D',
+            format: format,
+            width: 128,
+            height: 64
+        }));
+        compressedCubeGroup.addChild(new es3fTextureFormatTests.CompressedCubeFormatCase({
+            name: nameBase + '_cube_pot',
+            description: descriptionBase + ', gl.TEXTURE_CUBE_MAP',
+            format: format,
+            width: 64,
+            height: 64
+        }));
+        compressed2DGroup.addChild(new es3fTextureFormatTests.Compressed2DFormatCase({
+            name: nameBase + '_2d_pot',
+            description: descriptionBase + ', gl.TEXTURE_2D',
+            format: format,
+            width: 128,
+            height: 64
+        }));
+        compressedCubeGroup.addChild(new es3fTextureFormatTests.CompressedCubeFormatCase({
+            name: nameBase + '_cube_npot',
+            description: descriptionBase + ', gl.TEXTURE_CUBE_MAP',
+            format: format,
+            width: 51,
+            height: 51
+        }));
     });
-
-    state.testCases.addChild(unsizedGroup);
-    state.testCases.addChild(sizedGroup);
-    state.testCases.addChild(compressedGroup);
 };
 
 /**
  * Create and execute the test cases
  */
-es3fTextureFormatTests.run = function(context) {
+es3fTextureFormatTests.run = function(context, range) {
     gl = context;
+    var state = tcuTestCase.runner;
     try {
         es3fTextureFormatTests.genTestCases();
-        tcuTestCase.runner.runCallback(tcuTestCase.runTestCases);
+        if (range)
+            state.setRange(range);
+        else
+            state.setRange([37,38]);
+        state.runCallback(tcuTestCase.runTestCases);
     } catch (err) {
         bufferedLogToConsole(err);
-        tcuTestCase.runner.terminate();
+        state.terminate();
     }
 
 };
