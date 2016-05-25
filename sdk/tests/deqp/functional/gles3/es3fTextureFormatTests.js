@@ -1160,8 +1160,6 @@ es3fTextureFormatTests.run = function(context, range) {
         es3fTextureFormatTests.genTestCases();
         if (range)
             state.setRange(range);
-        else
-            state.setRange([37,38]);
         state.runCallback(tcuTestCase.runTestCases);
     } catch (err) {
         bufferedLogToConsole(err);

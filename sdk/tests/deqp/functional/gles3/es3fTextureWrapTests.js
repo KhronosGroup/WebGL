@@ -296,30 +296,30 @@ goog.scope(function() {
             new Rgba8Size('npot', 63, 112)
         ];
 
-        /** @type {tcuTestCase.DeqpTest} */ var rgba8Group = tcuTestCase.newTest('rgba8', '');
-        testGroup.addChild(rgba8Group);
+        for (var size = 0; size < rgba8Sizes.length; size++) {
+            /** @type {tcuTestCase.DeqpTest} */ var rgba8Group = tcuTestCase.newTest('rgba8', '');
+            testGroup.addChild(rgba8Group);
+            for (var wrapS = 0; wrapS < wrapModes.length; wrapS++) {
+                for (var wrapT = 0; wrapT < wrapModes.length; wrapT++) {
+                    for (var filter = 0; filter < filteringModes.length; filter++) {
+                        name = [
+                            wrapModes[wrapS].name,
+                            wrapModes[wrapT].name,
+                            filteringModes[filter].name,
+                            rgba8Sizes[size].name
+                        ].join('_');
 
-        for (var size = 0; size < rgba8Sizes.length; size++)
-        for (var wrapS = 0; wrapS < wrapModes.length; wrapS++)
-        for (var wrapT = 0; wrapT < wrapModes.length; wrapT++)
-        for (var filter = 0; filter < filteringModes.length; filter++) {
-            name = [
-                wrapModes[wrapS].name,
-                wrapModes[wrapT].name,
-                filteringModes[filter].name,
-                rgba8Sizes[size].name
-            ].join('_');
-
-            rgba8Group.addChild(
-                es3fTextureWrapTests.textureWrapCaseFromFormat(
-                    name, '',
-                    gl.RGBA, gl.UNSIGNED_BYTE,
-                    wrapModes[wrapS].mode,
-                    wrapModes[wrapT].mode,
-                    filteringModes[filter].mode, filteringModes[filter].mode,
-                    rgba8Sizes[size].width, rgba8Sizes[size].height)
-                );
-
+                        rgba8Group.addChild(es3fTextureWrapTests.textureWrapCaseFromFormat(
+                            name, '',
+                            gl.RGBA, gl.UNSIGNED_BYTE,
+                            wrapModes[wrapS].mode,
+                            wrapModes[wrapT].mode,
+                            filteringModes[filter].mode, filteringModes[filter].mode,
+                            rgba8Sizes[size].width, rgba8Sizes[size].height
+                        ));
+                    }
+                }
+            }
         }
         /* End RGBA8 Cases */
 
@@ -367,29 +367,30 @@ goog.scope(function() {
         ];
 
         for (var formatNdx = 0; formatNdx < etc2Formats.length; formatNdx++) {
-            /** @type {tcuTestCase.DeqpTest} */ var formatGroup = tcuTestCase.newTest(etc2Formats[formatNdx].name, '');
-            testGroup.addChild(formatGroup);
+            for (var size = 0; size < etc2Sizes.length; size++) {
+                /** @type {tcuTestCase.DeqpTest} */ var formatGroup = tcuTestCase.newTest(etc2Formats[formatNdx].name, '');
+                testGroup.addChild(formatGroup);
+                for (var wrapS = 0; wrapS < wrapModes.length; wrapS++) {
+                    for (var wrapT = 0; wrapT < wrapModes.length; wrapT++) {
+                        for (var filter = 0; filter < filteringModes.length; filter++) {
+                            name = [
+                                wrapModes[wrapS].name,
+                                wrapModes[wrapT].name,
+                                filteringModes[filter].name,
+                                etc2Sizes[size].name
+                            ].join('_');
 
-            for (var size = 0; size < etc2Sizes.length; size++)
-            for (var wrapS = 0; wrapS < wrapModes.length; wrapS++)
-            for (var wrapT = 0; wrapT < wrapModes.length; wrapT++)
-            for (var filter = 0; filter < filteringModes.length; filter++) {
-                name = [
-                    wrapModes[wrapS].name,
-                    wrapModes[wrapT].name,
-                    filteringModes[filter].name,
-                    etc2Sizes[size].name
-                ].join('_');
-
-                formatGroup.addChild(
-                    new es3fTextureWrapTests.TextureWrapCase(
-                        name, '',
-                        etc2Formats[formatNdx].format,
-                        wrapModes[wrapS].mode,
-                        wrapModes[wrapT].mode,
-                        filteringModes[filter].mode, filteringModes[filter].mode,
-                        etc2Sizes[size].width, etc2Sizes[size].height)
-                    );
+                            formatGroup.addChild(new es3fTextureWrapTests.TextureWrapCase(
+                                name, '',
+                                etc2Formats[formatNdx].format,
+                                wrapModes[wrapS].mode,
+                                wrapModes[wrapT].mode,
+                                filteringModes[filter].mode, filteringModes[filter].mode,
+                                etc2Sizes[size].width, etc2Sizes[size].height
+                            ));
+                        }
+                    }
+                }
             }
         }
     };
@@ -398,7 +399,7 @@ goog.scope(function() {
      * Run test
      * @param {WebGL2RenderingContext} context
      */
-    es3fTextureWrapTests.run = function(context) {
+    es3fTextureWrapTests.run = function(context, range) {
         gl = context;
         //Set up Test Root parameters
         var testName = 'texture_wrap';
@@ -415,12 +416,14 @@ goog.scope(function() {
         try {
             //Create test cases
             es3fTextureWrapTests.init();
+            if (range)
+                state.setRange(range);
             //Run test cases
             tcuTestCase.runTestCases();
         }
         catch (err) {
             testFailedOptions('Failed to es3fTextureWrapTests.run tests', false);
-            tcuTestCase.runner.terminate();
+            state.terminate();
         }
     };
 
