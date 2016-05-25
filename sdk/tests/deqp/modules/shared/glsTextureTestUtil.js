@@ -959,7 +959,7 @@ glsTextureTestUtil.computeNonProjectedTriLod = function(mode, dstSize, srcSize, 
  * @return {number}
  */
 glsTextureTestUtil.triangleInterpolate = function(v, x, y) {
-    return Number((v[0] + (v[2] - v[0]) * x + (v[1] - v[0]) * y).toFixed(10));
+    return v[0] + (v[2] - v[0]) * x + (v[1] - v[0]) * y;
 };
 
 /**
