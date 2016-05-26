@@ -2986,7 +2986,7 @@ var setParentClass = function(child, parent) {
             var size = reference.rows * reference.cols;
             for (var i = 0; i < reference.rows; i++)
                 for (var j = 0; j < reference.cols; j++)
-                    ret.set(i, j, output[size * index + j * reference.cols + i]);
+                    ret.set(i, j, output[size * index + j * reference.rows + i]);
             return ret;
         }
 
