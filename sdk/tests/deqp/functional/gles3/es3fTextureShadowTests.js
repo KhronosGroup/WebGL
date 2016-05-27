@@ -298,14 +298,14 @@ var deUtil = framework.delibs.debase.deUtil;
             var colorB = 0xff000000 | ~rgb;
 
             this.m_textures[1].getRefTexture().allocLevel(levelNdx);
-            tcuTextureUtil.fillWithGrid(this.m_textures[0].getRefTexture().getLevel(levelNdx), 4, tcuRGBA.newRGBAFromValue(colorA).toVec(), tcuRGBA.newRGBAFromValue(colorB).toVec());
+            tcuTextureUtil.fillWithGrid(this.m_textures[1].getRefTexture().getLevel(levelNdx), 4, tcuRGBA.newRGBAFromValue(colorA).toVec(), tcuRGBA.newRGBAFromValue(colorB).toVec());
         }
 
         for (var i = 0; i < this.m_textures.length; i++)
             this.m_textures[i].upload();
 
         var refInRangeUpper = (this.m_compareFunc == gl.EQUAL || this.m_compareFunc == gl.NOTEQUAL) ? 1.0 : 0.5;
-        var refInRangeLower = (this.m_compareFunc == gl.EQUAL || this.m_compareFunc == gl.NOTEQUAL) ? 1.0 : 0.5;
+        var refInRangeLower = (this.m_compareFunc == gl.EQUAL || this.m_compareFunc == gl.NOTEQUAL) ? 0.0 : 0.5;
 
         var refOutOfBoundsUpper = 1.1;
         var refOutOfBoundsLower = -0.1;
@@ -314,7 +314,7 @@ var deUtil = framework.delibs.debase.deUtil;
 
         var cases = [];
         cases.push(new es3fTextureShadowTests.TestCase(0, refInRangeUpper, 1.6, 2.9, -1.0, -2.7));
-        cases.push(new es3fTextureShadowTests.TestCase(0, refInRangeLower, -2.0, -1.35, -0.1, 0.7));
+        cases.push(new es3fTextureShadowTests.TestCase(0, refInRangeLower, -2.0, -1.35, -0.2, 0.7));
         cases.push(new es3fTextureShadowTests.TestCase(1, refInRangeUpper, 0.14, 0.275, -1.5, -1.1));
         cases.push(new es3fTextureShadowTests.TestCase(1, refInRangeLower, -0.92, -2.64, 0.4, -0.1));
         cases.push(new es3fTextureShadowTests.TestCase(1, refOutOfBoundsUpper, -0.39, -0.52, 0.65, 0.87));
@@ -510,7 +510,7 @@ var deUtil = framework.delibs.debase.deUtil;
         var viewportSize = 28;
         var viewport = new glsTextureTestUtil.RandomViewport(document.getElementById('canvas'), viewportSize, viewportSize, deString.deStringHash(this.fullName()) ^ deMath.deMathHash(this.m_caseNdx));
         var curCase = this.m_cases[this.m_caseNdx];
-        var sampleParams = new glsTextureTestUtil.ReferenceParams(glsTextureTestUtil.textureType.TEXTURETYPE_2D);
+        var sampleParams = new glsTextureTestUtil.ReferenceParams(glsTextureTestUtil.textureType.TEXTURETYPE_CUBE);
 
         if (viewport.width < viewportSize || viewport.height < viewportSize)
             throw new Error('Too small render target');
@@ -750,7 +750,7 @@ var deUtil = framework.delibs.debase.deUtil;
         );
 
         var isHighQuality = es3fTextureShadowTests.verifyTexCompareResult(tcuTexture.Texture2DArray, rendered.getAccess(), curCase.texture.getRefTexture(),
-                                                          texCoord[0], sampleParams, texComparePrecision, lodPrecision, pixelFormat);
+                                                          texCoord, sampleParams, texComparePrecision, lodPrecision, pixelFormat);
 
         if (!isHighQuality) {
             bufferedLogToConsole('Warning: Verification assuming high-quality PCF filtering failed');
@@ -760,7 +760,7 @@ var deUtil = framework.delibs.debase.deUtil;
             texComparePrecision.pcfBits = 0;
 
             var isOk = es3fTextureShadowTests.verifyTexCompareResult(tcuTexture.Texture2DArray, rendered.getAccess(), curCase.texture.getRefTexture(),
-                                                                                              texCoord[0], sampleParams, texComparePrecision, lodPrecision, pixelFormat);
+                                                                                              texCoord, sampleParams, texComparePrecision, lodPrecision, pixelFormat);
 
             if (!isOk) {
                 bufferedLogToConsole('ERROR: Verification against low precision requirements failed, failing test case.');
@@ -828,12 +828,12 @@ var deUtil = framework.delibs.debase.deUtil;
         var groupCube = tcuTestCase.newTest('cube', 'Cube map texture shadow lookup tests');
         testGroup.addChild(groupCube);
 
-        for (filterNdx = 0; filterNdx < filters.length; filterNdx++) {
+        for (var filterNdx = 0; filterNdx < filters.length; filterNdx++) {
             filterGroup = tcuTestCase.newTest(filters[filterNdx].name, '');
             groupCube.addChild(filterGroup);
 
-            for (compareNdx = 0; compareNdx < compareFuncs.length; compareNdx++) {
-                for (formatNdx = 0; formatNdx < formats.length; formatNdx++) {
+            for (var compareNdx = 0; compareNdx < compareFuncs.length; compareNdx++) {
+                for (var formatNdx = 0; formatNdx < formats.length; formatNdx++) {
                     minFilter = filters[filterNdx].minFilter;
                     magFilter = filters[filterNdx].magFilter;
                     format = formats[formatNdx].format;
@@ -848,6 +848,30 @@ var deUtil = framework.delibs.debase.deUtil;
             }
         }
 
+        var group2DArray = tcuTestCase.newTest('2d_array', '2D texture array shadow lookup tests');
+        testGroup.addChild(group2DArray);
+
+        for (var filterNdx = 0; filterNdx < filters.length; filterNdx++) {
+            filterGroup = tcuTestCase.newTest(filters[filterNdx].name, '');
+            group2DArray.addChild(filterGroup);
+
+            for (var compareNdx = 0; compareNdx < compareFuncs.length; compareNdx++) {
+                for (var formatNdx = 0; formatNdx < formats.length; formatNdx++) {
+                    minFilter = filters[filterNdx].minFilter;
+                    magFilter = filters[filterNdx].magFilter;
+                    format = formats[formatNdx].format;
+                    compareFunc = compareFuncs[compareNdx].func;
+                    wrapS = gl.REPEAT;
+                    wrapT = gl.REPEAT;
+                    width = 32;
+                    height = 64;
+                    var numLayers = 8;
+                    name = compareFuncs[compareNdx].name + '_' + formats[formatNdx].name;
+
+                    filterGroup.addChild(new es3fTextureShadowTests.Texture2DArrayShadowCase(name, '', minFilter, magFilter, wrapS, wrapT, format, width, height, numLayers, compareFunc));
+                }
+            }
+        }
     };
 
     es3fTextureShadowTests.run = function(context) {
