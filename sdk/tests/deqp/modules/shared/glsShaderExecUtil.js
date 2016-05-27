@@ -613,32 +613,32 @@ goog.scope(function() {
         vertexArrays.push(gluDrawUtil.newFloatVertexArrayBinding('a_position', 2, numValues, 0, positions));
 
         for (var inputNdx = 0; inputNdx < this.m_inputs.length; inputNdx++) {
-        symbol = this.m_inputs[inputNdx];
-        var attribName = 'a_' + symbol.name;
-        var ptr = inputs[inputNdx];
-        /** @type {gluShaderUtil.DataType} */ var basicType = symbol.varType.getBasicType();
-        /** @type {number} */ var vecSize = gluShaderUtil.getDataTypeScalarSize(basicType);
+            symbol = this.m_inputs[inputNdx];
+            var attribName = 'a_' + symbol.name;
+            var ptr = inputs[inputNdx];
+            /** @type {gluShaderUtil.DataType} */ var basicType = symbol.varType.getBasicType();
+            /** @type {number} */ var vecSize = gluShaderUtil.getDataTypeScalarSize(basicType);
 
-        if (gluShaderUtil.isDataTypeFloatOrVec(basicType))
-            vertexArrays.push(gluDrawUtil.newFloatVertexArrayBinding(attribName, vecSize, numValues, 0, ptr));
-        else if (gluShaderUtil.isDataTypeIntOrIVec(basicType))
-            vertexArrays.push(gluDrawUtil.newInt32VertexArrayBinding(attribName, vecSize, numValues, 0, ptr));
-        else if (gluShaderUtil.isDataTypeUintOrUVec(basicType))
-            vertexArrays.push(gluDrawUtil.newUint32VertexArrayBinding(attribName, vecSize, numValues, 0, ptr));
-        else if (gluShaderUtil.isDataTypeMatrix(basicType)) {
-            var numRows = gluShaderUtil.getDataTypeMatrixNumRows(basicType);
-            var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(basicType);
-            var stride = numRows * numCols * 4;
+            if (gluShaderUtil.isDataTypeFloatOrVec(basicType))
+                vertexArrays.push(gluDrawUtil.newFloatVertexArrayBinding(attribName, vecSize, numValues, 0, ptr));
+            else if (gluShaderUtil.isDataTypeIntOrIVec(basicType))
+                vertexArrays.push(gluDrawUtil.newInt32VertexArrayBinding(attribName, vecSize, numValues, 0, ptr));
+            else if (gluShaderUtil.isDataTypeUintOrUVec(basicType))
+                vertexArrays.push(gluDrawUtil.newUint32VertexArrayBinding(attribName, vecSize, numValues, 0, ptr));
+            else if (gluShaderUtil.isDataTypeMatrix(basicType)) {
+                var numRows = gluShaderUtil.getDataTypeMatrixNumRows(basicType);
+                var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(basicType);
+                var stride = numRows * numCols * 4;
 
-            for (var colNdx = 0; colNdx < numCols; ++colNdx)
-                vertexArrays.push(gluDrawUtil.newFloatColumnVertexArrayBinding(attribName,
-                    colNdx,
-                    numRows,
-                    numValues,
-                    stride,
-                    glsShaderExecUtil.getColumn(ptr, colNdx, numRows * numValues)));
-        } else
-            DE_ASSERT(false);
+                for (var colNdx = 0; colNdx < numCols; ++colNdx)
+                    vertexArrays.push(gluDrawUtil.newFloatColumnVertexArrayBinding(attribName,
+                       colNdx,
+                       numRows,
+                       numValues,
+                       stride,
+                       glsShaderExecUtil.getColumn(ptr, colNdx, numRows * numValues)));
+            } else
+                DE_ASSERT(false);
         }
 
         // Construct framebuffer.
@@ -685,10 +685,11 @@ goog.scope(function() {
                 gl.readBuffer(gl.COLOR_ATTACHMENT0 + outLocation + locNdx);
                 gl.readPixels(0, 0, framebufferW, framebufferH, transferFormat.format, transferFormat.dataType, tmpBuf.getAccess().getDataPtr());
 
-                if (outSize == 4 && outNumLocs == 1)
+                if (outSize == 4 && outNumLocs == 1) {
                     outputs[outNdx] = new Uint8Array(tmpBuf.getAccess().getBuffer());
-                else {
-                    outputs[outNdx] = new Uint32Array(numValues * outVecSize);
+                } else {
+                    if (locNdx == 0)
+                        outputs[outNdx] = new Uint32Array(numValues * outVecSize);
                     var srcPtr = new Uint32Array(tmpBuf.getAccess().getBuffer());
                     for (var valNdx = 0; valNdx < numValues; valNdx++) {
                         var srcOffset = valNdx * 4;
