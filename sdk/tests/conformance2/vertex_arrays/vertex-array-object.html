@@ -586,13 +586,8 @@ function runBoundDeleteTests() {
       var isPositionBuffer = gl.isBuffer(positionBuffer);
       var isColorBuffer    = gl.isBuffer(colorBuffer);
 
-      if(ii < 3) {
-        if(!isPositionBuffer) testFailed("Position buffer should still exist until last ref removed");
-        if(!isColorBuffer)    testFailed("Color buffer should still exist until last ref removed");
-      } else {
-        if(isPositionBuffer)  testFailed("Position buffer should no longer exist after last ref removed");
-        if(isColorBuffer)     testFailed("Color buffer should no longer exist after last ref removed");
-      }
+      if(isPositionBuffer)  testFailed("Position buffer should no longer exist after last ref removed");
+      if(isColorBuffer)     testFailed("Color buffer should no longer exist after last ref removed");
     }
 }
 
