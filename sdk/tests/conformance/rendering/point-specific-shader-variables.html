@@ -27,7 +27,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Rendering Test</title>
+<title>Point-specific shader variables test</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"> </script>
@@ -37,7 +37,7 @@
 <div id="description"></div>
 <div id="console"></div>
 
-<script id="vs" type="x-shader/x-vertex">
+<script id="vs-assign" type="x-shader/x-vertex">
 attribute vec2 aPosition;
 
 varying vec2 vPos;
@@ -47,7 +47,24 @@ void main()
     gl_Position = vec4(aPosition, 0, 1);
     vPos = aPosition;
 
-    gl_PointSize = 16.0;
+    gl_PointSize = 1.0;
+}
+</script>
+
+<script id="vs-conditional" type="x-shader/x-vertex">
+uniform float renderingPoints; // not assigned, equal to 0.0
+attribute vec2 aPosition;
+
+varying vec2 vPos;
+
+void main()
+{
+    gl_Position = vec4(aPosition, 0, 1);
+    vPos = aPosition;
+
+    if (renderingPoints > 0.0) {
+        gl_PointSize = 1.0;
+    }
 }
 </script>
 
@@ -77,11 +94,16 @@ void main()
 <script>
 "use strict";
 description(document.title);
+
+debug('This test verifies rendering with programs referencing shader variables specific to rendering of POINTS primitives.');
+
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("c", {depth: false});
 
-var prog_overwrite = wtu.setupProgram(gl, ["vs", "fs-overwrite"], ["aPosition"]);
-var prog_branch = wtu.setupProgram(gl, ["vs", "fs-unused-branch"], ["aPosition"]);
+var prog_overwrite = wtu.setupProgram(gl, ["vs-assign", "fs-overwrite"], ["aPosition"]);
+var prog_branch = wtu.setupProgram(gl, ["vs-assign", "fs-unused-branch"], ["aPosition"]);
+var prog_cond_overwrite = wtu.setupProgram(gl, ["vs-conditional", "fs-overwrite"], ["aPosition"]);
+var prog_cond_branch = wtu.setupProgram(gl, ["vs-conditional", "fs-unused-branch"], ["aPosition"]);
 
 var vertData = new Float32Array([
     -1, -1,
@@ -98,7 +120,8 @@ gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
 //////////
 
-debug("fs-overwrite");
+debug("");
+debug("prog-overwrite");
 
 gl.clear(gl.COLOR_BUFFER_BIT);
 wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 0, 0, 0]); // Bottom-left
@@ -113,12 +136,41 @@ wtu.checkCanvasRect(gl, 63, 63, 1, 1, [0, 0, 0, 0]); // Top-right
 //////////
 
 debug("");
-debug("fs-unused-branch");
+debug("prog-branch");
 
 gl.clear(gl.COLOR_BUFFER_BIT);
 wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 0, 0, 0]); // Bottom-left
 
 gl.useProgram(prog_branch);
+gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+wtu.checkCanvasRect(gl, 0, 0, 1, 1, [255, 255, 0, 255]); // Bottom-left
+wtu.checkCanvasRect(gl, 63, 63, 1, 1, [0, 0, 0, 0]); // Top-right
+
+//////////
+
+debug("");
+debug("prog-cond-overwrite");
+
+gl.clear(gl.COLOR_BUFFER_BIT);
+wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 0, 0, 0]); // Bottom-left
+
+gl.useProgram(prog_cond_overwrite);
+gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+wtu.checkCanvasRect(gl, 0, 0, 1, 1, [255, 255, 0, 255]); // Bottom-left
+wtu.checkCanvasRect(gl, 63, 63, 1, 1, [0, 0, 0, 0]); // Top-right
+
+
+//////////
+
+debug("");
+debug("prog-cond-branch");
+
+gl.clear(gl.COLOR_BUFFER_BIT);
+wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 0, 0, 0]); // Bottom-left
+
+gl.useProgram(prog_cond_branch);
 gl.drawArrays(gl.TRIANGLES, 0, 3);
 
 wtu.checkCanvasRect(gl, 0, 0, 1, 1, [255, 255, 0, 255]); // Bottom-left
