@@ -18,6 +18,7 @@ multisample-corruption.html
 --min-version 1.0.3 negative-one-index.html
 --min-version 1.0.3 point-no-attributes.html
 point-size.html
+--min-version 1.0.4 point-size-varyings.html
 --min-version 1.0.3 point-with-gl-pointcoord-in-fragment-shader.html
 --min-version 1.0.3 polygon-offset.html
 --min-version 1.0.2 simple.html
