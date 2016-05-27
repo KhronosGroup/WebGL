@@ -115,21 +115,37 @@ function testBasicBindings() {
 function testQueries() {
     debug('Query');
 
-    var query = gl.createQuery();
-    setTestExpandos(query);
-    gl.beginQuery(gl.ANY_SAMPLES_PASSED, query);
+    expandoValue = "First query";
+    var query1 = gl.createQuery();
+    setTestExpandos(query1);
+    gl.beginQuery(gl.ANY_SAMPLES_PASSED, query1);
 
-    assertMsg(query === gl.getQuery(gl.ANY_SAMPLES_PASSED, gl.CURRENT_QUERY), "CURRENT_QUERY returns instance that was bound.");
+    expandoValue = "Second query";
+    var query2 = gl.createQuery();
+    setTestExpandos(query2);
+    gl.beginQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query2);
+
+
+    assertMsg(query1 === gl.getQuery(gl.ANY_SAMPLES_PASSED, gl.CURRENT_QUERY), "CURRENT_QUERY returns instance that was bound.");
+    assertMsg(query2 === gl.getQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, gl.CURRENT_QUERY), "CURRENT_QUERY returns instance that was bound.");
 
     // Garbage collect Javascript references. Remaining references should be internal to WebGL.
-    query = null;
+    query1 = null;
+    query2 = null;
     webglHarnessCollectGarbage();
 
-    var retrievedQuery = gl.getQuery(gl.ANY_SAMPLES_PASSED, gl.CURRENT_QUERY);
-    verifyTestExpandos(retrievedQuery, "Query");
-    shouldBeType(retrievedQuery, 'WebGLQuery'); 
+    var retrievedQuery1 = gl.getQuery(gl.ANY_SAMPLES_PASSED, gl.CURRENT_QUERY);
+    var retrievedQuery2 = gl.getQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, gl.CURRENT_QUERY);
+    expandoValue = "First query";
+    verifyTestExpandos(retrievedQuery1, "Query");
+    shouldBeType(retrievedQuery1, 'WebGLQuery');
+
+    expandoValue = "Second query";
+    verifyTestExpandos(retrievedQuery2, "Query");
+    shouldBeType(retrievedQuery2, 'WebGLQuery');
 
     gl.endQuery(gl.ANY_SAMPLES_PASSED);
+    gl.endQuery(gl.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
 
     debug('');
 }
