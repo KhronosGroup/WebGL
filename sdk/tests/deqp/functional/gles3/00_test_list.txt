@@ -2,8 +2,9 @@ builtinprecision/00_test_list.txt
 shadertexturefunction/00_test_list.txt
 texturefiltering/00_test_list.txt
 textureformat/00_test_list.txt
-texturewrap/00_test_list.txt
+textureshadow/00_test_list.txt
 texturespecification/00_test_list.txt
+texturewrap/00_test_list.txt
 attriblocation.html
 booleanstatequery.html
 buffercopy.html
@@ -58,7 +59,6 @@ shaderstruct.html
 shaderswitch.html
 stringquery.html
 sync.html
-textureshadow.html
 texturestatequery.html
 transformfeedback.html
 uniformapi.html
