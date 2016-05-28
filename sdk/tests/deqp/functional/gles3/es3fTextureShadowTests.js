@@ -801,14 +801,12 @@ var deUtil = framework.delibs.debase.deUtil;
         var state = tcuTestCase.runner;
         /** @type {tcuTestCase.DeqpTest} */ var testGroup = state.testCases;
 
-        var group2D = tcuTestCase.newTest('2d', '2D texture shadow lookup tests');
-        testGroup.addChild(group2D);
-
         for (var filterNdx = 0; filterNdx < filters.length; filterNdx++) {
-            var filterGroup = tcuTestCase.newTest(filters[filterNdx].name, '');
-            group2D.addChild(filterGroup);
-
             for (var compareNdx = 0; compareNdx < compareFuncs.length; compareNdx++) {
+                var filterGroup = tcuTestCase.newTest(
+                    '2d.' + filters[filterNdx].name, '2D texture shadow lookup tests');
+                testGroup.addChild(filterGroup);
+
                 for (var formatNdx = 0; formatNdx < formats.length; formatNdx++) {
                     /** @type {number} */ var minFilter = filters[filterNdx].minFilter;
                     /** @type {number} */ var magFilter = filters[filterNdx].magFilter;
@@ -825,15 +823,13 @@ var deUtil = framework.delibs.debase.deUtil;
             }
         }
 
-        var groupCube = tcuTestCase.newTest('cube', 'Cube map texture shadow lookup tests');
-        testGroup.addChild(groupCube);
+        for (filterNdx = 0; filterNdx < filters.length; filterNdx++) {
+            for (compareNdx = 0; compareNdx < compareFuncs.length; compareNdx++) {
+                filterGroup = tcuTestCase.newTest(
+                    'cube.' + filters[filterNdx].name, 'Cube map texture shadow lookup tests');
+                testGroup.addChild(filterGroup);
 
-        for (var filterNdx = 0; filterNdx < filters.length; filterNdx++) {
-            filterGroup = tcuTestCase.newTest(filters[filterNdx].name, '');
-            groupCube.addChild(filterGroup);
-
-            for (var compareNdx = 0; compareNdx < compareFuncs.length; compareNdx++) {
-                for (var formatNdx = 0; formatNdx < formats.length; formatNdx++) {
+                for (formatNdx = 0; formatNdx < formats.length; formatNdx++) {
                     minFilter = filters[filterNdx].minFilter;
                     magFilter = filters[filterNdx].magFilter;
                     format = formats[formatNdx].format;
@@ -874,7 +870,7 @@ var deUtil = framework.delibs.debase.deUtil;
         }
     };
 
-    es3fTextureShadowTests.run = function(context) {
+    es3fTextureShadowTests.run = function(context, range) {
         gl = context;
         //Set up Test Root parameters
         var testName = 'texture_shadow';
@@ -891,6 +887,8 @@ var deUtil = framework.delibs.debase.deUtil;
         try {
             //Create test cases
             es3fTextureShadowTests.init();
+            if (range)
+                state.setRange(range);
             //Run test cases
             tcuTestCase.runTestCases();
         }
