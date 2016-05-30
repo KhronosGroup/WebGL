@@ -66,6 +66,7 @@ functional.gles3.es3fTextureShadowTests.run(gl, [%(start)s, %(end)s]);
 _TARGETS = [
     '2d',
     'cube',
+    '2d_array',
 ]
 
 _FILTERS = [

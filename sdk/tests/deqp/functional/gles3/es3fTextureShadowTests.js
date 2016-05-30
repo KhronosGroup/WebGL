@@ -844,14 +844,12 @@ var deUtil = framework.delibs.debase.deUtil;
             }
         }
 
-        var group2DArray = tcuTestCase.newTest('2d_array', '2D texture array shadow lookup tests');
-        testGroup.addChild(group2DArray);
-
         for (var filterNdx = 0; filterNdx < filters.length; filterNdx++) {
-            filterGroup = tcuTestCase.newTest(filters[filterNdx].name, '');
-            group2DArray.addChild(filterGroup);
-
             for (var compareNdx = 0; compareNdx < compareFuncs.length; compareNdx++) {
+                filterGroup = tcuTestCase.newTest(
+                    '2d_array.' + filters[filterNdx].name, '2D texture array shadow lookup tests');
+                testGroup.addChild(filterGroup);
+
                 for (var formatNdx = 0; formatNdx < formats.length; formatNdx++) {
                     minFilter = filters[filterNdx].minFilter;
                     magFilter = filters[filterNdx].magFilter;
