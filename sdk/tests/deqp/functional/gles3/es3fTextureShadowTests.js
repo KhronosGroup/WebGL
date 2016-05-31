@@ -704,7 +704,7 @@ var deUtil = framework.delibs.debase.deUtil;
     es3fTextureShadowTests.Texture2DArrayShadowCase.prototype.iterate = function() {
         var viewport = new glsTextureTestUtil.RandomViewport(document.getElementById('canvas'), VIEWPORT_WIDTH, VIEWPORT_HEIGHT, deString.deStringHash(this.fullName()) ^ deMath.deMathHash(this.m_caseNdx));
         var curCase = this.m_cases[this.m_caseNdx];
-        var sampleParams = new glsTextureTestUtil.ReferenceParams(glsTextureTestUtil.textureType.TEXTURETYPE_2D);
+        var sampleParams = new glsTextureTestUtil.ReferenceParams(glsTextureTestUtil.textureType.TEXTURETYPE_2D_ARRAY);
         var rendered = new tcuSurface.Surface(viewport.width, viewport.height);
         var texCoord = [];
 
