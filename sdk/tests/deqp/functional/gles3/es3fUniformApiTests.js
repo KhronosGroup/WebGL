@@ -2970,14 +2970,12 @@ goog.scope(function() {
 
         // Cases testing uniform values.
 
-        /** @type {tcuTestCase.DeqpTest} */ var valueGroup = tcuTestCase.newTest('value', 'es3fUniformApiTests.Uniform value tests');
-        testGroup.addChild(valueGroup);
-
         // Cases checking uniforms' initial values (all must be zeros), with glGetUniform*() or by rendering.
 
-        /** @type {tcuTestCase.DeqpTest} */ var initialValuesGroup = tcuTestCase.newTest(es3fUniformApiTests.UniformValueCase.getValueToCheckName(es3fUniformApiTests.ValueToCheck.INITIAL),
-                                                       es3fUniformApiTests.UniformValueCase.getValueToCheckDescription(es3fUniformApiTests.ValueToCheck.INITIAL));
-        valueGroup.addChild(initialValuesGroup);
+        /** @type {tcuTestCase.DeqpTest} */ var initialValuesGroup = tcuTestCase.newTest(
+            'value.' + es3fUniformApiTests.UniformValueCase.getValueToCheckName(es3fUniformApiTests.ValueToCheck.INITIAL),
+            es3fUniformApiTests.UniformValueCase.getValueToCheckDescription(es3fUniformApiTests.ValueToCheck.INITIAL));
+        testGroup.addChild(initialValuesGroup);
 
         for (var checkMethodI in es3fUniformApiTests.CheckMethod) {
             checkMethod = es3fUniformApiTests.CheckMethod[checkMethodI];
@@ -3023,9 +3021,10 @@ goog.scope(function() {
 
         // Cases that first assign values to each uniform, then check the values with glGetUniform*() or by rendering.
 
-        /** @type {tcuTestCase.DeqpTest} */ var assignedValuesGroup = tcuTestCase.newTest(es3fUniformApiTests.UniformValueCase.getValueToCheckName(es3fUniformApiTests.ValueToCheck.ASSIGNED),
-                                                                    es3fUniformApiTests.UniformValueCase.getValueToCheckDescription(es3fUniformApiTests.ValueToCheck.ASSIGNED));
-        valueGroup.addChild(assignedValuesGroup);
+        /** @type {tcuTestCase.DeqpTest} */ var assignedValuesGroup = tcuTestCase.newTest(
+            'value.' + es3fUniformApiTests.UniformValueCase.getValueToCheckName(es3fUniformApiTests.ValueToCheck.ASSIGNED),
+            es3fUniformApiTests.UniformValueCase.getValueToCheckDescription(es3fUniformApiTests.ValueToCheck.ASSIGNED));
+        testGroup.addChild(assignedValuesGroup);
 
         for (var assignMethodI in es3fUniformApiTests.AssignMethod) {
             /** @type {es3fUniformApiTests.AssignMethod} */ var assignMethod = es3fUniformApiTests.AssignMethod[assignMethodI];
@@ -3173,7 +3172,7 @@ goog.scope(function() {
      * Create and execute the test cases
      * @param {WebGL2RenderingContext} context
      */
-    es3fUniformApiTests.run = function(context) {
+    es3fUniformApiTests.run = function(context, range) {
         gl = context;
         //Set up Test Root parameters
         var testName = 'uniform_api';
@@ -3190,6 +3189,8 @@ goog.scope(function() {
         try {
             //Create test cases
             es3fUniformApiTests.init();
+            if (range)
+                state.setRange(range);
             //Run test cases
             tcuTestCase.runTestCases();
         }
