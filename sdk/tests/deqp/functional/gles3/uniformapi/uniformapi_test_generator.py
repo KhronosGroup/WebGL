@@ -40,7 +40,7 @@ DO NOT EDIT!
 _HTML_TEMPLATE = """<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>WebGL Texture Shadow Conformance Tests</title>
+<title>WebGL Uniform API Conformance Tests</title>
 <link rel="stylesheet" href="../../../../resources/js-test-style.css"/>
 <script src="../../../../js/js-test-pre.js"></script>
 <script src="../../../../js/webgl-test-utils.js"></script>
