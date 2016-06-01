@@ -737,7 +737,7 @@ goog.scope(function() {
                     testFailedOptions('Framebuffer checked as incomplete, but with wrong status', true);
                 }
             } else if (fboStatus != gl.FRAMEBUFFER_COMPLETE && statuses.isFBOStatusValid(gl.FRAMEBUFFER_COMPLETE)) {
-                testFailedOptions('Framebuffer object could have checked as complete but did not.', true);
+                testPassedOptions('Warning: framebuffer object could have checked as complete but did not.', true);
             } else {
                 // pass
                 testPassed();
