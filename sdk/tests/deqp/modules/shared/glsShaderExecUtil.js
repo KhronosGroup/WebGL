@@ -446,7 +446,11 @@ goog.scope(function() {
             else if (gluShaderUtil.isDataTypeMatrix(basicType)) {
                 /** @type {number} */ var numRows = gluShaderUtil.getDataTypeMatrixNumRows(basicType);
                 /** @type {number} */ var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(basicType);
-                /** @type {number} */ var stride = numRows * numCols * 4;//sizeof(float);
+                // A matrix consists of several (column-major) vectors. A buffer is created for
+                // every vector in gluDrawUtil.draw() below. Data in every buffer will be tightly
+                // packed. So the stride should be 0. This is different from the code in native
+                // deqp, which use only one buffer for a matrix, the data is interleaved.
+                /** @type {number} */ var stride = 0;
 
                 for (var colNdx = 0; colNdx < numCols; ++colNdx)
                     vertexArrays.push(gluDrawUtil.newFloatColumnVertexArrayBinding(symbol.name,
@@ -628,7 +632,11 @@ goog.scope(function() {
             else if (gluShaderUtil.isDataTypeMatrix(basicType)) {
                 var numRows = gluShaderUtil.getDataTypeMatrixNumRows(basicType);
                 var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(basicType);
-                var stride = numRows * numCols * 4;
+                // A matrix consists of several (column-major) vectors. A buffer is created for
+                // every vector in gluDrawUtil.draw() below. Data in every buffer will be tightly
+                // packed. So the stride should be 0. This is different from the code in native
+                // deqp, which use only one buffer for a matrix, the data is interleaved.
+                var stride = 0;
 
                 for (var colNdx = 0; colNdx < numCols; ++colNdx)
                     vertexArrays.push(gluDrawUtil.newFloatColumnVertexArrayBinding(attribName,
