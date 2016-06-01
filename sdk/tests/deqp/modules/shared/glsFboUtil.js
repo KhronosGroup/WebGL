@@ -1233,10 +1233,10 @@ goog.scope(function() {
 
     glsFboUtil.ValidStatusCodes.prototype.isFBOStatusRequired = function(fboStatus) {
         if (fboStatus == gl.FRAMEBUFFER_COMPLETE)
-            return m_allowComplete && this.m_errorStatusCodes.length == 0;
+            return this.m_allowComplete && this.m_errorStatusCodes.length == 0;
         else
             // fboStatus is the only allowed error status and succeeding is forbidden
-            return !m_allowComplete && this.m_errorStatusCodes.length == 1 && this.m_errorStatusCodes[0] == fboStatus;
+            return !this.m_allowComplete && this.m_errorStatusCodes.length == 1 && this.m_errorStatusCodes[0] == fboStatus;
     };
 
     glsFboUtil.ValidStatusCodes.prototype.isErrorCodeValid = function(errorCode) {
