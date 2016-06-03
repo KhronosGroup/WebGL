@@ -165,7 +165,7 @@ var DE_ASSERT = function(x) {
 
         // Render random-colored quads.
         /** @const {number} */ var numQuads = 8;
-        /** @type {deRandom.Random} */ var rnd = new deRandom.Random(9);
+        /** @type {deRandom.Random} */ var rnd = new deRandom.Random(7);
 
         ctx.depthFunc(gl.ALWAYS);
         ctx.enable(gl.STENCIL_TEST);
