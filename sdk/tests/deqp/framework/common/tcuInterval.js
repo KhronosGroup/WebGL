@@ -590,7 +590,7 @@ tcuInterval.applyMonotone3 = function(arg0, arg1, arg2, body) {
 
         var low = Math.min(i0.lo(), i1.lo(), i2.lo(), i3.lo(), i4.lo(), i5.lo(), i6.lo(), i7.lo());
         var high = Math.max(i0.hi(), i1.hi(), i2.hi(), i3.hi(), i4.hi(), i5.hi(), i6.hi(), i7.hi());
-        var hasNaN = i0.hasNaN() && i1.hasNaN() && i2.hasNaN() && i3.hasNaN() && i4.hasNaN() && i5.hasNaN() && i6.hasNaN() && i7.hasNaN();
+        var hasNaN = i0.hasNaN() || i1.hasNaN() || i2.hasNaN() || i3.hasNaN() || i4.hasNaN() || i5.hasNaN() || i6.hasNaN() || i7.hasNaN();
 
         ret = tcuInterval.withParams(hasNaN, low, high);
     }
