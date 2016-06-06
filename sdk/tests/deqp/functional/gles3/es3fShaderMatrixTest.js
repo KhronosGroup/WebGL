@@ -1668,149 +1668,161 @@ goog.scope(function() {
         var state = tcuTestCase.runner;
 
         var ops = [
-    		new es3fShaderMatrixTest.ops('add', 'Matrix addition tests', es3fShaderMatrixTest.MatrixOp.OP_ADD, true, true),
-    		new es3fShaderMatrixTest.ops('sub', 'Matrix subtraction tests', es3fShaderMatrixTest.MatrixOp.OP_SUB, true, true),
-    		new es3fShaderMatrixTest.ops('mul', 'Matrix multiplication tests', es3fShaderMatrixTest.MatrixOp.OP_MUL, true,	true),
-    		new es3fShaderMatrixTest.ops('div', 'Matrix division tests', es3fShaderMatrixTest.MatrixOp.OP_DIV, true, true),
-    		new es3fShaderMatrixTest.ops('matrixcompmult', 'Matrix component-wise multiplication tests', es3fShaderMatrixTest.MatrixOp.OP_COMP_MUL, false, true),
-    		new es3fShaderMatrixTest.ops('outerproduct', 'Matrix outerProduct() tests', es3fShaderMatrixTest.MatrixOp.OP_OUTER_PRODUCT, false, true),
-    		new es3fShaderMatrixTest.ops('transpose', 'Matrix transpose() tests', es3fShaderMatrixTest.MatrixOp.OP_TRANSPOSE, false, true),
-    		new es3fShaderMatrixTest.ops('determinant', 'Matrix determinant() tests', es3fShaderMatrixTest.MatrixOp.OP_DETERMINANT, false, true),
-    		new es3fShaderMatrixTest.ops('inverse', 'Matrix inverse() tests', es3fShaderMatrixTest.MatrixOp.OP_INVERSE, false, true),
-    		new es3fShaderMatrixTest.ops('unary_addition', 'Matrix unary addition tests', es3fShaderMatrixTest.MatrixOp.OP_UNARY_PLUS, false, false),
-    		new es3fShaderMatrixTest.ops('negation', 'Matrix negation tests', es3fShaderMatrixTest.MatrixOp.OP_NEGATION, false, false),
-    		new es3fShaderMatrixTest.ops('pre_increment', 'Matrix prefix increment tests', es3fShaderMatrixTest.MatrixOp.OP_PRE_INCREMENT, false, false),
-    		new es3fShaderMatrixTest.ops('pre_decrement', 'Matrix prefix decrement tests', es3fShaderMatrixTest.MatrixOp.OP_PRE_DECREMENT, false, false),
-    		new es3fShaderMatrixTest.ops('post_increment', 'Matrix postfix increment tests', es3fShaderMatrixTest.MatrixOp.OP_POST_INCREMENT, false, false),
-    		new es3fShaderMatrixTest.ops('post_decrement', 'Matrix postfix decrement tests', es3fShaderMatrixTest.MatrixOp.OP_POST_DECREMENT, false, false),
-    		new es3fShaderMatrixTest.ops('add_assign', 'Matrix add into tests', es3fShaderMatrixTest.MatrixOp.OP_ADD_INTO, false, false),
-    		new es3fShaderMatrixTest.ops('sub_assign', 'Matrix subtract from tests', es3fShaderMatrixTest.MatrixOp.OP_SUBTRACT_FROM,false, false),
-    		new es3fShaderMatrixTest.ops('mul_assign', 'Matrix multiply into tests', es3fShaderMatrixTest.MatrixOp.OP_MULTIPLY_INTO,false, false),
-    		new es3fShaderMatrixTest.ops('div_assign', 'Matrix divide into tests', es3fShaderMatrixTest.MatrixOp.OP_DIVIDE_INTO,false, false)
+            new es3fShaderMatrixTest.ops('add', 'Matrix addition tests', es3fShaderMatrixTest.MatrixOp.OP_ADD, true, true),
+            new es3fShaderMatrixTest.ops('sub', 'Matrix subtraction tests', es3fShaderMatrixTest.MatrixOp.OP_SUB, true, true),
+            new es3fShaderMatrixTest.ops('mul', 'Matrix multiplication tests', es3fShaderMatrixTest.MatrixOp.OP_MUL, true,	true),
+            new es3fShaderMatrixTest.ops('div', 'Matrix division tests', es3fShaderMatrixTest.MatrixOp.OP_DIV, true, true),
+            new es3fShaderMatrixTest.ops('matrixcompmult', 'Matrix component-wise multiplication tests', es3fShaderMatrixTest.MatrixOp.OP_COMP_MUL, false, true),
+            new es3fShaderMatrixTest.ops('outerproduct', 'Matrix outerProduct() tests', es3fShaderMatrixTest.MatrixOp.OP_OUTER_PRODUCT, false, true),
+            new es3fShaderMatrixTest.ops('transpose', 'Matrix transpose() tests', es3fShaderMatrixTest.MatrixOp.OP_TRANSPOSE, false, true),
+            new es3fShaderMatrixTest.ops('determinant', 'Matrix determinant() tests', es3fShaderMatrixTest.MatrixOp.OP_DETERMINANT, false, true),
+            new es3fShaderMatrixTest.ops('inverse', 'Matrix inverse() tests', es3fShaderMatrixTest.MatrixOp.OP_INVERSE, false, true),
+            new es3fShaderMatrixTest.ops('unary_addition', 'Matrix unary addition tests', es3fShaderMatrixTest.MatrixOp.OP_UNARY_PLUS, false, false),
+            new es3fShaderMatrixTest.ops('negation', 'Matrix negation tests', es3fShaderMatrixTest.MatrixOp.OP_NEGATION, false, false),
+            new es3fShaderMatrixTest.ops('pre_increment', 'Matrix prefix increment tests', es3fShaderMatrixTest.MatrixOp.OP_PRE_INCREMENT, false, false),
+            new es3fShaderMatrixTest.ops('pre_decrement', 'Matrix prefix decrement tests', es3fShaderMatrixTest.MatrixOp.OP_PRE_DECREMENT, false, false),
+            new es3fShaderMatrixTest.ops('post_increment', 'Matrix postfix increment tests', es3fShaderMatrixTest.MatrixOp.OP_POST_INCREMENT, false, false),
+            new es3fShaderMatrixTest.ops('post_decrement', 'Matrix postfix decrement tests', es3fShaderMatrixTest.MatrixOp.OP_POST_DECREMENT, false, false),
+            new es3fShaderMatrixTest.ops('add_assign', 'Matrix add into tests', es3fShaderMatrixTest.MatrixOp.OP_ADD_INTO, false, false),
+            new es3fShaderMatrixTest.ops('sub_assign', 'Matrix subtract from tests', es3fShaderMatrixTest.MatrixOp.OP_SUBTRACT_FROM,false, false),
+            new es3fShaderMatrixTest.ops('mul_assign', 'Matrix multiply into tests', es3fShaderMatrixTest.MatrixOp.OP_MULTIPLY_INTO,false, false),
+            new es3fShaderMatrixTest.ops('div_assign', 'Matrix divide into tests', es3fShaderMatrixTest.MatrixOp.OP_DIVIDE_INTO,false, false)
     	];
 
     	var extendedInputTypes = [
-    		new es3fShaderMatrixTest.InputTypeSpec('const', 'Constant matrix input', es3fShaderMatrixTest.InputType.INPUTTYPE_CONST),
-    		new es3fShaderMatrixTest.InputTypeSpec('uniform', 'Uniform matrix input', es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM),
-    		new es3fShaderMatrixTest.InputTypeSpec('dynamic', 'Dynamic matrix input', es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC)
+            new es3fShaderMatrixTest.InputTypeSpec('const', 'Constant matrix input', es3fShaderMatrixTest.InputType.INPUTTYPE_CONST),
+            new es3fShaderMatrixTest.InputTypeSpec('uniform', 'Uniform matrix input', es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM),
+            new es3fShaderMatrixTest.InputTypeSpec('dynamic', 'Dynamic matrix input', es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC)
     	];
 
     	var reducedInputTypes = [
-    		new es3fShaderMatrixTest.InputTypeSpec('dynamic', 'Dynamic matrix input', es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC)
+            new es3fShaderMatrixTest.InputTypeSpec('dynamic', 'Dynamic matrix input', es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC)
     	];
 
     	/** @type {Array<gluShaderUtil.DataType>} */ var matrixTypes = [
-    		gluShaderUtil.DataType.FLOAT_MAT2,
-    		gluShaderUtil.DataType.FLOAT_MAT2X3,
-    		gluShaderUtil.DataType.FLOAT_MAT2X4,
-    		gluShaderUtil.DataType.FLOAT_MAT3X2,
-    		gluShaderUtil.DataType.FLOAT_MAT3,
-    		gluShaderUtil.DataType.FLOAT_MAT3X4,
-    		gluShaderUtil.DataType.FLOAT_MAT4X2,
-    		gluShaderUtil.DataType.FLOAT_MAT4X3,
-    		gluShaderUtil.DataType.FLOAT_MAT4
+            gluShaderUtil.DataType.FLOAT_MAT2,
+            gluShaderUtil.DataType.FLOAT_MAT2X3,
+            gluShaderUtil.DataType.FLOAT_MAT2X4,
+            gluShaderUtil.DataType.FLOAT_MAT3X2,
+            gluShaderUtil.DataType.FLOAT_MAT3,
+            gluShaderUtil.DataType.FLOAT_MAT3X4,
+            gluShaderUtil.DataType.FLOAT_MAT4X2,
+            gluShaderUtil.DataType.FLOAT_MAT4X3,
+            gluShaderUtil.DataType.FLOAT_MAT4
     	];
 
     	/** @type {Array<gluShaderUtil.precision>} */ var precisions = [
-    		gluShaderUtil.precision.PRECISION_LOWP,
-    		gluShaderUtil.precision.PRECISION_MEDIUMP,
-    		gluShaderUtil.precision.PRECISION_HIGHP
+            gluShaderUtil.precision.PRECISION_LOWP,
+            gluShaderUtil.precision.PRECISION_MEDIUMP,
+            gluShaderUtil.precision.PRECISION_HIGHP
     	];
 
     	for (var opNdx = 0; opNdx < ops.length; opNdx++) {
-    		var inTypeList = ops[opNdx].extendedInputTypeCases ? extendedInputTypes : reducedInputTypes;
-    		var inTypeListSize = ops[opNdx].extendedInputTypeCases ? extendedInputTypes.length : reducedInputTypes.length;
-    		var op = ops[opNdx].op;
-    		var opGroup = tcuTestCase.newTest(ops[opNdx].name, ops[opNdx].desc);
+            var inTypeList = ops[opNdx].extendedInputTypeCases ? extendedInputTypes : reducedInputTypes;
+            var inTypeListSize = ops[opNdx].extendedInputTypeCases ? extendedInputTypes.length : reducedInputTypes.length;
+            var op = ops[opNdx].op;
 
-    		state.testCases.addChild(opGroup);
+            for (var inTypeNdx = 0; inTypeNdx < inTypeListSize; inTypeNdx++) {
+                var inputType = inTypeList[inTypeNdx].type;
+                var group = [];
 
-    		for (var inTypeNdx = 0; inTypeNdx < inTypeListSize; inTypeNdx++) {
-    			var inputType	= inTypeList[inTypeNdx].type;
-    			var inGroup;
+                if (ops[opNdx].name != 'mul') {
+                    if (ops[opNdx].createInputTypeGroup) {
+                        group[0] = tcuTestCase.newTest(ops[opNdx].name + '.' + inTypeList[inTypeNdx].name, inTypeList[inTypeNdx].desc);
+                    } else {
+                        group[0] = tcuTestCase.newTest(ops[opNdx].name, ops[opNdx].desc);
+                    }
+                    state.testCases.addChild(group[0]);
+                } else {
+                    for (var ii = 0; ii < precisions.length; ++ii) {
+                        group[ii] = tcuTestCase.newTest(ops[opNdx].name + '.' + inTypeList[inTypeNdx].name, inTypeList[inTypeNdx].desc);
+                        state.testCases.addChild(group[ii]);
+                    }
+                }
 
-    			if (ops[opNdx].createInputTypeGroup) {
-    				inGroup = tcuTestCase.newTest(inTypeList[inTypeNdx].name, inTypeList[inTypeNdx].desc);
-    				opGroup.addChild(inGroup);
-    			} else
-    				inGroup = opGroup;
+                for (var matTypeNdx = 0; matTypeNdx < matrixTypes.length; matTypeNdx++) {
+                    var matType = matrixTypes[matTypeNdx];
+                    var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(matType);
+                    var numRows = gluShaderUtil.getDataTypeMatrixNumRows(matType);
+                    var matTypeName = gluShaderUtil.getDataTypeName(matType);
 
-    			for (var matTypeNdx = 0; matTypeNdx < matrixTypes.length; matTypeNdx++) {
-    				var matType = matrixTypes[matTypeNdx];
-    				var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(matType);
-    				var numRows = gluShaderUtil.getDataTypeMatrixNumRows(matType);
-    				var matTypeName	= gluShaderUtil.getDataTypeName(matType);
+                    for (var precNdx = 0; precNdx < precisions.length; precNdx++) {
+                        var inGroup;
+                        if (ops[opNdx].name != 'mul') {
+                            inGroup = group[0];
+                        } else {
+                            inGroup = group[precNdx];
+                        }
 
-    				for (var precNdx = 0; precNdx < precisions.length; precNdx++) {
-    					var precision = precisions[precNdx];
-    					var precName = gluShaderUtil.getPrecisionName(precision);
-    					var baseName = precName + '_' + matTypeName + '_';
-    					var matIn = new es3fShaderMatrixTest.ShaderInput(inputType, matType, precision);
+                        var precision = precisions[precNdx];
+                        var precName = gluShaderUtil.getPrecisionName(precision);
+                        var baseName = precName + '_' + matTypeName + '_';
+                        var matIn = new es3fShaderMatrixTest.ShaderInput(inputType, matType, precision);
 
-    					if (es3fShaderMatrixTest.isOperationMatrixScalar(op)) {
-    						// Matrix-scalar \note For div cases we use uniform input.
-    						var scalarIn = new es3fShaderMatrixTest.ShaderInput(op == es3fShaderMatrixTest.MatrixOp.OP_DIV ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC, gluShaderUtil.DataType.FLOAT, precision);
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_vertex', 'Matrix-scalar case', matIn, scalarIn, op, true));
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_fragment',	'Matrix-scalar case', matIn, scalarIn, op, false));
-    					}
+                        if (es3fShaderMatrixTest.isOperationMatrixScalar(op)) {
+                            // Matrix-scalar \note For div cases we use uniform input.
+                            var scalarIn = new es3fShaderMatrixTest.ShaderInput(op == es3fShaderMatrixTest.MatrixOp.OP_DIV ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC, gluShaderUtil.DataType.FLOAT, precision);
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_vertex', 'Matrix-scalar case', matIn, scalarIn, op, true));
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_fragment',	'Matrix-scalar case', matIn, scalarIn, op, false));
+                        }
 
-    					if (es3fShaderMatrixTest.isOperationMatrixVector(op)) {
-    						// Matrix-vector.
-    						var colVecType	= gluShaderUtil.getDataTypeFloatVec(numCols);
-    						var colVecIn = new es3fShaderMatrixTest.ShaderInput(op == es3fShaderMatrixTest.MatrixOp.OP_DIV ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC, colVecType, precision);
+                        if (es3fShaderMatrixTest.isOperationMatrixVector(op)) {
+                            // Matrix-vector.
+                            var colVecType = gluShaderUtil.getDataTypeFloatVec(numCols);
+                            var colVecIn = new es3fShaderMatrixTest.ShaderInput(op == es3fShaderMatrixTest.MatrixOp.OP_DIV ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC, colVecType, precision);
 
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + gluShaderUtil.getDataTypeName(colVecType) + '_vertex', 'Matrix-vector case', matIn, colVecIn, op, true));
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + gluShaderUtil.getDataTypeName(colVecType) + '_fragment', 'Matrix-vector case', matIn, colVecIn, op, false));
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + gluShaderUtil.getDataTypeName(colVecType) + '_vertex', 'Matrix-vector case', matIn, colVecIn, op, true));
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + gluShaderUtil.getDataTypeName(colVecType) + '_fragment', 'Matrix-vector case', matIn, colVecIn, op, false));
 
-    						// Vector-matrix.
-    						var rowVecType	= gluShaderUtil.getDataTypeFloatVec(numRows);
-    						var	rowVecIn = new es3fShaderMatrixTest.ShaderInput(op == es3fShaderMatrixTest.MatrixOp.OP_DIV ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC, rowVecType, precision);
-    						var vecMatName = precName + '_' + gluShaderUtil.getDataTypeName(rowVecType) + '_' + matTypeName;
+                            // Vector-matrix.
+                            var rowVecType = gluShaderUtil.getDataTypeFloatVec(numRows);
+                            var rowVecIn = new es3fShaderMatrixTest.ShaderInput(op == es3fShaderMatrixTest.MatrixOp.OP_DIV ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC, rowVecType, precision);
+                            var vecMatName = precName + '_' + gluShaderUtil.getDataTypeName(rowVecType) + '_' + matTypeName;
 
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(vecMatName + '_vertex', 'Vector-matrix case', rowVecIn, matIn, op, true));
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(vecMatName + '_fragment', 'Vector-matrix case', rowVecIn, matIn, op, false));
-    					}
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(vecMatName + '_vertex', 'Vector-matrix case', rowVecIn, matIn, op, true));
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(vecMatName + '_fragment', 'Vector-matrix case', rowVecIn, matIn, op, false));
+                        }
 
-    					if (es3fShaderMatrixTest.isOperationArithmeticMatrixMatrix(op)) {
-    						// Arithmetic matrix-matrix multiplication.
-    						for (var otherCols = 2; otherCols <= 4; otherCols++) {
-    							var otherMatIn = new es3fShaderMatrixTest.ShaderInput(inputType == es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : inputType, gluShaderUtil.getDataTypeMatrix(otherCols, numCols), precision);
-    							inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + gluShaderUtil.getDataTypeName(otherMatIn.dataType) + '_vertex',	'Matrix-matrix case', matIn, otherMatIn, op, true));
-    							inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + gluShaderUtil.getDataTypeName(otherMatIn.dataType) + '_fragment',	'Matrix-matrix case', matIn, otherMatIn, op, false));
-    						}
-    					} else if (es3fShaderMatrixTest.isOperationComponentwiseMatrixMatrix(op)) {
-    						// Component-wise.
-    						var otherMatIn = new es3fShaderMatrixTest.ShaderInput(inputType == es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : inputType, matType, precision);
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + matTypeName + '_vertex', 'Matrix-matrix case', matIn, otherMatIn, op, true));
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + matTypeName + '_fragment', 'Matrix-matrix case', matIn, otherMatIn, op, false));
-    					}
+                        if (es3fShaderMatrixTest.isOperationArithmeticMatrixMatrix(op)) {
+                            // Arithmetic matrix-matrix multiplication.
+                            for (var otherCols = 2; otherCols <= 4; otherCols++) {
+                                var otherMatIn = new es3fShaderMatrixTest.ShaderInput(inputType == es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : inputType, gluShaderUtil.getDataTypeMatrix(otherCols, numCols), precision);
+                                inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + gluShaderUtil.getDataTypeName(otherMatIn.dataType) + '_vertex',	'Matrix-matrix case', matIn, otherMatIn, op, true));
+                                inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + gluShaderUtil.getDataTypeName(otherMatIn.dataType) + '_fragment',	'Matrix-matrix case', matIn, otherMatIn, op, false));
+                            }
+                        } else if (es3fShaderMatrixTest.isOperationComponentwiseMatrixMatrix(op)) {
+                            // Component-wise.
+                            var otherMatIn = new es3fShaderMatrixTest.ShaderInput(inputType == es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : inputType, matType, precision);
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + matTypeName + '_vertex', 'Matrix-matrix case', matIn, otherMatIn, op, true));
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + matTypeName + '_fragment', 'Matrix-matrix case', matIn, otherMatIn, op, false));
+                        }
 
-    					if (es3fShaderMatrixTest.isOperationVectorVector(op)) {
-    						var vec1In = new es3fShaderMatrixTest.ShaderInput(inputType, gluShaderUtil.getDataTypeFloatVec(numRows), precision);
-    						var vec2In = new es3fShaderMatrixTest.ShaderInput((inputType == es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC) ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : inputType, gluShaderUtil.getDataTypeFloatVec(numCols), precision);
+                        if (es3fShaderMatrixTest.isOperationVectorVector(op)) {
+                            var vec1In = new es3fShaderMatrixTest.ShaderInput(inputType, gluShaderUtil.getDataTypeFloatVec(numRows), precision);
+                            var vec2In = new es3fShaderMatrixTest.ShaderInput((inputType == es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC) ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : inputType, gluShaderUtil.getDataTypeFloatVec(numCols), precision);
 
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_vertex', 'Vector-vector case', vec1In, vec2In, op, true));
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_fragment', 'Vector-vector case', vec1In, vec2In, op, false));
-    					}
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_vertex', 'Vector-vector case', vec1In, vec2In, op, true));
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_fragment', 'Vector-vector case', vec1In, vec2In, op, false));
+                        }
 
-    					if (es3fShaderMatrixTest.isOperationUnaryAnyMatrix(op) || (es3fShaderMatrixTest.isOperationUnarySymmetricMatrix(op) && numCols == numRows)) {
-    						var voidInput = new es3fShaderMatrixTest.ShaderInput();
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_vertex', 'Matrix case', matIn, voidInput, op, true));
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_fragment', 'Matrix case', matIn, voidInput, op, false));
-    					}
+                        if (es3fShaderMatrixTest.isOperationUnaryAnyMatrix(op) || (es3fShaderMatrixTest.isOperationUnarySymmetricMatrix(op) && numCols == numRows)) {
+                            var voidInput = new es3fShaderMatrixTest.ShaderInput();
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_vertex', 'Matrix case', matIn, voidInput, op, true));
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_fragment', 'Matrix case', matIn, voidInput, op, false));
+                        }
 
-    					if (es3fShaderMatrixTest.isOperationAssignmentAnyMatrix(op) || (es3fShaderMatrixTest.isOperationAssignmentSymmetricMatrix(op) && numCols == numRows)) {
-    						var otherMatIn = new es3fShaderMatrixTest.ShaderInput(inputType == es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : inputType, matType, precision);
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_vertex', 'Matrix assignment case', matIn, otherMatIn, op, true));
-    						inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_fragment', 'Matrix assignment case', matIn, otherMatIn, op, false));
-    					}
-    				}
-    			}
-    		}
-    	}
+                        if (es3fShaderMatrixTest.isOperationAssignmentAnyMatrix(op) || (es3fShaderMatrixTest.isOperationAssignmentSymmetricMatrix(op) && numCols == numRows)) {
+                            var otherMatIn = new es3fShaderMatrixTest.ShaderInput(inputType == es3fShaderMatrixTest.InputType.INPUTTYPE_DYNAMIC ? es3fShaderMatrixTest.InputType.INPUTTYPE_UNIFORM : inputType, matType, precision);
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_vertex', 'Matrix assignment case', matIn, otherMatIn, op, true));
+                            inGroup.addChild(new es3fShaderMatrixTest.ShaderMatrixCase(baseName + 'float_fragment', 'Matrix assignment case', matIn, otherMatIn, op, false));
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    es3fShaderMatrixTest.run = function(context) {
+    es3fShaderMatrixTest.run = function(context, range) {
         gl = context;
         //Set up Test Root parameters
         var testName = 'shader_matrix';
@@ -1827,6 +1839,8 @@ goog.scope(function() {
         try {
             //Create test cases
             es3fShaderMatrixTest.init();
+            if (range)
+                state.setRange(range);
             //Run test cases
             tcuTestCase.runTestCases();
         }
