@@ -165,6 +165,10 @@ var DE_ASSERT = function(x) {
 
         // Render random-colored quads.
         /** @const {number} */ var numQuads = 8;
+
+        // The choice of random seed affects the correctness of the tests,
+        // because there are some boundary conditions which aren't handled
+        // correctly even in the C++ dEQP tests.
         /** @type {deRandom.Random} */ var rnd = new deRandom.Random(7);
 
         ctx.depthFunc(gl.ALWAYS);
