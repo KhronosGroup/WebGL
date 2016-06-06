@@ -151,6 +151,59 @@ tcuTexCompareVerifier.isFixedPointDepthTextureFormat = function(format) {
 };
 
 /**
+ * @param {tcuTexture.CompareMode} compareMode
+ * @param {tcuTexCompareVerifier.TexComparePrecision} prec
+ * @param {Array<number>} depths
+ * @param {Array<number>} fBounds
+ * @param {number} cmpReference
+ * @param {number} result
+ * @param {boolean} isFixedPointDepth
+ * @return {boolean}
+ */
+tcuTexCompareVerifier.isLinearCompareValid = function(compareMode, prec, depths, fBounds, cmpReference, result, isFixedPointDepth) {
+    assertMsgOptions(fBounds[0] >= 0 && fBounds[0] <= fBounds[1] && fBounds[1] <= 1, 'Invalid fBounds', false, true);
+
+    var d0 = depths[0];
+    var d1 = depths[1];
+
+    var cmp0 = tcuTexCompareVerifier.execCompare(compareMode, d0, cmpReference, prec.referenceBits, isFixedPointDepth);
+    var cmp1 = tcuTexCompareVerifier.execCompare(compareMode, d1, cmpReference, prec.referenceBits, isFixedPointDepth);
+    var cmp = [cmp0, cmp1];
+
+    var isTrue = getMask(cmp, function(x) {return x.isTrue;});
+    var isFalse = getMask(cmp, function(x) {return x.isFalse;});
+
+    var f0 = fBounds[0];
+    var f1 = fBounds[1];
+
+    var pcfErr = tcuTexVerifierUtil.computeFixedPointError(prec.pcfBits);
+    var resErr = tcuTexVerifierUtil.computeFixedPointError(prec.resultBits);
+    var totalErr = pcfErr + resErr;
+
+    for (var comb = 0; comb < 4; comb++) {
+        if (((comb & isTrue) | (~comb & isFalse )) != 3)
+            continue;
+
+        var cmp0True = ((comb >> 0) & 1) != 0;
+        var cmp1True = ((comb >> 1) & 1) != 0;
+
+        var ref0 = cmp0True ? 1 : 0;
+        var ref1 = cmp1True ? 1 : 0;
+
+        var v0 = ref0 * (1 - f0) + ref1 * f0;
+        var v1 = ref0 * (1 - f1) + ref1 * f1;
+        var minV = deMath.min(v0, v1);
+        var maxV = deMath.max(v0, v1);
+        var minR = minV - totalErr;
+        var maxR = maxV + totalErr;
+
+        if (deMath.deInRange32(result, minR, maxR))
+            return true;
+    }
+    return false;
+};
+
+/**
  * @param {number} val
  * @param {number} offset
  * @return {Array<boolean>}
@@ -778,7 +831,55 @@ tcuTexCompareVerifier.isNearestMipmapLinearCompareResultValid = function(level0,
                                               fBounds,
                                               cmpReference,
                                               result) {
+    var isFixedPointDepth = tcuTexCompareVerifier.isFixedPointDepthTextureFormat(level0.getFormat());
 
+    var w0 = level0.getWidth();
+    var w1 = level1.getWidth();
+    var h0 = level0.getHeight();
+    var h1 = level1.getHeight();
+
+    var uBounds0 = tcuTexVerifierUtil.computeNonNormalizedCoordBounds(sampler.normalizedCoords, w0, coord[0], prec.coordBits[0], prec.uvwBits[0]);
+    var uBounds1 = tcuTexVerifierUtil.computeNonNormalizedCoordBounds(sampler.normalizedCoords, w1, coord[0], prec.coordBits[0], prec.uvwBits[0]);
+    var vBounds0 = tcuTexVerifierUtil.computeNonNormalizedCoordBounds(sampler.normalizedCoords, h0, coord[1], prec.coordBits[1], prec.uvwBits[1]);
+    var vBounds1 = tcuTexVerifierUtil.computeNonNormalizedCoordBounds(sampler.normalizedCoords, h1, coord[1], prec.coordBits[1], prec.uvwBits[1]);
+
+    var minI0 = Math.floor(uBounds0[0]);
+    var maxI0 = Math.floor(uBounds0[1]);
+    var minI1 = Math.floor(uBounds1[0]);
+    var maxI1 = Math.floor(uBounds1[1]);
+    var minJ0 = Math.floor(vBounds0[0]);
+    var maxJ0 = Math.floor(vBounds0[1]);
+    var minJ1 = Math.floor(vBounds1[0]);
+    var maxJ1 = Math.floor(vBounds1[1]);
+
+    for (var j0 = minJ0; j0 <= maxJ0; j0++) {
+        for (var i0 = minI0; i0 <= maxI0; i0++) {
+            var x0 = tcuTexVerifierUtil.wrap(sampler.wrapS, i0, w0);
+            var y0 = tcuTexVerifierUtil.wrap(sampler.wrapT, j0, h0);
+
+            // Derivated from C++ dEQP function lookupDepth()
+            // Since x0 and y0 are wrapped, here lookupDepth() returns the same result as getPixDepth()
+            assertMsgOptions(deMath.deInBounds32(x0, 0, level0.getWidth()) && deMath.deInBounds32(y0, 0, level0.getHeight()) && deMath.deInBounds32(coordZ, 0, level0.getDepth()), 'x0, y0 or coordZ out of bound.', false, true);
+            var depth0 = level0.getPixDepth(x0, y0, coordZ);
+
+            for (var j1 = minJ1; j1 <= maxJ1; j1++) {
+                for (var i1 = minI1; i1 <= maxI1; i1++) {
+                    var x1 = tcuTexVerifierUtil.wrap(sampler.wrapS, i1, w1);
+                    var y1 = tcuTexVerifierUtil.wrap(sampler.wrapT, j1, h1);
+
+                    // Derivated from C++ dEQP function lookupDepth()
+                    // Since x1 and y1 are wrapped, here lookupDepth() returns the same result as getPixDepth()
+                    assertMsgOptions(deMath.deInBounds32(x1, 0, level1.getWidth()) && deMath.deInBounds32(y1, 0, level1.getHeight()), 'x1 or y1 out of bound.', false, true);
+                    var depth1 = level1.getPixDepth(x1, y1, coordZ);
+
+                    if (tcuTexCompareVerifier.isLinearCompareValid(sampler.compare, prec, [depth0, depth1], fBounds, cmpReference, result, isFixedPointDepth))
+                        return true;
+                }
+            }
+        }
+    }
+
+    return false;
 };
 
 /**
