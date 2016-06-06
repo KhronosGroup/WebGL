@@ -196,7 +196,7 @@ rrFragmentOperations.executeDepthCompare = function(inputFragments, depthFunc, d
                 var fragSampleNdx = 0;
                 var depthBufferValue = depthBuffer.getPixDepth(fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
                 var sampleDepthFloat = frag.sampleDepths[fragSampleNdx];
-                var sampleDepth = sampleDepthFloat;
+                var sampleDepth = deMath.clamp(sampleDepthFloat, 0.0, 1.0);
                 frag.depthPassed = expression(sampleDepth, depthBufferValue);
             }
         }
