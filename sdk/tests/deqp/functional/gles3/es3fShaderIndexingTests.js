@@ -1177,8 +1177,6 @@ goog.scope(function() {
         }
 
         // Vector indexing with subscripts.
-        /** @type {tcuTestCase.DeqpTest} */ var vecGroup = tcuTestCase.newTest("vector_subscript", "Vector subscript indexing.");
-        testGroup.addChild(vecGroup);
 
         /** @type {Array<gluShaderUtil.DataType>} */ var s_vectorTypes = [
             gluShaderUtil.DataType.FLOAT_VEC2,
@@ -1187,6 +1185,9 @@ goog.scope(function() {
         ];
 
         for (var typeNdx = 0; typeNdx < s_vectorTypes.length; typeNdx++) {
+            /** @type {tcuTestCase.DeqpTest} */ var vecGroup = tcuTestCase.newTest("vector_subscript", "Vector subscript indexing.");
+            testGroup.addChild(vecGroup);
+
             varType = s_vectorTypes[typeNdx];
             for (var writeAccess in es3fShaderIndexingTests.VectorAccessType) {
                 for (var readAccess in es3fShaderIndexingTests.VectorAccessType) {
@@ -1206,8 +1207,14 @@ goog.scope(function() {
         }
 
         // Matrix indexing with subscripts.
-        /** @type {tcuTestCase.DeqpTest} */ var matGroup = tcuTestCase.newTest("matrix_subscript", "Matrix subscript indexing.");
-        testGroup.addChild(matGroup);
+        /** @type {Array<tcuTestCase.DeqpTest>} */ var matGroup = [
+            tcuTestCase.newTest("matrix_subscript", "Matrix subscript indexing."),
+            tcuTestCase.newTest("matrix_subscript", "Matrix subscript indexing."),
+            tcuTestCase.newTest("matrix_subscript", "Matrix subscript indexing."),
+        ];
+        for (var ii = 0; ii < matGroup.length; ++ii) {
+            testGroup.addChild(matGroup[ii]);
+        }
 
         /** @type {Array<gluShaderUtil.DataType>} */ var s_matrixTypes = [
             gluShaderUtil.DataType.FLOAT_MAT2,
@@ -1234,7 +1241,8 @@ goog.scope(function() {
                         name = gluShaderUtil.getDataTypeName(varType) + "_" + writeAccessName + "_write_" + readAccessName + "_read_" + shaderTypeName;
                         desc = "Vector subscript access with " + writeAccessName + " write and " + readAccessName + " read in " + shaderTypeName + " shader.";
                         isVertexCase = shaderType === gluShaderProgram.shaderType.VERTEX;
-                        matGroup.addChild(es3fShaderIndexingTests.createMatrixSubscriptCase(name, desc, isVertexCase, varType, es3fShaderIndexingTests.IndexAccessType[writeAccess], es3fShaderIndexingTests.IndexAccessType[readAccess]));
+                        matGroup[typeNdx % matGroup.length].addChild(es3fShaderIndexingTests.createMatrixSubscriptCase(
+                            name, desc, isVertexCase, varType, es3fShaderIndexingTests.IndexAccessType[writeAccess], es3fShaderIndexingTests.IndexAccessType[readAccess]));
                     }
                 }
             }
@@ -1245,7 +1253,7 @@ goog.scope(function() {
      * Run test
      * @param {WebGL2RenderingContext} context
      */
-    es3fShaderIndexingTests.run = function(context) {
+    es3fShaderIndexingTests.run = function(context, range) {
         gl = context;
         //Set up Test Root parameters
         var state = tcuTestCase.runner;
@@ -1256,6 +1264,8 @@ goog.scope(function() {
         description(state.testCases.getDescription());
 
         try {
+            if (range)
+                state.setRange(range);
             //Run test cases
             tcuTestCase.runTestCases();
         }

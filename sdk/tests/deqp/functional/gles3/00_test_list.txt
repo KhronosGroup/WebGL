@@ -1,4 +1,5 @@
 builtinprecision/00_test_list.txt
+shaderindexing/00_test_list.txt
 shadertexturefunction/00_test_list.txt
 texturefiltering/00_test_list.txt
 textureformat/00_test_list.txt
@@ -49,7 +50,6 @@ shaderapi.html
 shaderbuiltinvar.html
 shadercommonfunction.html
 shaderderivate.html
-shaderindexing.html
 shaderloop_for.html
 shaderloop_while.html
 shaderloop_do_while.html
