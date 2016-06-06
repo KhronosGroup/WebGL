@@ -54,7 +54,9 @@ shaderloop.html
 shadermatrix.html
 shaderoperator.html
 shaderpackingfunction.html
-shaderprecision.html
+shaderprecision_float.html
+shaderprecision_int.html
+shaderprecision_uint.html
 shaderstatequery.html
 shaderstruct.html
 shaderswitch.html
