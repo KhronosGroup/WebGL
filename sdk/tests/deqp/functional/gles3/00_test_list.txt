@@ -50,7 +50,9 @@ shaderbuiltinvar.html
 shadercommonfunction.html
 shaderderivate.html
 shaderindexing.html
-shaderloop.html
+shaderloop_for.html
+shaderloop_while.html
+shaderloop_do_while.html
 shadermatrix.html
 shaderoperator.html
 shaderpackingfunction.html

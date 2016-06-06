@@ -1166,15 +1166,17 @@ es3fShaderLoopTests.ShaderLoopTests.prototype.init = function() {
 
     for (var loopType in es3fShaderLoopTests.LoopType) {
         /** @type {string} */ var loopTypeName = es3fShaderLoopTests.getLoopTypeName(es3fShaderLoopTests.LoopType[loopType]);
+        /** @type {tcuTestCase.DeqpTest} */ var loopTypeGroup = tcuTestCase.newTest(loopTypeName, 'Loop tests with ' + loopTypeName + ' loop type');
+        testGroup.addChild(loopTypeGroup);
 
         for (var loopCountType in es3fShaderLoopTests.LoopCountType) {
             /** @type {string} */ var loopCountName = es3fShaderLoopTests.getLoopCountTypeName(es3fShaderLoopTests.LoopCountType[loopCountType]);
 
-            /** @type {string} */ var groupName = loopTypeName + '_' + loopCountName + '_iterations';
+            /** @type {string} */ var groupName = loopCountName + '_iterations';
             /** @type {string} */ var groupDesc = 'Loop tests with ' + loopCountName + ' loop counter.';
 
             /** @type {tcuTestCase.DeqpTest} */ var group = tcuTestCase.newTest(groupName, groupDesc);
-            testGroup.addChild(group);
+            loopTypeGroup.addChild(group);
 
             // Generic cases.
 
@@ -1225,7 +1227,7 @@ es3fShaderLoopTests.ShaderLoopTests.prototype.init = function() {
 * Run test
 * @param {WebGL2RenderingContext} context
 */
-es3fShaderLoopTests.run = function(context) {
+es3fShaderLoopTests.run = function(context, range) {
     gl = context;
     //Set up Test Root parameters
     var state = tcuTestCase.runner;
@@ -1235,6 +1237,8 @@ es3fShaderLoopTests.run = function(context) {
     setCurrentTestName(state.testCases.fullName());
     description(state.testCases.getDescription());
     try {
+        if (range)
+            state.setRange(range);
         //Run test cases
         tcuTestCase.runTestCases();
     }
