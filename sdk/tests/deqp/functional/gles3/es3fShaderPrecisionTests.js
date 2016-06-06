@@ -916,7 +916,7 @@ goog.scope(function() {
     * Run test
     * @param {WebGL2RenderingContext} context
     */
-    es3fShaderPrecisionTests.run = function(context) {
+    es3fShaderPrecisionTests.run = function(context, range) {
         gl = context;
         //Set up Test Root parameters
         var state = tcuTestCase.runner;
@@ -927,6 +927,8 @@ goog.scope(function() {
         description(state.testCases.getDescription());
 
         try {
+            if (range)
+                state.setRange(range);
             //Run test cases
             tcuTestCase.runTestCases();
         }
