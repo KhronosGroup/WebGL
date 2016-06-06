@@ -43,16 +43,16 @@ goog.scope(function() {
     // tcu::RGBA::*_SHIFT values.
 
     function UintRGBA8_R(color) {
-        return (color >> 24) && 0xff;
+        return (color >> 24) & 0xff;
     }
     function UintRGBA8_G(color) {
-        return (color >> 16) && 0xff;
+        return (color >> 16) & 0xff;
     }
     function UintRGBA8_B(color) {
-        return (color >> 8) && 0xff;
+        return (color >> 8) & 0xff;
     }
     function UintRGBA8_A(color) {
-        return color && 0xff;
+        return color & 0xff;
     }
 
     /**
