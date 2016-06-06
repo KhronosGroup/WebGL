@@ -4959,6 +4959,14 @@ var setParentClass = function(child, parent) {
                 // 2^-11 at x == pi.
                 return deMath.deLdExp(Math.abs(arg), -12);
             }
+        } else if (ctx.floatPrecision == gluShaderUtil.precision.PRECISION_MEDIUMP) {
+            if (-Math.PI <= arg && arg <= Math.PI) {
+                // from OpenCL half-float extension specification
+                return ctx.format.ulp(ret, 2.0);
+            } else {
+                // |x| * 2^-10 , slightly larger than 2 ULP at x == pi
+                return deMath.deLdExp(Math.abs(arg), -10);
+            }
         } else {
             // from OpenCL half-float extension specification
             return ctx.format.ulp(ret, 2.0);
