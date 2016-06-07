@@ -896,138 +896,99 @@ gluTextureUtil.getSampler3D = function(format) {
     }
 };
 
-// /*--------------------------------------------------------------------*//*!
-//  * \brief Get GLSL sampler type for texture format.
-//  *
-//  * If no mapping is found, glu::TYPE_LAST is returned.
-//  *
-//  * \param format Texture format
-//  * \return GLSL cube map array sampler type for format
-//  *//*--------------------------------------------------------------------*/
-// DataType getSamplerCubeArrayType (tcu::TextureFormat format)
-// {
-//     using tcu::TextureFormat;
+gluTextureUtil.RenderableType = {
+    RENDERABLE_COLOR: (1<<0),
+    RENDERABLE_DEPTH: (1<<1),
+    RENDERABLE_STENCIL: (1<<2)
+};
 
-//     if (format.order == tcuTexture.ChannelOrder.D || format.order == tcuTexture.ChannelOrder.DS)
-//         return TYPE_SAMPLER_CUBE_ARRAY;
+/**
+ * \brief Get renderable bits.
+ * \note Works currently only on ES3 context.
+ *
+ * @param {number} internalFormat
+ * @return {gluTextureUtil.RenderableType}
+ */
+gluTextureUtil.getRenderableBitsES3 = function(internalFormat)
+{
+   switch (internalFormat)
+   {
+       // Color-renderable formats
+       case gl.RGBA32I:
+       case gl.RGBA32UI:
+       case gl.RGBA16I:
+       case gl.RGBA16UI:
+       case gl.RGBA8:
+       case gl.RGBA8I:
+       case gl.RGBA8UI:
+       case gl.SRGB8_ALPHA8:
+       case gl.RGB10_A2:
+       case gl.RGB10_A2UI:
+       case gl.RGBA4:
+       case gl.RGB5_A1:
+       case gl.RGB8:
+       case gl.RGB565:
+       case gl.RG32I:
+       case gl.RG32UI:
+       case gl.RG16I:
+       case gl.RG16UI:
+       case gl.RG8:
+       case gl.RG8I:
+       case gl.RG8UI:
+       case gl.R32I:
+       case gl.R32UI:
+       case gl.R16I:
+       case gl.R16UI:
+       case gl.R8:
+       case gl.R8I:
+       case gl.R8UI:
+           return gluTextureUtil.RenderableType.RENDERABLE_COLOR;
 
-//     if (format.order == tcuTexture.ChannelOrder.S)
-//         return TYPE_LAST;
+       // EXT_color_buffer_float
+       case gl.RGBA32F:
+       case gl.R11F_G11F_B10F:
+       case gl.RG32F:
+       case gl.R32F:
+       case gl.RGBA16F:
+       case gl.RG16F:
+       case gl.R16F:
+           if (gl.getExtension("EXT_color_buffer_float"))
+               return gluTextureUtil.RenderableType.RENDERABLE_COLOR;
+           else
+               return 0;
 
-//     switch (tcu::getTextureChannelClass(format.type))
-//     {
-//         case tcu::TEXTURECHANNELCLASS_FLOATING_POINT:
-//         case tcu::TEXTURECHANNELCLASS_SIGNED_FIXED_POINT:
-//         case tcu::TEXTURECHANNELCLASS_UNSIGNED_FIXED_POINT:
-//             return glu::TYPE_SAMPLER_CUBE_ARRAY;
+       // Depth formats
+       case gl.DEPTH_COMPONENT32F:
+       case gl.DEPTH_COMPONENT24:
+       case gl.DEPTH_COMPONENT16:
+           return gluTextureUtil.RenderableType.RENDERABLE_DEPTH;
 
-//         case tcu::TEXTURECHANNELCLASS_SIGNED_INTEGER:
-//             return glu::TYPE_INT_SAMPLER_CUBE_ARRAY;
+       // Depth+stencil formats
+       case gl.DEPTH32F_STENCIL8:
+       case gl.DEPTH24_STENCIL8:
+           return gluTextureUtil.RenderableType.RENDERABLE_DEPTH | gluTextureUtil.RenderableType.RENDERABLE_STENCIL;
 
-//         case tcu::TEXTURECHANNELCLASS_UNSIGNED_INTEGER:
-//             return glu::TYPE_UINT_SAMPLER_CUBE_ARRAY;
+       // Stencil formats
+       case gl.STENCIL_INDEX8:
+           return gluTextureUtil.RenderableType.RENDERABLE_STENCIL;
 
-//         default:
-//             return glu::TYPE_LAST;
-//     }
-// }
+       default:
+           return 0;
+   }
+}
 
-// enum RenderableType
-// {
-//     RENDERABLE_COLOR = (1<<0),
-//     RENDERABLE_DEPTH = (1<<1),
-//     RENDERABLE_STENCIL = (1<<2)
-// };
-
-// static deUint32 getRenderableBitsES3 (const ContextInfo& contextInfo, deUint32 internalFormat)
-// {
-//     switch (internalFormat)
-//     {
-//         // Color-renderable formats
-//         case gl.RGBA32I:
-//         case gl.RGBA32UI:
-//         case gl.RGBA16I:
-//         case gl.RGBA16UI:
-//         case gl.RGBA8:
-//         case gl.RGBA8I:
-//         case gl.RGBA8UI:
-//         case gl.SRGB8_ALPHA8:
-//         case gl.RGB10_A2:
-//         case gl.RGB10_A2UI:
-//         case gl.RGBA4:
-//         case gl.RGB5_A1:
-//         case gl.RGB8:
-//         case gl.RGB565:
-//         case gl.RG32I:
-//         case gl.RG32UI:
-//         case gl.RG16I:
-//         case gl.RG16UI:
-//         case gl.RG8:
-//         case gl.RG8I:
-//         case gl.RG8UI:
-//         case gl.R32I:
-//         case gl.R32UI:
-//         case gl.R16I:
-//         case gl.R16UI:
-//         case gl.R8:
-//         case gl.R8I:
-//         case gl.R8UI:
-//             return RENDERABLE_COLOR;
-
-//         // gl.EXT_color_buffer_float
-//         case gl.RGBA32F:
-//         case gl.R11F_G11F_B10F:
-//         case gl.RG32F:
-//         case gl.R32F:
-//             if (contextInfo.isExtensionSupported("gl.EXT_color_buffer_float"))
-//                 return RENDERABLE_COLOR;
-//             else
-//                 return 0;
-
-//         // gl.EXT_color_buffer_float / gl.EXT_color_buffer_half_float
-//         case gl.RGBA16F:
-//         case gl.RG16F:
-//         case gl.R16F:
-//             if (contextInfo.isExtensionSupported("gl.EXT_color_buffer_float") ||
-//                 contextInfo.isExtensionSupported("gl.EXT_color_buffer_half_float"))
-//                 return RENDERABLE_COLOR;
-//             else
-//                 return 0;
-
-//         // Depth formats
-//         case gl.DEPTH_COMPONENT32F:
-//         case gl.DEPTH_COMPONENT24:
-//         case gl.DEPTH_COMPONENT16:
-//             return RENDERABLE_DEPTH;
-
-//         // Depth+stencil formats
-//         case gl.DEPTH32F_STENCIL8:
-//         case gl.DEPTH24_STENCIL8:
-//             return RENDERABLE_DEPTH|RENDERABLE_STENCIL;
-
-//         // Stencil formats
-//         case gl.STENCIL_INDEX8:
-//             return RENDERABLE_STENCIL;
-
-//         default:
-//             return 0;
-//     }
-// }
-
-// /*--------------------------------------------------------------------*//*!
-//  * \brief Check if sized internal format is color-renderable.
-//  * \note Works currently only on ES3 context.
-//  *//*--------------------------------------------------------------------*/
-// bool isSizedFormatColorRenderable (const RenderContext& renderCtx, const ContextInfo& contextInfo, deUint32 sizedFormat)
-// {
-//     deUint32 renderable = 0;
-
-//     if (renderCtx.getType().getAPI() == ApiType::es(3,0))
-//         renderable = getRenderableBitsES3(contextInfo, sizedFormat);
-//     else
-//         throw tcu::InternalError("Context type not supported in query");
-
-//     return (renderable & RENDERABLE_COLOR) != 0;
-// }
+/**
+ * \brief Check if sized internal format is color-renderable.
+ * \note Works currently only on ES3 context.
+ *
+ * @param {number} sizedFormat
+ * @return {boolean}
+ */
+gluTextureUtil.isSizedFormatColorRenderable = function(sizedFormat)
+{
+    var renderable = 0;
+    renderable = gluTextureUtil.getRenderableBitsES3(sizedFormat);
+    return (renderable & gluTextureUtil.RenderableType.RENDERABLE_COLOR) != 0;
+}
 
 });
