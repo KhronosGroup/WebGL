@@ -177,10 +177,8 @@ var tcuImageCompare = framework.common.tcuImageCompare;
     es3fFragmentOutputTests.FragmentOutputCase.prototype.init = function() {
         // Check that all attachments are supported
         for (var iter = 0; iter < this.m_fboSpec.length; ++iter) {
-            /* TODO: isSizedFormatColorRenderable (in gluTextureUtil) not implemented yet.
-            if (!glu::isSizedFormatColorRenderable(m_context.getRenderContext(), m_context.getContextInfo(), this.m_fboSpec[iter].format))
-                throw tcu::NotSupportedError("Unsupported attachment format");
-                */
+            if (!gluTextureUtil.isSizedFormatColorRenderable(this.m_fboSpec[iter].format))
+                throw new Error('Unsupported attachment format');
         }
 
         DE_ASSERT(!this.m_program);
