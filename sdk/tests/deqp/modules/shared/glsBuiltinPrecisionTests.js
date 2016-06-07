@@ -5043,6 +5043,29 @@ var setParentClass = function(child, parent) {
      * @constructor
      * @extends {glsBuiltinPrecisionTests.CFloatFunc1}
      */
+    glsBuiltinPrecisionTests.ASin = function() {
+        glsBuiltinPrecisionTests.CFloatFunc1.call(this, 'asin', Math.asin);
+    };
+
+    setParentClass(glsBuiltinPrecisionTests.ASin, glsBuiltinPrecisionTests.CFloatFunc1);
+
+    glsBuiltinPrecisionTests.ASin.prototype.precision = function(ctx, ret, x) {
+        if (!deMath.deInBounds32(x, -1.0, 1.0))
+            return NaN;
+
+        if (ctx.floatPrecision == gluShaderUtil.precision.PRECISION_HIGHP) {
+            // Absolute error of 2^-11
+            return deMath.deLdExp(1.0, -11);
+        } else {
+            // Absolute error of 2^-8
+            return deMath.deLdExp(1.0, -8);
+        }
+    };
+
+    /**
+     * @constructor
+     * @extends {glsBuiltinPrecisionTests.CFloatFunc1}
+     */
     glsBuiltinPrecisionTests.ArcTrigFunc = function(name, func, precisionULPs, domain, coddomain) {
         glsBuiltinPrecisionTests.CFloatFunc1.call(this, name, func);
         this.m_precision = precisionULPs;
@@ -5069,20 +5092,8 @@ var setParentClass = function(child, parent) {
      * @constructor
      * @extends {glsBuiltinPrecisionTests.ArcTrigFunc}
      */
-    glsBuiltinPrecisionTests.ASin = function() {
-        glsBuiltinPrecisionTests.ArcTrigFunc.call(this, 'asin', Math.asin, 4,
-                                                tcuInterval.withNumbers(-1, 1),
-                                                tcuInterval.withNumbers(-Math.PI * 0.5, Math.PI * 0.5));
-    };
-
-    setParentClass(glsBuiltinPrecisionTests.ASin, glsBuiltinPrecisionTests.ArcTrigFunc);
-
-    /**
-     * @constructor
-     * @extends {glsBuiltinPrecisionTests.ArcTrigFunc}
-     */
     glsBuiltinPrecisionTests.ACos = function() {
-        glsBuiltinPrecisionTests.ArcTrigFunc.call(this, 'acos', Math.acos, 4,
+        glsBuiltinPrecisionTests.ArcTrigFunc.call(this, 'acos', Math.acos, 4096.0,
                                                 tcuInterval.withNumbers(-1, 1),
                                                 tcuInterval.withNumbers(0, Math.PI));
     };
@@ -5094,7 +5105,7 @@ var setParentClass = function(child, parent) {
      * @extends {glsBuiltinPrecisionTests.ArcTrigFunc}
      */
     glsBuiltinPrecisionTests.ATan = function() {
-        glsBuiltinPrecisionTests.ArcTrigFunc.call(this, 'atan', Math.atan, 5,
+        glsBuiltinPrecisionTests.ArcTrigFunc.call(this, 'atan', Math.atan, 4096.0,
                                                 tcuInterval.unbounded(),
                                                 tcuInterval.withNumbers(-Math.PI * 0.5, Math.PI * 0.5));
     };
@@ -5126,7 +5137,7 @@ var setParentClass = function(child, parent) {
 
     glsBuiltinPrecisionTests.ATan2.prototype.precision = function(ctx, ret, x, y) {
         if (ctx.floatPrecision == gluShaderUtil.precision.PRECISION_HIGHP)
-            return ctx.format.ulp(ret, 6.0);
+            return ctx.format.ulp(ret, 4096.0);
         else
             return ctx.format.ulp(ret, 2.0);
     };
