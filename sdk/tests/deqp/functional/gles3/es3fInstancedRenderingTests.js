@@ -432,19 +432,19 @@ var deMath = framework.delibs.debase.deMath;
             gl.vertexAttribDivisor(curLoc, divisor);
             var curLocGlBuffer = gl.createBuffer();
             if (isFloatCase) {
-                var bufferCurLoc = new Float32Array(this.m_gridVertexPositions);
+                var bufferCurLoc = new Float32Array(attrPtr);
                 gl.bindBuffer(gl.ARRAY_BUFFER, curLocGlBuffer);
                 gl.bufferData(gl.ARRAY_BUFFER, bufferCurLoc, gl.STATIC_DRAW);
 
                 gl.vertexAttribPointer(curLoc, typeSize, gl.FLOAT, false, 0, 0);
             } else if (isIntCase) {
-                var bufferCurLoc = new Int32Array(this.m_gridVertexPositions);
+                var bufferCurLoc = new Int32Array(attrPtr);
                 gl.bindBuffer(gl.ARRAY_BUFFER, curLocGlBuffer);
                 gl.bufferData(gl.ARRAY_BUFFER, bufferCurLoc, gl.STATIC_DRAW);
 
                 gl.vertexAttribIPointer(curLoc, typeSize, gl.INT, 0, 0);
             } else if (isUintCase) {
-                var bufferCurLoc = new Uint32Array(this.m_gridVertexPositions);
+                var bufferCurLoc = new Uint32Array(attrPtr);
                 gl.bindBuffer(gl.ARRAY_BUFFER, curLocGlBuffer);
                 gl.bufferData(gl.ARRAY_BUFFER, bufferCurLoc, gl.STATIC_DRAW);
 
@@ -453,7 +453,7 @@ var deMath = framework.delibs.debase.deMath;
                 /** @type {number} */ var numRows = gluShaderUtil.getDataTypeMatrixNumRows(this.m_rgbAttrType);
                 /** @type {number} */ var numCols = gluShaderUtil.getDataTypeMatrixNumColumns(this.m_rgbAttrType);
 
-                var bufferCurLoc = new Float32Array(this.m_gridVertexPositions);
+                var bufferCurLoc = new Float32Array(attrPtr);
                 gl.bindBuffer(gl.ARRAY_BUFFER, curLocGlBuffer);
                 gl.bufferData(gl.ARRAY_BUFFER, bufferCurLoc, gl.STATIC_DRAW);
 
@@ -486,7 +486,7 @@ var deMath = framework.delibs.debase.deMath;
                 gl.vertexAttribDivisor(offsetLoc, 1);
 
                 var offsetLocGlBuffer = gl.createBuffer();
-                var bufferOffsetLoc = new Float32Array(this.m_gridVertexPositions);
+                var bufferOffsetLoc = new Float32Array(this.m_instanceOffsets);
                 gl.bindBuffer(gl.ARRAY_BUFFER, offsetLocGlBuffer);
                 gl.bufferData(gl.ARRAY_BUFFER, bufferOffsetLoc, gl.STATIC_DRAW);
 
