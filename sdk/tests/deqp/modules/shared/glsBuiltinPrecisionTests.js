@@ -2322,7 +2322,17 @@ var setParentClass = function(child, parent) {
     };
 
     glsBuiltinPrecisionTests.Div.prototype.applyPoint = function(ctx, x, y) {
-        return glsBuiltinPrecisionTests.FloatFunc2.prototype.applyPoint.call(this, ctx, x, y);
+        var ret = glsBuiltinPrecisionTests.FloatFunc2.prototype.applyPoint.call(this, ctx, x, y);
+        if (isFinite(x) && isFinite(y) && y != 0) {
+            var dst = ctx.format.convert(ret);
+            if (dst.contains(tcuInterval.NEGATIVE_INFINITY)) {
+                ret.operatorOrAssignBinary(-ctx.format.getMaxValue());
+            }
+            if (dst.contains(tcuInterval.POSITIVE_INFINITY)) {
+                ret.operatorOrAssignBinary(+ctx.format.getMaxValue());
+            }
+        }
+        return ret;
     };
 
     /**
@@ -4579,6 +4589,12 @@ var setParentClass = function(child, parent) {
 
         var fracIV = tcuInterval.applyMonotone1p(func1, iargs.a);
         var wholeIV = tcuInterval.applyMonotone1p(func2, iargs.a);
+
+        if (!iargs.a.isFinite()) {
+            // Behavior on modf(Inf) not well-defined, allow anything as a fractional part
+            // See Khronos bug 13907
+            fracIV.operatorOrAssignBinary(tcuInterval.NAN);
+        }
 
         ctx.env.m_map[variablenames[1]] = wholeIV;
         return fracIV;
