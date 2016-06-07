@@ -1,4 +1,5 @@
 builtinprecision/00_test_list.txt
+fbocolorbuffer/00_test_list.txt
 shaderindexing/00_test_list.txt
 shadermatrix/00_test_list.txt
 shadertexturefunction/00_test_list.txt
@@ -15,7 +16,6 @@ bufferobjectquery.html
 clipping.html
 defaultvertexattribute.html
 draw.html
-fbocolorbuffer.html
 fbocompleteness.html
 fbodepthbuffer.html
 fboinvalidate.html

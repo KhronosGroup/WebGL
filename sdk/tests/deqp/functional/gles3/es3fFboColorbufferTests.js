@@ -936,41 +936,46 @@ es3fFboColorbufferTests.FboColorbufferTests.prototype.init = function() {
     var clearGroup = tcuTestCase.newTest("clear", "Color clears");
     this.addChild(clearGroup);
 
-    for (var ndx = 0; ndx < colorFormats.length; ndx++)
-        clearGroup.addChild(new es3fFboColorbufferTests.FboColorClearCase(es3fFboTestUtil.getFormatName(colorFormats[ndx]), "", colorFormats[ndx], 129, 117));
+    for (var ndx = 0; ndx < colorFormats.length; ndx++) {
+        clearGroup.addChild(new es3fFboColorbufferTests.FboColorClearCase(
+            es3fFboTestUtil.getFormatName(colorFormats[ndx]), "", colorFormats[ndx], 129, 117));
+    }
 
     // .tex2d
     var tex2DGroup = tcuTestCase.newTest("tex2d", "Texture 2D tests");
     this.addChild(tex2DGroup);
 
-    for (var ndx = 0; ndx < colorFormats.length; ndx++)
-        tex2DGroup.addChild(new es3fFboColorbufferTests.FboColorMultiTex2DCase(es3fFboTestUtil.getFormatName(colorFormats[ndx]), "",
-                                                        colorFormats[ndx], [129, 117],
-                                                        colorFormats[ndx], [99, 128]));
+    for (var ndx = 0; ndx < colorFormats.length; ndx++) {
+        tex2DGroup.addChild(new es3fFboColorbufferTests.FboColorMultiTex2DCase(
+            es3fFboTestUtil.getFormatName(colorFormats[ndx]), "", colorFormats[ndx], [129, 117], colorFormats[ndx], [99, 128]));
+    }
 
     // .texcube
     var texCubeGroup = tcuTestCase.newTest("texcube", "Texture cube map tests");
     this.addChild(texCubeGroup);
 
-    for (var ndx = 0; ndx < colorFormats.length; ndx++)
-        texCubeGroup.addChild(new es3fFboColorbufferTests.FboColorTexCubeCase(es3fFboTestUtil.getFormatName(colorFormats[ndx]), "",
-                                                       colorFormats[ndx], [128, 128]));
+    for (var ndx = 0; ndx < colorFormats.length; ndx++) {
+        texCubeGroup.addChild(new es3fFboColorbufferTests.FboColorTexCubeCase(
+            es3fFboTestUtil.getFormatName(colorFormats[ndx]), "", colorFormats[ndx], [128, 128]));
+    }
 
     // .tex2darray
     var tex2DArrayGroup = tcuTestCase.newTest("tex2darray", "Texture 2D array tests");
     this.addChild(tex2DArrayGroup);
 
-    for (var ndx = 0; ndx < colorFormats.length; ndx++)
-        tex2DArrayGroup.addChild(new es3fFboColorbufferTests.FboColorTex2DArrayCase(es3fFboTestUtil.getFormatName(colorFormats[ndx]), "",
-                                                             colorFormats[ndx], [128, 128, 5]));
+    for (var ndx = 0; ndx < colorFormats.length; ndx++) {
+        tex2DArrayGroup.addChild(new es3fFboColorbufferTests.FboColorTex2DArrayCase(
+            es3fFboTestUtil.getFormatName(colorFormats[ndx]), "", colorFormats[ndx], [128, 128, 5]));
+    }
 
     // .tex3d
     var tex3DGroup = tcuTestCase.newTest("tex3d", "Texture 3D tests");
     this.addChild(tex3DGroup);
 
-    for (var ndx = 0; ndx < colorFormats.length; ndx++)
-        tex3DGroup.addChild(new es3fFboColorbufferTests.FboColorTex3DCase(es3fFboTestUtil.getFormatName(colorFormats[ndx]), "",
-                                                   colorFormats[ndx], [128, 128, 5]));
+    for (var ndx = 0; ndx < colorFormats.length; ndx++) {
+        tex3DGroup.addChild(new es3fFboColorbufferTests.FboColorTex3DCase(
+            es3fFboTestUtil.getFormatName(colorFormats[ndx]), "", colorFormats[ndx], [128, 128, 5]));
+    }
 
     // .blend
     var blendGroup = tcuTestCase.newTest("blend", "Blending tests");
@@ -996,7 +1001,7 @@ es3fFboColorbufferTests.FboColorbufferTests.prototype.init = function() {
 * Run test
 * @param {WebGL2RenderingContext} context
 */
-es3fFboColorbufferTests.run = function(context) {
+es3fFboColorbufferTests.run = function(context, range) {
     gl = context;
     //Set up Test Root parameters
     var state = tcuTestCase.runner;
@@ -1007,6 +1012,8 @@ es3fFboColorbufferTests.run = function(context) {
     description(state.testCases.getDescription());
 
     try {
+        if (range)
+            state.setRange(range);
         //Run test cases
         tcuTestCase.runTestCases();
     }
