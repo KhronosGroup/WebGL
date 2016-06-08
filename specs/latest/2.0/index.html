@@ -1087,6 +1087,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p>Only differences from <a href="../1.0/index.html#CHECK_FRAMEBUFFER_STATUS">checkFramebufferStatus</a> in WebGL 1 are described here.</p>
         <p><em>target</em> must be <code>DRAW_FRAMEBUFFER</code>, <code>READ_FRAMEBUFFER</code> or <code>FRAMEBUFFER</code>. <code>FRAMEBUFFER</code> is equivalent to <code>DRAW_FRAMEBUFFER</code>.</p>
         <p>Returns <code>FRAMEBUFFER_UNSUPPORTED</code> if depth and stencil attachments, if present, are not the same image. See <a href="#FBO_ATTACHMENTS">Framebuffer Object Attachments</a> for detailed discussion.</p>
+        <p>Returns <code>FRAMEBUFFER_UNSUPPORTED</code> if at least one color attachment has an unsupported internal format. See <a href="#FBO_ATTACHMENTS">Framebuffer Object Attachments</a> for detailed discussion.</p>
         <p>Returns <code>FRAMEBUFFER_INCOMPLETE_MULTISAMPLE</code> if the values of <code>RENDERBUFFER_SAMPLES</code> are different among attached renderbuffers, or are non-zero if the attached images are a mix of renderbuffers and textures.</p>
         <p>Returns <code>FRAMEBUFFER_INCOMPLETE_DIMENSIONS</code> if attached images have different width, height, and depth (for 3D textures) or array size (for 2D array textures). See <a href="#INCOMPLETE_DIMENSIONS">checkFramebufferStatus may return FRAMEBUFFER_INCOMPLETE_DIMENSIONS</a>.</p>
       </dd>
@@ -2604,6 +2605,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       In WebGL 1, the framebuffer ends up with renderbuffer 1 attached to <code>DEPTH_ATTACHMENT</code> and no image attached to <code>STENCIL_ATTACHMENT</code>; in WebGL 2, however, neither <code>DEPTH_ATTACHMENT</code> nor <code>STENCIL_ATTACHMENT</code> has an image attached.</p>
     <p>The constraints defined in <a href="../1.0/index.html#FBO_ATTACHMENTS">Framebuffer Object Attachments</a> no longer apply in WebGL 2.</p>
     <p>If different images are bound to the depth and stencil attachment points, <code>checkFramebufferStatus</code> returns <code>FRAMEBUFFER_UNSUPPORTED</code>, and <code>getFramebufferAttachmentParameter</code> with <em>attachment</em> of <code>DEPTH_STENCIL_ATTACHMENT</code> generates an <code>INVALID_OPERATION</code> error.</p>
+    <p>The <code>RGB5_A1</code> internal format exposed in WebGL 2 cannot be color-renderable in a portable manner. For that reason, if an attachment has the <code>RGB5_A1</code> internal format, <code>checkFramebufferStatus</code> returns <code>FRAMEBUFFER_UNSUPPORTED</code>.</p>
 
     <h4>Texture Type in TexSubImage2D Calls</h4>
 
