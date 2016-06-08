@@ -125,6 +125,13 @@ goog.require('framework.delibs.debase.deMath');
      };
 
      /**
+      * @return {tcuFloatFormat.YesNoMaybe}
+      */
+     tcuFloatFormat.FloatFormat.prototype.hasInf = function() {
+         return this.m_hasInf;
+     };
+
+     /**
       * @param {number} x
       * @param {number} count
       * @return {number}

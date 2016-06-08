@@ -1621,7 +1621,7 @@ var setParentClass = function(child, parent) {
     };
 
     glsBuiltinPrecisionTests.InverseSqrt.prototype.precision = function(ctx, ret, x) {
-        if (x < 0)
+        if (x <= 0)
             return NaN;
         return ctx.format.ulp(ret, 2.0);
     };
@@ -5146,6 +5146,11 @@ var setParentClass = function(child, parent) {
                 ret.operatorOrAssignBinary(tcuInterval.NAN);
             if (xi.intersects(tcuInterval.withNumbers(-Infinity, 0)))
                 ret.operatorOrAssignBinary(tcuInterval.withNumbers(-Math.PI, Math.PI));
+        }
+
+        if (ctx.format.hasInf() != tcuFloatFormat.YesNoMaybe.YES && (!yi.isFinite() || !xi.isFinite())) {
+            // Infinities may not be supported, allow anything, including NaN
+            ret.operatorOrAssignBinary(tcuInterval.NAN);
         }
 
         return ret;
