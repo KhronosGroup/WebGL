@@ -9,6 +9,7 @@ textureshadow/00_test_list.txt
 texturespecification/00_test_list.txt
 texturewrap/00_test_list.txt
 uniformapi/00_test_list.txt
+uniformbuffers/00_test_list.txt
 attriblocation.html
 booleanstatequery.html
 buffercopy.html
@@ -66,6 +67,5 @@ stringquery.html
 sync.html
 texturestatequery.html
 transformfeedback.html
-uniformbuffers.html
 vertexarrayobject.html
 vertexarrays.html

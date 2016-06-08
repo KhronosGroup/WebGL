@@ -718,7 +718,7 @@ goog.scope(function() {
     /**
      * Create and execute the test cases
      */
-    es3fUniformBlockTests.run = function() {
+    es3fUniformBlockTests.run = function(range) {
         //Set up Test Root parameters
         var testName = 'ubo';
         var testDescription = 'Uniform Block Tests';
@@ -733,6 +733,8 @@ goog.scope(function() {
         try {
             //Create test cases
             es3fUniformBlockTests.init();
+            if (range)
+                state.setRange(range);
             //Run test cases
             tcuTestCase.runTestCases();
         }
