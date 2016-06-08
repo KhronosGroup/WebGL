@@ -170,7 +170,6 @@ var tcuImageCompare = framework.common.tcuImageCompare;
 
         /** @type {gluShaderProgram.ShaderProgram} */
         var program = new gluShaderProgram.ShaderProgram(gl, gluShaderProgram.makeVtxFragSources(vtx, frag));
-        console.log(program);
         return program;
     };
 
@@ -211,7 +210,6 @@ var tcuImageCompare = framework.common.tcuImageCompare;
             /** @type {number} */ var attachment = gl.COLOR_ATTACHMENT0 + bufNdx;
 
             gl.bindRenderbuffer(gl.RENDERBUFFER, this.m_renderbuffer);
-            // gl.getInternalformatParameter(gl.RENDERBUFFER, bufSpec.format, gl.SAMPLES); // just for debugging purposes
 
             gl.renderbufferStorageMultisample(gl.RENDERBUFFER, bufSpec.samples, bufSpec.format, bufSpec.width, bufSpec.height);
             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, attachment, gl.RENDERBUFFER, this.m_renderbuffer);
@@ -593,7 +591,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                             /** @type {number} */ var f1 = 0.5 + (xf - yf) * 0.5;
 
                             /** @type {Array<number>} */ var f = es3fFragmentOutputTests.swizzleVec([f0, f1, 1.0 - f0, 1.0 - f1], curInVec); // Vec4
-                            c = deMath.multiply(deMath.add(minVal, deMath.subtract(maxVal, minVal)), f); // Vec4
+                            c = deMath.add(minVal, deMath.multiply(deMath.subtract(maxVal, minVal), f)); // Vec4
 
                             pos = (y * gridWidth + x) * numScalars;
 
@@ -875,7 +873,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
 
                     finalThreshold = tcuTextureUtil.select(
                                     deMath.max(formatThreshold, [precThreshold, precThreshold, precThreshold, precThreshold]),
-                                    [1, 1, 1, 1], // C++ version: UVec4(~0u) bitwise not, all bits in the integer will be flipped
+                                    [0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff], // C++ version: UVec4(~0u) bitwise not, all bits in the integer will be flipped
                                     cmpMask);
 
                     isOk = tcuImageCompare.floatUlpThresholdCompare(name, desc, reference, rendered, finalThreshold /*, tcu::COMPARE_LOG_RESULT*/);
