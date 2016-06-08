@@ -21,6 +21,7 @@
 'use strict';
 goog.provide('framework.common.tcuImageCompare');
 goog.require('framework.common.tcuBilinearImageCompare');
+goog.require('framework.common.tcuFloat');
 goog.require('framework.common.tcuFuzzyImageCompare');
 goog.require('framework.common.tcuLogImage');
 goog.require('framework.common.tcuRGBA');
@@ -36,6 +37,7 @@ var tcuSurface = framework.common.tcuSurface;
 var deMath = framework.delibs.debase.deMath;
 var tcuTexture = framework.common.tcuTexture;
 var tcuTextureUtil = framework.common.tcuTextureUtil;
+var tcuFloat = framework.common.tcuFloat;
 var tcuFuzzyImageCompare = framework.common.tcuFuzzyImageCompare;
 var tcuBilinearImageCompare = framework.common.tcuBilinearImageCompare;
 var tcuRGBA = framework.common.tcuRGBA;
@@ -267,8 +269,8 @@ tcuImageCompare.floatUlpThresholdCompare = function(imageSetName, imageSetDesc, 
     for (var z = 0; z < depth; z++) {
         for (var y = 0; y < height; y++) {
             for (var x = 0; x < width; x++) {
-                /** @type {ArrayBuffer} */ var arrayBufferRef = new ArrayBuffer(4);
-                /** @type {ArrayBuffer} */ var arrayBufferCmp = new ArrayBuffer(4);
+                /** @type {ArrayBuffer} */ var arrayBufferRef = new ArrayBuffer(4 * 4);
+                /** @type {ArrayBuffer} */ var arrayBufferCmp = new ArrayBuffer(4 * 4);
 
                 /** @type {Array<number>} */ var refPix = reference.getPixel(x, y, z); // getPixel returns a Vec4 pixel color
 
@@ -279,8 +281,8 @@ tcuImageCompare.floatUlpThresholdCompare = function(imageSetName, imageSetDesc, 
 
                 // Instead of memcpy(), which is the way to do float->uint32 reinterpretation in C++
                 for (var i = 0; i < refPix.length; i++) {
-                    refBits[i] = refPix[i];
-                    cmpBits[i] = cmpPix[i];
+                    refBits[i] = tcuFloat.convertFloat32Inline(refPix[i], tcuFloat.description32);
+                    cmpBits[i] = tcuFloat.convertFloat32Inline(cmpPix[i], tcuFloat.description32);
                 }
 
                 /** @type {Array<number>} */ var diff = deMath.absDiff(refBits, cmpBits); // UVec4
