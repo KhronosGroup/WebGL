@@ -8,7 +8,9 @@
 
 <script src="../../../closure-library/closure/goog/base.js"></script>
 <script src="../../deqp-deps.js"></script>
-<script>goog.require('functional.gles3.es3fShaderPackingFunctionTests');</script>
+<script>
+goog.require('functional.gles3.es3fShaderPackingFunctionTests');
+</script>
 </head>
 <body>
 <div id="description"></div>
@@ -16,17 +18,9 @@
 <canvas id="canvas" width="256" height="256"> </canvas>
 <script>
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', null, 2);
+var gl = wtu.create3DContext('canvas', null, 2);
 
-
-    try {
-        functional.gles3.es3fShaderPackingFunctionTests.run(gl);
-    }
-    catch(err)
-    {
-        bufferedLogToConsole(err);
-    }
-
+functional.gles3.es3fShaderPackingFunctionTests.run(gl);
 </script>
 </body>
 </html>

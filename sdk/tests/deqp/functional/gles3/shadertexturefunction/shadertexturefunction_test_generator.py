@@ -22,7 +22,7 @@
 # MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 
 """
-  Generator for texturespecification* tests.
+  Generator for shadertexturefunction* tests.
   This file needs to be run in its folder.
 """
 
@@ -55,17 +55,9 @@ _HTML_TEMPLATE = """<html>
 <canvas id="canvas" width="256" height="256"> </canvas>
 <script>
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', null, 2);
+var gl = wtu.create3DContext('canvas', null, 2);
 
-
-    try {
-        functional.gles3.es3fShaderTextureFunctionTests.run(gl, [%(start)s, %(end)s]);
-    }
-    catch(err)
-    {
-        bufferedLogToConsole(err);
-    }
-
+functional.gles3.es3fShaderTextureFunctionTests.run(gl, [%(start)s, %(end)s]);
 </script>
 </body>
 </html>
