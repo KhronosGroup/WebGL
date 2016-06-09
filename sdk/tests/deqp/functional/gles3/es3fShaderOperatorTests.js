@@ -1924,6 +1924,7 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
     };
     var funcInfoGroups = [];
     var unary = new es3fShaderOperatorTests.BuiltinFuncGroup('unary_operator', 'Unary operator tests');
+    funcInfoGroups.push(unary);
 
     unary.push(op('plus', '+', GT, [v(GT, -1.0, 1.0)], f(0.5), f(0.5), all,
         es3fShaderOperatorTests.unaryGenTypeFuncs(nop)));
@@ -1959,6 +1960,9 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         gluShaderUtil.DataType.UINT)));
 
     // Pre/post incr/decr side effect cases.
+    unary = new es3fShaderOperatorTests.BuiltinFuncGroup('unary_operator', 'Unary operator tests');
+    funcInfoGroups.push(unary);
+
     unary.push(side('pre_increment_effect', '++', GT, [v(GT, -1.0, 1.0)], f(0.5), f(0.0), all,
         es3fShaderOperatorTests.unaryGenTypeFuncs(addOne)));
     unary.push(side('pre_increment_effect', '++', IGT, [v(IGT, -6.0, 4.0)], f(0.1), f(0.5), all,
@@ -1992,43 +1996,44 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         es3fShaderOperatorTests.unaryGenTypeFuncs(subOne, gluShaderUtil.DataType.UINT,
         gluShaderUtil.DataType.UINT)));
 
-        // Pre/post incr/decr result cases.
-        unary.push(op('pre_increment_result', '++', GT, [v(GT, -1.0, 1.0)], f(0.5), f(0.0), all,
-            es3fShaderOperatorTests.unaryGenTypeFuncs(addOne)));
-        unary.push(op('pre_increment_result', '++', IGT, [v(IGT, -6.0, 4.0)], f(0.1), f(0.5), all,
-            es3fShaderOperatorTests.unaryGenTypeFuncs(addOne, gluShaderUtil.DataType.INT,
-            gluShaderUtil.DataType.INT)));
-        unary.push(op('pre_increment_result', '++', UGT, [v(UGT, 0.0, 9.0)], f(0.1), f(0.0), all,
-            es3fShaderOperatorTests.unaryGenTypeFuncs(addOne, gluShaderUtil.DataType.UINT,
-            gluShaderUtil.DataType.UINT)));
-        unary.push(op('pre_dencrement_result', '--', GT, [v(GT, -1.0, 1.0)], f(0.5), f(1.0), all,
-            es3fShaderOperatorTests.unaryGenTypeFuncs(subOne)));
-        unary.push(op('pre_decrement_result', '--', IGT, [v(IGT, -4.0, 6.0)], f(0.1), f(0.5), all,
-            es3fShaderOperatorTests.unaryGenTypeFuncs(subOne, gluShaderUtil.DataType.INT,
-            gluShaderUtil.DataType.INT)));
-        unary.push(op('pre_decrement_result', '--', UGT, [v(UGT, 0.0, 10.0)], f(0.1), f(0.0), all,
-            es3fShaderOperatorTests.unaryGenTypeFuncs(subOne, gluShaderUtil.DataType.UINT,
-            gluShaderUtil.DataType.UINT)));
-        unary.push(postOp('post_increment_result', '++', GT, [v(GT, -1.0, 1.0)], f(0.5), f(0.5), all,
-            es3fShaderOperatorTests.unaryGenTypeFuncs(nop)));
-        unary.push(postOp('post_increment_result', '++', IGT, [v(IGT, -5.0, 5.0)], f(0.1), f(0.5), all,
-            es3fShaderOperatorTests.unaryGenTypeFuncs(nop, gluShaderUtil.DataType.INT,
-            gluShaderUtil.DataType.INT)));
-        unary.push(postOp('post_increment_result', '++', UGT, [v(UGT, 0.0, 9.0)], f(0.1), f(0.0), all,
-            es3fShaderOperatorTests.unaryGenTypeFuncs(nop, gluShaderUtil.DataType.UINT,
-            gluShaderUtil.DataType.UINT)));
-        unary.push(postOp('post_decrement_result', '--', GT, [v(GT, -1.0, 1.0)], f(0.5), f(0.5), all,
-            es3fShaderOperatorTests.unaryGenTypeFuncs(nop)));
-        unary.push(postOp('post_decrement_result', '--', IGT, [v(IGT, -5.0, 5.0)], f(0.1), f(0.5), all,
-            es3fShaderOperatorTests.unaryGenTypeFuncs(nop, gluShaderUtil.DataType.INT,
-            gluShaderUtil.DataType.INT)));
-        unary.push(postOp('post_decrement_result', '--', UGT, [v(UGT, 1.0, 10.0)], f(0.1), f(0.0), all,
-            es3fShaderOperatorTests.unaryGenTypeFuncs(nop, gluShaderUtil.DataType.UINT,
-            gluShaderUtil.DataType.UINT)));
-
+    // Pre/post incr/decr result cases.
+    unary = new es3fShaderOperatorTests.BuiltinFuncGroup('unary_operator', 'Unary operator tests');
     funcInfoGroups.push(unary);
 
-    var binary = new es3fShaderOperatorTests.BuiltinFuncGroup('binary_operator', 'Binary operator tests');
+    unary.push(op('pre_increment_result', '++', GT, [v(GT, -1.0, 1.0)], f(0.5), f(0.0), all,
+        es3fShaderOperatorTests.unaryGenTypeFuncs(addOne)));
+    unary.push(op('pre_increment_result', '++', IGT, [v(IGT, -6.0, 4.0)], f(0.1), f(0.5), all,
+        es3fShaderOperatorTests.unaryGenTypeFuncs(addOne, gluShaderUtil.DataType.INT,
+        gluShaderUtil.DataType.INT)));
+    unary.push(op('pre_increment_result', '++', UGT, [v(UGT, 0.0, 9.0)], f(0.1), f(0.0), all,
+        es3fShaderOperatorTests.unaryGenTypeFuncs(addOne, gluShaderUtil.DataType.UINT,
+        gluShaderUtil.DataType.UINT)));
+    unary.push(op('pre_dencrement_result', '--', GT, [v(GT, -1.0, 1.0)], f(0.5), f(1.0), all,
+        es3fShaderOperatorTests.unaryGenTypeFuncs(subOne)));
+    unary.push(op('pre_decrement_result', '--', IGT, [v(IGT, -4.0, 6.0)], f(0.1), f(0.5), all,
+        es3fShaderOperatorTests.unaryGenTypeFuncs(subOne, gluShaderUtil.DataType.INT,
+        gluShaderUtil.DataType.INT)));
+    unary.push(op('pre_decrement_result', '--', UGT, [v(UGT, 0.0, 10.0)], f(0.1), f(0.0), all,
+        es3fShaderOperatorTests.unaryGenTypeFuncs(subOne, gluShaderUtil.DataType.UINT,
+        gluShaderUtil.DataType.UINT)));
+    unary.push(postOp('post_increment_result', '++', GT, [v(GT, -1.0, 1.0)], f(0.5), f(0.5), all,
+        es3fShaderOperatorTests.unaryGenTypeFuncs(nop)));
+    unary.push(postOp('post_increment_result', '++', IGT, [v(IGT, -5.0, 5.0)], f(0.1), f(0.5), all,
+        es3fShaderOperatorTests.unaryGenTypeFuncs(nop, gluShaderUtil.DataType.INT,
+        gluShaderUtil.DataType.INT)));
+    unary.push(postOp('post_increment_result', '++', UGT, [v(UGT, 0.0, 9.0)], f(0.1), f(0.0), all,
+        es3fShaderOperatorTests.unaryGenTypeFuncs(nop, gluShaderUtil.DataType.UINT,
+        gluShaderUtil.DataType.UINT)));
+    unary.push(postOp('post_decrement_result', '--', GT, [v(GT, -1.0, 1.0)], f(0.5), f(0.5), all,
+        es3fShaderOperatorTests.unaryGenTypeFuncs(nop)));
+    unary.push(postOp('post_decrement_result', '--', IGT, [v(IGT, -5.0, 5.0)], f(0.1), f(0.5), all,
+        es3fShaderOperatorTests.unaryGenTypeFuncs(nop, gluShaderUtil.DataType.INT,
+        gluShaderUtil.DataType.INT)));
+    unary.push(postOp('post_decrement_result', '--', UGT, [v(UGT, 1.0, 10.0)], f(0.1), f(0.0), all,
+        es3fShaderOperatorTests.unaryGenTypeFuncs(nop, gluShaderUtil.DataType.UINT,
+        gluShaderUtil.DataType.UINT)));
+
+    var binary;
 
     // Normal binary operations and their corresponding assignment operations have lots in common; generate both in the following loop.
     // 0: normal op test, 1: assignment op side-effect test, 2: assignment op result test
@@ -2059,6 +2064,9 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         var rightShiftOp = isNormalOp ? '>>' : '>>=';
 
         op = isAssignEff ? es3fShaderOperatorTests.builtinSideEffOperInfo : es3fShaderOperatorTests.builtinOperInfo;
+
+        binary = new es3fShaderOperatorTests.BuiltinFuncGroup('binary_operator', 'Binary operator tests');
+        funcInfoGroups.push(binary);
 
         // The add operator.
 
@@ -2157,6 +2165,9 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
                 gluShaderUtil.DataType.UINT)));
         }
 
+        binary = new es3fShaderOperatorTests.BuiltinFuncGroup('binary_operator', 'Binary operator tests');
+        funcInfoGroups.push(binary);
+
         // The multiply operator.
 
         binary.push(op(mulName, mulOp, GT, [v(GT, -1.0, 1.0), v(GT, -1.0, 1.0)], f(1.0), f(0.0),
@@ -2253,6 +2264,9 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
                 gluShaderUtil.DataType.UINT)));
         }
 
+        binary = new es3fShaderOperatorTests.BuiltinFuncGroup('binary_operator', 'Binary operator tests');
+        funcInfoGroups.push(binary);
+
         // The modulus operator.
 
         binary.push(op(modName, modOp, IGT, [v(IGT, 0.0, 6.0), v(IGT, 1.1, 6.1)], f(0.25), f(0.5),
@@ -2336,6 +2350,9 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
                 highp, es3fShaderOperatorTests.binaryScalarVecFuncs(bitwiseAndScalarVec, gluShaderUtil.DataType.UINT,
                 gluShaderUtil.DataType.UINT)));
         }
+
+        binary = new es3fShaderOperatorTests.BuiltinFuncGroup('binary_operator', 'Binary operator tests');
+        funcInfoGroups.push(binary);
 
         // The bitwise or operator.
 
@@ -2421,6 +2438,9 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
                 gluShaderUtil.DataType.UINT)));
         }
 
+        binary = new es3fShaderOperatorTests.BuiltinFuncGroup('binary_operator', 'Binary operator tests');
+        funcInfoGroups.push(binary);
+
         // The left shift operator. Second operand (shift amount) can be either int or uint, even for uint and int first operand, respectively.
         for (var isSignedAmount = 0; isSignedAmount <= 1; isSignedAmount++) {
             var gType = isSignedAmount == 0 ? UGT : IGT;
@@ -2485,6 +2505,8 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
 
     // Rest of binary operators.
     // Scalar relational operators.
+    binary = new es3fShaderOperatorTests.BuiltinFuncGroup('binary_operator', 'Binary operator tests');
+    funcInfoGroups.push(binary);
 
     binary.push(op('less', '<', B, [v(F, -1.0, 1.0), v(F, -1.0, 1.0)], f(1.0), f(0.0),
         all, {scalar: es3fShaderOperatorTests.binaryGenTypeFuncs(lessThan).scalar}));
@@ -2553,10 +2575,9 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         na, {scalar: es3fShaderOperatorTests.binaryGenTypeFuncs(logicalXor, gluShaderUtil.DataType.BOOL,
         gluShaderUtil.DataType.BOOL).scalar}));
 
-    funcInfoGroups.push(binary);
-
     // 8.1 Angle and Trigonometry Functions.
     var trig = new es3fShaderOperatorTests.BuiltinFuncGroup("angle_and_trigonometry", "Angle and trigonometry function tests.");
+    funcInfoGroups.push(trig);
     op = es3fShaderOperatorTests.builtinFunctionInfo;
     trig.push(op("radians", "radians", GT, [v(GT, -1.0, 1.0)], f(25.0), f(0.5),
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(radians)));
@@ -2574,6 +2595,9 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.tan)));
     trig.push(op("tan", "tan", GT, [v(GT, -1.5, 5.5)], f(0.5), f(0.5),
         lowp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.tan)));
+
+    trig = new es3fShaderOperatorTests.BuiltinFuncGroup("angle_and_trigonometry", "Angle and trigonometry function tests.");
+    funcInfoGroups.push(trig);
     trig.push(op("asin", "asin", GT, [v(GT, -1.0, 1.0)], f(1.0), f(0.0),
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.asin)));
     trig.push(op("acos", "acos", GT, [v(GT, -1.0, 1.0)], f(1.0), f(0.0),
@@ -2582,6 +2606,9 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.atan)));
     trig.push(op("atan2", "atan", GT, [v(GT, -4.0, 4.0), v(GT, 0.5, 2.0)], f(0.5), f(0.5),
         mediumhighp, es3fShaderOperatorTests.binaryGenTypeFuncs(Math.atan2)));
+
+    trig = new es3fShaderOperatorTests.BuiltinFuncGroup("angle_and_trigonometry", "Angle and trigonometry function tests.");
+    funcInfoGroups.push(trig);
     trig.push(op("sinh", "sinh", GT, [v(GT, -5.0, 5.0)], f(0.5), f(0.5),
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.sinh)));
     trig.push(op("sinh", "sinh", GT, [v(GT, -1.5, 1.5)], f(0.5), f(0.5),
@@ -2594,6 +2621,9 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.tanh)));
     trig.push(op("tanh", "tanh", GT, [v(GT, -1.5, 5.5)], f(0.5), f(0.5),
         lowp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.tanh)));
+
+    trig = new es3fShaderOperatorTests.BuiltinFuncGroup("angle_and_trigonometry", "Angle and trigonometry function tests.");
+    funcInfoGroups.push(trig);
     trig.push(op("asinh", "asinh", GT, [v(GT, -1.0, 1.0)], f(1.0), f(0.0),
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.asinh)));
     trig.push(op("acosh", "acosh", GT, [v(GT, 1.0, 2.2)], f(1.0), f(0.0),
@@ -2601,8 +2631,6 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
     // Results are undefined if |x| >= 1, so it diverses from C++ version here.
     trig.push(op("atanh", "atanh", GT, [v(GT, -0.99, 0.99)], f(1.0), f(0.0),
         mediumhighp, es3fShaderOperatorTests.unaryGenTypeFuncs(Math.atanh)));
-
-    funcInfoGroups.push(trig);
 
     // 8.2 Exponential Functions.
     var exps = new es3fShaderOperatorTests.BuiltinFuncGroup("exponential", "Exponential function tests");
@@ -3166,7 +3194,7 @@ es3fShaderOperatorTests.ShaderOperatorTests.prototype.init = function() {
 * Run test
 * @param {WebGL2RenderingContext} context
 */
-es3fShaderOperatorTests.run = function(context) {
+es3fShaderOperatorTests.run = function(context, range) {
     gl = context;
     //Set up Test Root parameters
     var state = tcuTestCase.runner;
@@ -3177,6 +3205,8 @@ es3fShaderOperatorTests.run = function(context) {
     description(state.testCases.getDescription());
 
     try {
+        if (range)
+            state.setRange(range);
         //Run test cases
         tcuTestCase.runTestCases();
     }
