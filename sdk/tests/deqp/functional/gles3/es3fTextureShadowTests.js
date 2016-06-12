@@ -123,7 +123,7 @@ var deUtil = framework.delibs.debase.deUtil;
     es3fTextureShadowTests.verifyTexCompareResult = function(textureType, result, src, texCoord, sampleParams, comparePrec, lodPrecision, pixelFormat) {
         var reference = new tcuSurface.Surface(result.getWidth(), result.getHeight());
         var errorMask = new tcuSurface.Surface(result.getWidth(), result.getHeight());
-        var nonShadowThreshold = deMath.swizzle(tcuTexLookupVerifier.computeFixedPointThreshold(glsTextureTestUtil.getBitsVec(pixelFormat)), [1, 2, 3]);
+        var nonShadowThreshold = deMath.swizzle(tcuTexLookupVerifier.computeFixedPointThreshold(deMath.subtract(glsTextureTestUtil.getBitsVec(pixelFormat), [1, 1, 1, 1])), [1, 2, 3]);
         var numFailedPixels;
 
         if (es3fTextureShadowTests.isFloatingPointDepthFormat(src.getFormat())) {
