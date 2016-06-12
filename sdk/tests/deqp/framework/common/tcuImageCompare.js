@@ -340,6 +340,7 @@ tcuImageCompare.floatUlpThresholdCompare = function(imageSetName, imageSetDesc, 
  * @return {boolean}
  */
 tcuImageCompare.floatThresholdCompare = function(imageSetName, imageSetDesc, reference, result, threshold) {
+    /** @type {boolean} */ var isSRGB = reference.getFormat().order == tcuTexture.ChannelOrder.sRGB || reference.getFormat().order == tcuTexture.ChannelOrder.sRGBA;
     /** @type {number} */ var width = reference.getWidth();
     /** @type {number} */ var height = reference.getHeight();
     /** @type {number} */ var depth = reference.getDepth();
@@ -358,7 +359,7 @@ tcuImageCompare.floatThresholdCompare = function(imageSetName, imageSetDesc, ref
                 var refPix = reference.getPixel(x, y, z); // Vec4
                 var cmpPix = result.getPixel(x, y, z); // Vec4
 
-                /** @type {Array<number>} */ var diff = deMath.absDiff(refPix, cmpPix); // Vec4
+                /** @type {Array<number>} */ var diff = deMath.absDiff(isSRGB ? tcuTextureUtil.sRGBToLinear(refPix) : refPix, cmpPix); // Vec4
                 /** @type {boolean} */ var isOk = deMath.boolAll(deMath.lessThanEqual(diff, threshold));
 
                 maxDiff = deMath.max(maxDiff, diff);
