@@ -4297,7 +4297,9 @@ var setParentClass = function(child, parent) {
     };
 
     glsBuiltinPrecisionTests.Radians.prototype.doExpand = function(ctx, args) {
-        var val = new glsBuiltinPrecisionTests.Constant(Math.PI / 180);
+        var val = app(new glsBuiltinPrecisionTests.Div(),
+                                                      new glsBuiltinPrecisionTests.Constant(Math.PI),
+                                                      new glsBuiltinPrecisionTests.Constant(180));
         return new glsBuiltinPrecisionTests.Apply('float',
                                                   new glsBuiltinPrecisionTests.Mul(),
                                                   val,
@@ -4321,7 +4323,9 @@ var setParentClass = function(child, parent) {
     };
 
     glsBuiltinPrecisionTests.Degrees.prototype.doExpand = function(ctx, args) {
-        var val = new glsBuiltinPrecisionTests.Constant(180 / Math.PI);
+        var val = app(new glsBuiltinPrecisionTests.Div(),
+                                                      new glsBuiltinPrecisionTests.Constant(180),
+                                                      new glsBuiltinPrecisionTests.Constant(Math.PI));
         return new glsBuiltinPrecisionTests.Apply('float',
                                                   new glsBuiltinPrecisionTests.Mul(),
                                                   val,
