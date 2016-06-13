@@ -192,8 +192,8 @@ tcuTexCompareVerifier.isLinearCompareValid = function(compareMode, prec, depths,
 
         var v0 = ref0 * (1 - f0) + ref1 * f0;
         var v1 = ref0 * (1 - f1) + ref1 * f1;
-        var minV = deMath.min(v0, v1);
-        var maxV = deMath.max(v0, v1);
+        var minV = Math.min(v0, v1);
+        var maxV = Math.max(v0, v1);
         var minR = minV - totalErr;
         var maxR = maxV + totalErr;
 

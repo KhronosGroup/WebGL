@@ -106,7 +106,7 @@ var deUtil = framework.delibs.debase.deUtil;
      */
     es3fTextureShadowTests.clampFloatingPointTextureCube = function(target) {
         for (var level = 0; level < target.getNumLevels(); ++level)
-            for (var face = tcuTexture.CubeFace.CUBEFACE_POSITIVE_X; face < Object.keys(tcuTexture.CubeFace).length; face++)
+            for (var face = tcuTexture.CubeFace.CUBEFACE_NEGATIVE_X; face < Object.keys(tcuTexture.CubeFace).length; face++)
                 es3fTextureShadowTests.clampFloatingPointTexture(target.getLevelFace(level, face));
     };
 
