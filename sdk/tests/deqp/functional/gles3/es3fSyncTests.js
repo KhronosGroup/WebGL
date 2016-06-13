@@ -33,6 +33,7 @@ goog.scope(function() {
     var deString = framework.delibs.debase.deString;
 
     /** @const {number} */ es3fSyncTests.NUM_CASE_ITERATIONS = 5;
+    /** @const {number} */ es3fSyncTests.MAX_VERIRY_WAIT = 5;
 
     /**
      * @enum
@@ -47,6 +48,14 @@ goog.scope(function() {
     es3fSyncTests.CaseOptions = {
         FLUSH_BEFORE_WAIT: 1,
         FINISH_BEFORE_WAIT: 2
+    };
+
+    /** @enum
+     */
+    es3fSyncTests.State = {
+        DRAW: 0,
+        VERIFY: 1,
+        FINISH: 2
     };
 
     /**
@@ -72,6 +81,7 @@ goog.scope(function() {
         /** @type {WebGLSync} */ this.m_syncObject = null;
         /** @type {number} */ this.m_iterNdx = 0;
         /** @type {deRandom.Random} */ this.m_rnd = new deRandom.Random(deString.deStringHash(this.name));
+        /** @type {es3fSyncTests.State} */ this.m_state = es3fSyncTests.State.DRAW;
     };
 
     es3fSyncTests.FenceSyncCase.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
@@ -132,9 +142,8 @@ goog.scope(function() {
     /**
      * @return {tcuTestCase.IterateResult}
      */
-    es3fSyncTests.FenceSyncCase.prototype.iterate = function() {
+    es3fSyncTests.FenceSyncCase.prototype.draw = function() {
         /** @type {Array<number>} */ var vertices = [];
-        /** @type {boolean} */ var testOk = true;
 
         /** @type {string} */ var header = 'Case iteration ' + (this.m_iterNdx + 1) + ' / ' + es3fSyncTests.NUM_CASE_ITERATIONS;
         bufferedLogToConsole(header);
@@ -170,11 +179,15 @@ goog.scope(function() {
             gl.flush();
         if (this.m_caseOptions & es3fSyncTests.CaseOptions.FINISH_BEFORE_WAIT)
             gl.finish();
+        this.m_state = es3fSyncTests.State.VERIFY;
+    };
+
+
+    es3fSyncTests.FenceSyncCase.prototype.verify = function() {
+        /** @type {number} */ var waitValue = 0;
+        /** @type {boolean} */ var testOk = true;
 
         // Wait for sync object
-
-        /** @type {number} */ var waitValue = 0;
-
         if (this.m_waitCommand & es3fSyncTests.WaitCommand.WAIT_SYNC) {
             assertMsgOptions(this.m_timeout === gl.TIMEOUT_IGNORED, 'Expected TIMEOUT_IGNORED', false, true);
             assertMsgOptions(this.m_waitFlags === 0, 'Expected waitFlags = 0', false, true);
@@ -213,7 +226,7 @@ goog.scope(function() {
 
         // Delete sync object
 
-        if (this.m_syncObject) {
+        if (this.m_syncObject && testOk) {
             gl.deleteSync(this.m_syncObject);
             this.m_syncObject = null;
             bufferedLogToConsole('Sync object deleted.');
@@ -224,13 +237,43 @@ goog.scope(function() {
         bufferedLogToConsole('Test result: ' + (testOk ? 'Passed!' : 'Failed!'));
 
         if (!testOk) {
-            testFailedOptions('Fail', false);
-            return tcuTestCase.IterateResult.STOP;
+            if (!this.m_verifyStart)
+                this.m_verifyStart = new Date();
+            else {
+                var current = new Date();
+                var elapsedTime = 0.001 * (current.getTime() - this.m_verifyStart.getTime());
+                if (elapsedTime > es3fSyncTests.MAX_VERIFY_WAIT) {
+                    testFailedOptions('Fail', false);
+                    this.m_state = es3fSyncTests.State.FINISH;
+                    if (this.m_syncObject) {
+                        gl.deleteSync(this.m_syncObject);
+                        this.m_syncObject = null;
+                        bufferedLogToConsole('Sync object deleted.');
+                    }
+                }
+            }
         } else {
             bufferedLogToConsole('Sync objects created and deleted successfully.');
             testPassedOptions('Pass', true);
-            return (++this.m_iterNdx < es3fSyncTests.NUM_CASE_ITERATIONS) ? tcuTestCase.IterateResult.CONTINUE : tcuTestCase.IterateResult.STOP;
+            this.m_state = (++this.m_iterNdx < es3fSyncTests.NUM_CASE_ITERATIONS) ? es3fSyncTests.State.DRAW : es3fSyncTests.State.FINISH;
         }
+    };
+
+    es3fSyncTests.FenceSyncCase.prototype.iterate = function() {
+        switch (this.m_state) {
+            case es3fSyncTests.State.DRAW:
+                this.draw();
+                break;
+             case es3fSyncTests.State.VERIFY:
+                this.verify();
+                break;
+             case es3fSyncTests.State.FINISH:
+                return tcuTestCase.IterateResult.STOP;
+             default:
+                throw new Error('Invalid state: ' + this.m_state);
+        }
+
+        return tcuTestCase.IterateResult.CONTINUE;
     };
 
     /**
