@@ -212,7 +212,7 @@
 
         ext.endQueryEXT(ext.TIME_ELAPSED_EXT);
 
-        // At some point in the future, after returning control to the browser and being called again:
+        // ...at some point in the future, after returning control to the browser and being called again:
         var available = ext.getQueryObjectEXT(query, ext.QUERY_RESULT_AVAILABLE_EXT);
         var disjoint = gl.getParamater(ext.GPU_DISJOINT_EXT);
 
@@ -225,7 +225,6 @@
           // least significant 32 bits.
           adjustObjectLODBasedOnDrawTime(timeElapsed);
         }
-
 
         //----------------------------------------------------------------------
 
@@ -240,7 +239,7 @@
 
         ext.queryCounterEXT(endQuery, ext.TIMESTAMP_EXT);
 
-        // At some point in the future, after returning control to the browser and being called again:
+        // ...at some point in the future, after returning control to the browser and being called again:
         var available = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_AVAILABLE_EXT);
         var disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
 
@@ -253,6 +252,73 @@
           // taken to use all significant bits of the result, not just the
           // least significant 32 bits.
           adjustObjectLODBasedOnDrawTime(timeEnd - timeStart);
+        }
+
+        //----------------------------------------------------------------------
+
+        // Example (3) -- check the number of timestamp bits to determine how to best
+        // measure elapsed time.
+        var ext = gl.getExtension('EXT_disjoint_timer_query');
+        var timeElapsedQuery;
+        var startQuery;
+        var endQuery;
+
+        var useTimestamps = false;
+
+        if (ext.getQueryEXT(ext.TIMESTAMP_EXT, ext.QUERY_COUNTER_BITS_EXT) > 0) {
+          useTimestamps = true;
+        }
+
+        // Clear the disjoint state before starting to work with queries to increase
+        // the chances that the results will be valid.
+        gl.getParameter(ext.GPU_DISJOINT_EXT);
+
+        if (useTimestamps) {
+          startQuery = ext.createQueryEXT();
+          endQuery = ext.createQueryEXT();
+          ext.queryCounterEXT(startQuery, ext.TIMESTAMP_EXT);
+        } else {
+          timeElapsedQuery = ext.createQueryEXT();
+          ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, timeElapsedQuery);
+        }
+
+        // Draw object
+        gl.drawElements(...);
+
+        if (useTimestamps) {
+          ext.queryCounterEXT(endQuery, ext.TIMESTAMP_EXT);
+        } else {
+          ext.endQueryEXT(ext.TIME_ELAPSED_EXT);
+        }
+
+        // ...at some point in the future, after returning control to the browser and being called again:
+        var disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
+        if (disjoint) {
+          // Have to redo all of the measurements.
+        } else {
+          var available;
+          if (useTimestamps) {
+            available = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_AVAILABLE_EXT);
+          } else {
+            available = ext.getQueryObjectEXT(timeElapsedQuery, ext.QUERY_RESULT_AVAILABLE_EXT);
+          }
+
+          if (available) {
+            var timeElapsed;
+            if (useTimestamps) {
+              // See how much time the rendering of the object took in nanoseconds.
+              var timeStart = ext.getQueryObjectEXT(startQuery, ext.QUERY_RESULT_EXT);
+              var timeEnd = ext.getQueryObjectEXT(endQuery, ext.QUERY_RESULT_EXT);
+              timeElapsed = timeEnd - timeStart;
+            } else {
+              timeElapsed = ext.getQueryObjectEXT(query, ext.QUERY_RESULT_EXT);
+            }
+
+            // Do something useful with the time.  Note that care should be
+            // taken to use all significant bits of the result, not just the
+            // least significant 32 bits.
+            adjustObjectLODBasedOnDrawTime(timeElapsed);
+          }
         }
     </pre>
   </samplecode>
@@ -275,6 +341,9 @@
     </revision>
     <revision date="2015/10/19">
       <change>Promoted to community approved after discussion on public_webgl.</change>
+    </revision>
+    <revision date="2016/06/08">
+      <change>Added example choosing measurement technique based on number of timestamp bits.</change>
     </revision>
   </history>
 </extension>
