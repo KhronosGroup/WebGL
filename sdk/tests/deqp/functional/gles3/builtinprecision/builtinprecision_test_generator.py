@@ -56,17 +56,9 @@ _HTML_TEMPLATE = """<html>
 <script>
 var canvas = document.getElementById('canvas');
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', null, 2);
+var gl = wtu.create3DContext('canvas', null, 2);
 
-
-    try {
-        functional.gles3.es3fBuiltinPrecisionTests.run(gl, %(index)s);
-    }
-    catch(err)
-    {
-        bufferedLogToConsole(err);
-    }
-
+functional.gles3.es3fBuiltinPrecisionTests.run(gl, %(index)s);
 </script>
 </body>
 </html>

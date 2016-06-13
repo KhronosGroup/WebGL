@@ -15,20 +15,10 @@
 <div id="console"></div>
 <canvas id="canvas" width="320" height="240"></canvas>
 <script>
-    var wtu = WebGLTestUtils;
-    // Useful for debugging early errors, but not so much once the
-    // test is running a lot of code, because raising an exception
-    // breaks the subsequent tests.
-    // var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', {preserveDrawingBuffer: true}, 2);
-    var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 2);
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext('canvas', {preserveDrawingBuffer: true}, 2);
 
-    try {
-        functional.gles3.es3fTransformFeedbackTests.run(gl);
-    }
-    catch(err) {
-        bufferedLogToConsole(err);
-    }
-
+functional.gles3.es3fTransformFeedbackTests.run(gl);
 </script>
 </body>
 </html>
