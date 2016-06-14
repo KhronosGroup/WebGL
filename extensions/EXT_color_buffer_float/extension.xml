@@ -58,6 +58,12 @@
         floating-point color buffer.</li>
 
         <li>Multi-sample floating-point color buffers are not supported.</li>
+
+        <li>The sized internal format <code>RGB16F</code> is not
+        color-renderable in this extension. This is a difference in
+        functionality compared to the <a
+        href="../EXT_color_buffer_half_float">EXT_color_buffer_half_float</a>
+        extension.</li>
       </ul></p>
   </overview>
 
@@ -82,6 +88,10 @@ interface EXT_color_buffer_float {
 
     <revision date="2016/04/14">
       <change>Moved to community approved status.</change>
+    </revision>
+
+    <revision date="2016/06/16">
+      <change>Added note about RGB16F not being color-renderable.</change>
     </revision>
   </history>
 </extension>
