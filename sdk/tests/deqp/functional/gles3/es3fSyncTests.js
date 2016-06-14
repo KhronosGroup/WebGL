@@ -33,7 +33,7 @@ goog.scope(function() {
     var deString = framework.delibs.debase.deString;
 
     /** @const {number} */ es3fSyncTests.NUM_CASE_ITERATIONS = 5;
-    /** @const {number} */ es3fSyncTests.MAX_VERIRY_WAIT = 5;
+    /** @const {number} */ es3fSyncTests.MAX_VERIFY_WAIT = 5;
 
     /**
      * @enum
