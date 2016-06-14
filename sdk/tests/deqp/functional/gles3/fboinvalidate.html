@@ -16,17 +16,10 @@
 <canvas id="canvas" width="128" height="128"> </canvas>
 <script>
 var wtu = WebGLTestUtils;
-var gl = wtu.create3DContextWithWrapperThatThrowsOnGLError('canvas', {stencil: true}, 2);
+var gl = wtu.create3DContext('canvas', {stencil: true}, 2);
+var extension = gl.getExtension('EXT_color_buffer_float');
 
-
-    try {
-        functional.gles3.es3fFboInvalidateTests.run(gl);
-    }
-    catch(err)
-    {
-        bufferedLogToConsole(err);
-    }
-
+functional.gles3.es3fFboInvalidateTests.run(gl);
 </script>
 </body>
 </html>
