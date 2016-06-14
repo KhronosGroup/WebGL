@@ -56,6 +56,7 @@ _HTML_TEMPLATE = """<html>
 <script>
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext('canvas', null, 2);
+var ext = gl.getExtension('EXT_color_buffer_float');
 
 functional.gles3.es3fFboColorbufferTests.run(gl, [%(start)s, %(end)s]);
 </script>

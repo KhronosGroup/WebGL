@@ -133,7 +133,7 @@ function runFloatTextureRenderTargetTest(enabled, internalFormat, format, testPr
     var width = 2;
     var height = 2;
     gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, width, height, 0, format, gl.FLOAT, null);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "floating-point texture allocation should succeed if EXT_color_buffer_float is enabled");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "floating-point texture allocation should succeed");
 
     // Try to use this texture as a render target.
     var fbo = gl.createFramebuffer();
@@ -226,6 +226,41 @@ function runFloatRenderbufferRenderTargetTest(enabled, internalFormat, testProgr
     runReadbackTest(testProgram, subtractor);
 }
 
+function runRGB16FNegativeTest()
+{
+    debug("");
+    debug("testing RGB16F isn't color renderable");
+
+    var texture = allocateTexture();
+    var width = 2;
+    var height = 2;
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB16F, width, height, 0, gl.RGB, gl.FLOAT, null);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "RGB16F texture allocation should succeed");
+
+    // Try to use this texture as a render target.
+    var fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+
+    var completeStatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (completeStatus == gl.FRAMEBUFFER_COMPLETE)
+        testFailed("RGB16F render target should not be supported with or without enabling EXT_color_buffer_float");
+    else
+        testPassed("RGB16F render target should not be supported with or without enabling EXT_color_buffer_float");
+    gl.deleteTexture(texture);
+
+    var colorbuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, colorbuffer);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGB16F, width, height);
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "RGB16F renderbuffer allocation should fail with or without enabling EXT_color_buffer_float");
+    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    gl.deleteRenderbuffer(colorbuffer);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.deleteFramebuffer(fbo);
+}
+
 function runUniqueObjectTest()
 {
     debug("");
@@ -276,6 +311,9 @@ if (!gl) {
   runFloatRenderbufferRenderTargetTest(false, gl.RGBA32F);
   runFloatRenderbufferRenderTargetTest(false, gl.R11F_G11F_B10F);
 
+  // Ensure RGB16F can't be used for rendering.
+  runRGB16FNegativeTest();
+
   if (!gl.getExtension("EXT_color_buffer_float")) {
       testPassed("No EXT_color_buffer_float support -- this is legal");
   } else {
@@ -297,6 +335,9 @@ if (!gl) {
       runFloatRenderbufferRenderTargetTest(true, gl.RG32F, testProgram, 2, [1000, 1000, 1, 1]);
       runFloatRenderbufferRenderTargetTest(true, gl.RGBA32F, testProgram, 4, [1000, 1000, 1000, 1000]);
       runFloatRenderbufferRenderTargetTest(true, gl.R11F_G11F_B10F, testProgram, 3, [1000, 1000, 1000, 1]);
+
+      // Ensure EXT_color_buffer_float does not enable RGB16F as color renderable.
+      runRGB16FNegativeTest();
 
       runUniqueObjectTest();
   }

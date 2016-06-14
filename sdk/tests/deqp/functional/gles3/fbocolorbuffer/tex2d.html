@@ -24,6 +24,7 @@ DO NOT EDIT!
 <script>
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext('canvas', null, 2);
+var ext = gl.getExtension('EXT_color_buffer_float');
 
 functional.gles3.es3fFboColorbufferTests.run(gl, [1, 2]);
 </script>
