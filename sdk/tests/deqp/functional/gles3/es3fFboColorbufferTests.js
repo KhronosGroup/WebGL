@@ -928,8 +928,8 @@ es3fFboColorbufferTests.FboColorbufferTests.prototype.init = function() {
         gl.R32F,
         gl.R16F,
 
-        // gl.EXT_color_buffer_half_float
-        gl.RGB16F
+        // gl.EXT_color_buffer_half_float is not exposed in WebGL 2.0.
+        // gl.RGB16F
     ];
 
     // .clear

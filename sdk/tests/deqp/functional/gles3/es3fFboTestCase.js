@@ -363,7 +363,6 @@ var DE_ASSERT = function(x) {
         DE_ASSERT(!es3fFboTestCase.isRequiredFormat(format));
 
         switch (format) {
-            case gl.RGB16F:
             case gl.RGBA16F:
             case gl.RG16F:
             case gl.R16F:
@@ -373,6 +372,9 @@ var DE_ASSERT = function(x) {
             case gl.RG32F:
             case gl.R32F:
                 out.push('EXT_color_buffer_float');
+                break;
+            case gl.RGB16F:
+                // EXT_color_buffer_half_float is not exposed in WebGL 2.0.
                 break;
             default:
                 break;
