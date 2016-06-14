@@ -364,21 +364,16 @@ var DE_ASSERT = function(x) {
 
         switch (format) {
             case gl.RGB16F:
-                out.push('gl.EXT_color_buffer_half_float');
-                break;
-
             case gl.RGBA16F:
             case gl.RG16F:
             case gl.R16F:
-                out.push('gl.EXT_color_buffer_half_float');
-
             case gl.RGBA32F:
             case gl.RGB32F:
             case gl.R11F_G11F_B10F:
             case gl.RG32F:
             case gl.R32F:
-                out.push('gl.EXT_color_buffer_float');
-
+                out.push('EXT_color_buffer_float');
+                break;
             default:
                 break;
         }
@@ -393,7 +388,7 @@ var DE_ASSERT = function(x) {
     */
     es3fFboTestCase.isAnyExtensionSupported = function(context, requiredExts) {
         for (var iter in requiredExts) {
-            /** @const @type {string} */ var extension = iter;
+            /** @const @type {string} */ var extension = requiredExts[iter];
 
             if (sglrGLContext.isExtensionSupported(gl, extension))
                 return true;
