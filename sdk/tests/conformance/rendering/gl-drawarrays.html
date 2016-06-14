@@ -76,7 +76,7 @@ function init()
     gl.enableVertexAttribArray(0);
 
     checkDrawArrays(gl.TRIANGLES, 3,
-                    gl.INVALID_OPERATION, "gl.DrawArrays with no buffer attached to VAO shoud return INVALID_OPERATION");
+                    gl.INVALID_OPERATION, "gl.DrawArrays with no buffer attached to VAO should return INVALID_OPERATION");
 
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
 
