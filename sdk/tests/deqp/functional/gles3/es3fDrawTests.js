@@ -88,15 +88,14 @@ goog.scope(function() {
     es3fDrawTests.addTestIterations = function(test, baseSpec, type) {
         var spec = /** @type {glsDrawTests.DrawTestSpec} */ (deUtil.clone(baseSpec));
 
-        //JS RefRast only draws quads, so changing the primitive counts, leave original commented
         if (type == es3fDrawTests.TestIterationType.DRAW_COUNT) {
-            spec.primitiveCount = 2;
+            spec.primitiveCount = 1;
             test.addIteration(spec, 'draw count = ' + spec.primitiveCount);
 
-            spec.primitiveCount = 6;
+            spec.primitiveCount = 5;
             test.addIteration(spec, 'draw count = ' + spec.primitiveCount);
 
-            spec.primitiveCount = 26;
+            spec.primitiveCount = 25;
             test.addIteration(spec, 'draw count = ' + spec.primitiveCount);
         } else if (type == es3fDrawTests.TestIterationType.INSTANCE_COUNT) {
             spec.instanceCount = 1;
@@ -109,11 +108,11 @@ goog.scope(function() {
             test.addIteration(spec, 'instance count = ' + spec.instanceCount);
         } else if (type == es3fDrawTests.TestIterationType.INDEX_RANGE) {
             spec.indexMin = 0;
-            spec.indexMax = 24;
+            spec.indexMax = 23;
             test.addIteration(spec, 'index range = [' + spec.indexMin + ', ' + spec.indexMax + ']');
 
-            spec.indexMin = 24;
-            spec.indexMax = 41;
+            spec.indexMin = 23;
+            spec.indexMax = 40;
             test.addIteration(spec, 'index range = [' + spec.indexMin + ', ' + spec.indexMax + ']');
 
             // Only makes sense with points
@@ -206,7 +205,7 @@ goog.scope(function() {
 
         //spec.apiType = glu::ApiType::es(3,0);
         spec.primitive = this.m_primitive;
-        spec.primitiveCount = 6; //JS refrast value for quads
+        spec.primitiveCount = 5;
         spec.drawMethod = this.m_method;
         spec.indexType = this.m_indexType;
         spec.indexPointerOffset = 0;
@@ -238,7 +237,7 @@ goog.scope(function() {
 
         test = new glsDrawTests.DrawTest(null, 'multiple_attributes', 'Multiple attribute arrays.');
         spec.primitive = this.m_primitive;
-        spec.primitiveCount = 6; //JS refrast value for quads
+        spec.primitiveCount = 5;
         spec.drawMethod = this.m_method;
         spec.indexType = this.m_indexType;
         spec.indexPointerOffset = 0;
@@ -284,7 +283,7 @@ goog.scope(function() {
 
         //spec.apiType = glu::ApiType::es(3,0);
         spec.primitive = this.m_primitive;
-        spec.primitiveCount = 6; //JS refrast value for quads
+        spec.primitiveCount = 5;
         spec.drawMethod = this.m_method;
         spec.indexType = this.m_indexType;
         spec.indexPointerOffset = 0;
@@ -344,7 +343,7 @@ goog.scope(function() {
 
         //spec.apiType = glu::ApiType::es(3,0);
         spec.primitive = this.m_primitive;
-        spec.primitiveCount = 6; //JS refrast value for quads
+        spec.primitiveCount = 5;
         spec.drawMethod = this.m_method;
         spec.indexType = this.m_indexType;
         spec.indexPointerOffset = 0;

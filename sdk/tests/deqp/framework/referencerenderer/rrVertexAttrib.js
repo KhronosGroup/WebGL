@@ -245,7 +245,7 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
                 dst = new arrayType(dst);
             }
 
-            rrVertexAttrib.read(dst, vertexAttrib.type, vertexAttrib.size, new Uint8Array(vertexAttrib.pointer).subarray(byteOffset));
+            rrVertexAttrib.read(dst, vertexAttrib.type, vertexAttrib.size, new Uint8Array(vertexAttrib.pointer, byteOffset));
         } else {
             dst = new arrayType(/** @type {Array<number>} */ vertexAttrib.generic.data);
         }
