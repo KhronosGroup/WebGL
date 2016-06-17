@@ -9,6 +9,7 @@ textureformat/00_test_list.txt
 textureshadow/00_test_list.txt
 texturespecification/00_test_list.txt
 texturewrap/00_test_list.txt
+transformfeedback/00_test_list.txt
 uniformapi/00_test_list.txt
 uniformbuffers/00_test_list.txt
 attriblocation.html
@@ -66,6 +67,5 @@ shaderswitch.html
 stringquery.html
 sync.html
 texturestatequery.html
-transformfeedback.html
 vertexarrayobject.html
 vertexarrays.html
