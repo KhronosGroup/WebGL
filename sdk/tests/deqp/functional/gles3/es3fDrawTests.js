@@ -1127,7 +1127,7 @@ goog.scope(function() {
      * Create and execute the test cases
      * @param {WebGL2RenderingContext} context
      */
-    es3fDrawTests.run = function(context) {
+    es3fDrawTests.run = function(context, range) {
         gl = context;
         //Set up Test Root parameters
         var state = tcuTestCase.runner;
@@ -1140,6 +1140,9 @@ goog.scope(function() {
         description(rootTest.getDescription());
 
         try {
+            if (range) {
+                state.setRange(range);
+            }
             //Run test cases
             tcuTestCase.runTestCases();
         }
