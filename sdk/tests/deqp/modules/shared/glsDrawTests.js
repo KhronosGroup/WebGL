@@ -1443,59 +1443,7 @@ goog.scope(function() {
     };
 
     /**
-     * @constructor
-     * @param {number} componentCount
-     * @param {deRandom.Random} rnd
-     * @param {glsDrawTests.GLValue} min
-     * @param {glsDrawTests.GLValue} max
-     * @param {boolean} packed
-     */
-    glsDrawTests.RandomArrayGenerator.VertexParameters = function(componentCount, rnd, min, max, packed) {
-        /** @type {number} */ this.componentCount = componentCount;
-        /** @type {deRandom.Random} */ this.rnd = rnd;
-        /** @type {glsDrawTests.GLValue} */ this.min = min;
-        /** @type {glsDrawTests.GLValue} */ this.max = max;
-        /** @type {boolean}*/ this.packed = packed;
-    };
-
-    /**
-     * @param {Array<glsDrawTests.GLValue>} previousComponents
-     * @param {glsDrawTests.RandomArrayGenerator.VertexParameters} vertexParameters
-     * @return {Array<glsDrawTests.GLValue>|Array<number>}
-     */
-    glsDrawTests.RandomArrayGenerator.generateVertex = function(previousComponents, vertexParameters) {
-        /** @type {Array<glsDrawTests.GLValue>|Array<number>} */ var components = [];
-        /** @type {number} */ var limit10 = (1 << 10);
-        /** @type {number} */ var limit2 = (1 << 2);
-
-        for (var componentNdx = 0; componentNdx < vertexParameters.componentCount; componentNdx++) {
-            //keep z and w values the same as the previous attribute
-            if (componentNdx > 1 && previousComponents.length > 2) {
-                components[componentNdx] = previousComponents[componentNdx];
-                continue;
-            }
-
-            components[componentNdx] = vertexParameters.packed ? (
-                componentNdx == 3 ?
-                    new Uint32Array([vertexParameters.rnd.getInt() % limit2])[0] :
-                    new Uint32Array([vertexParameters.rnd.getInt() % limit10])[0]
-            ) : glsDrawTests.GLValue.getRandom(vertexParameters.rnd, vertexParameters.min, vertexParameters.max);
-
-            if (!vertexParameters.packed) {
-                var minSeparation = glsDrawTests.GLValue.minValue(vertexParameters.min.getType());
-
-                // Try to not create vertex near previous
-                if (previousComponents.length > 0 && glsDrawTests.GLValue.abs(components[componentNdx].sub(previousComponents[componentNdx])).lessThan(minSeparation)) {
-                    // Too close, try again (but only once)
-                    components[componentNdx] = glsDrawTests.GLValue.getRandom(vertexParameters.rnd, vertexParameters.min, vertexParameters.max);
-                }
-            }
-        }
-        return components;
-    };
-
-    /**
-     * createBasicArray - Modified JS version to ensure quad generation for compatibility with refrast.
+     * createBasicArray
      * @param {number} seed
      * @param {number} elementCount
      * @param {number} componentCount
@@ -1516,6 +1464,9 @@ goog.scope(function() {
 
         var packed = type == glsDrawTests.DrawTestSpec.InputType.INT_2_10_10_10 ||
             type == glsDrawTests.DrawTestSpec.InputType.UNSIGNED_INT_2_10_10_10;
+        /** @type {number} */ var limit10 = (1 << 10);
+        /** @type {number} */ var limit2 = (1 << 2);
+
 
         /** @type {number} */ var componentSize = glsDrawTests.DrawTestSpec.inputTypeSize(type);
         /** @type {number} */ var elementSize = componentSize * componentCount;
@@ -1524,228 +1475,56 @@ goog.scope(function() {
         var data = new ArrayBuffer(bufferSize);
         var writePtr = new Uint8Array(data, offset);
 
-        /** @type {Array<glsDrawTests.GLValue>|Array<number>} */ var components = [];
-        /** @type {Array<Array<glsDrawTests.GLValue>>|Array<Array<number>>} */ var quadVertices = [];
-        /** @type {Array<glsDrawTests.GLValue>} */ var vertex1 = [];
-        /** @type {Array<glsDrawTests.GLValue>} */ var vertex2 = [];
-        /** @type {Array<glsDrawTests.GLValue>} */ var vertex3 = [];
-        /** @type {Array<glsDrawTests.GLValue>} */ var vertex4 = [];
-        /** @type {Array<glsDrawTests.GLValue>} */ var vertex5 = [];
-        /** @type {Array<glsDrawTests.GLValue>} */ var vertex6 = [];
-        /** @type {number} */ var parallelaxis;
-        /** @type {number} */ var oppositeaxis;
-        /** @type {number} */ var direction;
-        /** @type {number} */ var packedValue;
-
-        //Alias
-        var generateVertex = glsDrawTests.RandomArrayGenerator.generateVertex;
+        var previousComponentsFloat = [0, 0, 0, 0];
         var rnd = new deRandom.Random(seed);
 
-        /** @type {glsDrawTests.RandomArrayGenerator.VertexParameters} */
-        var vertexParameters = new glsDrawTests.RandomArrayGenerator.VertexParameters(componentCount, rnd, min, max, packed);
-
         for (var vertexNdx = 0; vertexNdx < elementCount; vertexNdx++) {
-            //If first vertex hasn't been met, just generate individual vertices, and advance the buffer.
-            if (vertexNdx < first || primitive == glsDrawTests.DrawTestSpec.Primitive.POINTS) {
-                components = generateVertex(components, vertexParameters);
-                if (packed) {
-                    packedValue = deMath.binaryOp(
+            var components = [];
+
+            for (var componentNdx = 0; componentNdx < componentCount; componentNdx++) {
+                var getRandomComponent = function() {
+                    // For packed formats we can't use GLValue
+                    if (packed) {
+                        if (componentNdx == 3) {
+                            return rnd.getInt() % limit2;
+                        } else {
+                            return rnd.getInt() % limit10;
+                        }
+                    } else {
+                        return glsDrawTests.GLValue.getRandom(rnd, min, max);
+                    }
+                };
+
+                var component = getRandomComponent();
+                var componentFloat = (component instanceof glsDrawTests.GLValue) ? component.toFloat() : component;
+
+                // Try to not create vertex near previous
+                if (vertexNdx != 0 && Math.abs(componentFloat - previousComponentsFloat[componentNdx]) < min.toFloat()) {
+                    // Too close, try again (but only once)
+                    component = getRandomComponent();
+                    componentFloat = (component instanceof glsDrawTests.GLValue) ? component.toFloat() : component;
+                }
+
+                components.push(component);
+                previousComponentsFloat[componentNdx] = componentFloat;
+            }
+
+            if (packed) {
+                var packedValue = deMath.binaryOp(
                         deMath.shiftLeft(/** @type {Array<number>} */ (components)[3], 30), deMath.binaryOp(
                             deMath.shiftLeft(/** @type {Array<number>} */ (components)[2], 20), deMath.binaryOp(
                                 deMath.shiftLeft(/** @type {Array<number>} */ (components)[1], 10), /** @type {Array<number>} */ (components)[0], deMath.BinaryOp.OR
+                                ), deMath.BinaryOp.OR
                             ), deMath.BinaryOp.OR
-                        ), deMath.BinaryOp.OR
-                    );
-                    glsDrawTests.copyArray(
-                        writePtr.subarray(componentCount), new Uint32Array([packedValue])
-                    );
-                } else
-                    for (var componentNdx = 0; componentNdx < componentCount; componentNdx++)
-                        glsDrawTests.copyGLValueToArray(writePtr.subarray(componentNdx * componentSize), components[componentNdx]);
-
-                //Advance one vertex
-                writePtr = writePtr.subarray(componentCount * componentSize);
-                continue;
-            }
-
-            //Primitive cases
-            switch (primitive) {
-                case glsDrawTests.DrawTestSpec.Primitive.LINES:
-                case glsDrawTests.DrawTestSpec.Primitive.LINE_STRIP:
-                case glsDrawTests.DrawTestSpec.Primitive.LINE_LOOP: {
-                    quadVertices = [generateVertex(components, vertexParameters)];
-                    break;
-                }
-                case glsDrawTests.DrawTestSpec.Primitive.TRIANGLES: {
-                    vertex1 = generateVertex(components, vertexParameters);
-
-                    parallelaxis = rnd.getBool() ? 0 : 1;
-                    oppositeaxis = parallelaxis ? 0 : 1;
-
-                    vertex2 = generateVertex(vertex1, vertexParameters);
-                    vertex2[parallelaxis] = vertex1[parallelaxis];
-
-                    vertex3 = generateVertex(vertex2, vertexParameters);
-                    vertex3[oppositeaxis] = vertex1[oppositeaxis];
-
-                    vertex4 = generateVertex(vertex3, vertexParameters);
-                    vertex4[parallelaxis] = vertex3[parallelaxis];
-                    vertex4[oppositeaxis] = vertex2[oppositeaxis];
-
-                    quadVertices = [vertex1, vertex2, vertex3, vertex3, vertex2, vertex4];
-                    break;
-                }
-                case glsDrawTests.DrawTestSpec.Primitive.TRIANGLE_STRIP: {
-                    if (vertexNdx < first + 4) {
-                        vertex1 = generateVertex(components, vertexParameters);
-
-                        parallelaxis = rnd.getBool() ? 0 : 1;
-                        oppositeaxis = parallelaxis ? 0 : 1;
-
-                        vertex2 = generateVertex(vertex1, vertexParameters);
-                        vertex2[parallelaxis] = vertex1[parallelaxis];
-
-                        vertex3 = generateVertex(vertex2, vertexParameters);
-                        vertex3[oppositeaxis] = vertex1[oppositeaxis];
-
-                        direction = packed ?
-                            (vertex3[parallelaxis] > vertex1[parallelaxis] ? 1 : -1) :
-                            (vertex3[parallelaxis].greaterThan(vertex1[parallelaxis]) ? 1 : -1);
-
-                        vertex4 = generateVertex(vertex3, vertexParameters);
-                        vertex4[oppositeaxis] = vertex2[oppositeaxis];
-                        vertex4[parallelaxis] = vertex3[parallelaxis];
-
-                        quadVertices = [vertex1, vertex2, vertex3, vertex4];
-                    } else {
-                        vertex5 = generateVertex(components, vertexParameters);
-                        vertex5[oppositeaxis] = quadVertices[quadVertices.length - 2][oppositeaxis];
-                        if (!packed)
-                            vertex5[parallelaxis] = glsDrawTests.GLValue.getRandom(
-                                vertexParameters.rnd,
-                                direction > 0 ? components[parallelaxis] : vertexParameters.min,
-                                direction > 0 ? vertexParameters.max : components[parallelaxis]
-                            );
-
-                        vertex6 = generateVertex(vertex5, vertexParameters);
-                        vertex6[oppositeaxis] = quadVertices[quadVertices.length - 1][oppositeaxis];
-                        vertex6[parallelaxis] = vertex5[parallelaxis];
-
-                        quadVertices = [vertex5, vertex6];
-                    }
-                    break;
-                }
-                case glsDrawTests.DrawTestSpec.Primitive.TRIANGLE_FAN: {
-                    if (vertexNdx < first + 4) {
-                        vertex1 = generateVertex(components, vertexParameters);
-
-                        parallelaxis = rnd.getBool() ? 0 : 1;
-                        oppositeaxis = parallelaxis ? 0 : 1;
-
-                        vertex2 = generateVertex(vertex1, vertexParameters);
-                        vertex2[parallelaxis] = vertex1[parallelaxis];
-
-                        vertex3 = generateVertex(vertex2, vertexParameters);
-                        vertex3[oppositeaxis] = vertex2[oppositeaxis];
-
-                        vertex4 = generateVertex(vertex3, vertexParameters);
-                        vertex4[oppositeaxis] = vertex1[oppositeaxis];
-                        vertex4[parallelaxis] = vertex3[parallelaxis];
-
-                        direction = packed ?
-                            (vertex4[oppositeaxis] > vertex3[oppositeaxis] ? 1 : -1) :
-                            (vertex4[oppositeaxis].greaterThan(vertex3[oppositeaxis]) ? 1 : -1);
-
-                        quadVertices = [vertex1, vertex2, vertex3, vertex4];
-                    } else {
-                        vertex5 = generateVertex(components, vertexParameters);
-                        vertex5[parallelaxis] = components[parallelaxis];
-                        if (!packed)
-                            vertex5[oppositeaxis] = glsDrawTests.GLValue.getRandom(
-                                vertexParameters.rnd,
-                                direction > 0 ? components[oppositeaxis] : vertexParameters.min,
-                                direction > 0 ? vertexParameters.max : components[oppositeaxis]
-                            );
-
-                        vertex6 = generateVertex(vertex5, vertexParameters);
-                        vertex6[oppositeaxis] = vertex5[oppositeaxis];
-                        vertex6[parallelaxis] = vertex1[parallelaxis];
-
-                        //swap axes
-                        parallelaxis += oppositeaxis;
-                        oppositeaxis = parallelaxis - oppositeaxis;
-                        parallelaxis -= oppositeaxis;
-
-                        direction = packed ?
-                            (vertex6[oppositeaxis] > vertex5[oppositeaxis] ? 1 : -1) :
-                            (vertex6[oppositeaxis].greaterThan(vertex5[oppositeaxis]) ? 1 : -1);
-
-                        quadVertices = [vertex5, vertex6];
-                    }
-                    break;
-                }
-            }
-
-            //Copy values to buffer
-            for (var qVtx = 0; qVtx < quadVertices.length; qVtx++)
-                if (packed) {
-                    packedValue = deMath.binaryOp(
-                        deMath.shiftLeft(quadVertices[qVtx][3], 30), deMath.binaryOp(
-                            deMath.shiftLeft(quadVertices[qVtx][2], 20), deMath.binaryOp(
-                                deMath.shiftLeft(quadVertices[qVtx][1], 10), quadVertices[qVtx][0], deMath.BinaryOp.OR
-                            ), deMath.BinaryOp.OR
-                        ), deMath.BinaryOp.OR
-                    );
-
-                    glsDrawTests.copyArray(
-                        writePtr.subarray(qVtx * componentCount), new Uint32Array([packedValue])
-                    );
-                } else
-                    for (var componentNdx = 0; componentNdx < componentCount; componentNdx++)
-                        glsDrawTests.copyGLValueToArray(
-                            writePtr.subarray(
-                                Math.max(qVtx * componentCount * componentSize, qVtx * stride) + componentNdx * componentSize
-                            ),
-                            quadVertices[qVtx][componentNdx]
                         );
-
-            if (quadVertices.length > 0) {
-                writePtr = writePtr.subarray(stride * quadVertices.length);
-
-                //Remember last generated vertex
-                components = quadVertices[quadVertices.length - 1];
-
-                //Increment additional generated vertices number
-                vertexNdx += quadVertices.length - 1;
-            }
-        }
-
-        //If index array was specified, reorder vertices in the order specified (so refrast can still draw quads).
-        if (indices) {
-            var view = new Uint8Array(data, offset);
-            var reorderedbuffer = new ArrayBuffer(data.byteLength);
-            var reorderedview = new Uint8Array(reorderedbuffer, offset);
-            var indicesCount = (indices.length - offset) / indexSize;
-            for (var index = 0; index < indicesCount; index++) {
-                var start = indexSize * index;
-                var end = (indexSize * index) + indexSize;
-                var indexValue = indices.subarray(start, end);
-                switch (indexSize) {
-                    case 1: indexValue = indexValue[0]; break;
-                    case 2: indexValue = new Uint16Array(indexValue)[0]; break;
-                    case 4: indexValue = new Uint32Array(indexValue)[0]; break;
-                    default: throw new Error('Invalid index type size: ' + indexSize);
+                glsDrawTests.copyArray(writePtr, new Uint32Array([packedValue]));
+            } else {
+                for (var componentNdx = 0; componentNdx < componentCount; componentNdx++) {
+                    glsDrawTests.copyGLValueToArray(writePtr.subarray(componentNdx * componentSize), components[componentNdx]);
                 }
-                if (indexValue < elementCount)
-                    reorderedview.set(
-                        view.subarray(
-                            Math.max(index * componentCount * componentSize, index * stride),
-                            Math.max((index + 1) * componentCount * componentSize, (index + 1) * stride)
-                        ),
-                        Math.max(indexValue * componentCount * componentSize, indexValue * stride)
-                    );
             }
-            data = reorderedbuffer;
+
+            writePtr = writePtr.subarray(stride);
         }
 
         return new Uint8Array(data);

@@ -904,8 +904,8 @@ rrRenderer.drawPoints = function(state, renderTarget, program, vertexAttribs, pr
             for (var j = Math.floor(y - pointSize / 2); j < y + pointSize / 2; j++) {
                 var centerX = i + 0.5;
                 var centerY = j + 0.5;
-                if (Math.abs(centerX - x) < pointSize / 2 &&
-                    Math.abs(centerY - y) < pointSize / 2 &&
+                if (Math.abs(centerX - x) <= pointSize / 2 &&
+                    Math.abs(centerY - y) <= pointSize / 2 &&
                     rrRenderer.clipTest(i, j, depth, state.viewport.rect))
                     packets.push(new rrFragmentOperations.Fragment(b, [i, j], depth));
             }

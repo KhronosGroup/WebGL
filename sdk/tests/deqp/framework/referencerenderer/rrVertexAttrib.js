@@ -220,6 +220,19 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
         DE_ASSERT(rrVertexAttrib.isValidVertexAttrib(vertexAttrib));
         /** @type {goog.NumberArray} */ var dst;
 
+        var arrayType = null;
+        switch (genericType) {
+            case rrGenericVector.GenericVecType.INT32:
+                arrayType = Int32Array;
+                break;
+            case rrGenericVector.GenericVecType.UINT32:
+                arrayType = Uint32Array;
+                break;
+            case rrGenericVector.GenericVecType.FLOAT:
+                arrayType = Float32Array;
+                break;
+        }
+
         if (vertexAttrib.pointer) {
             /** @type {number} */ var elementNdx = (vertexAttrib.instanceDivisor != 0) ? (instanceNdx / vertexAttrib.instanceDivisor) : vertexNdx;
             /** @type {number} */ var compSize = rrVertexAttrib.getComponentSize(vertexAttrib.type);
@@ -228,21 +241,13 @@ var rrGenericVector = framework.referencerenderer.rrGenericVector;
 
             dst = [0, 0, 0, 1]; // defaults
 
-            switch (genericType) {
-                case rrGenericVector.GenericVecType.INT32:
-                    dst = new Int32Array(dst);
-                    break;
-                case rrGenericVector.GenericVecType.UINT32:
-                    dst = new Uint32Array(dst);
-                    break;
-                case rrGenericVector.GenericVecType.FLOAT:
-                    dst = new Float32Array(dst);
-                    break;
+            if (arrayType != null) {
+                dst = new arrayType(dst);
             }
 
-            rrVertexAttrib.read(dst, vertexAttrib.type, vertexAttrib.size, new Uint8Array(vertexAttrib.pointer).subarray(byteOffset));
+            rrVertexAttrib.read(dst, vertexAttrib.type, vertexAttrib.size, new Uint8Array(vertexAttrib.pointer, byteOffset));
         } else {
-            dst = new Uint32Array(/** @type {Array<number>} */ (vertexAttrib.generic.data));
+            dst = new arrayType(/** @type {Array<number>} */ vertexAttrib.generic.data);
         }
 
         return dst;
