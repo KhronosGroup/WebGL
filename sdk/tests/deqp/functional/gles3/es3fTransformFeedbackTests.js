@@ -1720,23 +1720,17 @@ goog.scope(function() {
         }
 
         // .basic_type
-        /** @type {tcuTestCase.DeqpTest} */
-        var basicTypeGroup = tcuTestCase.newTest('basic_types', 'Basic types in transform feedback');
-        testGroup.addChild(basicTypeGroup);
-
         for (var bufferModeNdx = 0; bufferModeNdx < bufferModes.length; bufferModeNdx++) {
-            /** @type {tcuTestCase.DeqpTest} */
-            var modeGroup = tcuTestCase.newTest(bufferModes[bufferModeNdx].name, '');
             /** @type {number} */
             var bufferMode = bufferModes[bufferModeNdx].mode;
-            basicTypeGroup.addChild(modeGroup);
-
             for (var primitiveTypeNdx = 0; primitiveTypeNdx < primitiveTypes.length; primitiveTypeNdx++) {
                 /** @type {tcuTestCase.DeqpTest} */
-                var primitiveGroup = tcuTestCase.newTest(primitiveTypes[primitiveTypeNdx].name, '');
+                var primitiveGroup = tcuTestCase.newTest(
+                    'basic_types.' + bufferModes[bufferModeNdx].name + '.' + primitiveTypes[primitiveTypeNdx].name,
+                    'Basic types in transform feedback');
                 /** @type {number} */
                 var primitiveType = primitiveTypes[primitiveTypeNdx].type;
-                modeGroup.addChild(primitiveGroup);
+                testGroup.addChild(primitiveGroup);
 
                 for (var typeNdx = 0; typeNdx < basicTypes.length; typeNdx++) {
                     /** @type {gluShaderUtil.DataType} */
@@ -1764,19 +1758,15 @@ goog.scope(function() {
         }
 
         // .array
-        /** @type {tcuTestCase.DeqpTest} */ var arrayGroup = tcuTestCase.newTest('array', 'Capturing whole array in TF');
-        testGroup.addChild(arrayGroup);
-
         for (var bufferModeNdx = 0; bufferModeNdx < bufferModes.length; bufferModeNdx++) {
-            var modeGroup = tcuTestCase.newTest(bufferModes[bufferModeNdx].name, '');
             var bufferMode = bufferModes[bufferModeNdx].mode;
-            arrayGroup.addChild(modeGroup);
-
             for (var primitiveTypeNdx = 0; primitiveTypeNdx < primitiveTypes.length; primitiveTypeNdx++) {
-                var primitiveGroup = tcuTestCase.newTest(primitiveTypes[primitiveTypeNdx].name, '');
+                var primitiveGroup = tcuTestCase.newTest(
+                    'array.' + bufferModes[bufferModeNdx].name + '.' + primitiveTypes[primitiveTypeNdx].name,
+                    'Capturing whole array in TF');
                 /** @type {number} */
                 var primitiveType = primitiveTypes[primitiveTypeNdx].type;
-                modeGroup.addChild(primitiveGroup);
+                testGroup.addChild(primitiveGroup);
 
                 for (var typeNdx = 0; typeNdx < basicTypes.length; typeNdx++) {
                     var type = basicTypes[typeNdx];
@@ -1801,19 +1791,14 @@ goog.scope(function() {
         }
 
         // .array_element
-        /** @type {tcuTestCase.DeqpTest} */
-        var arrayElemGroup = tcuTestCase.newTest('array_element', 'Capturing single array element in TF');
-        testGroup.addChild(arrayElemGroup);
-
         for (var bufferModeNdx = 0; bufferModeNdx < bufferModes.length; bufferModeNdx++) {
-            var modeGroup = tcuTestCase.newTest(bufferModes[bufferModeNdx].name, '');
             var bufferMode = bufferModes[bufferModeNdx].mode;
-            arrayElemGroup.addChild(modeGroup);
-
             for (var primitiveTypeNdx = 0; primitiveTypeNdx < primitiveTypes.length; primitiveTypeNdx++) {
-                var primitiveGroup = tcuTestCase.newTest(primitiveTypes[primitiveTypeNdx].name, '');
+                var primitiveGroup = tcuTestCase.newTest(
+                    'array_element.' + bufferModes[bufferModeNdx].name + '.' + primitiveTypes[primitiveTypeNdx].name,
+                    'Capturing single array element in TF');
                 var primitiveType = primitiveTypes[primitiveTypeNdx].type;
-                modeGroup.addChild(primitiveGroup);
+                testGroup.addChild(primitiveGroup);
 
                 for (var typeNdx = 0; typeNdx < basicTypes.length; typeNdx++) {
                     var type = basicTypes[typeNdx];
@@ -1838,17 +1823,12 @@ goog.scope(function() {
         }
 
         // .interpolation
-        /** @type {tcuTestCase.DeqpTest} */
-        var interpolationGroup = tcuTestCase.newTest(
-            'es3fTransformFeedbackTests.interpolation', 'Different es3fTransformFeedbackTests.interpolation modes in transform feedback varyings'
-        );
-        testGroup.addChild(interpolationGroup);
-
         for (var modeNdx = 0; modeNdx < interpModes.length; modeNdx++) {
-        var interp = interpModes[modeNdx].interp;
-        var modeGroup = tcuTestCase.newTest(interpModes[modeNdx].name, '');
-
-            interpolationGroup.addChild(modeGroup);
+            var interp = interpModes[modeNdx].interp;
+            var modeGroup = tcuTestCase.newTest(
+                'interpolation.' + interpModes[modeNdx].name,
+                'Different interpolation modes in transform feedback varyings');
+            testGroup.addChild(modeGroup);
 
             for (var precNdx = 0; precNdx < precisions.length; precNdx++) {
                 var precision = precisions[precNdx];
@@ -1876,21 +1856,16 @@ goog.scope(function() {
         }
 
         // .random
-        /** @type {tcuTestCase.DeqpTest} */
-        var randomGroup = tcuTestCase.newTest('random', 'Randomized transform feedback cases');
-        testGroup.addChild(randomGroup);
-
         for (var bufferModeNdx = 0; bufferModeNdx < bufferModes.length; bufferModeNdx++) {
-            var modeGroup = tcuTestCase.newTest(bufferModes[bufferModeNdx].name, '');
             /** @type {number} */
             var bufferMode = bufferModes[bufferModeNdx].mode;
-            randomGroup.addChild(modeGroup);
-
             for (var primitiveTypeNdx = 0; primitiveTypeNdx < primitiveTypes.length; primitiveTypeNdx++) {
-                var primitiveGroup = tcuTestCase.newTest(primitiveTypes[primitiveTypeNdx].name, '');
+                var primitiveGroup = tcuTestCase.newTest(
+                    'random.' + bufferModes[bufferModeNdx].name + '.' + primitiveTypes[primitiveTypeNdx].name,
+                    'Randomized transform feedback cases');
                 /** @type {number} */
                 var primitiveType = primitiveTypes[primitiveTypeNdx].type;
-                modeGroup.addChild(primitiveGroup);
+                testGroup.addChild(primitiveGroup);
 
                 for (var ndx = 0; ndx < 10; ndx++) {
                     /** @type {number} */
@@ -1912,7 +1887,7 @@ goog.scope(function() {
     /**
      * Create and execute the test cases
      */
-    es3fTransformFeedbackTests.run = function(context) {
+    es3fTransformFeedbackTests.run = function(context, range) {
         gl = context;
         var testName = 'transform_feedback';
         var testDescription = 'Transform Feedback Tests';
@@ -1926,6 +1901,8 @@ goog.scope(function() {
         description(testDescription);
         try {
             es3fTransformFeedbackTests.init();
+            if (range)
+                state.setRange(range);
 //            tcuTestCase.runner.runCallback(tcuTestCase.runTestCases);
             tcuTestCase.runTestCases();
         } catch (err) {
