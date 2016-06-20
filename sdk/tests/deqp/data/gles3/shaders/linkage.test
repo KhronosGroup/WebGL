@@ -468,6 +468,7 @@ group varying "Varying linkage"
 		case differing_interpolation_1
 			version 300 es
 			desc "varying interpolation different (flat vs. smooth)"
+			expect link_fail
 			values
 			{
 				input float in0		= [ -1.25 | -25.0 | 1.0 | 2.25 | 3.4 | 16.0 ];
@@ -501,6 +502,7 @@ group varying "Varying linkage"
 		case differing_interpolation_2
 			version 300 es
 			desc "varying interpolation different (smooth vs. centroid)"
+			expect link_fail
 			values
 			{
 				input float in0		= [ -1.25 | -25.0 | 1.0 | 2.25 | 3.4 | 16.0 ];
@@ -3627,6 +3629,43 @@ group uniform "Uniform linkage"
 				#version 300 es
 
 				uniform Block
+				{
+					highp vec4 val;
+				};
+
+				precision mediump float;
+				${FRAGMENT_DECLARATIONS}
+				in mediump float res;
+				void main()
+				{
+					dEQP_FragColor = vec4(val);
+				}
+			""
+		end
+
+		case layout_qualifier_mismatch_2
+			version 300 es
+			expect link_fail
+			vertex ""
+				#version 300 es
+
+				layout(shared) uniform Block
+				{
+					highp vec4 val;
+				};
+
+				${VERTEX_DECLARATIONS}
+				out mediump float res;
+				void main()
+				{
+					res = val.x;
+					${VERTEX_OUTPUT}
+				}
+			""
+			fragment ""
+				#version 300 es
+
+				layout(packed) uniform Block
 				{
 					highp vec4 val;
 				};
