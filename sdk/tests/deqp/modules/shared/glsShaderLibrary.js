@@ -144,10 +144,30 @@ var gluShaderUtil = framework.opengl.gluShaderUtil;
         str = str.substr(endstr.length, index_end - endstr.length);
         if (trimFront)
             str = str.replace(/^\s*\n/, '');
-        return str
-            .replace('\\n', '\n')
-            .replace('\\t', '\t')
-            .replace(/\\/g, '');
+        var result = '';
+        var i = 0;
+        while (str[i] != undefined) {
+            if (str[i]  == '\\') {
+                switch (str[i + 1]) {
+                    case undefined:
+                        break;
+                    case 'n':
+                        result += '\n';
+                        break;
+                    case 't':
+                        result += '\t';
+                        break;
+                    default:
+                        result += str[i + 1];
+                        break;
+                }
+                i += 2;
+            } else {
+                result += str[i];
+                i++;
+            }
+        }
+        return result;
 
     };
 
