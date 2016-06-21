@@ -63,7 +63,11 @@ goog.scope(function() {
      * @param {glsVertexArrayTests.deArray.Usage} usage
      */
     es3fVertexArrayTests.SingleVertexArrayUsageGroup = function(usage) {
-        tcuTestCase.DeqpTest.call(this, glsVertexArrayTests.deArray.usageTypeToString(usage), glsVertexArrayTests.deArray.usageTypeToString(usage));
+        tcuTestCase.DeqpTest.call(
+            this,
+            "single_attribute.usages." + glsVertexArrayTests.deArray.usageTypeToString(usage),
+            glsVertexArrayTests.deArray.usageTypeToString(usage)
+        );
         this.makeExecutable();
         this.m_usage = usage;
     };
@@ -118,45 +122,6 @@ goog.scope(function() {
                         );
                 }
             }
-        }
-    };
-
-    /**
-     * es3fVertexArrayTests.SingleVertexArrayUsageTests
-     * @constructor
-     * @extends {tcuTestCase.DeqpTest}
-     */
-    es3fVertexArrayTests.SingleVertexArrayUsageTests = function() {
-        tcuTestCase.DeqpTest.call(this, 'usages', 'Single vertex atribute, usage');
-        this.makeExecutable();
-    };
-
-    es3fVertexArrayTests.SingleVertexArrayUsageTests.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
-    es3fVertexArrayTests.SingleVertexArrayUsageTests.prototype.constructor = es3fVertexArrayTests.SingleVertexArrayUsageTests;
-
-    /**
-     * SingleVertexArrayUsageTests.init
-     */
-    es3fVertexArrayTests.SingleVertexArrayUsageTests.prototype.init = function() {
-        // Test usage
-        /** @type {Array<glsVertexArrayTests.deArray.Usage>} */ var usages = [
-            glsVertexArrayTests.deArray.Usage.STATIC_DRAW,
-            glsVertexArrayTests.deArray.Usage.STREAM_DRAW,
-            glsVertexArrayTests.deArray.Usage.DYNAMIC_DRAW,
-            glsVertexArrayTests.deArray.Usage.STATIC_COPY,
-            glsVertexArrayTests.deArray.Usage.STREAM_COPY,
-            glsVertexArrayTests.deArray.Usage.DYNAMIC_COPY,
-            glsVertexArrayTests.deArray.Usage.STATIC_READ,
-            glsVertexArrayTests.deArray.Usage.STREAM_READ,
-            glsVertexArrayTests.deArray.Usage.DYNAMIC_READ
-        ];
-
-        for (var usageNdx = 0; usageNdx < usages.length; usageNdx++) {
-            this.addChild(
-                new es3fVertexArrayTests.SingleVertexArrayUsageGroup(
-                    usages[usageNdx]
-                )
-            );
         }
     };
 
@@ -239,7 +204,7 @@ goog.scope(function() {
      * @extends {tcuTestCase.DeqpTest}
      */
     es3fVertexArrayTests.SingleVertexArrayStrideTests = function() {
-        tcuTestCase.DeqpTest.call(this, 'strides', 'Single stride vertex atribute');
+        tcuTestCase.DeqpTest.call(this, 'single_attribute.strides', 'Single stride vertex atribute');
         this.makeExecutable();
     };
 
@@ -346,7 +311,7 @@ goog.scope(function() {
      * @extends {tcuTestCase.DeqpTest}
      */
     es3fVertexArrayTests.SingleVertexArrayFirstTests = function() {
-        tcuTestCase.DeqpTest.call(this, 'first', 'Single vertex attribute, different first values to drawArrays');
+        tcuTestCase.DeqpTest.call(this, 'single_attribute.first', 'Single vertex attribute, different first values to drawArrays');
         this.makeExecutable();
     };
 
@@ -457,7 +422,7 @@ goog.scope(function() {
      * @extends {tcuTestCase.DeqpTest}
      */
     es3fVertexArrayTests.SingleVertexArrayOffsetTests = function() {
-        tcuTestCase.DeqpTest.call(this, 'offset', 'Single vertex atribute offset element');
+        tcuTestCase.DeqpTest.call(this, 'single_attribute.offset', 'Single vertex atribute offset element');
         this.makeExecutable();
     };
 
@@ -553,7 +518,7 @@ goog.scope(function() {
      * @extends {tcuTestCase.DeqpTest}
      */
     es3fVertexArrayTests.SingleVertexArrayNormalizeTests = function() {
-        tcuTestCase.DeqpTest.call(this, 'normalize', 'Single normalize vertex atribute');
+        tcuTestCase.DeqpTest.call(this, 'single_attribute.normalize', 'Single normalize vertex atribute');
         this.makeExecutable();
     };
 
@@ -596,7 +561,7 @@ goog.scope(function() {
     es3fVertexArrayTests.SingleVertexArrayOutputTypeGroup = function(type) {
         tcuTestCase.DeqpTest.call(
             this,
-            glsVertexArrayTests.deArray.inputTypeToString(type),
+            "single_attribute.output_types." + glsVertexArrayTests.deArray.inputTypeToString(type),
             glsVertexArrayTests.deArray.inputTypeToString(type)
         );
         this.makeExecutable();
@@ -707,66 +672,8 @@ goog.scope(function() {
      * @constructor
      * @extends {tcuTestCase.DeqpTest}
      */
-    es3fVertexArrayTests.SingleVertexArrayOutputTypeTests = function() {
-        tcuTestCase.DeqpTest.call(this, 'output_types', 'Single output type vertex atribute');
-        this.makeExecutable();
-    };
-
-    es3fVertexArrayTests.SingleVertexArrayOutputTypeTests.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
-    es3fVertexArrayTests.SingleVertexArrayOutputTypeTests.prototype.constructor = es3fVertexArrayTests.SingleVertexArrayOutputTypeTests;
-
-    es3fVertexArrayTests.SingleVertexArrayOutputTypeTests.prototype.init = function() {
-        // Test output types with different input types, component counts and storage, Usage?, Precision?, float?
-        var inputTypes = [
-            glsVertexArrayTests.deArray.InputType.FLOAT,
-            glsVertexArrayTests.deArray.InputType.SHORT,
-            glsVertexArrayTests.deArray.InputType.BYTE,
-            glsVertexArrayTests.deArray.InputType.UNSIGNED_SHORT,
-            glsVertexArrayTests.deArray.InputType.UNSIGNED_BYTE,
-            glsVertexArrayTests.deArray.InputType.UNSIGNED_INT,
-            glsVertexArrayTests.deArray.InputType.INT,
-            glsVertexArrayTests.deArray.InputType.HALF,
-            glsVertexArrayTests.deArray.InputType.UNSIGNED_INT_2_10_10_10,
-            glsVertexArrayTests.deArray.InputType.INT_2_10_10_10
-        ];
-
-        for (var inputTypeNdx = 0; inputTypeNdx < inputTypes.length; inputTypeNdx++) {
-            this.addChild(
-                new es3fVertexArrayTests.SingleVertexArrayOutputTypeGroup(
-                    inputTypes[inputTypeNdx]
-                )
-            );
-        }
-    };
-
-    /**
-     * es3fVertexArrayTests.SingleVertexArrayTestGroup
-     * @constructor
-     * @extends {tcuTestCase.DeqpTest}
-     */
-    es3fVertexArrayTests.SingleVertexArrayTestGroup = function() {
-        tcuTestCase.DeqpTest.call(this, 'single_attribute', 'Single vertex atribute');
-        this.makeExecutable();
-    };
-
-    es3fVertexArrayTests.SingleVertexArrayTestGroup.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
-    es3fVertexArrayTests.SingleVertexArrayTestGroup.prototype.constructor = es3fVertexArrayTests.SingleVertexArrayTestGroup;
-
-    es3fVertexArrayTests.SingleVertexArrayTestGroup.prototype.init = function() {
-        this.addChild(new es3fVertexArrayTests.SingleVertexArrayStrideTests());
-        this.addChild(new es3fVertexArrayTests.SingleVertexArrayNormalizeTests());
-        this.addChild(new es3fVertexArrayTests.SingleVertexArrayOutputTypeTests());
-        this.addChild(new es3fVertexArrayTests.SingleVertexArrayUsageTests());
-        this.addChild(new es3fVertexArrayTests.SingleVertexArrayOffsetTests());
-        this.addChild(new es3fVertexArrayTests.SingleVertexArrayFirstTests());
-    };
-
-    /**
-     * @constructor
-     * @extends {tcuTestCase.DeqpTest}
-     */
     es3fVertexArrayTests.MultiVertexArrayCountTests = function() {
-        tcuTestCase.DeqpTest.call(this, 'attribute_count', 'Attribute counts');
+        tcuTestCase.DeqpTest.call(this, 'multiple_attributes.attribute_count', 'Attribute counts');
         this.makeExecutable();
     };
 
@@ -827,7 +734,7 @@ goog.scope(function() {
      * @extends {tcuTestCase.DeqpTest}
      */
     es3fVertexArrayTests.MultiVertexArrayStorageTests = function() {
-        tcuTestCase.DeqpTest.call(this, 'storage', 'Attribute storages');
+        tcuTestCase.DeqpTest.call(this, 'multiple_attributes.storage', 'Attribute storages');
         this.makeExecutable();
     };
 
@@ -924,7 +831,7 @@ goog.scope(function() {
      * @extends {tcuTestCase.DeqpTest}
      */
     es3fVertexArrayTests.MultiVertexArrayStrideTests = function() {
-        tcuTestCase.DeqpTest.call(this, 'stride', 'Strides');
+        tcuTestCase.DeqpTest.call(this, 'multiple_attributes.stride', 'Strides');
         this.makeExecutable();
     };
 
@@ -1016,7 +923,7 @@ goog.scope(function() {
      * @extends {tcuTestCase.DeqpTest}
      */
     es3fVertexArrayTests.MultiVertexArrayOutputTests = function() {
-        tcuTestCase.DeqpTest.call(this, 'input_types', 'input types');
+        tcuTestCase.DeqpTest.call(this, 'multiple_attributes.input_types', 'input types');
         this.makeExecutable();
     };
 
@@ -1103,28 +1010,6 @@ goog.scope(function() {
     };
 
     /**
-     * @constructor
-     * @extends {tcuTestCase.DeqpTest}
-     */
-    es3fVertexArrayTests.MultiVertexArrayTestGroup = function() {
-        tcuTestCase.DeqpTest.call(this, 'multiple_attributes', 'Multiple vertex atributes');
-        this.makeExecutable();
-    };
-
-    es3fVertexArrayTests.MultiVertexArrayTestGroup.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
-    es3fVertexArrayTests.MultiVertexArrayTestGroup.prototype.constructor = es3fVertexArrayTests.MultiVertexArrayTestGroup;
-
-    /**
-     * init
-     */
-    es3fVertexArrayTests.MultiVertexArrayTestGroup.prototype.init = function() {
-        this.addChild(new es3fVertexArrayTests.MultiVertexArrayCountTests());
-        this.addChild(new es3fVertexArrayTests.MultiVertexArrayStorageTests());
-        this.addChild(new es3fVertexArrayTests.MultiVertexArrayStrideTests());
-        this.addChild(new es3fVertexArrayTests.MultiVertexArrayOutputTests());
-    };
-
-    /**
      * es3fVertexArrayTests.VertexArrayTestGroup
      * @constructor
      * @extends {tcuTestCase.DeqpTest}
@@ -1141,15 +1026,55 @@ goog.scope(function() {
      * init
      */
     es3fVertexArrayTests.VertexArrayTestGroup.prototype.init = function() {
-        this.addChild(new es3fVertexArrayTests.SingleVertexArrayTestGroup());
-        this.addChild(new es3fVertexArrayTests.MultiVertexArrayTestGroup());
+        this.addChild(new es3fVertexArrayTests.SingleVertexArrayStrideTests());
+        this.addChild(new es3fVertexArrayTests.SingleVertexArrayNormalizeTests());
+
+        // Test output types with different input types, component counts and storage, Usage?, Precision?, float?
+        var inputTypes = [
+            glsVertexArrayTests.deArray.InputType.FLOAT,
+            glsVertexArrayTests.deArray.InputType.SHORT,
+            glsVertexArrayTests.deArray.InputType.BYTE,
+            glsVertexArrayTests.deArray.InputType.UNSIGNED_SHORT,
+            glsVertexArrayTests.deArray.InputType.UNSIGNED_BYTE,
+            glsVertexArrayTests.deArray.InputType.UNSIGNED_INT,
+            glsVertexArrayTests.deArray.InputType.INT,
+            glsVertexArrayTests.deArray.InputType.HALF,
+            glsVertexArrayTests.deArray.InputType.UNSIGNED_INT_2_10_10_10,
+            glsVertexArrayTests.deArray.InputType.INT_2_10_10_10
+        ];
+        for (var inputTypeNdx = 0; inputTypeNdx < inputTypes.length; inputTypeNdx++) {
+            this.addChild(new es3fVertexArrayTests.SingleVertexArrayOutputTypeGroup(inputTypes[inputTypeNdx]));
+        }
+
+        /** @type {Array<glsVertexArrayTests.deArray.Usage>} */ var usages = [
+            glsVertexArrayTests.deArray.Usage.STATIC_DRAW,
+            glsVertexArrayTests.deArray.Usage.STREAM_DRAW,
+            glsVertexArrayTests.deArray.Usage.DYNAMIC_DRAW,
+            glsVertexArrayTests.deArray.Usage.STATIC_COPY,
+            glsVertexArrayTests.deArray.Usage.STREAM_COPY,
+            glsVertexArrayTests.deArray.Usage.DYNAMIC_COPY,
+            glsVertexArrayTests.deArray.Usage.STATIC_READ,
+            glsVertexArrayTests.deArray.Usage.STREAM_READ,
+            glsVertexArrayTests.deArray.Usage.DYNAMIC_READ
+        ];
+        for (var usageNdx = 0; usageNdx < usages.length; usageNdx++) {
+            this.addChild(new es3fVertexArrayTests.SingleVertexArrayUsageGroup(usages[usageNdx]));
+        }
+
+        this.addChild(new es3fVertexArrayTests.SingleVertexArrayOffsetTests());
+        this.addChild(new es3fVertexArrayTests.SingleVertexArrayFirstTests());
+
+        this.addChild(new es3fVertexArrayTests.MultiVertexArrayCountTests());
+        this.addChild(new es3fVertexArrayTests.MultiVertexArrayStorageTests());
+        this.addChild(new es3fVertexArrayTests.MultiVertexArrayStrideTests());
+        this.addChild(new es3fVertexArrayTests.MultiVertexArrayOutputTests());
     };
 
     /**
      * Create and execute the test cases
      * @param {WebGL2RenderingContext} context
      */
-    es3fVertexArrayTests.run = function(context) {
+    es3fVertexArrayTests.run = function(context, range) {
         gl = context;
         //Set up root Test
         var state = tcuTestCase.runner;
@@ -1165,6 +1090,8 @@ goog.scope(function() {
         description(testDescription);
 
         try {
+            if (range)
+                state.setRange(range);
             //Run test cases
             tcuTestCase.runTestCases();
         } catch (err) {
