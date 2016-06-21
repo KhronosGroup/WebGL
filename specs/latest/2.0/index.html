@@ -1834,7 +1834,9 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       </dt>
       <dd>
         Draw <code>instanceCount</code> instances of geometry using the currently enabled vertex attributes.
-        Vertex attributes which have a non-zero divisor advance once every divisor instances.
+        Vertex attributes which have a non-zero divisor advance once every divisor instances.<br><br>
+
+        If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.
       </dd>
       <dt>
         <p class="idl-code">void drawElementsInstanced(GLenum mode, GLsizei count, GLenum type, GLintptr offset, GLsizei instanceCount)
@@ -1846,7 +1848,9 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       </dt>
       <dd>
         Draw <code>instanceCount</code> instances of geometry using the currently bound element array buffer.
-        Vertex attributes which have a non-zero divisor advance once every divisor instances.
+        Vertex attributes which have a non-zero divisor advance once every divisor instances.<br><br>
+
+        If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.
       </dd>
       <dt>
         <p class="idl-code">void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLintptr offset)
@@ -1868,7 +1872,9 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <code>drawElements</code>, <code>drawArrays</code>, <code>drawRangeElements</code> and their
         instanced variants. See <a href="#RANGE_CHECKING">Range Checking</a>,
         <a href="#ENABLED_ATTRIBUTE">Enabled Attribute</a>, and <a href="#ACTIVE_UNIFORM_BLOCK_BACKING">Active
-        Uniform Block Backing</a>.
+        Uniform Block Backing</a>.<br><br>
+
+        If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.
       </dd>
     </dl>
 

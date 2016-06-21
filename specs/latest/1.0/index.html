@@ -3943,6 +3943,14 @@ extensions.
     "Framebuffer Attachment Completeness".
 </div>
 
+<h3>Transferring vertices when current program is null</h3>
+
+<div>
+    Any command that transfers vertices to the GL generates <code>INVALID_OPERATION</code> if the
+    <code>CURRENT_PROGRAM</code> is null. This includes <code>drawElements</code> and
+    <code>drawArrays</code>.
+</div>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
