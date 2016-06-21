@@ -392,8 +392,11 @@ var DE_ASSERT = function(x) {
         for (var iter in requiredExts) {
             /** @const @type {string} */ var extension = requiredExts[iter];
 
-            if (sglrGLContext.isExtensionSupported(gl, extension))
+            if (sglrGLContext.isExtensionSupported(gl, extension)) {
+                // enable the extension
+                gl.getExtension(extension);
                 return true;
+            }
         }
 
         return false;
