@@ -45,7 +45,7 @@ void main (void)
     float	ss, tt, w, h;
 
     vec3 pos = Position;
-    
+
     ss = pos.x / brickMortarWidth;
     tt = pos.z / brickMortarHeight;
 

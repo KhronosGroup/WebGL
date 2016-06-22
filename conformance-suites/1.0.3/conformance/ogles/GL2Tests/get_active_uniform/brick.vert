@@ -68,9 +68,9 @@ void main(void) {
     vec3 reflectVec = reflect(lightVec, tnorm);
     vec3 viewVec    = normalize(vec3(pos));
 
-	float f = myAttrib1f + myAttrib2f[0] + myAttrib4f[0] 
+	float f = myAttrib1f + myAttrib2f[0] + myAttrib4f[0]
 			  + float(myAttrib1i) + float(myAttrib2i[0]) + float(myAttrib3i[0]) + float(myAttrib4i[0])
-			  + float(myAttrib1b) + float(myAttrib2b[0]) + float(myAttrib3b[0]) + float(myAttrib4b[0])		  
+			  + float(myAttrib1b) + float(myAttrib2b[0]) + float(myAttrib3b[0]) + float(myAttrib4b[0])		
 			  + myAttrib2m[0][0] + myAttrib3m[0][0] + myAttrib4m[0][0]
 			  + myUniformfv[0] + myUniformfv[1] + myUniformfv[2] + myUniformfv[3] + myUniformfv[4];
 
@@ -83,6 +83,6 @@ void main(void) {
 
     lightIntensity = diffuseContribution * dot(lightVec, tnorm) +
                      specularContribution * spec;
-    
+
     gl_Position = gtf_ModelViewProjectionMatrix * gtf_Vertex;
 }

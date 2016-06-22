@@ -118,17 +118,17 @@ function runSupportedTest(extensionEnabled) {
 
 function runDrawTests() {
     debug("Test that draws with unsigned integer indices produce the expected results");
-    
+
     canvas.width = 50; canvas.height = 50;
     gl.viewport(0, 0, canvas.width, canvas.height);
-    
+
     var program = wtu.setupNoTexCoordTextureProgram(gl);
 
     function setupDraw(s) {
         // Create a vertex buffer that cannot be fully indexed via shorts
         var quadArrayLen = 65537 * 3;
         var quadArray = new Float32Array(quadArrayLen);
-        
+
         // Leave all but the last 4 values zero-ed out
         var idx = quadArrayLen - 12;
 

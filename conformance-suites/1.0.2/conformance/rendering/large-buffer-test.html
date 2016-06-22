@@ -101,9 +101,9 @@ There is supposed to be an example drawing here, but it's not important.
             function checkPixel(buf, x, y, expected) {
                 var i = (y * gl.drawingBufferWidth * 4) + (x * 4);
 
-                if (buf[i] != expected[0] || 
-                    buf[i+1] != expected[1] || 
-                    buf[i+2] != expected[2]|| 
+                if (buf[i] != expected[0] ||
+                    buf[i+1] != expected[1] ||
+                    buf[i+2] != expected[2]||
                     buf[i+3] != expected[3]) {
                     var reason = "pixel at ("+x+","+y+") is ("+buf[i]+","+buf[i+1]+","+buf[i+2]+","+buf[i+3]+"), should be ("+expected[0]+","+expected[1]+","+expected[2]+","+expected[3]+")";
                     testFailed(reason);

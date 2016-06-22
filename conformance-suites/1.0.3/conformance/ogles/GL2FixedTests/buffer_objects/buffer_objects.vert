@@ -113,10 +113,10 @@ void spotLight(in int i,
 
 vec3 fnormal(void)
 {
-    //Compute the normal 
+    //Compute the normal
     vec3 normal = gtf_NormalMatrix * gtf_Normal;
     normal = normalize(normal);
-    
+
 	return normal;
 }
 
@@ -132,7 +132,7 @@ void flight(in vec3 normal, in vec4 ecPosition, float alphaFade)
     Ambient  = vec4 (0.0);
     Diffuse  = vec4 (0.0);
     Specular = vec4 (0.0);
-   
+
    //lightSpecular = gtf_Color;
 
     spotLight(0, normal, eye, ecPosition3);

@@ -98,7 +98,7 @@ void pointLight(in int i, in vec3 normal, in vec3 eye, in vec3 ecPosition3)
 
 vec3 fnormal(void)
 {
-    //Compute the normal 
+    //Compute the normal
     vec3 normal = gtf_Normal * gtf_NormalMatrix;
     normal = normalize(normal);
 	

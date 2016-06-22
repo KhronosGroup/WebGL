@@ -675,7 +675,7 @@ var glErrorShouldBe = function(gl, glError, opt_msg) {
  * Links a WebGL program, throws if there are errors.
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {!WebGLProgram} program The WebGLProgram to link.
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {function(string): void) opt_errorCallback callback for errors.
  */
 var linkProgram = function(gl, program, opt_errorCallback) {
   errFn = opt_errorCallback || testFailed;
@@ -947,8 +947,8 @@ var readFileList = function(url) {
  * Loads a shader.
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {string} shaderSource The shader source.
- * @param {number} shaderType The type of shader. 
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {number} shaderType The type of shader.
+ * @param {function(string): void) opt_errorCallback callback for errors.
  * @return {!WebGLShader} The created shader.
  */
 var loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
@@ -989,7 +989,7 @@ var loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {file} file The URL of the shader source.
  * @param {number} type The type of shader.
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {function(string): void) opt_errorCallback callback for errors.
  * @return {!WebGLShader} The created shader.
  */
 var loadShaderFromFile = function(gl, file, type, opt_errorCallback) {
@@ -1014,7 +1014,7 @@ var getScript = function(scriptId) {
  * @param {string} scriptId The id of the script tag.
  * @param {number} opt_shaderType The type of shader. If not passed in it will
  *     be derived from the type of the script tag.
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {function(string): void) opt_errorCallback callback for errors.
  * @return {!WebGLShader} The created shader.
  */
 var loadShaderFromScript = function(
@@ -1056,7 +1056,7 @@ var loadStandardProgram = function(gl) {
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {string} vertexShaderPath The URL of the vertex shader.
  * @param {string} fragmentShaderPath The URL of the fragment shader.
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {function(string): void) opt_errorCallback callback for errors.
  * @return {!WebGLProgram} The created program.
  */
 var loadProgramFromFile = function(
@@ -1082,7 +1082,7 @@ var loadProgramFromFile = function(
  *        vertex shader.
  * @param {string} fragmentScriptId The id of the script tag that contains the
  *        fragment shader.
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {function(string): void) opt_errorCallback callback for errors.
  * @return {!WebGLProgram} The created program.
  */
 var loadProgramFromScript = function loadProgramFromScript(
@@ -1106,7 +1106,7 @@ var loadProgramFromScript = function loadProgramFromScript(
  * @param {!WebGLContext} gl The WebGLContext to use.
  * @param {string} vertexShader The vertex shader.
  * @param {string} fragmentShader The fragment shader.
- * @param {function(string): void) opt_errorCallback callback for errors. 
+ * @param {function(string): void) opt_errorCallback callback for errors.
  * @return {!WebGLProgram} The created program.
  */
 var loadProgram = function(
