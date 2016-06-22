@@ -1328,6 +1328,7 @@ goog.scope(function() {
         /** @type {number} */ this.m_blendFactorSrcAlpha = gl.ONE;
         /** @type {number} */ this.m_blendFactorDstAlpha = gl.ZERO;
         /** @type {Array<number>} */ this.m_blendColor = [0, 0, 0, 0];
+        /** @type {boolean} */ this.m_sRGBUpdateEnabled = true;
         /** @type {Array<boolean>} */ this.m_colorMask = [true, true, true, true];
         /** @type {boolean} */ this.m_depthMask = true;
         /** @type {sglrReferenceContext.VertexArray} */ this.m_defaultVAO = new sglrReferenceContext.VertexArray(this.m_limits.maxVertexAttribs);
@@ -3255,14 +3256,18 @@ goog.scope(function() {
             if (!colorBuf.isEmpty() && !maskZero) {
                 /** @type {Array<number>} */ var colorArea = deMath.intersect(baseArea, sglrReferenceContext.getBufferRect(colorBuf));
                 access = colorBuf.getSubregion(colorArea);
+                var color = value;
+
+                if (this.m_sRGBUpdateEnabled && access.raw().getFormat().isSRGB())
+                    color = tcuTextureUtil.linearToSRGB(color);
 
                 if (!maskUsed)
-                    access.clear(value);
+                    access.clear(color);
                 else {
-                for (var y = 0; y < access.raw().getDepth(); y++)
-                    for (var x = 0; x < access.raw().getHeight(); x++)
-                        for (var s = 0; s < access.getNumSamples(); s++)
-                            access.raw().setPixel(tcuTextureUtil.select(value, access.raw().getPixel(s, x, y), this.m_colorMask), s, x, y);
+                    for (var y = 0; y < access.raw().getDepth(); y++)
+                        for (var x = 0; x < access.raw().getHeight(); x++)
+                            for (var s = 0; s < access.getNumSamples(); s++)
+                                access.raw().setPixel(tcuTextureUtil.select(color, access.raw().getPixel(s, x, y), this.m_colorMask), s, x, y);
                 }
             }
         } else {
