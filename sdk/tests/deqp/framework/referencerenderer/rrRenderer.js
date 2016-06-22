@@ -386,7 +386,7 @@ void FragmentProcessor::render (const rr::MultisamplePixelBufferAccess& msColorB
     var stencilState = state.stencilStates[fragmentFacing];
     var colorMaskFactor = [state.colorMask[0] ? 1 : 0, state.colorMask[1] ? 1 : 0, state.colorMask[2] ? 1 : 0, state.colorMask[3] ? 1 : 0];
     var colorMaskNegationFactor = [state.colorMask[0] ? false : true, state.colorMask[1] ? false : true, state.colorMask[2] ? false : true, state.colorMask[3] ? false : true];
-    var sRGBTarget = false;
+    var sRGBTarget = state.sRGBEnabled && colorBuffer.getFormat().isSRGB();
 
     // Scissor test.
 
