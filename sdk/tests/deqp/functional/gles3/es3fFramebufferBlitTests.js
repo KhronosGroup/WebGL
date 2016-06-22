@@ -227,8 +227,8 @@ goog.scope(function() {
         // Image origin must be visible (for baseColor)
         DE_ASSERT(Math.min(this.m_dstRect[0], this.m_dstRect[2]) >= 0);
         DE_ASSERT(Math.min(this.m_dstRect[1], this.m_dstRect[3]) >= 0);
-        /** @const {tcuRGBA.RGBA} */ var cellColorA = tcuRGBA.newRGBAFromArray(this.m_gridCellColorA);
-        /** @const {tcuRGBA.RGBA} */ var cellColorB = tcuRGBA.newRGBAFromArray(this.m_gridCellColorB);
+        /** @const {tcuRGBA.RGBA} */ var cellColorA = tcuRGBA.newRGBAFromVec(this.m_gridCellColorA);
+        /** @const {tcuRGBA.RGBA} */ var cellColorB = tcuRGBA.newRGBAFromVec(this.m_gridCellColorB);
         // TODO: implement
         // const tcu::RGBA threshold = this.m_context.getRenderTarget().getPixelFormat().getColorThreshold() + tcu::RGBA(7,7,7,7);
         /** @type {tcuRGBA.RGBA} */ var threshold = tcuRGBA.newRGBAComponents(7, 7, 7, 7);
