@@ -51,7 +51,7 @@ var elapsed_query = null;
 var timestamp_query1 = null;
 var timestamp_query2 = null;
 var availability_retry = 500;
-var timestamp_counter_bits = 0; 
+var timestamp_counter_bits = 0;
 
 if (!gl) {
     testFailed("WebGL context does not exist");
@@ -224,7 +224,7 @@ function verifyQueryResultsNotAvailable() {
     var startTime = Date.now();
     while (Date.now() - startTime < 2000) {
         gl.finish();
-        if (ext.getQueryObjectEXT(elapsed_query, ext.QUERY_RESULT_AVAILABLE_EXT)) { 
+        if (ext.getQueryObjectEXT(elapsed_query, ext.QUERY_RESULT_AVAILABLE_EXT)) {
             testFailed("One of the queries' results became available too early");
             return;
         }

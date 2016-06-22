@@ -85,8 +85,8 @@ if (!gl) {
 
   // in real world case, after some drawing, we can invalidate the depth attachment of the bound fbo
   invalidation(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.STENCIL_ATTACHMENT);
- 
-  // set up framebuffer to blit to and read back from 
+
+  // set up framebuffer to blit to and read back from
   var fb = gl.createFramebuffer();
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   var buffer = gl.createRenderbuffer();
@@ -102,7 +102,7 @@ if (!gl) {
   gl.blitFramebuffer(0, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "should be no errors after bliting framebuffer.");
- 
+
   // invalidate the multi-sampled color attachment of the bound read framebuffer after blitFramebuffer.
   invalidation(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.DEPTH_ATTACHMENT);
 

@@ -85,15 +85,15 @@ if (!gl) {
 function runBindingTest() {
     debug("");
     debug("Testing binding enum");
-    
+
     shouldBe("gl.TRANSFORM_FEEDBACK_BINDING", "0x8E25");
-    
+
     gl.getParameter(gl.TRANSFORM_FEEDBACK_BINDING);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "TRANSFORM_FEEDBACK_BINDING query should succeed");
-    
+
     // Default value is null
     shouldBe("gl.getParameter(gl.TRANSFORM_FEEDBACK_BINDING)", "null");
-    
+
     debug("Testing binding a Transform Feedback object");
     tf = gl.createTransformFeedback();
     tf1 = gl.createTransformFeedback();
@@ -115,11 +115,11 @@ function runBindingTest() {
 function runObjectTest() {
     debug("");
     debug("Testing object creation");
-    
+
     tf = gl.createTransformFeedback();
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "createTransformFeedback should not set an error");
     shouldBeNonNull("tf");
-    
+
     // Expect false if never bound
     shouldBeFalse("gl.isTransformFeedback(tf)");
     gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
@@ -128,7 +128,7 @@ function runObjectTest() {
     shouldBeTrue("gl.isTransformFeedback(tf)");
     gl.deleteTransformFeedback(tf);
     shouldBeFalse("gl.isTransformFeedback(tf)");
-    
+
     shouldBeFalse("gl.isTransformFeedback(null)");
 
     tf = null;
