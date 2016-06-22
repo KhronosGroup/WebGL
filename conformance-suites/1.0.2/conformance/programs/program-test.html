@@ -265,7 +265,7 @@ function go() {
             debug(infolog);
         if (gl.getError() != gl.NO_ERROR)
             assertMsg(false, "unexpected error in getProgramParameter()");
-        
+
         if (testInvalidEnums) {
             // Verify that constants removed from the WebGL spec generate INVALID_ENUM errors
             assertMsg(gl.getProgramParameter(prog, desktopGL['INFO_LOG_LENGTH']) === null, "invalid call to getProgramParameter should return null");

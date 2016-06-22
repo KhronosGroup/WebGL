@@ -35,12 +35,12 @@ void main (void)
 	
 	if( (a&&b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 	
 	if( (a||b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 
 	if( !(a^^b) )
@@ -53,12 +53,12 @@ void main (void)
 	
 	if( !(a&&b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 	
 	if( (a||b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 
 	if( (a^^b) )
@@ -71,12 +71,12 @@ void main (void)
 
 	if( !(a&&b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 	
 	if( (a||b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 
 	if( (a^^b) )
@@ -89,12 +89,12 @@ void main (void)
 
 	if( !(a&&b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 	
 	if( !(a||b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 
 	if( !(a^^b) )

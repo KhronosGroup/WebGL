@@ -48,7 +48,7 @@ void main (void)
 
 	  	if(count1 == 5)
             		continue;
-	  	else 
+	  	else
 	    		val1 += count1;
 	
 	}

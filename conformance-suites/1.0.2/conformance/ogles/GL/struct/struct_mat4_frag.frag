@@ -29,15 +29,15 @@ precision mediump float;
 varying vec4 color;
 
 struct sabcd
-{ 
+{
  mat4 a;
 };
 
 void main (void)
 {
-	sabcd s = sabcd(mat4(12.0, 29.0, 13.0, 26.0, 
-			     71.0, 63.0, 90.0, 118.0, 
-			     128.0, 44.0, 57.0, 143.0, 
+	sabcd s = sabcd(mat4(12.0, 29.0, 13.0, 26.0,
+			     71.0, 63.0, 90.0, 118.0,
+			     128.0, 44.0, 57.0, 143.0,
 			     151.0, 14.0, 15.0, 21.0 ) );
 	float sum=0.0;
 	int i,j;

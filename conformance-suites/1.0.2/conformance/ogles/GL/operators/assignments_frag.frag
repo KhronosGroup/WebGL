@@ -35,23 +35,23 @@ void main (void)
 	bool result = true;
 	int r = m;	
 
-	if( r==12 ) 
+	if( r==12 )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 	
 	r += m;
 
 	if( r == 24 )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 
 	r-= m;
 
 	if( r == 12 )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 
 	r*= m;
@@ -67,7 +67,7 @@ void main (void)
 	// so the result need not be exact
 	if( r >= 11 && r <= 13 )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 
 	float gray;

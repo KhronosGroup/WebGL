@@ -36,7 +36,7 @@ void main (void)
 	  count++;
 	  if(count == 5)
             continue;
-	  else 
+	  else
 	    val += count;
 	}
 	

@@ -139,7 +139,7 @@ function runOneIteration() {
       gl.uniform1f(lineWidthLoc, lineWidth);
       gl.uniform1i(elemMultLoc, elemMult);
       gl.drawArrays(gl.POINTS, 0, gridRes * gridRes);
-      
+
       // Read back
       gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 

@@ -38,7 +38,7 @@ uniform vec3 lightPosition[2];
 void main(void)
 {
     vec3 v[2];
-  
+
     v[1] = vec3(color.r, color.g, color.b);
 	
 
