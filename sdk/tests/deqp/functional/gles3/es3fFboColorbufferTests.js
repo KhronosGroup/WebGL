@@ -957,7 +957,7 @@ es3fFboColorbufferTests.FboColorbufferTests.prototype.init = function() {
     // .texcube
     var texCubeGroup = [];
     for (var ii = 0; ii < numGroups; ++ii) {
-        texCubeGroup[ii] = tcuTestCase.("texcube", "Texture cube map tests");
+        texCubeGroup[ii] = tcuTestCase.newTest("texcube", "Texture cube map tests");
         this.addChild(texCubeGroup[ii]);
     }
     for (var ndx = 0; ndx < colorFormats.length; ndx++) {

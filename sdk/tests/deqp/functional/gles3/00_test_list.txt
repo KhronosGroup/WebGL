@@ -1,6 +1,7 @@
 builtinprecision/00_test_list.txt
 draw/00_test_list.txt
 fbocolorbuffer/00_test_list.txt
+framebufferblit/00_test_list.txt
 shaderindexing/00_test_list.txt
 shadermatrix/00_test_list.txt
 shaderoperator/00_test_list.txt
@@ -32,7 +33,6 @@ fbostencilbuffer.html
 floatstatequery.html
 fragdepth.html
 fragmentoutput.html
-framebufferblit.html
 indexedstatequery.html
 instancedrendering.html
 integerstatequery.html
