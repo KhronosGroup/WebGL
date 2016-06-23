@@ -56,7 +56,9 @@ samplerstatequery.html
 shaderapi.html
 shaderbuiltinvar.html
 shadercommonfunction.html
-shaderderivate.html
+shaderderivate_dfdx.html
+shaderderivate_dfdy.html
+shaderderivate_fwidth.html
 shaderloop_for.html
 shaderloop_while.html
 shaderloop_do_while.html
