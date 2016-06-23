@@ -342,7 +342,7 @@ var DE_ASSERT = function(x) {
         }
     };
 
-    es3fFboMultisampleTests.run = function(context) {
+    es3fFboMultisampleTests.run = function(context, range) {
         gl = context;
         //Set up root Test
         var state = tcuTestCase.runner;
@@ -360,6 +360,8 @@ var DE_ASSERT = function(x) {
         try {
             //Create test cases
             test.init();
+            if (range)
+                state.setRange(range);
             //Run test cases
             tcuTestCase.runTestCases();
         }
