@@ -1328,8 +1328,12 @@ es3fFboInvalidateTests.FboInvalidateTests.prototype.init = function() {
         subFboGroup.addChild(new es3fFboInvalidateTests.InvalidateSubFboUnbindBlitCase('unbind_blit_msaa_depth_stencil', '', 4, gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT));
     }
     // invalidate.format.
-    var formatGroup = new tcuTestCase.DeqpTest('format', 'Invalidating framebuffers with selected formats');
-    this.addChild(formatGroup);
+    var numFormatSubGroups = 3;
+    var formatGroup = [];
+    for (var ii = 0; ii < numFormatSubGroups; ++ii) {
+        formatGroup[ii] = new tcuTestCase.DeqpTest('format', 'Invalidating framebuffers with selected formats');
+        this.addChild(formatGroup[ii]);
+    }
     // Color buffer formats.
     var colorFormats = [
         // RGBA formats
@@ -1390,11 +1394,11 @@ es3fFboInvalidateTests.FboInvalidateTests.prototype.init = function() {
 
     // Colorbuffer tests use invalidate, unbind, read test.
     for (var ndx = 0; ndx < colorFormats.length; ndx++)
-        formatGroup.addChild(new es3fFboInvalidateTests.InvalidateSubFboUnbindReadCase(es3fFboTestUtil.getFormatName(colorFormats[ndx]), '', colorFormats[ndx], gl.NONE, gl.COLOR_BUFFER_BIT));
+        formatGroup[ndx % numFormatSubGroups].addChild(new es3fFboInvalidateTests.InvalidateSubFboUnbindReadCase(es3fFboTestUtil.getFormatName(colorFormats[ndx]), '', colorFormats[ndx], gl.NONE, gl.COLOR_BUFFER_BIT));
 
     // Depth/stencilbuffer tests use invalidate, render test.
     for (var ndx = 0; ndx < depthStencilFormats.length; ndx++)
-        formatGroup.addChild(new es3fFboInvalidateTests.InvalidateSubFboRenderCase(es3fFboTestUtil.getFormatName(depthStencilFormats[ndx]), '', gl.RGBA8, depthStencilFormats[ndx], gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT));
+        formatGroup[ndx % numFormatSubGroups].addChild(new es3fFboInvalidateTests.InvalidateSubFboRenderCase(es3fFboTestUtil.getFormatName(depthStencilFormats[ndx]), '', gl.RGBA8, depthStencilFormats[ndx], gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT));
 
     // invalidate.target
     var targetGroup = new tcuTestCase.DeqpTest('target', 'Invalidate target');
@@ -1432,7 +1436,7 @@ es3fFboInvalidateTests.FboInvalidateTests.prototype.init = function() {
 * Run test
 * @param {WebGL2RenderingContext} context
 */
-es3fFboInvalidateTests.run = function(context) {
+es3fFboInvalidateTests.run = function(context, range) {
     gl = context;
     //Set up Test Root parameters
     var state = tcuTestCase.runner;
@@ -1443,6 +1447,8 @@ es3fFboInvalidateTests.run = function(context) {
     description(state.testCases.getDescription());
 
     try {
+        if (range)
+            state.setRange(range);
         //Run test cases
         tcuTestCase.runTestCases();
     }
