@@ -3943,7 +3943,7 @@ goog.scope(function() {
                                                         sFilter, sFilter, 0.0 /* lod threshold */, false /* non-normalized coords */);
             /** @type {boolean} */ var srcIsSRGB = src.getFormat().order == tcuTexture.ChannelOrder.sRGB || src.getFormat().order == tcuTexture.ChannelOrder.sRGBA;
             /** @type {boolean} */ var dstIsSRGB = dst.getFormat().order == tcuTexture.ChannelOrder.sRGB || dst.getFormat().order == tcuTexture.ChannelOrder.sRGBA;
-            /** @type {boolean} */ var convertSRGB = false;
+            /** @type {boolean} */ var convertSRGB = this.m_sRGBUpdateEnabled;
 
             // \note We don't check for unsupported conversions, unlike spec requires.
 
