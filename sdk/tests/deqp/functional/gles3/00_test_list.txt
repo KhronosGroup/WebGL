@@ -23,7 +23,9 @@ defaultvertexattribute.html
 fbocompleteness.html
 fbodepthbuffer.html
 fboinvalidate.html
-fbomultisample.html
+fbomultisample.2_samples.html
+fbomultisample.4_samples.html
+fbomultisample.8_samples.html
 fborender.html
 fbostatequery.html
 fbostencilbuffer.html
