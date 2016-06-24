@@ -70,13 +70,16 @@ goog.scope(function() {
         bufIDs[1] = ctx.createBuffer();
 
         ctx.useProgram(program);
-        ctx.bindBuffer(gl.ARRAY_BUFFER, bufIDs[0]);
-        ctx.bufferData(gl.ARRAY_BUFFER, new Float32Array(position), gl.STATIC_DRAW);
 
-        ctx.enableVertexAttribArray(posLoc);
-        ctx.vertexAttribPointer(posLoc, 4, gl.FLOAT, false, 0, 0);
+        if (posLoc >= 0) {
+            ctx.bindBuffer(gl.ARRAY_BUFFER, bufIDs[0]);
+            ctx.bufferData(gl.ARRAY_BUFFER, new Float32Array(position), gl.STATIC_DRAW);
 
-        ctx.bindBuffer(gl.ARRAY_BUFFER, null);
+            ctx.enableVertexAttribArray(posLoc);
+            ctx.vertexAttribPointer(posLoc, 4, gl.FLOAT, false, 0, 0);
+
+            ctx.bindBuffer(gl.ARRAY_BUFFER, null);
+        }
 
         if (coordLoc >= 0) {
             ctx.bindBuffer(gl.ARRAY_BUFFER, bufIDs[1]);
@@ -94,6 +97,12 @@ goog.scope(function() {
         ctx.deleteBuffer(bufIDs[0]);
         ctx.deleteBuffer(bufIDs[1]);
         ctx.deleteVertexArray(vaoID);
+
+        if (posLoc >= 0)
+          ctx.disableVertexAttribArray(posLoc);
+
+        if (coordLoc >= 0)
+          ctx.disableVertexAttribArray(coordLoc);
     };
 
 });
