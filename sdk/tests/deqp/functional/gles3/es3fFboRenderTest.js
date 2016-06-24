@@ -141,20 +141,18 @@ goog.scope(function() {
 
         switch (format) {
             case gl.RGB16F:
-                out.push('EXT_color_buffer_half_float');
+                assertMsgOptions(false, "Not part of the tested formats", false, true);
                 break;
 
             case gl.RGBA16F:
             case gl.RG16F:
             case gl.R16F:
-                out.push('EXT_color_buffer_half_float');
-
             case gl.RGBA32F:
             case gl.RGB32F:
             case gl.R11F_G11F_B10F:
             case gl.RG32F:
             case gl.R32F:
-                out.push('WEBGL_color_buffer_float');
+                out.push('EXT_color_buffer_float');
 
             default:
                 break;
@@ -2008,9 +2006,10 @@ goog.scope(function() {
                 format: gl.RGBA16I, type: FormatType.INT
             },{
                 format: gl.RGBA16UI, type: FormatType.UINT
-            },{
+            },/*{
+                // RGB16F isn't made color-renderable through WebGL's EXT_color_buffer_float
                 format: gl.RGB16F, type: FormatType.FLOAT
-            },{
+            },*/{
                 format: gl.RGBA8I, type: FormatType.INT
             },{
                 format: gl.RGBA8UI, type: FormatType.UINT
