@@ -141,7 +141,7 @@ tcuImageCompare.intThresholdCompare = function(imageSetName, imageSetDesc, refer
     for (var z = 0; z < depth; z++) {
         for (var y = 0; y < height; y++) {
             for (var x = 0; x < width; x++) {
-            var refPix = reference.getPixelInt(x, y, z);
+                var refPix = reference.getPixelInt(x, y, z);
                 var cmpPix = result.getPixelInt(x, y, z);
 
                 var diff = deMath.absDiff(refPix, cmpPix);

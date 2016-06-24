@@ -722,14 +722,16 @@ goog.scope(function() {
         ctx.viewport(0, 0, this.m_size[0], this.m_size[1]);
 
         // Render gradients.
-        ctx.bindFramebuffer(gl.FRAMEBUFFER, srcFbo);
-        gradientToDstShader.setGradient(ctx, gradShaderDstID, dstRangeInfo.valueMin, dstRangeInfo.valueMax);
-
-        rrUtil.drawQuad(ctx, gradShaderDstID, [-1, -1, 0], [1, 1, 0]);
-
-        ctx.bindFramebuffer(gl.FRAMEBUFFER, dstFbo);
-        gradientToSrcShader.setGradient(ctx, gradShaderSrcID, srcRangeInfo.valueMin, dstRangeInfo.valueMax);
-        rrUtil.drawQuad(ctx, gradShaderSrcID, [-1, -1, 0], [1, 1, 0]);
+        for (var ndx = 0; ndx < 2; ndx++) {
+            ctx.bindFramebuffer(gl.FRAMEBUFFER, ndx ? dstFbo : srcFbo);
+            if (ndx) {
+                gradientToDstShader.setGradient(ctx, gradShaderDstID, dstRangeInfo.valueMax, dstRangeInfo.valueMin);
+                rrUtil.drawQuad(ctx, gradShaderDstID, [-1, -1, 0], [1, 1, 0]);
+            } else {
+                gradientToSrcShader.setGradient(ctx, gradShaderSrcID, srcRangeInfo.valueMin, srcRangeInfo.valueMax);
+                rrUtil.drawQuad(ctx, gradShaderSrcID, [-1, -1, 0], [1, 1, 0]);
+            }
+        }
 
         // Execute copy.
         ctx.bindFramebuffer(gl.READ_FRAMEBUFFER, srcFbo);
