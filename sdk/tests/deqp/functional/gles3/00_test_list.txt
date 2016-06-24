@@ -46,7 +46,8 @@ negativeshaderapi.html
 negativestateapi.html
 negativetextureapi.html
 negativevertexarrayapi.html
-occlusionquery.html
+occlusionquery_strict.html
+occlusionquery_conservative.html
 pixelbufferobject.html
 rasterizerdiscard.html
 rbostatequery.html
