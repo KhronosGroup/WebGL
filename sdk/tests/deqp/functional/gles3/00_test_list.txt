@@ -3,6 +3,7 @@ draw/00_test_list.txt
 fbocolorbuffer/00_test_list.txt
 fboinvalidate/00_test_list.txt
 fborender/00_test_list.txt
+fragmentoutput/00_test_list.txt
 framebufferblit/00_test_list.txt
 primitiverestart/00_test_list.txt
 shaderindexing/00_test_list.txt
@@ -33,7 +34,6 @@ fbostatequery.html
 fbostencilbuffer.html
 floatstatequery.html
 fragdepth.html
-fragmentoutput.html
 indexedstatequery.html
 instancedrendering.html
 integerstatequery.html
