@@ -3,6 +3,7 @@ draw/00_test_list.txt
 fbocolorbuffer/00_test_list.txt
 fboinvalidate/00_test_list.txt
 framebufferblit/00_test_list.txt
+primitiverestart/00_test_list.txt
 shaderindexing/00_test_list.txt
 shadermatrix/00_test_list.txt
 shaderoperator/00_test_list.txt
@@ -47,7 +48,6 @@ negativetextureapi.html
 negativevertexarrayapi.html
 occlusionquery.html
 pixelbufferobject.html
-primitiverestart.html
 rasterizerdiscard.html
 rbostatequery.html
 readpixel.html
