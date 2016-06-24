@@ -2,6 +2,7 @@ builtinprecision/00_test_list.txt
 draw/00_test_list.txt
 fbocolorbuffer/00_test_list.txt
 fboinvalidate/00_test_list.txt
+fborender/00_test_list.txt
 framebufferblit/00_test_list.txt
 primitiverestart/00_test_list.txt
 shaderindexing/00_test_list.txt
@@ -28,7 +29,6 @@ fbodepthbuffer.html
 fbomultisample.2_samples.html
 fbomultisample.4_samples.html
 fbomultisample.8_samples.html
-fborender.html
 fbostatequery.html
 fbostencilbuffer.html
 floatstatequery.html

@@ -2134,16 +2134,16 @@ goog.scope(function() {
         }
 
         // .shared_colorbuffer
-        /** @type {tcuTestCase.DeqpTest} */
-        var sharedColorbufferGroup = new tcuTestCase.DeqpTest(
-            'shared_colorbuffer', 'Shared colorbuffer tests'
-        );
+        /** @type {Array<tcuTestCase.DeqpTest>} */ var sharedColorbufferGroup = [];
+        var numSharedColorbufferGroups = 3;
+        for (var ii = 0; ii < numSharedColorbufferGroups; ++ii) {
+            sharedColorbufferGroup[ii] = new tcuTestCase.DeqpTest(
+                'shared_colorbuffer', 'Shared colorbuffer tests'
+            );
+            this.addChild(sharedColorbufferGroup[ii]);
+        }
 
-        this.addChild(sharedColorbufferGroup);
-
-        for (var colorFmtNdx = 0;
-            colorFmtNdx < colorFormats.length;
-            colorFmtNdx++) {
+        for (var colorFmtNdx = 0; colorFmtNdx < colorFormats.length; colorFmtNdx++) {
 
             depthStencilType = gl.RENDERBUFFER;
             depthStencilFormat = gl.DEPTH24_STENCIL8;
@@ -2179,17 +2179,17 @@ goog.scope(function() {
                         depthStencilType, depthStencilFormat
                 );
 
-                sharedColorbufferGroup.addChild(
+                sharedColorbufferGroup[0].addChild(
                     new es3fFboRenderTest.SharedColorbufferTest(colorOnlyConfig)
                 );
 
-                sharedColorbufferGroup.addChild(
+                sharedColorbufferGroup[1].addChild(
                     new es3fFboRenderTest.SharedColorbufferTest(
                         colorDepthConfig
                     )
                 );
 
-                sharedColorbufferGroup.addChild(
+                sharedColorbufferGroup[2].addChild(
                     new es3fFboRenderTest.SharedColorbufferTest(
                         colorDepthStencilConfig
                     )
@@ -2231,16 +2231,14 @@ goog.scope(function() {
         }
 
         // .resize
-        /** @type {tcuTestCase.DeqpTest} */
-        var resizeGroup = new tcuTestCase.DeqpTest(
-            'resize', 'FBO resize tests'
-        );
+        /** @type {Array<tcuTestCase.DeqpTest>} */ var resizeGroup = [];
+        var numResizeGroups = 4;
+        for (var ii = 0; ii < numResizeGroups; ++ii) {
+            resizeGroup[ii] = new tcuTestCase.DeqpTest('resize', 'FBO resize tests');
+            this.addChild(resizeGroup[ii]);
+        }
 
-        this.addChild(resizeGroup);
-
-        for (var colorFmtNdx = 0;
-            colorFmtNdx < colorFormats.length;
-            colorFmtNdx++) {
+        for (var colorFmtNdx = 0; colorFmtNdx < colorFormats.length; colorFmtNdx++) {
 
             var colorFormat = colorFormats[colorFmtNdx].format;
 
@@ -2250,23 +2248,19 @@ goog.scope(function() {
                     gl.COLOR_BUFFER_BIT, objectTypes[typeNdx],
                     colorFormat, gl.NONE, gl.NONE
                 );
-                resizeGroup.addChild(new es3fFboRenderTest.ResizeTest(config));
+                resizeGroup[colorFmtNdx % numResizeGroups].addChild(new es3fFboRenderTest.ResizeTest(config));
             }
 
             // For selected color formats tests depth & stencil variants.
             if (colorFormat == gl.RGBA8 || colorFormat == gl.RGBA16F) {
-                for (var depthStencilFmtNdx = 0;
-                    depthStencilFmtNdx < depthStencilFormats.length;
-                    depthStencilFmtNdx++) {
+                for (var depthStencilFmtNdx = 0; depthStencilFmtNdx < depthStencilFormats.length; depthStencilFmtNdx++) {
 
                     colorType = gl.TEXTURE_2D;
                     depth = depthStencilFormats[depthStencilFmtNdx].depth;
                     stencil = depthStencilFormats[depthStencilFmtNdx].stencil;
 
                     // Depth and stencil: both rbo and textures
-                    for (var typeNdx = 0;
-                        typeNdx < objectTypes.length;
-                        typeNdx++) {
+                    for (var typeNdx = 0; typeNdx < objectTypes.length; typeNdx++) {
 
                         if (!depth && objectTypes[typeNdx] != gl.RENDERBUFFER)
                             continue; // Not supported.
@@ -2279,7 +2273,7 @@ goog.scope(function() {
                             depthStencilFormats[depthStencilFmtNdx].format
                         );
 
-                        resizeGroup.addChild(
+                        resizeGroup[colorFmtNdx % numResizeGroups].addChild(
                             new es3fFboRenderTest.ResizeTest(config)
                         );
                     }
@@ -2288,16 +2282,14 @@ goog.scope(function() {
         }
 
         // .recreate_color
-        /** @type {tcuTestCase.DeqpTest} */
-        var recreateColorGroup = new tcuTestCase.DeqpTest(
-            'recreate_color', 'Recreate colorbuffer tests'
-        );
+        /** @type {Array<tcuTestCase.DeqpTest>} */ var recreateColorGroup = [];
+        var numRecreateColorGroups = 7;
+        for (var ii = 0; ii < numRecreateColorGroups; ++ii) {
+            recreateColorGroup[ii] = new tcuTestCase.DeqpTest('recreate_color', 'Recreate colorbuffer tests');
+            this.addChild(recreateColorGroup[ii]);
+        }
 
-        this.addChild(recreateColorGroup);
-
-        for (var colorFmtNdx = 0;
-            colorFmtNdx < colorFormats.length;
-            colorFmtNdx++) {
+        for (var colorFmtNdx = 0; colorFmtNdx < colorFormats.length; colorFmtNdx++) {
 
             colorFormat = colorFormats[colorFmtNdx].format;
             depthStencilFormat = gl.DEPTH24_STENCIL8;
@@ -2313,7 +2305,7 @@ goog.scope(function() {
                     depthStencilType, depthStencilFormat
                 );
 
-                recreateColorGroup.addChild(
+                recreateColorGroup[colorFmtNdx % numRecreateColorGroups].addChild(
                     new es3fFboRenderTest.RecreateBuffersTest(
                         config, gl.COLOR_BUFFER_BIT, true /* rebind */
                     )
@@ -2364,7 +2356,7 @@ goog.scope(function() {
      * Create and execute the test cases
      * @param {WebGL2RenderingContext} context
      */
-    es3fFboRenderTest.run = function(context) {
+    es3fFboRenderTest.run = function(context, range) {
         gl = context;
         //Set up Test Root parameters
         var state = tcuTestCase.runner;
@@ -2376,6 +2368,8 @@ goog.scope(function() {
         description(state.testCases.getDescription());
 
         try {
+            if (range)
+                state.setRange(range);
             //Run test cases
             tcuTestCase.runTestCases();
         }
