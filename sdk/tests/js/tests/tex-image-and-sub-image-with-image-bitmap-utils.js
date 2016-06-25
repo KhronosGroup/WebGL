@@ -52,13 +52,18 @@ function runOneIterationImageBitmapTest(useTexSubImage2D, bindingTarget, program
         break;
     }
 
-    if (optionsVal.is3D)
-        console.log('Testing texSubImage3D' + ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
-                ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
-    else
-        console.log('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
+    var str;
+    if (optionsVal.is3D) {
+        str = 'Testing texSubImage3D' + ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
+            ', bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY');
+    } else {
+        str = 'Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') +
               ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
-              ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP'));
+              ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP');
+    }
+    debug(str);
+    console.log(str);
+
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     // Enable writes to the RGBA channels
     gl.colorMask(1, 1, 1, 0);
