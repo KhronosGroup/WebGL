@@ -117,7 +117,7 @@ vec3 fnormal(void)
     vec3 normal = gtf_NormalMatrix * gtf_Normal;
     normal = normalize(normal);
 
-	return normal;
+    return normal;
 }
 
 void flight(in vec3 normal, in vec4 ecPosition, float alphaFade)
@@ -148,14 +148,14 @@ void flight(in vec3 normal, in vec4 ecPosition, float alphaFade)
 
 void main (void)
 {
-	vec3  transformedNormal;
+    vec3  transformedNormal;
     float alphaFade = 1.0;
-	
-	vec4 ecPosition = gtf_Vertex;
-	
-	color = gtf_Color;
-	gtf_TexCoord[0] = gtf_MultiTexCoord0;
-	gl_Position = gtf_ModelViewProjectionMatrix * gtf_Vertex;
-	transformedNormal = fnormal();
+
+    vec4 ecPosition = gtf_Vertex;
+
+    color = gtf_Color;
+    gtf_TexCoord[0] = gtf_MultiTexCoord0;
+    gl_Position = gtf_ModelViewProjectionMatrix * gtf_Vertex;
+    transformedNormal = fnormal();
     flight(transformedNormal, ecPosition, alphaFade);
 }
