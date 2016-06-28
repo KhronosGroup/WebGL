@@ -804,7 +804,7 @@ es3fFboInvalidateTests.InvalidateSubFboUnbindReadCase.prototype.render = functio
     var attachments = getFBODiscardAttachments(this.m_invalidateBuffers);
     // Create fbo.
     var transferFmt = gluTextureUtil.getTransferFormat(colorFmt);
-    var gradShader = new es3fFboTestUtil.GradientShader(gluShaderUtil.DataType.FLOAT_VEC4);
+    var gradShader = new es3fFboTestUtil.GradientShader(es3fFboTestUtil.getFragmentOutputType(colorFmt));
     var gradShaderID = ctx.createProgram(gradShader);
     var invalidateX = 0;
     var invalidateY = 0;
@@ -818,7 +818,8 @@ es3fFboInvalidateTests.InvalidateSubFboUnbindReadCase.prototype.render = functio
     var colorTex = ctx.createTexture();
     ctx.bindTexture(gl.TEXTURE_2D, colorTex);
     ctx.texImage2D(gl.TEXTURE_2D, 0, this.m_colorFmt, this.getWidth(), this.getHeight(), 0, transferFmt.format, transferFmt.dataType, null);
-    ctx.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    ctx.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    ctx.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
     if (this.m_depthStencilFmt != gl.NONE) {
         transferFmt = gluTextureUtil.getTransferFormat(depthStencilFmt);
@@ -858,6 +859,9 @@ es3fFboInvalidateTests.InvalidateSubFboUnbindReadCase.prototype.render = functio
     ctx.bindFramebuffer(gl.FRAMEBUFFER, null);
     ctx.disable(gl.DEPTH_TEST);
     ctx.disable(gl.STENCIL_TEST);
+
+    ctx.clearColor(0.25, 0.5, 0.75, 1);
+    ctx.clear(gl.COLOR_BUTTER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 
     // Limit read area using scissor.
     ctx.scissor(readX, readY, readW, readH);
