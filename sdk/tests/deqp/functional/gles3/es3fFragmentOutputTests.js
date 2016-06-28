@@ -900,9 +900,11 @@ var tcuImageCompare = framework.common.tcuImageCompare;
 
                 case tcuTexture.TextureChannelClass.SIGNED_INTEGER:
                 case tcuTexture.TextureChannelClass.UNSIGNED_INTEGER: {
+                    // The C++ dEQP code uses ~0u but ~0 is -1 in Javascript
+                    var UINT_MAX = Math.pow(2.0, 32.0) - 1;
                     threshold = tcuTextureUtil.select(
                                     [0, 0, 0, 0],
-                                    [1, 1, 1, 1],
+                                    [UINT_MAX, UINT_MAX, UINT_MAX, UINT_MAX],
                                     cmpMask
                                     ); // UVec4
                     isOk = tcuImageCompare.intThresholdCompare(name, desc, reference, rendered, threshold/*, tcu::COMPARE_LOG_RESULT*/);
