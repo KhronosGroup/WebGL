@@ -43,21 +43,21 @@ varying vec2 vertXY;
 
 void main (void)
 {
-	const float M_PI = 3.14159265358979323846;
-	float cosine;
+    const float M_PI = 3.14159265358979323846;
+    float cosine;
 
-	if( (gl_FragCoord.x < SAFETY_BOUND) && (gl_FragCoord.y < SAFETY_BOUND) )
-	{
-		// horizontal abs cosine wave with a period of 128 pixels
+    if( (gl_FragCoord.x < SAFETY_BOUND) && (gl_FragCoord.y < SAFETY_BOUND) )
+    {
+        // horizontal abs cosine wave with a period of 128 pixels
 
 #ifdef GL_OES_standard_derivatives
-		cosine = REDUCE_RANGE(abs(cos(fract(gl_FragCoord.x / 128.0) * (2.0 * M_PI))));
+        cosine = REDUCE_RANGE(abs(cos(fract(gl_FragCoord.x / 128.0) * (2.0 * M_PI))));
 #else
     cosine = 0.5;
 #endif
 
-		gl_FragColor = vec4(cosine, cosine, cosine, 1.0);
-	}
-	else discard;
+        gl_FragColor = vec4(cosine, cosine, cosine, 1.0);
+    }
+    else discard;
 }
 

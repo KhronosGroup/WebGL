@@ -33,7 +33,7 @@ varying vec3 colors;
 
 void main(void)
 {
-	colors = vec3(myAttribute1, 0, 0);
+    colors = vec3(myAttribute1, 0, 0);
 
     gl_Position = gtf_ModelViewProjectionMatrix * gtf_Vertex;
 }

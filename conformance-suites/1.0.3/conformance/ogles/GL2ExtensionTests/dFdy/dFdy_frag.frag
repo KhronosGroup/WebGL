@@ -48,21 +48,21 @@ varying vec2 vertXY;
 
 void main (void)
 {
-	const float M_PI = 3.14159265358979323846;
-	float sine;
-	float cosine;
+    const float M_PI = 3.14159265358979323846;
+    float sine;
+    float cosine;
 
 #ifdef GL_OES_standard_derivatives
-	sine = sin(fract(gl_FragCoord.y / 128.0) * (2.0 * M_PI));
-	cosine = REDUCE_RANGE((128.0 / (2.0 * M_PI)) * dFdy(sine));
+    sine = sin(fract(gl_FragCoord.y / 128.0) * (2.0 * M_PI));
+    cosine = REDUCE_RANGE((128.0 / (2.0 * M_PI)) * dFdy(sine));
 #else
         cosine = 0.5;
 #endif
 
-	if( gl_FragCoord.y < SAFETY_BOUND )
-	{
-		gl_FragColor = vec4(cosine, cosine, cosine, 1.0);
-	}
-	else discard;
+    if( gl_FragCoord.y < SAFETY_BOUND )
+    {
+        gl_FragColor = vec4(cosine, cosine, cosine, 1.0);
+    }
+    else discard;
 }
 

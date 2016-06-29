@@ -44,22 +44,22 @@ uniform float viewportheight;
 
 void main (void)
 {
-	const float M_PI = 3.14159265358979323846;
-	float func;
-	float funcfwidth;
+    const float M_PI = 3.14159265358979323846;
+    float func;
+    float funcfwidth;
 
 #ifdef GL_OES_standard_derivatives
-	// fwidth of average of horizontal and vertical sine waves with periods of 128 pixels, scaled to go from -1 to +1
-	func = 0.5 * (sin(fract(gl_FragCoord.x / 128.0) * (2.0 * M_PI)) + sin(fract(gl_FragCoord.y / 128.0) * (2.0 * M_PI)));
-	funcfwidth = REDUCE_RANGE((128.0 / (2.0 * M_PI)) * fwidth(func));
+    // fwidth of average of horizontal and vertical sine waves with periods of 128 pixels, scaled to go from -1 to +1
+    func = 0.5 * (sin(fract(gl_FragCoord.x / 128.0) * (2.0 * M_PI)) + sin(fract(gl_FragCoord.y / 128.0) * (2.0 * M_PI)));
+    funcfwidth = REDUCE_RANGE((128.0 / (2.0 * M_PI)) * fwidth(func));
 #else
         funcfwidth = 0.5;
 #endif
 
-	if( (gl_FragCoord.x < SAFETY_BOUND) && (gl_FragCoord.y < SAFETY_BOUND) )
-	{
-		gl_FragColor = vec4(funcfwidth, funcfwidth, funcfwidth, 1.0);
-	}
-	else discard;
+    if( (gl_FragCoord.x < SAFETY_BOUND) && (gl_FragCoord.y < SAFETY_BOUND) )
+    {
+        gl_FragColor = vec4(funcfwidth, funcfwidth, funcfwidth, 1.0);
+    }
+    else discard;
 }
 
