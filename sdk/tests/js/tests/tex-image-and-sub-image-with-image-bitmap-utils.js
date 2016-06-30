@@ -122,8 +122,18 @@ function runOneIterationImageBitmapTest(useTexSubImage2D, bindingTarget, program
     var br = premultiplyAlpha ? ((optionsVal.alpha == 0.5) ? halfGreen : (optionsVal.alpha == 1) ? greenColor : blackColor) : greenColor;
 
     var loc;
+    var skipCorner = false;
     if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
         loc = gl.getUniformLocation(program, "face");
+        switch (pixelFormat) {
+          case gl.RED_INTEGER:
+          case gl.RG_INTEGER:
+          case gl.RGB_INTEGER:
+          case gl.RGBA_INTEGER:
+            // https://github.com/KhronosGroup/WebGL/issues/1819
+            skipCorner = true;
+            break;
+        }
     }
 
     var tolerance = 10;
@@ -138,10 +148,14 @@ function runOneIterationImageBitmapTest(useTexSubImage2D, bindingTarget, program
         // the right color.
         console.log("Checking " + (flipY ? "top" : "bottom"));
         wtu.checkCanvasRect(gl, quaterWidth, bottom, 2, 2, tl, "shouldBe " + tl);
-        wtu.checkCanvasRect(gl, halfWidth + quaterWidth, bottom, 2, 2, tr, "shouldBe " + tr, tolerance);
+        if (!skipCorner && !flipY) {
+            wtu.checkCanvasRect(gl, halfWidth + quaterWidth, bottom, 2, 2, tr, "shouldBe " + tr, tolerance);
+        }
         console.log("Checking " + (flipY ? "bottom" : "top"));
         wtu.checkCanvasRect(gl, quaterWidth, top, 2, 2, bl, "shouldBe " + bl);
-        wtu.checkCanvasRect(gl, halfWidth + quaterWidth, top, 2, 2, br, "shouldBe " + br, tolerance);
+        if (!skipCorner && flipY) {
+            wtu.checkCanvasRect(gl, halfWidth + quaterWidth, top, 2, 2, br, "shouldBe " + br, tolerance);
+        }
     }
 }
 
