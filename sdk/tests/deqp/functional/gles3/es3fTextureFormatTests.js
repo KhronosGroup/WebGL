@@ -307,7 +307,16 @@ es3fTextureFormatTests.TextureCubeFormatCase.prototype.testFace = function(face)
         this.m_texture.getRefTexture(), texCoord, renderParams);
 
     // Compare and log.
-    var isOk = glsTextureTestUtil.compareImages(referenceFrame, renderedFrame, threshold);
+    var skipPixels = null;
+    if (renderParams.samplerType == glsTextureTestUtil.samplerType.SAMPLERTYPE_INT ||
+        renderParams.samplerType == glsTextureTestUtil.samplerType.SAMPLERTYPE_UINT) {
+        // Skip top right pixel due to Mac Intel driver bug.
+        // https://github.com/KhronosGroup/WebGL/issues/1819
+        skipPixels = [
+            [this.m_width - 1, this.m_height - 1]
+        ];
+    }
+    var isOk = glsTextureTestUtil.compareImages(referenceFrame, renderedFrame, threshold, skipPixels);
 
     assertMsgOptions(isOk, 'Face: ' + this.m_curFace + ' ' + es3fTextureFormatTests.testDescription(), true, true);
     return isOk;

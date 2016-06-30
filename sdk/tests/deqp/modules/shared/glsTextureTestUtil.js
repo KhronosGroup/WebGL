@@ -1408,11 +1408,12 @@ glsTextureTestUtil.sampleTexture3D = function(dst, src, texCoord, params) {
  * @param {tcuSurface.Surface} reference
  * @param {tcuSurface.Surface} rendered
  * @param {Array<number>} threshold
+ * @param {Array< Array<number> >} skipPixels
  *
  * @return {boolean}
  */
-glsTextureTestUtil.compareImages = function(reference, rendered, threshold) {
-    return tcuImageCompare.pixelThresholdCompare('Result', 'Image comparison result', reference, rendered, threshold, undefined /*tcu::COMPARE_LOG_RESULT*/);
+glsTextureTestUtil.compareImages = function(reference, rendered, threshold, skipPixels) {
+    return tcuImageCompare.pixelThresholdCompare('Result', 'Image comparison result', reference, rendered, threshold, undefined /*tcu::COMPARE_LOG_RESULT*/, skipPixels);
 };
 
 /**
