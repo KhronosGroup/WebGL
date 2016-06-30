@@ -172,7 +172,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                     "shouldBe " + greenColor);
         }
 
-        if (true) {
+        if (false) {
           var ma = wtu.makeImageFromCanvas(canvas);
           document.getElementById("console").appendChild(ma);
 
