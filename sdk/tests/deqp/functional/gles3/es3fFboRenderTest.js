@@ -1821,6 +1821,7 @@ goog.scope(function() {
             switch (type) {
                 case gl.TEXTURE_2D:
                     ctx.deleteTexture(/** @type {WebGLTexture} */ (buf));
+                    buf = ctx.createTexture();
                     ctx.bindTexture(gl.TEXTURE_2D, buf);
                     ctx.texImage2DDelegate(
                         gl.TEXTURE_2D, 0, format, width, height
@@ -1837,6 +1838,7 @@ goog.scope(function() {
                     ctx.deleteRenderbuffer(
                         /** @type {WebGLRenderbuffer} */ (buf)
                     );
+                    buf = ctx.createRenderbuffer();
                     ctx.bindRenderbuffer(gl.RENDERBUFFER, buf);
                     ctx.renderbufferStorage(
                         gl.RENDERBUFFER, format, width, height
@@ -1845,6 +1847,12 @@ goog.scope(function() {
 
                 default:
                     throw new Error('Unsupported buffer type');
+            }
+
+            if (ndx == 0) {
+                fbo.m_colorBuffer = buf;
+            } else {
+                fbo.m_depthStencilBuffer = buf;
             }
         }
 
