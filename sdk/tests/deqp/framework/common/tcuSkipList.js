@@ -115,6 +115,8 @@ goog.scope(function() {
         _skip("render.resize.rbo_r11f_g11f_b10f");
         // deqp/functional/gles3/fborender/recreate_color_02.html
         _skip("render.recreate_color.rbo_r11f_g11f_b10f_depth_stencil_rbo_depth24_stencil8");
+        // deqp/functional/gles3/fbocolorbuffer/clear.html
+        _skip("color.clear.r11f_g11f_b10f");
     } // if (!runSkippedTests)
 
     /*
