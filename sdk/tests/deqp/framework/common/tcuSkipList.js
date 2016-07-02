@@ -86,6 +86,35 @@ goog.scope(function() {
         // Please see https://android.googlesource.com/platform/external/deqp/+/master/android/cts/master/src/gles3-driver-issues.txt
         _skip("texture_functions.texturegrad.samplercubeshadow_vertex");
         _skip("texture_functions.texturegrad.samplercubeshadow_fragment");
+
+        _setReason("Mac OSX drivers handle R11F_G11F_B10F format incorrectly");
+        // https://github.com/KhronosGroup/WebGL/issues/1832
+        // deqp/functional/gles3/fragmentoutput/basic.float.html
+        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_mediump_float");
+        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_mediump_vec2");
+        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_mediump_vec3");
+        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_mediump_vec4");
+        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_highp_float");
+        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_highp_vec2");
+        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_highp_vec3");
+        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_highp_vec4");
+        // deqp/functional/gles3/fragmentoutput/array.float.html
+        _skip("fragment_outputs.array.float.r11f_g11f_b10f_mediump_float");
+        _skip("fragment_outputs.array.float.r11f_g11f_b10f_mediump_vec2");
+        _skip("fragment_outputs.array.float.r11f_g11f_b10f_mediump_vec3");
+        _skip("fragment_outputs.array.float.r11f_g11f_b10f_mediump_vec4");
+        _skip("fragment_outputs.array.float.r11f_g11f_b10f_highp_float");
+        _skip("fragment_outputs.array.float.r11f_g11f_b10f_highp_vec2");
+        _skip("fragment_outputs.array.float.r11f_g11f_b10f_highp_vec3");
+        _skip("fragment_outputs.array.float.r11f_g11f_b10f_highp_vec4");
+        // deqp/functional/gles3/fragmentoutput/random_00.html
+        _skip("fragment_outputs.random.57");
+        // deqp/functional/gles3/fragmentoutput/random_02.html
+        _skip("fragment_outputs.random.11");
+        // deqp/functional/gles3/fborender/resize_01.html
+        _skip("render.resize.rbo_r11f_g11f_b10f");
+        // deqp/functional/gles3/fborender/recreate_color_02.html
+        _skip("render.recreate_color.rbo_r11f_g11f_b10f_depth_stencil_rbo_depth24_stencil8");
     } // if (!runSkippedTests)
 
     /*
