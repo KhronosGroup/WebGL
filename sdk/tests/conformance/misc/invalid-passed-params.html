@@ -110,7 +110,7 @@ function generateShaderSource(opt_invalidIdentifierChar, opt_invalidCommentChar)
                           + "varying float " + validAttribName + ";\n"
                           + "void main() {\n"
                           + validAttribName  + " = " + validUniformName + ";\n"
-                          + "gl_Position = vec4(0.0, 0.0, 0.0, 1.0); }\n";
+                          + "gl_Position = vec4(0.0, 0.0, 0.0, 1.0); }\n"
                           + "//.+-/*%<>[](){}^|&~=!:;,?# " + invalidCommentString;
 }
 var vShader = context.createShader(context.VERTEX_SHADER);
