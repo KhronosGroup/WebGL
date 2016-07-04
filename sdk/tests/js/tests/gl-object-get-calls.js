@@ -857,7 +857,19 @@ if (contextVersion > 1) {
     debug("Test getSyncParameter");
     var sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
     shouldBe('gl.getSyncParameter(sync, gl.OBJECT_TYPE)', 'gl.SYNC_FENCE');
-    shouldBe('gl.getSyncParameter(sync, gl.SYNC_STATUS)', 'gl.UNSIGNALED');
+    var sync_status = gl.getSyncParameter(sync, gl.SYNC_STATUS);
+    switch (sync_status) {
+      case gl.UNSIGNALED:
+        testPassed('gl.getSyncParameter(sync, gl.SYNC_CONDITION) is gl.UNSIGNALED');
+        break;
+      case gl.SIGNALED:
+        testPassed('gl.getSyncParameter(sync, gl.SYNC_CONDITION) is gl.SIGNALED');
+        break;
+      default:
+        testFailed('gl.getSyncParameter(sync, gl.SYNC_CONDITION) was ' + sync_status +
+                   ', expected gl.UNSIGNALED or gl.SIGNALED');
+        break;
+    }
     shouldBe('gl.getSyncParameter(sync, gl.SYNC_CONDITION)', 'gl.SYNC_GPU_COMMANDS_COMPLETE');
     shouldBe('gl.getSyncParameter(sync, gl.SYNC_FLAGS)', '0');
     var validArrayForSyncParameter = new Array(
