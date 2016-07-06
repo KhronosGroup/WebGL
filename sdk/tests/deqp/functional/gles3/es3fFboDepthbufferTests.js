@@ -216,12 +216,12 @@ es3fFboDepthbufferTests.DepthWriteClampCase.prototype.render = function(dst) {
         ctx.depthMask(false);
 
         // Test if any fragment has greater depth than 1; there should be none
-        ctx.depthFunc(gl.LESS); // (1 < depth) ?
+        ctx.depthFunc(gl.LEQUAL); // (1 <= depth) ?
         gradShader.setUniforms(ctx, gradShaderID, 1, 1, red);
         rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, -1.0], [1.0, 1.0, 1.0]);
 
         // Test if any fragment has smaller depth than 0; there should be none
-        ctx.depthFunc(gl.GREATER); // (0 > depth) ?
+        ctx.depthFunc(gl.GEQUAL); // (0 >= depth) ?
         gradShader.setUniforms(ctx, gradShaderID, 0, 0, red);
         rrUtil.drawQuad(ctx, gradShaderID, [-1.0, -1.0, -1.0], [1.0, 1.0, 1.0]);
 
