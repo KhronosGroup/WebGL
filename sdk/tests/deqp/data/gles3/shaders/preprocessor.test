@@ -909,24 +909,6 @@ group line_continuation "Line Continuation Tests"
 		""
 	end
 
-	case middle_of_line
-		version 300 es
-		values { output float out0 = 1.0; }
-		both ""
-			#version 300 es
-			precision mediump float;
-			${DECLARATIONS}
-			#define A a \\ b
-			#define B 1.0
-
-			void main ()
-			{
-				out0 = B;
-				${OUTPUT}
-			}
-		""
-	end
-
 end # line_continuation
 
 group function_definitions "Function Definitions Tests"
