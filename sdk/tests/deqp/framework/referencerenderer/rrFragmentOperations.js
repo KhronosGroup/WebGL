@@ -196,7 +196,18 @@ rrFragmentOperations.executeDepthCompare = function(inputFragments, depthFunc, d
                 var fragSampleNdx = 0;
                 var depthBufferValue = depthBuffer.getPixDepth(fragSampleNdx, frag.pixelCoord[0], frag.pixelCoord[1]);
                 var sampleDepthFloat = frag.sampleDepths[fragSampleNdx];
-                var sampleDepth = deMath.clamp(sampleDepthFloat, 0.0, 1.0);
+
+                /* convert input float to target buffer format for comparison */
+                var access = new tcuTexture.PixelBufferAccess({
+                    format: depthBuffer.getFormat(),
+                    width: 1,
+                    height: 1,
+                    depth: 1,
+                    data: new ArrayBuffer(8)
+                });
+                access.setPixDepth(sampleDepthFloat, 0, 0, 0);
+                var sampleDepth = access.getPixDepth(0, 0, 0);
+
                 frag.depthPassed = expression(sampleDepth, depthBufferValue);
             }
         }
