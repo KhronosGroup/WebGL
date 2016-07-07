@@ -69,10 +69,29 @@ function setupColor(testR, testG, testB, value) {
   return data;
 }
 
+// The definition of <Unsinged 11-Bit Floating-Point Number> in GLES 3.0.4:
+// https://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.1.3
+// The definition of <Unsinged 10-Bit Floating-Point Number> in GLES 3.0.4:
+// https://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.1.4
+function setTolerance (testR, testG, testB, value) {
+  var tol = [0, 0, 0];
+  var exponent;
+  if (value < Math.pow(2, -14)) {
+    exponent = -14;
+  } else {
+    exponent = Math.floor(Math.log(value) / Math.LN2);
+  }
+  var tol11F = Math.pow(2, exponent) / 64;
+  var tol10F = Math.pow(2, exponent) / 32;
+  tol[0] = testR ? tol11F : 0;
+  tol[1] = testG ? tol11F : 0;
+  tol[2] = testB ? tol10F : 0;
+  return tol;
+}
+
 function clearAndVerifyColor(width, height, testR, testG, testB, value) {
   var data = setupColor(testR, testG, testB, value);
-  // TODO(zmo): are we too tolerant here?
-  var tol = [36, 36, 36];
+  var tol = setTolerance(testR, testG, testB, value);
   gl.clearBufferfv(gl.COLOR, gl.DRAWBUFFER0, data);
   var buffer = new Float32Array(width * height * 4);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.FLOAT, buffer);
@@ -82,7 +101,7 @@ function clearAndVerifyColor(width, height, testR, testG, testB, value) {
         Math.abs(pixel[0] - data[0]) > tol[0] ||
         Math.abs(pixel[1] - data[1]) > tol[1] ||
         Math.abs(pixel[2] - data[2]) > tol[2]) {
-      testFailed("Pixel " + ii + " : got [" + pixel + "], expected [" + data + "]");
+      testFailed("Pixel " + ii + " : got [" + pixel + "], expected [" + data + "], tol [" + tol + "]");
       return;
     }
   }
@@ -95,25 +114,34 @@ function testColorChannelsWithVariousValues(width, height) {
   clearAndVerifyColor(width, height, true, false, false, 1000);
   clearAndVerifyColor(width, height, true, false, false, 2500);
   clearAndVerifyColor(width, height, true, false, false, 5000);
-  clearAndVerifyColor(width, height, true, false, false, 8191);
-  clearAndVerifyColor(width, height, true, false, false, 8192);
   clearAndVerifyColor(width, height, true, false, false, 10000);
+  clearAndVerifyColor(width, height, true, false, false, 2047);
+  clearAndVerifyColor(width, height, true, false, false, 4095);
+  clearAndVerifyColor(width, height, true, false, false, 8191);
+  clearAndVerifyColor(width, height, true, false, false, 16383);
+  clearAndVerifyColor(width, height, true, false, false, 16384);
   debug("Testing G channel");
   clearAndVerifyColor(width, height, false, true, false, 100);
   clearAndVerifyColor(width, height, false, true, false, 1000);
   clearAndVerifyColor(width, height, false, true, false, 2500);
   clearAndVerifyColor(width, height, false, true, false, 5000);
-  clearAndVerifyColor(width, height, false, true, false, 8191);
-  clearAndVerifyColor(width, height, false, true, false, 8192);
   clearAndVerifyColor(width, height, false, true, false, 10000);
+  clearAndVerifyColor(width, height, false, true, false, 2047);
+  clearAndVerifyColor(width, height, false, true, false, 4095);
+  clearAndVerifyColor(width, height, false, true, false, 8191);
+  clearAndVerifyColor(width, height, false, true, false, 16383);
+  clearAndVerifyColor(width, height, false, true, false, 16384);
   debug("Testing B channel");
   clearAndVerifyColor(width, height, false, false, true, 100);
   clearAndVerifyColor(width, height, false, false, true, 1000);
   clearAndVerifyColor(width, height, false, false, true, 2500);
   clearAndVerifyColor(width, height, false, false, true, 5000);
-  clearAndVerifyColor(width, height, false, false, true, 8191);
-  clearAndVerifyColor(width, height, false, false, true, 8192);
   clearAndVerifyColor(width, height, false, false, true, 10000);
+  clearAndVerifyColor(width, height, false, false, true, 2047);
+  clearAndVerifyColor(width, height, false, false, true, 4095);
+  clearAndVerifyColor(width, height, false, false, true, 8191);
+  clearAndVerifyColor(width, height, false, false, true, 16383);
+  clearAndVerifyColor(width, height, false, false, true, 16384);
 }
 
 function testRenderbufferReadback(width, height) {
