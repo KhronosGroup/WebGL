@@ -341,14 +341,22 @@ interface WebGL2RenderingContextBase
   void texStorage2D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
   void texStorage3D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height,
                     GLsizei depth);
+  void texImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height,
+                  GLint border, GLenum format, GLenum type, GLintptr offset);
+  void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height,
+                     GLenum format, GLenum type, GLintptr offset);
   void texImage3D(GLenum target, GLint level, GLint internalformat,
                   GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format,
                   GLenum type, ArrayBufferView? pixels);
+  void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height,
+                  GLsizei depth, GLint border, GLenum format, GLenum type, GLintptr offset);
   void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                      GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type,
                      ArrayBufferView? pixels);
   void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                      GLenum format, GLenum type, TexImageSource? source);
+  void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width,
+                     GLsizei height, GLsizei depth, GLenum format, GLenum type, GLintptr offset);
   void copyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                          GLint x, GLint y, GLsizei width, GLsizei height);
   void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat,
@@ -389,6 +397,9 @@ interface WebGL2RenderingContextBase
   /* TODO(kbr): argue against exposing this because it can't safely
      offer better performance than drawElements */
   void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLintptr offset);
+
+  /* Reading back pixels */
+  void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLintptr offset);
 
   /* Multiple Render Targets */
   void drawBuffers(sequence<GLenum> buffers);
