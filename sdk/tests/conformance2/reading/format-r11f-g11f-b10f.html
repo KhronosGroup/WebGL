@@ -1,0 +1,165 @@
+<!--
+
+/*
+** Copyright (c) 2016 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Test Format R11F_G11F_B10F</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<canvas id="canvas" width="20" height="20"> </canvas>
+<script>
+"use strict";
+description("This tests format R11F_G11F_B10F works as expected");
+debug("MacOSX driver bug. See https://github.com/KhronosGroup/WebGL/issues/1832");
+
+var wtu = WebGLTestUtils;
+var canvas = document.getElementById("canvas");
+var gl = wtu.create3DContext(canvas, undefined, 2);
+
+if (!gl) {
+  testFailed("context does not exist");
+} else {
+  testPassed("context exists");
+  if (gl.getExtension("EXT_color_buffer_float")) {
+    testPassed("Extension EXT_color_buffer_float is available");
+    testRenderbufferReadback(4, 4);
+    testTextureReadback(4, 4);
+  } else {
+    testPassed("Extension EXT_color_buffer_float is unavailable - this is legal");
+  }
+}
+
+function setupColor(testR, testG, testB, value) {
+  var data = new Float32Array(4);
+  data[0] = testR ? value : 0;
+  data[1] = testG ? value : 0;
+  data[2] = testB ? value : 0;
+  data[3] = 1; // Doesn't really matter for RGB formats.
+  return data;
+}
+
+function clearAndVerifyColor(width, height, testR, testG, testB, value) {
+  var data = setupColor(testR, testG, testB, value);
+  // TODO(zmo): are we too tolerant here?
+  var tol = [36, 36, 36];
+  gl.clearBufferfv(gl.COLOR, gl.DRAWBUFFER0, data);
+  var buffer = new Float32Array(width * height * 4);
+  gl.readPixels(0, 0, width, height, gl.RGBA, gl.FLOAT, buffer);
+  for (var ii = 0; ii < width * height; ++ii) {
+    var pixel = [buffer[ii * 4], buffer[ii * 4 + 1], buffer[ii * 4 + 2], buffer[ii * 4 + 3]];
+    if (isNaN(pixel[0]) || isNaN(pixel[1]) || isNaN(pixel[2]) ||
+        Math.abs(pixel[0] - data[0]) > tol[0] ||
+        Math.abs(pixel[1] - data[1]) > tol[1] ||
+        Math.abs(pixel[2] - data[2]) > tol[2]) {
+      testFailed("Pixel " + ii + " : got [" + pixel + "], expected [" + data + "]");
+      return;
+    }
+  }
+  testPassed("Success : [" + data + "]");
+}
+
+function testColorChannelsWithVariousValues(width, height) {
+  debug("Testing R channel");
+  clearAndVerifyColor(width, height, true, false, false, 100);
+  clearAndVerifyColor(width, height, true, false, false, 1000);
+  clearAndVerifyColor(width, height, true, false, false, 2500);
+  clearAndVerifyColor(width, height, true, false, false, 5000);
+  clearAndVerifyColor(width, height, true, false, false, 8191);
+  clearAndVerifyColor(width, height, true, false, false, 8192);
+  clearAndVerifyColor(width, height, true, false, false, 10000);
+  debug("Testing G channel");
+  clearAndVerifyColor(width, height, false, true, false, 100);
+  clearAndVerifyColor(width, height, false, true, false, 1000);
+  clearAndVerifyColor(width, height, false, true, false, 2500);
+  clearAndVerifyColor(width, height, false, true, false, 5000);
+  clearAndVerifyColor(width, height, false, true, false, 8191);
+  clearAndVerifyColor(width, height, false, true, false, 8192);
+  clearAndVerifyColor(width, height, false, true, false, 10000);
+  debug("Testing B channel");
+  clearAndVerifyColor(width, height, false, false, true, 100);
+  clearAndVerifyColor(width, height, false, false, true, 1000);
+  clearAndVerifyColor(width, height, false, false, true, 2500);
+  clearAndVerifyColor(width, height, false, false, true, 5000);
+  clearAndVerifyColor(width, height, false, false, true, 8191);
+  clearAndVerifyColor(width, height, false, false, true, 8192);
+  clearAndVerifyColor(width, height, false, false, true, 10000);
+}
+
+function testRenderbufferReadback(width, height) {
+  debug("");
+  debug("Checking clear and readback a color image of renderbuffer with R11F_G11F_B10F format.");
+
+  var fbo = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+  var renderbuffer = gl.createRenderbuffer();
+  gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
+  gl.renderbufferStorage(gl.RENDERBUFFER, gl.R11F_G11F_B10F, width, height);
+  gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, renderbuffer);
+  shouldBe("gl.FRAMEBUFFER_COMPLETE", "gl.checkFramebufferStatus(gl.FRAMEBUFFER)");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setup framebuffer with renderbuffer should succeed.");
+
+  testColorChannelsWithVariousValues(width, height);
+
+  gl.deleteFramebuffer(fbo);
+  gl.deleteRenderbuffer(renderbuffer);
+}
+
+function testTextureReadback(width, height) {
+  debug("");
+  debug("Checking clear and readback a color image of texture with R11F_G11F_B10F format.");
+
+  var fbo = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+  var tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.R11F_G11F_B10F, width, height, 0, gl.RGB, gl.FLOAT, null);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+  shouldBe("gl.FRAMEBUFFER_COMPLETE", "gl.checkFramebufferStatus(gl.FRAMEBUFFER)");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setup framebuffer with texture should succeed.");
+
+  testColorChannelsWithVariousValues(width, height);
+
+  gl.deleteFramebuffer(fbo);
+  gl.deleteTexture(tex);
+}
+
+debug("");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "No GL error from tests.");
+var successfullyParsed = true;
+
+</script>
+<script src="../../js/js-test-post.js"></script>
+
+</body>
+</html>
