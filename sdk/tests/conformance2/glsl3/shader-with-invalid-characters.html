@@ -49,46 +49,9 @@ void main()
     gl_Position = vec4(1.0, 0.0, 0.0, 1.0);
 }
 </script>
-<script id="vertexShaderBackslashValid" type="text/something-not-javascript">
-void main()
-{
-    gl_Position = \
-        vec4(1.0, 0.0, 0.0, 1.0);
-}
-</script>
-<script id="vertexShaderBackslashInvalid" type="text/something-not-javascript">
-void main()
-{
-    gl_Position = \ vec4(1.0, 0.0, 0.0, 1.0);
-}
-</script>
 <script>
 "use strict";
 GLSLConformanceTester.runTest();
-
-debug("");
-debug("Check that INVALID_VALUE is generated if backslash is not immediately followed by a new line.");
-
-var wtu = WebGLTestUtils;
-var context = wtu.create3DContext();
-var source = document.getElementById('vertexShaderBackslashValid').text;
-var vShader = context.createShader(context.VERTEX_SHADER);
-context.shaderSource(vShader, source);
-shouldBe("context.getError()", "context.NO_ERROR");
-source = document.getElementById('vertexShaderBackslashInvalid').text;
-context.shaderSource(vShader, source);
-shouldBe("context.getError()", "context.INVALID_VALUE");
-
-// Use string for this case to avoid lint error on trailing spaces at the end of line.
-source = "// There are white spaces after backslash.\n" +
-    "void main()\n" +
-    "{\n" +
-    "    gl_Position = \\  \n" +
-    "        vec4(1.0, 0.0, 0.0, 1.0);\n" +
-    "}\n";
-context.shaderSource(vShader, source);
-shouldBe("context.getError()", "context.INVALID_VALUE");
-
 var successfullyParsed = true;
 </script>
 </body>
