@@ -1,4 +1,4 @@
-builtinprecision/00_test_list.txt
+--min-version 2.0.1 builtinprecision/00_test_list.txt
 draw/00_test_list.txt
 fbocolorbuffer/00_test_list.txt
 fboinvalidate/00_test_list.txt
