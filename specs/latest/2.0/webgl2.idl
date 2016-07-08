@@ -359,12 +359,22 @@ interface WebGL2RenderingContextBase
                      GLsizei height, GLsizei depth, GLenum format, GLenum type, GLintptr offset);
   void copyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                          GLint x, GLint y, GLsizei width, GLsizei height);
+  void compressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height,
+                            GLint border, GLintptr offset);
+  void compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
+                               GLsizei width, GLsizei height, GLenum format, GLintptr offset);
   void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat,
                             GLsizei width, GLsizei height, GLsizei depth,
                             GLint border, ArrayBufferView data);
+  void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat,
+                            GLsizei width, GLsizei height, GLsizei depth,
+                            GLint border, GLintptr offset)
   void compressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                                GLsizei width, GLsizei height, GLsizei depth,
                                GLenum format, ArrayBufferView data);
+  void compressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
+                               GLsizei width, GLsizei height, GLsizei depth,
+                               GLenum format, GLintptr offset);
 
   /* Programs and shaders */
   [WebGLHandlesContextLoss] GLint getFragDataLocation(WebGLProgram? program, DOMString name);
