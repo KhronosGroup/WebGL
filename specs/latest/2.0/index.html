@@ -2820,6 +2820,21 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         There is no use case for these parameters being different.
     </div>
 
+    <p>
+        If a fragment shader writes to none of <code>gl_FragColor</code>, <code>gl_FragData</code>, nor any
+        user-defined output variables, the values of the fragment colors following shader execution are untouched.
+        If some, but not all user-defined output variables are written, the values of fragment colors corresponding
+        to unwritten variables are similarly untouched.
+    </p>
+
+    <p>
+        If the values written by the fragment shader do not match the format(s) of the corresponding
+        color buffer(s) (for example, the output variable is an integer, but the corresponding color
+        buffer has a floating-point format, or vice versa), and the color buffer states are not set to
+        <code>NONE</code> by <code>DrawBuffers</code>, generates an <code>INVALID_OPERATION</code> error;
+        if the color buffer states are set to <code>NONE</code> by <code>DrawBuffers</code>, they remain untouched.
+    </p>
+
     <h3>No Program Binaries</h3>
 
     <p>
