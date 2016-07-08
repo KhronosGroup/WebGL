@@ -2642,35 +2642,13 @@ end # builtin
 
 group pragmas "Pragma Tests"
 
-	case pragma_vertex
-		values { output float out0 = 1.0; }
-
-		vertex ""
-			#pragma
-			#pragma STDGL invariant(all)
-			#pragma debug(off)
-			#pragma optimize(off)
-
-			precision mediump float;
-			${VERTEX_DECLARATIONS}
-			varying float v_val;
-			void main()
-			{
-				v_val = 1.0;
-				${VERTEX_OUTPUT}
-			}
-		""
-		fragment ""
-			precision mediump float;
-			${FRAGMENT_DECLARATIONS}
-			invariant varying float v_val;
-			void main()
-			{
-				out0 = v_val;
-				${FRAGMENT_OUTPUT}
-			}
-		""
-	end
+	# Note: pragma_vertex was removed compared to the native dEQP.
+	# This test was in the gles2-failures.txt skip list in the
+	# native dEQP. While it seemed theoretically correct, in
+	# practice, linking the program failed on Mac OS on all GPU
+	# types. Since this version of the dEQP is unlikely to be
+	# revisited, the test was removed here, rather than adding it
+	# to tcuSkipList.js.
 
 	# Note: pragma_fragment was removed compared to the native dEQP.
 	# This test was buggy; it required that a varying that was not
