@@ -1846,6 +1846,32 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         Set the rate at which the vertex attribute identified by <code>index</code> advances when drawing.
       </dd>
       <dt>
+        <p class="idl-code">void drawArrays(GLenum mode, GLint first, GLsizei count)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.9.3">OpenGL ES 3.0.4 &sect;2.9.3</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDrawArrays.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dd>
+        If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
+        <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
+        match shader attribute type</a>.
+      </dd>
+      <dt>
+        <p class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLintptr offset)
+          <span class="gl-spec">
+            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.9.3">OpenGL ES 3.0.4 &sect;2.9.3</a>,
+            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDrawElements.xhtml" class="nonnormative">man page</a>)
+          </span>
+        </p>
+      </dt>
+      <dd>
+        If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
+        <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
+        match shader attribute type</a>.
+      </dd>
+      <dt>
         <p class="idl-code">void drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.9.3">OpenGL ES 3.0.4 &sect;2.9.3</a>,
@@ -1857,7 +1883,11 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         Draw <code>instanceCount</code> instances of geometry using the currently enabled vertex attributes.
         Vertex attributes which have a non-zero divisor advance once every divisor instances.<br><br>
 
-        If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.
+        If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.<br><br>
+
+        If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
+        <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
+        match shader attribute type</a>.
       </dd>
       <dt>
         <p class="idl-code">void drawElementsInstanced(GLenum mode, GLsizei count, GLenum type, GLintptr offset, GLsizei instanceCount)
@@ -1871,7 +1901,11 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         Draw <code>instanceCount</code> instances of geometry using the currently bound element array buffer.
         Vertex attributes which have a non-zero divisor advance once every divisor instances.<br><br>
 
-        If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.
+        If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.<br><br>
+
+        If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
+        <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
+        match shader attribute type</a>.
       </dd>
       <dt>
         <p class="idl-code">void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLintptr offset)
@@ -1895,7 +1929,11 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <a href="#ENABLED_ATTRIBUTE">Enabled Attribute</a>, and <a href="#ACTIVE_UNIFORM_BLOCK_BACKING">Active
         Uniform Block Backing</a>.<br><br>
 
-        If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.
+        If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.<br><br>
+
+        If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
+        <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
+        match shader attribute type</a>.
       </dd>
     </dl>
 
@@ -2368,6 +2406,12 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         discarded after being stored into one or more buffer objects, or they can be passed on down to the
         clipping stage for further processing. The set of output variables captured is determined when a
         program is linked.
+    </p>
+
+    <p>
+        If any output variable is specified to be streamed to a transform feedback buffer object but not actually
+        written by a vertex shader, the value is set to 0. See <a href="#TRANSFORM_FEEDBACK_NOT_WRITTEN">
+        Transform feedback primitive capture</a>.
     </p>
 
     <dl class="methods">
@@ -3201,6 +3245,66 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         In <code>texSubImage2D</code> and <code>texSubImage3D</code> with ArrayBufferView, if <em>type</em> is
         <code>FLOAT_32_UNSIGNED_INT_24_8_REV</code>, generates an <code>INVALID_ENUM</code>.
     </p>
+
+    <h3><a name="ATTRIBUTE_TYPE_MATCH">VertexAttrib function must match shader attribute type</a></h3>
+
+    <p>
+        If any of the following situations are true, attempting to draw with <code>drawArrays</code>,
+        <code>drawElements</code>, <code>drawRangeElements</code> or their instanced variants generates an
+        <code>INVALID_OPERATION</code> error:
+    </p>
+
+    <ul>
+      <li>
+        <code>vertexAttribPointer</code>, <code>vertexAttrib{1234}f</code>, or <code>vertexAttrib{1234}fv
+        </code> is used and the base type of the shader attribute at slot <code>index</code> is not
+        floating-point (e.g. is signed or unsigned integer);
+      </li>
+      <li>
+        <code>vertexAttribIPointer</code> is used with <code>type</code> <code>UNSIGNED_BYTE</code>,
+        <code>UNSIGNED_SHORT</code> or <code>UNSIGNED_INT</code>, or <code>vertexAttribI4ui</code> or
+        <code>vertexAttribI4uiv</code> is used, and the base type of the shader attribute at slot
+        <code>index</code> is not unsigned integer (e.g. is floating-point or signed integer);
+      </li>
+      <li>
+        <code>vertexAttribIPointer</code> is used with <code>type</code> <code>BYTE</code>,
+        <code>SHORT</code> or <code>INT</code>, or <code>vertexAttribI4i</code> or <code>
+        vertexAttribI4iv</code> is used, and the base type of the shader attribute at slot
+        <code>index</code> is not signed integer (e.g. is floating-point or unsigned integer).
+      </li>
+    </ul>
+
+    <div class="note">
+        This undefined behavior is in the OpenGL ES 3.0 specification section 2.8 <span class="gl-spec">
+        (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.8">
+        OpenGL ES 3.0.4 &sect;2.8</a>)</span>.
+    </div>
+
+    <h3><a name="TRANSFORM_FEEDBACK_NOT_WRITTEN">Transform feedback primitive capture</a></h3>
+
+    <p>
+        If any output variable is specified to be streamed to a buffer object but not actually
+        written by a vertex shader, the value is set to 0.
+    </p>
+
+    <div class="note">
+        This undefined behavior is in the OpenGL ES 3.0 specification section 2.15.2 <span class="gl-spec">
+        (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.15.2">
+        OpenGL ES 3.0.4 &sect;2.15.2</a>)</span>.
+    </div>
+
+    <h3>gl_FragDepth</h3>
+
+    <p>
+        If a fragment shader statically assigns a value to <code>gl_FragDepth</code>, for any fragment
+        where statements assigning a value to gl_FragDepth are not executed, the value 0 is used.
+    </p>
+
+    <div class="note">
+        This undefined behavior is in the OpenGL ES 3.0 specification section 3.9.2 <span class="gl-spec">
+        (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.9.2">
+        OpenGL ES 3.0.4 &sect;3.9.2</a>).
+    </div>
 
 <!-- ======================================================================================================= -->
 
