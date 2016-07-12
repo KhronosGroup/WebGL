@@ -1110,6 +1110,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p>Returns <code>FRAMEBUFFER_UNSUPPORTED</code> if depth and stencil attachments, if present, are not the same image. See <a href="#FBO_ATTACHMENTS">Framebuffer Object Attachments</a> for detailed discussion.</p>
         <p>Returns <code>FRAMEBUFFER_INCOMPLETE_MULTISAMPLE</code> if the values of <code>RENDERBUFFER_SAMPLES</code> are different among attached renderbuffers, or are non-zero if the attached images are a mix of renderbuffers and textures.</p>
         <p>Returns <code>FRAMEBUFFER_INCOMPLETE_DIMENSIONS</code> if attached images have different width, height, and depth (for 3D textures) or array size (for 2D array textures). See <a href="#INCOMPLETE_DIMENSIONS">checkFramebufferStatus may return FRAMEBUFFER_INCOMPLETE_DIMENSIONS</a>.</p>
+        <p>Returns <code>FRAMEBUFFER_UNSUPPORTED</code> if the same image is attached to more than one color
+        attachment point. See <a href="#FRAMEBUFFER_COLOR_ATTACHMENTS">Framebuffer color attachments</a>.</p>
       </dd>
 
       <dt class="idl-code">any getFramebufferAttachmentParameter(GLenum target, GLenum attachment, GLenum pname)
@@ -3306,6 +3308,22 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         This undefined behavior is in the OpenGL ES 3.0 specification section 3.9.2 <span class="gl-spec">
         (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.9.2">
         OpenGL ES 3.0.4 &sect;3.9.2</a>).
+    </div>
+
+    <h3><a name="FRAMEBUFFER_COLOR_ATTACHMENTS">Framebuffer color attachments</a></h3>
+
+    <p>
+        If an image is attached to more than one color attachment point in a framebuffer,
+        <code>checkFramebufferStatus</code> returns <code>FRAMEBUFFER_UNSOPPORTED</code>.
+        An image can be an individual mip level, an array slice (from either 2D array
+        or cube map textures), or a 3D texture slice.
+    </p>
+
+    <div class="note rationale">
+        This is a limitation of Direct3D 11, on top of which OpenGL ES 3 behavior is emulated on Windows.
+        (see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ff476464.aspx">msdn manual
+        page</a>). In order to have consistent WebGL 2 behavior across platforms, it is reasonable to add
+        this limitation in WebGL 2 for all platforms.
     </div>
 
 <!-- ======================================================================================================= -->
