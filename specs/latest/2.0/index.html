@@ -2775,10 +2775,6 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
 
     <h2><a name="webgl_gl_differences">Differences Between WebGL and OpenGL ES 3.0</a></h2>
 
-    <div class="note editor">
-        Needs update for WebGL 2.0
-    </div>
-
     <p>
         This section describes changes made to the WebGL API relative to the
         OpenGL ES 3.0 API to improve portability across various operating
@@ -2875,11 +2871,17 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
     </div>
 
     <p>
-        If a fragment shader writes to none of <code>gl_FragColor</code>, <code>gl_FragData</code>, nor any
-        user-defined output variables, the values of the fragment colors following shader execution are untouched.
-        If some, but not all user-defined output variables are written, the values of fragment colors corresponding
-        to unwritten variables are similarly untouched.
+        If an ESSL1 fragment shader writes to neither <code>gl_FragColor</code> nor <code>gl_FragData</code>,
+        the values of the fragment colors following shader execution are untouched. If no output variables are
+        defined in an ESSL3 fragment shader, the values of the fragment colors following shader execution are untouched.
     </p>
+    <p>
+        All user-defined output variables default to zero if they are not written during a shader execution.
+    </p>
+
+    <div class="note">
+        For optimal performance, an output array should not include any elements that are not accessed.
+    </div>
 
     <p>
         If the values written by the fragment shader do not match the format(s) of the corresponding
