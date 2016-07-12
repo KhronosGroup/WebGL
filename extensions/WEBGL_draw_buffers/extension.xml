@@ -74,10 +74,12 @@
         If the WEBGL_draw_buffers extension is enabled, but the fragment shader does not contain the <code>#extension GL_EXT_draw_buffers</code> directive to enable it, then writes to <code>gl_FragColor</code> are only written to <code>COLOR_ATTACHMENT0_WEBGL</code>, and not broadcast to all color attachments. In this scenario, other color attachments are guaranteed to remain untouched.
       </addendum>
       <addendum>
-        If a fragment shader writes to none of <code>gl_FragColor</code>, <code>gl_FragData</code>, the values of
-        the fragment colors following shader execution are untouched. If some, but not all <code>gl_FragData</code>
-        output variables are written, the values of fragment colors corresponding to unwritten variables are
-        similarly untouched.
+        If a fragment shader writes to neither <code>gl_FragColor</code> nor <code>gl_FragData</code>, the values of
+        the fragment colors following shader execution are untouched.
+
+        If a fragment shader contains the <code>#extension GL_EXT_draw_buffers</code> directive, all
+        <code>gl_FragData</code> variables (from <code>gl_FragData[0]</code> to <code>gl_FragData[MAX_DRAW_BUFFERS_WEBGL - 1]</code>)
+        default to zero if no values are written to them during a shader execution.
       </addendum>
     </mirrors>
     <features>
@@ -167,7 +169,10 @@ interface WEBGL_draw_buffers {
       <change>Revised behavior of gl_MaxDrawBuffers and gl_FragColor broadcasting, to avoid significant performance impact for WebGL 1.0 implementations running on top of the desktop OpenGL API.</change>
     </revision>
     <revision date="2016/07/08">
-      <change>Remove undefined behaviors.</change>
+      <change>Removed undefined behaviors.</change>
+    </revision>
+    <revision date="2016/07/11">
+      <change>Revised user-defined variable behavior to default to zero.</change>
     </revision>
   </history>
 </ratified>
