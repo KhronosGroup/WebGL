@@ -43,6 +43,7 @@ goog.scope(function() {
     var tcuSkipList = framework.common.tcuSkipList;
 
     var _skipEntries = {};
+    var _wildcardSkipEntries = {};
     var _reason = "";
 
     function _setReason(reason) {
@@ -50,7 +51,12 @@ goog.scope(function() {
     }
 
     function _skip(testName) {
-        _skipEntries[testName] = _reason;
+        if(testName.indexOf("*") >= 0){
+            testName = testName.split("*")[0];
+            _wildcardSkipEntries[testName] = _reason;
+        }else{
+            _skipEntries[testName] = _reason;
+        }
     }
 
     var runSkippedTests = false;
@@ -84,29 +90,16 @@ goog.scope(function() {
         _skip("texture_functions.textureoffset.sampler3d_float_fragment");
         _skip("texture_functions.textureprojoffset.sampler3d_float_fragment");
         // Please see https://android.googlesource.com/platform/external/deqp/+/master/android/cts/master/src/gles3-driver-issues.txt
-        _skip("texture_functions.texturegrad.samplercubeshadow_vertex");
-        _skip("texture_functions.texturegrad.samplercubeshadow_fragment");
+        _skip("texture_functions.texturegrad.samplercubeshadow*");
 
         _setReason("Mac OSX drivers handle R11F_G11F_B10F format incorrectly");
         // https://github.com/KhronosGroup/WebGL/issues/1832
         // deqp/functional/gles3/fragmentoutput/basic.float.html
-        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_mediump_float");
-        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_mediump_vec2");
-        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_mediump_vec3");
-        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_mediump_vec4");
-        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_highp_float");
-        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_highp_vec2");
-        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_highp_vec3");
-        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_highp_vec4");
+        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_mediump*");
+        _skip("fragment_outputs.basic.float.r11f_g11f_b10f_highp*");
         // deqp/functional/gles3/fragmentoutput/array.float.html
-        _skip("fragment_outputs.array.float.r11f_g11f_b10f_mediump_float");
-        _skip("fragment_outputs.array.float.r11f_g11f_b10f_mediump_vec2");
-        _skip("fragment_outputs.array.float.r11f_g11f_b10f_mediump_vec3");
-        _skip("fragment_outputs.array.float.r11f_g11f_b10f_mediump_vec4");
-        _skip("fragment_outputs.array.float.r11f_g11f_b10f_highp_float");
-        _skip("fragment_outputs.array.float.r11f_g11f_b10f_highp_vec2");
-        _skip("fragment_outputs.array.float.r11f_g11f_b10f_highp_vec3");
-        _skip("fragment_outputs.array.float.r11f_g11f_b10f_highp_vec4");
+        _skip("fragment_outputs.array.float.r11f_g11f_b10f_mediump*");
+        _skip("fragment_outputs.array.float.r11f_g11f_b10f_highp*");
         // deqp/functional/gles3/fragmentoutput/random_00.html
         _skip("fragment_outputs.random.57");
         // deqp/functional/gles3/fragmentoutput/random_02.html
@@ -127,10 +120,28 @@ goog.scope(function() {
     tcuSkipList.getSkipStatus = function(testName) {
         var skipEntry = _skipEntries[testName];
         if (skipEntry === undefined) {
-            return { 'skip': false, 'reason': '' };
+            return this._getWildcardSkipStatus(testName);
         } else {
             return { 'skip': true, 'reason': skipEntry };
         }
+    }
+
+    /*
+     * Gets the skip status of the given tests like testpath*
+     * object with the properties "skip", a boolean, and "reason", a
+     * string.
+    */
+    tcuSkipList._getWildcardSkipStatus = function(testName) {
+        var skipEntry;
+        for (var key in _wildcardSkipEntries) {
+            if (testName.indexOf(key) >=0 ) {
+	        skipEntry = _wildcardSkipEntries[key];
+	        if (skipEntry != undefined) {
+                    return { 'skip': true, 'reason': skipEntry };
+                }
+            }
+        }
+        return { 'skip': false, 'reason': '' };
     }
 
 });
