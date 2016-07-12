@@ -110,6 +110,37 @@ goog.scope(function() {
         _skip("render.recreate_color.rbo_r11f_g11f_b10f_depth_stencil_rbo_depth24_stencil8");
         // deqp/functional/gles3/fbocolorbuffer/clear.html
         _skip("color.clear.r11f_g11f_b10f");
+
+        _setReason("Missing shadow sampler functions in D3D11");
+        // https://github.com/KhronosGroup/WebGL/issues/1870
+        // deqp/functional/gles3/shadertexturefunction/texturelod.html
+        _skip("texture_functions.texturelod.sampler2dshadow_vertex");
+        _skip("texture_functions.texturelod.sampler2dshadow_fragment");
+        // deqp/functional/gles3/shadertexturefunction/texturelodoffset.html
+        _skip("texture_functions.texturelodoffset.sampler2dshadow_vertex");
+        _skip("texture_functions.texturelodoffset.sampler2dshadow_fragment");
+        // deqp/functional/gles3/shadertexturefunction/textureprojlod.html
+        _skip("texture_functions.textureprojlod.sampler2dshadow_vertex");
+        _skip("texture_functions.textureprojlod.sampler2dshadow_fragment");
+        // deqp/functional/gles3/shadertexturefunction/textureprojlodoffset.html
+        _skip("texture_functions.textureprojlodoffset.sampler2dshadow_vertex");
+        _skip("texture_functions.textureprojlodoffset.sampler2dshadow_fragment");
+        // deqp/functional/gles3/shadertexturefunction/texturegrad.html
+        _skip("texture_functions.texturegrad.sampler2dshadow_vertex");
+        _skip("texture_functions.texturegrad.sampler2dshadow_fragment");
+        _skip("texture_functions.texturegrad.sampler2darrayshadow_vertex");
+        _skip("texture_functions.texturegrad.sampler2darrayshadow_fragment");
+        // deqp/functional/gles3/shadertexturefunction/texturegradoffset.html
+        _skip("texture_functions.texturegradoffset.sampler2dshadow_vertex");
+        _skip("texture_functions.texturegradoffset.sampler2dshadow_fragment");
+        _skip("texture_functions.texturegradoffset.sampler2darrayshadow_vertex");
+        _skip("texture_functions.texturegradoffset.sampler2darrayshadow_fragment");
+        // deqp/functional/gles3/shadertexturefunction/textureprojgrad.html
+        _skip("texture_functions.textureprojgrad.sampler2dshadow_vertex");
+        _skip("texture_functions.textureprojgrad.sampler2dshadow_fragment");
+        // deqp/functional/gles3/shadertexturefunction/textureprojgradoffset.html
+        _skip("texture_functions.textureprojgradoffset.sampler2dshadow_vertex");
+        _skip("texture_functions.textureprojgradoffset.sampler2dshadow_fragment");
     } // if (!runSkippedTests)
 
     /*
