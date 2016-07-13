@@ -495,8 +495,12 @@ group varying "Varying linkage"
 
 		# different interpolation
 		case differing_interpolation_2
+			# This deviates from C++ dEQP here. GLSL ES 3.00.4 specifies interpolation
+			# qualifier of variables with the same name declared in all linked shaders
+			# must match, in Section 4.3.9 Interpolation.
 			version 300 es
 			desc "varying interpolation different (smooth vs. centroid)"
+			expect link_fail
 			values
 			{
 				input float in0		= [ -1.25 | -25.0 | 1.0 | 2.25 | 3.4 | 16.0 ];
