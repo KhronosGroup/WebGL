@@ -1648,6 +1648,9 @@ group conditional_inclusion "Conditional Inclusion Tests"
 	case basic_2
 		version 300 es
 		values { output float out0 = 1.0; }
+		# Note: this is expected to fail contrary to native dEQP,
+		# see https://github.com/KhronosGroup/WebGL/pull/1523
+		expect compile_fail
 		both ""
 			#version 300 es
 			precision mediump float;
@@ -1669,6 +1672,9 @@ group conditional_inclusion "Conditional Inclusion Tests"
 	case defined_macro_defined_test
 		version 300 es
 		values { output float out0 = 1.0; }
+		# Note: this is expected to fail contrary to native dEQP,
+		# see https://github.com/KhronosGroup/WebGL/pull/1523
+		expect compile_fail
 		both ""
 			#version 300 es
 			precision mediump float;
@@ -1690,6 +1696,9 @@ group conditional_inclusion "Conditional Inclusion Tests"
 	case defined_macro_undef
 		version 300 es
 		values { output float out0 = 1.0; }
+		# Note: this is expected to fail contrary to native dEQP,
+		# see https://github.com/KhronosGroup/WebGL/pull/1523
+		expect compile_fail
 		both ""
 			#version 300 es
 			precision mediump float;
@@ -1713,6 +1722,9 @@ group conditional_inclusion "Conditional Inclusion Tests"
 	case define_defined
 		version 300 es
 		values { output float out0 = 1.0; }
+		# Note: this is expected to fail contrary to native dEQP,
+		# see https://github.com/KhronosGroup/WebGL/pull/1523
+		expect compile_fail
 		both ""
 			#version 300 es
 			precision mediump float;
@@ -1736,6 +1748,9 @@ group conditional_inclusion "Conditional Inclusion Tests"
 	case define_defined_outside_if
 		version 300 es
 		values { output float out0 = 1.0; }
+		# Note: this is expected to fail contrary to native dEQP,
+		# see https://github.com/KhronosGroup/WebGL/pull/1523
+		expect compile_fail
 		both ""
 			#version 300 es
 			precision mediump float;
