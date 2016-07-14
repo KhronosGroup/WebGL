@@ -229,6 +229,8 @@ gluShaderProgram.Program.prototype.link = function() {
     assertMsgOptions(this.gl.getError() == this.gl.NO_ERROR, 'gl.getProgramParameter()', false, true);
     this.info.linkOk = linkStatus;
     this.info.infoLog = this.gl.getProgramInfoLog(this.program);
+    if (!this.info.linkOk)
+        bufferedLogToConsole("program linking: " + this.info.infoLog);
 };
 
 /**
