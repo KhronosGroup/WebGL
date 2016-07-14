@@ -1160,7 +1160,7 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
  * @param {number} height width of region to check.
  * @param {!Array.<number>} color The color expected. A 4 element array where
  *        each element is in the range 0 to 255.
- * @param {string} opt_msg Message to associate with success. Eg
+ * @param {string} opt_msg Message to associate with success or failure. Eg
  *        ("should be red").
  * @param {number} opt_errorRange Optional. Acceptable error in
  *        color checking. 0 by default.
@@ -1174,7 +1174,12 @@ var checkCanvasRect = function(gl, x, y, width, height, color, opt_msg, opt_erro
           msg = "should be " + color.toString();
         testPassed(msg);
       },
-      testFailed,
+      function(differentMsg) {
+        var msg = opt_msg;
+        if (msg === undefined)
+          msg = "should be " + color.toString();
+        testFailed(msg + "\n" + differentMsg);
+      },
       debug);
 };
 
