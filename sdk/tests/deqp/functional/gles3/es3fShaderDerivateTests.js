@@ -28,6 +28,7 @@ goog.require('framework.opengl.gluPixelTransfer');
 goog.require('framework.opengl.gluShaderProgram');
 goog.require('framework.opengl.gluShaderUtil');
 goog.require('framework.opengl.gluTexture');
+goog.require('framework.opengl.gluTextureUtil');
 goog.require('framework.common.tcuInterval');
 goog.require('framework.common.tcuFloat');
 goog.require('framework.common.tcuLogImage');
@@ -51,6 +52,7 @@ goog.scope(function() {
     var gluShaderProgram = framework.opengl.gluShaderProgram;
     var gluShaderUtil = framework.opengl.gluShaderUtil;
     var gluTexture = framework.opengl.gluTexture;
+    var gluTextureUtil = framework.opengl.gluTextureUtil;
     var tcuInterval = framework.common.tcuInterval;
     var tcuFloat = framework.common.tcuFloat;
     var tcuLogImage = framework.common.tcuLogImage;
@@ -647,7 +649,27 @@ goog.scope(function() {
         /** @type {Array<number>} */ var indices = [0, 2, 1, 2, 3, 1];
 
         gl.clearColor(0.125, 0.25, 0.5, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+        // We can't really call clear() on gl.COLOR_BUFFER_BIT here as in c++ deqp.
+        // The fbo format might be of integer type and WebGL2 requires an INVALID_OPERATION to be generated.
+        var formatObj = gluTextureUtil.mapGLInternalFormat(fboFormat);
+        var fmtClass = tcuTexture.getTextureChannelClass(formatObj.type);
+        switch (fmtClass) {
+            case tcuTexture.TextureChannelClass.FLOATING_POINT:
+            case tcuTexture.TextureChannelClass.SIGNED_FIXED_POINT:
+            case tcuTexture.TextureChannelClass.UNSIGNED_FIXED_POINT:
+                gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+                break;
+            case tcuTexture.TextureChannelClass.UNSIGNED_INTEGER:
+                gl.clearBufferuiv(gl.COLOR, 0, new Uint32Array([31, 63, 127, 255]));
+                gl.clear(gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+                break;
+            case tcuTexture.TextureChannelClass.SIGNED_INTEGER:
+                gl.clearBufferiv(gl.COLOR, 0, new Int32Array([31, 63, 127, 255]));
+                gl.clear(gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+                break;
+            default:
+                throw new Error('Invalid channelclass ' + fmtClass);
+        }
         gl.disable(gl.DITHER);
 
         gl.useProgram(program.getProgram());
