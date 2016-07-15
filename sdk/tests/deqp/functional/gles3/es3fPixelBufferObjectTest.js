@@ -429,7 +429,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
             // The result of rgb10_a2 from Intel GPU would have slight difference with the one from CPU, so some tolerance is added here.
             // Detailed discussion in Mesa upstream can be found at https://bugs.freedesktop.org/show_bug.cgi?id=89314.
             var threshold;
-            if (tcuTestCase.runner.currentTest.name == 'rgb10_a2_triangles')
+            if (this.m_renderbufferFormat == gl.RGB10_A2)
                 threshold = [0.004, 0.004, 0.004, 0.0];
             else
                 threshold = [0.0, 0.0, 0.0, 0.0];
