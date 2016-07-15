@@ -226,7 +226,6 @@ es3fFboColorbufferTests.FboColorClearCase.prototype.render = function(dst) {
             var color = es3fFboColorbufferTests.randomVector(rnd, fmtInfo.valueMin, fmtInfo.valueMax);
 
             ctx.scissor(x, y, w, h);
-            ctx.clearBufferfv(gl.COLOR, 0, color);
 
             switch (fmtClass) {
                 case tcuTexture.TextureChannelClass.FLOATING_POINT:

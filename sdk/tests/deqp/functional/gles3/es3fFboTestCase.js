@@ -292,7 +292,9 @@ var DE_ASSERT = function(x) {
             gl.clearColor(0.0, 0.0, 0.0, 0.0);
             gl.clearDepth(1.0);
             gl.clearStencil(0.0);
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+            // Do not call clear() here because it might generate an INVALID_OPERATION if
+            // some color buffers are of integer formats due to WebGL2 specific constraint.
+            // The tests do not rely on clear() here.
         }
     };
 
