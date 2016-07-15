@@ -717,7 +717,8 @@ es3fTextureFormatTests.CompressedCubeFormatCase.prototype.testFace = function(fa
     /* TODO: Implement
     // tcu::RGBA threshold = m_renderCtx.getRenderTarget().getPixelFormat().getColorThreshold() + tcu::RGBA(1,1,1,1);
     */
-    var threshold = [3, 3, 3, 3];
+    // Threshold high enough to cover numerical errors in software decoders on Windows and Mac.  Threshold is 17 in native dEQP.
+    var threshold = [6, 6, 6, 6];
     var renderParams = new glsTextureTestUtil.ReferenceParams(glsTextureTestUtil.textureType.TEXTURETYPE_CUBE);
 
     /** @const */ var wrapS = gl.CLAMP_TO_EDGE;
