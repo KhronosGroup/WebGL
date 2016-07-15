@@ -425,8 +425,16 @@ var tcuImageCompare = framework.common.tcuImageCompare;
 
         var isOk = false;
 
-        if (floatCompare)
-            isOk = tcuImageCompare.floatThresholdCompare('Result comparison', 'Result of read pixels to memory compared with result of read pixels to buffer', readReference.getLevel(0), readResult, [0.0, 0.0, 0.0, 0.0]);
+        if (floatCompare) {
+            // The result of rgb10_a2 from Intel GPU would have slight difference with the one from CPU, so some tolerance is added here.
+            // Detailed discussion in Mesa upstream can be found at https://bugs.freedesktop.org/show_bug.cgi?id=89314.
+            var threshold;
+            if (tcuTestCase.runner.currentTest.name == 'rgb10_a2_triangles')
+                threshold = [0.004, 0.004, 0.004, 0.0];
+            else
+                threshold = [0.0, 0.0, 0.0, 0.0];
+            isOk = tcuImageCompare.floatThresholdCompare('Result comparison', 'Result of read pixels to memory compared with result of read pixels to buffer', readReference.getLevel(0), readResult, threshold);
+        }
         else
             isOk = tcuImageCompare.intThresholdCompare('Result comparison', 'Result of read pixels to memory compared with result of read pixels to buffer', readReference.getLevel(0), readResult, [0, 0, 0, 0]);
 
