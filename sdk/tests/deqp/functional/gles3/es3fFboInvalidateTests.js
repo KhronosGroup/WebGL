@@ -843,8 +843,8 @@ es3fFboInvalidateTests.InvalidateSubFboUnbindReadCase.prototype.render = functio
 
     this.checkFramebufferStatus(gl.FRAMEBUFFER);
 
-    ctx.clearColor(0, 0, 0, 1);
-    ctx.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+    this.clearColorBuffer(colorFmt, [0.0, 0.0, 0.0, 1.0]);
+    ctx.clear(gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 
     ctx.enable(gl.DEPTH_TEST);
     ctx.enable(gl.STENCIL_TEST);
