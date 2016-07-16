@@ -581,7 +581,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                         maxVal = deMath.min(maxVal, fmtInfo.valueMax);
                     }
 
-                    console.log('out ' + curInVec + ' value range: ' + minVal + ' -> ' + maxVal);
+                    bufferedLogToConsole('out ' + curInVec + ' value range: ' + minVal + ' -> ' + maxVal);
 
                     for (var y = 0; y < gridHeight; y++) {
                         for (var x = 0; x < gridWidth; x++) {
@@ -623,7 +623,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                         maxVal = tcuTextureUtil.select(maxVal, deMath.min(maxVal, fmtMaxVal), isZero);
                     }
 
-                    console.log('out ' + curInVec + ' value range: ' + minVal + ' -> ' + maxVal);
+                    bufferedLogToConsole('out ' + curInVec + ' value range: ' + minVal + ' -> ' + maxVal);
 
                     rangeDiv = es3fFragmentOutputTests.swizzleVec([gridWidth - 1, gridHeight - 1, gridWidth - 1, gridHeight - 1], curInVec); // IVec4
                     for (var i = 0; i < 4; i++) {
@@ -658,7 +658,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                         maxVal = deMath.min(maxVal, fmtMaxVal);
                     }
 
-                    console.log('out ' + curInVec + ' value range: ' + minVal + ' -> ' + maxVal);
+                    bufferedLogToConsole('out ' + curInVec + ' value range: ' + minVal + ' -> ' + maxVal);
 
                     rangeDiv = es3fFragmentOutputTests.swizzleVec([gridWidth - 1, gridHeight - 1, gridWidth - 1, gridHeight - 1], curInVec); // IVec4
 
@@ -1389,7 +1389,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
             tcuTestCase.runTestCases();
         } catch (err) {
             testFailedOptions('Failed to es3fFragmentOutputTests.run tests', false);
-            console.log(err);
+            bufferedLogToConsole.log(err);
             tcuTestCase.runner.terminate();
         }
 
