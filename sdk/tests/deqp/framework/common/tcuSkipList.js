@@ -141,6 +141,30 @@ goog.scope(function() {
         // deqp/functional/gles3/shadertexturefunction/textureprojgradoffset.html
         _skip("texture_functions.textureprojgradoffset.sampler2dshadow_vertex");
         _skip("texture_functions.textureprojgradoffset.sampler2dshadow_fragment");
+
+        _setReason("MacOSX drivers share namespaces where they shoudl not");
+        // https://github.com/KhronosGroup/WebGL/issues/1890
+        // deqp/data/gles3/shaders/scoping.html
+        _skip("scoping.valid.local_int_variable_hides_struct_type_vertex");
+        _skip("scoping.valid.local_int_variable_hides_struct_type_fragment");
+        _skip("scoping.valid.local_struct_variable_hides_struct_type_vertex");
+        _skip("scoping.valid.local_struct_variable_hides_struct_type_fragment");
+        _skip("scoping.valid.function_parameter_hides_struct_type_vertex");
+        _skip("scoping.valid.function_parameter_hides_struct_type_fragment");
+
+        _setReason("ES spec change to forbid some preprocessor 'defined' uses");
+        // https://github.com/KhronosGroup/WebGL/pull/1523
+        // deqp/data/gles3/shaders/preprocessor.html
+        _skip("preprocessor.conditional_inclusion.basic_2_vertex");
+        _skip("preprocessor.conditional_inclusion.basic_2_fragment");
+        _skip("preprocessor.conditional_inclusion.defined_macro_defined_test_vertex");
+        _skip("preprocessor.conditional_inclusion.defined_macro_defined_test_fragment");
+        _skip("preprocessor.conditional_inclusion.defined_macro_undef_vertex");
+        _skip("preprocessor.conditional_inclusion.defined_macro_undef_fragment");
+        _skip("preprocessor.conditional_inclusion.define_defined_vertex");
+        _skip("preprocessor.conditional_inclusion.define_defined_fragment");
+        _skip("preprocessor.conditional_inclusion.define_defined_outside_if_vertex");
+        _skip("preprocessor.conditional_inclusion.define_defined_outside_if_fragment");
     } // if (!runSkippedTests)
 
     /*
