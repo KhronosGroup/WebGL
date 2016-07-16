@@ -598,8 +598,6 @@ glsTextureTestUtil.ProgramLibrary.prototype.getProgram = function(program) {
 
     var vertSrc = tcuStringTemplate.specialize(vertShaderTemplate, params);
     var fragSrc = tcuStringTemplate.specialize(fragShaderTemplate, params);
-    // console.log(fragSrc);
-    // console.log(vertSrc);
     var progObj = new gluShaderProgram.ShaderProgram(gl, gluShaderProgram.makeVtxFragSources(vertSrc, fragSrc));
     // if (!progObj.isOk()) {
     //     // log << *progObj;
@@ -821,8 +819,6 @@ glsTextureTestUtil.TextureRenderer.prototype.renderQuad = function(texUnit, texC
     //     log << TestLog::Message << "u_colorBias = " << params.colorBias << TestLog::EndMessage;
     // }
     var vertexArrays = [];
-    // console.log(position);
-    // console.log(texCoord);
 
     var posLoc = gl.getAttribLocation(prog, 'a_position');
     if (posLoc === -1) {

@@ -1249,7 +1249,7 @@ goog.scope(function() {
             tcuTestCase.runTestCases();
         }
         catch (err) {
-            console.log(err);
+            bufferedLogToConsole(err);
             testFailedOptions('Failed to es3fFramebufferBlitTests.run tests', false);
             tcuTestCase.runner.terminate();
         }

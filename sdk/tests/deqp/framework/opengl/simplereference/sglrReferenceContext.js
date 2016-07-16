@@ -72,8 +72,7 @@ goog.scope(function() {
      */
     sglrReferenceContext.GLU_EXPECT_NO_ERROR = function(error, message) {
         if (error !== gl.NONE) {
-            console.log('Assertion failed message:' + message);
-            // throw new Error(message);
+            bufferedLogToConsole('Assertion failed message:' + message);
         }
     };
 

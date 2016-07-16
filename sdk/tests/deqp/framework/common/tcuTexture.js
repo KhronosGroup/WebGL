@@ -832,7 +832,6 @@ tcuTexture.sRGBToLinear = function(cs) {
  */
 tcuTexture.lookup = function(access, i, j, k) {
     var p = access.getPixel(i, j, k);
-    // console.log('Lookup at ' + i + ' ' + j + ' ' + k + ' ' + p);
     return access.getFormat().isSRGB() ? tcuTexture.sRGBToLinear(p) : p;
 };
 
@@ -1337,8 +1336,6 @@ tcuTexture.ConstPixelBufferAccess.prototype.getPixDepth = function(x, y, z) {
  */
 tcuTexture.ConstPixelBufferAccess.prototype.getPixel = function(x, y, z) {
     z = z || 0;
-    // console.log(this);
-    // console.log('(' + x + ',' + y + ',' + z + ')');
 
     DE_ASSERT(deMath.deInBounds32(x, 0, this.m_width));
     DE_ASSERT(deMath.deInBounds32(y, 0, this.m_height));
@@ -3099,7 +3096,6 @@ tcuTexture.Texture2D.prototype.allocLevel = function(levelNdx) {
     var width = tcuTexture.getMipPyramidLevelSize(this.m_width, levelNdx);
     var height = tcuTexture.getMipPyramidLevelSize(this.m_height, levelNdx);
 
-    // console.log('w ' + width + ' h ' + height);
     tcuTexture.TextureLevelPyramid.prototype.allocLevel.call(this, levelNdx, width, height, 1);
 };
 
