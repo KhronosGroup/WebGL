@@ -1095,7 +1095,6 @@ goog.scope(function() {
             es3fNegativeBufferApiTests.init(gl);
             tcuTestCase.runner.runCallback(tcuTestCase.runTestCases);
         } catch (err) {
-            console.log(err);
             bufferedLogToConsole(err);
             tcuTestCase.runner.terminate();
         }

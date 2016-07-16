@@ -559,7 +559,6 @@ goog.scope(function() {
     glsFboCompletenessTests.TestBase = function(name, desc, params) {
         tcuTestCase.DeqpTest.call(this, name, desc);
         this.m_params = params;
-    //  console.log('glsFboCompletenessTests.TestBase Constructor');
     };
     glsFboCompletenessTests.TestBase.prototype = Object.create(tcuTestCase.DeqpTest.prototype);
     glsFboCompletenessTests.TestBase.prototype.constructor = glsFboCompletenessTests.TestBase;

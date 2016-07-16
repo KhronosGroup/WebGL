@@ -1903,10 +1903,8 @@ goog.scope(function() {
             es3fTransformFeedbackTests.init();
             if (range)
                 state.setRange(range);
-//            tcuTestCase.runner.runCallback(tcuTestCase.runTestCases);
             tcuTestCase.runTestCases();
         } catch (err) {
-            console.log(err);
             bufferedLogToConsole(err);
             tcuTestCase.runner.terminate();
         }
