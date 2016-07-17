@@ -142,7 +142,7 @@ goog.scope(function() {
         _skip("texture_functions.textureprojgradoffset.sampler2dshadow_vertex");
         _skip("texture_functions.textureprojgradoffset.sampler2dshadow_fragment");
 
-        _setReason("MacOSX drivers share namespaces where they shoudl not");
+        _setReason("MacOSX drivers share namespaces where they should not");
         // https://github.com/KhronosGroup/WebGL/issues/1890
         // deqp/data/gles3/shaders/scoping.html
         _skip("scoping.valid.local_int_variable_hides_struct_type_vertex");
@@ -165,6 +165,15 @@ goog.scope(function() {
         _skip("preprocessor.conditional_inclusion.define_defined_fragment");
         _skip("preprocessor.conditional_inclusion.define_defined_outside_if_vertex");
         _skip("preprocessor.conditional_inclusion.define_defined_outside_if_fragment");
+
+        _setReason("NVidia Linux drivers does not clamp gl_FragDepth to [0.0, 1.0]");
+        // Standalone Test case:
+        //  https://github.com/Kangz/GLDriverBugs/blob/master/frag_depth_clamp_32f_depth/Main.cpp
+        // deqp/functional/gles3/fbodepthbuffer.html
+        _skip("depth.depth_write_clamp.depth_component32f");
+        _skip("depth.depth_write_clamp.depth32f_stencil8");
+        _skip("depth.depth_test_clamp.depth_component32f");
+        _skip("depth.depth_test_clamp.depth32f_stencil8");
     } // if (!runSkippedTests)
 
     /*
