@@ -788,8 +788,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void vertexAttribDivisor(GLuint index, GLuint divisor);
   void drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount);
   void drawElementsInstanced(GLenum mode, GLsizei count, GLenum type, GLintptr offset, GLsizei instanceCount);
-  /* TODO(kbr): argue against exposing this because it can't safely
-     offer better performance than drawElements */
   void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLintptr offset);
 
   /* Reading back pixels */
@@ -848,7 +846,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   any getActiveUniforms(WebGLProgram? program, sequence&lt;GLuint&gt; uniformIndices, GLenum pname);
   GLuint getUniformBlockIndex(WebGLProgram? program, DOMString uniformBlockName);
   any getActiveUniformBlockParameter(WebGLProgram? program, GLuint uniformBlockIndex, GLenum pname);
-  /* TODO: if there were a fake enum for GL_UNIFORM_BLOCK_NAME, then this could be folded into getActiveUniformBlockParameter */
   DOMString? getActiveUniformBlockName(WebGLProgram? program, GLuint uniformBlockIndex);
   void uniformBlockBinding(WebGLProgram? program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
 
@@ -1887,14 +1884,6 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
           </span>
         </p>
       </dt>
-      <dd>
-        If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
-        <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
-        match shader attribute type</a>.<br><br>
-
-        If any active uniform block is not backed by a sufficiently large buffer object, an <code>INVALID_OPERATION</code> error will
-        be generated. See <a href="#UNIFORM_BLOCK_DATA_SIZE">An active uniform block must be populated with a large enough buffer</a>.
-      </dd>
       <dt>
         <p class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLintptr offset)
           <span class="gl-spec">
@@ -1903,14 +1892,6 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
           </span>
         </p>
       </dt>
-      <dd>
-        If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
-        <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
-        match shader attribute type</a>.<br><br>
-
-        If any active uniform block is not backed by a sufficiently large buffer object, an <code>INVALID_OPERATION</code> error will
-        be generated. See <a href="#UNIFORM_BLOCK_DATA_SIZE">An active uniform block must be populated with a large enough buffer</a>.
-      </dd>
       <dt>
         <p class="idl-code">void drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
           <span class="gl-spec">
@@ -1922,15 +1903,6 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dd>
         Draw <code>instanceCount</code> instances of geometry using the currently enabled vertex attributes.
         Vertex attributes which have a non-zero divisor advance once every divisor instances.<br><br>
-
-        If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.<br><br>
-
-        If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
-        <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
-        match shader attribute type</a>.<br><br>
-
-        If any active uniform block is not backed by a sufficiently large buffer object, an <code>INVALID_OPERATION</code> error will
-        be generated. See <a href="#UNIFORM_BLOCK_DATA_SIZE">An active uniform block must be populated with a large enough buffer</a>.
       </dd>
       <dt>
         <p class="idl-code">void drawElementsInstanced(GLenum mode, GLsizei count, GLenum type, GLintptr offset, GLsizei instanceCount)
@@ -1943,15 +1915,6 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dd>
         Draw <code>instanceCount</code> instances of geometry using the currently bound element array buffer.
         Vertex attributes which have a non-zero divisor advance once every divisor instances.<br><br>
-
-        If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.<br><br>
-
-        If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
-        <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
-        match shader attribute type</a>.<br><br>
-
-        If any active uniform block is not backed by a sufficiently large buffer object, an <code>INVALID_OPERATION</code> error will
-        be generated. See <a href="#UNIFORM_BLOCK_DATA_SIZE">An active uniform block must be populated with a large enough buffer</a>.
       </dd>
       <dt>
         <p class="idl-code">void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLintptr offset)
@@ -1964,27 +1927,26 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dd>
         Draw using the currently bound element array buffer. All error conditions specified for
         <code>drawElements</code> in the section <a href="../1.0/index.html#WRITING_TO_THE_DRAWING_BUFFER">Writing
-        to the drawing buffer</a> of the WebGL 1.0 specification apply. In addition, indices used to draw
-        must lie between <code>start</code> and <code>end</code> inclusive. If the draw call references
-        indices that are not within this range, an <code>INVALID_OPERATION</code> error is generated and
-        nothing is drawn.<br><br>
+        to the drawing buffer</a> of the WebGL 1.0 specification apply.<br><br>
 
-        WebGL 2 performs additional error checking beyond that specified in OpenGL ES 3.0 during calls to
-        <code>drawElements</code>, <code>drawArrays</code>, <code>drawRangeElements</code> and their
-        instanced variants. See <a href="#RANGE_CHECKING">Range Checking</a>,
-        <a href="#ENABLED_ATTRIBUTE">Enabled Attribute</a>, and <a href="#ACTIVE_UNIFORM_BLOCK_BACKING">Active
-        Uniform Block Backing</a>.<br><br>
-
-        If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.<br><br>
-
-        If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
-        <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
-        match shader attribute type</a>.<br><br>
-
-        If any active uniform block is not backed by a sufficiently large buffer object, an <code>INVALID_OPERATION</code> error will
-        be generated. See <a href="#UNIFORM_BLOCK_DATA_SIZE">An active uniform block must be populated with a large enough buffer</a>.
+        In addition, if indices used to draw are outside the range of [<em>start</em>, <em>end</em>], an imeplementation
+        can either guarantee the behaviors defined in <a href="../1.0/index.html#OUT_OF_RANGE_ARRAY_ACCESSES">Out-of-Range
+        Array Accesses</a>, or simply discard the arguments <em>start</em> and <em>end</em> and call <code>drawElements</code>
+        instead. In either situation, no GL errors should be generated for this cause.
       </dd>
     </dl>
+
+    <p>      
+        During calls to <code>drawElements</code>, <code>drawArrays</code>, <code>drawRangeElements</code> and their
+        instanced variants, WebGL 2 performs additional error checking beyond that specified in OpenGL ES 3.0:
+        <ul>
+          <li>If the <code>CURRENT_PROGRAM</code> is null, an <code>INVALID_OPERATION</code> error will be generated;</li>
+          <li><a href="#RANGE_CHECKING">Range Checking</a>;</li>
+          <li><a href="#ENABLED_ATTRIBUTE">Enabled Attribute</a>;</li>
+          <li><a href="#ACTIVE_UNIFORM_BLOCK_BACKING">Active Uniform Block Backing</a>;</li>
+          <li><a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must match shader attribute type</a>.</li>
+        </ul>
+    </p>
 
 <!-- ======================================================================================================= -->
 
@@ -2995,6 +2957,11 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
     </p>
     <div class="note rationale">
         In OpenGL, insufficient uniform block backing is allowed to cause GL interruption or termination.
+        See OpenGL ES 3.0 specification section 2.12.6 <span class="gl-spec">
+        (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.12.6">
+        OpenGL ES 3.0.4 &sect;2.12.6</a>), under "Uniform Buffer Object Bindings."
+    </div>
+
     </div>
 
     <h3>Default Framebuffer</h3>
@@ -3417,24 +3384,6 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         These contraints also forbid row and image overlap, where the situations are not tested in the OpenGL ES
         3.0 DEQP test suites, and many drivers behave incorrectly. They also forbid skipping random pixels or rows,
         but that can be achieved by adjusting the data store offset accordingly.
-    </div>
-
-    <h3><a name="UNIFORM_BLOCK_DATA_SIZE">An active uniform block must be populated with a large enough buffer</a></h3>
-
-    <p>
-        When executing shaders that access uniform blocks, the binding point corresponding to each active uniform
-        block must be populated with a buffer object with a size no smaller than the minimum required size of the
-        uniform block (the value of <code>UNIFORM_BLOCK_DATA_SIZE</code>). For binding points populated by
-        <code>BindBufferRange</code>, the size in question is the value of the size parameter. If any active uniform
-        block is not backed by a sufficiently large buffer object, attempting to draw with <code>drawArrays</code>,
-        <code>drawElements</code>, <code>drawRangeElements</code> or their instanced variants generates an
-        <code>INVALID_OPERATION</code> error.
-    </p>
-
-    <div class="note">
-        This undefined behavior is in the OpenGL ES 3.0 specification section 2.12.6 <span class="gl-spec">
-        (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.12.6">
-        OpenGL ES 3.0.4 &sect;2.12.6</a>), under "Uniform Buffer Object Bindings."
     </div>
 
 <!-- ======================================================================================================= -->
