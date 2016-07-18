@@ -127,7 +127,7 @@ var doWhileLoopConditionTemplate = [
 
 var testDataList = [
 {
-    description: 'indexing a variable assignment',
+    description: 'indexing an array assignment',
     globalScopePrefix: '',
     mainPrefix: [
             'float a[2] = float[2](0.0, 0.0);',
@@ -138,7 +138,7 @@ var testDataList = [
     loopCondition: 'bool((c = (a = b)[0]) + 1.0)',
     loopContents: 'b[0] += 1.0;',
     loopIterations: 3,
-    passCondition: 'c == 4.0'
+    passCondition: 'abs(c - 4.0) < 0.01'
 },
 {
     description: 'indexing a function returning an array',
@@ -154,7 +154,7 @@ var testDataList = [
     loopCondition: 'bool(c = functionReturnArray()[0])',
     loopContents: '',
     loopIterations: 3,
-    passCondition: 'c == 3.0 && sideEffectCounter == 3'
+    passCondition: 'abs(c - 3.0) < 0.01 && sideEffectCounter == 3'
 },
 {
     description: 'indexing an array constructor',
@@ -165,20 +165,6 @@ var testDataList = [
     loopContents: '',
     loopIterations: 3,
     passCondition: 'c == 6'
-},
-{
-    description: 'indexing a sequence operator expression',
-    globalScopePrefix: '',
-    mainPrefix: [
-            'int a[2] = int[2](1, 0);',
-            'int b[2] = int[2](2, 3);',
-            'int c = 0;'
-        ].join('\n'),
-    loopExpression: 'c = (a, b)[0]',
-    loopCondition: 'bool(c = (a, b)[0])',
-    loopContents: 'b[0] += c;',
-    loopIterations: 3,
-    passCondition: 'c == 8'
 },
 {
     description: 'dynamic indexing of a vector',
@@ -192,7 +178,7 @@ var testDataList = [
     loopCondition: 'bool(c = v[j])',
     loopContents: '++j;',
     loopIterations: 3,
-    passCondition: 'c == 3.0'
+    passCondition: 'abs(c - 3.0) < 0.01'
 },
 {
     description: 'short-circuiting operator',
@@ -278,7 +264,7 @@ var testDataList = [
     loopCondition: 'bool(V[func()][0]++)',
     loopContents: '',
     loopIterations: 3,
-    passCondition: 'V[0][0] == 2.0 && V[1][0] == 5.0 && sideEffectCounter == 3'
+    passCondition: 'abs(V[0][0] - 2.0) < 0.01 && abs(V[1][0] - 5.0) < 0.01 && sideEffectCounter == 3'
 },
 {
     description: 'l-value indexing side effects combined with dynamically indexing a vector',
@@ -299,7 +285,7 @@ var testDataList = [
     loopCondition: 'bool(V[func()][u_zero + 1]++)',
     loopContents: '',
     loopIterations: 3,
-    passCondition: 'V[0][1] == 2.0 && V[1][1] == 5.0 && sideEffectCounter == 3'
+    passCondition: 'abs(V[0][1] - 2.0) < 0.01 && abs(V[1][1] - 5.0) < 0.01 && sideEffectCounter == 3'
 }
 ];
 
