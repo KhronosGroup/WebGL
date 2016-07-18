@@ -439,10 +439,14 @@ debug("");
 debug("Checking CopyTexSubImage2D: a set of inputs that are valid in GL but invalid in WebGL");
 
 testCases = [
+  // Section 3.8.5 of the GLES 3.0.4 spec, pg 140, requires that, if the
+  // destination format is sized, any component size of the source and
+  // destination formats must exactly match if the component exists in
+  // destination format.
   { target: gl.TEXTURE_2D,
     colorBufferFormat: gl.RGB5_A1,
     internalFormat: gl.RGBA,
-    expectedError: gl.NO_ERROR },
+    expectedError: gl.INVALID_OPERATION },
   { target: gl.TEXTURE_2D,
     colorBufferFormat: gl.RGB565,
     internalFormat: gl.RGBA,
