@@ -1132,12 +1132,18 @@ for (var i = 0; i < numVertices; i++) {
         <li> Let <em>use default return value</em> be false. </li>
 
         <li> If the <a href="#webgl-context-lost-flag">webgl context lost flag</a> is set,
-        let <em>use default return value</em> be true. </li>
+        let <em>use default return value</em> be true.
 
-        <li> If any argument to the method is a <code>WebGLObject</code> with
-        its <a href="#webgl-object-invalidated-flag">invalidated flag</a> set, generate
-        an <code>INVALID_OPERATION</code> error and let <em>use default return value</em> be
-        true. </li>
+            <ol class="nestedlist">
+
+            <li> Otherwise, if any argument to the method is a <code>WebGLObject</code> with
+            its <a href="#webgl-object-invalidated-flag">invalidated flag</a> set, generate
+            an <code>INVALID_OPERATION</code> error and let <em>use default return value</em> be
+            true. </li>
+
+            </ol>
+
+        </li>
 
         <li> If <em>use default return value</em> is true, perform the following steps:
 
@@ -1149,6 +1155,8 @@ for (var i = 0; i < numVertices; i++) {
             <li> Terminate this algorithm without calling the method implementation. </li>
 
             </ol>
+
+        </li>
 
         <li> Otherwise, perform the implementation of the called method and return its result. </li>
 
