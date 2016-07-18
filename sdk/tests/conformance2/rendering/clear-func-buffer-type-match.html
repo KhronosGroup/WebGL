@@ -123,6 +123,7 @@ if (!gl) {
   colorbuffer = setupRenderbuffer(gl.COLOR_ATTACHMENT0, gl.RGBA8);
   var numAttachments = 1;
   var ext = gl.getExtension("EXT_color_buffer_float");
+  var bufferType = "float buffer";
   if (ext) {
     debug("EXT_color_buffer_float is available: testing RGBA8 + RGBA32F");
     colorbuffer1 = setupRenderbuffer(gl.COLOR_ATTACHMENT1, gl.RGBA32F);
@@ -131,21 +132,22 @@ if (!gl) {
   } else {
     debug("EXT_color_buffer_float is unavailable: testing RGBA8");
     gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
+    bufferType = "RGBA8 buffer";
   }
   shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
 
   gl.clear(gl.COLOR_BUFFER_BIT);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "clear and float buffer");
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "clear and " + bufferType);
 
   for (var ii = 0; ii < numAttachments; ++ii) {
     gl.clearBufferfv(gl.COLOR, ii, new Float32Array(4));
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "clearBufferfv and float buffer");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "clearBufferfv and " + bufferType);
 
     gl.clearBufferiv(gl.COLOR, ii, new Int32Array(4));
-    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "clearBufferiv and float buffer");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "clearBufferiv and " + bufferType);
 
     gl.clearBufferuiv(gl.COLOR, ii, new Uint32Array(4));
-    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "clearBufferuiv and float buffer");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "clearBufferuiv and " + bufferType);
   }
 
   gl.deleteFramebuffer(fb);
