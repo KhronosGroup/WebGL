@@ -1890,7 +1890,10 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dd>
         If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
         <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
-        match shader attribute type</a>.
+        match shader attribute type</a>.<br><br>
+
+        If any active uniform block is not backed by a sufficiently large buffer object, an <code>INVALID_OPERATION</code> error will
+        be generated. See <a href="#UNIFORM_BLOCK_DATA_SIZE">An active uniform block must be populated with a large enough buffer</a>.
       </dd>
       <dt>
         <p class="idl-code">void drawElements(GLenum mode, GLsizei count, GLenum type, GLintptr offset)
@@ -1903,7 +1906,10 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       <dd>
         If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
         <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
-        match shader attribute type</a>.
+        match shader attribute type</a>.<br><br>
+
+        If any active uniform block is not backed by a sufficiently large buffer object, an <code>INVALID_OPERATION</code> error will
+        be generated. See <a href="#UNIFORM_BLOCK_DATA_SIZE">An active uniform block must be populated with a large enough buffer</a>.
       </dd>
       <dt>
         <p class="idl-code">void drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
@@ -1921,7 +1927,10 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
 
         If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
         <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
-        match shader attribute type</a>.
+        match shader attribute type</a>.<br><br>
+
+        If any active uniform block is not backed by a sufficiently large buffer object, an <code>INVALID_OPERATION</code> error will
+        be generated. See <a href="#UNIFORM_BLOCK_DATA_SIZE">An active uniform block must be populated with a large enough buffer</a>.
       </dd>
       <dt>
         <p class="idl-code">void drawElementsInstanced(GLenum mode, GLsizei count, GLenum type, GLintptr offset, GLsizei instanceCount)
@@ -1939,7 +1948,10 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
 
         If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
         <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
-        match shader attribute type</a>.
+        match shader attribute type</a>.<br><br>
+
+        If any active uniform block is not backed by a sufficiently large buffer object, an <code>INVALID_OPERATION</code> error will
+        be generated. See <a href="#UNIFORM_BLOCK_DATA_SIZE">An active uniform block must be populated with a large enough buffer</a>.
       </dd>
       <dt>
         <p class="idl-code">void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLintptr offset)
@@ -1967,7 +1979,10 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
 
         If an active vertex attribute's base type does not match the <code>vertexAttrib</code> function that specifies its value, an
         <code>INVALID_OPERATION</code> error will be generated. See <a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must
-        match shader attribute type</a>.
+        match shader attribute type</a>.<br><br>
+
+        If any active uniform block is not backed by a sufficiently large buffer object, an <code>INVALID_OPERATION</code> error will
+        be generated. See <a href="#UNIFORM_BLOCK_DATA_SIZE">An active uniform block must be populated with a large enough buffer</a>.
       </dd>
     </dl>
 
@@ -3402,6 +3417,24 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         These contraints also forbid row and image overlap, where the situations are not tested in the OpenGL ES
         3.0 DEQP test suites, and many drivers behave incorrectly. They also forbid skipping random pixels or rows,
         but that can be achieved by adjusting the data store offset accordingly.
+    </div>
+
+    <h3><a name="UNIFORM_BLOCK_DATA_SIZE">An active uniform block must be populated with a large enough buffer</a></h3>
+
+    <p>
+        When executing shaders that access uniform blocks, the binding point corresponding to each active uniform
+        block must be populated with a buffer object with a size no smaller than the minimum required size of the
+        uniform block (the value of <code>UNIFORM_BLOCK_DATA_SIZE</code>). For binding points populated by
+        <code>BindBufferRange</code>, the size in question is the value of the size parameter. If any active uniform
+        block is not backed by a sufficiently large buffer object, attempting to draw with <code>drawArrays</code>,
+        <code>drawElements</code>, <code>drawRangeElements</code> or their instanced variants generates an
+        <code>INVALID_OPERATION</code> error.
+    </p>
+
+    <div class="note">
+        This undefined behavior is in the OpenGL ES 3.0 specification section 2.12.6 <span class="gl-spec">
+        (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.12.6">
+        OpenGL ES 3.0.4 &sect;2.12.6</a>), under "Uniform Buffer Object Bindings."
     </div>
 
 <!-- ======================================================================================================= -->
