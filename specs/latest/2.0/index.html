@@ -1400,6 +1400,10 @@ match the <em>type</em> according to the following table; otherwise, generates a
           <tr><td>Uint16Array</td><td>HALF_FLOAT</td></tr>
           <tr><td>Float32Array</td><td>FLOAT</td></tr>
         </table>
+        <p>
+            If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS">pixel store parameter constraints</a> are not met,
+            generates an <code>INVALID_OPERATION</code> error.
+        </p>
       </dd>
 
       <dt class="idl-code">void texImage2D(GLenum target, GLint level, GLint internalformat, GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
@@ -1450,6 +1454,10 @@ match the <em>type</em> according to the following table; otherwise, generates a
         <p>The combination of <em>format</em>, <em>type</em>, and WebGLTexture's internal format must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
         <p>If an attempt is made to call the function with no WebGLTexture bound, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If no WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>
+            If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS">pixel store parameter constraints</a> are not met,
+            generates an <code>INVALID_OPERATION</code> error.
+        </p>
       </dd>
 
       <dt class="idl-code"><a name="TEXSUBIMAGE2D">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, ArrayBufferView? pixels)
@@ -1463,6 +1471,10 @@ match the <em>type</em> according to the following table; otherwise, generates a
         <p>If <em>pixels</em> is non-null, the type of <em>pixels</em> must
 match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">above table</a>; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>See <a href="../1.0/index.html#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific pixel storage parameters that affect the behavior of this function.</p>
+        <p>
+            If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS"> pixel store parameter constraints</a> are not met,
+            generates an <code>INVALID_OPERATION</code> error.
+        </p>
       </dd>
 
 
@@ -1483,6 +1495,10 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> error if it's less than 0.</p>
         <p>If an attempt is made to call the function with no WebGLTexture bound, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If no WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>
+            If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS"> pixel store parameter constraints</a> are not met,
+            generates an <code>INVALID_OPERATION</code> error.
+        </p>
       </dd>
 
       <dt class="idl-code">void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, ArrayBufferView? pixels)
@@ -1496,9 +1512,13 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p>The combination of <em>internalformat</em>, <em>format</em>, and <em>type</em> must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a></span>.</p>
         <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If <em>type</em> is specified as <code>FLOAT_32_UNSIGNED_INT_24_8_REV</code>, <em>pixels</em> must be null; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
-        <p>If <em>pixels</em> is non-null, the type of <em>pixels</em> must
+        <p>If <em>pixels</em> is non-null, the type of <etexm>pixels</em> must
 match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">above table</a>; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>See <a href="../1.0/index.html#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific pixel storage parameters that affect the behavior of this function. </p>
+        <p>
+            If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS"> pixel store parameter constraints</a> are not met,
+            generates an <code>INVALID_OPERATION</code> error.
+        </p>
 
         <div class="note">It is recommended to use <a href="#TEXSTORAGE3D">texStorage3D</a> instead of texImage3D to allocate three-dimensional textures. texImage3D may impose a higher memory cost compared to texStorage3D in some implementations.</div>
       </dd>
@@ -1511,6 +1531,10 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> error if it's less than 0.</p>
         <p>If an attempt is made to call the function with no WebGLTexture bound, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If no WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>
+            If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS">pixel store parameter constraints</a> are not met,
+            generates an <code>INVALID_OPERATION</code> error.
+        </p>
       </dd>
 
       <dt>
@@ -1532,6 +1556,10 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
 match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">above table</a>; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If <code>pixels</code> is non-null but its size is less than what is required by the specified <em>width</em>, <em>height</em>, <em>depth</em>, <em>format</em>, <em>type</em>, and pixel storage parameters, generates an <code>INVALID_OPERATION</code> error. </p>
         <p>See <a href="../1.0/index.html#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific pixel storage parameters that affect the behavior of this function.</p>
+        <p>
+            If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS"> pixel store parameter constraints</a> are not met,
+            generates an <code>INVALID_OPERATION</code> error.
+        </p>
       </dd>
       <dt>
         <p class="idl-code">void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
@@ -1569,6 +1597,10 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> error if it's less than 0.</p>
         <p>If an attempt is made to call the function with no WebGLTexture bound, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If no WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
+        <p>
+            If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS">pixel store parameter constraints</a> are not met,
+            generates an <code>INVALID_OPERATION</code> error.
+        </p>
       </dd>
 
       <dt>
@@ -1951,6 +1983,10 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         </dt>
         <dd>
           <p>If a WebGLBuffer is bound to the <code>PIXEL_PACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
+          <p>
+              If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS">pixel store parameter constraints</a> are not met,
+              generates an <code>INVALID_OPERATION</code> error.
+          </p>
         </dd>
 
         <dt class="idl-code">void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLintptr offset)
@@ -3324,6 +3360,48 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         (see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ff476464.aspx">msdn manual
         page</a>). In order to have consistent WebGL 2 behavior across platforms, it is reasonable to add
         this limitation in WebGL 2 for all platforms.
+    </div>
+
+    <h3><a name="PIXEL_STORE_PARAM_CONSTRAINTS">Pixel store parameter constraints</a></h3>
+
+    <p>
+        Define:
+        <ul>
+          <li>DataStoreWidth := <code>ROW_LENGTH</code> ? <code>ROW_LENGTH</code> : <em>width</em></li>
+          <li>DataStoreHeight := <code>IMAGE_HEIGHT</code> ? <code>IMAGE_HEIGHT</code> : <em>height</em></li>
+        </ul>
+    </p>
+
+    <p>
+        If <code>PACK_SKIP_PIXELS</code> + <em>width</em> > DataStoreWidth, <code>readPixels</code> generates an
+        <code>INVALID_OPERATION</code> error.
+    </p>
+
+    <p>
+        If <code>UNPACK_SKIP_PIXELS</code> + <em>width</em> > DataStoreWidth, <code>texImage2D</code> and
+        <code>texSubImage2D</code> generate an <code>INVALID_OPERATION</code> error. This does not
+        apply to <code>texImage2D</code> if no <code>PIXEL_UNPACK_BUFFER</code> is bound and
+        <em>pixels</em> is null.
+    </p>
+
+    <p>
+        If <code>UNPACK_SKIP_PIXELS</code> + <em>width</em> > DataStoreWidth or
+        <code>UNPACK_SKIP_ROWS</code> + <em>height</em> >  DataStoreHeight, <code>texImage3D</code> and
+        <code>texSubImage3D</code> generate an <code>INVALID_OPERATION</code> error. This does not
+        apply to <code>texImage3D</code> if no <code>PIXEL_UNPACK_BUFFER</code> is bound and
+        <em>pixels</em> is null.
+    </p>
+
+    <div class="note rationale">
+        These constraints normalize the use of these parameters to specify a sub region where pixels are stored.
+        For example, in <code>readPixels</code> cases, if we want to store pixels to a sub area of the entire
+        data store, we can use <code>PACK_ROW_LENGTH</code> to specify the data store width, and <code>
+        PACK_SKIP_PIXELS</code>, <code>PACK_SKIP_ROWS</code>, <em>width</em> and <em>height</em> to specify the sub
+        area's xoffset, yoffset, width, and height</code>.<br><br>
+
+        These contraints also forbid row and image overlap, where the situations are not tested in the OpenGL ES
+        3.0 DEQP test suites, and many drivers behave incorrectly. They also forbid skipping random pixels or rows,
+        but that can be achieved by adjusting the data store offset accordingly.
     </div>
 
 <!-- ======================================================================================================= -->
