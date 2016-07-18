@@ -152,20 +152,6 @@ goog.scope(function() {
         _skip("scoping.valid.function_parameter_hides_struct_type_vertex");
         _skip("scoping.valid.function_parameter_hides_struct_type_fragment");
 
-        _setReason("ES spec change to forbid some preprocessor 'defined' uses");
-        // https://github.com/KhronosGroup/WebGL/pull/1523
-        // deqp/data/gles3/shaders/preprocessor.html
-        _skip("preprocessor.conditional_inclusion.basic_2_vertex");
-        _skip("preprocessor.conditional_inclusion.basic_2_fragment");
-        _skip("preprocessor.conditional_inclusion.defined_macro_defined_test_vertex");
-        _skip("preprocessor.conditional_inclusion.defined_macro_defined_test_fragment");
-        _skip("preprocessor.conditional_inclusion.defined_macro_undef_vertex");
-        _skip("preprocessor.conditional_inclusion.defined_macro_undef_fragment");
-        _skip("preprocessor.conditional_inclusion.define_defined_vertex");
-        _skip("preprocessor.conditional_inclusion.define_defined_fragment");
-        _skip("preprocessor.conditional_inclusion.define_defined_outside_if_vertex");
-        _skip("preprocessor.conditional_inclusion.define_defined_outside_if_fragment");
-
         _setReason("NVidia Linux drivers does not clamp gl_FragDepth to [0.0, 1.0]");
         // Standalone Test case:
         //  https://github.com/Kangz/GLDriverBugs/blob/master/frag_depth_clamp_32f_depth/Main.cpp
