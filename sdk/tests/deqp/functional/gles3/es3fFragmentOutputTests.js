@@ -1389,7 +1389,7 @@ var tcuImageCompare = framework.common.tcuImageCompare;
             tcuTestCase.runTestCases();
         } catch (err) {
             testFailedOptions('Failed to es3fFragmentOutputTests.run tests', false);
-            bufferedLogToConsole.log(err);
+            bufferedLogToConsole(err);
             tcuTestCase.runner.terminate();
         }
 
