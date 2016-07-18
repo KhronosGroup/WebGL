@@ -272,6 +272,11 @@ function runTestIteration2D(gl, testCase, useUnpackBuffer) {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texImage2D with correct buffer size should succeed");
   } else {
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid unpack params combination");
+    if (!useUnpackBuffer) {
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB8, testCase.width, testCase.height, 0,
+                    gl.RGB, gl.UNSIGNED_BYTE, null);
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "unpack param constraints do not apply if no data are uploaded.");
+    }
     return;
   }
 
@@ -375,6 +380,11 @@ function runTestIteration3D(gl, testCase, useUnpackBuffer) {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texImage3D with correct buffer size should succeed");
   } else {
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid unpack params combination");
+    if (!useUnpackBuffer) {
+      gl.texImage3D(gl.TEXTURE_3D, 0, gl.RGB8, testCase.width, testCase.height, testCase.depth, 0,
+                    gl.RGB, gl.UNSIGNED_BYTE, null);
+      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "unpack param constraints do not apply if no data are uploaded.");
+    }
     return;
   }
 
