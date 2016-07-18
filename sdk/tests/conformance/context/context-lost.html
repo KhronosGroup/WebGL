@@ -138,9 +138,9 @@ function testValidContext()
     }
 }
 
-function testGLNOErrorFunctions(tests) {
+function testErrorFunctions(expectedError, tests) {
   tests.forEach(function(test) {
-      shouldGenerateGLError(gl, gl.NO_ERROR, test);
+      shouldGenerateGLError(gl, expectedError, test);
   });
 }
 
@@ -299,7 +299,7 @@ function testLostContext()
         "gl.vertexAttribPointer(0, 0, gl.FLOAT, false, 0, 0)",
         "gl.viewport(0, 0, 0, 0)",
     ];
-    testGLNOErrorFunctions(voidTests);
+    testErrorFunctions(gl.NO_ERROR, voidTests);
 
     // Functions return nullable values should all return null.
     var nullTests = [
@@ -344,10 +344,16 @@ function testLostContext()
 
     // test extensions
     if (OES_vertex_array_object) {
-      testGLNOErrorFunctions(
+      testErrorFunctions(gl.NO_ERROR,
+        [
+          "OES_vertex_array_object.bindVertexArrayOES(null)",
+          "OES_vertex_array_object.isVertexArrayOES(null)",
+          "OES_vertex_array_object.isVertexArrayOES(vertexArrayObject)",
+          "OES_vertex_array_object.deleteVertexArrayOES(null)",
+        ]);
+      testErrorFunctions(gl.INVALID_OPERATION,
         [
           "OES_vertex_array_object.bindVertexArrayOES(vertexArrayObject)",
-          "OES_vertex_array_object.isVertexArrayOES(vertexArrayObject)",
           "OES_vertex_array_object.deleteVertexArrayOES(vertexArrayObject)",
         ]);
       testFunctionsThatReturnNULL(
