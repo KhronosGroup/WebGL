@@ -198,6 +198,11 @@ goog.scope(function() {
         _skip("depth.depth_write_clamp.depth32f_stencil8");
         _skip("depth.depth_test_clamp.depth_component32f");
         _skip("depth.depth_test_clamp.depth32f_stencil8");
+
+        _setReason("NVidia Linux driver bug in nested uniform block location assignment");
+        // crbug.com/621178
+        // deqp/functional/gles3/uniformapi/random.html
+        _skip("uniform_api.random.64");
     } // if (!runSkippedTests)
 
     /*
