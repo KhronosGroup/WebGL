@@ -163,14 +163,14 @@ function runTestOnBindingTargetImageBitmap(bindingTarget, program, bitmaps, opti
     internalFormat, pixelFormat, pixelType, gl, tiu, wtu)
 {
     var cases = [
-        { sub: false, bitmap: bitmaps.noFlipYPremul, flipY: false, premultiply: true },
-        { sub: true, bitmap: bitmaps.noFlipYPremul, flipY: false, premultiply: true },
-        { sub: false, bitmap: bitmaps.noFlipYUnpremul, flipY: false, premultiply: false },
-        { sub: true, bitmap: bitmaps.noFlipYUnpremul, flipY: false, premultiply: false },
-        { sub: false, bitmap: bitmaps.flipYPremul, flipY: true, premultiply: true },
-        { sub: true, bitmap: bitmaps.flipYPremul, flipY: true, premultiply: true },
-        { sub: false, bitmap: bitmaps.flipYUnpremul, flipY: true, premultiply: false },
-        { sub: true, bitmap: bitmaps.flipYUnpremul, flipY: true, premultiply: false },
+        { sub: false, bitmap: bitmaps.noFlipYPremul1, flipY: false, premultiply: true },
+        { sub: true, bitmap: bitmaps.noFlipYPremul2, flipY: false, premultiply: true },
+        { sub: false, bitmap: bitmaps.noFlipYUnpremul1, flipY: false, premultiply: false },
+        { sub: true, bitmap: bitmaps.noFlipYUnpremul2, flipY: false, premultiply: false },
+        { sub: false, bitmap: bitmaps.flipYPremul1, flipY: true, premultiply: true },
+        { sub: true, bitmap: bitmaps.flipYPremul2, flipY: true, premultiply: true },
+        { sub: false, bitmap: bitmaps.flipYUnpremul1, flipY: true, premultiply: false },
+        { sub: true, bitmap: bitmaps.flipYUnpremul2, flipY: true, premultiply: false },
     ];
 
     for (var i in cases) {
@@ -212,11 +212,15 @@ function runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelForm
 function runImageBitmapTest(source, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D)
 {
     var bitmaps = [];
-    var p1 = createImageBitmap(source, {imageOrientation: "none", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.noFlipYPremul = imageBitmap });
-    var p2 = createImageBitmap(source, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul = imageBitmap });
-    var p3 = createImageBitmap(source, {imageOrientation: "flipY", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
-    var p4 = createImageBitmap(source, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
-    Promise.all([p1, p2, p3, p4]).then(function() {
+    var p1 = createImageBitmap(source, {imageOrientation: "none", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.noFlipYPremul1 = imageBitmap });
+    var p2 = createImageBitmap(source, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul1 = imageBitmap });
+    var p3 = createImageBitmap(source, {imageOrientation: "flipY", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.flipYPremul1 = imageBitmap });
+    var p4 = createImageBitmap(source, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul1 = imageBitmap });
+    var p5 = createImageBitmap(source, {imageOrientation: "none", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.noFlipYPremul2 = imageBitmap });
+    var p6 = createImageBitmap(source, {imageOrientation: "none", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.noFlipYUnpremul2 = imageBitmap });
+    var p7 = createImageBitmap(source, {imageOrientation: "flipY", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.flipYPremul2 = imageBitmap });
+    var p8 = createImageBitmap(source, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul2 = imageBitmap });
+    Promise.all([p1, p2, p3, p4, p5, p6, p7, p8]).then(function() {
         console.log("All createImageBitmap promises are resolved");
         runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D);
     }, function() {
