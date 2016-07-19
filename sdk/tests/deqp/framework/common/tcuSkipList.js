@@ -94,41 +94,41 @@ goog.scope(function() {
 
         // https://android.googlesource.com/platform/external/deqp/+/0c1f83aee4709eef7ef2a3edd384f9c192f476fd/android/cts/master/src/gles3-hw-issues.txt#801
         _setReason("Tricky blit rects can result in imperfect copies on some HW.");
-        _skip("fbo.blit.rect.nearest_consistency_mag");
-        _skip("fbo.blit.rect.nearest_consistency_mag_reverse_dst_x");
-        _skip("fbo.blit.rect.nearest_consistency_mag_reverse_src_dst_x");
-        _skip("fbo.blit.rect.nearest_consistency_mag_reverse_src_x");
-        _skip("fbo.blit.rect.nearest_consistency_mag_reverse_src_y");
-        _skip("fbo.blit.rect.nearest_consistency_min");
-        _skip("fbo.blit.rect.nearest_consistency_min_reverse_dst_x");
-        _skip("fbo.blit.rect.nearest_consistency_min_reverse_src_dst_x");
-        _skip("fbo.blit.rect.nearest_consistency_min_reverse_src_x");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_mag");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_mag_reverse_dst_x");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_mag_reverse_src_dst_x");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_mag_reverse_src_x");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_mag_reverse_src_y");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_min");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_min_reverse_dst_x");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_min_reverse_src_dst_x");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_min_reverse_src_x");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_min_reverse_src_y");
+        _skip("blit.rect.nearest_consistency_mag");
+        _skip("blit.rect.nearest_consistency_mag_reverse_dst_x");
+        _skip("blit.rect.nearest_consistency_mag_reverse_src_dst_x");
+        _skip("blit.rect.nearest_consistency_mag_reverse_src_x");
+        _skip("blit.rect.nearest_consistency_mag_reverse_src_y");
+        _skip("blit.rect.nearest_consistency_min");
+        _skip("blit.rect.nearest_consistency_min_reverse_dst_x");
+        _skip("blit.rect.nearest_consistency_min_reverse_src_dst_x");
+        _skip("blit.rect.nearest_consistency_min_reverse_src_x");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_mag");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_mag_reverse_dst_x");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_mag_reverse_src_dst_x");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_mag_reverse_src_x");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_mag_reverse_src_y");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_min");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_min_reverse_dst_x");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_min_reverse_src_dst_x");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_min_reverse_src_x");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_min_reverse_src_y");
 
         // https://android.googlesource.com/platform/external/deqp/+/0c1f83aee4709eef7ef2a3edd384f9c192f476fd/android/cts/master/src/gles3-driver-issues.txt#381
         _setReason("Tricky blit rects can result in imperfect copies on some drivers.");
-        _skip("fbo.blit.rect.out_of_bounds_linear");
-        _skip("fbo.blit.rect.out_of_bounds_reverse_src_x_linear");
-        _skip("fbo.blit.rect.out_of_bounds_reverse_src_y_linear");
-        _skip("fbo.blit.rect.out_of_bounds_reverse_dst_x_linear");
-        _skip("fbo.blit.rect.out_of_bounds_reverse_dst_y_linear");
-        _skip("fbo.blit.rect.out_of_bounds_reverse_src_dst_x_linear");
-        _skip("fbo.blit.rect.out_of_bounds_reverse_src_dst_y_linear");
+        _skip("blit.rect.out_of_bounds_linear");
+        _skip("blit.rect.out_of_bounds_reverse_src_x_linear");
+        _skip("blit.rect.out_of_bounds_reverse_src_y_linear");
+        _skip("blit.rect.out_of_bounds_reverse_dst_x_linear");
+        _skip("blit.rect.out_of_bounds_reverse_dst_y_linear");
+        _skip("blit.rect.out_of_bounds_reverse_src_dst_x_linear");
+        _skip("blit.rect.out_of_bounds_reverse_src_dst_y_linear");
 
         // https://android.googlesource.com/platform/external/deqp/+/0c1f83aee4709eef7ef2a3edd384f9c192f476fd/android/cts/master/src/gles3-driver-issues.txt#368
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_mag_reverse_dst_y");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_mag_reverse_src_dst_y");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_min_reverse_dst_y");
-        _skip("fbo.blit.rect.nearest_consistency_out_of_bounds_min_reverse_src_dst_y");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_mag_reverse_dst_y");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_mag_reverse_src_dst_y");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_min_reverse_dst_y");
+        _skip("blit.rect.nearest_consistency_out_of_bounds_min_reverse_src_dst_y");
 
         _setReason("Mac OSX drivers handle R11F_G11F_B10F format incorrectly");
         // https://github.com/KhronosGroup/WebGL/issues/1832
