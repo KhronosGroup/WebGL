@@ -149,6 +149,25 @@ goog.scope(function() {
         // deqp/functional/gles3/fbocolorbuffer/clear.html
         _skip("color.clear.r11f_g11f_b10f");
 
+        _setReason("HLSL compiler bugs");
+        // deqp/functional/gles3/shaderloop_for.html
+        _skip("loops.for.constant_iterations.nested_sequence_vertex");
+        _skip("loops.for.constant_iterations.nested_sequence_fragment");
+        _skip("loops.for.constant_iterations.nested_tricky_dataflow_1_vertex");
+        _skip("loops.for.constant_iterations.nested_tricky_dataflow_1_fragment");
+        _skip("loops.for.constant_iterations.nested_tricky_dataflow_2_vertex");
+        _skip("loops.for.constant_iterations.nested_tricky_dataflow_2_fragment");
+        // deqp/functional/gles3/shaderloop_while.html
+        _skip("loops.while.constant_iterations.nested_tricky_dataflow_1_vertex");
+        _skip("loops.while.constant_iterations.nested_tricky_dataflow_1_fragment");
+        _skip("loops.while.constant_iterations.nested_tricky_dataflow_2_vertex");
+        _skip("loops.while.constant_iterations.nested_tricky_dataflow_2_fragment");
+        // deqp/functional/gles3/shaderloop_do_while.html
+        _skip("loops.do_while.constant_iterations.nested_tricky_dataflow_1_vertex");
+        _skip("loops.do_while.constant_iterations.nested_tricky_dataflow_1_fragment");
+        _skip("loops.do_while.constant_iterations.nested_tricky_dataflow_2_vertex");
+        _skip("loops.do_while.constant_iterations.nested_tricky_dataflow_2_fragment");
+
         _setReason("Missing shadow sampler functions in D3D11");
         // https://github.com/KhronosGroup/WebGL/issues/1870
         // deqp/functional/gles3/shadertexturefunction/texturelod.html
