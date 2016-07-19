@@ -328,45 +328,23 @@ var cases = [
     linkSuccess: false,
     passMsg: "fragment shader with invariant gl_FrontFacing must fail compilation",
   },
+  {
+    vShaderId: "vertexShaderVariant",
+    vShaderSuccess: true,
+    fShaderId: "fragmentShaderGlobalInvariant",
+    fShaderSuccess: true,
+    linkSuccess: false,
+    passMsg: "vertex shader with variant varying and fragment shader with invariant (global setting) varying must fail",
+  },
+  {
+    vShaderId: "vertexShaderInvariant",
+    vShaderSuccess: true,
+    fShaderId: "fragmentShaderGlobalInvariant",
+    fShaderSuccess: true,
+    linkSuccess: true,
+    passMsg: "vertex shader with invariant varying and fragment shader with invariant (global setting) varying must succeed",
+  }
 ];
-
-var contextVersion = WebGLTestUtils.getDefault3DContextVersion();
-if (contextVersion < 2)
-    cases.push(
-    {
-      vShaderId: "vertexShaderVariant",
-      vShaderSuccess: true,
-      fShaderId: "fragmentShaderGlobalInvariant",
-      fShaderSuccess: true,
-      linkSuccess: false,
-      passMsg: "vertex shader with variant varying and fragment shader with invariant (global setting) varying must fail",
-    },
-    {
-      vShaderId: "vertexShaderInvariant",
-      vShaderSuccess: true,
-      fShaderId: "fragmentShaderGlobalInvariant",
-      fShaderSuccess: true,
-      linkSuccess: true,
-      passMsg: "vertex shader with invariant varying and fragment shader with invariant (global setting) varying must succeed",
-    });
-else 
-    cases.push(
-    {
-      vShaderId: "vertexShaderVariant",
-      vShaderSuccess: true,
-      fShaderId: "fragmentShaderGlobalInvariant",
-      fShaderSuccess: false,
-      linkSuccess: false,
-      passMsg: "vertex shader with variant varying and fragment shader with invariant (global setting) varying must fail",
-    },
-    {
-      vShaderId: "vertexShaderInvariant",
-      vShaderSuccess: true,
-      fShaderId: "fragmentShaderGlobalInvariant",
-      fShaderSuccess: false,
-      linkSuccess: false,
-      passMsg: "vertex shader with invariant varying and fragment shader with invariant (global setting) varying must fail",
-    });
 
 GLSLConformanceTester.runTests(cases);
 var successfullyParsed = true;
