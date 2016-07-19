@@ -394,10 +394,10 @@ function runNamedArrayDrawTest() {
     var bindings = [4, 5];
     gl.uniformBlockBinding(program, blockIndex[0], bindings[0]);
     gl.bindBufferRange(gl.UNIFORM_BUFFER, bindings[0], b1, 0, blockSize[0]);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call bindBufferBase without errors");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call bindBufferRange without errors");
     gl.uniformBlockBinding(program, blockIndex[1], bindings[1]);
     gl.bindBufferRange(gl.UNIFORM_BUFFER, bindings[1], b1, offset, blockSize[1]);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call bindBufferBase without errors");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call bindBufferRange without errors");
 
     wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(gl, [127, 0, 127, 255], "draw call should set canvas to (0.5, 0, 0.5)", 2);
