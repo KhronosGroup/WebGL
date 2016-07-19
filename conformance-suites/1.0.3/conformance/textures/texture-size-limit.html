@@ -155,9 +155,9 @@ function testFormatType(t, test) {
       var badOtherDimension = t.target == gl.TEXTURE_2D ? 1 : badSize;
       var pixels = new test.dataType(badSize * badOtherDimension * test.size);
       gl.texImage2D(target, level, test.format, size, otherDimension, 0, test.format, test.type, pixels);
-      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no error for level: " + level + " " + size + "x" + otherDimension);
+      wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.OUT_OF_MEMORY], "there should be no error for level: " + level + " " + size + "x" + otherDimension);
       gl.texImage2D(target, level, test.format, otherDimension, size, 0, test.format, test.type, pixels);
-      wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no error for level: " + level + " " + otherDimension + "x" + size);
+      wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.OUT_OF_MEMORY], "there should be no error for level: " + level + " " + otherDimension + "x" + size);
       gl.texImage2D(target, level, test.format, badSize, badOtherDimension, 0, test.format, test.type, pixels);
       wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "should generate INVALID_VALUE for level: " + level + " " + badSize + "x" + badOtherDimension);
       gl.texImage2D(target, level, test.format, badOtherDimension, badSize, 0, test.format, test.type, pixels);

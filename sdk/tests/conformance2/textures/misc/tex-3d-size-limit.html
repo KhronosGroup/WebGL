@@ -88,11 +88,11 @@ function test3DTextureDimensions() {
         var badSize = size * 2;
 
         gl.texImage3D(gl.TEXTURE_3D, level, gl.RGBA, size, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texImage3D should succeed.");
+        wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.OUT_OF_MEMORY], "texImage3D should succeed.");
         gl.texImage3D(gl.TEXTURE_3D, level, gl.RGBA, 1, size, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texImage3D should succeed.");
+        wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.OUT_OF_MEMORY], "texImage3D should succeed.");
         gl.texImage3D(gl.TEXTURE_3D, level, gl.RGBA, 1, 1, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texImage3D should succeed.");
+        wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.OUT_OF_MEMORY], "texImage3D should succeed.");
         gl.texImage3D(gl.TEXTURE_3D, level, gl.RGBA, badSize, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "texImage3D should fail for dimension out of range.");
         gl.texImage3D(gl.TEXTURE_3D, level, gl.RGBA, 2, badSize, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
