@@ -92,10 +92,51 @@ function testImageAttachedTwoPoints() {
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT2, gl.TEXTURE_2D, tex1, 0);
     checkFramebuffer([gl.FRAMEBUFFER_UNSUPPORTED]);
 
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.deleteFramebuffer(fb);
+    fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    var texCube = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, texCube);
+    for (var target = gl.TEXTURE_CUBE_MAP_POSITIVE_X; target < gl.TEXTURE_CUBE_MAP_POSITIVE_X + 6; target++) {
+      gl.texImage2D(target, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
+    }
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_POSITIVE_X, texCube, 0);
+    checkFramebuffer([gl.FRAMEBUFFER_COMPLETE]);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, texCube, 0);
+    checkFramebuffer([gl.FRAMEBUFFER_COMPLETE]);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT2, gl.TEXTURE_CUBE_MAP_POSITIVE_X, texCube, 0);
+    checkFramebuffer([gl.FRAMEBUFFER_UNSUPPORTED]);
+
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.deleteFramebuffer(fb);
+    fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    var tex3d = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_3D, tex3d);
+    gl.texImage3D(gl.TEXTURE_3D,
+                  0,                                          // level
+                  gl.RGBA,                                    // internalFormat
+                  2,                                          // width
+                  2,                                          // height
+                  2,                                          // depth
+                  0,                                          // border
+                  gl.RGBA,                                    // format
+                  gl.UNSIGNED_BYTE,                           // type
+                  new Uint8Array(4 * 2 * 2 * 2));             // data
+    gl.framebufferTextureLayer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex3d, 0, 0);
+    checkFramebuffer([gl.FRAMEBUFFER_COMPLETE]);
+    gl.framebufferTextureLayer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, tex3d, 0, 1);
+    checkFramebuffer([gl.FRAMEBUFFER_COMPLETE]);
+    gl.framebufferTextureLayer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT2, tex3d, 0, 0);
+    checkFramebuffer([gl.FRAMEBUFFER_UNSUPPORTED]);
 
     // Clean up
     gl.deleteTexture(tex1);
     gl.deleteTexture(tex2);
+    gl.deleteTexture(texCube);
+    gl.deleteTexture(tex3d);
     gl.deleteFramebuffer(fb);
 }
 
