@@ -376,7 +376,6 @@ var deMath = framework.delibs.debase.deMath;
         var numVertexAttribArrays = /** @type{number} */ (gl.getParameter(gl.MAX_VERTEX_ATTRIBS));
         for (var idx = 0; idx < numVertexAttribArrays; idx++) {
             gl.disableVertexAttribArray(idx);
-            gl.vertexAttribPointer(idx, 4, gl.FLOAT, gl.FALSE, 0, null);
             gl.vertexAttribDivisor(idx, 0);
         }
     };
