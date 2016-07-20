@@ -13,6 +13,7 @@ const-array-init.html
 forbidden-operators.html
 frag-depth.html
 invalid-default-precision.html
+invalid-invariant.html
 loops-with-side-effects.html
 misplaced-version-directive.html
 sampler-no-precision.html
