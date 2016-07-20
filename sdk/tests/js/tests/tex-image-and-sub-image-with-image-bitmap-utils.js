@@ -62,7 +62,7 @@ function runOneIterationImageBitmapTest(useTexSubImage2D, bindingTarget, program
               ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP');
     }
     debug(str);
-    console.log(str);
+    bufferedLogToConsole(str);
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     // Enable writes to the RGBA channels
@@ -86,7 +86,7 @@ function runOneIterationImageBitmapTest(useTexSubImage2D, bindingTarget, program
                    gl.TEXTURE_CUBE_MAP_NEGATIVE_Z];
     }
 
-    console.log("Starts uploading the image into texture");
+    bufferedLogToConsole("Starts uploading the image into texture");
     // Upload the image into the texture
     for (var tt = 0; tt < targets.length; ++tt) {
         if (optionsVal.is3D) {
@@ -104,7 +104,7 @@ function runOneIterationImageBitmapTest(useTexSubImage2D, bindingTarget, program
             }
         }
     }
-    console.log("Uploading texture completed");
+    bufferedLogToConsole("Uploading texture completed");
 
     var width = gl.canvas.width;
     var halfWidth = Math.floor(width / 2);
@@ -146,12 +146,12 @@ function runOneIterationImageBitmapTest(useTexSubImage2D, bindingTarget, program
 
         // Check the top pixel and bottom pixel and make sure they have
         // the right color.
-        console.log("Checking " + (flipY ? "top" : "bottom"));
+        bufferedLogToConsole("Checking " + (flipY ? "top" : "bottom"));
         wtu.checkCanvasRect(gl, quaterWidth, bottom, 2, 2, tl, "shouldBe " + tl);
         if (!skipCorner && !flipY) {
             wtu.checkCanvasRect(gl, halfWidth + quaterWidth, bottom, 2, 2, tr, "shouldBe " + tr, tolerance);
         }
-        console.log("Checking " + (flipY ? "bottom" : "top"));
+        bufferedLogToConsole("Checking " + (flipY ? "bottom" : "top"));
         wtu.checkCanvasRect(gl, quaterWidth, top, 2, 2, bl, "shouldBe " + bl);
         if (!skipCorner && flipY) {
             wtu.checkCanvasRect(gl, halfWidth + quaterWidth, top, 2, 2, br, "shouldBe " + br, tolerance);
@@ -217,7 +217,7 @@ function runImageBitmapTest(source, alphaVal, internalFormat, pixelFormat, pixel
     var p3 = createImageBitmap(source, {imageOrientation: "flipY", premultiplyAlpha: "premultiply"}).then(function(imageBitmap) { bitmaps.flipYPremul = imageBitmap });
     var p4 = createImageBitmap(source, {imageOrientation: "flipY", premultiplyAlpha: "none"}).then(function(imageBitmap) { bitmaps.flipYUnpremul = imageBitmap });
     Promise.all([p1, p2, p3, p4]).then(function() {
-        console.log("All createImageBitmap promises are resolved");
+        bufferedLogToConsole("All createImageBitmap promises are resolved");
         runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D);
     }, function() {
         // createImageBitmap with options could be rejected if it is not supported
