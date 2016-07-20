@@ -48,6 +48,16 @@ void main()
     gl_Position = v_varying;
 }
 </script>
+<script id="vertexShaderVariant-es3" type="text/something-not-javascript"
+>#version 300 es
+out vec4 v_varying;
+
+void main()
+{
+    gl_PointSize = 1.0;
+    gl_Position = v_varying;
+}
+</script>
 <script id="vertexShaderInvariant" type="text/something-not-javascript">
 invariant varying vec4 v_varying;
 
@@ -147,6 +157,18 @@ void main()
 precision mediump float;
 
 varying vec4 v_varying;
+
+void main()
+{
+    gl_FragColor = v_varying;
+}
+</script>
+<script id="fragmentShaderGlobalInvariant-es3" type="text/something-not-javascript"
+>#version 300 es
+#pragma STDGL invariant(all)
+precision mediump float;
+
+in vec4 v_varying;
 
 void main()
 {
@@ -346,7 +368,21 @@ var cases = [
   }
 ];
 
+if (WebGLTestUtils.getDefault3DContextVersion() >= 2) {
+  cases.push(
+    {
+      vShaderId: "vertexShaderVariant-es3",
+      vShaderSuccess: true,
+      fShaderId: "fragmentShaderGlobalInvariant-es3",
+      fShaderSuccess: false,
+      linkSuccess: false,
+      passMsg: "invariant(all) must be a compile-time error in fragment staders (ESSL 3.00.4 p53)",
+    }
+  );
+}
+
 GLSLConformanceTester.runTests(cases);
+
 var successfullyParsed = true;
 </script>
 </body>
