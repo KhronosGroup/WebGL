@@ -1250,7 +1250,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
-      <dd>        
+      <dd>
         <p>Accepts internal formats from OpenGL ES 3.0 as detailed in the <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.4.2">specification</a> and <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glRenderbufferStorage.xhtml" class="nonnormative">man page</a>.</p>
         <p>To be backward compatible with WebGL 1, also accepts internal format <code>DEPTH_STENCIL</code>, which should be mapped to <code>DEPTH24_STENCIL8</code> by implementations.</p>
       </dd>
@@ -1376,7 +1376,6 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p>Only differences from <a href="../1.0/index.html#TEXIMAGE2D">texImage2D</a> in WebGL 1 are described here. </p>
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>Sized internal formats are supported in WebGL 2 and <em>internalformat</em> is no longer required to be the same as <em>format</em>. Instead, the combination of <em>internalformat</em>, <em>format</em>, and <em>type</em> must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a></span>.</p>
-        <p>If <em>type</em> is specified as <code>FLOAT_32_UNSIGNED_INT_24_8_REV</code>, <em>pixels</em> must be null; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If <em>pixels</em> is non-null, the type of <em>pixels</em> must
 match the <em>type</em> according to the following table; otherwise, generates an <code>INVALID_OPERATION</code> error:</p>
         <table id="TEXTURE_PIXELS_TYPE_TABLE">
@@ -1396,6 +1395,7 @@ match the <em>type</em> according to the following table; otherwise, generates a
           <tr><td>Uint32Array</td><td>UNSIGNED_INT_24_8</td></tr>
           <tr><td>Uint16Array</td><td>HALF_FLOAT</td></tr>
           <tr><td>Float32Array</td><td>FLOAT</td></tr>
+          <tr><td>ArrayBuffer</td><td>FLOAT_32_UNSIGNED_INT_24_8_REV</td></tr>
         </table>
         <p>
             If <a href="#PIXEL_STORE_PARAM_CONSTRAINTS">pixel store parameter constraints</a> are not met,
@@ -1508,7 +1508,6 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         <p>If <code>pixels</code> is non-null but its size is less than what is required by the specified <em>width</em>, <em>height</em>, <em>depth</em>, <em>format</em>, <em>type</em>, and pixel storage parameters, generates an <code>INVALID_OPERATION</code> error. </p>
         <p>The combination of <em>internalformat</em>, <em>format</em>, and <em>type</em> must be listed in Table 1 or 2 from <span class="gl-spec"><a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a></span>.</p>
         <p>If an attempt is made to call this function with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error.</p>
-        <p>If <em>type</em> is specified as <code>FLOAT_32_UNSIGNED_INT_24_8_REV</code>, <em>pixels</em> must be null; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If <em>pixels</em> is non-null, the type of <em>pixels</em> must
 match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">above table</a>; otherwise, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>See <a href="../1.0/index.html#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific pixel storage parameters that affect the behavior of this function. </p>
