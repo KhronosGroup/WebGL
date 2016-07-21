@@ -167,6 +167,22 @@ var testDataList = [
     passCondition: 'c == 6'
 },
 {
+    description: 'indexing an array constructor inside a sequence operator',
+    globalScopePrefix: [
+            'int sideEffectCounter = 0;',
+            'int func() {',
+            '  sideEffectCounter++;',
+            '  return sideEffectCounter;',
+            '}'
+        ].join('\n'),
+    mainPrefix: 'int c = 0;',
+    loopExpression: 'c = (func(), (int[2](c + 1, c + 2))[1])',
+    loopCondition: 'bool(c = (func(), (int[2](c + 1, c + 2))[1]))',
+    loopContents: '',
+    loopIterations: 3,
+    passCondition: 'c == 6 && sideEffectCounter = 3'
+},
+{
     description: 'dynamic indexing of a vector',
     globalScopePrefix: '',
     mainPrefix: [
