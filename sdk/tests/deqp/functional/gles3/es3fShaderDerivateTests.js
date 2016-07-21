@@ -435,13 +435,18 @@ goog.scope(function() {
             for (var c = 0; c < numComponents; ++c) {
                 // interpolation value range
                 /** @type {tcuInterval.Interval} */ var forwardComponent = tcuInterval.withIntervals(
-                    new tcuInterval.Interval(es3fShaderDerivateTests.convertFloorFlushToZero(functionValueForward[c], minExponent, numVaryingSampleBits)),
-                    new tcuInterval.Interval(es3fShaderDerivateTests.convertCeilFlushToZero(functionValueForward[c], minExponent, numVaryingSampleBits))
+                    new tcuInterval.Interval(es3fShaderDerivateTests.convertFloorFlushToZero(
+                        es3fShaderDerivateTests.addErrorUlp(functionValueForward[c], -0.5, numVaryingSampleBits), minExponent, numBits)),
+                    new tcuInterval.Interval(es3fShaderDerivateTests.convertCeilFlushToZero(
+                        es3fShaderDerivateTests.addErrorUlp(functionValueForward[c], +0.5, numVaryingSampleBits), minExponent, numBits))
                 );
 
                 /** @type {tcuInterval.Interval} */ var backwardComponent = tcuInterval.withIntervals(
-                    new tcuInterval.Interval(es3fShaderDerivateTests.convertFloorFlushToZero(functionValueBackward[c], minExponent, numVaryingSampleBits)),
-                    new tcuInterval.Interval(es3fShaderDerivateTests.convertCeilFlushToZero(functionValueBackward[c], minExponent, numVaryingSampleBits)));
+                    new tcuInterval.Interval(es3fShaderDerivateTests.convertFloorFlushToZero(
+                        es3fShaderDerivateTests.addErrorUlp(functionValueBackward[c], -0.5, numVaryingSampleBits), minExponent, numBits)),
+                    new tcuInterval.Interval(es3fShaderDerivateTests.convertCeilFlushToZero(
+                        es3fShaderDerivateTests.addErrorUlp(functionValueBackward[c], +0.5, numVaryingSampleBits), minExponent, numBits))
+                );
 
                 /** @type {number} */
                 var maxValueExp = Math.max(
