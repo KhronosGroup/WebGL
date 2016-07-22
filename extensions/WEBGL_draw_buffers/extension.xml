@@ -81,6 +81,10 @@
         <code>gl_FragData</code> variables (from <code>gl_FragData[0]</code> to <code>gl_FragData[MAX_DRAW_BUFFERS_WEBGL - 1]</code>)
         default to zero if no values are written to them during a shader execution.
       </addendum>
+      <addendum>
+        If an image is attached to more than one color attachment point in a framebuffer, <code>checkFramebufferStatus</code>
+        returns <code>FRAMEBUFFER_UNSUPPORTED</code>. An image can be an individual mip level, or a face of cube map.
+      </addendum>
     </mirrors>
     <features>
       <feature>
@@ -173,6 +177,9 @@ interface WEBGL_draw_buffers {
     </revision>
     <revision date="2016/07/11">
       <change>Revised user-defined variable behavior to default to zero.</change>
+    </revision>
+    <revision date="2016/07/23">
+      <change>Revised behavior of the same image is attached to more than one color attachment point.</change>
     </revision>
   </history>
 </ratified>
