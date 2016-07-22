@@ -63,6 +63,42 @@ void main() {
 }
 </script>
 
+<script id='vshader_inactive_attrib' type='x-shader/x-vertex'>#version 300 es
+in ivec4 p;
+in ivec4 a;
+void main()
+{
+    gl_Position = vec4(p);
+}
+</script>
+<script id='vshader_active_attrib_int' type='x-shader/x-vertex'>#version 300 es
+in ivec4 p;
+in ivec4 a;
+in uvec4 b;
+void main()
+{
+    gl_Position = vec4(p) + vec4(a) + vec4(b);
+}
+</script>
+<script id='vshader_active_attrib_float' type='x-shader/x-vertex'>#version 300 es
+in vec4 p;
+in vec4 a;
+in vec4 c;
+void main()
+{
+    gl_Position = vec4(p) + vec4(a) + vec4(c);
+}
+</script>
+<script id='fshader' type='x-shader/x-fragment'>#version 300 es
+precision mediump float;
+layout(location=0) out vec4 oColor;
+void main()
+{
+    oColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+</script>
+
+
 <script>
 "use strict";
 description("This test verifies an active vertex attribute's base type has to match the verexAttrib function type.");
@@ -78,7 +114,69 @@ if (!gl) {
 } else {
     testPassed("WebGL context exists");
 
+    testGenericAttribs();
     runTests();
+}
+
+function testGenericAttribs() {
+    debug("");
+    debug("Test Generic Vertex Attributes for some corner cases");
+
+    var pIndex = 2;
+    var aIndex = 3;
+    var bIndex = 4;
+    var cIndex = 5;
+    var program0 = wtu.setupProgram(gl, ["vshader_inactive_attrib", "fshader"],
+        ['p', 'a'], [pIndex, aIndex]);
+    var program1 = wtu.setupProgram(gl, ["vshader_active_attrib_int", "fshader"],
+        ['p', 'a', 'b'], [pIndex, aIndex, bIndex]);
+    var program2 = wtu.setupProgram(gl, ["vshader_active_attrib_float", "fshader"],
+        ['p', 'a', 'c'], [pIndex, aIndex, cIndex]);
+    if (!program0 || !program1 || !program2) {
+      testFailed("Set up program failed");
+      return;
+    }
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "No GL error from set up");
+
+    wtu.setupUnitQuad(gl, 0);
+
+    debug("Inactive input in vertex shader");
+    gl.useProgram(program0);
+    gl.vertexAttribI4i(pIndex, 1, 0, 0, 0);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setting up succeeds");
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArrays succeeds: type in shader mismatch default vertex type is valid for inactive attrib");
+
+    gl.vertexAttrib4f(aIndex, 0.0, 1.0, 0.0, 0.0);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setting up succeeds");
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArrays succeeds: type in shader mismatch vertexAttrib type is valid for inactive attrib");
+
+    debug("active int/uint inputs in vertex shader");
+    gl.useProgram(program1);
+    gl.vertexAttribI4i(pIndex, 1, 0, 0, 0);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setting up succeeds");
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Type mismatch: type in shader mismatch the default type for a vertex attrib");
+    gl.vertexAttribI4i(aIndex, 0, 1, 0, 0);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setting up succeeds");
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Type mismatch: type in shader mismatch the default type for a vertex attrib");
+    gl.vertexAttribI4ui(bIndex, 0, 0, 1, 0);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setting up succeeds");
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArrays succeeds");
+
+    debug("active float input in vertex shader");
+    gl.useProgram(program2);
+    gl.vertexAttrib4f(pIndex, 1.0, 0.0, 0.0, 0.0);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setting up succeeds");
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Type mismatch: generic attrib is valid per context. 'a' is set to int type by previous test case");
+    gl.vertexAttrib4f(aIndex, 0.0, 1.0, 0.0, 0.0);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setting up succeeds");
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArrays succeeds: default type of generic attrib is float");
 }
 
 function setupAttribValues(offsetILoc, offsetULoc, colorLoc) {
@@ -100,6 +198,9 @@ function setupAttribPointers(offsetILoc, offsetULoc, colorLoc,
 }
 
 function runTests() {
+    debug("");
+    debug("Test vertexAttrib with drawArrays and drawArraysInstanced");
+
     var instanceCount = 4;
 
     var positionLoc = 0;
@@ -115,11 +216,8 @@ function runTests() {
     }
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "No GL error from set up");
 
-    debug("");
-    debug("Test vertexAttrib with drawArrays and drawArraysInstanced");
     wtu.setupUnitQuad(gl, 0);
 
-    debug("Correct setup");
     setupAttribValues(offsetILoc, offsetULoc, colorLoc);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setting up succeeds");
     gl.drawArrays(gl.TRIANGLES, 0, 6);
