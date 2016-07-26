@@ -526,6 +526,8 @@ rrRenderer.clipTest = function(x, y, z, rect) {
 rrRenderer.RASTERIZER_SUBPIXEL_BITS = 8;
 rrRenderer.RASTERIZER_MAX_SAMPLES_PER_FRAGMENT = 16;
 
+// Referenced from rrRasterizer.hpp
+
 /**
  * Get coverage bit value
  * @param {number} numSamples
@@ -581,6 +583,8 @@ rrRenderer.getCoverageAnyFragmentSampleLive = function(mask, numSamples, x, y) {
     return (mask & rrRenderer.getCoverageFragmentSampleBits(numSamples, x, y)) != 0;
 };
 
+// Referenced from rrRasterizer.cpp
+
 /**
  * Pixel coord to sub pixel coord
  * @param {number} v
@@ -617,7 +621,7 @@ rrRenderer.ceilSubpixelToPixelCoord = function(coord, fillEdge) {
 };
 
 /**
- * \brief Edge function
+ * \brief Edge function - referenced from struct EdgeFunction in rrRasterizer.hpp
  *
  * Edge function can be evaluated for point P (in a fixed-point coordinates
  * with RASTERIZER_SUBPIXEL_BITS fractional part) by computing
@@ -625,6 +629,8 @@ rrRenderer.ceilSubpixelToPixelCoord = function(coord, fillEdge) {
  *
  * D will be fixed-point value where lower (RASTERIZER_SUBPIXEL_BITS * 2) bits
  * will be fractional part.
+ *
+ * Member function evaluateEdge, reverseEdge and isInsideCCW are referenced from rrRasterizer.cpp.
  *
  * @param {number} a
  * @param {number} b
@@ -691,21 +697,23 @@ rrRenderer.initEdgeCCW = function(horizontalFill, verticalFill, x0, y0, x1, y1) 
 };
 
 /**
- * \brief Triangle rasterizer
+ * \brief Triangle rasterizer - referenced from class TriangleRasterizer in rrRasterizer.hpp
  *
  * Triangle rasterizer implements following features:
  * - Rasterization using fixed-point coordinates
- * - 1-sample rasterization
+ * - 1-sample rasterization (the value of numSamples always equals 1 in sglrReferenceContext)
  * - Depth interpolation
  * - Perspective-correct barycentric computation for interpolation
  * - Visible face determination
+ * - Clipping - native dEQP does clipping before rasterization; see function drawBasicPrimitives
+ *              in rrRenderer.cpp for more details
  *
  * It does not (and will not) implement following:
  * - Triangle setup
  * - Degenerate elimination
  * - Coordinate transformation (inputs are in screen-space)
  * - Culling - logic can be implemented outside by querying visible face
- * - Scissoring -(this can be done by controlling viewport rectangle)
+ * - Scissoring - (this can be done by controlling viewport rectangle)
  * - Any per-fragment operations
  *
  * @param {rrRenderState.RenderState} state
@@ -861,6 +869,14 @@ rrRenderer.triangleRasterizer.prototype.rasterize = function() {
         var barycentric1 = deMath.divide(b1, bSum);
         var barycentric2 = deMath.subtract(deMath.subtract([1, 1, 1, 1], barycentric0), barycentric1);
 
+        // In native dEQP, after rasterization, the pixel (x0, y0) actually represents four pixels:
+        // (x0, y0), (x0 + 1, y0), (x0, y0 + 1) and (x0 + 1, y0 + 1).
+        // The barycentrics and depths of these four pixels are to be computed after rasterization:
+        // barycentrics are computed in function shadeFragments in es3fFboTestUtil.cpp;
+        // depths are computed in function writeFragmentPackets in rrRenderer.cpp.
+
+        // In js, pixels are processed one after another, so their depths and barycentrics should be computed immediately.
+
         // Determine if (x0, y0), (x0 + 1, y0), (x0, y0 + 1), (x0 + 1, y0 + 1) can be rendered
         for (var fragNdx = 0; fragNdx < 4; fragNdx++) {
             var xo = fragNdx % 2;
@@ -868,16 +884,17 @@ rrRenderer.triangleRasterizer.prototype.rasterize = function() {
             var x = x0 + xo;
             var y = y0 + yo;
 
-            // The value of numSamples always equals 1 in sglrReferenceContext
+            // The value of numSamples always equals 1 in sglrReferenceContext.
             if(rrRenderer.getCoverageAnyFragmentSampleLive(coverage, 1, xo, yo)) {
-                // Barycentric coordinates
+                // Barycentric coordinates - referenced from function readTriangleVarying in rrShadingContext.hpp
                 var b = [barycentric0[fragNdx], barycentric1[fragNdx], barycentric2[fragNdx]];
 
-                // Depth
+                // Depth - referenced from writeFragmentPackets in rrRenderer.cpp
                 var depth = z0[fragNdx] * za + z1[fragNdx] * zb + zc;
                 depth = depth * depthScale + depthBias;
 
                 // Clip test
+                // Native dEQP does clipping test before rasterization.
                 if (!rrRenderer.clipTest(x, y, depth, this.m_viewport.rect))
                     continue;
 
@@ -912,6 +929,8 @@ rrRenderer.drawTriangles = function(state, renderTarget, program, vertexAttribs,
         return result;
     };
 
+    // Referenced from native dEQP Renderer::drawInstanced() in rrRenderer.cpp
+
     var primitives = new rrRenderer.PrimitiveList(primitive, count, first);
     // Do not draw if nothing to draw
     if (primitives.getNumElements() == 0)
@@ -941,6 +960,11 @@ rrRenderer.drawTriangles = function(state, renderTarget, program, vertexAttribs,
     }
     program.shadeVertices(vertexAttribs, vertexPackets, numVertexPackets);
 
+    // Referenced from native dEQP Renderer::rasterizePrimitive() for triangle rasterization in rrRenderer.cpp
+
+    // In native dEQP, only maxFragmentPackets packets are processed per rasterize-shade-write loop;
+    // in js all packets are processed in one loop.
+
     var rasterizer = new rrRenderer.triangleRasterizer(state);
 
     for (var prim = primitives.getNextPrimitive(true); prim.length > 0; prim = primitives.getNextPrimitive()) {
@@ -956,6 +980,8 @@ rrRenderer.drawTriangles = function(state, renderTarget, program, vertexAttribs,
         if ((state.cullMode == rrRenderState.CullMode.FRONT && rasterizer.m_face == rrDefs.FaceType.FACETYPE_FRONT) ||
             (state.cullMode == rrRenderState.CullMode.BACK && rasterizer.m_face == rrDefs.FaceType.FACETYPE_BACK))
         return;
+
+        /* TODO: Add Polygon Offset and Depth Clamp */
 
         // Compute a conservative integer bounding box for the triangle
         var minX = Math.floor(Math.min(v0[0], v1[0], v2[0]));
