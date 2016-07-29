@@ -134,9 +134,17 @@ var DE_ASSERT = function(x) {
             // Exceeds spec-mandated minimum - need to check.
             /** @const @type {goog.NumberArray} */ var supportedSampleCounts = es3fFboTestCase.querySampleCounts(sizedFormat);
             var supported = Array.prototype.slice.call(supportedSampleCounts);
-            if (supported.indexOf(numSamples) == -1)
-                throw new Error('Sample count not supported');
+            if (supported.indexOf(numSamples) == -1) {
+                if (numSamples >= 2) {
+                    testPassed("Sample count not supported, but it is allowed.");
+                    return false;
+                } else {
+                    throw new Error('Sample count not supported');
+                }
+            }
+            return true;
         }
+        return true;
     };
 
     /**
@@ -202,8 +210,11 @@ var DE_ASSERT = function(x) {
         /** @type {tcuSurface.Surface} */ var result = new tcuSurface.Surface(width, height);
 
         // Call preCheck() that can throw exception if some requirement is not met.
-        if (this.preCheck)
-            this.preCheck();
+        if (this.preCheck) {
+            var sampleCountSupported = this.preCheck();
+            if (!sampleCountSupported)
+                return tcuTestCase.IterateResult.STOP;
+        }
 
         // Render using GLES3.
         try {
