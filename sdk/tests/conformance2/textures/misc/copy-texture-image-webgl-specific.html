@@ -130,6 +130,50 @@ function copytexsubimage3d_valid_operation_diff_layer() {
     gl.deleteTexture(texture);
 }
 
+function copytexsubimage3d_texture_wrongly_initialized() {
+    debug("");
+    debug("Testing copytexsubimage3d_texture_wrongly_initialized");
+    var texture = [];
+    texture[0] = gl.createTexture();
+    texture[1] = gl.createTexture();
+    var layer = 0;
+    var width = 2;
+    var height = 2;
+    var depth = 2;
+    gl.bindTexture(gl.TEXTURE_2D, texture[0]);
+    var uint = new Uint8Array([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10]);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint);
+
+    var fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture[0], 0);
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
+        gl.bindTexture(gl.TEXTURE_3D, texture[1]);
+        gl.texStorage3D(gl.TEXTURE_3D, 1, gl.RGBA8, width, height, depth);
+        gl.copyTexSubImage3D(gl.TEXTURE_3D, 0, 0, 0, layer, 0, 0, width, height);
+        gl.framebufferTextureLayer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, texture[1], 0, layer);
+        var bytes = new Uint8Array(width*height*4);
+        gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, bytes);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "readpixel should succeed.");
+        for (var x = 0; x < width * height * 4; x++) {
+            if (bytes[x] != uint[x]) {
+                testFailed("byte comparison failure, byte at "+ x + " was " + bytes[x] +
+                ", should be " + uint[x]);
+                break;
+            }
+        }
+    } else {
+        testFailed("framebuffer not complete");
+    }
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindTexture(gl.TEXTURE_3D, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.deleteFramebuffer(fbo);
+    gl.deleteTexture(texture[0]);
+    gl.deleteTexture(texture[1]);
+};
+
 if (!gl) {
     testFailed("WebGL context does not exist");
 } else {
@@ -137,6 +181,7 @@ if (!gl) {
     copytexsubimage3d_invalid_operation_feedbackloops();
     copytexsubimage3d_valid_operation_diff_level();
     copytexsubimage3d_valid_operation_diff_layer();
+    copytexsubimage3d_texture_wrongly_initialized();
 }
 
 var successfullyParsed = true;
