@@ -63,10 +63,10 @@
         <code>UNSIGNED_BYTE</code> cannot be used for reading from a
         floating-point color buffer.</li>
 
-        <li>Multi-sample floating-point color renderbuffers may optionally be supported.
-        Applications must follow the limitations defined in the <a
+        <li>Multi-sample floating-point color renderbuffers may optionally be supported. Limitations
+        are defined in the <a
         href="http://www.khronos.org/registry/gles/extensions/EXT/EXT_color_buffer_float.txt">EXT_color_buffer_float</a>
-        extension, and check for framebuffer completeness after attaching such a renderbuffer.</li>
+        extension.</li>
 
         <li>The sized internal format <code>RGB16F</code> is not color-renderable in this
         extension.</li>
@@ -103,6 +103,10 @@ interface EXT_color_buffer_float {
     <revision date="2016/07/21">
       <change>Allowed allocation of multi-sample floating-point color renderbuffers as optional functionality.</change>
       <change>Changed XML tags to fix incorrect statement that there are no behavioral changes compared to the native extension.</change>
+    </revision>
+
+    <revision date="2016/08/03">
+      <change>Removed incorrect statement about framebuffer completeness and multi-sampled floating-point color renderbuffers.</change>
     </revision>
   </history>
 </extension>
