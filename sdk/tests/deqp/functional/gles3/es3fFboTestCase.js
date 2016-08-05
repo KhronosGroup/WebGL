@@ -135,7 +135,7 @@ var DE_ASSERT = function(x) {
             /** @const @type {goog.NumberArray} */ var supportedSampleCounts = es3fFboTestCase.querySampleCounts(sizedFormat);
             var supported = Array.prototype.slice.call(supportedSampleCounts);
             if (supported.indexOf(numSamples) == -1) {
-                if (numSamples >= 2) {
+                if (minSampleCount == 0 || numSamples > gl.getParameter(gl.MAX_SAMPLES)) {
                     testPassed("Sample count not supported, but it is allowed.");
                     return false;
                 } else {
