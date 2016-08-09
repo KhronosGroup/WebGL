@@ -4,6 +4,7 @@ copy-texture-image-webgl-specific.html
 gl-get-tex-parameter.html
 --min-version 2.0.1 integer-cubemap-texture-sampling.html
 mipmap-fbo.html
+multiple-write-to-sub-3d-texture.html
 tex-3d-size-limit.html
 tex-input-validation.html
 tex-mipmap-levels.html
