@@ -79,13 +79,15 @@ var DE_ASSERT = function(x) {
 
     es3fFboMultisampleTests.BasicFboMultisampleCase.prototype.preCheck = function() {
         this.checkFormatSupport(this.m_colorFormat);
-        var sampleCountSupported = this.checkSampleCount(this.m_colorFormat, this.m_numSamples);
+        if (!this.checkSampleCount(this.m_colorFormat, this.m_numSamples))
+            return false;
 
         if (this.m_depthStencilFormat != gl.NONE) {
             this.checkFormatSupport(this.m_depthStencilFormat);
-            sampleCountSupported = this.checkSampleCount(this.m_depthStencilFormat, this.m_numSamples);
+            if (!this.checkSampleCount(this.m_depthStencilFormat, this.m_numSamples))
+                return false;
         }
-        return sampleCountSupported;
+        return true; // No exception thrown
     };
 
     /**

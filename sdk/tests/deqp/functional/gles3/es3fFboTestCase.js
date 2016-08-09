@@ -136,7 +136,7 @@ var DE_ASSERT = function(x) {
             var supported = Array.prototype.slice.call(supportedSampleCounts);
             if (supported.indexOf(numSamples) == -1) {
                 if (minSampleCount == 0 || numSamples > gl.getParameter(gl.MAX_SAMPLES)) {
-                    testPassed("Sample count not supported, but it is allowed.");
+                    checkMessage(false, "Sample count not supported, but it is allowed.");
                     return false;
                 } else {
                     throw new Error('Sample count not supported');
@@ -210,11 +210,8 @@ var DE_ASSERT = function(x) {
         /** @type {tcuSurface.Surface} */ var result = new tcuSurface.Surface(width, height);
 
         // Call preCheck() that can throw exception if some requirement is not met.
-        if (this.preCheck) {
-            var sampleCountSupported = this.preCheck();
-            if (!sampleCountSupported)
-                return tcuTestCase.IterateResult.STOP;
-        }
+        if (this.preCheck && !this.preCheck())
+            return tcuTestCase.IterateResult.STOP;
 
         // Render using GLES3.
         try {
