@@ -649,6 +649,7 @@ goog.scope(function() {
     es3fFramebufferBlitTests.BlitColorConversionCase.prototype.preCheck = function() {
         this.checkFormatSupport(this.m_srcFormat);
         this.checkFormatSupport(this.m_dstFormat);
+        return true; // No exception thrown
     };
 
     /**
@@ -805,6 +806,7 @@ goog.scope(function() {
      */
     es3fFramebufferBlitTests.BlitDepthStencilCase.prototype.preCheck = function() {
         this.checkFormatSupport(this.m_format);
+        return true; // No exception thrown
     };
 
     /**
@@ -972,6 +974,7 @@ goog.scope(function() {
      */
     es3fFramebufferBlitTests.BlitDefaultFramebufferCase.prototype.preCheck = function() {
         this.checkFormatSupport(this.m_format);
+        return true; // No exception thrown
     };
 
     /**

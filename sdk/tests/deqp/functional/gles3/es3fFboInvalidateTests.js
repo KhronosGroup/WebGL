@@ -453,6 +453,7 @@ setParentClass(es3fFboInvalidateTests.InvalidateFboRenderCase, es3fFboTestCase.F
 es3fFboInvalidateTests.InvalidateFboRenderCase.prototype.preCheck = function() {
     if (this.m_colorFmt != gl.NONE) this.checkFormatSupport(this.m_colorFmt);
     if (this.m_depthStencilFmt != gl.NONE) this.checkFormatSupport(this.m_depthStencilFmt);
+    return true; // No exception thrown
 };
 
 es3fFboInvalidateTests.InvalidateFboRenderCase.prototype.render = function(dst) {
@@ -557,6 +558,7 @@ setParentClass(es3fFboInvalidateTests.InvalidateFboUnbindReadCase, es3fFboTestCa
 es3fFboInvalidateTests.InvalidateFboUnbindReadCase.prototype.preCheck = function() {
     if (this.m_colorFmt != gl.NONE) this.checkFormatSupport(this.m_colorFmt);
     if (this.m_depthStencilFmt != gl.NONE) this.checkFormatSupport(this.m_depthStencilFmt);
+    return true; // No exception thrown
 };
 
 es3fFboInvalidateTests.InvalidateFboUnbindReadCase.prototype.render = function(dst) {
@@ -667,6 +669,7 @@ setParentClass(es3fFboInvalidateTests.InvalidateFboUnbindBlitCase, es3fFboTestCa
 es3fFboInvalidateTests.InvalidateFboUnbindBlitCase.prototype.preCheck = function() {
     if (this.m_colorFmt != gl.NONE) this.checkFormatSupport(this.m_colorFmt);
     if (this.m_depthStencilFmt != gl.NONE) this.checkFormatSupport(this.m_depthStencilFmt);
+    return true; // No exception thrown
 };
 
 es3fFboInvalidateTests.InvalidateFboUnbindBlitCase.prototype.render = function(dst) {
@@ -787,6 +790,7 @@ setParentClass(es3fFboInvalidateTests.InvalidateSubFboUnbindReadCase, es3fFboTes
 es3fFboInvalidateTests.InvalidateSubFboUnbindReadCase.prototype.preCheck = function() {
     if (this.m_colorFmt != gl.NONE) this.checkFormatSupport(this.m_colorFmt);
     if (this.m_depthStencilFmt != gl.NONE) this.checkFormatSupport(this.m_depthStencilFmt);
+    return true; // No exception thrown
 };
 
 es3fFboInvalidateTests.InvalidateSubFboUnbindReadCase.prototype.compare = function(reference, result) {
@@ -915,6 +919,7 @@ setParentClass(es3fFboInvalidateTests.InvalidateSubFboRenderCase, es3fFboTestCas
 es3fFboInvalidateTests.InvalidateSubFboRenderCase.prototype.preCheck = function() {
     if (this.m_colorFmt != gl.NONE) this.checkFormatSupport(this.m_colorFmt);
     if (this.m_depthStencilFmt != gl.NONE) this.checkFormatSupport(this.m_depthStencilFmt);
+    return true; // No exception thrown
 };
 
 es3fFboInvalidateTests.InvalidateSubFboRenderCase.prototype.render = function(dst) {
@@ -1014,6 +1019,7 @@ setParentClass(es3fFboInvalidateTests.InvalidateSubFboUnbindBlitCase, es3fFboTes
 es3fFboInvalidateTests.InvalidateSubFboUnbindBlitCase.prototype.preCheck = function() {
     if (this.m_colorFmt != gl.NONE) this.checkFormatSupport(this.m_colorFmt);
     if (this.m_depthStencilFmt != gl.NONE) this.checkFormatSupport(this.m_depthStencilFmt);
+    return true; // No exception thrown
 };
 
 es3fFboInvalidateTests.InvalidateSubFboUnbindBlitCase.prototype.render = function(dst) {
