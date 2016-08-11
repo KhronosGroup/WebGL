@@ -816,11 +816,13 @@ var getTypedArrayElementsPerPixel = function(gl, format, type) {
  *        where each element is in the range 0 to 255.
  * @param {number} opt_level The level of the texture to fill. Default = 0.
  * @param {number} opt_format The format for the texture.
+ * @param {number} opt_internalFormat The internal format for the texture.
  */
-var fillTexture = function(gl, tex, width, height, color, opt_level, opt_format, opt_type) {
+var fillTexture = function(gl, tex, width, height, color, opt_level, opt_format, opt_type, opt_internalFormat) {
   opt_level = opt_level || 0;
   opt_format = opt_format || gl.RGBA;
   opt_type = opt_type || gl.UNSIGNED_BYTE;
+  opt_internalFormat = opt_internalFormat || opt_format;
   var pack = gl.getParameter(gl.UNPACK_ALIGNMENT);
   var numComponents = color.length;
   var bytesPerComponent = getBytesPerComponent(gl, opt_type);
@@ -839,7 +841,7 @@ var fillTexture = function(gl, tex, width, height, color, opt_level, opt_format,
   }
   gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.texImage2D(
-      gl.TEXTURE_2D, opt_level, opt_format, width, height, 0,
+      gl.TEXTURE_2D, opt_level, opt_internalFormat, width, height, 0,
       opt_format, opt_type, buf);
 };
 
@@ -2391,11 +2393,11 @@ var makeVideo = function(src, onerror) {
  */
 var insertImage = function(element, caption, img) {
   var div = document.createElement("div");
-  div.appendChild(img);
   var label = document.createElement("div");
   label.appendChild(document.createTextNode(caption));
   div.appendChild(label);
-   element.appendChild(div);
+  div.appendChild(img);
+  element.appendChild(div);
 };
 
 /**
