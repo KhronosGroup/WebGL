@@ -321,6 +321,9 @@ interface WebGL2RenderingContextBase
   // can not be exposed safely to JavaScript. GetBufferSubData
   // replaces it for the purpose of fetching data back from the GPU.
   void getBufferSubData(GLenum target, GLintptr offset, ArrayBuffer? returnedData);
+  // Asynchronous version of getBufferSubData which fulfills the returned promise when the data becomes available.
+  Promise<ArrayBuffer> getBufferSubDataAsync(GLenum target, GLintptr offset, ArrayBuffer returnedData,
+                                             unsigned long returnedOffset = 0, unsigned long returnedSize = 0);
 
   /* Framebuffer objects */
   void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0,
@@ -404,8 +407,6 @@ interface WebGL2RenderingContextBase
   void vertexAttribDivisor(GLuint index, GLuint divisor);
   void drawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount);
   void drawElementsInstanced(GLenum mode, GLsizei count, GLenum type, GLintptr offset, GLsizei instanceCount);
-  /* TODO(kbr): argue against exposing this because it can't safely
-     offer better performance than drawElements */
   void drawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, GLintptr offset);
 
   /* Reading back pixels */
@@ -464,7 +465,6 @@ interface WebGL2RenderingContextBase
   any getActiveUniforms(WebGLProgram? program, sequence<GLuint> uniformIndices, GLenum pname);
   GLuint getUniformBlockIndex(WebGLProgram? program, DOMString uniformBlockName);
   any getActiveUniformBlockParameter(WebGLProgram? program, GLuint uniformBlockIndex, GLenum pname);
-  /* TODO: if there were a fake enum for GL_UNIFORM_BLOCK_NAME, then this could be folded into getActiveUniformBlockParameter */
   DOMString? getActiveUniformBlockName(WebGLProgram? program, GLuint uniformBlockIndex);
   void uniformBlockBinding(WebGLProgram? program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
 

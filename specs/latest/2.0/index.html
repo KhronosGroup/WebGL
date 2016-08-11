@@ -705,6 +705,9 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   // can not be exposed safely to JavaScript. GetBufferSubData
   // replaces it for the purpose of fetching data back from the GPU.
   void getBufferSubData(GLenum target, GLintptr offset, ArrayBuffer? returnedData);
+  // Asynchronous version of getBufferSubData which fulfills the returned promise when the data becomes available.
+  Promise&lt;ArrayBuffer&gt; getBufferSubDataAsync(GLenum target, GLintptr offset, ArrayBuffer returnedData,
+                                             unsigned long returnedOffset = 0, unsigned long returnedSize = 0);
 
   /* Framebuffer objects */
   void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0,
@@ -1083,7 +1086,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         beyond the end of the buffer an <code>INVALID_VALUE</code> error is generated.
         If <code>returnedData</code> is null then an <code>INVALID_VALUE</code> error is generated.
         If <code>offset</code> is less than zero, an <code>INVALID_VALUE</code> error is generated.
-        If zero is bound to <code>target</code>, an <code>INVALID_OPERATION</code> error is generated.
+        If no WebGLBuffer is bound to <code>target</code>, an <code>INVALID_OPERATION</code> error is generated.
         If <code>target</code> is <code>TRANSFORM_FEEDBACK_BUFFER</code>, and any transform feedback object
         is currently active, an <code>INVALID_OPERATION</code> error is generated.
         If any error is generated, no data is written to <code>returnedData</code>.
@@ -1091,6 +1094,64 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         If the buffer is written and read sequentially by other operations and <code>getBufferSubData</code>,
         it is the responsibility of the WebGL API to ensure that data are accessed consistently. This applies
         even if the buffer is currently bound to a transform feedback binding point.
+      </dd>
+      <dt>
+        <p class="idl-code">Promise&lt;ArrayBuffer&gt; getBufferSubDataAsync(GLenum target, GLintptr offset, ArrayBuffer returnedData, unsigned long returnedOffset = 0, unsigned long returnedSize = 0)
+        </p>
+      </dt>
+      <dd>
+        Let <code>buffer</code> be the WebGLBuffer bound to the passed
+        target. Read <code>numBytes</code> bytes from <code>buffer</code> starting at byte
+        offset <code>offset</code> and write them to <code>returnedData</code> starting at byte
+        offset <code>returnedOffset</code>. <code>numBytes</code> is computed via the following
+        algorithm:
+
+        <ul>
+        <li> If <code>returnedSize</code> is zero, <code>numBytes = returnedData.byteLength - returnedOffset</code></li>
+        <li> Otherwise, <code>numBytes = returnedSize</code>.
+        </ul>
+
+        This command executes serially with respect to others in the command stream, but the data is
+        only written to <code>returnedData</code> when the promise is fulfilled; it is available in
+        the Promise's success callback, but not earlier.
+
+        <br><br>
+        If a failure occurs that prevents the promise from being fulfilled, such as:
+
+        <ul>
+          <li>no WebGLBuffer is bound to <code>target</code></li>
+          <li><code>offset</code> is less than zero</li>
+          <li><code>offset + numBytes</code> would extend beyond the end of <code>buffer</code></li>
+          <li><code>returnedOffset + numBytes</code> would extend beyond the end of <code>returnedData</code>
+          <li><code>target</code> is <code>TRANSFORM_FEEDBACK_BUFFER</code>, and any transform feedback object
+            is currently active</li>
+          <li>the context is lost before the Promise is fulfilled</li>
+        <ul>
+
+        <br><br>
+
+        then the returned Promise is rejected with an "InvalidStateError" DOMException, and no data
+        is written to <code>returnedData</code>. The Promise is rejected synchronously for all
+        failures except context loss.
+
+        <br><br>
+
+        Otherwise, the Promise is fulfilled when the data becomes available,
+        and <code>returnedData</code>, originally passed to <code>getBufferSubDataAsync</code>, is
+        passed to the success callback.
+
+        <br><br>
+        If the buffer is written and read sequentially by other operations
+        and <code>getBufferSubDataAsync</code>, it is the responsibility of the WebGL API to ensure
+        that data are accessed consistently. This applies even if the buffer is currently bound to a
+        transform feedback binding point.
+
+        <div class="note">
+          Compared to the synchronous version of <code>getBufferSubData</code>, this version may
+          impose less overhead on applications. Intended use cases include reading pixels into a
+          pixel buffer object and examining that data on the CPU. It does not force the graphics
+          pipeline to be stalled as <code>getBufferSubData</code> does.
+        </div>
       </dd>
     </dl>
 
@@ -1250,7 +1311,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
-      <dd>        
+      <dd>
         <p>Accepts internal formats from OpenGL ES 3.0 as detailed in the <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.4.2">specification</a> and <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glRenderbufferStorage.xhtml" class="nonnormative">man page</a>.</p>
         <p>To be backward compatible with WebGL 1, also accepts internal format <code>DEPTH_STENCIL</code>, which should be mapped to <code>DEPTH24_STENCIL8</code> by implementations.</p>
       </dd>
@@ -1936,7 +1997,7 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
       </dd>
     </dl>
 
-    <p>      
+    <p>
         During calls to <code>drawElements</code>, <code>drawArrays</code>, <code>drawRangeElements</code> and their
         instanced variants, WebGL 2 performs additional error checking beyond that specified in OpenGL ES 3.0:
         <ul>
