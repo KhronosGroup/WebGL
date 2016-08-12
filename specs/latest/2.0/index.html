@@ -1612,9 +1612,9 @@ match the <em>type</em> according to the <a href="#TEXTURE_PIXELS_TYPE_TABLE">ab
         If an attempt is made to call this function with no WebGLTexture bound (see above), an
         <code>INVALID_OPERATION</code> error is generated. <br><br>
 
-        For any pixel lying outside the frame buffer, all channels of the associated texel are
-        initialized to 0; see <a href="../1.0/index.html#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the
-        Framebuffer</a>. <br><br>
+        For any pixel lying outside the frame buffer, the corresponding destination pixel remains
+        untouched; see <a href="../1.0/index.html#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside
+        the Framebuffer</a>. <br><br>
       </dd>
 
       <dt>
