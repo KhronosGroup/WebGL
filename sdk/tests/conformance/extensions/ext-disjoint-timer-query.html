@@ -241,18 +241,21 @@ function verifyQueryResultsNotAvailable() {
 }
 
 function checkQueryResults() {
-    if (availability_retry > 0 && (timestamp_counter_bits == 0 ||
-        !ext.getQueryObjectEXT(timestamp_query2, ext.QUERY_RESULT_AVAILABLE_EXT))) {
-        var error = gl.getError();
-        if (error != gl.NO_ERROR) {
-            testFailed("getQueryObjectEXT should have no errors: " + wtu.glEnumToString(gl, error));
-            debug("");
-            finishTest();
+    if (availability_retry > 0) {
+        // Make a reasonable attempt to wait for the queries' results to become available.
+        if (!ext.getQueryObjectEXT(elapsed_query, ext.QUERY_RESULT_AVAILABLE_EXT) ||
+            (timestamp_counter_bits > 0 && !ext.getQueryObjectEXT(timestamp_query2, ext.QUERY_RESULT_AVAILABLE_EXT))) {
+            var error = gl.getError();
+            if (error != gl.NO_ERROR) {
+                testFailed("getQueryObjectEXT should have no errors: " + wtu.glEnumToString(gl, error));
+                debug("");
+                finishTest();
+                return;
+            }
+            availability_retry--;
+            window.requestAnimationFrame(checkQueryResults);
             return;
         }
-        availability_retry--;
-        window.requestAnimationFrame(checkQueryResults);
-        return;
     }
 
     debug("");
