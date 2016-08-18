@@ -36,10 +36,10 @@
 <script>
 "use strict";
 
-// These declarations need to be global for "shouldBe" to see them
-var gl;
-var pixel = [0, 0, 0, 1];
 var wtu = WebGLTestUtils;
+
+// This declaration needs to be global for "shouldBe" to see it
+var gl;
 
 function init()
 {
@@ -50,7 +50,7 @@ function init()
 
 function getWebGL(contextAttribs)
 {
-    return WebGLTestUtils.create3DContext("c", contextAttribs);
+    return wtu.create3DContext("c", contextAttribs);
 }
 
 function runTest()
@@ -61,9 +61,8 @@ function runTest()
     // Clear to black. Alpha channel of clearColor() is ignored.
     gl.clearColor(0.0, 0.0, 0.0, 0.7);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
-    pixel[3] = buf[3];
-    shouldBeTrue("pixel[3] == 255");
+    wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 0, 0, 255],
+                        "Alpha channel of clearColor should be ignored");
 
     wtu.waitForComposite(function() {
         // Make a new framebuffer and attach a texture with an alpha channel.
@@ -77,15 +76,14 @@ function runTest()
         // Clear texture. Note that alpha channel is not 1.0.
         gl.clearColor(1.0, 0.0, 0.0, 0.5);
         gl.clear(gl.COLOR_BUFFER_BIT);
-        gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
-        pixel[3] = buf[3];
-        shouldBeTrue("pixel[3] == 128");
+        wtu.checkCanvasRect(gl, 0, 0, 1, 1, [255, 0, 0, 128],
+                            "Alpha channel of clearColor should be obeyed for FBO with alpha channel",
+                            1);
 
         // Bind back buffer and check that its alpha channel is still 1.0.
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, buf);
-        pixel[3] = buf[3];
-        shouldBeTrue("pixel[3] == 255");
+        wtu.checkCanvasRect(gl, 0, 0, 1, 1, [0, 0, 0, 255],
+                            "Alpha channel of back buffer should still be 255");
         finishTest();
     });
 }
