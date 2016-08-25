@@ -170,6 +170,8 @@ goog.scope(function() {
 
         _setReason("Missing shadow sampler functions in D3D11");
         // https://github.com/KhronosGroup/WebGL/issues/1870
+        // deqp/functional/gles3/shadertexturefunction/texture.html
+        _skip("texture_functions.texture.sampler2darrayshadow_vertex");
         // deqp/functional/gles3/shadertexturefunction/texturelod.html
         _skip("texture_functions.texturelod.sampler2dshadow_vertex");
         _skip("texture_functions.texturelod.sampler2dshadow_fragment");
