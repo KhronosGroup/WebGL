@@ -148,6 +148,12 @@ goog.scope(function() {
         _skip("render.recreate_color.rbo_r11f_g11f_b10f_depth_stencil_rbo_depth24_stencil8");
         // deqp/functional/gles3/fbocolorbuffer/clear.html
         _skip("color.clear.r11f_g11f_b10f");
+        // deqp/functional/gles3/fbomultisample.2_samples.html
+        _skip("msaa.2_samples.r11f_g11f_b10f");
+        // deqp/functional/gles3/fbomultisample.4_samples.html
+        _skip("msaa.4_samples.r11f_g11f_b10f");
+        // deqp/functional/gles3/fbomultisample.8_samples.html
+        _skip("msaa.8_samples.r11f_g11f_b10f");
 
         _setReason("HLSL compiler bugs");
         // deqp/functional/gles3/shaderloop_for.html
