@@ -48,7 +48,7 @@ function testRenderbuffer(width, height) {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from getInternalformatParameter()");
 
     if (!samples || samples.length == 0) {
-        testFailed("getInternalformatParameter on RGB8 fails to return valid sampels");
+        testFailed("getInternalformatParameter on RGB8 fails to return valid samples");
         return;
     }
 
