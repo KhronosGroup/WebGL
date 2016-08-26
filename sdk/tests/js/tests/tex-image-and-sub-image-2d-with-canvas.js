@@ -116,7 +116,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         }
       }
       testPassed("Pixel values in source canvas remain unchanged after canvas used in webgl texture.");
-    }    
+    }
 
     function runOneIteration(canvas, useTexSubImage2D, flipY, program, bindingTarget, opt_texture, opt_fontTest)
     {

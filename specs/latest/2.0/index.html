@@ -763,8 +763,10 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
                   GLsizei depth, GLint border, GLenum format, GLenum type,
                   TexImageSource source); // May throw DOMException
   void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height,
+                  GLsizei depth, GLint border, GLenum format, GLenum type, ArrayBufferView? srcData);
+  void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height,
                   GLsizei depth, GLint border, GLenum format, GLenum type, ArrayBufferView srcData,
-                  optional GLuint srcOffset = 0);
+                  GLuint srcOffset);
 
   void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width,
                      GLsizei height, GLenum format, GLenum type, GLintptr pboOffset);
@@ -983,6 +985,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           <table>
               <tr><th>target</th></tr>
               <tr><td>ARRAY_BUFFER</td></tr>
+              <tr><td>COPY_READ_BUFFER</td></tr>
+              <tr><td>COPY_WRITE_BUFFER</td></tr>
               <tr><td>ELEMENT_ARRAY_BUFFER</td></tr>
               <tr><td>PIXEL_PACK_BUFFER</td></tr>
               <tr><td>PIXEL_UNPACK_BUFFER</td></tr>
@@ -1808,9 +1812,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         If an attempt is made to call this function with no WebGLTexture bound (see above), an
         <code>INVALID_OPERATION</code> error is generated. <br><br>
 
-        For any pixel lying outside the frame buffer, all channels of the associated texel are
-        initialized to 0; see <a href="../1.0/index.html#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the
-        Framebuffer</a>. <br><br>
+        For any pixel lying outside the frame buffer, the corresponding destination pixel remains
+        untouched; see <a href="../1.0/index.html#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside
+        the Framebuffer</a>. <br><br>
       </dd>
 
       <dt>

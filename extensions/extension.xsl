@@ -343,9 +343,14 @@
               function.
             </li>
           </xsl:for-each>
+          <xsl:for-each select="input">
+            <li>
+                <code><xsl:call-template name="shader_variable"/></code> is a built-in input.
+            </li>
+          </xsl:for-each>
           <xsl:for-each select="output">
             <li>
-                <code><xsl:call-template name="shader_output"/></code> is a built-in output.
+                <code><xsl:call-template name="shader_variable"/></code> is a built-in output.
             </li>
           </xsl:for-each>
         </ul>
@@ -450,9 +455,12 @@
   <xsl:text>)</xsl:text>
 </xsl:template>
 
-<xsl:template name="shader_output">
+<xsl:template name="shader_variable">
   <xsl:value-of select="@type"/><xsl:text> </xsl:text>
   <xsl:value-of select="@name"/>
+  <xsl:if test="@suffix">
+    <xsl:value-of select="@suffix"/>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="revision">
