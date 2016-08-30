@@ -1,5 +1,6 @@
 compressed-tex-image.html
 copy-texture-image.html
+copy-texture-image-luma-format.html
 copy-texture-image-webgl-specific.html
 gl-get-tex-parameter.html
 --min-version 2.0.1 integer-cubemap-texture-sampling.html
