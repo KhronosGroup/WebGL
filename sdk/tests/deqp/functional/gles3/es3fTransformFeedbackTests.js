@@ -1034,7 +1034,7 @@ goog.scope(function() {
                 }
                 // Fall through
             case es3fTransformFeedbackTests.State.FINISH:
-                if (!this.m_testPassed) testFailedOptions('Result comparison failed', false);
+                if (!this.m_testPassed) testFailedOptions('Result comparison failed for iteration ' + s.iterations[this.m_iterNdx - 1], false);
                 else testPassedOptions('Result comparison succeeded', true);
                 return tcuTestCase.IterateResult.STOP;
         }
