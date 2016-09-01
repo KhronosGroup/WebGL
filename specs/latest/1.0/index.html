@@ -2152,7 +2152,8 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             bound to this target is unbound. A given WebGLBuffer object may only be bound to one of
             the ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER target in its lifetime. An attempt to bind a
             buffer object to the other target will generate an <code>INVALID_OPERATION</code> error, and the
-            current binding will remain untouched.
+            current binding will remain untouched. An attempt to bind a deleted buffer will generate an
+            <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.
 
         <dt class="idl-code">void bufferData(GLenum target, GLsizeiptr size, GLenum usage)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferData.xml">man page</a>)</span>
@@ -2229,7 +2230,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             (<code class="param">target</code>), which must be <code class="enum">FRAMEBUFFER</code>.
             If <code class="param">framebuffer</code> is null, the default framebuffer provided by the context
             is bound and attempts to modify or query state on <code class="param">target</code> <code class="enum">FRAMEBUFFER</code>
-            will generate an <code class="error">INVALID_OPERATION</code> error.
+            will generate an <code class="error">INVALID_OPERATION</code> error. An attempt to bind a deleted framebuffer will generate an
+            <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.
+
 
         <dt class="idl-code"><a name="CHECK_FRAMEBUFFER_STATUS">[WebGLHandlesContextLoss] GLenum checkFramebufferStatus</a>(GLenum target)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.4.5">OpenGL ES 2.0 &sect;4.4.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCheckFramebufferStatus.xml">man page</a>)</span>
@@ -2299,7 +2302,8 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             Bind the given <code class="interface">WebGLRenderbuffer</code> object to the given binding point
             (<code class="param">target</code>), which must be <code class="enum">RENDERBUFFER</code>.
             If <code class="param">renderbuffer</code> is null the renderbuffer object currently bound to
-            this <code class="param">target</code> is unbound.
+            this <code class="param">target</code> is unbound. An attempt to bind a deleted renderbuffer will
+            generate an <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.
 
         <dt class="idl-code">WebGLRenderbuffer? createRenderbuffer()
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenRenderbuffers.xml">glGenRenderbuffers</a>)</span>
@@ -2359,6 +2363,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
     <dl class="methods">
         <dt class="idl-code">void bindTexture(GLenum target, WebGLTexture? texture)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindTexture.xml">man page</a>)</span>
+        <dd>
+            An attempt to bind a deleted texture will generate an <code>INVALID_OPERATION</code> error, and
+            the current binding will remain untouched.
 
         <dt><p class="idl-code"><a name="COMPRESSEDTEXIMAGE2D">void compressedTexImage2D</a>(GLenum target, GLint level, GLenum internalformat,
                     GLsizei width, GLsizei height, GLint border, ArrayBufferView pixels)

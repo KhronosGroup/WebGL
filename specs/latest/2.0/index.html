@@ -1012,6 +1012,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </table>
           <p>If <em>framebuffer</em> is null, the default framebuffer provided by the context is bound.</p>
           <p>If <em>target</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>An attempt to bind a deleted framebuffer will generate an <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.</p>
       </dd>
 
       <dt class="idl-code">void bindTexture(GLenum target, WebGLTexture? texture)
@@ -1027,6 +1028,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
               <tr><td>TEXTURE_CUBE_MAP</td></tr>
           </table>
           <p>If <em>target</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
+          <p>An attempt to bind a deleted texture will generate an <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.</p>
       </dd>
     </dl>
 
@@ -2477,7 +2479,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         state of the texture bound to that texture unit. If <code class="param">sampler</code> is null, the
         currently bound sampler is unbound from the texture unit. A single sampler object may be bound to
         multiple texture units simultaneously. <br><br>
-        If <em>unit</em> is greater than or equal to the value of <code>MAX_COMBINED_TEXTURE_IMAGE_UNITS</code>, generates an <code>INVALID_VALUE</code> error.
+        If <em>unit</em> is greater than or equal to the value of <code>MAX_COMBINED_TEXTURE_IMAGE_UNITS</code>, generates an <code>INVALID_VALUE</code> error.<br><br>
+        An attempt to bind a deleted sampler will generate an <code>INVALID_OPERATION</code> error,
+        and the current binding will remain untouched.
       </dd>
       <dt>
         <p class="idl-code">void samplerParameteri(WebGLSampler? sampler, GLenum pname, GLint param)</p>
@@ -2716,6 +2720,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             Bind the given <code class="interface">WebGLTransformFeedback</code> object.
             If <code class="param">transformFeedback</code> is null, the default transform feedback object provided by the context
             is bound.
+            An attempt to bind a deleted transform feedback will generate a <code>INVALID_OPERATION</code> error, and the current
+            binding will remain untouched.
 
         <dt class="idl-code">void beginTransformFeedback(GLenum primitiveMode)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.2">OpenGL ES 3.0.4 &sect;2.14.2</a>,
@@ -2770,7 +2776,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glBindBufferRange.xhtml">man page</a>)</span>
         <dd>
             Binds a range of the <code class="interface">WebGLBuffer</code> object buffer represented by <code class="param">offset</code> and <code class="param">size</code>
-            to the binding point at <code class="param">index</code> of the array of targets specified by <code class="param">target</code>
+            to the binding point at <code class="param">index</code> of the array of targets specified by <code class="param">target</code>.
 
         <dt class="idl-code">sequence&lt;GLuint&gt;? getUniformIndices(WebGLProgram? program, sequence&lt;DOMString&gt; uniformNames)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
@@ -2853,6 +2859,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             Bind the given <code class="interface">WebGLVertexArrayObject</code> object.
             If <code class="param">vertexArray</code> is null, the default vertex array provided by the context
             is bound.
+            An attempt to bind a deleted vertex array will generate a <code>INVALID_OPERATION</code> error, and
+            the current binding will remain untouched.
 
         <dt class="idl-code">WebGLVertexArrayObject? createVertexArray()
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.10">OpenGL ES 3.0.4 &sect;2.10</a>,
@@ -3079,6 +3087,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         according to the table above. Binding a buffer with type <em>undefined</em> to
         the <code>COPY_READ_BUFFER</code> or <code>COPY_WRITE_BUFFER</code> binding points will set
         its type to <em>other data</em>.
+    </p>
+
+    <p>
+        Any call to one of these functions which attempts to bind a deleted buffer will generate a
+        <code>INVALID_OPERATION</code> error, and the binding will remain untouched.
     </p>
 
     <p>
