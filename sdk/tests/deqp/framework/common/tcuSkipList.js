@@ -230,6 +230,12 @@ goog.scope(function() {
         // crbug.com/621178
         // deqp/functional/gles3/uniformapi/random.html
         _skip("uniform_api.random.64");
+
+        _setReason("Mac AMD / Linux AMD / older mesa handles clipping of wide points incorrectly");
+        // crbug.com/642822
+        // deqp/functional/gles3/clipping.html
+        _skip("clipping.wide_points_full_viewport");
+        _skip("clipping.wide_points_partial_viewport");
     } // if (!runSkippedTests)
 
     /*
@@ -255,8 +261,8 @@ goog.scope(function() {
         var skipEntry;
         for (var key in _wildcardSkipEntries) {
             if (testName.indexOf(key) >=0 ) {
-	        skipEntry = _wildcardSkipEntries[key];
-	        if (skipEntry != undefined) {
+                skipEntry = _wildcardSkipEntries[key];
+                if (skipEntry != undefined) {
                     return { 'skip': true, 'reason': skipEntry };
                 }
             }

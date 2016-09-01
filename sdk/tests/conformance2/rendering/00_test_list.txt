@@ -1,5 +1,6 @@
 attrib-type-match.html
 clear-func-buffer-type-match.html
+--min-version 2.0.1 clipping-wide-points.html
 draw-buffers.html
 element-index-uint.html
 framebuffer-completeness-unaffected.html
