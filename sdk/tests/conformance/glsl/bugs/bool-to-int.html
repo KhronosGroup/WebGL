@@ -1,0 +1,153 @@
+<!--
+
+/*
+** Copyright (c) 2016 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Verify int(bool) works correctly (Mac AMD driver bug)</title>
+<link rel="stylesheet" href="../../../resources/js-test-style.css"/>
+<script src="../../../js/js-test-pre.js"></script>
+<script src="../../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<canvas id="canvas" width="2" height="2"> </canvas>
+<div id="description"></div>
+<div id="console"></div>
+<script id="vshader1" type="x-shader/x-vertex">
+attribute vec3 aPosition;
+varying mediump float fvalue;
+uniform bool bvalue;
+
+void main() {
+    gl_Position = vec4(aPosition, 1);
+    int ivalue = int(bvalue);
+    if (ivalue == 0) {
+        fvalue = 0.0;
+    } else if (ivalue == 1) {
+        fvalue = 1.0;
+    } else {
+        fvalue = -1.0;
+    }
+}
+</script>
+<script id="fshader1" type="x-shader/x-fragment">
+varying mediump float fvalue;
+
+void main() {
+    if (fvalue == 1.0)
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    else if (fvalue == 0.0)
+        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+    else
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+}
+</script>
+
+<script id="vshader2" type="x-shader/x-vertex">
+attribute vec3 aPosition;
+
+void main() {
+    gl_Position = vec4(aPosition, 1);
+}
+</script>
+<script id="fshader2" type="x-shader/x-fragment">
+uniform bool bvalue;
+
+void main() {
+    int ivalue = int(bvalue);
+
+    if (ivalue == 1)
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    else if (ivalue == 0)
+        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+    else
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+}
+</script>
+
+<script type="application/javascript">
+"use strict";
+description("Verify int(bool) works correctly");
+debug("");
+var wtu = WebGLTestUtils;
+function test() {
+    var gl = wtu.create3DContext("canvas");
+    if (!gl) {
+        testFailed("context does not exist");
+        return;
+    }
+    wtu.setupUnitQuad(gl);
+
+    var program = wtu.setupProgram(gl, ["vshader1", "fshader1"], ["aPosition"]);
+    if (!program) {
+        testFailed("Fail to set up program");
+        return;
+    }
+    var uniformLoc = gl.getUniformLocation(program, 'bvalue');
+
+    debug("");
+    debug("Testing vertex shader int(false)");
+    gl.uniform1i(uniformLoc, 0);
+    wtu.drawUnitQuad(gl);
+    wtu.checkCanvas(gl, [0, 255, 0, 255]);
+
+    debug("");
+    debug("Testing vertex shader int(true)");
+    gl.uniform1i(uniformLoc, 1);
+    wtu.drawUnitQuad(gl);
+    wtu.checkCanvas(gl, [255, 0, 0, 255]);
+
+    program = wtu.setupProgram(gl, ["vshader2", "fshader2"], ["aPosition"]);
+    if (!program) {
+        testFailed("Fail to set up program");
+        return;
+    }
+    uniformLoc = gl.getUniformLocation(program, 'bvalue');
+
+    debug("");
+    debug("Testing fragment shader int(false)");
+    gl.uniform1i(uniformLoc, 0);
+    wtu.drawUnitQuad(gl);
+    wtu.checkCanvas(gl, [0, 255, 0, 255]);
+
+    debug("");
+    debug("Testing fragment shader int(true)");
+    gl.uniform1i(uniformLoc, 1);
+    wtu.drawUnitQuad(gl);
+    wtu.checkCanvas(gl, [255, 0, 0, 255]);
+};
+
+test();
+
+debug("");
+var successfullyParsed = true;
+</script>
+<script src="../../../js/js-test-post.js"></script>
+</body>
+</html>
+
