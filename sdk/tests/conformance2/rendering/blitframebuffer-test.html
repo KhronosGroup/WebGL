@@ -1,0 +1,177 @@
+<!--
+
+/*
+** Copyright (c) 2016 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL BlitFramebuffer Tests</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<canvas id="example" width="8" height="8"></canvas>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+
+var wtu = WebGLTestUtils;
+description("This test verifies the functionality of blitFramebuffer for some corner cases.");
+
+var gl = wtu.create3DContext("example", undefined, 2);
+
+function blit_framebuffer_test() {
+    var width = 8;
+    var height = 8;
+
+    // Create read fbo and its color attachment.
+    var tex_2d = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex_2d);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.generateMipmap(gl.TEXTURE_2D);
+
+    var fb0 = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
+    gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex_2d, 0);
+    if (gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+
+    // Create draw fbo and its color attachment.
+    var rb0 = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb0);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA8, width, height);
+
+    var fb1 = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
+    gl.framebufferRenderbuffer(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb0);
+    if (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+
+    // Blit framebuffer, all conditions are OK.
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT | gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed.");
+
+    // Blit framebuffer, the src buffer and the dst buffer should not be identical.
+    // Exactly the same read/draw fbo
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb0);
+    gl.blitFramebuffer(0, 0, 2, 2, 4, 4, 6, 6, gl.COLOR_BUFFER_BIT | gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer should generate INVALID_OPERATION if read/draw buffer are identical.");
+
+    // The same image with the same level bound to read/draw buffer.
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex_2d, 0);
+    if (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    gl.blitFramebuffer(0, 0, 2, 2, 4, 4, 6, 6, gl.COLOR_BUFFER_BIT | gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer should generate INVALID_OPERATION if read/draw buffer are identical.");
+
+    // The same image in read/draw buffer, but different levels are bound to read/draw buffer respectively.
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex_2d, 1);
+    if (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT | gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed if read/draw buffer has the same image with different levels.");
+
+    // The same cube_map image in read/draw buffer, but different faces are bound to read/draw buffer respectively.
+    var tex_cube_map = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, tex_cube_map);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
+    gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_POSITIVE_X, tex_cube_map, 0);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, tex_cube_map, 0);
+    if ((gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) ||
+        (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE)) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT | gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed if read/draw buffer has the same CUBE_MAP image with different faces.");
+
+    // The same 3D/2D_ARRAY image in read/draw buffer, but different layers are bound to read/draw buffer respectively.
+    var tex_2d_array = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D_ARRAY, tex_2d_array);
+    var depth = 2;
+    gl.texImage3D(gl.TEXTURE_2D_ARRAY, 0, gl.RGBA8, width, height, depth, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
+    var level = 0, layer = 0;
+    gl.framebufferTextureLayer(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex_2d_array, level, layer);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
+    layer = 1;
+    gl.framebufferTextureLayer(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex_2d_array, level, layer);
+    if ((gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) ||
+        (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE)) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT | gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed if read/draw buffer has the same 3D/2D_ARRAY image with different layers.");
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+    gl.bindTexture(gl.TEXTURE_2D_ARRAY, null);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+    gl.deleteTexture(tex_2d);
+    gl.deleteTexture(tex_cube_map);
+    gl.deleteTexture(tex_2d_array);
+    gl.deleteRenderbuffer(rb0);
+    gl.deleteFramebuffer(fb0);
+    gl.deleteFramebuffer(fb1);
+};
+
+if (!gl) {
+    testFailed("WebGL context does not exist");
+} else {
+    testPassed("WebGL context exists");
+    blit_framebuffer_test();
+}
+
+var successfullyParsed = true;
+</script>
+<script src="../../js/js-test-post.js"></script>
+
+</body>
+</html>
