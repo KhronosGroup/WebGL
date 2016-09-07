@@ -98,11 +98,10 @@ function blitframebuffer_outside_readbuffer(readbufferFormat, drawbufferFormat) 
     debug("bliting outside of read framebuffer, read buffer format is: " + wtu.glEnumToString(gl, readbufferFormat) + ", draw buffer format is: " + wtu.glEnumToString(gl, drawbufferFormat));
 
     // Initiate data to read framebuffer
-    var width_read = 3;
-    var height_read = 3;
-    var uint_read = new Uint8Array(width_read * height_read * 4);
+    var size_read = 3;
+    var uint_read = new Uint8Array(size_read * size_read * 4);
     var start = 0x20;
-    for (var ii = 0; ii < width_read * height_read * 4; ii += 4) {
+    for (var ii = 0; ii < size_read * size_read * 4; ii += 4) {
         for (var jj = 0; jj < 3; ++jj) {
           uint_read[ii + jj] = start;
         }
@@ -114,17 +113,16 @@ function blitframebuffer_outside_readbuffer(readbufferFormat, drawbufferFormat) 
     // Read buffer may has srgb image
     var tex_read = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex_read);
-    gl.texImage2D(gl.TEXTURE_2D, 0, readbufferFormat, width_read, height_read, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint_read);
+    gl.texImage2D(gl.TEXTURE_2D, 0, readbufferFormat, size_read, size_read, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint_read);
 
     var fbo_read = gl.createFramebuffer();
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
     gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex_read, 0);
 
     // Initiate data to draw framebuffer
-    var width_draw = 8;
-    var height_draw = 8;
-    var uint_draw = new Uint8Array(width_draw * height_draw * 4);
-    for (var ii = 0; ii < width_draw * height_draw * 4; ii += 4) {
+    var size_draw = 7;
+    var uint_draw = new Uint8Array(size_draw * size_draw * 4);
+    for (var ii = 0; ii < size_draw * size_draw * 4; ii += 4) {
         for (var jj = 0; jj < 3; ++jj) {
             uint_draw[ii + jj] = 0x10;
         }
@@ -140,7 +138,7 @@ function blitframebuffer_outside_readbuffer(readbufferFormat, drawbufferFormat) 
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
-    gl.texImage2D(gl.TEXTURE_2D, 0, drawbufferFormat, width_draw, height_draw, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint_draw);
+    gl.texImage2D(gl.TEXTURE_2D, 0, drawbufferFormat, size_draw, size_draw, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint_draw);
 
     var fbo_draw = gl.createFramebuffer();
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
@@ -148,72 +146,98 @@ function blitframebuffer_outside_readbuffer(readbufferFormat, drawbufferFormat) 
 
     if (gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
         var ref = [
-            // The reference pixels of the 1st line: (0, 0) ~ (7, 0)
+            // The reference pixels of the 1st line: (0, 0) ~ (6, 0)
             [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
-            [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
+            [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
 
-            // The reference pixels of the 2nd line: (0, 1) ~ (7, 1)
+            // The reference pixels of the 2nd line: (0, 1) ~ (6, 1)
             [0x10, 0x10, 0x10, 0xff], [0x20, 0x20, 0x20, 0xff], [0x20, 0x20, 0x20, 0xff], [0x30, 0x30, 0x30, 0xff],
-            [0x40, 0x40, 0x40, 0xff], [0x40, 0x40, 0x40, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
+            [0x40, 0x40, 0x40, 0xff], [0x40, 0x40, 0x40, 0xff], [0x10, 0x10, 0x10, 0xff],
 
-            // The reference pixels of the 3rd line: (0, 2) ~ (7, 2)
+            // The reference pixels of the 3rd line: (0, 2) ~ (6, 2)
             [0x10, 0x10, 0x10, 0xff], [0x20, 0x20, 0x20, 0xff], [0x20, 0x20, 0x20, 0xff], [0x30, 0x30, 0x30, 0xff],
-            [0x40, 0x40, 0x40, 0xff], [0x40, 0x40, 0x40, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
+            [0x40, 0x40, 0x40, 0xff], [0x40, 0x40, 0x40, 0xff], [0x10, 0x10, 0x10, 0xff],
 
-            // The reference pixels of the 4th line: (0, 3) ~ (7, 3)
+            // The reference pixels of the 4th line: (0, 3) ~ (6, 3)
             [0x10, 0x10, 0x10, 0xff], [0x50, 0x50, 0x50, 0xff], [0x50, 0x50, 0x50, 0xff], [0x60, 0x60, 0x60, 0xff],
-            [0x70, 0x70, 0x70, 0xff], [0x70, 0x70, 0x70, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
+            [0x70, 0x70, 0x70, 0xff], [0x70, 0x70, 0x70, 0xff], [0x10, 0x10, 0x10, 0xff],
 
-            // The reference pixels of the 5th line: (0, 4) ~ (7, 4)
+            // The reference pixels of the 5th line: (0, 4) ~ (6, 4)
             [0x10, 0x10, 0x10, 0xff], [0x80, 0x80, 0x80, 0xff], [0x80, 0x80, 0x80, 0xff], [0x90, 0x90, 0x90, 0xff],
-            [0xa0, 0xa0, 0xa0, 0xff], [0xa0, 0xa0, 0xa0, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
+            [0xa0, 0xa0, 0xa0, 0xff], [0xa0, 0xa0, 0xa0, 0xff], [0x10, 0x10, 0x10, 0xff],
 
-            // The reference pixels of the 6th line: (0, 5) ~ (7, 5)
+            // The reference pixels of the 6th line: (0, 5) ~ (6, 5)
             [0x10, 0x10, 0x10, 0xff], [0x80, 0x80, 0x80, 0xff], [0x80, 0x80, 0x80, 0xff], [0x90, 0x90, 0x90, 0xff],
-            [0xa0, 0xa0, 0xa0, 0xff], [0xa0, 0xa0, 0xa0, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
+            [0xa0, 0xa0, 0xa0, 0xff], [0xa0, 0xa0, 0xa0, 0xff], [0x10, 0x10, 0x10, 0xff],
 
-            // The reference pixels of the 7th line: (0, 6) ~ (7, 6)
+            // The reference pixels of the 7th line: (0, 6) ~ (6, 6)
             [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
-            [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
-
-            // The reference pixels of the 8th line: (0, 7) ~ (7, 7)
-            [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
-            [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
+            [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff], [0x10, 0x10, 0x10, 0xff],
         ];
 
         // The 1st round test: blit read framebuffer to the image in draw framebuffer
         // All directions of the read region have pixels outside of the read buffer
-        var srcStart = -1;
-        var srcEnd = 4;
-        var dstStart = 1;
-        var dstEnd = 6;
-        gl.blitFramebuffer(srcStart, srcStart, srcEnd, srcEnd, dstStart, dstStart, dstEnd, dstEnd, gl.COLOR_BUFFER_BIT, gl.LINEAR);
-
-        // Read pixels and check the correctness.
-        var pixels = new Uint8Array(width_draw * height_draw * 4);
-        gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_draw);
-        gl.readPixels(0, 0, width_draw, height_draw, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        // The src region and/or dst region may be reversed during bliting.
+        var test1 = [
+             [-1, 4, 1, 6], // reverse neither src nor dst
+             [4, -1, 1, 6], // reverse src only
+             [-1, 4, 6, 1], // reverse dst only
+             [4, -1, 6, 1]  // reverse both src and dst
+        ];
 
         var readbufferHasSRGBImage = (readbufferFormat == gl.SRGB8_ALPHA8);
         var drawbufferHasSRGBImage = (drawbufferFormat == gl.SRGB8_ALPHA8);
-        for (var ii = 0; ii < height_draw; ++ii) {
-            for (var jj = 0; jj < width_draw; ++jj) {
-                var loc = ii * width_draw + jj;
-                var color = [pixels[loc * 4], pixels[loc * 4 + 1], pixels[loc * 4 + 2], pixels[loc * 4 + 3]];
-                var expectedColor = ref[loc];
-                // We may need to covert the color space for pixels in blit region
-                if ((readbufferHasSRGBImage ^ drawbufferHasSRGBImage) &&
-                    (ii >= dstStart && ii < dstEnd && jj >= dstStart && jj < dstEnd)) {
-                    if (drawbufferHasSRGBImage) {
-                        expectedColor = linearToSRGB(expectedColor);
-                    } else {
-                        expectedColor = sRGBToLinear(expectedColor);
+
+        for (var i = 0; i < 4; ++i) {
+            debug("");
+            switch (i) {
+                case 0: debug("reverse neither src region nor dst region"); break;
+                case 1: debug("reverse src region only"); break;
+                case 2: debug("reverse dst region only"); break;
+                case 3: debug("reverse both src region and dst region"); break;
+            }
+            var srcStart = test1[i][0];
+            var srcEnd = test1[i][1];
+            var dstStart = test1[i][2];
+            var dstEnd = test1[i][3];
+            gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
+            gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
+            gl.blitFramebuffer(srcStart, srcStart, srcEnd, srcEnd, dstStart, dstStart, dstEnd, dstEnd, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+
+            // Read pixels and check the correctness.
+            var pixels = new Uint8Array(size_draw * size_draw * 4);
+            gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_draw);
+            gl.readPixels(0, 0, size_draw, size_draw, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+
+            for (var ii = 0; ii < size_draw; ++ii) {
+                for (var jj = 0; jj < size_draw; ++jj) {
+                    var loc = ii * size_draw + jj;
+                    var color = [pixels[loc * 4], pixels[loc * 4 + 1], pixels[loc * 4 + 2], pixels[loc * 4 + 3]];
+
+                    // We may need to reverse the reference loc if necessary
+                    var ref_loc = loc;
+                    var reverse_src = (srcStart < srcEnd);
+                    var reverse_dst = (dstStart < dstEnd);
+                    var reversed = reverse_src ^ reverse_dst;
+                    if (reversed) {
+                        ref_loc = (size_draw - ii - 1) * size_draw + (size_draw - jj -1);
                     }
-                }
-                if (checkPixel(color, expectedColor) == true) {
-                    testPassed("pixel at [" + jj + ", " + ii + "] is (" + color + "). It is correct!");
-                } else {
-                    testFailed("pixel at [" + jj + ", " + ii + "] should be (" + expectedColor + "), but the actual color is (" + color + ")");
+                    var expectedColor = ref[ref_loc];
+
+                    // We may need to covert the color space for pixels in blit region
+                    if ((readbufferHasSRGBImage ^ drawbufferHasSRGBImage) &&
+                        (ii >= dstStart && ii < dstEnd && jj >= dstStart && jj < dstEnd)) {
+                        if (drawbufferHasSRGBImage) {
+                            expectedColor = linearToSRGB(expectedColor);
+                        } else {
+                            expectedColor = sRGBToLinear(expectedColor);
+                        }
+                    }
+                    if (checkPixel(color, expectedColor) == true) {
+                        testPassed("pixel at [" + jj + ", " + ii + "] is (" + color + "). It is correct!");
+                    } else {
+                        testFailed("pixel at [" + jj + ", " + ii + "] should be (" + expectedColor + "), but the actual color is (" + color + ")");
+                    }
                 }
             }
         }
@@ -239,17 +263,17 @@ function blitframebuffer_outside_readbuffer(readbufferFormat, drawbufferFormat) 
             var srcX = tests[i][0];
             var srcY = tests[i][1];
             var offset = dstStart - srcStart;
-            gl.blitFramebuffer(srcX, srcY, srcX + width_read, srcY + height_read,
-                               srcX + offset, srcY + offset, srcX + offset + width_read, srcY + offset + height_read,
+            gl.blitFramebuffer(srcX, srcY, srcX + size_read, srcY + size_read,
+                               srcX + offset, srcY + offset, srcX + offset + size_read, srcY + offset + size_read,
                                gl.COLOR_BUFFER_BIT, gl.LINEAR);
 
             // Read pixels and check the correctness.
-            var pixels = new Uint8Array(width_draw * height_draw * 4);
+            var pixels = new Uint8Array(size_draw * size_draw * 4);
             gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_draw);
-            gl.readPixels(0, 0, width_draw, height_draw, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-            for (var ii = srcY + offset; ii < srcY + offset + height_read; ++ii) {
-                for (var jj = srcX + offset; jj < srcX + offset + width_read; ++jj) {
-                    var loc = ii * width_draw + jj;
+            gl.readPixels(0, 0, size_draw, size_draw, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+            for (var ii = srcY + offset; ii < srcY + offset + size_read; ++ii) {
+                for (var jj = srcX + offset; jj < srcX + offset + size_read; ++jj) {
+                    var loc = ii * size_draw + jj;
                     var color = [pixels[loc * 4], pixels[loc * 4 + 1], pixels[loc * 4 + 2], pixels[loc * 4 + 3]];
                     var expectedColor = ref[loc];
                     // We may need to covert the color space for pixels in blit region
