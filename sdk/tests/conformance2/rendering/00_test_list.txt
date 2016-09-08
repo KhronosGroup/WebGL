@@ -7,5 +7,6 @@ element-index-uint.html
 framebuffer-completeness-unaffected.html
 framebuffer-unsupported.html
 instanced-arrays.html
+--min-version 2.0.1 instanced-rendering-bug.html
 rgb-format-support.html
 uniform-block-buffer-size.html
