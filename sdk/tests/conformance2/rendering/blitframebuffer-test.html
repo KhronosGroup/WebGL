@@ -78,25 +78,34 @@ function blit_framebuffer_test() {
     }
 
     // Blit framebuffer, all conditions are OK.
-    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT | gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT, gl.NEAREST);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed.");
 
     // Blit framebuffer, the src buffer and the dst buffer should not be identical.
     // Exactly the same read/draw fbo
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb0);
-    gl.blitFramebuffer(0, 0, 2, 2, 4, 4, 6, 6, gl.COLOR_BUFFER_BIT | gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    gl.blitFramebuffer(0, 0, 2, 2, 4, 4, 6, 6, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer should generate INVALID_OPERATION if read/draw buffer are identical.");
+
+    // Exactly the same read/draw framebuffer: default framebuffer
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+    gl.blitFramebuffer(0, 0, 2, 2, 4, 4, 6, 6, gl.COLOR_BUFFER_BIT, gl.NEAREST);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer should generate INVALID_OPERATION if read/draw buffer are identical.");
 
     // The same image with the same level bound to read/draw buffer.
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
+    gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex_2d, 0);
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
     gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex_2d, 0);
-    if (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+    if (gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE ||
+        gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
         testFailed("Framebuffer incomplete.");
         return;
     }
-    gl.blitFramebuffer(0, 0, 2, 2, 4, 4, 6, 6, gl.COLOR_BUFFER_BIT | gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer should generate INVALID_OPERATION if read/draw buffer are identical.");
+    gl.blitFramebuffer(0, 0, 2, 2, 4, 4, 6, 6, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer should generate INVALID_OPERATION if read/draw color buffer are identical.");
 
     // The same image in read/draw buffer, but different levels are bound to read/draw buffer respectively.
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
@@ -105,7 +114,7 @@ function blit_framebuffer_test() {
         testFailed("Framebuffer incomplete.");
         return;
     }
-    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT | gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT, gl.NEAREST);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed if read/draw buffer has the same image with different levels.");
 
     // The same cube_map image in read/draw buffer, but different faces are bound to read/draw buffer respectively.
@@ -126,7 +135,7 @@ function blit_framebuffer_test() {
         testFailed("Framebuffer incomplete.");
         return;
     }
-    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT | gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT, gl.NEAREST);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed if read/draw buffer has the same CUBE_MAP image with different faces.");
 
     // The same 3D/2D_ARRAY image in read/draw buffer, but different layers are bound to read/draw buffer respectively.
@@ -145,8 +154,80 @@ function blit_framebuffer_test() {
         testFailed("Framebuffer incomplete.");
         return;
     }
-    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT | gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT, gl.NEAREST);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed if read/draw buffer has the same 3D/2D_ARRAY image with different layers.");
+
+    // The same image are bound as depth buffer in both read framebuffer and draw framebuffer
+    var rb1 = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb1);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH24_STENCIL8, width, height);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
+    gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_POSITIVE_X, tex_cube_map, 0);
+    gl.framebufferRenderbuffer(gl.READ_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, rb1);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, tex_cube_map, 0);
+    gl.framebufferRenderbuffer(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, rb1);
+    if (gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE ||
+        gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    // But the mask doesn't have depth buffer bit.
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed.");
+
+    // The mask has depth buffer bit.
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer should generate INVALID_OPERATION if read/draw framebuffer have identical depth buffer attachment.");
+
+    // The same image are bound as stencil buffer in both read framebuffer and draw framebuffer
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
+    gl.framebufferRenderbuffer(gl.READ_FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.RENDERBUFFER, rb1);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
+    gl.framebufferRenderbuffer(gl.DRAW_FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.RENDERBUFFER, rb1);
+    if (gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE ||
+        gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    // But the mask doesn't have stencil buffer bit.
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed.");
+
+    // The mask has stencil buffer bit.
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer should generate INVALID_OPERATION if read/draw framebuffer have identical stencil buffer attachment.");
+
+    // The same image are bound as color buffer in both read framebuffer and draw framebuffer
+    var rb2 = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb2);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH24_STENCIL8, width, height);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
+    gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_POSITIVE_X, tex_cube_map, 0);
+    gl.framebufferRenderbuffer(gl.READ_FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.RENDERBUFFER, null);
+    gl.framebufferRenderbuffer(gl.DRAW_FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.RENDERBUFFER, null);
+    gl.framebufferRenderbuffer(gl.READ_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, rb2);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, tex_cube_map, 0);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.TEXTURE_CUBE_MAP_POSITIVE_X, tex_cube_map, 0);
+    gl.framebufferRenderbuffer(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, rb1);
+    if (gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE ||
+        gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    // But the mask doesn't have color buffer bit.
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.DEPTH_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed.");
+
+    // The mask has color buffer bit, but the same image is not specified as draw buffer.
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed.");
+
+    // The mask has color buffer bit, the same image is specified as both read buffer and draw buffer.
+    gl.drawBuffers([gl.COLOR_ATTACHENT0, gl.COLOR_ATTACHMENT1]);
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer should generate INVALID_OPERATION if read/draw buffers have identical color buffer attachment.");
 
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
@@ -158,6 +239,8 @@ function blit_framebuffer_test() {
     gl.deleteTexture(tex_cube_map);
     gl.deleteTexture(tex_2d_array);
     gl.deleteRenderbuffer(rb0);
+    gl.deleteRenderbuffer(rb1);
+    gl.deleteRenderbuffer(rb2);
     gl.deleteFramebuffer(fb0);
     gl.deleteFramebuffer(fb1);
 };
