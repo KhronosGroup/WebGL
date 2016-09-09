@@ -236,6 +236,19 @@ goog.scope(function() {
         // deqp/functional/gles3/clipping.html
         _skip("clipping.wide_points_full_viewport");
         _skip("clipping.wide_points_partial_viewport");
+
+
+        _setReason("Mac AMD drivers handle instanced rendering incorrectly under certain situation");
+        // crbug.com/645298
+        // deqp/functional/gles3/instancedrendering.html
+        _skip("instanced_rendering.draw_arrays_instanced.attribute_divisor.4_instances");
+        _skip("instanced_rendering.draw_arrays_instanced.attribute_divisor.20_instances");
+        _skip("instanced_rendering.draw_arrays_instanced.mixed.4_instances");
+        _skip("instanced_rendering.draw_arrays_instanced.mixed.20_instances");
+        _skip("instanced_rendering.draw_elements_instanced.attribute_divisor.4_instances");
+        _skip("instanced_rendering.draw_elements_instanced.attribute_divisor.20_instances");
+        _skip("instanced_rendering.draw_elements_instanced.mixed.4_instances");
+        _skip("instanced_rendering.draw_elements_instanced.mixed.20_instances");
     } // if (!runSkippedTests)
 
     /*
