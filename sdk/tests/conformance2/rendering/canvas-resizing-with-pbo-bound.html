@@ -1,7 +1,7 @@
 <!--
 
 /*
-** Copyright (c) 2013 The Khronos Group Inc.
+** Copyright (c) 2016 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
@@ -56,7 +56,7 @@ void main()
 <script>
 "use strict";
 
-description("Verifies that resizing the canvas (recreating the ) works correctly while a PBO is bound.");
+description("Verifies that resizing the canvas (recreating the backing framebuffer) works correctly while a PBO is bound.");
 
 debug("");
 debug("Regression test for Chromium <a href='https://bugs.chromium.org/p/chromium/issues/detail?id=644572'>Issue 644572</a>");
@@ -128,7 +128,7 @@ function render() {
   wtu.checkCanvasRect(gl, largeSize - inset, inset, 1, 1, green, "lower right should be green", 1);
   wtu.checkCanvasRect(gl, inset, currentSize - inset, 1, 1, green, "upper left should be green", 1);
   wtu.checkCanvasRect(gl, largeSize - inset, currentSize - inset, 1, 1, green, "upper right should be green", 1);
-  
+
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "No GL error");
   if (gl.getParameter(gl.PIXEL_UNPACK_BUFFER_BINDING) != pbo) {
     testFailed("Pixel unpack buffer binding was lost");
