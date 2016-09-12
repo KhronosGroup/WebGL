@@ -2935,11 +2935,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h4>Non-Power-of-Two Texture Access</h4>
 
     <p>
-        Texture access works in the WebGL 2 API as in the OpenGL ES 3.0 API. Sampling a
-        non-power-of-two image with wrapping mode other than CLAMP_TO_EDGE and minification filter
-        other than NEAREST or LINEAR does not always return (R, G, B, A) = (0, 0, 0, 1) in the
-        WebGL 2 API, i.e. mipmapping and all wrapping modes are supported for non-power-of-two
-        images.
+        Texture access works in the WebGL 2.0 API as in the OpenGL ES 3.0 API. In other words,
+        unlike the WebGL 1.0 API, there are no special restrictions on non power of 2 textures. All
+        mipmapping and all wrapping modes are supported for non-power-of-two images.
     </p>
 
     <h4>Primitive Restart is Always Enabled</h4>
