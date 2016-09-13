@@ -108,7 +108,7 @@ function nextTest() {
 }
 
 function render() {
-  if (++numFrames < 30) {
+  if (++numFrames < 4) {
     if (currentSize == largeSize) {
       canvas.height = smallSize;
       currentSize = smallSize;
@@ -134,7 +134,7 @@ function render() {
     testFailed("Pixel unpack buffer binding was lost");
   }
 
-  if (numFrames < 60) {
+  if (numFrames < 4) {
     wtu.requestAnimFrame(render);
   } else {
     wtu.requestAnimFrame(nextTest);
