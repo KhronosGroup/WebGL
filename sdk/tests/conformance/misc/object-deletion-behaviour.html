@@ -39,7 +39,7 @@
 
 <script>
 "use strict";
-description("Tests deletion behavior for texture, renderbuffer, shader, and program");
+description("Tests deletion behavior for buffer, texture, renderbuffer, shader, and program");
 
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext();
@@ -375,48 +375,6 @@ shouldBeFalse("gl.isBuffer(bufferElement)");
 shouldBeNull("gl.getParameter(gl.ELEMENT_ARRAY_BUFFER_BINDING)");
 shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bufferElement)");
 shouldBeNull("gl.getParameter(gl.ELEMENT_ARRAY_BUFFER_BINDING)");
-
-if (contextVersion > 1) {
-  var bufferBaseUniform = gl.createBuffer();
-  shouldBeNonNull("bufferBaseUniform");
-  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, bufferBaseUniform)");
-  shouldBe("gl.getParameter(gl.UNIFORM_BUFFER_BINDING)", "bufferBaseUniform");
-  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteBuffer(bufferBaseUniform)");
-  shouldBeFalse("gl.isBuffer(bufferBaseUniform)");
-  shouldBeNull("gl.getParameter(gl.UNIFORM_BUFFER_BINDING)");
-  shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, bufferBaseUniform)");
-  shouldBeNull("gl.getParameter(gl.UNIFORM_BUFFER_BINDING)");
-
-  var bufferBaseTransformFeedback = gl.createBuffer();
-  shouldBeNonNull("bufferBaseTransformFeedback");
-  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, bufferBaseTransformFeedback)");
-  shouldBe("gl.getParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING)", "bufferBaseTransformFeedback");
-  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteBuffer(bufferBaseTransformFeedback)");
-  shouldBeFalse("gl.isBuffer(bufferBaseTransformFeedback)");
-  shouldBeNull("gl.getParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING)");
-  shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, bufferBaseTransformFeedback)");
-  shouldBeNull("gl.getParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING)");
-
-  var bufferRangeUniform = gl.createBuffer();
-  shouldBeNonNull("bufferRangeUniform");
-  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindBufferRange(gl.UNIFORM_BUFFER, 0, bufferRangeUniform, 0, 4)");
-  shouldBe("gl.getParameter(gl.UNIFORM_BUFFER_BINDING)", "bufferRangeUniform");
-  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteBuffer(bufferRangeUniform)");
-  shouldBeFalse("gl.isBuffer(bufferRangeUniform)");
-  shouldBeNull("gl.getParameter(gl.UNIFORM_BUFFER_BINDING)");
-  shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindBufferRange(gl.UNIFORM_BUFFER, 0, bufferRangeUniform, 0, 4)");
-  shouldBeNull("gl.getParameter(gl.UNIFORM_BUFFER_BINDING)");
-
-  var bufferRangeTransformFeedback = gl.createBuffer();
-  shouldBeNonNull("bufferRangeTransformFeedback");
-  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 0, bufferRangeTransformFeedback, 0, 4)");
-  shouldBe("gl.getParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING)", "bufferRangeTransformFeedback");
-  shouldGenerateGLError(gl, gl.NO_ERROR, "gl.deleteBuffer(bufferRangeTransformFeedback)");
-  shouldBeFalse("gl.isBuffer(bufferRangeTransformFeedback)");
-  shouldBeNull("gl.getParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING)");
-  shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 0, bufferRangeTransformFeedback, 0, 4)");
-  shouldBeNull("gl.getParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING)");
-}
 
 var b = gl.createBuffer();
 shouldBeNonNull("b");
