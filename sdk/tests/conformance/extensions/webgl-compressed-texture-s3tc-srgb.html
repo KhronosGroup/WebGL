@@ -649,6 +649,7 @@ function makeImage(imageWidth, imageHeight, dataWidth, data, alpha) {
     return wtu.makeImageFromCanvas(c);
 }
 
+// See EXT_texture_sRGB, Section 3.8.x, sRGB Texture Color Conversion.
 function sRGBChannelToLinear(value) {
     value = value / 255;
     if (value <= 0.04045) {
