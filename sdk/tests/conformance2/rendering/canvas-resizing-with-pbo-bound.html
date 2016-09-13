@@ -39,20 +39,6 @@
 <canvas id="canvas1" style="width: 256px; height: 256px;"> </canvas>
 <canvas id="canvas2" style="width: 256px; height: 256px;"> </canvas>
 <div id="console"></div>
-<script id="vshader" type="x-shader/x-vertex">
-attribute vec2 position;
-void main()
-{
-  gl_Position = vec4(position, 0.0, 1.0);
-}
-</script>
-
-<script id="fshader" type="x-shader/x-fragment">
-void main()
-{
-  gl_FragColor = vec4(0.0,1.0,0.0,1.0);
-}
-</script>
 <script>
 "use strict";
 
@@ -62,14 +48,12 @@ debug("");
 debug("Regression test for Chromium <a href='https://bugs.chromium.org/p/chromium/issues/detail?id=644572'>Issue 644572</a>");
 debug("");
 
-var err;
 var wtu = WebGLTestUtils;
 var canvas;
 var largeSize = 256;
 var smallSize = 128;
 var currentSize;
 var gl;
-var program;
 var numFrames = 0;
 var testNumber = 0;
 var pbo;
@@ -97,7 +81,6 @@ function nextTest() {
 
     gl.clearColor(0, 1, 0, 1);
 
-    program = wtu.setupProgram(gl, ["vshader", "fshader"], ["position"]);
     shouldBeNonNull("program");
 
     pbo = gl.createBuffer();
