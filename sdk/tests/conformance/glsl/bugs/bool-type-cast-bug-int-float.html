@@ -135,7 +135,145 @@ void main() {
 }
 </script>
 
-<script type="application/javascript">
+<script id="vshader-vec2-1" type="x-shader/x-vertex">
+attribute vec3 aPosition;
+varying mediump vec2 fvalue;
+uniform bool bvalue;
+
+void main() {
+    gl_Position = vec4(aPosition, 1);
+    fvalue = vec2(bvalue);
+}
+</script>
+<script id="fshader-vec2-1" type="x-shader/x-fragment">
+varying mediump vec2 fvalue;
+
+void main() {
+    if (fvalue == vec2(1.0, 1.0))
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    else if (fvalue == vec2(0.0, 0.0))
+        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+    else
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+}
+</script>
+
+<script id="vshader-vec2-2" type="x-shader/x-vertex">
+attribute vec3 aPosition;
+
+void main() {
+    gl_Position = vec4(aPosition, 1);
+}
+</script>
+<script id="fshader-vec2-2" type="x-shader/x-fragment">
+precision mediump float;
+uniform bool bvalue;
+
+void main() {
+    vec2 fvalue = vec2(bvalue);
+
+    if (fvalue == vec2(1.0, 1.0))
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    else if (fvalue == vec2(0.0, 0.0))
+        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+    else
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+}
+</script>
+
+<script id="vshader-vec3-1" type="x-shader/x-vertex">
+attribute vec3 aPosition;
+varying mediump vec3 fvalue;
+uniform bool bvalue;
+
+void main() {
+    gl_Position = vec4(aPosition, 1);
+    fvalue = vec3(bvalue);
+}
+</script>
+<script id="fshader-vec3-1" type="x-shader/x-fragment">
+varying mediump vec3 fvalue;
+
+void main() {
+    if (fvalue == vec3(1.0, 1.0, 1.0))
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    else if (fvalue == vec3(0.0, 0.0, 0.0))
+        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+    else
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+}
+</script>
+
+<script id="vshader-vec3-2" type="x-shader/x-vertex">
+attribute vec3 aPosition;
+
+void main() {
+    gl_Position = vec4(aPosition, 1);
+}
+</script>
+<script id="fshader-vec3-2" type="x-shader/x-fragment">
+precision mediump float;
+uniform bool bvalue;
+
+void main() {
+    vec3 fvalue = vec3(bvalue);
+
+    if (fvalue == vec3(1.0, 1.0, 1.0))
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    else if (fvalue == vec3(0.0, 0.0, 0.0))
+        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+    else
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+}
+</script>
+
+<script id="vshader-vec4-1" type="x-shader/x-vertex">
+attribute vec3 aPosition;
+varying mediump vec4 fvalue;
+uniform bool bvalue;
+
+void main() {
+    gl_Position = vec4(aPosition, 1);
+    fvalue = vec4(bvalue);
+}
+</script>
+<script id="fshader-vec4-1" type="x-shader/x-fragment">
+varying mediump vec4 fvalue;
+
+void main() {
+    if (fvalue == vec4(1.0, 1.0, 1.0, 1.0))
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    else if (fvalue == vec4(0.0, 0.0, 0.0, 0.0))
+        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+    else
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+}
+</script>
+
+<script id="vshader-vec4-2" type="x-shader/x-vertex">
+attribute vec3 aPosition;
+
+void main() {
+    gl_Position = vec4(aPosition, 1);
+}
+</script>
+<script id="fshader-vec4-2" type="x-shader/x-fragment">
+precision mediump float;
+uniform bool bvalue;
+
+void main() {
+    vec4 fvalue = vec4(bvalue);
+
+    if (fvalue == vec4(1.0, 1.0, 1.0, 1.0))
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    else if (fvalue == vec4(0.0, 0.0, 0.0, 0.0))
+        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+    else
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+}
+</script>
+
+    <script type="application/javascript">
 "use strict";
 description("Verify int(bool) and float(bool) work correctly");
 debug("");
@@ -148,76 +286,39 @@ function test() {
     }
     wtu.setupUnitQuad(gl);
 
-    debug("");
-    var program = wtu.setupProgram(gl, ["vshader-int1", "fshader-int1"], ["aPosition"]);
-    if (!program) {
-        testFailed("Fail to set up program");
-    } else {
-        var uniformLoc = gl.getUniformLocation(program, 'bvalue');
-        debug("Testing vertex shader int(false)");
-        gl.uniform1i(uniformLoc, 0);
-        wtu.drawUnitQuad(gl);
-        wtu.checkCanvas(gl, [0, 255, 0, 255]);
-        debug("Testing vertex shader int(true)");
-        gl.uniform1i(uniformLoc, 1);
-        wtu.drawUnitQuad(gl);
-        wtu.checkCanvas(gl, [255, 0, 0, 255]);
-        gl.deleteProgram(program);
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from testing");
-    }
+    var testCases = [
+        { vshader: "vshader-int1", fshader: "fshader-int1", desc: "vertex shader int" },
+        { vshader: "vshader-int2", fshader: "fshader-int2", desc: "fragment shader int" },
+        { vshader: "vshader-float1", fshader: "fshader-float1", desc: "vertex shader float" },
+        { vshader: "vshader-float2", fshader: "fshader-float2", desc: "fragment shader float" },
+        { vshader: "vshader-vec2-1", fshader: "fshader-vec2-1", desc: "vertex shader vec2" },
+        { vshader: "vshader-vec2-2", fshader: "fshader-vec2-2", desc: "fragment shader vec2" },
+        { vshader: "vshader-vec3-1", fshader: "fshader-vec3-1", desc: "vertex shader vec3" },
+        { vshader: "vshader-vec3-2", fshader: "fshader-vec3-2", desc: "fragment shader vec3" },
+        { vshader: "vshader-vec4-1", fshader: "fshader-vec4-1", desc: "vertex shader vec4" },
+        { vshader: "vshader-vec4-2", fshader: "fshader-vec4-2", desc: "fragment shader vec4" },
+    ];
 
-    debug("");
-    program = wtu.setupProgram(gl, ["vshader-int2", "fshader-int2"], ["aPosition"]);
-    if (!program) {
-        testFailed("Fail to set up program");
-    } else {
-        var uniformLoc = gl.getUniformLocation(program, 'bvalue');
-        debug("Testing fragment shader int(false)");
-        gl.uniform1i(uniformLoc, 0);
-        wtu.drawUnitQuad(gl);
-        wtu.checkCanvas(gl, [0, 255, 0, 255]);
-        debug("Testing fragment shader int(true)");
-        gl.uniform1i(uniformLoc, 1);
-        wtu.drawUnitQuad(gl);
-        wtu.checkCanvas(gl, [255, 0, 0, 255]);
-        gl.deleteProgram(program);
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from testing");
-    }
+    for (var idx = 0; idx < testCases.length; ++idx) {
+        var test = testCases[idx];
 
-    debug("");
-    program = wtu.setupProgram(gl, ["vshader-float1", "fshader-float1"], ["aPosition"]);
-    if (!program) {
-        testFailed("Fail to set up program");
-    } else {
-        var uniformLoc = gl.getUniformLocation(program, 'bvalue');
-        debug("Testing vertex shader float(false)");
-        gl.uniform1i(uniformLoc, 0);
-        wtu.drawUnitQuad(gl);
-        wtu.checkCanvas(gl, [0, 255, 0, 255]);
-        debug("Testing vertex shader float(true)");
-        gl.uniform1i(uniformLoc, 1);
-        wtu.drawUnitQuad(gl);
-        wtu.checkCanvas(gl, [255, 0, 0, 255]);
-        gl.deleteProgram(program);
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from testing");
-    }
-
-    debug("");
-    program = wtu.setupProgram(gl, ["vshader-float2", "fshader-float2"], ["aPosition"]);
-    if (!program) {
-        testFailed("Fail to set up program");
-    } else {
-        var uniformLoc = gl.getUniformLocation(program, 'bvalue');
-        debug("Testing fragment shader float(false)");
-        gl.uniform1i(uniformLoc, 0);
-        wtu.drawUnitQuad(gl);
-        wtu.checkCanvas(gl, [0, 255, 0, 255]);
-        debug("Testing fragment shader float(true)");
-        gl.uniform1i(uniformLoc, 1);
-        wtu.drawUnitQuad(gl);
-        wtu.checkCanvas(gl, [255, 0, 0, 255]);
-        gl.deleteProgram(program);
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from testing");
+        debug("");
+        var program = wtu.setupProgram(gl, [test.vshader, test.fshader], ["aPosition"]);
+        if (!program) {
+            testFailed("Fail to set up program");
+        } else {
+            var uniformLoc = gl.getUniformLocation(program, 'bvalue');
+            debug("Testing " + test.desc + " with false");
+            gl.uniform1i(uniformLoc, 0);
+            wtu.drawUnitQuad(gl);
+            wtu.checkCanvas(gl, [0, 255, 0, 255]);
+            debug("Testing " + test.desc + " with true");
+            gl.uniform1i(uniformLoc, 1);
+            wtu.drawUnitQuad(gl);
+            wtu.checkCanvas(gl, [255, 0, 0, 255]);
+            gl.deleteProgram(program);
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from testing");
+        }
     }
 };
 
