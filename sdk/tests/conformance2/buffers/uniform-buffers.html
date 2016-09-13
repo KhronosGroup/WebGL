@@ -170,8 +170,8 @@ function runBindingTest() {
 
     // Shouldn't be able to bind a deleted buffer.
     gl.bindBuffer(gl.UNIFORM_BUFFER, b2);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "binding a deleted buffer should generate INVALID_OPERATION");
     shouldBeNull("gl.getParameter(gl.UNIFORM_BUFFER_BINDING)");
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
 function runDrawTest() {
