@@ -2930,6 +2930,60 @@ var setupImageForCrossOriginTest = function(img, imgUrl, localUrl, callback) {
   }, false);
 }
 
+/**
+ * Convert sRGB color to linear color.
+ * @param {!Array.<number>} color The color to be converted.
+ *        The array has 4 elements, for example [R, G, B, A].
+ *        where each element is in the range 0 to 255.
+ * @return {!Array.<number>} color The color to be converted.
+ *        The array has 4 elements, for example [R, G, B, A].
+ *        where each element is in the range 0 to 255.
+ */
+var sRGBToLinear = function(color) {
+    return [sRGBChannelToLinear(color[0]),
+            sRGBChannelToLinear(color[1]),
+            sRGBChannelToLinear(color[2]),
+            color[3]]
+}
+
+/**
+ * Convert linear color to sRGB color.
+ * @param {!Array.<number>} color The color to be converted.
+ *        The array has 4 elements, for example [R, G, B, A].
+ *        where each element is in the range 0 to 255.
+ * @return {!Array.<number>} color The color to be converted.
+ *        The array has 4 elements, for example [R, G, B, A].
+ *        where each element is in the range 0 to 255.
+ */
+var linearToSRGB = function(color) {
+    return [linearChannelToSRGB(color[0]),
+            linearChannelToSRGB(color[1]),
+            linearChannelToSRGB(color[2]),
+            color[3]]
+}
+
+function sRGBChannelToLinear(value) {
+    value = value / 255;
+    if (value <= 0.04045)
+        value = value / 12.92;
+    else
+        value = Math.pow((value + 0.055) / 1.055, 2.4);
+    return Math.trunc(value * 255 + 0.5);
+}
+
+function linearChannelToSRGB(color) {
+    color = color / 255;
+    if (color <= 0.0) {
+        color = 0.0;
+    } else if (color < 0.0031308) {
+        color = color * 12.92;
+    } else if (color < 1) {
+        color = Math.pow(color, 0.41666) * 1.055 - 0.055;
+    } else {
+        color = 1.0;
+    }
+    return Math.trunc(color * 255 + 0.5);
+}
 var API = {
   addShaderSource: addShaderSource,
   addShaderSources: addShaderSources,
@@ -3035,6 +3089,10 @@ var API = {
 
   // fullscreen api
   setupFullscreen: setupFullscreen,
+
+  // sRGB converter api
+  sRGBToLinear: sRGBToLinear,
+  linearToSRGB: linearToSRGB,
 
   getHost: getHost,
   getBaseDomain: getBaseDomain,

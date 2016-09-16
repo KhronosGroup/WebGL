@@ -117,7 +117,7 @@ function generateMipmap()
     // Decode the srgba texture to a linear texture which will be used as reference.
     var linearTex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, linearTex);
-    wtu.fillTexture(gl, linearTex, width, height, sRGBToLinear(colors['srgba']), 0, gl.RGBA, gl.UNSIGNED_BYTE);
+    wtu.fillTexture(gl, linearTex, width, height, wtu.sRGBToLinear(colors['srgba']), 0, gl.RGBA, gl.UNSIGNED_BYTE);
     // Set up-left region of the texture as red color.
     // In order to make sure bi-linear interpolation operates on different colors, red region
     // is 1 pixel smaller than a quarter of the full texture on each side.
@@ -214,22 +214,6 @@ function generateMipmap()
         ctx.putImageData(imgData, 0, 0);
         var img = wtu.makeImageFromCanvas(canvas);
         return img;
-    }
-
-    function sRGBToLinear(color) {
-        return [sRGBChannelToLinear(color[0]),
-                sRGBChannelToLinear(color[1]),
-                sRGBChannelToLinear(color[2]),
-                color[3]]
-    }
-
-    function sRGBChannelToLinear(value) {
-        value = value / 255;
-        if (value <= 0.04045)
-            value = value / 12.92;
-        else
-            value = Math.pow((value + 0.055) / 1.055, 2.4);
-        return Math.trunc(value * 255 + 0.5);
     }
 }
 
