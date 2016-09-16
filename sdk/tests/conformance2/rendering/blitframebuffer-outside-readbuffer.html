@@ -56,43 +56,6 @@ function checkPixel(color, expectedColor) {
           Math.abs(color[3] - expectedColor[3]) <= tolerance);;
 }
 
-function sRGBToLinear(color) {
-    return [sRGBChannelToLinear(color[0]),
-            sRGBChannelToLinear(color[1]),
-            sRGBChannelToLinear(color[2]),
-            color[3]]
-}
-
-function linearToSRGB(color) {
-    return [linearChannelToSRGB(color[0]),
-            linearChannelToSRGB(color[1]),
-            linearChannelToSRGB(color[2]),
-            color[3]]
-}
-
-function sRGBChannelToLinear(value) {
-    value = value / 255;
-    if (value <= 0.04045)
-        value = value / 12.92;
-    else
-        value = Math.pow((value + 0.055) / 1.055, 2.4);
-    return Math.trunc(value * 255 + 0.5);
-}
-
-function linearChannelToSRGB(color) {
-    color = color / 255;
-    if (color <= 0.0) {
-        color = 0.0;
-    } else if (color < 0.0031308) {
-        color = color * 12.92;
-    } else if (color < 1) {
-        color = Math.pow(color, 0.41666) * 1.055 - 0.055;
-    } else {
-        color = 1.0;
-    }
-    return Math.trunc(color * 255 + 0.5);
-}
-
 function blitframebuffer_outside_readbuffer(readbufferFormat, drawbufferFormat) {
     debug("");
     debug("bliting outside of read framebuffer, read buffer format is: " + wtu.glEnumToString(gl, readbufferFormat) + ", draw buffer format is: " + wtu.glEnumToString(gl, drawbufferFormat));
@@ -228,9 +191,9 @@ function blitframebuffer_outside_readbuffer(readbufferFormat, drawbufferFormat) 
                     if ((readbufferHasSRGBImage ^ drawbufferHasSRGBImage) &&
                         (ii >= dstStart && ii < dstEnd && jj >= dstStart && jj < dstEnd)) {
                         if (drawbufferHasSRGBImage) {
-                            expectedColor = linearToSRGB(expectedColor);
+                            expectedColor = wtu.linearToSRGB(expectedColor);
                         } else {
-                            expectedColor = sRGBToLinear(expectedColor);
+                            expectedColor = wtu.sRGBToLinear(expectedColor);
                         }
                     }
                     if (checkPixel(color, expectedColor) == true) {
@@ -279,9 +242,9 @@ function blitframebuffer_outside_readbuffer(readbufferFormat, drawbufferFormat) 
                     // We may need to covert the color space for pixels in blit region
                     if ((readbufferHasSRGBImage ^ drawbufferHasSRGBImage)) {
                         if (drawbufferHasSRGBImage) {
-                            expectedColor = linearToSRGB(expectedColor);
+                            expectedColor = wtu.linearToSRGB(expectedColor);
                         } else {
-                            expectedColor = sRGBToLinear(expectedColor);
+                            expectedColor = wtu.sRGBToLinear(expectedColor);
                         }
                     }
                     if (checkPixel(color, expectedColor) == true) {
