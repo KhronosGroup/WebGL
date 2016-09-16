@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<draft href="WEBGL_compressed_texture_es3/">
-  <name>WEBGL_compressed_texture_es3</name>
+<draft href="WEBGL_compressed_texture_es3_0/">
+  <name>WEBGL_compressed_texture_es3_0</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
   </contact>
@@ -16,7 +16,7 @@
   <overview>
     <p>
       This extension exposes the compressed texture formats defined as core in the
-      <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.2.pdf">
+      <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf">
       OpenGL ES 3.0</a> spec to WebGL.
     </p>
     <features>
@@ -74,7 +74,7 @@
   </overview>
   <idl xml:space="preserve">
 [NoInterfaceObject]
-interface WEBGL_compressed_texture_es3 {
+interface WEBGL_compressed_texture_es3_0 {
     /* Compressed Texture Format */
     const GLenum COMPRESSED_R11_EAC                        = 0x9270;
     const GLenum COMPRESSED_SIGNED_R11_EAC                 = 0x9271;
@@ -181,6 +181,9 @@ interface WEBGL_compressed_texture_es3 {
       <change>Moved to draft.</change>
       <change>Added issue questions.</change>
       <change>Formalized the newtok and error codes.</change>
+    </revision>
+    <revision date="2016/09/16">
+      <change>Renamed to WEBGL_compressed_texture_es3_0.</change>
     </revision>
   </history>
 </draft>
