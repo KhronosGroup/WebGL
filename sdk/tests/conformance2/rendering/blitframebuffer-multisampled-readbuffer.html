@@ -128,7 +128,7 @@ function blitframebuffer_helper(readbufferFormat, drawbufferFormat, filter) {
 }
 
 function checkPixel(color, expectedColor) {
-  var tolerance = 63;
+  var tolerance = 15;
   return (Math.abs(color[0] - expectedColor[0]) <= tolerance &&
           Math.abs(color[1] - expectedColor[1]) <= tolerance &&
           Math.abs(color[2] - expectedColor[2]) <= tolerance &&
@@ -140,13 +140,21 @@ function draw_triangles(conversion) {
     gl.enableVertexAttribArray(positionLoc);
     // Draw two triangles. They are almost right-triangles: one is actually an obtuse triangle. The other is actually an acute triangle.
     // This means that some egdes of the triangles almost parallel with x-axis and y-axis. So they can show the alias.
-    var positions = new Float32Array([
+    /* var positions = new Float32Array([
          0.85, -0.90,
         -0.90,  0.85,
         -0.87, -0.87,
          0.90, -0.85,
          0.93,  0.93,
         -0.85,  0.90,
+    ]);*/
+    var positions = new Float32Array([
+         1.0, -1.0,
+        -1.0,  1.0,
+        -1.0, -1.0,
+         1.0, -1.0,
+         1.0,  1.0,
+        -1.0,  1.0,
     ]);
     var positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -154,13 +162,21 @@ function draw_triangles(conversion) {
     gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
 
     gl.enableVertexAttribArray(colorLoc);
-    var colors = [
+    /* var colors = [
         [255, 0, 0, 255],
         [0, 255, 0, 255],
         [0, 0, 255, 255],
         [253, 122, 5, 255],
         [6, 252, 120, 255],
         [118, 4, 254, 255]
+    ];*/
+    var colors = [
+        [255, 0, 0, 255],
+        [0, 255, 0, 255],
+        [0, 0, 255, 255],
+        [255, 0, 0, 255],
+        [0, 0, 255, 255],
+        [0, 255, 0, 255],
     ];
     // We need to convert srgb color space to linear color space for reference image.
     var vertexColors = new Uint8Array(24);
