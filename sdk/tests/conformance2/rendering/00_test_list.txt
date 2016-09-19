@@ -1,7 +1,8 @@
 attrib-type-match.html
-blitframebuffer-filter-srgb.html
+--min-version 2.0.1 blitframebuffer-filter-srgb.html
 blitframebuffer-multisampled-readbuffer.html
 blitframebuffer-outside-readbuffer.html
+--min-version 2.0.1 blitframebuffer-srgb-and-linear-drawbuffers.html
 --min-version 2.0.1 blitframebuffer-stencil-only.html
 blitframebuffer-test.html
 canvas-resizing-with-pbo-bound.html
