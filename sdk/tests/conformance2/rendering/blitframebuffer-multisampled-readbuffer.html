@@ -1,0 +1,301 @@
+<!--
+
+/*
+** Copyright (c) 2016 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL BlitFramebuffer Tests</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+<script src="../../js/glsl-conformance-test.js"></script>
+</head>
+<body>
+<canvas id="canvas" width="8" height="8"></canvas>
+<div id="description"></div>
+<div id="console"></div>
+
+<script id="vshader" type="x-shader/x-vertex">#version 300 es
+in highp vec2 aPosition;
+in highp vec4 aColor;
+out mediump vec4 vColor;
+void main() {
+    gl_Position = vec4(aPosition, 0.0, 1.0);
+    vColor = aColor;
+}
+</script>
+
+<script id="fshader" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+out vec4 oColor;
+in vec4 vColor;
+void main() {
+    oColor = vColor;
+}
+</script>
+
+<script>
+"use strict";
+
+var wtu = WebGLTestUtils;
+description("This test verifies the functionality of blitFramebuffer with multisampled readbuffer and sRGB color buffer.");
+
+var gl = wtu.create3DContext("canvas", undefined, 2);
+
+var tex_draw = gl.createTexture();
+var fb0 = gl.createFramebuffer();
+var fb1 = gl.createFramebuffer();
+var rb0 = gl.createRenderbuffer();
+var rb1 = gl.createRenderbuffer();
+var fbo_draw = gl.createFramebuffer();
+var size = 256;
+var vao;
+var program;
+var positionLoc;
+var colorLoc;
+
+if (!gl) {
+    testFailed("WebGL context does not exist");
+} else {
+    testPassed("WebGL context exists");
+
+    init();
+
+    var filters = [gl.LINEAR, gl.NEAREST];
+    for (var ii = 0; ii < filters.length; ++ii) {
+        blitframebuffer_multisampled_readbuffer(gl.SRGB8_ALPHA8, gl.SRGB8_ALPHA8, filters[ii]);
+    }
+}
+
+function init() {
+    program = wtu.setupProgram(gl, ['vshader', 'fshader']);
+    positionLoc = gl.getAttribLocation(program, "aPosition");
+    colorLoc = gl.getAttribLocation(program, "aColor");
+    if (!program || positionLoc < 0 || colorLoc < 0) {
+        testFailed("Set up program failed");
+        return;
+    }
+    testPassed("Set up program succeeded");
+
+    var vao = gl.createVertexArray();
+    gl.bindVertexArray(vao);
+    gl.clearColor(0, 0, 0, 1);
+    gl.viewport(0, 0, size, size);
+}
+
+function blitframebuffer_helper(readbufferFormat, drawbufferFormat, filter) {
+    // Create draw framebuffer and feed 0 to draw buffer
+    gl.bindTexture(gl.TEXTURE_2D, tex_draw);
+    gl.texImage2D(gl.TEXTURE_2D, 0, drawbufferFormat, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex_draw, 0);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "setup draw framebuffer should succeed");
+
+    gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.COLOR_BUFFER_BIT, filter);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitframebuffer should succeed");
+
+    // Read pixels for comparision
+    var pixels = new Uint8Array(size * size * 4);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_draw);
+    gl.readPixels(0, 0, size, size, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "readpixels should succeed");
+    return pixels;
+}
+
+function checkPixel(color, expectedColor) {
+  var tolerance = 15;
+  return (Math.abs(color[0] - expectedColor[0]) <= tolerance &&
+          Math.abs(color[1] - expectedColor[1]) <= tolerance &&
+          Math.abs(color[2] - expectedColor[2]) <= tolerance &&
+          Math.abs(color[3] - expectedColor[3]) <= tolerance);;
+}
+
+function draw_triangles(linear) {
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.enableVertexAttribArray(positionLoc);
+    // Draw two triangles. They are almost right-triangles: one is actually an obtuse triangle. The other is actually an acute triangle.
+    // This means that some egdes of the triangles almost parallel with x-axis and y-axis. So they can show the alias.
+    var positions = new Float32Array([
+         0.85, -0.90,
+        -0.90,  0.85,
+        -0.87, -0.87,
+         0.90, -0.85,
+         0.93,  0.93,
+        -0.85,  0.90,
+    ]);
+    var positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+    gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
+
+    gl.enableVertexAttribArray(colorLoc);
+    var colors = [
+        [255, 0, 0, 255],
+        [0, 255, 0, 255],
+        [0, 0, 255, 255],
+        [253, 122, 5, 255],
+        [6, 252, 120, 255],
+        [118, 4, 254, 255]
+    ];
+    // We need to convert srgb color space to linear color space for reference image.
+    var vertexColors = new Uint8Array(24);
+    for (var i = 0; i < 6; ++i) {
+        var color = linear ? colors[i] : wtu.sRGBToLinear(colors[i]);
+        for (var j = 0; j < 4; ++j) {
+            vertexColors[i * 4 + j] = color[j];
+        }
+    }
+    var colorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertexColors, gl.STATIC_DRAW);
+    gl.vertexAttribPointer(colorLoc, 4, gl.UNSIGNED_BYTE, true, 0, 0);
+
+    gl.useProgram(program);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Draw triangles should succeed");
+}
+
+function blitframebuffer_multisampled_readbuffer(readbufferFormat, drawbufferFormat, filter) {
+    debug("");
+    debug("Test multisampled read buffer for blitFramebuffer against sRGB color format, the current filter is: " + wtu.glEnumToString(gl, filter));
+    debug("read buffer format is: " + wtu.glEnumToString(gl, readbufferFormat) + ", draw buffer format is: " + wtu.glEnumToString(gl, drawbufferFormat));
+
+    // Draw to a multi-sampled srgb image, and blit to a srgb image.
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb0);
+    gl.renderbufferStorageMultisample(gl.RENDERBUFFER, 4, readbufferFormat, size, size);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb0);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb0);
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    draw_triangles(false);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
+    var pixels = blitframebuffer_helper(readbufferFormat, drawbufferFormat, filter);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Blit from a multi-sampled srgb image to a srgb image should succeed");
+
+    // Draw to a multi-sampled linear image, and blit to a linear image.
+    // This result is usded as reference. We suppose that this is correct.
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb1);
+    gl.renderbufferStorageMultisample(gl.RENDERBUFFER, 4, gl.RGBA8, size, size);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb1);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb1);
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    // Before drawing, the srgb color will be converted to linear color for reference data.
+    draw_triangles(true);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb1);
+    var temp = blitframebuffer_helper(readbufferFormat, gl.RGBA8, filter);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Blit from a multi-sampled linear image to a linear image should succeed");
+
+    // Encode linear color to srgb color for reference data
+    var ref_pixels = new Uint8Array(size * size * 4);
+    for (var ii = 0; ii < size * size * 4; ii += 4) {
+        var color = [temp[ii], temp[ii + 1], temp[ii + 2], temp[ii + 3]];
+        var ref_color;
+        ref_color = wtu.linearToSRGB(color);
+        for (var jj = 0; jj < 4; ++jj) {
+          ref_pixels[ii + jj] = ref_color[jj];
+        }
+    }
+
+    // Compare
+    var failed = false;
+    var count = 0;
+    // Don't show too much failures if many pixels comparison failed.
+    var numbers = 100;
+    for (var ii = 0; ii < size; ++ii) {
+        for (var jj = 0; jj < size; ++jj) {
+            var index = ii * size * 4 + jj;
+            var color = [pixels[index], pixels[index + 1], pixels[index + 2], pixels[index + 3]];
+            var expectedColor = [ref_pixels[index], ref_pixels[index + 1], ref_pixels[index + 2], ref_pixels[index + 3]];
+            if (checkPixel(color, expectedColor) == false) {
+                failed = true;
+                testFailed("pixel at [" + jj + ", " + ii + "] should be (" + expectedColor + "), but the actual color is (" + color + ")");
+                count++;
+            }
+            if (count > numbers) {
+                break;
+            }
+        }
+        if (count > numbers) {
+            break;
+        }
+    }
+    if (failed == false) {
+        testPassed("All pixels comparision can pass!");
+    }
+    displayImage(pixels, ref_pixels, size, size);
+}
+
+function displayImage(result, ref, width, height) {
+    var div = document.createElement("div");
+
+    var resImg = createImage(result, width, height);
+    var refImg = createImage(ref, width, height);
+    wtu.insertImage(div, "Reference", refImg);
+    wtu.insertImage(div, "Result", resImg);
+
+    var console = document.getElementById("console");
+    console.appendChild(div);
+}
+
+function createImage(buf, width, height) {
+    var canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    var ctx = canvas.getContext("2d");
+    var imgData = ctx.getImageData(0, 0, width, height);
+
+    for (var i = 0; i < buf.length; ++i) {
+        imgData.data[i] = buf[i];
+    }
+    ctx.putImageData(imgData, 0, 0);
+    var img = wtu.makeImageFromCanvas(canvas);
+    return img;
+}
+
+
+gl.bindTexture(gl.TEXTURE_2D, null);
+gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+gl.deleteRenderbuffer(rb0);
+gl.deleteRenderbuffer(rb1);
+gl.deleteTexture(tex_draw);
+gl.deleteFramebuffer(fb0);
+gl.deleteFramebuffer(fb1);
+
+var successfullyParsed = true;
+</script>
+<script src="../../js/js-test-post.js"></script>
+
+</body>
+</html>

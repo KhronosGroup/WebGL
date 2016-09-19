@@ -2971,18 +2971,18 @@ function sRGBChannelToLinear(value) {
     return Math.trunc(value * 255 + 0.5);
 }
 
-function linearChannelToSRGB(color) {
-    color = color / 255;
-    if (color <= 0.0) {
-        color = 0.0;
-    } else if (color < 0.0031308) {
-        color = color * 12.92;
-    } else if (color < 1) {
-        color = Math.pow(color, 0.41666) * 1.055 - 0.055;
+function linearChannelToSRGB(value) {
+    value = value / 255;
+    if (value <= 0.0) {
+        value = 0.0;
+    } else if (value < 0.0031308) {
+        value = value * 12.92;
+    } else if (value < 1) {
+        value = Math.pow(value, 0.41666) * 1.055 - 0.055;
     } else {
-        color = 1.0;
+        value = 1.0;
     }
-    return Math.trunc(color * 255 + 0.5);
+    return Math.trunc(value * 255 + 0.5);
 }
 var API = {
   addShaderSource: addShaderSource,
