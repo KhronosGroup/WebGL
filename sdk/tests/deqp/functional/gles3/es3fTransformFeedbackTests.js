@@ -1187,7 +1187,7 @@ goog.scope(function() {
             // Bind buffer for reading.
             gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, this.m_outputBuffers[bufferNdx]);
 
-            gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, buffer);
+            gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, new Uint8Array(buffer));
 
             // Verify all output variables that are written to this buffer.
             for (var i = 0; i < this.m_transformFeedbackOutputs.length; ++i) {
