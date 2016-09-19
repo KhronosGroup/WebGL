@@ -1,6 +1,7 @@
 attrib-type-match.html
 blitframebuffer-filter-srgb.html
 blitframebuffer-outside-readbuffer.html
+blitframebuffer-srgb-and-linear-drawbuffers.html
 blitframebuffer-test.html
 canvas-resizing-with-pbo-bound.html
 clear-func-buffer-type-match.html
