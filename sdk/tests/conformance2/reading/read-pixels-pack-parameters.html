@@ -179,9 +179,8 @@ function runTestIteration(xoffset, yoffset, width, height, packParams, usePixelP
         return;
 
     if (usePixelPackBuffer) {
-        var arrBuffer = new ArrayBuffer(skipSize + size);
-        gl.getBufferSubData(gl.PIXEL_PACK_BUFFER, 0, arrBuffer);
-        array = new Uint8Array(arrBuffer);
+        array = new Uint8Array(skipSize + size);
+        gl.getBufferSubData(gl.PIXEL_PACK_BUFFER, 0, array);
     }
 
     // Check skipped bytes are unchanged.

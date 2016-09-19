@@ -1246,10 +1246,9 @@ var checkFloatBuffer = function(gl, target, expected, opt_msg, opt_errorRange) {
   if (opt_errorRange === undefined)
     opt_errorRange = 0.001;
 
-  var outData = new ArrayBuffer(Float32Array.BYTES_PER_ELEMENT * expected.length);
-  gl.getBufferSubData(target, 0, outData);
+  var floatArray = new Float32Array(expected.length);
+  gl.getBufferSubData(target, 0, floatArray);
 
-  var floatArray = new Float32Array(outData);
   for (var i = 0; i < expected.length; i++) {
     if (Math.abs(floatArray[i] - expected[i]) > opt_errorRange) {
       testFailed(opt_msg);
@@ -1519,7 +1518,7 @@ function create3DContextWithWrapperThatThrowsOnGLError(canvas, opt_attributes, o
  * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
  * @param {string} evalStr The string to evaluate.
  */
-var shouldGenerateGLError = function(gl, glErrors, evalStr) {
+var shouldGenerateGLError = function(gl, glErrors, evalStr, opt_msg) {
   var exception;
   try {
     eval(evalStr);
@@ -1529,7 +1528,10 @@ var shouldGenerateGLError = function(gl, glErrors, evalStr) {
   if (exception) {
     testFailed(evalStr + " threw exception " + exception);
   } else {
-    glErrorShouldBe(gl, glErrors, "after evaluating: " + evalStr);
+    if (!opt_msg) {
+      opt_msg = "after evaluating: " + evalStr;
+    }
+    glErrorShouldBe(gl, glErrors, opt_msg);
   }
 };
 
