@@ -128,14 +128,14 @@ function blitframebuffer_helper(readbufferFormat, drawbufferFormat, filter) {
 }
 
 function checkPixel(color, expectedColor) {
-  var tolerance = 15;
+  var tolerance = 63;
   return (Math.abs(color[0] - expectedColor[0]) <= tolerance &&
           Math.abs(color[1] - expectedColor[1]) <= tolerance &&
           Math.abs(color[2] - expectedColor[2]) <= tolerance &&
           Math.abs(color[3] - expectedColor[3]) <= tolerance);;
 }
 
-function draw_triangles(linear) {
+function draw_triangles(conversion) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.enableVertexAttribArray(positionLoc);
     // Draw two triangles. They are almost right-triangles: one is actually an obtuse triangle. The other is actually an acute triangle.
@@ -165,7 +165,7 @@ function draw_triangles(linear) {
     // We need to convert srgb color space to linear color space for reference image.
     var vertexColors = new Uint8Array(24);
     for (var i = 0; i < 6; ++i) {
-        var color = linear ? colors[i] : wtu.sRGBToLinear(colors[i]);
+        var color = conversion ? wtu.sRGBToLinear(colors[i]) : colors[i];
         for (var j = 0; j < 4; ++j) {
             vertexColors[i * 4 + j] = color[j];
         }
@@ -219,8 +219,7 @@ function blitframebuffer_multisampled_readbuffer(readbufferFormat, drawbufferFor
     var ref_pixels = new Uint8Array(size * size * 4);
     for (var ii = 0; ii < size * size * 4; ii += 4) {
         var color = [temp[ii], temp[ii + 1], temp[ii + 2], temp[ii + 3]];
-        var ref_color;
-        ref_color = wtu.linearToSRGB(color);
+        var ref_color = wtu.linearToSRGB(color);
         for (var jj = 0; jj < 4; ++jj) {
           ref_pixels[ii + jj] = ref_color[jj];
         }
