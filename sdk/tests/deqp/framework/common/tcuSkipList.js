@@ -85,11 +85,15 @@ goog.scope(function() {
         _skip("texture_functions.textureprojoffset.sampler3d_fixed_fragment");
         _skip("texture_functions.textureprojoffset.isampler3d_fragment");
         _skip("texture_functions.textureprojoffset.usampler3d_fragment");
+        // Please see https://android.googlesource.com/platform/external/deqp/+/master/android/cts/master/src/gles3-hw-issues.txt
+        _skip("texture_functions.textureprojlod.isampler3d_vertex");
+        _skip("texture_functions.textureprojlod.usampler3d_vertex");
         // Please see https://android.googlesource.com/platform/external/deqp/+/master/android/cts/master/src/gles3-test-issues.txt
         _skip("texture_functions.textureprojlodoffset.usampler3d_vertex");
         _skip("texture_functions.textureoffset.sampler3d_float_fragment");
         _skip("texture_functions.textureprojoffset.sampler3d_float_fragment");
         // Please see https://android.googlesource.com/platform/external/deqp/+/master/android/cts/master/src/gles3-driver-issues.txt
+        _skip("texture_functions.textureprojlodoffset.isampler3d_vertex");
         _skip("texture_functions.texturegrad.samplercubeshadow*");
 
         // https://android.googlesource.com/platform/external/deqp/+/0c1f83aee4709eef7ef2a3edd384f9c192f476fd/android/cts/master/src/gles3-hw-issues.txt#801
