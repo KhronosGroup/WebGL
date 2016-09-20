@@ -1729,7 +1729,7 @@ goog.scope(function() {
             if (!this.testTextureSize(testSizes[currentIteration - 1]))
                 testFailedOptions('Fail: Case ' + (currentIteration - 1) + ' Got unexpected texture size', false);
             else
-				testPassedOptions('Pass', true);
+                testPassedOptions('Pass', true);
 
             return tcuTestCase.IterateResult.CONTINUE;
         }
@@ -2474,7 +2474,7 @@ goog.scope(function() {
 
                 es3fShaderTextureFunctionTests.getCaseSpec('sampler2dshadow', es3fShaderTextureFunctionTests.TexFunction.TEXTUREPROJLOD, [0.2, 0.6, 0.0, 1.5], [-2.25, -3.45, 1.5, 1.5],    false,    -1.0,    9.0,    true, [-8, 7, 0],    tex2DMipmapShadow, es3fShaderTextureFunctionTests.evalTexture2DShadowProjLodOffset,    es3fShaderTextureFunctionTests.CaseFlags.BOTH)
             ];
-        	es3fShaderTextureFunctionTests.createCaseGroup(this, 'textureprojlodoffset', 'textureProjLodOffset() Tests', textureProjLodOffsetCases);
+            es3fShaderTextureFunctionTests.createCaseGroup(this, 'textureprojlodoffset', 'textureProjLodOffset() Tests', textureProjLodOffsetCases);
 
             // textureGrad() cases
             // \note Only one of dudx, dudy, dvdx, dvdy is non-zero since spec allows approximating p from derivates by various methods.
