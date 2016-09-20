@@ -1,4 +1,3 @@
-compressed-tex-image.html
 copy-texture-image.html
 copy-texture-image-luma-format.html
 copy-texture-image-webgl-specific.html

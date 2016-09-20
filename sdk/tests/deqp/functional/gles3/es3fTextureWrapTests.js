@@ -347,6 +347,10 @@ goog.scope(function() {
             new Etc2Format('etc2_eac_rgba8', tcuCompressedTexture.Format.ETC2_EAC_RGBA8),
             new Etc2Format('etc2_eac_srgb8_alpha8', tcuCompressedTexture.Format.ETC2_EAC_SRGB8_ALPHA8)
         ];
+        if (!gluTextureUtil.enableCompressedTextureES30()) {
+            debug('Skipping ETC2 texture format tests: no support for WEBGL_compressed_texture_es3_0');
+            etc2Formats = [];
+        }
 
         /**
          * @constructor
