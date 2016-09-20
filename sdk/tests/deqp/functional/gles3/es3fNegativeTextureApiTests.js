@@ -38,6 +38,10 @@ goog.scope(function() {
     var gluTexture = framework.opengl.gluTexture;
     var gluTextureUtil = framework.opengl.gluTextureUtil;
 
+    function etc2Unsupported() {
+        debug("Skipping test: no support for WEBGL_compressed_texture_es3_0");
+    }
+
 
     /**
      * @param {number} width
@@ -130,7 +134,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage2d_invalid_target', 'Invalid gl.compressedTexImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type {Array<WebGLTexture>} */ var texture = [];
             texture[0] = gl.createTexture();
@@ -193,7 +197,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage2d_neg_level', 'Invalid gl.compressedTexImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
 
             /** @type {Array<WebGLTexture>} */ var texture = [];
@@ -229,7 +233,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage2d_max_level', 'Invalid gl.compressedTexImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
 
             /** @type {Array<WebGLTexture>} */ var texture = [];
@@ -271,7 +275,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage2d_neg_width_height', 'Invalid gl.compressedTexImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
 
             /** @type {Array<WebGLTexture>} */ var texture = [];
@@ -349,7 +353,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage2d_max_width_height', 'Invalid gl.compressedTexImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
 
             /** @type {Array<WebGLTexture>} */ var texture = [];
@@ -428,7 +432,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage2d_invalid_border', 'Invalid gl.compressedTexImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
 
             /** @type {Array<WebGLTexture>} */ var texture = [];
@@ -493,7 +497,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage2d_invalid_size', 'Invalid gl.compressedTexImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
 
             /** @type {WebGLTexture} */ var texture;
@@ -1120,7 +1124,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('generatemipmap', 'Invalid gl.generateMipmap() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{Array<WebGLTexture>} */ var texture = [];
             /** @type{WebGLFramebuffer} */ var fbo;
@@ -1794,7 +1798,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage2d', 'Invalid gl.compressedTexSubImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -1832,7 +1836,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage2d_neg_level', 'Invalid gl.compressedTexSubImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{Array<WebGLTexture>} */ var texture = [];
             texture[0] = gl.createTexture();
@@ -1863,7 +1867,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage2d_max_level', 'Invalid gl.compressedTexSubImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{Array<WebGLTexture>} */ var texture = [];
             texture[0] = gl.createTexture();
@@ -1896,7 +1900,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage2d_neg_offset', 'Invalid gl.compressedTexSubImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{ WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -1920,7 +1924,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage2d_invalid_offset', 'Invalid gl.compressedTexSubImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -1942,7 +1946,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage2d_neg_width_height', 'Invalid gl.compressedTexSubImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -1963,7 +1967,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage2d_invalid_size', 'Invalid gl.compressedTexImage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2487,7 +2491,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage3d', 'Invalid gl.compressedTexImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{Array<WebGLTexture>} */ var texture = [];
 
@@ -2515,7 +2519,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage3d_neg_level', 'Invalid gl.compressedTexImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{ WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2530,7 +2534,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage3d_max_level', 'Invalid gl.compressedTexImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{ WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2547,7 +2551,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage3d_neg_width_height_depth', 'Invalid gl.compressedTexImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{ WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2569,7 +2573,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage3d_max_width_height_depth', 'Invalid gl.compressedTexImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{ WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2593,7 +2597,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage3d_invalid_border', 'Invalid gl.compressedTexImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{ WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2611,7 +2615,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedteximage3d_invalid_size', 'Invalid gl.compressedTexImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{ WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2635,7 +2639,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage3d', 'Invalid gl.compressedTexSubImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             bufferedLogToConsole('gl.INVALID_ENUM is generated if target is invalid.');
             /** @type{WebGLTexture} */ var texture;
@@ -2676,7 +2680,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage3d_neg_level', 'Invalid gl.compressedTexSubImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2693,7 +2697,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage3d_max_level', 'Invalid gl.compressedTexSubImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2711,7 +2715,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage3d_neg_offset', 'Invalid gl.compressedTexSubImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2734,7 +2738,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage3d_invalid_offset', 'Invalid gl.compressedTexSubImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2758,7 +2762,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage3d_neg_width_height_depth', 'Invalid gl.compressedTexSubImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2781,7 +2785,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('compressedtexsubimage3d_invalid_size', 'Invalid gl.compressedTexSubImage3D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
 
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
@@ -2803,7 +2807,7 @@ goog.scope(function() {
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('texstorage2d', 'Invalid gl.texStorage2D() usage', gl,
         function() {
-            if (!haveCompressedTextureES30) { return; }
+            if (!haveCompressedTextureES30) { etc2Unsupported(); return; }
             /** @type{WebGLTexture} */ var texture;
             texture = gl.createTexture();
             gl.bindTexture (gl.TEXTURE_2D, texture);

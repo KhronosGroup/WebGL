@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL WEBGL_compressed_texture_es3_0 Tests</title>
+<title>WebGL WEBGL_compressed_texture_es3_0 Conformance Tests</title>
 <LINK rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
@@ -39,7 +39,7 @@
 <div id="console"></div>
 <script>
 "use strict";
-description("This test ensures WebGL implementations correctly implements WEBGL_compressed_texture_es3_0");
+description("This test verifies the functionality of the WEBGL_compressed_texture_es3_0 extension, if it is available.");
 
 debug("");
 var COMPRESSED_RGB_S3TC_DXT1_EXT              = 0x83F0;
@@ -75,12 +75,12 @@ function runTest() {
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
 
-    var name = wtu.getSupportedExtensionWithKnownPrefixes(gl, "WEBGL_compressed_texture_es3_0");
+    var haveExt = gl.getSupportedExtensions().indexOf("WEBGL_compressed_texture_es3_0") >= 0;
     WEBGL_compressed_texture_es3_0 = gl.getExtension("WEBGL_compressed_texture_es3_0");
 
     var isPositive = true;
 
-    if (name !== undefined) {
+    if (haveExt) {
       if (WEBGL_compressed_texture_es3_0 !== null) {
         testPassed("WEBGL_compressed_texture_es3_0 listed as supported and getExtension succeeded");
       } else {
