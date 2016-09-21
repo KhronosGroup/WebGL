@@ -171,11 +171,7 @@ function runTestDisabled() {
     debug("Testing binding enum with extension disabled");
 
     supportedFormats = gl.getParameter(gl.COMPRESSED_TEXTURE_FORMATS);
-    if (contextVersion < 2) {
-        shouldBe("supportedFormats", "[]");
-    } else {
-        shouldBe("supportedFormats.length", "10");
-    }
+    shouldBe("supportedFormats", "[]");
 }
 
 function formatExists(format, supportedFormats) {

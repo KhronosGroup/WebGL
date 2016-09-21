@@ -242,12 +242,6 @@ gluTextureUtil.enableCompressedTextureES30 = (function() {
         if (enabled === undefined) {
             enabled = false;
 
-            // TODO: Once ETC2/EAC are removed from WebGL 2, remove this block.
-            if (gl.COMPRESSED_R11_EAC !== undefined) {
-                debug("WebGL 2 context has ETC2 formats; not requesting WEBGL_compressed_texture_es3_0");
-                return enabled = true;
-            }
-
             var WEBGL_compressed_texture_es3_0 = gl.getExtension("WEBGL_compressed_texture_es3_0");
             if (WEBGL_compressed_texture_es3_0) {
                 // Extend gl with enums from WEBGL_compressed_texture_es3_0
