@@ -40,25 +40,6 @@
 <div id="description"></div>
 <div id="console"></div>
 
-<script id="vshader" type="x-shader/x-vertex">#version 300 es
-in highp vec2 aPosition;
-in highp vec4 aColor;
-out mediump vec4 vColor;
-void main() {
-    gl_Position = vec4(aPosition, 0.0, 1.0);
-    vColor = aColor;
-}
-</script>
-
-<script id="fshader" type="x-shader/x-fragment">#version 300 es
-precision mediump float;
-out vec4 oColor;
-in vec4 vColor;
-void main() {
-    oColor = vColor;
-}
-</script>
-
 <script>
 "use strict";
 
@@ -72,10 +53,7 @@ var fb0 = gl.createFramebuffer();
 var rb0 = gl.createRenderbuffer();
 var fbo_blit = gl.createFramebuffer();
 var size = 32;
-var vao;
 var program;
-var positionLoc;
-var colorLoc;
 
 if (!gl) {
     testFailed("WebGL context does not exist");
@@ -91,18 +69,7 @@ if (!gl) {
 }
 
 function init() {
-    program = wtu.setupProgram(gl, ['vshader', 'fshader']);
-    positionLoc = gl.getAttribLocation(program, "aPosition");
-    colorLoc = gl.getAttribLocation(program, "aColor");
-    if (!program || positionLoc < 0 || colorLoc < 0) {
-        testFailed("Set up program failed");
-        return;
-    }
-    testPassed("Set up program succeeded");
-
-    var vao = gl.createVertexArray();
-    gl.bindVertexArray(vao);
-    gl.clearColor(0, 0, 0, 1);
+    program = wtu.setupColorQuad(gl);
     gl.viewport(0, 0, size, size);
 }
 
@@ -126,33 +93,11 @@ function blitframebuffer_helper(readbufferFormat, drawbufferFormat, filter) {
 }
 
 function checkPixel(color, expectedColor) {
-  var tolerance = 7;
+  var tolerance = 3;
   return (Math.abs(color[0] - expectedColor[0]) <= tolerance &&
           Math.abs(color[1] - expectedColor[1]) <= tolerance &&
           Math.abs(color[2] - expectedColor[2]) <= tolerance &&
           Math.abs(color[3] - expectedColor[3]) <= tolerance);;
-}
-
-function draw_rect(color) {
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.enableVertexAttribArray(positionLoc);
-    var positions = new Float32Array([
-         1.0, -1.0,
-        -1.0,  1.0,
-        -1.0, -1.0,
-         1.0, -1.0,
-         1.0,  1.0,
-        -1.0,  1.0,
-    ]);
-    var positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-    gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
-
-    gl.vertexAttrib4fv(colorLoc, color);
-    gl.useProgram(program);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Draw triangles should succeed");
 }
 
 function blitframebuffer_multisampled_readbuffer(readbufferFormat, drawbufferFormat, filter) {
@@ -176,7 +121,8 @@ function blitframebuffer_multisampled_readbuffer(readbufferFormat, drawbufferFor
     }
     // Draw a rectangle. Fill it with solid color.
     // Note that the draw buffer is a multisampled srgb image. So during drawing, the color will be converted into srgb color space.
-    draw_rect(color);
+    gl.useProgram(program);
+    wtu.drawFloatColorQuad(gl, color);
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
     var pixels = blitframebuffer_helper(readbufferFormat, drawbufferFormat, filter);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Blit from a multi-sampled srgb image to a srgb image should succeed");
