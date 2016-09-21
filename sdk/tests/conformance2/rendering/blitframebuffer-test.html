@@ -44,12 +44,23 @@
 var wtu = WebGLTestUtils;
 description("This test verifies the functionality of blitFramebuffer for some corner cases.");
 
+var width = 8;
+var height = 8;
+
 var gl = wtu.create3DContext("example", undefined, 2);
+if (!gl) {
+    testFailed("WebGL context does not exist");
+} else {
+    testPassed("WebGL context exists");
+    blit_framebuffer_feedback_loop();
+    blit_framebuffer_multisampling_srgb();
+}
 
-function blit_framebuffer_test() {
-    var width = 8;
-    var height = 8;
 
+function blit_framebuffer_feedback_loop() {
+
+    debug("");
+    debug("This test vefify that whether the src resource and dst resource have identical image.");
     // Create read fbo and its color attachment.
     var tex_2d = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex_2d);
@@ -245,11 +256,81 @@ function blit_framebuffer_test() {
     gl.deleteFramebuffer(fb1);
 };
 
-if (!gl) {
-    testFailed("WebGL context does not exist");
-} else {
-    testPassed("WebGL context exists");
-    blit_framebuffer_test();
+function blit_framebuffer_multisampling_srgb() {
+
+    debug("");
+    debug("This test vefify the functionality of blitframebuffer from or to a multisampled srgb image.");
+
+    // Read buffer can have multisampled srgb image, but draw buffers can not.
+    var rb0 = gl.createRenderbuffer();
+    var fb0 = gl.createFramebuffer();
+    var rb1 = gl.createRenderbuffer();
+    var fb1 = gl.createFramebuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb0);
+    gl.renderbufferStorageMultisample(gl.RENDERBUFFER, 4, gl.SRGB8_ALPHA8, width, height);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
+    gl.framebufferRenderbuffer(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb0);
+
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb1);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.SRGB8_ALPHA8, width, height);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
+    gl.framebufferRenderbuffer(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb1);
+    if (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE ||
+        gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer from multisampled srgb image should succeed.");
+
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb1);
+    gl.renderbufferStorageMultisample(gl.RENDERBUFFER, 4, gl.SRGB8_ALPHA8, width, height);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
+    gl.framebufferRenderbuffer(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb1);
+    if (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer to a multisampled srgb image should generate INVALID_OPERATION.");
+
+    // BlitFramebuffer from a multisampled srgb image, the src region and the dst region should be exactly the same.
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb1);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.SRGB8_ALPHA8, width, height);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
+    gl.framebufferRenderbuffer(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb1);
+    if (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    gl.blitFramebuffer(0, 0, 2, 2, 2, 2, 4, 4, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer from a multisampled srgb image, the src region and the dst region should be exactly the same.");
+
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 4, 4, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer from a multisampled srgb image, the src region and the dst region should be exactly the same.");
+
+    // BlitFramebuffer from a multisampled srgb image, the format/type should be exactly the same. So blit from a multisampled srgb image to a linear image is invalid.
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    if (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        testFailed("Framebuffer incomplete.");
+        return;
+    }
+    gl.blitFramebuffer(0, 0, 2, 2, 0, 0, 2, 2, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "blitFramebuffer from a multisampled srgb image, the format/type should be exactly the same.");
+
+    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+    gl.deleteRenderbuffer(rb0);
+    gl.deleteRenderbuffer(rb1);
+    gl.deleteTexture(tex);
+    gl.deleteFramebuffer(fb0);
+    gl.deleteFramebuffer(fb1);
 }
 
 var successfullyParsed = true;
