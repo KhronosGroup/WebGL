@@ -259,6 +259,13 @@ goog.scope(function() {
         // deqp/functional/gles3/pixelbufferobject.html
         _skip("pixel_buffer_object.renderbuffer.rgb8_triangles");
         _skip("pixel_buffer_object.renderbuffer.rgb8_clears");
+
+        _setReason("Some Windows AMD D3D11 drivers have issues with blit and depth/stencil formats.");
+        // crbug.com/638323
+        // deqp/functional/gles3/framebufferblit/depth_stencil.html
+        // Also see conformance2/rendering/blitframebuffer-stencil-only.html for 2.0.1 test.
+        _skip("blit.depth_stencil.depth24_stencil8_scale");
+        _skip("blit.depth_stencil.depth24_stencil8_stencil_only");
     } // if (!runSkippedTests)
 
     /*
