@@ -93,7 +93,7 @@ function blitframebuffer_helper(readbufferFormat, drawbufferFormat, filter) {
 }
 
 function checkPixel(color, expectedColor) {
-  var tolerance = 1;
+  var tolerance = 3;
   return (Math.abs(color[0] - expectedColor[0]) <= tolerance &&
           Math.abs(color[1] - expectedColor[1]) <= tolerance &&
           Math.abs(color[2] - expectedColor[2]) <= tolerance &&
