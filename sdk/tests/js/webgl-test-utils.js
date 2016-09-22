@@ -3113,7 +3113,6 @@ Object.defineProperties(API, {
   simpleVertexShader: { value: simpleVertexShader, writable: false },
   simpleTextureFragmentShader: { value: simpleTextureFragmentShader, writable: false },
   simpleCubeMapTextureFragmentShader: { value: simpleCubeMapTextureFragmentShader, writable: false },
-  simpleTextureVertexShader: { value: simpleTextureVertexShader, writable: false },
   simpleVertexColorFragmentShader: { value: simpleVertexColorFragmentShader, writable: false },
   simpleVertexColorVertexShader: { value: simpleVertexColorVertexShader, writable: false }
 });
