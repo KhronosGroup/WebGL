@@ -137,7 +137,7 @@ function blitframebuffer_srgb_and_linear_drawbuffers(readbufferFormat, drawbuffe
     }
 
     // Blit to multiple draw buffers with srgb images and linear images
-    var dstSize = (readbufferFormat == gl.SRGB8_ALPHA8) ? 5 : size;
+    var dstSize = size - 1;
     gl.blitFramebuffer(0, 0, size, size, 0, 0, dstSize, dstSize, gl.COLOR_BUFFER_BIT, filter);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitframebuffer should succeed");
 
