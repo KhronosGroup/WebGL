@@ -60,7 +60,7 @@ if (!gl) {
     for (var ii = 0; ii < filters.length; ++ii) {
         for (var jj = 0; jj < drawbuffersFormats.length; ++jj) {
             blitframebuffer_srgb_and_linear_drawbuffers(gl.SRGB8_ALPHA8, drawbuffersFormats[jj], filters[ii]);
-            blitframebuffer_srgb_and_linear_drawbuffers(gl.RGBA, drawbuffersFormats[jj], filters[ii]);
+            blitframebuffer_srgb_and_linear_drawbuffers(gl.RGBA8, drawbuffersFormats[jj], filters[ii]);
         }
     }
 }
@@ -118,10 +118,10 @@ function blitframebuffer_srgb_and_linear_drawbuffers(readbufferFormat, drawbuffe
 
     if (drawbuffersFormatMask & linearMask) {
         gl.bindTexture(gl.TEXTURE_2D, tex_linear0);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.TEXTURE_2D, tex_linear0, 0);
         gl.bindTexture(gl.TEXTURE_2D, tex_linear1);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT3, gl.TEXTURE_2D, tex_linear1, 0);
         drawbuffers[1] = gl.COLOR_ATTACHMENT1;
         drawbuffers[3] = gl.COLOR_ATTACHMENT3;
@@ -130,34 +130,35 @@ function blitframebuffer_srgb_and_linear_drawbuffers(readbufferFormat, drawbuffe
     gl.drawBuffers(drawbuffers);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "setup draw framebuffer should succeed");
 
-    var status = gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) && gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER);
-    if (status != gl.FRAMEBUFFER_COMPLETE) {
+    if (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE ||
+        gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
         testFailed("Framebuffer incomplete when setup draw framebuffer.");
         return;
     }
 
     // Blit to multiple draw buffers with srgb images and linear images
-    gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.COLOR_BUFFER_BIT, filter);
+    var dstSize = (readbufferFormat == gl.SRGB8_ALPHA8) ? 5 : size;
+    gl.blitFramebuffer(0, 0, size, size, 0, 0, dstSize, dstSize, gl.COLOR_BUFFER_BIT, filter);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitframebuffer should succeed");
 
     // Read pixels from srgb images and linear images
-    var srgbPixels0 = new Uint8Array(size * size * 4);
-    var srgbPixels1 = new Uint8Array(size * size * 4);
-    var linearPixels0 = new Uint8Array(size * size * 4);
-    var linearPixels1 = new Uint8Array(size * size * 4);
+    var srgbPixels0 = new Uint8Array(dstSize * dstSize * 4);
+    var srgbPixels1 = new Uint8Array(dstSize * dstSize * 4);
+    var linearPixels0 = new Uint8Array(dstSize * dstSize * 4);
+    var linearPixels1 = new Uint8Array(dstSize * dstSize * 4);
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_draw);
     if (drawbuffersFormatMask & srgbMask) {
         gl.readBuffer(gl.COLOR_ATTACHMENT0);
-        gl.readPixels(0, 0, size, size, gl.RGBA, gl.UNSIGNED_BYTE, srgbPixels0);
+        gl.readPixels(0, 0, dstSize, dstSize, gl.RGBA, gl.UNSIGNED_BYTE, srgbPixels0);
         gl.readBuffer(gl.COLOR_ATTACHMENT2);
-        gl.readPixels(0, 0, size, size, gl.RGBA, gl.UNSIGNED_BYTE, srgbPixels1);
+        gl.readPixels(0, 0, dstSize, dstSize, gl.RGBA, gl.UNSIGNED_BYTE, srgbPixels1);
     }
 
     if (drawbuffersFormatMask & linearMask) {
         gl.readBuffer(gl.COLOR_ATTACHMENT1);
-        gl.readPixels(0, 0, size, size, gl.RGBA, gl.UNSIGNED_BYTE, linearPixels0);
+        gl.readPixels(0, 0, dstSize, dstSize, gl.RGBA, gl.UNSIGNED_BYTE, linearPixels0);
         gl.readBuffer(gl.COLOR_ATTACHMENT3);
-        gl.readPixels(0, 0, size, size, gl.RGBA, gl.UNSIGNED_BYTE, linearPixels1);
+        gl.readPixels(0, 0, dstSize, dstSize, gl.RGBA, gl.UNSIGNED_BYTE, linearPixels1);
     }
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "readpixels should succeed");
 
@@ -165,9 +166,9 @@ function blitframebuffer_srgb_and_linear_drawbuffers(readbufferFormat, drawbuffe
     var expectedSRGBColor = (readbufferFormat == gl.SRGB8_ALPHA8) ? color : wtu.linearToSRGB(color);
     var expectedLinearColor = (readbufferFormat == gl.SRGB8_ALPHA8) ? wtu.sRGBToLinear(color) : color;
     var failed = false;
-    for (var ii = 0; ii < size; ++ii) {
-        for (var jj = 0; jj < size; ++jj) {
-            var index = (ii * size + jj) * 4;
+    for (var ii = 0; ii < dstSize; ++ii) {
+        for (var jj = 0; jj < dstSize; ++jj) {
+            var index = (ii * dstSize + jj) * 4;
             if (drawbuffersFormatMask & srgbMask) {
                 var srgbColor0 = [srgbPixels0[index], srgbPixels0[index + 1], srgbPixels0[index + 2], srgbPixels0[index + 3]];
                 if (checkPixel(srgbColor0, expectedSRGBColor) == false) {
@@ -213,7 +214,7 @@ function blitframebuffer_srgb_and_linear_drawbuffers(readbufferFormat, drawbuffe
 }
 
 function checkPixel(color, expectedColor) {
-  var tolerance = 7;
+  var tolerance = 3;
   return (Math.abs(color[0] - expectedColor[0]) <= tolerance &&
           Math.abs(color[1] - expectedColor[1]) <= tolerance &&
           Math.abs(color[2] - expectedColor[2]) <= tolerance &&
