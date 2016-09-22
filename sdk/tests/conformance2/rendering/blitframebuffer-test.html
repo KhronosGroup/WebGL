@@ -266,8 +266,9 @@ function blit_framebuffer_multisampling_srgb() {
     var fb0 = gl.createFramebuffer();
     var rb1 = gl.createRenderbuffer();
     var fb1 = gl.createFramebuffer();
+    var samples = gl.getInternalformatParameter(gl.RENDERBUFFER, gl.SRGB8_ALPHA8, gl.SAMPLES);
     gl.bindRenderbuffer(gl.RENDERBUFFER, rb0);
-    gl.renderbufferStorageMultisample(gl.RENDERBUFFER, 4, gl.SRGB8_ALPHA8, width, height);
+    gl.renderbufferStorageMultisample(gl.RENDERBUFFER, samples[0], gl.SRGB8_ALPHA8, width, height);
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
     gl.framebufferRenderbuffer(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb0);
 
@@ -284,7 +285,7 @@ function blit_framebuffer_multisampling_srgb() {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer from multisampled srgb image should succeed.");
 
     gl.bindRenderbuffer(gl.RENDERBUFFER, rb1);
-    gl.renderbufferStorageMultisample(gl.RENDERBUFFER, 4, gl.SRGB8_ALPHA8, width, height);
+    gl.renderbufferStorageMultisample(gl.RENDERBUFFER, samples[0], gl.SRGB8_ALPHA8, width, height);
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb1);
     gl.framebufferRenderbuffer(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb1);
     if (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
