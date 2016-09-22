@@ -17,7 +17,9 @@
     <p>
       This extension exposes the compressed texture formats defined as core in the
       <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf">
-      OpenGL ES 3.0</a> spec to WebGL.
+      OpenGL ES 3.0</a> spec to WebGL. These include the ETC2 and EAC formats, where
+      ETC2 is a superset of ETC1. ETC1 textures can be loaded using the ETC2 token
+      value.
     </p>
     <features>
       <feature>
@@ -184,6 +186,9 @@ interface WEBGL_compressed_texture_es3_0 {
     </revision>
     <revision date="2016/09/16">
       <change>Renamed to WEBGL_compressed_texture_es3_0.</change>
+    </revision>
+    <revision date="2016/09/21">
+      <change>Clarifications to the supported formats on suggestion from Mark Callow.</change>
     </revision>
   </history>
 </draft>
