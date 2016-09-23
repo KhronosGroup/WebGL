@@ -48,14 +48,21 @@ description("This test verifies the functionality of blitFramebuffer when scisso
 
 var gl = wtu.create3DContext("example", undefined, 2);
 
+// Define the src region and dst region for blitFramebuffer
+var blit_src = [0, 0, 4, 4];
+var blit_dst = [2, 2, 6, 6];
+
 if (!gl) {
     testFailed("WebGL context does not exist");
 } else {
     testPassed("WebGL context exists");
+
     var bounds = [
         [0, 0, 4, 4], // Partially intersects with blitFramebuffer's dst region
         [0, 0, 2, 2], // No intersection with blitFramebuffer's dst region
     ];
+
+    // We can compute the real drawing area by intersecting the scissor bound with dst region of bliting.
     var intersections = [
         [2, 2, 4, 4],
         [0, 0, 0, 0],
@@ -116,9 +123,7 @@ function blitframebuffer_scissor(readbufferFormat, drawbufferFormat, bound, inte
     // Enable scissor test. Then blit framebuffer.
     gl.enable(gl.SCISSOR_TEST);
     gl.scissor(bound[0], bound[1], bound[2], bound[3]);
-    var blitSize = 4;
-    var blitOffset = 2;
-    gl.blitFramebuffer(0, 0, blitSize, blitSize, blitOffset, blitOffset, blitOffset + blitSize, blitOffset + blitSize, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+    gl.blitFramebuffer(blit_src[0], blit_src[1], blit_src[2], blit_src[3], blit_dst[0], blit_dst[1], blit_dst[2], blit_dst[3], gl.COLOR_BUFFER_BIT, gl.LINEAR);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitframebuffer should succeed");
 
     // Read pixels and Comparison
