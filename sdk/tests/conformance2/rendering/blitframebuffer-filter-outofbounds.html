@@ -1,0 +1,185 @@
+<!--
+
+/*
+** Copyright (c) 2016 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL BlitFramebuffer Tests</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+<script src="../../js/glsl-conformance-test.js"></script>
+</head>
+<body>
+<canvas id="example" width="8" height="8"></canvas>
+<div id="description"></div>
+<div id="console"></div>
+
+<script>
+// When blit framebuffer's src region have pixels out of the bounds of read buffer and the filter is LINEAR,
+// those out-of-bounds pixels are read as if CLAMP_TO_EDGE texture wrap mode is applied.
+// In MacOS, if the width/height of src region for blitFramebuffer are different from width/height of dst region,
+// it can correctly blit those pixels. Otherwise, it can not.
+// In other OSes, it always can not handle this feature correctly.
+
+"use strict";
+
+var wtu = WebGLTestUtils;
+description("This test verifies the functionality of blitFramebuffer when src region is out of the bounds of read buffer.");
+
+var gl = wtu.create3DContext("example", undefined, 2);
+
+function checkPixel(color, expectedColor) {
+  var tolerance = 3;
+  return (Math.abs(color[0] - expectedColor[0]) <= tolerance &&
+          Math.abs(color[1] - expectedColor[1]) <= tolerance &&
+          Math.abs(color[2] - expectedColor[2]) <= tolerance &&
+          Math.abs(color[3] - expectedColor[3]) <= tolerance);;
+}
+
+function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat) {
+    debug("");
+    debug("bliting outside of read framebuffer, read buffer format is: " + wtu.glEnumToString(gl, readbufferFormat) + ", draw buffer format is: " + wtu.glEnumToString(gl, drawbufferFormat));
+
+    // Initiate data to read framebuffer
+    var size_read = 4;
+    var uint_read = new Uint8Array(size_read * size_read * 4);
+    var color = 0x20;
+    for (var ii = 0; ii < size_read * size_read * 4; ii += 4) {
+        for (var jj = 0; jj < 3; ++jj) {
+          uint_read[ii + jj] = color;
+        }
+        uint_read[ii + 3] = 0xff;
+    }
+
+    // Create read framebuffer and feed data to read buffer
+    // Read buffer may has srgb image
+    var tex_read = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex_read);
+    gl.texImage2D(gl.TEXTURE_2D, 0, readbufferFormat, size_read, size_read, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint_read);
+
+    var fbo_read = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
+    gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex_read, 0);
+
+    // Create draw framebuffer. Color in draw buffer is initialized to 0.
+    // Draw buffer may has srgb image
+    var size_draw = 8;
+    var tex_draw = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex_draw);
+    gl.texImage2D(gl.TEXTURE_2D, 0, drawbufferFormat, size_draw, size_draw, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+    var fbo_draw = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex_draw, 0);
+
+    if (gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
+        // Blit read framebuffer to the image in draw framebuffer.
+        var test = [
+             [-2, 4, 1, 4], // Filter the image, dst region has different width/height with src region.
+             [-2, 4, 1, 7], // May not filter the image, dst region has the same width/height with src region.
+        ];
+
+        var readbufferHasSRGBImage = (readbufferFormat == gl.SRGB8_ALPHA8);
+        var drawbufferHasSRGBImage = (drawbufferFormat == gl.SRGB8_ALPHA8);
+
+        for (var i = 0; i < test.length; ++i) {
+            debug("");
+            switch (i) {
+                case 0: debug("Filter the image in read buffer: the width/height of dst region are different from width/height of src region."); break;
+                case 1: debug("May not filter the image in read buffer: the width/height of dst region are the same with width/height of src region."); break;
+            }
+            var srcStart = test[i][0];
+            var srcEnd = test[i][1];
+            var dstStart = test[i][2];
+            var dstEnd = test[i][3];
+            gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
+            gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
+            gl.blitFramebuffer(srcStart, srcStart, srcEnd, srcEnd, dstStart, dstStart, dstEnd, dstEnd, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+
+            // Read pixels and check the correctness.
+            var pixels = new Uint8Array(size_draw * size_draw * 4);
+            gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_draw);
+            gl.readPixels(0, 0, size_draw, size_draw, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+
+            for (var ii = 0; ii < size_draw; ++ii) {
+                for (var jj = 0; jj < size_draw; ++jj) {
+                    var loc = ii * size_draw + jj;
+                    var color = [pixels[loc * 4], pixels[loc * 4 + 1], pixels[loc * 4 + 2], pixels[loc * 4 + 3]];
+
+                    var expectedColor = [0, 0, 0, 0];
+                    if (ii >= dstStart && ii < dstEnd && jj >= dstStart && jj < dstEnd) {
+                        expectedColor = [0x20, 0x20, 0x20, 0xff];
+
+                        // We may need to covert the color space for pixels in blit region
+                        if (readbufferHasSRGBImage ^ drawbufferHasSRGBImage) {
+                            if (drawbufferHasSRGBImage) {
+                                expectedColor = wtu.linearToSRGB(expectedColor);
+                            } else {
+                                expectedColor = wtu.sRGBToLinear(expectedColor);
+                            }
+                        }
+                    }
+
+                    if (checkPixel(color, expectedColor) == true) {
+                        testPassed("pixel at [" + jj + ", " + ii + "] is (" + color + "). It is correct!");
+                    } else {
+                        testFailed("pixel at [" + jj + ", " + ii + "] should be (" + expectedColor + "), but the actual color is (" + color + ")");
+                    }
+                }
+            }
+        }
+    } else {
+        testFailed("framebuffer not complete");
+    }
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+    gl.deleteFramebuffer(fbo_read);
+    gl.deleteFramebuffer(fbo_draw);
+    gl.deleteTexture(tex_read);
+    gl.deleteTexture(tex_draw);
+};
+
+if (!gl) {
+    testFailed("WebGL context does not exist");
+} else {
+    testPassed("WebGL context exists");
+    blitframebuffer_filter_outofbounds(gl.RGBA8, gl.RGBA8);
+    blitframebuffer_filter_outofbounds(gl.RGBA8, gl.SRGB8_ALPHA8);
+    blitframebuffer_filter_outofbounds(gl.SRGB8_ALPHA8, gl.RGBA8);
+    blitframebuffer_filter_outofbounds(gl.SRGB8_ALPHA8, gl.SRGB8_ALPHA8);
+}
+
+var successfullyParsed = true;
+</script>
+<script src="../../js/js-test-post.js"></script>
+
+</body>
+</html>

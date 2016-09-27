@@ -1,4 +1,5 @@
 attrib-type-match.html
+--min-version 2.0.1 blitframebuffer-filter-outofbounds.html
 blitframebuffer-filter-srgb.html
 blitframebuffer-multisampled-readbuffer.html
 --min-version 2.0.1 blitframebuffer-outside-readbuffer.html
