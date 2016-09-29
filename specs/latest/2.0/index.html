@@ -1274,6 +1274,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         framebuffer. If the value of SAMPLE_BUFFERS for the read framebuffer is one and the value of
         SAMPLE_BUFFERS for the draw framebuffer is zero, the samples corresponding to each pixel location in
         the source are converted to a single sample before being written to the destination.
+
+        For any source pixel lying outside the read framebuffer, the corresponding destination pixel remains
+        untouched.
       </dd>
       <dt>
         <p class="idl-code">void framebufferTextureLayer(GLenum target, GLenum attachment, WebGLTexture? texture, GLint level, GLint layer)
@@ -1815,7 +1818,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         If an attempt is made to call this function with no WebGLTexture bound (see above), an
         <code>INVALID_OPERATION</code> error is generated. <br><br>
 
-        For any pixel lying outside the frame buffer, the corresponding destination pixel remains
+        For any pixel lying outside the framebuffer, the corresponding destination pixel remains
         untouched; see <a href="../1.0/index.html#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside
         the Framebuffer</a>. <br><br>
       </dd>
