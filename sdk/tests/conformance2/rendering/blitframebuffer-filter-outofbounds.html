@@ -41,16 +41,11 @@
 <div id="console"></div>
 
 <script>
-// When blit framebuffer's src region have pixels out of the bounds of read buffer and the filter is LINEAR,
-// those out-of-bounds pixels are read as if CLAMP_TO_EDGE texture wrap mode is applied.
-// In MacOS, if the width/height of src region for blitFramebuffer are different from width/height of dst region,
-// it can correctly blit those pixels. Otherwise, it can not.
-// In other OSes, it always can not handle this feature correctly.
 
 "use strict";
 
 var wtu = WebGLTestUtils;
-description("This test verifies the functionality of blitFramebuffer when src region is out of the bounds of read buffer.");
+description("This test verifies the functionality of blitFramebuffer when src/dst region are out-of-bounds.");
 
 var gl = wtu.create3DContext("example", undefined, 2);
 
@@ -62,9 +57,9 @@ function checkPixel(color, expectedColor) {
           Math.abs(color[3] - expectedColor[3]) <= tolerance);;
 }
 
-function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat) {
+function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat, filter) {
     debug("");
-    debug("bliting outside of read framebuffer, read buffer format is: " + wtu.glEnumToString(gl, readbufferFormat) + ", draw buffer format is: " + wtu.glEnumToString(gl, drawbufferFormat));
+    debug("blitting pixels out-of-bounds, read buffer format is: " + wtu.glEnumToString(gl, readbufferFormat) + ", draw buffer format is: " + wtu.glEnumToString(gl, drawbufferFormat) + ", filter is: " + wtu.glEnumToString(gl, filter));
 
     // Initiate data to read framebuffer
     var size_read = 4;
@@ -78,7 +73,7 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat) 
     }
 
     // Create read framebuffer and feed data to read buffer
-    // Read buffer may has srgb image
+    // Read buffer may have srgb image
     var tex_read = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex_read);
     gl.texImage2D(gl.TEXTURE_2D, 0, readbufferFormat, size_read, size_read, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint_read);
@@ -88,7 +83,7 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat) 
     gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex_read, 0);
 
     // Create draw framebuffer. Color in draw buffer is initialized to 0.
-    // Draw buffer may has srgb image
+    // Draw buffer may have srgb image
     var size_draw = 8;
     var tex_draw = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex_draw);
@@ -101,26 +96,39 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat) 
     if (gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
         // Blit read framebuffer to the image in draw framebuffer.
         var test = [
-             [-2, 4, 1, 4], // Filter the image, dst region has different width/height with src region.
-             [-2, 4, 1, 7], // May not filter the image, dst region has the same width/height with src region.
+             // [srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1]
+             [-2, -2, 4, 4, 1, 1, 4, 4], // only src region is out-of-bounds, dst region has different width/height as src region.
+             [-2, -2, 4, 4, 1, 1, 7, 7], // only src region is out-of-bounds, dst region has the same width/height as src region.
+             [0, 0, 6, 6, 5, 5, 10, 10], // only dst region is out-of-bounds, dst region has different width/height as src region after dst region is clipped to the bounds of draw buffer.
+             [0, 0, 6, 6, 2, 2, 10, 10], // only dst region is out-of-bounds, dst region has the same width/height as src region after dst region is clipped to the bounds of draw buffer.
+             [-2, -2, 4, 4, 5, 5, 10, 10], // both src and dst region are out-of-bounds, dst region has different width/height as src region after dst region is clipped to the bounds of draw buffer.
+             [-2, -2, 4, 4, 2, 2, 10, 10], // both src and dst region are out-of-bounds, dst region has the same width/height as src region after dst region is clipped to the bounds of draw buffer.
         ];
 
+        var realBlittedDstRegion = [
+            [2, 2, 4, 4],
+            [3, 3, 7, 7],
+            [5, 5, 8, 8],
+            [2, 2, 8, 8],
+            [2, 2, 4, 4],
+            [3, 3, 7, 7],
+        ]
         var readbufferHasSRGBImage = (readbufferFormat == gl.SRGB8_ALPHA8);
         var drawbufferHasSRGBImage = (drawbufferFormat == gl.SRGB8_ALPHA8);
 
         for (var i = 0; i < test.length; ++i) {
             debug("");
-            switch (i) {
-                case 0: debug("Filter the image in read buffer: the width/height of dst region are different from width/height of src region."); break;
-                case 1: debug("May not filter the image in read buffer: the width/height of dst region are the same with width/height of src region."); break;
-            }
+            debug("both the read framebuffer and draw framebuffer bounds are [0, 0, 8, 8]");
+            debug("blitting from src region [" + test[i][0] + ", " + test[i][1] + ", " + test[i][2] + ", " + test[i][3] + "] to dst region [" + test[i][4] + ", " + test[i][5] + ", " + test[i][6] + ", " + test[i][7] + "]");
             var srcStart = test[i][0];
             var srcEnd = test[i][1];
             var dstStart = test[i][2];
             var dstEnd = test[i][3];
+            var realStart = realBlittedDstRegion[i][0];
+            var realEnd = realBlittedDstRegion[i][1];
             gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
             gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
-            gl.blitFramebuffer(srcStart, srcStart, srcEnd, srcEnd, dstStart, dstStart, dstEnd, dstEnd, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+            gl.blitFramebuffer(test[i][0], test[i][1], test[i][2], test[i][3], test[i][4], test[i][5], test[i][6], test[i][7], gl.COLOR_BUFFER_BIT, filter);
 
             // Read pixels and check the correctness.
             var pixels = new Uint8Array(size_draw * size_draw * 4);
@@ -133,7 +141,7 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat) 
                     var color = [pixels[loc * 4], pixels[loc * 4 + 1], pixels[loc * 4 + 2], pixels[loc * 4 + 3]];
 
                     var expectedColor = [0, 0, 0, 0];
-                    if (ii >= dstStart && ii < dstEnd && jj >= dstStart && jj < dstEnd) {
+                    if (ii >= realBlittedDstRegion[i][0] && ii < realBlittedDstRegion[i][2] && jj >= realBlittedDstRegion[i][1] && jj < realBlittedDstRegion[i][3]) {
                         expectedColor = [0x20, 0x20, 0x20, 0xff];
 
                         // We may need to covert the color space for pixels in blit region
@@ -171,10 +179,13 @@ if (!gl) {
     testFailed("WebGL context does not exist");
 } else {
     testPassed("WebGL context exists");
-    blitframebuffer_filter_outofbounds(gl.RGBA8, gl.RGBA8);
-    blitframebuffer_filter_outofbounds(gl.RGBA8, gl.SRGB8_ALPHA8);
-    blitframebuffer_filter_outofbounds(gl.SRGB8_ALPHA8, gl.RGBA8);
-    blitframebuffer_filter_outofbounds(gl.SRGB8_ALPHA8, gl.SRGB8_ALPHA8);
+    var filters = [gl.LINEAR, gl.NEAREST];
+    for (var ii = 0; ii < filters.length; ++ii) {
+        blitframebuffer_filter_outofbounds(gl.RGBA8, gl.RGBA8, filters[ii]);
+        blitframebuffer_filter_outofbounds(gl.RGBA8, gl.SRGB8_ALPHA8, filters[ii]);
+        blitframebuffer_filter_outofbounds(gl.SRGB8_ALPHA8, gl.RGBA8, filters[ii]);
+        blitframebuffer_filter_outofbounds(gl.SRGB8_ALPHA8, gl.SRGB8_ALPHA8, filters[ii]);
+    }
 }
 
 var successfullyParsed = true;
