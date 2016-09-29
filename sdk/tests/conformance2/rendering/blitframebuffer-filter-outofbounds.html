@@ -62,10 +62,10 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat, 
     debug("blitting pixels out-of-bounds, read buffer format is: " + wtu.glEnumToString(gl, readbufferFormat) + ", draw buffer format is: " + wtu.glEnumToString(gl, drawbufferFormat) + ", filter is: " + wtu.glEnumToString(gl, filter));
 
     // Initiate data to read framebuffer
-    var size_read = 4;
-    var uint_read = new Uint8Array(size_read * size_read * 4);
+    var size = 8;
+    var uint_read = new Uint8Array(size * size * 4);
     var color = 0x20;
-    for (var ii = 0; ii < size_read * size_read * 4; ii += 4) {
+    for (var ii = 0; ii < size * size * 4; ii += 4) {
         for (var jj = 0; jj < 3; ++jj) {
           uint_read[ii + jj] = color;
         }
@@ -76,7 +76,7 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat, 
     // Read buffer may have srgb image
     var tex_read = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex_read);
-    gl.texImage2D(gl.TEXTURE_2D, 0, readbufferFormat, size_read, size_read, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint_read);
+    gl.texImage2D(gl.TEXTURE_2D, 0, readbufferFormat, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint_read);
 
     var fbo_read = gl.createFramebuffer();
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
@@ -84,10 +84,9 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat, 
 
     // Create draw framebuffer. Color in draw buffer is initialized to 0.
     // Draw buffer may have srgb image
-    var size_draw = 8;
     var tex_draw = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex_draw);
-    gl.texImage2D(gl.TEXTURE_2D, 0, drawbufferFormat, size_draw, size_draw, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.texImage2D(gl.TEXTURE_2D, 0, drawbufferFormat, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
     var fbo_draw = gl.createFramebuffer();
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
@@ -120,24 +119,18 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat, 
             debug("");
             debug("both the read framebuffer and draw framebuffer bounds are [0, 0, 8, 8]");
             debug("blitting from src region [" + test[i][0] + ", " + test[i][1] + ", " + test[i][2] + ", " + test[i][3] + "] to dst region [" + test[i][4] + ", " + test[i][5] + ", " + test[i][6] + ", " + test[i][7] + "]");
-            var srcStart = test[i][0];
-            var srcEnd = test[i][1];
-            var dstStart = test[i][2];
-            var dstEnd = test[i][3];
-            var realStart = realBlittedDstRegion[i][0];
-            var realEnd = realBlittedDstRegion[i][1];
             gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
             gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
             gl.blitFramebuffer(test[i][0], test[i][1], test[i][2], test[i][3], test[i][4], test[i][5], test[i][6], test[i][7], gl.COLOR_BUFFER_BIT, filter);
 
             // Read pixels and check the correctness.
-            var pixels = new Uint8Array(size_draw * size_draw * 4);
+            var pixels = new Uint8Array(size * size * 4);
             gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_draw);
-            gl.readPixels(0, 0, size_draw, size_draw, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+            gl.readPixels(0, 0, size, size, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
-            for (var ii = 0; ii < size_draw; ++ii) {
-                for (var jj = 0; jj < size_draw; ++jj) {
-                    var loc = ii * size_draw + jj;
+            for (var ii = 0; ii < size; ++ii) {
+                for (var jj = 0; jj < size; ++jj) {
+                    var loc = ii * size + jj;
                     var color = [pixels[loc * 4], pixels[loc * 4 + 1], pixels[loc * 4 + 2], pixels[loc * 4 + 3]];
 
                     var expectedColor = [0, 0, 0, 0];
