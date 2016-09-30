@@ -1,0 +1,143 @@
+<!--
+
+/*
+** Copyright (c) 2016 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL getBufferSubDataAsync test.</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+description("This test makes sure that getBufferSubDataAsync acts as expected governed by WebGL 2.");
+
+var wtu = WebGLTestUtils;
+
+var gl = wtu.create3DContext(undefined, undefined, 2);
+
+var vertices = [
+     1.1,  1.0,  1.3,
+    -1.0, -1.0,  -5.0,
+     5.3, -1.0,  1.0
+];
+var floatArray = new Float32Array(vertices);
+var retArray = new Float32Array(vertices.length);
+var extraLargeBuffer = new Float32Array(vertices.length + 1);
+var resolvedArray;
+var promise;
+
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
+
+function expectRejected(promise, message) {
+  return promise.then(function(v) {
+    testFailed("should be rejected but was " + v + ": " + message);
+  }, function(e) {
+    testPassed("correctly rejected with " + e + ": " + message);
+  });
+}
+
+// This long promise chain is to serialize the tests - so that the errors
+// associated with a given test always appear underneath that test.
+// For each test in this chain, if it performs test checks in a promise,
+// it MUST return that promise so that it completes before the next test.
+Promise.resolve().then(function() {
+  debug("Testing promise rejection");
+
+}).then(function() {
+  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, new ArrayBuffer(4))";
+  shouldBeType(code, "Promise");
+  return expectRejected(promise, code);
+
+}).then(function() {
+  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, null)";
+  shouldBeType(code, "Promise");
+  return expectRejected(promise, code);
+
+}).then(function() {
+  debug("");
+  debug("Test that getBufferSubDataAsync successfully works reading buffer data from gl.ARRAY_BUFFER");
+
+  var buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, floatArray, gl.STATIC_DRAW);
+
+  debug("Check array data to match original data set by the buffer");
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, retArray)");
+  return promise.then(function(arr) {
+    resolvedArray = arr;
+    shouldBe("resolvedArray", "retArray");
+    shouldBeTrue("areArraysEqual(resolvedArray, floatArray)");
+  });
+
+}).then(function() {
+  debug("");
+  debug("Test that getBufferSubDataAsync fails when given a buffer with its size larger than the original data");
+  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, extraLargeBuffer)";
+  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, code, "Extra length should generate INVALID_VALUE.");
+  return expectRejected(promise, code);
+
+}).then(function() {
+  debug("Test that getBufferSubDataAsync fails when offset summed with buffer length is larger than the size of the original data size");
+  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, retArray.byteLength + 1, retArray)";
+  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, code);
+  return expectRejected(promise, code);
+
+}).then(function() {
+  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 1, retArray)";
+  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, code);
+  return expectRejected(promise, code);
+
+}).then(function() {
+  debug("Test that getBufferSubDataAsync fails when 0 is bound to the target");
+  var code = "promise = gl.getBufferSubDataAsync(gl.ELEMENT_ARRAY_BUFFER, 0, retArray)";
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+  wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, code);
+  return expectRejected(promise, code);
+
+}).then(function() {
+  debug("Test that getBufferSubDataAsync fails when offset is less than 0");
+  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, -1, retArray)";
+  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, code);
+  return expectRejected(promise, code);
+
+}).then(function() {
+  finishTest();
+
+}).catch(function(e) {
+  testFailed(e.toString());
+});
+
+var successfullyParsed = true;
+</script>
+</body>
+</html>
