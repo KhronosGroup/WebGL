@@ -109,8 +109,8 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat, 
             [3, 3, 7, 7],
             [5, 5, 8, 8],
             [2, 2, 8, 8],
-            [2, 2, 4, 4],
-            [3, 3, 7, 7],
+            [6, 6, 8, 8],
+            [4, 4, 8, 8],
         ]
         var readbufferHasSRGBImage = (readbufferFormat == gl.SRGB8_ALPHA8);
         var drawbufferHasSRGBImage = (drawbufferFormat == gl.SRGB8_ALPHA8);
@@ -121,6 +121,8 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat, 
             debug("blitting from src region [" + test[i][0] + ", " + test[i][1] + ", " + test[i][2] + ", " + test[i][3] + "] to dst region [" + test[i][4] + ", " + test[i][5] + ", " + test[i][6] + ", " + test[i][7] + "]");
             gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
             gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
+            gl.bindTexture(gl.TEXTURE_2D, tex_draw);
+            gl.texImage2D(gl.TEXTURE_2D, 0, drawbufferFormat, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
             gl.blitFramebuffer(test[i][0], test[i][1], test[i][2], test[i][3], test[i][4], test[i][5], test[i][6], test[i][7], gl.COLOR_BUFFER_BIT, filter);
 
             // Read pixels and check the correctness.
