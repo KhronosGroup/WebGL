@@ -51,7 +51,7 @@ interface EXT_disjoint_timer_query_webgl2 {
   const GLenum TIMESTAMP_EXT               = 0x8E28;
   const GLenum GPU_DISJOINT_EXT            = 0x8FBB;
 
-  void queryCounterEXT(WebGLQuery? query, enum target);
+  void queryCounterEXT(WebGLQuery query, enum target);
 };
   </idl>
 
@@ -72,7 +72,7 @@ interface EXT_disjoint_timer_query_webgl2 {
 
   <newfun>
     <function name="queryCounterEXT" type="void">
-      <param name="query" type="WebGLQuery?"/>
+      <param name="query" type="WebGLQuery"/>
       <param name="target" type="GLenum"/>
       <code>target</code> accepts <code>TIMESTAMP_EXT</code>.
     </function>
