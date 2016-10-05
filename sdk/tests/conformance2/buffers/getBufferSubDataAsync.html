@@ -51,10 +51,14 @@ var vertices = [
      5.3, -1.0,  1.0
 ];
 var floatArray = new Float32Array(vertices);
-var retArray = new Float32Array(vertices.length);
+var dstData = new Float32Array(vertices.length);
 var extraLargeBuffer = new Float32Array(vertices.length + 1);
 var resolvedArray;
 var promise;
+
+function clearDstData() {
+    dstData = new Float32Array(vertices.length);
+}
 
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
@@ -66,73 +70,163 @@ function expectRejected(promise, message) {
   });
 }
 
+var types = [
+  'ARRAY_BUFFER',
+  'ELEMENT_ARRAY_BUFFER',
+  'COPY_READ_BUFFER',
+  'COPY_WRITE_BUFFER',
+  'PIXEL_PACK_BUFFER',
+  'PIXEL_UNPACK_BUFFER',
+  'TRANSFORM_FEEDBACK_BUFFER',
+  'UNIFORM_BUFFER'
+];
+var buffers = [];
+
+var buffer;
+for (var i = 0; i < types.length; i++) {
+  buffer = gl.createBuffer();
+  gl.bindBuffer(gl[types[i]], buffer);
+  gl.bufferData(gl[types[i]], floatArray, gl.STATIC_DRAW);
+  buffers.push(buffer);
+}
+
 // This long promise chain is to serialize the tests - so that the errors
 // associated with a given test always appear underneath that test.
 // For each test in this chain, if it performs test checks in a promise,
 // it MUST return that promise so that it completes before the next test.
-Promise.resolve().then(function() {
-  debug("Testing promise rejection");
+var allPromises = Promise.resolve();
 
-}).then(function() {
+allPromises = allPromises.then(function() {
+  debug("Testing promise rejection");
+});
+
+allPromises = allPromises.then(function() {
   var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, new ArrayBuffer(4))";
   shouldBeType(code, "Promise");
   return expectRejected(promise, code);
+});
 
-}).then(function() {
+allPromises = allPromises.then(function() {
   var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, null)";
   shouldBeType(code, "Promise");
   return expectRejected(promise, code);
+});
 
-}).then(function() {
+allPromises = allPromises.then(function() {
   debug("");
-  debug("Test that getBufferSubDataAsync successfully works reading buffer data from gl.ARRAY_BUFFER");
+});
 
-  var buffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, floatArray, gl.STATIC_DRAW);
+for (var i = 0; i < types.length; i++) {
+  (function() {
+    var type = types[i];
+    allPromises = allPromises.then(function() {
+      debug("Test that getBufferSubDataAsync successfully works reading buffer data from gl." + type);
+      wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
+          "promise = gl.getBufferSubDataAsync(gl." + type + ", 0, dstData)");
+      gl.bindBuffer(gl.ARRAY_BUFFER, null);
+      return promise.then(function(arr) {
+        resolvedArray = arr;
+        shouldBe("resolvedArray", "dstData");
+        shouldBeTrue("areArraysEqual(resolvedArray, floatArray)");
+      });
+    });
+  })();
+}
 
-  debug("Check array data to match original data set by the buffer");
-  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, retArray)");
+allPromises = allPromises.then(function() {
+  debug("");
+  debug("Test that getBufferSubDataAsync successfully works with dstOffset");
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffers[0]);
+
+  clearDstData();
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
+      "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, dstData, 2)");
   return promise.then(function(arr) {
     resolvedArray = arr;
-    shouldBe("resolvedArray", "retArray");
-    shouldBeTrue("areArraysEqual(resolvedArray, floatArray)");
+    shouldBe("resolvedArray", "dstData");
+    shouldBeTrue("areArraysEqual(resolvedArray.slice(0, 2), [0, 0])");
+    shouldBeTrue("areArraysEqual(resolvedArray.slice(2), floatArray.slice(0, floatArray.length - 2))");
   });
+});
 
-}).then(function() {
+allPromises = allPromises.then(function() {
+  debug("Test that getBufferSubDataAsync fails when given a dstOffset beyond the end of dstData");
+
+  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, dstData, dstData.length)";
+  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, code);
+  return expectRejected(promise, code);
+});
+
+allPromises = allPromises.then(function() {
+  debug("");
+  debug("Test that getBufferSubDataAsync successfully works with dstOffset and length");
+
+  clearDstData();
+  wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
+      "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, dstData, 2, 2)");
+  return promise.then(function(arr) {
+    resolvedArray = arr;
+    shouldBe("resolvedArray", "dstData");
+    shouldBeTrue("areArraysEqual(resolvedArray.slice(0, 2), [0, 0])");
+    shouldBeTrue("areArraysEqual(resolvedArray.slice(2, 4), floatArray.slice(0, 2))");
+    shouldBeTrue("areArraysEqual(resolvedArray.slice(4), [0, 0, 0, 0, 0])");
+  });
+});
+
+allPromises = allPromises.then(function() {
+  debug("Test that getBufferSubDataAsync fails when given a dstOffset+length beyond the end of dstData");
+
+  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, dstData, dstData.length - 1, 2)";
+  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, code);
+  return expectRejected(promise, code);
+});
+
+allPromises = allPromises.then(function() {
+  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, dstData, dstData.length, 0)";
+  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, code);
+  return expectRejected(promise, code);
+});
+
+allPromises = allPromises.then(function() {
   debug("");
   debug("Test that getBufferSubDataAsync fails when given a buffer with its size larger than the original data");
   var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, extraLargeBuffer)";
-  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, code, "Extra length should generate INVALID_VALUE.");
+  wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, code);
   return expectRejected(promise, code);
+});
 
-}).then(function() {
+allPromises = allPromises.then(function() {
   debug("Test that getBufferSubDataAsync fails when offset summed with buffer length is larger than the size of the original data size");
-  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, retArray.byteLength + 1, retArray)";
+  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, dstData.byteLength + 1, dstData)";
   wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, code);
   return expectRejected(promise, code);
+});
 
-}).then(function() {
-  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 1, retArray)";
+allPromises = allPromises.then(function() {
+  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 1, dstData)";
   wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, code);
   return expectRejected(promise, code);
+});
 
-}).then(function() {
+allPromises = allPromises.then(function() {
   debug("Test that getBufferSubDataAsync fails when 0 is bound to the target");
-  var code = "promise = gl.getBufferSubDataAsync(gl.ELEMENT_ARRAY_BUFFER, 0, retArray)";
+  var code = "promise = gl.getBufferSubDataAsync(gl.ELEMENT_ARRAY_BUFFER, 0, dstData)";
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
   wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, code);
   return expectRejected(promise, code);
+});
 
-}).then(function() {
+allPromises = allPromises.then(function() {
   debug("Test that getBufferSubDataAsync fails when offset is less than 0");
-  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, -1, retArray)";
+  var code = "promise = gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, -1, dstData)";
   wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, code);
   return expectRejected(promise, code);
+});
 
-}).then(function() {
+allPromises.then(function() {
+  debug("");
   finishTest();
-
 }).catch(function(e) {
   testFailed(e.toString());
 });

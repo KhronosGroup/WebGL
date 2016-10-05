@@ -1255,8 +1255,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         Promise is rejected with an "InvalidStateError" DOMException, and no data is written to
         <code>dstData</code>. If any of the above errors occur, the Promise is already rejected upon
         return. If the context is lost before the Promise is fulfilled, or if <code>dstData</code>
-        is currently neutered when the Promise is fulfilled, then the Promise will be rejected
-        later. In this case, no WebGL error is generated.
+        is neutered at the time the Promise is fulfilled, then the Promise will be rejected later.
+        In this case, no WebGL error is generated. If the promise rejects, no data is written to
+        <code>dstBuffer</code>.
 
         <br><br>
         Otherwise, the Promise is fulfilled when the data becomes available,
