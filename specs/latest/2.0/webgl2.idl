@@ -328,6 +328,10 @@ interface WebGL2RenderingContextBase
   // replaces it for the purpose of fetching data back from the GPU.
   void getBufferSubData(GLenum target, GLintptr srcByteOffset, ArrayBufferView dstData,
                         optional GLuint dstOffset = 0, optional GLuint length = 0);
+  // Asynchronous version of getBufferSubData which fulfills the returned promise when the data becomes available.
+  Promise<ArrayBuffer> getBufferSubDataAsync(GLenum target, GLintptr srcByteOffset,
+                                             ArrayBufferView dstData, optional GLuint dstOffset = 0,
+                                             optional GLuint length = 0);
 
   /* Framebuffer objects */
   void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0,
