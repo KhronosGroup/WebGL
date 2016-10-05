@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL getBufferSubDataAsync stress test.</title>
+<title>WebGL getBufferSubDataAsync context loss regression test.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
@@ -40,7 +40,7 @@
 <div id="console"></div>
 <script>
 "use strict";
-description("This test makes sure that getBufferSubDataAsync acts under stress as expected governed by WebGL 2.");
+description("This test makes sure that getBufferSubDataAsync does not cause crashes upon context loss.");
 
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
@@ -54,40 +54,50 @@ gl.bufferData(gl.PIXEL_PACK_BUFFER, 4, gl.DYNAMIC_READ);
 gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
 var readbackBuffer = new Uint8Array(4);
 
-var TEST_COUNT = 300;
-var last_counter = -1;
-var promises = [];
-promises.length = TEST_COUNT;
-debug("kicking off " + TEST_COUNT + " getBufferSubDataAsync calls");
-for (var i = 0; i < TEST_COUNT; i++) {
-  (function() {
-    var counter = i;
-    var color = [counter & 0xff, (counter << 8) & 0xff, (counter << 16) & 0xff, 255];
-    gl.clearColor(color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
-    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0);
-    var promise = gl.getBufferSubDataAsync(gl.PIXEL_PACK_BUFFER, 0, readbackBuffer);
-    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
-    promises.push(promise.then(function(buf) {
-      if (buf[0] == color[0] &&
-          buf[1] == color[1] &&
-          buf[2] == color[2] &&
-          buf[3] == color[3]) {
-        testPassed("color readback #" + counter + " was correct");
-      } else {
-        testFailed("color readback #" + counter + "was incorrect: was " +
-            buf + " but expected " + color);
-      }
-      if (counter <= last_counter) {
-        testFailed("getBufferSubDataAsync calls #" + last_counter + " and #" + counter + " out of order");
-      }
-      last_counter = counter;
-    }));
-  })();
+var extensionName = wtu.getSupportedExtensionWithKnownPrefixes(gl, "WEBGL_lose_context");
+if (!extensionName) {
+  debug("Could not find WEBGL_lose_context extension");
+  finishTest();
+}
+var extension = gl.getExtension(extensionName);
+
+gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
+gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0);
+var promise = gl.getBufferSubDataAsync(gl.PIXEL_PACK_BUFFER, 0, readbackBuffer);
+gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+var completed = false;
+promise.then(function(buf) {
+  testFailed("should not resolve");
+}, function(e) {
+  testPassed("correctly rejected with " + e);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no new errors from late rejection");
+}).then(function() {
+  completed = true;
+});
+
+extension.loseContext();
+wtu.glErrorShouldBe(gl, gl.CONTEXT_LOST_WEBGL, "context was lost");
+
+var t0 = performance.now();
+requestAnimationFrame(animate);
+finish();
+
+var animating = true;
+function animate() {
+  webglHarnessCollectGarbage();
+  animating = performance.now() - t0 < 2000;
+  if (animating) {
+    requestAnimationFrame(animate);
+  }
 }
 
-Promise.all(promises).then(finishTest);
+function finish() {
+  if (completed && !animating) {
+    finishTest();
+  } else {
+    setTimeout(finish, 100);
+  }
+}
 
 var successfullyParsed = true;
 </script>

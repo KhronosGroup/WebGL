@@ -6,5 +6,6 @@ buffer-type-restrictions.html
 buffer-overflow-test.html
 getBufferSubData.html
 getBufferSubDataAsync.html
-getBufferSubDataAsyncStress.html
+getBufferSubDataAsync-lose-context.html
+getBufferSubDataAsync-stress.html
 uniform-buffers.html
