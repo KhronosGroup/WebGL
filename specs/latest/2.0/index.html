@@ -1242,6 +1242,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
               error is generated.
           <li>If <code>srcByteOffset + length*ElementSize(dstBuffer)</code> is larger
               than the length of the GL buffer, generate INVALID_OPERATION.
+          <li>If <code>dstBuffer.length</code> equals <code>dstOffset</code>, no data is written to
+              <code>dstBuffer</code>.
         </ul>
         These errors are generated synchronously and are visible immediately after
         <code>getBufferSubDataAsync</code> returns.
