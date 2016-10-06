@@ -5,4 +5,5 @@ buffer-data-and-buffer-sub-data-sub-source.html
 buffer-type-restrictions.html
 buffer-overflow-test.html
 getBufferSubData.html
+one-large-uniform-buffer.html
 uniform-buffers.html
