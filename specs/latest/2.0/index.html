@@ -1202,13 +1202,15 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
               an <code>INVALID_VALUE</code> error is generated.
           <li>If <code>srcByteOffset</code> is less than zero, an <code>INVALID_VALUE</code>
               error is generated.
-          <li>If zero is bound to <code>target</code>, an <code>INVALID_OPERATION</code>
+          <li>If no WebGLBuffer is bound to <code>target</code>, an <code>INVALID_OPERATION</code>
               error is generated.
           <li>If <code>target</code> is <code>TRANSFORM_FEEDBACK_BUFFER</code>,
               and any transform feedback object is currently active, an <code>INVALID_OPERATION</code>
               error is generated.
           <li>If <code>srcByteOffset + length*ElementSize(dstBuffer)</code> is larger
               than the length of the GL buffer, generate INVALID_OPERATION.
+          <li>If <code>dstBuffer.length</code> equals <code>dstOffset</code>, no data is written to
+            <code>dstBuffer</code>.
         </ul>
         If any error is generated, no data is written to <code>dstBuffer</code>.
         <br><br>
