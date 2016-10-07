@@ -62,7 +62,7 @@ debug("kicking off " + TEST_COUNT + " getBufferSubDataAsync calls");
 for (var i = 0; i < TEST_COUNT; i++) {
   (function() {
     var counter = i;
-    var color = [counter & 0xff, (counter << 8) & 0xff, (counter << 16) & 0xff, 255];
+    var color = [counter & 0xff, (counter >> 8) & 0xff, (counter >> 16) & 0xff, 255];
     gl.clearColor(color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
