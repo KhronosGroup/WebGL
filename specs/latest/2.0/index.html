@@ -1205,7 +1205,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         from <code>buf</code> into <code>dstBuffer</code>,
         reading <code>buf</code> starting at byte index <code>srcByteOffset</code> and
         writing into <code>dstBuffer</code> starting at element index <code>dstOffset</code>.
-        If <code>copyLength</code> is 0, no data is written to <code>dstBuffer</code>.
+        If <code>copyLength</code> is 0, no data is written to <code>dstBuffer</code>, but
+        this does not cause a GL error to be generated.
         <ul>
           <li>If no WebGLBuffer is bound to <code>target</code>,
               an <code>INVALID_OPERATION</code> error is generated.
