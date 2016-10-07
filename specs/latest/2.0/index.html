@@ -1226,28 +1226,39 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dd>
-        If <code>length</code> is 0, it defaults to <code>dstBuffer.length - dstOffset</code>.
-        For the WebGLBuffer bound to the passed target, read <code>length</code>
-        elements into <code>dstBuffer</code>, reading starting at <code>srcByteOffset</code>
-        and writing starting at <code>dstOffset</code> into <code>dstBuffer</code>.
+        Reads back data asynchronously from the bound WebGLBuffer into <code>dstBuffer</code>.
+        <br><br>
+        Let <code>buf</code> be the buffer bound to <code>target</code>.
+        If <code>length</code> is 0, let <code>copyLength</code> be
+        <code>dstBuffer.length - dstOffset</code>; otherwise, let
+        <code>copyLength</code> be <code>length</code>.
+        <br><br>
+        Copy <code>copyLength</code> typed elements (each of size <code>dstBuffer.BYTES_PER_ELEMENT</code>)
+        from <code>buf</code> into <code>dstBuffer</code>,
+        reading <code>buf</code> starting at byte index <code>srcByteOffset</code> and
+        writing into <code>dstBuffer</code> starting at element index <code>dstOffset</code>.
+        If <code>copyLength</code> is 0, no data is written to <code>dstBuffer</code>.
         <ul>
-          <li>If <code>dstOffset + length</code> is greater than <code>dstBuffer.length</code>
-              an <code>INVALID_VALUE</code> error is generated.
-          <li>If <code>srcByteOffset</code> is less than zero, an <code>INVALID_VALUE</code>
-              error is generated.
-          <li>If no WebGLBuffer is bound to <code>target</code>, an <code>INVALID_OPERATION</code>
-              error is generated.
+          <li>If no WebGLBuffer is bound to <code>target</code>,
+              an <code>INVALID_OPERATION</code> error is generated.
           <li>If <code>target</code> is <code>TRANSFORM_FEEDBACK_BUFFER</code>,
-              and any transform feedback object is currently active, an <code>INVALID_OPERATION</code>
-              error is generated.
-          <li>If <code>srcByteOffset + length*ElementSize(dstBuffer)</code> is larger
-              than the length of the GL buffer, generate INVALID_OPERATION.
-          <li>If <code>dstBuffer.length</code> equals <code>dstOffset</code>, no data is written to
-              <code>dstBuffer</code>.
+              and any transform feedback object is currently active,
+              an <code>INVALID_OPERATION</code> error is generated.
+          <li>If <code>dstOffset</code> is greater than <code>dstBuffer.length</code>,
+              an <code>INVALID_VALUE</code> error is generated.
+          <li>If <code>dstOffset + copyLength</code> is greater than <code>dstBuffer.length</code>,
+              an <code>INVALID_VALUE</code> error is generated.
+          <li>If <code>srcByteOffset</code> is less than zero,
+              an <code>INVALID_VALUE</code> error is generated.
+          <li>If <code>srcByteOffset + copyLength*dstBuffer.BYTES_PER_ELEMENT</code>
+              is larger than the length of <code>buf</code>,
+              an <code>INVALID_OPERATION</code> is generated.
         </ul>
+        If any error is generated, no data is written to <code>dstBuffer</code>.
         These errors are generated synchronously and are visible immediately after
         <code>getBufferSubDataAsync</code> returns.
 
+        <br><br>
         This command executes serially with respect to others in the command stream, but the data is
         only written to <code>dstData</code> when the promise is fulfilled; it is available in
         the Promise's success callback, but not earlier.
@@ -1267,10 +1278,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         passed to the success callback.
 
         <br><br>
-        If the buffer is written and read sequentially by other operations
-        and <code>getBufferSubDataAsync</code>, it is the responsibility of the WebGL API to ensure
-        that data are accessed consistently. This applies even if the buffer is currently bound to a
-        transform feedback binding point.
+        If the buffer is written and read sequentially by other operations and <code>getBufferSubData</code>,
+        it is the responsibility of the WebGL API to ensure that data are accessed consistently. This applies
+        even if the buffer is currently bound to a transform feedback binding point.
+        <br><br>
 
         <div class="note">
           Compared to the synchronous version of <code>getBufferSubData</code>, this version may
