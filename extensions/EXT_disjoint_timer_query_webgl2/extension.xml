@@ -32,9 +32,9 @@
     <features>
       <feature>
         This extension provides the same functionality as <a
-        href="../EXT_disjoint_timer_query/">EXT_disjoint_timer_query</a>, and is queried from the
-        context under the same name. This IDL and description are specialized for WebGL 2.0, which
-        incorporates query objects into the core specification.
+        href="../EXT_disjoint_timer_query/">EXT_disjoint_timer_query</a>. The IDL, description, and
+        extension name are specialized for WebGL 2.0, which incorporates query objects into the core
+        specification.
       </feature>
     </features>
   </overview>
@@ -42,8 +42,6 @@
   <idl xml:space="preserve">
 typedef unsigned long long GLuint64EXT;
 
-// Note that this extension is still queried via
-// getExtension('EXT_disjoint_timer_query').
 [NoInterfaceObject]
 interface EXT_disjoint_timer_query_webgl2 {
   const GLenum QUERY_COUNTER_BITS_EXT      = 0x8864;
@@ -111,7 +109,7 @@ interface EXT_disjoint_timer_query_webgl2 {
   <samplecode xml:space="preserve">
     <pre>
         // Example (1) -- uses beginQuery/endQuery.
-        var ext = gl.getExtension('EXT_disjoint_timer_query');
+        var ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
         var query = gl.createQuery();
         gl.beginQuery(ext.TIME_ELAPSED_EXT, query);
 
@@ -137,7 +135,7 @@ interface EXT_disjoint_timer_query_webgl2 {
         //----------------------------------------------------------------------
 
         // Example (2) -- same as the example above, but uses queryCounterEXT instead.
-        var ext = gl.getExtension('EXT_disjoint_timer_query');
+        var ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
         var startQuery = gl.createQuery();
         var endQuery = gl.createQuery();
         gl.queryCounterEXT(startQuery, ext.TIMESTAMP_EXT);
@@ -166,7 +164,7 @@ interface EXT_disjoint_timer_query_webgl2 {
 
         // Example (3) -- check the number of timestamp bits to determine how to best
         // measure elapsed time.
-        var ext = gl.getExtension('EXT_disjoint_timer_query');
+        var ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
         var timeElapsedQuery;
         var startQuery;
         var endQuery;
