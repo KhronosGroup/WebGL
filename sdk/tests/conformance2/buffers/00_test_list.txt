@@ -8,4 +8,5 @@ getBufferSubData.html
 getBufferSubDataAsync.html
 getBufferSubDataAsync-lose-context.html
 getBufferSubDataAsync-stress.html
+one-large-uniform-buffer.html
 uniform-buffers.html
