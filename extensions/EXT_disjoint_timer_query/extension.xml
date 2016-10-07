@@ -37,35 +37,40 @@
         mechanisms first introduced in the occlusion query extension, which allow
         time intervals to be polled asynchronously by the application.
       </feature>
+      <feature>
+        This version of the disjoint_timer_query extension is exposed
+        only on on WebGL 1.0 contexts. See the _webgl2 version of the
+        extension for how it is exposed on WebGL 2.0 contexts.
+      </feature>
     </features>
   </overview>
 
   <idl xml:space="preserve">
-    typedef unsigned long long GLuint64EXT;
+typedef unsigned long long GLuint64EXT;
 
-    [NoInterfaceObject]
-    interface WebGLTimerQueryEXT : WebGLObject {
-    };
+[NoInterfaceObject]
+interface WebGLTimerQueryEXT : WebGLObject {
+};
 
-    [NoInterfaceObject]
-    interface EXT_disjoint_timer_query {
-      const GLenum QUERY_COUNTER_BITS_EXT      = 0x8864;
-      const GLenum CURRENT_QUERY_EXT           = 0x8865;
-      const GLenum QUERY_RESULT_EXT            = 0x8866;
-      const GLenum QUERY_RESULT_AVAILABLE_EXT  = 0x8867;
-      const GLenum TIME_ELAPSED_EXT            = 0x88BF;
-      const GLenum TIMESTAMP_EXT               = 0x8E28;
-      const GLenum GPU_DISJOINT_EXT            = 0x8FBB;
+[NoInterfaceObject]
+interface EXT_disjoint_timer_query {
+  const GLenum QUERY_COUNTER_BITS_EXT      = 0x8864;
+  const GLenum CURRENT_QUERY_EXT           = 0x8865;
+  const GLenum QUERY_RESULT_EXT            = 0x8866;
+  const GLenum QUERY_RESULT_AVAILABLE_EXT  = 0x8867;
+  const GLenum TIME_ELAPSED_EXT            = 0x88BF;
+  const GLenum TIMESTAMP_EXT               = 0x8E28;
+  const GLenum GPU_DISJOINT_EXT            = 0x8FBB;
 
-      WebGLTimerQueryEXT? createQueryEXT();
-      void deleteQueryEXT(WebGLTimerQueryEXT? query);
-      [WebGLHandlesContextLoss] boolean isQueryEXT(WebGLTimerQueryEXT? query);
-      void beginQueryEXT(enum target, WebGLTimerQueryEXT? query);
-      void endQueryEXT(enum target);
-      void queryCounterEXT(WebGLTimerQueryEXT? query, enum target);
-      any getQueryEXT(enum target, enum pname);
-      any getQueryObjectEXT(WebGLTimerQueryEXT? query, enum pname);
-    };
+  WebGLTimerQueryEXT? createQueryEXT();
+  void deleteQueryEXT(WebGLTimerQueryEXT? query);
+  [WebGLHandlesContextLoss] boolean isQueryEXT(WebGLTimerQueryEXT? query);
+  void beginQueryEXT(enum target, WebGLTimerQueryEXT? query);
+  void endQueryEXT(enum target);
+  void queryCounterEXT(WebGLTimerQueryEXT? query, enum target);
+  any getQueryEXT(enum target, enum pname);
+  any getQueryObjectEXT(WebGLTimerQueryEXT? query, enum pname);
+};
   </idl>
 
   <newfun>
@@ -214,7 +219,7 @@
 
         // ...at some point in the future, after returning control to the browser and being called again:
         var available = ext.getQueryObjectEXT(query, ext.QUERY_RESULT_AVAILABLE_EXT);
-        var disjoint = gl.getParamater(ext.GPU_DISJOINT_EXT);
+        var disjoint = gl.getParameter(ext.GPU_DISJOINT_EXT);
 
         if (available &amp;&amp; !disjoint) {
           // See how much time the rendering of the object took in nanoseconds.
@@ -344,6 +349,9 @@
     </revision>
     <revision date="2016/06/08">
       <change>Added example choosing measurement technique based on number of timestamp bits.</change>
+    </revision>
+    <revision date="2016/09/30">
+      <change>Added clarifying note that this document only applies to WebGL 1.0. Minor reformatting and typo fixes.</change>
     </revision>
   </history>
 </extension>
