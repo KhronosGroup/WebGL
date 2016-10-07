@@ -1200,7 +1200,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <code>dstBuffer.length - dstOffset</code>; otherwise, let
         <code>copyLength</code> be <code>length</code>.
         <br><br>
-        Copy <code>copyLength</code> typed elements (each of size <code>dstBuffer.BYTES_PER_ELEMENT</code>)
+        If <code>copyLength</code> is greater than zero,
+        copy <code>copyLength</code> typed elements (each of size <code>dstBuffer.BYTES_PER_ELEMENT</code>)
         from <code>buf</code> into <code>dstBuffer</code>,
         reading <code>buf</code> starting at byte index <code>srcByteOffset</code> and
         writing into <code>dstBuffer</code> starting at element index <code>dstOffset</code>.
