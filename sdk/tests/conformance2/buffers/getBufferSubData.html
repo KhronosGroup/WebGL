@@ -58,13 +58,26 @@ var buffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 gl.bufferData(gl.ARRAY_BUFFER, floatArray, gl.STATIC_DRAW);
 
+var uninitializedBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, uninitializedBuffer);
+gl.bufferData(gl.ARRAY_BUFFER, 36, gl.STATIC_DRAW);
+gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from buffer setup.");
+
+gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
 debug("");
 debug("Test that getBufferSubData successfully works reading buffer data from gl.ARRAY_BUFFER");
 var retArray = new Float32Array(vertices.length);
 wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.getBufferSubData(gl.ARRAY_BUFFER, 0, retArray)");
 
+debug("Argument must be ArrayBufferView, not ArrayBuffer")
 shouldThrow("gl.getBufferSubData(gl.ARRAY_BUFFER, 0, new ArrayBuffer(4))");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should not generate GL error");
+debug("Argument must be ArrayBufferView, not null")
 shouldThrow("gl.getBufferSubData(gl.ARRAY_BUFFER, 0, null)");
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should not generate GL error");
 
 debug("Check array data to match original data set by the buffer");
 var failed = false;
@@ -126,6 +139,34 @@ wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION,
 
 debug("Test that getBufferSubData fails when offset is less than 0");
 wtu.shouldGenerateGLError(gl, gl.INVALID_VALUE, "gl.getBufferSubData(gl.ARRAY_BUFFER, -1, retArray)");
+
+debug("");
+debug("Test that getBufferSubDataAsync successfully works with uninitialized buffers");
+retArray = new Float32Array([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+gl.bindBuffer(gl.ARRAY_BUFFER, uninitializedBuffer);
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
+    "gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, retArray)");
+shouldBeTrue("areArraysEqual(retArray, [0, 0, 0, 0, 0, 0, 0, 0, 0])");
+
+debug("");
+debug("Test that getBufferSubDataAsync works when a buffer is immediately resized to be too small");
+
+retArray = new Float32Array([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
+    "gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, retArray)");
+gl.bufferData(gl.ARRAY_BUFFER, 4, gl.STATIC_DRAW);
+shouldBeTrue("areArraysEqual(retArray, floatArray)");
+
+debug("");
+debug("Test that getBufferSubDataAsync works when a buffer is immediately deleted");
+retArray = new Float32Array([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+gl.bufferData(gl.ARRAY_BUFFER, floatArray, gl.STATIC_DRAW);
+wtu.shouldGenerateGLError(gl, gl.NO_ERROR,
+    "gl.getBufferSubDataAsync(gl.ARRAY_BUFFER, 0, retArray)");
+gl.deleteBuffer(buffer);
+shouldBeTrue("areArraysEqual(retArray, floatArray)");
 
 finishTest();
 
