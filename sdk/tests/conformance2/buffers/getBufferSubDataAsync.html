@@ -309,14 +309,9 @@ allPromises = allPromises.then(function() {
   });
 });
 
-allPromises.then(function() {
-  debug("");
-  finishTest();
-}).catch(function(e) {
+allPromises.catch(function(e) {
   testFailed(e.toString());
-  debug("");
-  finishTest();
-});
+}).then(finishTest);
 
 var successfullyParsed = true;
 </script>

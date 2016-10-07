@@ -55,7 +55,6 @@ gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
 var readbackBuffer = new Uint8Array(4);
 
 var TEST_COUNT = 300;
-var last_counter = -1;
 var promises = [];
 promises.length = TEST_COUNT;
 debug("kicking off " + TEST_COUNT + " getBufferSubDataAsync calls");
@@ -76,21 +75,19 @@ for (var i = 0; i < TEST_COUNT; i++) {
           buf[3] == color[3]) {
         testPassed("color readback #" + counter + " was correct");
       } else {
-        testFailed("color readback #" + counter + "was incorrect: was " +
+        testFailed("color readback #" + counter + " was incorrect: was " +
             buf + " but expected " + color);
       }
-      if (counter <= last_counter) {
-        testFailed("getBufferSubDataAsync calls #" + last_counter + " and #" + counter + " out of order");
-      }
-      last_counter = counter;
     }, function(e) {
-      testFailed(e);
+      testFailed(e.toString());
     });
     promises.push(promise);
   })();
 }
 
-Promise.all(promises).then(finishTest);
+Promise.all(promises).catch(function(e) {
+  testFailed(e.toString());
+}).then(finishTest);
 
 var successfullyParsed = true;
 </script>
