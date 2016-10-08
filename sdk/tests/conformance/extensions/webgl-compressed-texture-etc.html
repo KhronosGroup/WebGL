@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL WEBGL_compressed_texture_es3_0 Conformance Tests</title>
+<title>WebGL WEBGL_compressed_texture_etc Conformance Tests</title>
 <LINK rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
@@ -39,7 +39,7 @@
 <div id="console"></div>
 <script>
 "use strict";
-description("This test verifies the functionality of the WEBGL_compressed_texture_es3_0 extension, if it is available.");
+description("This test verifies the functionality of the WEBGL_compressed_texture_etc extension, if it is available.");
 
 debug("");
 var COMPRESSED_RGB_S3TC_DXT1_EXT              = 0x83F0;
@@ -62,7 +62,7 @@ var COMPRESSED_SRGB8_ALPHA8_ETC2_EAC          = 0x9279;
 
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext(undefined, undefined);
-var WEBGL_compressed_texture_es3_0;
+var WEBGL_compressed_texture_etc;
 
 var formats = null;
 
@@ -75,29 +75,29 @@ function runTest() {
     var tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
 
-    var haveExt = gl.getSupportedExtensions().indexOf("WEBGL_compressed_texture_es3_0") >= 0;
-    WEBGL_compressed_texture_es3_0 = gl.getExtension("WEBGL_compressed_texture_es3_0");
+    var haveExt = gl.getSupportedExtensions().indexOf("WEBGL_compressed_texture_etc") >= 0;
+    WEBGL_compressed_texture_etc = gl.getExtension("WEBGL_compressed_texture_etc");
 
     var isPositive = true;
 
     if (haveExt) {
-      if (WEBGL_compressed_texture_es3_0 !== null) {
-        testPassed("WEBGL_compressed_texture_es3_0 listed as supported and getExtension succeeded");
+      if (WEBGL_compressed_texture_etc !== null) {
+        testPassed("WEBGL_compressed_texture_etc listed as supported and getExtension succeeded");
       } else {
-        testFailed("WEBGL_compressed_texture_es3_0 listed as supported but getExtension failed");
+        testFailed("WEBGL_compressed_texture_etc listed as supported but getExtension failed");
         return;
       }
     } else {
-      if (WEBGL_compressed_texture_es3_0 !== null) {
-        testFailed("WEBGL_compressed_texture_es3_0 listed as supported but getExtension failed");
+      if (WEBGL_compressed_texture_etc !== null) {
+        testFailed("WEBGL_compressed_texture_etc listed as supported but getExtension failed");
         return;
       } else {
-        testPassed("No WEBGL_compressed_texture_es3_0 support -- this is legal");
+        testPassed("No WEBGL_compressed_texture_etc support -- this is legal");
         isPositive = false;
 
         // TODO: Remove this block when ETC2 is removed from WebGL 2.
         if (gl.COMPRESSED_R11_EAC !== undefined) {
-          debug("WebGL 2 has ETC2/EAC formats; testing despite lack of WEBGL_compressed_texture_es3_0");
+          debug("WebGL 2 has ETC2/EAC formats; testing despite lack of WEBGL_compressed_texture_etc");
           isPositive = true;
         }
       }
