@@ -98,19 +98,19 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat, 
              // [srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1]
              [-2, -2, 4, 4, 1, 1, 4, 4], // only src region is out-of-bounds, dst region has different width/height as src region.
              [-2, -2, 4, 4, 1, 1, 7, 7], // only src region is out-of-bounds, dst region has the same width/height as src region.
-             [0, 0, 6, 6, 5, 5, 10, 10], // only dst region is out-of-bounds, dst region has different width/height as src region after dst region is clipped to the bounds of draw buffer.
-             [0, 0, 6, 6, 2, 2, 10, 10], // only dst region is out-of-bounds, dst region has the same width/height as src region after dst region is clipped to the bounds of draw buffer.
-             [-2, -2, 4, 4, 5, 5, 10, 10], // both src and dst region are out-of-bounds, dst region has different width/height as src region after dst region is clipped to the bounds of draw buffer.
-             [-2, -2, 4, 4, 2, 2, 10, 10], // both src and dst region are out-of-bounds, dst region has the same width/height as src region after dst region is clipped to the bounds of draw buffer.
+             [0, 0, 6, 6, 7, 7, 10, 10], // only dst region is out-of-bounds, dst region has different width/height as src region after dst region is clipped to the bounds of draw buffer.
+             [0, 0, 6, 6, 4, 4, 10, 10], // only dst region is out-of-bounds, dst region has the same width/height as src region after dst region is clipped to the bounds of draw buffer.
+             [-2, -2, 4, 4, 7, 7, 10, 10], // both src and dst region are out-of-bounds, dst region has different width/height as src region after dst region is clipped to the bounds of draw buffer.
+             [-2, -2, 4, 4, 4, 4, 10, 10], // both src and dst region are out-of-bounds, dst region has the same width/height as src region after dst region is clipped to the bounds of draw buffer.
         ];
 
         var realBlittedDstRegion = [
             [2, 2, 4, 4],
             [3, 3, 7, 7],
-            [5, 5, 8, 8],
-            [2, 2, 8, 8],
-            [6, 6, 8, 8],
+            [7, 7, 8, 8],
             [4, 4, 8, 8],
+            [8, 8, 8, 8],
+            [6, 6, 8, 8],
         ]
         var readbufferHasSRGBImage = (readbufferFormat == gl.SRGB8_ALPHA8);
         var drawbufferHasSRGBImage = (drawbufferFormat == gl.SRGB8_ALPHA8);
