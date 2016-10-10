@@ -48,12 +48,6 @@ var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas, undefined, 2);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
 
-var pbo = gl.createBuffer();
-gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
-gl.bufferData(gl.PIXEL_PACK_BUFFER, 4, gl.DYNAMIC_READ);
-gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
-var readbackBuffer = new Uint8Array(4);
-
 var extensionName = wtu.getSupportedExtensionWithKnownPrefixes(gl, "WEBGL_lose_context");
 if (!extensionName) {
   debug("Could not find WEBGL_lose_context extension");
@@ -61,42 +55,48 @@ if (!extensionName) {
 }
 var extension = gl.getExtension(extensionName);
 
-gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
-gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0);
-var promise = gl.getBufferSubDataAsync(gl.PIXEL_PACK_BUFFER, 0, readbackBuffer);
-gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
-var completed = false;
-promise.then(function(buf) {
-  testFailed("should not resolve");
-}, function(e) {
-  testPassed("correctly rejected with " + e);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no new errors from late rejection");
-}).then(function() {
-  completed = true;
+var iter = 0;
+var ITERS = 20;
+canvas.addEventListener("webglcontextrestored", test);
+canvas.addEventListener("webglcontextlost", function(e) {
+  e.preventDefault();
+  webglHarnessCollectGarbage();
+  setTimeout(function() {
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "extension.restoreContext()");
+  }, 100);
 });
 
-extension.loseContext();
-wtu.glErrorShouldBe(gl, gl.CONTEXT_LOST_WEBGL, "context was lost");
+test();
 
-var t0 = performance.now();
-requestAnimationFrame(animate);
-finish();
-
-var animating = true;
-function animate() {
-  webglHarnessCollectGarbage();
-  animating = performance.now() - t0 < 2000;
-  if (animating) {
-    requestAnimationFrame(animate);
-  }
-}
-
-function finish() {
-  if (completed && !animating) {
+function test() {
+  shouldBeFalse("gl.isContextLost()");
+  if (iter >= ITERS) {
     finishTest();
-  } else {
-    setTimeout(finish, 100);
+    return;
   }
+  iter++;
+
+  var pbo = gl.createBuffer();
+  gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
+  gl.bufferData(gl.PIXEL_PACK_BUFFER, 4, gl.DYNAMIC_READ);
+  gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+  var readbackBuffer = new Uint8Array(4);
+
+  gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
+  gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0);
+  var promise = gl.getBufferSubDataAsync(gl.PIXEL_PACK_BUFFER, 0, readbackBuffer);
+  gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+  var completed = false;
+  promise.then(function(buf) {
+    testFailed("should not resolve");
+  }, function(e) {
+    testPassed("correctly rejected with " + e);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no new errors from late rejection");
+  }).then(function() {
+    completed = true;
+  });
+
+  wtu.shouldGenerateGLError(gl, gl.CONTEXT_LOST_WEBGL, "extension.loseContext()");
 }
 
 var successfullyParsed = true;
