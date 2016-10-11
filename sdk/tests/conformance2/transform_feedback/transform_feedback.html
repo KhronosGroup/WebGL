@@ -315,8 +315,8 @@ function completeTransformFeedbackQueryTest() {
     runVaryingsTest();
 }
 
-function verifyTransformFeedbackVarying(progrom, index, valid, name) {
-    activeInfo = gl.getTransformFeedbackVarying(program, index);
+function verifyTransformFeedbackVarying(prog, index, valid, name) {
+    activeInfo = gl.getTransformFeedbackVarying(prog, index);
     if (valid) {
         wtu.glErrorShouldBe(gl, gl.NO_ERROR,
             "Should be no errors from valid getTransformFeedbackVarying.");
