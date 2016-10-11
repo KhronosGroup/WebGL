@@ -315,6 +315,22 @@ function completeTransformFeedbackQueryTest() {
     runVaryingsTest();
 }
 
+function verifyTransformFeedbackVarying(progrom, index, valid, name) {
+    activeInfo = gl.getTransformFeedbackVarying(program, index);
+    if (valid) {
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+            "Should be no errors from valid getTransformFeedbackVarying.");
+        shouldBeNonNull("activeInfo");
+        shouldBe("activeInfo.name", "'" + name + "'");
+        shouldBe("activeInfo.type", "gl.FLOAT_VEC4");
+        shouldBe("activeInfo.size", "1");
+    } else {
+        wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
+            "Should be INVALID_VALUE when calling getTransformFeedbackVarying with an invalid index.");
+        shouldBeNull("activeInfo");
+    }
+}
+
 function runVaryingsTest() {
     debug("");
     debug("Testing transform feedback varyings");
@@ -328,25 +344,27 @@ function runVaryingsTest() {
     shouldBeNonNull("program");
 
     // Check the varyings
-    activeInfo = gl.getTransformFeedbackVarying(program, 0);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from valid getTransformFeedbackVarying.");
-    shouldBeNonNull("activeInfo");
-    shouldBe("activeInfo.name", "'out_add'");
-    shouldBe("activeInfo.type", "gl.FLOAT_VEC4");
-    shouldBe("activeInfo.size", "1");
+    shouldBe("gl.getProgramParameter(program, gl.TRANSFORM_FEEDBACK_VARYINGS)", "2");
+    verifyTransformFeedbackVarying(program, 0, true, "out_add");
+    verifyTransformFeedbackVarying(program, 1, true, "out_mul");
+    verifyTransformFeedbackVarying(program, 2, false);
 
-    activeInfo = gl.getTransformFeedbackVarying(program, 1);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from valid getTransformFeedbackVarying.");
-    shouldBeNonNull("activeInfo");
-    shouldBe("activeInfo.name", "'out_mul'");
-    shouldBe("activeInfo.type", "gl.FLOAT_VEC4");
-    shouldBe("activeInfo.size", "1");
+    // transformFeedbackVaryings() doesn't take effect until a successful link.
+    gl.transformFeedbackVaryings(program, ["out_mul"], gl.SEPARATE_ATTRIBS);
+    shouldBe("gl.getProgramParameter(program, gl.TRANSFORM_FEEDBACK_VARYINGS)", "2");
+    verifyTransformFeedbackVarying(program, 0, true, "out_add");
+    verifyTransformFeedbackVarying(program, 1, true, "out_mul");
+    verifyTransformFeedbackVarying(program, 2, false);
 
-    activeInfo = gl.getTransformFeedbackVarying(program, 2);
-    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Should be GL_INVALID_VALUE when calling getTransformFeedbackVarying with an invalid index.");
-    shouldBeNull("activeInfo");
+    // Now relink.
+    gl.linkProgram(program);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "linking transform feedback shader should not set an error");
+    shouldBeTrue("gl.getProgramParameter(program, gl.LINK_STATUS)");
+    shouldBe("gl.getProgramParameter(program, gl.TRANSFORM_FEEDBACK_VARYINGS)", "1");
+    verifyTransformFeedbackVarying(program, 0, true, "out_mul");
+    verifyTransformFeedbackVarying(program, 1, false);
+    verifyTransformFeedbackVarying(program, 2, false);
 
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
     finishTest();
 }
 
