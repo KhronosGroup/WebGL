@@ -33,12 +33,12 @@ conversion_24.html
 conversion_25.html
 conversion_26.html
 conversion_27.html
-conversion_28.html
+--min-version 2.0.1 conversion_28.html
 conversion_29.html
-conversion_30.html
-conversion_31.html
+--min-version 2.0.1 conversion_30.html
+--min-version 2.0.1 conversion_31.html
 conversion_32.html
-conversion_33.html
+--min-version 2.0.1 conversion_33.html
 conversion_34.html
 depth_stencil.html
 default_framebuffer_00.html
