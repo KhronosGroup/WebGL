@@ -56,7 +56,6 @@ var readbackBuffer = new Uint8Array(4);
 
 var TEST_COUNT = 300;
 var promises = [];
-promises.length = TEST_COUNT;
 debug("kicking off " + TEST_COUNT + " getBufferSubDataAsync calls");
 for (var i = 0; i < TEST_COUNT; i++) {
   (function() {
