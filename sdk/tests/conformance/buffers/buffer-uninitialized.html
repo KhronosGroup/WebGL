@@ -106,7 +106,7 @@ for (j = 0; j < REPETITIONS; j++) {
 }
 
 debug("");
-debug("testing bufferSubData(..., size, ...) of uninitialized buffer");
+debug("testing bufferSubData(..., offset, data) of uninitialized buffer");
 for (j = 0; j < REPETITIONS; j++) {
   test(function() {
     gl.bufferData(gl.ARRAY_BUFFER, TEST_BUFSIZE, gl.STATIC_DRAW);
