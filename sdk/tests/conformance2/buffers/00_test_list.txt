@@ -4,9 +4,9 @@ buffer-copying-restrictions.html
 buffer-data-and-buffer-sub-data-sub-source.html
 buffer-type-restrictions.html
 buffer-overflow-test.html
-getBufferSubData.html
-getBufferSubDataAsync.html
-getBufferSubDataAsync-lose-context.html
-getBufferSubDataAsync-stress.html
+get-buffer-sub-data.html
+get-buffer-sub-data-async.html
+get-buffer-sub-data-async-lose-context.html
+get-buffer-sub-data-async-stress.html
 one-large-uniform-buffer.html
 uniform-buffers.html

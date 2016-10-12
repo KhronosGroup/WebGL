@@ -176,7 +176,7 @@ es3fTextureFormatTests.Texture2DFormatCase.prototype.iterate = function() {
     // Compare and log.
     var isOk = glsTextureTestUtil.compareImages(referenceFrame, renderedFrame, threshold);
 
-    assertMsgOptions(isOk, es3fTextureFormatTests.testDescription(), true, true);
+    assertMsgOptions(isOk, es3fTextureFormatTests.testDescription(), true, false);
     return tcuTestCase.IterateResult.STOP;
 };
 
@@ -318,7 +318,7 @@ es3fTextureFormatTests.TextureCubeFormatCase.prototype.testFace = function(face)
     }
     var isOk = glsTextureTestUtil.compareImages(referenceFrame, renderedFrame, threshold, skipPixels);
 
-    assertMsgOptions(isOk, 'Face: ' + this.m_curFace + ' ' + es3fTextureFormatTests.testDescription(), true, true);
+    assertMsgOptions(isOk, 'Face: ' + this.m_curFace + ' ' + es3fTextureFormatTests.testDescription(), true, false);
     return isOk;
 };
 
@@ -443,7 +443,7 @@ es3fTextureFormatTests.Texture2DArrayFormatCase.prototype.testLayer = function(l
     // Compare and log.
     var isOk = glsTextureTestUtil.compareImages(referenceFrame, renderedFrame, threshold);
 
-    assertMsgOptions(isOk, 'Layer: ' + this.m_curLayer + ' ' + es3fTextureFormatTests.testDescription(), true, true);
+    assertMsgOptions(isOk, 'Layer: ' + this.m_curLayer + ' ' + es3fTextureFormatTests.testDescription(), true, false);
     return isOk;
 };
 
@@ -569,7 +569,7 @@ es3fTextureFormatTests.Texture3DFormatCase.prototype.testSlice = function(sliceN
     // Compare and log.
     var isOk = glsTextureTestUtil.compareImages(referenceFrame, renderedFrame, threshold);
 
-    assertMsgOptions(isOk, 'Slice: ' + this.m_curSlice + ' ' + es3fTextureFormatTests.testDescription(), true, true);
+    assertMsgOptions(isOk, 'Slice: ' + this.m_curSlice + ' ' + es3fTextureFormatTests.testDescription(), true, false);
     return isOk;
 };
 
@@ -676,7 +676,7 @@ es3fTextureFormatTests.Compressed2DFormatCase.prototype.iterate = function() {
     // Compare and log.
     var isOk = glsTextureTestUtil.compareImages(referenceFrame, renderedFrame, threshold);
 
-    assertMsgOptions(isOk, es3fTextureFormatTests.testDescription(), true, true);
+    assertMsgOptions(isOk, es3fTextureFormatTests.testDescription(), true, false);
     return tcuTestCase.IterateResult.STOP;
 };
 
@@ -772,7 +772,7 @@ es3fTextureFormatTests.CompressedCubeFormatCase.prototype.testFace = function(fa
     // Compare and log.
     var isOk = glsTextureTestUtil.compareImages(referenceFrame, renderedFrame, threshold);
 
-    assertMsgOptions(isOk, 'Face: ' + this.m_curFace + ' ' + es3fTextureFormatTests.testDescription(), true, true);
+    assertMsgOptions(isOk, 'Face: ' + this.m_curFace + ' ' + es3fTextureFormatTests.testDescription(), true, false);
     return isOk;
 };
 

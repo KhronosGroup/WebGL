@@ -138,12 +138,12 @@ interface EXT_disjoint_timer_query_webgl2 {
         var ext = gl.getExtension('EXT_disjoint_timer_query_webgl2');
         var startQuery = gl.createQuery();
         var endQuery = gl.createQuery();
-        gl.queryCounterEXT(startQuery, ext.TIMESTAMP_EXT);
+        ext.queryCounterEXT(startQuery, ext.TIMESTAMP_EXT);
 
         // Draw object
         gl.drawElements(...);
 
-        gl.queryCounterEXT(endQuery, ext.TIMESTAMP_EXT);
+        ext.queryCounterEXT(endQuery, ext.TIMESTAMP_EXT);
 
         // ...at some point in the future, after returning control to the browser and being called again:
         var available = gl.getQueryParameter(endQuery, gl.QUERY_RESULT_AVAILABLE);
@@ -192,7 +192,7 @@ interface EXT_disjoint_timer_query_webgl2 {
         gl.drawElements(...);
 
         if (useTimestamps) {
-          gl.queryCounterEXT(endQuery, ext.TIMESTAMP_EXT);
+          ext.queryCounterEXT(endQuery, ext.TIMESTAMP_EXT);
         } else {
           gl.endQuery(ext.TIME_ELAPSED_EXT);
         }
@@ -233,6 +233,9 @@ interface EXT_disjoint_timer_query_webgl2 {
     <revision date="2016/09/30">
       <change>Split WebGL 2.0 specification of this extension into its own file
       for better comprehensibility.</change>
+    </revision>
+    <revision date="2016/10/11">
+      <change>Fixed errors in sample code pointed out by @juj.</change>
     </revision>
   </history>
 </extension>
