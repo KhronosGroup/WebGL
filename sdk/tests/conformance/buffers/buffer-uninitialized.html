@@ -62,7 +62,7 @@ shouldBeTrue("program != null");
 
 var TEST_LENGTH = 1024;
 var TEST_BUFSIZE = TEST_LENGTH * 4;
-var data = new Float64Array(TEST_LENGTH / 4);
+var data = new Float32Array(TEST_LENGTH / 4); // this array is zeroed
 
 var indices = new Uint16Array(TEST_LENGTH);
 for (var i = 0; i < TEST_LENGTH; i++) {
@@ -110,7 +110,8 @@ debug("testing bufferSubData(..., offset, data) of uninitialized buffer");
 for (j = 0; j < REPETITIONS; j++) {
   test(function() {
     gl.bufferData(gl.ARRAY_BUFFER, TEST_BUFSIZE, gl.STATIC_DRAW);
-    gl.bufferSubData(gl.ARRAY_BUFFER, TEST_LENGTH / 4, data);
+    // bufferSubData the second quarter of the buffer
+    gl.bufferSubData(gl.ARRAY_BUFFER, TEST_BUFSIZE / 4, data);
   });
 }
 
