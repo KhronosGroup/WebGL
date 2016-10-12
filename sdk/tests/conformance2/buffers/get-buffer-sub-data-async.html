@@ -309,23 +309,6 @@ allPromises = allPromises.then(function() {
   });
 });
 
-allPromises = allPromises.then(function() {
-  debug("");
-  debug("Test that getBufferSubDataAsync...");
-
-  var transformFeedbackBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, transformFeedbackBuffer);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, floatArray, gl.STATIC_DRAW);
-  var transformFeedback = gl.createTransformFeedback();
-  debug("... passes when a transform feedback object is not bound");
-  wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.getBufferSubDataAsync(gl.TRANSFORM_FEEDBACK_BUFFER, 0, dstData)");
-  gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);
-  debug("... fails when a transform feedback object is bound");
-  wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.getBufferSubDataAsync(gl.TRANSFORM_FEEDBACK_BUFFER, 0, dstData)");
-  gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
-  gl.deleteTransformFeedback(transformFeedback);
-});
-
 allPromises.catch(function(e) {
   testFailed(e.toString());
 }).then(finishTest);
