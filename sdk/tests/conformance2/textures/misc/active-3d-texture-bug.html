@@ -59,7 +59,7 @@ void main () {
 </script>
 <script>
 "use strict";
-description("Test for a Mac OSX driver crash bug activating TEXTURE1 for 3d texture");
+description("Test for a MacOSX 10.12 with Intel GPUs driver crash bug activating TEXTURE1 for 3d texture");
 debug("");
 
 var wtu = WebGLTestUtils;
@@ -80,7 +80,6 @@ function activeTextureTest() {
     var width = 64;
     var height = 64;
     var depth = 4;
-    var green = [0, 255, 0, 255];
     var black = [0, 0, 0, 255];
     var size = width * height * depth * 4;
 
