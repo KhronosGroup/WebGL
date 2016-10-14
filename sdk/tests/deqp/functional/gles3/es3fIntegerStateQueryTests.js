@@ -22,6 +22,7 @@
 goog.provide('functional.gles3.es3fIntegerStateQueryTests');
 goog.require('framework.common.tcuTestCase');
 goog.require('framework.delibs.debase.deRandom');
+goog.require('framework.opengl.gluTextureUtil');
 goog.require('functional.gles3.es3fApiCase');
 goog.require('modules.shared.glsStateQuery');
 
@@ -1038,6 +1039,11 @@ goog.scope(function() {
         es3fIntegerStateQueryTests.ImplementationArrayTestCase.prototype.constructor = es3fIntegerStateQueryTests.ImplementationArrayTestCase;
 
         es3fIntegerStateQueryTests.ImplementationArrayTestCase.prototype.test = function() {
+                if (!framework.opengl.gluTextureUtil.enableCompressedTextureETC()) {
+                        debug('Skipping ETC2 texture format tests: no support for WEBGL_compressed_texture_etc');
+                        return;
+                }
+
                 var queryResult = /** @type {Array<number>} */ (gl.getParameter(this.m_testTargetName));
                 this.check(glsStateQuery.compare(queryResult.length, this.m_minValue));
 
