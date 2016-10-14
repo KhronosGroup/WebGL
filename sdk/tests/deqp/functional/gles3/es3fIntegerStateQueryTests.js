@@ -1039,8 +1039,8 @@ goog.scope(function() {
         es3fIntegerStateQueryTests.ImplementationArrayTestCase.prototype.constructor = es3fIntegerStateQueryTests.ImplementationArrayTestCase;
 
         es3fIntegerStateQueryTests.ImplementationArrayTestCase.prototype.test = function() {
-                if (!framework.opengl.gluTextureUtil.enableCompressedTextureES30()) {
-                        debug('Skipping ETC2 texture format tests: no support for WEBGL_compressed_texture_es3_0');
+                if (!framework.opengl.gluTextureUtil.enableCompressedTextureETC()) {
+                        debug('Skipping ETC2 texture format tests: no support for WEBGL_compressed_texture_etc');
                         return;
                 }
 
