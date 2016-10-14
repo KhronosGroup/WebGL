@@ -103,7 +103,9 @@ function activeTextureTest() {
     // then a default black texture will be bound to TEXTURE0.
     gl.bindTexture(gl.TEXTURE_3D, null);
 
+    // Active TEXTURE1 and 3d texture are necessary to reproduce the crash bug.
     gl.activeTexture(gl.TEXTURE1);
+
     gl.bindSampler(0, sampler);
     gl.samplerParameteri(sampler, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.samplerParameteri(sampler, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
@@ -122,8 +124,6 @@ function activeTextureTest() {
     // When rendering from texture unit 0, the black texture will be drawn.
     // Crash happens when calling gl.drawArrays during this rendering.
     render(0, width, height, black, "Result pixels rendering from TEXTURE0 should be black");
-    // When rendering from texture unit 1, the green texture will be drawn.
-    render(1, width, height, green, "Result pixels rendering from TEXTURE1 should be green");
 
     gl.bindTexture(gl.TEXTURE_3D, null);
     gl.deleteTexture(texture);
