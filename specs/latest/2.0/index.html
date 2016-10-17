@@ -3481,6 +3481,14 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         qualifiers will fail either the compilation or linking stages.
     </p>
 
+    <p>
+        The initial state of compilation is as if the following were declared:
+    </p>
+
+    <p><code>
+        layout(std140) uniform;
+    </p><code>
+
     <div class="note rationale">
         This restriction is enforced to improve portability by avoiding exposing uniform block
         layouts that are specific to one vendor's GPUs.
