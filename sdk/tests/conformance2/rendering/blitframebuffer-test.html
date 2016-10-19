@@ -54,7 +54,6 @@ if (!gl) {
     testPassed("WebGL context exists");
     blit_framebuffer_feedback_loop();
     blit_framebuffer_multisampling_srgb();
-    blit_framebuffer_overflow();
 }
 
 
@@ -333,80 +332,6 @@ function blit_framebuffer_multisampling_srgb() {
     gl.deleteTexture(tex);
     gl.deleteFramebuffer(fb0);
     gl.deleteFramebuffer(fb1);
-}
-
-function blit_framebuffer_overflow() {
-
-    debug("");
-    debug("This test vefify that whether the width and height of src/dst region overflow.");
-    var tex0 = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, tex0);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    var fb0 = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
-    gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex0, 0);
-
-    var tex1 = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, tex1);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    var fb1 = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb1);
-    gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex1, 0);
-    if ((gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) ||
-        (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE)) {
-        testFailed("Framebuffer incomplete.");
-        return;
-    }
-
-    var max = 0x7fffffff;
-    gl.blitFramebuffer(0, 0, max, max, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "BlitFramebuffer should succeed.");
-    gl.blitFramebuffer(0, 0, width, height, 0, 0, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "BlitFramebuffer should succeed.");
-    gl.blitFramebuffer(0, 0, max, max, 0, 0, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "BlitFramebuffer should succeed.");
-
-    gl.blitFramebuffer(-1, -1, max, max, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_OPERATION], "The width and height of src region may overflow.");
-    gl.blitFramebuffer(0, 0, width, height, -1, -1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_OPERATION], "The width and height of dst region may overflow.");
-    gl.blitFramebuffer(-1, -1, max, max, -1, -1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_OPERATION], "The width and height of src/dst region may overflow.");
-    gl.blitFramebuffer(-max, -max, max, max, -max, -max, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_OPERATION], "The width and height of src/dst region may overflow.");
-
-    try {
-        gl.blitFramebuffer(-1, -1, max, max, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-        testPassed("BlitFramebuffer succeed.");
-    } catch (e) {
-        if (e == gl.INVALID_OPERATION) {
-            testPassed("The width and height of src region overflow during blitting. It is OK to generate INVALID_OPERATION");
-        } else {
-            testFailed(e);
-        }
-    }
-
-    try {
-        gl.blitFramebuffer(0, 0, width, height, -1, -1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-        testPassed("BlitFramebuffer succeed.");
-    } catch (e) {
-        if (e == gl.INVALID_OPERATION) {
-            testPassed("The width and height of dst region overflow during blitting. It is OK to generate INVALID_OPERATION");
-        } else {
-            testFailed(e);
-        }
-    }
-
-    try {
-        gl.blitFramebuffer(-1, -1, max, max, -1, -1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-        testPassed("BlitFramebuffer succeed.");
-    } catch (e) {
-        if (e == gl.INVALID_OPERATION) {
-            testPassed("The width and height of src and dst region overflow during blitting. It is OK to generate INVALID_OPERATION");
-        } else {
-            testFailed(e);
-        }
-    }
 }
 
 var successfullyParsed = true;
