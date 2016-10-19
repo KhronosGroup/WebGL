@@ -360,17 +360,53 @@ function blit_framebuffer_overflow() {
 
     var max = 0x7fffffff;
     gl.blitFramebuffer(0, 0, max, max, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed.");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "BlitFramebuffer should succeed.");
     gl.blitFramebuffer(0, 0, width, height, 0, 0, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed.");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "BlitFramebuffer should succeed.");
     gl.blitFramebuffer(0, 0, max, max, 0, 0, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitFramebuffer should succeed.");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "BlitFramebuffer should succeed.");
+
     gl.blitFramebuffer(-1, -1, max, max, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "the width and height of src region overflow.");
+    wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_OPERATION], "The width and height of src region may overflow.");
     gl.blitFramebuffer(0, 0, width, height, -1, -1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "the width and height of dst region overflow.");
+    wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_OPERATION], "The width and height of dst region may overflow.");
     gl.blitFramebuffer(-1, -1, max, max, -1, -1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "the width and height of src/dst region overflow.");
+    wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_OPERATION], "The width and height of src/dst region may overflow.");
+    gl.blitFramebuffer(-max, -max, max, max, -max, -max, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_OPERATION], "The width and height of src/dst region may overflow.");
+
+    try {
+        gl.blitFramebuffer(-1, -1, max, max, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+        testPassed("BlitFramebuffer succeed.");
+    } catch (e) {
+        if (e == gl.INVALID_OPERATION) {
+            testPassed("The width and height of src region overflow during blitting. It is OK to generate INVALID_OPERATION");
+        } else {
+            testFailed(e);
+        }
+    }
+
+    try {
+        gl.blitFramebuffer(0, 0, width, height, -1, -1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+        testPassed("BlitFramebuffer succeed.");
+    } catch (e) {
+        if (e == gl.INVALID_OPERATION) {
+            testPassed("The width and height of dst region overflow during blitting. It is OK to generate INVALID_OPERATION");
+        } else {
+            testFailed(e);
+        }
+    }
+
+    try {
+        gl.blitFramebuffer(-1, -1, max, max, -1, -1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+        testPassed("BlitFramebuffer succeed.");
+    } catch (e) {
+        if (e == gl.INVALID_OPERATION) {
+            testPassed("The width and height of src and dst region overflow during blitting. It is OK to generate INVALID_OPERATION");
+        } else {
+            testFailed(e);
+        }
+    }
 }
 
 var successfullyParsed = true;
