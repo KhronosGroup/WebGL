@@ -42,7 +42,7 @@
 "use strict";
 
 var wtu = WebGLTestUtils;
-description("This test verifies the functionality of blitFramebuffer for some corner cases.");
+description("This test verifies blitFramebuffer won't cause a crash when the computed sizes might overflow.");
 
 var width = 8;
 var height = 8;
@@ -58,7 +58,7 @@ if (!gl) {
 function blit_region_test() {
 
     debug("");
-    debug("This test vefify that whether the width and height of src/dst region overflow.");
+    debug("Begin to run blitFramebuffer. The computed width/height of src and/or dst region might overflow during blitting.");
     var tex0 = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex0);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
@@ -80,20 +80,14 @@ function blit_region_test() {
 
     var max = 0x7fffffff;
     gl.blitFramebuffer(0, 0, max, max, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "BlitFramebuffer should succeed.");
     gl.blitFramebuffer(0, 0, width, height, 0, 0, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "BlitFramebuffer should succeed.");
     gl.blitFramebuffer(0, 0, max, max, 0, 0, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "BlitFramebuffer should succeed.");
 
     gl.blitFramebuffer(-1, -1, max, max, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_OPERATION], "The width and height of src region may overflow.");
     gl.blitFramebuffer(0, 0, width, height, -1, -1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_OPERATION], "The width and height of dst region may overflow.");
     gl.blitFramebuffer(-1, -1, max, max, -1, -1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_OPERATION], "The width and height of src/dst region may overflow.");
     gl.blitFramebuffer(-max - 1, -max - 1, max, max, -max - 1, -max - 1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_OPERATION], "The width and height of src/dst region may overflow.");
+    testPassed("Congratulations! blitFramebuffer doesn't cause the browser crash when the computed width/height of src and/or dst region might overflow.");
 }
 
 var successfullyParsed = true;
