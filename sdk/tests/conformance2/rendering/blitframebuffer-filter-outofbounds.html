@@ -95,13 +95,17 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat, 
     if (gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
         // Blit read framebuffer to the image in draw framebuffer.
         var test = [
-             // [srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1]
-             [-2, -2, 4, 4, 1, 1, 4, 4], // only src region is out-of-bounds, dst region has different width/height as src region.
-             [-2, -2, 4, 4, 1, 1, 7, 7], // only src region is out-of-bounds, dst region has the same width/height as src region.
-             [0, 0, 6, 6, 7, 7, 10, 10], // only dst region is out-of-bounds, dst region has different width/height as src region after dst region is clipped to the bounds of draw buffer.
-             [0, 0, 6, 6, 4, 4, 10, 10], // only dst region is out-of-bounds, dst region has the same width/height as src region after dst region is clipped to the bounds of draw buffer.
-             [-2, -2, 4, 4, 7, 7, 10, 10], // both src and dst region are out-of-bounds, dst region has different width/height as src region after dst region is clipped to the bounds of draw buffer.
-             [-2, -2, 4, 4, 4, 4, 10, 10], // both src and dst region are out-of-bounds, dst region has the same width/height as src region after dst region is clipped to the bounds of draw buffer.
+            // [srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1]
+            [-2, -2, 4, 4, 1, 1, 4, 4], // only src region is out-of-bounds, dst region has different width/height as src region.
+            [-2, -2, 4, 4, 1, 1, 7, 7], // only src region is out-of-bounds, dst region has the same width/height as src region.
+            [0, 0, 6, 6, 7, 7, 10, 10], // only dst region is out-of-bounds, dst region has different width/height as src region after dst region is clipped to the bounds of draw buffer.
+            [0, 0, 6, 6, 4, 4, 10, 10], // only dst region is out-of-bounds, dst region has the same width/height as src region after dst region is clipped to the bounds of draw buffer.
+            [-2, -2, 4, 4, 7, 7, 10, 10], // both src and dst region are out-of-bounds, dst region has different width/height as src region after dst region is clipped to the bounds of draw buffer.
+            [-2, -2, 4, 4, 4, 4, 10, 10], // both src and dst region are out-of-bounds, dst region has the same width/height as src region after dst region is clipped to the bounds of draw buffer.
+            [-2, -2, 4, 4, 2, 2, 10, 10], // both src and dst region are out-of-bounds. There are some dst pixels (x and y are within [4, 8] , and x or y equals to 4) whose corresponding src pixels are partially inside and partially outside the real sampling area of the src region (the real sampling area is [0, 0, 4, 4]). But the centers of such src pixels are lying outside the real sampling area.
+            [-2, -2, 4, 4, 3, 3, 10, 10], // both src and dst region are out-of-bounds. There are some dst pixels (x and y are within [4, 7] , and x or y equals to 5) whose corresponding src pixels are partially inside and partially outside the real sampling area of the src region (the real sampling area is [0, 0, 4, 4]). But the centers of such src pixels are lying inside the real sampling area.
+            [-2, -2, 4, 4, 10, 10, 2, 2], // both src and dst region are out-of-bounds, and the dst coordinates are reversed. There are some dst pixels (x and y are within [2, 7] , and x or y equals to 7) whose corresponding src pixels are partially inside and partially outside the real sampling area of the src region (the real sampling area is [0, 0, 4, 4]). But the centers of such src pixels are lying outside the real sampling area.
+            [-2, -2, 4, 4, 10, 10, 3, 3], // both src and dst region are out-of-bounds, and the dst coordinates are reversed. There are some dst pixels (x and y are within [3, 7] , and x or y equals to 7) whose corresponding src pixels are partially inside and partially outside the read sampling area of the src region (the real sampling area is [0, 0, 4, 4]). But the centers of such src pixels are lying inside the real sampling area.
         ];
 
         var realBlittedDstRegion = [
@@ -111,6 +115,10 @@ function blitframebuffer_filter_outofbounds(readbufferFormat, drawbufferFormat, 
             [4, 4, 8, 8],
             [8, 8, 8, 8],
             [6, 6, 8, 8],
+            [5, 5, 8, 8],
+            [5, 5, 8, 8],
+            [2, 2, 7, 7],
+            [3, 3, 8, 8],
         ]
         var readbufferHasSRGBImage = (readbufferFormat == gl.SRGB8_ALPHA8);
         var drawbufferHasSRGBImage = (drawbufferFormat == gl.SRGB8_ALPHA8);

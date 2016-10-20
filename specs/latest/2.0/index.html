@@ -675,16 +675,6 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   const GLenum TRANSFORM_FEEDBACK_PAUSED                     = 0x8E23;
   const GLenum TRANSFORM_FEEDBACK_ACTIVE                     = 0x8E24;
   const GLenum TRANSFORM_FEEDBACK_BINDING                    = 0x8E25;
-  const GLenum COMPRESSED_R11_EAC                            = 0x9270;
-  const GLenum COMPRESSED_SIGNED_R11_EAC                     = 0x9271;
-  const GLenum COMPRESSED_RG11_EAC                           = 0x9272;
-  const GLenum COMPRESSED_SIGNED_RG11_EAC                    = 0x9273;
-  const GLenum COMPRESSED_RGB8_ETC2                          = 0x9274;
-  const GLenum COMPRESSED_SRGB8_ETC2                         = 0x9275;
-  const GLenum COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2      = 0x9276;
-  const GLenum COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2     = 0x9277;
-  const GLenum COMPRESSED_RGBA8_ETC2_EAC                     = 0x9278;
-  const GLenum COMPRESSED_SRGB8_ALPHA8_ETC2_EAC              = 0x9279;
   const GLenum TEXTURE_IMMUTABLE_FORMAT                      = 0x912F;
   const GLenum MAX_ELEMENT_INDEX                             = 0x8D6B;
   const GLenum TEXTURE_IMMUTABLE_LEVELS                      = 0x82DF;
@@ -1982,11 +1972,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
            generate INVALID_OPERATION.
       </dd>
       </dt>
+      <p><strong>This section applies to the above four entry points.</strong></p>
       <dd>
         <p>If an attempt is made to call these functions with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
-
-        <div class="note editor">Needs update for WebGL 2.0</div>
+        <p>The ETC2 and EAC texture formats defined in OpenGL ES 3.0 are <a href="#NO_ETC2_EAC">not available in WebGL 2.0</a>.
       </dd>
 
       <dt>
@@ -2021,10 +2011,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           </span>
         </p>
       </dt>
+      <p><strong>This section applies to the above four entry points.</strong></p>
       <dd>
         <p>If an attempt is made to call these functions with no WebGLTexture bound (see above), generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If no WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
         <p><em>offset</em> is the byte offset into the WebGLBuffer's data store; generates an <code>INVALID_VALUE</code> error if it's less than 0.</p>
+        <p>The ETC2 and EAC texture formats defined in OpenGL ES 3.0 are <a href="#NO_ETC2_EAC">not available in WebGL 2.0</a>.
       </dd>
     </dl>
 
@@ -3097,7 +3089,6 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h3>New Features Supported in the WebGL 2 API</h3>
 
     <ul>
-      <li>ETC2 and EAC Compressed texture formats <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=appendix-c">OpenGL ES 3.0.4 Appendix C</a>)</span></li>
       <li>Pixel buffer objects <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.7.1">OpenGL ES 3.0.4 &sect;3.7.1</a> and <a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.3">OpenGL ES 3.0.4 &sect;4.3</a>)</span></li>
       <li>Primitive restart <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.8.1">OpenGL ES 3.0.4 &sect;2.8.1</a>)</span></li>
       <li>Rasterizer discard <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.1">OpenGL ES 3.0.4 &sect;3.1</a>)</span></li>
@@ -3566,6 +3557,14 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         qualifiers will fail either the compilation or linking stages.
     </p>
 
+    <p>
+        The initial state of compilation is as if the following were declared:
+    </p>
+
+    <p><code>
+        layout(std140) uniform;
+    </p><code>
+
     <div class="note rationale">
         This restriction is enforced to improve portability by avoiding exposing uniform block
         layouts that are specific to one vendor's GPUs.
@@ -3774,6 +3773,26 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
          <code>UNPACK_ROW_LENGTH</code> and <code>UNPACK_ALIGNMENT</code> are not strictly defined.
          These restrictions ensure consistent and efficient behavior regardless of implied
          <code>UNPACK_</code> params.
+    </div>
+
+    <h3><a name="NO_ETC2_EAC">No ETC2 and EAC compressed texture formats</a></h3>
+    <p>OpenGL ES 3.0 requires support for the following ETC2 and EAC compressed texture formats:
+       COMPRESSED_R11_EAC, COMPRESSED_SIGNED_R11_EAC, COMPRESSED_RG11_EAC,
+       COMPRESSED_SIGNED_RG11_EAC, COMPRESSED_RGB8_ETC2, COMPRESSED_SRGB8_ETC2,
+       COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2, COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2,
+       COMPRESSED_RGBA8_ETC2_EAC, and COMPRESSED_SRGB8_ALPHA8_ETC2_EAC.
+
+    <p>These texture formats are not supported by default in WebGL 2.0.
+
+    <div class="note rationale">
+        <p>These formats are not natively supported by most desktop GPU hardware.
+           As such, supporting these formats requires software decompression in either the
+           WebGL implementation or the underlying driver. This results in a drastic
+           increase in video memory usage, causing performance losses which are
+           invisible to the WebGL application.
+        <p>On hardware which supports the ETC2 and EAC compressed texture formats natively
+           (e.g. mobile OpenGL ES 3.0+ hardware), they may be exposed via the extension
+           <code>WEBGL_compressed_texture_etc</code>.
     </div>
 
 <!-- ======================================================================================================= -->
