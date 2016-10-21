@@ -78,9 +78,9 @@ if (!gl) {
 
     runBindingTest();
     runObjectTest();
+    runGetBufferSubDataTest();
     runOneOutFeedbackTest();
     runTwoOutFeedbackTest();
-    runGetBufferSubDataTest();
 }
 
 function runBindingTest() {
@@ -293,7 +293,7 @@ function runTwoOutFeedbackTest() {
 var retArray;
 
 function verifyGetBufferSubData(expected) {
-    wtu.shouldGenerateGLError(gl, expected, "gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, retArray, retArray.length)");
+    wtu.shouldGenerateGLError(gl, expected, "gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, retArray, 0, retArray.length)");
 }
 
 function runGetBufferSubDataTest() {
