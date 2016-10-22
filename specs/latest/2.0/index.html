@@ -700,11 +700,11 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   // MapBufferRange, in particular its read-only and write-only modes,
   // can not be exposed safely to JavaScript. GetBufferSubData
   // replaces it for the purpose of fetching data back from the GPU.
-  void getBufferSubData(GLenum target, GLintptr srcByteOffset, ArrayBufferView dstData,
+  void getBufferSubData(GLenum target, GLintptr srcByteOffset, ArrayBufferView dstBuffer,
                         optional GLuint dstOffset = 0, optional GLuint length = 0);
   // Asynchronous version of getBufferSubData which fulfills the returned promise when the data becomes available.
-  Promise&lt;ArrayBuffer&gt; getBufferSubDataAsync(GLenum target, GLintptr srcByteOffset, ArrayBufferView dstData,
-                                             optional GLuint dstOffset = 0, optional GLuint length = 0);
+  Promise&lt;ArrayBuffer&gt; getBufferSubDataAsync(GLenum target, GLintptr srcByteOffset, ArrayBufferView dstBuffer,
+                                             optional GLuint dstOffset = 0, optional GLuint length = 0); // May throw DOMException
 
   /* Framebuffer objects */
   void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0,
@@ -1224,14 +1224,15 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       </dd>
       <dt>
         <p class="idl-code">
-          Promise&lt;ArrayBuffer&gt; getBufferSubDataAsync(GLenum target, GLintptr srcByteOffset, ArrayBufferView dstData,
-                                                           optional GLuint dstOffset = 0, optional GLuint length = 0)
+          Promise&lt;ArrayBuffer&gt; getBufferSubDataAsync(GLenum target, GLintptr srcByteOffset, ArrayBufferView dstBuffer,
+                                                           optional GLuint dstOffset = 0, optional GLuint length = 0) // May throw DOMException
         </p>
       </dt>
       <dd>
         Reads back data asynchronously from the bound WebGLBuffer into <code>dstBuffer</code>.
         <br><br>
-        Let <code>buf</code> be the buffer bound to <code>target</code>.
+        Let <code>buf</code> be the buffer bound to <code>target</code> at the time
+        <code>getBufferSubDataAsync</code> is called.
         If <code>length</code> is 0, let <code>copyLength</code> be
         <code>dstBuffer.length - dstOffset</code>; otherwise, let
         <code>copyLength</code> be <code>length</code>.
@@ -1259,36 +1260,38 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
               is larger than the length of <code>buf</code>,
               an <code>INVALID_OPERATION</code> is generated.
         </ul>
-        If any error is generated, no data is written to <code>dstBuffer</code>.
-        These errors are generated synchronously and are visible immediately after
-        <code>getBufferSubDataAsync</code> returns.
-
-        <br><br>
-        This command executes serially with respect to others in the command stream, but the data is
-        only written to <code>dstData</code> when the promise is fulfilled; it is available in
-        the Promise's success callback, but not earlier.
-
-        <br><br>
-        If a failure occurs that prevents the promise from being fulfilled, then the returned
-        Promise is rejected with an "InvalidStateError" DOMException, and no data is written to
-        <code>dstData</code>. If any of the above errors occur, the Promise is already rejected upon
-        return. If the context is lost before the Promise is fulfilled, or if <code>dstData</code>
-        is neutered at the time the Promise is fulfilled, then the Promise will be rejected later.
-        In this case, no WebGL error is generated. If the promise rejects, no data is written to
-        <code>dstBuffer</code>.
-
-        <br><br>
-        Otherwise, the Promise is fulfilled when the data becomes available,
-        and <code>dstData</code>, originally passed to <code>getBufferSubDataAsync</code>, is
-        passed to the success callback.
-
-        <br><br>
-        If the buffer is written and read sequentially by other operations and <code>getBufferSubData</code>,
-        it is the responsibility of the WebGL API to ensure that data are accessed consistently. This applies
-        even if the buffer is currently bound to a transform feedback binding point.
-        <br><br>
+        When invoked, <code>getBufferSubDataAsync</code> must run these steps:
+        <ul>
+          <li>Let <code>promise</code> be a Promise to be returned.
+          <li>Check for the errors defined above. If there are any errors, generate the GL error
+            synchronously and
+            <a href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise">reject</a>
+            <code>promise</code> with an <code>InvalidStateError</code>.
+          <li>Insert a readback of <code>buf</code> into the GL command stream, using the range
+            defined above.
+          <li>Return <code>promise</code>, but continue running these steps in parallel.
+          <li>Upon completion of the readback, queue a task performing the following steps:
+            <ul>
+              <li>If the context has been lost, or if <code>dstBuffer</code> has been neutered,
+                <a href="https://www.w3.org/2001/tag/doc/promises-guide/#reject-promise">reject</a>
+                <code>promise</code> with an <code>InvalidStateError</code>. In this case, no GL
+                error is generated.
+              <li>Write the readback result into <code>dstBuffer</code>, using the range defined
+                above.
+              <li><a href="https://www.w3.org/2001/tag/doc/promises-guide/#resolve-promise">Resolve</a>
+                <code>promise</code> with <code>dstBuffer</code>.
+            </ul>
+            The task source for this task is the <a href="#WEBGLCONTEXTEVENT">WebGL task source</a>.
+        </ul>
+        If the returned Promise is rejected, no data is written to <code>dstBuffer</code>.
 
         <div class="note">
+          Even if <code>getBufferSubDataAsync</code> is called multiple times in a row with the same
+          <code>dstBuffer</code>, <code>then</code> callbacks added synchronously will never see
+          results of subsequent <code>getBufferSubDataAsync</code> calls.
+        </div>
+
+        <div class="note rationale">
           Compared to the synchronous version of <code>getBufferSubData</code>, this version may
           impose less overhead on applications. Intended use cases include reading pixels into a
           pixel buffer object and examining that data on the CPU. It does not force the graphics
@@ -2300,6 +2303,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
               generates an <code>INVALID_OPERATION</code> error.
           </p>
           <p>If <code>dstData</code> doesn't have enough space for the read operation starting at
+
              <code>dstOffset</code>, generate <code>INVALID_OPERATION</code>.
         </dd>
 
