@@ -86,6 +86,8 @@ interface EXT_disjoint_timer_query_webgl2 {
       <table width="30%">
       <tr><th>target</th><th>pname</th><th>returned type</th></tr>
       <tr><td>TIME_ELAPSED_EXT</td><td>CURRENT_QUERY</td><td>WebGLQuery?</td></tr>
+      <tr><td>TIMESTAMP_EXT</td><td>CURRENT_QUERY</td><td>null</td></tr>
+      <tr><td>TIME_ELAPSED_EXT</td><td>QUERY_COUNTER_BITS_EXT</td><td>GLint</td></tr>
       <tr><td>TIMESTAMP_EXT</td><td>QUERY_COUNTER_BITS_EXT</td><td>GLint</td></tr>
       </table>      
     </function>
