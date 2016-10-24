@@ -121,14 +121,15 @@ interface EXT_disjoint_timer_query {
     <function name="getQueryEXT" type="any">
       <param name="target" type="GLenum"/>
       <param name="pname" type="GLenum"/>
-      <code>target</code> accepts <code>TIME_ELAPSED_EXT</code> or <code>TIMESTAMP_EXT</code>.
-      <code>pname</code> accepts <code>CURRENT_QUERY_EXT</code> or <code>QUERY_COUNTER_BITS_EXT</code>.
+      <code>target</code> and <code>pname</code> accept the following combinations of
+      parameters. The return type of this method depends on the parameter queried.
       <br/>
-      The return type of this method depends on the parameter queried:
       <table width="30%">
-      <tr><th>pname</th><th>returned type</th></tr>
-      <tr><td>CURRENT_QUERY_EXT</td><td>WebGLTimerQueryEXT?</td></tr>
-      <tr><td>QUERY_COUNTER_BITS_EXT</td><td>GLint</td></tr>
+      <tr><th>target</th><th>pname</th><th>returned type</th></tr>
+      <tr><td>TIME_ELAPSED_EXT</td><td>CURRENT_QUERY</td><td>WebGLQuery?</td></tr>
+      <tr><td>TIMESTAMP_EXT</td><td>CURRENT_QUERY</td><td>null</td></tr>
+      <tr><td>TIME_ELAPSED_EXT</td><td>QUERY_COUNTER_BITS_EXT</td><td>GLint</td></tr>
+      <tr><td>TIMESTAMP_EXT</td><td>QUERY_COUNTER_BITS_EXT</td><td>GLint</td></tr>
       </table>      
     </function>
   </newfun>
