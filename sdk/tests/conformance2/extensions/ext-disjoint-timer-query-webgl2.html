@@ -89,6 +89,14 @@ if (!gl) {
 
 function runSanityTests() {
     debug("");
+    debug("Testing other query types");
+    query = gl.createQuery();
+    gl.beginQuery(gl.ANY_SAMPLES_PASSED, query);
+    shouldBeTrue("gl.getQuery(gl.ANY_SAMPLES_PASSED, gl.CURRENT_QUERY) !== null");
+    gl.endQuery(gl.ANY_SAMPLES_PASSED);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "enabling EXT_disjoint_timer_query_webgl2 should not break other queries");
+
+    debug("");
     debug("Testing timer query expectations");
 
     shouldBe("ext.QUERY_COUNTER_BITS_EXT", "0x8864");
