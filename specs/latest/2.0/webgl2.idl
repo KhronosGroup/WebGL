@@ -7,6 +7,7 @@
 // https://www.khronos.org/registry/typedarray/specs/latest/typedarrays.idl
 
 typedef long long GLint64;
+typedef unsigned long long GLuint64;
 
 
 interface WebGLQuery : WebGLObject {
@@ -536,7 +537,7 @@ interface WebGL2RenderingContextBase
   WebGLSync? fenceSync(GLenum condition, GLbitfield flags);
   [WebGLHandlesContextLoss] GLboolean isSync(WebGLSync? sync);
   void deleteSync(WebGLSync? sync);
-  GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout);
+  GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout);
   void waitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout);
   any getSyncParameter(WebGLSync? sync, GLenum pname);
 

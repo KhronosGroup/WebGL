@@ -254,6 +254,7 @@
     </p>
     <pre class="idl">
 typedef long long GLint64;
+typedef unsigned long long GLuint64;
 </pre>
 
 <!-- ======================================================================================================= -->
@@ -920,7 +921,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   WebGLSync? fenceSync(GLenum condition, GLbitfield flags);
   [WebGLHandlesContextLoss] GLboolean isSync(WebGLSync? sync);
   void deleteSync(WebGLSync? sync);
-  GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout);
+  GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout);
   void waitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout);
   any getSyncParameter(WebGLSync? sync, GLenum pname);
 
@@ -2598,7 +2599,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           This method merely gives the author greater control over when the sync object is destroyed.
       </dd>
       <dt>
-        <p class="idl-code">GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout)
+        <p class="idl-code">GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.4 &sect;5.2.1</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClientWaitSync.xhtml" class="nonnormative">man page</a>)
@@ -2631,11 +2632,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
         <p>
         As discussed in the <a href="#CLIENT_WAIT_SYNC">differences section</a>, WebGL implementations must impose a
-        short maximum timeout to prevent blocking the main thread either indefinitely or for long periods of time. The
+        short maximum timeout to prevent blocking the main thread for long periods of time. The
         implementation-defined timeout may be queried by calling <code>getParameter</code> with the
         argument <code>MAX_CLIENT_WAIT_TIMEOUT_WEBGL</code>. If <code>timeout</code> is larger than this
-        implementation-defined timeout then an <code>INVALID_OPERATION</code> error is generated. If <code>timeout</code>
-        is less than -1 then an <code>INVALID_VALUE</code> error is generated.
+        implementation-defined timeout then an <code>INVALID_OPERATION</code> error is generated.
         </p>
 
         <div class="note">
