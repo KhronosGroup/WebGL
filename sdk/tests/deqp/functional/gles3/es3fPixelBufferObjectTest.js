@@ -287,6 +287,9 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                 break;
         }
 
+        // GL_DITHER will cause the dither on color component which effects the result of rendering.
+        // Disable it to make sure that the diff of image is not because of dithering.
+        gl.disable(gl.DITHER);
         this.clearColor(this.m_colorScale * 0.4, this.m_colorScale * 1.0, this.m_colorScale * 0.5, this.m_colorScale * 1.0);
 
         if (this.m_useColorClears) {
