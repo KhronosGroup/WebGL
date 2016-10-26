@@ -300,11 +300,11 @@ goog.scope(function() {
             /** @type{WebGLSync} */ var sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if sync is not the name of an existing sync object.');
-            gl.clientWaitSync (null, 0, 10000);
+            gl.clientWaitSync (null, 0, 0);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if flags contains any unsupported flag.');
-            gl.clientWaitSync(sync, 0x00000004, 10000);
+            gl.clientWaitSync(sync, 0x00000004, 0);
             this.expectError(gl.INVALID_VALUE);
 
             gl.deleteSync(sync);
