@@ -481,7 +481,13 @@ goog.scope(function() {
                 this.m_numSamples = this.m_fboParams.numSamples;
             else {
                 bufferedLogToConsole('Querying maximum number of samples for ' + gluStrUtil.getPixelFormatName(gl.RGBA8) + ' with gl.getInternalformatParameter()');
-                this.m_numSamples = /** @type {number} */ (gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA8, gl.SAMPLES).length);
+                var supportedSampleCountArray = /** @type {Int32Array} */ (gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA8, gl.SAMPLES));
+                if (supportedSampleCountArray.length == 0) {
+                    var msg = 'No supported sample counts';
+                    checkMessage(false, msg);
+                    return false;
+                }
+                this.m_numSamples = supportedSampleCountArray[0];
             }
 
             bufferedLogToConsole('Using FBO of size (' + this.m_renderWidth + ', ' + this.m_renderHeight + ') with ' + this.m_numSamples + ' samples');
@@ -523,9 +529,10 @@ goog.scope(function() {
                 gl.renderbufferStorageMultisample(gl.RENDERBUFFER, this.m_numSamples, gl.RGBA8, this.m_renderWidth, this.m_renderHeight);
             }
             catch (e) {
-                /** @type {Int32Array} */ var maxSampleCount = /** @type {Int32Array} */ (gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA8, gl.SAMPLES));
-                if (maxSampleCount.length < this.m_numSamples)
-                    throw new Error('Maximum sample count returned by gl.getInternalformatParameter() for ' + gluStrUtil.getPixelFormatName(gl.RGBA8) + ' is only ' + maxSampleCount.length);
+                /** @type {Int32Array} */ var supportedSampleCountArray = /** @type {Int32Array} */ (gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA8, gl.SAMPLES));
+                var maxSampleCount = supportedSampleCountArray[0];
+                if (maxSampleCount < this.m_numSamples)
+                    throw new Error('Maximum sample count returned by gl.getInternalformatParameter() for ' + gluStrUtil.getPixelFormatName(gl.RGBA8) + ' is only ' + maxSampleCount);
                 else
                     throw new Error('Unspecified error.');
             }
