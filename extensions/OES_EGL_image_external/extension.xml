@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The root element should be <draft href="~~"> for draft extensions -->
+<!-- The root element should be <proposal href="~~"> for proposed extensions -->
+<!-- The root element should be <ratified href="~~"> for ratified extensions -->
+<!-- @href should be a URI relative to the WebGL extension registry at
+http://www.khronos.org/registry/webgl/extensions/
+-->
+<extension href="OES_EGL_image_external/">
+  <!-- The name of the extension. This is also the string which is passed to the 
+       WebGLRenderingContext getExtension API to enable the extension. For example, if
+       the extension were OES_texture_float, then the extension would be fetched and
+       enabled with a call to getExtension("OES_texture_float")
+
+       Per WebGL convention, the 'GL_' prefix is dropped from all extension and enum
+       names, and the 'gl' prefix dropped from, and capitalization adjusted of, all
+       function names.
+  -->
+
+  <name>OES_EGL_image_external</name>
+
+  <!-- the email address of the contact of the specification -->
+
+  <!-- prefer to 'at' instead of the '@' character to reduce spam -->
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <!-- Names and email addresses of individuals who contributed to the development of
+       the specification
+  -->
+
+  <contributors>
+    <contributor>Byungseon Shin(sun.shin@lge.com), LG Electronics</contributor>
+    <contributor>Andrey Volykhin(andrey.volykhin@lge.com), LG Electronics</contributor>
+  </contributors>
+
+  <number>k <!-- extension number in registry --></number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+    <!-- use mirrors if this extension wraps another -->
+
+    <mirrors href="https://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt"
+             name="OES_EGL_image_external">
+      <!-- list the deviations here if there are any -->
+
+      <addendum>Defines a new texture target <code>TEXTURE_EXTERNAL_OES</code>.</addendum>
+      <addendum>Provides a mechanism for binding <code>HTMLVideoElement</code>'s EGLImage to external texture targets.</addendum>
+
+      <!-- Tags not 'addendum' replace the default text that says
+           "Consult the above extension for documentation, issues and new functions and enumerants."
+      -->
+    </mirrors>
+
+    <features>
+      <!-- a list of features in XHTML -->
+
+      <feature>Add support for <code>OES_EGL_image_external</code> texture
+      binding of HTMLVideoElement.</feature>
+
+      <!-- can also specify glsl built-ins in structured format -->
+
+      <glsl extname="OES_EGL_image_external">
+        <stage type="fragment"/>
+        <type name="samplerExternalOES"/>
+
+        <function name="texture2D" type="vec4">
+          <param name="sampler" type="samplerExternalOES"/>
+
+          <param name="coord" type="vec2"/>
+        </function>
+
+      </glsl>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+[NoInterfaceObject]
+interface OESEGLImageExternal {
+    const GLenum TEXTURE_EXTERNAL_OES             = 0x8D65;
+    const GLenum SAMPLER_EXTERNAL_OES             = 0x8D66;
+    const GLenum TEXTURE_BINDING_EXTERNAL_OES     = 0x8D67;
+    const GLenum REQUIRED_TEXTURE_IMAGE_UNITS_OES = 0x8D68;
+
+    [RaisesException] void EGLImageTargetTexture2DOES(
+        GLenum target, HTMLVideoElement video);
+};
+  </idl>
+
+  <!-- New Implementation-Dependent State -->
+  <samplecode xml:space="preserve">
+
+    <p> This a fragment shader that samples a video texture.</p>
+    <pre>
+    #extension GL_OES_EGL_image_external : require
+    precision mediump float;
+    varying vec2 v_texCoord;
+
+    uniform samplerExternalOES uSampler;
+
+    void main(void) {
+      gl_FragColor = texture2D(uSampler, v_texCoord);
+    }
+    </pre>
+
+    <p> This shows application that renders video using proposed extension.  </p>
+    <pre>
+    var videoElement = document.getElementById("video");
+    var videoTexture = gl.createTexture();
+
+    function update() {
+        var ext = gl.getExtension('OES_EGL_image_external');
+        if(ext !=== null){
+            gl.bindTexture(ext.TEXTURE_EXTERNAL_OES, videoTexture);
+            ext.EGLImageTargetTexture2DOES(ext.TEXTURE_EXTERNAL_OES, videoElement);
+            gl.bindTexture(ext.TEXTURE_EXTERNAL_OES, null);
+        }
+    }
+
+    function render() {
+        gl.clearColor(0.0, 0.0, 1.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+        gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(ext.TEXTURE_EXTERNAL_OES, videoTexture);
+        gl.uniform1i(gl.getUniformLocation(shaderProgram, "uSampler"), 0);
+
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+    </pre>
+
+    <p> Application renders each video frames into WebGL canvas based on game-loop pattern. </p>
+    <pre>
+    update();
+
+    while (true) {
+       processInput();
+       render();
+    }
+    </pre>
+
+  </samplecode>
+
+  <tests/>
+
+  <issues/>
+
+  <history>
+    <revision date="2016/10/11">
+      <change>Initial revision.</change>
+    </revision>
+    <revision date="2016/10/11">
+      <change>Refine sample code.</change>
+    </revision>
+    <revision date="2016/10/11">
+      <change>Remove comment on WebGL API 2.0 dependency</change>
+      <change>Refine sample code as an implicit texture updating mode</change>
+    </revision>
+    <revision date="2016/11/01">
+      <change>Remove comment.</change>
+    </revision>
+  </history>
+</extension>
