@@ -43,8 +43,7 @@
 description("Tests texture uploads with ArrayBufferView+offsets");
 
 var wtu = WebGLTestUtils;
-var contextVersion = wtu.getDefault3DContextVersion();
-var gl = wtu.create3DContext();
+var gl = wtu.create3DContext(null, undefined, 2);
 console.log(gl.getParameter(gl.VERSION));
 
 ////
@@ -93,12 +92,7 @@ var fb = gl.createFramebuffer();
 function probeWithBadOffset(fnTest, info) {
   fnTest(+(-1|0));
   if (!gl.getError()) {
-    var text = "Does not support " + info + " with offsets into views.";
-    if (contextVersion >= 2) {
-      testFailed(text);
-    } else {
-      testPassed("Warning: " + text);
-    }
+    testFailed("Does not support " + info + " with offsets into views.");
     return false;
   }
   return true;
@@ -135,11 +129,8 @@ do {
         wtu.glErrorShouldBe(gl, gl.NO_ERROR);
         shouldBeWasArr(testView.slice(i, i+4), readPixelView);
 
-      } else if (effectiveViewLen >= 0) {
-        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION);
-
       } else {
-        wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION);
       }
     }
 
@@ -169,11 +160,8 @@ do {
         wtu.glErrorShouldBe(gl, gl.NO_ERROR);
         shouldBeWas(arr565[i], rgb888to565(readPixelView));
 
-      } else if (effectiveViewLen >= 0) {
-        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION);
-
       } else {
-        wtu.glErrorShouldBe(gl, gl.INVALID_VALUE);
+        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION);
       }
     }
   }
