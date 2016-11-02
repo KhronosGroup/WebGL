@@ -797,7 +797,8 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
                                GLsizei width, GLsizei height, GLenum format, GLintptr offset);
   void compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                                GLsizei width, GLsizei height, GLenum format,
-                               ArrayBufferView srcData, optional GLuint srcOffset = 0,
+                               ArrayBufferView srcData,
+                               optional GLuint srcOffset = 0,
                                optional GLuint srcLengthOverride = 0);
 
   void compressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
@@ -1833,7 +1834,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p class="idl-code">
           void compressedTexImage2D(GLenum target, GLint level, GLenum internalformat,
                                     GLsizei width, GLsizei height, GLint border,
-                                    ArrayBufferView srcData, optional GLuint srcOffset = 0)
+                                    ArrayBufferView srcData,
+                                    optional GLuint srcOffset = 0,
+                                    optional GLuint srcLengthOverride = 0)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.4 &sect;3.8.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexImage2D.xhtml" class="nonnormative">man page</a>)
@@ -1841,16 +1844,21 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       <dd>
         <p>Reading from <code>srcData</code> begins <code>srcOffset</code> elements into
-           <code>srcData</code>. (Elements are bytes for Uint8Array, int32s for Int32Array, etc.)
-        <p>If there's not enough data in <code>srcData</code> starting at <code>srcOffset</code>,
-           generate INVALID_OPERATION.
+           <code>srcData</code>. (Elements are bytes for Uint8Array, int32s for Int32Array, etc.)</p>
+        <p>If <code>srcOffset</code> &gt; <code>srcData.length</code>, generates an INVALID_VALUE error.</p>
+        <p><code>srcLengthOverride</code> defaults to <code>srcData.length - srcOffset</code>.</p>
+        <p>If there's not enough data in <code>srcData</code> starting at <code>srcOffset</code>, or
+           if the amount of data passed in is not consistent with the format, dimensions, and
+           contents of the compressed image, generates an INVALID_VALUE error.</p>
       </dd>
       </dt>
       <dt>
         <p class="idl-code">
           void compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                                        GLsizei width, GLsizei height, GLenum format,
-                                       ArrayBufferView srcData, optional GLuint srcOffset = 0)
+                                       ArrayBufferView srcData,
+                                       optional GLuint srcOffset = 0,
+                                       optional GLuint srcLengthOverride = 0)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.4 &sect;3.8.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexSubImage2D.xhtml" class="nonnormative">man page</a>)
@@ -1859,8 +1867,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dd>
         <p>Reading from <code>srcData</code> begins <code>srcOffset</code> elements into
            <code>srcData</code>. (Elements are bytes for Uint8Array, int32s for Int32Array, etc.)
-        <p>If there's not enough data in <code>srcData</code> starting at <code>srcOffset</code>,
-           generate INVALID_OPERATION.
+        <p>If <code>srcOffset</code> &gt; <code>srcData.length</code>, generates an INVALID_VALUE error.</p>
+        <p><code>srcLengthOverride</code> defaults to <code>srcData.length - srcOffset</code>.</p>
+        <p>If there's not enough data in <code>srcData</code> starting at <code>srcOffset</code>, or
+           if the amount of data passed in is not consistent with the format, dimensions, and
+           contents of the compressed image, generates an INVALID_VALUE error.</p>
       </dd>
       </dt>
 
@@ -1868,7 +1879,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p class="idl-code">
           void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat,
                                     GLsizei width, GLsizei height, GLsizei depth, GLint border,
-                                    ArrayBufferView srcData, optional GLuint srcOffset = 0)
+                                    ArrayBufferView srcData,
+                                    optional GLuint srcOffset = 0,
+                                    optional GLuint srcLengthOverride = 0)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.4 &sect;3.8.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexImage3D.xhtml" class="nonnormative">man page</a>)
@@ -1877,8 +1890,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dd>
         <p>Reading from <code>srcData</code> begins <code>srcOffset</code> elements into
            <code>srcData</code>. (Elements are bytes for Uint8Array, int32s for Int32Array, etc.)
-        <p>If there's not enough data in <code>srcData</code> starting at <code>srcOffset</code>,
-           generate INVALID_OPERATION.
+        <p>If <code>srcOffset</code> &gt; <code>srcData.length</code>, generates an INVALID_VALUE error.</p>
+        <p><code>srcLengthOverride</code> defaults to <code>srcData.length - srcOffset</code>.</p>
+        <p>If there's not enough data in <code>srcData</code> starting at <code>srcOffset</code>, or
+           if the amount of data passed in is not consistent with the format, dimensions, and
+           contents of the compressed image, generates an INVALID_VALUE error.</p>
       </dd>
       </dt>
       <dt>
@@ -1886,7 +1902,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           void compressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                                        GLint zoffset, GLsizei width, GLsizei height, GLsizei depth,
                                        GLenum format, ArrayBufferView srcData,
-                                       optional GLuint srcOffset = 0)
+                                       optional GLuint srcOffset = 0,
+                                       optional GLuint srcLengthOverride = 0)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.6">OpenGL ES 3.0.4 &sect;3.8.6</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glCompressedTexSubImage3D.xhtml" class="nonnormative">man page</a>)
@@ -1895,8 +1912,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dd>
         <p>Reading from <code>srcData</code> begins <code>srcOffset</code> elements into
            <code>srcData</code>. (Elements are bytes for Uint8Array, int32s for Int32Array, etc.)
-        <p>If there's not enough data in <code>srcData</code> starting at <code>srcOffset</code>,
-           generate INVALID_OPERATION.
+        <p>If <code>srcOffset</code> &gt; <code>srcData.length</code>, generates an INVALID_VALUE error.</p>
+        <p><code>srcLengthOverride</code> defaults to <code>srcData.length - srcOffset</code>.</p>
+        <p>If there's not enough data in <code>srcData</code> starting at <code>srcOffset</code>, or
+           if the amount of data passed in is not consistent with the format, dimensions, and
+           contents of the compressed image, generates an INVALID_VALUE error.</p>
       </dd>
       </dt>
       <p><strong>This section applies to the above four entry points.</strong></p>
