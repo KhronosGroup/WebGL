@@ -83,7 +83,9 @@ var width = 8;
 var height = 8;
 var tex0;
 var tex1;
-var fbo;
+var rb0;
+var rb1;
+var fbo = gl.createFramebuffer();
 var program0;
 var program1;
 var program2;
@@ -97,19 +99,24 @@ if (!gl) {
 
     // COLOR_ATTACHMENT0 is fixed-point data, which can be convert to float.
     // COLOR_ATTACHMENT1 is integer data. The fragment output data is float.
-    allocate_resource();
+    allocate_textures();
+    check_type_match();
+    allocate_renderbuffers();
+    check_type_match();
+}
 
+function check_type_match() {
     gl.useProgram(program0);
-    check_type_match([gl.COLOR_ATTACHMENT0, gl.NONE], gl.NO_ERROR);
-    check_type_match([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1], gl.NO_ERROR);
+    rendering([gl.COLOR_ATTACHMENT0, gl.NONE], gl.NO_ERROR);
+    rendering([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1], gl.NO_ERROR);
 
     gl.useProgram(program1);
-    check_type_match([gl.COLOR_ATTACHMENT0, gl.NONE], gl.NO_ERROR);
-    check_type_match([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1], gl.INVALID_OPERATION);
+    rendering([gl.COLOR_ATTACHMENT0, gl.NONE], gl.NO_ERROR);
+    rendering([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1], gl.INVALID_OPERATION);
 
     gl.useProgram(program2);
-    check_type_match([gl.COLOR_ATTACHMENT0, gl.NONE], gl.NO_ERROR);
-    check_type_match([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1], gl.INVALID_OPERATION);
+    rendering([gl.COLOR_ATTACHMENT0, gl.NONE], gl.NO_ERROR);
+    rendering([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1], gl.INVALID_OPERATION);
 }
 
 function init() {
@@ -126,10 +133,9 @@ function init() {
     gl.viewport(0, 0, width, height);
 }
 
-function allocate_resource() {
+function allocate_textures() {
     tex0 = gl.createTexture();
     tex1 = gl.createTexture();
-    fbo = gl.createFramebuffer();
     wtu.fillTexture(gl, tex0, width, height, [0xff, 0x0, 0x0, 0xff], 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.RGBA);
     wtu.fillTexture(gl, tex1, width, height, [0x0, 0xff, 0x0, 0xff], 0, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, gl.RGBA8UI);
 
@@ -138,7 +144,20 @@ function allocate_resource() {
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.TEXTURE_2D, tex1, 0);
 }
 
-function check_type_match(draw_buffers, error) {
+function allocate_renderbuffers() {
+    rb0 = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb0);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA8, width, height);
+    rb1 = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, rb1);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA8UI, width, height);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, rb0);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.RENDERBUFFER, rb1);
+}
+
+function rendering(draw_buffers, error) {
     gl.drawBuffers(draw_buffers);
 
     if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
@@ -151,10 +170,13 @@ function check_type_match(draw_buffers, error) {
 }
 
 gl.bindTexture(gl.TEXTURE_2D, null);
+gl.bindRenderbuffer(gl.RENDERBUFFER, null);
 gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 gl.useProgram(null);
 gl.deleteTexture(tex0);
 gl.deleteTexture(tex1);
+gl.deleteRenderbuffer(rb0);
+gl.deleteRenderbuffer(rb1);
 gl.deleteFramebuffer(fbo);
 gl.deleteProgram(program0);
 gl.deleteProgram(program1);
