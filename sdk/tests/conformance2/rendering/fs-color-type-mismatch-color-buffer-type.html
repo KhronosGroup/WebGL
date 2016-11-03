@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>The Color Type of Fragment Shader's Output Should Match The Type of Color Buffers</title>
+<title>The Color Types of Fragment Shader's Outputs Should Match The Data Types of Color Buffers</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
@@ -75,7 +75,7 @@ void main() {
 "use strict";
 
 var wtu = WebGLTestUtils;
-description("This test verifies that the color type of fragment shader's output should match color buffers' type.");
+description("This test verifies that the color types of fragment shader's outputs should match color buffers' types.");
 
 var gl = wtu.create3DContext("example", undefined, 2);
 
@@ -97,8 +97,8 @@ if (!gl) {
 
     init();
 
-    // COLOR_ATTACHMENT0 is fixed-point data, which can be convert to float.
-    // COLOR_ATTACHMENT1 is integer data. The fragment output data is float.
+    // COLOR_ATTACHMENT0 is fixed-point data, which can be converted to float.
+    // COLOR_ATTACHMENT1 is integer data. The fragment outputs are all float.
     allocate_textures();
     check_type_match();
     allocate_renderbuffers();
@@ -124,10 +124,10 @@ function init() {
     program1 = wtu.setupProgram(gl, ['vshader', 'fshaderMRT'], ['aPosition'], [0]);
     program2 = wtu.setupProgram(gl, ['vshader', 'fshaderRealMRT'], ['aPosition'], [0]);
     if (!program0 || !program1 || !program2) {
-        testFailed("Set up program failed");
+        testFailed("Failed to set up program");
         return;
     }
-    testPassed("Set up program succeeded");
+    testPassed("Succeed to set up program");
 
     wtu.setupUnitQuad(gl, 0, 1);
     gl.viewport(0, 0, width, height);
@@ -166,7 +166,7 @@ function rendering(draw_buffers, error) {
     }
 
     wtu.drawUnitQuad(gl);
-    wtu.glErrorShouldBe(gl, error, "If color buffers' type mismatch the type of fragment shader's output, geneate INVALID_OPERATION. Otherwise, it should be NO_ERROR");
+    wtu.glErrorShouldBe(gl, error, "If color buffers' type mismatch the type of fragment shader's outputs, geneate INVALID_OPERATION. Otherwise, it should be NO_ERROR");
 }
 
 gl.bindTexture(gl.TEXTURE_2D, null);
