@@ -688,7 +688,8 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   /* Buffer objects */
   // WebGL1:
   void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
-  void bufferData(GLenum target, BufferDataSource srcData, GLenum usage);
+  void bufferData(GLenum target, ArrayBuffer? srcData, GLenum usage);
+  void bufferData(GLenum target, ArrayBufferView srcData, GLenum usage);
   void bufferSubData(GLenum target, GLintptr dstByteOffset, BufferDataSource srcData);
   // WebGL2:
   void bufferData(GLenum target, ArrayBufferView srcData, GLenum usage, GLuint srcOffset,
@@ -734,7 +735,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
 
   void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                      GLsizei width, GLsizei height,
-                     GLenum format, GLenum type, ArrayBufferView pixels);
+                     GLenum format, GLenum type, ArrayBufferView? pixels);
   void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                      GLenum format, GLenum type, TexImageSource source); // May throw DOMException
 
@@ -776,7 +777,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
                      TexImageSource source); // May throw DOMException
   void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                      GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type,
-                     ArrayBufferView srcData, optional GLuint srcOffset = 0);
+                     ArrayBufferView? srcData, optional GLuint srcOffset = 0);
 
   void copyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                          GLint x, GLint y, GLsizei width, GLsizei height);
@@ -883,7 +884,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   /* Reading back pixels */
   // WebGL1:
   void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type,
-                  ArrayBufferView dstData);
+                  ArrayBufferView? dstData);
   // WebGL2:
   void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type,
                   GLintptr offset);
@@ -1739,7 +1740,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p class="idl-code">
           void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                              GLint zoffset, GLsizei width, GLsizei height, GLsizei depth,
-                             GLenum format, GLenum type, ArrayBufferView srcData,
+                             GLenum format, GLenum type, ArrayBufferView? srcData,
                              optional GLuint srcOffset = 0)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.4 &sect;3.8.5</a>,
@@ -1973,7 +1974,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <dl class="methods">
       <dt>
-        <p class="idl-code">[WebGLHandlesContextLoss] GLint getFragDataLocation(WebGLProgram? program, DOMString name)
+        <p class="idl-code">[WebGLHandlesContextLoss] GLint getFragDataLocation(WebGLProgram program, DOMString name)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.9.2">OpenGL ES 3.0.4 &sect;3.9.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetFragDataLocation.xhtml" class="nonnormative">man page</a>)
@@ -2356,7 +2357,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         flag</a> is set.
       </dd>
       <dt>
-        <p class="idl-code">void beginQuery(GLenum target, WebGLQuery? query)
+        <p class="idl-code">void beginQuery(GLenum target, WebGLQuery query)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.13">OpenGL ES 3.0.4 &sect;2.13</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBeginQuery.xhtml" class="nonnormative">man page</a>)
@@ -2402,7 +2403,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           function.</p>
       </dd>
       <dt>
-        <p class="idl-code"><a name="GET_QUERY_PARAMETER">any getQueryParameter</a>(WebGLQuery? query, GLenum pname)
+        <p class="idl-code"><a name="GET_QUERY_PARAMETER">any getQueryParameter</a>(WebGLQuery query, GLenum pname)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.7">OpenGL ES 3.0.4 &sect;6.1.7</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetQueryObjectuiv.xhtml" class="nonnormative">man page</a>)
@@ -2523,8 +2524,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         and the current binding will remain untouched.
       </dd>
       <dt>
-        <p class="idl-code">void samplerParameteri(WebGLSampler? sampler, GLenum pname, GLint param)</p>
-        <p class="idl-code">void samplerParameterf(WebGLSampler? sampler, GLenum pname, GLfloat param)</p>
+        <p class="idl-code">void samplerParameteri(WebGLSampler sampler, GLenum pname, GLint param)</p>
+        <p class="idl-code">void samplerParameterf(WebGLSampler sampler, GLenum pname, GLfloat param)</p>
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.2">OpenGL ES 3.0.4 &sect;3.8.2</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glSamplerParameter.xhtml" class="nonnormative">man page</a>)
@@ -2548,7 +2549,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
         <p>If <em>sampler</em> is not a valid sampler object, generates an <code>INVALID_OPERATION</code> error.</p>
       </dd>
-      <dt class="idl-code">any getSamplerParameter(WebGLSampler? sampler, GLenum pname)
+      <dt class="idl-code">any getSamplerParameter(WebGLSampler sampler, GLenum pname)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.5">OpenGL ES 3.0.4 &sect;6.1.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetSamplerParameter.xhtml">man page</a>)</span>
       </dt>
       <dd>
@@ -2621,7 +2622,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           This method merely gives the author greater control over when the sync object is destroyed.
       </dd>
       <dt>
-        <p class="idl-code">GLenum clientWaitSync(WebGLSync? sync, GLbitfield flags, GLuint64 timeout)
+        <p class="idl-code">GLenum clientWaitSync(WebGLSync sync, GLbitfield flags, GLuint64 timeout)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.4 &sect;5.2.1</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClientWaitSync.xhtml" class="nonnormative">man page</a>)
@@ -2672,7 +2673,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
       </dd>
       <dt>
-        <p class="idl-code">void waitSync(WebGLSync? sync, GLbitfield flags, GLint64 timeout)
+        <p class="idl-code">void waitSync(WebGLSync sync, GLbitfield flags, GLint64 timeout)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.4 &sect;5.2.1</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glWaitSync.xhtml" class="nonnormative">man page</a>)
@@ -2688,7 +2689,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           In the absence of the possibility of synchronizing between multiple GL contexts, calling waitSync is effectively a no-op.
         </div>
       </dd>
-      <dt class="idl-code">any getSyncParameter(WebGLSync? sync, GLenum pname)
+      <dt class="idl-code">any getSyncParameter(WebGLSync sync, GLenum pname)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.4 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetSynciv.xhtml">man page</a>)</span>
       </dt>
       <dd>
@@ -2781,12 +2782,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glResumeTransformFeedback.xhtml">man page</a>)</span>
         <dd>
 
-        <dt class="idl-code">void transformFeedbackVaryings(WebGLProgram? program, sequence&lt;DOMString&gt; varyings, GLenum bufferMode)
+        <dt class="idl-code">void transformFeedbackVaryings(WebGLProgram program, sequence&lt;DOMString&gt; varyings, GLenum bufferMode)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.8">OpenGL ES 3.0.4 &sect;2.11.8</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glTransformFeedbackVaryings.xhtml">man page</a>)</span>
         <dd>
 
-        <dt class="idl-code">WebGLActiveInfo? getTransformFeedbackVarying(WebGLProgram? program, GLuint index)
+        <dt class="idl-code">WebGLActiveInfo? getTransformFeedbackVarying(WebGLProgram program, GLuint index)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.8">OpenGL ES 3.0.4 &sect;2.11.8</a>,
             <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetTransformFeedbackVarying.xhtml">man page</a>)</span>
         <dd>
@@ -2816,13 +2817,13 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             Binds a range of the <code class="interface">WebGLBuffer</code> object buffer represented by <code class="param">offset</code> and <code class="param">size</code>
             to the binding point at <code class="param">index</code> of the array of targets specified by <code class="param">target</code>.
 
-        <dt class="idl-code">sequence&lt;GLuint&gt;? getUniformIndices(WebGLProgram? program, sequence&lt;DOMString&gt; uniformNames)
+        <dt class="idl-code">sequence&lt;GLuint&gt;? getUniformIndices(WebGLProgram program, sequence&lt;DOMString&gt; uniformNames)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetUniformIndices.xhtml">man page</a>)</span>
         <dd>
             Retrieves the indices of a number of uniforms within <code class="param">program</code>.
 
-        <dt class="idl-code">any getActiveUniforms(WebGLProgram? program, sequence&lt;GLuint&gt; uniformIndices, GLenum pname)
+        <dt class="idl-code">any getActiveUniforms(WebGLProgram program, sequence&lt;GLuint&gt; uniformIndices, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetActiveUniformsiv.xhtml">man page</a>)</span>
         <dd>
@@ -2841,13 +2842,13 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             </table><br>
             <p>If <code class="param">pname</code> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
 
-        <dt class="idl-code">GLuint getUniformBlockIndex(WebGLProgram? program, DOMString uniformBlockName)
+        <dt class="idl-code">GLuint getUniformBlockIndex(WebGLProgram program, DOMString uniformBlockName)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetUniformBlockIndex.xhtml">man page</a>)</span>
         <dd>
             Retrieves the index of a uniform block within <code class="param">program</code>.
 
-        <dt class="idl-code">any getActiveUniformBlockParameter(WebGLProgram? program, GLuint uniformBlockIndex, GLenum pname)
+        <dt class="idl-code">any getActiveUniformBlockParameter(WebGLProgram program, GLuint uniformBlockIndex, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetActiveUniformBlockiv.xhtml">man page</a>)</span>
         <dd>
@@ -2867,13 +2868,13 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             value of <code>ACTIVE_UNIFORM_BLOCKS</code>, generates an <code>INVALID_VALUE</code> error.</p>
             <p>If an OpenGL error is generated, returns null.</p>
 
-        <dt class="idl-code">DOMString? getActiveUniformBlockName(WebGLProgram? program, GLuint uniformBlockIndex)
+        <dt class="idl-code">DOMString? getActiveUniformBlockName(WebGLProgram program, GLuint uniformBlockIndex)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glGetActiveUniformBlockName.xhtml">man page</a>)</span>
         <dd>
             Retrieves the name of the active uniform block at <code class="param">uniformBlockIndex</code> within <code class="param">program</code>.
 
-        <dt class="idl-code">void uniformBlockBinding(WebGLProgram? program, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+        <dt class="idl-code">void uniformBlockBinding(WebGLProgram program, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.6">OpenGL ES 3.0.4 &sect;2.11.6</a>,
             <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glUniformBlockBinding.xhtml">man page</a>)</span>
         <dd>

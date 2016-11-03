@@ -526,7 +526,8 @@ interface WebGLRenderingContextBase
                            GLenum srcAlpha, GLenum dstAlpha);
 
     void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
-    void bufferData(GLenum target, BufferDataSource data, GLenum usage);
+    void bufferData(GLenum target, ArrayBuffer? data, GLenum usage);
+    void bufferData(GLenum target, ArrayBufferView data, GLenum usage);
     void bufferSubData(GLenum target, GLintptr offset, BufferDataSource data);
 
     [WebGLHandlesContextLoss] GLenum checkFramebufferStatus(GLenum target);
@@ -635,7 +636,7 @@ interface WebGLRenderingContextBase
     void polygonOffset(GLfloat factor, GLfloat units);
 
     void readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
-                    GLenum format, GLenum type, ArrayBufferView pixels);
+                    GLenum format, GLenum type, ArrayBufferView? pixels);
 
     void renderbufferStorage(GLenum target, GLenum internalformat,
                              GLsizei width, GLsizei height);
@@ -662,7 +663,7 @@ interface WebGLRenderingContextBase
 
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                        GLsizei width, GLsizei height,
-                       GLenum format, GLenum type, ArrayBufferView pixels);
+                       GLenum format, GLenum type, ArrayBufferView? pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                        GLenum format, GLenum type, TexImageSource source); // May throw DOMException
 
