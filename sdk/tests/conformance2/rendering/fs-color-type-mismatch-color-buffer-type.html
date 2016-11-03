@@ -95,17 +95,18 @@ if (!gl) {
 
     init();
 
-    // The sampling texture is bound to COLOR_ATTACHMENT1 during resource allocation
+    // COLOR_ATTACHMENT0 is fixed-point data, which can be convert to float.
+    // COLOR_ATTACHMENT1 is integer data. The fragment output data is float.
     allocate_resource();
 
     gl.useProgram(program0);
     check_type_match([gl.COLOR_ATTACHMENT0, gl.NONE], gl.NO_ERROR);
     check_type_match([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1], gl.NO_ERROR);
-    
+
     gl.useProgram(program1);
     check_type_match([gl.COLOR_ATTACHMENT0, gl.NONE], gl.NO_ERROR);
-    check_type_match([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1], gl.NO_ERROR);
-    
+    check_type_match([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1], gl.INVALID_OPERATION);
+
     gl.useProgram(program2);
     check_type_match([gl.COLOR_ATTACHMENT0, gl.NONE], gl.NO_ERROR);
     check_type_match([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1], gl.INVALID_OPERATION);
@@ -140,7 +141,6 @@ function allocate_resource() {
 function check_type_match(draw_buffers, error) {
     gl.drawBuffers(draw_buffers);
 
-    // Make sure framebuffer is complete before feedback loop detection
     if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
         testFailed("Framebuffer incomplete.");
         return;
