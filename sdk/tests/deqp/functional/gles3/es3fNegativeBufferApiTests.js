@@ -93,12 +93,9 @@ goog.scope(function() {
                 this.expectError(gl.INVALID_VALUE);
 
                 bufferedLogToConsole('An exception is thrown if data is null.');
-                try {
+                this.expectThrowNoError(function() {
                     gl.bufferSubData(gl.ARRAY_BUFFER, 0, null);
-                    this.testFailed("no exception");
-                } catch (e) {
-                    this.expectError(gl.NO_ERROR);
-                }
+                });
 
                 gl.deleteBuffer(buffer);
             }

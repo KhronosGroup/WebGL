@@ -117,12 +117,9 @@ goog.scope(function() {
             /** @type{WebGLProgram} */ var program = gl.createProgram();
 
             bufferedLogToConsole('An exception is thrown if program is null.');
-            try {
+            this.expectThrowNoError(function() {
                 shaders = gl.getAttachedShaders(null);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            });
 
             gl.deleteShader(shaderObject);
             gl.deleteProgram(program);
@@ -138,12 +135,9 @@ goog.scope(function() {
             this.expectError(gl.INVALID_ENUM);
 
             bufferedLogToConsole('An exception is thrown if shader is null.');
-            try {
-                param = /** @type{number} */ (gl.getShaderParameter(null, gl.SHADER_TYPE));
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            this.expectThrowNoError(function() {
+                gl.getShaderParameter(null, gl.SHADER_TYPE);
+            });
 
             gl.deleteShader(shader);
             gl.deleteProgram(program);
@@ -155,12 +149,9 @@ goog.scope(function() {
             /** @type{string} */ var infoLog;
 
             bufferedLogToConsole('An exception is thrown if shader is null.');
-            try {
+            this.expectThrowNoError(function() {
                 infoLog = gl.getShaderInfoLog(null);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            });
 
             gl.deleteShader(shader);
             gl.deleteProgram(program);
@@ -185,12 +176,9 @@ goog.scope(function() {
             /** @type{WebGLShader} */ var shader = gl.createShader(gl.VERTEX_SHADER);
 
             bufferedLogToConsole('An exception is thrown if shader is null.');
-            try {
+            this.expectThrowNoError(function() {
                 source = gl.getShaderSource(null);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            });
 
             gl.deleteProgram(program);
             gl.deleteShader(shader);
@@ -208,12 +196,9 @@ goog.scope(function() {
             this.expectError(gl.INVALID_ENUM);
 
             bufferedLogToConsole('An exception is thrown if program is null.');
-            try {
-                params = /** @type{boolean} */ (gl.getProgramParameter(null, gl.LINK_STATUS));
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            this.expectThrowNoError(function() {
+                gl.getProgramParameter(null, gl.LINK_STATUS);
+            });
 
             gl.deleteProgram(program);
             gl.deleteShader(shader);
@@ -225,12 +210,9 @@ goog.scope(function() {
             /** @type{string} */ var infoLog;
 
             bufferedLogToConsole('An exception is thrown if program is null.');
-            try {
+            this.expectThrowNoError(function() {
                 infoLog = gl.getProgramInfoLog (null);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            });
 
             gl.deleteProgram(program);
             gl.deleteShader(shader);
@@ -266,24 +248,18 @@ goog.scope(function() {
             /** @type{*} */ var params;
 
             bufferedLogToConsole('An exception is thrown if program is null.');
-            try {
+            this.expectThrowNoError(function() {
                 params = gl.getUniform (null, unif);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            });
 
             bufferedLogToConsole('gl.INVALID_OPERATION is generated if program has not been successfully linked.');
             params = gl.getUniform (programEmpty, unif);
             this.expectError(gl.INVALID_OPERATION);
 
             bufferedLogToConsole('An exception is thrown if location is null.');
-            try {
+            this.expectThrowNoError(function() {
                 params = gl.getUniform (program.getProgram(), null);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            });
 
             gl.deleteShader(shader);
             gl.deleteProgram(programEmpty);
@@ -298,12 +274,9 @@ goog.scope(function() {
             bufferedLogToConsole('// gl.ACTIVE_UNIFORMS = ' + numActiveUniforms + ' (expected 4).');
 
             bufferedLogToConsole('An exception is thrown if program is null.');
-            try {
+            this.expectThrowNoError(function() {
                 gl.getActiveUniform(null, 0);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            });
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater than or equal to the number of active uniform variables in program.');
             gl.useProgram(program.getProgram());
@@ -327,12 +300,9 @@ goog.scope(function() {
             bufferedLogToConsole('// gl.ACTIVE_UNIFORMS = ' + numActiveUniforms + ' (expected 4).');
 
             bufferedLogToConsole('An exception is thrown if program is null.');
-            try {
-                dummyParamDst = gl.getActiveUniforms(null, dummyUniformIndex, gl.UNIFORM_TYPE);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            this.expectThrowNoError(function() {
+                gl.getActiveUniforms(null, dummyUniformIndex, gl.UNIFORM_TYPE);
+            });
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if any value in uniformIndices is greater than or equal to the value of gl.ACTIVE_UNIFORMS for program.');
             /** @type{Array<number>} */ var invalidUniformIndices;
@@ -408,12 +378,9 @@ goog.scope(function() {
             gl.useProgram(program.getProgram());
 
             bufferedLogToConsole('An exception is thrown if program is null.');
-            try {
-                activeInfo = gl.getActiveAttrib(null, 0);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            this.expectThrowNoError(function() {
+                gl.getActiveAttrib(null, 0);
+            });
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater than or equal to gl.ACTIVE_ATTRIBUTES.');
             activeInfo = gl.getActiveAttrib(program.getProgram(), numActiveAttributes);
@@ -436,12 +403,9 @@ goog.scope(function() {
             this.expectError (gl.NO_ERROR);
 
             bufferedLogToConsole('An exception is thrown if program is null.');
-            try {
-                uniformIndices = gl.getUniformIndices(null, uniformName);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            this.expectThrowNoError(function() {
+                gl.getUniformIndices(null, uniformName);
+            });
 
             gl.useProgram(null);
             gl.deleteShader(shader);
@@ -635,12 +599,9 @@ goog.scope(function() {
             id = gl.createQuery();
 
             bufferedLogToConsole('An exception is thrown if the query object is null.');
-            try {
+            this.expectThrowNoError(function() {
                 gl.getQueryParameter (null, gl.QUERY_RESULT_AVAILABLE);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError (gl.NO_ERROR);
-            }
+            });
 
             bufferedLogToConsole('// Note: ' + id + ' is not a query object yet, since it hasn\'t been used by gl.beginQuery');
             gl.getQueryParameter (id, gl.QUERY_RESULT_AVAILABLE);
@@ -670,12 +631,9 @@ goog.scope(function() {
             /** @type{WebGLSync} */ var sync;
 
             bufferedLogToConsole('An exception is thrown if sync is null.');
-            try {
+            this.expectThrowNoError(function() {
                 gl.getSyncParameter (null, gl.OBJECT_TYPE);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError (gl.NO_ERROR);
-            }
+            });
 
             bufferedLogToConsole('gl.INVALID_ENUM is generated if pname is not one of the accepted tokens.');
             sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);

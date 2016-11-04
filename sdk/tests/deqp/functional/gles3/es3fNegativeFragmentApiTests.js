@@ -214,12 +214,9 @@ goog.scope(function() {
             this.expectError(gl.NO_ERROR);
 
             bufferedLogToConsole('An exception is thrown if the name is null.');
-            try {
+            this.expectThrowNoError(function() {
                 gl.beginQuery(gl.ANY_SAMPLES_PASSED, null);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            });
 
             bufferedLogToConsole('gl.INVALID_OPERATION is generated if the name has since been deleted with gl.deleteQuery.');
             gl.deleteQuery(ids[2]);
@@ -284,12 +281,9 @@ goog.scope(function() {
             /** @type{WebGLSync} */ var sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
 
             bufferedLogToConsole('An exception is thrown if sync is null.');
-            try {
+            this.expectThrowNoError(function() {
                 gl.waitSync(null, 0, gl.TIMEOUT_IGNORED);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            });
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if flags is not zero.');
             gl.waitSync(sync, 0x0010, gl.TIMEOUT_IGNORED);
@@ -306,12 +300,9 @@ goog.scope(function() {
             /** @type{WebGLSync} */ var sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
 
             bufferedLogToConsole('An exception is thrown if sync is null.');
-            try {
+            this.expectThrowNoError(function() {
                 gl.clientWaitSync (null, 0, 0);
-                this.testFailed("no exception");
-            } catch (e) {
-                this.expectError(gl.NO_ERROR);
-            }
+            });
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if flags contains any unsupported flag.');
             gl.clientWaitSync(sync, 0x00000004, 0);

@@ -386,12 +386,9 @@ goog.scope(function() {
                 this.expectError(gl.INVALID_VALUE);
 
                 bufferedLogToConsole('An exception is thrown if generated if program is null.');
-                try {
+                this.expectThrowNoError(function() {
                     gl.uniformBlockBinding(null, 0, 0);
-                    this.testFailed("no exception");
-                } catch (e) {
-                    this.expectError(gl.NO_ERROR);
-                }
+                });
             }
         ));
 
@@ -1124,12 +1121,9 @@ goog.scope(function() {
                 this.expectError(gl.NO_ERROR);
 
                 bufferedLogToConsole('An exception is thrown if program is null.');
-                try {
+                this.expectThrowNoError(function() {
                     name = gl.getTransformFeedbackVarying(null, 0);
-                    this.testFailed("no exception");
-                } catch (e) {
-                    this.expectError(gl.NO_ERROR);
-                }
+                });
 
                 bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater or equal to the value of gl.TRANSFORM_FEEDBACK_VARYINGS.');
                 maxTransformFeedbackVaryings = /** @type {number} */ (gl.getProgramParameter(program.getProgram(), gl.TRANSFORM_FEEDBACK_VARYINGS));
@@ -1156,12 +1150,9 @@ goog.scope(function() {
                 this.expectError(gl.NO_ERROR);
 
                 bufferedLogToConsole('An exception is thrown if program is null.');
-                try {
+                this.expectThrowNoError(function() {
                     gl.transformFeedbackVaryings(null, tfVarying, gl.INTERLEAVED_ATTRIBS);
-                    this.testFailed("no exception");
-                } catch (e) {
-                    this.expectError(gl.NO_ERROR);
-                }
+                });
 
                 bufferedLogToConsole('gl.INVALID_VALUE is generated if bufferMode is gl.SEPARATE_ATTRIBS and count is greater than gl.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS.');
                 maxTransformFeedbackSeparateAttribs = /** @type {number} */ (gl.getParameter(gl.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS));
