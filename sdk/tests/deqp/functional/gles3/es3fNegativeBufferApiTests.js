@@ -92,9 +92,13 @@ goog.scope(function() {
                 gl.bufferSubData(gl.ARRAY_BUFFER, 15, data);
                 this.expectError(gl.INVALID_VALUE);
 
-                bufferedLogToConsole('gl.INVALID_VALUE is generated if data is null.');
-                gl.bufferSubData(gl.ARRAY_BUFFER, 0, null);
-                this.expectError(gl.INVALID_VALUE);
+                bufferedLogToConsole('An exception is thrown if data is null.');
+                try {
+                    gl.bufferSubData(gl.ARRAY_BUFFER, 0, null);
+                    this.testFailed("no exception");
+                } catch (e) {
+                    this.expectError(gl.NO_ERROR);
+                }
 
                 gl.deleteBuffer(buffer);
             }
