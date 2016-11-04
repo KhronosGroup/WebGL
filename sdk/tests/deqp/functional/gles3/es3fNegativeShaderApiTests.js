@@ -385,7 +385,7 @@ goog.scope(function() {
                 gl.uniformBlockBinding(program.getProgram(), maxUniformBufferBindings, 0);
                 this.expectError(gl.INVALID_VALUE);
 
-                bufferedLogToConsole('An exception is thrown if generated if program is null.');
+                bufferedLogToConsole('An exception is thrown if program is null.');
                 this.expectThrowNoError(function() {
                     gl.uniformBlockBinding(null, 0, 0);
                 });
@@ -1122,7 +1122,7 @@ goog.scope(function() {
 
                 bufferedLogToConsole('An exception is thrown if program is null.');
                 this.expectThrowNoError(function() {
-                    name = gl.getTransformFeedbackVarying(null, 0);
+                    gl.getTransformFeedbackVarying(null, 0);
                 });
 
                 bufferedLogToConsole('gl.INVALID_VALUE is generated if index is greater or equal to the value of gl.TRANSFORM_FEEDBACK_VARYINGS.');

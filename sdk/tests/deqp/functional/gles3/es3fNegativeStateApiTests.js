@@ -112,13 +112,12 @@ goog.scope(function() {
         // Enumerated state queries: Shaders
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('get_attached_shaders', 'Invalid gl.getAttachedShaders() usage', gl, function() {
-            /** @type{Array<WebGLShader>} */ var shaders = [];
             /** @type{WebGLShader} */ var shaderObject = gl.createShader(gl.VERTEX_SHADER);
             /** @type{WebGLProgram} */ var program = gl.createProgram();
 
             bufferedLogToConsole('An exception is thrown if program is null.');
             this.expectThrowNoError(function() {
-                shaders = gl.getAttachedShaders(null);
+                gl.getAttachedShaders(null);
             });
 
             gl.deleteShader(shaderObject);
@@ -146,11 +145,10 @@ goog.scope(function() {
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('get_shader_info_log', 'Invalid gl.getShaderInfoLog() usage', gl, function() {
             /** @type{WebGLShader} */ var shader = gl.createShader(gl.VERTEX_SHADER);
             /** @type{WebGLProgram} */ var program = gl.createProgram();
-            /** @type{string} */ var infoLog;
 
             bufferedLogToConsole('An exception is thrown if shader is null.');
             this.expectThrowNoError(function() {
-                infoLog = gl.getShaderInfoLog(null);
+                gl.getShaderInfoLog(null);
             });
 
             gl.deleteShader(shader);
@@ -171,13 +169,12 @@ goog.scope(function() {
         }));
 
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('get_shader_source', 'Invalid gl.getShaderSource() usage', gl, function() {
-            /** @type{string} */ var source;
             /** @type{WebGLProgram} */ var program = gl.createProgram();
             /** @type{WebGLShader} */ var shader = gl.createShader(gl.VERTEX_SHADER);
 
             bufferedLogToConsole('An exception is thrown if shader is null.');
             this.expectThrowNoError(function() {
-                source = gl.getShaderSource(null);
+                gl.getShaderSource(null);
             });
 
             gl.deleteProgram(program);
@@ -207,11 +204,10 @@ goog.scope(function() {
         testGroup.addChild(new es3fApiCase.ApiCaseCallback('get_program_info_log', 'Invalid gl.getProgramInfoLog() usage', gl, function() {
             /** @type{WebGLProgram} */ var program = gl.createProgram();
             /** @type{WebGLShader} */ var shader = gl.createShader(gl.VERTEX_SHADER);
-            /** @type{string} */ var infoLog;
 
             bufferedLogToConsole('An exception is thrown if program is null.');
             this.expectThrowNoError(function() {
-                infoLog = gl.getProgramInfoLog (null);
+                gl.getProgramInfoLog (null);
             });
 
             gl.deleteProgram(program);
@@ -249,7 +245,7 @@ goog.scope(function() {
 
             bufferedLogToConsole('An exception is thrown if program is null.');
             this.expectThrowNoError(function() {
-                params = gl.getUniform (null, unif);
+                gl.getUniform (null, unif);
             });
 
             bufferedLogToConsole('gl.INVALID_OPERATION is generated if program has not been successfully linked.');
@@ -258,7 +254,7 @@ goog.scope(function() {
 
             bufferedLogToConsole('An exception is thrown if location is null.');
             this.expectThrowNoError(function() {
-                params = gl.getUniform (program.getProgram(), null);
+                gl.getUniform (program.getProgram(), null);
             });
 
             gl.deleteShader(shader);
