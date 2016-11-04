@@ -127,7 +127,7 @@ function setTolerance (testR, testG, testB, value) {
 function clearAndVerifyColor(width, height, testR, testG, testB, value) {
   var data = setupColor(testR, testG, testB, value);
   var tol = setTolerance(testR, testG, testB, value);
-  gl.clearBufferfv(gl.COLOR, gl.DRAWBUFFER0, data);
+  gl.clearBufferfv(gl.COLOR, 0, data);
   var buffer = new Float32Array(width * height * 4);
   gl.readPixels(0, 0, width, height, gl.RGBA, gl.FLOAT, buffer);
   for (var ii = 0; ii < width * height; ++ii) {
@@ -149,7 +149,7 @@ function clearDrawAndVerifyColor(fbo, program, testR, testG, testB, value) {
   debug("Testing : [" + data + "] with tolerance = [" + tol + "]");
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-  gl.clearBufferfv(gl.COLOR, gl.DRAWBUFFER0, data);
+  gl.clearBufferfv(gl.COLOR, 0, data);
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   gl.clearColor(0, 0, 0,1);
