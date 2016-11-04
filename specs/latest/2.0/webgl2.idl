@@ -304,7 +304,8 @@ interface WebGL2RenderingContextBase
   /* Buffer objects */
   // WebGL1:
   void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
-  void bufferData(GLenum target, BufferDataSource srcData, GLenum usage);
+  void bufferData(GLenum target, ArrayBuffer? srcData, GLenum usage);
+  void bufferData(GLenum target, ArrayBufferView srcData, GLenum usage);
   void bufferSubData(GLenum target, GLintptr dstByteOffset, BufferDataSource srcData);
   // WebGL2:
   void bufferData(GLenum target, ArrayBufferView srcData, GLenum usage, GLuint srcOffset,
@@ -350,7 +351,7 @@ interface WebGL2RenderingContextBase
 
   void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                      GLsizei width, GLsizei height,
-                     GLenum format, GLenum type, ArrayBufferView pixels);
+                     GLenum format, GLenum type, ArrayBufferView? pixels);
   void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                      GLenum format, GLenum type, TexImageSource source); // May throw DOMException
 
@@ -392,7 +393,7 @@ interface WebGL2RenderingContextBase
                      TexImageSource source); // May throw DOMException
   void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                      GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type,
-                     ArrayBufferView srcData, optional GLuint srcOffset = 0);
+                     ArrayBufferView? srcData, optional GLuint srcOffset = 0);
 
   void copyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                          GLint x, GLint y, GLsizei width, GLsizei height);
@@ -413,7 +414,8 @@ interface WebGL2RenderingContextBase
                                GLsizei width, GLsizei height, GLenum format, GLintptr offset);
   void compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                                GLsizei width, GLsizei height, GLenum format,
-                               ArrayBufferView srcData, optional GLuint srcOffset = 0,
+                               ArrayBufferView srcData,
+                               optional GLuint srcOffset = 0,
                                optional GLuint srcLengthOverride = 0);
 
   void compressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
@@ -498,7 +500,7 @@ interface WebGL2RenderingContextBase
   /* Reading back pixels */
   // WebGL1:
   void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type,
-                  ArrayBufferView dstData);
+                  ArrayBufferView? dstData);
   // WebGL2:
   void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type,
                   GLintptr offset);
