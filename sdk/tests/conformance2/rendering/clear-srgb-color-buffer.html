@@ -64,14 +64,6 @@ if (!gl) {
     clear_srgb_color_buffer(1);
 }
 
-function checkPixel(color, expectedColor) {
-    var tolerance = 3;
-    return (Math.abs(color[0] - expectedColor[0]) <= tolerance &&
-            Math.abs(color[1] - expectedColor[1]) <= tolerance &&
-            Math.abs(color[2] - expectedColor[2]) <= tolerance &&
-            Math.abs(color[3] - expectedColor[3]) <= tolerance);
-}
-
 function init() {
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.SRGB8_ALPHA8, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
@@ -100,22 +92,8 @@ function clear_srgb_color_buffer(iter) {
         gl.clearBufferfv(gl.COLOR, 0, data);
     }
 
-    // Read pixels and compare
-    var pixels = new Uint8Array(size * size * 4);
-    gl.readPixels(0, 0, size, size, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-
     var color_ref = wtu.linearToSRGB(color);
-    for (var ii = 0; ii < size; ++ii) {
-        for (var jj = 0; jj < size; ++jj) {
-            var index = (ii * size + jj ) * 4;
-            var pix = [pixels[index], pixels[index + 1], pixels[index + 2], pixels[index + 3]];
-            if (checkPixel(pix, color_ref) == true) {
-                testPassed("pixel at [" + jj + ", " + ii + "] is (" + pix + "). It is correct!");
-            } else {
-                testFailed("pixel at [" + jj + ", " + ii + "] should be (" + color_ref + "), but the actual color is (" + pix + ")");
-            }
-        }
-    }
+    wtu.checkCanvasRect(gl, 0, 0, size, size, color_ref);
 }
 
 gl.bindTexture(gl.TEXTURE_2D, null);
