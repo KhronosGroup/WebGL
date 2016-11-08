@@ -160,22 +160,23 @@ var TexImageUtils = (function() {
    * A fragment shader for a single 3D texture.
    * @type {string}
    */
-  // Note we always set the tex coordinate t to 0.
+  // Note that the tex coordinate r (the uniform uRCoord) is set to 0.0 by default.
   var simple3DTextureFragmentShaderES3 = [
     '#version 300 es',
     'precision mediump float;',
     'uniform mediump sampler3D tex;',
     'in vec2 texCoord;',
+    'uniform float uRCoord;',
     'out vec4 fragData;',
     'void main() {',
-    '    fragData = vec4(texture(tex, vec3(texCoord, 0.0)).rgb, 1.0);',
+    '    fragData = vec4(texture(tex, vec3(texCoord, uRCoord)).rgb, 1.0);',
     '}'].join('\n');
 
   /**
    * A fragment shader for a single 3D unsigned integer texture.
    * @type {string}
    */
-  // Note we always set the tex coordinate t to 0.
+  // Note that the tex coordinate r (the uniform uRCoord) is set to 0.0 by default.
   // Note we always output 1.0 for alpha because if the texture does not contain
   // alpha channel, sampling returns 1; for RGBA textures, sampling returns [0,255].
   var simple3DUintTextureFragmentShaderES3 = [
@@ -183,9 +184,10 @@ var TexImageUtils = (function() {
     'precision mediump float;',
     'uniform mediump usampler3D tex;',
     'in vec2 texCoord;',
+    'uniform float uRCoord;',
     'out vec4 fragData;',
     'void main() {',
-    '    uvec4 data = texture(tex, vec3(texCoord, 0.0));',
+    '    uvec4 data = texture(tex, vec3(texCoord, uRCoord));',
     '    fragData = vec4(float(data[0])/255.0,',
     '                    float(data[1])/255.0,',
     '                    float(data[2])/255.0,',
@@ -196,7 +198,7 @@ var TexImageUtils = (function() {
    * A fragment shader for a single 3D signed integer texture.
    * @type {string}
    */
-  // Note we always set the tex coordinate t to 0.
+  // Note that the tex coordinate r (the uniform uRCoord) is set to 0.0 by default.
   // Note we always output 1.0 for alpha because if the texture does not contain
   // alpha channel, sampling returns 1; for RGBA textures, sampling returns [0,255].
   var simple3DIntTextureFragmentShaderES3 = [
@@ -204,9 +206,10 @@ var TexImageUtils = (function() {
     'precision mediump float;',
     'uniform mediump isampler3D tex;',
     'in vec2 texCoord;',
+    'uniform float uRCoord;',
     'out vec4 fragData;',
     'void main() {',
-    '    ivec4 data = texture(tex, vec3(texCoord, 0.0));',
+    '    ivec4 data = texture(tex, vec3(texCoord, uRCoord));',
     '    fragData = vec4(float(data[0])/255.0,',
     '                    float(data[1])/255.0,',
     '                    float(data[2])/255.0,',
@@ -217,22 +220,25 @@ var TexImageUtils = (function() {
    * A fragment shader for a single 2D_ARRAY texture.
    * @type {string}
    */
-  // Note we always use the first image in the array.
+  // Note that the first image in the array (selected by the uniform
+  // uRCoord) is used by default.
   var simple2DArrayTextureFragmentShaderES3 = [
     '#version 300 es',
     'precision mediump float;',
     'uniform mediump sampler2DArray tex;',
     'in vec2 texCoord;',
+    'uniform float uRCoord;',
     'out vec4 fragData;',
     'void main() {',
-    '    fragData = vec4(texture(tex, vec3(texCoord, 0.0)).rgb, 1.0);',
+    '    fragData = vec4(texture(tex, vec3(texCoord, uRCoord)).rgb, 1.0);',
     '}'].join('\n');
 
   /**
    * A fragment shader for a single 2D_ARRAY unsigned integer texture.
    * @type {string}
    */
-  // Note we always use the first image in the array.
+  // Note that the first image in the array (selected by the uniform
+  // uRCoord) is used by default.
   // Note we always output 1.0 for alpha because if the texture does not contain
   // alpha channel, sampling returns 1; for RGBA textures, sampling returns [0,255].
   var simple2DArrayUintTextureFragmentShaderES3 = [
@@ -240,9 +246,10 @@ var TexImageUtils = (function() {
     'precision mediump float;',
     'uniform mediump usampler2DArray tex;',
     'in vec2 texCoord;',
+    'uniform float uRCoord;',
     'out vec4 fragData;',
     'void main() {',
-    '    uvec4 data = texture(tex, vec3(texCoord, 0.0));',
+    '    uvec4 data = texture(tex, vec3(texCoord, uRCoord));',
     '    fragData = vec4(float(data[0])/255.0,',
     '                    float(data[1])/255.0,',
     '                    float(data[2])/255.0,',
@@ -253,7 +260,8 @@ var TexImageUtils = (function() {
    * A fragment shader for a single 2D_ARRAY signed integer texture.
    * @type {string}
    */
-  // Note we always use the first image in the array.
+  // Note that the first image in the array (selected by the uniform
+  // uRCoord) is used by default.
   // Note we always output 1.0 for alpha because if the texture does not contain
   // alpha channel, sampling returns 1; for RGBA textures, sampling returns [0,255].
   var simple2DArrayIntTextureFragmentShaderES3 = [
@@ -261,9 +269,10 @@ var TexImageUtils = (function() {
     'precision mediump float;',
     'uniform mediump isampler2DArray tex;',
     'in vec2 texCoord;',
+    'uniform float uRCoord;',
     'out vec4 fragData;',
     'void main() {',
-    '    ivec4 data = texture(tex, vec3(texCoord, 0.0));',
+    '    ivec4 data = texture(tex, vec3(texCoord, uRCoord));',
     '    fragData = vec4(float(data[0])/255.0,',
     '                    float(data[1])/255.0,',
     '                    float(data[2])/255.0,',
@@ -771,6 +780,8 @@ var TexImageUtils = (function() {
       program = setupSimple3DIntTextureProgram(gl);
     else
       program = setupSimple3DTextureProgram(gl);
+    var uRCoordLoc = gl.getUniformLocation(program, 'uRCoord');
+    gl.uniform1f(uRCoordLoc, 0.0);
     wtu.setupUnitQuad(gl);
     return program;
   };
@@ -791,6 +802,8 @@ var TexImageUtils = (function() {
       program = setupSimple2DArrayIntTextureProgram(gl);
     else
       program = setupSimple2DArrayTextureProgram(gl);
+    var uRCoordLoc = gl.getUniformLocation(program, 'uRCoord');
+    gl.uniform1f(uRCoordLoc, 0.0);
     wtu.setupUnitQuad(gl);
     return program;
   };
