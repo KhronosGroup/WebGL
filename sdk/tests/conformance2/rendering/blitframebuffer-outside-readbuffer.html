@@ -53,7 +53,7 @@ function checkPixel(color, expectedColor) {
   return (Math.abs(color[0] - expectedColor[0]) <= tolerance &&
           Math.abs(color[1] - expectedColor[1]) <= tolerance &&
           Math.abs(color[2] - expectedColor[2]) <= tolerance &&
-          Math.abs(color[3] - expectedColor[3]) <= tolerance);;
+          Math.abs(color[3] - expectedColor[3]) <= tolerance);
 }
 
 function blitframebuffer_outside_readbuffer(readbufferFormat, drawbufferFormat) {

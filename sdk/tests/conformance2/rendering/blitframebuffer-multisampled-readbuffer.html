@@ -83,21 +83,6 @@ function blitframebuffer_helper(readbufferFormat, drawbufferFormat, filter) {
 
     gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.COLOR_BUFFER_BIT, filter);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "blitframebuffer should succeed");
-
-    // Read pixels for comparison
-    var pixels = new Uint8Array(size * size * 4);
-    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_blit);
-    gl.readPixels(0, 0, size, size, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "readpixels should succeed");
-    return pixels;
-}
-
-function checkPixel(color, expectedColor) {
-  var tolerance = 3;
-  return (Math.abs(color[0] - expectedColor[0]) <= tolerance &&
-          Math.abs(color[1] - expectedColor[1]) <= tolerance &&
-          Math.abs(color[2] - expectedColor[2]) <= tolerance &&
-          Math.abs(color[3] - expectedColor[3]) <= tolerance);;
 }
 
 function blitframebuffer_multisampled_readbuffer(readbufferFormat, drawbufferFormat, filter) {
@@ -124,24 +109,12 @@ function blitframebuffer_multisampled_readbuffer(readbufferFormat, drawbufferFor
     gl.useProgram(program);
     wtu.drawFloatColorQuad(gl, color);
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fb0);
-    var pixels = blitframebuffer_helper(readbufferFormat, drawbufferFormat, filter);
+    blitframebuffer_helper(readbufferFormat, drawbufferFormat, filter);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Blit from a multi-sampled srgb image to a srgb image should succeed");
 
     // Compare
-    var failed = false;
-    for (var ii = 0; ii < size; ++ii) {
-        for (var jj = 0; jj < size; ++jj) {
-            var index = (ii * size + jj) * 4;
-            var color = [pixels[index], pixels[index + 1], pixels[index + 2], pixels[index + 3]];
-            if (checkPixel(color, expectedColor) == false) {
-                failed = true;
-                debug("pixel at [" + jj + ", " + ii + "] should be (" + expectedColor + "), but the actual color is (" + color + ")");
-            }
-        }
-    }
-    if (failed == false) {
-        testPassed("All pixels comparision can pass!");
-    }
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_blit);
+    wtu.checkCanvasRect(gl, 0, 0, size, size, expectedColor);
 }
 
 gl.bindTexture(gl.TEXTURE_2D, null);
