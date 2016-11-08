@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proposal href="proposals/OES_EGL_image_external/">
+  <name>OES_EGL_image_external</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Byungseon Shin (sun.shin 'at' lge.com)</contributor>
+    <contributor>Andrey Volykhin (andrey.volykhin 'at' lge.com)</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>NN</number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt"
+             name="OES_EGL_image_external">
+      <addendum>Defines a new texture target <code>TEXTURE_EXTERNAL_OES</code>.</addendum>
+      <addendum>Provides a mechanism for binding <code>HTMLVideoElement</code>'s EGLImage to external texture targets.</addendum>
+    </mirrors>
+
+    <features>
+      <feature>Add support for <code>OES_EGL_image_external</code> texture
+      binding of HTMLVideoElement.</feature>
+
+      <glsl extname="OES_EGL_image_external">
+        <stage type="fragment"/>
+        <type name="samplerExternalOES"/>
+
+        <function name="texture2D" type="vec4">
+          <param name="sampler" type="samplerExternalOES"/>
+
+          <param name="coord" type="vec2"/>
+        </function>
+
+      </glsl>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+[NoInterfaceObject]
+interface OES_EGL_image_external {
+    const GLenum TEXTURE_EXTERNAL_OES             = 0x8D65;
+    const GLenum SAMPLER_EXTERNAL_OES             = 0x8D66;
+    const GLenum TEXTURE_BINDING_EXTERNAL_OES     = 0x8D67;
+    const GLenum REQUIRED_TEXTURE_IMAGE_UNITS_OES = 0x8D68;
+
+    [RaisesException] void EGLImageTargetTexture2DOES(
+        GLenum target, HTMLVideoElement video);
+};
+  </idl>
+
+  <samplecode xml:space="preserve">
+
+    <p> This a fragment shader that samples a video texture.</p>
+    <pre>
+    #extension GL_OES_EGL_image_external : require
+    precision mediump float;
+    varying vec2 v_texCoord;
+
+    uniform samplerExternalOES uSampler;
+
+    void main(void) {
+      gl_FragColor = texture2D(uSampler, v_texCoord);
+    }
+    </pre>
+
+    <p> This shows application that renders video using proposed extension.  </p>
+    <pre>
+    var videoElement = document.getElementById("video");
+    var videoTexture = gl.createTexture();
+
+    function update() {
+        var ext = gl.getExtension('OES_EGL_image_external');
+        if(ext !=== null){
+            gl.bindTexture(ext.TEXTURE_EXTERNAL_OES, videoTexture);
+            ext.EGLImageTargetTexture2DOES(ext.TEXTURE_EXTERNAL_OES, videoElement);
+            gl.bindTexture(ext.TEXTURE_EXTERNAL_OES, null);
+        }
+    }
+
+    function render() {
+        gl.clearColor(0.0, 0.0, 1.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+        gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(ext.TEXTURE_EXTERNAL_OES, videoTexture);
+        gl.uniform1i(gl.getUniformLocation(shaderProgram, "uSampler"), 0);
+
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+    </pre>
+
+    <p> Application renders each video frames into WebGL canvas based on game-loop pattern. </p>
+    <pre>
+    update();
+
+    while (true) {
+       processInput();
+       render();
+    }
+    </pre>
+
+  </samplecode>
+
+  <tests/>
+
+  <issues/>
+
+  <history>
+    <revision date="2016/11/05">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</proposal>
