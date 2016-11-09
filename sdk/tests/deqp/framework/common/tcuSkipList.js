@@ -118,6 +118,7 @@ goog.scope(function() {
         _skip("blit.rect.nearest_consistency_out_of_bounds_min_reverse_src_x");
         _skip("blit.rect.nearest_consistency_out_of_bounds_min_reverse_src_y");
 
+        _setReason("Tricky blit rects can result in imperfect copies on Mac Intel driver.");
         // crbug.com/658724
         // deqp/functional/gles3/framebufferblit/rect_03.html
         _skip("blit.rect.nearest_consistency_mag_reverse_src_dst_y");
