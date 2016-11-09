@@ -34,5 +34,6 @@ texture-offset-out-of-range.html
 --min-version 2.0.1 unary-minus-operator-in-dynamic-loop.html
 uniform-block-layouts.html
 uniform-location-length-limits.html
+valid-invariant.html
 vector-dynamic-indexing.html
 --min-version 2.0.1 vector-dynamic-indexing-nv-driver-bug.html
