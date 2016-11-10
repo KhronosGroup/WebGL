@@ -137,9 +137,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         for (var tt = 0; tt < targets.length; ++tt) {
             if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-                if (sourceSubRectangle)
-                    continue;
-
                 gl.uniform1i(loc, targets[tt]);
             }
 
