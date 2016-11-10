@@ -236,7 +236,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         if (wtu.getDefault3DContextVersion() > 1) {
             var morecases = [];
-            // make 4 copies of the original case, one for each corner
+            // Make 2 copies of the original case: top left and bottom right 1x1 rectangles
             for (var i = 0; i < cases.length; i++) {
                 for (var subX = 0; subX <= 1; subX++) {
                     var subY = subX == 0 ? 1 : 0;
