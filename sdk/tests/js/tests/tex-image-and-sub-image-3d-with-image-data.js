@@ -99,9 +99,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, premultiplyAlpha);
         // Upload the image into the texture
         // Initialize the texture to black first
-        gl.texImage3D(bindingTarget, 0, gl[internalFormat], imageData.width, imageData.height, 1 /* depth */, 0,
-                      gl[pixelFormat], gl[pixelType], null);
-        gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, gl[pixelFormat], gl[pixelType], imageData);
+        var uploadWidth = imageData.width;
+        var uploadHeight = imageData.height;
+        var depth = 1;
+        gl.texImage3D(bindingTarget, 0, gl[internalFormat], uploadWidth, uploadHeight, depth, 0, gl[pixelFormat], gl[pixelType], null);
+        gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, uploadWidth, uploadHeight, depth, gl[pixelFormat], gl[pixelType], imageData);
 
         var width = gl.canvas.width;
         var halfWidth = Math.floor(width / 2);
