@@ -69,12 +69,13 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function runOneIteration(useTexSubImage3D, flipY, premultiplyAlpha, bindingTarget,
-                             depth, sourceSubRectangle, unpackImageHeight, program)
+                             depth, sourceSubRectangle, rTexCoord, unpackImageHeight, program)
     {
-        var expected = simulate(flipY, premultiplyAlpha, depth, sourceSubRectangle, unpackImageHeight);
+        var expected = simulate(flipY, premultiplyAlpha, depth, sourceSubRectangle, rTexCoord, unpackImageHeight);
         var sourceSubRectangleString = '';
         if (sourceSubRectangle) {
             sourceSubRectangleString = ', sourceSubRectangle=' + sourceSubRectangle;
+            sourceSubRectangleString += ', rTexCoord=' + rTexCoord;
         }
         debug('');
         debug('Testing ' + (useTexSubImage3D ? 'texSubImage3D' : 'texImage3D') +
@@ -105,6 +106,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             uploadWidth = sourceSubRectangle[2];
             uploadHeight = sourceSubRectangle[3];
         }
+        if (unpackImageHeight) {
+            gl.pixelStorei(gl.UNPACK_IMAGE_HEIGHT, unpackImageHeight);
+        }
         // Upload the image into the texture
         if (useTexSubImage3D) {
             var allocatedHeight = uploadHeight;
@@ -131,6 +135,12 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var bl = expected[1][0];
         var br = expected[1][1];
 
+        var rCoordLocation = gl.getUniformLocation(program, 'uRCoord');
+        if (!rCoordLocation) {
+            testFailed("Shader incorrectly set up; couldn't find uRCoord uniform");
+            return;
+        }
+        gl.uniform1f(rCoordLocation, rTexCoord);
         // Draw the triangles
         wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
 
@@ -174,7 +184,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         finishTest();
     }
 
-    function simulate(flipY, premultiplyAlpha, depth, sourceSubRectangle, unpackImageHeight) {
+    function simulate(flipY, premultiplyAlpha, depth, sourceSubRectangle, rTexCoord, unpackImageHeight) {
         // NOTE: depth and unpackImageHeight are not actually simulated, so
         // new test cases with different values may not actually work.
         var ro = [255, 0, 0];   var rt = premultiplyAlpha ? [0, 0, 0] : [255, 0, 0];
@@ -205,44 +215,38 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
           default:
             break;
         }
-        var expected2;
+
         if (flipY) {
-            expected2 = [];
-            for (var row = 0; row < 4; row++) {
-                expected2[row] = expected[3 - row];
-            }
-        } else {
-            expected2 = expected;
+            expected.reverse();
         }
-        expected = expected2;
+
         if (sourceSubRectangle) {
-            expected2 = [];
-            for (var row = 0; row < sourceSubRectangle[3]; row++) {
+            let expected2 = [];
+            for (var row = 0; row < unpackImageHeight; row++) {
                 expected2[row] = [];
                 for (var col = 0; col < sourceSubRectangle[2]; col++) {
                     expected2[row][col] =
-                        expected[sourceSubRectangle[1] + row][sourceSubRectangle[0] + col];
+                        expected[sourceSubRectangle[1] + row + rTexCoord * unpackImageHeight][sourceSubRectangle[0] + col];
                 }
             }
+            expected = expected2;
         }
-        expected = expected2;
+
         return expected;
     }
 
     function runTestOnBindingTarget(bindingTarget, program) {
         var rects = [
+            undefined,
             [0, 0, 2, 4],
             [2, 0, 2, 4],
-            [0, 2, 4, 2],
         ];
         // NOTE: depth and unpackImageHeight are not actually simulated, so
         // new test cases with different values may not actually work.
-        var depth = 2;
-        var unpackImageHeight = 2;
-        var dbg = false;
+        var dbg = true;
         if (dbg) {
             (function() {
-                debug("Original ImageData:");
+                debug("Original ImageData (transparent pixels appear black):");
                 var cvs = document.createElement("canvas");
                 cvs.width = 4;
                 cvs.height = 4;
@@ -259,16 +263,21 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         for (const sub of [false, true]) {
             for (const flipY of [false, true]) {
                 for (const premul of [false, true]) {
-                    for (var irect = 0; irect < rects.length; irect++) {
+                    for (let irect = 0; irect < rects.length; irect++) {
                         var rect = rects[irect];
-                        runOneIteration(sub, flipY, premul, bindingTarget,
-                                depth, rect, unpackImageHeight, program);
-                        if (dbg) {
-                            debug("Actual:");
-                            var img = document.createElement("img");
-                            img.src = gl.canvas.toDataURL("image/png");
-                            var output = document.getElementById("console");
-                            output.appendChild(img);
+                        for (let rTexCoord = 0; rTexCoord < (rect ? 2 : 1); rTexCoord++) {
+                            let depth = rect ? 2 : 1;
+                            let unpackImageHeight = rect ? 2 : 0;
+                            runOneIteration(sub, flipY, premul, bindingTarget,
+                                    depth, rect, rTexCoord, unpackImageHeight,
+                                    program);
+                            if (dbg) {
+                                debug("Actual:");
+                                var img = document.createElement("img");
+                                img.src = gl.canvas.toDataURL("image/png");
+                                var output = document.getElementById("console");
+                                output.appendChild(img);
+                            }
                         }
                     }
                 }
