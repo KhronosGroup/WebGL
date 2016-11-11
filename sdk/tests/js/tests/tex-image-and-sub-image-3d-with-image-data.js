@@ -150,6 +150,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var expectedW = expected[0].length;
         var texelH = Math.floor(gl.canvas.height / expectedH);
         var texelW = Math.floor(gl.canvas.width / expectedW);
+        // For each entry of the expected[][] array, check the appropriate
+        // canvas rectangle for correctness.
         for (var row = 0; row < expectedH; row++) {
             var y = row * texelH;
             for (var col = 0; col < expectedW; col++) {
@@ -173,6 +175,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function simulate(flipY, premultiplyAlpha, depth, sourceSubRectangle, unpackImageHeight) {
+        // NOTE: depth and unpackImageHeight are not actually simulated, so
+        // new test cases with different values may not actually work.
         var ro = [255, 0, 0];   var rt = premultiplyAlpha ? [0, 0, 0] : [255, 0, 0];
         var go = [0, 255, 0];   var gt = premultiplyAlpha ? [0, 0, 0] : [0, 255, 0];
         var bo = [0, 0, 255];   var bt = premultiplyAlpha ? [0, 0, 0] : [0, 0, 255];
@@ -229,7 +233,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var rects = [
             [0, 0, 2, 4],
             [2, 0, 2, 4],
+            [0, 2, 4, 2],
         ];
+        // NOTE: depth and unpackImageHeight are not actually simulated, so
+        // new test cases with different values may not actually work.
         var depth = 2;
         var unpackImageHeight = 2;
         var dbg = false;
@@ -254,7 +261,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                 for (const premul of [false, true]) {
                     for (var irect = 0; irect < rects.length; irect++) {
                         var rect = rects[irect];
-                        runOneIteration(sub, flipY, premul, bindingTarget, depth, rect, unpackImageHeight, program);
+                        runOneIteration(sub, flipY, premul, bindingTarget,
+                                depth, rect, unpackImageHeight, program);
                         if (dbg) {
                             debug("Actual:");
                             var img = document.createElement("img");
