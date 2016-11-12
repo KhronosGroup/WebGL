@@ -113,6 +113,7 @@ function runSanityTests() {
     query = ext.createQueryEXT();
     shouldBe("ext.isQueryEXT(query)", "false");
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Query creation must succeed.");
+    shouldThrow("ext.beginQueryEXT(ext.TIMESTAMP_EXT, null)");
     ext.beginQueryEXT(ext.TIMESTAMP_EXT, query);
     wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Beginning a timestamp query should fail.");
     ext.beginQueryEXT(ext.TIME_ELAPSED_EXT, query);
@@ -127,6 +128,7 @@ function runSanityTests() {
     shouldBe("ext.getQueryEXT(ext.TIME_ELAPSED_EXT, ext.CURRENT_QUERY_EXT)", "query");
     ext.endQueryEXT(ext.TIME_ELAPSED_EXT);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Ending an active time elapsed query should succeed.");
+    shouldThrow("ext.getQueryObjectEXT(null, ext.QUERY_RESULT_AVAILABLE_EXT)");
     ext.getQueryObjectEXT(query, ext.QUERY_RESULT_AVAILABLE_EXT);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Fetching query result availability after query end should succeed.");
     ext.endQueryEXT(ext.TIME_ELAPSED_EXT);
@@ -144,6 +146,7 @@ function runSanityTests() {
     debug("");
     debug("Testing timestamp counter");
     query = ext.createQueryEXT();
+    shouldThrow("ext.queryCounterEXT(null, ext.TIMESTAMP_EXT)");
     ext.queryCounterEXT(query, ext.TIMESTAMP_EXT);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Timestamp counter queries should work.");
     ext.deleteQueryEXT(query);
