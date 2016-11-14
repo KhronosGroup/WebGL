@@ -117,7 +117,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             }
 
             // Initialize the texture to black first
-            gl.texImage3D(bindingTarget, 0, gl[internalFormat], uploadWidth, uploadHeight, depth, 0,
+            gl.texImage3D(bindingTarget, 0, gl[internalFormat], uploadWidth, allocatedHeight, depth, 0,
                           gl[pixelFormat], gl[pixelType], null);
             gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, uploadWidth, uploadHeight, depth,
                              gl[pixelFormat], gl[pixelType], imageData);
@@ -185,8 +185,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function simulate(flipY, premultiplyAlpha, depth, sourceSubRectangle, rTexCoord, unpackImageHeight) {
-        // NOTE: depth and unpackImageHeight are not actually simulated, so
-        // new test cases with different values may not actually work.
         var ro = [255, 0, 0];   var rt = premultiplyAlpha ? [0, 0, 0] : [255, 0, 0];
         var go = [0, 255, 0];   var gt = premultiplyAlpha ? [0, 0, 0] : [0, 255, 0];
         var bo = [0, 0, 255];   var bt = premultiplyAlpha ? [0, 0, 0] : [0, 0, 255];
@@ -241,17 +239,16 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             [0, 0, 2, 4],
             [2, 0, 2, 4],
         ];
-        // NOTE: depth and unpackImageHeight are not actually simulated, so
-        // new test cases with different values may not actually work.
-        var dbg = true;
+        var dbg = false;  // Set to true for debug output images
         if (dbg) {
             (function() {
+                debug("");
                 debug("Original ImageData (transparent pixels appear black):");
                 var cvs = document.createElement("canvas");
                 cvs.width = 4;
                 cvs.height = 4;
-                cvs.style.width = "64px";
-                cvs.style.height = "64px";
+                cvs.style.width = "32px";
+                cvs.style.height = "32px";
                 cvs.style.imageRendering = "pixelated";
                 cvs.style.background = "#000";
                 var ctx = cvs.getContext("2d");
@@ -265,8 +262,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                 for (const premul of [false, true]) {
                     for (let irect = 0; irect < rects.length; irect++) {
                         var rect = rects[irect];
-                        for (let rTexCoord = 0; rTexCoord < (rect ? 2 : 1); rTexCoord++) {
-                            let depth = rect ? 2 : 1;
+                        let depth = rect ? 2 : 1;
+                        for (let rTexCoord = 0; rTexCoord < depth; rTexCoord++) {
                             let unpackImageHeight = rect ? 2 : 0;
                             runOneIteration(sub, flipY, premul, bindingTarget,
                                     depth, rect, rTexCoord, unpackImageHeight,
