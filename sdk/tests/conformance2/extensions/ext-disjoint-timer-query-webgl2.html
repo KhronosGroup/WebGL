@@ -155,6 +155,7 @@ function runSanityTests() {
     debug("");
     debug("Testing timestamp counter");
     query = gl.createQuery();
+    shouldThrow("ext.queryCounterEXT(null, ext.TIMESTAMP_EXT)");
     ext.queryCounterEXT(query, ext.TIMESTAMP_EXT);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Timestamp counter queries should work.");
     gl.deleteQuery(query);

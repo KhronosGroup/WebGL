@@ -65,11 +65,11 @@ interface EXT_disjoint_timer_query {
   WebGLTimerQueryEXT? createQueryEXT();
   void deleteQueryEXT(WebGLTimerQueryEXT? query);
   [WebGLHandlesContextLoss] boolean isQueryEXT(WebGLTimerQueryEXT? query);
-  void beginQueryEXT(enum target, WebGLTimerQueryEXT? query);
+  void beginQueryEXT(enum target, WebGLTimerQueryEXT query);
   void endQueryEXT(enum target);
-  void queryCounterEXT(WebGLTimerQueryEXT? query, enum target);
+  void queryCounterEXT(WebGLTimerQueryEXT query, enum target);
   any getQueryEXT(enum target, enum pname);
-  any getQueryObjectEXT(WebGLTimerQueryEXT? query, enum pname);
+  any getQueryObjectEXT(WebGLTimerQueryEXT query, enum pname);
 };
   </idl>
 
