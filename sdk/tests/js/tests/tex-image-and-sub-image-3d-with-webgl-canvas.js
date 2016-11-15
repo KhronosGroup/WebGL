@@ -85,7 +85,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
       ctx.canvas.height = 2;
       setCanvasToRedGreen(ctx);
     }
-  
+
     function runOneIteration(canvas, flipY, program, bindingTarget, opt_texture)
     {
         debug('Testing ' + flipY + ' bindingTarget=' + (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY') +
