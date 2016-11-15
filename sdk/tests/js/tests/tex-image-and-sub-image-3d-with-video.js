@@ -103,7 +103,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         gl.texImage3D(bindingTarget, 0, gl[internalFormat],
                       width, height, 1 /* depth */, 0,
                       gl[pixelFormat], gl[pixelType], null);
-        gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, gl[pixelFormat], gl[pixelType], videoElement);
+        gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, width, height, 1, gl[pixelFormat], gl[pixelType], videoElement);
 
         var c = document.createElement("canvas");
         c.width = 16;
