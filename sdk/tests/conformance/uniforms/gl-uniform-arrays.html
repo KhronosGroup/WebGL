@@ -437,7 +437,7 @@ function testUniformOptimizationIssues(testIndex) {
   var name = test.arrayName + "[" + test.usedUniformVector + "]";
   var uniformLocation = gl.getUniformLocation(program, name);
   gl.uniform4fv(uniformLocation, test.color);
-  wtu.setupIndexedQuad(gl, 1, positionLoc);
+  wtu.setupIndexedQuad(gl, 1);
   wtu.clearAndDrawIndexedQuad(gl, 1);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 
