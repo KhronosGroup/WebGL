@@ -94,6 +94,27 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
               ' with flipY=' + flipY + ' and premultiplyAlpha=' + premultiplyAlpha +
               ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP') +
               sourceSubRectangleString);
+
+        var loc;
+        var skipCorner = false;
+        if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
+            loc = gl.getUniformLocation(program, "face");
+            switch (gl[pixelFormat]) {
+              case gl.RED_INTEGER:
+              case gl.RG_INTEGER:
+              case gl.RGB_INTEGER:
+              case gl.RGBA_INTEGER:
+                // https://github.com/KhronosGroup/WebGL/issues/1819
+                skipCorner = true;
+                break;
+            }
+        }
+
+        if (skipCorner && expected.length == 1 && (flipY ^ sourceSubRectangle[1] == 0)) {
+            debug("Test skipped, see WebGL#1819");
+            return;
+        }
+
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Enable writes to the RGBA channels
         gl.colorMask(1, 1, 1, 0);
@@ -171,21 +192,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             tr = expected[1];
             bl = expected[2];
             br = expected[3];
-        }
-
-        var loc;
-        var skipCorner = false;
-        if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-            loc = gl.getUniformLocation(program, "face");
-            switch (gl[pixelFormat]) {
-              case gl.RED_INTEGER:
-              case gl.RG_INTEGER:
-              case gl.RGB_INTEGER:
-              case gl.RGBA_INTEGER:
-                // https://github.com/KhronosGroup/WebGL/issues/1819
-                skipCorner = true;
-                break;
-            }
         }
 
         for (var tt = 0; tt < targets.length; ++tt) {
