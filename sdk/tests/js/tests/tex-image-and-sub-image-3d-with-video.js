@@ -77,9 +77,12 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         runTest();
     }
 
-    function runOneIteration(videoElement, flipY, topColor, bottomColor, program, bindingTarget)
+    function runOneIteration(videoElement, flipY, useTexSubImage3D, topColor, bottomColor, program, bindingTarget,
+                             depth, sourceSubRectangle, unpackImageHeight, rTextureCoord)
     {
-        debug('Testing ' + ' with flipY=' + flipY + ' bindingTarget=' +
+        debug('Testing ' +
+              (useTexSubImage3D ? "texSubImage3D" : "texImage3D") +
+              ' with flipY=' + flipY + ' bindingTarget=' +
               (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Disable any writes to the alpha channel
@@ -96,14 +99,40 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         // Set up pixel store parameters
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+        gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
+        var uploadWidth = videoElement.width;
+        var uploadHeight = videoElement.height;
+        if (sourceSubRectangle) {
+            gl.pixelStorei(gl.UNPACK_SKIP_PIXELS, sourceSubRectangle[0]);
+            gl.pixelStorei(gl.UNPACK_SKIP_ROWS, sourceSubRectangle[1]);
+            uploadWidth = sourceSubRectangle[2];
+            uploadHeight = sourceSubRectangle[3];
+        }
+        if (unpackImageHeight) {
+            gl.pixelStorei(gl.UNPACK_IMAGE_HEIGHT, unpackImageHeight);
+        }
         // Upload the videoElement into the texture
-        // Initialize the texture to black first
-        var width = videoElement.videoWidth;
-        var height = videoElement.videoHeight;
-        gl.texImage3D(bindingTarget, 0, gl[internalFormat],
-                      width, height, 1 /* depth */, 0,
-                      gl[pixelFormat], gl[pixelType], null);
-        gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, width, height, 1, gl[pixelFormat], gl[pixelType], videoElement);
+        if (useTexSubImage3D) {
+            var allocatedHeight = uploadHeight;
+            if (unpackImageHeight) {
+                allocatedHeight = unpackImageHeight;
+            }
+
+            // Initialize the texture to black first
+            gl.texImage3D(bindingTarget, 0, gl[internalFormat],
+                          uploadWidth, allocatedHeight, depth, 0,
+                          gl[pixelFormat], gl[pixelType], null);
+            gl.texSubImage3D(bindingTarget, 0, 0, 0, 0,
+                             uploadWidth, uploadHeight, depth,
+                             gl[pixelFormat], gl[pixelType], videoElement);
+        } else {
+            gl.texImage3D(bindingTarget, 0, gl[internalFormat],
+                          uploadWidth, uploadHeight, depth, 0,
+                          gl[pixelFormat], gl[pixelType], videoElement);
+        }
+        gl.pixelStorei(gl.UNPACK_SKIP_PIXELS, 0);
+        gl.pixelStorei(gl.UNPACK_SKIP_ROWS, 0);
+        gl.pixelStorei(gl.UNPACK_IMAGE_HEIGHT, 0);
 
         var c = document.createElement("canvas");
         c.width = 16;
@@ -112,6 +141,13 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var ctx = c.getContext("2d");
         ctx.drawImage(videoElement, 0, 0, 16, 16);
         document.body.appendChild(c);
+
+        var rCoordLocation = gl.getUniformLocation(program, 'uRCoord');
+        if (!rCoordLocation) {
+            testFailed('Shader incorrectly set up; couldn\'t find uRCoord uniform');
+            return;
+        }
+        gl.uniform1f(rCoordLocation, rTextureCoord);
 
         // Draw the triangles
         wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
@@ -129,8 +165,18 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     function runTest(videoElement)
     {
         var cases = [
-            { flipY: true, topColor: redColor, bottomColor: greenColor },
-            { flipY: false, topColor: greenColor, bottomColor: redColor },
+            { flipY: false, sourceSubRectangle: [32, 16, 16, 80],
+              depth: 5, unpackImageHeight: 16, rTextureCoord: 0,
+              topColor: redColor, bottomColor: redColor },
+            { flipY: false, sourceSubRectangle: [32, 16, 16, 80],
+              depth: 5, unpackImageHeight: 16, rTextureCoord: 4,
+              topColor: greenColor, bottomColor: greenColor },
+            { flipY: false, sourceSubRectangle: [24, 48, 32, 32],
+              depth: 1, unpackImageHeight: 32, rTextureCoord: 0,
+              topColor: greenColor, bottomColor: redColor },
+            { flipY: true, sourceSubRectangle: [24, 48, 32, 32],
+              depth: 1, unpackImageHeight: 32, rTextureCoord: 0,
+              topColor: redColor, bottomColor: greenColor },
         ];
 
         function runTexImageTest(bindingTarget) {
@@ -178,9 +224,18 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                 }
                 function runTest() {
                     for (var i in cases) {
-                        runOneIteration(video, cases[i].flipY,
+                        runOneIteration(video, cases[i].flipY, false,
                                         cases[i].topColor, cases[i].bottomColor,
-                                        program, bindingTarget);
+                                        program, bindingTarget, cases[i].depth,
+                                        cases[i].sourceSubRectangle,
+                                        cases[i].unpackImageHeight,
+                                        cases[i].rTextureCoord);
+                        runOneIteration(video, cases[i].flipY, true,
+                                        cases[i].topColor, cases[i].bottomColor,
+                                        program, bindingTarget, cases[i].depth,
+                                        cases[i].sourceSubRectangle,
+                                        cases[i].unpackImageHeight,
+                                        cases[i].rTextureCoord);
                     }
                     runNextVideo();
                 }
