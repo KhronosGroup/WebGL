@@ -2971,6 +2971,12 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
         of the next compositing operation.
     </p>
 
+    <p>
+        If anyone of these 3 calls attempts to draw to a missing attachment of a complete framebuffer,
+        nothing is to be drawn to that attachment and no error is generated
+        per <a href="../1.0/index.html#DRAWING_TO_MISSING_ATTACHMENT">Drawing to a Missing Attachment</a>.
+    </p>
+
     <dl class="methods">
         <dt class="idl-code">void clear(GLbitfield mask)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.2.3">OpenGL ES 2.0 &sect;4.2.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glClear.xml">man page</a>)</span>
@@ -3831,6 +3837,23 @@ extensions.
     <li> <code>copyTexImage2D</code>
     <li> <code>copyTexSubImage2D</code>
     <li> <code>readPixels</code>
+    </ul>
+</p>
+
+<h3><a name="DRAWING_TO_MISSING_ATTACHMENT">Drawing To a Missing Attachment</a></h3>
+<p>
+    In the OpenGL ES 2.0 API, it is not specified what happens when a command tries to drawing
+    to a missing attachment, such as clearing a draw buffer from a complete framebuffer
+    that does not have a color attachment.
+</p>
+<p>
+    In the WebGL API, such operations that drawing to an attachment that is missing will draw
+    nothing to that attachment. No error is generated. This applies to the following functions:
+
+    <ul>
+    <li> <code>clear</code>
+    <li> <code>drawArrays</code>
+    <li> <code>drawElements</code>
     </ul>
 </p>
 

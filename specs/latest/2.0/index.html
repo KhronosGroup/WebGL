@@ -1281,10 +1281,18 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         Transfer a rectangle of pixel values from one region of the read framebuffer to another in the draw
         framebuffer. If the value of SAMPLE_BUFFERS for the read framebuffer is one and the value of
         SAMPLE_BUFFERS for the draw framebuffer is zero, the samples corresponding to each pixel location in
-        the source are converted to a single sample before being written to the destination.
+        the source are converted to a single sample before being written to the destination.<br><br>
 
         For any source pixel lying outside the read framebuffer, the corresponding destination pixel remains
-        untouched.
+        untouched.<br><br>
+
+        If this function attempts to blit to a missing attachment of a complete framebuffer, nothing is to be
+        blitted to that attachment and no error is generated
+        per <a href="../1.0/index.html#DRAWING_TO_MISSING_ATTACHMENT">Drawing to a Missing Attachment</a>.<br>
+
+        If this function attempts to read from a missing attachment of a complete framebuffer, and at least one
+        draw buffer has image to be blitted, an <code>INVALID_OPERATION</code> error is generated
+        per <a href="../1.0/index.html#READING_FROM_MISSING_ATTACHMENT">Reading from a Missing Attachment</a>.
       </dd>
       <dt>
         <p class="idl-code">void framebufferTextureLayer(GLenum target, GLenum attachment, WebGLTexture? texture, GLint level, GLint layer)
@@ -1829,6 +1837,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         For any pixel lying outside the framebuffer, the corresponding destination pixel remains
         untouched; see <a href="../1.0/index.html#READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside
         the Framebuffer</a>. <br><br>
+
+        If this function attempts to read from a missing attachment of a complete framebuffer,
+        an <code>INVALID_OPERATION</code> error is generated
+        per <a href="../1.0/index.html#READING_FROM_MISSING_ATTACHMENT">Reading from a Missing Attachment</a>.
       </dd>
 
       <dt>
@@ -2308,8 +2320,13 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </table><br>
         If <code>buffer</code> is <code>COLOR_BUFFER</code> and the function is not chosen according to the
         above table, an <code>INVALID_OPERATION</code> error is generated and nothing is cleared.
+
         <p>For ArrayBufferView entrypoints, if there's not enough elements in <code>values</code>
            starting at <code>srcOffset</code>, generate <code>INVALID_VALUE</code>.
+
+        <p>If this function attempts to clear to a missing attachment of a complete framebuffer, nothing
+           is to be cleared and no error is generated
+           per <a href="../1.0/index.html#DRAWING_TO_MISSING_ATTACHMENT">Drawing to a Missing Attachment</a>.
       </dd>
     </dl>
 <!-- ======================================================================================================= -->
