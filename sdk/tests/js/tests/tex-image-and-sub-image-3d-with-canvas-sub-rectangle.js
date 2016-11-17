@@ -110,13 +110,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         }
         // Upload the image into the texture
         if (useTexSubImage3D) {
-            var allocatedHeight = uploadHeight;
-            if (unpackImageHeight) {
-                allocatedHeight = unpackImageHeight;
-            }
-
             // Initialize the texture to black first
-            gl.texImage3D(bindingTarget, 0, gl[internalFormat], uploadWidth, allocatedHeight, depth, 0,
+            gl.texImage3D(bindingTarget, 0, gl[internalFormat], uploadWidth, uploadHeight, depth, 0,
                           gl[pixelFormat], gl[pixelType], null);
             gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, uploadWidth, uploadHeight, depth,
                              gl[pixelFormat], gl[pixelType], canvas);
@@ -196,6 +191,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
               ', flipY=' + flipY + ', bindingTarget=' +
               (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY') +
               ', sourceSubRectangle=' + sourceSubRectangle +
+              ', depth=' + depth +
+              (unpackImageHeight ? ', unpackImageHeight=' + unpackImageHeight : '') +
               ', rTextureCoord=' + rTextureCoord);
 
         // Initialize the contents of the source canvas.
@@ -227,27 +224,51 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var cases = [
             // Small canvas cases. Expected that these won't be
             // GPU-accelerated in most browsers' implementations.
-            { expected: redColor,   flipY: false, size: [4, 4], subRect: [0, 0, 2, 4], depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0 },
-            { expected: blueColor,  flipY: false, size: [4, 4], subRect: [0, 0, 2, 4], depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0 },
-            { expected: blueColor,  flipY: true,  size: [4, 4], subRect: [0, 0, 2, 4], depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0 },
-            { expected: redColor,   flipY: true,  size: [4, 4], subRect: [0, 0, 2, 4], depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0 },
-            { expected: greenColor, flipY: false, size: [4, 4], subRect: [2, 0, 2, 4], depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0 },
-            { expected: cyanColor,  flipY: false, size: [4, 4], subRect: [2, 0, 2, 4], depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0 },
-            { expected: cyanColor,  flipY: true,  size: [4, 4], subRect: [2, 0, 2, 4], depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0 },
-            { expected: greenColor, flipY: true,  size: [4, 4], subRect: [2, 0, 2, 4], depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0 },
+
+            // No UNPACK_IMAGE_HEIGHT specified.
+            { expected: redColor,   flipY: false, size: [4, 4], subRect: [0, 0, 2, 2], depth: 2, rTextureCoord: 0.0 },
+            { expected: blueColor,  flipY: false, size: [4, 4], subRect: [0, 0, 2, 2], depth: 2, rTextureCoord: 1.0 },
+            { expected: blueColor,  flipY: true,  size: [4, 4], subRect: [0, 0, 2, 2], depth: 2, rTextureCoord: 0.0 },
+            { expected: redColor,   flipY: true,  size: [4, 4], subRect: [0, 0, 2, 2], depth: 2, rTextureCoord: 1.0 },
+            { expected: greenColor, flipY: false, size: [4, 4], subRect: [2, 0, 2, 2], depth: 2, rTextureCoord: 0.0 },
+            { expected: cyanColor,  flipY: false, size: [4, 4], subRect: [2, 0, 2, 2], depth: 2, rTextureCoord: 1.0 },
+            { expected: cyanColor,  flipY: true,  size: [4, 4], subRect: [2, 0, 2, 2], depth: 2, rTextureCoord: 0.0 },
+            { expected: greenColor, flipY: true,  size: [4, 4], subRect: [2, 0, 2, 2], depth: 2, rTextureCoord: 1.0 },
+
+            // Use UNPACK_IMAGE_HEIGHT to skip some pixels.
+            { expected: redColor,   flipY: false, size: [4, 4], subRect: [0, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0 },
+            { expected: blueColor,  flipY: false, size: [4, 4], subRect: [0, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0 },
+            { expected: blueColor,  flipY: true,  size: [4, 4], subRect: [0, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0 },
+            { expected: redColor,   flipY: true,  size: [4, 4], subRect: [0, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0 },
+            { expected: greenColor, flipY: false, size: [4, 4], subRect: [2, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0 },
+            { expected: cyanColor,  flipY: false, size: [4, 4], subRect: [2, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0 },
+            { expected: cyanColor,  flipY: true,  size: [4, 4], subRect: [2, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0 },
+            { expected: greenColor, flipY: true,  size: [4, 4], subRect: [2, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0 },
 
             // Larger canvas cases. Expected that these will be
             // GPU-accelerated in most browsers' implementations.
             // Changes will be gladly accepted to trigger more
             // browsers' heuristics to accelerate these canvases.
-            { expected: redColor,   flipY: false, size: [384, 384], subRect: [0, 0, 192, 384], depth: 2, unpackImageHeight: 192, rTextureCoord: 0.0 },
-            { expected: blueColor,  flipY: false, size: [384, 384], subRect: [0, 0, 192, 384], depth: 2, unpackImageHeight: 192, rTextureCoord: 1.0 },
-            { expected: blueColor,  flipY: true,  size: [384, 384], subRect: [0, 0, 192, 384], depth: 2, unpackImageHeight: 192, rTextureCoord: 0.0 },
-            { expected: redColor,   flipY: true,  size: [384, 384], subRect: [0, 0, 192, 384], depth: 2, unpackImageHeight: 192, rTextureCoord: 1.0 },
-            { expected: greenColor, flipY: false, size: [384, 384], subRect: [192, 0, 192, 384], depth: 2, unpackImageHeight: 192, rTextureCoord: 0.0 },
-            { expected: cyanColor,  flipY: false, size: [384, 384], subRect: [192, 0, 192, 384], depth: 2, unpackImageHeight: 192, rTextureCoord: 1.0 },
-            { expected: cyanColor,  flipY: true,  size: [384, 384], subRect: [192, 0, 192, 384], depth: 2, unpackImageHeight: 192, rTextureCoord: 0.0 },
-            { expected: greenColor, flipY: true,  size: [384, 384], subRect: [192, 0, 192, 384], depth: 2, unpackImageHeight: 192, rTextureCoord: 1.0 },
+
+            // No UNPACK_IMAGE_HEIGHT specified.
+            { expected: redColor,   flipY: false, size: [384, 384], subRect: [0, 0, 192, 192], depth: 2, rTextureCoord: 0.0 },
+            { expected: blueColor,  flipY: false, size: [384, 384], subRect: [0, 0, 192, 192], depth: 2, rTextureCoord: 1.0 },
+            { expected: blueColor,  flipY: true,  size: [384, 384], subRect: [0, 0, 192, 192], depth: 2, rTextureCoord: 0.0 },
+            { expected: redColor,   flipY: true,  size: [384, 384], subRect: [0, 0, 192, 192], depth: 2, rTextureCoord: 1.0 },
+            { expected: greenColor, flipY: false, size: [384, 384], subRect: [192, 0, 192, 192], depth: 2, rTextureCoord: 0.0 },
+            { expected: cyanColor,  flipY: false, size: [384, 384], subRect: [192, 0, 192, 192], depth: 2, rTextureCoord: 1.0 },
+            { expected: cyanColor,  flipY: true,  size: [384, 384], subRect: [192, 0, 192, 192], depth: 2, rTextureCoord: 0.0 },
+            { expected: greenColor, flipY: true,  size: [384, 384], subRect: [192, 0, 192, 192], depth: 2, rTextureCoord: 1.0 },
+
+            // Use UNPACK_IMAGE_HEIGHT to skip some pixels.
+            { expected: redColor,   flipY: false, size: [384, 384], subRect: [0, 0, 96, 96], depth: 2, unpackImageHeight: 192, rTextureCoord: 0.0 },
+            { expected: blueColor,  flipY: false, size: [384, 384], subRect: [0, 0, 96, 96], depth: 2, unpackImageHeight: 192, rTextureCoord: 1.0 },
+            { expected: blueColor,  flipY: true,  size: [384, 384], subRect: [0, 0, 96, 96], depth: 2, unpackImageHeight: 192, rTextureCoord: 0.0 },
+            { expected: redColor,   flipY: true,  size: [384, 384], subRect: [0, 0, 96, 96], depth: 2, unpackImageHeight: 192, rTextureCoord: 1.0 },
+            { expected: greenColor, flipY: false, size: [384, 384], subRect: [192, 0, 96, 96], depth: 2, unpackImageHeight: 192, rTextureCoord: 0.0 },
+            { expected: cyanColor,  flipY: false, size: [384, 384], subRect: [192, 0, 96, 96], depth: 2, unpackImageHeight: 192, rTextureCoord: 1.0 },
+            { expected: cyanColor,  flipY: true,  size: [384, 384], subRect: [192, 0, 96, 96], depth: 2, unpackImageHeight: 192, rTextureCoord: 0.0 },
+            { expected: greenColor, flipY: true,  size: [384, 384], subRect: [192, 0, 96, 96], depth: 2, unpackImageHeight: 192, rTextureCoord: 1.0 },
         ];
 
         var program = tiu.setupTexturedQuadWith3D(gl, internalFormat);
