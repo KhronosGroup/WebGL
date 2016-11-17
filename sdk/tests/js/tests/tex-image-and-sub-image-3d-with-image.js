@@ -74,14 +74,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     function uploadImageToTexture(image, useTexSubImage3D, flipY, bindingTarget,
                                   depth, sourceSubRectangle, unpackImageHeight)
     {
-        sourceSubRectangleString = '';
-        if (sourceSubRectangle) {
-            sourceSubRectangleString = ' sourceSubRectangle=' + sourceSubRectangle;
-        }
-        debug('Testing ' + (useTexSubImage3D ? 'texSubImage3D' : 'texImage3D') +
-              ' with flipY=' + flipY + ' bindingTarget=' +
-              (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY') +
-              sourceSubRectangleString);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Disable any writes to the alpha channel
         gl.colorMask(1, 1, 1, 0);
@@ -111,13 +103,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         }
         // Upload the image into the texture
         if (useTexSubImage3D) {
-            var allocatedHeight = uploadHeight;
-            if (unpackImageHeight) {
-                allocatedHeight = unpackImageHeight;
-            }
-
             // Initialize the texture to black first
-            gl.texImage3D(bindingTarget, 0, gl[internalFormat], uploadWidth, allocatedHeight, depth, 0,
+            gl.texImage3D(bindingTarget, 0, gl[internalFormat], uploadWidth, uploadHeight, depth, 0,
                           gl[pixelFormat], gl[pixelType], null);
             gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, uploadWidth, uploadHeight, depth,
                              gl[pixelFormat], gl[pixelType], image);
@@ -134,6 +121,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     function runRedGreenTest(image) {
         function runOneIteration(image, useTexSubImage3D, flipY, bindingTarget, topColor, bottomColor, program)
         {
+            debug('Testing ' + (useTexSubImage3D ? 'texSubImage3D' : 'texImage3D') +
+                  ' with flipY=' + flipY + ' bindingTarget=' +
+                  (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
+
             uploadImageToTexture(image, useTexSubImage3D, flipY, bindingTarget, 1);
 
             // Draw the triangles
@@ -172,6 +163,20 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                                  depth, sourceSubRectangle, unpackImageHeight,
                                  rTextureCoord, topColor, bottomColor, program)
         {
+            sourceSubRectangleString = '';
+            if (sourceSubRectangle) {
+                sourceSubRectangleString = ' sourceSubRectangle=' + sourceSubRectangle;
+            }
+            unpackImageHeightString = '';
+            if (unpackImageHeight) {
+                unpackImageHeightString = ' unpackImageHeight=' + unpackImageHeight;
+            }
+            debug('Testing ' + (useTexSubImage3D ? 'texSubImage3D' : 'texImage3D') +
+                  ' with flipY=' + flipY + ' bindingTarget=' +
+                  (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY') +
+                  sourceSubRectangleString + ' depth=' + depth + unpackImageHeightString +
+                  ' rTextureCoord=' + rTextureCoord);
+
             uploadImageToTexture(image, useTexSubImage3D, flipY, bindingTarget,
                                  depth, sourceSubRectangle, unpackImageHeight);
             var rCoordLocation = gl.getUniformLocation(program, 'uRCoord');
@@ -194,29 +199,40 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         }
 
         var cases = [
-            { flipY: false, sourceSubRectangle: [0, 0, 2, 4],
-              depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0,
+            // No UNPACK_IMAGE_HEIGHT specified.
+            { flipY: false, sourceSubRectangle: [0, 0, 2, 2], depth: 2, rTextureCoord: 0.0,
               topColor: redColor, bottomColor: redColor },
-            { flipY: false, sourceSubRectangle: [0, 0, 2, 4],
-              depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0,
+            { flipY: false, sourceSubRectangle: [0, 0, 2, 2], depth: 2, rTextureCoord: 1.0,
               topColor: blueColor, bottomColor: blueColor },
-            { flipY: true, sourceSubRectangle: [0, 0, 2, 4],
-              depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0,
+            { flipY: true, sourceSubRectangle: [0, 0, 2, 2], depth: 2, rTextureCoord: 0.0,
               topColor: blueColor, bottomColor: blueColor },
-            { flipY: true, sourceSubRectangle: [0, 0, 2, 4],
-              depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0,
+            { flipY: true, sourceSubRectangle: [0, 0, 2, 2], depth: 2, rTextureCoord: 1.0,
               topColor: redColor, bottomColor: redColor },
-            { flipY: false, sourceSubRectangle: [2, 0, 2, 4],
-              depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0,
+            { flipY: false, sourceSubRectangle: [2, 0, 2, 2], depth: 2, rTextureCoord: 0.0,
               topColor: greenColor, bottomColor: greenColor },
-            { flipY: false, sourceSubRectangle: [2, 0, 2, 4],
-              depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0,
+            { flipY: false, sourceSubRectangle: [2, 0, 2, 2], depth: 2, rTextureCoord: 1.0,
               topColor: cyanColor, bottomColor: cyanColor },
-            { flipY: true, sourceSubRectangle: [2, 0, 2, 4],
-              depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0,
+            { flipY: true, sourceSubRectangle: [2, 0, 2, 2], depth: 2, rTextureCoord: 0.0,
               topColor: cyanColor, bottomColor: cyanColor },
-            { flipY: true, sourceSubRectangle: [2, 0, 2, 4],
-              depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0,
+            { flipY: true, sourceSubRectangle: [2, 0, 2, 2], depth: 2, rTextureCoord: 1.0,
+              topColor: greenColor, bottomColor: greenColor },
+
+            // Use UNPACK_IMAGE_HEIGHT to skip some pixels.
+            { flipY: false, sourceSubRectangle: [0, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0,
+              topColor: redColor, bottomColor: redColor },
+            { flipY: false, sourceSubRectangle: [0, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0,
+              topColor: blueColor, bottomColor: blueColor },
+            { flipY: true, sourceSubRectangle: [0, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0,
+              topColor: blueColor, bottomColor: blueColor },
+            { flipY: true, sourceSubRectangle: [0, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0,
+              topColor: redColor, bottomColor: redColor },
+            { flipY: false, sourceSubRectangle: [2, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0,
+              topColor: greenColor, bottomColor: greenColor },
+            { flipY: false, sourceSubRectangle: [2, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0,
+              topColor: cyanColor, bottomColor: cyanColor },
+            { flipY: true, sourceSubRectangle: [2, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 0.0,
+              topColor: cyanColor, bottomColor: cyanColor },
+            { flipY: true, sourceSubRectangle: [2, 0, 1, 1], depth: 2, unpackImageHeight: 2, rTextureCoord: 1.0,
               topColor: greenColor, bottomColor: greenColor },
         ];
 

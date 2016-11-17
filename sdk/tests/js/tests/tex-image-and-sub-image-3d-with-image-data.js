@@ -69,9 +69,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     }
 
     function runOneIteration(useTexSubImage3D, flipY, premultiplyAlpha, bindingTarget,
-                             depth, sourceSubRectangle, rTexCoord, unpackImageHeight, program)
+                             depth, sourceSubRectangle, rTexCoord, program)
     {
-        var expected = simulate(flipY, premultiplyAlpha, depth, sourceSubRectangle, rTexCoord, unpackImageHeight);
+        var expected = simulate(flipY, premultiplyAlpha, depth, sourceSubRectangle, rTexCoord);
         var sourceSubRectangleString = '';
         if (sourceSubRectangle) {
             sourceSubRectangleString = ', sourceSubRectangle=' + sourceSubRectangle;
@@ -106,18 +106,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             uploadWidth = sourceSubRectangle[2];
             uploadHeight = sourceSubRectangle[3];
         }
-        if (unpackImageHeight) {
-            gl.pixelStorei(gl.UNPACK_IMAGE_HEIGHT, unpackImageHeight);
-        }
         // Upload the image into the texture
         if (useTexSubImage3D) {
-            var allocatedHeight = uploadHeight;
-            if (unpackImageHeight) {
-                allocatedHeight = unpackImageHeight;
-            }
-
             // Initialize the texture to black first
-            gl.texImage3D(bindingTarget, 0, gl[internalFormat], uploadWidth, allocatedHeight, depth, 0,
+            gl.texImage3D(bindingTarget, 0, gl[internalFormat], uploadWidth, uploadHeight, depth, 0,
                           gl[pixelFormat], gl[pixelType], null);
             gl.texSubImage3D(bindingTarget, 0, 0, 0, 0, uploadWidth, uploadHeight, depth,
                              gl[pixelFormat], gl[pixelType], imageData);
@@ -127,7 +119,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         }
         gl.pixelStorei(gl.UNPACK_SKIP_PIXELS, 0);
         gl.pixelStorei(gl.UNPACK_SKIP_ROWS, 0);
-        gl.pixelStorei(gl.UNPACK_IMAGE_HEIGHT, 0);
         wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from texture upload");
 
         var tl = expected[0][0];
@@ -184,7 +175,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         finishTest();
     }
 
-    function simulate(flipY, premultiplyAlpha, depth, sourceSubRectangle, rTexCoord, unpackImageHeight) {
+    function simulate(flipY, premultiplyAlpha, depth, sourceSubRectangle, rTexCoord) {
         var ro = [255, 0, 0];   var rt = premultiplyAlpha ? [0, 0, 0] : [255, 0, 0];
         var go = [0, 255, 0];   var gt = premultiplyAlpha ? [0, 0, 0] : [0, 255, 0];
         var bo = [0, 0, 255];   var bt = premultiplyAlpha ? [0, 0, 0] : [0, 0, 255];
@@ -220,11 +211,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         if (sourceSubRectangle) {
             let expected2 = [];
-            for (var row = 0; row < unpackImageHeight; row++) {
+            for (var row = 0; row < sourceSubRectangle[3]; row++) {
                 expected2[row] = [];
                 for (var col = 0; col < sourceSubRectangle[2]; col++) {
                     expected2[row][col] =
-                        expected[sourceSubRectangle[1] + row + rTexCoord * unpackImageHeight][sourceSubRectangle[0] + col];
+                        expected[sourceSubRectangle[1] + row + rTexCoord * sourceSubRectangle[3]][sourceSubRectangle[0] + col];
                 }
             }
             expected = expected2;
@@ -236,8 +227,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     function runTestOnBindingTarget(bindingTarget, program) {
         var rects = [
             undefined,
-            [0, 0, 2, 4],
-            [2, 0, 2, 4],
+            [0, 0, 2, 2],
+            [2, 0, 2, 2],
         ];
         var dbg = false;  // Set to true for debug output images
         if (dbg) {
@@ -264,10 +255,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                         var rect = rects[irect];
                         let depth = rect ? 2 : 1;
                         for (let rTexCoord = 0; rTexCoord < depth; rTexCoord++) {
-                            let unpackImageHeight = rect ? 2 : 0;
+                            // TODO: add tests for UNPACK_IMAGE_HEIGHT.
                             runOneIteration(sub, flipY, premul, bindingTarget,
-                                    depth, rect, rTexCoord, unpackImageHeight,
-                                    program);
+                                    depth, rect, rTexCoord, program);
                             if (dbg) {
                                 debug("Actual:");
                                 var img = document.createElement("img");

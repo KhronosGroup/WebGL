@@ -83,7 +83,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         debug('Testing ' +
               (useTexSubImage3D ? "texSubImage3D" : "texImage3D") +
               ' with flipY=' + flipY + ' bindingTarget=' +
-              (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY'));
+              (bindingTarget == gl.TEXTURE_3D ? 'TEXTURE_3D' : 'TEXTURE_2D_ARRAY') +
+              (sourceSubRectangle ? ', sourceSubRectangle=' + sourceSubRectangle : '') +
+              (unpackImageHeight ? ', unpackImageHeight=' + unpackImageHeight : '') +
+              ', depth=' + depth +
+              ', rTextureCoord=' + rTextureCoord);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Disable any writes to the alpha channel
         gl.colorMask(1, 1, 1, 0);
@@ -113,14 +117,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         }
         // Upload the videoElement into the texture
         if (useTexSubImage3D) {
-            var allocatedHeight = uploadHeight;
-            if (unpackImageHeight) {
-                allocatedHeight = unpackImageHeight;
-            }
-
             // Initialize the texture to black first
             gl.texImage3D(bindingTarget, 0, gl[internalFormat],
-                          uploadWidth, allocatedHeight, depth, 0,
+                          uploadWidth, uploadHeight, depth, 0,
                           gl[pixelFormat], gl[pixelType], null);
             gl.texSubImage3D(bindingTarget, 0, 0, 0, 0,
                              uploadWidth, uploadHeight, depth,
@@ -165,18 +164,24 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     function runTest(videoElement)
     {
         var cases = [
-            { flipY: false, sourceSubRectangle: [32, 16, 16, 80],
-              depth: 5, unpackImageHeight: 16, rTextureCoord: 0,
+            // No UNPACK_IMAGE_HEIGHT specified.
+            { flipY: false, sourceSubRectangle: [32, 16, 16, 16], depth: 5, rTextureCoord: 0,
               topColor: redColor, bottomColor: redColor },
-            { flipY: false, sourceSubRectangle: [32, 16, 16, 80],
-              depth: 5, unpackImageHeight: 16, rTextureCoord: 4,
+            // Note that an rTextureCoord of 4.0 satisfies the need to
+            // have it be >= 1.0 for the TEXTURE_3D case, and also its
+            // use as an index in the TEXTURE_2D_ARRAY case.
+            { flipY: false, sourceSubRectangle: [32, 16, 16, 16], depth: 5, rTextureCoord: 4,
               topColor: greenColor, bottomColor: greenColor },
-            { flipY: false, sourceSubRectangle: [24, 48, 32, 32],
-              depth: 1, unpackImageHeight: 32, rTextureCoord: 0,
+            { flipY: false, sourceSubRectangle: [24, 48, 32, 32], depth: 1, rTextureCoord: 0,
               topColor: greenColor, bottomColor: redColor },
-            { flipY: true, sourceSubRectangle: [24, 48, 32, 32],
-              depth: 1, unpackImageHeight: 32, rTextureCoord: 0,
+            { flipY: true, sourceSubRectangle: [24, 48, 32, 32], depth: 1, rTextureCoord: 0,
               topColor: redColor, bottomColor: greenColor },
+
+            // Use UNPACK_IMAGE_HEIGHT to skip some pixels.
+            { flipY: false, sourceSubRectangle: [32, 16, 16, 16], depth: 2, unpackImageHeight: 64, rTextureCoord: 0,
+              topColor: redColor, bottomColor: redColor },
+            { flipY: false, sourceSubRectangle: [32, 16, 16, 16], depth: 2, unpackImageHeight: 64, rTextureCoord: 1,
+              topColor: greenColor, bottomColor: greenColor },
         ];
 
         function runTexImageTest(bindingTarget) {
