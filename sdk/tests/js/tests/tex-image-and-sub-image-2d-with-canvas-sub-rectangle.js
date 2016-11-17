@@ -161,6 +161,26 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
               ', bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP') +
               sourceSubRectangleString);
 
+        var loc;
+        var skipCorner = false;
+        if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
+            loc = gl.getUniformLocation(program, "face");
+            switch (gl[pixelFormat]) {
+              case gl.RED_INTEGER:
+              case gl.RG_INTEGER:
+              case gl.RGB_INTEGER:
+              case gl.RGBA_INTEGER:
+                // https://github.com/KhronosGroup/WebGL/issues/1819
+                skipCorner = true;
+                break;
+            }
+        }
+
+        if (skipCorner && sourceSubRectangle &&
+                sourceSubRectangle[2] == 1 && sourceSubRectangle[3] == 1) {
+            debug("Test skipped, see WebGL#1819");
+        }
+
         // Initialize the contents of the source canvas.
         var width = canvasSize[0];
         var height = canvasSize[1];
@@ -228,21 +248,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         var bottom = outputCanvasHeight - outputCanvasHalfHeight;
         var left = 0;
         var right = outputCanvasWidth - outputCanvasHalfWidth;
-
-        var loc;
-        var skipCorner = false;
-        if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
-            loc = gl.getUniformLocation(program, "face");
-            switch (gl[pixelFormat]) {
-              case gl.RED_INTEGER:
-              case gl.RG_INTEGER:
-              case gl.RGB_INTEGER:
-              case gl.RGBA_INTEGER:
-                // https://github.com/KhronosGroup/WebGL/issues/1819
-                skipCorner = true;
-                break;
-            }
-        }
 
         for (var tt = 0; tt < targets.length; ++tt) {
             if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
