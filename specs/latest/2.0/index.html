@@ -3654,24 +3654,43 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     </div>
 
     <h3><a name="DOM_UPLOAD_UNPACK_PARAMS">Pixel store parameters for uploads from TexImageSource</a></h3>
-    <p><code>UNPACK_ALIGNMENT</code> and <code>UNPACK_ROW_LENGTH</code> are ignored, as they
-       determine row-stride-in-bytes, which is implicit and implementation-dependent for
-       TexImageSource objects.
+
+    <p><code>UNPACK_ALIGNMENT</code> and <code>UNPACK_ROW_LENGTH</code> are ignored.
+       <code>UNPACK_ALIGNMENT</code> is specified in bytes, and is implicit and
+       implementation-dependent for TexImageSource objects. <code>UNPACK_ROW_LENGTH</code> is
+       currently unused.</p>
     <p>Subrect selection is possible using <code>UNPACK_</code> params.
        <code>UNPACK_SKIP_PIXELS</code> and <code>UNPACK_SKIP_ROWS</code> determine the origin of the
-       subrect, with <code>width</code> and <code>height</code> determining the size of the subrect.
-    <p>For 3D textures, <code>UNPACK_SKIP_IMAGES</code> and <code>UNPACK_IMAGE_HEIGHT</code> allow
-       selection of multiple slices from the 2D source.
-       Conceptually, <code>UNPACK_IMAGE_HEIGHT</code> determines how many rows there are in an
-       "image". For example, an element with a height of 20 and <code>UNPACK_IMAGE_HEIGHT</code> set
-       to 10 allows uploading data with <code>depth</code> of 2.
-    <p><code>width</code>, <code>height</code>, and <code>depth</code> specify the extents of the
-       subrect slices to unpack from. For an <code>HTMLImageElement</code> with a width of 20,
-       passing <code>width = 10</code> for texture upload will cause only the left half of the image
-       to be selected, thus uploaded. The resulting texture will have a width of 10.
-    <p>If, additionally in this example, UNPACK_SKIP_PIXELS is set to 10, only the right half of the
-       image is selected for unpack.
-    <p>Also, UNPACK_SKIP_IMAGES applies only to 3D entrypoints, not to 2D entrypoints.
+       subrect, with the <code>width</code> and <code>height</code> arguments determining the size of the subrect.</p>
+    <p>For 3D textures, the <code>width</code>, <code>height</code>, and <code>depth</code>
+       arguments specify a rectangular region of a texel array to unpack to.
+       <code>UNPACK_SKIP_IMAGES</code> and <code>UNPACK_IMAGE_HEIGHT</code> allow selection of
+       multiple slices from the 2D source.  <code>UNPACK_IMAGE_HEIGHT</code> determines the stride,
+       in rows, between two slices. For example, a <code>TexImageSource</code> 30 pixels tall may
+       have the top 10 and bottom 10 rows uploaded into two slices of a 3D texture by uploading with
+       <code>height</code> equal to 10, <code>UNPACK_IMAGE_HEIGHT</code> set to 20, and
+       <code>depth</code> equal to 2.  If <code>UNPACK_IMAGE_HEIGHT</code> is 0, the stride, in
+       rows, between two slices defaults to <code>height</code>.</p>
+    <p>For an <code>HTMLImageElement</code> 20 pixels wide, passing <code>width = 10</code> for
+       texture upload will cause only the left half of the image to be selected, thus uploaded. The
+       resulting texture will have a width of 10. If, additionally in this example,
+       <code>UNPACK_SKIP_PIXELS</code> is set to 10, only the right half of the image is selected
+       for unpack.</p>
+    <p>Also, <code>UNPACK_SKIP_IMAGES</code> applies only to 3D entrypoints, not to 2D entrypoints.</p>
+    <img src="six_color_32x48.png"></image>
+    <p>Looking at another example, the above 32x48 image of six colors, each of size 16x16, is uploaded to
+      a 3D texture of  <code>width = 2</code>, <code>height = 1</code>, and <code>depth = 3</code>.
+      <ul>
+        <li>If <code>UNPACK_SKIP_PIXELS</code> is 0, <code>UNPACK_SKIP_ROWS</code> is 0, and <code>UNPACK_IMAGE_HEIGHT</code>
+            is 0, the entire texel array is set to red.</li>
+        <li>If <code>UNPACK_SKIP_PIXELS</code> is 16, <code>UNPACK_SKIP_ROWS</code> is 16, and <code>UNPACK_IMAGE_HEIGHT</code>
+            is 0, the entire texel array is set to yellow.</li>
+        <li>If <code>UNPACK_SKIP_PIXELS</code> is 0, <code>UNPACK_SKIP_ROWS</code> is 0, and <code>UNPACK_IMAGE_HEIGHT</code>
+            is 16, the first slice of the texel array is red, the second slice is blue, and the third slice is purple.</li>
+        <li>If <code>UNPACK_SKIP_PIXELS</code> is 16, <code>UNPACK_SKIP_ROWS</code> is 0, and <code>UNPACK_IMAGE_HEIGHT</code>
+            is 16, the first slice of the texel array is green, the second slice is yellow, and the third slice is pink.</li>
+      </ul>
+    </p>
 
     <h3><a name="PIXEL_STORE_PARAM_CONSTRAINTS">Pixel store parameter constraints</a></h3>
 
