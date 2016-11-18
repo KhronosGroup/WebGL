@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL Rendering and Sampling Feedback Loop Tests</title>
+<title>WebGL Rendering and Sampling Feedback Loop Tests For WEBGL_draw_buffers Extension</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
@@ -82,7 +82,7 @@ if (!gl) {
     testFailed("WebGL context does not exist");
 } else {
     testPassed("WebGL context exists");
-  
+
     var ext = gl.getExtension("WEBGL_draw_buffers");
     if (!ext) {
         testPassed("No WEBGL_draw_buffers support -- this is legal");
