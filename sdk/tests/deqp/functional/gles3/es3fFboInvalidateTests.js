@@ -865,7 +865,7 @@ es3fFboInvalidateTests.InvalidateSubFboUnbindReadCase.prototype.render = functio
     ctx.disable(gl.STENCIL_TEST);
 
     ctx.clearColor(0.25, 0.5, 0.75, 1);
-    ctx.clear(gl.COLOR_BUTTER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+    ctx.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 
     // Limit read area using scissor.
     ctx.scissor(readX, readY, readW, readH);
