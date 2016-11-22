@@ -179,6 +179,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         if (skipCorner && sourceSubRectangle &&
                 sourceSubRectangle[2] == 1 && sourceSubRectangle[3] == 1) {
             debug("Test skipped, see WebGL#1819");
+            return;
         }
 
         // Initialize the contents of the source canvas.
