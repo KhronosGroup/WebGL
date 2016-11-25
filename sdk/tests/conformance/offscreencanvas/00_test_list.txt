@@ -1,2 +1,4 @@
 context-creation.html
 context-creation-worker.html
+methods.html
+methods-worker.html
