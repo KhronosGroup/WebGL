@@ -28,7 +28,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL Context Creation Test for OffscreenCanvas</title>
+<title>WebGL Context Creation Test for OffscreenCanvas in a worker</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
@@ -36,25 +36,40 @@
 <body>
 <div id="description"></div>
 <div id="console"></div>
+<script id="myWorker" type="text/worker">
+self.onmessage = function(e) {
+    var canvas = new OffscreenCanvas(10, 10);
+    var gl = canvas.getContext('webgl');
+
+    if (gl instanceof WebGLRenderingContext)
+      self.postMessage("Test passed");
+    else
+      self.postMessage("Test failed");
+};
+</script>
 <script>
-"use strict";
 description("This test ensures that the WebGL context can be created on an OffscreenCanvas.");
 
 if (!window.OffscreenCanvas) {
   finishTest();
 }
 
-var wtu = WebGLTestUtils;
-var canvas = new OffscreenCanvas(10, 10);
-var gl = canvas.getContext('webgl');
+function makeWorker(script) {
+   var blob = new Blob([script]);
+   return new Worker(URL.createObjectURL(blob));
+}
 
-if (gl instanceof WebGLRenderingContext)
-  testPassed("WebGL context created correctly.");
-else
-  testFailed("WebGL context creation failed");
-
-var successfullyParsed = true;
-finishTest();
+var successfullyParsed = false;
+var worker = makeWorker(document.getElementById("myWorker").textContent);
+worker.postMessage("Start worker");
+worker.onmessage = function(e) {
+  if (e.data == "Test passed")
+    successfullyParsed = true;
+  else
+    successfullyParsed = false;
+  finishTest();
+}
 </script>
+
 </body>
 </html>
