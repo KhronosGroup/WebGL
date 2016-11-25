@@ -185,6 +185,12 @@
       <addendum>
         Attempting to enable both <code>GL_OVR_multiview</code> and <code>GL_OVR_multiview2</code> in the same shader results in a compile error.
       </addendum>
+      <addendum>
+        Attempting to draw when the number of views in the draw framebuffer does not match the number of views specified in the active program generates an <code>INVALID_OPERATION</code> error.
+      </addendum>
+      <addendum>
+        When the number of views specified in the active program is one, <code>gl_ViewID_OVR</code> will always evaluate to zero.
+      </addendum>
     </mirrors>
     <features>
       <feature>
@@ -223,6 +229,10 @@ interface WEBGL_multiview {
   <history>
     <revision date="2016/11/11">
       <change>Initial revision.</change>
+    </revision>
+
+    <revision date="2016/11/25">
+      <change>Specified what happens when the number of views doesn't match or if the number of views is one.</change>
     </revision>
   </history>
 </proposal>
