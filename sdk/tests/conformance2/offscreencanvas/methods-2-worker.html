@@ -287,14 +287,11 @@ function assertFunction(v, f) {
 
 self.onmessage = function(e) {
     var canvas = new OffscreenCanvas(10, 10);
-    var gl = canvas.getContext('webgl');
+    var gl = canvas.getContext('webgl2');
     var passed = true;
     for (var i=0; i<methods.length; i++) {
       var r = assertFunction(gl, methods[i]);
       passed = passed && r;
-    }
-    if (!passed) {
-      self.postMessage("Test failed");
     }
     var extended = false;
     for (var i in gl) {
@@ -302,14 +299,13 @@ self.onmessage = function(e) {
         if (!extended) {
           extended = true;
         }
-        testFailed(i);
       }
     }
 
-    if (!extended) {
-      self.postMessage("Test failed");
-    }
-    self.postMessage("Test passed");
+    if (!passed || extended)
+        self.postMessage("Test failed");
+    else
+        self.postMessage("Test passed");
 }
 </script>
 <script>
@@ -328,10 +324,13 @@ var successfullyParsed = false;
 var worker = makeWorker(document.getElementById("myWorker").textContent);
 worker.postMessage("Start worker");
 worker.onmessage = function(e) {
-  if (e.data == "Test passed")
+  if (e.data == "Test passed") {
+    testPassed("All test have passed");
     successfullyParsed = true;
-  else
+  } else {
+    testFailed("Some tests failed");
     successfullyParsed = false;
+  }
   finishTest();
 }
 </script>

@@ -149,13 +149,12 @@ self.onmessage = function(e) {
     if (!testValidContext())
         self.postMessage("Test failed");
 
-    extensionName = wtu.getSupportedExtensionWithKnownPrefixes(gl, "WEBGL_lose_context");
-    if (!extensionName)
+    extension = gl.getExtension("WEBGL_lose_context");
+    if (extension == null)
         self.postMessage("Test failed");
-    extension = gl.getExtension(extensionName);
 
     // need an extension that exposes new API methods.
-    OES_vertex_array_object = wtu.getExtensionWithKnownPrefixes(gl, "OES_vertex_array_object");
+    OES_vertex_array_object = gl.getExtension("OES_vertex_array_object");
 
     canvas.addEventListener("webglcontextlost", testLostContext, false);
 
@@ -209,6 +208,7 @@ function testValidContext()
         if (!OES_vertex_array_object.isVertexArrayOES(vertexArrayObject))
             return false;
     }
+    return true;
 }
 
 function testLostContext()
@@ -231,7 +231,7 @@ function testLostContext()
     if (!compareGLError(gl.INVALID_OPERATION, "extension.loseContext()"))
         self.postMessage("Test failed");
 
-    imageData = ctx2d.createImageData(1, 1);
+    imageData = new ImageData(1, 1);
     float32array = new Float32Array(1);
     int32array = new Int32Array(1);
 
@@ -424,11 +424,15 @@ function init()
   var worker = makeWorker(document.getElementById("myWorker").textContent);
   worker.postMessage("Start worker");
   worker.onmessage = function(e) {
-    if (e.data == "Test passed")
+    if (e.data == "Test passed") {
+      testPassed("All tests have passed");
       successfullyParsed = true;
-    else
+      finishTest();
+    } else {
+      testFailed("Some tests failed");
       successfullyParsed = false;
-    finishTest();
+      finishTest();
+    }
   }
 }
 </script>

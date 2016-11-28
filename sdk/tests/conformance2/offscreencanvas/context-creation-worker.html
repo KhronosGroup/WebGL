@@ -63,10 +63,13 @@ var successfullyParsed = false;
 var worker = makeWorker(document.getElementById("myWorker").textContent);
 worker.postMessage("Start worker");
 worker.onmessage = function(e) {
-  if (e.data == "Test passed")
+  if (e.data == "Test passed") {
+    testPassed("All tests have passed");
     successfullyParsed = true;
-  else
+  } else {
+    testFailed("Some tests failed");
     successfullyParsed = false;
+  }
   finishTest();
 }
 </script>
