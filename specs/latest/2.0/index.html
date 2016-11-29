@@ -1015,9 +1015,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
               <tr><td>READ_FRAMEBUFFER</td></tr>
               <tr><td>DRAW_FRAMEBUFFER</td></tr>
           </table>
-          <p>If <em>framebuffer</em> is null, the default framebuffer provided by the context is bound.</p>
           <p>If <em>target</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
-          <p>An attempt to bind a deleted framebuffer will generate an <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.</p>
       </dd>
 
       <dt class="idl-code">void bindTexture(GLenum target, WebGLTexture? texture)
@@ -1033,7 +1031,6 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
               <tr><td>TEXTURE_CUBE_MAP</td></tr>
           </table>
           <p>If <em>target</em> is not in the table above, generates an <code>INVALID_ENUM</code> error.</p>
-          <p>An attempt to bind a deleted texture will generate an <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.</p>
       </dd>
     </dl>
 
