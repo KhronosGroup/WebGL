@@ -2460,10 +2460,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dd>
-        Delete the query object contained in the passed <code class="interface">WebGLQuery</code> as if by calling
-        glDeleteQueries. If the query has already been deleted the call has no effect.
-        Note that the query object will be deleted when the <code class="interface">WebGLQuery</code> object is destroyed.
-        This method merely gives the author greater control over when the query object is destroyed.
+        Mark for deletion the query object contained in the passed
+        <code class="interface">WebGLQuery</code>, as if by calling glDeleteQueries.
+        If the object has already been marked for deletion, the call has no effect. Note that
+        underlying GL object will be automatically marked for deletion when the JS object is
+        destroyed, however this method allows authors to mark an object for deletion early.
       </dd>
       <dt>
         <p class="idl-code">[WebGLHandlesContextLoss] GLboolean isQuery(WebGLQuery? query)
@@ -2609,10 +2610,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dd>
-        Delete the sampler object contained in the passed <code class="interface">WebGLSampler</code> as if by calling
-        glDeleteSamplers. If the sampler has already been deleted the call has no effect.
-        Note that the sampler object will be deleted when the <code class="interface">WebGLSampler</code> object is destroyed.
-        This method merely gives the author greater control over when the sampler object is destroyed.
+        Mark for deletion the sampler object contained in the passed
+        <code class="interface">WebGLSampler</code>, as if by calling glDeleteSamplers.
+        If the object has already been marked for deletion, the call has no effect. Note that
+        underlying GL object will be automatically marked for deletion when the JS object is
+        destroyed, however this method allows authors to mark an object for deletion early.
       </dd>
       <dt>
         <p class="idl-code">[WebGLHandlesContextLoss] GLboolean isSampler(WebGLSampler? sampler)
@@ -2643,8 +2645,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         currently bound sampler is unbound from the texture unit. A single sampler object may be bound to
         multiple texture units simultaneously. <br><br>
         If <em>unit</em> is greater than or equal to the value of <code>MAX_COMBINED_TEXTURE_IMAGE_UNITS</code>, generates an <code>INVALID_VALUE</code> error.<br><br>
-        An attempt to bind a deleted sampler will generate an <code>INVALID_OPERATION</code> error,
-        and the current binding will remain untouched.
+        An attempt to bind an object marked for deletion will generate an
+        <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.
       </dd>
       <dt>
         <p class="idl-code">void samplerParameteri(WebGLSampler sampler, GLenum pname, GLint param)</p>
@@ -2739,10 +2741,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </p>
       </dt>
       <dd>
-          Delete the sync object contained in the passed <code class="interface">WebGLSync</code> as if by calling
-          glDeleteSync. If the sync has already been deleted the call has no effect.
-          Note that the sync object will be deleted when the <code class="interface">WebGLSync</code> object is destroyed.
-          This method merely gives the author greater control over when the sync object is destroyed.
+          Mark for deletion the sync object contained in the passed
+          <code class="interface">WebGLSync</code>, as if by calling glDeleteSync.
+          If the object has already been marked for deletion, the call has no effect. Note that
+          underlying GL object will be automatically marked for deletion when the JS object is
+          destroyed, however this method allows authors to mark an object for deletion early.
       </dd>
       <dt>
         <p class="idl-code">GLenum clientWaitSync(WebGLSync sync, GLbitfield flags, GLuint64 timeout)
@@ -2861,10 +2864,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.1">OpenGL ES 3.0.4 &sect;2.14.1</a>,
             similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteTransformFeedbacks.xhtml">glDeleteTransformFeedbacks</a>)</span>
         <dd>
-            Delete the transform feedback object contained in the passed <code class="interface">WebGLTransformFeedback</code> as if by calling
-            glDeleteTransformFeedbacks. If the transform feedback has already been deleted the call has no effect.
-            Note that the transform feedback object will be deleted when the <code class="interface">WebGLTransformFeedback</code> object is destroyed.
-            This method merely gives the author greater control over when the transform feedback object is destroyed.
+            Mark for deletion the transform feedback object contained in the passed
+            <code class="interface">WebGLTransformFeedback</code>, as if by calling
+            glDeleteTransformFeedbacks.
+            If the object has already been marked for deletion, the call has no effect. Note that
+            underlying GL object will be automatically marked for deletion when the JS object is
+            destroyed, however this method allows authors to mark an object for deletion early.
 
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isTransformFeedback(WebGLTransformFeedback? transformFeedback)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.11">OpenGL ES 3.0.4 &sect;6.1.11</a>,
@@ -2882,8 +2887,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             Bind the given <code class="interface">WebGLTransformFeedback</code> object.
             If <code class="param">transformFeedback</code> is null, the default transform feedback object provided by the context
             is bound.
-            An attempt to bind a deleted transform feedback will generate a <code>INVALID_OPERATION</code> error, and the current
-            binding will remain untouched.
+            An attempt to bind an object marked for deletion will generate an
+            <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.
 
         <dt class="idl-code">void beginTransformFeedback(GLenum primitiveMode)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.14.2">OpenGL ES 3.0.4 &sect;2.14.2</a>,
@@ -3035,11 +3040,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.10">OpenGL ES 3.0.4 &sect;2.10</a>,
             similar to <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteVertexArrays.xhtml">glDeleteVertexArrays</a>)</span>
         <dd>
-            Delete the vertex array object contained in the passed <code class="interface">WebGLVertexArrayObject</code> as if by calling
-            glDeleteVertexArrays. If the vertex array has already been deleted the call has no effect.
-            Note that the vertex array object will be deleted when the <code class="interface">WebGLVertexArrayObject</code> object is destroyed.
-            This method merely gives the author greater control over when the vertex array object is
-            destroyed.
+            Mark for deletion the vertex array object contained in the passed
+            <code class="interface">WebGLVertexArrayObject</code>, as if by calling
+            glDeleteVertexArrays.
+            If the object has already been marked for deletion, the call has no effect. Note that
+            underlying GL object will be automatically marked for deletion when the JS object is
+            destroyed, however this method allows authors to mark an object for deletion early.
 
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isVertexArray(WebGLVertexArrayObject? vertexArray)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.10">OpenGL ES 3.0.4 &sect;6.1.10</a>,
