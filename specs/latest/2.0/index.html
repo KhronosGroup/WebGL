@@ -1156,6 +1156,77 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h4>Buffer objects</h4>
 
     <dl class="methods">
+
+      <dt class="idl-code">void bufferData(GLenum target, ArrayBufferView srcData, GLenum usage, GLuint srcOffset, optional GLuint length = 0);
+          <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.10.2">OpenGL ES 3.0.4 &sect;2.10.2</a>,
+           <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBufferData.xhtml" class="nonnormative">man page</a>)
+          </span>
+      </dt>
+      <dd>
+        Set the size of the currently bound WebGLBuffer object, then copy a sub-region of <code>srcData</code> to the buffer object.
+        <br><br>
+        Let <code>buf</code> be the buffer bound to <code>target</code>.
+        <br><br>
+        If <code>length</code> is 0:
+        <ul>
+        <li> If <code>srcData</code> is a <code>DataView</code>, let <code>copyLength</code> be <code>srcData.byteLength - srcOffset</code>; the typed elements in the text below are bytes.
+        <li> Otherwise, let <code>copyLength</code> be <code>srcData.length - srcOffset</code>.
+        </ul>
+        Otherwise, let <code>copyLength</code> be <code>length</code>.
+        <br><br>
+        Set the size of <code>buf</code> to <code>copyLength * srcData.BYTES_PER_ELEMENT</code>, or <code>copyLength</code> in the case of <code>DataView</code>.
+        <br><br>
+        If <code>copyLength</code> is greater than zero, copy <code>copyLength</code> typed elements
+        (each of size <code>srcData.BYTES_PER_ELEMENT</code>, or 1 in the case
+        of <code>DataView</code>) from <code>srcData</code> into <code>buf</code>,
+        reading <code>srcData</code> starting at element index <code>srcOffset</code>.
+        If <code>copyLength</code> is 0, no data is written to <code>buf</code>, but this does
+        not cause a GL error to be generated.
+        <ul>
+          <li> If no WebGLBuffer is bound to <code>target</code>, generates an <code>INVALID_OPERATION</code> error.
+          <li> If <code>srcOffset + copyLength</code> is greater than <code>srcData.length</code> (or <code>srcData.byteLength</code> for <code>DataView</code>), generates an <code>INVALID_VALUE</code> error.
+        </ul>
+        If any error is generated, <code>buf</code>'s size is unmodified, and no data is written to it.
+      </dd>
+
+      <dt class="idl-code">void bufferSubData(GLenum target, GLintptr dstByteOffset, ArrayBufferView srcData, GLuint srcOffset, optional GLuint length = 0);
+          <span class="gl-spec">
+          (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.10.2">OpenGL ES 3.0.4 &sect;2.10.2</a>,
+           <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBufferSubData.xhtml" class="nonnormative">man page</a>)
+          </span>
+      </dt>
+      <dd>
+        Copy a sub-region of <code>srcData</code> to the currently bound WebGLBuffer object.
+        <br><br>
+        Let <code>buf</code> be the buffer bound to <code>target</code>.
+        <br><br>
+        If <code>length</code> is 0:
+        <ul>
+        <li> If <code>srcData</code> is a <code>DataView</code>, let <code>copyLength</code> be <code>srcData.byteLength - srcOffset</code>; the typed elements in the text below are bytes.
+        <li> Otherwise, let <code>copyLength</code> be <code>srcData.length - srcOffset</code>.
+        </ul>
+        Otherwise, let <code>copyLength</code> be <code>length</code>.
+        <br><br>
+        Let <code>copyByteLength</code> be <code>copyLength * srcData.BYTES_PER_ELEMENT</code>, or <code>copyLength</code> in the case of <code>DataView</code>.
+        <br><br>
+        If <code>copyLength</code> is greater than zero, copy <code>copyLength</code> typed elements
+        (each of size <code>srcData.BYTES_PER_ELEMENT</code>, or 1 in the case
+        of <code>DataView</code>) from <code>srcData</code> into <code>buf</code>,
+        reading <code>srcData</code> starting at element index <code>srcOffset</code>, and
+        writing <code>buf</code> starting at byte offset <code>dstByteOffset</code>.
+        If <code>copyLength</code> is 0, no data is written to <code>buf</code>, but this does
+        not cause a GL error to be generated.
+        <ul>
+          <li> If no WebGLBuffer is bound to <code>target</code>, generates an <code>INVALID_OPERATION</code> error.
+          <li> If <code>dstByteOffset</code> is less than zero, generates an <code>INVALID_VALUE</code> error.
+          <li> If <code>dstByteOffset + copyByteLength</code> is greater than the size of <code>buf</code>, generates an <code>INVALID_VALUE</code> error.
+          <li> If <code>srcOffset + copyLength</code> is greater than <code>srcData.length</code> (or <code>srcData.byteLength</code> for <code>DataView</code>), generates an <code>INVALID_VALUE</code> error.
+        </ul>
+        If any error is generated, no data is written to <code>buf</code>.
+      </dd>
+
+
       <dt class="idl-code">any getBufferParameter(GLenum target, GLenum pname)
           <span class="gl-spec">
           (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.9">OpenGL ES 3.0.4 &sect;6.1.9</a>,
@@ -1191,12 +1262,16 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         Reads back data from the bound WebGLBuffer into <code>dstBuffer</code>.
         <br><br>
         Let <code>buf</code> be the buffer bound to <code>target</code>.
-        If <code>length</code> is 0, let <code>copyLength</code> be
-        <code>dstBuffer.length - dstOffset</code>; otherwise, let
-        <code>copyLength</code> be <code>length</code>.
+        <br><br>
+        If <code>length</code> is 0:
+        <ul>
+          <li> If <code>dstBuffer</code> is a <code>DataView</code>, let <code>copyLength</code> be <code>dstBuffer.byteLength - dstOffset</code>; the typed elements in the text below are bytes.
+          <li> Otherwise, let <code>copyLength</code> be <code>dstBuffer.length - dstOffset</code>.
+        </ul>
+        Otherwise, let <code>copyLength</code> be <code>length</code>.
         <br><br>
         If <code>copyLength</code> is greater than zero,
-        copy <code>copyLength</code> typed elements (each of size <code>dstBuffer.BYTES_PER_ELEMENT</code>)
+        copy <code>copyLength</code> typed elements (each of size <code>dstBuffer.BYTES_PER_ELEMENT</code>, or 1 in the case of <code>DataView</code>)
         from <code>buf</code> into <code>dstBuffer</code>,
         reading <code>buf</code> starting at byte index <code>srcByteOffset</code> and
         writing into <code>dstBuffer</code> starting at element index <code>dstOffset</code>.
@@ -1204,19 +1279,22 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         this does not cause a GL error to be generated.
         <ul>
           <li>If no WebGLBuffer is bound to <code>target</code>,
-              an <code>INVALID_OPERATION</code> error is generated.
+              generates an <code>INVALID_OPERATION</code> error.
           <li>If <code>target</code> is <code>TRANSFORM_FEEDBACK_BUFFER</code>,
               and any transform feedback object is currently active,
-              an <code>INVALID_OPERATION</code> error is generated.
-          <li>If <code>dstOffset</code> is greater than <code>dstBuffer.length</code>,
-              an <code>INVALID_VALUE</code> error is generated.
-          <li>If <code>dstOffset + copyLength</code> is greater than <code>dstBuffer.length</code>,
-              an <code>INVALID_VALUE</code> error is generated.
+              generates an <code>INVALID_OPERATION</code> error.
+          <li>If <code>dstOffset</code> is greater than <code>dstBuffer.length</code>
+              (or <code>dstBuffer.byteLength</code> in the case of <code>DataView</code>), generates
+              an <code>INVALID_VALUE</code> error.
+          <li>If <code>dstOffset + copyLength</code> is greater than <code>dstBuffer.length</code>
+              (or <code>dstBuffer.byteLength</code> in the case of <code>DataView</code>), generates
+              an <code>INVALID_VALUE</code> error.
           <li>If <code>srcByteOffset</code> is less than zero,
-              an <code>INVALID_VALUE</code> error is generated.
-          <li>If <code>srcByteOffset + copyLength*dstBuffer.BYTES_PER_ELEMENT</code>
-              is larger than the length of <code>buf</code>,
-              an <code>INVALID_OPERATION</code> is generated.
+              generates an <code>INVALID_VALUE</code> error.
+          <li>If <code>srcByteOffset + copyLength * dstBuffer.BYTES_PER_ELEMENT</code>
+              (or <code>srcByteOffset + copyLength</code> in the case of <code>DataView</code>) is
+              greater than the size of <code>buf</code>, generates an <code>INVALID_OPERATION</code>
+              error.
         </ul>
         If any error is generated, no data is written to <code>dstBuffer</code>.
         <br><br>
