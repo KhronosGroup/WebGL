@@ -1286,12 +1286,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         For any source pixel lying outside the read framebuffer, the corresponding destination pixel remains
         untouched.<br><br>
 
-        If this function attempts to blit to a missing attachment of a complete framebuffer, nothing is to be
+        If this function attempts to blit to a missing attachment of a complete framebuffer, nothing is
         blitted to that attachment and no error is generated
         per <a href="../1.0/index.html#DRAWING_TO_MISSING_ATTACHMENT">Drawing to a Missing Attachment</a>.<br>
 
         If this function attempts to read from a missing attachment of a complete framebuffer, and at least one
-        draw buffer has image to be blitted, an <code>INVALID_OPERATION</code> error is generated
+        draw buffer has an image to be blitted, an <code>INVALID_OPERATION</code> error is generated
         per <a href="../1.0/index.html#READING_FROM_MISSING_ATTACHMENT">Reading from a Missing Attachment</a>.
       </dd>
       <dt>
@@ -2324,8 +2324,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p>For ArrayBufferView entrypoints, if there's not enough elements in <code>values</code>
            starting at <code>srcOffset</code>, generate <code>INVALID_VALUE</code>.
 
-        <p>If this function attempts to clear to a missing attachment of a complete framebuffer, nothing
-           is to be cleared and no error is generated
+        <p>If this function attempts to clear a missing attachment of a complete framebuffer, nothing
+           is cleared and no error is generated
            per <a href="../1.0/index.html#DRAWING_TO_MISSING_ATTACHMENT">Drawing to a Missing Attachment</a>.
       </dd>
     </dl>

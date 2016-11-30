@@ -2972,8 +2972,8 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
     </p>
 
     <p>
-        If anyone of these 3 calls attempts to draw to a missing attachment of a complete framebuffer,
-        nothing is to be drawn to that attachment and no error is generated
+        If any one of these 3 calls attempts to draw to a missing attachment of a complete framebuffer,
+        nothing is drawn to that attachment and no error is generated
         per <a href="../1.0/index.html#DRAWING_TO_MISSING_ATTACHMENT">Drawing to a Missing Attachment</a>.
     </p>
 
@@ -3842,12 +3842,12 @@ extensions.
 
 <h3><a name="DRAWING_TO_MISSING_ATTACHMENT">Drawing To a Missing Attachment</a></h3>
 <p>
-    In the OpenGL ES 2.0 API, it is not specified what happens when a command tries to drawing
+    In the OpenGL ES 2.0 API, it is not specified what happens when a command tries to draw
     to a missing attachment, such as clearing a draw buffer from a complete framebuffer
     that does not have a color attachment.
 </p>
 <p>
-    In the WebGL API, such operations that drawing to an attachment that is missing will draw
+    In the WebGL API, such operations that draw to an attachment that is missing will draw
     nothing to that attachment. No error is generated. This applies to the following functions:
 
     <ul>
