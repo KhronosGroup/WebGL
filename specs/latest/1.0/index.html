@@ -467,9 +467,8 @@ gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
         programs. The WebGLRenderingContext interface has a method to create a
         WebGLObject subclass for each type. Data from the underlying graphics library are
         stored in these objects and are fully managed by them.
-        The DOM object is guaranteed to exist at least as long as the author has an explicit
-        valid reference to it <b>and</b> at least as long as it is bound by the underlying graphics
-        library.
+        The DOM object will stay alive not only as long as the author retains an explicit reference
+        to it, but also as long as it is in use by the underlying graphics library.
         When the DOM object is destroyed, it marks its resources for deletion.
         If authors wish to mark an object for deletion prior to the DOM object being destroyed,
         they may explicitly call the respective delete function. (e.g. deleteTexture)
