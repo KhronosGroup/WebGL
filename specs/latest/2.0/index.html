@@ -1185,7 +1185,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </ul>
         Otherwise, let <code>copyLength</code> be <code>length</code>.
         <br><br>
-        Set the size of <code>buf</code> to <code>copyLength * srcData.BYTES_PER_ELEMENT</code>, or <code>copyLength</code> in the case of <code>DataView</code>.
+        If <code>srcData</code> is a <code>DataView</code>, set the size of <code>buf</code> to <code>copyLength</code>; otherwise, set the size of <code>buf</code> to <code>copyLength * srcData.BYTES_PER_ELEMENT</code>.
         <br><br>
         If <code>copyLength</code> is greater than zero, copy <code>copyLength</code> typed elements
         (each of size <code>srcData.BYTES_PER_ELEMENT</code>, or 1 in the case
@@ -1195,6 +1195,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         not cause a GL error to be generated.
         <ul>
           <li> If no WebGLBuffer is bound to <code>target</code>, generates an <code>INVALID_OPERATION</code> error.
+          <li> If <code>srcOffset</code> is greater than <code>srcData.length</code> (or <code>srcData.byteLength</code> for <code>DataView</code>), generates an <code>INVALID_VALUE</code> error.
           <li> If <code>srcOffset + copyLength</code> is greater than <code>srcData.length</code> (or <code>srcData.byteLength</code> for <code>DataView</code>), generates an <code>INVALID_VALUE</code> error.
         </ul>
         If any error is generated, <code>buf</code>'s size is unmodified, and no data is written to it.
@@ -1218,7 +1219,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </ul>
         Otherwise, let <code>copyLength</code> be <code>length</code>.
         <br><br>
-        Let <code>copyByteLength</code> be <code>copyLength * srcData.BYTES_PER_ELEMENT</code>, or <code>copyLength</code> in the case of <code>DataView</code>.
+        If <code>srcData</code> is a <code>DataView</code>, let <code>copyByteLength</code> be <code>copyLength</code>; otherwise, let <code>copyByteLength</code> be <code>copyLength * srcData.BYTES_PER_ELEMENT</code>.
         <br><br>
         If <code>copyLength</code> is greater than zero, copy <code>copyLength</code> typed elements
         (each of size <code>srcData.BYTES_PER_ELEMENT</code>, or 1 in the case
@@ -1231,6 +1232,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
           <li> If no WebGLBuffer is bound to <code>target</code>, generates an <code>INVALID_OPERATION</code> error.
           <li> If <code>dstByteOffset</code> is less than zero, generates an <code>INVALID_VALUE</code> error.
           <li> If <code>dstByteOffset + copyByteLength</code> is greater than the size of <code>buf</code>, generates an <code>INVALID_VALUE</code> error.
+          <li> If <code>srcOffset</code> is greater than <code>srcData.length</code> (or <code>srcData.byteLength</code> for <code>DataView</code>), generates an <code>INVALID_VALUE</code> error.
           <li> If <code>srcOffset + copyLength</code> is greater than <code>srcData.length</code> (or <code>srcData.byteLength</code> for <code>DataView</code>), generates an <code>INVALID_VALUE</code> error.
         </ul>
         If any error is generated, no data is written to <code>buf</code>.
