@@ -1187,9 +1187,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <br><br>
         If <code>srcData</code> is a <code>DataView</code>, set the size of <code>buf</code> to <code>copyLength</code>; otherwise, set the size of <code>buf</code> to <code>copyLength * srcData.BYTES_PER_ELEMENT</code>.
         <br><br>
+        If <code>srcData</code> is a <code>DataView</code>, let <code>elementSize</code> be 1; otherwise, let <code>elementSize</code> be <code>srcData.BYTES_PER_ELEMENT</code>.
+        <br><br>
         If <code>copyLength</code> is greater than zero, copy <code>copyLength</code> typed elements
-        (each of size <code>srcData.BYTES_PER_ELEMENT</code>, or 1 in the case
-        of <code>DataView</code>) from <code>srcData</code> into <code>buf</code>,
+        (each of size <code>elementSize</code>) from <code>srcData</code> into <code>buf</code>,
         reading <code>srcData</code> starting at element index <code>srcOffset</code>.
         If <code>copyLength</code> is 0, no data is written to <code>buf</code>, but this does
         not cause a GL error to be generated.
@@ -1221,9 +1222,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <br><br>
         If <code>srcData</code> is a <code>DataView</code>, let <code>copyByteLength</code> be <code>copyLength</code>; otherwise, let <code>copyByteLength</code> be <code>copyLength * srcData.BYTES_PER_ELEMENT</code>.
         <br><br>
+        If <code>srcData</code> is a <code>DataView</code>, let <code>elementSize</code> be 1; otherwise, let <code>elementSize</code> be <code>srcData.BYTES_PER_ELEMENT</code>.
+        <br><br>
         If <code>copyLength</code> is greater than zero, copy <code>copyLength</code> typed elements
-        (each of size <code>srcData.BYTES_PER_ELEMENT</code>, or 1 in the case
-        of <code>DataView</code>) from <code>srcData</code> into <code>buf</code>,
+        (each of size <code>elementSize</code>) from <code>srcData</code> into <code>buf</code>,
         reading <code>srcData</code> starting at element index <code>srcOffset</code>, and
         writing <code>buf</code> starting at byte offset <code>dstByteOffset</code>.
         If <code>copyLength</code> is 0, no data is written to <code>buf</code>, but this does
@@ -1282,8 +1284,12 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         </ul>
         Otherwise, let <code>copyLength</code> be <code>length</code>.
         <br><br>
+        If <code>dstBuffer</code> is a <code>DataView</code>, let <code>copyByteLength</code> be <code>copyLength</code>; otherwise, let <code>copyByteLength</code> be <code>copyLength * dstBuffer.BYTES_PER_ELEMENT</code>.
+        <br><br>
+        If <code>dstBuffer</code> is a <code>DataView</code>, let <code>elementSize</code> be 1; otherwise, let <code>elementSize</code> be <code>dstBuffer.BYTES_PER_ELEMENT</code>.
+        <br><br>
         If <code>copyLength</code> is greater than zero,
-        copy <code>copyLength</code> typed elements (each of size <code>dstBuffer.BYTES_PER_ELEMENT</code>, or 1 in the case of <code>DataView</code>)
+        copy <code>copyLength</code> typed elements (each of size <code>elementSize</code>)
         from <code>buf</code> into <code>dstBuffer</code>,
         reading <code>buf</code> starting at byte index <code>srcByteOffset</code> and
         writing into <code>dstBuffer</code> starting at element index <code>dstOffset</code>.
@@ -1303,10 +1309,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
               an <code>INVALID_VALUE</code> error.
           <li>If <code>srcByteOffset</code> is less than zero,
               generates an <code>INVALID_VALUE</code> error.
-          <li>If <code>srcByteOffset + copyLength * dstBuffer.BYTES_PER_ELEMENT</code>
-              (or <code>srcByteOffset + copyLength</code> in the case of <code>DataView</code>) is
-              greater than the size of <code>buf</code>, generates an <code>INVALID_OPERATION</code>
-              error.
+          <li>If <code>srcByteOffset + copyByteLength</code> is greater than the size
+              of <code>buf</code>, generates an <code>INVALID_OPERATION</code> error.
         </ul>
         If any error is generated, no data is written to <code>dstBuffer</code>.
         <br><br>
