@@ -12,6 +12,7 @@ canvas-resizing-with-pbo-bound.html
 clear-func-buffer-type-match.html
 --min-version 2.0.1 clear-srgb-color-buffer.html
 --min-version 2.0.1 clipping-wide-points.html
+--min-version 2.0.1 depth-stencil-feedback-loop.html
 draw-buffers.html
 element-index-uint.html
 framebuffer-completeness-unaffected.html
