@@ -72,7 +72,7 @@ function runTest() {
     wtu.setupUnitQuad(gl, 0, 1);
     wtu.drawUnitQuad(gl);
     var msg = "";
-    var tolerance = 7;
+    var tolerance = 3;
     wtu.checkCanvas(gl, [127, 0, 0, 255], msg, tolerance);
     gl.deleteProgram(program);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from testing");
