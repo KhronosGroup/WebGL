@@ -142,7 +142,8 @@ function detect_depth_stencil_feedback_loop() {
 
     // Test rendering and sampling feedback loop for stencil buffer
     gl.bindTexture(gl.TEXTURE_2D, tex2);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.TEXTURE_2D, tex2, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, null, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.TEXTURE_2D, tex2, 0);
     if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
         testFailed("Framebuffer incomplete.");
         return;
