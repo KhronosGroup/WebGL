@@ -28,7 +28,7 @@ uniform mat4 gtf_ModelViewProjectionMatrix;
 varying vec4 color;
 
 struct sabcd
-{ 
+{
  mat3 a;
 };
 
@@ -50,7 +50,7 @@ void main (void)
 	sum = sum + s2.a[2][0];
 	sum = sum + s2.a[2][1];
 	sum = sum + s2.a[2][2];
-		 
+		
 	color = vec4( vec3(  sum / 550.0  ), 1.0);
 	gl_Position = gtf_ModelViewProjectionMatrix * gtf_Vertex;
 }

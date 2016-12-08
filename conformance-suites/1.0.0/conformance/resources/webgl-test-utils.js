@@ -466,11 +466,11 @@ function create3DContextWithWrapperThatThrowsOnGLError(canvas) {
 
 /**
  * Tests that an evaluated expression generates a specific GL error.
- * @param {!WebGLContext} gl The WebGLContext to use.
- * @param {number} glError The expected gl error.
- * @param {string} evalSTr The string to evaluate.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
+ * @param {string} evalStr The string to evaluate.
  */
-var shouldGenerateGLError = function(gl, glError, evalStr) {
+var shouldGenerateGLError = function(gl, glErrors, evalStr) {
   var exception;
   try {
     eval(evalStr);
@@ -480,30 +480,34 @@ var shouldGenerateGLError = function(gl, glError, evalStr) {
   if (exception) {
     testFailed(evalStr + " threw exception " + exception);
   } else {
-    var err = gl.getError();
-    if (err != glError) {
-      testFailed(evalStr + " expected: " + getGLErrorAsString(gl, glError) + ". Was " + getGLErrorAsString(gl, err) + ".");
-    } else {
-      testPassed(evalStr + " was expected value: " + getGLErrorAsString(gl, glError) + ".");
-    }
+    glErrorShouldBe(gl, glErrors, "after evaluating: " + evalStr);
   }
 };
 
 /**
  * Tests that the first error GL returns is the specified error.
- * @param {!WebGLContext} gl The WebGLContext to use.
- * @param {number} glError The expected gl error.
- * @param {string} opt_msg
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
+ * @param {string} opt_msg Optional additional message.
  */
-var glErrorShouldBe = function(gl, glError, opt_msg) {
+var glErrorShouldBe = function(gl, glErrors, opt_msg) {
+  if (!glErrors.length) {
+    glErrors = [glErrors];
+  }
   opt_msg = opt_msg || "";
   var err = gl.getError();
-  if (err != glError) {
-    testFailed("getError expected: " + getGLErrorAsString(gl, glError) +
-               ". Was " + getGLErrorAsString(gl, err) + " : " + opt_msg);
+  var ndx = glErrors.indexOf(err);
+  var errStrs = [];
+  for (var ii = 0; ii < glErrors.length; ++ii) {
+    errStrs.push(glEnumToString(gl, glErrors[ii]));
+  }
+  var expected = errStrs.join(" or ");
+  if (ndx < 0) {
+    var msg = "getError expected" + ((glErrors.length > 1) ? " one of: " : ": ");
+    testFailed(msg + expected +  ". Was " + glEnumToString(gl, err) + " : " + opt_msg);
   } else {
-    testPassed("getError was expected value: " +
-                getGLErrorAsString(gl, glError) + " : " + opt_msg);
+    var msg = "getError was " + ((glErrors.length > 1) ? "one of: " : "expected value: ");
+    testPassed(msg + expected + " : " + opt_msg);
   }
 };
 

@@ -36,12 +36,12 @@ bool result = true;
 	
 	if( (a&&b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 	
 	if( (a||b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 
 	if( !(a^^b) )
@@ -54,12 +54,12 @@ bool result = true;
 	
 	if( !(a&&b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 	
 	if( (a||b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 
 	if( (a^^b) )
@@ -72,12 +72,12 @@ bool result = true;
 
 	if( !(a&&b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 	
 	if( (a||b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 
 	if( (a^^b) )
@@ -90,12 +90,12 @@ bool result = true;
 
 	if( !(a&&b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 	
 	if( !(a||b) )
 		result = result && true;
-	else 
+	else
 		result = result && false;
 
 	if( !(a^^b) )

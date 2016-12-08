@@ -17,6 +17,8 @@
     <api version="1.0"/>
 
     <ext name="OES_texture_half_float" require="true"/>
+
+    <subsumed version="2.0" by="EXT_color_buffer_float" />
   </depends>
 
   <overview>
@@ -133,6 +135,10 @@ interface EXT_color_buffer_half_float {
 
     <revision date="2014/11/24">
       <change>Move to community approved.</change>
+    </revision>
+
+    <revision date="2016/05/05">
+      <change>Subsumed in WebGL 2.0 by EXT_color_buffer_float.</change>
     </revision>
   </history>
 </extension>

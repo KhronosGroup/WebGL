@@ -68,7 +68,22 @@
         Likewise the shading language preprocessor <code>#define GL_EXT_draw_buffers</code>, will be defined to 1 if the extension is supported.
       </addendum>
       <addendum>
-        The value of <code>gl_MaxDrawBuffers</code> should match <code>MAX_DRAW_BUFFERS_WEBGL</code> from the API if the extension is enabled in a WebGL context; otherwise, the value should be 1. Whether or not the extension is enabled with the <code>#extension GL_EXT_draw_buffers</code> directive in a shader does not affect the value of <code>gl_MaxDrawBuffers</code>.
+        The value of <code>gl_MaxDrawBuffers</code> must match <code>MAX_DRAW_BUFFERS_WEBGL</code> from the API if the extension is enabled in a WebGL context; otherwise, the value must be 1. Whether or not the extension is enabled with the <code>#extension GL_EXT_draw_buffers</code> directive in a shader does not affect the value of <code>gl_MaxDrawBuffers</code>. The value of <code>gl_MaxDrawBuffers</code> is a constant in the shader, and is guaranteed to be frozen at program link time. It is implementation-dependent whether it is frozen at shader compile time. (A consequence is that if a program is linked, and later the WEBGL_draw_buffers extension is enabled, the value of <code>gl_MaxDrawBuffers</code> seen by that program will still be 1.)
+      </addendum>
+      <addendum>
+        If the WEBGL_draw_buffers extension is enabled, but the fragment shader does not contain the <code>#extension GL_EXT_draw_buffers</code> directive to enable it, then writes to <code>gl_FragColor</code> are only written to <code>COLOR_ATTACHMENT0_WEBGL</code>, and not broadcast to all color attachments. In this scenario, other color attachments are guaranteed to remain untouched.
+      </addendum>
+      <addendum>
+        If a fragment shader writes to neither <code>gl_FragColor</code> nor <code>gl_FragData</code>, the values of
+        the fragment colors following shader execution are untouched.
+
+        If a fragment shader contains the <code>#extension GL_EXT_draw_buffers</code> directive, all
+        <code>gl_FragData</code> variables (from <code>gl_FragData[0]</code> to <code>gl_FragData[MAX_DRAW_BUFFERS_WEBGL - 1]</code>)
+        default to zero if no values are written to them during a shader execution.
+      </addendum>
+      <addendum>
+        If an image is attached to more than one color attachment point in a framebuffer, <code>checkFramebufferStatus</code>
+        returns <code>FRAMEBUFFER_UNSUPPORTED</code>. An image can be an individual mip level, or a face of cube map.
       </addendum>
     </mirrors>
     <features>
@@ -153,6 +168,18 @@ interface WEBGL_draw_buffers {
     </revision>
     <revision date="2014/08/08">
       <change>Ratified by Khronos Board of Promoters.</change>
+    </revision>
+    <revision date="2016/06/28">
+      <change>Revised behavior of gl_MaxDrawBuffers and gl_FragColor broadcasting, to avoid significant performance impact for WebGL 1.0 implementations running on top of the desktop OpenGL API.</change>
+    </revision>
+    <revision date="2016/07/08">
+      <change>Removed undefined behaviors.</change>
+    </revision>
+    <revision date="2016/07/11">
+      <change>Revised user-defined variable behavior to default to zero.</change>
+    </revision>
+    <revision date="2016/07/23">
+      <change>Revised behavior of the same image is attached to more than one color attachment point.</change>
     </revision>
   </history>
 </ratified>

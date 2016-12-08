@@ -95,7 +95,7 @@
   #frames iframe {
     border: 0;
   }
-  
+
   #testList {
     padding:1em;
   }
@@ -121,7 +121,7 @@
     white-space: nowrap;
   }
 
-  .testpage { 
+  .testpage {
     border-style: solid;
     border-color: #CCC;
     border-width: 0px 0 1px 0;
@@ -133,7 +133,7 @@
     transition: background-color 0.25s;
   }
 
-  .testpage:first-child { 
+  .testpage:first-child {
     border-width: 1px 0 1px 0;
   }
 
@@ -177,7 +177,7 @@ var OPTIONS = {
 
 var testVersions = [
   "1.0.4 (beta)",
-  "2.0.0 (beta)"
+  "2.0.1 (beta)"
 ];
 
 function start() {
@@ -233,6 +233,7 @@ function start() {
     this.totalSuccessful = 0;
     this.totalTimeouts = 0;
     this.totalSkipped = 0;
+    this.totalFailed = 0;
     this.testIndex = testIndex;
     this.startTime = 0;
     this.totalTime = 0;
@@ -306,6 +307,7 @@ function start() {
       // don't report success.
       return;
     } else {
+      ++this.totalFailed;
       var result = "failed";
       var css = "fail";
     }
@@ -323,6 +325,8 @@ function start() {
     }
     this.totalTests = 0;
     this.totalSuccessful = 0;
+    this.totalSkipped = 0;
+    this.totalFailed = 0;
     this.totalTimeouts = 0;
     this.totalTime = 0;
     // remove previous results.
@@ -356,11 +360,20 @@ function start() {
       this.totalTime = 0;
     }
 
-    if(this.totalSkipped) {
-      var msg = ' (' + this.totalSkipped + ' of ' + this.totalTests + ' skipped in ' + this.totalTime.toFixed(1) + ' ms)';
-    } else {
-      var msg = ' (' + this.totalSuccessful + ' of ' + this.totalTests + ' passed in ' + this.totalTime.toFixed(1) + ' ms)';
+    var passedMsg = ' (Passed: ' + this.totalSuccessful + '/' + this.totalTests;
+    var skippedMsg = '';
+    if (this.totalSkipped > 0) {
+      skippedMsg = ' Skipped: ' + this.totalSkipped + '/' + this.totalTests;
     }
+    var failedMsg = '';
+    if (this.totalFailed > 0) {
+      failedMsg = ' Failed: ' + this.totalFailed + '/' + this.totalTests;
+    }
+    var timeoutMsg = '';
+    if (this.totalTimeouts > 0) {
+      timeoutMsg = ' Timeout: ' + this.totalTimeouts + '/' + this.totalTests;
+    }
+    var msg = passedMsg + skippedMsg + failedMsg + timeoutMsg + ' in ' + this.totalTime.toFixed(1) + ' ms)';
 
     if (success === undefined) {
       var css = 'testpagetimeout';
@@ -406,6 +419,8 @@ function start() {
     this.folder = folder;
     this.cachedTotalTime = 0;
     this.cachedTotalSuccessful = 0;
+    this.cachedTotalSkipped = 0;
+    this.cachedTotalTimeouts = 0;
     this.cachedTotalTests = 0;
     var that = this;
 
@@ -501,6 +516,45 @@ function start() {
     return this.cachedTotalSuccessful;
   };
 
+  Folder.prototype.totalSkipped = function() {
+    if (this.cachedTotalSkipped == -1) {
+      this.cachedTotalSkipped = 0;
+      for (var name in this.subFolders) {
+        this.cachedTotalSkipped += this.subFolders[name].totalSkipped();
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.cachedTotalSkipped += this.pages[ii].totalSkipped;
+      }
+    }
+    return this.cachedTotalSkipped;
+  };
+
+  Folder.prototype.totalFailed = function() {
+    if (this.cachedTotalFailed == -1) {
+      this.cachedTotalFailed = 0;
+      for (var name in this.subFolders) {
+        this.cachedTotalFailed += this.subFolders[name].totalFailed();
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.cachedTotalFailed += this.pages[ii].totalFailed;
+      }
+    }
+    return this.cachedTotalFailed;
+  };
+
+  Folder.prototype.totalTimeouts = function() {
+    if (this.cachedTotalTimeouts == -1) {
+      this.cachedTotalTimeouts = 0;
+      for (var name in this.subFolders) {
+        this.cachedTotalTimeouts += this.subFolders[name].totalTimeouts();
+      }
+      for (var ii = 0; ii < this.pages.length; ++ii) {
+        this.cachedTotalTimeouts += this.pages[ii].totalTimeouts;
+      }
+    }
+    return this.cachedTotalTimeouts;
+  };
+
   Folder.prototype.totalTests = function() {
     if (this.cachedTotalTests == -1) {
       this.cachedTotalTests = 0;
@@ -525,8 +579,24 @@ function start() {
   Folder.prototype.pageFinished = function(page, success) {
     this.cachedTotalTime = -1;
     this.cachedTotalSuccessful = -1;
+    this.cachedTotalSkipped = -1;
+    this.cachedTotalFailed = -1;
+    this.cachedTotalTimeouts = -1;
     this.cachedTotalTests = -1;
-    this.msgNode.textContent = ' (' + this.totalSuccessful() + ' of ' + this.totalTests() + ' passed in ' + (this.totalTime() / 1000).toFixed(2) + ' seconds)';
+    var passedMsg = ' (Passed: ' + this.totalSuccessful() + '/' + this.totalTests();
+    var skippedMsg = '';
+    if (this.totalSkipped() > 0) {
+      skippedMsg = ' Skipped: ' + this.totalSkipped() + '/' + this.totalTests();
+    }
+    var failedMsg = '';
+    if (this.totalFailed() > 0) {
+      failedMsg = ' Failed: ' + this.totalFailed() + '/' + this.totalTests();
+    }
+    var timeoutMsg = '';
+    if (this.totalTimeouts() > 0) {
+      timeoutMsg = ' Timeout: ' + this.totalTimeouts() + '/' + this.totalTests();
+    }
+    this.msgNode.textContent = passedMsg + skippedMsg + failedMsg + timeoutMsg + ' in ' + (this.totalTime() / 1000).toFixed(2) + ' seconds)';
     if (this.folder) {
       this.folder.pageFinished(page, success);
     }
@@ -742,6 +812,7 @@ function start() {
       var totalSuccessful = 0;
       var totalTimeouts = 0;
       var totalSkipped = 0;
+      var totalFailed = 0;
       var totalTime = Date.now() - this.startTime;
       for (var url in this.pagesByURL) {
         var page = this.pagesByURL[url];
@@ -749,13 +820,26 @@ function start() {
         totalSuccessful += page.totalSuccessful;
         totalTimeouts += page.totalTimeouts;
         totalSkipped += page.totalSkipped;
+        totalFailed += page.totalFailed;
       }
+      var passedMsg = 'Passed ' + totalSuccessful + '/' + totalTests + ' (' + (totalSuccessful * 100.0 / totalTests).toFixed(2) + '%)';
       var timeout = '';
       if (totalTimeouts > 0) {
         timeout = ', ' + totalTimeouts + ' timed out';
       }
-      var msg = ' (' + totalSuccessful + ' of ' +
-                totalTests + ' passed' + timeout + ')';
+      var skippedMsg = '';
+      if (totalSkipped > 0) {
+        skippedMsg = ' Skipped ' + totalSkipped + '/' + totalTests + ' (' + (totalSkipped * 100.0 / totalTests).toFixed(2) + '%)';
+      }
+      var failedMsg = '';
+      if (totalFailed > 0) {
+        failedMsg = ' Failed ' + totalFailed + '/' + totalTests + ' (' + (totalFailed * 100.0 / totalTests).toFixed(2) + '%)';
+      }
+      var timeoutMsg = '';
+      if (totalTimeouts > 0) {
+        timeoutMsg = ' Timeout ' + totalTimeouts + '/' + totalTests + ' (' + (totalTimeouts * 100.0 / totalTests).toFixed(2) + '%)';
+      }
+      var msg = passedMsg + skippedMsg + failedMsg + timeoutMsg;
       this.fullResultsNode.textContent = msg;
 
       // generate a text summary
@@ -1131,7 +1215,7 @@ function start() {
             <div id="info">
               <img src="resources/webgl-logo.png" /><br />
               WebGL Conformance Test Runner<br/>
-              Version 
+              Version
               <select id="testVersion">
               </select>
               <br/>

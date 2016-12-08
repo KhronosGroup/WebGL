@@ -49,7 +49,7 @@ void main (void)
 
 	  	if(count1 == 2)
             		continue;
-	  	else 
+	  	else
 	    		val1 += count1;
 	
 	}

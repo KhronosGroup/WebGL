@@ -7,6 +7,10 @@
     <a href="http://www.khronos.org/registry/webgl/specs/{@version}/">WebGL API <xsl:value-of select="@version"/></a>
   </xsl:template>
 
+  <xsl:template match="subsumed">
+    No longer available as of the <a href="http://www.khronos.org/registry/webgl/specs/latest/{@version}/">WebGL API <xsl:value-of select="@version"/></a> specification. Subsumed by the <a href="../{@by}/"><xsl:value-of select="@by"/></a> extension.
+  </xsl:template>
+
   <xsl:template match="ext">
     <a href="http://www.khronos.org/registry/webgl/extensions/{@name}/">
       <xsl:value-of select="@name"/>

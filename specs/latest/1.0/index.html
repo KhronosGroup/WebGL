@@ -28,7 +28,7 @@
     <!--end-logo-->
 
     <h1>WebGL Specification</h1>
-    <h2 class="no-toc">Editor's Draft 11 January 2016</h2>
+    <h2 class="no-toc">Editor's Draft <span id="LastEditDate"></span></h2>
     <dl>
         <dt>This version:
             <dd>
@@ -79,7 +79,7 @@
     <p>
         This specification describes an additional rendering context and support
         objects for the
-        <a href="http://www.w3.org/TR/html5/the-canvas-element.html"
+        <a href="https://www.w3.org/TR/html5/scripting-1.html#the-canvas-element"
            title="HTML 5 Canvas Element">
             HTML 5 <span class="prop-name">canvas</span> element <a href="#refsCANVAS">[CANVAS]</a>.
         </a>
@@ -91,12 +91,22 @@
     <!--begin-status-->
     <p>
         This document is an editor's draft. Do not cite this document as other than work in
-        progress.  Public discussion of this specification is welcome on the
-        (<a href="https://www.khronos.org/webgl/public-mailing-list/archives/">archived</a>) WebGL
-        mailing list <a href="mailto:public_webgl@khronos.org">public_webgl@khronos.org</a> (see
-        <a href="http://www.khronos.org/webgl/public-mailing-list/">instructions</a>).
+        progress.
     </p>
     <!--end-status-->
+
+    <h2 class="no-toc">Feedback</h2>
+    <p>
+        Public discussion of this specification is welcome on
+        the <a href="mailto:public_webgl@khronos.org">public_webgl@khronos.org</a> mailing list
+        (<a href="http://www.khronos.org/webgl/public-mailing-list/">instructions</a>, <a href="https://www.khronos.org/webgl/public-mailing-list/archives/">archives</a>).
+    </p>
+    <p>
+        Please file bugs against the specification or its conformance tests in
+        the <a href="https://github.com/KhronosGroup/WebGL/issues">issue tracker</a>. Pull requests
+        are welcome against the <a href="https://github.com/KhronosGroup/WebGL">Github
+        repository</a>.
+    </p>
 
     <h2 class="no-toc">Table of contents</h2>
     <div id="toc"></div>
@@ -1132,12 +1142,18 @@ for (var i = 0; i < numVertices; i++) {
         <li> Let <em>use default return value</em> be false. </li>
 
         <li> If the <a href="#webgl-context-lost-flag">webgl context lost flag</a> is set,
-        let <em>use default return value</em> be true. </li>
+        let <em>use default return value</em> be true.
 
-        <li> If any argument to the method is a <code>WebGLObject</code> with
-        its <a href="#webgl-object-invalidated-flag">invalidated flag</a> set, generate
-        an <code>INVALID_OPERATION</code> error and let <em>use default return value</em> be
-        true. </li>
+            <ol class="nestedlist">
+
+            <li> Otherwise, if any argument to the method is a <code>WebGLObject</code> with
+            its <a href="#webgl-object-invalidated-flag">invalidated flag</a> set, generate
+            an <code>INVALID_OPERATION</code> error and let <em>use default return value</em> be
+            true. </li>
+
+            </ol>
+
+        </li>
 
         <li> If <em>use default return value</em> is true, perform the following steps:
 
@@ -1150,6 +1166,8 @@ for (var i = 0; i < numVertices; i++) {
 
             </ol>
 
+        </li>
+
         <li> Otherwise, perform the implementation of the called method and return its result. </li>
 
         </ol>
@@ -1158,6 +1176,14 @@ for (var i = 0; i < numVertices; i++) {
     See <a href="#CONTEXT_LOST">the context lost event</a> for further details.
     </p>
     <pre class="idl">
+typedef (ArrayBuffer or ArrayBufferView) BufferDataSource;
+typedef (ImageBitmap or
+         ImageData or
+         HTMLImageElement or
+         HTMLCanvasElement or
+         HTMLVideoElement) TexImageSource;
+typedef (Float32Array or sequence&lt;GLfloat&gt;) VertexAttribFVSource;
+
 [NoInterfaceObject]
 interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
 {
@@ -1592,8 +1618,8 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     object? getExtension(DOMString name);
 
     void activeTexture(GLenum texture);
-    void attachShader(WebGLProgram? program, WebGLShader? shader);
-    void bindAttribLocation(WebGLProgram? program, GLuint index, DOMString name);
+    void attachShader(WebGLProgram program, WebGLShader shader);
+    void bindAttribLocation(WebGLProgram program, GLuint index, DOMString name);
     void bindBuffer(GLenum target, WebGLBuffer? buffer);
     void bindFramebuffer(GLenum target, WebGLFramebuffer? framebuffer);
     void bindRenderbuffer(GLenum target, WebGLRenderbuffer? renderbuffer);
@@ -1605,10 +1631,10 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB,
                            GLenum srcAlpha, GLenum dstAlpha);
 
-    typedef (ArrayBuffer or ArrayBufferView) BufferDataSource;
     void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
-    void bufferData(GLenum target, BufferDataSource? data, GLenum usage);
-    void bufferSubData(GLenum target, GLintptr offset, BufferDataSource? data);
+    void bufferData(GLenum target, ArrayBuffer? data, GLenum usage);
+    void bufferData(GLenum target, ArrayBufferView data, GLenum usage);
+    void bufferSubData(GLenum target, GLintptr offset, BufferDataSource data);
 
     [WebGLHandlesContextLoss] GLenum checkFramebufferStatus(GLenum target);
     void clear(GLbitfield mask);
@@ -1616,7 +1642,7 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void clearDepth(GLclampf depth);
     void clearStencil(GLint s);
     void colorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
-    void compileShader(WebGLShader? shader);
+    void compileShader(WebGLShader shader);
 
     void compressedTexImage2D(GLenum target, GLint level, GLenum internalformat,
                               GLsizei width, GLsizei height, GLint border,
@@ -1651,7 +1677,7 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void depthFunc(GLenum func);
     void depthMask(GLboolean flag);
     void depthRange(GLclampf zNear, GLclampf zFar);
-    void detachShader(WebGLProgram? program, WebGLShader? shader);
+    void detachShader(WebGLProgram program, WebGLShader shader);
     void disable(GLenum cap);
     void disableVertexAttribArray(GLuint index);
     void drawArrays(GLenum mode, GLint first, GLsizei count);
@@ -1670,11 +1696,11 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
 
     void generateMipmap(GLenum target);
 
-    WebGLActiveInfo? getActiveAttrib(WebGLProgram? program, GLuint index);
-    WebGLActiveInfo? getActiveUniform(WebGLProgram? program, GLuint index);
-    sequence&lt;WebGLShader&gt;? getAttachedShaders(WebGLProgram? program);
+    WebGLActiveInfo? getActiveAttrib(WebGLProgram program, GLuint index);
+    WebGLActiveInfo? getActiveUniform(WebGLProgram program, GLuint index);
+    sequence&lt;WebGLShader&gt;? getAttachedShaders(WebGLProgram program);
 
-    [WebGLHandlesContextLoss] GLint getAttribLocation(WebGLProgram? program, DOMString name);
+    [WebGLHandlesContextLoss] GLint getAttribLocation(WebGLProgram program, DOMString name);
 
     any getBufferParameter(GLenum target, GLenum pname);
     any getParameter(GLenum pname);
@@ -1683,20 +1709,20 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
 
     any getFramebufferAttachmentParameter(GLenum target, GLenum attachment,
                                           GLenum pname);
-    any getProgramParameter(WebGLProgram? program, GLenum pname);
-    DOMString? getProgramInfoLog(WebGLProgram? program);
+    any getProgramParameter(WebGLProgram program, GLenum pname);
+    DOMString? getProgramInfoLog(WebGLProgram program);
     any getRenderbufferParameter(GLenum target, GLenum pname);
-    any getShaderParameter(WebGLShader? shader, GLenum pname);
+    any getShaderParameter(WebGLShader shader, GLenum pname);
     WebGLShaderPrecisionFormat? getShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype);
-    DOMString? getShaderInfoLog(WebGLShader? shader);
+    DOMString? getShaderInfoLog(WebGLShader shader);
 
-    DOMString? getShaderSource(WebGLShader? shader);
+    DOMString? getShaderSource(WebGLShader shader);
 
     any getTexParameter(GLenum target, GLenum pname);
 
-    any getUniform(WebGLProgram? program, WebGLUniformLocation? location);
+    any getUniform(WebGLProgram program, WebGLUniformLocation location);
 
-    WebGLUniformLocation? getUniformLocation(WebGLProgram? program, DOMString name);
+    WebGLUniformLocation? getUniformLocation(WebGLProgram program, DOMString name);
 
     any getVertexAttrib(GLuint index, GLenum pname);
 
@@ -1711,7 +1737,7 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     [WebGLHandlesContextLoss] GLboolean isShader(WebGLShader? shader);
     [WebGLHandlesContextLoss] GLboolean isTexture(WebGLTexture? texture);
     void lineWidth(GLfloat width);
-    void linkProgram(WebGLProgram? program);
+    void linkProgram(WebGLProgram program);
     void pixelStorei(GLenum pname, GLint param);
     void polygonOffset(GLfloat factor, GLfloat units);
 
@@ -1723,7 +1749,7 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void sampleCoverage(GLclampf value, GLboolean invert);
     void scissor(GLint x, GLint y, GLsizei width, GLsizei height);
 
-    void shaderSource(WebGLShader? shader, DOMString source);
+    void shaderSource(WebGLShader shader, DOMString source);
 
     void stencilFunc(GLenum func, GLint ref, GLuint mask);
     void stencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask);
@@ -1732,16 +1758,11 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
     void stencilOp(GLenum fail, GLenum zfail, GLenum zpass);
     void stencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass);
 
-    typedef (ImageBitmap or
-             ImageData or
-             HTMLImageElement or
-             HTMLCanvasElement or
-             HTMLVideoElement) TexImageSource;
     void texImage2D(GLenum target, GLint level, GLint internalformat,
                     GLsizei width, GLsizei height, GLint border, GLenum format,
                     GLenum type, ArrayBufferView? pixels);
     void texImage2D(GLenum target, GLint level, GLint internalformat,
-                    GLenum format, GLenum type, TexImageSource? source); // May throw DOMException
+                    GLenum format, GLenum type, TexImageSource source); // May throw DOMException
 
     void texParameterf(GLenum target, GLenum pname, GLfloat param);
     void texParameteri(GLenum target, GLenum pname, GLint param);
@@ -1750,7 +1771,7 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
                        GLsizei width, GLsizei height,
                        GLenum format, GLenum type, ArrayBufferView? pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
-                       GLenum format, GLenum type, TexImageSource? source); // May throw DOMException
+                       GLenum format, GLenum type, TexImageSource source); // May throw DOMException
 
     void uniform1f(WebGLUniformLocation? location, GLfloat x);
     void uniform1fv(WebGLUniformLocation? location, Float32Array v);
@@ -1791,18 +1812,17 @@ interface <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</dfn>
                           sequence&lt;GLfloat&gt; value);
 
     void useProgram(WebGLProgram? program);
-    void validateProgram(WebGLProgram? program);
+    void validateProgram(WebGLProgram program);
 
-    void vertexAttrib1f(GLuint indx, GLfloat x);
-    typedef (Float32Array or sequence&lt;GLfloat&gt;) VertexAttribFVSource;
-    void vertexAttrib1fv(GLuint indx, VertexAttribFVSource values);
-    void vertexAttrib2f(GLuint indx, GLfloat x, GLfloat y);
-    void vertexAttrib2fv(GLuint indx, VertexAttribFVSource values);
-    void vertexAttrib3f(GLuint indx, GLfloat x, GLfloat y, GLfloat z);
-    void vertexAttrib3fv(GLuint indx, VertexAttribFVSource values);
-    void vertexAttrib4f(GLuint indx, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-    void vertexAttrib4fv(GLuint indx, VertexAttribFVSource values);
-    void vertexAttribPointer(GLuint indx, GLint size, GLenum type,
+    void vertexAttrib1f(GLuint index, GLfloat x);
+    void vertexAttrib1fv(GLuint index, VertexAttribFVSource values);
+    void vertexAttrib2f(GLuint index, GLfloat x, GLfloat y);
+    void vertexAttrib2fv(GLuint index, VertexAttribFVSource values);
+    void vertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat z);
+    void vertexAttrib3fv(GLuint index, VertexAttribFVSource values);
+    void vertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+    void vertexAttrib4fv(GLuint index, VertexAttribFVSource values);
+    void vertexAttribPointer(GLuint index, GLint size, GLenum type,
                              GLboolean normalized, GLsizei stride, GLintptr offset);
 
     void viewport(GLint x, GLint y, GLsizei width, GLsizei height);
@@ -2028,6 +2048,10 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             </table><br>
             <p>All queries returning sequences or typed arrays return a new object each time.</p>
             <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
+            <p>If <em>pname</em> is <code>IMPLEMENTATION_COLOR_READ_FORMAT</code>
+            or <code>IMPLEMENTATION_COLOR_READ_TYPE</code>, and the currently bound framebuffer is
+            not <em>framebuffer complete</em>, generates an <code>INVALID_OPERATION</code> error and
+            returns null.
             <p>The following <em>pname</em> arguments return a string describing some aspect of the current WebGL implementation:</p>
             <table>
               <tr><td>VERSION</td>
@@ -2139,7 +2163,8 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             bound to this target is unbound. A given WebGLBuffer object may only be bound to one of
             the ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER target in its lifetime. An attempt to bind a
             buffer object to the other target will generate an <code>INVALID_OPERATION</code> error, and the
-            current binding will remain untouched.
+            current binding will remain untouched. An attempt to bind a deleted buffer will generate an
+            <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.
 
         <dt class="idl-code">void bufferData(GLenum target, GLsizeiptr size, GLenum usage)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferData.xml">man page</a>)</span>
@@ -2147,14 +2172,16 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             Set the size of the currently bound WebGLBuffer object for the passed target. The
             buffer is initialized to 0.
 
-        <dt><p class="idl-code">void bufferData(GLenum target, BufferDataSource? data, GLenum usage)
+        <dt><p class="idl-code">void bufferData(GLenum target, ArrayBuffer? data, GLenum usage)
+            <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferData.xml">man page</a>)</span></p>
+            <p class="idl-code">void bufferData(GLenum target, ArrayBufferView data, GLenum usage)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferData.xml">man page</a>)</span></p>
         <dd>
             Set the size of the currently bound WebGLBuffer object for the passed target to the
             size of the passed data, then write the contents of data to the buffer object.
             <br><br>
             If the passed data is null then an <code>INVALID_VALUE</code> error is generated.
-        <dt><p class="idl-code">void bufferSubData(GLenum target, GLintptr offset, BufferDataSource? data)
+        <dt><p class="idl-code">void bufferSubData(GLenum target, GLintptr offset, BufferDataSource data)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBufferSubData.xml">man page</a>)</span></p>
         <dd>
             For the WebGLBuffer object bound to the passed target write the passed data starting at
@@ -2216,7 +2243,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             (<code class="param">target</code>), which must be <code class="enum">FRAMEBUFFER</code>.
             If <code class="param">framebuffer</code> is null, the default framebuffer provided by the context
             is bound and attempts to modify or query state on <code class="param">target</code> <code class="enum">FRAMEBUFFER</code>
-            will generate an <code class="error">INVALID_OPERATION</code> error.
+            will generate an <code class="error">INVALID_OPERATION</code> error. An attempt to bind a deleted framebuffer will generate an
+            <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.
+
 
         <dt class="idl-code"><a name="CHECK_FRAMEBUFFER_STATUS">[WebGLHandlesContextLoss] GLenum checkFramebufferStatus</a>(GLenum target)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.4.5">OpenGL ES 2.0 &sect;4.4.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCheckFramebufferStatus.xml">man page</a>)</span>
@@ -2286,7 +2315,8 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             Bind the given <code class="interface">WebGLRenderbuffer</code> object to the given binding point
             (<code class="param">target</code>), which must be <code class="enum">RENDERBUFFER</code>.
             If <code class="param">renderbuffer</code> is null the renderbuffer object currently bound to
-            this <code class="param">target</code> is unbound.
+            this <code class="param">target</code> is unbound. An attempt to bind a deleted renderbuffer will
+            generate an <code>INVALID_OPERATION</code> error, and the current binding will remain untouched.
 
         <dt class="idl-code">WebGLRenderbuffer? createRenderbuffer()
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGenRenderbuffers.xml">glGenRenderbuffers</a>)</span>
@@ -2346,6 +2376,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
     <dl class="methods">
         <dt class="idl-code">void bindTexture(GLenum target, WebGLTexture? texture)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindTexture.xml">man page</a>)</span>
+        <dd>
+            An attempt to bind a deleted texture will generate an <code>INVALID_OPERATION</code> error, and
+            the current binding will remain untouched.
 
         <dt><p class="idl-code"><a name="COMPRESSEDTEXIMAGE2D">void compressedTexImage2D</a>(GLenum target, GLint level, GLenum internalformat,
                     GLsizei width, GLsizei height, GLint border, ArrayBufferView pixels)
@@ -2454,7 +2487,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             If <code>pixels</code> is non-null but its size is less than what is required by the specified <em>width</em>, <em>height</em>, <em>format</em>, <em>type</em>, and pixel storage parameters, generates an <code>INVALID_OPERATION</code> error.
 
         <dt><p class="idl-code"><a name="TEXIMAGE2D_HTML">void texImage2D</a>(GLenum target, GLint level, GLint internalformat,
-                    GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
+                    GLenum format, GLenum type, TexImageSource source) /* May throw DOMException */
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.1">OpenGL ES 2.0 &sect;3.7.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexImage2D.xml">man page</a>)</span></p>
         <dd>
             Uploads the given element or image data to the currently bound WebGLTexture. <br><br>
@@ -2467,15 +2500,21 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             the WebGL implementation. If a packed pixel format is specified which would imply loss
             of bits of precision from the image data, this loss of precision must occur. <br><br>
 
-            The first pixel transferred from the source to the WebGL implementation corresponds to
-            the upper left corner of the source. This behavior is modified by the
-            the <code>UNPACK_FLIP_Y_WEBGL</code> <a href="#PIXEL_STORAGE_PARAMETERS">pixel storage
-            parameter</a>. <br><br>
+            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
+            pixel storage parameters that affect the behavior of this function when it is called
+            with any argument type other than <code>ImageBitmap</code>. <br><br>
 
-            If the source image is an RGB or RGBA lossless image with 8 bits per channel, the
-            browser guarantees that the full precision of all channels is preserved. <br><br>
+            The first pixel transferred from the source to the WebGL implementation corresponds
+            to the upper left corner of the source. This behavior is modified by the
+            <code>UNPACK_FLIP_Y_WEBGL</code> <a href="#PIXEL_STORAGE_PARAMETERS">pixel storage
+            parameter</a>, except for <code>ImageBitmap</code> arguments, as described in the
+            abovementioned section. <br><br>
 
-            If the original image contains an alpha channel and the
+            If the source is an <code>HTMLImageElement</code> or <code>ImageBitmap</code> containing
+            an RGB or RGBA lossless image with 8 bits per channel, the browser guarantees that the
+            full precision of all channels is preserved. <br><br>
+
+            If the original <code>HTMLImageElement</code> contains an alpha channel and the
             <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter is false, then the
             RGB values are guaranteed to never have been premultiplied by the alpha channel, whether
             those values are derived directly from the original file format or converted from some
@@ -2511,9 +2550,6 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             If <code>source</code> is null then an <code>INVALID_VALUE</code> error is
             generated. <br><br>
-
-            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
-            pixel storage parameters that affect the behavior of this function.
         <dt class="idl-code">void texParameterf(GLenum target, GLenum pname, GLfloat param)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.4">OpenGL ES 2.0 &sect;3.7.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexParameter.xml">man page</a>)</span>
         <dd>
@@ -2546,7 +2582,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function.
         <dt><p class="idl-code"><a name="TEXSUBIMAGE2D_HTML">void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset,
-                       GLenum format, GLenum type, TexImageSource? source) /* May throw DOMException */
+                       GLenum format, GLenum type, TexImageSource source) /* May throw DOMException */
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.2">OpenGL ES 2.0 &sect;3.7.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glTexSubImage2D.xml">man page</a>)</span></p>
         <dd>
             Updates a sub-rectangle of the currently bound WebGLTexture with the contents of the
@@ -2559,10 +2595,15 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             the <em>format</em> and <em>type</em> arguments, and notes on
             the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter. <br><br>
 
-            The first pixel transferred from the source to the WebGL implementation corresponds to
-            the upper left corner of the source. This behavior is modified by the
-            the <code>UNPACK_FLIP_Y_WEBGL</code> <a href="#PIXEL_STORAGE_PARAMETERS">pixel storage
-            parameter</a>. <br><br>
+            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
+            pixel storage parameters that affect the behavior of this function when it is called
+            with any argument type other than <code>ImageBitmap</code>. <br><br>
+
+            The first pixel transferred from the source to the WebGL implementation corresponds
+            to the upper left corner of the source. This behavior is modified by the
+            <code>UNPACK_FLIP_Y_WEBGL</code> <a href="#PIXEL_STORAGE_PARAMETERS">pixel storage
+            parameter</a>, except for <code>ImageBitmap</code> arguments, as described in the
+            abovementioned section. <br><br>
 
             If an attempt is made to call this function with no WebGLTexture bound (see above), an
             <code>INVALID_OPERATION</code> error is generated. <br><br>
@@ -2584,9 +2625,6 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             If <code>source</code> is null then an <code>INVALID_VALUE</code> error is
             generated. <br><br>
-
-            See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
-            pixel storage parameters that affect the behavior of this function.
     </dl>
 
 <!-- ======================================================================================================= -->
@@ -2601,9 +2639,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
     </p>
 
     <dl class="methods">
-        <dt class="idl-code">void attachShader(WebGLProgram? program, WebGLShader? shader)
+        <dt class="idl-code">void attachShader(WebGLProgram program, WebGLShader shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glAttachShader.xml">man page</a>)</span>
-        <dt class="idl-code">void bindAttribLocation(WebGLProgram? program, GLuint index, DOMString name)
+        <dt class="idl-code">void bindAttribLocation(WebGLProgram program, GLuint index, DOMString name)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glBindAttribLocation.xml">man page</a>)</span>
         <dd>
             If the passed name is longer than the restriction defined
@@ -2616,7 +2654,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
-        <dt class="idl-code">void compileShader(WebGLShader? shader)
+        <dt class="idl-code">void compileShader(WebGLShader shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glCompileShader.xml">man page</a>)</span>
         <dd>
             See <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL
@@ -2654,16 +2692,16 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             Note that the shader object will be deleted when the WebGLShader object is destroyed.
             This method merely gives the author greater control over when the shader object is
             destroyed.
-        <dt class="idl-code">void detachShader(WebGLProgram? program, WebGLShader? shader)
+        <dt class="idl-code">void detachShader(WebGLProgram program, WebGLShader shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDetachShader.xml">man page</a>)</span>
-        <dt class="idl-code">sequence&lt;WebGLShader&gt;? getAttachedShaders(WebGLProgram? program)
+        <dt class="idl-code">sequence&lt;WebGLShader&gt;? getAttachedShaders(WebGLProgram program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetAttachedShaders.xml">man page</a>)</span>
         <dd>
             <p>Returns a new object representing the list of shaders attached to the passed program.</p>
 
             <p>Returns null if any OpenGL errors are generated during the execution of this
             function.</p>
-        <dt class="idl-code">any getProgramParameter(WebGLProgram? program, GLenum pname)
+        <dt class="idl-code">any getProgramParameter(WebGLProgram program, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetProgramiv.xml">man page</a>)</span>
         <dd>
             Return the value for the passed pname given the passed program. The type returned is the natural
@@ -2680,12 +2718,12 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
             <p>Returns null if any OpenGL errors are generated during the execution of this
             function.</p>
-        <dt class="idl-code">DOMString? getProgramInfoLog(WebGLProgram? program)
+        <dt class="idl-code">DOMString? getProgramInfoLog(WebGLProgram program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetProgramInfoLog.xml">man page</a>)</span>
         <dd>
             <p>Returns null if any OpenGL errors are generated during the execution of this
             function.</p>
-        <dt class="idl-code">any getShaderParameter(WebGLShader? shader, GLenum pname)
+        <dt class="idl-code">any getShaderParameter(WebGLShader shader, GLenum pname)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, similar to <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderiv.xml">man page</a>)</span>
         <dd>
             Return the value for the passed pname given the passed shader. The type returned is the natural
@@ -2709,12 +2747,12 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             <p>Returns null if any OpenGL errors are generated during the execution of this
             function.</p>
-        <dt class="idl-code">DOMString? getShaderInfoLog(WebGLShader? shader)
+        <dt class="idl-code">DOMString? getShaderInfoLog(WebGLShader shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderInfoLog.xml">man page</a>)</span>
         <dd>
             <p>Returns null if any OpenGL errors are generated during the execution of this
             function.</p>
-        <dt class="idl-code">DOMString? getShaderSource(WebGLShader? shader)
+        <dt class="idl-code">DOMString? getShaderSource(WebGLShader shader)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetShaderSource.xml">man page</a>)</span>
         <dd>
             <p>Returns null if any OpenGL errors are generated during the execution of this
@@ -2733,7 +2771,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             Returns false if the shader's <a href="#webgl-object-invalidated-flag">invalidated
             flag</a> is set.
-        <dt class="idl-code">void linkProgram(WebGLProgram? program)
+        <dt class="idl-code">void linkProgram(WebGLProgram program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glLinkProgram.xml">man page</a>)</span>
         <dd>
             Links the passed program object. Details of the behavior are defined in the OpenGL ES
@@ -2753,7 +2791,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             See <a href="#PACKING_RESTRICTIONS">Packing Restrictions for Uniforms and Varyings</a>
             for additional constraints enforced in, and additional validation performed by, WebGL
             implementations.
-        <dt class="idl-code">void shaderSource(WebGLShader? shader, DOMString source)
+        <dt class="idl-code">void shaderSource(WebGLShader shader, DOMString source)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glShaderSource.xml">man page</a>)</span>
         <dd>
             See <a href="#SUPPORTED_GLSL_CONSTRUCTS">Supported GLSL
@@ -2765,7 +2803,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             and additional validation performed by WebGL implementations.
         <dt class="idl-code">void useProgram(WebGLProgram? program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glUseProgram.xml">man page</a>)</span>
-        <dt class="idl-code">void validateProgram(WebGLProgram? program)
+        <dt class="idl-code">void validateProgram(WebGLProgram program)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.5">OpenGL ES 2.0 &sect;2.10.5</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glValidateProgram.xml">man page</a>)</span>
     </dl>
 
@@ -2787,7 +2825,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             rules beyond OpenGL ES 2.0 regarding enabled vertex attributes;
             see <a href="#ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range
             Checking</a>.
-        <dt class="idl-code">WebGLActiveInfo? getActiveAttrib(WebGLProgram? program, GLuint index)
+        <dt class="idl-code">WebGLActiveInfo? getActiveAttrib(WebGLProgram program, GLuint index)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetActiveAttrib.xml">man page</a>)</span>
         <dd>
             Returns a new <code>WebGLActiveInfo</code> object describing the size, type and name of
@@ -2795,7 +2833,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             index is out of range, generates an <code>INVALID_VALUE</code> error and returns null.
             <p>Returns null if any OpenGL errors are generated during the execution of this
             function.</p>
-        <dt class="idl-code">WebGLActiveInfo? getActiveUniform(WebGLProgram? program, GLuint index)
+        <dt class="idl-code">WebGLActiveInfo? getActiveUniform(WebGLProgram program, GLuint index)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetActiveUniform.xml">man page</a>)</span>
         <dd>
             Returns a new <code>WebGLActiveInfo</code> object describing the size, type and name of
@@ -2803,7 +2841,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             of range, generates an <code>INVALID_VALUE</code> error and returns null.
             <p>Returns null if any OpenGL errors are generated during the execution of this
             function.</p>
-        <dt class="idl-code">[WebGLHandlesContextLoss] GLint getAttribLocation(WebGLProgram? program, DOMString name)
+        <dt class="idl-code">[WebGLHandlesContextLoss] GLint getAttribLocation(WebGLProgram program, DOMString name)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetAttribLocation.xml">man page</a>)</span>
         <dd>
             If the passed name is longer than the restriction defined
@@ -2822,7 +2860,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
 
             See <a href="#CHARACTERS_OUTSIDE_VALID_SET">Characters Outside the GLSL Source Character
             Set</a> for additional validation performed by WebGL implementations.
-        <dt class="idl-code">any getUniform(WebGLProgram? program, WebGLUniformLocation? location)
+        <dt class="idl-code">any getUniform(WebGLProgram program, WebGLUniformLocation location)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.8">OpenGL ES 2.0 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetUniform.xml">man page</a>)</span>
         <dd>
             Return the uniform value at the passed location in the passed program. The type returned is
@@ -2850,7 +2888,7 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             <p>All queries returning sequences or typed arrays return a new object each time.</p>
             <p>Returns null if any OpenGL errors are generated during the execution of this
             function.</p>
-        <dt class="idl-code">WebGLUniformLocation? getUniformLocation(WebGLProgram? program, DOMString name)
+        <dt class="idl-code">WebGLUniformLocation? getUniformLocation(WebGLProgram program, DOMString name)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.4">OpenGL ES 2.0 &sect;2.10.4</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glGetUniformLocation.xml">man page</a>)</span>
         <dd>
             <p>Return a new <code>WebGLUniformLocation</code> that represents the location of a
@@ -2907,15 +2945,15 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             If the array passed to any of the vector forms (those ending in <code>v</code>) has an
             invalid length, an <code>INVALID_VALUE</code> error will be generated. The length is
             invalid if it is too short for or is not an integer multiple of the assigned type.
-        <dt><p class="idl-code">void vertexAttrib[1234]f(GLuint indx, ...)</p>
-            <p class="idl-code">void vertexAttrib[1234]fv(GLuint indx, ...)
+        <dt><p class="idl-code">void vertexAttrib[1234]f(GLuint index, ...)</p>
+            <p class="idl-code">void vertexAttrib[1234]fv(GLuint index, ...)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.7">OpenGL ES 2.0 &sect;2.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glVertexAttrib.xml">man page</a>)</span></p>
        <dd>
            Sets the vertex attribute at the passed index to the given constant value. Values set via the
            <code>vertexAttrib</code> are guaranteed to be returned from the <code>getVertexAttrib</code> function
            with the <code>CURRENT_VERTEX_ATTRIB</code> param, even if there have been intervening calls to
            <code>drawArrays</code> or <code>drawElements</code>.
-       <dt class="idl-code">void vertexAttribPointer(GLuint indx, GLint size, GLenum type,
+       <dt class="idl-code">void vertexAttribPointer(GLuint index, GLint size, GLenum type,
                             GLboolean normalized, GLsizei stride, GLintptr offset)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glVertexAttribPointer.xml">man page</a>)</span>
         <dd>
@@ -2941,6 +2979,12 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
         directed to the drawing buffer, making any of the 3 rendering calls shall
         cause the drawing buffer to be presented to the HTML page compositor at the start
         of the next compositing operation.
+    </p>
+
+    <p>
+        If any one of these 3 calls attempts to draw to a missing attachment of a complete framebuffer,
+        nothing is drawn to that attachment and no error is generated
+        per <a href="../1.0/index.html#DRAWING_TO_MISSING_ATTACHMENT">Drawing to a Missing Attachment</a>.
     </p>
 
     <dl class="methods">
@@ -3060,8 +3104,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
         any loss of context. Any objects referenced by a disabled extension, such as the object returned
         by <code>getExtension</code>, are no longer associated with the WebGL rendering context. Any
         extension objects that derive from <code>WebGLObject</code> have their
-        <a href="#webgl-object-invalidated-flag">invalidated</a> flag set to true. Any use of a disabled
-        extension or its referenced objects generates an INVALID_OPERATION error.
+        <a href="#webgl-object-invalidated-flag">invalidated</a> flag set to true. Behavior of
+        extensions' methods after context loss is defined by the steps in the
+        section <a href="#WEBGLRENDERINGCONTEXT">"The WebGL context"</a>.
     <p>
         There are no other mechanisms to disable an extension.
     </p>
@@ -3127,7 +3172,7 @@ interface <dfn id="WebGLContextLostEvent">WebGLContextEvent</dfn> : <a href="htt
 
 // EventInit is defined in the DOM4 specification.
 dictionary WebGLContextEventInit : <a href="http://www.w3.org/TR/domcore/#eventinit">EventInit</a> {
-    DOMString statusMessage;
+    DOMString statusMessage = "";
 };</pre>
 
     <p>
@@ -3575,6 +3620,12 @@ is <code>BROWSER_DEFAULT_WEBGL</code>.
 
 </dl>
 
+<p>
+If the <code>TexImageSource</code> is an <code>ImageBitmap</code>, then these three parameters will
+be ignored. Instead the equivalent
+<a href="https://html.spec.whatwg.org/multipage/webappapis.html#imagebitmapoptions">ImageBitmapOptions</a> should be used to
+create an <code>ImageBitmap</code> with the desired format.
+
 <h3><a name="READS_OUTSIDE_FRAMEBUFFER">Reading Pixels Outside the Framebuffer</a></h3>
 
 <p>
@@ -3799,6 +3850,23 @@ extensions.
     </ul>
 </p>
 
+<h3><a name="DRAWING_TO_MISSING_ATTACHMENT">Drawing To a Missing Attachment</a></h3>
+<p>
+    In the OpenGL ES 2.0 API, it is not specified what happens when a command tries to draw
+    to a missing attachment, such as clearing a draw buffer from a complete framebuffer
+    that does not have a color attachment.
+</p>
+<p>
+    In the WebGL API, such operations that draw to an attachment that is missing will draw
+    nothing to that attachment. No error is generated. This applies to the following functions:
+
+    <ul>
+    <li> <code>clear</code>
+    <li> <code>drawArrays</code>
+    <li> <code>drawElements</code>
+    </ul>
+</p>
+
 <h3><a name="NAN_LINE_WIDTH">NaN Line Width</a></h3>
 <p>
     In the WebGL API, if the <code>width</code> parameter passed to <code>lineWidth</code> is set
@@ -3863,15 +3931,14 @@ extensions.
     content.
 </div>
 
-<h3><a name="PREPROCESSOR_DEFINED_IN_MACRO">GLSL ES Preprocessor "defined" Operator Generated By Macro Replacement</a></h3>
+<h3><a name="PREPROCESSOR_DEFINED_IN_MACRO">GLSL ES Preprocessor "defined" Operator</a></h3>
 
 <p>
     The C++ standard, which the GLSL ES preprocessor specification refers to, has undefined behavior
     when the <code>defined</code> operator is generated by macro replacement when parsing the
     controlling expression of an <code>#if</code> or <code>#elif</code> directive. When shader code
     processed by the WebGL API generates the token <code>defined</code> during macro replacement
-    inside a preprocessor expression, that token must be immediately handled as the
-    <code>defined</code> operator before any further macro replacement.
+    inside a preprocessor expression, that must result in a compiler error.
 </p>
 
 <p>
@@ -3879,10 +3946,14 @@ extensions.
     <code>defined</code> operator.
 </p>
 
+<p>
+    Using <code>defined</code> as a macro name also has undefined behavior in the C++ standard. In
+    the WebGL API, using <code>defined</code> as a macro name must result in a compiler error.
+</p>
+
 <div class="note rationale">
-    This behavior is enforced across GLES implementations by dEQP tests, so shaders created on other
-    platforms may rely on it. In addition, the ported dEQP tests in the WebGL conformance suite are
-    only valid if this behavior is specified.
+    Behavior of the WebGL API should be consistent in cases where the native API spec allows undefined
+    behavior.
 </div>
 
 <h3><a name="EXTENSION_DIRECTIVE_LOCATION">GLSL ES #extension directive location</a></h3>
@@ -3923,6 +3994,21 @@ extensions.
     "Framebuffer Attachment Completeness".
 </div>
 
+<h3>Transferring vertices when current program is null</h3>
+
+<p>
+    Any command that transfers vertices to the GL generates <code>INVALID_OPERATION</code> if the
+    <code>CURRENT_PROGRAM</code> is null. This includes <code>drawElements</code> and
+    <code>drawArrays</code>.
+</p>
+
+<h3>Fragment shader output</h3>
+
+<p>
+    If a fragment shader writes to neither <code>gl_FragColor</code> nor <code>gl_FragData</code>,
+    the values of the fragment colors following shader execution are untouched.
+</p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
@@ -3931,7 +4017,7 @@ extensions.
     <dl>
 
         <dt id="refsCANVAS">[CANVAS]</dt>
-        <dd><cite><a href="http://www.w3.org/TR/html5/scripting-1.html#the-canvas-element">
+        <dd><cite><a href="https://www.w3.org/TR/html5/scripting-1.html#the-canvas-element">
             HTML5: The Canvas Element</a></cite>,
             World Wide Web Consortium (W3C).
         </dd>

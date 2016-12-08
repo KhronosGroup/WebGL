@@ -227,11 +227,11 @@ function go() {
     checkGetAttachedShaders([fs], [], [fs], "attaching a single shader should give the expected list");
     checkGetAttachedShaders([fs, vs], [], [fs, vs],
         "attaching some shaders should give the expected list");
-    checkGetAttachedShaders([fs], [fs], [], "attaching a shader and detaching it shoud leave an empty list");
+    checkGetAttachedShaders([fs], [fs], [], "attaching a shader and detaching it should leave an empty list");
     checkGetAttachedShaders([fs, vs], [fs, vs], [],
-        "attaching some shaders and detaching them in same order shoud leave an empty list");
+        "attaching some shaders and detaching them in same order should leave an empty list");
     checkGetAttachedShaders([fs, vs], [vs, fs], [],
-        "attaching some shaders and detaching them in random order shoud leave an empty list");
+        "attaching some shaders and detaching them in random order should leave an empty list");
     checkGetAttachedShaders([fs, vs], [vs], [fs],
         "attaching and detaching some shaders should leave the difference list");
     checkGetAttachedShaders([fs, vs], [fs], [vs],
@@ -265,7 +265,7 @@ function go() {
             debug(infolog);
         if (gl.getError() != gl.NO_ERROR)
             assertMsg(false, "unexpected error in getProgramParameter()");
-        
+
         if (testInvalidEnums) {
             // Verify that constants removed from the WebGL spec generate INVALID_ENUM errors
             assertMsg(gl.getProgramParameter(prog, desktopGL['INFO_LOG_LENGTH']) === null, "invalid call to getProgramParameter should return null");

@@ -57,6 +57,6 @@ void main(void) {
 
     lightIntensity = diffuseContribution * dot(lightVec, tnorm) +
                      specularContribution * spec;
-    
+
     gl_Position = gtf_ModelViewProjectionMatrix * gtf_Vertex;
 }
