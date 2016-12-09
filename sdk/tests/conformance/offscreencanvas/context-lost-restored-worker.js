@@ -1,5 +1,3 @@
-<!--
-
 /*
 ** Copyright (c) 2016 The Khronos Group Inc.
 **
@@ -23,81 +21,48 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
--->
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../js/js-test-pre.js"></script>
-<script src="../../js/webgl-test-utils.js"></script>
-<script src="../../js/tests/canvas-tests-utils.js"></script>
-<script>
-
-function init()
-{
-    description("Tests behavior under a restored context for OffscreenCanvas.");
-
-    var successfullyParsed = false;
-    if (!window.OffscreenCanvas) {
-      successfullyParsed = true;
-      finishTest();
-    }
-
-    if (!setupTest()) {
-        testFailed("Cannot initialize test");
-        finishTest();
-    }
+importScripts("../../js/tests/canvas-tests-utils.js");
+self.onmessage = function(e) {
+    if (!setupTest())
+        self.postMessage("Test failed");
 
     canvas.addEventListener("webglcontextlost", function(e) {
-        if (!testLostContext(e)) {
-            testFailed("Some test failed");
-            finishTest();
-        }
+        if (!testLostContext(e))
+            self.postMessage("Test failed");
         // restore the context after this event has exited.
         setTimeout(function() {
             // we didn't call prevent default so we should not be able to restore the context
-            if (!compareGLError(gl.INVALID_OPERATION, "WEBGL_lose_context.restoreContext()")) {
-                testFailed("Some test failed");
-                finishTest();
-            }
+            if (!compareGLError(gl.INVALID_OPERATION, "WEBGL_lose_context.restoreContext()"))
+                self.postMessage("Test failed");
             testLosingAndRestoringContext().then(function() {
-                testPassed("Test passed");
-                successfullyParsed = true;
-                finishTest();
+                self.postMessage("Test passed");
             }, function() {
-                testFailed("Some test failed");
-                finishTest();
+                self.postMessage("Test failed");
             });
-       }, 0);
+        }, 0);
     });
     canvas.addEventListener("webglcontextrestored", function() {
-        testFailed("Some test failed");
-        finishTest();
+        self.postMessage("Test failed");
     });
     allowRestore = false;
     contextLostEventFired = false;
     contextRestoredEventFired = false;
 
-    if (!testOriginalContext()) {
-        testFailed("Some test failed");
-        finishTest();
-    }
+    if (!testOriginalContext())
+        self.postMessage("Test failed");
     WEBGL_lose_context.loseContext();
     // The context should be lost immediately.
-    shouldBeTrue("gl.isContextLost()");
-    shouldBe("gl.getError()", "gl.CONTEXT_LOST_WEBGL");
-    shouldBe("gl.getError()", "gl.NO_ERROR");
+    if (!gl.isContextLost())
+        self.postMessage("Test failed");
+    if (gl.getError() != gl.CONTEXT_LOST_WEBGL)
+        self.postMessage("Test failed");
+    if (gl.getError() != gl.NO_ERROR)
+        self.postMessage("Test failed");
     // gl methods should be no-ops
-    shouldBeTrue(compareGLError(gl.NO_ERROR, "gl.blendFunc(gl.TEXTURE_2D, gl.TEXTURE_CUBE_MAP)"));
+    if (!compareGLError(gl.NO_ERROR, "gl.blendFunc(gl.TEXTURE_2D, gl.TEXTURE_CUBE_MAP)"))
+        self.postMessage("Test failed");
     // but the event should not have been fired.
-    shouldBeFalse("contextLostEventFired");
+    if (contextLostEventFired)
+        self.postMessage("Test failed");
 }
 
-</script>
-</head>
-<body onload="init()">
-<div id="description"></div>
-<div id="console"></div>
-</body>
-</html>

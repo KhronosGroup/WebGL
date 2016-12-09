@@ -1,5 +1,3 @@
-<!--
-
 /*
 ** Copyright (c) 2016 The Khronos Group Inc.
 **
@@ -23,42 +21,10 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
--->
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../js/js-test-pre.js"></script>
-<script src="../../js/webgl-test-utils.js"></script>
-<script>
-function init()
-{
-  description("Tests behavior under a lost context for OffscreenCanvas in a worker");
-
-  var successfullyParsed = false;
-  if (!window.OffscreenCanvas) {
-    successfullyParsed = true;
-    finishTest();
-  }
-
-  var worker = new Worker('context-lost-worker.js');
-  worker.postMessage("Start worker");
-  worker.onmessage = function(e) {
-    if (e.data == "Test passed") {
-      testPassed("All tests have passed");
-      successfullyParsed = true;
-      finishTest();
-    } else {
-      testFailed("Some tests failed");
-      finishTest();
-    }
-  }
+importScripts("../../js/tests/canvas-tests-utils.js");
+self.onmessage = function(e) {
+    if (testAPIs('webgl2'))
+        self.postMessage("Test passed");
+    else
+        self.postMessage("Test failed");
 }
-</script>
-</head>
-<body onload="init()">
-<div id="description"></div>
-<div id="console"></div>
-</body>
-</html>

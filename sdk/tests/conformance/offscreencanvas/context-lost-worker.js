@@ -1,5 +1,3 @@
-<!--
-
 /*
 ** Copyright (c) 2016 The Khronos Group Inc.
 **
@@ -23,43 +21,21 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
--->
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="../../resources/js-test-style.css"/>
-<script src="../../js/js-test-pre.js"></script>
-<script src="../../js/webgl-test-utils.js"></script>
-<script src="../../js/tests/canvas-tests-utils.js"></script>
-<script>
-function init()
-{
-    description("Tests behavior under a lost context for OffscreenCanvas");
-
-    var successfullyParsed = false;
-    if (!window.OffscreenCanvas) {
-      successfullyParsed = true;
-      finishTest();
-    }
-
+importScripts("../../js/tests/canvas-tests-utils.js");
+self.onmessage = function(e) {
     canvas = new OffscreenCanvas(10, 10);
     gl = canvas.getContext('webgl');
 
     // call testValidContext() before checking for the extension, because this is where we check
     // for the isContextLost() method, which we want to do regardless of the extension's presence.
-    if (!testValidContext()) {
-        testFailed("Some tests failed");
-        finishTest();
-    }
+    if (!testValidContext())
+        self.postMessage("Test failed");
 
     extension = gl.getExtension("WEBGL_lose_context");
     // need an extension that exposes new API methods.
     OES_vertex_array_object = gl.getExtension("OES_vertex_array_object");
-    if (extension == null || OES_vertex_array_object == null) {
-        testFailed("Some tests failed");
-        finishTest();
-    }
+    if (extension == null || OES_vertex_array_object == null)
+        self.postMessage("Test failed");
 
     // We need to initialize |uniformLocation| before losing context.
     // Otherwise gl.getUniform() when context is lost will throw.
@@ -67,21 +43,10 @@ function init()
     extension.loseContext();
 
     canvas.addEventListener("webglcontextlost", function() {
-        if (testLostContextWithoutRestore()) {
-            testPassed("All tests passed");
-            successfullyParsed = true;
-            finishTest();
-        } else {
-            testFailed("Some tests failed");
-            finishTest();
-        }
+        if (testLostContextWithoutRestore())
+            self.postMessage("Test passed");
+        else
+            self.postMessage("Test failed");
     }, false);
 }
 
-</script>
-</head>
-<body onload="init()">
-<div id="description"></div>
-<div id="console"></div>
-</body>
-</html>

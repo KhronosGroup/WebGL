@@ -36,31 +36,16 @@
 <body>
 <div id="description"></div>
 <div id="console"></div>
-<script id="myWorker" type="text/worker">
-self.onmessage = function(e) {
-    var canvas = new OffscreenCanvas(10, 10);
-    var gl = canvas.getContext('webgl2');
-
-    if (gl instanceof WebGL2RenderingContext)
-      self.postMessage("Test passed");
-    else
-      self.postMessage("Test failed");
-};
-</script>
 <script>
 description("This test ensures that the WebGL context can be created on an OffscreenCanvas.");
 
+var successfullyParsed = false;
 if (!window.OffscreenCanvas) {
+  successfullyParsed = true;
   finishTest();
 }
 
-function makeWorker(script) {
-   var blob = new Blob([script]);
-   return new Worker(URL.createObjectURL(blob));
-}
-
-var successfullyParsed = false;
-var worker = makeWorker(document.getElementById("myWorker").textContent);
+var worker = new Worker('context-creation-worker.js');
 worker.postMessage("Start worker");
 worker.onmessage = function(e) {
   if (e.data == "Test passed") {
@@ -68,7 +53,6 @@ worker.onmessage = function(e) {
     successfullyParsed = true;
   } else {
     testFailed("Some tests failed");
-    successfullyParsed = false;
   }
   finishTest();
 }
