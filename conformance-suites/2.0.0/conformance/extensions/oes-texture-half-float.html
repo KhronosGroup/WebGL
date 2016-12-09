@@ -415,10 +415,10 @@ function runFramebufferTest() {
         shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
 
         shouldBeNull("gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT)");
-        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "IMPLEMENTATION_COLOR_READ_FORMAT should fail for incomplete framebuffers.");
+        wtu.glErrorShouldBe(gl, [gl.INVALID_OPERATION, gl.INVALID_FRAMEBUFFER_OPERATION], "IMPLEMENTATION_COLOR_READ_FORMAT should fail for incomplete framebuffers.");
 
         shouldBeNull("gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE)");
-        wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "IMPLEMENTATION_COLOR_READ_TYPE should fail for incomplete framebuffers.");
+        wtu.glErrorShouldBe(gl, [gl.INVALID_OPERATION, gl.INVALID_FRAMEBUFFER_OPERATION], "IMPLEMENTATION_COLOR_READ_TYPE should fail for incomplete framebuffers.");
 
         gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.FLOAT, arrayBufferFloatOutput);
         wtu.glErrorShouldBe(gl, gl.INVALID_FRAMEBUFFER_OPERATION , "readPixels should fail on incomplete framebuffers.");
