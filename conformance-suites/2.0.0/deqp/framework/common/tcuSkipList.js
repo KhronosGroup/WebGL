@@ -254,6 +254,39 @@ goog.scope(function() {
         // Also see conformance2/rendering/blitframebuffer-stencil-only.html for 2.0.1 test.
         _skip("blit.depth_stencil.depth24_stencil8_scale");
         _skip("blit.depth_stencil.depth24_stencil8_stencil_only");
+
+        _setReason("Transform feedback does not pass any tests on Mac AMD.");
+        // crbug.com/526748
+        // Apple Radar: 28126946
+        _skip("transform_feedback.*");
+
+        _setReason("Texture minification filtering is buggy for LINEAR mode on Mac Intel.");
+        // crbug.com/656478
+        // Apple Radar: 28902129
+        _skip("filtering.2d_combinations.linear_nearest_*");
+        _skip("filtering.cube_combinations.linear_nearest_*");
+        _skip("filtering.2d_array_combinations.linear_nearest_clamp_repeat");
+        _skip("filtering.2d_array_combinations.linear_nearest_clamp_mirror");
+        _skip("filtering.2d_array_combinations.linear_nearest_repeat_*");
+        _skip("filtering.2d_array_combinations.linear_nearest_mirror_*");
+        _skip("filtering.3d_combinations.linear_nearest_clamp_clamp_repeat");
+        _skip("filtering.3d_combinations.linear_nearest_clamp_clamp_mirror");
+        _skip("filtering.3d_combinations.linear_nearest_clamp_repeat_*");
+        _skip("filtering.3d_combinations.linear_nearest_clamp_mirror_*");
+        _skip("filtering.3d_combinations.linear_nearest_repeat_*");
+        _skip("filtering.3d_combinations.linear_nearest_mirror_*");
+
+        _setReason("Setting of GL_READ_BUFFER and GL_DRAW_BUFFERs affects framebuffer completeness on Mac Intel.");
+        // crbug.com/630800
+        // Apple Radar: 28236629
+        _skip("completeness.attachment_combinations.none_rbo_none_none");
+        _skip("completeness.attachment_combinations.none_tex_none_none");
+
+        _setReason("multisample constancy_alpha_to_coverage tests fail on Mac Intel.");
+        // crbug.com/663184
+        _skip("multisample.fbo_4_samples.constancy_alpha_to_coverage");
+        _skip("multisample.fbo_8_samples.constancy_alpha_to_coverage");
+        _skip("multisample.fbo_max_samples.constancy_alpha_to_coverage");
     } // if (!runSkippedTests)
 
     /*
