@@ -254,6 +254,19 @@ goog.scope(function() {
         // Also see conformance2/rendering/blitframebuffer-stencil-only.html for 2.0.1 test.
         _skip("blit.depth_stencil.depth24_stencil8_scale");
         _skip("blit.depth_stencil.depth24_stencil8_stencil_only");
+
+        _setReason("Texture minification filtering is buggy for LINEAR mode on Max OSX with Intel GPU");
+        // crbug.com/656478
+        // deqp/functional/gles3/texturefiltering/2d_combinations_01.html
+        _skip("filtering.2d_combinations.linear_nearest*");
+        // deqp/functional/gles3/texturefiltering/cube_combinations_01.html
+        _skip("filtering.cube_combinations.linear_nearest*");
+        // deqp/functional/gles3/texturefiltering/2d_array_combinations_01.html
+        _skip("filtering.2d_array_combinations.linear_nearest*");
+        // deqp/functional/gles3/texturefiltering/3d_combinations_06.html
+        // deqp/functional/gles3/texturefiltering/3d_combinations_07.html
+        // deqp/functional/gles3/texturefiltering/3d_combinations_08.html
+        _skip("filtering.3d_combinations.linear_nearest*");
     } // if (!runSkippedTests)
 
     /*
