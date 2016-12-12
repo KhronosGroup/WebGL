@@ -191,11 +191,6 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         canvas.height = height;
         canvasSetupFunction(canvas);
 
-        // For Chrome, this works around a driver bug on Mac Intel.
-        // Chromium bug: crbug.com/665656
-        // Apple Radar: 29563996
-        canvas.toDataURL();
-
         // Upload the source canvas to the texture and draw it to a quad.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // Enable writes to the RGBA channels
@@ -319,10 +314,14 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                             canvas, cases[i].size, canvasSetupFunction,
                             cases[i].subRect,
                             cases[i].expected, bindingTarget, program);
-            runOneIteration(sourceDescription, true, cases[i].flipY,
-                            canvas, cases[i].size, canvasSetupFunction,
-                            cases[i].subRect,
-                            cases[i].expected, bindingTarget, program);
+
+            // In Chrome, this hits a bug on Mac with Intel GPU.
+            // Chromium bug: crbug.com/665656
+            // Apple Radar: 29563996
+            //runOneIteration(sourceDescription, true, cases[i].flipY,
+            //                canvas, cases[i].size, canvasSetupFunction,
+            //                cases[i].subRect,
+            //                cases[i].expected, bindingTarget, program);
         }
     }
 
