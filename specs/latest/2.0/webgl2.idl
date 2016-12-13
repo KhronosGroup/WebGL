@@ -318,7 +318,7 @@ interface WebGL2RenderingContextBase
   // MapBufferRange, in particular its read-only and write-only modes,
   // can not be exposed safely to JavaScript. GetBufferSubData
   // replaces it for the purpose of fetching data back from the GPU.
-  void getBufferSubData(GLenum target, GLintptr srcByteOffset, ArrayBufferView dstData,
+  void getBufferSubData(GLenum target, GLintptr srcByteOffset, ArrayBufferView dstBuffer,
                         optional GLuint dstOffset = 0, optional GLuint length = 0);
 
   /* Framebuffer objects */
