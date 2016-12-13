@@ -50,6 +50,8 @@ var gl = wtu.create3DContext("example", undefined, 2);
 
 var tex_read = gl.createTexture();
 var tex_draw = gl.createTexture();
+var tex_depth = gl.createTexture();
+var tex_stencil = gl.createTexture();
 var fbo_read = gl.createFramebuffer();
 var fbo_draw = gl.createFramebuffer();
 var size = 8;
@@ -89,6 +91,8 @@ function init_read_fbo() {
 function init_draw_fbo() {
     gl.bindTexture(gl.TEXTURE_2D, tex_draw);
     wtu.fillTexture(gl, tex_draw, size, size, [0x0, 0xff, 0xff, 0xff], 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.RGBA8);
+    wtu.fillTexture(gl, tex_depth, size, size, [0x80], 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, gl.DEPTH_COMPONENT16);
+    wtu.fillTexture(gl, tex_stencil, size, size, [0x40], 0, gl.DEPTH_STENCIL, gl.UNSIGNED_INT_24_8, gl.DEPTH24_STENCIL8);
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
     gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex_draw, 0);
     if (gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
@@ -166,7 +170,7 @@ function clear() {
 
 function draw() {
     debug("");
-    debug("draw a color buffer which has no image attached");
+    debug("draw to a color buffer which has no image attached");
 
     var program = wtu.setupSimpleColorProgram(gl, 0);
     gl.uniform4f(gl.getUniformLocation(program, "u_color"), 1, 0, 0, 1);
@@ -240,7 +244,7 @@ function blit() {
     gl.readBuffer(gl.COLOR_ATTACHMENT1);
     gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
     gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Should generate INVALID_OPERATION.");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Should generate INVALID_OPERATION when read buffer misses image.");
     // The image color at COLOR_ATTACHMENT0 in draw fbo should not be changed.
     checkTextureValue(fbo_draw, gl.COLOR_ATTACHMENT0, [0, 255, 255, 255]);
 
@@ -249,9 +253,37 @@ function blit() {
     gl.readBuffer(gl.COLOR_ATTACHMENT1);
     gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1]);
     gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.COLOR_BUFFER_BIT, gl.NEAREST);
-    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Should generate INVALID_OPERATION.");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Should generate INVALID_OPERATION when read buffer misses image.");
     // The image color at COLOR_ATTACHMENT0 in draw fbo should not be changed.
     checkTextureValue(fbo_draw, gl.COLOR_ATTACHMENT0, [0, 255, 255, 255]);
+
+    // Depth buffer in read fbo has no image. It should generate INVALID_OPERATION if depth buffer in draw fbo has image.
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, tex_depth, 0);
+    gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.DEPTH_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Should generate INVALID_OPERATION when depth buffer misses image.");
+
+    // Depth buffer in read fbo has no image. It should be OK if depth buffer in draw fbo has no image too.
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, null, 0);
+    gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.DEPTH_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no error.");
+
+    // Stencil buffer in read fbo has no image. It should generate INVALID_OPERATION if stencil buffer in draw fbo has image.
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.TEXTURE_2D, tex_stencil, 0);
+    gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.STENCIL_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Should generate INVALID_OPERATION when stencil buffer misses image.");
+
+    // Stencil buffer in read fbo has no image. It should be OK if stencil buffer in draw fbo has no image too.
+    gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_read);
+    gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.TEXTURE_2D, null, 0);
+    gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.STENCIL_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no error.");
 }
 
 gl.bindTexture(gl.TEXTURE_2D, null);
@@ -259,6 +291,8 @@ gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
 gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
 gl.deleteTexture(tex_read);
 gl.deleteTexture(tex_draw);
+gl.deleteTexture(tex_depth);
+gl.deleteTexture(tex_stencil);
 gl.deleteFramebuffer(fbo_read);
 gl.deleteFramebuffer(fbo_draw);
 
