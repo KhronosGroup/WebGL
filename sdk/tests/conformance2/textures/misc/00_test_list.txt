@@ -1,4 +1,5 @@
 --min-version 2.0.1 active-3d-texture-bug.html
+canvas-remains-unchanged-after-used-in-webgl-texture.html
 copy-texture-image.html
 copy-texture-image-luma-format.html
 copy-texture-image-webgl-specific.html
@@ -18,6 +19,7 @@ tex-new-formats.html
 tex-storage-2d.html
 tex-storage-and-subimage-3d.html
 tex-storage-compressed-formats.html
+--min-version 2.0.1 tex-subimage3d-pixel-buffer-bug.html
 tex-unpack-params.html
 texel-fetch-undefined.html
 texture-npot.html

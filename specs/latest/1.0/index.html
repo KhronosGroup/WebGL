@@ -79,7 +79,7 @@
     <p>
         This specification describes an additional rendering context and support
         objects for the
-        <a href="http://www.w3.org/TR/html5/the-canvas-element.html"
+        <a href="https://www.w3.org/TR/html5/scripting-1.html#the-canvas-element"
            title="HTML 5 Canvas Element">
             HTML 5 <span class="prop-name">canvas</span> element <a href="#refsCANVAS">[CANVAS]</a>.
         </a>
@@ -91,12 +91,22 @@
     <!--begin-status-->
     <p>
         This document is an editor's draft. Do not cite this document as other than work in
-        progress.  Public discussion of this specification is welcome on the
-        (<a href="https://www.khronos.org/webgl/public-mailing-list/archives/">archived</a>) WebGL
-        mailing list <a href="mailto:public_webgl@khronos.org">public_webgl@khronos.org</a> (see
-        <a href="http://www.khronos.org/webgl/public-mailing-list/">instructions</a>).
+        progress.
     </p>
     <!--end-status-->
+
+    <h2 class="no-toc">Feedback</h2>
+    <p>
+        Public discussion of this specification is welcome on
+        the <a href="mailto:public_webgl@khronos.org">public_webgl@khronos.org</a> mailing list
+        (<a href="http://www.khronos.org/webgl/public-mailing-list/">instructions</a>, <a href="https://www.khronos.org/webgl/public-mailing-list/archives/">archives</a>).
+    </p>
+    <p>
+        Please file bugs against the specification or its conformance tests in
+        the <a href="https://github.com/KhronosGroup/WebGL/issues">issue tracker</a>. Pull requests
+        are welcome against the <a href="https://github.com/KhronosGroup/WebGL">Github
+        repository</a>.
+    </p>
 
     <h2 class="no-toc">Table of contents</h2>
     <div id="toc"></div>
@@ -2971,6 +2981,12 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
         of the next compositing operation.
     </p>
 
+    <p>
+        If any one of these 3 calls attempts to draw to a missing attachment of a complete framebuffer,
+        nothing is drawn to that attachment and no error is generated
+        per <a href="../1.0/index.html#DRAWING_TO_MISSING_ATTACHMENT">Drawing to a Missing Attachment</a>.
+    </p>
+
     <dl class="methods">
         <dt class="idl-code">void clear(GLbitfield mask)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.2.3">OpenGL ES 2.0 &sect;4.2.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glClear.xml">man page</a>)</span>
@@ -3834,6 +3850,23 @@ extensions.
     </ul>
 </p>
 
+<h3><a name="DRAWING_TO_MISSING_ATTACHMENT">Drawing To a Missing Attachment</a></h3>
+<p>
+    In the OpenGL ES 2.0 API, it is not specified what happens when a command tries to draw
+    to a missing attachment, such as clearing a draw buffer from a complete framebuffer
+    that does not have a color attachment.
+</p>
+<p>
+    In the WebGL API, such operations that draw to an attachment that is missing will draw
+    nothing to that attachment. No error is generated. This applies to the following functions:
+
+    <ul>
+    <li> <code>clear</code>
+    <li> <code>drawArrays</code>
+    <li> <code>drawElements</code>
+    </ul>
+</p>
+
 <h3><a name="NAN_LINE_WIDTH">NaN Line Width</a></h3>
 <p>
     In the WebGL API, if the <code>width</code> parameter passed to <code>lineWidth</code> is set
@@ -3984,7 +4017,7 @@ extensions.
     <dl>
 
         <dt id="refsCANVAS">[CANVAS]</dt>
-        <dd><cite><a href="http://www.w3.org/TR/html5/scripting-1.html#the-canvas-element">
+        <dd><cite><a href="https://www.w3.org/TR/html5/scripting-1.html#the-canvas-element">
             HTML5: The Canvas Element</a></cite>,
             World Wide Web Consortium (W3C).
         </dd>

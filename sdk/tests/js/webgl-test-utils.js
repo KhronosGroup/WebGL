@@ -739,7 +739,16 @@ var glTypeToTypedArrayType = function(gl, type) {
     case gl.INT:
       return window.Int32Array;
     case gl.UNSIGNED_INT:
+    case gl.UNSIGNED_INT_5_9_9_9_REV:
+    case gl.UNSIGNED_INT_10F_11F_11F_REV:
+    case gl.UNSIGNED_INT_2_10_10_10_REV:
+    case gl.UNSIGNED_INT_24_8:
       return window.Uint32Array;
+    case gl.HALF_FLOAT:
+    case 0x8D61:  // HALF_FLOAT_OES
+      return window.Uint16Array;
+    case gl.FLOAT:
+      return window.Float32Array;
     default:
       throw 'unknown gl type ' + glEnumToString(gl, type);
   }
@@ -761,9 +770,16 @@ var getBytesPerComponent = function(gl, type) {
     case gl.UNSIGNED_SHORT_5_6_5:
     case gl.UNSIGNED_SHORT_4_4_4_4:
     case gl.UNSIGNED_SHORT_5_5_5_1:
+    case gl.HALF_FLOAT:
+    case 0x8D61:  // HALF_FLOAT_OES
       return 2;
     case gl.INT:
     case gl.UNSIGNED_INT:
+    case gl.UNSIGNED_INT_5_9_9_9_REV:
+    case gl.UNSIGNED_INT_10F_11F_11F_REV:
+    case gl.UNSIGNED_INT_2_10_10_10_REV:
+    case gl.UNSIGNED_INT_24_8:
+    case gl.FLOAT:
       return 4;
     default:
       throw 'unknown gl type ' + glEnumToString(gl, type);

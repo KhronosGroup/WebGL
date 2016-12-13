@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<draft href="WEBGL_compressed_texture_astc/">
+<extension href="WEBGL_compressed_texture_astc/">
   <name>WEBGL_compressed_texture_astc</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -570,5 +570,8 @@ interface WEBGL_compressed_texture_astc {
     <revision date="2015/08/10">
       <change>Moved to draft status.</change>
     </revision>
+    <revision date="2016/12/12">
+      <change>Moved to community approved after discussion on public_webgl list.</change>
+    </revision>
   </history>
-</draft>
+</extension>
