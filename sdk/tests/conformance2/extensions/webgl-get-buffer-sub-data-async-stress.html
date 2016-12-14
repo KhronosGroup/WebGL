@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL getBufferSubDataAsync stress test.</title>
+<title>WEBGL_get_buffer_sub_data_async stress test.</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
@@ -46,54 +46,64 @@ var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
 
 var gl = wtu.create3DContext(canvas, undefined, 2);
+var WEBGL_get_buffer_sub_data_async = gl.getExtension("WEBGL_get_buffer_sub_data_async");
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
-
-var pbo = gl.createBuffer();
-gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
-gl.bufferData(gl.PIXEL_PACK_BUFFER, 4, gl.DYNAMIC_READ);
-gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
-var readbackBuffer = new Uint8Array(4);
-
-var TEST_COUNT = 300;
-var lastCounter = -1;
-var promises = [];
-debug("kicking off " + TEST_COUNT + " getBufferSubDataAsync calls");
-for (var i = 0; i < TEST_COUNT; i++) {
-  (function() {
-    var counter = i;
-    var color = [counter & 0xff, (counter >> 8) & 0xff, (counter >> 16) & 0xff, 255];
-    gl.clearColor(color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
-    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0);
-    var promise = gl.getBufferSubDataAsync(gl.PIXEL_PACK_BUFFER, 0, readbackBuffer);
-    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
-    promise = promise.then(function(buf) {
-      if (buf[0] == color[0] &&
-          buf[1] == color[1] &&
-          buf[2] == color[2] &&
-          buf[3] == color[3]) {
-        testPassed("color readback #" + counter + " was correct");
-      } else {
-        testFailed("color readback #" + counter + " was incorrect: was " +
-            buf + " but expected " + color);
-      }
-      if (counter == lastCounter + 1) {
-        testPassed("    and its Promise resolved in order after " + lastCounter);
-      } else {
-        testFailed("    and its Promise resolved out of order order after " + lastCounter);
-      }
-      lastCounter = counter;
-    }, function(e) {
-      testFailed(e.toString());
-    });
-    promises.push(promise);
-  })();
+if (!WEBGL_get_buffer_sub_data_async) {
+  testPassed("No WEBGL_get_buffer_sub_data_async support -- this is legal");
+  finishTest();
+} else {
+  testPassed("Successfully enabled WEBGL_get_buffer_sub_data_async extension");
+  runTests();
 }
 
-Promise.all(promises).catch(function(e) {
-  testFailed(e.toString());
-}).then(finishTest);
+function runTests() {
+  var pbo = gl.createBuffer();
+  gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
+  gl.bufferData(gl.PIXEL_PACK_BUFFER, 4, gl.DYNAMIC_READ);
+  gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+  var readbackBuffer = new Uint8Array(4);
+
+  var TEST_COUNT = 300;
+  var lastCounter = -1;
+  var promises = [];
+  debug("kicking off " + TEST_COUNT + " getBufferSubDataAsync calls");
+  for (var i = 0; i < TEST_COUNT; i++) {
+    (function() {
+      var counter = i;
+      var color = [counter & 0xff, (counter >> 8) & 0xff, (counter >> 16) & 0xff, 255];
+      gl.clearColor(color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
+      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0);
+      var promise = WEBGL_get_buffer_sub_data_async.getBufferSubDataAsync(gl.PIXEL_PACK_BUFFER, 0, readbackBuffer);
+      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+      promise = promise.then(function(buf) {
+        if (buf[0] == color[0] &&
+            buf[1] == color[1] &&
+            buf[2] == color[2] &&
+            buf[3] == color[3]) {
+          testPassed("color readback #" + counter + " was correct");
+        } else {
+          testFailed("color readback #" + counter + " was incorrect: was " +
+              buf + " but expected " + color);
+        }
+        if (counter == lastCounter + 1) {
+          testPassed("    and its Promise resolved in order after " + lastCounter);
+        } else {
+          testFailed("    and its Promise resolved out of order order after " + lastCounter);
+        }
+        lastCounter = counter;
+      }, function(e) {
+        testFailed(e.toString());
+      });
+      promises.push(promise);
+    })();
+  }
+
+  Promise.all(promises).catch(function(e) {
+    testFailed(e.toString());
+  }).then(finishTest);
+}
 
 var successfullyParsed = true;
 </script>
