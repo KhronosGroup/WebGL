@@ -989,14 +989,14 @@ goog.scope(function() {
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_TEXTURE_SIZE) for 2D texture targets.');
             /** @type{number} */ var log2MaxTextureSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)))) + 1;
             gl.copyTexSubImage2D(gl.TEXTURE_2D, log2MaxTextureSize, 0, 0, 0, 0, 4, 4);
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_CUBE_MAP_SIZE) for cubemap targets.');
             /** @type{number} */ var log2MaxCubemapSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE)))) + 1;
             var local = this;
             es3fNegativeTextureApiTests.forCubeFaces(function(faceGL) {
                 gl.copyTexSubImage2D(faceGL, log2MaxCubemapSize, 0, 0, 0, 0, 4, 4);
-                local.expectError(gl.INVALID_VALUE);
+                local.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
             });
 
             gl.deleteTexture(texture[0]);
@@ -1626,14 +1626,14 @@ goog.scope(function() {
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_TEXTURE_SIZE).');
             /** @type{number} */ var log2MaxTextureSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)))) + 1;
             gl.texSubImage2D(gl.TEXTURE_2D, log2MaxTextureSize, 0, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, uint8);
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_CUBE_MAP_TEXTURE_SIZE).');
             /** @type{number} */ var log2MaxCubemapSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE)))) + 1;
             var local = this;
             es3fNegativeTextureApiTests.forCubeFaces(function(faceGL) {
                 gl.texSubImage2D(faceGL, log2MaxCubemapSize, 0, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, uint8);
-                local.expectError(gl.INVALID_VALUE);
+                local.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
             });
 
             gl.deleteTexture(texture[0]);
@@ -1884,14 +1884,14 @@ goog.scope(function() {
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_TEXTURE_SIZE).');
             /** @type{number} */ var log2MaxTextureSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)))) + 1;
             gl.compressedTexSubImage2D(gl.TEXTURE_2D, log2MaxTextureSize, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_CUBE_MAP_TEXTURE_SIZE).');
             /** @type{number} */ var log2MaxCubemapSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE)))) + 1;
             var local = this;
             es3fNegativeTextureApiTests.forCubeFaces(function(faceGL) {
                 gl.compressedTexSubImage2D(faceGL, log2MaxCubemapSize, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
-                local.expectError(gl.INVALID_VALUE);
+                local.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
             });
 
             gl.deleteTexture(texture[0]);
@@ -2248,11 +2248,11 @@ goog.scope(function() {
             /** @type {ArrayBufferView} */ var uint8 = new Uint8Array(4);
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_3D_TEXTURE_SIZE).');
             gl.texSubImage3D(gl.TEXTURE_3D, log2Max3DTextureSize, 0, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_TEXTURE_SIZE).');
             gl.texSubImage3D(gl.TEXTURE_2D_ARRAY, log2MaxTextureSize, 0, 0, 0, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, uint8);
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
 
             gl.deleteTexture(texture[0]);
             gl.deleteTexture(texture[1]);
@@ -2388,11 +2388,11 @@ goog.scope(function() {
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_3D_TEXTURE_SIZE).');
             gl.copyTexSubImage3D(gl.TEXTURE_3D, log2Max3DTextureSize, 0, 0, 0, 0, 0, 4, 0);
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
 
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_TEXTURE_SIZE).');
             gl.copyTexSubImage3D(gl.TEXTURE_2D_ARRAY, log2MaxTextureSize, 0, 0, 0, 0, 0, 4, 0);
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
 
             gl.deleteTexture(texture[0]);
             gl.deleteTexture(texture[1]);
@@ -2543,7 +2543,7 @@ goog.scope(function() {
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_TEXTURE_SIZE).');
             /** @type{number} */ var log2MaxTextureSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)))) + 1;
             gl.compressedTexImage3D(gl.TEXTURE_2D_ARRAY, log2MaxTextureSize, gl.COMPRESSED_RGBA8_ETC2_EAC, 0, 0, 0, 0, new Uint8Array(0));
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
 
             gl.deleteTexture(texture);
 
@@ -2708,7 +2708,7 @@ goog.scope(function() {
             bufferedLogToConsole('gl.INVALID_VALUE is generated if level is greater than log_2(gl.MAX_TEXTURE_SIZE).');
             /** @type{number} */ var log2MaxTextureSize = Math.floor(Math.log2(/** @type{number} */(gl.getParameter(gl.MAX_TEXTURE_SIZE)))) + 1;
             gl.compressedTexSubImage3D(gl.TEXTURE_2D_ARRAY, log2MaxTextureSize, 0, 0, 0, 0, 0, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, new Uint8Array(0));
-            this.expectError(gl.INVALID_VALUE);
+            this.expectError([gl.INVALID_VALUE, gl.INVALID_OPERATION]);
 
             gl.deleteTexture(texture);
         }));
