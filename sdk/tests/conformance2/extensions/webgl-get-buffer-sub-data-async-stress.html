@@ -67,37 +67,34 @@ function runTests() {
   var lastCounter = -1;
   var promises = [];
   debug("kicking off " + TEST_COUNT + " getBufferSubDataAsync calls");
-  for (var i = 0; i < TEST_COUNT; i++) {
-    (function() {
-      var counter = i;
-      var color = [counter & 0xff, (counter >> 8) & 0xff, (counter >> 16) & 0xff, 255];
-      gl.clearColor(color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
-      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0);
-      var promise = WEBGL_get_buffer_sub_data_async.getBufferSubDataAsync(gl.PIXEL_PACK_BUFFER, 0, readbackBuffer);
-      gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
-      promise = promise.then(function(buf) {
-        if (buf[0] == color[0] &&
-            buf[1] == color[1] &&
-            buf[2] == color[2] &&
-            buf[3] == color[3]) {
-          testPassed("color readback #" + counter + " was correct");
-        } else {
-          testFailed("color readback #" + counter + " was incorrect: was " +
-              buf + " but expected " + color);
-        }
-        if (counter == lastCounter + 1) {
-          testPassed("    and its Promise resolved in order after " + lastCounter);
-        } else {
-          testFailed("    and its Promise resolved out of order order after " + lastCounter);
-        }
-        lastCounter = counter;
-      }, function(e) {
-        testFailed(e.toString());
-      });
-      promises.push(promise);
-    })();
+  for (let counter = 0; counter < TEST_COUNT; counter++) {
+    let color = [counter & 0xff, (counter >> 8) & 0xff, (counter >> 16) & 0xff, 255];
+    gl.clearColor(color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0);
+    let promise = WEBGL_get_buffer_sub_data_async.getBufferSubDataAsync(gl.PIXEL_PACK_BUFFER, 0, readbackBuffer);
+    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+    promise = promise.then(function(buf) {
+      if (buf[0] == color[0] &&
+          buf[1] == color[1] &&
+          buf[2] == color[2] &&
+          buf[3] == color[3]) {
+        testPassed("color readback #" + counter + " was correct");
+      } else {
+        testFailed("color readback #" + counter + " was incorrect: was " +
+            buf + " but expected " + color);
+      }
+      if (counter == lastCounter + 1) {
+        testPassed("    and its Promise resolved in order after " + lastCounter);
+      } else {
+        testFailed("    and its Promise resolved out of order order after " + lastCounter);
+      }
+      lastCounter = counter;
+    }, function(e) {
+      testFailed(e.toString());
+    });
+    promises.push(promise);
   }
 
   Promise.all(promises).catch(function(e) {
