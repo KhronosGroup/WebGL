@@ -40,19 +40,17 @@
 <script>
 description("This test ensures that the WebGL context has all the methods in the specification.");
 
-var successfullyParsed = false;
 if (!window.OffscreenCanvas) {
-    successfullyParsed = true;
     finishTest();
 }
 
 if (testAPIs('webgl2')) {
   testPassed("All WebGL2 methods found");
-  successfullyParsed = true;
 } else {
   testFailed("Some WebGL2 methods not found");
 }
 
+var successfullyParsed = true;
 finishTest();
 </script>
 

@@ -36,9 +36,7 @@ function init()
 {
   description("Tests behavior under a lost context for OffscreenCanvas in a worker");
 
-  var successfullyParsed = false;
   if (!window.OffscreenCanvas) {
-    successfullyParsed = true;
     finishTest();
   }
 
@@ -47,12 +45,11 @@ function init()
   worker.onmessage = function(e) {
     if (e.data == "Test passed") {
       testPassed("All tests have passed");
-      successfullyParsed = true;
-      finishTest();
     } else {
       testFailed("Some tests failed");
-      finishTest();
     }
+    var successfullyParsed = false;
+    finishTest();
   }
 }
 </script>

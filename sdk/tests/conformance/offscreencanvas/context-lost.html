@@ -37,9 +37,7 @@ function init()
 {
     description("Tests behavior under a lost context for OffscreenCanvas");
 
-    var successfullyParsed = false;
     if (!window.OffscreenCanvas) {
-      successfullyParsed = true;
       finishTest();
     }
 
@@ -69,7 +67,7 @@ function init()
     canvas.addEventListener("webglcontextlost", function() {
         if (testLostContextWithoutRestore()) {
             testPassed("All tests passed");
-            successfullyParsed = true;
+            var successfullyParsed = true;
             finishTest();
         } else {
             testFailed("Some tests failed");

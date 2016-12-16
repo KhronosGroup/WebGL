@@ -39,21 +39,18 @@
 <script>
 description("This test ensures that the WebGL context can be created on an OffscreenCanvas.");
 
-var successfullyParsed = false;
-if (!window.OffscreenCanvas) {
-  successfullyParsed = true;
+if (!window.OffscreenCanvas)
   finishTest();
-}
 
 var worker = new Worker('context-creation-worker.js');
 worker.postMessage("Start worker");
 worker.onmessage = function(e) {
   if (e.data == "Test passed") {
     testPassed("All tests have passed");
-    successfullyParsed = true;
   } else {
     testFailed("Some tests failed");
   }
+  var successfullyParsed = true;
   finishTest();
 }
 </script>

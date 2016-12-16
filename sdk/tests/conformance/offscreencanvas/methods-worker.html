@@ -39,9 +39,7 @@
 <script>
 description("This test ensures that the WebGL context created for an OffscreenCanvas has all the methods in the specification.");
 
-var successfullyParsed = false;
 if (!window.OffscreenCanvas) {
-  successfullyParsed = true;
   finishTest();
 }
 
@@ -50,10 +48,10 @@ worker.postMessage("Start worker");
 worker.onmessage = function(e) {
   if (e.data == "Test passed") {
     testPassed("All tests have passed");
-    successfullyParsed = true;
   } else {
     testFailed("Some tests failed");
   }
+  var successfullyParsed = false;
   finishTest();
 }
 </script>

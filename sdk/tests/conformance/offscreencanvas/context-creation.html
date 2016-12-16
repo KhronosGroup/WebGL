@@ -41,19 +41,17 @@
 "use strict";
 description("This test ensures that the WebGL context can be created on an OffscreenCanvas.");
 
-var successfullyParsed = false;
 if (!window.OffscreenCanvas) {
-  successfullyParsed = true;
   finishTest();
 }
 
 if (contextCreation('webgl')) {
-  successfullyParsed = true;
   testPassed("WebGL context created correctly.");
 } else {
   testFailed("WebGL context creation failed");
 }
 
+var successfullyParsed = true;
 finishTest();
 </script>
 </body>

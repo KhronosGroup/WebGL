@@ -38,9 +38,7 @@ function init()
 {
     description("Tests behavior under a restored context for OffscreenCanvas.");
 
-    var successfullyParsed = false;
     if (!window.OffscreenCanvas) {
-      successfullyParsed = true;
       finishTest();
     }
 
@@ -63,7 +61,7 @@ function init()
             }
             testLosingAndRestoringContext().then(function() {
                 testPassed("Test passed");
-                successfullyParsed = true;
+                var successfullyParsed = true;
                 finishTest();
             }, function() {
                 testFailed("Some test failed");

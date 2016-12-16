@@ -40,19 +40,17 @@
 <script>
 description("This test ensures that the WebGL context created for an OffscreenCanvas has all the methods in the specification.");
 
-var successfullyParsed = false;
 if (!window.OffscreenCanvas) {
-  successfullyParsed = true;
   finishTest();
 }
 
 if (testAPIs('webgl')) {
-  successfullyParsed = true;
   testPassed("All WebGL methods found");
 } else {
   testFailed("Some WebGL methods not found");
 }
 
+var successfullyParsed = true;
 finishTest();
 </script>
 
