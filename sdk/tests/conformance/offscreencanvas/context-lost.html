@@ -67,7 +67,6 @@ function init()
     canvas.addEventListener("webglcontextlost", function() {
         if (testLostContextWithoutRestore()) {
             testPassed("All tests passed");
-            var successfullyParsed = true;
             finishTest();
         } else {
             testFailed("Some tests failed");
@@ -76,6 +75,7 @@ function init()
     }, false);
 }
 
+var successfullyParsed = true;
 </script>
 </head>
 <body onload="init()">

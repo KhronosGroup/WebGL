@@ -61,7 +61,6 @@ function init()
             }
             testLosingAndRestoringContext().then(function() {
                 testPassed("Test passed");
-                var successfullyParsed = true;
                 finishTest();
             }, function() {
                 testFailed("Some test failed");
@@ -92,6 +91,7 @@ function init()
     shouldBeFalse("contextLostEventFired");
 }
 
+var successfullyParsed = true;
 </script>
 </head>
 <body onload="init()">
