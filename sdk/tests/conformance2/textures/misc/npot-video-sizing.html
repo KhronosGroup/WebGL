@@ -97,16 +97,16 @@ function init()
     gl = wtu.create3DContext(canvas, { preserveDrawingBuffer: true }, 2);
     wtu.setupUnitQuad(gl);
     var program = wtu.setupProgram(
-	gl,
-	[vertexShader, fragmentShader],
-	['vPosition', 'texCoord0'],
-	[0, 1]);
+        gl,
+        [vertexShader, fragmentShader],
+        ['vPosition', 'texCoord0'],
+        [0, 1]);
 
     if (!program) {
-	testFailed("Error creating program");
-	return;
+        testFailed("Error creating program");
+        return;
     }
-    
+
     gl.clearColor(0,0,0,1);
     gl.clearDepth(1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -115,7 +115,7 @@ function init()
 
     textureLoc = gl.getUniformLocation(program, "tex");
     expectedVideoHeightLoc = gl.getUniformLocation(
-	program, "expectedVideoHeight");
+        program, "expectedVideoHeight");
 
     requestAnimationFrame(runNextVideo);
 }
@@ -126,7 +126,7 @@ function runNextVideo() {
     }
 
     if (videoNdx == videos.length) {
-	finishTest();
+        finishTest();
         return;
     }
 
@@ -184,9 +184,9 @@ function runTest()
 
     // Verify that the video texture's size was as expected
     wtu.checkCanvasRect(gl, 0, 0, gl.canvas.width, gl.canvas.height,
-			[0, 255, 0, 255],
-			"Should be green -- that indicates the video texture's height was correct",
-			1);
+                        [0, 255, 0, 255],
+                        "Should be green -- that indicates the video texture's height was correct",
+                        1);
 
     requestAnimationFrame(runNextVideo);
 }
