@@ -270,6 +270,9 @@ function blit() {
     gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, null, 0);
     gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.DEPTH_BUFFER_BIT, gl.NEAREST);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no error.");
+    // Validate some other parameters as usual
+    gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.DEPTH_BUFFER_BIT, gl.LINEAR);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid filter");
 
     // Stencil buffer in read fbo has no image. It should generate INVALID_OPERATION if stencil buffer in draw fbo has image.
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo_draw);
@@ -284,6 +287,9 @@ function blit() {
     gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.TEXTURE_2D, null, 0);
     gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.STENCIL_BUFFER_BIT, gl.NEAREST);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no error.");
+    // Validate some other parameters as usual
+    gl.blitFramebuffer(0, 0, size, size, 0, 0, size, size, gl.STENCIL_BUFFER_BIT, gl.LINEAR);
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "invalid filter");
 }
 
 gl.bindTexture(gl.TEXTURE_2D, null);
