@@ -204,25 +204,6 @@ goog.scope(function() {
         _skip("clipping.wide_points_full_viewport");
         _skip("clipping.wide_points_partial_viewport");
 
-
-        _setReason("Mac AMD drivers handle instanced rendering incorrectly under certain situation");
-        // crbug.com/645298
-        // deqp/functional/gles3/instancedrendering.html
-        _skip("instanced_rendering.draw_arrays_instanced.attribute_divisor.4_instances");
-        _skip("instanced_rendering.draw_arrays_instanced.attribute_divisor.20_instances");
-        _skip("instanced_rendering.draw_arrays_instanced.mixed.4_instances");
-        _skip("instanced_rendering.draw_arrays_instanced.mixed.20_instances");
-        _skip("instanced_rendering.draw_elements_instanced.attribute_divisor.4_instances");
-        _skip("instanced_rendering.draw_elements_instanced.attribute_divisor.20_instances");
-        _skip("instanced_rendering.draw_elements_instanced.mixed.4_instances");
-        _skip("instanced_rendering.draw_elements_instanced.mixed.20_instances");
-
-        _setReason("Mac AMD drivers readPixels from RGB buffer into PIXEL_PACK_BUFFER got alpha values wrong");
-        // crbug.com/646182
-        // deqp/functional/gles3/pixelbufferobject.html
-        _skip("pixel_buffer_object.renderbuffer.rgb8_triangles");
-        _skip("pixel_buffer_object.renderbuffer.rgb8_clears");
-
         _setReason("Some Windows AMD D3D11 drivers have issues with blit and depth/stencil formats.");
         // crbug.com/638323
         // deqp/functional/gles3/framebufferblit/depth_stencil.html
