@@ -60,13 +60,13 @@ if (!gl) {
   var max = gl.getParameter(gl.MAX_CLIENT_WAIT_TIMEOUT_WEBGL);
   debug("Querying gl.MAX_CLIENT_WAIT_TIMEOUT_WEBGL");
   shouldBe("gl.getError()", "gl.NO_ERROR");
-  debug("gl.MAX_CLIENT_WAIT_TIMEOUT_WEBGL returns " + max);
+  debug("gl.MAX_CLIENT_WAIT_TIMEOUT_WEBGL returns " + max + "ns");
   if (max < 0) {
     testFailed("gl.MAX_CLIENT_WAIT_TIMEOUT_WEBGL < 0");
-  } else if (max > 1000) {
-    // This is not demanded by the WebGL2 spec, but anything larger than 1s
+  } else if (max > 1000 * 1000 * 1000) {
+    // This is not demanded by the WebGL2 spec, but anything larger than 1000ms
     // is bad idea and no implementation should allow it.
-    testFailed("gl.MAX_CLIENT_WAIT_TIMEOUT_WEBGL should not exceed 1s");
+    testFailed("gl.MAX_CLIENT_WAIT_TIMEOUT_WEBGL should not exceed 1000ms");
   } else {
     testPassed("gl.MAX_CLIENT_WAIT_TIMEOUT_WEBGL returns a valid value");
   }
