@@ -163,8 +163,8 @@
         Attempting to compile a vertex shader that enables the <code>GL_OVR_multiview</code> extension where other outputs than <code>gl_Position.x</code> depend on <code>gl_ViewID_OVR</code> must result in a compile error. This must be checked according to the following rules:
         </p>
         <ul>
-            <li><code>gl_ViewID_OVR</code> may be used on the right hand side of assignment to <code>gl_Position.x</code>. The right hand side of assignment to <code>gl_Position.x</code> that statically references <code>gl_ViewID_OVR</code> is not allowed to contain any sub-expressions that require an l-value, such as assignment, increment or decrement. Such right-hand side of assignment is also not allowed to call 1) any user-defined functions or 2) built-in functions that may have side effects visible in the shader.</li>
-            <li><code>gl_ViewID_OVR</code> may also be used in if statement conditions, where the condition is an equality comparison between <code>gl_ViewID_OVR</code> and a literal integer. The if or else branch of such an if statement may only contain one assignment to <code>gl_Position.x</code>. The right hand side of this assignment is not allowed to contain any sub-expressions that require an l-value, such as assignment, increment or decrement. Such right-hand side of assignment is also not allowed to call 1) any user-defined functions or 2) built-in functions that may have side effects visible in the shader.</li>
+            <li><code>gl_ViewID_OVR</code> may be used on the right hand side of assignment to <code>gl_Position.x</code>. The right hand side of assignment to <code>gl_Position.x</code> that statically references <code>gl_ViewID_OVR</code> is not allowed to contain any sub-expressions that require an l-value, such as assignment, increment or decrement. Such right-hand side of assignment is also not allowed to call 1) any user-defined functions or 2) built-in functions that may have side effects visible in the shader. Such an assignment to <code>gl_Position.x</code> must not be a part of a larger expression.</li>
+            <li><code>gl_ViewID_OVR</code> may also be used in if statement conditions, where the condition is an equality comparison between <code>gl_ViewID_OVR</code> and a literal integer. The if or else branch of such an if statement must contain one assignment to <code>gl_Position.x</code> and nothing else. The right hand side of this assignment is not allowed to contain any sub-expressions that require an l-value, such as assignment, increment or decrement. Such right-hand side of assignment is also not allowed to call 1) any user-defined functions or 2) built-in functions that may have side effects visible in the shader.</li>
             <li>Any other static use of <code>gl_ViewID_OVR</code> is disallowed.</li>
             <li>If <code>gl_ViewID_OVR</code> is used in a vertex shader, it may not statically read <code>gl_Position</code>.</li>
         </ul>
@@ -175,8 +175,8 @@
       <addendum>
         Attempting to compile a fragment shader that enables the <code>GL_OVR_multiview</code> extension must result in a compile error in the following cases:
         <ul>
-          <li>The fragment shader references <code>gl_ViewID_OVR</code>.</li>
-          <li>The fragment shader references <code>gl_FragCoord</code> or any other built-in variables whose value depends on the fragment.</li>
+          <li>The fragment shader statically uses <code>gl_ViewID_OVR</code>.</li>
+          <li>The fragment shader statically uses <code>gl_FragCoord</code> or any other built-in input variables whose value depends on the fragment.</li>
         </ul>
       </addendum>
       <addendum>
@@ -190,6 +190,12 @@
       </addendum>
       <addendum>
         When the number of views specified in the active program is one, <code>gl_ViewID_OVR</code> will always evaluate to zero.
+      </addendum>
+      <addendum>
+        Attempting to specify a <code>num_views</code> value less than 1 will result in a compile error.
+      </addendum>
+      <addendum>
+        If a layout qualifier specifying <code>num_views</code> is declared more than once in the same shader, all those declarations must set <code>num_views</code> to the same value; otherwise a compile error results.
       </addendum>
     </mirrors>
     <features>
@@ -233,6 +239,10 @@ interface WEBGL_multiview {
 
     <revision date="2016/11/25">
       <change>Specified what happens when the number of views doesn't match or if the number of views is one.</change>
+    </revision>
+    ´
+    <revision date="2016/12/21">
+      <change>Specified what happens on invalid num_views declarations and if assignment to gl_Position.x is inside a larger expression.</change>
     </revision>
   </history>
 </proposal>
