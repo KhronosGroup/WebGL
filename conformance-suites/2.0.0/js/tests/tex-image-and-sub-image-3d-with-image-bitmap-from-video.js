@@ -50,8 +50,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         video = document.createElement("video");
         video.oncanplaythrough = function() {
-            runImageBitmapTest(video, 1, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, true);
-            finishTest();
+            runImageBitmapTest(video, 1, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, true)
+            .then(() => {
+                finishTest();
+            });
         }
         video.src = resourcePath + "red-green.theora.ogv";
         document.body.appendChild(video);

@@ -52,8 +52,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         video.src = resourcePath + "red-green.theora.ogv";
         document.body.appendChild(video);
         wtu.startPlayingAndWaitForVideo(video, function() {
-            runImageBitmapTest(video, 1, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, true);
-            finishTest();
+            runImageBitmapTest(video, 1, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, true)
+            .then(() => {
+                finishTest();
+            });
         });
     }
 
