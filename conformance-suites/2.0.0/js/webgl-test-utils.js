@@ -1773,6 +1773,7 @@ var getFileListAsync = function(url, callback) {
 var readFile = function(file) {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", file, false);
+  xhr.overrideMimeType("text/plain");
   xhr.send();
   return xhr.responseText.replace(/\r/g, "");
 };
