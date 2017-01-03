@@ -39,13 +39,12 @@
 <div id="description"></div>
 <div id="console"></div>
 <script id="vshader" type="x-shader/x-vertex">
-uniform vec4 uMult;
 attribute vec4 vPosition;
 attribute vec2 texCoord0;
 varying vec2 texCoord;
 void main()
 {
-    gl_Position = vPosition * uMult;
+    gl_Position = vPosition;
     texCoord = texCoord0;
 }
 </script>
@@ -85,7 +84,6 @@ function generateMipmap()
 
     var texLoc = gl.getUniformLocation(program, "tex");
     gl.uniform1i(texLoc, 0);
-    var multLoc = gl.getUniformLocation(program, "uMult");
 
     var width = 128;
     var height = 128;
@@ -95,7 +93,6 @@ function generateMipmap()
 
     var srgbTex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, srgbTex);
-    gl.uniform4f(multLoc, 1, 1, 1, 1);
     // Set full texture as srgba color first.
     wtu.fillTexture(gl, srgbTex, width, height, colors['srgba'], 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.SRGB8_ALPHA8);
     // Set up-left region of the texture as red color.
@@ -153,69 +150,12 @@ function generateMipmap()
 
     var tolerance = 7;
     var diff = new Uint8Array(width * height * 4);
-    var failed = compare(result, reference, tolerance, diff);
+    var failed = wtu.comparePixels(result, reference, tolerance, diff);
     if (failed) {
         testFailed("Generate wrong mipmaps for sRGB texture.");
-        displayDiff(result, reference, diff, width, height);
+        wtu.displayImageDiff(result, reference, diff, width, height);
     } else {
         testPassed("Generate correct mipmaps for sRGB texture.");
-    }
-
-    function compare(cmp, ref, tolerance, diff) {
-        if (cmp.length != ref.length) {
-            testFailed("invalid pixel size.");
-        }
-
-        var count = 0;
-        for (var i = 0; i < cmp.length; i++) {
-            diff[i * 4] = 0;
-            diff[i * 4 + 1] = 255;
-            diff[i * 4 + 2] = 0;
-            diff[i * 4 + 3] = 255;
-            if (Math.abs(cmp[i * 4] - ref[i * 4]) > tolerance ||
-                Math.abs(cmp[i * 4 + 1] - ref[i * 4 + 1]) > tolerance ||
-                Math.abs(cmp[i * 4 + 2] - ref[i * 4 + 2]) > tolerance ||
-                Math.abs(cmp[i * 4 + 3] - ref[i * 4 + 3]) > tolerance) {
-                if (count < 10) {
-                    testFailed("Pixel " + i + ": expected (" +
-                        [ref[i * 4], ref[i * 4 + 1], ref[i * 4 + 2], ref[i * 4 + 3]] + "), got (" +
-                        [cmp[i * 4], cmp[i * 4 + 1], cmp[i * 4 + 2], cmp[i * 4 + 3]] + ")");
-                }
-                count++;
-                diff[i * 4] = 255;
-                diff[i * 4 + 1] = 0;
-            }
-        }
-
-        return count;
-    }
-
-    function displayDiff(cmp, ref, diff, width, height) {
-        var div = document.createElement("div");
-
-        var cmpImg = createImage(cmp, width, height);
-        var refImg = createImage(ref, width, height);
-        var diffImg = createImage(diff, width, height);
-        wtu.insertImage(div, "Reference", refImg);
-        wtu.insertImage(div, "Result", cmpImg);
-        wtu.insertImage(div, "Difference", diffImg);
-
-        var console = document.getElementById("console");
-        console.appendChild(div);
-    }
-
-    function createImage(buf, width, height) {
-        var canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        var ctx = canvas.getContext("2d");
-        var imgData = ctx.getImageData(0, 0, width, height);
-
-        for (var i = 0; i < buf.length; i++)
-            imgData.data[i] = buf[i];
-        ctx.putImageData(imgData, 0, 0);
-        var img = wtu.makeImageFromCanvas(canvas);
-        return img;
     }
 }
 

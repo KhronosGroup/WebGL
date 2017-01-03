@@ -4,7 +4,6 @@
 <meta charset="utf-8"/>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
-<script src="../../js/webgl-test.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
 </head>
 <body>
@@ -25,6 +24,27 @@ precision mediump float;
 uniform float uColor;
 void main() {
   gl_FragColor = vec4(uColor, uColor, uColor, 1);
+}
+</script>
+
+<script id="vshader" type="x-shader/x-vertex">
+attribute vec4 vPosition;
+attribute vec2 texCoord0;
+varying vec2 texCoord;
+void main()
+{
+    gl_Position = vPosition;
+    texCoord = texCoord0;
+}
+</script>
+
+<script id="fshader" type="x-shader/x-fragment">
+precision mediump float;
+uniform sampler2D tex;
+varying vec2 texCoord;
+void main()
+{
+    gl_FragColor = texture2D(tex, texCoord);
 }
 </script>
 
@@ -227,6 +247,7 @@ if (!gl) {
     runFramebufferTextureConversionTest(ext.SRGB_EXT);
     runFramebufferTextureConversionTest(ext.SRGB_ALPHA_EXT);
     runFramebufferRenderbufferConversionTest();
+    rungenerateMipmapTest();
     runLoadFromImageTest(function() {
       finishTest();
     });
@@ -422,6 +443,101 @@ function runLoadFromImageTest(callback) {
     testFailed("Image could not be loaded");
     callback();
   });
+}
+
+function rungenerateMipmapTest()
+{
+    debug("");
+    debug("Generate mipmaps for sRGB texture");
+
+    wtu.setupUnitQuad(gl, 0, 1);
+    var program = wtu.setupProgram(
+        gl, ['vshader', 'fshader'], ['vPosition', 'texCoord0'], [0, 1]);
+
+    gl.disable(gl.DEPTH_TEST);
+    gl.disable(gl.BLEND);
+
+    var colors = {
+        blank: [0, 0, 0, 0],
+        srgba: [0, 63, 127, 255],
+    };
+
+    var texLoc = gl.getUniformLocation(program, "tex");
+    gl.uniform1i(texLoc, 0);
+
+    var width = 128;
+    var height = 128;
+    canvas.width = width;
+    canvas.height = height;
+    gl.viewport(0, 0, width, height);
+
+    var srgbTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, srgbTex);
+    // Set full texture as srgba color first.
+    wtu.fillTexture(gl, srgbTex, width, height, colors['srgba'], 0, ext.SRGB_ALPHA_EXT, gl.UNSIGNED_BYTE, ext.SRGB_ALPHA_EXT);
+
+    // Set up-left region of the texture as red color.
+    // In order to make sure bi-linear interpolation operates on different colors, red region
+    // is 1 pixel smaller than a quarter of the full texture on each side.
+    var redWidth = width / 2 - 1;
+    var redHeight = height / 2 - 1;
+    var buf = new Uint8Array(redWidth * redHeight * 4);
+    for (var i = 0; i < redWidth * redHeight; i++) {
+        buf[4 * i + 0] = 255;
+        buf[4 * i + 1] = 0;
+        buf[4 * i + 2] = 0;
+        buf[4 * i + 3] = 255;
+    }
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, redWidth, redHeight, ext.SRGB_ALPHA_EXT, gl.UNSIGNED_BYTE, buf);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_NEAREST);
+
+    // Decode the srgba texture to a linear texture which will be used as reference.
+    var linearTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, linearTex);
+    wtu.fillTexture(gl, linearTex, width, height, wtu.sRGBToLinear(colors['srgba']), 0, gl.RGBA, gl.UNSIGNED_BYTE);
+    // Set up-left region of the texture as red color.
+    // In order to make sure bi-linear interpolation operates on different colors, red region
+    // is 1 pixel smaller than a quarter of the full texture on each side.
+    for (var i = 0; i < redWidth * redHeight; i++) {
+        buf[4 * i + 0] = 255;
+        buf[4 * i + 1] = 0;
+        buf[4 * i + 2] = 0;
+        buf[4 * i + 3] = 255;
+    }
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, redWidth, redHeight, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_NEAREST);
+
+    // Change canvas to a small size.
+    width = 32;
+    height = 32;
+    canvas.width = width;
+    canvas.height = height;
+    gl.viewport(0, 0, width, height);
+
+    // Draw with srgb texture and linear texture respectively.
+    gl.bindTexture(gl.TEXTURE_2D, srgbTex);
+    wtu.clearAndDrawUnitQuad(gl);
+    var result = new Uint8Array(width * height * 4);
+    gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, result);
+    gl.bindTexture(gl.TEXTURE_2D, linearTex);
+    wtu.clearAndDrawUnitQuad(gl);
+    var reference = new Uint8Array(width * height * 4);
+    gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, reference);
+
+    gl.deleteTexture(srgbTex);
+    gl.deleteTexture(linearTex);
+
+    var tolerance = 7;
+    var diff = new Uint8Array(width * height * 4);
+    var failed = wtu.comparePixels(result, reference, tolerance, diff);
+    if (failed) {
+        testFailed("Generate wrong mipmaps for sRGB texture.");
+        wtu.displayImageDiff(result, reference, diff, width, height);
+    } else {
+        testPassed("Generate correct mipmaps for sRGB texture.");
+    }
 }
 
 var successfullyParsed = true;
