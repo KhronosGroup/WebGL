@@ -3272,8 +3272,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <p>
         If an ESSL1 fragment shader writes to neither <code>gl_FragColor</code> nor <code>gl_FragData</code>,
-        the values of the fragment colors following shader execution are untouched. If no output variables are
-        defined in an ESSL3 fragment shader, the values of the fragment colors following shader execution are untouched.
+        the values of the fragment colors following shader execution are untouched. If corresponding output
+        variables are not defined in an ESSL3 fragment shader, the values of the fragment colors following
+        shader execution are untouched.
     </p>
     <p>
         All user-defined output variables default to zero if they are not written during a shader execution.
