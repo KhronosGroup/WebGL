@@ -843,12 +843,21 @@ var fillTexture = function(gl, tex, width, height, color, opt_level, opt_format,
   var numComponents = color.length;
   var bytesPerComponent = getBytesPerComponent(gl, opt_type);
   var rowSize = numComponents * width * bytesPerComponent;
-  var paddedRowSize = Math.floor((rowSize + pack - 1) / pack) * pack;
-  var size = rowSize + (height - 1) * paddedRowSize;
-  size = Math.floor((size + bytesPerComponent - 1) / bytesPerComponent) * bytesPerComponent;
+  // See equation 3.10 in ES 2.0 spec and equation 3.13 in ES 3.0 spec for paddedRowLength calculation.
+  // k is paddedRowLength.
+  // n is numComponents.
+  // l is width.
+  // a is pack.
+  // s is bytesPerComponent.
+  var paddedRowLength;
+  if (bytesPerComponent >= pack)
+    paddedRowLength = numComponents * width;
+  else
+    paddedRowLength = Math.floor((rowSize + pack - 1) / pack) * pack / bytesPerComponent;
+  var size = width * numComponents + (height - 1) * paddedRowLength;
   var buf = new (glTypeToTypedArrayType(gl, opt_type))(size);
   for (var yy = 0; yy < height; ++yy) {
-    var off = yy * paddedRowSize;
+    var off = yy * paddedRowLength;
     for (var xx = 0; xx < width; ++xx) {
       for (var jj = 0; jj < numComponents; ++jj) {
         buf[off++] = color[jj];
