@@ -1362,6 +1362,7 @@ var shouldGenerateGLError = function(gl, glErrors, evalStr) {
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
  * @param {string} evalStr The string to evaluate.
+ * @param {string} opt_msg The optional message to display.
  */
 var shouldThrowOrGenerateGLError = function(gl, glErrors, evalStr, opt_msg) {
   var exception;

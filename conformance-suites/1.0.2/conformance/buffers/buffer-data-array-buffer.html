@@ -84,8 +84,7 @@ glErrorShouldBe(gl, gl.INVALID_VALUE);
 gl.bufferSubData(gl.ARRAY_BUFFER, 10, array);
 glErrorShouldBe(gl, gl.NO_ERROR);
 
-gl.bufferSubData(gl.ARRAY_BUFFER, 10, null);
-glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_VALUE]);
+wtu.shouldThrowOrGenerateGLError(gl, [gl.NO_ERROR, gl.INVALID_VALUE], "gl.bufferSubData(gl.ARRAY_BUFFER, 10, null)");
 
 var successfullyParsed = true;
 </script>
