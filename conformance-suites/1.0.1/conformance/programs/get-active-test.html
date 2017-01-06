@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -37,6 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <script>
 description("Test of getActiveAttrib and getActiveUniform");
 
+var wtu = WebGLTestUtils;
 var context = create3DContext();
 var context2 = create3DContext();
 var program = loadStandardProgram(context);
@@ -52,8 +54,7 @@ shouldBeNull("context.getActiveUniform(program, 1)");
 glErrorShouldBe(context, context.INVALID_VALUE);
 shouldBeNull("context.getActiveUniform(program, -1)");
 glErrorShouldBe(context, context.INVALID_VALUE);
-shouldBeNull("context.getActiveUniform(null, 0)");
-glErrorShouldBe(context, context.INVALID_VALUE);
+wtu.shouldThrowOrGenerateGLError(context, context.INVALID_VALUE, "context.getActiveUniform(null, 0)");
 
 // we don't know the order the attribs will appear.
 var info = [
@@ -109,8 +110,7 @@ shouldBeNull("context.getActiveAttrib(program, 2)");
 glErrorShouldBe(context, context.INVALID_VALUE);
 shouldBeNull("context.getActiveAttrib(program, -1)");
 glErrorShouldBe(context, context.INVALID_VALUE);
-shouldBeNull("context.getActiveAttrib(null, 0)");
-glErrorShouldBe(context, context.INVALID_VALUE);
+wtu.shouldThrowOrGenerateGLError(context, context.INVALID_VALUE, "context.getActiveAttrib(null, 0)");
 
 glErrorShouldBe(context2, context.NO_ERROR);
 

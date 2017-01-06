@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -42,6 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <script>
 description("Tests generation of synthetic and real GL errors");
 
+var wtu = WebGLTestUtils;
 var context = create3DContext();
 var program = loadStandardProgram(context);
 
@@ -55,9 +57,7 @@ var program = loadStandardProgram(context);
 glErrorShouldBe(context, context.NO_ERROR);
 
 debug("Testing getActiveAttrib");
-// Synthetic OpenGL error
-shouldBeNull("context.getActiveAttrib(null, 2)");
-glErrorShouldBe(context, context.INVALID_VALUE);
+wtu.shouldThrowOrGenerateGLError(context, context.INVALID_VALUE, "context.getActiveAttrib(null, 2)");
 // Error state should be clear by this point
 glErrorShouldBe(context, context.NO_ERROR);
 // Real OpenGL error
@@ -67,9 +67,7 @@ glErrorShouldBe(context, context.INVALID_VALUE);
 glErrorShouldBe(context, context.NO_ERROR);
 
 debug("Testing getActiveUniform");
-// Synthetic OpenGL error
-shouldBeNull("context.getActiveUniform(null, 0)");
-glErrorShouldBe(context, context.INVALID_VALUE);
+wtu.shouldThrowOrGenerateGLError(context, context.INVALID_VALUE, "context.getActiveUniform(null, 0)");
 // Error state should be clear by this point
 glErrorShouldBe(context, context.NO_ERROR);
 // Real OpenGL error

@@ -10,6 +10,7 @@ found in the LICENSE file.
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../resources/js-test-pre.js"></script>
 <script src="../resources/webgl-test.js"></script>
+<script src="../resources/webgl-test-utils.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -20,6 +21,7 @@ description("Test bufferData/bufferSubData with ArrayBuffer input");
 
 debug('Regression test for <a href="https://bugs.webkit.org/show_bug.cgi?id=41884">https://bugs.webkit.org/show_bug.cgi?id=41884</a> : <code>Implement bufferData and bufferSubData with ArrayBuffer as input</code>');
 
+var wtu = WebGLTestUtils;
 var gl = create3DContext();
 shouldBeNonNull("gl");
 
@@ -56,8 +58,7 @@ glErrorShouldBe(gl, gl.INVALID_VALUE);
 gl.bufferSubData(gl.ARRAY_BUFFER, 10, array);
 glErrorShouldBe(gl, gl.NO_ERROR);
 
-gl.bufferSubData(gl.ARRAY_BUFFER, 10, null);
-glErrorShouldBe(gl, [gl.NO_ERROR, gl.INVALID_VALUE]);
+wtu.shouldThrowOrGenerateGLError(gl, [gl.NO_ERROR, gl.INVALID_VALUE], "gl.bufferSubData(gl.ARRAY_BUFFER, 10, null)");
 
 successfullyParsed = true;
 </script>
