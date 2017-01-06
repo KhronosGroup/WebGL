@@ -22,6 +22,7 @@
              name="OES_EGL_image_external">
       <addendum>Defines a new texture target <code>TEXTURE_EXTERNAL_OES</code>.</addendum>
       <addendum>Provides a mechanism for binding <code>HTMLVideoElement</code>'s EGLImage to external texture targets.</addendum>
+      <addendum>Provides time of frame, texture width and height of <code>HTMLVideoElement</code>'s EGLImage.</addendum>
     </mirrors>
 
     <features>
@@ -44,6 +45,13 @@
 
   <idl xml:space="preserve">
 [NoInterfaceObject]
+interface WebGLVideoFrameInfo {
+  readonly attribute double currentTime;
+  readonly attribute unsigned long textureWidth;
+  readonly attribute unsigned long textureHeight;
+};
+
+[NoInterfaceObject]
 interface OES_EGL_image_external {
     const GLenum TEXTURE_EXTERNAL_OES             = 0x8D65;
     const GLenum SAMPLER_EXTERNAL_OES             = 0x8D66;
@@ -52,6 +60,8 @@ interface OES_EGL_image_external {
 
     [RaisesException] void EGLImageTargetTexture2DOES(
         GLenum target, HTMLVideoElement video);
+    [RaisesException] WebGLVideoFrameInfo getVideoFrameInfo(
+        HTMLVideoElement video); 
 };
   </idl>
 
@@ -118,6 +128,9 @@ interface OES_EGL_image_external {
   <history>
     <revision date="2016/11/05">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2017/01/06">
+      <change>Add VideoFrameInfo interface and function to return it.</change>
     </revision>
   </history>
 </proposal>
