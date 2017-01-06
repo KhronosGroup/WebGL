@@ -3398,11 +3398,21 @@ the state of the binding point will remain untouched.
 <p>
 
 The WebGL API does not support client-side arrays. If <code>vertexAttribPointer</code> is called
-without a <code>WebGLBuffer</code> bound to the <code>ARRAY_BUFFER</code> binding point,
-an <code>INVALID_OPERATION</code> error is generated. If <code>drawElements</code> is called with
-a <code>count</code> greater than zero, and no <code>WebGLBuffer</code> is bound to
-the <code>ELEMENT_ARRAY_BUFFER</code> binding point, an <code>INVALID_OPERATION</code> error is
-generated.
+without a <code>WebGLBuffer</code> bound to the <code>ARRAY_BUFFER</code> binding point, and
+<code>offset</code> is non-zero, an <code>INVALID_OPERATION</code> error is generated. If
+<code>drawElements</code> is called with a <code>count</code> greater than zero, and no
+<code>WebGLBuffer</code> is bound to the <code>ELEMENT_ARRAY_BUFFER</code> binding point, an
+<code>INVALID_OPERATION</code> error is generated.
+
+<div class="note rationale">
+    <p>
+    Allowing setting VERTEX_ATTRIB_ARRAY_BUFFER_BINDING to null even though client-side arrays
+    are never supported allows for clearing the binding to its original state, which isn't
+    strictly possible otherwise.
+    <p>
+    This also matches the behavior in OpenGL ES 3.0.5 <a href="#refsGLES30">[GLES30]</a> p25 for
+    non-default VAO objects.
+</div>
 
 </p>
 
