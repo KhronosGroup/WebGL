@@ -1125,6 +1125,27 @@ var shouldGenerateGLError = function(gl, glErrors, evalStr) {
 };
 
 /**
+ * Tests that an evaluated expression either throws an exception or generates a specific GL error.
+ * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
+ * @param {string} evalStr The string to evaluate.
+ * @param {string } opt_msg The optional message to display.
+ */
+var shouldThrowOrGenerateGLError = function(gl, glErrors, evalStr, opt_msg) {
+  var exception;
+  try {
+    eval(evalStr);
+  } catch (e) {
+    exception = e;
+  }
+  if (exception) {
+    testPassed(evalStr + " threw exception " + exception);
+  } else {
+    glErrorShouldBe(gl, glErrors, "after evaluating: " + evalStr);
+  }
+};
+
+/**
  * Tests that the first error GL returns is the specified error.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {number|Array.<number>} glErrors The expected gl error or an array of expected errors.
@@ -2079,6 +2100,7 @@ return {
   startPlayingAndWaitForVideo: startPlayingAndWaitForVideo,
   startsWith: startsWith,
   shouldGenerateGLError: shouldGenerateGLError,
+  shouldThrowOrGenerateGLError: shouldThrowOrGenerateGLError,
   readFile: readFile,
   readFileList: readFileList,
   replaceParams: replaceParams,
