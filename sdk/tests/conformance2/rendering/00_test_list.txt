@@ -14,6 +14,7 @@ clear-func-buffer-type-match.html
 --min-version 2.0.1 clipping-wide-points.html
 --min-version 2.0.1 depth-stencil-feedback-loop.html
 draw-buffers.html
+--min-version 2.0.1 draw-buffers-dirty-state-bug.html
 element-index-uint.html
 framebuffer-completeness-unaffected.html
 framebuffer-unsupported.html
