@@ -142,7 +142,7 @@ function runNextVideo() {
     }
 
     if (!video.canPlayType(videoInfo.type).replace(/no/, '')) {
-        debug(info.type + " unsupported");
+        debug(videoInfo.type + " unsupported");
         requestAnimationFrame(runNextVideo);
         return;
     };
