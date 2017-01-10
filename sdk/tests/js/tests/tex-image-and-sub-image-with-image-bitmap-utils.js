@@ -341,19 +341,18 @@ function runTestOnBindingTargetImageBitmap(bindingTarget, program, cases, option
             x.bitmap.flipY, x.bitmap.premultiply, optionsVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
     });
 
-    if (bindingTarget == gl.TEXTURE_CUBE_MAP || bindingTarget == gl.TEXTURE_2D_ARRAY)
+    if (wtu.getDefault3DContextVersion() <= 1 ||
+        (bindingTarget == gl.TEXTURE_CUBE_MAP || bindingTarget == gl.TEXTURE_2D_ARRAY))
     {
         // Skip testing source sub region on TEXTURE_CUBE_MAP and TEXTURE_2D_ARRAY on WebGL2 to save
         // running time.
         return;
     }
 
-    if (wtu.getDefault3DContextVersion() > 1) {
-        cases.forEach(x => {
-            runOneIterationImageBitmapTestSubSource(x.sub, bindingTarget, program, x.bitmap,
-                x.bitmap.flipY, x.bitmap.premultiply, optionsVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
-        });
-    }
+    cases.forEach(x => {
+        runOneIterationImageBitmapTestSubSource(x.sub, bindingTarget, program, x.bitmap,
+            x.bitmap.flipY, x.bitmap.premultiply, optionsVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
+    });
 }
 
 function runImageBitmapTestInternal(bitmaps, alphaVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, is3D)
