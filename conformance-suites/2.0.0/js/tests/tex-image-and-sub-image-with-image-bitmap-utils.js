@@ -341,7 +341,7 @@ function runTestOnBindingTargetImageBitmap(bindingTarget, program, cases, option
             x.bitmap.flipY, x.bitmap.premultiply, optionsVal, internalFormat, pixelFormat, pixelType, gl, tiu, wtu);
     });
 
-    if (wtu.getDefault3DContextVersion() > 1 &&
+    if (wtu.getDefault3DContextVersion() <= 1 ||
         (bindingTarget == gl.TEXTURE_CUBE_MAP || bindingTarget == gl.TEXTURE_2D_ARRAY))
     {
         // Skip testing source sub region on TEXTURE_CUBE_MAP and TEXTURE_2D_ARRAY on WebGL2 to save
