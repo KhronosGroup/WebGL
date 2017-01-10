@@ -61,7 +61,6 @@ var COMPRESSED_RGBA8_ETC2_EAC                 = 0x9278;
 var COMPRESSED_SRGB8_ALPHA8_ETC2_EAC          = 0x9279;
 
 var wtu = WebGLTestUtils;
-var contextVersion = wtu.getDefault3DContextVersion();
 var gl = wtu.create3DContext();
 var WEBGL_compressed_texture_etc;
 
@@ -139,18 +138,10 @@ function runTest() {
     shouldBe("formats.length", isPositive ? "10" : "0");
 
     debug("");
-    if (contextVersion >= 2) {
-      // `null` coerces into `0` for the PBO entrypoint, yielding INVALID_OP due to no PBO bound.
-      wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.compressedTexImage2D(gl.TEXTURE_2D, 0, COMPRESSED_R11_EAC, 4, 4, 0, null)");
-      wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, COMPRESSED_R11_EAC, null)");
-      wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.compressedTexImage3D(gl.TEXTURE_2D_ARRAY, 0, COMPRESSED_R11_EAC, 4, 4, 4, 0, null)");
-      wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.compressedTexSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, 0, 0, 0, 0, 0, COMPRESSED_R11_EAC, null)");
-    } else {
-      shouldThrow("gl.compressedTexImage2D(gl.TEXTURE_2D, 0, COMPRESSED_R11_EAC, 4, 4, 0, null)");
-      shouldThrow("gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, COMPRESSED_R11_EAC, null)");
-      shouldThrow("gl.compressedTexImage3D(gl.TEXTURE_2D_ARRAY, 0, COMPRESSED_R11_EAC, 4, 4, 4, 0, null)");
-      shouldThrow("gl.compressedTexSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, 0, 0, 0, 0, 0, COMPRESSED_R11_EAC, null)");
-    }
+    shouldThrow("gl.compressedTexImage2D(gl.TEXTURE_2D, 0, COMPRESSED_R11_EAC, 4, 4, 0, null)");
+    shouldThrow("gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, 0, 0, COMPRESSED_R11_EAC, null)");
+    shouldThrow("gl.compressedTexImage3D(gl.TEXTURE_2D_ARRAY, 0, COMPRESSED_R11_EAC, 4, 4, 4, 0, null)");
+    shouldThrow("gl.compressedTexSubImage3D(gl.TEXTURE_2D_ARRAY, 0, 0, 0, 0, 0, 0, 0, COMPRESSED_R11_EAC, null)");
   }
 }
 
