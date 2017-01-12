@@ -48,6 +48,7 @@ canvas = document.getElementById("example");
 var gl = wtu.create3DContext(canvas, undefined, 2);
 var tiu = TexImageUtils;
 
+// Both Chrome and Firefox fail on this test on NVIDIA Windows, see crbug.com/679639.
 function testDrawIntegerTextureBaseLevel()
 {
     description("This test verifies the functionality of rendering with integer texture non-zero base level.");
