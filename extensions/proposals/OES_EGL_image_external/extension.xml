@@ -22,6 +22,7 @@
              name="OES_EGL_image_external">
       <addendum>Defines a new texture target <code>TEXTURE_EXTERNAL_OES</code>.</addendum>
       <addendum>Provides a mechanism for binding <code>HTMLVideoElement</code>'s EGLImage to external texture targets.</addendum>
+      <addendum>Provides time of frame, texture width and height of <code>HTMLVideoElement</code>'s EGLImage.</addendum>
     </mirrors>
 
     <features>
@@ -44,13 +45,20 @@
 
   <idl xml:space="preserve">
 [NoInterfaceObject]
+interface WebGLVideoFrameInfo {
+  readonly attribute double currentTime;
+  readonly attribute unsigned long textureWidth;
+  readonly attribute unsigned long textureHeight;
+};
+
+[NoInterfaceObject]
 interface OES_EGL_image_external {
     const GLenum TEXTURE_EXTERNAL_OES             = 0x8D65;
     const GLenum SAMPLER_EXTERNAL_OES             = 0x8D66;
     const GLenum TEXTURE_BINDING_EXTERNAL_OES     = 0x8D67;
     const GLenum REQUIRED_TEXTURE_IMAGE_UNITS_OES = 0x8D68;
 
-    [RaisesException] void EGLImageTargetTexture2DOES(
+    [RaisesException] WebGLVideoFrameInfo EGLImageTargetTexture2DOES(
         GLenum target, HTMLVideoElement video);
 };
   </idl>
@@ -101,9 +109,9 @@ interface OES_EGL_image_external {
 
     <p> Application renders each video frames into WebGL canvas based on game-loop pattern. </p>
     <pre>
-    update();
 
     while (true) {
+       update();
        processInput();
        render();
     }
@@ -118,6 +126,11 @@ interface OES_EGL_image_external {
   <history>
     <revision date="2016/11/05">
       <change>Initial revision.</change>
+    </revision>
+    <revision date="2017/01/10">
+      <change>Change EGLImageTargetTexture2DOES to be called at every WebGL rendering cycle.</change>
+      <change>Add VideoFrameInfo interface.</change>
+      <change>Change EGLImageTargetTexture2DOES to return VideoFrameInfo as a currently mapped frame.</change>
     </revision>
   </history>
 </proposal>
