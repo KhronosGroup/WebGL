@@ -75,7 +75,7 @@ gl.generateMipmap(gl.TEXTURE_CUBE_MAP); // there's no need to call this but the 
 
 var textureData = new Uint8Array(dataWidth * dataHeight * 4);
 
-// The first texture has downlaoded
+// The first texture has downloaded
 var first = 1;
 gl.bindTexture(gl.TEXTURE_CUBE_MAP, tex);
 gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + first, 0, gl.RGBA, dataWidth, dataHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, textureData);
