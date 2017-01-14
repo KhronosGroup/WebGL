@@ -1068,10 +1068,11 @@ var context = canvas.getContext('webgl',
 
     <p>
         Vertex, index, texture, and other data is transferred to the WebGL implementation using
-        the <a href="../../../../typedarray/specs/latest/#ARRAYBUFFER">ArrayBuffer</a>
-        and <a href="../../../../typedarray/specs/latest/#TYPEDARRAYS">views</a> defined in
-        the <a href="../../../../typedarray/specs/latest/">Typed Array</a>
-        specification <a href="#refsTYPEDARRAYS">[TYPEDARRAYS]</a>.
+        <a href="http://www.ecma-international.org/ecma-262/6.0/#sec-arraybuffer-constructor">ArrayBuffer</a>s,
+        <a href="http://www.ecma-international.org/ecma-262/6.0/#sec-typedarray-constructors">Typed Arrays</a> and
+        <a href="http://www.ecma-international.org/ecma-262/6.0/#sec-dataview-objects">DataView</a>s
+        as defined in the <a href="http://www.ecma-international.org/ecma-262/6.0/">ECMAScript specification</a>
+        <a href="#refsECMASCRIPT">[ECMASCRIPT]</a>.
     </p>
     <p>
         Typed Arrays support the creation of interleaved, heterogeneous vertex data; uploading of
@@ -4027,10 +4028,10 @@ extensions.
             Canvas Context Registry</a></cite>,
             WHATWG.
         </dd>
-        <dt id="refsTYPEDARRAYS">[TYPEDARRAYS]</dt>
-        <dd><cite><a href="http://www.khronos.org/registry/typedarray/specs/latest/">
-            Typed Array Specification: Editor's Draft</a></cite>,
-            V. Vukicevic, K. Russell, May 2010.
+        <dt id="refsECMASCRIPT">[ECMASCRIPT]</dt>
+        <dd><cite><a href="http://www.ecma-international.org/ecma-262/6.0/">
+            ECMAScript&reg; 2015 Language Specification</a></cite>,
+            Ecma International, 2015.
         </dd>
         <dt id="refsGLES20">[GLES20]</dt>
         <dd><cite><a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf">
