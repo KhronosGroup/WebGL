@@ -1766,13 +1766,14 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       </dd>
 
       <dt class="idl-code">
-        void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width,
-                        GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type,
-                        ArrayBufferView? srcData)
-        void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width,
-                        GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type,
-                        ArrayBufferView srcData, GLuint srcOffset)
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.4 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a>)</span>
+        <p>void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width,
+                           GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type,
+                           ArrayBufferView? srcData)</p>
+        <p>void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width,
+                           GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type,
+                           ArrayBufferView srcData, GLuint srcOffset)
+          <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.4 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a>)</span>
+        </p>
       </dt>
       <dd>
         <p>Allocates and initializes the specified mipmap level of a three-dimensional or two-dimensional array texture. </p>
@@ -2386,23 +2387,26 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         Define the draw buffers to which all fragment colors are written.
       </dd>
       <dt>
-        <p class="idl-code">
-          void clearBufferfv(GLenum buffer, GLint drawbuffer, Float32List values,
-                             optional GLuint srcOffset = 0);
-          void clearBufferiv(GLenum buffer, GLint drawbuffer, Int32List values,
-                             optional GLuint srcOffset = 0);
-          void clearBufferuiv(GLenum buffer, GLint drawbuffer, Uint32List values,
-                              optional GLuint srcOffset = 0);
-          void clearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil);
-          <span class="gl-spec">
-            (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.2.3">OpenGL ES 3.0.4 &sect;4.2.3</a>,
-            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClearBuffer.xhtml" class="nonnormative">man page</a>)
-          </span>
-        </p>
+        <div class="idl-code">
+          <p>void clearBufferfv(GLenum buffer, GLint drawbuffer, Float32List values,
+                                optional GLuint srcOffset = 0);</p>
+          <p>void clearBufferiv(GLenum buffer, GLint drawbuffer, Int32List values,
+                                optional GLuint srcOffset = 0);</p>
+          <p>void clearBufferuiv(GLenum buffer, GLint drawbuffer, Uint32List values,
+                                 optional GLuint srcOffset = 0);</p>
+          <p>void clearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil);
+            <span class="gl-spec">
+              (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.2.3">OpenGL ES 3.0.4 &sect;4.2.3</a>,
+              <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClearBuffer.xhtml" class="nonnormative">man page</a>)
+            </span>
+          </p>
+        </div>
       </dt>
       <dd>
-        Set every pixel in the specified buffer to a constant value. The clearBuffer function that should be
-        used for a color buffer depends on the type of the color buffer, given in the following table:
+        Set every pixel in the specified buffer to a constant value. The <code>clearBuffer</code>
+        function that should be used for a color buffer depends on the type of the color buffer,
+        given in the following table:
+
         <table>
           <tr><th>Type of buffer</th><th>clearBuffer function</th></tr>
           <tr><td>floating point</td><td>clearBufferfv</td></tr>
@@ -2415,6 +2419,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
         <p>For ArrayBufferView entrypoints, if there's not enough elements in <code>values</code>
            starting at <code>srcOffset</code>, generate <code>INVALID_VALUE</code>.
+
+        <p><code>clearBufferfi</code> may be used to clear the depth and stencil buffers.
+          <code>buffer</code> must be <code>DEPTH_STENCIL</code> and <code>drawBuffer</code> must be
+          zero. <code>depth</code> and <code>stencil</code> are the depth and stencil values,
+          respectively.</p>
 
         <p>If this function attempts to clear a missing attachment of a complete framebuffer, nothing
            is cleared and no error is generated
