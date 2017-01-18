@@ -249,23 +249,6 @@ function testFailed(msg) {
     _flushBufferedLogsToConsole();
 }
 
-/**
- * @param  {string=} msg
- */
-function testSkipped(msg) {
-    msg = msg || 'Skipped';
-    if (_currentTestName)
-      msg = _currentTestName + ': ' + msg;
-
-    reportSkippedTestResultsToHarness(true, msg);
-
-    if (!quietMode())
-      _addSpan('<span><span class="warn">SKIP</span> ' + escapeHTML(msg) + '</span>');
-    if (_jsTestPreVerboseLogging) {
-        _bufferedLogToConsole('SKIP' + msg);
-    }
-}
-
 var _currentTestName;
 
 /**

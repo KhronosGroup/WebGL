@@ -41,7 +41,7 @@
 description("This test ensures that the WebGL context has all the methods in the specification.");
 
 if (!window.OffscreenCanvas) {
-    testSkipped("OffscreenCanvas is not supported.");
+  testPassed("No OffscreenCanvas support");
 } else {
   if (testAPIs('webgl2')) {
     testPassed("All WebGL2 methods found");

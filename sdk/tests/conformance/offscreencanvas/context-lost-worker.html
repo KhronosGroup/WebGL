@@ -37,7 +37,7 @@ function init()
   description("Tests behavior under a lost context for OffscreenCanvas in a worker");
 
   if (!window.OffscreenCanvas) {
-    testSkipped("OffscreenCanvas is not supported.");
+    testPassed("No OffscreenCanvas support");
     finishTest();
     return;
   }
