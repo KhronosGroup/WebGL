@@ -287,6 +287,13 @@ goog.scope(function() {
         _skip("multisample.fbo_4_samples.constancy_alpha_to_coverage");
         _skip("multisample.fbo_8_samples.constancy_alpha_to_coverage");
         _skip("multisample.fbo_max_samples.constancy_alpha_to_coverage");
+
+        _setReason("Intel Mesa driver bug on updating texture with TexSubImage3D from pixel buffer.");
+        // crbug.com/666384
+        _skip("texture_functions.texturesize.sampler3d*");
+        _skip("texture_functions.texturesize.isampler3d*");
+        _skip("texture_functions.texturesize.sampler2darray*");
+        _skip("texture_functions.texturesize.isampler2darray*");
     } // if (!runSkippedTests)
 
     /*
