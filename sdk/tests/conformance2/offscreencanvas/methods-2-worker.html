@@ -40,21 +40,21 @@
 description("This test ensures that the WebGL context created for an OffscreenCanvas has all the methods in the specification.");
 
 if (!window.OffscreenCanvas) {
+  testPassed("No OffscreenCanvas support");
   finishTest();
-}
-
-var worker = new Worker('methods-2-worker.js');
-worker.postMessage("Start worker");
-worker.onmessage = function(e) {
-  if (e.data == "Test passed") {
-    testPassed("All test have passed");
-  } else {
-    testFailed("Some tests failed");
+} else {
+  var worker = new Worker('methods-2-worker.js');
+  worker.postMessage("Start worker");
+  worker.onmessage = function(e) {
+    if (e.data == "Test passed") {
+      testPassed("All test have passed");
+    } else {
+      testFailed("Some tests failed");
+    }
+    finishTest();
   }
-  finishTest();
 }
-var successfullyParsed = false;
-</script>
 
+</script>
 </body>
 </html>

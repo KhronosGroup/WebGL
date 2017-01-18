@@ -38,7 +38,9 @@ function init()
     description("Tests behavior under a lost context for OffscreenCanvas");
 
     if (!window.OffscreenCanvas) {
+      testPassed("No OffscreenCanvas support");
       finishTest();
+      return;
     }
 
     canvas = new OffscreenCanvas(10, 10);
@@ -49,6 +51,7 @@ function init()
     if (!testValidContext()) {
         testFailed("Some tests failed");
         finishTest();
+        return;
     }
 
     extension = gl.getExtension("WEBGL_lose_context");
@@ -57,6 +60,7 @@ function init()
     if (extension == null || OES_vertex_array_object == null) {
         testFailed("Some tests failed");
         finishTest();
+        return;
     }
 
     // We need to initialize |uniformLocation| before losing context.
@@ -68,14 +72,15 @@ function init()
         if (testLostContextWithoutRestore()) {
             testPassed("All tests passed");
             finishTest();
+            return;
         } else {
             testFailed("Some tests failed");
             finishTest();
+            return;
         }
     }, false);
 }
 
-var successfullyParsed = true;
 </script>
 </head>
 <body onload="init()">

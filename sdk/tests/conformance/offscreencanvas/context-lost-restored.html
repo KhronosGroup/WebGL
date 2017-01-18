@@ -39,18 +39,22 @@ function init()
     description("Tests behavior under a restored context for OffscreenCanvas.");
 
     if (!window.OffscreenCanvas) {
+      testPassed("No OffscreenCanvas support");
       finishTest();
+      return;
     }
 
     if (!setupTest()) {
         testFailed("Cannot initialize test");
         finishTest();
+        return;
     }
 
     canvas.addEventListener("webglcontextlost", function(e) {
         if (!testLostContext(e)) {
             testFailed("Some test failed");
             finishTest();
+            return;
         }
         // restore the context after this event has exited.
         setTimeout(function() {
@@ -58,19 +62,23 @@ function init()
             if (!compareGLError(gl.INVALID_OPERATION, "WEBGL_lose_context.restoreContext()")) {
                 testFailed("Some test failed");
                 finishTest();
+                return;
             }
             testLosingAndRestoringContext().then(function() {
                 testPassed("Test passed");
                 finishTest();
+                return;
             }, function() {
                 testFailed("Some test failed");
                 finishTest();
+                return;
             });
        }, 0);
     });
     canvas.addEventListener("webglcontextrestored", function() {
         testFailed("Some test failed");
         finishTest();
+        return;
     });
     allowRestore = false;
     contextLostEventFired = false;
@@ -79,6 +87,7 @@ function init()
     if (!testOriginalContext()) {
         testFailed("Some test failed");
         finishTest();
+        return;
     }
     WEBGL_lose_context.loseContext();
     // The context should be lost immediately.
@@ -91,7 +100,6 @@ function init()
     shouldBeFalse("contextLostEventFired");
 }
 
-var successfullyParsed = true;
 </script>
 </head>
 <body onload="init()">

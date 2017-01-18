@@ -37,7 +37,9 @@ function init()
   description("Tests behavior under a lost context for OffscreenCanvas in a worker");
 
   if (!window.OffscreenCanvas) {
+    testPassed("No OffscreenCanvas support");
     finishTest();
+    return;
   }
 
   var worker = new Worker('context-lost-worker.js');
@@ -49,9 +51,10 @@ function init()
       testFailed("Some tests failed");
     }
     finishTest();
+    return;
   }
 }
-var successfullyParsed = false;
+
 </script>
 </head>
 <body onload="init()">

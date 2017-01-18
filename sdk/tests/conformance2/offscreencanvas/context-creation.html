@@ -41,18 +41,17 @@
 description("This test ensures that the WebGL2 context can be created on an OffscreenCanvas.");
 
 if (!window.OffscreenCanvas) {
-  finishTest();
-}
-
-if (contextCreation('webgl2')) {
-  testPassed("WebGL2 context created correctly.");
+  testPassed("No OffscreenCanvas support");
 } else {
-  testFailed("WebGL2 context creation failed");
+  if (contextCreation('webgl2')) {
+    testPassed("WebGL2 context created correctly.");
+  } else {
+    testFailed("WebGL2 context creation failed");
+  }
 }
 
 var successfullyParsed = true;
-finishTest();
 </script>
-
+<script src="../../js/js-test-post.js"></script>
 </body>
 </html>

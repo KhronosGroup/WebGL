@@ -41,18 +41,17 @@
 description("This test ensures that the WebGL context created for an OffscreenCanvas has all the methods in the specification.");
 
 if (!window.OffscreenCanvas) {
-  finishTest();
-}
-
-if (testAPIs('webgl')) {
-  testPassed("All WebGL methods found");
+  testPassed("No OffscreenCanvas support");
 } else {
-  testFailed("Some WebGL methods not found");
+  if (testAPIs('webgl')) {
+    testPassed("All WebGL methods found");
+  } else {
+    testFailed("Some WebGL methods not found");
+  }
 }
 
 var successfullyParsed = true;
-finishTest();
 </script>
-
+<script src="../../js/js-test-post.js"></script>
 </body>
 </html>
