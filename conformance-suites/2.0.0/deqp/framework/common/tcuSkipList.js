@@ -294,6 +294,12 @@ goog.scope(function() {
         _skip("texture_functions.texturesize.isampler3d*");
         _skip("texture_functions.texturesize.sampler2darray*");
         _skip("texture_functions.texturesize.isampler2darray*");
+
+        _setReason("Fails on Linux NVidia Quadro 600.");
+        // crbug.com/682815
+        _skip("multisample.fbo_max_samples.num_samples_polygon");
+        _skip("multisample.fbo_max_samples.num_samples_line");
+        _skip("multisample.fbo_max_samples.depth");
     } // if (!runSkippedTests)
 
     /*
