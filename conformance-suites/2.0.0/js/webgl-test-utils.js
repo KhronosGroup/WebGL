@@ -134,7 +134,7 @@ var simpleTextureFragmentShader = [
 var simpleCubeMapTextureFragmentShader = [
   'precision mediump float;',
   'uniform samplerCube tex;',
-  'uniform int face;',
+  'uniform highp int face;',
   'varying vec2 texCoord;',
   'void main() {',
   // Transform [0, 1] -> [-1, 1]
