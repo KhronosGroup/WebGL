@@ -723,14 +723,19 @@ typedef unrestricted float GLclampf;
         The <code>WebGLContextAttributes</code> dictionary contains drawing surface attributes and
         is passed as the second parameter to <code>getContext</code>.
     </p>
-    <pre class="idl">dictionary <dfn id="WebGLContextAttributes">WebGLContextAttributes</dfn> {
+    <!-- The capitalization rules here match those of the crossOrigin
+    attribute, which was added to HTMLMediaElement on behalf of
+    WebGL. -->
+    <pre class="idl">enum PowerPreference { "default", "low-power", "high-performance" };
+
+dictionary <dfn id="WebGLContextAttributes">WebGLContextAttributes</dfn> {
     GLboolean alpha = true;
     GLboolean depth = true;
     GLboolean stencil = false;
     GLboolean antialias = true;
     GLboolean premultipliedAlpha = true;
     GLboolean preserveDrawingBuffer = false;
-    GLboolean preferLowPowerToHighPerformance = false;
+    PowerPreference powerPreference = "default";
     GLboolean failIfMajorPerformanceCaveat = false;
 };</pre>
 
@@ -790,7 +795,7 @@ typedef unrestricted float GLclampf;
                 </em>
                 </blockquote>
             </dd>
-        <dt><span class=prop-value>preferLowPowerToHighPerformance</span></dt>
+        <dt><span class=prop-value>powerPreference</span></dt>
             <dd>
               Provides a hint to the implementation suggesting that, if possible, it
               creates a context that optimizes for power consumption over
