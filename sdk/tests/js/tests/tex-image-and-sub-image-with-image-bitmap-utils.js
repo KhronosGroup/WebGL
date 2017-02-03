@@ -149,12 +149,12 @@ function runOneIterationImageBitmapTest(useTexSubImage, bindingTarget, program, 
         // Check the top pixel and bottom pixel and make sure they have
         // the right color.
         bufferedLogToConsole("Checking " + (flipY ? "top" : "bottom"));
-        wtu.checkCanvasRect(gl, quaterWidth, bottom, 2, 2, tl, "shouldBe " + tl);
+        wtu.checkCanvasRect(gl, quaterWidth, bottom, 2, 2, tl, "shouldBe " + tl, tolerance);
         if (!skipCorner && !flipY) {
             wtu.checkCanvasRect(gl, halfWidth + quaterWidth, bottom, 2, 2, tr, "shouldBe " + tr, tolerance);
         }
         bufferedLogToConsole("Checking " + (flipY ? "bottom" : "top"));
-        wtu.checkCanvasRect(gl, quaterWidth, top, 2, 2, bl, "shouldBe " + bl);
+        wtu.checkCanvasRect(gl, quaterWidth, top, 2, 2, bl, "shouldBe " + bl, tolerance);
         if (!skipCorner && flipY) {
             wtu.checkCanvasRect(gl, halfWidth + quaterWidth, top, 2, 2, br, "shouldBe " + br, tolerance);
         }
