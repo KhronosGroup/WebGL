@@ -80,6 +80,27 @@ function contextCreation(contextType) {
     }
 }
 
+function transferredOffscreenCanvasCreation(placeholder, width, height) {
+  placeholder.width = width;
+  placeholder.height = height;
+  return placeholder.transferControlToOffscreen();
+}
+
+function assertWidthAndHeight(entity, entityName, width, height) {
+ if (entity.width == width && entity.height == height) {
+   testPassed("The width and height of " + entityName + " are correct.");
+   return;
+ }
+ var errMsg = "";
+ if (entity.width != width) {
+   errMsg += "The width of " + entityName + " is " + entity.width + " while expected value is " + width + ". ";
+ }
+ if (entity.height != height) {
+   errMsg += "The height of " + entityName + " is " + entity.height + " while expected value is " + height + ". ";
+ }
+ testFailed(errMsg);
+}
+
 var webgl1Methods = [
   "getContextAttributes",
   "activeTexture",
