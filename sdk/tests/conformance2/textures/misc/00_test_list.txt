@@ -1,5 +1,6 @@
 --min-version 2.0.1 active-3d-texture-bug.html
 canvas-remains-unchanged-after-used-in-webgl-texture.html
+--min-version 2.0.1 compressed-tex-from-pbo-crash.html
 copy-texture-image.html
 copy-texture-image-luma-format.html
 copy-texture-image-webgl-specific.html
