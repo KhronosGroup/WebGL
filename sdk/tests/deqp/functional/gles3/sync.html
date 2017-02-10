@@ -18,15 +18,7 @@
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext('canvas', null, 2);
 
-
-    try {
-        functional.gles3.es3fSyncTests.run(gl);
-    }
-    catch(err)
-    {
-        bufferedLogToConsole(err);
-    }
-
+functional.gles3.es3fSyncTests.run(gl);
 </script>
 </body>
 </html>

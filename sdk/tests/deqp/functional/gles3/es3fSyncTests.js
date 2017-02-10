@@ -220,8 +220,10 @@ goog.scope(function() {
         gl.finish();
 
         if (this.m_caseOptions & es3fSyncTests.CaseOptions.FINISH_BEFORE_WAIT && waitValue != gl.ALREADY_SIGNALED) {
-            testOk = false;
-            bufferedLogToConsole('Expected glClientWaitSync to return gl.ALREADY_SIGNALED.');
+            // WebGL's finish() doesn't actually trigger a finish() in the underlying driver,
+            // so it is not guaranteed that the gl.ALREADY_SIGNALED is returned here.
+            // testOk = false;
+            // bufferedLogToConsole('Expected glClientWaitSync to return gl.ALREADY_SIGNALED.');
         }
 
         // Delete sync object
