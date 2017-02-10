@@ -288,7 +288,11 @@ function runOneTest(gl, info) {
   if (info.renderTolerance !== undefined) {
     tolerance = info.renderTolerance;
   }
-  wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", tolerance);
+  if (info.renderColor !== undefined) {
+    wtu.checkCanvas(gl, info.renderColor, "should be expected color " + info.renderColor, tolerance);
+  } else {
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", tolerance);
+  }
 }
 
 function runTests(shaderInfos, opt_contextVersion) {

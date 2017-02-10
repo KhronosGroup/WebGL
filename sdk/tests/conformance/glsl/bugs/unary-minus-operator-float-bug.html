@@ -33,17 +33,11 @@
 <link rel="stylesheet" href="../../../resources/js-test-style.css"/>
 <script src="../../../js/js-test-pre.js"></script>
 <script src="../../../js/webgl-test-utils.js"></script>
+<script src="../../../js/glsl-conformance-test.js"></script>
 </head>
 <body>
 <div id="description"></div>
-<canvas id="canvas" width="64" height="64"> </canvas>
 <div id="console"></div>
-<script id="vshader" type="x-shader/x-vertex">
-attribute vec4 a_position;
-void main() {
-    gl_Position = a_position;
-}
-</script>
 <script id="fshader" type="x-shader/x-fragment">
 precision mediump float;
 void main () {
@@ -59,36 +53,18 @@ description("Test for unary minus operator with float bug on MacOSX 10.11 with I
 debug("This is a regression test for <a href='https://bugs.chromium.org/p/chromium/issues/detail?id=308366'>Chromium Issue 308366</a>");
 debug("");
 
-var wtu = WebGLTestUtils;
-var canvas = document.getElementById("canvas");
-var gl = wtu.create3DContext(canvas);
-
-function runTest() {
-    var width = 64;
-    var height = 64;
-
-    var program = wtu.setupProgram(gl, ["vshader", "fshader"], ['a_position']);
-    gl.viewport(0, 0, width, height);
-    wtu.setupUnitQuad(gl, 0, 1);
-    wtu.drawUnitQuad(gl);
-    var msg = "";
-    var tolerance = 3;
-    wtu.checkCanvas(gl, [127, 0, 0, 255], msg, tolerance);
-    gl.deleteProgram(program);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from testing");
+GLSLConformanceTester.runRenderTests([
+{
+  fShaderId: 'fshader',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: "Evaluate unary minus operator and atan(x, y)",
+  renderTolerance: 3,
+  renderColor: [127, 0, 0, 255]
 }
+]);
 
-if (!gl) {
-    testFailed("Fail to get a WebGL context");
-} else {
-    testPassed("Created WebGL context successfully");
-    runTest();
-}
-
-debug("");
-var successfullyParsed = true;
 </script>
-<script src="../../../js/js-test-post.js"></script>
 
 </body>
 </html>
