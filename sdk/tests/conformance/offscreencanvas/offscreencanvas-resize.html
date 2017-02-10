@@ -99,7 +99,8 @@ function testResizeOnTransferredOffscreenCanvas() {
 }
 
 if (!window.OffscreenCanvas) {
-    testPassed("No OffscreenCanvas support");
+  testPassed("No OffscreenCanvas support");
+  finishTest();
 } else {
   testResizeOnNewOffscreenCanvas();
   testResizeOnTransferredOffscreenCanvas();
