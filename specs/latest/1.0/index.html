@@ -4,7 +4,6 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>WebGL Specification</title>
-    <meta name="generator" content="BBEdit 9.1">
     <link rel="stylesheet" type="text/css" href="../../../resources/Khronos-WD.css" />
     <script src="../../../resources/jquery-1.3.2.min.js" type="application/javascript"></script>
     <script src="../../../resources/generateTOC.js" type="application/javascript"></script>
@@ -730,7 +729,6 @@ typedef unrestricted float GLclampf;
     GLboolean antialias = true;
     GLboolean premultipliedAlpha = true;
     GLboolean preserveDrawingBuffer = false;
-    GLboolean preferLowPowerToHighPerformance = false;
     GLboolean failIfMajorPerformanceCaveat = false;
 };</pre>
 
@@ -789,15 +787,6 @@ typedef unrestricted float GLclampf;
                     to true can have significant performance implications.
                 </em>
                 </blockquote>
-            </dd>
-        <dt><span class=prop-value>preferLowPowerToHighPerformance</span></dt>
-            <dd>
-              Provides a hint to the implementation suggesting that, if possible, it
-              creates a context that optimizes for power consumption over
-              performance. For example, on hardware that has more than one
-              GPU, it may be the case that one of them is less powerful
-              but also uses less power. An implementation may choose to, and may
-              have to, ignore this hint.
             </dd>
         <dt> <span class=prop-value>failIfMajorPerformanceCaveat</span></dt>
             <dd>
