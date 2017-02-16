@@ -807,12 +807,12 @@ enum WebGLPowerPreference { "default", "low-power", "high-performance" };
                 only a hint and a WebGL implementation may choose to ignore it.
               </p>
               <p>
+
                 WebGL implementations use context lost and restored events to regulate power and
-                memory consumption, <em>even if</em> this attribute is not specified. <em>The
-                application must have registered an event listener which would handle the
-                <code>"webglcontextlost"</code> and <code>"webglcontextrestored"</code> events if
-                they were dispatched to the canvas element before fetching a WebGLRenderingContext
-                specifying this attribute, or "default" will be used.</em>
+                memory consumption, <em>regardless</em> of the value of this attribute. <em>At
+                WebGLRenderingContext creation time, this attribute will be ignored if no event
+                listeners exist which would handle both <code>"webglcontextlost"</code>
+                and <code>"webglcontextrestored"</code> events dispatched to the canvas element.</em>
               </p>
               <p>
                 The allowed values are:
