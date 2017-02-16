@@ -3187,14 +3187,14 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
     <h3><a name="WEBGLCONTEXTEVENT">WebGLContextEvent</a></h3>
 
     <p>
-        WebGL generates a <code>WebGLContextEvent</code> event in response to a status change to the
-        WebGL rendering context associated with the HTMLCanvasElement which has a listener for this
-        event. Events are sent using the DOM Event
-        System <a href="#refsDOM3EVENTS">[DOM3EVENTS]</a>. Event types can include the loss or
-        restoration of state, or the inability to create a context.
-        <a href="http://www.w3.org/TR/domcore/#eventinit">EventInit</a> is defined in the DOM4
-        specification <a href="#refsDOM4">[DOM4]</a>.
+        WebGL generates a <code>WebGLContextEvent</code> event in response to important changes in status of a
+        WebGL rendering context. Events are sent using the DOM Event System <a href="#refsDOM3EVENTS">[DOM3EVENTS]</a>,
+        and are dispatched to the HTMLCanvasElement associated with the WebGL rendering context.
+        The types of status changes that can trigger a <code>WebGLContextEvent</code> event are <a href="#CONTEXT_LOST">
+        the loss of state</a>, <a href="#CONTEXT_RESTORED">the restoration of state</a>, and <a href="#CONTEXT_CREATION_ERROR">
+        the inability to create a context</a>.
     </p>
+    <p>
         To <b><a name="fire-a-webgl-context-event">fire a WebGL context event named e</a></b> means
         that an <a href="http://www.w3.org/TR/domcore/#concept-event">event</a> using
         the <code>WebGLContextEvent</code> interface, with
@@ -3205,7 +3205,6 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
         attribute <a href="#refsDOM4">[DOM4]</a> initialized to true, is to
         be <a href="http://www.w3.org/TR/domcore/#concept-event-dispatch">dispatched</a> at the
         given object.
-    <p>
     </p>
     <pre class="idl">
 [Constructor(DOMString type, optional WebGLContextEventInit eventInit)]
@@ -3292,7 +3291,7 @@ dictionary WebGLContextEventInit : <a href="http://www.w3.org/TR/domcore/#eventi
     <pre>canvas.addEventListener("webglcontextlost", function(e) { e.preventDefault(); }, false); </pre>
     </div>
 
-    <h4>The Context Restored Event</h4>
+    <h4><a name="CONTEXT_RESTORED">The Context Restored Event</a></h4>
 
     <p>
 
@@ -3376,7 +3375,7 @@ canvas.addEventListener(
 initializeGame();</pre>
     </div>
 
-    <h4>The Context Creation Error Event</h4>
+    <h4><a name="CONTEXT_CREATION_ERROR">The Context Creation Error Event</a></h4>
 
     <p>
         When the user agent is to <b><a name="fire-a-webgl-context-creation-error">fire a WebGL
