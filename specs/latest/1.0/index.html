@@ -4,7 +4,6 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>WebGL Specification</title>
-    <meta name="generator" content="BBEdit 9.1">
     <link rel="stylesheet" type="text/css" href="../../../resources/Khronos-WD.css" />
     <script src="../../../resources/jquery-1.3.2.min.js" type="application/javascript"></script>
     <script src="../../../resources/generateTOC.js" type="application/javascript"></script>
@@ -713,6 +712,10 @@ typedef unsigned short GLushort;
 typedef unsigned long  GLuint;
 typedef unrestricted float GLfloat;
 typedef unrestricted float GLclampf;
+
+enum WebGLPerformancePreference {
+    "default", "high", "low"
+};
 </pre>
 
 <!-- ======================================================================================================= -->
@@ -723,14 +726,15 @@ typedef unrestricted float GLclampf;
         The <code>WebGLContextAttributes</code> dictionary contains drawing surface attributes and
         is passed as the second parameter to <code>getContext</code>.
     </p>
-    <pre class="idl">dictionary <dfn id="WebGLContextAttributes">WebGLContextAttributes</dfn> {
+    <pre class="idl">
+dictionary <dfn id="WebGLContextAttributes">WebGLContextAttributes</dfn> {
     GLboolean alpha = true;
     GLboolean depth = true;
     GLboolean stencil = false;
     GLboolean antialias = true;
     GLboolean premultipliedAlpha = true;
     GLboolean preserveDrawingBuffer = false;
-    GLboolean preferLowPowerToHighPerformance = false;
+    WebGLPerformancePreference performancePreference = "default";
     GLboolean failIfMajorPerformanceCaveat = false;
 };</pre>
 
@@ -790,14 +794,40 @@ typedef unrestricted float GLclampf;
                 </em>
                 </blockquote>
             </dd>
-        <dt><span class=prop-value>preferLowPowerToHighPerformance</span></dt>
+        <dt> <span class=prop-value>performancePreference</span>
             <dd>
-              Provides a hint to the implementation suggesting that, if possible, it
-              creates a context that optimizes for power consumption over
-              performance. For example, on hardware that has more than one
-              GPU, it may be the case that one of them is less powerful
-              but also uses less power. An implementation may choose to, and may
-              have to, ignore this hint.
+                Provides a hint to the user agent indicating what configuration of GPU is suitable
+                for this WebGL context. This may influence which GPU is used in a system with
+                multiple GPUs. For example, a dual-GPU system might have one GPU that consumes less
+                power at the expense of rendering performance. Note that this property is only a hint and
+                a WebGL implementation may choose to ignore it. The allowed values are:
+                <dl>
+                    <dt>default</dt>
+                    <dd>Let the user agent decide which GPU configuration is most suitable. This is
+                        the default value.</dd>
+                    <dt>high</dt>
+                    <dd>Indicates a request for a GPU configuration that values high
+                        rendering performance over power consumption.
+                        Any content that chooses this value should
+                        be aware that it is much more likely that the user agent will
+                        force a lost context at any time. Developers should always provide
+                        event handlers for the <a href="#WEBGLCONTEXTEVENT">context lost and
+                        context restored events</a> if they specify this value. Implementations may
+                        decide to initially respect this request and, after some time, choose to
+                        lose the context and restore a new context ignoring the request. Developers
+                        are encouraged to only specify this value if they believe it is absolutely
+                        necessary, since it may degrade the overall system performance and consume more
+                        of the user's battery.</dd>
+                    <dt>low</dt>
+                    <dd>Indicates a request for a GPU configutation that values power consumption
+                        over rendering performance. Generally this means the content is unlikely to be
+                        constrained by drawing. For example, it may render only one frame a
+                        second, it does not issuing draw calls with a lot of geometry or complex
+                        shaders, or it is a very small HTML canvas element. Developers are encouraged
+                        to specify this value if their content allows, since it may consume less
+                        of the user's battery.
+                    </dd>
+                </dl>
             </dd>
         <dt> <span class=prop-value>failIfMajorPerformanceCaveat</span></dt>
             <dd>

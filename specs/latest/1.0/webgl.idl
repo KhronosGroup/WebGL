@@ -22,6 +22,10 @@ typedef unsigned long  GLuint;
 typedef unrestricted float GLfloat;
 typedef unrestricted float GLclampf;
 
+enum WebGLPerformancePreference {
+    "default", "high", "low"
+};
+
 
 dictionary WebGLContextAttributes {
     GLboolean alpha = true;
@@ -30,7 +34,7 @@ dictionary WebGLContextAttributes {
     GLboolean antialias = true;
     GLboolean premultipliedAlpha = true;
     GLboolean preserveDrawingBuffer = false;
-    GLboolean preferLowPowerToHighPerformance = false;
+    WebGLPerformancePreference performancePreference = "default";
     GLboolean failIfMajorPerformanceCaveat = false;
 };
 
