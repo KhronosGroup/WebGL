@@ -713,6 +713,10 @@ typedef unsigned short GLushort;
 typedef unsigned long  GLuint;
 typedef unrestricted float GLfloat;
 typedef unrestricted float GLclampf;
+
+// The power preference settings are documented in the WebGLContextAttributes
+// section of the specification.
+enum WebGLPowerPreference { "default", "low-power", "high-performance" };
 </pre>
 
 <!-- ======================================================================================================= -->
@@ -723,6 +727,9 @@ typedef unrestricted float GLclampf;
         The <code>WebGLContextAttributes</code> dictionary contains drawing surface attributes and
         is passed as the second parameter to <code>getContext</code>.
     </p>
+    <!-- The capitalization rules here match those of the crossOrigin
+    attribute, which was added to HTMLMediaElement on behalf of
+    WebGL. -->
     <pre class="idl">dictionary <dfn id="WebGLContextAttributes">WebGLContextAttributes</dfn> {
     GLboolean alpha = true;
     GLboolean depth = true;
@@ -730,7 +737,7 @@ typedef unrestricted float GLclampf;
     GLboolean antialias = true;
     GLboolean premultipliedAlpha = true;
     GLboolean preserveDrawingBuffer = false;
-    GLboolean preferLowPowerToHighPerformance = false;
+    WebGLPowerPreference powerPreference = "default";
     GLboolean failIfMajorPerformanceCaveat = false;
 };</pre>
 
@@ -790,14 +797,59 @@ typedef unrestricted float GLclampf;
                 </em>
                 </blockquote>
             </dd>
-        <dt><span class=prop-value>preferLowPowerToHighPerformance</span></dt>
+        <dt><span class=prop-value>powerPreference</span></dt>
             <dd>
-              Provides a hint to the implementation suggesting that, if possible, it
-              creates a context that optimizes for power consumption over
-              performance. For example, on hardware that has more than one
-              GPU, it may be the case that one of them is less powerful
-              but also uses less power. An implementation may choose to, and may
-              have to, ignore this hint.
+              <p>
+                Provides a hint to the user agent indicating what configuration of GPU is suitable
+                for this WebGL context. This may influence which GPU is used in a system with
+                multiple GPUs. For example, a dual-GPU system might have one GPU that consumes
+                less power at the expense of rendering performance. Note that this property is
+                only a hint and a WebGL implementation may choose to ignore it.
+              </p>
+              <p>
+                WebGL implementations use context lost and restored events to regulate power and
+                memory consumption, <em>regardless</em> of the value of this attribute. <em>At
+                WebGLRenderingContext creation time, this attribute will be ignored if no event
+                listeners exist which would handle both <code>"webglcontextlost"</code>
+                and <code>"webglcontextrestored"</code> events dispatched to the canvas element.</em>
+              </p>
+              <p>
+                The allowed values are:
+              </p>
+              <dl><dd>
+                  <p>
+                    <em>default</em>
+                  </p>
+                  <p>
+                    Let the user agent decide which GPU configuration is most suitable. This is the
+                    default value.
+                  </p>
+                  <p>
+                    <em>high-performance</em>
+                  </p>
+                  <p>
+                    Indicates a request for a GPU configuration that prioritizes rendering
+                    performance over power consumption.  Any content that chooses this value should
+                    be aware that it is more likely that the user agent will force a lost context at
+                    any time. Implementations may decide to initially respect this request and,
+                    after some time, lose the context and restore a new context ignoring the
+                    request. Developers are encouraged to only specify this value if they believe it
+                    is absolutely necessary, since it may significantly decrease battery life on
+                    mobile devices.
+                  </p>
+                  <p>
+                    <em>low-power</em>
+                  </p>
+                  <p>
+                    Indicates a request for a GPU configuration that prioritizes power saving over
+                    rendering performance. Generally, content should use this if it is unlikely to
+                    be constrained by drawing performance; for example, if it renders only one frame
+                    per second, draws only relatively simple geometry with simple shaders, or uses a
+                    small HTML canvas element. Developers are encouraged to use this value if their
+                    content allows, since it may significantly improve battery life on mobile
+                    devices.
+                  </p>
+              </dd></dl>
             </dd>
         <dt> <span class=prop-value>failIfMajorPerformanceCaveat</span></dt>
             <dd>
