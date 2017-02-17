@@ -63,113 +63,117 @@ var gl = wtu.create3DContext("example", undefined, 2);
 var vSrc = wtu.getScript("vshader");
 var fTemplate = wtu.getScript("fshader");
 
+// |color| is defined in fragment shader as an array of 3 elements.
+var uniformArraySize = 3;
+var initialUniformValue = 99;
+
 var typeInfos = [
   { type: 'float',
     setter: 'uniform1fv',
     elem: '',
     numElementsPerType: 1,
-    srcValues: [16, 15, 14],
-    srcValuesWithOffset: [0, 0, 16, 15, 14],
-    srcValuesWithOffsetAndLength: [0, 0, 16, 15, 14, 0],
+    srcValues: [16, 15],
+    srcValuesWithOffset: [0, 0, 16, 15],
+    srcValuesWithOffsetAndLength: [0, 0, 16, 15, 0],
     srcOffset: 2,
   },
   { type: 'int',
     setter: 'uniform1iv',
     elem: '',
     numElementsPerType: 1,
-    srcValues: [16, 15, 14],
-    srcValuesWithOffset: [0, 0, 16, 15, 14],
-    srcValuesWithOffsetAndLength: [0, 0, 16, 15, 14, 0],
+    srcValues: [16, 15],
+    srcValuesWithOffset: [0, 0, 16, 15],
+    srcValuesWithOffsetAndLength: [0, 0, 16, 15, 0],
     srcOffset: 2,
   },
   { type: 'uint',
     setter: 'uniform1uiv',
     elem: '',
     numElementsPerType: 1,
-    srcValues: [16, 15, 14],
-    srcValuesWithOffset: [0, 0, 16, 15, 14],
-    srcValuesWithOffsetAndLength: [0, 0, 16, 15, 14, 0],
+    srcValues: [16, 15],
+    srcValuesWithOffset: [0, 0, 16, 15],
+    srcValuesWithOffsetAndLength: [0, 0, 16, 15, 0],
     srcOffset: 2,
   },
   { type: 'vec2',
     setter: 'uniform2fv',
     elem: '[1]',
     numElementsPerType: 2,
-    srcValues: [16, 15, 14, 13, 12, 11],
-    srcValuesWithOffset: [0, 16, 15, 14, 13, 12, 11],
-    srcValuesWithOffsetAndLength: [0, 16, 15, 14, 13, 12, 11, 0],
+    srcValues: [16, 15, 14, 13],
+    srcValuesWithOffset: [0, 16, 15, 14, 13],
+    srcValuesWithOffsetAndLength: [0, 16, 15, 14, 13, 0],
     srcOffset: 1,
   },
   { type: 'ivec2',
     setter: 'uniform2iv',
     elem: '[1]',
     numElementsPerType: 2,
-    srcValues: [16, 15, 14, 13, 12, 11],
-    srcValuesWithOffset: [0, 16, 15, 14, 13, 12, 11],
-    srcValuesWithOffsetAndLength: [0, 16, 15, 14, 13, 12, 11, 0],
+    srcValues: [16, 15, 14, 13],
+    srcValuesWithOffset: [0, 16, 15, 14, 13],
+    srcValuesWithOffsetAndLength: [0, 16, 15, 14, 13, 0],
     srcOffset: 1,
   },
   { type: 'uvec2',
     setter: 'uniform2uiv',
     elem: '[1]',
     numElementsPerType: 2,
-    srcValues: [16, 15, 14, 13, 12, 11],
-    srcValuesWithOffset: [0, 16, 15, 14, 13, 12, 11],
-    srcValuesWithOffsetAndLength: [0, 16, 15, 14, 13, 12, 11, 0],
+    srcValues: [16, 15, 14, 13],
+    srcValuesWithOffset: [0, 16, 15, 14, 13],
+    srcValuesWithOffsetAndLength: [0, 16, 15, 14, 13, 0],
     srcOffset: 1,
   },
   { type: 'vec3',
     setter: 'uniform3fv',
     elem: '[2]',
     numElementsPerType: 3,
-    srcValues: [16, 15, 14, 13, 12, 11, 10, 9, 8],
-    srcValuesWithOffset: [0, 16, 15, 14, 13, 12, 11, 10, 9, 8],
-    srcValuesWithOffsetAndLength: [0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 0, 0],
+    srcValues: [16, 15, 14, 13, 12, 11],
+    srcValuesWithOffset: [0, 16, 15, 14, 13, 12, 11],
+    srcValuesWithOffsetAndLength: [0, 16, 15, 14, 13, 12, 11, 0, 0],
     srcOffset: 1,
   },
   { type: 'ivec3',
     setter: 'uniform3iv',
     elem: '[2]',
     numElementsPerType: 3,
-    srcValues: [16, 15, 14, 13, 12, 11, 10, 9, 8],
-    srcValuesWithOffset: [0, 16, 15, 14, 13, 12, 11, 10, 9, 8],
-    srcValuesWithOffsetAndLength: [0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 0, 0],
+    srcValues: [16, 15, 14, 13, 12, 11],
+    srcValuesWithOffset: [0, 16, 15, 14, 13, 12, 11],
+    srcValuesWithOffsetAndLength: [0, 16, 15, 14, 13, 12, 11, 0, 0],
     srcOffset: 1,
   },
   { type: 'uvec3',
     setter: 'uniform3uiv',
     elem: '[2]',
     numElementsPerType: 3,
-    srcValues: [16, 15, 14, 13, 12, 11, 10, 9, 8],
-    srcValuesWithOffset: [0, 16, 15, 14, 13, 12, 11, 10, 9, 8],
-    srcValuesWithOffsetAndLength: [0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 0, 0],
+    srcValues: [16, 15, 14, 13, 12, 11],
+    srcValuesWithOffset: [0, 16, 15, 14, 13, 12, 11],
+    srcValuesWithOffsetAndLength: [0, 16, 15, 14, 13, 12, 11, 0, 0],
     srcOffset: 1,
   },
   { type: 'vec4',
     setter: 'uniform4fv',
     elem: '[3]',
     numElementsPerType: 4,
-    srcValues: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
-    srcValuesWithOffset: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
-    srcValuesWithOffsetAndLength: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 0],
+    srcValues: [16, 15, 14, 13, 12, 11, 10, 9],
+    srcValuesWithOffset: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9],
+    srcValuesWithOffsetAndLength: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 0],
     srcOffset: 3,
   },
   { type: 'ivec4',
     setter: 'uniform4iv',
     elem: '[3]',
     numElementsPerType: 4,
-    srcValues: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
-    srcValuesWithOffset: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
-    srcValuesWithOffsetAndLength: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 0],
+    srcValues: [16, 15, 14, 13, 12, 11, 10, 9],
+    srcValuesWithOffset: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9],
+    srcValuesWithOffsetAndLength: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 0],
     srcOffset: 3,
   },
   { type: 'uvec4',
     setter: 'uniform4uiv',
     elem: '[3]',
     numElementsPerType: 4,
-    srcValues: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
-    srcValuesWithOffset: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
-    srcValuesWithOffsetAndLength: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 0],
+    srcValues: [16, 15, 14, 13, 12, 11, 10, 9],
+    srcValuesWithOffset: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9],
+    srcValuesWithOffsetAndLength: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 0],
     srcOffset: 3,
   },
 
@@ -178,9 +182,9 @@ var typeInfos = [
     setter: 'uniformMatrix2fv',
     elem: '[1][1]',
     numElementsPerType: 4,
-    srcValues: [16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
-    srcValuesWithOffset: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
-    srcValuesWithOffsetAndLength: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 0],
+    srcValues: [16, 15, 14, 13, 12, 11, 10, 9],
+    srcValuesWithOffset: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9],
+    srcValuesWithOffsetAndLength: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 0],
     srcOffset: 3,
   },
   { type: 'mat3',
@@ -258,11 +262,19 @@ var typeInfos = [
 
 ];
 
-function checkUniformValues(program, typeInfo) {
+function checkUniformValues(program, typeInfo, useInitialValues) {
   var numSrcValues = typeInfo.srcValues.length / typeInfo.numElementsPerType;
-  for (var ii = 0; ii < numSrcValues; ++ii) {
-    var expectedValues = typeInfo.srcValues.slice(
-        typeInfo.numElementsPerType * ii, typeInfo.numElementsPerType * (ii + 1));
+  for (var ii = 0; ii < uniformArraySize; ++ii) {
+    var expectedValues;
+    if (useInitialValues || ii >= numSrcValues) {
+      expectedValues = new Array(typeInfo.numElementsPerType);
+      for (var jj = 0; jj < typeInfo.numElementsPerType; ++jj) {
+        expectedValues[jj] = initialUniformValue;
+      }
+    } else {
+      expectedValues = typeInfo.srcValues.slice(
+          typeInfo.numElementsPerType * ii, typeInfo.numElementsPerType * (ii + 1));
+    }
     var elemLoc = gl.getUniformLocation(program, "color[" + ii + "]");
     wtu.glErrorShouldBe(gl, gl.NO_ERROR,
         "can get location of element " + ii + " of array from gl.getUniformLocation");
@@ -273,8 +285,9 @@ function checkUniformValues(program, typeInfo) {
     if (value === null) {
       equal = false;
     } else if (typeInfo.numElementsPerType == 1) {
-      if (value != expectedValues[0])
+      if (value != expectedValues[0]) {
         equal = false;
+      }
     } else {
       for (var jj = 0; jj < typeInfo.numElementsPerType; ++jj) {
         if (value[jj] != expectedValues[jj]) {
@@ -330,6 +343,16 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
       }
     }
   }
+
+  // Initialize uniforms to value 99 and verify it.
+  var initValues = new Array(typeInfo.numElementsPerType * uniformArraySize);
+  for (var ii = 0; ii < typeInfo.numElementsPerType * uniformArraySize; ++ii) {
+    initValues[ii] = initialUniformValue;
+  }
+  setter(loc, initValues);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+      "no error from initializing uniforms to 99");
+  checkUniformValues(program, typeInfo, true);
 
   setter(loc, typeInfo.srcValues);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
