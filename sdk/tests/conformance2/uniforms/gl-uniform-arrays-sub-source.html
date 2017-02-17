@@ -171,122 +171,9 @@ var typeInfos = [
     srcValuesWithOffset: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
     srcValuesWithOffsetAndLength: [0, 0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 0],
     srcOffset: 3,
-  }
-];
+  },
 
-function checkUniformValues(program, typeInfo) {
-  var numSrcValues = typeInfo.srcValues.length / typeInfo.numElementsPerType;
-  for (var ii = 0; ii < numSrcValues; ++ii) {
-    var expectedValues = typeInfo.srcValues.slice(
-        typeInfo.numElementsPerType * ii, typeInfo.numElementsPerType * (ii + 1));
-    var elemLoc = gl.getUniformLocation(program, "color[" + ii + "]");
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-        "can get location of element " + ii + " of array from gl.getUniformLocation");
-    var value = gl.getUniform(program, elemLoc);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-        "can get value of element " + ii + " of array from gl.getUniform");
-    var equal = true;
-    if (value === null) {
-      equal = false;
-    } else if (typeInfo.numElementsPerType == 1) {
-      if (value != expectedValues[0])
-        equal = false;
-    } else {
-      for (var jj = 0; jj < typeInfo.numElementsPerType; ++jj) {
-        if (value[jj] != expectedValues[jj]) {
-          equal = false;
-          break;
-        }
-      }
-    }
-    assertMsg(equal,
-        "value put in (" + expectedValues + ") matches value pulled out (" +
-        (value === null ? "null" : value) + ")");
-  }
-}
-
-for (var tt = 0; tt < typeInfos.length; ++tt) {
-  var typeInfo = typeInfos[tt];
-  debug("");
-  debug("check " + typeInfo.type);
-  var srcLength = typeInfo.srcValues.length;
-  var fSrc = wtu.replaceParams(fTemplate, typeInfo);
-  var program = wtu.loadProgram(gl, vSrc, fSrc);
-  if (!program) {
-    testFailed("Failed to create the program");
-    continue;
-  }
-  gl.useProgram(program);
-
-  var loc = gl.getUniformLocation(program, "color[0]");
-  if (!loc) {
-    testFailed("Failed to obtain the location of the uniform");
-    continue;
-  }
-
-  gl[typeInfo.setter](loc, typeInfo.srcValues);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-      "can set an array of uniforms with gl." + typeInfo.setter +
-      " without srcOffset / srcLength");
-  checkUniformValues(program, typeInfo);
-
-  gl[typeInfo.setter](loc, typeInfo.srcValues, 0);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-      "can set an array of uniforms with gl." + typeInfo.setter +
-      " with srcOffset = 0");
-  checkUniformValues(program, typeInfo);
-
-  gl[typeInfo.setter](loc, typeInfo.srcValues, 0, 0);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-      "can set an array of uniforms with gl." + typeInfo.setter +
-      " with srcOffset = 0 / srcLength = 0");
-  checkUniformValues(program, typeInfo);
-
-  gl[typeInfo.setter](loc, typeInfo.srcValuesWithOffset, typeInfo.srcOffset);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-      "can set an array of uniforms with gl." + typeInfo.setter +
-      " with srcOffset = " + typeInfo.srcOffset);
-  checkUniformValues(program, typeInfo);
-
-  gl[typeInfo.setter](loc, typeInfo.srcValuesWithOffset, typeInfo.srcOffset, 0);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-      "can set an array of uniforms with gl." + typeInfo.setter +
-      " with srcOffset = " + typeInfo.srcOffset + " / srcLength = 0");
-  checkUniformValues(program, typeInfo);
-
-  gl[typeInfo.setter](loc, typeInfo.srcValuesWithOffsetAndLength, typeInfo.srcOffset, srcLength);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-      "can set an array of uniforms with gl." + typeInfo.setter +
-      " with srcOffset = " + typeInfo.srcOffset + " / srcLength = " + srcLength);
-  checkUniformValues(program, typeInfo);
-
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors");
-
-  // Negative tests
-  gl[typeInfo.setter](loc, typeInfo.srcValues, typeInfo.srcValues.length + 1);
-  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
-      "gl." + typeInfo.setter + " with srcOffset out-of-bounds");
-
-  gl[typeInfo.setter](loc, typeInfo.srcValues, 0, typeInfo.srcValues.length + 1);
-  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
-      "gl." + typeInfo.setter + " with srcLength out-of-bounds");
-
-  gl[typeInfo.setter](loc, typeInfo.srcValues, typeInfo.srcOffset, srcLength);
-  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
-      "gl." + typeInfo.setter + " with srcOffset + srcLength out-of-bounds");
-
-  gl[typeInfo.setter](loc, typeInfo.srcValues, typeInfo.srcValues.length);
-  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
-      "gl." + typeInfo.setter + " with 0 data");
-
-  if (typeInfo.numElementsPerType > 1) {
-    gl[typeInfo.setter](loc, typeInfo.srcValuesWithOffsetAndLength, typeInfo.srcOffset);
-    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
-        "gl." + typeInfo.setter + " with array length minus srcOffset not multiple of " + typeInfo.type);
-  }
-}
-
-typeInfos = [
+  // Matrix
   { type: 'mat2',
     setter: 'uniformMatrix2fv',
     elem: '[1][1]',
@@ -368,7 +255,39 @@ typeInfos = [
     srcValuesWithOffsetAndLength: [0, 0, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 0, 0, 0, 0],
     srcOffset: 2,
   },
+
 ];
+
+function checkUniformValues(program, typeInfo) {
+  var numSrcValues = typeInfo.srcValues.length / typeInfo.numElementsPerType;
+  for (var ii = 0; ii < numSrcValues; ++ii) {
+    var expectedValues = typeInfo.srcValues.slice(
+        typeInfo.numElementsPerType * ii, typeInfo.numElementsPerType * (ii + 1));
+    var elemLoc = gl.getUniformLocation(program, "color[" + ii + "]");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+        "can get location of element " + ii + " of array from gl.getUniformLocation");
+    var value = gl.getUniform(program, elemLoc);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR,
+        "can get value of element " + ii + " of array from gl.getUniform");
+    var equal = true;
+    if (value === null) {
+      equal = false;
+    } else if (typeInfo.numElementsPerType == 1) {
+      if (value != expectedValues[0])
+        equal = false;
+    } else {
+      for (var jj = 0; jj < typeInfo.numElementsPerType; ++jj) {
+        if (value[jj] != expectedValues[jj]) {
+          equal = false;
+          break;
+        }
+      }
+    }
+    assertMsg(equal,
+        "value put in (" + expectedValues + ") matches value pulled out (" +
+        (value === null ? "null" : value) + ")");
+  }
+}
 
 for (var tt = 0; tt < typeInfos.length; ++tt) {
   var typeInfo = typeInfos[tt];
@@ -389,37 +308,60 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
     continue;
   }
 
-  gl[typeInfo.setter](loc, gl.FALSE, typeInfo.srcValues);
+  function setter(loc, array, srcOffset, srcLength) {
+    var isMatrix = (typeInfo.setter.indexOf("Matrix") == 7);
+    if (typeof(srcOffset) != 'undefined') {
+      if (isMatrix) {
+        gl[typeInfo.setter](loc, gl.FALSE, array, srcOffset, srcLength);
+      } else {
+        gl[typeInfo.setter](loc, array, srcOffset, srcLength);
+      }
+    } else if (typeof(srcLength) != 'undefined') {
+      if (isMatrix) {
+        gl[typeInfo.setter](loc, gl.FALSE, array, srcOffset);
+      } else {
+        gl[typeInfo.setter](loc, array, srcOffset);
+      }
+    } else {
+      if (isMatrix) {
+        gl[typeInfo.setter](loc, gl.FALSE, array);
+      } else {
+        gl[typeInfo.setter](loc, array);
+      }
+    }
+  }
+
+  setter(loc, typeInfo.srcValues);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "can set an array of uniforms with gl." + typeInfo.setter +
       " without srcOffset / srcLength");
   checkUniformValues(program, typeInfo);
 
-  gl[typeInfo.setter](loc, gl.FALSE, typeInfo.srcValues, 0);
+  setter(loc, typeInfo.srcValues, 0);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "can set an array of uniforms with gl." + typeInfo.setter +
       " with srcOffset = 0");
   checkUniformValues(program, typeInfo);
 
-  gl[typeInfo.setter](loc, gl.FALSE, typeInfo.srcValues, 0, 0);
+  setter(loc, typeInfo.srcValues, 0, 0);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "can set an array of uniforms with gl." + typeInfo.setter +
       " with srcOffset = 0 / srcLength = 0");
   checkUniformValues(program, typeInfo);
 
-  gl[typeInfo.setter](loc, gl.FALSE, typeInfo.srcValuesWithOffset, typeInfo.srcOffset);
+  setter(loc, typeInfo.srcValuesWithOffset, typeInfo.srcOffset);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "can set an array of uniforms with gl." + typeInfo.setter +
       " with srcOffset = " + typeInfo.srcOffset);
   checkUniformValues(program, typeInfo);
 
-  gl[typeInfo.setter](loc, gl.FALSE, typeInfo.srcValuesWithOffset, typeInfo.srcOffset, 0);
+  setter(loc, typeInfo.srcValuesWithOffset, typeInfo.srcOffset, 0);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "can set an array of uniforms with gl." + typeInfo.setter +
       " with srcOffset = " + typeInfo.srcOffset + " / srcLength = 0");
   checkUniformValues(program, typeInfo);
 
-  gl[typeInfo.setter](loc, gl.FALSE, typeInfo.srcValuesWithOffsetAndLength, typeInfo.srcOffset, srcLength);
+  setter(loc, typeInfo.srcValuesWithOffsetAndLength, typeInfo.srcOffset, srcLength);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
       "can set an array of uniforms with gl." + typeInfo.setter +
       " with srcOffset = " + typeInfo.srcOffset + " / srcLength = " + srcLength);
@@ -428,25 +370,27 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "no errors");
 
   // Negative tests
-  gl[typeInfo.setter](loc, gl.FALSE, typeInfo.srcValues, typeInfo.srcValues.length + 1);
+  setter(loc, typeInfo.srcValues, typeInfo.srcValues.length + 1);
   wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
       "gl." + typeInfo.setter + " with srcOffset out-of-bounds");
 
-  gl[typeInfo.setter](loc, gl.FALSE, typeInfo.srcValues, 0, typeInfo.srcValues.length + 1);
+  setter(loc, typeInfo.srcValues, 0, typeInfo.srcValues.length + 1);
   wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
       "gl." + typeInfo.setter + " with srcLength out-of-bounds");
 
-  gl[typeInfo.setter](loc, gl.FALSE, typeInfo.srcValues, typeInfo.srcOffset, srcLength);
+  setter(loc, typeInfo.srcValues, typeInfo.srcOffset, srcLength);
   wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
       "gl." + typeInfo.setter + " with srcOffset + srcLength out-of-bounds");
 
-  gl[typeInfo.setter](loc, gl.FALSE, typeInfo.srcValues, typeInfo.srcValues.length);
+  setter(loc, typeInfo.srcValues, typeInfo.srcValues.length);
   wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
       "gl." + typeInfo.setter + " with 0 data");
 
-  gl[typeInfo.setter](loc, gl.FALSE, typeInfo.srcValuesWithOffsetAndLength, typeInfo.srcOffset);
-  wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
-      "gl." + typeInfo.setter + " with array length minus srcOffset not multiple of " + typeInfo.type);
+  if (typeInfo.numElementsPerType > 1) {
+    setter(loc, typeInfo.srcValuesWithOffsetAndLength, typeInfo.srcOffset);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE,
+        "gl." + typeInfo.setter + " with array length minus srcOffset not multiple of " + typeInfo.type);
+  }
 }
 
 debug("");
