@@ -63,6 +63,10 @@ var gl = wtu.create3DContext("example", undefined, 2);
 var vSrc = wtu.getScript("vshader");
 var fTemplate = wtu.getScript("fshader");
 
+// |color| is defined in fragment shader as an array of 3 elements.
+var uniformArraySize = 3;
+var initialUniformValue = 99;
+
 var typeInfos = [
   { type: 'float',
     setter: 'uniform1fv',
@@ -258,14 +262,14 @@ var typeInfos = [
 
 ];
 
-function checkUniformValues(program, typeInfo, initialValues) {
+function checkUniformValues(program, typeInfo, useInitialValues) {
   var numSrcValues = typeInfo.srcValues.length / typeInfo.numElementsPerType;
-  for (var ii = 0; ii < 3; ++ii) {
+  for (var ii = 0; ii < uniformArraySize; ++ii) {
     var expectedValues;
-    if (initialValues || ii >= numSrcValues) {
+    if (useInitialValues || ii >= numSrcValues) {
       expectedValues = new Array(typeInfo.numElementsPerType);
       for (var jj = 0; jj < typeInfo.numElementsPerType; ++jj) {
-        expectedValues[jj] = 99;
+        expectedValues[jj] = initialUniformValue;
       }
     } else {
       expectedValues = typeInfo.srcValues.slice(
@@ -341,9 +345,9 @@ for (var tt = 0; tt < typeInfos.length; ++tt) {
   }
 
   // Initialize uniforms to value 99 and verify it.
-  var initValues = new Array(typeInfo.numElementsPerType * 3);
-  for (var ii = 0; ii < typeInfo.numElementsPerType * 3; ++ii) {
-    initValues[ii] = 99;
+  var initValues = new Array(typeInfo.numElementsPerType * uniformArraySize);
+  for (var ii = 0; ii < typeInfo.numElementsPerType * uniformArraySize; ++ii) {
+    initValues[ii] = initialUniformValue;
   }
   setter(loc, initValues);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR,
