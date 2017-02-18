@@ -522,20 +522,17 @@ goog.scope(function() {
             this.m_msColorRbo = gl.createRenderbuffer();
             gl.bindRenderbuffer(gl.RENDERBUFFER, this.m_msColorRbo);
 
-            // If glRenderbufferStorageMultisample() fails, check if it's because of a too high sample count.
-            // \note We don't do the check until now because some implementations can't handle the gl.SAMPLES query with glGetInternalformativ(),
-            //         and we don't want that to be the cause of test case failure.
-            try {
-                gl.renderbufferStorageMultisample(gl.RENDERBUFFER, this.m_numSamples, gl.RGBA8, this.m_renderWidth, this.m_renderHeight);
+            /** @type {Int32Array} */ var supportedSampleCountArray = /** @type {Int32Array} */ (gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA8, gl.SAMPLES));
+            var maxSampleCount = supportedSampleCountArray[0];
+            if (maxSampleCount < this.m_numSamples) {
+                bufferedLogToConsole('skipping test: ' + this.m_numSamples + ' samples not supported; max is ' + maxSampleCount);
+                return false;
             }
-            catch (e) {
-                /** @type {Int32Array} */ var supportedSampleCountArray = /** @type {Int32Array} */ (gl.getInternalformatParameter(gl.RENDERBUFFER, gl.RGBA8, gl.SAMPLES));
-                var maxSampleCount = supportedSampleCountArray[0];
-                if (maxSampleCount < this.m_numSamples)
-                    throw new Error('Maximum sample count returned by gl.getInternalformatParameter() for ' + gluStrUtil.getPixelFormatName(gl.RGBA8) + ' is only ' + maxSampleCount);
-                else
-                    throw new Error('Unspecified error.');
-            }
+
+            assertMsgOptions(gl.getError() === gl.NO_ERROR, 'should be no GL error before renderbufferStorageMultisample');
+            gl.renderbufferStorageMultisample(gl.RENDERBUFFER, this.m_numSamples, gl.RGBA8, this.m_renderWidth, this.m_renderHeight);
+            assertMsgOptions(gl.getError() === gl.NO_ERROR, 'should be no GL error after renderbufferStorageMultisample');
+
 
             if (this.m_fboParams.useDepth || this.m_fboParams.useStencil) {
                 // Setup ms depth & stencil RBO.
