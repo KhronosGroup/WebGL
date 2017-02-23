@@ -300,6 +300,29 @@ goog.scope(function() {
         _skip("multisample.fbo_max_samples.num_samples_polygon");
         _skip("multisample.fbo_max_samples.num_samples_line");
         _skip("multisample.fbo_max_samples.depth");
+
+        _setReason("Fails on Android/Qualcomm (Google Pixel).");
+        // crbug.com/695679
+        _skip("derivate.dfdy.fbo_float.float_highp");
+        _skip("derivate.dfdy.fbo_float.vec2_highp");
+        _skip("derivate.dfdy.fbo_float.vec3_highp");
+        _skip("derivate.dfdy.fbo_float.vec4_highp");
+        _skip("derivate.dfdy.nicest.fbo_float.float_highp");
+        _skip("derivate.dfdy.nicest.fbo_float.vec2_highp");
+        _skip("derivate.dfdy.nicest.fbo_float.vec3_highp");
+        _skip("derivate.dfdy.nicest.fbo_float.vec4_highp");
+        _skip("derivate.dfdy.fastest.fbo_float.float_highp");
+        _skip("derivate.dfdy.fastest.fbo_float.vec2_highp");
+        _skip("derivate.dfdy.fastest.fbo_float.vec3_highp");
+        _skip("derivate.dfdy.fastest.fbo_float.vec4_highp");
+
+        _setReason("Fails on Android/Qualcomm (Google Pixel).");
+        // crbug.com/695673
+        _skip("arrays.declaration.multiple_declarations_single_statement_*");
+
+        _setReason("Fails on Android/Qualcomm (Google Pixel).");
+        // crbug.com/695677
+        _skip("precision.float.mediump_add_fragment");
     } // if (!runSkippedTests)
 
     /*

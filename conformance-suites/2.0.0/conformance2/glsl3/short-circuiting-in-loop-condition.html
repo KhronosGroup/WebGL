@@ -169,6 +169,9 @@ var testShader = function(fshaderId, subTestDescription) {
     wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green", 0);
 
+    debug("SKIP: 1 case skipped: crbug.com/695685");
+    return;
+
     debug("Test short-circuiting operator with a false condition.");
     gl.uniform1i(gl.getUniformLocation(program, "u"), 0);
     wtu.clearAndDrawUnitQuad(gl);

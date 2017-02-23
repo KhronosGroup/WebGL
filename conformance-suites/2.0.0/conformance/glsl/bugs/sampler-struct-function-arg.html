@@ -69,6 +69,10 @@
 
 description();
 debug("");
+
+debug("SKIP: test skipped: crbug.com/695680");
+
+/*
 debug("If the test passes correctly the viewport will be green.");
 
 var wtu = WebGLTestUtils;
@@ -109,6 +113,8 @@ if (!gl) {
         wtu.checkCanvasRect(gl, 0, 128, 256, 128, [0, 255,0, 255], "should be green",  1);
     }
 }
+*/
+
 var successfullyParsed = true;
 </script>
 <script src="../../../js/js-test-post.js"></script>
