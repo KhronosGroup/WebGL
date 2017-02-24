@@ -284,6 +284,8 @@ description("Dynamic indexing of vectors and matrices should work.");
 
 debug("Dynamic indexing of vectors and matrices requires complex workarounds on HLSL backends. Try to test possible bugs those workarounds might have.");
 
+debug("SKIP: 7 cases skipped: crbug.com/695689");
+
 GLSLConformanceTester.runRenderTests([
 {
   fShaderId: 'fshaderIndexMatrixTwice',
@@ -297,6 +299,8 @@ GLSLConformanceTester.runRenderTests([
   linkSuccess: true,
   passMsg: 'Index a vector with an index that is the result of indexing'
 },
+// crbug.com/695689
+/*
 {
   fShaderId: 'fshaderIndexLValue',
   fShaderSuccess: true,
@@ -327,6 +331,7 @@ GLSLConformanceTester.runRenderTests([
   linkSuccess: true,
   passMsg: 'Index an inout parameter passed to an user-defined function'
 },
+*/
 {
   fShaderId: 'fshaderIndexWithSideEffects',
   fShaderSuccess: true,
@@ -339,6 +344,8 @@ GLSLConformanceTester.runRenderTests([
   linkSuccess: true,
   passMsg: 'Use expression with side effects as an index of an l-value that is both read and written'
 },
+// crbug.com/695689
+/*
 {
   fShaderId: 'fshaderIndexUserDefinedFunctionCallInOutParameterWithIndexWithSideEffects',
   fShaderSuccess: true,
@@ -351,6 +358,7 @@ GLSLConformanceTester.runRenderTests([
   linkSuccess: true,
   passMsg: 'Index on the left-hand side of assignment with an uint'
 },
+*/
 {
   fShaderId: 'fshaderIndexUniform',
   fShaderSuccess: true,
