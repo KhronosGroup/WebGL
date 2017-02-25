@@ -192,7 +192,7 @@
 <xsl:template name="logo">
   <xsl:comment>begin-logo</xsl:comment>
   <div class="left">
-    <a href="http://webgl.org/"><img alt="WebGL" height="72" src="{concat($basepath,'/resources/WebGL-Logo.png')}" width="156" /></a>
+    <a href="http://webgl.org/"><img alt="WebGL" height="100" src="{concat($basepath,'/resources/WebGL-Logo.png')}" width="240" /></a>
   </div>
   <div class="right">
     <a href="http://khronos.org/"><img alt="Khronos" height="60" src="{concat($basepath,'/resources/KhronosGroup-3D.png')}" width="220" /></a>
