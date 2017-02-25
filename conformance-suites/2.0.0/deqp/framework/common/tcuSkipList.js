@@ -323,6 +323,17 @@ goog.scope(function() {
         _setReason("Fails on Android/Qualcomm (Google Pixel).");
         // crbug.com/695677
         _skip("precision.float.mediump_add_fragment");
+
+        _setReason("Fails on Android/Qualcomm (Google Pixel).");
+        // crbug.com/695742
+        _skip("multisample.fbo_4_samples.constancy_sample_coverage*");
+        _skip("multisample.fbo_4_samples.constancy_sample_coverage_inverted");
+        _skip("multisample.fbo_4_samples.constancy_both");
+        _skip("multisample.fbo_4_samples.constancy_both_inverted");
+        _skip("multisample.fbo_max_samples.constancy_sample_coverage");
+        _skip("multisample.fbo_max_samples.constancy_sample_coverage_inverted");
+        _skip("multisample.fbo_max_samples.constancy_both");
+        _skip("multisample.fbo_max_samples.constancy_both_inverted");
     } // if (!runSkippedTests)
 
     /*
