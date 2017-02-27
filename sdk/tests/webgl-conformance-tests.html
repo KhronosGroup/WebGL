@@ -901,6 +901,7 @@ function start() {
       while (r.firstChild) r.removeChild(r.firstChild);
       r.appendChild(document.createTextNode(tx));
       document.getElementById("showTextSummary").style.visibility = "visible";
+      document.getElementById("dlTextSummary").style.visibility = "visible";
 
       this.postResultsToServer(tx);
     } else {
@@ -1175,6 +1176,22 @@ function start() {
       textbutton.setAttribute("value", "display text summary");
     }
   };
+
+  function download(filename, text) {
+    var element = document.createElement("a");
+    element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
+    element.setAttribute("download", filename);
+    element.style.display = "none";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+  var dltextbutton = document.getElementById("dlTextSummary");
+  dltextbutton.onclick = function() {
+    var textdiv = document.getElementById("testResultsText");
+    download("webgl-conformance-" + OPTIONS.version + ".txt", textdiv.innerText);
+  };
+
   if (reporter.noSelectedWebGLVersion) {
     button.disabled = true;
   }
@@ -1230,6 +1247,8 @@ function start() {
               <label for="hidePassedCheckbox">hide passed tests</label>
               <br/>
               <input type="button" style="visibility: hidden;" value="display text summary" id="showTextSummary"/>
+              <br/>
+              <input type="button" style="visibility: hidden;" value="download text summary" id="dlTextSummary"/>
               <div id="nowebgl" class="nowebgl" style="display: none;">
                 This browser does not appear to support WebGL
               </div>
