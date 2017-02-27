@@ -375,52 +375,56 @@ goog.scope(function() {
             gl.compressedTexImage2D(gl.TEXTURE_2D, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxTextureSize, maxTextureSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxTextureSize, maxTextureSize)));
             this.expectError(gl.INVALID_VALUE);
 
+            var dataCubemapMaxByOne = new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, 1));
+            var dataCubemapOneByMax = new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(1, maxCubemapSize));
+            var dataCubemapMaxByMax = new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, maxCubemapSize));
+
             bufferedLogToConsole('gl.TEXTURE_CUBE_MAP_POSITIVE_X target');
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, 1, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, 1)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, 1, 0, dataCubemapMaxByOne);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 1, maxCubemapSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(1, maxCubemapSize)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 1, maxCubemapSize, 0, dataCubemapOneByMax);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, maxCubemapSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, maxCubemapSize)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, maxCubemapSize, 0, dataCubemapMaxByMax);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.TEXTURE_CUBE_MAP_POSITIVE_Y target');
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, 1, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, 1)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, 1, 0, dataCubemapMaxByOne);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 1, maxCubemapSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(1, maxCubemapSize)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 1, maxCubemapSize, 0, dataCubemapOneByMax);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, maxCubemapSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, maxCubemapSize)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, maxCubemapSize, 0, dataCubemapMaxByMax);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.TEXTURE_CUBE_MAP_POSITIVE_Z target');
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, 1, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, 1)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, 1, 0, dataCubemapMaxByOne);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 1, maxCubemapSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(1, maxCubemapSize)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 1, maxCubemapSize, 0, dataCubemapOneByMax);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, maxCubemapSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, maxCubemapSize)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, maxCubemapSize, 0, dataCubemapMaxByMax);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.TEXTURE_CUBE_MAP_NEGATIVE_X target');
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, 1, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, 1)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, 1, 0, dataCubemapMaxByOne);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 1, maxCubemapSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(1, maxCubemapSize)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 1, maxCubemapSize, 0, dataCubemapOneByMax);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, maxCubemapSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, maxCubemapSize)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, maxCubemapSize, 0, dataCubemapMaxByMax);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.TEXTURE_CUBE_MAP_NEGATIVE_Y target');
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, 1, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, 1)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, 1, 0, dataCubemapMaxByOne);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 1, maxCubemapSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(1, maxCubemapSize)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 1, maxCubemapSize, 0, dataCubemapOneByMax);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, maxCubemapSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, maxCubemapSize)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, maxCubemapSize, 0, dataCubemapMaxByMax);
             this.expectError(gl.INVALID_VALUE);
 
             bufferedLogToConsole('gl.TEXTURE_CUBE_MAP_NEGATIVE_Z target');
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, 1, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, 1)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, 1, 0, dataCubemapMaxByOne);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 1, maxCubemapSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(1, maxCubemapSize)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, 1, maxCubemapSize, 0, dataCubemapOneByMax);
             this.expectError(gl.INVALID_VALUE);
-            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, maxCubemapSize, 0, new Uint8Array(es3fNegativeTextureApiTests.etc2EacDataSize(maxCubemapSize, maxCubemapSize)));
+            gl.compressedTexImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.COMPRESSED_RGBA8_ETC2_EAC, maxCubemapSize, maxCubemapSize, 0, dataCubemapMaxByMax);
             this.expectError(gl.INVALID_VALUE);
 
 
