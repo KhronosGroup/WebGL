@@ -994,31 +994,11 @@ var setParentClass = function(child, parent) {
      * @return {glsBuiltinPrecisionTests.Intervals}
      */
     glsBuiltinPrecisionTests.Apply.prototype.doEvaluate = function(ctx) {
-        var debug = false;
-
-        if (debug) {
-            glsBuiltinPrecisionTests.Apply.prototype.doEvaluate.level = glsBuiltinPrecisionTests.Apply.prototype.doEvaluate.level || 0;
-            var level = glsBuiltinPrecisionTests.Apply.prototype.doEvaluate.level;
-            glsBuiltinPrecisionTests.Apply.prototype.doEvaluate.level++;
-            var name = this.m_func.constructor.toString();
-            name = name.replace(/[\s\S]*glsBuiltinPrecisionTests\./m, '').replace(/\.call[\s\S]*/m, '');
-            if (this.m_func.getName)
-                name += ' ' + this.m_func.getName();
-            console.log('<' + level + '> Function ' + name);
-        }
-
         var a = this.m_args.a.evaluate(ctx);
         var b = this.m_args.b.evaluate(ctx);
         var c = this.m_args.c.evaluate(ctx);
         var d = this.m_args.d.evaluate(ctx);
         var retVal = this.m_func.applyFunction(ctx, a, b, c, d);
-
-        if (debug) {
-            console.log('<' + level + '> a: ' + a);
-            console.log('<' + level + '> b: ' + b);
-            console.log('<' + level + '> returning: ' + retVal);
-            glsBuiltinPrecisionTests.Apply.prototype.doEvaluate.level--;
-        }
         return retVal;
     };
 
