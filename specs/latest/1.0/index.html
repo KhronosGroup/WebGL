@@ -3046,10 +3046,11 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
         <dd>
             Draw using the currently bound element array buffer.  The given offset is in bytes, and
             must be a valid multiple of the size of the given type or an <code>INVALID_OPERATION</code>
-            error will be generated; see <a href="#BUFFER_OFFSET_AND_STRIDE">Buffer Offset and Stride
-            Requirements</a>. If <code>count</code> is greater than zero, then a non-null
-            <code>WebGLBuffer</code> must be bound to the <code>ELEMENT_ARRAY_BUFFER</code> binding
-            point or an <code>INVALID_OPERATION</code> error will be generated.<br><br>
+            error will be generated; in addition the offset must be non-negative or an
+            <code>INVALID_VALUE</code> error will be generated; see <a href="#BUFFER_OFFSET_AND_STRIDE">
+            Buffer Offset and Stride Requirements</a>. If <code>count</code> is greater than zero,
+            then a non-null <code>WebGLBuffer</code> must be bound to the <code>ELEMENT_ARRAY_BUFFER</code>
+            binding point or an <code>INVALID_OPERATION</code> error will be generated.<br><br>
             If the CURRENT_PROGRAM is null, an <code>INVALID_OPERATION</code> error will be generated.
 
             WebGL performs additional error checking beyond that specified in OpenGL ES 2.0 during
@@ -3502,6 +3503,13 @@ size of the data type passed to the call, or an <code>INVALID_OPERATION</code> e
         <code>N</code>."
     </p>
 </div>
+
+<p>
+
+In addition the <code>offset</code> argument to <code>drawElements</code> must be non-negative or
+an <code>INVALID_VALUE</code> error is generated.
+
+</p>
 
     <h3><a name="ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range Checking</a></h3>
 
