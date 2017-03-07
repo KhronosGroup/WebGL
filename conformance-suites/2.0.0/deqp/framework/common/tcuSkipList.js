@@ -334,6 +334,16 @@ goog.scope(function() {
         _skip("multisample.fbo_max_samples.constancy_sample_coverage_inverted");
         _skip("multisample.fbo_max_samples.constancy_both");
         _skip("multisample.fbo_max_samples.constancy_both_inverted");
+
+        _setReason("Fails on Android/NVIDIA (SHIELD).");
+        // crbug.com/698934
+        _skip("arrays.unnamed_parameter.float_*");
+        _skip("arrays.unnamed_parameter.float_vec3_*");
+        _skip("arrays.unnamed_parameter.float_mat3_*");
+        _skip("arrays.unnamed_parameter.int_*");
+        _skip("arrays.unnamed_parameter.int_vec3_*");
+        _skip("arrays.unnamed_parameter.int_mat3_*");
+        _skip("arrays.unnamed_parameter.bool_mat3_*");
     } // if (!runSkippedTests)
 
     /*

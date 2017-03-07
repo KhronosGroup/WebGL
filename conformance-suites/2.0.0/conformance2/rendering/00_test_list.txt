@@ -4,7 +4,7 @@ blitframebuffer-filter-srgb.html
 blitframebuffer-multisampled-readbuffer.html
 --min-version 2.0.1 blitframebuffer-outside-readbuffer.html
 blitframebuffer-scissor-enabled.html
-blitframebuffer-size-overflow.html
+--min-version 2.0.1 blitframebuffer-size-overflow.html
 --min-version 2.0.1 blitframebuffer-srgb-and-linear-drawbuffers.html
 --min-version 2.0.1 blitframebuffer-stencil-only.html
 blitframebuffer-test.html
