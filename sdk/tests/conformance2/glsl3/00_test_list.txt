@@ -40,3 +40,4 @@ uniform-location-length-limits.html
 valid-invariant.html
 vector-dynamic-indexing.html
 --min-version 2.0.1 vector-dynamic-indexing-nv-driver-bug.html
+--min-version 2.0.1 vector-dynamic-indexing-swizzled-lvalue.html
