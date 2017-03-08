@@ -270,8 +270,12 @@ function runOneTest(gl, info) {
   if (info.uniforms !== undefined) {
     for (var i = 0; i < info.uniforms.length; ++i) {
       var uniformLocation = gl.getUniformLocation(program, info.uniforms[i].name);
-      gl[info.uniforms[i].functionName](uniformLocation, info.uniforms[i].value);
-      debug(info.uniforms[i].name + ' set to ' + info.uniforms[i].value);
+      if (uniformLocation !== null) {
+        gl[info.uniforms[i].functionName](uniformLocation, info.uniforms[i].value);
+        debug(info.uniforms[i].name + ' set to ' + info.uniforms[i].value);
+      } else {
+        debug('uniform ' + info.uniforms[i].name + ' had null location and was not set');
+      }
     }
   }
 
