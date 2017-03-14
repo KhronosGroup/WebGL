@@ -94,22 +94,22 @@
         <p>WebGL 1.0 is supported in the stable releases of most major browsers on both desktop and mobile platforms. Chrome, Firefox, Internet Explorer, Opera, and Safari are all known to have good WebGL support on both desktop and mobile browsers. See <a href="http://caniuse.com/#feat=webgl">http://caniuse.com/#feat=webgl</a> for availability details.</p>
         <p>Technical issues such as known hardware problems or lack of required GPU features may prevent WebGL from running in some cases.</p>
         <h2>WebGL 2.0</h2>
-        <p>The <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/">WebGL 2.0 specification</a> has recently been released, and developers can now begin experiementing with the new functionality in some browsers. Existing implementations have known functionality gaps and may lack some validation that will be present once WebGL 2.0 is available in stable builds. They are provided to encourage early developer feedback.</p>
+        <p>The <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/">WebGL 2.0 specification</a> has recently been released, and implementations of the new API are becoming available.</p>
         <p>WebGL 2.0 requires hardware with OpenGL ES 3.0 support or comparable desktop OpenGL feature support. Not all systems capable of running WebGL 1.0 will be able to run WebGL 2.0. See <a href="http://caniuse.com/#feat=webgl2">http://caniuse.com/#feat=webgl2</a> for availability details.</p>
         <h2>Firefox</h2>
-        <p>See <a href="https://wiki.mozilla.org/Platform/GFX/WebGL2">https://wiki.mozilla.org/Platform/GFX/WebGL2</a> for instructions on how to enable WebGL 2 in Firefox.</p>
-        <p>Please file bugs for any issues you discover with Firefox’s WebGL 2.0 implementation at <a href="https://bugzilla.mozilla.org/">https://bugzilla.mozilla.org/</a></p>
+        <p>WebGL 2.0 is first supported in <a href="https://hacks.mozilla.org/2017/01/webgl-2-lands-in-firefox/">Firefox 51</a>. Please file bugs for any issues you discover with Firefox’s WebGL 2.0 implementation at <a href="https://bugzilla.mozilla.org/">https://bugzilla.mozilla.org/</a>.</p>
         <h2>Chrome</h2>
-        <p>Experimental WebGL 2.0 support is available in recent <a href="https://www.google.com/chrome/browser/canary.html">Chrome Canary</a> builds. It can be enabled either by passing the “--enable-unsafe-es3-apis” flag on the command line, or enabling it in about:flags. The prototype is currently available on Android, Linux, Mac OS, and Windows.</p>
-        <p>When enabled, WebGL 2.0 contexts can be created with the “webgl2” context ID.</p>
-        <p>Please file bugs for any issues you discover with Chrome’s WebGL 2.0 implementation at <a href="https://crbug.com/">https://crbug.com</a> In addition to describing the problem please navigate to about:gpu and attach the contents of that page to your report, which will help the developers identify the problem in the case that the issue is GPU or OS specific.</p>
+        <p>WebGL 2.0 is first supported on desktop platforms in Chrome 56. As of this writing, it may be enabled on Android by navigating to <code>about:flags</code>, finding the entry for "WebGL 2.0", and changing the setting from "Default" to "Enabled".</p>
+        <p>Please file bugs for any issues you discover with Chrome's WebGL 2.0 implementation at <a href="https://crbug.com/">https://crbug.com</a>. In addition to describing the problem, please navigate to <code>about:gpu</code> and attach the contents of that page to your report, which will help the developers identify the problem in the case that the issue is GPU or OS specific.</p>
         <h2>Demos</h2>
-        <p>Here are a few links to demos using WebGL 2.0 with which you can verify that your browser has it properly enabled. Note that due to bugs in implementations, these may not work correctly in all browsers.</p>
+        <p>Here are a few links to demos using WebGL 2.0 with which you can verify that your browser has it properly enabled.</p>
         <ul>
+          <li><a href="https://playcanv.as/e/p/44MRmJRU/">PlayCanvas' "After the Flood"</a>
           <li><a href="http://toji.github.io/webgl2-particles-2/">WebGL 2.0 Particles</a> (<a href="https://github.com/toji/webgl2-particles-2">Github repository</a>)</li>
           <li><a href="http://toji.github.io/webgl2-crowd/">WebGL 2.0 Crowd</a> (<a href="https://github.com/toji/webgl2-crowd">Github repository</a>)</li>
           <li><a href="http://www.ibiblio.org/e-notes/webgl/webgl.htm">Evgeny Demidov's WebGL demos</a> (see WebGL 2.0 links at the top of the page)</li>
           <li><a href="http://webglsamples.org/WebGL2Samples/">WebGL 2.0 Samples Pack</a> (<a href="https://github.com/WebGLSamples/WebGL2Samples">Github repository</a>)</li>
+          <li><a href="https://hacks.mozilla.org/2017/01/webgl-2-lands-in-firefox/">Mozilla's WebGL 2.0 Launch Blog Post</a>
         </ul>
         <hr>
         <div id="moreinfo">
