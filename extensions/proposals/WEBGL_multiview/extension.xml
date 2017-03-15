@@ -14,100 +14,6 @@
     <api version="2.0"/>
   </depends>
   <overview>
-
-    <h1>Proposed changes to the core WebGL specification</h1>
-
-    <p>These changes are written here in the extension document in order to facilitate discussion of the proposal. They are intended to be merged to the core WebGL specification and removed from here at a later date.</p>
-
-    <h2>The following is added to the WebGLRenderingContextBase interface:</h2>
-
-    <pre>
-    /* Stereo draw buffer selection */
-    const GLenum BACK_LEFT                      = 0x0402;
-    const GLenum BACK_RIGHT                     = 0x0403;
-
-    void drawBuffer(GLenum buf);
-    </pre>
-
-    <h2>The following is added to the WebGLContextAttributes dictionary:</h2>
-
-    <pre>
-    GLboolean stereo = false;
-    </pre>
-
-    <h2>The following is added to the section "Context creation parameters":</h2>
-
-    <dl>
-        <dt><span class="prop-value">stereo</span></dt>
-        <dd>
-          <p>If the value is true, the default framebuffer will consist of two buffers, one
-          intended to be presented to the user's left eye and one intended to be presented
-          to the user's right eye. These are called the left buffer and the right buffer.
-          Each buffer will have its own depth/stencil attachments.</p>
-
-          <p>Operations using the context as a source image only access the left buffer unless
-          explicitly stated otherwise. This includes read operations done by the WebGL API and
-          also operations done by other web APIs.</p>
-
-          <p>Monoscopic contexts display only the left buffer.</p>
-
-          <p>The buffer that is affected by pixel color writes can be set by calling
-          <code>drawBuffer</code>.</p>
-
-          <p>When stereo is true and the default framebuffer is bound, attempting to draw
-          using a shader that contains a static use of <code>gl_FragCoord</code> will generate an
-          <code>INVALID_OPERATION</code> error.</p>
-        </dd>
-    </dl>
-
-    <h2>The following is added to the API documentation under section "The WebGL context":</h2>
-
-    <h4><a name="drawbuffer">Selecting stereo buffers as a target for writes</a></h4>
-
-    <p>
-        Either the left or right buffer of the default stereo framebuffer can be chosen as a target for pixel color writes.
-    </p>
-
-    <dl class="methods">
-        <dt class="idl-code">void drawBuffer(GLenum buf)</dt>
-        <dd>
-            Indicating a buffer using <code>drawBuffer</code> causes subsequent pixel color value
-            writes to affect the indicated buffer of the default framebuffer.
-            <br /><br />
-
-            In the initial state the draw buffer is <code>BACK_LEFT</code>.
-            <br /><br />
-
-            If the actual context parameter <code>stereo</code> is false, an
-            <code>INVALID_OPERATION</code> error is generated.
-            <br /><br />
-
-            If <code>buf</code> is not <code>BACK_LEFT</code> or <code>BACK_RIGHT</code>, an
-            <code>INVALID_VALUE</code> error is generated.
-            <br /><br />
-
-            If a framebuffer object is bound as the draw framebuffer, an
-            <code>INVALID_OPERATION</code> error is generated.
-        </dd>
-    </dl>
-
-    <h2>The following is added to the section "Differences Between WebGL and OpenGL ES 2.0":</h2>
-
-    <h3>Stereo default framebuffer</h3>
-
-    <p>
-        WebGL adds the possibility to use a stereo default framebuffer and choose either the left or
-        the right buffer of the default framebuffer as the target for writes by adding the
-        <code>drawBuffer</code> entry point.
-    </p>
-
-    <div class="note rationale">
-        This enables efficient implementations of a WebVR display pipeline across VR devices, and adds
-        support for use cases where a WebGL canvas will be composited in stereo.
-    </div>
-
-    <h1>WEBGL_multiview extension</h1>
-
     <mirrors href="https://www.opengl.org/registry/specs/OVR/multiview.txt" name="OVR_multiview">
       <addendum>
         Attempting to enable this extension when the <code>EXT_disjoint_timer_query_webgl2</code> extension is enabled generates an <code>INVALID_OPERATION</code> error.
@@ -119,16 +25,10 @@
         When transform feedback is active, calling <code>framebufferTextureMultiviewWEBGL</code> generates an <code>INVALID_OPERATION</code> error.
       </addendum>
       <addendum>
-        When transform feedback is active, calling <code>drawBuffer</code> with the <code>buf</code> parameter set to <code>BACK_LEFT_AND_RIGHT_MULTIVIEW_WEBGL</code> generates an <code>INVALID_OPERATION</code> error.
-      </addendum>
-      <addendum>
         When transform feedback is active, calling <code>bindFramebuffer</code> with a framebuffer parameter that has multi-view attachments generates an <code>INVALID_OPERATION</code> error.
       </addendum>
       <addendum>
-        When transform feedback is active, calling <code>bindFramebuffer</code> to bind the default framebuffer when both the left and right buffers of the stereo default framebuffer are chosen for rendering generates an <code>INVALID_OPERATION</code> error.
-      </addendum>
-      <addendum>
-        When a framebuffer with multi-view attachments is bound as the draw framebuffer, or the default framebuffer is bound as the draw framebuffer and both left and right buffers of the stereo default framebuffer are chosen for rendering, calling <code>beginTransformFeedback</code> generates an <code>INVALID_OPERATION</code> error.
+        When a framebuffer with multi-view attachments is bound as the draw framebuffer, calling <code>beginTransformFeedback</code> generates an <code>INVALID_OPERATION</code> error.
       </addendum>
       <addendum>
         Calling <code>framebufferTextureMultiviewWEBGL</code> with a <code>texture</code> parameter that does not identify a 2D array texture generates an <code>INVALID_OPERATION</code> error.
@@ -138,9 +38,6 @@
       </addendum>
       <addendum>
         If <code>baseViewIndex</code> + <code>numViews</code> is greater than the number of texture array elements in the texture bound to <code>target</code>, the framebuffer is considered incomplete. Calling getFramebufferStatus for a framebuffer in this state returns <code>FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR</code>.
-      </addendum>
-      <addendum>
-        Calling <code>drawBuffer</code> with the <code>buf</code> parameter set to <code>BACK_LEFT_AND_RIGHT_MULTIVIEW_WEBGL</code> chooses both the left and right buffers of the stereo default framebuffer for rendering. When both the left and right buffers are chosen for rendering, framebuffer writes will be done as if the framebuffer had two-layer texture arrays attached by <code>framebufferTextureMultiviewWEBGL</code>. The left buffer corresponds to <code>gl_ViewID_OVR</code> zero, and the right buffer corresponds to <code>gl_ViewID_OVR</code> one. If <code>drawBuffer</code> is called with the <code>buf</code> parameter set to either <code>BACK_LEFT</code> or <code>BACK_RIGHT</code>, only one of the stereo buffers will again be chosen for rendering.
       </addendum>
       <addendum>
         Attempting to bind a framebuffer that has multi-view attachments to <code>READ_FRAMEBUFFER</code> generates an <code>INVALID_OPERATION</code> error.
@@ -218,9 +115,7 @@ interface WEBGL_multiview {
     const GLenum MAX_VIEWS_OVR = 0x9631;
     const GLenum FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR = 0x9633;
 
-    const GLenum BACK_LEFT_AND_RIGHT_MULTIVIEW_WEBGL = 0x0405;  // TODO: This is now the same as GL_BACK in GLES. Should probably be something else.
-
-    void framebufferTextureMultiviewWEBGL(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint baseViewIndex, GLsizei numViews);
+    void framebufferTextureMultiviewWEBGL(GLenum target, GLenum attachment, WebGLTexture? texture, GLint level, GLint baseViewIndex, GLsizei numViews);
 };
   </idl>
   <newfun>
@@ -274,16 +169,10 @@ interface WEBGL_multiview {
       The error <code>INVALID_OPERATION</code> is generated by calling <code>framebufferTextureMultiviewWEBGL</code> when transform feedback is active.
     </error>
     <error>
-      The error <code>INVALID_OPERATION</code> is generated by calling <code>drawBuffer</code> with the <code>buf</code> parameter set to <code>BACK_LEFT_AND_RIGHT_MULTIVIEW_WEBGL</code> when transform feedback is active.
-    </error>
-    <error>
       The error <code>INVALID_OPERATION</code> is generated by calling <code>bindFramebuffer</code> with a <code>framebuffer</code> parameter that has multi-view attachments when transform feedback is active.
     </error>
     <error>
-      The error <code>INVALID_OPERATION</code> is generated by calling <code>bindFramebuffer</code> to bind the default framebuffer when both the left and right buffers of the stereo default framebuffer are chosen for rendering and transform feedback is active.
-    </error>
-    <error>
-      The error <code>INVALID_OPERATION</code> is generated by calling <code>beginTransformFeedback</code> when a framebuffer with multi-view attachments is bound as the draw framebuffer, or the default framebuffer is bound as the draw framebuffer and both left and right buffers of the stereo default framebuffer are chosen for rendering.
+      The error <code>INVALID_OPERATION</code> is generated by calling <code>beginTransformFeedback</code> when a framebuffer with multi-view attachments is bound as the draw framebuffer,
     </error>
     <error>
       The error <code>INVALID_OPERATION</code> is generated by calling <code>framebufferTextureMultiviewWEBGL</code> with a <code>texture</code> parameter that does not identify a 2D array texture.
@@ -298,15 +187,18 @@ interface WEBGL_multiview {
       The error <code>INVALID_FRAMEBUFFER_OPERATION</code> is generated by commands that read from the framebuffer such as <code>BlitFramebuffer</code>, <code>ReadPixels</code>, <code>CopyTexImage*</code>, and <code>CopyTexSubImage*</code>, if the number of views in the current read framebuffer is greater than 1.
     </error>
     <error>
-      The error <code>INVALID_OPERATION</code> is generated by attempting to draw if the number of views in the draw framebuffer does not match the number of views declared in the active program.
+      The error <code>INVALID_OPERATION</code> is generated by attempting to draw if the active program declares a number of views and the number of views in the draw framebuffer does not match the number of views declared in the active program.
     </error>
   </errors>
   <samplecode xml:space="preserve">
     <pre>
-    var gl = document.createElement('canvas').getContext('webgl2', {'stereo': true});
+    var gl = document.createElement('canvas').getContext('webgl2');
     var ext = gl.getExtension('WEBGL_multiview');
-    gl.drawBuffer(ext.BACK_LEFT_AND_RIGHT_MULTIVIEW_WEBGL);
-    gl.drawElements(...);  // draw will be broadcasted to both left and right buffers.
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D_ARRAY, tex);
+    gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, 512, 512, 2);
+    ext.framebufferTextureMultiviewWEBGL(gl.TEXTURE_2D_ARRAY, gl.COLOR_ATTACHMENT0, tex, 0, 0, 2);
+    gl.drawElements(...);  // draw will be broadcasted to the layers of the texture.
     </pre>
   </samplecode>
   <samplecode xml:space="preserve">
@@ -339,6 +231,10 @@ interface WEBGL_multiview {
 
     <revision date="2017/01/12">
       <change>Filled in getFramebufferAttachmentParameter and extension macro specs, formatted the documentation better, and added a simple API usage example.</change>
+    </revision>
+
+    <revision date="2017/03/10">
+      <change>Removed the core spec changes and made the specification follow the OVR_multiview specification more closely.</change>
     </revision>
   </history>
 </proposal>
