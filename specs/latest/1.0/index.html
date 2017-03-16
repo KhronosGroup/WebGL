@@ -3195,7 +3195,8 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
         WebGL rendering context. Events are sent using the DOM Event System <a href="#refsDOM3EVENTS">[DOM3EVENTS]</a>,
         and are dispatched to the HTMLCanvasElement associated with the WebGL rendering context.
         The types of status changes that can trigger a <code>WebGLContextEvent</code> event are <a href="#CONTEXT_LOST">
-        the loss of the context</a>, <a href="#CONTEXT_RESTORED">the restoration of the context</a>, and
+        the loss of the context</a>, <a href="#CONTEXT_RESTORED">the restoration of the context</a>,
+        <a href="#CONTEXT_CHANGED">a significant change in the system GPU's capabilities</a>, and
         <a href="#CONTEXT_CREATION_ERROR"> the inability to create a context</a>.
     </p>
     <p>
@@ -3377,6 +3378,42 @@ canvas.addEventListener(
 }, false);
 
 initializeGame();</pre>
+    </div>
+
+    <h4><a name="CONTEXT_CHANGED">The Context Changed Event</a></h4>
+
+    <p>
+        When the user agent detects that the capabilities of the
+        <code>WebGLRenderingContext</code> <em>context</em> have been significantly changed
+        by the system, such as parameters indicating the maximum values the
+        context supports, it must run the following steps:
+
+        <ol class="nestedlist">
+
+        <li> Let <em>canvas</em> be the <em>context's</em>
+        <a href="#context-canvas">canvas</a>. </li>
+
+        <li> <a href="http://dev.w3.org/html5/spec/webappapis.html#queue-a-task">Queue a task</a> to
+        perform the following step:
+
+            <ol class="nestedlist">
+
+            <li> <a href="#fire-a-webgl-context-event">Fire a WebGL context event</a> named
+            "webglcontextchanged" at <em>canvas</em>, with its <code>statusMessage</code> attribute set
+            to "". </li>
+
+            </ol>
+
+        </li>
+        </ol>
+    </p>
+
+    <div class="note">
+        This event is designed to be mostly informative, and usually only applicable to content
+        that has tested and exceeded the minimum requirements for some context limits. In this
+        case, on a system with multiple GPUs, if the underlying GPU that a context is using
+        is changed by the system to one that is less capable, the content may need to
+        reset itself for the new limits. The majority of content will not need to handle this event.
     </div>
 
     <h4><a name="CONTEXT_CREATION_ERROR">The Context Creation Error Event</a></h4>
