@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+
+<proposal href="proposals/WEBGL_multiview_side_by_side/">
+  <name>WEBGL_multiview_side_by_side</name>
+  <contact>
+    <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
+  </contact>
+  <contributors>
+    <contributor>Olli Etuaho, NVIDIA</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+  <number>NN</number>
+  <depends>
+    <api version="1.0"/>
+  </depends>
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/webgl/extensions/proposals/WEBGL_multiview" name="WEBGL_multiview">
+      <addendum>
+        Attempting to enable this extension when the <code>EXT_disjoint_timer_query</code> extension is enabled generates an <code>INVALID_OPERATION</code> error.
+      </addendum>
+      <addendum>
+        Attempting to enable the <code>EXT_disjoint_timer_query</code> extension when this extension is enabled generates an <code>INVALID_OPERATION</code> error.
+      </addendum>
+      <addendum>
+        Attempting to enable this extension when the <code>WEBGL_multiview</code> extension is enabled generates an <code>INVALID_OPERATION</code> error.
+      </addendum>
+      <addendum>
+        Attempting to enable the <code>WEBGL_multiview</code> extension when this extension is enabled generates an <code>INVALID_OPERATION</code> error.
+      </addendum>
+      <addendum>
+        When transform feedback is active, calling <code>drawBufferWEBGL</code> with the <code>buffer</code> parameter set to <code>BACK_BROADCAST_LEFT_AND_RIGHT_WEBGL</code> generates an <code>INVALID_OPERATION</code> error.
+      </addendum>
+      <addendum>
+        Calling <code>beginTransformFeedback</code> when the currently set draw buffer mode is <code>BACK_BROADCAST_LEFT_AND_RIGHT_WEBGL</code> generates an <code>INVALID_OPERATION</code> error.
+      </addendum>
+      <addendum>
+        GLSL ES 1.00 shaders that enable or require <code>GL_OVR_multiview</code> or <code>GL_OVR_multiview2</code> behave as if they had set <code>num_views</code> to 2. They are not allowed to set <code>num_views</code> with a layout qualifier.
+      </addendum>
+      <addendum>
+        When this extension is enabled, attempting to compile shaders that enable or require <code>GL_OVR_multiview</code> or <code>GL_OVR_multiview2</code> and set <code>num_views</code> to any other value than 2 must result in a compile error.
+      </addendum>
+      <addendum>
+        When this extension is enabled, attempting to compile shaders that enable or require <code>GL_OVR_multiview</code> or <code>GL_OVR_multiview2</code> and statically use <code>gl_FragCoord</code> must result in a compile error.
+      </addendum>
+    </mirrors>
+    <features>
+      <feature>
+        Adds support for rendering into two halves of the draw framebuffer simultaneously. The draws are performed similarly to WEBGL_multiview, but instead of targeting layers of a 2D array texture, draw commands can be broadcasted to the left and right halves of the draw framebuffer. The left half of the framebuffer is <code>floor(width / 2)</code> pixels wide, and the right half is <code>width - floor(width / 2)</code> pixels wide, where width is the width of the draw framebuffer.
+      </feature>
+      <feature>
+        When a shader enables, requires, or warns either <code>GL_OVR_multiview</code> or <code>GL_OVR_multiview2</code> with an extension directive:
+        <ul>
+          <li><code>gl_ViewID_OVR</code> is a built-in input of the type uint.</li>
+        </ul>
+      </feature>
+      <feature>
+        The GLSL macro <code>GL_OVR_multiview</code> is defined as 1.
+      </feature>
+      <feature>
+        The GLSL macro <code>GL_OVR_multiview2</code> is defined as 1.
+      </feature>
+    </features>
+  </overview>
+  <idl xml:space="preserve">
+[NoInterfaceObject]
+interface WEBGL_multiview_side_by_side {
+    void drawBufferWEBGL(GLenum buffer);
+
+    GLenum DRAW_BUFFER = 0x0C01;
+
+    GLenum BACK_LEFT = 0x0402;
+    GLenum BACK_RIGHT = 0x0403;
+    GLenum BACK = 0x0405;
+    GLenum BACK_BROADCAST_LEFT_AND_RIGHT_WEBGL; /* TODO: Allocate an enum value for this. */
+};
+  </idl>
+  <newfun>
+    <function name="drawBufferWEBGL" type="void">
+      <param name="buffer" type="GLenum"/>
+
+    <p>Sets the current draw buffer mode to <code>buffer</code>.</p>
+
+    <p>When the current draw buffer mode is <code>BACK</code>, draw commands target the whole draw framebuffer.</p>
+
+    <p>When the current draw buffer mode is <code>BACK_LEFT</code>, draw commands target the left half of the draw framebuffer.</p>
+
+    <p>When the current draw buffer mode is <code>BACK_RIGHT</code>, draw commands target the right half of the draw framebuffer. Scissor and viewport rectangles will be interpreted as relative to the left edge of the right half of the draw framebuffer.</p>
+
+    <p>When the current draw buffer mode is <code>BACK_BROADCAST_LEFT_AND_RIGHT_WEBGL</code>, draw commands are broadcast to the left and right halves of the draw framebuffer, as if the halves of the framebuffer attachments of the draw framebuffer were layers of 2D array textures chosen for multiview rendering.</p>
+    </function>
+  </newfun>
+  <newtok>
+    <function name="getParameter" type="any">
+      <param name="pname" type="GLenum"/>
+      Calling with the <code>pname</code> set to <code>DRAW_BUFFER</code> returns the currently set draw buffer mode.
+      <br/>
+
+      The return type depends on the parameter queried:
+      <table width="30%">
+      <tr><th>pname</th><th>returned type</th></tr>
+      <tr><td>DRAW_BUFFER</td><td>GLenum</td></tr>
+      </table>
+    </function>
+  </newtok>
+  <errors>
+    <error>
+      The error <code>INVALID_OPERATION</code> is generated by attempting to enable this extension when the <code>EXT_disjoint_timer_query_webgl</code> extension is enabled.
+    </error>
+    <error>
+      The error <code>INVALID_OPERATION</code> is generated by attempting to enable the <code>EXT_disjoint_timer_query_webgl</code> extension when this extension is enabled.
+    </error>
+    <error>
+      The error <code>INVALID_OPERATION</code> is generated by attempting to enable this extension when the <code>EXT_disjoint_timer_query_webgl2</code> extension is enabled.
+    </error>
+    <error>
+      The error <code>INVALID_OPERATION</code> is generated by attempting to enable the <code>EXT_disjoint_timer_query_webgl2</code> extension when this extension is enabled.
+    </error>
+    <error>
+      The error <code>INVALID_OPERATION</code> is generated by attempting to enable this extension when the <code>WEBGL_multiview</code> extension is enabled.
+    </error>
+    <error>
+      The error <code>INVALID_OPERATION</code> is generated by attempting to enable the <code>WEBGL_multiview</code> extension when this extension is enabled.
+    </error>
+    <error>
+      The error <code>INVALID_VALUE</code> is generated by calling <code>drawBufferWEBGL</code> with any other value than <code>BACK_LEFT</code>, <code>BACK_RIGHT</code>, <code>BACK</code> or <code>BACK_BROADCAST_LEFT_AND_RIGHT_WEBGL</code>.
+    </error>
+    <error>
+      The error <code>INVALID_OPERATION</code> is generated by calling <code>drawBufferWEBGL</code> with the <code>buffer</code> parameter set to <code>BACK_BROADCAST_LEFT_AND_RIGHT_WEBGL</code> when transform feedback is active.
+    </error>
+    <error>
+      The error <code>INVALID_OPERATION</code> is generated by calling <code>beginTransformFeedback</code> when the currently set draw buffer mode is <code>BACK_BROADCAST_LEFT_AND_RIGHT_WEBGL</code>.
+    </error>
+  </errors>
+  <samplecode xml:space="preserve">
+    <pre>
+    var gl = document.createElement('canvas').getContext('webgl');
+    var ext = gl.getExtension('WEBGL_multiview_side_by_side');
+    ext.drawBufferWEBGL(ext.BACK_LEFT);
+    gl.drawElements(...);  // draw will target the left half of the framebuffer only.
+    ext.drawBufferWEBGL(ext.BACK_RIGHT);
+    gl.drawElements(...);  // draw will target the right half of the framebuffer only.
+    ext.drawBufferWEBGL(ext.BACK);
+    gl.drawElements(...);  // draw will be broadcasted to both halves of the framebuffer.
+    </pre>
+  </samplecode>
+  <samplecode xml:space="preserve">
+    <pre>
+    #version 100 es
+    #extension GL_OVR_multiview : require
+    precision mediump float;
+    in vec4 inPos;
+    uniform mat4 u_viewMatrix0;
+    uniform mat4 u_viewMatrix1;
+    void main() {
+        gl_Position.x = (gl_ViewID_OVR == 0 ? u_viewMatrix0 * inPos : u_viewMatrix1 * inPos).x;
+        gl_Position.yzw = (u_viewMatrix0 * inPos).yzw;
+    }
+    </pre>
+  </samplecode>
+  <history>
+    <revision date="2017/03/30">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</proposal>
