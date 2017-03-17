@@ -165,6 +165,12 @@
 <script type="application/javascript" src="js/webgl-test-harness.js"></script>
 <script>
 "use strict";
+
+window.onbeforeunload = function() {
+  // Prompt user before reloading
+  return false;
+}
+
 var DEFAULT_CONFORMANCE_TEST_VERSION = "2.0.0";
 
 var OPTIONS = {
