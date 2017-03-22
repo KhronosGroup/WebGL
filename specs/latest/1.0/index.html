@@ -3485,7 +3485,14 @@ bound in order for texture-related operations and queries to succeed.
 
 <p>
 
-Accessing binary representations of compiled shaders is not supported in the WebGL API. This includes OpenGL ES 2.0 ShaderBinary entry point. In addition, querying shader binary formats and shader compiler with getParameter is not supported in the WebGL API.
+Accessing binary representations of compiled shaders is not supported in the WebGL API. This
+includes the OpenGL ES 2.0 ShaderBinary entry point. In addition, querying shader binary formats
+and the availability of a shader compiler via getParameter is not supported in the WebGL API.
+
+</p>
+<p>
+
+All WebGL implementations must implicitly support an on-line shader compiler.
 
 </p>
 
