@@ -3481,6 +3481,22 @@ bound in order for texture-related operations and queries to succeed.
 
 </p>
 
+    <h3>No Shader Binaries</h3>
+
+<p>
+
+Accessing binary representations of compiled shaders is not supported in the WebGL API. This
+includes the OpenGL ES 2.0 <code>ShaderBinary</code> entry point. In addition, querying shader
+binary formats and the availability of a shader compiler via <code>getParameter</code> is not
+supported in the WebGL API.
+
+</p>
+<p>
+
+All WebGL implementations must implicitly support an on-line shader compiler.
+
+</p>
+
     <h3><a name="BUFFER_OFFSET_AND_STRIDE">Buffer Offset and Stride Requirements</a></h3>
 
 <p>
