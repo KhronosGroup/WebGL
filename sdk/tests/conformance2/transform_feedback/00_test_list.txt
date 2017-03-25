@@ -1,4 +1,5 @@
 --min-version 2.0.1 non-existent-varying.html
+default_transform_feedback.html
 transform_feedback.html
 transform_feedback_same_buffers_as_input_and_output.html
 two-unreferenced-varyings.html
