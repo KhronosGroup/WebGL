@@ -1195,7 +1195,7 @@ function start() {
   var dltextbutton = document.getElementById("dlTextSummary");
   dltextbutton.onclick = function() {
     var textdiv = document.getElementById("testResultsText");
-    download("webgl-conformance-" + OPTIONS.version + ".txt", textdiv.innerText);
+    download("webgl-conformance-" + OPTIONS.version + ".txt", textdiv.innerText.trim());
   };
 
   if (reporter.noSelectedWebGLVersion) {
