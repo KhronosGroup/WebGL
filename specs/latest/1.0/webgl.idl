@@ -81,8 +81,8 @@ typedef (ImageBitmap or
          HTMLCanvasElement or
          HTMLVideoElement) TexImageSource;
 
-typedef (Float32Array or sequence) Float32List;
-typedef (Int32Array or sequence) Int32List;
+typedef (Float32Array or sequence<GLfloat>) Float32List;
+typedef (Int32Array or sequence<GLint>) Int32List;
 
 [NoInterfaceObject]
 interface WebGLRenderingContextBase
