@@ -45,13 +45,14 @@ function testPrologue(gl) {
 }
 
 generateTest(
-    'Verify uploading corner-case videos to 2D textures',
+    'Verify uploading various corner-case videos to 2D textures',
     "RGBA", "RGBA", "UNSIGNED_BYTE", testPrologue, "", 1,
     [
         // Regression test for http://crbug.com/701060.
         // Generated with the following command line:
         // ffmpeg -r 25 -i red-green-480-272.png -vframes 10 -vcodec h264 -vf setsar=136:135,setdar=16:9 -pix_fmt yuv420p ...
         {
+            comment: "Video whose natural size is larger than coded size due to uncommon pixel shape (Sample Aspect Ratio)",
             src: "../../../resources/red-green-480x272-sar-136x135-dar-16x9.mp4",
             type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
         }

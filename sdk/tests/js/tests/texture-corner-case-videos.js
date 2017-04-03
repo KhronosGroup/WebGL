@@ -242,7 +242,8 @@ function generateTest(desc,
 
                     var info = videos[videoNdx++];
                     debug("");
-                    debug("testing: " + info.type);
+                    debug("testing: " + info.comment);
+                    debug("video type: " + info.type);
                     video = document.createElement("video");
                     var canPlay = true;
                     if (!video.canPlayType) {
@@ -252,7 +253,7 @@ function generateTest(desc,
                     }
 
                     if(!video.canPlayType(info.type).replace(/no/, '')) {
-                      debug(info.type + " unsupported");
+                      debug(info.type + " unsupported; skipping test");
                       runNextVideo();
                       return;
                     };
