@@ -15,6 +15,7 @@ clear-func-buffer-type-match.html
 --min-version 2.0.1 depth-stencil-feedback-loop.html
 draw-buffers.html
 --min-version 2.0.1 draw-buffers-dirty-state-bug.html
+--min-version 2.0.1 draw-buffers-driver-hang.html
 --min-version 2.0.1 draw-with-integer-texture-base-level.html
 element-index-uint.html
 framebuffer-completeness-unaffected.html
