@@ -54,7 +54,11 @@ generateTest(
         {
             comment: "Video whose natural size is larger than coded size due to uncommon pixel shape (Sample Aspect Ratio)",
             src: "../../../resources/red-green-480x272-sar-136x135-dar-16x9.mp4",
-            type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
+            type: 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"',
+            // A fairly high tolerance is used because colorspace conversion seems to differ widely between
+            // hardware-accelerated video decoders. At least on Windows / NVIDIA, this test was seen to convert
+            // (0,255,0) to (13,238,14), and (255,0,0) to (238,14,14).
+            tolerance: 18,
         }
     ])();
 </script>

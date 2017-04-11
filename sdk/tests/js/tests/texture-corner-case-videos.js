@@ -42,6 +42,7 @@ function generateTest(desc,
     var successfullyParsed = false;
     var redColor = [255, 0, 0];
     var greenColor = [0, 255, 0];
+    var currentTolerance = 0;
 
     function init()
     {
@@ -72,7 +73,7 @@ function generateTest(desc,
         gl.clearColor(0,0,0,1);
         gl.clearDepth(1);
 
-        runTest();
+        runAllTests();
     }
 
     function runOneIteration(videoElement, useTexSubImage2D, flipY, topColor, bottomColor, sourceSubRectangle, program, bindingTarget)
@@ -179,7 +180,7 @@ function generateTest(desc,
             wtu.clearAndDrawUnitQuad(gl, [0, 0, 0, 255]);
             // Check a few pixels near the top and bottom and make sure they have
             // the right color.
-            var tolerance = 5;
+            var tolerance = currentTolerance;
             debug("Checking lower left corner");
             wtu.checkCanvasRect(gl, 4, 4, 2, 2, bottomColor,
                                 "shouldBe " + bottomColor, tolerance);
@@ -201,7 +202,7 @@ function generateTest(desc,
         // Check a few pixels near the top and bottom and make sure they have
         // the right color.
         // Origin is upper left in 2D canvas context.
-        var tolerance = 5;
+        var tolerance = currentTolerance;
         debug("Checking lower left corner");
         wtu.checkCanvasRect(c2d, 4, canvas.height - 8, 2, 2, bottomColor,
                             "shouldBe " + bottomColor, tolerance);
@@ -210,7 +211,7 @@ function generateTest(desc,
                             "shouldBe " + topColor, tolerance);
     }
 
-    function runTest(videoElement)
+    function runAllTests()
     {
         var cases = [
             { sub: false, flipY: true, topColor: redColor, bottomColor: greenColor },
@@ -244,6 +245,9 @@ function generateTest(desc,
                     debug("");
                     debug("testing: " + info.comment);
                     debug("video type: " + info.type);
+                    // Default to tolerance of 5.
+                    currentTolerance = info.tolerance || 5;
+                    debug("tolerance: " + currentTolerance);
                     video = document.createElement("video");
                     var canPlay = true;
                     if (!video.canPlayType) {
