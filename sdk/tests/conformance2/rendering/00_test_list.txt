@@ -9,6 +9,7 @@ blitframebuffer-size-overflow.html
 --min-version 2.0.1 blitframebuffer-stencil-only.html
 blitframebuffer-test.html
 canvas-resizing-with-pbo-bound.html
+--min-version 2.0.1 clearbuffer-sub-source.html
 clear-func-buffer-type-match.html
 --min-version 2.0.1 clear-srgb-color-buffer.html
 --min-version 2.0.1 clipping-wide-points.html
