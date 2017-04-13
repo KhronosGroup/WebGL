@@ -4088,6 +4088,15 @@ extensions.
     the values of the fragment colors following shader execution are untouched.
 </p>
 
+<h3>Initial values for GLSL local and global variables</h3>
+
+<p>
+    The GLSL ES <a href="#refsGLES20GLSL">[GLES20GLSL]</a> spec leaves the value of
+    local and global variables as undefined unless they are initialized by the
+    shader. WebGL guarantees that such variables are initialized to zero:
+    <code>0.0</code>, <code>vec4(0.0)</code>, <code>0</code>, <code>false</code>, etc.
+</p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>

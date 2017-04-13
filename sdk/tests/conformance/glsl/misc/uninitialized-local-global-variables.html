@@ -1,0 +1,159 @@
+<!--
+
+/*
+** Copyright (c) 2017 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Uninitialized local/global variables should be initialized</title>
+<link rel="stylesheet" href="../../../resources/js-test-style.css"/>
+<link rel="stylesheet" href="../../../resources/glsl-feature-tests.css"/>
+<script src="../../../js/js-test-pre.js"></script>
+<script src="../../../js/webgl-test-utils.js"> </script>
+
+<!-- Uninitialized local in vertex shader -->
+<script id="vs_uninit_local_in_vert" type="x-shader/x-vertex">
+precision highp float;
+attribute vec4 a_position;
+varying vec4 v_uninit;
+void main() {
+    vec4 uninit; // uninitialized
+    v_uninit = uninit;
+    gl_Position = a_position;
+}
+</script>
+<script id="fs_uninit_local_in_vert" type="x-shader/x-fragment">
+precision highp float;
+varying vec4 v_uninit;
+void main() {
+    gl_FragColor = v_uninit;
+}
+</script>
+
+<!-- Uninitialized local in fragment shader -->
+<script id="vs_uninit_local_in_frag" type="x-shader/x-vertex">
+precision highp float;
+attribute vec4 a_position;
+void main() {
+    gl_Position = a_position;
+}
+</script>
+<script id="fs_uninit_local_in_frag" type="x-shader/x-fragment">
+precision highp float;
+void main() {
+    vec4 uninit; // uninitialized
+    gl_FragColor = uninit;
+}
+</script>
+
+<!-- Uninitialized global in vertex shader -->
+<script id="vs_uninit_global_in_vert" type="x-shader/x-vertex">
+precision highp float;
+attribute vec4 a_position;
+varying vec4 v_uninit;
+vec4 uninit; // uninitialized
+void main() {
+    v_uninit = uninit;
+    gl_Position = a_position;
+}
+</script>
+<script id="fs_uninit_global_in_vert" type="x-shader/x-fragment">
+precision highp float;
+varying vec4 v_uninit;
+void main() {
+    gl_FragColor = v_uninit;
+}
+</script>
+
+<!-- Uninitialized global in fragment shader -->
+<script id="vs_uninit_global_in_frag" type="x-shader/x-vertex">
+precision highp float;
+attribute vec4 a_position;
+void main() {
+    gl_Position = a_position;
+}
+</script>
+<script id="fs_uninit_global_in_frag" type="x-shader/x-fragment">
+precision highp float;
+vec4 uninit; // uninitialized
+void main() {
+    gl_FragColor = uninit;
+}
+</script>
+
+</head>
+<body>
+<canvas id="canvas" width="50" height="50"></canvas>
+<div id="description"></div>
+<div id="console"></div>
+<script>
+"use strict";
+description('Uninitialized local/global variables should be initialized: http://anglebug.com/1966');
+
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("canvas");
+wtu.setupUnitQuad(gl);
+
+var cases = [
+  {
+    name: "Uninitialized local variable in vertex shader",
+    prog: ["vs_uninit_local_in_vert", "fs_uninit_local_in_vert"],
+  },
+  {
+    name: "Uninitialized local variable in fragment shader",
+    prog: ["vs_uninit_local_in_frag", "fs_uninit_local_in_frag"],
+  },
+  {
+    name: "Uninitialized global variable in vertex shader",
+    prog: ["vs_uninit_global_in_vert", "fs_uninit_global_in_vert"],
+  },
+  {
+    name: "Uninitialized global variable in fragment shader",
+    prog: ["vs_uninit_global_in_frag", "fs_uninit_global_in_frag"],
+  },
+];
+
+function runTest() {
+  for (var i = 0; i < cases.length; ++i) {
+    debug("");
+    debug(cases[i].name);
+    var program = wtu.setupProgram(gl, cases[i].prog, ["a_position"], undefined, true);
+    gl.clearColor(1.0, 0.0, 0.0, 1.0);
+    wtu.clearAndDrawUnitQuad(gl);
+    wtu.checkCanvas(gl, [0, 0, 0, 255]);
+  }
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+}
+
+runTest();
+
+var successfullyParsed = true;
+</script>
+<script src="../../../js/js-test-post.js"></script>
+</body>
+</html>
+

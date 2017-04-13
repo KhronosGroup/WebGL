@@ -112,3 +112,4 @@ struct-nesting-under-maximum.html
 --min-version 1.0.4 ternary-operator-on-arrays.html
 --min-version 1.0.3 ternary-operators-in-global-initializers.html
 --min-version 1.0.3 ternary-operators-in-initializers.html
+--min-version 1.0.4 uninitialized-local-global-variables.html
