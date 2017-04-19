@@ -48,7 +48,7 @@ function _checkCanvas(buf, width, height, webglContextVersion)
         if (buf[i * 4] != 255 || buf[i * 4 + 1] != 255 ||
             buf[i * 4 + 2] != 0 || buf[i * 4 + 3] != 255) {
             testFailed("OffscreenCanvas." + webglContextVersion +
-                ": This pixel should be red, but it is: [" + buf[i * 4] + ", " +
+                ": This pixel should be [255, 255, 0, 255], but it is: [" + buf[i * 4] + ", " +
                 buf[i * 4 + 1] + ", " + buf[i * 4 + 2] + ", " + buf[i * 4 + 3] + "].");
             return;
         }
