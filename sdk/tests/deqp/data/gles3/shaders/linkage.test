@@ -506,7 +506,7 @@ group varying "Varying linkage"
 			vertex ""
 				#version 300 es
 				${VERTEX_DECLARATIONS}
-				smooth out mediump float var;
+				smooth centroid out mediump float var;
 				void main()
 				{
 					var = in0;
