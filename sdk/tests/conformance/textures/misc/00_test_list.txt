@@ -21,6 +21,7 @@ tex-image-with-invalid-data.html
 --max-version 1.9.9 tex-input-validation.html
 tex-sub-image-2d-bad-args.html
 tex-sub-image-2d.html
+--min-version 1.0.4 tex-video-using-tex-unit-non-zero.html
 texparameter-test.html
 texture-active-bind-2.html
 texture-active-bind.html
