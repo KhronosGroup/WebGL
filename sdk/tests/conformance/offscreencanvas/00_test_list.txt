@@ -8,3 +8,4 @@ context-lost-restored-worker.html
 methods.html
 methods-worker.html
 offscreencanvas-resize.html
+offscreencanvas-transfer-image-bitmap.html
