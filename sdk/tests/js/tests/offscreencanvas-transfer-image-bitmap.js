@@ -1,4 +1,4 @@
-function testTransferToImageBitmap(webglContextVersion, bitmap) { 
+function testTransferToImageBitmap(webglContextVersion, bitmap) {
     var internalFormat = "RGBA";
     var pixelFormat = "RGBA";
     var pixelType = "UNSIGNED_BYTE";
