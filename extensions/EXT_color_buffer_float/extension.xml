@@ -39,9 +39,10 @@
       </feature>
 
       <feature>
-        <p>Renderbuffers with these internal formats can be created. Note that
-        textures with these internal formats can be created in core WebGL
-        2.0.</p>
+        <p>Renderbuffers with these internal formats can be created. These
+        internal formats are valid for CopyTexImage2D. Note that textures
+        with these internal formats can be created with TexImage2D in core
+        WebGL 2.0.</p>
       </feature>
 
       <feature>
@@ -107,6 +108,10 @@ interface EXT_color_buffer_float {
 
     <revision date="2016/08/03">
       <change>Removed incorrect statement about framebuffer completeness and multi-sampled floating-point color renderbuffers.</change>
+    </revision>
+
+    <revision date="2017/04/19">
+      <change>Allowed these float formats for CopyTexImage2D.</change>
     </revision>
   </history>
 </extension>
