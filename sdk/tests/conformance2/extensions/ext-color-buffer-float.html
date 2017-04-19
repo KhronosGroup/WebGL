@@ -435,7 +435,7 @@ function runCopyTexImageTest(enabled)
         } else {
             shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
             gl.copyTexImage2D(gl.TEXTURE_2D, level, destInternalformat, 0, 0, width, height, 0);
-            wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "CopyTexImage2D should fail.");
+            wtu.glErrorShouldBe(gl, [gl.INVALID_ENUM, gl.INVALID_FRAMEBUFFER_OPERATION], "CopyTexImage2D should fail.");
         }
 
         gl.deleteTexture(texDest);

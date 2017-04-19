@@ -67,6 +67,14 @@ function runTest() {
       data: new Uint8Array(width * height * 4)
     }
   ];
+  if (gl.getExtension("EXT_color_buffer_float")) {
+      cases.push({
+          internalformat: "RGBA32F",
+          format: "RGBA",
+          type: "FLOAT",
+          data: new Float32Array(width * height * 4)
+      });
+  }
   cases.forEach(function(testcase) {
     debug("");
     debug("Testing internalformat: " + testcase.internalformat);
