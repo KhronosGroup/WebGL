@@ -65,6 +65,11 @@ if (!gl) {
         testPassed("No EXT_disjoint_timer_query support -- this is legal");
         finishTest();
     } else {
+        // On some platforms, tests in this file will consume more than the default 20 seconds.
+        // Change timeout delay to 40 seconds and restore the default value after finishing tests.
+        if (window.parent.webglTestHarness)
+            window.parent.webglTestHarness.setTimeoutDelay(40000);
+
         runSanityTests();
 
         // Clear disjoint value.
@@ -78,6 +83,9 @@ if (!gl) {
         verifyQueryResultsNotAvailable();
 
         window.requestAnimationFrame(checkQueryResults);
+
+        if (window.parent.webglTestHarness)
+            window.parent.webglTestHarness.setTimeoutDelay(20000);
     }
 }
 
