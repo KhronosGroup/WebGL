@@ -1381,6 +1381,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         For any source pixel lying outside the read framebuffer, the corresponding destination pixel remains
         untouched.<br><br>
 
+        When blitting to the color attachment of the WebGL context's default back buffer, a context
+        created with <code>alpha:false</code> is considered to have internal
+        format <code>RGB8</code>, while a context created with <code>alpha:true</code> is considered
+        to have internal format <code>RGBA8</code>.<br><br>
+
         If this function attempts to blit to a missing attachment of a complete framebuffer, nothing is
         blitted to that attachment and no error is generated
         per <a href="../1.0/index.html#DRAWING_TO_MISSING_ATTACHMENT">Drawing to a Missing Attachment</a>.<br>
