@@ -65,7 +65,7 @@ function runTest(testParams) {
 
     // Find the supported samples for a multisampled renderbuffer of the appropriate internal format.
     let samples = gl.getInternalformatParameter(gl.RENDERBUFFER, gl[testParams.internalformat], gl.SAMPLES);
-    if (!samples) {
+    if (!samples || !samples.length) {
         testFailed("At least one multisampled format is required to be supported");
         return;
     }
