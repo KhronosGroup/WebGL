@@ -11,6 +11,7 @@ copy-tex-image-and-sub-image-2d.html
 gl-pixelstorei.html
 gl-teximage.html
 origin-clean-conformance.html
+origin-clean-conformance-offscreencanvas.html
 tex-image-and-sub-image-2d-with-array-buffer-view.html
 tex-image-and-uniform-binding-bugs.html
 --min-version 1.0.3 tex-image-canvas-corruption.html
