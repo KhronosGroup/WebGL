@@ -726,7 +726,7 @@ goog.scope(function() {
         for (var ndx = 0; ndx < 2; ndx++) {
             ctx.bindFramebuffer(gl.FRAMEBUFFER, ndx ? dstFbo : srcFbo);
             if (ndx) {
-                gradientToDstShader.setGradient(ctx, gradShaderDstID, dstRangeInfo.valueMax, dstRangeInfo.valueMin);
+                gradientToDstShader.setGradient(ctx, gradShaderDstID, dstRangeInfo.valueMin, dstRangeInfo.valueMax);
                 rrUtil.drawQuad(ctx, gradShaderDstID, [-1, -1, 0], [1, 1, 0]);
             } else {
                 gradientToSrcShader.setGradient(ctx, gradShaderSrcID, srcRangeInfo.valueMin, srcRangeInfo.valueMax);
