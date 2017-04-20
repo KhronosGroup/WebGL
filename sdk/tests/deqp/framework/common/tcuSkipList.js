@@ -210,6 +210,25 @@ goog.scope(function() {
         // Also see conformance2/rendering/blitframebuffer-stencil-only.html for 2.0.1 test.
         _skip("blit.depth_stencil.depth24_stencil8_scale");
         _skip("blit.depth_stencil.depth24_stencil8_stencil_only");
+
+        _setReason("The expected result of Bliting pixels out-of-bounds conflicts with GLES/OGL spec.");
+        // crbug.com/644740
+        // deqp/functional/gles3/framebufferblit/default_framebuffer*.html
+        // Also see conformance2/rendering/blitframebuffer-filter-outofbounds.html for 2.0.1 test.
+        // Also see conformance2/rendering/blitframebuffer-outside-readbuffer.html for 2.0.1 test.
+        _skip("blit.default_framebuffer.srgb8_alpha8_linear_out_of_bounds*");
+        _skip("blit.default_framebuffer.rgb10_a2_linear_out_of_bounds*");
+        _skip("blit.default_framebuffer.rgba16f_linear_out_of_bounds*");
+        _skip("blit.default_framebuffer.r11f_g11f_b10f_linear_out_of_bounds*");
+        _skip("blit.default_framebuffer.rgba4_linear_out_of_bounds*");
+        _skip("blit.default_framebuffer.rgba8_linear_out_of_bounds*");
+        _skip("blit.default_framebuffer.rgb5_a1_linear_out_of_bounds*");
+        _skip("blit.default_framebuffer.rg8_linear_out_of_bounds*");
+        _skip("blit.default_framebuffer.r8_linear_out_of_bounds*");
+        _skip("blit.default_framebuffer.rg16f_linear_out_of_bounds*");
+        _skip("blit.default_framebuffer.rgb8_linear_out_of_bounds*");
+        _skip("blit.default_framebuffer.rgb565_linear_out_of_bounds*");
+        _skip("blit.default_framebuffer.r16f_linear_out_of_bounds*");
     } // if (!runSkippedTests)
 
     /*
