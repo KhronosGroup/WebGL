@@ -118,6 +118,7 @@ _FORMATS_TYPES_WEBGL2 = [
   {'internal_format': 'SRGB8_ALPHA8', 'format': 'RGBA', 'type': 'UNSIGNED_BYTE' },
   {'internal_format': 'RGB5_A1', 'format': 'RGBA', 'type': 'UNSIGNED_BYTE' },
   {'internal_format': 'RGB5_A1', 'format': 'RGBA', 'type': 'UNSIGNED_SHORT_5_5_5_1' },
+  {'internal_format': 'RGB10_A2', 'format': 'RGBA', 'type': 'UNSIGNED_INT_2_10_10_10_REV' },
   {'internal_format': 'RGBA4', 'format': 'RGBA', 'type': 'UNSIGNED_BYTE' },
   {'internal_format': 'RGBA4', 'format': 'RGBA', 'type': 'UNSIGNED_SHORT_4_4_4_4' },
   {'internal_format': 'RGBA16F', 'format': 'RGBA', 'type': 'HALF_FLOAT' },
