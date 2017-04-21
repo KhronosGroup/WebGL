@@ -53,23 +53,13 @@ var localImgUrl = "../../../resources/opengl_logo.jpg";
 
 var imgDomain;
 var pageDomain;
-var successfullyParsed;
-
-function endTest() {
-  debug("");
-  successfullyParsed = true;
-  shouldBeTrue("successfullyParsed");
-  debug('<br /><span class="pass">TEST COMPLETE</span>');
-  notifyFinishedToHarness();
-}
-
 
 function imageLoaded() {
   description("This test ensures WebGL implementations for OffscreenCanvas follow proper same-origin restrictions.");
 
   if (!window.OffscreenCanvas) {
     testPassed("No OffscreenCanvas support");
-    endTest();
+    finishTest();
     return;
   }
 
@@ -133,7 +123,7 @@ function imageLoaded() {
   // TODO: Should check video.
   // TODO: Should check CORS support.
 
-  endTest();
+  finishTest();
 }
 
 wtu.setupImageForCrossOriginTest("#img", defaultImgUrl, localImgUrl, imageLoaded);

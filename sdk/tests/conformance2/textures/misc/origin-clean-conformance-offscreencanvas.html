@@ -53,22 +53,13 @@ var localImgUrl = "../../../resources/opengl_logo.jpg";
 
 var imgDomain;
 var pageDomain;
-var successfullyParsed;
-
-function endTest() {
-  debug("");
-  successfullyParsed = true;
-  shouldBeTrue("successfullyParsed");
-  debug('<br /><span class="pass">TEST COMPLETE</span>');
-  notifyFinishedToHarness();
-}
 
 function imageLoaded() {
   description("This test ensures WebGL2 implementations for OffscreenCanvas follow proper same-origin restrictions.");
 
   if (!window.OffscreenCanvas) {
     testPassed("No OffscreenCanvas support");
-    endTest();
+    finishTest();
     return;
   }
 
@@ -131,7 +122,7 @@ function imageLoaded() {
 
   debug("check that readPixels continues to work against this offscreencanvas.");
   assertMsg(!causedException(makeReadPixels(gl)),
-            "readPixels should never throw exception -- not possible to dirty origin of WebGL canvas.");
+            "readPixels should never throw exception -- not possible to dirty origin of WebGL2 canvas.");
 
   debug("check that an attempt to upload a tainted canvas throws an exception.");
   var canvas = document.getElementById("canvas");
@@ -148,12 +139,12 @@ function imageLoaded() {
 
   debug("check that readPixels continues to work against this offscreencanvas.");
   assertMsg(!causedException(makeReadPixels(gl)),
-            "readPixels should never throw exception -- not possible to dirty origin of WebGL canvas.");
+            "readPixels should never throw exception -- not possible to dirty origin of WebGL2 canvas.");
 
   // TODO: Should check video.
   // TODO: Should check CORS support.
 
-  endTest();
+  finishTest();
 }
 
 wtu.setupImageForCrossOriginTest("#img", defaultImgUrl, localImgUrl, imageLoaded);

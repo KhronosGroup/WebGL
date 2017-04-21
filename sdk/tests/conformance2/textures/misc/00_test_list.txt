@@ -12,7 +12,7 @@ gl-get-tex-parameter.html
 mipmap-fbo.html
 --min-version 2.0.1 npot-video-sizing.html
 --min-version 2.0.1 tex-3d-mipmap-levels-intel-bug.html
-origin-clean-conformance-offscreencanvas.html
+--min-version 2.0.1 origin-clean-conformance-offscreencanvas.html
 tex-3d-size-limit.html
 tex-image-and-sub-image-with-array-buffer-view-sub-source.html
 tex-image-with-bad-args.html
