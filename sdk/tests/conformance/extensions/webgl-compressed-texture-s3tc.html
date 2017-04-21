@@ -231,17 +231,14 @@ function testDXT1_RGBA() {
             channels: 4,
             data: img_4x4_rgba_dxt1,
             format: ext.COMPRESSED_RGBA_S3TC_DXT1_EXT,
-            // This is a special case -- the texture is still opaque
-            // though it's RGBA.
-            hasAlpha: false,
+            hasAlpha: true,
         },
         {   width: 8,
             height: 8,
             channels: 4,
             data: img_8x8_rgba_dxt1,
             format: ext.COMPRESSED_RGBA_S3TC_DXT1_EXT,
-            // This is a special case -- the texture is still opaque
-            // though it's RGBA.
+            hasAlpha: true,
         }
     ];
     testDXTTextures(tests);
