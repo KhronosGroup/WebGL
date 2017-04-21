@@ -172,6 +172,10 @@ function testGenericAttribs() {
     gl.vertexAttrib4f(pIndex, 1.0, 0.0, 0.0, 0.0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setting up succeeds");
     gl.drawArrays(gl.TRIANGLES, 0, 6);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "No type mismatch: generic attrib is per vertex shader. 'a' is still float, the default.");
+    gl.vertexAttribI4i(aIndex, 0, 0, 1, 0);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setting up succeeds");
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Type mismatch: generic attrib is valid per context. 'a' is set to int type by previous test case");
     gl.vertexAttrib4f(aIndex, 0.0, 1.0, 0.0, 0.0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Setting up succeeds");
