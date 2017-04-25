@@ -60,15 +60,14 @@ void main()
 </script>
 <script>
 "use strict";
-var canvas;
 var wtu = WebGLTestUtils;
+var canvas = document.getElementById("example");
+var gl = wtu.create3DContext(canvas, undefined, 2);
 
+description("Test srgb emulation for generateMipmap.");
 function generateMipmap()
 {
-    description("Generate mipmaps for sRGB texture");
-
-    canvas = document.getElementById("example");
-    var gl = wtu.create3DContext(canvas);
+    debug("Generate mipmaps for sRGB texture");
 
     wtu.setupUnitQuad(gl, 0, 1);
     var program = wtu.setupProgram(
@@ -159,7 +158,34 @@ function generateMipmap()
     }
 }
 
+function generateMipmap_immutableTexture()
+{
+    debug("Generate mipmaps for immutable texture.");
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texStorage2D(gl.TEXTURE_2D, Math.log2(canvas.width), gl.SRGB8_ALPHA8, canvas.width, canvas.height);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "GenerateMipmap should succeed.");
+
+    gl.deleteTexture(tex);
+}
+
+function generateMipmap_widthHeightNotEqual()
+{
+    debug("Generate mipmaps when width and height are not equal.");
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.SRGB8_ALPHA8, 64, 32, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "GenerateMipmap should succeed.");
+
+    gl.deleteTexture(tex);
+}
+
 generateMipmap();
+generateMipmap_immutableTexture();
+generateMipmap_widthHeightNotEqual();
+
 var successfullyParsed = true;
 </script>
 <script src="../../../js/js-test-post.js"></script>
