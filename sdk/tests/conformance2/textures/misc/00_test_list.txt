@@ -14,6 +14,7 @@ mipmap-fbo.html
 --min-version 2.0.1 tex-3d-mipmap-levels-intel-bug.html
 --min-version 2.0.1 origin-clean-conformance-offscreencanvas.html
 tex-3d-size-limit.html
+--min-version 2.0.1 tex-base-level-bug.html
 tex-image-and-sub-image-with-array-buffer-view-sub-source.html
 tex-image-with-bad-args.html
 tex-image-with-bad-args-from-dom-elements.html
