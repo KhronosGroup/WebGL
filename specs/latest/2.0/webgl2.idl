@@ -25,7 +25,7 @@ interface WebGLTransformFeedback : WebGLObject {
 interface WebGLVertexArrayObject : WebGLObject {
 };
 
-typedef (Uint32Array or sequence<GLuint>) Uint32List;
+typedef ([AllowShared] Uint32Array or sequence<GLuint>) Uint32List;
 
 [NoInterfaceObject]
 interface WebGL2RenderingContextBase
