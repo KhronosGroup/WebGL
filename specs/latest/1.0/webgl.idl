@@ -74,7 +74,6 @@ interface WebGLShaderPrecisionFormat {
     readonly attribute GLint precision;
 };
 
-typedef (ArrayBuffer or ArrayBufferView) BufferDataSource;
 typedef (ImageBitmap or
          ImageData or
          HTMLImageElement or
@@ -532,9 +531,8 @@ interface WebGLRenderingContextBase
                            GLenum srcAlpha, GLenum dstAlpha);
 
     void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
-    void bufferData(GLenum target, ArrayBuffer? data, GLenum usage);
-    void bufferData(GLenum target, ArrayBufferView data, GLenum usage);
-    void bufferSubData(GLenum target, GLintptr offset, BufferDataSource data);
+    void bufferData(GLenum target, [AllowShared] BufferSource? data, GLenum usage);
+    void bufferSubData(GLenum target, GLintptr offset, [AllowShared] BufferSource data);
 
     [WebGLHandlesContextLoss] GLenum checkFramebufferStatus(GLenum target);
     void clear(GLbitfield mask);
@@ -546,11 +544,11 @@ interface WebGLRenderingContextBase
 
     void compressedTexImage2D(GLenum target, GLint level, GLenum internalformat,
                               GLsizei width, GLsizei height, GLint border,
-                              ArrayBufferView data);
+                              [AllowShared] ArrayBufferView data);
     void compressedTexSubImage2D(GLenum target, GLint level,
                                  GLint xoffset, GLint yoffset,
                                  GLsizei width, GLsizei height, GLenum format,
-                                 ArrayBufferView data);
+                                 [AllowShared] ArrayBufferView data);
 
     void copyTexImage2D(GLenum target, GLint level, GLenum internalformat,
                         GLint x, GLint y, GLsizei width, GLsizei height,
@@ -642,7 +640,7 @@ interface WebGLRenderingContextBase
     void polygonOffset(GLfloat factor, GLfloat units);
 
     void readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
-                    GLenum format, GLenum type, ArrayBufferView? pixels);
+                    GLenum format, GLenum type, [AllowShared] ArrayBufferView? pixels);
 
     void renderbufferStorage(GLenum target, GLenum internalformat,
                              GLsizei width, GLsizei height);
@@ -660,7 +658,7 @@ interface WebGLRenderingContextBase
 
     void texImage2D(GLenum target, GLint level, GLint internalformat,
                     GLsizei width, GLsizei height, GLint border, GLenum format,
-                    GLenum type, ArrayBufferView? pixels);
+                    GLenum type, [AllowShared] ArrayBufferView? pixels);
     void texImage2D(GLenum target, GLint level, GLint internalformat,
                     GLenum format, GLenum type, TexImageSource source); // May throw DOMException
 
@@ -669,7 +667,7 @@ interface WebGLRenderingContextBase
 
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                        GLsizei width, GLsizei height,
-                       GLenum format, GLenum type, ArrayBufferView? pixels);
+                       GLenum format, GLenum type, [AllowShared] ArrayBufferView? pixels);
     void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                        GLenum format, GLenum type, TexImageSource source); // May throw DOMException
 
