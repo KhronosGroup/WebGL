@@ -105,11 +105,11 @@ function runTest() {
 
         var uniforms1Location = gl.getUniformBlockIndex(program, "Uniforms1");
         gl.uniformBlockBinding(program, uniforms1Location, 0);
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uniforms1Location " + uniforms1Location + " probably invalid");
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uniforms1Location was " + uniforms1Location);
 
         var uniforms2Location = gl.getUniformBlockIndex(program, "Uniforms2");
         gl.uniformBlockBinding(program, uniforms2Location, 1);
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uniforms2Location " + uniforms2Location + " probably invalid");
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uniforms2Location was " + uniforms2Location);
 
         debug("");
     }
