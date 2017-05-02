@@ -297,7 +297,7 @@ var setupProgram = function(
  * @param {boolean} opt_logShaders Whether to log shader source.
  */
 var setupTransformFeedbackProgram = function(
-    gl, shaders, varyings, bufferMode, opt_attribs, opt_locations, opt_logShaders) {
+    gl, shaders, varyings, bufferMode, opt_attribs, opt_locations, opt_logShaders, opt_skipCompileStatus) {
   var realShaders = [];
   var program = gl.createProgram();
   var shaderCount = 0;
@@ -309,13 +309,13 @@ var setupTransformFeedbackProgram = function(
       if (element) {
         if (element.type != "x-shader/x-vertex" && element.type != "x-shader/x-fragment")
           shaderType = ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER;
-        shader = loadShaderFromScript(gl, shader, shaderType, undefined, opt_logShaders);
+        shader = loadShaderFromScript(gl, shader, shaderType, undefined, opt_logShaders, opt_skipCompileStatus);
       } else if (endsWith(shader, ".vert")) {
-        shader = loadShaderFromFile(gl, shader, gl.VERTEX_SHADER, undefined, opt_logShaders);
+        shader = loadShaderFromFile(gl, shader, gl.VERTEX_SHADER, undefined, opt_logShaders, opt_skipCompileStatus);
       } else if (endsWith(shader, ".frag")) {
-        shader = loadShaderFromFile(gl, shader, gl.FRAGMENT_SHADER, undefined, opt_logShaders);
+        shader = loadShaderFromFile(gl, shader, gl.FRAGMENT_SHADER, undefined, opt_logShaders, opt_skipCompileStatus);
       } else {
-        shader = loadShader(gl, shader, ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER, undefined, opt_logShaders);
+        shader = loadShader(gl, shader, ii ? gl.FRAGMENT_SHADER : gl.VERTEX_SHADER, undefined, opt_logShaders, undefined, undefined, opt_skipCompileStatus);
       }
     } else if (opt_logShaders) {
       throw 'Shader source logging requested but no shader source provided';
