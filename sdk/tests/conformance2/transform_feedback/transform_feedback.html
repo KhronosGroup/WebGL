@@ -449,6 +449,7 @@ function runVaryingsTest() {
     verifyTransformFeedbackVarying(program, 2, false);
 
     // Test recompiling/relinking the program
+    // Regression test for http://crbug.com/716018
     var skipCompileStatus = true;
     program = wtu.setupTransformFeedbackProgram(gl, ["vshader", "fshader"],
         ["out_add", "out_mul"], gl.SEPARATE_ATTRIBS,
