@@ -448,6 +448,19 @@ function runVaryingsTest() {
     verifyTransformFeedbackVarying(program, 1, false);
     verifyTransformFeedbackVarying(program, 2, false);
 
+    // Test recompiling/relinking the program
+    // Regression test for http://crbug.com/716018
+    var skipCompileStatus = true;
+    program = wtu.setupTransformFeedbackProgram(gl, ["vshader", "fshader"],
+        ["out_add", "out_mul"], gl.SEPARATE_ATTRIBS,
+        ["in_data"], undefined, undefined, skipCompileStatus);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "linking transform feedback shader should not set an error");
+    shouldBeTrue("gl.getProgramParameter(program, gl.LINK_STATUS)");
+    shouldBe("gl.getProgramParameter(program, gl.TRANSFORM_FEEDBACK_VARYINGS)", "2");
+    verifyTransformFeedbackVarying(program, 0, true, "out_add");
+    verifyTransformFeedbackVarying(program, 1, true, "out_mul");
+    verifyTransformFeedbackVarying(program, 2, false);
+
     finishTest();
 }
 
