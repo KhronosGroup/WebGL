@@ -197,7 +197,7 @@ function runTestExtension() {
           'TEXTURE_CUBE_MAP_NEGATIVE_Z'
         ];
         for (var tt = 0; tt < targets.length; ++tt) {
-            wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, 'gl.texImage2D(gl.' + targets[ii] + ', 1, gl.' + typeInfo.format + ', 1, 1, 0, gl.' + typeInfo.format + ', ' + typeStr + ', null)');
+            wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, 'gl.texImage2D(gl.' + targets[ii] + ', 0, gl.' + typeInfo.format + ', 1, 1, 0, gl.' + typeInfo.format + ', ' + typeStr + ', null)');
         }
 
         // The WebGL_depth_texture extension supports both NEAREST and
