@@ -927,9 +927,10 @@ goog.scope(function() {
         ctx.bindFramebuffer(gl.DRAW_FRAMEBUFFER, dstFbo);
         ctx.blitFramebuffer(this.m_srcRect[0], this.m_srcRect[1], this.m_srcRect[2], this.m_srcRect[3], this.m_dstRect[0], this.m_dstRect[1], this.m_dstRect[2], this.m_dstRect[3], this.m_copyBuffers, gl.NEAREST);
 
-        // Render blue color where depth < 0, decrement on depth failure.
+        // Render blue color where depth <= 0, decrement on depth failure.
         ctx.bindFramebuffer(gl.FRAMEBUFFER, dstFbo);
         ctx.viewport(0, 0, this.m_dstSize[0], this.m_dstSize[1]);
+        ctx.depthFunc(gl.LEQUAL);
         ctx.stencilOp(gl.KEEP, gl.DECR, gl.KEEP);
         ctx.stencilFunc(gl.ALWAYS, 0, 0xff);
 
