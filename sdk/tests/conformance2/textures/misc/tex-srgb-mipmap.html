@@ -182,9 +182,55 @@ function generateMipmap_widthHeightNotEqual()
     gl.deleteTexture(tex);
 }
 
+function generateMipmap_maxLevelLessThanFullMipmapLevel()
+{
+    debug("Generate mipmaps when maxLevel is less than full mipmap level.");
+
+    wtu.setupUnitQuad(gl, 0, 1);
+    var program = wtu.setupProgram(
+        gl, ['vshader', 'fshader'], ['vPosition', 'texCoord0'], [0, 1]);
+
+    var colors = [0, 63, 127, 255];
+
+    var texLoc = gl.getUniformLocation(program, "tex");
+    gl.uniform1i(texLoc, 0);
+
+    var width = 16;
+    var height = 16;
+    canvas.width = width;
+    canvas.height = height;
+    gl.viewport(0, 0, width, height);
+
+    var srgbTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, srgbTex);
+    wtu.fillTexture(gl, srgbTex, width, height, colors, 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.SRGB8_ALPHA8);
+
+    // Set max level, check if the max level mipmap is generated.
+    var max_level = 3;
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, max_level);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_NEAREST);
+
+    width >>= max_level;
+    height >>= max_level;
+    canvas.width = width;
+    canvas.height = height;
+    gl.viewport(0, 0, width, height);
+
+    gl.bindTexture(gl.TEXTURE_2D, srgbTex);
+    wtu.clearAndDrawUnitQuad(gl);
+
+    var reference = wtu.sRGBToLinear(colors);
+    var msg;
+    wtu.checkCanvasRect(gl, 0, 0, width, height, reference, msg, [1,1,1,1]);
+
+    gl.deleteTexture(srgbTex);
+}
+
 generateMipmap();
 generateMipmap_immutableTexture();
 generateMipmap_widthHeightNotEqual();
+generateMipmap_maxLevelLessThanFullMipmapLevel();
 
 var successfullyParsed = true;
 </script>
