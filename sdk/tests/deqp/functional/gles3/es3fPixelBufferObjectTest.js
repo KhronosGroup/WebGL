@@ -287,6 +287,11 @@ var tcuImageCompare = framework.common.tcuImageCompare;
                 break;
         }
 
+        if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+            testSkippedOptions("Cannot test pixel buffer readPixels on an incomplete framebuffer", true);
+            return tcuTestCase.IterateResult.STOP;
+        }
+
         this.clearColor(this.m_colorScale * 0.4, this.m_colorScale * 1.0, this.m_colorScale * 0.5, this.m_colorScale * 1.0);
 
         if (this.m_useColorClears) {
