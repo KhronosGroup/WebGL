@@ -422,7 +422,7 @@ typedef unsigned long long GLuint64;
     </p>
 
     <pre class="idl">
-typedef (Uint32Array or sequence&lt;GLuint&gt;) Uint32List;
+typedef ([AllowShared] Uint32Array or sequence&lt;GLuint&gt;) Uint32List;
 
 [NoInterfaceObject]
 interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
@@ -699,13 +699,12 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   /* Buffer objects */
   // WebGL1:
   void bufferData(GLenum target, GLsizeiptr size, GLenum usage);
-  void bufferData(GLenum target, ArrayBuffer? srcData, GLenum usage);
-  void bufferData(GLenum target, ArrayBufferView srcData, GLenum usage);
-  void bufferSubData(GLenum target, GLintptr dstByteOffset, BufferDataSource srcData);
+  void bufferData(GLenum target, [AllowShared] BufferSource? srcData, GLenum usage);
+  void bufferSubData(GLenum target, GLintptr dstByteOffset, [AllowShared] BufferSource srcData);
   // WebGL2:
-  void bufferData(GLenum target, ArrayBufferView srcData, GLenum usage, GLuint srcOffset,
+  void bufferData(GLenum target, [AllowShared] ArrayBufferView srcData, GLenum usage, GLuint srcOffset,
                   optional GLuint length = 0);
-  void bufferSubData(GLenum target, GLintptr dstByteOffset, ArrayBufferView srcData,
+  void bufferSubData(GLenum target, GLintptr dstByteOffset, [AllowShared] ArrayBufferView srcData,
                      GLuint srcOffset, optional GLuint length = 0);
 
   void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset,
@@ -713,7 +712,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   // MapBufferRange, in particular its read-only and write-only modes,
   // can not be exposed safely to JavaScript. GetBufferSubData
   // replaces it for the purpose of fetching data back from the GPU.
-  void getBufferSubData(GLenum target, GLintptr srcByteOffset, ArrayBufferView dstBuffer,
+  void getBufferSubData(GLenum target, GLintptr srcByteOffset, [AllowShared] ArrayBufferView dstBuffer,
                         optional GLuint dstOffset = 0, optional GLuint length = 0);
 
   /* Framebuffer objects */
@@ -740,13 +739,13 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   // WebGL1 legacy entrypoints:
   void texImage2D(GLenum target, GLint level, GLint internalformat,
                   GLsizei width, GLsizei height, GLint border, GLenum format,
-                  GLenum type, ArrayBufferView? pixels);
+                  GLenum type, [AllowShared] ArrayBufferView? pixels);
   void texImage2D(GLenum target, GLint level, GLint internalformat,
                   GLenum format, GLenum type, TexImageSource source); // May throw DOMException
 
   void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                      GLsizei width, GLsizei height,
-                     GLenum format, GLenum type, ArrayBufferView? pixels);
+                     GLenum format, GLenum type, [AllowShared] ArrayBufferView? pixels);
   void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                      GLenum format, GLenum type, TexImageSource source); // May throw DOMException
 
@@ -757,7 +756,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
                   GLint border, GLenum format, GLenum type,
                   TexImageSource source); // May throw DOMException
   void texImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height,
-                  GLint border, GLenum format, GLenum type, ArrayBufferView srcData,
+                  GLint border, GLenum format, GLenum type, [AllowShared] ArrayBufferView srcData,
                   GLuint srcOffset);
 
   void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height,
@@ -766,9 +765,9 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
                   GLsizei depth, GLint border, GLenum format, GLenum type,
                   TexImageSource source); // May throw DOMException
   void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height,
-                  GLsizei depth, GLint border, GLenum format, GLenum type, ArrayBufferView? srcData);
+                  GLsizei depth, GLint border, GLenum format, GLenum type, [AllowShared] ArrayBufferView? srcData);
   void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height,
-                  GLsizei depth, GLint border, GLenum format, GLenum type, ArrayBufferView srcData,
+                  GLsizei depth, GLint border, GLenum format, GLenum type, [AllowShared] ArrayBufferView srcData,
                   GLuint srcOffset);
 
   void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width,
@@ -777,7 +776,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
                      GLsizei height, GLenum format, GLenum type,
                      TexImageSource source); // May throw DOMException
   void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width,
-                     GLsizei height, GLenum format, GLenum type, ArrayBufferView srcData,
+                     GLsizei height, GLenum format, GLenum type, [AllowShared] ArrayBufferView srcData,
                      GLuint srcOffset);
 
   void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
@@ -788,7 +787,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
                      TexImageSource source); // May throw DOMException
   void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                      GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type,
-                     ArrayBufferView? srcData, optional GLuint srcOffset = 0);
+                     [AllowShared] ArrayBufferView? srcData, optional GLuint srcOffset = 0);
 
   void copyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                          GLint x, GLint y, GLsizei width, GLsizei height);
@@ -796,20 +795,20 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   void compressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width,
                             GLsizei height, GLint border, GLsizei imageSize, GLintptr offset);
   void compressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width,
-                            GLsizei height, GLint border, ArrayBufferView srcData,
+                            GLsizei height, GLint border, [AllowShared] ArrayBufferView srcData,
                             optional GLuint srcOffset = 0, optional GLuint srcLengthOverride = 0);
 
   void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width,
                             GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, GLintptr offset);
   void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width,
-                            GLsizei height, GLsizei depth, GLint border, ArrayBufferView srcData,
+                            GLsizei height, GLsizei depth, GLint border, [AllowShared] ArrayBufferView srcData,
                             optional GLuint srcOffset = 0, optional GLuint srcLengthOverride = 0);
 
   void compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                                GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, GLintptr offset);
   void compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                                GLsizei width, GLsizei height, GLenum format,
-                               ArrayBufferView srcData,
+                               [AllowShared] ArrayBufferView srcData,
                                optional GLuint srcOffset = 0,
                                optional GLuint srcLengthOverride = 0);
 
@@ -818,7 +817,7 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
                                GLenum format, GLsizei imageSize, GLintptr offset);
   void compressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                                GLint zoffset, GLsizei width, GLsizei height, GLsizei depth,
-                               GLenum format, ArrayBufferView srcData,
+                               GLenum format, [AllowShared] ArrayBufferView srcData,
                                optional GLuint srcOffset = 0,
                                optional GLuint srcLengthOverride = 0);
 
@@ -895,12 +894,12 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   /* Reading back pixels */
   // WebGL1:
   void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type,
-                  ArrayBufferView? dstData);
+                  [AllowShared] ArrayBufferView? dstData);
   // WebGL2:
   void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type,
                   GLintptr offset);
   void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type,
-                  ArrayBufferView dstData, GLuint dstOffset);
+                  [AllowShared] ArrayBufferView dstData, GLuint dstOffset);
 
   /* Multiple Render Targets */
   void drawBuffers(sequence&lt;GLenum&gt; buffers);
@@ -1168,7 +1167,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <dl class="methods">
 
-      <dt class="idl-code">void bufferData(GLenum target, ArrayBufferView srcData, GLenum usage, GLuint srcOffset, optional GLuint length = 0);
+      <dt class="idl-code">void bufferData(GLenum target, [AllowShared] ArrayBufferView srcData, GLenum usage, GLuint srcOffset, optional GLuint length = 0);
           <span class="gl-spec">
           (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.10.2">OpenGL ES 3.0.4 &sect;2.10.2</a>,
            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBufferData.xhtml" class="nonnormative">man page</a>)
@@ -1203,7 +1202,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         If any error is generated, <code>buf</code>'s size is unmodified, and no data is written to it.
       </dd>
 
-      <dt class="idl-code">void bufferSubData(GLenum target, GLintptr dstByteOffset, ArrayBufferView srcData, GLuint srcOffset, optional GLuint length = 0);
+      <dt class="idl-code">void bufferSubData(GLenum target, GLintptr dstByteOffset, [AllowShared] ArrayBufferView srcData, GLuint srcOffset, optional GLuint length = 0);
           <span class="gl-spec">
           (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.10.2">OpenGL ES 3.0.4 &sect;2.10.2</a>,
            <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glBufferSubData.xhtml" class="nonnormative">man page</a>)
@@ -1268,7 +1267,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt>
         <p class="idl-code">
           void getBufferSubData(GLenum target, GLintptr srcByteOffset,
-                                ArrayBufferView dstBuffer,
+                                [AllowShared] ArrayBufferView dstBuffer,
                                 optional GLuint dstOffset = 0,
                                 optional GLuint length = 0)
         </p>
@@ -1616,7 +1615,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt class="idl-code">
         void texImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
                         GLsizei height, GLint border, GLenum format, GLenum type,
-                        ArrayBufferView srcData, GLuint srcOffset)
+                        [AllowShared] ArrayBufferView srcData, GLuint srcOffset)
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.4 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
       </dt>
       <dd>
@@ -1720,7 +1719,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt class="idl-code"><a name="TEXSUBIMAGE2D">
         void texSubImage2D</a>(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                                GLsizei width, GLsizei height, GLenum format, GLenum type,
-                               ArrayBufferView srcData, GLuint srcOffset)
+                               [AllowShared] ArrayBufferView srcData, GLuint srcOffset)
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.4 &sect;3.8.5</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexSubImage2D.xhtml">man page</a>)</span>
       </dt>
       <dd>
@@ -1776,10 +1775,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
       <dt class="idl-code">
         <p>void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width,
                            GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type,
-                           ArrayBufferView? srcData)</p>
+                           [AllowShared] ArrayBufferView? srcData)</p>
         <p>void texImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width,
                            GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type,
-                           ArrayBufferView srcData, GLuint srcOffset)
+                           [AllowShared] ArrayBufferView srcData, GLuint srcOffset)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.4 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage3D.xhtml">man page</a>)</span>
         </p>
       </dt>
@@ -1849,7 +1848,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p class="idl-code">
           void texSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                              GLint zoffset, GLsizei width, GLsizei height, GLsizei depth,
-                             GLenum format, GLenum type, ArrayBufferView? srcData,
+                             GLenum format, GLenum type, [AllowShared] ArrayBufferView? srcData,
                              optional GLuint srcOffset = 0)
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.5">OpenGL ES 3.0.4 &sect;3.8.5</a>,
@@ -1948,7 +1947,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p class="idl-code">
           void compressedTexImage2D(GLenum target, GLint level, GLenum internalformat,
                                     GLsizei width, GLsizei height, GLint border,
-                                    ArrayBufferView srcData,
+                                    [AllowShared] ArrayBufferView srcData,
                                     optional GLuint srcOffset = 0,
                                     optional GLuint srcLengthOverride = 0)
           <span class="gl-spec">
@@ -1970,7 +1969,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p class="idl-code">
           void compressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                                        GLsizei width, GLsizei height, GLenum format,
-                                       ArrayBufferView srcData,
+                                       [AllowShared] ArrayBufferView srcData,
                                        optional GLuint srcOffset = 0,
                                        optional GLuint srcLengthOverride = 0)
           <span class="gl-spec">
@@ -1993,7 +1992,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p class="idl-code">
           void compressedTexImage3D(GLenum target, GLint level, GLenum internalformat,
                                     GLsizei width, GLsizei height, GLsizei depth, GLint border,
-                                    ArrayBufferView srcData,
+                                    [AllowShared] ArrayBufferView srcData,
                                     optional GLuint srcOffset = 0,
                                     optional GLuint srcLengthOverride = 0)
           <span class="gl-spec">
@@ -2015,7 +2014,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         <p class="idl-code">
           void compressedTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
                                        GLint zoffset, GLsizei width, GLsizei height, GLsizei depth,
-                                       GLenum format, ArrayBufferView srcData,
+                                       GLenum format, [AllowShared] ArrayBufferView srcData,
                                        optional GLuint srcOffset = 0,
                                        optional GLuint srcLengthOverride = 0)
           <span class="gl-spec">
@@ -2351,7 +2350,7 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <dl class="methods">
         <dt class="idl-code">
           void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format,
-                          GLenum type, ArrayBufferView dstData, GLuint dstOffset)
+                          GLenum type, [AllowShared] ArrayBufferView dstData, GLuint dstOffset)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-4.3.2">OpenGL ES 3.0 &sect;4.3.2</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glReadPixels.xhtml">man page</a>)</span>
         </dt>
         <dd>
@@ -3928,9 +3927,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
             S. Bradner. IETF, March 1997.
         </dd>
         <dt id="refsWEBIDL">[WEBIDL]</dt>
-        <dd><cite><a href="http://dev.w3.org/2006/webapi/WebIDL/">
+        <dd><cite><a href="https://heycam.github.io/webidl/">
             Web IDL: W3C Editor’s Draft</a></cite>,
-            C. McCormack.
+            C. McCormack, B. Zbarsky, T. Langel.
         </dd>
     </dl>
 
