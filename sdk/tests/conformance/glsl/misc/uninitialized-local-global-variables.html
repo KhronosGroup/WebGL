@@ -36,7 +36,7 @@
 <script src="../../../js/webgl-test-utils.js"> </script>
 
 <script id="vs_uninit_in_frag" type="x-shader/x-vertex">
-precision highp float;
+precision mediump float;
 attribute vec4 a_position;
 void main() {
     gl_Position = a_position;
@@ -45,7 +45,7 @@ void main() {
 
 <!-- Uninitialized local in vertex shader -->
 <script id="vs_uninit_local_in_vert" type="x-shader/x-vertex">
-precision highp float;
+precision mediump float;
 attribute vec4 a_position;
 varying vec3 v_uninit;
 void main() {
@@ -55,7 +55,7 @@ void main() {
 }
 </script>
 <script id="fs_uninit_local_in_vert" type="x-shader/x-fragment">
-precision highp float;
+precision mediump float;
 varying vec3 v_uninit;
 void main() {
     gl_FragColor = v_uninit.xyzz;
@@ -64,7 +64,7 @@ void main() {
 
 <!-- Uninitialized local in fragment shader -->
 <script id="fs_uninit_local_in_frag" type="x-shader/x-fragment">
-precision highp float;
+precision mediump float;
 void main() {
     vec2 uninit; // uninitialized
     gl_FragColor = uninit.xyyy;
@@ -73,7 +73,7 @@ void main() {
 
 <!-- Uninitialized global in vertex shader -->
 <script id="vs_uninit_global_in_vert" type="x-shader/x-vertex">
-precision highp float;
+precision mediump float;
 attribute vec4 a_position;
 varying float v_uninit;
 float uninit; // uninitialized
@@ -83,7 +83,7 @@ void main() {
 }
 </script>
 <script id="fs_uninit_global_in_vert" type="x-shader/x-fragment">
-precision highp float;
+precision mediump float;
 varying float v_uninit;
 void main() {
     gl_FragColor = vec4(v_uninit);
@@ -92,7 +92,7 @@ void main() {
 
 <!-- Uninitialized global in fragment shader -->
 <script id="fs_uninit_global_in_frag" type="x-shader/x-fragment">
-precision highp float;
+precision mediump float;
 vec4 uninit; // uninitialized
 void main() {
     gl_FragColor = uninit;
@@ -101,16 +101,34 @@ void main() {
 
 <!-- Uninitialized local int in fragment shader -->
 <script id="fs_uninit_local_int_in_frag" type="x-shader/x-fragment">
-precision highp float;
+precision mediump float;
 void main() {
     int uninit;
     gl_FragColor = vec4(uninit);
 }
 </script>
 
+<!-- Uninitialized local variable and another variable in the same declaration using it as an initializer in fragment shader -->
+<script id="fs_uninit_two_local_variables_in_declaration_in_frag" type="x-shader/x-fragment">
+precision mediump float;
+void main() {
+    vec2 uninit, uninit2 = uninit;
+    gl_FragColor = uninit2.xyyy;
+}
+</script>
+
+<!-- Uninitialized local array and another variable in the same declaration using it in its initializer in fragment shader -->
+<script id="fs_uninit_array_and_another_in_declaration_in_frag" type="x-shader/x-fragment">
+precision mediump float;
+void main() {
+    vec2 uninit[2], uninit2 = uninit[0];
+    gl_FragColor = uninit2.xyyy;
+}
+</script>
+
 <!-- Uninitialized global int in fragment shader -->
 <script id="fs_uninit_global_int_in_frag" type="x-shader/x-fragment">
-precision highp float;
+precision mediump float;
 int uninit; // uninitialized
 void main() {
     gl_FragColor = vec4(uninit);
@@ -119,7 +137,7 @@ void main() {
 
 <!-- Uninitialized local struct in fragment shader -->
 <script id="fs_uninit_local_struct_in_frag" type="x-shader/x-fragment">
-precision highp float;
+precision mediump float;
 struct S { vec4 v; };
 void main() {
     S uninit; // uninitialized
@@ -129,7 +147,7 @@ void main() {
 
 <!-- Uninitialized global struct in fragment shader -->
 <script id="fs_uninit_global_struct_in_frag" type="x-shader/x-fragment">
-precision highp float;
+precision mediump float;
 struct S { vec4 v; };
 S uninit; // uninitialized
 void main() {
@@ -139,7 +157,7 @@ void main() {
 
 <!-- Uninitialized local bool in fragment shader -->
 <script id="fs_uninit_local_bool_in_frag" type="x-shader/x-fragment">
-precision highp float;
+precision mediump float;
 void main() {
     bool uninit[16]; // uninitialized
     bool result;
@@ -152,7 +170,7 @@ void main() {
 
 <!-- Uninitialized global bool in fragment shader -->
 <script id="fs_uninit_global_bool_in_frag" type="x-shader/x-fragment">
-precision highp float;
+precision mediump float;
 bool uninit[16]; // uninitialized
 void main() {
     bool result = false;
@@ -196,6 +214,14 @@ var cases = [
   {
     name: "Uninitialized local int variable in fragment shader",
     prog: ["vs_uninit_in_frag", "fs_uninit_local_int_in_frag"],
+  },
+  {
+    name: "Uninitialized local variable and another variable in the same declaration using it as an initializer in fragment shader",
+    prog: ["vs_uninit_in_frag", "fs_uninit_two_local_variables_in_declaration_in_frag"],
+  },
+  {
+    name: "Uninitialized local array and another variable in the same declaration using it in its initializer in fragment shader",
+    prog: ["vs_uninit_in_frag", "fs_uninit_array_and_another_in_declaration_in_frag"],
   },
   {
     name: "Uninitialized global int variable in fragment shader",
