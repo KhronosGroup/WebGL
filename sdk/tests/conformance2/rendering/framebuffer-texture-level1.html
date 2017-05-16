@@ -44,6 +44,9 @@ var wtu = WebGLTestUtils;
 var gl;
 
 function testFramebufferTextureWithNonZeroBaseLevel(level) {
+  if (level < 1) {
+    throw "This test is incorrect if level < 1";
+  }
   var width = 32;
   var height = 16;
   var texture = gl.createTexture();
