@@ -7,3 +7,5 @@ buffer-overflow-test.html
 get-buffer-sub-data.html
 one-large-uniform-buffer.html
 uniform-buffers.html
+--min-version 2.0.1 uniform-buffers-second-compile.html
+--min-version 2.0.1 uniform-buffers-state-restoration.html
