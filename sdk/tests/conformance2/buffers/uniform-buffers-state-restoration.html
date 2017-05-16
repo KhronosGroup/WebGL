@@ -67,7 +67,7 @@ debug("");
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas, null, 2);
-var buf = null;
+var greenBuf = null;
 var throwawayBuf = null;
 var red = new Float32Array([1, 0, 0, 1]);
 var green = new Float32Array([0, 1, 0, 1]);
@@ -79,7 +79,7 @@ if (!gl) {
     testPassed("WebGL context exists");
 
     initTest();
-    requestAnimationFrame(runFrame);
+    wtu.waitForComposite(runTest);
 }
 
 function initTest() {
@@ -93,33 +93,25 @@ function initTest() {
     var uboLocation = gl.getUniformBlockIndex(program, "UBOData");
     gl.uniformBlockBinding(program, uboLocation, 0);
 
-    buf = gl.createBuffer();
+    greenBuf = gl.createBuffer();
     throwawayBuf = gl.createBuffer();
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "createBuffer should not set an error");
 
-    // Bind uniform buffer (both index 0 AND generic binding points) to buf
-    gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, buf);
+    // Bind uniform buffer (both index 0 AND generic binding points) to greenBuf
+    gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, greenBuf);
     gl.bufferData(gl.UNIFORM_BUFFER, green, gl.STATIC_DRAW);
     // Bind throwaray uniform buffer (from only the generic binding point)
     gl.bindBuffer(gl.UNIFORM_BUFFER, throwawayBuf);
 }
 
-function runFrame() {
-    // ONLY the binding point at index 0 (not the generic binding point) should be correct.
-    // (The generic binding point should point at the throwaway buffer.)
-    if (frame == 9) {
-        // So this bufferData should go into the throwaway buffer.
-        gl.bufferData(gl.UNIFORM_BUFFER, red, gl.STATIC_DRAW);
-        wtu.clearAndDrawUnitQuad(gl);
-        wtu.checkCanvas(gl, [0, 255, 0, 255], "frame " + frame + ": draw call should still set canvas to green", 2);
-        finishTest();
-    } else {
-        wtu.clearAndDrawUnitQuad(gl);
-        wtu.checkCanvas(gl, [0, 255, 0, 255], "frame " + frame + ": draw call should set canvas to green", 2);
-
-        frame++;
-        requestAnimationFrame(runFrame);
-    }
+function runTest() {
+    // ONLY the binding point at index 0 (not the generic binding point) should be greenBuf.
+    // (The generic binding point should point at throwawayBuf.)
+    // So this bufferData should go into throwawayBuf.
+    gl.bufferData(gl.UNIFORM_BUFFER, red, gl.STATIC_DRAW);
+    wtu.clearAndDrawUnitQuad(gl);
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "draw call should set canvas to green", 2);
+    finishTest();
 }
 
 debug("");
