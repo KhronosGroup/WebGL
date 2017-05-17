@@ -2054,7 +2054,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
                 <tr><td>RED_BITS</td><td>GLint</td></tr>
                 <tr><td>RENDERBUFFER_BINDING</td><td>WebGLRenderbuffer</td></tr>
                 <tr><td>RENDERER</td><td>DOMString</td></tr>
+                <tr><td>SAMPLE_ALPHA_TO_COVERAGE</td><td>GLboolean</td></tr>
                 <tr><td>SAMPLE_BUFFERS</td><td>GLint</td></tr>
+                <tr><td>SAMPLE_COVERAGE</td><td>GLboolean</td></tr>
                 <tr><td>SAMPLE_COVERAGE_INVERT</td><td>GLboolean</td></tr>
                 <tr><td>SAMPLE_COVERAGE_VALUE</td><td>GLfloat</td></tr>
                 <tr><td>SAMPLES</td><td>GLint</td></tr>
@@ -2120,6 +2122,9 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
         <dt class="idl-code">[WebGLHandlesContextLoss] GLboolean isEnabled(GLenum cap)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-6.1.1">OpenGL ES 2.0 &sect;6.1.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glIsEnabled.xml">man page</a>)</span>
         <dd>
+            For any <code>isEnabled</code> query, the same boolean value can be obtained via
+            <code>getParameter</code>.
+            <br><br>
             Returns false if the context's <a href="#webgl-context-lost-flag">webgl context lost
             flag</a> is set.
         <dt class="idl-code">void lineWidth(GLfloat width)
