@@ -42,6 +42,10 @@
 var wtu = WebGLTestUtils;
 description('Verify multisampled renderbuffers are initialized to 0 before being read in WebGL');
 
+const ALLOCATE_ATTACH = 0;
+const ATTACH_ALLOCATE = 1;
+const ALLOCATE_ATTACH_REALLOCATE = 2;
+
 var gl = wtu.create3DContext("testbed", null, 2);
 
 if (!gl) {
@@ -50,10 +54,12 @@ if (!gl) {
     // Set the clear color to green. It should never show up.
     gl.clearColor(0, 1, 0, 1);
 
-    runTest(gl, gl.canvas.width, gl.canvas.height, 0);
-    runTest(gl, gl.canvas.width, gl.canvas.height, 1);
-    runTest(gl, gl.canvas.width, gl.canvas.height, 0);
-    runTest(gl, gl.canvas.width, gl.canvas.height, 1);
+    runTest(gl, gl.canvas.width, gl.canvas.height, ALLOCATE_ATTACH);
+    runTest(gl, gl.canvas.width, gl.canvas.height, ATTACH_ALLOCATE);
+    runTest(gl, gl.canvas.width, gl.canvas.height, ALLOCATE_ATTACH_REALLOCATE);
+    runTest(gl, gl.canvas.width, gl.canvas.height, ALLOCATE_ATTACH);
+    runTest(gl, gl.canvas.width, gl.canvas.height, ATTACH_ALLOCATE);
+    runTest(gl, gl.canvas.width, gl.canvas.height, ALLOCATE_ATTACH_REALLOCATE);
 
     // Testing buffer clearing won't change the clear values.
     var clearColor = gl.getParameter(gl.COLOR_CLEAR_VALUE);
@@ -62,6 +68,7 @@ if (!gl) {
 }
 
 function runTest(gl, width, height, order) {
+    debug("test with width=" + width + ", height=" + height);
     wtu.checkCanvasRect(gl, 0, 0, width, height, [0, 0, 0, 0],
                         "internal buffers have been initialized to 0");
 
@@ -89,11 +96,21 @@ function runTest(gl, width, height, order) {
     var buffer_m = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, buffer_m);
     switch (order) {
-      case 0:
+      case ALLOCATE_ATTACH:
+        debug("allocate then attach");
         allocStorage(width, height);
         attachBuffer(buffer_m);
         break;
-      case 1:
+      case ATTACH_ALLOCATE:
+        debug("attach then allocate");
+        attachBuffer(buffer_m);
+        allocStorage(width, height);
+        break;
+      case ALLOCATE_ATTACH_REALLOCATE:
+        // Test for initially allocating at the wrong size.
+        // Chrome regression test for http://crbug.com/696126
+        debug("allocate at the wrong size, then attach, then reallocate");
+        allocStorage(width / 2, height / 2);
         attachBuffer(buffer_m);
         allocStorage(width, height);
         break;
