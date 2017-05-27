@@ -26,3 +26,4 @@ point-size.html
 --min-version 1.0.2 simple.html
 triangle.html
 line-loop-tri-fan.html
+--min-version 1.0.4 framebuffer-texture-clear.html
