@@ -44,7 +44,7 @@ description('Verify multisampled renderbuffers are initialized to 0 before being
 
 const ALLOCATE_ATTACH = 0;
 const ATTACH_ALLOCATE = 1;
-const ALLOCATE_ATTACH_REALLOCATE = 2;
+const ALLOCATE_ATTACH_CLEAR_REALLOCATE = 2;
 
 var gl = wtu.create3DContext("testbed", null, 2);
 
@@ -56,10 +56,10 @@ if (!gl) {
 
     runTest(gl, gl.canvas.width, gl.canvas.height, ALLOCATE_ATTACH);
     runTest(gl, gl.canvas.width, gl.canvas.height, ATTACH_ALLOCATE);
-    runTest(gl, gl.canvas.width, gl.canvas.height, ALLOCATE_ATTACH_REALLOCATE);
+    runTest(gl, gl.canvas.width, gl.canvas.height, ALLOCATE_ATTACH_CLEAR_REALLOCATE);
     runTest(gl, gl.canvas.width, gl.canvas.height, ALLOCATE_ATTACH);
     runTest(gl, gl.canvas.width, gl.canvas.height, ATTACH_ALLOCATE);
-    runTest(gl, gl.canvas.width, gl.canvas.height, ALLOCATE_ATTACH_REALLOCATE);
+    runTest(gl, gl.canvas.width, gl.canvas.height, ALLOCATE_ATTACH_CLEAR_REALLOCATE);
 
     // Testing buffer clearing won't change the clear values.
     var clearColor = gl.getParameter(gl.COLOR_CLEAR_VALUE);
@@ -106,12 +106,16 @@ function runTest(gl, width, height, order) {
         attachBuffer(buffer_m);
         allocStorage(width, height);
         break;
-      case ALLOCATE_ATTACH_REALLOCATE:
+      case ALLOCATE_ATTACH_CLEAR_REALLOCATE:
         // Test for initially allocating at the wrong size.
-        // Chrome regression test for http://crbug.com/696126
-        debug("allocate at the wrong size, then attach, then reallocate");
+        // This is caused by a Qualcomm driver bug: http://crbug.com/696126
+        debug("allocate at the wrong size, then attach and clear, then reallocate");
         allocStorage(width / 2, height / 2);
         attachBuffer(buffer_m);
+        // Clear the FBO in order to make sure framebufferRenderbuffer is
+        // committed. (In Firefox, framebufferRenderbuffer is deferred, so this
+        // is needed to trigger the bug.)
+        gl.clear(gl.COLOR_BUFFER_BIT);
         allocStorage(width, height);
         break;
     }
