@@ -155,6 +155,24 @@ void main() {
 }
 </script>
 
+<!-- Uninitialized nameless local struct in fragment shader -->
+<script id="fs_uninit_nameless_local_struct_in_frag" type="x-shader/x-fragment">
+precision mediump float;
+void main() {
+    struct { vec4 v; } uninit; // uninitialized
+    gl_FragColor = uninit.v;
+}
+</script>
+
+<!-- Uninitialized nameless global struct in fragment shader -->
+<script id="fs_uninit_nameless_global_struct_in_frag" type="x-shader/x-fragment">
+precision mediump float;
+struct { vec4 v; } uninit; // uninitialized
+void main() {
+    gl_FragColor = uninit.v;
+}
+</script>
+
 <!-- Uninitialized local bool in fragment shader -->
 <script id="fs_uninit_local_bool_in_frag" type="x-shader/x-fragment">
 precision mediump float;
@@ -234,6 +252,14 @@ var cases = [
   {
     name: "Uninitialized global struct variable in fragment shader",
     prog: ["vs_uninit_in_frag", "fs_uninit_global_struct_in_frag"],
+  },
+  {
+    name: "Uninitialized nameless local struct variable in fragment shader",
+    prog: ["vs_uninit_in_frag", "fs_uninit_nameless_local_struct_in_frag"],
+  },
+  {
+    name: "Uninitialized nameless global struct variable in fragment shader",
+    prog: ["vs_uninit_in_frag", "fs_uninit_nameless_global_struct_in_frag"],
   },
   {
     name: "Uninitialized local bool array variable in fragment shader",
