@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<draft href="WEBGL_compressed_texture_s3tc_srgb/">
+<extension href="WEBGL_compressed_texture_s3tc_srgb/">
   <name>WEBGL_compressed_texture_s3tc_srgb</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -106,5 +106,8 @@ interface WEBGL_compressed_texture_s3tc_srgb {
     <revision date="2016/07/21">
       <change>Moved to draft after discussion in working group, and study of possible dependencies.</change>
     </revision>
+    <revision date="2017/05/31">
+      <change>Moved to community approved after Mozilla voiced support.</change>
+    </revision>
   </history>
-</draft>
+</extension>
