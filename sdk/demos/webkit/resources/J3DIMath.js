@@ -724,7 +724,7 @@ J3DIMatrix4.prototype.lookat = function(eyex, eyey, eyez, centerx, centery, cent
     // Recompute Y = Z cross X
     yx = zy * xz - zz * xy;
     yy = -zx * xz + zz * xx;
-    yx = zx * xy - zy * xx;
+    yz = zx * xy - zy * xx;
 
     // cross product gives area of parallelogram, which is < 1.0 for
     // non-perpendicular unit-length vectors; so normalize x, y here
