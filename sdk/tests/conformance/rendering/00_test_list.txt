@@ -27,3 +27,4 @@ point-size.html
 triangle.html
 line-loop-tri-fan.html
 --min-version 1.0.4 framebuffer-texture-clear.html
+--min-version 1.0.4 clear-after-copyTexImage2D.html
