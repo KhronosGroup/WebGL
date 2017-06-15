@@ -1,5 +1,6 @@
 --min-version 1.0.3 gl-bindAttribLocation-aliasing.html
 --min-version 1.0.3 gl-bindAttribLocation-matrix.html
+--min-version 1.0.4 gl-bindAttribLocation-nonexistent-attribute.html
 --min-version 1.0.4 gl-bindAttribLocation-repeated.html
 --min-version 1.0.2 gl-disabled-vertex-attrib.html
 gl-enable-vertex-attrib.html
