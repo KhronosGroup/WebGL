@@ -29,6 +29,7 @@ shader-with-1025-character-define.html
 shader-with-1025-character-identifier.frag.html
 shader-with-invalid-characters.html
 shader-with-mis-matching-uniform-block.html
+--min-version 2.0.1 shaders-with-name-conflicts.html
 short-circuiting-in-loop-condition.html
 texture-offset-out-of-range.html
 --min-version 2.0.1 texture-offset-uniform-texture-coordinate.html
