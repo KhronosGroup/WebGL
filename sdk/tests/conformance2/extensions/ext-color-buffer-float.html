@@ -427,11 +427,7 @@ function runCopyTexImageTest(enabled)
         if (enabled) {
             shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
             gl.copyTexImage2D(gl.TEXTURE_2D, level, destInternalformat, 0, 0, width, height, 0);
-            if (destInternalformat == gl.RGB16F || destInternalformat == gl.RGB32F) {
-                wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "CopyTexImage2D should fail.");
-            } else {
-                wtu.glErrorShouldBe(gl, gl.NO_ERROR, "CopyTexImage2D should succeed.");
-            }
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "CopyTexImage2D should succeed.");
         } else {
             shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
             gl.copyTexImage2D(gl.TEXTURE_2D, level, destInternalformat, 0, 0, width, height, 0);

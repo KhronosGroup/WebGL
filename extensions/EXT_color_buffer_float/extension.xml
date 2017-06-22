@@ -39,10 +39,7 @@
       </feature>
 
       <feature>
-        <p>Renderbuffers with these internal formats can be created. These
-        internal formats are valid for CopyTexImage2D. Note that textures
-        with these internal formats can be created with TexImage2D in core
-        WebGL 2.0.</p>
+        <p>Renderbuffers with these internal formats can be created.</p>
       </feature>
 
       <feature>
