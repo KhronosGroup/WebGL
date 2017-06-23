@@ -1527,11 +1527,12 @@ var shouldGenerateGLError = function(gl, glErrors, evalStr, opt_msg) {
   }
   if (exception) {
     testFailed(evalStr + " threw exception " + exception);
+    return -1;
   } else {
     if (!opt_msg) {
       opt_msg = "after evaluating: " + evalStr;
     }
-    glErrorShouldBe(gl, glErrors, opt_msg);
+    return glErrorShouldBe(gl, glErrors, opt_msg);
   }
 };
 
@@ -1550,11 +1551,12 @@ var shouldThrowOrGenerateGLError = function(gl, glErrors, evalStr, opt_msg) {
   }
   if (exception) {
     testPassed(evalStr + " threw exception " + exception);
+    return 0;
   } else {
     if (!opt_msg) {
       opt_msg = "after evaluating: " + evalStr;
     }
-    glErrorShouldBe(gl, glErrors, opt_msg);
+    return glErrorShouldBe(gl, glErrors, opt_msg);
   }
 };
 
@@ -1584,7 +1586,7 @@ var failIfGLError = function(gl, evalStr) {
  * @param {string} opt_msg Optional additional message.
  */
 var glErrorShouldBe = function(gl, glErrors, opt_msg) {
-  glErrorShouldBeImpl(gl, glErrors, true, opt_msg);
+  return glErrorShouldBeImpl(gl, glErrors, true, opt_msg);
 };
 
 
@@ -1615,6 +1617,7 @@ var glErrorShouldBeImpl = function(gl, glErrors, reportSuccesses, opt_msg) {
     var msg = "getError was " + ((glErrors.length > 1) ? "one of: " : "expected value: ");
     testPassed(msg + expected + " : " + opt_msg);
   }
+  return err;
 };
 
 /**
