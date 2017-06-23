@@ -600,10 +600,12 @@ goog.scope(function() {
                 gl.bufferData (gl.ELEMENT_ARRAY_BUFFER, 32, gl.STATIC_DRAW);
 
                 gl.pauseTransformFeedback();
-                // WebGL has different limitation on divisor of zero from C++ code.
-                // In the WebGL 2.0 API, instanced drawing needs at leas one enabled attribute with divisor zero.
                 gl.drawElementsInstanced (gl.POINTS, 1, gl.UNSIGNED_BYTE, vertices, 1);
-                this.expectError (gl.INVALID_OPERATION);
+                // We removed the WebGL1 extension limitation after 2.0.0 snapshot.
+                // See https://github.com/KhronosGroup/WebGL/issues/2419.
+                // So both NO_ERROR and INVALID_OPERATION are allowed in the 2.0.0 snapshot,
+                // but future versions of the test requires NO_ERROR.
+                // this.expectError (gl.INVALID_OPERATION);
 
                 gl.endTransformFeedback ();
                 gl.deleteBuffer(buf);
@@ -698,10 +700,12 @@ goog.scope(function() {
                 gl.bufferData (gl.ELEMENT_ARRAY_BUFFER, 32, gl.STATIC_DRAW);
 
                 gl.pauseTransformFeedback();
-                // WebGL has different limitation on divisor of zero from C++ code.
-                // In the WebGL 2.0 API, instanced drawing needs at leas one enabled attribute with divisor zero.
                 gl.drawElementsInstanced (gl.TRIANGLES, 1, gl.UNSIGNED_BYTE, vertices, 1);
-                this.expectError (gl.INVALID_OPERATION);
+                // We removed the WebGL1 extension limitation after 2.0.0 snapshot.
+                // See https://github.com/KhronosGroup/WebGL/issues/2419.
+                // So both NO_ERROR and INVALID_OPERATION are allowed in the 2.0.0 snapshot,
+                // but future versions of the test requires NO_ERROR.
+                // this.expectError (gl.INVALID_OPERATION);
 
                 gl.endTransformFeedback ();
                 gl.deleteBuffer(buf);
