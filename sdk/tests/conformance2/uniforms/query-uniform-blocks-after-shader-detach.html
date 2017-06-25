@@ -36,29 +36,24 @@
 <script id="vshader" type="x-shader/x-vertex">#version 300 es
 
 in vec4 position;
-in vec4 color;
 
 uniform localInputs
 {
     mat4 projectionModelViewMatrix;
 };
 
-out lowp vec4 v_frontColor;
-
 void main ()
 {
-    v_frontColor = color;
     gl_Position = projectionModelViewMatrix * position;
 }
 </script>
 <script id="fshader" type="x-shader/x-fragment">#version 300 es
 
-in lowp vec4 v_frontColor;
 out lowp vec4 resultColor;
 
 void main()
 {
-    resultColor = v_frontColor;
+    resultColor = vec4(0,1,0,1);
 }
 </script>
 </head>
