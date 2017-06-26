@@ -7,6 +7,7 @@ draw-elements-out-of-bounds.html
 --min-version 1.0.3 framebuffer-switch.html
 --min-version 1.0.3 framebuffer-texture-switch.html
 gl-clear.html
+--min-version 1.0.4 framebuffer-with-never-bound-renderbuffers.html
 --min-version 1.0.3 gl-drawarrays.html
 gl-drawelements.html
 gl-scissor-test.html
