@@ -3163,9 +3163,9 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <p>
         If <code>getFramebufferAttachmentParameter</code> is called with <em>pname</em>
-        <code>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</code> and <em>attachment</em> has no
-	image attached, in WebGL 1.0 / ES 2.0, it generates an <code>INVALID_OPERATION</code>;
-	in WebGL 2.0 / ES 3.0, it generates no error and zero is returned.
+        <code>FRAMEBUFFER_ATTACHMENT_OBJECT_NAME</code> and <em>attachment</em> has no
+        image attached, in WebGL 1.0 / ES 2.0, it generates an <code>INVALID_OPERATION</code>;
+        in WebGL 2.0 / ES 3.0, it generates no error and <code>null</code> is returned.
     </p>
 
     <h3>New Features Supported in the WebGL 2.0 API</h3>
