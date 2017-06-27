@@ -51,9 +51,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         var imageData = new ImageData(new Uint8ClampedArray(
                                       [255, 0, 0, 255,
-                                      255, 0, 0, 0,
+                                      255, 0, 0, 128,
                                       0, 255, 0, 255,
-                                      0, 255, 0, 0]),
+                                      0, 255, 0, 128]),
                                       2, 2);
 
         createImageBitmap(imageData, {imageOrientation: "none", premultiplyAlpha: "none"})
@@ -61,7 +61,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             testPassed("createImageBitmap with options may be rejected if it is not supported. Retrying without options.");
             return createImageBitmap(imageData);
         }).then( bitmap => {
-            return runImageBitmapTest(bitmap, 0, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, false);
+            return runImageBitmapTest(bitmap, 0.5, internalFormat, pixelFormat, pixelType, gl, tiu, wtu, false);
         }, () => {
             testFailed("createImageBitmap(imageData) should succeed.");
         }).then(() => {
