@@ -682,7 +682,8 @@ function testBindRenderbufferBeforeFramebufferAttach() {
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, attachmentType, gl.RENDERBUFFER, rbo);
         wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "bindRenderbuffer must be called before attachment to " + strAttachmentType);
         shouldBe("gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl." + strAttachmentType + ", gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE)", "gl.NONE");
-        shouldBeNull("gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl." + strAttachmentType + ", gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME)");
+        gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, attachmentType, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_NAME);
+        wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Only OBJECT_TYPE can be queried when no image is attached");
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, attachmentType, gl.RENDERBUFFER, null);
         gl.deleteRenderbuffer(rbo);
     });
