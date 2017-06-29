@@ -12,6 +12,7 @@ gl_position_unset.vert.html
 glsl-function-nodes.html
 --min-version 1.0.2 glsl-vertex-branch.html
 glsl-long-variable-names.html
+--min-version 1.0.4 local-variable-shadowing-outer-function.html
 non-ascii-comments.vert.html
 non-ascii.vert.html
 --min-version 1.0.2 re-compile-re-link.html
