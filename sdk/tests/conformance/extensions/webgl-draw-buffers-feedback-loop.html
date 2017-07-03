@@ -74,6 +74,7 @@ var height = 8;
 var tex0;
 var tex1;
 var fbo;
+var ext;
 var program;
 var positionLoc;
 var texCoordLoc;
@@ -83,7 +84,7 @@ if (!gl) {
 } else {
     testPassed("WebGL context exists");
 
-    var ext = gl.getExtension("WEBGL_draw_buffers");
+    ext = gl.getExtension("WEBGL_draw_buffers");
     if (!ext) {
         testPassed("No WEBGL_draw_buffers support -- this is legal");
 
@@ -96,8 +97,8 @@ if (!gl) {
         // The sampling texture is bound to COLOR_ATTACHMENT1 during resource allocation
         allocate_resource();
 
-        rendering_sampling_feedback_loop([gl.NONE, gl.COLOR_ATTACHMENT1], gl.INVALID_OPERATION);
-        rendering_sampling_feedback_loop([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1], gl.INVALID_OPERATION);
+        rendering_sampling_feedback_loop([gl.NONE, ext.COLOR_ATTACHMENT1_WEBGL], gl.INVALID_OPERATION);
+        rendering_sampling_feedback_loop([gl.COLOR_ATTACHMENT0, ext.COLOR_ATTACHMENT1_WEBGL], gl.INVALID_OPERATION);
         rendering_sampling_feedback_loop([gl.COLOR_ATTACHMENT0, gl.NONE], gl.NO_ERROR);
     }
 }
@@ -129,7 +130,7 @@ function allocate_resource() {
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex0, 0);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.TEXTURE_2D, tex1, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, ext.COLOR_ATTACHMENT1_WEBGL, gl.TEXTURE_2D, tex1, 0);
 }
 
 function rendering_sampling_feedback_loop(draw_buffers, error) {
