@@ -416,6 +416,13 @@ function runTests(imgs) {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from zero sized textures");
 
   debug("");
+  debug("check not-ready upload cases");
+  var video = document.createElement('video');
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+  wtu.clearAndDrawUnitQuad(gl);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from drawing with uploads from not-ready elements");
+
+  debug("");
   successfullyParsed = true;
   shouldBeTrue("successfullyParsed");
   debug('<br /><span class="pass">TEST COMPLETE</span>');
