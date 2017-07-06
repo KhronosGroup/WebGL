@@ -73,13 +73,15 @@ if (!gl) {
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
 
-    if (++frameCount === 100) {
-      var elapsed = Date.now() - startTime;
-      if (elapsed < 3333) {  // 30FPS
+    ++frameCount;
+
+    if (Date.now() - startTime > 5000) {
+      if (frameCount > 150) {  // 30FPS
         testPassed("Texture switching did not significantly hurt performance");
       } else {
         testFailed("Texture switching significantly hurt performance");
       }
+      console.log(frameCount);
       finishTest();
     } else {
       requestAnimationFrame(draw);
