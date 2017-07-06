@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL Texture Switch Conformance Tests</title>
+<title>WebGL 2 Texture Switch Conformance Tests</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
@@ -44,7 +44,7 @@ var wtu = WebGLTestUtils;
 var canvas = document.createElement('canvas');
 canvas.width = 32;
 canvas.height = 32;
-var gl = wtu.create3DContext(canvas);
+var gl = wtu.create3DContext(canvas, undefined, 2);
 if (!gl) {
   testFailed("context does not exist");
   finishTest();
