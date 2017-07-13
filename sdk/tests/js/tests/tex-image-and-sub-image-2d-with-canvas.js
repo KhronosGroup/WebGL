@@ -67,7 +67,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         setAlphaChannelTo1(semiTransparentGreenColor);
     }
 
-    function shouldRepeatTestForTextureFormat(internalFormat, pixelFormat, pixelType)
+    function repeatCountForTextureFormat(internalFormat, pixelFormat, pixelType)
     {
         // There were bugs in early WebGL 1.0 implementations when repeatedly uploading canvas
         // elements into textures. In response, this test was changed into a regression test by
@@ -78,8 +78,12 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         // Doing repeated runs with just a couple of WebGL 1.0's supported texture formats acts as a
         // sufficient regression test for the old bugs. For this reason the test has been changed to
         // only repeat for those texture formats.
-        return ((internalFormat == 'RGBA' && pixelFormat == 'RGBA' && pixelType == 'UNSIGNED_BYTE') ||
-                (internalFormat == 'RGB' && pixelFormat == 'RGB' && pixelType == 'UNSIGNED_BYTE'));
+        if ((internalFormat == 'RGBA' && pixelFormat == 'RGBA' && pixelType == 'UNSIGNED_BYTE') ||
+            (internalFormat == 'RGB' && pixelFormat == 'RGB' && pixelType == 'UNSIGNED_BYTE')) {
+            return 4;
+        }
+
+        return 1;
     }
 
     function init()
@@ -95,7 +99,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             return;
         }
 
-        repeatCount = (shouldRepeatTestForTextureFormat(internalFormat, pixelFormat, pixelType) ? 4 : 1);
+        repeatCount = repeatCountForTextureFormat(internalFormat, pixelFormat, pixelType);
 
         switch (gl[pixelFormat]) {
           case gl.RED:
@@ -149,10 +153,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             semiTransparentGreenColor = wtu.sRGBToLinear(semiTransparentGreenColor);
             break;
           case gl.RGBA8UI:
-            // For int and uint textures, TexImageUtils outputs 1.0 for the alpha channel all the
-            // time because of differences in behavior when sampling integer textures with and
-            // without alpha channels. Since changing this behavior may have large impact across the
-            // test suite, leave it as is for now.
+            // For int and uint textures, TexImageUtils outputs the maximum value (in this case,
+            // 255) for the alpha channel all the time because of differences in behavior when
+            // sampling integer textures with and without alpha channels. Since changing this
+            // behavior may have large impact across the test suite, leave it as is for now.
             setAllAlphaChannelsTo1();
             break;
         }
@@ -337,11 +341,10 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                     } else if (pixelType == 'UNSIGNED_SHORT_4_4_4_4' || internalFormat == 'RGBA4') {
                         tolerance = 9;
                     } else if (pixelType == 'UNSIGNED_SHORT_5_5_5_1' || internalFormat == 'RGB5_A1') {
-                        // It's ambiguous whether the one bit of alpha should be treated as:
-                        //   - zero if alpha is zero, otherwise one
-                        // or:
-                        //   - one if alpha is one, otherwise zero
-                        // Different browsers implement different rules, so ignore alpha for these tests.
+                        // Semi-transparent values are allowed to convert to either 1 or 0 for this
+                        // single-bit alpha format per OpenGL ES 3.0.5 section 2.1.6.2, "Conversion
+                        // from Floating-Point to Normalized Fixed-Point". Ignore alpha for these
+                        // tests.
                         tolerance = 6;
                         localRed = localRed.slice(0, 3);
                         localGreen = localGreen.slice(0, 3);
