@@ -28,6 +28,22 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var successfullyParsed = false;
     var redColor = [255, 0, 0];
     var greenColor = [0, 255, 0];
+    var repeatCount;
+
+    function shouldRepeatTestForTextureFormat(internalFormat, pixelFormat, pixelType)
+    {
+        // There were bugs in early WebGL 1.0 implementations when repeatedly uploading canvas
+        // elements into textures. In response, this test was changed into a regression test by
+        // repeating all of the cases multiple times. Unfortunately, this means that adding a new
+        // case above significantly increases the run time of the test suite. The problem is made
+        // even worse by the addition of many more texture formats in WebGL 2.0.
+        //
+        // Doing repeated runs with just a couple of WebGL 1.0's supported texture formats acts as a
+        // sufficient regression test for the old bugs. For this reason the test has been changed to
+        // only repeat for those texture formats.
+        return ((internalFormat == 'RGBA' && pixelFormat == 'RGBA' && pixelType == 'UNSIGNED_BYTE') ||
+                (internalFormat == 'RGB' && pixelFormat == 'RGB' && pixelType == 'UNSIGNED_BYTE'));
+    }
 
     function init()
     {
@@ -42,9 +58,20 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             return;
         }
 
+        repeatCount = (shouldRepeatTestForTextureFormat(internalFormat, pixelFormat, pixelType) ? 4 : 1);
+
         switch (gl[pixelFormat]) {
           case gl.RED:
           case gl.RED_INTEGER:
+            greenColor = [0, 0, 0];
+            break;
+          case gl.LUMINANCE:
+          case gl.LUMINANCE_ALPHA:
+            redColor = [255, 255, 255];
+            greenColor = [0, 0, 0];
+            break;
+          case gl.ALPHA:
+            redColor = [0, 0, 0];
             greenColor = [0, 0, 0];
             break;
           default:
@@ -209,7 +236,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
             }
 
             return new Promise(function(resolve, reject) {
-                var count = 4;
+                var count = repeatCount;
                 var caseNdx = 0;
                 var texture = undefined;
                 function runNextTest() {

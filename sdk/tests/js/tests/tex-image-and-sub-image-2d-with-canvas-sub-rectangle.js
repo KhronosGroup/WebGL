@@ -73,6 +73,21 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
           cyanColor = [0, 255, 0];
           break;
 
+        case gl.LUMINANCE:
+        case gl.LUMINANCE_ALPHA:
+          redColor = [255, 255, 255];
+          greenColor = [0, 0, 0];
+          blueColor = [0, 0, 0];
+          cyanColor = [0, 0, 0];
+          break;
+
+        case gl.ALPHA:
+          redColor = [0, 0, 0];
+          greenColor = [0, 0, 0];
+          blueColor = [0, 0, 0];
+          cyanColor = [0, 0, 0];
+          break;
+
         default:
           break;
         }
