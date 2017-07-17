@@ -34,6 +34,7 @@ webgl-debug-shaders.html
 --min-version 1.0.3 webgl-compressed-texture-size-limit.html
 --min-version 1.0.2 --max-version 1.9.9 webgl-depth-texture.html
 --min-version 1.0.3 --max-version 1.9.9 webgl-draw-buffers.html
+--min-version 1.0.4 --max-version 1.9.9 webgl-draw-buffers-broadcast-return.html
 --min-version 1.0.3 --max-version 1.9.9 webgl-draw-buffers-feedback-loop.html
 --min-version 1.0.4 --max-version 1.9.9 webgl-draw-buffers-framebuffer-unsupported.html
 --min-version 1.0.4 --max-version 1.9.9 webgl-draw-buffers-max-draw-buffers.html
