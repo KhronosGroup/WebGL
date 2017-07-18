@@ -21,15 +21,24 @@
 ** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 */
 
-// This file contains utilities shared between tests for the WEBGL_draw_buffers extension.
+// This file contains utilities shared between tests for the WEBGL_draw_buffers extension and multiple draw buffers functionality in WebGL 2.0.
 
 'use strict';
 
 var WebGLDrawBuffersUtils = function(gl, ext) {
 
   var getMaxUsableColorAttachments = function() {
-    var maxDrawingBuffers = gl.getParameter(ext.MAX_DRAW_BUFFERS_WEBGL);
-    var maxColorAttachments = gl.getParameter(ext.MAX_COLOR_ATTACHMENTS_WEBGL);
+    var maxDrawingBuffers;
+    var maxColorAttachments;
+    if (ext) {
+      // EXT_draw_buffers
+      maxDrawingBuffers = gl.getParameter(ext.MAX_DRAW_BUFFERS_WEBGL);
+      maxColorAttachments = gl.getParameter(ext.MAX_COLOR_ATTACHMENTS_WEBGL);
+    } else {
+      // WebGL 2.0
+      maxDrawingBuffers = gl.getParameter(gl.MAX_DRAW_BUFFERS);
+      maxColorAttachments = gl.getParameter(gl.MAX_COLOR_ATTACHMENTS);
+    }
     var maxUniformVectors = gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS);
     return Math.min(maxDrawingBuffers, maxColorAttachments, maxUniformVectors);
   };
