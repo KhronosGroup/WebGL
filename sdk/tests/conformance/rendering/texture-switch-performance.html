@@ -76,7 +76,7 @@ if (!gl) {
     ++frameCount;
 
     if (Date.now() - startTime > 5000) {
-      if (frameCount > 150) {  // 30FPS
+      if (frameCount > 50) {  // 10FPS
         testPassed("Texture switching did not significantly hurt performance");
       } else {
         testFailed("Texture switching significantly hurt performance");
