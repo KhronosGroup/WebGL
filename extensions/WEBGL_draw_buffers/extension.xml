@@ -74,7 +74,7 @@
         If the WEBGL_draw_buffers extension is enabled, but the fragment shader does not contain the <code>#extension GL_EXT_draw_buffers</code> directive to enable it, then writes to <code>gl_FragColor</code> are only written to <code>COLOR_ATTACHMENT0_WEBGL</code>, and not broadcast to all color attachments. In this scenario, other color attachments are guaranteed to remain untouched.
       </addendum>
       <addendum>
-        If a fragment shader writes to neither <code>gl_FragColor</code> nor <code>gl_FragData</code>, the values of
+        If a fragment shader statically uses neither <code>gl_FragColor</code> nor <code>gl_FragData</code>, the values of
         the fragment colors following shader execution are untouched.
 
         If a fragment shader contains the <code>#extension GL_EXT_draw_buffers</code> directive, all
@@ -180,6 +180,9 @@ interface WEBGL_draw_buffers {
     </revision>
     <revision date="2016/07/23">
       <change>Revised behavior of the same image is attached to more than one color attachment point.</change>
+    </revision>
+    <revision date="2017/07/19">
+      <change>Fragment outputs are not guaranteed to be untouched in case they are statically used, even if they are not written.</change>
     </revision>
   </history>
 </ratified>
