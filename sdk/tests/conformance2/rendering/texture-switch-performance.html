@@ -66,7 +66,7 @@ if (!gl) {
   var frameCount = 0;
 
   function draw() {
-    for (var i = 0; i < 200; ++i) {
+    for (var i = 0; i < 400; ++i) {
       gl.uniform1i(loc, 0);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       gl.uniform1i(loc, 1);
@@ -76,10 +76,11 @@ if (!gl) {
     ++frameCount;
 
     if (Date.now() - startTime > 5000) {
-      if (frameCount > 150) {  // 30FPS
-        testPassed("Texture switching did not significantly hurt performance");
+      var perfString = " - achieved " + frameCount + " frames in " + ((Date.now() - startTime) / 1000.0) + " seconds";
+      if (frameCount > 75) {  // 15 FPS
+        testPassed("Texture switching did not significantly hurt performance" + perfString);
       } else {
-        testFailed("Texture switching significantly hurt performance");
+        testFailed("Texture switching significantly hurt performance" + perfString);
       }
       console.log(frameCount);
       finishTest();
