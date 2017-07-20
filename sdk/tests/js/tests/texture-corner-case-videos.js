@@ -187,6 +187,20 @@ function generateTest(desc,
             debug("Checking upper left corner");
             wtu.checkCanvasRect(gl, 4, gl.canvas.height - 8, 2, 2, topColor,
                                 "shouldBe " + topColor, tolerance);
+
+            // Expose bug http://crbug.com/733172.
+            if (sourceSubRectangle) {
+                // Skip sub-rectangle tests for cube map textures for the moment.
+                if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
+                    continue;
+                }
+                gl.texSubImage2D(targets[tt], 0, 0, 0,
+                                 sourceSubRectangle[2], sourceSubRectangle[3],
+                                 gl[pixelFormat], gl[pixelType], videoElement);
+            } else {
+                gl.texSubImage2D(targets[tt], 0, 0, 0, gl[pixelFormat], gl[pixelType], videoElement);
+            }
+            wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
         }
     }
 
