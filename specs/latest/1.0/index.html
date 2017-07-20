@@ -4090,9 +4090,23 @@ extensions.
 <h3>Fragment shader output</h3>
 
 <p>
-    If a fragment shader statically uses neither <code>gl_FragColor</code> nor <code>gl_FragData</code>,
-    the values of the fragment colors following shader execution are untouched.
+    If a fragment statically uses neither <code>gl_FragColor</code> nor <code>gl_FragData</code>, it
+    behaves as if (0, 0, 0, 0) would be assigned to <code>gl_FragColor</code> in the beginning of
+    the shader.
 </p>
+
+<p>
+    Statically used fragment output variables default to zero if they are not written during a
+    shader execution.
+</p>
+
+<div class="note rationale">
+    The values written to the framebuffer can be undefined in the GLES specification in case
+    gl_FragColor and gl_FragData are not written. Initializing them should not have a significant
+    performance impact on algorithms that don't need to write color values to the framebuffer, as
+    they may simply use a framebuffer without a color buffer or a color mask to disable writing
+    fragment colors.
+</div>
 
 <h3>Initial values for GLSL local and global variables</h3>
 
