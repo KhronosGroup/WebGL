@@ -99,7 +99,7 @@ if (!gl) {
     ++testFrameCount;
 
     if (Date.now() - testStartTime > RUNTIME) {
-      var perfString = " - achieved " + testFrameCount + " frames in " + ((Date.now() - testStartTime) / 1000.0) + 
+      var perfString = " - achieved " + testFrameCount + " frames in " + ((Date.now() - testStartTime) / 1000.0) +
         " seconds (" + (testFrameCount / baseFrameCount).toFixed(2) + " times baseline performance)";
       if (testFrameCount > baseFrameCount * THRESHOLD) {
         testPassed("Texture switching did not significantly hurt performance" + perfString);
