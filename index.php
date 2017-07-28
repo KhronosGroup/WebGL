@@ -9,7 +9,7 @@ include_once("../../assets/static_pages/khr_page_top.php");
     IDL files corresponding to the specifications; and other related
     documentation.
 
-<h6> WebGL Core API Specification, IDL, and Documentation </h6>
+<h2>WebGL Core API Specification, IDL, and Documentation</h2>
 
 <ul>
 <li> <a href="specs/latest">WebGL current draft specification</a>.
@@ -18,14 +18,12 @@ include_once("../../assets/static_pages/khr_page_top.php");
      Web IDL description of the WebGL API. </li>
 </ul>
 
-<h6> <a name="otherextspecs">
-     WebGL Extensions</a></h6>
+<h2 id="otherextspecs">WebGL Extensions</h2>
 <ul>
 <li> <a href="extensions/">WebGL extension registry</a> </li>
 </ul>
 
-<h6> <a name="ip-disclosures">
-     IP Disclosures for the WebGL API</a></h6>
+<h2 id="ip-disclosures">IP Disclosures for the WebGL API</h2>
 <ul>
 <li> <a href="../../files/ip-disclosures/webgl/">WebGL IP Disclosures</a> </li>
 </ul>
