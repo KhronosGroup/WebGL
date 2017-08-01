@@ -3,6 +3,7 @@ blitframebuffer-filter-outofbounds.html
 blitframebuffer-filter-srgb.html
 blitframebuffer-multisampled-readbuffer.html
 --min-version 2.0.1 blitframebuffer-outside-readbuffer.html
+--min-version 2.0.1 blitframebuffer-r11f-g11f-b10f.html
 --min-version 2.0.1 blitframebuffer-resolve-to-back-buffer.html
 blitframebuffer-scissor-enabled.html
 blitframebuffer-size-overflow.html

@@ -1130,10 +1130,14 @@ var checkCanvasRects = function(gl, rects) {
  * @param {!function()} differentFn Function to call if a pixel
  *        is different than color
  * @param {!function()} logFn Function to call for logging.
- * @param {Uint8Array} opt_readBackBuf typically passed to reuse existing
- *        buffer while reading back pixels.
+ * @param {TypedArray} opt_readBackBuf optional buffer to read back into.
+ *        Typically passed to either reuse buffer, or support readbacks from
+ *        floating-point framebuffers.
+ * @param {GLenum} opt_readBackType optional read back type, defaulting to
+ *        gl.UNSIGNED_BYTE. Can be used to support readback from floating-point
+ *        framebuffers.
  */
-var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRange, sameFn, differentFn, logFn, opt_readBackBuf) {
+var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRange, sameFn, differentFn, logFn, opt_readBackBuf, opt_readBackType) {
   if (isWebGLContext(gl) && !gl.getParameter(gl.FRAMEBUFFER_BINDING)) {
     // We're reading the backbuffer so clip.
     var xr = clipToRange(x, width, 0, gl.canvas.width);
@@ -1155,7 +1159,8 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
   var buf;
   if (isWebGLContext(gl)) {
     buf = opt_readBackBuf ? opt_readBackBuf : new Uint8Array(width * height * 4);
-    gl.readPixels(x, y, width, height, gl.RGBA, gl.UNSIGNED_BYTE, buf);
+    var readBackType = opt_readBackType ? opt_readBackType : gl.UNSIGNED_BYTE;
+    gl.readPixels(x, y, width, height, gl.RGBA, readBackType, buf);
   } else {
     buf = gl.getImageData(x, y, width, height).data;
   }
@@ -1191,8 +1196,14 @@ var checkCanvasRectColor = function(gl, x, y, width, height, color, opt_errorRan
  *        ("should be red").
  * @param {number} opt_errorRange Optional. Acceptable error in
  *        color checking. 0 by default.
+ * @param {TypedArray} opt_readBackBuf optional buffer to read back into.
+ *        Typically passed to either reuse buffer, or support readbacks from
+ *        floating-point framebuffers.
+ * @param {GLenum} opt_readBackType optional read back type, defaulting to
+ *        gl.UNSIGNED_BYTE. Can be used to support readback from floating-point
+ *        framebuffers.
  */
-var checkCanvasRect = function(gl, x, y, width, height, color, opt_msg, opt_errorRange) {
+var checkCanvasRect = function(gl, x, y, width, height, color, opt_msg, opt_errorRange, opt_readBackBuf, opt_readBackType) {
   checkCanvasRectColor(
       gl, x, y, width, height, color, opt_errorRange,
       function() {
@@ -1207,7 +1218,9 @@ var checkCanvasRect = function(gl, x, y, width, height, color, opt_msg, opt_erro
           msg = "should be " + color.toString();
         testFailed(msg + "\n" + differentMsg);
       },
-      debug);
+      debug,
+      opt_readBackBuf,
+      opt_readBackType);
 };
 
 /**
