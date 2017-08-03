@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<proposal href="proposals/OES_EGL_image_external/">
-  <name>OES_EGL_image_external</name>
+<proposal href="proposals/WEBGL_video_texture/">
+  <name>WEBGL_video_texture</name>
 
   <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
   working group</a> (public_webgl 'at' khronos.org) </contact>
@@ -20,21 +20,21 @@
   <overview>
     <mirrors href="https://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt"
              name="OES_EGL_image_external">
-      <addendum>Defines a new texture target <code>TEXTURE_EXTERNAL_OES</code>.</addendum>
-      <addendum>Provides a mechanism for binding <code>HTMLVideoElement</code>'s EGLImage to external texture targets.</addendum>
-      <addendum>Provides time of frame, texture width and height of <code>HTMLVideoElement</code>'s EGLImage.</addendum>
+      <addendum>Defines a new texture target <code>TEXTURE_VIDEO_IMAGE</code>.</addendum>
+      <addendum>Provides a mechanism for binding <code>HTMLVideoElement</code> stream to video texture targets.</addendum>
+      <addendum>Provides time of frame, texture width and height of <code>HTMLVideoElement</code>'s texture binding.</addendum>
     </mirrors>
 
     <features>
-      <feature>Add support for <code>OES_EGL_image_external</code> texture
+      <feature>Add support for <code>WEBGL_video_texture</code>
       binding of HTMLVideoElement.</feature>
 
-      <glsl extname="OES_EGL_image_external">
+      <glsl extname="WEBGL_video_texture">
         <stage type="fragment"/>
-        <type name="samplerExternalOES"/>
+        <type name="samplerVideoWEBGL"/>
 
         <function name="texture2D" type="vec4">
-          <param name="sampler" type="samplerExternalOES"/>
+          <param name="sampler" type="samplerVideoWEBGL"/>
 
           <param name="coord" type="vec2"/>
         </function>
@@ -52,13 +52,11 @@ interface WebGLVideoFrameInfo {
 };
 
 [NoInterfaceObject]
-interface OES_EGL_image_external {
-    const GLenum TEXTURE_EXTERNAL_OES             = 0x8D65;
-    const GLenum SAMPLER_EXTERNAL_OES             = 0x8D66;
-    const GLenum TEXTURE_BINDING_EXTERNAL_OES     = 0x8D67;
-    const GLenum REQUIRED_TEXTURE_IMAGE_UNITS_OES = 0x8D68;
+interface WEBGL_video_texture {
+    const GLenum TEXTURE_VIDEO_IMAGE             = 0x851D;
+    const GLenum SAMPLER_VIDEO_IMAGE             = 0x8B61;
 
-    [RaisesException] WebGLVideoFrameInfo EGLImageTargetTexture2DOES(
+    [RaisesException] WebGLVideoFrameInfo VideoElementTargetVideoTexture(
         GLenum target, HTMLVideoElement video);
 };
   </idl>
@@ -67,11 +65,11 @@ interface OES_EGL_image_external {
 
     <p> This a fragment shader that samples a video texture.</p>
     <pre>
-    #extension GL_OES_EGL_image_external : require
+    #extension GL_WEBGL_video_texture : require
     precision mediump float;
     varying vec2 v_texCoord;
 
-    uniform samplerExternalOES uSampler;
+    uniform samplerVideoWEBGL uSampler;
 
     void main(void) {
       gl_FragColor = texture2D(uSampler, v_texCoord);
@@ -84,11 +82,11 @@ interface OES_EGL_image_external {
     var videoTexture = gl.createTexture();
 
     function update() {
-        var ext = gl.getExtension('OES_EGL_image_external');
+        var ext = gl.getExtension('WEBGL_video_texture');
         if(ext !=== null){
-            gl.bindTexture(ext.TEXTURE_EXTERNAL_OES, videoTexture);
-            ext.EGLImageTargetTexture2DOES(ext.TEXTURE_EXTERNAL_OES, videoElement);
-            gl.bindTexture(ext.TEXTURE_EXTERNAL_OES, null);
+            gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE, videoTexture);
+            ext.VideoElementTargetVideoTexture(ext.TEXTURE_VIDEO_IMAGE, videoElement);
+            gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE, null);
         }
     }
 
@@ -100,7 +98,7 @@ interface OES_EGL_image_external {
         gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 
         gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(ext.TEXTURE_EXTERNAL_OES, videoTexture);
+        gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE, videoTexture);
         gl.uniform1i(gl.getUniformLocation(shaderProgram, "uSampler"), 0);
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
@@ -131,6 +129,11 @@ interface OES_EGL_image_external {
       <change>Change EGLImageTargetTexture2DOES to be called at every WebGL rendering cycle.</change>
       <change>Add VideoFrameInfo interface.</change>
       <change>Change EGLImageTargetTexture2DOES to return VideoFrameInfo as a currently mapped frame.</change>
+    </revision>
+    <revision date="2017/08/03">
+      <change>Change Extension name to WEBGL_video_texture for abstracion of OES_EGL_image_external extension.</change>
+      <change>Define new sampler and texture type, TEXTURE_VIDEO_IMAGE and SAMPLER_VIDEO_IMAGE.</change>
+      <change>Change EGLImageTargetTexture2DOES to VideoElementTargetVideoTexture.</change>
     </revision>
   </history>
 </proposal>
