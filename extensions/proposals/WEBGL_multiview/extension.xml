@@ -62,34 +62,7 @@
         Likewise the shading language preprocessor <code>#define GL_OVR_multiview</code>, will be defined to 1 if the extension is supported.
       </addendum>
       <addendum>
-        Two levels of acceleration are exposed through alternative extension directives: <code>GL_OVR_multiview</code> and <code>GL_OVR_multiview2</code>. Using <code>GL_OVR_multiview</code> instead of <code>GL_OVR_multiview2</code> restricts what can be done in shaders but may enable the WebGL implementation to accelerate multiview rendering using fixed-function hardware specifically designed for this purpose.
-      </addendum>
-      <addendum>
-        <p>
-        Attempting to compile a vertex shader that enables the <code>GL_OVR_multiview</code> extension where other outputs than <code>gl_Position.x</code> depend on <code>gl_ViewID_OVR</code> must result in a compile error. This must be checked according to the following rules:
-        </p>
-        <ul>
-            <li><code>gl_ViewID_OVR</code> may be used on the right hand side of assignment to <code>gl_Position.x</code>. The right hand side of assignment to <code>gl_Position.x</code> that statically references <code>gl_ViewID_OVR</code> is not allowed to contain any sub-expressions that require an l-value, such as assignment, increment or decrement. Such right-hand side of assignment is also not allowed to call 1) any user-defined functions or 2) built-in functions that may have side effects visible in the shader. Such an assignment to <code>gl_Position.x</code> must not be a part of a larger expression.</li>
-            <li><code>gl_ViewID_OVR</code> may also be used in if statement conditions, where the condition is an equality comparison between <code>gl_ViewID_OVR</code> and a literal integer. The if or else branch of such an if statement must contain one assignment to <code>gl_Position.x</code> and nothing else. The right hand side of this assignment is not allowed to contain any sub-expressions that require an l-value, such as assignment, increment or decrement. Such right-hand side of assignment is also not allowed to call 1) any user-defined functions or 2) built-in functions that may have side effects visible in the shader.</li>
-            <li>Any other static use of <code>gl_ViewID_OVR</code> is disallowed.</li>
-            <li>If <code>gl_ViewID_OVR</code> is used in a vertex shader, it may not statically read <code>gl_Position</code>.</li>
-        </ul>
-        <p>
-        These restrictions exist to make the extension fully compatible with all possible underlying hardware acceleration extensions like <code>GL_NV_stereo_view_rendering</code>.
-        </p>
-      </addendum>
-      <addendum>
-        Attempting to compile a fragment shader that enables the <code>GL_OVR_multiview</code> extension must result in a compile error in the following cases:
-        <ul>
-          <li>The fragment shader statically uses <code>gl_ViewID_OVR</code>.</li>
-          <li>The fragment shader statically uses <code>gl_FragCoord</code> or any other built-in input variables whose value depends on the fragment.</li>
-        </ul>
-      </addendum>
-      <addendum>
-        When linking vertex and fragment shaders, <code>GL_OVR_multiview</code> or <code>GL_OVR_multiview2</code> extension directives must match. Otherwise, linking results in a link error.
-      </addendum>
-      <addendum>
-        Attempting to enable both <code>GL_OVR_multiview</code> and <code>GL_OVR_multiview2</code> in the same shader results in a compile error.
+        This extension relaxes the restriction in OVR_multiview that only gl_Position can depend on ViewID in the vertex shader. With this change, view-dependent outputs like reflection vectors and similar are allowed.
       </addendum>
       <addendum>
         When the number of views specified in the active program is one, <code>gl_ViewID_OVR</code> will always evaluate to zero.
@@ -101,7 +74,7 @@
         If a layout qualifier specifying <code>num_views</code> is declared more than once in the same shader, all those declarations must set <code>num_views</code> to the same value; otherwise a compile error results.
       </addendum>
       <addendum>
-        When a shader written in OpenGL ES shading language version 1.00 enables or requires either <code>GL_OVR_multiview</code> or <code>GL_OVR_multiview2</code> with an extension directive, <code>layout</code> is treated as a keyword rather than an identifier, and using a layout qualifier to specify <code>num_views</code> is allowed. Other uses of layout qualifiers are not allowed in OpenGL ES shading language 1.00.
+        When a shader written in OpenGL ES shading language version 1.00 enables or requires <code>GL_OVR_multiview</code> with an extension directive, <code>layout</code> is treated as a keyword rather than an identifier, and using a layout qualifier to specify <code>num_views</code> is allowed. Other uses of layout qualifiers are not allowed in OpenGL ES shading language 1.00.
       </addendum>
       <addendum>
         In OpenGL ES shading language version 1.00 <code>gl_ViewID_OVR</code> has the type <code>int</code> as opposed to <code>uint</code>.
@@ -118,16 +91,13 @@
         Adds support for rendering into multiple views simultaneously.
       </feature>
       <feature>
-        When a shader enables, requires, or warns either <code>GL_OVR_multiview</code> or <code>GL_OVR_multiview2</code> with an extension directive:
+        When a shader enables, requires, or warns <code>GL_OVR_multiview</code> with an extension directive:
         <ul>
           <li><code>gl_ViewID_OVR</code> is a built-in input of the type uint.</li>
         </ul>
       </feature>
       <feature>
         The GLSL macro <code>GL_OVR_multiview</code> is defined as 1.
-      </feature>
-      <feature>
-        The GLSL macro <code>GL_OVR_multiview2</code> is defined as 1.
       </feature>
     </features>
   </overview>
@@ -247,8 +217,11 @@ interface WEBGL_multiview {
     uniform mat4 u_viewMatrix0;
     uniform mat4 u_viewMatrix1;
     void main() {
-        gl_Position.x = (gl_ViewID_OVR == 0u ? u_viewMatrix0 * inPos : u_viewMatrix1 * inPos).x;
-        gl_Position.yzw = (u_viewMatrix0 * inPos).yzw;
+      if (gl_ViewID_OVR == 0u) {
+        gl_Position = u_viewMatrix0 * inPos;
+      } else {
+        gl_Position = u_viewMatrix1 * inPos;
+      }
     }
     </pre>
   </samplecode>
@@ -283,6 +256,10 @@ interface WEBGL_multiview {
 
     <revision date="2017/07/21">
       <change>Specified some errors to be generated at draw time and made the extension compatible with emscripten.</change>
+    </revision>
+
+    <revision date="2017/08/08">
+      <change>Rolled back shader restrictions.</change>
     </revision>
   </history>
 </proposal>
