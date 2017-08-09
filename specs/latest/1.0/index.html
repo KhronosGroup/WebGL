@@ -2996,6 +2996,12 @@ WebGLRenderingContext implements WebGLRenderingContextBase;
             If the array passed to any of the vector forms (those ending in <code>v</code>) has an
             invalid length, an <code>INVALID_VALUE</code> error will be generated. The length is
             invalid if it is too short for or is not an integer multiple of the assigned type.
+
+            <div class="note">Performance problems have been observed on some implementations when
+            using <code>uniform1i</code> to update sampler uniforms. To change the texture
+            referenced by a sampler uniform, binding a new texture to the texture unit referenced
+            by the uniform should be preferred over using <code>uniform1i</code> to update the
+            uniform itself.</div>
         <dt><p class="idl-code">void vertexAttrib[1234]f(GLuint index, ...)</p>
             <p class="idl-code">void vertexAttrib[1234]fv(GLuint index, ...)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.7">OpenGL ES 2.0 &sect;2.7</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glVertexAttrib.xml">man page</a>)</span></p>
