@@ -301,7 +301,8 @@ goog.scope(function() {
         _skip("multisample.fbo_max_samples.num_samples_line");
         _skip("multisample.fbo_max_samples.depth");
 
-        _setReason("Fails on Android/Qualcomm (Google Pixel).");
+        _setReason("Removed from native dEQP mustpass. Possibly non-spec-compliant.");
+        // These tests may be overly strict compared to the spec - they fail on Android/Qualcomm (Google Pixel).
         // crbug.com/695679
         _skip("derivate.dfdy.fbo_float.float_highp");
         _skip("derivate.dfdy.fbo_float.vec2_highp");
