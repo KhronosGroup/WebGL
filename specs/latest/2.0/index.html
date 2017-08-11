@@ -3900,6 +3900,14 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
            <code>WEBGL_compressed_texture_etc</code>.
     </div>
 
+    <h3>The value of UNIFORM_BUFFER_OFFSET_ALIGNMENT must be divisible by 4</h3>
+
+    <p>The value of <code>UNIFORM_BUFFER_OFFSET_ALIGNMENT</code>, as given in basic machine units, must be divisible by 4.</p>
+
+    <div class="note rationale">
+        If the value of UNIFORM_BUFFER_OFFSET_ALIGNMENT was not divisible by 4, it would make it impractical to upload ArrayBuffers to uniform buffers which are bound with BindBufferRange.
+    </div>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
