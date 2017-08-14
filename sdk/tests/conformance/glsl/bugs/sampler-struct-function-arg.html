@@ -35,7 +35,7 @@
 </head>
 
 <body>
-<canvas id="output" style="border: none;" width="256" height="256"></canvas>
+<canvas id="output" style="border: none;" width="64" height="64"></canvas>
 <div id="description"></div>
 <div id="console"></div>
 
@@ -77,7 +77,6 @@
 "use strict";
 
 description();
-debug("");
 debug("If the test passes correctly the viewport will be green.");
 
 var wtu = WebGLTestUtils;
@@ -99,10 +98,6 @@ var createGreenTexture = function() {
 };
 
 var test = function(fragShaderId, texUniformName) {
-    // Clear complete viewport to red
-    gl.clearColor(1.0, 0.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
     var program = wtu.setupProgram(gl, [wtu.simpleVertexShader, fragShaderId], ["a_position"], [0], true);
 
     if (!program) {
@@ -115,7 +110,7 @@ var test = function(fragShaderId, texUniformName) {
         gl.uniform1i(uniformMap[texUniformName].location, 0);
 
         // Draw
-        wtu.drawUnitQuad(gl);
+        wtu.clearAndDrawUnitQuad(gl);
 
         // Verify output
         wtu.checkCanvasRect(gl, 0, 128, 256, 128, [0, 255,0, 255], "should be green",  1);
