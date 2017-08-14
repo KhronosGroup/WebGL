@@ -29,6 +29,7 @@
 --min-version 1.0.4 pow-with-constant-exponent-should-not-crash.html
 --min-version 1.0.4 qualcomm-crash.html
 --min-version 1.0.4 qualcomm-loop-with-continue-crash.html
+--min-version 1.0.4 sampler-array-struct-function-arg.html
 --min-version 1.0.3 sampler-array-using-loop-index.html
 --min-version 1.0.4 sampler-struct-function-arg.html
 --min-version 1.0.4 sequence-operator-evaluation-order.html
