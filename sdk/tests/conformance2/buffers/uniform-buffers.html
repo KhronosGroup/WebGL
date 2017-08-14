@@ -114,6 +114,58 @@ void main()
                   (UBOA[0].Blue + UBOA[1].Blue) / 2.0, 1.0);
 }
 </script>
+<script id='fshadernestedstruct' type='x-shader/x-fragment'>#version 300 es
+precision mediump float;
+layout(location=0) out vec4 oColor;
+
+struct color_t {
+    float red;
+    float green;
+    float blue;
+};
+
+struct wrapper_t {
+    color_t color;
+};
+
+uniform UBOData {
+    wrapper_t UBOStruct;
+};
+
+// This is intended to reproduce a specific ANGLE bug that triggers when the wrapper struct is passed to a function.
+void processColor(wrapper_t wrapper) {
+    oColor = vec4(wrapper.color.red, wrapper.color.green, wrapper.color.blue, 1.0);
+}
+
+void main()
+{
+    processColor(UBOStruct);
+}
+</script>
+<script id='fshaderarrayofstructs' type='x-shader/x-fragment'>#version 300 es
+precision mediump float;
+layout(location=0) out vec4 oColor;
+
+struct color_t {
+    float red;
+    float green;
+    float blue;
+};
+
+uniform UBOData {
+    color_t UBOColors[2];
+};
+
+// This is intended to reproduce a specific ANGLE bug that triggers when a struct from an array of structs in an interface block is passed to a function.
+vec3 processColor(color_t color) {
+    return vec3(color.red, color.green, color.blue);
+}
+
+void main()
+{
+    oColor = vec4(processColor(UBOColors[0]) + processColor(UBOColors[1]), 1.0);
+}
+</script>
 </head>
 <body>
 <div id="description"></div>
@@ -136,12 +188,16 @@ if (!gl) {
 } else {
     testPassed("WebGL context exists");
 
+    wtu.setupUnitQuad(gl);
+
     runBindingTest();
     runBadShaderTest();
     runUniformBufferOffsetAlignmentTest();
     runDrawTest();
     runNamedDrawTest();
     runNamedArrayDrawTest();
+    runNestedStructsDrawTest();
+    runArrayOfStructsDrawTest();
 }
 
 function runBindingTest() {
@@ -203,12 +259,16 @@ function setRGBValuesToFloat32Array(floatView, red, green, blue) {
     floatView[2] = blue;
 }
 
-function checkFloat32UniformOffsetsInStd140Layout(uniformOffsets) {
+function checkFloat32UniformOffsetsInStd140Layout(uniformOffsets, expectedInitialOffset) {
+    if (expectedInitialOffset === undefined)
+    {
+        expectedInitialOffset = 0;
+    }
     // Verify that the uniform offsets are set according to the std140 layout, which WebGL enforces.
     // This function checks this for 32-bit float values, which are expected to be tightly packed.
     for (var i = 0; i < uniformOffsets.length; ++i)
     {
-        if (uniformOffsets[i] != i * Float32Array.BYTES_PER_ELEMENT)
+        if (uniformOffsets[i] != expectedInitialOffset + i * Float32Array.BYTES_PER_ELEMENT)
         {
             testFailed("Uniform offsets are not according to std140 layout");
             return false;
@@ -220,8 +280,6 @@ function checkFloat32UniformOffsetsInStd140Layout(uniformOffsets) {
 function runDrawTest() {
     debug("");
     debug("Testing drawing with uniform buffers");
-
-    wtu.setupUnitQuad(gl);
 
     var program = wtu.setupProgram(gl, ['vshader', 'fshader']);
     if (!program) {
@@ -288,8 +346,6 @@ function runNamedDrawTest() {
     debug("");
     debug("Testing drawing with named uniform buffers");
 
-    wtu.setupUnitQuad(gl);
-
     var program = wtu.setupProgram(gl, ['vshader', 'fshadernamed']);
     if (!program) {
         testFailed("Could not compile shader with named uniform blocks without error");
@@ -341,8 +397,6 @@ function runNamedDrawTest() {
 function runNamedArrayDrawTest() {
     debug("");
     debug("Testing drawing with named uniform buffer arrays");
-
-    wtu.setupUnitQuad(gl);
 
     var program = wtu.setupProgram(gl, ['vshader', 'fshadernamedarray']);
     if (!program) {
@@ -416,6 +470,119 @@ function runNamedArrayDrawTest() {
 
     wtu.clearAndDrawUnitQuad(gl);
     wtu.checkCanvas(gl, [0, 127, 255, 255], "draw call should set canvas to (0, 0.5, 1)", 2);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+}
+
+function runNestedStructsDrawTest() {
+    debug("");
+    debug("Testing drawing with nested struct inside uniform block. The wrapper struct is passed to a function.");
+
+    var program = wtu.setupProgram(gl, ['vshader', 'fshadernestedstruct'], undefined, undefined, true);
+    if (!program) {
+        testFailed("Could not compile shader with nested structs without error");
+        return;
+    }
+
+    var blockIndex = gl.getUniformBlockIndex(program, "UBOData");
+    var blockSize = gl.getActiveUniformBlockParameter(program, blockIndex, gl.UNIFORM_BLOCK_DATA_SIZE);
+    var uniformIndices = gl.getUniformIndices(program, ["UBOStruct.color.red", "UBOStruct.color.green", "UBOStruct.color.blue"]);
+    var uniformOffsets = gl.getActiveUniforms(program, uniformIndices, gl.UNIFORM_OFFSET);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to query uniform block information without error");
+
+    if (uniformOffsets.length < 3) {
+        testFailed("Could not query uniform offsets");
+        return;
+    }
+
+    if (!checkFloat32UniformOffsetsInStd140Layout(uniformOffsets))
+    {
+        return;
+    }
+
+    var uboArray = new ArrayBuffer(blockSize);
+    var uboFloatView = new Float32Array(uboArray);
+    setRGBValuesToFloat32Array(uboFloatView, 0.0, 1.0, 0.0);
+
+    b1 = gl.createBuffer();
+    gl.bindBuffer(gl.UNIFORM_BUFFER, b1);
+    gl.bufferData(gl.UNIFORM_BUFFER, uboArray, gl.DYNAMIC_DRAW);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to set UBO data with no errors");
+
+    var binding = 3;
+    gl.uniformBlockBinding(program, blockIndex, binding);
+    gl.bindBufferBase(gl.UNIFORM_BUFFER, binding, b1);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call bindBufferBase without errors");
+
+    wtu.clearAndDrawUnitQuad(gl);
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "draw call should set canvas to green", 2);
+
+    debug("Changing the data in the uniform buffer should automatically update the uniforms exposed to the draw call");
+    setRGBValuesToFloat32Array(uboFloatView, 0.0, 0.0, 1.0);
+    gl.bufferData(gl.UNIFORM_BUFFER, uboArray, gl.DYNAMIC_DRAW);
+
+    wtu.clearAndDrawUnitQuad(gl);
+    wtu.checkCanvas(gl, [0, 0, 255, 255], "draw call should set canvas to blue", 2);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+}
+
+function runArrayOfStructsDrawTest() {
+    debug("");
+    debug("Testing drawing with array of structs inside uniform block. A struct in the block is passed to a function.");
+
+    var program = wtu.setupProgram(gl, ['vshader', 'fshaderarrayofstructs'], undefined, undefined, true);
+    if (!program) {
+        testFailed("Could not compile shader with an array of structs in an interface block without error");
+        return;
+    }
+
+    var blockIndex = gl.getUniformBlockIndex(program, "UBOData");
+    var blockSize = gl.getActiveUniformBlockParameter(program, blockIndex, gl.UNIFORM_BLOCK_DATA_SIZE);
+    var uniformIndices = gl.getUniformIndices(program, ["UBOColors[0].red", "UBOColors[0].green", "UBOColors[0].blue"]);
+    var uniformOffsets = gl.getActiveUniforms(program, uniformIndices, gl.UNIFORM_OFFSET);
+    var uniformIndices_2 = gl.getUniformIndices(program, ["UBOColors[1].red", "UBOColors[1].green", "UBOColors[1].blue"]);
+    var uniformOffsets_2 = gl.getActiveUniforms(program, uniformIndices_2, gl.UNIFORM_OFFSET);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to query uniform block information without error");
+
+    if (uniformOffsets.length < 3) {
+        testFailed("Could not query uniform offsets");
+        return;
+    }
+
+    if (!checkFloat32UniformOffsetsInStd140Layout(uniformOffsets))
+    {
+        return;
+    }
+    if (!checkFloat32UniformOffsetsInStd140Layout(uniformOffsets_2, uniformOffsets_2[0]))
+    {
+        return;
+    }
+
+    var uboArray = new ArrayBuffer(blockSize);
+    var uboFloatView = new Float32Array(uboArray);
+    setRGBValuesToFloat32Array(uboFloatView, 0.0, 0.5, 0.0);
+    var uboFloatView2 = new Float32Array(uboArray, uniformOffsets_2[0]);
+    setRGBValuesToFloat32Array(uboFloatView2, 0.0, 0.5, 0.0);
+
+    b1 = gl.createBuffer();
+    gl.bindBuffer(gl.UNIFORM_BUFFER, b1);
+    gl.bufferData(gl.UNIFORM_BUFFER, uboArray, gl.DYNAMIC_DRAW);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to set UBO data with no errors");
+
+    var binding = 3;
+    gl.uniformBlockBinding(program, blockIndex, binding);
+    gl.bindBufferBase(gl.UNIFORM_BUFFER, binding, b1);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be able to call bindBufferBase without errors");
+
+    wtu.clearAndDrawUnitQuad(gl);
+    wtu.checkCanvas(gl, [0, 255, 0, 255], "draw call should set canvas to green", 2);
+
+    debug("Changing the data in the uniform buffer should automatically update the uniforms exposed to the draw call");
+    setRGBValuesToFloat32Array(uboFloatView, 1.0, 0.0, 0.0);
+    setRGBValuesToFloat32Array(uboFloatView2, 0.0, 0.0, 1.0);
+    gl.bufferData(gl.UNIFORM_BUFFER, uboArray, gl.DYNAMIC_DRAW);
+
+    wtu.clearAndDrawUnitQuad(gl);
+    wtu.checkCanvas(gl, [255, 0, 255, 255], "draw call should set canvas to purple", 2);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
 }
 
