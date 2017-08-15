@@ -133,6 +133,7 @@ uniform UBOData {
 };
 
 // This is intended to reproduce a specific ANGLE bug that triggers when the wrapper struct is passed to a function.
+// https://bugs.chromium.org/p/angleproject/issues/detail?id=2084
 void processColor(wrapper_t wrapper) {
     oColor = vec4(wrapper.color.red, wrapper.color.green, wrapper.color.blue, 1.0);
 }
@@ -157,6 +158,7 @@ uniform UBOData {
 };
 
 // This is intended to reproduce a specific ANGLE bug that triggers when a struct from an array of structs in an interface block is passed to a function.
+// https://bugs.chromium.org/p/angleproject/issues/detail?id=2084
 vec3 processColor(color_t color) {
     return vec3(color.red, color.green, color.blue);
 }
