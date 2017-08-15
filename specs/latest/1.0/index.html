@@ -4109,6 +4109,33 @@ extensions.
     <code>0.0</code>, <code>vec4(0.0)</code>, <code>0</code>, <code>false</code>, etc.
 </p>
 
+<h3>Vertex attribute conversions from normalized signed integers to floating point</h3>
+
+<p>
+    The OpenGL ES 2.0 spec <a href="#refsGLES20">[GLES20]</a> section 2.1.2 "Data Conversions",
+    subsection "Conversion from Integer to Floating-Point" defines conversion from a normalized
+    signed integer <em>c</em>, where the bit width of the type is <em>b</em>, to floating-point
+    value <em>f</em> as:
+
+    <dl>
+    <dd><em>f</em> = (2*<em>c</em> + 1) / (2^<em>b</em> - 1)</dd>
+    </dl>
+
+    During conversions of signed normalized vertex attributes to floating point, WebGL 1.0
+    implementations may optionally use this conversion rule, which preserves zeros:
+
+    <dl>
+    <dd><em>f</em> = max(<em>c</em> / (2^(<em>b</em> - 1) - 1), -1.0)
+    </dl>
+
+    <div class="note rationale">
+    Some APIs on which WebGL 1.0 is built on use the second rule, and since this conversion is done
+    in fixed-function hardware, it is not possible to emulate one behavior or the other. This
+    difference in behavior does not affect most applications, so a query to determine which behavior
+    is being used has not been added to the WebGL rendering context.
+    </div>
+</p>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
