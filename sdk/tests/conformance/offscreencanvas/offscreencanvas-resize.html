@@ -80,12 +80,13 @@ function testResizeOnTransferredOffscreenCanvas() {
   // Set timeout acts as a sync barrier to allow commit to propagate
   setTimeout(function() {
     // Verify that commit() asynchronously updates the size of its placeholder canvas.
-    assertWidthAndHeight(placeholder, "placeholder canvas", 10, 20);
+    assertWidthAndHeight(placeholder, "placeholder canvas", 30, 40);
 
-    // Verify that width/height attributes are still settable even though they have no effect.
-    placeholder.width = 50;
-    placeholder.height = 60;
-    assertWidthAndHeight(placeholder, "placeholder canvas after size reset", 50, 60);
+    // Verify that width/height attributes are not settable
+    shouldThrow("placeholder.width = 50");
+    shouldThrow("placeholder.height = 60");
+
+    assertWidthAndHeight(placeholder, "placeholder canvas after size reset", 30, 40);
 
     createImageBitmap(placeholder).then(image => {
       // Verify that an image grabbed from the placeholder has the correct dimensions
