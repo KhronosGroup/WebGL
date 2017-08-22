@@ -82,7 +82,7 @@ function testResizeOnTransferredOffscreenCanvas() {
     // Verify that commit() asynchronously updates the size of its placeholder canvas.
     assertWidthAndHeight(placeholder, "placeholder canvas", 30, 40);
 
-    // Verify that width/height attributes are not settable 
+    // Verify that width/height attributes are not settable
     shouldThrow("placeholder.width = 50");
     shouldThrow("placeholder.height = 60");
 
