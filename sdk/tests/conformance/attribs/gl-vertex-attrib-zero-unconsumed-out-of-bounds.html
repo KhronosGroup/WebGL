@@ -61,36 +61,18 @@ function setupProgram() {
   return wtu.setupProgram(gl, ['vshader', 'fshader'], [], []);
 }
 
-function setupVerts(numVerts) {
-  var verts = [
-     1.0,  1.0, 0.0,
-    -1.0,  1.0, 0.0,
-    -1.0, -1.0, 0.0,
-     1.0,  1.0, 0.0,
-    -1.0, -1.0, 0.0,
-     1.0, -1.0, 0.0
-  ];
-  var positions = new Float32Array(numVerts * 3);
+function setupIndices(numVerts) {
   var indices = new Uint16Array(numVerts);
   for (var ii = 0; ii < numVerts; ++ii) {
-    var ndx = ii % 6;
-    var dst = ii * 3;
-    var src = ndx * 3;
-    for (var jj = 0; jj < 3; ++jj) {
-      positions[dst + jj] = verts[src + jj];
-    }
     indices[ii] = ii;
   }
-  var vertexObject = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexObject);
-  gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
   var indexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 }
 
 var prog = setupProgram();
-setupVerts(60000);
+setupIndices(60000);
 
 // Tests for http://crbug.com/756293 (driver crash on macOS)
 var unallocatedBuffer = gl.createBuffer();
