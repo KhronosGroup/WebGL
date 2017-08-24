@@ -5,7 +5,6 @@ array-complex-indexing.html
 array-element-increment.html
 array-equality.html
 array-in-complex-expression.html
-array-length-side-effects.html
 attrib-location-length-limits.html
 bool-type-cast-bug-uint-ivec-uvec.html
 compare-structs-containing-arrays.html
