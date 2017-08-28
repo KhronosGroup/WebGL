@@ -118,11 +118,26 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
       setCanvasToRedGreen(ctx);
     }
 
-    function runOneIteration(canvas, useTexSubImage2D, flipY, program, bindingTarget, opt_texture)
+    function setCanvasTo32x32(ctx, bindingTarget) {
+      ctx.canvas.width = ctx.canvas.height = 32;
+      setCanvasToRedGreen(ctx);
+    }
+
+    function runOneIteration(canvas, useTexSubImage2D, flipY, visible, program, bindingTarget, opt_texture)
     {
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') + ' with flipY=' +
-              flipY + ' bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP') +
+              flipY + ' visible=' + visible +
+              ' bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP') +
               ' canvas size: ' + canvas.width + 'x' + canvas.height + ' with red-green');
+
+        if (visible && !canvas.parentNode) {
+          var descriptionNode = document.getElementById("description");
+          document.body.insertBefore(canvas, descriptionNode);
+        }
+        if (!visible && canvas.parentNode) {
+          document.body.removeChild(canvas);
+        }
+
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         if (!opt_texture) {
             var texture = gl.createTexture();
@@ -213,18 +228,24 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
     function runTest()
     {
-        var ctx = wtu.create3DContext();
-        var canvas = ctx.canvas;
+        // Note: We use preserveDrawingBuffer:true to prevent canvas
+        // visibility from interfering with the tests.
+        var ctx = wtu.create3DContext(null, { preserveDrawingBuffer:true });
+        canvas = ctx.canvas;
 
         var cases = [
-            { sub: false, flipY: true, init: setCanvasToMin },
-            { sub: false, flipY: false },
-            { sub: true,  flipY: true },
-            { sub: true,  flipY: false },
-            { sub: false, flipY: true, init: setCanvasTo257x257 },
-            { sub: false, flipY: false },
-            { sub: true,  flipY: true },
-            { sub: true,  flipY: false },
+            { sub: false, flipY: true,  visible: false, init: setCanvasToMin },
+            { sub: false, flipY: false, visible: false },
+            { sub: true,  flipY: true,  visible: false },
+            { sub: true,  flipY: false, visible: false },
+            { sub: false, flipY: true,  visible: false, init: setCanvasTo257x257 },
+            { sub: false, flipY: false, visible: false },
+            { sub: true,  flipY: true,  visible: false },
+            { sub: true,  flipY: false, visible: false },
+            { sub: false, flipY: true,  visible: true, init: setCanvasTo32x32 },
+            { sub: false, flipY: false, visible: true },
+            { sub: true,  flipY: true,  visible: true },
+            { sub: true,  flipY: false, visible: true },
         ];
 
         function runTexImageTest(bindingTarget) {
@@ -244,7 +265,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                     if (c.init) {
                       c.init(ctx, bindingTarget);
                     }
-                    texture = runOneIteration(canvas, c.sub, c.flipY, program, bindingTarget, texture);
+                    texture = runOneIteration(canvas, c.sub, c.flipY, c.visible, program, bindingTarget, texture);
                     // for the first 2 iterations always make a new texture.
                     if (count > 2) {
                       texture = undefined;
