@@ -216,7 +216,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     function runTest()
     {
         var ctx = wtu.create3DContext();
-        canvas = ctx.canvas;
+        var canvas = ctx.canvas;
         // Note: We use preserveDrawingBuffer:true to prevent canvas
         // visibility from interfering with the tests.
         var visibleCtx = wtu.create3DContext(null, { preserveDrawingBuffer:true });
