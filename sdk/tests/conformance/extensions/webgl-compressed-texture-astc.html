@@ -1891,8 +1891,10 @@ function testASTCTexture(test, useTexStorage) {
     gl.generateMipmap(gl.TEXTURE_2D);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "trying to generate mipmaps from compressed texture");
 
-    gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 1, data);
-    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "non 0 border");
+    if (!useTexStorage) {
+        gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 1, data);
+        wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "non 0 border");
+    }
 
     debug("");
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, format, data);
