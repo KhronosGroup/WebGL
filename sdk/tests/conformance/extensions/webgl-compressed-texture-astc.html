@@ -1850,7 +1850,7 @@ function testASTCTexture(test, useTexStorage) {
     canvas.height = height;
     gl.viewport(0, 0, width, height);
     debug("");
-    debug("testing " + formatToString(format) + " " + width + "x" + height +
+    debug("testing " + formatToString(format) + " " + width + "x" + height + " (" + test.mode + ")" +
           (useTexStorage ? " via texStorage2D" : " via compressedTexImage2D"));
     debug("");
 
