@@ -1831,11 +1831,15 @@ function testHDRTextures() {
 function testASTCTextures(tests) {
     debug("<hr/>");
     for (var i = 0; i < tests.length; ++i) {
-        testASTCTexture(tests[i]);
+        testASTCTexture(tests[i], false);
+        if (contextVersion >= 2) {
+          debug("<br/>");
+          testASTCTexture(tests[i], true);
+        }
     }
 }
 
-function testASTCTexture(test) {
+function testASTCTexture(test, useTexStorage) {
     var data = test.data;
     var width = test.width;
     var height = test.height;
@@ -1846,7 +1850,8 @@ function testASTCTexture(test) {
     canvas.height = height;
     gl.viewport(0, 0, width, height);
     debug("");
-    debug("Testing " + formatToString(format) + " " + width + "x" + height + " (" + test.mode + ")");
+    debug("testing " + formatToString(format) + " " + width + "x" + height + " (" + test.mode + ")" +
+          (useTexStorage ? " via texStorage2D" : " via compressedTexImage2D"));
     debug("");
 
     // Texture upload
@@ -1856,8 +1861,19 @@ function testASTCTexture(test) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, data);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture");
+    if (useTexStorage) {
+        gl.texStorage2D(gl.TEXTURE_2D, 1, format, width, height);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "allocating compressed texture via texStorage2D");
+        wtu.clearAndDrawUnitQuad(gl);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawing unit quad");
+        var clearColor = [0, 0, 0, 0];
+        wtu.checkCanvas(gl, clearColor, "texture should be initialized to black");
+        gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, format, data);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture data via compressedTexSubImage2D");
+    } else {
+        gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 0, data);
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "uploading compressed texture");
+    }
 
     wtu.clearAndDrawUnitQuad(gl);
 
@@ -1875,8 +1891,10 @@ function testASTCTexture(test) {
     gl.generateMipmap(gl.TEXTURE_2D);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "trying to generate mipmaps from compressed texture");
 
-    gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 1, data);
-    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "non 0 border");
+    if (!useTexStorage) {
+        gl.compressedTexImage2D(gl.TEXTURE_2D, 0, format, width, height, 1, data);
+        wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "non 0 border");
+    }
 
     debug("");
     gl.compressedTexSubImage2D(gl.TEXTURE_2D, 0, 0, 0, width, height, format, data);
