@@ -1,6 +1,6 @@
 <!--
 /*
-** Copyright (c) 2015 The Khronos Group Inc.
+** Copyright (c) 2017 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
@@ -25,8 +25,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>WebGL 2 Normalized Vertex Attrbiutes Conformance Test</title>
+    <title>WebGL 2 Normalized Vertex Attributes Conformance Test</title>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 </head>
 <body>
     <canvas width=1 height=1></canvas>
@@ -70,7 +71,7 @@
             gl.bufferData(gl.ARRAY_BUFFER, new Int8Array([
                 // Here we set the third component (the one that's actually tested)
                 // to (MIN_INT + 1). If non-zero-preserving rules are used, it'll be
-                // converted to a float that's slightly large than -1. If zero-preserving
+                // converted to a float that's slightly greater than -1. If zero-preserving
                 // rules are used, as the GLES 3 spec requires, result of conversion
                 // should be exactly -1.
                 -0x80,  0x7f, -0x7f,
@@ -90,7 +91,7 @@
         }());
     </script>
     <script>
-        description('Verify that conversion of normalized singed int attributes to floats uses zero-preserving rule.');
+        description('Verify that conversion of normalized signed int attributes to floats uses zero-preserving rule.');
         window.successfullyParsed = true;
     </script>
     <script src="../../js/js-test-post.js"></script>
