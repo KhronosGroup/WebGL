@@ -285,10 +285,9 @@ goog.scope(function() {
 
 		bufferedLogToConsole("Assuming " + mantissaBits + " mantissa bits, " + numLostBits + " bits lost in operation, and " + roundingUlpError + " ULP rounding error.")
 
-		/** @type {number} */ var refBits = tcuFloat.newFloat64(reference).bits();
-		/** @type {number} */ var resBits = tcuFloat.newFloat64(result).bits();
-		/** @type {number} */ var accurateRefBits = deMath.shiftRight(refBits, maskBits);
-		/** @type {number} */ var accurateResBits = deMath.shiftRight(resBits, maskBits);
+		// These numbers should never be larger than 52 bits. An assertion in getBitRange verifies this.
+		/** @type {number} */ var accurateRefBits = tcuFloat.newFloat64(reference).getBitRange(maskBits, 64);
+		/** @type {number} */ var accurateResBits = tcuFloat.newFloat64(result).getBitRange(maskBits, 64);
 		/** @type {number} */ var ulpDiff = Math.abs(accurateRefBits - accurateResBits);
 
 		if (ulpDiff > roundingUlpError) {
@@ -337,6 +336,13 @@ goog.scope(function() {
 		for (var testNdx = 0; testNdx < this.m_numTestsPerIter; testNdx++) {
 			/** @type {number} */ var in0 = this.m_rnd.getFloat(this.m_rangeA[0], this.m_rangeA[1]);
 			/** @type {number} */ var in1 = this.m_rnd.getFloat(this.m_rangeB[0], this.m_rangeB[1]);
+
+			// These random numbers are used in the reference computation. But
+			// highp is only 32 bits, so these float64s must be rounded to
+			// float32 first for correctness. This is needed for highp_mul_* on
+			// one Linux/NVIDIA machine.
+			in0 = tcuFloat.newFloat32(in0).getValue();
+			in1 = tcuFloat.newFloat32(in1).getValue();
 
 			/** @type {number} */ var refD = this.m_evalFunc(in0, in1);
 
