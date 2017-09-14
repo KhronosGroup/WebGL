@@ -37,7 +37,9 @@
         Renderbuffers can be created in these formats. These and textures
         created with <code>type = HALF_FLOAT_OES</code>, which will have one
         of these internal formats, can be attached to framebuffer object color
-        attachments for rendering.</p>
+        attachments for rendering. <code>RGBA16F</code> textures are guaranteed
+	to be color-renderable. <code>RGB16F</code> textures are color-renderable
+        if <code>getFramebufferStatus()</code> returns <code>FRAMEBUFFER_COMPLETE</code>.
       </feature>
 
       <feature>
@@ -139,6 +141,10 @@ interface EXT_color_buffer_half_float {
 
     <revision date="2016/05/05">
       <change>Subsumed in WebGL 2.0 by EXT_color_buffer_float.</change>
+    </revision>
+
+    <revision date="2017/09/14">
+      <change>Require RGBA16F to be color-renderable and RGB16F to be optionally color-renderable.</change>
     </revision>
   </history>
 </extension>

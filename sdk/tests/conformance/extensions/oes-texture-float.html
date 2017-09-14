@@ -114,24 +114,20 @@ if (!gl) {
 
         (function() {
             debug("");
+            var renderable = isRenderable(gl);
             var renderableExtName = "WEBGL_color_buffer_float";
-            if (isRenderable(gl)) {
-                var supported = gl.getSupportedExtensions();
-                assertMsg(supported.includes(renderableExtName),
-                          "Implicit renderability requires exposing support for " + renderableExtName);
-            } else {
-                var renderableExt = gl.getExtension(renderableExtName);
-                if (!renderableExt) {
-                    testPassed(renderableExtName + " not supported. This is fine.");
-                    return;
-                }
-                testPassed(renderableExtName + " supported. Proceeding to its tests.");
+            var supported = gl.getSupportedExtensions().includes(renderableExtName);
+            if (renderable && !supported) {
+                testFailed("RGBA/FLOAT is color renderable but " + renderableExtName + " not exposed");
+            } else if (supported && !renderable) {
+                testFailed(renderableExtName + " is exposed but RGBA/FLOAT is not color renderable");
             }
-
-            runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0);
-            runRenderTargetAndReadbackTest(testProgram, gl.RGB, 3, [10000, 10000, 10000, 1], 0);
-            runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 1);
-            runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0.5);
+            if (supported) {
+                runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0, true);
+                runRenderTargetAndReadbackTest(testProgram, gl.RGB, 3, [10000, 10000, 10000, 1], 0, false);
+                runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 1, true);
+                runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0.5, true);
+            }
         })();
 
         runUniqueObjectTest();
@@ -224,7 +220,7 @@ function arrayToString(arr, size) {
     return out + "]";
 }
 
-function runRenderTargetAndReadbackTest(testProgram, format, numberOfChannels, subtractor, texSubImageCover)
+function runRenderTargetAndReadbackTest(testProgram, format, numberOfChannels, subtractor, texSubImageCover, requireRenderable)
 {
     var formatString = wtu.glEnumToString(gl, format);
     debug("");
@@ -244,7 +240,10 @@ function runRenderTargetAndReadbackTest(testProgram, format, numberOfChannels, s
     // It is legal for a WebGL implementation exposing the OES_texture_float extension to
     // support floating-point textures but not as attachments to framebuffer objects.
     if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
-        debug("floating-point " + formatString + " render target not supported -- this is legal");
+        if (requireRenderable)
+            testFailed("floating-point " + formatString + " render target not supported");
+        else
+            debug("floating-point " + formatString + " render target not supported -- this is legal");
         return;
     }
 
