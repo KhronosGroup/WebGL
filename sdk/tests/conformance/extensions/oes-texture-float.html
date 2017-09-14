@@ -82,41 +82,76 @@ var canvas = document.getElementById("canvas");
 var gl = wtu.create3DContext(canvas);
 
 if (!gl) {
-  testFailed("WebGL context does not exist");
+    testFailed("WebGL context does not exist");
 } else {
-  testPassed("WebGL context exists");
+    testPassed("WebGL context exists");
 
-  var texturedShaders = [
-      wtu.simpleTextureVertexShader,
-      "testFragmentShader"
-  ];
-  var testProgram =
-      wtu.setupProgram(gl,
-                       texturedShaders,
-                       ['vPosition', 'texCoord0'],
-                       [0, 1]);
-  var quadParameters = wtu.setupUnitQuad(gl, 0, 1);
+    var texturedShaders = [
+        wtu.simpleTextureVertexShader,
+        "testFragmentShader"
+    ];
+    var testProgram =
+        wtu.setupProgram(gl,
+                         texturedShaders,
+                         ['vPosition', 'texCoord0'],
+                         [0, 1]);
+    var quadParameters = wtu.setupUnitQuad(gl, 0, 1);
 
-  // First verify that allocation of floating-point textures fails if
-  // the extension has not been enabled yet.
-  runTextureCreationTest(testProgram, false);
+    // First verify that allocation of floating-point textures fails if
+    // the extension has not been enabled yet.
+    runTextureCreationTest(testProgram, false);
 
-  if (!gl.getExtension("OES_texture_float")) {
-      testPassed("No OES_texture_float support -- this is legal");
-  } else {
-      testPassed("Successfully enabled OES_texture_float extension");
-      // If alpha value is missing from a texture it gets filled to 1 when sampling according to GLES2.0 table 3.12
-      runTextureCreationTest(testProgram, true, gl.RGBA, 4, [10000, 10000, 10000, 10000]);
-      runTextureCreationTest(testProgram, true, gl.RGB, 3, [10000, 10000, 10000, 1]);
-      runTextureCreationTest(testProgram, true, gl.LUMINANCE, 1, [10000, 10000, 10000, 1]);
-      runTextureCreationTest(testProgram, true, gl.ALPHA, 1, [0, 0, 0, 10000]);
-      runTextureCreationTest(testProgram, true, gl.LUMINANCE_ALPHA, 2, [10000, 10000, 10000, 10000]);
-      runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0);
-      runRenderTargetAndReadbackTest(testProgram, gl.RGB, 3, [10000, 10000, 10000, 1], 0);
-      runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 1);
-      runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0.5);
-      runUniqueObjectTest();
-  }
+    if (!gl.getExtension("OES_texture_float")) {
+        testPassed("No OES_texture_float support -- this is legal");
+    } else {
+        testPassed("Successfully enabled OES_texture_float extension");
+        // If alpha value is missing from a texture it gets filled to 1 when sampling according to GLES2.0 table 3.12
+        runTextureCreationTest(testProgram, true, gl.RGBA, 4, [10000, 10000, 10000, 10000]);
+        runTextureCreationTest(testProgram, true, gl.RGB, 3, [10000, 10000, 10000, 1]);
+        runTextureCreationTest(testProgram, true, gl.LUMINANCE, 1, [10000, 10000, 10000, 1]);
+        runTextureCreationTest(testProgram, true, gl.ALPHA, 1, [0, 0, 0, 10000]);
+        runTextureCreationTest(testProgram, true, gl.LUMINANCE_ALPHA, 2, [10000, 10000, 10000, 10000]);
+
+        (function() {
+            debug("");
+            var renderableExtName = "WEBGL_color_buffer_float";
+            if (isRenderable(gl)) {
+                var supported = gl.getSupportedExtensions();
+                assertMsg(supported.includes(renderableExtName),
+                          "Implicit renderability requires exposing support for " + renderableExtName);
+            } else {
+                var renderableExt = gl.getExtension(renderableExtName);
+                if (!renderableExt) {
+                    testPassed(renderableExtName + " not supported. This is fine.");
+                    return;
+                }
+                testPassed(renderableExtName + " supported. Proceeding to its tests.");
+            }
+
+            runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0);
+            runRenderTargetAndReadbackTest(testProgram, gl.RGB, 3, [10000, 10000, 10000, 1], 0);
+            runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 1);
+            runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0.5);
+        })();
+
+        runUniqueObjectTest();
+    }
+}
+
+function isRenderable(gl) {
+    var tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.FLOAT, null);
+
+    var fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+
+    var status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    gl.deleteFramebuffer(fb);
+    gl.deleteTexture(tex);
+
+    return status == gl.FRAMEBUFFER_COMPLETE;
 }
 
 function allocateTexture()
