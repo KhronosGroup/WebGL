@@ -39,14 +39,14 @@
         of these internal formats, can be attached to framebuffer object color
         attachments for rendering. <code>RGBA16F</code> textures are guaranteed
 	to be color-renderable. <code>RGB16F</code> textures are color-renderable
-        if <code>getFramebufferStatus()</code> returns <code>FRAMEBUFFER_COMPLETE</code>.
+        if <code>checkFramebufferStatus()</code> returns <code>FRAMEBUFFER_COMPLETE</code>.
       </feature>
 
       <feature>
         <p><span style="color: red">NOTE:</span> fragment shaders outputs
         gl_FragColor and gl_FragData[0] will only be clamped and converted
-        when the color buffer is fixed-point and <code>BlendColor()</code> and
-        <code>ClearColor()</code> will no longer clamp their parameter values
+        when the color buffer is fixed-point and <code>blendColor()</code> and
+        <code>clearColor()</code> will no longer clamp their parameter values
         on input. Clamping will be applied as necessary at draw time according
         to the type of color buffer in use.</p>
       </feature>

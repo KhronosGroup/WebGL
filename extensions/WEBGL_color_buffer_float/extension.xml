@@ -44,7 +44,7 @@
         <code>type = FLOAT</code> as specified in <a
         href="http://www.khronos.org/registry/webgl/extensions/OES_texture_float/">OES_texture_float</a>,
         can be attached to framebuffer object color attachments for rendering
-	if <code>getFrameBufferStatus()</code> retruns <code>FRAMEBUFFER_COMPLETE</code>.
+	if <code>checkFrameBufferStatus()</code> returns <code>FRAMEBUFFER_COMPLETE</code>.
         </p>
       </feature>
 
