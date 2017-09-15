@@ -35,12 +35,11 @@
       <code>HTMLVideoElement</code> are extended to accept the pixel type
       <code>HALF_FLOAT_OES</code>. </feature>
 
-      <feature>Implementations supporting float rendering via this extension
-      will implicitly enable the <a
-      href="../EXT_color_buffer_half_float/">EXT_color_buffer_half_float</a>
-      extension and follow its requirements. This ensures correct behavior
-      when a texture with pixel type <code>HALF_FLOAT_OES</code> is attached
-      to an FBO.</feature>
+      <feature>Upon activation of this extension, implementations supporting
+      <a href="../EXT_color_buffer_half_float/">EXT_color_buffer_half_float</a>
+      shall implicitly enable it. This requirement maintains the historical
+      behavior prior to the differentiation of float renderability from float
+      textures, so as to not break existing content.</feature>
     </features>
   </overview>
 

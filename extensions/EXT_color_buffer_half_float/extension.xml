@@ -37,9 +37,10 @@
         Renderbuffers can be created in these formats. These and textures
         created with <code>type = HALF_FLOAT_OES</code>, which will have one
         of these internal formats, can be attached to framebuffer object color
-        attachments for rendering. <code>RGBA16F</code> textures are guaranteed
-	to be color-renderable. <code>RGB16F</code> textures are color-renderable
-        if <code>checkFramebufferStatus()</code> returns <code>FRAMEBUFFER_COMPLETE</code>.
+        attachments for rendering. Implementations supporting this extension is
+	required to support rendering to <code>RGBA16F</code> format.
+	Applications must check framebuffer completeness to determine if
+	<code>RGA16F</code> is supported.
       </feature>
 
       <feature>

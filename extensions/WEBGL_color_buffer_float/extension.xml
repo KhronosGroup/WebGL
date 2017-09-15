@@ -38,13 +38,14 @@
       </feature>
 
       <feature>
-        <p>The 32-bit floating-point type <code>RGB32F</code> may become available
-        as a color-renderable format. Renderbuffers can be created in this
-        format. These and textures created with <code>format = RGB</code> and
-        <code>type = FLOAT</code> as specified in <a
+        <p>The 32-bit floating-point type <code>RGB32F</code> may also optionally
+	become available as a color-renderable format. Renderbuffers can be created
+	in this format. These and textures created with <code>format = RGB</code>
+	and <code>type = FLOAT</code> as specified in <a
         href="http://www.khronos.org/registry/webgl/extensions/OES_texture_float/">OES_texture_float</a>,
-        can be attached to framebuffer object color attachments for rendering
-	if <code>checkFramebufferStatus()</code> returns <code>FRAMEBUFFER_COMPLETE</code>.
+        can be attached to framebuffer object color attachments for rendering.
+	Applications must check framebuffer completeness to determine if an
+	implementation actually supports this format.
         </p>
       </feature>
 
@@ -76,7 +77,6 @@
 [NoInterfaceObject]
 interface WEBGL_color_buffer_float {
   const GLenum RGBA32F_EXT = 0x8814;
-  const GLenum RGB32F_EXT = 0x8815;
   const GLenum FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT = 0x8211;
   const GLenum UNSIGNED_NORMALIZED_EXT = 0x8C17;
 }; // interface WEBGL_color_buffer_float
