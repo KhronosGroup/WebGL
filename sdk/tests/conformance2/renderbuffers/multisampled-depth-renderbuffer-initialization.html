@@ -139,14 +139,15 @@ function runTest(gl, params) {
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, fbo_m);
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fbo);
     gl.clear(gl.DEPTH_BUFFER_BIT);
-    // Blit depth from fbo_m (should be 0) to fbo (should be 1)
+    // Blit depth from fbo_m (should be 1.0) to fbo (should be 0.0).
     gl.blitFramebuffer(0, 0, resolve.w, resolve.h,
                        0, 0, resolve.w, resolve.h,
                        gl.DEPTH_BUFFER_BIT, gl.NEAREST);
+    // fbo depth should now be 1.0.
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, 'should be no errors');
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    // Draw a red quad (should pass the depth test)
+    // Draw a blue quad (at z = 0.0, so depth = 0.5) (should pass the depth test)
     gl.depthFunc(gl.LESS);
     gl.enable(gl.DEPTH_TEST);
     wtu.setupColorQuad(gl);
