@@ -39,10 +39,9 @@
 
       <feature>
         <p>The 32-bit floating-point type <code>RGB32F</code> may also optionally
-	become available as a color-renderable format. Renderbuffers can be created
-	in this format. These and textures created with <code>format = RGB</code>
-	and <code>type = FLOAT</code> as specified in <a
-        href="http://www.khronos.org/registry/webgl/extensions/OES_texture_float/">OES_texture_float</a>,
+	become available as a color-renderable format. These and textures created
+	with <code>format = RGB</code> and <code>type = FLOAT</code> as specified in
+	<a href="http://www.khronos.org/registry/webgl/extensions/OES_texture_float/">OES_texture_float</a>,
         can be attached to framebuffer object color attachments for rendering.
 	Applications must check framebuffer completeness to determine if an
 	implementation actually supports this format.
