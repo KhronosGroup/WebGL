@@ -20,7 +20,7 @@
     <mirrors href="http://www.khronos.org/registry/gles/extensions/OES/OES_texture_float.txt"
              name="OES_texture_half_float">
       <addendum>Optional support for <code>HALF_FLOAT</code> textures as FBO
-      attachments (deprecated).</addendum>
+      attachments.</addendum>
     </mirrors>
 
     <features>
@@ -35,15 +35,11 @@
       <code>HTMLVideoElement</code> are extended to accept the pixel type
       <code>HALF_FLOAT_OES</code>. </feature>
 
-      <feature>Implementations supporting float rendering via this extension
-      will implicitly enable the <a
-      href="../EXT_color_buffer_half_float/">EXT_color_buffer_half_float</a>
-      extension and follow its requirements. This ensures correct behavior
-      when a texture with pixel type <code>HALF_FLOAT_OES</code> is attached
-      to an FBO. Although this feature has historically been allowed, new
-      implementations should not implicitly support float rendering and
-      applications should be modified to explicitly enable <a
-      href="../EXT_color_buffer_half_float/">EXT_color_buffer_half_float</a>.</feature>
+      <feature>Upon activation of this extension, implementations supporting
+      <a href="../EXT_color_buffer_half_float/">EXT_color_buffer_half_float</a>
+      shall implicitly enable it. This requirement maintains the historical
+      behavior prior to the differentiation of float renderability from float
+      textures, so as to not break existing content.</feature>
     </features>
   </overview>
 
@@ -90,6 +86,10 @@ interface OES_texture_half_float {
 
     <revision date="2014/09/11">
       <change>Corrected link to EXT_color_buffer_half_float.</change>
+    </revision>
+
+    <revision date="2017/09/14">
+      <change>Clarify behaviors regarding EXT_color_buffer_half_float.</change>
     </revision>
   </history>
 </ratified>

@@ -38,10 +38,21 @@
       </feature>
 
       <feature>
+        <p>The 32-bit floating-point type <code>RGB32F</code> may also optionally
+	become available as a color-renderable format. These and textures created
+	with <code>format = RGB</code> and <code>type = FLOAT</code> as specified in
+	<a href="http://www.khronos.org/registry/webgl/extensions/OES_texture_float/">OES_texture_float</a>,
+        can be attached to framebuffer object color attachments for rendering.
+	Applications must check framebuffer completeness to determine if an
+	implementation actually supports this format.
+        </p>
+      </feature>
+
+      <feature>
         <p><span style="color: red">NOTE:</span> fragment shaders outputs
         gl_FragColor and gl_FragData[0] will only be clamped and converted
-        when the color buffer is fixed-point and <code>BlendColor()</code> and
-        <code>ClearColor()</code> will no longer clamp their parameter values
+        when the color buffer is fixed-point and <code>blendColor()</code> and
+        <code>clearColor()</code> will no longer clamp their parameter values
         on input. Clamping will be applied as necessary at draw time according
         to the type of color buffer in use.</p>
       </feature>
@@ -125,6 +136,10 @@ interface WEBGL_color_buffer_float {
 
     <revision date="2016/05/05">
       <change>Subsumed in WebGL 2.0 by EXT_color_buffer_float.</change>
+    </revision>
+
+    <revision date="2017/09/14">
+      <change>Add optional RGB renderability.</change>
     </revision>
   </history>
 </extension>

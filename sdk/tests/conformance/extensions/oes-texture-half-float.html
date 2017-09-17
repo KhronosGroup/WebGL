@@ -158,8 +158,8 @@ if (!gl) {
         // Next check that values outside the 0-1 range can be written.
         var halfFloatTenK = 0x70E2; // Half float 10000
         var uint16Formats2 = [
-          { format: gl.RGBA, subtractor: [10000, 10000, 10000, 10000], },
-          { format: gl.RGB,  subtractor: [10000, 10000, 10000, 1], },
+          { format: gl.RGBA, subtractor: [10000, 10000, 10000, 10000], requireRenderable: true},
+          { format: gl.RGB,  subtractor: [10000, 10000, 10000, 1], requireRenderable: false},
         ];
 
         uint16Formats2.forEach(function(f) {
@@ -171,28 +171,22 @@ if (!gl) {
             for (var ii = 0; ii <  uint16Data.length; ii++) {
                 uint16Data[ii] = halfFloatTenK;
             }
-            runRenderTest(format, f.subtractor, uint16Data);
+            runRenderTest(format, f.subtractor, uint16Data, f.requireRenderable);
         });
 
         (function() {
             debug("");
+            var renderable = isRenderable(gl, ext);
             var renderableExtName = "EXT_color_buffer_half_float";
-            if (isRenderable(gl, ext)) {
-                var supported = gl.getSupportedExtensions();
-                assertMsg(supported.includes(renderableExtName),
-                          "Implicit renderability requires exposing support for " + renderableExtName);
-            } else {
-                var renderableExt = gl.getExtension(renderableExtName);
-                if (!renderableExt) {
-                    testPassed(renderableExtName + " not supported. This is fine.");
-                    return;
-                }
-                testPassed(renderableExtName + " supported. Proceeding to its tests.");
+            var supported = gl.getSupportedExtensions().includes(renderableExtName);
+            if (renderable && !supported) {
+                testFailed("RGBA/HALF_FLOAT_OES is color renderable but " + renderableExtName + " not exposed");
+            } else if (supported && !renderable) {
+                testFailed(renderableExtName + " is exposed but RGBA/HALF_FLOAT_OES is not color renderable");
             }
-
-            if (runFramebufferTest()) {
-                runRenderTest(gl.RGBA, [10000, 10000, 10000, 10000], null);
-                runRenderTest(gl.RGB, [10000, 10000, 10000, 1], null);
+            if (supported) {
+                runRenderTest(gl.RGBA, [10000, 10000, 10000, 10000], null, true);
+                runRenderTest(gl.RGB, [10000, 10000, 10000, 1], null, false);
             }
         })();
 
@@ -311,7 +305,7 @@ function checkRenderingResults()
     wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
 }
 
-function runRenderTest(format, subtractor, data)
+function runRenderTest(format, subtractor, data, requireRenderable)
 {
     var formatString = wtu.glEnumToString(gl, format);
 
@@ -340,7 +334,11 @@ function runRenderTest(format, subtractor, data)
         // It is legal for a WebGL implementation exposing the OES_texture_half_float extension to
         // support half floating point textures but not as attachments to framebuffer objects.
         if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
-            testFailed(formatString + " render targets not supported.");
+            if (requireRenderable) {
+                testFailed(formatString + " render targets not supported.");
+            } else {
+                debug(formatString + " render targets not supported -- this is legal");
+            }
             return;
         }
 
