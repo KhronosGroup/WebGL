@@ -40,7 +40,7 @@
         attachments for rendering. Implementations supporting this extension is
 	required to support rendering to <code>RGBA16F</code> format.
 	Applications must check framebuffer completeness to determine if
-	<code>RGA16F</code> is supported.
+	<code>RGA16F</code> is supported.</p>
       </feature>
 
       <feature>
