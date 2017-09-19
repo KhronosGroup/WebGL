@@ -187,6 +187,7 @@ if (!gl) {
             if (supported) {
                 runRenderTest(gl.RGBA, [10000, 10000, 10000, 10000], null, true);
                 runRenderTest(gl.RGB, [10000, 10000, 10000, 1], null, false);
+                runFramebufferTest();
             }
         })();
 
@@ -428,17 +429,12 @@ function runFramebufferTest() {
 
     var texture = allocateTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, ext.HALF_FLOAT_OES, null);
 
     var fbo = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
-        testFailed("Half floating point render targets not actually supported.");
-        return false;
-    }
 
-    debug("Ensure non-color-renderable formats [LUMINANCE, LUMINANCE_ALPHA, ALPHA] fail");
+    debug("Ensure non-color-renderable formats [LUMINANCE, LUMINANCE_ALPHA, ALPHA] fail.");
     var arrayBufferFloatOutput = new Float32Array(4); // 4 color channels
     [gl.LUMINANCE, gl.LUMINANCE_ALPHA, gl.ALPHA].forEach(function(badFormat) {
         debug(getFormatName(badFormat) + " framebuffer");
@@ -469,55 +465,52 @@ function runFramebufferTest() {
         debug("");
 
         gl.texImage2D(gl.TEXTURE_2D, 0, goodFormat, 1, 1, 0, goodFormat, ext.HALF_FLOAT_OES, arrayBufferHalfFloatInput);
-        shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)", "gl.FRAMEBUFFER_COMPLETE");
-
-        // To avoid GPU idiosyncrasies, dispense with clearing or rendering to the texture. Go straight to readPixels.
-
-        // Per the OES_color_buffer_half_float, RGBA/FLOAT should always succeed for readPixels
-        verifyReadPixelsColors(
-            0.00, // red
-            0.25, // green
-            0.50, // blue
-            0.75, // alpha
-            1.0,  // alphaRGB
-            goodFormat,
-            gl.FLOAT,
-            Float32Array);
-
-        var implementationColorReadFormat = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT);
-        assertMsg(implementationColorReadFormat === gl.RGBA || implementationColorReadFormat === gl.RGB,
-            "IMPLEMENTATION_COLOR_READ_FORMAT should be color renderable: RGBA or RGB. Received: " + getFormatName(implementationColorReadFormat));
-
-        var implementationColorReadType = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE);
-
-        // There is nothing in the specifications that keeps the
-        // implementation color read format and type from being the
-        // same as the implicitly supported one. For this reason, keep
-        // gl.FLOAT as one of the valid options.
-        assertMsg(implementationColorReadType === gl.UNSIGNED_BYTE ||
-                  implementationColorReadType === gl.FLOAT ||
-                  implementationColorReadType === ext.HALF_FLOAT_OES ||
-                  implementationColorReadType === gl.UNSIGNED_SHORT_4_4_4_4 ||
-                  implementationColorReadType === gl.UNSIGNED_SHORT_5_5_5_1 ||
-                  implementationColorReadType === gl.UNSIGNED_SHORT_5_6_5,
-                  "IMPLEMENTATION_COLOR_READ_TYPE must be one of UNSIGNED_BYTE, UNSIGNED_SHORT_4_4_4_4, UNSIGNED_SHORT_5_5_5_1, UNSIGNED_SHORT_5_6_5, FLOAT, or HALF_FLOAT_OES. " +
-                  "Received: " + getTypeName(implementationColorReadType));
-
-        // Test the RGBA/HALF_FLOAT_OES combination
-        if (implementationColorReadFormat === gl.RGBA && implementationColorReadType === ext.HALF_FLOAT_OES) {
+        if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
+            // Per the OES_color_buffer_half_float, RGBA/FLOAT should always succeed for readPixels
             verifyReadPixelsColors(
-                0,      // red
-                0x3400, // green
-                0x3800, // blue
-                0x3A00, // alpha
-                0x3C00, // alphaRGB
+                0.00, // red
+                0.25, // green
+                0.50, // blue
+                0.75, // alpha
+                1.0,  // alphaRGB
                 goodFormat,
-                ext.HALF_FLOAT_OES,
-                Uint16Array);
+                gl.FLOAT,
+                Float32Array);
+
+            var implementationColorReadFormat = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT);
+            assertMsg(implementationColorReadFormat === gl.RGBA || implementationColorReadFormat === gl.RGB,
+                "IMPLEMENTATION_COLOR_READ_FORMAT should be color renderable: RGBA or RGB. Received: " + getFormatName(implementationColorReadFormat));
+
+            var implementationColorReadType = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE);
+
+            // There is nothing in the specifications that keeps the
+            // implementation color read format and type from being the
+            // same as the implicitly supported one. For this reason, keep
+            // gl.FLOAT as one of the valid options.
+            assertMsg(implementationColorReadType === gl.UNSIGNED_BYTE ||
+                      implementationColorReadType === gl.FLOAT ||
+                      implementationColorReadType === ext.HALF_FLOAT_OES ||
+                      implementationColorReadType === gl.UNSIGNED_SHORT_4_4_4_4 ||
+                      implementationColorReadType === gl.UNSIGNED_SHORT_5_5_5_1 ||
+                      implementationColorReadType === gl.UNSIGNED_SHORT_5_6_5,
+                      "IMPLEMENTATION_COLOR_READ_TYPE must be one of UNSIGNED_BYTE, UNSIGNED_SHORT_4_4_4_4, UNSIGNED_SHORT_5_5_5_1, UNSIGNED_SHORT_5_6_5, FLOAT, or HALF_FLOAT_OES. " +
+                      "Received: " + getTypeName(implementationColorReadType));
+
+            // Test the RGBA/HALF_FLOAT_OES combination
+            if (implementationColorReadFormat === gl.RGBA && implementationColorReadType === ext.HALF_FLOAT_OES) {
+                verifyReadPixelsColors(
+                    0,      // red
+                    0x3400, // green
+                    0x3800, // blue
+                    0x3A00, // alpha
+                    0x3C00, // alphaRGB
+                    goodFormat,
+                    ext.HALF_FLOAT_OES,
+                    Uint16Array);
+            }
         }
         debug("");
     });
-    return true;
 }
 
 debug("");
