@@ -28,6 +28,10 @@
         <p>All references to <code>R16F</code> and <code>RG16F</code> types
         are ignored.</p>
       </addendum>
+      <addendum>
+	<p>WebGL implementations supporting this extension are required to
+	support rendering to <code>RGBA16F</code> format.</p>
+      </addendum>
     </mirrors>
 
     <features>
@@ -37,7 +41,7 @@
         Renderbuffers can be created in these formats. These and textures
         created with <code>type = HALF_FLOAT_OES</code>, which will have one
         of these internal formats, can be attached to framebuffer object color
-        attachments for rendering. Implementations supporting this extension is
+        attachments for rendering. Implementations supporting this extension are
 	required to support rendering to <code>RGBA16F</code> format.
 	Applications must check framebuffer completeness to determine if
 	<code>RGB16F</code> is supported.</p>
