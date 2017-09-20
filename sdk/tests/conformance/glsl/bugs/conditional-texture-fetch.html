@@ -102,34 +102,34 @@ var test = function(greenTexture) {
     //
     // However, this doesn't seem to produce incorrect rendering results.
     var program = wtu.setupProgram(
-	gl,
-	["vshaderConditionalTextureFetch",
-	 "fshaderConditionalTextureFetch"],
-	["a_position", "a_canvasTileColor", "a_texCoord"],
-	[0, 1, 2],
-	true);
+        gl,
+        ["vshaderConditionalTextureFetch",
+         "fshaderConditionalTextureFetch"],
+        ["a_position", "a_canvasTileColor", "a_texCoord"],
+        [0, 1, 2],
+        true);
     if (!program) {
         testFailed("Shader compilation/link failed");
     } else {
-	// Set up buffers
-	wtu.setupUnitQuad(gl, 0, 2);
+        // Set up buffers
+        wtu.setupUnitQuad(gl, 0, 2);
 
-	// Set up constant color (red)
-	gl.vertexAttrib4f(1, 1, 0, 0, 1);
+        // Set up constant color (red)
+        gl.vertexAttrib4f(1, 1, 0, 0, 1);
 
         var uniformMap = wtu.getUniformMap(gl, program);
 
-	// Use texturing
+        // Use texturing
         gl.uniform1i(uniformMap["hasTexture"].location, 1);
-	
+        
         // Bind texture
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, greenTexture);
         gl.uniform1i(uniformMap["canvasTileTexture"].location, 0);
 
-	// Set up (essentially no-op) clamp rectangle
-	gl.uniform4f(uniformMap["uvRect"].location, 0, 0, 0.25, 0.25);
-	
+        // Set up (essentially no-op) clamp rectangle
+        gl.uniform4f(uniformMap["uvRect"].location, 0, 0, 0.25, 0.25);
+        
         // Draw
         wtu.clearAndDrawUnitQuad(gl);
 
