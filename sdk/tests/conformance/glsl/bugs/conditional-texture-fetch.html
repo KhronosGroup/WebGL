@@ -121,7 +121,7 @@ var test = function(greenTexture) {
 
         // Use texturing
         gl.uniform1i(uniformMap["hasTexture"].location, 1);
-        
+
         // Bind texture
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, greenTexture);
@@ -129,7 +129,7 @@ var test = function(greenTexture) {
 
         // Set up (essentially no-op) clamp rectangle
         gl.uniform4f(uniformMap["uvRect"].location, 0, 0, 0.25, 0.25);
-        
+
         // Draw
         wtu.clearAndDrawUnitQuad(gl);
 
