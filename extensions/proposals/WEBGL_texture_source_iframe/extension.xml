@@ -27,7 +27,7 @@
   <idl xml:space="preserve">
 [NoInterfaceObject]
 interface WEBGL_texture_source_iframe {
-  Promise bindTextureSource(GLenum target, HTMLIframeElement iframe);
+  Promise bindTextureSource(GLenum target, HTMLIFrameElement iframe);
   Promise requestFrame(GLenum target);
   void setEventForwarding(function(Event));
 };
@@ -73,7 +73,7 @@ interface WEBGL_texture_source_iframe {
         when this function is called has been blitted to the texture.
       </p>
       <p>
-        If an application uses <code>requestAnimationFrame</code>, implemnetations must guarantee once
+        If an application uses <code>requestAnimationFrame</code>, implementations must guarantee once
         this function is called, the iframe rendering results from the same frame has been blitted to the
         texture when entering the next animation frame. Therefore, it is not necessary for an
         application to depend on the return of the promise. The promise is for applications that do not
