@@ -3484,10 +3484,10 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
 
     <h3><a name="TIMEOUT_IGNORED">TIMEOUT_IGNORED</a></h3>
     <p>
-        In the WebGL 2.0 API TIMEOUT_IGNORED is defined as a GLint64 with the value -1 instead of a GLuint64
-        with the value 0xFFFFFFFFFFFFFFFF. This is because Javascript cannot accurately represent an integer
-        that large. For the same reason clientWaitSync and waitSync both take GLint64 values instead of GLuint64
-        for timeout.
+        In the WebGL 2.0 API <code>TIMEOUT_IGNORED</code> is defined as a <code>GLint64</code> with the value
+        <code>-1</code> instead of a <code>GLuint64</code> with the value <code>0xFFFFFFFFFFFFFFFF</code>. This
+        is because Javascript cannot accurately represent an integer that large. For the same reason
+        <code>waitSync</code> takes <code>GLint64</code> values instead of </code>GLuint64</code> for timeout.
     </p>
 
     <h3><a name="CLIENT_WAIT_SYNC">clientWaitSync</a></h3>
