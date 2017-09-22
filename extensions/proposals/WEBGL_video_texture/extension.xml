@@ -6,8 +6,12 @@
   working group</a> (public_webgl 'at' khronos.org) </contact>
 
   <contributors>
-    <contributor>Byungseon Shin (sun.shin 'at' lge.com)</contributor>
-    <contributor>Andrey Volykhin (andrey.volykhin 'at' lge.com)</contributor>
+    <contributor>Byungseon Shin, LG Electronics</contributor>
+
+    <contributor>Andrei Volykhin, LG Electronics</contributor>
+
+    <contributor>Mark Callow, Edgewise Consulting</contributor>
+
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
@@ -18,19 +22,47 @@
   </depends>
 
   <overview>
-    <mirrors href="https://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt"
-             name="OES_EGL_image_external">
-      <addendum>Defines a new texture target <code>TEXTURE_VIDEO_IMAGE</code>.</addendum>
-      <addendum>Provides a mechanism for binding <code>HTMLVideoElement</code> stream to video texture targets.</addendum>
-      <addendum>Provides time of frame, texture width and height of <code>HTMLVideoElement</code>'s texture binding.</addendum>
-    </mirrors>
+    <p>This extension defines a new object, the <code>HTMLVideoTexture</code>,
+    that can be used to efficiently transfer a sequence of image frames from
+    a producer which is outside the control of WebGL into a WebGL texture.
+    This is done via a new texture target, <code>TEXTURE_VIDEO_WEBGL</code>
+    which can only be specified as being the consumer of an image stream from a
+    producer element.</p>
+
+    <p>There is no support for most of the functions that manipulate other
+    texture targets (e.g. you cannot use <code>*[Tt]ex*Image*()</code>
+    functions with <code>TEXTURE_VIDEO_WEBGL</code>). Also,
+    <code>TEXTURE_VIDEO_WEBGL</code> targets never have more than a single
+    level of detail. Because of these restrictions, it is possible to
+    allow sources which have internal formats not otherwise supported by WebGL,
+    such as planar or interleaved YUV data to be WebGL texture target siblings.</p>
+
+    <p>The extension extends GLSL ES with a new <code>samplerVideoWebGL</code> type
+    and matching sampling functions that provide a place for an implementation
+    to inject code for sampling non-RGB data when necessary without degrading performance
+    for other texture targets. Sampling a <code>TEXTURE_VIDEO_WEBGL</code> via a sampler of
+    type <code>samplerVideoWebGL</code> always returns RGBA data.</p>
+
+    <p>Sampling a WebGL texture which is not associated with any
+    <code>HTMLVideoTexture</code> object will return a sample value of (0,0,0,1).</p>
+
+    <p>Each <code>TEXTURE_VIDEO_WEBGL</code> texture object may require up
+    to 3 texture image units for each texture unit to which it is bound.
+    The number of texture image units required by a bound texture object
+    can be queried using <code>getTexParameter</code> with target set
+    to the texture target in question, value set to
+    <code>REQUIRED_TEXTURE_VIDEO_IMAGE_UNITS_WEBGL</code>, and <code>activeTexture</code>
+    set to the texture unit to which the texture object is bound.</p>
+
+    <p><code>HTMLVideoTexture</code> provides a commands for <em>latching</em> an
+    image frame into the consuming texture as its contents and retrieving additional
+    information as a timestamp or a transformation matrix.</p>
 
     <features>
-      <feature>Add support for <code>WEBGL_video_texture</code>
-      binding of HTMLVideoElement.</feature>
-
       <glsl extname="WEBGL_video_texture">
+        <stage type="vertex"/>
         <stage type="fragment"/>
+
         <type name="samplerVideoWEBGL"/>
 
         <function name="texture2D" type="vec4">
@@ -39,87 +71,243 @@
           <param name="coord" type="vec2"/>
         </function>
 
+        <function name="texture2DProj" type="vec4">
+          <param name="sampler" type="samplerVideoWEBGL"/>
+
+          <param name="coord" type="vec3"/>
+        </function>
+
+        <function name="texture2DProj" type="vec4">
+          <param name="sampler" type="samplerVideoWEBGL"/>
+
+          <param name="coord" type="vec4"/>
+        </function>
       </glsl>
     </features>
   </overview>
 
   <idl xml:space="preserve">
 [NoInterfaceObject]
-interface WebGLVideoFrameInfo {
-  readonly attribute double currentTime;
-  readonly attribute unsigned long textureWidth;
-  readonly attribute unsigned long textureHeight;
+interface HTMLVideoTexture : EventTarget {
+  void updateTexImage();
+
+  double getTimestamp();
+  void getTransformMatrix(Float32Array matrix);
+
+  double getLastAvailableTimestamp();
+
+  attribute EventHandler onframeavailable;
+  attribute EventHandler onerror;
 };
 
 [NoInterfaceObject]
 interface WEBGL_video_texture {
-    const GLenum TEXTURE_VIDEO_IMAGE             = 0x851D;
-    const GLenum SAMPLER_VIDEO_IMAGE             = 0x8B61;
+  const GLenum TEXTURE_VIDEO_WEBGL = 0x9248;
+  const GLenum SAMPLER_VIDEO_WEBGL = 0x9249;
+  const GLenum TEXTURE_BINDING_VIDEO_WEBGL = 0x924A;
+  const GLenum REQUIRED_TEXTURE_VIDEO_IMAGE_UNITS_WEBGL = 0x924B;
 
-    [RaisesException] WebGLVideoFrameInfo VideoElementTargetVideoTexture(
-        GLenum target, HTMLVideoElement video);
+  [RaisesException] HTMLVideoTexture? createVideoTexture(WebGLTexture? texture, HTMLVideoElement video);
 };
   </idl>
 
-  <samplecode xml:space="preserve">
+  <!-- new functions -->
 
-    <p> This a fragment shader that samples a video texture.</p>
+  <newfun>
+    <p>On <code>HTMLVideoTexture</code>:</p>
+
+    <function name="updateTexImage" type="void">
+      Release the previously-held frame, if any, and update the texture image
+      to the most recent frame from the image stream.
+      This may cause some frames of the stream to be skipped.
+      Sampling the WebGL texture, that is the <code>HTMLVideoTexture</code>'s
+      <em>consumer</em>, will return values from the latched image.
+      The image data is guaranteed not to change as long as the image is latched.
+      It will implicitly binds associated WebGL texture to the active texture unit's
+      <code>TEXTURE_VIDEO_WEBGL</code> texture target.
+    </function>
+
+    <function name="getTimestamp" type="double">
+      Retrieve the timestamp associated with the texture image set by the most
+      recent call to <code>updateTexImage</code>. This timestamp represent
+      the time of frame relative to start of the producer timeline, the time
+      when the frame was produced (the Media Stream Counter in OpenML),
+      not the time when frame was received by application.
+      This timestamp is in seconds, and is normally monotonically increasing.
+      It is equivalent of <code>HTMLMediaElement</code>'s <em>currentTime</em> property.
+    </function>
+
+    <function name="getTransformMatrix" type="void">
+      <param name="matrix" type="Float32Array"/>
+      Retrieve the 4x4 texture coordinate transform matrix associated with
+      the texture image set by the most recent call to <code>updateTexImage</code>.
+      This transform matrix maps 2D homogeneous texture coordinates
+      of the form (s, t, 0, 1) with s and t in the inclusive range [0, 1]
+      to the texture coordinate that should be used to sample that location
+      from the texture. Sampling the texture outside of the range
+      of this transform is undefined.
+      The matrix is stored in column-major order.
+    </function>
+
+    <function name="getLastAvailableTimestamp" type="double">
+      Retrieve the timestamp associated with the most recent texture image
+      which could be provided by a producer.
+    </function>
+  </newfun>
+
+  <dl class="methods">
+    <dt><code class="attribute-name">onframeavailable</code> of type
+        <code>EventHandler</code></dt>
+
+    <dd>The <code>onframeavailable</code> handler is executed when a new frame
+        could be latched from image stream.</dd>
+
+    <dt><code class="attribute-name">onerror</code> of type
+        <code>EventHandler</code></dt>
+
+    <dd>The <code>onerror</code> handler is executed when this object
+        will be in "incomplete" state in case if a image stream's consumer or
+        producer will be deleted or due internal errors.</dd>
+  </dl>
+
+  <!-- new tokens -->
+
+  <newtok>
+    <p>On <code>WEBGL_video_texture</code>:</p>
+
+    <p>The meaning and use of these tokens is similar as described in <a
+    href="https://www.khronos.org/registry/OpenGL/extensions/OES/OES_EGL_image_external.txt">OES_EGL_image_external</a>.</p>
+
+    <function name="bindTexture" type="void">
+      <param name="target" type="GLenum"/>
+      <param name="texture" type="WebGLTexture?"/>
+      <code>TEXTURE_VIDEO_WEBGL</code> is accepted as a target by the
+      <code>target</code> parameter of <code>bindTexture</code>
+    </function>
+
+    <function name="getActiveUniform" type="WebGLActiveInfo?">
+      <param name="program" type="WebGLProgram?"/>
+      <param name="index" type="GLuint"/>
+      <code>SAMPLER_VIDEO_WEBGL</code> can be returned in the
+      <code>type</code> field of the <code>WebGLActiveInfo</code> returned by
+      <code>getActiveUniform</code>
+    </function>
+
+    <function name="getParameter" type="any">
+      <param name="pname" type="GLenum"/>
+      <code>TEXTURE_BINDING_VIDEO_WEBGL</code> is accepted by
+      the <code>pname</code> parameter of <code>getParameter</code>
+    </function>
+
+    <function name="getTexParameter*" type="any">
+      <param name="target" type="GLenum"/>
+      <param name="pname" type="GLenum"/>
+      <code>REQUIRED_TEXTURE_VIDEO_IMAGE_UNITS_WEBGL</code> is accepted
+      as the <code>pname</code> parameter of <code>getTexParameter*</code>
+    </function>
+  </newtok>
+
+  <newfun>
+    <p>New <code>HTMLVideoTexture</code> object creation</p>
+
+    <function name="createVideoTexture" type="HTMLVideoTexture?">
+      <param name="texture" type="WebGLTexture?"/>
+      <param name="video" type="HTMLVideoElement"/>
+      Create a new <code>HTMLVideoTexture></code> object that can be used to
+      transfer a sequence of image frames from a <code>HTMLVideoElement</code>
+      into a WebGL texture.
+      WebGL texture must be defined as a texture with <code>TEXTURE_VIDEO_WEBGL</code>
+      target before passing it as <code>texture</code> parameter
+      (Note: to create a <code>TEXTURE_VIDEO_WEBGL</code> texture and bind it,
+      call <code>bindTexture</code> with <code>target</code> set to
+      <code>TEXTURE_VIDEO_WEBGL</code> and <code>texture</code>
+      set to the name of the new created texture).
+      If this function is called with <code>HTMLVideoElement</code>
+      which origin differs from the origin of the containing Document,
+      a <code>SECURITY_ERR</code> exception must be thrown.
+      If the WebGL texture is later deleted, connected to a different
+      <code>HTMLVideoTexture</code>, then this <code>HTMLVideoTexture</code>
+      will be in "incomplete" state and release any associated resources.
+      If the <code>HTMLVideoElement</code> or <code>HTMLVideoTexture</code>
+      is later destroyed then the consuming texture will be "incomplete" and
+      sampling from it will return a sample value of (0,0,0,1).
+    </function>
+  </newfun>
+
+  <errors>
+    <error>
+      The error <code>INVALID_OPERATION</code> is generated by calling
+      <code>createVideoTexture</code> with a <code>texture</code> parameter
+      that does not identify a <code>VIDEO_WEBGL</code> texture.
+    </error>
+  </errors>
+
+  <samplecode xml:space="preserve">
+    <p>This a fragment shader that samples a video texture.</p>
     <pre>
+    #version 100 es
     #extension GL_WEBGL_video_texture : require
+
     precision mediump float;
-    varying vec2 v_texCoord;
 
     uniform samplerVideoWEBGL uSampler;
+    varying vec2 v_texCoord;
 
     void main(void) {
       gl_FragColor = texture2D(uSampler, v_texCoord);
     }
     </pre>
 
-    <p> This shows application that renders video using proposed extension.  </p>
+    <p>This shows application that renders an HTMLVideoElement using proposed extension.</p>
     <pre>
-    var videoElement = document.getElementById("video");
-    var videoTexture = gl.createTexture();
+    var gl = document.createElement('canvas').getContext('webgl');
+    var video = document.getElementById("video");
+
+    var ext = gl.getExtension('WEBGL_video_texture');
+
+    var texture = gl.createTexture();
+    gl.bindTexture(ext.TEXTURE_VIDEO_WEBGL, texture); // explicit texture binding
+
+    var videoTexture = ext.createVideoTexture(texture, video);
+    videoTexture.onframeavailable = function() { ... };
+    videoTexture.onerror = function() { ... };
 
     function update() {
-        var ext = gl.getExtension('WEBGL_video_texture');
-        if(ext !=== null){
-            gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE, videoTexture);
-            ext.VideoElementTargetVideoTexture(ext.TEXTURE_VIDEO_IMAGE, videoElement);
-            gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE, null);
-        }
+      videoTexture.updateTexImage(); // implicit texture binding
     }
 
     function render() {
-        gl.clearColor(0.0, 0.0, 1.0, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
-        gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE, videoTexture);
-        gl.uniform1i(gl.getUniformLocation(shaderProgram, "uSampler"), 0);
-
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        // ... do something
+        gl.drawArrays(...);
     }
-    </pre>
-
-    <p> Application renders each video frames into WebGL canvas based on game-loop pattern. </p>
-    <pre>
 
     while (true) {
-       update();
-       processInput();
-       render();
+      update();
+      processInput();
+      render();
     }
     </pre>
-
   </samplecode>
 
   <tests/>
 
-  <issues/>
+  <issues>
+    <ol>
+      <li>
+        <p>In which colorspace should be the RGB value returned by sampler?</p>
+
+        <p>A. In linear RGB colorspace.</p>
+
+        <p>B. In extended sRGB (scRGB-non-linear) colorspace <a
+        href="https://developer.apple.com/documentation/coregraphics/kcgcolorspaceextendedsrgb?language=objc">kCGColorSpaceExtendedSRGB</a></p>
+
+        <p>C. It will be allowed to choose by passed parameter at a
+        <code>HTMLVideoTexture</code> object creation time.</p>
+
+        <p>UNRESOLVED.</p>
+      </li>
+    </ol>
+  </issues>
 
   <history>
     <revision date="2016/11/05">
@@ -134,6 +322,9 @@ interface WEBGL_video_texture {
       <change>Change Extension name to WEBGL_video_texture for abstracion of OES_EGL_image_external extension.</change>
       <change>Define new sampler and texture type, TEXTURE_VIDEO_IMAGE and SAMPLER_VIDEO_IMAGE.</change>
       <change>Change EGLImageTargetTexture2DOES to VideoElementTargetVideoTexture.</change>
+    </revision>
+    <revision date="2017/09/21">
+      <change>Add new HTMLVideoTexture object and new tokens.</change>
     </revision>
   </history>
 </proposal>
