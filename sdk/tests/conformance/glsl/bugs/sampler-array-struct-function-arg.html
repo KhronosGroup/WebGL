@@ -64,7 +64,7 @@ description();
 
 var wtu = WebGLTestUtils;
 var canvas = document.getElementById("output");
-var gl = wtu.create3DContext(canvas, undefined, 2);
+var gl = wtu.create3DContext(canvas);
 
 if (!gl) {
     testFailed("Could not create a GL context.");
