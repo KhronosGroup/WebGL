@@ -50,7 +50,7 @@ var gl = wtu.create3DContext("example");
 var tex = gl.createTexture();
 gl.bindTexture(gl.TEXTURE_2D, tex);
 
-function runTests() {
+function testUpload() {
   // Because WEBGL_depth_texture is enabled, UNSIGNED_SHORT becomes a valid type, but RGBA/UNSIGNED_SHORT is invalid.
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_SHORT, new Uint16Array(2*2*4));
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "texImage2D() with invalid format/type combination");
@@ -60,25 +60,27 @@ var ext = gl.getExtension('WEBGL_depth_texture');
 if (ext) {
   debug("");
   debug("Testing with FlipY = false, PremultiplyAlpha = false");
-  runTests();
+  testUpload();
 
   debug("");
   debug("Testing with FlipY = true, PremultiplyAlpha = false");
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 0);
-  runTests();
+  testUpload();
 
   debug("");
   debug("Testing with FlipY = false, PremultiplyAlpha = true");
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-  runTests();
+  testUpload();
 
   debug("");
   debug("Testing with FlipY = true, PremultiplyAlpha = true");
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-  runTests();
+  testUpload();
+} else {
+  testPassed("WEBGL_depth_texture not supported, skipping tests.");
 }
 
 gl.deleteTexture(tex);
