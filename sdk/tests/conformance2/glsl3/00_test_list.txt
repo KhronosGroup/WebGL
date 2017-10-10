@@ -32,6 +32,7 @@ shader-with-1025-character-identifier.frag.html
 shader-with-invalid-characters.html
 shader-with-mis-matching-uniform-block.html
 short-circuiting-in-loop-condition.html
+--min-version 2.0.1 switch-case.html
 texture-offset-out-of-range.html
 --min-version 2.0.1 texture-offset-uniform-texture-coordinate.html
 --min-version 2.0.1 tricky-loop-conditions.html
