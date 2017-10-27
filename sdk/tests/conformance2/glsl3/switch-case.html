@@ -110,6 +110,98 @@ void main()
     }
 }
 </script>
+<script id="fshaderEmptySwitchStatement" type="x-shader/x-fragment">#version 300 es
+
+precision highp float;
+
+out vec4 my_FragColor;
+
+uniform int u_zero;
+
+void main()
+{
+    switch(u_zero)
+    {
+    }
+    my_FragColor = vec4(0, 1, 0, 1);
+}
+</script>
+<script id="fshaderLastCaseHasEmptyDeclaration" type="x-shader/x-fragment">#version 300 es
+
+precision highp float;
+
+out vec4 my_FragColor;
+
+uniform int u_zero;
+
+void main()
+{
+    // Empty declaration should count as a statement.
+    switch(u_zero)
+    {
+        case 0:
+            int;
+    }
+    my_FragColor = vec4(0, 1, 0, 1);
+}
+</script>
+<script id="fshaderLastCaseHasEmptyBlock" type="x-shader/x-fragment">#version 300 es
+
+precision highp float;
+
+out vec4 my_FragColor;
+
+uniform int u_zero;
+
+void main()
+{
+    // Empty block should count as a statement.
+    switch(u_zero)
+    {
+        case 0:
+            {}
+    }
+    my_FragColor = vec4(0, 1, 0, 1);
+}
+</script>
+<script id="fshaderLastCaseHasConstantStatement" type="x-shader/x-fragment">#version 300 es
+
+precision highp float;
+
+out vec4 my_FragColor;
+
+uniform int u_zero;
+
+void main()
+{
+    // Empty statement should count as a statement.
+    switch(u_zero)
+    {
+        case 0:
+            0;
+    }
+    my_FragColor = vec4(0, 1, 0, 1);
+}
+</script>
+<script id="fshaderLastCaseHasEmptyStatement" type="x-shader/x-fragment">#version 300 es
+
+precision highp float;
+
+out vec4 my_FragColor;
+
+uniform int u_zero;
+
+void main()
+{
+    // Empty statement should count as a statement.
+    switch(u_zero)
+    {
+        case 0:
+            ;
+    }
+    my_FragColor = vec4(0, 1, 0, 1);
+}
+</script>
 <script type="application/javascript">
 "use strict";
 description();
@@ -119,24 +211,57 @@ description();
 // http://anglebug.com/2178
 // http://anglebug.com/2179
 
-GLSLConformanceTester.runRenderTests([
+GLSLConformanceTester.runTests([
 {
   fShaderId: 'fshaderDeclarationInsideSwitch',
   fShaderSuccess: true,
   linkSuccess: true,
-  passMsg: 'Declaration inside switch should work.'
+  passMsg: 'Declaration inside switch should work.',
+  render: true
 },
 {
   fShaderId: 'fshaderDeclarationInsideSwitchScope',
   fShaderSuccess: true,
   linkSuccess: true,
-  passMsg: 'Declaration inside switch should be scoped until the end of the switch statement.'
+  passMsg: 'Declaration inside switch should be scoped until the end of the switch statement.',
+  render: true
 },
 {
   fShaderId: 'fshaderFallThroughAll',
   fShaderSuccess: true,
   linkSuccess: true,
-  passMsg: 'Falling through all cases in switch/case should work.'
+  passMsg: 'Falling through all cases in switch/case should work.',
+  render: true
+},
+{
+  fShaderId: 'fshaderEmptySwitchStatement',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Empty switch statements are valid.'
+},
+{
+  fShaderId: 'fshaderLastCaseHasEmptyDeclaration',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Empty declaration should count as a statement for the purposes of switch statement validation.'
+},
+{
+  fShaderId: 'fshaderLastCaseHasEmptyBlock',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Empty block should count as a statement for the purposes of switch statement validation.'
+},
+{
+  fShaderId: 'fshaderLastCaseHasConstantStatement',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Constant statement should count as a statement for the purposes of switch statement validation.'
+},
+{
+  fShaderId: 'fshaderLastCaseHasEmptyStatement',
+  fShaderSuccess: true,
+  linkSuccess: true,
+  passMsg: 'Empty statement should count as a statement for the purposes of switch statement validation.'
 }
 ], 2);
 </script>
