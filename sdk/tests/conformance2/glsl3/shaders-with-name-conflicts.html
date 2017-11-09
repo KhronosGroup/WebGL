@@ -1,0 +1,242 @@
+<!--
+
+/*
+** Copyright (c) 2017 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>GLSL name conflict</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<link rel="stylesheet" href="../../resources/glsl-feature-tests.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+<script src="../../js/glsl-conformance-test.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<script id="vertexShaderUniform1" type="text/something-not-javascript">#version 300 es
+uniform highp vec4 foo;
+
+void main()
+{
+    gl_Position = foo;
+}
+</script>
+<script id="vertexShaderUniform2" type="text/something-not-javascript">#version 300 es
+uniform highp vec4 bar;
+
+void main()
+{
+    gl_Position = bar;
+}
+</script>
+<script id="vertexShaderUniform3" type="text/something-not-javascript">#version 300 es
+uniform highp vec4 baz;
+
+void main()
+{
+    gl_Position = baz;
+}
+</script>
+<script id="vertexShaderUniformBlock" type="text/something-not-javascript">#version 300 es
+uniform foo {
+    highp vec4 bar;
+};
+
+void main()
+{
+    gl_Position = bar;
+}
+</script>
+<script id="vertexShaderInstancedUniformBlock" type="text/something-not-javascript">#version 300 es
+uniform foo {
+    highp vec4 bar;
+} baz;
+
+void main()
+{
+    gl_Position = baz.bar;
+}
+</script>
+<script id="fragmentShaderUniform1" type="text/something-not-javascript">#version 300 es
+uniform highp vec4 foo;
+
+out highp vec4 out_FragColor;
+void main()
+{
+    out_FragColor = foo;
+}
+</script>
+<script id="fragmentShaderUniform2" type="text/something-not-javascript">#version 300 es
+uniform highp vec4 bar;
+
+out highp vec4 out_FragColor;
+void main()
+{
+    out_FragColor = bar;
+}
+</script>
+<script id="fragmentShaderUniform3" type="text/something-not-javascript">#version 300 es
+uniform highp vec4 baz;
+
+out highp vec4 out_FragColor;
+void main()
+{
+    out_FragColor = baz;
+}
+</script>
+<script id="fragmentShaderUniformBlock" type="text/something-not-javascript">#version 300 es
+uniform foo {
+    highp vec4 bar;
+};
+
+out highp vec4 out_FragColor;
+void main()
+{
+    out_FragColor = bar;
+}
+</script>
+<script id="fragmentShaderInstancedUniformBlock" type="text/something-not-javascript">#version 300 es
+uniform foo {
+    highp vec4 bar;
+} baz;
+
+out highp vec4 out_FragColor;
+void main()
+{
+    out_FragColor = baz.bar;
+}
+</script>
+<script>
+"use strict";
+description("shaders with conflicting uniform/uniform block names should fail");
+
+/*
+GLSL 3.00.4 section 4.2.5
+
+Shared globals are variables that can be accessed by multiple compilation units.
+In GLSL ES the only shared globals are uniforms.
+
+Shared globals share the same name space, and must be declared with the same
+type and precision.
+
+Section 4.3.7
+
+Uniform variable declarations can be grouped into named interface blocks
+to provide coarser granularity backing than is achievable
+with individual declarations.
+
+For uniform blocks, the application uses the block name to identify the block.
+Block names have no other use within a shader beyond interface matching;
+it is an error to use a block name at global scope for anything other than
+as a block name (e.g., use of a block name for a global variable name
+or function name is currently reserved).
+
+If an instance name (instance-name) is not used, the names declared inside
+the block are scoped at the global level and accessed as if they were declared
+outside the block. 
+*/
+
+var cases = [
+    { vShaderId: 'vertexShaderUniformBlock',
+      vShaderSuccess: true,
+      fShaderId: 'fragmentShaderUniform1',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'shaders with conflicting uniform/uniform block names should fail'
+    },
+    { vShaderId: 'vertexShaderUniformBlock',
+      vShaderSuccess: true,
+      fShaderId: 'fragmentShaderUniform2',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'shaders with conflicting uniform/uniform block member names should fail'
+    },
+    { vShaderId: 'vertexShaderInstancedUniformBlock',
+      vShaderSuccess: true,
+      fShaderId: 'fragmentShaderUniform1',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'shaders with conflicting uniform/uniform block names should fail'
+    },
+    { vShaderId: 'vertexShaderInstancedUniformBlock',
+      vShaderSuccess: true,
+      fShaderId: 'fragmentShaderUniform2',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: 'shaders with not conflicting uniform/uniform block member names should succeed'
+    },
+    { vShaderId: 'vertexShaderInstancedUniformBlock',
+      vShaderSuccess: true,
+      fShaderId: 'fragmentShaderUniform3',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'shaders with conflicting uniform/uniform block instance names should fail'
+    },
+    { vShaderId: 'vertexShaderUniform1',
+      vShaderSuccess: true,
+      fShaderId: 'fragmentShaderUniformBlock',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'shaders with conflicting uniform/uniform block names should fail'
+    },
+    { vShaderId: 'vertexShaderUniform2',
+      vShaderSuccess: true,
+      fShaderId: 'fragmentShaderUniformBlock',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'shaders with conflicting uniform/uniform block member names should fail'
+    },
+    { vShaderId: 'vertexShaderUniform1',
+      vShaderSuccess: true,
+      fShaderId: 'fragmentShaderInstancedUniformBlock',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'shaders with conflicting uniform/uniform block names should fail'
+    },
+    { vShaderId: 'vertexShaderUniform2',
+      vShaderSuccess: true,
+      fShaderId: 'fragmentShaderInstancedUniformBlock',
+      fShaderSuccess: true,
+      linkSuccess: true,
+      passMsg: 'shaders with not conflicting uniform/uniform block member names should succeed'
+    },
+    { vShaderId: 'vertexShaderUniform3',
+      vShaderSuccess: true,
+      fShaderId: 'fragmentShaderInstancedUniformBlock',
+      fShaderSuccess: true,
+      linkSuccess: false,
+      passMsg: 'shaders with conflicting uniform/uniform block instance names should fail'
+    },
+];
+
+GLSLConformanceTester.runTests(cases, 2);
+var successfullyParsed = true;
+</script>
+</body>
+</html>
