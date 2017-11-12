@@ -70,9 +70,9 @@ function render() {
     wtu.checkCanvasRect(gl, 10, 10, 10, 10, black, "should be black", 1);
 
     if (--numRenders > 0) {
-	window.requestAnimationFrame(render);
+        window.requestAnimationFrame(render);
     } else {
-	finishTest();
+        finishTest();
     }
 }
 
