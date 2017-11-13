@@ -553,7 +553,7 @@ var setupTexturedQuad = function(
  */
 var setupColorQuad = function(gl, opt_positionLocation) {
   opt_positionLocation = opt_positionLocation || 0;
-  var program = setupSimpleColorProgram(gl);
+  var program = setupSimpleColorProgram(gl, opt_positionLocation);
   setupUnitQuad(gl, opt_positionLocation);
   return program;
 };
