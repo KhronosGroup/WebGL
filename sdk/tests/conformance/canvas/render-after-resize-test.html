@@ -1,0 +1,134 @@
+<!--
+
+/*
+** Copyright (c) 2012 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebGL renderer after resize</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"> </script>
+<style type="text/css">
+body {
+    height: 3000px;
+}
+</style>
+</head>
+<body>
+<div id="description"></div>
+<canvas style="width: 100px, height: 100px; border: 1px solid blue;" id="c"></canvas>
+<canvas width="1200" height="672" style="width: 100px; height: 100px; border: 1px solid blue;" id="c2"></canvas>
+<div id="console"></div>
+<script>
+description("This test ensures WebGL implementations can render correctly after resizing the canvas");
+debug("");
+
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("c");
+shouldBeTrue("gl != null");
+
+const ctx = document.querySelector("#c2").getContext("2d");
+
+const vsrc = `
+varying vec4 v_color;
+void main() {
+ gl_PointSize = 64.0;
+ gl_Position = vec4(0, 0, 0, 1);
+}
+`;
+const fsrc = `
+void main() {
+ gl_FragColor = vec4(1, 0, 0, 1);
+}
+`;
+
+const prg = wtu.setupProgram(gl, [vsrc, fsrc]);
+
+const smallWidth = 300;
+const smallHeight = 150;
+const largeWidth = ctx.canvas.width;    // 1200
+const largeHeight = ctx.canvas.height;  // 672
+const dotSize = 64;
+
+function takeScreenshot() {
+  // changing this size to sometihng smaller produces
+  // different results. Sometimes wrong, sometimes correct,
+  gl.canvas.width = largeWidth;
+  gl.canvas.height = largeHeight;
+  renderScene();
+  ctx.drawImage(gl.canvas, 0, 0, ctx.canvas.width, ctx.canvas.height);
+}
+
+function renderScene() {
+  gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+
+  gl.enable(gl.DEPTH_TEST);
+  gl.clearColor(0,1,0,1);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  gl.useProgram(prg);
+  gl.drawArrays(gl.POINTS, 0, 1);
+}
+
+function render(time) {
+  gl.canvas.width = smallWidth;
+  gl.canvas.height = smallHeight;
+  renderScene();
+}
+
+render();          // force canvas to 300x150
+takeScreenshot();  // this fails
+render();          // this also fails
+
+function checkForDot(ctx) {
+  const w = ctx.canvas.width;
+  const h = ctx.canvas.height;
+
+  const dotX = w / 2 - dotSize / 2;
+  const dotY = h / 2 - dotSize / 2;
+console.log(w, h, dotX, dotY);
+  wtu.checkCanvasRect(ctx, 0             , 0             , w      , dotY   , [0, 255, 0, 255]);  // top
+  wtu.checkCanvasRect(ctx, 0             , dotY + dotSize, w      , dotY   , [0, 255, 0, 255]);  // bottom
+  wtu.checkCanvasRect(ctx, 0             , dotY          , dotX   , dotSize, [0, 255, 0, 255]);  // left
+  wtu.checkCanvasRect(ctx, dotX + dotSize, dotY          , dotX   , dotSize, [0, 255, 0, 255]);  // right
+  wtu.checkCanvasRect(ctx, dotX          , dotY          , dotSize, dotSize, [255, 0, 0, 255]);  // dot
+}
+
+
+// check the 2d canvas
+checkForDot(ctx);
+
+// check the webgl canvas
+checkForDot(gl);
+
+finishTest();
+
+var successfullyParsed = true;
+</script>
+</body>
+</html>
+
