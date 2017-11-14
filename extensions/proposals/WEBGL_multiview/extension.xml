@@ -16,16 +16,13 @@
   <overview>
     <mirrors href="https://www.opengl.org/registry/specs/OVR/multiview.txt" name="OVR_multiview">
       <addendum>
-        Calling <code>framebufferTextureMultiviewWEBGL</code> with a <code>texture</code> parameter that does not identify a 2D array texture generates an <code>INVALID_OPERATION</code> error.
+        Calling <code>framebufferTextureMultiviewWEBGL</code> with a non-null <code>texture</code> parameter that does not identify a 2D array texture generates an <code>INVALID_OPERATION</code> error.
       </addendum>
       <addendum>
-        Calling <code>framebufferTextureMultiviewWEBGL</code> with the parameters set so that <code>baseViewIndex</code> + <code>numViews</code> is greater than the value of <code>MAX_ARRAY_TEXTURE_LAYERS</code> generates an <code>INVALID_VALUE</code> error.
+        The values of <code>baseViewIndex</code> and <code>numViews</code> can result in an error only if the <code>texture</code> parameter is non-null.
       </addendum>
       <addendum>
-        If <code>baseViewIndex</code> is not the same for all framebuffer attachment points where the value of <code>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</code> is not <code>NONE</code> the framebuffer is considered incomplete. Calling getFramebufferStatus for a framebuffer in this state returns <code>FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR</code>.
-      </addendum>
-      <addendum>
-        If <code>baseViewIndex</code> + <code>numViews</code> is greater than the number of texture array elements in the texture bound to <code>target</code>, the framebuffer is considered incomplete. Calling getFramebufferStatus for a framebuffer in this state returns <code>FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR</code>.
+        If <code>baseViewIndex</code> is not the same for all framebuffer attachment points where the value of <code>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</code> is not <code>NONE</code> the framebuffer is considered incomplete. Calling <code>getFramebufferStatus</code> for a framebuffer in this state returns <code>FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR</code>. Other rules for framebuffer completeness from the OVR_multiview specification also apply.
       </addendum>
       <addendum>
         Other web APIs may expose <i>opaque multiview framebuffers</i>. Opaque multiview framebuffers are <code>WebGLFramebuffer</code> objects that act as if they have multi-view attachments, but their attachments are not exposed as textures or renderbuffers and can not be changed. Opaque multiview framebuffers may have any combination of color, depth and stencil attachments.
@@ -62,16 +59,10 @@
         Likewise the shading language preprocessor <code>#define GL_OVR_multiview</code>, will be defined to 1 if the extension is supported.
       </addendum>
       <addendum>
-        This extension relaxes the restriction in OVR_multiview that only gl_Position can depend on ViewID in the vertex shader. With this change, view-dependent outputs like reflection vectors and similar are allowed.
+        This extension relaxes the restriction in OVR_multiview that only <code>gl_Position</code> can depend on ViewID in the vertex shader. With this change, view-dependent outputs like reflection vectors and similar are allowed.
       </addendum>
       <addendum>
         When the number of views specified in the active program is one, <code>gl_ViewID_OVR</code> will always evaluate to zero.
-      </addendum>
-      <addendum>
-        Attempting to specify a <code>num_views</code> value less than 1 will result in a compile error.
-      </addendum>
-      <addendum>
-        If a layout qualifier specifying <code>num_views</code> is declared more than once in the same shader, all those declarations must set <code>num_views</code> to the same value; otherwise a compile error results.
       </addendum>
       <addendum>
         When a shader written in OpenGL ES shading language version 1.00 enables or requires <code>GL_OVR_multiview</code> with an extension directive, <code>layout</code> is treated as a keyword rather than an identifier, and using a layout qualifier to specify <code>num_views</code> is allowed. Other uses of layout qualifiers are not allowed in OpenGL ES shading language 1.00.
@@ -80,10 +71,7 @@
         In OpenGL ES shading language version 1.00 <code>gl_ViewID_OVR</code> has the type <code>int</code> as opposed to <code>uint</code>.
       </addendum>
       <addendum>
-        When a timer query is active and the number of views in the current draw framebuffer is greater than 1, attempting to draw or calling <code>clear</code> generates an <code>INVALID_OPERATION</code> error.
-      </addendum>
-      <addendum>
-        When transform feedback is active and the number of views in the current draw framebuffer is greater than 1, attempting to draw generates an <code>INVALID_OPERATION</code> error.
+        When a timer query is active and the number of views in the current draw framebuffer is greater than one, attempting to draw or calling <code>clear</code> generates an <code>INVALID_OPERATION</code> error.
       </addendum>
       <addendum>
         When the number of views in the current draw framebuffer is greater than one and the active program does not declare a number of views, attempting to draw generates an <code>INVALID_OPERATION</code> error.
@@ -91,7 +79,7 @@
     </mirrors>
     <features>
       <feature>
-        Adds support for rendering into multiple views simultaneously.
+        Adds support for rendering into multiple views simultaneously. This is supported for opaque multiview framebuffers starting from WebGL 1.0, and 2D texture arrays starting from WebGL 2.0.
       </feature>
       <feature>
         When a shader enables, requires, or warns <code>GL_OVR_multiview</code> with an extension directive:
@@ -172,10 +160,16 @@ interface WEBGL_multiview {
       The error <code>INVALID_ENUM</code> is generated by calling <code>getFramebufferAttachmentParameter</code> with the <code>pname</code> parameter set to <code>FRAMEBUFFER_ATTACHMENT_OBJECT_NAME</code> when the <code>target</code> parameter identifies an opaque multiview framebuffer.
     </error>
     <error>
-      The error <code>INVALID_VALUE</code> is generated by calling <code>framebufferTextureMultiviewWEBGL</code> if <code>numViews</code> is less than 1, if <code>numViews</code> is more than <code>MAX_VIEWS_OVR</code> or with the parameters set so that <code>baseViewIndex</code> + <code>numViews</code> exceeds the value of <code>MAX_ARRAY_TEXTURE_LAYERS</code>.
+      The error <code>INVALID_VALUE</code> is generated by calling <code>framebufferTextureMultiviewWEBGL</code> with a non-null <code>texture</code> in the following cases:
+      <ul>
+        <li>if <code>numViews</code> is less than one</li>
+        <li>if <code>numViews</code> is more than <code>MAX_VIEWS_OVR</code></li>
+        <li>with the parameters set so that <code>baseViewIndex</code> + <code>numViews</code> is larger than the value of <code>MAX_ARRAY_TEXTURE_LAYERS</code> minus one</li>
+        <li>if <code>baseViewIndex</code> is negative</li>
+      </ul>
     </error>
     <error>
-      The error <code>INVALID_FRAMEBUFFER_OPERATION</code> is generated by commands that read from the framebuffer such as <code>BlitFramebuffer</code>, <code>ReadPixels</code>, <code>CopyTexImage*</code>, and <code>CopyTexSubImage*</code>, if the number of views in the current read framebuffer is greater than 1.
+      The error <code>INVALID_FRAMEBUFFER_OPERATION</code> is generated by commands that read from the framebuffer such as <code>BlitFramebuffer</code>, <code>ReadPixels</code>, <code>CopyTexImage*</code>, and <code>CopyTexSubImage*</code>, if the number of views in the current read framebuffer is greater than one.
     </error>
     <error>
       The error <code>INVALID_OPERATION</code> is generated by attempting to draw if the active program declares a number of views and the number of views in the draw framebuffer does not match the number of views declared in the active program.
@@ -184,10 +178,10 @@ interface WEBGL_multiview {
       The error <code>INVALID_OPERATION</code> is generated by attempting to draw if the number of views in the current draw framebuffer is greater than one and the active program does not declare a number of views.
     </error>
     <error>
-      The error <code>INVALID_OPERATION</code> is generated by attempting to draw if the number of views in the current draw framebuffer is greater than 1 and transform feedback is active.
+      The error <code>INVALID_OPERATION</code> is generated by attempting to draw if the number of views in the current draw framebuffer is greater than one and transform feedback is active.
     </error>
     <error>
-      The error <code>INVALID_OPERATION</code> is generated by attempting to draw or calling <code>clear</code> if the number of views in the current draw framebuffer is greater than 1 and a timer query is active.
+      The error <code>INVALID_OPERATION</code> is generated by attempting to draw or calling <code>clear</code> if the number of views in the current draw framebuffer is greater than one and a timer query is active.
     </error>
   </errors>
   <samplecode xml:space="preserve">
@@ -196,11 +190,15 @@ interface WEBGL_multiview {
     var ext = gl.getExtension('WEBGL_multiview');
     var fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb);
-    var tex = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D_ARRAY, tex);
+    var colorTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D_ARRAY, colorTex);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, 512, 512, 2);
-    ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex, 0, 0, 2);
-    gl.drawElements(...);  // draw will be broadcasted to the layers of the texture.
+    ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, 2);
+    var depthStencilTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D_ARRAY, depthStencilTex);
+    gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.DEPTH32F_STENCIL8, 512, 512, 2);
+    ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, depthStencilTex, 0, 0, 2);
+    gl.drawElements(...);  // draw will be broadcasted to the layers of colorTex and depthStencilTex.
     </pre>
   </samplecode>
   <samplecode xml:space="preserve">
@@ -270,6 +268,10 @@ interface WEBGL_multiview {
 
     <revision date="2017/08/17">
       <change>Required a multiview program to draw to a multiview framebuffer.</change>
+    </revision>
+
+    <revision date="2017/10/26">
+      <change>Took changes in the native OVR_multiview specification into account, added a more elaborate example including a depth/stencil texture, and an explicit mention that texture arrays are only supported in WebGL 2.0.</change>
     </revision>
   </history>
 </proposal>
