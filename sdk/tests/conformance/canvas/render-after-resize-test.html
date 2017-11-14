@@ -87,11 +87,13 @@ function checkForDot(ctx) {
   const dotY = (h / 2 - dotHeight / 2) | 0;
   const slop = 1;
 
-  wtu.checkCanvasRect(ctx, 0                         , 0                          , w              , dotY - slop     , [0, 255, 0, 255]);  // top
-  wtu.checkCanvasRect(ctx, 0                         , dotY + dotHeight + 2 * slop, w              , dotY - 2 * slop , [0, 255, 0, 255]);  // bottom
-  wtu.checkCanvasRect(ctx, 0                         , dotY                       , dotX - slop    , dotHeight       , [0, 255, 0, 255]);  // left
-  wtu.checkCanvasRect(ctx, dotX + dotWidth + 2 * slop, dotY                       , dotX - 2 * slop, dotHeight       , [0, 255, 0, 255]);  // right
-  wtu.checkCanvasRect(ctx, dotX + slop               , dotY + slop                , dotWidth - slop, dotHeight - slop, [255, 0, 0, 255]);  // dot
+  wtu.checkCanvasRect(ctx, 0,           0,           w,                   dotY - slop,          [0, 255, 0, 255]);  // top
+  let start = dotY + dotHeight + 2 * slop;
+  wtu.checkCanvasRect(ctx, 0,           start,       w,                   h - start,            [0, 255, 0, 255]);  // bottom
+  wtu.checkCanvasRect(ctx, 0,           dotY,        dotX - slop,         dotHeight,            [0, 255, 0, 255]);  // left
+  start = dotX + dotWidth + 2 * slop;
+  wtu.checkCanvasRect(ctx, start,       dotY,        w - start,           dotHeight,            [0, 255, 0, 255]);  // right
+  wtu.checkCanvasRect(ctx, dotX + slop, dotY + slop, dotWidth - 2 * slop, dotHeight - 2 * slop, [255, 0, 0, 255]);  // dot
 }
 
 gl.canvas.width = smallWidth;
