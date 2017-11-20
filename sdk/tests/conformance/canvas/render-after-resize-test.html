@@ -47,16 +47,9 @@ shouldBeTrue("gl != null");
 
 var positionLocation = 0;
 var texcoordLocation = 1;
-var program = wtu.setupSimpleColorProgram(gl, 0);
+var program = wtu.setupColorQuad(gl, positionLocation);
 var colorLocation = gl.getUniformLocation(program, 'u_color');
-gl.uniform4fv(colorLocation, [1.0, 0.0, 0.0, 1.0]);
-var buffers = wtu.setupQuad(gl, {
-  positionLocation: positionLocation,
-  texcoordLocation: texcoordLocation,
-  lowerLeftTexCoords: [ 0.0, 0.0 ],
-  upperRightTexCoords: [ 1.0, 1.0 ],
-  scale: 0.25,
-});
+gl.uniform4fv(colorLocation, [0.0, 1.0, 0.0, 1.0]);
 
 const smallWidth = 300;
 const smallHeight = 150;
@@ -69,44 +62,31 @@ function render() {
   gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
   gl.enable(gl.DEPTH_TEST);
-  gl.clearColor(0,1,0,1);
+  gl.clearColor(1,0,0,1);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   gl.useProgram(program);
   wtu.drawUnitQuad(gl);
 }
 
-function checkForDot(ctx) {
+function checkForQuad(ctx) {
   let w = ctx.drawingBufferWidth;
   let h = ctx.drawingBufferHeight;
 
-  // Round all coordinates to integers.
-  const dotWidth  = (w / 4) | 0;
-  const dotHeight = (h / 4) | 0;
-  const dotX = (w / 2 - dotWidth / 2) | 0;
-  const dotY = (h / 2 - dotHeight / 2) | 0;
-  const slop = 1;
-
-  wtu.checkCanvasRect(ctx, 0,           0,           w,                   dotY - slop,          [0, 255, 0, 255]);  // top
-  let start = dotY + dotHeight + 2 * slop;
-  wtu.checkCanvasRect(ctx, 0,           start,       w,                   h - start,            [0, 255, 0, 255]);  // bottom
-  wtu.checkCanvasRect(ctx, 0,           dotY,        dotX - slop,         dotHeight,            [0, 255, 0, 255]);  // left
-  start = dotX + dotWidth + 2 * slop;
-  wtu.checkCanvasRect(ctx, start,       dotY,        w - start,           dotHeight,            [0, 255, 0, 255]);  // right
-  wtu.checkCanvasRect(ctx, dotX + slop, dotY + slop, dotWidth - 2 * slop, dotHeight - 2 * slop, [255, 0, 0, 255]);  // dot
+  wtu.checkCanvasRect(gl, 0, 0, w, h, [ 0, 255, 0, 255 ]);
 }
 
 gl.canvas.width = smallWidth;
 gl.canvas.height = smallHeight;
 render();
-checkForDot(gl); // passes
+checkForQuad(gl); // passes
 
 gl.canvas.width = largeWidth;
 gl.canvas.height = largeHeight;
 gl.canvas.width = smallWidth;
 gl.canvas.height = smallHeight;
 render();
-checkForDot(gl); // fails (almost all the time)
+checkForQuad(gl); // fails (almost all the time)
 
 finishTest();
 
@@ -114,4 +94,3 @@ var successfullyParsed = true;
 </script>
 </body>
 </html>
-
