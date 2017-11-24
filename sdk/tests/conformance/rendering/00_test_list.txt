@@ -31,3 +31,4 @@ line-loop-tri-fan.html
 --min-version 1.0.4 framebuffer-texture-clear.html
 --min-version 1.0.4 clear-after-copyTexImage2D.html
 --min-version 1.0.4 texture-switch-performance.html
+--min-version 1.0.4 rendering-stencil-large-viewport.html
