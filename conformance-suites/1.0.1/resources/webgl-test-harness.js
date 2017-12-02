@@ -493,7 +493,7 @@ TestHarness.prototype.startNextFile = function() {
 
 TestHarness.prototype.reportResults = function (success, msg, skipped) {
   this.clearTimeout();
-  log(success ? "PASS" : "FAIL", msg);
+  log((success ? "PASS" : "FAIL") + ": " + msg);
   this.reportFunc(TestHarness.reportType.TEST_RESULT, msg, success, skipped);
   // For each result we get, reset the timeout
   this.setTimeout();
