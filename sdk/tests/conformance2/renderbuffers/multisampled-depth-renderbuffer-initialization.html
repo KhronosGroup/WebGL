@@ -147,7 +147,7 @@ function runTest(gl, params) {
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, 'should be no errors');
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    // Draw a blue quad (at z = 0.0, so depth = 0.5) (should pass the depth test)
+    // Draw a blue quad (at clip z = 0.0, so depth = 0.5) (should pass the depth test)
     gl.depthFunc(gl.LESS);
     gl.enable(gl.DEPTH_TEST);
     wtu.setupColorQuad(gl);
