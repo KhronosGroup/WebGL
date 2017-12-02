@@ -99,6 +99,10 @@ function runTest(gl, params) {
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.STENCIL_ATTACHMENT, gl.RENDERBUFFER, stencilBuffer);
     if (params.alloc2) {
         if (params.alloc1) {
+            if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+                debug("Skip: framebuffer is allowed to be incomplete.");
+                return;
+            }
             // Clear the FBO in order to make sure framebufferRenderbuffer is
             // committed.
             gl.clear(gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
@@ -115,9 +119,13 @@ function runTest(gl, params) {
             "should be no error after renderbufferStorage.");
     }
 
-    shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)",
-             "gl.FRAMEBUFFER_COMPLETE");
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        debug("Skip: framebuffer is allowed to be incomplete.");
+        return;
+    }
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, 'should be no errors');
+
+    // fbo depth should now be the default value of 0.
 
     // Draw a blue quad (stencil = 1) (should pass the stencil test: 1 > 0)
     gl.stencilFunc(gl.GREATER, 1, 0xffffffff);

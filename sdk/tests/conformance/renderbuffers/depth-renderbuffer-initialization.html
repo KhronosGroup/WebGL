@@ -101,6 +101,10 @@ function runTest(gl, params) {
         if (params.alloc1) {
             // Clear the FBO in order to make sure framebufferRenderbuffer is
             // committed.
+            if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+                debug("Skip: framebuffer is allowed to be incomplete.");
+                return;
+            }
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         }
         gl.bindRenderbuffer(gl.RENDERBUFFER, buffer);
@@ -115,11 +119,15 @@ function runTest(gl, params) {
             "should be no error after renderbufferStorage.");
     }
 
-    shouldBe("gl.checkFramebufferStatus(gl.FRAMEBUFFER)",
-             "gl.FRAMEBUFFER_COMPLETE");
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        debug("Skip: framebuffer is allowed to be incomplete.");
+        return;
+    }
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, 'should be no errors');
 
-    // Draw a blue quad (at z = 0.0, so depth = 0.5) (should pass the depth test)
+    // fbo depth should now be the default value of 1.0.
+
+    // Draw a blue quad (at clip z = 0.0, so depth = 0.5) (should pass the depth test: 0.5 < 1.0)
     gl.depthFunc(gl.LESS);
     gl.enable(gl.DEPTH_TEST);
     wtu.setupColorQuad(gl);
