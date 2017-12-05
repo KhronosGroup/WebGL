@@ -156,17 +156,19 @@ function getPixelsFromTexture2D(gl, tex, xoffset, yoffset, width, height) {
   return buffer;
 }
 
-function comparePixels(buffer1, buffer2) {
+function comparePixels(buffer1, buffer2, tolerance) {
   if (buffer1.length != buffer2.length || buffer1.length % 4 != 0) {
     testFailed("compare pixels: invalid buffer size");
     return;
   }
   var count = 0;
   for (var ii = 0; ii < buffer1.length / 4; ++ii) {
-    if (buffer1[ii * 4] != buffer2[ii * 4] ||
-        buffer1[ii * 4 + 1] != buffer2[ii * 4 + 1] ||
-        buffer1[ii * 4 + 2] != buffer2[ii * 4 + 2] ||
-        buffer1[ii * 4 + 3] != buffer2[ii * 4 + 3]) {
+    var distance = 0;
+    for (var jj = 0; jj < 4; ++jj) {
+      var diff = buffer1[ii * 4 + jj] - buffer2[ii * 4 + jj];
+      distance += diff * diff;
+    }
+    if (Math.sqrt(diff) > tolerance) {
       if (__verbose__) {
         debug("Pixel " + ii + ": expected (" +
               [buffer1[ii * 4], buffer1[ii * 4 + 1], buffer1[ii * 4 + 2], buffer1[ii * 4 + 3]] + "), got (" +
@@ -195,6 +197,8 @@ function runTestIteration2D(gl, testCase, flip_y, premultiply_alpha) {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flip_y);
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, premultiply_alpha);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Set up pixel store parameters should succeed");
+
+  var tol = 3;
 
   var tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -226,7 +230,7 @@ function runTestIteration2D(gl, testCase, flip_y, premultiply_alpha) {
 
   var buffer1 = unpackPixels(array, testCase.width, testCase.height, imageSizes, flip_y, premultiply_alpha);
   var buffer2 = getPixelsFromTexture2D(gl, tex, 0, 0, testCase.width, testCase.height);
-  comparePixels(buffer1, buffer2);
+  comparePixels(buffer1, buffer2, tol);
 
   var subWidth = testCase.width - testCase.xoffset;
   var subHeight = testCase.height - testCase.yoffset;
@@ -255,7 +259,7 @@ function runTestIteration2D(gl, testCase, flip_y, premultiply_alpha) {
   var buffer1 = unpackPixels(array, subWidth, subHeight, imageSizes, flip_y, premultiply_alpha);
   var buffer2 = getPixelsFromTexture2D(
       gl, tex, testCase.xoffset, testCase.yoffset, subWidth, subHeight);
-  comparePixels(buffer1, buffer2);
+  comparePixels(buffer1, buffer2, tol);
 
   gl.bindTexture(gl.TEXTURE_2D, null);
   gl.deleteTexture(tex);
