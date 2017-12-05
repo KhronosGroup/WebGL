@@ -139,21 +139,9 @@ function getPixelsFromTexture2D(gl, tex, xoffset, yoffset, width, height) {
   var readbackBuffer = setupArrayBuffer(width * height * bytesPerReadbackPixel, false);
   gl.readPixels(xoffset, yoffset, width, height, gl.RGBA, gl.UNSIGNED_BYTE, readbackBuffer);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "read back texture pixels should succeed");
-  var bytesPerPixel = 4;
-  var buffer = setupArrayBuffer(width * height * bytesPerPixel, false);
-  var srcIndex = 0;
-  var dstIndex = 0;
-  for (var y = 0; y < height; ++y) {
-    for (var x = 0; x < width; ++x) {
-      buffer[dstIndex++] = readbackBuffer[srcIndex++]; // R
-      buffer[dstIndex++] = readbackBuffer[srcIndex++]; // G
-      buffer[dstIndex++] = readbackBuffer[srcIndex++]; // B
-      buffer[dstIndex++] = readbackBuffer[srcIndex++]; // A
-    }
-  }
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   gl.deleteFramebuffer(fbo);
-  return buffer;
+  return readbackBuffer;
 }
 
 function comparePixels(buffer1, buffer2, tolerance) {
