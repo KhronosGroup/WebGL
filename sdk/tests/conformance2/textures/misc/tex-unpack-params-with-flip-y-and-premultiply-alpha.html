@@ -487,12 +487,29 @@ function runNegativeTests(gl) {
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
 }
 
+function runRegressionTests(gl) {
+  debug("");
+  debug("The following test serves as a regression test for crbug.com/774174");
+  var array = new Uint16Array(32);
+  gl.pixelStorei(gl.UNPACK_ROW_LENGTH, 4);
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 6);
+  var tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texSubImage2D(gl.TEXTURE_2D, 4, 7, 5, 8, 5, gl.RGB, gl.UNSIGNED_SHORT_5_5_5_1, array);
+  // At this point, the Chrome ASAN build used to crash.
+  testPassed("The regression test for crbug.com/774174 doesn't crash");
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Calling texSubImage2D without initializing the texture is illegal");
+  gl.pixelStorei(gl.UNPACK_ROW_LENGTH, 0);
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+}
+
 var gl = wtu.create3DContext("example", undefined, 2);
 if (!gl) {
   testFailed("Fail to get a WebGL context");
 } else {
   runTests(gl);
   runNegativeTests(gl);
+  runRegressionTests(gl);
 }
 
 debug("");
