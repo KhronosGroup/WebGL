@@ -3881,14 +3881,16 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     </div>
 
     <p>
-        If a buffer is bound to <code>PIXEL_UNPACK_BUFFER</code>, and <code>UNPACK_FLIP_Y_WEBGL</code>
-        or <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> is set to true, <code>texImage2D</code> and
-        <code>texSubImage2D</code> generate an <code>INVALID_OPERATION</code> error.
+        If <code>UNPACK_FLIP_Y_WEBGL</code> or <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> is set to true,
+        <code>texImage2D</code> and <code>texSubImage2D</code> generate an <code>INVALID_OPERATION</code> error
+        if they upload data from a <code>PIXEL_UNPACK_BUFFER</code>.
     </p>
 
     <p>
         If <code>UNPACK_FLIP_Y_WEBGL</code> or <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> is set to true,
-        <code>texImage3D</code> and <code>texSubImage3D</code> generate an <code>INVALID_OPERATION</code> error.
+        <code>texImage3D</code> and <code>texSubImage3D</code> generate an <code>INVALID_OPERATION</code> error
+        if they upload data from a <code>PIXEL_UNPACK_BUFFER</code> or a non-null client side
+        <code>ArrayBufferView</code>.
     </p>
 
     <h3><a name="NO_ETC2_EAC">No ETC2 and EAC compressed texture formats</a></h3>
