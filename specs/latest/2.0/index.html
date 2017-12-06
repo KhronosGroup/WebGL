@@ -3880,6 +3880,19 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
          <code>UNPACK_</code> params.
     </div>
 
+    <p>
+        If <code>UNPACK_FLIP_Y_WEBGL</code> or <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> is set to true,
+        <code>texImage2D</code> and <code>texSubImage2D</code> generate an <code>INVALID_OPERATION</code> error
+        if they upload data from a <code>PIXEL_UNPACK_BUFFER</code>.
+    </p>
+
+    <p>
+        If <code>UNPACK_FLIP_Y_WEBGL</code> or <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> is set to true,
+        <code>texImage3D</code> and <code>texSubImage3D</code> generate an <code>INVALID_OPERATION</code> error
+        if they upload data from a <code>PIXEL_UNPACK_BUFFER</code> or a non-null client side
+        <code>ArrayBufferView</code>.
+    </p>
+
     <h3><a name="NO_ETC2_EAC">No ETC2 and EAC compressed texture formats</a></h3>
     <p>OpenGL ES 3.0 requires support for the following ETC2 and EAC compressed texture formats:
        COMPRESSED_R11_EAC, COMPRESSED_SIGNED_R11_EAC, COMPRESSED_RG11_EAC,
