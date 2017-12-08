@@ -89,12 +89,20 @@ function runTest() {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuf);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Int16Array([ 0, 1, 2, 2, 1, 3 ]), gl.STATIC_DRAW);
 
+    var uboDataSize = gl.getActiveUniformBlockParameter(
+        program, uboIndex, gl.UNIFORM_BLOCK_DATA_SIZE);
+    if (uboDataSize == 0) {
+        testFailed("uniform block data size invalid");
+        return;
+    }
+
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "No errors from setup");
 
     debug("draw lower triangle - should be red");
     var uboBuf1 = gl.createBuffer();
     gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, uboBuf1);
-    gl.bufferData(gl.UNIFORM_BUFFER, new Float32Array([ 1, 0, 0, 1 ]), gl.STATIC_DRAW);
+    gl.bufferData(gl.UNIFORM_BUFFER, uboDataSize, gl.STATIC_DRAW);
+    gl.bufferSubData(gl.UNIFORM_BUFFER, 0, new Float32Array([ 1, 0, 0, 1 ]));
     gl.uniformBlockBinding(program, uboIndex, 0);
     gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "No errors from draw");
@@ -102,7 +110,8 @@ function runTest() {
     debug("draw upper triangle - should be green");
     var uboBuf2 = gl.createBuffer();
     gl.bindBufferBase(gl.UNIFORM_BUFFER, 1, uboBuf2);
-    gl.bufferData(gl.UNIFORM_BUFFER, new Float32Array([ 0, 1, 0, 1 ]), gl.STATIC_DRAW);
+    gl.bufferData(gl.UNIFORM_BUFFER, uboDataSize, gl.STATIC_DRAW);
+    gl.bufferSubData(gl.UNIFORM_BUFFER, 0, new Float32Array([ 0, 1, 0, 1 ]));
     gl.uniformBlockBinding(program, uboIndex, 1);
     gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, 6);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "No errors from draw");
