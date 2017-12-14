@@ -95,9 +95,6 @@ function runDefaultTransformFeedbackTest() {
   runFeedback(gl, prog, srcVAO1, tf);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors having drawn with the default transform feedback");
 
-  // FIXME: this should not be needed once the spec and implementations are fixed
-  gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, outLoc, null);  // this is not needed
-
   const expected = [2, 4, 6];
   gl.bindBuffer(gl.ARRAY_BUFFER, dstBuffer);
   wtu.checkFloatBuffer(gl, gl.ARRAY_BUFFER, expected);
@@ -122,8 +119,6 @@ function createBuffer(gl, dataOrSize) {
   const buf = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buf);
   gl.bufferData(gl.ARRAY_BUFFER, dataOrSize, gl.STATIC_DRAW);
-  // FIXME: this should not be needed once the spec and implementations are fixed
-  gl.bindBuffer(gl.ARRAY_BUFFER, null);  // this is not needed
   return buf;
 }
 
