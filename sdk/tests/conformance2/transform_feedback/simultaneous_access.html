@@ -121,7 +121,7 @@ function runDrawArraysTest() {
 
   gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, dstBuffer);
   runFeedback(gl, prog, srcVAO1, tf);
-  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer used as uniform buffer and tf simultaneously");  
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer used as uniform buffer and tf simultaneously");
   gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, uniformBuffer);
 
   gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
