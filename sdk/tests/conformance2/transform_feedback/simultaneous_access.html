@@ -72,7 +72,6 @@ if (!gl) {
     testPassed("WebGL context exists");
 
     runDrawArraysTest();
-    runTexImageTest();
     finishTest();
 }
 
@@ -132,8 +131,8 @@ function runDrawArraysTest() {
 
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, outLoc, dstBuffer);
 
-  // Test PIXEL_UNPACK_BUFFER
-  var tex = gl.createTexture();
+  debug("Test PIXEL_UNPACK_BUFFER");
+  const tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.bindBuffer(gl.PIXEL_UNPACK_BUFFER, srcBuffer1);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, 0);
@@ -143,7 +142,7 @@ function runDrawArraysTest() {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, 0);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "PIXEL_UNPACK_BUFFER is bound for transform feedback");
 
-  // Test PIXEL_PACK_BUFFER
+  debug("Test PIXEL_PACK_BUFFER");
   gl.bindBuffer(gl.PIXEL_PACK_BUFFER, srcBuffer1);
   gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "PIXEL_PACK_BUFFER is not bound for transform feedback");
@@ -151,21 +150,22 @@ function runDrawArraysTest() {
   gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "PIXEL_PACK_BUFFER is bound for transform feedback");
 
-  // Test bufferData family
+  debug("Test bufferData family");
+  gl.bindBuffer(gl.COPY_READ_BUFFER, srcBuffer1);
   gl.bindBuffer(gl.COPY_WRITE_BUFFER, dstBuffer);
-  gl.bufferData(gl.COPY_WRITE_BUFFER, 16, gl.STATIC_DRAW);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "transform feedback is not active");
-  gl.beginTransformFeedback(gl.POINTS);
-  gl.bufferData(gl.COPY_WRITE_BUFFER, 16, gl.STATIC_DRAW);
-  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "transform feedback is active");
-  gl.endTransformFeedback();
-}
-
-function runTexImageTest() {
-  var tex = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, tex);
-
-  gl.texImage2D
+  const runBufferDataTest = (bufferDataFunction) => {
+    bufferDataFunction();
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "transform feedback is not active");
+    gl.beginTransformFeedback(gl.POINTS);
+    bufferDataFunction();
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "transform feedback is active");
+    gl.endTransformFeedback();
+  };
+  runBufferDataTest(()=>{ gl.bufferData(gl.COPY_WRITE_BUFFER, 16, gl.STATIC_DRAW); });
+  runBufferDataTest(()=>{ gl.bufferSubData(gl.COPY_WRITE_BUFFER, 0, new Uint8Array([0])); });
+  runBufferDataTest(()=>{ gl.getBufferSubData(gl.COPY_WRITE_BUFFER, 0, new Uint8Array([0]), 0, 1); });
+  runBufferDataTest(()=>{ gl.copyBufferSubData(gl.COPY_WRITE_BUFFER, gl.COPY_READ_BUFFER, 0, 0, 1); });
+  runBufferDataTest(()=>{ gl.copyBufferSubData(gl.COPY_READ_BUFFER, gl.COPY_WRITE_BUFFER, 0, 0, 1); });
 }
 
 function runFeedback(gl, prog, srcVAO, tf) {
