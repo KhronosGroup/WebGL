@@ -77,26 +77,6 @@ debug("Verify that in depthRange zNear <= zFar");
 wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.depthRange(20, 10)");
 
 debug("");
-debug("Verify that front/back settings should be the same for stenclMask and stencilFunc");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMask(255)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMaskSeparate(gl.FRONT, 1)");
-wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMaskSeparate(gl.BACK, 1)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFunc(gl.ALWAYS, 0, 255)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 1, 255)");
-wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 1, 255)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 1, 1)");
-wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 1, 1)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-
-debug("");
 debug("Verify that *LENGTH are undefined");
 shouldBeUndefined(gl.INFO_LOG_LENGTH);
 shouldBeUndefined(gl.SHADER_SOURCE_LENGTH);

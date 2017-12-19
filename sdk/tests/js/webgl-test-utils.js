@@ -953,6 +953,15 @@ var drawUnitQuad = function(gl) {
   gl.drawArrays(gl.TRIANGLES, 0, 6);
 };
 
+var noopProgram = null;
+var dummySetProgramAndDrawNothing = function(gl) {
+  if (!noopProgram) {
+    noopProgram = setupProgram(gl, ["void main() {}", "void main() {}"], [], []);
+  }
+  gl.useProgram(noopProgram);
+  gl.drawArrays(gl.TRIANGLES, 0, 0);
+};
+
 /**
  * Clears then Draws a previously setupUnitQuad.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
@@ -3110,6 +3119,7 @@ var API = {
   drawIndexedQuad: drawIndexedQuad,
   drawUByteColorQuad: drawUByteColorQuad,
   drawFloatColorQuad: drawFloatColorQuad,
+  dummySetProgramAndDrawNothing: dummySetProgramAndDrawNothing,
   dumpShadersInfo: dumpShadersInfo,
   endsWith: endsWith,
   failIfGLError: failIfGLError,

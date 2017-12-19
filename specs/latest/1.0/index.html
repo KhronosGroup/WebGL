@@ -3728,16 +3728,29 @@ destination range for any pixel outside the bound framebuffer.
 <h3><a name="STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a></h3>
 
 <p>
-In the WebGL API it is illegal to specify a different mask or reference value for front facing and
-back facing triangles in stencil operations. A call to <code>drawArrays</code>
-or <code>drawElements</code> will generate an <code>INVALID_OPERATION</code> error if:
+In the WebGL API, if stencil testing is enabled and the currently bound framebuffer has a stencil buffer,
+then it is illegal to draw while any of the following cases are true.
+Doing so will generate an <code>INVALID_OPERATION</code> error.
+</p>
 
 <ul>
-<li> <code>STENCIL_WRITEMASK</code> != <code>STENCIL_BACK_WRITEMASK</code> (as specified by <code>stencilMaskSeparate</code> for the <code>mask</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
-<li> <code>STENCIL_VALUE_MASK</code> != <code>STENCIL_BACK_VALUE_MASK</code> (as specified by <code>stencilFuncSeparate</code> for the <code>mask</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
-<li> <code>STENCIL_REF</code> != <code>STENCIL_BACK_REF</code> (as specified by <code>stencilFuncSeparate</code> for the <code>ref</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
+<li><code>(STENCIL_WRITEMASK &amp; maxStencilValue) != (STENCIL_BACK_WRITEMASK &amp; maxStencilValue)</code>
+<br>
+(as specified by <code>stencilMaskSeparate</code> for the <code>mask</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
+
+<li><code>(STENCIL_VALUE_MASK &amp; maxStencilValue) != (STENCIL_BACK_VALUE_MASK &amp; maxStencilValue)</code>
+<br>
+(as specified by <code>stencilFuncSeparate</code> for the <code>mask</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
+
+<li><code>clamp(STENCIL_REF, 0, maxStencilValue) != clamp(STENCIL_BACK_REF, 0, maxStencilValue)</code>
+<br>
+(as specified by <code>stencilFuncSeparate</code> for the <code>ref</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
 </ul>
 
+<p>
+where <code>maxStencilValue</code> is <code>((1 &lt;&lt; s) - 1)</code>,
+where <code>s</code> is the number of stencil bits in the draw framebuffer.
+(When no stencil bits are present, these checks always pass.)
 </p>
 
     <h3><a name="VERTEX_STRIDE">Vertex Attribute Data Stride</a></h3>
