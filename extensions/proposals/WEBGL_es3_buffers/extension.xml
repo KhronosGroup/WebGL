@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:set sw=2 ts=4: -->
+<?xml-stylesheet href="../../extension.xsl" type="text/xsl"?>
+<proposal href="proposals/WEBGL_es3_buffers/">
+  <name>WEBGL_es3_buffers</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Jeff Gilbert, Mozilla</contributor>
+  </contributors>
+
+  <number>XYZ</number>
+
+  <depends>
+    <api version="1.0"/>
+    <removed version="2.0" />
+  </depends>
+
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/NV/NV_copy_buffer.txt"
+             name="NV_copy_buffer">
+    </mirrors>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/NV/NV_pixel_buffer_object.txt"
+             name="NV_pixel_buffer_object">
+    </mirrors>
+    <features>
+      <feature>
+        Pull support for WebGL 2 buffer commands into WebGL 1.
+      </feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+    [NoInterfaceObject]
+    interface WEBGL_es3_buffers {
+      const GLenum STREAM_READ                 = 0x88E1;
+      const GLenum STREAM_COPY                 = 0x88E2;
+      const GLenum STATIC_READ                 = 0x88E5;
+      const GLenum STATIC_COPY                 = 0x88E6;
+      const GLenum DYNAMIC_READ                = 0x88E9;
+      const GLenum DYNAMIC_COPY                = 0x88EA;
+      const GLenum PIXEL_PACK_BUFFER           = 0x88EB;
+      const GLenum PIXEL_UNPACK_BUFFER         = 0x88EC;
+      const GLenum PIXEL_PACK_BUFFER_BINDING   = 0x88ED;
+      const GLenum PIXEL_UNPACK_BUFFER_BINDING = 0x88EF;
+      const GLenum COPY_READ_BUFFER            = 0x8F36;
+      const GLenum COPY_WRITE_BUFFER           = 0x8F37;
+      const GLenum COPY_READ_BUFFER_BINDING    = 0x8F36; /* Same as COPY_READ_BUFFER */
+      const GLenum COPY_WRITE_BUFFER_BINDING   = 0x8F37; /* Same as COPY_WRITE_BUFFER */
+
+      void copyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset,
+                             GLintptr writeOffset, GLsizeiptr size);
+      void getBufferSubData(GLenum target, GLintptr srcByteOffset,
+                            [AllowShared] ArrayBufferView dstBuffer, optional GLuint dstOffset = 0,
+                            optional GLuint length = 0);
+
+      void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type,
+                      [AllowShared] ArrayBufferView? dstData);
+      void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type,
+                      GLintptr offset);
+      void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type,
+                      [AllowShared] ArrayBufferView dstData, GLuint dstOffset);
+    };
+  </idl>
+
+  <samplecode xml:space="preserve">
+    <pre>
+    class FetchPixel {
+      constructor(gl) {
+        const bufferExt = gl.getExtension('WEBGL_es3_buffers');
+        const syncExt = gl.getExtension('WEBGL_fence_sync');
+
+        const readback_buffer = gl.createBuffer();
+        gl.bindBuffer(bufferExt.PIXEL_PACK_BUFFER, readback_buffer);
+        gl.bufferData(bufferExt.PIXEL_PACK_BUFFER, 4, bufferExt.STREAM_READ);
+        bufferExt.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, 0);
+
+        const fence = syncExt.fenceSync(syncExt.SYNC_GPU_COMMANDS_COMPLETE, 0);
+        gl.flush();
+
+        const obj = this;
+        this.get = () => {
+          const status = syncExt.getSyncParameter(fence, syncExt.SYNC_STATUS);
+          if (status != syncExt.SIGNALED)
+            return null;
+
+          const pixel = new Uint8Array(4);
+          gl.bindBuffer(bufferExt.PIXEL_PACK_BUFFER, readback_buffer);
+          bufferExt.getBufferSubData(bufferExt.PIXEL_PACK_BUFFER, 0, pixel);
+          gl.deleteBuffer(readback_buffer);
+          syncExt.deleteSync(fence);
+
+          obj.get = () => pixel;
+          return obj.get();
+        };
+      }
+    };
+    </pre>
+  </samplecode>
+
+  <history>
+    <revision date="2017/12/18">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</proposal>
