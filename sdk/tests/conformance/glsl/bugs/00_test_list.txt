@@ -19,6 +19,7 @@
 --min-version 1.0.4 global-invariant-does-not-leak-across-shaders.html
 --min-version 1.0.4 init-array-with-loop.html
 --min-version 1.0.4 invariant-does-not-leak-across-shaders.html
+--min-version 1.0.4 in-parameter-passed-as-inout-argument-and-global.html
 --min-version 1.0.4 logic-inside-block-without-braces.html
 --min-version 1.0.3 long-expressions-should-not-crash.html
 --min-version 1.0.4 loop-if-loop-gradient.html
