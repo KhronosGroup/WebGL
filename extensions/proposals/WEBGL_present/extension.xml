@@ -23,15 +23,19 @@
 
     <features>
       <feature>
-        <code>present()</code> triggers canvas-related Present early. After calling present, the
-        context respects preserveDrawingBuffer like usual.
+        <code>present()</code> triggers canvas-related Present early, but does not immediately
+        trigger page composition.
+        After calling present, the context respects preserveDrawingBuffer like usual, and clears
+        the backbuffer-dirty bit, but does not clear the canvas-dirty bit.
+        The canvas-dirty bit means the now-frontbuffer (previously-backbuffer) will be composited
+        like normal at the end of the frame.
       </feature>
       <feature>
-        <code>autoPresent</code> disables (or re-enables) the default dirty canvas auto-Present.
+        <code>autoPresent</code> disables (or re-enables) the default backbuffer-dirty auto-Present.
         When disabled, the context will not automatically Present its backbuffer to the compositor
         even if the backbuffer has been drawn into.
-        In this case, <code>present()</code> is the only way to Present the backbuffer to the
-        compositor.
+        In this case, <code>present()</code> is the only way trigger Presentation of the backbuffer
+        to the compositor.
       </feature>
     </features>
   </overview>
