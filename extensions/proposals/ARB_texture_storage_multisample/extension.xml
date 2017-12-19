@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vi:set sw=2 ts=4: -->
+<?xml-stylesheet href="../../extension.xsl" type="text/xsl"?>
+<proposal href="proposals/ARB_texture_storage_multisample/">
+  <name>ARB_texture_storage_multisample</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Jeff Gilbert, Mozilla</contributor>
+  </contributors>
+
+  <number>XYZ</number>
+
+  <depends>
+    <api version="2.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_texture_storage_multisample.txt"
+             name="ARB_texture_storage_multisample">
+    </mirrors>
+
+    <features>
+      <feature>
+        Adds support multisampled textures.
+      </feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+    [NoInterfaceObject]
+    interface ARB_texture_storage_multisample {
+      void texStorage2DMultisample(GLenum target,
+                                   GLsizei samples,
+                                   GLenum internalformat,
+                                   GLsizei width,
+                                   GLsizei height,
+                                   GLboolean fixedsamplelocations);
+      void texStorage3DMultisample(GLenum target,
+                                   GLsizei samples,
+                                   GLenum internalformat,
+                                   GLsizei width,
+                                   GLsizei height,
+                                   GLsizei depth,
+                                   GLboolean fixedsamplelocations);
+    };
+  </idl>
+
+  <history>
+    <revision date="2017/12/18">
+      <change>Initial revision.</change>
+    </revision>
+  </history>
+</proposal>
