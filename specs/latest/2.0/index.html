@@ -424,8 +424,7 @@ typedef unsigned long long GLuint64;
     <pre class="idl">
 typedef ([AllowShared] Uint32Array or sequence&lt;GLuint&gt;) Uint32List;
 
-[NoInterfaceObject]
-interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
+interface mixin <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
 {
   const GLenum READ_BUFFER                                   = 0x0C02;
   const GLenum UNPACK_ROW_LENGTH                             = 0x0CF2;
@@ -968,12 +967,12 @@ interface <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase</dfn>
   [WebGLHandlesContextLoss] GLboolean isVertexArray(WebGLVertexArrayObject? vertexArray);
   void bindVertexArray(WebGLVertexArrayObject? array);
 };
-WebGL2RenderingContextBase implements WebGLRenderingContextBase;
+WebGL2RenderingContextBase includes WebGLRenderingContextBase;
 
 interface <dfn id="WebGL2RenderingContext">WebGL2RenderingContext</dfn>
 {
 };
-WebGL2RenderingContext implements WebGL2RenderingContextBase;
+WebGL2RenderingContext includes WebGL2RenderingContextBase;
 
 </pre>
 
