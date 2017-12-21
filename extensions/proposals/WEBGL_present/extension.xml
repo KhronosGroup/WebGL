@@ -34,7 +34,7 @@
         <code>autoPresent</code> disables (or re-enables) the default backbuffer-dirty auto-Present.
         When disabled, the context will not automatically Present its backbuffer to the compositor
         even if the backbuffer has been drawn into.
-        In this case, <code>present()</code> is the only way trigger Presentation of the backbuffer
+        In this case, <code>present()</code> is the only way to trigger Presentation of the backbuffer
         to the compositor.
       </feature>
     </features>
