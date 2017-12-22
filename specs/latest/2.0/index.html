@@ -3307,11 +3307,11 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     <h3>Preventing undefined behavior with Transform Feedback</h3>
 
     <p>
-        A buffer which is simultaneously bound to a TRANSFORM_FEEDBACK_BUFFER binding point and any other
-        binding point in the WebGL API cannot be used. Any attempted use of the buffer fails with an <code>
-        INVALID_OPERATION</code> error, regardless of whether transform feedback is enabled. For example,
-        readPixels to a PIXEL_PACK_BUFFER will fail if the buffer is also bound to the current transform
-        feedback object.
+        A buffer which is simultaneously bound to a TRANSFORM_FEEDBACK_BUFFER binding point in the currently
+        bound transform feedback object and any other binding point in the WebGL API cannot be used. Any
+        attempted use of such a double bound buffer fails with an <code>INVALID_OPERATION</code> error,
+        regardless of whether transform feedback is enabled. For example, readPixels to a PIXEL_PACK_BUFFER
+        will fail if the buffer is also bound to the current transform feedback object.
     </p>
 
     <div class="note rationale">
