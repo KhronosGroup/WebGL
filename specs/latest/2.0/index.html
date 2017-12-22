@@ -3292,22 +3292,6 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         from other buffer data also maps better to the Direct3D API.
     </div>
 
-    <h3>Preventing undefined behavior with Transform Feedback</h3>
-
-    <p>
-        Attempting to read from or write to a buffer which is bound to a transform feedback buffer binding
-        point, via any mechanism other than transform feedback itself (e.g. as a vertex array in a draw
-        call), fails with an INVALID OPERATION error. There is one exception to this rule: bufferData,
-        bufferSubData, getBufferSubData, and copyBufferSubData are allowed as long as transform feedback
-        is not active.
-    </p>
-
-    <div class="note rationale">
-        If an error were not generated, the values read or written would be undefined. <span class="gl-spec">
-        (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.pdf#nameddest=section-2.15.2">
-        OpenGL ES 3.0.5 &sect;2.15.2</a>)
-    </div>
-
     <h3><a name="COPYING_BUFFERS">Copying Buffers</a></h3>
 
     <p>
@@ -3318,6 +3302,22 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     </p>
     <div class="note rationale">
         Same as with <a href="#BUFFER_OBJECT_BINDING">Buffer Object Binding</a> restrictions above.
+    </div>
+
+    <h3>Preventing undefined behavior with Transform Feedback</h3>
+
+    <p>
+        A buffer which is simultaneously bound to a TRANSFORM_FEEDBACK_BUFFER binding point and any other
+        binding point in the WebGL API cannot be used. Any attempted use of the buffer fails with an <code>
+        INVALID_OPERATION</code> error, regardless of whether transform feedback is enabled. For example,
+        readPixels to a PIXEL_PACK_BUFFER will fail if the buffer is also bound to the current transform
+        feedback object.
+    </p>
+
+    <div class="note rationale">
+        If an error were not generated, the values read or written would be undefined. <span class="gl-spec">
+        (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.pdf#nameddest=section-2.15.2">
+        OpenGL ES 3.0.5 &sect;2.15.2</a>)</span>
     </div>
 
     <h3>Draw Buffers</h3>
