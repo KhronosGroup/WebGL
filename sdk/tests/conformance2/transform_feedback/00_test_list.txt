@@ -2,3 +2,4 @@
 transform_feedback.html
 two-unreferenced-varyings.html
 unwritten-output-defaults-to-zero.html
+--min-version 2.0.1 simultaneous_binding.html

@@ -3292,16 +3292,6 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         from other buffer data also maps better to the Direct3D API.
     </div>
 
-    <p>
-        In addition, a buffer can not be simultaneously bound to a transform feedback buffer binding point
-        and another buffer binding point in the WebGL 2.0 API. Attempting to violate this rule generates an
-        <code>INVALID_OPERATION</code> error, and the state of the binding point will remain untouched.
-    </p>
-
-    <div class="note rationale">
-        This restriction has been added to prevent undefined values when reading from or writing to a buffer object that is simultaneously bound to a transform feedback buffer binding point and elsewhere in the GL. An example of such a situation is <code>ReadPixels</code> to a pixel buffer object binding point. See <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.15.2">OpenGL ES 3.0.4 &sect;2.15.2</a>)</span>.
-    </div>
-
     <h3><a name="COPYING_BUFFERS">Copying Buffers</a></h3>
 
     <p>
@@ -3312,6 +3302,22 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
     </p>
     <div class="note rationale">
         Same as with <a href="#BUFFER_OBJECT_BINDING">Buffer Object Binding</a> restrictions above.
+    </div>
+
+    <h3>Preventing undefined behavior with Transform Feedback</h3>
+
+    <p>
+        A buffer which is simultaneously bound to a TRANSFORM_FEEDBACK_BUFFER binding point in the currently
+        bound transform feedback object and any other binding point in the WebGL API cannot be used. Any
+        attempted use of such a double bound buffer fails with an <code>INVALID_OPERATION</code> error,
+        regardless of whether transform feedback is enabled. For example, readPixels to a PIXEL_PACK_BUFFER
+        will fail if the buffer is also bound to the current transform feedback object.
+    </p>
+
+    <div class="note rationale">
+        If an error were not generated, the values read or written would be undefined. <span class="gl-spec">
+        (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.pdf#nameddest=section-2.15.2">
+        OpenGL ES 3.0.5 &sect;2.15.2</a>)</span>
     </div>
 
     <h3>Draw Buffers</h3>
