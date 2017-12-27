@@ -23,6 +23,7 @@ draw-buffers.html
 --min-version 2.0.1 draw-with-integer-texture-base-level.html
 element-index-uint.html
 framebuffer-completeness-unaffected.html
+--min-version 2.0.1 framebuffer-texture-changing-base-level.html
 framebuffer-unsupported.html
 --min-version 2.0.1 fs-color-type-mismatch-color-buffer-type.html
 instanced-arrays.html
