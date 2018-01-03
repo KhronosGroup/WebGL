@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<proposal href="proposals/WEBGL_multiview/">
+<draft href="WEBGL_multiview/">
   <name>WEBGL_multiview</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -9,7 +9,7 @@
     <contributor>Olli Etuaho, NVIDIA</contributor>
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
-  <number>NN</number>
+  <number>36</number>
   <depends>
     <api version="1.0"/>
   </depends>
@@ -273,5 +273,9 @@ interface WEBGL_multiview {
     <revision date="2017/10/26">
       <change>Took changes in the native OVR_multiview specification into account, added a more elaborate example including a depth/stencil texture, and an explicit mention that texture arrays are only supported in WebGL 2.0.</change>
     </revision>
+
+    <revision date="2018/01/03">
+      <change>Moved to draft status.</change>
+    </revision>
   </history>
-</proposal>
+</draft>
