@@ -570,11 +570,11 @@ interface mixin WebGL2RenderingContextBase
   [WebGLHandlesContextLoss] GLboolean isVertexArray(WebGLVertexArrayObject? vertexArray);
   void bindVertexArray(WebGLVertexArrayObject? array);
 };
-WebGL2RenderingContextBase includes WebGLRenderingContextBase;
 
 interface WebGL2RenderingContext
 {
 };
+WebGL2RenderingContext includes WebGLRenderingContextBase;
 WebGL2RenderingContext includes WebGL2RenderingContextBase;
 
 
