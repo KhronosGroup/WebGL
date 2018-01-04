@@ -83,8 +83,7 @@ typedef (ImageBitmap or
 typedef ([AllowShared] Float32Array or sequence<GLfloat>) Float32List;
 typedef ([AllowShared] Int32Array or sequence<GLint>) Int32List;
 
-[NoInterfaceObject]
-interface WebGLRenderingContextBase
+interface mixin WebGLRenderingContextBase
 {
 
     /* ClearBufferMask */
@@ -716,7 +715,7 @@ interface WebGLRenderingContextBase
 interface WebGLRenderingContext
 {
 };
-WebGLRenderingContext implements WebGLRenderingContextBase;
+WebGLRenderingContext includes WebGLRenderingContextBase;
 
 
 [Constructor(DOMString type, optional WebGLContextEventInit eventInit)]
