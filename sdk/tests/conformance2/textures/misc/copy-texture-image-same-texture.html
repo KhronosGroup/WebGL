@@ -106,6 +106,11 @@ function testChangeTargetTextureLevelSize() {
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 1);
     checkFramebuffer([gl.FRAMEBUFFER_COMPLETE]);
 
+    // fbo source texture is |texture| level 1, 32x32. Target is |texture| level 2, 64x64.
+    // Only one quarter of the target 64x64 will come from the source.
+    // Implementations may insert internal commands before copying over 32x32 in order to
+    // initialize undefined three quarters to 0 as WebGL spec requires. This will actually create
+    // a 64x64 image at level 2 and make the fbo incomplete, thus, the copying will fail.
     gl.copyTexImage2D(gl.TEXTURE_2D, 2, gl.RGBA8, 0, 0, 64, 64, 0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "copyTexImage2D should succeed.");
     checkFramebuffer([gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT]);
@@ -130,6 +135,9 @@ function testChangeTargetTextureLevelFormat() {
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 1);
     checkFramebuffer([gl.FRAMEBUFFER_COMPLETE]);
 
+    // Using LUNIMANCE_ALPHA format may trigger implementations' emulation code path
+    // on desktop core profile GL, which might change level 2 image definition first
+    // and make the fbo incomplete, thus, the actual copying will fail.
     gl.copyTexImage2D(gl.TEXTURE_2D, 2, gl.LUMINANCE_ALPHA, 0, 0, 16, 16, 0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "copyTexImage2D should succeed.");
     checkFramebuffer([gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT]);
