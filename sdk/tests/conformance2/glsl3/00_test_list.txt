@@ -14,6 +14,7 @@ compound-assignment-type-combination.html
 const-array-init.html
 --min-version 2.0.1 float-parsing.html
 forbidden-operators.html
+--min-version 2.0.1 forward-declaration.html
 frag-depth.html
 --min-version 2.0.1 gradient-in-discontinuous-loop.html
 --min-version 2.0.1 input-with-interpotaion-as-lvalue.html
