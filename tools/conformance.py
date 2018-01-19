@@ -691,8 +691,10 @@ class Webdriver(object):
                 b_options.gaia_login = False
                 b_options.gaia_id = b_options.gaia_id
                 open('/mnt/stateful_partition/etc/collect_chrome_crashes', 'w').close()
-                browser_to_create = browser_finder.FindBrowser(finder_options)
-                self._browser = browser_to_create.Create(finder_options)
+                self._browser_to_create = browser_finder.FindBrowser(finder_options)
+                self._browser_to_create.SetUpEnvironment(
+                    finder_options.browser_options)
+                self._browser = self._browser_to_create.Create()
                 self._browser.tabs[0].Close()
 
             webdriver_args = [self.path]
@@ -788,6 +790,7 @@ class Webdriver(object):
             if self.target_os.is_cros():
                 self._browser.Close()
                 del self._browser
+                self._browser_to_create.CleanUpEnvironment()
 
 
 class Status(object):
