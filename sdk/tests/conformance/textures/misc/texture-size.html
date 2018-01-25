@@ -146,7 +146,7 @@ function checkTexture(width, height, cubeMap) {
     testFailed("unexpected gl error: " + wtu.glEnumToString(gl, err));
   }
   wtu.clearAndDrawUnitQuad(gl);
-  var tolerance = 1;
+  var tolerance = 3;
   wtu.checkCanvas(gl, color.rgba,
       type + " of size " + width + "x" + height + " with no mips should draw with " + color.name,
       tolerance);
