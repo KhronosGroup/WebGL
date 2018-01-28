@@ -3728,17 +3728,20 @@ destination range for any pixel outside the bound framebuffer.
 <h3><a name="STENCIL_SEPARATE_LIMIT">Stencil Separate Mask and Reference Value</a></h3>
 
 <p>
-In the WebGL API it is illegal to specify a different mask or reference value for front facing and
-back facing triangles in stencil operations. A call to <code>drawArrays</code>
-or <code>drawElements</code> will generate an <code>INVALID_OPERATION</code> error if:
+In the WebGL API, it is illegal to draw while the front and back stencil references, value masks, or
+write masks differ when masked by the framebuffer's <code>s</code> stencil bits. When no stencil
+bits are present, this test always passes.
 
+<p>
+Specifically, the following state will generate an INVALID_OPERATION on draw calls:
+<code>(STENCIL_X & ((1&lt;&lt;s)-1) != (STENCIL_BACK_X & ((1&lt;&lt;s)-1)</code>
+Where <code>s</code> is the number of stencil bits in the draw framebuffer, and <code>X</code> is
+one of:
 <ul>
-<li> <code>STENCIL_WRITEMASK</code> != <code>STENCIL_BACK_WRITEMASK</code> (as specified by <code>stencilMaskSeparate</code> for the <code>mask</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
-<li> <code>STENCIL_VALUE_MASK</code> != <code>STENCIL_BACK_VALUE_MASK</code> (as specified by <code>stencilFuncSeparate</code> for the <code>mask</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
-<li> <code>STENCIL_REF</code> != <code>STENCIL_BACK_REF</code> (as specified by <code>stencilFuncSeparate</code> for the <code>ref</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
+<li><code>WRITEMASK</code> (as specified by <code>stencilMaskSeparate</code> for the <code>mask</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
+<li><code>VALUE_MASK</code> (as specified by <code>stencilFuncSeparate</code> for the <code>mask</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
+<li><code>REF</code> (as specified by <code>stencilFuncSeparate</code> for the <code>ref</code> parameter associated with the FRONT and BACK values of <code>face</code>, respectively)
 </ul>
-
-</p>
 
     <h3><a name="VERTEX_STRIDE">Vertex Attribute Data Stride</a></h3>
 
