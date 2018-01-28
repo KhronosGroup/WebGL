@@ -98,20 +98,20 @@ function testForStencilBits(errIfMismatch) {
     wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMask(1023)");
 
 
-    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 1, 1023)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 256, 1023)");
     wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 257, 1023)");
     wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.POINTS, 0, 0)");
 
-    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 258, 1023)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 254, 1023)");
     wtu.shouldGenerateGLError(gl, errIfMismatch, "gl.drawArrays(gl.POINTS, 0, 0)");
     wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFunc(gl.ALWAYS, 0, 1023)");
 
 
-    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 0, 1)");
-    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 0, 257)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 0, -1)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 0, 0)");
     wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.POINTS, 0, 0)");
 
-    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 0, 258)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 0, 1)");
     wtu.shouldGenerateGLError(gl, errIfMismatch, "gl.drawArrays(gl.POINTS, 0, 0)");
     wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFunc(gl.ALWAYS, 0, 1023)");
 }
