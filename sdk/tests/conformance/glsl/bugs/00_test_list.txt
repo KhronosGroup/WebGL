@@ -18,6 +18,7 @@
 --min-version 1.0.3 fragcoord-linking-bug.html
 --min-version 1.0.4 gl-fragcoord-multisampling-bug.html
 --min-version 1.0.4 global-invariant-does-not-leak-across-shaders.html
+--min-version 1.0.4 if-return-and-elseif.html
 --min-version 1.0.4 init-array-with-loop.html
 --min-version 1.0.4 invariant-does-not-leak-across-shaders.html
 --min-version 1.0.4 in-parameter-passed-as-inout-argument-and-global.html
