@@ -2745,7 +2745,7 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
           destroyed, however this method allows authors to mark an object for deletion early.
       </dd>
       <dt>
-        <p class="idl-code">GLenum clientWaitSync(WebGLSync sync, GLbitfield flags, GLuint64 timeout)
+        <p class="idl-code"><a name="CLIENT_WAIT_SYNC">GLenum clientWaitSync(WebGLSync sync, GLbitfield flags, GLuint64 timeout)</a>
           <span class="gl-spec">
             (<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-5.2.1">OpenGL ES 3.0.4 &sect;5.2.1</a>,
             <a href="http://www.khronos.org/opengles/sdk/docs/man3/html/glClientWaitSync.xhtml" class="nonnormative">man page</a>)
@@ -2794,6 +2794,15 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         <p>Returns <code>WAIT_FAILED</code> if any OpenGL errors are generated during the execution of this
         function.</p>
 
+        <p>In order to ensure consistent behavior across platforms, sync objects may only transition
+        to the signaled state when the user
+        agent's <a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/webappapis.html#event-loops">event
+        loop</a> is not executing a task. In other words:
+        <ul>
+          <li> clientWaitSync must not return CONDITION_SATISFIED or ALREADY_SIGNALED for a newly
+               created sync object until control has returned to the user agent's main loop. </li>
+        </ul>
+        </p>
       </dd>
       <dt>
         <p class="idl-code">void waitSync(WebGLSync sync, GLbitfield flags, GLint64 timeout)
@@ -2812,7 +2821,7 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
           In the absence of the possibility of synchronizing between multiple GL contexts, calling waitSync is effectively a no-op.
         </div>
       </dd>
-      <dt class="idl-code">any getSyncParameter(WebGLSync sync, GLenum pname)
+      <dt class="idl-code"><a name="GET_SYNC_PARAMETER">any getSyncParameter(WebGLSync sync, GLenum pname)</a>
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.8">OpenGL ES 3.0.4 &sect;6.1.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetSynciv.xhtml">man page</a>)</span>
       </dt>
       <dd>
@@ -2828,6 +2837,18 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
           <p>If <em>pname</em> is not in the table above, generates an <code>INVALID_ENUM</code> error and returns null.</p>
           <p>Returns null if any OpenGL errors are generated during the execution of this
           function.</p>
+
+          <p>In order to ensure consistent behavior across platforms, sync objects may only
+          transition to the signaled state when the user agent's <a
+          href="http://www.whatwg.org/specs/web-apps/current-work/multipage/webappapis.html#event-loops">event
+          loop</a> is not executing a task. In other words:
+          <ul>
+            <li> A sync object must not become signaled until control has returned to the user
+                 agent's main loop. </li>
+            <li> Repeatedly fetching a sync object's SYNC_STATUS parameter in a loop, without
+                 returning control to the user agent, must always return the same value. </li>
+          </ul>
+          </p>
       </dd>
     </dl>
 
@@ -3923,6 +3944,17 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
     <div class="note rationale">
         If the value of UNIFORM_BUFFER_OFFSET_ALIGNMENT was not divisible by 4, it would make it impractical to upload ArrayBuffers to uniform buffers which are bound with BindBufferRange.
     </div>
+
+    <h3>Sync objects' results must not be made available in the current frame</h3>
+
+    <p>
+        In OpenGL ES 3.0, if the appropriate primitives (e.g. <code>glFinish()</code> or another
+        synchronous API) are called, a sync object may be signaled in the same frame it was
+        issued. In WebGL, in order to improve application portability, a sync object must never
+        transition to the signaled state in the same frame the sync was issued. See the
+        specification of <a href="#GET_SYNC_PARAMETER">getSyncParameter</a>
+        and <a href="#CLIENT_WAIT_SYNC">clientWaitSync</a> for discussion and rationale.
+    </p>
 
 <!-- ======================================================================================================= -->
 
