@@ -661,6 +661,7 @@ var setupIndexedQuadWithOptions = function (gl, options) {
 
   if (options.colorLocation !== undefined) {
     var colors = new Float32Array(numVerts * 4);
+    poffset = 0;
     for (var yy = 0; yy <= gridRes; ++yy) {
       for (var xx = 0; xx <= gridRes; ++xx) {
         if (options.color !== undefined) {
