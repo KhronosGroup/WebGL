@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL Vertex Buffer Updated After Draw Test</title>
+<title>WebGL 2 Disabled Vertex Attrib Update Test</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"> </script>
@@ -39,68 +39,54 @@
 </canvas>
 <div id="description"></div>
 <div id="console"></div>
-<script id="vshader" type="x-shader/x-vertex">
-attribute vec2 a_position;
-attribute vec4 a_color;
-varying vec4 v_outcolor;
+<script id="vshader" type="x-shader/x-vertex">#version 300 es
+layout(location=0) in vec4 a_position;
+layout(location=1) in float a_actualValue;
+uniform float u_expectedValue;
+out float v_result;
 void main() {
-  gl_Position = vec4(a_position, 0, 1);
-  v_outcolor = a_color;
+  gl_Position = a_position;
+  v_result = a_actualValue == u_expectedValue ? 1.0 : 0.0;
 }
 </script>
 
-<script id="fshader" type="x-shader/x-fragment">
-varying mediump vec4 v_outcolor;
+<script id="fshader" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+in float v_result;
+out vec4 fragColor;
 void main() {
-    gl_FragColor = v_outcolor;
+  fragColor = v_result > 0.0 ? vec4(0.0, 1.0, 0.0, 1.0) : vec4(1.0, 0.0, 0.0, 1.0);
 }
 </script>
 
 <script>
+// Tests that repeatedly updating a disabled vertex attribute works as expected.
+// This covers an ANGLE bug where dirty bits for current values were ignoring repeated updates.
+// Based on: https://github.com/google/angle/blob/master/src/tests/gl_tests/VertexAttributeTest.cpp#L1454-L1500
 "use strict";
 var wtu = WebGLTestUtils;
 description();
 
-var gl = wtu.create3DContext("example");
+var gl = wtu.create3DContext("example", undefined, 2);
 
 var program = wtu.setupProgram(gl, ['vshader', 'fshader']);
+gl.useProgram(program);
 
-var colorLoc = gl.getAttribLocation(program, "a_color");
-var green = new Uint8Array(4 * 6);
-var red = new Uint8Array(4 * 6);
+gl.vertexAttribPointer(1, 1, gl.FLOAT, gl.FALSE, 0, 0);
 
-for (var i = 0; i < 6; ++i) {
-  var ci = i * 4;
-
-  green[ci] = 0;
-  red[ci] = 255;
-
-  green[ci + 1] = 255;
-  red[ci + 1] = 0;
-
-  green[ci + 2] = red[ci + 2] = 0;
-
-  green[ci + 3] = red[ci + 3] = 255;
-}
-
-var positionLoc = gl.getAttribLocation(program, "a_position");
+var uniLoc = gl.getUniformLocation(program, "u_expectedValue");
 
 var gridRes = 1;
-wtu.setupIndexedQuad(gl, gridRes, positionLoc);
+wtu.setupIndexedQuad(gl, gridRes, 0);
 
-var colorBuf = gl.createBuffer();
-gl.bindBuffer(gl.ARRAY_BUFFER, colorBuf);
-gl.bufferData(gl.ARRAY_BUFFER, green, gl.STATIC_DRAW);
-gl.vertexAttribPointer(colorLoc, 4, gl.UNSIGNED_BYTE, true, 0, 0);
-gl.enableVertexAttribArray(colorLoc);
-
-wtu.clearAndDrawIndexedQuad(gl, gridRes);
-wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
-  
-gl.bufferSubData(gl.ARRAY_BUFFER, 0, red);
-
-wtu.clearAndDrawIndexedQuad(gl, gridRes);
-wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red");
+var testValues = [1, 2, 3, 4];
+for (var i = 0; i < testValues.length; ++i) {
+  var testValue = testValues[i];
+  gl.uniform1f(uniLoc, testValue);
+  gl.vertexAttrib1f(1, testValue);
+  wtu.clearAndDrawIndexedQuad(gl, gridRes);
+  wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
+} 
   
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 

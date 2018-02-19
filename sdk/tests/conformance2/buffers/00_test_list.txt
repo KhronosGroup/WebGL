@@ -9,3 +9,4 @@ one-large-uniform-buffer.html
 uniform-buffers.html
 --min-version 2.0.1 uniform-buffers-second-compile.html
 --min-version 2.0.1 uniform-buffers-state-restoration.html
+--min-version 2.0.1 vertex-buffer-updated-after-draw.html

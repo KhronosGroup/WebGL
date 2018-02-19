@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL Vertex Buffer Updated After Draw Test</title>
+<title>WebGL 2 Vertex Buffer Updated After Draw Test</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"> </script>
@@ -39,20 +39,21 @@
 </canvas>
 <div id="description"></div>
 <div id="console"></div>
-<script id="vshader" type="x-shader/x-vertex">
-attribute vec2 a_position;
-attribute vec4 a_color;
-varying vec4 v_outcolor;
+<script id="vshader" type="x-shader/x-vertex">#version 300 es
+layout(location=0) in vec2 a_position;
+layout(location=1) in vec4 a_color;
+out vec4 v_outcolor;
 void main() {
   gl_Position = vec4(a_position, 0, 1);
   v_outcolor = a_color;
 }
 </script>
 
-<script id="fshader" type="x-shader/x-fragment">
-varying mediump vec4 v_outcolor;
+<script id="fshader" type="x-shader/x-fragment">#version 300 es
+in mediump vec4 v_outcolor;
+out mediump vec4 fragColor;
 void main() {
-    gl_FragColor = v_outcolor;
+    fragColor = v_outcolor;
 }
 </script>
 
@@ -61,11 +62,10 @@ void main() {
 var wtu = WebGLTestUtils;
 description();
 
-var gl = wtu.create3DContext("example");
+var gl = wtu.create3DContext("example", undefined, 2);
 
 var program = wtu.setupProgram(gl, ['vshader', 'fshader']);
 
-var colorLoc = gl.getAttribLocation(program, "a_color");
 var green = new Uint8Array(4 * 6);
 var red = new Uint8Array(4 * 6);
 
@@ -82,17 +82,14 @@ for (var i = 0; i < 6; ++i) {
 
   green[ci + 3] = red[ci + 3] = 255;
 }
-
-var positionLoc = gl.getAttribLocation(program, "a_position");
-
 var gridRes = 1;
-wtu.setupIndexedQuad(gl, gridRes, positionLoc);
+wtu.setupIndexedQuad(gl, gridRes, 0);
 
 var colorBuf = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, colorBuf);
 gl.bufferData(gl.ARRAY_BUFFER, green, gl.STATIC_DRAW);
-gl.vertexAttribPointer(colorLoc, 4, gl.UNSIGNED_BYTE, true, 0, 0);
-gl.enableVertexAttribArray(colorLoc);
+gl.vertexAttribPointer(1, 4, gl.UNSIGNED_BYTE, true, 0, 0);
+gl.enableVertexAttribArray(1);
 
 wtu.clearAndDrawIndexedQuad(gl, gridRes);
 wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
