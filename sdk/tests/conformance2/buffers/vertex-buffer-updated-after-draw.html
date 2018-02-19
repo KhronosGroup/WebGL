@@ -58,6 +58,8 @@ void main() {
 </script>
 
 <script>
+// Tests that D3D11 dirty bit updates don't forget about BufferSubData attrib updates.
+// Based on ANGLE test (StateChangeTest, VertexBufferUpdatedAfterDraw) from https://github.com/google/angle/blob/master/src/tests/gl_tests/StateChangeTest.cpp
 "use strict";
 var wtu = WebGLTestUtils;
 description();
