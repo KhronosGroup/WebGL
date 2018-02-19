@@ -87,8 +87,8 @@ for (var i = 0; i < testValues.length; ++i) {
   gl.vertexAttrib1f(attribLoc, testValue);
   wtu.clearAndDrawIndexedQuad(gl, gridRes);
   wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
-} 
-  
+}
+
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 
 var successfullyParsed = true;

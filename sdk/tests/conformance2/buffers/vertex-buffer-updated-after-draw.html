@@ -95,12 +95,12 @@ gl.enableVertexAttribArray(1);
 
 wtu.clearAndDrawIndexedQuad(gl, gridRes);
 wtu.checkCanvas(gl, [0, 255, 0, 255], "should be green");
-  
+
 gl.bufferSubData(gl.ARRAY_BUFFER, 0, red);
 
 wtu.clearAndDrawIndexedQuad(gl, gridRes);
 wtu.checkCanvas(gl, [255, 0, 0, 255], "should be red");
-  
+
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors");
 
 var successfullyParsed = true;

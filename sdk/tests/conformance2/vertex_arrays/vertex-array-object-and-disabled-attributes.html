@@ -41,13 +41,13 @@
 <div id="console"></div>
 <script id="singlevshader" type="x-shader/x-vertex">
 attribute vec4 position;
-void main() { 
+void main() {
   gl_Position = position;
 }
 </script>
 
 <script id="singlefshader" type="x-shader/x-fragment">
-void main() { 
+void main() {
   gl_FragColor = vec4(1, 0, 0, 1);
 }
 </script>
@@ -89,7 +89,7 @@ var singlePositionLocation = gl.getAttribLocation(singleProgram, "position");
 gl.useProgram(singleProgram);
 
 var positions = new Float32Array([
-    -1, 1, 
+    -1, 1,
     -1, -1,
     1, -1,
     -1, 1,
