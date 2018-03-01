@@ -1,7 +1,7 @@
 <!--
 
 /*
-** Copyright (c) 2016 The Khronos Group Inc.
+** Copyright (c) 2018 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
@@ -74,7 +74,7 @@ void main () {
 
 <script>
 "use strict";
-description("This test verifies that 2 different contexts both using 2d array texture or 3d texture does not share the texture data among them due to context save/restore bug");
+description("This test verifies that 2 different contexts both using 2d array texture or 3d texture does not share the texture data among them due to context save/restore bug. https://bugs.chromium.org/p/chromium/issues/detail?id=788448");
 debug("");
 
 function render(gl, width, height, expectedColor, msg) {
@@ -96,7 +96,7 @@ function StateSetup(gl, texture_type, texture_color, width, height) {
         buf[i + 3] = texture_color[3];
     }
     gl.viewport(0, 0, width, height);
- 
+
     // choose texture type and fragment shader type
     var tex_type = gl.TEXTURE_2D;
     var fragment_shader =  "", vertex_shader = "vs";
@@ -113,7 +113,7 @@ function StateSetup(gl, texture_type, texture_color, width, height) {
     // create a texture
     var texture = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
-  
+
     // program texture parameters
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(tex_type, texture);
