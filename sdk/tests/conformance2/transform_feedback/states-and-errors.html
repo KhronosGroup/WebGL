@@ -138,8 +138,9 @@ gl.beginTransformFeedback(gl.POINTS);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "begin");
 checkParameter(gl.TRANSFORM_FEEDBACK_BINDING, tf1);
 
-// gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf2);
-// wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "bind while unpaused");
+gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf2);
+wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "bind while unpaused");
+
 // Check that nothing actually changed and rendering still works
 checkParameter(gl.TRANSFORM_FEEDBACK_BINDING, tf1);
 gl.drawArrays(gl.POINTS, 0, 1);
