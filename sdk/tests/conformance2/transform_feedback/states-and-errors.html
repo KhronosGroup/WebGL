@@ -210,42 +210,6 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "end while paused");
 
 finishTest();
 
-// debug("<h3>Leaving TF enabled while creating contexts</h3>");
-
-// checkParameter(gl.TRANSFORM_FEEDBACK_ACTIVE, false);
-// checkParameter(gl.TRANSFORM_FEEDBACK_PAUSED, false);
-// gl.beginTransformFeedback(gl.POINTS);
-// checkParameter(gl.TRANSFORM_FEEDBACK_ACTIVE, true);
-// checkParameter(gl.TRANSFORM_FEEDBACK_PAUSED, false);
-// gl.clear(gl.COLOR_BUFFER_BIT);
-
-// var frame = 0;
-// function rafCallback() {
-//   checkParameter(gl.TRANSFORM_FEEDBACK_ACTIVE, true);
-//   checkParameter(gl.TRANSFORM_FEEDBACK_PAUSED, false);
-//   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([frame]), gl.STREAM_READ);
-//   gl.drawArrays(gl.POINTS, 0, 1);
-//   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "draw should succeed");
-//   gl.clear(gl.COLOR_BUFFER_BIT);
-//   const newCanvas = document.createElement("canvas");
-//   document.body.appendChild(newCanvas);
-//   const newGl = newCanvas.getContext("webgl");
-//   if (!newGl) {
-//     testFailed("failed to create context");
-//     return;
-//   }
-//   newGl.clear(gl.COLOR_BUFFER_BIT);
-//   if (++frame < 4) {
-//     requestAnimationFrame(rafCallback);
-//   } else {
-//     gl.endTransformFeedback();
-//     wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER,
-//         [0, 0, 2, 0.5, 4, 1, 6, 1.5]);
-//     finishTest();
-//   }
-// };
-// rafCallback();
-
 // Helper functions
 function createBuffer(gl, dataOrSize) {
   const buf = gl.createBuffer();
