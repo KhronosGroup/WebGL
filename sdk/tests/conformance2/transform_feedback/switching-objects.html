@@ -57,7 +57,7 @@ void main() {
 </script>
 <script>
 "use strict";
-description("Tests states and errors related to transform feedback objects.");
+description("Tests switching transform feedback objects.");
 
 debug("<h3>Setup</h3>")
 
@@ -178,7 +178,7 @@ gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf2);
 gl.endTransformFeedback();
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "end on tf2");
 
-debug("<h3>Invalid operations</h3>")
+debug("<h3>Misc. invalid operations</h3>")
 
 gl.endTransformFeedback();
 wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "endTransformFeedback before begin");
