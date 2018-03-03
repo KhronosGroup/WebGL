@@ -40,6 +40,7 @@
 <div id="console"></div>
 <script id="vshader" type="x-shader/x-vertex">#version 300 es
 in float in_value;
+in float in_value2;
 out float out_value;
 
 void main() {
@@ -72,13 +73,14 @@ if (!gl) {
     testPassed("WebGL context exists");
 }
 
-function drawWithFeedbackBound(gl, prog, vao, tf, enableFeedback) {
+function drawWithFeedbackBound(gl, drawFunction, prog, vao, tf, enableFeedback) {
   gl.useProgram(prog);
   gl.bindVertexArray(vao);
   gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
   if (enableFeedback) gl.beginTransformFeedback(gl.POINTS);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should not be any errors before drawing");
-  gl.drawArrays(gl.POINTS, 0, 4);
+  let error = gl.getError();
+  if (error != gl.NO_ERROR) testFailed("Unexpected error before drawing: " +  error)
+  drawFunction();
   if (enableFeedback) gl.endTransformFeedback();
   gl.bindVertexArray(null);
   gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
@@ -92,12 +94,17 @@ function createBuffer(gl, dataOrSize) {
   return buf;
 }
 
-function createVAO(gl, buf, inLoc) {
+function createVAO(gl, vertexBuffer, vertexBuffer2, indexBuffer) {
   const vao = gl.createVertexArray();
   gl.bindVertexArray(vao);
-  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
   gl.enableVertexAttribArray(0);
   gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer2);
+  gl.enableVertexAttribArray(1);
+  gl.vertexAttribPointer(1, 1, gl.FLOAT, false, 0, 0);
+  gl.vertexAttribDivisor(1, 2);
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
   gl.bindVertexArray(null);
   return vao;
@@ -105,11 +112,17 @@ function createVAO(gl, buf, inLoc) {
 
 const prog = wtu.setupTransformFeedbackProgram(gl, ["vshader", "fshader"],
     ["out_value"], gl.SEPARATE_ATTRIBS,
-    ["in_value"]);
+    ["in_value", "in_value2"]);
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "linking transform feedback shader should not set an error");
 
 const vertexBuffer = createBuffer(gl, new Float32Array([1, 2, 3, 4]));
-const vao = createVAO(gl, vertexBuffer);
+const vertexBuffer2 = createBuffer(gl, new Float32Array([1, 2, 3, 4]));
+
+const indexBuffer = gl.createBuffer();
+gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Int16Array([0, 1, 2, 3]), gl.STATIC_DRAW);
+
+const vao = createVAO(gl, vertexBuffer, vertexBuffer2, indexBuffer);
 
 const tfBuffer = createBuffer(gl, new Float32Array([0, 0, 0, 0]));
 
@@ -125,46 +138,89 @@ const ubi = gl.getUniformBlockIndex(prog, "UniformBlock");
 gl.uniformBlockBinding(prog, ubi, 0);
 gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, uniformBuffer);
 
-drawWithFeedbackBound(gl, prog, vao, tf, true);
-wtu.glErrorShouldBe(gl, gl.NO_ERROR, "transform feedback should be successful");
+const drawFunctions = [
+    [
+      ()=>gl.drawArrays(gl.POINTS, 0, 4),
+      ()=>gl.drawElements(gl.POINTS, 4, gl.UNSIGNED_SHORT, 0),
+    ],
+    [
+      ()=>gl.drawArraysInstanced(gl.POINTS, 0, 4, 1),
+      ()=>gl.drawElementsInstanced(gl.POINTS, 4, gl.UNSIGNED_SHORT, 0, 1),
+    ],
+    [
+      ()=>gl.drawArrays(gl.POINTS, 0, 4),
+      ()=>gl.drawRangeElements(gl.POINTS, 0, 3, 4, gl.UNSIGNED_SHORT, 0),
+    ],
+  ];
 
-const expected = [2, 4, 6, 8];
-gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, tfBuffer);
-wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, expected);
+for (let [drawArrays, drawElements] of drawFunctions) {
+  debug("<h3>With draw functions " + drawArrays + " and " + drawElements + "</h3>");
+  debug("<hr/>Test baseline");
+  gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, tfBuffer);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 16, gl.STATIC_DRAW);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "bufferData to TRANSFORM_FEEDBACK_BUFFER");
+  drawWithFeedbackBound(gl, drawArrays, prog, vao, tf, true);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "transform feedback should be successful");
+  drawWithFeedbackBound(gl, drawElements, prog, vao, tf, false);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElements should be successful");
 
-debug("<hr/>Test ARRAY_BUFFER");
-// this should fail because the transform feedback's buffer #0 and the
-// badVao's buffer #0 are the same buffer
-const badVao = createVAO(gl, tfBuffer);
-drawWithFeedbackBound(gl, prog, badVao, tf, false);
-wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer used as vertex attrib and tf simultaneously");
-drawWithFeedbackBound(gl, prog, badVao, tf, true);
-wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer used as vertex attrib and tf simultaneously");
-gl.bindVertexArray(vao);
+  const expected = [2, 4, 6, 8];
+  gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, tfBuffer);
+  wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, expected);
 
-gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, tfBuffer);
-wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, expected, "should be the same as before as nothing has executed");
+  debug("<hr/>Test ARRAY_BUFFER");
+  // this should fail because the transform feedback's buffer #0 and the
+  // badVao's buffer #0 are the same buffer
+  const badVao = createVAO(gl, tfBuffer, vertexBuffer2, indexBuffer);
+  drawWithFeedbackBound(gl, drawArrays, prog, badVao, tf, false);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "drawArrays: buffer used as vertex attrib and tf simultaneously");
+  drawWithFeedbackBound(gl, drawElements, prog, badVao, tf, false);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "drawElements: buffer used as vertex attrib and tf simultaneously");
+  drawWithFeedbackBound(gl, drawArrays, prog, badVao, tf, true);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer used as vertex attrib and tf simultaneously");
+  gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, tfBuffer);
+  wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, expected, "should be the same as before as nothing has executed");
 
-debug("<hr/>Test UNIFORM_BUFFER");
-gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, tfBuffer);
-gl.bindBuffer(gl.UNIFORM_BUFFER, null); // tfBuffer is still bound at index 0
-drawWithFeedbackBound(gl, prog, vao, tf, false);
-wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer used as uniform buffer and tf simultaneously");
-drawWithFeedbackBound(gl, prog, vao, tf, true);
-wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer used as uniform buffer and tf simultaneously");
-gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, uniformBuffer);
-drawWithFeedbackBound(gl, prog, vao, tf, false);
-wtu.glErrorShouldBe(gl, gl.NO_ERROR, "tf buffer not used as uniform buffer anymore");
-drawWithFeedbackBound(gl, prog, vao, tf, true);
-wtu.glErrorShouldBe(gl, gl.NO_ERROR, "tf buffer not used as uniform buffer anymore");
+  debug("<hr/>Test UNIFORM_BUFFER");
+  gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, tfBuffer);
+  gl.bindBuffer(gl.UNIFORM_BUFFER, null); // tfBuffer is still bound at index 0
+  drawWithFeedbackBound(gl, drawArrays, prog, vao, tf, false);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "drawArrays: buffer used as uniform buffer and tf simultaneously");
+  drawWithFeedbackBound(gl, drawElements, prog, vao, tf, false);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "drawElements: buffer used as uniform buffer and tf simultaneously");
+  drawWithFeedbackBound(gl, drawArrays, prog, vao, tf, true);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "buffer used as uniform buffer and tf simultaneously");
+  gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, uniformBuffer);
+  drawWithFeedbackBound(gl, drawArrays, prog, vao, tf, false);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArrays: tf buffer not used as uniform buffer anymore");
+  drawWithFeedbackBound(gl, drawElements, prog, vao, tf, false);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElements: tf buffer not used as uniform buffer anymore");
+  drawWithFeedbackBound(gl, drawArrays, prog, vao, tf, true);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "tf buffer not used as uniform buffer anymore");
 
-gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
-const tfBuffer2 = createBuffer(gl, Float32Array.BYTES_PER_ELEMENT * 4);
-gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer2);
-drawWithFeedbackBound(gl, prog, badVao, tf);
-wtu.glErrorShouldBe(gl, gl.NO_ERROR, "buffer is no longer bound for transform feedback");
-gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
-gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer);
+  gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
+  const tfBuffer2 = createBuffer(gl, Float32Array.BYTES_PER_ELEMENT * 4);
+  gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer2);
+  drawWithFeedbackBound(gl, drawArrays, prog, badVao, tf);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "buffer is no longer bound for transform feedback");
+  gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
+  gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer);
+
+  debug("<hr/>Test TF buffer bound to target unused by draw")
+  // Even if the TF buffer is bound to a target that's not used by the draw, it's
+  // still an error.
+  gl.bindBuffer(gl.COPY_READ_BUFFER, tfBuffer);
+  drawWithFeedbackBound(gl, drawArrays, prog, vao, tf, true);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "tf enabled");
+  drawWithFeedbackBound(gl, drawArrays, prog, vao, tf, false);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArrays: tf disabled");
+  drawWithFeedbackBound(gl, drawElements, prog, vao, tf, false);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElements: tf disabled");
+  gl.bindBuffer(gl.COPY_READ_BUFFER, null);
+}
+
+debug("<h3>Non-drawing tests</h3>");
+
 
 debug("<hr/>Test PIXEL_UNPACK_BUFFER");
 const tex = gl.createTexture();
