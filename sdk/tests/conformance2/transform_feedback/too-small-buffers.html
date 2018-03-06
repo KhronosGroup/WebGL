@@ -126,41 +126,42 @@ for (let {name, drawFunction, result} of cases) {
   }
 
   gl.useProgram(progInterleaved);
+  const sizeOfFloat = 4;
 
   debug("<h3>interleaved - Baseline success case</h3>")
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 8*4, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 8*sizeOfFloat, gl.STREAM_READ);
   doTransformFeedback(drawFunction, gl.NO_ERROR);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, interleavedResult);
 
   debug("<h3>interleaved - Buffer too small</h3>")
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 8*4-1, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 8*sizeOfFloat-1, gl.STREAM_READ);
   doTransformFeedback(drawFunction, gl.INVALID_OPERATION);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER,
       [0, 0, 0, 0, 0, 0, 0]);
 
   debug("<h3>interleaved - Multiple draws success case</h3>")
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 8*4*2, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 8*sizeOfFloat*2, gl.STREAM_READ);
   doTransformFeedback(()=>{drawFunction(); drawFunction()}, gl.NO_ERROR);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, interleavedResult.concat(interleavedResult))
 
   debug("<h3>interleaved - Too small for multiple draws</h3>")
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 8*4*2-1, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 8*sizeOfFloat*2-1, gl.STREAM_READ);
   doTransformFeedback(()=>{drawFunction(); drawFunction()}, gl.INVALID_OPERATION);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, interleavedResult.concat([0, 0, 0, 0, 0, 0, 0]))
 
   debug("<h3>interleaved - bindBufferRange too small</h3>")
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 8*4, gl.STREAM_READ);
-  gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0, 0, 7*4);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 8*sizeOfFloat, gl.STREAM_READ);
+  gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0, 0, 7*sizeOfFloat);
   doTransformFeedback(drawFunction, gl.INVALID_OPERATION);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER,
       [0, 0, 0, 0, 0, 0, 0, 0]);
 
   debug("<h3>interleaved - bindBufferRange larger than buffer</h3>")
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 8*4-1, gl.STREAM_READ);
-  gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0, 0, 8*4);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 8*sizeOfFloat-1, gl.STREAM_READ);
+  gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0, 0, 8*sizeOfFloat);
   doTransformFeedback(drawFunction, gl.INVALID_OPERATION);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER,
       [0, 0, 0, 0, 0, 0, 0]);
@@ -169,9 +170,9 @@ for (let {name, drawFunction, result} of cases) {
 
   debug("<h3>separate - Baseline success case</h3>")
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*4, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*sizeOfFloat, gl.STREAM_READ);
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, tfBuffer1);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*4, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*sizeOfFloat, gl.STREAM_READ);
   doTransformFeedback(drawFunction, gl.NO_ERROR);
   gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, tfBuffer0);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, result[0]);
@@ -180,9 +181,9 @@ for (let {name, drawFunction, result} of cases) {
 
   debug("<h3>separate - Buffer too small</h3>")
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*4, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*sizeOfFloat, gl.STREAM_READ);
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, tfBuffer1);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*4-1, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*sizeOfFloat-1, gl.STREAM_READ);
   doTransformFeedback(drawFunction, gl.INVALID_OPERATION);
   gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, tfBuffer0);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, [0, 0, 0, 0]);
@@ -191,9 +192,9 @@ for (let {name, drawFunction, result} of cases) {
 
   debug("<h3>separate - multiple draws success case</h3>")
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*4*2, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*sizeOfFloat*2, gl.STREAM_READ);
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, tfBuffer1);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*4*2, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*sizeOfFloat*2, gl.STREAM_READ);
   doTransformFeedback(()=>{drawFunction(); drawFunction();}, gl.NO_ERROR);
   gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, tfBuffer0);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, result[0].concat(result[0]));
@@ -202,9 +203,9 @@ for (let {name, drawFunction, result} of cases) {
 
   debug("<h3>separate - Too small for multiple draws</h3>")
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*4*2, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*sizeOfFloat*2, gl.STREAM_READ);
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 1, tfBuffer1);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*4*2-1, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*sizeOfFloat*2-1, gl.STREAM_READ);
   doTransformFeedback(()=>{drawFunction(); drawFunction();}, gl.INVALID_OPERATION);
   gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, tfBuffer0);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, result[0].concat([0, 0, 0, 0]));
@@ -213,9 +214,9 @@ for (let {name, drawFunction, result} of cases) {
 
   debug("<h3>separate - bindBufferRange too small</h3>")
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*4, gl.STREAM_READ);
-  gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 1, tfBuffer1, 0, 3*4);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*4, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*sizeOfFloat, gl.STREAM_READ);
+  gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 1, tfBuffer1, 0, 3*sizeOfFloat);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*sizeOfFloat, gl.STREAM_READ);
   doTransformFeedback(drawFunction, gl.INVALID_OPERATION);
   gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, tfBuffer0);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, [0, 0, 0, 0]);
@@ -224,9 +225,9 @@ for (let {name, drawFunction, result} of cases) {
 
   debug("<h3>separate - bindBufferRange larger than buffer</h3>")
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*4, gl.STREAM_READ);
-  gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 1, tfBuffer1, 0, 4*4);
-  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*4-1, gl.STREAM_READ);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*sizeOfFloat, gl.STREAM_READ);
+  gl.bindBufferRange(gl.TRANSFORM_FEEDBACK_BUFFER, 1, tfBuffer1, 0, 4*sizeOfFloat);
+  gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, 4*sizeOfFloat-1, gl.STREAM_READ);
   doTransformFeedback(drawFunction, gl.INVALID_OPERATION);
   gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, tfBuffer0);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, [0, 0, 0, 0]);
