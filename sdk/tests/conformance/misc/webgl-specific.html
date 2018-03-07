@@ -78,23 +78,59 @@ wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.depthRange(20, 10)");
 
 debug("");
 debug("Verify that front/back settings should be the same for stenclMask and stencilFunc");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMask(255)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMaskSeparate(gl.FRONT, 1)");
-wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMaskSeparate(gl.BACK, 1)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
+const fb = gl.createFramebuffer();
+gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+const colorRB = gl.createRenderbuffer();
+gl.bindRenderbuffer(gl.RENDERBUFFER, colorRB);
+gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, 1, 1);
+gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, colorRB);
 
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFunc(gl.ALWAYS, 0, 255)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 1, 255)");
-wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 1, 255)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 1, 1)");
-wtu.shouldGenerateGLError(gl, gl.INVALID_OPERATION, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 1, 1)");
-wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.TRIANGLES, 0, 0)");
+function testForStencilBits(errIfMismatch) {
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.POINTS, 0, 0)");
+
+
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMaskSeparate(gl.FRONT, 1)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMaskSeparate(gl.BACK, 257)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.POINTS, 0, 0)");
+
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMaskSeparate(gl.BACK, 258)");
+    wtu.shouldGenerateGLError(gl, errIfMismatch, "gl.drawArrays(gl.POINTS, 0, 0)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilMask(1023)");
+
+
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 256, 1023)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 257, 1023)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.POINTS, 0, 0)");
+
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 254, 1023)");
+    wtu.shouldGenerateGLError(gl, errIfMismatch, "gl.drawArrays(gl.POINTS, 0, 0)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFunc(gl.ALWAYS, 0, 1023)");
+
+
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.FRONT, gl.ALWAYS, 0, -1)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 0, 0)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.drawArrays(gl.POINTS, 0, 0)");
+
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFuncSeparate(gl.BACK, gl.ALWAYS, 0, 1)");
+    wtu.shouldGenerateGLError(gl, errIfMismatch, "gl.drawArrays(gl.POINTS, 0, 0)");
+    wtu.shouldGenerateGLError(gl, gl.NO_ERROR, "gl.stencilFunc(gl.ALWAYS, 0, 1023)");
+}
+
+debug("...with 0 stencil bits in the draw framebuffer");
+testForStencilBits(gl.NO_ERROR);
+
+const depthStencilRB = gl.createRenderbuffer();
+gl.bindRenderbuffer(gl.RENDERBUFFER, depthStencilRB);
+gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, 1, 1);
+gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER,
+                           depthStencilRB);
+
+debug("...with 8 stencil bits in the draw framebuffer");
+testForStencilBits(gl.INVALID_OPERATION);
+
+gl.deleteRenderbuffer(fb);
+gl.deleteRenderbuffer(colorRB);
+gl.deleteRenderbuffer(depthStencilRB);
 
 debug("");
 debug("Verify that *LENGTH are undefined");
