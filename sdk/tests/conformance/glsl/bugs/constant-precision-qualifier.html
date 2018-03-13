@@ -95,10 +95,12 @@ function test() {
   var gl = wtu.create3DContext();
   if (!gl) {
     testFailed("context does not exist");
+    finishTest();
     return;
   }
   if (gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT).precision == 0) {
     testPassed("highp precision not supported");
+    finishTest();
   } else {
     GLSLConformanceTester.runRenderTests([
     {
@@ -129,7 +131,6 @@ function test() {
 
 test();
 var successfullyParsed = true;
-finishTest();
 </script>
 </body>
 </html>
