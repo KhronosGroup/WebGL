@@ -311,17 +311,11 @@ function runTests(shaderInfos, opt_contextVersion) {
     return;
   }
 
-  var testIndex = 0;
-  var runNextTest = function() {
-    if (testIndex == shaderInfos.length) {
-      finishTest();
-      return;
-    }
-
-    runOneTest(gl, shaderInfos[testIndex++]);
-    setTimeout(runNextTest, 1);
+  for (var i = 0; i < shaderInfos.length; i++) {
+    runOneTest(gl, shaderInfos[i]);
   }
-  runNextTest();
+
+  finishTest();
 };
 
 function getSource(elem) {
