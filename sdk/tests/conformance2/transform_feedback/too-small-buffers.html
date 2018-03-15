@@ -252,7 +252,7 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "before draw");
 // multiplied to calculate the number of transform feedback vertices, the
 // calculation will overflow to 0.
 gl.drawArraysInstanced(gl.POINTS, 0, 1<<16, 1<<16);
-wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "integer overflow");
+wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "integer overflow and/or buffer too small");
 gl.endTransformFeedback();
 
 finishTest();
