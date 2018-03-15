@@ -97,6 +97,8 @@ let tfBuffer1 = gl.createBuffer();
 
 wtu.glErrorShouldBe(gl, gl.NO_ERROR, "setup");
 
+const sizeOfFloat = 4;
+
 let cases = [
     { name: "drawArrays",
       drawFunction: ()=>gl.drawArrays(gl.POINTS, 0, 4),
@@ -126,7 +128,6 @@ for (let {name, drawFunction, result} of cases) {
   }
 
   gl.useProgram(progInterleaved);
-  const sizeOfFloat = 4;
 
   debug("<h3>interleaved - Baseline success case</h3>")
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0);
@@ -234,6 +235,25 @@ for (let {name, drawFunction, result} of cases) {
   gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, tfBuffer1);
   wtu.checkFloatBuffer(gl, gl.TRANSFORM_FEEDBACK_BUFFER, [0, 0, 0]);
 }
+
+debug("<h1>integer overflow</h1>")
+
+gl.useProgram(progInterleaved);
+gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer0);
+gl.bufferData(gl.ARRAY_BUFFER, (1<<16)*sizeOfFloat, gl.STREAM_READ);
+gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer1);
+gl.bufferData(gl.ARRAY_BUFFER, (1<<16)*sizeOfFloat, gl.STREAM_READ);
+gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer0);
+gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, (1<<16)*sizeOfFloat*2, gl.STREAM_READ);
+
+gl.beginTransformFeedback(gl.POINTS);
+wtu.glErrorShouldBe(gl, gl.NO_ERROR, "before draw");
+// If count and primcount are stored in 32-bit signed integers and then
+// multiplied to calculate the number of transform feedback vertices, the
+// calculation will overflow to 0.
+gl.drawArraysInstanced(gl.POINTS, 0, 1<<16, 1<<16);
+wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "integer overflow and/or buffer too small");
+gl.endTransformFeedback();
 
 finishTest();
 
