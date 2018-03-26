@@ -4148,6 +4148,22 @@ extensions.
     </div>
 </p>
 
+<h3>Uniform and attribute name collisions</h3>
+
+<p>
+    If any of the shaders attached to a WebGL program declare a uniform that has the same name as a
+    statically used vertex attribute, program linking should fail.
+</p>
+
+<div class="note">
+    This behavior differs from one specified in GLSL ES 3.00.6 section 12.47.
+</div>
+
+<div class="note rationale">
+    WebGL implementations have enforced this behavior for several years now, due to that some OpenGL
+    drivers don't accept uniforms and vertex attributes with the same name.
+</div>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
