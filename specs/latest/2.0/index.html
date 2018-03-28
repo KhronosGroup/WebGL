@@ -3527,13 +3527,16 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
 
     <h3><a name="VERTEX_ATTRIBUTE_ALIASING">Vertex Attribute Aliasing</a></h3>
     <p>
-        In the WebGL 2.0 API, if more than one active attribute name is bound to the same location, it is considered
-        aliased, regardless whether there exists a path through the shader that consumes more than of these
-        attributes. Such definition of aliasing is broader than what is defined in
-        <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-2.11.5">OpenGL ES 3.0.4 &sect;2.11.5</a>)</span>.
+        The WebGL 2.0 API relaxes the restrictions in GLSL ES 3.00.6 section 12.46. In the WebGL 2.0
+        API, two attributes that are bound to the same location are only considered to be aliased in
+        case they are both statically used. Otherwise the resolution of GLSL ES 3.00.6 section 12.46
+        applies to all shader programs used with the WebGL 2.0 API, so aliasing of statically used
+        attributes does cause linking to fail.
     </p>
     <p>
-        A link error is required when aliasing exists.
+        This rule is consistent with WebGL 1.0 spec section
+        <a href="../1.0/index.html#ATTRIBUTE_ALIASING">Attribute Aliasing</a>, so GLSL ES 1.00
+        shaders behave the same in WebGL 2.0 and WebGL 1.0 with respect to attribute aliasing.
     </p>
 
     <h3><a name="NO_PRIMITIVE_RESTART_FIXED_INDEX">PRIMITIVE_RESTART_FIXED_INDEX is always enabled</a></h3>
