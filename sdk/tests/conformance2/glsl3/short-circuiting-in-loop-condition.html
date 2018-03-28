@@ -64,6 +64,30 @@ void main() {
   result = success ? vec4(0, 1.0, 0, 1.0) : vec4(0, 1.0, 0, 0);
 }
 </script>
+<script id="fshaderForCondition" type="x-shader/x-fragment">#version 300 es
+precision mediump float;
+uniform bool u;
+out vec4 result;
+int sideEffectCounter;
+
+bool foo() {
+  ++sideEffectCounter;
+  return true;
+}
+
+void main() {
+  sideEffectCounter = 0;
+  for(int iterations = 0; u && foo();) {
+    ++iterations;
+    if (iterations >= 10) {
+      break;
+    }
+  }
+
+  bool success = (u && sideEffectCounter == 10) || (!u && sideEffectCounter == 0);
+  result = success ? vec4(0, 1.0, 0, 1.0) : vec4(0, 1.0, 0, 0);
+}
+</script>
 <script id="fshaderFor" type="x-shader/x-fragment">#version 300 es
 precision mediump float;
 uniform bool u;
@@ -146,6 +170,7 @@ description("Test behavior of a short-circuiting operator in a loop using a func
 
 var testShaders = [
   {fShaderId: 'fshaderWhile', description: 'in while loop condition'},
+  {fShaderId: 'fshaderForCondition', description: 'in for loop condition'},
   {fShaderId: 'fshaderFor', description: 'in for loop expression'},
   {fShaderId: 'fshaderDoWhile', description: 'in do-while loop condition'},
   {fShaderId: 'fshaderSequence', description: 'inside a sequence in while loop condition'}
