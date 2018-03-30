@@ -89,7 +89,8 @@ if (!gl) {
         testPassed("Successfully enabled WEBGL_depth_texture extension");
 
         runSupportedTest(true);
-        runTestExtension();
+        runTestExtension(true);
+        runTestExtension(false);
     }
 }
 
@@ -138,8 +139,8 @@ function dumpIt(gl, res, msg) {
     debug(strs.join(" "));
   }
 }
-function runTestExtension() {
-    debug("Testing WEBGL_depth_texture");
+function runTestExtension(unpackFlipY) {
+    debug("Testing WEBGL_depth_texture. UNPACK_FLIP_Y_WEBGL: " + unpackFlipY);
 
     var res = 8;
 
@@ -170,6 +171,8 @@ function runTestExtension() {
         gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, unpackFlipY);
 
     var types = [
         {obj: 'gl',  attachment: 'DEPTH_ATTACHMENT',         format: 'DEPTH_COMPONENT', type: 'UNSIGNED_SHORT',          data: 'new Uint16Array(1)', depthBits: "16"},
