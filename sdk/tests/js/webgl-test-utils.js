@@ -57,6 +57,10 @@ var loggingOff = function() {
  * @return {string} The enum as a string.
  */
 var glEnumToString = function(gl, value) {
+  // Avoid returning "NO_ERROR" if the arguments are totally wrong.
+  if (gl.NO_ERROR === undefined || value === undefined) {
+    return undefined;
+  }
   // Optimization for the most common enum:
   if (value === gl.NO_ERROR) {
     return "NO_ERROR";
