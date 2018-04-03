@@ -305,15 +305,17 @@ function start() {
       var result = "timeout";
       var css = "timeout";
     } else if (success) {
-      if(skipped) {
-        ++this.totalSkipped;
-      } else {
-        ++this.totalSuccessful;
-      }
+      ++this.totalSuccessful;
       // don't report success.
       return;
     } else {
       ++this.totalFailed;
+      if (skipped) {
+        // Skipped tests are counted as both skips and failures (because we
+        // don't want to accidentally accept a conformance submission with
+        // skipped tests).
+        ++this.totalSkipped;
+      }
       var result = "failed";
       var css = "fail";
     }
@@ -843,10 +845,11 @@ function start() {
       for (var url in this.pagesByURL) {
         var page = this.pagesByURL[url];
         totalTests += 1;
+        if (page.totalSkipped) {
+          testsSkipped += 1;
+        }
         if (page.totalFailed) {
           testsFailed += 1;
-        } else if (page.totalSkipped) {
-          testsSkipped += 1;
         } else if (page.totalTimeouts) {
           testsTimedOut += 1;
         } else if (page.totalSuccessful) {
