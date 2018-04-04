@@ -970,13 +970,16 @@ var drawUnitQuad = function(gl) {
   gl.drawArrays(gl.TRIANGLES, 0, 6);
 };
 
-var noopProgram = null;
+var dummyProgram = null;
 var dummySetProgramAndDrawNothing = function(gl) {
-  if (!noopProgram) {
-    noopProgram = setupProgram(gl, ["void main() {}", "void main() {}"], [], []);
+  if (!dummyProgram) {
+    dummyProgram = setupProgram(gl, [
+      "void main() { gl_Position = vec4(0.0); }",
+      "void main() { gl_FragColor = vec4(0.0); }"
+    ], [], []);
   }
-  gl.useProgram(noopProgram);
-  gl.drawArrays(gl.TRIANGLES, 0, 0);
+  gl.useProgram(dummyProgram);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
 };
 
 /**
