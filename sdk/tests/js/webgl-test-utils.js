@@ -195,6 +195,19 @@ var simpleColorFragmentShader = [
   '}'].join('\n');
 
 /**
+ * A fragment shader for a uniform color.
+ * @type {string}
+ */
+var simpleColorFragmentShaderESSL300 = [
+  '#version 300 es',
+  'precision mediump float;',
+  'out vec4 out_color;',
+  'uniform vec4 u_color;',
+  'void main() {',
+  '    out_color = u_color;',
+  '}'].join('\n');
+
+/**
  * A vertex shader for vertex colors.
  * @type {string}
  */
@@ -3225,6 +3238,7 @@ Object.defineProperties(API, {
   noTexCoordTextureVertexShader: { value: noTexCoordTextureVertexShader, writable: false },
   simpleTextureVertexShader: { value: simpleTextureVertexShader, writable: false },
   simpleColorFragmentShader: { value: simpleColorFragmentShader, writable: false },
+  simpleColorFragmentShaderESSL300: { value: simpleColorFragmentShaderESSL300, writable: false },
   simpleVertexShader: { value: simpleVertexShader, writable: false },
   simpleTextureFragmentShader: { value: simpleTextureFragmentShader, writable: false },
   simpleCubeMapTextureFragmentShader: { value: simpleCubeMapTextureFragmentShader, writable: false },
