@@ -3527,10 +3527,11 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
 
     <h3><a name="VERTEX_ATTRIBUTE_ALIASING">Vertex Attribute Aliasing</a></h3>
     <p>
-        WebGL 2.0 API implementations must strictly follow GLSL ES 3.00.6 section 12.46, that
-        specifies that any vertex attribute aliasing is disallowed. In addition, WebGL 1.0 spec
-        section <a href="../1.0/index.html#ATTRIBUTE_ALIASING">Attribute aliasing</a> applies to
-        GLSL ES 1.00 shaders used with the WebGL 2.0 API.
+        WebGL 2.0 API implementations must strictly follow GLSL ES 3.00.6 section 12.46, which
+        specifies that any vertex attribute aliasing is disallowed. As stated in
+        <a href="#refsGLES30">[GLES30]</a> p57, GLSL ES 1.00 shaders may still alias, as allowed by
+        the WebGL 1.0 spec section <a href="../1.0/index.html#ATTRIBUTE_ALIASING">Attribute
+        aliasing</a>.
     </p>
 
     <h3><a name="NO_PRIMITIVE_RESTART_FIXED_INDEX">PRIMITIVE_RESTART_FIXED_INDEX is always enabled</a></h3>
