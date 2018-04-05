@@ -114,7 +114,7 @@ function runGetSyncParameterTest() {
 
 function finishSyncParameterTest() {
   if (--iteration == 0) {
-    testFailed("Sync object wasn't signaled in a reasonable timeframe (" + (Date.now() - startTimeOfFinish) + " ms)");
+    testFailed("Sync object wasn't signaled in a reasonable timeframe (" + numRetries + " iterations)");
     finishTest();
     return;
   }
@@ -154,7 +154,7 @@ function runClientWaitSyncTest() {
 
 function finishClientWaitSyncTest() {
   if (--iteration == 0) {
-    testFailed("clientWaitSync didn't complete in a reasonable timeframe");
+    testFailed("clientWaitSync didn't complete in a reasonable timeframe (" + numRetries + " iterations)");
     finishTest();
     return;
   }
