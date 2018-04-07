@@ -3,6 +3,7 @@
 canvas-remains-unchanged-after-used-in-webgl-texture.html
 --min-version 2.0.1 compressed-tex-from-pbo-crash.html
 --min-version 2.0.1 copy-texture-cube-map-AMD-bug.html
+--min-version 2.0.1 copy-texture-cube-map-bug.html
 copy-texture-image.html
 copy-texture-image-luma-format.html
 --min-version 2.0.1 copy-texture-image-same-texture.html
