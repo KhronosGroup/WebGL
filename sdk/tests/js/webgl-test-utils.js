@@ -1922,11 +1922,6 @@ var loadShader = function(
 
   // Load the shader source
   gl.shaderSource(shader, shaderSource);
-  var err = gl.getError();
-  if (err != gl.NO_ERROR) {
-    errFn("*** Error loading shader '" + shader + "':" + glEnumToString(gl, err));
-    return null;
-  }
 
   // Compile the shader
   gl.compileShader(shader);
