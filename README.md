@@ -8,7 +8,7 @@ Before adding a new test or editing an existing test
 [please read these guidelines](sdk/tests/test-guidelines.md).
 
 You can find live versions of the specifications at
-http://www.khronos.org/webgl/
+https://www.khronos.org/webgl/
 
 The newest work in progress WebGL conformance test suite
 for the next version of the spec can be accessed at.
@@ -18,7 +18,7 @@ Official live versions of the conformance test suite can be found at
 https://www.khronos.org/registry/webgl/conformance-suites/
 
 The WebGL Wiki can be found here
-http://www.khronos.org/webgl/wiki/
+https://www.khronos.org/webgl/wiki/
 
 ## Cloning this repository
 
