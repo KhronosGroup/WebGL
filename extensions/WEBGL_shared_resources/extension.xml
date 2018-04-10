@@ -330,7 +330,7 @@ interface WEBGL_shared_resources {
      long acquireSharedResource(
          WebGLSharedObject resource,
          GLenum mode,
-         AcquireResourcesCallback callback);
+         AcquireSharedResourcesCallback callback);
      void releaseSharedResource(
          WebGLSharedObject resource);
      void cancelAcquireSharedResource(long id);
@@ -340,25 +340,25 @@ callback AcquireSharedResourcesCallback = void ();
 
 [NoInterfaceObject]
 interface WebGLShareGroup {
-}
+};
 
 interface WebGLSharedObject : WebGLObject {
-}
+};
 
 interface WebGLBuffer : WebGLSharedObject {
-}
+};
 
 interface WebGLProgram : WebGLSharedObject {
-}
+};
 
 interface WebGLRenderbuffer : WebGLSharedObject {
-}
+};
 
 interface WebGLShader : WebGLSharedObject {
-}
+};
 
 interface WebGLTexture : WebGLSharedObject {
-}
+};
   </idl>
   <history>
     <revision date="2012/02/06">
