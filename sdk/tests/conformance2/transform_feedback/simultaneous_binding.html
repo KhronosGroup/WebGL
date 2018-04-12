@@ -117,14 +117,18 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "linking transform feedback shader should n
 
 const vertexBuffer = createBuffer(gl, new Float32Array([1, 2, 3, 4]));
 const vertexBuffer2 = createBuffer(gl, new Float32Array([1, 2, 3, 4]));
+const vertexBuffer3 = createBuffer(gl, new Float32Array([1, 2, 3, 4]));
 
 const indexBuffer = gl.createBuffer();
 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
 gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Int16Array([0, 1, 2, 3]), gl.STATIC_DRAW);
 
-const vao = createVAO(gl, vertexBuffer, vertexBuffer2, indexBuffer);
-
 const tfBuffer = createBuffer(gl, new Float32Array([0, 0, 0, 0]));
+
+const vao = createVAO(gl, vertexBuffer, vertexBuffer2, indexBuffer);
+// This tests that having a transform feedback buffer bound in an unbound VAO
+// does not affect anything.
+const unboundVao = createVAO(gl, tfBuffer, tfBuffer, indexBuffer);
 
 const tf = gl.createTransformFeedback();
 gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
@@ -206,7 +210,7 @@ for (let [drawArrays, drawElements] of drawFunctions) {
   gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, tfBuffer);
 
-  debug("<hr/>Test TF buffer bound to target unused by draw")
+  debug("<hr/>Test TF buffer bound to target unused by draw");
   // Even if the TF buffer is bound to a target that's not used by the draw, it's
   // still an error.
   gl.bindBuffer(gl.COPY_READ_BUFFER, tfBuffer);
@@ -217,6 +221,25 @@ for (let [drawArrays, drawElements] of drawFunctions) {
   drawWithFeedbackBound(gl, drawElements, prog, vao, tf, false);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElements: tf disabled");
   gl.bindBuffer(gl.COPY_READ_BUFFER, null);
+
+  debug("<hr/>Test TF buffer bound to disabled vertex attrib");
+  // Having a TF buffer bound to a disabled vertex attrib should not be an error
+  // when TF is not enabled, because the buffer is not used.
+  gl.bindVertexArray(vao);
+  gl.bindBuffer(gl.ARRAY_BUFFER, tfBuffer);
+  gl.vertexAttribPointer(2, 1, gl.FLOAT, false, 0, 0);
+  gl.disableVertexAttribArray(2);
+  gl.bindVertexArray(null);
+  drawWithFeedbackBound(gl, drawArrays, prog, vao, tf, false);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "tf disabled, draw should succeed");
+  drawWithFeedbackBound(gl, drawElements, prog, vao, tf, false);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "tf disabled, draw should succeed");
+  // Remove the TF buffer binding from the VAO after the test.
+  gl.bindVertexArray(vao);
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer3);
+  gl.vertexAttribPointer(2, 1, gl.FLOAT, false, 0, 0);
+  gl.disableVertexAttribArray(2);
+  gl.bindVertexArray(null);
 }
 
 debug("<h3>Non-drawing tests</h3>");
