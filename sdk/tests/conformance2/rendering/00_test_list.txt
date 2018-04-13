@@ -28,6 +28,7 @@ framebuffer-unsupported.html
 --min-version 2.0.1 fs-color-type-mismatch-color-buffer-type.html
 instanced-arrays.html
 --min-version 2.0.1 instanced-rendering-bug.html
+--min-version 2.0.1 line-rendering-quality.html
 --min-version 2.0.1 multisampling-fragment-evaluation.html
 out-of-bounds-index-buffers-after-copying.html
 --min-version 2.0.1 read-draw-when-missing-image.html
