@@ -3954,6 +3954,22 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         and <a href="#CLIENT_WAIT_SYNC">clientWaitSync</a> for discussion and rationale.
     </p>
 
+    <h3>blitFramebuffer rectangle width/height limitations</h3>
+
+    <p>
+        <code>blitFramebuffer()</code> src* and dst* parameters must be set so that the resulting
+        width and height of the source and destination rectangles are less than or equal to the
+        maximum value that can be stored in a GLint. In case computing any of the width or height
+        values as a GLint results in integer overflow, <code>blitFramebuffer()</code> generates an
+        <code>INVALID_VALUE</code> error.
+    </p>
+
+    <div class="note rationale">
+        Using larger than max 32-bit int sized rectangles for blitFramebuffer triggers issues on
+        most desktop OpenGL drivers, and there is no general workaround for cases where
+        blitFramebuffer is used to scale the framebuffer.
+    </div>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
