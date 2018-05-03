@@ -373,7 +373,9 @@ interface WebGLTexture : WebGLSharedObject {
     <revision date="2018/05/02">
       <change>Rejected after discussion on public_webgl and no strong objections. At this point in
       the WebGL API's development it is not profitable to invest the time to implement this
-      extension.</change>
+      extension. Alternatives: CanvasRenderingContext2D.drawImage taking a WebGL-rendered canvas as
+      argument, or using OffscreenCanvas.transferToImageBitmap with a WebGL-rendered canvas,
+      combined with ImageBitmapRenderingContext.transferFromImageBitmap.</change>
     </revision>
   </history>
 </rejected>
