@@ -222,23 +222,6 @@ function runTexStorageAndSubImage3DTest()
                          testcase.unsizedformat, testcase.type,
                          pixels);
         wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "texSubImage3D should fail for dimension out of range");
-
-        // Test non-square images.
-        function expectOk(x,y,z) {
-            const tex = gl.createTexture();
-            gl.bindTexture(target, tex);
-            gl.texStorage3D(target, levels, testcase.sizedformat, x, y, z);
-            wtu.glErrorShouldBe(gl, gl.NO_ERROR,
-                                "texStorage3D should succeed with size [" + ([x,y,z].join(', ')) + "].");
-            gl.deleteTexture(tex);
-        }
-        //expectOk(texsize, texsize, texsize);
-        expectOk(texsize, texsize,       1);
-        expectOk(texsize,       1, texsize);
-        expectOk(texsize,       1,       1);
-        expectOk(      1, texsize, texsize);
-        expectOk(      1, texsize,       1);
-        expectOk(      1,       1, texsize);
     });
 }
 
