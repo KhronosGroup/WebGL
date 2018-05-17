@@ -91,7 +91,11 @@ function blit_region_test() {
 
     gl.blitFramebuffer(-1, -1, max, max, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Using source width/height greater than max 32-bit integer should fail.");
+    gl.blitFramebuffer(max, max, -1, -1, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Using source width/height greater than max 32-bit integer should fail.");
     gl.blitFramebuffer(0, 0, width, height, -1, -1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Using destination width/height greater than max 32-bit integer should fail.");
+    gl.blitFramebuffer(0, 0, width, height, max, max, -1, -1, gl.COLOR_BUFFER_BIT, gl.NEAREST);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Using destination width/height greater than max 32-bit integer should fail.");
     gl.blitFramebuffer(-1, -1, max, max, -1, -1, max, max, gl.COLOR_BUFFER_BIT, gl.NEAREST);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Using both source and destination width/height greater than max 32-bit integer should fail.");
