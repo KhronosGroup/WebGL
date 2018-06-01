@@ -3462,12 +3462,22 @@ the state of the binding point will remain untouched.
     <h3>No Client Side Arrays</h3>
 
 <p>
+The WebGL API does not support client-side arrays.
 
-The WebGL API does not support client-side arrays. If <code>vertexAttribPointer</code> is called
-without a <code>WebGLBuffer</code> bound to the <code>ARRAY_BUFFER</code> binding point, and
-<code>offset</code> is non-zero, an <code>INVALID_OPERATION</code> error is generated. If
-<code>drawElements</code> is called with a <code>count</code> greater than zero, and no
-<code>WebGLBuffer</code> is bound to the <code>ELEMENT_ARRAY_BUFFER</code> binding point, an
+<p>
+If a vertex attribute is enabled as an array via <code>enableVertexAttribArray</code> but no buffer
+is bound to that attribute (generally via <code>bindBuffer</code> and
+<code>vertexAttribPointer</code>), then draw commands (<code>drawArrays</code> or
+<code>drawElements</code>) will generate an <code>INVALID_OPERATION</code> error.
+
+<p>
+If an indexed draw command (<code>drawElements</code>) is called and no <code>WebGLBuffer</code> is
+bound to the <code>ELEMENT_ARRAY_BUFFER</code> binding point, an <code>INVALID_OPERATION</code>
+error is generated.
+
+<p>
+If <code>vertexAttribPointer</code> is called without a <code>WebGLBuffer</code> bound to the
+<code>ARRAY_BUFFER</code> binding point, and <code>offset</code> is non-zero, an
 <code>INVALID_OPERATION</code> error is generated.
 
 <div class="note rationale">
@@ -3479,8 +3489,6 @@ without a <code>WebGLBuffer</code> bound to the <code>ARRAY_BUFFER</code> bindin
     This also matches the behavior in OpenGL ES 3.0.5 <a href="#refsGLES30">[GLES30]</a> p25 for
     non-default VAO objects.
 </div>
-
-</p>
 
     <h3>No Default Textures</h3>
 
@@ -3540,20 +3548,11 @@ an <code>INVALID_VALUE</code> error is generated.
     <h3><a name="ATTRIBS_AND_RANGE_CHECKING">Enabled Vertex Attributes and Range Checking</a></h3>
 
 <p>
-
-If a vertex attribute is enabled as an array via <code>enableVertexAttribArray</code> but no buffer
-is bound to that attribute via <code>bindBuffer</code> and <code>vertexAttribPointer</code>, then
-calls to <code>drawArrays</code> or <code>drawElements</code> will generate an
-<code>INVALID_OPERATION</code> error.
-
-</p>
-<p>
-
-If a vertex attribute is enabled as an array, a buffer is bound to that attribute, and the attribute
-is consumed by the current program, then it is possible that the range specified by a call
-to <code>drawArrays</code>, or any referenced index in a call to <code>drawElements</code>, may
-reference vertices outside the storage of the bound buffer. If this occurs, then one of the
-following behaviors will result:
+It is possible for draw commands to request data outside the bounds of a WebGLBuffer by calling a
+drawing command that requires fetching data for an active vertex attribute, when it is enabled as an
+array, either directly (<code>drawArrays</code>), or indirectly from an indexed draw
+(<code>drawElements</code>).
+If this occurs, then one of the following behaviors will result:
 
 <ol>
 
@@ -3590,7 +3589,11 @@ is not consumed by the current program, then regardless of the size of the bound
 cause any error to be generated during a call to <code>drawArrays</code>
 or <code>drawElements</code>.
 
-</p>
+    <h3>Out-of-bounds fetches from the index buffer</h3>
+
+<p>
+Calling an indexed drawing command (<code>drawElements</code>) that fetches index elements outside
+the bounds of ELEMENT_ARRAY_BUFFER will result in an INVALID_OPERATION error.
 
     <h3><a name="FBO_ATTACHMENTS">Framebuffer Object Attachments</a></h3>
 
