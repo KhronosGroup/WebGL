@@ -4075,6 +4075,23 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         blitFramebuffer is used to scale the framebuffer.
     </div>
 
+    <h3>Transform feedback buffer binding limitations</h3>
+
+    <p>
+        In case the same buffer is bound to more than one transform feedback binding point that will
+        be written to, <code>BeginTransformFeedback</code> generates an
+        <code>INVALID_OPERATION</code> error.
+    </p>
+
+    <div class="note">
+        This can happen only in <code>SEPARATE_ATTRIBS</code> mode.
+    </div>
+
+    <div class="note rationale">
+        Behavior in this case is not specified in the OpenGL ES spec and may differ between
+        implementations.
+    </div>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
