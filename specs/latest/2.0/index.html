@@ -3445,8 +3445,9 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
 
     <p>
         In case the same buffer is bound to more than one transform feedback binding point that will
-        be written to, <code>BeginTransformFeedback</code> generates an
-        <code>INVALID_OPERATION</code> error.
+        be written to, and the buffer has been bound with <code>bindBufferBase</code> or the ranges
+        in the buffer chosen by <code>bindBufferRange</code> overlap, <code>BeginTransformFeedback</code>
+        generates an <code>INVALID_OPERATION</code> error.
     </p>
 
     <div class="note">
