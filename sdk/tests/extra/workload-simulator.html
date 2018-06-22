@@ -57,7 +57,7 @@ body {
 
 input {
   margin: 15px 15px;
-  transform: scale(2) translate(0px, -2px);
+  transform: scale(2);
 }
 
 input[type="number"] {
@@ -68,6 +68,15 @@ input[type="range"] {
     margin: 30px 200px;
     padding: 0px;
     transform: scale(4);
+}
+
+@keyframes rotating {
+  from { transform: scale(2) rotate(0deg); }
+  to { transform: scale(2) rotate(360deg); }
+}
+
+.rotate {
+  animation: rotating 2s linear infinite;
 }
 
 label {
@@ -89,6 +98,8 @@ label {
 </div>
 <div id="warning"></div>
 
+<label for=animation><input type=checkbox id=animation>CSS animation</label>
+<br>
 <label for=useGl>Renderer: <input type=radio name=renderer id=useGl checked>WebGL</label>
 <label for=use2D><input type=radio name=renderer id=use2D>Canvas 2D</label>
 <label for=useDom><input type=radio name=renderer id=useDom>DOM</label>
@@ -190,12 +201,10 @@ for (const control of controls) {
   if (param) {
     if (control.type == 'radio')
       control.checked = true;
-    else if (param.length > 1) {
-      if (control.type == 'checkbox')
-        control.checked = param[1] != 'false';
-      else
-        control.value = param[1];
-    }
+    else if (control.type == 'checkbox')
+      control.checked = param[1] != 'false';
+    else
+      control.value = param[1];
   }
   control.oninput = updateControls;
 }
@@ -234,6 +243,7 @@ function updateControls() {
   webglCanvas.style.display = useGl.checked ? 'block' : 'none';
   canvas.style.display = use2D.checked ? 'block' : 'none';
   dom.style.display = useDom.checked ? 'block' : 'none';
+  animation.className = animation.checked ? 'rotate' : null;
   continuousOptions.style.visibility =
       continuous.checked ? 'visible' : 'hidden';
   glOptions.style.visibility =
@@ -254,6 +264,9 @@ function updateControls() {
   uploadLabel.textContent =
       parseFloat(uploads.value).toFixed(2);
   viewsLabel.textContent = views.value;
+  // Multiview is currently incompatible with multisampling.
+  if ((views.value > 1 || multiview.checked) && antialias.checked)
+    antialias.click();
 
   const queryParams = [];
   for (const control of controls) {
@@ -262,7 +275,7 @@ function updateControls() {
         queryParams.push(control.id);
     } else if (control.type == 'checkbox') {
       if (control.checked != defaultChecked[control.id])
-        queryParams.push(control.id + '=' + control.checked);
+        queryParams.push(defaultChecked[control.id] ? control.id + '=' + control.checked : control.id);
     } else if (control.value != defaultValues[control.id]) {
       queryParams.push(control.id + '=' + control.value);
     }
@@ -506,8 +519,7 @@ function render(fromRaf, fromPostMessage) {
       maxViewsMultiview = Math.min(gl.getParameter(ext.MAX_VIEWS_OVR), 16);
       views.max = maxViewsMultiview;
       for (let i = 0; i < maxViewsMultiview; ++i) {
-        multiviewProgram[i] = setupProgram(`
-          #version 300 es
+        multiviewProgram[i] = setupProgram(`#version 300 es
           #extension GL_OVR_multiview2 : enable
           layout(num_views=${i + 1}) in;
           in vec2 position;
@@ -517,8 +529,7 @@ function render(fromRaf, fromPostMessage) {
           void main() {
             gl_Position = vec4(position * size + offset + vec2(size - 1., 1. - size), 0, 1);
             texCoord = vec2(position.x, 1. - position.y);
-          }`, `
-          #version 300 es
+          }`, `#version 300 es
           #extension GL_OVR_multiview2 : enable
           precision highp float;
           in vec2 texCoord;
