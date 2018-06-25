@@ -444,7 +444,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                     }
                     texture = runOneIteration(canvas, c.sub, c.flipY, c.semiTransparent, program, bindingTarget, texture, c.font);
                     // for the first 2 iterations always make a new texture.
-                    if (count > 2) {
+                    if (count < 2) {
                       gl.deleteTexture(texture);
                       texture = undefined;
                     }
