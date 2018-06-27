@@ -3508,8 +3508,8 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
     <p>
         In the WebGL 2.0 API, attempting to draw with <code>drawArrays</code>, <code>drawElements</code>,
         <code>drawRangeElements</code> or their instanced variants generates an <code>INVALID_OPERATION</code>
-        error if there is not at least one enabled vertex attribute array that has a divisor of zero and is
-        bound to an active generic attribute value in the program used for the draw command.
+        error if there is not at least one enabled vertex attribute array that is bound to an active generic
+        attribute value in the program used for the draw command.
     </p>
     <div class="note rationale">
         The removed functionality is an exotic corner case, and Direct3D based implementations of WebGL would
