@@ -28,6 +28,7 @@ tex-new-formats.html
 tex-storage-2d.html
 tex-storage-and-subimage-3d.html
 tex-storage-compressed-formats.html
+--min-version 2.0.1 tex-subimage3d-canvas-bug.html
 --min-version 2.0.1 tex-subimage3d-pixel-buffer-bug.html
 tex-unpack-params.html
 --min-version 2.0.1 tex-unpack-params-imagedata.html
