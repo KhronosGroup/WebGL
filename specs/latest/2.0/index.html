@@ -2344,7 +2344,6 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         <ul>
           <li>If the <code>CURRENT_PROGRAM</code> is null, an <code>INVALID_OPERATION</code> error will be generated;</li>
           <li><a href="#RANGE_CHECKING">Range Checking</a>;</li>
-          <li><a href="#ENABLED_ATTRIBUTE">Enabled Attribute</a>;</li>
           <li><a href="#ACTIVE_UNIFORM_BLOCK_BACKING">Active Uniform Block Backing</a>;</li>
           <li><a href="#ATTRIBUTE_TYPE_MATCH">VertexAttrib function must match shader attribute type</a>.</li>
         </ul>
@@ -3501,19 +3500,6 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         The OpenGL robustness extensions do not specify what happens if indices above MAX_ELEMENT_INDEX are
         used, so passing them to the driver is risky. On platforms where MAX_ELEMENT_INDEX is the same as
         the maximum unsigned integer value this section will have no effect.
-    </div>
-
-    <h3><a name="ENABLED_ATTRIBUTE">Enabled Attribute</a></h3>
-
-    <p>
-        In the WebGL 2.0 API, attempting to draw with <code>drawArrays</code>, <code>drawElements</code>,
-        <code>drawRangeElements</code> or their instanced variants generates an <code>INVALID_OPERATION</code>
-        error if there is not at least one enabled vertex attribute array that is bound to an active generic
-        attribute value in the program used for the draw command.
-    </p>
-    <div class="note rationale">
-        The removed functionality is an exotic corner case, and Direct3D based implementations of WebGL would
-        need to add complex workarounds to support it.
     </div>
 
     <h3><a name="ACTIVE_UNIFORM_BLOCK_BACKING">Active Uniform Block Backing</a></h3>
