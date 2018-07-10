@@ -3444,10 +3444,8 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
     </div>
 
     <p>
-        In case the same buffer is bound to more than one transform feedback binding point that will
-        be written to, and the buffer has been bound with <code>bindBufferBase</code> or the ranges
-        in the buffer chosen by <code>bindBufferRange</code> overlap, <code>BeginTransformFeedback</code>
-        generates an <code>INVALID_OPERATION</code> error.
+        In case the same buffer is bound to more than one binding point in the active transform feedback,
+        <code>BeginTransformFeedback</code> generates an <code>INVALID_OPERATION</code> error.
     </p>
 
     <div class="note">
@@ -3455,8 +3453,8 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
     </div>
 
     <div class="note rationale">
-        Behavior when the same buffer is bound to two outputs is not specified in the OpenGL ES spec
-        and may differ between implementations.
+        This is a restriction from D3D11, where writing two different streams to the same buffer is not
+        allowed.
     </div>
 
     <h3>Draw Buffers</h3>
