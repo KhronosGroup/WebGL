@@ -3442,6 +3442,20 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         OpenGL ES 3.0.5 &sect;2.15.2</a>)</span>
     </div>
 
+    <p>
+        In case the same buffer is bound to more than one binding point in the active transform feedback,
+        <code>beginTransformFeedback</code> generates an <code>INVALID_OPERATION</code> error.
+    </p>
+
+    <div class="note">
+        This can happen only in <code>SEPARATE_ATTRIBS</code> mode.
+    </div>
+
+    <div class="note rationale">
+        This is a restriction from D3D11, where writing two different streams to the same buffer is not
+        allowed.
+    </div>
+
     <h3>Draw Buffers</h3>
 
     <p>
