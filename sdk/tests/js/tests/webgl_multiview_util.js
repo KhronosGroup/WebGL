@@ -104,6 +104,97 @@ function getMultiviewColorFragmentShader() {
     '}'].join('\n');
 }
 
+function getMultiviewColorFragmentShaderForDrawBuffers(drawBuffers) {
+    let shaderCode = ['#version 300 es',
+    '#extension GL_OVR_multiview : require',
+    'precision highp float;',
+
+    'out vec4 my_FragColor[$(drawBuffers)];',
+
+    'void main() {',
+    '    uint mask;'];
+
+    for (let i = 0; i < drawBuffers; ++i) {
+        shaderCode.push(wtu.replaceParams('    mask = gl_ViewID_OVR + $(i)u;', {'i': i + 1}));
+        shaderCode.push(wtu.replaceParams('    my_FragColor[$(i)] = vec4(((mask & 4u) != 0u) ? 1.0 : 0.0,', {'i': i}));
+        shaderCode.push('                           ((mask & 2u) != 0u) ? 1.0 : 0.0,');
+        shaderCode.push('                           ((mask & 1u) != 0u) ? 1.0 : 0.0,');
+        shaderCode.push('                           1.0);');
+    }
+    shaderCode.push('}');
+    shaderCode = shaderCode.join('\n');
+    return wtu.replaceParams(shaderCode, {'drawBuffers' : drawBuffers});
+}
+
+function getMultiviewFlatVaryingVertexShader(views) {
+    let shaderCode = ['#version 300 es',
+    '#extension GL_OVR_multiview : require',
+
+    'layout(num_views = $(num_views)) in;',
+
+    'in vec4 a_position;',
+    'flat out int testVarying;',
+
+    'void main() {',
+    '    gl_Position = a_position;',
+    '    testVarying = int(gl_ViewID_OVR);',
+    '}'].join('\n');
+    return wtu.replaceParams(shaderCode, {'num_views': views});
+}
+
+function getMultiviewFlatVaryingFragmentShader() {
+    return ['#version 300 es',
+    '#extension GL_OVR_multiview : require',
+    'precision highp float;',
+
+    'flat in int testVarying;',
+    'out vec4 my_FragColor;',
+
+    'void main() {',
+    '    int mask = testVarying + 1;',
+    '    my_FragColor = vec4(((mask & 4) != 0) ? 1.0 : 0.0,',
+    '                        ((mask & 2) != 0) ? 1.0 : 0.0,',
+    '                        ((mask & 1) != 0) ? 1.0 : 0.0,',
+    '                        1.0);',
+    '}'].join('\n');
+}
+
+function getMultiviewInstancedVertexShader(views) {
+    let shaderCode = ['#version 300 es',
+    '#extension GL_OVR_multiview : require',
+
+    'layout(num_views = $(num_views)) in;',
+
+    'in vec4 a_position;',
+    'out vec4 color;',
+
+    'void main() {',
+    '    vec4 pos = a_position;',
+    "    // Transform the quad to a thin vertical strip that's offset along the x axis according to the view id and instance id.",
+    '    pos.x = (pos.x * 0.5 + 0.5 + float(gl_ViewID_OVR) + float(gl_InstanceID)) * 2.0 / ($(num_views).0 * 2.0) - 1.0;',
+    '    int mask = gl_InstanceID + 1;',
+    '    color = vec4(((mask & 4) != 0) ? 1.0 : 0.0,',
+    '                 ((mask & 2) != 0) ? 1.0 : 0.0,',
+    '                 ((mask & 1) != 0) ? 1.0 : 0.0,',
+    '                 1.0);',
+    '    gl_Position = pos;',
+    '}'].join('\n');
+    return wtu.replaceParams(shaderCode, {'num_views': views});
+}
+
+function getInstanceColorFragmentShader() {
+    return ['#version 300 es',
+    '#extension GL_OVR_multiview : require',
+    'precision highp float;',
+
+    'in vec4 color;',
+    'out vec4 my_FragColor;',
+
+    'void main() {',
+    '    my_FragColor = color;',
+    '}'].join('\n');
+}
+
 function getExpectedColor(view) {
     var mask = (view + 1);
     return [(mask & 4) ? 255 : 0, (mask & 2) ? 255 : 0, (mask & 1) ? 255 : 0, 255];
