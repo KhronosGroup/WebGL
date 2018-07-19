@@ -105,6 +105,7 @@ var videos = [
   { src: resourcePath + "red-green.theora.ogv",
     type: 'video/ogg; codecs="theora, vorbis"' },
 ];
+var currentVideo = null;
 
 function runAllTests() {
   return new Promise(function(resolve, reject) {
@@ -119,6 +120,7 @@ function runAllTests() {
         return;
       }
       var info = videos[videoNdx++];
+      currentVideo = info;
       debug("");
       debug("testing: " + info.type);
       video = document.createElement("video");
@@ -188,17 +190,12 @@ function runAllTests() {
       // <-- End Expected -->
 
       // Compare results
-      var compareOk = true;
-      for (var index = 0; index < expectedPixels.length; ++index) {
-        if (observedPixels[index] != expectedPixels[index]) {
-          compareOk = false;
-          break;
-        }
-      }
-      if (compareOk) {
-        testPassed("Texture states were correct, rendering as expected");
+      var numDifferentPixels = wtu.comparePixels(observedPixels, expectedPixels, 0, undefined);
+      if (numDifferentPixels) {
+        testFailed("Texture states were incorrect for " + currentVideo.type +
+                   ", rendering was wrong: found " + numDifferentPixels + " differing pixels");
       } else {
-        testFailed("Texture states were incorrect, rendering was wrong");
+        testPassed("Texture states were correct, rendering as expected");
       }
       wtu.glErrorShouldBe(gl, gl.NO_ERROR);
 
@@ -217,4 +214,3 @@ runAllTests().then(function(val) {
 
 </body>
 </html>
-
