@@ -3098,10 +3098,12 @@ function comparePixels(cmp, ref, tolerance, diff) {
 
     var count = 0;
     for (var i = 0; i < cmp.length; i++) {
-        diff[i * 4] = 0;
-        diff[i * 4 + 1] = 255;
-        diff[i * 4 + 2] = 0;
-        diff[i * 4 + 3] = 255;
+        if (diff) {
+            diff[i * 4] = 0;
+            diff[i * 4 + 1] = 255;
+            diff[i * 4 + 2] = 0;
+            diff[i * 4 + 3] = 255;
+        }
         if (Math.abs(cmp[i * 4] - ref[i * 4]) > tolerance ||
             Math.abs(cmp[i * 4 + 1] - ref[i * 4 + 1]) > tolerance ||
             Math.abs(cmp[i * 4 + 2] - ref[i * 4 + 2]) > tolerance ||
@@ -3112,8 +3114,10 @@ function comparePixels(cmp, ref, tolerance, diff) {
                 [cmp[i * 4], cmp[i * 4 + 1], cmp[i * 4 + 2], cmp[i * 4 + 3]] + ")");
             }
             count++;
-            diff[i * 4] = 255;
-            diff[i * 4 + 1] = 0;
+            if (diff) {
+                diff[i * 4] = 255;
+                diff[i * 4 + 1] = 0;
+            }
         }
     }
 
