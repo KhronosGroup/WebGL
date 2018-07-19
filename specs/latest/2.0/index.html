@@ -297,7 +297,7 @@ typedef unsigned long long GLuint64;
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteQueries.xhtml">man page</a>)
         </span>.
     </p>
-    <pre class="idl">interface <dfn id="WebGLQuery">WebGLQuery</dfn> : WebGLObject {
+    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLQuery">WebGLQuery</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -322,7 +322,7 @@ typedef unsigned long long GLuint64;
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteSamplers.xhtml">man page</a>)
         </span>.
     </p>
-    <pre class="idl">interface <dfn id="WebGLSampler">WebGLSampler</dfn> : WebGLObject {
+    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLSampler">WebGLSampler</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -359,7 +359,7 @@ typedef unsigned long long GLuint64;
     </p>
     <p>
     </p>
-    <pre class="idl">interface <dfn id="WebGLSync">WebGLSync</dfn> : WebGLObject {
+    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLSync">WebGLSync</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -384,7 +384,7 @@ typedef unsigned long long GLuint64;
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteTransformFeedbacks.xhtml">man page</a>)
         </span>.
     </p>
-    <pre class="idl">interface <dfn id="WebGLTransformFeedback">WebGLTransformFeedback</dfn> : WebGLObject {
+    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLTransformFeedback">WebGLTransformFeedback</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -409,7 +409,7 @@ typedef unsigned long long GLuint64;
           <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glDeleteVertexArrays.xhtml">man page</a>)
         </span>.
     </p>
-    <pre class="idl">interface <dfn id="WebGLVertexArrayObject">WebGLVertexArrayObject</dfn> : WebGLObject {
+    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLVertexArrayObject">WebGLVertexArrayObject</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -968,6 +968,7 @@ interface mixin <dfn id="WebGL2RenderingContextBase">WebGL2RenderingContextBase<
   void bindVertexArray(WebGLVertexArrayObject? array);
 };
 
+[Exposed=(Window,Worker)]
 interface <dfn id="WebGL2RenderingContext">WebGL2RenderingContext</dfn>
 {
 };
