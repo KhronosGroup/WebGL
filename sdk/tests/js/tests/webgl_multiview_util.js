@@ -23,7 +23,7 @@
 
 "use strict";
 
-function setupTexture(target)
+function createTextureWithNearestFiltering(target)
 {
     let texture = gl.createTexture();
     gl.bindTexture(target, texture);
@@ -66,6 +66,23 @@ function getMultiviewOffsetVertexShader(views) {
     return wtu.replaceParams(shaderCode, {'num_views': views});
 }
 
+function getMultiviewRealisticUseCaseVertexShader(views) {
+    let shaderCode = ['#version 300 es',
+    '#extension GL_OVR_multiview : require',
+
+    'layout(num_views = $(num_views)) in;',
+
+    'uniform mat4 transform[$(num_views)];',
+    'in vec4 a_position;',
+
+    'void main() {',
+    "    // Transform the quad with the transformation matrix chosen according to gl_ViewID_OVR.",
+    '    vec4 pos = transform[gl_ViewID_OVR] * a_position;',
+    '    gl_Position = pos;',
+    '}'].join('\n');
+    return wtu.replaceParams(shaderCode, {'num_views': views});
+}
+
 function getMultiviewColorFragmentShader() {
     return ['#version 300 es',
     '#extension GL_OVR_multiview : require',
@@ -74,32 +91,11 @@ function getMultiviewColorFragmentShader() {
     'out vec4 my_FragColor;',
 
     'void main() {',
-    '    switch (gl_ViewID_OVR & 7u) {',
-    '        case 0u:',
-    '            my_FragColor = vec4(0.0, 0.0, 1.0, 1.0);',
-    '            break;',
-    '        case 1u:',
-    '            my_FragColor = vec4(0.0, 1.0, 0.0, 1.0);',
-    '            break;',
-    '        case 2u:',
-    '            my_FragColor = vec4(0.0, 1.0, 1.0, 1.0);',
-    '            break;',
-    '        case 3u:',
-    '            my_FragColor = vec4(1.0, 0.0, 0.0, 1.0);',
-    '            break;',
-    '        case 4u:',
-    '            my_FragColor = vec4(1.0, 0.0, 1.0, 1.0);',
-    '            break;',
-    '        case 5u:',
-    '            my_FragColor = vec4(1.0, 1.0, 0.0, 1.0);',
-    '            break;',
-    '        case 6u:',
-    '            my_FragColor = vec4(1.0, 1.0, 1.0, 1.0);',
-    '            break;',
-    '        default:',
-    '            my_FragColor = vec4(0.0, 0.0, 0.0, 1.0);',
-    '            break;',
-    '    }',
+    '    uint mask = gl_ViewID_OVR + 1u;',
+    '    my_FragColor = vec4(((mask & 4u) != 0u) ? 1.0 : 0.0,',
+    '                        ((mask & 2u) != 0u) ? 1.0 : 0.0,',
+    '                        ((mask & 1u) != 0u) ? 1.0 : 0.0,',
+    '                        1.0);',
     '}'].join('\n');
 }
 

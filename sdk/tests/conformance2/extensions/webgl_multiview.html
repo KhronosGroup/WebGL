@@ -81,17 +81,17 @@ function runInvalidTextureTypeTest()
 {
     debug("");
     debug("Testing invalid texture types");
-    let tex2D = setupTexture(gl.TEXTURE_2D);
+    let tex2D = createTextureWithNearestFiltering(gl.TEXTURE_2D);
     gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 128, 128);
     ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex2D, 0, 0, 1);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be possible to create a multiview framebuffer against a 2D texture");
 
-    let texCube = setupTexture(gl.TEXTURE_CUBE_MAP);
+    let texCube = createTextureWithNearestFiltering(gl.TEXTURE_CUBE_MAP);
     gl.texStorage2D(gl.TEXTURE_CUBE_MAP, 1, gl.RGBA8, 128, 128);
     ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, texCube, 0, 0, 1);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be possible to create a multiview framebuffer against a cube map texture");
 
-    let tex3D = setupTexture(gl.TEXTURE_3D);
+    let tex3D = createTextureWithNearestFiltering(gl.TEXTURE_3D);
     gl.texStorage3D(gl.TEXTURE_3D, 1, gl.RGBA8, 128, 128, 2);
     ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex3D, 0, 0, 2);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be possible to create a multiview framebuffer against a 3D texture");
@@ -167,7 +167,7 @@ function runFramebufferQueryTest(allocateStorage)
         testPassed('Querying numViews returned null on a framebuffer without attachments');
     }
 
-    let colorTex = setupTexture(gl.TEXTURE_2D_ARRAY);
+    let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     if (allocateStorage) {
         gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 2, gl.RGBA8, 128, 128, maxViews);
     }
@@ -176,7 +176,7 @@ function runFramebufferQueryTest(allocateStorage)
     setupAndQuery(colorTex, 0, 1, maxViews - 1);
 
     // Test matching and mismatching attachments for framebuffer status.
-    let colorTex2 = setupTexture(gl.TEXTURE_2D_ARRAY);
+    let colorTex2 = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     if (allocateStorage) {
         gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, 128, 128, maxViews);
     }
@@ -200,7 +200,7 @@ function runInvalidViewsTest()
 
     let fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb);
-    let colorTex = setupTexture(gl.TEXTURE_2D_ARRAY);
+    let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     // Don't allocate storage since it's not needed for the validation, and the spec doesn't guarantee that
     // we can allocate a texture with maxViews + 1 layers. It could be that maxLayers == maxViews.
     ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, maxViews + 1);
@@ -210,7 +210,7 @@ function runInvalidViewsTest()
     ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, -1, 2);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Specified negative baseViewIndex");
 
-    let colorTex2 = setupTexture(gl.TEXTURE_2D_ARRAY);
+    let colorTex2 = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex2, 0, maxLayers - maxViews, maxViews);
     // Note that this validation is a bit strange since one more view could fit a 2D array texture -
     // but baseViewIndex + numViews is currently specified to be at most MAX_ARRAY_TEXTURE_LAYERS minus one.
@@ -233,7 +233,7 @@ function runDetachTest()
 
     let fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb);
-    let colorTex = setupTexture(gl.TEXTURE_2D_ARRAY);
+    let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, maxViews);
     ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, null, 0, maxLayers + 1, 0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "baseViewIndex and numViews are not validated when detaching");
@@ -258,7 +258,7 @@ function runDetachTest()
 function runClearTest()
 {
     debug("");
-    debug("Testing clear");
+    debug("Testing that calling clear() clears all views");
 
     let width = 256;
     let height = 256;
@@ -267,7 +267,7 @@ function runClearTest()
 
     let fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    let colorTex = setupTexture(gl.TEXTURE_2D_ARRAY);
+    let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
     ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
 
@@ -308,7 +308,7 @@ function runFragmentShaderRenderTest()
 
     let fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    let colorTex = setupTexture(gl.TEXTURE_2D_ARRAY);
+    let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
     ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
 
@@ -348,11 +348,92 @@ function runVertexShaderRenderTest()
 
     let fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    let colorTex = setupTexture(gl.TEXTURE_2D_ARRAY);
+    let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
     ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
 
     gl.viewport(0, 0, width, height);
+    wtu.drawUnitQuad(gl);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from draw");
+
+    let readFb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, readFb);
+    for (let viewIndex = 0; viewIndex < views; ++viewIndex) {
+        gl.framebufferTextureLayer(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, viewIndex);
+        let expectedColor = getExpectedColor(viewIndex);
+        let colorRegionLeftEdge = (width / views) * viewIndex;
+        let colorRegionRightEdge = (width / views) * (viewIndex + 1);
+        if (viewIndex > 0) {
+            wtu.checkCanvasRect(gl, 0, 0, colorRegionLeftEdge - 1, height, [0, 0, 0, 0], 'the left edge of view ' + viewIndex + ' should be untouched');
+        }
+        if (viewIndex < views - 1) {
+            wtu.checkCanvasRect(gl, colorRegionRightEdge + 1, 0, width - colorRegionRightEdge - 1, height, [0, 0, 0, 0], 'the right edge of view ' + viewIndex + ' should be untouched');
+        }
+        wtu.checkCanvasRect(gl, colorRegionLeftEdge + 1, 0, colorRegionRightEdge - colorRegionLeftEdge - 2, height, expectedColor, 'a thin strip in view ' + viewIndex + ' should be colored ' + expectedColor);
+    }
+}
+
+function runRealisticUseCaseRenderTest()
+{
+    debug("");
+    debug("Testing rendering with a different transformation matrix chosen from a uniform array according to ViewID");
+
+    let width = 256;
+    let height = 256;
+
+    let views = gl.getParameter(ext.MAX_VIEWS_OVR);
+
+    let multiviewShaders = [
+      getMultiviewRealisticUseCaseVertexShader(views),
+      getMultiviewColorFragmentShader()
+    ];
+
+    let testProgram = wtu.setupProgram(gl, multiviewShaders, ['a_position'], [0], true);
+    if (!testProgram) {
+        testFailed("Compilation with extension enabled failed.");
+        return;
+    }
+
+    let fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
+    gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
+    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
+
+    gl.viewport(0, 0, width, height);
+
+    let transformLocation = gl.getUniformLocation(testProgram, 'transform');
+    let transformData = new Float32Array (views * 16);
+    for (let viewIndex = 0; viewIndex < views; ++viewIndex) {
+        let scaleX = 1.0 / views;
+        // offsetX is the position of the left edge of the quad we want to get in normalized device coordinates
+        let offsetX = viewIndex / views * 2.0 - 1.0;
+        // x position is transformed according to this equation: scaleX * x0 + translateX = offsetX
+        // By substituting x0 with -1 (vertex attribute x value for the left edge), we get the following:
+        let translateX = offsetX + scaleX;
+
+        transformData[viewIndex * 16] = scaleX;
+        transformData[viewIndex * 16 + 1] = 0.0;
+        transformData[viewIndex * 16 + 2] = 0.0;
+        transformData[viewIndex * 16 + 3] = 0.0;
+
+        transformData[viewIndex * 16 + 4] = 0.0;
+        transformData[viewIndex * 16 + 5] = 1.0;
+        transformData[viewIndex * 16 + 6] = 0.0;
+        transformData[viewIndex * 16 + 7] = 0.0;
+
+        transformData[viewIndex * 16 + 8] = 0.0;
+        transformData[viewIndex * 16 + 9] = 0.0;
+        transformData[viewIndex * 16 + 10] = 1.0;
+        transformData[viewIndex * 16 + 11] = 0.0;
+
+        transformData[viewIndex * 16 + 12] = translateX;
+        transformData[viewIndex * 16 + 13] = 0.0;
+        transformData[viewIndex * 16 + 14] = 0.0;
+        transformData[viewIndex * 16 + 15] = 1.0;
+    }
+    gl.uniformMatrix4fv(transformLocation, false, transformData);
+
     wtu.drawUnitQuad(gl);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from draw");
 
@@ -416,6 +497,7 @@ if (!gl) {
 
       runFragmentShaderRenderTest();
       runVertexShaderRenderTest();
+      runRealisticUseCaseRenderTest();
       runUniqueObjectTest();
   }
 }
