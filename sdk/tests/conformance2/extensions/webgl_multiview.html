@@ -201,8 +201,7 @@ function runInvalidViewsTest()
     let fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb);
     let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
-    // Don't allocate storage since it's not needed for the validation, and the spec doesn't guarantee that
-    // we can allocate a texture with maxViews + 1 layers. It could be that maxLayers == maxViews.
+    // Don't allocate storage since it's not needed for the validation.
     ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, maxViews + 1);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Specified too many views");
     ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, 0);
@@ -211,16 +210,11 @@ function runInvalidViewsTest()
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Specified negative baseViewIndex");
 
     let colorTex2 = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
+    ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex2, 0, maxLayers - maxViews + 1, maxViews);
+    // baseViewIndex + numViews  =  (maxLayers - maxViews + 1) + maxViews  =  maxLayers + 1
+    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Specified so many views that baseViewIndex + numViews is greater than MAX_ARRAY_TEXTURE_LAYERS");
     ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex2, 0, maxLayers - maxViews, maxViews);
-    // Note that this validation is a bit strange since one more view could fit a 2D array texture -
-    // but baseViewIndex + numViews is currently specified to be at most MAX_ARRAY_TEXTURE_LAYERS minus one.
-    // There's an open bug against the native OVR_multiview spec to verify what was the intent.
-    // baseViewIndex + numViews  =  (maxLayers - maxViews) + maxViews  =  maxLayers
-    wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Specified so many views that baseViewIndex + numViews is greater than MAX_ARRAY_TEXTURE_LAYERS minus one");
-    if (maxLayers > maxViews) {
-        ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex2, 0, maxLayers - maxViews - 1, maxViews);
-        wtu.glErrorShouldBe(gl, gl.NO_ERROR, "baseViewIndex + numViews is exactly MAX_ARRAY_TEXTURE_LAYERS minus one");
-    }
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "baseViewIndex + numViews is exactly MAX_ARRAY_TEXTURE_LAYERS");
 }
 
 function runDetachTest()
