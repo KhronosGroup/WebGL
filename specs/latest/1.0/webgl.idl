@@ -56,37 +56,47 @@ dictionary WebGLContextAttributes {
     GLboolean failIfMajorPerformanceCaveat = false;
 };
 
-[Exposed=(Window,Worker)] interface WebGLObject {
+[Exposed=(Window,Worker)]
+interface WebGLObject {
 };
 
-[Exposed=(Window,Worker)] interface WebGLBuffer : WebGLObject {
+[Exposed=(Window,Worker)]
+interface WebGLBuffer : WebGLObject {
 };
 
-[Exposed=(Window,Worker)] interface WebGLFramebuffer : WebGLObject {
+[Exposed=(Window,Worker)]
+interface WebGLFramebuffer : WebGLObject {
 };
 
-[Exposed=(Window,Worker)] interface WebGLProgram : WebGLObject {
+[Exposed=(Window,Worker)]
+interface WebGLProgram : WebGLObject {
 };
 
-[Exposed=(Window,Worker)] interface WebGLRenderbuffer : WebGLObject {
+[Exposed=(Window,Worker)]
+interface WebGLRenderbuffer : WebGLObject {
 };
 
-[Exposed=(Window,Worker)] interface WebGLShader : WebGLObject {
+[Exposed=(Window,Worker)]
+interface WebGLShader : WebGLObject {
 };
 
-[Exposed=(Window,Worker)] interface WebGLTexture : WebGLObject {
+[Exposed=(Window,Worker)]
+interface WebGLTexture : WebGLObject {
 };
 
-[Exposed=(Window,Worker)] interface WebGLUniformLocation {
+[Exposed=(Window,Worker)]
+interface WebGLUniformLocation {
 };
 
-[Exposed=(Window,Worker)] interface WebGLActiveInfo {
+[Exposed=(Window,Worker)]
+interface WebGLActiveInfo {
     readonly attribute GLint size;
     readonly attribute GLenum type;
     readonly attribute DOMString name;
 };
 
-[Exposed=(Window,Worker)] interface WebGLShaderPrecisionFormat {
+[Exposed=(Window,Worker)]
+interface WebGLShaderPrecisionFormat {
     readonly attribute GLint rangeMin;
     readonly attribute GLint rangeMax;
     readonly attribute GLint precision;
@@ -737,7 +747,9 @@ interface WebGLRenderingContext
 WebGLRenderingContext includes WebGLRenderingContextBase;
 
 
-[Exposed=(Window,Worker), Constructor(DOMString type, optional WebGLContextEventInit eventInit)]
+[Exposed=(Window,Worker),
+ Constructor(DOMString type,
+ optional WebGLContextEventInit eventInit)]
 interface WebGLContextEvent : Event {
     readonly attribute DOMString statusMessage;
 };

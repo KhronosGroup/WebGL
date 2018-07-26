@@ -28,19 +28,24 @@ typedef long long GLint64;
 typedef unsigned long long GLuint64;
 
 
-[Exposed=(Window,Worker)] interface WebGLQuery : WebGLObject {
+[Exposed=(Window,Worker)]
+interface WebGLQuery : WebGLObject {
 };
 
-[Exposed=(Window,Worker)] interface WebGLSampler : WebGLObject {
+[Exposed=(Window,Worker)]
+interface WebGLSampler : WebGLObject {
 };
 
-[Exposed=(Window,Worker)] interface WebGLSync : WebGLObject {
+[Exposed=(Window,Worker)]
+interface WebGLSync : WebGLObject {
 };
 
-[Exposed=(Window,Worker)] interface WebGLTransformFeedback : WebGLObject {
+[Exposed=(Window,Worker)]
+interface WebGLTransformFeedback : WebGLObject {
 };
 
-[Exposed=(Window,Worker)] interface WebGLVertexArrayObject : WebGLObject {
+[Exposed=(Window,Worker)]
+interface WebGLVertexArrayObject : WebGLObject {
 };
 
 typedef ([AllowShared] Uint32Array or sequence<GLuint>) Uint32List;

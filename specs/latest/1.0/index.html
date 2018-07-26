@@ -899,7 +899,8 @@ var context = canvas.getContext('webgl',
         Each <code>WebGLObject</code> has
         an <b><a name="webgl-object-invalidated-flag">invalidated</a></b> flag, which is initially unset.
     </p>
-    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLObject">WebGLObject</dfn> {
+    <pre class="idl">[Exposed=(Window,Worker)]
+interface <dfn id="WebGLObject">WebGLObject</dfn> {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -916,7 +917,8 @@ var context = canvas.getContext('webgl',
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.9">OpenGL ES 2.0 &sect;2.9</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteBuffers.xml">man page</a>)</span>
         .
     </p>
-    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLBuffer">WebGLBuffer</dfn> : WebGLObject {
+    <pre class="idl">[Exposed=(Window,Worker)]
+interface <dfn id="WebGLBuffer">WebGLBuffer</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -933,7 +935,8 @@ var context = canvas.getContext('webgl',
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.4.1">OpenGL ES 2.0 &sect;4.4.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteFramebuffers.xml">man page</a>)</span>
         .
     </p>
-    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLFramebuffer">WebGLFramebuffer</dfn> : WebGLObject {
+    <pre class="idl">[Exposed=(Window,Worker)]
+interface <dfn id="WebGLFramebuffer">WebGLFramebuffer</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -950,7 +953,8 @@ var context = canvas.getContext('webgl',
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.3">OpenGL ES 2.0 &sect;2.10.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteProgram.xml">man page</a>)</span>
         .
     </p>
-    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLProgram">WebGLProgram</dfn> : WebGLObject {
+    <pre class="idl">[Exposed=(Window,Worker)]
+interface <dfn id="WebGLProgram">WebGLProgram</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -967,7 +971,8 @@ var context = canvas.getContext('webgl',
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-4.4.3">OpenGL ES 2.0 &sect;4.4.3</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteRenderbuffers.xml">man page</a>)</span>
         .
     </p>
-    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLRenderbuffer">WebGLRenderbuffer</dfn> : WebGLObject {
+    <pre class="idl">[Exposed=(Window,Worker)]
+interface <dfn id="WebGLRenderbuffer">WebGLRenderbuffer</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -984,7 +989,8 @@ var context = canvas.getContext('webgl',
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.10.1">OpenGL ES 2.0 &sect;2.10.1</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteShader.xml">man page</a>)</span>
         .
     </p>
-    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLShader">WebGLShader</dfn> : WebGLObject {
+    <pre class="idl">[Exposed=(Window,Worker)]
+interface <dfn id="WebGLShader">WebGLShader</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1001,7 +1007,8 @@ var context = canvas.getContext('webgl',
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-3.7.13">OpenGL ES 2.0 &sect;3.7.13</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glDeleteTextures.xml">man page</a>)</span>
         .
     </p>
-    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLTexture">WebGLTexture</dfn> : WebGLObject {
+    <pre class="idl">[Exposed=(Window,Worker)]
+interface <dfn id="WebGLTexture">WebGLTexture</dfn> : WebGLObject {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1012,7 +1019,8 @@ var context = canvas.getContext('webgl',
         The <code>WebGLUniformLocation</code> interface represents the location of a uniform variable
         in a shader program.
     </p>
-    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLUniformLocation">WebGLUniformLocation</dfn> {
+    <pre class="idl">[Exposed=(Window,Worker)]
+interface <dfn id="WebGLUniformLocation">WebGLUniformLocation</dfn> {
 };</pre>
 
 <!-- ======================================================================================================= -->
@@ -1023,7 +1031,8 @@ var context = canvas.getContext('webgl',
         The <code>WebGLActiveInfo</code> interface represents the information returned
         from the getActiveAttrib and getActiveUniform calls.
     </p>
-    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLActiveInfo">WebGLActiveInfo</dfn> {
+    <pre class="idl">[Exposed=(Window,Worker)]
+interface <dfn id="WebGLActiveInfo">WebGLActiveInfo</dfn> {
     readonly attribute GLint size;
     readonly attribute GLenum type;
     readonly attribute DOMString name;
@@ -1073,7 +1082,8 @@ var context = canvas.getContext('webgl',
         The <code>WebGLShaderPrecisionFormat</code> interface represents the information returned
         from the getShaderPrecisionFormat call.
     </p>
-    <pre class="idl">[Exposed=(Window,Worker)] interface <dfn id="WebGLShaderPrecisionFormat">WebGLShaderPrecisionFormat</dfn> {
+    <pre class="idl">[Exposed=(Window,Worker)]
+interface <dfn id="WebGLShaderPrecisionFormat">WebGLShaderPrecisionFormat</dfn> {
     readonly attribute GLint rangeMin;
     readonly attribute GLint rangeMax;
     readonly attribute GLint precision;
@@ -3334,7 +3344,9 @@ WebGLRenderingContext includes WebGLRenderingContextBase;
         given object.
     </p>
     <pre class="idl">
-[Exposed=(Window,Worker), Constructor(DOMString type, optional WebGLContextEventInit eventInit)]
+[Exposed=(Window,Worker),
+ Constructor(DOMString type,
+ optional WebGLContextEventInit eventInit)]
 interface <dfn id="WebGLContextLostEvent">WebGLContextEvent</dfn> : <a href="http://www.w3.org/TR/domcore/#event">Event</a> {
     readonly attribute DOMString statusMessage;
 };
