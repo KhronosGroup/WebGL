@@ -49,6 +49,9 @@ function getMultiviewPassthroughVertexShader(views) {
     return wtu.replaceParams(shaderCode, {'num_views': views});
 }
 
+// This shader splits the viewport into <views> equally sized vertical strips.
+// The input quad defined by "a_position" is transformed to fill a different
+// strip in each view.
 function getMultiviewOffsetVertexShader(views) {
     let shaderCode = ['#version 300 es',
     '#extension GL_OVR_multiview : require',
@@ -66,6 +69,8 @@ function getMultiviewOffsetVertexShader(views) {
     return wtu.replaceParams(shaderCode, {'num_views': views});
 }
 
+// This shader transforms the incoming "a_position" with transforms for each
+// view given in the uniform array "transform".
 function getMultiviewRealisticUseCaseVertexShader(views) {
     let shaderCode = ['#version 300 es',
     '#extension GL_OVR_multiview : require',
