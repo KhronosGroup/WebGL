@@ -355,15 +355,8 @@ function runVertexShaderRenderTest()
     for (let viewIndex = 0; viewIndex < views; ++viewIndex) {
         gl.framebufferTextureLayer(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, viewIndex);
         let expectedColor = getExpectedColor(viewIndex);
-        let colorRegionLeftEdge = (width / views) * viewIndex;
-        let colorRegionRightEdge = (width / views) * (viewIndex + 1);
-        if (viewIndex > 0) {
-            wtu.checkCanvasRect(gl, 0, 0, colorRegionLeftEdge - 1, height, [0, 0, 0, 0], 'the left edge of view ' + viewIndex + ' should be untouched');
-        }
-        if (viewIndex < views - 1) {
-            wtu.checkCanvasRect(gl, colorRegionRightEdge + 1, 0, width - colorRegionRightEdge - 1, height, [0, 0, 0, 0], 'the right edge of view ' + viewIndex + ' should be untouched');
-        }
-        wtu.checkCanvasRect(gl, colorRegionLeftEdge + 1, 0, colorRegionRightEdge - colorRegionLeftEdge - 2, height, expectedColor, 'a thin strip in view ' + viewIndex + ' should be colored ' + expectedColor);
+
+        checkVerticalStrip(width, height, views, viewIndex, expectedColor, 'view ' + viewIndex);
     }
 }
 
@@ -402,29 +395,8 @@ function runRealisticUseCaseRenderTest()
         let scaleX = 1.0 / views;
         // offsetX is the position of the left edge of the quad we want to get in normalized device coordinates
         let offsetX = viewIndex / views * 2.0 - 1.0;
-        // x position is transformed according to this equation: scaleX * x0 + translateX = offsetX
-        // By substituting x0 with -1 (vertex attribute x value for the left edge), we get the following:
-        let translateX = offsetX + scaleX;
 
-        transformData[viewIndex * 16] = scaleX;
-        transformData[viewIndex * 16 + 1] = 0.0;
-        transformData[viewIndex * 16 + 2] = 0.0;
-        transformData[viewIndex * 16 + 3] = 0.0;
-
-        transformData[viewIndex * 16 + 4] = 0.0;
-        transformData[viewIndex * 16 + 5] = 1.0;
-        transformData[viewIndex * 16 + 6] = 0.0;
-        transformData[viewIndex * 16 + 7] = 0.0;
-
-        transformData[viewIndex * 16 + 8] = 0.0;
-        transformData[viewIndex * 16 + 9] = 0.0;
-        transformData[viewIndex * 16 + 10] = 1.0;
-        transformData[viewIndex * 16 + 11] = 0.0;
-
-        transformData[viewIndex * 16 + 12] = translateX;
-        transformData[viewIndex * 16 + 13] = 0.0;
-        transformData[viewIndex * 16 + 14] = 0.0;
-        transformData[viewIndex * 16 + 15] = 1.0;
+        setupTranslateAndScaleXMatrix(transformData, viewIndex * 16, scaleX, offsetX);
     }
     gl.uniformMatrix4fv(transformLocation, false, transformData);
 
@@ -436,15 +408,8 @@ function runRealisticUseCaseRenderTest()
     for (let viewIndex = 0; viewIndex < views; ++viewIndex) {
         gl.framebufferTextureLayer(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, viewIndex);
         let expectedColor = getExpectedColor(viewIndex);
-        let colorRegionLeftEdge = (width / views) * viewIndex;
-        let colorRegionRightEdge = (width / views) * (viewIndex + 1);
-        if (viewIndex > 0) {
-            wtu.checkCanvasRect(gl, 0, 0, colorRegionLeftEdge - 1, height, [0, 0, 0, 0], 'the left edge of view ' + viewIndex + ' should be untouched');
-        }
-        if (viewIndex < views - 1) {
-            wtu.checkCanvasRect(gl, colorRegionRightEdge + 1, 0, width - colorRegionRightEdge - 1, height, [0, 0, 0, 0], 'the right edge of view ' + viewIndex + ' should be untouched');
-        }
-        wtu.checkCanvasRect(gl, colorRegionLeftEdge + 1, 0, colorRegionRightEdge - colorRegionLeftEdge - 2, height, expectedColor, 'a thin strip in view ' + viewIndex + ' should be colored ' + expectedColor);
+
+        checkVerticalStrip(width, height, views, viewIndex, expectedColor, 'view ' + viewIndex);
     }
 }
 
