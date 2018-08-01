@@ -184,6 +184,17 @@ var simpleVertexShader = [
   '}'].join('\n');
 
 /**
+ * A vertex shader for a uniform color.
+ * @type {string}
+ */
+var simpleVertexShaderESSL300 = [
+  '#version 300 es',
+  'in vec4 vPosition;',
+  'void main() {',
+  '    gl_Position = vPosition;',
+  '}'].join('\n');
+
+/**
  * A fragment shader for a uniform color.
  * @type {string}
  */
@@ -3262,6 +3273,7 @@ Object.defineProperties(API, {
   simpleColorFragmentShader: { value: simpleColorFragmentShader, writable: false },
   simpleColorFragmentShaderESSL300: { value: simpleColorFragmentShaderESSL300, writable: false },
   simpleVertexShader: { value: simpleVertexShader, writable: false },
+  simpleVertexShaderESSL300: { value: simpleVertexShaderESSL300, writable: false },
   simpleTextureFragmentShader: { value: simpleTextureFragmentShader, writable: false },
   simpleCubeMapTextureFragmentShader: { value: simpleCubeMapTextureFragmentShader, writable: false },
   simpleVertexColorFragmentShader: { value: simpleVertexColorFragmentShader, writable: false },
