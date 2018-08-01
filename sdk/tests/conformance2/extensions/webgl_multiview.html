@@ -34,6 +34,18 @@
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
 <script src="../../js/tests/webgl_multiview_util.js"></script>
+<script id="macroFragmentShader" type="x-shader/x-fragment">#version 300 es
+precision highp float;
+out vec4 my_FragColor;
+void main() {
+#ifdef GL_OVR_multiview
+    my_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+#else
+    // Error expected
+    #error no GL_OVR_multiview;
+#endif
+}
+</script>
 </head>
 <body>
 <div id="description"></div>
@@ -45,8 +57,25 @@ let wtu = WebGLTestUtils;
 let gl = wtu.create3DContext(null, null, 2);
 let ext = null;
 
+function runExtensionDisabledTest()
+{
+    debug("");
+    debug("Testing queries with extension disabled");
+
+    let maxViews = gl.getParameter(0x9631);
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Can't query MAX_VIEWS_OVR without enabling WEBGL_multiview");
+
+    let baseViewIndex = gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, 0x9630);
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Can't query FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX_OVR without enabling WEBGL_multiview");
+    let numViews = gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, 0x9632);
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Can't query FRAMEBUFFER_ATTACHMENT_TEXTURE_NUM_VIEWS_OVR without enabling WEBGL_multiview");
+}
+
 function runQueryTest()
 {
+    debug("");
+    debug("Testing querying MAX_VIEWS_OVR");
+
     let maxViews = gl.getParameter(ext.MAX_VIEWS_OVR);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from querying MAX_VIEWS_OVR");
     if (typeof maxViews != 'number') {
@@ -249,6 +278,40 @@ function runDetachTest()
     }
 }
 
+function runShaderCompileTest(extensionEnabled)
+{
+    debug("");
+    debug("Testing shader compiles with extension " + (extensionEnabled ? "enabled" : "disabled"));
+
+    var macroFragmentProgram = wtu.setupProgram(gl, [wtu.simpleVertexShaderESSL300, "macroFragmentShader"], undefined, undefined, true);
+    if (extensionEnabled) {
+        if (macroFragmentProgram) {
+            testPassed("GL_OVR_multiview defined in shaders when extension is enabled");
+        } else {
+            testFailed("GL_OVR_multiview not defined in shaders when extension is enabled");
+        }
+    } else {
+        if (macroFragmentProgram) {
+            testFailed("GL_OVR_multiview defined in shaders when extension is disabled");
+        } else {
+            testPassed("GL_OVR_multiview not defined in shaders when extension disabled");
+        }
+    }
+
+    if (!extensionEnabled) {
+        let multiviewShaders = [
+          getMultiviewPassthroughVertexShader(2),
+          getMultiviewColorFragmentShader()
+        ];
+        let testProgram = wtu.setupProgram(gl, multiviewShaders, ['a_position'], [0], true);
+        if (testProgram) {
+            testFailed("Compilation of shaders using extension functionality succeeded when the extension is disabled, should fail.");
+        } else {
+            testPassed("Compilation of shaders using extension functionality should fail when the extension is disabled.");
+        }
+    }
+}
+
 function runClearTest()
 {
     debug("");
@@ -431,11 +494,19 @@ if (!gl) {
 } else {
   testPassed("WebGL context exists");
 
+  runExtensionDisabledTest();
+
+  runShaderCompileTest(false);
+
+  debug("");
+
   if (!gl.getExtension("WEBGL_multiview")) {
       testPassed("No WEBGL_multiview support -- this is legal");
   } else {
       testPassed("Successfully enabled WEBGL_multiview extension");
       ext = gl.getExtension('WEBGL_multiview');
+
+      runShaderCompileTest(true);
 
       runQueryTest();
 
