@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>GLSL struct as a function parameter bug</title>
+<title>GLSL passing struct from a const array into a function parameter bug</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
@@ -71,7 +71,7 @@ GLSLConformanceTester.runTests([
   fShaderId: 'fShaderTest',
   fShaderSuccess: true,
   linkSuccess: true,
-  passMsg: 'Passing a struct from a dynamically indexed const array as a non-const function parameter should work.',
+  passMsg: 'Passing a struct from a dynamically indexed const array into a non-const function parameter should work.',
   render: true
 }
 ], 2);
