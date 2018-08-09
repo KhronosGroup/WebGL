@@ -10,3 +10,4 @@ promoted-extensions-in-shaders.html
 --min-version 2.0.1 webgl_multiview_non_multiview_shaders.html
 --min-version 2.0.1 webgl_multiview_single_view_operations.html
 --min-version 2.0.1 webgl_multiview_timer_query.html
+--min-version 2.0.1 webgl_multiview_transform_feedback.html

@@ -172,6 +172,39 @@ function getMultiviewColorFragmentShaderForDrawBuffers(drawBuffers) {
     return wtu.replaceParams(shaderCode, {'drawBuffers' : drawBuffers});
 }
 
+function getMultiviewVaryingVertexShader(views) {
+    let shaderCode = ['#version 300 es',
+    '#extension GL_OVR_multiview : require',
+
+    'layout(num_views = $(num_views)) in;',
+
+    'in vec4 a_position;',
+    'out float testVarying;',
+
+    'void main() {',
+    '    gl_Position = a_position;',
+    '    testVarying = float(gl_ViewID_OVR);',
+    '}'].join('\n');
+    return wtu.replaceParams(shaderCode, {'num_views': views});
+}
+
+function getMultiviewVaryingFragmentShader() {
+    return ['#version 300 es',
+    '#extension GL_OVR_multiview : require',
+    'precision highp float;',
+
+    'in float testVarying;',
+    'out vec4 my_FragColor;',
+
+    'void main() {',
+    '    int mask = int(testVarying + 0.1) + 1;',
+    '    my_FragColor = vec4(((mask & 4) != 0) ? 1.0 : 0.0,',
+    '                        ((mask & 2) != 0) ? 1.0 : 0.0,',
+    '                        ((mask & 1) != 0) ? 1.0 : 0.0,',
+    '                        1.0);',
+    '}'].join('\n');
+}
+
 function getMultiviewFlatVaryingVertexShader(views) {
     let shaderCode = ['#version 300 es',
     '#extension GL_OVR_multiview : require',
