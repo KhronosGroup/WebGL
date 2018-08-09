@@ -3,6 +3,7 @@ ext-disjoint-timer-query-webgl2.html
 promoted-extensions.html
 promoted-extensions-in-shaders.html
 --min-version 2.0.1 webgl_multiview.html
+--min-version 2.0.1 webgl_multiview_depth.html
 --min-version 2.0.1 webgl_multiview_draw_buffers.html
 --min-version 2.0.1 webgl_multiview_flat_varying.html
 --min-version 2.0.1 webgl_multiview_instanced_draw.html
