@@ -1317,6 +1317,29 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         If the buffer is written and read sequentially by other operations and <code>getBufferSubData</code>,
         it is the responsibility of the WebGL API to ensure that data are accessed consistently. This applies
         even if the buffer is currently bound to a transform feedback binding point.
+
+        <div class="note">
+          <p>
+            This is a blocking operation, as WebGL must completely finish all
+            previous writes into the source buffer in order to return a result.
+            In multi-process WebGL implementations, <code>getBufferSubData</code>
+            can also incur an expensive inter-process round-trip to fetch the
+            result from the remote process.
+          </p>
+          <p>
+            The user may be able to avoid these costs by signalling intent to
+            read back from the buffer:
+          </p>
+          <ul>
+            <li>Insert a <code>fenceSync</code> after writing to the source
+              buffer, and wait for it to pass before performing the
+              <code>getBufferSubData</code> operation.
+            <li>Allocate buffers with a <code>_READ</code> usage hint if they are
+              to be used as a readback source. (Avoid overuse of buffers
+              allocated with <code>_READ</code> usage hints, as they may incur
+              overhead in maintaining a shadow copy of the buffer data.)
+          </ul>
+        </div>
       </dd>
     </dl>
 
@@ -2376,6 +2399,23 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
           </p>
           <p>If <code>dstData</code> doesn't have enough space for the read operation starting at
              <code>dstOffset</code>, generate <code>INVALID_OPERATION</code>.
+
+          <div class="note">
+            <p>
+              This is a blocking operation, as WebGL must completely finish all
+              previous rendering operations into the source framebuffer in order
+              to return a result. In multi-process WebGL implementations, it also
+              incurs an expensive inter-process round-trip to fetch the result
+              from the remote process.
+            </p>
+            <p>
+              Consider instead using <code>readPixels</code> into a
+              <code>PIXEL_PACK_BUFFER</code>. Use <code>getBufferSubData</code>
+              to read the data from that buffer.
+              (See <code>getBufferSubData</code> for how to avoid blocking in
+              that call.)
+            </p>
+          </div>
         </dd>
 
         <dt class="idl-code">void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLintptr offset)
