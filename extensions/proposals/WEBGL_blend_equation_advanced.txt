@@ -1,0 +1,88 @@
+WEBGL_blend_equation_advanced extension proposal
+
+Name: WEBGL_blend_equation_advanced
+Contact: public_webgl@khronos.org
+Contributors: ashley@scirra.com, members of the WebGL working group
+Last modified: 21st August 2018
+Revision: 2
+Number: WebGL extension #??
+Dependencies: Written against the WebGL API 1.0 specification
+
+Overview:
+This extension exposes the KHR_blend_equation_advanced functionality to WebGL. See: https://www.opengl.org/registry/specs/KHR/blend_equation_advanced.txt
+
+CanvasRenderingContext2D provides a series of common blend functions with globalComposeOperation, such as "multiply" and "screen". KHR_blend_equation_advanced provides, with the exception of "xor", exactly the same list of blend functions for WebGL, as detailed below:
+
+"multiply": MULTIPLY_KHR
+"screen": SCREEN_KHR
+"overlay": OVERLAY_KHR
+"darken": DARKEN_KHR
+"lighten": LIGHTEN_KHR
+"color-dodge": COLORDODGE_KHR
+"color-burn": COLORBURN_KHR
+"hard-light": HARDLIGHT_KHR
+"soft-light": SOFTLIGHT_KHR
+"difference": DIFFERENCE_KHR
+"exclusion": EXCLUSION_KHR
+"hue": HSL_HUE_KHR
+"saturation": HSL_SATURATION_KHR
+"color": HSL_COLOR_KHR
+"luminosity": HSL_LUMINOSITY_KHR
+
+These effects are useful for high-quality artistic blends. They can be implemented using shaders and rendering via an intermediate texture. However this has a high performance overhead both in draw calls and GPU bandwidth. Advanced blend modes allow a much simpler, high-performance way of implementing these blends. Using shaders rendering to an intermediate texture can be used as a fallback if this extension is not supported.
+
+When this extension is enabled, the blendEquation entry points are extended to accept the enums in the IDL below.
+
+IDL:
+
+[NoInterfaceObject]
+interface WEBGL_blend_equation_advanced  {
+  const GLenum MULTIPLY = 0x9294;
+  const GLenum SCREEN = 0x9295;
+  const GLenum OVERLAY = 0x9296;
+  const GLenum DARKEN = 0x9297;
+  const GLenum LIGHTEN = 0x9298;
+  const GLenum COLORDODGE = 0x9299;
+  const GLenum COLORBURN = 0x929A;
+  const GLenum HARDLIGHT = 0x929B;
+  const GLenum SOFTLIGHT = 0x929C;
+  const GLenum DIFFERENCE = 0x929E;
+  const GLenum EXCLUSION = 0x92A0;
+  const GLenum HSL_HUE = 0x92AD;
+  const GLenum HSL_SATURATION = 0x92AE;
+  const GLenum HSL_COLOR = 0x92AF;
+  const GLenum HSL_LUMINOSITY =  0x92B0;
+  
+  void blendBarrier();
+};
+
+
+Sample code:
+
+var ext = gl.getExtension("WEBGL_blend_equation_advanced");
+gl.blendEquation(ext.MULTIPLY);
+gl.getParameter(gl.BLEND_EQUATION) == ext.MULTIPLY;
+ext.blendBarrier();
+
+
+Issues:
+(0) What is the adoption of KHR_blend_equation_advanced in the wild?
+
+According to gpuinfo.org, as of August 2018 it is supported on ~46% of desktop systems and ~31% of mobile devices.
+
+(1) Can implementors provide fallbacks if support is missing, or should WebGL developers provide their own?
+
+Developers can use a shader rendering via an intermediate texture if the extension is not supported. This is currently what is done in practice anyway.
+
+(2) Should the "coherent" variant be supported?
+
+Yes, the extension is the same but also exposes BLEND_ADVANCED_COHERENT_KHR = 0x9285
+
+(3) Should an equivalent to the "xor" globalComposeOperation be supported?
+
+No: this is an unusual blend mode that appears to only be included in canvas2d for historical reasons.
+
+
+Revision history:
+Revision 2, 2018-08-21: Updated revision
+Revision 1, 2015-05-26: Initial revision
