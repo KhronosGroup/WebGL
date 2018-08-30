@@ -40,14 +40,14 @@
 <script>
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext(undefined, undefined, 2);
-var actual;
+let actual;
 
 description("TexImage3D from ImageData with unpack params");
 
 debug("TexImage3D from ImageData with UNPACK_IMAGE_HEIGHT set (crbug.com/804123)");
 
 // framebuffer for readback
-var fbo = gl.createFramebuffer();
+const fbo = gl.createFramebuffer();
 gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
 
 function makeTestData(size, start) {
