@@ -171,7 +171,8 @@
 
     <p>
         Before using the WebGL API, the author must obtain a <code>WebGLRenderingContext</code>
-        object for a given HTMLCanvasElement <a href="#refsCANVAS">[CANVAS]</a> as described
+        object for a given HTMLCanvasElement <a href="#refsCANVAS">[CANVAS]</a> or
+        OffscreenCanvas <a href="#refsOFFSCREENCANVAS">[OFFSCREENCANVAS]</a> as described
         below. This object is used to manage OpenGL state and render to the drawing buffer, which
         must be created at the time of context creation.
     </p>
@@ -183,7 +184,8 @@
     <p>
         Each <code>WebGLRenderingContext</code> has an
         associated <b><a name="context-canvas">canvas</a></b>, set upon creation, which is
-        a <em>canvas</em> <a href="#refsCANVAS">[CANVAS]</a>.
+        a <em>canvas</em> <a href="#refsCANVAS">[CANVAS]</a> or <em>offscreen
+        canvas</em> <a href="#refsOFFSCREENCANVAS">[OFFSCREENCANVAS]</a>.
     </p>
     <p>
         Each <code>WebGLRenderingContext</code> has <b><a name="context-creation-parameters">context
@@ -200,8 +202,8 @@
         context lost flag</a></b>, which is initially unset.
     </p>
     <p>
-        When the <code>getContext()</code> method of a <code>canvas</code> element is to return a
-        new object for
+        When the <code>getContext()</code> method of a <code>canvas</code> element
+        or <code>offscreen canvas</code> object is to return a new object for
         the <em>contextId</em> <code>webgl</code> <a href="#refsCANVASCONTEXTS">[CANVASCONTEXTS]</a>,
         the user agent must perform the following steps:
 
@@ -209,8 +211,8 @@
 
         <li> Create a new <code>WebGLRenderingContext</code> object, <em>context</em>.
 
-        <li> Let <em>context's</em> <a href="#context-canvas">canvas</a> be the canvas
-             the <code>getContext()</code> method is associated with.
+        <li> Let <em>context's</em> <a href="#context-canvas">canvas</a> be the canvas or offscreen
+             canvas the <code>getContext()</code> method is associated with.
 
         <li> Create a new <code>WebGLContextAttributes</code> object, <em>contextAttributes</em>.
 
@@ -273,9 +275,10 @@
         The table below shows all the buffers which make up the drawing buffer, along with their
         minimum sizes and whether they are defined or not by default. The size of this drawing
         buffer shall be determined by the <code>width</code> and <code>height</code> attributes of
-        the HTMLCanvasElement. The table below also shows the value to which these buffers shall be
-        cleared when first created, when the size is changed, or after presentation when
-        the <code>preserveDrawingBuffer</code> context creation attribute is <code>false</code>.
+        the HTMLCanvasElement or OffscreenCanvas. The table below also shows the value to which
+        these buffers shall be cleared when first created, when the size is changed, or after
+        presentation when the <code>preserveDrawingBuffer</code> context creation attribute
+        is <code>false</code>.
     </p>
     <table class="foo">
         <tr><th>Buffer</th><th>Clear value</th><th>Minimum size</th><th>Defined by default?</th></tr>
@@ -287,11 +290,11 @@
     <p>
         If the requested width or height cannot be satisfied, either when the drawing buffer is first
         created or when the <code>width</code> and <code>height</code> attributes of the
-        <code>HTMLCanvasElement</code> are changed, a drawing buffer with smaller dimensions shall
-        be created. The dimensions actually used are implementation dependent and there is no
-        guarantee that a buffer with the same aspect ratio will be created. The actual drawing
-        buffer size can be obtained from the <code>drawingBufferWidth</code> and
-        <code>drawingBufferHeight</code> attributes.
+        <code>HTMLCanvasElement</code> or <code>OffscreenCanvas</code> are changed, a drawing buffer
+        with smaller dimensions shall be created. The dimensions actually used are implementation
+        dependent and there is no guarantee that a buffer with the same aspect ratio will be
+        created. The actual drawing buffer size can be obtained from
+        the <code>drawingBufferWidth</code> and <code>drawingBufferHeight</code> attributes.
     </p>
     <p>
         A WebGL implementation must not perform any automatic scaling of the size of the drawing
@@ -1245,7 +1248,8 @@ typedef (ImageBitmap or
          ImageData or
          HTMLImageElement or
          HTMLCanvasElement or
-         HTMLVideoElement) TexImageSource;
+         HTMLVideoElement or
+         OffscreenCanvas) TexImageSource;
 
 typedef ([AllowShared] Float32Array or sequence&lt;GLfloat&gt;) Float32List;
 typedef ([AllowShared] Int32Array or sequence&lt;GLint&gt;) Int32List;
@@ -1671,7 +1675,8 @@ interface mixin <dfn id="WebGLRenderingContextBase">WebGLRenderingContextBase</d
     const GLenum UNPACK_COLORSPACE_CONVERSION_WEBGL = 0x9243;
     const GLenum BROWSER_DEFAULT_WEBGL          = 0x9244;
 
-    [Exposed=Window] readonly attribute HTMLCanvasElement canvas;
+    [Exposed=Window] readonly attribute (HTMLCanvasElement or OffscreenCanvas) canvas;
+    [Exposed=Worker] readonly attribute OffscreenCanvas canvas;
     readonly attribute GLsizei drawingBufferWidth;
     readonly attribute GLsizei drawingBufferHeight;
 
@@ -1901,9 +1906,9 @@ WebGLRenderingContext includes WebGLRenderingContextBase;
                     canvas
                 </a>
             </code>
-            of type <code>HTMLCanvasElement</code>
+            of type <code>(HTMLCanvasElement or OffscreenCanvas)</code>
         <dd>
-            A reference to the canvas element which created this context.
+            A reference to the canvas element or OffscreenCanvas object which created this context.
 
         <dt>
             <code class=attribute-name>
@@ -2622,12 +2627,13 @@ WebGLRenderingContext includes WebGLRenderingContextBase;
 
             <div class="note">
 
-            Some implementations of HTMLCanvasElement's CanvasRenderingContext2D store color values
-            internally in premultiplied form. If such a canvas is uploaded to a WebGL texture with
-            the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter set to false,
-            the color channels will have to be un-multiplied by the alpha channel, which is a lossy
-            operation. The WebGL implementation therefore can not guarantee that colors with alpha <
-            1.0 will be preserved losslessly when first drawn to a canvas via
+            Some implementations of HTMLCanvasElement's or OffscreenCanvas's
+            CanvasRenderingContext2D store color values internally in premultiplied form. If such a
+            canvas is uploaded to a WebGL texture with the
+            <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter set to false, the
+            color channels will have to be un-multiplied by the alpha channel, which is a lossy
+            operation. The WebGL implementation therefore can not guarantee that colors with alpha
+            &lt; 1.0 will be preserved losslessly when first drawn to a canvas via
             CanvasRenderingContext2D and then uploaded to a WebGL texture when
             the <code>UNPACK_PREMULTIPLY_ALPHA_WEBGL</code> pixel storage parameter is set to false.
 
@@ -2644,9 +2650,10 @@ WebGLRenderingContext includes WebGLRenderingContextBase;
 
             If this function is called with an <code>HTMLImageElement</code>
             or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
-            Document, or with an <code>HTMLCanvasElement</code> or <code>ImageBitmap</code> whose
-            bitmap's <i>origin-clean</i> flag is set to false, a <code>SECURITY_ERR</code> exception
-            must be thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
+            Document, or with an <code>HTMLCanvasElement</code>, <code>ImageBitmap</code>
+            or <code>OffscreenCanvas</code> whose bitmap's <i>origin-clean</i> flag is set to false,
+            a <code>SECURITY_ERR</code> exception must be
+            thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
 
             If <code>source</code> is null then an <code>INVALID_VALUE</code> error is
             generated. <br><br>
@@ -2719,9 +2726,10 @@ WebGLRenderingContext includes WebGLRenderingContextBase;
 
             If this function is called with an <code>HTMLImageElement</code>
             or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing
-            Document, or with an <code>HTMLCanvasElement</code> or <code>ImageBitmap</code> whose
-            bitmap's <i>origin-clean</i> flag is set to false, a <code>SECURITY_ERR</code> exception
-            must be thrown. See <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
+            Document, or with an <code>HTMLCanvasElement</code>, <code>ImageBitmap</code>,
+            or <code>OffscreenCanvas</code> whose bitmap's <i>origin-clean</i> flag is set to false,
+            a <code>SECURITY_ERR</code> exception must be thrown. See
+            <a href="#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.<br><br>
 
             If <code>source</code> is null then an <code>INVALID_VALUE</code> error is
             generated. <br><br>
@@ -3326,7 +3334,7 @@ WebGLRenderingContext includes WebGLRenderingContextBase;
     <p>
         WebGL generates a <code>WebGLContextEvent</code> event in response to important changes in status of a
         WebGL rendering context. Events are sent using the DOM Event System <a href="#refsDOM3EVENTS">[DOM3EVENTS]</a>,
-        and are dispatched to the HTMLCanvasElement associated with the WebGL rendering context.
+        and are dispatched to the HTMLCanvasElement or OffscreenCanvas associated with the WebGL rendering context.
         The types of status changes that can trigger a <code>WebGLContextEvent</code> event are <a href="#CONTEXT_LOST">
         the loss of the context</a>, <a href="#CONTEXT_RESTORED">the restoration of the context</a>, and
         <a href="#CONTEXT_CREATION_ERROR"> the inability to create a context</a>.
@@ -3800,10 +3808,12 @@ sub-rectangle updated by <code>texSubImage2D</code> are determined based on the 
             height of the uploaded bitmap in pixels. If an SVG image is uploaded, the width and
             height of the texture are set to the current values of the width and height properties
             of the <code>HTMLImageElement</code> object.
-        <dt><code>source</code> of type <code>HTMLCanvasElement</code>
+        <dt><code>source</code> of type <code>HTMLCanvasElement</code> or
+          <code>OffscreenCanvas</code>
         <dd>
             The width and height of the texture are set to the current values of the width and
-            height properties of the <code>HTMLCanvasElement</code> object.
+            height properties of the <code>HTMLCanvasElement</code> or <code>OffscreenCanvas</code>
+            object.
         <dt><code>source</code> of type <code>HTMLVideoElement</code>
         <dd>
             The width and height of the texture are set to the width and height of the uploaded
@@ -4302,6 +4312,12 @@ extensions.
         <dd><cite><a href="https://www.w3.org/TR/html5/scripting-1.html#the-canvas-element">
             HTML5: The Canvas Element</a></cite>,
             World Wide Web Consortium (W3C).
+        </dd>
+
+        <dt id="refsOFFSCREENCANVAS">[OFFSCREENCANVAS]</dt>
+        <dd><cite><a href="https://html.spec.whatwg.org/multipage/canvas.html#the-offscreencanvas-interface">
+            HTML Living Standard - The OffscreenCanvas interface</a></cite>,
+            WHATWG.
         </dd>
 
         <dt id="refsCANVASCONTEXTS">[CANVASCONTEXTS]</dt>

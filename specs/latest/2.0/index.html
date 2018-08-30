@@ -164,7 +164,8 @@
 
     <p>
         Before using the WebGL API, the author must obtain a <code>WebGLRenderingContext</code>
-        object for a given HTMLCanvasElement <a href="#refsCANVAS">[CANVAS]</a> as described
+        object for a given HTMLCanvasElement <a href="#refsCANVAS">[CANVAS]</a> or
+        OffscreenCanvas <a href="#refsOFFSCREENCANVAS">[OFFSCREENCANVAS]</a> as described
         below. This object is used to manage OpenGL state and render to the drawing buffer, which
         must be created at the time of context creation.
     </p>
@@ -176,7 +177,8 @@
     <p>
         Each <code>WebGLRenderingContext</code> and <code>WebGL2RenderingContext</code> has an
         associated <b><a name="context-canvas">canvas</a></b>, set upon creation, which is
-        a <em>canvas</em> <a href="#refsCANVAS">[CANVAS]</a>.
+        a <em>canvas</em> <a href="#refsCANVAS">[CANVAS]</a> or <em>offscreen
+        canvas</em> <a href="#refsOFFSCREENCANVAS">[OFFSCREENCANVAS]</a>.
     </p>
     <p>
         Each <code>WebGLRenderingContext</code> and <code>WebGL2RenderingContext</code> has <b><a name="context-creation-parameters">context
@@ -202,8 +204,8 @@
 
         <li> Create a new <code>WebGL2RenderingContext</code> object, <em>context</em>.
 
-        <li> Let <em>context's</em> <a href="#context-canvas">canvas</a> be the canvas
-             the <code>getContext()</code> method is associated with.
+        <li> Let <em>context's</em> <a href="#context-canvas">canvas</a> be the canvas or offscreen
+             canvas the <code>getContext()</code> method is associated with.
 
         <li> Create a new <code>WebGLContextAttributes</code> object, <em>contextAttributes</em>.
 
@@ -1727,7 +1729,7 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         <tr><td>RGBA32F</td><td>RGBA</td><td>FLOAT</td></tr>
         <tr><td>RGBA8UI</td><td>RGBA_INTEGER</td><td>UNSIGNED_BYTE</td></tr>
         </table>
-        <div class="note rationale">When the data source is a DOM element (<code>HTMLImageElement</code>, <code>HTMLCanvasElement</code>, or <code>HTMLVideoElement</code>), or is an <code>ImageBitmap</code> or <code>ImageData</code> object, commonly each channel's representation is an unsigned integer type of at least 8 bits. Converting such representation to signed integers or unsigned integers with more bits is not clearly defined. For example, when converting RGBA8 to RGBA16UI,  it is unclear whether or not the intention is to scale up values to the full range of a 16-bit unsigned integer. Therefore, only converting to unsigned integer of at most 8 bits, half float, or float is allowed.</div>
+        <div class="note rationale">When the data source is a DOM element (<code>HTMLImageElement</code>, <code>HTMLCanvasElement</code>, or <code>HTMLVideoElement</code>), or is an <code>ImageBitmap</code>, <code>ImageData</code>, or <code>OffscreenCanvas</code> object, commonly each channel's representation is an unsigned integer type of at least 8 bits. Converting such representation to signed integers or unsigned integers with more bits is not clearly defined. For example, when converting RGBA8 to RGBA16UI,  it is unclear whether or not the intention is to scale up values to the full range of a 16-bit unsigned integer. Therefore, only converting to unsigned integer of at most 8 bits, half float, or float is allowed.</div>
       </dd>
 
       <dt class="idl-code"><a name="TEXIMAGE2D_SERVER_SIDE">void texImage2D</a>(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, GLintptr offset) <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.3">OpenGL ES 3.0.4 &sect;3.8.4</a>, <a class="nonnormative" href="https://www.khronos.org/opengles/sdk/docs/man3/html/glTexImage2D.xhtml">man page</a>)</span>
@@ -1855,7 +1857,7 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If this function is called with an <code>ImageData</code> whose <code>data</code> attribute has been neutered, an <code>INVALID_VALUE</code> error is generated. </p>
         <p>If this function is called with an <code>ImageBitmap</code> that has been neutered, an <code>INVALID_VALUE</code> error is generated. </p>
-        <p>If this function is called with an <code>HTMLImageElement</code> or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing Document, or with an <code>HTMLCanvasElement</code> or <code>ImageBitmap</code> whose bitmap's <i>origin-clean</i> flag is set to false, a <code>SECURITY_ERR</code> exception must be thrown. See <a href="../1.0/index.html#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.</p>
+        <p>If this function is called with an <code>HTMLImageElement</code> or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing Document, or with an <code>HTMLCanvasElement</code>, <code>ImageBitmap</code>, or <code>OffscreenCanvas</code> whose bitmap's <i>origin-clean</i> flag is set to false, a <code>SECURITY_ERR</code> exception must be thrown. See <a href="../1.0/index.html#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.</p>
       </dd>
 
       <dt class="idl-code"><a name="TEXIMAGE3D_SERVER_SIDE">void texImage3D</a>(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLintptr offset)
@@ -1928,7 +1930,7 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>
         <p>If this function is called with an <code>ImageData</code> whose <code>data</code> attribute has been neutered, an <code>INVALID_VALUE</code> error is generated. </p>
         <p>If this function is called with an <code>ImageBitmap</code> that has been neutered, an <code>INVALID_VALUE</code> error is generated. </p>
-        <p>If this function is called with an <code>HTMLImageElement</code> or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing Document, or with an <code>HTMLCanvasElement</code> or <code>ImageBitmap</code> whose bitmap's <i>origin-clean</i> flag is set to false, a <code>SECURITY_ERR</code> exception must be thrown. See <a href="../1.0/index.html#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.</p>
+        <p>If this function is called with an <code>HTMLImageElement</code> or <code>HTMLVideoElement</code> whose origin differs from the origin of the containing Document, or with an <code>HTMLCanvasElement</code>, <code>ImageBitmap</code>, or <code>OffscreenCanvas</code> whose bitmap's <i>origin-clean</i> flag is set to false, a <code>SECURITY_ERR</code> exception must be thrown. See <a href="../1.0/index.html#ORIGIN_RESTRICTIONS">Origin Restrictions</a>.</p>
       </dd>
 
       <dt>
@@ -4135,6 +4137,11 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         <dd><cite><a href="http://www.w3.org/TR/html5/scripting-1.html#the-canvas-element">
             HTML5: The Canvas Element</a></cite>,
             World Wide Web Consortium (W3C).
+        </dd>
+        <dt id="refsOFFSCREENCANVAS">[OFFSCREENCANVAS]</dt>
+        <dd><cite><a href="https://html.spec.whatwg.org/multipage/canvas.html#the-offscreencanvas-interface">
+            HTML Living Standard - The OffscreenCanvas interface</a></cite>,
+            WHATWG.
         </dd>
         <dt id="refsCANVASCONTEXTS">[CANVASCONTEXTS]</dt>
         <dd><cite><a href="http://wiki.whatwg.org/wiki/CanvasContexts">
