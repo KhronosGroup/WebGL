@@ -3140,6 +3140,10 @@ WebGLRenderingContext includes WebGLRenderingContextBase;
            <code>vertexAttrib</code> are guaranteed to be returned from the <code>getVertexAttrib</code> function
            with the <code>CURRENT_VERTEX_ATTRIB</code> param, even if there have been intervening calls to
            <code>drawArrays</code> or <code>drawElements</code>.
+           <br><br>
+           If the array passed to any of the vector forms (those ending in <code>v</code>) is too
+           short, an <code>INVALID_VALUE</code> error will be generated.
+
        <dt class="idl-code">void vertexAttribPointer(GLuint index, GLint size, GLenum type,
                             GLboolean normalized, GLsizei stride, GLintptr offset)
             <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/2.0/es_full_spec_2.0.25.pdf#nameddest=section-2.8">OpenGL ES 2.0 &sect;2.8</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/2.0/docs/man/xhtml/glVertexAttribPointer.xml">man page</a>)</span>

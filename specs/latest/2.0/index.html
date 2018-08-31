@@ -2232,6 +2232,9 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         <code>vertexAttrib</code> are guaranteed to be returned from the <code>getVertexAttrib</code> function
         with the <code>CURRENT_VERTEX_ATTRIB</code> param, even if there have been intervening calls to
         <code>drawArrays</code> or <code>drawElements</code>.
+        <br><br>
+        If the array passed to any of the vector forms (those ending in <code>v</code>) is too
+        short, an <code>INVALID_VALUE</code> error will be generated.
       </dd>
       <dt>
         <p class="idl-code">void vertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, GLintptr offset)
