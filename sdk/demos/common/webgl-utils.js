@@ -92,6 +92,14 @@ var OTHER_PROBLEM = '' +
   '<a href="http://get.webgl.org/troubleshooting/">Click here for more information.</a>';
 
 /**
+ * Mesasge for need better hardware
+ * @type {string}
+ */
+var WEBGL2_COMPUTE_NOT_SUPPORTED = '' +
+  "It doesn't appear your computer can support WebGL 2.0 Compute.<br/>" +
+  '<a href="http://get.webgl.org/troubleshooting/">Click here for more information.</a>';
+
+/**
  * Creates a webgl context. If creation fails it will
  * change the contents of the container of the <canvas>
  * tag to an error message with the correct links for WebGL.
@@ -122,6 +130,36 @@ var setupWebGL = function(canvas, opt_attribs) {
 };
 
 /**
+ * Creates a webgl2-compute context. If creation fails it will
+ * change the contents of the container of the <canvas>
+ * tag to an error message with the correct links for WebGL.
+ * @param {Element} canvas. The canvas element to create a
+ *     context from.
+ * @param {WebGLContextCreationAttirbutes} opt_attribs Any
+ *     creation attributes you want to pass in.
+ * @return {WebGLRenderingContext} The created context.
+ */
+var setupWebGL2Compute = function(canvas, opt_attribs) {
+  function showLink(str) {
+    var container = canvas.parentNode;
+    if (container) {
+      container.innerHTML = makeFailHTML(str);
+    }
+  };
+
+  if (!window.WebGLRenderingContext) {
+    showLink(GET_A_WEBGL_BROWSER);
+    return null;
+  }
+
+  var context = canvas.getContext("webgl2-compute", opt_attribs);
+  if (!context) {
+    showLink(WEBGL2_COMPUTE_NOT_SUPPORTED);
+  }
+  return context;
+};
+
+/**
  * Creates a webgl context.
  * @param {!Canvas} canvas The canvas tag to get context
  *     from. If one is not passed in one will be created.
@@ -143,7 +181,8 @@ var create3DContext = function(canvas, opt_attribs) {
 
 return {
   create3DContext: create3DContext,
-  setupWebGL: setupWebGL
+  setupWebGL: setupWebGL,
+  setupWebGL2Compute: setupWebGL2Compute
 };
 }();
 
