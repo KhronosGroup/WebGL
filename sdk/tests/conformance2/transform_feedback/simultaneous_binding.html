@@ -241,9 +241,9 @@ for (let [drawArrays, drawElements] of drawFunctions) {
   drawWithFeedbackBound(gl, drawArrays, prog, vao, tf, true);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "tf enabled");
   drawWithFeedbackBound(gl, drawArrays, prog, vao, tf, false);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawArrays: tf disabled");
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "drawArrays: tf disabled");
   drawWithFeedbackBound(gl, drawElements, prog, vao, tf, false);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawElements: tf disabled");
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "drawElements: tf disabled");
   gl.bindBuffer(gl.COPY_READ_BUFFER, null);
 
   debug("<hr/>Test TF buffer bound to disabled vertex attrib");
@@ -255,9 +255,9 @@ for (let [drawArrays, drawElements] of drawFunctions) {
   gl.disableVertexAttribArray(2);
   gl.bindVertexArray(null);
   drawWithFeedbackBound(gl, drawArrays, prog, vao, tf, false);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "tf disabled, draw should succeed");
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "tf disabled, draw should succeed");
   drawWithFeedbackBound(gl, drawElements, prog, vao, tf, false);
-  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "tf disabled, draw should succeed");
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "tf disabled, draw should succeed");
   // Remove the TF buffer binding from the VAO after the test.
   gl.bindVertexArray(vao);
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer3);
