@@ -35,13 +35,12 @@
 <script src="../../../js/webgl-test-utils.js"></script>
 <script>
 "use strict";
-var wtu = WebGLTestUtils;
+const wtu = WebGLTestUtils;
 
 const sz = 512;
 let greenImage = null;
 
 function loadImageAndStart(startFunc) {
-
   let c = document.createElement('canvas');
   c.width = sz;
   c.height = sz;
@@ -53,6 +52,10 @@ function loadImageAndStart(startFunc) {
 
 function runTest() {
   description();
+  debug('Regression test for <a href="http://crbug.com/878545">http://crbug.com/878545</a>');
+  // Mimics the image-to-texture upload path from the old JavaScript
+  // port of O3D, salvaged at https://github.com/petersont/o3d .
+
   // Create a canvas and draw the entire image into it.
   let bigCanvas = document.createElement('canvas');
   bigCanvas.width = greenImage.naturalWidth;
@@ -76,11 +79,11 @@ function runTest() {
   // Iterate through the large canvas, drawing pieces of it to a
   // scratch canvas.
   let scratchCanvas = document.createElement('canvas');
-  var width = tempCanvas.width / 2;
-  var height = tempCanvas.height / 2;
+  const width = tempCanvas.width / 2;
+  const height = tempCanvas.height / 2;
   let bb = new Uint8Array(4 * c3d.width * c3d.height);
-  for (var jj = 0; jj < 2; ++jj) {
-    for (var ii = 0; ii < 2; ++ii) {
+  for (let jj = 0; jj < 2; ++jj) {
+    for (let ii = 0; ii < 2; ++ii) {
       // Prepare texture.
       scratchCanvas.width = width;
       scratchCanvas.height = height;
