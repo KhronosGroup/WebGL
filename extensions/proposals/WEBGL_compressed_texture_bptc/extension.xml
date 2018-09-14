@@ -20,6 +20,12 @@
       ARB_texture_compression_bptc</a> OpenGL extension to WebGL. Consult that extension
       specification for behavioral definitions, including error behaviors.
     </p>
+    <p>
+      Sampling from textures in the COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB format performs a color space
+      conversion as specified for SRGB textures in the
+      <a href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_sRGB.txt">EXT_sRGB</a> OpenGL ES
+      extension.
+    </p>
     <features>
       <feature>
         Compression format <code>COMPRESSED_RGBA_BPTC_UNORM_ARB</code>,
@@ -90,7 +96,7 @@ interface WEBGL_compressed_texture_bptc {
   </errors>
 
   <history>
-    <revision date="2018/09/13">
+    <revision date="2018/09/14">
       <change>Initial revision.</change>
     </revision>
   </history>
