@@ -46,7 +46,6 @@ debug("");
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext();
 
-var ETC1_RGB8_OES                       = 0x8D64;
 var COMPRESSED_RGB_PVRTC_4BPPV1_IMG     = 0x8C00;
 var COMPRESSED_RGBA_PVRTC_4BPPV1_IMG    = 0x8C02;
 
@@ -60,7 +59,6 @@ if (!gl) {
   var tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
 
-  wtu.shouldGenerateGLError(gl, gl.INVALID_ENUM, "gl.compressedTexImage2D(gl.TEXTURE_2D, 0, ETC1_RGB8_OES, 4, 4, 0, new Uint8Array(8))");
   wtu.shouldGenerateGLError(gl, gl.INVALID_ENUM, "gl.compressedTexImage2D(gl.TEXTURE_2D, 0, COMPRESSED_RGB_PVRTC_4BPPV1_IMG, 8, 8, 0, new Uint8Array(8))");
   wtu.shouldGenerateGLError(gl, gl.INVALID_ENUM, "gl.compressedTexImage2D(gl.TEXTURE_2D, 0, COMPRESSED_RGBA_PVRTC_4BPPV1_IMG, 8, 8, 0, new Uint8Array(8))");
 
