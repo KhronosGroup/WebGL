@@ -2620,6 +2620,28 @@ var getSupportedExtensionWithKnownPrefixes = function(gl, name) {
 };
 
 /**
+ * @param {WebGLRenderingContext} gl The WebGLRenderingContext to use.
+ * @param {string} name Name of extension to look for.
+ * @param {boolean} extensionEnabled True if the extension was enabled successfully via gl.getExtension().
+ */
+var runExtensionSupportedTest = function(gl, name, extensionEnabled) {
+  var prefixedName = getSupportedExtensionWithKnownPrefixes(gl, name);
+  if (prefixedName !== undefined) {
+      if (extensionEnabled) {
+          testPassed(name + " listed as supported and getExtension succeeded");
+      } else {
+          testFailed(name + " listed as supported but getExtension failed");
+      }
+  } else {
+      if (extensionEnabled) {
+          testFailed(name + " not listed as supported but getExtension succeeded");
+      } else {
+          testPassed(name + " not listed as supported and getExtension failed -- this is legal");
+      }
+  }
+}
+
+/**
  * Given an extension name like WEBGL_compressed_texture_s3tc
  * returns the supported version extension, like
  * WEBKIT_WEBGL_compressed_teture_s3tc
@@ -3220,6 +3242,7 @@ var API = {
   makeImageFromCanvas: makeImageFromCanvas,
   makeVideo: makeVideo,
   error: error,
+  runExtensionSupportedTest: runExtensionSupportedTest,
   shallowCopyObject: shallowCopyObject,
   setDefault3DContextVersion: setDefault3DContextVersion,
   setupColorQuad: setupColorQuad,
