@@ -26,6 +26,7 @@
 webgl-debug-renderer-info.html
 webgl-debug-shaders.html
 --min-version 1.0.4 webgl-compressed-texture-astc.html
+--min-version 1.0.4 webgl-compressed-texture-bptc.html
 --min-version 1.0.4 webgl-compressed-texture-etc.html
 --min-version 1.0.4 webgl-compressed-texture-etc1.html
 --min-version 1.0.3 webgl-compressed-texture-pvrtc.html
