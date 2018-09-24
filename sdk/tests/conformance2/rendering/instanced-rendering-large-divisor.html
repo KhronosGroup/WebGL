@@ -47,7 +47,6 @@ out vec4 v_color;
 void main()
 {
     gl_Position = vec4(a_position.x * 0.05 + a_positionOffset, a_position.y * 0.05, 0.0, 1.0);
-    gl_PointSize = 4.0f;
     v_color = a_color;
 }
 </script>
@@ -94,6 +93,8 @@ function runTest() {
 
     var offsetBuf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, offsetBuf);
+    // Note that only the first two offsets below should be used for rendering.
+    // We add some extra ones to the buffer since it can reveal if a too small divisor is used on the WebGL backend.
     var offsetData = [];
     for (var i = 0; i < 4; ++i) {
         offsetData.push(0.0 + i * 0.25);
@@ -135,7 +136,7 @@ function runDrawElementsTest(divisor) {
     gl.vertexAttribDivisor(1, divisor);
 
     var instanceCount = divisor + 1;
-    var quadsRendered = (instanceCount - 1) / divisor + 1;
+    var quadsRendered = Math.floor((instanceCount - 1) / divisor) + 1;
 
     gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, instanceCount);
 
