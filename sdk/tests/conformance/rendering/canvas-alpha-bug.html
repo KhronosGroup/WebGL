@@ -1,0 +1,185 @@
+<!--
+
+/*
+** Copyright (c) 2018 The Khronos Group Inc.
+**
+** Permission is hereby granted, free of charge, to any person obtaining a
+** copy of this software and/or associated documentation files (the
+** "Materials"), to deal in the Materials without restriction, including
+** without limitation the rights to use, copy, modify, merge, publish,
+** distribute, sublicense, and/or sell copies of the Materials, and to
+** permit persons to whom the Materials are furnished to do so, subject to
+** the following conditions:
+**
+** The above copyright notice and this permission notice shall be included
+** in all copies or substantial portions of the Materials.
+**
+** THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+** EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+** MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+** IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+** CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+** TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+** MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
+*/
+
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Alpha blending Tests on WebGL Canvas</title>
+<link rel="stylesheet" href="../../resources/js-test-style.css"/>
+<script src="../../js/js-test-pre.js"></script>
+<script src="../../js/webgl-test-utils.js"></script>
+</head>
+<body>
+<div id="description"></div>
+<div id="console"></div>
+<canvas id="canvas" width="128" height="128"> </canvas>
+<script id="vshader" type="x-shader/x-vertex">
+attribute vec2 a_position;
+void main()
+{
+    gl_Position = vec4(a_position.xy, 0.0, 1.0);
+}
+</script>
+
+<script id="fshader" type="x-shader/x-fragment">
+precision mediump float;
+uniform vec4 u_color;
+void main()
+{
+    gl_FragColor = u_color;
+}
+</script>
+
+<script id="vshader-tex" type="x-shader/x-vertex">
+attribute vec2 a_position;
+varying vec2 v_uv;
+void main()
+{
+    v_uv = a_position.xy * vec2(0.5, 0.5) + vec2(0.5, 0.5);
+    gl_Position = vec4(a_position.xy, 0.0, 1.0);
+}
+</script>
+
+<script id="fshader-tex" type="x-shader/x-fragment">
+precision mediump float;
+varying vec2 v_uv;
+uniform sampler2D u_texture;
+uniform vec4 u_color;
+void main()
+{
+    vec4 tex = texture2D(u_texture, v_uv);
+    gl_FragColor = tex * u_color;
+}
+</script>
+
+<script>
+"use strict";
+// This test exposes an Intel driver issue on macOS.
+var wtu = WebGLTestUtils;
+var gl = wtu.create3DContext("canvas");
+
+var vertex_buffer;
+
+var program_no_tex;
+var program_tex;
+
+var offscreen_tex;
+var fbo;
+
+function init()
+{
+    // Create a buffer to hold the render quad
+    var vertices = [
+        -1.0, -1.0,
+         1.0, -1.0,
+        -1.0,  1.0,
+        -1.0,  1.0,
+         1.0, -1.0,
+         1.0,  1.0,
+    ];
+
+    vertex_buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+
+    // Init programs
+    program_no_tex = wtu.setupProgram(gl, ["vshader", "fshader"], ["a_position"]);
+    program_tex = wtu.setupProgram(gl, ["vshader-tex", "fshader-tex"], ["a_position"]);
+
+    // Init offscreen render target
+    offscreen_tex = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, offscreen_tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, canvas.width, canvas.height, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
+
+    fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, offscreen_tex, 0);
+
+    // Init blend state
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+}
+
+function draw_rect(texture, color)
+{
+    // Draw the quad
+    var program = texture ? program_tex : program_no_tex;
+    gl.useProgram(program);
+    var vert_attrib = gl.getAttribLocation(program, 'a_position');
+    if (texture)
+    {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        var u_tex_loc = gl.getUniformLocation(program, 'u_texture');
+        gl.uniform1i(u_tex_loc, 0);
+    }
+    var u_loc = gl.getUniformLocation(program, 'u_color');
+    gl.uniform4fv(u_loc, color);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
+    gl.enableVertexAttribArray(vert_attrib);
+    gl.vertexAttribPointer(vert_attrib, 2, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+}
+
+function test_canvas_alpha() {
+    init();
+
+    gl.disable(gl.BLEND);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    draw_rect(null, [0.0,1.0,0.0,1.0]);
+
+    // Clear default framebuffer
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+
+    // Disable blending so that shader values are copied directly to the buffer
+    gl.disable(gl.BLEND);
+    draw_rect(null, [1.0,0.0,0.0,1.0]);
+    wtu.checkCanvasRect(gl, 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, [255, 0, 0, 255]);
+
+    gl.enable(gl.BLEND);
+    draw_rect(offscreen_tex, [1.0,1.0,1.0,1.0]);
+    wtu.checkCanvasRect(gl, 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, [0, 255, 0, 255]);
+}
+
+test_canvas_alpha();
+
+debug("");
+var successfullyParsed = true;
+
+</script>
+<script src="../../js/js-test-post.js"></script>
+
+</body>
+</html>
