@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Alpha blending Tests on WebGL Canvas</title>
+<title>Alpha blending bug on WebGL canvas</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
@@ -38,24 +38,8 @@
 <div id="description"></div>
 <div id="console"></div>
 <canvas id="canvas" width="128" height="128"> </canvas>
+
 <script id="vshader" type="x-shader/x-vertex">
-attribute vec2 a_position;
-void main()
-{
-    gl_Position = vec4(a_position.xy, 0.0, 1.0);
-}
-</script>
-
-<script id="fshader" type="x-shader/x-fragment">
-precision mediump float;
-uniform vec4 u_color;
-void main()
-{
-    gl_FragColor = u_color;
-}
-</script>
-
-<script id="vshader-tex" type="x-shader/x-vertex">
 attribute vec2 a_position;
 varying vec2 v_uv;
 void main()
@@ -65,7 +49,7 @@ void main()
 }
 </script>
 
-<script id="fshader-tex" type="x-shader/x-fragment">
+<script id="fshader" type="x-shader/x-fragment">
 precision mediump float;
 varying vec2 v_uv;
 uniform sampler2D u_texture;
@@ -83,35 +67,16 @@ void main()
 var wtu = WebGLTestUtils;
 var gl = wtu.create3DContext("canvas");
 
-var vertex_buffer;
-
-var program_no_tex;
-var program_tex;
-
+var program;
 var offscreen_tex;
 var fbo;
 
 function init()
 {
-    // Create a buffer to hold the render quad
-    var vertices = [
-        -1.0, -1.0,
-         1.0, -1.0,
-        -1.0,  1.0,
-        -1.0,  1.0,
-         1.0, -1.0,
-         1.0,  1.0,
-    ];
+    // Init program
+    program = wtu.setupProgram(gl, ["vshader", "fshader"], ["a_position"]);
 
-    vertex_buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-
-    // Init programs
-    program_no_tex = wtu.setupProgram(gl, ["vshader", "fshader"], ["a_position"]);
-    program_tex = wtu.setupProgram(gl, ["vshader-tex", "fshader-tex"], ["a_position"]);
-
-    // Init offscreen render target
+    // Init offscreen render targets and specify the format of offscreen texture to be RGB.
     offscreen_tex = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, offscreen_tex);
@@ -127,55 +92,42 @@ function init()
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 }
 
-function draw_rect(texture, color)
+function draw_rect()
 {
-    // Draw the quad
-    var program = texture ? program_tex : program_no_tex;
     gl.useProgram(program);
-    var vert_attrib = gl.getAttribLocation(program, 'a_position');
-    if (texture)
-    {
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        var u_tex_loc = gl.getUniformLocation(program, 'u_texture');
-        gl.uniform1i(u_tex_loc, 0);
-    }
-    var u_loc = gl.getUniformLocation(program, 'u_color');
-    gl.uniform4fv(u_loc, color);
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
-    gl.enableVertexAttribArray(vert_attrib);
-    gl.vertexAttribPointer(vert_attrib, 2, gl.FLOAT, false, 0, 0);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-    gl.bindTexture(gl.TEXTURE_2D, null);
+
+    gl.bindTexture(gl.TEXTURE_2D, offscreen_tex);
+    var u_tex_loc = gl.getUniformLocation(program, 'u_texture');
+    gl.uniform1i(u_tex_loc, 0);
+
+    wtu.setupUnitQuad(gl);
+    wtu.drawFloatColorQuad(gl, [1.0, 1.0, 1.0, 1.0]);
 }
 
 function test_canvas_alpha() {
     init();
 
-    gl.disable(gl.BLEND);
+    // Clear offscreen texture to Green
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
     gl.viewport(0, 0, canvas.width, canvas.height);
-    draw_rect(null, [0.0,1.0,0.0,1.0]);
+    gl.clearColor(0.0, 1.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
     // Clear default framebuffer
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.clear(gl.COLOR_BUFFER_BIT);
     gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.clearColor(1.0, 0.0, 0.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
-    // Disable blending so that shader values are copied directly to the buffer
-    gl.disable(gl.BLEND);
-    draw_rect(null, [1.0,0.0,0.0,1.0]);
-    wtu.checkCanvasRect(gl, 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, [255, 0, 0, 255]);
-
+    // Enable alpha blending and render to default framebuffer
     gl.enable(gl.BLEND);
-    draw_rect(offscreen_tex, [1.0,1.0,1.0,1.0]);
+    draw_rect();
     wtu.checkCanvasRect(gl, 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, [0, 255, 0, 255]);
 }
 
 test_canvas_alpha();
 
-debug("");
+description("Exposes alpha blending bug in Intel drivers on macOS - see https://crbug.com/886970");
 var successfullyParsed = true;
 
 </script>
