@@ -9,7 +9,7 @@
     <contributor>Olli Etuaho, NVIDIA</contributor>
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
-  <number>NN</number>
+  <number>38</number>
   <depends>
     <api version="1.0"/>
   </depends>
