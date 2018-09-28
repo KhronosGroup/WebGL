@@ -29,7 +29,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL WEBGL_compressed_texture_rgtc Conformance Tests</title>
+<title>WebGL EXT_texture_compression_bptc Conformance Tests</title>
 <LINK rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
@@ -40,24 +40,19 @@
 <div id="console"></div>
 <script>
 "use strict";
-description("This test verifies the functionality of the WEBGL_compressed_texture_rgtc extension, if it is available.");
+description("This test verifies the functionality of the EXT_texture_compression_bptc extension, if it is available.");
 
 debug("");
 
 var validFormats = {
-  COMPRESSED_RED_RGTC1_EXT: 0x8DBB,
-  COMPRESSED_SIGNED_RED_RGTC1_EXT: 0x8DBC,
-  COMPRESSED_RED_GREEN_RGTC2_EXT: 0x8DBD,
-  COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT: 0x8DBE
+  COMPRESSED_RGBA_BPTC_UNORM_EXT: 0x8E8C,
+  COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT: 0x8E8D,
+  COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT: 0x8E8E,
+  COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT: 0x8E8F
 };
 
 function expectedByteLength(width, height, format) {
-  if (format == validFormats.COMPRESSED_RED_RGTC1_EXT || format == validFormats.COMPRESSED_SIGNED_RED_RGTC1_EXT) {
-    return Math.ceil(width / 4) * Math.ceil(height / 4) * 8;
-  }
-  else {
-    return Math.ceil(width / 4) * Math.ceil(height / 4) * 16;
-  }
+  return Math.ceil(width / 4) * Math.ceil(height / 4) * 16;
 }
 
 function getBlockDimensions(format) {
@@ -88,9 +83,9 @@ function runTest() {
 
     ctu.testCompressedFormatsUnavailableWhenExtensionDisabled(gl, validFormats, expectedByteLength, 4);
 
-    ext = gl.getExtension("WEBGL_compressed_texture_rgtc");
+    ext = gl.getExtension("EXT_texture_compression_bptc");
 
-    wtu.runExtensionSupportedTest(gl, "WEBGL_compressed_texture_rgtc", ext !== null);
+    wtu.runExtensionSupportedTest(gl, "EXT_texture_compression_bptc", ext !== null);
 
     if (ext !== null) {
       runTestExtension();

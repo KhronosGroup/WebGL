@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<draft href="WEBGL_compressed_texture_bptc/">
-  <name>WEBGL_compressed_texture_bptc</name>
+<draft href="EXT_texture_compression_bptc/">
+  <name>EXT_texture_compression_bptc</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
   </contact>
@@ -16,22 +16,22 @@
   <overview>
     <p>
       This extension exposes the compressed texture format defined in the
-      <a href="https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_texture_compression_bptc.txt">
-      ARB_texture_compression_bptc</a> OpenGL extension to WebGL. Consult that extension
+      <a href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_texture_compression_bptc.txt">
+      EXT_texture_compression_bptc</a> OpenGL ES extension to WebGL. Consult that extension
       specification for behavioral definitions, including error behaviors.
     </p>
     <p>
-      Sampling from textures in the COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB format performs a color space
+      Sampling from textures in the COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT format performs a color space
       conversion as specified for SRGB textures in the
       <a href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_sRGB.txt">EXT_sRGB</a> OpenGL ES
       extension.
     </p>
     <features>
       <feature>
-        Compression format <code>COMPRESSED_RGBA_BPTC_UNORM_ARB</code>,
-        <code>COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB</code>,
-        <code>COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ARB</code>,
-        and <code>COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB</code> may be passed to
+        Compression format <code>COMPRESSED_RGBA_BPTC_UNORM_EXT</code>,
+        <code>COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT</code>,
+        <code>COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT</code>,
+        and <code>COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT</code> may be passed to
         the <code>compressedTexImage2D</code> and <code>compressedTexSubImage2D</code> entry points.
       </feature>
       <feature>
@@ -54,11 +54,11 @@
   </overview>
   <idl xml:space="preserve">
 [NoInterfaceObject]
-interface WEBGL_compressed_texture_bptc {
-    const GLenum COMPRESSED_RGBA_BPTC_UNORM_ARB = 0x8E8C;
-    const GLenum COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB = 0x8E8D;
-    const GLenum COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ARB = 0x8E8E;
-    const GLenum COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB = 0x8E8F;
+interface EXT_texture_compression_bptc {
+    const GLenum COMPRESSED_RGBA_BPTC_UNORM_EXT = 0x8E8C;
+    const GLenum COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT = 0x8E8D;
+    const GLenum COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT = 0x8E8E;
+    const GLenum COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT = 0x8E8F;
 };
   </idl>
 
@@ -66,20 +66,20 @@ interface WEBGL_compressed_texture_bptc {
     <function name="compressedTexImage2D">
       <param name="internalformat" type="GLenum"/>
       Accepted by the <code>internalformat</code> parameter:
-      <code>COMPRESSED_RGBA_BPTC_UNORM_ARB</code>,
-      <code>COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB</code>,
-      <code>COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ARB</code>,
-      <code>COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB</code>
+      <code>COMPRESSED_RGBA_BPTC_UNORM_EXT</code>,
+      <code>COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT</code>,
+      <code>COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT</code>,
+      <code>COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT</code>
       <br/>
     </function>
 
     <function name="compressedTexSubImage2D">
       <param name="internalformat" type="GLenum"/>
       Accepted by the <code>internalformat</code> parameter:
-      <code>COMPRESSED_RGBA_BPTC_UNORM_ARB</code>,
-      <code>COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB</code>,
-      <code>COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ARB</code>,
-      <code>COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB</code>
+      <code>COMPRESSED_RGBA_BPTC_UNORM_EXT</code>,
+      <code>COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT</code>,
+      <code>COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT</code>,
+      <code>COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT</code>
       <br/>
     </function>
   </newtok>
@@ -101,6 +101,10 @@ interface WEBGL_compressed_texture_bptc {
     </revision>
     <revision date="2018/09/18">
       <change>Moved to draft status.</change>
+    </revision>
+    <revision date="2018/09/26">
+      <change>Retarget against EXT_texture_compression_bptc instead of ARB_texture_compression_bptc</change>
+      <change>Rename to EXT_texture_compression_bptc from WEBGL_compressed_texture_bptc</change>
     </revision>
   </history>
 </draft>
