@@ -494,7 +494,7 @@ gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
         data values.  Creating a resource without initial values is commonly used to
         reserve space for a texture or VBO, which is then modified using <code>texSubImage</code> or
         <code>bufferSubData</code> calls.  If initial data is not provided to these calls, the WebGL
-        implementation must initialize their contents to 0; depth renderbuffers must be cleared to
+        implementation must initialize their contents to 0; depth resources must be cleared to
         the default 1.0 clear depth.  This may require creating a zeroed temporary buffer the size
         of a requested VBO, so that it can be initialized correctly.  All other forms of loading
         data into a texture or VBO involve either ArrayBuffers or DOM objects such as images, and
