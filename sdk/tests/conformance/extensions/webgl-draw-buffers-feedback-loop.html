@@ -97,9 +97,10 @@ if (!gl) {
         // The sampling texture is bound to COLOR_ATTACHMENT1 during resource allocation
         allocate_resource();
 
-        rendering_sampling_feedback_loop([gl.NONE, ext.COLOR_ATTACHMENT1_WEBGL], gl.INVALID_OPERATION);
-        rendering_sampling_feedback_loop([gl.COLOR_ATTACHMENT0, ext.COLOR_ATTACHMENT1_WEBGL], gl.INVALID_OPERATION);
-        rendering_sampling_feedback_loop([gl.COLOR_ATTACHMENT0, gl.NONE], gl.NO_ERROR);
+        rendering_sampling_feedback_loop([gl.NONE]);
+        rendering_sampling_feedback_loop([gl.NONE, ext.COLOR_ATTACHMENT1_WEBGL]);
+        rendering_sampling_feedback_loop([gl.COLOR_ATTACHMENT0, ext.COLOR_ATTACHMENT1_WEBGL]);
+        rendering_sampling_feedback_loop([gl.COLOR_ATTACHMENT0, gl.NONE]);
     }
 }
 
@@ -134,6 +135,8 @@ function allocate_resource() {
 }
 
 function rendering_sampling_feedback_loop(draw_buffers, error) {
+    debug("draw_buffers: " + draw_buffers);
+
     // gl.drawBuffers(draw_buffers);
     ext.drawBuffersWEBGL(draw_buffers);
 
@@ -143,8 +146,14 @@ function rendering_sampling_feedback_loop(draw_buffers, error) {
         return;
     }
 
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.glErrorShouldBe(gl, error, "Rendering to a texture where it samples from should geneates INVALID_OPERATION. Otherwise, it should be NO_ERROR");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Feedback loop detection ignores drawBuffers settings.");
+
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_NEAREST);
+    // The texture will be mipmap incomplete, so feedback cannot occur nor be consistently evaluated.
+    wtu.clearAndDrawUnitQuad(gl);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Feedback loop detection ignores sampled incomplete textures.");
 }
 
 gl.bindTexture(gl.TEXTURE_2D, null);
