@@ -39,7 +39,28 @@
 <div id="description"></div>
 <div id="console"></div>
 
-<script id="vshader" type="x-shader/x-vertex">#version 300 es
+<script id="vs100" type="x-shader/x-vertex">
+attribute vec4 aPosition;
+attribute vec2 aTexCoord;
+varying vec2 texCoord;
+void main() {
+    gl_Position = aPosition;
+    texCoord = aTexCoord;
+}
+</script>
+
+<script id="fs100" type="x-shader/x-fragment">
+#extension GL_EXT_draw_buffers : require
+precision mediump float;
+uniform sampler2D tex;
+varying vec2 texCoord;
+void main() {
+    gl_FragData[0] = texture2D(tex, texCoord);
+    gl_FragData[1] = texture2D(tex, texCoord);
+}
+</script>
+
+<script id="vs300" type="x-shader/x-vertex">#version 300 es
 in highp vec4 aPosition;
 in vec2 aTexCoord;
 out vec2 texCoord;
@@ -49,7 +70,7 @@ void main() {
 }
 </script>
 
-<script id="fshader" type="x-shader/x-fragment">#version 300 es
+<script id="fs300" type="x-shader/x-fragment">#version 300 es
 precision mediump float;
 uniform sampler2D tex;
 in vec2 texCoord;
@@ -62,43 +83,58 @@ void main() {
 <script>
 "use strict";
 
-var wtu = WebGLTestUtils;
+const wtu = WebGLTestUtils;
 description("This test verifies the functionality of rendering to the same texture where it samples from.");
 
-var gl = wtu.create3DContext("example", undefined, 2);
+const gl = wtu.create3DContext("example");
 
-var width = 8;
-var height = 8;
-var tex0;
-var tex1;
-var fbo;
-var program;
-var positionLoc;
-var texCoordLoc;
+const width = 8;
+const height = 8;
+let tex;
+let fbo;
+let drawBuffers = null;
 
 if (!gl) {
     testFailed("WebGL context does not exist");
 } else {
     testPassed("WebGL context exists");
 
+    if (gl.drawBuffers) {
+        debug("Using webgl2.drawBuffers.");
+        drawBuffers = (x) => gl.drawBuffers(x);
+    } else {
+        const ext = gl.getExtension("WEBGL_draw_buffers");
+        if (ext) {
+            debug("Using WEBGL_draw_buffers.drawBuffersWEBGL.");
+            drawBuffers = (x) => ext.drawBuffersWEBGL(x);
+        }
+    }
+
     init();
 
     // The sampling texture is bound to COLOR_ATTACHMENT1 during resource allocation
     allocate_resource();
 
-    rendering_sampling_feedback_loop([gl.NONE, gl.COLOR_ATTACHMENT1], gl.INVALID_OPERATION);
-    rendering_sampling_feedback_loop([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1], gl.INVALID_OPERATION);
-    rendering_sampling_feedback_loop([gl.COLOR_ATTACHMENT0, gl.NONE], gl.NO_ERROR);
+    rendering_sampling_feedback_loop(null);
+    if (drawBuffers) {
+        rendering_sampling_feedback_loop([gl.NONE]);
+    }
 }
 
 function init() {
-    program = wtu.setupProgram(gl, ['vshader', 'fshader'], ['aPosition', 'aTexCoord'], [0, 1]);
-    positionLoc = gl.getAttribLocation(program, "aPosition");
-    texCoordLoc = gl.getAttribLocation(program, "aTexCoord");
+    let shaders = ["vs100", "fs100"];
+    if (gl.texStorage2D) {
+        shaders = ["vs300", "fs300"];
+    }
+    const program = wtu.setupProgram(gl, shaders, ["aPosition", "aTexCoord"], [0, 1]);
+    const positionLoc = gl.getAttribLocation(program, "aPosition");
+    const texCoordLoc = gl.getAttribLocation(program, "aTexCoord");
     if (!program || positionLoc < 0 || texCoordLoc < 0) {
         testFailed("Set up program failed");
         return;
     }
+    const texLoc = gl.getUniformLocation(program, "tex");
+    gl.uniform1i(texLoc, 0);
     testPassed("Set up program succeeded");
 
     wtu.setupUnitQuad(gl, 0, 1);
@@ -106,23 +142,21 @@ function init() {
 }
 
 function allocate_resource() {
-    tex0 = gl.createTexture();
-    tex1 = gl.createTexture();
+    tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
     fbo = gl.createFramebuffer();
-    wtu.fillTexture(gl, tex0, width, height, [0xff, 0x0, 0x0, 0xff], 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.RGBA);
-    wtu.fillTexture(gl, tex1, width, height, [0x0, 0xff, 0x0, 0xff], 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.RGBA);
-
-    gl.bindTexture(gl.TEXTURE_2D, tex1);
-    var texLoc = gl.getUniformLocation(program, "tex");
-    gl.uniform1i(texLoc, 0);
-
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex0, 0);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.TEXTURE_2D, tex1, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
 }
 
-function rendering_sampling_feedback_loop(draw_buffers, error) {
-    gl.drawBuffers(draw_buffers);
+function rendering_sampling_feedback_loop(draw_buffers) {
+    debug("draw_buffers: " + JSON.stringify(draw_buffers));
+
+    if (draw_buffers) {
+        drawBuffers(draw_buffers);
+    }
 
     // Make sure framebuffer is complete before feedback loop detection
     if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
@@ -130,14 +164,21 @@ function rendering_sampling_feedback_loop(draw_buffers, error) {
         return;
     }
 
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.glErrorShouldBe(gl, error, "Rendering to a texture where it samples from should geneates INVALID_OPERATION. Otherwise, it should be NO_ERROR");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Feedback loop detection ignores drawBuffers settings.");
+
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_NEAREST);
+    // The texture will be mipmap incomplete, so feedback cannot occur nor be consistently evaluated.
+    wtu.clearAndDrawUnitQuad(gl);
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Feedback loop detection ignores sampled incomplete textures.");
+
+    if (draw_buffers) {
+        drawBuffers([gl.COLOR_ATTACHMENT0]);
+    }
 }
 
-gl.bindTexture(gl.TEXTURE_2D, null);
-gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-gl.deleteTexture(tex0);
-gl.deleteTexture(tex1);
+gl.deleteTexture(tex);
 gl.deleteFramebuffer(fbo);
 
 var successfullyParsed = true;
