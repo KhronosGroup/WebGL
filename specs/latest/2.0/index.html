@@ -4126,6 +4126,26 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         blitFramebuffer is used to scale the framebuffer.
     </div>
 
+
+    <h3>GenerateMipmap requires positive image dimensions</h3>
+    <p>
+        <code>generateMipmap</code> requires that TEXTURE_BASE_LEVEL's dimensions are all positive.
+    </p>
+
+    <div class="note">
+        GLES 3.0.5 technically allows calling GenerateMipmap on 0x0 images, though cubemaps must be
+        cube-complete, thus having positive dimensions.
+    </div>
+
+    <div class="note rationale">
+        This change simplifies implementations by allowing a concept of base-level-completeness for
+        textures, as otherwise required for non-mipmap-sampled validation.
+        Since GenerateMipmap has no effect on a 0x0 texture, and is illegal in WebGL 1 (0 is not a
+        power of two), this is an easy restriction to add.
+        Further, GenerateMipmap would otherwise be the only entrypoint that has to operate on
+        undefined texture images, skipping an otherwise-common validation.
+    </div>
+
 <!-- ======================================================================================================= -->
 
     <h2>References</h2>
