@@ -1567,7 +1567,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         Specify all the levels of a two-dimensional or cube-map texture at the same time. <br><br>
 
         The image contents are set as if a buffer of sufficient size initialized to 0 would be passed to
-        each texImage2D call in the pseudocode in The OpenGL ES 3.0 specification section 3.8.4
+        each texImage2D (or compressedTexImage2D for compressed formats) call in the pseudocode in
+        The OpenGL ES 3.0 specification section 3.8.4
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.4 &sect;3.8.4</a>)</span>.
 
         <div class="note"><code>texStorage2D</code> should be considered a preferred alternative to
@@ -1586,7 +1587,8 @@ WebGL2RenderingContext implements WebGL2RenderingContextBase;
         Specify all the levels of a three-dimensional texture or two-dimensional array texture. <br><br>
 
         The image contents are set as if a buffer of sufficient size initialized to 0 would be passed to
-        each texImage3D call in the pseudocode in The OpenGL ES 3.0 specification section 3.8.4
+        each texImage3D (or compressedTexImage3D for compressed formats) call in the pseudocode in
+        The OpenGL ES 3.0 specification section 3.8.4
         <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-3.8.4">OpenGL ES 3.0.4 &sect;3.8.4</a>)</span>.
       </dd>
 
