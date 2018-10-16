@@ -1685,6 +1685,45 @@ var glErrorShouldBeImpl = function(gl, glErrors, reportSuccesses, opt_msg) {
 };
 
 /**
+ * Tests that a function throws or not.
+ * @param {!WebGLContext} gl The WebGLContext to use.
+ * @param throwType Type of thrown error (e.g. TypeError), or false.
+ * @param {string} info Info on what's being tested
+ * @param {function} func The func to test.
+ */
+var shouldThrow = function(gl, throwType, info, func) {
+  while (gl.getError()) {}
+
+  var shouldThrow = (throwType != false);
+
+  try {
+    func();
+
+    if (shouldThrow) {
+      testFailed("Should throw a " + throwType.name + ": " + info);
+    } else {
+      testPassed("Should not have thrown: " + info);
+    }
+  } catch (e) {
+    if (shouldThrow) {
+      if (e instanceof throwType) {
+        testPassed("Should throw a " + throwType.name + ": " + info);
+      } else {
+        testFailed("Should throw a " + throwType.name + ", threw " + e.name + ": " + info);
+      }
+    } else {
+      testFailed("Should not have thrown: " + info);
+    }
+
+    if (gl.getError()) {
+      testFailed("Should not generate an error when throwing: " + info);
+    }
+  }
+
+  while (gl.getError()) {}
+};
+
+/**
  * Links a WebGL program, throws if there are errors.
  * @param {!WebGLRenderingContext} gl The WebGLRenderingContext to use.
  * @param {!WebGLProgram} program The WebGLProgram to link.
@@ -3266,6 +3305,7 @@ var API = {
   startPlayingAndWaitForVideo: startPlayingAndWaitForVideo,
   startsWith: startsWith,
   shouldGenerateGLError: shouldGenerateGLError,
+  shouldThrow: shouldThrow,
   readFile: readFile,
   readFileList: readFileList,
   replaceParams: replaceParams,
