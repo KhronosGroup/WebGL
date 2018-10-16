@@ -118,6 +118,10 @@ if (!gl) {
     rendering_sampling_feedback_loop(null);
     if (drawBuffers) {
         rendering_sampling_feedback_loop([gl.NONE]);
+        rendering_sampling_feedback_loop([gl.COLOR_ATTACHMENT0,
+                                          gl.COLOR_ATTACHMENT0+1]);
+        rendering_sampling_feedback_loop([gl.NONE,
+                                          gl.COLOR_ATTACHMENT0+1]);
     }
 }
 
