@@ -38,13 +38,13 @@
 [NoInterfaceObject]
 interface EXT_multi_draw_arrays  {
   void multiDrawArraysEXT(GLenum mode, 
-                          (Int32Array or sequence&lt;GLint&gt;) firstList, GLuint firstOffset,
-                          (Int32Array or sequence&lt;GLsizei&gt;) countList, GLuint countOffset,
+                          (Int32Array or sequence&lt;GLint&gt;) firstsList, GLuint firstsOffset,
+                          (Int32Array or sequence&lt;GLsizei&gt;) countsList, GLuint countsOffset,
                           GLsizei drawcount);
   void multiDrawElementsEXT(GLenum mode,
-                            (Int32Array or sequence&lt;GLint&gt;) countList, GLuint countOffset,
+                            (Int32Array or sequence&lt;GLint&gt;) countsList, GLuint countsOffset,
                             GLenum type,
-                            (Int32Array or sequence&lt;GLsizei&gt;) offsetList, GLuint offsetOffset,
+                            (Int32Array or sequence&lt;GLsizei&gt;) offsetsList, GLuint offsetsOffset,
                             GLsizei drawcount);
 };
   </idl>
