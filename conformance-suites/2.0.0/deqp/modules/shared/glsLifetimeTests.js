@@ -869,12 +869,8 @@ glsLifetimeTests.AttachmentTest.testDeletedNames = function() {
     assertMsgOptions(getAttachment(this.m_attacher, container) == element,
                  'Attachment name not returned by query after attachment was deleted.', false, true);
 
-    if (elemType.nameLingers())
-        assertMsgOptions(elemType.exists(element),
-                     'Attached object name no longer valid after deletion.', false, true);
-    else
-        assertMsgOptions(!elemType.exists(element),
-                     'Attached object name still valid after deletion.', false, true);
+    assertMsgOptions(elemType.exists(element),
+                 'Attached object name no longer valid after deletion.', false, true);
 
     this.m_attacher.detach(element, container);
     assertMsgOptions(getAttachment(this.m_attacher, container) == null,
