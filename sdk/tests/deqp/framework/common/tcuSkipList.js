@@ -210,6 +210,13 @@ goog.scope(function() {
         // Also see conformance2/rendering/blitframebuffer-stencil-only.html for 2.0.1 test.
         _skip("blit.depth_stencil.depth24_stencil8_scale");
         _skip("blit.depth_stencil.depth24_stencil8_stencil_only");
+
+        _setReason("Mac OSX drivers handle fbo completeness incorrectly if READ_BUFFER or DRAW_BUFFERs miss image");
+        // crbug.com/630800
+        // deqp/functional/gles3/fbocompleteness.html
+        // Also see conformance2/rendering/framebuffer-completeness-unaffected.html for 2.0.1 test.
+        _skip("completeness.attachment_combinations.none_rbo_none_none");
+        _skip("completeness.attachment_combinations.none_tex_none_none");
     } // if (!runSkippedTests)
 
     /*
