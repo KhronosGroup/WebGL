@@ -2500,6 +2500,7 @@ var makeImageFromCanvas = function(canvas, onload, imageFormat) {
  */
 var makeVideo = function(src, onerror) {
   var vid = document.createElement('video');
+  vid.muted = true;
   if (onerror) {
     vid.onerror = onerror;
   } else {
