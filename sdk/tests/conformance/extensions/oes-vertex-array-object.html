@@ -644,6 +644,13 @@ function runBoundDeleteTests() {
         var expectedError = (expectRetained ? gl.NO_ERROR : gl.INVALID_OPERATION);
         wtu.glErrorShouldBe(gl, expectedError,
                             "Draw call should " + (expectRetained ? "not " : "") + "fail.");
+
+        if (gl.isBuffer(positionBuffer)) {
+            testFailed("References from unbound VAOs don't keep Position buffer alive.");
+        }
+        if (gl.isBuffer(colorBuffer)) {
+            testFailed("References from unbound VAOs don't keep Color buffer alive");
+        }
     }
 }
 
