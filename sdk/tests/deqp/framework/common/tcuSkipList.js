@@ -118,13 +118,6 @@ goog.scope(function() {
         _skip("blit.rect.nearest_consistency_out_of_bounds_min_reverse_src_x");
         _skip("blit.rect.nearest_consistency_out_of_bounds_min_reverse_src_y");
 
-        _setReason("Tricky blit rects can result in imperfect copies on Mac Intel driver.");
-        // crbug.com/658724
-        // deqp/functional/gles3/framebufferblit/rect_03.html
-        _skip("blit.rect.nearest_consistency_mag_reverse_src_dst_y");
-        // deqp/functional/gles3/framebufferblit/rect_04.html
-        _skip("blit.rect.nearest_consistency_min_reverse_src_dst_y");
-
         // https://android.googlesource.com/platform/external/deqp/+/0c1f83aee4709eef7ef2a3edd384f9c192f476fd/android/cts/master/src/gles3-driver-issues.txt#381
         _setReason("Tricky blit rects can result in imperfect copies on some drivers.");
         _skip("blit.rect.out_of_bounds_linear");
