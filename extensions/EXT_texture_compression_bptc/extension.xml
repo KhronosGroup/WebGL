@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<draft href="EXT_texture_compression_bptc/">
+<extension href="EXT_texture_compression_bptc/">
   <name>EXT_texture_compression_bptc</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -106,5 +106,8 @@ interface EXT_texture_compression_bptc {
       <change>Retarget against EXT_texture_compression_bptc instead of ARB_texture_compression_bptc</change>
       <change>Rename to EXT_texture_compression_bptc from WEBGL_compressed_texture_bptc</change>
     </revision>
+    <revision date="2018/11/05">
+      <change>Moved to Community Approved status.</change>
+    </revision>
   </history>
-</draft>
+</extension>
