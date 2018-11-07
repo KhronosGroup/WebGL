@@ -1511,7 +1511,7 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
     attributes.antialias = false;
   }
   if (!opt_version) {
-    opt_version = parseInt(getUrlOptions().webglVersion, 10) || default3DContextVersion;
+    opt_version = getDefault3DContextVersion();
   }
   opt_canvas = opt_canvas || document.createElement("canvas");
   if (typeof opt_canvas == 'string') {
