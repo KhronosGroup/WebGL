@@ -41,7 +41,7 @@ const sz = 256;
 
 function drawTo2DCanvas(c2, webGLCanvas) {
   // Always clear 2D canvas to solid green first.
-  c2.fillRect(0, 0, sz, sz);
+  c2.clearRect(0, 0, sz, sz);
   c2.fillStyle = 'rgb(0,255,0)';
   c2.fillRect(0, 0, sz, sz);
   // Draw WebGL canvas to this canvas.
@@ -88,7 +88,7 @@ function runTest() {
   gl.clear(gl.COLOR_BUFFER_BIT);
   // Draw to 2D canvas.
   drawTo2DCanvas(c2, webGLCanvas);
-  
+
   // 2D canvas should be green.
   // In the error case, the rendering results from earlier draws were
   // being accumulated, so the 2D canvas was ultimately red.
