@@ -41,7 +41,7 @@ const sz = 256;
 
 function drawTo2DCanvas(c2, webGLCanvas) {
   // Always clear 2D canvas to solid green first.
-  c2.fillRect(0, 0, sz, sz);
+  c2.clearRect(0, 0, sz, sz);
   c2.fillStyle = 'rgb(0,255,0)';
   c2.fillRect(0, 0, sz, sz);
   // Draw WebGL canvas to this canvas.
