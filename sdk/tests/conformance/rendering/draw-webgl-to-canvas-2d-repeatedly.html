@@ -56,7 +56,6 @@ function runTest() {
   let c2 = document.getElementById('canvas-2d').getContext('2d');
   let webGLCanvas = document.getElementById('canvas-webgl');
   let gl = wtu.create3DContext(webGLCanvas, { alpha: true, antialias: false, premultipliedAlpha: true });
-  let boxOffset = 64;
   let tolerance = 2;
 
   // Clear left half of WebGL canvas to red and right half to
