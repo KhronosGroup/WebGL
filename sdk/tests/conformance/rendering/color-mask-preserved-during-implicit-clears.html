@@ -80,7 +80,8 @@ function runTest() {
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   // Set clear color to transparent green.
   gl.clearColor(0, 1, 0, 0);
-  // Clear. Result should be opaque green.
+  // Clear. Result should be opaque green. Was transparent green when
+  // bug was encountered.
   gl.clear(gl.COLOR_BUFFER_BIT);
   wtu.checkCanvasRect(gl, 0, 0, sz, sz,
                       [ 0, 255, 0, 255 ],
