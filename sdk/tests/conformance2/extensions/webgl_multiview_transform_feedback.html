@@ -88,14 +88,14 @@ function runTransformFeedbackTest()
 
     gl.pauseTransformFeedback();
     wtu.drawUnitQuad(gl);
-    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "rendering to a multiview framebuffer with more than one view when there's an active transform feedback should result in invalid operation even if the transform feedback is paused");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from draw when rendering to a multiview framebuffer with more than one view when there's an active paused transform feedback");
 
     let readFb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, readFb);
     for (let viewIndex = 0; viewIndex < views; ++viewIndex) {
         gl.framebufferTextureLayer(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, viewIndex);
-        let expectedColor = [0, 0, 0, 0];
-        wtu.checkCanvasRect(gl, 0, 0, width, height, expectedColor, 'view ' + viewIndex + ' should be untouched');
+        let expectedColor = getExpectedColor(viewIndex);
+        wtu.checkCanvasRect(gl, 0, 0, width, height, expectedColor, 'view ' + viewIndex + ' should be colored ' + expectedColor);
     }
 
     gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
