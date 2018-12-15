@@ -1810,6 +1810,7 @@ goog.scope(function() {
         gl.texParameteri(textureTarget, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.texParameteri(textureTarget, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(textureTarget, gl.TEXTURE_BASE_LEVEL, testSize.lodBase);
+        gl.texParameteri(textureTarget, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
 
         // set up texture
 
