@@ -46,14 +46,14 @@ enum WebGLPowerPreference { "default", "low-power", "high-performance" };
 
 
 dictionary WebGLContextAttributes {
-    GLboolean alpha = true;
-    GLboolean depth = true;
-    GLboolean stencil = false;
-    GLboolean antialias = true;
-    GLboolean premultipliedAlpha = true;
-    GLboolean preserveDrawingBuffer = false;
+    boolean alpha = true;
+    boolean depth = true;
+    boolean stencil = false;
+    boolean antialias = true;
+    boolean premultipliedAlpha = true;
+    boolean preserveDrawingBuffer = false;
     WebGLPowerPreference powerPreference = "default";
-    GLboolean failIfMajorPerformanceCaveat = false;
+    boolean failIfMajorPerformanceCaveat = false;
 };
 
 [Exposed=(Window,Worker)]
