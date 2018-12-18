@@ -49,7 +49,7 @@ gl.clearColor(0, 1, 0, 1);
 
 var targets = [gl.TEXTURE_2D, gl.TEXTURE_3D];
 for (var ii = 0; ii < targets.length; ++ii) {
-  gl.clear(gl.COLOR_BUFFER);
+  gl.clear(gl.COLOR_BUFFER_BIT);
   var target = targets[ii];
   var tex = gl.createTexture();
   gl.bindTexture(target, tex);
