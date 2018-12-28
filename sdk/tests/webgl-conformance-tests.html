@@ -44,6 +44,14 @@
     font-size: 0.8em;
   }
 
+  input[type=button], select {
+    padding: 2px 6px 2px 6px;
+    margin: 0;
+    border: 1px solid #888;
+    border-radius: 2px;
+    background: #f4f4f4;
+  }
+
   a {
     color: #88F;
     text-decoration: none;
@@ -1234,7 +1242,7 @@ function start() {
     Version
     <select id="testVersion">
     </select>
-    <a href="../../conformance-suites/"><i>(older versions)</i></a>
+    <a href="../../conformance-suites/">(older versions?)</a>
     <br/>
     <input type="button" value="run tests" id="runTestsButton"/>
     <label for="autoScrollCheckbox"><input type="checkbox" id="autoScrollCheckbox"/>auto scroll</label>
