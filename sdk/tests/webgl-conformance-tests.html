@@ -106,6 +106,9 @@
 
   .folderHeader {
     white-space: nowrap;
+    position: sticky;
+    top: 0;
+    background: white;
   }
 
   .folderName {
@@ -279,7 +282,12 @@ function start() {
       quiet: OPTIONS.quiet
     });
     a.target = "_blank";
-    var node = reporter.localDoc.createTextNode(url);
+    const folderName = that.folder.displayName;
+    console.assert(folderName.startsWith("all/"));
+    console.assert(url.startsWith(folderName.substring(4) + "/"));
+    const urlWithoutFolder = url.substring(folderName.length - 4 + 1);
+    console.log(url, urlWithoutFolder);
+    var node = reporter.localDoc.createTextNode(urlWithoutFolder);
     a.appendChild(node);
     div.appendChild(a);
     li.setAttribute('class', 'testpage');
