@@ -34,6 +34,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WebGL Conformance Tests</title>
 <style>
+  * {
+    box-sizing: border-box;
+  }
+
   body {
     border: 0;
     margin: 0;
@@ -100,18 +104,32 @@
     height: 40px;
   }
 
-  #test-iframe {
-    background: white;
-    border: 1px solid black;
+  #iframe-container {
+    color: white;
+    display: block;
     position: fixed;
     width: 90%;
     height: calc(100% - 170px);
-    bottom: 0;
+    bottom: 4px;
     left: 91%;
     transition: left 0.15s;
   }
-  #test-iframe:hover {
+  #iframe-container.iframe-shown {
     left: 10%;
+  }
+  #iframe-toggle {
+    display: inline-block;
+    vertical-align: middle;
+    width: 1.8em;
+    height: 100%;
+    padding: 0;
+  }
+  #test-iframe {
+    display: inline-block;
+    vertical-align: middle;
+    background: white;
+    width: calc(100% - 2em);
+    height: 100%;
   }
 
   .folder {
@@ -1215,6 +1233,20 @@ function start() {
     elem.style.display = "";
     reporter.postResultsToServer("Browser does not appear to support the selected version of WebGL");
   }
+
+  const iframeContainer = document.getElementById("iframe-container");
+  const iframeToggle = document.getElementById("iframe-toggle");
+  iframeToggle.value = iframeToggle.getAttribute("data-value-hidden");
+  iframeToggle.onclick = function() {
+    const expanded = iframeToggle.myExpanded = !iframeToggle.myExpanded;
+    if (expanded) {
+      iframeContainer.classList.add("iframe-shown");
+      iframeToggle.value = iframeToggle.getAttribute("data-value-shown");
+    } else {
+      iframeContainer.classList.remove("iframe-shown");
+      iframeToggle.value = iframeToggle.getAttribute("data-value-hidden");
+    }
+  };
 }
 </script>
 </head>
@@ -1230,7 +1262,10 @@ function start() {
   </div>
 </div> <!-- end of container -->
 
-<iframe id="test-iframe"></iframe>
+<div id="iframe-container">
+  <input type="button" data-value-hidden="◄" data-value-shown="►" id="iframe-toggle" aria-hidden="true"
+  ><iframe id="test-iframe"></iframe>
+</div>
 
 <div id="header">
   <div id="info">
