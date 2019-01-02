@@ -140,7 +140,13 @@
     white-space: nowrap;
     position: sticky;
     top: 0;
+  }
+  .folderHeaderInner {
     background: white;
+    /* to hide checkboxes from parent headers */
+    position: relative;
+    left: -2em;
+    padding-left: 2em;
   }
 
   .folderName {
@@ -489,8 +495,11 @@ function start() {
     var li = doc.createElement('li');
     li.id = this.elementId;
     li.classList.add("folder");
-    var div = doc.createElement('div');
-    div.classList.add('folderHeader');
+    var folderHeader = doc.createElement('div');
+    folderHeader.classList.add('folderHeader');
+    var folderHeaderInner = doc.createElement('div');
+    folderHeaderInner.classList.add('folderHeaderInner');
+    folderHeader.appendChild(folderHeaderInner);
     var check = doc.createElement('input');
     check.type = 'checkbox';
     check.checked = true;
@@ -502,7 +511,7 @@ function start() {
         that.disableTest(".*", true);
       }
     };
-    div.appendChild(check);
+    folderHeaderInner.appendChild(check);
     var button = doc.createElement('input');
     button.type = 'button';
     button.value = 'run';
@@ -513,23 +522,23 @@ function start() {
     if (reporter.noSelectedWebGLVersion) {
       button.disabled = true;
     }
-    div.appendChild(button);
+    folderHeaderInner.appendChild(button);
     var h = doc.createElement('span');
     h.classList.add('folderName');
     h.appendChild(doc.createTextNode(this.displayName));
-    div.appendChild(h);
+    folderHeaderInner.appendChild(h);
     var m = doc.createElement('span');
     m.classList.add('folderMessage');
     this.msgNode = doc.createTextNode('');
     m.appendChild(this.msgNode);
-    div.appendChild(m);
+    folderHeaderInner.appendChild(m);
     var ul = doc.createElement('ul');
-    li.appendChild(div);
+    li.appendChild(folderHeader);
     li.appendChild(ul);
     this.childUL = ul;
     this.elem = li;
     this.check = check;
-    this.folderHeader = div;
+    this.folderHeader = folderHeader;
   };
 
   Folder.prototype.checked = function() {
