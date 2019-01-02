@@ -110,8 +110,8 @@
     position: fixed;
     width: 90%;
     height: calc(100% - 170px);
-    bottom: 4px;
-    left: 91%;
+    bottom: 0px;
+    left: calc(91% - 15px);
     transition: left 0.15s;
   }
   #iframe-container.iframe-shown {
@@ -120,7 +120,7 @@
   #iframe-toggle {
     display: inline-block;
     vertical-align: middle;
-    width: 1.8em;
+    width: 20px;
     height: 100%;
     padding: 0;
   }
@@ -128,8 +128,9 @@
     display: inline-block;
     vertical-align: middle;
     background: white;
-    width: calc(100% - 2em);
+    width: calc(100% - 20px);
     height: 100%;
+    border: 1px solid black;
   }
 
   .folder {
