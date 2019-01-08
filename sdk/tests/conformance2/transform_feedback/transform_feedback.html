@@ -387,6 +387,13 @@ function runUnboundDeleteTest() {
     debug("Deleting output buffer again should be a no-op");
     shouldBe("gl.getIndexedParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING, 0)", "out_add_buffer");
 
+    // Try unbinding and rebinding the transform feedback object just
+    // to make sure that has no effect on the attached output buffer.
+    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, null);
+    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
+    debug("Transform feedback object should still keep output buffer alive");
+    shouldBe("gl.getIndexedParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING, 0)", "out_add_buffer");
+
     gl.deleteTransformFeedback(tf);
 
     tf = null;
