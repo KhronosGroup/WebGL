@@ -3154,9 +3154,9 @@ WebGLRenderingContext includes WebGLRenderingContextBase;
             passed type and size or an <code>INVALID_OPERATION</code> error will be generated;
             see <a href="#BUFFER_OFFSET_AND_STRIDE">Buffer Offset and Stride Requirements</a>. If
             offset is negative, an <code>INVALID_VALUE</code> error will be generated. If no
-            WebGLBuffer is bound to the ARRAY_BUFFER target, an <code>INVALID_OPERATION</code> error
-            will be generated. In WebGL, the maximum supported stride is 255;
-            see <a href="#VERTEX_STRIDE"> Vertex Attribute Data Stride</a>.
+            WebGLBuffer is bound to the ARRAY_BUFFER target and <code>offset</code> is non-zero,
+            an <code>INVALID_OPERATION</code> error will be generated. In WebGL, the maximum
+            supported stride is 255; see <a href="#VERTEX_STRIDE"> Vertex Attribute Data Stride</a>.
     </dl>
 
 <!-- ======================================================================================================= -->
