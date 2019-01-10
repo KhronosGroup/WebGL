@@ -2251,11 +2251,12 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         attribute at the passed index. Values are always left as integer values. Size is number of
         components per attribute. Stride and offset are in units of bytes. Passed stride and offset
         must be appropriate for the passed type and size or an <code>INVALID_OPERATION</code> error
-        will be generated; see <a href="../1.0/index.html#BUFFER_OFFSET_AND_STRIDE">Buffer Offset and Stride
-        Requirements</a>. If offset is negative, an <code>INVALID_VALUE</code> error will be
-        generated. If no WebGLBuffer is bound to the ARRAY_BUFFER target,
-        an <code>INVALID_OPERATION</code> error will be generated. In WebGL, the maximum supported
-        stride is 255; see <a href="../1.0/index.html#VERTEX_STRIDE"> Vertex Attribute Data Stride</a>.
+        will be generated; see <a href="../1.0/index.html#BUFFER_OFFSET_AND_STRIDE">Buffer Offset
+        and Stride Requirements</a>. If offset is negative, an <code>INVALID_VALUE</code> error will
+        be generated. If no WebGLBuffer is bound to the ARRAY_BUFFER target and <code>offset</code>
+        is non-zero, an <code>INVALID_OPERATION</code> error will be generated. In WebGL, the
+        maximum supported stride is 255; see <a href="../1.0/index.html#VERTEX_STRIDE"> Vertex
+        Attribute Data Stride</a>.
       </dd>
       <dt class="idl-code">any getVertexAttrib(GLuint index, GLenum pname)
           <span class="gl-spec">(<a href="http://www.khronos.org/registry/gles/specs/3.0/es_spec_3.0.4.pdf#nameddest=section-6.1.12">OpenGL ES 3.0.4 &sect;6.1.12</a>, <a class="nonnormative" href="http://www.khronos.org/opengles/sdk/docs/man3/html/glGetVertexAttrib.xhtml">man page</a>)</span>
