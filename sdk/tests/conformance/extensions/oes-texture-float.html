@@ -389,10 +389,10 @@ function runFramebufferTest() {
 
     debug("Ensure color renderable formats [RGBA, RGB] succeed.");
     var arrayBufferFloatInput = new Float32Array(4); // 4 color channels
-    arrayBufferFloatInput[0] = 0;  
-    arrayBufferFloatInput[1] = .25; 
-    arrayBufferFloatInput[2] = .50; 
-    arrayBufferFloatInput[3] = .75; 
+    arrayBufferFloatInput[0] = 0;
+    arrayBufferFloatInput[1] = .25;
+    arrayBufferFloatInput[2] = .50;
+    arrayBufferFloatInput[3] = .75;
 
     [gl.RGBA, gl.RGB].forEach(function(goodFormat) {
         debug(wtu.glEnumToString(gl, goodFormat) + " framebuffer tests");
