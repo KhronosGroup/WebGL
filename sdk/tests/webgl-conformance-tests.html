@@ -31,7 +31,7 @@
 <!-- Prevents Chrome from offering to translate tests which generate
      random characters for things like attribute names -->
 <meta name="google" value="notranslate">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width">
 <title>WebGL Conformance Tests</title>
 <style>
   * {
@@ -325,7 +325,6 @@ function start() {
     console.assert(folderName.startsWith("all/"));
     console.assert(url.startsWith(folderName.substring(4) + "/"));
     const urlWithoutFolder = url.substring(folderName.length - 4 + 1);
-    console.log(url, urlWithoutFolder);
     var node = reporter.localDoc.createTextNode(urlWithoutFolder);
     a.appendChild(node);
     div.appendChild(a);
