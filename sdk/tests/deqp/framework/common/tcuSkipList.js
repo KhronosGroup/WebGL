@@ -95,6 +95,9 @@ goog.scope(function() {
         // Please see https://android.googlesource.com/platform/external/deqp/+/master/android/cts/master/src/gles3-driver-issues.txt
         _skip("texture_functions.textureprojlodoffset.isampler3d_vertex");
         _skip("texture_functions.texturegrad.samplercubeshadow*");
+        // Please see https://android.googlesource.com/platform/external/deqp/+/40ff528%5E%21/
+        // and https://bugs.chromium.org/p/angleproject/issues/detail?id=3094
+        _skip("texture_functions.texturelodoffset.sampler3d_float_vertex");
 
         // https://android.googlesource.com/platform/external/deqp/+/0c1f83aee4709eef7ef2a3edd384f9c192f476fd/android/cts/master/src/gles3-hw-issues.txt#801
         _setReason("Tricky blit rects can result in imperfect copies on some HW.");
