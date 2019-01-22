@@ -10,7 +10,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>40</number>
 
   <depends>
     <api version="1.0"/>
@@ -83,7 +83,7 @@ var ext = gl.getExtension("WEBGL_multi_draw");
   // multiDrawArrays variant.
   let firsts = new Int32Array(...);
   let counts = new Int32Array(...);
-  ext.multiDrawArraysANGLE(gl.TRIANGLES, firsts, 0, counts, 0, firsts.length);
+  ext.multiDrawArraysWEBGL(gl.TRIANGLES, firsts, 0, counts, 0, firsts.length);
 }
 
 {
@@ -92,7 +92,7 @@ var ext = gl.getExtension("WEBGL_multi_draw");
   // ELEMENT_ARRAY_BUFFER are to be treated as UNSIGNED_SHORT.
   let counts = new Int32Array(...);
   let offsets = new Int32Array(...);
-  ext.multiDrawElementsANGLE(
+  ext.multiDrawElementsWEBGL(
       gl.TRIANGLES, counts, 0, gl.UNSIGNED_SHORT, offsets, 0, counts.length);
 }
 
@@ -112,6 +112,9 @@ void main() {
   <history>
     <revision date="2018/11/09">
       <change>Initial version.</change>
+    </revision>
+    <revision date="2019/01/21">
+      <change>Moved to draft.</change>
     </revision>
   </history>
 </proposal>

@@ -10,7 +10,7 @@
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
-  <number>NN</number>
+  <number>41</number>
 
   <depends>
     <api version="1.0"/>
@@ -118,6 +118,9 @@ void main() {
   <history>
     <revision date="2018/11/09">
       <change>Initial version.</change>
+    </revision>
+    <revision date="2019/01/21">
+      <change>Moved to draft.</change>
     </revision>
   </history>
 </proposal>
