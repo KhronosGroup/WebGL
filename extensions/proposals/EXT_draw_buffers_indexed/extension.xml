@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proposal href="proposals/EXT_draw_buffers_indexed">
+
+  <name>EXT_draw_buffers_indexed</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+    <contributor>Alexey Knyazev</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>NN</number>
+
+  <depends>
+    <api version="2.0"/>
+  </depends>
+
+  <overview>
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_draw_buffers_indexed.txt"
+             name="EXT_draw_buffers_indexed">
+    </mirrors>
+
+    <features>
+      <feature>This extension provides the ability to independently enable or disable blending, set the blend equations, 
+      set the blend functions, and set the color write masks per color output.</feature>
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+[NoInterfaceObject]
+interface EXT_draw_buffers_indexed {
+  void enableiEXT(GLenum target, GLuint index);
+
+  void disableiEXT(GLenum target, GLuint index);
+  
+  void blendEquationiEXT(GLuint buf, GLenum mode);
+  
+  void blendEquationSeparateiEXT(GLuint buf, 
+                                 GLenum modeRGB, GLenum modeAlpha);
+  
+  void blendFunciEXT(GLuint buf,
+                     GLenum src, GLenum dst);
+  
+  void blendFuncSeparateiEXT(GLuint buf,
+                             GLenum srcRGB, GLenum dstRGB,
+                             GLenum srcAlpha, GLenum dstAlpha);
+  
+  void colorMaskiEXT(GLuint buf, 
+                     GLboolean r, GLboolean g, GLboolean b, GLboolean a);
+  
+  [WebGLHandlesContextLoss] GLboolean isEnablediEXT(GLenum target, GLuint index);
+};
+  </idl>
+
+  <newfun>
+    <function name="enableiEXT" type="void">
+      <param name="target" type="GLenum"/>
+      <param name="index" type="GLuint"/>
+      <p>
+        Enables blending for an individual draw buffer.
+      </p>
+      <p>
+        <code>target</code> must be <code>BLEND</code>.
+      </p>
+      <p>
+        <code>index</code> is an integer <code>i</code> specifying the draw buffer associated with
+        the symbolic constant <code>DRAW_BUFFER<em>i</em></code>.
+      </p>
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="disableiEXT" type="void">
+      <param name="target" type="GLenum"/>
+      <param name="index" type="GLuint"/>
+      <p>
+        Disables blending for an individual draw buffer.
+      </p>
+      <p>
+        <code>target</code> must be <code>BLEND</code>.
+      </p>
+      <p>
+        <code>index</code> is an integer <code>i</code> specifying the draw buffer associated with
+        the symbolic constant <code>DRAW_BUFFER<em>i</em></code>.
+      </p>
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="blendEquationiEXT" type="void">
+      <param name="buf" type="GLuint"/>
+      <param name="mode" type="GLenum"/>
+      <p>
+        The <code>buf</code> argument is an integer <code>i</code> that indicates that the blend equations
+        should be modified for <code>DRAW_BUFFER<em>i</em></code>."
+      </p>
+      <p>
+        <code>mode</code> accepts the same tokens as <code>mode</code> in <code>blendEquation</code>.
+      </p>      
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="blendEquationSeparateiEXT" type="void">
+      <param name="buf" type="GLuint"/>
+      <param name="modeRGB" type="GLenum"/>
+      <param name="modeAlpha" type="GLenum"/>
+      <p>
+        The <code>buf</code> argument is an integer <code>i</code> that indicates that the blend equations
+        should be modified for <code>DRAW_BUFFER<em>i</em></code>."
+      </p>
+      <p>
+        <code>modeRGB</code> and <code>modeAlpha</code> accept the same tokens as <code>modeRGB</code>
+        and <code>modeAlpha</code> in <code>blendEquationSeparate</code>.
+      </p>
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="blendFunciEXT" type="void">
+      <param name="buf" type="GLuint"/>
+      <param name="src" type="GLenum"/>
+      <param name="dst" type="GLenum"/>
+      <p>
+        The <code>buf</code> argument is an integer <code>i</code> that indicates that the blend functions
+        should be modified for <code>DRAW_BUFFER<em>i</em></code>."
+      </p>
+      <p>
+        <code>src</code> and <code>dst</code> accept the same tokens as <code>src</code> and 
+        <code>dst</code> in <code>blendFunc</code>.
+      </p>      
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="blendFuncSeparateiEXT" type="void">
+      <param name="buf" type="GLuint"/>
+      <param name="srcRGB" type="GLenum"/>
+      <param name="dstRGB" type="GLenum"/>
+      <param name="srcAlpha" type="GLenum"/>
+      <param name="dstAlpha" type="GLenum"/>
+      <p>
+        The <code>buf</code> argument is an integer <code>i</code> that indicates that the blend functions
+        should be modified for <code>DRAW_BUFFER<em>i</em></code>."
+      </p>
+      <p>
+        <code>srcRGB</code>, <code>dstRGB</code>, <code>srcAlpha</code>, and <code>dstAlpha</code> accept the same 
+        tokens as <code>srcRGB</code>, <code>dstRGB</code>, <code>srcAlpha</code>, and <code>dstAlpha</code> parameters in
+        <code>blendEquationSeparate</code>.
+      </p>
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="colorMaskiEXT" type="void">
+      <param name="buf" type="GLuint"/>
+      <param name="r" type="GLboolean"/>
+      <param name="g" type="GLboolean"/>
+      <param name="b" type="GLboolean"/>
+      <param name="a" type="GLboolean"/>
+      <p>
+        The <code>buf</code> argument is an integer <code>i</code> that indicates that the write mask
+        should be modified for <code>DRAW_BUFFER<em>i</em></code>."
+      </p>
+      <p>
+        <code>r</code>, <code>g</code>, <code>b</code>, and <code>a</code> indicate whether R, G, B, or A
+        values, respectively, are written or not (a value of TRUE means that the corresponding value is written).
+      </p>
+    </function>
+  </newfun>
+
+  <newtok>
+    <function name="getIndexedParameter" type="">
+      <param name="target" type="GLenum"/>
+      <param name="index" type="GLuint"/>
+      <p>
+        New allowed <code>target</code> tokens and their return types are given in the following table. 
+      </p>
+      <p>
+        <table class="foo">
+          <tr><th>target</th><th>returned type</th></tr>
+          <tr><td>BLEND_EQUATION_RGB</td><td>GLenum</td></tr>
+          <tr><td>BLEND_EQUATION_ALPHA</td><td>GLenum</td></tr>
+          <tr><td>BLEND_SRC_RGB</td><td>GLenum</td></tr>
+          <tr><td>BLEND_SRC_ALPHA</td><td>GLenum</td></tr>
+          <tr><td>BLEND_DST_RGB</td><td>GLenum</td></tr>
+          <tr><td>BLEND_DST_ALPHA</td><td>GLenum</td></tr>
+          <tr><td>COLOR_WRITEMASK</td><td>sequence&lt;GLboolean&gt; (with 4 values)</td></tr>
+        </table>
+      </p>
+      <p>
+        <code>index</code> is an integer <code>i</code> specifying the draw buffer associated with
+        the symbolic constant <code>DRAW_BUFFER<em>i</em></code>.
+      </p>
+    </function>
+  </newtok>
+  
+  <issues>
+    Describe interaction with <code>WEBGL_blend_equation_advanced_coherent</code>.
+  </issues>
+
+  <history>
+    <revision date="2019/01/24">
+      <change>First draft.</change>
+    </revision>
+  </history>
+</extension>
