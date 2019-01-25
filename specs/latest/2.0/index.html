@@ -3538,8 +3538,13 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
         If the values written by the fragment shader do not match the format(s) of the corresponding
         color buffer(s) (for example, the output variable is an integer, but the corresponding color
         buffer has a floating-point format, or vice versa), and the color buffer states are not set to
-        <code>NONE</code> by <code>DrawBuffers</code>, generates an <code>INVALID_OPERATION</code> error;
+        <code>NONE</code> by <code>DrawBuffers</code>, draws generate an <code>INVALID_OPERATION</code> error;
         if the color buffer states are set to <code>NONE</code> by <code>DrawBuffers</code>, they remain untouched.
+    </p>
+
+    <p>
+        If any draw buffer with an attachment does not have a defined fragment shader output, draws
+        generate <code>INVALID_OPERATION</code>.
     </p>
 
     <h3>No Program Binaries</h3>

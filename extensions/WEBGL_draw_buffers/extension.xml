@@ -61,7 +61,7 @@
         </ul>
       </addendum>
       <addendum>
-        Although the extension name is prefixed with WEBGL the extension must be enabled with the 
+        Although the extension name is prefixed with WEBGL the extension must be enabled with the
         <code>#extension GL_EXT_draw_buffers</code> directive, as shown in the sample code, to use
         the extension in a shader.
 
@@ -71,7 +71,14 @@
         The value of <code>gl_MaxDrawBuffers</code> must match <code>MAX_DRAW_BUFFERS_WEBGL</code> from the API if the extension is enabled in a WebGL context; otherwise, the value must be 1. Whether or not the extension is enabled with the <code>#extension GL_EXT_draw_buffers</code> directive in a shader does not affect the value of <code>gl_MaxDrawBuffers</code>. The value of <code>gl_MaxDrawBuffers</code> is a constant in the shader, and is guaranteed to be frozen at program link time. It is implementation-dependent whether it is frozen at shader compile time. (A consequence is that if a program is linked, and later the WEBGL_draw_buffers extension is enabled, the value of <code>gl_MaxDrawBuffers</code> seen by that program will still be 1.)
       </addendum>
       <addendum>
-        If the WEBGL_draw_buffers extension is enabled, but the fragment shader does not contain the <code>#extension GL_EXT_draw_buffers</code> directive to enable it, then writes to <code>gl_FragColor</code> are only written to <code>COLOR_ATTACHMENT0_WEBGL</code>, and not broadcast to all color attachments. In this scenario, other color attachments are guaranteed to remain untouched.
+        If the WEBGL_draw_buffers extension is enabled, but the fragment shader does not contain the
+        <code>#extension GL_EXT_draw_buffers</code> directive to enable it, then writes to
+        <code>gl_FragColor</code> are only written to <code>COLOR_ATTACHMENT0_WEBGL</code>, and not
+        broadcast to all color attachments.
+
+        In this scenario, if there are draw buffers other than COLOR_ATTACHMENT0, because there is
+        only a fragment shader output for DRAW_BUFFER0, draw commands generate
+        <code>INVALID_OPERATION</code>.
       </addendum>
       <addendum>
         If a fragment shader writes to neither <code>gl_FragColor</code> nor <code>gl_FragData</code>, the values of

@@ -360,6 +360,12 @@ function runDrawTests() {
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   gl.drawBuffers(bufs);
   gl.useProgram(blueProgramESSL1);
+
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.drawUnitQuad(gl);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Active draw buffers with missing frag outputs.");
+
+  gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
   wtu.drawUnitQuad(gl);
 
   drawBuffersUtils.checkAttachmentsForColorFn(attachments, function(attachment, index) {
@@ -372,6 +378,12 @@ function runDrawTests() {
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   gl.drawBuffers(bufs);
   gl.useProgram(redProgram);
+
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.drawUnitQuad(gl);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Active draw buffers with missing frag outputs.");
+
+  gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
   wtu.drawUnitQuad(gl);
 
   drawBuffersUtils.checkAttachmentsForColorFn(attachments, function(attachment, index) {

@@ -561,6 +561,12 @@ function runDrawTests() {
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   ext.drawBuffersWEBGL(bufs);
   gl.useProgram(redProgram);
+
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.drawUnitQuad(gl);
+  gl.getError(); // Consume possible error.
+
+  ext.drawBuffersWEBGL([gl.COLOR_ATTACHMENT0]);
   wtu.drawUnitQuad(gl);
 
   checkAttachmentsForColorFn(attachments, function(attachment, index) {
