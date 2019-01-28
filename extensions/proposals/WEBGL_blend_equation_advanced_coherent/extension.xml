@@ -24,7 +24,7 @@
     <div class="nonnormative">
       <p>This extension exposes the KHR_blend_equation_advanced_coherent functionality to WebGL.</p>
 
-      <p>CanvasRenderingContext2D provides a series of common blend functions with globalComposeOperation, such as "multiply" and "screen". KHR_blend_equation_advanced_coherent provides, with the exception of "xor", exactly the same list of blend functions for WebGL, as detailed below:</p>
+      <p>CanvasRenderingContext2D provides a series of common blend functions with globalCompositeOperation, such as "multiply" and "screen". KHR_blend_equation_advanced_coherent provides, with the exception of "xor", exactly the same list of blend functions for WebGL, as detailed below:</p>
 	  
 	  <ul>
 		<li>"multiply": MULTIPLY_KHR</li>
