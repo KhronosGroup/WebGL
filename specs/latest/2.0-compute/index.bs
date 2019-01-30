@@ -1218,6 +1218,13 @@ Abstract: This is the WebGL 2.0 compute specification.
     Define the const and non-const behavior for some corner case like NaN, Inf, 0.0 in compute shader
   </p>
 
+## std430 layout is requred for shared memory ## {#std430-layout}
+  <p>
+    OpenGL ES 3.1 SPEC does not define which memory layout we should follow to calculate the total memory consumption of shared variables. 
+
+    This extension calculates the usage of shared memory in std430 layout. The total size of active shared variables may not exceed the largest block size that would be obtained if all active variables declared as shared were instead declared as arbitrarily ordered members of a shader storage block qualified with std430.
+  </p>
+
 ## Clarify undefined behaviors ## {#undefined-behavior}
 ###  Rendering against compute program is not allowed ### {#rendering-against-compute-program}
   <p>
@@ -1239,7 +1246,38 @@ Abstract: This is the WebGL 2.0 compute specification.
     Sampling from stencil texture should use a unsigned integer sampler (say usampler2D tex in shader). Otherwise, the result are undefined, see GLES spec 3.1 on page 274. (the last but one paragraph).
   </p>
 
-## SSBO out-of-bounds access ## {#ssbo-out-of-bounds}
+### Out-of-bounds access to ssbo or atomic counter in shader ### {#out-of-bounds-access}
   <p>
-    Descriptions here
+    Out-of-bounds access to shader storage buffers or atomic counter buffers in shader cannot read from or write to data not owned by the application. See <a href="https://www.khronos.org/registry/OpenGL/extensions/KHR/KHR_robust_buffer_access_behavior.txt">KHR_robust_buffer_access_behavior</a>.
+  </p>
+
+### Uninitialized shared variables in shader ### {#uninitialized-shared-variables}
+  <p>
+    Variables declared as shared may not have initializers and their contents are all zero at the beginning of shader execution.
+  </p>
+
+### Image load or store ### {#image-load-store}
+  <p>
+    Read from an image unit with a texture bound as GL_WRITE_ONLY, or write to an image unit with a texture bound as GL_READ_ONLY, the results of that shader operation are undefined and may lead to application termination in OpenGL ES 3.1. It generates INVALID_OPERATION instead when dispatch compute in this spec.
+  </p>
+  <p>
+    If the individual texel identified for an image load or store operation doesn't exist, the access is treated as invalid. An access is considered invalid if
+      * no texture is bound to the selected image unit;
+      * the texture bound to the selected image unit is incomplete;
+      * the texture level bound to the image unit is less than the base level or greater than the maximum level of the texture;
+      * the internal format of the texture bound to the image unit is not RGBA32F, RGBA16F, R32F, RGBA32UI, RGBA16UI, RGBA8UI, R32UI, RGBA32I, RGBA16I, RGBA8I, R32I, RGBA8, RGBA8_SNORM.
+      * the internal format of the texture bound to the image unit is incompatible with the specified format according to ES 3.1 spec table 8.28.
+      * the texture bound to the image unit has layers, and the selected layer or cube map face doesn't exist.
+
+    It generates INVALID_OPERATION when dispatch compute in the cases above for both load and store in this spec.
+  </p>
+  <p>
+    If image load or store operations are considered to involve a format mismatch, undefined values will be returned by image load operations and undefined values will be written by stores in OpenGL ES 3.1 spec. A format mismatch will occur if:
+      * The type of image variable used to access the image unit does not match the target of a texture bound to the image unit with layered set to TRUE.
+      * The type of image variable used to access the image unit does not match the target corresponding to a single layer of a multi-layer texture target bound to the image unit with layered set to FALSE.
+      * The type of image variable used to access the image unit has a component data type(floating-point, signed integer, unsigned integer) incompatible with the format of the image unit.
+      * The format layout qualifier for an image variable used for an image load or atomic operation does not match the format for the image unit, according to ES 3.1 spec table 8.27.
+      * The image variable used for an image store has a format layout qualifier, and that qualifier does not match the format of the image unit, according to table ES 3.1 spec table 8.27.
+
+    It generates INVALID_OPERATION when dispatch compute in this spec;
   </p>
