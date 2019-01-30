@@ -284,6 +284,12 @@ Abstract: This is the WebGL 2.0 compute specification.
       void framebufferParameter(GLenum target, GLenum pname, GLint param);
       any getFramebufferParameter(GLenum target, GLenum pname);
 
+      any getProgramInterfaceParameter(WebGLProgram program, GLenum programInterface, GLenum pname);
+      any getProgramResource(WebGLProgram program, GLenum programInterface, GLuint index, GLenum props);
+      GLuint getProgramResourceIndex(WebGLProgram program, GLenum programInterface, DOMString name);
+      DOMString? getProgramResourceName(WebGLProgram program, GLenum programInterface, GLuint index);
+      GLint getProgramResourceLocation(WebGLProgram program, GLenum programInterface, DOMString name);
+
       void programParameter(WebGLProgram? program, GLenum pname, GLint value);
       GLuint createShaderProgram(GLenum type, GLsizei count, DOMString source);
       WebGLProgramPipeline? createProgramPipeline();
@@ -865,7 +871,7 @@ Abstract: This is the WebGL 2.0 compute specification.
 ### Program Interface Query ### {#program-interface}
   <p>
     <b>
-      any getProgramInterfaceParameter(WebGLProgram? program, GLenum programInterface, GLenum pname)
+      any getProgramInterfaceParameter(WebGLProgram program, GLenum programInterface, GLenum pname)
     </b>
   </p>
   <p>
@@ -880,7 +886,7 @@ Abstract: This is the WebGL 2.0 compute specification.
   </p>
   <p>
     <b>
-      void getProgramResource(WebGLProgram? program, GLenum programInterface, GLuint index, GLsizei propCount, GLenum * props, GLsizei bufSize, GLsizei * length, GLint * params)
+      sequence<any>? getProgramResource(WebGLProgram program, GLenum programInterface, GLuint index, sequence<GLenum> props)
     </b>
   </p>
   <p>
@@ -895,7 +901,7 @@ Abstract: This is the WebGL 2.0 compute specification.
   </p>
   <p>
     <b>
-      void getProgramResourceName(WebGLProgram? program, GLenum programInterface, GLuint index, GLsizei bufSize, GLsizei * length, GLint * params)
+      DOMString? getProgramResourceName(WebGLProgram program, GLenum programInterface, GLuint index)
     </b>
   </p>
   <p>
@@ -910,7 +916,7 @@ Abstract: This is the WebGL 2.0 compute specification.
   </p>
   <p>
     <b>
-      GLuint getProgramResourceIndex(WebGLProgram? program, GLenum programInterface, const char * name)
+      GLuint getProgramResourceIndex(WebGLProgram program, GLenum programInterface, DOMString name)
     </b>
   </p>
   <p>
@@ -925,7 +931,7 @@ Abstract: This is the WebGL 2.0 compute specification.
   </p>
   <p>
     <b>
-      void getProgramResourceLocation(WebGLProgram? program, GLenum programInterface, const char * name)
+      GLint getProgramResourceLocation(WebGLProgram program, GLenum programInterface, DOMString name)
     </b>
   </p>
   <p>
