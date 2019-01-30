@@ -22,11 +22,13 @@
   <overview>
     <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/KHR/KHR_parallel_shader_compile.txt"
              name="KHR_parallel_shader_compile">
+      <addendum><code>MAX_SHADER_COMPILER_THREADS_KHR</code> is not supported.</addendum>
+      <addendum><code>maxShaderCompilerThreadsKHR</code> is not supported.</addendum>
     </mirrors>
 
     <features>
       <feature>
-        Shader compilation and program linking may be performed in a separate CPU thread. This extension provides a mechanism for the application to provide a hint to limit the number of threads it wants to be used to compile shaders, as well as a query to determine if the compilation process is complete.
+        Shader compilation and program linking may be performed in a separate CPU thread. This extension provides a query to determine if the compilation process is complete.
       </feature>
     </features>
   </overview>
@@ -34,10 +36,7 @@
   <idl xml:space="preserve">
     [NoInterfaceObject]
     interface KHR_parallel_shader_compile {
-      const GLenum MAX_SHADER_COMPILER_THREADS_KHR      = 0x91B0;
       const GLenum COMPLETION_STATUS_KHR                = 0x91B1;
-
-      void maxShaderCompilerThreadsKHR(GLuint count);
     };
   </idl>
 
@@ -46,12 +45,6 @@
     var canvas = document.createElement("canvas");
     var gl = canvas.getContext("webgl");
     var ext = gl.getExtension('KHR_parallel_shader_compile');
-    if (ext) {
-      // Just for demo of API usage. Generally it's not needed unless you really
-      // want to override the implementation-specific maximum.
-      var threads = gl.getParameter(ext.MAX_SHADER_COMPILER_THREADS_KHR);
-      ext.maxShaderCompilerThreadsKHR(Math.max(2, threads));
-    }
 
     var vSource = "attribute vec2 position; void main() { gl_Position = vec4(position, 0, 1); }";
     var fSource = "precision mediump float; void main() { gl_FragColor = vec4(1,0,0,1); }";
@@ -98,6 +91,9 @@
     </revision>
     <revision date="2018/09/14">
       <change>Moved to draft status.</change>
+    </revision>
+    <revision date="2019/01/30">
+      <change>Max threads number removed.</change>
     </revision>
   </history>
 </draft>
