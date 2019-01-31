@@ -94,7 +94,7 @@ interface EXT_draw_buffers_indexed {
       <param name="mode" type="GLenum"/>
       <p>
         The <code>buf</code> argument is an integer <code>i</code> that indicates that the blend equations
-        should be modified for <code>DRAW_BUFFER<em>i</em></code>."
+        should be modified for <code>DRAW_BUFFER<em>i</em></code>.
       </p>
       <p>
         <code>mode</code> accepts the same tokens as <code>mode</code> in <code>blendEquation</code>.
@@ -109,7 +109,7 @@ interface EXT_draw_buffers_indexed {
       <param name="modeAlpha" type="GLenum"/>
       <p>
         The <code>buf</code> argument is an integer <code>i</code> that indicates that the blend equations
-        should be modified for <code>DRAW_BUFFER<em>i</em></code>."
+        should be modified for <code>DRAW_BUFFER<em>i</em></code>.
       </p>
       <p>
         <code>modeRGB</code> and <code>modeAlpha</code> accept the same tokens as <code>modeRGB</code>
@@ -125,7 +125,7 @@ interface EXT_draw_buffers_indexed {
       <param name="dst" type="GLenum"/>
       <p>
         The <code>buf</code> argument is an integer <code>i</code> that indicates that the blend functions
-        should be modified for <code>DRAW_BUFFER<em>i</em></code>."
+        should be modified for <code>DRAW_BUFFER<em>i</em></code>.
       </p>
       <p>
         <code>src</code> and <code>dst</code> accept the same tokens as <code>src</code> and 
@@ -143,7 +143,7 @@ interface EXT_draw_buffers_indexed {
       <param name="dstAlpha" type="GLenum"/>
       <p>
         The <code>buf</code> argument is an integer <code>i</code> that indicates that the blend functions
-        should be modified for <code>DRAW_BUFFER<em>i</em></code>."
+        should be modified for <code>DRAW_BUFFER<em>i</em></code>.
       </p>
       <p>
         <code>srcRGB</code>, <code>dstRGB</code>, <code>srcAlpha</code>, and <code>dstAlpha</code> accept the same 
@@ -162,11 +162,28 @@ interface EXT_draw_buffers_indexed {
       <param name="a" type="GLboolean"/>
       <p>
         The <code>buf</code> argument is an integer <code>i</code> that indicates that the write mask
-        should be modified for <code>DRAW_BUFFER<em>i</em></code>."
+        should be modified for <code>DRAW_BUFFER<em>i</em></code>.
       </p>
       <p>
         <code>r</code>, <code>g</code>, <code>b</code>, and <code>a</code> indicate whether R, G, B, or A
         values, respectively, are written or not (a value of TRUE means that the corresponding value is written).
+      </p>
+    </function>
+  </newfun>
+
+  <newfun>
+    <function name="isEnablediEXT" type="GLboolean">
+      <param name="target" type="GLenum"/>
+      <param name="index" type="GLuint"/>
+      <p>
+        Returns whether blending is enabled for a given draw buffer.
+      </p>
+      <p>
+        <code>target</code> must be <code>BLEND</code>.
+      </p>
+      <p>
+        <code>index</code> is an integer <code>i</code> specifying the draw buffer associated with
+        the symbolic constant <code>DRAW_BUFFER<em>i</em></code>.
       </p>
     </function>
   </newfun>
@@ -204,6 +221,9 @@ interface EXT_draw_buffers_indexed {
   <history>
     <revision date="2019/01/24">
       <change>First draft.</change>
+    </revision>
+    <revision date="2019/01/30">
+      <change>Fixed typos.</change>
     </revision>
   </history>
 </proposal>
