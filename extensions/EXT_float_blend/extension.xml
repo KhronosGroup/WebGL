@@ -7,15 +7,15 @@
 
   <contributors>
     <contributor>Mark Callow</contributor>
-
     <contributor>Members of the WebGL working group</contributor>
   </contributors>
 
   <number>35</number>
 
   <depends>
-    <api version="2.0"/>
-    <ext name="EXT_color_buffer_float" require="true"/>
+    <api version="1.0"/>
+    <ext name="WEBGL_color_buffer_float" require="false"/>
+    <ext name="EXT_color_buffer_float" require="false"/>
   </depends>
 
   <overview>
@@ -29,10 +29,11 @@
         enabled and the draw buffer has 32-bit floating-point components. Note
         that in order to create such a draw buffer the
         <a href="http://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_float">
-        EXT_color_buffer_float</a> extension must be enabled.</p>
+        EXT_color_buffer_float</a> or
+        <a href="http://www.khronos.org/registry/webgl/extensions/WEBGL_color_buffer_float">
+        WEBGL_color_buffer_float</a> extensions must be enabled.</p>
       </feature>
     </features>
-
   </overview>
 
   <idl xml:space="preserve">
@@ -48,6 +49,10 @@ interface EXT_float_blend {
 
     <revision date="2017/01/03">
       <change>Promoted to draft status after discussion on public_webgl.</change>
+    </revision>
+
+    <revision date="2018/02/01">
+      <change>Backport to WebGL 1.</change>
     </revision>
   </history>
 </draft>

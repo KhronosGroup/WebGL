@@ -1,5 +1,6 @@
 ext-color-buffer-float.html
 ext-disjoint-timer-query-webgl2.html
+--min-version 2.0.1 ext-float-blend.html
 promoted-extensions.html
 promoted-extensions-in-shaders.html
 --min-version 2.0.1 webgl_multiview.html

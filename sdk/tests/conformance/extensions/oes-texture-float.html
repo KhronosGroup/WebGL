@@ -29,10 +29,11 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL OES_texture_float Conformance Tests</title>
+<title>OES_texture_float/WEBGL_color_buffer_float</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
+<script src="../../js/tests/ext-float-blend.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -73,7 +74,7 @@ void main()
 </script>
 <script>
 "use strict";
-description("This test verifies the functionality of the OES_texture_float extension, if it is available.");
+description("This test verifies the functionality of the OES_texture_float and WEBGL_color_buffer_float extensions, if available.");
 
 debug("");
 
@@ -128,6 +129,18 @@ if (!gl) {
                 runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 1, true);
                 runRenderTargetAndReadbackTest(testProgram, gl.RGBA, 4, [10000, 10000, 10000, 10000], 0.5, true);
                 runFramebufferTest();
+
+                debug("");
+                debug("Testing that float32 blending fails with EXT_float_blend.");
+                testExtFloatBlend(false, gl.RGBA);
+
+                debug("");
+                debug("Testing that float32 blending succeeds with EXT_float_blend.");
+                if (!gl.getExtension("EXT_float_blend")) {
+                    testPassed("No EXT_float_blend support -- this is legal");
+                    return;
+                }
+                testExtFloatBlend(true, gl.RGBA);
             }
         })();
 
@@ -395,32 +408,33 @@ function runFramebufferTest() {
     arrayBufferFloatInput[3] = .75;
 
     [gl.RGBA, gl.RGB].forEach(function(goodFormat) {
-        debug(wtu.glEnumToString(gl, goodFormat) + " framebuffer tests");
         debug("");
+        debug(wtu.glEnumToString(gl, goodFormat) + " framebuffer tests");
 
         gl.texImage2D(gl.TEXTURE_2D, 0, goodFormat, 1, 1, 0, goodFormat, gl.FLOAT, arrayBufferFloatInput);
-        if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) == gl.FRAMEBUFFER_COMPLETE) {
-            verifyReadPixelsColors(
-                0.00, // red
-                0.25, // green
-                0.50, // blue
-                0.75, // alpha
-                1.0,  // alphaRGB
-                goodFormat,
-                gl.FLOAT,
-                Float32Array);
-
-            var implementationColorReadFormat = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT);
-            assertMsg(implementationColorReadFormat === gl.RGBA || implementationColorReadFormat === gl.RGB,
-                "IMPLEMENTATION_COLOR_READ_FORMAT should be color renderable: RGBA or RGB. Received: " + wtu.glEnumToString(gl, implementationColorReadFormat));
-
-            var implementationColorReadType = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE);
-            assertMsg(implementationColorReadType === gl.UNSIGNED_BYTE ||
-                      implementationColorReadType === gl.FLOAT ||
-                      "IMPLEMENTATION_COLOR_READ_TYPE must be one of UNSIGNED_BYTE or FLOAT " +
-                      "Received: " + wtu.glEnumToString(gl, implementationColorReadType));
+        if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+            testPassed("Format is not renderable. This is allowed.");
+            return;
         }
-        debug("");
+        verifyReadPixelsColors(
+            0.00, // red
+            0.25, // green
+            0.50, // blue
+            0.75, // alpha
+            1.0,  // alphaRGB
+            goodFormat,
+            gl.FLOAT,
+            Float32Array);
+
+        var implementationColorReadFormat = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_FORMAT);
+        assertMsg(implementationColorReadFormat === gl.RGBA || implementationColorReadFormat === gl.RGB,
+            "IMPLEMENTATION_COLOR_READ_FORMAT should be color renderable: RGBA or RGB. Received: " + wtu.glEnumToString(gl, implementationColorReadFormat));
+
+        var implementationColorReadType = gl.getParameter(gl.IMPLEMENTATION_COLOR_READ_TYPE);
+        assertMsg(implementationColorReadType === gl.UNSIGNED_BYTE ||
+                  implementationColorReadType === gl.FLOAT ||
+                  "IMPLEMENTATION_COLOR_READ_TYPE must be one of UNSIGNED_BYTE or FLOAT " +
+                  "Received: " + wtu.glEnumToString(gl, implementationColorReadType));
     });
 }
 
