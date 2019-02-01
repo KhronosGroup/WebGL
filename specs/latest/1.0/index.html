@@ -3241,7 +3241,13 @@ WebGLRenderingContext includes WebGLRenderingContextBase;
             IMPLEMENTATION_COLOR_READ_FORMAT and IMPLEMENTATION_COLOR_READ_TYPE, respectively. The
             implementation-chosen format may vary depending on the format of the currently bound
             rendering surface. Unsupported combinations of <code>format</code> and <code>type</code>
-            will generate an INVALID_OPERATION error. <br><br>
+            will generate an INVALID_OPERATION error.
+            <br><br>
+
+            Because queries of IMPLEMENTATION_COLOR_READ_[FORMAT,TYPE] may return enums not used
+            elsewhere, providing these enums to <code>readPixels</code> will not necessarily
+            generate INVALID_ENUM.
+            <br><br>
 
             If <code>pixels</code> is null, an INVALID_VALUE error is generated. If
             <code>pixels</code> is non-null, but is not large enough to retrieve all of the pixels

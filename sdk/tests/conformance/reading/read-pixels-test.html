@@ -152,18 +152,20 @@ function runTest(canvas, antialias) {
   }
 
   function continueTestPart2() {
-    var invalidFormat = [gl.DEPTH_COMPONENT, gl.DEPTH_STENCIL, desktopGL.R8, gl.RGBA4, gl.LUMINANCE, gl.LUMINANCE_ALPHA];
+    let neverValidFormats = [gl.DEPTH_COMPONENT, gl.DEPTH_STENCIL, desktopGL.R8, gl.RGBA4];
+    let maybeValidFormats = [gl.LUMINANCE, gl.LUMINANCE_ALPHA];
     if (contextVersion < 2) {
     // They are valid in WebGL 2 or higher
-      invalidFormat = invalidFormat.concat([desktopGL.RED, desktopGL.RG_INTEGER, desktopGL.RGBA_INTEGER]);
+      maybeValidFormats = maybeValidFormats.concat([desktopGL.RED, desktopGL.RG_INTEGER, desktopGL.RGBA_INTEGER]);
     }
 
-    var invalidTypeInfo = [
+    let neverValidTypeInfo = [
       {type: desktopGL.UNSIGNED_INT_24_8,       dest: new Uint32Array(4)}
     ];
+    let maybeValidTypeInfo = [];
     if (contextVersion < 2) {
     // They are valid in WebGL 2 or Higher
-      invalidTypeInfo = invalidTypeInfo.concat([
+      maybeValidTypeInfo = maybeValidTypeInfo.concat([
         {type: gl.UNSIGNED_SHORT,                     dest: new Uint16Array(4)},
         {type: gl.SHORT,                              dest: new Int16Array(4)},
         {type: gl.BYTE,                               dest: new Int8Array(4)},
@@ -173,20 +175,29 @@ function runTest(canvas, antialias) {
     }
 
     debug("");
-    debug("check invalid format or type");
-    for (var ff = 0; ff < invalidFormat.length; ++ff) {
-      var format = invalidFormat[ff];
+    debug("check non-default format or type");
+    for (let format of neverValidFormats) {
       var buf = new Uint8Array(4);
       gl.readPixels(0, 0, 1, 1, format, gl.UNSIGNED_BYTE, buf);
       wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Should not be able to read as " + wtu.glEnumToString(gl, format));
     }
+    for (let format of maybeValidFormats) {
+      var buf = new Uint8Array(4);
+      gl.readPixels(0, 0, 1, 1, format, gl.UNSIGNED_BYTE, buf);
+      wtu.glErrorShouldBe(gl, [gl.INVALID_ENUM, gl.INVALID_OPERATION], "Should not be able to read as " + wtu.glEnumToString(gl, format));
+    }
 
-    for (var tt = 0; tt < invalidTypeInfo.length; ++tt) {
-      var info = invalidTypeInfo[tt];
+    for (let info of neverValidTypeInfo) {
       var type = info.type;
       var dest = info.dest;
       gl.readPixels(0, 0, 1, 1, gl.RGBA, type, dest);
       wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "Should not be able to read as " + wtu.glEnumToString(gl, type));
+    }
+    for (let info of maybeValidTypeInfo) {
+      var type = info.type;
+      var dest = info.dest;
+      gl.readPixels(0, 0, 1, 1, gl.RGBA, type, dest);
+      wtu.glErrorShouldBe(gl, [gl.INVALID_ENUM, gl.INVALID_OPERATION], "Should not be able to read as " + wtu.glEnumToString(gl, type));
     }
 
     var combinations = [
