@@ -54,13 +54,11 @@ var gluShaderUtil = framework.opengl.gluShaderUtil;
 
 /** @const*/ var MIN_THRESHOLD = new tcuRGBA.RGBA([12, 12, 12, 12]);
 
-const QUICK_TEST = true;
-
 let canvasWH = 256;
 let texPotSize = [128, 128, 5];
 let texNpotSizeA = [129, 117];
 let texNpotSizeB = [99, 128];
-if (QUICK_TEST) {
+if (tcuTestCase.isQuickMode()) {
     canvasWH = 32;
     texPotSize = [16, 16, 5];
     texNpotSizeA = [12, 11];
