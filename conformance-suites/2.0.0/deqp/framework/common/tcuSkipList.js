@@ -301,9 +301,12 @@ goog.scope(function() {
         _skip("multisample.fbo_max_samples.num_samples_line");
         _skip("multisample.fbo_max_samples.depth");
 
-        _setReason("Removed from native dEQP mustpass. Possibly non-spec-compliant.");
-        // These tests may be overly strict compared to the spec - they fail on Android/Qualcomm (Google Pixel).
-        // crbug.com/695679
+        _setReason("Removed from native dEQP mustpass. Not passable on Adreno.");
+        // These tests have been skipped in native dEQP since 2015:
+        // https://android.googlesource.com/platform/external/deqp/+/ea026b329e6bf73f109cda914c90f08d5f7a5b8d
+        // They do not pass on Android/Qualcomm (Google Pixel 1, Pixel 3).
+        // It's not clear if the tests or the hardware are out-of-spec, but there's nothing we can do about it right now.
+        // See also: crbug.com/695679
         _skip("derivate.dfdy.fbo_float.float_highp");
         _skip("derivate.dfdy.fbo_float.vec2_highp");
         _skip("derivate.dfdy.fbo_float.vec3_highp");
