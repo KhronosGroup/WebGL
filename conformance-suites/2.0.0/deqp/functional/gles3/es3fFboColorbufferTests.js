@@ -1011,7 +1011,7 @@ es3fFboColorbufferTests.FboColorbufferTests.prototype.init = function() {
             continue; // Blending is not supported.
 
         blendGroup.addChild(new es3fFboColorbufferTests.FboBlendCase(fmtName + "_src_over", "", format,
-            [127, 111], gl.FUNC_ADD, gl.FUNC_ADD, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ZERO, gl.ONE));
+            texNpotSizeA, gl.FUNC_ADD, gl.FUNC_ADD, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ZERO, gl.ONE));
     }
 };
 

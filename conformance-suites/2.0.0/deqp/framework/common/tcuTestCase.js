@@ -47,9 +47,7 @@ goog.scope(function() {
      * Reads the filter parameter from the URL to filter tests.
      * @return {?string }
      */
-    tcuTestCase.getFilter = function() {
-        return tcuTestCase.getQueryVal('filter');
-    };
+    tcuTestCase.getFilter = () => tcuTestCase.getQueryVal('filter');
 
     /**
      * Indicates the state of an iteration operation.
