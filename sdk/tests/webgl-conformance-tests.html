@@ -272,6 +272,7 @@ function start() {
   var folderCount = 0;
   var autoScrollEnabled = true; // Whether the user prefers to auto scroll
   var autoScroll = true; // Whether auto scroll is actually performed
+  let quickTestMode = true;
 
   var Page = function(reporter, folder, testIndex, url) {
     this.reporter = reporter;
@@ -318,7 +319,8 @@ function start() {
     var a = reporter.localDoc.createElement('a');
     a.href = WebGLTestHarnessModule.getURLWithOptions(url, {
       webglVersion: reporter.selectedWebGLVersion,
-      quiet: OPTIONS.quiet
+      quiet: OPTIONS.quiet,
+      quick: quickTestMode ? 1 : 0,
     });
     a.target = "_blank";
     const folderName = that.folder.displayName;
@@ -1199,6 +1201,12 @@ function start() {
     }
   };
 
+  var quickTestModeCheckbox = document.getElementById("quickTestModeCheckbox");
+  quickTestModeCheckbox.checked = quickTestMode;
+  quickTestModeCheckbox.onclick = function() {
+    quickTestMode = quickTestModeCheckbox.checked;
+  };
+
   var textbutton = document.getElementById("showTextSummary");
   textbutton.onclick = function() {
     log("click");
@@ -1291,6 +1299,7 @@ function start() {
     <input type="button" value="run tests" id="runTestsButton"/>
     <label for="autoScrollCheckbox"><input type="checkbox" id="autoScrollCheckbox"/>auto scroll</label>
     <label for="hidePassedCheckbox"><input type="checkbox" id="hidePassedCheckbox"/>hide passed</label>
+    <label for="quickTestModeCheckbox"><input type="checkbox" id="quickTestModeCheckbox"/>quick test mode</label>
     <br/>
     <input type="button" disabled value="show text summary" id="showTextSummary"/>
     <input type="button" disabled value="download text" id="dlTextSummary"/>
