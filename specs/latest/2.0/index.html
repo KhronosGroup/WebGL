@@ -1695,6 +1695,27 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
       </dt>
       <dd>
         <p>Only differences from <a href="../1.0/index.html#TEXIMAGE2D_HTML">texImage2D</a> in WebGL 1.0 are described here. </p>
+        <p>Conversion to new formats introduced in WebGL 2.0 is performed according to the following table.</p>
+        <table class="foo">
+          <tr>
+            <th rowspan="2">Source DOM Image Format</th>
+            <th colspan="2">Target WebGL Format</th>
+          </tr>
+          <tr>
+            <th>RED</th>
+            <th>RG</th>
+          </tr>
+          <tr>
+            <td>Grayscale (1 channel)<br>Grayscale + Alpha (2 channels)</td>
+            <td>R = <em>sourceGray</em><br></td>
+            <td>R = <em>sourceGray</em><br>G = <em>sourceGray</em></td>
+          </tr>
+          <tr>
+            <td>Color (3 channels)<br>Color + Alpha (4 channels)</td>
+            <td>R = <em>sourceRed</em><br></td>
+            <td>R = <em>sourceRed</em><br>G = <em>sourceGreen</em><br></td>
+          </tr>
+        </table><br>
         <p>Uploading subregions of elements is detailed in <a href="#DOM_UPLOAD_UNPACK_PARAMS">Pixel
            store parameters for uploads from <code>TexImageSource</code></a>.
         <p>If a WebGLBuffer is bound to the <code>PIXEL_UNPACK_BUFFER</code> target, generates an <code>INVALID_OPERATION</code> error.</p>

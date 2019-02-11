@@ -2602,8 +2602,55 @@ WebGLRenderingContext includes WebGLRenderingContextBase;
 
             The source image data is conceptually first converted to the data type and format
             specified by the <em>format</em> and <em>type</em> arguments, and then transferred to
-            the WebGL implementation. If a packed pixel format is specified which would imply loss
-            of bits of precision from the image data, this loss of precision must occur. <br><br>
+            the WebGL implementation. Format conversion is performed according to the following table.
+            If a packed pixel format is specified which would imply loss of bits of precision from the
+            image data, this loss of precision must occur. <br><br>
+
+            <table class="foo">
+              <tr>
+                <th rowspan="2">Source DOM Image Format</th>
+                <th colspan="5">Target WebGL Format</th>
+              </tr>
+              <tr>
+                <th>ALPHA</th>
+                <th>RGB</th>
+                <th>RGBA</th>
+                <th>LUMINANCE</th>
+                <th>LUMINANCE_ALPHA</th>
+              </tr>
+              <tr>
+                <td>Grayscale (1 channel)</td>
+                <td>A = 255 (1.0)</td>
+                <td>R = <em>sourceGray</em><br>G = <em>sourceGray</em><br>B = <em>sourceGray</em><br></td>
+                <td>R = <em>sourceGray</em><br>G = <em>sourceGray</em><br>B = <em>sourceGray</em><br>A = 255 (1.0)</td>
+                <td>L = <em>sourceGray</em></td>
+                <td>L = <em>sourceGray</em><br>A = 255 (1.0)</td>
+              </tr>
+              <tr>
+                <td>Grayscale + Alpha (2 channels)</td>
+                <td>A = <em>sourceAlpha</em></td>
+                <td>R = <em>sourceGray</em><br>G = <em>sourceGray</em><br>B = <em>sourceGray</em><br></td>
+                <td>R = <em>sourceGray</em><br>G = <em>sourceGray</em><br>B = <em>sourceGray</em><br>A = <em>sourceAlpha</em></td>
+                <td>L = <em>sourceGray</em><br></td>
+                <td>L = <em>sourceGray</em><br>A = <em>sourceAlpha</em></td>
+              </tr>
+              <tr>
+                <td>Color (3 channels)</td>
+                <td>A = 255 (1.0)</td>
+                <td>R = <em>sourceRed</em><br>G = <em>sourceGreen</em><br>B = <em>sourceBlue</em><br></td>
+                <td>R = <em>sourceRed</em><br>G = <em>sourceGreen</em><br>B = <em>sourceBlue</em><br>A = 255 (1.0)<br></td>
+                <td>L = <em>sourceRed</em></td>
+                <td>L = <em>sourceRed</em><br>A = 255 (1.0)</td>
+              </tr>
+              <tr>
+                <td>Color + Alpha (4 channels)</td>
+                <td>A = <em>sourceAlpha</em></td>
+                <td>R = <em>sourceRed</em><br>G = <em>sourceGreen</em><br>B = <em>sourceBlue</em></td>
+                <td>R = <em>sourceRed</em><br>G = <em>sourceGreen</em><br>B = <em>sourceBlue</em><br>A = <em>sourceAlpha</em></td>
+                <td>L = <em>sourceRed</em></td>
+                <td>L = <em>sourceRed</em><br>A = <em>sourceAlpha</em></td>
+              </tr>
+            </table><br>
 
             See <a href="#PIXEL_STORAGE_PARAMETERS">Pixel Storage Parameters</a> for WebGL-specific
             pixel storage parameters that affect the behavior of this function when it is called
