@@ -3256,6 +3256,7 @@ var API = {
   glTypeToTypedArrayType: glTypeToTypedArrayType,
   hasAttributeCaseInsensitive: hasAttributeCaseInsensitive,
   insertImage: insertImage,
+  linkProgram: linkProgram,
   loadImageAsync: loadImageAsync,
   loadImagesAsync: loadImagesAsync,
   loadProgram: loadProgram,
