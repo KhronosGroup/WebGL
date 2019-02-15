@@ -13,10 +13,12 @@ Editor: Jiawei Shao, Intel http://intel.com, jiawei.shao@intel.com
 Editor: Yizhou Jiang, Intel http://intel.com, yizhou.jiang@intel.com
 Editor: Xinghua Cao, Intel http://intel.com, xinghua.cao@intel.com
 Editor: Jie Chen, Intel http://intel.com, jie.a.chen@intel.com
+Editor: Jiajie Hu, Intel http://intel.com, jiajie.hu@intel.com
 
 Abstract: This is the WebGL 2.0 compute specification.
   <p>This specification describes an additional rendering context and supports objects for the <a href="http://www.w3.org/TR/html5/the-canvas-element.html">HTML5 Canvas element</a> <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/#refsCANVAS">[Canvas]</a>. This context allows rendering using an API that conforms closely to the OpenGL ES 3.1 API. The most important feature in OpenGL ES 3.1 is GPU compute.</p>
   </p>This document should be read as an extension to the <a href="https://www.khronos.org/registry/webgl/specs/latest/2.0/">WebGL 2.0 specification</a>. It will only describe the differences from 2.0.</p>
+  </p>This document is a draft. Implementations based on this document may not be shipped.</p>
 
 </pre>
 
