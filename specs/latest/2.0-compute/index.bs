@@ -2,8 +2,8 @@
 Shortname: webgl2-compute
 Title: WebGL 2.0 Compute Specification
 Level: 1
-Status: w3c/ED
-Group: Khronos
+Status: khronos/ED
+Group: WebGL
 URL: https://www.khronos.org/registry/webgl/specs/latest/2.0-compute/
 
 Editor: Yunchao He, Intel http://intel.com, yunchao.he@intel.com
