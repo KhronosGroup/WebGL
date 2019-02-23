@@ -1706,9 +1706,14 @@ WebGL2RenderingContext includes WebGL2RenderingContextBase;
             <th>RG</th>
           </tr>
           <tr>
-            <td>Grayscale (1 channel)<br>Grayscale + Alpha (2 channels)</td>
+            <td>Grayscale (1 channel)</td>
             <td>R = <em>sourceGray</em><br></td>
-            <td>R = <em>sourceGray</em><br>G = <em>sourceGray</em></td>
+            <td>R = <em>sourceGray</em><br>G = 0</td>
+          </tr>
+          <tr>
+            <td>Grayscale + Alpha (2 channels)</td>
+            <td>R = <em>sourceGray</em><br></td>
+            <td>R = <em>sourceGray</em><br>G = <em>sourceAlpha</em></td>
           </tr>
           <tr>
             <td>Color (3 channels)<br>Color + Alpha (4 channels)</td>
