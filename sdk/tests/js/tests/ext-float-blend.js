@@ -19,7 +19,7 @@ void main()
 }
 `;
 const trivialFsMrtSrc = `#version 300 es
-precision lowp float;
+precision mediump float;
 layout(location = 0) out vec4 o_color0;
 layout(location = 1) out vec4 o_color1;
 void main()
