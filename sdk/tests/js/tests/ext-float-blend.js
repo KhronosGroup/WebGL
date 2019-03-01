@@ -50,7 +50,7 @@ function testExtFloatBlend(shouldBlend, internalFormat) {
     gl.drawArrays(gl.POINTS, 0, 1);
     wtu.glErrorShouldBe(gl, shouldBlend ? 0 : gl.INVALID_OPERATION,
                         'Float32 blending is ' + (shouldBlend ? '' : 'not ') + 'allowed ');
-    
+
     gl.deleteFramebuffer(fb);
     gl.deleteTexture(tex);
 }
@@ -62,7 +62,7 @@ function testExtFloatBlendMRT(shouldBlend) {
     const tex1 = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex1);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    
+
     const tex2 = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex2);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
@@ -70,7 +70,7 @@ function testExtFloatBlendMRT(shouldBlend) {
     const texF1 = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texF1);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 1, 1, 0, gl.RGBA, gl.FLOAT, null);
-    
+
     const texF2 = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texF2);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 1, 1, 0, gl.RGBA, gl.FLOAT, null);
@@ -84,7 +84,7 @@ function testExtFloatBlendMRT(shouldBlend) {
     gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1]);
 
     gl.enable(gl.BLEND);
-    
+
     gl.drawArrays(gl.POINTS, 0, 1);
     wtu.glErrorShouldBe(gl, 0, 'No Float32 color attachment');
 
