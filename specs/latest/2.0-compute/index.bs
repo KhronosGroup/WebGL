@@ -290,7 +290,7 @@ Abstract: This is the WebGL 2.0 compute specification.
       any getProgramResource(WebGLProgram program, GLenum programInterface, GLuint index, GLenum props);
       GLuint getProgramResourceIndex(WebGLProgram program, GLenum programInterface, DOMString name);
       DOMString? getProgramResourceName(WebGLProgram program, GLenum programInterface, GLuint index);
-      GLint getProgramResourceLocation(WebGLProgram program, GLenum programInterface, DOMString name);
+      any getProgramResourceLocation(WebGLProgram program, GLenum programInterface, DOMString name);
 
       void programParameter(WebGLProgram? program, GLenum pname, GLint value);
       GLuint createShaderProgram(GLenum type, GLsizei count, DOMString source);
