@@ -829,7 +829,7 @@ Abstract: This is the WebGL 2.0 compute specification.
     </b>
   </p>
   <p>
-    Set the advisor value for attributes taken from the buffer bound to bindingindex between a vertex attribute and the vertex buffer binding.
+    Set the divisor value for attributes taken from the buffer bound to bindingindex between a vertex attribute and the vertex buffer binding.
     <br/>See glVertexBindingDivisor at
       <span class="gl-spec">
         <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-10.3.2">
@@ -933,7 +933,7 @@ Abstract: This is the WebGL 2.0 compute specification.
   </p>
   <p>
     <b>
-      GLint getProgramResourceLocation(WebGLProgram program, GLenum programInterface, DOMString name)
+      any getProgramResourceLocation(WebGLProgram program, GLenum programInterface, DOMString name)
     </b>
   </p>
   <p>
