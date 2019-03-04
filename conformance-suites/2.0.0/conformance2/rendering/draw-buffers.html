@@ -380,6 +380,12 @@ function runDrawTests() {
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   gl.drawBuffers(bufs);
   gl.useProgram(blueProgramESSL1);
+
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.drawUnitQuad(gl);
+  gl.getError(); // Consume possible error.
+
+  gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
   wtu.drawUnitQuad(gl);
 
   checkAttachmentsForColorFn(attachments, function(attachment, index) {
@@ -392,6 +398,12 @@ function runDrawTests() {
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   gl.drawBuffers(bufs);
   gl.useProgram(redProgram);
+
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
+  wtu.drawUnitQuad(gl);
+  gl.getError(); // Consume possible error.
+
+  gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
   wtu.drawUnitQuad(gl);
 
   checkAttachmentsForColorFn(attachments, function(attachment, index) {

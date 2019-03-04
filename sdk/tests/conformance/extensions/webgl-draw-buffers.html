@@ -548,11 +548,9 @@ function runDrawTests() {
   gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
   ext.drawBuffersWEBGL(bufs);
   gl.useProgram(redProgram);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
   wtu.drawUnitQuad(gl);
-
-  drawBuffersUtils.checkAttachmentsForColorFn(attachments, function(attachment, index) {
-    return (index == 0) ? [255, 0, 0, 255] : [0, 255, 0, 255];
-  });
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Active draw buffers with missing frag outputs.");
 
   debug("test that gl_FragColor broadcasts if extension is enabled in fragment shader");
   gl.clear(gl.COLOR_BUFFER_BIT);
