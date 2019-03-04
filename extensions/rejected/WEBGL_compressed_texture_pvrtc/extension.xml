@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<extension href="WEBGL_compressed_texture_pvrtc/">
+<rejected href="WEBGL_compressed_texture_pvrtc/">
   <name>WEBGL_compressed_texture_pvrtc</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
@@ -14,7 +14,7 @@
   </depends>
   <overview>
     <p>
-      This extension exposes the compressed texture formats defined in the 
+      This extension exposes the compressed texture formats defined in the
       <a href="http://www.khronos.org/registry/gles/extensions/IMG/IMG_texture_compression_pvrtc.txt">
       IMG_texture_compression_pvrtc</a> OpenGL extension to WebGL.
     </p>
@@ -96,5 +96,8 @@ interface WEBGL_compressed_texture_pvrtc {
     <revision date="2014/07/15">
       <change>Added NoInterfaceObject extended attribute.</change>
     </revision>
+    <revision date="2019/03/04">
+      <change>Moved to rejected status in favor of ASTC, ETC, and S3TC.</change>
+    </revision>
   </history>
-</extension>
+</rejected>
