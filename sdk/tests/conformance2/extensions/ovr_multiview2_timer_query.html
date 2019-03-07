@@ -29,11 +29,11 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL WEBGL_multiview Conformance Tests</title>
+<title>WebGL OVR_multiview2 Conformance Tests</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
-<script src="../../js/tests/webgl_multiview_util.js"></script>
+<script src="../../js/tests/ovr_multiview2_util.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -60,7 +60,7 @@ function runClearTest()
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
-    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
+    ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
 
     gl.viewport(0, 0, width, height);
 
@@ -108,7 +108,7 @@ function runFragmentShaderRenderTest()
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
-    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
+    ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
 
     gl.viewport(0, 0, width, height);
 
@@ -130,7 +130,7 @@ function runFragmentShaderRenderTest()
     }
 }
 
-description("This test verifies the functionality of the WEBGL_multiview extension and its interaction with EXT_disjoint_timer_query_webgl2, if it is available.");
+description("This test verifies the functionality of the OVR_multiview2 extension and its interaction with EXT_disjoint_timer_query_webgl2, if it is available.");
 
 debug("");
 
@@ -139,11 +139,11 @@ if (!gl) {
 } else {
   testPassed("WebGL context exists");
 
-  if (!gl.getExtension("WEBGL_multiview") || !gl.getExtension("EXT_disjoint_timer_query_webgl2")) {
-      testPassed("No WEBGL_multiview support or no EXT_disjoint_timer_query_webgl2 support -- this is legal");
+  if (!gl.getExtension("OVR_multiview2") || !gl.getExtension("EXT_disjoint_timer_query_webgl2")) {
+      testPassed("No OVR_multiview2 support or no EXT_disjoint_timer_query_webgl2 support -- this is legal");
   } else {
-      testPassed("Successfully enabled WEBGL_multiview and EXT_disjoint_timer_query_webgl2 extensions");
-      ext = gl.getExtension('WEBGL_multiview');
+      testPassed("Successfully enabled OVR_multiview2 and EXT_disjoint_timer_query_webgl2 extensions");
+      ext = gl.getExtension('OVR_multiview2');
       queryExt = gl.getExtension('EXT_disjoint_timer_query_webgl2');
 
       runClearTest();
