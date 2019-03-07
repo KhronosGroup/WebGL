@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
-<draft href="WEBGL_multiview/">
-  <name>WEBGL_multiview</name>
+<draft href="OVR_multiview2/">
+  <name>OVR_multiview2</name>
   <contact>
     <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL working group</a> (public_webgl 'at' khronos.org)
   </contact>
@@ -11,7 +11,7 @@
   </contributors>
   <number>36</number>
   <depends>
-    <api version="1.0"/>
+    <api version="2.0"/>
   </depends>
   <overview>
     <mirrors href="https://www.opengl.org/registry/specs/OVR/multiview.txt" name="OVR_multiview">
@@ -25,38 +25,11 @@
         If <code>baseViewIndex</code> is not the same for all framebuffer attachment points where the value of <code>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</code> is not <code>NONE</code> the framebuffer is considered incomplete. Calling <code>getFramebufferStatus</code> for a framebuffer in this state returns <code>FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR</code>. Other rules for framebuffer completeness from the OVR_multiview specification also apply.
       </addendum>
       <addendum>
-        Other web APIs may expose <i>opaque multiview framebuffers</i>. Opaque multiview framebuffers are <code>WebGLFramebuffer</code> objects that act as if they have multi-view attachments, but their attachments are not exposed as textures or renderbuffers and can not be changed. Opaque multiview framebuffers may have any combination of color, depth and stencil attachments.
-      </addendum>
-      <addendum>
-        Calling <code>framebufferRenderbuffer</code>, <code>framebufferTexture2D</code>, <code>framebufferTextureLayer</code>, <code>framebufferTextureMultiviewWEBGL</code>, or any other call that could change framebuffer attachments with an opaque multiview framebuffer bound to <code>target</code> generates an <code>INVALID_OPERATION</code> error.
-      </addendum>
-      <addendum>
-        If an opaque framebuffer is bound to <code>target</code> when calling <code>getFramebufferAttachmentParameter</code>, then <code>attachment</code> must be <code>BACK</code>, <code>DEPTH</code>, or <code>STENCIL</code>.
-      </addendum>
-      <addendum>
-        If an opaque framebuffer is bound to <code>target</code> when calling <code>getFramebufferAttachmentParameter</code>, then <code>pname</code> must not be <code>FRAMEBUFFER_ATTACHMENT_OBJECT_NAME</code>.
-      </addendum>
-      <addendum>
-        Querying <code>FRAMEBUFFER_ATTACHMENT_TEXTURE_NUM_VIEWS_OVR</code> on an opaque multiview framebuffer attachment point that has attachments must return the number of views in the opaque multiview framebuffer.
-      </addendum>
-      <addendum>
-        Querying <code>FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX_OVR</code> on an opaque multiview framebuffer must return 0.
-      </addendum>
-      <addendum>
-        Querying <code>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</code> on an opaque multiview framebuffer must return <code>FRAMEBUFFER_DEFAULT</code>.
-      </addendum>
-      <addendum>
-        The number of views in an opaque multiview framebuffer may be greater than the maximum number of texture array views (the value of <code>MAX_VIEWS_OVR</code>).
-      </addendum>
-      <addendum>
-        Passing an opaque multiview framebuffer to <code>deleteFramebuffer</code> generates an <code>INVALID_OPERATION</code> error.
-      </addendum>
-      <addendum>
-        Although the extension name is prefixed with WEBGL the extension must be enabled with the
-        <code>#extension GL_OVR_multiview</code> directive, as shown in the sample code, to use
+        The extension must be enabled with the
+        <code>#extension GL_OVR_multiview2</code> directive, as shown in the sample code, to use
         the extension in a shader.
 
-        Likewise the shading language preprocessor <code>#define GL_OVR_multiview</code>, will be defined to 1 if the extension is supported.
+        Likewise the shading language preprocessor <code>#define GL_OVR_multiview2</code>, will be defined to 1 if the extension is supported.
       </addendum>
       <addendum>
         This extension relaxes the restriction in OVR_multiview that only <code>gl_Position</code> can depend on ViewID in the vertex shader. With this change, view-dependent outputs like reflection vectors and similar are allowed.
@@ -79,22 +52,22 @@
     </mirrors>
     <features>
       <feature>
-        Adds support for rendering into multiple views simultaneously. This is supported for opaque multiview framebuffers starting from WebGL 1.0, and 2D texture arrays starting from WebGL 2.0.
+        Adds support for rendering into multiple views simultaneously. This is supported for 2D texture arrays starting from WebGL 2.0.
       </feature>
       <feature>
-        When a shader enables, requires, or warns <code>GL_OVR_multiview</code> with an extension directive:
+        When a shader enables, requires, or warns <code>GL_OVR_multiview2</code> with an extension directive:
         <ul>
           <li><code>gl_ViewID_OVR</code> is a built-in input of the type uint.</li>
         </ul>
       </feature>
       <feature>
-        The GLSL macro <code>GL_OVR_multiview</code> is defined as 1.
+        The GLSL macro <code>GL_OVR_multiview2</code> is defined as 1.
       </feature>
     </features>
   </overview>
   <idl xml:space="preserve">
 [NoInterfaceObject]
-interface WEBGL_multiview {
+interface OVR_multiview2 {
     const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_NUM_VIEWS_OVR = 0x9630;
     const GLenum FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX_OVR = 0x9632;
     const GLenum MAX_VIEWS_OVR = 0x9631;
@@ -148,18 +121,6 @@ interface WEBGL_multiview {
       The error <code>INVALID_OPERATION</code> is generated by calling <code>framebufferTextureMultiviewWEBGL</code> with a <code>texture</code> parameter that does not identify a 2D array texture.
     </error>
     <error>
-      The error <code>INVALID_OPERATION</code> is generated by calling <code>framebufferRenderbuffer</code>, <code>framebufferTexture2D</code>, <code>framebufferTextureLayer</code>, or <code>framebufferTextureMultiviewWEBGL</code> with a <code>target</code> parameter that identifies an opaque multiview framebuffer.
-    </error>
-    <error>
-      The error <code>INVALID_OPERATION</code> is generated by calling <code>deleteFramebuffer</code> with a <code>buffer</code> parameter that identifies an opaque multiview framebuffer.
-    </error>
-    <error>
-      The error <code>INVALID_ENUM</code> is generated by calling <code>getFramebufferAttachmentParameter</code> with an <code>attachment</code> parameter other than <code>BACK</code>, <code>DEPTH</code> or <code>STENCIL</code> when the <code>target</code> parameter identifies an opaque multiview framebuffer.
-    </error>
-    <error>
-      The error <code>INVALID_ENUM</code> is generated by calling <code>getFramebufferAttachmentParameter</code> with the <code>pname</code> parameter set to <code>FRAMEBUFFER_ATTACHMENT_OBJECT_NAME</code> when the <code>target</code> parameter identifies an opaque multiview framebuffer.
-    </error>
-    <error>
       The error <code>INVALID_VALUE</code> is generated by calling <code>framebufferTextureMultiviewWEBGL</code> with a non-null <code>texture</code> in the following cases:
       <ul>
         <li>if <code>numViews</code> is less than one</li>
@@ -187,7 +148,7 @@ interface WEBGL_multiview {
   <samplecode xml:space="preserve">
     <pre>
     var gl = document.createElement('canvas').getContext('webgl2');
-    var ext = gl.getExtension('WEBGL_multiview');
+    var ext = gl.getExtension('OVR_multiview2');
     var fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb);
     var colorTex = gl.createTexture();
@@ -203,18 +164,8 @@ interface WEBGL_multiview {
   </samplecode>
   <samplecode xml:space="preserve">
     <pre>
-    var gl = document.createElement('canvas').getContext('webgl');
-    var ext = gl.getExtension('WEBGL_multiview');
-    // ... obtain opaque multiview framebuffer "fb" from another web API here ...
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.drawElements(...);  // draw will be broadcasted to the views of the opaque multiview framebuffer.
-    // You can not call framebufferTextureMultiviewWEBGL to change the attachments of "fb", only draw to it.
-    </pre>
-  </samplecode>
-  <samplecode xml:space="preserve">
-    <pre>
     #version 300 es
-    #extension GL_OVR_multiview : require
+    #extension GL_OVR_multiview2 : require
     precision mediump float;
     layout (num_views = 2) in;
     in vec4 inPos;
@@ -280,6 +231,10 @@ interface WEBGL_multiview {
 
     <revision date="2018/07/26">
       <change>Fixed off-by-one issue in validating baseViewIndex + numViews.</change>
+    </revision>
+
+    <revision date="2019/03/06">
+      <change>Removing opaque framebuffer references, renaming extension to OVR_multiview2, and updating extension to only apply to webgl2.</change>
     </revision>
   </history>
 </draft>

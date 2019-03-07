@@ -83,7 +83,7 @@ function checkVerticalStrip(width, height, strips, coloredStripIndex, expectedSt
 
 function getMultiviewPassthroughVertexShader(views) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview : require',
+    '#extension GL_OVR_multiview2 : require',
 
     'layout(num_views = $(num_views)) in;',
 
@@ -100,7 +100,7 @@ function getMultiviewPassthroughVertexShader(views) {
 // strip in each view.
 function getMultiviewOffsetVertexShader(views) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview : require',
+    '#extension GL_OVR_multiview2 : require',
 
     'layout(num_views = $(num_views)) in;',
 
@@ -119,7 +119,7 @@ function getMultiviewOffsetVertexShader(views) {
 // view given in the uniform array "transform".
 function getMultiviewRealisticUseCaseVertexShader(views) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview : require',
+    '#extension GL_OVR_multiview2 : require',
 
     'layout(num_views = $(num_views)) in;',
 
@@ -136,7 +136,7 @@ function getMultiviewRealisticUseCaseVertexShader(views) {
 
 function getMultiviewColorFragmentShader() {
     return ['#version 300 es',
-    '#extension GL_OVR_multiview : require',
+    '#extension GL_OVR_multiview2 : require',
     'precision highp float;',
 
     'out vec4 my_FragColor;',
@@ -152,7 +152,7 @@ function getMultiviewColorFragmentShader() {
 
 function getMultiviewColorFragmentShaderForDrawBuffers(drawBuffers) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview : require',
+    '#extension GL_OVR_multiview2 : require',
     'precision highp float;',
 
     'out vec4 my_FragColor[$(drawBuffers)];',
@@ -174,7 +174,7 @@ function getMultiviewColorFragmentShaderForDrawBuffers(drawBuffers) {
 
 function getMultiviewVaryingVertexShader(views) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview : require',
+    '#extension GL_OVR_multiview2 : require',
 
     'layout(num_views = $(num_views)) in;',
 
@@ -190,7 +190,7 @@ function getMultiviewVaryingVertexShader(views) {
 
 function getMultiviewVaryingFragmentShader() {
     return ['#version 300 es',
-    '#extension GL_OVR_multiview : require',
+    '#extension GL_OVR_multiview2 : require',
     'precision highp float;',
 
     'in float testVarying;',
@@ -207,7 +207,7 @@ function getMultiviewVaryingFragmentShader() {
 
 function getMultiviewFlatVaryingVertexShader(views) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview : require',
+    '#extension GL_OVR_multiview2 : require',
 
     'layout(num_views = $(num_views)) in;',
 
@@ -223,7 +223,7 @@ function getMultiviewFlatVaryingVertexShader(views) {
 
 function getMultiviewFlatVaryingFragmentShader() {
     return ['#version 300 es',
-    '#extension GL_OVR_multiview : require',
+    '#extension GL_OVR_multiview2 : require',
     'precision highp float;',
 
     'flat in int testVarying;',
@@ -240,7 +240,7 @@ function getMultiviewFlatVaryingFragmentShader() {
 
 function getMultiviewInstancedVertexShader(views) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview : require',
+    '#extension GL_OVR_multiview2 : require',
 
     'layout(num_views = $(num_views)) in;',
 
@@ -263,7 +263,7 @@ function getMultiviewInstancedVertexShader(views) {
 
 function getInstanceColorFragmentShader() {
     return ['#version 300 es',
-    '#extension GL_OVR_multiview : require',
+    '#extension GL_OVR_multiview2 : require',
     'precision highp float;',
 
     'in vec4 color;',

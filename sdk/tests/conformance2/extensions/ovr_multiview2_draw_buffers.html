@@ -29,11 +29,11 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>WebGL WEBGL_multiview Conformance Tests</title>
+<title>WebGL OVR_multiview2 Conformance Tests</title>
 <link rel="stylesheet" href="../../resources/js-test-style.css"/>
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
-<script src="../../js/tests/webgl_multiview_util.js"></script>
+<script src="../../js/tests/ovr_multiview2_util.js"></script>
 </head>
 <body>
 <div id="description"></div>
@@ -147,7 +147,7 @@ function runDrawBuffersRenderTest()
     }
 }
 
-description("This test verifies the functionality of the WEBGL_multiview extension when used with multiple draw buffers, if it is available.");
+description("This test verifies the functionality of the OVR_multiview2 extension when used with multiple draw buffers, if it is available.");
 
 debug("");
 
@@ -156,11 +156,11 @@ if (!gl) {
 } else {
   testPassed("WebGL context exists");
 
-  if (!gl.getExtension("WEBGL_multiview")) {
-      testPassed("No WEBGL_multiview support -- this is legal");
+  if (!gl.getExtension("OVR_multiview2")) {
+      testPassed("No OVR_multiview2 support -- this is legal");
   } else {
-      testPassed("Successfully enabled WEBGL_multiview extension");
-      ext = gl.getExtension('WEBGL_multiview');
+      testPassed("Successfully enabled OVR_multiview2 extension");
+      ext = gl.getExtension('OVR_multiview2');
 
       runDrawBuffersClearTest();
 
