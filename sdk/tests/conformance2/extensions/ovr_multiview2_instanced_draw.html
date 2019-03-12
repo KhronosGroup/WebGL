@@ -70,7 +70,7 @@ function runInstancedDrawTest()
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
-    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
+    ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
 
     gl.viewport(0, 0, width, height);
     gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, 2);

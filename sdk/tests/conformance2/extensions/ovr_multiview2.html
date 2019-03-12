@@ -112,17 +112,17 @@ function runInvalidTextureTypeTest()
     debug("Testing invalid texture types");
     let tex2D = createTextureWithNearestFiltering(gl.TEXTURE_2D);
     gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA8, 128, 128);
-    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex2D, 0, 0, 1);
+    ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex2D, 0, 0, 1);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be possible to create a multiview framebuffer against a 2D texture");
 
     let texCube = createTextureWithNearestFiltering(gl.TEXTURE_CUBE_MAP);
     gl.texStorage2D(gl.TEXTURE_CUBE_MAP, 1, gl.RGBA8, 128, 128);
-    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, texCube, 0, 0, 1);
+    ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, texCube, 0, 0, 1);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be possible to create a multiview framebuffer against a cube map texture");
 
     let tex3D = createTextureWithNearestFiltering(gl.TEXTURE_3D);
     gl.texStorage3D(gl.TEXTURE_3D, 1, gl.RGBA8, 128, 128, 2);
-    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex3D, 0, 0, 2);
+    ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, tex3D, 0, 0, 2);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "should not be possible to create a multiview framebuffer against a 3D texture");
 }
 
@@ -143,7 +143,7 @@ function runFramebufferQueryTest(allocateStorage)
     }
 
     let setupAndQuery = function(colorTex, levelSet, baseViewIndexSet, numViewsSet) {
-        ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, levelSet, baseViewIndexSet, numViewsSet);
+        ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, levelSet, baseViewIndexSet, numViewsSet);
         let objectType = gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
         if (objectType != gl.TEXTURE) {
             testFailed('Unexpected FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE ' + wtu.glEnumToString(gl, objectType) + ', should be TEXTURE');
@@ -168,7 +168,7 @@ function runFramebufferQueryTest(allocateStorage)
     }
 
     let setupSecondAttachmentAndQueryStatus = function(colorTex2, baseViewIndex, numViews, expectedStatus, msg) {
-        ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, colorTex2, 0, baseViewIndex, numViews);
+        ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, colorTex2, 0, baseViewIndex, numViews);
         let status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
         if (status != expectedStatus) {
             testFailed('Framebuffer status: ' + wtu.glEnumToString(gl, status) + ' did not match with the expected value: ' + wtu.glEnumToString(gl, expectedStatus) + ' - ' + msg);
@@ -212,7 +212,7 @@ function runFramebufferQueryTest(allocateStorage)
     setupSecondAttachmentAndQueryStatus(colorTex2, 1, maxViews - 1, allocateStorage ? gl.FRAMEBUFFER_COMPLETE : gl.FRAMEBUFFER_INCOMPLETE_ATTACHMENT, 'matching baseViewIndex and numViews on different attachments');
     if (allocateStorage) {
         setupSecondAttachmentAndQueryStatus(colorTex2, 0, maxViews - 1, ext.FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR, 'baseViewIndex mismatch');
-        ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, maxViews);
+        ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, maxViews);
         setupSecondAttachmentAndQueryStatus(colorTex2, 0, maxViews - 1, ext.FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR, 'numViews mismatch');
     }
 
@@ -231,18 +231,18 @@ function runInvalidViewsTest()
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb);
     let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     // Don't allocate storage since it's not needed for the validation.
-    ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, maxViews + 1);
+    ext.framebufferTextureMultiviewOVR(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, maxViews + 1);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Specified too many views");
-    ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, 0);
+    ext.framebufferTextureMultiviewOVR(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, 0);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Specified zero views");
-    ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, -1, 2);
+    ext.framebufferTextureMultiviewOVR(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, -1, 2);
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Specified negative baseViewIndex");
 
     let colorTex2 = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
-    ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex2, 0, maxLayers - maxViews + 1, maxViews);
+    ext.framebufferTextureMultiviewOVR(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex2, 0, maxLayers - maxViews + 1, maxViews);
     // baseViewIndex + numViews  =  (maxLayers - maxViews + 1) + maxViews  =  maxLayers + 1
     wtu.glErrorShouldBe(gl, gl.INVALID_VALUE, "Specified so many views that baseViewIndex + numViews is greater than MAX_ARRAY_TEXTURE_LAYERS");
-    ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex2, 0, maxLayers - maxViews, maxViews);
+    ext.framebufferTextureMultiviewOVR(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex2, 0, maxLayers - maxViews, maxViews);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "baseViewIndex + numViews is exactly MAX_ARRAY_TEXTURE_LAYERS");
 }
 
@@ -257,8 +257,8 @@ function runDetachTest()
     let fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, fb);
     let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
-    ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, maxViews);
-    ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, null, 0, maxLayers + 1, 0);
+    ext.framebufferTextureMultiviewOVR(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, maxViews);
+    ext.framebufferTextureMultiviewOVR(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, null, 0, maxLayers + 1, 0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "baseViewIndex and numViews are not validated when detaching");
     let objectType = gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
     if (objectType != gl.NONE) {
@@ -267,7 +267,7 @@ function runDetachTest()
         testPassed('FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE was NONE after detach');
     }
 
-    ext.framebufferTextureMultiviewWEBGL(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, maxViews);
+    ext.framebufferTextureMultiviewOVR(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, maxViews);
     gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, null, 0);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Can detach with framebufferTexture2D as well.");
     objectType = gl.getFramebufferAttachmentParameter(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE);
@@ -326,7 +326,7 @@ function runClearTest()
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
-    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
+    ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
 
     gl.viewport(0, 0, width, height);
 
@@ -367,7 +367,7 @@ function runFragmentShaderRenderTest()
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
-    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
+    ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
 
     gl.viewport(0, 0, width, height);
     wtu.drawUnitQuad(gl);
@@ -407,7 +407,7 @@ function runVertexShaderRenderTest()
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
-    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
+    ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
 
     gl.viewport(0, 0, width, height);
     wtu.drawUnitQuad(gl);
@@ -448,7 +448,7 @@ function runRealisticUseCaseRenderTest()
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
-    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
+    ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, views);
 
     gl.viewport(0, 0, width, height);
 

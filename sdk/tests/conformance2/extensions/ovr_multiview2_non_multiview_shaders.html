@@ -66,7 +66,7 @@ function runNonMultiviewShaderTest()
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     let colorTex = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
     gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, depth);
-    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, 1);
+    ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, 1);
 
     gl.viewport(0, 0, width, height);
 
@@ -79,7 +79,7 @@ function runNonMultiviewShaderTest()
     gl.framebufferTextureLayer(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0);
     wtu.checkCanvasRect(gl, 0, 0, width, height, [0, 255, 0, 255], 'view 0 should be green');
 
-    ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, 2);
+    ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, colorTex, 0, 0, 2);
     wtu.drawUnitQuad(gl);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "draw should generate an INVALID_OPERATION error when using a non-multiview shader and the number of views is > 1");
 }

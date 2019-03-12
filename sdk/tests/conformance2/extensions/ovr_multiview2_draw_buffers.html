@@ -62,7 +62,7 @@ function runDrawBuffersClearTest()
     for (let texIndex = 0; texIndex < colorTex.length; ++texIndex) {
         colorTex[texIndex] = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
         gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
-        ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + texIndex, colorTex[texIndex], 0, 0, views);
+        ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + texIndex, colorTex[texIndex], 0, 0, views);
         drawBuffers[texIndex] = gl.COLOR_ATTACHMENT0 + texIndex;
     }
 
@@ -102,7 +102,7 @@ function runDrawBuffersRenderTest()
     for (let texIndex = 0; texIndex < colorTex.length; ++texIndex) {
         colorTex[texIndex] = createTextureWithNearestFiltering(gl.TEXTURE_2D_ARRAY);
         gl.texStorage3D(gl.TEXTURE_2D_ARRAY, 1, gl.RGBA8, width, height, views);
-        ext.framebufferTextureMultiviewWEBGL(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + texIndex, colorTex[texIndex], 0, 0, views);
+        ext.framebufferTextureMultiviewOVR(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + texIndex, colorTex[texIndex], 0, 0, views);
         drawBuffers[texIndex] = gl.COLOR_ATTACHMENT0 + texIndex;
     }
 
