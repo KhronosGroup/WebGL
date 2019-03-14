@@ -308,12 +308,12 @@ function runTest() {
                 gl.bindTexture(target, textureInfo.texture);
                 gl.drawArrays(gl.POINTS, 0, 1);
                 wtu.glErrorShouldBe(gl, expected, `${desc} texture state NONE, no sampler object`);
+
+                gl.bindSampler(0, samplerObject);
                 gl.samplerParameteri(samplerObject, gl.TEXTURE_COMPARE_MODE, gl.NONE);
                 gl.drawArrays(gl.POINTS, 0, 1);
                 wtu.glErrorShouldBe(gl, expected, `${desc} texture state NONE, sampler state NONE`);
 
-                gl.bindSampler(0, samplerObject);
-                gl.samplerParameteri(samplerObject, gl.TEXTURE_COMPARE_MODE, gl.NONE);
                 gl.texParameteri(target, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
                 gl.drawArrays(gl.POINTS, 0, 1);
                 wtu.glErrorShouldBe(gl, expected, `${desc} texture state COMPARE_REF_TO_TEXTURE, sampler state NONE`);
