@@ -297,7 +297,7 @@ function runTest() {
                 const desc = wtu.glEnumToString(gl, internalFormat);
                 const info = textureInternalFormatInfo[internalFormat];
 
-                // The texture object can have two values of TEXTURE_COMPARE_MODE, NONE or
+                // The texture object can have two values of TEXTURE_COMPARE_MODE: NONE or
                 // COMPARE_REF_TO_TEXTURE. However, the sampler can have three states:
                 // No sampler object bound, sampler object with NONE, and sampler object with
                 // COMPARE_REF_TO_TEXTURE. When a sampler object is bound, it overrides the
