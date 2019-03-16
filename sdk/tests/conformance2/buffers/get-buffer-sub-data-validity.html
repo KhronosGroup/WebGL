@@ -239,6 +239,27 @@ function copyBufferUsingTransformFeedback(src, dst) {
     checkGetBufferSubData(gl.INVALID_OPERATION, "noData");
     recreateReadbackBuffer();
 
+    // crbug.com/941930
+    {
+        debug("");
+        debug("write-delete-recreate-fence-wait-read");
+        gl.copyBufferSubData(gl.COPY_READ_BUFFER, gl.COPY_WRITE_BUFFER, 0, 0, 8);
+        deleteReadbackBuffer();
+        recreateReadbackBuffer();
+        await fence();
+        checkGetBufferSubData(gl.NO_ERROR, "noData");
+
+        debug("");
+        debug("write-delete-fence-wait-read");
+        gl.copyBufferSubData(gl.COPY_READ_BUFFER, gl.COPY_WRITE_BUFFER, 0, 0, 8);
+        {
+            const p = fence();
+            deleteReadbackBuffer();
+            await p;
+        }
+        wtu.glErrorShouldBe(gl, gl.NO_ERROR);
+    }
+
     finishTest();
 })();
 
