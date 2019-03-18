@@ -28,10 +28,10 @@ var ext = null;
     }
 
     debug("");
-    debug("Testing that float32 blending is forbidden without EXT_float_blend");
-    testExtFloatBlend(false, gl.RGBA32F);
-    testExtFloatBlendMRT(false);
-    testExtFloatBlendNonFloat32Type(false);
+    debug("Testing float32 blending without EXT_float_blend");
+    testExtFloatBlend(gl.RGBA32F);
+    testExtFloatBlendMRT();
+    testExtFloatBlendNonFloat32Type();
 
     const floatBlend = gl.getExtension("EXT_float_blend");
     if (!floatBlend) {
@@ -41,9 +41,9 @@ var ext = null;
 
     debug("");
     debug("Testing that float32 blending is allowed with EXT_float_blend");
-    testExtFloatBlend(true, gl.RGBA32F);
-    testExtFloatBlendMRT(true);
-    testExtFloatBlendNonFloat32Type(true);
+    testExtFloatBlend(gl.RGBA32F);
+    testExtFloatBlendMRT();
+    testExtFloatBlendNonFloat32Type();
 })();
 
 debug("");
