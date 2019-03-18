@@ -33,20 +33,20 @@
         <a href="http://www.khronos.org/registry/webgl/extensions/WEBGL_color_buffer_float">
         WEBGL_color_buffer_float</a> extensions must be enabled.</p>
       </feature>
-    </features>
-    <features>
-      On supported systems, this extension is implicitly enabled when any of the
-      following extensions are enabled:
-      <ul>
-        <li><a href="http://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_float">
-        EXT_color_buffer_float</a>
-        <li><a href="http://www.khronos.org/registry/webgl/extensions/OES_texture_float">
-        OES_texture_float</a>
-        <li><a href="http://www.khronos.org/registry/webgl/extensions/WEBGL_color_buffer_float">
-        WEBGL_color_buffer_float</a>
-      </ul>
-      <p>
-      This preserves functionality for content written before this extension was exposed.
+      <feature>
+        On supported systems, this extension is implicitly enabled when any of the
+        following extensions are enabled:
+        <ul>
+          <li><a href="http://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_float">
+          EXT_color_buffer_float</a></li>
+          <li><a href="http://www.khronos.org/registry/webgl/extensions/OES_texture_float">
+          OES_texture_float</a></li>
+          <li><a href="http://www.khronos.org/registry/webgl/extensions/WEBGL_color_buffer_float">
+          WEBGL_color_buffer_float</a></li>
+        </ul>
+        <p>
+        This preserves functionality for content written before this extension was exposed.</p>
+      </feature>
     </features>
   </overview>
 
