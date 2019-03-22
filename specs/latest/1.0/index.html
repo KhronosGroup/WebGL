@@ -3613,7 +3613,7 @@ canvas.addEventListener(
     "webglcontextcreationerror",
     onContextCreationError, false);
 
-var gl = canvas.getContext("experimental-webgl");
+var gl = canvas.getContext("webgl");
 if(!gl) {
   alert("A WebGL context could not be created.\nReason: " +
         errorInfo);
