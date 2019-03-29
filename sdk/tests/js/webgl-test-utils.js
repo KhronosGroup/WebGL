@@ -2968,6 +2968,14 @@ var setZeroTimeout = (function() {
   return setZeroTimeout;
 })();
 
+function dispatchPromise(fn) {
+  return new Promise((fn_resolve, fn_reject) => {
+    setZeroTimeout(() => {
+      fn_resolve(fn());
+    });
+  });
+}
+
 /**
  * Runs an array of functions, yielding to the browser between each step.
  * If you want to know when all the steps are finished add a last step.
@@ -3226,7 +3234,7 @@ var API = {
   clearAndDrawUnitQuad: clearAndDrawUnitQuad,
   clearAndDrawIndexedQuad: clearAndDrawIndexedQuad,
   comparePixels: comparePixels,
-  dispatchTask: setZeroTimeout,
+  dispatchPromise: dispatchPromise,
   displayImageDiff: displayImageDiff,
   drawUnitQuad: drawUnitQuad,
   drawIndexedQuad: drawIndexedQuad,
