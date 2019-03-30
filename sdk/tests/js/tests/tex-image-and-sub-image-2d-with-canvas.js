@@ -465,9 +465,9 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                     }
                     // While we are working with Canvases, it's really unlikely that
                     // waiting for composition will change anything here, and it's much
-                    // slower, so just dispatchTask. If we want to test with composites,
+                    // slower, so just dispatchPromise. If we want to test with composites,
                     // we should test a more narrow subset of tests.
-                    wtu.dispatchTask(runNextTest);
+                    wtu.dispatchPromise(runNextTest);
                 }
                 runNextTest();
             });

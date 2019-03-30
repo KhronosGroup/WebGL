@@ -282,7 +282,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                             return;
                         }
                     }
-                    wtu.dispatchTask(runNextTest);
+                    wtu.dispatchPromise(runNextTest);
                 }
                 runNextTest();
             });
