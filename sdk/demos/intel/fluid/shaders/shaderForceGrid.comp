@@ -1,0 +1,126 @@
+#version 310 es
+
+layout(local_size_x = NUM_THREADS, local_size_y = 1, local_size_z = 1) in;
+
+struct Particle {
+  vec2 position;
+  vec2 velocity;
+};
+
+struct ParticleForces {
+  vec2 acceleration;
+};
+
+struct ParticleDensity {
+  float density;
+  float padding1;
+  float padding2;
+  float padding3;
+};
+
+struct GridIndices {
+  uvec2 indices;
+};
+
+layout(std140, binding = 0) uniform Cb {
+  uint g_iNumParticles;
+  float g_fTimeStep;
+  float g_fSmoothlen;
+  float g_fPressureStiffness;
+  float g_fRestDensity;
+  float g_fDensityCoef;
+  float g_fGradPressureCoef;
+  float g_fLapViscosityCoef;
+  float g_fWallStiffness;
+  vec4 g_vGravity;
+  vec4 g_vGridDim;
+  vec3 g_vPlanes[4];
+}
+cb;
+
+layout(std140, binding = 6) buffer ParticlesRO {
+  readonly Particle data[];
+}
+particlesRO;
+
+layout(std140, binding = 1) buffer ParticlesDensityRO {
+  readonly ParticleDensity data[];
+}
+particlesDensityRO;
+
+layout(std140, binding = 2) buffer ParticlesForcesRW {
+  ParticleForces data[];
+}
+particlesForcesRW;
+
+layout(std140, binding = 5) buffer GridIndicesRO {
+  readonly GridIndices data[];
+}
+gridIndicesRO;
+
+vec2 GridCalculateCell(vec2 position) {
+  return clamp(position * cb.g_vGridDim.xy + cb.g_vGridDim.zw, vec2(0, 0),
+               vec2(255, 255));
+}
+
+int GridConstuctKey(vec2 xy) {
+  return int(int(xy.y) * 256 + int(xy.x));
+}
+
+float CalculatePressure(float density) {
+  return cb.g_fPressureStiffness *
+         max(pow(density / cb.g_fRestDensity, 3.0f) - 1.0f, 0.0f);
+}
+
+vec2 CalculateGradPressure(float r,
+                           float P_pressure,
+                           float N_pressure,
+                           float N_density,
+                           vec2 diff) {
+  float h = cb.g_fSmoothlen;
+  float avg_pressure = 0.5f * (N_pressure + P_pressure);
+  return cb.g_fGradPressureCoef * avg_pressure / N_density * (h - r) * (h - r) /
+         r * (diff);
+}
+
+vec2 CalculateLapVelocity(float r,
+                          vec2 P_velocity,
+                          vec2 N_velocity,
+                          float N_density) {
+  float h = cb.g_fSmoothlen;
+  vec2 vel_diff = (N_velocity - P_velocity);
+  return cb.g_fLapViscosityCoef / N_density * (h - r) * vel_diff;
+}
+
+void main() {
+  int P_ID = int(gl_GlobalInvocationID.x);
+  vec2 P_position = particlesRO.data[P_ID].position;
+  vec2 P_velocity = particlesRO.data[P_ID].velocity;
+  float P_density = particlesDensityRO.data[P_ID].density;
+  float P_pressure = CalculatePressure(P_density);
+  float h_sq = cb.g_fSmoothlen * cb.g_fSmoothlen;
+  vec2 acceleration = vec2(0, 0);
+  ivec2 G_XY = ivec2(GridCalculateCell(P_position));
+  for (int Y = max(G_XY.y - 1, 0); Y <= min(G_XY.y + 1, 255); Y++) {
+    for (int X = max(G_XY.x - 1, 0); X <= min(G_XY.x + 1, 255); X++) {
+      int G_CELL = GridConstuctKey(vec2(X, Y));
+      uvec2 G_START_END = gridIndicesRO.data[G_CELL].indices;
+      for (int N_ID = int(G_START_END.x); uint(N_ID) < G_START_END.y; N_ID++) {
+        vec2 N_position = particlesRO.data[N_ID].position;
+        vec2 diff = N_position - P_position;
+        float r_sq = dot(diff, diff);
+        if (r_sq < h_sq && P_ID != N_ID) {
+          vec2 N_velocity = particlesRO.data[N_ID].velocity;
+          float N_density = particlesDensityRO.data[N_ID].density;
+          float N_pressure = CalculatePressure(N_density);
+          float r = sqrt(r_sq);
+          acceleration +=
+              CalculateGradPressure(r, P_pressure, N_pressure, N_density, diff);
+          acceleration +=
+              CalculateLapVelocity(r, P_velocity, N_velocity, N_density);
+        }
+      }
+    }
+  }
+  particlesForcesRW.data[P_ID].acceleration = acceleration / P_density;
+}

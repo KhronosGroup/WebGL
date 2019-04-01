@@ -1,0 +1,59 @@
+#version 310 es
+precision mediump float;
+
+layout(local_size_x = NUM_THREADS, local_size_y = 1, local_size_z = 1) in;
+
+struct Particle {
+  vec2 position;
+  vec2 velocity;
+};
+
+struct ParticleForces {
+  vec2 acceleration;
+};
+
+layout(std140, binding = 0) uniform Cb {
+  uint g_iNumParticles;
+  float g_fTimeStep;
+  float g_fSmoothlen;
+  float g_fPressureStiffness;
+  float g_fRestDensity;
+  float g_fDensityCoef;
+  float g_fGradPressureCoef;
+  float g_fLapViscosityCoef;
+  float g_fWallStiffness;
+  vec4 g_vGravity;
+  vec4 g_vGridDim;
+  vec3 g_vPlanes[4];
+}
+cb;
+
+layout(std140, binding = 0) buffer ParticlesRW {
+  Particle particles[];
+}
+particlesRW;
+layout(std140, binding = 6) buffer ParticlesRO {
+  readonly Particle particles[];
+}
+particlesRO;
+
+layout(std140, binding = 2) buffer ParticlesForcesRO {
+  readonly ParticleForces particles[];
+}
+particlesForcesRO;
+
+void main() {
+  int P_ID = int(gl_GlobalInvocationID.x);
+  vec2 position = particlesRO.particles[P_ID].position;
+  vec2 velocity = particlesRO.particles[P_ID].velocity;
+  vec2 acceleration = particlesForcesRO.particles[P_ID].acceleration;
+  for (int i = 0; i < 4; i++) {
+    float dist = dot(vec3(position, 1), cb.g_vPlanes[i]);
+    acceleration += min(dist, 0.0f) * -cb.g_fWallStiffness * cb.g_vPlanes[i].xy;
+  }
+  acceleration += cb.g_vGravity.xy;
+  velocity += cb.g_fTimeStep * acceleration;
+  position += cb.g_fTimeStep * velocity;
+  particlesRW.particles[P_ID].position = position;
+  particlesRW.particles[P_ID].velocity = velocity;
+}

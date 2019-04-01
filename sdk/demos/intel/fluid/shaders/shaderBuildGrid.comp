@@ -1,0 +1,58 @@
+#version 310 es
+precision mediump float;
+layout(local_size_x = NUM_THREADS, local_size_y = 1, local_size_z = 1) in;
+
+struct Particle {
+  vec2 position;
+  vec2 velocity;
+};
+
+struct Grid {
+  uint grid;
+  uint padding1;
+  uint padding2;
+  uint padding3;
+};
+
+layout(std140, binding = 0) uniform Cb {
+  uint g_iNumParticles;
+  float g_fTimeStep;
+  float g_fSmoothlen;
+  float g_fPressureStiffness;
+  float g_fRestDensity;
+  float g_fDensityCoef;
+  float g_fGradPressureCoef;
+  float g_fLapViscosityCoef;
+  float g_fWallStiffness;
+  vec4 g_vGravity;
+  vec4 g_vGridDim;
+  vec3 g_vPlanes[4];
+}
+cb;
+
+layout(std140, binding = 0) buffer ParticlesRO {
+  readonly Particle data[];
+}
+particlesRO;
+
+layout(std140, binding = 3) buffer GridRW {
+  Grid data[];
+}
+gridRW;
+
+vec2 GridCalculateCell(vec2 position) {
+  return clamp(position * cb.g_vGridDim.xy + cb.g_vGridDim.zw, vec2(0, 0),
+               vec2(255, 255));
+}
+
+uint GridConstuctKeyValuePair(uvec2 xy, uint value) {
+  return uint(uint(xy.y) * uint(256) * uint(256) * uint(256) +
+              uint(xy.x) * uint(256) * uint(256) + uint(value));
+}
+
+void main() {
+  uint P_ID = uint(gl_GlobalInvocationID.x);
+  vec2 position = particlesRO.data[P_ID].position;
+  vec2 grid_xy = GridCalculateCell(position);
+  gridRW.data[P_ID].grid = GridConstuctKeyValuePair(uvec2(grid_xy), uint(P_ID));
+}
