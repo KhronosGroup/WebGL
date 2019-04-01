@@ -26,13 +26,21 @@
     </mirrors>
 
     <features>
-      <feature>This extension provides a set of new 16-bit signed normalized and unsigned normalized fixed point texture, renderbuffer and texture buffer formats. The 16-bit normalized fixed point types <code>R16_EXT</code>, <code>RG16_EXT</code> and <code>RGBA16_EXT</code> become available as color-renderable formats. Renderbuffers can be created in these formats. These and textures created with <code>type = UNSIGNED_SHORT</code>, which will have one of these internal formats, can be attached to framebuffer object color attachments for rendering.
+      <feature>This extension provides a set of new 16-bit signed normalized
+      and unsigned normalized fixed point texture, renderbuffer and texture
+      buffer formats. The 16-bit normalized fixed point types
+      <code>R16_EXT</code>, <code>RG16_EXT</code> and <code>RGBA16_EXT</code>
+      become available as color-renderable formats. Renderbuffers can be
+      created in these formats. These and textures created with
+      <code>type = UNSIGNED_SHORT</code>, which will have one of these internal
+      formats, can be attached to framebuffer object color attachments for
+      rendering.
       </feature>
 
       <feature> The <code>texImage2D</code> and <code>texSubImage2D</code>
       entry points taking <code>ArrayBufferView</code> are extended to accept
-      <code>Uint16Array</code> with the pixel type <code>UNSIGNED_SHORT</code> and
-      <code>Int16Array</code> with the pixel type <code>SHORT</code>.
+      <code>Uint16Array</code> with the pixel type <code>UNSIGNED_SHORT</code>
+      and <code>Int16Array</code> with the pixel type <code>SHORT</code>.
       </feature>
 
       <feature> The <code>texImage2D</code> and <code>texSubImage2D</code>
@@ -40,7 +48,6 @@
       <code>HTMLImageElement</code>, <code>HTMLCanvasElement</code> and
       <code>HTMLVideoElement</code> are extended to accept the pixel type
       <code>UNSIGNED_SHORT</code>. </feature>
-
 
     </features>
   </overview>
