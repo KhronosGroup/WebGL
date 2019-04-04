@@ -1538,6 +1538,11 @@ var create3DContext = function(opt_canvas, opt_attributes, opt_version) {
   }
   if (!context) {
     testFailed("Unable to fetch WebGL rendering context for Canvas");
+  } else {
+    if (!window._wtu_contexts) {
+      window._wtu_contexts = []
+    }
+    window._wtu_contexts.push(context);
   }
   return context;
 };
@@ -3186,6 +3191,24 @@ function comparePixels(cmp, ref, tolerance, diff) {
     return count;
 }
 
+function destroyContext(gl) {
+  gl.canvas.width = 1;
+  gl.canvas.height = 1;
+  const ext = gl.getExtension('WEBGL_lose_context');
+  if (ext) {
+    ext.loseContext();
+  }
+}
+
+function destroyAllContexts() {
+  if (!window._wtu_contexts)
+    return;
+  for (const x of window._wtu_contexts) {
+    destroyContext(x);
+  }
+  window._wtu_contexts = [];
+}
+
 function displayImageDiff(cmp, ref, diff, width, height) {
     var div = document.createElement("div");
 
@@ -3234,6 +3257,8 @@ var API = {
   clearAndDrawUnitQuad: clearAndDrawUnitQuad,
   clearAndDrawIndexedQuad: clearAndDrawIndexedQuad,
   comparePixels: comparePixels,
+  destroyAllContexts: destroyAllContexts,
+  destroyContext: destroyContext,
   dispatchPromise: dispatchPromise,
   displayImageDiff: displayImageDiff,
   drawUnitQuad: drawUnitQuad,
