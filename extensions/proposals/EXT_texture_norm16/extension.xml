@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<proposal href="proposals/EXT_texture_norm16/">
+
+  <name>EXT_texture_norm16</name>
+
+  <contact> <a href="https://www.khronos.org/webgl/public-mailing-list/">WebGL
+  working group</a> (public_webgl 'at' khronos.org) </contact>
+
+  <contributors>
+  <contributor>Rijubrata Bhaumik (rijubrata.bhaumik 'at' intel.com)</contributor>
+    <contributor>Members of the WebGL working group</contributor>
+  </contributors>
+
+  <number>NN</number>
+
+  <depends>
+    <api version="1.0"/>
+  </depends>
+
+  <overview>
+
+    <mirrors href="https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_texture_norm16.txt"
+             name="EXT_texture_norm16">
+        <addendum>Support for <code>UNSIGNED_SHORT</code> textures as FBO
+        attachments.</addendum>
+    </mirrors>
+
+    <features>
+      <feature>This extension provides a set of new 16-bit signed normalized
+      and unsigned normalized fixed point texture, renderbuffer and texture
+      buffer formats. The 16-bit normalized fixed point types
+      <code>R16_EXT</code>, <code>RG16_EXT</code> and <code>RGBA16_EXT</code>
+      become available as color-renderable formats. Renderbuffers can be
+      created in these formats. These and textures created with
+      <code>type = UNSIGNED_SHORT</code>, which will have one of these internal
+      formats, can be attached to framebuffer object color attachments for
+      rendering.
+      </feature>
+
+      <feature> The <code>texImage2D</code> and <code>texSubImage2D</code>
+      entry points taking <code>ArrayBufferView</code> are extended to accept
+      <code>Uint16Array</code> with the pixel type <code>UNSIGNED_SHORT</code>
+      and <code>Int16Array</code> with the pixel type <code>SHORT</code>.
+      </feature>
+
+      <feature> The <code>texImage2D</code> and <code>texSubImage2D</code>
+      entry points taking <code>ImageData</code>,
+      <code>HTMLImageElement</code>, <code>HTMLCanvasElement</code> and
+      <code>HTMLVideoElement</code> are extended to accept the pixel type
+      <code>UNSIGNED_SHORT</code>. </feature>
+
+    </features>
+  </overview>
+
+  <idl xml:space="preserve">
+
+[NoInterfaceObject]
+interface EXT_texture_norm16 {
+  const GLenum R16_EXT = 0x822A;
+  const GLenum RG16_EXT = 0x822C;
+  const GLenum RGB16_EXT = 0x8054;
+  const GLenum RGBA16_EXT = 0x805B;
+  const GLenum R16_SNORM_EXT = 0x8F98;
+  const GLenum RG16_SNORM_EXT = 0x8F99;
+  const GLenum RGB16_SNORM_EXT = 0x8F9A;
+  const GLenum RGBA16_SNORM_EXT = 0x8F9B;
+};
+  </idl>
+
+  <history>
+    <revision date="2019/03/27">
+      <change>Initial Draft.</change>
+    </revision>
+  </history>
+</proposal>
