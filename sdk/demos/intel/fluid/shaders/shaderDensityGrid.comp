@@ -1,0 +1,87 @@
+#version 310 es
+precision mediump float;
+layout(local_size_x = NUM_THREADS, local_size_y = 1, local_size_z = 1) in;
+
+struct Particle {
+  vec2 position;
+  vec2 velocity;
+};
+
+struct ParticleDensity {
+  float density;
+  float padding1;
+  float padding2;
+  float padding3;
+};
+
+struct GridIndices {
+  uvec2 indices;
+};
+
+layout(std140, binding = 0) uniform Cb {
+  uint g_iNumParticles;
+  float g_fTimeStep;
+  float g_fSmoothlen;
+  float g_fPressureStiffness;
+  float g_fRestDensity;
+  float g_fDensityCoef;
+  float g_fGradPressureCoef;
+  float g_fLapViscosityCoef;
+  float g_fWallStiffness;
+  vec4 g_vGravity;
+  vec4 g_vGridDim;
+  vec3 g_vPlanes[4];
+}
+cb;
+
+layout(std140, binding = 6) buffer ParticlesRW {
+  Particle particles[];
+}
+particlesRW;
+
+layout(std140, binding = 1) buffer ParticlesDensityRW {
+  ParticleDensity particles[];
+}
+particlesDensityRW;
+
+layout(std140, binding = 5) buffer GridIndicesRO {
+  readonly GridIndices data[];
+}
+gridIndicesRO;
+
+vec2 GridCalculateCell(vec2 position) {
+  return clamp(position * cb.g_vGridDim.xy + cb.g_vGridDim.zw, vec2(0, 0),
+               vec2(255, 255));
+}
+
+int GridConstuctKey(ivec2 xy) {
+  return int(xy.y * 256 + xy.x);
+}
+
+float CalculateDensity(float r_sq) {
+  float h_sq = cb.g_fSmoothlen * cb.g_fSmoothlen;
+  return cb.g_fDensityCoef * (h_sq - r_sq) * (h_sq - r_sq) * (h_sq - r_sq);
+}
+
+void main() {
+  int P_ID = int(gl_GlobalInvocationID.x);
+  float h_sq = cb.g_fSmoothlen * cb.g_fSmoothlen;
+  vec2 P_position = particlesRW.particles[P_ID].position;
+  float density = 0.0f;
+  ivec2 G_XY = ivec2(GridCalculateCell(P_position));
+  for (int Y = max(G_XY.y - 1, 0); Y <= min(G_XY.y + 1, 255); Y++) {
+    for (int X = max(G_XY.x - 1, 0); X <= min(G_XY.x + 1, 255); X++) {
+      int G_CELL = GridConstuctKey(ivec2(X, Y));
+      uvec2 G_START_END = gridIndicesRO.data[G_CELL].indices;
+      for (int N_ID = int(G_START_END.x); uint(N_ID) < G_START_END.y; N_ID++) {
+        vec2 N_position = particlesRW.particles[N_ID].position;
+        vec2 diff = N_position - P_position;
+        float r_sq = dot(diff, diff);
+        if (r_sq < h_sq) {
+          density += CalculateDensity(r_sq);
+        }
+      }
+    }
+  }
+  particlesDensityRW.particles[P_ID].density = density;
+}

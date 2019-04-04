@@ -1,0 +1,41 @@
+#version 310 es
+
+layout(local_size_x = NUM_THREADS, local_size_y = 1, local_size_z = 1) in;
+
+struct Particle {
+  vec2 position;
+  vec2 velocity;
+};
+
+struct Grid {
+  int grid;
+  int padding1;
+  int padding2;
+  int padding3;
+};
+
+layout(std140, binding = 6) buffer ParticlesRW {
+  Particle data[];
+}
+particlesRW;
+
+layout(std140, binding = 0) buffer ParticlesRO {
+  readonly Particle data[];
+}
+particlesRO;
+
+layout(std140, binding = 3) buffer GridRO {
+  readonly Grid data[];
+}
+gridRO;
+
+int GridGetValue(int keyvaluepair) {
+  return (keyvaluepair & 0xFFFF);
+}
+
+void main() {
+  int ID = int(gl_GlobalInvocationID.x);
+  int G_ID = GridGetValue(gridRO.data[ID].grid);
+  particlesRW.data[ID].position = particlesRO.data[G_ID].position;
+  particlesRW.data[ID].velocity = particlesRO.data[G_ID].velocity;
+}
