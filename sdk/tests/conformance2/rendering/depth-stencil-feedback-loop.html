@@ -133,12 +133,12 @@ function detect_depth_stencil_feedback_loop() {
 
     gl.depthMask(gl.FALSE);
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "The test sampls from a image. The same image is used as depth buffer. But depth mask is false.");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "The test samples from a image. The same image is used as depth buffer. A feedback loop is formed regardless of the status of depth mask.");
 
     gl.depthMask(gl.TRUE);
     gl.disable(gl.DEPTH_TEST);
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "The test samples from a image. The same image is used as depth buffer. But depth test is not enabled during rendering.");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "The test samples from a image. The same image is used as depth buffer. A feedback loop is formed regardless of whether the depth test is enabled.");
 
     // Test rendering and sampling feedback loop for stencil buffer
     gl.bindTexture(gl.TEXTURE_2D, tex2);
@@ -155,12 +155,12 @@ function detect_depth_stencil_feedback_loop() {
 
     gl.stencilMask(0x0);
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "The test sampls from a image. The same image is used as stencil buffer. But stencil mask is zero.");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "The test sampls from a image. The same image is used as stencil buffer. A feedback loop is formed regardless of the status of stencil mask.");
 
     gl.stencilMask(0xffff);
     gl.disable(gl.STENCIL_TEST);
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "The test samples from a image. The same image is used as stencil buffer. But stencil test is not enabled during rendering.");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "The test samples from a image. The same image is used as stencil buffer. A feedback loop is formed regardless of whether the stencil test is enabled.");
 }
 
 function deinit() {
