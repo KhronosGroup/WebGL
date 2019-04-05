@@ -40,37 +40,37 @@
 <script>
 "use strict";
 description("This test checks whether OffscreenCanvas webgl context honors the preserveDrawingBuffer flag.");
+var wtu = WebGLTestUtils;
 
-function getPixelsFromOffscreenWebgl(preserveFlag) {
+const nextFrame = async () => new Promise(r => requestAnimationFrame(r));
+
+async function getPixelsFromOffscreenWebgl(preserveFlag, color, msg) {
   var canvas = document.createElement("canvas");
   var offscreenCanvas = transferredOffscreenCanvasCreation(canvas, 10, 10);
   var gl = offscreenCanvas.getContext("webgl", {preserveDrawingBuffer: preserveFlag});
 
-  // Draw some color on gl and commit
+  // Draw some color on gl
   gl.clearColor(1, 0, 1, 1);
   gl.clear(gl.COLOR_BUFFER_BIT);
-  gl.commit();
 
+  await nextFrame();
   var pixels = new Uint8Array(4);
-  gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-  return pixels;
+  wtu.checkCanvas(gl, color, msg);
 }
 
-if (!window.OffscreenCanvas) {
-    testPassed("No OffscreenCanvas support");
-} else {
-    // Test if OffscreenCanvas.webgl retains context if preserveDrawingBuffer is true.
-    var pixelsPreserve = getPixelsFromOffscreenWebgl(true);
-    shouldBe(pixelsPreserve, [255,0,255,255]);
+(async () => {
+  if (!window.OffscreenCanvas) {
+      testPassed("No OffscreenCanvas support");
+  } else {
+      // Test if OffscreenCanvas.webgl retains context if preserveDrawingBuffer is true.
+      await getPixelsFromOffscreenWebgl(true, [255,0,255,255], "should be preserved");
 
-    // Test if OffscreenCanvas.webgl loses context if presereDrawingbuffer is false.
-    var pixelsNoPreserve = getPixelsFromOffscreenWebgl(false);
-    shouldBe(pixelsNoPreserve, [0,0,0,0]);
-}
-
-var successfullyParsed = true;
+      // Test if OffscreenCanvas.webgl loses context if presereDrawingbuffer is false.
+      await getPixelsFromOffscreenWebgl(false, [0, 0, 0, 0], "should not be preserved");
+      finishTest();
+  }
+})();
 
 </script>
-<script src="../../js/js-test-post.js"></script>
 </body>
 </html>
