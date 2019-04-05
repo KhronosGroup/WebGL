@@ -60,6 +60,15 @@ void main() {
 }
 </script>
 
+<script id="fs100-no-ext-draw-buffers" type="x-shader/x-fragment">
+precision mediump float;
+uniform sampler2D tex;
+varying vec2 texCoord;
+void main() {
+    gl_FragData[0] = texture2D(tex, texCoord);
+}
+</script>
+
 <script id="vs300" type="x-shader/x-vertex">#version 300 es
 in highp vec4 aPosition;
 in vec2 aTexCoord;
@@ -110,7 +119,7 @@ if (!gl) {
         }
     }
 
-    init();
+    init(drawBuffers);
 
     // The sampling texture is bound to COLOR_ATTACHMENT1 during resource allocation
     allocate_resource();
@@ -125,10 +134,12 @@ if (!gl) {
     }
 }
 
-function init() {
+function init(drawBuffers) {
     let shaders = ["vs100", "fs100"];
     if (gl.texStorage2D) {
         shaders = ["vs300", "fs300"];
+    } else if (!drawBuffers) {
+        shaders = ["vs100", "fs100-no-ext-draw-buffers"];
     }
     const program = wtu.setupProgram(gl, shaders, ["aPosition", "aTexCoord"], [0, 1]);
     const positionLoc = gl.getAttribLocation(program, "aPosition");
