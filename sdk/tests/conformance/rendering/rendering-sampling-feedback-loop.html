@@ -181,12 +181,12 @@ function rendering_sampling_feedback_loop(draw_buffers) {
 
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Feedback loop detection ignores drawBuffers settings.");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Feedback loop detection should ignore drawBuffers settings.");
 
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_NEAREST);
     // The texture will be mipmap incomplete, so feedback cannot occur nor be consistently evaluated.
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Feedback loop detection ignores sampled incomplete textures.");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Feedback loop detection should ignore sampled incomplete textures.");
 
     if (draw_buffers) {
         drawBuffers([gl.COLOR_ATTACHMENT0]);
