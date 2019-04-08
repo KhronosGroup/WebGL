@@ -119,7 +119,7 @@ if (!gl) {
         }
     }
 
-    init(drawBuffers);
+    init();
 
     // The sampling texture is bound to COLOR_ATTACHMENT1 during resource allocation
     allocate_resource();
@@ -134,7 +134,7 @@ if (!gl) {
     }
 }
 
-function init(drawBuffers) {
+function init() {
     let shaders = ["vs100", "fs100"];
     if (gl.texStorage2D) {
         shaders = ["vs300", "fs300"];
