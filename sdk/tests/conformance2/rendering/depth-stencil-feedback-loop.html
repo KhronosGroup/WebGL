@@ -109,8 +109,15 @@ function init() {
     tex1 = gl.createTexture();
     tex2 = gl.createTexture();
     wtu.fillTexture(gl, tex0, width, height, [0x0, 0xff, 0x0, 0xff], 0, gl.RGBA, gl.UNSIGNED_BYTE, gl.RGBA);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     wtu.fillTexture(gl, tex1, width, height, [0x80], 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, gl.DEPTH_COMPONENT16);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
     wtu.fillTexture(gl, tex2, width, height, [0x40], 0, gl.DEPTH_STENCIL, gl.UNSIGNED_INT_24_8, gl.DEPTH24_STENCIL8);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Succeed to create textures.");
 
     fbo = gl.createFramebuffer();
@@ -126,7 +133,6 @@ function detect_depth_stencil_feedback_loop() {
         testFailed("Framebuffer incomplete.");
         return;
     }
-
     gl.enable(gl.DEPTH_TEST);
     wtu.clearAndDrawUnitQuad(gl);
     wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "The test samples from a image. The same image is used as depth buffer during rendering.");
