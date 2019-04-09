@@ -86,16 +86,6 @@ Abstract: This is the WebGL 2.0 compute specification.
     This section describes the interfaces and functionality added to the DOM to support runtime access to the functionality described above.
   </p>
 
-## WebGLProgramPipeline ## {#program-pipeline}
-  <p>
-    The WebGLProgramPipeline interface represents an OpenGL Program Pipeline Object. The underlying object is created as if by calling glGenProgramPipelines (OpenGL ES 3.1 §7.4, man page) , bound as if by calling glBindProgramPipeline (OpenGL ES 3.1 §7.4, man page) and destroyed as if by calling glDeleteProgramPipelines (OpenGL ES 3.1 §7.4, man page) .
-  </p>
-
-  <pre class="idl">
-    interface WebGLProgramPipeline: WebGLObject {
-  };
-  </pre>
-
 ## The WebGL 2 Compute Rendering Context ## {#webgl2-compute-context}
   <p>
     The WebGL2ComputeRenderingContext represents the API allowing OpenGL ES 3.1 style rendering into the canvas element.
@@ -162,9 +152,6 @@ Abstract: This is the WebGL 2.0 compute specification.
       const GLenum  VERTEX_SHADER_BIT                          = 0x00000001;
       const GLenum  FRAGMENT_SHADER_BIT                        = 0x00000002;
       const GLenum  ALL_SHADER_BITS                            = 0xFFFFFFFF;
-      const GLenum  PROGRAM_SEPARABLE                          = 0x8258;
-      const GLenum  ACTIVE_PROGRAM                             = 0x8259;
-      const GLenum  PROGRAM_PIPELINE_BINDING                   = 0x825A;
       const GLenum  ATOMIC_COUNTER_BUFFER_BINDING              = 0x92C1;
       const GLenum  ATOMIC_COUNTER_BUFFER_START                = 0x92C2;
       const GLenum  ATOMIC_COUNTER_BUFFER_SIZE                 = 0x92C3;
@@ -291,18 +278,6 @@ Abstract: This is the WebGL 2.0 compute specification.
       GLuint getProgramResourceIndex(WebGLProgram program, GLenum programInterface, DOMString name);
       DOMString? getProgramResourceName(WebGLProgram program, GLenum programInterface, GLuint index);
       any getProgramResourceLocation(WebGLProgram program, GLenum programInterface, DOMString name);
-
-      void programParameter(WebGLProgram? program, GLenum pname, GLint value);
-      GLuint createShaderProgram(GLenum type, GLsizei count, DOMString source);
-      WebGLProgramPipeline? createProgramPipeline();
-      void deleteProgramPipeline(WebGLProgramPipeline? pipeline);
-      void bindProgramPipeline(WebGLProgramPipeline? pipeline);
-      [WebGLHandlesContextLoss] GLboolean isProgramPipeline(WebGLProgramPipeline? pipeline);
-      void activeShaderProgram(WebGLProgramPipeline? pipeline, WebGLProgram? program);
-      void useProgramStages(WebGLProgramPipeline? pipeline, GLbitfield stages, WebGLProgram? program);
-      void validateProgramPipeline(WebGLProgramPipeline? pipeline);
-      DOMString? getProgramPipelineInfoLog(WebGLProgramPipeline? pipeline);
-      any getProgramPipelineParameter(WebGLProgramPipeline? pipeline, GLenum pname);
 
       void programUniform1i(WebGLProgram? program, WebGLUniformLocation? location, GLint v0);
       void programUniform2i(WebGLProgram? program, WebGLUniformLocation? location, GLint v0, GLint v1);
@@ -495,181 +470,6 @@ Abstract: This is the WebGL 2.0 compute specification.
         and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glSampleMaski.xhtml"
           class="nonnormative">man page</a>
       </span>
-  </p>
-
-### Program, Shader and Program Pipeline ### {#program}
-  <p>
-    <b>
-      void programParameter(WebGLProgram? program, GLenum pname, GLint value)
-    </b>
-  </p>
-  <p>
-    Set program parameter given a program. The only support parameter is PROGRAM_SEPARABLE.
-    <br/>See glProgramParameteri at
-      <span class="gl-spec">
-        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.3">
-          OpenGL ES 3.1 Section 7.3</a>,
-        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glProgramParameteri.xhtml"
-          class="nonnormative">man page</a>
-      </span>
-  </p>
-  <p>
-    <b>
-      GLuint createShaderProgram(GLenum type, GLsizei count, DOMString source)
-    </b>
-  </p>
-  <p>
-    Create a standalone separable program from an array of null-terminated source code string for a single shader type.
-    <br/>See glCreateShaderProgramv at
-      <span class="gl-spec">
-        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.3">
-          OpenGL ES 3.1 Section 7.3</a>,
-        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glCreateShaderProgramv.xhtml"
-          class="nonnormative">man page</a>
-      </span>
-  </p>
-  <p>
-    <b>
-      WebGLProgramPipeline? createProgramPipeline()
-    </b>
-  </p>
-  <p>
-    Create a WebGLProgramPipeline object and initialize it with a program pipeline name like genProgramPipelines.
-    <br/>See glGenProgramPipelines at
-      <span class="gl-spec">
-        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.4">
-          OpenGL ES 3.1 Section 7.4</a>,
-        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glGenProgramPipelines.xhtml"
-          class="nonnormative">man page</a>
-      </span>
-  </p>
-  <p>
-    <b>
-      void deleteProgramPipeline(WebGLProgramPipeline? pipeline)
-    </b>
-  </p>
-  <p>
-    Delete a WebGLProgramPipeline object pipeline.
-    <br/>See glDeleteProgramPipelines at
-      <span class="gl-spec">
-        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.4">
-          OpenGL ES 3.1 Section 7.4</a>,
-        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glDeleteProgramPipelines.xhtml"
-          class="nonnormative">man page</a>
-      </span>
-  </p>
-  <p>
-    <b>
-      void bindProgramPipeline(WebGLProgramPipeline? pipeline)
-    </b>
-  </p>
-  <p>
-    Bind a WebGLProgramPipeline object pipeline.
-    <br/>See glBindProgramPipeline at
-      <span class="gl-spec">
-        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.4">
-          OpenGL ES 3.1 Section 7.4</a>,
-        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glBindProgramPipeline.xhtml"
-          class="nonnormative">man page</a>
-      </span>
-  </p>
-  <p>
-    <b>
-      [WebGLHandlesContextLoss] GLboolean isProgramPipeline(WebGLProgramPipeline? pipeline)
-    </b>
-  </p>
-  <p>
-    Return true if the passed WebGLProgramPipeline is valid and false otherwise.
-    <br/>See glIsProgramPipeline at
-      <span class="gl-spec">
-        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.4">
-          OpenGL ES 3.1 Section 7.4</a>,
-        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glIsProgramPipeline.xhtml"
-          class="nonnormative">man page</a>
-      </span>
-  </p>
-  <p>
-    <b>
-      void activeShaderProgram(WebGLProgramPipeline? pipeline, WebGLProgram? program)
-    </b>
-  </p>
-  <p>
-    Set the linked named by program to be the active program used for uniform updates for the program pipeline object pipeline.
-    <br/>See glActiveShaderProgram at
-      <span class="gl-spec">
-        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.4">
-          OpenGL ES 3.1 Section 7.4</a>,
-        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glActiveShaderProgram.xhtml"
-          class="nonnormative">man page</a>
-      </span>
-  </p>
-  <p>
-    <b>
-      void useProgramStages(WebGLProgramPipeline? pipeline, GLbitfield stages, WebGLProgram? program)
-    </b>
-  </p>
-  <p>
-    Associate one or more shader stages in program program with the program pipeline pipeline.
-    <br/>See glUseProgramStages at
-      <span class="gl-spec">
-        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.4">
-          OpenGL ES 3.1 Section 7.4</a>,
-        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glIsProgramStages.xhtml"
-          class="nonnormative">man page</a>
-      </span>
-  </p>
-  <p>
-    <b>
-      void validateProgramPipeline(WebGLProgramPipeline? pipeline)
-    </b>
-  </p>
-  <p>
-    Validate the program pipeline object pipeline against the current GL state.
-    <br/>See glValidateProgramPipeline at
-      <span class="gl-spec">
-        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-11.1.3.11">
-          OpenGL ES 3.1 Section 11.1.3.11</a>,
-        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glValidateProgramPipeline.xhtml"
-          class="nonnormative">man page</a>
-      </span>
-  </p>
-  <p>
-    <b>
-      DOMString? getProgramPipelineInfoLog(WebGLProgramPipeline? pipeline)
-    </b>
-  </p>
-  <p>
-    Return program pipeline infomation log give pipeline.
-    <br/>See glGetProgramPipelineInfoLog at
-      <span class="gl-spec">
-        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.12">
-          OpenGL ES 3.1 Section 7.12</a>,
-        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glIsProgramPipeline.xhtml"
-          class="nonnormative">man page</a>
-      </span>
-  </p>
-  <p>
-    <b>
-      any getProgramPipelineParameter(WebGLProgramPipeline? pipeline, GLenum pname)
-    </b>
-  </p>
-  <p>
-    Query program pipeline parameter pname give pipeline.
-    <br/>See glGetProgramPipelineiv at
-      <span class="gl-spec">
-        <a href="https://www.khronos.org/registry/OpenGL/specs/es/3.1/es_spec_3.1.pdf#nameddest=section-7.12">
-          OpenGL ES 3.1 Section 7.12</a>,
-        and <a href="https://www.khronos.org/registry/OpenGL-Refpages/es3.1/html/glGetProgramPipelineiv.xhtml"
-          class="nonnormative">man page</a>
-      </span>
-  </p>
-  <p>
-    The requested pname and its return type are given in the following table:
-    <table width="30%">
-        <tr><th>pname</th><th>returned type</th></tr>
-        <tr><td>ACTIVE_PROGRAM</td><td>GLint</td></tr>
-        <tr><td>VALIDATE_STATUS</td><td>GLboolean</td></tr>
-    </table>
   </p>
 
 ### Uniforms and Attributes ### {#uniforms-attributes}
@@ -1155,7 +955,6 @@ Abstract: This is the WebGL 2.0 compute specification.
     The requested pname and its return type are given in the following table:
     <table width="30%">
         <tr><th>pname</th><th>returned type</th></tr>
-        <tr><td>PROGRAM_SEPRARABLE</td><td>GLboolean</td></tr>
         <tr><td>COMPUTE_WORK_GROUP_SIZE</td><td>GLint</td></tr>
         <tr><td>ACTIVE_ATOMIC_COUNTER_BUFFERS</td><td>GLint</td></tr>
     </table>
@@ -1193,6 +992,11 @@ Abstract: This is the WebGL 2.0 compute specification.
   </p>
 
 # Differences between WebGL 2.0 compute and OpenGL ES 3.1 # {#diff-with-gles31}
+## Program pipeline is not supported in WebGL 2.0 compute ## {#no-program-pipeline}
+  <p>
+    Program pipeline in OpenGL ES 3.1 is not supported in WebGL 2.0 compute. Program pipeline is irrelevant to compute shader and it is not very useful.
+  </p>
+
 ## The same layer and level of texture cannot be bound to multiple image units ## {#bind-texture-to-image}
   <p>
     In OpenGL ES 3.1, the same layer and level of texture can be bound to multiple image units. But this feature is not allowed in D3D11, and it is not very useful. So this feature is disabled. It generates INVALID_OPERATION otherwise.
