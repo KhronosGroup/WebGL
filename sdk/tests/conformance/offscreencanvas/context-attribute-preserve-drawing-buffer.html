@@ -52,10 +52,38 @@ function checkPixels(color) {
 
 const nextFrame = () => new Promise(r => requestAnimationFrame(r));
 
-async function getPixelsFromOffscreenWebgl(preserveFlag, color, msg) {
+async function getPixelsFromOffscreenWebglPreserveFlagTrue(color, msg) {
   var canvas = document.createElement("canvas");
   var offscreenCanvas = transferredOffscreenCanvasCreation(canvas, 10, 10);
-  var gl = offscreenCanvas.getContext("webgl", {preserveDrawingBuffer: preserveFlag});
+  var gl = offscreenCanvas.getContext("webgl", {preserveDrawingBuffer: true});
+
+  // Draw some color on gl
+  gl.clearColor(1, 0, 1, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  var t, t0 = await nextFrame();
+  for (;;) {
+    t = await nextFrame();
+    
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+    if (!checkPixels(color)) {
+      testFailed(msg + '\nexpected: ' + color.toString() + ' was ' + pixels.toString());
+      return;
+    }
+
+    // Keep checking until it takes up to a certain time
+    if (t > t0 + 500) {
+      break;
+    }
+  }
+
+  testPassed(msg);
+}
+
+async function getPixelsFromOffscreenWebglPreserveFlagFalse(color, msg) {
+  var canvas = document.createElement("canvas");
+  var offscreenCanvas = transferredOffscreenCanvasCreation(canvas, 10, 10);
+  var gl = offscreenCanvas.getContext("webgl", {preserveDrawingBuffer: false});
 
   // Draw some color on gl
   gl.clearColor(1, 0, 1, 1);
@@ -66,16 +94,9 @@ async function getPixelsFromOffscreenWebgl(preserveFlag, color, msg) {
     t = await nextFrame();
     
     gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-    if (preserveFlag) {
-      if (!checkPixels(color)) {
-        testFailed(msg + '\nexpected: ' + color.toString() + ' was ' + pixels.toString());
-        return;
-      }
-    } else {
-      if (checkPixels(color)) {
-        testPassed(msg);
-        return;
-      }
+    if (checkPixels(color)) {
+      testPassed(msg);
+      return;
     }
 
     // Keep checking until it takes up to a certain time
@@ -83,25 +104,20 @@ async function getPixelsFromOffscreenWebgl(preserveFlag, color, msg) {
       break;
     }
   }
-  
-  if (preserveFlag) {
-    testPassed(msg);
-  } else {
-    // testFailed(msg);
-    testFailed(msg + '\nexpected: ' + color.toString() + ' was ' + pixels.toString());
-  }
+
+  testFailed(msg + '\nexpected: ' + color.toString() + ' was ' + pixels.toString());
 }
 
 (async () => {
   if (!window.OffscreenCanvas) {
-      testPassed("No OffscreenCanvas support");
+    testPassed("No OffscreenCanvas support");
   } else {
-      // Test if OffscreenCanvas.webgl retains contents if preserveDrawingBuffer is true.
-      await getPixelsFromOffscreenWebgl(true, [255,0,255,255], "should be preserved");
+    // Test if OffscreenCanvas.webgl retains contents if preserveDrawingBuffer is true.
+    await getPixelsFromOffscreenWebglPreserveFlagTrue([255,0,255,255], "should be preserved");
 
-      // Test if OffscreenCanvas.webgl loses contents if preserveDrawingBuffer is false.
-      await getPixelsFromOffscreenWebgl(false, [0, 0, 0, 0], "should not be preserved");
-      finishTest();
+    // Test if OffscreenCanvas.webgl loses contents if preserveDrawingBuffer is false.
+    await getPixelsFromOffscreenWebglPreserveFlagFalse([0, 0, 0, 0], "should not be preserved");
+    finishTest();
   }
 })();
 
