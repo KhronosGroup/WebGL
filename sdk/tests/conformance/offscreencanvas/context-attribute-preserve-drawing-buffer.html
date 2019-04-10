@@ -40,8 +40,8 @@
 <script>
 "use strict";
 description("This test checks whether OffscreenCanvas webgl context honors the preserveDrawingBuffer flag.");
-var wtu = WebGLTestUtils;
-var pixels = new Uint8Array(4);
+const wtu = WebGLTestUtils;
+const pixels = new Uint8Array(4);
 
 function checkPixels(color) {
   return (color[0] === pixels[0]) &&
@@ -53,15 +53,16 @@ function checkPixels(color) {
 const nextFrame = () => new Promise(r => requestAnimationFrame(r));
 
 async function getPixelsFromOffscreenWebgl(preserveFlag, color, msg) {
-  var canvas = document.createElement("canvas");
-  var offscreenCanvas = transferredOffscreenCanvasCreation(canvas, 10, 10);
-  var gl = offscreenCanvas.getContext("webgl", {preserveDrawingBuffer: preserveFlag});
+  const canvas = document.createElement("canvas");
+  const offscreenCanvas = transferredOffscreenCanvasCreation(canvas, 10, 10);
+  const gl = offscreenCanvas.getContext("webgl", {preserveDrawingBuffer: preserveFlag});
 
   // Draw some color on gl
   gl.clearColor(1, 0, 1, 1);
   gl.clear(gl.COLOR_BUFFER_BIT);
 
-  var t, t0 = await nextFrame();
+  let t;
+  const t0 = await nextFrame();
   for (;;) {
     t = await nextFrame();
     
