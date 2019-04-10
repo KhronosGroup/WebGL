@@ -20,7 +20,7 @@
   <overview>
     <mirrors href="https://www.khronos.org/registry/gles/extensions/OES/OES_EGL_image_external.txt"
              name="OES_EGL_image_external">
-      <addendum>Defines a new texture target <code>TEXTURE_VIDEO_IMAGE</code>.</addendum>
+      <addendum>Defines a new texture target <code>TEXTURE_VIDEO_IMAGE_WEBGL</code> and a new sampler type <code>SAMPLER_VIDEO_IMAGE_WEBGL</code></addendum>
       <addendum>Provides a mechanism for binding <code>HTMLVideoElement</code> stream to video texture targets.</addendum>
       <addendum>Provides time of frame, texture width and height of <code>HTMLVideoElement</code>'s texture binding.</addendum>
     </mirrors>
@@ -28,6 +28,17 @@
     <features>
       <feature>Add support for <code>WEBGL_video_texture</code>
       binding of HTMLVideoElement.</feature>
+      <feature><code>TEXTURE_VIDEO_IMAGE_WEBGL</code> and <code>TEXTURE_2D</code> are distinct.</feature>
+      <feature>Textures bound to <code>TEXTURE_VIDEO_IMAGE_WEBGL</code> only accept <code>LINEAR</code> and <code>NEAREST</code>
+        for <code>TEXTURE_MIN_FILTER</code> and <code>TEXTURE_MAG_FILTER</code>.</feature>
+      <feature>Textures bound to <code>TEXTURE_VIDEO_IMAGE_WEBGL</code> only accept <code>CLAMP_TO_EDGE</code> for
+        <code>TEXTURE_WRAP_S</code> and <code>TEXTURE_WRAP_T</code>.</feature>
+      <feature>The maximum mipmap level of textures that bind to <code>TEXTURE_VIDEO_IMAGE_WEBGL</code> is 1.</feature>
+      <feature><code>shareVideoImageWEBGL</code> will lock video frame and reject another video source until call
+        <code>releaseVideoImageWEBGL</code>.</feature>
+      <feature>If the application does not call releaseVideoImageWEBGL, then all of the WebGLTextures with which video
+        frames were shared will be implicitly released when the current JavaScript code returns control to the user agent.</feature>
+
 
       <glsl extname="WEBGL_video_texture">
         <stage type="fragment"/>
@@ -53,11 +64,12 @@ interface WebGLVideoFrameInfo {
 
 [NoInterfaceObject]
 interface WEBGL_video_texture {
-    const GLenum TEXTURE_VIDEO_IMAGE             = 0x851D;
-    const GLenum SAMPLER_VIDEO_IMAGE             = 0x8B61;
+    const GLenum TEXTURE_VIDEO_IMAGE_WEBGL             = 0x851D;
+    const GLenum SAMPLER_VIDEO_IMAGE_WEBGL             = 0x8B61;
 
-    [RaisesException] WebGLVideoFrameInfo VideoElementTargetVideoTexture(
-        GLenum target, HTMLVideoElement video);
+    [RaisesException] WebGLVideoFrameInfo shareVideoImageWEBGL(
+      GLenum target, HTMLVideoElement video);
+    [RaiseException] bool releaseVideoImageWEBGL(GLenum target);
 };
   </idl>
 
@@ -84,9 +96,10 @@ interface WEBGL_video_texture {
     function update() {
         var ext = gl.getExtension('WEBGL_video_texture');
         if(ext !=== null){
-            gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE, videoTexture);
-            ext.VideoElementTargetVideoTexture(ext.TEXTURE_VIDEO_IMAGE, videoElement);
-            gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE, null);
+            gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE_WEBGL, videoTexture);
+            ext.shareVideoImageWEBGL(ext.TEXTURE_VIDEO_IMAGE_WEBGL, videoElement);
+            ext.releaseVideoImageWEBGL(ext.TEXTURE_VIDEO_IMAGE_WEBGL);
+            gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE_WEBGL, null);
         }
     }
 
@@ -98,10 +111,12 @@ interface WEBGL_video_texture {
         gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 
         gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE, videoTexture);
+        gl.bindTexture(ext.TEXTURE_VIDEO_IMAGE_WEBGL, videoTexture);
         gl.uniform1i(gl.getUniformLocation(shaderProgram, "uSampler"), 0);
 
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        ext.releaseVideoImageWEBGL(ext.TEXTURE_VIDEO_IMAGE_WEBGL);
     }
     </pre>
 
@@ -134,6 +149,13 @@ interface WEBGL_video_texture {
       <change>Change Extension name to WEBGL_video_texture for abstracion of OES_EGL_image_external extension.</change>
       <change>Define new sampler and texture type, TEXTURE_VIDEO_IMAGE and SAMPLER_VIDEO_IMAGE.</change>
       <change>Change EGLImageTargetTexture2DOES to VideoElementTargetVideoTexture.</change>
+    </revision>
+    <revision date="2019/04/10">
+      <change>Add WEBGL suffix for extension enums.</change>
+      <change>Change function name VideoElementTargetVideoTexture to shareVideoImageWEBGL</change>
+      <change>Declare possible side effect of TEXTURE_VIDEO_IMAGE_WEBGL.</change>
+      <change>Add limitations for TEXTURE_VIDEO_IMAGE_WEBGL</change>
+      <change>Add releaseVideoImageWEBGL and implicit release rules</change>
     </revision>
   </history>
 </proposal>
