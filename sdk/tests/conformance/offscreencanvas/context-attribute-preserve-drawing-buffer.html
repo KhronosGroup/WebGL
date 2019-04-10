@@ -65,7 +65,7 @@ async function getPixelsFromOffscreenWebgl(preserveFlag, color, msg) {
   const t0 = await nextFrame();
   for (;;) {
     t = await nextFrame();
-    
+
     gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
     if (preserveFlag) {
       if (!checkPixels(color)) {
