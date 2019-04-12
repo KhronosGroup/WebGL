@@ -123,13 +123,13 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texParameter(TEXTURE_MIN_FILTER) should succeed");
   wtu.clearAndDrawUnitQuad(gl);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "clearAndDrawQuad should succeed");
-  wtu.checkCanvas(gl, [0, 0, 255, 255], "should draw with [0, 0, 255, 255]");
+  wtu.checkCanvas(gl, [0, 0, 255, 255], "filling partial levels: should draw with [0, 0, 255, 255]");
 
   // Test that generateMipmap works with partial levels.
   gl.generateMipmap(gl.TEXTURE_2D);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "generateMipmap should succeed");
   wtu.clearAndDrawUnitQuad(gl);
-  wtu.checkCanvas(gl, [255, 0, 0, 255], "should draw with [255, 0, 0, 255]");
+  wtu.checkCanvas(gl, [255, 0, 0, 255], "generateMipmap with partial levels: should draw with [255, 0, 0, 255]");
   gl.deleteTexture(tex);
 
   // Test incompleteless for partial levels.
@@ -232,7 +232,7 @@ wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Should be no errors from setup.");
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "texStorage2D should succeed");
   wtu.clearAndDrawUnitQuad(gl);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "clearAndDrawQuad should succeed");
-  wtu.checkCanvas(gl, [255, 0, 0, 255], "should draw with [255, 0, 0, 255]");
+  wtu.checkCanvas(gl, [255, 0, 0, 255], "non-zero base level texStorage2D: should draw with [255, 0, 0, 255]");
   gl.deleteTexture(tex);
 
 })();
