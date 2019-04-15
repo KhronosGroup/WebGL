@@ -154,11 +154,12 @@ function initController() {
   let option8k = createElement('option', {'value': '8', 'selected': 'selected'}, '8K Particles');
   let option16k = createElement('option', {'value': '16'}, '16K Particles');
   let option32k = createElement('option', {'value': '32'}, '32K Particles');
+  let option64k = createElement('option', {'value': '64'}, '64K Particles');
   let tSelectP = createElement(
     'select',
     {'id': 'selP',
      'onchange': 'restart(this.value)'},
-    [option8k, option16k, option32k]
+    [option8k, option16k, option32k, option64k]
   );
   let dSelectP = createElement('div', {}, tSelectP);
 
