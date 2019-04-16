@@ -1,6 +1,6 @@
 <pre class='metadata'>
 Shortname: webgl2-compute
-Title: WebGL 2.0 Compute Specification
+Title: WebGL 2.0 Compute
 Level: 1
 Status: khronos/ED
 Group: WebGL
