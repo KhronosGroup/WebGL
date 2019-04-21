@@ -4,6 +4,7 @@ import subprocess
 import re
 import sys
 import fnmatch
+import commands
 
 from collections import defaultdict
 from optparse import OptionParser
@@ -18,7 +19,7 @@ def git(command, *args):
     command_line = ["git", command] + args
 
     try:
-        return subprocess.check_output(command_line, universal_newlines=True, **proc_kwargs)
+        return subprocess.check_output(command_line, **proc_kwargs)
     except subprocess.CalledProcessError:
         raise
 
@@ -79,9 +80,9 @@ def parse_whitelist_file(filename):
             data[file_match][error_type].add(line_number)
 
     def inner(path, errors):
-        whitelisted = [False for item in range(len(errors))]
+        whitelisted = [False for item in xrange(len(errors))]
 
-        for file_match, whitelist_errors in data.items():
+        for file_match, whitelist_errors in data.iteritems():
             if fnmatch.fnmatch(path, file_match):
                 for i, (error_type, msg, line) in enumerate(errors):
                     if "*" in whitelist_errors:
@@ -156,19 +157,19 @@ def check_regexp_line(path, f):
 
 def output_errors(errors):
     for error_type, error, line_number in errors:
-        print("%s: %s" % (error_type, error))
+        print "%s: %s" % (error_type, error)
 
 
 def output_error_count(error_count):
     if not error_count:
         return
 
-    by_type = " ".join("%s: %d" % item for item in error_count.items())
+    by_type = " ".join("%s: %d" % item for item in error_count.iteritems())
     count = sum(error_count.values())
     if count == 1:
-        print("There was 1 error (%s)" % (by_type,))
+        print "There was 1 error (%s)" % (by_type,)
     else:
-        print("There were %d errors (%s)" % (count, by_type))
+        print "There were %d errors (%s)" % (count, by_type)
 
 
 def main():
@@ -210,7 +211,7 @@ def main():
                         f.seek(0)
 
     output_error_count(error_count)
-    return sum(error_count.values())
+    return sum(error_count.itervalues())
 
 file_path_lints = [check_filename_space]
 file_content_lints = [check_regexp_line]
