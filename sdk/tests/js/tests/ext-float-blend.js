@@ -29,7 +29,9 @@ void main()
 }
 `;
 
-function testExtFloatBlend(shouldBlend, internalFormat) {
+function testExtFloatBlend(internalFormat) {
+    const shouldBlend = gl.getSupportedExtensions().indexOf('EXT_float_blend') != -1;
+
     const prog = wtu.setupProgram(gl, [trivialVsSrc, trivialFsSrc]);
     gl.useProgram(prog);
 
@@ -55,7 +57,9 @@ function testExtFloatBlend(shouldBlend, internalFormat) {
     gl.deleteTexture(tex);
 }
 
-function testExtFloatBlendMRT(shouldBlend) {
+function testExtFloatBlendMRT() {
+    const shouldBlend = gl.getSupportedExtensions().indexOf('EXT_float_blend') != -1;
+
     const prog = wtu.setupProgram(gl, [trivialVsMrtSrc, trivialFsMrtSrc]);
     gl.useProgram(prog);
 
@@ -123,7 +127,9 @@ function testExtFloatBlendMRT(shouldBlend) {
     gl.deleteTexture(texF2);
 }
 
-function testExtFloatBlendNonFloat32Type(shouldBlend) {
+function testExtFloatBlendNonFloat32Type() {
+    const shouldBlend = gl.getSupportedExtensions().indexOf('EXT_float_blend') != -1;
+
     const prog = wtu.setupProgram(gl, [trivialVsSrc, trivialFsSrc]);
     gl.useProgram(prog);
 

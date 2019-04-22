@@ -60,6 +60,15 @@ void main() {
 }
 </script>
 
+<script id="fs100-no-ext-draw-buffers" type="x-shader/x-fragment">
+precision mediump float;
+uniform sampler2D tex;
+varying vec2 texCoord;
+void main() {
+    gl_FragData[0] = texture2D(tex, texCoord);
+}
+</script>
+
 <script id="vs300" type="x-shader/x-vertex">#version 300 es
 in highp vec4 aPosition;
 in vec2 aTexCoord;
@@ -129,6 +138,8 @@ function init() {
     let shaders = ["vs100", "fs100"];
     if (gl.texStorage2D) {
         shaders = ["vs300", "fs300"];
+    } else if (!drawBuffers) {
+        shaders = ["vs100", "fs100-no-ext-draw-buffers"];
     }
     const program = wtu.setupProgram(gl, shaders, ["aPosition", "aTexCoord"], [0, 1]);
     const positionLoc = gl.getAttribLocation(program, "aPosition");
@@ -170,12 +181,12 @@ function rendering_sampling_feedback_loop(draw_buffers) {
 
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Feedback loop detection ignores drawBuffers settings.");
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Feedback loop detection should ignore drawBuffers settings.");
 
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST_MIPMAP_NEAREST);
     // The texture will be mipmap incomplete, so feedback cannot occur nor be consistently evaluated.
     wtu.clearAndDrawUnitQuad(gl);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Feedback loop detection ignores sampled incomplete textures.");
+    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "Feedback loop detection should ignore sampled incomplete textures.");
 
     if (draw_buffers) {
         drawBuffers([gl.COLOR_ATTACHMENT0]);

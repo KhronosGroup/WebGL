@@ -1,0 +1,63 @@
+#version 310 es
+precision mediump float;
+
+layout(local_size_x = NUM_THREADS, local_size_y = 1, local_size_z = 1) in;
+
+struct Particle {
+  vec2 position;
+  vec2 velocity;
+};
+
+struct ParticleDensity {
+  float density;
+  float padding1;
+  float padding2;
+  float padding3;
+};
+
+layout(std140, binding = 0) uniform Cb {
+  uint g_iNumParticles;
+  float g_fTimeStep;
+  float g_fSmoothlen;
+  float g_fPressureStiffness;
+  float g_fRestDensity;
+  float g_fDensityCoef;
+  float g_fGradPressureCoef;
+  float g_fLapViscosityCoef;
+  float g_fWallStiffness;
+  vec4 g_vGravity;
+  vec4 g_vGridDim;
+  vec3 g_vPlanes[4];
+}
+cb;
+
+layout(std140, binding = 0) buffer ParticlesRO {
+  readonly Particle particles[];
+}
+particlesRO;
+
+layout(std140, binding = 1) buffer ParticlesDensityRW {
+  ParticleDensity particles[];
+}
+particlesDensityRW;
+
+float CalculateDensity(float r_sq) {
+  float h_sq = cb.g_fSmoothlen * cb.g_fSmoothlen;
+  return cb.g_fDensityCoef * (h_sq - r_sq) * (h_sq - r_sq) * (h_sq - r_sq);
+}
+
+void main() {
+  int P_ID = int(gl_GlobalInvocationID.x);
+  float h_sq = cb.g_fSmoothlen * cb.g_fSmoothlen;
+  vec2 P_position = particlesRO.particles[P_ID].position;
+  float density = 0.0f;
+  for (uint N_ID = 0u; N_ID < cb.g_iNumParticles; N_ID++) {
+    vec2 N_position = particlesRO.particles[N_ID].position;
+    vec2 diff = N_position - P_position;
+    float r_sq = dot(diff, diff);
+    if (r_sq < h_sq) {
+      density += CalculateDensity(r_sq);
+    }
+  }
+  particlesDensityRW.particles[P_ID].density = density;
+}

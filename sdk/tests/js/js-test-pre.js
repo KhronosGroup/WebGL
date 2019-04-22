@@ -601,6 +601,31 @@ function expectTrue(v, msg) {
   }
 }
 
+function maxArrayDiff(a, b) {
+    if (a.length != b.length)
+        throw new Error(`a and b have different lengths: ${a.length} vs ${b.length}`);
+
+    let diff = 0;
+    for (const i in a) {
+        diff = Math.max(diff, Math.abs(a[i] - b[i]));
+    }
+    return diff;
+}
+
+function expectArray(was, expected, maxDiff=0) {
+    const diff = maxArrayDiff(expected, was);
+    let str = `Expected [${expected.toString()}]`;
+    let fn = testPassed;
+    if (maxDiff) {
+        str += ' +/- ' + maxDiff;
+    }
+    if (diff > maxDiff) {
+        fn = testFailed;
+        str += `, was [${was.toString()}]`;
+    }
+    fn(str);
+}
+
 function shouldThrow(_a, _e)
 {
   var exception;

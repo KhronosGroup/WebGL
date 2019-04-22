@@ -744,6 +744,7 @@ enum WebGLPowerPreference { "default", "low-power", "high-performance" };
     boolean preserveDrawingBuffer = false;
     WebGLPowerPreference powerPreference = "default";
     boolean failIfMajorPerformanceCaveat = false;
+    boolean desynchronized = false;
 };</pre>
 
     <h4>Context creation parameters</h4>
@@ -876,6 +877,35 @@ enum WebGLPowerPreference { "default", "low-power", "high-performance" };
               Alternatively the application can retry WebGL context creation with this parameter
               set to <code>false</code>, with the knowledge that a reduced-fidelity rendering mode
               should be used to improve performance.
+            </dd>
+        <dt> <span class=prop-value>desynchronized</span></dt>
+            <dd>
+              <p>
+                If the value is true, then the user agent may optimize the rendering of the canvas
+                to reduce the latency, as measured from input events to rasterization, by
+                desynchronizing the canvas paint cycle from the event loop, bypassing the ordinary
+                user agent rendering algorithm, or both. Insofar as this mode involves bypassing the
+                usual paint mechanisms, rasterization, or both, it might introduce visible tearing
+                artifacts.
+              </p>
+              <div class="note">
+                <p>
+                  The user agent usually renders on a buffer which is not being displayed, quickly
+                  swapping it and the one being scanned out for presentation; the former buffer is
+                  called back buffer and the latter <i>front buffer</i>. A popular technique for
+                  reducing latency is called front buffer rendering, also known as <i>single
+                  buffer</i> rendering, where rendering happens inparallel and racily with the
+                  scanning out process. This technique reduces the latency at the price of
+                  potentially introducing tearing artifacts and can be used to implement in total or
+                  part of the <code>desynchronized</code>
+                  boolean. <a href="#refsMULTIPLEBUFFERING">[MULTIPLEBUFFERING]</a>
+                </p>
+                <p>
+                  The <code>desynchronized</code> boolean can be useful when implementing certain
+                  kinds of applications, such as drawing applications, where the latency between
+                  input and rasterization is critical.
+                </p>
+              </div>
             </dd>
     </dl>
     <div class="example">
@@ -3613,7 +3643,7 @@ canvas.addEventListener(
     "webglcontextcreationerror",
     onContextCreationError, false);
 
-var gl = canvas.getContext("experimental-webgl");
+var gl = canvas.getContext("webgl");
 if(!gl) {
   alert("A WebGL context could not be created.\nReason: " +
         errorInfo);
@@ -4449,6 +4479,10 @@ extensions.
         <dd><cide><a href="https://www.opengl.org/registry/specs/KHR/robust_buffer_access_behavior.txt">
             KHR_robust_buffer_access_behavior OpenGL ES extension</a></cite>,
             Leech, J. and Daniell, P., August, 2014.
+        </dd>
+        <dt id="refsMULTIPLEBUFFERING">[MULTIPLEBUFFERING]</dt>
+        <dd>(Non-normative) <cite><a href="https://en.wikipedia.org/wiki/Multiple_buffering">
+            Multiple buffering</a></cite>. Wikipedia.
         </dd>
     </dl>
 

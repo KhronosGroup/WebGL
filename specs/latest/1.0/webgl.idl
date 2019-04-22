@@ -3,7 +3,7 @@
 // WebGL IDL definitions scraped from the Khronos specification:
 // https://www.khronos.org/registry/webgl/specs/latest/
 
-// Copyright (c) 2018 The Khronos Group Inc.
+// Copyright (c) 2019 The Khronos Group Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and/or associated documentation files (the
@@ -54,6 +54,7 @@ dictionary WebGLContextAttributes {
     boolean preserveDrawingBuffer = false;
     WebGLPowerPreference powerPreference = "default";
     boolean failIfMajorPerformanceCaveat = false;
+    boolean desynchronized = false;
 };
 
 [Exposed=(Window,Worker)]

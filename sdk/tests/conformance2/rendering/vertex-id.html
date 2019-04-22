@@ -14,17 +14,18 @@
 <!-- Shaders for testing instanced draws -->
 <script id="vs" type="text/plain">
 #version 300 es
-flat out int vVertexID;
+flat out highp int vVertexID;
 
 void main() {
     vVertexID = gl_VertexID;
+    gl_PointSize = 1.0;
     gl_Position = vec4(0,0,0,1);
 }
 </script>
 <script id="fs" type="text/plain">
 #version 300 es
-flat in int vVertexID;
-out int oVertexID;
+flat in highp int vVertexID;
+out highp int oVertexID;
 void main() {
     oVertexID = vVertexID;
 }

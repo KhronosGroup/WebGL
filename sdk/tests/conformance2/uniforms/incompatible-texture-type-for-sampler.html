@@ -255,6 +255,13 @@ function runTest() {
         });
     });
 
+    const samplerObject = gl.createSampler();
+    gl.samplerParameteri(samplerObject, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.samplerParameteri(samplerObject, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.samplerParameteri(samplerObject, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.samplerParameteri(samplerObject, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.samplerParameteri(samplerObject, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE);
+
     // The rules implemented here are:
 
     // Float samplers accept only float textures and normalized integer textures
@@ -289,19 +296,46 @@ function runTest() {
                 const internalFormat = textureInfo.internalFormat;
                 const desc = wtu.glEnumToString(gl, internalFormat);
                 const info = textureInternalFormatInfo[internalFormat];
-                gl.bindTexture(target, textureInfo.texture);
-                gl.texParameteri(target, gl.TEXTURE_COMPARE_MODE, gl.NONE);
-                gl.drawArrays(gl.POINTS, 0, 1);
+
+                // The texture object can have two values of TEXTURE_COMPARE_MODE: NONE or
+                // COMPARE_REF_TO_TEXTURE. However, the sampler can have three states:
+                // No sampler object bound, sampler object with NONE, and sampler object with
+                // COMPARE_REF_TO_TEXTURE. When a sampler object is bound, it overrides the
+                // texture object's state. We test 2*3=6 possible combinations of state.
+
+                // First test the three states that result in TEXTURE_COMPARE_MODE being NONE.
                 let expected = samplerType == info.samplerType ? gl.NONE : gl.INVALID_OPERATION;
-                wtu.glErrorShouldBe(gl, expected, `from draw with ${desc}`);
+                gl.bindTexture(target, textureInfo.texture);
+                gl.drawArrays(gl.POINTS, 0, 1);
+                wtu.glErrorShouldBe(gl, expected, `${desc} texture state NONE, no sampler object`);
+
+                gl.bindSampler(0, samplerObject);
+                gl.samplerParameteri(samplerObject, gl.TEXTURE_COMPARE_MODE, gl.NONE);
+                gl.drawArrays(gl.POINTS, 0, 1);
+                wtu.glErrorShouldBe(gl, expected, `${desc} texture state NONE, sampler state NONE`);
+
                 gl.texParameteri(target, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
                 gl.drawArrays(gl.POINTS, 0, 1);
+                wtu.glErrorShouldBe(gl, expected, `${desc} texture state COMPARE_REF_TO_TEXTURE, sampler state NONE`);
+
+                // Now test test the three states that result in TEXTURE_COMPARE_MODE being COMPARE_REF_TO_TEXTURE.
                 if (info.depth) {
                   expected = samplerType == SHADOW ? gl.NONE : gl.INVALID_OPERATION;
                 }
-                wtu.glErrorShouldBe(gl, expected, `from draw with ${desc} using TEXTURE_COMPARE_MODE`);
-            });
+                gl.bindSampler(0, null);
+                gl.drawArrays(gl.POINTS, 0, 1);
+                wtu.glErrorShouldBe(gl, expected, `${desc} texture state COMPARE_REF_TO_TEXTURE, no sampler object`);
 
+                gl.bindSampler(0, samplerObject);
+                gl.samplerParameteri(samplerObject, gl.TEXTURE_COMPARE_MODE, gl.COMPARE_REF_TO_TEXTURE);
+                gl.drawArrays(gl.POINTS, 0, 1);
+                wtu.glErrorShouldBe(gl, expected, `${desc} texture state COMPARE_REF_TO_TEXTURE, sampler state COMPARE_REF_TO_TEXTURE`);
+
+                gl.texParameteri(target, gl.TEXTURE_COMPARE_MODE, gl.NONE);
+                gl.drawArrays(gl.POINTS, 0, 1);
+                wtu.glErrorShouldBe(gl, expected, `${desc} texture state NONE, sampler state COMPARE_REF_TO_TEXTURE`);
+                gl.bindSampler(0, null);
+            });
         });
     };
 }

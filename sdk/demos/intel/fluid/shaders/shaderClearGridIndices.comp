@@ -1,0 +1,17 @@
+#version 310 es
+precision mediump float;
+
+layout(local_size_x = NUM_THREADS, local_size_y = 1, local_size_z = 1) in;
+
+struct GridIndices {
+  uvec2 indices;
+};
+
+layout(std140, binding = 5) buffer GridIndicesRW {
+  GridIndices data[];
+}
+gridIndicesRW;
+
+void main() {
+  gridIndicesRW.data[gl_GlobalInvocationID.x].indices = uvec2(0, 0);
+}

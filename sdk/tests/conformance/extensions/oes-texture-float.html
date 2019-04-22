@@ -131,8 +131,8 @@ if (!gl) {
                 runFramebufferTest();
 
                 debug("");
-                debug("Testing that float32 blending fails with EXT_float_blend.");
-                testExtFloatBlend(false, gl.RGBA);
+                debug("Test float32 blending without EXT_float_blend.");
+                testExtFloatBlend(gl.RGBA);
 
                 debug("");
                 debug("Testing that float32 blending succeeds with EXT_float_blend.");
@@ -140,7 +140,7 @@ if (!gl) {
                     testPassed("No EXT_float_blend support -- this is legal");
                     return;
                 }
-                testExtFloatBlend(true, gl.RGBA);
+                testExtFloatBlend(gl.RGBA);
             }
         })();
 
