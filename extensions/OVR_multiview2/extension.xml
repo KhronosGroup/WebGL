@@ -27,10 +27,10 @@
       </addendum>
       <addendum>
         The extension must be enabled with the
-        <code>#extension GL_OVR_multiview2</code> directive, as shown in the sample code, to use
+        <code>#extension GL_OVR_multiview2</code> or <code>#extension GL_OVR_multiview</code> directive, as shown in the sample code, to use
         the extension in a shader.
 
-        Likewise the shading language preprocessor <code>#define GL_OVR_multiview2</code>, will be defined to 1 if the extension is supported.
+        Likewise the shading language preprocessor <code>#define GL_OVR_multiview2</code> or <code>#define GL_OVR_multiview</code> will be defined to 1 if the extension is supported.
       </addendum>
       <addendum>
         When the number of views specified in the active program is one, <code>gl_ViewID_OVR</code> will always evaluate to zero.
@@ -47,13 +47,13 @@
         Adds support for rendering into multiple views simultaneously. This is supported for 2D texture arrays starting from WebGL 2.0.
       </feature>
       <feature>
-        When a shader enables, requires, or warns <code>GL_OVR_multiview2</code> with an extension directive:
+        When a shader enables, requires, or warns <code>GL_OVR_multiview2</code> or <code>GL_OVR_multiview</code> with an extension directive:
         <ul>
           <li><code>gl_ViewID_OVR</code> is a built-in input of the type uint.</li>
         </ul>
       </feature>
       <feature>
-        The GLSL macro <code>GL_OVR_multiview2</code> is defined as 1.
+        The GLSL macro <code>GL_OVR_multiview2</code> or <code>GL_OVR_multiview</code> is defined as 1.
       </feature>
     </features>
   </overview>
@@ -227,6 +227,10 @@ interface OVR_multiview2 {
 
     <revision date="2019/03/06">
       <change>Removing opaque framebuffer references, renaming extension to OVR_multiview2, and updating extension to only apply to WebGL 2.</change>
+    </revision>
+    
+    <revision date="2019/04/22">
+      <change>Adding #GL_OVR_multiview as extension directive, same functionality as #GL_OVR_multiview2.</change>
     </revision>
   </history>
 </draft>
