@@ -85,10 +85,12 @@ function runDrawBuffersClearTest()
     }
 }
 
-function runDrawBuffersRenderTest()
+function runDrawBuffersRenderTest(extensionName)
 {
     debug("");
     debug("Testing rendering into multiple draw buffers with a different transformation matrix chosen from a uniform array according to ViewID");
+    let extension = extensionName ? "GL_OVR_multiview" : "GL_OVR_multiview2";
+    debug(extension + " #extension directive used in this test");
 
     let width = 256;
     let height = 256;
@@ -107,8 +109,8 @@ function runDrawBuffersRenderTest()
     }
 
     let multiviewShaders = [
-      getMultiviewRealisticUseCaseVertexShader(views),
-      getMultiviewColorFragmentShaderForDrawBuffers(colorTex.length)
+      getMultiviewRealisticUseCaseVertexShader(views, extensionName),
+      getMultiviewColorFragmentShaderForDrawBuffers(colorTex.length, extensionName)
     ];
 
     let testProgram = wtu.setupProgram(gl, multiviewShaders, ['a_position'], [0], true);
@@ -166,7 +168,8 @@ if (!gl) {
 
       wtu.setupUnitQuad(gl, 0, 1);
 
-      runDrawBuffersRenderTest();
+      runDrawBuffersRenderTest(true);
+      runDrawBuffersRenderTest(false);
   }
 }
 

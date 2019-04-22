@@ -278,30 +278,31 @@ function runDetachTest()
     }
 }
 
-function runShaderCompileTest(extensionEnabled)
+function runShaderCompileTest(extensionEnabled, extensionName)
 {
     debug("");
     debug("Testing shader compiles with extension " + (extensionEnabled ? "enabled" : "disabled"));
+    let ext = extensionName ? "GL_OVR_multiview" : "GL_OVR_multiview2";
 
     var macroFragmentProgram = wtu.setupProgram(gl, [wtu.simpleVertexShaderESSL300, "macroFragmentShader"], undefined, undefined, true);
     if (extensionEnabled) {
         if (macroFragmentProgram) {
-            testPassed("GL_OVR_multiview2 defined in shaders when extension is enabled");
+            testPassed(ext + " defined in shaders when extension is enabled");
         } else {
-            testFailed("GL_OVR_multiview2 not defined in shaders when extension is enabled");
+            testFailed(ext + " not defined in shaders when extension is enabled");
         }
     } else {
         if (macroFragmentProgram) {
-            testFailed("GL_OVR_multiview2 defined in shaders when extension is disabled");
+            testFailed(ext + " defined in shaders when extension is disabled");
         } else {
-            testPassed("GL_OVR_multiview2 not defined in shaders when extension disabled");
+            testPassed(ext +  " not defined in shaders when extension disabled");
         }
     }
 
     if (!extensionEnabled) {
         let multiviewShaders = [
-          getMultiviewPassthroughVertexShader(2),
-          getMultiviewColorFragmentShader()
+          getMultiviewPassthroughVertexShader(2, extensionName),
+          getMultiviewColorFragmentShader(extensionName)
         ];
         let testProgram = wtu.setupProgram(gl, multiviewShaders, ['a_position'], [0], true);
         if (testProgram) {
@@ -343,10 +344,12 @@ function runClearTest()
     }
 }
 
-function runFragmentShaderRenderTest()
+function runFragmentShaderRenderTest(extensionName)
 {
     debug("");
     debug("Testing rendering with different colors in fragment shader");
+    let extension = extensionName ? "GL_OVR_multiview" : "GL_OVR_multiview2";
+    debug(extension + " #extension directive used in this test");
 
     let width = 256;
     let height = 256;
@@ -354,8 +357,8 @@ function runFragmentShaderRenderTest()
     let views = gl.getParameter(ext.MAX_VIEWS_OVR);
 
     let multiviewShaders = [
-      getMultiviewPassthroughVertexShader(views),
-      getMultiviewColorFragmentShader()
+      getMultiviewPassthroughVertexShader(views, extensionName),
+      getMultiviewColorFragmentShader(extensionName)
     ];
     let testProgram = wtu.setupProgram(gl, multiviewShaders, ['a_position'], [0], true);
     if (!testProgram) {
@@ -382,10 +385,12 @@ function runFragmentShaderRenderTest()
     }
 }
 
-function runVertexShaderRenderTest()
+function runVertexShaderRenderTest(extensionName)
 {
     debug("");
     debug("Testing rendering with different colors in fragment shader, different offsets in vertex shader");
+    let extension = extensionName ? "GL_OVR_multiview" : "GL_OVR_multiview2";
+    debug(extension + " #extension directive used in this test");
 
     let width = 256;
     let height = 256;
@@ -393,8 +398,8 @@ function runVertexShaderRenderTest()
     let views = gl.getParameter(ext.MAX_VIEWS_OVR);
 
     let multiviewShaders = [
-      getMultiviewOffsetVertexShader(views),
-      getMultiviewColorFragmentShader()
+      getMultiviewOffsetVertexShader(views, extensionName),
+      getMultiviewColorFragmentShader(extensionName)
     ];
 
     let testProgram = wtu.setupProgram(gl, multiviewShaders, ['a_position'], [0], true);
@@ -423,10 +428,12 @@ function runVertexShaderRenderTest()
     }
 }
 
-function runRealisticUseCaseRenderTest()
+function runRealisticUseCaseRenderTest(extensionName)
 {
     debug("");
     debug("Testing rendering with a different transformation matrix chosen from a uniform array according to ViewID");
+    let extension = extensionName ? "GL_OVR_multiview" : "GL_OVR_multiview2";
+    debug(extension + " #extension directive used in this test");
 
     let width = 256;
     let height = 256;
@@ -434,8 +441,8 @@ function runRealisticUseCaseRenderTest()
     let views = gl.getParameter(ext.MAX_VIEWS_OVR);
 
     let multiviewShaders = [
-      getMultiviewRealisticUseCaseVertexShader(views),
-      getMultiviewColorFragmentShader()
+      getMultiviewRealisticUseCaseVertexShader(views, extensionName),
+      getMultiviewColorFragmentShader(extensionName)
     ];
 
     let testProgram = wtu.setupProgram(gl, multiviewShaders, ['a_position'], [0], true);
@@ -494,9 +501,10 @@ if (!gl) {
 } else {
   testPassed("WebGL context exists");
 
-  runExtensionDisabledTest();
+//   runExtensionDisabledTest();
 
-  runShaderCompileTest(false);
+//   runShaderCompileTest(false, true);
+//   runShaderCompileTest(false, false);
 
   debug("");
 
@@ -506,28 +514,32 @@ if (!gl) {
       testPassed("Successfully enabled OVR_multiview2 extension");
       ext = gl.getExtension('OVR_multiview2');
 
-      runShaderCompileTest(true);
+    //   runShaderCompileTest(true, true);
+    //   runShaderCompileTest(true, false);
 
-      runQueryTest();
+    //   runQueryTest();
 
-      runDefaultFramebufferQueryTest();
+    //   runDefaultFramebufferQueryTest();
 
-      runInvalidTextureTypeTest();
+    //   runInvalidTextureTypeTest();
 
-      runFramebufferQueryTest(true);
-      runFramebufferQueryTest(false);
+    //   runFramebufferQueryTest(true);
+    //   runFramebufferQueryTest(false);
 
-      runInvalidViewsTest();
+    //   runInvalidViewsTest();
 
-      runDetachTest();
+    //   runDetachTest();
 
-      runClearTest();
+    //   runClearTest();
 
       wtu.setupUnitQuad(gl, 0, 1);
 
-      runFragmentShaderRenderTest();
-      runVertexShaderRenderTest();
-      runRealisticUseCaseRenderTest();
+      runFragmentShaderRenderTest(true);
+      runVertexShaderRenderTest(true);
+      runRealisticUseCaseRenderTest(true);
+      runFragmentShaderRenderTest(false);
+      runVertexShaderRenderTest(false);
+      runRealisticUseCaseRenderTest(false);
       runUniqueObjectTest();
   }
 }

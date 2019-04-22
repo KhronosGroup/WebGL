@@ -46,10 +46,12 @@ let gl = wtu.create3DContext(null, null, 2);
 let ext = null;
 let queryExt = null;
 
-function runTransformFeedbackTest()
+function runTransformFeedbackTest(extensionName)
 {
     debug("");
     debug("Testing transform feedback combined with multiview rendering");
+    let extension = extensionName ? "GL_OVR_multiview" : "GL_OVR_multiview2";
+    debug(extension + " #extension directive used in this test");
 
     let width = 64;
     let height = 64;
@@ -57,8 +59,8 @@ function runTransformFeedbackTest()
     let views = gl.getParameter(ext.MAX_VIEWS_OVR);
 
     let multiviewShaders = [
-      getMultiviewVaryingVertexShader(views),
-      getMultiviewVaryingFragmentShader()
+      getMultiviewVaryingVertexShader(views, extensionName),
+      getMultiviewVaryingFragmentShader(extensionName)
     ];
     let testProgram = wtu.setupTransformFeedbackProgram(gl, multiviewShaders, ['testVarying'], gl.SEPARATE_ATTRIBS, ['a_position'], [0], true);
     if (!testProgram) {
@@ -133,7 +135,8 @@ if (!gl) {
 
       wtu.setupUnitQuad(gl, 0, 1);
 
-      runTransformFeedbackTest();
+      runTransformFeedbackTest(true);
+      runTransformFeedbackTest(false);
   }
 }
 

@@ -45,10 +45,12 @@ let wtu = WebGLTestUtils;
 let gl = wtu.create3DContext(null, null, 2);
 let ext = null;
 
-function runFlatVaryingTest()
+function runFlatVaryingTest(extensionName)
 {
     debug("");
     debug("Testing rendering with different colors in fragment shader");
+    let extension = extensionName ? "GL_OVR_multiview" : "GL_OVR_multiview2";
+    debug(extension + " #extension directive used in this test");
 
     let width = 256;
     let height = 256;
@@ -56,8 +58,8 @@ function runFlatVaryingTest()
     let views = gl.getParameter(ext.MAX_VIEWS_OVR);
 
     let multiviewShaders = [
-      getMultiviewFlatVaryingVertexShader(views),
-      getMultiviewFlatVaryingFragmentShader()
+      getMultiviewFlatVaryingVertexShader(views, extensionName),
+      getMultiviewFlatVaryingFragmentShader(extensionName)
     ];
     let testProgram = wtu.setupProgram(gl, multiviewShaders, ['a_position'], [0], true);
     if (!testProgram) {
@@ -101,7 +103,8 @@ if (!gl) {
 
       wtu.setupUnitQuad(gl, 0, 1);
 
-      runFlatVaryingTest();
+      runFlatVaryingTest(true);
+      runFlatVaryingTest(false);
   }
 }
 

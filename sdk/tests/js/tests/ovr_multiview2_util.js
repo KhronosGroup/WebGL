@@ -81,9 +81,9 @@ function checkVerticalStrip(width, height, strips, coloredStripIndex, expectedSt
     wtu.checkCanvasRect(gl, colorRegionLeftEdge + 1, 0, colorRegionRightEdge - colorRegionLeftEdge - 2, height, expectedStripColor, 'a thin strip in ' + framebufferDescription + ' should be colored ' + expectedStripColor);
 }
 
-function getMultiviewPassthroughVertexShader(views) {
+function getMultiviewPassthroughVertexShader(views, extension) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview2 : require',
+    '#extension $(extension) : require',
 
     'layout(num_views = $(num_views)) in;',
 
@@ -92,15 +92,16 @@ function getMultiviewPassthroughVertexShader(views) {
     'void main() {',
     '    gl_Position = a_position;',
     '}'].join('\n');
-    return wtu.replaceParams(shaderCode, {'num_views': views});
+    let ext = extension ? 'GL_OVR_multiview' : 'GL_OVR_multiview2';
+    return wtu.replaceParams(shaderCode, {'num_views': views, 'extension': ext});
 }
 
 // This shader splits the viewport into <views> equally sized vertical strips.
 // The input quad defined by "a_position" is transformed to fill a different
 // strip in each view.
-function getMultiviewOffsetVertexShader(views) {
+function getMultiviewOffsetVertexShader(views, extension) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview2 : require',
+    '#extension $(extension) : require',
 
     'layout(num_views = $(num_views)) in;',
 
@@ -112,14 +113,15 @@ function getMultiviewOffsetVertexShader(views) {
     '    pos.x = (pos.x * 0.5 + 0.5 + float(gl_ViewID_OVR)) * 2.0 / $(num_views).0 - 1.0;',
     '    gl_Position = pos;',
     '}'].join('\n');
-    return wtu.replaceParams(shaderCode, {'num_views': views});
+    let ext = extension ? 'GL_OVR_multiview' : 'GL_OVR_multiview2';
+    return wtu.replaceParams(shaderCode, {'num_views': views, 'extension': ext});
 }
 
 // This shader transforms the incoming "a_position" with transforms for each
 // view given in the uniform array "transform".
-function getMultiviewRealisticUseCaseVertexShader(views) {
+function getMultiviewRealisticUseCaseVertexShader(views, extension) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview2 : require',
+    '#extension $(extension) : require',
 
     'layout(num_views = $(num_views)) in;',
 
@@ -131,12 +133,13 @@ function getMultiviewRealisticUseCaseVertexShader(views) {
     '    vec4 pos = transform[gl_ViewID_OVR] * a_position;',
     '    gl_Position = pos;',
     '}'].join('\n');
-    return wtu.replaceParams(shaderCode, {'num_views': views});
+    let ext = extension ? 'GL_OVR_multiview' : 'GL_OVR_multiview2';
+    return wtu.replaceParams(shaderCode, {'num_views': views, 'extension': ext});
 }
 
-function getMultiviewColorFragmentShader() {
-    return ['#version 300 es',
-    '#extension GL_OVR_multiview2 : require',
+function getMultiviewColorFragmentShader(extension) {
+    let shaderCode = ['#version 300 es',
+    '#extension $(extension) : require',
     'precision highp float;',
 
     'out vec4 my_FragColor;',
@@ -148,11 +151,13 @@ function getMultiviewColorFragmentShader() {
     '                        ((mask & 1u) != 0u) ? 1.0 : 0.0,',
     '                        1.0);',
     '}'].join('\n');
+    let ext = extension ? 'GL_OVR_multiview' : 'GL_OVR_multiview2';
+    return wtu.replaceParams(shaderCode, {'extension': ext});
 }
 
-function getMultiviewColorFragmentShaderForDrawBuffers(drawBuffers) {
+function getMultiviewColorFragmentShaderForDrawBuffers(drawBuffers, extension) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview2 : require',
+    '#extension $(extension) : require',
     'precision highp float;',
 
     'out vec4 my_FragColor[$(drawBuffers)];',
@@ -169,12 +174,13 @@ function getMultiviewColorFragmentShaderForDrawBuffers(drawBuffers) {
     }
     shaderCode.push('}');
     shaderCode = shaderCode.join('\n');
-    return wtu.replaceParams(shaderCode, {'drawBuffers' : drawBuffers});
+    let ext = extension ? 'GL_OVR_multiview' : 'GL_OVR_multiview2';
+    return wtu.replaceParams(shaderCode, {'drawBuffers' : drawBuffers, 'extension' : ext});
 }
 
-function getMultiviewVaryingVertexShader(views) {
+function getMultiviewVaryingVertexShader(views, extension) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview2 : require',
+    '#extension $(extension) : require',
 
     'layout(num_views = $(num_views)) in;',
 
@@ -185,12 +191,13 @@ function getMultiviewVaryingVertexShader(views) {
     '    gl_Position = a_position;',
     '    testVarying = float(gl_ViewID_OVR);',
     '}'].join('\n');
-    return wtu.replaceParams(shaderCode, {'num_views': views});
+    let ext = extension ? 'GL_OVR_multiview' : 'GL_OVR_multiview2';
+    return wtu.replaceParams(shaderCode, {'num_views': views, 'extension': ext});
 }
 
-function getMultiviewVaryingFragmentShader() {
-    return ['#version 300 es',
-    '#extension GL_OVR_multiview2 : require',
+function getMultiviewVaryingFragmentShader(extension) {
+    let shaderCode = ['#version 300 es',
+    '#extension $(extension) : require',
     'precision highp float;',
 
     'in float testVarying;',
@@ -203,11 +210,13 @@ function getMultiviewVaryingFragmentShader() {
     '                        ((mask & 1) != 0) ? 1.0 : 0.0,',
     '                        1.0);',
     '}'].join('\n');
+    let ext = extension ? 'GL_OVR_multiview' : 'GL_OVR_multiview2';
+    return wtu.replaceParams(shaderCode, {'extension': ext});
 }
 
-function getMultiviewFlatVaryingVertexShader(views) {
+function getMultiviewFlatVaryingVertexShader(views, extension) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview2 : require',
+    '#extension $(extension) : require',
 
     'layout(num_views = $(num_views)) in;',
 
@@ -218,12 +227,13 @@ function getMultiviewFlatVaryingVertexShader(views) {
     '    gl_Position = a_position;',
     '    testVarying = int(gl_ViewID_OVR);',
     '}'].join('\n');
-    return wtu.replaceParams(shaderCode, {'num_views': views});
+    let ext = extension ? 'GL_OVR_multiview' : 'GL_OVR_multiview2';
+    return wtu.replaceParams(shaderCode, {'num_views': views, 'extension': ext});
 }
 
-function getMultiviewFlatVaryingFragmentShader() {
-    return ['#version 300 es',
-    '#extension GL_OVR_multiview2 : require',
+function getMultiviewFlatVaryingFragmentShader(extension) {
+    let shaderCode = ['#version 300 es',
+    '#extension $(extension) : require',
     'precision highp float;',
 
     'flat in int testVarying;',
@@ -236,11 +246,13 @@ function getMultiviewFlatVaryingFragmentShader() {
     '                        ((mask & 1) != 0) ? 1.0 : 0.0,',
     '                        1.0);',
     '}'].join('\n');
+    let ext = extension ? 'GL_OVR_multiview' : 'GL_OVR_multiview2';
+    return wtu.replaceParams(shaderCode, {'extension': ext});
 }
 
-function getMultiviewInstancedVertexShader(views) {
+function getMultiviewInstancedVertexShader(views, extension) {
     let shaderCode = ['#version 300 es',
-    '#extension GL_OVR_multiview2 : require',
+    '#extension $(extension) : require',
 
     'layout(num_views = $(num_views)) in;',
 
@@ -258,12 +270,13 @@ function getMultiviewInstancedVertexShader(views) {
     '                 1.0);',
     '    gl_Position = pos;',
     '}'].join('\n');
-    return wtu.replaceParams(shaderCode, {'num_views': views});
+    let ext = extension ? 'GL_OVR_multiview' : 'GL_OVR_multiview2';
+    return wtu.replaceParams(shaderCode, {'num_views': views, 'extension': ext});
 }
 
-function getInstanceColorFragmentShader() {
-    return ['#version 300 es',
-    '#extension GL_OVR_multiview2 : require',
+function getInstanceColorFragmentShader(extension) {
+    let shaderCode = ['#version 300 es',
+    '#extension $(extension) : require',
     'precision highp float;',
 
     'in vec4 color;',
@@ -272,6 +285,8 @@ function getInstanceColorFragmentShader() {
     'void main() {',
     '    my_FragColor = color;',
     '}'].join('\n');
+    let ext = extension ? 'GL_OVR_multiview' : 'GL_OVR_multiview2';
+    return wtu.replaceParams(shaderCode, {'extension': ext});
 }
 
 function getExpectedColor(view) {

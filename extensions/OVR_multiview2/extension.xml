@@ -226,7 +226,7 @@ interface OVR_multiview2 {
     </revision>
 
     <revision date="2019/03/06">
-      <change>Removing opaque framebuffer references, renaming extension to OVR_multiview2, and updating extension to only apply to WebGL2.</change>
+      <change>Removing opaque framebuffer references, renaming extension to OVR_multiview2, and updating extension to only apply to WebGL 2.</change>
     </revision>
   </history>
 </draft>

@@ -57,10 +57,12 @@ let wtu = WebGLTestUtils;
 let gl = wtu.create3DContext(null, null, 2);
 let ext = null;
 
-function runDepthRenderTest()
+function runDepthRenderTest(extensionName)
 {
     debug("");
     debug("Testing rendering with a depth texture array and depth test on");
+    let extension = extensionName ? "GL_OVR_multiview" : "GL_OVR_multiview2";
+    debug(extension + " #extension directive used in this test");
 
     let width = 64;
     let height = 64;
@@ -68,8 +70,8 @@ function runDepthRenderTest()
     let views = gl.getParameter(ext.MAX_VIEWS_OVR);
 
     let multiviewShaders = [
-      getMultiviewPassthroughVertexShader(views),
-      getMultiviewColorFragmentShader()
+      getMultiviewPassthroughVertexShader(views, extensionName),
+      getMultiviewColorFragmentShader(extensionName)
     ];
     let testProgram = wtu.setupProgram(gl, multiviewShaders, ['a_position'], [0], true);
     if (!testProgram) {
@@ -146,7 +148,8 @@ if (!gl) {
 
       wtu.setupUnitQuad(gl, 0, 1);
 
-      runDepthRenderTest();
+      runDepthRenderTest(true);
+      runDepthRenderTest(false);
   }
 }
 

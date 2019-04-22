@@ -45,10 +45,12 @@ let wtu = WebGLTestUtils;
 let gl = wtu.create3DContext(null, null, 2);
 let ext = null;
 
-function runInstancedDrawTest()
+function runInstancedDrawTest(extensionName)
 {
     debug("");
     debug("Testing instanced rendering");
+    let extension = extensionName ? "GL_OVR_multiview" : "GL_OVR_multiview2";
+    debug(extension + " #extension directive used in this test");
 
     let width = 256;
     let height = 256;
@@ -56,8 +58,8 @@ function runInstancedDrawTest()
     let views = gl.getParameter(ext.MAX_VIEWS_OVR);
 
     let multiviewShaders = [
-      getMultiviewInstancedVertexShader(views),
-      getInstanceColorFragmentShader()
+      getMultiviewInstancedVertexShader(views, extensionName),
+      getInstanceColorFragmentShader(extensionName)
     ];
 
     let testProgram = wtu.setupProgram(gl, multiviewShaders, ['a_position'], [0], true);
@@ -113,7 +115,8 @@ if (!gl) {
 
       wtu.setupUnitQuad(gl, 0, 1);
 
-      runInstancedDrawTest();
+      runInstancedDrawTest(true);
+      runInstancedDrawTest(false);
   }
 }
 

@@ -84,10 +84,12 @@ function runClearTest()
     }
 }
 
-function runFragmentShaderRenderTest()
+function runFragmentShaderRenderTest(extensionName)
 {
     debug("");
     debug("Testing rendering with different colors in fragment shader");
+    let extension = extensionName ? "GL_OVR_multiview" : "GL_OVR_multiview2";
+    debug(extension + " #extension directive used in this test");
 
     let width = 256;
     let height = 256;
@@ -95,8 +97,8 @@ function runFragmentShaderRenderTest()
     let views = gl.getParameter(ext.MAX_VIEWS_OVR);
 
     let multiviewShaders = [
-      getMultiviewPassthroughVertexShader(views),
-      getMultiviewColorFragmentShader()
+      getMultiviewPassthroughVertexShader(views, extensionName),
+      getMultiviewColorFragmentShader(extensionName)
     ];
     let testProgram = wtu.setupProgram(gl, multiviewShaders, ['a_position'], [0], true);
     if (!testProgram) {
@@ -150,7 +152,8 @@ if (!gl) {
 
       wtu.setupUnitQuad(gl, 0, 1);
 
-      runFragmentShaderRenderTest();
+      runFragmentShaderRenderTest(true);
+      runFragmentShaderRenderTest(false);
   }
 }
 
