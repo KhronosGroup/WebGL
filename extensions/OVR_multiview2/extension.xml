@@ -23,7 +23,14 @@
         The values of <code>baseViewIndex</code> and <code>numViews</code> can result in an error only if the <code>texture</code> parameter is non-null.
       </addendum>
       <addendum>
-        If <code>baseViewIndex</code> is not the same for all framebuffer attachment points where the value of <code>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</code> is not <code>NONE</code> the framebuffer is considered incomplete. Calling <code>getFramebufferStatus</code> for a framebuffer in this state returns <code>FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR</code>. Other rules for framebuffer completeness from the OVR_multiview specification also apply.
+        If <code>baseViewIndex</code> is not the same for all framebuffer attachment points where
+        the value of <code>FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE</code> is not <code>NONE</code> the
+        framebuffer is considered incomplete. Calling <code>getFramebufferStatus</code> for a
+        framebuffer in this state returns <code>FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR</code>.
+        Other rules for framebuffer completeness from the OVR_multiview specification also apply.
+        <ul>
+          <li>This is required for a performant implementation on most desktop platforms.
+        </ul>
       </addendum>
       <addendum>
         The extension must be enabled with the
