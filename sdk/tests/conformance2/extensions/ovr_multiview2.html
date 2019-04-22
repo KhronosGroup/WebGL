@@ -283,6 +283,7 @@ function runShaderCompileTest(extensionEnabled, extensionName)
     debug("");
     debug("Testing shader compiles with extension " + (extensionEnabled ? "enabled" : "disabled"));
     let ext = extensionName ? "GL_OVR_multiview" : "GL_OVR_multiview2";
+    debug(extension + " #extension directive used in this test");
 
     var macroFragmentProgram = wtu.setupProgram(gl, [wtu.simpleVertexShaderESSL300, "macroFragmentShader"], undefined, undefined, true);
     if (extensionEnabled) {
@@ -501,10 +502,10 @@ if (!gl) {
 } else {
   testPassed("WebGL context exists");
 
-//   runExtensionDisabledTest();
+  runExtensionDisabledTest();
 
-//   runShaderCompileTest(false, true);
-//   runShaderCompileTest(false, false);
+  runShaderCompileTest(false, true);
+  runShaderCompileTest(false, false);
 
   debug("");
 
@@ -514,23 +515,23 @@ if (!gl) {
       testPassed("Successfully enabled OVR_multiview2 extension");
       ext = gl.getExtension('OVR_multiview2');
 
-    //   runShaderCompileTest(true, true);
-    //   runShaderCompileTest(true, false);
+      runShaderCompileTest(true, true);
+      runShaderCompileTest(true, false);
 
-    //   runQueryTest();
+      runQueryTest();
 
-    //   runDefaultFramebufferQueryTest();
+      runDefaultFramebufferQueryTest();
 
-    //   runInvalidTextureTypeTest();
+      runInvalidTextureTypeTest();
 
-    //   runFramebufferQueryTest(true);
-    //   runFramebufferQueryTest(false);
+      runFramebufferQueryTest(true);
+      runFramebufferQueryTest(false);
 
-    //   runInvalidViewsTest();
+      runInvalidViewsTest();
 
-    //   runDetachTest();
+      runDetachTest();
 
-    //   runClearTest();
+      runClearTest();
 
       wtu.setupUnitQuad(gl, 0, 1);
 
