@@ -29,7 +29,7 @@
         framebuffer in this state returns <code>FRAMEBUFFER_INCOMPLETE_VIEW_TARGETS_OVR</code>.
         Other rules for framebuffer completeness from the OVR_multiview specification also apply.
         <ul>
-          <li>This is required for a performant implementation on most desktop platforms.
+          <li>This is required for a performant implementation on most desktop platforms.</li>
         </ul>
       </addendum>
       <addendum>
