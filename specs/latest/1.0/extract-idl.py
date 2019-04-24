@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/env python3
 
 from datetime import date
 from string import Template
@@ -61,4 +61,4 @@ def elementTextContent(el):
 preList = doc.getElementsByTagName("pre")
 idlList = [elementTextContent(p) for p in preList if elementHasClass(p, "idl") ]
 licenseTemplate = Template(LICENSE)
-print licenseTemplate.substitute(YEAR=date.today().year) + "\n\n".join(idlList)
+print(licenseTemplate.substitute(YEAR=date.today().year) + "\n\n".join(idlList))
