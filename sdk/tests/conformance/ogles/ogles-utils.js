@@ -722,7 +722,7 @@ function runBuildTest(test, callback) {
       compileSuccess = (success[0] && success[1]);
       if (!test.compstat) {
         if (compileSuccess) {
-          testFailed("expected compile failure but was successful");
+          testPassed("expected compile failure but was successful (spec doesn't require reporting errors at compile time)");
         } else {
           testPassed("expected compile failure and it failed");
         }
@@ -736,8 +736,9 @@ function runBuildTest(test, callback) {
         var program = wtu.createProgram(gl, shaders[0], shaders[1], function() {
           linkSuccess = false;
         });
-        if (linkSuccess !== test.linkstat) {
-          testFailed("expected link to " + (test.linkstat ? "succeed" : "fail"));
+        var linkstatAdjusted = test.linkstat && test.compstat;
+        if (linkSuccess !== linkstatAdjusted) {
+          testFailed("expected link to " + (linkstatAdjusted ? "succeed" : "fail"));
         } else {
           testPassed("shaders compiled and linked as expected.");
         }
