@@ -168,14 +168,9 @@ interface OVR_multiview2 {
     precision mediump float;
     layout (num_views = 2) in;
     in vec4 inPos;
-    uniform mat4 u_viewMatrix0;
-    uniform mat4 u_viewMatrix1;
+    uniform mat4 u_viewMatrices[2];
     void main() {
-      if (gl_ViewID_OVR == 0u) {
-        gl_Position = u_viewMatrix0 * inPos;
-      } else {
-        gl_Position = u_viewMatrix1 * inPos;
-      }
+      gl_Position = u_viewMatrices[gl_ViewID_OVR] * inPos;
     }
     </pre>
   </samplecode>
