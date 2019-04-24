@@ -531,7 +531,7 @@ function runDrawTests() {
   } else {
     gl.useProgram(noWriteProgram);
     wtu.drawUnitQuad(gl);
-
+    wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Active draw buffers with missing frag outputs.");
     drawBuffersUtils.checkAttachmentsForColor(attachments, [0, 255, 0, 255]);
     gl.deleteProgram(noWriteProgram);
   }

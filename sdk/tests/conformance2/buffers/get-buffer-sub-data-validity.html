@@ -130,6 +130,8 @@ function copyBufferUsingTransformFeedback(src, dst) {
     gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, tf);
     gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, dst);
 
+    gl.drawBuffers([gl.NONE]);
+
     gl.enable(gl.RASTERIZER_DISCARD);
     gl.beginTransformFeedback(gl.POINTS);
     // treats the input and output data as two uint32s
