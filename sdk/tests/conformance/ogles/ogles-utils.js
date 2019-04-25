@@ -732,17 +732,19 @@ function runBuildTest(test, callback) {
         } else {
           testFailed("expected compile success but it failed");
         }
-        var linkSuccess = true;
-        var program = wtu.createProgram(gl, shaders[0], shaders[1], function() {
-          linkSuccess = false;
-        });
-        var linkstatAdjusted = test.linkstat && test.compstat;
-        if (linkSuccess !== linkstatAdjusted) {
-          testFailed("expected link to " + (linkstatAdjusted ? "succeed" : "fail"));
-        } else {
-          testPassed("shaders compiled and linked as expected.");
-        }
       }
+
+      var linkSuccess = true;
+      var program = wtu.createProgram(gl, shaders[0], shaders[1], function() {
+        linkSuccess = false;
+      });
+      var linkstatAdjusted = test.linkstat && test.compstat;
+      if (linkSuccess !== linkstatAdjusted) {
+        testFailed("expected link to " + (linkstatAdjusted ? "succeed" : "fail"));
+      } else {
+        testPassed("shaders compiled and linked as expected.");
+      }
+
       callback();
     }
   }
