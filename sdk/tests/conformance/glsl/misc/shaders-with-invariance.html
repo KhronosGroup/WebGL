@@ -333,8 +333,8 @@ var cases = [
     vShaderSuccess: true,
     fShaderId: "fragmentShaderGlobalInvariant",
     fShaderSuccess: true,
-    linkSuccess: false,
-    passMsg: "vertex shader with variant varying and fragment shader with invariant (global setting) varying must fail",
+    linkSuccess: true,
+    passMsg: "vertex shader with variant varying and fragment shader with invariant (global setting) varying must succeed",
   },
   {
     vShaderId: "vertexShaderInvariant",
