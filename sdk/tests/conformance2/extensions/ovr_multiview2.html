@@ -34,16 +34,32 @@
 <script src="../../js/js-test-pre.js"></script>
 <script src="../../js/webgl-test-utils.js"></script>
 <script src="../../js/tests/ovr_multiview2_util.js"></script>
-<script id="macroFragmentShader" type="x-shader/x-fragment">#version 300 es
+<script id="requireDefine_GL_OVR_multiview2" type="x-shader/x-fragment">#version 300 es
+#ifndef GL_OVR_multiview2
+    #error no GL_OVR_multiview2
+#endif
 precision highp float;
 out vec4 my_FragColor;
 void main() {
-#ifdef GL_OVR_multiview2
     my_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
-#else
-    // Error expected
-    #error no GL_OVR_multiview2;
+}
+</script>
+<script id="forbidDefine_GL_OVR_multiview" type="x-shader/x-fragment">#version 300 es
+#ifdef GL_OVR_multiview
+    #error legacy GL_OVR_multiview support must be forbidden
 #endif
+precision highp float;
+out vec4 my_FragColor;
+void main() {
+    my_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+}
+</script>
+<script id="legacyMultiview1Shader" type="x-shader/x-fragment">#version 300 es
+#extension GL_OVR_multiview: require
+precision highp float;
+out vec4 my_FragColor;
+void main() {
+    my_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
 }
 </script>
 </head>
@@ -283,19 +299,15 @@ function runShaderCompileTest(extensionEnabled)
     debug("");
     debug("Testing shader compiles with extension " + (extensionEnabled ? "enabled" : "disabled"));
 
-    var macroFragmentProgram = wtu.setupProgram(gl, [wtu.simpleVertexShaderESSL300, "macroFragmentShader"], undefined, undefined, true);
+    let prog = wtu.setupProgram(gl, [wtu.simpleVertexShaderESSL300, "requireDefine_GL_OVR_multiview2"], undefined, undefined, true);
+    expectTrue(!extensionEnabled == !prog,
+               "GL_OVR_multiview2 must be defined by the preprocessor iff OVR_multiview2 is enabled by getExtension.");
     if (extensionEnabled) {
-        if (macroFragmentProgram) {
-            testPassed("GL_OVR_multiview2 defined in shaders when extension is enabled");
-        } else {
-            testFailed("GL_OVR_multiview2 not defined in shaders when extension is enabled");
-        }
-    } else {
-        if (macroFragmentProgram) {
-            testFailed("GL_OVR_multiview2 defined in shaders when extension is disabled");
-        } else {
-            testPassed("GL_OVR_multiview2 not defined in shaders when extension disabled");
-        }
+        prog = wtu.setupProgram(gl, [wtu.simpleVertexShaderESSL300, "forbidDefine_GL_OVR_multiview"], undefined, undefined, true);
+        expectTrue(prog, "GL_OVR_multiview must never be defined by the preprocessor.");
+
+        prog = wtu.setupProgram(gl, [wtu.simpleVertexShaderESSL300, "legacyMultiview1Shader"], undefined, undefined, true);
+        expectTrue(!prog, "#extension GL_OVR_multiview must be forbidden.");
     }
 
     if (!extensionEnabled) {

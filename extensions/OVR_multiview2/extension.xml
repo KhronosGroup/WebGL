@@ -40,6 +40,12 @@
         Likewise the shading language preprocessor <code>#define GL_OVR_multiview2</code>, will be defined to 1 if the extension is supported.
       </addendum>
       <addendum>
+        The legacy <code>#extension GL_OVR_multiview</code> directive is <em>not</em> supported.
+        The only supported shader extension string is GL_OVR_multiview2.
+        Likewise the shading language preprocessor will not define <code>GL_OVR_multiview</code>,
+        even if OVR_multiview2 is supported.
+      </addendum>
+      <addendum>
         When the number of views specified in the active program is one, <code>gl_ViewID_OVR</code> will always evaluate to zero.
       </addendum>
       <addendum>
@@ -229,6 +235,10 @@ interface OVR_multiview2 {
 
     <revision date="2019/03/06">
       <change>Removing opaque framebuffer references, renaming extension to OVR_multiview2, and updating extension to only apply to WebGL 2.</change>
+    </revision>
+
+    <revision date="2019/04/25">
+      <change>Forbid legacy GL_OVR_multiview support in shaders.</change>
     </revision>
   </history>
 </draft>
