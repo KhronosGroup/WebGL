@@ -91,19 +91,11 @@ function runDefaultFramebufferQueryTest()
     debug("");
     debug("Testing querying base view index and num views on the default framebuffer");
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    let baseViewIndex = gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, ext.FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX_OVR);
-    let numViews = gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, ext.FRAMEBUFFER_ATTACHMENT_TEXTURE_NUM_VIEWS_OVR);
-    if (baseViewIndex != 0) {
-        testFailed('Unexpected baseViewIndex ' + baseViewIndex + ' on the default framebuffer');
-    } else {
-        testPassed('baseViewIndex on the default framebuffer was 0');
-    }
-    if (numViews != 0) {
-        testFailed('Unexpected numViews ' + numViews + ' on the default framebuffer');
-    } else {
-        testPassed('numViews on the default framebuffer was 0');
-    }
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "should be no errors from framebuffer queries on the default framebuffer");
+    // Same behavior as FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER:
+    gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, ext.FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX_OVR);
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "FRAMEBUFFER_ATTACHMENT_TEXTURE_BASE_VIEW_INDEX_OVR is INVALID_ENUM for default framebuffer");
+    gl.getFramebufferAttachmentParameter(gl.FRAMEBUFFER, gl.BACK, ext.FRAMEBUFFER_ATTACHMENT_TEXTURE_NUM_VIEWS_OVR);
+    wtu.glErrorShouldBe(gl, gl.INVALID_ENUM, "FRAMEBUFFER_ATTACHMENT_TEXTURE_NUM_VIEWS_OVR is INVALID_ENUM for default framebuffer");
 }
 
 function runInvalidTextureTypeTest()
