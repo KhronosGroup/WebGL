@@ -331,10 +331,6 @@ function go() {
     assertMsg(gl.getProgramParameter(progGood2, gl.LINK_STATUS) == false,
               "linking should fail with in-use formerly good program, with new bad shader attached");
 
-    // Invalid link leaves previous valid program intact.
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-    wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid program shouldn't generate a GL error");
-
     gl.useProgram(progGood1);
     gl.drawArrays(gl.TRIANGLES, 0, 4);
     wtu.glErrorShouldBe(gl, gl.NO_ERROR, "drawing with a valid when last used program shouldn't generate a GL error");
