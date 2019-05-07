@@ -551,6 +551,13 @@ function runDrawTests() {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
   wtu.drawUnitQuad(gl);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Active draw buffers with missing frag outputs.");
+  gl.colorMask(false, false, false, false);
+  wtu.drawUnitQuad(gl);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors when all 4 channels of color mask are disabled.");
+  gl.colorMask(false, true, false, false);
+  wtu.drawUnitQuad(gl);
+  wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "partially diabled color mask shall have no impact.");
+  gl.colorMask(true, true, true, true);
 
   debug("test that gl_FragColor broadcasts if extension is enabled in fragment shader");
   gl.clear(gl.COLOR_BUFFER_BIT);
