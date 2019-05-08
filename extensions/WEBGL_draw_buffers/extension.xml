@@ -78,7 +78,7 @@
 
         In this scenario, if there are draw buffers other than COLOR_ATTACHMENT0, because there is
         only a fragment shader output for DRAW_BUFFER0, draw commands generate
-        <code>INVALID_OPERATION</code>.
+        <code>INVALID_OPERATION</code>, unless all 4 channels of <code>colorMask</code> are set to false.
       </addendum>
       <addendum>
         If a fragment shader writes to neither <code>gl_FragColor</code> nor <code>gl_FragData</code>, the values of
