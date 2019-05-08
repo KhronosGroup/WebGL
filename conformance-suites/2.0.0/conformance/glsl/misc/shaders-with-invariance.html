@@ -328,6 +328,9 @@ var cases = [
     linkSuccess: false,
     passMsg: "fragment shader with invariant gl_FrontFacing must fail compilation",
   },
+  // The following test has been removed as it was enforcing a rule contradictory to the ESSL 1.0
+  // specification.
+  /*
   {
     vShaderId: "vertexShaderVariant",
     vShaderSuccess: true,
@@ -336,6 +339,7 @@ var cases = [
     linkSuccess: false,
     passMsg: "vertex shader with variant varying and fragment shader with invariant (global setting) varying must fail",
   },
+  */
   {
     vShaderId: "vertexShaderInvariant",
     vShaderSuccess: true,
