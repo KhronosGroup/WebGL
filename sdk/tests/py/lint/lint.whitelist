@@ -28,6 +28,12 @@ INDENT TABS:*.vert
 INDENT TABS:deqp/functional/gles3/*.js
 INDENT TABS:conformance-suites/2.0.0/deqp/functional/gles3/*.js
 
+## Two files in the repository deliberately contain Unicode. Skip the
+## content checks for them.
+
+CONTAINS UNICODE:sdk/tests/conformance/glsl/misc/non-ascii-comments.vert.html
+CONTAINS UNICODE:sdk/tests/conformance/glsl/misc/non-ascii.vert.html
+
 ## File types that should never be checked ##
 
 *:*.pdf

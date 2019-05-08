@@ -146,10 +146,13 @@ def check_regexp_line(path, f):
 
     applicable_regexps = [regexp for regexp in regexps if regexp.applies(path)]
 
-    for i, line in enumerate(f):
-        for regexp in applicable_regexps:
-            if regexp.search(line):
-                errors.append((regexp.error, "%s line %i" % (path, i+1), i+1))
+    try:
+        for i, line in enumerate(f):
+            for regexp in applicable_regexps:
+                if regexp.search(line):
+                    errors.append((regexp.error, "%s line %i" % (path, i+1), i+1))
+    except UnicodeDecodeError as e:
+        return [("CONTAINS UNICODE", "File %s contains Unicode characters" % path, None)]
 
     return errors
 
