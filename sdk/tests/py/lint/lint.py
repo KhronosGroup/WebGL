@@ -152,7 +152,7 @@ def check_regexp_line(path, f):
                 if regexp.search(line):
                     errors.append((regexp.error, "%s line %i" % (path, i+1), i+1))
     except UnicodeDecodeError as e:
-        return [("CONTAINS UNICODE", "File %s contains Unicode characters" % path, None)]
+        return [("INVALID UNICODE", "File %s contains non-UTF-8 Unicode characters" % path, None)]
 
     return errors
 
