@@ -182,7 +182,8 @@ if (!gl) {
       var formatName = wtu.glEnumToString(gl, format);
       var desc = "format: " + formatName + ", type: " + typeName;
       debug("");
-      debug("checking gl.texImage2D with " + desc);
+      debug("checking gl.texImage2D with " + desc + " and buffer type " +
+            buf.constructor.name);
       gl.texImage2D(gl.TEXTURE_2D,
                     0,                 // level
                     format,            // internalFormat
@@ -205,6 +206,13 @@ if (!gl) {
    checkType(
        0, 255, 0, 255, gl.UNSIGNED_BYTE, gl.RGBA,
        new Uint8Array(
+         [ 0, 255, 0, 255,
+           0, 255, 0, 255,
+           0, 255, 0, 255,
+           0, 255, 0, 255]));
+   checkType(
+       0, 255, 0, 255, gl.UNSIGNED_BYTE, gl.RGBA,
+       new Uint8ClampedArray(
          [ 0, 255, 0, 255,
            0, 255, 0, 255,
            0, 255, 0, 255,
