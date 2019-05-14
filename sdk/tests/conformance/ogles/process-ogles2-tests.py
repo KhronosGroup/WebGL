@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/env python2
 
 """generates tests from OpenGL ES 2.0 .run/.test files."""
 
@@ -29,12 +29,10 @@ FILTERS = [
 ]
 
 LICENSE = """
-/*
 Copyright (c) 2019 The Khronos Group Inc.
 Use of this source code is governed by an MIT-style license that can be
 found in the LICENSE.txt file.
-*/
-"""
+""".strip()
 
 COMMENT_RE = re.compile("/\*\n\*\*\s+Copyright.*?\*/",
                         re.IGNORECASE | re.DOTALL)
@@ -222,7 +220,8 @@ def CopyShader(filename, src, dst):
     print "no matching license found:", s
     raise RuntimeError
   new_text = REMOVE_COPYRIGHT_RE.sub("", new_text)
-  new_text = new_text.replace(marker, LICENSE)
+  glsl_license = '/*\n' + LICENSE + '\n*/'
+  new_text = new_text.replace(marker, glsl_license)
   f = WriteOpen(d)
   f.write(new_text)
   f.close()
@@ -342,9 +341,8 @@ class TestReader():
   def WriteTests(self, filename, outname, tests_data):
     Log("Writing %s" % outname)
     template = """<!DOCTYPE html>
-<!-- this file is auto-generated. DO NOT EDIT.
+<!-- this file is auto-generated. DO NOT EDIT. -->
 %(license)s
--->
 <html>
 <head>
 <meta charset="utf-8">
@@ -376,9 +374,10 @@ var successfullyParsed = true;
     css_html = RelativizePaths(outname, css, '<link rel="stylesheet" href="%s" />')
     scripts_html = RelativizePaths(outname, scripts, '<script src="%s"></script>')
 
+    html_license = '<!--\n' + LICENSE + '\n-->'
     f = WriteOpen(outname)
     f.write(template % {
-        "license": LICENSE,
+        "license": html_license,
         "css": css_html,
         "scripts": scripts_html,
         "title": os.path.basename(outname),
