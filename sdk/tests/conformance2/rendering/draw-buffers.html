@@ -343,6 +343,10 @@ function runDrawTests() {
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors");
   wtu.drawUnitQuad(gl);
   wtu.glErrorShouldBe(gl, gl.INVALID_OPERATION, "Active draw buffers with missing frag outputs.");
+  gl.enable(gl.RASTERIZER_DISCARD);
+  wtu.drawUnitQuad(gl);
+  wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors when RASTERIZER_DISCARD is enabled.");
+  gl.disable(gl.RASTERIZER_DISCARD);
   gl.colorMask(false, false, false, false);
   wtu.drawUnitQuad(gl);
   wtu.glErrorShouldBe(gl, gl.NO_ERROR, "there should be no errors when all 4 channels of color mask are disabled.");
