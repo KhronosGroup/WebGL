@@ -80,8 +80,8 @@ async function getPixelsFromOffscreenWebgl(preserveFlag, color, msg) {
 
     // Test if OffscreenCanvas.webgl loses contents if preserveDrawingBuffer is false.
     await getPixelsFromOffscreenWebgl(false, [0, 0, 0, 0], "should not be preserved");
-    finishTest();
   }
+  finishTest();
 })();
 
 </script>
