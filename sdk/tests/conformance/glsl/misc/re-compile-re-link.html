@@ -91,7 +91,7 @@ function checkShaderStatus(s) {
   shader = s;
   shouldBeTrue("success = gl.getShaderParameter(shader, gl.COMPILE_STATUS)");
   if (!success) {
-    debug("error: " + gl.getShaderInfoLog());
+    debug("error: " + gl.getShaderInfoLog(shader));
   }
 }
 
