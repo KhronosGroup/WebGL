@@ -11,6 +11,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
     var successfullyParsed = false;
     var redColor = [255, 0, 0];
     var greenColor = [0, 255, 0];
+    var blueColor = [0, 0, 255];
     var repeatCount;
 
     function shouldRepeatTestForTextureFormat(internalFormat, pixelFormat, pixelType)
@@ -47,15 +48,22 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
           case gl.RED:
           case gl.RED_INTEGER:
             greenColor = [0, 0, 0];
+            blueColor = [0, 0, 0];
             break;
           case gl.LUMINANCE:
           case gl.LUMINANCE_ALPHA:
             redColor = [255, 255, 255];
             greenColor = [0, 0, 0];
+            blueColor = [0, 0, 0];
             break;
           case gl.ALPHA:
             redColor = [0, 0, 0];
             greenColor = [0, 0, 0];
+            blueColor = [0, 0, 0];
+            break;
+          case gl.RG:
+          case gl.RG_INTEGER:
+            blueColor = [0, 0, 0];
             break;
           default:
             break;
@@ -76,7 +84,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
       ctx.enable(ctx.SCISSOR_TEST);
       ctx.scissor(0, 0, width, halfHeight);
-      ctx.clearColor(1.0, 0, 0, 1.0);
+      ctx.clearColor(1.0, 0.0, 0.0, 1.0);
       ctx.clear(ctx.COLOR_BUFFER_BIT);
       ctx.scissor(0, halfHeight, width, height - halfHeight);
       ctx.clearColor(0.0, 1.0, 0, 1.0);
@@ -84,10 +92,32 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
       ctx.disable(ctx.SCISSOR_TEST);
     }
 
+
+    function setCanvasToRedGreenBlue(ctx) {
+      var width = ctx.canvas.width;
+      var height = ctx.canvas.height;
+      var halfHeight = Math.floor(height / 2);
+      var quarterHeight = Math.floor(height / 4);
+
+      ctx.viewport(0, 0, width, height);
+
+      ctx.enable(ctx.SCISSOR_TEST);
+      ctx.scissor(0, 0, width, quarterHeight);
+      ctx.clearColor(1.0, 0.0, 0.0, 1.0);
+      ctx.clear(ctx.COLOR_BUFFER_BIT);
+      ctx.scissor(0, quarterHeight, width, height - quarterHeight);
+      ctx.clearColor(0.0, 0.0, 1.0, 1.0);
+      ctx.clear(ctx.COLOR_BUFFER_BIT);
+      ctx.scissor(0, height - quarterHeight, width, height);
+      ctx.clearColor(0.0, 1.0, 0.0, 1.0);
+      ctx.clear(ctx.COLOR_BUFFER_BIT);
+      ctx.disable(ctx.SCISSOR_TEST);
+    }
+
     function setCanvasTo257x257(ctx, bindingTarget) {
       ctx.canvas.width = 257;
       ctx.canvas.height = 257;
-      setCanvasToRedGreen(ctx);
+      setCanvasToRedGreenBlue(ctx);
     }
 
     function setCanvasToMin(ctx, bindingTarget) {
@@ -101,7 +131,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
       setCanvasToRedGreen(ctx);
     }
 
-    function runOneIteration(canvas, useTexSubImage2D, flipY, program, bindingTarget, opt_texture)
+    function runOneIteration(canvas, useTexSubImage2D, flipY, program, bindingTarget, opt_texture, colors)
     {
         var objType = 'canvas';
         if (canvas.transferToImageBitmap)
@@ -111,7 +141,8 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         debug('Testing ' + (useTexSubImage2D ? 'texSubImage2D' : 'texImage2D') + ' with flipY=' +
               flipY + ' source object: ' + objType +
               ' bindingTarget=' + (bindingTarget == gl.TEXTURE_2D ? 'TEXTURE_2D' : 'TEXTURE_CUBE_MAP') +
-              ' canvas size: ' + canvas.width + 'x' + canvas.height + ' with red-green');
+              ' canvas size: ' + canvas.width + 'x' + canvas.height +
+              ' with ' + (colors == 3 ? 'red-blue-green' : 'red-green'));
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         if (!opt_texture) {
@@ -153,10 +184,11 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
         var width = gl.canvas.width;
         var height = gl.canvas.height;
-        var halfWidth = Math.floor(width / 2);
         var halfHeight = Math.floor(height / 2);
-        var top = flipY ? (height - halfHeight) : 0;
-        var bottom = flipY ? 0 : (height - halfHeight);
+        var quarterHeight = Math.floor(height / 4);
+        var stripSize = (colors == 3) ? quarterHeight : halfHeight;
+        var top = flipY ? (height - stripSize) : 0;
+        var bottom = flipY ? 0 : (height - stripSize);
 
         var loc;
         if (bindingTarget == gl.TEXTURE_CUBE_MAP) {
@@ -172,10 +204,15 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
 
             // Check the top and bottom halves and make sure they have the right color.
             debug("Checking " + (flipY ? "top" : "bottom"));
-            wtu.checkCanvasRect(gl, 0, bottom, width, halfHeight, redColor,
+            wtu.checkCanvasRect(gl, 0, bottom, width, stripSize, redColor,
                     "shouldBe " + redColor);
+            if (colors == 3) {
+              debug("Checking middle");
+              wtu.checkCanvasRect(gl, 0, quarterHeight, width, halfHeight, blueColor,
+                      "shouldBe " + blueColor);
+            }
             debug("Checking " + (flipY ? "bottom" : "top"));
-            wtu.checkCanvasRect(gl, 0, top, width, halfHeight, greenColor,
+            wtu.checkCanvasRect(gl, 0, top, width, stripSize, greenColor,
                     "shouldBe " + greenColor);
         }
 
@@ -208,28 +245,28 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
         document.body.insertBefore(visibleCanvas, descriptionNode);
 
         var cases = [
-            { sub: false, flipY: true,  ctx: ctx, init: setCanvasToMin },
-            { sub: false, flipY: false, ctx: ctx },
-            { sub: true,  flipY: true,  ctx: ctx },
-            { sub: true,  flipY: false, ctx: ctx },
-            { sub: false, flipY: true,  ctx: ctx, init: setCanvasTo257x257 },
-            { sub: false, flipY: false, ctx: ctx },
-            { sub: true,  flipY: true,  ctx: ctx },
-            { sub: true,  flipY: false, ctx: ctx },
-            { sub: false, flipY: true,  ctx: visibleCtx, init: setCanvasToMin },
-            { sub: false, flipY: false, ctx: visibleCtx },
-            { sub: true,  flipY: true,  ctx: visibleCtx },
-            { sub: true,  flipY: false, ctx: visibleCtx },
+            { sub: false, flipY: true,  ctx: ctx, colors: 2, init: setCanvasToMin },
+            { sub: false, flipY: false, ctx: ctx, colors: 2 },
+            { sub: true,  flipY: true,  ctx: ctx, colors: 2 },
+            { sub: true,  flipY: false, ctx: ctx, colors: 2 },
+            { sub: false, flipY: true,  ctx: ctx, colors: 3, init: setCanvasTo257x257 },
+            { sub: false, flipY: false, ctx: ctx, colors: 3 },
+            { sub: true,  flipY: true,  ctx: ctx, colors: 3 },
+            { sub: true,  flipY: false, ctx: ctx, colors: 3 },
+            { sub: false, flipY: true,  ctx: visibleCtx, colors: 2, init: setCanvasToMin },
+            { sub: false, flipY: false, ctx: visibleCtx, colors: 2 },
+            { sub: true,  flipY: true,  ctx: visibleCtx, colors: 2 },
+            { sub: true,  flipY: false, ctx: visibleCtx, colors: 2 },
         ];
 
         if (window.OffscreenCanvas) {
             var offscreen = new OffscreenCanvas(1, 1);
             var offscreenCtx = wtu.create3DContext(offscreen);
             cases = cases.concat([
-                { sub: false, flipY: true,  ctx: offscreenCtx, init: setCanvasToMin },
-                { sub: false, flipY: false, ctx: offscreenCtx },
-                { sub: true,  flipY: true,  ctx: offscreenCtx },
-                { sub: true,  flipY: false, ctx: offscreenCtx },
+                { sub: false, flipY: true,  ctx: offscreenCtx, colors: 2, init: setCanvasToMin },
+                { sub: false, flipY: false, ctx: offscreenCtx, colors: 2 },
+                { sub: true,  flipY: true,  ctx: offscreenCtx, colors: 2 },
+                { sub: true,  flipY: false, ctx: offscreenCtx, colors: 2 },
             ]);
         }
 
@@ -250,7 +287,7 @@ function generateTest(internalFormat, pixelFormat, pixelType, prologue, resource
                     if (c.init) {
                       c.init(c.ctx, bindingTarget);
                     }
-                    texture = runOneIteration(c.ctx.canvas, c.sub, c.flipY, program, bindingTarget, texture);
+                    texture = runOneIteration(c.ctx.canvas, c.sub, c.flipY, program, bindingTarget, texture, c.colors);
                     // for the first 2 iterations always make a new texture.
                     if (count < 2) {
                       gl.deleteTexture(texture);
