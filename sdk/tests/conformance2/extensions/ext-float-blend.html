@@ -30,8 +30,8 @@ var ext = null;
     debug("");
     debug("Testing float32 blending without EXT_float_blend");
     testExtFloatBlend(gl.RGBA32F);
-    testExtFloatBlendMRT();
-    testExtFloatBlendNonFloat32Type();
+    testExtFloatBlendMRTWebGL2();
+    testExtFloatBlendNonFloat32TypeWebGL2();
 
     const floatBlend = gl.getExtension("EXT_float_blend");
     if (!floatBlend) {
@@ -42,8 +42,8 @@ var ext = null;
     debug("");
     debug("Testing that float32 blending is allowed with EXT_float_blend");
     testExtFloatBlend(gl.RGBA32F);
-    testExtFloatBlendMRT();
-    testExtFloatBlendNonFloat32Type();
+    testExtFloatBlendMRTWebGL2();
+    testExtFloatBlendNonFloat32TypeWebGL2();
 })();
 
 debug("");

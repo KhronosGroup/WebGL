@@ -12,13 +12,28 @@ void main()
     gl_FragColor = vec4(0,1,0,1);
 }
 `;
-const trivialVsMrtSrc = `#version 300 es
+const trivialVsMrtSrc100 = `
 void main()
 {
     gl_Position = vec4(0,0,0,1);
 }
 `;
-const trivialFsMrtSrc = `#version 300 es
+const trivialFsMrtSrc100 = `
+#extension GL_EXT_draw_buffers : require
+precision mediump float;
+void main()
+{
+    gl_FragData[0] = vec4(1, 0, 0, 1);
+    gl_FragData[1] = vec4(0, 1, 0, 1);
+}
+`;
+const trivialVsMrtSrc300 = `#version 300 es
+void main()
+{
+    gl_Position = vec4(0,0,0,1);
+}
+`;
+const trivialFsMrtSrc300 = `#version 300 es
 precision mediump float;
 layout(location = 0) out vec4 o_color0;
 layout(location = 1) out vec4 o_color1;
@@ -57,10 +72,10 @@ function testExtFloatBlend(internalFormat) {
     gl.deleteTexture(tex);
 }
 
-function testExtFloatBlendMRT() {
+function testExtFloatBlendMRT(internalFormat, shaders, attachments, drawBuffers) {
     const shouldBlend = gl.getSupportedExtensions().indexOf('EXT_float_blend') != -1;
 
-    const prog = wtu.setupProgram(gl, [trivialVsMrtSrc, trivialFsMrtSrc]);
+    const prog = wtu.setupProgram(gl, shaders);
     gl.useProgram(prog);
 
     const tex1 = gl.createTexture();
@@ -73,48 +88,51 @@ function testExtFloatBlendMRT() {
 
     const texF1 = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texF1);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 1, 1, 0, gl.RGBA, gl.FLOAT, null);
+    gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 1, 1, 0, gl.RGBA, gl.FLOAT, null);
 
     const texF2 = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texF2);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 1, 1, 0, gl.RGBA, gl.FLOAT, null);
+    gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 1, 1, 0, gl.RGBA, gl.FLOAT, null);
 
     const fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex1, 0);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.TEXTURE_2D, tex2, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[0], gl.TEXTURE_2D, tex1, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[1], gl.TEXTURE_2D, tex2, 0);
     shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
 
-    gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1]);
+    drawBuffers(attachments);
 
     gl.enable(gl.BLEND);
 
     gl.drawArrays(gl.POINTS, 0, 1);
     wtu.glErrorShouldBe(gl, 0, 'No Float32 color attachment');
 
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texF1, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[0], gl.TEXTURE_2D, texF1, 0);
+    shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
     gl.drawArrays(gl.POINTS, 0, 1);
     wtu.glErrorShouldBe(gl, shouldBlend ? 0 : gl.INVALID_OPERATION,
                         'Float32 blending is ' + (shouldBlend ? '' : 'not ') + 'allowed ');
 
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.TEXTURE_2D, texF2, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[1], gl.TEXTURE_2D, texF2, 0);
+    shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
     gl.drawArrays(gl.POINTS, 0, 1);
     wtu.glErrorShouldBe(gl, shouldBlend ? 0 : gl.INVALID_OPERATION,
                         'Float32 blending is ' + (shouldBlend ? '' : 'not ') + 'allowed ');
 
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex1, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[0], gl.TEXTURE_2D, tex1, 0);
+    shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
     gl.drawArrays(gl.POINTS, 0, 1);
     wtu.glErrorShouldBe(gl, shouldBlend ? 0 : gl.INVALID_OPERATION,
                         'Float32 blending is ' + (shouldBlend ? '' : 'not ') + 'allowed ');
 
-    gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
+    drawBuffers([attachments[0]]);
     shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
 
     gl.drawArrays(gl.POINTS, 0, 1);
     wtu.glErrorShouldBe(gl, 0, 'Float32 color attachment draw buffer is not enabled');
 
-    gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1]);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.TEXTURE_2D, tex2, 0);
+    drawBuffers(attachments);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, attachments[1], gl.TEXTURE_2D, tex2, 0);
     shouldBe('gl.checkFramebufferStatus(gl.FRAMEBUFFER)', 'gl.FRAMEBUFFER_COMPLETE');
 
     gl.drawArrays(gl.POINTS, 0, 1);
@@ -127,7 +145,25 @@ function testExtFloatBlendMRT() {
     gl.deleteTexture(texF2);
 }
 
-function testExtFloatBlendNonFloat32Type() {
+function testExtFloatBlendMRTWebGL1(drawBuffersExt) {
+    testExtFloatBlendMRT(
+        gl.RGBA,
+        [trivialVsMrtSrc100, trivialFsMrtSrc100],
+        [drawBuffersExt.COLOR_ATTACHMENT0_WEBGL, drawBuffersExt.COLOR_ATTACHMENT1_WEBGL],
+        drawBuffersExt.drawBuffersWEBGL.bind(drawBuffersExt)
+    );
+}
+
+function testExtFloatBlendMRTWebGL2() {
+    testExtFloatBlendMRT(
+        gl.RGBA32F,
+        [trivialVsMrtSrc300, trivialFsMrtSrc300],
+        [gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1],
+        gl.drawBuffers.bind(gl)
+    );
+}
+
+function testExtFloatBlendNonFloat32Type(internalFormat, formats) {
     const shouldBlend = gl.getSupportedExtensions().indexOf('EXT_float_blend') != -1;
 
     const prog = wtu.setupProgram(gl, [trivialVsSrc, trivialFsSrc]);
@@ -137,7 +173,7 @@ function testExtFloatBlendNonFloat32Type() {
 
     const tex = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, 1, 1, 0, gl.RGBA, gl.FLOAT, null);
+    gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 1, 1, 0, gl.RGBA, gl.FLOAT, null);
 
     const fb = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
@@ -152,14 +188,6 @@ function testExtFloatBlendNonFloat32Type() {
     gl.drawArrays(gl.POINTS, 0, 1);
     wtu.glErrorShouldBe(gl, 0, 'UNSIGNED_BYTE should blend anyway');
 
-    const formats = [
-        [gl.RGBA16F, gl.RGBA, gl.HALF_FLOAT],
-        [gl.RGBA16F, gl.RGBA, gl.FLOAT],
-        [gl.RG16F, gl.RG, gl.FLOAT],
-        [gl.R16F, gl.RED, gl.FLOAT],
-        [gl.R11F_G11F_B10F, gl.RGB, gl.FLOAT]
-    ];
-
     for (let i = 0, len = formats.length; i < len; i++) {
         gl.texImage2D(gl.TEXTURE_2D, 0, formats[i][0], 1, 1, 0, formats[i][1], formats[i][2], null);
         gl.drawArrays(gl.POINTS, 0, 1);
@@ -168,6 +196,25 @@ function testExtFloatBlendNonFloat32Type() {
 
     gl.deleteFramebuffer(fb);
     gl.deleteTexture(tex);
+}
+
+function testExtFloatBlendNonFloat32TypeWebGL1(ext) {
+    const formats = [
+        [gl.RGBA, gl.RGBA, ext.HALF_FLOAT_OES],
+        [gl.RGB, gl.RGB, ext.HALF_FLOAT_OES]
+    ];
+    testExtFloatBlendNonFloat32Type(gl.RGBA, formats);
+}
+
+function testExtFloatBlendNonFloat32TypeWebGL2() {
+    const formats = [
+        [gl.RGBA16F, gl.RGBA, gl.HALF_FLOAT],
+        [gl.RGBA16F, gl.RGBA, gl.FLOAT],
+        [gl.RG16F, gl.RG, gl.FLOAT],
+        [gl.R16F, gl.RED, gl.FLOAT],
+        [gl.R11F_G11F_B10F, gl.RGB, gl.FLOAT]
+    ];
+    testExtFloatBlendNonFloat32Type(gl.RGBA32F, formats);
 }
 
 /*
