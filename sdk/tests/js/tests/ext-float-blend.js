@@ -200,8 +200,7 @@ function testExtFloatBlendNonFloat32Type(internalFormat, formats) {
 
 function testExtFloatBlendNonFloat32TypeWebGL1(ext) {
     const formats = [
-        [gl.RGBA, gl.RGBA, ext.HALF_FLOAT_OES],
-        [gl.RGB, gl.RGB, ext.HALF_FLOAT_OES]
+        [gl.RGBA, gl.RGBA, ext.HALF_FLOAT_OES]
     ];
     testExtFloatBlendNonFloat32Type(gl.RGBA, formats);
 }
